@@ -1,0 +1,70 @@
+<?php
+/**
+ * Created by PhpStorm.
+ * User: himal
+ * Date: 7/20/16
+ * Time: 4:15 PM
+ */
+
+$form->setAttribute('role', 'form');
+$form->setAttribute('class', 'login-form');
+
+$username = $form->get("username");
+$username->setAttribute('id', 'form-username');
+$username->setAttribute('class', 'form-username form-control');
+$username->setAttribute('placeholder', 'Username...');
+$username->setAttribute('required', false);
+
+$password = $form->get('password');
+$password->setAttribute('id', 'form-password');
+$password->setAttribute('class', 'form-password form-control');
+$password->setAttribute('placeholder', 'Password...');
+$password->setAttribute('required', false);
+
+$rememberme = $form->get('rememberme');
+$rememberme->setAttribute('class', '');
+
+$submit = $form->get('submit');
+$submit->setAttribute('class', 'btn');
+
+$form->setAttribute('action', $this->url('auth/process', ['action' => 'authenticate']));
+$form->prepare();
+
+print $this->form()->openTag($form);
+
+//echo $this->form()->openTag($form);
+//echo $this->formCollection($form);
+//echo $this->form()->closeTag();
+
+if ($this->messages) {
+    print '<ul class="help-block bg-danger" style="background:#f3e250;">';
+    foreach ($this->messages as $message) {
+        print '<li>' . $message . '</li>';
+    }
+    print '</ul>';
+}
+?>
+
+<div class="form-group">
+    <?php print $this->formLabel($username) ?>
+    <?php print $this->formElement($username) ?>
+    <?php print $this->formElementErrors()->render($username, ['class' => 'help-block']) ?>
+</div>
+
+<div class="form-group">
+    <?php print $this->formLabel($password) ?>
+    <?php print $this->formElement($password) ?>
+    <?php print $this->formElementErrors()->render($password, ['class' => 'help-block']) ?>
+</div>
+
+<div class="form-group">
+    <?php print $this->formLabel($rememberme) ?>
+    <?php print $this->formElement($rememberme) ?>
+    <?php //print $this->formRow($rememberme) ?>
+    <?php print $this->formElementErrors()->render($rememberme, ['class' => 'help-block']) ?>
+</div>
+
+<?php
+print $this->formSubmit($submit);
+print $this->form()->closeTag();
+

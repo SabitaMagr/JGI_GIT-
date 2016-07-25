@@ -1,0 +1,142 @@
+<?php
+/**
+ * Created by PhpStorm.
+ * User: himal
+ * Date: 7/21/16
+ * Time: 12:05 PM
+ */
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <title>Neo::HRIS Login</title>
+
+    <?php print $this->headMeta()
+        ->appendName('viewport', 'width=device-width, initial-scale=1.0')
+        ->appendHttpEquiv('X-UA-Compatible', 'IE=edge');
+    ?>
+
+    <?php print $this->headLink(['rel' => 'shortcut icon', 'type' => 'image/vnd.microsoft.icon', 'href' => $this->basePath() . '/ico/favicon.png'])
+        ->prependStylesheet($this->basePath('css/login/style.css'))
+        ->prependStylesheet($this->basePath('css/login/form-elements.css'))
+        ->prependStylesheet($this->basePath('plugins/font-awesome/css/font-awesome.min.css'))
+        ->prependStylesheet($this->basePath('plugins/bootstrap-v3.3.6/css/bootstrap.min.css'))
+        ->prependStylesheet($this->basePath('fonts.googleapis.com/css4afb.css?family=Roboto:400,100,300,500'));
+    ?>
+
+    <?php $this->headScript()->captureStart(); ?>
+    site = {
+        basePath: "<?php print $this->basePath(); ?>"
+    };
+    <?php $this->headScript()->captureEnd(); ?>
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <?php print $this->headScript()
+        ->prependFile($this->basePath('js/login/respond.min.js'))
+        ->prependFile($this->basePath('js/login/html5shiv.js'));
+    ?>
+    <![endif]-->
+
+    <!-- Favicon and touch icons -->
+    <?php
+    $this->headLink()->deleteContainer();
+    print $this->headLink(['rel' => 'apple-touch-icon-precomposed', 'href' => $this->basePath() . '/ico/apple-touch-icon-57-precomposed.png'])
+        ->prependStylesheet(['rel' => 'apple-touch-icon-precomposed', 'sizes'=>'72x72', 'href' => $this->basePath() . '/ico/apple-touch-icon-72-precomposed.png'])
+        ->prependStylesheet(['rel' => 'apple-touch-icon-precomposed', 'sizes'=>'114x114', 'href' => $this->basePath() . '/ico/apple-touch-icon-114-precomposed.png'])
+        ->prependStylesheet(['rel' => 'apple-touch-icon-precomposed', 'sizes'=>'144x144', 'href' => $this->basePath() . '/ico/apple-touch-icon-144-precomposed.png']);
+    ?>
+
+</head>
+
+<body>
+
+<!-- Top content -->
+<div class="top-content">
+
+    <div class="inner-bg">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-8 col-sm-offset-2 text">
+                    <h1><strong>HRIS</strong> Login</h1>
+                    <div class="description">
+                        <?php /*
+                        <p>This is a free responsive login form made with Bootstrap.</p>
+                        */ ?>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6 col-sm-offset-3 form-box">
+                    <div class="form-top">
+                        <div class="form-top-left">
+                            <h3>Login to Neo HRIS</h3>
+                            <p>Enter your username and password to log on</p>
+                        </div>
+                        <div class="form-top-right">
+                            <i class="fa fa-key"></i>
+                        </div>
+                    </div>
+                    <div class="form-bottom">
+                        <?php print $this->content; ?>
+                        <?php /*
+                        <form role="form" action="#" method="post" class="login-form">
+                            <div class="form-group">
+                                <label class="sr-only" for="form-username">Username</label>
+                                <input type="text" name="form-username" placeholder="Username..." class="form-username form-control" id="form-username">
+                            </div>
+                            <div class="form-group">
+                                <label class="sr-only" for="form-password">Password</label>
+                                <input type="password" name="form-password" placeholder="Password..." class="form-password form-control" id="form-password">
+                            </div>
+                            <button type="submit" class="btn">Sign in!</button>
+                        </form>
+                        */ ?>
+                    </div>
+                </div>
+            </div>
+            <?php /*
+            <div class="row">
+                <div class="col-sm-6 col-sm-offset-3 social-login">
+                    <h3>...or login with:</h3>
+                    <div class="social-login-buttons">
+                        <a class="btn btn-link-2" href="#">
+                            <i class="fa fa-facebook"></i> Facebook
+                        </a>
+                        <a class="btn btn-link-2" href="#">
+                            <i class="fa fa-twitter"></i> Twitter
+                        </a>
+                        <a class="btn btn-link-2" href="#">
+                            <i class="fa fa-google-plus"></i> Google Plus
+                        </a>
+                    </div>
+                </div>
+            </div>
+            */ ?>
+        </div>
+    </div>
+
+</div>
+
+
+<!-- Javascript -->
+<?php print $this->headScript()
+    ->prependFile($this->basePath('js/login/scripts.js'))
+    ->prependFile($this->basePath('js/login/jquery.backstretch.min.js'))
+    ->prependFile($this->basePath('plugins/bootstrap-v3.3.6/js/bootstrap.min.js'))
+    ->prependFile($this->basePath('plugins/jquery/jquery-2.2.4.min.js'));
+?>
+
+<!--[if lt IE 10]>
+<script src="js/login/placeholder.js"></script>
+<![endif]-->
+
+</body>
+
+</html>
+
