@@ -3,10 +3,13 @@
 use Zend\Mvc\Application;
 use Zend\Stdlib\ArrayUtils;
 
+// Define application environment
+defined('APPLICATION_ENV')
+        || define('APPLICATION_ENV', (getenv('APPLICATION_ENV') ? getenv('APPLICATION_ENV') : 'development'));
 /**
  * Display all errors when APPLICATION_ENV is development.
  */
-if ('development' == $_SERVER['APPLICATION_ENV'] || 'staging' == $_SERVER['APPLICATION_ENV']) {
+if ('development' == APPLICATION_ENV || 'staging' == APPLICATION_ENV) {
     error_reporting(E_ALL);
     ini_set("display_errors", 1);
 }
