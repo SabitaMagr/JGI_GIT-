@@ -118,10 +118,13 @@ return [
         'exception_template'       => 'error/index',
         'template_map' => [
             'layout/layout'           => __DIR__ . '/../view/layout/layout.phtml',
-            'layout/login'           => __DIR__ . '/../view/layout/login.phtml',
+            'layout/login'            => __DIR__ . '/../view/layout/login.phtml',
             'application/index/index' => __DIR__ . '/../view/application/index/index.phtml',
             'error/404'               => __DIR__ . '/../view/error/404.phtml',
             'error/index'             => __DIR__ . '/../view/error/index.phtml',
+            'partial/header'          => __DIR__ . '/../view/layout/partials/header.phtml',
+            'partial/footer'          => __DIR__ . '/../view/layout/partials/footer.phtml',
+            'partial/sidebar'         => __DIR__ . '/../view/layout/partials/sidebar.phtml',
         ],
         'template_path_stack' => [
             __DIR__ . '/../view',

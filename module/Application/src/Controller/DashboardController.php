@@ -16,7 +16,7 @@ class DashboardController extends AbstractActionController
 
     public function indexAction()
     {
-        return (new ViewModel())->setTerminal(true);
+        return new ViewModel();
     }
 
 }
