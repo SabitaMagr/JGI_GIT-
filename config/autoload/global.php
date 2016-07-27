@@ -25,19 +25,19 @@ return [
 //        ],
 //    ],
 
-//     'db' => [
-//         'driver'    => 'oci',
-//         'dsn'       => 'oci:dbname=(DESCRIPTION =
-//             (ADDRESS = (PROTOCOL = TCP)(HOST = 192.168.4.2)(PORT = 1521))
-//             (CONNECT_DATA =
-//                 (SERVER = DEDICATED)
-//                 (SERVICE_NAME = erp)
-//             )
-//           )',
-//         'username'      => 'distribution',
-//         'password'      => 'DISTRIBUTION',
-//         'platform_options' => ['quote_identifiers' => false]
-//     ],
+    // 'db' => [
+    //     'driver'    => 'oci',
+    //     'dsn'       => 'oci:dbname=(DESCRIPTION =
+    //         (ADDRESS = (PROTOCOL = TCP)(HOST = 192.168.4.2)(PORT = 1521))
+    //         (CONNECT_DATA =
+    //             (SERVER = DEDICATED)
+    //             (SERVICE_NAME = erp)
+    //         )
+    //       )',
+    //     'username'      => 'distribution',
+    //     'password'      => 'DISTRIBUTION',
+    //     'platform_options' => ['quote_identifiers' => false]
+    // ],
 
     'service_manager' => [
         'factories' => [
