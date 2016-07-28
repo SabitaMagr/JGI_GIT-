@@ -4,17 +4,32 @@
 $form->setAttribute('role', 'form');
 $form->setAttribute('class', 'login-form');
 
-$name = $form->get("name");
-$name->setAttribute('id', 'form-name');
-$name->setAttribute('class', 'form-name form-control');
-$name->setAttribute('placeholder', 'Name...');
-$name->setAttribute('required', false);
+$first_name = $form->get("first_name");
+$first_name->setAttribute('id', 'form-first_name');
+$first_name->setAttribute('class', 'form-first_name form-control');
+$first_name->setAttribute('placeholder', 'Enter First Name...');
+//$first_name->setAttribute('required', false);
+
+$middle_name = $form->get("middle_name");
+$middle_name->setAttribute('id','form-middle_name');
+$middle_name->setAttribute('class','form-middle_name form-control');
+$middle_name->setAttribute('placeholder','Enter Middle Name...');
+
+$last_name = $form->get("last_name");
+$last_name->setAttribute('id','form-last_name');
+$last_name->setAttribute('class','form-last_name form-control');
+$last_name->setAttribute('placeholder','Enter Last Name...');
 
 $address = $form->get('address');
 $address->setAttribute('id', 'form-address');
 $address->setAttribute('class', 'form-address form-control');
 $address->setAttribute('placeholder', 'Address...');
-$address->setAttribute('required', false);
+//$address->setAttribute('required', false);
+
+$employee_id = $form->get('employee_id');
+$employee_id->setAttribute('id','form-employee_id');
+$employee_id->setAttribute('class','form-employee_id form-control');
+$employee_id->setAttribute('placeholder','Employee Id...');
 
 
 
@@ -40,22 +55,65 @@ if ($this->messages) {
 
     <ul class="nav nav-tabs nav-tabs-linetriangle nav-tabs-separator nav-stack-sm">
     <li class="active">
-    <a data-toggle="tab" href="#tab1"><i class="fa fa-shopping-cart tab-icon"></i> <span>Your cart</span></a>
+    <a data-toggle="tab" href="#tab1"><i class="fa fa-info-circle tab-icon"></i> <span>General</span></a>
     </li>
     <li class="">
-    <a data-toggle="tab" href="#tab2"><i class="fa fa-truck tab-icon"></i> <span>Shipping information</span></a>
+    <a data-toggle="tab" href="#tab2"><i class="fa fa-info-circle tab-icon"></i> <span>Family</span></a>
     </li>
     <li class="">
-    <a data-toggle="tab" href="#tab3"><i class="fa fa-credit-card tab-icon"></i> <span>Payment details</span></a>
+    <a data-toggle="tab" href="#tab3"><i class="fa fa-info-circle tab-icon"></i> <span>Identification</span></a>
     </li>
     <li class="">
-    <a data-toggle="tab" href="#tab4"><i class="fa fa-check tab-icon"></i> <span>Summary</span></a>
+    <a data-toggle="tab" href="#tab4"><i class="fa fa-info-circle tab-icon"></i> <span>Status & Integration</span></a>
+    </li>
+    <li class="">
+    <a data-toggle="tab" href="#tab5"><i class="fa fa-upload tab-icon"></i> <span>Upload Image</span></a>
     </li>
     </ul>
 
     <div class="tab-content">
         <div class="tab-pane padding-20 active slide-left" id="tab1">
-        tab1
+            
+            <div class="form-group form-group-default required">
+                <?php print $this->formLabel($employee_id);?>
+                <?php print $this->formElement($employee_id);?>
+                <?php print $this->formElementErrors()->render($employee_id,['class'=>'help-block'])?>
+
+            </div>
+            <div class="row clearfix">
+                <div class="col-sm-4">
+                     <div class="form-group form-group-default required">
+                        <?php print $this->formLabel($first_name) ?>
+                        <?php print $this->formElement($first_name) ?>
+                        <?php print $this->formElementErrors()->render($first_name, ['class' => 'help-block']) ?>
+                    </div>
+                </div>
+
+                <div class="col-sm-4">
+                    <div class="form-group form-group-default">
+                        <?php print $this->formLabel($middle_name)?>
+                        <?php print $this->formElement($middle_name)?>
+                        <?php print $this->formElementErrors()->render($middle_name,['class'=>'help-block'])?>
+                    </div>
+                </div>
+
+                <div class="col-sm-4">
+                    <div class="form-group form-group-default">
+                        <?php print $this->formLabel($last_name)?>
+                        <?php print $this->formElement($last_name)?>
+                        <?php print $this->formElementErrors()->render($last_name,['class'=>'help-block'])?>
+                    </div>
+                </div>
+
+            </div>
+ 
+            <div class="form-group form-group-default required">
+                <?php print $this->formLabel($address) ?>
+                <?php print $this->formElement($address) ?>
+                <?php print $this->formElementErrors()->render($address, ['class' => 'help-block']) ?>
+            </div>
+
+            
         </div>
 
         <div class="tab-pane slide-left padding-20" id="tab2">
@@ -68,6 +126,10 @@ if ($this->messages) {
 
         <div class="tab-pane slide-left padding-20" id="tab4">
         tab4
+        </div>
+
+        <div class="tab-pane slide-left padding-20" id="tab5">
+        tab5
         </div>
 
         <div class="padding-20 bg-white">
@@ -99,17 +161,6 @@ if ($this->messages) {
 
 </div>
 
-<div class="form-group">
-    <?php print $this->formLabel($name) ?>
-    <?php print $this->formElement($name) ?>
-    <?php print $this->formElementErrors()->render($name, ['class' => 'help-block']) ?>
-</div>
-
-<div class="form-group">
-    <?php print $this->formLabel($address) ?>
-    <?php print $this->formElement($address) ?>
-    <?php print $this->formElementErrors()->render($address, ['class' => 'help-block']) ?>
-</div>
 
 
 
@@ -118,4 +169,3 @@ print $this->formSubmit($submit);
 print $this->form()->closeTag();
 
 ?>
-
