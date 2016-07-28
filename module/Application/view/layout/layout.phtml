@@ -1233,6 +1233,11 @@ print $this->partial("partials/sidebar.phtml");
     ->prependFile($this->basePath('js/demo.js'))
     ->prependFile($this->basePath('js/scripts.js'))
     ->prependFile($this->basePath('js/dashboard.js'))
+
+    //for form tab<<
+    ->prependFile($this->basePath('js/form/form_wizard.js'))
+    //>>
+
     ->prependFile($this->basePath('pages/js/pages.min.js'))
     ->prependFile($this->basePath('plugins/bootstrap-datepicker/js/bootstrap-datepicker.js'))
     ->prependFile($this->basePath('plugins/skycons/skycons.js'))
@@ -1250,6 +1255,11 @@ print $this->partial("partials/sidebar.phtml");
     ->prependFile($this->basePath('plugins/nvd3/src/utils.js'))
     ->prependFile($this->basePath('plugins/nvd3/nv.d3.min.js'))
     ->prependFile($this->basePath('plugins/nvd3/lib/d3.v3.js'))
+
+    //for form tab<<
+    ->prependFile($this->basePath('js/form/boostrap-form-wizard/js/jquery.bootstrap.wizard.min.js'))
+    //>>
+    
     ->prependFile($this->basePath('plugins/switchery/js/switchery.min.js'))
     ->prependFile($this->basePath('plugins/classie/classie.js'))
     ->prependFile($this->basePath('plugins/bootstrap-select2/select2.min.js'))
