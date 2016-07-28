@@ -36,6 +36,69 @@ if ($this->messages) {
 }
 ?>
 
+<div id="rootwizard" class="m-t-50">
+
+    <ul class="nav nav-tabs nav-tabs-linetriangle nav-tabs-separator nav-stack-sm">
+    <li class="active">
+    <a data-toggle="tab" href="#tab1"><i class="fa fa-shopping-cart tab-icon"></i> <span>Your cart</span></a>
+    </li>
+    <li class="">
+    <a data-toggle="tab" href="#tab2"><i class="fa fa-truck tab-icon"></i> <span>Shipping information</span></a>
+    </li>
+    <li class="">
+    <a data-toggle="tab" href="#tab3"><i class="fa fa-credit-card tab-icon"></i> <span>Payment details</span></a>
+    </li>
+    <li class="">
+    <a data-toggle="tab" href="#tab4"><i class="fa fa-check tab-icon"></i> <span>Summary</span></a>
+    </li>
+    </ul>
+
+    <div class="tab-content">
+        <div class="tab-pane padding-20 active slide-left" id="tab1">
+        tab1
+        </div>
+
+        <div class="tab-pane slide-left padding-20" id="tab2">
+        tab2
+        </div>
+
+        <div class="tab-pane slide-left padding-20" id="tab3">
+        tab3
+        </div>
+
+        <div class="tab-pane slide-left padding-20" id="tab4">
+        tab4
+        </div>
+
+        <div class="padding-20 bg-white">
+            <ul class="pager wizard">
+                <li class="next">
+                    <button class="btn btn-primary btn-cons btn-animated from-left fa fa-truck pull-right" type="button">
+                    <span>Next</span>
+                    </button>
+                </li>
+                <li class="next finish hidden">
+                    <button class="btn btn-primary btn-cons btn-animated from-left fa fa-cog pull-right" type="button">
+                    <span>Finish</span>
+                    </button>
+                </li>
+                <li class="previous first hidden">
+                    <button class="btn btn-default btn-cons btn-animated from-left fa fa-cog pull-right" type="button">
+                    <span>First</span>
+                    </button>
+                </li>
+                <li class="previous">
+                    <button class="btn btn-default btn-cons pull-right" type="button">
+                    <span>Previous</span>
+                    </button>
+                </li>
+            </ul>
+        </div>
+
+    </div>
+
+</div>
+
 <div class="form-group">
     <?php print $this->formLabel($name) ?>
     <?php print $this->formElement($name) ?>
@@ -53,4 +116,6 @@ if ($this->messages) {
 <?php
 print $this->formSubmit($submit);
 print $this->form()->closeTag();
+
+?>
 
