@@ -1,0 +1,201 @@
+<?php
+$form->setAttribute('role', 'form');
+$form->setAttribute('class', 'login-form');
+
+$employeeId = $form->get('employeeId');
+$title = $form->get('title');
+$firstName = $form->get("firstName");
+$middleName = $form->get("middleName");
+$lastName = $form->get("lastName");
+$inNepali = $form->get("inNepali");
+$dateOfBirth = $form->get('dateOfBirth');
+$placeOfBirth = $form->get('placeOfBirth');
+
+
+
+$address = $form->get('address');
+
+$submit = $form->get('submit');
+
+
+$form->setAttribute('action', $this->url('test', ['action' => 'add']));
+$form->prepare();
+
+print $this->form()->openTag($form);
+
+if ($this->messages) {
+    print '<ul class="help-block bg-danger" style="background:#f3e250;">';
+    foreach ($this->messages as $message) {
+        print '<li>' . $message . '</li>';
+    }
+    print '</ul>';
+}
+?>
+<div id="rootwizard" class="m-t-50">
+    <ul class="nav nav-tabs nav-tabs-linetriangle nav-tabs-separator nav-stack-sm">
+        <li class="active">
+            <a data-toggle="tab" href="#tab1"><i class="fa fa-info-circle tab-icon"></i> 
+                <span>General</span>
+            </a>
+        </li>
+        <li class="">
+            <a data-toggle="tab" href="#tab2"><i class="fa fa-info-circle tab-icon"></i> 
+                <span>Family</span>
+            </a>
+        </li>
+        <li class="">
+            <a data-toggle="tab" href="#tab3"><i class="fa fa-info-circle tab-icon"></i> 
+                <span>Identification</span>
+            </a>
+        </li>
+        <li class="">
+            <a data-toggle="tab" href="#tab4"><i class="fa fa-info-circle tab-icon"></i> 
+                <span>Status & Integration</span>
+            </a>
+        </li>
+        <li class="">
+            <a data-toggle="tab" href="#tab5"><i class="fa fa-upload tab-icon"></i> 
+                <span>Upload Image</span>
+            </a>
+        </li>
+         <li class="">
+            <a data-toggle="tab" href="#tab6"><i class="fa fa-info-circle tab-icon"></i> 
+                <span>Add. Information</span>
+            </a>
+        </li>
+    </ul>
+
+    <div class="tab-content">
+        <div class="tab-pane padding-20 active slide-left" id="tab1">
+            <div class="form-group form-group-default required">
+                <?php print $this->formLabel($employeeId);?>
+                <?php print $this->formElement($employeeId);?>
+                <?php print $this->formElementErrors()->render($employeeId,['class'=>'help-block'])?>
+            </div>
+           
+            <div class="row clearfix">
+                <div class="col-sm-1">
+                    <div class="form-group form-group-default">
+                        <?php print $this->formLabel($title) ?>
+                        <?php print $this->formElement($title) ?>
+                        <?php print $this->formElementErrors()->render($title, ['class' => 'help-block']) ?>
+                    </div>
+                </div>
+            
+                <div class="col-sm-4">
+                     <div class="form-group form-group-default required">
+                        <?php print $this->formLabel($firstName) ?>
+                        <?php print $this->formElement($firstName) ?>
+                        <?php print $this->formElementErrors()->render($firstName, ['class' => 'help-block']) ?>
+                    </div>
+                </div>
+
+                <div class="col-sm-3">
+                    <div class="form-group form-group-default">
+                        <?php print $this->formLabel($middleName)?>
+                        <?php print $this->formElement($middleName)?>
+                        <?php print $this->formElementErrors()->render($middleName,['class'=>'help-block'])?>
+                    </div>
+                </div>
+
+                <div class="col-sm-4">
+                    <div class="form-group form-group-default">
+                        <?php print $this->formLabel($lastName)?>
+                        <?php print $this->formElement($lastName)?>
+                        <?php print $this->formElementErrors()->render($lastName,['class'=>'help-block'])?>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="form-group form-group-default">
+                <?php print $this->formLabel($inNepali);?>
+                <?php print $this->formElement($inNepali);?>
+                <?php print $this->formElementErrors($inNepali);?>
+            </div>
+
+            <div class="form-group form-group-default">
+                <?php print $this->formLabel($dateOfBirth);?>
+                <?php print $this->formElement($dateOfBirth);?>
+                <?php print $this->formElementErrors()->render($dateOfBirth,['class'=>'help-block']);?>
+            </div>
+            <div class="form-group form-group-default">
+                <?php print $this->formLabel($placeOfBirth);?>
+                <?php print $this->formElement($placeOfBirth);?>
+                <?php print $this->formElementErrors()->render($placeOfBirth,['class'=>'help-block']);?>
+            </div>
+ 
+            <div class="form-group form-group-default required">
+                <?php print $this->formLabel($address) ?>
+                <?php print $this->formElement($address) ?>
+                <?php print $this->formElementErrors()->render($address, ['class' => 'help-block']) ?>
+            </div>
+
+            
+        </div>
+
+        <div class="tab-pane slide-left padding-20" id="tab2">
+        tab2
+        </div>
+
+        <div class="tab-pane slide-left padding-20" id="tab3">
+        tab3
+        </div>
+
+        <div class="tab-pane slide-left padding-20" id="tab4">
+        tab4
+        </div>
+
+        <div class="tab-pane slide-left padding-20" id="tab5">
+        tab5
+        </div>
+
+        <div class="tab-pane slide-left padding-20" id="tab6">
+        <?php  print $this->formSubmit($submit); ?>
+        </div>
+
+        <div class="padding-20 bg-white">
+            <ul class="pager wizard">
+                <li class="next">
+                    <button class="btn btn-primary btn-cons btn-animated from-left fa fa-truck pull-right" type="button">
+                    <span>Next</span>
+                    </button>
+                </li>
+                <li class="next finish hidden">
+                    <button class="btn btn-primary btn-cons btn-animated from-left fa fa-cog pull-right" type="button">
+                    <span>Finish</span>
+                    </button>
+                </li>
+                <li class="previous first hidden">
+                    <button class="btn btn-default btn-cons btn-animated from-left fa fa-cog pull-right" type="button">
+                    <span>First</span>
+                    </button>
+                </li>
+                <li class="previous">
+                    <button class="btn btn-default btn-cons pull-right" type="button">
+                    <span>Previous</span>
+                    </button>
+                </li>
+            </ul>
+        </div>
+
+    </div>
+
+</div>
+
+
+
+
+<?php
+
+print $this->form()->closeTag();
+
+
+// $this->headScript()
+// ->offsetSetScript(4,$this->basePath('js/form/form_wizard.js'))
+// ->offsetSetScript(5,$this->basePath('js/form/boostrap-form-wizard/js/jquery.bootstrap.wizard.min.js'));
+    
+
+?>
+
+

@@ -25,16 +25,17 @@ class TestController extends AbstractActionController
 
     public function indexAction()
     {
-       $form = $this->getForm();
-      
-         return new ViewModel([
-            'form' => $form,
-            'messages' => $this->flashmessenger()->getMessages()
-        ]);
+       
     }
 
     public function addAction()
     {
+        $form = $this->getForm();
+
+         return new ViewModel([
+            'form' => $form,
+            'messages' => $this->flashmessenger()->getMessages()
+        ]);
     }
 
     public function editAction()
