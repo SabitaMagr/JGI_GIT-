@@ -15,7 +15,8 @@ $gender = $form->get('gender');
 $bloodGroup=$form->get('bloodGroup');
 $nationalityAtBirth = $form->get('nationalityAtBirth');
 $presentNationality = $form->get('presentNationality');
-
+$religion = $form->get('religion');
+$socialActivities = $form->get('socialActivities');
 
 $address = $form->get('address');
 
@@ -169,6 +170,18 @@ if ($this->messages) {
                         <?php print $this->formElementErrors()->render($presentNationality,['class'=>'help-block'])?>
                     </div>
                 </div>
+            </div>
+
+            <div class="form-group form-group-default">
+                <?php print $this->formLabel($religion) ?>
+                <?php print $this->formElement($religion) ?>
+                <?php print $this->formElementErrors()->render($religion, ['class' => 'help-block']) ?>
+            </div>
+
+            <div class="form-group form-group-default">
+                <?php print $this->formLabel($socialActivities) ?>
+                <?php print $this->formElement($socialActivities) ?>
+                <?php print $this->formElementErrors()->render($socialActivities, ['class' => 'help-block']) ?>
             </div>
 
              

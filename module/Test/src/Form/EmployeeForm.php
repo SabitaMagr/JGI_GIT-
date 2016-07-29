@@ -120,7 +120,24 @@ class EmployeeForm
     */
     public $presentNationality;
 
-   
+    /**
+     * @Annotation\Type("Zend\Form\Element\Select")
+     * @Annotation\Required({"required":"false"})
+     * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
+     * @Annotation\Options({"label":"Religion","value_options":{"Hindu":"Hindu","Muslim":"Muslim","Buddhist":"Buddhist","Christian":"Christian","Others":"Others"}})
+     * @Annotation\Attributes({ "id":"form-religion","data-init-plugin":"cs-select","class":"cs-select cs-skin-slide form-control"})
+    */
+    public $religion;
+
+    /**
+     * @Annotation\Type("Zend\Form\Element\Text")
+     * @Annotation\Required({"required":"true" })
+     * @Annotation\Filter({"name":"StripTags"})
+     * @Annotation\Options({"label":"Social Activities"})
+     * @Annotation\Attributes({ "id":"form-socialActivities", "class":"form-socialActivities form-control","placeholder":"Social Activities..." })
+     */
+    public $socialActivities;
+
     /**
      * @Annotation\Type("Zend\Form\Element\Text")
      * @Annotation\Required({"required":"true" })
