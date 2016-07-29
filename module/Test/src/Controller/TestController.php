@@ -31,11 +31,21 @@ class TestController extends AbstractActionController
     public function addAction()
     {
         $form = $this->getForm();
+        $view =['form' => $form, 'messages' => $this->flashmessenger()->getMessages()];
+        $request = $this->getRequest();
+        $form->get('submit')->setAttribute('value','ADD');
+        if(!$request->isPost()){
+            return $view;
+        }
 
-         return new ViewModel([
-            'form' => $form,
-            'messages' => $this->flashmessenger()->getMessages()
-        ]);
+        $form->setData($request->getPost());
+
+        if(!$form->isValid()){
+            return $view;
+        }
+
+
+        
     }
 
     public function editAction()

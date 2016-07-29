@@ -96,7 +96,7 @@ class EmployeeForm
 
     /**
      * @Annotation\Type("Zend\Form\Element\Submit")
-     * @Annotation\Attributes({"value":"Sign In","class":"btn"})
+     * @Annotation\Attributes({"value":"GO","class":"btn"})
     */
     public $submit;
 }
