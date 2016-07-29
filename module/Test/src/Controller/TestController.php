@@ -37,15 +37,11 @@ class TestController extends AbstractActionController
         if(!$request->isPost()){
             return $view;
         }
-
         $form->setData($request->getPost());
 
         if(!$form->isValid()){
             return $view;
-        }
-
-
-        
+        }      
     }
 
     public function editAction()

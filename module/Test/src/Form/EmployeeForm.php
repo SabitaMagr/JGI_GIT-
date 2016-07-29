@@ -83,6 +83,15 @@ class EmployeeForm
      * @Annotation\Attributes({ "id":"form-placeOfBirth","class":"form-placeOfBirth form-control", "placeholder":"Place of Birth..."})
     */
     public $placeOfBirth;
+
+    /**
+     * @Annotation\Type("Zend\Form\Element\Select")
+     * @Annotation\Required({"required":"true"})
+     * @Annotation\Filter({"name":"StripTags"})
+     * @Annotation\Options({"label":"Gender", "value_options":{"F":"Female","M":"Male","O":"Others"}})
+     * @Annotation\Attributes({ "id":"form-gender", "class":"form-gender form-control"})
+     */
+    public $gender;
    
     /**
      * @Annotation\Type("Zend\Form\Element\Text")

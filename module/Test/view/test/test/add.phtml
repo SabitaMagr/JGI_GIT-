@@ -10,7 +10,7 @@ $lastName = $form->get("lastName");
 $inNepali = $form->get("inNepali");
 $dateOfBirth = $form->get('dateOfBirth');
 $placeOfBirth = $form->get('placeOfBirth');
-
+$gender = $form->get('gender');
 
 
 $address = $form->get('address');
@@ -74,7 +74,7 @@ if ($this->messages) {
             </div>
            
             <div class="row clearfix">
-                <div class="col-sm-1">
+                <div class="col-sm-1" style="padding-left:5px;">
                     <div class="form-group form-group-default">
                         <?php print $this->formLabel($title) ?>
                         <?php print $this->formElement($title) ?>
@@ -98,7 +98,7 @@ if ($this->messages) {
                     </div>
                 </div>
 
-                <div class="col-sm-4">
+                <div class="col-sm-4" style="padding-right:5px;">
                     <div class="form-group form-group-default">
                         <?php print $this->formLabel($lastName)?>
                         <?php print $this->formElement($lastName)?>
@@ -113,16 +113,27 @@ if ($this->messages) {
                 <?php print $this->formElement($inNepali);?>
                 <?php print $this->formElementErrors($inNepali);?>
             </div>
+            <div class="row clearfix">
+                <div class="col-sm-6" style="padding-left:5px;">
+                    <div class="form-group form-group-default">
+                        <?php print $this->formLabel($dateOfBirth);?>
+                        <?php print $this->formElement($dateOfBirth);?>
+                        <?php print $this->formElementErrors()->render($dateOfBirth,['class'=>'help-block']);?>
+                    </div>
+                </div>
+                <div class="col-sm-6" style="padding-right:5px;">
+                    <div class="form-group form-group-default">
+                        <?php print $this->formLabel($placeOfBirth);?>
+                        <?php print $this->formElement($placeOfBirth);?>
+                        <?php print $this->formElementErrors()->render($placeOfBirth,['class'=>'help-block']);?>
+                    </div>
+                </div>
+            </div>
 
             <div class="form-group form-group-default">
-                <?php print $this->formLabel($dateOfBirth);?>
-                <?php print $this->formElement($dateOfBirth);?>
-                <?php print $this->formElementErrors()->render($dateOfBirth,['class'=>'help-block']);?>
-            </div>
-            <div class="form-group form-group-default">
-                <?php print $this->formLabel($placeOfBirth);?>
-                <?php print $this->formElement($placeOfBirth);?>
-                <?php print $this->formElementErrors()->render($placeOfBirth,['class'=>'help-block']);?>
+                <?php print $this->formLabel($gender); ?>
+                <?php print $this->formElement($gender);?>
+                <?php print $this->formElementErrors()->render($gender,['class'=>'help-block']);?>
             </div>
  
             <div class="form-group form-group-default required">
