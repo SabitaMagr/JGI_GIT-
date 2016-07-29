@@ -1232,6 +1232,11 @@ print $this->partial("partials/sidebar.phtml");
 <?php print $this->headScript()
     ->prependFile($this->basePath('js/demo.js'))
     ->prependFile($this->basePath('js/scripts.js'))
+
+    //for form validation and datepicker<<
+    ->prependFile($this->basePath('js/form/form_layouts.js'))
+    //>>
+
     ->prependFile($this->basePath('js/dashboard.js'))
 
     //for form tab<<
@@ -1240,6 +1245,11 @@ print $this->partial("partials/sidebar.phtml");
 
     ->prependFile($this->basePath('pages/js/pages.min.js'))
     ->prependFile($this->basePath('plugins/bootstrap-datepicker/js/bootstrap-datepicker.js'))
+
+    //for form validation<<
+    ->prependFile($this->basePath('js/form/jquery-validation/js/jquery.validate.min.js'))
+    //>>
+
     ->prependFile($this->basePath('plugins/skycons/skycons.js'))
     ->prependFile($this->basePath('plugins/jquery-sparkline/jquery.sparkline.min.js'))
     ->prependFile($this->basePath('plugins/jquery-metrojs/MetroJs.min.js'))
