@@ -12,6 +12,9 @@ $inNepali = $form->get("inNepali");
 $dateOfBirth = $form->get('dateOfBirth');
 $placeOfBirth = $form->get('placeOfBirth');
 $gender = $form->get('gender');
+$bloodGroup=$form->get('bloodGroup');
+$nationalityAtBirth = $form->get('nationalityAtBirth');
+$presentNationality = $form->get('presentNationality');
 
 
 $address = $form->get('address');
@@ -106,7 +109,6 @@ if ($this->messages) {
                         <?php print $this->formElementErrors()->render($lastName,['class'=>'help-block'])?>
                     </div>
                 </div>
-
             </div>
             <div class="row clearfix">
                 <div class="col-sm-6" style="padding-left:5px;">
@@ -138,6 +140,33 @@ if ($this->messages) {
                         <?php print $this->formLabel($placeOfBirth);?>
                         <?php print $this->formElement($placeOfBirth);?>
                         <?php print $this->formElementErrors()->render($placeOfBirth,['class'=>'help-block']);?>
+                    </div>
+                </div>
+            </div>
+
+             <div class="row clearfix">
+                
+                <div class="col-sm-4" style="padding-left:5px;">
+                     <div class="form-group form-group-default">
+                        <?php print $this->formLabel($bloodGroup) ?>
+                        <?php print $this->formElement($bloodGroup) ?>
+                        <?php print $this->formElementErrors()->render($bloodGroup, ['class' => 'help-block']) ?>
+                    </div>
+                </div>
+
+                <div class="col-sm-4">
+                    <div class="form-group form-group-default">
+                        <?php print $this->formLabel($nationalityAtBirth)?>
+                        <?php print $this->formElement($nationalityAtBirth)?>
+                        <?php print $this->formElementErrors()->render($nationalityAtBirth,['class'=>'help-block'])?>
+                    </div>
+                </div>
+
+                <div class="col-sm-4" style="padding-right:5px;">
+                    <div class="form-group form-group-default">
+                        <?php print $this->formLabel($presentNationality)?>
+                        <?php print $this->formElement($presentNationality)?>
+                        <?php print $this->formElementErrors()->render($presentNationality,['class'=>'help-block'])?>
                     </div>
                 </div>
             </div>

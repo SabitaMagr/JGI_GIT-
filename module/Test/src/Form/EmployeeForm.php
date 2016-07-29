@@ -25,7 +25,7 @@ class EmployeeForm
      * @Annotation\Required({"required":"true"})
      * @Annotation\Filter({"name":"StripTags"})
      * @Annotation\Options({"label":"Title", "value_options":{"M":"Mr.","F":"Mrs.","N":"Ms."}})
-     * @Annotation\Attributes({ "id":"form-title", "class":"form-title form-control"})
+     * @Annotation\Attributes({ "id":"form-title","data-init-plugin":"cs-select","class":"cs-select cs-skin-slide form-title form-control"})
      */
     public $title;
 
@@ -89,9 +89,37 @@ class EmployeeForm
      * @Annotation\Required({"required":"true"})
      * @Annotation\Filter({"name":"StripTags"})
      * @Annotation\Options({"label":"Gender", "value_options":{"F":"Female","M":"Male","O":"Others"}})
-     * @Annotation\Attributes({ "id":"form-gender", "class":"form-gender form-control"})
+     * @Annotation\Attributes({ "id":"form-gender","data-init-plugin":"cs-select","class":"cs-select cs-skin-slide form-gender form-control"})
      */
     public $gender;
+
+    /**
+     * @Annotation\Type("Zend\Form\Element\Select")
+     * @Annotation\Required({"required":"false"})
+     * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
+     * @Annotation\Options({"label":"Blood Group","value_options":{"A-":"A-","A+":"A+","B-":"B-","B+":"B+","AB-":"AB-","AB+":"AB+","O-":"O-","O+":"O+"}})
+     * @Annotation\Attributes({ "id":"form-bloodGroup","data-init-plugin":"cs-select","class":"cs-select cs-skin-slide form-control"})
+    */
+    public $bloodGroup;
+
+    /**
+     * @Annotation\Type("Zend\Form\Element\Text")
+     * @Annotation\Required({"required":"false"})
+     * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
+     * @Annotation\Options({"label":"Nationality at Birth"})
+     * @Annotation\Attributes({ "id":"form-nationalityAtBirth","class":"form-nationalityAtBirth form-control", "placeholder":"Nationality at Birth..."})
+    */
+    public $nationalityAtBirth;
+
+    /**
+     * @Annotation\Type("Zend\Form\Element\Text")
+     * @Annotation\Required({"required":"false"})
+     * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
+     * @Annotation\Options({"label":"Present Nationality"})
+     * @Annotation\Attributes({ "id":"form-presentNationality","class":"form-presentNationality form-control", "placeholder":"Present Nationality..."})
+    */
+    public $presentNationality;
+
    
     /**
      * @Annotation\Type("Zend\Form\Element\Text")
