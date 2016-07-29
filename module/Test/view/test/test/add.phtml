@@ -108,12 +108,23 @@ if ($this->messages) {
                 </div>
 
             </div>
-
-            <div class="form-group form-group-default">
-                <?php print $this->formLabel($inNepali);?>
-                <?php print $this->formElement($inNepali);?>
-                <?php print $this->formElementErrors($inNepali);?>
+            <div class="row clearfix">
+                <div class="col-sm-6" style="padding-left:5px;">
+                    <div class="form-group form-group-default">
+                        <?php print $this->formLabel($inNepali);?>
+                        <?php print $this->formElement($inNepali);?>
+                        <?php print $this->formElementErrors($inNepali);?>
+                    </div>
+                </div>
+                <div class="col-sm-6" style="padding-right:5px;">    
+                    <div class="form-group form-group-default">
+                        <?php print $this->formLabel($gender); ?>
+                        <?php print $this->formElement($gender);?>
+                        <?php print $this->formElementErrors()->render($gender,['class'=>'help-block']);?>
+                    </div>
+                </div>
             </div>
+
             <div class="row clearfix">
                 <div class="col-sm-6" style="padding-left:5px;">
                     <div class="form-group form-group-default">
@@ -131,12 +142,7 @@ if ($this->messages) {
                 </div>
             </div>
 
-            <div class="form-group form-group-default">
-                <?php print $this->formLabel($gender); ?>
-                <?php print $this->formElement($gender);?>
-                <?php print $this->formElementErrors()->render($gender,['class'=>'help-block']);?>
-            </div>
- 
+             
             <div class="form-group form-group-default required">
                 <?php print $this->formLabel($address) ?>
                 <?php print $this->formElement($address) ?>
@@ -202,11 +208,6 @@ if ($this->messages) {
 
 print $this->form()->closeTag();
 
-
-// $this->headScript()
-// ->offsetSetScript(4,$this->basePath('js/form/form_wizard.js'))
-// ->offsetSetScript(5,$this->basePath('js/form/boostrap-form-wizard/js/jquery.bootstrap.wizard.min.js'));
-    
 
 ?>
 

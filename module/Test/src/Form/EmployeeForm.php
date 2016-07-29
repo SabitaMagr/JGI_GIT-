@@ -71,7 +71,7 @@ class EmployeeForm
      * @Annotation\Required({"required":"true"})
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
      * @Annotation\Options({"label":"Date of Birth"})
-     * @Annotation\Attributes({"id":"form-dateOfBirth start-date", "class":"form-dateOfBirth form-control","placeholder":"Date of Birth..." })
+     * @Annotation\Attributes({"id":"start-date", "class":"form-dateOfBirth form-control","placeholder":"Date of Birth..." })
      */
     public $dateOfBirth;
 
