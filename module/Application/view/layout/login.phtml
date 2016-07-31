@@ -30,7 +30,7 @@
 
     <?php $this->headScript()->captureStart(); ?>
     site = {
-        basePath: "<?php print $this->basePath(); ?>"
+    basePath: "<?php print $this->basePath(); ?>"
     };
     <?php $this->headScript()->captureEnd(); ?>
 
@@ -38,8 +38,8 @@
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
     <?php print $this->headScript()
-        ->prependFile($this->basePath('js/login/respond.min.js'))
-        ->prependFile($this->basePath('js/login/html5shiv.js'));
+    ->prependFile($this->basePath('js/login/respond.min.js'))
+    ->prependFile($this->basePath('js/login/html5shiv.js'));
     ?>
     <![endif]-->
 
@@ -47,9 +47,9 @@
     <?php
     $this->headLink()->deleteContainer();
     print $this->headLink(['rel' => 'apple-touch-icon-precomposed', 'href' => $this->basePath() . '/ico/apple-touch-icon-57-precomposed.png'])
-        ->prependStylesheet(['rel' => 'apple-touch-icon-precomposed', 'sizes'=>'72x72', 'href' => $this->basePath() . '/ico/apple-touch-icon-72-precomposed.png'])
-        ->prependStylesheet(['rel' => 'apple-touch-icon-precomposed', 'sizes'=>'114x114', 'href' => $this->basePath() . '/ico/apple-touch-icon-114-precomposed.png'])
-        ->prependStylesheet(['rel' => 'apple-touch-icon-precomposed', 'sizes'=>'144x144', 'href' => $this->basePath() . '/ico/apple-touch-icon-144-precomposed.png']);
+        ->prependStylesheet(['rel' => 'apple-touch-icon-precomposed', 'sizes' => '72x72', 'href' => $this->basePath() . '/ico/apple-touch-icon-72-precomposed.png'])
+        ->prependStylesheet(['rel' => 'apple-touch-icon-precomposed', 'sizes' => '114x114', 'href' => $this->basePath() . '/ico/apple-touch-icon-114-precomposed.png'])
+        ->prependStylesheet(['rel' => 'apple-touch-icon-precomposed', 'sizes' => '144x144', 'href' => $this->basePath() . '/ico/apple-touch-icon-144-precomposed.png']);
     ?>
 
 </head>
