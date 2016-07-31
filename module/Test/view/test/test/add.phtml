@@ -86,7 +86,8 @@ $includePayroll = $form->get('includePayroll');
 $contractDate = $form->get('contractDate');
 $contractPeriod = $form->get('contractPeriod');
 $remarks = $form->get('remarks');
-
+$image1 = $form->get('image1');
+$image2 = $form->get('image2');
 
 
 
@@ -702,7 +703,22 @@ if ($this->messages) {
         </div>
 
         <div class="tab-pane slide-left padding-20" id="tab5">
-        tab5
+            <div class="row clearfix">
+                <div class="col-sm-6" style="padding-left:5px;">
+                    <div class="form-group form-group-default">
+                        <?php print $this->formLabel($image1);?>
+                        <?php print $this->formElement($image1);?>
+                        <?php print $this->formElementErrors()->render($image1,['class'=>'help-block']);?>
+                    </div>
+                </div>
+                <div class="col-sm-6" style="padding-right:5px;">
+                    <div class="form-group form-group-default">
+                        <?php print $this->formLabel($image2);?>
+                        <?php print $this->formElement($image2);?>
+                        <?php print $this->formElementErrors()->render($image2,['class'=>'help-block']);?>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <div class="tab-pane slide-left padding-20" id="tab6">

@@ -696,7 +696,8 @@ class EmployeeForm
 
     /**     
      * @Annotation\Type("Zend\Form\Element\Checkbox")
-     * @Annotation\Attributes({"type":"checkbox","value":"1"})
+     * @Annotation\Attributes({"value":"1"})
+     * @Annotation\Filter({"name":"StripTags"})
      * @Annotation\Options({"label":"Sift Applicable?"})
     */
     public $shiftApplicable;
@@ -731,8 +732,9 @@ class EmployeeForm
     /**
      * @Annotation\Type("Zend\Form\Element\Checkbox")
      * @Annotation\Options({"label":"Include Payroll?"})
-     * @Annotation\Checked({"Checked":"false"})
-     * @Annotation\Attributes({ "type":"checkbox", "id":"form-includePayroll", "class":"form-includePayroll", "value":"1" })
+     * @Annotation\Filter({"name":"StripTags"})
+     * @Annotation\Checked({"checked":"false"})
+     * @Annotation\Attributes({ "id":"form-includePayroll", "class":"form-includePayroll", "value":"1" })
      */
     public $includePayroll;
 
@@ -765,13 +767,22 @@ class EmployeeForm
 
 
     /**
-     * @Annotation\Type("Zend\Form\Element\Text")
+     * @Annotation\Type("Zend\Form\Element\File")
      * @Annotation\Required({"required":"false" })
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
-     * @Annotation\Options({"label":"Address"})
-     * @Annotation\Attributes({ "id":"form-address", "class":"form-address form-control","placeholder":"" })
+     * @Annotation\Options({"label":"Upload Image"})
+     * @Annotation\Attributes({ "id":"form-image1", "class":"form-image1 form-control","placeholder":"" })
      */
-    public $address;
+    public $image1;
+
+    /**
+     * @Annotation\Type("Zend\Form\Element\File")
+     * @Annotation\Required({"required":"false" })
+     * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
+     * @Annotation\Options({"label":"Upload Image"})
+     * @Annotation\Attributes({ "id":"form-image2", "class":"form-image2 form-control","placeholder":"" })
+     */
+    public $image2;
 
 
     /**
