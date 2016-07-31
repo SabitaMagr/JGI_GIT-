@@ -28,7 +28,7 @@ class Module implements AutoloaderProviderInterface
 
     public function onBootstrap(MvcEvent $e)
     {
-        $eventManager   = $e->getApplication()->getEventManager();
+        $eventManager = $e->getApplication()->getEventManager();
         $moduleRouteListener = new ModuleRouteListener();
         $moduleRouteListener->attach($eventManager);
 
@@ -44,11 +44,12 @@ class Module implements AutoloaderProviderInterface
         ], -100);
     }
 
-    function beforeDispatch(MvcEvent $event){
+    function beforeDispatch(MvcEvent $event)
+    {
 
         $request = $event->getRequest();
         $response = $event->getResponse();
-        $target = $event->getTarget ();
+        $target = $event->getTarget();
 
         /* Offline pages not needed authentication */
         $whiteList = [
@@ -61,8 +62,8 @@ class Module implements AutoloaderProviderInterface
         $auth = $app->getServiceManager()->get('AuthService');
 
         $requestUri = $request->getRequestUri();
-        $controller = $event->getRouteMatch ()->getParam ( 'controller' );
-        $action = $event->getRouteMatch ()->getParam ( 'action' );
+        $controller = $event->getRouteMatch()->getParam('controller');
+        $action = $event->getRouteMatch()->getParam('action');
 
         $requestedResourse = $controller . "-" . $action;
 
@@ -76,18 +77,21 @@ class Module implements AutoloaderProviderInterface
                 )
             );
             $response->setStatusCode(302);
-            $response->sendHeaders ();
+            $response->sendHeaders();
             return $response;
         }
 
         //print "Called before any controller action called. Do any operation.";
     }
 
-    function afterDispatch(MvcEvent $event){
+    function afterDispatch(MvcEvent $event)
+    {
         //print "Called after any controller action called. Do any operation.";
     }
 
-    public function getAutoloaderConfig() {}
+    public function getAutoloaderConfig()
+    {
+    }
 
     public function getServiceConfig()
     {
@@ -116,7 +120,7 @@ class Module implements AutoloaderProviderInterface
     {
         return [
             'factories' => [
-                Controller\AuthController::class => function($container) {
+                Controller\AuthController::class => function ($container) {
                     return new Controller\AuthController(
                         $container->get('AuthService')
                     );

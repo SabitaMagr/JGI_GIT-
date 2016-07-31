@@ -28,7 +28,8 @@
         "zendframework/zend-session": "^2.7.1",
         "zendframework/zend-servicemanager-di": "^1.0",
         "doctrine/orm" : "^2.5",
-        "zf-commons/zfc-twig": "dev-master"
+        "zf-commons/zfc-twig": "dev-master",
+        "zendframework/zend-debug": "^2.5"
     },
     "autoload": {
         "psr-0": {
@@ -37,7 +38,8 @@
         "psr-4": {
             "Application\\": "module/Application/src/",
             "Album\\": "module/Album/src/",
-            "Test\\": "module/Test/src/"
+            "Test\\": "module/Test/src/",
+            "Setup\\":"module/Setup/src/"
         }
     },
     "autoload-dev": {

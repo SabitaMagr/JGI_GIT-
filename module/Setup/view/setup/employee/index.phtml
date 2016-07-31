@@ -1,0 +1,16 @@
+<?php
+
+?>
+
+<table>
+
+<?php foreach ($list as $employee) : ?>
+    <tr>
+    <td><?php print $this->escapeHtml($employee->employeeCode) ?></td>
+    <td><?php print $this->escapeHtml($employee->employeeFirstName) ?></td>
+    <td><?php print $this->escapeHtml($employee->employeeMiddleName) ?></td>
+    <td><?php print $this->escapeHtml($employee->employeeLastName) ?></td>
+
+    </tr>
+<?php endforeach; ?>
+</table>

@@ -12,10 +12,10 @@
  */
 
 return [
-   'db' => [
-       'driver' => 'Pdo',
-       'dsn'    => sprintf('sqlite:%s/data/schema.db', realpath(getcwd())),
-   ],
+//   'db' => [
+//       'driver' => 'Pdo',
+//       'dsn'    => sprintf('sqlite:%s/data/schema.db', realpath(getcwd())),
+//   ],
 
 //    'db' => [
 //        'driver'         => 'Pdo',

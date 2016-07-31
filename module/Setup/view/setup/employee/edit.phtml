@@ -1,0 +1,62 @@
+<?php
+$form->setAttribute('role', 'form');
+$form->setAttribute('class', 'login-form');
+
+
+
+
+$employeeFirstName=$form->get("employeeFirstName");
+$employeeFirstName->setAttribute('class', 'form-name form-control');
+$employeeFirstName->setAttribute('placeholder', 'First Name');
+
+$employeeMiddleName=$form->get("employeeMiddleName");
+$employeeMiddleName->setAttribute('class', 'form-name form-control');
+$employeeMiddleName->setAttribute('placeholder', 'Middle Name');
+
+
+$employeeLastName=$form->get("employeeLastName");
+$employeeLastName->setAttribute('class', 'form-name form-control');
+$employeeLastName->setAttribute('placeholder', 'Last Name');
+
+
+//$dateofbirth = $form->get("dateOfBirth");
+//$dateofbirth->setAttribute('id', 'dateOfBirth');
+//$dateofbirth->setAttribute('class', 'form-name form-control');
+//$dateofbirth->setAttribute('placeholder', 'Date of Birth');
+//$dateofbirth->setAttribute('required', true);
+
+$submit = $form->get('submit');
+$submit->setAttribute('class', 'btn');
+
+$form->setAttribute('action', $this->url('setup', ['action' => 'edit','id'=>$id]));
+$form->prepare();
+
+
+print $this->form()->openTag($form);
+
+?>
+
+<div class="form-group">
+    <?= $this->formLabel($employeeFirstName) ?>
+    <?= $this->formElement($employeeFirstName) ?>
+    <?= $this->formElementErrors()->render($employeeFirstName,['class'=>'help-block']) ?>
+</div>
+<div class="form-group">
+    <?= $this->formLabel($employeeMiddleName) ?>
+    <?= $this->formElement($employeeMiddleName) ?>
+    <?= $this->formElementErrors()->render($employeeLastName,['class'=>'help-block']) ?>
+</div>
+<div class="form-group">
+    <?= $this->formLabel($employeeLastName) ?>
+    <?= $this->formElement($employeeLastName) ?>
+    <?= $this->formElementErrors()->render($employeeLastName,['class'=>'help-block']) ?>
+</div>
+
+
+
+
+<?php
+print $this->formSubmit($submit);
+print $this->form()->closeTag();
+
+?>
