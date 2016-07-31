@@ -34,7 +34,7 @@ class EmployeeForm
      * @Annotation\Required({"required":"true"})
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
      * @Annotation\Options({"label":"First Name"})
-     * @Annotation\Attributes({ "id":"form-firstName", "class":"form-firstName form-control", "placeholder":"Firt Name..."})
+     * @Annotation\Attributes({ "id":"form-firstName", "class":"form-firstName form-control", "placeholder":"First Name..."})
      */
     public $firstName;
 
@@ -416,7 +416,7 @@ class EmployeeForm
      * @Annotation\Required({"required":"false" })
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
      * @Annotation\Options({"label":"Spouse Birth Date"})
-     * @Annotation\Attributes({ "id":"form-spouseBirthDate", "class":"form-spouseBirthDate form-control"})
+     * @Annotation\Attributes({ "id":"start-date1", "class":"form-spouseBirthDate form-control"})
      */
     public $spouseBirthDate;
 
@@ -479,7 +479,7 @@ class EmployeeForm
      * @Annotation\Required({"required":"false" })
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
      * @Annotation\Options({"label":"Driving License Expiry Date"})
-     * @Annotation\Attributes({ "id":"form-drivingLicenceExpiryDate", "class":"form-drivingLicenceExpiryDate form-control" })
+     * @Annotation\Attributes({ "id":"start-date2", "class":"form-drivingLicenceExpiryDate form-control" })
      */
     public $drivingLicenceExpiryDate;
 
@@ -783,6 +783,42 @@ class EmployeeForm
      * @Annotation\Attributes({ "id":"form-image2", "class":"form-image2 form-control","placeholder":"" })
      */
     public $image2;
+
+
+    //to add child
+
+    /**
+     * @Annotation\Type("Zend\Form\Element\Text")
+     * @Annotation\Required({"required":"false"})
+     * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
+     * @Annotation\Options({"label":"Child Name"})
+     * @Annotation\Attributes({"id":"form-childName", "class":"form-childName form-control"})
+    */
+    public $childName;
+
+    /**
+     * @Annotation\Type("Zend\Form\Element\Text")
+     * @Annotation\Required({"required":"false"})
+     * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
+     * @Annotation\Options({"label":"Date of Birth"})
+     * @Annotation\Attributes({"id":"form-childDateOfBirth", "class":"form-childDateOfBirth form-control"})
+    */
+    public $childDateOfBirth;
+
+
+    /**
+     * @Annotation\Type("Zend\Form\Element\Select")
+     * @Annotation\Required({"required":"true"})
+     * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
+     * @Annotation\Options({"label":"Gender", "value_options":{"F":"Female","M":"Male","O":"Others"}})
+     * @Annotation\Attributes({ "id":"form-childGender","data-init-plugin":"cs-select","class":"cs-select cs-skin-slide form-childGender form-control"})
+     */
+    public $childGender;
+
+
+    //to add training
+    
+
 
 
     /**

@@ -1,3 +1,11 @@
 $(document).ready(function(){
 	$('#start-date').datepicker();
+	$('#start-date1').datepicker();
+	$('#start-date2').datepicker();
+	$('#form-citizenshipIssuedDate').datepicker();
+	$('#form-passportExpiryDate').datepicker();
+	$('#form-probationDate').datepicker();
+	$('#form-joinDate').datepicker();
+	$('#form-permanentDate').datepicker();
+	$('#form-contractDate').datepicker();
 });
