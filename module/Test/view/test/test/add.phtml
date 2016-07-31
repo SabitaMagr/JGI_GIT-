@@ -49,7 +49,22 @@ $spouseName = $form->get('spouseName');
 $spouseOccupation = $form->get('spouseOccupation');
 $spouseBirthDate = $form->get('spouseBirthDate');
 $weddingAnniversary = $form->get('weddingAnniversary');
-
+$cardPinId = $form->get('cardPinId');
+$lbrf = $form->get('lbrf');
+$barCode = $form->get('barCode');
+$providentFundNo = $form->get('providentFundNo');
+$drivingLicenceNo = $form->get('drivingLicenceNo');
+$drivingLicenceExpiryDate = $form->get('drivingLicenceExpiryDate');
+$drivingLicenseType = $form->get('drivingLicenseType');
+$passportNo = $form->get('passportNo');
+$thumbId = $form->get('thumbId');
+$panNo = $form->get('panNo');
+$accountNo = $form->get('accountNo');
+$retirementNo = $form->get('retirementNo');
+$citizenshipNo = $form->get('citizenshipNo');
+$citizenshipIssuedDate = $form->get('citizenshipIssuedDate');
+$citizenshipIssuedPlace = $form->get('citizenshipIssuedPlace');
+$passportExpiryDate = $form->get('passportExpiryDate');
 
 
 $submit = $form->get('submit');
@@ -451,7 +466,95 @@ if ($this->messages) {
         </div>
 
         <div class="tab-pane slide-left padding-20" id="tab3">
-        tab3
+            <div class="row clearfix">
+                <div class="col-sm-6" style="padding-left:5px;">
+                    <div class="form-group form-group-default">
+                        <?php print $this->formLabel($cardPinId);?>
+                        <?php print $this->formElement($cardPinId);?>
+                        <?php print $this->formElementErrors()->render($cardPinId,['class'=>'help-block']);?>
+                    </div>
+                    <div class="form-group form-group-default">
+                        <?php print $this->formLabel($lbrf);?>
+                        <?php print $this->formElement($lbrf);?>
+                        <?php print $this->formElementErrors()->render($lbrf,['class'=>'help-block']);?>
+                    </div>
+
+                    <div class="form-group form-group-default">
+                        <?php print $this->formLabel($barCode);?>
+                        <?php print $this->formElement($barCode);?>
+                        <?php print $this->formElementErrors()->render($barCode,['class'=>'help-block']);?>
+                    </div>
+                    <div class="form-group form-group-default">
+                        <?php print $this->formLabel($providentFundNo);?>
+                        <?php print $this->formElement($providentFundNo);?>
+                        <?php print $this->formElementErrors()->render($providentFundNo,['class'=>'help-block']);?>
+                    </div>
+                    <div class="form-group form-group-default">
+                        <?php print $this->formLabel($drivingLicenceNo);?>
+                        <?php print $this->formElement($drivingLicenceNo);?>
+                        <?php print $this->formElementErrors()->render($drivingLicenceNo,['class'=>'help-block']);?>
+                    </div>
+                    <div class="form-group form-group-default">
+                        <?php print $this->formLabel($drivingLicenceExpiryDate);?>
+                        <?php print $this->formElement($drivingLicenceExpiryDate);?>
+                        <?php print $this->formElementErrors()->render($drivingLicenceExpiryDate,['class'=>'help-block']);?>
+                    </div>
+                    <div class="form-group form-group-default">
+                        <?php print $this->formLabel($drivingLicenseType);?>
+                        <?php print $this->formElement($drivingLicenseType);?>
+                        <?php print $this->formElementErrors()->render($drivingLicenseType,['class'=>'help-block']);?>
+                    </div>
+                    <div class="form-group form-group-default">
+                        <?php print $this->formLabel($passportNo);?>
+                        <?php print $this->formElement($passportNo);?>
+                        <?php print $this->formElementErrors()->render($passportNo,['class'=>'help-block']);?>
+                    </div>
+                </div>
+                <div class="col-sm-6" style="padding-right:5px;">
+                    <div class="form-group form-group-default">
+                        <?php print $this->formLabel($thumbId);?>
+                        <?php print $this->formElement($thumbId);?>
+                        <?php print $this->formElementErrors()->render($thumbId,['class'=>'help-block']);?>
+                    </div>
+                    <div class="form-group form-group-default">
+                        <?php print $this->formLabel($panNo);?>
+                        <?php print $this->formElement($panNo);?>
+                        <?php print $this->formElementErrors()->render($panNo,['class'=>'help-block']);?>
+                    </div>
+
+                    <div class="form-group form-group-default">
+                        <?php print $this->formLabel($accountNo);?>
+                        <?php print $this->formElement($accountNo);?>
+                        <?php print $this->formElementErrors()->render($accountNo,['class'=>'help-block']);?>
+                    </div>
+                    <div class="form-group form-group-default">
+                        <?php print $this->formLabel($retirementNo);?>
+                        <?php print $this->formElement($retirementNo);?>
+                        <?php print $this->formElementErrors()->render($retirementNo,['class'=>'help-block']);?>
+                    </div>
+                    <div class="form-group form-group-default">
+                        <?php print $this->formLabel($citizenshipNo);?>
+                        <?php print $this->formElement($citizenshipNo);?>
+                        <?php print $this->formElementErrors()->render($citizenshipNo,['class'=>'help-block']);?>
+                    </div>
+                    <div class="form-group form-group-default">
+                        <?php print $this->formLabel($citizenshipIssuedDate);?>
+                        <?php print $this->formElement($citizenshipIssuedDate);?>
+                        <?php print $this->formElementErrors()->render($citizenshipIssuedDate,['class'=>'help-block']);?>
+                    </div>
+                    <div class="form-group form-group-default">
+                        <?php print $this->formLabel($citizenshipIssuedPlace);?>
+                        <?php print $this->formElement($citizenshipIssuedPlace);?>
+                        <?php print $this->formElementErrors()->render($citizenshipIssuedPlace,['class'=>'help-block']);?>
+                    </div>
+                    <div class="form-group form-group-default">
+                        <?php print $this->formLabel($passportExpiryDate);?>
+                        <?php print $this->formElement($passportExpiryDate);?>
+                        <?php print $this->formElementErrors()->render($passportExpiryDate,['class'=>'help-block']);?>
+                    </div>
+                </div>
+            </div>
+
         </div>
 
         <div class="tab-pane slide-left padding-20" id="tab4">
