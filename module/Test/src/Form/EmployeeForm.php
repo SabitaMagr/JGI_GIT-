@@ -695,16 +695,16 @@ class EmployeeForm
     public $employeeStatus;
 
     /**
-     * @Annotation\Type("Zend\Form\Element\Text")
+     * @Annotation\Type("Zend\Form\Element\Checkbox")
      * @Annotation\Required({"required":"true" })
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
-     * @Annotation\Options({"label":"Sift Applicable?"})
-     * @Annotation\Attributes({ "id":"form-shiftApplicable", "class":"form-shiftApplicable form-control","placeholder":"" })
+     * @Annotation\Options({"label":"Sift Applicable?","checked_value":"1"})
+     * @Annotation\Attributes({ "id":"form-shiftApplicable", "class":"form-shiftApplicable form-control","placeholder":""})
      */
     public $shiftApplicable;
 
     /**
-     * @Annotation\Type("Zend\Form\Element\Checkbox")
+     * @Annotation\Type("Zend\Form\Element\Text")
      * @Annotation\Required({"required":"true" })
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
      * @Annotation\Options({"label":"Recommender","value_options":{"A":"A","B":"B","C":"C"}})
@@ -731,11 +731,11 @@ class EmployeeForm
     public $basicSalary;
 
     /**
-     * @Annotation\Type("Zend\Form\Element\Text")
+     * @Annotation\Type("Zend\Form\Element\Checkbox")
      * @Annotation\Required({"required":"true" })
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
      * @Annotation\Options({"label":"Include Payroll?"})
-     * @Annotation\Attributes({ "id":"form-includePayroll", "class":"form-includePayroll form-control","placeholder":"" })
+     * @Annotation\Attributes({ "id":"form-includePayroll", "class":"form-includePayroll form-control","placeholder":"", "value":"1" })
      */
     public $includePayroll;
 
