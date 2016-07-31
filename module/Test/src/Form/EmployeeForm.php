@@ -131,7 +131,7 @@ class EmployeeForm
 
     /**
      * @Annotation\Type("Zend\Form\Element\Text")
-     * @Annotation\Required({"required":"true" })
+     * @Annotation\Required({"required":"false" })
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
      * @Annotation\Options({"label":"Social Activities"})
      * @Annotation\Attributes({ "id":"form-socialActivities", "class":"form-socialActivities form-control" })
@@ -149,7 +149,7 @@ class EmployeeForm
 
     /**
      * @Annotation\Type("Zend\Form\Element\Text")
-     * @Annotation\Required({"required":"true" })
+     * @Annotation\Required({"required":"false" })
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
      * @Annotation\Options({"label":"Phone No."})
      * @Annotation\Attributes({ "id":"form-phoneNo", "class":"form-phoneNo form-control" })
@@ -158,7 +158,7 @@ class EmployeeForm
 
     /**
      * @Annotation\Type("Zend\Form\Element\Text")
-     * @Annotation\Required({"required":"true" })
+     * @Annotation\Required({"required":"false" })
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
      * @Annotation\Options({"label":"Mobile No."})
      * @Annotation\Attributes({ "id":"form-mobileNo", "class":"form-mobileNo form-control"})
@@ -167,7 +167,7 @@ class EmployeeForm
 
     /**
      * @Annotation\Type("Zend\Form\Element\Email")
-     * @Annotation\Required({"required":"true" })
+     * @Annotation\Required({"required":"false" })
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
      * @Annotation\Options({"label":"Official Email"})
      * @Annotation\Attributes({ "id":"form-officialEmail", "class":"form-officialEmail form-control"})
@@ -176,7 +176,7 @@ class EmployeeForm
 
     /**
      * @Annotation\Type("Zend\Form\Element\Email")
-     * @Annotation\Required({"required":"true" })
+     * @Annotation\Required({"required":"false" })
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
      * @Annotation\Options({"label":"Personal Email"})
      * @Annotation\Attributes({ "id":"form-personalEmail", "class":"form-personalEmail form-control"})
@@ -185,7 +185,7 @@ class EmployeeForm
 
     /**
      * @Annotation\Type("Zend\Form\Element\Textarea")
-     * @Annotation\Required({"required":"true" })
+     * @Annotation\Required({"required":"false" })
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
      * @Annotation\Options({"label":"Social Network"})
      * @Annotation\Attributes({ "id":"form-socialNetwork", "class":"form-socialNetwork form-control"})
@@ -195,7 +195,7 @@ class EmployeeForm
 
     /**
      * @Annotation\Type("Zend\Form\Element\Text")
-     * @Annotation\Required({"required":"true" })
+     * @Annotation\Required({"required":"false" })
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
      * @Annotation\Options({"label":"Highest Qualification"})
      * @Annotation\Attributes({ "id":"form-highestQualification", "class":"form-highestQualification form-control"})
@@ -204,7 +204,7 @@ class EmployeeForm
 
     /**
      * @Annotation\Type("Zend\Form\Element\Text")
-     * @Annotation\Required({"required":"true" })
+     * @Annotation\Required({"required":"false" })
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
      * @Annotation\Options({"label":"Contact Name"})
      * @Annotation\Attributes({ "id":"form-contactName", "class":"form-contactName form-control"})
@@ -214,7 +214,7 @@ class EmployeeForm
 
     /**
      * @Annotation\Type("Zend\Form\Element\Text")
-     * @Annotation\Required({"required":"true" })
+     * @Annotation\Required({"required":"false" })
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
      * @Annotation\Options({"label":"Relationship"})
      * @Annotation\Attributes({ "id":"form-relationship", "class":"form-relationship form-control" })
@@ -223,7 +223,7 @@ class EmployeeForm
 
     /**
      * @Annotation\Type("Zend\Form\Element\Text")
-     * @Annotation\Required({"required":"true" })
+     * @Annotation\Required({"required":"false" })
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
      * @Annotation\Options({"label":"Contact Address"})
      * @Annotation\Attributes({ "id":"form-contactAddress", "class":"form-contactAddress form-control"})
@@ -232,7 +232,7 @@ class EmployeeForm
 
     /**
      * @Annotation\Type("Zend\Form\Element\Text")
-     * @Annotation\Required({"required":"true" })
+     * @Annotation\Required({"required":"false" })
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
      * @Annotation\Options({"label":"Contact Number"})
      * @Annotation\Attributes({ "id":"form-contactNumber", "class":"form-contactNumber form-control"})
@@ -241,7 +241,7 @@ class EmployeeForm
 
     /**
      * @Annotation\Type("Zend\Form\Element\Text")
-     * @Annotation\Required({"required":"true" })
+     * @Annotation\Required({"required":"false" })
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
      * @Annotation\Options({"label":"House No."})
      * @Annotation\Attributes({ "id":"form-pHouseNo", "class":"form-pHouseNo form-control"})
@@ -250,7 +250,7 @@ class EmployeeForm
 
     /**
      * @Annotation\Type("Zend\Form\Element\Text")
-     * @Annotation\Required({"required":"true" })
+     * @Annotation\Required({"required":"false" })
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
      * @Annotation\Options({"label":"House No."})
      * @Annotation\Attributes({ "id":"form-cHouseNo", "class":"form-cHouseNo form-control" })
@@ -259,7 +259,7 @@ class EmployeeForm
 
     /**
      * @Annotation\Type("Zend\Form\Element\Text")
-     * @Annotation\Required({"required":"true" })
+     * @Annotation\Required({"required":"false" })
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
      * @Annotation\Options({"label":"Ward No."})
      * @Annotation\Attributes({ "id":"form-pWardNo", "class":"form-pWardNo form-control"})
@@ -268,7 +268,7 @@ class EmployeeForm
 
     /**
      * @Annotation\Type("Zend\Form\Element\Text")
-     * @Annotation\Required({"required":"true" })
+     * @Annotation\Required({"required":"false" })
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
      * @Annotation\Options({"label":"Ward No"})
      * @Annotation\Attributes({ "id":"form-cWardNo", "class":"form-cWardNo form-control"})
@@ -277,7 +277,7 @@ class EmployeeForm
 
     /**
      * @Annotation\Type("Zend\Form\Element\Text")
-     * @Annotation\Required({"required":"true" })
+     * @Annotation\Required({"required":"false" })
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
      * @Annotation\Options({"label":"Street Address"})
      * @Annotation\Attributes({ "id":"form-pStreetAddress", "class":"form-pStreetAddress form-control" })
@@ -286,7 +286,7 @@ class EmployeeForm
 
     /**
      * @Annotation\Type("Zend\Form\Element\Text")
-     * @Annotation\Required({"required":"true" })
+     * @Annotation\Required({"required":"false" })
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
      * @Annotation\Options({"label":"Street Address"})
      * @Annotation\Attributes({ "id":"form-cStreetAddress", "class":"form-cStreetAddress form-control"})
@@ -296,7 +296,7 @@ class EmployeeForm
 
     /**
      * @Annotation\Type("Zend\Form\Element\Text")
-     * @Annotation\Required({"required":"true" })
+     * @Annotation\Required({"required":"false" })
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
      * @Annotation\Options({"label":"VDC/City"})
      * @Annotation\Attributes({ "id":"form-pVdcCity", "class":"form-pVdcCity form-control" })
@@ -305,7 +305,7 @@ class EmployeeForm
 
     /**
      * @Annotation\Type("Zend\Form\Element\Text")
-     * @Annotation\Required({"required":"true" })
+     * @Annotation\Required({"required":"false" })
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
      * @Annotation\Options({"label":"VDC/City"})
      * @Annotation\Attributes({ "id":"form-cVdcCity", "class":"form-cVdcCity form-control" })
@@ -314,7 +314,7 @@ class EmployeeForm
 
     /**
      * @Annotation\Type("Zend\Form\Element\Text")
-     * @Annotation\Required({"required":"true" })
+     * @Annotation\Required({"required":"false" })
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
      * @Annotation\Options({"label":"District"})
      * @Annotation\Attributes({ "id":"form-pDistrict", "class":"form-pDistrict form-control" })
@@ -323,7 +323,7 @@ class EmployeeForm
 
     /**
      * @Annotation\Type("Zend\Form\Element\Text")
-     * @Annotation\Required({"required":"true" })
+     * @Annotation\Required({"required":"false" })
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
      * @Annotation\Options({"label":"District"})
      * @Annotation\Attributes({ "id":"form-cDistrict", "class":"form-cDistrict form-control" })
@@ -332,7 +332,7 @@ class EmployeeForm
 
     /**
      * @Annotation\Type("Zend\Form\Element\Text")
-     * @Annotation\Required({"required":"true" })
+     * @Annotation\Required({"required":"false" })
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
      * @Annotation\Options({"label":"Father's Name"})
      * @Annotation\Attributes({ "id":"form-fathersName", "class":"form-fathersName form-control"})
@@ -341,7 +341,7 @@ class EmployeeForm
 
     /**
      * @Annotation\Type("Zend\Form\Element\Text")
-     * @Annotation\Required({"required":"true" })
+     * @Annotation\Required({"required":"false" })
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
      * @Annotation\Options({"label":"Father Occupation"})
      * @Annotation\Attributes({ "id":"form-fathersOccupation", "class":"form-fathersOccupation form-control" })
@@ -350,7 +350,7 @@ class EmployeeForm
 
     /**
      * @Annotation\Type("Zend\Form\Element\Text")
-     * @Annotation\Required({"required":"true" })
+     * @Annotation\Required({"required":"false" })
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
      * @Annotation\Options({"label":"Mother's Name"})
      * @Annotation\Attributes({ "id":"form-mothersName", "class":"form-mothersName form-control" })
@@ -359,7 +359,7 @@ class EmployeeForm
 
     /**
      * @Annotation\Type("Zend\Form\Element\Text")
-     * @Annotation\Required({"required":"true" })
+     * @Annotation\Required({"required":"false" })
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
      * @Annotation\Options({"label":"Mother's Occupation"})
      * @Annotation\Attributes({ "id":"form-mothersOccupation", "class":"form-mothersOccupation form-control"})
@@ -368,7 +368,7 @@ class EmployeeForm
 
     /**
      * @Annotation\Type("Zend\Form\Element\Text")
-     * @Annotation\Required({"required":"true" })
+     * @Annotation\Required({"required":"false" })
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
      * @Annotation\Options({"label":"Grand Father Name"})
      * @Annotation\Attributes({ "id":"form-grandFatherName", "class":"form-grandFatherName form-control"})
@@ -377,7 +377,7 @@ class EmployeeForm
 
     /**
      * @Annotation\Type("Zend\Form\Element\Text")
-     * @Annotation\Required({"required":"true" })
+     * @Annotation\Required({"required":"false" })
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
      * @Annotation\Options({"label":"Grand Mother Name"})
      * @Annotation\Attributes({ "id":"form-grandMotherName", "class":"form-grandMotherName form-control"})
@@ -386,7 +386,7 @@ class EmployeeForm
 
     /**
      * @Annotation\Type("Zend\Form\Element\Select")
-     * @Annotation\Required({"required":"true" })
+     * @Annotation\Required({"required":"false" })
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
      * @Annotation\Options({"label":"Marital Status","value_options":{"Unmarried":"Unmarried","Married":"Married","Divorced":"Divorced","Widow":"Widow"}})
      * @Annotation\Attributes({ "id":"form-maritalStatus", "data-init-plugin":"cs-select","class":"cs-select cs-skin-slide form-maritalStatus form-control" })
@@ -395,7 +395,7 @@ class EmployeeForm
 
     /**
      * @Annotation\Type("Zend\Form\Element\Text")
-     * @Annotation\Required({"required":"true" })
+     * @Annotation\Required({"required":"false" })
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
      * @Annotation\Options({"label":"Spouse Name"})
      * @Annotation\Attributes({ "id":"form-spouseName", "class":"form-spouseName form-control"})
@@ -404,7 +404,7 @@ class EmployeeForm
 
     /**
      * @Annotation\Type("Zend\Form\Element\Text")
-     * @Annotation\Required({"required":"true" })
+     * @Annotation\Required({"required":"false" })
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
      * @Annotation\Options({"label":"Spouse Occupation"})
      * @Annotation\Attributes({ "id":"form-spouseOccupation", "class":"form-spouseOccupation form-control"})
@@ -413,7 +413,7 @@ class EmployeeForm
 
     /**
      * @Annotation\Type("Zend\Form\Element\Text")
-     * @Annotation\Required({"required":"true" })
+     * @Annotation\Required({"required":"false" })
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
      * @Annotation\Options({"label":"Spouse Birth Date"})
      * @Annotation\Attributes({ "id":"form-spouseBirthDate", "class":"form-spouseBirthDate form-control"})
@@ -422,7 +422,7 @@ class EmployeeForm
 
     /**
      * @Annotation\Type("Zend\Form\Element\Text")
-     * @Annotation\Required({"required":"true" })
+     * @Annotation\Required({"required":"false" })
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
      * @Annotation\Options({"label":"Wedding Anniversary"})
      * @Annotation\Attributes({ "id":"form-weddingAnniversary", "class":"form-weddingAnniversary form-control"})
@@ -431,7 +431,7 @@ class EmployeeForm
 
     /**
      * @Annotation\Type("Zend\Form\Element\Text")
-     * @Annotation\Required({"required":"true" })
+     * @Annotation\Required({"required":"false" })
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
      * @Annotation\Options({"label":"Card Pin Id"})
      * @Annotation\Attributes({ "id":"form-cardPinId", "class":"form-cardPinId form-control"})
@@ -440,7 +440,7 @@ class EmployeeForm
 
     /**
      * @Annotation\Type("Zend\Form\Element\Text")
-     * @Annotation\Required({"required":"true" })
+     * @Annotation\Required({"required":"false" })
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
      * @Annotation\Options({"label":"LBRF"})
      * @Annotation\Attributes({ "id":"form-lbrf", "class":"form-lbrf form-control" })
@@ -449,7 +449,7 @@ class EmployeeForm
 
     /**
      * @Annotation\Type("Zend\Form\Element\Text")
-     * @Annotation\Required({"required":"true" })
+     * @Annotation\Required({"required":"false" })
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
      * @Annotation\Options({"label":"Bar Code"})
      * @Annotation\Attributes({ "id":"form-barCode", "class":"form-barCode form-control"})
@@ -458,7 +458,7 @@ class EmployeeForm
 
     /**
      * @Annotation\Type("Zend\Form\Element\Text")
-     * @Annotation\Required({"required":"true" })
+     * @Annotation\Required({"required":"false" })
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
      * @Annotation\Options({"label":"Provident Fund No"})
      * @Annotation\Attributes({ "id":"form-providentFundNo", "class":"form-providentFundNo form-control"})
@@ -467,7 +467,7 @@ class EmployeeForm
 
     /**
      * @Annotation\Type("Zend\Form\Element\Text")
-     * @Annotation\Required({"required":"true" })
+     * @Annotation\Required({"required":"false" })
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
      * @Annotation\Options({"label":"Driving License No"})
      * @Annotation\Attributes({ "id":"form-drivingLicenceNo", "class":"form-drivingLicenceNo form-control"})
@@ -476,7 +476,7 @@ class EmployeeForm
 
     /**
      * @Annotation\Type("Zend\Form\Element\Text")
-     * @Annotation\Required({"required":"true" })
+     * @Annotation\Required({"required":"false" })
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
      * @Annotation\Options({"label":"Driving License Expiry Date"})
      * @Annotation\Attributes({ "id":"form-drivingLicenceExpiryDate", "class":"form-drivingLicenceExpiryDate form-control" })
@@ -485,7 +485,7 @@ class EmployeeForm
 
     /**
      * @Annotation\Type("Zend\Form\Element\Text")
-     * @Annotation\Required({"required":"true" })
+     * @Annotation\Required({"required":"false" })
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
      * @Annotation\Options({"label":"Driving License Type"})
      * @Annotation\Attributes({ "id":"form-drivingLicenseType", "class":"form-drivingLicenseType form-control"})
@@ -494,7 +494,7 @@ class EmployeeForm
 
     /**
      * @Annotation\Type("Zend\Form\Element\Text")
-     * @Annotation\Required({"required":"true" })
+     * @Annotation\Required({"required":"false" })
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
      * @Annotation\Options({"label":"Passport No."})
      * @Annotation\Attributes({ "id":"form-passportNo", "class":"form-passportNo form-control"})
@@ -503,7 +503,7 @@ class EmployeeForm
 
     /**
      * @Annotation\Type("Zend\Form\Element\Text")
-     * @Annotation\Required({"required":"true" })
+     * @Annotation\Required({"required":"false" })
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
      * @Annotation\Options({"label":"Thumb Id"})
      * @Annotation\Attributes({ "id":"form-thumbId", "class":"form-thumbId form-control"})
@@ -512,7 +512,7 @@ class EmployeeForm
 
     /**
      * @Annotation\Type("Zend\Form\Element\Text")
-     * @Annotation\Required({"required":"true" })
+     * @Annotation\Required({"required":"false" })
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
      * @Annotation\Options({"label":"Pan No"})
      * @Annotation\Attributes({ "id":"form-panNo", "class":"form-panNo form-control"})
@@ -521,7 +521,7 @@ class EmployeeForm
 
     /**
      * @Annotation\Type("Zend\Form\Element\Text")
-     * @Annotation\Required({"required":"true" })
+     * @Annotation\Required({"required":"false" })
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
      * @Annotation\Options({"label":"Account No"})
      * @Annotation\Attributes({ "id":"form-accountNo", "class":"form-accountNo form-control"})
@@ -530,7 +530,7 @@ class EmployeeForm
 
     /**
      * @Annotation\Type("Zend\Form\Element\Text")
-     * @Annotation\Required({"required":"true" })
+     * @Annotation\Required({"required":"false" })
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
      * @Annotation\Options({"label":"Retirement No"})
      * @Annotation\Attributes({ "id":"form-retirementNo", "class":"form-retirementNo form-control"})
@@ -539,7 +539,7 @@ class EmployeeForm
 
     /**
      * @Annotation\Type("Zend\Form\Element\Text")
-     * @Annotation\Required({"required":"true" })
+     * @Annotation\Required({"required":"false" })
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
      * @Annotation\Options({"label":"Citizenship No"})
      * @Annotation\Attributes({ "id":"form-citizenshipNo", "class":"form-citizenshipNo form-control"})
@@ -548,7 +548,7 @@ class EmployeeForm
 
     /**
      * @Annotation\Type("Zend\Form\Element\Text")
-     * @Annotation\Required({"required":"true" })
+     * @Annotation\Required({"required":"false" })
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
      * @Annotation\Options({"label":"Citizenship Issued Date"})
      * @Annotation\Attributes({ "id":"form-citizenshipIssuedDate", "class":"form-citizenshipIssuedDate form-control" })
@@ -557,7 +557,7 @@ class EmployeeForm
 
     /**
      * @Annotation\Type("Zend\Form\Element\Text")
-     * @Annotation\Required({"required":"true" })
+     * @Annotation\Required({"required":"false" })
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
      * @Annotation\Options({"label":"Citizenship Issued Place"})
      * @Annotation\Attributes({ "id":"form-citizenshipIssuedPlace", "class":"form-citizenshipIssuedPlace form-control" })
@@ -566,7 +566,7 @@ class EmployeeForm
 
     /**
      * @Annotation\Type("Zend\Form\Element\Text")
-     * @Annotation\Required({"required":"true" })
+     * @Annotation\Required({"required":"false" })
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
      * @Annotation\Options({"label":"Passport Expiry Date"})
      * @Annotation\Attributes({ "id":"form-passportExpiryDate", "class":"form-passportExpiryDate form-control" })
@@ -575,7 +575,7 @@ class EmployeeForm
 
     /**
      * @Annotation\Type("Zend\Form\Element\Select")
-     * @Annotation\Required({"required":"true" })
+     * @Annotation\Required({"required":"false" })
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
      * @Annotation\Options({"label":"Corporate Level","value_options":{"A":"A","B":"B","C":"C"}})
      * @Annotation\Attributes({ "id":"form-corporateLevel", "data-init-plugin":"cs-select","class":"cs-select cs-skin-slide form-corporateLevel form-control","placeholder":"" })
@@ -584,7 +584,7 @@ class EmployeeForm
 
     /**
      * @Annotation\Type("Zend\Form\Element\Select")
-     * @Annotation\Required({"required":"true" })
+     * @Annotation\Required({"required":"false" })
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
      * @Annotation\Options({"label":"Department","value_options":{"A":"A","B":"B","C":"C"}})
      * @Annotation\Attributes({ "id":"form-department", "data-init-plugin":"cs-select","class":"cs-select cs-skin-slide form-department form-control","placeholder":"" })
@@ -595,7 +595,7 @@ class EmployeeForm
 
     /**
      * @Annotation\Type("Zend\Form\Element\Select")
-     * @Annotation\Required({"required":"true" })
+     * @Annotation\Required({"required":"false" })
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
      * @Annotation\Options({"label":"Funtional Title","value_options":{"A":"A","B":"B","C":"C"}})
      * @Annotation\Attributes({ "id":"form-functionalTitle", "data-init-plugin":"cs-select","class":"cs-select cs-skin-slide form-functionalTitle form-control","placeholder":"" })
@@ -604,7 +604,7 @@ class EmployeeForm
 
     /**
      * @Annotation\Type("Zend\Form\Element\Select")
-     * @Annotation\Required({"required":"true" })
+     * @Annotation\Required({"required":"false" })
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
      * @Annotation\Options({"label":"Grade Name","value_options":{"A":"A","B":"B","C":"C"}})
      * @Annotation\Attributes({ "id":"form-gradeName", "data-init-plugin":"cs-select","class":"cs-select cs-skin-slide form-gradeName form-control","placeholder":"" })
@@ -613,7 +613,7 @@ class EmployeeForm
 
     /**
      * @Annotation\Type("Zend\Form\Element\Select")
-     * @Annotation\Required({"required":"true" })
+     * @Annotation\Required({"required":"false" })
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
      * @Annotation\Options({"label":"Job Evaluation Title","value_options":{"A":"A","B":"B","C":"C"}})
      * @Annotation\Attributes({ "id":"form-jobEvaluationTitle", "data-init-plugin":"cs-select","class":"cs-select cs-skin-slide form-jobEvaluationTitle form-control","placeholder":"" })
@@ -622,7 +622,7 @@ class EmployeeForm
 
     /**
      * @Annotation\Type("Zend\Form\Element\Select")
-     * @Annotation\Required({"required":"true" })
+     * @Annotation\Required({"required":"false" })
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
      * @Annotation\Options({"label":"Branch Name","value_options":{"A":"A","B":"B","C":"C"}})
      * @Annotation\Attributes({ "id":"form-branchName","data-init-plugin":"cs-select","class":"cs-select cs-skin-slide form-branchName form-control","placeholder":"" })
@@ -631,7 +631,7 @@ class EmployeeForm
  
     /**
      * @Annotation\Type("Zend\Form\Element\Select")
-     * @Annotation\Required({"required":"true" })
+     * @Annotation\Required({"required":"false" })
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
      * @Annotation\Options({"label":"Employee Type","value_options":{"A":"A","B":"B","C":"C"}})
      * @Annotation\Attributes({ "id":"form-employeeType", "data-init-plugin":"cs-select","class":"cs-select cs-skin-slide form-employeeType form-control","placeholder":"" })
@@ -641,7 +641,7 @@ class EmployeeForm
 
     /**
      * @Annotation\Type("Zend\Form\Element\Text")
-     * @Annotation\Required({"required":"true" })
+     * @Annotation\Required({"required":"false" })
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
      * @Annotation\Options({"label":"Seniority Level"})
      * @Annotation\Attributes({ "id":"form-seniorityLevel", "class":"form-seniorityLevel form-control","placeholder":"" })
@@ -650,7 +650,7 @@ class EmployeeForm
 
     /**
      * @Annotation\Type("Zend\Form\Element\Text")
-     * @Annotation\Required({"required":"true" })
+     * @Annotation\Required({"required":"false" })
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
      * @Annotation\Options({"label":"Probation Date"})
      * @Annotation\Attributes({ "id":"form-probationDate", "class":"form-probationDate form-control","placeholder":"" })
@@ -660,7 +660,7 @@ class EmployeeForm
 
     /**
      * @Annotation\Type("Zend\Form\Element\Text")
-     * @Annotation\Required({"required":"true" })
+     * @Annotation\Required({"required":"false" })
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
      * @Annotation\Options({"label":"Probation Period"})
      * @Annotation\Attributes({ "id":"form-probationPeriod", "class":"form-probationPeriod form-control","placeholder":"" })
@@ -669,7 +669,7 @@ class EmployeeForm
 
     /**
      * @Annotation\Type("Zend\Form\Element\Text")
-     * @Annotation\Required({"required":"true" })
+     * @Annotation\Required({"required":"false" })
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
      * @Annotation\Options({"label":"Join Date"})
      * @Annotation\Attributes({ "id":"form-joinDate", "class":"form-joinDate form-control","placeholder":"" })
@@ -678,7 +678,7 @@ class EmployeeForm
 
     /**
      * @Annotation\Type("Zend\Form\Element\Text")
-     * @Annotation\Required({"required":"true" })
+     * @Annotation\Required({"required":"false" })
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
      * @Annotation\Options({"label":"Permanent Date"})
      * @Annotation\Attributes({ "id":"form-permanentDate", "class":"form-permanentDate form-control","placeholder":"" })
@@ -687,25 +687,23 @@ class EmployeeForm
 
     /**
      * @Annotation\Type("Zend\Form\Element\Select")
-     * @Annotation\Required({"required":"true" })
+     * @Annotation\Required({"required":"false" })
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
      * @Annotation\Options({"label":"Employee Status","value_options":{"A":"A","B":"B","C":"C"}})
      * @Annotation\Attributes({ "id":"form-employeeStatus", "data-init-plugin":"cs-select","class":"cs-select cs-skin-slide form-employeeStatus form-control","placeholder":"" })
      */
     public $employeeStatus;
 
-    /**
+    /**     
      * @Annotation\Type("Zend\Form\Element\Checkbox")
-     * @Annotation\Required({"required":"true" })
-     * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
-     * @Annotation\Options({"label":"Sift Applicable?","checked_value":"1"})
-     * @Annotation\Attributes({ "id":"form-shiftApplicable", "class":"form-shiftApplicable form-control","placeholder":""})
-     */
+     * @Annotation\Attributes({"type":"checkbox","value":"1"})
+     * @Annotation\Options({"label":"Sift Applicable?"})
+    */
     public $shiftApplicable;
 
     /**
      * @Annotation\Type("Zend\Form\Element\Text")
-     * @Annotation\Required({"required":"true" })
+     * @Annotation\Required({"required":"false" })
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
      * @Annotation\Options({"label":"Recommender","value_options":{"A":"A","B":"B","C":"C"}})
      * @Annotation\Attributes({ "id":"form-reccomender", "data-init-plugin":"cs-select","class":"cs-select cs-skin-slide form-reccomender form-control","placeholder":"" })
@@ -714,7 +712,7 @@ class EmployeeForm
 
     /**
      * @Annotation\Type("Zend\Form\Element\Select")
-     * @Annotation\Required({"required":"true" })
+     * @Annotation\Required({"required":"false" })
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
      * @Annotation\Options({"label":"Approver","value_options":{"A":"A","B":"B","C":"C"}})
      * @Annotation\Attributes({ "id":"form-approver", "data-init-plugin":"cs-select","class":"cs-select cs-skin-slide form-approver form-control","placeholder":"" })
@@ -723,7 +721,7 @@ class EmployeeForm
 
     /**
      * @Annotation\Type("Zend\Form\Element\Text")
-     * @Annotation\Required({"required":"true" })
+     * @Annotation\Required({"required":"false" })
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
      * @Annotation\Options({"label":"Basic Salary"})
      * @Annotation\Attributes({ "id":"form-basicSalary", "class":"form-basicSalary form-control","placeholder":"" })
@@ -732,16 +730,15 @@ class EmployeeForm
 
     /**
      * @Annotation\Type("Zend\Form\Element\Checkbox")
-     * @Annotation\Required({"required":"true" })
-     * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
      * @Annotation\Options({"label":"Include Payroll?"})
-     * @Annotation\Attributes({ "id":"form-includePayroll", "class":"form-includePayroll form-control","placeholder":"", "value":"1" })
+     * @Annotation\Checked({"Checked":"false"})
+     * @Annotation\Attributes({ "type":"checkbox", "id":"form-includePayroll", "class":"form-includePayroll", "value":"1" })
      */
     public $includePayroll;
 
     /**
      * @Annotation\Type("Zend\Form\Element\Text")
-     * @Annotation\Required({"required":"true" })
+     * @Annotation\Required({"required":"false" })
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
      * @Annotation\Options({"label":"Contract Date"})
      * @Annotation\Attributes({ "id":"form-contractDate", "class":"form-contractDate form-control","placeholder":"" })
@@ -750,7 +747,7 @@ class EmployeeForm
 
     /**
      * @Annotation\Type("Zend\Form\Element\Text")
-     * @Annotation\Required({"required":"true" })
+     * @Annotation\Required({"required":"false" })
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
      * @Annotation\Options({"label":"Contract Period"})
      * @Annotation\Attributes({ "id":"form-contractPeriod", "class":"form-contractPeriod form-control","placeholder":"" })
@@ -759,7 +756,7 @@ class EmployeeForm
 
     /**
      * @Annotation\Type("Zend\Form\Element\Textarea")
-     * @Annotation\Required({"required":"true" })
+     * @Annotation\Required({"required":"false" })
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
      * @Annotation\Options({"label":"Remarks"})
      * @Annotation\Attributes({ "id":"form-remarks", "class":"form-remarks form-control","placeholder":"" })
@@ -769,7 +766,7 @@ class EmployeeForm
 
     /**
      * @Annotation\Type("Zend\Form\Element\Text")
-     * @Annotation\Required({"required":"true" })
+     * @Annotation\Required({"required":"false" })
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
      * @Annotation\Options({"label":"Address"})
      * @Annotation\Attributes({ "id":"form-address", "class":"form-address form-control","placeholder":"" })
