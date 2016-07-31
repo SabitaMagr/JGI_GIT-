@@ -384,6 +384,51 @@ class EmployeeForm
      */
     public $grandMotherName;
 
+    /**
+     * @Annotation\Type("Zend\Form\Element\Select")
+     * @Annotation\Required({"required":"true" })
+     * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
+     * @Annotation\Options({"label":"Marital Status","value_options":{"Unmarried":"Unmarried","Married":"Married","Divorced":"Divorced","Widow":"Widow"}})
+     * @Annotation\Attributes({ "id":"form-address", "data-init-plugin":"cs-select","class":"cs-select cs-skin-slide form-maritalStatus form-control" })
+     */
+    public $maritalStatus;
+
+    /**
+     * @Annotation\Type("Zend\Form\Element\Text")
+     * @Annotation\Required({"required":"true" })
+     * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
+     * @Annotation\Options({"label":"Spouse Name"})
+     * @Annotation\Attributes({ "id":"form-spouseName", "class":"form-spouseName form-control","placeholder":"Spouse Name..." })
+     */
+    public $spouseName;
+
+    /**
+     * @Annotation\Type("Zend\Form\Element\Text")
+     * @Annotation\Required({"required":"true" })
+     * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
+     * @Annotation\Options({"label":"Spouse Occupation"})
+     * @Annotation\Attributes({ "id":"form-spouseOccupation", "class":"form-spouseOccupation form-control","placeholder":"Spouse Occupation..." })
+     */
+    public $spouseOccupation;
+
+    /**
+     * @Annotation\Type("Zend\Form\Element\Text")
+     * @Annotation\Required({"required":"true" })
+     * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
+     * @Annotation\Options({"label":"Spouse Birth Date"})
+     * @Annotation\Attributes({ "id":"form-spouseBirthDate", "class":"form-spouseBirthDate form-control","placeholder":"Spouse Birth Date..." })
+     */
+    public $spouseBirthDate;
+
+    /**
+     * @Annotation\Type("Zend\Form\Element\Text")
+     * @Annotation\Required({"required":"true" })
+     * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
+     * @Annotation\Options({"label":"Wedding Anniversary"})
+     * @Annotation\Attributes({ "id":"form-weddingAnniversary", "class":"form-weddingAnniversary form-control","placeholder":"Wedding Anniversary..." })
+     */
+    public $weddingAnniversary;
+
 
     /**
      * @Annotation\Type("Zend\Form\Element\Text")

@@ -38,8 +38,19 @@ $pVdcCity = $form->get('pVdcCity');
 $cVdcCity = $form->get('cVdcCity');
 $pDistrict = $form->get('pDistrict');
 $cDistrict = $form->get('cDistrict');
+$fathersName = $form->get('fathersName');
+$fathersOccupation = $form->get('fathersOccupation');
+$mothersName = $form->get('mothersName');
+$mothersOccupation = $form->get('mothersOccupation');
+$grandFatherName = $form->get('grandFatherName');
+$grandMotherName = $form->get('grandMotherName');
+$maritalStatus = $form->get('maritalStatus');
+$spouseName = $form->get('spouseName');
+$spouseOccupation = $form->get('spouseOccupation');
+$spouseBirthDate = $form->get('spouseBirthDate');
+$weddingAnniversary = $form->get('weddingAnniversary');
 
-$address = $form->get('address');
+
 
 $submit = $form->get('submit');
 
@@ -370,7 +381,73 @@ if ($this->messages) {
         </div>
 
         <div class="tab-pane slide-left padding-20" id="tab2">
-        tab2
+            <div class="row clearfix">
+                <div class="col-sm-6" style="padding-left:5px;">
+                    <div class="form-group form-group-default">
+                        <?php print $this->formLabel($fathersName);?>
+                        <?php print $this->formElement($fathersName);?>
+                        <?php print $this->formElementErrors()->render($fathersName,['class'=>'help-block']);?>
+                    </div>
+
+                    <div class="form-group form-group-default">
+                        <?php print $this->formLabel($fathersOccupation);?>
+                        <?php print $this->formElement($fathersOccupation);?>
+                        <?php print $this->formElementErrors()->render($fathersOccupation,['class'=>'help-block']);?>
+                    </div>
+                    <div class="form-group form-group-default">
+                        <?php print $this->formLabel($grandFatherName);?>
+                        <?php print $this->formElement($grandFatherName);?>
+                        <?php print $this->formElementErrors()->render($grandFatherName,['class'=>'help-block']);?>
+                    </div>
+
+                    <div class="form-group form-group-default">
+                        <?php print $this->formLabel($maritalStatus);?>
+                        <?php print $this->formElement($maritalStatus);?>
+                        <?php print $this->formElementErrors()->render($maritalStatus,['class'=>'help-block']);?>
+                    </div>
+                    <div class="form-group form-group-default">
+                        <?php print $this->formLabel($spouseName);?>
+                        <?php print $this->formElement($spouseName);?>
+                        <?php print $this->formElementErrors()->render($spouseName,['class'=>'help-block']);?>
+                    </div>
+                    <div class="form-group form-group-default">
+                        <?php print $this->formLabel($spouseOccupation);?>
+                        <?php print $this->formElement($spouseOccupation);?>
+                        <?php print $this->formElementErrors()->render($spouseOccupation,['class'=>'help-block']);?>
+                    </div>
+
+                </div>
+                <div class="col-sm-6" style="padding-right:5px;"> 
+                    <div class="form-group form-group-default">
+                        <?php print $this->formLabel($mothersName); ?>
+                        <?php print $this->formElement($mothersName);?>
+                        <?php print $this->formElementErrors()->render($mothersName,['class'=>'help-block']);?>
+                    </div>
+
+                    <div class="form-group form-group-default">
+                        <?php print $this->formLabel($mothersOccupation); ?>
+                        <?php print $this->formElement($mothersOccupation);?>
+                        <?php print $this->formElementErrors()->render($mothersOccupation,['class'=>'help-block']);?>
+                    </div>
+                    <div class="form-group form-group-default">
+                        <?php print $this->formLabel($grandMotherName); ?>
+                        <?php print $this->formElement($grandMotherName);?>
+                        <?php print $this->formElementErrors()->render($grandMotherName,['class'=>'help-block']);?>
+                    </div>
+                     <div class="form-group form-group-default">
+                        <?php print $this->formLabel($spouseBirthDate); ?>
+                        <?php print $this->formElement($spouseBirthDate);?>
+                        <?php print $this->formElementErrors()->render($spouseBirthDate,['class'=>'help-block']);?>
+                    </div>
+
+                    <div class="form-group form-group-default">
+                        <?php print $this->formLabel($weddingAnniversary); ?>
+                        <?php print $this->formElement($weddingAnniversary);?>
+                        <?php print $this->formElementErrors()->render($weddingAnniversary,['class'=>'help-block']);?>
+                    </div>
+
+                </div>
+            </div>
         </div>
 
         <div class="tab-pane slide-left padding-20" id="tab3">
