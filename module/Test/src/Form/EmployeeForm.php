@@ -573,6 +573,199 @@ class EmployeeForm
      */
     public $passportExpiryDate;
 
+    /**
+     * @Annotation\Type("Zend\Form\Element\Select")
+     * @Annotation\Required({"required":"true" })
+     * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
+     * @Annotation\Options({"label":"Corporate Level","value_options":{"A":"A","B":"B","C":"C"}})
+     * @Annotation\Attributes({ "id":"form-corporateLevel", "data-init-plugin":"cs-select","class":"cs-select cs-skin-slide form-corporateLevel form-control","placeholder":"" })
+     */
+    public $corporateLevel;
+
+    /**
+     * @Annotation\Type("Zend\Form\Element\Select")
+     * @Annotation\Required({"required":"true" })
+     * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
+     * @Annotation\Options({"label":"Department","value_options":{"A":"A","B":"B","C":"C"}})
+     * @Annotation\Attributes({ "id":"form-department", "data-init-plugin":"cs-select","class":"cs-select cs-skin-slide form-department form-control","placeholder":"" })
+     */
+    public $department;
+
+
+
+    /**
+     * @Annotation\Type("Zend\Form\Element\Select")
+     * @Annotation\Required({"required":"true" })
+     * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
+     * @Annotation\Options({"label":"Funtional Title","value_options":{"A":"A","B":"B","C":"C"}})
+     * @Annotation\Attributes({ "id":"form-functionalTitle", "data-init-plugin":"cs-select","class":"cs-select cs-skin-slide form-functionalTitle form-control","placeholder":"" })
+     */
+    public $functionalTitle;
+
+    /**
+     * @Annotation\Type("Zend\Form\Element\Select")
+     * @Annotation\Required({"required":"true" })
+     * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
+     * @Annotation\Options({"label":"Grade Name","value_options":{"A":"A","B":"B","C":"C"}})
+     * @Annotation\Attributes({ "id":"form-gradeName", "data-init-plugin":"cs-select","class":"cs-select cs-skin-slide form-gradeName form-control","placeholder":"" })
+     */
+    public $gradeName;
+
+    /**
+     * @Annotation\Type("Zend\Form\Element\Select")
+     * @Annotation\Required({"required":"true" })
+     * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
+     * @Annotation\Options({"label":"Job Evaluation Title","value_options":{"A":"A","B":"B","C":"C"}})
+     * @Annotation\Attributes({ "id":"form-jobEvaluationTitle", "data-init-plugin":"cs-select","class":"cs-select cs-skin-slide form-jobEvaluationTitle form-control","placeholder":"" })
+     */
+    public $jobEvaluationTitle;
+
+    /**
+     * @Annotation\Type("Zend\Form\Element\Select")
+     * @Annotation\Required({"required":"true" })
+     * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
+     * @Annotation\Options({"label":"Branch Name","value_options":{"A":"A","B":"B","C":"C"}})
+     * @Annotation\Attributes({ "id":"form-branchName","data-init-plugin":"cs-select","class":"cs-select cs-skin-slide form-branchName form-control","placeholder":"" })
+     */
+    public $branchName;
+ 
+    /**
+     * @Annotation\Type("Zend\Form\Element\Select")
+     * @Annotation\Required({"required":"true" })
+     * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
+     * @Annotation\Options({"label":"Employee Type","value_options":{"A":"A","B":"B","C":"C"}})
+     * @Annotation\Attributes({ "id":"form-employeeType", "data-init-plugin":"cs-select","class":"cs-select cs-skin-slide form-employeeType form-control","placeholder":"" })
+     */
+    public $employeeType ;
+
+
+    /**
+     * @Annotation\Type("Zend\Form\Element\Text")
+     * @Annotation\Required({"required":"true" })
+     * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
+     * @Annotation\Options({"label":"Seniority Level"})
+     * @Annotation\Attributes({ "id":"form-seniorityLevel", "class":"form-seniorityLevel form-control","placeholder":"" })
+     */
+    public $seniorityLevel ;
+
+    /**
+     * @Annotation\Type("Zend\Form\Element\Text")
+     * @Annotation\Required({"required":"true" })
+     * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
+     * @Annotation\Options({"label":"Probation Date"})
+     * @Annotation\Attributes({ "id":"form-probationDate", "class":"form-probationDate form-control","placeholder":"" })
+     */
+    public $probationDate;
+
+
+    /**
+     * @Annotation\Type("Zend\Form\Element\Text")
+     * @Annotation\Required({"required":"true" })
+     * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
+     * @Annotation\Options({"label":"Probation Period"})
+     * @Annotation\Attributes({ "id":"form-probationPeriod", "class":"form-probationPeriod form-control","placeholder":"" })
+     */
+    public $probationPeriod;
+
+    /**
+     * @Annotation\Type("Zend\Form\Element\Text")
+     * @Annotation\Required({"required":"true" })
+     * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
+     * @Annotation\Options({"label":"Join Date"})
+     * @Annotation\Attributes({ "id":"form-joinDate", "class":"form-joinDate form-control","placeholder":"" })
+     */
+    public $joinDate;
+
+    /**
+     * @Annotation\Type("Zend\Form\Element\Text")
+     * @Annotation\Required({"required":"true" })
+     * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
+     * @Annotation\Options({"label":"Permanent Date"})
+     * @Annotation\Attributes({ "id":"form-permanentDate", "class":"form-permanentDate form-control","placeholder":"" })
+     */
+    public $permanentDate;
+
+    /**
+     * @Annotation\Type("Zend\Form\Element\Select")
+     * @Annotation\Required({"required":"true" })
+     * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
+     * @Annotation\Options({"label":"Employee Status","value_options":{"A":"A","B":"B","C":"C"}})
+     * @Annotation\Attributes({ "id":"form-employeeStatus", "data-init-plugin":"cs-select","class":"cs-select cs-skin-slide form-employeeStatus form-control","placeholder":"" })
+     */
+    public $employeeStatus;
+
+    /**
+     * @Annotation\Type("Zend\Form\Element\Text")
+     * @Annotation\Required({"required":"true" })
+     * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
+     * @Annotation\Options({"label":"Sift Applicable?"})
+     * @Annotation\Attributes({ "id":"form-shiftApplicable", "class":"form-shiftApplicable form-control","placeholder":"" })
+     */
+    public $shiftApplicable;
+
+    /**
+     * @Annotation\Type("Zend\Form\Element\Checkbox")
+     * @Annotation\Required({"required":"true" })
+     * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
+     * @Annotation\Options({"label":"Recommender","value_options":{"A":"A","B":"B","C":"C"}})
+     * @Annotation\Attributes({ "id":"form-reccomender", "data-init-plugin":"cs-select","class":"cs-select cs-skin-slide form-reccomender form-control","placeholder":"" })
+     */
+    public $reccomender;
+
+    /**
+     * @Annotation\Type("Zend\Form\Element\Select")
+     * @Annotation\Required({"required":"true" })
+     * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
+     * @Annotation\Options({"label":"Approver","value_options":{"A":"A","B":"B","C":"C"}})
+     * @Annotation\Attributes({ "id":"form-approver", "data-init-plugin":"cs-select","class":"cs-select cs-skin-slide form-approver form-control","placeholder":"" })
+     */
+    public $approver;
+
+    /**
+     * @Annotation\Type("Zend\Form\Element\Text")
+     * @Annotation\Required({"required":"true" })
+     * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
+     * @Annotation\Options({"label":"Basic Salary"})
+     * @Annotation\Attributes({ "id":"form-basicSalary", "class":"form-basicSalary form-control","placeholder":"" })
+     */
+    public $basicSalary;
+
+    /**
+     * @Annotation\Type("Zend\Form\Element\Text")
+     * @Annotation\Required({"required":"true" })
+     * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
+     * @Annotation\Options({"label":"Include Payroll?"})
+     * @Annotation\Attributes({ "id":"form-includePayroll", "class":"form-includePayroll form-control","placeholder":"" })
+     */
+    public $includePayroll;
+
+    /**
+     * @Annotation\Type("Zend\Form\Element\Text")
+     * @Annotation\Required({"required":"true" })
+     * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
+     * @Annotation\Options({"label":"Contract Date"})
+     * @Annotation\Attributes({ "id":"form-contractDate", "class":"form-contractDate form-control","placeholder":"" })
+     */
+    public $contractDate;
+
+    /**
+     * @Annotation\Type("Zend\Form\Element\Text")
+     * @Annotation\Required({"required":"true" })
+     * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
+     * @Annotation\Options({"label":"Contract Period"})
+     * @Annotation\Attributes({ "id":"form-contractPeriod", "class":"form-contractPeriod form-control","placeholder":"" })
+     */
+    public $contractPeriod;
+
+    /**
+     * @Annotation\Type("Zend\Form\Element\Textarea")
+     * @Annotation\Required({"required":"true" })
+     * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
+     * @Annotation\Options({"label":"Remarks"})
+     * @Annotation\Attributes({ "id":"form-remarks", "class":"form-remarks form-control","placeholder":"" })
+     */
+    public $remarks;
+
 
     /**
      * @Annotation\Type("Zend\Form\Element\Text")

@@ -65,6 +65,29 @@ $citizenshipNo = $form->get('citizenshipNo');
 $citizenshipIssuedDate = $form->get('citizenshipIssuedDate');
 $citizenshipIssuedPlace = $form->get('citizenshipIssuedPlace');
 $passportExpiryDate = $form->get('passportExpiryDate');
+$corporateLevel = $form->get('corporateLevel');
+$department = $form->get('department');
+$functionalTitle = $form->get('functionalTitle');
+$gradeName = $form->get('gradeName');
+$jobEvaluationTitle = $form->get('jobEvaluationTitle');
+$branchName = $form->get('branchName');
+$employeeType = $form->get('employeeType');
+$seniorityLevel = $form->get('seniorityLevel');
+$probationDate = $form->get('probationDate');
+$probationPeriod = $form->get('probationPeriod');
+$joinDate = $form->get('joinDate');
+$permanentDate = $form->get('permanentDate');
+$employeeStatus = $form->get('employeeStatus');
+$shiftApplicable = $form->get('shiftApplicable');
+$reccomender = $form->get('reccomender');
+$approver = $form->get('approver');
+$basicSalary = $form->get('basicSalary');
+$includePayroll = $form->get('includePayroll');
+$contractDate = $form->get('contractDate');
+$contractPeriod = $form->get('contractPeriod');
+$remarks = $form->get('remarks');
+
+
 
 
 $submit = $form->get('submit');
@@ -558,7 +581,124 @@ if ($this->messages) {
         </div>
 
         <div class="tab-pane slide-left padding-20" id="tab4">
-        tab4
+            <div class="row clearfix">
+                <div class="col-sm-6" style="padding-left:5px;">
+                    <div class="form-group form-group-default">
+                        <?php print $this->formLabel($corporateLevel);?>
+                        <?php print $this->formElement($corporateLevel);?>
+                        <?php print $this->formElementErrors()->render($corporateLevel,['class'=>'help-block']);?>
+                    </div>
+                    <div class="form-group form-group-default">
+                        <?php print $this->formLabel($functionalTitle);?>
+                        <?php print $this->formElement($functionalTitle);?>
+                        <?php print $this->formElementErrors()->render($functionalTitle,['class'=>'help-block']);?>
+                    </div>
+
+                    <div class="form-group form-group-default">
+                        <?php print $this->formLabel($jobEvaluationTitle);?>
+                        <?php print $this->formElement($jobEvaluationTitle);?>
+                        <?php print $this->formElementErrors()->render($jobEvaluationTitle,['class'=>'help-block']);?>
+                    </div>
+                    <div class="form-group form-group-default">
+                        <?php print $this->formLabel($department);?>
+                        <?php print $this->formElement($department);?>
+                        <?php print $this->formElementErrors()->render($department,['class'=>'help-block']);?>
+                    </div>
+                    <div class="form-group form-group-default">
+                        <?php print $this->formLabel($branchName);?>
+                        <?php print $this->formElement($branchName);?>
+                        <?php print $this->formElementErrors()->render($branchName,['class'=>'help-block']);?>
+                    </div>
+                    <div class="form-group form-group-default">
+                        <?php print $this->formLabel($gradeName);?>
+                        <?php print $this->formElement($gradeName);?>
+                        <?php print $this->formElementErrors()->render($gradeName,['class'=>'help-block']);?>
+                    </div>
+                    <div class="form-group form-group-default">
+                        <?php print $this->formLabel($seniorityLevel);?>
+                        <?php print $this->formElement($seniorityLevel);?>
+                        <?php print $this->formElementErrors()->render($seniorityLevel,['class'=>'help-block']);?>
+                    </div>
+
+                    <div class="form-group form-group-default">
+                        <?php print $this->formLabel($employeeType);?>
+                        <?php print $this->formElement($employeeType);?>
+                        <?php print $this->formElementErrors()->render($employeeType,['class'=>'help-block']);?>
+                    </div>
+                    <div class="form-group form-group-default">
+                        <?php print $this->formLabel($probationDate);?>
+                        <?php print $this->formElement($probationDate);?>
+                        <?php print $this->formElementErrors()->render($probationDate,['class'=>'help-block']);?>
+                    </div>
+                    <div class="form-group form-group-default">
+                        <?php print $this->formLabel($probationPeriod);?>
+                        <?php print $this->formElement($probationPeriod);?>
+                        <?php print $this->formElementErrors()->render($probationPeriod,['class'=>'help-block']);?>
+                    </div>
+                    
+                    
+                </div>
+                <div class="col-sm-6" style="padding-right:5px;">
+                    <div class="form-group form-group-default">
+                        <?php print $this->formLabel($joinDate);?>
+                        <?php print $this->formElement($joinDate);?>
+                        <?php print $this->formElementErrors()->render($joinDate,['class'=>'help-block']);?>
+                    </div>
+                    <div class="form-group form-group-default">
+                        <?php print $this->formLabel($permanentDate);?>
+                        <?php print $this->formElement($permanentDate);?>
+                        <?php print $this->formElementErrors()->render($permanentDate,['class'=>'help-block']);?>
+                    </div>
+
+                    <div class="form-group form-group-default">
+                        <?php print $this->formLabel($employeeStatus);?>
+                        <?php print $this->formElement($employeeStatus);?>
+                        <?php print $this->formElementErrors()->render($employeeStatus,['class'=>'help-block']);?>
+                    </div>
+                    <div class="form-group form-group-default">
+                        <?php print $this->formLabel($shiftApplicable);?>
+                        <?php print $this->formElement($shiftApplicable);?>
+                        <?php print $this->formElementErrors()->render($shiftApplicable,['class'=>'help-block']);?>
+                    </div>
+                    <div class="form-group form-group-default">
+                        <?php print $this->formLabel($reccomender);?>
+                        <?php print $this->formElement($reccomender);?>
+                        <?php print $this->formElementErrors()->render($reccomender,['class'=>'help-block']);?>
+                    </div>
+                    <div class="form-group form-group-default">
+                        <?php print $this->formLabel($approver);?>
+                        <?php print $this->formElement($approver);?>
+                        <?php print $this->formElementErrors()->render($approver,['class'=>'help-block']);?>
+                    </div>
+                    <div class="form-group form-group-default">
+                        <?php print $this->formLabel($basicSalary);?>
+                        <?php print $this->formElement($basicSalary);?>
+                        <?php print $this->formElementErrors()->render($basicSalary,['class'=>'help-block']);?>
+                    </div>
+                    <div class="form-group form-group-default">
+                        <?php print $this->formLabel($includePayroll);?>
+                        <?php print $this->formElement($includePayroll);?>
+                        <?php print $this->formElementErrors()->render($includePayroll,['class'=>'help-block']);?>
+                    </div>
+                    <div class="form-group form-group-default">
+                        <?php print $this->formLabel($contractDate);?>
+                        <?php print $this->formElement($contractDate);?>
+                        <?php print $this->formElementErrors()->render($contractDate,['class'=>'help-block']);?>
+                    </div>
+                    <div class="form-group form-group-default">
+                        <?php print $this->formLabel($contractPeriod);?>
+                        <?php print $this->formElement($contractPeriod);?>
+                        <?php print $this->formElementErrors()->render($contractPeriod,['class'=>'help-block']);?>
+                    </div>
+                </div>
+            </div>
+
+             <div class="form-group form-group-default">
+                <?php print $this->formLabel($remarks);?>
+                <?php print $this->formElement($remarks);?>
+                <?php print $this->formElementErrors()->render($remarks,['class'=>'help-block']);?>
+            </div>
+
         </div>
 
         <div class="tab-pane slide-left padding-20" id="tab5">
