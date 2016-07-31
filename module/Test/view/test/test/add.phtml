@@ -79,10 +79,15 @@ $joinDate = $form->get('joinDate');
 $permanentDate = $form->get('permanentDate');
 $employeeStatus = $form->get('employeeStatus');
 $shiftApplicable = $form->get('shiftApplicable');
+$shiftApplicable->setChecked(false);
+
 $reccomender = $form->get('reccomender');
 $approver = $form->get('approver');
 $basicSalary = $form->get('basicSalary');
+
 $includePayroll = $form->get('includePayroll');
+//$includePayroll->setChecked(false);
+
 $contractDate = $form->get('contractDate');
 $contractPeriod = $form->get('contractPeriod');
 $remarks = $form->get('remarks');
