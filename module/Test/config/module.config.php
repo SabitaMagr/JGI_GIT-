@@ -24,7 +24,7 @@ return [
                     ],
                     'defaults' => [
                         'controller' => Controller\TestController::class,
-                        'action'     => 'index',
+                        'action'     => 'add',
                     ],
                 ],
             ],

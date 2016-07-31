@@ -23,6 +23,7 @@
     <meta content="" name="author"/>
 
     <?php print $this->headLink(['rel'=>'shortcut icon', 'type'=>'image/vnd.microsoft.icon', 'href'=>$this->basePath('ico/favicon.png')])
+
         ->prependStylesheet(['rel'=>'apple-touch-icon-precomposed', 'sizes'=>'152x152', 'href'=>$this->basePath('ico/152.png')])
         ->prependStylesheet(['rel'=>'apple-touch-icon-precomposed', 'sizes'=>'120x120', 'href'=>$this->basePath('ico/120.png')])
         ->prependStylesheet(['rel'=>'apple-touch-icon-precomposed', 'sizes'=>'76x76', 'href'=>$this->basePath('ico/76.png')])
@@ -39,7 +40,10 @@
         ->prependStylesheet(['rel'=>'stylesheet', 'type'=>'text/css', 'media'=>'screen', 'href'=>$this->basePath('plugins/jquery-scrollbar/jquery.scrollbar.css')])
         ->prependStylesheet(['rel'=>'stylesheet', 'type'=>'text/css','href'=>$this->basePath('plugins/font-awesome/css/font-awesome.min.css')])
         ->prependStylesheet(['rel'=>'stylesheet', 'type'=>'text/css','href'=>$this->basePath('plugins/bootstrap-v3.3.6/css/bootstrap.min.css')])
-        ->prependStylesheet(['rel'=>'stylesheet', 'type'=>'text/css','href'=>$this->basePath('plugins/pace/pace-theme-flash.css')]);
+        ->prependStylesheet(['rel'=>'stylesheet', 'type'=>'text/css','href'=>$this->basePath('plugins/pace/pace-theme-flash.css')])
+        ->prependStylesheet(['rel'=>'stylesheet', 'type'=>'text/css','href'=>$this->basePath('css/custom.css')]);
+
+       
     ?>
     <!--[if lte IE 9]>
     <link href="<?php print $this->basePath('plugins/codrops-dialogFx/dialog.ie.css'); ?>" rel="stylesheet" type="text/css" media="screen" />
@@ -1230,6 +1234,7 @@ print $this->partial("partials/sidebar.phtml");
 </div>
 
 <?php print $this->headScript()
+
     ->prependFile($this->basePath('js/demo.js'))
     ->prependFile($this->basePath('js/scripts.js'))
     ->prependFile($this->basePath('js/dashboard.js'))
@@ -1272,9 +1277,12 @@ print $this->partial("partials/sidebar.phtml");
     ->prependFile($this->basePath('plugins/bootstrap-v3.3.6/js/bootstrap.min.js'))
     ->prependFile($this->basePath('plugins/jquery-ui/jquery-ui.min.js'))
     ->prependFile($this->basePath('plugins/modernizr.custom.js'))
+    
+    ->prependFile($this->basePath('js/custom.js'))
 
     ->prependFile($this->basePath('plugins/jquery/jquery-2.2.4.min.js'))
     ->prependFile($this->basePath('plugins/pace/pace.min.js'));
+    
 ?>
 
 </body>

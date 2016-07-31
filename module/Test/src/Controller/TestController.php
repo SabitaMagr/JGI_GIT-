@@ -6,7 +6,6 @@ use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 use Test\Form\EmployeeForm;
 use Zend\Form\Annotation\AnnotationBuilder;
-use Zend\EventManager\EventManagerInterface;
 
 
 
@@ -26,16 +25,30 @@ class TestController extends AbstractActionController
 
     public function indexAction()
     {
+
         $form = $this->getForm();
 
         return new ViewModel([
             'form' => $form,
             'messages' => $this->flashmessenger()->getMessages()
         ]);
+
     }
 
     public function addAction()
     {
+        $form = $this->getForm();
+        $view =['form' => $form, 'messages' => $this->flashmessenger()->getMessages()];
+        $request = $this->getRequest();
+        $form->get('submit')->setAttribute('value','ADD');
+        if(!$request->isPost()){
+            return $view;
+        }
+        $form->setData($request->getPost());
+
+        if(!$form->isValid()){
+            return $view;
+        }      
     }
 
     public function editAction()
