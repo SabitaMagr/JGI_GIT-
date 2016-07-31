@@ -733,7 +733,6 @@ class EmployeeForm
      * @Annotation\Type("Zend\Form\Element\Checkbox")
      * @Annotation\Options({"label":"Include Payroll?"})
      * @Annotation\Filter({"name":"StripTags"})
-     * @Annotation\Checked({"checked":"false"})
      * @Annotation\Attributes({ "id":"form-includePayroll", "class":"form-includePayroll", "value":"1" })
      */
     public $includePayroll;
