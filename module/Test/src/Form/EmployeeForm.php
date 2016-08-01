@@ -808,7 +808,7 @@ class EmployeeForm
 
     /**
      * @Annotation\Type("Zend\Form\Element\Select")
-     * @Annotation\Required({"required":"true"})
+     * @Annotation\Required({"required":"false"})
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
      * @Annotation\Options({"label":"Gender", "value_options":{"F":"Female","M":"Male","O":"Others"}})
      * @Annotation\Attributes({ "id":"form-childGender","data-init-plugin":"cs-select","class":"cs-select cs-skin-slide form-childGender form-control"})
@@ -816,7 +816,16 @@ class EmployeeForm
     public $childGender;
 
 
-    //to add training
+    //to add qualification
+
+    /**
+     * @Annotation\Type("Zend\Form\Element\Text")
+     * @Annotation\Required({"required":"false"})
+     * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
+     * @Annotation\Options({"label":"Degree"})
+     * @Annotation\Attributes({"id":"form-degree","class":"form-degree form-control"})
+     */
+    public $degree;
     
 
 
