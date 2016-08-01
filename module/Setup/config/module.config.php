@@ -22,32 +22,15 @@ return [
                 ]
 
             ],
-//            'edit'=>[
-//                'type'=>Segment::class,
-//                'options'=>[
-//                    'route'=>'/setup/:id',
-//                    'defaults'=>[
-//                        'controller'=>Controller\EmployeeController::class,
-//                        'action'=>'edit'
-//                    ]
-//                ]
-//            ],
-//            'list'=>[
-//                'type'=>Segment::class,
-//                'options'=>[
-//                    'route'=>'/setup[/:action]',
-//                    'defaults'=>[
-//                        'controller'=>Controller\EmployeeController::class,
-//                        'action'=>'list'
-//                    ]
-//                ]
-//            ]
         ]
     ],
-    'controllers'=>[
-        'factories'=>[
-            Controller\EmployeeController::class=>Factory\EmployeeControllerFactory::class
-        ]
+
+
+
+    'controllers' => [
+        'factories' => [
+            Controller\EmployeeController::class => Factory\EmployeeControllerFactory::class
+        ],
     ],
 
     'view_manager' => [

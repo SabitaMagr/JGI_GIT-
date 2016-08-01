@@ -9,6 +9,7 @@
 namespace Setup\Controller;
 
 
+use Setup\Model\EmployeeRepositoryInterface;
 use Zend\Db\Adapter\Adapter;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\TableGateway\TableGateway;
@@ -23,10 +24,12 @@ class EmployeeController extends AbstractActionController
 {
     protected $form;
     private $db;
+    private $employeeRepository;
 
-    public function __construct(AdapterInterface $db)
+    public function __construct(AdapterInterface $db, EmployeeRepositoryInterface $employeeRepository)
     {
         $this->db = $db;
+        $this->employeeRepository = $employeeRepository;
 
     }
 
@@ -51,13 +54,16 @@ class EmployeeController extends AbstractActionController
         $this->form->setData($request->getPost());
 
         if ($this->form->isValid()) {
-        $employee->exchangeArray($this->form->getData());
+            $employee->exchangeArray($this->form->getData());
 
-        $table=new TableGateway('employee',$this->db);
-        $table->insert($employee->getArrayCopy());
-            return $this->redirect()->toRoute("sdf");
+            $table = new TableGateway('employee', $this->db);
+             $table->insert($employee->getArrayCopy());
 
-        }else{
+//            $this->employeeRepository->addEmployee($employee);
+
+            return $this->redirect()->toRoute("test");
+
+        } else {
             return $this->redirect()->toRoute("123");
 
         }
@@ -67,7 +73,7 @@ class EmployeeController extends AbstractActionController
 
     public function editAction()
     {
-        $id = (int) $this->params()->fromRoute('id', 0);
+        $id = (int)$this->params()->fromRoute('id', 0);
 
         if (0 === $id) {
             return $this->redirect()->toRoute('setup', ['action' => 'index']);
@@ -81,44 +87,43 @@ class EmployeeController extends AbstractActionController
         }
 
 
-        $employeeTable=new TableGateway('employee',$this->db);
+        $employeeTable = new TableGateway('employee', $this->db);
 
 
         $request = $this->getRequest();
         $viewData = [];
 
-        if (! $request->isPost()) {
-        $rowset      = $employeeTable->select(['employeeCode' => $id]);
-        $artistRow   = $rowset->current();
+        if (!$request->isPost()) {
+            $rowset = $employeeTable->select(['employeeCode' => $id]);
+            $artistRow = $rowset->current();
 
-        $this->form->bind($artistRow);
+            $this->form->bind($artistRow);
 
-        $viewData = ['id' => $id, 'form' => $this->form];
+            $viewData = ['id' => $id, 'form' => $this->form];
             return $viewData;
         }
 
         $this->form->setData($request->getPost());
 
-        if(!$this->form->isValid()){
+        if (!$this->form->isValid()) {
             return $viewData;
         }
 
         $employee->exchangeArray($this->form->getData());
-        $employeeTable->update($employee->getArrayCopy(),['employeeCode'=>$id]);
+        $employeeTable->update($employee->getArrayCopy(), ['employeeCode' => $id]);
 
 
         return $this->redirect()->toRoute("setup");
 
     }
 
-    public function indexAction(){
-        $employeeTable=new TableGateway('employee',$this->db);
+    public function indexAction()
+    {
+        $employeeTable = new TableGateway('employee', $this->db);
 
-        $rowset=$employeeTable->select();
+        $rowset = $employeeTable->select();
 
-        return new ViewModel(['list'=>$rowset]);
-
-
+        return new ViewModel(['list' => $rowset]);
 
 
     }
