@@ -770,8 +770,8 @@ class EmployeeForm
      * @Annotation\Type("Zend\Form\Element\File")
      * @Annotation\Required({"required":"false" })
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
-     * @Annotation\Options({"label":"Upload Image"})
-     * @Annotation\Attributes({ "id":"form-image1", "class":"form-image1 form-control","placeholder":"" })
+     * @Annotation\Options({"label":""})
+     * @Annotation\Attributes({ "id":"form-image1", "class":"form-image1","placeholder":"" })
      */
     public $image1;
 
@@ -779,8 +779,8 @@ class EmployeeForm
      * @Annotation\Type("Zend\Form\Element\File")
      * @Annotation\Required({"required":"false" })
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
-     * @Annotation\Options({"label":"Upload Image"})
-     * @Annotation\Attributes({ "id":"form-image2", "class":"form-image2 form-control","placeholder":"" })
+     * @Annotation\Options({"label":""})
+     * @Annotation\Attributes({ "id":"form-image2", "class":"form-image2","placeholder":"" })
      */
     public $image2;
 
@@ -826,8 +826,43 @@ class EmployeeForm
      * @Annotation\Attributes({"id":"form-degree","class":"form-degree form-control"})
      */
     public $degree;
-    
 
+
+    /**
+     * @Annotation\Type("Zend\Form\Element\Text")
+     * @Annotation\Required({"required":"false"})
+     * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
+     * @Annotation\Options({"label":"Course Title"})
+     * @Annotation\Attributes({"id":"form-courseTitle","class":"form-courseTitle form-control"})
+     */
+    public $courseTitle;
+  
+    /**
+     * @Annotation\Type("Zend\Form\Element\Text")
+     * @Annotation\Required({"required":"false"})
+     * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
+     * @Annotation\Options({"label":"University/College"})
+     * @Annotation\Attributes({"id":"form-university","class":"form-university form-control"})
+     */
+    public $university; 
+
+    /**
+     * @Annotation\Type("Zend\Form\Element\Text")
+     * @Annotation\Required({"required":"false"})
+     * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
+     * @Annotation\Options({"label":"Passed Year"})
+     * @Annotation\Attributes({"id":"form-passedYear","class":"form-passedYear form-control"})
+     */
+    public $passedYear; 
+
+    /**
+     * @Annotation\Type("Zend\Form\Element\Text")
+     * @Annotation\Required({"required":"false"})
+     * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
+     * @Annotation\Options({"label":"Grade"})
+     * @Annotation\Attributes({"id":"form-grade","class":"form-grade form-control"})
+     */
+    public $grade; 
 
 
     /**

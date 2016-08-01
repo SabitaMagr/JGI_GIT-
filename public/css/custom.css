@@ -6,3 +6,16 @@
 	font-size:11px !important;
 	line-height: 6px !important;
 }
+.emp-form-group .form-control{
+	height: 12px !important;
+    min-height: 14px !important;
+    margin-top: 3px !important;
+    font-size: 12px !important;
+}
+.emp-form-group{
+	padding-left: 6px !important;
+}
+.emp-form-group label{
+	line-height: 6px !important;
+	font-size: 10px !important;
+}
