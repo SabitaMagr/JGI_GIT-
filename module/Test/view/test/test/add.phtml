@@ -914,22 +914,24 @@ if ($this->messages) {
                     </div>
                     
                 </div>
-                <div class="col-sm-6" style="padding-right:5px;">
-                <p><u><i>Children Information</i></u></p>
-                    <div class="form-group form-group-default emp-form-group">
-                        <?php print $this->formLabel($childName);?>
-                        <?php print $this->formElement($childName);?>
-                        <?php print $this->formElementErrors()->render($childName,['class'=>'help-block']);?>
-                    </div>
-                    <div class="form-group form-group-default emp-form-group">
-                        <?php print $this->formLabel($childDateOfBirth);?>
-                        <?php print $this->formElement($childDateOfBirth);?>
-                        <?php print $this->formElementErrors()->render($childDateOfBirth,['class'=>'help-block']);?>
-                    </div>
-                    <div class="form-group form-group-default emp-form-group">
-                        <?php print $this->formLabel($childGender);?>
-                        <?php print $this->formElement($childGender);?>
-                        <?php print $this->formElementErrors()->render($childGender,['class'=>'help-block']);?>
+                <div class="col-sm-6" style="padding-right:5px;" >
+                <p><u><i>Children Information</i></u></p> 
+                    <div id="child_div">
+                        <div class="form-group form-group-default emp-form-group">
+                            <?php print $this->formLabel($childName);?>
+                            <?php print $this->formElement($childName);?>
+                            <?php print $this->formElementErrors()->render($childName,['class'=>'help-block']);?>
+                        </div>
+                        <div class="form-group form-group-default emp-form-group">
+                            <?php print $this->formLabel($childDateOfBirth);?>
+                            <?php print $this->formElement($childDateOfBirth);?>
+                            <?php print $this->formElementErrors()->render($childDateOfBirth,['class'=>'help-block']);?>
+                        </div>
+                        <div class="form-group form-group-default emp-form-group">
+                            <?php print $this->formLabel($childGender);?>
+                            <?php print $this->formElement($childGender);?>
+                            <?php print $this->formElementErrors()->render($childGender,['class'=>'help-block']);?>
+                        </div>
                     </div>
                 </div>
                

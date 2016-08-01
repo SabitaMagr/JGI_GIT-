@@ -4,7 +4,6 @@
  * @copyright Copyright (c) 2005-2016 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
-
 namespace Application;
 
 use Zend\Mvc\ModuleRouteListener;
@@ -51,7 +50,7 @@ class Module implements AutoloaderProviderInterface
         $response = $event->getResponse();
         $target = $event->getTarget();
 
-        /* Offline pages not needed authentication */
+        /*Offline pages not needed authentication*/
         $whiteList = [
             Controller\AuthController::class . '-login',
             Controller\AuthController::class . '-logout',

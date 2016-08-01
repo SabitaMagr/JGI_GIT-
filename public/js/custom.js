@@ -12,4 +12,9 @@ $(document).ready(function(){
 	$('#form-toDate').datepicker();
 	$('#form-trainFromDate').datepicker();
 	$('#form-trainToDate').datepicker();
+	$('#form-childDateOfBirth').datepicker();
+
+	$('#add_more_child').click(function(){
+		//$("#child_div").clone().insertAfter("div#child_div:last")
+	})
 });

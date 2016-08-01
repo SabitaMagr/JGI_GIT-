@@ -38,7 +38,6 @@ class AuthController extends AbstractActionController
             $this->authservice = $this->getServiceLocator()
                 ->get('AuthService');
         }
-
         return $this->authservice;
     }
 
@@ -48,7 +47,6 @@ class AuthController extends AbstractActionController
             $this->storage = $this->getServiceLocator()
                 ->get(HrisAuthStorage::class);
         }
-
         return $this->storage;
     }
 
