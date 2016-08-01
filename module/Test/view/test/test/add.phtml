@@ -762,12 +762,29 @@ if ($this->messages) {
             </div>
         </div>
 
-        <div class="tab-pane slide-left padding-10" id="tab6">
-            <div class="row clearfix">
-                
-                <div class="col-sm-6" style="padding-left:5px;">
-                <p><u><i>Experience</i></u></p>
-                    <div class="form-group form-group-default emp-form-group">
+        <div class="tab-pane slide-left" id="tab6">
+
+            <ul class="nav nav-tabs nav-tabs-linetriangle nav-tabs-separator nav-stack-sm">
+                <li class="active">
+                    <a data-toggle="tab" href="#tab11"> 
+                        <span>General</span>
+                    </a>
+                </li>
+                <li class="">
+                    <a data-toggle="tab" href="#tab22"> 
+                        <span>Family</span>
+                    </a>
+                </li>
+                <li class="">
+                    <a data-toggle="tab" href="#tab33"> 
+                        <span>Identification</span>
+                    </a>
+                </li>
+               
+            </ul>
+            <div class="tab-content bg-light-color">
+                <div class="tab-pane slide-left active" id="tab11">
+                <div class="form-group form-group-default emp-form-group">
                         <?php print $this->formLabel($organizationName);?>
                         <?php print $this->formElement($organizationName);?>
                         <?php print $this->formElementErrors()->render($organizationName,['class'=>'help-block']);?>
@@ -793,10 +810,8 @@ if ($this->messages) {
                         <?php print $this->formElementErrors()->render($position,['class'=>'help-block']);?>
                     </div>
                 </div>
-
-                <div class="col-sm-6" style="padding-right:5px;">
-                <p><u><i>Qualification</i></u></p>
-                    <div class="form-group form-group-default emp-form-group">
+                <div class="tab-pane slide-left" id="tab22">
+                <div class="form-group form-group-default emp-form-group">
                         <?php print $this->formLabel($degree);?>
                         <?php print $this->formElement($degree);?>
                         <?php print $this->formElementErrors()->render($degree,['class'=>'help-block']);?>
@@ -821,6 +836,22 @@ if ($this->messages) {
                         <?php print $this->formElement($grade);?>
                         <?php print $this->formElementErrors()->render($grade,['class'=>'help-block']);?>
                     </div>
+                </div>
+                <div class="tab-pane slide-left" id="tab33">
+                tab33
+                </div>
+            </div>
+
+            <div class="row clearfix">
+                
+                <div class="col-sm-6" style="padding-left:5px;">
+                <p><u><i>Experience</i></u></p>
+                    
+                </div>
+
+                <div class="col-sm-6" style="padding-right:5px;">
+                <p><u><i>Qualification</i></u></p>
+                    
                 </div>
             </div>
 
