@@ -8,4 +8,8 @@ $(document).ready(function(){
 	$('#form-joinDate').datepicker();
 	$('#form-permanentDate').datepicker();
 	$('#form-contractDate').datepicker();
+	$('#form-fromDate').datepicker();
+	$('#form-toDate').datepicker();
+	$('#form-trainFromDate').datepicker();
+	$('#form-trainToDate').datepicker();
 });

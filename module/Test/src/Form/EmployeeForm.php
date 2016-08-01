@@ -864,6 +864,201 @@ class EmployeeForm
      */
     public $grade; 
 
+    //to add experience
+
+    /**
+     * @Annotation\Type("Zend\Form\Element\Text")
+     * @Annotation\Required({"required":"false"})
+     * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
+     * @Annotation\Options({"label":"Organization Name"})
+     * @Annotation\Attributes({"id":"form-organizationName","class":"form-organizationName form-control"})
+     */
+    public $organizationName;
+
+
+    /**
+     * @Annotation\Type("Zend\Form\Element\Select")
+     * @Annotation\Required({"required":"false"})
+     * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
+     * @Annotation\Options({"label":"Organization Type","value_options":{"F":"Financial","N":"Non-Financial"}})
+     * @Annotation\Attributes({"id":"form-organizationType","data-init-plugin":"cs-select","class":"cs-select cs-skin-slide form-organizationType form-control"})
+     */
+    public $organizationType;
+  
+    /**
+     * @Annotation\Type("Zend\Form\Element\Text")
+     * @Annotation\Required({"required":"false"})
+     * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
+     * @Annotation\Options({"label":"From Date"})
+     * @Annotation\Attributes({"id":"form-fromDate","class":"form-fromDate form-control"})
+     */
+    public $fromDate; 
+
+    /**
+     * @Annotation\Type("Zend\Form\Element\Text")
+     * @Annotation\Required({"required":"false"})
+     * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
+     * @Annotation\Options({"label":"To Date"})
+     * @Annotation\Attributes({"id":"form-toDate","class":"form-toDate form-control"})
+     */
+    public $toDate; 
+
+    /**
+     * @Annotation\Type("Zend\Form\Element\Text")
+     * @Annotation\Required({"required":"false"})
+     * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
+     * @Annotation\Options({"label":"Position"})
+     * @Annotation\Attributes({"id":"form-position","class":"form-position form-control"})
+     */
+    public $position; 
+
+    //to add training
+
+
+    /**
+     * @Annotation\Type("Zend\Form\Element\Text")
+     * @Annotation\Required({"required":"false"})
+     * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
+     * @Annotation\Options({"label":"Training Name"})
+     * @Annotation\Attributes({"id":"form-trainingName","class":"form-trainingName form-control"})
+     */
+    public $trainingName;
+
+
+    /**
+     * @Annotation\Type("Zend\Form\Element\Textarea")
+     * @Annotation\Required({"required":"false"})
+     * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
+     * @Annotation\Options({"label":"Decription"})
+     * @Annotation\Attributes({"id":"form-decription","class":"form-decription form-control"})
+     */
+    public $decription;
+  
+    /**
+     * @Annotation\Type("Zend\Form\Element\Text")
+     * @Annotation\Required({"required":"false"})
+     * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
+     * @Annotation\Options({"label":"From Date"})
+     * @Annotation\Attributes({"id":"form-trainFromDate","class":"form-trainFromDate form-control"})
+     */
+    public $trainFromDate; 
+
+    /**
+     * @Annotation\Type("Zend\Form\Element\Text")
+     * @Annotation\Required({"required":"false"})
+     * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
+     * @Annotation\Options({"label":"To Date"})
+     * @Annotation\Attributes({"id":"form-trainToDate","class":"form-trainToDate form-control"})
+     */
+    public $trainToDate; 
+
+    /**
+     * @Annotation\Type("Zend\Form\Element\Textarea")
+     * @Annotation\Required({"required":"false"})
+     * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
+     * @Annotation\Options({"label":"Remarks"})
+     * @Annotation\Attributes({"id":"form-trainRemarks","class":"form-trainRemarks form-control"})
+     */
+    public $trainRemarks;
+
+
+    //to add References
+
+
+    /**
+     * @Annotation\Type("Zend\Form\Element\Text")
+     * @Annotation\Required({"required":"false"})
+     * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
+     * @Annotation\Options({"label":"Reference Name"})
+     * @Annotation\Attributes({"id":"form-referenceName","class":"form-referenceName form-control"})
+     */
+    public $referenceName;
+
+
+    /**
+     * @Annotation\Type("Zend\Form\Element\Email")
+     * @Annotation\Required({"required":"false"})
+     * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
+     * @Annotation\Options({"label":"E-Mail"})
+     * @Annotation\Attributes({"id":"form-referenceEmail","class":"form-referenceEmail form-control"})
+     */
+    public $referenceEmail;
+  
+    /**
+     * @Annotation\Type("Zend\Form\Element\Text")
+     * @Annotation\Required({"required":"false"})
+     * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
+     * @Annotation\Options({"label":"Contact No."})
+     * @Annotation\Attributes({"id":"form-referenceContactNo","class":"form-referenceContactNo form-control"})
+     */
+    public $referenceContactNo; 
+
+    /**
+     * @Annotation\Type("Zend\Form\Element\Text")
+     * @Annotation\Required({"required":"false"})
+     * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
+     * @Annotation\Options({"label":"Occupation"})
+     * @Annotation\Attributes({"id":"form-occupation","class":"form-occupation form-control"})
+     */
+    public $occupation; 
+
+    /**
+     * @Annotation\Type("Zend\Form\Element\Text")
+     * @Annotation\Required({"required":"false"})
+     * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
+     * @Annotation\Options({"label":"Job Title"})
+     * @Annotation\Attributes({"id":"form-jobTitle","class":"form-jobTitle form-control"})
+     */
+    public $jobTitle;
+
+    /**
+     * @Annotation\Type("Zend\Form\Element\Text")
+     * @Annotation\Required({"required":"false"})
+     * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
+     * @Annotation\Options({"label":"Organisation"})
+     * @Annotation\Attributes({"id":"form-organisation","class":"form-organisation form-control"})
+     */
+    public $organisation;
+
+    // to add relative
+
+    /**
+     * @Annotation\Type("Zend\Form\Element\Text")
+     * @Annotation\Required({"required":"false"})
+     * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
+     * @Annotation\Options({"label":"Relation"})
+     * @Annotation\Attributes({"id":"form-relation","class":"form-relation form-control"})
+     */
+    public $relation; 
+
+    /**
+     * @Annotation\Type("Zend\Form\Element\Text")
+     * @Annotation\Required({"required":"false"})
+     * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
+     * @Annotation\Options({"label":"Relative Name"})
+     * @Annotation\Attributes({"id":"form-relativeName","class":"form-relativeName form-control"})
+     */
+    public $relativeName; 
+
+    /**
+     * @Annotation\Type("Zend\Form\Element\Text")
+     * @Annotation\Required({"required":"false"})
+     * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
+     * @Annotation\Options({"label":"Organisation"})
+     * @Annotation\Attributes({"id":"form-relativeOrganisation","class":"form-relativeOrganisation form-control"})
+     */
+    public $relativeOrganisation;
+
+    /**
+     * @Annotation\Type("Zend\Form\Element\Text")
+     * @Annotation\Required({"required":"false"})
+     * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
+     * @Annotation\Options({"label":"Job Title"})
+     * @Annotation\Attributes({"id":"form-relativeJobTitle","class":"form-relativeJobTitle form-control"})
+     */
+    public $relativeJobTitle;
+
+    
 
     /**
      * @Annotation\Type("Zend\Form\Element\Submit")
