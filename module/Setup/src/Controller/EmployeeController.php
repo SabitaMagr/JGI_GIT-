@@ -12,10 +12,12 @@ namespace Setup\Controller;
 use Setup\Model\EmployeeRepositoryInterface;
 use Zend\Db\Adapter\Adapter;
 use Zend\Db\Adapter\AdapterInterface;
+use Zend\Db\Sql\Sql;
 use Zend\Db\TableGateway\TableGateway;
 use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
+use Zend\Db\Sql\Select;
 
 use Setup\Model\Employee;
 
@@ -47,7 +49,6 @@ class EmployeeController extends AbstractActionController
             return new ViewModel([
                 'form' => $this->form
             ]);
-
         }
 
 
@@ -56,12 +57,12 @@ class EmployeeController extends AbstractActionController
         if ($this->form->isValid()) {
             $employee->exchangeArray($this->form->getData());
 
-            $table = new TableGateway('employee', $this->db);
-             $table->insert($employee->getArrayCopy());
+//            $table = new TableGateway('employee', $this->db);
+//            $table->insert($employee->getArrayCopy());
 
-//            $this->employeeRepository->addEmployee($employee);
+            $this->employeeRepository->addEmployee($employee);
 
-            return $this->redirect()->toRoute("test");
+            return $this->redirect()->toRoute("setup");
 
         } else {
             return $this->redirect()->toRoute("123");
@@ -121,7 +122,10 @@ class EmployeeController extends AbstractActionController
     {
         $employeeTable = new TableGateway('employee', $this->db);
 
-        $rowset = $employeeTable->select();
+
+        $rowset = $employeeTable->select(function (Select $select) {
+            $select->order('employeeCode desc');
+        });
 
         return new ViewModel(['list' => $rowset]);
 

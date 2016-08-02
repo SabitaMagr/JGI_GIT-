@@ -19,14 +19,52 @@ $employeeLastName->setAttribute('class', 'form-name form-control');
 $employeeLastName->setAttribute('placeholder', 'Last Name');
 
 
-//$dateofbirth = $form->get("dateOfBirth");
-//$dateofbirth->setAttribute('id', 'dateOfBirth');
-//$dateofbirth->setAttribute('class', 'form-name form-control');
-//$dateofbirth->setAttribute('placeholder', 'Date of Birth');
-//$dateofbirth->setAttribute('required', true);
+$dateOfBirth=$form->get("dateOfBirth");
+$dateOfBirth->setAttribute('class', 'form-name form-control');
+$dateOfBirth->setAttribute('placeholder', 'Date of Birth');
+
+
+$gender=$form->get("gender");
+$gender->setAttribute('class','form-name form-control');
+$gender->setAttribute("placeholder","Gender");
+
+$bloodGroup=$form->get("bloodGroup");
+$bloodGroup->setAttribute("class","form-name form-control");
+$bloodGroup->setAttribute("placeholder","Blood Group");
+
+$nationality=$form->get("nationality");
+$nationality->setAttribute('class','form-name form-control');
+$nationality->setAttribute("placeholder","Nationality");
+
+$religion=$form->get("religion");
+$religion->setAttribute('class','form-name form-control');
+$religion->setAttribute("placeholder","religion");
+
+
+$phoneNumber=$form->get("phoneNumber");
+$phoneNumber->setAttribute('class','form-name form-control');
+$phoneNumber->setAttribute("placeholder","phoneNumber");
+
+$mobileNumber=$form->get("mobileNumber");
+$mobileNumber->setAttribute('class','form-name form-control');
+$mobileNumber->setAttribute("placeholder","mobileNumber");
+
+$personalEmail=$form->get("personalEmail");
+$personalEmail->setAttribute('class','form-name form-control');
+$personalEmail->setAttribute("placeholder","personalEmail");
+
+$languages=$form->get("languages");
+$languages->setAttribute('class','form-name form-control');
+$languages->setAttribute("placeholder","languages");
+
+$citizenshipNo=$form->get("citizenshipNo");
+$citizenshipNo->setAttribute('class','form-name form-control');
+$citizenshipNo->setAttribute("placeholder","citizenshipNo");
+
 
 $submit = $form->get('submit');
 $submit->setAttribute('class', 'btn');
+$submit->setAttribute('value',"Edit Employee");
 
 $form->setAttribute('action', $this->url('setup', ['action' => 'edit','id'=>$id]));
 $form->prepare();
@@ -50,6 +88,57 @@ print $this->form()->openTag($form);
     <?= $this->formLabel($employeeLastName) ?>
     <?= $this->formElement($employeeLastName) ?>
     <?= $this->formElementErrors()->render($employeeLastName,['class'=>'help-block']) ?>
+</div>
+<div class="form-group">
+    <?= $this->formLabel($dateOfBirth) ?>
+    <?= $this->formElement($dateOfBirth) ?>
+    <?= $this->formElementErrors()->render($dateOfBirth,['class'=>'help-block']) ?>
+</div>
+<div class="form-group">
+    <?= $this->formLabel($gender) ?>
+    <?= $this->formElement($gender) ?>
+    <?= $this->formElementErrors()->render($gender, ['class' => 'help-block']) ?>
+</div>
+<div class="form-group">
+    <?= $this->formLabel($bloodGroup) ?>
+    <?= $this->formElement($bloodGroup) ?>
+    <?= $this->formElementErrors()->render($bloodGroup, ['class' => 'help-block']) ?>
+</div>
+<div class="form-group">
+    <?= $this->formLabel($nationality) ?>
+    <?= $this->formElement($nationality) ?>
+    <?= $this->formElementErrors()->render($nationality, ['class' => 'help-block']) ?>
+</div>
+<div class="form-group">
+    <?= $this->formLabel($religion) ?>
+    <?= $this->formElement($religion) ?>
+    <?= $this->formElementErrors()->render($religion, ['class' => 'help-block']) ?>
+</div>
+
+<div class="form-group">
+    <?= $this->formLabel($phoneNumber) ?>
+    <?= $this->formElement($phoneNumber) ?>
+    <?= $this->formElementErrors()->render($phoneNumber, ['class' => 'help-block']) ?>
+</div>
+<div class="form-group">
+    <?= $this->formLabel($mobileNumber) ?>
+    <?= $this->formElement($mobileNumber) ?>
+    <?= $this->formElementErrors()->render($mobileNumber, ['class' => 'help-block']) ?>
+</div>
+<div class="form-group">
+    <?= $this->formLabel($personalEmail) ?>
+    <?= $this->formElement($personalEmail) ?>
+    <?= $this->formElementErrors()->render($personalEmail, ['class' => 'help-block']) ?>
+</div>
+<div class="form-group">
+    <?= $this->formLabel($languages) ?>
+    <?= $this->formElement($languages) ?>
+    <?= $this->formElementErrors()->render($languages, ['class' => 'help-block']) ?>
+</div>
+<div class="form-group">
+    <?= $this->formLabel($citizenshipNo) ?>
+    <?= $this->formElement($citizenshipNo) ?>
+    <?= $this->formElementErrors()->render($citizenshipNo, ['class' => 'help-block']) ?>
 </div>
 
 

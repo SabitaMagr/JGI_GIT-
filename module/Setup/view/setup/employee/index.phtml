@@ -24,40 +24,48 @@
             aria-controls="basicTable" tabindex="0" class="sorting" style="width: 155px;">
             Date of Birth
         </th>
+        <th aria-label="Last Update: activate to sort column ascending" colspan="1" rowspan="1"
+            aria-controls="basicTable" tabindex="0" class="sorting" style="width: 155px;">
+            Action
+        </th>
     </tr>
     </thead>
 
     <tbody>
 
 
-
-<?php $counter=1;?>
+    <?php $counter = 1; ?>
     <?php foreach ($list as $employee) : ?>
-    <tr class="<?= ($counter%2)==0?"even":"odd" ?>" role="row">
-        <td class="v-align-middle sorting_1">
-            <p>
-            <?php print $this->escapeHtml($employee->employeeCode) ?>
-            </p>
-        </td>
-        <td class="v-align-middle">
-            <p>
-            <?php print $this->escapeHtml($employee->employeeFirstName) ?>
-            </p>
-        </td>
-        <td class="v-align-middle">
-            <p>
-            <?php print $this->escapeHtml($employee->employeeMiddleName) ?>
-            </p>
-        </td>
-        <td class="v-align-middle">
-            <p>
+        <tr class="<?= ($counter % 2) == 0 ? "even" : "odd" ?>" role="row">
+            <td class="v-align-middle sorting_1">
+                <p>
+                    <?php print $this->escapeHtml($employee->employeeCode) ?>
+                </p>
+            </td>
+            <td class="v-align-middle">
+                <p>
+                    <?php print $this->escapeHtml($employee->employeeFirstName) ?>
+                </p>
+            </td>
+            <td class="v-align-middle">
+                <p>
+                    <?php print $this->escapeHtml($employee->employeeMiddleName) ?>
+                </p>
+            </td>
+            <td class="v-align-middle">
+                <p>
             <td>
-            <?php print $this->escapeHtml($employee->employeeLastName) ?></td>
-        </p>
-        </td>
-    </tr>
-<?php $counter++; ?>
+                <?php print $this->escapeHtml($employee->employeeLastName) ?></td>
+            </p>
+            </td>
+            <td class="v-align-middle">
+                <p>
+                    <a href="<?= $this->url("setup",["action"=>"edit","id"=>$employee->employeeCode]) ?>">Edit</a>
+            </p>
+            </td>
+        </tr>
+        <?php $counter++; ?>
     <?php endforeach; ?>
-</tbody>
+    </tbody>
 
 </table>

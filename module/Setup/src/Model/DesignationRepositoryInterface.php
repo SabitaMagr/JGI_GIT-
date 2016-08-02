@@ -1,7 +1,14 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: ukesh
- * Date: 8/2/16
- * Time: 12:08 PM
- */
+
+namespace Setup\Model;
+
+interface DesignationRepositoryInterface
+{
+    public function addDesignation(Designation $designation);
+    public function editDesignation(Designation $designation);
+    public function deleteDesignation(Designation $designation);
+
+    public function fetchAll();
+
+    public function fetchById( $id);
+}

@@ -2,6 +2,7 @@
 
 namespace Setup;
 
+use SebastianBergmann\Comparator\Factory;
 use Zend\Router\Http\Literal;
 use Zend\Router\Http\Segment;
 use Zend\ServiceManager\Factory\InvokableFactory;
@@ -15,21 +16,31 @@ return [
                 'options' => [
                     'route' => '/setup[/:action[/:id]]',
                     'defaults' => [
-                        'controller'=>Controller\EmployeeController::class,
-                        'action'=>'index'
+                        'controller' => Controller\EmployeeController::class,
+                        'action' => 'index'
 
                     ]
                 ]
+            ],
+            'designation' => [
+                'type' => Segment::class,
+                'options' => [
+                    'route' => '/designation[/:action[/:id]]',
+                    'defaults' => [
+                        'controller' => Controller\DesignationController::class,
+                        'action' => 'index'
 
+                    ]
+                ]
             ],
         ]
     ],
 
 
-
     'controllers' => [
         'factories' => [
-            Controller\EmployeeController::class => Factory\EmployeeControllerFactory::class
+            Controller\EmployeeController::class => Factory\EmployeeControllerFactory::class,
+            Controller\DesignationController::class=>Factory\DesignationControllerFactory::class,
         ],
     ],
 

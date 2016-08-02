@@ -17,8 +17,7 @@ class  EmployeeRepository implements EmployeeRepositoryInterface
 
     public function addEmployee(Employee $employee)
     {
-       echo  $this->gateway->insert($employee->getArrayCopy());
-        die();
+        $this->gateway->insert($employee->getArrayCopy());
     }
 
     public function editEmployee(Employee $employee)
@@ -28,7 +27,7 @@ class  EmployeeRepository implements EmployeeRepositoryInterface
 
     public function fetchAll()
     {
-       return $this->gateway->select();
+        return $this->gateway->select();
     }
 
     public function fetchById($id)

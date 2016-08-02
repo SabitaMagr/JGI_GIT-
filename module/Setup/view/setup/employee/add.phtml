@@ -64,6 +64,7 @@ $citizenshipNo->setAttribute("placeholder","citizenshipNo");
 
 $submit = $form->get('submit');
 $submit->setAttribute('class', 'btn');
+$submit->setAttribute('value',"Add Employee");
 
 $form->setAttribute('action', $this->url('setup', ['action' => 'add']));
 $form->prepare();

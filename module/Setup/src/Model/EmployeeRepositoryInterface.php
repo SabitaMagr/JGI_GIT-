@@ -7,7 +7,6 @@ interface EmployeeRepositoryInterface{
     public function editEmployee(Employee $employee);
     public function  fetchAll();
     public function fetchById($id);
-
     public function deleteEmployee(Employee $employee);
 
 

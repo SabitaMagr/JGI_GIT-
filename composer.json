@@ -27,7 +27,7 @@
         "zendframework/zend-psr7bridge": "^0.2.2",
         "zendframework/zend-session": "^2.7.1",
         "zendframework/zend-servicemanager-di": "^1.0",
-        "doctrine/orm" : "^2.5",
+        "doctrine/orm": "2.4.*",
         "zf-commons/zfc-twig": "dev-master",
         "zendframework/zend-debug": "^2.5"
     },
