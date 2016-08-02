@@ -79,6 +79,21 @@ return [
                     ]
                 ],
             ],
+
+            'employeeType'=>[
+                'type'=>segment::class,
+                'options'=>[
+                    'route'=>'/employeeType[/:action[/:id]]',
+                    'constants'=>[
+                       'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                       'id'     => '[0-9]+',
+                    ],
+                    'defaults'=>[
+                        'controller'=>Controller\EmployeeTypeController::class,
+                        'action'=>'add',
+                    ]
+                ],
+            ],
         
 
 //            'edit'=>[
@@ -110,6 +125,7 @@ return [
             Controller\BranchController::class => InvokableFactory::class,
             Controller\DepartmentController::class => InvokableFactory::class,
             Controller\PositionController::class => InvokableFactory::class,
+            Controller\EmployeeTypeController::class => InvokableFactory::class,
         ]
     ],
 
