@@ -10,7 +10,6 @@ use Zend\Form\Annotation;
 
 class EmployeeForm
 {
-
     /**
      *@Annotation\Type("Zend\Form\Element\Text")
      *@Annotation\Required({"required":"true"})
@@ -734,7 +733,7 @@ class EmployeeForm
      * @Annotation\Options({"label":"Include Payroll?"})
      * @Annotation\Filter({"name":"StripTags"})
      * @Annotation\Checked({"checked":"false"})
-     * @Annotation\Attributes({ "id":"form-includePayroll", "class":"form-includePayroll", "value":"1" })
+     * @Annotation\Attributes({ "id":"form-includePayroll checkbox4", "class":"form-includePayroll", "value":"1" })
      */
     public $includePayroll;
 
