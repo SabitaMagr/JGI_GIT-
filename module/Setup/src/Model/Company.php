@@ -77,7 +77,7 @@ class Company{
 
 	/**
 	 * @Annotion\Type("Zend\Form\Element\Text")
-	 * @Annotation\Required({"required":"true"})
+	 * @Annotation\Required({"required":"false"})
 	 * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
 	 * @Annotation\Options({"label":"Fax"})
 	 * @Annotation\Attributes({ "id":"form-fax", "class":"form-fax form-control","placeholder":"Enter fax number.." })
@@ -86,14 +86,106 @@ class Company{
 
 	/**
 	 * @Annotion\Type("Zend\Form\Element\Text")
-	 * @Annotation\Required({"required":"true"})
+	 * @Annotation\Required({"required":"false"})
 	 * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
 	 * @Annotation\Options({"label":"Web"})
 	 * @Annotation\Attributes({ "id":"form-web", "class":"form-web form-control","placeholder":"Enter website address..." })
 	 */
 	public $web;
 
+	/**
+	 * @Annotion\Type("Zend\Form\Element\Text")
+	 * @Annotation\Required({"required":"false"})
+	 * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
+	 * @Annotation\Options({"label":"Registration No"})
+	 * @Annotation\Attributes({ "id":"form-registrationNo", "class":"form-registrationNo form-control" })
+	 */
+	public $registrationNo;
 
+
+	/**
+	 * @Annotion\Type("Zend\Form\Element\Text")
+	 * @Annotation\Required({"required":"false"})
+	 * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
+	 * @Annotation\Options({"label":"VAT No"})
+	 * @Annotation\Attributes({ "id":"form-vatNo", "class":"form-vatNo form-control" })
+	 */
+	public $vatNo;
+
+	/**
+	 * @Annotion\Type("Zend\Form\Element\Text")
+	 * @Annotation\Required({"required":"false"})
+	 * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
+	 * @Annotation\Options({"label":"SMTP Host"})
+	 * @Annotation\Attributes({ "id":"form-smtpHost", "class":"form-smtpHost form-control" })
+	 */
+	public $smtpHost;
+
+	/**
+	 * @Annotion\Type("Zend\Form\Element\Text")
+	 * @Annotation\Required({"required":"false"})
+	 * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
+	 * @Annotation\Options({"label":"Server Path"})
+	 * @Annotation\Attributes({ "id":"form-serverPath", "class":"form-serverPath form-control"})
+	 */
+	public $serverPath;
+
+
+	/**
+	 * @Annotion\Type("Zend\Form\Element\Text")
+	 * @Annotation\Required({"required":"false"})
+	 * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
+	 * @Annotation\Options({"label":"Fiscal Start"})
+	 * @Annotation\Attributes({ "id":"form-fiscalStart", "class":"form-fiscalStart form-control"})
+	 */
+	public $fiscalStart;
+
+
+	/**
+	 * @Annotion\Type("Zend\Form\Element\Text")
+	 * @Annotation\Required({"required":"false"})
+	 * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
+	 * @Annotation\Options({"label":"Fiscal End"})
+	 * @Annotation\Attributes({ "id":"form-fiscalEnd", "class":"form-fiscalEnd form-control"})
+	 */
+	public $fiscalEnd;
+
+
+	/**
+	 * @Annotion\Type("Zend\Form\Element\Text")
+	 * @Annotation\Required({"required":"false"})
+	 * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
+	 * @Annotation\Options({"label":"Start Time"})
+	 * @Annotation\Attributes({ "id":"form-startTime", "class":"form-startTime form-control"})
+	 */
+	public $startTime;
+
+	/**
+	 * @Annotion\Type("Zend\Form\Element\Text")
+	 * @Annotation\Required({"required":"false"})
+	 * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
+	 * @Annotation\Options({"label":"End Time"})
+	 * @Annotation\Attributes({ "id":"form-endTime", "class":"form-endTime form-control"})
+	 */
+	public $endTime;
+
+	/**
+	 * @Annotion\Type("Zend\Form\Element\Text")
+	 * @Annotation\Required({"required":"false"})
+	 * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
+	 * @Annotation\Options({"label":"Grace Start Time"})
+	 * @Annotation\Attributes({ "id":"form-graceStartTime", "class":"form-graceStartTime form-control"})
+	 */
+	public $graceStartTime;
+
+	/**
+	 * @Annotion\Type("Zend\Form\Element\Text")
+	 * @Annotation\Required({"required":"false"})
+	 * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
+	 * @Annotation\Options({"label":"Grace End Time"})
+	 * @Annotation\Attributes({ "id":"form-graceEndTime", "class":"form-graceEndTime form-control"})
+	 */
+	public $graceEndTime;
 
 
 }
