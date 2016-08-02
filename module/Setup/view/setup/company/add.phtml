@@ -25,6 +25,7 @@ $endTime = $form->get('endTime');
 $graceStartTime = $form->get('graceStartTime');
 $graceEndTime = $form->get('graceEndTime');
 
+$submit = $form->get('submit');
 
 $form->setAttribute('action',$this->url('company',['action'=>'add']));
 $form->prepare();
@@ -194,6 +195,10 @@ if ($this->messages) {
 			</div>
 		</div>			
 					
+	</div>
+
+	<div class="panel-footer">
+		<?php  print $this->formSubmit($submit); ?>		
 	</div>
 </div>
 

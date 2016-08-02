@@ -188,4 +188,11 @@ class Company{
 	public $graceEndTime;
 
 
+	/**
+     * @Annotation\Type("Zend\Form\Element\Submit")
+     * @Annotation\Attributes({"value":"Add","class":"btn"})
+    */
+    public $submit;
+
+
 }
