@@ -19,3 +19,28 @@
 	line-height: 6px !important;
 	font-size: 10px !important;
 }
+
+.title-header {
+	color: #626262;
+}
+fieldset.scheduler-border {
+    border: 1px solid #ddd !important;
+    padding: 0 1.4em 1.4em 1.4em !important;
+    margin: 0 0 1.5em 0 !important;
+    -webkit-box-shadow: 0px 0px 0px 0px #000;
+    box-shadow: 0px 0px 0px 0px #000;
+}
+
+legend.scheduler-border {
+    width: inherit;
+    padding: 0 10px;
+    border-bottom: none;
+}
+
+.panel-title-head{
+	border-bottom: 1px solid #ddd !important;
+	 }
+
+.panel-title-head h4{
+	    line-height: 3px !important;
+}

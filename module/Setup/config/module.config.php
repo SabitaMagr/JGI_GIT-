@@ -22,6 +22,37 @@ return [
                 ]
 
             ],
+            
+            'company' => [
+                'type'    => Segment::class,
+                'options' => [
+                    'route' => '/company[/:action[/:id]]',
+                    'constraints' => [
+                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'id'     => '[0-9]+',
+                    ],
+                    'defaults' => [
+                        'controller' => Controller\CompanyController::class,
+                        'action'     => 'add',
+                    ],
+                ],
+            ],
+            'branch'=>[
+                'type'=>segment::class,
+                'options'=>[
+                    'route'=>'/branch[/:action[/:id]]',
+                    'constraints'=>[
+                       'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                       'id'     => '[0-9]+', 
+                    ],
+                    'defaults'=>[
+                        'controller'=>Controller\BranchController::class,
+                        'action'=>'add',
+                    ]
+                ],
+            ],
+        
+
 //            'edit'=>[
 //                'type'=>Segment::class,
 //                'options'=>[
@@ -46,7 +77,9 @@ return [
     ],
     'controllers'=>[
         'factories'=>[
-            Controller\EmployeeController::class=>Factory\EmployeeControllerFactory::class
+            Controller\EmployeeController::class=>Factory\EmployeeControllerFactory::class,
+            Controller\CompanyController::class => InvokableFactory::class,
+            Controller\BranchController::class => InvokableFactory::class,
         ]
     ],
 

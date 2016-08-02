@@ -1,6 +1,6 @@
 <?php
 $form->setAttribute('role', 'form');
-$form->setAttribute('class', 'login-form');
+$form->setAttribute('class', 'employee-form');
 $form->setAttribute('id','form-personal');
 
 $employeeId = $form->get('employeeId');
@@ -714,6 +714,7 @@ if ($this->messages) {
                         <?php print $this->formElement($basicSalary);?>
                         <?php print $this->formElementErrors()->render($basicSalary,['class'=>'help-block']);?>
                     </div>
+                  
                     <div class="form-group emp-form-group">
                         <?php print $this->formLabel($includePayroll);?>
                         <?php print $this->formElement($includePayroll);?>
