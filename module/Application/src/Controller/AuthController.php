@@ -80,7 +80,6 @@ class AuthController extends AbstractActionController
     {
         $form = $this->getForm();
         $redirect = 'login';
-
         $request = $this->getRequest();
         if ($request->isPost()) {
             $form->setData($request->getPost());
@@ -89,13 +88,11 @@ class AuthController extends AbstractActionController
                 $this->getAuthService()->getAdapter()
                     ->setIdentity($request->getPost('username'))
                     ->setCredential($request->getPost('password'));
-
                 $result = $this->getAuthService()->authenticate();
                 foreach ($result->getMessages() as $message) {
                     //save message temporary into flashmessenger
                     $this->flashmessenger()->addMessage($message);
                 }
-
                 if ($result->isValid()) {
                     $redirect = 'dashboard';
                     //check if it has rememberMe :
@@ -109,7 +106,6 @@ class AuthController extends AbstractActionController
                 }
             }
         }
-
         return $this->redirect()->toRoute($redirect);
     }
 
