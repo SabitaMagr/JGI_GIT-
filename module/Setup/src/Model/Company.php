@@ -190,7 +190,7 @@ class Company{
 
 	/**
      * @Annotation\Type("Zend\Form\Element\Submit")
-     * @Annotation\Attributes({"value":"Add","class":"btn"})
+     * @Annotation\Attributes({"value":"Submit","class":"btn btn-primary pull-right"})
     */
     public $submit;
 
