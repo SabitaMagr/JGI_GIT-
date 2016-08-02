@@ -1,0 +1,35 @@
+<?php
+$designationTitle = $form->get("designationTitle");
+$designationTitle->setAttribute('class','form-name form-control');
+$designationTitle->setAttribute("placeholder","Designation Title");
+
+
+$designationDetail = $form->get("designationDetail");
+$designationDetail->setAttribute("class","form-name form-control");
+$designationDetail->setAttribute("placeholder","Designation Detail");
+
+$submit = $form->get("submit");
+$submit->setAttribute("class","btn");
+$submit->setAttribute("value","Edit Designation");
+
+$form->setAttribute('action', $this->url('designation', ['action' => 'edit',"id"=>$id]));
+$form->prepare();
+
+print $this->form()->openTag($form);
+?>
+
+<div class="form-group">
+    <?= $this->formLabel($designationTitle) ?>
+    <?= $this->formElement($designationTitle); ?>
+    <?= $this->formElementErrors()->render($designationTitle, ['class' => 'help-block']) ?>
+</div>
+<div class="form-group">
+    <?= $this->formLabel($designationDetail) ?>
+    <?= $this->formElement($designationDetail); ?>
+    <?= $this->formElementErrors()->render($designationDetail, ['class' => 'help-block']) ?>
+</div>
+
+<?php
+print $this->formSubmit($submit);
+print $this->form()->closeTag();
+?>

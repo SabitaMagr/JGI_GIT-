@@ -3,6 +3,9 @@
 namespace Setup;
 
 use SebastianBergmann\Comparator\Factory;
+use Setup\Controller\EmployeeController;
+use Setup\Model\EmployeeRepository;
+use Zend\Db\TableGateway\TableGateway;
 use Zend\Router\Http\Literal;
 use Zend\Router\Http\Segment;
 use Zend\ServiceManager\Factory\InvokableFactory;
@@ -35,34 +38,34 @@ return [
             ],
 
             'company' => [
-                'type'    => Segment::class,
+                'type' => Segment::class,
                 'options' => [
                     'route' => '/company[/:action[/:id]]',
                     'constraints' => [
                         'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
-                        'id'     => '[0-9]+',
+                        'id' => '[0-9]+',
                     ],
                     'defaults' => [
                         'controller' => Controller\CompanyController::class,
-                        'action'     => 'add',
+                        'action' => 'add',
                     ],
                 ],
             ],
-            'branch'=>[
-                'type'=>segment::class,
-                'options'=>[
-                    'route'=>'/branch[/:action[/:id]]',
-                    'constraints'=>[
-                       'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
-                       'id'     => '[0-9]+', 
+            'branch' => [
+                'type' => segment::class,
+                'options' => [
+                    'route' => '/branch[/:action[/:id]]',
+                    'constraints' => [
+                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'id' => '[0-9]+',
                     ],
-                    'defaults'=>[
-                        'controller'=>Controller\BranchController::class,
-                        'action'=>'add',
+                    'defaults' => [
+                        'controller' => Controller\BranchController::class,
+                        'action' => 'add',
                     ]
                 ],
             ],
-        
+
 
 //            'edit'=>[
 //                'type'=>Segment::class,
@@ -86,9 +89,10 @@ return [
 //            ]
         ]
     ],
-    'controllers'=>[
-        'factories'=>[
-            Controller\EmployeeController::class=>Factory\EmployeeControllerFactory::class,
+    'controllers' => [
+        'factories' => [
+            Controller\EmployeeController::class => Controller\EmployeeControllerFactory::class,
+            Controller\DesignationController::class => Controller\DesignationControllerFactory::class,
             Controller\CompanyController::class => InvokableFactory::class,
             Controller\BranchController::class => InvokableFactory::class,
         ]

@@ -17,28 +17,4 @@ class Module implements ConfigProviderInterface
 
 
 
-//    public function getControllerConfig()
-//    {
-//        return [
-//            'factories' => [
-//                'controllers' => [
-//                    'factories' => [
-//                        Controller\EmployeeController::class => Factory\EmployeeControllerFactory::class,
-//                        Controller\DesignationController::class=>Factory\DesignationControllerFactory::class
-//                    ]
-//                ],
-//            ],
-//        ];
-//    }
-
-
-    public function getServiceConfig()
-    {
-        return [
-            'factories' => [
-                Factory\EmployeeControllerFactory::class => InvokableFactory::class,
-                Factory\DesignationControllerFactory::class => InvokableFactory::class
-            ],
-        ];
-    }
 }

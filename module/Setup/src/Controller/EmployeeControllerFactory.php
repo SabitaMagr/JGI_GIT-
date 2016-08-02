@@ -1,12 +1,11 @@
 <?php
-namespace Setup\Factory;
+namespace Setup\Controller;
 
 
-use Zend\ServiceManager\Factory\FactoryInterface;
-use Setup\Controller\EmployeeController;
-use Zend\Db\Adapter\AdapterInterface;
 use Setup\Model\EmployeeRepository;
+use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\TableGateway\TableGateway;
+use Zend\ServiceManager\Factory\FactoryInterface;
 
 class EmployeeControllerFactory implements FactoryInterface
 {

@@ -13,10 +13,12 @@ class DesignationRepository implements DesignationRepositoryInterface
 
     public function addDesignation(Designation $designation)
     {
+        $this->tableGateway->insert($designation->getArrayCopy());
     }
 
-    public function editDesignation(Designation $designation)
+    public function editDesignation(Designation $designation,$id)
     {
+        $this->tableGateway->update($designation->getArrayCopy(),["designationCode"=>$id]);
     }
 
     public function deleteDesignation(Designation $designation)
@@ -30,5 +32,7 @@ class DesignationRepository implements DesignationRepositoryInterface
 
     public function fetchById($id)
     {
+       $rowset= $this->tableGateway->select(["designationCode"=>$id]);
+        return $rowset->current();
     }
 }
