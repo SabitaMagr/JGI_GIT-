@@ -1,16 +1,71 @@
 <?php
-
 ?>
 
-<table>
+<table role="grid" class="table table-hover dataTable no-footer" id="employeelist">
 
-<?php foreach ($list as $employee) : ?>
-    <tr>
-    <td><?php print $this->escapeHtml($employee->employeeCode) ?></td>
-    <td><?php print $this->escapeHtml($employee->employeeFirstName) ?></td>
-    <td><?php print $this->escapeHtml($employee->employeeMiddleName) ?></td>
-    <td><?php print $this->escapeHtml($employee->employeeLastName) ?></td>
-
+    <thead>
+    <tr role="row">
+        <th aria-label="Title: activate to sort column ascending" aria-sort="descending" colspan="1" rowspan="1"
+            aria-controls="basicTable" tabindex="0" class="sorting_desc" style="width: 218px;">Employee
+            Code
+        </th>
+        <th aria-label="Places: activate to sort column ascending" colspan="1" rowspan="1" aria-controls="basicTable"
+            tabindex="0" class="sorting" style="width: 219px;">First Name
+        </th>
+        <th aria-label="Activities: activate to sort column ascending" colspan="1" rowspan="1"
+            aria-controls="basicTable" tabindex="0" class="sorting" style="width: 333px;">
+            Middle Name
+        </th>
+        <th aria-label="Status: activate to sort column ascending" colspan="1" rowspan="1" aria-controls="basicTable"
+            tabindex="0" class="sorting" style="width: 155px;">
+            Last Name
+        </th>
+        <th aria-label="Last Update: activate to sort column ascending" colspan="1" rowspan="1"
+            aria-controls="basicTable" tabindex="0" class="sorting" style="width: 155px;">
+            Date of Birth
+        </th>
+        <th aria-label="Last Update: activate to sort column ascending" colspan="1" rowspan="1"
+            aria-controls="basicTable" tabindex="0" class="sorting" style="width: 155px;">
+            Action
+        </th>
     </tr>
-<?php endforeach; ?>
+    </thead>
+
+    <tbody>
+
+
+    <?php $counter = 1; ?>
+    <?php foreach ($list as $employee) : ?>
+        <tr class="<?= ($counter % 2) == 0 ? "even" : "odd" ?>" role="row">
+            <td class="v-align-middle sorting_1">
+                <p>
+                    <?php print $this->escapeHtml($employee->employeeCode) ?>
+                </p>
+            </td>
+            <td class="v-align-middle">
+                <p>
+                    <?php print $this->escapeHtml($employee->employeeFirstName) ?>
+                </p>
+            </td>
+            <td class="v-align-middle">
+                <p>
+                    <?php print $this->escapeHtml($employee->employeeMiddleName) ?>
+                </p>
+            </td>
+            <td class="v-align-middle">
+                <p>
+            <td>
+                <?php print $this->escapeHtml($employee->employeeLastName) ?></td>
+            </p>
+            </td>
+            <td class="v-align-middle">
+                <p>
+                    <a href="<?= $this->url("setup",["action"=>"edit","id"=>$employee->employeeCode]) ?>">Edit</a>
+            </p>
+            </td>
+        </tr>
+        <?php $counter++; ?>
+    <?php endforeach; ?>
+    </tbody>
+
 </table>
