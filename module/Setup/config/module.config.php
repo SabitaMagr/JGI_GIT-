@@ -65,7 +65,50 @@ return [
                     ]
                 ],
             ],
+            'department'=>[
+                'type'=>segment::class,
+                'options'=>[
+                    'route'=>'/department[/:action[/:id]]',
+                    'constants'=>[
+                       'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                       'id'     => '[0-9]+',
+                    ],
+                    'defaults'=>[
+                        'controller'=>Controller\DepartmentController::class,
+                        'action'=>'add',
+                    ]
+                ],
+            ],
+            'position'=>[
+                'type'=>segment::class,
+                'options'=>[
+                    'route'=>'/position[/:action[/:id]]',
+                    'constants'=>[
+                       'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                       'id'     => '[0-9]+',
+                    ],
+                    'defaults'=>[
+                        'controller'=>Controller\PositionController::class,
+                        'action'=>'add',
+                    ]
+                ],
+            ],
 
+            'employeeType'=>[
+                'type'=>segment::class,
+                'options'=>[
+                    'route'=>'/employeeType[/:action[/:id]]',
+                    'constants'=>[
+                       'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                       'id'     => '[0-9]+',
+                    ],
+                    'defaults'=>[
+                        'controller'=>Controller\EmployeeTypeController::class,
+                        'action'=>'add',
+                    ]
+                ],
+            ],
+        
 
 //            'edit'=>[
 //                'type'=>Segment::class,
@@ -95,6 +138,9 @@ return [
             Controller\DesignationController::class => Controller\DesignationControllerFactory::class,
             Controller\CompanyController::class => InvokableFactory::class,
             Controller\BranchController::class => InvokableFactory::class,
+            Controller\DepartmentController::class => InvokableFactory::class,
+            Controller\PositionController::class => InvokableFactory::class,
+            Controller\EmployeeTypeController::class => InvokableFactory::class,
         ]
     ],
 

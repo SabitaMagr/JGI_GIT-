@@ -3,19 +3,18 @@
 namespace Setup\Controller;
 
 use Zend\Form\Annotation\AnnotationBuilder;
-use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
-use Setup\Model\Branch;
+use Zend\Mvc\Controller\AbstractActionController;
+use Setup\Model\Position;
 
-class BranchController extends AbstractActionController{
-
+class PositionController extends AbstractActionController{
 	protected $form;
 
 	public function getForm(){
-		$branch = new Branch();
+		$position = new Position();
 		$builder = new AnnotationBuilder();
 		if (!$this->form) {
-			$this->form = $builder->createForm($branch);
+			$this->form = $builder->createForm($position);
 		}
 		return $this->form;
 	}
@@ -37,5 +36,8 @@ class BranchController extends AbstractActionController{
 	public function deleteAction(){
 
 	}
-
 }
+	
+
+
+?>

@@ -1,0 +1,46 @@
+<?php 
+$form->setAttribute('role','form');
+$form->setAttribute('class','position-form');
+
+$positionCode = $form->get('positionCode');
+$positionName = $form->get('positionName');
+
+$submit = $form->get('submit');
+
+$form->setAttribute('action',$this->url('position',['action'=>'add']));
+$form->prepare();
+
+print $this->form()->openTag();
+
+?>
+<div class="row">
+	<div class="col-sm-6">
+		<div class="panel panel-default">
+			<div class="panel-heading panel-title-head">
+				<!--<div class="panel-title"> -->
+					<h4>Position Setup</h4>		
+			</div>
+			<div class="panel-body padding-5" style="margin-top:7px;">	
+				<div class="form-group form-group-default emp-form-group">
+					<?php print $this->formLabel($positionCode); ?>
+					<?php print $this->formElement($positionCode); ?>
+					<?php print $this->formElementErrors()->render($positionCode,['class'=>'help-block']);?>
+				</div>
+				<div class="form-group form-group-default  emp-form-group">
+					<?php print $this->formLabel($positionName); ?>
+					<?php print $this->formElement($positionName); ?>
+					<?php print $this->formElementErrors()->render($positionName,['class'=>'help-block']);?>
+				</div>
+				
+			</div>
+			<div class="panel-footer">
+				<?php  print $this->formSubmit($submit); ?>		
+			</div>
+		</div>
+	</div>
+</div>
+<?php
+
+print $this->form()->closeTag();
+
+?>
