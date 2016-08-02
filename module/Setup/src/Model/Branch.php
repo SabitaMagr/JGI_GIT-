@@ -75,22 +75,22 @@ class Branch{
 	public $contactPerson;
 
 	/**
-	 * @Annotion\Type("Zend\Form\Element\Select")
-	 * @Annotation\Required({"required":"false"})
-	 * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
-	 * @Annotation\Options({"label":"Branch Manager","value_options":{"A":"Anita","B":"Balaram","C":"Ceeta"}})
-	 * @Annotation\Attributes({ "id":"form-branchManager", "class":"form-branchManager form-control"})
-	 */
+     * @Annotation\Type("Zend\Form\Element\Select")
+     * @Annotation\Required({"required":"false"})
+     * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
+      * @Annotation\Options({"label":"Branch Manager","value_options":{"A":"Anita","B":"Balaram","C":"Ceeta"}})
+     * @Annotation\Attributes({ "id":"form-branchManager","data-init-plugin":"cs-select","class":"cs-select cs-skin-slide form-branchManager form-control"})
+     */
 	public $branchManager;
 
-
+	
 	/**
-	 * @Annotion\Type("Zend\Form\Element\Select")
-	 * @Annotation\Required({"required":"false"})
-	 * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
-	 * @Annotation\Options({"label":"Parent Branch","value_options":{"A":"Branch A","B":"Branch B","C":"Branch C"}})
-	 * @Annotation\Attributes({ "id":"form-parentBranch", "class":"form-parentBranch form-control"})
-	 */
+     * @Annotation\Type("Zend\Form\Element\Select")
+     * @Annotation\Required({"required":"false"})
+     * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
+     * @Annotation\Options({"label":"Parent Branch","value_options":{"A":"Branch A","B":"Branch B","C":"Branch C"}})
+     * @Annotation\Attributes({ "id":"form-parentBranch","data-init-plugin":"cs-select","class":"cs-select cs-skin-slide form-parentBranch form-control"})
+     */
 	public $parentBranch;
 
 

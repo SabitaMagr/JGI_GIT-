@@ -51,6 +51,34 @@ return [
                     ]
                 ],
             ],
+            'department'=>[
+                'type'=>segment::class,
+                'options'=>[
+                    'route'=>'/department[/:action[/:id]]',
+                    'constants'=>[
+                       'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                       'id'     => '[0-9]+',
+                    ],
+                    'defaults'=>[
+                        'controller'=>Controller\DepartmentController::class,
+                        'action'=>'add',
+                    ]
+                ],
+            ],
+            'position'=>[
+                'type'=>segment::class,
+                'options'=>[
+                    'route'=>'/position[/:action[/:id]]',
+                    'constants'=>[
+                       'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                       'id'     => '[0-9]+',
+                    ],
+                    'defaults'=>[
+                        'controller'=>Controller\PositionController::class,
+                        'action'=>'add',
+                    ]
+                ],
+            ],
         
 
 //            'edit'=>[
@@ -80,6 +108,8 @@ return [
             Controller\EmployeeController::class=>Factory\EmployeeControllerFactory::class,
             Controller\CompanyController::class => InvokableFactory::class,
             Controller\BranchController::class => InvokableFactory::class,
+            Controller\DepartmentController::class => InvokableFactory::class,
+            Controller\PositionController::class => InvokableFactory::class,
         ]
     ],
 
