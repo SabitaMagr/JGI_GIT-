@@ -13,5 +13,5 @@ interface  RepositoryInterface{
     public function edit(ModelInterface $model,$id);
     public function  fetchAll();
     public function fetchById($id);
-    public function delete(ModelInterface $model);
+    public function delete($id);
 }

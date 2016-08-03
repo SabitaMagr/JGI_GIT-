@@ -7,11 +7,12 @@ use Zend\Form\Annotation;
 * @Annotation\Hydrator("Zend\Hydrator\ObjectProperty")
 * @Annotation\Name("Department")
 */
+class Department implements ModelInterface
 
-class Department{
+{
 	/**
 	 * @Annotion\Type("Zend\Form\Element\Text")
-	 * @Annotation\Required({"required":"true"})
+	 * @Annotation\Required({"required":"false"})
 	 * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
 	 * @Annotation\Options({"label":"Department Code"})
 	 * @Annotation\Attributes({ "id":"form-departmentCode", "class":"form-departmentCode form-control" })
@@ -20,7 +21,7 @@ class Department{
 
 	/**
 	 * @Annotion\Type("Zend\Form\Element\Text")
-	 * @Annotation\Required({"required":"true"})
+	 * @Annotation\Required({"required":"false"})
 	 * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
 	 * @Annotation\Options({"label":"Department Name"})
 	 * @Annotation\Attributes({ "id":"form-departmentName", "class":"form-departmentName form-control" })
@@ -50,5 +51,28 @@ class Department{
      * @Annotation\Attributes({"value":"Submit","class":"btn btn-primary pull-right"})
     */
     public $submit;
+
+
+ 
+
+    public function exchangeArray(array $data)
+    {
+        $this->departmentCode = !empty($data['departmentCode']) ? $data['departmentCode'] : null;
+        $this->departmentName = !empty($data['departmentName']) ? $data['departmentName'] : null;
+        $this->hodCode = !empty($data['hodCode']) ? $data['hodCode'] : null;
+        $this->parentDepartment = !empty($data['parentDepartment']) ? $data['parentDepartment'] : null;
+       
+    }
+
+    public function getArrayCopy()
+    {
+        return [
+            'departmentCode' => $this->departmentCode,
+            'departmentName' => $this->departmentName,
+            'hodCode' => $this->hodCode,
+            'parentDepartment' => $this->parentDepartment
+           ];
+           
+    }
 
 }

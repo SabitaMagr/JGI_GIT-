@@ -8,10 +8,10 @@ $remarks = $form->get('remarks');
 
 $submit = $form->get('submit');
 
-$form->setAttribute('action',$this->url('position',['action'=>'add']));
+$form->setAttribute('action',$this->url('employeeType',['action'=>'add']));
 $form->prepare();
 
-print $this->form()->openTag();
+print $this->form()->openTag($form);
 
 ?>
 <div class="row">

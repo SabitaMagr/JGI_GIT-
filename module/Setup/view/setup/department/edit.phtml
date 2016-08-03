@@ -10,7 +10,7 @@ $parentDepartment = $form->get('parentDepartment');
 
 $submit = $form->get('submit');
 
-$form->setAttribute('action',$this->url('department',['action'=>'add']));
+$form->setAttribute('action',$this->url('department',['action'=>'edit','id'=>$id]));
 
 $form->prepare();
 

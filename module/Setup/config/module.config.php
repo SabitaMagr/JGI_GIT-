@@ -75,7 +75,7 @@ return [
                     ],
                     'defaults'=>[
                         'controller'=>Controller\DepartmentController::class,
-                        'action'=>'add',
+                        'action'=>'index',
                     ]
                 ],
             ],
@@ -104,7 +104,7 @@ return [
                     ],
                     'defaults'=>[
                         'controller'=>Controller\EmployeeTypeController::class,
-                        'action'=>'add',
+                        'action'=>'index',
                     ]
                 ],
             ],
