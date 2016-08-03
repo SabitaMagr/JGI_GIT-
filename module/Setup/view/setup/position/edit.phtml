@@ -7,7 +7,7 @@ $positionName = $form->get('positionName');
 
 $submit = $form->get('submit');
 
-$form->setAttribute('action',$this->url('position',['action'=>'add']));
+$form->setAttribute('action',$this->url('position',['action'=>'edit','id'=>$id]));
 
 $form->prepare();
 

@@ -31,7 +31,7 @@ return [
                     'route' => '/designation[/:action[/:id]]',
                     'defaults' => [
                         'controller' => Controller\DesignationController::class,
-                        'action' => 'index'
+                        'action' => 'add'
 
                     ]
                 ]
@@ -89,7 +89,7 @@ return [
                     ],
                     'defaults'=>[
                         'controller'=>Controller\PositionController::class,
-                        'action'=>'add',
+                        'action'=>'index',
                     ]
                 ],
             ],
@@ -139,7 +139,7 @@ return [
             Controller\CompanyController::class => Controller\ControllerFactory::class,
             Controller\BranchController::class => Controller\ControllerFactory::class,
             Controller\DepartmentController::class => Controller\ControllerFactory::class,
-            Controller\PositionController::class => Controller\ControllerFactory::class,
+            Controller\PositionController::class => Controller\PositionControllerFactory::class,
             Controller\EmployeeTypeController::class => Controller\ControllerFactory::class,
         ]
     ],

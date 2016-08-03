@@ -36,7 +36,6 @@ class EmployeeType{
      * @Annotation\Attributes({"id":"form-remarks","class":"form-remarks form-control"})
      */
     public $remarks;
-
 	
 	/**
      * @Annotation\Type("Zend\Form\Element\Submit")

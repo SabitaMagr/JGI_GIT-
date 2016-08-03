@@ -1,14 +1,16 @@
 
+<a href="<?php echo $this->url('position',["action"=>"add"]) ?>">Add New</a>
+
+
 <table role="grid" class="table table-hover dataTable no-footer" id="employeelist">
 
     <thead>
     <tr role="row">
         <th aria-label="Title: activate to sort column ascending" aria-sort="descending" colspan="1" rowspan="1"
-            aria-controls="basicTable" tabindex="0" class="sorting_desc" style="width: 218px;">Designation Title
-            Code
+            aria-controls="basicTable" tabindex="0" class="sorting_desc" style="width: 218px;">Position Code
         </th>
         <th aria-label="Places: activate to sort column ascending" colspan="1" rowspan="1" aria-controls="basicTable"
-            tabindex="0" class="sorting" style="width: 219px;">Designation Detail
+            tabindex="0" class="sorting" style="width: 219px;">Position Title
         </th>
         <th aria-label="Last Update: activate to sort column ascending" colspan="1" rowspan="1"
             aria-controls="basicTable" tabindex="0" class="sorting" style="width: 155px;">
@@ -18,21 +20,21 @@
     </thead>
     <tbody>
 
-<?php  foreach($designations as $designation):?>
+<?php  foreach($positions as $position):?>
     <tr role="row">
         <td class="v-align-middle sorting_1">
             <p>
-                <?php print $this->escapeHtml($designation->designationTitle) ?>
+                <?php print $this->escapeHtml($position->positionCode) ?>
             </p>
         </td>
         <td class="v-align-middle sorting_1">
             <p>
-                <?php print $this->escapeHtml($designation->designationDetail) ?>
+                <?php print $this->escapeHtml($position->positionName) ?>
             </p>
         </td>
         <td class="v-align-middle sorting_1">
-            <a href="<?= $this->url("designation",["action"=>"edit","id"=>$designation->designationCode]) ?>">Edit</a>
-        
+            <a href="<?= $this->url("position",["action"=>"edit","id"=>$position->positionCode]) ?>">Edit</a>|
+            <a href="<?= $this->url("position",["action"=>"delete","id"=>$position->positionCode]); ?>">Delete</a>
         </td>
     </tr>
 
