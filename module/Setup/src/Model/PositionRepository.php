@@ -13,7 +13,7 @@ class PositionRepository implements PositionRepositoryInterface{
 		$this->tableGateway->insert($position->getArrayCopy());
 	}
 	public function editPosition(Position $position,$id){
-		$this->tableGateway->update($postion->getArrayCopy(),["positionCode"=>$id]);
+		$this->tableGateway->update($position->getArrayCopy(),["positionCode"=>$id]);
 	}
 	public function deletePosition($id){
 		$this->tableGateway->delete(["positionCode"=>$id]);

@@ -56,10 +56,33 @@ class PositionController extends AbstractActionController{
 
 
 	public function editAction(){
+		$id = (int)$this->params()->fromRoute("id",0);
+		if($id===0){
+			$this->redirect()->toRoute('position');
+		}
+		$position = new Position();
+		$builder = new AnnotationBuilder();
+		$form = $builder->createForm($position);
+
+		$request = $this->getRequest();
+
+		if(!$request->isPost()){
+			$form->bind($this->repository->fetchById($id));
+			return ['form'=>$form,'id'=>$id];
+		}
+
+		$form->setData($request->getPost());
+		if($form->isValid()){
+			$position->exchangeArray($form->getData());
+			$this->repository->editPosition($position,$id);
+			return $this->redirect()->toRoute('position');
+		}else{
+			return ['form'=>$form,'id'=>$id];
+		}
 
 	}
 	public function deleteAction(){
-
+		
 	}
 }
 	
