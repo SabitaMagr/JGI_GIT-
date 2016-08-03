@@ -36,22 +36,62 @@ class EmployeeTypeController extends AbstractActionController{
 	}
 
 	public function addAction(){
+		
 		$this->initializeForm();
 
-		$request = $this->getRequest();
-		if(!$request->isPost()){
-			return ['form'=>$this->form];
-		}
+        $request = $this->getRequest();
+        if (!$request->isPost()) {
+           return new ViewModel([
+	            'form' => $this->form,
+	            'messages' => $this->flashmessenger()->getMessages()
+        	]);
+        }
+        $this->form->setData($request->getPost());
 
-		
+        if ($this->form->isValid()) {
+
+            $this->employeeType->exchangeArray($this->form->getData());
+            $this->repository->add($this->employeeType);
+            return $this->redirect()->toRoute("employeeType");
+        } else {
+            return new ViewModel([
+	            'form' => $this->form,
+	            'messages' => $this->flashmessenger()->getMessages()
+        	]);
+        }   
 	}
 
 	
 	public function editAction(){
 
+		$id=(int) $this->params()->fromRoute("id");
+		if($id===0){
+			return $this->redirect()->toRoute();
+		}
+        $this->initializeForm();
+
+        $request=$this->getRequest();
+
+        if(!$request->isPost()){
+            $this->form->bind($this->repository->fetchById($id));
+            return ['form'=>$this->form,'id'=>$id];
+        }
+
+        $this->form->setData($request->getPost());
+
+        if ($this->form->isValid()) {
+            $this->employeeType->exchangeArray($this->form->getData());
+            $this->repository->edit($this->employeeType,$id);
+           return $this->redirect()->toRoute("employeeType");
+        } else {
+            return ['form'=>$this->form,'id'=>$id];
+
+        }
 	}
 	public function deleteAction(){
-
+		$id = (int)$this->params()->fromRoute("id");
+		$this->repository->delete($id);
+		return $this->redirect()->toRoute('employeeType');
 	}
 }
 	

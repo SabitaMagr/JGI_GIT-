@@ -1,0 +1,53 @@
+<?php 
+$form->setAttribute('role','form');
+$form->setAttribute('class','employeeType-form');
+
+$employeeTypeCode = $form->get('employeeTypeCode');
+$employeeTypeName = $form->get('employeeTypeName');
+$remarks = $form->get('remarks');
+
+$submit = $form->get('submit');
+
+$form->setAttribute('action',$this->url('employeeType',['action'=>'edit','id'=>$id]));
+$form->prepare();
+
+print $this->form()->openTag($form);
+
+?>
+<div class="row">
+	<div class="col-sm-6">
+		<div class="panel panel-default">
+			<div class="panel-heading panel-title-head">
+				<!--<div class="panel-title"> -->
+					<h4>Position Setup</h4>		
+			</div>
+			<div class="panel-body padding-5" style="margin-top:7px;">	
+				<div class="form-group form-group-default emp-form-group">
+					<?php print $this->formLabel($employeeTypeCode); ?>
+					<?php print $this->formElement($employeeTypeCode); ?>
+					<?php print $this->formElementErrors()->render($employeeTypeCode,['class'=>'help-block']);?>
+				</div>
+				<div class="form-group form-group-default  emp-form-group">
+					<?php print $this->formLabel($employeeTypeName); ?>
+					<?php print $this->formElement($employeeTypeName); ?>
+					<?php print $this->formElementErrors()->render($employeeTypeName,['class'=>'help-block']);?>
+				</div>
+
+				<div class="form-group form-group-default  emp-form-group">
+					<?php print $this->formLabel($remarks); ?>
+					<?php print $this->formElement($remarks); ?>
+					<?php print $this->formElementErrors()->render($remarks,['class'=>'help-block']);?>
+				</div>
+				
+			</div>
+			<div class="panel-footer">
+				<?php  print $this->formSubmit($submit); ?>		
+			</div>
+		</div>
+	</div>
+</div>
+<?php
+
+print $this->form()->closeTag();
+
+?>

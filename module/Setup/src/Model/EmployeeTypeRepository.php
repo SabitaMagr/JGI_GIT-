@@ -1,15 +1,18 @@
 <?php
+
 namespace Setup\Model;
 
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\TableGateway\TableGateway;
 
-class EmployeeTypeRepository implements RepositoryInterface{
-	private $tableGateway;
+class EmployeeTypeRepository implements RepositoryInterface
+{
+    private $tableGateway;
+    public function __construct(AdapterInterface $adapter)
+    {
+        $this->tableGateway=new TableGateway('employeeType',$adapter);
 
-	public function __construct(AdapterInterface $adapter){
-		$this->tableGateway = new TableGateway('employeeType',$adapter);
-	}
+    }
 
     public function add(ModelInterface $model)
     {
@@ -37,5 +40,4 @@ class EmployeeTypeRepository implements RepositoryInterface{
     	$this->tableGateway->delete(['employeeTypeCode'=>$id]);
 
     }
-
 }
