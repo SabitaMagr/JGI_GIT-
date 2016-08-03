@@ -82,7 +82,9 @@ class PositionController extends AbstractActionController{
 
 	}
 	public function deleteAction(){
-		
+		$id = (int) $this->params()->fromRoute("id",0);
+		$this->repository->deletePosition($id);
+		return $this->redirect()->toRoute('position');
 	}
 }
 	
