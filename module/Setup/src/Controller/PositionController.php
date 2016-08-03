@@ -39,7 +39,14 @@ class PositionController extends AbstractActionController
         $request = $this->getRequest();
 
         if (!$request->isPost()) {
-            return new ViewModel(Helper::addFlashMessagesToArray($this,['form' => $form, 'messages' => $this->flashmessenger()->getMessages()]));
+            return new ViewModel(Helper::addFlashMessagesToArray(
+                $this,
+                [
+                    'form' => $form,
+                    'messages' => $this->flashmessenger()->getMessages()
+                 ]
+                )
+            );
         }
 
         $form->setData($request->getPost());
