@@ -13,8 +13,9 @@ $branchManager = $form->get('branchManager');
 $parentBranch = $form->get('parentBranch');
 
 $submit = $form->get('submit');
+$submit->setAttribute('value',"Edit Branch");
 
-$form->setAttribute('action',$this->url('branch',['action'=>'add']));
+$form->setAttribute('action',$this->url('branch',['action'=>'edit','id'=>$id]));
 $form->prepare();
 
 print $this->form()->openTag($form);

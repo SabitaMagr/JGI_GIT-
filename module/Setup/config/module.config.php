@@ -61,7 +61,7 @@ return [
                     ],
                     'defaults' => [
                         'controller' => Controller\BranchController::class,
-                        'action' => 'add',
+                        'action' => 'index',
                     ]
                 ],
             ],
@@ -136,11 +136,11 @@ return [
         'factories' => [
             Controller\EmployeeController::class => Controller\EmployeeControllerFactory::class,
             Controller\DesignationController::class => Controller\DesignationControllerFactory::class,
-            Controller\CompanyController::class => InvokableFactory::class,
-            Controller\BranchController::class => InvokableFactory::class,
-            Controller\DepartmentController::class => InvokableFactory::class,
-            Controller\PositionController::class => InvokableFactory::class,
-            Controller\EmployeeTypeController::class => InvokableFactory::class,
+            Controller\CompanyController::class => Controller\ControllerFactory::class,
+            Controller\BranchController::class => Controller\ControllerFactory::class,
+            Controller\DepartmentController::class => Controller\ControllerFactory::class,
+            Controller\PositionController::class => Controller\ControllerFactory::class,
+            Controller\EmployeeTypeController::class => Controller\ControllerFactory::class,
         ]
     ],
 

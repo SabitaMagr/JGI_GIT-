@@ -8,7 +8,7 @@ use Zend\Form\Annotation;
  * @Annotation\Name("Employee")
 */
 
-class Company{
+class Company implements ModelInterface{
 	/**
 	 * @Annotion\Type("Zend\Form\Element\Text")
 	 * @Annotation\Required({"required":"true"})
@@ -195,4 +195,11 @@ class Company{
     public $submit;
 
 
+	public function exchangeArray(array $data)
+	{
+	}
+
+	public function getArrayCopy()
+	{
+	}
 }

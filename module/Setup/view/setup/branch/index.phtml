@@ -1,0 +1,41 @@
+
+<table role="grid" class="table table-hover dataTable no-footer" id="employeelist">
+
+    <thead>
+    <tr role="row">
+        <th aria-label="Title: activate to sort column ascending" aria-sort="descending" colspan="1" rowspan="1"
+            aria-controls="basicTable" tabindex="0" class="sorting_desc" style="width: 218px;">Designation Title
+            Code
+        </th>
+        <th aria-label="Places: activate to sort column ascending" colspan="1" rowspan="1" aria-controls="basicTable"
+            tabindex="0" class="sorting" style="width: 219px;">Designation Detail
+        </th>
+        <th aria-label="Last Update: activate to sort column ascending" colspan="1" rowspan="1"
+            aria-controls="basicTable" tabindex="0" class="sorting" style="width: 155px;">
+            Action
+        </th>
+    </tr>
+    </thead>r
+    <tbody>
+
+    <?php  foreach($branches as $branch):?>
+        <tr role="row">
+            <td class="v-align-middle sorting_1">
+                <p>
+                    <?php print $this->escapeHtml($branch->branchName) ?>
+                </p>
+            </td>
+            <td class="v-align-middle sorting_1">
+                <p>
+                    <?php print $this->escapeHtml($branch->location) ?>
+                </p>
+            </td>
+            <td class="v-align-middle sorting_1">
+                <a href="<?= $this->url("designation",["action"=>"edit","id"=>$branch->branchCode]) ?>">Edit</a>
+            </td>
+        </tr>
+
+    <?php endforeach;?>
+
+    </tbody>
+</table>

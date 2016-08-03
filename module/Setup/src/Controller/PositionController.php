@@ -2,12 +2,21 @@
 
 namespace Setup\Controller;
 
+use Zend\Db\Adapter\AdapterInterface;
 use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\View\Model\ViewModel;
 use Zend\Mvc\Controller\AbstractActionController;
 use Setup\Model\Position;
 
 class PositionController extends AbstractActionController{
+	private $adapter;
+
+	function __construct(AdapterInterface $adapter)
+	{
+		$this->adapter=$adapter;
+	}
+
+
 	protected $form;
 
 	public function getForm(){
