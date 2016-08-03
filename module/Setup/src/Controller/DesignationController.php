@@ -18,11 +18,21 @@ class DesignationController extends AbstractActionController
         $this->repository = $repository;
     }
 
+    public function addFlashMessagesToArray($return)
+    {
+        $flashMessenger = $this->flashMessenger();
+        if ($flashMessenger->hasMessages()) {
+            $return['messages'] = $flashMessenger->getMessages();
+        }
+        return $return;
+    }
 
     public function indexAction()
     {
         $designations = $this->repository->fetchAll();
-        return new ViewModel(["designations" => $designations]);
+
+        $return = ["designations" => $designations];
+        return new ViewModel($this->addFlashMessagesToArray($return));
     }
 
     public function editAction()
@@ -41,16 +51,16 @@ class DesignationController extends AbstractActionController
 
         if (!$request->isPost()) {
             $designationForm->bind($this->repository->fetchById($id));
-            return ["form"=>$designationForm,"id"=>$id];
+            return $this->addFlashMessagesToArray(["form" => $designationForm, "id" => $id]);
         }
 
         $designationForm->setData($request->getPost());
-        if($designationForm->isValid()){
+        if ($designationForm->isValid()) {
             $designation->exchangeArray($designationForm->getData());
-            $this->repository->editDesignation($designation,$id);
-            $this->redirect()->toRoute("designation",["action"=>"edit"]);
-        }else{
-            $this->redirect()->toRoute("designation",["action"=>"edit"]);
+            $this->repository->editDesignation($designation, $id);
+            $this->redirect()->toRoute("designation", ["action" => "edit"]);
+        } else {
+            $this->redirect()->toRoute("designation", ["action" => "edit"]);
 
         }
 
@@ -65,7 +75,7 @@ class DesignationController extends AbstractActionController
 
         $request = $this->getRequest();
         if (!$request->isPost()) {
-            return ['form' => $designationForm];
+            return $this->addFlashMessagesToArray(['form' => $designationForm]);
         }
 
         $designationForm->setData($request->getPost());
@@ -73,8 +83,10 @@ class DesignationController extends AbstractActionController
         if ($designationForm->isValid()) {
             $designation->exchangeArray($designationForm->getData());
             $this->repository->addDesignation($designation);
+            $this->flashmessenger()->addMessage("Designation Successfully added!");
             $this->redirect()->toRoute("designation");
         } else {
+            $this->flashmessenger()->addMessage("Error while adding!");
             $this->redirect()->toRoute("designation", ["action" => "add"]);
 
         }

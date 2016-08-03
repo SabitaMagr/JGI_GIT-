@@ -31,7 +31,7 @@ return [
                     'route' => '/designation[/:action[/:id]]',
                     'defaults' => [
                         'controller' => Controller\DesignationController::class,
-                        'action' => 'add'
+                        'action' => 'index'
 
                     ]
                 ]
