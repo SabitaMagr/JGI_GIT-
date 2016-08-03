@@ -1,24 +1,41 @@
-
 <table role="grid" class="table table-hover dataTable no-footer" id="employeelist">
 
     <thead>
     <tr role="row">
         <th aria-label="Title: activate to sort column ascending" aria-sort="descending" colspan="1" rowspan="1"
-            aria-controls="basicTable" tabindex="0" class="sorting_desc" style="width: 218px;">Designation Title
-            Code
+            aria-controls="basicTable" tabindex="0" class="sorting_desc" style="width: 218px;">
+            Branch Name
         </th>
         <th aria-label="Places: activate to sort column ascending" colspan="1" rowspan="1" aria-controls="basicTable"
-            tabindex="0" class="sorting" style="width: 219px;">Designation Detail
+            tabindex="0" class="sorting" style="width: 219px;">Location
+        </th>
+        <th aria-label="Places: activate to sort column ascending" colspan="1" rowspan="1" aria-controls="basicTable"
+            tabindex="0" class="sorting" style="width: 219px;">Telephone
+        </th>
+        <th aria-label="Places: activate to sort column ascending" colspan="1" rowspan="1" aria-controls="basicTable"
+            tabindex="0" class="sorting" style="width: 219px;">Fax
+        </th>
+        <th aria-label="Places: activate to sort column ascending" colspan="1" rowspan="1" aria-controls="basicTable"
+            tabindex="0" class="sorting" style="width: 219px;">Email
+        </th>
+        <th aria-label="Places: activate to sort column ascending" colspan="1" rowspan="1" aria-controls="basicTable"
+            tabindex="0" class="sorting" style="width: 219px;">Contact Person
+        </th>
+        <th aria-label="Places: activate to sort column ascending" colspan="1" rowspan="1" aria-controls="basicTable"
+            tabindex="0" class="sorting" style="width: 219px;">Branch Manager
+        </th>
+        <th aria-label="Places: activate to sort column ascending" colspan="1" rowspan="1" aria-controls="basicTable"
+            tabindex="0" class="sorting" style="width: 219px;">Parent Branch
         </th>
         <th aria-label="Last Update: activate to sort column ascending" colspan="1" rowspan="1"
             aria-controls="basicTable" tabindex="0" class="sorting" style="width: 155px;">
             Action
         </th>
     </tr>
-    </thead>r
+    </thead>
     <tbody>
 
-    <?php  foreach($branches as $branch):?>
+    <?php foreach ($branches as $branch): ?>
         <tr role="row">
             <td class="v-align-middle sorting_1">
                 <p>
@@ -31,11 +48,41 @@
                 </p>
             </td>
             <td class="v-align-middle sorting_1">
-                <a href="<?= $this->url("designation",["action"=>"edit","id"=>$branch->branchCode]) ?>">Edit</a>
+                <p>
+                    <?php print $this->escapeHtml($branch->telephone) ?>
+                </p>
+            </td>
+            <td class="v-align-middle sorting_1">
+                <p>
+                    <?php print $this->escapeHtml($branch->fax) ?>
+                </p>
+            </td>
+            <td class="v-align-middle sorting_1">
+                <p>
+                    <?php print $this->escapeHtml($branch->email) ?>
+                </p>
+            </td>
+            <td class="v-align-middle sorting_1">
+                <p>
+                    <?php print $this->escapeHtml($branch->contactPerson) ?>
+                </p>
+            </td>
+            <td class="v-align-middle sorting_1">
+                <p>
+                    <?php print $this->escapeHtml($branch->branchManager) ?>
+                </p>
+            </td>
+            <td class="v-align-middle sorting_1">
+                <p>
+                    <?php print $this->escapeHtml($branch->parentBranch) ?>
+                </p>
+            </td>
+            <td class="v-align-middle sorting_1">
+                <a href="<?= $this->url("branch", ["action" => "edit", "id" => $branch->branchCode]) ?>">Edit</a>
             </td>
         </tr>
 
-    <?php endforeach;?>
+    <?php endforeach; ?>
 
     </tbody>
 </table>

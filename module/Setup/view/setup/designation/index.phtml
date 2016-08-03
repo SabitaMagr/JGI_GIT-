@@ -1,4 +1,3 @@
-
 <table role="grid" class="table table-hover dataTable no-footer" id="employeelist">
 
     <thead>
@@ -32,7 +31,7 @@
         </td>
         <td class="v-align-middle sorting_1">
             <a href="<?= $this->url("designation",["action"=>"edit","id"=>$designation->designationCode]) ?>">Edit</a>
-        
+
         </td>
     </tr>
 
@@ -40,3 +39,12 @@
 
     </tbody>
 </table>
+<?php
+if ($this->messages) {
+print '<ul class="help-block bg-danger" style="background:#f3e250;">';
+    foreach ($this->messages as $message) {
+    print '<li>' . $message . '</li>';
+    }
+    print '</ul>';
+}
+?>
