@@ -1,0 +1,43 @@
+
+<a href="<?php echo $this->url('position',["action"=>"add"]) ?>">Add New</a>
+
+
+<table role="grid" class="table table-hover dataTable no-footer" id="employeelist">
+
+    <thead>
+    <tr role="row">
+        <th aria-label="Title: activate to sort column ascending" aria-sort="descending" colspan="1" rowspan="1"
+            aria-controls="basicTable" tabindex="0" class="sorting_desc" style="width: 218px;">Position Code
+        </th>
+        <th aria-label="Places: activate to sort column ascending" colspan="1" rowspan="1" aria-controls="basicTable"
+            tabindex="0" class="sorting" style="width: 219px;">Position Title
+        </th>
+        <th aria-label="Last Update: activate to sort column ascending" colspan="1" rowspan="1"
+            aria-controls="basicTable" tabindex="0" class="sorting" style="width: 155px;">
+            Action
+        </th>
+    </tr>
+    </thead>
+    <tbody>
+
+<?php  foreach($positions as $position):?>
+    <tr role="row">
+        <td class="v-align-middle sorting_1">
+            <p>
+                <?php print $this->escapeHtml($position->positionCode) ?>
+            </p>
+        </td>
+        <td class="v-align-middle sorting_1">
+            <p>
+                <?php print $this->escapeHtml($position->positionName) ?>
+            </p>
+        </td>
+        <td class="v-align-middle sorting_1">
+            <a href="<?= $this->url("position",["action"=>"edit","id"=>$position->positionCode]) ?>">Edit</a>
+        </td>
+    </tr>
+
+<?php endforeach;?>
+
+    </tbody>
+</table>

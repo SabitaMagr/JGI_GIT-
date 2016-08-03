@@ -23,6 +23,7 @@ class Position{
 	 * @Annotation\Required({"required":"true"})
 	 * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
 	 * @Annotation\Options({"label":"Position Name"})
+	 * @Annotation\Validator({"name":"StringLength", "options":{"min":"5"}})
 	 * @Annotation\Attributes({ "id":"form-positionName", "class":"form-positionName form-control" })
 	 */
 	public $positionName;
@@ -33,5 +34,17 @@ class Position{
      * @Annotation\Attributes({"value":"Submit","class":"btn btn-primary pull-right"})
     */
     public $submit;
+
+    public function exchangeArray(array $data){
+    	$this->positionCode = !empty($data['positionCode']) ? $data['positionCode'] : null;
+    	$this->positionName = !empty($data['positionName']) ? $data['positionName'] : null;
+
+    }
+    public function getArrayCopy(){
+    	return [
+    		'positionCode' => $this->positionCode,
+    		'positionName'=>$this->positionName
+    	];
+    }
 
 }

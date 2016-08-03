@@ -54,9 +54,6 @@ class DesignationController extends AbstractActionController
 
         }
 
-
-
-
     }
 
     public function addAction()

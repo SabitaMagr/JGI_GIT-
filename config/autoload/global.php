@@ -12,10 +12,20 @@
  */
 
 return [
-  'db' => [
-      'driver' => 'Pdo',
-      'dsn'    => sprintf('sqlite:%s/data/schema.db', realpath(getcwd())),
-  ],
+
+     'db' => [
+        'driver' => 'Mysqli',
+        'database' => 'album',
+        'host'=>'localhost',
+        'username' => 'root',
+        'password' => 'root',
+    ],
+
+
+  // 'db' => [
+  //     'driver' => 'Pdo',
+  //     'dsn'    => sprintf('sqlite:%s/data/schema.db', realpath(getcwd())),
+  // ],
 
 //    'db' => [
 //        'driver'         => 'Pdo',

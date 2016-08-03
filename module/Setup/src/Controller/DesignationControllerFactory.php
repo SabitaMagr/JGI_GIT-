@@ -15,6 +15,6 @@ class DesignationControllerFactory implements FactoryInterface
     {
         $table = new TableGateway('designation', $container->get(AdapterInterface::class));
         $designationRepository = new DesignationRepository($table);
-        return new DesignationController( $designationRepository);
+        return new DesignationController($designationRepository);
     }
 }
