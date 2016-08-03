@@ -17,7 +17,7 @@ class EmployeeTypeController extends AbstractActionController{
 
 	function __construct(AdapterInterface $adapter)
 	{
-		//$this->repository = new EmployeeTypeRepository($adapter);
+		$this->repository = new EmployeeTypeRepository($adapter);
 	}
 
 	public function initializeForm(){
@@ -29,8 +29,21 @@ class EmployeeTypeController extends AbstractActionController{
 	}
 
 	public function indexAction(){
-		//$employeeTypes= $this->repository->fetchAll();
-		return new ViewModel();
+		$employeeTypeList= $this->repository->fetchAll();
+		return new ViewModel([
+			'employeeTypeList'=>$employeeTypeList
+			]);
+	}
+
+	public function addAction(){
+		$this->initializeForm();
+
+		$request = $this->getRequest();
+		if(!$request->isPost()){
+			return ['form'=>$this->form];
+		}
+
+		
 	}
 
 	
