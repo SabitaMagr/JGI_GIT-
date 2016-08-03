@@ -75,7 +75,7 @@ class PositionController extends AbstractActionController{
 		if($form->isValid()){
 			$position->exchangeArray($form->getData());
 			$this->repository->editPosition($position,$id);
-			return $this->redirect()->toRoute('position');
+			return $this->redirect()->toRoute('position');			
 		}else{
 			return ['form'=>$form,'id'=>$id];
 		}
