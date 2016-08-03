@@ -7,38 +7,33 @@ use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\View\Model\ViewModel;
 use Zend\Mvc\Controller\AbstractActionController;
 use Setup\Model\EmployeeType;
+use Zend\View\View;
+use Setup\Model\EmployeeTypeRepository;
 
 class EmployeeTypeController extends AbstractActionController{
-	private $adapter;
+	private $form;
+	private $employeeType;
+	private $repository;
 
 	function __construct(AdapterInterface $adapter)
 	{
-		$this->adapter=$adapter;
+		//$this->repository = new EmployeeTypeRepository($adapter);
 	}
 
-
-	protected $form;
-
-	public function getForm(){
-		$employeeType = new EmployeeType();
+	public function initializeForm(){
+		$this->employeeType = new EmployeeType();
 		$builder = new AnnotationBuilder();
 		if (!$this->form) {
-			$this->form = $builder->createForm($employeeType);
+			$this->form = $builder->createForm($this->employeeType);
 		}
-		return $this->form;
 	}
 
 	public function indexAction(){
-
+		//$employeeTypes= $this->repository->fetchAll();
+		return new ViewModel();
 	}
-	public function addAction(){
-		$form = $this->getForm();
 
-        return new ViewModel([
-            'form' => $form,
-            'messages' => $this->flashmessenger()->getMessages()
-        ]);
-	}
+	
 	public function editAction(){
 
 	}

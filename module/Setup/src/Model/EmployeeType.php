@@ -8,7 +8,7 @@ use Zend\Form\Annotation;
 * @Annotation\Name("EmployeeType")
 */
 
-class EmployeeType{
+class EmployeeType implements ModelInterface{
 	/**
 	 * @Annotion\Type("Zend\Form\Element\Text")
 	 * @Annotation\Required({"required":"true"})
@@ -42,5 +42,20 @@ class EmployeeType{
      * @Annotation\Attributes({"value":"Submit","class":"btn btn-primary pull-right"})
     */
     public $submit;
+
+    public function exchangeArray(array $data){
+    	$this->employeeTypeCode = !empty($data['employeeTypeCode']) ? $data['employeeTypeCode'] : null;
+    	$this->employeeTypeName = !empty($data['employeeTypeName']) ? $data['employeeTypeName'] : null;
+    	$this->remarks = !empty($data['remarks']) ? $data['remarks'] : null;
+    }
+
+    public function getArrayCopy(){
+    	return [
+    		'employeeTypeCode' => $employeeTypeCode,
+    		'employeeTypeName' => $employeeTypeName,
+    		'remarks'=>$remarks
+
+    	];
+    }
 
 }
