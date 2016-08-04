@@ -19,6 +19,9 @@ class BranchController extends AbstractActionController
 
     function __construct(AdapterInterface $adapter)
     {
+       print_r($adapter->query('SELECT * FROM `artist` WHERE `id` = ?', [5])) ;
+        die();
+
         $this->repository = new BranchRepository($adapter);
     }
 

@@ -5,8 +5,11 @@ $form->setAttribute('class','department-form');
 $departmentCode = $form->get('departmentCode');
 $departmentName = $form->get('departmentName');
 $hodCode = $form->get('hodCode');
-$parentDepartment = $form->get('parentDepartment');
 
+//* @Annotation\Options({"label":"Parent Department", "value_options":{"A":"ABC","D":"DEF","H":"HJK"}})
+
+$parentDepartment = $form->get('parentDepartment');
+$parentDepartment->setOptions(["label"=>"Parent","value_options"=>[1=>"One"]]);
 
 $submit = $form->get('submit');
 
@@ -49,7 +52,7 @@ print $this->form()->openTag($form);
 			</div>
 			<div class="panel-footer">
 				<?php  print $this->formSubmit($submit); ?>		
-			</div>
+			</div>r
 		</div>
 	</div>
 </div>

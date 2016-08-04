@@ -41,10 +41,10 @@ class Department implements ModelInterface
      * @Annotation\Type("Zend\Form\Element\Select")
      * @Annotation\Required({"required":"false"})
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
-     * @Annotation\Options({"label":"Parent Department", "value_options":{"A":"ABC","D":"DEF","H":"HJK"}})
      * @Annotation\Attributes({ "id":"form-parentDepartment","data-init-plugin":"cs-select","class":"cs-select cs-skin-slide form-parentDepartment form-control"})
      */
 	public $parentDepartment;
+
 
 	/**
      * @Annotation\Type("Zend\Form\Element\Submit")

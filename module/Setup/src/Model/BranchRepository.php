@@ -7,6 +7,7 @@ use Zend\Db\TableGateway\TableGateway;
 class BranchRepository implements RepositoryInterface
 {
     private $tableGateway;
+
     public function __construct(AdapterInterface $adapter)
     {
         $this->tableGateway=new TableGateway('branch',$adapter);
@@ -34,8 +35,8 @@ class BranchRepository implements RepositoryInterface
         return $rowset->current();
     }
 
-    public function delete(ModelInterface $model)
+    public function delete($id)
     {
-
+        // TODO: Implement delete() method.
     }
 }
