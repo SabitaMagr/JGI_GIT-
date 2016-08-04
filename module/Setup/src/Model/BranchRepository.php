@@ -34,8 +34,8 @@ class BranchRepository implements RepositoryInterface
         return $rowset->current();
     }
 
-    public function delete(ModelInterface $model)
+    public function delete($id)
     {
-
+        $this->tableGateway->delete(['branchCode'=>$id]);
     }
 }

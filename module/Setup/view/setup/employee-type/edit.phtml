@@ -9,8 +9,16 @@ $remarks = $form->get('remarks');
 $submit = $form->get('submit');
 
 $form->setAttribute('action',$this->url('employeeType',['action'=>'edit','id'=>$id]));
-$form->prepare();
 
+if ($this->messages) {
+    print '<ul class="help-block bg-danger" style="background:#f3e250;">';
+    foreach ($this->messages as $message) {
+        print '<li>' . $message . '</li>';
+    }
+    print '</ul>';
+}
+
+$form->prepare();
 print $this->form()->openTag($form);
 
 ?>

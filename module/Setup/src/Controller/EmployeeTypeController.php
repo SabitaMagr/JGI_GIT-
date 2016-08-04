@@ -2,6 +2,7 @@
 
 namespace Setup\Controller;
 
+use Application\Helper\Helper;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\View\Model\ViewModel;
@@ -30,9 +31,8 @@ class EmployeeTypeController extends AbstractActionController{
 
 	public function indexAction(){
 		$employeeTypeList= $this->repository->fetchAll();
-		return new ViewModel([
-			'employeeTypeList'=>$employeeTypeList
-			]);
+		$request = $this->getRequest();
+		return Helper::addFlashMessagesToArray($this,['employeeTypeList' => $employeeTypeList]);
 	}
 
 	public function addAction(){
@@ -41,7 +41,7 @@ class EmployeeTypeController extends AbstractActionController{
 
         $request = $this->getRequest();
         if (!$request->isPost()) {
-           return new ViewModel([
+        	return Helper::addFlashMessagesToArray($this,[
 	            'form' => $this->form,
 	            'messages' => $this->flashmessenger()->getMessages()
         	]);
@@ -52,9 +52,10 @@ class EmployeeTypeController extends AbstractActionController{
 
             $this->employeeType->exchangeArray($this->form->getData());
             $this->repository->add($this->employeeType);
+            $this->flashmessenger()->addMessage("Employee Type Successfully Added!!!");
             return $this->redirect()->toRoute("employeeType");
         } else {
-            return new ViewModel([
+            return Helper::addFlashMessagesToArray($this,[
 	            'form' => $this->form,
 	            'messages' => $this->flashmessenger()->getMessages()
         	]);
@@ -74,7 +75,7 @@ class EmployeeTypeController extends AbstractActionController{
 
         if(!$request->isPost()){
             $this->form->bind($this->repository->fetchById($id));
-            return ['form'=>$this->form,'id'=>$id];
+            return Helper::addFlashMessagesToArray($this,['form'=>$this->form,'id'=>$id]);
         }
 
         $this->form->setData($request->getPost());
@@ -82,15 +83,17 @@ class EmployeeTypeController extends AbstractActionController{
         if ($this->form->isValid()) {
             $this->employeeType->exchangeArray($this->form->getData());
             $this->repository->edit($this->employeeType,$id);
+            $this->flashmessenger()->addMessage("Employee Type Successfully Updated!!!");
            return $this->redirect()->toRoute("employeeType");
         } else {
-            return ['form'=>$this->form,'id'=>$id];
+            return Helper::addFlashMessagesToArray($this,['form'=>$this->form,'id'=>$id]);
 
         }
 	}
 	public function deleteAction(){
 		$id = (int)$this->params()->fromRoute("id");
 		$this->repository->delete($id);
+		$this->flashmessenger()->addMessage("Employee Type Successfully Deleted!!!");
 		return $this->redirect()->toRoute('employeeType');
 	}
 }

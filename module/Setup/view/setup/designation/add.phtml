@@ -13,9 +13,7 @@ $submit->setAttribute("class","btn");
 $submit->setAttribute("value","Add Designation");
 
 $form->setAttribute('action', $this->url('designation', ['action' => 'add']));
-$form->prepare();
 
-print $this->form()->openTag($form);
 if ($this->messages) {
     print '<ul class="help-block bg-danger" style="background:#f3e250;">';
     foreach ($this->messages as $message) {
@@ -23,6 +21,9 @@ if ($this->messages) {
     }
     print '</ul>';
 }
+
+$form->prepare();
+print $this->form()->openTag($form);
 ?>
 
 <div class="form-group">

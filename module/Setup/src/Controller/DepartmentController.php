@@ -60,7 +60,7 @@ class DepartmentController extends AbstractActionController{
             $this->department->exchangeArray($this->form->getData());
             $this->repository->add($this->department);
             
-            $this->flashmessenger()->addMessage("Department Successfully added!");
+            $this->flashmessenger()->addMessage("Department Successfully added!!!");
             return $this->redirect()->toRoute("department");
         } else {
             return new ViewModel(Helper::addFlashMessagesToArray(
@@ -86,7 +86,9 @@ class DepartmentController extends AbstractActionController{
 
         if(!$request->isPost()){
             $this->form->bind($this->repository->fetchById($id));
-            return ['form'=>$this->form,'id'=>$id];
+            return Helper::addFlashMessagesToArray(
+                $this,['form'=>$this->form,'id'=>$id]
+                );
         }
 
         $this->form->setData($request->getPost());
@@ -94,15 +96,19 @@ class DepartmentController extends AbstractActionController{
         if ($this->form->isValid()) {
             $this->department->exchangeArray($this->form->getData());
             $this->repository->edit($this->department,$id);
+            $this->flashmessenger()->addMessage("Department Successfully Updated!!!");
            return $this->redirect()->toRoute("department");
         } else {
-            return ['form'=>$this->form,'id'=>$id];
+            return Helper::addFlashMessagesToArray(
+                $this,['form'=>$this->form,'id'=>$id]
+             );
 
         }
 	}
 	public function deleteAction(){
 		$id = (int)$this->params()->fromRoute("id");
 		$this->repository->delete($id);
+        $this->flashmessenger()->addMessage("Department Successfully Deleted!!!");
 		return $this->redirect()->toRoute('department');
 	}
 }
