@@ -1,0 +1,52 @@
+<?php
+if ($this->messages) {
+    print '<ul class="help-block bg-danger" style="background:#f3e250;">';
+    foreach ($this->messages as $message) {
+        print '<li>' . $message . '</li>';
+    }
+    print '</ul>';
+}
+?>
+<a href="<?php echo $this->url('company',["action"=>"add"]) ?>">Add New</a>
+
+
+<table role="grid" class="table table-hover dataTable no-footer" id="employeelist">
+
+    <thead>
+    <tr role="row">
+        <th aria-label="Title: activate to sort column ascending" aria-sort="descending" colspan="1" rowspan="1"
+            aria-controls="basicTable" tabindex="0" class="sorting_desc" style="width: 218px;">Company Code
+        </th>
+        <th aria-label="Places: activate to sort column ascending" colspan="1" rowspan="1" aria-controls="basicTable"
+            tabindex="0" class="sorting" style="width: 219px;">Company Name
+        </th>
+        <th aria-label="Last Update: activate to sort column ascending" colspan="1" rowspan="1"
+            aria-controls="basicTable" tabindex="0" class="sorting" style="width: 155px;">
+            Action
+        </th>
+    </tr>
+    </thead>
+    <tbody>
+
+<?php  foreach($companyList as $company):?>
+    <tr role="row">
+        <td class="v-align-middle sorting_1">
+            <p>
+                <?php print $this->escapeHtml($company->companyCode) ?>
+            </p>
+        </td>
+        <td class="v-align-middle sorting_1">
+            <p>
+                <?php print $this->escapeHtml($company->companyName) ?>
+            </p>
+        </td>
+        <td class="v-align-middle sorting_1">
+            <a href="<?= $this->url("company",["action"=>"edit","id"=>$company->companyCode]); ?>">Edit</a>|
+            <a href="<?= $this->url("company",["action"=>"delete","id"=>$company->companyCode]); ?>">Delete</a>
+        </td>
+    </tr>
+
+<?php endforeach;?>
+
+    </tbody>
+</table>

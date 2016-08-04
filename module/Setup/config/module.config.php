@@ -47,7 +47,7 @@ return [
                     ],
                     'defaults' => [
                         'controller' => Controller\CompanyController::class,
-                        'action' => 'add',
+                        'action' => 'index',
                     ],
                 ],
             ],

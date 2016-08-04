@@ -197,9 +197,50 @@ class Company implements ModelInterface{
 
 	public function exchangeArray(array $data)
 	{
+		$this->companyCode = !empty($data['companyCode']) ? $data['companyCode'] : Null;
+		$this->companyName = !empty($data['companyName']) ? $data['companyName'] : Null;
+		$this->inNepali = !empty($data['inNepali']) ? $data['inNepali'] : Null;
+		$this->addressFirst  = !empty($data['addressFirst']) ? $data['addressFirst'] : Null;
+		$this->addressSecond = !empty($data['addressSecond']) ? $data['addressSecond'] : Null;
+		$this->telephone = !empty($data['telephone']) ? $data['telephone'] : Null;
+		$this->email = !empty($data['email']) ? $data['email'] : Null;
+		$this->fax = !empty($data['fax']) ? $data['fax'] : Null;
+		$this->web = !empty($data['web']) ? $data['web'] : Null;
+		$this->registrationNo = !empty($data['registrationNo']) ? $data['registrationNo'] : Null;
+		$this->vatNo = !empty($data['vatNo']) ? $data['vatNo'] : Null;
+		$this->smtpHost = !empty($data['smtpHost']) ? $data['smtpHost'] : Null;
+		$this->serverPath = !empty($data['serverPath']) ? $data['serverPath'] : Null;
+		$this->fiscalStart = !empty($data['fiscalStart']) ? $data['fiscalStart'] : Null;
+		$this->fiscalEnd = !empty($data['fiscalEnd']) ? $data['fiscalEnd'] : Null;
+		$this->startTime = !empty($data['startTime']) ? $data['startTime'] : Null;
+		$this->endTime = !empty($data['endTime']) ? $data['endTime'] : Null;
+		$this->graceStartTime = !empty($data['graceStartTime']) ? $data['graceStartTime'] : Null;
+		$this->graceEndTime = !empty($data['graceEndTime']) ? $data['graceEndTime'] : Null;
+
 	}
 
 	public function getArrayCopy()
 	{
+		return [
+			'companyCode'=>$this->companyCode,
+			'companyName'=>$this->companyName,
+			'inNepali'=>$this->inNepali,
+			'addressFirst'=>$this->addressFirst,
+			'addressSecond'=>$this->addressSecond,
+			'telephone'=>$this->telephone,
+			'email'=>$this->email,
+			'fax'=>$this->fax,
+			'web'=>$this->web,
+			'registrationNo'=>$this->registrationNo,
+			'vatNo'=>$this->vatNo,
+			'smtpHost'=>$this->smtpHost,
+			'serverPath'=>$this->serverPath,
+			'fiscalStart'=>$this->fiscalStart,
+			'fiscalEnd'=>$this->fiscalEnd,
+			'startTime'=>$this->startTime,
+			'endTime'=>$this->endTime,
+			'graceStartTime'=>$this->graceStartTime,
+			'graceEndTime'=>$this->graceEndTime,
+		];
 	}
 }
