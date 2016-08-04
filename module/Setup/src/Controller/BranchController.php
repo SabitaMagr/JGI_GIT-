@@ -4,7 +4,9 @@ namespace Setup\Controller;
 
 use Application\Helper\Helper;
 use Setup\Model\BranchRepository;
+use Zend\Db\Adapter\Adapter;
 use Zend\Db\Adapter\AdapterInterface;
+use Zend\Db\Sql\Sql;
 use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
@@ -20,9 +22,41 @@ class BranchController extends AbstractActionController
 
     function __construct(AdapterInterface $adapter)
     {
-       print_r($adapter->query('SELECT * FROM `artist` WHERE `id` = ?', [5])) ;
-        die();
+//       print_r($adapter->query('SELECT * FROM `branch` WHERE `branchCode` = ?', [5])) ;
+//        $sql = $adapter->query('SELECT * FROM `branch`',
+//            Adapter::QUERY_MODE_EXECUTE);
+//        print_r($sql->current());
+//        die();
 
+//        $statement = $adapter->query(
+//            'SELECT * FROM branch where branchCode = ?',[1]
+//        );
+
+//            $statement= $adapter->createStatement('SELECT * FROM branch where branchCode = ?',[2]);
+//        $results=$statement->execute();
+//
+//
+//        $row = $results->current();
+//        $name = $row['branchName'];
+//
+//        echo $name;
+//        die();
+
+//        $sql = new Sql($adapter);
+//
+//        $select = $sql->select();
+//
+//        $select
+//            ->from(['b' => 'branch'])->join(
+//                ['d' => 'designation'],
+//                'b.branchcode = d.designationCode');
+//        $statement = $sql->prepareStatementForSqlObject($select);
+//        $result = $statement->execute();
+//
+//        forEach ($result as $r) {
+//            print_r($r);
+//        }
+//        die();
         $this->repository = new BranchRepository($adapter);
     }
 
@@ -38,8 +72,8 @@ class BranchController extends AbstractActionController
 
     public function indexAction()
     {
-        $branches=$this->repository->fetchAll();
-        return Helper::addFlashMessagesToArray($this,['branches'=>$branches]);
+        $branches = $this->repository->fetchAll();
+        return Helper::addFlashMessagesToArray($this, ['branches' => $branches]);
     }
 
     public function addAction()
@@ -48,7 +82,7 @@ class BranchController extends AbstractActionController
 
         $request = $this->getRequest();
         if (!$request->isPost()) {
-            return Helper::addFlashMessagesToArray($this,['form'=>$this->form]);
+            return Helper::addFlashMessagesToArray($this, ['form' => $this->form]);
         }
 
         $this->form->setData($request->getPost());
@@ -59,21 +93,21 @@ class BranchController extends AbstractActionController
             $this->flashmessenger()->addMessage("Branch Successfully Added!!!");
             return $this->redirect()->toRoute("branch");
         } else {
-             return Helper::addFlashMessagesToArray($this,['form'=>$this->form]);
+            return Helper::addFlashMessagesToArray($this, ['form' => $this->form]);
 
         }
     }
 
     public function editAction()
     {
-        $id=(int) $this->params()->fromRoute("id");
+        $id = (int)$this->params()->fromRoute("id");
         $this->initializeForm();
 
-        $request=$this->getRequest();
+        $request = $this->getRequest();
 
-        if(!$request->isPost()){
+        if (!$request->isPost()) {
             $this->form->bind($this->repository->fetchById($id));
-            return Helper::addFlashMessagesToArray($this,['form'=>$this->form,'id'=>$id]);
+            return Helper::addFlashMessagesToArray($this, ['form' => $this->form, 'id' => $id]);
         }
 
 
@@ -81,11 +115,11 @@ class BranchController extends AbstractActionController
 
         if ($this->form->isValid()) {
             $this->branch->exchangeArray($this->form->getData());
-            $this->repository->edit($this->branch,$id);
+            $this->repository->edit($this->branch, $id);
             $this->flashmessenger()->addMessage("Branch Successfully Updated!!!");
             return $this->redirect()->toRoute("branch");
         } else {
-            return Helper::addFlashMessagesToArray($this,['form'=>$this->form,'id'=>$id]);
+            return Helper::addFlashMessagesToArray($this, ['form' => $this->form, 'id' => $id]);
 
         }
     }

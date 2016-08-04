@@ -2,27 +2,15 @@
 
 namespace Setup\Model;
 
+use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\TableGateway\TableGateway;
 
-class DesignationRepository implements DesignationRepositoryInterface
+class DesignationRepository implements RepositoryInterface
 {
     private $tableGateway;
-    public function __construct(TableGateway $designationTableGateway){
-        $this->tableGateway=$designationTableGateway;
-    }
-
-    public function addDesignation(Designation $designation)
+    public function __construct(AdapterInterface $adapter)
     {
-        $this->tableGateway->insert($designation->getArrayCopy());
-    }
-
-    public function editDesignation(Designation $designation,$id)
-    {
-        $this->tableGateway->update($designation->getArrayCopy(),["designationCode"=>$id]);
-    }
-
-    public function deleteDesignation(Designation $designation)
-    {
+        $this->tableGateway=new TableGateway('designation',$adapter);
     }
 
     public function fetchAll()
@@ -35,4 +23,19 @@ class DesignationRepository implements DesignationRepositoryInterface
        $rowset= $this->tableGateway->select(["designationCode"=>$id]);
         return $rowset->current();
     }
+
+    public function add(ModelInterface $model)
+    {
+        $this->tableGateway->insert($model->getArrayCopy());
+    }
+
+    public function edit(ModelInterface $model, $id)
+    {
+        $this->tableGateway->update($model->getArrayCopy(),["designationCode"=>$id]);
+    }
+
+    public function delete($id)
+    {
+    }
+
 }

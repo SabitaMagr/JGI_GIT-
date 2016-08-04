@@ -29,6 +29,15 @@ class ControllerFactory implements FactoryInterface
             case EmployeeTypeController::class:
                 $controller = new EmployeeTypeController($adapter);
                 break;
+            case DesignationController::class:
+                $controller = new DesignationController($adapter);
+                break;
+            case EmployeeController::class:
+                $controller = new EmployeeController($adapter);
+                break;
+            case PositionController::class:
+                $controller = new PositionController($adapter);
+                break;
         }
         return $controller;
     }

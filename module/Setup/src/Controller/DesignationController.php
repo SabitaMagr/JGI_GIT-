@@ -4,18 +4,18 @@ namespace Setup\Controller;
 
 use Application\Helper\Helper;
 use Setup\Model\Designation;
-use Setup\Model\DesignationRepositoryInterface;
+use Setup\Model\DesignationRepository;
+use Zend\Db\Adapter\AdapterInterface;
 use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\Mvc\Controller\AbstractActionController;
-use Zend\View\Model\ViewModel;
 
 class DesignationController extends AbstractActionController
 {
     private $repository;
 
-    function __construct(DesignationRepositoryInterface $repository)
+    function __construct(AdapterInterface $adapter)
     {
-        $this->repository = $repository;
+        $this->repository = new DesignationRepository($adapter);
     }
 
 
@@ -47,7 +47,7 @@ class DesignationController extends AbstractActionController
         $designationForm->setData($request->getPost());
         if ($designationForm->isValid()) {
             $designation->exchangeArray($designationForm->getData());
-            $this->repository->editDesignation($designation, $id);
+            $this->repository->edit($designation, $id);
             $this->flashmessenger()->addMessage("Deisgnation Successfully Updated!!!");
            return $this->redirect()->toRoute("designation");
         } else {
@@ -73,7 +73,7 @@ class DesignationController extends AbstractActionController
 
         if ($designationForm->isValid()) {
             $designation->exchangeArray($designationForm->getData());
-            $this->repository->addDesignation($designation);
+            $this->repository->add($designation);
             $this->flashmessenger()->addMessage("Deisgnation Successfully Added!!!");
             return $this->redirect()->toRoute("designation");
         } else {

@@ -3,26 +3,16 @@
 
 namespace Setup\Model;
 
+use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\TableGateway\TableGateway;
 
-class  EmployeeRepository implements EmployeeRepositoryInterface
+class  EmployeeRepository implements RepositoryInterface
 {
     private $gateway;
 
-    public function __construct(TableGateway $gateway)
+    public function __construct(AdapterInterface $adapter)
     {
-        $this->gateway = $gateway;
-    }
-
-
-    public function addEmployee(Employee $employee)
-    {
-        $this->gateway->insert($employee->getArrayCopy());
-    }
-
-    public function editEmployee(Employee $employee)
-    {
-        $this->gateway->update($employee->getArrayCopy(), ['employeeCode' => $employee->employeeCode]);
+        $this->gateway = new TableGateway('employee', $adapter);
     }
 
     public function fetchAll()
@@ -36,7 +26,20 @@ class  EmployeeRepository implements EmployeeRepositoryInterface
         return $rowset->current();
     }
 
-    public function deleteEmployee(Employee $employee)
+
+
+    public function add(ModelInterface $model)
+    {
+        $this->gateway->insert($model->getArrayCopy());
+
+    }
+
+    public function edit(ModelInterface $model, $id)
+    {
+        $this->gateway->update($model->getArrayCopy(), ['employeeCode' => $id]);
+    }
+
+    public function delete($id)
     {
 
     }

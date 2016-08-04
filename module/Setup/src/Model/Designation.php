@@ -3,6 +3,7 @@
 namespace Setup\Model;
 
 use Zend\Form\Annotation;
+use Zend\View\Model\ModelInterface;
 
 //use Zend\Form\Element\Textarea
 
@@ -10,7 +11,7 @@ use Zend\Form\Annotation;
  * @Annotation\Hydrator("Zend\Hydrator\ObjectProperty")
  * @Annotation\Name("Designation")
  */
-class Designation
+class Designation implements \Setup\Model\ModelInterface
 {
     public $designationCode;
 

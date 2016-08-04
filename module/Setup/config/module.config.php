@@ -65,81 +65,61 @@ return [
                     ]
                 ],
             ],
-            'department'=>[
-                'type'=>segment::class,
-                'options'=>[
-                    'route'=>'/department[/:action[/:id]]',
-                    'constants'=>[
-                       'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
-                       'id'     => '[0-9]+',
+            'department' => [
+                'type' => segment::class,
+                'options' => [
+                    'route' => '/department[/:action[/:id]]',
+                    'constants' => [
+                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'id' => '[0-9]+',
                     ],
-                    'defaults'=>[
-                        'controller'=>Controller\DepartmentController::class,
-                        'action'=>'index',
+                    'defaults' => [
+                        'controller' => Controller\DepartmentController::class,
+                        'action' => 'index',
                     ]
                 ],
             ],
-            'position'=>[
-                'type'=>segment::class,
-                'options'=>[
-                    'route'=>'/position[/:action[/:id]]',
-                    'constants'=>[
-                       'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
-                       'id'     => '[0-9]+',
+            'position' => [
+                'type' => segment::class,
+                'options' => [
+                    'route' => '/position[/:action[/:id]]',
+                    'constants' => [
+                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'id' => '[0-9]+',
                     ],
-                    'defaults'=>[
-                        'controller'=>Controller\PositionController::class,
-                        'action'=>'index',
+                    'defaults' => [
+                        'controller' => Controller\PositionController::class,
+                        'action' => 'index',
                     ]
                 ],
             ],
 
-            'employeeType'=>[
-                'type'=>segment::class,
-                'options'=>[
-                    'route'=>'/employeeType[/:action[/:id]]',
-                    'constants'=>[
-                       'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
-                       'id'     => '[0-9]+',
+            'employeeType' => [
+                'type' => segment::class,
+                'options' => [
+                    'route' => '/employeeType[/:action[/:id]]',
+                    'constants' => [
+                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'id' => '[0-9]+',
                     ],
-                    'defaults'=>[
-                        'controller'=>Controller\EmployeeTypeController::class,
-                        'action'=>'index',
+                    'defaults' => [
+                        'controller' => Controller\EmployeeTypeController::class,
+                        'action' => 'index',
                     ]
                 ],
             ],
-        
 
-//            'edit'=>[
-//                'type'=>Segment::class,
-//                'options'=>[
-//                    'route'=>'/setup/:id',
-//                    'defaults'=>[
-//                        'controller'=>Controller\EmployeeController::class,
-//                        'action'=>'edit'
-//                    ]
-//                ]
-//            ],
-//            'list'=>[
-//                'type'=>Segment::class,
-//                'options'=>[
-//                    'route'=>'/setup[/:action]',
-//                    'defaults'=>[
-//                        'controller'=>Controller\EmployeeController::class,
-//                        'action'=>'list'
-//                    ]
-//                ]
-//            ]
+
         ]
     ],
     'controllers' => [
         'factories' => [
-            Controller\EmployeeController::class => Controller\EmployeeControllerFactory::class,
-            Controller\DesignationController::class => Controller\DesignationControllerFactory::class,
+            Controller\EmployeeController::class => Controller\ControllerFactory::class,
+            Controller\DesignationController::class => Controller\ControllerFactory::class,
             Controller\CompanyController::class => Controller\ControllerFactory::class,
             Controller\BranchController::class => Controller\ControllerFactory::class,
             Controller\DepartmentController::class => Controller\ControllerFactory::class,
-            Controller\PositionController::class => Controller\PositionControllerFactory::class,
+            Controller\PositionController::class => Controller\ControllerFactory::class,
             Controller\EmployeeTypeController::class => Controller\ControllerFactory::class,
         ]
     ],

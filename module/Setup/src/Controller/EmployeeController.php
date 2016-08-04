@@ -9,6 +9,7 @@
 namespace Setup\Controller;
 
 
+use Setup\Model\EmployeeRepository;
 use Setup\Model\EmployeeRepositoryInterface;
 use Zend\Db\Adapter\Adapter;
 use Zend\Db\Adapter\AdapterInterface;
@@ -25,13 +26,11 @@ use Setup\Model\Employee;
 class EmployeeController extends AbstractActionController
 {
     protected $form;
-    private $db;
     private $employeeRepository;
 
-    public function __construct(AdapterInterface $db, EmployeeRepositoryInterface $employeeRepository)
+    public function __construct(AdapterInterface $db)
     {
-        $this->db = $db;
-        $this->employeeRepository = $employeeRepository;
+        $this->employeeRepository = new EmployeeRepository($db);
 
     }
 
@@ -57,10 +56,7 @@ class EmployeeController extends AbstractActionController
         if ($this->form->isValid()) {
             $employee->exchangeArray($this->form->getData());
 
-//            $table = new TableGateway('employee', $this->db);
-//            $table->insert($employee->getArrayCopy());
-
-            $this->employeeRepository->addEmployee($employee);
+            $this->employeeRepository->add($employee);
 
             return $this->redirect()->toRoute("setup");
 
@@ -88,17 +84,11 @@ class EmployeeController extends AbstractActionController
         }
 
 
-        $employeeTable = new TableGateway('employee', $this->db);
-
-
         $request = $this->getRequest();
         $viewData = [];
 
         if (!$request->isPost()) {
-            $rowset = $employeeTable->select(['employeeCode' => $id]);
-            $artistRow = $rowset->current();
-
-            $this->form->bind($artistRow);
+            $this->form->bind($this->employeeRepository->fetchById($id));
 
             $viewData = ['id' => $id, 'form' => $this->form];
             return $viewData;
@@ -111,7 +101,7 @@ class EmployeeController extends AbstractActionController
         }
 
         $employee->exchangeArray($this->form->getData());
-        $employeeTable->update($employee->getArrayCopy(), ['employeeCode' => $id]);
+        $this->employeeRepository->edit($employee, $id);
 
 
         return $this->redirect()->toRoute("setup");
@@ -120,13 +110,14 @@ class EmployeeController extends AbstractActionController
 
     public function indexAction()
     {
-        $employeeTable = new TableGateway('employee', $this->db);
+//        $employeeTable = new TableGateway('employee', $this->db);
+//
+//
+//        $rowset = $employeeTable->select(function (Select $select) {
+//            $select->order('employeeCode desc');
+//        });
 
-
-        $rowset = $employeeTable->select(function (Select $select) {
-            $select->order('employeeCode desc');
-        });
-
+        $rowset=$this->employeeRepository->fetchAll();
         return new ViewModel(['list' => $rowset]);
 
 

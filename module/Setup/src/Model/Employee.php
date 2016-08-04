@@ -8,7 +8,7 @@ use Zend\Form\Annotation;
  * @Annotation\Hydrator("Zend\Hydrator\ObjectProperty")
  * @Annotation\Name("Employee")
  */
-class Employee
+class Employee implements  ModelInterface
 {
 
     public $employeeCode;
@@ -143,7 +143,7 @@ class Employee
 
     public function exchangeArray(array $data)
     {
-        $this->employeeCode = !empty($data['employeeCode']) ? $data['employeeCode'] : null;
+//        $this->employeeCode = !empty($data['employeeCode']) ? $data['employeeCode'] : null;
         $this->employeeFirstName = !empty($data['employeeFirstName']) ? $data['employeeFirstName'] : null;
         $this->employeeLastName = !empty($data['employeeLastName']) ? $data['employeeLastName'] : null;
         $this->employeeMiddleName = !empty($data['employeeMiddleName']) ? $data['employeeMiddleName'] : null;
