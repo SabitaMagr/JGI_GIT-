@@ -90,7 +90,6 @@ class CompanyController extends AbstractActionController{
                 $this,['form'=>$this->form,'id'=>$id]
                 );
         }
-
         $this->form->setData($request->getPost());
 
         if ($this->form->isValid()) {

@@ -28,9 +28,7 @@ $graceEndTime = $form->get('graceEndTime');
 $submit = $form->get('submit');
 
 $form->setAttribute('action',$this->url('company',['action'=>'add']));
-$form->prepare();
 
-print $this->form()->openTag($form);
 
 if ($this->messages) {
     print '<ul class="help-block bg-danger" style="background:#f3e250;">';
@@ -39,6 +37,10 @@ if ($this->messages) {
     }
     print '</ul>';
 }
+
+
+$form->prepare();
+print $this->form()->openTag($form);
 
 ?>
 

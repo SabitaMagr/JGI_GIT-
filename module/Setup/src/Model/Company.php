@@ -5,7 +5,7 @@ use Zend\Form\Annotation;
 
 /**
  * @Annotation\Hydrator("Zend\Hydrator\ObjectProperty")
- * @Annotation\Name("Employee")
+ * @Annotation\Name("Company")
 */
 
 class Company implements ModelInterface{
