@@ -11,7 +11,7 @@ class Department implements ModelInterface
 
 {
 	/**
-	 * @Annotion\Type("Zend\Form\Element\Text")
+	 * @Annotation\Type("Zend\Form\Element\Text")
 	 * @Annotation\Required({"required":"false"})
 	 * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
 	 * @Annotation\Options({"label":"Department Code"})
@@ -20,7 +20,7 @@ class Department implements ModelInterface
 	public $departmentCode;
 
 	/**
-	 * @Annotion\Type("Zend\Form\Element\Text")
+	 * @Annotation\Type("Zend\Form\Element\Text")
 	 * @Annotation\Required({"required":"false"})
 	 * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
 	 * @Annotation\Options({"label":"Department Name"})
@@ -29,7 +29,7 @@ class Department implements ModelInterface
 	public $departmentName;
 
 	/**
-	 * @Annotion\Type("Zend\Form\Element\Text")
+	 * @Annotation\Type("Zend\Form\Element\Text")
 	 * @Annotation\Required({"required":"false"})
 	 * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
 	 * @Annotation\Options({"label":"H.O.D code"})

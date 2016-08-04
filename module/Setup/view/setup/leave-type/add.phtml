@@ -1,0 +1,66 @@
+<?php
+$form->setAttribute('role','form');
+$form->setAttribute('class','form-leaveType');
+
+$leaveCode = $form->get('leaveCode');
+$leaveName = $form->get('leaveName');
+$totalLeave= $form->get('totalLeave');
+$remarks = $form->get('remarks');
+
+$submit = $form->get('submit');
+
+$form->setAttribute('action',$this->url("leaveType",["action"=>"add"]));
+
+
+if ($this->messages) {
+    print '<ul class="help-block bg-danger" style="background:#f3e250;">';
+    foreach ($this->messages as $message) {
+        print '<li>' . $message . '</li>';
+    }
+    print '</ul>';
+}
+
+$form->prepare();
+print $this->form()->openTag($form);
+?>
+<div class="row">
+    <div class="col-sm-12">
+        <div class="panel panel-default">
+            <div class="panel-heading panel-title-head">
+                <!--<div class="panel-title"> -->
+                    <h4>Leave Type Setup</h4>     
+            </div>
+            <div class="panel-body padding-5" style="margin-top:7px;">  
+                <div class="form-group form-group-default emp-form-group">
+                    <?= $this->formLabel($leaveCode) ?>
+                    <?= $this->formElement($leaveCode); ?>
+                    <?= $this->formElementErrors()->render($leaveCode, ['class' => 'help-block']) ?>
+                </div>
+                <div class="form-group form-group-default emp-form-group">
+                    <?= $this->formLabel($leaveName) ?>
+                    <?= $this->formElement($leaveName); ?>
+                    <?= $this->formElementErrors()->render($leaveName, ['class' => 'help-block']) ?>
+                </div>
+                <div class="form-group form-group-default emp-form-group">
+                    <?= $this->formLabel($totalLeave) ?>
+                    <?= $this->formElement($totalLeave); ?>
+                    <?= $this->formElementErrors()->render($totalLeave, ['class' => 'help-block']) ?>
+                </div>
+                <div class="form-group form-group-default">
+                    <?= $this->formLabel($remarks) ?>
+                    <?= $this->formElement($remarks); ?>
+                    <?= $this->formElementErrors()->render($remarks, ['class' => 'help-block']) ?>
+                </div>
+                <div class="panel-footer panel-footer-default">
+                    <?php  print $this->formSubmit($submit); ?>     
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<?php
+
+print $this->form()->closeTag();
+
+

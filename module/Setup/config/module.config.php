@@ -109,6 +109,21 @@ return [
                 ],
             ],
 
+            'leaveType'=>[
+                'type'=>segment::class,
+                'options'=>[
+                    'route'=>'/leaveType[/:action[/:id]]',
+                    'constant'=>[
+                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'id'     => '[0-9]+',
+                    ],
+                    'defaults'=>[
+                        'controller'=>Controller\LeaveTypeController::class,
+                        'action'=>'index',
+                    ]
+                ],
+            ],
+
 
         ]
     ],
@@ -121,6 +136,7 @@ return [
             Controller\DepartmentController::class => Controller\ControllerFactory::class,
             Controller\PositionController::class => Controller\ControllerFactory::class,
             Controller\ServiceTypeController::class => Controller\ControllerFactory::class,
+            Controller\LeaveTypeController::class=>Controller\ControllerFactory::class,
         ]
     ],
 
