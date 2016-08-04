@@ -23,7 +23,7 @@ print $this->form()->openTag($form);
 
 ?>
 <div class="row">
-	<div class="col-sm-6">
+	<div class="col-sm-12">
 		<div class="panel panel-default">
 			<div class="panel-heading panel-title-head">
 				<!--<div class="panel-title"> -->
@@ -41,16 +41,18 @@ print $this->form()->openTag($form);
 					<?php print $this->formElementErrors()->render($serviceTypeName,['class'=>'help-block']);?>
 				</div>
 
-				<div class="form-group form-group-default  emp-form-group">
+				<div class="form-group form-group-default">
 					<?php print $this->formLabel($remarks); ?>
 					<?php print $this->formElement($remarks); ?>
 					<?php print $this->formElementErrors()->render($remarks,['class'=>'help-block']);?>
 				</div>
+
+				<div class="panel-footer">
+					<?php  print $this->formSubmit($submit); ?>		
+				</div>
 				
 			</div>
-			<div class="panel-footer">
-				<?php  print $this->formSubmit($submit); ?>		
-			</div>
+			
 		</div>
 	</div>
 </div>
