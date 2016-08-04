@@ -2,6 +2,7 @@
 
 namespace Setup\Controller;
 
+use Application\Helper\Helper;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\View\Model\ViewModel;
@@ -32,32 +33,44 @@ class DepartmentController extends AbstractActionController{
 
 	public function indexAction(){
 		$departments = $this->repository->fetchAll();
-		return new ViewModel([
-			'departments'=>$departments
-			]);
+        $request = $this->getRequest();
+
+        return Helper::addFlashMessagesToArray($this,['departments' => $departments]);
+
 	}
+
 	public function addAction(){
 		
 		$this->initializeForm();
 
         $request = $this->getRequest();
         if (!$request->isPost()) {
-           return new ViewModel([
-	            'form' => $this->form,
-	            'messages' => $this->flashmessenger()->getMessages()
-        	]);
+           return new ViewModel(Helper::addFlashMessagesToArray(
+                $this,
+                [
+                    'form' => $this->form,
+                    'messages' => $this->flashmessenger()->getMessages()
+                 ]
+                )
+            );
         }
         $this->form->setData($request->getPost());
 
         if ($this->form->isValid()) {
             $this->department->exchangeArray($this->form->getData());
             $this->repository->add($this->department);
+            
+            $this->flashmessenger()->addMessage("Department Successfully added!!!");
             return $this->redirect()->toRoute("department");
         } else {
-            return new ViewModel([
-	            'form' => $this->form,
-	            'messages' => $this->flashmessenger()->getMessages()
-        	]);
+            return new ViewModel(Helper::addFlashMessagesToArray(
+                $this,
+                [
+                    'form' => $this->form,
+                    'messages' => $this->flashmessenger()->getMessages()
+                 ]
+                )
+            );
         }        
 	}
 
@@ -73,7 +86,9 @@ class DepartmentController extends AbstractActionController{
 
         if(!$request->isPost()){
             $this->form->bind($this->repository->fetchById($id));
-            return ['form'=>$this->form,'id'=>$id];
+            return Helper::addFlashMessagesToArray(
+                $this,['form'=>$this->form,'id'=>$id]
+                );
         }
 
         $this->form->setData($request->getPost());
@@ -81,15 +96,19 @@ class DepartmentController extends AbstractActionController{
         if ($this->form->isValid()) {
             $this->department->exchangeArray($this->form->getData());
             $this->repository->edit($this->department,$id);
+            $this->flashmessenger()->addMessage("Department Successfully Updated!!!");
            return $this->redirect()->toRoute("department");
         } else {
-            return ['form'=>$this->form,'id'=>$id];
+            return Helper::addFlashMessagesToArray(
+                $this,['form'=>$this->form,'id'=>$id]
+             );
 
         }
 	}
 	public function deleteAction(){
 		$id = (int)$this->params()->fromRoute("id");
 		$this->repository->delete($id);
+        $this->flashmessenger()->addMessage("Department Successfully Deleted!!!");
 		return $this->redirect()->toRoute('department');
 	}
 }

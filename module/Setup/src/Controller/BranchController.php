@@ -2,6 +2,7 @@
 
 namespace Setup\Controller;
 
+use Application\Helper\Helper;
 use Setup\Model\BranchRepository;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Form\Annotation\AnnotationBuilder;
@@ -38,7 +39,7 @@ class BranchController extends AbstractActionController
     public function indexAction()
     {
         $branches=$this->repository->fetchAll();
-        return new ViewModel(['branches'=>$branches]) ;
+        return Helper::addFlashMessagesToArray($this,['branches'=>$branches]);
     }
 
     public function addAction()
@@ -47,7 +48,7 @@ class BranchController extends AbstractActionController
 
         $request = $this->getRequest();
         if (!$request->isPost()) {
-            return ['form' => $this->form];
+            return Helper::addFlashMessagesToArray($this,['form'=>$this->form]);
         }
 
         $this->form->setData($request->getPost());
@@ -55,9 +56,10 @@ class BranchController extends AbstractActionController
         if ($this->form->isValid()) {
             $this->branch->exchangeArray($this->form->getData());
             $this->repository->add($this->branch);
-            $this->redirect()->toRoute("branch");
+            $this->flashmessenger()->addMessage("Branch Successfully Added!!!");
+            return $this->redirect()->toRoute("branch");
         } else {
-            $this->redirect()->toRoute("branch", ["action" => "add"]);
+             return Helper::addFlashMessagesToArray($this,['form'=>$this->form]);
 
         }
     }
@@ -71,7 +73,7 @@ class BranchController extends AbstractActionController
 
         if(!$request->isPost()){
             $this->form->bind($this->repository->fetchById($id));
-            return ['form'=>$this->form,'id'=>$id];
+            return Helper::addFlashMessagesToArray($this,['form'=>$this->form,'id'=>$id]);
         }
 
 
@@ -80,18 +82,20 @@ class BranchController extends AbstractActionController
         if ($this->form->isValid()) {
             $this->branch->exchangeArray($this->form->getData());
             $this->repository->edit($this->branch,$id);
-            $this->redirect()->toRoute("branch");
+            $this->flashmessenger()->addMessage("Branch Successfully Updated!!!");
+            return $this->redirect()->toRoute("branch");
         } else {
-            $this->redirect()->toRoute("branch", ["action" => "edit","id"=>$id]);
+            return Helper::addFlashMessagesToArray($this,['form'=>$this->form,'id'=>$id]);
 
         }
     }
 
     public function deleteAction()
     {
-
-
-
+        $id = (int)$this->params()->fromRoute("id");
+        $this->repository->delete($id);
+        $this->flashmessenger()->addMessage("Branch Successfully Deleted!!!");
+        return $this->redirect()->toRoute('branch');
     }
 
 }

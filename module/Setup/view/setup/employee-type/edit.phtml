@@ -8,7 +8,7 @@ $remarks = $form->get('remarks');
 
 $submit = $form->get('submit');
 
-$form->setAttribute('action',$this->url('employeeType',['action'=>'add']));
+$form->setAttribute('action',$this->url('employeeType',['action'=>'edit','id'=>$id]));
 
 if ($this->messages) {
     print '<ul class="help-block bg-danger" style="background:#f3e250;">';

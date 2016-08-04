@@ -43,19 +43,26 @@ class EmployeeType implements ModelInterface{
     */
     public $submit;
 
-    public function exchangeArray(array $data){
-    	$this->employeeTypeCode = !empty($data['employeeTypeCode']) ? $data['employeeTypeCode'] : null;
-    	$this->employeeTypeName = !empty($data['employeeTypeName']) ? $data['employeeTypeName'] : null;
-    	$this->remarks = !empty($data['remarks']) ? $data['remarks'] : null;
+
+
+    public function exchangeArray(array $data)
+    {
+        $this->employeeTypeCode = !empty($data['employeeTypeCode']) ? $data['employeeTypeCode'] : null;
+        $this->employeeTypeName = !empty($data['employeeTypeName']) ? $data['employeeTypeName'] : null;
+        $this->remarks = !empty($data['remarks']) ? $data['remarks'] : null;
+        
     }
 
-    public function getArrayCopy(){
-    	return [
-    		'employeeTypeCode' => $employeeTypeCode,
-    		'employeeTypeName' => $employeeTypeName,
-    		'remarks'=>$remarks
-
-    	];
+    public function getArrayCopy()
+    {
+        return [
+            'employeeTypeCode' => $this->employeeTypeCode,
+            'employeeTypeName' => $this->employeeTypeName,
+            'remarks' => $this->remarks        
+           ];
     }
+
+
+
 
 }

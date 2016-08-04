@@ -2,7 +2,7 @@
 
 namespace Setup\Controller;
 
-
+use Application\Helper\Helper;
 use Setup\Model\Designation;
 use Setup\Model\DesignationRepositoryInterface;
 use Zend\Form\Annotation\AnnotationBuilder;
@@ -18,21 +18,11 @@ class DesignationController extends AbstractActionController
         $this->repository = $repository;
     }
 
-    public function addFlashMessagesToArray($return)
-    {
-        $flashMessenger = $this->flashMessenger();
-        if ($flashMessenger->hasMessages()) {
-            $return['messages'] = $flashMessenger->getMessages();
-        }
-        return $return;
-    }
 
     public function indexAction()
     {
         $designations = $this->repository->fetchAll();
-
-        $return = ["designations" => $designations];
-        return new ViewModel($this->addFlashMessagesToArray($return));
+        return Helper::addFlashMessagesToArray($this,["designations" => $designations]);
     }
 
     public function editAction()
@@ -51,16 +41,17 @@ class DesignationController extends AbstractActionController
 
         if (!$request->isPost()) {
             $designationForm->bind($this->repository->fetchById($id));
-            return $this->addFlashMessagesToArray(["form" => $designationForm, "id" => $id]);
+            return Helper::addFlashMessagesToArray($this,["form" => $designationForm, "id" => $id]);
         }
 
         $designationForm->setData($request->getPost());
         if ($designationForm->isValid()) {
             $designation->exchangeArray($designationForm->getData());
             $this->repository->editDesignation($designation, $id);
-            $this->redirect()->toRoute("designation", ["action" => "edit"]);
+            $this->flashmessenger()->addMessage("Deisgnation Successfully Updated!!!");
+           return $this->redirect()->toRoute("designation");
         } else {
-            $this->redirect()->toRoute("designation", ["action" => "edit"]);
+            return Helper::addFlashMessagesToArray($this,["form" => $designationForm, "id" => $id]);
 
         }
 
@@ -75,7 +66,7 @@ class DesignationController extends AbstractActionController
 
         $request = $this->getRequest();
         if (!$request->isPost()) {
-            return $this->addFlashMessagesToArray(['form' => $designationForm]);
+            return Helper::addFlashMessagesToArray($this,["form" => $designationForm]);
         }
 
         $designationForm->setData($request->getPost());
@@ -83,11 +74,10 @@ class DesignationController extends AbstractActionController
         if ($designationForm->isValid()) {
             $designation->exchangeArray($designationForm->getData());
             $this->repository->addDesignation($designation);
-            $this->flashmessenger()->addMessage("Designation Successfully added!");
-            $this->redirect()->toRoute("designation");
+            $this->flashmessenger()->addMessage("Deisgnation Successfully Added!!!");
+            return $this->redirect()->toRoute("designation");
         } else {
-            $this->flashmessenger()->addMessage("Error while adding!");
-            $this->redirect()->toRoute("designation", ["action" => "add"]);
+            return Helper::addFlashMessagesToArray($this,["form" => $designationForm]);
 
         }
 
