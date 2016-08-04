@@ -6,6 +6,7 @@ $departmentCode = $form->get('departmentCode');
 $departmentName = $form->get('departmentName');
 $hodCode = $form->get('hodCode');
 $parentDepartment = $form->get('parentDepartment');
+$parentDepartment->setOptions(["label"=>"Parent","value_options"=>[1=>"One"]]);
 
 
 $submit = $form->get('submit');
@@ -27,7 +28,7 @@ print $this->form()->openTag($form);
 
 ?>
 <div class="row">
-	<div class="col-sm-6">
+	<div class="col-sm-12">
 		<div class="panel panel-default">
 			<div class="panel-heading panel-title-head">
 				<!--<div class="panel-title"> -->
@@ -54,11 +55,11 @@ print $this->form()->openTag($form);
 					<?php print $this->formElement($parentDepartment); ?>
 					<?php print $this->formElementErrors()->render($parentDepartment,['class'=>'help-block']);?>
 				</div>
-				
-			</div>
-			<div class="panel-footer">
-				<?php  print $this->formSubmit($submit); ?>		
-			</div>
+
+				<div class="panel-footer panel-footer-default">
+					<?php  print $this->formSubmit($submit); ?>		
+				</div>				
+			</div>			
 		</div>
 	</div>
 </div>

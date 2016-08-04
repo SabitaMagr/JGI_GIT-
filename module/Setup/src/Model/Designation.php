@@ -29,6 +29,7 @@ class Designation implements \Setup\Model\ModelInterface
      * @Annotation\Options({"label":"Designation Detail:", "label_attributes":{"class":"sr-only"}})
      * @Annotation\Required({"required":"true"})
      * @Annotation\Filter({"name":"StripTags"})
+     * @Annotation\Attribute({"style":"height: 50px; font-size:12px"})
      */
     public $designationDetail;
 
