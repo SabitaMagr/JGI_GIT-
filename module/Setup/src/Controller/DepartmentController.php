@@ -78,7 +78,7 @@ class DepartmentController extends AbstractActionController{
 		
 		$id=(int) $this->params()->fromRoute("id");
 		if($id===0){
-			return $this->redirect()->toRoute();
+			return $this->redirect()->toRoute('department');
 		}
         $this->initializeForm();
 

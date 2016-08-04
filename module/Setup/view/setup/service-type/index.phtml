@@ -7,7 +7,7 @@ if ($this->messages) {
     print '</ul>';
 }
 ?>
-<a href="<?php echo $this->url('employeeType',["action"=>"add"]) ?>">Add New</a>
+<a href="<?php echo $this->url('serviceType',["action"=>"add"]) ?>">Add New</a>
 
 
 <table role="grid" class="table table-hover dataTable no-footer" id="employeelist">
@@ -15,10 +15,10 @@ if ($this->messages) {
     <thead>
     <tr role="row">
         <th aria-label="Title: activate to sort column ascending" aria-sort="descending" colspan="1" rowspan="1"
-            aria-controls="basicTable" tabindex="0" class="sorting_desc" style="width: 218px;">Employee Type Code
+            aria-controls="basicTable" tabindex="0" class="sorting_desc" style="width: 218px;">Service Type Code
         </th>
         <th aria-label="Places: activate to sort column ascending" colspan="1" rowspan="1" aria-controls="basicTable"
-            tabindex="0" class="sorting" style="width: 219px;">Employee Type Name
+            tabindex="0" class="sorting" style="width: 219px;">Service Type Name
         </th>
         <th aria-label="Last Update: activate to sort column ascending" colspan="1" rowspan="1"
             aria-controls="basicTable" tabindex="0" class="sorting" style="width: 155px;">
@@ -28,21 +28,21 @@ if ($this->messages) {
     </thead>
     <tbody>
 
-<?php  foreach($employeeTypeList as $employeeType):?>
+<?php  foreach($serviceTypeList as $serviceType):?>
     <tr role="row">
         <td class="v-align-middle sorting_1">
             <p>
-                <?php print $this->escapeHtml($employeeType->employeeTypeCode) ?>
+                <?php print $this->escapeHtml($serviceType->serviceTypeCode) ?>
             </p>
         </td>
         <td class="v-align-middle sorting_1">
             <p>
-                <?php print $this->escapeHtml($employeeType->employeeTypeName) ?>
+                <?php print $this->escapeHtml($serviceType->serviceTypeName) ?>
             </p>
         </td>
         <td class="v-align-middle sorting_1">
-            <a href="<?= $this->url("employeeType",["action"=>"edit","id"=>$employeeType->employeeTypeCode]) ?>">Edit</a>|
-            <a href="<?= $this->url("employeeType",["action"=>"delete","id"=>$employeeType->employeeTypeCode]); ?>">Delete</a>
+            <a href="<?= $this->url("serviceType",["action"=>"edit","id"=>$serviceType->serviceTypeCode]) ?>">Edit</a>|
+            <a href="<?= $this->url("serviceType",["action"=>"delete","id"=>$serviceType->serviceTypeCode]); ?>">Delete</a>
         </td>
     </tr>
 

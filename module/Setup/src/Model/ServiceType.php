@@ -5,27 +5,27 @@ use Zend\Form\Annotation;
 
 /** 
 * @Annotation\Hydrator("Zend\Hydrator\ObjectProperty")
-* @Annotation\Name("EmployeeType")
+* @Annotation\Name("ServiceType")
 */
 
-class EmployeeType implements ModelInterface{
+class ServiceType implements ModelInterface{
 	/**
 	 * @Annotion\Type("Zend\Form\Element\Text")
 	 * @Annotation\Required({"required":"true"})
 	 * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
-	 * @Annotation\Options({"label":"Employee Type Code"})
-	 * @Annotation\Attributes({ "id":"form-employeeTypeCode", "class":"form-employeeTypeCode form-control" })
+	 * @Annotation\Options({"label":"Service Type Code"})
+	 * @Annotation\Attributes({ "id":"form-serviceTypeCode", "class":"form-serviceTypeCode form-control" })
 	 */
-	public $employeeTypeCode;
+	public $serviceTypeCode;
 
 	/**
 	 * @Annotion\Type("Zend\Form\Element\Text")
 	 * @Annotation\Required({"required":"true"})
 	 * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
-	 * @Annotation\Options({"label":"Employee Type Name"})
-	 * @Annotation\Attributes({ "id":"form-employeeTypeName", "class":"form-employeeTypeName form-control" })
+	 * @Annotation\Options({"label":"Service Type Name"})
+	 * @Annotation\Attributes({ "id":"form-serviceTypeName", "class":"form-serviceTypeName form-control" })
 	 */
-	public $employeeTypeName;
+	public $serviceTypeName;
 
 
 	/**
@@ -47,8 +47,8 @@ class EmployeeType implements ModelInterface{
 
     public function exchangeArray(array $data)
     {
-        $this->employeeTypeCode = !empty($data['employeeTypeCode']) ? $data['employeeTypeCode'] : null;
-        $this->employeeTypeName = !empty($data['employeeTypeName']) ? $data['employeeTypeName'] : null;
+        $this->serviceTypeCode = !empty($data['serviceTypeCode']) ? $data['serviceTypeCode'] : null;
+        $this->serviceTypeName = !empty($data['serviceTypeName']) ? $data['serviceTypeName'] : null;
         $this->remarks = !empty($data['remarks']) ? $data['remarks'] : null;
         
     }
@@ -56,8 +56,8 @@ class EmployeeType implements ModelInterface{
     public function getArrayCopy()
     {
         return [
-            'employeeTypeCode' => $this->employeeTypeCode,
-            'employeeTypeName' => $this->employeeTypeName,
+            'serviceTypeCode' => $this->serviceTypeCode,
+            'serviceTypeName' => $this->serviceTypeName,
             'remarks' => $this->remarks        
            ];
     }

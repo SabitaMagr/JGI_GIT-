@@ -5,13 +5,12 @@ namespace Setup\Model;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\TableGateway\TableGateway;
 
-class DepartmentRepository implements RepositoryInterface
+class ServiceTypeRepository implements RepositoryInterface
 {
     private $tableGateway;
-    
     public function __construct(AdapterInterface $adapter)
     {
-        $this->tableGateway=new TableGateway('department',$adapter);
+        $this->tableGateway=new TableGateway('serviceType',$adapter);
 
     }
 
@@ -22,7 +21,7 @@ class DepartmentRepository implements RepositoryInterface
 
     public function edit(ModelInterface $model,$id)
     {
-        $this->tableGateway->update($model->getArrayCopy(),["departmentCode"=>$id]);
+        $this->tableGateway->update($model->getArrayCopy(),["serviceTypeCode"=>$id]);
     }
 
     public function fetchAll()
@@ -32,13 +31,13 @@ class DepartmentRepository implements RepositoryInterface
 
     public function fetchById($id)
     {
-        $rowset= $this->tableGateway->select(['departmentCode'=>$id]);
+        $rowset= $this->tableGateway->select(['serviceTypeCode'=>$id]);
         return $rowset->current();
     }
 
     public function delete($id)
     {
-    	$this->tableGateway->delete(['departmentCode'=>$id]);
+    	$this->tableGateway->delete(['serviceTypeCode'=>$id]);
 
     }
 }

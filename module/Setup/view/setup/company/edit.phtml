@@ -26,8 +26,9 @@ $graceStartTime = $form->get('graceStartTime');
 $graceEndTime = $form->get('graceEndTime');
 
 $submit = $form->get('submit');
+$submit->setAttribute('value','Edit Company');
 
-$form->setAttribute('action',$this->url('company',['action'=>'add']));
+$form->setAttribute('action',$this->url('company',['action'=>'edit','id'=>$id]));
 
 
 if ($this->messages) {
@@ -41,7 +42,6 @@ if ($this->messages) {
 
 $form->prepare();
 print $this->form()->openTag($form);
-
 ?>
 
 <div class="panel panel-default">
