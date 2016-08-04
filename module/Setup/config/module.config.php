@@ -94,16 +94,16 @@ return [
                 ],
             ],
 
-            'employeeType'=>[
+            'serviceType'=>[
                 'type'=>segment::class,
                 'options'=>[
-                    'route'=>'/employeeType[/:action[/:id]]',
+                    'route'=>'/serviceType[/:action[/:id]]',
                     'constants'=>[
                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
                        'id'     => '[0-9]+',
                     ],
                     'defaults'=>[
-                        'controller'=>Controller\EmployeeTypeController::class,
+                        'controller'=>Controller\ServiceTypeController::class,
                         'action'=>'index',
                     ]
                 ],
@@ -139,8 +139,8 @@ return [
             Controller\CompanyController::class => Controller\ControllerFactory::class,
             Controller\BranchController::class => Controller\ControllerFactory::class,
             Controller\DepartmentController::class => Controller\ControllerFactory::class,
-            Controller\PositionController::class => Controller\PositionControllerFactory::class,
-            Controller\EmployeeTypeController::class => Controller\ControllerFactory::class,
+            Controller\PositionController::class => Controller\ControllerFactory::class,
+            Controller\ServiceTypeController::class => Controller\ControllerFactory::class,
         ]
     ],
 

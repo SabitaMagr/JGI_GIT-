@@ -8,33 +8,42 @@ use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\View\Model\ViewModel;
 use Zend\Mvc\Controller\AbstractActionController;
 use Setup\Model\Position;
-use Setup\Model\PositionRepositoryInterface;
+use Setup\Model\PositionRepository;
 
 class PositionController extends AbstractActionController
 {
 
     private $repository;
+    private $form;
+    private $position;
 
-    public function __construct(PositionRepositoryInterface $repository)
+    public function __construct(AdapterInterface $adapter)
     {
-        $this->repository = $repository;
+        $this->repository = new PositionRepository($adapter);
     }
 
+     public function initializeForm()
+    {
+        $this->position = new Position();
+        $builder = new AnnotationBuilder();
+        if (!$this->form) {
+            $this->form = $builder->createForm($this->position);
+        }
+    }
 
     public function indexAction()
     {
-        $position = $this->repository->fetchAll();
+        $this->position = $this->repository->fetchAll();
         $request = $this->getRequest();
 
-        return Helper::addFlashMessagesToArray($this,['positions' => $position]);
+        return Helper::addFlashMessagesToArray($this,['positions' => $this->position]);
     }
+
+    
 
     public function addAction()
     {
-        $position = new Position();
-        $builder = new AnnotationBuilder();
-        $form = $builder->createForm($position);
-
+        $this->initializeForm();
 
         $request = $this->getRequest();
 
@@ -42,59 +51,72 @@ class PositionController extends AbstractActionController
             return new ViewModel(Helper::addFlashMessagesToArray(
                 $this,
                 [
-                    'form' => $form,
+                    'form' => $this->form,
                     'messages' => $this->flashmessenger()->getMessages()
                  ]
                 )
             );
         }
 
-        $form->setData($request->getPost());
+        $this->form->setData($request->getPost());
 
-        if ($form->isValid()) {
-            $position->exchangeArray($form->getData());
-            $this->repository->addPosition($position);
-
-            $this->flashmessenger()->addMessage("Position Successfully added!");
-            return $this->redirect()->toRoute('position');
+        if ($this->form->isValid()) {
+            $this->position->exchangeArray($this->form->getData());
+            $this->repository->add($this->position);
+            
+            $this->flashmessenger()->addMessage("Position Successfully added!!!");
+            return $this->redirect()->toRoute("position");
         } else {
-            return ['form' => $form];
-        }
+            return new ViewModel(Helper::addFlashMessagesToArray(
+                $this,
+                [
+                    'form' => $this->form,
+                    'messages' => $this->flashmessenger()->getMessages()
+                 ]
+                )
+            );
+        }   
     }
 
 
     public function editAction()
     {
-        $id = (int)$this->params()->fromRoute("id", 0);
-        if ($id === 0) {
-            $this->redirect()->toRoute('position');
-        }
-        $position = new Position();
-        $builder = new AnnotationBuilder();
-        $form = $builder->createForm($position);
-
-        $request = $this->getRequest();
-
-        if (!$request->isPost()) {
-            $form->bind($this->repository->fetchById($id));
-            return Helper::addFlashMessagesToArray($this,['form' => $form, 'id' => $id]);
-        }
-
-        $form->setData($request->getPost());
-        if ($form->isValid()) {
-            $position->exchangeArray($form->getData());
-            $this->repository->editPosition($position, $id);
+        $id=(int) $this->params()->fromRoute("id");
+        if($id===0){
             return $this->redirect()->toRoute('position');
+        }
+        $this->initializeForm();
+
+        $request=$this->getRequest();
+
+        if(!$request->isPost()){
+            $this->form->bind($this->repository->fetchById($id));
+            return Helper::addFlashMessagesToArray(
+                $this,['form'=>$this->form,'id'=>$id]
+                );
+        }
+
+        $this->form->setData($request->getPost());
+
+        if ($this->form->isValid()) {
+            $this->position->exchangeArray($this->form->getData());
+            $this->repository->edit($this->position,$id);
+            $this->flashmessenger()->addMessage("Position Successfully Updated!!!");
+           return $this->redirect()->toRoute("position");
         } else {
-            return ['form' => $form, 'id' => $id];
+            return Helper::addFlashMessagesToArray(
+                $this,['form'=>$this->form,'id'=>$id]
+             );
+
         }
 
     }
 
     public function deleteAction()
     {
-        $id = (int)$this->params()->fromRoute("id", 0);
-        $this->repository->deletePosition($id);
+        $id = (int)$this->params()->fromRoute("id");
+        $this->repository->delete($id);
+        $this->flashmessenger()->addMessage("Position Successfully Deleted!!!");
         return $this->redirect()->toRoute('position');
     }
 }

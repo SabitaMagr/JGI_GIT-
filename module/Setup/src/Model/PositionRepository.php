@@ -2,20 +2,23 @@
 namespace Setup\Model;
 
 use Zend\Db\TableGateway\TableGateway;
+use Zend\Db\Adapter\AdapterInterface;
 
-class PositionRepository implements PositionRepositoryInterface{
+class PositionRepository implements RepositoryInterface{
 	private $tableGateway;
 
-	public function __construct(TableGateway $positionTableGateway){
-		$this->tableGateway = $positionTableGateway;
+	public function __construct(AdapterInterface $adapter){
+
+		$this->tableGateway = new TableGateway('position',$adapter);
+		
 	}
-	public function addPosition(Position $position){
-		$this->tableGateway->insert($position->getArrayCopy());
+	public function add(ModelInterface $model){
+		$this->tableGateway->insert($model->getArrayCopy());
 	}
-	public function editPosition(Position $position,$id){
-		$this->tableGateway->update($position->getArrayCopy(),["positionCode"=>$id]);
+	public function edit(ModelInterface $model,$id){
+		$this->tableGateway->update($model->getArrayCopy(),["positionCode"=>$id]);
 	}
-	public function deletePosition($id){
+	public function delete($id){
 		$this->tableGateway->delete(["positionCode"=>$id]);
 	}
 	public function fetchAll(){

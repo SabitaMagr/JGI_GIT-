@@ -1,14 +1,14 @@
 <?php 
 $form->setAttribute('role','form');
-$form->setAttribute('class','employeeType-form');
+$form->setAttribute('class','serviceType-form');
 
-$employeeTypeCode = $form->get('employeeTypeCode');
-$employeeTypeName = $form->get('employeeTypeName');
+$serviceTypeCode = $form->get('serviceTypeCode');
+$serviceTypeName = $form->get('serviceTypeName');
 $remarks = $form->get('remarks');
 
 $submit = $form->get('submit');
 
-$form->setAttribute('action',$this->url('employeeType',['action'=>'add']));
+$form->setAttribute('action',$this->url('serviceType',['action'=>'edit','id'=>$id]));
 
 if ($this->messages) {
     print '<ul class="help-block bg-danger" style="background:#f3e250;">';
@@ -27,18 +27,18 @@ print $this->form()->openTag($form);
 		<div class="panel panel-default">
 			<div class="panel-heading panel-title-head">
 				<!--<div class="panel-title"> -->
-					<h4>Position Setup</h4>		
+					<h4>Service Type Setup</h4>		
 			</div>
 			<div class="panel-body padding-5" style="margin-top:7px;">	
 				<div class="form-group form-group-default emp-form-group">
-					<?php print $this->formLabel($employeeTypeCode); ?>
-					<?php print $this->formElement($employeeTypeCode); ?>
-					<?php print $this->formElementErrors()->render($employeeTypeCode,['class'=>'help-block']);?>
+					<?php print $this->formLabel($serviceTypeCode); ?>
+					<?php print $this->formElement($serviceTypeCode); ?>
+					<?php print $this->formElementErrors()->render($serviceTypeCode,['class'=>'help-block']);?>
 				</div>
 				<div class="form-group form-group-default  emp-form-group">
-					<?php print $this->formLabel($employeeTypeName); ?>
-					<?php print $this->formElement($employeeTypeName); ?>
-					<?php print $this->formElementErrors()->render($employeeTypeName,['class'=>'help-block']);?>
+					<?php print $this->formLabel($serviceTypeName); ?>
+					<?php print $this->formElement($serviceTypeName); ?>
+					<?php print $this->formElementErrors()->render($serviceTypeName,['class'=>'help-block']);?>
 				</div>
 
 				<div class="form-group form-group-default  emp-form-group">
