@@ -124,6 +124,21 @@ return [
                 ],
             ],
 
+            'shift'=>[
+                'type'=>segment::class,
+                'options'=>[
+                    'route'=>'/shift[/:action[/:id]]',
+                    'constant'=>[
+                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'id'     => '[0-9]+',
+                    ],
+                    'defaults'=>[
+                        'controller'=>Controller\ShiftController::class,
+                        'action'=>'index',
+                    ]
+                ],
+            ],
+
 
         ]
     ],
@@ -137,6 +152,7 @@ return [
             Controller\PositionController::class => Controller\ControllerFactory::class,
             Controller\ServiceTypeController::class => Controller\ControllerFactory::class,
             Controller\LeaveTypeController::class=>Controller\ControllerFactory::class,
+            Controller\ShiftController::class=>Controller\ControllerFactory::class,
         ]
     ],
 
