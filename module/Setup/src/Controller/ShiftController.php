@@ -22,7 +22,8 @@ class ShiftController extends AbstractActionController {
 	}
 
 	public function indexAction(){
-		return new ViewModel();
+		$shiftList = $this->repository->fetchAll();
+		return Helper::addFlashMessagesToArray($this,['shiftList'=>$shiftList]);
 	}
 
 	public function initializeForm(){
@@ -44,7 +45,7 @@ class ShiftController extends AbstractActionController {
                 )
             );
         }
-        
+
         $this->form->setData($request->getPost());
         if ($this->form->isValid()) {
             $this->shift->exchangeArray($this->form->getData());
@@ -66,11 +67,48 @@ class ShiftController extends AbstractActionController {
 	}
 
 	public function editAction(){
+		$this->initializeForm();
+		$id = (int) $this->params()->fromRoute("id");
+
+		if($id===0){
+			return $this->redirect()->toRoute("shift");
+		}
+
+		$request = $this->getRequest();
+
+		if(!$request->isPost()){
+			$this->form->bind($this->repository->fetchById($id));
+			return Helper::addFlashMessagesToArray($this,['form'=>$this->form,'id'=>$id]);
+		}
+
+		$this->form->setData($request->getPost());
+
+		if($this->form->isValid()){
+			$this->shift->exchangeArray($this->form->getData());
+
+			$this->repository->edit($this->shift,$id);
+			
+			$this->flashmessenger()->addMessage("Shift Successfuly Updated!!!");
+			return $this->redirect()->toRoute("shift");
+		}else{
+			return new ViewModel(Helper::addFlashMessagesToArray(
+                $this,
+                [
+                    'form' => $this->form,
+                    'id'=>$id
+                 ]
+                )
+            );
+		}
+
 
 	}
 
 	public function deleteAction(){
-
+		$id = (int)$this->params()->fromRoute("id");
+        $this->repository->delete($id);
+        $this->flashmessenger()->addMessage("Shift Successfully Deleted!!!");
+        return $this->redirect()->toRoute('shift');
 	}
 }
 

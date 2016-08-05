@@ -49,8 +49,7 @@ class ServiceTypeController extends AbstractActionController{
         $this->form->setData($request->getPost());
 
         if ($this->form->isValid()) {
-
-            $this->serviceType->exchangeArray($this->form->getData());
+        	$this->serviceType->exchangeArray($this->form->getData());
             $this->repository->add($this->serviceType);
             $this->flashmessenger()->addMessage("Service Type Successfully Added!!!");
             return $this->redirect()->toRoute("serviceType");
@@ -74,7 +73,11 @@ class ServiceTypeController extends AbstractActionController{
         $request=$this->getRequest();
 
         if(!$request->isPost()){
-            $this->form->bind($this->repository->fetchById($id));
+        	$r = $this->repository->fetchById($id);
+        	$this->serviceType->exchangeArrayDb($r->getArrayCopy());
+        	$ab = (object)$this->serviceType->getLocalArrayCopy();
+				
+            $this->form->bind($ab);
             return Helper::addFlashMessagesToArray($this,['form'=>$this->form,'id'=>$id]);
         }
 

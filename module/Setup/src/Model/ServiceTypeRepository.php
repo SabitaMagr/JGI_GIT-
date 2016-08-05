@@ -21,7 +21,7 @@ class ServiceTypeRepository implements RepositoryInterface
 
     public function edit(ModelInterface $model,$id)
     {
-        $this->tableGateway->update($model->getArrayCopy(),["serviceTypeCode"=>$id]);
+        $this->tableGateway->update($model->getArrayCopy(),["SERVICE_TYPE_CODE"=>$id]);
     }
 
     public function fetchAll()
@@ -31,13 +31,13 @@ class ServiceTypeRepository implements RepositoryInterface
 
     public function fetchById($id)
     {
-        $rowset= $this->tableGateway->select(['serviceTypeCode'=>$id]);
+        $rowset= $this->tableGateway->select(['SERVICE_TYPE_CODE'=>$id]);
         return $rowset->current();
     }
 
     public function delete($id)
     {
-    	$this->tableGateway->delete(['serviceTypeCode'=>$id]);
+    	$this->tableGateway->delete(['SERVICE_TYPE_CODE'=>$id]);
 
     }
 }

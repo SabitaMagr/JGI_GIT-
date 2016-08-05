@@ -44,7 +44,7 @@ class ServiceType implements ModelInterface{
     public $submit;
 
 
-
+    //to exchange array of data of form submit
     public function exchangeArray(array $data)
     {
         $this->serviceTypeCode = !empty($data['serviceTypeCode']) ? $data['serviceTypeCode'] : null;
@@ -53,8 +53,25 @@ class ServiceType implements ModelInterface{
         
     }
 
+    //to exchange array of data of database
+    public function exchangeArrayDb(array $data)
+    {
+        $this->serviceTypeCode = !empty($data['SERVICE_TYPE_CODE']) ? $data['SERVICE_TYPE_CODE'] : null;
+        $this->serviceTypeName = !empty($data['SERVICE_TYPE_NAME']) ? $data['SERVICE_TYPE_NAME'] : null;
+        $this->remarks = !empty($data['remarks']) ? $data['remarks'] : null;
+        
+    }
+
     public function getArrayCopy()
     {
+        return [
+            'SERVICE_TYPE_CODE' => $this->serviceTypeCode,
+            'SERVICE_TYPE_NAME' => $this->serviceTypeName,
+            'remarks' => $this->remarks        
+           ];
+    }
+
+    public function getLocalArrayCopy(){
         return [
             'serviceTypeCode' => $this->serviceTypeCode,
             'serviceTypeName' => $this->serviceTypeName,

@@ -41,11 +41,11 @@ return [
     //         (ADDRESS = (PROTOCOL = TCP)(HOST = 192.168.4.2)(PORT = 1521))
     //         (CONNECT_DATA =
     //             (SERVER = DEDICATED)
-    //             (SERVICE_NAME = erp)
+    //             (SERVICE_NAME = ITN)
     //         )
     //       )',
-    //     'username'      => 'distribution',
-    //     'password'      => 'DISTRIBUTION',
+    //     'username'      => 'HRIS',
+    //     'password'      => 'NEO-HRIS',
     //     'platform_options' => ['quote_identifiers' => false]
     // ],
 

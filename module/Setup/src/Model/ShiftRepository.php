@@ -17,8 +17,7 @@ class ShiftRepository implements RepositoryInterface
 
      public function add(ModelInterface $model)
     {
-    	print_r($model->getArrayCopy());
-    	die();
+ 
         $this->tableGateway->insert($model->getArrayCopy());
     }
 

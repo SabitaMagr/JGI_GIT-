@@ -2,16 +2,16 @@
 $form->setAttribute('role','form');
 $form->setAttribute('class','position-form');
 
-
 $shiftCode = $form->get('shiftCode');
 $shiftName = $form->get('shiftName');
 $startTime = $form->get('startTime');
 $endTime = $form->get('endTime');
 $submit = $form->get('submit');
+$submit->setAttribute('value',"Edit");
 
-$submit = $form->get('submit');
 
-$form->setAttribute('action',$this->url('shift',['action'=>'add']));
+
+$form->setAttribute('action',$this->url('shift',['action'=>'edit','id'=>$id]));
 
 if ($this->messages) {
 	print '<ul class="help-block bg-danger" style="background:#f3e250;">';
@@ -29,7 +29,7 @@ print $this->form()->openTag($form);
 		<div class="panel panel-default">
 			<div class="panel-heading panel-title-head">
 				<!--<div class="panel-title"> -->
-					<h4>Shift Setup</h4>		
+				<h4>Shift Setup</h4>	
 			</div>
 			<div class="panel-body padding-5" style="margin-top:7px;">	
 				<div class="form-group form-group-default emp-form-group">
