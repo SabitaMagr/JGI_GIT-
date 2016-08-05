@@ -50,6 +50,9 @@ class ServiceTypeController extends AbstractActionController{
 
         if ($this->form->isValid()) {
         	$this->serviceType->exchangeArray($this->form->getData());
+        	
+        	print_r($this->form->getData());
+      
             $this->repository->add($this->serviceType);
             $this->flashmessenger()->addMessage("Service Type Successfully Added!!!");
             return $this->redirect()->toRoute("serviceType");
