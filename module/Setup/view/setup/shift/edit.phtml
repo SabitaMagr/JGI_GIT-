@@ -65,7 +65,7 @@ print $this->form()->openTag($form);
 	</div>
 </div>
 <?php
-
+echo $this->formHidden($form->get('modifiedDt'));
 print $this->form()->closeTag();
 
 ?>

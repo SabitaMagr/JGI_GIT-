@@ -46,6 +46,7 @@ class ServiceType implements ModelInterface{
      */
     public $status;
 	
+
 	/**
      * @Annotation\Type("Zend\Form\Element\Submit")
      * @Annotation\Attributes({"value":"Submit","class":"btn btn-primary pull-right"})
@@ -59,8 +60,7 @@ class ServiceType implements ModelInterface{
         $this->serviceTypeCode = !empty($data['serviceTypeCode']) ? $data['serviceTypeCode'] : null;
         $this->serviceTypeName = !empty($data['serviceTypeName']) ? $data['serviceTypeName'] : null;
         $this->remarks = !empty($data['remarks']) ? $data['remarks'] : null;
-        $this->status = !empty($data['status']) ? $data['status'] : null;
-        
+        $this->status = !empty($data['status']) ? $data['status'] : null;     
     }
 
     //to exchange array of data of database
@@ -69,7 +69,7 @@ class ServiceType implements ModelInterface{
         $this->serviceTypeCode = !empty($data['SERVICE_TYPE_CODE']) ? $data['SERVICE_TYPE_CODE'] : null;
         $this->serviceTypeName = !empty($data['SERVICE_TYPE_NAME']) ? $data['SERVICE_TYPE_NAME'] : null;
         $this->remarks = !empty($data['REMARKS']) ? $data['REMARKS'] : null;
-        $this->status = !empty($data['STATUS']) ? $data['STATUS'] : null;            
+        $this->status = !empty($data['STATUS']) ? $data['STATUS'] : null;         
     }
 
     public function getArrayCopyForDB()
@@ -78,7 +78,7 @@ class ServiceType implements ModelInterface{
             'SERVICE_TYPE_CODE' => $this->serviceTypeCode,
             'SERVICE_TYPE_NAME' => $this->serviceTypeName,
             'REMARKS' => $this->remarks,
-            'STATUS' => $this->status       
+            'STATUS' => $this->status      
            ];
     }
 
@@ -87,7 +87,7 @@ class ServiceType implements ModelInterface{
             'serviceTypeCode' => $this->serviceTypeCode,
             'serviceTypeName' => $this->serviceTypeName,
             'remarks' => $this->remarks ,
-            'status'=>$this->status       
+            'status'=>$this->status    
            ];
     }
 

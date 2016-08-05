@@ -83,14 +83,17 @@ class ServiceTypeController extends AbstractActionController{
             $this->form->bind($ab);
             return Helper::addFlashMessagesToArray($this,['form'=>$this->form,'id'=>$id]);
         }
+        $modifiedDt = date("Y-m-d");
 
         $this->form->setData($request->getPost());
 
         if ($this->form->isValid()) {
             $this->serviceType->exchangeArrayFromForm($this->form->getData());
-            $this->repository->edit($this->serviceType,$id);
+
+            $this->repository->edit($this->serviceType,$id,$modifiedDt);
+
             $this->flashmessenger()->addMessage("Service Type Successfully Updated!!!");
-           return $this->redirect()->toRoute("serviceType");
+            return $this->redirect()->toRoute("serviceType");
         } else {
             return Helper::addFlashMessagesToArray($this,['form'=>$this->form,'id'=>$id]);
 
