@@ -16,12 +16,12 @@ class ServiceTypeRepository implements RepositoryInterface
 
     public function add(ModelInterface $model)
     {
-        $this->tableGateway->insert($model->getArrayCopy());
+        $this->tableGateway->insert($model->getArrayCopyForDB());
     }
 
     public function edit(ModelInterface $model,$id)
     {
-        $this->tableGateway->update($model->getArrayCopy(),["SERVICE_TYPE_ID"=>$id]);
+        $this->tableGateway->update($model->getArrayCopyForDB(),["SERVICE_TYPE_ID"=>$id]);
     }
 
     public function fetchAll()

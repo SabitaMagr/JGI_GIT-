@@ -49,7 +49,7 @@ class ServiceTypeController extends AbstractActionController{
         $this->form->setData($request->getPost());
 
         if ($this->form->isValid()) {
-        	$this->serviceType->exchangeArray($this->form->getData());
+        	$this->serviceType->exchangeArrayFromForm($this->form->getData());
         	
         	print_r($this->form->getData());
       
@@ -77,8 +77,8 @@ class ServiceTypeController extends AbstractActionController{
 
         if(!$request->isPost()){
         	$r = $this->repository->fetchById($id);
-        	$this->serviceType->exchangeArrayDb($r->getArrayCopy());
-        	$ab = (object)$this->serviceType->getLocalArrayCopy();
+        	$this->serviceType->exchangeArrayFromDb($r->getArrayCopy());
+        	$ab = (object)$this->serviceType->getArrayCopyForForm();
 				
             $this->form->bind($ab);
             return Helper::addFlashMessagesToArray($this,['form'=>$this->form,'id'=>$id]);
@@ -87,7 +87,7 @@ class ServiceTypeController extends AbstractActionController{
         $this->form->setData($request->getPost());
 
         if ($this->form->isValid()) {
-            $this->serviceType->exchangeArray($this->form->getData());
+            $this->serviceType->exchangeArrayFromForm($this->form->getData());
             $this->repository->edit($this->serviceType,$id);
             $this->flashmessenger()->addMessage("Service Type Successfully Updated!!!");
            return $this->redirect()->toRoute("serviceType");

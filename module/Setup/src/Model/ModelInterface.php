@@ -4,8 +4,8 @@ namespace Setup\Model;
 
 interface ModelInterface
 {
-    public function exchangeArray(array $data);
-    public function getArrayCopy();
-    public function exchangeArrayDb(array $data);
-    public function getLocalArrayCopy();
+   public function exchangeArrayFromForm(array $data);
+   public function exchangeArrayFromDB(array $data);
+   public function getArrayCopyForDB();
+   public function getArrayCopyForForm();
 }
