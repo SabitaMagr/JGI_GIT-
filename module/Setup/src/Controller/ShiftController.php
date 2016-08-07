@@ -48,7 +48,7 @@ class ShiftController extends AbstractActionController {
 
         $this->form->setData($request->getPost());
         if ($this->form->isValid()) {
-            $this->shift->exchangeArray($this->form->getData());
+            $this->shift->exchangeArrayFromForm($this->form->getData());
             $this->repository->add($this->shift);
             
             $this->flashmessenger()->addMessage("Shift Successfully added!!!");
@@ -75,18 +75,20 @@ class ShiftController extends AbstractActionController {
 		}
 
 		$request = $this->getRequest();
+		$modifiedDt = date("Y-m-d");
 
 		if(!$request->isPost()){
-			$this->form->bind($this->repository->fetchById($id));
+			$this->shift->exchangeArrayFromDb($this->repository->fetchById($id)->getArrayCopy());
+			$this->form->bind((object)$this->shift->getArrayCopyForForm());
 			return Helper::addFlashMessagesToArray($this,['form'=>$this->form,'id'=>$id]);
 		}
 
 		$this->form->setData($request->getPost());
 
 		if($this->form->isValid()){
-			$this->shift->exchangeArray($this->form->getData());
+			$this->shift->exchangeArrayFromForm($this->form->getData());
 
-			$this->repository->edit($this->shift,$id);
+			$this->repository->edit($this->shift,$id,$modifiedDt);
 			
 			$this->flashmessenger()->addMessage("Shift Successfuly Updated!!!");
 			return $this->redirect()->toRoute("shift");

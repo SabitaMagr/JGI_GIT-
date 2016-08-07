@@ -61,7 +61,7 @@ class PositionController extends AbstractActionController
         $this->form->setData($request->getPost());
 
         if ($this->form->isValid()) {      
-            $this->position->exchangeArray($this->form->getData());
+            $this->position->exchangeArrayFromForm($this->form->getData());
             $this->repository->add($this->position);          
             $this->flashmessenger()->addMessage("Position Successfully added!!!");
             return $this->redirect()->toRoute("position");
@@ -88,8 +88,11 @@ class PositionController extends AbstractActionController
 
         $request=$this->getRequest();
 
+        $modifiedDt = date("Y-m-d");
         if(!$request->isPost()){
-            $this->form->bind($this->repository->fetchById($id));
+            $this->position->exchangeArrayFromDb($this->repository->fetchById($id)->getArrayCopy());
+            $this->form->bind((object)$this->position->getArrayCopyForForm());
+
             return Helper::addFlashMessagesToArray(
                 $this,['form'=>$this->form,'id'=>$id]
                 );
@@ -98,8 +101,8 @@ class PositionController extends AbstractActionController
         $this->form->setData($request->getPost());
 
         if ($this->form->isValid()) {
-            $this->position->exchangeArray($this->form->getData());
-            $this->repository->edit($this->position,$id);
+            $this->position->exchangeArrayFromForm($this->form->getData());
+            $this->repository->edit($this->position,$id,$modifiedDt);
             $this->flashmessenger()->addMessage("Position Successfully Updated!!!");
            return $this->redirect()->toRoute("position");
         } else {

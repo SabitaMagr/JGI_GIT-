@@ -22,8 +22,8 @@ class ServiceTypeRepository implements RepositoryInterface
     public function edit(ModelInterface $model,$id,$modifiedDt)
     {
         $array=$model->getArrayCopyForDB();
-        $new_array =  array_merge($r, ['MODIFIED_DT'=> $modifiedDt ]);
-        $this->tableGateway->update( $new_array,["SERVICE_TYPE_ID"=>$id]);
+        $newArray =  array_merge($r, ['MODIFIED_DT'=> $modifiedDt ]);
+        $this->tableGateway->update( $newArray,["SERVICE_TYPE_ID"=>$id]);
     }
 
     public function fetchAll()

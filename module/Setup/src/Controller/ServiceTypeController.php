@@ -77,8 +77,8 @@ class ServiceTypeController extends AbstractActionController{
 
         if(!$request->isPost()){
         	$r = $this->repository->fetchById($id);
-        	$this->serviceType->exchangeArrayFromDb($r->getArrayCopy());
-        	$ab = (object)$this->serviceType->getArrayCopyForForm();
+        	$this->serviceType->exchangeArrayFromDb($r->getArrayCopy()); // ARRAY FROM ARRAY OBJECT
+        	$ab = (object)$this->serviceType->getArrayCopyForForm(); //OBJECT
 				
             $this->form->bind($ab);
             return Helper::addFlashMessagesToArray($this,['form'=>$this->form,'id'=>$id]);
