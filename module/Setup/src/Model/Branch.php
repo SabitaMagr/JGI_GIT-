@@ -116,13 +116,30 @@ class Branch implements ModelInterface
     public function getArrayCopy()
     {
         return [
-            'branchName' => $this->branchName,
+            '' => $this->branchName,
             'location' => $this->location,
             'telephone' => $this->telephone,
             'fax' => $this->fax,
             'email' => $this->email,
             'contactPerson' => $this->contactPerson,
             'branchManager' => $this->branchManager,
-            'parentBranch' => $this->parentBranch];
+            'parentBranch' => $this->parentBranch
+        ];
+    }
+
+
+    public function getLocalArrayCopy()
+    {
+        return [
+            'branch-name' => $this->branchName,
+            'location' => $this->location,
+            'telephone' => $this->telephone,
+            'fax' => $this->fax,
+            'email' => $this->email,
+            'contactPerson' => $this->contactPerson,
+            'branchManager' => $this->branchManager,
+            'parentBranch' => $this->parentBranch
+        ];
+
     }
 }

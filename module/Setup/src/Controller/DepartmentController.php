@@ -33,9 +33,10 @@ class DepartmentController extends AbstractActionController{
 
 	public function indexAction(){
 		$departments = $this->repository->fetchAll();
-        $request = $this->getRequest();
 
-        return Helper::addFlashMessagesToArray($this,['departments' => $departments]);
+//        $request = $this->getRequest();
+
+        return Helper::addFlashMessagesToArray($this,['departments' => $departments,'obj'=>new Department()]);
 
 	}
 
@@ -57,7 +58,7 @@ class DepartmentController extends AbstractActionController{
         $this->form->setData($request->getPost());
 
         if ($this->form->isValid()) {
-            $this->department->exchangeArray($this->form->getData());
+            $this->department->exchangeArrayFromForm($this->form->getData())->createdDT=date('Y-m-d H:i:s');
             $this->repository->add($this->department);
             
             $this->flashmessenger()->addMessage("Department Successfully added!!!");
@@ -85,7 +86,9 @@ class DepartmentController extends AbstractActionController{
         $request=$this->getRequest();
 
         if(!$request->isPost()){
-            $this->form->bind($this->repository->fetchById($id));
+
+            $this->department->exchangeArrayFromDB((array) $this->repository->fetchById($id));
+            $this->form->bind((object) $this->department->getArrayCopyForForm());
             return Helper::addFlashMessagesToArray(
                 $this,['form'=>$this->form,'id'=>$id]
                 );
@@ -94,7 +97,7 @@ class DepartmentController extends AbstractActionController{
         $this->form->setData($request->getPost());
 
         if ($this->form->isValid()) {
-            $this->department->exchangeArray($this->form->getData());
+            $this->department->exchangeArrayFromForm($this->form->getData());
             $this->repository->edit($this->department,$id);
             $this->flashmessenger()->addMessage("Department Successfully Updated!!!");
            return $this->redirect()->toRoute("department");

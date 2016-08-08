@@ -243,4 +243,24 @@ class Company implements ModelInterface{
 			'graceEndTime'=>$this->graceEndTime,
 		];
 	}
+
+	public function exchangeArrayFromForm(array $data)
+	{
+		// TODO: Implement exchangeArrayFromForm() method.
+	}
+
+	public function exchangeArrayFromDB(array $data)
+	{
+		// TODO: Implement exchangeArrayFromDB() method.
+	}
+
+	public function getArrayCopyForDB()
+	{
+		// TODO: Implement getArrayCopyForDB() method.
+	}
+
+	public function getArrayCopyForForm()
+	{
+		// TODO: Implement getArrayCopyForForm() method.
+	}
 }

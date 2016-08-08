@@ -105,6 +105,7 @@ class Module implements AutoloaderProviderInterface
                     //$dbTableAuthAdapter = new DbTableAuthAdapter($dbAdapter, 'users', 'username', 'password', 'MD5(?)');
                     $dbTableAuthAdapter = new DbTableAuthAdapter($dbAdapter, 'users', 'username', 'password');
 
+//                    $dbTableAuthAdapter = new DbTableAuthAdapter($dbAdapter, 'HR_EMPLOYEE_JOB_HISTORY', 'DESIGNATION_CODE', 'GRADE_CODE');
                     $authService = new AuthenticationService();
                     $authService->setAdapter($dbTableAuthAdapter);
                     $authService->setStorage($container->get(Model\HrisAuthStorage::class));

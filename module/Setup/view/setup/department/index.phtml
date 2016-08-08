@@ -29,10 +29,11 @@ if ($this->messages) {
     <tbody>
 
 <?php  foreach($departments as $department):?>
+    <?php $obj->exchangeArrayFromDB((array)$department) ?>
     <tr role="row">
         <td class="v-align-middle sorting_1">
             <p>
-                <?php print $this->escapeHtml($department->departmentCode) ?>
+                <?php print $this->escapeHtml($obj->departmentCode) ?>
             </p>
         </td>
         <td class="v-align-middle sorting_1">
