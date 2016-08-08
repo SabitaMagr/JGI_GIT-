@@ -44,3 +44,6 @@ legend.scheduler-border {
 .panel-title-head h4{
 	    line-height: 3px !important;
 }
+.panel-footer-default{
+	background-color:#fff !important;
+}

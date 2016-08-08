@@ -29,7 +29,7 @@ print $this->form()->openTag($form);
 
 ?>
 <div class="row">
-	<div class="col-sm-6">
+	<div class="col-sm-12">
 		<div class="panel panel-default">
 			<div class="panel-heading panel-title-head">
 				<!--<div class="panel-title"> -->
@@ -82,10 +82,12 @@ print $this->form()->openTag($form);
 					<?php print $this->formElementErrors()->render($parentBranch,['class'=>'help-block']);?>
 				</div>
 
+				<div class="panel-footer panel-footer-default">
+					<?php  print $this->formSubmit($submit); ?>		
+				</div>
+
 			</div>
-			<div class="panel-footer">
-				<?php  print $this->formSubmit($submit); ?>		
-			</div>
+			
 		</div>
 	</div>
 </div>

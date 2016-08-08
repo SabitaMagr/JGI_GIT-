@@ -1,15 +1,16 @@
 <?php
+
 namespace Setup\Model;
 
 use Zend\Db\TableGateway\TableGateway;
 use Zend\Db\Adapter\AdapterInterface;
 
-class PositionRepository implements RepositoryInterface{
+class LeaveTypeRepository implements RepositoryInterface{
 	private $tableGateway;
 
 	public function __construct(AdapterInterface $adapter){
 
-		$this->tableGateway = new TableGateway('position',$adapter);
+		$this->tableGateway = new TableGateway('leaveType',$adapter);
 		
 	}
 	public function add(ModelInterface $model){
@@ -17,16 +18,16 @@ class PositionRepository implements RepositoryInterface{
 
 	}
 	public function edit(ModelInterface $model,$id){
-		$this->tableGateway->update($model->getArrayCopy(),["positionCode"=>$id]);
+		$this->tableGateway->update($model->getArrayCopy(),["leaveCode"=>$id]);
 	}
 	public function delete($id){
-		$this->tableGateway->delete(["positionCode"=>$id]);
+		$this->tableGateway->delete(["leaveCode"=>$id]);
 	}
 	public function fetchAll(){
 		return $this->tableGateway->select();
 	}
 	public function fetchById($id){
-		$row = $this->tableGateway->select(["positionCode"=>$id]);
+		$row = $this->tableGateway->select(["leaveCode"=>$id]);
 		return $row->current();
 	}
 }

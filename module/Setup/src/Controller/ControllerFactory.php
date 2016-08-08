@@ -41,6 +41,12 @@ class ControllerFactory implements FactoryInterface
             case PositionController::class:
                 $controller = new PositionController($adapter);
                 break;
+            case LeaveTypeController::class:
+                $controller = new LeaveTypeController($adapter);
+                break;
+            case ShiftController::class:
+                $controller = new ShiftController($adapter);
+                break;
         }
         return $controller;
     }

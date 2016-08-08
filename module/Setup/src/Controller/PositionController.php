@@ -60,14 +60,13 @@ class PositionController extends AbstractActionController
 
         $this->form->setData($request->getPost());
 
-        if ($this->form->isValid()) {
+        if ($this->form->isValid()) {      
             $this->position->exchangeArray($this->form->getData());
-            $this->repository->add($this->position);
-            
+            $this->repository->add($this->position);          
             $this->flashmessenger()->addMessage("Position Successfully added!!!");
             return $this->redirect()->toRoute("position");
         } else {
-            return new ViewModel(Helper::addFlashMessagesToArray(
+                return new ViewModel(Helper::addFlashMessagesToArray(
                 $this,
                 [
                     'form' => $this->form,
