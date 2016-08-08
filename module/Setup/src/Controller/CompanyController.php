@@ -90,11 +90,14 @@ class CompanyController extends AbstractActionController{
                 $this,['form'=>$this->form,'id'=>$id]
                 );
         }
+
+        $modifiedDt = date("Y-m-d");
+
         $this->form->setData($request->getPost());
 
         if ($this->form->isValid()) {
             $this->company->exchangeArray($this->form->getData());
-            $this->repository->edit($this->company,$id);
+            $this->repository->edit($this->company,$id,$modifiedDt);
             $this->flashmessenger()->addMessage("Company Successfully Updated!!!");
            return $this->redirect()->toRoute("company");
         } else {

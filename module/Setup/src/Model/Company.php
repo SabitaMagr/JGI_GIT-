@@ -195,7 +195,7 @@ class Company implements ModelInterface{
     public $submit;
 
 
-	public function exchangeArray(array $data)
+	public function exchangeArrayFromForm(array $data)
 	{
 		$this->companyCode = !empty($data['companyCode']) ? $data['companyCode'] : Null;
 		$this->companyName = !empty($data['companyName']) ? $data['companyName'] : Null;
@@ -219,7 +219,7 @@ class Company implements ModelInterface{
 
 	}
 
-	public function getArrayCopy()
+	public function getArrayCopyForForm()
 	{
 		return [
 			'companyCode'=>$this->companyCode,
@@ -242,5 +242,13 @@ class Company implements ModelInterface{
 			'graceStartTime'=>$this->graceStartTime,
 			'graceEndTime'=>$this->graceEndTime,
 		];
+	}
+
+	public function exchangeArrayFromDb(array $data){
+
+	}
+
+	public function getArrayCopyForDb(){
+		
 	}
 }

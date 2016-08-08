@@ -20,7 +20,7 @@ class CompanyRepository implements RepositoryInterface
         $this->tableGateway->insert($model->getArrayCopy());
     }
 
-    public function edit(ModelInterface $model,$id)
+    public function edit(ModelInterface $model,$id,$modifiedDt)
     {
         $this->tableGateway->update($model->getArrayCopy(),["companyCode"=>$id]);
     }
