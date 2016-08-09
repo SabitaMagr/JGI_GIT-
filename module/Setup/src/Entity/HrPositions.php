@@ -15,7 +15,7 @@ class HrPositions
     /**
      * @var integer
      *
-     * @ORM\Column(name="POSITION_ID", type="integer", precision=0, scale=0, nullable=false, unique=false)
+     * @ORM\Column(name="POSITION_ID", type="integer", nullable=false)
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
@@ -24,226 +24,45 @@ class HrPositions
     /**
      * @var string
      *
-     * @ORM\Column(name="POSITION_CODE", type="string", length=20, precision=0, scale=0, nullable=false, unique=false)
+     * @ORM\Column(name="POSITION_CODE", type="string", length=20, nullable=false)
      */
     private $positionCode;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="POSITION_NAME", type="string", length=50, precision=0, scale=0, nullable=false, unique=false)
+     * @ORM\Column(name="POSITION_NAME", type="string", length=50, nullable=false)
      */
     private $positionName;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="REMARKS", type="text", length=65535, precision=0, scale=0, nullable=false, unique=false)
+     * @ORM\Column(name="REMARKS", type="text", length=65535, nullable=false)
      */
     private $remarks;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="STATUS", type="string", length=10, precision=0, scale=0, nullable=false, unique=false)
+     * @ORM\Column(name="STATUS", type="string", length=10, nullable=false)
      */
     private $status;
 
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="CREATED_DT", type="datetime", precision=0, scale=0, nullable=false, unique=false)
+     * @ORM\Column(name="CREATED_DT", type="datetime", nullable=false)
      */
-    private $createdDt;
+    private $createdDt = 'CURRENT_TIMESTAMP';
 
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="MODIFIED_DT", type="date", precision=0, scale=0, nullable=true, unique=false)
+     * @ORM\Column(name="MODIFIED_DT", type="date", nullable=true)
      */
     private $modifiedDt;
 
 
-    /**
-     * Get positionId
-     *
-     * @return integer
-     */
-    public function getPositionId()
-    {
-        return $this->positionId;
-    }
-
-    /**
-     * Set positionCode
-     *
-     * @param string $positionCode
-     *
-     * @return HrPositions
-     */
-    public function setPositionCode($positionCode)
-    {
-        $this->positionCode = $positionCode;
-
-        return $this;
-    }
-
-    /**
-     * Get positionCode
-     *
-     * @return string
-     */
-    public function getPositionCode()
-    {
-        return $this->positionCode;
-    }
-
-    /**
-     * Set positionName
-     *
-     * @param string $positionName
-     *
-     * @return HrPositions
-     */
-    public function setPositionName($positionName)
-    {
-        $this->positionName = $positionName;
-
-        return $this;
-    }
-
-    /**
-     * Get positionName
-     *
-     * @return string
-     */
-    public function getPositionName()
-    {
-        return $this->positionName;
-    }
-
-    /**
-     * Set remarks
-     *
-     * @param string $remarks
-     *
-     * @return HrPositions
-     */
-    public function setRemarks($remarks)
-    {
-        $this->remarks = $remarks;
-
-        return $this;
-    }
-
-    /**
-     * Get remarks
-     *
-     * @return string
-     */
-    public function getRemarks()
-    {
-        return $this->remarks;
-    }
-
-    /**
-     * Set status
-     *
-     * @param string $status
-     *
-     * @return HrPositions
-     */
-    public function setStatus($status)
-    {
-        $this->status = $status;
-
-        return $this;
-    }
-
-    /**
-     * Get status
-     *
-     * @return string
-     */
-    public function getStatus()
-    {
-        return $this->status;
-    }
-
-    /**
-     * Set createdDt
-     *
-     * @param \DateTime $createdDt
-     *
-     * @return HrPositions
-     */
-    public function setCreatedDt($createdDt)
-    {
-        $this->createdDt = $createdDt;
-
-        return $this;
-    }
-
-    /**
-     * Get createdDt
-     *
-     * @return \DateTime
-     */
-    public function getCreatedDt()
-    {
-        return $this->createdDt;
-    }
-
-    /**
-     * Set modifiedDt
-     *
-     * @param \DateTime $modifiedDt
-     *
-     * @return HrPositions
-     */
-    public function setModifiedDt($modifiedDt)
-    {
-        $this->modifiedDt = $modifiedDt;
-
-        return $this;
-    }
-
-    /**
-     * Get modifiedDt
-     *
-     * @return \DateTime
-     */
-    public function getModifiedDt()
-    {
-        return $this->modifiedDt;
-    }
-
-      /**
-     * Convert the object to an array.
-     *
-     * @return array
-     */
-    public function getArrayCopy() 
-    {
-        return [
-            'positionCode' => $this->positionCode,
-            'positionName'=>$this->positionName,
-            'remarks' => $this->remarks,
-            'status' => $this->status
-        ];
-    }
-  
-    /**
-     * Populate from an array.
-     *
-     * @param array $data
-     */
-    public function exchangeArray(array $data) 
-    {
-        $this->positionCode = !empty($data['positionCode']) ? $data['positionCode'] : null;
-        $this->positionName = !empty($data['positionName']) ? $data['positionName'] : null;
-        $this->remarks = !empty($data['remarks']) ? $data['remarks'] : null;
-        $this->status = !empty($data['status']) ? $data['status'] : null;
-    }
 }
 

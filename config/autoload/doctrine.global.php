@@ -3,7 +3,7 @@ $dbParams1 = [
     'hostname' => 'localhost',
     'username' => 'root',
     'password' => 'root',
-    'database' => 'album'
+    'database' => 'hr'
 ];
 return [
     'doctrine' => [

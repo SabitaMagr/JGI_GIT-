@@ -3,10 +3,8 @@
 namespace Setup\Controller;
 
 use Application\Helper\Helper;
-use Setup\Model\BranchRepository;
-use Zend\Db\Adapter\Adapter;
-use Zend\Db\Adapter\AdapterInterface;
-use Zend\Db\Sql\Sql;
+use Doctrine\ORM\EntityManager;
+use Setup\Entity\Album;
 use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
@@ -16,12 +14,14 @@ use Zend\View\View;
 class BranchController extends AbstractActionController
 {
 
-    private $repository;
     private $branch;
     private $form;
+    private $entityManager;
 
-    function __construct(AdapterInterface $adapter)
+    function __construct(EntityManager $entityManager)
     {
+            $this->entityManager=$entityManager;
+
 //       print_r($adapter->query('SELECT * FROM `branch` WHERE `branchCode` = ?', [5])) ;
 //        $sql = $adapter->query('SELECT * FROM `branch`',
 //            Adapter::QUERY_MODE_EXECUTE);
@@ -57,7 +57,6 @@ class BranchController extends AbstractActionController
 //            print_r($r);
 //        }
 //        die();
-        $this->repository = new BranchRepository($adapter);
     }
 
 
@@ -72,7 +71,16 @@ class BranchController extends AbstractActionController
 
     public function indexAction()
     {
-        $branches = $this->repository->fetchAll();
+//        $designation = new Album();
+//        $designation->setTitle("sdsdff");
+//        $designation->setArtist("ds");
+//
+//        $this->entityManager->persist($designation);
+//        $this->entityManager->flush();
+
+
+        $branchRepository = $this->entityManager->getRepository(Album::class);
+        $branches = $branchRepository->findAll();
         return Helper::addFlashMessagesToArray($this, ['branches' => $branches]);
     }
 

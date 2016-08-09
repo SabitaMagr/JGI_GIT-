@@ -123,7 +123,20 @@ return [
             Controller\ServiceTypeController::class => Controller\ControllerFactory::class,
         ]
     ],
-
+    'doctrine' => [
+        'driver' => [
+            _NAMESPACE_ . '_driver' => [
+                'class' => 'Doctrine\ORM\Mapping\Driver\AnnotationDriver',
+                'cache' => 'array',
+                'paths' => [__DIR__ . '/../src/Entity' ]
+            ],
+            'orm_default' => [
+                'drivers' => [
+                    _NAMESPACE_ . '\Entity' => _NAMESPACE_ . '_driver'
+                ]
+            ]
+        ]
+    ],
     'view_manager' => [
         'template_path_stack' => [
             'setup' => __DIR__ . '/../view',

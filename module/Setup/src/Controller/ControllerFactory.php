@@ -16,12 +16,11 @@ class ControllerFactory implements FactoryInterface
 {
     public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
     {
-        // $adapter=$container->get(AdapterInterface::class);
         $conn = [
             'host' =>'localhost',
             'user' => 'root',
             'password' => 'root',
-            'dbname' =>'album' ,
+            'dbname' =>'hr' ,
             'driver'=>'pdo_mysql'
         ];
 
