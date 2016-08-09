@@ -10,26 +10,21 @@ use Zend\Mvc\Controller\AbstractActionController;
 use Setup\Model\Position;
 use Setup\Model\PositionRepository;
 
-
-use Doctrine\ORM\Tools\Setup;
 use Doctrine\ORM\EntityManager;
-
 use Setup\Entity\HrPositions;
-
-use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
-use Doctrine\Common\Annotations\AnnotationReader;
-use Doctrine\Common\Annotations\AnnotationRegistry;
 
 class PositionController extends AbstractActionController
 {
 
-    private $repository;
+    // private $repository;
     private $form;
     private $position;
+    private $entityManager;
 
-    public function __construct(AdapterInterface $adapter)
+    public function __construct(EntityManager $entityManager)
     {
-        $this->repository = new PositionRepository($adapter);
+        $this->entityManager = $entityManager;
+
     }
 
      public function initializeForm()
@@ -43,9 +38,7 @@ class PositionController extends AbstractActionController
 
     public function indexAction()
     {
-        $this->position = $this->repository->fetchAll();
-        $request = $this->getRequest();
-
+        $this->position  = $this->entityManager->getRepository('Setup\Entity\HrPositions')->findAll();
         return Helper::addFlashMessagesToArray($this,['positions' => $this->position]);
     }
 
@@ -54,7 +47,7 @@ class PositionController extends AbstractActionController
     public function addAction()
     {
         $this->initializeForm();
-
+        $hrPosition = new HrPositions();
         $request = $this->getRequest();
 
         if (!$request->isPost()) {
@@ -71,8 +64,10 @@ class PositionController extends AbstractActionController
         $this->form->setData($request->getPost());
 
         if ($this->form->isValid()) {      
-            $this->position->exchangeArrayFromForm($this->form->getData());
-            $this->repository->add($this->position);          
+            $hrPosition->exchangeArray($this->form->getData());
+            $this->entityManager->persist($hrPosition);
+            $this->entityManager->flush();  
+
             $this->flashmessenger()->addMessage("Position Successfully added!!!");
             return $this->redirect()->toRoute("position");
         } else {
@@ -98,10 +93,16 @@ class PositionController extends AbstractActionController
 
         $request=$this->getRequest();
 
+        $hrPosition1 = new HrPositions();
+
         $modifiedDt = date("Y-m-d");
         if(!$request->isPost()){
-            $this->position->exchangeArrayFromDb($this->repository->fetchById($id)->getArrayCopy());
-            $this->form->bind((object)$this->position->getArrayCopyForForm());
+            $hrPosition = $this->entityManager->find('Setup\Entity\HrPositions', $id);
+            
+            //print_r($hrPosition1->getArrayCopy()); die();
+            //print_r($hrPosition); die();
+
+            $this->form->bind($hrPosition);
 
             return Helper::addFlashMessagesToArray(
                 $this,['form'=>$this->form,'id'=>$id]
@@ -124,45 +125,17 @@ class PositionController extends AbstractActionController
 
     }
 
-    public function deleteAction()
-    {
-        $id = (int)$this->params()->fromRoute("id");
-        $this->repository->delete($id);
-        $this->flashmessenger()->addMessage("Position Successfully Deleted!!!");
-        return $this->redirect()->toRoute('position');
-    }
 
-    public function createAction()
-    {
-        $product = new HrPositions();
-        $product->setPositionCode('015');
-        $product->setPositionName('hellow');
-        $product->setRemarks('hi');
-        $product->setStatus('e');
-        
-        $conn = [
-            'host' =>'localhost',
-            'user' => 'root',
-            'password' => 'root',
-            'dbname' =>'album' ,
-            'driver'=>'pdo_mysql'
-        ];
 
-        $paths            = array(__DIR__."/../Entity/");
-        $isDevMode        = false;
+    // public function deleteAction()
+    // {
+    //     $id = (int)$this->params()->fromRoute("id");
+    //     $this->repository->delete($id);
+    //     $this->flashmessenger()->addMessage("Position Successfully Deleted!!!");
+    //     return $this->redirect()->toRoute('position');
+    // }
 
-        $config = Setup::createConfiguration($isDevMode);
-        $driver = new AnnotationDriver(new AnnotationReader(), $paths);
-
-        AnnotationRegistry::registerLoader('class_exists');
-        $config->setMetadataDriverImpl($driver);
-
-        // $entityManager = EntityManager::create($conn, $config);
-        // $entityManager->persist($product);
-        // $entityManager->flush();
-
-        return $this->redirect()->toRoute('position');
-    }
+ 
 }
 
 

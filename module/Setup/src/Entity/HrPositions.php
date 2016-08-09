@@ -217,5 +217,33 @@ class HrPositions
     {
         return $this->modifiedDt;
     }
+
+      /**
+     * Convert the object to an array.
+     *
+     * @return array
+     */
+    public function getArrayCopy() 
+    {
+        return [
+            'positionCode' => $this->positionCode,
+            'positionName'=>$this->positionName,
+            'remarks' => $this->remarks,
+            'status' => $this->status
+        ];
+    }
+  
+    /**
+     * Populate from an array.
+     *
+     * @param array $data
+     */
+    public function exchangeArray(array $data) 
+    {
+        $this->positionCode = !empty($data['positionCode']) ? $data['positionCode'] : null;
+        $this->positionName = !empty($data['positionName']) ? $data['positionName'] : null;
+        $this->remarks = !empty($data['remarks']) ? $data['remarks'] : null;
+        $this->status = !empty($data['status']) ? $data['status'] : null;
+    }
 }
 
