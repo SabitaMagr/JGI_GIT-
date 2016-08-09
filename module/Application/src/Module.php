@@ -16,6 +16,8 @@ use Zend\Authentication\Storage;
 use Zend\Authentication\AuthenticationService;
 use Zend\Authentication\Adapter\DbTable\CredentialTreatmentAdapter as DbTableAuthAdapter;
 
+use Zend\ModuleManager\Feature\ConfigProviderInterface;
+
 class Module implements AutoloaderProviderInterface
 {
     const VERSION = '3.0.1dev';
@@ -103,6 +105,7 @@ class Module implements AutoloaderProviderInterface
                 'AuthService' => function ($container) {
                     $dbAdapter = $container->get(DbAdapter::class);
                     //$dbTableAuthAdapter = new DbTableAuthAdapter($dbAdapter, 'users', 'username', 'password', 'MD5(?)');
+//                    $dbTableAuthAdapter = new DbTableAuthAdapter($dbAdapter, 'HR_USERS', 'USER_NAME', 'PASSWORD');
                     $dbTableAuthAdapter = new DbTableAuthAdapter($dbAdapter, 'users', 'username', 'password');
 
 //                    $dbTableAuthAdapter = new DbTableAuthAdapter($dbAdapter, 'HR_EMPLOYEE_JOB_HISTORY', 'DESIGNATION_CODE', 'GRADE_CODE');

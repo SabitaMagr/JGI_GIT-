@@ -176,12 +176,7 @@ class ArgvInput extends Input
 
         // unexpected argument
         } else {
-            $all = $this->definition->getArguments();
-            if (count($all)) {
-                throw new RuntimeException(sprintf('Too many arguments, expected arguments "%s".', implode('" "', array_keys($all))));
-            }
-
-            throw new RuntimeException(sprintf('No arguments expected, got "%s".', $token));
+            throw new RuntimeException('Too many arguments.');
         }
     }
 
@@ -274,11 +269,14 @@ class ArgvInput extends Input
     /**
      * {@inheritdoc}
      */
-    public function hasParameterOption($values)
+    public function hasParameterOption($values, $onlyParams = false)
     {
         $values = (array) $values;
 
         foreach ($this->tokens as $token) {
+            if ($onlyParams && $token === '--') {
+                return false;
+            }
             foreach ($values as $value) {
                 if ($token === $value || 0 === strpos($token, $value.'=')) {
                     return true;
@@ -292,13 +290,16 @@ class ArgvInput extends Input
     /**
      * {@inheritdoc}
      */
-    public function getParameterOption($values, $default = false)
+    public function getParameterOption($values, $default = false, $onlyParams = false)
     {
         $values = (array) $values;
         $tokens = $this->tokens;
 
         while (0 < count($tokens)) {
             $token = array_shift($tokens);
+            if ($onlyParams && $token === '--') {
+                return false;
+            }
 
             foreach ($values as $value) {
                 if ($token === $value || 0 === strpos($token, $value.'=')) {
@@ -321,14 +322,13 @@ class ArgvInput extends Input
      */
     public function __toString()
     {
-        $self = $this;
-        $tokens = array_map(function ($token) use ($self) {
+        $tokens = array_map(function ($token) {
             if (preg_match('{^(-[^=]+=)(.+)}', $token, $match)) {
-                return $match[1].$self->escapeToken($match[2]);
+                return $match[1].$this->escapeToken($match[2]);
             }
 
             if ($token && $token[0] !== '-') {
-                return $self->escapeToken($token);
+                return $this->escapeToken($token);
             }
 
             return $token;

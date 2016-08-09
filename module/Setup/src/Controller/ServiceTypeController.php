@@ -21,7 +21,7 @@ class ServiceTypeController extends AbstractActionController{
 		$this->repository = new ServiceTypeRepository($adapter);
 	}
 
-	public function initializeForm(){
+	private function initializeForm(){
 		$this->serviceType = new ServiceType();
 		$builder = new AnnotationBuilder();
 		if (!$this->form) {
@@ -40,6 +40,7 @@ class ServiceTypeController extends AbstractActionController{
 		$this->initializeForm();
 
         $request = $this->getRequest();
+
         if (!$request->isPost()) {
         	return Helper::addFlashMessagesToArray($this,[
 	            'form' => $this->form,
@@ -49,13 +50,20 @@ class ServiceTypeController extends AbstractActionController{
         $this->form->setData($request->getPost());
 
         if ($this->form->isValid()) {
-        	$this->serviceType->exchangeArrayFromForm($this->form->getData());
-        	
-        	print_r($this->form->getData());
-      
-            $this->repository->add($this->serviceType);
-            $this->flashmessenger()->addMessage("Service Type Successfully Added!!!");
-            return $this->redirect()->toRoute("serviceType");
+        	try {
+	        	$this->serviceType->exchangeArrayFromForm($this->form->getData());
+	        	
+	        	print_r($this->form->getData());
+	      
+	            $this->repository->add($this->serviceType);
+	            
+	            $this->flashmessenger()->addMessage("Service Type Successfully Added!!!");
+	            return $this->redirect()->toRoute("serviceType");
+	        }
+	        catch(Exception $e) {
+
+	        }
+
         } else {
             return Helper::addFlashMessagesToArray($this,[
 	            'form' => $this->form,
@@ -77,20 +85,23 @@ class ServiceTypeController extends AbstractActionController{
 
         if(!$request->isPost()){
         	$r = $this->repository->fetchById($id);
-        	$this->serviceType->exchangeArrayFromDb($r->getArrayCopy());
-        	$ab = (object)$this->serviceType->getArrayCopyForForm();
+        	$this->serviceType->exchangeArrayFromDb($r->getArrayCopy()); // ARRAY FROM ARRAY OBJECT
+        	$ab = (object)$this->serviceType->getArrayCopyForForm(); //OBJECT
 				
             $this->form->bind($ab);
             return Helper::addFlashMessagesToArray($this,['form'=>$this->form,'id'=>$id]);
         }
+        $modifiedDt = date("Y-m-d");
 
         $this->form->setData($request->getPost());
 
         if ($this->form->isValid()) {
             $this->serviceType->exchangeArrayFromForm($this->form->getData());
-            $this->repository->edit($this->serviceType,$id);
+
+            $this->repository->edit($this->serviceType,$id,$modifiedDt);
+
             $this->flashmessenger()->addMessage("Service Type Successfully Updated!!!");
-           return $this->redirect()->toRoute("serviceType");
+            return $this->redirect()->toRoute("serviceType");
         } else {
             return Helper::addFlashMessagesToArray($this,['form'=>$this->form,'id'=>$id]);
 

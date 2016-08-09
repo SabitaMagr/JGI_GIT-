@@ -10,6 +10,16 @@ use Zend\Mvc\Controller\AbstractActionController;
 use Setup\Model\Position;
 use Setup\Model\PositionRepository;
 
+
+use Doctrine\ORM\Tools\Setup;
+use Doctrine\ORM\EntityManager;
+
+use Setup\Entity\HrPositions;
+
+use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
+use Doctrine\Common\Annotations\AnnotationReader;
+use Doctrine\Common\Annotations\AnnotationRegistry;
+
 class PositionController extends AbstractActionController
 {
 
@@ -61,7 +71,7 @@ class PositionController extends AbstractActionController
         $this->form->setData($request->getPost());
 
         if ($this->form->isValid()) {      
-            $this->position->exchangeArray($this->form->getData());
+            $this->position->exchangeArrayFromForm($this->form->getData());
             $this->repository->add($this->position);          
             $this->flashmessenger()->addMessage("Position Successfully added!!!");
             return $this->redirect()->toRoute("position");
@@ -88,8 +98,11 @@ class PositionController extends AbstractActionController
 
         $request=$this->getRequest();
 
+        $modifiedDt = date("Y-m-d");
         if(!$request->isPost()){
-            $this->form->bind($this->repository->fetchById($id));
+            $this->position->exchangeArrayFromDb($this->repository->fetchById($id)->getArrayCopy());
+            $this->form->bind((object)$this->position->getArrayCopyForForm());
+
             return Helper::addFlashMessagesToArray(
                 $this,['form'=>$this->form,'id'=>$id]
                 );
@@ -98,8 +111,8 @@ class PositionController extends AbstractActionController
         $this->form->setData($request->getPost());
 
         if ($this->form->isValid()) {
-            $this->position->exchangeArray($this->form->getData());
-            $this->repository->edit($this->position,$id);
+            $this->position->exchangeArrayFromForm($this->form->getData());
+            $this->repository->edit($this->position,$id,$modifiedDt);
             $this->flashmessenger()->addMessage("Position Successfully Updated!!!");
            return $this->redirect()->toRoute("position");
         } else {
@@ -116,6 +129,38 @@ class PositionController extends AbstractActionController
         $id = (int)$this->params()->fromRoute("id");
         $this->repository->delete($id);
         $this->flashmessenger()->addMessage("Position Successfully Deleted!!!");
+        return $this->redirect()->toRoute('position');
+    }
+
+    public function createAction()
+    {
+        $product = new HrPositions();
+        $product->setPositionCode('015');
+        $product->setPositionName('hellow');
+        $product->setRemarks('hi');
+        $product->setStatus('e');
+        
+        $conn = [
+            'host' =>'localhost',
+            'user' => 'root',
+            'password' => 'root',
+            'dbname' =>'album' ,
+            'driver'=>'pdo_mysql'
+        ];
+
+        $paths            = array(__DIR__."/../Entity/");
+        $isDevMode        = false;
+
+        $config = Setup::createConfiguration($isDevMode);
+        $driver = new AnnotationDriver(new AnnotationReader(), $paths);
+
+        AnnotationRegistry::registerLoader('class_exists');
+        $config->setMetadataDriverImpl($driver);
+
+        // $entityManager = EntityManager::create($conn, $config);
+        // $entityManager->persist($product);
+        // $entityManager->flush();
+
         return $this->redirect()->toRoute('position');
     }
 }

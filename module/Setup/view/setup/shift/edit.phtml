@@ -6,6 +6,8 @@ $shiftCode = $form->get('shiftCode');
 $shiftName = $form->get('shiftName');
 $startTime = $form->get('startTime');
 $endTime = $form->get('endTime');
+$remarks = $form->get('remarks');
+$status = $form->get('status');
 $submit = $form->get('submit');
 $submit->setAttribute('value',"Edit");
 
@@ -53,6 +55,19 @@ print $this->form()->openTag($form);
 					<?php print $this->formLabel($endTime); ?>
 					<?php print $this->formElement($endTime); ?>
 					<?php print $this->formElementErrors()->render($endTime,['class'=>'help-block']);?>
+				</div>
+
+
+				<div class="form-group form-group-default" style="padding-left:6px">
+					<?php print $this->formLabel($remarks); ?>
+					<?php print $this->formElement($remarks); ?>
+					<?php print $this->formElementErrors()->render($remarks,['class'=>'help-block']);?>
+				</div>
+
+				<div class="form-group form-group-default emp-form-group">
+					<?php print $this->formLabel($status); ?>
+					<?php print $this->formElement($status); ?>
+					<?php print $this->formElementErrors()->render($status,['class'=>'help-block']);?>
 				</div>
 
 				<div class="panel-footer panel-footer-default">

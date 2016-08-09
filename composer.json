@@ -27,9 +27,11 @@
         "zendframework/zend-psr7bridge": "^0.2.2",
         "zendframework/zend-session": "^2.7.1",
         "zendframework/zend-servicemanager-di": "^1.0",
-        "doctrine/orm": "2.4.*",
         "zf-commons/zfc-twig": "dev-master",
-        "zendframework/zend-debug": "^2.5"
+        "zendframework/zend-debug": "^2.5",
+        "doctrine/doctrine-orm-module":"dev-master",
+        "doctrine/doctrine-module":"dev-master"
+
     },
     "autoload": {
         "psr-0": {
@@ -55,7 +57,7 @@
         "serve": "php -S 0.0.0.0:8080 -t public/ public/index.php"
     },
     "require-dev": {
-        "zendframework/zend-developer-tools": "^1.1.0",
-        "zendframework/zend-test": "^3.0.1"
+        "zendframework/zend-test": "^3.0.1",
+        "zendframework/zend-developer-tools": "^1.1"
     }
 }

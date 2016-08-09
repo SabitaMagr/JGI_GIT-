@@ -11,20 +11,22 @@ class ShiftRepository implements RepositoryInterface
     
     public function __construct(AdapterInterface $adapter)
     {
-        $this->tableGateway = new TableGateway('shift',$adapter);
+        $this->tableGateway = new TableGateway('hr_shifts',$adapter);
 
     }
 
      public function add(ModelInterface $model)
     {
  
-        $this->tableGateway->insert($model->getArrayCopy());
+        $this->tableGateway->insert($model->getArrayCopyForDb());
     }
 
 
-    public function edit(ModelInterface $model,$id)
+    public function edit(ModelInterface $model,$id,$modifiedDt)
     {
-        $this->tableGateway->update($model->getArrayCopy(),["shiftCode"=>$id]);
+        $array = $model->getArrayCopyForDb();
+        $newArray = array_merge($array,["MODIFIED_DT"=>$modifiedDt]);
+        $this->tableGateway->update($newArray,["SHIFT_ID"=>$id]);
     }
 
     public function fetchAll()
@@ -34,13 +36,13 @@ class ShiftRepository implements RepositoryInterface
 
     public function fetchById($id)
     {
-        $rowset= $this->tableGateway->select(['shiftCode'=>$id]);
+        $rowset= $this->tableGateway->select(['SHIFT_ID'=>$id]);
         return $rowset->current();
     }
 
     public function delete($id)
     {
-    	$this->tableGateway->delete(['shiftCode'=>$id]);
+    	$this->tableGateway->delete(['SHIFT_ID'=>$id]);
 
     }
 }

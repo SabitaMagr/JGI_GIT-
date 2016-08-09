@@ -34,31 +34,34 @@ if ($this->messages) {
     </thead>
     <tbody>
 
-<?php  foreach($shiftList as $shift):?>
+<?php  foreach($shiftList as $shift):
+
+
+?>
     <tr role="row">
         <td class="v-align-middle sorting_1">
             <p>
-                <?php print $this->escapeHtml($shift->shiftCode) ?>
+                <?php print $this->escapeHtml($shift->SHIFT_CODE) ?>
             </p>
         </td>
         <td class="v-align-middle sorting_1">
             <p>
-                <?php print $this->escapeHtml($shift->shiftName) ?>
+                <?php print $this->escapeHtml($shift->SHIFT_NAME) ?>
             </p>
         </td>
         <td class="v-align-middle sorting_1">
             <p>
-                <?php print $this->escapeHtml($shift->startTime) ?>
+                <?php print $this->escapeHtml($shift->START_TIME) ?>
             </p>
         </td>
         <td class="v-align-middle sorting_1">
             <p>
-                <?php print $this->escapeHtml($shift->endTime) ?>
+                <?php print $this->escapeHtml($shift->END_TIME) ?>
             </p>
         </td>
         <td class="v-align-middle sorting_1">
-            <a href="<?= $this->url("shift",["action"=>"edit","id"=>$shift->shiftCode]) ?>">Edit</a>|
-            <a href="<?= $this->url("shift",["action"=>"delete","id"=>$shift->shiftCode]); ?>">Delete</a>
+            <a href="<?= $this->url("shift",["action"=>"edit","id"=>$shift->SHIFT_ID]) ?>">Edit</a>|
+            <a href="<?= $this->url("shift",["action"=>"delete","id"=>$shift->SHIFT_ID]); ?>">Delete</a>
         </td>
     </tr>
 

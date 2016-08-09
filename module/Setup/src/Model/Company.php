@@ -195,7 +195,7 @@ class Company implements ModelInterface{
     public $submit;
 
 
-	public function exchangeArray(array $data)
+	public function exchangeArrayFromForm(array $data)
 	{
 		$this->companyCode = !empty($data['companyCode']) ? $data['companyCode'] : Null;
 		$this->companyName = !empty($data['companyName']) ? $data['companyName'] : Null;
@@ -219,7 +219,7 @@ class Company implements ModelInterface{
 
 	}
 
-	public function getArrayCopy()
+	public function getArrayCopyForForm()
 	{
 		return [
 			'companyCode'=>$this->companyCode,
@@ -244,6 +244,7 @@ class Company implements ModelInterface{
 		];
 	}
 
+<<<<<<< HEAD
 	public function exchangeArrayFromForm(array $data)
 	{
 		// TODO: Implement exchangeArrayFromForm() method.
@@ -262,5 +263,13 @@ class Company implements ModelInterface{
 	public function getArrayCopyForForm()
 	{
 		// TODO: Implement getArrayCopyForForm() method.
+=======
+	public function exchangeArrayFromDb(array $data){
+
+	}
+
+	public function getArrayCopyForDb(){
+		
+>>>>>>> 15ed08473a649f53c440f2a0089102de7be18d43
 	}
 }
