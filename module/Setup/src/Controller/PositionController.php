@@ -18,7 +18,7 @@ class PositionController extends AbstractActionController
 
     // private $repository;
     private $form;
-    private $position;
+    private $positionForm;
     private $entityManager;
     private $hrPosition;
 
@@ -31,20 +31,18 @@ class PositionController extends AbstractActionController
      public function initializeForm()
     {   
         $this->hrPosition = new HrPositions();
-        $this->position = new Position();
+        $this->positionForm = new Position();
         $builder = new AnnotationBuilder();
         if (!$this->form) {
-            $this->form = $builder->createForm($this->position);
+            $this->form = $builder->createForm($this->positionForm);
         }
     }
 
     public function indexAction()
     {
-        $this->position  = $this->entityManager->getRepository('Setup\Entity\HrPositions')->findAll();
-        return Helper::addFlashMessagesToArray($this,['positions' => $this->position]);
+        $positionList  = $this->entityManager->getRepository('Setup\Entity\HrPositions')->findAll();
+        return Helper::addFlashMessagesToArray($this,['positions' => $positionList]);
     }
-
-    
 
     public function addAction()
     {
@@ -129,7 +127,6 @@ class PositionController extends AbstractActionController
             return $this->redirect()->toRoute('position');
         }
         $this->hrPosition =  $this->entityManager->find('Setup\Entity\HrPositions', $id);
-
         $this->entityManager->remove($this->hrPosition);
         $this->entityManager->flush();
         $this->flashmessenger()->addMessage("Position Successfully Deleted!!!");
