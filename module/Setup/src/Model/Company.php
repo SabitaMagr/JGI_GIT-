@@ -244,11 +244,6 @@ class Company implements ModelInterface{
 		];
 	}
 
-<<<<<<< HEAD
-	public function exchangeArrayFromForm(array $data)
-	{
-		// TODO: Implement exchangeArrayFromForm() method.
-	}
 
 	public function exchangeArrayFromDB(array $data)
 	{
@@ -260,16 +255,4 @@ class Company implements ModelInterface{
 		// TODO: Implement getArrayCopyForDB() method.
 	}
 
-	public function getArrayCopyForForm()
-	{
-		// TODO: Implement getArrayCopyForForm() method.
-=======
-	public function exchangeArrayFromDb(array $data){
-
-	}
-
-	public function getArrayCopyForDb(){
-		
->>>>>>> 15ed08473a649f53c440f2a0089102de7be18d43
-	}
 }
