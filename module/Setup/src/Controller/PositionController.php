@@ -20,6 +20,7 @@ class PositionController extends AbstractActionController
     private $form;
     private $position;
     private $entityManager;
+    private $hrPosition;
 
     public function __construct(EntityManager $entityManager)
     {
@@ -28,7 +29,8 @@ class PositionController extends AbstractActionController
     }
 
      public function initializeForm()
-    {
+    {   
+        $this->hrPosition = new HrPositions();
         $this->position = new Position();
         $builder = new AnnotationBuilder();
         if (!$this->form) {
@@ -47,7 +49,6 @@ class PositionController extends AbstractActionController
     public function addAction()
     {
         $this->initializeForm();
-        $hrPosition = new HrPositions();
         $request = $this->getRequest();
 
         if (!$request->isPost()) {
@@ -64,8 +65,8 @@ class PositionController extends AbstractActionController
         $this->form->setData($request->getPost());
 
         if ($this->form->isValid()) {      
-            $hrPosition->exchangeArray($this->form->getData());
-            $this->entityManager->persist($hrPosition);
+            $this->hrPosition->exchangeArray($this->form->getData());
+            $this->entityManager->persist($this->hrPosition);
             $this->entityManager->flush();  
 
             $this->flashmessenger()->addMessage("Position Successfully added!!!");
@@ -93,16 +94,11 @@ class PositionController extends AbstractActionController
 
         $request=$this->getRequest();
 
-        $hrPosition1 = new HrPositions();
-
         $modifiedDt = date("Y-m-d");
         if(!$request->isPost()){
-            $hrPosition = $this->entityManager->find('Setup\Entity\HrPositions', $id);
-            
-            //print_r($hrPosition1->getArrayCopy()); die();
-            //print_r($hrPosition); die();
+            $this->hrPosition->exchangeArray($this->entityManager->find('Setup\Entity\HrPositions', $id)->getArrayCopy());
 
-            $this->form->bind($hrPosition);
+            $this->form->bind((object)$this->hrPosition->getArrayCopy());
 
             return Helper::addFlashMessagesToArray(
                 $this,['form'=>$this->form,'id'=>$id]
@@ -112,29 +108,33 @@ class PositionController extends AbstractActionController
         $this->form->setData($request->getPost());
 
         if ($this->form->isValid()) {
-            $this->position->exchangeArrayFromForm($this->form->getData());
-            $this->repository->edit($this->position,$id,$modifiedDt);
+            $this->hrPosition->exchangeArray($this->form->getData());
+            $this->hrPosition->setPositionId($id);
+            $this->entityManager->merge($this->hrPosition);
+            $this->entityManager->flush();     
+            
             $this->flashmessenger()->addMessage("Position Successfully Updated!!!");
-           return $this->redirect()->toRoute("position");
+            return $this->redirect()->toRoute("position");
         } else {
             return Helper::addFlashMessagesToArray(
                 $this,['form'=>$this->form,'id'=>$id]
              );
-
         }
-
     }
 
+    public function deleteAction()
+    {
+        $id = (int)$this->params()->fromRoute("id");
+        if (!$id) {
+            return $this->redirect()->toRoute('position');
+        }
+        $this->hrPosition =  $this->entityManager->find('Setup\Entity\HrPositions', $id);
 
-
-    // public function deleteAction()
-    // {
-    //     $id = (int)$this->params()->fromRoute("id");
-    //     $this->repository->delete($id);
-    //     $this->flashmessenger()->addMessage("Position Successfully Deleted!!!");
-    //     return $this->redirect()->toRoute('position');
-    // }
-
+        $this->entityManager->remove($this->hrPosition);
+        $this->entityManager->flush();
+        $this->flashmessenger()->addMessage("Position Successfully Deleted!!!");
+        return $this->redirect()->toRoute('position');
+    }
  
 }
 

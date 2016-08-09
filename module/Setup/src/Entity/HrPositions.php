@@ -64,6 +64,21 @@ class HrPositions
     private $modifiedDt;
 
 
+     /**
+     * Set positionId
+     *
+     * @param string $positionCode
+     *
+     * @return HrPositions
+     */
+    public function setPositionId($positionId)
+    {
+        $this->positionId = $positionId;
+
+        return $this;
+    }
+
+
     /**
      * Get positionId
      *
@@ -226,6 +241,7 @@ class HrPositions
     public function getArrayCopy() 
     {
         return [
+            'positionId' => $this->positionId,
             'positionCode' => $this->positionCode,
             'positionName'=>$this->positionName,
             'remarks' => $this->remarks,
@@ -240,6 +256,7 @@ class HrPositions
      */
     public function exchangeArray(array $data) 
     {
+        $this->positionId =  !empty($data['positionId']) ? $data['positionId'] : null;
         $this->positionCode = !empty($data['positionCode']) ? $data['positionCode'] : null;
         $this->positionName = !empty($data['positionName']) ? $data['positionName'] : null;
         $this->remarks = !empty($data['remarks']) ? $data['remarks'] : null;
