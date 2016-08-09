@@ -157,9 +157,9 @@ class PositionController extends AbstractActionController
         AnnotationRegistry::registerLoader('class_exists');
         $config->setMetadataDriverImpl($driver);
 
-        $entityManager = EntityManager::create($conn, $config);
-        $entityManager->persist($product);
-        $entityManager->flush();
+        // $entityManager = EntityManager::create($conn, $config);
+        // $entityManager->persist($product);
+        // $entityManager->flush();
 
         return $this->redirect()->toRoute('position');
     }
