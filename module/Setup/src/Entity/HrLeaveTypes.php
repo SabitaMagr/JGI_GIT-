@@ -1,39 +1,45 @@
 <?php
-
 namespace Setup\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * HrPositions
+ * HrLeaveTypes
  *
- * @ORM\Table(name="HR_POSITIONS")
+ * @ORM\Table(name="HR_LEAVE_TYPES")
  * @ORM\Entity
  */
-class HrPositions
+class HrLeaveTypes
 {
     /**
      * @var integer
      *
-     * @ORM\Column(name="POSITION_ID", type="integer", nullable=false)
+     * @ORM\Column(name="LEAVE_ID", type="integer", nullable=false)
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
-    private $positionId;
+    private $leaveId;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="POSITION_CODE", type="string", length=20, nullable=false)
+     * @ORM\Column(name="LEAVE_CODE", type="string", length=20, nullable=false)
      */
-    private $positionCode;
+    private $leaveCode;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="POSITION_NAME", type="string", length=50, nullable=false)
+     * @ORM\Column(name="LEAVE_NAME", type="string", length=50, nullable=false)
      */
-    private $positionName;
+    private $leaveName;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="TOTAL_LEAVE", type="integer", nullable=false)
+     */
+    private $totalLeave;
 
     /**
      * @var string
@@ -45,7 +51,7 @@ class HrPositions
     /**
      * @var string
      *
-     * @ORM\Column(name="STATUS", type="string", length=10, nullable=false)
+     * @ORM\Column(name="STATUS", type="string", length=11, nullable=false)
      */
     private $status;
 
@@ -59,56 +65,72 @@ class HrPositions
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="MODIFIED_DT", type="date", nullable=true)
+     * @ORM\Column(name="MODIFIED_DT", type="date", nullable=false)
      */
     private $modifiedDt;
 
     /**
      * @return int
      */
-    public function getPositionId()
+    public function getLeaveId()
     {
-        return $this->positionId;
+        return $this->leaveId;
     }
 
     /**
-     * @param int $positionId
+     * @param int $leaveId
      */
-    public function setPositionId($positionId)
+    public function setLeaveId($leaveId)
     {
-        $this->positionId = $positionId;
-    }
-
-    /**
-     * @return string
-     */
-    public function getPositionCode()
-    {
-        return $this->positionCode;
-    }
-
-    /**
-     * @param string $positionCode
-     */
-    public function setPositionCode($positionCode)
-    {
-        $this->positionCode = $positionCode;
+        $this->leaveId = $leaveId;
     }
 
     /**
      * @return string
      */
-    public function getPositionName()
+    public function getLeaveCode()
     {
-        return $this->positionName;
+        return $this->leaveCode;
     }
 
     /**
-     * @param string $positionName
+     * @param string $leaveCode
      */
-    public function setPositionName($positionName)
+    public function setLeaveCode($leaveCode)
     {
-        $this->positionName = $positionName;
+        $this->leaveCode = $leaveCode;
+    }
+
+    /**
+     * @return string
+     */
+    public function getLeaveName()
+    {
+        return $this->leaveName;
+    }
+
+    /**
+     * @param string $leaveName
+     */
+    public function setLeaveName($leaveName)
+    {
+        $this->leaveName = $leaveName;
+    }
+
+    /**
+     * @return int
+     */
+    public function getTotalLeave()
+    {
+        return $this->totalLeave;
+    }
+
+    /**
+     * @param int $totalLeave
+     */
+    public function setTotalLeave($totalLeave)
+    {
+        $this->totalLeave = $totalLeave;
     }
 
     /**
@@ -176,9 +198,7 @@ class HrPositions
     }
 
     public function getArrayCopy(){
-
         return get_object_vars($this);
-
     }
 
 

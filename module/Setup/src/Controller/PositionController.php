@@ -8,11 +8,9 @@ use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\View\Model\ViewModel;
 use Zend\Mvc\Controller\AbstractActionController;
 use Setup\Model\Position;
-use Setup\Model\PositionRepository;
 
 use Doctrine\ORM\EntityManager;
 use Setup\Entity\HrPositions;
-
 use DoctrineModule\Stdlib\Hydrator\DoctrineObject as DoctrineHydrator;
 
 class PositionController extends AbstractActionController
@@ -66,8 +64,9 @@ class PositionController extends AbstractActionController
 
         $this->form->setData($request->getPost());
 
-        if ($this->form->isValid()) {      
-            $this->hrPosition = $this->hydrator->hydrate($this->form->getData(), $this->hrPosition);  
+        if ($this->form->isValid()) {    
+            $formData = $this->form->getData();  
+            $this->hrPosition = $this->hydrator->hydrate($formData, $this->hrPosition);  
             $this->entityManager->persist($this->hrPosition);
             $this->entityManager->flush();  
 

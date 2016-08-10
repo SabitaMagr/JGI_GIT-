@@ -32,17 +32,17 @@ if ($this->messages) {
     <tr role="row">
         <td class="v-align-middle sorting_1">
             <p>
-                <?php print $this->escapeHtml($leaveType->leaveCode) ?>
+                <?php print $this->escapeHtml($leaveType->getLeaveCode()) ?>
             </p>
         </td>
         <td class="v-align-middle sorting_1">
             <p>
-                <?php print $this->escapeHtml($leaveType->leaveName) ?>
+                <?php print $this->escapeHtml($leaveType->getLeaveName()) ?>
             </p>
         </td>
         <td class="v-align-middle sorting_1">
-            <a href="<?= $this->url("leaveType",["action"=>"edit","id"=>$leaveType->leaveCode]) ?>">Edit</a>|
-            <a href="<?= $this->url("leaveType",["action"=>"delete","id"=>$leaveType->leaveCode]); ?>">Delete</a>
+            <a href="<?= $this->url("leaveType",["action"=>"edit","id"=>$leaveType->getLeaveId()]) ?>">Edit</a>|
+            <a href="<?= $this->url("leaveType",["action"=>"delete","id"=>$leaveType->getLeaveId()]); ?>" onclick="return confirm('Are you sure you want to delete this item?');">Delete</a>
         </td>
     </tr>
 
