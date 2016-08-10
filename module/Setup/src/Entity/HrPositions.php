@@ -242,41 +242,9 @@ class HrPositions
      */
     public function getArrayCopy() 
     {
-        return [
-            'positionId' => $this->positionId,
-            'positionCode' => $this->positionCode,
-            'positionName'=>$this->positionName,
-            'remarks' => $this->remarks,
-            'status' => $this->status
-        ];
+        return get_object_vars($this);
     }
   
-    /**
-     * Populate from an array.
-     *
-     * @param array $data
-     */
-    public function exchangeArray(array $data) 
-    {
-        $this->positionId =  !empty($data['positionId']) ? $data['positionId'] : null;
-        $this->positionCode = !empty($data['positionCode']) ? $data['positionCode'] : null;
-        $this->positionName = !empty($data['positionName']) ? $data['positionName'] : null;
-        $this->remarks = !empty($data['remarks']) ? $data['remarks'] : null;
-        $this->status = !empty($data['status']) ? $data['status'] : null;
-    }
-
-    public function set(array $array) {
-    $refl = new ReflectionClass($this);
-
-        foreach ($array as $propertyToSet => $value) {
-            $property = $refl->getProperty($propertyToSet);
-
-            if ($property instanceof ReflectionProperty) {
-              $property->setValue($this, $value);
-            }
-            //var_dump($this); die();
-        }
-    }
 
 }
 

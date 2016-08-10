@@ -67,7 +67,7 @@ class PositionController extends AbstractActionController
         $this->form->setData($request->getPost());
 
         if ($this->form->isValid()) {      
-            $this->hrPosition->exchangeArray($this->form->getData());
+            $this->hrPosition = $this->hydrator->hydrate($this->form->getData(), $this->hrPosition);  
             $this->entityManager->persist($this->hrPosition);
             $this->entityManager->flush();  
 
@@ -84,7 +84,6 @@ class PositionController extends AbstractActionController
             );
         }   
     }
-
 
     public function editAction()
     {
@@ -108,9 +107,11 @@ class PositionController extends AbstractActionController
 
         if ($this->form->isValid()) {
 
-            $form = $this->form->getData();
-            $this->hrPosition = $this->hydrator->hydrate($form, $this->hrPosition);  
+            $formData = $this->form->getData();
+            $newFormData =  array_merge($formData, ['modifiedDt'=> $modifiedDt ]);        
+            $this->hrPosition = $this->hydrator->hydrate($newFormData, $this->hrPosition);  
             $this->hrPosition->setPositionId($id);
+
             $this->entityManager->merge($this->hrPosition);
             $this->entityManager->flush();     
             
