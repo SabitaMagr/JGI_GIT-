@@ -1,7 +1,5 @@
 <?php
 namespace Setup\Form;
-
-
 /**
 * Form Setup Leave Type
 * Leave Type Form.

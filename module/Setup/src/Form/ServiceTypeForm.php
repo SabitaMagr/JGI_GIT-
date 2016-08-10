@@ -1,9 +1,10 @@
 <?php
 namespace Setup\Form;
 
+
 /**
-* Form Setup Shift
-* Shift Form.
+* Form Setup Service Type
+* Service Type Form.
 * Created By: Somkala Pachhai
 * Edited By: 
 * Date: August 10, 2016, Wednesday 
@@ -11,51 +12,33 @@ namespace Setup\Form;
 * Last Modified Date: 
 */
 
+
 use Zend\Form\Annotation;
 
 /** 
 * @Annotation\Hydrator("Zend\Hydrator\ObjectProperty")
-* @Annotation\Name("Shift")
+* @Annotation\Name("ServiceType")
 */
 
-class ShiftForm{
+class ServiceTypeForm{
 	/**
 	 * @Annotion\Type("Zend\Form\Element\Text")
 	 * @Annotation\Required({"required":"true"})
 	 * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
-	 * @Annotation\Options({"label":"Shift Code"})
-	 * @Annotation\Attributes({ "id":"form-shiftCode", "class":"form-shiftCode form-control" })
+	 * @Annotation\Options({"label":"Service Type Code"})
+	 * @Annotation\Attributes({ "id":"form-serviceTypeCode", "class":"form-serviceTypeCode form-control" })
 	 */
-	public $shiftCode;
+	public $serviceTypeCode;
 
 	/**
 	 * @Annotion\Type("Zend\Form\Element\Text")
 	 * @Annotation\Required({"required":"true"})
 	 * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
-	 * @Annotation\Options({"label":"Shift Name"})
-	 * @Annotation\Validator({"name":"StringLength", "options":{"min":"5"}})
-	 * @Annotation\Attributes({ "id":"form-shiftName", "class":"form-shiftName form-control" })
+	 * @Annotation\Options({"label":"Service Type Name"})
+	 * @Annotation\Attributes({ "id":"form-serviceTypeName", "class":"form-serviceTypeName form-control" })
 	 */
-	public $shiftName;
+	public $serviceTypeName;
 
-
-	/**
-	 * @Annotation\Type("Zend\Form\Element\Text")
-	 * @Annotation\Required({"required":"false"})
-	 * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
-	 * @Annotation\Options({"label":"Start Time"})
-	 * @Annotation\Attributes({ "id":"form-startTime", "class":"form-startTime form-control" })
-	 */
-	public $startTime;
-
-	/**
-	 * @Annotation\Type("Zend\Form\Element\Text")
-	 * @Annotation\Required({"required":"false"})
-	 * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
-	 * @Annotation\Options({"label":"End Time"})
-	 * @Annotation\Attributes({ "id":"form-endTime", "class":"form-endTime form-control" })
-	 */
-	public $endTime;
 
 	/**
      * @Annotation\Type("Zend\Form\Element\Textarea")
@@ -74,8 +57,8 @@ class ShiftForm{
      * @Annotation\Attributes({ "id":"form-status","data-init-plugin":"cs-select","class":"cs-select cs-skin-slide form-status form-control"})
      */
     public $status;
-
 	
+
 	/**
      * @Annotation\Type("Zend\Form\Element\Submit")
      * @Annotation\Attributes({"value":"Submit","class":"btn btn-primary pull-right"})
@@ -84,5 +67,5 @@ class ShiftForm{
 
 }
 
-/* End of file ShiftForm.php */
-/* Location: ./Setup/src/Form/ShiftForm.php */
+/* End of file ServiceTypeForm.php */
+/* Location: ./Setup/src/Form/ServiceTypeForm.php */

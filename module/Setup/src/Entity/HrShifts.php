@@ -68,7 +68,7 @@ class HrShifts
      *
      * @ORM\Column(name="CREATED_DT", type="datetime", nullable=false)
      */
-    private $createdDt = 'CURRENT_TIMESTAMP';
+    private $createdDt;
 
     /**
      * @var \DateTime
@@ -219,6 +219,10 @@ class HrShifts
     public function setModifiedDt($modifiedDt)
     {
         $this->modifiedDt = $modifiedDt;
+    }
+
+    public function getArrayCopy(){
+        return get_object_vars($this);
     }
 
 
