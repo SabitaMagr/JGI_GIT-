@@ -13,6 +13,8 @@ use Setup\Model\PositionRepository;
 use Doctrine\ORM\EntityManager;
 use Setup\Entity\HrPositions;
 
+use DoctrineModule\Stdlib\Hydrator\DoctrineObject as DoctrineHydrator;
+
 class PositionController extends AbstractActionController
 {
 
@@ -21,10 +23,12 @@ class PositionController extends AbstractActionController
     private $positionForm;
     private $entityManager;
     private $hrPosition;
+    private $hydrator;
 
     public function __construct(EntityManager $entityManager)
     {
         $this->entityManager = $entityManager;
+        $this->hydrator = new DoctrineHydrator($entityManager);
 
     }
 
@@ -89,15 +93,12 @@ class PositionController extends AbstractActionController
             return $this->redirect()->toRoute('position');
         }
         $this->initializeForm();
-
         $request=$this->getRequest();
 
         $modifiedDt = date("Y-m-d");
         if(!$request->isPost()){
-            $this->hrPosition->exchangeArray($this->entityManager->find('Setup\Entity\HrPositions', $id)->getArrayCopy());
-
-            $this->form->bind((object)$this->hrPosition->getArrayCopy());
-
+            $positionEdit = (object)$this->entityManager->find('Setup\Entity\HrPositions', $id)->getArrayCopy();
+            $this->form->bind($positionEdit);
             return Helper::addFlashMessagesToArray(
                 $this,['form'=>$this->form,'id'=>$id]
                 );
@@ -106,7 +107,9 @@ class PositionController extends AbstractActionController
         $this->form->setData($request->getPost());
 
         if ($this->form->isValid()) {
-            $this->hrPosition->exchangeArray($this->form->getData());
+
+            $form = $this->form->getData();
+            $this->hrPosition = $this->hydrator->hydrate($form, $this->hrPosition);  
             $this->hrPosition->setPositionId($id);
             $this->entityManager->merge($this->hrPosition);
             $this->entityManager->flush();     
@@ -132,6 +135,9 @@ class PositionController extends AbstractActionController
         $this->flashmessenger()->addMessage("Position Successfully Deleted!!!");
         return $this->redirect()->toRoute('position');
     }
+
+
+    
  
 }
 

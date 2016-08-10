@@ -4,6 +4,8 @@ namespace Setup\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
+use ReflectionClass;
+
 /**
  * HrPositions
  *
@@ -262,5 +264,19 @@ class HrPositions
         $this->remarks = !empty($data['remarks']) ? $data['remarks'] : null;
         $this->status = !empty($data['status']) ? $data['status'] : null;
     }
+
+    public function set(array $array) {
+    $refl = new ReflectionClass($this);
+
+        foreach ($array as $propertyToSet => $value) {
+            $property = $refl->getProperty($propertyToSet);
+
+            if ($property instanceof ReflectionProperty) {
+              $property->setValue($this, $value);
+            }
+            //var_dump($this); die();
+        }
+    }
+
 }
 

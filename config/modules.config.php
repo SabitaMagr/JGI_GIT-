@@ -14,7 +14,7 @@
 
 
 return [
-        'ZendDeveloperTools',
+        
         'Zend\Paginator',
         'Zend\ServiceManager\Di',
         'Zend\Session',
