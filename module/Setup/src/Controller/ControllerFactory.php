@@ -17,15 +17,16 @@ class ControllerFactory implements FactoryInterface
     public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
     {
         $conn = [
-            'host' =>'localhost',
+            'host' => '192.168.4.11',
             'user' => 'root',
             'password' => 'root',
-            'dbname' =>'hr' ,
-            'driver'=>'pdo_mysql'
+            'dbname' => 'hr',
+            'driver' => 'pdo_mysql',
         ];
 
-        $paths            = array(__DIR__."/../Entity/");
-        $isDevMode        = false;
+        $paths = array(__DIR__ . "/../Entity/");
+        echo __DIR__ . "/../Entity/";
+        $isDevMode = false;
 
         $config = Setup::createConfiguration($isDevMode);
         $driver = new AnnotationDriver(new AnnotationReader(), $paths);
@@ -33,12 +34,10 @@ class ControllerFactory implements FactoryInterface
         AnnotationRegistry::registerLoader('class_exists');
         $config->setMetadataDriverImpl($driver);
 
-        $entityManager = EntityManager::create($conn, $config);
+        $entityManager = EntityManager::create(null, $config);
 
-
-        
-        $controller=new $requestedName($entityManager);
-
+        $controller = new $requestedName($entityManager);
+        die();
         return $controller;
     }
 }

@@ -23,105 +23,118 @@ use Zend\Db\Sql\Select;
 use Setup\Model\Employee;
 
 
+use Doctrine\ORM\Tools\Setup;
+use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
+use Doctrine\Common\Annotations\AnnotationReader;
+use Doctrine\Common\Annotations\AnnotationRegistry;
+
 class EmployeeController extends AbstractActionController
 {
-    protected $form;
-    private $employeeRepository;
-
-    public function __construct(AdapterInterface $db)
-    {
-        $this->employeeRepository = new EmployeeRepository($db);
-
-    }
-
-
-    public function addAction()
-    {
-        $employee = new Employee();
-        $builder = new AnnotationBuilder();
-        if (!$this->form) {
-            $this->form = $builder->createForm($employee);
-        }
-
-        $request = $this->getRequest();
-        if (!$request->isPost()) {
-            return new ViewModel([
-                'form' => $this->form
-            ]);
-        }
-
-
-        $this->form->setData($request->getPost());
-
-        if ($this->form->isValid()) {
-            $employee->exchangeArray($this->form->getData());
-
-            $this->employeeRepository->add($employee);
-
-            return $this->redirect()->toRoute("setup");
-
-        } else {
-            return $this->redirect()->toRoute("123");
-
-        }
-
-
-    }
-
-    public function editAction()
-    {
-        $id = (int)$this->params()->fromRoute('id', 0);
-
-        if (0 === $id) {
-            return $this->redirect()->toRoute('setup', ['action' => 'index']);
-        }
-
-
-        $employee = new Employee();
-        $builder = new AnnotationBuilder();
-        if (!$this->form) {
-            $this->form = $builder->createForm($employee);
-        }
-
-
-        $request = $this->getRequest();
-        $viewData = [];
-
-        if (!$request->isPost()) {
-            $this->form->bind($this->employeeRepository->fetchById($id));
-
-            $viewData = ['id' => $id, 'form' => $this->form];
-            return $viewData;
-        }
-
-        $this->form->setData($request->getPost());
-
-        if (!$this->form->isValid()) {
-            return $viewData;
-        }
-
-        $employee->exchangeArray($this->form->getData());
-        $this->employeeRepository->edit($employee, $id);
-
-
-        return $this->redirect()->toRoute("setup");
-
-    }
 
     public function indexAction()
     {
-//        $employeeTable = new TableGateway('employee', $this->db);
-//
-//
-//        $rowset = $employeeTable->select(function (Select $select) {
-//            $select->order('employeeCode desc');
-//        });
-
-        $rowset=$this->employeeRepository->fetchAll();
-        return new ViewModel(['list' => $rowset]);
-
 
     }
+
+
+//    protected $form;
+//    private $employeeRepository;
+//
+//    public function __construct(AdapterInterface $db)
+//    {
+//        $this->employeeRepository = new EmployeeRepository($db);
+//
+//    }
+//
+//
+//    public function addAction()
+//    {
+//        $employee = new Employee();
+//        $builder = new AnnotationBuilder();
+//        if (!$this->form) {
+//            $this->form = $builder->createForm($employee);
+//        }
+//
+//        $request = $this->getRequest();
+//        if (!$request->isPost()) {
+//            return new ViewModel([
+//                'form' => $this->form
+//            ]);
+//        }
+//
+//
+//        $this->form->setData($request->getPost());
+//
+//        if ($this->form->isValid()) {
+//            $employee->exchangeArray($this->form->getData());
+//
+//            $this->employeeRepository->add($employee);
+//
+//            return $this->redirect()->toRoute("setup");
+//
+//        } else {
+//            return $this->redirect()->toRoute("123");
+//
+//        }
+//
+//
+//    }
+//
+//    public function editAction()
+//    {
+//        $id = (int)$this->params()->fromRoute('id', 0);
+//
+//        if (0 === $id) {
+//            return $this->redirect()->toRoute('setup', ['action' => 'index']);
+//        }
+//
+//
+//        $employee = new Employee();
+//        $builder = new AnnotationBuilder();
+//        if (!$this->form) {
+//            $this->form = $builder->createForm($employee);
+//        }
+//
+//
+//        $request = $this->getRequest();
+//        $viewData = [];
+//
+//        if (!$request->isPost()) {
+//            $this->form->bind($this->employeeRepository->fetchById($id));
+//
+//            $viewData = ['id' => $id, 'form' => $this->form];
+//            return $viewData;
+//        }
+//
+//        $this->form->setData($request->getPost());
+//
+//        if (!$this->form->isValid()) {
+//            return $viewData;
+//        }
+//
+//        $employee->exchangeArray($this->form->getData());
+//        $this->employeeRepository->edit($employee, $id);
+//
+//
+//        return $this->redirect()->toRoute("setup");
+//
+//    }
+//
+//    public function indexAction()
+//    {
+////        $employeeTable = new TableGateway('employee', $this->db);
+////
+////
+////        $rowset = $employeeTable->select(function (Select $select) {
+////            $select->order('employeeCode desc');
+////        });
+//
+//        $rowset=$this->employeeRepository->fetchAll();
+//        return new ViewModel(['list' => $rowset]);
+//
+//
+//    }
 
 
 }

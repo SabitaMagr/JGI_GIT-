@@ -42,7 +42,7 @@ if ($this->messages) {
         </td>
         <td class="v-align-middle sorting_1">
             <a href="<?= $this->url("position",["action"=>"edit","id"=>$position->getPositionId()]) ?>">Edit</a>|
-            <a href="<?= $this->url("position",["action"=>"delete","id"=>$position->getPositionId()]); ?>">Delete</a>
+            <a href="<?= $this->url("position",["action"=>"delete","id"=>$position->getPositionId()]); ?>" onclick="return confirm('Are you sure you want to delete this item?');">Delete</a>
         </td>
     </tr>
 
