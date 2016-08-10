@@ -9,6 +9,7 @@ $remarks = $form->get('remarks');
 $status = $form->get('status');
 
 $submit = $form->get('submit');
+$submit->setAttribute('value',"Edit");
 
 $form->setAttribute('action',$this->url("leaveType",["action"=>"edit","id"=>$id]));
 

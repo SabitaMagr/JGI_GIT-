@@ -8,6 +8,7 @@ $basicSalary = $form->get("basicSalary");
 $status = $form->get("status");
 
 $submit = $form->get("submit");
+$submit->setAttribute('value',"Edit");
 
 $form->setAttribute('action', $this->url('designation', ['action' => 'edit',"id"=>$id]));
 
