@@ -2,6 +2,17 @@
 
 namespace Setup\Controller;
 
+/**
+* Master Setup for Position
+* Position controller.
+* Created By: Somkala Pachhai
+* Edited By: Somkala Pachhai
+* Date: August 2, 2016, Wednesday 
+* Last Modified By: Somkala Pachhai
+* Last Modified Date: August 10,2016, Wednesday 
+*/
+
+
 use Application\Helper\Helper;
 use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\View\Model\ViewModel;
@@ -64,7 +75,7 @@ class PositionController extends AbstractActionController
         if ($this->positionForm->isValid()) {    
             $formData = $this->positionForm->getData();  
             $this->hrPositions = $this->hydrator->hydrate($formData, $this->hrPositions); 
-             
+
             $this->entityManager->persist($this->hrPositions);
             $this->entityManager->flush();  
 
@@ -140,4 +151,6 @@ class PositionController extends AbstractActionController
 }
 
 
+/* End of file PositionController.php */
+/* Location: ./Setup/src/Controller/PositionController.php */
 ?>
