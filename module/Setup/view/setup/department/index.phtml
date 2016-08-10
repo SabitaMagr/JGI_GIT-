@@ -32,17 +32,17 @@ if ($this->messages) {
     <tr role="row">
         <td class="v-align-middle sorting_1">
             <p>
-                <?php print $this->escapeHtml($department->departmentCode) ?>
+                <?php print $this->escapeHtml($department->getDepartmentCode()) ?>
             </p>
         </td>
         <td class="v-align-middle sorting_1">
             <p>
-                <?php print $this->escapeHtml($department->departmentName) ?>
+                <?php print $this->escapeHtml($department->getDepartmentName()) ?>
             </p>
         </td>
         <td class="v-align-middle sorting_1">
-            <a href="<?= $this->url("department",["action"=>"edit","id"=>$department->departmentCode]) ?>">Edit</a>|
-            <a href="<?= $this->url("department",["action"=>"delete","id"=>$department->departmentCode]); ?>">Delete</a>
+            <a href="<?= $this->url("department",["action"=>"edit","id"=>$department->getDepartmentId()]) ?>">Edit</a>|
+            <a href="<?= $this->url("department",["action"=>"delete","id"=>$department->getDepartmentId()]); ?>" onclick="return confirm('Are you sure you want to delete this item?');">Delete</a>
         </td>
     </tr>
 

@@ -33,6 +33,7 @@ class ShiftController extends AbstractActionController {
 	public function __construct(EntityManager $entityManager){
 		$this->entityManager = $entityManager;
 		$this->hydrator = new DoctrineHydrator($entityManager);
+		$this->hrShifts = new HrShifts();
 	}
 
 	public function indexAction(){
@@ -44,7 +45,6 @@ class ShiftController extends AbstractActionController {
 		$form = new ShiftForm();
 		$builder = new AnnotationBuilder();
 		$this->shiftForm = $builder->createForm($form);
-		$this->hrShifts = new HrShifts();
 	}
 
 	public function addAction(){

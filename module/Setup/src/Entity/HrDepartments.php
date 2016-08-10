@@ -5,47 +5,54 @@ namespace Setup\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * HrPositions
+ * HrDepartments
  *
- * @ORM\Table(name="HR_POSITIONS")
+ * @ORM\Table(name="HR_DEPARTMENTS")
  * @ORM\Entity
  */
-class HrPositions
+class HrDepartments
 {
     /**
      * @var integer
      *
-     * @ORM\Column(name="POSITION_ID", type="integer", nullable=false)
+     * @ORM\Column(name="DEPARTMENT_ID", type="integer", nullable=false)
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
-    private $positionId;
+    private $departmentId;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="POSITION_CODE", type="string", length=20, nullable=false)
+     * @ORM\Column(name="DEPARTMENT_CODE", type="string", length=20, nullable=false)
      */
-    private $positionCode;
+    private $departmentCode;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="POSITION_NAME", type="string", length=50, nullable=false)
+     * @ORM\Column(name="DEPARTMENT_NAME", type="string", length=50, nullable=false)
      */
-    private $positionName;
+    private $departmentName;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="REMARKS", type="text", length=65535, nullable=false)
+     * @ORM\Column(name="REMARKS", type="string", length=30, nullable=false)
      */
     private $remarks;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="STATUS", type="string", length=10, nullable=false)
+     * @ORM\Column(name="PARENT_DEPARTMENT", type="string", length=20, nullable=false)
+     */
+    private $parentDepartment;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="STATUS", type="string", nullable=false)
      */
     private $status;
 
@@ -59,56 +66,56 @@ class HrPositions
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="MODIFIED_DT", type="date", nullable=true)
+     * @ORM\Column(name="MODIFIED_DT", type="date", nullable=false)
      */
     private $modifiedDt;
 
     /**
      * @return int
      */
-    public function getPositionId()
+    public function getDepartmentId()
     {
-        return $this->positionId;
+        return $this->departmentId;
     }
 
     /**
-     * @param int $positionId
+     * @param int $departmentId
      */
-    public function setPositionId($positionId)
+    public function setDepartmentId($departmentId)
     {
-        $this->positionId = $positionId;
-    }
-
-    /**
-     * @return string
-     */
-    public function getPositionCode()
-    {
-        return $this->positionCode;
-    }
-
-    /**
-     * @param string $positionCode
-     */
-    public function setPositionCode($positionCode)
-    {
-        $this->positionCode = $positionCode;
+        $this->departmentId = $departmentId;
     }
 
     /**
      * @return string
      */
-    public function getPositionName()
+    public function getDepartmentCode()
     {
-        return $this->positionName;
+        return $this->departmentCode;
     }
 
     /**
-     * @param string $positionName
+     * @param string $departmentCode
      */
-    public function setPositionName($positionName)
+    public function setDepartmentCode($departmentCode)
     {
-        $this->positionName = $positionName;
+        $this->departmentCode = $departmentCode;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDepartmentName()
+    {
+        return $this->departmentName;
+    }
+
+    /**
+     * @param string $departmentName
+     */
+    public function setDepartmentName($departmentName)
+    {
+        $this->departmentName = $departmentName;
     }
 
     /**
@@ -130,13 +137,29 @@ class HrPositions
     /**
      * @return string
      */
+    public function getParentDepartment()
+    {
+        return $this->parentDepartment;
+    }
+
+    /**
+     * @param string $parentDepartment
+     */
+    public function setParentDepartment($parentDepartment)
+    {
+        $this->parentDepartment = $parentDepartment;
+    }
+
+    /**
+     * @return int
+     */
     public function getStatus()
     {
         return $this->status;
     }
 
     /**
-     * @param string $status
+     * @param int $status
      */
     public function setStatus($status)
     {

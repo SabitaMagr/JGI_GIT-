@@ -4,12 +4,9 @@ $form->setAttribute('class','department-form');
 
 $departmentCode = $form->get('departmentCode');
 $departmentName = $form->get('departmentName');
-$hodCode = $form->get('hodCode');
-
-//* @Annotation\Options({"label":"Parent Department", "value_options":{"A":"ABC","D":"DEF","H":"HJK"}})
-
+$remarks = $form->get('remarks');
+$status = $form->get('status');
 $parentDepartment = $form->get('parentDepartment');
-$parentDepartment->setOptions(["label"=>"Parent","value_options"=>[1=>"One"]]);
 
 $submit = $form->get('submit');
 
@@ -45,15 +42,22 @@ print $this->form()->openTag($form);
 					<?php print $this->formElement($departmentName); ?>
 					<?php print $this->formElementErrors()->render($departmentName,['class'=>'help-block']);?>
 				</div>
-				<div class="form-group form-group-default  emp-form-group">
-					<?php print $this->formLabel($hodCode); ?>
-					<?php print $this->formElement($hodCode); ?>
-					<?php print $this->formElementErrors()->render($hodCode,['class'=>'help-block']);?>
+				<div class="form-group form-group-default" style="padding-left:6px">
+					<?php print $this->formLabel($remarks); ?>
+					<?php print $this->formElement($remarks); ?>
+					<?php print $this->formElementErrors()->render($remarks,['class'=>'help-block']);?>
 				</div>
+
 				<div class="form-group form-group-default  emp-form-group">
 					<?php print $this->formLabel($parentDepartment); ?>
 					<?php print $this->formElement($parentDepartment); ?>
 					<?php print $this->formElementErrors()->render($parentDepartment,['class'=>'help-block']);?>
+				</div>
+
+				<div class="form-group form-group-default emp-form-group">
+					<?php print $this->formLabel($status); ?>
+					<?php print $this->formElement($status); ?>
+					<?php print $this->formElementErrors()->render($status,['class'=>'help-block']);?>
 				</div>
 
 				<div class="panel-footer panel-footer-default">

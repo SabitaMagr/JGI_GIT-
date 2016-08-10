@@ -1,7 +1,15 @@
 <?php
-namespace Setup\Model;
+namespace Setup\Form;
 
-
+/**
+* Form Setup Department
+* Department Form.
+* Created By: Somkala Pachhai
+* Edited By: Somkala Pachhai
+* Date: August 5, 2016, Friday 
+* Last Modified By: Somkala Pachhai
+* Last Modified Date: August 10, 2016, Wednesday 
+*/
 
 use Zend\Form\Annotation;
 
@@ -9,7 +17,7 @@ use Zend\Form\Annotation;
 * @Annotation\Hydrator("Zend\Hydrator\ObjectProperty")
 * @Annotation\Name("Department")
 */
-class Department implements ModelInterface
+class DepartmentForm
 
 {
 	/**
@@ -31,21 +39,32 @@ class Department implements ModelInterface
 	public $departmentName;
 
 	/**
-	 * @Annotation\Type("Zend\Form\Element\Text")
-	 * @Annotation\Required({"required":"false"})
-	 * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
-	 * @Annotation\Options({"label":"H.O.D code"})
-	 * @Annotation\Attributes({ "id":"form-hodCode", "class":"form-hodCode form-control" })
-	 */
-	public $hodCode;
+     * @Annotation\Type("Zend\Form\Element\Textarea")
+     * @Annotation\Required({"required":"false"})
+     * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
+     * @Annotation\Options({"label":"Remarks"})
+     * @Annotation\Attributes({"id":"form-remarks","class":"form-remarks form-control","style":"    height: 50px; font-size:12px"})
+     */
+    public $remarks;
 
 	/**
      * @Annotation\Type("Zend\Form\Element\Select")
      * @Annotation\Required({"required":"false"})
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
+     * @Annotation\Options({"label":"Parent Department","value_options":{"A":"Dept A","B":"Dept B","C":"Dept C"}})
      * @Annotation\Attributes({ "id":"form-parentDepartment","data-init-plugin":"cs-select","class":"cs-select cs-skin-slide form-parentDepartment form-control"})
      */
 	public $parentDepartment;
+
+	/**
+     * @Annotation\Type("Zend\Form\Element\Select")
+     * @Annotation\Required({"required":"false"})
+     * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
+     * @Annotation\Options({"label":"Status","value_options":{"E":"Enabled","D":"Disabled"}})
+     * @Annotation\Attributes({ "id":"form-status","data-init-plugin":"cs-select","class":"cs-select cs-skin-slide form-status form-control"})
+     */
+    public $status;
+
 
 
 	/**
@@ -55,26 +74,7 @@ class Department implements ModelInterface
     public $submit;
 
 
- 
-
-    public function exchangeArray(array $data)
-    {
-        $this->departmentCode = !empty($data['departmentCode']) ? $data['departmentCode'] : null;
-        $this->departmentName = !empty($data['departmentName']) ? $data['departmentName'] : null;
-        $this->hodCode = !empty($data['hodCode']) ? $data['hodCode'] : null;
-        $this->parentDepartment = !empty($data['parentDepartment']) ? $data['parentDepartment'] : null;
-       
-    }
-
-    public function getArrayCopy()
-    {
-        return [
-            'departmentCode' => $this->departmentCode,
-            'departmentName' => $this->departmentName,
-            'hodCode' => $this->hodCode,
-            'parentDepartment' => $this->parentDepartment
-           ];
-           
-    }
-
 }
+
+/* End of file DepartmentForm.php */
+/* Location: ./Setup/src/Form/DepartmentForm.php */

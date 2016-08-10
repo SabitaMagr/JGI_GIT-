@@ -34,6 +34,7 @@ class ServiceTypeController extends AbstractActionController{
 	{
 		$this->entityManager = $entityManager;
 		$this->hydrator = new DoctrineHydrator($entityManager);
+		$this->hrServiceTypes = new HrServiceTypes();
 	}
 
 	private function initializeForm(){
@@ -42,7 +43,6 @@ class ServiceTypeController extends AbstractActionController{
 		if (!$this->serviceTypeForm) {
 			$this->serviceTypeForm = $builder->createForm($form);
 		}
-		$this->hrServiceTypes = new HrServiceTypes();
 	}
 
 	public function indexAction(){

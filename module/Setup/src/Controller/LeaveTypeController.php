@@ -32,16 +32,14 @@ class LeaveTypeController extends AbstractActionController {
 
 		$this->hydrator = new DoctrineHydrator($entityManager);
 		$this->entityManager =  $entityManager;
-
+		$this->hrLeaveTypes =  new HrLeaveTypes();
 	}
 
 	public function initializeForm(){
 
 		$form = new LeaveTypeForm();
-		$builder =  new AnnotationBuilder();
-		$this->hrLeaveTypes =  new HrLeaveTypes();
+		$builder =  new AnnotationBuilder();	
 		$this->leaveTypeForm = $builder -> createForm($form);
-
 	}
 
 	public function indexAction(){

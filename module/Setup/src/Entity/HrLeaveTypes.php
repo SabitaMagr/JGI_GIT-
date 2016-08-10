@@ -1,4 +1,5 @@
 <?php
+
 namespace Setup\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -65,7 +66,7 @@ class HrLeaveTypes
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="MODIFIED_DT", type="date", nullable=false)
+     * @ORM\Column(name="MODIFIED_DT", type="date", nullable=true)
      */
     private $modifiedDt;
 
@@ -200,7 +201,6 @@ class HrLeaveTypes
     public function getArrayCopy(){
         return get_object_vars($this);
     }
-
 
 }
 

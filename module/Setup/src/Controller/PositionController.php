@@ -35,12 +35,11 @@ class PositionController extends AbstractActionController
     {
         $this->entityManager = $entityManager;
         $this->hydrator = new DoctrineHydrator($entityManager);
-
+        $this->hrPositions = new HrPositions();
     }
 
      public function initializeForm()
     {   
-        $this->hrPositions = new HrPositions();
         $form = new PositionForm();
         $builder = new AnnotationBuilder();
         if (!$this->positionForm) {
@@ -143,10 +142,7 @@ class PositionController extends AbstractActionController
         $this->entityManager->flush();
         $this->flashmessenger()->addMessage("Position Successfully Deleted!!!");
         return $this->redirect()->toRoute('position');
-    }
-
-
-    
+    }    
  
 }
 

@@ -3,8 +3,8 @@ namespace Setup\Form;
 
 
 /**
-* Form Setup Shift
-* Shift Form.
+* Form Setup Position
+* Position Form.
 * Created By: Somkala Pachhai
 * Edited By: 
 * Date: August 9, 2016, Wednesday 
