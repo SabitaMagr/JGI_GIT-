@@ -1,12 +1,13 @@
 <?php
 namespace Setup\Form;
 
+
 /**
-* Form Setup Shift
-* Shift Form.
+* Form Setup Position
+* Position Form.
 * Created By: Somkala Pachhai
 * Edited By: 
-* Date: August 10, 2016, Wednesday 
+* Date: August 9, 2016, Wednesday 
 * Last Modified By: 
 * Last Modified Date: 
 */
@@ -15,47 +16,28 @@ use Zend\Form\Annotation;
 
 /** 
 * @Annotation\Hydrator("Zend\Hydrator\ObjectProperty")
-* @Annotation\Name("Shift")
+* @Annotation\Name("Position")
 */
 
-class ShiftForm{
+class PositionForm{
 	/**
 	 * @Annotion\Type("Zend\Form\Element\Text")
 	 * @Annotation\Required({"required":"true"})
 	 * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
-	 * @Annotation\Options({"label":"Shift Code"})
-	 * @Annotation\Attributes({ "id":"form-shiftCode", "class":"form-shiftCode form-control" })
+	 * @Annotation\Options({"label":"Position Code"})
+	 * @Annotation\Attributes({ "id":"form-positionCode", "class":"form-positionCode form-control" })
 	 */
-	public $shiftCode;
+	public $positionCode;
 
 	/**
 	 * @Annotion\Type("Zend\Form\Element\Text")
 	 * @Annotation\Required({"required":"true"})
 	 * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
-	 * @Annotation\Options({"label":"Shift Name"})
+	 * @Annotation\Options({"label":"Position Name"})
 	 * @Annotation\Validator({"name":"StringLength", "options":{"min":"5"}})
-	 * @Annotation\Attributes({ "id":"form-shiftName", "class":"form-shiftName form-control" })
+	 * @Annotation\Attributes({ "id":"form-positionName", "class":"form-positionName form-control" })
 	 */
-	public $shiftName;
-
-
-	/**
-	 * @Annotation\Type("Zend\Form\Element\Text")
-	 * @Annotation\Required({"required":"false"})
-	 * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
-	 * @Annotation\Options({"label":"Start Time"})
-	 * @Annotation\Attributes({ "id":"form-startTime", "class":"form-startTime form-control" })
-	 */
-	public $startTime;
-
-	/**
-	 * @Annotation\Type("Zend\Form\Element\Text")
-	 * @Annotation\Required({"required":"false"})
-	 * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
-	 * @Annotation\Options({"label":"End Time"})
-	 * @Annotation\Attributes({ "id":"form-endTime", "class":"form-endTime form-control" })
-	 */
-	public $endTime;
+	public $positionName;
 
 	/**
      * @Annotation\Type("Zend\Form\Element\Textarea")
@@ -84,5 +66,5 @@ class ShiftForm{
 
 }
 
-/* End of file ShiftForm.php */
-/* Location: ./Setup/src/Form/ShiftForm.php */
+/* End of file PositionForm.php */
+/* Location: ./Setup/src/Form/PositionForm.php */

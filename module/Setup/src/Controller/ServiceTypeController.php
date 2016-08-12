@@ -2,61 +2,74 @@
 
 namespace Setup\Controller;
 
+/**
+* Master Setup for Service Type
+* Service Type controller.
+* Created By: Somkala Pachhai
+* Edited By: Somkala Pachhai
+* Date: August 2, 2016, Wednesday 
+* Last Modified By: Somkala Pachhai
+* Last Modified Date: August 10,2016, Wednesday 
+*/
+
 use Application\Helper\Helper;
-use Zend\Db\Adapter\AdapterInterface;
 use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\View\Model\ViewModel;
 use Zend\Mvc\Controller\AbstractActionController;
-use Setup\Model\ServiceType;
-use Zend\View\View;
-use Setup\Model\ServiceTypeRepository;
+use Setup\Form\ServiceTypeForm;
+
+use Doctrine\ORM\EntityManager;
+use Setup\Entity\HrServiceTypes;
+use DoctrineModule\Stdlib\Hydrator\DoctrineObject as DoctrineHydrator;
+
 
 class ServiceTypeController extends AbstractActionController{
-	private $form;
-	private $serviceType;
-	private $repository;
+	
+	private $serviceTypeForm;
+	private $hydrator;
+	private $hrServiceTypes;
+	private $entityManager;
 
-	function __construct(AdapterInterface $adapter)
+	function __construct(EntityManager $entityManager)
 	{
-		$this->repository = new ServiceTypeRepository($adapter);
+		$this->entityManager = $entityManager;
+		$this->hydrator = new DoctrineHydrator($entityManager);
+		$this->hrServiceTypes = new HrServiceTypes();
 	}
 
 	private function initializeForm(){
-		$this->serviceType = new ServiceType();
+		$form = new ServiceTypeForm();
 		$builder = new AnnotationBuilder();
-		if (!$this->form) {
-			$this->form = $builder->createForm($this->serviceType);
+		if (!$this->serviceTypeForm) {
+			$this->serviceTypeForm = $builder->createForm($form);
 		}
 	}
 
 	public function indexAction(){
-		$serviceTypeList= $this->repository->fetchAll();
-		$request = $this->getRequest();
+		$serviceTypeList= $this->entityManager->getRepository(HrServiceTypes::class)->findAll();
 		return Helper::addFlashMessagesToArray($this,['serviceTypeList' => $serviceTypeList]);
 	}
 
 	public function addAction(){
 		
 		$this->initializeForm();
-
         $request = $this->getRequest();
 
         if (!$request->isPost()) {
         	return Helper::addFlashMessagesToArray($this,[
-	            'form' => $this->form,
+	            'form' => $this->serviceTypeForm,
 	            'messages' => $this->flashmessenger()->getMessages()
         	]);
         }
-        $this->form->setData($request->getPost());
+        $this->serviceTypeForm->setData($request->getPost());
 
-        if ($this->form->isValid()) {
+        if ($this->serviceTypeForm->isValid()) {
         	try {
-	        	$this->serviceType->exchangeArrayFromForm($this->form->getData());
-	        	
-	        	print_r($this->form->getData());
-	      
-	            $this->repository->add($this->serviceType);
-	            
+        		$formData = $this->serviceTypeForm->getData();
+        		$this->hrServiceTypes = $this->hydrator->hydrate($formData,$this->hrServiceTypes);
+	        	$this->entityManager->persist($this->hrServiceTypes);
+	        	$this->entityManager->flush();
+
 	            $this->flashmessenger()->addMessage("Service Type Successfully Added!!!");
 	            return $this->redirect()->toRoute("serviceType");
 	        }
@@ -66,7 +79,7 @@ class ServiceTypeController extends AbstractActionController{
 
         } else {
             return Helper::addFlashMessagesToArray($this,[
-	            'form' => $this->form,
+	            'form' => $this->serviceTypeForm,
 	            'messages' => $this->flashmessenger()->getMessages()
         	]);
         }   
@@ -84,37 +97,49 @@ class ServiceTypeController extends AbstractActionController{
         $request=$this->getRequest();
 
         if(!$request->isPost()){
-        	$r = $this->repository->fetchById($id);
-        	$this->serviceType->exchangeArrayFromDb($r->getArrayCopy()); // ARRAY FROM ARRAY OBJECT
-        	$ab = (object)$this->serviceType->getArrayCopyForForm(); //OBJECT
-				
-            $this->form->bind($ab);
-            return Helper::addFlashMessagesToArray($this,['form'=>$this->form,'id'=>$id]);
+        	$serviceTypeRecord =(object) $this->entityManager->find(HrServiceTypes::class, $id)->getArrayCopy();		
+            $this->serviceTypeForm->bind($serviceTypeRecord);
+            return Helper::addFlashMessagesToArray($this,['form'=>$this->serviceTypeForm,'id'=>$id]);
         }
+
         $modifiedDt = date("Y-m-d");
+        $this->serviceTypeForm->setData($request->getPost());
 
-        $this->form->setData($request->getPost());
+        if ($this->serviceTypeForm->isValid()) {
 
-        if ($this->form->isValid()) {
-            $this->serviceType->exchangeArrayFromForm($this->form->getData());
+        	$formData = $this->serviceTypeForm->getData();
+        	$newFormData = array_merge($formData,['modifiedDt'=>$modifiedDt]);
+        	$this->hrServiceTypes = $this->hydrator->hydrate($newFormData,$this->hrServiceTypes);
+        	$this->hrServiceTypes->setServiceTypeId($id);
 
-            $this->repository->edit($this->serviceType,$id,$modifiedDt);
+        	$this->entityManager->merge($this->hrServiceTypes);
+        	$this->entityManager->flush();      
 
             $this->flashmessenger()->addMessage("Service Type Successfully Updated!!!");
             return $this->redirect()->toRoute("serviceType");
         } else {
-            return Helper::addFlashMessagesToArray($this,['form'=>$this->form,'id'=>$id]);
+            return Helper::addFlashMessagesToArray($this,['form'=>$this->serviceTypeForm,'id'=>$id]);
 
         }
 	}
 	public function deleteAction(){
 		$id = (int)$this->params()->fromRoute("id");
-		$this->repository->delete($id);
+		
+		if(!$id){
+			return $this->redirect()->toRoute('serviceType');
+		}
+
+		$this->hrServiceTypes = $this->entityManager->find(HrServiceTypes::class,$id);
+		$this->entityManager->remove($this->hrServiceTypes);
+		$this->entityManager->flush();
+
 		$this->flashmessenger()->addMessage("Service Type Successfully Deleted!!!");
 		return $this->redirect()->toRoute('serviceType');
 	}
 }
 	
-
+/* End of file ServiceTypeController.php */
+/* Location: ./Setup/src/Controller/ServiceTypeController.php */
 
 ?>
+

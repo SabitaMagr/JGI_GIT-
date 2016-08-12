@@ -8,6 +8,7 @@ if ($this->messages) {
 }
 
 ?>
+<a href="<?= $this->url('branch',['action'=>'add'])?>">Add New</a>
 
 <table role="grid" class="table table-hover dataTable no-footer" id="employeelist">
 
@@ -17,9 +18,7 @@ if ($this->messages) {
             aria-controls="basicTable" tabindex="0" class="sorting_desc" style="width: 218px;">
             Branch Name
         </th>
-        <th aria-label="Places: activate to sort column ascending" colspan="1" rowspan="1" aria-controls="basicTable"
-            tabindex="0" class="sorting" style="width: 219px;">Location
-        </th>
+     
         <th aria-label="Places: activate to sort column ascending" colspan="1" rowspan="1" aria-controls="basicTable"
             tabindex="0" class="sorting" style="width: 219px;">Telephone
         </th>
@@ -29,15 +28,7 @@ if ($this->messages) {
         <th aria-label="Places: activate to sort column ascending" colspan="1" rowspan="1" aria-controls="basicTable"
             tabindex="0" class="sorting" style="width: 219px;">Email
         </th>
-        <th aria-label="Places: activate to sort column ascending" colspan="1" rowspan="1" aria-controls="basicTable"
-            tabindex="0" class="sorting" style="width: 219px;">Contact Person
-        </th>
-        <th aria-label="Places: activate to sort column ascending" colspan="1" rowspan="1" aria-controls="basicTable"
-            tabindex="0" class="sorting" style="width: 219px;">Branch Manager
-        </th>
-        <th aria-label="Places: activate to sort column ascending" colspan="1" rowspan="1" aria-controls="basicTable"
-            tabindex="0" class="sorting" style="width: 219px;">Parent Branch
-        </th>
+   
         <th aria-label="Last Update: activate to sort column ascending" colspan="1" rowspan="1"
             aria-controls="basicTable" tabindex="0" class="sorting" style="width: 155px;">
             Action
@@ -50,46 +41,28 @@ if ($this->messages) {
         <tr role="row">
             <td class="v-align-middle sorting_1">
                 <p>
-                    <?php print $this->escapeHtml($branch->branchName) ?>
+                    <?php print $this->escapeHtml($branch->getBranchName()) ?>
                 </p>
             </td>
             <td class="v-align-middle sorting_1">
                 <p>
-                    <?php print $this->escapeHtml($branch->location) ?>
+                    <?php print $this->escapeHtml($branch->getTelephone()) ?>
                 </p>
             </td>
             <td class="v-align-middle sorting_1">
                 <p>
-                    <?php print $this->escapeHtml($branch->telephone) ?>
+                    <?php print $this->escapeHtml($branch->getFax()) ?>
                 </p>
             </td>
             <td class="v-align-middle sorting_1">
                 <p>
-                    <?php print $this->escapeHtml($branch->fax) ?>
+                    <?php print $this->escapeHtml($branch->getEmail()) ?>
                 </p>
             </td>
+            
             <td class="v-align-middle sorting_1">
-                <p>
-                    <?php print $this->escapeHtml($branch->email) ?>
-                </p>
-            </td>
-            <td class="v-align-middle sorting_1">
-                <p>
-                    <?php print $this->escapeHtml($branch->contactPerson) ?>
-                </p>
-            </td>
-            <td class="v-align-middle sorting_1">
-                <p>
-                    <?php print $this->escapeHtml($branch->branchManager) ?>
-                </p>
-            </td>
-            <td class="v-align-middle sorting_1">
-                <p>
-                    <?php print $this->escapeHtml($branch->parentBranch) ?>
-                </p>
-            </td>
-            <td class="v-align-middle sorting_1">
-                <a href="<?= $this->url("branch", ["action" => "edit", "id" => $branch->branchCode]) ?>">Edit</a>
+                <a href="<?= $this->url("branch", ["action" => "edit", "id" => $branch->getBranchId()]) ?>">Edit</a>
+                <a href="<?= $this->url("branch",["action"=>"delete","id"=>$branch->getBranchId()]); ?>" onclick="return confirm('Are you sure you want to delete this item?');">Delete</a>
             </td>
         </tr>
 

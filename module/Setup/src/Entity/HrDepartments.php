@@ -5,47 +5,54 @@ namespace Setup\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * HrServiceTypes
+ * HrDepartments
  *
- * @ORM\Table(name="HR_SERVICE_TYPES")
+ * @ORM\Table(name="HR_DEPARTMENTS")
  * @ORM\Entity
  */
-class HrServiceTypes
+class HrDepartments
 {
     /**
      * @var integer
      *
-     * @ORM\Column(name="SERVICE_TYPE_ID", type="integer", nullable=false)
+     * @ORM\Column(name="DEPARTMENT_ID", type="integer", nullable=false)
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
-    private $serviceTypeId;
+    private $departmentId;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="SERVICE_TYPE_CODE", type="string", length=50, nullable=false)
+     * @ORM\Column(name="DEPARTMENT_CODE", type="string", length=20, nullable=false)
      */
-    private $serviceTypeCode;
+    private $departmentCode;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="SERVICE_TYPE_NAME", type="string", length=50, nullable=false)
+     * @ORM\Column(name="DEPARTMENT_NAME", type="string", length=50, nullable=false)
      */
-    private $serviceTypeName;
+    private $departmentName;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="REMARKS", type="text", length=65535, nullable=false)
+     * @ORM\Column(name="REMARKS", type="string", length=30, nullable=false)
      */
     private $remarks;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="STATUS", type="string", length=50, nullable=false)
+     * @ORM\Column(name="PARENT_DEPARTMENT", type="string", length=20, nullable=false)
+     */
+    private $parentDepartment;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="STATUS", type="string", nullable=false)
      */
     private $status;
 
@@ -59,56 +66,56 @@ class HrServiceTypes
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="MODIFIED_DT", type="date", nullable=true)
+     * @ORM\Column(name="MODIFIED_DT", type="date", nullable=false)
      */
     private $modifiedDt;
 
     /**
      * @return int
      */
-    public function getServiceTypeId()
+    public function getDepartmentId()
     {
-        return $this->serviceTypeId;
+        return $this->departmentId;
     }
 
     /**
-     * @param int $serviceTypeId
+     * @param int $departmentId
      */
-    public function setServiceTypeId($serviceTypeId)
+    public function setDepartmentId($departmentId)
     {
-        $this->serviceTypeId = $serviceTypeId;
-    }
-
-    /**
-     * @return string
-     */
-    public function getServiceTypeCode()
-    {
-        return $this->serviceTypeCode;
-    }
-
-    /**
-     * @param string $serviceTypeCode
-     */
-    public function setServiceTypeCode($serviceTypeCode)
-    {
-        $this->serviceTypeCode = $serviceTypeCode;
+        $this->departmentId = $departmentId;
     }
 
     /**
      * @return string
      */
-    public function getServiceTypeName()
+    public function getDepartmentCode()
     {
-        return $this->serviceTypeName;
+        return $this->departmentCode;
     }
 
     /**
-     * @param string $serviceTypeName
+     * @param string $departmentCode
      */
-    public function setServiceTypeName($serviceTypeName)
+    public function setDepartmentCode($departmentCode)
     {
-        $this->serviceTypeName = $serviceTypeName;
+        $this->departmentCode = $departmentCode;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDepartmentName()
+    {
+        return $this->departmentName;
+    }
+
+    /**
+     * @param string $departmentName
+     */
+    public function setDepartmentName($departmentName)
+    {
+        $this->departmentName = $departmentName;
     }
 
     /**
@@ -130,13 +137,29 @@ class HrServiceTypes
     /**
      * @return string
      */
+    public function getParentDepartment()
+    {
+        return $this->parentDepartment;
+    }
+
+    /**
+     * @param string $parentDepartment
+     */
+    public function setParentDepartment($parentDepartment)
+    {
+        $this->parentDepartment = $parentDepartment;
+    }
+
+    /**
+     * @return int
+     */
     public function getStatus()
     {
         return $this->status;
     }
 
     /**
-     * @param string $status
+     * @param int $status
      */
     public function setStatus($status)
     {

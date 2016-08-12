@@ -41,27 +41,27 @@ if ($this->messages) {
     <tr role="row">
         <td class="v-align-middle sorting_1">
             <p>
-                <?php print $this->escapeHtml($shift->SHIFT_CODE) ?>
+                <?php print $this->escapeHtml($shift->getShiftCode()) ?>
             </p>
         </td>
         <td class="v-align-middle sorting_1">
             <p>
-                <?php print $this->escapeHtml($shift->SHIFT_NAME) ?>
+                <?php print $this->escapeHtml($shift->getShiftName()) ?>
             </p>
         </td>
         <td class="v-align-middle sorting_1">
             <p>
-                <?php print $this->escapeHtml($shift->START_TIME) ?>
+                <?php print $this->escapeHtml($shift->getStartTime()) ?>
             </p>
         </td>
         <td class="v-align-middle sorting_1">
             <p>
-                <?php print $this->escapeHtml($shift->END_TIME) ?>
+                <?php print $this->escapeHtml($shift->getEndTime()) ?>
             </p>
         </td>
         <td class="v-align-middle sorting_1">
-            <a href="<?= $this->url("shift",["action"=>"edit","id"=>$shift->SHIFT_ID]) ?>">Edit</a>|
-            <a href="<?= $this->url("shift",["action"=>"delete","id"=>$shift->SHIFT_ID]); ?>">Delete</a>
+            <a href="<?= $this->url("shift",["action"=>"edit","id"=>$shift->getShiftId()]) ?>">Edit</a>|
+            <a href="<?= $this->url("shift",["action"=>"delete","id"=>$shift->getShiftId()]); ?>" onclick="return confirm('Are you sure you want to delete this item?');">Delete</a>
         </td>
     </tr>
 

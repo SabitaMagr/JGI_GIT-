@@ -68,7 +68,7 @@ class HrShifts
      *
      * @ORM\Column(name="CREATED_DT", type="datetime", nullable=false)
      */
-    private $createdDt = 'CURRENT_TIMESTAMP';
+    private $createdDt;
 
     /**
      * @var \DateTime
@@ -76,22 +76,6 @@ class HrShifts
      * @ORM\Column(name="MODIFIED_DT", type="date", nullable=true)
      */
     private $modifiedDt;
-
-    /**
-     * @return int
-     */
-    public function getShiftId()
-    {
-        return $this->shiftId;
-    }
-
-    /**
-     * @param int $shiftId
-     */
-    public function setShiftId($shiftId)
-    {
-        $this->shiftId = $shiftId;
-    }
 
     /**
      * @return string
@@ -107,6 +91,22 @@ class HrShifts
     public function setShiftCode($shiftCode)
     {
         $this->shiftCode = $shiftCode;
+    }
+
+    /**
+     * @return int
+     */
+    public function getShiftId()
+    {
+        return $this->shiftId;
+    }
+
+    /**
+     * @param int $shiftId
+     */
+    public function setShiftId($shiftId)
+    {
+        $this->shiftId = $shiftId;
     }
 
     /**
@@ -144,22 +144,6 @@ class HrShifts
     /**
      * @return string
      */
-    public function getRemarks()
-    {
-        return $this->remarks;
-    }
-
-    /**
-     * @param string $remarks
-     */
-    public function setRemarks($remarks)
-    {
-        $this->remarks = $remarks;
-    }
-
-    /**
-     * @return string
-     */
     public function getEndTime()
     {
         return $this->endTime;
@@ -171,6 +155,22 @@ class HrShifts
     public function setEndTime($endTime)
     {
         $this->endTime = $endTime;
+    }
+
+    /**
+     * @return string
+     */
+    public function getRemarks()
+    {
+        return $this->remarks;
+    }
+
+    /**
+     * @param string $remarks
+     */
+    public function setRemarks($remarks)
+    {
+        $this->remarks = $remarks;
     }
 
     /**
@@ -192,22 +192,6 @@ class HrShifts
     /**
      * @return \DateTime
      */
-    public function getCreatedDt()
-    {
-        return $this->createdDt;
-    }
-
-    /**
-     * @param \DateTime $createdDt
-     */
-    public function setCreatedDt($createdDt)
-    {
-        $this->createdDt = $createdDt;
-    }
-
-    /**
-     * @return \DateTime
-     */
     public function getModifiedDt()
     {
         return $this->modifiedDt;
@@ -221,6 +205,25 @@ class HrShifts
         $this->modifiedDt = $modifiedDt;
     }
 
+    /**
+     * @return \DateTime
+     */
+    public function getCreatedDt()
+    {
+        return $this->createdDt;
+    }
+
+    /**
+     * @param \DateTime $createdDt
+     */
+    public function setCreatedDt($createdDt)
+    {
+        $this->createdDt = $createdDt;
+    }
+
+    public function getArrayCopy(){
+        return get_object_vars($this);
+    }
 
 }
 

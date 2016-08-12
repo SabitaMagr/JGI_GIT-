@@ -5,6 +5,7 @@ $form->setAttribute('class', 'department-form');
 $departmentCode = $form->get('departmentCode');
 $departmentName = $form->get('departmentName');
 $remarks = $form->get('remarks');
+<<<<<<< HEAD
 $parentDepartment = $form->get('parentDepartment');
 $status = $form->get('status');
 
@@ -12,6 +13,10 @@ $status = $form->get('status');
 //$parentDepartment->setOptions(["label" => "Parent", "value_options" => [1 => "One"]]);
 $parentDepartment->setOptions(["label" => "Parent"]);
 
+=======
+$status = $form->get('status');
+$parentDepartment = $form->get('parentDepartment');
+>>>>>>> 7c3cdfa888d72816c839089ad028377266c55341
 
 $submit = $form->get('submit');
 
@@ -29,6 +34,7 @@ $form->prepare();
 print $this->form()->openTag($form);
 
 ?>
+<<<<<<< HEAD
     <div class="row">
         <div class="col-sm-6">
             <div class="panel panel-default">
@@ -71,6 +77,52 @@ print $this->form()->openTag($form);
             </div>
         </div>
     </div>
+=======
+<div class="row">
+	<div class="col-sm-12">
+		<div class="panel panel-default">
+			<div class="panel-heading panel-title-head">
+				<!--<div class="panel-title"> -->
+					<h4>Department Setup</h4>		
+			</div>
+			<div class="panel-body padding-5" style="margin-top:7px;">	
+				<div class="form-group form-group-default emp-form-group">
+					<?php print $this->formLabel($departmentCode); ?>
+					<?php print $this->formElement($departmentCode); ?>
+					<?php print $this->formElementErrors()->render($departmentCode,['class'=>'help-block']);?>
+				</div>
+				<div class="form-group form-group-default  emp-form-group">
+					<?php print $this->formLabel($departmentName); ?>
+					<?php print $this->formElement($departmentName); ?>
+					<?php print $this->formElementErrors()->render($departmentName,['class'=>'help-block']);?>
+				</div>
+				<div class="form-group form-group-default" style="padding-left:6px">
+					<?php print $this->formLabel($remarks); ?>
+					<?php print $this->formElement($remarks); ?>
+					<?php print $this->formElementErrors()->render($remarks,['class'=>'help-block']);?>
+				</div>
+
+				<div class="form-group form-group-default  emp-form-group">
+					<?php print $this->formLabel($parentDepartment); ?>
+					<?php print $this->formElement($parentDepartment); ?>
+					<?php print $this->formElementErrors()->render($parentDepartment,['class'=>'help-block']);?>
+				</div>
+
+				<div class="form-group form-group-default emp-form-group">
+					<?php print $this->formLabel($status); ?>
+					<?php print $this->formElement($status); ?>
+					<?php print $this->formElementErrors()->render($status,['class'=>'help-block']);?>
+				</div>
+
+				<div class="panel-footer panel-footer-default">
+					<?php  print $this->formSubmit($submit); ?>		
+				</div>
+			</div>
+			
+		</div>
+	</div>
+</div>
+>>>>>>> 7c3cdfa888d72816c839089ad028377266c55341
 <?php
 
 print $this->form()->closeTag();

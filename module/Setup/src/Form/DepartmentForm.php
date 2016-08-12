@@ -2,60 +2,41 @@
 namespace Setup\Form;
 
 /**
-* Form Setup Shift
-* Shift Form.
+* Form Setup Department
+* Department Form.
 * Created By: Somkala Pachhai
-* Edited By: 
-* Date: August 10, 2016, Wednesday 
-* Last Modified By: 
-* Last Modified Date: 
+* Edited By: Somkala Pachhai
+* Date: August 5, 2016, Friday 
+* Last Modified By: Somkala Pachhai
+* Last Modified Date: August 10, 2016, Wednesday 
 */
 
 use Zend\Form\Annotation;
 
 /** 
 * @Annotation\Hydrator("Zend\Hydrator\ObjectProperty")
-* @Annotation\Name("Shift")
+* @Annotation\Name("Department")
 */
+class DepartmentForm
 
-class ShiftForm{
+{
 	/**
-	 * @Annotion\Type("Zend\Form\Element\Text")
-	 * @Annotation\Required({"required":"true"})
+	 * @Annotation\Type("Zend\Form\Element\Text")
+	 * @Annotation\Required({"required":"false"})
 	 * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
-	 * @Annotation\Options({"label":"Shift Code"})
-	 * @Annotation\Attributes({ "id":"form-shiftCode", "class":"form-shiftCode form-control" })
+	 * @Annotation\Options({"label":"Department Code"})
+	 * @Annotation\Attributes({ "id":"form-departmentCode", "class":"form-departmentCode form-control" })
 	 */
-	public $shiftCode;
-
-	/**
-	 * @Annotion\Type("Zend\Form\Element\Text")
-	 * @Annotation\Required({"required":"true"})
-	 * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
-	 * @Annotation\Options({"label":"Shift Name"})
-	 * @Annotation\Validator({"name":"StringLength", "options":{"min":"5"}})
-	 * @Annotation\Attributes({ "id":"form-shiftName", "class":"form-shiftName form-control" })
-	 */
-	public $shiftName;
-
+	public $departmentCode;
 
 	/**
 	 * @Annotation\Type("Zend\Form\Element\Text")
 	 * @Annotation\Required({"required":"false"})
 	 * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
-	 * @Annotation\Options({"label":"Start Time"})
-	 * @Annotation\Attributes({ "id":"form-startTime", "class":"form-startTime form-control" })
+	 * @Annotation\Options({"label":"Department Name"})
+	 * @Annotation\Attributes({ "id":"form-departmentName", "class":"form-departmentName form-control" })
 	 */
-	public $startTime;
-
-	/**
-	 * @Annotation\Type("Zend\Form\Element\Text")
-	 * @Annotation\Required({"required":"false"})
-	 * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
-	 * @Annotation\Options({"label":"End Time"})
-	 * @Annotation\Attributes({ "id":"form-endTime", "class":"form-endTime form-control" })
-	 */
-	public $endTime;
+	public $departmentName;
 
 	/**
      * @Annotation\Type("Zend\Form\Element\Textarea")
@@ -66,7 +47,16 @@ class ShiftForm{
      */
     public $remarks;
 
-    /**
+	/**
+     * @Annotation\Type("Zend\Form\Element\Select")
+     * @Annotation\Required({"required":"false"})
+     * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
+     * @Annotation\Options({"label":"Parent Department","value_options":{"A":"Dept A","B":"Dept B","C":"Dept C"}})
+     * @Annotation\Attributes({ "id":"form-parentDepartment","data-init-plugin":"cs-select","class":"cs-select cs-skin-slide form-parentDepartment form-control"})
+     */
+	public $parentDepartment;
+
+	/**
      * @Annotation\Type("Zend\Form\Element\Select")
      * @Annotation\Required({"required":"false"})
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
@@ -75,14 +65,16 @@ class ShiftForm{
      */
     public $status;
 
-	
+
+
 	/**
      * @Annotation\Type("Zend\Form\Element\Submit")
      * @Annotation\Attributes({"value":"Submit","class":"btn btn-primary pull-right"})
     */
     public $submit;
 
+
 }
 
-/* End of file ShiftForm.php */
-/* Location: ./Setup/src/Form/ShiftForm.php */
+/* End of file DepartmentForm.php */
+/* Location: ./Setup/src/Form/DepartmentForm.php */

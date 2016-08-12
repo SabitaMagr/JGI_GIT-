@@ -9,6 +9,7 @@ $status = $form->get('status');
 
 
 $submit = $form->get('submit');
+$submit->setAttribute('value',"Edit");
 
 $form->setAttribute('action',$this->url('serviceType',['action'=>'edit','id'=>$id]));
 
