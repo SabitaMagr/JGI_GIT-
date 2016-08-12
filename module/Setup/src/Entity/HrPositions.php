@@ -5,35 +5,35 @@ namespace Setup\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * HrServiceTypes
+ * HrPositions
  *
- * @ORM\Table(name="HR_SERVICE_TYPES")
+ * @ORM\Table(name="HR_POSITIONS")
  * @ORM\Entity
  */
-class HrServiceTypes
+class HrPositions
 {
     /**
      * @var integer
      *
-     * @ORM\Column(name="SERVICE_TYPE_ID", type="integer", nullable=false)
+     * @ORM\Column(name="POSITION_ID", type="integer", nullable=false)
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
-    private $serviceTypeId;
+    private $positionId;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="SERVICE_TYPE_CODE", type="string", length=50, nullable=false)
+     * @ORM\Column(name="POSITION_CODE", type="string", length=20, nullable=false)
      */
-    private $serviceTypeCode;
+    private $positionCode;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="SERVICE_TYPE_NAME", type="string", length=50, nullable=false)
+     * @ORM\Column(name="POSITION_NAME", type="string", length=50, nullable=false)
      */
-    private $serviceTypeName;
+    private $positionName;
 
     /**
      * @var string
@@ -45,7 +45,7 @@ class HrServiceTypes
     /**
      * @var string
      *
-     * @ORM\Column(name="STATUS", type="string", length=50, nullable=false)
+     * @ORM\Column(name="STATUS", type="string", length=10, nullable=false)
      */
     private $status;
 
@@ -54,7 +54,7 @@ class HrServiceTypes
      *
      * @ORM\Column(name="CREATED_DT", type="datetime", nullable=false)
      */
-    private $createdDt = 'CURRENT_TIMESTAMP';
+    private $createdDt;
 
     /**
      * @var \DateTime
@@ -66,49 +66,49 @@ class HrServiceTypes
     /**
      * @return int
      */
-    public function getServiceTypeId()
+    public function getPositionId()
     {
-        return $this->serviceTypeId;
+        return $this->positionId;
     }
 
     /**
-     * @param int $serviceTypeId
+     * @param int $positionId
      */
-    public function setServiceTypeId($serviceTypeId)
+    public function setPositionId($positionId)
     {
-        $this->serviceTypeId = $serviceTypeId;
-    }
-
-    /**
-     * @return string
-     */
-    public function getServiceTypeCode()
-    {
-        return $this->serviceTypeCode;
-    }
-
-    /**
-     * @param string $serviceTypeCode
-     */
-    public function setServiceTypeCode($serviceTypeCode)
-    {
-        $this->serviceTypeCode = $serviceTypeCode;
+        $this->positionId = $positionId;
     }
 
     /**
      * @return string
      */
-    public function getServiceTypeName()
+    public function getPositionCode()
     {
-        return $this->serviceTypeName;
+        return $this->positionCode;
     }
 
     /**
-     * @param string $serviceTypeName
+     * @param string $positionCode
      */
-    public function setServiceTypeName($serviceTypeName)
+    public function setPositionCode($positionCode)
     {
-        $this->serviceTypeName = $serviceTypeName;
+        $this->positionCode = $positionCode;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPositionName()
+    {
+        return $this->positionName;
+    }
+
+    /**
+     * @param string $positionName
+     */
+    public function setPositionName($positionName)
+    {
+        $this->positionName = $positionName;
     }
 
     /**
@@ -173,6 +173,12 @@ class HrServiceTypes
     public function setModifiedDt($modifiedDt)
     {
         $this->modifiedDt = $modifiedDt;
+    }
+
+    public function getArrayCopy(){
+
+        return get_object_vars($this);
+
     }
 
 

@@ -8,24 +8,25 @@ use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\View\Model\ViewModel;
 use Zend\Mvc\Controller\AbstractActionController;
 use Setup\Model\Position;
-use Setup\Model\PositionRepository;
 
 use Doctrine\ORM\EntityManager;
 use Setup\Entity\HrPositions;
+use DoctrineModule\Stdlib\Hydrator\DoctrineObject as DoctrineHydrator;
 
 class PositionController extends AbstractActionController
 {
-
 
     // private $repository;
     private $form;
     private $positionForm;
     private $entityManager;
     private $hrPosition;
+    private $hydrator;
 
     public function __construct(EntityManager $entityManager)
     {
         $this->entityManager = $entityManager;
+        $this->hydrator = new DoctrineHydrator($entityManager);
 
     }
 
@@ -41,7 +42,7 @@ class PositionController extends AbstractActionController
 
     public function indexAction()
     {
-        $positionList  = $this->entityManager->getRepository(HrPositions::class)->findAll();
+        $positionList  = $this->entityManager->getRepository('Setup\Entity\HrPositions')->findAll();
         return Helper::addFlashMessagesToArray($this,['positions' => $positionList]);
     }
 
@@ -63,8 +64,9 @@ class PositionController extends AbstractActionController
 
         $this->form->setData($request->getPost());
 
-        if ($this->form->isValid()) {      
-            $this->hrPosition->exchangeArray($this->form->getData());
+        if ($this->form->isValid()) {    
+            $formData = $this->form->getData();  
+            $this->hrPosition = $this->hydrator->hydrate($formData, $this->hrPosition);  
             $this->entityManager->persist($this->hrPosition);
             $this->entityManager->flush();  
 
@@ -82,7 +84,6 @@ class PositionController extends AbstractActionController
         }   
     }
 
-
     public function editAction()
     {
         $id=(int) $this->params()->fromRoute("id");
@@ -90,17 +91,12 @@ class PositionController extends AbstractActionController
             return $this->redirect()->toRoute('position');
         }
         $this->initializeForm();
-
         $request=$this->getRequest();
 
         $modifiedDt = date("Y-m-d");
         if(!$request->isPost()){
-            $this->hrPosition->exchangeArray(
-            );
-            (HrPositions) $this->entityManager->find(HrPositions::class, $id)->getArrayCopy();
-
-            $this->form->bind((object)$this->hrPosition->getArrayCopy());
-
+            $positionEdit = (object)$this->entityManager->find('Setup\Entity\HrPositions', $id)->getArrayCopy();
+            $this->form->bind($positionEdit);
             return Helper::addFlashMessagesToArray(
                 $this,['form'=>$this->form,'id'=>$id]
                 );
@@ -109,8 +105,12 @@ class PositionController extends AbstractActionController
         $this->form->setData($request->getPost());
 
         if ($this->form->isValid()) {
-            $this->hrPosition->exchangeArray($this->form->getData());
+
+            $formData = $this->form->getData();
+            $newFormData =  array_merge($formData, ['modifiedDt'=> $modifiedDt ]);        
+            $this->hrPosition = $this->hydrator->hydrate($newFormData, $this->hrPosition);  
             $this->hrPosition->setPositionId($id);
+
             $this->entityManager->merge($this->hrPosition);
             $this->entityManager->flush();     
             
@@ -135,6 +135,9 @@ class PositionController extends AbstractActionController
         $this->flashmessenger()->addMessage("Position Successfully Deleted!!!");
         return $this->redirect()->toRoute('position');
     }
+
+
+    
  
 }
 

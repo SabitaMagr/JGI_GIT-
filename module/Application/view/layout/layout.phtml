@@ -1244,7 +1244,7 @@ print $this->partial("partials/sidebar.phtml");
     //>>
 
     ->prependFile($this->basePath('pages/js/pages.min.js'))
-    ->prependFile($this->basePath('plugins/bootstrap-datepicker/js/bootstrap-datepicker.js'))
+
     ->prependFile($this->basePath('plugins/skycons/skycons.js'))
     ->prependFile($this->basePath('plugins/jquery-sparkline/jquery.sparkline.min.js'))
     ->prependFile($this->basePath('plugins/jquery-metrojs/MetroJs.min.js'))
@@ -1277,12 +1277,13 @@ print $this->partial("partials/sidebar.phtml");
     ->prependFile($this->basePath('plugins/bootstrap-v3.3.6/js/bootstrap.min.js'))
     ->prependFile($this->basePath('plugins/jquery-ui/jquery-ui.min.js'))
     ->prependFile($this->basePath('plugins/modernizr.custom.js'))
-    
+
     ->prependFile($this->basePath('js/custom.js'))
 
+    ->prependFile($this->basePath('plugins/bootstrap-datepicker/js/bootstrap-datepicker.js'))
     ->prependFile($this->basePath('plugins/jquery/jquery-2.2.4.min.js'))
     ->prependFile($this->basePath('plugins/pace/pace.min.js'));
-    
+
 ?>
 
 </body>

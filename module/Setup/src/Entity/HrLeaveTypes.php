@@ -1,39 +1,45 @@
 <?php
-
 namespace Setup\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * HrServiceTypes
+ * HrLeaveTypes
  *
- * @ORM\Table(name="HR_SERVICE_TYPES")
+ * @ORM\Table(name="HR_LEAVE_TYPES")
  * @ORM\Entity
  */
-class HrServiceTypes
+class HrLeaveTypes
 {
     /**
      * @var integer
      *
-     * @ORM\Column(name="SERVICE_TYPE_ID", type="integer", nullable=false)
+     * @ORM\Column(name="LEAVE_ID", type="integer", nullable=false)
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
-    private $serviceTypeId;
+    private $leaveId;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="SERVICE_TYPE_CODE", type="string", length=50, nullable=false)
+     * @ORM\Column(name="LEAVE_CODE", type="string", length=20, nullable=false)
      */
-    private $serviceTypeCode;
+    private $leaveCode;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="SERVICE_TYPE_NAME", type="string", length=50, nullable=false)
+     * @ORM\Column(name="LEAVE_NAME", type="string", length=50, nullable=false)
      */
-    private $serviceTypeName;
+    private $leaveName;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="TOTAL_LEAVE", type="integer", nullable=false)
+     */
+    private $totalLeave;
 
     /**
      * @var string
@@ -45,7 +51,7 @@ class HrServiceTypes
     /**
      * @var string
      *
-     * @ORM\Column(name="STATUS", type="string", length=50, nullable=false)
+     * @ORM\Column(name="STATUS", type="string", length=11, nullable=false)
      */
     private $status;
 
@@ -54,61 +60,77 @@ class HrServiceTypes
      *
      * @ORM\Column(name="CREATED_DT", type="datetime", nullable=false)
      */
-    private $createdDt = 'CURRENT_TIMESTAMP';
+    private $createdDt;
 
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="MODIFIED_DT", type="date", nullable=true)
+     * @ORM\Column(name="MODIFIED_DT", type="date", nullable=false)
      */
     private $modifiedDt;
 
     /**
      * @return int
      */
-    public function getServiceTypeId()
+    public function getLeaveId()
     {
-        return $this->serviceTypeId;
+        return $this->leaveId;
     }
 
     /**
-     * @param int $serviceTypeId
+     * @param int $leaveId
      */
-    public function setServiceTypeId($serviceTypeId)
+    public function setLeaveId($leaveId)
     {
-        $this->serviceTypeId = $serviceTypeId;
-    }
-
-    /**
-     * @return string
-     */
-    public function getServiceTypeCode()
-    {
-        return $this->serviceTypeCode;
-    }
-
-    /**
-     * @param string $serviceTypeCode
-     */
-    public function setServiceTypeCode($serviceTypeCode)
-    {
-        $this->serviceTypeCode = $serviceTypeCode;
+        $this->leaveId = $leaveId;
     }
 
     /**
      * @return string
      */
-    public function getServiceTypeName()
+    public function getLeaveCode()
     {
-        return $this->serviceTypeName;
+        return $this->leaveCode;
     }
 
     /**
-     * @param string $serviceTypeName
+     * @param string $leaveCode
      */
-    public function setServiceTypeName($serviceTypeName)
+    public function setLeaveCode($leaveCode)
     {
-        $this->serviceTypeName = $serviceTypeName;
+        $this->leaveCode = $leaveCode;
+    }
+
+    /**
+     * @return string
+     */
+    public function getLeaveName()
+    {
+        return $this->leaveName;
+    }
+
+    /**
+     * @param string $leaveName
+     */
+    public function setLeaveName($leaveName)
+    {
+        $this->leaveName = $leaveName;
+    }
+
+    /**
+     * @return int
+     */
+    public function getTotalLeave()
+    {
+        return $this->totalLeave;
+    }
+
+    /**
+     * @param int $totalLeave
+     */
+    public function setTotalLeave($totalLeave)
+    {
+        $this->totalLeave = $totalLeave;
     }
 
     /**
@@ -173,6 +195,10 @@ class HrServiceTypes
     public function setModifiedDt($modifiedDt)
     {
         $this->modifiedDt = $modifiedDt;
+    }
+
+    public function getArrayCopy(){
+        return get_object_vars($this);
     }
 
 

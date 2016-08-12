@@ -54,22 +54,6 @@ class Album
     /**
      * @return string
      */
-    public function getArtist()
-    {
-        return $this->artist;
-    }
-
-    /**
-     * @param string $artist
-     */
-    public function setArtist($artist)
-    {
-        $this->artist = $artist;
-    }
-
-    /**
-     * @return string
-     */
     public function getTitle()
     {
         return $this->title;
@@ -81,6 +65,22 @@ class Album
     public function setTitle($title)
     {
         $this->title = $title;
+    }
+
+    /**
+     * @return string
+     */
+    public function getArtist()
+    {
+        return $this->artist;
+    }
+
+    /**
+     * @param string $artist
+     */
+    public function setArtist($artist)
+    {
+        $this->artist = $artist;
     }
 
 

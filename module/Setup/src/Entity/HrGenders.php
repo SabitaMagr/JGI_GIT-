@@ -5,56 +5,56 @@ namespace Setup\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * HrServiceTypes
+ * HrGenders
  *
- * @ORM\Table(name="HR_SERVICE_TYPES")
+ * @ORM\Table(name="HR_GENDERS")
  * @ORM\Entity
  */
-class HrServiceTypes
+class HrGenders
 {
     /**
      * @var integer
      *
-     * @ORM\Column(name="SERVICE_TYPE_ID", type="integer", nullable=false)
+     * @ORM\Column(name="GENDER_ID", type="integer", nullable=false)
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
-    private $serviceTypeId;
+    private $genderId;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="SERVICE_TYPE_CODE", type="string", length=50, nullable=false)
+     * @ORM\Column(name="GENDER_CODE", type="string", length=1, nullable=false)
      */
-    private $serviceTypeCode;
+    private $genderCode;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="SERVICE_TYPE_NAME", type="string", length=50, nullable=false)
+     * @ORM\Column(name="GENDER_NAME", type="string", length=20, nullable=false)
      */
-    private $serviceTypeName;
+    private $genderName;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="REMARKS", type="text", length=65535, nullable=false)
+     * @ORM\Column(name="REMARKS", type="string", length=255, nullable=true)
      */
     private $remarks;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="STATUS", type="string", length=50, nullable=false)
+     * @ORM\Column(name="STATUS", type="string", length=1, nullable=false)
      */
     private $status;
 
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="CREATED_DT", type="datetime", nullable=false)
+     * @ORM\Column(name="CREATED_DT", type="date", nullable=false)
      */
-    private $createdDt = 'CURRENT_TIMESTAMP';
+    private $createdDt;
 
     /**
      * @var \DateTime
@@ -66,49 +66,49 @@ class HrServiceTypes
     /**
      * @return int
      */
-    public function getServiceTypeId()
+    public function getGenderId()
     {
-        return $this->serviceTypeId;
+        return $this->genderId;
     }
 
     /**
-     * @param int $serviceTypeId
+     * @param int $genderId
      */
-    public function setServiceTypeId($serviceTypeId)
+    public function setGenderId($genderId)
     {
-        $this->serviceTypeId = $serviceTypeId;
-    }
-
-    /**
-     * @return string
-     */
-    public function getServiceTypeCode()
-    {
-        return $this->serviceTypeCode;
-    }
-
-    /**
-     * @param string $serviceTypeCode
-     */
-    public function setServiceTypeCode($serviceTypeCode)
-    {
-        $this->serviceTypeCode = $serviceTypeCode;
+        $this->genderId = $genderId;
     }
 
     /**
      * @return string
      */
-    public function getServiceTypeName()
+    public function getGenderCode()
     {
-        return $this->serviceTypeName;
+        return $this->genderCode;
     }
 
     /**
-     * @param string $serviceTypeName
+     * @param string $genderCode
      */
-    public function setServiceTypeName($serviceTypeName)
+    public function setGenderCode($genderCode)
     {
-        $this->serviceTypeName = $serviceTypeName;
+        $this->genderCode = $genderCode;
+    }
+
+    /**
+     * @return string
+     */
+    public function getGenderName()
+    {
+        return $this->genderName;
+    }
+
+    /**
+     * @param string $genderName
+     */
+    public function setGenderName($genderName)
+    {
+        $this->genderName = $genderName;
     }
 
     /**
@@ -174,6 +174,8 @@ class HrServiceTypes
     {
         $this->modifiedDt = $modifiedDt;
     }
+
+
 
 
 }

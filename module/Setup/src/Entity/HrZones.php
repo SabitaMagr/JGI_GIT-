@@ -5,56 +5,56 @@ namespace Setup\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * HrServiceTypes
+ * HrZones
  *
- * @ORM\Table(name="HR_SERVICE_TYPES")
+ * @ORM\Table(name="HR_ZONES")
  * @ORM\Entity
  */
-class HrServiceTypes
+class HrZones
 {
     /**
      * @var integer
      *
-     * @ORM\Column(name="SERVICE_TYPE_ID", type="integer", nullable=false)
+     * @ORM\Column(name="ZONE_ID", type="integer", nullable=false)
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
-    private $serviceTypeId;
+    private $zoneId;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="SERVICE_TYPE_CODE", type="string", length=50, nullable=false)
+     * @ORM\Column(name="ZONE_CODE", type="string", length=2, nullable=false)
      */
-    private $serviceTypeCode;
+    private $zoneCode;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="SERVICE_TYPE_NAME", type="string", length=50, nullable=false)
+     * @ORM\Column(name="ZONE_NAME", type="string", length=150, nullable=false)
      */
-    private $serviceTypeName;
+    private $zoneName;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="REMARKS", type="text", length=65535, nullable=false)
+     * @ORM\Column(name="REMARKS", type="string", length=255, nullable=true)
      */
     private $remarks;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="STATUS", type="string", length=50, nullable=false)
+     * @ORM\Column(name="STATUS", type="string", length=1, nullable=false)
      */
     private $status;
 
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="CREATED_DT", type="datetime", nullable=false)
+     * @ORM\Column(name="CREATED_DT", type="date", nullable=false)
      */
-    private $createdDt = 'CURRENT_TIMESTAMP';
+    private $createdDt;
 
     /**
      * @var \DateTime
@@ -66,49 +66,49 @@ class HrServiceTypes
     /**
      * @return int
      */
-    public function getServiceTypeId()
+    public function getZoneId()
     {
-        return $this->serviceTypeId;
+        return $this->zoneId;
     }
 
     /**
-     * @param int $serviceTypeId
+     * @param int $zoneId
      */
-    public function setServiceTypeId($serviceTypeId)
+    public function setZoneId($zoneId)
     {
-        $this->serviceTypeId = $serviceTypeId;
-    }
-
-    /**
-     * @return string
-     */
-    public function getServiceTypeCode()
-    {
-        return $this->serviceTypeCode;
-    }
-
-    /**
-     * @param string $serviceTypeCode
-     */
-    public function setServiceTypeCode($serviceTypeCode)
-    {
-        $this->serviceTypeCode = $serviceTypeCode;
+        $this->zoneId = $zoneId;
     }
 
     /**
      * @return string
      */
-    public function getServiceTypeName()
+    public function getZoneCode()
     {
-        return $this->serviceTypeName;
+        return $this->zoneCode;
     }
 
     /**
-     * @param string $serviceTypeName
+     * @param string $zoneCode
      */
-    public function setServiceTypeName($serviceTypeName)
+    public function setZoneCode($zoneCode)
     {
-        $this->serviceTypeName = $serviceTypeName;
+        $this->zoneCode = $zoneCode;
+    }
+
+    /**
+     * @return string
+     */
+    public function getZoneName()
+    {
+        return $this->zoneName;
+    }
+
+    /**
+     * @param string $zoneName
+     */
+    public function setZoneName($zoneName)
+    {
+        $this->zoneName = $zoneName;
     }
 
     /**
@@ -174,6 +174,7 @@ class HrServiceTypes
     {
         $this->modifiedDt = $modifiedDt;
     }
+
 
 
 }
