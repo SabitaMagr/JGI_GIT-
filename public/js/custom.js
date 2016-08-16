@@ -14,7 +14,12 @@ $(document).ready(function(){
 	$('#form-trainToDate').datepicker();
 	$('#form-childDateOfBirth').datepicker();
 
+	$("#form-birthDate").datepicker({
+        altFormat: "yy-mm-dd"
+    });
 	$('#add_more_child').click(function(){
 		//$("#child_div").clone().insertAfter("div#child_div:last")
-	})
+	});
+
 });
+

@@ -17,6 +17,7 @@ class HrDepartments
      *
      * @ORM\Column(name="DEPARTMENT_ID", type="integer", nullable=true)
      * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     protected $departmentId;
 

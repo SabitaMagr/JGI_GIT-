@@ -109,36 +109,6 @@ return [
                 ],
             ],
 
-            'leaveType'=>[
-                'type'=>segment::class,
-                'options'=>[
-                    'route'=>'/leaveType[/:action[/:id]]',
-                    'constant'=>[
-                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
-                        'id'     => '[0-9]+',
-                    ],
-                    'defaults'=>[
-                        'controller'=>Controller\LeaveTypeController::class,
-                        'action'=>'index',
-                    ]
-                ],
-            ],
-
-            'shift'=>[
-                'type'=>segment::class,
-                'options'=>[
-                    'route'=>'/shift[/:action[/:id]]',
-                    'constant'=>[
-                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
-                        'id'     => '[0-9]+',
-                    ],
-                    'defaults'=>[
-                        'controller'=>Controller\ShiftController::class,
-                        'action'=>'index',
-                    ]
-                ],
-            ],
-
 
             'jobHistory'=>[
                 'type'=>segment::class,
@@ -182,29 +152,12 @@ return [
             Controller\DepartmentController::class => Controller\ControllerFactory::class,
             Controller\PositionController::class => Controller\ControllerFactory::class,
             Controller\ServiceTypeController::class => Controller\ControllerFactory::class,
+
             Controller\LeaveTypeController::class=>Controller\ControllerFactory::class,
             Controller\ShiftController::class=>Controller\ControllerFactory::class,
             Controller\EmpCurrentPostingController::class=>Controller\ControllerFactory::class,
             Controller\JobHistoryController::class=>Controller\ControllerFactory::class,
         ]
-    ],
-
-  
-
-     // Doctrine config
-    'doctrine' => [
-        'driver' => [
-            __NAMESPACE__ . '_driver' => [
-                'class' => 'Doctrine\ORM\Mapping\Driver\AnnotationDriver',
-                'cache' => 'array',
-                'paths' => [__DIR__ . '/../src/Entity' ]
-             ],
-            'orm_default' => [
-                'drivers' => [
-                    __NAMESPACE__ . '\Entity' => __NAMESPACE__ . '_driver'
-                 ]
-            ]
-         ]
     ],
 
     'view_manager' => [
@@ -213,4 +166,3 @@ return [
         ],
     ],
 ];
-

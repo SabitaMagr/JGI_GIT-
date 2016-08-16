@@ -51,26 +51,23 @@ class DepartmentController extends AbstractActionController{
 		
 		$this->initializeForm();
 
-        $this->hrDepartments->setDepartmentId(19);
-        $this->hrDepartments->setDepartmentCode("BC002");
-        $this->hrDepartments->setDepartmentName("Hr");
-        $this->hrDepartments->setRemarks("hello");
-        $this->hrDepartments->setStatus("E");
-        $this->entityManager->persist($this->hrDepartments);
-        $this->entityManager->flush();
+        // $this->hrDepartments->setDepartmentId(19);
+        // $this->hrDepartments->setDepartmentCode("BC002");
+        // $this->hrDepartments->setDepartmentName("Hr");
+        // $this->hrDepartments->setRemarks("hello");
+        // $this->hrDepartments->setStatus("E");
+        // $this->entityManager->persist($this->hrDepartments);
+        // $this->entityManager->flush();
 
         $request = $this->getRequest(); 
         if ($request->isPost()) {
            
             $this->departmentForm->setData($request->getPost());
-            //print_r($request->getPost());  die();
-
+          
             if ($this->departmentForm->isValid()){
                 $formData = $this->departmentForm->getData();
 
                 $this->hrDepartments = EntityHelper::hydrate($this->entityManager,HrDepartments::class,$formData);
-                
-                //print_r($this->hrDepartments); die();
 
                 $em =$this->entityManager;
                 $em->getConnection()->beginTransaction(); // suspend auto-commit      
@@ -124,10 +121,9 @@ class DepartmentController extends AbstractActionController{
             
             if ($this->departmentForm->isValid()) {
                 $formData = $this->departmentForm->getData();
-                // $newFormData = array_merge($formData,['modifiedDt'=>$modifiedDt]);
-                //print"<pre>";print_r($newFormData);exit;
+          
                 $this->hrDepartments = EntityHelper::hydrate($this->entityManager,HrDepartments::class, $formData);
-// print"<pre>";print_r($this->hrDepartments);exit;
+
                // $date = new \DateTime($modifiedDt);
 
                 //$this->hrDepartments->setModifiedDt($date);

@@ -11,18 +11,22 @@ class DepartmentRepository implements RepositoryInterface
     
     public function __construct(AdapterInterface $adapter)
     {
-        $this->tableGateway=new TableGateway('department',$adapter);
+        $this->tableGateway=new TableGateway('HR_DEPARTMENTS',$adapter);
 
     }
 
     public function add(ModelInterface $model)
     {
-        $this->tableGateway->insert($model->getArrayCopy());
+        $this->tableGateway->insert($model->getArrayCopyForDB());
     }
 
     public function edit(ModelInterface $model,$id)
     {
-        $this->tableGateway->update($model->getArrayCopy(),["departmentCode"=>$id]);
+        $temp=$model->getArrayCopyForDB();
+        unset($temp["DEPARTMENT_ID"]);
+        unset($temp["CREATED_DT"]);
+
+        $this->tableGateway->update($temp,["DEPARTMENT_ID"=>$id]);
     }
 
     public function fetchAll()
@@ -32,13 +36,13 @@ class DepartmentRepository implements RepositoryInterface
 
     public function fetchById($id)
     {
-        $rowset= $this->tableGateway->select(['departmentCode'=>$id]);
+        $rowset= $this->tableGateway->select(['DEPARTMENT_ID'=>$id]);
         return $rowset->current();
     }
 
     public function delete($id)
     {
-    	$this->tableGateway->delete(['departmentCode'=>$id]);
+    	$this->tableGateway->delete(['DEPARTMENT_ID'=>$id]);
 
     }
 }

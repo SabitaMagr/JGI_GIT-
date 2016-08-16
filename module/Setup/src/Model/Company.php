@@ -244,11 +244,15 @@ class Company implements ModelInterface{
 		];
 	}
 
-	public function exchangeArrayFromDb(array $data){
 
+	public function exchangeArrayFromDB(array $data)
+	{
+		// TODO: Implement exchangeArrayFromDB() method.
 	}
 
-	public function getArrayCopyForDb(){
-		
+	public function getArrayCopyForDB()
+	{
+		// TODO: Implement getArrayCopyForDB() method.
 	}
+
 }

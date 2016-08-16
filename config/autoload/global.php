@@ -10,6 +10,7 @@
  * control, so do not include passwords or other sensitive information in this
  * file.
  */
+
 return [
     //  'db' => [
     //     'driver' => 'Mysqli',
@@ -37,27 +38,13 @@ return [
     'password'      => 'NEO_HRIS',
     'platform_options' => ['quote_identifiers' => false]
     ],
-    'service_manager' => [
+ 'service_manager' => [
         'factories' => [
             'Zend\Db\Adapter\Adapter' => 'Zend\Db\Adapter\AdapterServiceFactory',
         ],
-    ],
+    ] ,
 
-//     // 'doctrine' => [
-//     //     'connection' => [
-//     //         'orm_default' => [
-//     //             'params' => [
-//     //                 'host' => $dbParams['hostname'],
-//     //                 'user' => $dbParams['username'],
-//     //                 'password' => $dbParams['password'],
-//     //                 'dbname' => $dbParams['database'],
-//     //                 'driverOptions' => [
-//     //                     PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8'
-//     //                 ],
-//     //             ],
-//     //         ],
-//     //     ],
-//     // ],
+
 ];
 
 
