@@ -19,7 +19,7 @@ use Zend\Form\Annotation\AnnotationBuilder;
 
 use Doctrine\ORM\EntityManager;
 use Setup\Entity\HrLeaveTypes;
-use DoctrineModule\Stdlib\Hydrator\DoctrineObject as DoctrineHydrator;
+use Setup\Helper\EntityHelper;
 
 class LeaveTypeController extends AbstractActionController {
 
@@ -30,7 +30,6 @@ class LeaveTypeController extends AbstractActionController {
 
 	public function __construct(EntityManager $entityManager){
 
-		$this->hydrator = new DoctrineHydrator($entityManager);
 		$this->entityManager =  $entityManager;
 		$this->hrLeaveTypes =  new HrLeaveTypes();
 	}
@@ -50,31 +49,22 @@ class LeaveTypeController extends AbstractActionController {
 	public function addAction(){
 		$this->initializeForm();
 		$request = $this->getRequest();
-		if(!$request->isPost()){
-			return Helper::addFlashMessagesToArray(
-				$this,
-				[
-					'form'=>$this->leaveTypeForm,
-					'messages' => $this->flashmessenger()->getMessages()
-				]
-			);
+		if($request->isPost()){
+				
+			$this->leaveTypeForm->setData($request->getPost());
+			if($this->leaveTypeForm->isValid()){
+
+				$formData = $this->leaveTypeForm->getData();
+				$this->hrLeaveTypes = EntityHelper::hydrate($this->entityManager,HrLeaveTypes::class,$formData);
+				$this->entityManager->persist($this->hrLeaveTypes);
+				$this->entityManager->flush();
+
+				$this->flashmessenger()->addMessage("Leave Type Successfully Added!!!");
+				return $this->redirect()->toRoute("leaveType");
+
+			}
 		}
-		$this->leaveTypeForm->setData($request->getPost());
-
-		if($this->leaveTypeForm->isValid()){
-
-			$formData = $this->leaveTypeForm->getData();
-			$this->hrLeaveTypes = $this->hydrator->hydrate($formData,$this->hrLeaveTypes);
-			$this->entityManager->persist($this->hrLeaveTypes);
-			$this->entityManager->flush();
-
-			$this->flashmessenger()->addMessage("Leave Type Successfully Added!!!");
-			return $this->redirect()->toRoute("leaveType");
-
-		}else{
-
-			return Helper::addFlashMessagesToArray($this,['form'=>$this->leaveTypeForm]);
-		}
+		return Helper::addFlashMessagesToArray($this,['form'=>$this->leaveTypeForm]);	
 	}
 
 	public function editAction()
@@ -85,38 +75,33 @@ class LeaveTypeController extends AbstractActionController {
             return $this->redirect()->toRoute('leaveType');
         }
         $this->initializeForm();
-
         $request=$this->getRequest();
         $modifiedDt = date("Y-m-d");
+        
         if(!$request->isPost()){
-        	$leaveTypeRecord = (object)$this->entityManager->find(HrLeaveTypes::class,$id)->getArrayCopy();
-            $this->leaveTypeForm->bind($leaveTypeRecord);
-            return Helper::addFlashMessagesToArray(
+        	$leaveTypeRecord = $this->entityManager->find(HrLeaveTypes::class,$id);
+        	$leaveTypeRecord1 = EntityHelper::extract($this->entityManager,$leaveTypeRecord);
+            $this->leaveTypeForm->bind((object)$leaveTypeRecord1);            
+        }else{
+
+	        $this->leaveTypeForm->setData($request->getPost());
+	        if ($this->leaveTypeForm->isValid()) {
+
+	        	$formData =  $this->leaveTypeForm->getData();
+	            $newFormData = array_merge($formData,['modifiedDt'=>$modifiedDt]);
+	        	$this->hrLeaveTypes = EntityHelper::hydrate($this->entityManager,HrLeaveTypes::class,$formData);
+	        	$this->hrLeaveTypes->setLeaveId($id);
+
+	        	$this->entityManager->merge($this->hrLeaveTypes);
+	        	$this->entityManager->flush();
+
+	            $this->flashmessenger()->addMessage("Leave Type Successfully Updated!!!");
+	            return $this->redirect()->toRoute("leaveType");
+	        }
+    	}
+        return Helper::addFlashMessagesToArray(
                 $this,['form'=>$this->leaveTypeForm,'id'=>$id]
                 );
-        }
-
-        $this->leaveTypeForm->setData($request->getPost());
-
-        if ($this->leaveTypeForm->isValid()) {
-
-        	$formData =  $this->leaveTypeForm->getData();
-            $newFormData = array_merge($formData,['modifiedDt'=>$modifiedDt]);
-        	$this->hrLeaveTypes = $this->hydrator->hydrate($formData,$this->hrLeaveTypes);
-        	$this->hrLeaveTypes->setLeaveId($id);
-
-        	$this->entityManager->merge($this->hrLeaveTypes);
-        	$this->entityManager->flush();
-
-            $this->flashmessenger()->addMessage("Leave Type Successfully Updated!!!");
-           return $this->redirect()->toRoute("leaveType");
-
-        } else {
-            return Helper::addFlashMessagesToArray(
-                $this,['form'=>$this->leaveTypeForm,'id'=>$id]
-             );
-
-        }
           
 	}
 

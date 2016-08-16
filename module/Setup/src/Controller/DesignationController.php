@@ -19,7 +19,7 @@ use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 
 use Setup\Entity\HrDesignations;
-use DoctrineModule\Stdlib\Hydrator\DoctrineObject as DoctrineHydrator;
+use Setup\Helper\EntityHelper;
 use Doctrine\ORM\EntityManager;
 
 class DesignationController extends AbstractActionController
@@ -32,7 +32,6 @@ class DesignationController extends AbstractActionController
     function __construct(EntityManager $entityManager)
     {
         $this->entityManager = $entityManager;
-        $this->hydrator = new DoctrineHydrator($entityManager);
         $this->hrDesignations = new HrDesignations();
     }
 
@@ -55,37 +54,29 @@ class DesignationController extends AbstractActionController
         $this->initializeForm();
 
         $request = $this->getRequest();
-        if (!$request->isPost()) {
-           return new ViewModel(Helper::addFlashMessagesToArray(
-                $this,
-                [
-                    'form' => $this->designationForm,
-                    'messages' => $this->flashmessenger()->getMessages()
-                 ]
-                )
-            );
+        if ($request->isPost()) {
+          
+            $this->designationForm->setData($request->getPost());
+            if ($this->designationForm->isValid()) {
+                $formData = $this->designationForm->getData();
+                $this->hrDesignations = EntityHelper::hydrate($this->entityManager,HrDesignations::class,$formData);
+
+                $this->entityManager->persist($this->hrDesignations);
+                $this->entityManager->flush();
+                
+                $this->flashmessenger()->addMessage("Designation Successfully added!!!");
+                return $this->redirect()->toRoute("designation");
+            } 
         }
-        $this->designationForm->setData($request->getPost());
-
-        if ($this->designationForm->isValid()) {
-            $formData = $this->designationForm->getData();
-            $this->hrDesignations = $this->hydrator->hydrate($formData,$this->hrDesignations);
-
-            $this->entityManager->persist($this->hrDesignations);
-            $this->entityManager->flush();
-            
-            $this->flashmessenger()->addMessage("Designation Successfully added!!!");
-            return $this->redirect()->toRoute("designation");
-        } else {
-            return new ViewModel(Helper::addFlashMessagesToArray(
-                $this,
-                [
-                    'form' => $this->designationForm,
-                    'messages' => $this->flashmessenger()->getMessages()
-                 ]
-                )
-            );
-        }        
+        return new ViewModel(Helper::addFlashMessagesToArray(
+            $this,
+            [
+                'form' => $this->designationForm,
+                'messages' => $this->flashmessenger()->getMessages()
+             ]
+            )
+        );
+               
     }
 
     public function editAction(){
@@ -99,8 +90,9 @@ class DesignationController extends AbstractActionController
         $request=$this->getRequest();
 
         if(!$request->isPost()){
-            $designationRecord = (object)$this->entityManager->find(HrDesignations::class,$id)->getArrayCopy();
-            $this->designationForm->bind($designationRecord);
+            $designationRecord = $this->entityManager->find(HrDesignations::class,$id);
+            $designationRecord1 = EntityHelper::extract($this->entityManager,$designationRecord);
+            $this->designationForm->bind((object)$designationRecord1);
         }else{
 
             $this->designationForm->setData($request->getPost());
@@ -108,7 +100,7 @@ class DesignationController extends AbstractActionController
             if ($this->designationForm->isValid()) {
                 $formData = $this->designationForm->getData();
                 $newFormData = array_merge($formData,['modifiedDt'=>$modifiedDt]);
-                $this->hrDesignations = $this->hydrator->hydrate($newFormData,$this->hrDesignations);
+                $this->hrDesignations = EntityHelper::hydrate($this->entityManager,HrDesignations::class,$formData);
                 $this->hrDesignations->setDesignationId($id);
 
                 $this->entityManager->merge($this->hrDesignations);

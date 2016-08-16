@@ -15,60 +15,53 @@ class HrDepartments
     /**
      * @var integer
      *
-     * @ORM\Column(name="DEPARTMENT_ID", type="integer", nullable=false)
+     * @ORM\Column(name="DEPARTMENT_ID", type="integer", nullable=true)
      * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
      */
-    private $departmentId;
+    protected $departmentId;
 
     /**
      * @var string
      *
      * @ORM\Column(name="DEPARTMENT_CODE", type="string", length=20, nullable=false)
      */
-    private $departmentCode;
+    protected $departmentCode;
 
     /**
      * @var string
      *
      * @ORM\Column(name="DEPARTMENT_NAME", type="string", length=50, nullable=false)
      */
-    private $departmentName;
+    protected $departmentName;
 
     /**
      * @var string
      *
      * @ORM\Column(name="REMARKS", type="string", length=30, nullable=false)
      */
-    private $remarks;
+    protected $remarks;
 
     /**
-     * @var string
+     * @var integer
      *
-     * @ORM\Column(name="PARENT_DEPARTMENT", type="string", length=20, nullable=false)
+     * @ORM\Column(name="PARENT_DEPARTMENT", type="integer", length=11, nullable=false)
      */
-    private $parentDepartment;
+    protected $parentDepartment;
 
     /**
      * @var integer
      *
      * @ORM\Column(name="STATUS", type="string", nullable=false)
      */
-    private $status;
+    protected $status;
 
+  
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="CREATED_DT", type="datetime", nullable=false)
+     * @ORM\Column(name="MODIFIED_DT", type="date", nullable=true)
      */
-    private $createdDt;
-
-    /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="MODIFIED_DT", type="date", nullable=false)
-     */
-    private $modifiedDt;
+    protected $modifiedDt;
 
     /**
      * @return int
@@ -166,21 +159,6 @@ class HrDepartments
         $this->status = $status;
     }
 
-    /**
-     * @return \DateTime
-     */
-    public function getCreatedDt()
-    {
-        return $this->createdDt;
-    }
-
-    /**
-     * @param \DateTime $createdDt
-     */
-    public function setCreatedDt($createdDt)
-    {
-        $this->createdDt = $createdDt;
-    }
 
     /**
      * @return \DateTime
@@ -197,10 +175,5 @@ class HrDepartments
     {
         $this->modifiedDt = $modifiedDt;
     }
-
-    public function getArrayCopy(){
-        return get_object_vars($this);
-    }
-
 }
 

@@ -19,7 +19,6 @@ use Zend\Form\Annotation;
  */
 class BranchForm
 {
-
     /**
      * @Annotion\Type("Zend\Form\Element\Text")
      * @Annotation\Required({"required":"true"})
@@ -41,7 +40,7 @@ class BranchForm
 
     /**
      * @Annotion\Type("Zend\Form\Element\Text")
-     * @Annotation\Required({"required":"false"})
+     * @Annotation\Required(false)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Street Address"})
      * @Annotation\Attributes({ "id":"form-streetAddress", "class":"form-streetAddress form-control"  })
@@ -50,9 +49,10 @@ class BranchForm
 
     /**
      * @Annotion\Type("Zend\Form\Element\Text")
-     * @Annotation\Required({"required":"false"})
+     * @Annotation\Required(false)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Telephone"})
+     * @Annotation\Validator({"name":"StringLength", "options":{"max":"10"}})
      * @Annotation\Attributes({ "id":"form-telephone", "class":"form-telephone form-control"})
      */
     public $telephone;
@@ -60,7 +60,7 @@ class BranchForm
 
     /**
      * @Annotion\Type("Zend\Form\Element\Text")
-     * @Annotation\Required({"required":"false"})
+     * @Annotation\Required(false)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Fax"})
      * @Annotation\Attributes({ "id":"form-fax", "class":"form-fax form-control"})
@@ -69,7 +69,7 @@ class BranchForm
 
     /**
      * @Annotion\Type("Zend\Form\Element\Email")
-     * @Annotation\Required({"required":"false"})
+     * @Annotation\Required(false)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Email"})
      * @Annotation\Attributes({ "id":"form-email", "class":"form-email form-control"})
@@ -78,7 +78,7 @@ class BranchForm
 
     /**
      * @Annotation\Type("Zend\Form\Element\Textarea")
-     * @Annotation\Required({"required":"false"})
+     * @Annotation\Required(false)
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
      * @Annotation\Options({"label":"Remarks"})
      * @Annotation\Attributes({"id":"form-remarks","class":"form-remarks form-control","style":"    height: 50px; font-size:12px"})
@@ -87,7 +87,7 @@ class BranchForm
 
     /**
      * @Annotation\Type("Zend\Form\Element\Select")
-     * @Annotation\Required({"required":"false"})
+     * @Annotation\Required(false)
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
      * @Annotation\Options({"label":"Status","value_options":{"E":"Enabled","D":"Disabled"}})
      * @Annotation\Attributes({ "id":"form-status","data-init-plugin":"cs-select","class":"cs-select cs-skin-slide form-status form-control"})

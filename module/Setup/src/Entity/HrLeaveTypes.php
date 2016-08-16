@@ -197,10 +197,5 @@ class HrLeaveTypes
     {
         $this->modifiedDt = $modifiedDt;
     }
-
-    public function getArrayCopy(){
-        return get_object_vars($this);
-    }
-
 }
 

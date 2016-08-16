@@ -140,6 +140,37 @@ return [
             ],
 
 
+            'jobHistory'=>[
+                'type'=>segment::class,
+                'options'=>[
+                    'route'=>'/jobHistory[/:action[/:id]]',
+                    'constant'=>[
+                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'id'     => '[0-9]+',
+                    ],
+                    'defaults'=>[
+                        'controller'=>Controller\JobHistoryController::class,
+                        'action'=>'index',
+                    ]
+                ],
+            ],
+
+            'empCurrentPosting'=>[
+                'type'=>segment::class,
+                'options'=>[
+                    'route'=>'/empCurrentPosting[/:action[/:id]]',
+                    'constant'=>[
+                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'id'     => '[0-9]+',
+                    ],
+                    'defaults'=>[
+                        'controller'=>Controller\EmpCurrentPostingController::class,
+                        'action'=>'index',
+                    ]
+                ],
+            ],
+
+
         ]
     ],
     'controllers' => [
@@ -153,6 +184,8 @@ return [
             Controller\ServiceTypeController::class => Controller\ControllerFactory::class,
             Controller\LeaveTypeController::class=>Controller\ControllerFactory::class,
             Controller\ShiftController::class=>Controller\ControllerFactory::class,
+            Controller\EmpCurrentPostingController::class=>Controller\ControllerFactory::class,
+            Controller\JobHistoryController::class=>Controller\ControllerFactory::class,
         ]
     ],
 

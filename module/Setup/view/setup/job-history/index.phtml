@@ -1,0 +1,69 @@
+<?php
+if ($this->messages) {
+    print '<ul class="help-block bg-danger" style="background:#f3e250;">';
+    foreach ($this->messages as $message) {
+        print '<li>' . $message . '</li>';
+    }
+    print '</ul>';
+}
+?>
+<a href="<?= $this->url('jobHistory',['action'=>'add']) ?>">Add new</a>
+
+
+<table role="grid" class="table table-hover dataTable no-footer" id="employeelist">
+
+    <thead>
+    <tr role="row">
+        <th aria-label="Title: activate to sort column ascending" aria-sort="descending" colspan="1" rowspan="1"
+            aria-controls="basicTable" tabindex="0" class="sorting_desc" style="width: 218px;">Employee Name
+        </th>
+        <th aria-label="Places: activate to sort column ascending" colspan="1" rowspan="1" aria-controls="basicTable"
+            tabindex="0" class="sorting" style="width: 219px;">Start Date
+        </th>
+        <th aria-label="Places: activate to sort column ascending" colspan="1" rowspan="1" aria-controls="basicTable"
+            tabindex="0" class="sorting" style="width: 219px;">End Date
+        </th>
+        <th aria-label="Places: activate to sort column ascending" colspan="1" rowspan="1" aria-controls="basicTable"
+            tabindex="0" class="sorting" style="width: 219px;">Service Type
+        </th>
+        <th aria-label="Last Update: activate to sort column ascending" colspan="1" rowspan="1"
+            aria-controls="basicTable" tabindex="0" class="sorting" style="width: 155px;">
+            Action
+        </th>
+    </tr>
+    </thead>
+    <tbody>
+
+<?php  foreach($jobHistoryList as $jobHistory):?>
+    <tr role="row">
+        <td class="v-align-middle sorting_1">
+            <p>
+                <?php print $this->escapeHtml($jobHistory->getEmployeeId()); ?>
+            </p>
+        </td>
+        <td class="v-align-middle sorting_1">
+            <p>
+                <?php     
+                 print $this->escapeHtml($jobHistory->getStartDate()->format('Y-m-d')); ?>
+            </p>
+        </td>
+        <td class="v-align-middle sorting_1">
+            <p>
+                <?php print $this->escapeHtml($jobHistory->getEndDate()->format('Y-m-d')); ?>
+            </p>
+        </td>
+        <td class="v-align-middle sorting_1">
+            <p>
+                <?php print $this->escapeHtml($jobHistory->getServiceTypeId()); ?>
+            </p>
+        </td>
+        <td class="v-align-middle sorting_1">
+            <a href="<?= $this->url("jobHistory",["action"=>"edit","id"=>$jobHistory->getId()]) ?>">Edit</a>|
+            <a href="<?= $this->url("jobHistory",["action"=>"delete","id"=>$jobHistory->getId()]); ?>" onclick="return confirm('Are you sure you want to delete this item?');">Delete</a>
+        </td>
+    </tr>
+
+<?php endforeach;?>
+
+    </tbody>
+</table>

@@ -78,14 +78,14 @@ class HrBranches
     private $status;
 
     /**
-     * @var \DateTime
+     * @var \Date
      *
      * @ORM\Column(name="CREATED_DT", type="datetime", nullable=false)
      */
     private $createdDt;
 
     /**
-     * @var \DateTime
+     * @var \Date
      *
      * @ORM\Column(name="MODIFIED_DT", type="date", nullable=false)
      */
@@ -236,7 +236,7 @@ class HrBranches
     }
 
     /**
-     * @return \DateTime
+     * @return \Date
      */
     public function getCreatedDt()
     {
@@ -244,7 +244,7 @@ class HrBranches
     }
 
     /**
-     * @param \DateTime $createdDt
+     * @param \Date $createdDt
      */
     public function setCreatedDt($createdDt)
     {
@@ -252,7 +252,7 @@ class HrBranches
     }
 
     /**
-     * @return \DateTime
+     * @return \Date
      */
     public function getModifiedDt()
     {
@@ -260,17 +260,11 @@ class HrBranches
     }
 
     /**
-     * @param \DateTime $modifiedDt
+     * @param \Date $modifiedDt
      */
     public function setModifiedDt($modifiedDt)
     {
         $this->modifiedDt = $modifiedDt;
     }
-
-    public function getArrayCopy(){
-        return get_object_vars($this);
-    }
-
-
 }
 

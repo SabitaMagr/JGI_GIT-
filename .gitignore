@@ -8,6 +8,8 @@ nbproject
 .project
 .settings
 #vendor/
+#config/autoload/global.php
+#config/autoload/doctrine.global.php
 composer.phar
 config/development.config.php
 phpunit.xml

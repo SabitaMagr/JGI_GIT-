@@ -20,8 +20,7 @@ use Setup\Form\ShiftForm;
 
 use Doctrine\ORM\EntityManager;
 use Setup\Entity\HrShifts;
-use DoctrineModule\Stdlib\Hydrator\DoctrineObject as DoctrineHydrator;
-
+use Setup\Helper\EntityHelper;
 
 class ShiftController extends AbstractActionController {
 	
@@ -32,7 +31,6 @@ class ShiftController extends AbstractActionController {
 
 	public function __construct(EntityManager $entityManager){
 		$this->entityManager = $entityManager;
-		$this->hydrator = new DoctrineHydrator($entityManager);
 		$this->hrShifts = new HrShifts();
 	}
 
@@ -48,42 +46,33 @@ class ShiftController extends AbstractActionController {
 	}
 
 	public function addAction(){
+		
 		$this->initializeForm();
         $request = $this->getRequest();
-        if (!$request->isPost()) {
-           return new ViewModel(Helper::addFlashMessagesToArray(
-                $this,
-                [
-                    'form' => $this->shiftForm,
-                    'messages' => $this->flashmessenger()->getMessages()
-                 ]
-                )
-            );
+        if ($request->isPost()) {
+        
+	        $this->shiftForm->setData($request->getPost());
+	        if ($this->shiftForm->isValid()) {
+
+	        	$formData = $this->shiftForm->getData();
+	        	$this->hrShifts = EntityHelper::hydrate($this->entityManager,HrShifts::class,$formData);
+
+	            $this->entityManager->persist($this->hrShifts);
+	            $this->entityManager->flush();
+	            
+	            $this->flashmessenger()->addMessage("Shift Successfully added!!!");
+	            return $this->redirect()->toRoute("shift");
+	        } 
         }
-
-        $this->shiftForm->setData($request->getPost());
-        if ($this->shiftForm->isValid()) {
-
-        	$formData = $this->shiftForm->getData();
-        	$this->hrShifts = $this->hydrator->hydrate($formData,$this->hrShifts);
-
-            $this->entityManager->persist($this->hrShifts);
-            $this->entityManager->flush();
-            
-            $this->flashmessenger()->addMessage("Shift Successfully added!!!");
-            return $this->redirect()->toRoute("shift");
-        } else {
-            return new ViewModel(Helper::addFlashMessagesToArray(
-                $this,
-                [
-                    'form' => $this->shiftForm,
-                    'messages' => $this->flashmessenger()->getMessages()
-                 ]
-                )
-            );
-        }
-
-	}
+        return new ViewModel(Helper::addFlashMessagesToArray(
+            $this,
+            [
+                'form' => $this->shiftForm,
+                'messages' => $this->flashmessenger()->getMessages()
+             ]
+            )
+        );
+   	}
 
 	public function editAction(){
 		$this->initializeForm();
@@ -98,37 +87,34 @@ class ShiftController extends AbstractActionController {
 
 		if(!$request->isPost()){
 			
-			$shiftRecord = (object)$this->entityManager->find(HrShifts::class,$id)->getArrayCopy();
-			$this->shiftForm->bind($shiftRecord);
-			return Helper::addFlashMessagesToArray($this,['form'=>$this->shiftForm,'id'=>$id]);
-		}
-
-		$this->shiftForm->setData($request->getPost());
-
-		if($this->shiftForm->isValid()){
-
-			$formData = $this->shiftForm->getData();
-			$newFormData = array_merge($formData,['modifiedDt'=>$modifiedDt]);
-			$this->hrShifts = $this->hydrator->hydrate($newFormData,$this->hrShifts);
-			$this->hrShifts->setShiftId($id);
-			
-			$this->entityManager->merge($this->hrShifts);
-			$this->entityManager->flush();
-		
-			$this->flashmessenger()->addMessage("Shift Successfuly Updated!!!");
-			return $this->redirect()->toRoute("shift");
+			$shiftRecord = $this->entityManager->find(HrShifts::class,$id);
+			$shiftRecord1 = EntityHelper::extract($this->entityManager,$shiftRecord);
+			$this->shiftForm->bind((object)$shiftRecord1);
 		}else{
-			return new ViewModel(Helper::addFlashMessagesToArray(
-                $this,
-                [
-                    'form' => $this->shiftForm,
-                    'id'=>$id
-                 ]
-                )
-            );
+
+			$this->shiftForm->setData($request->getPost());
+			if($this->shiftForm->isValid()){
+
+				$formData = $this->shiftForm->getData();
+				$newFormData = array_merge($formData,['modifiedDt'=>$modifiedDt]);
+				$this->hrShifts = EntityHelper::hydrate($this->entityManager,HrShifts::class,$formData);
+				$this->hrShifts->setShiftId($id);
+				
+				$this->entityManager->merge($this->hrShifts);
+				$this->entityManager->flush();
+			
+				$this->flashmessenger()->addMessage("Shift Successfuly Updated!!!");
+				return $this->redirect()->toRoute("shift");
+			}
 		}
-
-
+		return new ViewModel(Helper::addFlashMessagesToArray(
+            $this,
+            [
+                'form' => $this->shiftForm,
+                'id'=>$id
+             ]
+            )
+        );
 	}
 
 	public function deleteAction(){

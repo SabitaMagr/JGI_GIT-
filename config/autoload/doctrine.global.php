@@ -1,24 +1,37 @@
 <?php
-$dbParams1 = [
-    'hostname' => 'localhost',
-    'username' => 'root',
-    'password' => 'root',
-    'database' => 'album'
-];
+
+
+//$db = "(DESCRIPTION=(ADDRESS_LIST = (ADDRESS = (PROTOCOL = TCP)(HOST = 192.168.XX.XXX)(PORT = 1521)))(CONNECT_DATA=(SID=XXXX)))"; 
+$db       = '(DESCRIPTION =
+    (ADDRESS = (PROTOCOL = TCP)(HOST = 192.168.4.2)(PORT = 1521))
+    (CONNECT_DATA =
+    (SERVER = DEDICATED)
+    (SERVICE_NAME = ITN)
+    )
+    )';
+
 return [
     'doctrine' => [
         'connection' => [
             'orm_default' => [
+                'driverClass' => 'Doctrine\DBAL\Driver\OCI8\Driver',
                 'params' => [
-                    'host' => $dbParams1['hostname'],
-                    'user' => $dbParams1['username'],
-                    'password' => $dbParams1['password'],
-                    'dbname' => $dbParams1['database'],
-                    'driverOptions' => [
-                        PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8'
-                    ],
+                    'driver' => 'oci8',
+                    'host'     => '192.168.4.2',
+                    'port'     => '1521',
+                    'user'     => 'HRIS',
+                    'password' => 'NEO_HRIS',
+                    'dbname'   => 'ITN',
+                    'servicename'=>'ITN'
+                    
                 ],
             ],
         ],
     ],
 ];
+
+
+
+
+
+   

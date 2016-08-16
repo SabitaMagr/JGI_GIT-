@@ -1,0 +1,89 @@
+<?php 
+$form->setAttribute('role','form');
+$form->setAttribute('class','empCurrentPosting-form');
+
+$employeeId = $form->get('employeeId');
+$serviceTypeId = $form->get('serviceTypeId');
+$serviceTypeId->setValueOptions($serviceTypes);
+$branchId = $form->get('branchId');
+$branchId->setValueOptions($branches);
+$departmentId = $form->get('departmentId');
+$departmentId->setValueOptions($departments);
+$designationId = $form->get('designationId');
+$designationId->setValueOptions($designations);
+$positionId = $form->get('positionId');
+$positionId->setValueOptions($positions);
+
+$submit = $form->get('submit');
+$submit->setAttribute("value","Edit");
+
+$form->setAttribute('action',$this->url('empCurrentPosting',['action'=>'edit','id'=>$id]));
+
+if ($this->messages) {
+	print '<ul class="help-block bg-danger" style="background:#f3e250;">';
+	foreach ($this->messages as $message) {
+		print '<li>' . $message . '</li>';
+	}
+	print '</ul>';
+}
+
+$form->prepare();
+print $this->form()->openTag($form);
+?>
+<div class="row">
+	<div class="col-sm-12">
+		<div class="panel panel-default">
+			<div class="panel-heading panel-title-head">
+				<!--<div class="panel-title"> -->
+					<h4>Employee Current Posting</h4>		
+			</div>
+			<div class="panel-body padding-5" style="margin-top:7px;">	
+				<div class="form-group form-group-default emp-form-group">
+					<?php print $this->formLabel($employeeId); ?>
+					<?php print $this->formElement($employeeId); ?>
+					<?php print $this->formElementErrors()->render($employeeId,['class'=>'help-block']);?>
+				</div>
+				<div class="form-group form-group-default emp-form-group">
+					<?php print $this->formLabel($serviceTypeId); ?>
+					<?php print $this->formElement($serviceTypeId); ?>
+					<?php print $this->formElementErrors()->render($serviceTypeId,['class'=>'help-block']);?>
+				</div>
+
+				<div class="form-group form-group-default emp-form-group">
+					<?php print $this->formLabel($branchId); ?>
+					<?php print $this->formElement($branchId); ?>
+					<?php print $this->formElementErrors()->render($branchId,['class'=>'help-block']);?>
+				</div>
+
+				<div class="form-group form-group-default emp-form-group">
+					<?php print $this->formLabel($departmentId); ?>
+					<?php print $this->formElement($departmentId); ?>
+					<?php print $this->formElementErrors()->render($departmentId,['class'=>'help-block']);?>
+				</div>
+
+				<div class="form-group form-group-default emp-form-group">
+					<?php print $this->formLabel($designationId); ?>
+					<?php print $this->formElement($designationId); ?>
+					<?php print $this->formElementErrors()->render($designationId,['class'=>'help-block']);?>
+				</div>
+
+				<div class="form-group form-group-default emp-form-group">
+					<?php print $this->formLabel($positionId); ?>
+					<?php print $this->formElement($positionId); ?>
+					<?php print $this->formElementErrors()->render($positionId,['class'=>'help-block']);?>
+				</div>
+
+				<div class="panel-footer panel-footer-default">
+					<?php  print $this->formSubmit($submit); ?>		
+				</div>
+				
+			</div>
+			
+		</div>
+	</div>
+</div>
+<?php
+
+print $this->form()->closeTag();
+
+?>

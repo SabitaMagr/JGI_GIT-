@@ -20,8 +20,7 @@ use Setup\Form\ServiceTypeForm;
 
 use Doctrine\ORM\EntityManager;
 use Setup\Entity\HrServiceTypes;
-use DoctrineModule\Stdlib\Hydrator\DoctrineObject as DoctrineHydrator;
-
+use Setup\Helper\EntityHelper;
 
 class ServiceTypeController extends AbstractActionController{
 	
@@ -33,7 +32,6 @@ class ServiceTypeController extends AbstractActionController{
 	function __construct(EntityManager $entityManager)
 	{
 		$this->entityManager = $entityManager;
-		$this->hydrator = new DoctrineHydrator($entityManager);
 		$this->hrServiceTypes = new HrServiceTypes();
 	}
 
@@ -55,34 +53,28 @@ class ServiceTypeController extends AbstractActionController{
 		$this->initializeForm();
         $request = $this->getRequest();
 
-        if (!$request->isPost()) {
-        	return Helper::addFlashMessagesToArray($this,[
-	            'form' => $this->serviceTypeForm,
-	            'messages' => $this->flashmessenger()->getMessages()
-        	]);
-        }
-        $this->serviceTypeForm->setData($request->getPost());
+        if ($request->isPost()) {
+        
+	        $this->serviceTypeForm->setData($request->getPost());
+	        if ($this->serviceTypeForm->isValid()) {
+	        	try {
+	        		$formData = $this->serviceTypeForm->getData();
+	        		$this->hrServiceTypes = EntityHelper::hydrate($this->entityManager,HrServiceTypes::class,$formData);
+		        	$this->entityManager->persist($this->hrServiceTypes);
+		        	$this->entityManager->flush();
 
-        if ($this->serviceTypeForm->isValid()) {
-        	try {
-        		$formData = $this->serviceTypeForm->getData();
-        		$this->hrServiceTypes = $this->hydrator->hydrate($formData,$this->hrServiceTypes);
-	        	$this->entityManager->persist($this->hrServiceTypes);
-	        	$this->entityManager->flush();
+		            $this->flashmessenger()->addMessage("Service Type Successfully Added!!!");
+		            return $this->redirect()->toRoute("serviceType");
+		        }
+		        catch(Exception $e) {
 
-	            $this->flashmessenger()->addMessage("Service Type Successfully Added!!!");
-	            return $this->redirect()->toRoute("serviceType");
+		        }
 	        }
-	        catch(Exception $e) {
-
-	        }
-
-        } else {
-            return Helper::addFlashMessagesToArray($this,[
-	            'form' => $this->serviceTypeForm,
-	            'messages' => $this->flashmessenger()->getMessages()
-        	]);
-        }   
+    	}
+        return Helper::addFlashMessagesToArray($this,[
+            'form' => $this->serviceTypeForm,
+            'messages' => $this->flashmessenger()->getMessages()
+    	]);     
 	}
 
 	
@@ -97,31 +89,31 @@ class ServiceTypeController extends AbstractActionController{
         $request=$this->getRequest();
 
         if(!$request->isPost()){
-        	$serviceTypeRecord =(object) $this->entityManager->find(HrServiceTypes::class, $id)->getArrayCopy();		
-            $this->serviceTypeForm->bind($serviceTypeRecord);
-            return Helper::addFlashMessagesToArray($this,['form'=>$this->serviceTypeForm,'id'=>$id]);
-        }
+        	$serviceTypeRecord = $this->entityManager->find(HrServiceTypes::class, $id);
+        	$serviceTypeRecord1 = EntityHelper::extract($this->entityManager,$serviceTypeRecord);
+            $this->serviceTypeForm->bind((object)$serviceTypeRecord1);
+        }else{
 
-        $modifiedDt = date("Y-m-d");
-        $this->serviceTypeForm->setData($request->getPost());
+	        $modifiedDt = date("Y-m-d");
+	        $this->serviceTypeForm->setData($request->getPost());
 
-        if ($this->serviceTypeForm->isValid()) {
+	        if ($this->serviceTypeForm->isValid()) {
 
-        	$formData = $this->serviceTypeForm->getData();
-        	$newFormData = array_merge($formData,['modifiedDt'=>$modifiedDt]);
-        	$this->hrServiceTypes = $this->hydrator->hydrate($newFormData,$this->hrServiceTypes);
-        	$this->hrServiceTypes->setServiceTypeId($id);
+	        	$formData = $this->serviceTypeForm->getData();
+	        	$newFormData = array_merge($formData,['modifiedDt'=>$modifiedDt]);
+	        	$this->hrServiceTypes = EntityHelper::hydrate($this->entityManager,HrServiceTypes::class,$formData);
+	        	$this->hrServiceTypes->setServiceTypeId($id);
 
-        	$this->entityManager->merge($this->hrServiceTypes);
-        	$this->entityManager->flush();      
+	        	$this->entityManager->merge($this->hrServiceTypes);
+	        	$this->entityManager->flush();      
 
-            $this->flashmessenger()->addMessage("Service Type Successfully Updated!!!");
-            return $this->redirect()->toRoute("serviceType");
-        } else {
-            return Helper::addFlashMessagesToArray($this,['form'=>$this->serviceTypeForm,'id'=>$id]);
-
-        }
+	            $this->flashmessenger()->addMessage("Service Type Successfully Updated!!!");
+	            return $this->redirect()->toRoute("serviceType");
+	        }
+    	}
+        return Helper::addFlashMessagesToArray($this,['form'=>$this->serviceTypeForm,'id'=>$id]);
 	}
+	
 	public function deleteAction(){
 		$id = (int)$this->params()->fromRoute("id");
 		

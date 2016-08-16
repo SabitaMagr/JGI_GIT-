@@ -19,8 +19,8 @@ use Zend\View\Model\ViewModel;
 use Setup\Form\BranchForm;
 
 use Doctrine\ORM\EntityManager;
-use DoctrineModule\Stdlib\Hydrator\DoctrineObject as DocrtineHydrator;
 use Setup\Entity\HrBranches;
+use Setup\Helper\EntityHelper;
 
 class BranchController extends AbstractActionController
 {
@@ -32,7 +32,6 @@ class BranchController extends AbstractActionController
     function __construct(EntityManager $entityManager)
     {
         $this->entityManager = $entityManager;
-        $this->hydrator = new DocrtineHydrator($entityManager);
         $this->hrBranches = new HrBranches();
     }
 
@@ -55,27 +54,28 @@ class BranchController extends AbstractActionController
     public function addAction()
     {
         $this->initializeForm();
-
         $request = $this->getRequest();
-        if (!$request->isPost()) {
-            return Helper::addFlashMessagesToArray($this, ['form' => $this->branchForm]);
-        }
-
-        $this->branchForm->setData($request->getPost());
-
-        if ($this->branchForm->isValid()) {
-            $formData = $this->branchForm->getData();
-            $this->hrBranches = $this->hydrator->hydrate($formData,$this->hrBranches);
+        if ($request->isPost()) {
             
-            $this->entityManager->persist($this->hrBranches);
-            $this->entityManager->flush();
-           
-            $this->flashmessenger()->addMessage("Branch Successfully Added!!!");
-            return $this->redirect()->toRoute("branch");
-        } else {
-            return Helper::addFlashMessagesToArray($this, ['form' => $this->branchForm]);
-
+            $this->branchForm->setData($request->getPost());
+        
+            if ($this->branchForm->isValid()) {
+                $formData = $this->branchForm->getData();
+                $this->hrBranches = EntityHelper::hydrate($this->entityManager,HrBranches::class,$formData);
+        
+                $this->entityManager->persist($this->hrBranches);
+                $this->entityManager->flush();
+               
+                $this->flashmessenger()->addMessage("Branch Successfully Added!!!");
+                return $this->redirect()->toRoute("branch");
+            }else{
+              
+                return Helper::addFlashMessagesToArray($this, ['form' => $this->branchForm]);
+            } 
         }
+
+        return Helper::addFlashMessagesToArray($this, ['form' => $this->branchForm]);
+        
     }
 
     public function editAction()
@@ -86,8 +86,9 @@ class BranchController extends AbstractActionController
         $request = $this->getRequest();
 
         if (!$request->isPost()) {
-            $branchRecord =(object)$this->entityManager->find(HrBranches::class,$id)->getArrayCopy();
-            $this->branchForm->bind($branchRecord);           
+            $branchRecord =$this->entityManager->find(HrBranches::class,$id);
+            $branchRecord1 = EntityHelper::extract($this->entityManager,$branchRecord);
+            $this->branchForm->bind((object)$branchRecord1);           
         }else{
             $modifiedDt = date('Y-m-d');
             $this->branchForm->setData($request->getPost());
@@ -96,7 +97,7 @@ class BranchController extends AbstractActionController
 
                 $formData = $this->branchForm->getData();
                 $newFormData = array_merge($formData,['modifiedDt'=>$modifiedDt]);
-                $this->hrBranches = $this->hydrator->hydrate($newFormData,$this->hrBranches);
+                $this->hrBranches = EntityHelper::hydrate($this->entityManager,HrBranches::class,$formData);
                 $this->hrBranches->setBranchId($id);
 
                 $this->entityManager->merge($this->hrBranches);

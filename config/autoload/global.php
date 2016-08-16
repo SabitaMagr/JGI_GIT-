@@ -10,96 +10,54 @@
  * control, so do not include passwords or other sensitive information in this
  * file.
  */
-
-// return [
-
-//      'db' => [
-//         'driver' => 'Mysqli',
-//         'database' => 'album',
-//         'host'=>'localhost',
-//         'username' => 'root',
-//         'password' => 'root',
-//     ],
-//     'service_manager' => [
-//         'factories' => [
-//             'Zend\Db\Adapter\Adapter' => 'Zend\Db\Adapter\AdapterServiceFactory',
-//         ],
-//     ],
-// ];
-
-  // 'db' => [
-  //     'driver' => 'Pdo',
-  //     'dsn'    => sprintf('sqlite:%s/data/schema.db', realpath(getcwd())),
-  // ],
-// 
-//    'db' => [
-//        'driver'         => 'Pdo',
-//        'dsn'            => 'mysql:dbname=zf2tutorial;host=127.0.0.1',
-//        'driver_options' => [
-//            PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES \'UTF8\''
-//        ],
-//    ],
-
-    // 'db' => [
-    //     'driver'    => 'oci',
-    //     'dsn'       => 'oci:dbname=(DESCRIPTION =
-    //         (ADDRESS = (PROTOCOL = TCP)(HOST = 192.168.4.2)(PORT = 1521))
-    //         (CONNECT_DATA =
-    //             (SERVER = DEDICATED)
-    //             (SERVICE_NAME = ITN)
-    //         )
-    //       )',
-    //     'username'      => 'HRIS',
-    //     'password'      => 'NEO-HRIS',
-    //     'platform_options' => ['quote_identifiers' => false]
+return [
+    //  'db' => [
+    //     'driver' => 'Mysqli',
+    //     'database' => 'album',
+    //     'host'=> 'localhost',
+    //     'username' => 'root',
+    //     'password' => 'root',
     // ],
 
-// $dbParams = [
-//     'hostname' => 'localhost',
-//     'username' => 'root',
-//     'password' => 'root',
-//     'database' => 'album'
-// ];
-
-// $dbParams = [
-//     'hostname' => '192.168.4.2',
-//     'username' => 'HRIS',
-//     'password' => 'NEO_HRIS',
-//     'database' => 'HRIS'
-// ];
- 
-return [
-
-     'db' => [
-        'driver' => 'Mysqli',
-        'database' => 'album',
-        'host'=> 'localhost',
-        'username' => 'root',
-        'password' => 'root',
+    // 'service_manager' => [
+    //     'factories' => [
+    //         'Zend\Db\Adapter\Adapter' => 'Zend\Db\Adapter\AdapterServiceFactory',
+    //     ],
+    // ],
+'db' => [
+    'driver'    => 'oci8',
+    'connection_string'       => '(DESCRIPTION =
+    (ADDRESS = (PROTOCOL = TCP)(HOST = 192.168.4.2)(PORT = 1521))
+    (CONNECT_DATA =
+    (SERVER = DEDICATED)
+    (SERVICE_NAME = ITN)
+    )
+    )',
+    'username'      => 'HRIS',
+    'password'      => 'NEO_HRIS',
+    'platform_options' => ['quote_identifiers' => false]
     ],
-
     'service_manager' => [
         'factories' => [
             'Zend\Db\Adapter\Adapter' => 'Zend\Db\Adapter\AdapterServiceFactory',
         ],
     ],
 
-    // 'doctrine' => [
-    //     'connection' => [
-    //         'orm_default' => [
-    //             'params' => [
-    //                 'host' => $dbParams['hostname'],
-    //                 'user' => $dbParams['username'],
-    //                 'password' => $dbParams['password'],
-    //                 'dbname' => $dbParams['database'],
-    //                 'driverOptions' => [
-    //                     PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8'
-    //                 ],
-    //             ],
-    //         ],
-    //     ],
-    // ],
-
+//     // 'doctrine' => [
+//     //     'connection' => [
+//     //         'orm_default' => [
+//     //             'params' => [
+//     //                 'host' => $dbParams['hostname'],
+//     //                 'user' => $dbParams['username'],
+//     //                 'password' => $dbParams['password'],
+//     //                 'dbname' => $dbParams['database'],
+//     //                 'driverOptions' => [
+//     //                     PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8'
+//     //                 ],
+//     //             ],
+//     //         ],
+//     //     ],
+//     // ],
 ];
 
 

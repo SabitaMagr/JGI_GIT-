@@ -34,6 +34,7 @@ class LeaveTypeForm{
 	 * @Annotation\Required({"required":"true"})
 	 * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
 	 * @Annotation\Options({"label":"Leave Name"})
+	 * @Annotation\Validator({"name":"StringLength", "options":{"min":"5"}})
 	 * @Annotation\Attributes({ "id":"form-leaveName", "class":"form-leaveName form-control" })
 	 */
 	public $leaveName;
@@ -50,7 +51,7 @@ class LeaveTypeForm{
 
 	/**
      * @Annotation\Type("Zend\Form\Element\Textarea")
-     * @Annotation\Required({"required":"false"})
+     * @Annotation\Required(false)
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
      * @Annotation\Options({"label":"Remarks"})
      * @Annotation\Attributes({"id":"form-remarks","class":"form-remarks form-control","style":"    height: 50px; font-size:12px"})
@@ -59,7 +60,7 @@ class LeaveTypeForm{
 
     /**
      * @Annotation\Type("Zend\Form\Element\Select")
-     * @Annotation\Required({"required":"false"})
+     * @Annotation\Required(false)
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
      * @Annotation\Options({"label":"Status","value_options":{"E":"Enabled","D":"Disabled"}})
      * @Annotation\Attributes({ "id":"form-status","data-init-plugin":"cs-select","class":"cs-select cs-skin-slide form-status form-control"})

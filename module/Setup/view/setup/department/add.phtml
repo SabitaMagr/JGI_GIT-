@@ -7,6 +7,7 @@ $departmentName = $form->get('departmentName');
 $remarks = $form->get('remarks');
 $status = $form->get('status');
 $parentDepartment = $form->get('parentDepartment');
+$parentDepartment->setValueOptions($departments);
 
 $submit = $form->get('submit');
 
@@ -22,7 +23,8 @@ if ($this->messages) {
 
 $form->prepare();
 print $this->form()->openTag($form);
-
+//echo $this->formHidden($form->get('departmentId'));
+ //$departmentId =$form->get('departmentId');
 ?>
 <div class="row">
 	<div class="col-sm-12">
@@ -32,6 +34,7 @@ print $this->form()->openTag($form);
 					<h4>Department Setup</h4>		
 			</div>
 			<div class="panel-body padding-5" style="margin-top:7px;">	
+							
 				<div class="form-group form-group-default emp-form-group">
 					<?php print $this->formLabel($departmentCode); ?>
 					<?php print $this->formElement($departmentCode); ?>

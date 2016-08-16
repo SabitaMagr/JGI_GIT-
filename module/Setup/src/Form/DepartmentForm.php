@@ -20,7 +20,8 @@ use Zend\Form\Annotation;
 class DepartmentForm
 
 {
-	/**
+	
+    /**
 	 * @Annotation\Type("Zend\Form\Element\Text")
 	 * @Annotation\Required({"required":"false"})
 	 * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
@@ -34,13 +35,14 @@ class DepartmentForm
 	 * @Annotation\Required({"required":"false"})
 	 * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
 	 * @Annotation\Options({"label":"Department Name"})
+     * @Annotation\Validator({"name":"StringLength", "options":{"min":"5"}})
 	 * @Annotation\Attributes({ "id":"form-departmentName", "class":"form-departmentName form-control" })
 	 */
 	public $departmentName;
 
 	/**
      * @Annotation\Type("Zend\Form\Element\Textarea")
-     * @Annotation\Required({"required":"false"})
+     * @Annotation\Required(false)
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
      * @Annotation\Options({"label":"Remarks"})
      * @Annotation\Attributes({"id":"form-remarks","class":"form-remarks form-control","style":"    height: 50px; font-size:12px"})
@@ -49,16 +51,16 @@ class DepartmentForm
 
 	/**
      * @Annotation\Type("Zend\Form\Element\Select")
-     * @Annotation\Required({"required":"false"})
+     * @Annotation\Required(false)
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
-     * @Annotation\Options({"label":"Parent Department","value_options":{"A":"Dept A","B":"Dept B","C":"Dept C"}})
+     * @Annotation\Options({"disable_inarray_validator":"true","label":"Parent Department"})
      * @Annotation\Attributes({ "id":"form-parentDepartment","data-init-plugin":"cs-select","class":"cs-select cs-skin-slide form-parentDepartment form-control"})
      */
 	public $parentDepartment;
 
 	/**
      * @Annotation\Type("Zend\Form\Element\Select")
-     * @Annotation\Required({"required":"false"})
+     * @Annotation\Required(false)
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
      * @Annotation\Options({"label":"Status","value_options":{"E":"Enabled","D":"Disabled"}})
      * @Annotation\Attributes({ "id":"form-status","data-init-plugin":"cs-select","class":"cs-select cs-skin-slide form-status form-control"})

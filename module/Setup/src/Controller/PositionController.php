@@ -21,7 +21,7 @@ use Setup\Form\PositionForm;
 
 use Doctrine\ORM\EntityManager;
 use Setup\Entity\HrPositions;
-use DoctrineModule\Stdlib\Hydrator\DoctrineObject as DoctrineHydrator;
+use Setup\Helper\EntityHelper;
 
 class PositionController extends AbstractActionController
 {
@@ -34,7 +34,6 @@ class PositionController extends AbstractActionController
     public function __construct(EntityManager $entityManager)
     {
         $this->entityManager = $entityManager;
-        $this->hydrator = new DoctrineHydrator($entityManager);
         $this->hrPositions = new HrPositions();
     }
 
@@ -58,38 +57,28 @@ class PositionController extends AbstractActionController
         $this->initializeForm();
         $request = $this->getRequest();
 
-        if (!$request->isPost()) {
-            return new ViewModel(Helper::addFlashMessagesToArray(
-                $this,
-                [
-                    'form' => $this->positionForm,
-                    'messages' => $this->flashmessenger()->getMessages()
-                 ]
-                )
-            );
+        if ($request->isPost()) {
+            
+            $this->positionForm->setData($request->getPost());      
+            if ($this->positionForm->isValid()) {    
+                $formData = $this->positionForm->getData();  
+                $this->hrPositions = EntityHelper::hydrate($this->entityManager,HrPositions::class,$formData); 
+
+                $this->entityManager->persist($this->hrPositions);
+                $this->entityManager->flush();  
+
+                $this->flashmessenger()->addMessage("Position Successfully added!!!");
+                return $this->redirect()->toRoute("position");
+            } 
         }
-
-        $this->positionForm->setData($request->getPost());
-
-        if ($this->positionForm->isValid()) {    
-            $formData = $this->positionForm->getData();  
-            $this->hrPositions = $this->hydrator->hydrate($formData, $this->hrPositions); 
-
-            $this->entityManager->persist($this->hrPositions);
-            $this->entityManager->flush();  
-
-            $this->flashmessenger()->addMessage("Position Successfully added!!!");
-            return $this->redirect()->toRoute("position");
-        } else {
-                return new ViewModel(Helper::addFlashMessagesToArray(
+        return new ViewModel(Helper::addFlashMessagesToArray(
                 $this,
                 [
                     'form' => $this->positionForm,
                     'messages' => $this->flashmessenger()->getMessages()
                  ]
                 )
-            );
-        }   
+            );   
     }
 
     public function editAction()
@@ -103,32 +92,30 @@ class PositionController extends AbstractActionController
 
         $modifiedDt = date("Y-m-d");
         if(!$request->isPost()){
-            $positionRecord = (object)$this->entityManager->find(HrPositions::class, $id)->getArrayCopy();
-            $this->positionForm->bind($positionRecord);
-            return Helper::addFlashMessagesToArray(
-                $this,['form'=>$this->positionForm,'id'=>$id]
-                );
+            $positionRecord = $this->entityManager->find(HrPositions::class, $id);
+            $positionRecord1  = EntityHelper::extract($this->entityManager,$positionRecord);
+            $this->positionForm->bind((object)$positionRecord1);
+        }else{
+
+            $this->positionForm->setData($request->getPost());
+            if ($this->positionForm->isValid()) {
+
+                $formData = $this->positionForm->getData();
+                $newFormData =  array_merge($formData, ['modifiedDt'=> $modifiedDt ]);        
+                $this->hrPositions = EntityHelper::hydrate($this->entityManager,HrPositions::class,$formData);   
+                $this->hrPositions->setPositionId($id);
+
+                $this->entityManager->merge($this->hrPositions);
+                $this->entityManager->flush();     
+                
+                $this->flashmessenger()->addMessage("Position Successfully Updated!!!");
+                return $this->redirect()->toRoute("position");
+            }
         }
-
-        $this->positionForm->setData($request->getPost());
-
-        if ($this->positionForm->isValid()) {
-
-            $formData = $this->positionForm->getData();
-            $newFormData =  array_merge($formData, ['modifiedDt'=> $modifiedDt ]);        
-            $this->hrPositions = $this->hydrator->hydrate($newFormData, $this->hrPositions);  
-            $this->hrPositions->setPositionId($id);
-
-            $this->entityManager->merge($this->hrPositions);
-            $this->entityManager->flush();     
-            
-            $this->flashmessenger()->addMessage("Position Successfully Updated!!!");
-            return $this->redirect()->toRoute("position");
-        } else {
-            return Helper::addFlashMessagesToArray(
-                $this,['form'=>$this->positionForm,'id'=>$id]
-             );
-        }
+        return Helper::addFlashMessagesToArray(
+            $this,['form'=>$this->positionForm,'id'=>$id]
+         );
+       
     }
 
     public function deleteAction()

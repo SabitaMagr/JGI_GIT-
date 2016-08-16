@@ -1,5 +1,4 @@
 <?php
-
 namespace Setup\Controller;
 
 use Interop\Container\ContainerInterface;
@@ -16,14 +15,24 @@ class ControllerFactory implements FactoryInterface
 {
     public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
     {
-        // $adapter=$container->get(AdapterInterface::class);
+        $adapter=$container->get(AdapterInterface::class);
+        
         $conn = [
-            'host' =>'localhost',
-            'user' => 'root',
-            'password' => 'root',
-            'dbname' =>'album' ,
-            'driver'=>'pdo_mysql'
+            'host' =>'192.168.4.2',
+            'user' => 'HRIS',
+            'password' => 'NEO_HRIS',
+            'servicename' =>'ITN' ,  
+            'dbname' => 'ITN',
+            'driver'=>'oci8',
         ];
+
+        // $conn = [
+        //     'host' =>'localhost',
+        //     'user' => 'root',
+        //     'password' => 'root',
+        //     'dbname' =>'album' ,
+        //     'driver'=>'mysqli'
+        // ];
 
         $paths            = array(__DIR__."/../Entity/");
         $isDevMode        = false;
@@ -35,10 +44,8 @@ class ControllerFactory implements FactoryInterface
         $config->setMetadataDriverImpl($driver);
 
         $entityManager = EntityManager::create($conn, $config);
-
-
-        
-        $controller=new $requestedName($entityManager);
+       
+        $controller = new $requestedName($entityManager);
 
         return $controller;
     }

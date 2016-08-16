@@ -174,10 +174,5 @@ class HrDesignations
     {
         $this->createdDt = $createdDt;
     }
-
-    public function getArrayCopy(){
-        return get_object_vars($this);
-    }
-
 }
 

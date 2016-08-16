@@ -35,6 +35,7 @@ class DesignationForm
      * @Annotation\Required({"required":"true"})
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Designation Title"})
+     * @Annotation\Validator({"name":"StringLength", "options":{"min":"5"}})
      * @Annotation\Attributes({ "id":"form-designationTitle", "class":"form-designationTitle form-control" })
      */
     public $designationTitle;
@@ -50,7 +51,7 @@ class DesignationForm
 
     /**
      * @Annotation\Type("Zend\Form\Element\Select")
-     * @Annotation\Required({"required":"false"})
+     * @Annotation\Required(false)
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
      * @Annotation\Options({"label":"Status","value_options":{"E":"Enabled","D":"Disabled"}})
      * @Annotation\Attributes({ "id":"form-status","data-init-plugin":"cs-select","class":"cs-select cs-skin-slide form-status form-control"})
