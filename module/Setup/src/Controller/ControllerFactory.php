@@ -17,6 +17,7 @@ class ControllerFactory implements FactoryInterface
     {
 
         // $adapter=$container->get(AdapterInterface::class);
+       
        // $conn = [
        //     'host' =>'localhost',
        //     'user' => 'root',

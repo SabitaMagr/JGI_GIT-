@@ -10,8 +10,7 @@
  * control, so do not include passwords or other sensitive information in this
  * file.
  */
-
-return [
+//return [
     //  'db' => [
     //     'driver' => 'Mysqli',
     //     'database' => 'album',
@@ -25,27 +24,42 @@ return [
     //         'Zend\Db\Adapter\Adapter' => 'Zend\Db\Adapter\AdapterServiceFactory',
     //     ],
     // ],
-'db' => [
-    'driver'    => 'oci8',
-    'connection_string'       => '(DESCRIPTION =
-    (ADDRESS = (PROTOCOL = TCP)(HOST = 192.168.4.2)(PORT = 1521))
-    (CONNECT_DATA =
-    (SERVER = DEDICATED)
-    (SERVICE_NAME = ITN)
-    )
-    )',
-    'username'      => 'HRIS',
-    'password'      => 'NEO_HRIS',
-    'platform_options' => ['quote_identifiers' => false]
+
+return [
+
+    'db' => [
+        'driver'    => 'oci8',
+        'connection_string'       => '(DESCRIPTION =
+        (ADDRESS = (PROTOCOL = TCP)(HOST = 192.168.4.2)(PORT = 1521))
+        (CONNECT_DATA =
+        (SERVER = DEDICATED)
+        (SERVICE_NAME = ITN)
+        )
+        )',
+        'username'      => 'HRIS',
+        'password'      => 'NEO_HRIS',
+        'platform_options' => ['quote_identifiers' => false]
     ],
- 'service_manager' => [
+
+    'doctrine' => [
+        'connection' => [
+            'orm_default'=>[
+                'driverClass'=>'Doctrine\DBAL\Driver\OCI8\Driver',
+                'params'=>[
+                    'host'=>'192.168.4.2',
+                    'port'=>'1521',
+                    'driver'=>'oci8',
+                    'servicename'=>'ITN',
+                    'user'=>'HRIS',
+                    'password'=>'NEO_HRIS',
+                ]
+            ]
+        ],
+    ],
+
+    'service_manager' => [
         'factories' => [
             'Zend\Db\Adapter\Adapter' => 'Zend\Db\Adapter\AdapterServiceFactory',
         ],
-    ] ,
-
-
+    ],
 ];
-
-
-
