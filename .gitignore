@@ -7,7 +7,7 @@ nbproject
 .idea
 .project
 .settings
-
+#vendor/
 #config/autoload/global.php
 #config/autoload/doctrine.global.php
 composer.phar
