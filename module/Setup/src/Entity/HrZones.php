@@ -13,11 +13,10 @@ use Doctrine\ORM\Mapping as ORM;
 class HrZones
 {
     /**
-     * @var integer
+     * @var string
      *
-     * @ORM\Column(name="ZONE_ID", type="integer", nullable=false)
+     * @ORM\Column(name="ZONE_ID", type="string", nullable=false)
      * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     private $zoneId;
 
@@ -49,22 +48,10 @@ class HrZones
      */
     private $status;
 
-    /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="CREATED_DT", type="date", nullable=false)
-     */
-    private $createdDt;
+
 
     /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="MODIFIED_DT", type="date", nullable=true)
-     */
-    private $modifiedDt;
-
-    /**
-     * @return int
+     * @return string
      */
     public function getZoneId()
     {
@@ -72,7 +59,7 @@ class HrZones
     }
 
     /**
-     * @param int $zoneId
+     * @param string $zoneId
      */
     public function setZoneId($zoneId)
     {
@@ -142,39 +129,6 @@ class HrZones
     {
         $this->status = $status;
     }
-
-    /**
-     * @return \DateTime
-     */
-    public function getCreatedDt()
-    {
-        return $this->createdDt;
-    }
-
-    /**
-     * @param \DateTime $createdDt
-     */
-    public function setCreatedDt($createdDt)
-    {
-        $this->createdDt = $createdDt;
-    }
-
-    /**
-     * @return \DateTime
-     */
-    public function getModifiedDt()
-    {
-        return $this->modifiedDt;
-    }
-
-    /**
-     * @param \DateTime $modifiedDt
-     */
-    public function setModifiedDt($modifiedDt)
-    {
-        $this->modifiedDt = $modifiedDt;
-    }
-
 
 
 }

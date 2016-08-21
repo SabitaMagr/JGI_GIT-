@@ -1,5 +1,4 @@
 <?php
-
 namespace Setup\Controller;
 
 use Application\Helper\Helper;
@@ -12,7 +11,8 @@ use Zend\View\View;
 use Setup\Model\CompanyRepository;
 
 class CompanyController extends AbstractActionController{
-	private $repository;
+    
+    private $repository;
     private $company;
     private $form;
 
@@ -30,13 +30,11 @@ class CompanyController extends AbstractActionController{
         }
     }
 
-
 	public function indexAction(){
 		$companyList = $this->repository->fetchAll();
         $request = $this->getRequest();
 
         return Helper::addFlashMessagesToArray($this,['companyList' => $companyList]);
-
 	}
 
 	public function addAction(){
@@ -45,7 +43,7 @@ class CompanyController extends AbstractActionController{
 
         $request = $this->getRequest();
         if (!$request->isPost()) {
-           return new ViewModel(Helper::addFlashMessagesToArray(
+            return new ViewModel(Helper::addFlashMessagesToArray(
                 $this,
                 [
                     'form' => $this->form,
@@ -62,6 +60,7 @@ class CompanyController extends AbstractActionController{
             
             $this->flashmessenger()->addMessage("Company Successfully added!!!");
             return $this->redirect()->toRoute("company");
+
         } else {
             return new ViewModel(Helper::addFlashMessagesToArray(
                 $this,
@@ -104,9 +103,9 @@ class CompanyController extends AbstractActionController{
             return Helper::addFlashMessagesToArray(
                 $this,['form'=>$this->form,'id'=>$id]
              );
-
         }
 	}
+
 	public function deleteAction(){
 		$id = (int)$this->params()->fromRoute("id");
 		$this->repository->delete($id);
@@ -114,8 +113,4 @@ class CompanyController extends AbstractActionController{
 		return $this->redirect()->toRoute('company');
 	}
 }
-	
-
-
-
 ?>

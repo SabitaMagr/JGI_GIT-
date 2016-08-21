@@ -1,5 +1,4 @@
 <?php
-
 namespace Setup\Model;
 
 use Zend\Db\Adapter\AdapterInterface;
@@ -11,7 +10,7 @@ class CompanyRepository implements RepositoryInterface
     
     public function __construct(AdapterInterface $adapter)
     {
-        $this->tableGateway=new TableGateway('company',$adapter);
+        $this->tableGateway = new TableGateway('company',$adapter);
 
     }
 

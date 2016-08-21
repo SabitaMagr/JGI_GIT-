@@ -20,13 +20,15 @@ use Setup\Form\DepartmentForm;
 use Setup\Entity\HrDepartments;
 use Doctrine\ORM\EntityManager;
 use Setup\Helper\EntityHelper;
+use Setup\Entity\HrZones;
+use Setup\Entity\HrPositions;
 
 class DepartmentController extends AbstractActionController{
 	private $entityManager;
     private $hrDepartments;
     private $departmentForm;
     private $hydrator;
-// 
+ 
 	function __construct(EntityManager $entityManager)
 	{
 		$this->entityManager = $entityManager;
@@ -51,13 +53,32 @@ class DepartmentController extends AbstractActionController{
 		
 		$this->initializeForm();
 
-        // $this->hrDepartments->setDepartmentId(19);
-        // $this->hrDepartments->setDepartmentCode("BC002");
-        // $this->hrDepartments->setDepartmentName("Hr");
-        // $this->hrDepartments->setRemarks("hello");
-        // $this->hrDepartments->setStatus("E");
-        // $this->entityManager->persist($this->hrDepartments);
-        // $this->entityManager->flush();
+        $hrPositions = new HrPositions();
+        $hrPositions->setPositionId(3);
+        //$hrPositions->setPositionCode("PC001");
+        $hrPositions->setPositionName("Developer");
+        $hrPositions->setStatus("E");
+        $hrPositions->setRemarks("Heloo");
+
+        // $hrZone = new HrZones();
+        // $hrZone->setZoneId("2yui");
+        // $hrZone->setZoneCode("ZOne1");
+        // $hrZone->setZoneName("first zone");
+        // $hrZone->setStatus("E");
+        // $hrZone->setRemarks("sdfdsfds");
+
+        print"<pre>";print_r($hrPositions); die();
+      
+        $this->hrDepartments->setDepartmentCode("BC002");
+        $this->hrDepartments->setDepartmentName("Hr");
+        $this->hrDepartments->setRemarks("hello");
+        $this->hrDepartments->setStatus("E");
+        $this->hrDepartments->setDepartmentId(19);
+        $this->hrDepartments->setParentDepartment(1);
+        
+        $this->entityManager->persist($this->hrDepartments);
+
+        $this->entityManager->flush();
 
         $request = $this->getRequest(); 
         if ($request->isPost()) {
@@ -69,7 +90,7 @@ class DepartmentController extends AbstractActionController{
 
                 $this->hrDepartments = EntityHelper::hydrate($this->entityManager,HrDepartments::class,$formData);
 
-                $em =$this->entityManager;
+                $em = $this->entityManager;
                 $em->getConnection()->beginTransaction(); // suspend auto-commit      
                 
                 try {
@@ -80,7 +101,6 @@ class DepartmentController extends AbstractActionController{
                   $em->getConnection()->rollback();
                   throw $e;
                 }  
-
                 $this->flashmessenger()->addMessage("Department Successfully added!!!");
                 return $this->redirect()->toRoute("department");
             }
@@ -104,42 +124,27 @@ class DepartmentController extends AbstractActionController{
 		}
         $this->initializeForm();
 
-        $request=$this->getRequest();
+        $request = $this->getRequest();
 
         $departmentRecord = $this->entityManager->find(HrDepartments::class,$id);
         $departmentRecord1 = EntityHelper::extract($this->entityManager,$departmentRecord);
-
+        $modifiedDt = date('Y-m-d');
         if(!$request->isPost()){
             $this->departmentForm->bind((object)$departmentRecord1);
         }else{
 
             $this->departmentForm->setData($request->getPost());
-
-            //print_r($request->getPost());die();
-            
-            //$modifiedDt = date('d-M-y H:i:s');
             
             if ($this->departmentForm->isValid()) {
                 $formData = $this->departmentForm->getData();
-          
-                $this->hrDepartments = EntityHelper::hydrate($this->entityManager,HrDepartments::class, $formData);
-
-               // $date = new \DateTime($modifiedDt);
-
-                //$this->hrDepartments->setModifiedDt($date);
-                //$this->hrDepartments->setDepartmentId($id);
-                //$this->hrDepartments->setModifiedDt($modifiedDt);
-
-                // print_r($this->hrDepartments);die();
-                // $this->entityManager->getConnection()->beginTransaction();
-                // $this->entityManager->merge($this->hrDepartments);
-                // $this->entityManager->flush();
-                // $this->entityManager->getConnection()->commit();
+                $newFormData = array_merge($formData,['modifiedDt'=>$modifiedDt]);
+                $this->hrDepartments = EntityHelper::hydrate($this->entityManager,HrDepartments::class, $newFormData);
+                $this->hrDepartments->setDepartmentId($id);
 
                 $em =$this->entityManager;
                 $em->getConnection()->beginTransaction(); // suspend auto-commit
                 try {
-                  $em->persist($this->hrDepartments);
+                  $em->merge($this->hrDepartments);
                   $em->flush();
                   $em->getConnection()->commit();
                 } catch (Exception $e) {
@@ -172,5 +177,4 @@ class DepartmentController extends AbstractActionController{
 	
 /* End of file DepartmentController.php */
 /* Location: ./Setup/src/Controller/DepartmentController.php */
-
 ?>

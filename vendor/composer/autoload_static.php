@@ -7,7 +7,6 @@ namespace Composer\Autoload;
 class ComposerStaticInit3beba3f34d79073b782a60e952d3c132
 {
     public static $files = array (
-        '0e6d7bf4a5811bfa5cf40c5ccd6fae6a' => __DIR__ . '/..' . '/symfony/polyfill-mbstring/bootstrap.php',
         '34901568a1e26d13dd475cb2c85e0284' => __DIR__ . '/..' . '/zendframework/zend-form/autoload/formElementManagerPolyfill.php',
     );
 
@@ -29,7 +28,6 @@ class ComposerStaticInit3beba3f34d79073b782a60e952d3c132
             'Zend\\ServiceManager\\' => 20,
             'Zend\\Router\\' => 12,
             'Zend\\Psr7Bridge\\' => 16,
-            'Zend\\Paginator\\' => 15,
             'Zend\\Mvc\\Plugin\\Prg\\' => 20,
             'Zend\\Mvc\\Plugin\\Identity\\' => 25,
             'Zend\\Mvc\\Plugin\\FlashMessenger\\' => 31,
@@ -73,9 +71,7 @@ class ComposerStaticInit3beba3f34d79073b782a60e952d3c132
         ),
         'S' => 
         array (
-            'Symfony\\Polyfill\\Mbstring\\' => 26,
             'Symfony\\Component\\Yaml\\' => 23,
-            'Symfony\\Component\\Console\\' => 26,
             'Setup\\' => 6,
         ),
         'P' => 
@@ -89,8 +85,6 @@ class ComposerStaticInit3beba3f34d79073b782a60e952d3c132
         'D' => 
         array (
             'Doctrine\\Instantiator\\' => 22,
-            'Doctrine\\Common\\Cache\\' => 22,
-            'Doctrine\\Common\\' => 16,
             'DeepCopy\\' => 9,
         ),
         'A' => 
@@ -151,10 +145,6 @@ class ComposerStaticInit3beba3f34d79073b782a60e952d3c132
         'Zend\\Psr7Bridge\\' => 
         array (
             0 => __DIR__ . '/..' . '/zendframework/zend-psr7bridge/src',
-        ),
-        'Zend\\Paginator\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/zendframework/zend-paginator/src',
         ),
         'Zend\\Mvc\\Plugin\\Prg\\' => 
         array (
@@ -292,17 +282,9 @@ class ComposerStaticInit3beba3f34d79073b782a60e952d3c132
         array (
             0 => __DIR__ . '/../..' . '/module/Test/src',
         ),
-        'Symfony\\Polyfill\\Mbstring\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/symfony/polyfill-mbstring',
-        ),
         'Symfony\\Component\\Yaml\\' => 
         array (
             0 => __DIR__ . '/..' . '/symfony/yaml',
-        ),
-        'Symfony\\Component\\Console\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/symfony/console',
         ),
         'Setup\\' => 
         array (
@@ -319,14 +301,6 @@ class ComposerStaticInit3beba3f34d79073b782a60e952d3c132
         'Doctrine\\Instantiator\\' => 
         array (
             0 => __DIR__ . '/..' . '/doctrine/instantiator/src/Doctrine/Instantiator',
-        ),
-        'Doctrine\\Common\\Cache\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/doctrine/cache/lib/Doctrine/Common/Cache',
-        ),
-        'Doctrine\\Common\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/doctrine/common/lib/Doctrine/Common',
         ),
         'DeepCopy\\' => 
         array (
@@ -370,41 +344,6 @@ class ComposerStaticInit3beba3f34d79073b782a60e952d3c132
             'Prophecy\\' => 
             array (
                 0 => __DIR__ . '/..' . '/phpspec/prophecy/src',
-            ),
-        ),
-        'D' => 
-        array (
-            'Doctrine\\ORM\\' => 
-            array (
-                0 => __DIR__ . '/..' . '/doctrine/orm/lib',
-            ),
-            'Doctrine\\DBAL\\' => 
-            array (
-                0 => __DIR__ . '/..' . '/doctrine/dbal/lib',
-            ),
-            'Doctrine\\Common\\Lexer\\' => 
-            array (
-                0 => __DIR__ . '/..' . '/doctrine/lexer/lib',
-            ),
-            'Doctrine\\Common\\Inflector\\' => 
-            array (
-                0 => __DIR__ . '/..' . '/doctrine/inflector/lib',
-            ),
-            'Doctrine\\Common\\Collections\\' => 
-            array (
-                0 => __DIR__ . '/..' . '/doctrine/collections/lib',
-            ),
-            'Doctrine\\Common\\Annotations\\' => 
-            array (
-                0 => __DIR__ . '/..' . '/doctrine/annotations/lib',
-            ),
-            'DoctrineORMModule\\' => 
-            array (
-                0 => __DIR__ . '/..' . '/doctrine/doctrine-orm-module/src',
-            ),
-            'DoctrineModule\\' => 
-            array (
-                0 => __DIR__ . '/..' . '/doctrine/doctrine-module/src',
             ),
         ),
         'B' => 

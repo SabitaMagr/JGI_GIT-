@@ -17,16 +17,10 @@ class HrPositions
      *
      * @ORM\Column(name="POSITION_ID", type="integer", nullable=false)
      * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     private $positionId;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="POSITION_CODE", type="string", length=20, nullable=false)
-     */
-    private $positionCode;
+
 
     /**
      * @var string
@@ -79,21 +73,6 @@ class HrPositions
         $this->positionId = $positionId;
     }
 
-    /**
-     * @return string
-     */
-    public function getPositionCode()
-    {
-        return $this->positionCode;
-    }
-
-    /**
-     * @param string $positionCode
-     */
-    public function setPositionCode($positionCode)
-    {
-        $this->positionCode = $positionCode;
-    }
 
     /**
      * @return string

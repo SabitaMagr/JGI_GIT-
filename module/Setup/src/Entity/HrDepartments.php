@@ -17,7 +17,6 @@ class HrDepartments
      *
      * @ORM\Column(name="DEPARTMENT_ID", type="integer", nullable=true)
      * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     protected $departmentId;
 
@@ -57,12 +56,6 @@ class HrDepartments
     protected $status;
 
   
-    /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="MODIFIED_DT", type="date", nullable=true)
-     */
-    protected $modifiedDt;
 
     /**
      * @return int
@@ -161,20 +154,5 @@ class HrDepartments
     }
 
 
-    /**
-     * @return \DateTime
-     */
-    public function getModifiedDt()
-    {
-        return $this->modifiedDt;
-    }
-
-    /**
-     * @param \DateTime $modifiedDt
-     */
-    public function setModifiedDt($modifiedDt)
-    {
-        $this->modifiedDt = $modifiedDt;
-    }
 }
 

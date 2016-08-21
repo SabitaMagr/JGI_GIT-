@@ -13,7 +13,7 @@
 
 
 return [
-    'Zend\Paginator',
+    'Zend\Db',
     'Zend\ServiceManager\Di',
     'Zend\Session',
     'Zend\Mvc\Plugin\Prg',
@@ -23,16 +23,13 @@ return [
     'Zend\Mvc\I18n',
     'Zend\Log',
     'Zend\Form',
-    'Zend\Db',
     'Zend\Cache',
     'Zend\Router',
     'Zend\Validator',
-    'DoctrineModule',
-    'DoctrineORMModule',
     'Application',
     'Setup',
     'Test',
-
+    
     // These are various options for the listeners attached to the ModuleManager
     // 'module_listener_options' => [
     //     'module_paths' => [

@@ -68,14 +68,9 @@ class BranchController extends AbstractActionController
                
                 $this->flashmessenger()->addMessage("Branch Successfully Added!!!");
                 return $this->redirect()->toRoute("branch");
-            }else{
-              
-                return Helper::addFlashMessagesToArray($this, ['form' => $this->branchForm]);
-            } 
+            }
         }
-
-        return Helper::addFlashMessagesToArray($this, ['form' => $this->branchForm]);
-        
+        return Helper::addFlashMessagesToArray($this, ['form' => $this->branchForm]);     
     }
 
     public function editAction()

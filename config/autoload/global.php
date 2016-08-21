@@ -26,7 +26,6 @@
     // ],
 
 return [
-
     'db' => [
         'driver'    => 'oci8',
         'connection_string'       => '(DESCRIPTION =
@@ -40,23 +39,7 @@ return [
         'password'      => 'NEO_HRIS',
         'platform_options' => ['quote_identifiers' => false]
     ],
-
-    'doctrine' => [
-        'connection' => [
-            'orm_default'=>[
-                'driverClass'=>'Doctrine\DBAL\Driver\OCI8\Driver',
-                'params'=>[
-                    'host'=>'192.168.4.2',
-                    'port'=>'1521',
-                    'driver'=>'oci8',
-                    'servicename'=>'ITN',
-                    'user'=>'HRIS',
-                    'password'=>'NEO_HRIS',
-                ]
-            ]
-        ],
-    ],
-
+    
     'service_manager' => [
         'factories' => [
             'Zend\Db\Adapter\Adapter' => 'Zend\Db\Adapter\AdapterServiceFactory',
