@@ -10,7 +10,7 @@
  * control, so do not include passwords or other sensitive information in this
  * file.
  */
-//return [
+return [
     //  'db' => [
     //     'driver' => 'Mysqli',
     //     'database' => 'album',
@@ -25,7 +25,7 @@
     //     ],
     // ],
 
-return [
+// return [
     'db' => [
         'driver'    => 'oci8',
         'connection_string'       => '(DESCRIPTION =

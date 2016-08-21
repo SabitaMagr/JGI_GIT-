@@ -16,91 +16,50 @@ use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\View\Model\ViewModel;
 use Zend\Mvc\Controller\AbstractActionController;
 use Setup\Form\DepartmentForm;
-
-use Setup\Entity\HrDepartments;
-use Doctrine\ORM\EntityManager;
 use Setup\Helper\EntityHelper;
-use Setup\Entity\HrZones;
-use Setup\Entity\HrPositions;
+use Setup\Model\DepartmentRepository;
+use Zend\Db\Adapter\AdapterInterface;
+
 
 class DepartmentController extends AbstractActionController{
-	private $entityManager;
-    private $hrDepartments;
-    private $departmentForm;
-    private $hydrator;
+	
+    private $department;
+    private $form;
+    private $repository;
+    private $adapter;
  
-	function __construct(EntityManager $entityManager)
+	function __construct(AdapterInterface $adapter)
 	{
-		$this->entityManager = $entityManager;
-        $this->hrDepartments = new HrDepartments();
+		$this->repository = new DepartmentRepository($adapter);
+        $this->adapter = $adapter;
 	}
 
 	 public function initializeForm()
     {
-        $form = new DepartmentForm();
+        $this->department = new DepartmentForm();
         $builder = new AnnotationBuilder();
-        if (!$this->departmentForm) {
-            $this->departmentForm = $builder->createForm($form);
+        if (!$this->form) {
+            $this->form = $builder->createForm($this->department);
         }
     }
 
 	public function indexAction(){
-		$departments = $this->entityManager->getRepository(HrDepartments::class)->findAll();
-        return Helper::addFlashMessagesToArray($this,['departments' => $departments]);
+		$departmentList  = $this->repository->fetchAll();
+        return Helper::addFlashMessagesToArray($this,['departments' => $departmentList]);
 	}
 
 	public function addAction(){
 		
 		$this->initializeForm();
-
-        $hrPositions = new HrPositions();
-        $hrPositions->setPositionId(3);
-        //$hrPositions->setPositionCode("PC001");
-        $hrPositions->setPositionName("Developer");
-        $hrPositions->setStatus("E");
-        $hrPositions->setRemarks("Heloo");
-
-        // $hrZone = new HrZones();
-        // $hrZone->setZoneId("2yui");
-        // $hrZone->setZoneCode("ZOne1");
-        // $hrZone->setZoneName("first zone");
-        // $hrZone->setStatus("E");
-        // $hrZone->setRemarks("sdfdsfds");
-
-        print"<pre>";print_r($hrPositions); die();
-      
-        $this->hrDepartments->setDepartmentCode("BC002");
-        $this->hrDepartments->setDepartmentName("Hr");
-        $this->hrDepartments->setRemarks("hello");
-        $this->hrDepartments->setStatus("E");
-        $this->hrDepartments->setDepartmentId(19);
-        $this->hrDepartments->setParentDepartment(1);
-        
-        $this->entityManager->persist($this->hrDepartments);
-
-        $this->entityManager->flush();
-
         $request = $this->getRequest(); 
+
         if ($request->isPost()) {
            
-            $this->departmentForm->setData($request->getPost());
+            $this->form->setData($request->getPost());
           
-            if ($this->departmentForm->isValid()){
-                $formData = $this->departmentForm->getData();
-
-                $this->hrDepartments = EntityHelper::hydrate($this->entityManager,HrDepartments::class,$formData);
-
-                $em = $this->entityManager;
-                $em->getConnection()->beginTransaction(); // suspend auto-commit      
-                
-                try {
-                  $em->persist($this->hrDepartments);
-                  $em->flush();
-                  $em->getConnection()->commit();
-                } catch (Exception $e) {
-                  $em->getConnection()->rollback();
-                  throw $e;
-                }  
+            if ($this->form->isValid()){
+                $this->department->exchangeArrayFromForm($this->form->getData());
+                $this->repository->add($this->department);  
                 $this->flashmessenger()->addMessage("Department Successfully added!!!");
                 return $this->redirect()->toRoute("department");
             }
@@ -108,8 +67,8 @@ class DepartmentController extends AbstractActionController{
         return new ViewModel(Helper::addFlashMessagesToArray(
             $this,
             [
-                'form' => $this->departmentForm,
-                'departments'=> EntityHelper::getDepartmentKVList($this->entityManager),
+                'form' => $this->form,
+                'departments'=> EntityHelper::getDepartmentKVList($this->adapter),
                 'messages' => $this->flashmessenger()->getMessages()
              ]
             )
@@ -123,41 +82,26 @@ class DepartmentController extends AbstractActionController{
 			return $this->redirect()->toRoute('department');
 		}
         $this->initializeForm();
-
         $request = $this->getRequest();
 
-        $departmentRecord = $this->entityManager->find(HrDepartments::class,$id);
-        $departmentRecord1 = EntityHelper::extract($this->entityManager,$departmentRecord);
-        $modifiedDt = date('Y-m-d');
+        $modifiedDt = date("d-M-y");
         if(!$request->isPost()){
-            $this->departmentForm->bind((object)$departmentRecord1);
+            
+            $this->department->exchangeArrayFromDb($this->repository->fetchById($id)->getArrayCopy());
+            $this->form->bind((object)$this->department->getArrayCopyForForm());
         }else{
 
-            $this->departmentForm->setData($request->getPost());
-            
-            if ($this->departmentForm->isValid()) {
-                $formData = $this->departmentForm->getData();
-                $newFormData = array_merge($formData,['modifiedDt'=>$modifiedDt]);
-                $this->hrDepartments = EntityHelper::hydrate($this->entityManager,HrDepartments::class, $newFormData);
-                $this->hrDepartments->setDepartmentId($id);
-
-                $em =$this->entityManager;
-                $em->getConnection()->beginTransaction(); // suspend auto-commit
-                try {
-                  $em->merge($this->hrDepartments);
-                  $em->flush();
-                  $em->getConnection()->commit();
-                } catch (Exception $e) {
-                  $em->getConnection()->rollback();
-                  throw $e;
-                }
+            $this->form->setData($request->getPost());
+            if ($this->form->isValid()) {
+                $this->department->exchangeArrayFromForm($this->form->getData());
+                $this->repository->edit($this->department,$id,$modifiedDt);
                 $this->flashmessenger()->addMessage("Department Successfully Updated!!!");
-                return $this->redirect()->toRoute("department");            
+                return $this->redirect()->toRoute("department");
             }
         }
         return Helper::addFlashMessagesToArray(
-            $this,['form'=>$this->departmentForm,'id'=>$id,
-            'departments'=> EntityHelper::getDepartmentKVList($this->entityManager,$id)
+            $this,['form'=>$this->form,'id'=>$id,
+            //'departments'=> EntityHelper::getDepartmentKVList($this->entityManager,$id)
             ]
          );
 	}

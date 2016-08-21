@@ -2,7 +2,7 @@
 $form->setAttribute('role','form');
 $form->setAttribute('class','position-form');
 
-$positionCode = $form->get('positionCode');
+$positionId = $form->get('positionId');
 $positionName = $form->get('positionName');
 $remarks = $form->get('remarks');
 $status = $form->get('status');
@@ -31,9 +31,9 @@ print $this->form()->openTag($form);
 			</div>
 			<div class="panel-body padding-5" style="margin-top:7px;">	
 				<div class="form-group form-group-default emp-form-group">
-					<?php print $this->formLabel($positionCode); ?>
-					<?php print $this->formElement($positionCode); ?>
-					<?php print $this->formElementErrors()->render($positionCode,['class'=>'help-block']);?>
+					<?php print $this->formLabel($positionId); ?>
+					<?php print $this->formElement($positionId); ?>
+					<?php print $this->formElementErrors()->render($positionId,['class'=>'help-block']);?>
 				</div>
 				<div class="form-group form-group-default  emp-form-group">
 					<?php print $this->formLabel($positionName); ?>

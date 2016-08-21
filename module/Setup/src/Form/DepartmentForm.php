@@ -12,14 +12,23 @@ namespace Setup\Form;
 */
 
 use Zend\Form\Annotation;
+use Setup\Model\Model;
 
 /** 
 * @Annotation\Hydrator("Zend\Hydrator\ObjectProperty")
 * @Annotation\Name("Department")
 */
-class DepartmentForm
+class DepartmentForm extends Model
 
 {
+    /**
+     * @Annotation\Type("Zend\Form\Element\Text")
+     * @Annotation\Required({"required":"false"})
+     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
+     * @Annotation\Options({"label":"Department Id"})
+     * @Annotation\Attributes({ "id":"form-departmentId", "class":"form-departmentId form-control" })
+     */
+    public $departmentId;
 	
     /**
 	 * @Annotation\Type("Zend\Form\Element\Text")
@@ -74,6 +83,46 @@ class DepartmentForm
      * @Annotation\Attributes({"value":"Submit","class":"btn btn-primary pull-right"})
     */
     public $submit;
+
+    private $mappings=[
+        'DEPARTMENT_ID'=>'departmentId',
+        'DEPARTMENT_CODE'=>'departmentCode',
+        'DEPARTMENT_NAME'=>'departmentName',
+        'PARENT_DEPARTMENT'=>'parentDepartment',
+        'REMARKS'=>'remarks',
+        'STATUS'=>'status'
+    ];
+
+    public function exchangeArrayFromForm(array $data)
+    {
+        foreach($this->mappings as $key => $value){
+            $this->{$value} = !empty($data[$value]) ? $data[$value] : null;
+        }
+    }
+
+    public function exchangeArrayFromDB(array $data)
+    {
+        foreach($this->mappings as $key => $value){
+            $this->{$value} = !empty($data[$key]) ? $data[$key] : null;
+        }
+    }
+    public function getArrayCopyForDB()
+    {
+        $tempArray=[];
+        foreach($this->mappings as $key => $value){
+            $tempArray[$key]=$this->{$value};
+        }
+        return $tempArray;
+    }
+
+    public function getArrayCopyForForm()
+    {
+        $tempArray=[];
+        foreach($this->mappings as $key => $value){
+            $tempArray[$value]=$this->{$value};
+        }
+        return $tempArray;
+    }
 
 
 }

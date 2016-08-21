@@ -2,33 +2,23 @@
 
 namespace Setup\Helper;
 
-
-use DoctrineModule\Stdlib\Hydrator\DoctrineObject as DoctrineHydrator;
-use Doctrine\ORM\EntityManager;
-use Setup\Entity\HrDepartments;
-use Setup\Entity\HrDesignations;
-use Setup\Entity\HrBranches;
-use Setup\Entity\HrPositions;
-use Setup\Entity\HrServiceTypes;
-//use Setup\Entity\HrEmployees;
-use Setup\Entity\BloodGroups;
-use Setup\Entity\HrDistricts;
-use Setup\Entity\HrGenders;
-use Setup\Entity\HrVdcMunicipality;
-use Setup\Entity\HrZones;
+use Zend\Db\Adapter\AdapterInterface;
+use Zend\Db\TableGateway\TableGateway;
+use Setup\Model\DepartmentRepository;
 
 class EntityHelper
 {
-    public static function getDepartmentKVList(EntityManager $em,$departmentId=null)
-    {
-        $repo = $em->getRepository(HrDepartments::class);
-        $entities = $repo->findAll();
 
+    public static function getDepartmentKVList(AdapterInterface $adapter,$departmentId=null)
+    {
+        $departmentRepository = new DepartmentRepository($adapter);
+        $entities = $departmentRepository->fetchAll();
         $entitiesArray=array();
         $entitiesArray[0]='----';
         foreach($entities as $entity){
-            if($entity->getDepartmentId()!=$departmentId){
-                $entitiesArray[$entity->getDepartmentId()]=$entity->getDepartmentName();
+            $entityResultSet = $entity->getArrayCopy();
+            if($entityResultSet['DEPARTMENT_ID']!=$departmentId){
+                $entitiesArray[$entityResultSet['DEPARTMENT_ID']]=$entityResultSet['DEPARTMENT_NAME'];
             }
         }
         return $entitiesArray;
