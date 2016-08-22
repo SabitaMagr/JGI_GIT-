@@ -32,17 +32,17 @@ if ($this->messages) {
     <tr role="row">
         <td class="v-align-middle sorting_1">
             <p>
-                <?php print $this->escapeHtml($serviceType->getServiceTypeCode()) ?>
+                <?php print $this->escapeHtml($serviceType->SERVICE_TYPE_CODE); ?>
             </p>
         </td>
         <td class="v-align-middle sorting_1">
             <p>
-                <?php print $this->escapeHtml($serviceType->getServiceTypeName()) ?>
+                <?php print $this->escapeHtml($serviceType->SERVICE_TYPE_NAME); ?>
             </p>
         </td>
         <td class="v-align-middle sorting_1">
-            <a href="<?= $this->url("serviceType",["action"=>"edit","id"=>$serviceType->getServiceTypeId()]) ?>">Edit</a>|
-            <a href="<?= $this->url("serviceType",["action"=>"delete","id"=>$serviceType->getServiceTypeId()]); ?>" onclick="return confirm('Are you sure you want to delete this item?');">Delete</a>
+            <a href="<?= $this->url("serviceType",["action"=>"edit","id"=>$serviceType->SERVICE_TYPE_ID]) ?>">Edit</a>|
+            <a href="<?= $this->url("serviceType",["action"=>"delete","id"=>$serviceType->SERVICE_TYPE_ID]); ?>" onclick="return confirm('Are you sure you want to delete this item?');">Delete</a>
         </td>
     </tr>
 

@@ -2,6 +2,7 @@
 $form->setAttribute('role','form');
 $form->setAttribute('class','jobHistory-form');
 
+$jobHistoryId = $form->get('jobHistoryId');
 $employeeId = $form->get('employeeId');
 $startDate = $form->get('startDate');
 $endDate = $form->get('endDate');
@@ -48,6 +49,11 @@ print $this->form()->openTag($form);
 					<h4>Job History Entry</h4>		
 			</div>
 			<div class="panel-body padding-5" style="margin-top:7px;">	
+				<div class="form-group form-group-default emp-form-group">
+					<?php print $this->formLabel($jobHistoryId); ?>
+					<?php print $this->formElement($jobHistoryId); ?>
+					<?php print $this->formElementErrors()->render($jobHistoryId,['class'=>'help-block']);?>
+				</div>
 				<div class="form-group form-group-default emp-form-group">
 					<?php print $this->formLabel($employeeId); ?>
 					<?php print $this->formElement($employeeId); ?>

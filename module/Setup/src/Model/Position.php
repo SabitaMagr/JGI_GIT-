@@ -8,15 +8,15 @@ use Zend\Form\Annotation;
 * @Annotation\Name("Position")
 */
 
-class Position{
+class Position extends Model{
 	/**
 	 * @Annotion\Type("Zend\Form\Element\Text")
 	 * @Annotation\Required({"required":"true"})
 	 * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
-	 * @Annotation\Options({"label":"Position Code"})
-	 * @Annotation\Attributes({ "id":"form-positionCode", "class":"form-positionCode form-control" })
+	 * @Annotation\Options({"label":"Position Id"})
+	 * @Annotation\Attributes({ "id":"form-positionId", "class":"form-positionId form-control" })
 	 */
-	public $positionCode;
+	public $positionId;
 
 	/**
 	 * @Annotion\Type("Zend\Form\Element\Text")
@@ -53,36 +53,12 @@ class Position{
     */
     public $submit;
 
-    // public function exchangeArrayFromForm(array $data){
-    // 	$this->positionCode = !empty($data['positionCode']) ? $data['positionCode'] : null;
-    // 	$this->positionName = !empty($data['positionName']) ? $data['positionName'] : null;
-    // 	$this->remarks = !empty($data['remarks']) ? $data['remarks'] : null;
-    // 	$this->status = !empty($data['status']) ? $data['status'] : null;
+    private $mappings=[
+        'positionId'=>'POSITION_ID',
+        'positionName'=>'POSITION_NAME',
+        'remarks'=>'REMARKS',
+        'status'=>'STATUS'
+    ];
 
-    // }
-    // public function getArrayCopyForForm(){
-    // 	return [
-    // 		'positionCode' => $this->positionCode,
-    // 		'positionName'=>$this->positionName,
-    // 		'remarks' => $this->remarks,
-    // 		'status' => $this->status
-    // 	];
-    // }
-
-    // public function exchangeArrayFromDB(array $data){
-    // 	$this->positionCode = !empty($data['POSITION_CODE']) ? $data['POSITION_CODE'] : null;
-    // 	$this->positionName = !empty($data['POSITION_NAME']) ? $data['POSITION_NAME'] : null;
-    // 	$this->remarks = !empty($data['REMARKS']) ? $data['REMARKS'] : null;
-    // 	$this->status = !empty($data['STATUS']) ? $data['STATUS'] : null;
-    // }
-
-    // public function getArrayCopyForDb(){
-    // 	return [
-    // 		'POSITION_CODE' => $this->positionCode,
-    // 		'POSITION_NAME'=>$this->positionName,
-    // 		'REMARKS' => $this->remarks,
-    // 		'STATUS' => $this->status
-    // 	];
-    // }
-
+ 
 }

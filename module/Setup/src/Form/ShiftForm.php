@@ -12,13 +12,24 @@ namespace Setup\Form;
 */
 
 use Zend\Form\Annotation;
+use Setup\Model\Model;
 
 /** 
 * @Annotation\Hydrator("Zend\Hydrator\ObjectProperty")
 * @Annotation\Name("Shift")
 */
 
-class ShiftForm{
+class ShiftForm extends Model{
+	
+	/**
+	 * @Annotion\Type("Zend\Form\Element\Text")
+	 * @Annotation\Required({"required":"true"})
+	 * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
+	 * @Annotation\Options({"label":"Shift Id"})
+	 * @Annotation\Attributes({ "id":"form-shiftId", "class":"form-shiftId form-control" })
+	 */
+	public $shiftId;
+
 	/**
 	 * @Annotion\Type("Zend\Form\Element\Text")
 	 * @Annotation\Required({"required":"true"})
@@ -81,6 +92,16 @@ class ShiftForm{
      * @Annotation\Attributes({"value":"Submit","class":"btn btn-primary pull-right"})
     */
     public $submit;
+
+    public $mappings = [
+    	'SHIFT_ID'=>'shiftId',
+    	'SHIFT_CODE'=>'shiftCode',
+    	'SHIFT_NAME'=>'shiftName',
+    	'START_TIME'=>'startTime',
+    	'END_TIME'=>'endTime',
+    	'REMARKS'=>'remarks',
+    	'STATUS'=>'status'
+    	];
 
 }
 

@@ -17,53 +17,44 @@ use Setup\Form\DesignationForm;
 use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
-
-use Setup\Entity\HrDesignations;
-use Setup\Helper\EntityHelper;
-use Doctrine\ORM\EntityManager;
+use Zend\Db\Adapter\AdapterInterface;
+use Setup\Model\DesignationRepository;
 
 class DesignationController extends AbstractActionController
 {
-    private $entityManager;
-    private $hrDesignations;
-    private $designationForm;
-    private $hydrator;
+    private $repository;
+    private $desgination;
+    private $form;
 
-    function __construct(EntityManager $entityManager)
+    function __construct(AdapterInterface $adapter)
     {
-        $this->entityManager = $entityManager;
-        $this->hrDesignations = new HrDesignations();
+        $this->repository = new DesignationRepository($adapter);
     }
 
     public function initializeForm(){
-        $form = new DesignationForm();
+        $this->designation = new DesignationForm();
         $builder = new AnnotationBuilder();
-        if(!$this->designationForm){
-            $this->designationForm = $builder->createForm($form);
+        if(!$this->form){
+            $this->form = $builder->createForm($this->designation);
         }
     }
 
     public function indexAction()
     {
-        $designations = $this->entityManager->getRepository(HrDesignations::class)->findAll();
+        $designations = $this->repository->fetchAll();
         return Helper::addFlashMessagesToArray($this,["designations" => $designations]);
     }
 
     public function addAction(){
         
         $this->initializeForm();
-
         $request = $this->getRequest();
         if ($request->isPost()) {
           
-            $this->designationForm->setData($request->getPost());
-            if ($this->designationForm->isValid()) {
-                $formData = $this->designationForm->getData();
-                $this->hrDesignations = EntityHelper::hydrate($this->entityManager,HrDesignations::class,$formData);
-
-                $this->entityManager->persist($this->hrDesignations);
-                $this->entityManager->flush();
-                
+            $this->form->setData($request->getPost());
+            if ($this->form->isValid()) {
+                $this->designation->exchangeArrayFromForm($this->form->getData());
+                $this->repository->add($this->designation);
                 $this->flashmessenger()->addMessage("Designation Successfully added!!!");
                 return $this->redirect()->toRoute("designation");
             } 
@@ -71,7 +62,7 @@ class DesignationController extends AbstractActionController
         return new ViewModel(Helper::addFlashMessagesToArray(
             $this,
             [
-                'form' => $this->designationForm,
+                'form' => $this->form,
                 'messages' => $this->flashmessenger()->getMessages()
              ]
             )
@@ -86,32 +77,26 @@ class DesignationController extends AbstractActionController
             return $this->redirect()->toRoute('designation');
         }
         $this->initializeForm();
-
         $request=$this->getRequest();
 
         if(!$request->isPost()){
-            $designationRecord = $this->entityManager->find(HrDesignations::class,$id);
-            $designationRecord1 = EntityHelper::extract($this->entityManager,$designationRecord);
-            $this->designationForm->bind((object)$designationRecord1);
+            $this->designation->exchangeArrayFromDb($this->repository->fetchById($id)->getArrayCopy());
+            $this->form->bind((object)$this->designation->getArrayCopyForForm());
         }else{
 
-            $this->designationForm->setData($request->getPost());
-            $modifiedDt = date('Y-m-d');
-            if ($this->designationForm->isValid()) {
-                $formData = $this->designationForm->getData();
-                $newFormData = array_merge($formData,['modifiedDt'=>$modifiedDt]);
-                $this->hrDesignations = EntityHelper::hydrate($this->entityManager,HrDesignations::class,$formData);
-                $this->hrDesignations->setDesignationId($id);
-
-                $this->entityManager->merge($this->hrDesignations);
-                $this->entityManager->flush();
+            $this->form->setData($request->getPost());
+            $modifiedDt = date('d-M-y');
+            if ($this->form->isValid()) {
+                
+                $this->designation->exchangeArrayFromForm($this->form->getData());
+                $this->repository->edit($this->designation,$id,$modifiedDt);
 
                 $this->flashmessenger()->addMessage("Designation Successfully Updated!!!");
                 return $this->redirect()->toRoute("designation");
             }
         }
         return Helper::addFlashMessagesToArray(
-                    $this,['form'=>$this->designationForm,'id'=>$id]
+                    $this,['form'=>$this->form,'id'=>$id]
                  );
     }
 
@@ -120,14 +105,10 @@ class DesignationController extends AbstractActionController
         if (!$id) {
             return $this->redirect()->toRoute('designation');
         }
-        $this->hrDesignations =  $this->entityManager->find(HrDesignations::class, $id);
-        $this->entityManager->remove($this->hrDesignations);
-        $this->entityManager->flush();
+        $this->repository->delete($id);
         $this->flashmessenger()->addMessage("Designation Successfully Deleted!!!");
         return $this->redirect()->toRoute('designation');
     }
-
-
 }
 /* End of file DesignationController.php */
 /* Location: ./Setup/src/Controller/DesignationController.php */

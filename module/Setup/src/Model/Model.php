@@ -27,7 +27,6 @@ class Model
     {
         $tempArray = [];
         foreach ($this->mappings as $key => $value) {
-//            array_push($tempArray, $value, $this->{$key});
         $tempArray[$value]=$this->{$key};
         }
 

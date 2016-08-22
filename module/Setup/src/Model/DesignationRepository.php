@@ -10,7 +10,7 @@ class DesignationRepository implements RepositoryInterface
     private $tableGateway;
     public function __construct(AdapterInterface $adapter)
     {
-        $this->tableGateway=new TableGateway('designation',$adapter);
+        $this->tableGateway=new TableGateway('HR_DESIGNATIONS',$adapter);
     }
 
     public function fetchAll()
@@ -20,22 +20,29 @@ class DesignationRepository implements RepositoryInterface
 
     public function fetchById($id)
     {
-       $rowset= $this->tableGateway->select(["designationCode"=>$id]);
+       $rowset= $this->tableGateway->select(["DESIGNATION_ID"=>$id]);
         return $rowset->current();
     }
 
     public function add(Model $model)
     {
-        $this->tableGateway->insert($model->getArrayCopy());
+        $this->tableGateway->insert($model->getArrayCopyForDb());
     }
 
-    public function edit(Model $model, $id)
+    public function edit(Model $model, $id,$modifiedDt)
     {
-        $this->tableGateway->update($model->getArrayCopy(),["designationCode"=>$id]);
+        $array = $model->getArrayCopyForDb();
+        $newArray = array_merge($array,['MODIFIED_DT'=>$modifiedDt]);
+        $this->tableGateway->update($newArray,["DESIGNATION_ID"=>$id]);
+    }
+    public function fetchActiveRecord()
+    {
+         return  $rowset= $this->tableGateway->select(['STATUS'=>'E']);       
     }
 
     public function delete($id)
     {
+        $this->tableGateway->delete(["DESIGNATION_ID"=>$id]);
     }
 
 }

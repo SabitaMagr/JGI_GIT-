@@ -2,28 +2,14 @@
 $form->setAttribute('role','form');
 $form->setAttribute('class','company-form');
 
+$companyId = $form->get('companyId');
 $companyCode = $form->get('companyCode');
 $companyName = $form->get('companyName');
-$inNepali = $form->get('inNepali');
-$addressFirst = $form->get('addressFirst');
-$addressSecond = $form->get('addressSecond');
-
+$address= $form->get('address');
 $telephone = $form->get('telephone');
-$email = $form->get('email');
 $fax = $form->get('fax');
-$web = $form->get('web');
+$swift = $form->get('swift');
 
-$registrationNo = $form->get('registrationNo');
-$vatNo = $form->get('vatNo');
-$smtpHost = $form->get('smtpHost');
-$serverPath = $form->get('serverPath');
-
-$fiscalStart = $form->get('fiscalStart');
-$fiscalEnd = $form->get('fiscalEnd');
-$startTime = $form->get('startTime');
-$endTime = $form->get('endTime');
-$graceStartTime = $form->get('graceStartTime');
-$graceEndTime = $form->get('graceEndTime');
 
 $submit = $form->get('submit');
 
@@ -54,7 +40,11 @@ print $this->form()->openTag($form);
 			<div class="col-sm-6">
 				<fieldset class="scheduler-border" style="height:auto;">
                 <legend class="scheduler-border" style="font-size:15px;">Company Profile</legend>
-                       
+                 <div class="form-group form-group-default required emp-form-group">
+					<?php print $this->formLabel($companyId); ?>
+					<?php print $this->formElement($companyId); ?>
+					<?php print $this->formElementErrors()->render($companyId,['class'=>'help-block']);?>
+				</div>      
 				<div class="form-group form-group-default required emp-form-group">
 					<?php print $this->formLabel($companyCode); ?>
 					<?php print $this->formElement($companyCode); ?>
@@ -66,20 +56,11 @@ print $this->form()->openTag($form);
 					<?php print $this->formElementErrors()->render($companyName,['class'=>'help-block']);?>
 				</div>
 				<div class="form-group form-group-default required emp-form-group">
-					<?php print $this->formLabel($inNepali); ?>
-					<?php print $this->formElement($inNepali); ?>
-					<?php print $this->formElementErrors()->render($inNepali,['class'=>'help-block']);?>
+					<?php print $this->formLabel($address); ?>
+					<?php print $this->formElement($address); ?>
+					<?php print $this->formElementErrors()->render($address,['class'=>'help-block']);?>
 				</div>
-				<div class="form-group form-group-default required emp-form-group">
-					<?php print $this->formLabel($addressFirst); ?>
-					<?php print $this->formElement($addressFirst); ?>
-					<?php print $this->formElementErrors()->render($addressFirst,['class'=>'help-block']);?>
-				</div>
-				<div class="form-group form-group-default required emp-form-group">
-					<?php print $this->formLabel($addressSecond); ?>
-					<?php print $this->formElement($addressSecond); ?>
-					<?php print $this->formElementErrors()->render($addressSecond,['class'=>'help-block']);?>
-				</div>
+				
 				
 				</fieldset>
 			</div>
@@ -93,108 +74,21 @@ print $this->form()->openTag($form);
 					<?php print $this->formElement($telephone); ?>
 					<?php print $this->formElementErrors()->render($telephone,['class'=>'help-block']);?>
 				</div>
-				<div class="form-group form-group-default emp-form-group">
-					<?php print $this->formLabel($email); ?>
-					<?php print $this->formElement($email); ?>
-					<?php print $this->formElementErrors()->render($email,['class'=>'help-block']);?>
-				</div>
+
 				<div class="form-group form-group-default emp-form-group">
 					<?php print $this->formLabel($fax); ?>
 					<?php print $this->formElement($fax); ?>
 					<?php print $this->formElementErrors()->render($fax,['class'=>'help-block']);?>
 				</div>
 				<div class="form-group form-group-default emp-form-group">
-					<?php print $this->formLabel($web); ?>
-					<?php print $this->formElement($web); ?>
-					<?php print $this->formElementErrors()->render($web,['class'=>'help-block']);?>
+					<?php print $this->formLabel($swift); ?>
+					<?php print $this->formElement($swift); ?>
+					<?php print $this->formElementErrors()->render($swift,['class'=>'help-block']);?>
 				</div>
 				</fieldset>
 			</div>
 		</div>
-		<div class="row">
-			<div class="col-sm-6">
-				<fieldset class="scheduler-border" style="height:auto;">
-                <legend class="scheduler-border" style="font-size:15px;">Official Information</legend>
-                       
-				<div class="form-group form-group-default emp-form-group">
-					<?php print $this->formLabel($registrationNo); ?>
-					<?php print $this->formElement($registrationNo); ?>
-					<?php print $this->formElementErrors()->render($registrationNo,['class'=>'help-block']);?>
-				</div>
-				<div class="form-group form-group-default emp-form-group">
-					<?php print $this->formLabel($vatNo); ?>
-					<?php print $this->formElement($vatNo); ?>
-					<?php print $this->formElementErrors()->render($vatNo,['class'=>'help-block']);?>
-				</div>
-				
-				</fieldset>
-			</div>
-			<div class="col-sm-6">
-				<fieldset class="scheduler-border" style="height:auto;">
-                <legend class="scheduler-border" style="font-size:15px;">Server Information</legend>
-                       
-				<div class="form-group form-group-default emp-form-group">
-					<?php print $this->formLabel($smtpHost); ?>
-					<?php print $this->formElement($smtpHost); ?>
-					<?php print $this->formElementErrors()->render($smtpHost,['class'=>'help-block']);?>
-				</div>
-				<div class="form-group form-group-default emp-form-group">
-					<?php print $this->formLabel($serverPath); ?>
-					<?php print $this->formElement($serverPath); ?>
-					<?php print $this->formElementErrors()->render($serverPath,['class'=>'help-block']);?>
-				</div>
-				
-				</fieldset>
-			</div>
-		</div>
-		<div class="row">
-			<div class="col-sm-6">
-				<fieldset class="scheduler-border" style="height:auto;">
-                <legend class="scheduler-border" style="font-size:15px;">Fiscal</legend>
-                       
-				<div class="form-group form-group-default emp-form-group">
-					<?php print $this->formLabel($fiscalStart); ?>
-					<?php print $this->formElement($fiscalStart); ?>
-					<?php print $this->formElementErrors()->render($fiscalStart,['class'=>'help-block']);?>
-				</div>
-				<div class="form-group form-group-default emp-form-group">
-					<?php print $this->formLabel($fiscalEnd); ?>
-					<?php print $this->formElement($fiscalEnd); ?>
-					<?php print $this->formElementErrors()->render($fiscalEnd,['class'=>'help-block']);?>
-				</div>
-				
-				</fieldset>
-			</div>
-
-			<div class="col-sm-6">
-				<fieldset class="scheduler-border" style="height:auto;">
-                <legend class="scheduler-border" style="font-size:15px;">Time Schedule</legend>
-                       
-				<div class="form-group form-group-default emp-form-group">
-					<?php print $this->formLabel($startTime); ?>
-					<?php print $this->formElement($startTime); ?>
-					<?php print $this->formElementErrors()->render($startTime,['class'=>'help-block']);?>
-				</div>
-				<div class="form-group form-group-default emp-form-group">
-					<?php print $this->formLabel($endTime); ?>
-					<?php print $this->formElement($endTime); ?>
-					<?php print $this->formElementErrors()->render($endTime,['class'=>'help-block']);?>
-				</div>
-
-				<div class="form-group form-group-default emp-form-group">
-					<?php print $this->formLabel($graceStartTime); ?>
-					<?php print $this->formElement($graceStartTime); ?>
-					<?php print $this->formElementErrors()->render($graceStartTime,['class'=>'help-block']);?>
-				</div>
-
-				<div class="form-group form-group-default emp-form-group">
-					<?php print $this->formLabel($graceEndTime); ?>
-					<?php print $this->formElement($graceEndTime); ?>
-					<?php print $this->formElementErrors()->render($graceEndTime,['class'=>'help-block']);?>
-				</div>
-				
-				</fieldset>
-			</div>
+		
 		</div>	
 
 		<div class="panel-footer panel-footer-default">

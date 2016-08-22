@@ -140,6 +140,36 @@ return [
                 ],
             ],
 
+            'shift' => [
+                'type' => segment::class,
+                'options' => [
+                    'route' => '/shift[/:action[/:id]]',
+                    'constants' => [
+                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'id' => '[0-9]+',
+                    ],
+                    'defaults' => [
+                        'controller' => Controller\ShiftController::class,
+                        'action' => 'index',
+                    ]
+                ],
+            ],
+
+            'leaveType' => [
+                'type' => segment::class,
+                'options' => [
+                    'route' => '/leaveType[/:action[/:id]]',
+                    'constants' => [
+                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'id' => '[0-9]+',
+                    ],
+                    'defaults' => [
+                        'controller' => Controller\LeaveTypeController::class,
+                        'action' => 'index',
+                    ]
+                ],
+            ],
+
 
         ]
     ],

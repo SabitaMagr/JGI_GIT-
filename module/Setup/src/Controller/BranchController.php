@@ -17,37 +17,33 @@ use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 use Setup\Form\BranchForm;
-
-use Doctrine\ORM\EntityManager;
-use Setup\Entity\HrBranches;
-use Setup\Helper\EntityHelper;
+use Setup\Model\BranchRepository;
+use Zend\Db\Adapter\AdapterInterface;
 
 class BranchController extends AbstractActionController
 {
-    private $entityManager;
-    private $branchForm;
-    private $hydrator;
-    private $hrBranches;
+    private $branch;
+    private $form;
+    private $repository;
 
-    function __construct(EntityManager $entityManager)
+    function __construct(AdapterInterface $adapter)
     {
-        $this->entityManager = $entityManager;
-        $this->hrBranches = new HrBranches();
+        $this->repository = new BranchRepository($adapter);
     }
 
 
     public function initializeForm()
     {
-        $form = new BranchForm();
+        $this->branch = new BranchForm();
         $builder = new AnnotationBuilder();
-        if (!$this->branchForm) {
-            $this->branchForm = $builder->createForm($form);
+        if (!$this->form) {
+            $this->form = $builder->createForm($this->branch);
         }     
     }
 
     public function indexAction()
     {
-        $branches = $this->entityManager->getRepository(HrBranches::class)->findAll();
+        $branches = $this->repository->fetchAll();
         return Helper::addFlashMessagesToArray($this, ['branches' => $branches]);
     }
 
@@ -57,52 +53,40 @@ class BranchController extends AbstractActionController
         $request = $this->getRequest();
         if ($request->isPost()) {
             
-            $this->branchForm->setData($request->getPost());
-        
-            if ($this->branchForm->isValid()) {
-                $formData = $this->branchForm->getData();
-                $this->hrBranches = EntityHelper::hydrate($this->entityManager,HrBranches::class,$formData);
-        
-                $this->entityManager->persist($this->hrBranches);
-                $this->entityManager->flush();
+            $this->form->setData($request->getPost());       
+            if ($this->form->isValid()) {
+
+                $this->branch->exchangeArrayFromForm($this->form->getData());
+                $this->repository->add($this->branch);
                
                 $this->flashmessenger()->addMessage("Branch Successfully Added!!!");
                 return $this->redirect()->toRoute("branch");
             }
         }
-        return Helper::addFlashMessagesToArray($this, ['form' => $this->branchForm]);     
+        return Helper::addFlashMessagesToArray($this, ['form' => $this->form]);     
     }
 
     public function editAction()
     {
         $id = (int)$this->params()->fromRoute("id");
         $this->initializeForm();
-
         $request = $this->getRequest();
 
         if (!$request->isPost()) {
-            $branchRecord =$this->entityManager->find(HrBranches::class,$id);
-            $branchRecord1 = EntityHelper::extract($this->entityManager,$branchRecord);
-            $this->branchForm->bind((object)$branchRecord1);           
+            $this->branch->exchangeArrayFromDb($this->repository->fetchById($id)->getArrayCopy());
+            $this->form->bind((object)$this->branch->getArrayCopyForForm());        
         }else{
-            $modifiedDt = date('Y-m-d');
-            $this->branchForm->setData($request->getPost());
 
-            if ($this->branchForm->isValid()) {
-
-                $formData = $this->branchForm->getData();
-                $newFormData = array_merge($formData,['modifiedDt'=>$modifiedDt]);
-                $this->hrBranches = EntityHelper::hydrate($this->entityManager,HrBranches::class,$formData);
-                $this->hrBranches->setBranchId($id);
-
-                $this->entityManager->merge($this->hrBranches);
-                $this->entityManager->flush();
-
+            $modifiedDt = date('d-M-y');
+            $this->form->setData($request->getPost());
+            if ($this->form->isValid()) {
+                $this->branch->exchangeArrayFromForm($this->form->getData());
+                $this->repository->edit($this->branch,$id,$modifiedDt);
                 $this->flashmessenger()->addMessage("Branch Successfully Updated!!!");
                 return $this->redirect()->toRoute("branch");
             } 
         }
-        return Helper::addFlashMessagesToArray($this, ['form' => $this->branchForm, 'id' => $id]);
+        return Helper::addFlashMessagesToArray($this, ['form' => $this->form, 'id' => $id]);
     }
 
     public function deleteAction()
@@ -112,11 +96,7 @@ class BranchController extends AbstractActionController
         if(!$id){
             return $this->redirect()->toRoute('branch');
         }
-
-        $this->hrBranches = $this->entityManager->find(HrBranches::class,$id);
-        $this->entityManager->remove($this->hrBranches);
-        $this->entityManager->flush();
-
+        $this->repository->delete($id);
         $this->flashmessenger()->addMessage("Branch Successfully Deleted!!!");
         return $this->redirect()->toRoute('branch');
     }

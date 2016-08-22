@@ -14,13 +14,25 @@ namespace Setup\Form;
 
 
 use Zend\Form\Annotation;
+use Setup\Model\Model;
 
 /** 
 * @Annotation\Hydrator("Zend\Hydrator\ObjectProperty")
 * @Annotation\Name("ServiceType")
 */
 
-class ServiceTypeForm{
+class ServiceTypeForm extends Model{
+
+	/**
+	 * @Annotion\Type("Zend\Form\Element\Text")
+	 * @Annotation\Required({"required":"true"})
+	 * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
+	 * @Annotation\Options({"label":"Service Type Id"})
+	 * @Annotation\Attributes({ "id":"form-serviceTypeId", "class":"form-serviceTypeId form-control" })
+	 */
+	public $serviceTypeId;
+
+
 	/**
 	 * @Annotion\Type("Zend\Form\Element\Text")
 	 * @Annotation\Required({"required":"true"})
@@ -66,6 +78,13 @@ class ServiceTypeForm{
     */
     public $submit;
 
+    public $mappings = [
+    	'SERVICE_TYPE_ID'=>'serviceTypeId',
+    	'SERVICE_TYPE_CODE'=>'serviceTypeCode',
+    	'SERVICE_TYPE_NAME'=>'serviceTypeName',
+    	'REMARKS'=>'remarks',
+    	'STATUS'=>'status'
+    ];
 }
 
 /* End of file ServiceTypeForm.php */

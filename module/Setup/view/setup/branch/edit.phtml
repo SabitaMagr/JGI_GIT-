@@ -2,6 +2,7 @@
 $form->setAttribute('role','form');
 $form->setAttribute('class','branch-form');
 
+$branchId = $form->get('branchId');
 $branchCode = $form->get('branchCode');
 $branchName = $form->get('branchName');
 $streetAddress = $form->get('streetAddress');
@@ -36,6 +37,11 @@ print $this->form()->openTag($form);
 					<h4>Branch Setup</h4>		
 			</div>
 			<div class="panel-body padding-5" style="margin-top:7px;">	
+				<div class="form-group form-group-default emp-form-group">
+					<?php print $this->formLabel($branchId); ?>
+					<?php print $this->formElement($branchId); ?>
+					<?php print $this->formElementErrors()->render($branchId,['class'=>'help-block']);?>
+				</div>
 				<div class="form-group form-group-default emp-form-group">
 					<?php print $this->formLabel($branchCode); ?>
 					<?php print $this->formElement($branchCode); ?>

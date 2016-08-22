@@ -10,7 +10,7 @@ class ServiceTypeRepository implements RepositoryInterface
     private $tableGateway;
     public function __construct(AdapterInterface $adapter)
     {
-        $this->tableGateway=new TableGateway('hr_service_types',$adapter);
+        $this->tableGateway=new TableGateway('HR_SERVICE_TYPES',$adapter);
 
     }
 
@@ -19,10 +19,10 @@ class ServiceTypeRepository implements RepositoryInterface
         $this->tableGateway->insert($model->getArrayCopyForDB());
     }
 
-    public function edit(Model $model, $id, $modifiedDt)
+    public function edit(Model $model,$id,$modifiedDt)
     {
         $array=$model->getArrayCopyForDB();
-        $newArray =  array_merge($r, ['MODIFIED_DT'=> $modifiedDt ]);
+        $newArray =  array_merge($array, ['MODIFIED_DT'=> $modifiedDt ]);
         $this->tableGateway->update( $newArray,["SERVICE_TYPE_ID"=>$id]);
     }
 
@@ -35,6 +35,10 @@ class ServiceTypeRepository implements RepositoryInterface
     {
         $rowset= $this->tableGateway->select(['SERVICE_TYPE_ID'=>$id]);
         return $rowset->current();
+    }
+    public function fetchActiveRecord()
+    {
+         return  $rowset= $this->tableGateway->select(['STATUS'=>'E']);       
     }
 
     public function delete($id)

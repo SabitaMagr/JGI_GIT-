@@ -18,15 +18,12 @@ use Setup\Form\PositionForm;
 use Setup\Model\PositionRepository;
 use Zend\Db\Adapter\AdapterInterface;
 
-
-
 class PositionController extends AbstractActionController
 {
 
-    private $positionForm;
-    private $hrPositions;
-    private $hydrator;
+    private $position;
     private $repository;
+    private $form;
 
     public function __construct(AdapterInterface $adapter)
     {
@@ -35,10 +32,10 @@ class PositionController extends AbstractActionController
 
      public function initializeForm()
     {   
-        $form = new PositionForm();
+        $this->position = new PositionForm();
         $builder = new AnnotationBuilder();
-        if (!$this->positionForm) {
-            $this->positionForm = $builder->createForm($form);
+        if (!$this->form) {
+            $this->form = $builder->createForm($this->position);
         }
     }
 
@@ -55,14 +52,13 @@ class PositionController extends AbstractActionController
 
         if ($request->isPost()) {
             
-            $this->positionForm->setData($request->getPost());      
-            if ($this->positionForm->isValid()) {    
-                $formData = $this->positionForm->getData();  
-                $this->hrPositions = EntityHelper::hydrate($this->entityManager,HrPositions::class,$formData); 
-
-                $this->entityManager->persist($this->hrPositions);
-                $this->entityManager->flush();  
-
+            $this->form->setData($request->getPost());      
+            
+            if ($this->form->isValid()) {    
+            
+                $this->position->exchangeArrayFromForm($this->form->getData());
+                $this->repository->add($this->position);
+                
                 $this->flashmessenger()->addMessage("Position Successfully added!!!");
                 return $this->redirect()->toRoute("position");
             } 
@@ -70,63 +66,53 @@ class PositionController extends AbstractActionController
         return new ViewModel(Helper::addFlashMessagesToArray(
                 $this,
                 [
-                    'form' => $this->positionForm,
+                    'form' => $this->form,
                     'messages' => $this->flashmessenger()->getMessages()
                  ]
                 )
             );   
     }
 
-    // public function editAction()
-    // {
-    //     $id=(int) $this->params()->fromRoute("id");
-    //     if($id===0){
-    //         return $this->redirect()->toRoute('position');
-    //     }
-    //     $this->initializeForm();
-    //     $request=$this->getRequest();
+    public function editAction()
+    {
+        $id=(int) $this->params()->fromRoute("id");
+        if($id===0){
+            return $this->redirect()->toRoute('position');
+        }
+        
+        $this->initializeForm();
+        $request=$this->getRequest();
 
-    //     $modifiedDt = date("Y-m-d");
-    //     if(!$request->isPost()){
-    //         $positionRecord = $this->entityManager->find(HrPositions::class, $id);
-    //         $positionRecord1  = EntityHelper::extract($this->entityManager,$positionRecord);
-    //         $this->positionForm->bind((object)$positionRecord1);
-    //     }else{
+        $modifiedDt = date("d-M-y");
+        if(!$request->isPost()){
+            
+            $this->position->exchangeArrayFromDb($this->repository->fetchById($id)->getArrayCopy());
+            $this->form->bind((object)$this->position->getArrayCopyForForm());
+        }else{
 
-    //         $this->positionForm->setData($request->getPost());
-    //         if ($this->positionForm->isValid()) {
+            $this->form->setData($request->getPost());
+            if ($this->form->isValid()) {
+                $this->position->exchangeArrayFromForm($this->form->getData());
+                $this->repository->edit($this->position,$id,$modifiedDt);
+                $this->flashmessenger()->addMessage("Position Successfully Updated!!!");
+                return $this->redirect()->toRoute("position");
+            }
+        }
+        return Helper::addFlashMessagesToArray(
+            $this,['form'=>$this->form,'id'=>$id]
+        );       
+    }
 
-    //             $formData = $this->positionForm->getData();
-    //             $newFormData =  array_merge($formData, ['modifiedDt'=> $modifiedDt ]);        
-    //             $this->hrPositions = EntityHelper::hydrate($this->entityManager,HrPositions::class,$formData);   
-    //             $this->hrPositions->setPositionId($id);
-
-    //             $this->entityManager->merge($this->hrPositions);
-    //             $this->entityManager->flush();     
-                
-    //             $this->flashmessenger()->addMessage("Position Successfully Updated!!!");
-    //             return $this->redirect()->toRoute("position");
-    //         }
-    //     }
-    //     return Helper::addFlashMessagesToArray(
-    //         $this,['form'=>$this->positionForm,'id'=>$id]
-    //      );
-       
-    // }
-
-    // public function deleteAction()
-    // {
-    //     $id = (int)$this->params()->fromRoute("id");
-    //     if (!$id) {
-    //         return $this->redirect()->toRoute('position');
-    //     }
-    //     $this->hrPositions =  $this->entityManager->find(HrPositions::class, $id);
-    //     $this->entityManager->remove($this->hrPositions);
-    //     $this->entityManager->flush();
-    //     $this->flashmessenger()->addMessage("Position Successfully Deleted!!!");
-    //     return $this->redirect()->toRoute('position');
-    // }    
- 
+    public function deleteAction()
+    {
+        $id = (int)$this->params()->fromRoute("id");
+        if (!$id) {
+            return $this->redirect()->toRoute('position');
+        }
+        $this->repository->delete($id);
+        $this->flashmessenger()->addMessage("Position Successfully Deleted!!!");
+        return $this->redirect()->toRoute('position');
+    }    
 }
 
 /* End of file PositionController.php */

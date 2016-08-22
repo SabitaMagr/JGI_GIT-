@@ -12,13 +12,14 @@ namespace Setup\Form;
 */
 
 use Zend\Form\Annotation;
+use Setup\Model\Model;
 
 /**
  * @Annotation\Hydrator("Zend\Hydrator\ObjectProperty")
  * @Annotation\Name("JobHistoryForm")
 */
 
-class EmpCurrentPostingForm{
+class EmpCurrentPostingForm extends Model{
 
 	/**
      * @Annotation\Type("Zend\Form\Element\Select")
@@ -80,6 +81,15 @@ class EmpCurrentPostingForm{
      * @Annotation\Attributes({"value":"Submit","class":"btn btn-primary pull-right"})
     */
     public $submit;
+
+    public $mappings = [
+        'EMPLOYEE_ID'=>'employeeId',
+        'SERVICE_TYPE_ID'=>'serviceTypeId',
+        'BRANCH_ID'=>'branchId',
+        'DEPARTMENT_ID'=>'departmentId',
+        'DESIGNATION_ID'=>'designationId',
+        'POSITION_ID'=>'positionId'
+    ];
 
 }
 /* End of file EmpCurrentPosting.php */

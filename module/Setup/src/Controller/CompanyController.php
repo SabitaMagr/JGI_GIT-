@@ -6,8 +6,7 @@ use Zend\Db\Adapter\AdapterInterface;
 use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\View\Model\ViewModel;
 use Zend\Mvc\Controller\AbstractActionController;
-use Setup\Model\Company;
-use Zend\View\View;
+use Setup\Form\CompanyForm;
 use Setup\Model\CompanyRepository;
 
 class CompanyController extends AbstractActionController{
@@ -23,7 +22,7 @@ class CompanyController extends AbstractActionController{
 
 	 public function initializeForm()
     {
-        $this->company = new Company();
+        $this->company = new CompanyForm();
         $builder = new AnnotationBuilder();
         if (!$this->form) {
             $this->form = $builder->createForm($this->company);
@@ -40,37 +39,27 @@ class CompanyController extends AbstractActionController{
 	public function addAction(){
 		
 		$this->initializeForm();
-
         $request = $this->getRequest();
-        if (!$request->isPost()) {
-            return new ViewModel(Helper::addFlashMessagesToArray(
-                $this,
-                [
-                    'form' => $this->form,
-                    'messages' => $this->flashmessenger()->getMessages()
-                 ]
-                )
-            );
+
+        if ($request->isPost()) {
+           
+            $this->form->setData($request->getPost());
+            if ($this->form->isValid()) {
+                $this->company->exchangeArrayFromForm($this->form->getData());
+                $this->repository->add($this->company);               
+                $this->flashmessenger()->addMessage("Company Successfully added!!!");
+                return $this->redirect()->toRoute("company");
+
+            }
         }
-        $this->form->setData($request->getPost());
-
-        if ($this->form->isValid()) {
-            $this->company->exchangeArray($this->form->getData());
-            $this->repository->add($this->company);
-            
-            $this->flashmessenger()->addMessage("Company Successfully added!!!");
-            return $this->redirect()->toRoute("company");
-
-        } else {
-            return new ViewModel(Helper::addFlashMessagesToArray(
-                $this,
-                [
-                    'form' => $this->form,
-                    'messages' => $this->flashmessenger()->getMessages()
-                 ]
-                )
-            );
-        }        
+        return new ViewModel(Helper::addFlashMessagesToArray(
+            $this,
+            [
+                'form' => $this->form,
+                'messages' => $this->flashmessenger()->getMessages()
+             ]
+            )
+        );       
 	}
 
 	public function editAction(){
@@ -80,30 +69,26 @@ class CompanyController extends AbstractActionController{
 			return $this->redirect()->toRoute('company');
 		}
         $this->initializeForm();
-
         $request=$this->getRequest();
 
         if(!$request->isPost()){
-            $this->form->bind($this->repository->fetchById($id));
-            return Helper::addFlashMessagesToArray(
-                $this,['form'=>$this->form,'id'=>$id]
-                );
+            $this->company->exchangeArrayFromDb($this->repository->fetchById($id)->getArrayCopy());
+            $this->form->bind((object)$this->company->getArrayCopyForForm());
+        }else{
+        
+            $modifiedDt = date("d-M-y");
+            $this->form->setData($request->getPost());
+            if ($this->form->isValid()) {
+                $this->company->exchangeArrayFromForm($this->form->getData());
+                $this->repository->edit($this->company,$id,$modifiedDt); 
+                $this->flashmessenger()->addMessage("Company Successfully Updated!!!");
+                return $this->redirect()->toRoute("company");
+            } 
         }
-
-        $modifiedDt = date("Y-m-d");
-
-        $this->form->setData($request->getPost());
-
-        if ($this->form->isValid()) {
-            $this->company->exchangeArray($this->form->getData());
-            $this->repository->edit($this->company,$id,$modifiedDt);
-            $this->flashmessenger()->addMessage("Company Successfully Updated!!!");
-           return $this->redirect()->toRoute("company");
-        } else {
-            return Helper::addFlashMessagesToArray(
-                $this,['form'=>$this->form,'id'=>$id]
-             );
-        }
+        return Helper::addFlashMessagesToArray(
+            $this,['form'=>$this->form,'id'=>$id]
+         );
+        
 	}
 
 	public function deleteAction(){

@@ -2,6 +2,7 @@
 $form->setAttribute('role', 'form');
 $form->setAttribute('class', 'department-form');
 
+$departmentId = $form->get('departmentId');
 $departmentCode = $form->get('departmentCode');
 $departmentName = $form->get('departmentName');
 $remarks = $form->get('remarks');
@@ -37,6 +38,11 @@ print $this->form()->openTag($form);
 					<h4>Department Setup</h4>
 				</div>
 				<div class="panel-body padding-5" style="margin-top:7px;">
+					<div class="form-group form-group-default emp-form-group">
+						<?php print $this->formLabel($departmentId); ?>
+						<?php print $this->formElement($departmentId); ?>
+						<?php print $this->formElementErrors()->render($departmentId, ['class' => 'help-block']); ?>
+					</div>
 					<div class="form-group form-group-default emp-form-group">
 						<?php print $this->formLabel($departmentCode); ?>
 						<?php print $this->formElement($departmentCode); ?>

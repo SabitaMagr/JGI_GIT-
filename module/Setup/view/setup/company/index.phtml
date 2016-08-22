@@ -32,17 +32,17 @@ if ($this->messages) {
     <tr role="row">
         <td class="v-align-middle sorting_1">
             <p>
-                <?php print $this->escapeHtml($company->companyCode) ?>
+                <?php print $this->escapeHtml($company->COMPANY_CODE) ?>
             </p>
         </td>
         <td class="v-align-middle sorting_1">
             <p>
-                <?php print $this->escapeHtml($company->companyName) ?>
+                <?php print $this->escapeHtml($company->COMPANY_NAME) ?>
             </p>
         </td>
         <td class="v-align-middle sorting_1">
-            <a href="<?= $this->url("company",["action"=>"edit","id"=>$company->companyCode]); ?>">Edit</a>|
-            <a href="<?= $this->url("company",["action"=>"delete","id"=>$company->companyCode]); ?>">Delete</a>
+            <a href="<?= $this->url("company",["action"=>"edit","id"=>$company->COMPANY_ID]); ?>">Edit</a>|
+            <a href="<?= $this->url("company",["action"=>"delete","id"=>$company->COMPANY_ID]); ?>">Delete</a>
         </td>
     </tr>
 

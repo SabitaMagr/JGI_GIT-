@@ -12,14 +12,23 @@ namespace Setup\Form;
 */
 
 use Zend\Form\Annotation;
+use Setup\Model\Model;
 
 /** 
 * @Annotation\Hydrator("Zend\Hydrator\ObjectProperty")
 * @Annotation\Name("Department")
 */
-class DepartmentForm
+class DepartmentForm extends Model
 
 {
+    /**
+     * @Annotation\Type("Zend\Form\Element\Text")
+     * @Annotation\Required({"required":"false"})
+     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
+     * @Annotation\Options({"label":"Department Id"})
+     * @Annotation\Attributes({ "id":"form-departmentId", "class":"form-departmentId form-control" })
+     */
+    public $departmentId;
 	
     /**
 	 * @Annotation\Type("Zend\Form\Element\Text")
@@ -75,7 +84,14 @@ class DepartmentForm
     */
     public $submit;
 
-
+    public $mappings=[
+        'DEPARTMENT_ID'=>'departmentId',
+        'DEPARTMENT_CODE'=>'departmentCode',
+        'DEPARTMENT_NAME'=>'departmentName',
+        'PARENT_DEPARTMENT'=>'parentDepartment',
+        'REMARKS'=>'remarks',
+        'STATUS'=>'status'
+    ];
 }
 
 /* End of file DepartmentForm.php */

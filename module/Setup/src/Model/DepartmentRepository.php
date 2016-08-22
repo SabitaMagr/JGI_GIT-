@@ -20,13 +20,12 @@ class DepartmentRepository implements RepositoryInterface
         $this->tableGateway->insert($model->getArrayCopyForDB());
     }
 
-    public function edit(Model $model, $id)
+    public function edit(Model $model,$id,$modifiedDt)
     {
         $temp=$model->getArrayCopyForDB();
-        unset($temp["DEPARTMENT_ID"]);
-        unset($temp["CREATED_DT"]);
+        $newArray = array_merge($temp,['MODIFIED_DT'=>$modifiedDt]);
 
-        $this->tableGateway->update($temp,["DEPARTMENT_ID"=>$id]);
+        $this->tableGateway->update($newArray,["DEPARTMENT_ID"=>$id]);
     }
 
     public function fetchAll()
@@ -39,6 +38,12 @@ class DepartmentRepository implements RepositoryInterface
         $rowset= $this->tableGateway->select(['DEPARTMENT_ID'=>$id]);
         return $rowset->current();
     }
+    public function fetchActiveRecord()
+    {
+         return  $rowset= $this->tableGateway->select(['STATUS'=>'E']);
+        
+    }
+
 
     public function delete($id)
     {
