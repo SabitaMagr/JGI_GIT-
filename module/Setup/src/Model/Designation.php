@@ -11,7 +11,7 @@ use Zend\View\Model\ModelInterface;
  * @Annotation\Hydrator("Zend\Hydrator\ObjectProperty")
  * @Annotation\Name("Designation")
  */
-class Designation implements \Setup\Model\ModelInterface
+class Designation implements \Setup\Model\Model
 {
     public $designationCode;
 

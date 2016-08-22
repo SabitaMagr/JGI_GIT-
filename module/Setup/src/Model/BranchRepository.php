@@ -14,12 +14,12 @@ class BranchRepository implements RepositoryInterface
 
     }
 
-    public function add(ModelInterface $model)
+    public function add(Model $model)
     {
         $this->tableGateway->insert($model->getArrayCopy());
     }
 
-    public function edit(ModelInterface $model,$id)
+    public function edit(Model $model, $id)
     {
         $this->tableGateway->update($model->getArrayCopy(),["branchCode"=>$id]);
     }

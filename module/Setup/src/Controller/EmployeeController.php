@@ -9,52 +9,34 @@
 namespace Setup\Controller;
 
 
-use Doctrine\ORM\Mapping\Entity;
-use SebastianBergmann\CodeCoverage\Node\Builder;
-use Setup\Entity\BloodGroups;
-use Setup\Entity\HrDistricts;
-use Setup\Entity\HrEmployees;
-use Setup\Entity\HrZones;
+
 use Setup\Form\HrEmployeesForm;
 use Setup\Helper\EntityHelper;
 use Setup\Model\EmployeeRepository;
-use Setup\Model\EmployeeRepositoryInterface;
-use Test\Form\EmployeeForm;
-use Zend\Db\Adapter\Adapter;
+use Setup\Model\HrEmployees;
 use Zend\Db\Adapter\AdapterInterface;
-use Zend\Db\Sql\Sql;
-use Zend\Db\TableGateway\TableGateway;
 use Zend\Form\Annotation\AnnotationBuilder;
-use Zend\Form\Form;
+use Zend\Hydrator;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
-use Zend\Db\Sql\Select;
-use Zend\Hydrator;
-
-use Setup\Model\Employee;
-
-
-use Doctrine\ORM\Tools\Setup;
-use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
-use Doctrine\Common\Annotations\AnnotationReader;
-use Doctrine\Common\Annotations\AnnotationRegistry;
 
 
 class EmployeeController extends AbstractActionController
 {
-    private $entityManager;
+    private $adapter;
     private $form;
+    private $repository;
 
-    public function __construct(EntityManager $entityManager)
+    public function __construct(AdapterInterface $adapter)
     {
-        $this->entityManager = $entityManager;
+        $this->adapter = $adapter;
+        $this->repository = new EmployeeRepository($adapter);
+
     }
 
 
     public function indexAction()
     {
-        var_dump(EntityHelper::extract($this->entityManager, EntityHelper::hydrate($this->entityManager, HrDistricts::class, ['districtId' => 1, "districtName" => "sdf"])));
 
     }
 
@@ -70,31 +52,38 @@ class EmployeeController extends AbstractActionController
         if (!$request->isPost()) {
             return new ViewModel([
                 'form' => $this->form,
-                "bloodGroups" => EntityHelper::getBloodGroupKVList($this->entityManager),
-                "districts" => EntityHelper::getDistrictKVList($this->entityManager),
-                "genders" => EntityHelper::getGenderKVList($this->entityManager),
-                "vdcMunicipalities" => EntityHelper::getVdcMunicipalityKVList($this->entityManager),
-                "zones" => EntityHelper::getZoneKVList($this->entityManager)
+                "bloodGroups" => EntityHelper::getTableKVList($this->adapter, EntityHelper::HR_BLOOD_GROUPS),
+                "districts" => EntityHelper::getTableKVList($this->adapter, EntityHelper::HR_DISTRICTS),
+                "genders" => EntityHelper::getTableKVList($this->adapter, EntityHelper::HR_GENDERS),
+                "vdcMunicipalities" => EntityHelper::getTableKVList($this->adapter, EntityHelper::HR_VDC_MUNICIPALITY),
+                "zones" => EntityHelper::getTableKVList($this->adapter, EntityHelper::HR_ZONES),
+                "religions"=>EntityHelper::getTableKVList($this->adapter,EntityHelper::HR_RELIGIONS),
+                "companies"=>EntityHelper::getTableKVList($this->adapter,EntityHelper::HR_COMPANY)
             ]);
         }
 
         $this->form->setData($request->getPost());
 
         if ($this->form->isValid()) {
-            $employee = EntityHelper::hydrate($this->entityManager, HrEmployees::class, $this->form->getData());
-            $this->entityManager->persist($employee);
-            $this->entityManager->flush();
+            $employee = new HrEmployees();
+            $employee->exchangeArrayFromForm($this->form->getData());
+            $employee->employeeId=1;
+            $employee->status='E';
+            $employee->createdDt='14-AUG-15';
+
+            $this->repository->add($employee);
 
             return $this->redirect()->toRoute("setup");
         } else {
             return [
-                "form" => $this->form,
-                "districts" => EntityHelper::getDistrictKVList($this->entityManager),
-                "bloodGroups" => EntityHelper::getBloodGroupKVList($this->entityManager),
-                "genders" => EntityHelper::getGenderKVList($this->entityManager),
-                "vdcMunicipalities" => EntityHelper::getVdcMunicipalityKVList($this->entityManager),
-                "zones" => EntityHelper::getZoneKVList($this->entityManager)
-
+                'form' => $this->form,
+                "bloodGroups" => EntityHelper::getTableKVList($this->adapter, EntityHelper::HR_BLOOD_GROUPS),
+                "districts" => EntityHelper::getTableKVList($this->adapter, EntityHelper::HR_DISTRICTS),
+                "genders" => EntityHelper::getTableKVList($this->adapter, EntityHelper::HR_GENDERS),
+                "vdcMunicipalities" => EntityHelper::getTableKVList($this->adapter, EntityHelper::HR_VDC_MUNICIPALITY),
+                "zones" => EntityHelper::getTableKVList($this->adapter, EntityHelper::HR_ZONES),
+                "religions"=>EntityHelper::getTableKVList($this->adapter,EntityHelper::HR_RELIGIONS),
+                "companies"=>EntityHelper::getTableKVList($this->adapter,EntityHelper::HR_COMPANY)
             ];
         }
 
@@ -117,37 +106,40 @@ class EmployeeController extends AbstractActionController
 
         $request = $this->getRequest();
         if (!$request->isPost()) {
-            $employee = $this->entityManager->find(HrEmployees::class, $id);
+            $employee=new HrEmployees();
+            $employee->exchangeArrayFromDB((array) $this->repository->fetchById($id));
             $this->form->bind($employee);
             return new ViewModel([
                 'form' => $this->form,
                 "id" => $id,
-                "bloodGroups" => EntityHelper::getBloodGroupKVList($this->entityManager),
-                "districts" => EntityHelper::getDistrictKVList($this->entityManager),
-                "genders" => EntityHelper::getGenderKVList($this->entityManager),
-                "vdcMunicipalities" => EntityHelper::getVdcMunicipalityKVList($this->entityManager),
-                "zones" => EntityHelper::getZoneKVList($this->entityManager)
+                "bloodGroups" => EntityHelper::getTableKVList($this->adapter, EntityHelper::HR_BLOOD_GROUPS),
+                "districts" => EntityHelper::getTableKVList($this->adapter, EntityHelper::HR_DISTRICTS),
+                "genders" => EntityHelper::getTableKVList($this->adapter, EntityHelper::HR_GENDERS),
+                "vdcMunicipalities" => EntityHelper::getTableKVList($this->adapter, EntityHelper::HR_VDC_MUNICIPALITY),
+                "zones" => EntityHelper::getTableKVList($this->adapter, EntityHelper::HR_ZONES),
+                "religions"=>EntityHelper::getTableKVList($this->adapter,EntityHelper::HR_RELIGIONS),
+                "companies"=>EntityHelper::getTableKVList($this->adapter,EntityHelper::HR_COMPANY)
             ]);
         }
 
         $this->form->setData($request->getPost());
         if (!$this->form->isValid()) {
-
             return new ViewModel([
                 'form' => $this->form,
                 "id" => $id,
-                "bloodGroups" => EntityHelper::getBloodGroupKVList($this->entityManager),
-                "districts" => EntityHelper::getDistrictKVList($this->entityManager),
-                "genders" => EntityHelper::getGenderKVList($this->entityManager),
-                "vdcMunicipalities" => EntityHelper::getVdcMunicipalityKVList($this->entityManager),
-                "zones" => EntityHelper::getZoneKVList($this->entityManager)
+                "bloodGroups" => EntityHelper::getTableKVList($this->adapter, EntityHelper::HR_BLOOD_GROUPS),
+                "districts" => EntityHelper::getTableKVList($this->adapter, EntityHelper::HR_DISTRICTS),
+                "genders" => EntityHelper::getTableKVList($this->adapter, EntityHelper::HR_GENDERS),
+                "vdcMunicipalities" => EntityHelper::getTableKVList($this->adapter, EntityHelper::HR_VDC_MUNICIPALITY),
+                "zones" => EntityHelper::getTableKVList($this->adapter, EntityHelper::HR_ZONES),
+                "religions"=>EntityHelper::getTableKVList($this->adapter,EntityHelper::HR_RELIGIONS),
+                "companies"=>EntityHelper::getTableKVList($this->adapter,EntityHelper::HR_COMPANY)
             ]);
         }
-        $employee = EntityHelper::hydrate($this->entityManager, HrEmployees::class, $this->form->getData());
-        $employee->setEmployeeId($id);
-        $this->entityManager->merge($employee);
-        $this->entityManager->flush();
-
+       $employee= new HrEmployees();
+        $employee->exchangeArrayFromForm($this->form->getData());
+        $employee->employeeId=$id;
+        $this->repository->edit($employee,$id,"1-AUG-12");
         return $this->redirect()->toRoute("setup");
 
 

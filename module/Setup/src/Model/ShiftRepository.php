@@ -15,14 +15,14 @@ class ShiftRepository implements RepositoryInterface
 
     }
 
-     public function add(ModelInterface $model)
+     public function add(Model $model)
     {
  
         $this->tableGateway->insert($model->getArrayCopyForDb());
     }
 
 
-    public function edit(ModelInterface $model,$id,$modifiedDt)
+    public function edit(Model $model, $id, $modifiedDt)
     {
         $array = $model->getArrayCopyForDb();
         $newArray = array_merge($array,["MODIFIED_DT"=>$modifiedDt]);

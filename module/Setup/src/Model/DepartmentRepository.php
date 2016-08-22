@@ -15,12 +15,12 @@ class DepartmentRepository implements RepositoryInterface
 
     }
 
-    public function add(ModelInterface $model)
+    public function add(Model $model)
     {
         $this->tableGateway->insert($model->getArrayCopyForDB());
     }
 
-    public function edit(ModelInterface $model,$id)
+    public function edit(Model $model, $id)
     {
         $temp=$model->getArrayCopyForDB();
         unset($temp["DEPARTMENT_ID"]);

@@ -8,7 +8,7 @@ use Zend\Form\Annotation;
  * @Annotation\Name("Company")
 */
 
-class Company implements ModelInterface{
+class Company implements Model{
 	/**
 	 * @Annotion\Type("Zend\Form\Element\Text")
 	 * @Annotation\Required({"required":"true"})

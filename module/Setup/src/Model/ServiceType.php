@@ -8,7 +8,7 @@ use Zend\Form\Annotation;
 * @Annotation\Name("ServiceType")
 */
 
-class ServiceType implements ModelInterface{
+class ServiceType implements Model{
 	/**
 	 * @Annotion\Type("Zend\Form\Element\Text")
 	 * @Annotation\Required({"required":"true"})

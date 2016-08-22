@@ -8,7 +8,7 @@ use Zend\Form\Annotation;
 * @Annotation\Name("Shift")
 */
 
-class Shift implements ModelInterface{
+class Shift implements Model{
 	/**
 	 * @Annotion\Type("Zend\Form\Element\Text")
 	 * @Annotation\Required({"required":"true"})

@@ -3,190 +3,91 @@
 namespace Setup\Helper;
 
 
-use DoctrineModule\Stdlib\Hydrator\DoctrineObject as DoctrineHydrator;
-use Doctrine\ORM\EntityManager;
-use Setup\Entity\HrDepartments;
-use Setup\Entity\HrDesignations;
-use Setup\Entity\HrBranches;
-use Setup\Entity\HrPositions;
-use Setup\Entity\HrServiceTypes;
-//use Setup\Entity\HrEmployees;
-use Setup\Entity\BloodGroups;
-use Setup\Entity\HrDistricts;
-use Setup\Entity\HrGenders;
-use Setup\Entity\HrVdcMunicipality;
-use Setup\Entity\HrZones;
+use Zend\Db\Adapter\AdapterInterface;
+use Zend\Db\TableGateway\TableGateway;
+
 
 class EntityHelper
 {
-    public static function getDepartmentKVList(EntityManager $em,$departmentId=null)
-    {
-        $repo = $em->getRepository(HrDepartments::class);
-        $entities = $repo->findAll();
+    public static $tablesAttributes=[
+        self::HR_BLOOD_GROUPS=>[
+            "BLOOD_GROUP_ID"=>"BLOOD_GROUP_CODE"
+        ],
+        self::HR_DEPARTMENTS=>[
+            "DEPARTMENT_ID"=>"DEPARTMENT_NAME"
+        ],
+        self::HR_DESIGNATIONS=>[
+            "DESIGNATION_ID"=>"DESIGNATION_TITLE"
+        ],
+        self::HR_DISTRICTS=>[
+            "DISTRICT_ID"=>"DISTRICT_NAME"
+        ],
+        self::HR_POSITIONS=>[
+            "POSITION_ID"=>"POSITION_NAME"
+        ],
+        self::HR_GENDERS=>[
+            "GENDER_ID"=>"GENDER_NAME"
+        ],
+        self::HR_BRANCHES=>[
+            "BRANCH_ID"=>"BRANCH_NAME"
+        ],
+        self::HR_VDC_MUNICIPALITY=>[
+            "VDC_MUNICIPALITY_ID"=>"VDC_MUNICIPALITY_NAME"
+        ],
+        self::HR_SERVICE_TYPES=>[
+            "SERVICE_TYPE_ID"=>"SERVICE_TYPE_NAME"
+        ],
+        self::HR_ZONES=>[
+            "ZONE_ID"=>"ZONE_NAME"
+        ],self::HR_RELIGIONS=>[
+            "RELIGION_ID"=>"RELIGION_NAME"
+        ],
+        self::HR_COMPANY=>[
+            "COMPANY_ID"=>"COMPANY_NAME"
+        ]
+    ];
 
-        $entitiesArray=array();
-        $entitiesArray[0]='----';
-        foreach($entities as $entity){
-            if($entity->getDepartmentId()!=$departmentId){
-                $entitiesArray[$entity->getDepartmentId()]=$entity->getDepartmentName();
-            }
-        }
-        return $entitiesArray;
-    }
-
-
-
-    public static function getBloodGroupKVList(EntityManager $em)
-    {
-        $repo = $em->getRepository(BloodGroups::class);
-        $entities = $repo->findAll();
-
-        $entitiesArray = array();
-        foreach ($entities as $entity) {
-            $entitiesArray[$entity->getBloodGroupId()] = $entity->getBloodGroupCode();
-        }
-        return $entitiesArray;
-    }
-
-
-    public static function getDesignationKVList(EntityManager $em,$designationId=null){
-        $repo = $em->getRepository(HrDesignations::class);
-        $entities = $repo->findAll();
-
-        $entitiesArray=array();
-        $entitiesArray[0]='----';
-        foreach($entities as $entity){
-            if($entity->getDesignationId()!=$designationId){
-                $entitiesArray[$entity->getDesignationId()]=$entity->getDesignationTitle();
-            }
-        }
-        return $entitiesArray;
-    }
-
-    public static function getDistrictKVList(EntityManager $em)
-    {
-        $repo = $em->getRepository(HrDistricts::class);
-        $entities = $repo->findAll();
-
-        $entitiesArray = array();
-        foreach ($entities as $entity) {
-            $entitiesArray[$entity->getDistrictId()] = $entity->getDistrictName();
-
-        }
-        return $entitiesArray;
-    }
+    const HR_BLOOD_GROUPS='HR_BLOOD_GROUPS';
+    const HR_DEPARTMENTS="HR_DEPARTMENTS";
+    const HR_DESIGNATIONS="HR_DESIGNATIONS";
+    const HR_DISTRICTS="HR_DISTRICTS";
+    const HR_POSITIONS="HR_POSITIONS";
+    const HR_GENDERS="HR_GENDERS";
+    const HR_BRANCHES="HR_BRANCHES";
+    const HR_VDC_MUNICIPALITY="HR_VDC_MUNICIPALITIY";
+    const HR_SERVICE_TYPES="HR_SERVICE_TYPES";
+    const HR_ZONES="HR_ZONES";
+    const HR_RELIGIONS="HR_RELIGIONS";
+    const HR_COMPANY="HR_COMPANY";
 
 
-    public static function getPositionKVList(EntityManager $em,$positionId=null){
-        $repo = $em->getRepository(HrPositions::class);
-        $entities = $repo->findAll();
+    public static function getTableKVList(AdapterInterface $adapter,$tableName){
+        $gateway = new TableGateway($tableName, $adapter);
+        $key=array_keys(self::$tablesAttributes[$tableName])[0];
+        $value=array_values(self::$tablesAttributes[$tableName])[0];
 
-        $entitiesArray=array();
-        $entitiesArray[0]='----';
-        foreach($entities as $entity){
-            if($entity->getPositionId()!=$positionId){
-                $entitiesArray[$entity->getPositionId()]=$entity->getPositionName();
-            }
-        }
-        return $entitiesArray;
-    }
-
-    public static function getGenderKVList(EntityManager $em)
-    {
-        $repo = $em->getRepository(HrGenders::class);
-        $entities = $repo->findAll();
+        $resultset = $gateway->select();
 
         $entitiesArray = array();
-        foreach ($entities as $entity) {
-            $entitiesArray[$entity->getGenderId()] = $entity->getGenderName();
-
+        foreach ($resultset as $result) {
+            $entitiesArray[$result[$key]] = $result[$value];
         }
         return $entitiesArray;
     }
 
 
-    public static function getBranchKVList(EntityManager $em,$branchId=null){
-        $repo = $em->getRepository(HrBranches::class);
-        $entities = $repo->findAll();
 
-        $entitiesArray=array();
-        $entitiesArray[0]='----';
-        foreach($entities as $entity){
-            if($entity->getBranchId()!=$branchId){
-                $entitiesArray[$entity->getBranchId()]=$entity->getBranchName();
-            }
-        }
-        return $entitiesArray;
-    }
-
-    public static function getVdcMunicipalityKVList(EntityManager $em)
-    {
-        $repo = $em->getRepository(HrVdcMunicipality::class);
-        $entities = $repo->findAll();
-
-        $entitiesArray = array();
-        foreach ($entities as $entity) {
-            $entitiesArray[$entity->getVdcMunicipalityId()] = $entity->getVdcMunicipalityName();
-
-        }
-        return $entitiesArray;
-    }
-
-
-    public static function getServiceTypeKVList(EntityManager $em,$serviceTypeId=null){
-        $repo = $em->getRepository(HrServiceTypes::class);
-        $entities = $repo->findAll();
-
-        $entitiesArray=array();
-        $entitiesArray[0]='----';
-        foreach($entities as $entity){
-            if($entity->getServiceTypeId()!=$serviceTypeId){
-                $entitiesArray[$entity->getServiceTypeId()]=$entity->getServiceTypeName();
-            }
-        }
-        return $entitiesArray;
-    }
-
-    public static function getZoneKVList(EntityManager $em)
-    {
-        $repo = $em->getRepository(HrZones::class);
-        $entities = $repo->findAll();
-
-        $entitiesArray = array();
-        foreach ($entities as $entity) {
-            $entitiesArray[$entity->getZoneId()] = $entity->getZoneName();
-
-        }
-        return $entitiesArray;
-    }
-
-
-    // public static function getEmployeeKVList(EntityManager $em,$employeeId=null){
-    //     $repo = $em->getRepository(HrEmployees::class);
-    //     $entities = $repo->findAll();
-
-    //     $entitiesArray=array();
-    //     $entitiesArray[0]='----';
-    //     foreach($entities as $entity){
-    //         if($entity->getEmployeeId()!=$employeeId){
-    //             $entitiesArray[$entity->getEmployeeId()]=$entity->getEmployeeName();
-    //         }
-    //     }
-    //     return $entitiesArray;
-    // }
-
-
-    public static function hydrate(EntityManager $entityManager, $class, $array)
-    {
-        $hydrator = new DoctrineHydrator($entityManager);
-        return $hydrator->hydrate($array, new $class());
-    }
-
-
-    public static function extract(EntityManager $entityManager, $object)
-    {
-        $hydrator = new DoctrineHydrator($entityManager);
-        return $hydrator->extract($object);
-    }
+//    public static function hydrate(EntityManager $entityManager, $class, $array)
+//    {
+//        $hydrator = new DoctrineHydrator($entityManager);
+//        return $hydrator->hydrate($array, new $class());
+//    }
+//
+//
+//    public static function extract(EntityManager $entityManager, $object)
+//    {
+//        $hydrator = new DoctrineHydrator($entityManager);
+//        return $hydrator->extract($object);
+//    }
 
 }
