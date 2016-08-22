@@ -4,8 +4,7 @@ namespace Setup\Model;
 
 class Model
 {
-      private $mappings=[
-    ];
+    private $mappings=[];
 
     public function exchangeArrayFromForm(array $data)
     {

@@ -101,7 +101,7 @@ class DepartmentController extends AbstractActionController{
         }
         return Helper::addFlashMessagesToArray(
             $this,['form'=>$this->form,'id'=>$id,
-            //'departments'=> EntityHelper::getDepartmentKVList($this->entityManager,$id)
+            'departments'=> EntityHelper::getDepartmentKVList($this->adapter,$id)
             ]
          );
 	}
@@ -111,9 +111,7 @@ class DepartmentController extends AbstractActionController{
         if (!$id) {
             return $this->redirect()->toRoute('position');
         }
-        $this->hrDepartments =  $this->entityManager->find(HrDepartments::class, $id);
-        $this->entityManager->remove($this->hrDepartments);
-        $this->entityManager->flush();
+        $this->repository->delete($id);
         $this->flashmessenger()->addMessage("Department Successfully Deleted!!!");
         return $this->redirect()->toRoute('department');
     }

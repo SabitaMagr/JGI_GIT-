@@ -12,11 +12,12 @@ class PositionRepository implements RepositoryInterface{
 		$this->tableGateway = new TableGateway('HR_POSITIONS',$adapter);
 		
 	}
-	public function add(ModelInterface $model){
+	public function add($model){
+		print_r($model->getArrayCopyForDb());die();
 		 $this->tableGateway->insert($model->getArrayCopyForDb());
 
 	}
-	public function edit(ModelInterface $model,$id,$modifiedDt){
+	public function edit($model,$id,$modifiedDt){
 		$array = $model->getArrayCopyForDB();
 		$newArray = array_merge($array,["MODIFIED_DT"=>$modifiedDt]);
 		$this->tableGateway->update($newArray,["POSITION_ID"=>$id]);

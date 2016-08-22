@@ -12,14 +12,14 @@ namespace Setup\Form;
 */
 
 use Zend\Form\Annotation;
-use Setup\Model\ModelInterface;
+use Setup\Model\Model;
 
 /** 
 * @Annotation\Hydrator("Zend\Hydrator\ObjectProperty")
 * @Annotation\Name("Position")
 */
 
-class PositionForm implements ModelInterface{
+class PositionForm extends Model{
 	/**
 	 * @Annotion\Type("Zend\Form\Element\Text")
 	 * @Annotation\Required({"required":"true"})
@@ -70,37 +70,6 @@ class PositionForm implements ModelInterface{
         'REMARKS'=>'remarks',
         'STATUS'=>'status'
     ];
-
-    public function exchangeArrayFromForm(array $data)
-    {
-        foreach($this->mappings as $key => $value){
-            $this->{$value} = !empty($data[$value]) ? $data[$value] : null;
-        }
-    }
-
-    public function exchangeArrayFromDB(array $data)
-    {
-        foreach($this->mappings as $key => $value){
-            $this->{$value} = !empty($data[$key]) ? $data[$key] : null;
-        }
-    }
-    public function getArrayCopyForDB()
-    {
-        $tempArray=[];
-        foreach($this->mappings as $key => $value){
-            $tempArray[$key]=$this->{$value};
-        }
-        return $tempArray;
-    }
-
-    public function getArrayCopyForForm()
-    {
-        $tempArray=[];
-        foreach($this->mappings as $key => $value){
-            $tempArray[$value]=$this->{$value};
-        }
-        return $tempArray;
-    }
 }
 
 /* End of file PositionForm.php */

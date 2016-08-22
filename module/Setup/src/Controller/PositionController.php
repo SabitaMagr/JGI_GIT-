@@ -79,6 +79,7 @@ class PositionController extends AbstractActionController
         if($id===0){
             return $this->redirect()->toRoute('position');
         }
+        
         $this->initializeForm();
         $request=$this->getRequest();
 
@@ -99,7 +100,7 @@ class PositionController extends AbstractActionController
         }
         return Helper::addFlashMessagesToArray(
             $this,['form'=>$this->form,'id'=>$id]
-         );       
+        );       
     }
 
     public function deleteAction()

@@ -10,7 +10,7 @@ $remarks = $form->get('remarks');
 $status = $form->get('status');
 $parentDepartment = $form->get('parentDepartment');
 
-//$parentDepartment->setValueOptions($departments);
+$parentDepartment->setValueOptions($departments);
 
 $submit = $form->get('submit');
 $submit->setAttribute("value" , "Edit Department");
