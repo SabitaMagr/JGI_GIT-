@@ -52,7 +52,7 @@ class ShiftForm extends Model{
 
 	/**
 	 * @Annotation\Type("Zend\Form\Element\Text")
-	 * @Annotation\Required({"required":"false"})
+	 * @Annotation\Required({"required":"true"})
 	 * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
 	 * @Annotation\Options({"label":"Start Time"})
 	 * @Annotation\Attributes({ "id":"form-startTime", "class":"form-startTime form-control" })
@@ -61,7 +61,7 @@ class ShiftForm extends Model{
 
 	/**
 	 * @Annotation\Type("Zend\Form\Element\Text")
-	 * @Annotation\Required({"required":"false"})
+	 * @Annotation\Required({"required":"true"})
 	 * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
 	 * @Annotation\Options({"label":"End Time"})
 	 * @Annotation\Attributes({ "id":"form-endTime", "class":"form-endTime form-control" })

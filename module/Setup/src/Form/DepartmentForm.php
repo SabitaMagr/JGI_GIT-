@@ -23,7 +23,7 @@ class DepartmentForm extends Model
 {
     /**
      * @Annotation\Type("Zend\Form\Element\Text")
-     * @Annotation\Required({"required":"false"})
+     * @Annotation\Required({"required":"true"})
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Department Id"})
      * @Annotation\Attributes({ "id":"form-departmentId", "class":"form-departmentId form-control" })
@@ -32,7 +32,7 @@ class DepartmentForm extends Model
 	
     /**
 	 * @Annotation\Type("Zend\Form\Element\Text")
-	 * @Annotation\Required({"required":"false"})
+	 * @Annotation\Required({"required":"true"})
 	 * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
 	 * @Annotation\Options({"label":"Department Code"})
 	 * @Annotation\Attributes({ "id":"form-departmentCode", "class":"form-departmentCode form-control" })
@@ -41,7 +41,7 @@ class DepartmentForm extends Model
 
 	/**
 	 * @Annotation\Type("Zend\Form\Element\Text")
-	 * @Annotation\Required({"required":"false"})
+	 * @Annotation\Required({"required":"true"})
 	 * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
 	 * @Annotation\Options({"label":"Department Name"})
      * @Annotation\Validator({"name":"StringLength", "options":{"min":"5"}})
