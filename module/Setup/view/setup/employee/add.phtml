@@ -3,10 +3,10 @@
 
 $form->setAttribute('role', 'form');
 $form->setAttribute('class', 'formEmployee');
-$form->setAttribute('id','formEmployee');
+$form->setAttribute('id', 'formEmployee');
 
 $employeeCode = $form->get('employeeCode');
-
+$companyId = $form->get('companyId');
 /**
  * Personal Information
  */
@@ -16,14 +16,14 @@ $lastName = $form->get("lastName");
 $nameNepali = $form->get("nameNepali");
 $birthDate = $form->get('birthDate');
 $genderId = $form->get('genderId');
-$bloodGroupId=$form->get('bloodGroupId');
+$bloodGroupId = $form->get('bloodGroupId');
 $religionId = $form->get('religionId');
 $socialActivity = $form->get('socialActivity');
-$telephoneNo=$form->get('telephoneNo');
-$mobileNo=$form->get('mobileNo');
-$extensionNo= $form->get('extensionNo');
+$telephoneNo = $form->get('telephoneNo');
+$mobileNo = $form->get('mobileNo');
+$extensionNo = $form->get('extensionNo');
 $emailOfficial = $form->get('emailOfficial');
-$emailPersonal=$form->get('emailPersonal');
+$emailPersonal = $form->get('emailPersonal');
 $socialNetwork = $form->get('socialNetwork');
 
 /**
@@ -43,15 +43,14 @@ $addrPermWardNo = $form->get('addrPermWardNo');
 $addrPermStreetAddress = $form->get('addrPermStreetAddress');
 $addrPermVdcMunicipalityId = $form->get('addrPermVdcMunicipalityId');
 $addrPermDistrictId = $form->get('addrPermDistrictId');
-$addrPermZoneId=$form->get('addrPermZoneId');
+$addrPermZoneId = $form->get('addrPermZoneId');
 
-$addrTempHouseNo=$form->get('addrTempHouseNo');
+$addrTempHouseNo = $form->get('addrTempHouseNo');
 $addrTempWardNo = $form->get('addrTempWardNo');
 $addrTempStreetAddress = $form->get('addrTempStreetAddress');
 $addrTempVdcMunicipalityId = $form->get('addrTempVdcMunicipalityId');
 $addrTempDistrictId = $form->get('addrTempDistrictId');
-$addrTempZoneId=$form->get('addrTempZoneId');
-
+$addrTempZoneId = $form->get('addrTempZoneId');
 
 
 /*
@@ -108,23 +107,26 @@ $salaryPf = $form->get('salaryPf');
 $submit = $form->get('submit');
 
 
-$genderId->setOptions(["value_options"=>$genders]);
-$bloodGroupId->setOptions(["value_options"=>$bloodGroups]);
-$religionId->setOptions(["value_options"=>[1=>"Hindu"]]);
+$genderId->setOptions(["value_options" => $genders]);
+$bloodGroupId->setOptions(["value_options" => $bloodGroups]);
+$religionId->setOptions(["value_options" => $religions]);
 
-$addrPermVdcMunicipalityId->setOptions(["value_options"=>$vdcMunicipalities]);
-$addrTempVdcMunicipalityId->setOptions(["value_options"=>$vdcMunicipalities]);
+$addrPermVdcMunicipalityId->setOptions(["value_options" => $vdcMunicipalities]);
+$addrTempVdcMunicipalityId->setOptions(["value_options" => $vdcMunicipalities]);
 
-$addrPermDistrictId->setOptions(["value_options"=>$districts]);
-$addrTempDistrictId->setOptions(["value_options"=>$districts]);
+$addrPermDistrictId->setOptions(["value_options" => $districts]);
+$addrTempDistrictId->setOptions(["value_options" => $districts]);
 
-$addrPermZoneId->setOptions(["value_options"=>$zones]);
-$addrTempZoneId->setOptions(["value_options"=>$zones]);
+$addrPermZoneId->setOptions(["value_options" => $zones]);
+$addrTempZoneId->setOptions(["value_options" => $zones]);
 
-$maritualStatus->setOptions(["value_options"=>["M"=>"Married","U"=>"Unmarried"]]);
+$maritualStatus->setOptions(["value_options" => ["M" => "Married", "U" => "Unmarried"]]);
+
+$companyId->setOptions(["value_options" => $companies]);
 
 
 $form->setAttribute('action', $this->url('setup', ['action' => 'add']));
+$form->setAttribute("name", "employeeForm");
 $form->prepare();
 
 print $this->form()->openTag($form);
@@ -176,10 +178,21 @@ if ($this->messages) {
         <div class="tab-pane padding-10 active slide-left" id="tab1">
             <p><u><i>Personal Information</i></u></p>
 
-            <div class="form-group form-group-default required emp-form-group">
-                <?php print $this->formLabel($employeeCode);?>
-                <?php print $this->formElement($employeeCode);?>
-                <?php print $this->formElementErrors()->render($employeeCode,['class'=>'help-block'])?>
+            <div class="row clearfix">
+                <div class="col-sm-6" style="padding-left:5px;">
+                    <div class="form-group form-group-default required emp-form-group">
+                        <?php print $this->formLabel($employeeCode); ?>
+                        <?php print $this->formElement($employeeCode); ?>
+                        <?php print $this->formElementErrors()->render($employeeCode, ['class' => 'help-block']) ?>
+                    </div>
+                </div>
+                <div class="col-sm-6" style="padding-left:5px;">
+                    <div class="form-group form-group-default required emp-form-group">
+                        <?php print $this->formLabel($companyId); ?>
+                        <?php print $this->formElement($companyId); ?>
+                        <?php print $this->formElementErrors()->render($companyId, ['class' => 'help-block']) ?>
+                    </div>
+                </div>
             </div>
 
             <div class="row clearfix">
@@ -193,17 +206,17 @@ if ($this->messages) {
 
                 <div class="col-sm-4">
                     <div class="form-group form-group-default emp-form-group">
-                        <?php print $this->formLabel($middleName)?>
-                        <?php print $this->formElement($middleName)?>
-                        <?php print $this->formElementErrors()->render($middleName,['class'=>'help-block'])?>
+                        <?php print $this->formLabel($middleName) ?>
+                        <?php print $this->formElement($middleName) ?>
+                        <?php print $this->formElementErrors()->render($middleName, ['class' => 'help-block']) ?>
                     </div>
                 </div>
 
-                <div class="col-sm-4"  style="padding-left:5px;">
+                <div class="col-sm-4" style="padding-left:5px;">
                     <div class="form-group form-group-default emp-form-group">
-                        <?php print $this->formLabel($lastName)?>
-                        <?php print $this->formElement($lastName)?>
-                        <?php print $this->formElementErrors()->render($lastName,['class'=>'help-block'])?>
+                        <?php print $this->formLabel($lastName) ?>
+                        <?php print $this->formElement($lastName) ?>
+                        <?php print $this->formElementErrors()->render($lastName, ['class' => 'help-block']) ?>
                     </div>
                 </div>
             </div>
@@ -211,16 +224,16 @@ if ($this->messages) {
 
                 <div class="col-sm-6" style="padding-left:5px;">
                     <div class="form-group form-group-default emp-form-group">
-                        <?php print $this->formLabel($nameNepali);?>
-                        <?php print $this->formElement($nameNepali);?>
-                        <?php print $this->formElementErrors()->render($nameNepali,['class'=>['help-block']]);?>
+                        <?php print $this->formLabel($nameNepali); ?>
+                        <?php print $this->formElement($nameNepali); ?>
+                        <?php print $this->formElementErrors()->render($nameNepali, ['class' => ['help-block']]); ?>
                     </div>
                 </div>
                 <div class="col-sm-6" style="padding-right:5px;">
                     <div class="form-group form-group-default emp-form-group">
                         <?php print $this->formLabel($genderId); ?>
-                        <?php print $this->formElement($genderId);?>
-                        <?php print $this->formElementErrors()->render($genderId,['class'=>'help-block']);?>
+                        <?php print $this->formElement($genderId); ?>
+                        <?php print $this->formElementErrors()->render($genderId, ['class' => 'help-block']); ?>
                     </div>
                 </div>
             </div>
@@ -228,9 +241,9 @@ if ($this->messages) {
             <div class="row clearfix">
                 <div class="col-sm-6" style="padding-left:5px;">
                     <div class="form-group form-group-default emp-form-group">
-                        <?php print $this->formLabel($birthDate);?>
-                        <?php print $this->formElement($birthDate);?>
-                        <?php print $this->formElementErrors()->render($birthDate,['class'=>'help-block']);?>
+                        <?php print $this->formLabel($birthDate); ?>
+                        <?php print $this->formElement($birthDate); ?>
+                        <?php print $this->formElementErrors()->render($birthDate, ['class' => 'help-block']); ?>
                     </div>
                 </div>
                 <div class="col-sm-6" style="padding-right:5px;">
@@ -271,25 +284,25 @@ if ($this->messages) {
             <div class="row clearfix">
                 <div class="col-sm-4" style="padding-left:5px;">
                     <div class="form-group form-group-default emp-form-group">
-                        <?php print $this->formLabel($telephoneNo);?>
-                        <?php print $this->formElement($telephoneNo);?>
-                        <?php print $this->formElementErrors()->render($telephoneNo,['class'=>'help-block']);?>
+                        <?php print $this->formLabel($telephoneNo); ?>
+                        <?php print $this->formElement($telephoneNo); ?>
+                        <?php print $this->formElementErrors()->render($telephoneNo, ['class' => 'help-block']); ?>
 
                     </div>
                 </div>
                 <div class="col-sm-4">
                     <div class="form-group form-group-default emp-form-group">
-                        <?php print $this->formLabel($mobileNo);?>
-                        <?php print $this->formElement($mobileNo);?>
-                        <?php print $this->formElementErrors()->render($mobileNo,['class'=>'help-block']);?>
+                        <?php print $this->formLabel($mobileNo); ?>
+                        <?php print $this->formElement($mobileNo); ?>
+                        <?php print $this->formElementErrors()->render($mobileNo, ['class' => 'help-block']); ?>
 
                     </div>
                 </div>
                 <div class="col-sm-4" style="padding-right:5px;">
                     <div class="form-group form-group-default emp-form-group">
-                        <?php print $this->formLabel($extensionNo);?>
-                        <?php print $this->formElement($extensionNo);?>
-                        <?php print $this->formElementErrors()->render($extensionNo,['class'=>'help-block']);?>
+                        <?php print $this->formLabel($extensionNo); ?>
+                        <?php print $this->formElement($extensionNo); ?>
+                        <?php print $this->formElementErrors()->render($extensionNo, ['class' => 'help-block']); ?>
 
                     </div>
                 </div>
@@ -298,25 +311,25 @@ if ($this->messages) {
             <div class="row clearfix">
                 <div class="col-sm-6" style="padding-left:5px;">
                     <div class="form-group form-group-default emp-form-group">
-                        <?php print $this->formLabel($emailOfficial);?>
-                        <?php print $this->formElement($emailOfficial);?>
-                        <?php print $this->formElementErrors()->render($emailOfficial,['class'=>'help-block']);?>
+                        <?php print $this->formLabel($emailOfficial); ?>
+                        <?php print $this->formElement($emailOfficial); ?>
+                        <?php print $this->formElementErrors()->render($emailOfficial, ['class' => 'help-block']); ?>
                     </div>
                 </div>
                 <div class="col-sm-6" style="padding-right:5px;">
                     <div class="form-group form-group-default emp-form-group">
-                        <?php print $this->formLabel($emailPersonal);?>
-                        <?php print $this->formElement($emailPersonal);?>
-                        <?php print $this->formElementErrors()->render($emailPersonal,['class'=>'help-block']);?>
+                        <?php print $this->formLabel($emailPersonal); ?>
+                        <?php print $this->formElement($emailPersonal); ?>
+                        <?php print $this->formElementErrors()->render($emailPersonal, ['class' => 'help-block']); ?>
                     </div>
                 </div>
             </div>
             <div class="row clearfix">
                 <div class="col-sm-6" style="padding-left:5px;">
                     <div class="form-group form-group-default emp-form-group">
-                        <?php print $this->formLabel($socialNetwork);?>
-                        <?php print $this->formElement($socialNetwork);?>
-                        <?php print $this->formElementErrors()->render($socialNetwork,['class'=>'help-block']);?>
+                        <?php print $this->formLabel($socialNetwork); ?>
+                        <?php print $this->formElement($socialNetwork); ?>
+                        <?php print $this->formElementErrors()->render($socialNetwork, ['class' => 'help-block']); ?>
                     </div>
                 </div>
                 <div class="col-sm-6" style="padding-right:5px;">
@@ -326,33 +339,33 @@ if ($this->messages) {
             <div class="row clearfix">
                 <div class="col-sm-6" style="padding-left:5px;">
                     <div class="form-group form-group-default emp-form-group">
-                        <?php print $this->formLabel($emergContactName);?>
-                        <?php print $this->formElement($emergContactName);?>
-                        <?php print $this->formElementErrors()->render($emergContactName,['class'=>'help-block']);?>
+                        <?php print $this->formLabel($emergContactName); ?>
+                        <?php print $this->formElement($emergContactName); ?>
+                        <?php print $this->formElementErrors()->render($emergContactName, ['class' => 'help-block']); ?>
                     </div>
                 </div>
                 <div class="col-sm-6" style="padding-right:5px;">
 
                     <div class="form-group form-group-default emp-form-group">
-                        <?php print $this->formLabel($emergContactRelationship);?>
-                        <?php print $this->formElement($emergContactRelationship);?>
-                        <?php print $this->formElementErrors()->render($emergContactRelationship,['class'=>'help-block']);?>
+                        <?php print $this->formLabel($emergContactRelationship); ?>
+                        <?php print $this->formElement($emergContactRelationship); ?>
+                        <?php print $this->formElementErrors()->render($emergContactRelationship, ['class' => 'help-block']); ?>
                     </div>
                 </div>
             </div>
             <div class="row clearfix">
                 <div class="col-sm-6" style="padding-left:5px;">
                     <div class="form-group form-group-default emp-form-group">
-                        <?php print $this->formLabel($emergContactAddress);?>
-                        <?php print $this->formElement($emergContactAddress);?>
-                        <?php print $this->formElementErrors()->render($emergContactAddress,['class'=>'help-block']);?>
+                        <?php print $this->formLabel($emergContactAddress); ?>
+                        <?php print $this->formElement($emergContactAddress); ?>
+                        <?php print $this->formElementErrors()->render($emergContactAddress, ['class' => 'help-block']); ?>
                     </div>
                 </div>
                 <div class="col-sm-6" style="padding-right:5px;">
                     <div class="form-group form-group-default emp-form-group">
                         <?php print $this->formLabel($emergContactNo); ?>
-                        <?php print $this->formElement($emergContactNo);?>
-                        <?php print $this->formElementErrors()->render($emergContactNo,['class'=>'help-block']);?>
+                        <?php print $this->formElement($emergContactNo); ?>
+                        <?php print $this->formElementErrors()->render($emergContactNo, ['class' => 'help-block']); ?>
                     </div>
                 </div>
             </div>
@@ -361,36 +374,36 @@ if ($this->messages) {
                 <div class="col-sm-6" style="padding-left:5px;">
                     <p class="p_address">Permanent Address</p>
                     <div class="form-group form-group-default emp-form-group">
-                        <?php print $this->formLabel($addrPermHouseNo);?>
-                        <?php print $this->formElement($addrPermHouseNo);?>
-                        <?php print $this->formElementErrors()->render($addrPermHouseNo,['class'=>'help-block']);?>
+                        <?php print $this->formLabel($addrPermHouseNo); ?>
+                        <?php print $this->formElement($addrPermHouseNo); ?>
+                        <?php print $this->formElementErrors()->render($addrPermHouseNo, ['class' => 'help-block']); ?>
                     </div>
 
                     <div class="form-group form-group-default emp-form-group">
-                        <?php print $this->formLabel($addrPermWardNo);?>
-                        <?php print $this->formElement($addrPermWardNo);?>
-                        <?php print $this->formElementErrors()->render($addrPermWardNo,['class'=>'help-block']);?>
+                        <?php print $this->formLabel($addrPermWardNo); ?>
+                        <?php print $this->formElement($addrPermWardNo); ?>
+                        <?php print $this->formElementErrors()->render($addrPermWardNo, ['class' => 'help-block']); ?>
                     </div>
                     <div class="form-group form-group-default emp-form-group">
-                        <?php print $this->formLabel($addrPermStreetAddress);?>
-                        <?php print $this->formElement($addrPermStreetAddress);?>
-                        <?php print $this->formElementErrors()->render($addrPermStreetAddress,['class'=>'help-block']);?>
+                        <?php print $this->formLabel($addrPermStreetAddress); ?>
+                        <?php print $this->formElement($addrPermStreetAddress); ?>
+                        <?php print $this->formElementErrors()->render($addrPermStreetAddress, ['class' => 'help-block']); ?>
                     </div>
 
                     <div class="form-group form-group-default emp-form-group">
-                        <?php print $this->formLabel($addrPermVdcMunicipalityId);?>
-                        <?php print $this->formElement($addrPermVdcMunicipalityId);?>
-                        <?php print $this->formElementErrors()->render($addrPermVdcMunicipalityId,['class'=>'help-block']);?>
+                        <?php print $this->formLabel($addrPermVdcMunicipalityId); ?>
+                        <?php print $this->formElement($addrPermVdcMunicipalityId); ?>
+                        <?php print $this->formElementErrors()->render($addrPermVdcMunicipalityId, ['class' => 'help-block']); ?>
                     </div>
                     <div class="form-group form-group-default emp-form-group">
-                        <?php print $this->formLabel($addrPermDistrictId);?>
-                        <?php print $this->formElement($addrPermDistrictId);?>
-                        <?php print $this->formElementErrors()->render($addrPermDistrictId,['class'=>'help-block']);?>
+                        <?php print $this->formLabel($addrPermDistrictId); ?>
+                        <?php print $this->formElement($addrPermDistrictId); ?>
+                        <?php print $this->formElementErrors()->render($addrPermDistrictId, ['class' => 'help-block']); ?>
                     </div>
                     <div class="form-group form-group-default emp-form-group">
-                        <?php print $this->formLabel($addrPermZoneId);?>
-                        <?php print $this->formElement($addrPermZoneId);?>
-                        <?php print $this->formElementErrors()->render($addrPermZoneId,['class'=>'help-block']);?>
+                        <?php print $this->formLabel($addrPermZoneId); ?>
+                        <?php print $this->formElement($addrPermZoneId); ?>
+                        <?php print $this->formElementErrors()->render($addrPermZoneId, ['class' => 'help-block']); ?>
                     </div>
 
                 </div>
@@ -398,35 +411,35 @@ if ($this->messages) {
                     <p class="p_address">Contact Address</p>
                     <div class="form-group form-group-default emp-form-group">
                         <?php print $this->formLabel($addrTempHouseNo); ?>
-                        <?php print $this->formElement($addrTempHouseNo);?>
-                        <?php print $this->formElementErrors()->render($addrTempHouseNo,['class'=>'help-block']);?>
+                        <?php print $this->formElement($addrTempHouseNo); ?>
+                        <?php print $this->formElementErrors()->render($addrTempHouseNo, ['class' => 'help-block']); ?>
                     </div>
 
                     <div class="form-group form-group-default emp-form-group">
                         <?php print $this->formLabel($addrTempWardNo); ?>
-                        <?php print $this->formElement($addrTempWardNo);?>
-                        <?php print $this->formElementErrors()->render($addrTempWardNo,['class'=>'help-block']);?>
+                        <?php print $this->formElement($addrTempWardNo); ?>
+                        <?php print $this->formElementErrors()->render($addrTempWardNo, ['class' => 'help-block']); ?>
                     </div>
                     <div class="form-group form-group-default emp-form-group">
                         <?php print $this->formLabel($addrTempStreetAddress); ?>
-                        <?php print $this->formElement($addrTempStreetAddress);?>
-                        <?php print $this->formElementErrors()->render($addrTempStreetAddress,['class'=>'help-block']);?>
+                        <?php print $this->formElement($addrTempStreetAddress); ?>
+                        <?php print $this->formElementErrors()->render($addrTempStreetAddress, ['class' => 'help-block']); ?>
                     </div>
                     <div class="form-group form-group-default emp-form-group">
                         <?php print $this->formLabel($addrTempVdcMunicipalityId); ?>
-                        <?php print $this->formElement($addrTempVdcMunicipalityId);?>
-                        <?php print $this->formElementErrors()->render($addrTempVdcMunicipalityId,['class'=>'help-block']);?>
+                        <?php print $this->formElement($addrTempVdcMunicipalityId); ?>
+                        <?php print $this->formElementErrors()->render($addrTempVdcMunicipalityId, ['class' => 'help-block']); ?>
                     </div>
 
                     <div class="form-group form-group-default emp-form-group">
                         <?php print $this->formLabel($addrTempDistrictId); ?>
-                        <?php print $this->formElement($addrTempDistrictId);?>
-                        <?php print $this->formElementErrors()->render($addrTempDistrictId,['class'=>'help-block']);?>
+                        <?php print $this->formElement($addrTempDistrictId); ?>
+                        <?php print $this->formElementErrors()->render($addrTempDistrictId, ['class' => 'help-block']); ?>
                     </div>
                     <div class="form-group form-group-default emp-form-group">
                         <?php print $this->formLabel($addrTempZoneId); ?>
-                        <?php print $this->formElement($addrTempZoneId);?>
-                        <?php print $this->formElementErrors()->render($addrTempZoneId,['class'=>'help-block']);?>
+                        <?php print $this->formElement($addrTempZoneId); ?>
+                        <?php print $this->formElementErrors()->render($addrTempZoneId, ['class' => 'help-block']); ?>
                     </div>
 
                 </div>
@@ -439,66 +452,66 @@ if ($this->messages) {
             <div class="row clearfix">
                 <div class="col-sm-6" style="padding-left:5px;">
                     <div class="form-group form-group-default emp-form-group">
-                        <?php print $this->formLabel($famFatherName);?>
-                        <?php print $this->formElement($famFatherName);?>
-                        <?php print $this->formElementErrors()->render($famFatherName,['class'=>'help-block']);?>
+                        <?php print $this->formLabel($famFatherName); ?>
+                        <?php print $this->formElement($famFatherName); ?>
+                        <?php print $this->formElementErrors()->render($famFatherName, ['class' => 'help-block']); ?>
                     </div>
 
                     <div class="form-group form-group-default emp-form-group">
-                        <?php print $this->formLabel($famFatherOccupation);?>
-                        <?php print $this->formElement($famFatherOccupation);?>
-                        <?php print $this->formElementErrors()->render($famFatherOccupation,['class'=>'help-block']);?>
+                        <?php print $this->formLabel($famFatherOccupation); ?>
+                        <?php print $this->formElement($famFatherOccupation); ?>
+                        <?php print $this->formElementErrors()->render($famFatherOccupation, ['class' => 'help-block']); ?>
                     </div>
                     <div class="form-group form-group-default emp-form-group">
-                        <?php print $this->formLabel($famGrandFatherName);?>
-                        <?php print $this->formElement($famGrandFatherName);?>
-                        <?php print $this->formElementErrors()->render($famGrandFatherName,['class'=>'help-block']);?>
+                        <?php print $this->formLabel($famGrandFatherName); ?>
+                        <?php print $this->formElement($famGrandFatherName); ?>
+                        <?php print $this->formElementErrors()->render($famGrandFatherName, ['class' => 'help-block']); ?>
                     </div>
 
                     <div class="form-group form-group-default emp-form-group">
-                        <?php print $this->formLabel($maritualStatus);?>
-                        <?php print $this->formElement($maritualStatus);?>
-                        <?php print $this->formElementErrors()->render($maritualStatus,['class'=>'help-block']);?>
+                        <?php print $this->formLabel($maritualStatus); ?>
+                        <?php print $this->formElement($maritualStatus); ?>
+                        <?php print $this->formElementErrors()->render($maritualStatus, ['class' => 'help-block']); ?>
                     </div>
                     <div class="form-group form-group-default emp-form-group">
-                        <?php print $this->formLabel($famSpouseName);?>
-                        <?php print $this->formElement($famSpouseName);?>
-                        <?php print $this->formElementErrors()->render($famSpouseName,['class'=>'help-block']);?>
+                        <?php print $this->formLabel($famSpouseName); ?>
+                        <?php print $this->formElement($famSpouseName); ?>
+                        <?php print $this->formElementErrors()->render($famSpouseName, ['class' => 'help-block']); ?>
                     </div>
                     <div class="form-group form-group-default emp-form-group">
-                        <?php print $this->formLabel($famSpouseOccupation);?>
-                        <?php print $this->formElement($famSpouseOccupation);?>
-                        <?php print $this->formElementErrors()->render($famSpouseOccupation,['class'=>'help-block']);?>
+                        <?php print $this->formLabel($famSpouseOccupation); ?>
+                        <?php print $this->formElement($famSpouseOccupation); ?>
+                        <?php print $this->formElementErrors()->render($famSpouseOccupation, ['class' => 'help-block']); ?>
                     </div>
 
                 </div>
                 <div class="col-sm-6" style="padding-right:5px;">
                     <div class="form-group form-group-default emp-form-group">
                         <?php print $this->formLabel($famMotherName); ?>
-                        <?php print $this->formElement($famMotherName);?>
-                        <?php print $this->formElementErrors()->render($famMotherName,['class'=>'help-block']);?>
+                        <?php print $this->formElement($famMotherName); ?>
+                        <?php print $this->formElementErrors()->render($famMotherName, ['class' => 'help-block']); ?>
                     </div>
 
                     <div class="form-group form-group-default emp-form-group">
                         <?php print $this->formLabel($famMotherOccupation); ?>
-                        <?php print $this->formElement($famMotherOccupation);?>
-                        <?php print $this->formElementErrors()->render($famMotherOccupation,['class'=>'help-block']);?>
+                        <?php print $this->formElement($famMotherOccupation); ?>
+                        <?php print $this->formElementErrors()->render($famMotherOccupation, ['class' => 'help-block']); ?>
                     </div>
                     <div class="form-group form-group-default emp-form-group">
                         <?php print $this->formLabel($famGrandMotherName); ?>
-                        <?php print $this->formElement($famGrandMotherName);?>
-                        <?php print $this->formElementErrors()->render($famGrandMotherName,['class'=>'help-block']);?>
+                        <?php print $this->formElement($famGrandMotherName); ?>
+                        <?php print $this->formElementErrors()->render($famGrandMotherName, ['class' => 'help-block']); ?>
                     </div>
                     <div class="form-group form-group-default emp-form-group">
                         <?php print $this->formLabel($famSpouseBirthDate); ?>
-                        <?php print $this->formElement($famSpouseBirthDate);?>
-                        <?php print $this->formElementErrors()->render($famSpouseBirthDate,['class'=>'help-block']);?>
+                        <?php print $this->formElement($famSpouseBirthDate); ?>
+                        <?php print $this->formElementErrors()->render($famSpouseBirthDate, ['class' => 'help-block']); ?>
                     </div>
 
                     <div class="form-group form-group-default emp-form-group">
                         <?php print $this->formLabel($famSpouseWeddingAnniversary); ?>
-                        <?php print $this->formElement($famSpouseWeddingAnniversary);?>
-                        <?php print $this->formElementErrors()->render($famSpouseWeddingAnniversary,['class'=>'help-block']);?>
+                        <?php print $this->formElement($famSpouseWeddingAnniversary); ?>
+                        <?php print $this->formElementErrors()->render($famSpouseWeddingAnniversary, ['class' => 'help-block']); ?>
                     </div>
 
                 </div>
@@ -509,88 +522,88 @@ if ($this->messages) {
             <div class="row clearfix">
                 <div class="col-sm-6" style="padding-left:5px;">
                     <div class="form-group form-group-default emp-form-group">
-                        <?php print $this->formLabel($idCardNo);?>
-                        <?php print $this->formElement($idCardNo);?>
-                        <?php print $this->formElementErrors()->render($idCardNo,['class'=>'help-block']);?>
+                        <?php print $this->formLabel($idCardNo); ?>
+                        <?php print $this->formElement($idCardNo); ?>
+                        <?php print $this->formElementErrors()->render($idCardNo, ['class' => 'help-block']); ?>
                     </div>
                     <div class="form-group form-group-default emp-form-group">
-                        <?php print $this->formLabel($idLbrf);?>
-                        <?php print $this->formElement($idLbrf);?>
-                        <?php print $this->formElementErrors()->render($idLbrf,['class'=>'help-block']);?>
+                        <?php print $this->formLabel($idLbrf); ?>
+                        <?php print $this->formElement($idLbrf); ?>
+                        <?php print $this->formElementErrors()->render($idLbrf, ['class' => 'help-block']); ?>
                     </div>
 
                     <div class="form-group form-group-default emp-form-group">
-                        <?php print $this->formLabel($idBarCode);?>
-                        <?php print $this->formElement($idBarCode);?>
-                        <?php print $this->formElementErrors()->render($idBarCode,['class'=>'help-block']);?>
+                        <?php print $this->formLabel($idBarCode); ?>
+                        <?php print $this->formElement($idBarCode); ?>
+                        <?php print $this->formElementErrors()->render($idBarCode, ['class' => 'help-block']); ?>
                     </div>
                     <div class="form-group form-group-default emp-form-group">
-                        <?php print $this->formLabel($idProvidentFundNo);?>
-                        <?php print $this->formElement($idProvidentFundNo);?>
-                        <?php print $this->formElementErrors()->render($idProvidentFundNo,['class'=>'help-block']);?>
+                        <?php print $this->formLabel($idProvidentFundNo); ?>
+                        <?php print $this->formElement($idProvidentFundNo); ?>
+                        <?php print $this->formElementErrors()->render($idProvidentFundNo, ['class' => 'help-block']); ?>
                     </div>
                     <div class="form-group form-group-default emp-form-group">
-                        <?php print $this->formLabel($idDrivingLicenseNo);?>
-                        <?php print $this->formElement($idDrivingLicenseNo);?>
-                        <?php print $this->formElementErrors()->render($idDrivingLicenseNo,['class'=>'help-block']);?>
+                        <?php print $this->formLabel($idDrivingLicenseNo); ?>
+                        <?php print $this->formElement($idDrivingLicenseNo); ?>
+                        <?php print $this->formElementErrors()->render($idDrivingLicenseNo, ['class' => 'help-block']); ?>
                     </div>
                     <div class="form-group form-group-default emp-form-group">
-                        <?php print $this->formLabel($idDrivingLicenseExpiry);?>
-                        <?php print $this->formElement($idDrivingLicenseExpiry);?>
-                        <?php print $this->formElementErrors()->render($idDrivingLicenseExpiry,['class'=>'help-block']);?>
+                        <?php print $this->formLabel($idDrivingLicenseExpiry); ?>
+                        <?php print $this->formElement($idDrivingLicenseExpiry); ?>
+                        <?php print $this->formElementErrors()->render($idDrivingLicenseExpiry, ['class' => 'help-block']); ?>
                     </div>
                     <div class="form-group form-group-default emp-form-group">
-                        <?php print $this->formLabel($idDrivingLicenseType);?>
-                        <?php print $this->formElement($idDrivingLicenseType);?>
-                        <?php print $this->formElementErrors()->render($idDrivingLicenseType,['class'=>'help-block']);?>
+                        <?php print $this->formLabel($idDrivingLicenseType); ?>
+                        <?php print $this->formElement($idDrivingLicenseType); ?>
+                        <?php print $this->formElementErrors()->render($idDrivingLicenseType, ['class' => 'help-block']); ?>
                     </div>
                     <div class="form-group form-group-default emp-form-group">
-                        <?php print $this->formLabel($idPassportNo);?>
-                        <?php print $this->formElement($idPassportNo);?>
-                        <?php print $this->formElementErrors()->render($idPassportNo,['class'=>'help-block']);?>
+                        <?php print $this->formLabel($idPassportNo); ?>
+                        <?php print $this->formElement($idPassportNo); ?>
+                        <?php print $this->formElementErrors()->render($idPassportNo, ['class' => 'help-block']); ?>
                     </div>
                 </div>
                 <div class="col-sm-6" style="padding-right:5px;">
                     <div class="form-group form-group-default emp-form-group">
-                        <?php print $this->formLabel($idThumbId);?>
-                        <?php print $this->formElement($idThumbId);?>
-                        <?php print $this->formElementErrors()->render($idThumbId,['class'=>'help-block']);?>
+                        <?php print $this->formLabel($idThumbId); ?>
+                        <?php print $this->formElement($idThumbId); ?>
+                        <?php print $this->formElementErrors()->render($idThumbId, ['class' => 'help-block']); ?>
                     </div>
                     <div class="form-group form-group-default emp-form-group">
-                        <?php print $this->formLabel($idPanNo);?>
-                        <?php print $this->formElement($idPanNo);?>
-                        <?php print $this->formElementErrors()->render($idPanNo,['class'=>'help-block']);?>
+                        <?php print $this->formLabel($idPanNo); ?>
+                        <?php print $this->formElement($idPanNo); ?>
+                        <?php print $this->formElementErrors()->render($idPanNo, ['class' => 'help-block']); ?>
                     </div>
 
                     <div class="form-group form-group-default emp-form-group">
-                        <?php print $this->formLabel($idAccountId);?>
-                        <?php print $this->formElement($idAccountId);?>
-                        <?php print $this->formElementErrors()->render($idAccountId,['class'=>'help-block']);?>
+                        <?php print $this->formLabel($idAccountId); ?>
+                        <?php print $this->formElement($idAccountId); ?>
+                        <?php print $this->formElementErrors()->render($idAccountId, ['class' => 'help-block']); ?>
                     </div>
                     <div class="form-group form-group-default emp-form-group">
-                        <?php print $this->formLabel($idRetirementNo);?>
-                        <?php print $this->formElement($idRetirementNo);?>
-                        <?php print $this->formElementErrors()->render($idRetirementNo,['class'=>'help-block']);?>
+                        <?php print $this->formLabel($idRetirementNo); ?>
+                        <?php print $this->formElement($idRetirementNo); ?>
+                        <?php print $this->formElementErrors()->render($idRetirementNo, ['class' => 'help-block']); ?>
                     </div>
                     <div class="form-group form-group-default emp-form-group">
-                        <?php print $this->formLabel($idCitizenshipNo);?>
-                        <?php print $this->formElement($idCitizenshipNo);?>
-                        <?php print $this->formElementErrors()->render($idCitizenshipNo,['class'=>'help-block']);?>
+                        <?php print $this->formLabel($idCitizenshipNo); ?>
+                        <?php print $this->formElement($idCitizenshipNo); ?>
+                        <?php print $this->formElementErrors()->render($idCitizenshipNo, ['class' => 'help-block']); ?>
                     </div>
                     <div class="form-group form-group-default emp-form-group">
-                        <?php print $this->formLabel($idCitizenshipIssueDate);?>
-                        <?php print $this->formElement($idCitizenshipIssueDate);?>
-                        <?php print $this->formElementErrors()->render($idCitizenshipIssueDate,['class'=>'help-block']);?>
+                        <?php print $this->formLabel($idCitizenshipIssueDate); ?>
+                        <?php print $this->formElement($idCitizenshipIssueDate); ?>
+                        <?php print $this->formElementErrors()->render($idCitizenshipIssueDate, ['class' => 'help-block']); ?>
                     </div>
                     <div class="form-group form-group-default emp-form-group">
-                        <?php print $this->formLabel($idCitizenshipIssuePlace);?>
-                        <?php print $this->formElement($idCitizenshipIssuePlace);?>
-                        <?php print $this->formElementErrors()->render($idCitizenshipIssuePlace,['class'=>'help-block']);?>
+                        <?php print $this->formLabel($idCitizenshipIssuePlace); ?>
+                        <?php print $this->formElement($idCitizenshipIssuePlace); ?>
+                        <?php print $this->formElementErrors()->render($idCitizenshipIssuePlace, ['class' => 'help-block']); ?>
                     </div>
                     <div class="form-group form-group-default emp-form-group">
-                        <?php print $this->formLabel($idPassportExpiry);?>
-                        <?php print $this->formElement($idPassportExpiry);?>
-                        <?php print $this->formElementErrors()->render($idPassportExpiry,['class'=>'help-block']);?>
+                        <?php print $this->formLabel($idPassportExpiry); ?>
+                        <?php print $this->formElement($idPassportExpiry); ?>
+                        <?php print $this->formElementErrors()->render($idPassportExpiry, ['class' => 'help-block']); ?>
                     </div>
                 </div>
             </div>
@@ -604,20 +617,20 @@ if ($this->messages) {
                 </div>
                 <div class="col-sm-6" style="padding-right:5px;">
                     <div class="form-group form-group-default emp-form-group">
-                        <?php print $this->formLabel($joinDate);?>
-                        <?php print $this->formElement($joinDate);?>
-                        <?php print $this->formElementErrors()->render($joinDate,['class'=>'help-block']);?>
+                        <?php print $this->formLabel($joinDate); ?>
+                        <?php print $this->formElement($joinDate); ?>
+                        <?php print $this->formElementErrors()->render($joinDate, ['class' => 'help-block']); ?>
                     </div>
 
                     <div class="form-group form-group-default emp-form-group">
-                        <?php print $this->formLabel($salary);?>
-                        <?php print $this->formElement($salary);?>
-                        <?php print $this->formElementErrors()->render($salary,['class'=>'help-block']);?>
+                        <?php print $this->formLabel($salary); ?>
+                        <?php print $this->formElement($salary); ?>
+                        <?php print $this->formElementErrors()->render($salary, ['class' => 'help-block']); ?>
                     </div>
                     <div class="form-group form-group-default emp-form-group">
-                        <?php print $this->formLabel($salaryPf);?>
-                        <?php print $this->formElement($salaryPf);?>
-                        <?php print $this->formElementErrors()->render($salaryPf,['class'=>'help-block']);?>
+                        <?php print $this->formLabel($salaryPf); ?>
+                        <?php print $this->formElement($salaryPf); ?>
+                        <?php print $this->formElementErrors()->render($salaryPf, ['class' => 'help-block']); ?>
                     </div>
 
                 </div>
@@ -665,7 +678,7 @@ if ($this->messages) {
                     <p><u><i>Relative Working in Related Organisation</i></u></p>
 
                 </div>
-                <div class="col-sm-6" style="padding-right:5px;" >
+                <div class="col-sm-6" style="padding-right:5px;">
                     <p><u><i>Children Information</i></u></p>
                     <div id="child_div">
                     </div>
@@ -674,13 +687,14 @@ if ($this->messages) {
             </div>
 
 
-            <?php  print $this->formSubmit($submit); ?>
+            <?php print $this->formSubmit($submit); ?>
         </div>
 
         <div class="padding-20">
             <ul class="pager wizard">
                 <li class="next">
-                    <button class="btn btn-primary btn-cons btn-animated from-left fa fa-truck pull-right" type="button">
+                    <button class="btn btn-primary btn-cons btn-animated from-left fa fa-truck pull-right"
+                            type="button">
                         <span>Next</span>
                     </button>
                 </li>
@@ -705,8 +719,6 @@ if ($this->messages) {
     </div>
 
 </div>
-
-
 
 
 <?php

@@ -15,12 +15,12 @@ class DepartmentRepository implements RepositoryInterface
 
     }
 
-    public function add($model)
+    public function add(Model $model)
     {
         $this->tableGateway->insert($model->getArrayCopyForDB());
     }
 
-    public function edit($model,$id,$modifiedDt)
+    public function edit(Model $model,$id,$modifiedDt)
     {
         $temp=$model->getArrayCopyForDB();
         $newArray = array_merge($temp,['MODIFIED_DT'=>$modifiedDt]);

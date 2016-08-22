@@ -18,6 +18,14 @@ class HrEmployeesForm
     public $employeeCode;
 
     /**
+     * @Annotation\Type("Zend\Form\Element\Select")
+     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
+     * @Annotation\Options({"disable_inarray_validator":"true","label":"Companies"})
+     * @Annotation\Attributes({ "id":"form-companyId", "class":"form-companyId form-control" })
+     */
+    public $companyId;
+
+    /**
      * @Annotation\Type("Zend\Form\Element\Text")
      * @Annotation\Required({"required":"true"})
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
@@ -57,7 +65,6 @@ class HrEmployeesForm
 
     /**
      * @Annotation\Type("Zend\Form\Element\Select")
-     * @Annotation\Required({"required":"true"})
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"disable_inarray_validator":"true","label":"Gender"})
      * @Annotation\Attributes({ "id":"form-genderId", "class":"form-genderId form-control" })
@@ -157,7 +164,6 @@ class HrEmployeesForm
 
     /**
      * @Annotation\Type("Zend\Form\Element\Text")
-     * @Annotation\Required({"required":"false"})
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Emergency Contact Name"})
      * @Annotation\Attributes({ "id":"form-emergContactName", "class":"form-emergContactName form-control" })
@@ -185,7 +191,6 @@ class HrEmployeesForm
 
     /**
      * @Annotation\Type("Zend\Form\Element\Text")
-     * @Annotation\Required({"required":"false"})
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Emergency Contact Relationship"})
      */
@@ -377,7 +382,7 @@ class HrEmployeesForm
 
 
     /**
-     * @Annotation\Type("Zend\Form\Element\Date")
+     * @Annotation\Type("Zend\Form\Element\Text")
      * @Annotation\Required({"required":"false"})
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Spouse Birth Date"})
@@ -386,7 +391,7 @@ class HrEmployeesForm
 
 
     /**
-     * @Annotation\Type("Zend\Form\Element\Date")
+     * @Annotation\Type("Zend\Form\Element\Text")
      * @Annotation\Required({"required":"false"})
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Spouse Wdding Anniversary"})
@@ -447,7 +452,7 @@ class HrEmployeesForm
     public $idDrivingLicenseType;
 
     /**
-     * @Annotation\Type("Zend\Form\Element\Date")
+     * @Annotation\Type("Zend\Form\Element\Text")
      * @Annotation\Required({"required":"false"})
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Driving License Expiry"})
@@ -498,7 +503,7 @@ class HrEmployeesForm
     public $idCitizenshipNo;
 
     /**
-     * @Annotation\Type("Zend\Form\Element\Date")
+     * @Annotation\Type("Zend\Form\Element\Text")
      * @Annotation\Required({"required":"false"})
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Citizenship Issue Date"})
@@ -525,7 +530,7 @@ class HrEmployeesForm
 
 
     /**
-     * @Annotation\Type("Zend\Form\Element\Date")
+     * @Annotation\Type("Zend\Form\Element\Text")
      * @Annotation\Required({"required":"false"})
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Passport Expiry"})
@@ -533,7 +538,7 @@ class HrEmployeesForm
     public $idPassportExpiry;
 
     /**
-     * @Annotation\Type("Zend\Form\Element\Date")
+     * @Annotation\Type("Zend\Form\Element\Text")
      * @Annotation\Required({"required":"false"})
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Join Date"})

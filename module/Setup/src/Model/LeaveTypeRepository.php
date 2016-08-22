@@ -13,11 +13,11 @@ class LeaveTypeRepository implements RepositoryInterface{
 		$this->tableGateway = new TableGateway('HR_LEAVE_TYPES',$adapter);
 		
 	}
-	public function add($model){
+	public function add(Model $model){
 		 $this->tableGateway->insert($model->getArrayCopyForDb());
 
 	}
-	public function edit($model,$id,$modifiedDt){
+	public function edit(Model $model,$id,$modifiedDt){
 		$array = $model->getArrayCopyForDb();
 		$newArray = array_merge($array,['MODIFIED_DT'=>$modifiedDt]);
 		$this->tableGateway->update($newArray,["LEAVE_ID"=>$id]);

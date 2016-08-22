@@ -7,7 +7,7 @@ use Zend\Form\Annotation;
  * @Annotation\Hydrator("Zend\Hydrator\ObjectProperty")
  * @Annotation\Name("LeaveType")
  */
-class LeaveType implements ModelInterface{
+class LeaveType implements Model{
 
 
 	/**

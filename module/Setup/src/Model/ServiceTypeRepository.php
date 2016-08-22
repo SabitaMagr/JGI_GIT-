@@ -14,12 +14,12 @@ class ServiceTypeRepository implements RepositoryInterface
 
     }
 
-    public function add($model)
+    public function add(Model $model)
     {
         $this->tableGateway->insert($model->getArrayCopyForDB());
     }
 
-    public function edit($model,$id,$modifiedDt)
+    public function edit(Model $model,$id,$modifiedDt)
     {
         $array=$model->getArrayCopyForDB();
         $newArray =  array_merge($array, ['MODIFIED_DT'=> $modifiedDt ]);

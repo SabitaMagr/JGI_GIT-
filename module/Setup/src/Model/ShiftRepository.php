@@ -14,13 +14,13 @@ class ShiftRepository implements RepositoryInterface
         $this->tableGateway = new TableGateway('HR_SHIFTS',$adapter);
     }
 
-     public function add($model)
+     public function add(Model $model)
     {
         $this->tableGateway->insert($model->getArrayCopyForDb());
     }
 
 
-    public function edit($model,$id,$modifiedDt)
+    public function edit(Model $model,$id,$modifiedDt)
     {
         $array = $model->getArrayCopyForDb();
         $newArray = array_merge($array,["MODIFIED_DT"=>$modifiedDt]);

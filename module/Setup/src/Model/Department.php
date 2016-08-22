@@ -9,7 +9,7 @@ use Zend\Form\Annotation;
 * @Annotation\Hydrator("Zend\Hydrator\ObjectProperty")
 * @Annotation\Name("Department")
 */
-class Department implements ModelInterface
+class Department implements Model
 
 {
 

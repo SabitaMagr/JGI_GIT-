@@ -12,7 +12,7 @@ class  EmployeeRepository implements RepositoryInterface
 
     public function __construct(AdapterInterface $adapter)
     {
-        $this->gateway = new TableGateway('employee', $adapter);
+        $this->gateway = new TableGateway('HR_EMPLOYEES', $adapter);
     }
 
     public function fetchAll()
@@ -22,25 +22,25 @@ class  EmployeeRepository implements RepositoryInterface
 
     public function fetchById($id)
     {
-        $rowset = $this->gateway->select(['employeeCode' => $id]);
+        $rowset = $this->gateway->select(['EMPLOYEE_ID' => $id]);
         return $rowset->current();
     }
 
-
-
-    public function add(ModelInterface $model)
+    public function add(Model $model)
     {
-        $this->gateway->insert($model->getArrayCopy());
-
-    }
-
-    public function edit(ModelInterface $model, $id)
-    {
-        $this->gateway->update($model->getArrayCopy(), ['employeeCode' => $id]);
+        $this->gateway->insert($model->getArrayCopyForDB());
     }
 
     public function delete($id)
     {
+
+    }
+
+    public function edit(Model $model, $id, $modifiedDt)
+    {
+        $tempArray=$model->getArrayCopyForDB();
+
+        $this->gateway->update($tempArray, ['EMPLOYEE_ID' => $id]);
 
     }
 }

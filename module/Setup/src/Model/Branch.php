@@ -7,7 +7,7 @@ use Zend\Form\Annotation;
  * @Annotation\Hydrator("Zend\Hydrator\ObjectProperty")
  * @Annotation\Name("Branch")
  */
-class Branch implements ModelInterface
+class Branch implements Model
 {
 
     /**
@@ -141,5 +141,47 @@ class Branch implements ModelInterface
             'parentBranch' => $this->parentBranch
         ];
 
+    }
+
+
+
+
+
+    private $mappings=['branchCode'=>'BRANCH_CODE'];
+
+    public function exchangeArrayFromForm(array $data)
+    {
+        $entityKeys=array_keys($this->mappings);
+        foreach($entityKeys as $keys){
+            $this->{$keys} = !empty($data[$keys]) ? $data[$keys] : null;
+        }
+
+    }
+
+    public function exchangeArrayFromDB(array $data)
+    {
+
+        foreach($this->mappings as $key => $value){
+            $this->{$key} = !empty($data[$value]) ? $data[$value] : null;
+        }
+    }
+
+    public function getArrayCopyForDB()
+    {
+        $tempArray=[];
+        foreach($this->mappings as $key => $value){
+         array_push($tempArray,$value,$this->{$key});
+        }
+        return $tempArray;
+
+    }
+
+    public function getArrayCopyForForm()
+    {
+        $tempArray=[];
+        foreach($this->mappings as $key => $value){
+         array_push($tempArray,$key,$this->{$key});
+        }
+        return $tempArray;
     }
 }
