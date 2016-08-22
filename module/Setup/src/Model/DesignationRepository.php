@@ -35,6 +35,10 @@ class DesignationRepository implements RepositoryInterface
         $newArray = array_merge($array,['MODIFIED_DT'=>$modifiedDt]);
         $this->tableGateway->update($newArray,["DESIGNATION_ID"=>$id]);
     }
+    public function fetchActiveRecord()
+    {
+         return  $rowset= $this->tableGateway->select(['STATUS'=>'E']);       
+    }
 
     public function delete($id)
     {

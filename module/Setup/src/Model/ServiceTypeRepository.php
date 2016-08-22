@@ -36,6 +36,10 @@ class ServiceTypeRepository implements RepositoryInterface
         $rowset= $this->tableGateway->select(['SERVICE_TYPE_ID'=>$id]);
         return $rowset->current();
     }
+    public function fetchActiveRecord()
+    {
+         return  $rowset= $this->tableGateway->select(['STATUS'=>'E']);       
+    }
 
     public function delete($id)
     {

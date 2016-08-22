@@ -17,33 +17,33 @@ use Zend\Mvc\Controller\AbstractActionController;
 use Zend\Form\Annotation\AnnotationBuilder;
 use Application\Helper\Helper;
 use Setup\Form\EmpCurrentPostingForm;
-
-use Doctrine\ORM\EntityManager;
 use Setup\Helper\EntityHelper;
-use Setup\Entity\EmployeeCurrentPosting;
+use Zend\Db\Adapter\AdapterInterface;
+use Setup\Model\EmpCurrentPostingRepository;
+
 
 class EmpCurrentPostingController extends AbstractActionController{
 
-	private $entityManager;
-	private $empCurrentPostingForm;
-	private $hydrator;
 	private $empCurrentPosting;
+	private $form;
+	private $adapter;
+	private $repository;
 
-	public function __construct(EntityManager $entityManager){
-		$this->entityManager = $entityManager;
-		$this->empCurrentPosting = new EmployeeCurrentPosting();
+	public function __construct(AdapterInterface $adapter){
+		$this->adapter = $adapter;
+		$this->repository = new EmpCurrentPostingRepository($adapter);
 	}
 
 	public function initializeForm(){
-		$form = new EmpCurrentPostingForm();
+		$this->empCurrentPosting = new EmpCurrentPostingForm();
 		$builder = new AnnotationBuilder();
-		if(!$this->empCurrentPostingForm){
-			$this->empCurrentPostingForm = $builder->createForm($form);
+		if(!$this->form){
+			$this->form = $builder->createForm($this->empCurrentPosting);
 		}
 	}
 
 	public function indexAction(){
-		$empCurrentPostingList = $this->entityManager->getRepository(EmployeeCurrentPosting::class)->findAll();
+		$empCurrentPostingList = $this->repository->fetchAll();
         return Helper::addFlashMessagesToArray($this,['empCurrentPostingList' => $empCurrentPostingList]);
 	}
 
@@ -53,12 +53,10 @@ class EmpCurrentPostingController extends AbstractActionController{
 
 		if($request->isPost()){
 		
-			$this->empCurrentPostingForm->setData($request->getPost());
-			if($this->empCurrentPostingForm->isValid()){
-				$formData = $this->empCurrentPostingForm->getData();
-				$this->empCurrentPosting = EntityHelper::hydrate($this->entityManager,EmployeeCurrentPosting::class,$formData);
-				$this->entityManager->persist($this->empCurrentPosting);
-				$this->entityManager->flush();
+			$this->form->setData($request->getPost());
+			if($this->form->isValid()){
+				$this->empCurrentPosting->exchangeArrayFromForm($this->form->getData());
+				$this->repository->add($this->empCurrentPosting);			
 
 				$this->flashmessenger()->addMessage("Employee Current Posting Successfully added!!!");
 	            return $this->redirect()->toRoute("empCurrentPosting");
@@ -67,13 +65,13 @@ class EmpCurrentPostingController extends AbstractActionController{
 		return Helper::addFlashMessagesToArray(
 			$this,
 			[
-				'form'=>$this->empCurrentPostingForm,
+				'form'=>$this->form,
 				'messages' => $this->flashmessenger()->getMessages(),
-				'departments'=>EntityHelper::getDepartmentKVList($this->entityManager),
-				'designations'=>EntityHelper::getDesignationKVList($this->entityManager),
-				'branches'=>EntityHelper::getBranchKVList($this->entityManager),
-				'positions'=>EntityHelper::getPositionKVList($this->entityManager),
-				'serviceTypes'=>EntityHelper::getServiceTypeKVList($this->entityManager),
+				'departments'=>EntityHelper::getDepartmentKVList($this->adapter),
+				'designations'=>EntityHelper::getDesignationKVList($this->adapter),
+				'branches'=>EntityHelper::getBranchKVList($this->adapter),
+				'positions'=>EntityHelper::getPositionKVList($this->adapter),
+				'serviceTypes'=>EntityHelper::getServiceTypeKVList($this->adapter),
 			]);
 	}
 
@@ -86,21 +84,15 @@ class EmpCurrentPostingController extends AbstractActionController{
         $request=$this->getRequest();
 
         if(!$request->isPost()){
-            $empCurrentPostDtl = $this->entityManager->find(EmployeeCurrentPosting::class,$id);
-            $empCurrentPostDtl1 = EntityHelper::extract($this->entityManager,$empCurrentPostDtl);
-            $this->empCurrentPostingForm->bind((object)$empCurrentPostDtl1);
+           $this->empCurrentPosting->exchangeArrayFromDb($this->repository->fetchById($id)->getArrayCopy());
+           $this->form->bind((object)$this->empCurrentPosting->getArrayCopyForForm());
         }else{
 
             $this->empCurrentPostingForm->setData($request->getPost());
-            $modifiedDt = date('Y-m-d');
+           
             if ($this->empCurrentPostingForm->isValid()) {
-                $formData = $this->empCurrentPostingForm->getData();
-                $newFormData = array_merge($formData,['modifiedDt'=>$modifiedDt]);
-                $this->empCurrentPosting = EntityHelper::hydrate($this->entityManager,EmployeeCurrentPosting::class,$formData);
-                $this->empCurrentPosting->setId($id);
-
-                $this->entityManager->merge($this->empCurrentPosting);
-                $this->entityManager->flush();
+                $this->empCurrentPosting->exchangeArrayFromForm($this->form->getData());
+                $this->repository->edit($this->empCurrentPosting,$id);
 
                 $this->flashmessenger()->addMessage("Employee Current Posting Updated!!!");
                 return $this->redirect()->toRoute("empCurrentPosting");
@@ -109,13 +101,14 @@ class EmpCurrentPostingController extends AbstractActionController{
         return Helper::addFlashMessagesToArray(
             $this,
             [
-            	'form'=>$this->empCurrentPostingForm,
             	'id'=>$id,
-            	'departments'=>EntityHelper::getDepartmentKVList($this->entityManager),
-				'designations'=>EntityHelper::getDesignationKVList($this->entityManager),
-				'branches'=>EntityHelper::getBranchKVList($this->entityManager),
-				'positions'=>EntityHelper::getPositionKVList($this->entityManager),
-				'serviceTypes'=>EntityHelper::getServiceTypeKVList($this->entityManager),      
+            	'form'=>$this->form,
+				'messages' => $this->flashmessenger()->getMessages(),
+				'departments'=>EntityHelper::getDepartmentKVList($this->adapter),
+				'designations'=>EntityHelper::getDesignationKVList($this->adapter),
+				'branches'=>EntityHelper::getBranchKVList($this->adapter),
+				'positions'=>EntityHelper::getPositionKVList($this->adapter),
+				'serviceTypes'=>EntityHelper::getServiceTypeKVList($this->adapter),     
             ]
         );
 	}
@@ -125,9 +118,7 @@ class EmpCurrentPostingController extends AbstractActionController{
         if (!$id) {
             return $this->redirect()->toRoute('empCurrentPosting');
         }
-        $this->empCurrentPosting =  $this->entityManager->find(EmployeeCurrentPosting::class, $id);
-        $this->entityManager->remove($this->empCurrentPosting);
-        $this->entityManager->flush();
+        $this->repository->delete($id);
         $this->flashmessenger()->addMessage("Employee Current Posting Deleted!!!");
         return $this->redirect()->toRoute("empCurrentPosting");
 	}

@@ -40,28 +40,28 @@ if ($this->messages) {
     <tr role="row">
         <td class="v-align-middle sorting_1">
             <p>
-                <?php print $this->escapeHtml($empCurrentPosting->getEmployeeId()); ?>
+                <?php print $this->escapeHtml($empCurrentPosting->EMPLOYEE_ID); ?>
             </p>
         </td>
         <td class="v-align-middle sorting_1">
             <p>
                 <?php     
-                 print $this->escapeHtml($empCurrentPosting->getBranchId()); ?>
+                 print $this->escapeHtml($empCurrentPosting->BRANCH_ID); ?>
             </p>
         </td>
         <td class="v-align-middle sorting_1">
             <p>
-                <?php print $this->escapeHtml($empCurrentPosting->getDepartmentId()); ?>
+                <?php print $this->escapeHtml($empCurrentPosting->DEPARTMENT_ID); ?>
             </p>
         </td>
         <td class="v-align-middle sorting_1">
             <p>
-                <?php print $this->escapeHtml($empCurrentPosting->getDesignationId()); ?>
+                <?php print $this->escapeHtml($empCurrentPosting->DESIGNATION_ID); ?>
             </p>
         </td>
         <td class="v-align-middle sorting_1">
-            <a href="<?= $this->url("empCurrentPosting",["action"=>"edit","id"=>$empCurrentPosting->getId()]) ?>">Edit</a>|
-            <a href="<?= $this->url("empCurrentPosting",["action"=>"delete","id"=>$empCurrentPosting->getId()]); ?>" onclick="return confirm('Are you sure you want to delete this item?');">Delete</a>
+            <a href="<?= $this->url("empCurrentPosting",["action"=>"edit","id"=>$empCurrentPosting->EMPLOYEE_ID]) ?>">Edit</a>|
+            <a href="<?= $this->url("empCurrentPosting",["action"=>"delete","id"=>$empCurrentPosting->EMPLOYEE_ID]); ?>" onclick="return confirm('Are you sure you want to delete this item?');">Delete</a>
         </td>
     </tr>
 

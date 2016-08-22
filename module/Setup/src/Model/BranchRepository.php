@@ -31,6 +31,12 @@ class BranchRepository implements RepositoryInterface
         return $this->tableGateway->select();
     }
 
+    public function fetchActiveRecord()
+    {
+         return  $rowset= $this->tableGateway->select(['STATUS'=>'E']);
+        
+    }
+
     public function fetchById($id)
     {
            $rowset= $this->tableGateway->select(['BRANCH_ID'=>$id]);

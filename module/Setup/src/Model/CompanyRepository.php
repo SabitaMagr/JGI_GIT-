@@ -10,18 +10,20 @@ class CompanyRepository implements RepositoryInterface
     
     public function __construct(AdapterInterface $adapter)
     {
-        $this->tableGateway = new TableGateway('company',$adapter);
+        $this->tableGateway = new TableGateway('HR_COMPANY',$adapter);
 
     }
 
-    public function add(ModelInterface $model)
+    public function add($model)
     {
-        $this->tableGateway->insert($model->getArrayCopy());
+        $this->tableGateway->insert($model->getArrayCopyForDb());
     }
 
-    public function edit(ModelInterface $model,$id,$modifiedDt)
+    public function edit($model,$id,$modifiedDt)
     {
-        $this->tableGateway->update($model->getArrayCopy(),["companyCode"=>$id]);
+        $array = $model->getArrayCopyForDb();
+        $newArray = array_merge($array,['MODIFIED_DT'=>$modifiedDt]);
+        $this->tableGateway->update($newArray,["COMPANY_ID"=>$id]);
     }
 
     public function fetchAll()
@@ -31,13 +33,13 @@ class CompanyRepository implements RepositoryInterface
 
     public function fetchById($id)
     {
-        $rowset= $this->tableGateway->select(['companyCode'=>$id]);
+        $rowset= $this->tableGateway->select(['COMPANY_ID'=>$id]);
         return $rowset->current();
     }
 
     public function delete($id)
     {
-    	$this->tableGateway->delete(['companyCode'=>$id]);
+    	$this->tableGateway->delete(['COMPANY_ID'=>$id]);
 
     }
 }

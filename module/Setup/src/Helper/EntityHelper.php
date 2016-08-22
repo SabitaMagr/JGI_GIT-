@@ -5,14 +5,18 @@ namespace Setup\Helper;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\TableGateway\TableGateway;
 use Setup\Model\DepartmentRepository;
+use Setup\Model\DesignationRepository;
+use Setup\Model\PositionRepository;
+use Setup\Model\ServiceTypeRepository;
+use Setup\Model\BranchRepository;
 
 class EntityHelper
 {
 
     public static function getDepartmentKVList(AdapterInterface $adapter,$departmentId=null)
     {
-        $departmentRepository = new DepartmentRepository($adapter);
-        $entities = $departmentRepository->fetchAll();
+        $repository = new DepartmentRepository($adapter);
+        $entities = $repository->fetchActiveRecord();
         $entitiesArray=array();
         $entitiesArray[0]='----';
         foreach($entities as $entity){
@@ -23,8 +27,6 @@ class EntityHelper
         }
         return $entitiesArray;
     }
-
-
 
     public static function getBloodGroupKVList(EntityManager $em)
     {
@@ -39,15 +41,16 @@ class EntityHelper
     }
 
 
-    public static function getDesignationKVList(EntityManager $em,$designationId=null){
-        $repo = $em->getRepository(HrDesignations::class);
-        $entities = $repo->findAll();
-
+    public static function getDesignationKVList(AdapterInterface $adapter,$designationId=null){
+        
+        $repository = new DesignationRepository($adapter);
+        $entities = $repository->fetchActiveRecord();
         $entitiesArray=array();
         $entitiesArray[0]='----';
         foreach($entities as $entity){
-            if($entity->getDesignationId()!=$designationId){
-                $entitiesArray[$entity->getDesignationId()]=$entity->getDesignationTitle();
+            $entityResultSet = $entity->getArrayCopy();
+            if($entityResultSet['DESIGNATION_ID']!=$designationId){
+                $entitiesArray[$entityResultSet['DESIGNATION_ID']]=$entityResultSet['DESIGNATION_TITLE'];
             }
         }
         return $entitiesArray;
@@ -67,15 +70,16 @@ class EntityHelper
     }
 
 
-    public static function getPositionKVList(EntityManager $em,$positionId=null){
-        $repo = $em->getRepository(HrPositions::class);
-        $entities = $repo->findAll();
+    public static function getPositionKVList(AdapterInterface $adapter,$positionId=null){
 
+        $repository = new PositionRepository($adapter);
+        $entities = $repository->fetchActiveRecord();
         $entitiesArray=array();
         $entitiesArray[0]='----';
         foreach($entities as $entity){
-            if($entity->getPositionId()!=$positionId){
-                $entitiesArray[$entity->getPositionId()]=$entity->getPositionName();
+            $entityResultSet = $entity->getArrayCopy();
+            if($entityResultSet['POSITION_ID']!=$positionId){
+                $entitiesArray[$entityResultSet['POSITION_ID']]=$entityResultSet['POSITION_NAME'];
             }
         }
         return $entitiesArray;
@@ -95,15 +99,15 @@ class EntityHelper
     }
 
 
-    public static function getBranchKVList(EntityManager $em,$branchId=null){
-        $repo = $em->getRepository(HrBranches::class);
-        $entities = $repo->findAll();
-
+    public static function getBranchKVList(AdapterInterface $adapter,$branchId=null){
+        $repository = new BranchRepository($adapter);
+        $entities = $repository->fetchActiveRecord();
         $entitiesArray=array();
         $entitiesArray[0]='----';
         foreach($entities as $entity){
-            if($entity->getBranchId()!=$branchId){
-                $entitiesArray[$entity->getBranchId()]=$entity->getBranchName();
+            $entityResultSet = $entity->getArrayCopy();
+            if($entityResultSet['BRANCH_ID']!=$branchId){
+                $entitiesArray[$entityResultSet['BRANCH_ID']]=$entityResultSet['BRANCH_NAME'];
             }
         }
         return $entitiesArray;
@@ -123,15 +127,15 @@ class EntityHelper
     }
 
 
-    public static function getServiceTypeKVList(EntityManager $em,$serviceTypeId=null){
-        $repo = $em->getRepository(HrServiceTypes::class);
-        $entities = $repo->findAll();
-
+    public static function getServiceTypeKVList(AdapterInterface $adapter,$serviceTypeId=null){
+        $repository = new ServiceTypeRepository($adapter);
+        $entities = $repository->fetchActiveRecord();
         $entitiesArray=array();
         $entitiesArray[0]='----';
         foreach($entities as $entity){
-            if($entity->getServiceTypeId()!=$serviceTypeId){
-                $entitiesArray[$entity->getServiceTypeId()]=$entity->getServiceTypeName();
+            $entityResultSet = $entity->getArrayCopy();
+            if($entityResultSet['SERVICE_TYPE_ID']!=$serviceTypeId){
+                $entitiesArray[$entityResultSet['SERVICE_TYPE_ID']]=$entityResultSet['SERVICE_TYPE_NAME'];
             }
         }
         return $entitiesArray;

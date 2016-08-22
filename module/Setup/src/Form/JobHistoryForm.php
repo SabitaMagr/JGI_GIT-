@@ -12,15 +12,26 @@ namespace Setup\Form;
 */
 
 use Zend\Form\Annotation;
+use Setup\Model\Model;
 
 /**
  * @Annotation\Hydrator("Zend\Hydrator\ObjectProperty")
  * @Annotation\Name("JobHistoryForm")
 */
 
-class JobHistoryForm{
+class JobHistoryForm extends Model{
 
-	/**
+    /**
+     * @Annotion\Type("Zend\Form\Element\Text")
+     * @Annotation\Required({"required":"true"})
+     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
+     * @Annotation\Options({"label":"Job History Id"})
+     * @Annotation\Attributes({ "id":"form-jobHistoryId", "class":"form-jobHistoryId form-control" })
+     */
+    public $jobHistoryId;
+
+
+    /**
      * @Annotation\Type("Zend\Form\Element\Select")
      * @Annotation\Required({"required":"true"})
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
@@ -30,7 +41,7 @@ class JobHistoryForm{
     public $employeeId;
 
     /**
-     * @Annotation\Type("Zend\Form\Element\Date")
+     * @Annotation\Type("Zend\Form\Element\Text")
      * @Annotation\Required({"required":"true"})
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
      * @Annotation\Options({"label":"Start Date"})
@@ -39,7 +50,7 @@ class JobHistoryForm{
     public $startDate;
 
     /**
-     * @Annotation\Type("Zend\Form\Element\Date")
+     * @Annotation\Type("Zend\Form\Element\Text")
      * @Annotation\Required({"required":"true"})
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
      * @Annotation\Options({"label":"End Date"})
@@ -134,6 +145,21 @@ class JobHistoryForm{
     */
     public $submit;
 
+    public $mappings = [
+        'JOB_HISTORY_ID'=>'jobHistoryId',
+        'EMPLOYEE_ID'=>'employeeId',
+        'START_DATE'=>'startDate',
+        'END_DATE'=>'endDate',
+        'SERVICE_TYPE_ID'=>'serviceTypeId',
+        'FROM_BRANCH_ID'=>'fromBranchId',
+        'TO_BRANCH_ID'=>'toBranchId',
+        'FROM_DEPARTMENT_ID'=>'fromDepartmentId',
+        'TO_DEPARTMENT_ID'=>'toDepartmentId',
+        'FROM_DESIGNATION_ID'=>'fromDesignationId',
+        'TO_DESIGNATION_ID'=>'toDesignationId',
+        'FROM_POSITION_ID'=>'fromPositionId',
+        'TO_POSITION_ID'=>'toPositionId'
+    ];
 }
 
 /* End of file JobHistoryForm.php */

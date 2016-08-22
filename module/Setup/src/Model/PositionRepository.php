@@ -25,6 +25,10 @@ class PositionRepository implements RepositoryInterface{
 	public function fetchAll(){
 		return $this->tableGateway->select();
 	}
+	public function fetchActiveRecord()
+    {
+         return  $rowset= $this->tableGateway->select(['STATUS'=>'E']);       
+    }
 	public function fetchById($id){
 		$row = $this->tableGateway->select(["POSITION_ID"=>$id]);
 		return $row->current();

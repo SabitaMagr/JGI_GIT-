@@ -38,6 +38,12 @@ class DepartmentRepository implements RepositoryInterface
         $rowset= $this->tableGateway->select(['DEPARTMENT_ID'=>$id]);
         return $rowset->current();
     }
+    public function fetchActiveRecord()
+    {
+         return  $rowset= $this->tableGateway->select(['STATUS'=>'E']);
+        
+    }
+
 
     public function delete($id)
     {

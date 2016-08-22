@@ -95,10 +95,7 @@ class LeaveTypeController extends AbstractActionController {
         if (!$id) {
             return $this->redirect()->toRoute('position');
         }
-        $this->hrLeaveTypes =  $this->entityManager->find(HrLeaveTypes::class, $id);
-        $this->entityManager->remove($this->hrLeaveTypes);
-        $this->entityManager->flush();
-
+        $this->repository->delete($id);
         $this->flashmessenger()->addMessage("Leave Type Successfully Deleted!!!");
         return $this->redirect()->toRoute('leaveType');
 	}
