@@ -64,12 +64,14 @@ class PositionForm extends Model{
     */
     public $submit;
 
-    private $mappings=[
+    public $mappings=[
         'POSITION_ID'=>'positionId',
         'POSITION_NAME'=>'positionName',
         'REMARKS'=>'remarks',
         'STATUS'=>'status'
     ];
+
+   
 }
 
 /* End of file PositionForm.php */

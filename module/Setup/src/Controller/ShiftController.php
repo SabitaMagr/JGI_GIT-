@@ -17,32 +17,28 @@ use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 use Zend\Form\Annotation\AnnotationBuilder;
 use Setup\Form\ShiftForm;
-
-use Doctrine\ORM\EntityManager;
-use Setup\Entity\HrShifts;
-use Setup\Helper\EntityHelper;
+use Setup\Model\ShiftRepository;
+use Zend\Db\Adapter\AdapterInterface;
 
 class ShiftController extends AbstractActionController {
 	
-	private $hrShifts;
-	private $shiftForm;
-	private $entityManager;
-	private $hydrator;
+	private $repository;
+	private $form;
+	private $shift;
 
-	public function __construct(EntityManager $entityManager){
-		$this->entityManager = $entityManager;
-		$this->hrShifts = new HrShifts();
+	public function __construct(AdapterInterface $adapter){
+		$this->repository = new ShiftRepository($adapter);
 	}
 
 	public function indexAction(){
-		$shiftList = $this->entityManager->getRepository(HrShifts::class)->findAll();
+		$shiftList = $this->repository->fetchAll();
 		return Helper::addFlashMessagesToArray($this,['shiftList'=>$shiftList]);
 	}
 
 	public function initializeForm(){
-		$form = new ShiftForm();
+		$this->shift = new ShiftForm();
 		$builder = new AnnotationBuilder();
-		$this->shiftForm = $builder->createForm($form);
+		$this->form = $builder->createForm($this->shift);
 	}
 
 	public function addAction(){
@@ -51,15 +47,10 @@ class ShiftController extends AbstractActionController {
         $request = $this->getRequest();
         if ($request->isPost()) {
         
-	        $this->shiftForm->setData($request->getPost());
-	        if ($this->shiftForm->isValid()) {
-
-	        	$formData = $this->shiftForm->getData();
-	        	$this->hrShifts = EntityHelper::hydrate($this->entityManager,HrShifts::class,$formData);
-
-	            $this->entityManager->persist($this->hrShifts);
-	            $this->entityManager->flush();
-	            
+	        $this->form->setData($request->getPost());
+	        if ($this->form->isValid()) {
+	        	$this->shift->exchangeArrayFromForm($this->form->getData());
+	        	$this->repository->add($this->shift);	            
 	            $this->flashmessenger()->addMessage("Shift Successfully added!!!");
 	            return $this->redirect()->toRoute("shift");
 	        } 
@@ -67,7 +58,7 @@ class ShiftController extends AbstractActionController {
         return new ViewModel(Helper::addFlashMessagesToArray(
             $this,
             [
-                'form' => $this->shiftForm,
+                'form' => $this->form,
                 'messages' => $this->flashmessenger()->getMessages()
              ]
             )
@@ -83,26 +74,16 @@ class ShiftController extends AbstractActionController {
 		}
 
 		$request = $this->getRequest();
-		$modifiedDt = date("Y-m-d");
-
+		$modifiedDt = date("d-M-y");
 		if(!$request->isPost()){
-			
-			$shiftRecord = $this->entityManager->find(HrShifts::class,$id);
-			$shiftRecord1 = EntityHelper::extract($this->entityManager,$shiftRecord);
-			$this->shiftForm->bind((object)$shiftRecord1);
+			$this->shift->exchangeArrayFromDb($this->repository->fetchById($id)->getArrayCopy());
+			$this->form->bind((object)$this->shift->getArrayCopyForForm());
 		}else{
 
-			$this->shiftForm->setData($request->getPost());
-			if($this->shiftForm->isValid()){
-
-				$formData = $this->shiftForm->getData();
-				$newFormData = array_merge($formData,['modifiedDt'=>$modifiedDt]);
-				$this->hrShifts = EntityHelper::hydrate($this->entityManager,HrShifts::class,$formData);
-				$this->hrShifts->setShiftId($id);
-				
-				$this->entityManager->merge($this->hrShifts);
-				$this->entityManager->flush();
-			
+			$this->form->setData($request->getPost());
+			if($this->form->isValid()){
+				$this->shift->exchangeArrayFromForm($this->form->getData());
+				$this->repository->edit($this->shift,$id,$modifiedDt);
 				$this->flashmessenger()->addMessage("Shift Successfuly Updated!!!");
 				return $this->redirect()->toRoute("shift");
 			}
@@ -110,7 +91,7 @@ class ShiftController extends AbstractActionController {
 		return new ViewModel(Helper::addFlashMessagesToArray(
             $this,
             [
-                'form' => $this->shiftForm,
+                'form' => $this->form,
                 'id'=>$id
              ]
             )
@@ -122,10 +103,7 @@ class ShiftController extends AbstractActionController {
         if (!$id) {
             return $this->redirect()->toRoute('position');
         }
-        $this->hrShifts =  $this->entityManager->find(HrShifts::class, $id);
-        $this->entityManager->remove($this->hrShifts);
-        $this->entityManager->flush();
-
+        $this->repository->delete($id);
         $this->flashmessenger()->addMessage("Shift Successfully Deleted!!!");
         return $this->redirect()->toRoute('shift');
 	}

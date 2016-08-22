@@ -11,13 +11,23 @@ namespace Setup\Form;
 */
 
 use Zend\Form\Annotation;
+use Setup\Model\Model;
 
 /**
  * @Annotation\Hydrator("Zend\Hydrator\ObjectProperty")
  * @Annotation\Name("LeaveType")
  */
-class LeaveTypeForm{
+class LeaveTypeForm extends Model{
 
+
+	/**
+	 * @Annotation\Type("Zend\Form\Element\Text")
+	 * @Annotation\Required({"required":"true"})
+	 * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
+	 * @Annotation\Options({"label":"Leave Id"})
+	 * @Annotation\Attributes({ "id":"form-leaveId", "class":"form-leaveId form-control" })
+	 */
+	public $leaveId;
 
 	/**
 	 * @Annotation\Type("Zend\Form\Element\Text")
@@ -74,6 +84,15 @@ class LeaveTypeForm{
      * @Annotation\Attributes({"value":"Submit","class":"btn btn-primary pull-right"})
     */
     public $submit;
+
+    public $mappings = [
+    	'LEAVE_ID'=>'leaveId',
+    	'LEAVE_CODE'=>'leaveCode',
+    	'LEAVE_NAME'=>'leaveName',
+    	'TOTAL_LEAVE'=>'totalLeave',
+    	'REMARKS'=>'remarks',
+    	'STATUS'=>'status'
+    ];
 
 
 }

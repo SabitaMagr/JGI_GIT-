@@ -10,24 +10,26 @@ class LeaveTypeRepository implements RepositoryInterface{
 
 	public function __construct(AdapterInterface $adapter){
 
-		$this->tableGateway = new TableGateway('leaveType',$adapter);
+		$this->tableGateway = new TableGateway('HR_LEAVE_TYPES',$adapter);
 		
 	}
-	public function add(ModelInterface $model){
-		 $this->tableGateway->insert($model->getArrayCopy());
+	public function add($model){
+		 $this->tableGateway->insert($model->getArrayCopyForDb());
 
 	}
-	public function edit(ModelInterface $model,$id){
-		$this->tableGateway->update($model->getArrayCopy(),["leaveCode"=>$id]);
+	public function edit($model,$id,$modifiedDt){
+		$array = $model->getArrayCopyForDb();
+		$newArray = array_merge($array,['MODIFIED_DT'=>$modifiedDt]);
+		$this->tableGateway->update($newArray,["LEAVE_ID"=>$id]);
 	}
 	public function delete($id){
-		$this->tableGateway->delete(["leaveCode"=>$id]);
+		$this->tableGateway->delete(["LEAVE_ID"=>$id]);
 	}
 	public function fetchAll(){
 		return $this->tableGateway->select();
 	}
 	public function fetchById($id){
-		$row = $this->tableGateway->select(["leaveCode"=>$id]);
+		$row = $this->tableGateway->select(["LEAVE_ID"=>$id]);
 		return $row->current();
 	}
 }

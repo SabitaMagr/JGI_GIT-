@@ -80,33 +80,24 @@ class ServiceTypeController extends AbstractActionController{
 			return $this->redirect()->toRoute();
 		}
         $this->initializeForm();
-
         $request=$this->getRequest();
 
         if(!$request->isPost()){
-        	$serviceTypeRecord = $this->entityManager->find(HrServiceTypes::class, $id);
-        	$serviceTypeRecord1 = EntityHelper::extract($this->entityManager,$serviceTypeRecord);
-            $this->serviceTypeForm->bind((object)$serviceTypeRecord1);
+        	$this->serviceType->exchangeArrayFromDb($this->repository->fetchById($id)->getArrayCopy());
+        	$this->form->bind((object)$this->serviceType->getArrayCopyForForm());
         }else{
 
-	        $modifiedDt = date("Y-m-d");
-	        $this->serviceTypeForm->setData($request->getPost());
+	        $modifiedDt = date("d-M-y");
+	        $this->form->setData($request->getPost());
+	        if ($this->form->isValid()) {
 
-	        if ($this->serviceTypeForm->isValid()) {
-
-	        	$formData = $this->serviceTypeForm->getData();
-	        	$newFormData = array_merge($formData,['modifiedDt'=>$modifiedDt]);
-	        	$this->hrServiceTypes = EntityHelper::hydrate($this->entityManager,HrServiceTypes::class,$formData);
-	        	$this->hrServiceTypes->setServiceTypeId($id);
-
-	        	$this->entityManager->merge($this->hrServiceTypes);
-	        	$this->entityManager->flush();      
-
+	        	$this->serviceType->exchangeArrayFromForm($this->form->getData());
+	        	$this->repository->edit($this->serviceType,$id,$modifiedDt);
 	            $this->flashmessenger()->addMessage("Service Type Successfully Updated!!!");
 	            return $this->redirect()->toRoute("serviceType");
 	        }
     	}
-        return Helper::addFlashMessagesToArray($this,['form'=>$this->serviceTypeForm,'id'=>$id]);
+        return Helper::addFlashMessagesToArray($this,['form'=>$this->form,'id'=>$id]);
 	}
 	
 	public function deleteAction(){
@@ -115,11 +106,7 @@ class ServiceTypeController extends AbstractActionController{
 		if(!$id){
 			return $this->redirect()->toRoute('serviceType');
 		}
-
-		$this->hrServiceTypes = $this->entityManager->find(HrServiceTypes::class,$id);
-		$this->entityManager->remove($this->hrServiceTypes);
-		$this->entityManager->flush();
-
+		$this->repository->delete($id);
 		$this->flashmessenger()->addMessage("Service Type Successfully Deleted!!!");
 		return $this->redirect()->toRoute('serviceType');
 	}

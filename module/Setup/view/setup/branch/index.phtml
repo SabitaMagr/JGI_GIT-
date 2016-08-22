@@ -41,28 +41,28 @@ if ($this->messages) {
         <tr role="row">
             <td class="v-align-middle sorting_1">
                 <p>
-                    <?php print $this->escapeHtml($branch->getBranchName()) ?>
+                    <?php print $this->escapeHtml($branch->BRANCH_NAME); ?>
                 </p>
             </td>
             <td class="v-align-middle sorting_1">
                 <p>
-                    <?php print $this->escapeHtml($branch->getTelephone()) ?>
+                    <?php print $this->escapeHtml($branch->TELEPHONE); ?>
                 </p>
             </td>
             <td class="v-align-middle sorting_1">
                 <p>
-                    <?php print $this->escapeHtml($branch->getFax()) ?>
+                    <?php print $this->escapeHtml($branch->FAX);?>
                 </p>
             </td>
             <td class="v-align-middle sorting_1">
                 <p>
-                    <?php print $this->escapeHtml($branch->getEmail()) ?>
+                    <?php print $this->escapeHtml($branch->EMAIL); ?>
                 </p>
             </td>
             
             <td class="v-align-middle sorting_1">
-                <a href="<?= $this->url("branch", ["action" => "edit", "id" => $branch->getBranchId()]) ?>">Edit</a>
-                <a href="<?= $this->url("branch",["action"=>"delete","id"=>$branch->getBranchId()]); ?>" onclick="return confirm('Are you sure you want to delete this item?');">Delete</a>
+                <a href="<?= $this->url("branch", ["action" => "edit", "id" => $branch->BRANCH_ID]) ?>">Edit</a>
+                <a href="<?= $this->url("branch",["action"=>"delete","id"=>$branch->BRANCH_ID]); ?>" onclick="return confirm('Are you sure you want to delete this item?');">Delete</a>
             </td>
         </tr>
 

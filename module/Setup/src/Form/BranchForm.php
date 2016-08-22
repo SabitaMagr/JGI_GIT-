@@ -12,13 +12,23 @@ namespace Setup\Form;
 */
 
 use Zend\Form\Annotation;
+use Setup\Model\Model;
 
 /**
  * @Annotation\Hydrator("Zend\Hydrator\ObjectProperty")
  * @Annotation\Name("Branch")
  */
-class BranchForm
+class BranchForm extends Model
 {
+    /**
+     * @Annotion\Type("Zend\Form\Element\Text")
+     * @Annotation\Required({"required":"true"})
+     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
+     * @Annotation\Options({"label":"Branch Id"})
+     * @Annotation\Attributes({ "id":"form-branchId", "class":"form-branchId form-control" })
+     */
+    public $branchId;
+
     /**
      * @Annotion\Type("Zend\Form\Element\Text")
      * @Annotation\Required({"required":"true"})
@@ -49,7 +59,7 @@ class BranchForm
 
     /**
      * @Annotion\Type("Zend\Form\Element\Text")
-     * @Annotation\Required(false)
+     * @Annotation\Required({"required":"true"})
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Telephone"})
      * @Annotation\Validator({"name":"StringLength", "options":{"max":"10"}})
@@ -102,6 +112,18 @@ class BranchForm
      * @Annotation\Attributes({"value":"Submit","class":"btn btn-primary pull-right"})
      */
     public $submit;
+
+    public $mappings = [
+            'BRANCH_ID'=>'branchId',
+            'BRANCH_CODE'=>'branchCode',
+            'BRANCH_NAME'=>'branchName',
+            'STREET_ADDRESS'=>'streetAddress',
+            'TELEPHONE'=>'telephone',
+            'FAX'=>'fax',
+            'EMAIL'=>'email',
+            'REMARKS'=>'remarks',
+            'STATUS'=>'status'
+        ];
 
 }
 

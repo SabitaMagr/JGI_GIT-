@@ -4,27 +4,26 @@ namespace Setup\Model;
 
 class Model
 {
-    private $mappings=[];
+    public $mappings=[];
 
     public function exchangeArrayFromForm(array $data)
     {
-        $entityKeys=array_keys($this->mappings);
-        foreach($entityKeys as $keys){
-            $this->{$keys} = !empty($data[$keys]) ? $data[$keys] : null;
+        foreach($this->mappings as $key => $value){
+            $this->{$value} = !empty($data[$value]) ? $data[$value] : null;
         }
     }
 
     public function exchangeArrayFromDB(array $data)
     {
         foreach($this->mappings as $key => $value){
-            $this->{$key} = !empty($data[$value]) ? $data[$value] : null;
+            $this->{$value} = !empty($data[$key]) ? $data[$key] : null;
         }
     }
     public function getArrayCopyForDB()
     {
         $tempArray=[];
         foreach($this->mappings as $key => $value){
-            $tempArray[$value]=$this->{$key};
+            $tempArray[$key]=$this->{$value};
         }
         return $tempArray;
     }
@@ -33,7 +32,7 @@ class Model
     {
         $tempArray=[];
         foreach($this->mappings as $key => $value){
-            $tempArray[$key]=$this->{$key};
+            $tempArray[$value]=$this->{$value};
         }
         return $tempArray;
     }

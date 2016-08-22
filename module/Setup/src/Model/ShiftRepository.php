@@ -11,18 +11,16 @@ class ShiftRepository implements RepositoryInterface
     
     public function __construct(AdapterInterface $adapter)
     {
-        $this->tableGateway = new TableGateway('hr_shifts',$adapter);
-
+        $this->tableGateway = new TableGateway('HR_SHIFTS',$adapter);
     }
 
-     public function add(ModelInterface $model)
+     public function add($model)
     {
- 
         $this->tableGateway->insert($model->getArrayCopyForDb());
     }
 
 
-    public function edit(ModelInterface $model,$id,$modifiedDt)
+    public function edit($model,$id,$modifiedDt)
     {
         $array = $model->getArrayCopyForDb();
         $newArray = array_merge($array,["MODIFIED_DT"=>$modifiedDt]);

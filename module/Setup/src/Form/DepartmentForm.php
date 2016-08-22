@@ -84,7 +84,7 @@ class DepartmentForm extends Model
     */
     public $submit;
 
-    private $mappings=[
+    public $mappings=[
         'DEPARTMENT_ID'=>'departmentId',
         'DEPARTMENT_CODE'=>'departmentCode',
         'DEPARTMENT_NAME'=>'departmentName',

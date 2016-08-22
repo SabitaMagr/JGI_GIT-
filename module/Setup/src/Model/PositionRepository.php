@@ -8,14 +8,11 @@ class PositionRepository implements RepositoryInterface{
 	private $tableGateway;
 
 	public function __construct(AdapterInterface $adapter){
-
-		$this->tableGateway = new TableGateway('HR_POSITIONS',$adapter);
-		
+		$this->tableGateway = new TableGateway('HR_POSITIONS',$adapter);		
 	}
 	public function add($model){
-		print_r($model->getArrayCopyForDb());die();
-		 $this->tableGateway->insert($model->getArrayCopyForDb());
-
+		//print_r($model->getArrayCopyForDb());die();
+		$this->tableGateway->insert($model->getArrayCopyForDb());
 	}
 	public function edit($model,$id,$modifiedDt){
 		$array = $model->getArrayCopyForDB();

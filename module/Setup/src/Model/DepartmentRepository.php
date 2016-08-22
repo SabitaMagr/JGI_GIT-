@@ -23,10 +23,9 @@ class DepartmentRepository implements RepositoryInterface
     public function edit($model,$id,$modifiedDt)
     {
         $temp=$model->getArrayCopyForDB();
-        unset($temp["DEPARTMENT_ID"]);
-        unset($temp["CREATED_DT"]);
+        $newArray = array_merge($temp,['MODIFIED_DT'=>$modifiedDt]);
 
-        $this->tableGateway->update($temp,["DEPARTMENT_ID"=>$id]);
+        $this->tableGateway->update($newArray,["DEPARTMENT_ID"=>$id]);
     }
 
     public function fetchAll()

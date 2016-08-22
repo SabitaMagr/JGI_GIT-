@@ -13,14 +13,26 @@ namespace Setup\Form;
 */
 
 use Zend\Form\Annotation;
+use Setup\Model\Model;
+
 
 /**
  * @Annotation\Hydrator("Zend\Hydrator\ObjectProperty")
  * @Annotation\Name("DesignationForm")
  */
 
-class DesignationForm 
+class DesignationForm extends Model 
 {
+    
+    /**
+     * @Annotation\Type("Zend\Form\Element\Text")
+     * @Annotation\Required({"required":"true"})
+     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
+     * @Annotation\Options({"label":"Designation Id"})
+     * @Annotation\Attributes({ "id":"form-designationId", "class":"form-designationId form-control" })
+     */
+    public $designationId;
+
     /**
      * @Annotation\Type("Zend\Form\Element\Text")
      * @Annotation\Required({"required":"true"})
@@ -63,6 +75,14 @@ class DesignationForm
      * @Annotation\Attributes({"value":"Submit","class":"btn btn-primary pull-right"})
     */
     public $submit;
+
+    public $mappings =[
+        'DESIGNATION_ID'=>'designationId',
+        'DESIGNATION_CODE'=>'designationCode',
+        'DESIGNATION_TITLE'=>'designationTitle',
+        'BASIC_SALARY'=>'basicSalary',
+        'STATUS'=>'status'
+    ];
 }
 
 /* End of file DesignationForm.php */

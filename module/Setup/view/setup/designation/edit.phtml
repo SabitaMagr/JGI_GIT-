@@ -2,6 +2,7 @@
 $form->setAttribute('role','form');
 $form->setAttribute('class','designation-form');
 
+$designationId = $form->get('designationId');
 $designationCode = $form->get('designationCode');
 $designationTitle = $form->get("designationTitle");
 $basicSalary = $form->get("basicSalary");
@@ -32,6 +33,11 @@ print $this->form()->openTag($form);
                     <h4>Designation Setup</h4>     
             </div>
             <div class="panel-body padding-5" style="margin-top:7px;">  
+                <div class="form-group form-group-default emp-form-group">
+                    <?= $this->formLabel($designationId) ?>
+                    <?= $this->formElement($designationId); ?>
+                    <?= $this->formElementErrors()->render($designationId, ['class' => 'help-block']) ?>
+                </div>
                 <div class="form-group form-group-default emp-form-group">
                     <?= $this->formLabel($designationCode) ?>
                     <?= $this->formElement($designationCode); ?>

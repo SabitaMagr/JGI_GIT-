@@ -10,18 +10,20 @@ class BranchRepository implements RepositoryInterface
 
     public function __construct(AdapterInterface $adapter)
     {
-        $this->tableGateway=new TableGateway('branch',$adapter);
+        $this->tableGateway=new TableGateway('HR_BRANCHES',$adapter);
 
     }
 
-    public function add(ModelInterface $model)
+    public function add($model)
     {
-        $this->tableGateway->insert($model->getArrayCopy());
+        $this->tableGateway->insert($model->getArrayCopyForDb());
     }
 
-    public function edit(ModelInterface $model,$id)
+    public function edit($model,$id,$modifiedDt)
     {
-        $this->tableGateway->update($model->getArrayCopy(),["branchCode"=>$id]);
+        $array = $model->getArrayCopyForDb();
+        $newArray = array_merge($array,['MODIFIED_DT'=>$modifiedDt]);
+        $this->tableGateway->update($newArray,["BRANCH_ID"=>$id]);
     }
 
     public function fetchAll()
@@ -31,12 +33,12 @@ class BranchRepository implements RepositoryInterface
 
     public function fetchById($id)
     {
-           $rowset= $this->tableGateway->select(['branchCode'=>$id]);
+           $rowset= $this->tableGateway->select(['BRANCH_ID'=>$id]);
         return $rowset->current();
     }
 
     public function delete($id)
     {
-        $this->tableGateway->delete(['branchCode'=>$id]);
+        $this->tableGateway->delete(['BRANCH_ID'=>$id]);
     }
 }

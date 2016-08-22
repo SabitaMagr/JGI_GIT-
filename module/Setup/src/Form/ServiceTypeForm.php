@@ -78,14 +78,13 @@ class ServiceTypeForm extends Model{
     */
     public $submit;
 
-    private $mappings = [
+    public $mappings = [
     	'SERVICE_TYPE_ID'=>'serviceTypeId',
     	'SERVICE_TYPE_CODE'=>'serviceTypeCode',
     	'SERVICE_TYPE_NAME'=>'serviceTypeName',
     	'REMARKS'=>'remarks',
     	'STATUS'=>'status'
     ];
-
 }
 
 /* End of file ServiceTypeForm.php */
