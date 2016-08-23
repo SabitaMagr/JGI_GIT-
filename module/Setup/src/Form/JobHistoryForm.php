@@ -2,24 +2,23 @@
 namespace Setup\Form;
 
 /**
-* Form Setup Job History
-* Job History Form.
-* Created By: Somkala Pachhai
-* Edited By: 
-* Date: August 11, 2016, Thursday 
-* Last Modified By: 
-* Last Modified Date: 
-*/
+ * Form Setup Job History
+ * Job History Form.
+ * Created By: Somkala Pachhai
+ * Edited By:
+ * Date: August 11, 2016, Thursday
+ * Last Modified By:
+ * Last Modified Date:
+ */
 
 use Zend\Form\Annotation;
-use Setup\Model\Model;
 
 /**
  * @Annotation\Hydrator("Zend\Hydrator\ObjectProperty")
  * @Annotation\Name("JobHistoryForm")
-*/
-
-class JobHistoryForm extends Model{
+ */
+class JobHistoryForm
+{
 
     /**
      * @Annotion\Type("Zend\Form\Element\Text")
@@ -142,24 +141,9 @@ class JobHistoryForm extends Model{
     /**
      * @Annotation\Type("Zend\Form\Element\Submit")
      * @Annotation\Attributes({"value":"Submit","class":"btn btn-primary pull-right"})
-    */
+     */
     public $submit;
 
-    public $mappings = [
-        'JOB_HISTORY_ID'=>'jobHistoryId',
-        'EMPLOYEE_ID'=>'employeeId',
-        'START_DATE'=>'startDate',
-        'END_DATE'=>'endDate',
-        'SERVICE_TYPE_ID'=>'serviceTypeId',
-        'FROM_BRANCH_ID'=>'fromBranchId',
-        'TO_BRANCH_ID'=>'toBranchId',
-        'FROM_DEPARTMENT_ID'=>'fromDepartmentId',
-        'TO_DEPARTMENT_ID'=>'toDepartmentId',
-        'FROM_DESIGNATION_ID'=>'fromDesignationId',
-        'TO_DESIGNATION_ID'=>'toDesignationId',
-        'FROM_POSITION_ID'=>'fromPositionId',
-        'TO_POSITION_ID'=>'toPositionId'
-    ];
 }
 
 /* End of file JobHistoryForm.php */

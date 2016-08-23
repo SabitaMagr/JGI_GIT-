@@ -3,57 +3,56 @@ namespace Setup\Form;
 
 
 /**
-* Form Setup Service Type
-* Service Type Form.
-* Created By: Somkala Pachhai
-* Edited By: 
-* Date: August 10, 2016, Wednesday 
-* Last Modified By: 
-* Last Modified Date: 
-*/
+ * Form Setup Service Type
+ * Service Type Form.
+ * Created By: Somkala Pachhai
+ * Edited By:
+ * Date: August 10, 2016, Wednesday
+ * Last Modified By:
+ * Last Modified Date:
+ */
 
 
 use Zend\Form\Annotation;
-use Setup\Model\Model;
 
-/** 
-* @Annotation\Hydrator("Zend\Hydrator\ObjectProperty")
-* @Annotation\Name("ServiceType")
-*/
+/**
+ * @Annotation\Hydrator("Zend\Hydrator\ObjectProperty")
+ * @Annotation\Name("ServiceType")
+ */
+class ServiceTypeForm
+{
 
-class ServiceTypeForm extends Model{
-
-	/**
-	 * @Annotion\Type("Zend\Form\Element\Text")
-	 * @Annotation\Required({"required":"true"})
-	 * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
-	 * @Annotation\Options({"label":"Service Type Id"})
-	 * @Annotation\Attributes({ "id":"form-serviceTypeId", "class":"form-serviceTypeId form-control" })
-	 */
-	public $serviceTypeId;
-
-
-	/**
-	 * @Annotion\Type("Zend\Form\Element\Text")
-	 * @Annotation\Required({"required":"true"})
-	 * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
-	 * @Annotation\Options({"label":"Service Type Code"})
-	 * @Annotation\Attributes({ "id":"form-serviceTypeCode", "class":"form-serviceTypeCode form-control" })
-	 */
-	public $serviceTypeCode;
-
-	/**
-	 * @Annotion\Type("Zend\Form\Element\Text")
-	 * @Annotation\Required({"required":"true"})
-	 * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
-	 * @Annotation\Options({"label":"Service Type Name"})
-	 * @Annotation\Validator({"name":"StringLength", "options":{"min":"5"}})
-	 * @Annotation\Attributes({ "id":"form-serviceTypeName", "class":"form-serviceTypeName form-control" })
-	 */
-	public $serviceTypeName;
+    /**
+     * @Annotion\Type("Zend\Form\Element\Text")
+     * @Annotation\Required({"required":"true"})
+     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
+     * @Annotation\Options({"label":"Service Type Id"})
+     * @Annotation\Attributes({ "id":"form-serviceTypeId", "class":"form-serviceTypeId form-control" })
+     */
+    public $serviceTypeId;
 
 
-	/**
+    /**
+     * @Annotion\Type("Zend\Form\Element\Text")
+     * @Annotation\Required({"required":"true"})
+     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
+     * @Annotation\Options({"label":"Service Type Code"})
+     * @Annotation\Attributes({ "id":"form-serviceTypeCode", "class":"form-serviceTypeCode form-control" })
+     */
+    public $serviceTypeCode;
+
+    /**
+     * @Annotion\Type("Zend\Form\Element\Text")
+     * @Annotation\Required({"required":"true"})
+     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
+     * @Annotation\Options({"label":"Service Type Name"})
+     * @Annotation\Validator({"name":"StringLength", "options":{"min":"5"}})
+     * @Annotation\Attributes({ "id":"form-serviceTypeName", "class":"form-serviceTypeName form-control" })
+     */
+    public $serviceTypeName;
+
+
+    /**
      * @Annotation\Type("Zend\Form\Element\Textarea")
      * @Annotation\Required(false)
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
@@ -70,21 +69,14 @@ class ServiceTypeForm extends Model{
      * @Annotation\Attributes({ "id":"form-status","data-init-plugin":"cs-select","class":"cs-select cs-skin-slide form-status form-control"})
      */
     public $status;
-	
 
-	/**
+
+    /**
      * @Annotation\Type("Zend\Form\Element\Submit")
      * @Annotation\Attributes({"value":"Submit","class":"btn btn-primary pull-right"})
-    */
+     */
     public $submit;
 
-    public $mappings = [
-    	'SERVICE_TYPE_ID'=>'serviceTypeId',
-    	'SERVICE_TYPE_CODE'=>'serviceTypeCode',
-    	'SERVICE_TYPE_NAME'=>'serviceTypeName',
-    	'REMARKS'=>'remarks',
-    	'STATUS'=>'status'
-    ];
 }
 
 /* End of file ServiceTypeForm.php */

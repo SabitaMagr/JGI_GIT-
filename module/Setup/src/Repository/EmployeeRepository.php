@@ -1,8 +1,10 @@
 <?php
 
 
-namespace Setup\Model;
+namespace Setup\Repository;
 
+use Setup\Model\HrEmployees;
+use Setup\Model\Model;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\TableGateway\TableGateway;
 
@@ -17,7 +19,18 @@ class  EmployeeRepository implements RepositoryInterface
 
     public function fetchAll()
     {
-        return $this->gateway->select();
+        $result = $this->gateway->select();
+
+        $tempArray=[];
+        $tempObject=new HrEmployees();
+        foreach($result as $item){
+            $tempObject->exchangeArrayFromDB( $item->getArrayCopy());
+            array_push($tempArray,$tempObject);
+        }
+
+        return $tempArray;
+
+
     }
 
     public function fetchById($id)
@@ -36,9 +49,9 @@ class  EmployeeRepository implements RepositoryInterface
 
     }
 
-    public function edit(Model $model, $id, $modifiedDt)
+    public function edit(Model $model, $id)
     {
-        $tempArray=$model->getArrayCopyForDB();
+        $tempArray = $model->getArrayCopyForDB();
 
         $this->gateway->update($tempArray, ['EMPLOYEE_ID' => $id]);
 

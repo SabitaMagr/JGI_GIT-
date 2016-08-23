@@ -1,6 +1,7 @@
 <?php
-namespace Setup\Model;
+namespace Setup\Repository;
 
+use Setup\Model\Model;
 use Zend\Db\TableGateway\TableGateway;
 use Zend\Db\Adapter\AdapterInterface;
 
@@ -11,13 +12,13 @@ class PositionRepository implements RepositoryInterface{
 		$this->tableGateway = new TableGateway('HR_POSITIONS',$adapter);		
 	}
 	public function add(Model $model){
-		//print_r($model->getArrayCopyForDb());die();
-		$this->tableGateway->insert($model->getArrayCopyForDb());
+		$this->tableGateway->insert($model->getArrayCopyForDB());
 	}
-	public function edit(Model $model,$id,$modifiedDt){
+	public function edit(Model $model,$id){
 		$array = $model->getArrayCopyForDB();
-		$newArray = array_merge($array,["MODIFIED_DT"=>$modifiedDt]);
-		$this->tableGateway->update($newArray,["POSITION_ID"=>$id]);
+		unset($array["POSITION_ID"]);
+		unset($array["CREATED_DT"]);
+		$this->tableGateway->update($array,["POSITION_ID"=>$id]);
 	}
 	public function delete($id){
 		$this->tableGateway->delete(["POSITION_ID"=>$id]);

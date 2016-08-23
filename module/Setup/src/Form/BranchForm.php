@@ -18,7 +18,7 @@ use Setup\Model\Model;
  * @Annotation\Hydrator("Zend\Hydrator\ObjectProperty")
  * @Annotation\Name("Branch")
  */
-class BranchForm extends Model
+class BranchForm
 {
     /**
      * @Annotion\Type("Zend\Form\Element\Text")
@@ -113,17 +113,6 @@ class BranchForm extends Model
      */
     public $submit;
 
-    public $mappings = [
-            'BRANCH_ID'=>'branchId',
-            'BRANCH_CODE'=>'branchCode',
-            'BRANCH_NAME'=>'branchName',
-            'STREET_ADDRESS'=>'streetAddress',
-            'TELEPHONE'=>'telephone',
-            'FAX'=>'fax',
-            'EMAIL'=>'email',
-            'REMARKS'=>'remarks',
-            'STATUS'=>'status'
-        ];
 
 }
 

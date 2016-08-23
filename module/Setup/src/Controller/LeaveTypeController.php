@@ -12,17 +12,17 @@ namespace Setup\Controller;
 */
 
 use Application\Helper\Helper;
+use Setup\Model\LeaveType;
 use Zend\View\Model\ViewModel;
 use Setup\Form\LeaveTypeForm;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\Db\Adapter\AdapterInterface;
-use Setup\Model\LeaveTypeRepository;
+use Setup\Repository\LeaveTypeRepository;
 
 
 class LeaveTypeController extends AbstractActionController {
 
-	private $leaveType;
 	private $form;
 	private $repository;
 
@@ -32,9 +32,9 @@ class LeaveTypeController extends AbstractActionController {
 
 	public function initializeForm(){
 
-		$this->leaveType = new LeaveTypeForm();
+		$leaveTypeForm = new LeaveTypeForm();
 		$builder =  new AnnotationBuilder();	
-		$this->form = $builder -> createForm($this->leaveType);
+		$this->form = $builder -> createForm($leaveTypeForm);
 	}
 
 	public function indexAction(){
@@ -49,8 +49,10 @@ class LeaveTypeController extends AbstractActionController {
 				
 			$this->form->setData($request->getPost());
 			if($this->form->isValid()){
-				$this->leaveType->exchangeArrayFromForm($this->form->getData());
-				$this->repository->add($this->leaveType);
+				$leaveType=new LeaveType();
+				$leaveType->exchangeArrayFromForm($this->form->getData());
+				$leaveType->createdDt=date('d-M-y');
+				$this->repository->add($leaveType);
 				$this->flashmessenger()->addMessage("Leave Type Successfully Added!!!");
 				return $this->redirect()->toRoute("leaveType");
 
@@ -68,18 +70,19 @@ class LeaveTypeController extends AbstractActionController {
         }
         $this->initializeForm();
         $request=$this->getRequest();
-        $modifiedDt = date("d-M-y");
-        
+
+		$leaveType=new LeaveType();
         if(!$request->isPost()){
-        	$this->leaveType->exchangeArrayFromDb($this->repository->fetchById($id)->getArrayCopy());
-        	$this->form->bind((object)$this->leaveType->getArrayCopyForForm());           
+        	$leaveType->exchangeArrayFromDB($this->repository->fetchById($id)->getArrayCopy());
+        	$this->form->bind($leaveType);
         }else{
 
 	        $this->form->setData($request->getPost());
 	        if ($this->form->isValid()) {
 
-	        	$this->leaveType->exchangeArrayFromForm($this->form->getData());
-	        	$this->repository->edit($this->leaveType,$id,$modifiedDt);
+	        	$leaveType->exchangeArrayFromForm($this->form->getData());
+				$leaveType->modifiedDt=date('d-M-y');
+	        	$this->repository->edit($leaveType,$id);
 	            $this->flashmessenger()->addMessage("Leave Type Successfully Updated!!!");
 	            return $this->redirect()->toRoute("leaveType");
 	        }

@@ -1,13 +1,14 @@
 <?php
-namespace Setup\Model;
+namespace Setup\Repository;
 
+use Setup\Model\Model;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\TableGateway\TableGateway;
 
 class CompanyRepository implements RepositoryInterface
 {
     private $tableGateway;
-    
+
     public function __construct(AdapterInterface $adapter)
     {
         $this->tableGateway = new TableGateway('HR_COMPANY',$adapter);
@@ -16,14 +17,15 @@ class CompanyRepository implements RepositoryInterface
 
     public function add(Model $model)
     {
-        $this->tableGateway->insert($model->getArrayCopyForDb());
+        $this->tableGateway->insert($model->getArrayCopyForDB());
     }
 
-    public function edit(Model $model,$id,$modifiedDt)
+    public function edit(Model $model,$id)
     {
-        $array = $model->getArrayCopyForDb();
-        $newArray = array_merge($array,['MODIFIED_DT'=>$modifiedDt]);
-        $this->tableGateway->update($newArray,["COMPANY_ID"=>$id]);
+        $array = $model->getArrayCopyForDB();
+        unset($array['COMPANY_ID']);
+        unset($array['CREATED_DT']);
+        $this->tableGateway->update($array,["COMPANY_ID"=>$id]);
     }
 
     public function fetchAll()

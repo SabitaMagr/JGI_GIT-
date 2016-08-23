@@ -1,14 +1,15 @@
 <?php
 namespace Setup\Form;
+
 /**
-* Form Setup Leave Type
-* Leave Type Form.
-* Created By: Somkala Pachhai
-* Edited By: 
-* Date: August 10, 2016, Wednesday 
-* Last Modified By: 
-* Last Modified Date: 
-*/
+ * Form Setup Leave Type
+ * Leave Type Form.
+ * Created By: Somkala Pachhai
+ * Edited By:
+ * Date: August 10, 2016, Wednesday
+ * Last Modified By:
+ * Last Modified Date:
+ */
 
 use Zend\Form\Annotation;
 use Setup\Model\Model;
@@ -17,49 +18,50 @@ use Setup\Model\Model;
  * @Annotation\Hydrator("Zend\Hydrator\ObjectProperty")
  * @Annotation\Name("LeaveType")
  */
-class LeaveTypeForm extends Model{
+class LeaveTypeForm
+{
 
 
-	/**
-	 * @Annotation\Type("Zend\Form\Element\Text")
-	 * @Annotation\Required({"required":"true"})
-	 * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
-	 * @Annotation\Options({"label":"Leave Id"})
-	 * @Annotation\Attributes({ "id":"form-leaveId", "class":"form-leaveId form-control" })
-	 */
-	public $leaveId;
+    /**
+     * @Annotation\Type("Zend\Form\Element\Text")
+     * @Annotation\Required({"required":"true"})
+     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
+     * @Annotation\Options({"label":"Leave Id"})
+     * @Annotation\Attributes({ "id":"form-leaveId", "class":"form-leaveId form-control" })
+     */
+    public $leaveId;
 
-	/**
-	 * @Annotation\Type("Zend\Form\Element\Text")
-	 * @Annotation\Required({"required":"true"})
-	 * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
-	 * @Annotation\Options({"label":"Leave Code"})
-	 * @Annotation\Attributes({ "id":"form-leaveCode", "class":"form-leaveCode form-control" })
-	 */
-	public $leaveCode;
+    /**
+     * @Annotation\Type("Zend\Form\Element\Text")
+     * @Annotation\Required({"required":"true"})
+     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
+     * @Annotation\Options({"label":"Leave Code"})
+     * @Annotation\Attributes({ "id":"form-leaveCode", "class":"form-leaveCode form-control" })
+     */
+    public $leaveCode;
 
-	
-	/**
-	 * @Annotation\Type("Zend\Form\Element\Text")
-	 * @Annotation\Required({"required":"true"})
-	 * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
-	 * @Annotation\Options({"label":"Leave Name"})
-	 * @Annotation\Validator({"name":"StringLength", "options":{"min":"5"}})
-	 * @Annotation\Attributes({ "id":"form-leaveName", "class":"form-leaveName form-control" })
-	 */
-	public $leaveName;
 
-	
-	/**
-	 * @Annotation\Type("Zend\Form\Element\Number")
-	 * @Annotation\Required({"required":"true"})
-	 * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
-	 * @Annotation\Options({"label":"Total Leave"})
-	 * @Annotation\Attributes({ "id":"form-totalLeave", "class":"form-totalLeave form-control" })
-	 */
-	public $totalLeave;
+    /**
+     * @Annotation\Type("Zend\Form\Element\Text")
+     * @Annotation\Required({"required":"true"})
+     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
+     * @Annotation\Options({"label":"Leave Name"})
+     * @Annotation\Validator({"name":"StringLength", "options":{"min":"5"}})
+     * @Annotation\Attributes({ "id":"form-leaveName", "class":"form-leaveName form-control" })
+     */
+    public $leaveName;
 
-	/**
+
+    /**
+     * @Annotation\Type("Zend\Form\Element\Number")
+     * @Annotation\Required({"required":"true"})
+     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
+     * @Annotation\Options({"label":"Total Leave"})
+     * @Annotation\Attributes({ "id":"form-totalLeave", "class":"form-totalLeave form-control" })
+     */
+    public $totalLeave;
+
+    /**
      * @Annotation\Type("Zend\Form\Element\Textarea")
      * @Annotation\Required(false)
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
@@ -78,21 +80,11 @@ class LeaveTypeForm extends Model{
     public $status;
 
 
-
-	/**
+    /**
      * @Annotation\Type("Zend\Form\Element\Submit")
      * @Annotation\Attributes({"value":"Submit","class":"btn btn-primary pull-right"})
-    */
+     */
     public $submit;
-
-    public $mappings = [
-    	'LEAVE_ID'=>'leaveId',
-    	'LEAVE_CODE'=>'leaveCode',
-    	'LEAVE_NAME'=>'leaveName',
-    	'TOTAL_LEAVE'=>'totalLeave',
-    	'REMARKS'=>'remarks',
-    	'STATUS'=>'status'
-    ];
 
 
 }

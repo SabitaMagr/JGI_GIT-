@@ -11,18 +11,18 @@ namespace Setup\Controller;
 * Last Modified Date: 
 */
 
+use Setup\Model\JobHistory;
 use Zend\View\Model\ViewModel;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\Form\Annotation\AnnotationBuilder;
 use Application\Helper\Helper;
 use Setup\Form\JobHistoryForm;
 use Zend\Db\Adapter\AdapterInterface;
-use Setup\Model\JobHistoryRepository;
+use Setup\Repository\JobHistoryRepository;
 use Setup\Helper\EntityHelper;
 
 class JobHistoryController extends AbstractActionController{
 
-	private $jobHistory;
 	private $repository;
 	private $form;
 	private $adapter;
@@ -33,10 +33,10 @@ class JobHistoryController extends AbstractActionController{
 	}
 
 	public function initializeForm(){
-		$this->jobHistory = new JobHistoryForm();
+		$jobHistoryForm = new JobHistoryForm();
 		$builder = new AnnotationBuilder();
 		if(!$this->form){
-			$this->form = $builder->createForm($this->jobHistory);
+			$this->form = $builder->createForm($jobHistoryForm);
 		}
 	}
 
@@ -53,9 +53,9 @@ class JobHistoryController extends AbstractActionController{
 		
 			$this->form->setData($request->getPost());
 	        if ($this->form->isValid()) { 
-
-	           	$this->jobHistory->exchangeArrayFromForm($this->form->getData());
-	           	$this->repository->add($this->jobHistory);
+				$jobHistory=new JobHistory();
+	           	$jobHistory->exchangeArrayFromForm($this->form->getData());
+	           	$this->repository->add($jobHistory);
 	            $this->flashmessenger()->addMessage("Job History Successfully added!!!");
 	            return $this->redirect()->toRoute("jobHistory");
 	        } 
@@ -65,11 +65,11 @@ class JobHistoryController extends AbstractActionController{
 			[
 				'form'=>$this->form,
 				'messages' => $this->flashmessenger()->getMessages(),
-				'departments'=>EntityHelper::getDepartmentKVList($this->adapter),
-				'designations'=>EntityHelper::getDesignationKVList($this->adapter),
-				'branches'=>EntityHelper::getBranchKVList($this->adapter),
-				'positions'=>EntityHelper::getPositionKVList($this->adapter),
-				'serviceTypes'=>EntityHelper::getServiceTypeKVList($this->adapter),
+				'departments'=>EntityHelper::getTableKVList($this->adapter,EntityHelper::HR_DEPARTMENTS),
+				'designations'=>EntityHelper::getTableKVList($this->adapter,EntityHelper::HR_DESIGNATIONS),
+				'branches'=>EntityHelper::getTableKVList($this->adapter,EntityHelper::HR_BRANCHES),
+				'positions'=>EntityHelper::getTableKVList($this->adapter,EntityHelper::HR_POSITIONS),
+				'serviceTypes'=>EntityHelper::getTableKVList($this->adapter,EntityHelper::HR_SERVICE_TYPES),
 			]
 		);
 	}
@@ -82,16 +82,17 @@ class JobHistoryController extends AbstractActionController{
         $this->initializeForm();
         $request=$this->getRequest();
 
+		$jobHistory=new JobHistory();
         if(!$request->isPost()){
-          $this->jobHistory->exchangeArrayFromDb($this->repository->fetchById($id)->getArrayCopy());
-          $this->form->bind((object)$this->jobHistory->getArrayCopyForDb());
+          $jobHistory->exchangeArrayFromDb($this->repository->fetchById($id)->getArrayCopy());
+          $this->form->bind($jobHistory);
         }else{
 
             $this->form->setData($request->getPost());           
             if ($this->form->isValid()) {
                 
-                $this->jobHistory->exchangeArrayFromForm($this->form->getData());
-                $this->repository->edit($this->jobHistory,$id);
+                $jobHistory->exchangeArrayFromForm($this->form->getData());
+                $this->repository->edit($jobHistory,$id);
                 $this->flashmessenger()->addMessage("Job History Successfully Updated!!!");
                 return $this->redirect()->toRoute("jobHistory");
             }
@@ -102,11 +103,11 @@ class JobHistoryController extends AbstractActionController{
             	'form'=>$this->form,
             	'id'=>$id,
 				'messages' => $this->flashmessenger()->getMessages(),
-				'departments'=>EntityHelper::getDepartmentKVList($this->adapter),
-				'designations'=>EntityHelper::getDesignationKVList($this->adapter),
-				'branches'=>EntityHelper::getBranchKVList($this->adapter),
-				'positions'=>EntityHelper::getPositionKVList($this->adapter),
-				'serviceTypes'=>EntityHelper::getServiceTypeKVList($this->adapter), 
+				'departments'=>EntityHelper::getTableKVList($this->adapter,EntityHelper::HR_DEPARTMENTS),
+				'designations'=>EntityHelper::getTableKVList($this->adapter,EntityHelper::HR_DESIGNATIONS),
+				'branches'=>EntityHelper::getTableKVList($this->adapter,EntityHelper::HR_BRANCHES),
+				'positions'=>EntityHelper::getTableKVList($this->adapter,EntityHelper::HR_POSITIONS),
+				'serviceTypes'=>EntityHelper::getTableKVList($this->adapter,EntityHelper::HR_SERVICE_TYPES),
             ]
         );
 	}

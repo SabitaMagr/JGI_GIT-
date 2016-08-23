@@ -3,115 +3,119 @@
 namespace Setup\Controller;
 
 /**
-* Master Setup for Service Type
-* Service Type controller.
-* Created By: Somkala Pachhai
-* Edited By: Somkala Pachhai
-* Date: August 2, 2016, Wednesday 
-* Last Modified By: Somkala Pachhai
-* Last Modified Date: August 10,2016, Wednesday 
-*/
+ * Master Setup for Service Type
+ * Service Type controller.
+ * Created By: Somkala Pachhai
+ * Edited By: Somkala Pachhai
+ * Date: August 2, 2016, Wednesday
+ * Last Modified By: Somkala Pachhai
+ * Last Modified Date: August 10,2016, Wednesday
+ */
 
 use Application\Helper\Helper;
-use Zend\Form\Annotation\AnnotationBuilder;
-use Zend\View\Model\ViewModel;
-use Zend\Mvc\Controller\AbstractActionController;
 use Setup\Form\ServiceTypeForm;
-use Setup\Helper\EntityHelper;
-use Setup\Model\ServiceTypeRepository;
+use Setup\Model\ServiceType;
+use Setup\Repository\ServiceTypeRepository;
 use Zend\Db\Adapter\AdapterInterface;
+use Zend\Form\Annotation\AnnotationBuilder;
+use Zend\Mvc\Controller\AbstractActionController;
 
-class ServiceTypeController extends AbstractActionController{
-	
-	private $serviceType;
-	private $repository;
-	private $form;
+class ServiceTypeController extends AbstractActionController
+{
 
-	function __construct(AdapterInterface $adapter)
-	{
-		$this->repository = new ServiceTypeRepository($adapter);
-	}
+    private $repository;
+    private $form;
 
-	private function initializeForm(){
-		$this->serviceType = new ServiceTypeForm();
-		$builder = new AnnotationBuilder();
-		if (!$this->form) {
-			$this->form = $builder->createForm($this->serviceType);
-		}
-	}
+    function __construct(AdapterInterface $adapter)
+    {
+        $this->repository = new ServiceTypeRepository($adapter);
+    }
 
-	public function indexAction(){
-		$serviceTypeList= $this->repository->fetchAll();
-		return Helper::addFlashMessagesToArray($this,['serviceTypeList' => $serviceTypeList]);
-	}
+    private function initializeForm()
+    {
+        $serviceTypeForm = new ServiceTypeForm();
+        $builder = new AnnotationBuilder();
+        if (!$this->form) {
+            $this->form = $builder->createForm($serviceTypeForm);
+        }
+    }
 
-	public function addAction(){
-		
-		$this->initializeForm();
+    public function indexAction()
+    {
+        $serviceTypeList = $this->repository->fetchAll();
+        return Helper::addFlashMessagesToArray($this, ['serviceTypeList' => $serviceTypeList]);
+    }
+
+    public function addAction()
+    {
+
+        $this->initializeForm();
         $request = $this->getRequest();
 
         if ($request->isPost()) {
-        
-	        $this->form->setData($request->getPost());
-	        if ($this->form->isValid()) {
-	        	try {
-	        		$this->serviceType->exchangeArrayFromForm($this->form->getData());
-	        		$this->repository->add($this->serviceType);
-	        		
-		            $this->flashmessenger()->addMessage("Service Type Successfully Added!!!");
-		            return $this->redirect()->toRoute("serviceType");
-		        }
-		        catch(Exception $e) {
 
-		        }
-	        }
-    	}
-        return Helper::addFlashMessagesToArray($this,[
+            $this->form->setData($request->getPost());
+            if ($this->form->isValid()) {
+                try {
+                    $serviceType=new ServiceType();
+                    $serviceType->exchangeArrayFromForm($this->form->getData());
+                    $serviceType->createdDt=date('d-M-y');
+                    $this->repository->add($serviceType);
+
+                    $this->flashmessenger()->addMessage("Service Type Successfully Added!!!");
+                    return $this->redirect()->toRoute("serviceType");
+                } catch (Exception $e) {
+
+                }
+            }
+        }
+        return Helper::addFlashMessagesToArray($this, [
             'form' => $this->form,
             'messages' => $this->flashmessenger()->getMessages()
-    	]);     
-	}
+        ]);
+    }
 
-	
-	public function editAction(){
 
-		$id=(int) $this->params()->fromRoute("id");
-		if($id===0){
-			return $this->redirect()->toRoute();
-		}
+    public function editAction()
+    {
+
+        $id = (int)$this->params()->fromRoute("id");
+        if ($id === 0) {
+            return $this->redirect()->toRoute();
+        }
         $this->initializeForm();
-        $request=$this->getRequest();
+        $request = $this->getRequest();
+        $serviceType=new ServiceType();
+        if (!$request->isPost()) {
+            $serviceType->exchangeArrayFromDb($this->repository->fetchById($id)->getArrayCopy());
+            $this->form->bind($serviceType);
+        } else {
 
-        if(!$request->isPost()){
-        	$this->serviceType->exchangeArrayFromDb($this->repository->fetchById($id)->getArrayCopy());
-        	$this->form->bind((object)$this->serviceType->getArrayCopyForForm());
-        }else{
+            $this->form->setData($request->getPost());
+            if ($this->form->isValid()) {
+                $serviceType->exchangeArrayFromForm($this->form->getData());
+                $serviceType->modifiedDt=date('d-M-y');
+                $this->repository->edit($serviceType, $id);
+                $this->flashmessenger()->addMessage("Service Type Successfully Updated!!!");
+                return $this->redirect()->toRoute("serviceType");
+            }
+        }
+        return Helper::addFlashMessagesToArray($this, ['form' => $this->form, 'id' => $id]);
+    }
 
-	        $modifiedDt = date("d-M-y");
-	        $this->form->setData($request->getPost());
-	        if ($this->form->isValid()) {
+    public function deleteAction()
+    {
+        $id = (int)$this->params()->fromRoute("id");
 
-	        	$this->serviceType->exchangeArrayFromForm($this->form->getData());
-	        	$this->repository->edit($this->serviceType,$id,$modifiedDt);
-	            $this->flashmessenger()->addMessage("Service Type Successfully Updated!!!");
-	            return $this->redirect()->toRoute("serviceType");
-	        }
-    	}
-        return Helper::addFlashMessagesToArray($this,['form'=>$this->form,'id'=>$id]);
-	}
-	
-	public function deleteAction(){
-		$id = (int)$this->params()->fromRoute("id");
-		
-		if(!$id){
-			return $this->redirect()->toRoute('serviceType');
-		}
-		$this->repository->delete($id);
-		$this->flashmessenger()->addMessage("Service Type Successfully Deleted!!!");
-		return $this->redirect()->toRoute('serviceType');
-	}
+        if (!$id) {
+            return $this->redirect()->toRoute('serviceType');
+        }
+        $this->repository->delete($id);
+        $this->flashmessenger()->addMessage("Service Type Successfully Deleted!!!");
+        return $this->redirect()->toRoute('serviceType');
+    }
 }
-	
+
 /* End of file ServiceTypeController.php */
 /* Location: ./Setup/src/Controller/ServiceTypeController.php */
 

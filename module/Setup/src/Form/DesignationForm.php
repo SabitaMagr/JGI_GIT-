@@ -21,7 +21,7 @@ use Setup\Model\Model;
  * @Annotation\Name("DesignationForm")
  */
 
-class DesignationForm extends Model 
+class DesignationForm
 {
     
     /**
@@ -76,13 +76,6 @@ class DesignationForm extends Model
     */
     public $submit;
 
-    public $mappings =[
-        'DESIGNATION_ID'=>'designationId',
-        'DESIGNATION_CODE'=>'designationCode',
-        'DESIGNATION_TITLE'=>'designationTitle',
-        'BASIC_SALARY'=>'basicSalary',
-        'STATUS'=>'status'
-    ];
 }
 
 /* End of file DesignationForm.php */

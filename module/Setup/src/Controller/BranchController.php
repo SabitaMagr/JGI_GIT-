@@ -3,26 +3,25 @@
 namespace Setup\Controller;
 
 /**
-* Master Setup for Branch
-* Branch controller.
-* Created By: Ukesh Gaiju
-* Edited By: Somkala Pachhai
-* Date: August 3, 2016, Wednesday 
-* Last Modified By: Somkala Pachhai
-* Last Modified Date: August 10,2016, Wednesday 
-*/
+ * Master Setup for Branch
+ * Branch controller.
+ * Created By: Ukesh Gaiju
+ * Edited By: Somkala Pachhai
+ * Date: August 3, 2016, Wednesday
+ * Last Modified By: Somkala Pachhai
+ * Last Modified Date: August 10,2016, Wednesday
+ */
 
 use Application\Helper\Helper;
+use Setup\Form\BranchForm;
+use Setup\Model\Branch;
+use Setup\Repository\BranchRepository;
+use Zend\Db\Adapter\AdapterInterface;
 use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\Mvc\Controller\AbstractActionController;
-use Zend\View\Model\ViewModel;
-use Setup\Form\BranchForm;
-use Setup\Model\BranchRepository;
-use Zend\Db\Adapter\AdapterInterface;
 
 class BranchController extends AbstractActionController
 {
-    private $branch;
     private $form;
     private $repository;
 
@@ -34,11 +33,11 @@ class BranchController extends AbstractActionController
 
     public function initializeForm()
     {
-        $this->branch = new BranchForm();
+        $branchForm = new BranchForm();
         $builder = new AnnotationBuilder();
         if (!$this->form) {
-            $this->form = $builder->createForm($this->branch);
-        }     
+            $this->form = $builder->createForm($branchForm);
+        }
     }
 
     public function indexAction()
@@ -52,18 +51,19 @@ class BranchController extends AbstractActionController
         $this->initializeForm();
         $request = $this->getRequest();
         if ($request->isPost()) {
-            
-            $this->form->setData($request->getPost());       
-            if ($this->form->isValid()) {
 
-                $this->branch->exchangeArrayFromForm($this->form->getData());
-                $this->repository->add($this->branch);
-               
+            $this->form->setData($request->getPost());
+            if ($this->form->isValid()) {
+                $branch=new Branch();
+                $branch->exchangeArrayFromForm($this->form->getData());
+                $branch->createdDt=date('d-M-y');
+                $this->repository->add($branch);
+
                 $this->flashmessenger()->addMessage("Branch Successfully Added!!!");
                 return $this->redirect()->toRoute("branch");
             }
         }
-        return Helper::addFlashMessagesToArray($this, ['form' => $this->form]);     
+        return Helper::addFlashMessagesToArray($this, ['form' => $this->form]);
     }
 
     public function editAction()
@@ -72,19 +72,20 @@ class BranchController extends AbstractActionController
         $this->initializeForm();
         $request = $this->getRequest();
 
+            $branch=new Branch();
         if (!$request->isPost()) {
-            $this->branch->exchangeArrayFromDb($this->repository->fetchById($id)->getArrayCopy());
-            $this->form->bind((object)$this->branch->getArrayCopyForForm());        
-        }else{
-
+            $branch->exchangeArrayFromDB($this->repository->fetchById($id)->getArrayCopy());
+            $this->form->bind($branch);
+        } else {
             $modifiedDt = date('d-M-y');
             $this->form->setData($request->getPost());
             if ($this->form->isValid()) {
-                $this->branch->exchangeArrayFromForm($this->form->getData());
-                $this->repository->edit($this->branch,$id,$modifiedDt);
+                $branch->exchangeArrayFromForm($this->form->getData());
+                $branch->modifiedDt=$modifiedDt;
+                $this->repository->edit($branch, $id);
                 $this->flashmessenger()->addMessage("Branch Successfully Updated!!!");
                 return $this->redirect()->toRoute("branch");
-            } 
+            }
         }
         return Helper::addFlashMessagesToArray($this, ['form' => $this->form, 'id' => $id]);
     }
@@ -92,8 +93,8 @@ class BranchController extends AbstractActionController
     public function deleteAction()
     {
         $id = (int)$this->params()->fromRoute("id");
-        
-        if(!$id){
+
+        if (!$id) {
             return $this->redirect()->toRoute('branch');
         }
         $this->repository->delete($id);

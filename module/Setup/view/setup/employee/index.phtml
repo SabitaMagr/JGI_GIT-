@@ -1,6 +1,13 @@
 <?php
-?>
+if ($this->messages) {
+    print '<ul class="help-block bg-danger" style="background:#f3e250;">';
+    foreach ($this->messages as $message) {
+        print '<li>' . $message . '</li>';
+    }
+    print '</ul>';
+}
 
+?>
 <table role="grid" class="table table-hover dataTable no-footer" id="employeelist">
 
     <thead>
@@ -44,18 +51,21 @@
             </td>
             <td class="v-align-middle">
                 <p>
-                    <?php print $this->escapeHtml($employee->employeeFirstName) ?>
+                    <?php print $this->escapeHtml($employee->firstName) ?>
                 </p>
             </td>
             <td class="v-align-middle">
                 <p>
-                    <?php print $this->escapeHtml($employee->employeeMiddleName) ?>
+                    <?php print $this->escapeHtml($employee->middleName) ?>
                 </p>
             </td>
             <td class="v-align-middle">
                 <p>
+                    <?php print $this->escapeHtml($employee->lastName) ?>
+
+                </p>
             <td>
-                <?php print $this->escapeHtml($employee->employeeLastName) ?></td>
+                <?php print $this->escapeHtml($employee->birthDate) ?></td>
             </p>
             </td>
             <td class="v-align-middle">

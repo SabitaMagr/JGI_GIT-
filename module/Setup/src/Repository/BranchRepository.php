@@ -1,6 +1,7 @@
 <?php
-namespace Setup\Model;
+namespace Setup\Repository;
 
+use Setup\Model\Model;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\TableGateway\TableGateway;
 
@@ -16,14 +17,15 @@ class BranchRepository implements RepositoryInterface
 
     public function add(Model $model)
     {
-        $this->tableGateway->insert($model->getArrayCopyForDb());
+        $this->tableGateway->insert($model->getArrayCopyForDB());
     }
 
-    public function edit(Model $model,$id,$modifiedDt)
+    public function edit(Model $model,$id)
     {
-        $array = $model->getArrayCopyForDb();
-        $newArray = array_merge($array,['MODIFIED_DT'=>$modifiedDt]);
-        $this->tableGateway->update($newArray,["BRANCH_ID"=>$id]);
+        $array = $model->getArrayCopyForDB();
+        unset($array['CREATED_DT']);
+        unset($array['BRANCH_ID']);
+        $this->tableGateway->update($array,["BRANCH_ID"=>$id]);
     }
 
     public function fetchAll()
@@ -31,11 +33,6 @@ class BranchRepository implements RepositoryInterface
         return $this->tableGateway->select();
     }
 
-    public function fetchActiveRecord()
-    {
-         return  $rowset= $this->tableGateway->select(['STATUS'=>'E']);
-        
-    }
 
     public function fetchById($id)
     {

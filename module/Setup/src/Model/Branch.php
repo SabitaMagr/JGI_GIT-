@@ -1,187 +1,35 @@
 <?php
 namespace Setup\Model;
 
-use Zend\Form\Annotation;
 
-/**
- * @Annotation\Hydrator("Zend\Hydrator\ObjectProperty")
- * @Annotation\Name("Branch")
- */
-class Branch implements Model
+class Branch extends Model
 {
-
-    /**
-     * @Annotion\Type("Zend\Form\Element\Text")
-     * @Annotation\Required({"required":"true"})
-     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
-     * @Annotation\Options({"label":"Branch Code"})
-     * @Annotation\Attributes({ "id":"form-branchCode", "class":"form-branchCode form-control" })
-     */
+    public $branchId;
     public $branchCode;
-
-    /**
-     * @Annotion\Type("Zend\Form\Element\Text")
-     * @Annotation\Required({"required":"true"})
-     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
-     * @Annotation\Options({"label":"Branch Name"})
-     * @Annotation\Attributes({ "id":"form-branchName", "class":"form-branchName form-control" })
-     */
     public $branchName;
-
-    /**
-     * @Annotion\Type("Zend\Form\Element\Text")
-     * @Annotation\Required({"required":"false"})
-     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
-     * @Annotation\Options({"label":"Location"})
-     * @Annotation\Attributes({ "id":"form-location", "class":"form-location form-control"  })
-     */
-    public $location;
-
-    /**
-     * @Annotion\Type("Zend\Form\Element\Text")
-     * @Annotation\Required({"required":"false"})
-     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
-     * @Annotation\Options({"label":"Telephone"})
-     * @Annotation\Attributes({ "id":"form-telephone", "class":"form-telephone form-control"})
-     */
+    public $streetAddress;
     public $telephone;
-
-
-    /**
-     * @Annotion\Type("Zend\Form\Element\Text")
-     * @Annotation\Required({"required":"false"})
-     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
-     * @Annotation\Options({"label":"Fax"})
-     * @Annotation\Attributes({ "id":"form-fax", "class":"form-fax form-control"})
-     */
     public $fax;
-
-    /**
-     * @Annotion\Type("Zend\Form\Element\Text")
-     * @Annotation\Required({"required":"false"})
-     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
-     * @Annotation\Options({"label":"Email"})
-     * @Annotation\Attributes({ "id":"form-email", "class":"form-email form-control"})
-     */
     public $email;
+    public $remarks;
+    public $status;
+    public $createdDt;
+    public $modifiedDt;
 
-    /**
-     * @Annotion\Type("Zend\Form\Element\Text")
-     * @Annotation\Required({"required":"false"})
-     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
-     * @Annotation\Options({"label":"Contact Person"})
-     * @Annotation\Attributes({ "id":"form-contactPerson", "class":"form-contactPerson form-control"})
-     */
-    public $contactPerson;
-
-    /**
-     * @Annotation\Type("Zend\Form\Element\Select")
-     * @Annotation\Required({"required":"false"})
-     * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
-     * @Annotation\Options({"label":"Branch Manager","value_options":{"A":"Anita","B":"Balaram","C":"Ceeta"}})
-     * @Annotation\Attributes({ "id":"form-branchManager","data-init-plugin":"cs-select","class":"cs-select cs-skin-slide form-branchManager form-control"})
-     */
-    public $branchManager;
-
-
-    /**
-     * @Annotation\Type("Zend\Form\Element\Select")
-     * @Annotation\Required({"required":"false"})
-     * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
-     * @Annotation\Options({"label":"Parent Branch","value_options":{"A":"Branch A","B":"Branch B","C":"Branch C"}})
-     * @Annotation\Attributes({ "id":"form-parentBranch","data-init-plugin":"cs-select","class":"cs-select cs-skin-slide form-parentBranch form-control"})
-     */
-    public $parentBranch;
-
-
-    /**
-     * @Annotation\Type("Zend\Form\Element\Submit")
-     * @Annotation\Attributes({"value":"Submit","class":"btn btn-primary pull-right"})
-     */
-    public $submit;
-
-    public function exchangeArray(array $data)
-    {
-        $this->branchName = !empty($data['branchName']) ? $data['branchName'] : null;
-        $this->location = !empty($data['location']) ? $data['location'] : null;
-        $this->telephone = !empty($data['telephone']) ? $data['telephone'] : null;
-        $this->fax = !empty($data['fax']) ? $data['fax'] : null;
-        $this->email = !empty($data['email']) ? $data['email'] : null;
-        $this->contactPerson = !empty($data['contactPerson']) ? $data['contactPerson'] : null;
-        $this->branchManager = !empty($data['branchManager']) ? $data['branchManager'] : null;
-        $this->parentBranch = !empty($data['parentBranch']) ? $data['parentBranch'] : null;
-
-    }
-
-    public function getArrayCopy()
-    {
-        return [
-            '' => $this->branchName,
-            'location' => $this->location,
-            'telephone' => $this->telephone,
-            'fax' => $this->fax,
-            'email' => $this->email,
-            'contactPerson' => $this->contactPerson,
-            'branchManager' => $this->branchManager,
-            'parentBranch' => $this->parentBranch
-        ];
-    }
-
-
-    public function getLocalArrayCopy()
-    {
-        return [
-            'branch-name' => $this->branchName,
-            'location' => $this->location,
-            'telephone' => $this->telephone,
-            'fax' => $this->fax,
-            'email' => $this->email,
-            'contactPerson' => $this->contactPerson,
-            'branchManager' => $this->branchManager,
-            'parentBranch' => $this->parentBranch
-        ];
-
-    }
+    public $mappings = [
+        'branchId'=>'BRANCH_ID',
+        'branchCode'=>'BRANCH_CODE',
+        'branchName'=>'BRANCH_NAME',
+        'streetAddress'=>'STREET_ADDRESS',
+        'telephone'=>'TELEPHONE',
+        'fax'=>'FAX',
+        'email'=>'EMAIL',
+        'remarks'=>'REMARKS',
+        'status'=>'STATUS',
+        'createdDt'=>'CREATED_DT',
+        'modifiedDt'=>'MODIFIED_DT'
+    ];
 
 
 
-
-
-    private $mappings=['branchCode'=>'BRANCH_CODE'];
-
-    public function exchangeArrayFromForm(array $data)
-    {
-        $entityKeys=array_keys($this->mappings);
-        foreach($entityKeys as $keys){
-            $this->{$keys} = !empty($data[$keys]) ? $data[$keys] : null;
-        }
-
-    }
-
-    public function exchangeArrayFromDB(array $data)
-    {
-
-        foreach($this->mappings as $key => $value){
-            $this->{$key} = !empty($data[$value]) ? $data[$value] : null;
-        }
-    }
-
-    public function getArrayCopyForDB()
-    {
-        $tempArray=[];
-        foreach($this->mappings as $key => $value){
-         array_push($tempArray,$value,$this->{$key});
-        }
-        return $tempArray;
-
-    }
-
-    public function getArrayCopyForForm()
-    {
-        $tempArray=[];
-        foreach($this->mappings as $key => $value){
-         array_push($tempArray,$key,$this->{$key});
-        }
-        return $tempArray;
-    }
 }

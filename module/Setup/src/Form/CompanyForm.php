@@ -9,7 +9,7 @@ use Setup\Model\Model;
  * @Annotation\Name("Company")
 */
 
-class CompanyForm extends Model{
+class CompanyForm{
 	
 	/**
 	 * @Annotion\Type("Zend\Form\Element\Text")
@@ -84,15 +84,5 @@ class CompanyForm extends Model{
     */
     public $submit;
 
-    public $mappings = [
-    	'COMPANY_ID'=>'companyId',
-    	'COMPANY_CODE'=>'companyCode',
-    	'COMPANY_NAME'=>'companyName',
-    	'ADDRESS'=>'address',
-    	'TELEPHONE'=>'telephone',
-    	'FAX'=>'fax',
-    	'SWIFT'=>'swift'
-
-    ];
 
 }

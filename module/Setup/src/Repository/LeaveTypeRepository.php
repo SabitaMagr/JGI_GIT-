@@ -1,7 +1,8 @@
 <?php
 
-namespace Setup\Model;
+namespace Setup\Repository;
 
+use Setup\Model\Model;
 use Zend\Db\TableGateway\TableGateway;
 use Zend\Db\Adapter\AdapterInterface;
 
@@ -14,13 +15,14 @@ class LeaveTypeRepository implements RepositoryInterface{
 		
 	}
 	public function add(Model $model){
-		 $this->tableGateway->insert($model->getArrayCopyForDb());
+		 $this->tableGateway->insert($model->getArrayCopyForDB());
 
 	}
-	public function edit(Model $model,$id,$modifiedDt){
-		$array = $model->getArrayCopyForDb();
-		$newArray = array_merge($array,['MODIFIED_DT'=>$modifiedDt]);
-		$this->tableGateway->update($newArray,["LEAVE_ID"=>$id]);
+	public function edit(Model $model,$id){
+		$array = $model->getArrayCopyForDB();
+		unset($array['LEAVE_ID']);
+		unset($array['CREATED_DATE']);
+		$this->tableGateway->update($array,["LEAVE_ID"=>$id]);
 	}
 	public function delete($id){
 		$this->tableGateway->delete(["LEAVE_ID"=>$id]);

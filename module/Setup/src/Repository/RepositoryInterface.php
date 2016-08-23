@@ -1,8 +1,9 @@
 <?php
 
-namespace Setup\Model;
+namespace Setup\Repository;
 
 
+use Setup\Model\Model;
 use Zend\Db\Adapter\AdapterInterface;
 
 interface  RepositoryInterface{
@@ -10,7 +11,7 @@ interface  RepositoryInterface{
     public function __construct(AdapterInterface $adapter);
 
     public function add(Model $model);
-    public function edit(Model $model, $id, $modifiedDt);
+    public function edit(Model $model, $id);
     public function  fetchAll();
     public function fetchById($id);
     public function delete($id);

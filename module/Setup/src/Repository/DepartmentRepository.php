@@ -1,7 +1,8 @@
 <?php
 
-namespace Setup\Model;
+namespace Setup\Repository;
 
+use Setup\Model\Model;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\TableGateway\TableGateway;
 
@@ -20,12 +21,12 @@ class DepartmentRepository implements RepositoryInterface
         $this->tableGateway->insert($model->getArrayCopyForDB());
     }
 
-    public function edit(Model $model,$id,$modifiedDt)
+    public function edit(Model $model,$id)
     {
         $temp=$model->getArrayCopyForDB();
-        $newArray = array_merge($temp,['MODIFIED_DT'=>$modifiedDt]);
-
-        $this->tableGateway->update($newArray,["DEPARTMENT_ID"=>$id]);
+        unset($temp['DEPARTMENT_ID']);
+        unset($temp['CREATED_DT']);
+        $this->tableGateway->update($temp,["DEPARTMENT_ID"=>$id]);
     }
 
     public function fetchAll()
