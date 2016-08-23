@@ -22,7 +22,7 @@ class DepartmentForm
 {
     /**
      * @Annotation\Type("Zend\Form\Element\Text")
-     * @Annotation\Required({"required":"false"})
+     * @Annotation\Required({"required":"true"})
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Department Id"})
      * @Annotation\Attributes({ "id":"form-departmentId", "class":"form-departmentId form-control" })

@@ -50,7 +50,7 @@ class BranchForm
 
     /**
      * @Annotion\Type("Zend\Form\Element\Text")
-     * @Annotation\Required(false)
+     * @Annotation\Required({"required":"true"})
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Street Address"})
      * @Annotation\Attributes({ "id":"form-streetAddress", "class":"form-streetAddress form-control"  })

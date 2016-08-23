@@ -52,7 +52,7 @@ class CompanyForm{
 
 	/**
 	 * @Annotion\Type("Zend\Form\Element\Text")
-	 * @Annotation\Required({"required":"true"})
+	 * @Annotation\Required(false)
 	 * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
 	 * @Annotation\Options({"label":"Telephone"})
 	 * @Annotation\Attributes({ "id":"form-telephone", "class":"form-telephone form-control","placeholder":"Enter contact number.." })
@@ -62,7 +62,7 @@ class CompanyForm{
 
 	/**
 	 * @Annotion\Type("Zend\Form\Element\Text")
-	 * @Annotation\Required({"required":"false"})
+	 * @Annotation\Required(false)
 	 * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
 	 * @Annotation\Options({"label":"Fax"})
 	 * @Annotation\Attributes({ "id":"form-fax", "class":"form-fax form-control","placeholder":"Enter fax number.." })
@@ -71,7 +71,7 @@ class CompanyForm{
 
 	/**
 	 * @Annotion\Type("Zend\Form\Element\Text")
-	 * @Annotation\Required({"required":"false"})
+	 * @Annotation\Required(false)
 	 * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
 	 * @Annotation\Options({"label":"Swift"})
 	 * @Annotation\Attributes({ "id":"form-swift", "class":"form-web form-control"})
