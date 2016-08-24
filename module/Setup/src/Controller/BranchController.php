@@ -81,7 +81,8 @@ class BranchController extends AbstractActionController
             $this->form->setData($request->getPost());
             if ($this->form->isValid()) {
                 $branch->exchangeArrayFromForm($this->form->getData());
-                $branch->modifiedDt=$modifiedDt;
+//                $branch->modifiedDt=$modifiedDt;
+                $branch->modifiedDt="to_date('2014-01-01', 'YYYY-MM-DD')";
                 $this->repository->edit($branch, $id);
                 $this->flashmessenger()->addMessage("Branch Successfully Updated!!!");
                 return $this->redirect()->toRoute("branch");

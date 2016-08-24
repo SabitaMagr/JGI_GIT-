@@ -20,6 +20,7 @@ class  EmployeeRepository implements RepositoryInterface
     public function fetchAll()
     {
         $result = $this->gateway->select();
+//        $this->gateway->
 
         $tempArray=[];
         $tempObject=new HrEmployees();
@@ -35,6 +36,7 @@ class  EmployeeRepository implements RepositoryInterface
 
     public function fetchById($id)
     {
+
         $rowset = $this->gateway->select(['EMPLOYEE_ID' => $id]);
         return $rowset->current();
     }

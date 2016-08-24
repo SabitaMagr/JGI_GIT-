@@ -14,9 +14,30 @@ $(document).ready(function(){
 	$('#form-trainToDate').datepicker();
 	$('#form-childDateOfBirth').datepicker();
 
-    //$("#form-birthDate").datepicker({
-    //    altFormat: "yy-mm-dd"
-    //});
+	var format="mm/dd/yyyy";
+
+    $("#employeeBirthDate").datepicker({
+		format: format
+    });
+    $("#famSpouseBirthDate").datepicker({
+		format: format
+    });
+    $("#famSpouseWeddingAnniversary").datepicker({
+		format: format
+    });
+    $("#idDrivingLicenseExpiry").datepicker({
+		format: format
+    });
+    $("#idCitizenshipIssueDate").datepicker({
+		format: format
+    });
+    $("#idPassportExpiry").datepicker({
+		format: format
+    });
+    $("#joinDate").datepicker({
+		format: format
+    });
+
 	$('#add_more_child').click(function(){
 		//$("#child_div").clone().insertAfter("div#child_div:last")
 	});
