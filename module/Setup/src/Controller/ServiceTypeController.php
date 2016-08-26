@@ -25,9 +25,11 @@ class ServiceTypeController extends AbstractActionController
 
     private $repository;
     private $form;
+    private $adapter;
 
     function __construct(AdapterInterface $adapter)
     {
+        $this->adapter=$adapter;
         $this->repository = new ServiceTypeRepository($adapter);
     }
 
@@ -59,7 +61,8 @@ class ServiceTypeController extends AbstractActionController
                 try {
                     $serviceType=new ServiceType();
                     $serviceType->exchangeArrayFromForm($this->form->getData());
-                    $serviceType->createdDt=date('d-M-y');
+                    $serviceType->serviceTypeId=((int) Helper::getMaxId($this->adapter,"HR_SERVICE_TYPES","SERVICE_TYPE_ID"))+1;
+                    $serviceType->createdDt=Helper::getcurrentExpressionDate();
                     $this->repository->add($serviceType);
 
                     $this->flashmessenger()->addMessage("Service Type Successfully Added!!!");
@@ -94,7 +97,7 @@ class ServiceTypeController extends AbstractActionController
             $this->form->setData($request->getPost());
             if ($this->form->isValid()) {
                 $serviceType->exchangeArrayFromForm($this->form->getData());
-                $serviceType->modifiedDt=date('d-M-y');
+                $serviceType->modifiedDt=Helper::getcurrentExpressionDate();
                 $this->repository->edit($serviceType, $id);
                 $this->flashmessenger()->addMessage("Service Type Successfully Updated!!!");
                 return $this->redirect()->toRoute("serviceType");

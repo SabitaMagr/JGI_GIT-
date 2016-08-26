@@ -20,14 +20,6 @@ use Zend\Form\Annotation;
 class DepartmentForm
 
 {
-    /**
-     * @Annotation\Type("Zend\Form\Element\Text")
-     * @Annotation\Required({"required":"true"})
-     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
-     * @Annotation\Options({"label":"Department Id"})
-     * @Annotation\Attributes({ "id":"form-departmentId", "class":"form-departmentId form-control" })
-     */
-    public $departmentId;
 
     /**
      * @Annotation\Type("Zend\Form\Element\Text")
@@ -39,6 +31,15 @@ class DepartmentForm
     public $departmentCode;
 
     /**
+     * @Annotation\Type("Zend\Form\Element\Select")
+     * @Annotation\Required({"required":"true"})
+     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
+     * @Annotation\Options({"disable_inarray_validator":"true","label":"Country"})
+     * @Annotation\Attributes({ "id":"countryId","class":"full-width select2-offscreen","data-init-plugin":"select2","tabindex":"-1"})
+     */
+    public $countryId;
+
+    /**
      * @Annotation\Type("Zend\Form\Element\Text")
      * @Annotation\Required({"required":"false"})
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
@@ -46,6 +47,8 @@ class DepartmentForm
      * @Annotation\Validator({"name":"StringLength", "options":{"min":"5"}})
      * @Annotation\Attributes({ "id":"form-departmentName", "class":"form-departmentName form-control" })
      */
+
+
     public $departmentName;
 
     /**
@@ -62,7 +65,7 @@ class DepartmentForm
      * @Annotation\Required(false)
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
      * @Annotation\Options({"disable_inarray_validator":"true","label":"Parent Department"})
-     * @Annotation\Attributes({ "id":"form-parentDepartment","data-init-plugin":"cs-select","class":"cs-select cs-skin-slide form-parentDepartment form-control"})
+     * @Annotation\Attributes({ "id":"form-parentDepartment","class":"full-width select2-offscreen","data-init-plugin":"select2","tabindex":"-1"})
      */
     public $parentDepartment;
 
@@ -71,7 +74,7 @@ class DepartmentForm
      * @Annotation\Required(false)
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
      * @Annotation\Options({"label":"Status","value_options":{"E":"Enabled","D":"Disabled"}})
-     * @Annotation\Attributes({ "id":"form-status","data-init-plugin":"cs-select","class":"cs-select cs-skin-slide form-status form-control"})
+     * @Annotation\Attributes({ "id":"form-status","class":"full-width select2-offscreen","data-init-plugin":"select2","tabindex":"-1"})
      */
     public $status;
 

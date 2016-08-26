@@ -8,6 +8,7 @@ class Branch extends Model
     public $branchCode;
     public $branchName;
     public $streetAddress;
+    public $countryId;
     public $telephone;
     public $fax;
     public $email;
@@ -21,6 +22,7 @@ class Branch extends Model
         'branchCode'=>'BRANCH_CODE',
         'branchName'=>'BRANCH_NAME',
         'streetAddress'=>'STREET_ADDRESS',
+        'countryId'=>'COUNTRY_ID',
         'telephone'=>'TELEPHONE',
         'fax'=>'FAX',
         'email'=>'EMAIL',

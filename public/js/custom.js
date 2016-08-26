@@ -14,7 +14,9 @@ $(document).ready(function(){
 	$('#form-trainToDate').datepicker();
 	$('#form-childDateOfBirth').datepicker();
 
-	var format="mm/dd/yyyy";
+
+	$('#finishBtn').on('click',function(){$('#submit').click();});
+	var format="d-M-yyyy";
 
     $("#employeeBirthDate").datepicker({
 		format: format
@@ -37,7 +39,12 @@ $(document).ready(function(){
     $("#joinDate").datepicker({
 		format: format
     });
-
+	$("#startDate").datepicker({
+		format: format
+	});
+	$("#endDate").datepicker({
+		format: format
+	});
 	$('#add_more_child').click(function(){
 		//$("#child_div").clone().insertAfter("div#child_div:last")
 	});

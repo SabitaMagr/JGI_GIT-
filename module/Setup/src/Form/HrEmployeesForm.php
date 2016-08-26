@@ -232,7 +232,6 @@ class HrEmployeesForm
     public $addrPermVdcMunicipalityId;
 
 
-
     /**
      * @Annotation\Type("Zend\Form\Element\Select")
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
@@ -374,7 +373,6 @@ class HrEmployeesForm
     public $maritualStatus;
 
 
-
     /**
      * @Annotation\Type("Zend\Form\Element\Text")
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
@@ -428,7 +426,6 @@ class HrEmployeesForm
      * @Annotation\Attributes({ "id":"idLbrf", "class":"form-control" })
      */
     public $idLbrf;
-
 
 
     /**
@@ -526,7 +523,6 @@ class HrEmployeesForm
     public $idCitizenshipIssueDate;
 
 
-
     /**
      * @Annotation\Type("Zend\Form\Element\Text")
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
@@ -580,9 +576,39 @@ class HrEmployeesForm
      */
     public $salaryPf;
 
+
+    /**
+     * @Annotation\Type("Zend\Form\Element\Select")
+     * @Annotation\Required({"required":"true"})
+     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
+     * @Annotation\Options({"disable_inarray_validator":"true","label":"Country"})
+     * @Annotation\Attributes({ "id":"countryId","class":"full-width select2-offscreen","data-init-plugin":"select2","tabindex":"-1"})
+     */
+    public $countryId;
+
+
+    /**
+     * @Annotation\Type("Zend\Form\Element\Select")
+     * @Annotation\Required({"required":"true"})
+     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
+     * @Annotation\Options({"disable_inarray_validator":"true","label":"Permanent Country"})
+     * @Annotation\Attributes({ "id":"countryId","class":"full-width select2-offscreen","data-init-plugin":"select2","tabindex":"-1"})
+     */
+    public $addrPermCountryId;
+
+
+    /**
+     * @Annotation\Type("Zend\Form\Element\Select")
+     * @Annotation\Required({"required":"true"})
+     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
+     * @Annotation\Options({"disable_inarray_validator":"true","label":"Temporary Country"})
+     * @Annotation\Attributes({ "id":"countryId","class":"full-width select2-offscreen","data-init-plugin":"select2","tabindex":"-1"})
+     */
+    public $addrTempCountryId;
+
     /**
      * @Annotation\Type("Zend\Form\Element\Submit")
-     * @Annotation\Attributes({"value":"Submit","class":"btn btn-primary pull-right"})
+     * @Annotation\Attributes({"id":"submit","value":"Submit","class":"btn btn-primary pull-right hidden"})
      */
     public $submit;
 

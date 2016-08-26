@@ -59,7 +59,7 @@ class EmpCurrentPostingController extends AbstractActionController
 
             $this->form->setData($request->getPost());
             if ($this->form->isValid()) {
-                $empCurrentPosting=new EmpCurrentPosting();
+                $empCurrentPosting = new EmpCurrentPosting();
                 $empCurrentPosting->exchangeArrayFromForm($this->form->getData());
                 $this->repository->add($empCurrentPosting);
 
@@ -72,11 +72,12 @@ class EmpCurrentPostingController extends AbstractActionController
             [
                 'form' => $this->form,
                 'messages' => $this->flashmessenger()->getMessages(),
-                'departments' => EntityHelper::getTableKVList($this->adapter,EntityHelper::HR_DEPARTMENTS),
-                'designations' => EntityHelper::getTableKVList($this->adapter,EntityHelper::HR_DESIGNATIONS),
-                'branches' => EntityHelper::getTableKVList($this->adapter,EntityHelper::HR_BRANCHES),
-                'positions' => EntityHelper::getTableKVList($this->adapter,EntityHelper::HR_POSITIONS),
-                'serviceTypes' => EntityHelper::getTableKVList($this->adapter,EntityHelper::HR_SERVICE_TYPES),
+                'departments' => EntityHelper::getTableKVList($this->adapter, EntityHelper::HR_DEPARTMENTS),
+                'designations' => EntityHelper::getTableKVList($this->adapter, EntityHelper::HR_DESIGNATIONS),
+                'branches' => EntityHelper::getTableKVList($this->adapter, EntityHelper::HR_BRANCHES),
+                'positions' => EntityHelper::getTableKVList($this->adapter, EntityHelper::HR_POSITIONS),
+                'serviceTypes' => EntityHelper::getTableKVList($this->adapter, EntityHelper::HR_SERVICE_TYPES),
+                'employees' => EntityHelper::getTableKVList($this->adapter, EntityHelper::HR_EMPLOYEES)
             ]);
     }
 
@@ -88,7 +89,7 @@ class EmpCurrentPostingController extends AbstractActionController
         }
         $this->initializeForm();
         $request = $this->getRequest();
-        $empCurrentPosting=new EmpCurrentPosting();
+        $empCurrentPosting = new EmpCurrentPosting();
         if (!$request->isPost()) {
             $empCurrentPosting->exchangeArrayFromDB($this->repository->fetchById($id)->getArrayCopy());
             $this->form->bind($empCurrentPosting);
@@ -110,11 +111,12 @@ class EmpCurrentPostingController extends AbstractActionController
                 'id' => $id,
                 'form' => $this->form,
                 'messages' => $this->flashmessenger()->getMessages(),
-                'departments' => EntityHelper::getTableKVList($this->adapter,EntityHelper::HR_DEPARTMENTS),
-                'designations' => EntityHelper::getTableKVList($this->adapter,EntityHelper::HR_DESIGNATIONS),
-                'branches' => EntityHelper::getTableKVList($this->adapter,EntityHelper::HR_BRANCHES),
-                'positions' => EntityHelper::getTableKVList($this->adapter,EntityHelper::HR_POSITIONS),
-                'serviceTypes' => EntityHelper::getTableKVList($this->adapter,EntityHelper::HR_SERVICE_TYPES),
+                'departments' => EntityHelper::getTableKVList($this->adapter, EntityHelper::HR_DEPARTMENTS),
+                'designations' => EntityHelper::getTableKVList($this->adapter, EntityHelper::HR_DESIGNATIONS),
+                'branches' => EntityHelper::getTableKVList($this->adapter, EntityHelper::HR_BRANCHES),
+                'positions' => EntityHelper::getTableKVList($this->adapter, EntityHelper::HR_POSITIONS),
+                'serviceTypes' => EntityHelper::getTableKVList($this->adapter, EntityHelper::HR_SERVICE_TYPES),
+                'employees' => EntityHelper::getTableKVList($this->adapter, EntityHelper::HR_EMPLOYEES)
             ]
         );
     }

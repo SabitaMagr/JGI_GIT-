@@ -11,14 +11,6 @@ use Setup\Model\Model;
 
 class CompanyForm{
 	
-	/**
-	 * @Annotion\Type("Zend\Form\Element\Text")
-	 * @Annotation\Required({"required":"true"})
-	 * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
-	 * @Annotation\Options({"label":"Company Id"})
-	 * @Annotation\Attributes({ "id":"form-companyId", "class":"form-companyId form-control" })
-	 */
-	public $companyId;
 
 	/**
 	 * @Annotion\Type("Zend\Form\Element\Text")

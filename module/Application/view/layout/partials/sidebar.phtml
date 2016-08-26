@@ -22,11 +22,14 @@
         </div>
     </div>
     <div class="sidebar-header">
-        <img src="img/logo.png" alt="logo" class="brand" data-src="img/logo.png" data-src-retina="img/logo_white_2x.png" width="78" height="22">
+        <img src="img/logo.png" alt="logo" class="brand" data-src="img/logo.png" data-src-retina="img/logo_white_2x.png"
+             width="78" height="22">
         <div class="sidebar-header-controls">
-            <button type="button" class="btn btn-xs sidebar-slide-toggle btn-link m-l-20" data-pages-toggle="#appMenu"><i class="fa fa-angle-down fs-16"></i>
+            <button type="button" class="btn btn-xs sidebar-slide-toggle btn-link m-l-20" data-pages-toggle="#appMenu">
+                <i class="fa fa-angle-down fs-16"></i>
             </button>
-            <button type="button" class="btn btn-link visible-lg-inline" data-toggle-pin="sidebar"><i class="fa fs-12"></i>
+            <button type="button" class="btn btn-link visible-lg-inline" data-toggle-pin="sidebar"><i
+                    class="fa fs-12"></i>
             </button>
         </div>
     </div>
@@ -38,6 +41,50 @@
                     <span class="details">12 New Updates</span>
                 </a>
                 <span class="bg-success icon-thumbnail"><i class="pg-home"></i></span>
+            </li >
+            <li>
+                <a href="javascript:;"><span class="title">Setup</span>
+                    <span class=" arrow"></span></a>
+                <span class="icon-thumbnail"><i class="pg-form"></i></span>
+                <ul class="sub-menu">
+                    <li class="">
+                        <a href="<?= $this->url("employee", ["action" => "index"]) ?>">Employee</a>
+                        <span class="icon-thumbnail">E</span>
+                    </li>
+                    <li class="">
+                        <a href="<?= $this->url("branch", ["action" => "index"]) ?>">Branch</a>
+                        <span class="icon-thumbnail">B</span>
+                    </li>
+                    <li class="">
+                        <a href="<?= $this->url("company", ["action" => "index"]) ?>">Company</a>
+                        <span class="icon-thumbnail">C</span>
+                    </li>
+                    <li class="">
+                        <a href="<?= $this->url("department", ["action" => "index"]) ?>">Department</a>
+                        <span class="icon-thumbnail">D</span>
+                    </li>
+                    <li class="">
+                        <a href="<?= $this->url("designation", ["action" => "index"]) ?>">Designation</a>
+                        <span class="icon-thumbnail">D</span>
+                    </li>
+                    <li class="">
+                        <a href="<?= $this->url("empCurrentPosting", ["action" => "index"]) ?>">Current Posting</a>
+                        <span class="icon-thumbnail">CP</span>
+                    </li>
+                    <li class="">
+                        <a href="<?= $this->url("jobHistory", ["action" => "index"]) ?>">Job History</a>
+                        <span class="icon-thumbnail">JH</span>
+                    </li>
+                    <li class="">
+                        <a href="<?= $this->url("position", ["action" => "index"]) ?>">Position</a>
+                        <span class="icon-thumbnail">P</span>
+                    </li>
+                    <li class="">
+                        <a href="<?= $this->url("serviceType", ["action" => "index"]) ?>">Service Type</a>
+                        <span class="icon-thumbnail">ST</span>
+                    </li>
+
+                </ul>
             </li>
             <li class="">
                 <a href="widget.html" class="detailed">
@@ -84,6 +131,7 @@
                     </li>
                 </ul>
             </li>
+
             <li class="">
                 <a href="builder.html">
                     <span class="title">Builder</span>

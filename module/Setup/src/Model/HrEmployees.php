@@ -35,15 +35,15 @@ class HrEmployees extends Model
     public $addrPermHouseNo;
     public $addrPermWardNo;
     public $addrPermStreetAddress;
+    public $addrPermCountryId;
 //25
     public $addrPermVdcMunicipalityId;
-    public $addrPermZoneId;
     public $addrTempHouseNo;
     public $addrTempWardNo;
     public $addrTempStreetAddress;
+    public $addrTempCountryId;
 
     public $addrTempVdcMunicipalityId;
-    public $addrTempZoneId;
     public $famFatherName;
     public $famFatherOccupation;
     public $famMotherName;
@@ -84,8 +84,8 @@ class HrEmployees extends Model
     public $status;
     public $createdDt;
 
-    public $addrTempDistrictId;
-    public $addrPermDistrictId;
+    public $countryId;
+
 
     public $mappings=[
         'employeeId'=>'EMPLOYEE_ID',
@@ -119,15 +119,11 @@ class HrEmployees extends Model
         'addrPermStreetAddress'=>'ADDR_PERM_STREET_ADDRESS',
         'addrPermVdcMunicipalityId'=>'ADDR_PERM_VDC_MUNICIPALITY_ID',
 
-        'addrPermDistrictId'=>'ADDR_PERM_DISTRICT_ID',
-        'addrPermZoneId'=>'ADDR_PERM_ZONE_ID',
         'addrTempHouseNo'=>'ADDR_TEMP_HOUSE_NO',
         'addrTempWardNo'=>'ADDR_TEMP_WARD_NO',
         'addrTempStreetAddress'=>'ADDR_TEMP_STREET_ADDRESS',
 
         'addrTempVdcMunicipalityId'=>'ADDR_TEMP_VDC_MUNICIPALITY_ID',
-        'addrTempDistrictId'=>'ADDR_TEMP_DISTRICT_ID',
-        'addrTempZoneId'=>'ADDR_TEMP_ZONE_ID',
         'famFatherName'=>'FAM_FATHER_NAME',
         'famFatherOccupation'=>'FAM_FATHER_OCCUPATION',
 
@@ -168,17 +164,11 @@ class HrEmployees extends Model
         'status'=>'STATUS',
 
         'createdDt'=>'CREATED_DT',
+        'countryId'=>'COUNTRY_ID',
+        'addrPermCountryId'=>'ADDR_PERM_COUNTRY_ID',
+        'addrTempCountryId'=>'ADDR_TEMP_COUNTRY_ID'
     ];
 
-    public function getArrayCopyForDB()
-    {
-        $tempArray= parent::getArrayCopyForDB();
-        unset($tempArray["CREATED_DT"]);
-        unset($tempArray["STATUS"]);
-        unset($tempArray["REMARKS"]);
-        unset($tempArray["EMPLOYEE_ID"]);
-        return $tempArray;
-    }
 
 
 }

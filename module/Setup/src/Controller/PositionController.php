@@ -25,9 +25,11 @@ class PositionController extends AbstractActionController
 
     private $repository;
     private $form;
+    private $adapter;
 
     public function __construct(AdapterInterface $adapter)
     {
+        $this->adapter = $adapter;
         $this->repository = new PositionRepository($adapter);
     }
 
@@ -58,7 +60,8 @@ class PositionController extends AbstractActionController
             if ($this->form->isValid()) {
                 $position = new Position();
                 $position->exchangeArrayFromForm($this->form->getData());
-                $position->createdDt = date('d-M-y');
+                $position->positionId=((int) Helper::getMaxId($this->adapter,"HR_POSITIONS","POSITION_ID"))+1;
+                $position->createdDt = Helper::getcurrentExpressionDate();
                 $this->repository->add($position);
 
                 $this->flashmessenger()->addMessage("Position Successfully added!!!");
@@ -85,7 +88,7 @@ class PositionController extends AbstractActionController
         $this->initializeForm();
         $request = $this->getRequest();
 
-            $position=new Position();
+        $position = new Position();
         if (!$request->isPost()) {
             $position->exchangeArrayFromDB($this->repository->fetchById($id)->getArrayCopy());
             $this->form->bind($position);
@@ -94,7 +97,7 @@ class PositionController extends AbstractActionController
             $this->form->setData($request->getPost());
             if ($this->form->isValid()) {
                 $position->exchangeArrayFromForm($this->form->getData());
-                $position->modifiedDt=date('d-M-y');
+                $position->modifiedDt = Helper::getcurrentExpressionDate();
                 $this->repository->edit($position, $id);
                 $this->flashmessenger()->addMessage("Position Successfully Updated!!!");
                 return $this->redirect()->toRoute("position");

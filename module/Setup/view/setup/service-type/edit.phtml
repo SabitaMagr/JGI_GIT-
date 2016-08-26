@@ -1,76 +1,65 @@
-<?php 
-$form->setAttribute('role','form');
-$form->setAttribute('class','serviceType-form');
+<?php
+$form->setAttribute('role', 'form');
+$form->setAttribute('class', 'serviceType-form');
 
-$serviceTypeId = $form->get('serviceTypeId');
 $serviceTypeCode = $form->get('serviceTypeCode');
 $serviceTypeName = $form->get('serviceTypeName');
 $remarks = $form->get('remarks');
 $status = $form->get('status');
 
-
 $submit = $form->get('submit');
-$submit->setAttribute('value',"Edit");
+$submit->setAttribute('value','Edit');
 
-$form->setAttribute('action',$this->url('serviceType',['action'=>'edit','id'=>$id]));
+$form->setAttribute('action', $this->url('serviceType', ['action' => 'edit','id'=>$id]));
 
 if ($this->messages) {
-    print '<ul class="help-block bg-danger" style="background:#f3e250;">';
-    foreach ($this->messages as $message) {
-        print '<li>' . $message . '</li>';
-    }
-    print '</ul>';
+	print '<ul class="help-block bg-danger" style="background:#f3e250;">';
+	foreach ($this->messages as $message) {
+		print '<li>' . $message . '</li>';
+	}
+	print '</ul>';
 }
 
 $form->prepare();
 print $this->form()->openTag($form);
 
 ?>
-<div class="row">
-	<div class="col-sm-12">
-		<div class="panel panel-default">
+	<div class="row">
+		<div class="col-lg-3"></div>
+		<div class="col-lg-6">
 			<div class="panel-heading panel-title-head">
-				<!--<div class="panel-title"> -->
-					<h4>Service Type Setup</h4>		
+				<h4>Service Type Setup</h4>
 			</div>
 			<div class="panel-body padding-5" style="margin-top:7px;">
 				<div class="form-group form-group-default emp-form-group">
-					<?php print $this->formLabel($serviceTypeId); ?>
-					<?php print $this->formElement($serviceTypeId); ?>
-					<?php print $this->formElementErrors()->render($serviceTypeId,['class'=>'help-block']);?>
-				</div>	
-				<div class="form-group form-group-default emp-form-group">
 					<?php print $this->formLabel($serviceTypeCode); ?>
 					<?php print $this->formElement($serviceTypeCode); ?>
-					<?php print $this->formElementErrors()->render($serviceTypeCode,['class'=>'help-block']);?>
+					<?php print $this->formElementErrors()->render($serviceTypeCode, ['class' => 'help-block']); ?>
 				</div>
 				<div class="form-group form-group-default  emp-form-group">
 					<?php print $this->formLabel($serviceTypeName); ?>
 					<?php print $this->formElement($serviceTypeName); ?>
-					<?php print $this->formElementErrors()->render($serviceTypeName,['class'=>'help-block']);?>
+					<?php print $this->formElementErrors()->render($serviceTypeName, ['class' => 'help-block']); ?>
 				</div>
 
 				<div class="form-group form-group-default" style="padding-left: 6px !important;">
 					<?php print $this->formLabel($remarks); ?>
 					<?php print $this->formElement($remarks); ?>
-					<?php print $this->formElementErrors()->render($remarks,['class'=>'help-block']);?>
+					<?php print $this->formElementErrors()->render($remarks, ['class' => 'help-block']); ?>
 				</div>
 
-				<div class="form-group form-group-default emp-form-group">
+				<div class="form-group form-group-default form-group-default-select2">
 					<?php print $this->formLabel($status); ?>
 					<?php print $this->formElement($status); ?>
-					<?php print $this->formElementErrors()->render($status,['class'=>'help-block']);?>
+					<?php print $this->formElementErrors()->render($status, ['class' => 'help-block']); ?>
 				</div>
 
-				<div class="panel-footer panel-footer-default">
-					<?php  print $this->formSubmit($submit); ?>		
-				</div>
-				
+				<?php print $this->formSubmit($submit); ?>
+
 			</div>
-			
+
 		</div>
 	</div>
-</div>
 <?php
 
 print $this->form()->closeTag();

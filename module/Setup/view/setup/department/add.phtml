@@ -2,7 +2,6 @@
 $form->setAttribute('role', 'form');
 $form->setAttribute('class', 'department-form');
 
-$departmentId = $form->get('departmentId');
 $departmentCode = $form->get('departmentCode');
 $departmentName = $form->get('departmentName');
 $remarks = $form->get('remarks');
@@ -11,6 +10,9 @@ $status = $form->get('status');
 $parentDepartment = $form->get('parentDepartment');
 $parentDepartment->setValueOptions($departments);
 
+
+$countryId = $form->get('countryId');
+$countryId->setValueOptions($countries);
 $submit = $form->get('submit');
 
 $form->setAttribute('action', $this->url('department', ['action' => 'add']));
@@ -25,53 +27,50 @@ if ($this->messages) {
 
 $form->prepare();
 print $this->form()->openTag($form);
-//echo $this->formHidden($form->get('departmentId'));
- //$departmentId =$form->get('departmentId');
 ?>
     <div class="row">
-        <div class="col-sm-6">
-            <div class="panel panel-default">
-                <div class="panel-heading panel-title-head">
-                    <!--<div class="panel-title"> -->
-                    <h4>Department Setup</h4>
-                </div>
-                <div class="panel-body padding-5" style="margin-top:7px;">
-                    <div class="form-group form-group-default emp-form-group">
-                        <?php print $this->formLabel($departmentId); ?>
-                        <?php print $this->formElement($departmentId); ?>
-                        <?php print $this->formElementErrors()->render($departmentId, ['class' => 'help-block']); ?>
-                    </div>
-                    <div class="form-group form-group-default emp-form-group">
-                        <?php print $this->formLabel($departmentCode); ?>
-                        <?php print $this->formElement($departmentCode); ?>
-                        <?php print $this->formElementErrors()->render($departmentCode, ['class' => 'help-block']); ?>
-                    </div>
-                    <div class="form-group form-group-default  emp-form-group">
-                        <?php print $this->formLabel($departmentName); ?>
-                        <?php print $this->formElement($departmentName); ?>
-                        <?php print $this->formElementErrors()->render($departmentName, ['class' => 'help-block']); ?>
-                    </div>
-                    <div class="form-group form-group-default  emp-form-group">
-                        <?php print $this->formLabel($remarks); ?>
-                        <?php print $this->formElement($remarks); ?>
-                        <?php print $this->formElementErrors()->render($remarks, ['class' => 'help-block']); ?>
-                    </div>
-                    <div class="form-group form-group-default  emp-form-group">
-                        <?php print $this->formLabel($parentDepartment); ?>
-                        <?php print $this->formElement($parentDepartment); ?>
-                        <?php print $this->formElementErrors()->render($parentDepartment, ['class' => 'help-block']); ?>
-                    </div>
-                    <div class="form-group form-group-default  emp-form-group">
-                        <?php print $this->formLabel($status); ?>
-                        <?php print $this->formElement($status); ?>
-                        <?php print $this->formElementErrors()->render($status, ['class' => 'help-block']); ?>
-                    </div>
+        <div class="col-sm-3">
 
-                </div>
-                <div class="panel-footer">
-                    <?php print $this->formSubmit($submit); ?>
-                </div>
+        </div>
+        <div class="col-sm-6">
+            <div class="panel-heading panel-title-head">
+                <!--<div class="panel-title"> -->
+                <h4>Department Setup</h4>
             </div>
+            <div class="panel-body padding-5" style="margin-top:7px;">
+                <div class="form-group form-group-default emp-form-group">
+                    <?php print $this->formLabel($departmentCode); ?>
+                    <?php print $this->formElement($departmentCode); ?>
+                    <?php print $this->formElementErrors()->render($departmentCode, ['class' => 'help-block']); ?>
+                </div>
+                <div class="form-group form-group-default  emp-form-group">
+                    <?php print $this->formLabel($departmentName); ?>
+                    <?php print $this->formElement($departmentName); ?>
+                    <?php print $this->formElementErrors()->render($departmentName, ['class' => 'help-block']); ?>
+                </div>
+                <div class="form-group form-group-default  emp-form-group">
+                    <?php print $this->formLabel($countryId); ?>
+                    <?php print $this->formElement($countryId); ?>
+                    <?php print $this->formElementErrors()->render($countryId, ['class' => 'help-block']); ?>
+                </div>
+                <div class="form-group form-group-default  emp-form-group">
+                    <?php print $this->formLabel($remarks); ?>
+                    <?php print $this->formElement($remarks); ?>
+                    <?php print $this->formElementErrors()->render($remarks, ['class' => 'help-block']); ?>
+                </div>
+                <div class="form-group form-group-default  form-group-default-select2">
+                    <?php print $this->formLabel($parentDepartment); ?>
+                    <?php print $this->formElement($parentDepartment); ?>
+                    <?php print $this->formElementErrors()->render($parentDepartment, ['class' => 'help-block']); ?>
+                </div>
+                <div class="form-group form-group-default  form-group-default-select2">
+                    <?php print $this->formLabel($status); ?>
+                    <?php print $this->formElement($status); ?>
+                    <?php print $this->formElementErrors()->render($status, ['class' => 'help-block']); ?>
+                </div>
+
+            </div>
+            <?php print $this->formSubmit($submit); ?>
         </div>
     </div>
 

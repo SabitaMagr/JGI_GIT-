@@ -7,42 +7,74 @@ if ($this->messages) {
     print '</ul>';
 }
 ?>
-<a href="<?php echo $this->url('department',["action"=>"add"]) ?>">Add New</a>
-<table role="grid" class="table table-hover dataTable no-footer" id="employeelist">
-    <thead>
-    <tr role="row">
-        <th aria-label="Title: activate to sort column ascending" aria-sort="descending" colspan="1" rowspan="1"
-            aria-controls="basicTable" tabindex="0" class="sorting_desc" style="width: 218px;">Department Code
-        </th>
-        <th aria-label="Places: activate to sort column ascending" colspan="1" rowspan="1" aria-controls="basicTable"
-            tabindex="0" class="sorting" style="width: 219px;">Department Name
-        </th>
-        <th aria-label="Last Update: activate to sort column ascending" colspan="1" rowspan="1"
-            aria-controls="basicTable" tabindex="0" class="sorting" style="width: 155px;">
-            Action
-        </th>
-    </tr>
-    </thead>
-    <tbody>
 
-<?php  foreach($departments as $department):?>   
-    <tr role="row">
-        <td class="v-align-middle sorting_1">
-            <p>
-                <?php print $this->escapeHtml($department->DEPARTMENT_CODE) ?>
-            </p>
-        </td>
-        <td class="v-align-middle sorting_1">
-            <p>
-                <?php print $this->escapeHtml($department->DEPARTMENT_NAME) ?>
-            </p>
-        </td>
-        <td class="v-align-middle sorting_1">
-            <a href="<?= $this->url("department",["action"=>"edit","id"=>$department->DEPARTMENT_ID]) ?>">Edit</a>|
-            <a href="<?= $this->url("department",["action"=>"delete","id"=>$department->DEPARTMENT_ID]); ?>" onclick="return confirm('Are you sure you want to delete this item?');">Delete</a>
-        </td>
-    </tr>
-<?php endforeach;?>
+<div class="panel panel-transparent">
+    <div class="panel-heading">
+        <div class="panel-title">
+            Pages Default Tables Style
+        </div>
+        <div class="btn-group pull-right m-b-10">
+            <a class="btn btn-default" href="<?php echo $this->url('department', ["action" => "add"]) ?>">
+                Add new
+            </a>
+            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu" role="menu">
+                <li><a href="#">Settings</a>
+                </li>
+                <li><a href="#">Help</a>
+                </li>
+            </ul>
+        </div>
+        <div class="clearfix"></div>
+    </div>
+    <div class="panel-body">
+        <div class="table-responsive">
+            <div id="basicTable_wrapper" class="dataTables_wrapper form-inline no-footer">
+                <table role="grid" class="table table-hover dataTable no-footer" id="employeelist">
+                    <thead>
+                    <tr role="row">
+                        <th aria-label="Title: activate to sort column ascending" aria-sort="descending" colspan="1"
+                            rowspan="1"
+                            aria-controls="basicTable" tabindex="0" class="sorting_desc" style="width: 218px;">
+                            Department Code
+                        </th>
+                        <th aria-label="Places: activate to sort column ascending" colspan="1" rowspan="1"
+                            aria-controls="basicTable"
+                            tabindex="0" class="sorting" style="width: 219px;">Department Name
+                        </th>
+                        <th aria-label="Last Update: activate to sort column ascending" colspan="1" rowspan="1"
+                            aria-controls="basicTable" tabindex="0" class="sorting" style="width: 155px;">
+                            Action
+                        </th>
+                    </tr>
+                    </thead>
+                    <tbody>
 
-    </tbody>
-</table>
+                    <?php foreach ($departments as $department): ?>
+                        <tr role="row">
+                            <td class="v-align-middle sorting_1">
+                                <p>
+                                    <?php print $this->escapeHtml($department->DEPARTMENT_CODE) ?>
+                                </p>
+                            </td>
+                            <td class="v-align-middle sorting_1">
+                                <p>
+                                    <?php print $this->escapeHtml($department->DEPARTMENT_NAME) ?>
+                                </p>
+                            </td>
+                            <td class="v-align-middle sorting_1">
+                                <a href="<?= $this->url("department", ["action" => "edit", "id" => $department->DEPARTMENT_ID]) ?>">Edit</a>|
+                                <a href="<?= $this->url("department", ["action" => "delete", "id" => $department->DEPARTMENT_ID]); ?>"
+                                   onclick="return confirm('Are you sure you want to delete this item?');">Delete</a>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
+
+                    </tbody>
+                </table>
+                </div>
+            </div>
+        </div>
+    </div>

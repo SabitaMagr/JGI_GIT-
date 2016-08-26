@@ -8,9 +8,11 @@ use Zend\Db\TableGateway\TableGateway;
 class CompanyRepository implements RepositoryInterface
 {
     private $tableGateway;
+    private $adapter;
 
     public function __construct(AdapterInterface $adapter)
     {
+        $this->adapter=$adapter;
         $this->tableGateway = new TableGateway('HR_COMPANY',$adapter);
 
     }

@@ -1,15 +1,14 @@
 <?php
-$form->setAttribute('role','form');
-$form->setAttribute('class','designation-form');
+$form->setAttribute('role', 'form');
+$form->setAttribute('class', 'designation-form');
 
-$designationId = $form->get('designationId');
 $designationCode = $form->get('designationCode');
 $designationTitle = $form->get("designationTitle");
 $basicSalary = $form->get("basicSalary");
 $status = $form->get("status");
 
 $submit = $form->get("submit");
-$submit->setAttribute('value',"Edit");
+$submit->setAttribute('value','Edit');
 
 $form->setAttribute('action', $this->url('designation', ['action' => 'edit',"id"=>$id]));
 
@@ -24,44 +23,39 @@ if ($this->messages) {
 $form->prepare();
 print $this->form()->openTag($form);
 ?>
-
 <div class="row">
-    <div class="col-sm-12">
-        <div class="panel panel-default">
-            <div class="panel-heading panel-title-head">
-                <!--<div class="panel-title"> -->
-                    <h4>Designation Setup</h4>     
+    <div class="col-lg-3">
+
+    </div>
+    <div class="col-lg-6">
+        <div class="panel-heading panel-title-head">
+            <h4>Designation Setup</h4>
+        </div>
+        <div class="panel-body padding-5" style="margin-top:7px;">
+
+            <div class="form-group form-group-default emp-form-group">
+                <?= $this->formLabel($designationCode) ?>
+                <?= $this->formElement($designationCode); ?>
+                <?= $this->formElementErrors()->render($designationCode, ['class' => 'help-block']) ?>
             </div>
-            <div class="panel-body padding-5" style="margin-top:7px;">  
-                <div class="form-group form-group-default emp-form-group">
-                    <?= $this->formLabel($designationId) ?>
-                    <?= $this->formElement($designationId); ?>
-                    <?= $this->formElementErrors()->render($designationId, ['class' => 'help-block']) ?>
-                </div>
-                <div class="form-group form-group-default emp-form-group">
-                    <?= $this->formLabel($designationCode) ?>
-                    <?= $this->formElement($designationCode); ?>
-                    <?= $this->formElementErrors()->render($designationCode, ['class' => 'help-block']) ?>
-                </div>
-                <div class="form-group form-group-default emp-form-group">
-                    <?= $this->formLabel($designationTitle) ?>
-                    <?= $this->formElement($designationTitle); ?>
-                    <?= $this->formElementErrors()->render($designationTitle, ['class' => 'help-block']) ?>
-                </div>
-                <div class="form-group form-group-default emp-form-group">
-                    <?= $this->formLabel($basicSalary) ?>
-                    <?= $this->formElement($basicSalary); ?>
-                    <?= $this->formElementErrors()->render($basicSalary, ['class' => 'help-block']) ?>
-                </div>
-                <div class="form-group form-group-default emp-form-group">
-                    <?php print $this->formLabel($status); ?>
-                    <?php print $this->formElement($status); ?>
-                    <?php print $this->formElementErrors()->render($status,['class'=>'help-block']);?>
-                </div>
-                <div class="panel-footer panel-footer-default">
-                    <?php  print $this->formSubmit($submit); ?>     
-                </div>
+            <div class="form-group form-group-default emp-form-group">
+                <?= $this->formLabel($designationTitle) ?>
+                <?= $this->formElement($designationTitle); ?>
+                <?= $this->formElementErrors()->render($designationTitle, ['class' => 'help-block']) ?>
             </div>
+            <div class="form-group form-group-default emp-form-group">
+                <?= $this->formLabel($basicSalary) ?>
+                <?= $this->formElement($basicSalary); ?>
+                <?= $this->formElementErrors()->render($basicSalary, ['class' => 'help-block']) ?>
+            </div>
+            <div class="form-group form-group-default form-group-default-select2">
+                <?php print $this->formLabel($status); ?>
+                <?php print $this->formElement($status); ?>
+                <?php print $this->formElementErrors()->render($status, ['class' => 'help-block']); ?>
+            </div>
+
+            <?php print $this->formSubmit($submit); ?>
+
         </div>
     </div>
 </div>

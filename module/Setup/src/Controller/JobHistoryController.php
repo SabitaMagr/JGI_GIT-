@@ -55,6 +55,9 @@ class JobHistoryController extends AbstractActionController{
 	        if ($this->form->isValid()) { 
 				$jobHistory=new JobHistory();
 	           	$jobHistory->exchangeArrayFromForm($this->form->getData());
+				$jobHistory->jobHistoryId=((int) Helper::getMaxId($this->adapter,"HR_JOB_HISTORY","JOB_HISTORY_ID"))+1;
+				$jobHistory->startDate=Helper::getExpressionDate($jobHistory->startDate);
+				$jobHistory->endDate=Helper::getExpressionDate($jobHistory->endDate);
 	           	$this->repository->add($jobHistory);
 	            $this->flashmessenger()->addMessage("Job History Successfully added!!!");
 	            return $this->redirect()->toRoute("jobHistory");
@@ -92,6 +95,10 @@ class JobHistoryController extends AbstractActionController{
             if ($this->form->isValid()) {
                 
                 $jobHistory->exchangeArrayFromForm($this->form->getData());
+
+				$jobHistory->startDate=Helper::getExpressionDate($jobHistory->startDate);
+				$jobHistory->endDate=Helper::getExpressionDate($jobHistory->endDate);
+
                 $this->repository->edit($jobHistory,$id);
                 $this->flashmessenger()->addMessage("Job History Successfully Updated!!!");
                 return $this->redirect()->toRoute("jobHistory");

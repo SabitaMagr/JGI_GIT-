@@ -25,8 +25,8 @@ class EmpCurrentPostingForm extends Model{
      * @Annotation\Type("Zend\Form\Element\Select")
      * @Annotation\Required({"required":"true"})
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
-     * @Annotation\Options({"label":"Employee Name","value_options":{"1":"Emp1","2":"Emp2"}})
-     * @Annotation\Attributes({ "id":"form-employeeId","data-init-plugin":"cs-select","class":"cs-select cs-skin-slide form-employeeId form-control"})
+     * @Annotation\Options({"disable_inarray_validator":"true","label":"Employee Name"})
+     * @Annotation\Attributes({ "id":"employeeId","class":"full-width select2-offscreen","data-init-plugin":"select2","tabindex":"-1"})
      */
     public $employeeId;
 
@@ -35,7 +35,7 @@ class EmpCurrentPostingForm extends Model{
      * @Annotation\Required({"required":"true"})
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
      * @Annotation\Options({"disable_inarray_validator":"true","label":"Service Type Name"})
-     * @Annotation\Attributes({ "id":"form-serviceTypeId","data-init-plugin":"cs-select","class":"cs-select cs-skin-slide form-serviceTypeId form-control"})
+     * @Annotation\Attributes({ "id":"serviceTypeId","class":"full-width select2-offscreen","data-init-plugin":"select2","tabindex":"-1"})
      */
     public $serviceTypeId;
 
@@ -45,7 +45,7 @@ class EmpCurrentPostingForm extends Model{
      * @Annotation\Required({"required":"true"})
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
      * @Annotation\Options({"disable_inarray_validator":"true","label":"Branch Name"})
-     * @Annotation\Attributes({ "id":"form-branchId","data-init-plugin":"cs-select","class":"cs-select cs-skin-slide form-branchId form-control"})
+     * @Annotation\Attributes({ "id":"branchId","class":"full-width select2-offscreen","data-init-plugin":"select2","tabindex":"-1"})
      */
     public $branchId;
 
@@ -54,7 +54,7 @@ class EmpCurrentPostingForm extends Model{
      * @Annotation\Required({"required":"true"})
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
      * @Annotation\Options({"disable_inarray_validator":"true","label":"Department Name"})
-     * @Annotation\Attributes({ "id":"form-departmentId","data-init-plugin":"cs-select","class":"cs-select cs-skin-slide form-departmentId form-control"})
+     * @Annotation\Attributes({ "id":"departmentId","class":"full-width select2-offscreen","data-init-plugin":"select2","tabindex":"-1"})
      */
     public $departmentId;
 
@@ -63,7 +63,7 @@ class EmpCurrentPostingForm extends Model{
      * @Annotation\Required({"required":"true"})
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
      * @Annotation\Options({"disable_inarray_validator":"true","label":"Designation Name"})
-     * @Annotation\Attributes({ "id":"form-designationId","data-init-plugin":"cs-select","class":"cs-select cs-skin-slide form-designationId form-control"})
+     * @Annotation\Attributes({ "id":"designationId","class":"full-width select2-offscreen","data-init-plugin":"select2","tabindex":"-1"})
      */
     public $designationId;
 
@@ -72,7 +72,7 @@ class EmpCurrentPostingForm extends Model{
      * @Annotation\Required({"required":"true"})
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
      * @Annotation\Options({"disable_inarray_validator":"true","label":"Position Name"})
-     * @Annotation\Attributes({ "id":"form-positionId","data-init-plugin":"cs-select","class":"cs-select cs-skin-slide form-positionId form-control"})
+     * @Annotation\Attributes({ "id":"positionId","class":"full-width select2-offscreen","data-init-plugin":"select2","tabindex":"-1"})
      */
     public $positionId;
 
@@ -92,5 +92,3 @@ class EmpCurrentPostingForm extends Model{
     ];
 
 }
-/* End of file EmpCurrentPosting.php */
-/* Location: ./Setup/src/Form/EmpCurrentPosting.php */

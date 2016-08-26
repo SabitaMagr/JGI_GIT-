@@ -24,15 +24,6 @@ class BranchForm
      * @Annotion\Type("Zend\Form\Element\Text")
      * @Annotation\Required({"required":"true"})
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
-     * @Annotation\Options({"label":"Branch Id"})
-     * @Annotation\Attributes({ "id":"form-branchId", "class":"form-branchId form-control" })
-     */
-    public $branchId;
-
-    /**
-     * @Annotion\Type("Zend\Form\Element\Text")
-     * @Annotation\Required({"required":"true"})
-     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Branch Code"})
      * @Annotation\Attributes({ "id":"form-branchCode", "class":"form-branchCode form-control" })
      */
@@ -56,6 +47,15 @@ class BranchForm
      * @Annotation\Attributes({ "id":"form-streetAddress", "class":"form-streetAddress form-control"  })
      */
     public $streetAddress;
+
+    /**
+     * @Annotation\Type("Zend\Form\Element\Select")
+     * @Annotation\Required({"required":"true"})
+     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
+     * @Annotation\Options({"disable_inarray_validator":"true","label":"Country"})
+     * @Annotation\Attributes({ "id":"countryId","class":"full-width select2-offscreen","data-init-plugin":"select2","tabindex":"-1"})
+     */
+    public $countryId;
 
     /**
      * @Annotion\Type("Zend\Form\Element\Text")
@@ -100,7 +100,7 @@ class BranchForm
      * @Annotation\Required(false)
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
      * @Annotation\Options({"label":"Status","value_options":{"E":"Enabled","D":"Disabled"}})
-     * @Annotation\Attributes({ "id":"form-status","data-init-plugin":"cs-select","class":"cs-select cs-skin-slide form-status form-control"})
+     * @Annotation\Attributes({ "id":"form-status","class":"full-width select2-offscreen","data-init-plugin":"select2","tabindex":"-1"})
      */
     public $status;
 

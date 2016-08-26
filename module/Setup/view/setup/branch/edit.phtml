@@ -1,101 +1,98 @@
-<?php 
-$form->setAttribute('role','form');
-$form->setAttribute('class','branch-form');
+<?php
+$form->setAttribute('role', 'form');
+$form->setAttribute('class', 'branch-form');
 
-$branchId = $form->get('branchId');
 $branchCode = $form->get('branchCode');
 $branchName = $form->get('branchName');
 $streetAddress = $form->get('streetAddress');
+$countryId=$form->get('countryId');
 $telephone = $form->get('telephone');
 $fax = $form->get('fax');
 $email = $form->get('email');
 $remarks = $form->get('remarks');
 $status = $form->get('status');
 
-$submit = $form->get('submit');
-$submit->setAttribute('value',"Edit Branch");
+$countryId->setValueOptions($countries);
 
-$form->setAttribute('action',$this->url('branch',['action'=>'edit','id'=>$id]));
+$submit = $form->get('submit');
+$submit->setAttribute('value','Edit');
+
+$form->setAttribute('action', $this->url('branch', ['action' => 'edit','id'=>$id]));
 
 if ($this->messages) {
-    print '<ul class="help-block bg-danger" style="background:#f3e250;">';
-    foreach ($this->messages as $message) {
-        print '<li>' . $message . '</li>';
-    }
-    print '</ul>';
+	print '<ul class="help-block bg-danger" style="background:#f3e250;">';
+	foreach ($this->messages as $message) {
+		print '<li>' . $message . '</li>';
+	}
+	print '</ul>';
 }
 
 $form->prepare();
 print $this->form()->openTag($form);
 
 ?>
-<div class="row">
-	<div class="col-sm-12">
-		<div class="panel panel-default">
+	<div class="row">
+		<div class="col-sm-3">
+
+		</div>
+		<div class="col-sm-6">
 			<div class="panel-heading panel-title-head">
-				<!--<div class="panel-title"> -->
-					<h4>Branch Setup</h4>		
+				<h4>Branch Setup</h4>
 			</div>
-			<div class="panel-body padding-5" style="margin-top:7px;">	
-				<div class="form-group form-group-default emp-form-group">
-					<?php print $this->formLabel($branchId); ?>
-					<?php print $this->formElement($branchId); ?>
-					<?php print $this->formElementErrors()->render($branchId,['class'=>'help-block']);?>
-				</div>
+			<div class="panel-body padding-5" style="margin-top:7px;">
 				<div class="form-group form-group-default emp-form-group">
 					<?php print $this->formLabel($branchCode); ?>
 					<?php print $this->formElement($branchCode); ?>
-					<?php print $this->formElementErrors()->render($branchCode,['class'=>'help-block']);?>
+					<?php print $this->formElementErrors()->render($branchCode, ['class' => 'help-block']); ?>
 				</div>
 				<div class="form-group form-group-default  emp-form-group">
 					<?php print $this->formLabel($branchName); ?>
 					<?php print $this->formElement($branchName); ?>
-					<?php print $this->formElementErrors()->render($branchName,['class'=>'help-block']);?>
+					<?php print $this->formElementErrors()->render($branchName, ['class' => 'help-block']); ?>
 				</div>
 				<div class="form-group form-group-default  emp-form-group">
 					<?php print $this->formLabel($streetAddress); ?>
 					<?php print $this->formElement($streetAddress); ?>
-					<?php print $this->formElementErrors()->render($streetAddress,['class'=>'help-block']);?>
+					<?php print $this->formElementErrors()->render($streetAddress, ['class' => 'help-block']); ?>
+				</div>
+				<div class="form-group form-group-default  emp-form-group">
+					<?php print $this->formLabel($countryId); ?>
+					<?php print $this->formElement($countryId); ?>
+					<?php print $this->formElementErrors()->render($countryId, ['class' => 'help-block']); ?>
 				</div>
 				<div class="form-group form-group-default  emp-form-group">
 					<?php print $this->formLabel($telephone); ?>
 					<?php print $this->formElement($telephone); ?>
-					<?php print $this->formElementErrors()->render($telephone,['class'=>'help-block']);?>
+					<?php print $this->formElementErrors()->render($telephone, ['class' => 'help-block']); ?>
 				</div>
 				<div class="form-group form-group-default  emp-form-group">
 					<?php print $this->formLabel($fax); ?>
 					<?php print $this->formElement($fax); ?>
-					<?php print $this->formElementErrors()->render($fax,['class'=>'help-block']);?>
+					<?php print $this->formElementErrors()->render($fax, ['class' => 'help-block']); ?>
 				</div>
 				<div class="form-group form-group-default  emp-form-group">
 					<?php print $this->formLabel($email); ?>
 					<?php print $this->formElement($email); ?>
-					<?php print $this->formElementErrors()->render($email,['class'=>'help-block']);?>
+					<?php print $this->formElementErrors()->render($email, ['class' => 'help-block']); ?>
 				</div>
+
 				<div class="form-group form-group-default" style="padding-left:6px">
 					<?php print $this->formLabel($remarks); ?>
 					<?php print $this->formElement($remarks); ?>
-					<?php print $this->formElementErrors()->render($remarks,['class'=>'help-block']);?>
+					<?php print $this->formElementErrors()->render($remarks, ['class' => 'help-block']); ?>
 				</div>
 
-				<div class="form-group form-group-default emp-form-group">
+				<div class="form-group form-group-default form-group-default-select2">
 					<?php print $this->formLabel($status); ?>
 					<?php print $this->formElement($status); ?>
-					<?php print $this->formElementErrors()->render($status,['class'=>'help-block']);?>
+					<?php print $this->formElementErrors()->render($status, ['class' => 'help-block']); ?>
 				</div>
-				
-
-				<div class="panel-footer panel-footer-default">
-					<?php  print $this->formSubmit($submit); ?>		
-				</div>
+				<?php print $this->formSubmit($submit); ?>
 
 			</div>
-			
+
 		</div>
 	</div>
-</div>
 <?php
-
 print $this->form()->closeTag();
-
 ?>

@@ -19,14 +19,6 @@ use Zend\Form\Annotation;
  */
 class PositionForm
 {
-    /**
-     * @Annotion\Type("Zend\Form\Element\Text")
-     * @Annotation\Required({"required":"true"})
-     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
-     * @Annotation\Options({"label":"Position Id"})
-     * @Annotation\Attributes({ "id":"form-positionId", "class":"form-positionId form-control" })
-     */
-    public $positionId;
 
     /**
      * @Annotion\Type("Zend\Form\Element\Text")
@@ -52,7 +44,7 @@ class PositionForm
      * @Annotation\Required(false)
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
      * @Annotation\Options({"label":"Status","value_options":{"E":"Enabled","D":"Disabled"}})
-     * @Annotation\Attributes({ "id":"form-status","data-init-plugin":"cs-select","class":"cs-select cs-skin-slide form-status form-control"})
+     * @Annotation\Attributes({ "id":"form-status","class":"full-width select2-offscreen","data-init-plugin":"select2","tabindex":"-1"})
      */
     public $status;
 

@@ -14,6 +14,7 @@ namespace Setup\Controller;
 
 use Application\Helper\Helper;
 use Setup\Form\BranchForm;
+use Setup\Helper\EntityHelper;
 use Setup\Model\Branch;
 use Setup\Repository\BranchRepository;
 use Zend\Db\Adapter\AdapterInterface;
@@ -24,9 +25,11 @@ class BranchController extends AbstractActionController
 {
     private $form;
     private $repository;
+    private $adapter;
 
     function __construct(AdapterInterface $adapter)
     {
+        $this->adapter = $adapter;
         $this->repository = new BranchRepository($adapter);
     }
 
@@ -54,16 +57,23 @@ class BranchController extends AbstractActionController
 
             $this->form->setData($request->getPost());
             if ($this->form->isValid()) {
-                $branch=new Branch();
+                $branch = new Branch();
                 $branch->exchangeArrayFromForm($this->form->getData());
-                $branch->createdDt=date('d-M-y');
+                $branch->branchId = ((int)Helper::getMaxId($this->adapter, "HR_BRANCHES", "BRANCH_ID")) + 1;
+                $branch->createdDt = Helper::getcurrentExpressionDate();
+
                 $this->repository->add($branch);
 
                 $this->flashmessenger()->addMessage("Branch Successfully Added!!!");
                 return $this->redirect()->toRoute("branch");
             }
         }
-        return Helper::addFlashMessagesToArray($this, ['form' => $this->form]);
+        return Helper::addFlashMessagesToArray($this,
+            [
+                'form' => $this->form,
+                'countries' => EntityHelper::getTableKVList($this->adapter, EntityHelper::HR_COUNTRIES)
+            ]
+        );
     }
 
     public function editAction()
@@ -72,7 +82,7 @@ class BranchController extends AbstractActionController
         $this->initializeForm();
         $request = $this->getRequest();
 
-            $branch=new Branch();
+        $branch = new Branch();
         if (!$request->isPost()) {
             $branch->exchangeArrayFromDB($this->repository->fetchById($id)->getArrayCopy());
             $this->form->bind($branch);
@@ -81,14 +91,18 @@ class BranchController extends AbstractActionController
             $this->form->setData($request->getPost());
             if ($this->form->isValid()) {
                 $branch->exchangeArrayFromForm($this->form->getData());
-//                $branch->modifiedDt=$modifiedDt;
-                $branch->modifiedDt="to_date('2014-01-01', 'YYYY-MM-DD')";
+                $branch->modifiedDt = Helper::getcurrentExpressionDate();
                 $this->repository->edit($branch, $id);
                 $this->flashmessenger()->addMessage("Branch Successfully Updated!!!");
                 return $this->redirect()->toRoute("branch");
             }
         }
-        return Helper::addFlashMessagesToArray($this, ['form' => $this->form, 'id' => $id]);
+        return Helper::addFlashMessagesToArray($this, [
+            'form' => $this->form,
+            'id' => $id,
+            'countries' => EntityHelper::getTableKVList($this->adapter, EntityHelper::HR_COUNTRIES)
+
+        ]);
     }
 
     public function deleteAction()

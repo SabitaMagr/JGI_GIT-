@@ -25,9 +25,11 @@ class DesignationController extends AbstractActionController
 {
     private $repository;
     private $form;
+    private $adapter;
 
     function __construct(AdapterInterface $adapter)
     {
+        $this->adapter=$adapter;
         $this->repository = new DesignationRepository($adapter);
     }
 
@@ -57,7 +59,8 @@ class DesignationController extends AbstractActionController
             if ($this->form->isValid()) {
                 $designation = new Designation();
                 $designation->exchangeArrayFromForm($this->form->getData());
-                $designation->createdDt = date('d-M-y');
+                $designation->createdDt = Helper::getcurrentExpressionDate();
+                $designation->designationId=((int) Helper::getMaxId($this->adapter,"HR_DESIGNATIONS","DESIGNATION_ID"))+1;
                 $this->repository->add($designation);
 
                 $this->flashmessenger()->addMessage("Designation Successfully added!!!");
@@ -94,7 +97,7 @@ class DesignationController extends AbstractActionController
             if ($this->form->isValid()) {
 
                 $designation->exchangeArrayFromForm($this->form->getData());
-                $designation->modifiedDt = date('d-M-y');
+                $designation->modifiedDt = Helper::getcurrentExpressionDate();
                 $this->repository->edit($designation, $id);
 
                 $this->flashmessenger()->addMessage("Designation Successfully Updated!!!");

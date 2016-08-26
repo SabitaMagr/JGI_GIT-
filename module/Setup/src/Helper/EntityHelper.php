@@ -44,6 +44,12 @@ class EntityHelper
         ],
         self::HR_COMPANY=>[
             "COMPANY_ID"=>"COMPANY_NAME"
+        ],
+        self::HR_EMPLOYEES=>[
+            'EMPLOYEE_ID'=>'FIRST_NAME'
+        ],
+        self::HR_COUNTRIES=>[
+            'COUNTRY_ID'=>'COUNTRY_NAME'
         ]
     ];
 
@@ -54,11 +60,13 @@ class EntityHelper
     const HR_POSITIONS="HR_POSITIONS";
     const HR_GENDERS="HR_GENDERS";
     const HR_BRANCHES="HR_BRANCHES";
-    const HR_VDC_MUNICIPALITY="HR_VDC_MUNICIPALITIY";
+    const HR_VDC_MUNICIPALITY="HR_VDC_MUNICIPALITIES";
     const HR_SERVICE_TYPES="HR_SERVICE_TYPES";
     const HR_ZONES="HR_ZONES";
     const HR_RELIGIONS="HR_RELIGIONS";
     const HR_COMPANY="HR_COMPANY";
+    const HR_EMPLOYEES='HR_EMPLOYEES';
+    const HR_COUNTRIES='HR_COUNTRIES';
 
 
     public static function getTableKVList(AdapterInterface $adapter,$tableName){

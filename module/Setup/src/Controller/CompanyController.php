@@ -4,6 +4,7 @@ namespace Setup\Controller;
 use Application\Helper\Helper;
 use Setup\Model\Company;
 use Zend\Db\Adapter\AdapterInterface;
+use Zend\Db\Sql\Expression;
 use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\View\Model\ViewModel;
 use Zend\Mvc\Controller\AbstractActionController;
@@ -15,9 +16,11 @@ class CompanyController extends AbstractActionController
 
     private $repository;
     private $form;
+    private $adapter;
 
     function __construct(AdapterInterface $adapter)
     {
+        $this->adapter = $adapter;
         $this->repository = new CompanyRepository($adapter);
     }
 
@@ -43,14 +46,13 @@ class CompanyController extends AbstractActionController
 
         $this->initializeForm();
         $request = $this->getRequest();
-
         if ($request->isPost()) {
-
             $this->form->setData($request->getPost());
             if ($this->form->isValid()) {
                 $company = new Company();
                 $company->exchangeArrayFromForm($this->form->getData());
-                $company->createdDt=date("d-M-y");
+                $company->createdDt = Helper::getcurrentExpressionDate();
+                $company->companyId = ((int) Helper::getMaxId($this->adapter, "HR_COMPANY", "COMPANY_ID"))+1;
                 $this->repository->add($company);
 
                 $this->flashmessenger()->addMessage("Company Successfully added!!!");
@@ -83,11 +85,10 @@ class CompanyController extends AbstractActionController
             $company->exchangeArrayFromDB($this->repository->fetchById($id)->getArrayCopy());
             $this->form->bind($company);
         } else {
-            $modifiedDt = date("d-M-y");
             $this->form->setData($request->getPost());
             if ($this->form->isValid()) {
                 $company->exchangeArrayFromForm($this->form->getData());
-                $company->modifiedDt=$modifiedDt;
+                $company->modifiedDt = Helper::getcurrentExpressionDate();
                 $this->repository->edit($company, $id);
                 $this->flashmessenger()->addMessage("Company Successfully Updated!!!");
                 return $this->redirect()->toRoute("company");

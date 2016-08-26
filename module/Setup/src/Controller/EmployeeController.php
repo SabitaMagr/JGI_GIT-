@@ -15,6 +15,7 @@ use Setup\Helper\EntityHelper;
 use Setup\Model\HrEmployees;
 use Setup\Repository\EmployeeRepository;
 use Zend\Db\Adapter\AdapterInterface;
+use Zend\Db\Sql\Sql;
 use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\Hydrator;
 use Zend\Mvc\Controller\AbstractActionController;
@@ -55,13 +56,20 @@ class EmployeeController extends AbstractActionController
             if ($this->form->isValid()) {
                 $employee = new HrEmployees();
                 $employee->exchangeArrayFromForm($this->form->getData());
-                $employee->employeeId = 1;
+                $employee->employeeId = ((int)Helper::getMaxId($this->adapter, "HR_EMPLOYEES", "EMPLOYEE_ID")) + 1;
                 $employee->status = 'E';
-                $employee->createdDt = '14-AUG-15';
+                $employee->createdDt = Helper::getcurrentExpressionDate();
+                $employee->birthDate = Helper::getExpressionDate($employee->birthDate);
+                $employee->famSpouseBirthDate = Helper::getExpressionDate($employee->famSpouseBirthDate);
+                $employee->famSpouseWeddingAnniversary = Helper::getExpressionDate($employee->famSpouseWeddingAnniversary);
+                $employee->idDrivingLicenseExpiry = Helper::getExpressionDate($employee->idDrivingLicenseExpiry);
+                $employee->idCitizenshipIssueDate = Helper::getExpressionDate($employee->idCitizenshipIssueDate);
+                $employee->idPassportExpiry = Helper::getExpressionDate($employee->idPassportExpiry);
+                $employee->joinDate = Helper::getExpressionDate($employee->joinDate);
 
                 $this->repository->add($employee);
 
-                return $this->redirect()->toRoute("setup");
+                return $this->redirect()->toRoute("employee");
             }
         }
         return new ViewModel([
@@ -72,7 +80,8 @@ class EmployeeController extends AbstractActionController
             "vdcMunicipalities" => EntityHelper::getTableKVList($this->adapter, EntityHelper::HR_VDC_MUNICIPALITY),
             "zones" => EntityHelper::getTableKVList($this->adapter, EntityHelper::HR_ZONES),
             "religions" => EntityHelper::getTableKVList($this->adapter, EntityHelper::HR_RELIGIONS),
-            "companies" => EntityHelper::getTableKVList($this->adapter, EntityHelper::HR_COMPANY)
+            "companies" => EntityHelper::getTableKVList($this->adapter, EntityHelper::HR_COMPANY),
+            "countries" => EntityHelper::getTableKVList($this->adapter, EntityHelper::HR_COUNTRIES)
         ]);
 
 
@@ -83,7 +92,7 @@ class EmployeeController extends AbstractActionController
         $id = (int)$this->params()->fromRoute('id', 0);
 
         if (0 === $id) {
-            return $this->redirect()->toRoute('setup', ['action' => 'index']);
+            return $this->redirect()->toRoute('employee', ['action' => 'index']);
         }
 
 
@@ -103,10 +112,17 @@ class EmployeeController extends AbstractActionController
             if ($this->form->isValid()) {
                 $employee = new HrEmployees();
                 $employee->exchangeArrayFromForm($this->form->getData());
-                $employee->employeeId = $id;
-                $this->repository->edit($employee, $id, "1-AUG-12");
+                $employee->birthDate = Helper::getExpressionDate($employee->birthDate);
+                $employee->famSpouseBirthDate = Helper::getExpressionDate($employee->famSpouseBirthDate);
+                $employee->famSpouseWeddingAnniversary = Helper::getExpressionDate($employee->famSpouseWeddingAnniversary);
+                $employee->idDrivingLicenseExpiry = Helper::getExpressionDate($employee->idDrivingLicenseExpiry);
+                $employee->idCitizenshipIssueDate = Helper::getExpressionDate($employee->idCitizenshipIssueDate);
+                $employee->idPassportExpiry = Helper::getExpressionDate($employee->idPassportExpiry);
+                $employee->joinDate = Helper::getExpressionDate($employee->joinDate);
+
+                $this->repository->edit($employee, $id);
                 $this->flashmessenger()->addMessage("Employee Successfully Updated!!!");
-                return $this->redirect()->toRoute("setup");
+                return $this->redirect()->toRoute("employee");
             }
         }
         return Helper::addFlashMessagesToArray($this, [
@@ -118,10 +134,21 @@ class EmployeeController extends AbstractActionController
             "vdcMunicipalities" => EntityHelper::getTableKVList($this->adapter, EntityHelper::HR_VDC_MUNICIPALITY),
             "zones" => EntityHelper::getTableKVList($this->adapter, EntityHelper::HR_ZONES),
             "religions" => EntityHelper::getTableKVList($this->adapter, EntityHelper::HR_RELIGIONS),
-            "companies" => EntityHelper::getTableKVList($this->adapter, EntityHelper::HR_COMPANY)
+            "companies" => EntityHelper::getTableKVList($this->adapter, EntityHelper::HR_COMPANY),
+            "countries" => EntityHelper::getTableKVList($this->adapter, EntityHelper::HR_COUNTRIES)
         ]);
 
 
+    }
+
+    public function deleteAction()
+    {
+        $id = (int)$this->params()->fromRoute("id");
+
+        $this->repository->delete($id);
+
+        $this->flashmessenger()->addMessage("Employee Successfully Deleted!!!");
+        return $this->redirect()->toRoute('employee');
     }
 
 }

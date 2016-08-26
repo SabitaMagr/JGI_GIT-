@@ -7,46 +7,74 @@ if ($this->messages) {
     print '</ul>';
 }
 ?>
-<a href="<?php echo $this->url('company',["action"=>"add"]) ?>">Add New</a>
+<div class="panel panel-transparent">
+    <div class="panel-heading">
+        <div class="panel-title">
+            Pages Default Tables Style
+        </div>
+        <div class="btn-group pull-right m-b-10">
+            <a class="btn btn-default" href="<?php echo $this->url('company', ["action" => "add"]) ?>">
+                Add new
+            </a>
+            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu" role="menu">
+                <li><a href="#">Settings</a>
+                </li>
+                <li><a href="#">Help</a>
+                </li>
+            </ul>
+        </div>
+        <div class="clearfix"></div>
+    </div>
+    <div class="panel-body">
+        <div class="table-responsive">
+            <div id="basicTable_wrapper" class="dataTables_wrapper form-inline no-footer">
+                <table role="grid" class="table table-hover dataTable no-footer" id="employeelist">
 
+                    <thead>
+                    <tr role="row">
+                        <th aria-label="Title: activate to sort column ascending" aria-sort="descending" colspan="1"
+                            rowspan="1"
+                            aria-controls="basicTable" tabindex="0" class="sorting_desc" style="width: 218px;">Company
+                            Code
+                        </th>
+                        <th aria-label="Places: activate to sort column ascending" colspan="1" rowspan="1"
+                            aria-controls="basicTable"
+                            tabindex="0" class="sorting" style="width: 219px;">Company Name
+                        </th>
+                        <th aria-label="Last Update: activate to sort column ascending" colspan="1" rowspan="1"
+                            aria-controls="basicTable" tabindex="0" class="sorting" style="width: 155px;">
+                            Action
+                        </th>
+                    </tr>
+                    </thead>
+                    <tbody>
 
-<table role="grid" class="table table-hover dataTable no-footer" id="employeelist">
+                    <?php foreach ($companyList as $company): ?>
+                        <tr role="row">
+                            <td class="v-align-middle sorting_1">
+                                <p>
+                                    <?php print $this->escapeHtml($company->COMPANY_CODE) ?>
+                                </p>
+                            </td>
+                            <td class="v-align-middle sorting_1">
+                                <p>
+                                    <?php print $this->escapeHtml($company->COMPANY_NAME) ?>
+                                </p>
+                            </td>
+                            <td class="v-align-middle sorting_1">
+                                <a href="<?= $this->url("company", ["action" => "edit", "id" => $company->COMPANY_ID]); ?>">Edit</a>|
+                                <a href="<?= $this->url("company", ["action" => "delete", "id" => $company->COMPANY_ID]); ?>">Delete</a>
+                            </td>
+                        </tr>
 
-    <thead>
-    <tr role="row">
-        <th aria-label="Title: activate to sort column ascending" aria-sort="descending" colspan="1" rowspan="1"
-            aria-controls="basicTable" tabindex="0" class="sorting_desc" style="width: 218px;">Company Code
-        </th>
-        <th aria-label="Places: activate to sort column ascending" colspan="1" rowspan="1" aria-controls="basicTable"
-            tabindex="0" class="sorting" style="width: 219px;">Company Name
-        </th>
-        <th aria-label="Last Update: activate to sort column ascending" colspan="1" rowspan="1"
-            aria-controls="basicTable" tabindex="0" class="sorting" style="width: 155px;">
-            Action
-        </th>
-    </tr>
-    </thead>
-    <tbody>
+                    <?php endforeach; ?>
 
-<?php  foreach($companyList as $company):?>
-    <tr role="row">
-        <td class="v-align-middle sorting_1">
-            <p>
-                <?php print $this->escapeHtml($company->COMPANY_CODE) ?>
-            </p>
-        </td>
-        <td class="v-align-middle sorting_1">
-            <p>
-                <?php print $this->escapeHtml($company->COMPANY_NAME) ?>
-            </p>
-        </td>
-        <td class="v-align-middle sorting_1">
-            <a href="<?= $this->url("company",["action"=>"edit","id"=>$company->COMPANY_ID]); ?>">Edit</a>|
-            <a href="<?= $this->url("company",["action"=>"delete","id"=>$company->COMPANY_ID]); ?>">Delete</a>
-        </td>
-    </tr>
-
-<?php endforeach;?>
-
-    </tbody>
-</table>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
