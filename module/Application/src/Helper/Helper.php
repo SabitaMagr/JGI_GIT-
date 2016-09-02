@@ -4,15 +4,19 @@ namespace Application\Helper;
 
 use Setup\Model\Model;
 use Zend\Db\Adapter\AdapterInterface;
+use Zend\Db\Adapter\Driver\ResultInterface;
+use Zend\Db\ResultSet\ResultSet;
+use Zend\Db\ResultSet\ResultSetInterface;
 use Zend\Db\Sql\Expression;
 use Zend\Db\Sql\Select;
 use Zend\Db\Sql\Sql;
 
 class Helper
 {
-    const ORACLE_DATE_FORMAT="DD-MON-YYYY";
-    const MYSQL_DATE_FORMAT="";
-    const PHP_DATE_FORMAT="d-M-Y";
+    const ORACLE_DATE_FORMAT = "DD-MON-YYYY";
+    const ORACLE_TIME_FORMAT="HH:MI AM";
+    const MYSQL_DATE_FORMAT = "";
+    const PHP_DATE_FORMAT = "d-M-Y";
 
     public static function addFlashMessagesToArray($context, $return)
     {
@@ -79,13 +83,56 @@ class Helper
 
     }
 
-    public static function getExpressionDate($dateStr){
-        $format=Helper::ORACLE_DATE_FORMAT;
+    public static function getExpressionDate($dateStr)
+    {
+        $format = Helper::ORACLE_DATE_FORMAT;
         return new Expression("TO_DATE('{$dateStr}', '{$format}')");
     }
 
-    public static function getcurrentExpressionDate(){
-        $currentDate=date(self::PHP_DATE_FORMAT);
+    public static function getExpressionTime($dateStr)
+    {
+        $format = Helper::ORACLE_TIME_FORMAT;
+        return new Expression("TO_DATE('{$dateStr}', '{$format}')");
+    }
+    public static function getcurrentExpressionDate()
+    {
+        $currentDate = date(self::PHP_DATE_FORMAT);
         return self::getExpressionDate($currentDate);
+    }
+
+    public static function hydrate($class, ResultSet $resultSet)
+    {
+        $tempArray = [];
+        foreach ($resultSet as $item) {
+            $model = new $class();
+            $model->exchangeArrayFromDB($item->getArrayCopy());
+            array_push($tempArray, $model);
+        }
+        return $tempArray;
+    }
+
+    public static function renderCustomView()
+    {
+        return function ($object) {
+            $elems = $object->getValueOptions();
+            $counter = 1;
+            $name = $object->getName();
+            foreach ($elems as $key => $value) {
+                $temp = '';
+                if ($object->getValue() == "") {
+                    if ($counter == $object->getCheckedValue()) {
+                        $temp = 'checked=checked';
+                    }
+                }else{
+                    if($object->getValue()==$key){
+                        $temp = 'checked=checked';
+                    }
+                }
+                echo "<input $temp  type='radio' value='$key' name='$name' id='$name+$value'>";
+                echo "<label for='$name+$value'>$value</label>";
+                $counter++;
+            }
+
+        };
     }
 }

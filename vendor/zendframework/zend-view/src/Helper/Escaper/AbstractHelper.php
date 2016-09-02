@@ -50,9 +50,11 @@ abstract class AbstractHelper extends Helper\AbstractHelper
         if (is_string($value)) {
             return $this->escape($value);
         }
-
         if (is_array($value)) {
             if (!(self::RECURSE_ARRAY & $recurse)) {
+//                print "<pre>";
+//                print_r($value);
+//                exit;
                 throw new Exception\InvalidArgumentException(
                     'Array provided to Escape helper, but flags do not allow recursion'
                 );

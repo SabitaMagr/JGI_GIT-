@@ -8,12 +8,12 @@ if ($this->messages) {
 }
 
 ?>
+<script>
+    document.menu=<?php $menu = ["id" => "menuSetup","subMenu"=>["id"=>"subMenuEmployee"]];echo json_encode($menu);?>;
+</script>
 
 <div class="panel panel-transparent">
     <div class="panel-heading">
-        <div class="panel-title">
-            Pages Default Tables Style
-        </div>
         <div class="btn-group pull-right m-b-10">
            <a class="btn btn-default" href="<?= $this->url("employee", ["action" => "add"]) ?>">
                 Add new
@@ -36,22 +36,16 @@ if ($this->messages) {
                 <table role="grid" class="table table-hover dataTable no-footer" id="employeelist">
                     <thead>
                     <tr role="row">
-                        <th aria-label="Title: activate to sort column ascending" aria-sort="descending" colspan="1"
-                            rowspan="1"
-                            aria-controls="basicTable" tabindex="0" class="sorting_desc" style="width: 218px;">Employee
-                            Code
+                        <th aria-label="Title: activate to sort column ascending" aria-sort="descending" colspan="1" rowspan="1" aria-controls="basicTable" tabindex="0" class="sorting_desc" style="width: 218px;">
+                            Employee Code
                         </th>
-                        <th aria-label="Places: activate to sort column ascending" colspan="1" rowspan="1"
-                            aria-controls="basicTable"
-                            tabindex="0" class="sorting" style="width: 219px;">First Name
+                        <th aria-label="Places: activate to sort column ascending" colspan="1" rowspan="1"  aria-controls="basicTable" tabindex="0" class="sorting" style="width: 219px;">
+                            First Name
                         </th>
-                        <th aria-label="Activities: activate to sort column ascending" colspan="1" rowspan="1"
-                            aria-controls="basicTable" tabindex="0" class="sorting" style="width: 333px;">
+                        <th aria-label="Activities: activate to sort column ascending" colspan="1" rowspan="1"  aria-controls="basicTable" tabindex="0" class="sorting" style="width: 333px;">
                             Middle Name
                         </th>
-                        <th aria-label="Status: activate to sort column ascending" colspan="1" rowspan="1"
-                            aria-controls="basicTable"
-                            tabindex="0" class="sorting" style="width: 155px;">
+                        <th aria-label="Status: activate to sort column ascending" colspan="1" rowspan="1"  aria-controls="basicTable"  tabindex="0" class="sorting" style="width: 155px;">
                             Last Name
                         </th>
                         <th aria-label="Last Update: activate to sort column ascending" colspan="1" rowspan="1"
@@ -97,7 +91,7 @@ if ($this->messages) {
                             </td>
                             <td class="v-align-middle">
                                 <p>
-                                    <a href="<?= $this->url("employee", ["action" => "edit", "id" => $employee->employeeId]) ?>">Edit</a>/
+                                    <a href="<?= $this->url("employee", ["action" => "edit", "id" => $employee->employeeId,'tab'=>1]) ?>">Edit</a> /
                                     <a href="<?= $this->url("employee", ["action" => "delete", "id" => $employee->employeeId]) ?>">Delete</a>
                                 </p>
                             </td>

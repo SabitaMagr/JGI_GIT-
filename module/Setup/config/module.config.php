@@ -4,6 +4,7 @@ namespace Setup;
 
 use Setup\Model\EmployeeRepository;
 use Zend\Router\Http\Segment;
+use Zend\ServiceManager\Factory\InvokableFactory;
 
 return [
     'router' => [
@@ -11,11 +12,10 @@ return [
             'employee' => [
                 'type' => Segment::class,
                 'options' => [
-                    'route' => '/employee[/:action[/:id]]',
+                    'route' => '/employee[/:action[/:id[/:tab]]]',
                     'defaults' => [
                         'controller' => Controller\EmployeeController::class,
                         'action' => 'index'
-
                     ]
                 ]
             ],
@@ -163,7 +163,20 @@ return [
                     ]
                 ],
             ],
-
+            'webService' => [
+                'type' => segment::class,
+                'options' => [
+                    'route' => '/webService[/:action[/:id]]',
+                    'constants' => [
+                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'id' => '[0-9]+',
+                    ],
+                    'defaults' => [
+                        'controller' => Controller\WebServiceController::class,
+                        'action' => 'index',
+                    ]
+                ],
+            ],
 
         ]
     ],
@@ -181,7 +194,9 @@ return [
             Controller\ShiftController::class => Controller\ControllerFactory::class,
             Controller\EmpCurrentPostingController::class => Controller\ControllerFactory::class,
             Controller\JobHistoryController::class => Controller\ControllerFactory::class,
-        ]
+            Controller\WebServiceController::class=>Controller\ControllerFactory::class
+        ],
+
     ],
 
     'view_manager' => [

@@ -8,9 +8,9 @@ $basicSalary = $form->get("basicSalary");
 $status = $form->get("status");
 
 $submit = $form->get("submit");
-$submit->setAttribute('value','Edit');
+$submit->setAttribute('value','Edit Designation');
 
-$form->setAttribute('action', $this->url('designation', ['action' => 'edit',"id"=>$id]));
+$form->setAttribute('action', $this->url('designation', ['action' => 'edit','id'=>$id]));
 
 if ($this->messages) {
     print '<ul class="help-block bg-danger" style="background:#f3e250;">';
@@ -23,27 +23,31 @@ if ($this->messages) {
 $form->prepare();
 print $this->form()->openTag($form);
 ?>
+<script>
+    document.menu=<?php $menu = ["id" => "menuSetup","subMenu"=>["id"=>"subMenuDesignation"]];echo json_encode($menu);?>;
+</script>
+
 <div class="row">
-    <div class="col-lg-3">
+    <div class="col-sm-2">
 
     </div>
-    <div class="col-lg-6">
+    <div class="col-sm-8 bg-light-color padding-30">
         <div class="panel-heading panel-title-head">
-            <h4>Designation Setup</h4>
+            <h4>Designation</h4>
         </div>
-        <div class="panel-body padding-5" style="margin-top:7px;">
+        <div class="panel-body padding-5" >
 
-            <div class="form-group form-group-default emp-form-group">
+            <div class="form-group form-group-default ">
                 <?= $this->formLabel($designationCode) ?>
                 <?= $this->formElement($designationCode); ?>
                 <?= $this->formElementErrors()->render($designationCode, ['class' => 'help-block']) ?>
             </div>
-            <div class="form-group form-group-default emp-form-group">
+            <div class="form-group form-group-default ">
                 <?= $this->formLabel($designationTitle) ?>
                 <?= $this->formElement($designationTitle); ?>
                 <?= $this->formElementErrors()->render($designationTitle, ['class' => 'help-block']) ?>
             </div>
-            <div class="form-group form-group-default emp-form-group">
+            <div class="form-group form-group-default ">
                 <?= $this->formLabel($basicSalary) ?>
                 <?= $this->formElement($basicSalary); ?>
                 <?= $this->formElementErrors()->render($basicSalary, ['class' => 'help-block']) ?>

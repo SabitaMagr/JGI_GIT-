@@ -8,13 +8,12 @@ if ($this->messages) {
 }
 
 ?>
-
+<script>
+    document.menu=<?php $menu = ["id" => "menuSetup","subMenu"=>["id"=>"subMenuBranch"]];echo json_encode($menu);?>;
+</script>
 
 <div class="panel panel-transparent">
     <div class="panel-heading">
-        <div class="panel-title">
-            Pages Default Tables Style
-        </div>
         <div class="btn-group pull-right m-b-10">
             <a class="btn btn-default" href="<?= $this->url('branch', ['action' => 'add']) ?>">
                 Add new
@@ -89,7 +88,7 @@ if ($this->messages) {
                             </td>
 
                             <td class="v-align-middle sorting_1">
-                                <a href="<?= $this->url("branch", ["action" => "edit", "id" => $branch->BRANCH_ID]) ?>">Edit</a>
+                                <a href="<?= $this->url("branch", ["action" => "edit", "id" => $branch->BRANCH_ID]) ?>">Edit</a> /
                                 <a href="<?= $this->url("branch", ["action" => "delete", "id" => $branch->BRANCH_ID]); ?>"
                                    onclick="return confirm('Are you sure you want to delete this item?');">Delete</a>
                             </td>

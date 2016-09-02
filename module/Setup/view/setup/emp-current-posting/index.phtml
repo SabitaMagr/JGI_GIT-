@@ -8,7 +8,9 @@ if ($this->messages) {
 }
 ?>
 
-
+<script>
+    document.menu=<?php $menu = ["id" => "menuSetup","subMenu"=>["id"=>"subMenuCurrentPosting"]];echo json_encode($menu);?>;
+</script>
 <div class="panel panel-transparent">
     <div class="panel-heading">
         <div class="panel-title">
@@ -44,6 +46,10 @@ if ($this->messages) {
                         </th>
                         <th aria-label="Places: activate to sort column ascending" colspan="1" rowspan="1"
                             aria-controls="basicTable"
+                            tabindex="0" class="sorting" style="width: 219px;">Service Type
+                        </th>
+                        <th aria-label="Places: activate to sort column ascending" colspan="1" rowspan="1"
+                            aria-controls="basicTable"
                             tabindex="0" class="sorting" style="width: 219px;">Branch Name
                         </th>
                         <th aria-label="Places: activate to sort column ascending" colspan="1" rowspan="1"
@@ -53,6 +59,10 @@ if ($this->messages) {
                         <th aria-label="Places: activate to sort column ascending" colspan="1" rowspan="1"
                             aria-controls="basicTable"
                             tabindex="0" class="sorting" style="width: 219px;">Designation Title
+                        </th>
+                        <th aria-label="Places: activate to sort column ascending" colspan="1" rowspan="1"
+                            aria-controls="basicTable"
+                            tabindex="0" class="sorting" style="width: 219px;">Position Name
                         </th>
                         <th aria-label="Last Update: activate to sort column ascending" colspan="1" rowspan="1"
                             aria-controls="basicTable" tabindex="0" class="sorting" style="width: 155px;">
@@ -68,28 +78,40 @@ if ($this->messages) {
                         <tr role="row">
                             <td class="v-align-middle sorting_1">
                                 <p>
-                                    <?php print $this->escapeHtml($empCurrentPosting->EMPLOYEE_ID); ?>
+                                    <?php print $this->escapeHtml($empCurrentPosting['FIRST_NAME'].' '.$empCurrentPosting['MIDDLE_NAME']." ".$empCurrentPosting['LAST_NAME']); ?>
                                 </p>
                             </td>
                             <td class="v-align-middle sorting_1">
                                 <p>
                                     <?php
-                                    print $this->escapeHtml($empCurrentPosting->BRANCH_ID); ?>
+                                    print $this->escapeHtml($empCurrentPosting['SERVICE_TYPE_NAME']); ?>
                                 </p>
                             </td>
                             <td class="v-align-middle sorting_1">
                                 <p>
-                                    <?php print $this->escapeHtml($empCurrentPosting->DEPARTMENT_ID); ?>
+                                    <?php
+                                    print $this->escapeHtml($empCurrentPosting['BRANCH_NAME']); ?>
                                 </p>
                             </td>
                             <td class="v-align-middle sorting_1">
                                 <p>
-                                    <?php print $this->escapeHtml($empCurrentPosting->DESIGNATION_ID); ?>
+                                    <?php print $this->escapeHtml($empCurrentPosting['DEPARTMENT_NAME']); ?>
                                 </p>
                             </td>
                             <td class="v-align-middle sorting_1">
-                                <a href="<?= $this->url("empCurrentPosting", ["action" => "edit", "id" => $empCurrentPosting->EMPLOYEE_ID]) ?>">Edit</a>|
-                                <a href="<?= $this->url("empCurrentPosting", ["action" => "delete", "id" => $empCurrentPosting->EMPLOYEE_ID]); ?>"
+                                <p>
+                                    <?php print $this->escapeHtml($empCurrentPosting['DESIGNATION_TITLE']); ?>
+                                </p>
+                            </td>
+
+                            <td class="v-align-middle sorting_1">
+                                <p>
+                                    <?php print $this->escapeHtml($empCurrentPosting['POSITION_NAME']); ?>
+                                </p>
+                            </td>
+                            <td class="v-align-middle sorting_1">
+                                <a href="<?= $this->url("empCurrentPosting", ["action" => "edit", "id" => $empCurrentPosting['EMPLOYEE_ID']]) ?>">Edit</a> /
+                                <a href="<?= $this->url("empCurrentPosting", ["action" => "delete", "id" => $empCurrentPosting['EMPLOYEE_ID']]); ?>"
                                    onclick="return confirm('Are you sure you want to delete this item?');">Delete</a>
                             </td>
                         </tr>

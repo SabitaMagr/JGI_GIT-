@@ -7,12 +7,12 @@ if ($this->messages) {
     print '</ul>';
 }
 ?>
+<script>
+    document.menu=<?php $menu = ["id" => "menuSetup","subMenu"=>["id"=>"subMenuServiceType"]];echo json_encode($menu);?>;
+</script>
 
 <div class="panel panel-transparent">
     <div class="panel-heading">
-        <div class="panel-title">
-            Pages Default Tables Style
-        </div>
         <div class="btn-group pull-right m-b-10">
             <a class="btn btn-default" href="<?= $this->url('serviceType', ["action" => "add"]) ?>">
                 Add new

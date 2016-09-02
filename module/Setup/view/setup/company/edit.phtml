@@ -11,7 +11,8 @@ $swift = $form->get('swift');
 
 
 $submit = $form->get('submit');
-$submit->setAttribute("value","Edit");
+$submit->setAttribute('value','Edit Company');
+
 $form->setAttribute('action', $this->url('company', ['action' => 'edit','id'=>$id]));
 
 
@@ -28,49 +29,53 @@ $form->prepare();
 print $this->form()->openTag($form);
 
 ?>
+	<script>
+		document.menu =<?php $menu = ["id" => "menuSetup", "subMenu" => ["id" => "subMenuCompany"]];echo json_encode($menu);?>;
+	</script>
+
 
 	<div class="row">
-		<div class="col-sm-3">
+		<div class="col-sm-2">
 
 		</div>
-		<div class="col-sm-6">
+		<div class="col-sm-8 bg-light-color padding-30">
 			<div class="panel-heading panel-title-head">
-				<h4>Company Profile Setup</h4>
+				<h4>Company Profile</h4>
 			</div>
-			<div class="form-group form-group-default required emp-form-group">
-				<?php print $this->formLabel($companyCode); ?>
-				<?php print $this->formElement($companyCode); ?>
-				<?php print $this->formElementErrors()->render($companyCode, ['class' => 'help-block']); ?>
-			</div>
-			<div class="form-group form-group-default required emp-form-group">
-				<?php print $this->formLabel($companyName); ?>
-				<?php print $this->formElement($companyName); ?>
-				<?php print $this->formElementErrors()->render($companyName, ['class' => 'help-block']); ?>
-			</div>
-			<div class="form-group form-group-default required emp-form-group">
-				<?php print $this->formLabel($address); ?>
-				<?php print $this->formElement($address); ?>
-				<?php print $this->formElementErrors()->render($address, ['class' => 'help-block']); ?>
-			</div>
+			<div class="panel-body">
+				<div class="form-group form-group-default required ">
+					<?php print $this->formLabel($companyCode); ?>
+					<?php print $this->formElement($companyCode); ?>
+					<?php print $this->formElementErrors()->render($companyCode, ['class' => 'help-block']); ?>
+				</div>
+				<div class="form-group form-group-default required ">
+					<?php print $this->formLabel($companyName); ?>
+					<?php print $this->formElement($companyName); ?>
+					<?php print $this->formElementErrors()->render($companyName, ['class' => 'help-block']); ?>
+				</div>
+				<div class="form-group form-group-default required ">
+					<?php print $this->formLabel($address); ?>
+					<?php print $this->formElement($address); ?>
+					<?php print $this->formElementErrors()->render($address, ['class' => 'help-block']); ?>
+				</div>
+				<div class="form-group form-group-default ">
+					<?php print $this->formLabel($telephone); ?>
+					<?php print $this->formElement($telephone); ?>
+					<?php print $this->formElementErrors()->render($telephone, ['class' => 'help-block']); ?>
+				</div>
 
-
-			<div class="form-group form-group-default emp-form-group">
-				<?php print $this->formLabel($telephone); ?>
-				<?php print $this->formElement($telephone); ?>
-				<?php print $this->formElementErrors()->render($telephone, ['class' => 'help-block']); ?>
+				<div class="form-group form-group-default ">
+					<?php print $this->formLabel($fax); ?>
+					<?php print $this->formElement($fax); ?>
+					<?php print $this->formElementErrors()->render($fax, ['class' => 'help-block']); ?>
+				</div>
+				<div class="form-group form-group-default ">
+					<?php print $this->formLabel($swift); ?>
+					<?php print $this->formElement($swift); ?>
+					<?php print $this->formElementErrors()->render($swift, ['class' => 'help-block']); ?>
+				</div>
+				<?php print $this->formSubmit($submit); ?>
 			</div>
-
-			<div class="form-group form-group-default emp-form-group">
-				<?php print $this->formLabel($fax); ?>
-				<?php print $this->formElement($fax); ?>
-				<?php print $this->formElementErrors()->render($fax, ['class' => 'help-block']); ?>
-			</div>
-			<div class="form-group form-group-default emp-form-group">
-				<?php print $this->formLabel($swift); ?>
-				<?php print $this->formElement($swift); ?>
-				<?php print $this->formElementErrors()->render($swift, ['class' => 'help-block']); ?>
-			</div>
-			<?php print $this->formSubmit($submit); ?>
 		</div>
 
 	</div>

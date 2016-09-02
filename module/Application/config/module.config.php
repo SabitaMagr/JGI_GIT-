@@ -125,6 +125,7 @@ return [
             'partial/header'          => __DIR__ . '/../view/layout/partials/header.phtml',
             'partial/footer'          => __DIR__ . '/../view/layout/partials/footer.phtml',
             'partial/sidebar'         => __DIR__ . '/../view/layout/partials/sidebar.phtml',
+            'layout/webService'         =>__DIR__.'/../view/layout/webService.phtml'
         ],
         'template_path_stack' => [
             __DIR__ . '/../view',

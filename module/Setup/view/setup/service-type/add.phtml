@@ -8,6 +8,7 @@ $remarks = $form->get('remarks');
 $status = $form->get('status');
 
 $submit = $form->get('submit');
+$submit->setAttribute('value','Add Service Type');
 
 $form->setAttribute('action', $this->url('serviceType', ['action' => 'add']));
 
@@ -23,25 +24,29 @@ $form->prepare();
 print $this->form()->openTag($form);
 
 ?>
+    <script>
+        document.menu=<?php $menu = ["id" => "menuSetup","subMenu"=>["id"=>"subMenuServiceType"]];echo json_encode($menu);?>;
+    </script>
+
     <div class="row">
-        <div class="col-lg-3"></div>
-        <div class="col-lg-6">
+        <div class="col-sm-2"></div>
+        <div class="col-sm-8 padding-30 bg-light-color">
             <div class="panel-heading panel-title-head">
-                <h4>Service Type Setup</h4>
+                <h4>Service Type</h4>
             </div>
-            <div class="panel-body padding-5" style="margin-top:7px;">
-                <div class="form-group form-group-default emp-form-group">
+            <div class="panel-body padding-5" >
+                <div class="form-group form-group-default ">
                     <?php print $this->formLabel($serviceTypeCode); ?>
                     <?php print $this->formElement($serviceTypeCode); ?>
                     <?php print $this->formElementErrors()->render($serviceTypeCode, ['class' => 'help-block']); ?>
                 </div>
-                <div class="form-group form-group-default  emp-form-group">
+                <div class="form-group form-group-default ">
                     <?php print $this->formLabel($serviceTypeName); ?>
                     <?php print $this->formElement($serviceTypeName); ?>
                     <?php print $this->formElementErrors()->render($serviceTypeName, ['class' => 'help-block']); ?>
                 </div>
 
-                <div class="form-group form-group-default" style="padding-left: 6px !important;">
+                <div class="form-group form-group-default" >
                     <?php print $this->formLabel($remarks); ?>
                     <?php print $this->formElement($remarks); ?>
                     <?php print $this->formElementErrors()->render($remarks, ['class' => 'help-block']); ?>

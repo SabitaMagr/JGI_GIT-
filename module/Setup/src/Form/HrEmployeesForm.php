@@ -19,7 +19,7 @@ class HrEmployeesForm
 
     /**
      * @Annotation\Type("Zend\Form\Element\Select")
-     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
+     * @Annotation\Required({"required":"true"})
      * @Annotation\Options({"disable_inarray_validator":"true","label":"Companies"})
      * @Annotation\Attributes({ "id":"companyId","class":"full-width select2-offscreen","data-init-plugin":"select2","tabindex":"-1"})
      */
@@ -36,7 +36,7 @@ class HrEmployeesForm
 
     /**
      * @Annotation\Type("Zend\Form\Element\Text")
-     * @Annotation\Required({"required":"false"})
+     * @Annotation\Required({"required":false})
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Middle Name"})
      * @Annotation\Attributes({ "id":"form-middleName", "class":"form-control" })
@@ -55,7 +55,6 @@ class HrEmployeesForm
 
     /**
      * @Annotation\Type("Zend\Form\Element\Text")
-     * @Annotation\Required({"required":"false"})
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Name in Nepali"})
      * @Annotation\Attributes({ "id":"form-nameNepali", "class":"form-control" })
@@ -66,6 +65,7 @@ class HrEmployeesForm
     /**
      * @Annotation\Type("Zend\Form\Element\Select")
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
+     * @Annotation\Required({"required":"true"})
      * @Annotation\Options({"disable_inarray_validator":"true","label":"Gender"})
      * @Annotation\Attributes({ "id":"genderId","class":"full-width select2-offscreen","data-init-plugin":"select2","tabindex":"-1"})
      */
@@ -100,7 +100,6 @@ class HrEmployeesForm
 
     /**
      * @Annotation\Type("Zend\Form\Element\Text")
-     * @Annotation\Required({"required":"false"})
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Social Activity"})
      * @Annotation\Attributes({ "id":"socialActivity","class":"form-control" })
@@ -109,7 +108,6 @@ class HrEmployeesForm
 
     /**
      * @Annotation\Type("Zend\Form\Element\Text")
-     * @Annotation\Required({"required":"false"})
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Telephone No"})
      * @Annotation\Attributes({ "id":"telephoneNo", "class":"form-control" })
@@ -127,7 +125,6 @@ class HrEmployeesForm
 
     /**
      * @Annotation\Type("Zend\Form\Element\Text")
-     * @Annotation\Required({"required":"false"})
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Extension Number"})
      * @Annotation\Attributes({ "id":"extensionNo", "class":"form-control" })
@@ -137,7 +134,6 @@ class HrEmployeesForm
 
     /**
      * @Annotation\Type("Zend\Form\Element\Email")
-     * @Annotation\Required({"required":"false"})
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Email Official"})
      * @Annotation\Attributes({ "id":"emailOfficial", "class":"form-control" })
@@ -146,7 +142,6 @@ class HrEmployeesForm
 
     /**
      * @Annotation\Type("Zend\Form\Element\Email")
-     * @Annotation\Required({"required":"false"})
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Email Personal"})
      * @Annotation\Attributes({ "id":"emailPersonal", "class":"form-control" })
@@ -155,7 +150,6 @@ class HrEmployeesForm
 
     /**
      * @Annotation\Type("Zend\Form\Element\Text")
-     * @Annotation\Required({"required":"false"})
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Social Network"})
      * @Annotation\Attributes({ "id":"socialNetwork", "class":"form-control" })
@@ -172,7 +166,6 @@ class HrEmployeesForm
 
     /**
      * @Annotation\Type("Zend\Form\Element\Text")
-     * @Annotation\Required({"required":"false"})
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Emergency Contact No"})
      * @Annotation\Attributes({ "id":"emergContactNo", "class":"form-control" })
@@ -182,7 +175,6 @@ class HrEmployeesForm
 
     /**
      * @Annotation\Type("Zend\Form\Element\Text")
-     * @Annotation\Required({"required":"false"})
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Emergency Contact Address"})
      * @Annotation\Attributes({ "id":"emergContactAddress", "class":"form-control" })
@@ -252,7 +244,6 @@ class HrEmployeesForm
 
     /**
      * @Annotation\Type("Zend\Form\Element\Text")
-     * @Annotation\Required({"required":"false"})
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Temporary House No"})
      * @Annotation\Attributes({ "id":"addrTempHouseNo", "class":"form-control" })
@@ -261,7 +252,6 @@ class HrEmployeesForm
 
     /**
      * @Annotation\Type("Zend\Form\Element\Number")
-     * @Annotation\Required({"required":"false"})
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Temporary Ward No"})
      * @Annotation\Attributes({ "id":"addrTempWardNo", "class":"form-control" })
@@ -271,7 +261,6 @@ class HrEmployeesForm
 
     /**
      * @Annotation\Type("Zend\Form\Element\Text")
-     * @Annotation\Required({"required":"false"})
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Temporary Street Address"})
      * @Annotation\Attributes({ "id":"addrTempStreetAddress", "class":"form-control" })
@@ -281,7 +270,6 @@ class HrEmployeesForm
 
     /**
      * @Annotation\Type("Zend\Form\Element\Select")
-     * @Annotation\Required({"required":"false"})
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"disable_inarray_validator":"true","label":"Temporary VDC or Municipality"})
      * @Annotation\Attributes({ "id":"addrTempVdcMunicipality","class":"full-width select2-offscreen","data-init-plugin":"select2","tabindex":"-1"})
@@ -291,7 +279,6 @@ class HrEmployeesForm
 
     /**
      * @Annotation\Type("Zend\Form\Element\Select")
-     * @Annotation\Required({"required":"false"})
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"disable_inarray_validator":"true","label":"Temporary District"})
      * @Annotation\Attributes({ "id":"addrTempDistrictId","class":"full-width select2-offscreen","data-init-plugin":"select2","tabindex":"-1"})
@@ -300,7 +287,6 @@ class HrEmployeesForm
 
     /**
      * @Annotation\Type("Zend\Form\Element\Select")
-     * @Annotation\Required({"required":"false"})
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"disable_inarray_validator":"true","label":"Temporary Zone"})
      * @Annotation\Attributes({ "id":"addrTempZoneId","class":"full-width select2-offscreen","data-init-plugin":"select2","tabindex":"-1"})
@@ -326,7 +312,6 @@ class HrEmployeesForm
 
     /**
      * @Annotation\Type("Zend\Form\Element\Text")
-     * @Annotation\Required({"required":"false"})
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Mother Name"})
      * @Annotation\Attributes({ "id":"famMotherName", "class":"form-control" })
@@ -336,7 +321,6 @@ class HrEmployeesForm
 
     /**
      * @Annotation\Type("Zend\Form\Element\Text")
-     * @Annotation\Required({"required":"false"})
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Mother Occupation"})
      * @Annotation\Attributes({ "id":"famMotherOccupation", "class":"form-control" })
@@ -345,7 +329,6 @@ class HrEmployeesForm
 
     /**
      * @Annotation\Type("Zend\Form\Element\Text")
-     * @Annotation\Required({"required":"false"})
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Grand Father Name"})
      * @Annotation\Attributes({ "id":"famGrandFatherName", "class":"form-control" })
@@ -355,7 +338,6 @@ class HrEmployeesForm
 
     /**
      * @Annotation\Type("Zend\Form\Element\Text")
-     * @Annotation\Required({"required":"false"})
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Grand Mother Name"})
      * @Annotation\Attributes({ "id":"famGrandMotherName", "class":"form-control" })
@@ -402,7 +384,6 @@ class HrEmployeesForm
 
     /**
      * @Annotation\Type("Zend\Form\Element\Text")
-     * @Annotation\Required({"required":"false"})
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Spouse Wdding Anniversary"})
      * @Annotation\Attributes({ "id":"famSpouseWeddingAnniversary", "class":"form-control" })
@@ -463,7 +444,6 @@ class HrEmployeesForm
 
     /**
      * @Annotation\Type("Zend\Form\Element\Text")
-     * @Annotation\Required({"required":"false"})
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Driving License Expiry"})
      * @Annotation\Attributes({ "id":"idDrivingLicenseExpiry", "class":"form-control" })
@@ -515,7 +495,6 @@ class HrEmployeesForm
 
     /**
      * @Annotation\Type("Zend\Form\Element\Text")
-     * @Annotation\Required({"required":"false"})
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Citizenship Issue Date"})
      * @Annotation\Attributes({ "id":"idCitizenshipIssueDate", "class":"form-control" })
@@ -542,7 +521,6 @@ class HrEmployeesForm
 
     /**
      * @Annotation\Type("Zend\Form\Element\Text")
-     * @Annotation\Required({"required":"false"})
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Passport Expiry"})
      * @Annotation\Attributes({ "id":"idPassportExpiry", "class":"form-control" })
@@ -551,7 +529,7 @@ class HrEmployeesForm
 
     /**
      * @Annotation\Type("Zend\Form\Element\Text")
-     * @Annotation\Required({"required":"false"})
+     * @Annotation\Required({"required":"true"})
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Join Date"})
      * @Annotation\Attributes({ "id":"joinDate", "class":"form-control" })
@@ -560,7 +538,6 @@ class HrEmployeesForm
 
     /**
      * @Annotation\Type("Zend\Form\Element\Number")
-     * @Annotation\Required({"required":"false"})
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Salary"})
      * @Annotation\Attributes({ "id":"salary", "class":"form-control" })
@@ -569,7 +546,6 @@ class HrEmployeesForm
 
     /**
      * @Annotation\Type("Zend\Form\Element\Number")
-     * @Annotation\Required({"required":"false"})
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Salary PF"})
      * @Annotation\Attributes({ "id":"salaryPf", "class":"form-control" })
@@ -579,32 +555,12 @@ class HrEmployeesForm
 
     /**
      * @Annotation\Type("Zend\Form\Element\Select")
-     * @Annotation\Required({"required":"true"})
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"disable_inarray_validator":"true","label":"Country"})
      * @Annotation\Attributes({ "id":"countryId","class":"full-width select2-offscreen","data-init-plugin":"select2","tabindex":"-1"})
      */
     public $countryId;
 
-
-    /**
-     * @Annotation\Type("Zend\Form\Element\Select")
-     * @Annotation\Required({"required":"true"})
-     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
-     * @Annotation\Options({"disable_inarray_validator":"true","label":"Permanent Country"})
-     * @Annotation\Attributes({ "id":"countryId","class":"full-width select2-offscreen","data-init-plugin":"select2","tabindex":"-1"})
-     */
-    public $addrPermCountryId;
-
-
-    /**
-     * @Annotation\Type("Zend\Form\Element\Select")
-     * @Annotation\Required({"required":"true"})
-     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
-     * @Annotation\Options({"disable_inarray_validator":"true","label":"Temporary Country"})
-     * @Annotation\Attributes({ "id":"countryId","class":"full-width select2-offscreen","data-init-plugin":"select2","tabindex":"-1"})
-     */
-    public $addrTempCountryId;
 
     /**
      * @Annotation\Type("Zend\Form\Element\Submit")

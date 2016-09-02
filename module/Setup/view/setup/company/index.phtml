@@ -7,11 +7,12 @@ if ($this->messages) {
     print '</ul>';
 }
 ?>
+<script>
+    document.menu=<?php $menu = ["id" => "menuSetup","subMenu"=>["id"=>"subMenuCompany"]];echo json_encode($menu);?>;
+</script>
+
 <div class="panel panel-transparent">
     <div class="panel-heading">
-        <div class="panel-title">
-            Pages Default Tables Style
-        </div>
         <div class="btn-group pull-right m-b-10">
             <a class="btn btn-default" href="<?php echo $this->url('company', ["action" => "add"]) ?>">
                 Add new
@@ -65,7 +66,7 @@ if ($this->messages) {
                                 </p>
                             </td>
                             <td class="v-align-middle sorting_1">
-                                <a href="<?= $this->url("company", ["action" => "edit", "id" => $company->COMPANY_ID]); ?>">Edit</a>|
+                                <a href="<?= $this->url("company", ["action" => "edit", "id" => $company->COMPANY_ID]); ?>">Edit</a> /
                                 <a href="<?= $this->url("company", ["action" => "delete", "id" => $company->COMPANY_ID]); ?>">Delete</a>
                             </td>
                         </tr>

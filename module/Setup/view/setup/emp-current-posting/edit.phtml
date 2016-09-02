@@ -16,7 +16,7 @@ $positionId = $form->get('positionId');
 $positionId->setValueOptions($positions);
 
 $submit = $form->get('submit');
-$submit->setAttribute('value','Edit');
+$submit->setAttribute('value','Edit Changed Employee Posting');
 
 $form->setAttribute('action', $this->url('empCurrentPosting', ['action' => 'edit','id'=>$id]));
 
@@ -31,15 +31,20 @@ if ($this->messages) {
 $form->prepare();
 print $this->form()->openTag($form);
 ?>
+
+	<script>
+		document.menu=<?php $menu = ["id" => "menuSetup","subMenu"=>["id"=>"subMenuCurrentPosting"]];echo json_encode($menu);?>;
+	</script>
+
 	<div class="row">
-		<div class="col-lg-3">
+		<div class="col-sm-2">
 
 		</div>
-		<div class="col-lg-6">
+		<div class="col-sm-8 padding-30 bg-light-color">
 			<div class="panel-heading panel-title-head">
 				<h4>Employee Current Posting</h4>
 			</div>
-			<div class="panel-body padding-5" style="margin-top:7px;">
+			<div class="panel-body">
 				<div class="form-group form-group-default form-group-default-select2">
 					<?php print $this->formLabel($employeeId); ?>
 					<?php print $this->formElement($employeeId); ?>

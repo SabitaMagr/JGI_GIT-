@@ -14,7 +14,7 @@ $parentDepartment->setValueOptions($departments);
 $countryId = $form->get('countryId');
 $countryId->setValueOptions($countries);
 $submit = $form->get('submit');
-$submit->setAttribute('value','Edit');
+$submit->setAttribute('value','Edit Department');
 
 $form->setAttribute('action', $this->url('department', ['action' => 'edit','id'=>$id]));
 
@@ -29,32 +29,35 @@ if ($this->messages) {
 $form->prepare();
 print $this->form()->openTag($form);
 ?>
+	<script>
+		document.menu=<?php $menu = ["id" => "menuSetup","subMenu"=>["id"=>"subMenuDepartment"]];echo json_encode($menu);?>;
+	</script>
+
 	<div class="row">
-		<div class="col-sm-3">
+		<div class="col-sm-2">
 
 		</div>
-		<div class="col-sm-6">
+		<div class="col-sm-8 bg-light-color padding-30" >
 			<div class="panel-heading panel-title-head">
-				<!--<div class="panel-title"> -->
-				<h4>Department Setup</h4>
+				<h4>Department</h4>
 			</div>
-			<div class="panel-body padding-5" style="margin-top:7px;">
-				<div class="form-group form-group-default emp-form-group">
+			<div class="panel-body padding-5" >
+				<div class="form-group form-group-default">
 					<?php print $this->formLabel($departmentCode); ?>
 					<?php print $this->formElement($departmentCode); ?>
 					<?php print $this->formElementErrors()->render($departmentCode, ['class' => 'help-block']); ?>
 				</div>
-				<div class="form-group form-group-default  emp-form-group">
+				<div class="form-group form-group-default  ">
 					<?php print $this->formLabel($departmentName); ?>
 					<?php print $this->formElement($departmentName); ?>
 					<?php print $this->formElementErrors()->render($departmentName, ['class' => 'help-block']); ?>
 				</div>
-				<div class="form-group form-group-default  emp-form-group">
+				<div class="form-group form-group-default form-group-default-select2">
 					<?php print $this->formLabel($countryId); ?>
 					<?php print $this->formElement($countryId); ?>
 					<?php print $this->formElementErrors()->render($countryId, ['class' => 'help-block']); ?>
 				</div>
-				<div class="form-group form-group-default  emp-form-group">
+				<div class="form-group form-group-default  ">
 					<?php print $this->formLabel($remarks); ?>
 					<?php print $this->formElement($remarks); ?>
 					<?php print $this->formElementErrors()->render($remarks, ['class' => 'help-block']); ?>

@@ -69,12 +69,17 @@ class EntityHelper
     const HR_COUNTRIES='HR_COUNTRIES';
 
 
-    public static function getTableKVList(AdapterInterface $adapter,$tableName){
+    public static function getTableKVList(AdapterInterface $adapter,$tableName,$id=null){
         $gateway = new TableGateway($tableName, $adapter);
         $key=array_keys(self::$tablesAttributes[$tableName])[0];
         $value=array_values(self::$tablesAttributes[$tableName])[0];
 
+        if($id==null){
         $resultset = $gateway->select();
+        }else{
+        $resultset = $gateway->select($id);
+
+        }
 
         $entitiesArray = array();
         foreach ($resultset as $result) {

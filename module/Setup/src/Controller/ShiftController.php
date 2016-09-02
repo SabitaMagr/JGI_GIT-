@@ -20,16 +20,19 @@ use Zend\Db\Adapter\AdapterInterface;
 use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
+use ZF\DevelopmentMode\Help;
 
 class ShiftController extends AbstractActionController
 {
 
     private $repository;
     private $form;
+    private $adapter;
 
     public function __construct(AdapterInterface $adapter)
     {
         $this->repository = new ShiftRepository($adapter);
+        $this->adapter=$adapter;
     }
 
     public function indexAction()
@@ -50,12 +53,18 @@ class ShiftController extends AbstractActionController
         $this->initializeForm();
         $request = $this->getRequest();
         if ($request->isPost()) {
-
             $this->form->setData($request->getPost());
             if ($this->form->isValid()) {
                 $shift = new Shift();
                 $shift->exchangeArrayFromForm($this->form->getData());
-                $shift->createdDt = date('d-M-y');
+                $shift->shiftId=((int) Helper::getMaxId($this->adapter,"HR_SHIFTS","SHIFT_ID"))+1;
+                $shift->startDate=Helper::getExpressionDate($shift->startDate);
+                $shift->endDate=Helper::getExpressionDate($shift->endDate);
+                $shift->startTime=Helper::getExpressionTime($shift->startTime);
+                $shift->endTime=Helper::getExpressionTime($shift->endTime);
+                $shift->halfDayEndTime=Helper::getExpressionTime($shift->halfDayEndTime);
+                $shift->halfTime=Helper::getExpressionTime($shift->halfTime);
+                $shift->createdDt = Helper::getcurrentExpressionDate();
 
                 $this->repository->add($shift);
                 $this->flashmessenger()->addMessage("Shift Successfully added!!!");
@@ -66,7 +75,7 @@ class ShiftController extends AbstractActionController
             $this,
             [
                 'form' => $this->form,
-                'messages' => $this->flashmessenger()->getMessages()
+                'customRenderer'=>Helper::renderCustomView()
             ]
         )
         );
@@ -91,7 +100,15 @@ class ShiftController extends AbstractActionController
             $this->form->setData($request->getPost());
             if ($this->form->isValid()) {
                 $shift->exchangeArrayFromForm($this->form->getData());
-                $shift->modifiedDt = date('d-M-y');
+                $shift->shiftId=((int) Helper::getMaxId($this->adapter,"HR_SHIFTS","SHIFT_ID"))+1;
+                $shift->startDate=Helper::getExpressionDate($shift->startDate);
+                $shift->endDate=Helper::getExpressionDate($shift->endDate);
+                $shift->startTime=Helper::getExpressionTime($shift->startTime);
+                $shift->endTime=Helper::getExpressionTime($shift->endTime);
+                $shift->halfDayEndTime=Helper::getExpressionTime($shift->halfDayEndTime);
+                $shift->halfTime=Helper::getExpressionTime($shift->halfTime);
+                $shift->modifiedDt = Helper::getcurrentExpressionDate();
+
                 $this->repository->edit($shift, $id);
                 $this->flashmessenger()->addMessage("Shift Successfuly Updated!!!");
                 return $this->redirect()->toRoute("shift");
@@ -101,7 +118,8 @@ class ShiftController extends AbstractActionController
             $this,
             [
                 'form' => $this->form,
-                'id' => $id
+                'id' => $id,
+                'customRenderer'=>Helper::renderCustomView()
             ]
         )
         );

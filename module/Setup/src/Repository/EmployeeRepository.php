@@ -42,17 +42,19 @@ class  EmployeeRepository implements RepositoryInterface
 
     public function fetchById($id)
     {
-        $rowset = $this->gateway->select(function(Select $select){
-        $select->columns(Helper::convertColumnDateFormat($this->adapter, new HrEmployees(),
-            [
-                'birthDate',
-                'famSpouseBirthDate',
-                'famSpouseWeddingAnniversary',
-                'idDrivingLicenseExpiry',
-                'idCitizenshipIssueDate',
-                'idPassportExpiry',
-                'joinDate'
-            ]), false);
+        $rowset = $this->gateway->select(function (Select $select) use ($id) {
+            $select->columns(Helper::convertColumnDateFormat($this->adapter, new HrEmployees(),
+                [
+                    'birthDate',
+                    'famSpouseBirthDate',
+                    'famSpouseWeddingAnniversary',
+                    'idDrivingLicenseExpiry',
+                    'idCitizenshipIssueDate',
+                    'idPassportExpiry',
+                    'joinDate'
+                ]), false);
+
+            $select->where(['EMPLOYEE_ID'=>$id]);
         });
         return $rowset->current();
     }
@@ -70,10 +72,22 @@ class  EmployeeRepository implements RepositoryInterface
     public function edit(Model $model, $id)
     {
         $tempArray = $model->getArrayCopyForDB();
-        unset($tempArray['CREATED_DT']);
-        unset($tempArray['EMPLOYEE_ID']);
-        unset($tempArray['STATUS']);
-        $this->gateway->update($tempArray, ['EMPLOYEE_ID' => $id]);
+
+        if (array_key_exists('CREATED_DT',$tempArray)) {
+            unset($tempArray['CREATED_DT']);
+        }
+        if (array_key_exists('EMPLOYEE_ID',$tempArray)) {
+            unset($tempArray['EMPLOYEE_ID']);
+        }
+        if (array_key_exists('STATUS',$tempArray)) {
+            unset($tempArray['STATUS']);
+        }
+//        print "<pre>";
+//        print_r($tempArray);
+//        print_r($id);
+//       echo
+       $this->gateway->update($tempArray, ['EMPLOYEE_ID' => $id]);
+//        exit;
 
     }
 }
