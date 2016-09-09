@@ -27,7 +27,7 @@ class HrEmployeesFormTabOne extends Model
      * @Annotation\Type("Zend\Form\Element\Select")
      * @Annotation\Required(true)
      * @Annotation\Options({"disable_inarray_validator":"true","label":"Companies"})
-     * @Annotation\Attributes({ "id":"companyId","class":"full-width select2-offscreen","data-init-plugin":"select2","tabindex":"-1"})
+     * @Annotation\Attributes({ "id":"companyId","class":"full-width select2-offscreen","data-init-plugin":"select2"})
      */
     public $companyId;
 
@@ -74,7 +74,7 @@ class HrEmployeesFormTabOne extends Model
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Required(true)
      * @Annotation\Options({"disable_inarray_validator":"true","label":"Gender"})
-     * @Annotation\Attributes({ "id":"genderId","class":"full-width select2-offscreen","data-init-plugin":"select2","tabindex":"-1"})
+     * @Annotation\Attributes({ "id":"genderId","class":"full-width select2-offscreen","data-init-plugin":"select2"})
      */
     public $genderId;
 
@@ -92,7 +92,7 @@ class HrEmployeesFormTabOne extends Model
      * @Annotation\Required(true)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"disable_inarray_validator":"true","label":"Blood Group"})
-     * @Annotation\Attributes({ "id":"bloodGroupId","class":"full-width select2-offscreen","data-init-plugin":"select2","tabindex":"-1"})
+     * @Annotation\Attributes({ "id":"bloodGroupId","class":"full-width select2-offscreen","data-init-plugin":"select2"})
      */
     public $bloodGroupId;
 
@@ -101,7 +101,7 @@ class HrEmployeesFormTabOne extends Model
      * @Annotation\Required(true)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"disable_inarray_validator":"true","label":"Religion"})
-     * @Annotation\Attributes({ "id":"religionId","class":"full-width select2-offscreen","data-init-plugin":"select2","tabindex":"-1"})
+     * @Annotation\Attributes({ "id":"religionId","class":"full-width select2-offscreen","data-init-plugin":"select2"})
      */
     public $religionId;
 
@@ -115,20 +115,20 @@ class HrEmployeesFormTabOne extends Model
     public $socialActivity;
 
     /**
-     * @Annotation\Type("Zend\Form\Element\Text")
+     * @Annotation\Type("Application\Custom\FormElement\Telephone")
+     * @Annotation\Required(false)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Telephone No"})
-     * @Annotation\Attributes({ "id":"telephoneNo", "class":"form-control" })
-     * @Annotation\Required(false)
+     * @Annotation\Attributes({ "id":"telephoneNo", "placeholder":"xx-xxxxxxx", "class":"form-control"})
      */
     public $telephoneNo;
 
     /**
-     * @Annotation\Type("Zend\Form\Element\Text")
+     * @Annotation\Type("Application\Custom\FormElement\Mobile")
      * @Annotation\Required(true)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Mobile No"})
-     * @Annotation\Attributes({ "id":"mobileNo", "class":"form-control" })
+     * @Annotation\Attributes({ "id":"MobileNo", "placeholder":"xxx-xxx-xxxx", "class":"form-control"})
      */
     public $mobileNo;
 
@@ -137,6 +137,7 @@ class HrEmployeesFormTabOne extends Model
      * @Annotation\Type("Zend\Form\Element\Text")
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Extension Number"})
+     * @Annotation\Validator({"name":"StringLength", "options":{"max":"50"}})
      * @Annotation\Attributes({ "id":"extensionNo", "class":"form-control" })
      */
     public $extensionNo;
@@ -174,7 +175,7 @@ class HrEmployeesFormTabOne extends Model
      * @Annotation\Required(false)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"disable_inarray_validator":"true","label":"Country"})
-     * @Annotation\Attributes({ "id":"countryId","class":"full-width select2-offscreen","data-init-plugin":"select2","tabindex":"-1"})
+     * @Annotation\Attributes({ "id":"countryId","class":"full-width select2-offscreen","data-init-plugin":"select2"})
      */
     public $countryId;
 
@@ -188,11 +189,11 @@ class HrEmployeesFormTabOne extends Model
     public $emergContactName;
 
     /**
-     * @Annotation\Type("Zend\Form\Element\Text")
+     * @Annotation\Type("Application\Custom\FormElement\Mobile")
+     * @Annotation\Required(true)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
-     * @Annotation\Required(false)
      * @Annotation\Options({"label":"Emergency Contact No"})
-     * @Annotation\Attributes({ "id":"emergContactNo", "class":"form-control" })
+     * @Annotation\Attributes({ "id":"emergContactNo", "placeholder":"xxx-xxx-xxxx", "class":"form-control"})
      */
     public $emergContactNo;
 
@@ -221,6 +222,7 @@ class HrEmployeesFormTabOne extends Model
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Required(false)
      * @Annotation\Options({"label":" Permanent House No"})
+     * @Annotation\Validator({"name":"StringLength", "options":{"max":"10"}})
      * @Annotation\Attributes({ "id":"addrPermHouseNo", "class":"form-control" })
      */
     public $addrPermHouseNo;
@@ -230,6 +232,7 @@ class HrEmployeesFormTabOne extends Model
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":" Permanent Ward No"})
      * @Annotation\Required(false)
+     * @Annotation\Validator({"name":"StringLength", "options":{"max":"2"}})
      * @Annotation\Attributes({ "id":"addrPermWardNo", "class":"form-control" })
      */
     public $addrPermWardNo;
@@ -249,7 +252,7 @@ class HrEmployeesFormTabOne extends Model
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Required(false)
      * @Annotation\Options({"disable_inarray_validator":"true","label":"Permanent VDC or Municipality"})
-     * @Annotation\Attributes({ "id":"addrPermVdcMunicipalityId","class":"full-width select2-offscreen","data-init-plugin":"select2","tabindex":"-1"})
+     * @Annotation\Attributes({ "id":"addrPermVdcMunicipalityId","class":"full-width select2-offscreen","data-init-plugin":"select2"})
      */
     public $addrPermVdcMunicipalityId;
 
@@ -259,7 +262,7 @@ class HrEmployeesFormTabOne extends Model
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"disable_inarray_validator":"true","label":"Permanent District"})
      * @Annotation\Required(false)
-     * @Annotation\Attributes({ "id":"addrPermDistrictId","class":"full-width select2-offscreen","data-init-plugin":"select2","tabindex":"-1"})
+     * @Annotation\Attributes({ "id":"addrPermDistrictId","class":"full-width select2-offscreen","data-init-plugin":"select2"})
      *
      */
     public $addrPermDistrictId;
@@ -269,7 +272,7 @@ class HrEmployeesFormTabOne extends Model
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Required(false)
      * @Annotation\Options({"disable_inarray_validator":"true","label":"Permanent Zone"})
-     * @Annotation\Attributes({ "id":"addrPermZoneId","class":"full-width select2-offscreen","data-init-plugin":"select2","tabindex":"-1"})
+     * @Annotation\Attributes({ "id":"addrPermZoneId","class":"full-width select2-offscreen","data-init-plugin":"select2"})
      */
     public $addrPermZoneId;
 
@@ -279,6 +282,7 @@ class HrEmployeesFormTabOne extends Model
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Temporary House No"})
      * @Annotation\Required(false)
+     * @Annotation\Validator({"name":"StringLength", "options":{"max":"10"}})
      * @Annotation\Attributes({ "id":"addrTempHouseNo", "class":"form-control" })
      */
     public $addrTempHouseNo;
@@ -288,6 +292,7 @@ class HrEmployeesFormTabOne extends Model
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Required(false)
      * @Annotation\Options({"label":"Temporary Ward No"})
+     * @Annotation\Validator({"name":"StringLength", "options":{"max":"2"}})
      * @Annotation\Attributes({ "id":"addrTempWardNo", "class":"form-control" })
      */
     public $addrTempWardNo;
@@ -308,7 +313,7 @@ class HrEmployeesFormTabOne extends Model
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"disable_inarray_validator":"true","label":"Temporary VDC or Municipality"})
      * @Annotation\Required(false)
-     * @Annotation\Attributes({ "id":"addrTempVdcMunicipality","class":"full-width select2-offscreen","data-init-plugin":"select2","tabindex":"-1"})
+     * @Annotation\Attributes({ "id":"addrTempVdcMunicipality","class":"full-width select2-offscreen","data-init-plugin":"select2"})
      */
     public $addrTempVdcMunicipalityId;
 
@@ -318,7 +323,7 @@ class HrEmployeesFormTabOne extends Model
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"disable_inarray_validator":"true","label":"Temporary District"})
      * @Annotation\Required(false)
-     * @Annotation\Attributes({ "id":"addrTempDistrictId","class":"full-width select2-offscreen","data-init-plugin":"select2","tabindex":"-1"})
+     * @Annotation\Attributes({ "id":"addrTempDistrictId","class":"full-width select2-offscreen","data-init-plugin":"select2"})
      */
     public $addrTempDistrictId;
 
@@ -327,7 +332,7 @@ class HrEmployeesFormTabOne extends Model
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Required(false)
      * @Annotation\Options({"disable_inarray_validator":"true","label":"Temporary Zone"})
-     * @Annotation\Attributes({ "id":"addrTempZoneId","class":"full-width select2-offscreen","data-init-plugin":"select2","tabindex":"-1"})
+     * @Annotation\Attributes({ "id":"addrTempZoneId","class":"full-width select2-offscreen","data-init-plugin":"select2"})
      */
     public $addrTempZoneId;
 

@@ -62,6 +62,9 @@ class DepartmentController extends AbstractActionController
             if ($this->form->isValid()) {
                 $department = new Department();
                 $department->exchangeArrayFromForm($this->form->getData());
+                if($department->parentDepartment==0){
+                    unset($department->parentDepartment);
+                }
                 $department->createdDt = Helper::getcurrentExpressionDate();
                 $department->departmentId=((int) Helper::getMaxId($this->adapter,"HR_DEPARTMENTS","DEPARTMENT_ID"))+1;
                 $this->repository->add($department);
@@ -95,10 +98,12 @@ class DepartmentController extends AbstractActionController
             $department->exchangeArrayFromDb($this->repository->fetchById($id)->getArrayCopy());
             $this->form->bind($department);
         } else {
-
             $this->form->setData($request->getPost());
             if ($this->form->isValid()) {
                 $department->exchangeArrayFromForm($this->form->getData());
+                if($department->parentDepartment==0){
+                    unset($department->parentDepartment);
+                }
                 $department->modifiedDt = Helper::getcurrentExpressionDate();
                 $this->repository->edit($department, $id);
                 $this->flashmessenger()->addMessage("Department Successfully Updated!!!");
@@ -125,6 +130,4 @@ class DepartmentController extends AbstractActionController
     }
 }
 
-/* End of file DepartmentController.php */
-/* Location: ./Setup/src/Controller/DepartmentController.php */
 ?>

@@ -8,8 +8,8 @@ $remarks = $form->get('remarks');
 
 $status = $form->get('status');
 $parentDepartment = $form->get('parentDepartment');
-$parentDepartment->setValueOptions($departments);
 
+$parentDepartment->setValueOptions(array_merge(["0"=>"none"],$departments));
 
 $countryId = $form->get('countryId');
 $countryId->setValueOptions($countries);

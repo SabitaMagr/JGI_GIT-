@@ -50,6 +50,9 @@ class EntityHelper
         ],
         self::HR_COUNTRIES=>[
             'COUNTRY_ID'=>'COUNTRY_NAME'
+        ],
+        self::HR_FILE_TYPE=>[
+            'FILETYPE_CODE'=>'NAME'
         ]
     ];
 
@@ -67,6 +70,7 @@ class EntityHelper
     const HR_COMPANY="HR_COMPANY";
     const HR_EMPLOYEES='HR_EMPLOYEES';
     const HR_COUNTRIES='HR_COUNTRIES';
+    const HR_FILE_TYPE='HR_FILE_TYPE';
 
 
     public static function getTableKVList(AdapterInterface $adapter,$tableName,$id=null){

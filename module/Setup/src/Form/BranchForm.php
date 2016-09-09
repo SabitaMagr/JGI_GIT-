@@ -22,7 +22,7 @@ class BranchForm
 {
     /**
      * @Annotion\Type("Zend\Form\Element\Text")
-     * @Annotation\Required({"required":"true"})
+     * @Annotation\Required(true)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Branch Code"})
      * @Annotation\Attributes({ "id":"form-branchCode", "class":"form-branchCode form-control" })
@@ -31,7 +31,7 @@ class BranchForm
 
     /**
      * @Annotion\Type("Zend\Form\Element\Text")
-     * @Annotation\Required({"required":"true"})
+     * @Annotation\Required(true)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Branch Name"})
      * @Annotation\Validator({"name":"StringLength", "options":{"min":"5"}})
@@ -41,7 +41,7 @@ class BranchForm
 
     /**
      * @Annotion\Type("Zend\Form\Element\Text")
-     * @Annotation\Required({"required":"true"})
+     * @Annotation\Required(true)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Street Address"})
      * @Annotation\Attributes({ "id":"form-streetAddress", "class":"form-streetAddress form-control"  })
@@ -50,20 +50,19 @@ class BranchForm
 
     /**
      * @Annotation\Type("Zend\Form\Element\Select")
-     * @Annotation\Required({"required":"true"})
+     * @Annotation\Required(true)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"disable_inarray_validator":"true","label":"Country"})
-     * @Annotation\Attributes({ "id":"countryId","class":"full-width select2-offscreen","data-init-plugin":"select2","tabindex":"-1"})
+     * @Annotation\Attributes({ "id":"countryId","class":"full-width select2-offscreen","data-init-plugin":"select2"})
      */
     public $countryId;
 
     /**
-     * @Annotion\Type("Zend\Form\Element\Text")
-     * @Annotation\Required({"required":"true"})
+     * @Annotation\Type("Application\Custom\FormElement\Telephone")
+     * @Annotation\Required(true)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Telephone"})
-     * @Annotation\Validator({"name":"StringLength", "options":{"max":"10"}})
-     * @Annotation\Attributes({ "id":"form-telephone", "class":"form-telephone form-control"})
+     * @Annotation\Attributes({ "id":"form-telephone", "placeholder":"xx-xxxxxxx", "class":"form-control"})
      */
     public $telephone;
 
@@ -72,17 +71,18 @@ class BranchForm
      * @Annotion\Type("Zend\Form\Element\Text")
      * @Annotation\Required(false)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
+     * @Annotation\Validator({"name":"StringLength", "options":{"max":"10"}})
      * @Annotation\Options({"label":"Fax"})
-     * @Annotation\Attributes({ "id":"form-fax", "class":"form-fax form-control"})
+     * @Annotation\Attributes({ "id":"fax", "class":"form-control"})
      */
     public $fax;
 
     /**
-     * @Annotion\Type("Zend\Form\Element\Email")
-     * @Annotation\Required(false)
+     * @Annotation\Type("Zend\Form\Element\Email")
+     * @Annotation\Required(true)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Email"})
-     * @Annotation\Attributes({ "id":"form-email", "class":"form-email form-control"})
+     * @Annotation\Attributes({ "id":"email", "class":"form-control" })
      */
     public $email;
 
@@ -96,11 +96,11 @@ class BranchForm
     public $remarks;
 
     /**
-     * @Annotation\Type("Zend\Form\Element\Select")
+     * @Annotation\Type("Zend\Form\Element\Radio")
      * @Annotation\Required(false)
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
      * @Annotation\Options({"label":"Status","value_options":{"E":"Enabled","D":"Disabled"}})
-     * @Annotation\Attributes({ "id":"form-status","class":"full-width select2-offscreen","data-init-plugin":"select2","tabindex":"-1"})
+     * @Annotation\Attributes({ "id":"form-status"})
      */
     public $status;
 

@@ -19,6 +19,7 @@ class HrEmployeesFormTabThree extends  Model
      * @Annotation\Type("Zend\Form\Element\Text")
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Id Card No"})
+     * @Annotation\Validator({"name":"StringLength", "options":{"max":"15"}})
      * @Annotation\Attributes({ "id":"idCardNo", "class":"form-control" })
      */
     public $idCardNo;
@@ -39,6 +40,7 @@ class HrEmployeesFormTabThree extends  Model
      * @Annotation\Type("Zend\Form\Element\Text")
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Id Bar code"})
+     * @Annotation\Validator({"name":"StringLength", "options":{"max":"50"}})
      * @Annotation\Attributes({ "id":"idBarCode", "class":"form-control" })
      */
     public $idBarCode;
@@ -48,6 +50,7 @@ class HrEmployeesFormTabThree extends  Model
      * @Annotation\Type("Zend\Form\Element\Text")
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Provident Fund No"})
+     * @Annotation\Validator({"name":"StringLength", "options":{"max":"15"}})
      * @Annotation\Attributes({ "id":"idProvidentFundNo", "class":"form-control" })
      */
     public $idProvidentFundNo;
@@ -57,6 +60,7 @@ class HrEmployeesFormTabThree extends  Model
      * @Annotation\Type("Zend\Form\Element\Text")
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Driving License No"})
+     * @Annotation\Validator({"name":"StringLength", "options":{"max":"50"}})
      * @Annotation\Attributes({ "id":"idDrivingLicenseNo", "class":"form-control" })
      */
     public $idDrivingLicenseNo;
@@ -67,6 +71,7 @@ class HrEmployeesFormTabThree extends  Model
      * @Annotation\Type("Zend\Form\Element\Text")
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Driving License Type"})
+     * @Annotation\Validator({"name":"StringLength", "options":{"max":"6"}})
      * @Annotation\Attributes({ "id":"idDrivingLicenseType", "class":"form-control" })
      */
     public $idDrivingLicenseType;
@@ -86,6 +91,7 @@ class HrEmployeesFormTabThree extends  Model
      * @Annotation\Type("Zend\Form\Element\Text")
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Thumb Id"})
+     * @Annotation\Validator({"name":"StringLength", "options":{"max":"50"}})
      * @Annotation\Attributes({ "id":"idThumbId", "class":"form-control" })
      */
     public $idThumbId;
@@ -95,6 +101,7 @@ class HrEmployeesFormTabThree extends  Model
      * @Annotation\Type("Zend\Form\Element\Text")
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Pan No"})
+     * @Annotation\Validator({"name":"StringLength", "options":{"max":"50"}})
      * @Annotation\Attributes({ "id":"idPanNo", "class":"form-control" })
      */
     public $idPanNo;
@@ -105,6 +112,7 @@ class HrEmployeesFormTabThree extends  Model
      * @Annotation\Type("Zend\Form\Element\Text")
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Account Id"})
+     * @Annotation\Validator({"name":"StringLength", "options":{"max":"50"}})
      * @Annotation\Attributes({ "id":"idAccountId", "class":"form-control" })
      */
     public $idAccountId;
@@ -113,7 +121,8 @@ class HrEmployeesFormTabThree extends  Model
      * @Annotation\Required(false)
      * @Annotation\Type("Zend\Form\Element\Text")
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
-     * @Annotation\Options({"label":"Retirement No"})
+     * @Annotation\Options({"label":"CIT No"})
+     * @Annotation\Validator({"name":"StringLength", "options":{"max":"15"}})
      * @Annotation\Attributes({ "id":"idRetirementNo", "class":"form-control" })
      */
     public $idRetirementNo;
@@ -124,6 +133,7 @@ class HrEmployeesFormTabThree extends  Model
      * @Annotation\Type("Zend\Form\Element\Text")
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Citizenship No"})
+     * @Annotation\Validator({"name":"StringLength", "options":{"max":"50"}})
      * @Annotation\Attributes({ "id":"idCitizenshipNo", "class":"form-control" })
      */
     public $idCitizenshipNo;
@@ -152,6 +162,7 @@ class HrEmployeesFormTabThree extends  Model
      * @Annotation\Type("Zend\Form\Element\Text")
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Passport No"})
+     * @Annotation\Validator({"name":"StringLength", "options":{"max":"15"}})
      * @Annotation\Attributes({ "id":"idPassportNo", "class":"form-control" })
      */
     public $idPassportNo;

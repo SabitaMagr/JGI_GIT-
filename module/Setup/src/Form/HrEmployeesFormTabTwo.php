@@ -75,7 +75,7 @@ class HrEmployeesFormTabTwo extends Model
      * @Annotation\Required(true)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"disable_inarray_validator":"true","label":"Maritual Status"})
-     * @Annotation\Attributes({ "id":"maritualStatus","class":"full-width select2-offscreen","data-init-plugin":"select2","tabindex":"-1"})
+     * @Annotation\Attributes({ "id":"maritualStatus","class":"full-width select2-offscreen","data-init-plugin":"select2"})
      */
     public $maritualStatus;
 
@@ -113,7 +113,7 @@ class HrEmployeesFormTabTwo extends Model
     /**
      * @Annotation\Type("Zend\Form\Element\Text")
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
-     * @Annotation\Options({"label":"Spouse Wdding Anniversary"})
+     * @Annotation\Options({"label":"Wedding Anniversary"})
      * @Annotation\Attributes({ "id":"famSpouseWeddingAnniversary", "class":"form-control" })
      * @Annotation\Required(false)
      */

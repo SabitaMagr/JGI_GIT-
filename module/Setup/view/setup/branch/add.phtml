@@ -44,53 +44,63 @@ print $this->form()->openTag($form);
                 <h4>Branch</h4>
             </div>
             <div class="panel-body " >
-                <div class="form-group form-group-default ">
+                <div class="form-group form-group-default <?= empty($branchCode->getMessages()) ? "" : "error" ?>">
                     <?php print $this->formLabel($branchCode); ?>
                     <?php print $this->formElement($branchCode); ?>
-                    <?php print $this->formElementErrors()->render($branchCode, ['class' => 'help-block']); ?>
                 </div>
-                <div class="form-group form-group-default  ">
+                    <?php print $this->formElementErrors()->render($branchCode, ['class' => 'help-block error']); ?>
+
+                <div class="form-group form-group-default <?= empty($branchName->getMessages()) ? "" : "error" ?>">
                     <?php print $this->formLabel($branchName); ?>
                     <?php print $this->formElement($branchName); ?>
-                    <?php print $this->formElementErrors()->render($branchName, ['class' => 'help-block']); ?>
                 </div>
-                <div class="form-group form-group-default  ">
+                    <?php print $this->formElementErrors()->render($branchName, ['class' => 'help-block error']); ?>
+
+                <div class="form-group form-group-default  <?= empty($streetAddress->getMessages()) ? "" : "error" ?>">
                     <?php print $this->formLabel($streetAddress); ?>
                     <?php print $this->formElement($streetAddress); ?>
-                    <?php print $this->formElementErrors()->render($streetAddress, ['class' => 'help-block']); ?>
                 </div>
+                    <?php print $this->formElementErrors()->render($streetAddress, ['class' => 'help-block error']); ?>
+
                 <div class="form-group form-group-default form-group-default-select2">
                     <?php print $this->formLabel($countryId); ?>
                     <?php print $this->formElement($countryId); ?>
-                    <?php print $this->formElementErrors()->render($countryId, ['class' => 'help-block']); ?>
                 </div>
-                <div class="form-group form-group-default  ">
+                    <?php print $this->formElementErrors()->render($countryId, ['class' => 'help-block error']); ?>
+
+                <div class="form-group form-group-default <?= empty($telephone->getMessages()) ? "" : "error" ?>">
                     <?php print $this->formLabel($telephone); ?>
                     <?php print $this->formElement($telephone); ?>
-                    <?php print $this->formElementErrors()->render($telephone, ['class' => 'help-block']); ?>
                 </div>
-                <div class="form-group form-group-default  ">
+                    <?php print $this->formElementErrors()->render($telephone, ['class' => 'help-block error']); ?>
+
+                <div class="form-group form-group-default <?= empty($fax->getMessages()) ? "" : "error" ?>">
                     <?php print $this->formLabel($fax); ?>
                     <?php print $this->formElement($fax); ?>
-                    <?php print $this->formElementErrors()->render($fax, ['class' => 'help-block']); ?>
                 </div>
-                <div class="form-group form-group-default  ">
+                    <?php print $this->formElementErrors()->render($fax, ['class' => 'help-block error']); ?>
+
+                <div class="form-group form-group-default <?= empty($email->getMessages()) ? "" : "error" ?>">
                     <?php print $this->formLabel($email); ?>
                     <?php print $this->formElement($email); ?>
-                    <?php print $this->formElementErrors()->render($email, ['class' => 'help-block']); ?>
                 </div>
+                    <?php print $this->formElementErrors()->render($email, ['class' => 'help-block error']); ?>
 
                 <div class="form-group form-group-default" >
                     <?php print $this->formLabel($remarks); ?>
                     <?php print $this->formElement($remarks); ?>
-                    <?php print $this->formElementErrors()->render($remarks, ['class' => 'help-block']); ?>
+                    <?php print $this->formElementErrors()->render($remarks, ['class' => 'help-block error']); ?>
                 </div>
 
-                <div class="form-group form-group-default form-group-default-select2">
+                <div class="form-group padding-10">
                     <?php print $this->formLabel($status); ?>
-                    <?php print $this->formElement($status); ?>
-                    <?php print $this->formElementErrors()->render($status, ['class' => 'help-block']); ?>
+                    <div class="radio radio-complete">
+                        <?php $customRenderer($status); ?>
+                    </div>
                 </div>
+                <?php print $this->formElementErrors()->render($status, ['class' => 'help-block']); ?>
+
+
                 <div class="">
                 <?php print $this->formSubmit($submit); ?>
                 </div>

@@ -66,6 +66,12 @@ class ShiftController extends AbstractActionController
                 $shift->halfTime=Helper::getExpressionTime($shift->halfTime);
                 $shift->createdDt = Helper::getcurrentExpressionDate();
 
+//                $shift->shiftLname=mb_convert_encoding($shift->shiftLname, 'UTF-16LE');
+//                print "<pre>";
+//                print_r($shift->shiftLname);
+//                exit;
+
+                $shift->status='E';
                 $this->repository->add($shift);
                 $this->flashmessenger()->addMessage("Shift Successfully added!!!");
                 return $this->redirect()->toRoute("shift");
@@ -94,6 +100,7 @@ class ShiftController extends AbstractActionController
         $shift = new Shift();
         if (!$request->isPost()) {
             $shift->exchangeArrayFromDB($this->repository->fetchById($id)->getArrayCopy());
+//                $shift->shiftLname=mb_convert_encoding($shift->shiftLname, 'UTF-8','UTF-16LE' );
             $this->form->bind($shift);
         } else {
 
@@ -129,7 +136,7 @@ class ShiftController extends AbstractActionController
     {
         $id = (int)$this->params()->fromRoute("id");
         if (!$id) {
-            return $this->redirect()->toRoute('position');
+            return $this->redirect()->toRoute('shift');
         }
         $this->repository->delete($id);
         $this->flashmessenger()->addMessage("Shift Successfully Deleted!!!");

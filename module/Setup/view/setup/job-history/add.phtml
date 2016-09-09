@@ -1,11 +1,4 @@
 <?php
-/**
- * Load Javascript files here
- */
-$this->headScript()->appendFile($this->basePath('js/jobHistory/add.js'));
-?>
-
-<?php
 $form->setAttribute('role', 'form');
 $form->setAttribute('class', 'jobHistory-form');
 
@@ -48,7 +41,7 @@ $form->prepare();
 print $this->form()->openTag($form);
 ?>
     <script>
-        document.menu =<?php $menu = ["id" => "menuSetup", "subMenu" => ["id" => "subMenuJobHistory"]];echo json_encode($menu);?>;
+        document.menu =<?php $menu = ["id" => "menuServiceHistory"];echo json_encode($menu);?>;
     </script>
 
     <div class="padding-30 bg-light-color">

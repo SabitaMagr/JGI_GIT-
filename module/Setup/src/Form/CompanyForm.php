@@ -42,13 +42,13 @@ class CompanyForm{
 	public $address;
 
 
-	/**
-	 * @Annotion\Type("Zend\Form\Element\Text")
-	 * @Annotation\Required(false)
-	 * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
-	 * @Annotation\Options({"label":"Telephone"})
-	 * @Annotation\Attributes({ "id":"form-telephone", "class":"form-telephone form-control","placeholder":"Enter contact number.." })
-	 */
+    /**
+     * @Annotation\Type("Application\Custom\FormElement\Telephone")
+     * @Annotation\Required(false)
+     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
+     * @Annotation\Options({"label":"Telephone"})
+     * @Annotation\Attributes({ "id":"form-telephone", "placeholder":"xx-xxxxxxx", "class":"form-control"})
+     */
 	public $telephone;
 
 

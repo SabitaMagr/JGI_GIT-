@@ -29,6 +29,7 @@ class Shift extends Model
     public $createdDt;
     public $modifiedDt;
     public $remarks;
+    public $status;
 
     public $mappings = [
         'shiftId'=>'SHIFT_ID',
@@ -56,6 +57,7 @@ class Shift extends Model
         'createdDt'=>'CREATED_DT',
         'modifiedDt'=>'MODIFIED_DT',
         'remarks'=>'REMARKS',
+        'status'=>'STATUS'
         ];
 
 }

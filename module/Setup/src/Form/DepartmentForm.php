@@ -35,7 +35,7 @@ class DepartmentForm
      * @Annotation\Required({"required":"true"})
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"disable_inarray_validator":"true","label":"Country"})
-     * @Annotation\Attributes({ "id":"countryId","class":"full-width select2-offscreen","data-init-plugin":"select2","tabindex":"-1"})
+     * @Annotation\Attributes({ "id":"countryId","class":"full-width select2-offscreen","data-init-plugin":"select2"})
      */
     public $countryId;
 
@@ -65,7 +65,7 @@ class DepartmentForm
      * @Annotation\Required(false)
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
      * @Annotation\Options({"disable_inarray_validator":"true","label":"Parent Department"})
-     * @Annotation\Attributes({ "id":"form-parentDepartment","class":"full-width select2-offscreen","data-init-plugin":"select2","tabindex":"-1"})
+     * @Annotation\Attributes({ "id":"form-parentDepartment","class":"full-width select2-offscreen","data-init-plugin":"select2"})
      */
     public $parentDepartment;
 
@@ -74,7 +74,7 @@ class DepartmentForm
      * @Annotation\Required(false)
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
      * @Annotation\Options({"label":"Status","value_options":{"E":"Enabled","D":"Disabled"}})
-     * @Annotation\Attributes({ "id":"form-status","class":"full-width select2-offscreen","data-init-plugin":"select2","tabindex":"-1"})
+     * @Annotation\Attributes({ "id":"form-status","class":"full-width select2-offscreen","data-init-plugin":"select2"})
      */
     public $status;
 

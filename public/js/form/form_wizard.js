@@ -41,12 +41,19 @@
             }, onNext: function (tab, navigation, index) {
                 console.log("Showing next tab");
                 if (typeof document.currentTab !== 'undefined') {
+                    if(index <=5){
                     $('#btnform' + index).click();
-                } else if (index == 1) {
-                    $('#btnform' + index).click();
-                }else{
-                    return true;
+                    }else{
+                        return true;
+                    }
+                } else{
+                    if (index == 1) {
+                        $('#btnform' + index).click();
+                    }else{
+                        return true;
+                    }
                 }
+
                 return false;
 
             }, onPrevious: function (tab, navigation, index) {

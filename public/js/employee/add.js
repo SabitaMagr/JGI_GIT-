@@ -94,9 +94,11 @@ $(document).ready(function () {
     });
 
 
-    // $('#finishBtn').on('click', function () {
-    //     $('#submit').click();
-    // });
+    $('#finishBtn').on('click', function () {
+        if(typeof document.urlEmployeeList !== 'undefined'){
+        location.href=document.urlEmployeeList;
+        }
+    });
     if(typeof document.currentTab!=="undefined"){
         // $('[href="#tab'+document.currentTab+'"]').click();
         $('#rootwizard').bootstrapWizard('show',parseInt(document.currentTab)-1);
@@ -132,5 +134,21 @@ $(document).ready(function () {
     $("#joinDate").datepicker({
         format: format,
         autoclose:true
+    });
+
+    $('#filePath').on('change',function(){
+        if(this.files && this.files[0]){
+            var reader=new FileReader();
+
+            reader.onload =function (e) {
+              var previewUpload=  $('#previewUpload');
+                    previewUpload.attr('src',e.target.result);
+                if(previewUpload.hasClass('hidden')){
+                    previewUpload.removeClass('hidden');
+                }
+
+            }
+            reader.readAsDataURL(this.files[0]);
+        }
     });
 });

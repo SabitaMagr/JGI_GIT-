@@ -28,6 +28,7 @@ class  EmployeeRepository implements RepositoryInterface
         $select = $sql->select();
         $select->from("HR_EMPLOYEES");
         $select->columns(Helper::convertColumnDateFormat($this->adapter, new HrEmployees(), ['birthDate']), false);
+        $select->where(['STATUS'=>'E']);
         $statement = $sql->prepareStatementForSqlObject($select);
         $result = $statement->execute();
         $tempArray = [];
@@ -66,7 +67,8 @@ class  EmployeeRepository implements RepositoryInterface
 
     public function delete($id)
     {
-        $this->gateway->delete(['EMPLOYEE_ID' => $id]);
+//        $this->gateway->update(['STATUS'=>'D','MODIFIED_DT'=>Helper::getcurrentExpressionDate()],['EMPLOYEE_ID' => $id]);
+        $this->gateway->update(['STATUS'=>'D'],['EMPLOYEE_ID' => $id]);
     }
 
     public function edit(Model $model, $id)
@@ -82,12 +84,7 @@ class  EmployeeRepository implements RepositoryInterface
         if (array_key_exists('STATUS',$tempArray)) {
             unset($tempArray['STATUS']);
         }
-//        print "<pre>";
-//        print_r($tempArray);
-//        print_r($id);
-//       echo
        $this->gateway->update($tempArray, ['EMPLOYEE_ID' => $id]);
-//        exit;
 
     }
 }

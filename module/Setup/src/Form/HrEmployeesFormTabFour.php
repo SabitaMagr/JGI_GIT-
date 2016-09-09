@@ -27,6 +27,7 @@ class HrEmployeesFormTabFour extends Model
      * @Annotation\Type("Zend\Form\Element\Number")
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Salary"})
+     * @Annotation\Validator({"name":"StringLength", "options":{"max":"9"}})
      * @Annotation\Attributes({ "id":"salary", "class":"form-control" })
      */
     public $salary;
@@ -36,6 +37,7 @@ class HrEmployeesFormTabFour extends Model
      * @Annotation\Type("Zend\Form\Element\Number")
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Salary PF"})
+     * @Annotation\Validator({"name":"StringLength", "options":{"max":"9"}})
      * @Annotation\Attributes({ "id":"salaryPf", "class":"form-control" })
      */
     public $salaryPf;

@@ -24,6 +24,12 @@
 
     <?php print $this->headLink(['rel'=>'shortcut icon', 'type'=>'image/vnd.microsoft.icon', 'href'=>$this->basePath('ico/favicon.png')])
 
+
+        ->prependStylesheet(['rel'=>'stylesheet', 'type'=>'text/css','href'=>$this->basePath('datatables-responsive/css/datatables.responsive.css')])
+        ->prependStylesheet(['rel'=>'stylesheet', 'type'=>'text/css','href'=>$this->basePath('plugins/jquery-datatable/extensions/FixedColumns/css/dataTables.fixedColumns.min.css')])
+        ->prependStylesheet(['rel'=>'stylesheet', 'type'=>'text/css','href'=>$this->basePath('plugins/jquery-datatable/media/css/dataTables.bootstrap.min.css')])
+        ->prependStylesheet(['rel'=>'stylesheet', 'type'=>'text/css','href'=>$this->basePath('css/custom.css')])
+
         ->prependStylesheet(['rel'=>'apple-touch-icon-precomposed', 'sizes'=>'152x152', 'href'=>$this->basePath('ico/152.png')])
         ->prependStylesheet(['rel'=>'apple-touch-icon-precomposed', 'sizes'=>'120x120', 'href'=>$this->basePath('ico/120.png')])
         ->prependStylesheet(['rel'=>'apple-touch-icon-precomposed', 'sizes'=>'76x76', 'href'=>$this->basePath('ico/76.png')])
@@ -41,8 +47,7 @@
         ->prependStylesheet(['rel'=>'stylesheet', 'type'=>'text/css', 'media'=>'screen', 'href'=>$this->basePath('plugins/jquery-scrollbar/jquery.scrollbar.css')])
         ->prependStylesheet(['rel'=>'stylesheet', 'type'=>'text/css','href'=>$this->basePath('plugins/font-awesome/css/font-awesome.min.css')])
         ->prependStylesheet(['rel'=>'stylesheet', 'type'=>'text/css','href'=>$this->basePath('plugins/bootstrap-v3.3.6/css/bootstrap.min.css')])
-        ->prependStylesheet(['rel'=>'stylesheet', 'type'=>'text/css','href'=>$this->basePath('plugins/pace/pace-theme-flash.css')])
-        ->prependStylesheet(['rel'=>'stylesheet', 'type'=>'text/css','href'=>$this->basePath('css/custom.css')]);
+        ->prependStylesheet(['rel'=>'stylesheet', 'type'=>'text/css','href'=>$this->basePath('plugins/pace/pace-theme-flash.css')]);
 
        
     ?>

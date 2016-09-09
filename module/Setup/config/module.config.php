@@ -2,9 +2,7 @@
 
 namespace Setup;
 
-use Setup\Model\EmployeeRepository;
 use Zend\Router\Http\Segment;
-use Zend\ServiceManager\Factory\InvokableFactory;
 
 return [
     'router' => [
@@ -12,7 +10,7 @@ return [
             'employee' => [
                 'type' => Segment::class,
                 'options' => [
-                    'route' => '/employee[/:action[/:id[/:tab]]]',
+                    'route' => '/setup/employee[/:action[/:id[/:tab]]]',
                     'defaults' => [
                         'controller' => Controller\EmployeeController::class,
                         'action' => 'index'
@@ -22,7 +20,7 @@ return [
             'designation' => [
                 'type' => Segment::class,
                 'options' => [
-                    'route' => '/designation[/:action[/:id]]',
+                    'route' => '/setup/designation[/:action[/:id]]',
                     'defaults' => [
                         'controller' => Controller\DesignationController::class,
                         'action' => 'index'
@@ -34,7 +32,7 @@ return [
             'company' => [
                 'type' => Segment::class,
                 'options' => [
-                    'route' => '/company[/:action[/:id]]',
+                    'route' => '/setup/company[/:action[/:id]]',
                     'constraints' => [
                         'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
                         'id' => '[0-9]+',
@@ -48,7 +46,7 @@ return [
             'branch' => [
                 'type' => segment::class,
                 'options' => [
-                    'route' => '/branch[/:action[/:id]]',
+                    'route' => '/setup/branch[/:action[/:id]]',
                     'constraints' => [
                         'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
                         'id' => '[0-9]+',
@@ -62,7 +60,7 @@ return [
             'department' => [
                 'type' => segment::class,
                 'options' => [
-                    'route' => '/department[/:action[/:id]]',
+                    'route' => '/setup/department[/:action[/:id]]',
                     'constants' => [
                         'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
                         'id' => '[0-9]+',
@@ -76,7 +74,7 @@ return [
             'position' => [
                 'type' => segment::class,
                 'options' => [
-                    'route' => '/position[/:action[/:id]]',
+                    'route' => '/setup/position[/:action[/:id]]',
                     'constants' => [
                         'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
                         'id' => '[0-9]+',
@@ -91,7 +89,7 @@ return [
             'serviceType' => [
                 'type' => segment::class,
                 'options' => [
-                    'route' => '/serviceType[/:action[/:id]]',
+                    'route' => '/setup/serviceType[/:action[/:id]]',
                     'constants' => [
                         'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
                         'id' => '[0-9]+',
@@ -107,7 +105,7 @@ return [
             'jobHistory' => [
                 'type' => segment::class,
                 'options' => [
-                    'route' => '/jobHistory[/:action[/:id]]',
+                    'route' => '/history/jobHistory[/:action[/:id]]',
                     'constant' => [
                         'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
                         'id' => '[0-9]+',
@@ -122,7 +120,7 @@ return [
             'empCurrentPosting' => [
                 'type' => segment::class,
                 'options' => [
-                    'route' => '/empCurrentPosting[/:action[/:id]]',
+                    'route' => '/setup/empCurrentPosting[/:action[/:id]]',
                     'constant' => [
                         'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
                         'id' => '[0-9]+',
@@ -137,7 +135,7 @@ return [
             'shift' => [
                 'type' => segment::class,
                 'options' => [
-                    'route' => '/shift[/:action[/:id]]',
+                    'route' => '/setup/shift[/:action[/:id]]',
                     'constants' => [
                         'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
                         'id' => '[0-9]+',
@@ -149,24 +147,10 @@ return [
                 ],
             ],
 
-            'leaveType' => [
-                'type' => segment::class,
-                'options' => [
-                    'route' => '/leaveType[/:action[/:id]]',
-                    'constants' => [
-                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
-                        'id' => '[0-9]+',
-                    ],
-                    'defaults' => [
-                        'controller' => Controller\LeaveTypeController::class,
-                        'action' => 'index',
-                    ]
-                ],
-            ],
             'webService' => [
                 'type' => segment::class,
                 'options' => [
-                    'route' => '/webService[/:action[/:id]]',
+                    'route' => '/setup/webService[/:action[/:id]]',
                     'constants' => [
                         'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
                         'id' => '[0-9]+',
@@ -177,6 +161,20 @@ return [
                     ]
                 ],
             ],
+//            'leave' => [
+//                'type' => segment::class,
+//                'options' => [
+//                    'route' => '/leave[/:action[/:id]]',
+//                    'constants' => [
+//                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+//                        'id' => '[0-9]+',
+//                    ],
+//                    'defaults' => [
+//                        'controller' => Controller\LeaveMasterController::class,
+//                        'action' => 'index',
+//                    ]
+//                ],
+//            ],
 
         ]
     ],
@@ -190,18 +188,18 @@ return [
             Controller\PositionController::class => Controller\ControllerFactory::class,
             Controller\ServiceTypeController::class => Controller\ControllerFactory::class,
 
-            Controller\LeaveTypeController::class => Controller\ControllerFactory::class,
             Controller\ShiftController::class => Controller\ControllerFactory::class,
             Controller\EmpCurrentPostingController::class => Controller\ControllerFactory::class,
             Controller\JobHistoryController::class => Controller\ControllerFactory::class,
-            Controller\WebServiceController::class=>Controller\ControllerFactory::class
+            Controller\WebServiceController::class => Controller\ControllerFactory::class,
+//            Controller\LeaveMasterController::class => Controller\ControllerFactory::class,
         ],
 
     ],
 
     'view_manager' => [
         'template_path_stack' => [
-            'setup' => __DIR__ . '/../view',
+            __DIR__ . '/../view',
         ],
     ],
 ];

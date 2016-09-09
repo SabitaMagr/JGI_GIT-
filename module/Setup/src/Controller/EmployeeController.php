@@ -11,12 +11,14 @@ namespace Setup\Controller;
 
 use Application\Helper\Helper;
 use Setup\Form\HrEmployeesForm;
+use Setup\Form\HrEmployeesFormTabFive;
 use Setup\Form\HrEmployeesFormTabFour;
 use Setup\Form\HrEmployeesFormTabOne;
 use Setup\Form\HrEmployeesFormTabThree;
 use Setup\Form\HrEmployeesFormTabTwo;
 use Setup\Helper\EntityHelper;
 use Setup\Model\HrEmployees;
+use Setup\Repository\EmployeeFile;
 use Setup\Repository\EmployeeRepository;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Sql\Sql;
@@ -31,11 +33,14 @@ class EmployeeController extends AbstractActionController
     private $adapter;
     private $form;
     private $repository;
+    private $employeeFileRepo;
+    const UPLOAD_DIR = "/var/www/html/neo/neo-hris/public/uploads/";
 
     public function __construct(AdapterInterface $adapter)
     {
         $this->adapter = $adapter;
         $this->repository = new EmployeeRepository($adapter);
+        $this->employeeFileRepo=new EmployeeFile($this->adapter);
 
     }
 
@@ -50,6 +55,7 @@ class EmployeeController extends AbstractActionController
     private $formTwo;
     private $formThree;
     private $formFour;
+    private $formFive;
 
     public function initializeForm()
     {
@@ -58,6 +64,7 @@ class EmployeeController extends AbstractActionController
         $formTabTwo = new HrEmployeesFormTabTwo();
         $formTabThree = new HrEmployeesFormTabThree();
         $formTabFour = new HrEmployeesFormTabFour();
+        $formTabFive = new HrEmployeesFormTabFive();
 
         if (!$this->formOne) {
             $this->formOne = $builder->createForm($formTabOne);
@@ -71,6 +78,10 @@ class EmployeeController extends AbstractActionController
         if (!$this->formFour) {
             $this->formFour = $builder->createForm($formTabFour);
         }
+        if (!$this->formFive) {
+            $this->formFive = $builder->createForm($formTabFive);
+        }
+
     }
 
     public function addAction()
@@ -100,6 +111,7 @@ class EmployeeController extends AbstractActionController
             'formTwo' => $this->formTwo,
             'formThree' => $this->formThree,
             'formFour' => $this->formFour,
+            'formFive' => $this->formFive,
             "bloodGroups" => EntityHelper::getTableKVList($this->adapter, EntityHelper::HR_BLOOD_GROUPS),
             "districts" => EntityHelper::getTableKVList($this->adapter, EntityHelper::HR_DISTRICTS),
             "genders" => EntityHelper::getTableKVList($this->adapter, EntityHelper::HR_GENDERS),
@@ -107,7 +119,8 @@ class EmployeeController extends AbstractActionController
             "zones" => EntityHelper::getTableKVList($this->adapter, EntityHelper::HR_ZONES),
             "religions" => EntityHelper::getTableKVList($this->adapter, EntityHelper::HR_RELIGIONS),
             "companies" => EntityHelper::getTableKVList($this->adapter, EntityHelper::HR_COMPANY),
-            "countries" => EntityHelper::getTableKVList($this->adapter, EntityHelper::HR_COUNTRIES)
+            "countries" => EntityHelper::getTableKVList($this->adapter, EntityHelper::HR_COUNTRIES),
+            'filetypes'=>EntityHelper::getTableKVList($this->adapter,EntityHelper::HR_FILE_TYPE)
         ]);
 
 
@@ -133,8 +146,11 @@ class EmployeeController extends AbstractActionController
         $formTwoModel = new HrEmployeesFormTabTwo();
         $formThreeModel = new HrEmployeesFormTabThree();
         $formFourModel = new HrEmployeesFormTabFour();
+        $formFiveModel = new HrEmployeesFormTabFive();
 
         $employeeData = (array)$this->repository->fetchById($id);
+
+        $employeeFile=(array) $this->employeeFileRepo->fetchById($id);
 
         if ($request->isPost()) {
             $postData = $request->getPost();
@@ -179,6 +195,31 @@ class EmployeeController extends AbstractActionController
                         return $this->redirect()->toRoute('employee', ['action' => 'edit', 'id' => $id, 'tab' => 5]);
                     }
                     break;
+                case 5:
+                    $post = array_merge_recursive(
+                        $postData->toArray(),
+                        $request->getFiles()->toArray()
+                    );
+                    $this->formFive->setData($post);
+                    if ($this->formFive->isValid()) {
+                        $uploadedFile = $post['filePath'];
+                        $ext = pathinfo($uploadedFile['name'], PATHINFO_EXTENSION);
+                        $newFileName = Helper::generateUniqueName() . "." . $ext;
+                        $success = move_uploaded_file($uploadedFile['tmp_name'], self::UPLOAD_DIR . $newFileName);
+                        if ($success) {
+                            $formFiveModel->fileCode=((int) Helper::getMaxId($this->adapter,'HR_EMPLOYEE_FILE','FILE_CODE'))+1;
+                            $formFiveModel->employeeId=$id;
+                            $formFiveModel->fileTypeCode=$post['fileTypeCode'];
+                            $formFiveModel->filePath=$newFileName;
+                            $formFiveModel->status='E';
+                            $formFiveModel->createdDt=Helper::getcurrentExpressionDate();
+
+                            $this->employeeFileRepo->add($formFiveModel);
+                            return $this->redirect()->toRoute('employee', ['action' => 'edit', 'id' => $id, 'tab' => 6]);
+                        }
+
+                    }
+                    break;
             }
 
         }
@@ -201,12 +242,21 @@ class EmployeeController extends AbstractActionController
             $formFourModel->exchangeArrayFromDB($employeeData);
             $this->formFour->bind($formFourModel);
         }
+        if ($tab != 5 || !$request->isPost()) {
+            $formFiveModel->exchangeArrayFromDB($employeeFile);
+//            print "<pre>";
+////            print_r($formFiveModel);
+            $this->formFive->bind($formFiveModel);
+//            print_r($this->formFive->get('filePath'));
+//            exit;
+        }
 
         return Helper::addFlashMessagesToArray($this, [
             'formOne' => $this->formOne,
             'formTwo' => $this->formTwo,
             'formThree' => $this->formThree,
             'formFour' => $this->formFour,
+            'formFive' => $this->formFive,
             'tab' => $tab,
             "id" => $id,
             "bloodGroups" => EntityHelper::getTableKVList($this->adapter, EntityHelper::HR_BLOOD_GROUPS),
@@ -216,7 +266,8 @@ class EmployeeController extends AbstractActionController
             "zones" => EntityHelper::getTableKVList($this->adapter, EntityHelper::HR_ZONES),
             "religions" => EntityHelper::getTableKVList($this->adapter, EntityHelper::HR_RELIGIONS),
             "companies" => EntityHelper::getTableKVList($this->adapter, EntityHelper::HR_COMPANY),
-            "countries" => EntityHelper::getTableKVList($this->adapter, EntityHelper::HR_COUNTRIES)
+            "countries" => EntityHelper::getTableKVList($this->adapter, EntityHelper::HR_COUNTRIES),
+            'filetypes'=>EntityHelper::getTableKVList($this->adapter,EntityHelper::HR_FILE_TYPE)
         ]);
 
 
@@ -225,9 +276,7 @@ class EmployeeController extends AbstractActionController
     public function deleteAction()
     {
         $id = (int)$this->params()->fromRoute("id");
-
         $this->repository->delete($id);
-
         $this->flashmessenger()->addMessage("Employee Successfully Deleted!!!");
         return $this->redirect()->toRoute('employee');
     }

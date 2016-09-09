@@ -39,6 +39,8 @@
             "Application\\": "module/Application/src/",
             "Album\\": "module/Album/src/",
             "Test\\": "module/Test/src/",
+            "LeaveManagement\\":"module/LeaveManagement/src/",
+            "HolidayManagement\\":"module/HolidayManagement/src/",
             "Setup\\":"module/Setup/src/"
         }
     },

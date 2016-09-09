@@ -1,4 +1,16 @@
 <?php
+/**
+ * Load Javascript files here
+ */
+$this->headScript()->appendFile($this->basePath('plugins/jquery-datatable/media/js/jquery.dataTables.min.js'));
+$this->headScript()->appendFile($this->basePath('plugins/jquery-datatable/extensions/TableTools/js/dataTables.tableTools.min.js'));
+$this->headScript()->appendFile($this->basePath('plugins/jquery-datatable/media/js/dataTables.bootstrap.js'));
+$this->headScript()->appendFile($this->basePath('plugins/jquery-datatable/extensions/Bootstrap/jquery-datatable-bootstrap.js'));
+$this->headScript()->appendFile($this->basePath('plugins/datatables-responsive/js/datatables.responsive.js'));
+$this->headScript()->appendFile($this->basePath('plugins/datatables-responsive/js/lodash.min.js'));
+$this->headScript()->appendFile($this->basePath('js/datatables.js'));
+?>
+<?php
 if ($this->messages) {
     print '<ul class="help-block bg-danger" style="background:#f3e250;">';
     foreach ($this->messages as $message) {
@@ -8,7 +20,7 @@ if ($this->messages) {
 }
 ?>
 <script>
-    document.menu=<?php $menu = ["id" => "menuSetup","subMenu"=>["id"=>"subMenuJobHistory"]];echo json_encode($menu);?>;
+    document.menu =<?php $menu = ["id" => "menuServiceHistory"];echo json_encode($menu);?>;
 </script>
 
 <div class="panel panel-transparent">
@@ -30,11 +42,11 @@ if ($this->messages) {
         <div class="clearfix"></div>
     </div>
     <div class="panel-body">
-        <div class="table-responsive">
-            <div id="detailedTable_wrapper" class="dataTables_wrapper form-inline no-footer">
-                <table class="table table-hover table-detailed dataTable no-footer" id="detailedTable"
-                       role="grid">
-                    <thead  >
+        <div id="tableWithDynamicRows_wrapper" class="dataTables_wrapper form-inline no-footer">
+            <div class="table-responsive">
+                <table class="table table-hover demo-table-dynamic dataTable no-footer" id="tableWithDynamicRows"
+                       role="grid" aria-describedby="tableWithDynamicRows_info">
+                    <thead>
                     <tr role="row">
                         <th class="sorting_disabled size-10" rowspan="1" colspan="1">
                             Employee Name
@@ -120,7 +132,8 @@ if ($this->messages) {
                             </td>
                             <td class="v-align-middle size-10">
                                 <p>
-                                    <a href="<?= $this->url("jobHistory", ["action" => "edit", "id" => $jobHistory['JOB_HISTORY_ID']]) ?>">Edit</a> /
+                                    <a href="<?= $this->url("jobHistory", ["action" => "edit", "id" => $jobHistory['JOB_HISTORY_ID']]) ?>">Edit</a>
+                                    /
                                     <a href="<?= $this->url("jobHistory", ["action" => "delete", "id" => $jobHistory['JOB_HISTORY_ID']]) ?>">Delete</a>
                                 </p>
                             </td>
@@ -130,7 +143,5 @@ if ($this->messages) {
                 </table>
             </div>
         </div>
-
-
     </div>
 </div>

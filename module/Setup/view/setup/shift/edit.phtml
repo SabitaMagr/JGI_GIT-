@@ -71,30 +71,30 @@ print $this->form()->openTag($form);
 	<div class="panel-body padding-5">
 		<div class="row">
 			<div class="col-sm-6">
-				<div class="form-group form-group-default ">
+				<div class="form-group form-group-default <?= empty($shiftCode->getMessages()) ? "" : "error" ?>">
 					<?php print $this->formLabel($shiftCode); ?>
 					<?php print $this->formElement($shiftCode); ?>
 				</div>
-				<?php print $this->formElementErrors()->render($shiftCode, ['class' => 'help-block']); ?>
+				<?php print $this->formElementErrors()->render($shiftCode, ['class' => 'help-block error']); ?>
 			</div>
 			<div class="col-sm-6"></div>
 		</div>
 
 		<div class="row">
 			<div class="col-sm-6">
-				<div class="form-group form-group-default  ">
+				<div class="form-group form-group-default  <?= empty($shiftEname->getMessages()) ? "" : "error" ?>">
 					<?php print $this->formLabel($shiftEname); ?>
 					<?php print $this->formElement($shiftEname); ?>
 				</div>
-				<?php print $this->formElementErrors()->render($shiftEname, ['class' => 'help-block']); ?>
+				<?php print $this->formElementErrors()->render($shiftEname, ['class' => 'help-block error']); ?>
 
 			</div>
 			<div class="col-sm-6">
-				<div class="form-group form-group-default  ">
+				<div class="form-group form-group-default  <?= empty($shiftLname->getMessages()) ? "" : "error" ?>">
 					<?php print $this->formLabel($shiftLname); ?>
 					<?php print $this->formElement($shiftLname); ?>
 				</div>
-				<?php print $this->formElementErrors()->render($shiftLname, ['class' => 'help-block']); ?>
+				<?php print $this->formElementErrors()->render($shiftLname, ['class' => 'help-block error']); ?>
 			</div>
 		</div>
 		<div class="row">
@@ -139,7 +139,7 @@ print $this->form()->openTag($form);
 						<?php $customRenderer($lateIn); ?>
 					</div>
 				</div>
-				<?php print $this->formElementErrors()->render($lateIn, ['class' => 'help-block']); ?>
+				<?php print $this->formElementErrors()->render($lateIn, ['class' => 'help-block error']); ?>
 
 			</div>
 			<div class="col-sm-6">
@@ -149,13 +149,13 @@ print $this->form()->openTag($form);
 						<?php $customRenderer($earlyOut); ?>
 					</div>
 				</div>
-				<?php print $this->formElementErrors()->render($earlyOut, ['class' => 'help-block']); ?>
+				<?php print $this->formElementErrors()->render($earlyOut, ['class' => 'help-block error']); ?>
 
 			</div>
 		</div>
 		<div class="row">
 			<div class="col-sm-6">
-				<div class="form-group form-group-default required input-group">
+				<div class="form-group form-group-default required input-group <?= empty($startDate->getMessages()) ? "" : "error" ?>">
 					<?php print $this->formLabel($startDate) ?>
 					<?php print $this->formElement($startDate) ?>
 					<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
@@ -164,7 +164,7 @@ print $this->form()->openTag($form);
 
 			</div>
 			<div class="col-sm-6">
-				<div class="form-group form-group-default required input-group">
+				<div class="form-group form-group-default required input-group <?= empty($endDate->getMessages()) ? "" : "error" ?>">
 					<?php print $this->formLabel($endDate) ?>
 					<?php print $this->formElement($endDate) ?>
 					<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
@@ -181,7 +181,7 @@ print $this->form()->openTag($form);
 						<?php $customRenderer($weekday1); ?>
 					</div>
 				</div>
-				<?php print $this->formElementErrors()->render($weekday1, ['class' => 'help-block']); ?>
+				<?php print $this->formElementErrors()->render($weekday1, ['class' => 'help-block error']); ?>
 
 				<div class="form-group  padding-10">
 					<?php print $this->formLabel($weekday3); ?>
@@ -189,7 +189,7 @@ print $this->form()->openTag($form);
 						<?php $customRenderer($weekday3); ?>
 					</div>
 				</div>
-				<?php print $this->formElementErrors()->render($weekday3, ['class' => 'help-block']); ?>
+				<?php print $this->formElementErrors()->render($weekday3, ['class' => 'help-block error']); ?>
 
 				<div class="form-group padding-10">
 					<?php print $this->formLabel($weekday5); ?>
@@ -197,7 +197,7 @@ print $this->form()->openTag($form);
 						<?php $customRenderer($weekday5); ?>
 					</div>
 				</div>
-				<?php print $this->formElementErrors()->render($weekday5, ['class' => 'help-block']); ?>
+				<?php print $this->formElementErrors()->render($weekday5, ['class' => 'help-block error']); ?>
 
 			</div>
 
@@ -209,7 +209,7 @@ print $this->form()->openTag($form);
 						<?php $customRenderer($weekday2); ?>
 					</div>
 				</div>
-				<?php print $this->formElementErrors()->render($weekday2, ['class' => 'help-block']); ?>
+				<?php print $this->formElementErrors()->render($weekday2, ['class' => 'help-block error']); ?>
 
 
 				<div class="form-group padding-10">
@@ -218,7 +218,7 @@ print $this->form()->openTag($form);
 						<?php $customRenderer($weekday4); ?>
 					</div>
 				</div>
-				<?php print $this->formElementErrors()->render($weekday4, ['class' => 'help-block']); ?>
+				<?php print $this->formElementErrors()->render($weekday4, ['class' => 'help-block error']); ?>
 
 				<div class="form-group padding-10">
 					<?php print $this->formLabel($weekday6); ?>
@@ -226,7 +226,7 @@ print $this->form()->openTag($form);
 						<?php $customRenderer($weekday6); ?>
 					</div>
 				</div>
-				<?php print $this->formElementErrors()->render($weekday6, ['class' => 'help-block']); ?>
+				<?php print $this->formElementErrors()->render($weekday6, ['class' => 'help-block error']); ?>
 
 				<div class="form-group padding-10">
 					<?php print $this->formLabel($weekday7); ?>
@@ -234,7 +234,7 @@ print $this->form()->openTag($form);
 						<?php $customRenderer($weekday7); ?>
 					</div>
 				</div>
-				<?php print $this->formElementErrors()->render($weekday7, ['class' => 'help-block']); ?>
+				<?php print $this->formElementErrors()->render($weekday7, ['class' => 'help-block error']); ?>
 
 			</div>
 
@@ -247,7 +247,7 @@ print $this->form()->openTag($form);
 						<?php $customRenderer($currentShift); ?>
 					</div>
 				</div>
-				<?php print $this->formElementErrors()->render($currentShift, ['class' => 'help-block']); ?>
+				<?php print $this->formElementErrors()->render($currentShift, ['class' => 'help-block error']); ?>
 
 				<div class="form-group padding-10">
 					<?php print $this->formLabel($defaultShift); ?>
@@ -255,7 +255,7 @@ print $this->form()->openTag($form);
 						<?php $customRenderer($defaultShift); ?>
 					</div>
 				</div>
-				<?php print $this->formElementErrors()->render($defaultShift, ['class' => 'help-block']); ?>
+				<?php print $this->formElementErrors()->render($defaultShift, ['class' => 'help-block error']); ?>
 			</div>
 			<div class="col-sm-6">
 				<div class="form-group padding-10 ">
@@ -264,7 +264,7 @@ print $this->form()->openTag($form);
 						<?php $customRenderer($twoDayShift); ?>
 					</div>
 				</div>
-				<?php print $this->formElementErrors()->render($twoDayShift, ['class' => 'help-block']); ?>
+				<?php print $this->formElementErrors()->render($twoDayShift, ['class' => 'help-block error']); ?>
 
 			</div>
 		</div>
@@ -273,7 +273,7 @@ print $this->form()->openTag($form);
 				<div class="form-group form-group-default">
 					<?php print $this->formLabel($remarks); ?>
 					<?php print $this->formElement($remarks); ?>
-					<?php print $this->formElementErrors()->render($remarks, ['class' => 'help-block']); ?>
+					<?php print $this->formElementErrors()->render($remarks, ['class' => 'help-block error']); ?>
 				</div>
 
 			</div>

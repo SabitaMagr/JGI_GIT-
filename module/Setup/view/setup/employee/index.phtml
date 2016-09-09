@@ -1,4 +1,16 @@
 <?php
+/**
+ * Load Javascript files here
+ */
+$this->headScript()->appendFile($this->basePath('plugins/jquery-datatable/media/js/jquery.dataTables.min.js'));
+$this->headScript()->appendFile($this->basePath('plugins/jquery-datatable/extensions/TableTools/js/dataTables.tableTools.min.js'));
+$this->headScript()->appendFile($this->basePath('plugins/jquery-datatable/media/js/dataTables.bootstrap.js'));
+$this->headScript()->appendFile($this->basePath('plugins/jquery-datatable/extensions/Bootstrap/jquery-datatable-bootstrap.js'));
+$this->headScript()->appendFile($this->basePath('plugins/datatables-responsive/js/datatables.responsive.js'));
+$this->headScript()->appendFile($this->basePath('plugins/datatables-responsive/js/lodash.min.js'));
+$this->headScript()->appendFile($this->basePath('js/datatables.js'));
+?>
+<?php
 if ($this->messages) {
     print '<ul class="help-block bg-danger" style="background:#f3e250;">';
     foreach ($this->messages as $message) {
@@ -31,9 +43,10 @@ if ($this->messages) {
         <div class="clearfix"></div>
     </div>
     <div class="panel-body">
-        <div class="table-responsive">
-            <div id="basicTable_wrapper" class="dataTables_wrapper form-inline no-footer">
-                <table role="grid" class="table table-hover dataTable no-footer" id="employeelist">
+        <div id="tableWithDynamicRows_wrapper" class="dataTables_wrapper form-inline no-footer">
+            <div class="table-responsive">
+                <table class="table table-hover demo-table-dynamic dataTable no-footer" id="tableWithDynamicRows"
+                       role="grid" aria-describedby="tableWithDynamicRows_info">
                     <thead>
                     <tr role="row">
                         <th aria-label="Title: activate to sort column ascending" aria-sort="descending" colspan="1" rowspan="1" aria-controls="basicTable" tabindex="0" class="sorting_desc" style="width: 218px;">

@@ -28,7 +28,8 @@ return [
     'Zend\Validator',
     'Application',
     'Setup',
-    'Test',
+    'LeaveManagement',
+    'HolidayManagement',
     
     // These are various options for the listeners attached to the ModuleManager
     // 'module_listener_options' => [

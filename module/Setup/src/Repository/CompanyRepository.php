@@ -1,6 +1,7 @@
 <?php
 namespace Setup\Repository;
 
+use Application\Helper\Helper;
 use Setup\Model\Model;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\TableGateway\TableGateway;
@@ -32,6 +33,7 @@ class CompanyRepository implements RepositoryInterface
 
     public function fetchAll()
     {
+//        return $this->tableGateway->select(['STATUS'=>'E']);
         return $this->tableGateway->select();
     }
 
@@ -43,7 +45,7 @@ class CompanyRepository implements RepositoryInterface
 
     public function delete($id)
     {
-    	$this->tableGateway->delete(['COMPANY_ID'=>$id]);
-
+//    	$this->tableGateway->edit(['STATUS'=>'D','MODIFIED_DT'=>Helper::getcurrentExpressionDate()],['COMPANY_ID'=>$id]);
+        $this->tableGateway->delete(['COMPANY_ID'=>$id]);
     }
 }

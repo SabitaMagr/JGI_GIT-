@@ -7,6 +7,7 @@ use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Adapter\Driver\ResultInterface;
 use Zend\Db\ResultSet\ResultSet;
 use Zend\Db\ResultSet\ResultSetInterface;
+use Zend\Db\Sql\Ddl\Column\Datetime;
 use Zend\Db\Sql\Expression;
 use Zend\Db\Sql\Select;
 use Zend\Db\Sql\Sql;
@@ -14,7 +15,7 @@ use Zend\Db\Sql\Sql;
 class Helper
 {
     const ORACLE_DATE_FORMAT = "DD-MON-YYYY";
-    const ORACLE_TIME_FORMAT="HH:MI AM";
+    const ORACLE_TIME_FORMAT = "HH:MI AM";
     const MYSQL_DATE_FORMAT = "";
     const PHP_DATE_FORMAT = "d-M-Y";
 
@@ -94,6 +95,7 @@ class Helper
         $format = Helper::ORACLE_TIME_FORMAT;
         return new Expression("TO_DATE('{$dateStr}', '{$format}')");
     }
+
     public static function getcurrentExpressionDate()
     {
         $currentDate = date(self::PHP_DATE_FORMAT);
@@ -123,8 +125,8 @@ class Helper
                     if ($counter == $object->getCheckedValue()) {
                         $temp = 'checked=checked';
                     }
-                }else{
-                    if($object->getValue()==$key){
+                } else {
+                    if ($object->getValue() == $key) {
                         $temp = 'checked=checked';
                     }
                 }
@@ -134,5 +136,13 @@ class Helper
             }
 
         };
+    }
+
+    public static function generateUniqueName()
+    {
+        $date = new \DateTime();
+        $t = $date->getTimestamp();
+        return $t+rand(0,1000);
+
     }
 }

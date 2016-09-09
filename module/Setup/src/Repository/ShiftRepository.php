@@ -31,6 +31,7 @@ class ShiftRepository implements RepositoryInterface
         $array = $model->getArrayCopyForDB();
         unset($array['SHIFT_ID']);
         unset($array['CREATED_DT']);
+        unset($array['STATUS']);
         $this->tableGateway->update($array,["SHIFT_ID"=>$id]);
     }
 
@@ -41,6 +42,7 @@ class ShiftRepository implements RepositoryInterface
         $select = $sql->select();
         $select->from("HR_SHIFTS");
         $select->columns(Helper::convertColumnDateFormat($this->adapter, new Shift(), ['startTime','endTime']), false);
+        $select->where(['STATUS'=>'E']);
         $statement = $sql->prepareStatementForSqlObject($select);
         $result = $statement->execute();
         return $result;
@@ -58,7 +60,8 @@ class ShiftRepository implements RepositoryInterface
 
     public function delete($id)
     {
-    	$this->tableGateway->delete(['SHIFT_ID'=>$id]);
+//    	$this->tableGateway->delete(['SHIFT_ID'=>$id]);
+        $this->tableGateway->update(['STATUS'=>'D'],['SHIFT_ID'=>$id]);
 
     }
 }

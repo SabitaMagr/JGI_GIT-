@@ -2,27 +2,29 @@
     <div class="sidebar-overlay-slide from-top" id="appMenu">
         <div class="row">
             <div class="col-xs-6 no-padding">
-                <a href="#" class="p-l-40"><img src="<?= $this->basePath('img/demo/social_app.svg')?>" alt="socail">
+                <a href="#" class="p-l-40"><img src="<?= $this->basePath('img/demo/social_app.svg') ?>" alt="socail">
                 </a>
             </div>
             <div class="col-xs-6 no-padding">
-                <a href="#" class="p-l-10"><img src="<?= $this->basePath('img/demo/email_app.svg')?>" alt="socail">
+                <a href="#" class="p-l-10"><img src="<?= $this->basePath('img/demo/email_app.svg') ?>" alt="socail">
                 </a>
             </div>
         </div>
         <div class="row">
             <div class="col-xs-6 m-t-20 no-padding">
-                <a href="#" class="p-l-40"><img src="<?= $this->basePath('img/demo/calendar_app.svg')?>" alt="socail">
+                <a href="#" class="p-l-40"><img src="<?= $this->basePath('img/demo/calendar_app.svg') ?>" alt="socail">
                 </a>
             </div>
             <div class="col-xs-6 m-t-20 no-padding">
-                <a href="#" class="p-l-10"><img src="<?= $this->basePath('img/demo/add_more.svg')?>" alt="socail">
+                <a href="#" class="p-l-10"><img src="<?= $this->basePath('img/demo/add_more.svg') ?>" alt="socail">
                 </a>
             </div>
         </div>
     </div>
     <div class="sidebar-header">
-        <img src="<?= $this->basePath('img/logo.png')?>" alt="logo" class="brand" data-src="<?= $this->basePath('img/logo.png')?>" data-src-retina="<?= $this->basePath('img/logo_white_2x.png')?>"
+        <img src="<?= $this->basePath('img/logo.png') ?>" alt="logo" class="brand"
+             data-src="<?= $this->basePath('img/logo.png') ?>"
+             data-src-retina="<?= $this->basePath('img/logo_white_2x.png') ?>"
              width="78" height="22">
         <div class="sidebar-header-controls">
             <button type="button" class="btn btn-xs sidebar-slide-toggle btn-link m-l-20" data-pages-toggle="#appMenu">
@@ -34,13 +36,14 @@
         </div>
     </div>
     <div class="sidebar-menu">
-        <ul  class="menu-items">
-            <li id=""menuDashBoard" class="m-t-30 ">
-                <a href="index-2.html" class="detailed">
-                    <span class="title">Dashboard</span>
-                    <span class="details">12 New Updates</span>
-                </a>
-                <span class="icon-thumbnail"><i class="pg-home"></i></span>
+        <ul class="menu-items">
+            <li id="" menuDashBoard
+            " class="m-t-30 ">
+            <a href="index-2.html" class="detailed">
+                <span class="title">Dashboard</span>
+                <span class="details">12 New Updates</span>
+            </a>
+            <span class="icon-thumbnail"><i class="pg-home"></i></span>
             </li>
             <li id="menuSetup">
                 <a href="javascript:;"><span class="title">Setup</span>
@@ -71,10 +74,6 @@
                         <a href="<?= $this->url("empCurrentPosting", ["action" => "index"]) ?>">Current Posting</a>
                         <span class="icon-thumbnail">CP</span>
                     </li>
-                    <li id="subMenuJobHistory" class="">
-                        <a href="<?= $this->url("jobHistory", ["action" => "index"]) ?>">Job History</a>
-                        <span class="icon-thumbnail">JH</span>
-                    </li>
                     <li id="subMenuPosition" class="">
                         <a href="<?= $this->url("position", ["action" => "index"]) ?>">Position</a>
                         <span class="icon-thumbnail">P</span>
@@ -90,7 +89,42 @@
 
                 </ul>
             </li>
-
+            <li id="menuLeaveManagement">
+                <a href="javascript:;"><span class="title">Leave </span>
+                    <span class=" arrow"></span></a>
+                <span class="icon-thumbnail"><i class="pg-form"></i></span>
+                <ul class="sub-menu">
+                    <li id="subMenuLeaveSetup" class="">
+                        <a href="<?= $this->url("leavesetup", ["action" => "index"]) ?>">Leave Setup</a>
+                        <span class="icon-thumbnail">LS</span>
+                    </li>
+                    <li id="subMenuLeaveAssign" class="">
+                        <a href="<?= $this->url("leaveassign", ["action" => "index"]) ?>">Leave Assign</a>
+                        <span class="icon-thumbnail">LA</span>
+                    </li>
+                    <li id="subMenuLeaveApply" class="">
+                        <a href="<?= $this->url("leaveapply", ["action" => "index"]) ?>">Leave Apply</a>
+                        <span class="icon-thumbnail">LA</span>
+                    </li>
+                </ul>
+            </li>
+            <li id="menuHolidayManagement">
+                <a href="javascript:;"><span class="title">Holiday</span>
+                    <span class=" arrow"></span></a>
+                <span class="icon-thumbnail"><i class="pg-form"></i></span>
+                <ul class="sub-menu">
+                    <li id="subMenuHolidaySetup" class="">
+                        <a href="<?= $this->url("holidaysetup", ["action" => "index"]) ?>">Holiday Setup</a>
+                        <span class="icon-thumbnail">LS</span>
+                    </li>
+                </ul>
+            </li>
+            <li id="menuServiceHistory">
+                <a href="<?= $this->url("jobHistory", ['action' => 'index']) ?>">
+                    <span class="title">History</span>
+                </a>
+                <span class="icon-thumbnail"><i class="pg-desktop"></i></span>
+            </li>
 
         </ul>
         <div class="clearfix"></div>

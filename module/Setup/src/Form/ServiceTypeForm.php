@@ -57,7 +57,7 @@ class ServiceTypeForm
      * @Annotation\Required(false)
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
      * @Annotation\Options({"label":"Status","value_options":{"E":"Enabled","D":"Disabled"}})
-     * @Annotation\Attributes({ "id":"form-status","class":"full-width select2-offscreen","data-init-plugin":"select2","tabindex":"-1"})
+     * @Annotation\Attributes({ "id":"form-status","class":"full-width select2-offscreen","data-init-plugin":"select2"})
      */
     public $status;
 
