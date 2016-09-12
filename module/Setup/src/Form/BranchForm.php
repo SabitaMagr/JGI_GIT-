@@ -91,7 +91,7 @@ class BranchForm
      * @Annotation\Required(false)
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
      * @Annotation\Options({"label":"Remarks"})
-     * @Annotation\Attributes({"id":"form-remarks","class":"form-remarks form-control","style":"    height: 50px; font-size:12px"})
+     * @Annotation\Attributes({"id":"remarks","class":"form-control"})
      */
     public $remarks;
 
@@ -100,7 +100,7 @@ class BranchForm
      * @Annotation\Required(false)
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
      * @Annotation\Options({"label":"Status","value_options":{"E":"Enabled","D":"Disabled"}})
-     * @Annotation\Attributes({ "id":"form-status"})
+     * @Annotation\Attributes({ "id":"status"})
      */
     public $status;
 

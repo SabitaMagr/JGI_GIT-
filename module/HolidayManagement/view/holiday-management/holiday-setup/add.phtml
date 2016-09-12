@@ -1,0 +1,49 @@
+<?php
+/**
+ * Load Javascript files here
+ */
+//$this->headScript()->appendFile($this->basePath('js/employee/add.js'));
+?>
+
+<script>
+    /*
+     * load js vars here
+     * */
+    document.menu =<?php $menu = ["id" => "menuHolidayManagement", "subMenu" => ["id" => "subMenuHolidaySetup"]];echo json_encode($menu);?>;
+</script>
+
+<?php
+/*
+ * flash message
+ * */
+if ($this->messages) {
+    print '<ul class="help-block bg-danger" style="background:#f3e250;">';
+    foreach ($this->messages as $message) {
+        print '<li>' . $message . '</li>';
+    }
+    print '</ul>';
+}
+?>
+<?php
+$form->setAttribute('role', 'form');
+$holidayCode = $form->get('holidayCode');
+$genderId = $form->get('genderId');
+$branchId = $form->get('branchId');
+$holidayEname = $form->get('holidayEname');
+$holidayLname = $form->get('holidayLname');
+$startDate = $form->get('startDate');
+$endDate = $form->get('endDate');
+$halfday = $form->get('halfday');
+$fiscalYear = $form->get('fiscalYear');
+$remarks = $form->get('remarks');
+
+$submit = $form->get('submit');
+$submit->setAttribute('value', 'Add Holiday');
+
+$form->setAttribute('action', $this->url('holidaysetup', ['action' => 'add']));
+?>
+
+<?php
+$form->prepare();
+print $this->form()->openTag($form);
+?>

@@ -2,12 +2,11 @@
 
 namespace Setup\Controller;
 
-use Application\Helper\Helper;
+use LeaveManagement\Repository\LeaveAssignRepository;
 use Setup\Helper\EntityHelper;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\EventManager\EventManagerInterface;
 use Zend\Mvc\Controller\AbstractActionController;
-use Zend\View\Model\JsonModel;
 
 class WebServiceController extends AbstractActionController
 {
@@ -29,7 +28,35 @@ class WebServiceController extends AbstractActionController
 
     public function indexAction()
     {
-
+        $request = $this->getRequest();
+        $responseData = [];
+        if ($request->isPost()) {
+            $postedData = $request->getPost();
+            switch ($postedData->action) {
+                case "assignedLeaves":
+                    $leaveAssignRepo = new LeaveAssignRepository($this->adapter);
+                    $result = $leaveAssignRepo->fetchByEmployeeId($postedData->id);
+                    $tempArray = [];
+                    foreach ($result as $item) {
+                        array_push($tempArray, $item);
+                    }
+                    $responseData = [
+                        "success" => true,
+                        "data" => $tempArray
+                    ];
+                    break;
+                default:
+                    $responseData = [
+                        "success" => false
+                    ];
+                    break;
+            }
+        } else {
+            $responseData = [
+                "success" => false
+            ];
+        }
+        return ['data'=>$responseData];
     }
 
     public function districtAction()

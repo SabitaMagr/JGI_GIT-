@@ -1,37 +1,8 @@
 /**
  * Created by ukesh on 8/29/16.
  */
-
-function pullDataById(url, id) {
-    return new Promise(function (resolve, reject) {
-        $.ajax({
-            url: url,
-            data: {id: id},
-            type: 'POST',
-            error: function (error) {
-                reject(error);
-            },
-            success: function (data) {
-                resolve(data);
-            }
-
-        });
-    });
-}
-
-function populateSelectElement(element, data) {
-    element.html('');
-    for (key in data) {
-        element.append($('<option>', {value: key, text: data[key]}));
-    }
-    var keys = Object.keys(data);
-    if (keys.length > 0) {
-        element.select2('val', keys[0]);
-    }
-}
-
 function fetchAndPopulate(url, id, element, callback) {
-    pullDataById(url, id).then(function (data) {
+    pullDataById(url, {id: id}).then(function (data) {
         populateSelectElement(element, data);
         if (typeof callback !== 'undefined') {
             callback();
@@ -95,55 +66,35 @@ $(document).ready(function () {
 
 
     $('#finishBtn').on('click', function () {
-        if(typeof document.urlEmployeeList !== 'undefined'){
-        location.href=document.urlEmployeeList;
+        if (typeof document.urlEmployeeList !== 'undefined') {
+            location.href = document.urlEmployeeList;
         }
     });
-    if(typeof document.currentTab!=="undefined"){
+    if (typeof document.currentTab !== "undefined") {
         // $('[href="#tab'+document.currentTab+'"]').click();
-        $('#rootwizard').bootstrapWizard('show',parseInt(document.currentTab)-1);
+        $('#rootwizard').bootstrapWizard('show', parseInt(document.currentTab) - 1);
     }
     // $('#formEmployee').validate({rules: {'form-employeeCode': 'required'}, messages: {'form-employeeCode': "ee"}});
 
 
-    var format="d-M-yyyy";
-    $("#employeeBirthDate").datepicker({
-        format: format,
-        autoclose:true
-    });
-    $("#famSpouseBirthDate").datepicker({
-        format: format,
-        autoclose:true
-    });
-    $("#famSpouseWeddingAnniversary").datepicker({
-        format: format,
-        autoclose:true
-    });
-    $("#idDrivingLicenseExpiry").datepicker({
-        format: format,
-        autoclose:true
-    });
-    $("#idCitizenshipIssueDate").datepicker({
-        format: format,
-        autoclose:true
-    });
-    $("#idPassportExpiry").datepicker({
-        format: format,
-        autoclose:true
-    });
-    $("#joinDate").datepicker({
-        format: format,
-        autoclose:true
-    });
+    addDatePicker(
+        $("#employeeBirthDate"),
+        $("#joinDate"),
+        $("#idPassportExpiry"),
+        $("#idCitizenshipIssueDate"),
+        $("#idDrivingLicenseExpiry"),
+        $("#famSpouseWeddingAnniversary"),
+        $("#famSpouseBirthDate")
+    );
 
-    $('#filePath').on('change',function(){
-        if(this.files && this.files[0]){
-            var reader=new FileReader();
+    $('#filePath').on('change', function () {
+        if (this.files && this.files[0]) {
+            var reader = new FileReader();
 
-            reader.onload =function (e) {
-              var previewUpload=  $('#previewUpload');
-                    previewUpload.attr('src',e.target.result);
-                if(previewUpload.hasClass('hidden')){
+            reader.onload = function (e) {
+                var previewUpload = $('#previewUpload');
+                previewUpload.attr('src', e.target.result);
+                if (previewUpload.hasClass('hidden')) {
                     previewUpload.removeClass('hidden');
                 }
 

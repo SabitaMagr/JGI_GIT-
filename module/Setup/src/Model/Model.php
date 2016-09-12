@@ -27,9 +27,10 @@ class Model
     {
         $tempArray = [];
         foreach ($this->mappings as $key => $value) {
-        $tempArray[$value]=$this->{$key};
+            if (isset($this->{$key})) {
+                $tempArray[$value] = $this->{$key};
+            }
         }
-
         return $tempArray;
 
     }
@@ -38,8 +39,9 @@ class Model
     {
         $tempArray = [];
         foreach ($this->mappings as $key => $value) {
-//            array_push($tempArray, $key, $this->{$key});
-            $tempArray[$key]=$this->{$key};
+            if (isset($this->{$key})) {
+                $tempArray[$key] = $this->{$key};
+            }
         }
         return $tempArray;
     }

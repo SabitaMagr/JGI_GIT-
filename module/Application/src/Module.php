@@ -56,7 +56,7 @@ class Module implements AutoloaderProviderInterface
         $whiteList = [
             Controller\AuthController::class . '-login',
             Controller\AuthController::class . '-logout',
-            Controller\AuthController::class . '-authenticate'
+            Controller\AuthController::class . '-authenticate',
         ];
         $app = $event->getApplication();
         //$routeMatch = $event->getRouteMatch();

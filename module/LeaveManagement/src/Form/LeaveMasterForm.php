@@ -96,5 +96,4 @@ class LeaveMasterForm
      * @Annotation\Attributes({"value":"Submit","class":"btn btn-primary pull-right"})
      */
     public $submit;
-
 }

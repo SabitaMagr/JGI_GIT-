@@ -21,7 +21,7 @@ return [
             'leaveassign' => [
                 'type' => Segment::class,
                 'options' => [
-                    'route' => '/leave/leaveassign[/:action[/:id]]',
+                    'route' => '/leave/leaveassign[/:action[/:eid[/:id]]]',
                     'defaults' => [
                         'controller' => Controller\leaveAssign::class,
                         'action' => 'index'

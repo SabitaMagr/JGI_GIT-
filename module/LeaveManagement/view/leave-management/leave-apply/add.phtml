@@ -1,21 +1,24 @@
 <?php
+/**
+ * Load Javascript files here
+ */
+$this->headScript()->appendFile($this->basePath('js/leaveAssign/add.js'));
+?>
+
+
+<?php
 $form->setAttribute('role', 'form');
 
-$leaveCode = $form->get('leaveCode');
-$leaveEname = $form->get('leaveEname');
-$leaveLname = $form->get('leaveLname');
-$allowHalfday = $form->get('allowHalfday');
-$defaultDays = $form->get('defaultDays');
-$fiscalYear = $form->get('fiscalYear');
-$carryForward = $form->get('carryForward');
-$cashable = $form->get('cashable');
-
-$remarks = $form->get('remarks');
+$leaveId = $form->get('leaveId');
+$startDate = $form->get('startDate');
+$endDate = $form->get('endDate');
+$noOfDays = $form->get('noOfDays');
+$halfDay = $form->get('halfDay');
 
 $submit = $form->get('submit');
-$submit->setAttribute('value', 'Add Leave');
+$submit->setAttribute('value', 'Apply Leave');
 
-$form->setAttribute('action', $this->url('leavesetup', ['action' => 'add']));
+$form->setAttribute('action', $this->url('leaveapply', ['action' => 'add','id'=>$id]));
 
 if ($this->messages) {
     print '<ul class="help-block bg-danger" style="background:#f3e250;">';
@@ -30,91 +33,62 @@ print $this->form()->openTag($form);
 ?>
     <script>
         document.menu =<?php $menu = ["id" => "menuLeaveManagement", "subMenu" => ["id" => "subMenuLeaveApply"]];echo json_encode($menu);?>;
+        document.urlAssignedLeaves = '<?= $this->url("webService", ["action" => "index"]) ?>';
+        document.id =<?= $id ?>;
+
     </script>
 
     <div class="row">
         <div class="col-sm-2"></div>
         <div class="col-sm-8 padding-30 bg-light-color">
             <div class="panel-heading panel-title-head">
-                <h4>Position</h4>
+                <h4>Apply Leave</h4>
             </div>
             <div class="panel-body">
-                <div class="form-group form-group-default <?= empty($leaveCode->getMessages()) ? "" : "error" ?>">
-                    <?php print $this->formLabel($leaveCode); ?>
-                    <?php print $this->formElement($leaveCode); ?>
+                <div class="form-group form-group-default form-group-default-select2">
+                    <?php print $this->formLabel($leaveId); ?>
+                    <?php print $this->formElement($leaveId); ?>
                 </div>
-                <?php print $this->formElementErrors()->render($leaveCode, ['class' => 'help-block error']); ?>
+                <?php print $this->formElementErrors()->render($leaveId, ['class' => 'help-block error']) ?>
 
-                <div class="form-group form-group-default <?= empty($leaveEname->getMessages()) ? "" : "error" ?>">
-                    <?php print $this->formLabel($leaveEname); ?>
-                    <?php print $this->formElement($leaveEname); ?>
+                <div
+                    class="form-group form-group-default required input-group <?= empty($startDate->getMessages()) ? "" : "error" ?>">
+                    <?php print $this->formLabel($startDate) ?>
+                    <?php print $this->formElement($startDate) ?>
+                    <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
                 </div>
-                <?php print $this->formElementErrors()->render($leaveEname, ['class' => 'help-block error']); ?>
+                <?php print $this->formElementErrors()->render($startDate, ['class' => 'help-block error']) ?>
 
-                <div class="form-group form-group-default <?= empty($leaveLname->getMessages()) ? "" : "error" ?>">
-                    <?php print $this->formLabel($leaveLname); ?>
-                    <?php print $this->formElement($leaveLname); ?>
+                <div
+                    class="form-group form-group-default required input-group <?= empty($endDate->getMessages()) ? "" : "error" ?>">
+                    <?php print $this->formLabel($endDate) ?>
+                    <?php print $this->formElement($endDate) ?>
+                    <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
                 </div>
-                <?php print $this->formElementErrors()->render($leaveLname, ['class' => 'help-block error']); ?>
+                <?php print $this->formElementErrors()->render($endDate, ['class' => 'help-block error']) ?>
 
-                <div class="padding-5">
-                    <div class="row  bg-master-lightest">
-                        <div class=" col-sm-6 ">
-                            <div class="form-group padding-15">
-                                <?php print $this->formLabel($allowHalfday); ?>
-                                <div class="radio radio-success">
-                                    <?php $customRenderer($allowHalfday); ?>
-                                </div>
-                            </div>
-                            <?php print $this->formElementErrors()->render($allowHalfday, ['class' => 'help-block error']); ?>
-                            <div class="form-group padding-15">
-                                <?php print $this->formLabel($defaultDays); ?>
-                                <div class="radio radio-success">
-                                    <?php $customRenderer($defaultDays); ?>
-                                </div>
-                            </div>
-                            <?php print $this->formElementErrors()->render($defaultDays, ['class' => 'help-block error']); ?>
-                            <div class="form-group padding-15">
-                                <?php print $this->formLabel($cashable); ?>
-                                <div class="radio radio-success">
-                                    <?php $customRenderer($cashable); ?>
-                                </div>
-                            </div>
-                            <?php print $this->formElementErrors()->render($cashable, ['class' => 'help-block error']); ?>
-                        </div>
-                        <div class="col-sm-6">
-                            <div class="form-group padding-15">
-                                <?php print $this->formLabel($fiscalYear); ?>
-                                <div class="radio radio-success">
-                                    <?php $customRenderer($fiscalYear); ?>
-                                </div>
-                            </div>
-                            <?php print $this->formElementErrors()->render($fiscalYear, ['class' => 'help-block error']); ?>
+                <div class="form-group form-group-default disabled">
+                    <label for="noOfDays">Available Days</label>
+                    <input type="number" id="availableDays" disabled class="form-control" >
+                </div>
+                <div
+                    class="form-group form-group-default required <?= empty($noOfDays->getMessages()) ? "" : "error" ?>">
+                    <?php print $this->formLabel($noOfDays); ?>
+                    <?php print $this->formElement($noOfDays); ?>
+                </div>
+                <?php print $this->formElementErrors()->render($noOfDays, ['class' => 'help-block error']); ?>
 
-                            <div class="form-group padding-15">
-                                <?php print $this->formLabel($carryForward); ?>
-                                <div class="radio radio-success">
-                                    <?php $customRenderer($carryForward); ?>
-                                </div>
-                            </div>
-                            <?php print $this->formElementErrors()->render($carryForward, ['class' => 'help-block error']); ?>
-                        </div>
+                <div class="form-group padding-15">
+                    <?php print $this->formLabel($halfDay); ?>
+                    <div class="radio radio-success">
+                        <?php $customRenderer($halfDay); ?>
                     </div>
                 </div>
-
-
-                <div class="form-group form-group-default">
-                    <?php print $this->formLabel($remarks); ?>
-                    <?php print $this->formElement($remarks); ?>
-                    <?php print $this->formElementErrors()->render($remarks, ['class' => 'help-block']); ?>
-                </div>
-
+                <?php print $this->formElementErrors()->render($halfDay, ['class' => 'help-block error']); ?>
                 <?php print $this->formSubmit($submit); ?>
 
             </div>
-
         </div>
-    </div>
 <?php
 
 print $this->form()->closeTag();
