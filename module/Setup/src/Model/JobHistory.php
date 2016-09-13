@@ -8,6 +8,8 @@
 
 namespace Setup\Model;
 
+use Application\Model\Model;
+
 class JobHistory extends Model
 {
     public $jobHistoryId;

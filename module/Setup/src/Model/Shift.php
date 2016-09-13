@@ -2,6 +2,8 @@
 namespace Setup\Model;
 
 
+use Application\Model\Model;
+
 class Shift extends Model
 {
     public $shiftId;

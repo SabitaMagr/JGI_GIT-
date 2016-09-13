@@ -1,5 +1,5 @@
 <?php
-namespace Setup\Controller;
+namespace Application\Controller;
 
 use Interop\Container\ContainerInterface;
 use Zend\Db\Adapter\AdapterInterface;
@@ -11,9 +11,6 @@ class ControllerFactory implements FactoryInterface
     {
         $adapter=$container->get(AdapterInterface::class);
         $controller = new $requestedName($adapter);
-
         return $controller;
-
-
     }
 }

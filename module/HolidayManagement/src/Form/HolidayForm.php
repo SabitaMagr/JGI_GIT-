@@ -20,11 +20,11 @@ class HolidayForm
     public $holidayCode;
 
     /**
-     * @Annotation\Type("Zend\Form\Element\Select")
+     * @Annotation\Type("Zend\Form\Element\Radio")
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Required(true)
      * @Annotation\Options({"disable_inarray_validator":"true","label":"Gender"})
-     * @Annotation\Attributes({ "id":"genderId","class":"full-width select2-offscreen","data-init-plugin":"select2"})
+     * @Annotation\Attributes({ "id":"genderId"})
      */
     public $genderId;
 
@@ -32,7 +32,7 @@ class HolidayForm
      * @Annotation\Type("Zend\Form\Element\Select")
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Required(true)
-     * @Annotation\Options({"disable_inarray_validator":"true","label":"Gender"})
+     * @Annotation\Options({"disable_inarray_validator":"true","label":"Branch"})
      * @Annotation\Attributes({ "id":"branchId","class":"full-width select2-offscreen","data-init-plugin":"select2"})
      */
     public $branchId;
@@ -78,20 +78,12 @@ class HolidayForm
     /**
      * @Annotation\Type("Zend\Form\Element\Radio")
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
-     * @Annotation\Options({"value_options":{"Y":"Yes","N":"No"},"label":"Halfday"})
+     * @Annotation\Options({"value_options":{"F":"First Half","S":"Second Half","N":"Full Day"},"label":"Halfday"})
      * @Annotation\Required(false)
      * @Annotation\Attributes({ "id":"halfday"})
      */
     public $halfday;
 
-    /**
-     * @Annotation\Type("Zend\Form\Element\Select")
-     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
-     * @Annotation\Required(true)
-     * @Annotation\Options({"disable_inarray_validator":"true","label":"Fiscal Year"})
-     * @Annotation\Attributes({ "id":"fiscalYear","class":"full-width select2-offscreen","data-init-plugin":"select2"})
-     */
-    public $fiscalYear;
 
     /**
      * @Annotion\Type("Zend\Form\Element\Textarea")

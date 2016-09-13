@@ -9,6 +9,8 @@
 namespace Setup\Model;
 
 
+use Application\Model\Model;
+
 class LeaveMaster extends Model
 {
     public $leaveId;

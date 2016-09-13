@@ -37,7 +37,7 @@ $halfday = $form->get('halfday');
 $remarks = $form->get('remarks');
 
 $submit = $form->get('submit');
-$submit->setAttribute('value', 'Add Holiday');
+$submit->setAttribute('value', 'Edit Holiday');
 
 $genderId->setValueOptions($genders);
 $branchId->setValueOptions($branches);
@@ -45,7 +45,7 @@ $branchId->setValueOptions($branches);
 
 <?php
 $form->setAttribute('role', 'form');
-$form->setAttribute('action', $this->url('holidaysetup', ['action' => 'add']));
+$form->setAttribute('action', $this->url('holidaysetup', ['action' => 'edit','id'=>$id]));
 $form->prepare();
 print $this->form()->openTag($form);
 ?>

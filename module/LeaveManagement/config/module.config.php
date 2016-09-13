@@ -3,7 +3,7 @@
 namespace LeaveManagement;
 
 use Zend\Router\Http\Segment;
-use Setup\Controller\ControllerFactory;
+use Application\Controller\ControllerFactory;
 
 return [
     'router' => [

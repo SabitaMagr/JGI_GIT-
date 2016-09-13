@@ -1,6 +1,8 @@
 <?php
 namespace Setup\Model;
 
+use Application\Model\Model;
+
 class Department extends Model
 {
     public $departmentId;

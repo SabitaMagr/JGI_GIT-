@@ -8,7 +8,7 @@
 
 namespace LeaveManagement\Model;
 
-use Setup\Model\Model;
+use Application\Model\Model;
 
 class LeaveAssign extends Model
 {

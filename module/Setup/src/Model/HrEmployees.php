@@ -2,7 +2,7 @@
 
 namespace Setup\Model;
 
-use Setup\Model\Model;
+use Application\Model\Model;
 
 class HrEmployees extends Model
 {

@@ -11,8 +11,8 @@ namespace Setup\Form;
 * Last Modified Date: 
 */
 
+use Application\Model\Model;
 use Zend\Form\Annotation;
-use Setup\Model\Model;
 
 /**
  * @Annotation\Hydrator("Zend\Hydrator\ObjectProperty")

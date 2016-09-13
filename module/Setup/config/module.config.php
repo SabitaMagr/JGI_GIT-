@@ -2,6 +2,7 @@
 
 namespace Setup;
 
+use Application\Controller\ControllerFactory;
 use Zend\Router\Http\Segment;
 
 return [
@@ -180,18 +181,18 @@ return [
     ],
     'controllers' => [
         'factories' => [
-            Controller\EmployeeController::class => Controller\ControllerFactory::class,
-            Controller\DesignationController::class => Controller\ControllerFactory::class,
-            Controller\CompanyController::class => Controller\ControllerFactory::class,
-            Controller\BranchController::class => Controller\ControllerFactory::class,
-            Controller\DepartmentController::class => Controller\ControllerFactory::class,
-            Controller\PositionController::class => Controller\ControllerFactory::class,
-            Controller\ServiceTypeController::class => Controller\ControllerFactory::class,
+            Controller\EmployeeController::class => ControllerFactory::class,
+            Controller\DesignationController::class => ControllerFactory::class,
+            Controller\CompanyController::class => ControllerFactory::class,
+            Controller\BranchController::class => ControllerFactory::class,
+            Controller\DepartmentController::class => ControllerFactory::class,
+            Controller\PositionController::class => ControllerFactory::class,
+            Controller\ServiceTypeController::class => ControllerFactory::class,
 
-            Controller\ShiftController::class => Controller\ControllerFactory::class,
-            Controller\EmpCurrentPostingController::class => Controller\ControllerFactory::class,
-            Controller\JobHistoryController::class => Controller\ControllerFactory::class,
-            Controller\WebServiceController::class => Controller\ControllerFactory::class,
+            Controller\ShiftController::class => ControllerFactory::class,
+            Controller\EmpCurrentPostingController::class => ControllerFactory::class,
+            Controller\JobHistoryController::class => ControllerFactory::class,
+            Controller\WebServiceController::class => ControllerFactory::class,
 //            Controller\LeaveMasterController::class => Controller\ControllerFactory::class,
         ],
 

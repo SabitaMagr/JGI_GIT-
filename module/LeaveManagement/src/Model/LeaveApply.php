@@ -9,10 +9,16 @@
 namespace LeaveManagement\Model;
 
 
-use Setup\Model\Model;
+use Application\Model\Model;
 
 class LeaveApply extends Model
 {
+    const TABLE_NAME="HR_EMPLOYEE_LEAVE_REQUEST";
+    const EMPLOYEE_ID="EMPLOYEE_ID";
+    const LEAVE_ID="LEAVE_ID";
+    const START_DATE="START_DATE";
+
+
     public $employeeId;
     public $leaveId;
     public $startDate;
@@ -26,9 +32,10 @@ class LeaveApply extends Model
     public $halfDay;
     public $requestedDt;
 
+
     public $mappings=[
-        'employeeId'=>'EMPLOYEE_ID',
-        'leaveId'=>'LEAVE_ID',
+        'employeeId'=>self::EMPLOYEE_ID,
+        'leaveId'=>self::LEAVE_ID,
         'startDate'=>'START_DATE',
         'endDate'=>'END_DATE',
         'noOfDays'=>'NO_OF_DAYS',

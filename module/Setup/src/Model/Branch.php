@@ -2,6 +2,8 @@
 namespace Setup\Model;
 
 
+use Application\Model\Model;
+
 class Branch extends Model
 {
     public $branchId;

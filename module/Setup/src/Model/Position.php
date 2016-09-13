@@ -1,6 +1,8 @@
 <?php
 namespace Setup\Model;
 
+use Application\Model\Model;
+
 class Position extends Model
 {
     public $positionId;

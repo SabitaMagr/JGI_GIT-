@@ -9,10 +9,28 @@
 namespace HolidayManagement\Model;
 
 
-use Setup\Model\Model;
+use Application\Model\Model;
 
 class Holiday extends Model
 {
+    const TABLE_NAME="HR_HOLIDAY_MASTER_SETUP";
+
+    const HOLIDAY_ID="HOLIDAY_ID";
+    const HOLIDAY_CODE="HOLIDAY_CODE";
+    const GENDER_ID="GENDER_ID";
+    const BRANCH_ID="BRANCH_ID";
+    const HOLIDAY_ENAME="HOLIDAY_ENAME";
+    const HOLIDAY_LNAME="HOLIDAY_LNAME";
+    const START_DATE="START_DATE";
+    const END_DATE="END_DATE";
+    const HALFDAY="HALFDAY";
+    const FISCAL_YEAR="FISCAL_YEAR";
+    const CREATED_DT="CREATED_DT";
+    const MODIFIED_DT="MODIFIED_DT";
+    const STATUS="STATUS";
+    const REMARKS="REMARKS";
+
+
     public $holidayId;
     public $holidayCode;
     public $genderId;
@@ -30,20 +48,19 @@ class Holiday extends Model
     public $remarks;
 
     public $mappings = [
-        'holidayId'=>'HOLIDAY_ID',
-        'holidayCode'=>'HOLIDAY_CODE',
-        'genderId'=>'GENDER_ID',
-        'branchId'=>'BRANCH_ID',
-        'holidayEname'=>'HOLIDAY_ENAME',
-        'holidayLname'=>'HOLIDAY_LNAME',
-        'startDate'=>'START_DATE',
-        'endDate'=>'END_DATE',
-        'halfday'=>'HALFDAY',
-        'fiscalYear'=>'FISCAL_YEAR',
-        'createdDt'=>'CREATED_DT',
-        'modifiedDt'=>'MODIFIED_DT',
-        'status'=>'STATUS',
-        'remarks'=>'REMARKS'
+        'holidayId'=>self::HOLIDAY_ID,
+        'holidayCode'=>self::HOLIDAY_CODE,
+        'genderId'=>self::GENDER_ID,
+        'branchId'=>self::BRANCH_ID,
+        'holidayEname'=>self::HOLIDAY_ENAME,
+        'holidayLname'=>self::HOLIDAY_LNAME,
+        'startDate'=>self::START_DATE,
+        'endDate'=>self::END_DATE,
+        'halfday'=>self::HALFDAY,
+        'fiscalYear'=>self::FISCAL_YEAR,
+        'createdDt'=>self::CREATED_DT,
+        'modifiedDt'=>self::MODIFIED_DT,
+        'status'=>self::STATUS,
+        'remarks'=>self::REMARKS
     ];
-
 }

@@ -8,7 +8,7 @@
 
 namespace Setup\Form;
 
-use Setup\Model\Model;
+use Application\Model\Model;
 use Zend\Form\Annotation;
 
 class HrEmployeesFormTabFour extends Model

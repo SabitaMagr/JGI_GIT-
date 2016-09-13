@@ -9,7 +9,7 @@
 namespace LeaveManagement\Model;
 
 
-use Setup\Model\Model;
+use Application\Model\Model;
 
 class LeaveMaster extends Model
 {

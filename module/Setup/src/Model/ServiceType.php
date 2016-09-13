@@ -1,6 +1,8 @@
 <?php
 namespace Setup\Model;
 
+use Application\Model\Model;
+
 class ServiceType extends Model{
 
     public $serviceTypeId;

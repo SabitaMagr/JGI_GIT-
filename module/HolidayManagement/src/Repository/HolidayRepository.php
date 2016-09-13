@@ -2,9 +2,13 @@
 
 namespace HolidayManagement\Repository;
 
+use Application\Helper\Helper;
+use HolidayManagement\Model\Holiday;
 use Setup\Model\Model;
 use Setup\Repository\RepositoryInterface;
 use Zend\Db\Adapter\AdapterInterface;
+use Zend\Db\Sql\Expression;
+use Zend\Db\Sql\Sql;
 use Zend\Db\TableGateway\TableGateway;
 
 class HolidayRepository implements RepositoryInterface
@@ -14,8 +18,8 @@ class HolidayRepository implements RepositoryInterface
 
     public function __construct(AdapterInterface $adapter)
     {
-        $this->tableGateway = new TableGateway('HR_HOLIDAY_MASTER_SETUP',$adapter);
-        $this->adapter=$adapter;
+        $this->tableGateway = new TableGateway(Holiday::TABLE_NAME, $adapter);
+        $this->adapter = $adapter;
     }
 
     public function add(Model $model)
@@ -24,35 +28,57 @@ class HolidayRepository implements RepositoryInterface
     }
 
 
-    public function edit(Model $model,$id)
+    public function edit(Model $model, $id)
     {
         $array = $model->getArrayCopyForDB();
-        unset($array['LEAVE_ID']);
-        unset($array['CREATED_DT']);
-        unset($array['STATUS']);
-        $this->tableGateway->update($array,["LEAVE_ID"=>$id]);
+        $this->tableGateway->update($array, [
+            Holiday::HOLIDAY_ID => $id
+        ]);
     }
 
     public function fetchAll()
     {
-        return $this->tableGateway->select(['STATUS'=>'E']);
+//        return $this->tableGateway->select([
+//            Holiday::STATUS => 'E'
+//        ]);
+
+        $sql = new Sql($this->adapter);
+        $select = $sql->select();
+        $select->columns([
+            new Expression("TO_CHAR(H.START_DATE, 'DD-MON-YYYY') AS START_DATE"),
+            new Expression("TO_CHAR(H.END_DATE, 'DD-MON-YYYY') AS END_DATE"),
+            new Expression("H.HOLIDAY_ID AS HOLIDAY_ID"),
+            new Expression("H.HOLIDAY_CODE AS HOLIDAY_CODE"),
+            new Expression("H.HOLIDAY_ENAME AS HOLIDAY_ENAME"),
+            new Expression("H.HALFDAY AS HALFDAY"),
+            new Expression("H.FISCAL_YEAR AS FISCAL_YEAR"),
+            new Expression("H.REMARKS AS REMARKS"),
+            ], true);
+        $select->from(['H' => Holiday::TABLE_NAME])
+            ->join(['G' => 'HR_GENDERS'], 'H.GENDER_ID=G.GENDER_ID', ['GENDER_NAME'])
+            ->join(['B' => "HR_BRANCHES"], 'H.BRANCH_ID=B.BRANCH_ID', ['BRANCH_NAME']);
+        $select->where(["H.STATUS='E'"]);
+        $statement = $sql->prepareStatementForSqlObject($select);
+        $result = $statement->execute();
+        return $result;
     }
 
     public function fetchById($id)
     {
-        $rowset= $this->tableGateway->select(['LEAVE_ID'=>$id,'STATUS'=>'E']);
+        $rowset = $this->tableGateway->select([
+            Holiday::HOLIDAY_ID => $id,
+            Holiday::STATUS => 'E'
+        ]);
         return $rowset->current();
-    }
-
-    public function fetchActiveRecord()
-    {
-        return  $rowset= $this->tableGateway->select(['STATUS'=>'E']);
     }
 
     public function delete($id)
     {
-//    	$this->tableGateway->delete(['SHIFT_ID'=>$id]);
-        $this->tableGateway->update(['STATUS'=>'D'],['LEAVE_ID'=>$id]);
+        $this->tableGateway->update([
+            Holiday::STATUS => 'D'
+        ], [
+            Holiday::HOLIDAY_ID => $id
+        ]);
 
     }
 }

@@ -9,6 +9,7 @@
 namespace LeaveManagement\Repository;
 
 
+use LeaveManagement\Model\LeaveApply;
 use Setup\Model\Model;
 use Setup\Repository\RepositoryInterface;
 use Zend\Db\Adapter\AdapterInterface;
@@ -21,7 +22,7 @@ class LeaveApplyRepository implements RepositoryInterface
 
     public function __construct(AdapterInterface $adapter)
     {
-        $this->tableGateway = new TableGateway('HR_EMPLOYEE_LEAVE_REQUEST', $adapter);
+        $this->tableGateway = new TableGateway(LeaveApply::TABLE_NAME, $adapter);
         $this->adapter = $adapter;
     }
 

@@ -2,6 +2,7 @@
 
 namespace Setup\Model;
 
+use Application\Model\Model;
 use Zend\Form\Annotation;
 use Zend\View\Model\ModelInterface;
 
