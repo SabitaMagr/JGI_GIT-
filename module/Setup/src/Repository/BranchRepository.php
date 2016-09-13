@@ -1,7 +1,9 @@
 <?php
 namespace Setup\Repository;
 
-use Setup\Model\Model;
+use Application\Repository\RepositoryInterface;
+use Setup\Model\Branch;
+use Application\Model\Model;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\TableGateway\TableGateway;
 
@@ -11,7 +13,7 @@ class BranchRepository implements RepositoryInterface
 
     public function __construct(AdapterInterface $adapter)
     {
-        $this->tableGateway=new TableGateway('HR_BRANCHES',$adapter);
+        $this->tableGateway=new TableGateway(Branch::TABLE_NAME,$adapter);
 
     }
 
@@ -23,25 +25,23 @@ class BranchRepository implements RepositoryInterface
     public function edit(Model $model,$id)
     {
         $array = $model->getArrayCopyForDB();
-        unset($array['CREATED_DT']);
-        unset($array['BRANCH_ID']);
-        $this->tableGateway->update($array,["BRANCH_ID"=>$id]);
+         $this->tableGateway->update($array,[Branch::BRANCH_ID=>$id]);
     }
 
     public function fetchAll()
     {
-        return $this->tableGateway->select();
+        return $this->tableGateway->select([Branch::STATUS=>'E']);
     }
 
 
     public function fetchById($id)
     {
-           $rowset= $this->tableGateway->select(['BRANCH_ID'=>$id]);
+           $rowset= $this->tableGateway->select([Branch::BRANCH_ID=>$id]);
         return $rowset->current();
     }
 
     public function delete($id)
     {
-        $this->tableGateway->delete(['BRANCH_ID'=>$id]);
+        $this->tableGateway->update([Branch::STATUS=>'D'],[Branch::BRANCH_ID=>$id]);
     }
 }

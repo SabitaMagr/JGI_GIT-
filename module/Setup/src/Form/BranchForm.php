@@ -96,18 +96,6 @@ class BranchForm
     public $remarks;
 
     /**
-     * @Annotation\Type("Zend\Form\Element\Radio")
-     * @Annotation\Required(false)
-     * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
-     * @Annotation\Options({"label":"Status","value_options":{"E":"Enabled","D":"Disabled"}})
-     * @Annotation\Attributes({ "id":"status"})
-     */
-    public $status;
-
-
-
-
-    /**
      * @Annotation\Type("Zend\Form\Element\Submit")
      * @Annotation\Attributes({"value":"Submit","class":"btn btn-primary pull-right"})
      */

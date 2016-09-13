@@ -2,7 +2,9 @@
 namespace Setup\Repository;
 
 use Application\Helper\Helper;
-use Setup\Model\Model;
+use Application\Model\Model;
+use Application\Repository\RepositoryInterface;
+use Setup\Model\Company;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\TableGateway\TableGateway;
 
@@ -14,38 +16,37 @@ class CompanyRepository implements RepositoryInterface
     public function __construct(AdapterInterface $adapter)
     {
         $this->adapter=$adapter;
-        $this->tableGateway = new TableGateway('HR_COMPANY',$adapter);
+        $this->tableGateway = new TableGateway(Company::TABLE_NAME,$adapter);
 
     }
 
     public function add(Model $model)
     {
+//        print "<pre>";
+//        print_r($model);
+//        exit;
         $this->tableGateway->insert($model->getArrayCopyForDB());
     }
 
     public function edit(Model $model,$id)
     {
         $array = $model->getArrayCopyForDB();
-        unset($array['COMPANY_ID']);
-        unset($array['CREATED_DT']);
-        $this->tableGateway->update($array,["COMPANY_ID"=>$id]);
+        $this->tableGateway->update($array,[Company::COMPANY_ID=>$id]);
     }
 
     public function fetchAll()
     {
-//        return $this->tableGateway->select(['STATUS'=>'E']);
-        return $this->tableGateway->select();
+        return $this->tableGateway->select([Company::STATUS=>'E']);
     }
 
     public function fetchById($id)
     {
-        $rowset= $this->tableGateway->select(['COMPANY_ID'=>$id]);
+        $rowset= $this->tableGateway->select([Company::COMPANY_ID=>$id,Company::STATUS=>'E']);
         return $rowset->current();
     }
 
     public function delete($id)
     {
-//    	$this->tableGateway->edit(['STATUS'=>'D','MODIFIED_DT'=>Helper::getcurrentExpressionDate()],['COMPANY_ID'=>$id]);
-        $this->tableGateway->delete(['COMPANY_ID'=>$id]);
+        $this->tableGateway->delete([Company::COMPANY_ID=>$id]);
     }
 }

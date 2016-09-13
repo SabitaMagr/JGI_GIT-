@@ -1,9 +1,9 @@
 <?php
 
-namespace Setup\Repository;
+namespace Application\Repository;
 
 
-use Setup\Model\Model;
+use Application\Model\Model;
 use Zend\Db\Adapter\AdapterInterface;
 
 interface  RepositoryInterface{

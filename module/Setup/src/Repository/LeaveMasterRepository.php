@@ -2,11 +2,9 @@
 
 namespace Setup\Repository;
 
-use Application\Helper\Helper;
-use Setup\Model\Model;
-use Setup\Model\Shift;
+use Application\Model\Model;
+use Application\Repository\RepositoryInterface;
 use Zend\Db\Adapter\AdapterInterface;
-use Zend\Db\Sql\Sql;
 use Zend\Db\TableGateway\TableGateway;
 
 class LeaveMasterRepository implements RepositoryInterface

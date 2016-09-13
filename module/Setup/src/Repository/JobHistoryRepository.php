@@ -2,14 +2,12 @@
 
 namespace Setup\Repository;
 
-use Application\Helper\Helper;
-use Setup\Model\JobHistory;
-use Setup\Model\Model;
+use Application\Model\Model;
+use Application\Repository\RepositoryInterface;
+use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Sql\Expression;
-use Zend\Db\Sql\Select;
 use Zend\Db\Sql\Sql;
 use Zend\Db\TableGateway\TableGateway;
-use Zend\Db\Adapter\AdapterInterface;
 
 class JobHistoryRepository implements RepositoryInterface
 {

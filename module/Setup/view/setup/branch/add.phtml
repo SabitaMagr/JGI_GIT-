@@ -9,8 +9,6 @@ $telephone = $form->get('telephone');
 $fax = $form->get('fax');
 $email = $form->get('email');
 $remarks = $form->get('remarks');
-$status = $form->get('status');
-
 $countryId=$form->get('countryId');
 $countryId->setValueOptions($countries);
 
@@ -91,14 +89,6 @@ print $this->form()->openTag($form);
                     <?php print $this->formElement($remarks); ?>
                     <?php print $this->formElementErrors()->render($remarks, ['class' => 'help-block error']); ?>
                 </div>
-
-                <div class="form-group padding-10">
-                    <?php print $this->formLabel($status); ?>
-                    <div class="radio radio-complete">
-                        <?php $customRenderer($status); ?>
-                    </div>
-                </div>
-                <?php print $this->formElementErrors()->render($status, ['class' => 'help-block']); ?>
 
 
                 <div class="">

@@ -61,6 +61,7 @@ class BranchController extends AbstractActionController
                 $branch->exchangeArrayFromForm($this->form->getData());
                 $branch->branchId = ((int)Helper::getMaxId($this->adapter, "HR_BRANCHES", "BRANCH_ID")) + 1;
                 $branch->createdDt = Helper::getcurrentExpressionDate();
+                $branch->status='E';
 
                 $this->repository->add($branch);
 
@@ -94,6 +95,9 @@ class BranchController extends AbstractActionController
             if ($this->form->isValid()) {
                 $branch->exchangeArrayFromForm($this->form->getData());
                 $branch->modifiedDt = Helper::getcurrentExpressionDate();
+                unset($branch->createdDt);
+                unset($branch->branchId);
+                unset($branch->status);
                 $this->repository->edit($branch, $id);
                 $this->flashmessenger()->addMessage("Branch Successfully Updated!!!");
                 return $this->redirect()->toRoute("branch");

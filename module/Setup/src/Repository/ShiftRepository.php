@@ -3,7 +3,8 @@
 namespace Setup\Repository;
 
 use Application\Helper\Helper;
-use Setup\Model\Model;
+use Application\Model\Model;
+use Application\Repository\RepositoryInterface;
 use Setup\Model\Shift;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Sql\Sql;
@@ -60,7 +61,6 @@ class ShiftRepository implements RepositoryInterface
 
     public function delete($id)
     {
-//    	$this->tableGateway->delete(['SHIFT_ID'=>$id]);
         $this->tableGateway->update(['STATUS'=>'D'],['SHIFT_ID'=>$id]);
 
     }

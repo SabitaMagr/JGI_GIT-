@@ -2,10 +2,11 @@
 
 namespace Setup\Repository;
 
-use Setup\Model\Model;
+use Application\Model\Model;
+use Application\Repository\RepositoryInterface;
+use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Sql\Sql;
 use Zend\Db\TableGateway\TableGateway;
-use Zend\Db\Adapter\AdapterInterface;
 
 class EmpCurrentPostingRepository implements RepositoryInterface{
 	private $tableGateway;

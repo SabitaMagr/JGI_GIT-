@@ -43,7 +43,6 @@ class CompanyController extends AbstractActionController
 
     public function addAction()
     {
-
         $this->initializeForm();
         $request = $this->getRequest();
         if ($request->isPost()) {
@@ -53,6 +52,7 @@ class CompanyController extends AbstractActionController
                 $company->exchangeArrayFromForm($this->form->getData());
                 $company->createdDt = Helper::getcurrentExpressionDate();
                 $company->companyId = ((int) Helper::getMaxId($this->adapter, "HR_COMPANY", "COMPANY_ID"))+1;
+                $company->status='E';
                 $this->repository->add($company);
 
                 $this->flashmessenger()->addMessage("Company Successfully added!!!");
@@ -89,6 +89,9 @@ class CompanyController extends AbstractActionController
             if ($this->form->isValid()) {
                 $company->exchangeArrayFromForm($this->form->getData());
                 $company->modifiedDt = Helper::getcurrentExpressionDate();
+                unset($company->createdDt);
+                unset($company->companyId);
+                unset($company->status);
                 $this->repository->edit($company, $id);
                 $this->flashmessenger()->addMessage("Company Successfully Updated!!!");
                 return $this->redirect()->toRoute("company");

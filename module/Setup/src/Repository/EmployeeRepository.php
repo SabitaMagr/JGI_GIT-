@@ -4,8 +4,9 @@
 namespace Setup\Repository;
 
 use Application\Helper\Helper;
+use Application\Model\Model;
+use Application\Repository\RepositoryInterface;
 use Setup\Model\HrEmployees;
-use Setup\Model\Model;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Sql\Select;
 use Zend\Db\Sql\Sql;
