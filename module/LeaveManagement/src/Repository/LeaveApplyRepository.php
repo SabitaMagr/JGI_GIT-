@@ -9,9 +9,9 @@
 namespace LeaveManagement\Repository;
 
 
+use Application\Model\Model;
+use Application\Repository\RepositoryInterface;
 use LeaveManagement\Model\LeaveApply;
-use Setup\Model\Model;
-use Setup\Repository\RepositoryInterface;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\TableGateway\TableGateway;
 

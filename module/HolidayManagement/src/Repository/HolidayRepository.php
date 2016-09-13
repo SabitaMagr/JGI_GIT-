@@ -2,10 +2,9 @@
 
 namespace HolidayManagement\Repository;
 
-use Application\Helper\Helper;
+use Application\Model\Model;
+use Application\Repository\RepositoryInterface;
 use HolidayManagement\Model\Holiday;
-use Setup\Model\Model;
-use Setup\Repository\RepositoryInterface;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Sql\Expression;
 use Zend\Db\Sql\Sql;
