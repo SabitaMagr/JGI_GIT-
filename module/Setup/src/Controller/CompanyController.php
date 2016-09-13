@@ -51,10 +51,9 @@ class CompanyController extends AbstractActionController
                 $company = new Company();
                 $company->exchangeArrayFromForm($this->form->getData());
                 $company->createdDt = Helper::getcurrentExpressionDate();
-                $company->companyId = ((int) Helper::getMaxId($this->adapter, "HR_COMPANY", "COMPANY_ID"))+1;
+                $company->companyId = ((int) Helper::getMaxId($this->adapter, Company::TABLE_NAME, Company::COMPANY_ID))+1;
                 $company->status='E';
                 $this->repository->add($company);
-
                 $this->flashmessenger()->addMessage("Company Successfully added!!!");
                 return $this->redirect()->toRoute("company");
 

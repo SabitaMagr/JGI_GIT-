@@ -4,6 +4,7 @@ namespace Setup\Repository;
 
 use Application\Model\Model;
 use Application\Repository\RepositoryInterface;
+use Setup\Model\Department;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\TableGateway\TableGateway;
 
@@ -13,7 +14,7 @@ class DepartmentRepository implements RepositoryInterface
     
     public function __construct(AdapterInterface $adapter)
     {
-        $this->tableGateway=new TableGateway('HR_DEPARTMENTS',$adapter);
+        $this->tableGateway=new TableGateway(Department::TABLE_NAME,$adapter);
 
     }
 
@@ -25,31 +26,22 @@ class DepartmentRepository implements RepositoryInterface
     public function edit(Model $model,$id)
     {
         $temp=$model->getArrayCopyForDB();
-        unset($temp['DEPARTMENT_ID']);
-        unset($temp['CREATED_DT']);
-        $this->tableGateway->update($temp,["DEPARTMENT_ID"=>$id]);
+        $this->tableGateway->update($temp,[Department::DEPARTMENT_ID=>$id]);
     }
 
     public function fetchAll()
     {
-        return $this->tableGateway->select();
+        return $this->tableGateway->select([Department::STATUS=>'E']);
     }
 
     public function fetchById($id)
     {
-        $rowset= $this->tableGateway->select(['DEPARTMENT_ID'=>$id]);
+        $rowset= $this->tableGateway->select([Department::DEPARTMENT_ID=>$id,Department::STATUS=>'E']);
         return $rowset->current();
     }
-    public function fetchActiveRecord()
-    {
-         return  $rowset= $this->tableGateway->select(['STATUS'=>'E']);
-        
-    }
-
 
     public function delete($id)
     {
-    	$this->tableGateway->delete(['DEPARTMENT_ID'=>$id]);
-
+    	$this->tableGateway->update([Department::STATUS=>'D'],[Department::DEPARTMENT_ID=>$id]);
     }
 }

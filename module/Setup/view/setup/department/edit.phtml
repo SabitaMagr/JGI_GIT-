@@ -6,7 +6,6 @@ $departmentCode = $form->get('departmentCode');
 $departmentName = $form->get('departmentName');
 $remarks = $form->get('remarks');
 
-$status = $form->get('status');
 $parentDepartment = $form->get('parentDepartment');
 $parentDepartment->setValueOptions(array_merge(["0"=>"none"],$departments));
 
@@ -66,11 +65,6 @@ print $this->form()->openTag($form);
 					<?php print $this->formLabel($parentDepartment); ?>
 					<?php print $this->formElement($parentDepartment); ?>
 					<?php print $this->formElementErrors()->render($parentDepartment, ['class' => 'help-block']); ?>
-				</div>
-				<div class="form-group form-group-default  form-group-default-select2">
-					<?php print $this->formLabel($status); ?>
-					<?php print $this->formElement($status); ?>
-					<?php print $this->formElementErrors()->render($status, ['class' => 'help-block']); ?>
 				</div>
 
 			</div>

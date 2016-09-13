@@ -5,6 +5,18 @@ use Application\Model\Model;
 
 class Department extends Model
 {
+    const TABLE_NAME="HR_DEPARTMENTS";
+
+    const DEPARTMENT_ID="DEPARTMENT_ID";
+    const DEPARTMENT_CODE="DEPARTMENT_CODE";
+    const DEPARTMENT_NAME="DEPARTMENT_NAME";
+    const COUNTRY_ID="COUNTRY_ID";
+    const PARENT_DEPARTMENT="PARENT_DEPARTMENT";
+    const REMARKS="REMARKS";
+    const STATUS="STATUS";
+    const CREATED_DT="CREATED_DT";
+    const MODIFIED_DT="MODIFIED_DT";
+
     public $departmentId;
     public $departmentCode;
     public $departmentName;
@@ -17,15 +29,15 @@ class Department extends Model
 
 
     public $mappings=[
-        'departmentId'=>'DEPARTMENT_ID',
-        'departmentCode'=>'DEPARTMENT_CODE',
-        'departmentName'=>'DEPARTMENT_NAME',
-        'countryId'=>'COUNTRY_ID',
-        'parentDepartment'=>'PARENT_DEPARTMENT',
-        'remarks'=>'REMARKS',
-        'status'=>'STATUS',
-        'createdDt'=>'CREATED_DT',
-        'modifiedDt'=>'MODIFIED_DT'
+        'departmentId'=>self::DEPARTMENT_ID,
+        'departmentCode'=>self::DEPARTMENT_CODE,
+        'departmentName'=>self::DEPARTMENT_NAME,
+        'countryId'=>self::COUNTRY_ID,
+        'parentDepartment'=>self::PARENT_DEPARTMENT,
+        'remarks'=>self::REMARKS,
+        'status'=>self::STATUS,
+        'createdDt'=>self::CREATED_DT,
+        'modifiedDt'=>self::MODIFIED_DT
     ];
 
 }

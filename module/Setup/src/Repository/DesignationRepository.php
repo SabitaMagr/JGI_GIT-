@@ -4,6 +4,7 @@ namespace Setup\Repository;
 
 use Application\Model\Model;
 use Application\Repository\RepositoryInterface;
+use Setup\Model\Designation;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\TableGateway\TableGateway;
 
@@ -13,17 +14,17 @@ class DesignationRepository implements RepositoryInterface
 
     public function __construct(AdapterInterface $adapter)
     {
-        $this->tableGateway = new TableGateway('HR_DESIGNATIONS', $adapter);
+        $this->tableGateway = new TableGateway(Designation::TABLE_NAME, $adapter);
     }
 
     public function fetchAll()
     {
-        return $this->tableGateway->select();
+        return $this->tableGateway->select([Designation::STATUS=>'E']);
     }
 
     public function fetchById($id)
     {
-        $rowset = $this->tableGateway->select(["DESIGNATION_ID" => $id]);
+        $rowset = $this->tableGateway->select([Designation::DESIGNATION_ID => $id,Designation::STATUS=>'E']);
         return $rowset->current();
     }
 
@@ -35,14 +36,12 @@ class DesignationRepository implements RepositoryInterface
     public function edit(Model $model, $id)
     {
         $array = $model->getArrayCopyForDB();
-        unset($array['DESIGNATION_ID']);
-        unset($array['CREATED_DT']);
-        $this->tableGateway->update($array, ["DESIGNATION_ID" => $id]);
+        $this->tableGateway->update($array, [Designation::DESIGNATION_ID => $id]);
     }
 
     public function delete($id)
     {
-        $this->tableGateway->delete(["DESIGNATION_ID" => $id]);
+        $this->tableGateway->update([Designation::STATUS=>'D'],["DESIGNATION_ID" => $id]);
     }
 
 }

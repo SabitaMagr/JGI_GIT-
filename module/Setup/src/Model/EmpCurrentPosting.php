@@ -1,37 +1,37 @@
 <?php
 
 namespace Setup\Model;
+
+
 use Application\Model\Model;
 
-/**
- * Created by PhpStorm.
- * User: ukesh
- * Date: 8/23/16
- * Time: 12:01 PM
- */
 
 class EmpCurrentPosting extends Model
 {
+    const TABLE_NAME="HR_EMPLOYEE_CURRENT_POSTING";
+
+    const EMPLOYEE_ID="EMPLOYEE_ID";
+    const SERVICE_TYPE_ID="SERVICE_TYPE_ID";
+    const BRANCH_ID="BRANCH_ID";
+    const DEPARTMENT_ID="DEPARTMENT_ID";
+    const DESIGNATION_ID="DESIGNATION_ID";
+    const POSITION_ID="POSITION_ID";
+
     public $employeeId;
-
     public $serviceTypeId;
-
     public $branchId;
-
     public $departmentId;
-
     public $designationId;
-
     public $positionId;
 
 
     public $mappings = [
-        'employeeId'=>'EMPLOYEE_ID',
-        'serviceTypeId'=>'SERVICE_TYPE_ID',
-        'branchId'=>'BRANCH_ID',
-        'departmentId'=>'DEPARTMENT_ID',
-        'designationId'=>'DESIGNATION_ID',
-        'positionId'=>'POSITION_ID'
+        'employeeId'=>self::EMPLOYEE_ID,
+        'serviceTypeId'=>self::SERVICE_TYPE_ID,
+        'branchId'=>self::BRANCH_ID,
+        'departmentId'=>self::DEPARTMENT_ID,
+        'designationId'=>self::DESIGNATION_ID,
+        'positionId'=>self::POSITION_ID
     ];
 
 }

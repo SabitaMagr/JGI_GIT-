@@ -4,6 +4,7 @@ namespace Setup\Repository;
 
 use Application\Model\Model;
 use Application\Repository\RepositoryInterface;
+use Setup\Model\EmpCurrentPosting;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Sql\Sql;
 use Zend\Db\TableGateway\TableGateway;
@@ -12,7 +13,7 @@ class EmpCurrentPostingRepository implements RepositoryInterface{
 	private $tableGateway;
 private $adapter;
 	public function __construct(AdapterInterface $adapter){
-		$this->tableGateway = new TableGateway('HR_EMPLOYEE_CURRENT_POSTING',$adapter);
+		$this->tableGateway = new TableGateway(EmpCurrentPosting::TABLE_NAME,$adapter);
 		$this->adapter=$adapter;
 	}
 	public function add(Model $model){
@@ -20,11 +21,10 @@ private $adapter;
 	}
 	public function edit(Model $model,$id){
 		$array = $model->getArrayCopyForDb();
-		unset($array['EMPLOYEE_ID']);
-		$this->tableGateway->update($array,["EMPLOYEE_ID"=>$id]);
+		$this->tableGateway->update($array,[EmpCurrentPosting::EMPLOYEE_ID=>$id]);
 	}
 	public function delete($id){
-		$this->tableGateway->delete(["EMPLOYEE_ID"=>$id]);
+		$this->tableGateway->delete([EmpCurrentPosting::EMPLOYEE_ID=>$id]);
 	}
 	public function fetchAll(){
 //		return $this->tableGateway->select();
@@ -43,13 +43,10 @@ private $adapter;
 		$statement = $sql->prepareStatementForSqlObject($select);
 		$result = $statement->execute();
 
-//		print '<pre>';
-//        print_r($result->current());
-//        exit;
 		return $result;
 	}
 	public function fetchById($id){
-		$row = $this->tableGateway->select(["EMPLOYEE_ID"=>$id]);
+		$row = $this->tableGateway->select([EmpCurrentPosting::EMPLOYEE_ID=>$id]);
 		return $row->current();
 	}
 }

@@ -4,6 +4,7 @@ namespace Setup\Repository;
 
 use Application\Model\Model;
 use Application\Repository\RepositoryInterface;
+use Setup\Model\JobHistory;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Sql\Expression;
 use Zend\Db\Sql\Sql;
@@ -17,7 +18,7 @@ class JobHistoryRepository implements RepositoryInterface
     public function __construct(AdapterInterface $adapter)
     {
         $this->adapter = $adapter;
-        $this->tableGateway = new TableGateway('HR_JOB_HISTORY', $adapter);
+        $this->tableGateway = new TableGateway(JobHistory::TABLE_NAME, $adapter);
     }
 
     public function add(Model $model)
@@ -28,13 +29,12 @@ class JobHistoryRepository implements RepositoryInterface
     public function edit(Model $model, $id)
     {
         $array = $model->getArrayCopyForDB();
-        unset($array['JOB_HISTORY_ID']);
-        $this->tableGateway->update($array, ["JOB_HISTORY_ID" => $id]);
+        $this->tableGateway->update($array, [JobHistory::JOB_HISTORY_ID => $id]);
     }
 
     public function delete($id)
     {
-        $this->tableGateway->delete(["JOB_HISTORY_ID" => $id]);
+        $this->tableGateway->delete([JobHistory::JOB_HISTORY_ID => $id]);
     }
 
     public function fetchAll()
@@ -69,7 +69,7 @@ class JobHistoryRepository implements RepositoryInterface
 
     public function fetchById($id)
     {
-        $row = $this->tableGateway->select(["JOB_HISTORY_ID" => $id]);
+        $row = $this->tableGateway->select([JobHistory::JOB_HISTORY_ID => $id]);
         return $row->current();
     }
 }

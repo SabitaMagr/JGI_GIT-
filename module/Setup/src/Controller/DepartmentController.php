@@ -62,11 +62,13 @@ class DepartmentController extends AbstractActionController
             if ($this->form->isValid()) {
                 $department = new Department();
                 $department->exchangeArrayFromForm($this->form->getData());
-                if($department->parentDepartment==0){
+                if ($department->parentDepartment == 0) {
                     unset($department->parentDepartment);
                 }
                 $department->createdDt = Helper::getcurrentExpressionDate();
-                $department->departmentId=((int) Helper::getMaxId($this->adapter,"HR_DEPARTMENTS","DEPARTMENT_ID"))+1;
+                $department->departmentId = ((int)Helper::getMaxId($this->adapter, "HR_DEPARTMENTS", "DEPARTMENT_ID")) + 1;
+                $department->status = 'E';
+
                 $this->repository->add($department);
                 $this->flashmessenger()->addMessage("Department Successfully added!!!");
                 return $this->redirect()->toRoute("department");
@@ -101,17 +103,23 @@ class DepartmentController extends AbstractActionController
             $this->form->setData($request->getPost());
             if ($this->form->isValid()) {
                 $department->exchangeArrayFromForm($this->form->getData());
-                if($department->parentDepartment==0){
+                if ($department->parentDepartment == 0) {
                     unset($department->parentDepartment);
                 }
                 $department->modifiedDt = Helper::getcurrentExpressionDate();
+                unset($department->departmentId);
+                unset($department->createdDt);
+                unset($department->status);
+
                 $this->repository->edit($department, $id);
                 $this->flashmessenger()->addMessage("Department Successfully Updated!!!");
                 return $this->redirect()->toRoute("department");
             }
         }
         return Helper::addFlashMessagesToArray(
-            $this, ['form' => $this->form, 'id' => $id,
+            $this,
+            [
+                'form' => $this->form, 'id' => $id,
                 'departments' => EntityHelper::getTableKVList($this->adapter, EntityHelper::HR_DEPARTMENTS),
                 'countries' => EntityHelper::getTableKVList($this->adapter, EntityHelper::HR_COUNTRIES)
             ]

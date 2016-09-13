@@ -8,8 +8,17 @@ use Zend\View\Model\ModelInterface;
 
 class Designation extends Model
 {
-    public $designationId;
+    const TABLE_NAME="HR_DESIGNATIONS";
 
+    const DESIGNATION_ID="DESIGNATION_ID";
+    const DESIGNATION_CODE="DESIGNATION_CODE";
+    const DESIGNATION_TITLE="DESIGNATION_TITLE";
+    const BASIC_SALARY="BASIC_SALARY";
+    const CREATED_DT="CREATED_DT";
+    const MODIFIED_DT="MODIFIED_DT";
+    const STATUS="STATUS";
+
+    public $designationId;
     public $designationCode;
     public $designationTitle;
     public $basicSalary;
@@ -19,12 +28,12 @@ class Designation extends Model
 
 
     public $mappings =[
-        'designationId'=>'DESIGNATION_ID',
-        'designationCode'=>'DESIGNATION_CODE',
-        'designationTitle'=>'DESIGNATION_TITLE',
-        'basicSalary'=>'BASIC_SALARY',
-        'status'=>'STATUS',
-        'createdDt'=>'CREATED_DT',
-        'modifiedDt'=>'MODIFIED_DT'
+        'designationId'=>self::DESIGNATION_ID,
+        'designationCode'=>self::DESIGNATION_CODE,
+        'designationTitle'=>self::DESIGNATION_TITLE,
+        'basicSalary'=>self::BASIC_SALARY,
+        'createdDt'=>self::CREATED_DT,
+        'modifiedDt'=>self::MODIFIED_DT,
+        'status'=>self::STATUS,
     ];
 }

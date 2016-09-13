@@ -11,7 +11,6 @@ namespace Setup\Form;
 * Last Modified Date: 
 */
 
-use Application\Model\Model;
 use Zend\Form\Annotation;
 
 /**
@@ -19,7 +18,7 @@ use Zend\Form\Annotation;
  * @Annotation\Name("JobHistoryForm")
 */
 
-class EmpCurrentPostingForm extends Model{
+class EmpCurrentPostingForm {
 
 	/**
      * @Annotation\Type("Zend\Form\Element\Select")
@@ -81,14 +80,5 @@ class EmpCurrentPostingForm extends Model{
      * @Annotation\Attributes({"value":"Submit","class":"btn btn-primary pull-right"})
     */
     public $submit;
-
-    public $mappings = [
-        'EMPLOYEE_ID'=>'employeeId',
-        'SERVICE_TYPE_ID'=>'serviceTypeId',
-        'BRANCH_ID'=>'branchId',
-        'DEPARTMENT_ID'=>'departmentId',
-        'DESIGNATION_ID'=>'designationId',
-        'POSITION_ID'=>'positionId'
-    ];
 
 }
