@@ -20,6 +20,7 @@ use Setup\Repository\BranchRepository;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\Mvc\Controller\AbstractActionController;
+use Zend\View\Model\ViewModel;
 
 class BranchController extends AbstractActionController
 {
@@ -46,6 +47,12 @@ class BranchController extends AbstractActionController
     public function indexAction()
     {
         $branches = $this->repository->fetchAll();
+        $view=new ViewModel(Helper::addFlashMessagesToArray($this, ['branches' => $branches]));
+//        $view->setCaptureTo('login');
+//        $view->setTerminal(true);
+//        $layout=$this->layout();
+//$layout->setTemplate('layout/login');
+//        return $view;
         return Helper::addFlashMessagesToArray($this, ['branches' => $branches]);
     }
 

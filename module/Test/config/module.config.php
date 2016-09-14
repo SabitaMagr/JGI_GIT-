@@ -1,30 +1,27 @@
 <?php
 namespace Test;
 
-use Zend\Router\Http\Segment;
-use Zend\ServiceManager\Factory\InvokableFactory;
+use Application\Controller\ControllerFactory;
+use Zend\Router\Http\Literal;
 
 return [
     'controllers' => [
         'factories' => [
-            Controller\TestController::class => InvokableFactory::class,
+            Controller\TestController::class => ControllerFactory::class,
         ],
+
     ],
 
 
     'router' => [
         'routes' => [
             'test' => [
-                'type'    => Segment::class,
+                'type'    => Literal::class,
                 'options' => [
-                    'route' => '/test[/:action[/:id]]',
-                    'constraints' => [
-                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
-                        'id'     => '[0-9]+',
-                    ],
+                    'route' => '/test',
                     'defaults' => [
                         'controller' => Controller\TestController::class,
-                        'action'     => 'add',
+                        'action'=>'index'
                     ],
                 ],
             ],
@@ -34,8 +31,11 @@ return [
   
     'view_manager' => [
         'template_path_stack' => [
-            'test' => __DIR__ . '/../view',
+             __DIR__ . '/../view',
         ],
+        'strategies' => array(
+            'ViewJsonStrategy',
+        ),
     ],
 ];
 

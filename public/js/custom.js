@@ -12,6 +12,7 @@ window.app = (function ($) {
                     reject(error);
                 },
                 success: function (data) {
+                    console.log(data);
                     resolve(data);
                 }
 
