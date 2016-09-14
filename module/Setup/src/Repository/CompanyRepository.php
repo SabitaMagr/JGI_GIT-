@@ -47,6 +47,6 @@ class CompanyRepository implements RepositoryInterface
 
     public function delete($id)
     {
-        $this->tableGateway->delete([Company::COMPANY_ID=>$id]);
+        $this->tableGateway->update([Company::STATUS=>'D'],[Company::COMPANY_ID=>$id]);
     }
 }
