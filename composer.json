@@ -41,7 +41,8 @@
             "Test\\": "module/Test/src/",
             "LeaveManagement\\":"module/LeaveManagement/src/",
             "HolidayManagement\\":"module/HolidayManagement/src/",
-            "Setup\\":"module/Setup/src/"
+            "Setup\\":"module/Setup/src/",
+            "AttendanceManagement\\":"module/AttendanceManagement/src/"
         }
     },
     "autoload-dev": {

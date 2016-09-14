@@ -60,15 +60,28 @@ class Helper
 
         unset($temp['mappings']);
 
+        if($timeAttrs!=null) {
+            foreach ($timeAttrs as $attr) {
+                unset($temp[$attr]);
+            }
+        }
+
         $attributes = array_keys($temp);
 
         $tempCols = [];
-        if($attrs!=null){
-        foreach ($attrs as $attr) {
-            array_push($tempCols, Helper::appendDateFormat($adapter, $table->mappings[$attr], self::ORACLE_DATE_FORMAT));
+
+        if($attrs!=null) {
+            foreach ($attrs as $attr) {
+                array_push($tempCols, Helper::appendDateFormat($adapter, $table->mappings[$attr], self::ORACLE_DATE_FORMAT));
+            }
         }
 
+        if($timeAttrs!=null) {
+            foreach ($timeAttrs as $attr) {
+                array_push($tempCols, Helper::appendDateFormat($adapter, $table->mappings[$attr], self::ORACLE_TIME_FORMAT));
+            }
         }
+
         if($timeAttrs!=null){
         foreach ($timeAttrs as $attr) {
             array_push($tempCols, Helper::appendDateFormat($adapter, $table->mappings[$attr], self::ORACLE_TIME_FORMAT));
@@ -78,7 +91,6 @@ class Helper
         foreach ($attributes as $attribute) {
             array_push($tempCols, $table->mappings[$attribute]);
         }
-
         return $tempCols;
     }
 

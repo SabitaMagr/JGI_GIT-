@@ -14,10 +14,19 @@ use Application\Model\Model;
 class LeaveApply extends Model
 {
     const TABLE_NAME="HR_EMPLOYEE_LEAVE_REQUEST";
+
     const EMPLOYEE_ID="EMPLOYEE_ID";
     const LEAVE_ID="LEAVE_ID";
     const START_DATE="START_DATE";
-
+    const END_DATE="END_DATE";
+    const NO_OF_DAYS="NO_OF_DAYS";
+    const STATUS="STATUS";
+    const RECOMMENDED_BY="RECOMMENDED_BY";
+    const RECOMMENDED_DT="RECOMMENDED_DT";
+    const APPROVED_BY="APPROVED_BY";
+    const APPROVED_DT="APPROVED_DT";
+    const HALF_DAY="HALF_DAY";
+    const REQUESTED_DT="REQUESTED_DT";
 
     public $employeeId;
     public $leaveId;
@@ -36,16 +45,16 @@ class LeaveApply extends Model
     public $mappings=[
         'employeeId'=>self::EMPLOYEE_ID,
         'leaveId'=>self::LEAVE_ID,
-        'startDate'=>'START_DATE',
-        'endDate'=>'END_DATE',
-        'noOfDays'=>'NO_OF_DAYS',
-        'status'=>'STATUS',
-        'recommendedBy'=>'RECOMMENDED_BY',
-        'recommendedDt'=>'RECOMMENDED_DT',
-        'approvedBy'=>'APPROVED_BY',
-        'approvedDt'=>'APPROVED_DT',
-        'halfDay'=>'HALF_DAY',
-        'requestedDt'=>'REQUESTED_DT'
+        'startDate'=>self::START_DATE,
+        'endDate'=>self::END_DATE,
+        'noOfDays'=>self::NO_OF_DAYS,
+        'status'=>self::STATUS,
+        'recommendedBy'=>self::RECOMMENDED_BY,
+        'recommendedDt'=>self::RECOMMENDED_DT,
+        'approvedBy'=>self::APPROVED_BY,
+        'approvedDt'=>self::APPROVED_DT,
+        'halfDay'=>self::HALF_DAY,
+        'requestedDt'=>self::REQUESTED_DT
     ];
 
 }

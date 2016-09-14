@@ -18,6 +18,7 @@ use Setup\Repository\EmployeeRepository;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\Mvc\Controller\AbstractActionController;
+use LeaveManagement\Model\LeaveAssign as LeaveAssignController;
 
 class leaveAssign extends AbstractActionController
 {
@@ -85,7 +86,7 @@ class leaveAssign extends AbstractActionController
             if ($this->form->isValid()) {
                 $leaveAssign = new \LeaveManagement\Model\LeaveAssign();
                 $leaveAssign->exchangeArrayFromForm($this->form->getData());
-                $leaveAssign->employeeLeaveAssignId = ((int)Helper::getMaxId($this->adapter, "HR_EMPLOYEE_LEAVE_ASSIGN", "EMPLOYEE_LEAVE_ASSIGN_ID")) + 1;
+                $leaveAssign->employeeLeaveAssignId = ((int)Helper::getMaxId($this->adapter, LeaveAssignController::TABLE_NAME, LeaveAssignController::EMPLOYEE_LEAVE_ASSIGN_ID)) + 1;
                 $leaveAssign->createdDt = Helper::getcurrentExpressionDate();
                 $leaveAssign->employeeId = $id;
                 $this->repository->add($leaveAssign);

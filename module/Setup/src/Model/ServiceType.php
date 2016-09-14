@@ -5,6 +5,16 @@ use Application\Model\Model;
 
 class ServiceType extends Model{
 
+    const TABLE_NAME="HR_SERVICE_TYPES";
+
+    const SERVICE_TYPE_ID="SERVICE_TYPE_ID";
+    const SERVICE_TYPE_CODE="SERVICE_TYPE_CODE";
+    const SERVICE_TYPE_NAME="SERVICE_TYPE_NAME";
+    const REMARKS="REMARKS";
+    const STATUS="STATUS";
+    const CREATED_DT="CREATED_DT";
+    const MODIFIED_DT="MODIFIED_DT";
+
     public $serviceTypeId;
     public $serviceTypeCode;
     public $serviceTypeName;
@@ -14,13 +24,13 @@ class ServiceType extends Model{
     public $modifiedDt;
 
     public $mappings = [
-        'serviceTypeId'=>'SERVICE_TYPE_ID',
-        'serviceTypeCode'=>'SERVICE_TYPE_CODE',
-        'serviceTypeName'=>'SERVICE_TYPE_NAME',
-        'remarks'=>'REMARKS',
-        'status'=>'STATUS',
-        'createdDt'=>'CREATED_DT',
-        'modifiedDt'=>'MODIFIED_DT'
+        'serviceTypeId'=>self::SERVICE_TYPE_ID,
+        'serviceTypeCode'=>self::SERVICE_TYPE_CODE,
+        'serviceTypeName'=>self::SERVICE_TYPE_NAME,
+        'remarks'=>self::REMARKS,
+        'status'=>self::STATUS,
+        'createdDt'=>self::CREATED_DT,
+        'modifiedDt'=>self::MODIFIED_DT
     ];
 
 }

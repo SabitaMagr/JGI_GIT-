@@ -6,6 +6,35 @@ use Application\Model\Model;
 
 class Shift extends Model
 {
+    const TABLE_NAME="HR_SHIFTS";
+
+    const SHIFT_ID="SHIFT_ID";
+    const SHIFT_CODE="SHIFT_CODE";
+    const SHIFT_ENAME="SHIFT_ENAME";
+    const SHIFT_LNAME="SHIFT_LNAME";
+    const START_TIME="START_TIME";
+    const END_TIME="END_TIME";
+    const HALF_DAY_END_TIME="HALF_DAY_END_TIME";
+    const HALF_TIME="HALF_TIME";
+    const LATE_IN="LATE_IN";
+    const EARLY_OUT="EARLY_OUT";
+    const START_DATE="START_DATE";
+    const END_DATE="END_DATE";
+    const WEEKDAY1="WEEKDAY1";
+    const WEEKDAY2="WEEKDAY2";
+    const WEEKDAY3="WEEKDAY3";
+    const WEEKDAY4="WEEKDAY4";
+    const WEEKDAY5="WEEKDAY5";
+    const WEEKDAY6="WEEKDAY6";
+    const WEEKDAY7="WEEKDAY7";
+    const CURRENT_SHIFT="CURRENT_SHIFT";
+    const TWO_DAY_SHIFT="TWO_DAY_SHIFT";
+    const DEFAULT_SHIFT="DEFAULT_SHIFT";
+    const CREATED_DT="CREATED_DT";
+    const MODIFIED_DT="MODIFIED_DT";
+    const REMARKS="REMARKS";
+    const STATUS="STATUS";
+
     public $shiftId;
     public $shiftCode;
     public $shiftEname;
@@ -34,32 +63,32 @@ class Shift extends Model
     public $status;
 
     public $mappings = [
-        'shiftId'=>'SHIFT_ID',
-        'shiftCode'=>'SHIFT_CODE',
-        'shiftEname'=>'SHIFT_ENAME',
-        'shiftLname'=>'SHIFT_LNAME',
-        'startTime'=>'START_TIME',
-        'endTime'=>'END_TIME',
-        'halfDayEndTime'=>'HALF_DAY_END_TIME',
-        'halfTime'=>'HALF_TIME',
-        'lateIn'=>'LATE_IN',
-        'earlyOut'=>'EARLY_OUT',
-        'startDate'=>'START_DATE',
-        'endDate'=>'END_DATE',
-        'weekday1'=>'WEEKDAY1',
-        'weekday2'=>'WEEKDAY2',
-        'weekday3'=>'WEEKDAY3',
-        'weekday4'=>'WEEKDAY4',
-        'weekday5'=>'WEEKDAY5',
-        'weekday6'=>'WEEKDAY6',
-        'weekday7'=>'WEEKDAY7',
-        'currentShift'=>'CURRENT_SHIFT',
-        'twoDayShift'=>'TWO_DAY_SHIFT',
-        'defaultShift'=>'DEFAULT_SHIFT',
-        'createdDt'=>'CREATED_DT',
-        'modifiedDt'=>'MODIFIED_DT',
-        'remarks'=>'REMARKS',
-        'status'=>'STATUS'
+        'shiftId'=>self::SHIFT_ID,
+        'shiftCode'=>self::SHIFT_CODE,
+        'shiftEname'=>self::SHIFT_ENAME,
+        'shiftLname'=>self::SHIFT_LNAME,
+        'startTime'=>self::START_TIME,
+        'endTime'=>self::END_TIME,
+        'halfDayEndTime'=>self::HALF_DAY_END_TIME,
+        'halfTime'=>self::HALF_TIME,
+        'lateIn'=>self::LATE_IN,
+        'earlyOut'=>self::EARLY_OUT,
+        'startDate'=>self::START_DATE,
+        'endDate'=>self::END_DATE,
+        'weekday1'=>self::WEEKDAY1,
+        'weekday2'=>self::WEEKDAY2,
+        'weekday3'=>self::WEEKDAY3,
+        'weekday4'=>self::WEEKDAY4,
+        'weekday5'=>self::WEEKDAY5,
+        'weekday6'=>self::WEEKDAY6,
+        'weekday7'=>self::WEEKDAY7,
+        'currentShift'=>self::CURRENT_SHIFT,
+        'twoDayShift'=>self::TWO_DAY_SHIFT,
+        'defaultShift'=>self::DEFAULT_SHIFT,
+        'createdDt'=>self::CREATED_DT,
+        'modifiedDt'=>self::MODIFIED_DT,
+        'remarks'=>self::REMARKS,
+        'status'=>self::STATUS
         ];
 
 }

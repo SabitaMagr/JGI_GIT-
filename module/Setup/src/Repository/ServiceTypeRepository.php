@@ -6,13 +6,14 @@ use Application\Model\Model;
 use Application\Repository\RepositoryInterface;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\TableGateway\TableGateway;
+use Setup\Model\ServiceType;
 
 class ServiceTypeRepository implements RepositoryInterface
 {
     private $tableGateway;
     public function __construct(AdapterInterface $adapter)
     {
-        $this->tableGateway=new TableGateway('HR_SERVICE_TYPES',$adapter);
+        $this->tableGateway=new TableGateway(ServiceType::TABLE_NAME,$adapter);
 
     }
 
@@ -24,9 +25,9 @@ class ServiceTypeRepository implements RepositoryInterface
     public function edit(Model $model,$id)
     {
         $array=$model->getArrayCopyForDB();
-        unset($array['SERVICE_TYPE_ID']);
-        unset($array['CREATED_DT']);
-        $this->tableGateway->update( $array,["SERVICE_TYPE_ID"=>$id]);
+        unset($array[ServiceType::SERVICE_TYPE_ID]);
+        unset($array[ServiceType::CREATED_DT]);
+        $this->tableGateway->update( $array,[ServiceType::SERVICE_TYPE_ID=>$id]);
     }
 
     public function fetchAll()
@@ -36,17 +37,16 @@ class ServiceTypeRepository implements RepositoryInterface
 
     public function fetchById($id)
     {
-        $rowset= $this->tableGateway->select(['SERVICE_TYPE_ID'=>$id]);
+        $rowset= $this->tableGateway->select([ServiceType::SERVICE_TYPE_ID=>$id]);
         return $rowset->current();
     }
     public function fetchActiveRecord()
     {
-         return  $rowset= $this->tableGateway->select(['STATUS'=>'E']);       
+         return  $rowset= $this->tableGateway->select([ServiceType::STATUS=>'E']);
     }
 
     public function delete($id)
     {
-    	$this->tableGateway->delete(['SERVICE_TYPE_ID'=>$id]);
-
+    	$this->tableGateway->update([ServiceType::STATUS=>'D'],[ServiceType::SERVICE_TYPE_ID=>$id]);
     }
 }
