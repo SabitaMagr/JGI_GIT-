@@ -1,13 +1,13 @@
 /**
  * Created by ukesh on 9/12/16.
  */
-(function ($) {
+(function ($,app) {
     'use strict';
     $(document).ready(function () {
-    addDatePicker(
+    app.addDatePicker(
         $("#startDate"),
         $("#endDate")
     );
 
     });
-})(window.jQuery);
+})(window.jQuery,window.app);

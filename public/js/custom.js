@@ -1,22 +1,8 @@
-$(document).ready(function () {
+window.app = (function ($) {
+    'use strict';
+    var format = "d-M-yyyy";
 
-
-    var selectedMenu = $('#' + document.menu.id);
-    selectedMenu.addClass('open').addClass('active');
-
-    $('#' + document.menu.id + ' > a :nth-child(2)').addClass('active').addClass('open');
-
-    $('#' + document.menu.id + " > span").addClass("bg-success")
-
-    if (typeof document.menu.subMenu !== "undefined") {
-        var selectedMenu = $('#' + document.menu.subMenu.id);
-        selectedMenu.addClass('active');
-
-    }
-    //$('#add_more_child').click(function(){
-    //});
-
-    pullDataById = function (url, data) {
+    var pullDataById = function (url, data) {
         return new Promise(function (resolve, reject) {
             $.ajax({
                 url: url,
@@ -31,11 +17,11 @@ $(document).ready(function () {
 
             });
         });
-    }
+    };
 
-    populateSelectElement = function (element, data) {
+    var populateSelectElement = function (element, data) {
         element.html('');
-        for (key in data) {
+        for (var key in data) {
             element.append($('<option>', {value: key, text: data[key]}));
         }
         var keys = Object.keys(data);
@@ -44,10 +30,20 @@ $(document).ready(function () {
         }
     }
 
-    format = "d-M-yyyy";
+    var fetchAndPopulate = function (url, id, element, callback) {
+        pullDataById(url, {id: id}).then(function (data) {
+            populateSelectElement(element, data);
+            if (typeof callback !== 'undefined') {
+                callback();
+            }
+        }, function (error) {
+            console.log("Error fetching Districts", error);
+        });
+    }
 
-    addDatePicker = function () {
-        for (x in arguments) {
+
+    var addDatePicker = function () {
+        for (var x in arguments) {
             arguments[x].datepicker({
                 format: format,
                 autoclose: true
@@ -56,5 +52,19 @@ $(document).ready(function () {
         }
     }
 
-});
+    var addTimePicker = function () {
+        for (var x in arguments) {
+            arguments[x].timepicker();
+        }
+    }
+
+    return {
+        format: format,
+        pullDataById: pullDataById,
+        populateSelectElement: populateSelectElement,
+        addDatePicker: addDatePicker,
+        addTimePicker: addTimePicker,
+        fetchAndPopulate:fetchAndPopulate
+    };
+})(window.jQuery);
 

@@ -96,6 +96,7 @@ print $this->partial("partials/sidebar.phtml");
 
 <?php print $this->headScript()
 
+    ->prependFile($this->basePath('js/menu.js'))
     ->prependFile($this->basePath('js/custom.js'))
 
     //for form tab<<

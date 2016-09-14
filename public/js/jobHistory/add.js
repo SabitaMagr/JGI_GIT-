@@ -1,17 +1,10 @@
 /**
  * Created by ukesh on 9/2/16.
  */
-(function ($) {
+(function ($,app) {
     'use strict';
-    var format="d-M-yyyy";
-
-    $("#startDate").datepicker({
-        format: format,
-        autoclose:true
-    });
-    $("#endDate").datepicker({
-        format: format,
-        autoclose:true
+    $(document).ready(function(){
+        app.addDatePicker($("#startDate"),$("#endDate"));
     });
 
-})(window.jQuery);
+})(window.jQuery,window.app);
