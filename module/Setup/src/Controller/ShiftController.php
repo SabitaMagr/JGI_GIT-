@@ -57,7 +57,7 @@ class ShiftController extends AbstractActionController
             if ($this->form->isValid()) {
                 $shift = new Shift();
                 $shift->exchangeArrayFromForm($this->form->getData());
-                $shift->shiftId=((int) Helper::getMaxId($this->adapter,"HR_SHIFTS","SHIFT_ID"))+1;
+                $shift->shiftId=((int) Helper::getMaxId($this->adapter,Shift::TABLE_NAME,Shift::SHIFT_ID))+1;
                 $shift->startDate=Helper::getExpressionDate($shift->startDate);
                 $shift->endDate=Helper::getExpressionDate($shift->endDate);
                 $shift->startTime=Helper::getExpressionTime($shift->startTime);
@@ -99,7 +99,7 @@ class ShiftController extends AbstractActionController
         $request = $this->getRequest();
         $shift = new Shift();
         if (!$request->isPost()) {
-            $shift->exchangeArrayFromDB($this->repository->fetchById($id)->getArrayCopy());
+            $shift->exchangeArrayFromDB($this->repository->fetchById($id));
 //                $shift->shiftLname=mb_convert_encoding($shift->shiftLname, 'UTF-8','UTF-16LE' );
             $this->form->bind($shift);
         } else {
@@ -107,7 +107,7 @@ class ShiftController extends AbstractActionController
             $this->form->setData($request->getPost());
             if ($this->form->isValid()) {
                 $shift->exchangeArrayFromForm($this->form->getData());
-                $shift->shiftId=((int) Helper::getMaxId($this->adapter,"HR_SHIFTS","SHIFT_ID"))+1;
+                $shift->shiftId=((int) Helper::getMaxId($this->adapter,Shift::TABLE_NAME,Shift::SHIFT_ID))+1;
                 $shift->startDate=Helper::getExpressionDate($shift->startDate);
                 $shift->endDate=Helper::getExpressionDate($shift->endDate);
                 $shift->startTime=Helper::getExpressionTime($shift->startTime);

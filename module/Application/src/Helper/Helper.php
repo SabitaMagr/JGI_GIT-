@@ -39,7 +39,7 @@ class Helper
 
     }
 
-    public static function convertColumnDateFormat(AdapterInterface $adapter, Model $table, $attrs)
+    public static function convertColumnDateFormat(AdapterInterface $adapter, Model $table, $attrs=null,$timeAttrs=null)
     {
         $format = 'DD-MON-YYYY HH24:MI:SS';
 
@@ -49,16 +49,21 @@ class Helper
         }
         unset($temp['mappings']);
 
+        foreach ($timeAttrs as $attr) {
+            unset($temp[$attr]);
+        }
+
         $attributes = array_keys($temp);
         $tempCols = [];
         foreach ($attrs as $attr) {
             array_push($tempCols, Helper::appendDateFormat($adapter, $table->mappings[$attr], self::ORACLE_DATE_FORMAT));
         }
+        foreach ($timeAttrs as $attr) {
+            array_push($tempCols, Helper::appendDateFormat($adapter, $table->mappings[$attr], self::ORACLE_TIME_FORMAT));
+        }
         foreach ($attributes as $attribute) {
             array_push($tempCols, $table->mappings[$attribute]);
         }
-
-
         return $tempCols;
     }
 

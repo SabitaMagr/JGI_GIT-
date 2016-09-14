@@ -13,6 +13,22 @@ use Application\Model\Model;
 
 class LeaveMaster extends Model
 {
+    const TABLE_NAME="HR_LEAVE_MASTER_SETUP";
+
+    const LEAVE_ID="LEAVE_ID";
+    const LEAVE_CODE="LEAVE_CODE";
+    const LEAVE_ENAME="LEAVE_ENAME";
+    const LEAVE_LNAME="LEAVE_LNAME";
+    const ALLOW_HALFDAY="ALLOW_HALFDAY";
+    const DEFAULT_DAYS="DEFAULT_DAYS";
+    const FISCAL_YEAR="FISCAL_YEAR";
+    const CARRY_FORWARD="CARRY_FORWARD";
+    const CASHABLE="CASHABLE";
+    const CREATED_DT="CREATED_DT";
+    const MODIFIED_DT="MODIFIED_DT";
+    const STATUS="STATUS";
+    const REMARKS="REMARKS";
+
     public $leaveId;
     public $leaveCode;
     public $leaveEname;
@@ -28,19 +44,19 @@ class LeaveMaster extends Model
     public $remarks;
 
     public $mappings=[
-        'leaveId'=>'LEAVE_ID',
-        'leaveCode'=>'LEAVE_CODE',
-        'leaveEname'=>'LEAVE_ENAME',
-        'leaveLname'=>'LEAVE_LNAME',
-        'allowHalfday'=>'ALLOW_HALFDAY',
-        'defaultDays'=>'DEFAULT_DAYS',
-        'fiscalYear'=>'FISCAL_YEAR',
-        'carryForward'=>'CARRY_FORWARD',
-        'cashable'=>'CASHABLE',
-        'createdDt'=>'CREATED_DT',
-        'modifiedDt'=>'MODIFIED_DT',
-        'status'=>'STATUS',
-        'remarks'=>'REMARKS'
+        'leaveId'=>self::LEAVE_ID,
+        'leaveCode'=>self::LEAVE_CODE,
+        'leaveEname'=>self::LEAVE_ENAME,
+        'leaveLname'=>self::LEAVE_LNAME,
+        'allowHalfday'=>self::ALLOW_HALFDAY,
+        'defaultDays'=>self::DEFAULT_DAYS,
+        'fiscalYear'=>self::FISCAL_YEAR,
+        'carryForward'=>self::CARRY_FORWARD,
+        'cashable'=>self::CASHABLE,
+        'createdDt'=>self::CREATED_DT,
+        'modifiedDt'=>self::MODIFIED_DT,
+        'status'=>self::STATUS,
+        'remarks'=>self::REMARKS
     ];
 
 

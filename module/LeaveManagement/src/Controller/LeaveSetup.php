@@ -58,7 +58,7 @@ class LeaveSetup extends AbstractActionController
                 $leaveMaster->status = 'E';
                 $this->repository->add($leaveMaster);
                 $this->flashmessenger()->addMessage("Leave Successfully added!!!");
-                return $this->redirect()->toRoute("leave");
+                return $this->redirect()->toRoute("leavesetup");
             }
         }
         return new ViewModel(Helper::addFlashMessagesToArray(
@@ -112,7 +112,7 @@ class LeaveSetup extends AbstractActionController
     {
         $id = (int)$this->params()->fromRoute("id");
         if (!$id) {
-            return $this->redirect()->toRoute('leave');
+            return $this->redirect()->toRoute('leavesetup');
         }
         $this->repository->delete($id);
         $this->flashmessenger()->addMessage("Leave Successfully Deleted!!!");

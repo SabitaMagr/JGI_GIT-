@@ -44,7 +44,7 @@ class ServiceTypeController extends AbstractActionController
 
     public function indexAction()
     {
-        $serviceTypeList = $this->repository->fetchAll();
+        $serviceTypeList = $this->repository->fetchActiveRecord();
         return Helper::addFlashMessagesToArray($this, ['serviceTypeList' => $serviceTypeList]);
     }
 
@@ -61,7 +61,7 @@ class ServiceTypeController extends AbstractActionController
                 try {
                     $serviceType=new ServiceType();
                     $serviceType->exchangeArrayFromForm($this->form->getData());
-                    $serviceType->serviceTypeId=((int) Helper::getMaxId($this->adapter,"HR_SERVICE_TYPES","SERVICE_TYPE_ID"))+1;
+                    $serviceType->serviceTypeId=((int) Helper::getMaxId($this->adapter,ServiceType::TABLE_NAME,ServiceType::SERVICE_TYPE_ID))+1;
                     $serviceType->createdDt=Helper::getcurrentExpressionDate();
                     $this->repository->add($serviceType);
 

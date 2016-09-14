@@ -44,7 +44,7 @@ class PositionController extends AbstractActionController
 
     public function indexAction()
     {
-        $positionList = $this->repository->fetchAll();
+        $positionList = $this->repository->fetchActiveRecord();
         return Helper::addFlashMessagesToArray($this, ['positions' => $positionList]);
     }
 
@@ -60,7 +60,7 @@ class PositionController extends AbstractActionController
             if ($this->form->isValid()) {
                 $position = new Position();
                 $position->exchangeArrayFromForm($this->form->getData());
-                $position->positionId=((int) Helper::getMaxId($this->adapter,"HR_POSITIONS","POSITION_ID"))+1;
+                $position->positionId=((int) Helper::getMaxId($this->adapter,Position::TABLE_NAME,Position::POSITION_ID))+1;
                 $position->createdDt = Helper::getcurrentExpressionDate();
                 $this->repository->add($position);
 

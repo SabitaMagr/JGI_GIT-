@@ -5,6 +5,15 @@ use Application\Model\Model;
 
 class Position extends Model
 {
+    const TABLE_NAME="HR_POSITIONS";
+
+    const POSITION_ID="POSITION_ID";
+    const POSITION_NAME="POSITION_NAME";
+    const REMARKS="REMARKS";
+    const STATUS="STATUS";
+    const CREATED_DT="CREATED_DT";
+    const MODIFIED_DT="MODIFIED_DT";
+
     public $positionId;
     public $positionName;
     public $remarks;
@@ -14,12 +23,12 @@ class Position extends Model
 
 
     public $mappings = [
-        'positionId' => 'POSITION_ID',
-        'positionName' => 'POSITION_NAME',
-        'remarks' => 'REMARKS',
-        'status' => 'STATUS',
-        'createdDt'=>'CREATED_DT',
-        'modifiedDt'=>'MODIFIED_DT'
+        'positionId' => self::POSITION_ID,
+        'positionName' => self::POSITION_NAME,
+        'remarks' => self::REMARKS,
+        'status' => self::STATUS,
+        'createdDt'=>self::CREATED_DT,
+        'modifiedDt'=>self::MODIFIED_DT
     ];
 
 }
