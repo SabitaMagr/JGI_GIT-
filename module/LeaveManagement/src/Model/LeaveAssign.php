@@ -12,6 +12,19 @@ use Application\Model\Model;
 
 class LeaveAssign extends Model
 {
+    const TABLE_NAME="HR_EMPLOYEE_LEAVE_ASSIGN";
+
+    const EMPLOYEE_LEAVE_ASSIGN_ID="EMPLOYEE_LEAVE_ASSIGN_ID";
+    const EMPLOYEE_ID="EMPLOYEE_ID";
+    const LEAVE_ID="LEAVE_ID";
+    const PREVIOUS_YEAR_BAL="PREVIOUS_YEAR_BAL";
+    const TOTAL_DAYS="TOTAL_DAYS";
+    const BALANCE="BALANCE";
+    const FISCAL_YEAR="FISCAL_YEAR";
+    const REMARKS="REMARKS";
+    const CREATED_DT="CREATED_DT";
+    const MODIFIED_DT="MODIFIED_DT";
+
     public $employeeLeaveAssignId;
     public $employeeId;
     public $leaveId;
@@ -24,15 +37,15 @@ class LeaveAssign extends Model
     public $modifiedDt;
 
     public $mappings=[
-        'employeeLeaveAssignId'=>'EMPLOYEE_LEAVE_ASSIGN_ID',
-        'employeeId'=>'EMPLOYEE_ID',
-        'leaveId'=>'LEAVE_ID',
-        'previousYearBalance'=>'PREVIOUS_YEAR_BAL',
-        'totalDays'=>'TOTAL_DAYS',
-        'balance'=>'BALANCE',
-        'fiscalYear'=>'FISCAL_YEAR',
-        'remarks'=>'REMARKS',
-        'createdDt'=>'CREATED_DT',
-        'modifiedDt'=>'MODIFIED_DT'
+        'employeeLeaveAssignId'=>self::EMPLOYEE_LEAVE_ASSIGN_ID,
+        'employeeId'=>self::EMPLOYEE_ID,
+        'leaveId'=>self::LEAVE_ID,
+        'previousYearBalance'=>self::PREVIOUS_YEAR_BAL,
+        'totalDays'=>self::TOTAL_DAYS,
+        'balance'=>self::BALANCE,
+        'fiscalYear'=>self::FISCAL_YEAR,
+        'remarks'=>self::REMARKS,
+        'createdDt'=>self::CREATED_DT,
+        'modifiedDt'=>self::MODIFIED_DT
     ];
 }
