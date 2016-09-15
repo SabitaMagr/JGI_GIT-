@@ -17,6 +17,7 @@ use Setup\Model\HrEmployees;
 use Setup\Repository\EmployeeRepository;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Form\Annotation\AnnotationBuilder;
+use Zend\Form\Element\Select;
 use Zend\Mvc\Controller\AbstractActionController;
 use LeaveManagement\Model\LeaveAssign as LeaveAssignController;
 
@@ -50,22 +51,33 @@ class leaveAssign extends AbstractActionController
 
     public function assignAction()
     {
-        $this->initializeForm();
-        $id = (int)$this->params()->fromRoute("eid");
+       $empFormElement= new Select();
+        $empFormElement->setName("employee");
+        $empFormElement->setValueOptions(\Application\Helper\EntityHelper::getTableKVList($this->adapter,"HR_EMPLOYEES","EMPLOYEE_ID",["FIRST_NAME","MIDDLE_NAME","LAST_NAME"]));
+        $empFormElement->setAttributes(["id"=>"employeeId","class"=>"full-width select2-offscreen","data-init-plugin"=>"select2"]);
 
-        if ($id === 0) {
-            return $this->redirect()->toRoute("leaveassign");
-        }
-        $employeeRepo = new EmployeeRepository($this->adapter);
-        $employee = $employeeRepo->fetchById($id);
-
-        $assignList = $this->repository->fetchByEmployeeId($id);
-        return Helper::addFlashMessagesToArray($this, [
-            'assignList' => $assignList,
-            'id' => $id,
-            'employee' => $employee
+        return Helper::addFlashMessagesToArray($this,[
+           "employeesFormElement"=>$empFormElement
         ]);
     }
+//    public function assignAction()
+//    {
+//        $this->initializeForm();
+//        $id = (int)$this->params()->fromRoute("eid");
+//
+//        if ($id === 0) {
+//            return $this->redirect()->toRoute("leaveassign");
+//        }
+//        $employeeRepo = new EmployeeRepository($this->adapter);
+//        $employee = $employeeRepo->fetchById($id);
+//
+//        $assignList = $this->repository->fetchByEmployeeId($id);
+//        return Helper::addFlashMessagesToArray($this, [
+//            'assignList' => $assignList,
+//            'id' => $id,
+//            'employee' => $employee
+//        ]);
+//    }
 
     public function addAction()
     {

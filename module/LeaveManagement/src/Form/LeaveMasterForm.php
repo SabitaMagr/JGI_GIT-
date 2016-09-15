@@ -58,10 +58,11 @@ class LeaveMasterForm
 
 
     /**
-     * @Annotation\Type("Zend\Form\Element\Radio")
+     * @Annotation\Type("Zend\Form\Element\Select")
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
-     * @Annotation\Options({"value_options":{"Y":"Yes","N":"No"},"label":"Fiscal Year"})
-     * @Annotation\Attributes({ "id":"fiscalYear"})
+     * @Annotation\Required(true)
+     * @Annotation\Options({"disable_inarray_validator":"true","label":"Fiscal Year"})
+     * @Annotation\Attributes({ "id":"fiscalYear","class":"full-width select2-offscreen","data-init-plugin":"select2"})
      */
     public $fiscalYear;
 

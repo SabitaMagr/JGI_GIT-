@@ -32,7 +32,6 @@ return [
     'HolidayManagement',
     'AttendanceManagement',
     'SelfService'
-    
     // These are various options for the listeners attached to the ModuleManager
     // 'module_listener_options' => [
     //     'module_paths' => [
