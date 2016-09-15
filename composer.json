@@ -42,7 +42,8 @@
             "LeaveManagement\\":"module/LeaveManagement/src/",
             "HolidayManagement\\":"module/HolidayManagement/src/",
             "Setup\\":"module/Setup/src/",
-            "AttendanceManagement\\":"module/AttendanceManagement/src/"
+            "AttendanceManagement\\":"module/AttendanceManagement/src/",
+            "SelfService\\":"module/SelfService/src/"
         }
     },
     "autoload-dev": {

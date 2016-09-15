@@ -18,7 +18,7 @@ return [
                 'type' => Segment::class,
                 'options' => [
                     'route' => '/attendance/shiftassign[/:action[/:id]]',
-                    'constraints' => [
+                    'constants' => [
                         'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
                         'id' => '[0-9]+',
                     ],
@@ -33,7 +33,7 @@ return [
                 'type' => Segment::class,
                 'options' => [
                     'route' => '/attendance/attendancebyhr[/:action[/:id]]',
-                    'constraints' => [
+                    'constants' => [
                         'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
                         'id' => '[0-9]+',
                     ],
