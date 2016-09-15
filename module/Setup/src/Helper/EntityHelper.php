@@ -71,6 +71,7 @@ class EntityHelper
     const HR_EMPLOYEES = 'HR_EMPLOYEES';
     const HR_COUNTRIES = 'HR_COUNTRIES';
     const HR_FILE_TYPE = 'HR_FILE_TYPE';
+    const HR_FISCAL_YEARS="HR_FISCAL_YEARS";
 
 
     public static function getTableKVList(AdapterInterface $adapter, $tableName, $id = null)
@@ -83,7 +84,6 @@ class EntityHelper
             $resultset = $gateway->select();
         } else {
             $resultset = $gateway->select($id);
-
         }
 
         $entitiesArray = array();

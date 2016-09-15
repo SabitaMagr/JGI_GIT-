@@ -1,12 +1,30 @@
+<?php
+/**
+ * Load Javascript files here
+ */
+$this->headScript()->appendFile($this->basePath('plugins/jquery-datatable/media/js/jquery.dataTables.min.js'));
+$this->headScript()->appendFile($this->basePath('plugins/jquery-datatable/extensions/TableTools/js/dataTables.tableTools.min.js'));
+$this->headScript()->appendFile($this->basePath('plugins/jquery-datatable/media/js/dataTables.bootstrap.js'));
+$this->headScript()->appendFile($this->basePath('plugins/jquery-datatable/extensions/Bootstrap/jquery-datatable-bootstrap.js'));
+$this->headScript()->appendFile($this->basePath('plugins/datatables-responsive/js/datatables.responsive.js'));
+$this->headScript()->appendFile($this->basePath('plugins/datatables-responsive/js/lodash.min.js'));
+$this->headScript()->appendFile($this->basePath('js/datatables.js'));
+$this->headScript()->appendFile($this->basePath('js/leaveAssign/assign.js'));
+
+?>
+
 <script>
     document.menu =<?php $menu = ["id" => "menuLeaveManagement", "subMenu" => ["id" => "subMenuLeaveAssign"]];echo json_encode($menu);?>;
+    document.url = '<?= $this->url("webService", ["action" => "index"]) ?>';
 </script>
 
 
 <div class="panel panel-transparent">
     <div class="panel-heading">
         <div class="panel-title">
-            <?= $employee['FIRST_NAME'] ?>
+            <div class="form-group-default-select2">
+                <?php print $this->formElement($employeesFormElement); ?>
+            </div>
         </div>
         <div class="btn-group pull-right m-b-10">
             <a class="btn btn-default" href="<?= $this->url('leaveassign', ['action' => 'add', 'eid' => $id]) ?>">
@@ -25,38 +43,42 @@
         <div class="clearfix"></div>
     </div>
     <div class="panel-body">
-        <div class="table-responsive">
-            <div id="detailedTable_wrapper" class="dataTables_wrapper form-inline no-footer">
-                <table class="table table-hover table-condensed table-detailed dataTable no-footer" id="detailedTable"
-                       role="grid">
+        <div id="tableWithSearch_wrapper" class="dataTables_wrapper form-inline no-footer">
+            <div class="table-responsive">
+                <table class="table table-hover demo-table-search dataTable no-footer" id="tableWithSearch" role="grid"
+                       aria-describedby="tableWithSearch_info">
                     <thead>
                     <tr role="row">
-                        <th class="sorting_disabled" rowspan="1" colspan="1">Leave</th>
-                        <th class="sorting_disabled" rowspan="1" colspan="1">Previous Year Bal</th>
-                        <th class="sorting_disabled" rowspan="1" colspan="1">Total Days</th>
-                        <th class="sorting_disabled" rowspan="1" colspan="1">Balance</th>
-                        <th class="sorting_disabled" rowspan="1" colspan="1">Fiscal Year</th>
-                        <th class="sorting_disabled" rowspan="1" colspan="1">Action</th>
+                        <th aria-label="Title: activate to sort column ascending" aria-sort="descending" colspan="1"
+                            rowspan="1" aria-controls="basicTable" tabindex="0" class="sorting_desc">
+                            Leave
+                        </th>
+                        <th aria-label="Title: activate to sort column ascending" aria-sort="descending" colspan="1"
+                            rowspan="1" aria-controls="basicTable" tabindex="0" class="sorting_desc">
+                            Prev Year Bal
+                        </th>
+                        <th aria-label="Title: activate to sort column ascending" aria-sort="descending" colspan="1"
+                            rowspan="1" aria-controls="basicTable" tabindex="0" class="sorting_desc">
+                            Total Days
+                        </th>
+                        <th aria-label="Title: activate to sort column ascending" aria-sort="descending" colspan="1"
+                            rowspan="1" aria-controls="basicTable" tabindex="0" class="sorting_desc">
+                            Balance
+                        </th>
+                        <th aria-label="Title: activate to sort column ascending" aria-sort="descending" colspan="1"
+                            rowspan="1" aria-controls="basicTable" tabindex="0" class="sorting_desc">
+                            Fiscal Year
+                        </th>
+                        <th aria-label="Title: activate to sort column ascending" aria-sort="descending" colspan="1"
+                            rowspan="1" aria-controls="basicTable" tabindex="0" class="sorting_desc">
+                            Action
+                        </th>
                     </tr>
                     </thead>
-                    <tbody>
-                    <?php foreach ($assignList as $index => $assign) : ?>
-                        <tr role="row" class="<?= ($index % 2 == 0) ? 'odd' : 'even' ?>">
-                            <td class="v-align-middle semi-bold"><?= $assign['LEAVE_ENAME'] ?></td>
-                            <td class="v-align-middle"><?= $assign['PREVIOUS_YEAR_BAL'] ?></td>
-                            <td class="v-align-middle semi-bold"><?= $assign['TOTAL_DAYS'] ?></td>
-                            <td class="v-align-middle"><?= $assign['BALANCE'] ?></td>
-                            <td class="v-align-middle semi-bold"><?= $assign['FISCAL_YEAR'] ?></td>
-                            <td class="v-align-middle">
-                                <a href="<?= $this->url("leaveassign", ["action" => "edit",'eid'=>$id, "id" => $assign['EMPLOYEE_LEAVE_ASSIGN_ID']]) ?>">Edit</a>
-                                /
-                                <a href="<?= $this->url("leaveassign", ["action" => "delete", "eid"=>$id,"id" => $assign['EMPLOYEE_LEAVE_ASSIGN_ID']]) ?>">Delete</a>
-                            </td>
-                        </tr>
-                    <?php endforeach; ?>
-                    </tbody>
-                </table>
+                    </table>
+                </div>
             </div>
         </div>
-    </div>
+
+
 </div>

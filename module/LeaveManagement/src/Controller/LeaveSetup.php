@@ -2,6 +2,7 @@
 
 namespace LeaveManagement\Controller;
 
+use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
 use LeaveManagement\Form\LeaveMasterForm;
 use LeaveManagement\Model\LeaveMaster;
@@ -65,7 +66,8 @@ class LeaveSetup extends AbstractActionController
             $this,
             [
                 'form' => $this->form,
-                'customRenderer' => Helper::renderCustomView()
+                'customRenderer' => Helper::renderCustomView(),
+                'fiscalYears'=>EntityHelper::getTableKVList($this->adapter,"HR_FISCAL_YEARS","FISCAL_YEAR_ID",["START_DATE","END_DATE"],null,"|")
             ]
         )
         );
@@ -102,7 +104,8 @@ class LeaveSetup extends AbstractActionController
             [
                 'form' => $this->form,
                 'id' => $id,
-                'customRenderer' => Helper::renderCustomView()
+                'customRenderer' => Helper::renderCustomView(),
+                'fiscalYears'=>EntityHelper::getTableKVList($this->adapter,"HR_FISCAL_YEARS","FISCAL_YEAR_ID",["START_DATE","END_DATE"],null,"|")
             ]
         )
         );

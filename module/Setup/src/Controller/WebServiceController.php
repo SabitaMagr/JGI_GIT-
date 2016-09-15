@@ -37,6 +37,18 @@ class WebServiceController extends AbstractActionController
                         "data" => $tempArray
                     ];
                     break;
+                case "assignList":
+                    $assignRepo = new LeaveAssignRepository($this->adapter);
+                    $assignList = $assignRepo->fetchByEmployeeId($postedData->id);
+                    $tempArray = [];
+                    foreach ($assignList as $item) {
+                        array_push($tempArray, $item);
+                    }
+                    $responseData = [
+                        "success" => true,
+                        "data" => $tempArray
+                    ];
+                    break;
                 default:
                     $responseData = [
                         "success" => false
