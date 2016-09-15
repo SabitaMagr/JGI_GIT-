@@ -1,11 +1,11 @@
 <?php
 
-namespace Setup\Repository;
+namespace AttendanceManagement\Repository;
 
 use Application\Helper\Helper;
 use Application\Model\Model;
 use Application\Repository\RepositoryInterface;
-use Setup\Model\Shift;
+use AttendanceManagement\Model\ShiftSetup;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Sql\Sql;
 use Zend\Db\TableGateway\TableGateway;
@@ -17,7 +17,7 @@ class ShiftRepository implements RepositoryInterface
     
     public function __construct(AdapterInterface $adapter)
     {
-        $this->tableGateway = new TableGateway(Shift::TABLE_NAME,$adapter);
+        $this->tableGateway = new TableGateway(ShiftSetup::TABLE_NAME,$adapter);
         $this->adapter=$adapter;
     }
 
@@ -30,10 +30,10 @@ class ShiftRepository implements RepositoryInterface
     public function edit(Model $model,$id)
     {
         $array = $model->getArrayCopyForDB();
-        unset($array[Shift::SHIFT_ID]);
-        unset($array[Shift::CREATED_DT]);
-        unset($array[Shift::STATUS]);
-        $this->tableGateway->update($array,[Shift::SHIFT_ID=>$id]);
+        unset($array[ShiftSetup::SHIFT_ID]);
+        unset($array[ShiftSetup::CREATED_DT]);
+        unset($array[ShiftSetup::STATUS]);
+        $this->tableGateway->update($array,[ShiftSetup::SHIFT_ID=>$id]);
     }
 
     public function fetchAll()
@@ -41,9 +41,9 @@ class ShiftRepository implements RepositoryInterface
 //        return $this->tableGateway->select();
         $sql = new Sql($this->adapter);
         $select = $sql->select();
-        $select->from(Shift::TABLE_NAME);
-        $select->columns(Helper::convertColumnDateFormat($this->adapter, new Shift(), ['startDate','endDate'],['startTime','endTime']),false);
-        $select->where([Shift::STATUS=>'E']);
+        $select->from(ShiftSetup::TABLE_NAME);
+        $select->columns(Helper::convertColumnDateFormat($this->adapter, new ShiftSetup(), ['startDate','endDate'],['startTime','endTime']),false);
+        $select->where([ShiftSetup::STATUS=>'E']);
         $statement = $sql->prepareStatementForSqlObject($select);
 
         $result = $statement->execute();
@@ -54,9 +54,9 @@ class ShiftRepository implements RepositoryInterface
     {
         $sql = new Sql($this->adapter);
         $select = $sql->select();
-        $select->from(Shift::TABLE_NAME);
-        $select->columns(Helper::convertColumnDateFormat($this->adapter, new Shift(), ['startDate','endDate'],['startTime','endTime','halfTime','halfDayEndTime']),false);
-        $select->where([Shift::SHIFT_ID=>$id]);
+        $select->from(ShiftSetup::TABLE_NAME);
+        $select->columns(Helper::convertColumnDateFormat($this->adapter, new ShiftSetup(), ['startDate','endDate'],['startTime','endTime','halfTime','halfDayEndTime']),false);
+        $select->where([ShiftSetup::SHIFT_ID=>$id]);
         $statement = $sql->prepareStatementForSqlObject($select);
 
         $result = $statement->execute();
@@ -65,12 +65,12 @@ class ShiftRepository implements RepositoryInterface
     }
     public function fetchActiveRecord()
     {
-         return  $rowset= $this->tableGateway->select([Shift::STATUS=>'E']);
+         return  $rowset= $this->tableGateway->select([ShiftSetup::STATUS=>'E']);
     }
 
     public function delete($id)
     {
-        $this->tableGateway->update([Shift::STATUS=>'D'],[Shift::SHIFT_ID=>$id]);
+        $this->tableGateway->update([ShiftSetup::STATUS=>'D'],[ShiftSetup::SHIFT_ID=>$id]);
 
     }
 }

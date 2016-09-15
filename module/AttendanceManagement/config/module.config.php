@@ -28,12 +28,44 @@ return [
                     ]
                 ],
             ],
+
+            'attendancebyhr' => [
+                'type' => Segment::class,
+                'options' => [
+                    'route' => '/attendance/attendancebyhr[/:action[/:id]]',
+                    'constraints' => [
+                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'id' => '[0-9]+',
+                    ],
+                    'defaults' => [
+                        'controller' => Controller\AttendanceByHr::class,
+                        'action' => 'index',
+                    ]
+                ],
+            ],
+
+            'shiftsetup' => [
+                'type' => Segment::class,
+                'options' => [
+                    'route' => '/attendance/shiftsetup[/:action[/:id]]',
+                    'constants' => [
+                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'id' => '[0-9]+',
+                    ],
+                    'defaults' => [
+                        'controller' => Controller\ShiftSetup::class,
+                        'action' => 'index',
+                    ]
+                ],
+            ],
         ],
     ],
 
     'controllers' => [
         'factories' => [
             Controller\ShiftAssign::class=>ControllerFactory::class,
+            Controller\AttendanceByHr::class=>ControllerFactory::class,
+            Controller\ShiftSetup::class=>ControllerFactory::class,
         ],
 
     ],

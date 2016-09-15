@@ -10,7 +10,7 @@ namespace AttendanceManagement\Controller;
 
 
 use Zend\Authentication\Adapter\AdapterInterface;
-use Zend\Mvc\Console\View\ViewModel;
+use Zend\View\Model\ViewModel;
 use Zend\Mvc\Controller\AbstractActionController;
 
 class ShiftAssign extends AbstractActionController {

@@ -1,10 +1,10 @@
 <?php
-namespace Setup\Model;
+namespace AttendanceManagement\Model;
 
 
 use Application\Model\Model;
 
-class Shift extends Model
+class ShiftSetup extends Model
 {
     const TABLE_NAME="HR_SHIFTS";
 

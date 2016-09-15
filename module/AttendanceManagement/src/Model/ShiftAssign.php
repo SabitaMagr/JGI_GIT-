@@ -12,6 +12,7 @@ use Application\Model\Model;
 
 class ShiftAssign extends  Model {
     const TABLE_NAME="EMPLOYEE_SHIFT_ASSIGN";
+
     const SHIFT_ASSIGN_ID="SHIFT_ASSIGN_ID";
     const EMPLOYEE_CODE="EMPLOYEE_CODE";
     const FROM_DATE="FROM_DATE";

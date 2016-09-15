@@ -6,7 +6,7 @@ $this->headScript()->appendFile($this->basePath('plugins/bootstrap-timepicker/bo
 $this->headScript()->appendFile($this->basePath('js/shift/add.js'));
 ?>
 <script>
-    document.menu =<?php $menu = ["id" => "menuSetup", "subMenu" => ["id" => "subMenuShift"]];echo json_encode($menu);?>;
+    document.menu =<?php $menu = ["id" => "menuAttendanceManagement", "subMenu" => ["id" => "subMenuShiftSetup"]];echo json_encode($menu);?>;
 </script>
 
 <?php
@@ -58,7 +58,7 @@ if ($this->messages) {
 
 <?php
 
-$form->setAttribute('action', $this->url('shift', ['action' => 'add']));
+$form->setAttribute('action', $this->url('shiftsetup', ['action' => 'add']));
 $form->prepare();
 print $this->form()->openTag($form);
 ?>
