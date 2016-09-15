@@ -88,7 +88,8 @@ if ($this->messages) {
                         <tr role="row">
                             <td class="">
                                 <p>
-                                    <?php print $this->escapeHtml($attendances['FIRST_NAME']); ?>
+                                    <?php
+                                    print $this->escapeHtml($attendances['FIRST_NAME']." ".$attendances['MIDDLE_NAME']." ".$attendances['LAST_NAME']); ?>
                                 </p>
                             </td>
                             <td class="">

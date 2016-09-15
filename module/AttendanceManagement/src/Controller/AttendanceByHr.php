@@ -63,7 +63,7 @@ class AttendanceByHr extends  AbstractActionController {
         return Helper::addFlashMessagesToArray($this,
             [
                 'form' => $this->form,
-                'employees' => EntityHelper::getTableKVList($this->adapter, EntityHelper::HR_EMPLOYEES)
+                'employees' => \Application\Helper\EntityHelper::getTableKVList($this->adapter,"HR_EMPLOYEES","EMPLOYEE_ID",["FIRST_NAME","MIDDLE_NAME","LAST_NAME"])
             ]
         );
 
@@ -73,7 +73,7 @@ class AttendanceByHr extends  AbstractActionController {
         $this->initializeForm();
         $id = (int)$this->params()->fromRoute("id");
         if ($id === 0) {
-            return $this->redirect()->toRoute("shift");
+            return $this->redirect()->toRoute("attendancebyhr");
         }
 
         $request = $this->getRequest();
@@ -97,7 +97,7 @@ class AttendanceByHr extends  AbstractActionController {
             [
                 'form' => $this->form,
                 'id'=>$id,
-                'employees' => EntityHelper::getTableKVList($this->adapter, EntityHelper::HR_EMPLOYEES)
+                'employees' => \Application\Helper\EntityHelper::getTableKVList($this->adapter,"HR_EMPLOYEES","EMPLOYEE_ID",["FIRST_NAME","MIDDLE_NAME","LAST_NAME"])
             ]
         );
     }

@@ -22,11 +22,13 @@ class MyAttendance extends  AbstractActionController
     private $adapter;
     private $repository;
     private $form;
+    private $employee_id;
 
     public function __construct(AdapterInterface $adapter)
     {
         $this->adapter = $adapter;
         $this->repository = new AttendanceByHrRepository($adapter);
+        $this->employee_id=1;
     }
 
     public function initializeForm()
@@ -38,7 +40,7 @@ class MyAttendance extends  AbstractActionController
 
     public function indexAction()
     {
-        $attendanceList = $this->repository->fetchAll();
+        $attendanceList = $this->repository->fetchByEmpId($this->employee_id);
         return Helper::addFlashMessagesToArray($this, ['attendanceList' => $attendanceList]);
     }
 
@@ -51,19 +53,20 @@ class MyAttendance extends  AbstractActionController
             if ($this->form->isValid()) {
                 $attendanceByHrModel = new AttendanceByHrModel();
                 $attendanceByHrModel->exchangeArrayFromForm($this->form->getData());
+                $attendanceByHrModel->employeeId = $this->employee_id;
                 $attendanceByHrModel->attendanceDt = Helper::getExpressionDate($attendanceByHrModel->attendanceDt);
                 $attendanceByHrModel->id = ((int)Helper::getMaxId($this->adapter, AttendanceByHrModel::TABLE_NAME, "ID")) + 1;
                 $attendanceByHrModel->inTime = Helper::getExpressionTime($attendanceByHrModel->inTime);
                 $attendanceByHrModel->outTime = Helper::getExpressionTime($attendanceByHrModel->outTime);
+
                 $this->repository->add($attendanceByHrModel);
                 $this->flashmessenger()->addMessage("Attendance Submitted Successfully!!");
-                return $this->redirect()->toRoute("attendancebyhr");
+                return $this->redirect()->toRoute("myattendance");
             }
         }
         return Helper::addFlashMessagesToArray($this,
             [
-                'form' => $this->form,
-                'employees' => EntityHelper::getTableKVList($this->adapter, EntityHelper::HR_EMPLOYEES)
+                'form' => $this->form
             ]
         );
     }
@@ -73,7 +76,7 @@ class MyAttendance extends  AbstractActionController
         $this->initializeForm();
         $id = (int)$this->params()->fromRoute("id");
         if ($id === 0) {
-            return $this->redirect()->toRoute("shift");
+            return $this->redirect()->toRoute("myattendance");
         }
 
         $request = $this->getRequest();
@@ -90,14 +93,13 @@ class MyAttendance extends  AbstractActionController
                 $attendanceByHrModel->outTime = Helper::getExpressionTime($attendanceByHrModel->outTime);
                 $this->repository->edit($attendanceByHrModel, $id);
                 $this->flashmessenger()->addMessage("Attendance Updated Successfully!!");
-                return $this->redirect()->toRoute("attendancebyhr");
+                return $this->redirect()->toRoute("myattendance");
             }
         }
         return Helper::addFlashMessagesToArray($this,
             [
                 'form' => $this->form,
                 'id' => $id,
-                'employees' => EntityHelper::getTableKVList($this->adapter, EntityHelper::HR_EMPLOYEES)
             ]
         );
     }

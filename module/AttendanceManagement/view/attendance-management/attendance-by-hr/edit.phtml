@@ -45,7 +45,7 @@ print $this->form()->openTag($form);
                 <h4>Attendance Entry</h4>
             </div>
             <div class="panel-body " >
-                <div class="form-group form-group-default <?= empty($employeeId->getMessages()) ? "" : "error" ?>">
+                <div class="form-group form-group-default form-group-default-select2 <?= empty($employeeId->getMessages()) ? "" : "error" ?>">
                     <?php print $this->formLabel($employeeId); ?>
                     <?php print $this->formElement($employeeId); ?>
                 </div>
