@@ -1,6 +1,6 @@
 <?php
 
-namespace Setup\Controller;
+namespace AttendanceManagement\Controller;
 
 /**
  * Master Setup for Shift
@@ -13,16 +13,16 @@ namespace Setup\Controller;
  */
 
 use Application\Helper\Helper;
-use Setup\Form\ShiftForm;
-use Setup\Model\Shift;
-use Setup\Repository\ShiftRepository;
+use AttendanceManagement\Form\ShiftForm;
+use AttendanceManagement\Model\ShiftSetup as Shift;
+use AttendanceManagement\Repository\ShiftRepository;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 use ZF\DevelopmentMode\Help;
 
-class ShiftController extends AbstractActionController
+class ShiftSetup extends AbstractActionController
 {
 
     private $repository;
@@ -74,7 +74,7 @@ class ShiftController extends AbstractActionController
                 $shift->status='E';
                 $this->repository->add($shift);
                 $this->flashmessenger()->addMessage("Shift Successfully added!!!");
-                return $this->redirect()->toRoute("shift");
+                return $this->redirect()->toRoute("shiftsetup");
             }
         }
         return new ViewModel(Helper::addFlashMessagesToArray(
@@ -93,7 +93,7 @@ class ShiftController extends AbstractActionController
         $id = (int)$this->params()->fromRoute("id");
 
         if ($id === 0) {
-            return $this->redirect()->toRoute("shift");
+            return $this->redirect()->toRoute("shiftsetup");
         }
 
         $request = $this->getRequest();
@@ -118,7 +118,7 @@ class ShiftController extends AbstractActionController
 
                 $this->repository->edit($shift, $id);
                 $this->flashmessenger()->addMessage("Shift Successfuly Updated!!!");
-                return $this->redirect()->toRoute("shift");
+                return $this->redirect()->toRoute("shiftsetup");
             }
         }
         return new ViewModel(Helper::addFlashMessagesToArray(
@@ -136,11 +136,11 @@ class ShiftController extends AbstractActionController
     {
         $id = (int)$this->params()->fromRoute("id");
         if (!$id) {
-            return $this->redirect()->toRoute('shift');
+            return $this->redirect()->toRoute('shiftsetup');
         }
         $this->repository->delete($id);
         $this->flashmessenger()->addMessage("Shift Successfully Deleted!!!");
-        return $this->redirect()->toRoute('shift');
+        return $this->redirect()->toRoute('shiftsetup');
     }
 }
 

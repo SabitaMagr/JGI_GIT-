@@ -11,7 +11,7 @@ $this->headScript()->appendFile($this->basePath('plugins/datatables-responsive/j
 $this->headScript()->appendFile($this->basePath('js/datatables.js'));
 ?>
 <script>
-    document.menu =<?php $menu = ["id" => "menuSetup", "subMenu" => ["id" => "subMenuShift"]];echo json_encode($menu);?>;
+    document.menu =<?php $menu = ["id" => "menuAttendanceManagement", "subMenu" => ["id" => "subMenuShiftSetup"]];echo json_encode($menu);?>;
 </script>
 
 <?php
@@ -27,7 +27,7 @@ if ($this->messages) {
 <div class="panel panel-transparent">
     <div class="panel-heading">
         <div class="btn-group pull-right m-b-10">
-            <a class="btn btn-default" href="<?= $this->url('shift', ['action' => 'add']) ?>">
+            <a class="btn btn-default" href="<?= $this->url('shiftsetup', ['action' => 'add']) ?>">
                 Add new
             </a>
             <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
@@ -97,8 +97,8 @@ if ($this->messages) {
                                 </p>
                             </td>
                             <td class="v-align-middle sorting_1">
-                                <a href="<?= $this->url("shift", ["action" => "edit", "id" => $shift['SHIFT_ID']]) ?>">Edit</a> /
-                                <a href="<?= $this->url("shift", ["action" => "delete", "id" => $shift['SHIFT_ID']]); ?>"
+                                <a href="<?= $this->url("shiftsetup", ["action" => "edit", "id" => $shift['SHIFT_ID']]) ?>">Edit</a> /
+                                <a href="<?= $this->url("shiftsetup", ["action" => "delete", "id" => $shift['SHIFT_ID']]); ?>"
                                    onclick="return confirm('Are you sure you want to delete this item?');">Delete</a>
                             </td>
                         </tr>

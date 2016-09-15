@@ -82,10 +82,6 @@
                         <a href="<?= $this->url("serviceType", ["action" => "index"]) ?>">Service Type</a>
                         <span class="icon-thumbnail">ST</span>
                     </li>
-                    <li id="subMenuShift" class="">
-                        <a href="<?= $this->url("shift", ["action" => "index"]) ?>">Shift</a>
-                        <span class="icon-thumbnail">SH</span>
-                    </li>
 
                 </ul>
             </li>
@@ -130,6 +126,10 @@
                     <span class=" arrow"></span></a>
                 <span class="icon-thumbnail"><i class="pg-form"></i></span>
                 <ul class="sub-menu">
+                    <li id="subMenuShiftSetup" class="">
+                        <a href="<?= $this->url("shiftsetup", ["action" => "index"]) ?>">Shift</a>
+                        <span class="icon-thumbnail">SH</span>
+                    </li>
                     <li id="subMenuShiftAssign" class="">
                         <a href="<?= $this->url("shiftassign",["action"=>"index"]); ?>">Shift Assign</a>
                         <span class="icon-thumbnail">SA</span>

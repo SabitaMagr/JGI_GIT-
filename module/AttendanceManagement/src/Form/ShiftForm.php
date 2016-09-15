@@ -1,5 +1,5 @@
 <?php
-namespace Setup\Form;
+namespace AttendanceManagement\Form;
 
 use Zend\Form\Annotation;
 

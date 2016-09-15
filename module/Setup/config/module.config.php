@@ -133,21 +133,6 @@ return [
                 ],
             ],
 
-            'shift' => [
-                'type' => segment::class,
-                'options' => [
-                    'route' => '/setup/shift[/:action[/:id]]',
-                    'constants' => [
-                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
-                        'id' => '[0-9]+',
-                    ],
-                    'defaults' => [
-                        'controller' => Controller\ShiftController::class,
-                        'action' => 'index',
-                    ]
-                ],
-            ],
-
             'webService' => [
                 'type' => segment::class,
                 'options' => [
@@ -188,8 +173,6 @@ return [
             Controller\DepartmentController::class => ControllerFactory::class,
             Controller\PositionController::class => ControllerFactory::class,
             Controller\ServiceTypeController::class => ControllerFactory::class,
-
-            Controller\ShiftController::class => ControllerFactory::class,
             Controller\EmpCurrentPostingController::class => ControllerFactory::class,
             Controller\JobHistoryController::class => ControllerFactory::class,
             Controller\WebServiceController::class => ControllerFactory::class,
