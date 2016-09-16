@@ -27,7 +27,7 @@ class HrEmployeesFormTabFive extends Model
     public $fileTypeCode;
 
     /**
-     * @Annotation\Required(true)
+     * @Annotation\Required(false)
      * @Annotation\Type("Zend\Form\Element\File")
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"File Path"})

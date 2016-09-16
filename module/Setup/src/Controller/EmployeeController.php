@@ -26,7 +26,7 @@ use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\Hydrator;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
-
+use Application\Helper\EntityHelper as ApplicationHelper;
 
 class EmployeeController extends AbstractActionController
 {
@@ -34,7 +34,7 @@ class EmployeeController extends AbstractActionController
     private $form;
     private $repository;
     private $employeeFileRepo;
-    const UPLOAD_DIR = "/var/www/html/neo/neo-hris/public/uploads/";
+    const UPLOAD_DIR = "/var/www/html/neo-hris/public/uploads/";
 
     public function __construct(AdapterInterface $adapter)
     {
@@ -120,7 +120,12 @@ class EmployeeController extends AbstractActionController
             "religions" => EntityHelper::getTableKVList($this->adapter, EntityHelper::HR_RELIGIONS),
             "companies" => EntityHelper::getTableKVList($this->adapter, EntityHelper::HR_COMPANY),
             "countries" => EntityHelper::getTableKVList($this->adapter, EntityHelper::HR_COUNTRIES),
-            'filetypes'=>EntityHelper::getTableKVList($this->adapter,EntityHelper::HR_FILE_TYPE)
+            'filetypes'=>EntityHelper::getTableKVList($this->adapter,EntityHelper::HR_FILE_TYPE),
+            'serviceTypes'=>ApplicationHelper::getTableKVList($this->adapter,"HR_SERVICE_TYPES","SERVICE_TYPE_ID",["SERVICE_TYPE_NAME"]),
+            'positions'=>ApplicationHelper::getTableKVList($this->adapter,"HR_POSITIONS","POSITION_ID",["POSITION_NAME"]),
+            'designations'=>ApplicationHelper::getTableKVList($this->adapter,"HR_DESIGNATIONS","DESIGNATION_ID",["DESIGNATION_TITLE"]),
+            'departments'=>ApplicationHelper::getTableKVList($this->adapter,"HR_DEPARTMENTS","DEPARTMENT_ID",["DEPARTMENT_NAME"]),
+            'branches'=>ApplicationHelper::getTableKVList($this->adapter,"HR_BRANCHES","BRANCH_ID",["BRANCH_NAME"])
         ]);
 
 
@@ -267,7 +272,12 @@ class EmployeeController extends AbstractActionController
             "religions" => EntityHelper::getTableKVList($this->adapter, EntityHelper::HR_RELIGIONS),
             "companies" => EntityHelper::getTableKVList($this->adapter, EntityHelper::HR_COMPANY),
             "countries" => EntityHelper::getTableKVList($this->adapter, EntityHelper::HR_COUNTRIES),
-            'filetypes'=>EntityHelper::getTableKVList($this->adapter,EntityHelper::HR_FILE_TYPE)
+            'filetypes'=>EntityHelper::getTableKVList($this->adapter,EntityHelper::HR_FILE_TYPE),
+            'serviceTypes'=>ApplicationHelper::getTableKVList($this->adapter,"HR_SERVICE_TYPES","SERVICE_TYPE_ID",["SERVICE_TYPE_NAME"]),
+            'positions'=>ApplicationHelper::getTableKVList($this->adapter,"HR_POSITIONS","POSITION_ID",["POSITION_NAME"]),
+            'designations'=>ApplicationHelper::getTableKVList($this->adapter,"HR_DESIGNATIONS","DESIGNATION_ID",["DESIGNATION_TITLE"]),
+            'departments'=>ApplicationHelper::getTableKVList($this->adapter,"HR_DEPARTMENTS","DEPARTMENT_ID",["DEPARTMENT_NAME"]),
+            'branches'=>ApplicationHelper::getTableKVList($this->adapter,"HR_BRANCHES","BRANCH_ID",["BRANCH_NAME"])
         ]);
 
 

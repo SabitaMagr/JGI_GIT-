@@ -109,6 +109,21 @@ $joinDate = $formFour->get('joinDate');
 $salary = $formFour->get('salary');
 $salaryPf = $formFour->get('salaryPf');
 
+$serviceTypeId = $formFour->get('serviceTypeId');
+$serviceTypeId->setValueOptions($serviceTypes);
+
+$positionId = $formFour->get('positionId');
+$positionId->setValueOptions($positions);
+
+$designationId = $formFour->get('designationId');
+$designationId->setValueOptions($designations);
+
+$departmentId = $formFour->get('departmentId');
+$departmentId->setValueOptions($departments);
+
+$branchId = $formFour->get('branchId');
+$branchId->setValueOptions($branches);
+
 
 $formFive->setAttribute('id','form5');
 $fileTypeCode=$formFive->get('fileTypeCode');
@@ -691,8 +706,34 @@ if ($this->messages) {
                     </div>
                     <?php print $this->formElementErrors()->render($salaryPf, ['class' => 'help-block error']); ?>
 
+                    <div class="form-group form-group-default form-group-default-select2 <?= empty($serviceTypeId->getMessages()) ? "" : "error" ?>">
+                        <?php print $this->formLabel($serviceTypeId); ?>
+                        <?php print $this->formElement($serviceTypeId); ?>
+                    </div>
+                    <?php print $this->formElementErrors()->render($serviceTypeId, ['class' => 'help-block error']); ?>
+
                 </div>
-                <div class="col-sm-6" style="padding-left:5px;">
+                <div class="col-sm-6">
+                    <div class="form-group form-group-default form-group-default-select2 <?= empty($positionId->getMessages()) ? "" : "error" ?>">
+                        <?php print $this->formLabel($positionId); ?>
+                        <?php print $this->formElement($positionId); ?>
+                    </div>
+                    <?php print $this->formElementErrors()->render($positionId, ['class' => 'help-block error']); ?>
+                    <div class="form-group form-group-default form-group-default-select2 <?= empty($designationId->getMessages()) ? "" : "error" ?>">
+                        <?php print $this->formLabel($designationId); ?>
+                        <?php print $this->formElement($designationId); ?>
+                    </div>
+                    <?php print $this->formElementErrors()->render($designationId, ['class' => 'help-block error']); ?>
+                    <div class="form-group form-group-default form-group-default-select2 <?= empty($departmentId->getMessages()) ? "" : "error" ?>">
+                        <?php print $this->formLabel($departmentId); ?>
+                        <?php print $this->formElement($departmentId); ?>
+                    </div>
+                    <?php print $this->formElementErrors()->render($departmentId, ['class' => 'help-block error']); ?>
+                    <div class="form-group form-group-default form-group-default-select2 <?= empty($branchId->getMessages()) ? "" : "error" ?>">
+                        <?php print $this->formLabel($branchId); ?>
+                        <?php print $this->formElement($branchId); ?>
+                    </div>
+                    <?php print $this->formElementErrors()->render($branchId, ['class' => 'help-block error']); ?>
 
                 </div>
             </div>

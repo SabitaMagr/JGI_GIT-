@@ -5,7 +5,6 @@ $this->headScript()->appendFile($this->basePath('js/attendance/add.js'));
 $form->setAttribute('role', 'form');
 $form->setAttribute('class', 'attendanceByHr-form');
 
-$employeeId = $form->get('employeeId');
 $attendanceDt = $form->get('attendanceDt');
 $inTime = $form->get('inTime');
 $outTime = $form->get('outTime');
@@ -13,12 +12,10 @@ $inRemarks = $form->get('inRemarks');
 $outRemarks = $form->get('outRemarks');
 $totalHour = $form->get('totalHour');
 
-$employeeId->setValueOptions($employees);
-
 $submit = $form->get('submit');
 $submit->setAttribute('value','ADD');
 
-$form->setAttribute('action', $this->url('attendancebyhr', ['action' => 'add']));
+$form->setAttribute('action', $this->url('myattendance', ['action' => 'add']));
 
 if ($this->messages) {
     print '<ul class="help-block bg-danger" style="background:#f3e250;">';
@@ -33,7 +30,7 @@ print $this->form()->openTag($form);
 
 ?>
     <script>
-        document.menu=<?php $menu = ["id" => "menuAttendanceManagement","subMenu"=>["id"=>"subMenuAttendanceByHr"]];echo json_encode($menu);?>;
+        document.menu =<?php $menu = ["id" => "menuSelfService", "subMenu" => ["id" => "subMenuMyAttendance"]];echo json_encode($menu);?>;
     </script>
 
     <div class="row">
@@ -45,11 +42,6 @@ print $this->form()->openTag($form);
                 <h4>Attendance Entry</h4>
             </div>
             <div class="panel-body " >
-                <div class="form-group form-group-default form-group-default-select2 <?= empty($employeeId->getMessages()) ? "" : "error" ?> ">
-                    <?php print $this->formLabel($employeeId); ?>
-                    <?php print $this->formElement($employeeId); ?>
-                </div>
-                <?php print $this->formElementErrors()->render($employeeId, ['class' => 'help-block error']); ?>
 
                 <div class="form-group form-group-default <?= empty($attendanceDt->getMessages()) ? "" : "error" ?>">
                     <?php print $this->formLabel($attendanceDt); ?>
