@@ -48,12 +48,19 @@ class HolidaySetup extends AbstractActionController
             if ($this->form->isValid()) {
                 $holiday = new Holiday();
                 $holiday->exchangeArrayFromForm($this->form->getData());
-                $holiday->holidayId = ((int)Helper::getMaxId($this->adapter, "HR_HOLIDAY_MASTER_SETUP", "HOLIDAY_ID")) + 1;
                 $holiday->createdDt = Helper::getcurrentExpressionDate();
-
                 $holiday->status = 'E';
                 $holiday->fiscalYear=(int) Helper::getMaxId($this->adapter,"HR_FISCAL_YEARS","FISCAL_YEAR_ID");
-                $this->repository->add($holiday);
+                $branches = $holiday->branchId;
+                unset($holiday->branchId);
+
+                foreach($branches as $branchId){
+                    $holiday->holidayId = ((int)Helper::getMaxId($this->adapter,'HR_HOLIDAY_MASTER_SETUP', 'HOLIDAY_ID')) + 1;
+                    $holiday->branchId = $branchId;
+                    $this->repository->add($holiday);
+
+                    $this->repository->add($holiday);
+                }
                 $this->flashmessenger()->addMessage("Holiday Successfully added!!!");
                 return $this->redirect()->toRoute("holidaysetup");
             }

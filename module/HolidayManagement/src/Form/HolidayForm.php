@@ -31,9 +31,9 @@ class HolidayForm
     /**
      * @Annotation\Type("Zend\Form\Element\Select")
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
-     * @Annotation\Required(true)
+     * @Annotation\Required(false)
      * @Annotation\Options({"disable_inarray_validator":"true","label":"Branch"})
-     * @Annotation\Attributes({ "id":"branchId","class":"full-width select2-offscreen","data-init-plugin":"select2"})
+     * @Annotation\Attributes({ "id":"branchId","class":"full-width","data-init-plugin"="select2", "multiple":"multiple"})
      */
     public $branchId;
 
