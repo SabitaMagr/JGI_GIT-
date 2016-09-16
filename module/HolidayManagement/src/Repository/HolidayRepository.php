@@ -9,15 +9,18 @@ use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Sql\Expression;
 use Zend\Db\Sql\Sql;
 use Zend\Db\TableGateway\TableGateway;
+use HolidayManagement\Model\HolidayBranch;
 
 class HolidayRepository implements RepositoryInterface
 {
     private $tableGateway;
+    private $tableGatewayHolidayBranch;
     private $adapter;
 
     public function __construct(AdapterInterface $adapter)
     {
         $this->tableGateway = new TableGateway(Holiday::TABLE_NAME, $adapter);
+        $this->tableGatewayHolidayBranch = new TableGateway(HolidayBranch::TABLE_NAME,$adapter);
         $this->adapter = $adapter;
     }
 
@@ -26,6 +29,10 @@ class HolidayRepository implements RepositoryInterface
         $this->tableGateway->insert($model->getArrayCopyForDB());
     }
 
+    public function addHolidayBranch(Model $model)
+    {
+        $this->tableGatewayHolidayBranch->insert($model->getArrayCopyForDB());
+    }
 
     public function edit(Model $model, $id)
     {
@@ -37,9 +44,6 @@ class HolidayRepository implements RepositoryInterface
 
     public function fetchAll()
     {
-//        return $this->tableGateway->select([
-//            Holiday::STATUS => 'E'
-//        ]);
 
         $sql = new Sql($this->adapter);
         $select = $sql->select();
@@ -55,7 +59,9 @@ class HolidayRepository implements RepositoryInterface
             ], true);
         $select->from(['H' => Holiday::TABLE_NAME])
             ->join(['G' => 'HR_GENDERS'], 'H.GENDER_ID=G.GENDER_ID', ['GENDER_NAME'])
-            ->join(['B' => "HR_BRANCHES"], 'H.BRANCH_ID=B.BRANCH_ID', ['BRANCH_NAME']);
+            ->join(['HB'=> 'HR_HOLIDAY_BRANCH'],'H.HOLIDAY_ID=HB.HOLIDAY_ID',['BRANCH_ID'])
+            ->join(['B' => "HR_BRANCHES"], 'HB.BRANCH_ID=B.BRANCH_ID', ['BRANCH_NAME']);
+
         $select->where(["H.STATUS='E'"]);
         $statement = $sql->prepareStatementForSqlObject($select);
         $result = $statement->execute();

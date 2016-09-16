@@ -11,6 +11,7 @@ use Zend\Db\Adapter\AdapterInterface;
 use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
+use HolidayManagement\Model\HolidayBranch;
 
 class HolidaySetup extends AbstractActionController
 {
@@ -47,19 +48,22 @@ class HolidaySetup extends AbstractActionController
             $this->form->setData($request->getPost());
             if ($this->form->isValid()) {
                 $holiday = new Holiday();
+                $holidayBranch = new HolidayBranch();
                 $holiday->exchangeArrayFromForm($this->form->getData());
                 $holiday->createdDt = Helper::getcurrentExpressionDate();
                 $holiday->status = 'E';
                 $holiday->fiscalYear=(int) Helper::getMaxId($this->adapter,"HR_FISCAL_YEARS","FISCAL_YEAR_ID");
+
                 $branches = $holiday->branchId;
                 unset($holiday->branchId);
 
-                foreach($branches as $branchId){
-                    $holiday->holidayId = ((int)Helper::getMaxId($this->adapter,'HR_HOLIDAY_MASTER_SETUP', 'HOLIDAY_ID')) + 1;
-                    $holiday->branchId = $branchId;
-                    $this->repository->add($holiday);
+                $holiday->holidayId = ((int)Helper::getMaxId($this->adapter,'HR_HOLIDAY_MASTER_SETUP', 'HOLIDAY_ID')) + 1;
+                $this->repository->add($holiday);
 
-                    $this->repository->add($holiday);
+                foreach($branches as $branchId){
+                    $holidayBranch->branchId = $branchId;
+                    $holidayBranch->holidayId = $holiday->holidayId;
+                    $this->repository->addHolidayBranch($holidayBranch);
                 }
                 $this->flashmessenger()->addMessage("Holiday Successfully added!!!");
                 return $this->redirect()->toRoute("holidaysetup");
