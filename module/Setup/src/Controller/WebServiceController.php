@@ -49,6 +49,20 @@ class WebServiceController extends AbstractActionController
                         "data" => $tempArray
                     ];
                     break;
+
+                case "pullEmployeeLeave":
+                    $leaveAssign = new LeaveAssignRepository($this->adapter);
+                    $ids = $postedData->id;
+                    $temp = $leaveAssign->filter($ids['leaveId'], $ids['branchId'], $ids['departmentId'], $ids['genderId'], $ids['designationId']);
+                    $tempArray = [];
+                    foreach ($temp as $item) {
+                        array_push($tempArray, $item);
+                    }
+
+                    print "<pre>";
+                    print_r($tempArray);
+                    exit;
+                    break;
                 default:
                     $responseData = [
                         "success" => false

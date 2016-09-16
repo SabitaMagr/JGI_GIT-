@@ -14,34 +14,52 @@ $this->headScript()->appendFile($this->basePath('js/leaveAssign/assign.js'));
 ?>
 
 <script>
-    document.menu =<?php $menu = ["id" => "menuLeaveManagement", "subMenu" => ["id" => "subMenuLeaveAssign"]];echo json_encode($menu);?>;
+    document.menu =<?php $menu = ["id" => "menuLeaveManagement", "subMenu" => ["id" => "subMenuLeaveAssign"], "subMenuChild" => ["id" => "subMenuChildLeaveAssign"]];echo json_encode($menu);?>;
     document.url = '<?= $this->url("webService", ["action" => "index"]) ?>';
 </script>
+<div class="panel-body">
 
+<div class="row">
+    <div class="col-sm-4">
+            <div class="form-group form-group-default-select2">
+                <?php print $this->formLabel($leaveFormElement); ?>
+                <?php print $this->formElement($leaveFormElement); ?>
+            </div>
+            <div class=" form-group form-group-default-select2">
+                <?php print $this->formLabel($branchFormElement); ?>
+                <?php print $this->formElement($branchFormElement); ?>
+            </div>
+        <div class=" form-group form-group-default-select2">
+            <?php print $this->formLabel($departmentFormElement); ?>
+            <?php print $this->formElement($departmentFormElement); ?>
+        </div>
+
+    </div>
+    <div class="col-sm-4 col-sm-offset-2">
+        <div class=" form-group form-group-default-select2">
+            <?php print $this->formLabel($genderFormElement); ?>
+            <?php print $this->formElement($genderFormElement); ?>
+        </div>
+        <div class=" form-group form-group-default-select2">
+            <?php print $this->formLabel($designationFormElement); ?>
+            <?php print $this->formElement($designationFormElement); ?>
+        </div>
+    <button id="viewEmployees" class="btn btn-primary pull-right">View</button>
+    </div>
+
+
+</div>
+    <div class="row">
+
+    </div>
+</div>
 
 <div class="panel panel-transparent">
-    <div class="panel-heading">
-        <div class="panel-title">
-            <div class="form-group-default-select2">
-                <?php print $this->formElement($employeesFormElement); ?>
-            </div>
-        </div>
-        <div class="btn-group pull-right m-b-10">
-            <a class="btn btn-default" href="<?= $this->url('leaveassign', ['action' => 'add', 'eid' => $id]) ?>">
-                Add new</a>
+    <div class="panel-heading panel-primary">
 
-            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-                <span class="caret"></span>
-            </button>
-            <ul class="dropdown-menu" role="menu">
-                <li><a href="#">Settings</a>
-                </li>
-                <li><a href="#">Help</a>
-                </li>
-            </ul>
-        </div>
-        <div class="clearfix"></div>
     </div>
+
+
     <div class="panel-body">
         <div id="tableWithSearch_wrapper" class="dataTables_wrapper form-inline no-footer">
             <div class="table-responsive">
@@ -51,23 +69,23 @@ $this->headScript()->appendFile($this->basePath('js/leaveAssign/assign.js'));
                     <tr role="row">
                         <th aria-label="Title: activate to sort column ascending" aria-sort="descending" colspan="1"
                             rowspan="1" aria-controls="basicTable" tabindex="0" class="sorting_desc">
+                            Name
+                        </th>
+                        <th aria-label="Title: activate to sort column ascending" aria-sort="descending" colspan="1"
+                            rowspan="1" aria-controls="basicTable" tabindex="0" class="sorting_desc">
                             Leave
                         </th>
                         <th aria-label="Title: activate to sort column ascending" aria-sort="descending" colspan="1"
                             rowspan="1" aria-controls="basicTable" tabindex="0" class="sorting_desc">
-                            Prev Year Bal
+                            Designation
                         </th>
                         <th aria-label="Title: activate to sort column ascending" aria-sort="descending" colspan="1"
                             rowspan="1" aria-controls="basicTable" tabindex="0" class="sorting_desc">
-                            Total Days
+                            Branch
                         </th>
                         <th aria-label="Title: activate to sort column ascending" aria-sort="descending" colspan="1"
                             rowspan="1" aria-controls="basicTable" tabindex="0" class="sorting_desc">
-                            Balance
-                        </th>
-                        <th aria-label="Title: activate to sort column ascending" aria-sort="descending" colspan="1"
-                            rowspan="1" aria-controls="basicTable" tabindex="0" class="sorting_desc">
-                            Fiscal Year
+                            Days
                         </th>
                         <th aria-label="Title: activate to sort column ascending" aria-sort="descending" colspan="1"
                             rowspan="1" aria-controls="basicTable" tabindex="0" class="sorting_desc">
@@ -75,10 +93,10 @@ $this->headScript()->appendFile($this->basePath('js/leaveAssign/assign.js'));
                         </th>
                     </tr>
                     </thead>
-                    </table>
-                </div>
+                </table>
             </div>
         </div>
+    </div>
 
 
 </div>

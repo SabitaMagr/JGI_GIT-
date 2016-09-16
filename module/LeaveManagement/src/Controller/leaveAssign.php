@@ -12,7 +12,12 @@ namespace LeaveManagement\Controller;
 use Application\Helper\Helper;
 use LeaveManagement\Form\LeaveAssignForm;
 use LeaveManagement\Helper\EntityHelper;
+use LeaveManagement\Model\LeaveMaster;
 use LeaveManagement\Repository\LeaveAssignRepository;
+use Setup\Entity\HrGenders;
+use Setup\Model\Branch;
+use Setup\Model\Department;
+use Setup\Model\Designation;
 use Setup\Model\HrEmployees;
 use Setup\Repository\EmployeeRepository;
 use Zend\Db\Adapter\AdapterInterface;
@@ -51,13 +56,56 @@ class leaveAssign extends AbstractActionController
 
     public function assignAction()
     {
-       $empFormElement= new Select();
+        $empFormElement = new Select();
         $empFormElement->setName("employee");
-        $empFormElement->setValueOptions(\Application\Helper\EntityHelper::getTableKVList($this->adapter,"HR_EMPLOYEES","EMPLOYEE_ID",["FIRST_NAME","MIDDLE_NAME","LAST_NAME"]));
-        $empFormElement->setAttributes(["id"=>"employeeId","class"=>"full-width select2-offscreen","data-init-plugin"=>"select2"]);
+        $empFormElement->setValueOptions(\Application\Helper\EntityHelper::getTableKVList($this->adapter, "HR_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"]));
+        $empFormElement->setAttributes(["id" => "employeeId", "class" => "full-width select2-offscreen", "data-init-plugin" => "select2"]);
 
-        return Helper::addFlashMessagesToArray($this,[
-           "employeesFormElement"=>$empFormElement
+        $leaveFormElement = new Select();
+        $leaveFormElement->setName("leave");
+        $leaveFormElement->setLabel("Leave Type");
+        $leaveFormElement->setValueOptions(\Application\Helper\EntityHelper::getTableKVList($this->adapter, LeaveMaster::TABLE_NAME, LeaveMaster::LEAVE_ID, [LeaveMaster::LEAVE_ENAME]));
+        $leaveFormElement->setAttributes(["id" => "leaveId", "class" => "full-width select2-offscreen", "data-init-plugin" => "select2"]);
+
+        $branchFormElement = new Select();
+        $branchFormElement->setName("branch");
+        $branches=\Application\Helper\EntityHelper::getTableKVList($this->adapter, Branch::TABLE_NAME, Branch::BRANCH_ID, [Branch::BRANCH_NAME]);
+        $branches[-1]="All";
+        $branchFormElement->setValueOptions($branches);
+        $branchFormElement->setAttributes(["id" => "branchId", "class" => "full-width select2-offscreen", "data-init-plugin" => "select2"]);
+        $branchFormElement->setLabel("Branch");
+
+        $departmentFormElement = new Select();
+        $departmentFormElement->setName("department");
+        $departments=\Application\Helper\EntityHelper::getTableKVList($this->adapter, Department::TABLE_NAME, Department::DEPARTMENT_ID, [Department::DEPARTMENT_NAME]);
+        $departments[-1]="All";
+        $departmentFormElement->setValueOptions($departments);
+        $departmentFormElement->setAttributes(["id" => "departmentId", "class" => "full-width select2-offscreen", "data-init-plugin" => "select2"]);
+        $departmentFormElement->setLabel("Department");
+
+        $genderFormElement = new Select();
+        $genderFormElement->setName("gender");
+        $genders=\Application\Helper\EntityHelper::getTableKVList($this->adapter,"HR_GENDERS","GENDER_ID" , ["GENDER_NAME"]);
+        $genders[-1]="All";
+        $genderFormElement->setValueOptions($genders);
+        $genderFormElement->setAttributes(["id" => "genderId", "class" => "full-width select2-offscreen", "data-init-plugin" => "select2"]);
+        $genderFormElement->setLabel("Gender");
+
+        $designationFormElement = new Select();
+        $designationFormElement->setName("designation");
+        $designations=\Application\Helper\EntityHelper::getTableKVList($this->adapter,Designation::TABLE_NAME,Designation::DESIGNATION_ID , [Designation::DESIGNATION_TITLE]);
+        $designations[-1]="All";
+        $designationFormElement->setValueOptions($designations);
+        $designationFormElement->setAttributes(["id" => "designationId", "class" => "full-width select2-offscreen", "data-init-plugin" => "select2"]);
+        $designationFormElement->setLabel("Designation");
+
+        return Helper::addFlashMessagesToArray($this, [
+            "employeesFormElement" => $empFormElement,
+            'leaveFormElement'=>$leaveFormElement,
+            'branchFormElement'=>$branchFormElement,
+            'departmentFormElement'=>$departmentFormElement,
+            'genderFormElement'=>$genderFormElement,
+            'designationFormElement'=>$designationFormElement
         ]);
     }
 //    public function assignAction()

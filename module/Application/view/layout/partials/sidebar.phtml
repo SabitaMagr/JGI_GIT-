@@ -95,8 +95,23 @@
                         <span class="icon-thumbnail">LS</span>
                     </li>
                     <li id="subMenuLeaveAssign" class="">
-                        <a href="<?= $this->url("leaveassign", ["action" => "index"]) ?>">Leave Assign</a>
+                        <a href="javascript:;"><span class="title">Leave Assign</span>
+                            <span class="arrow"></span></a>
                         <span class="icon-thumbnail">LA</span>
+                        <ul class="sub-menu">
+                            <li>
+                                <a href="javascript:;">Export</a>
+                                <span class="icon-thumbnail">E</span>
+                            </li>
+                            <li>
+                                <a href="javascript:;">Import</a>
+                                <span class="icon-thumbnail">I</span>
+                            </li>
+                            <li id="subMenuChildLeaveAssign">
+                                <a href="<?= $this->url("leaveassign", ["action" => "assign"]) ?>">Group Assign</a>
+                                <span class="icon-thumbnail">GA</span>
+                            </li>
+                        </ul>
                     </li>
                     <li id="subMenuLeaveApply" class="">
                         <a href="<?= $this->url("leaveapply", ["action" => "index"]) ?>">Leave Apply</a>
@@ -131,11 +146,12 @@
                         <span class="icon-thumbnail">SH</span>
                     </li>
                     <li id="subMenuShiftAssign" class="">
-                        <a href="<?= $this->url("shiftassign",["action"=>"index"]); ?>">Shift Assign</a>
+                        <a href="<?= $this->url("shiftassign", ["action" => "index"]); ?>">Shift Assign</a>
                         <span class="icon-thumbnail">SA</span>
                     </li>
+
                     <li id="subMenuAttendanceByHr" class="">
-                        <a href="<?= $this->url("attendancebyhr",["action"=>"index"]); ?>">Attendance By HR</a>
+                        <a href="<?= $this->url("attendancebyhr", ["action" => "index"]); ?>">Attendance By HR</a>
                         <span class="icon-thumbnail">ABH</span>
                     </li>
 
@@ -148,7 +164,7 @@
                 <span class="icon-thumbnail"><i class="pg-form"></i></span>
                 <ul class="sub-menu">
                     <li id="subMenuMyAttendance" class="">
-                        <a href="<?= $this->url("myattendance",["action"=>"index"]); ?>">My Attendance</a>
+                        <a href="<?= $this->url("myattendance", ["action" => "index"]); ?>">My Attendance</a>
                         <span class="icon-thumbnail">MA</span>
                     </li>
 

@@ -20,5 +20,25 @@
         });
     });
 
+    var viewEmployees=$('#viewEmployees');
+    var leaveId=$('#leaveId');
+    var branchId=$('#branchId');
+    var departmentId=$('#departmentId');
+    var genderId=$('#genderId');
+    var designationId=$('#designationId');
+    viewEmployees.on("click",function () {
+        app.pullDataById(document.url,{
+           action:'pullEmployeeLeave',
+            id:{
+               leaveId:leaveId.val(),
+                branchId:branchId.val(),
+                departmentId:departmentId.val(),
+                genderId:genderId.val(),
+                designationId:designationId.val()
+            }
+        });
+    });
+
+
 
 })(window.jQuery, window.app);

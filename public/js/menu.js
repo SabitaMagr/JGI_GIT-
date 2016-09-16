@@ -8,9 +8,17 @@
         selectedMenu.addClass('open').addClass('active');
         $('#' + document.menu.id + ' > a :nth-child(2)').addClass('active').addClass('open');
         $('#' + document.menu.id + " > span").addClass("bg-success")
+
+            var selectedSubMenu;
         if (typeof document.menu.subMenu !== "undefined") {
-            var selectedMenu = $('#' + document.menu.subMenu.id);
-            selectedMenu.addClass('active');
+            selectedSubMenu = $('#' + document.menu.subMenu.id);
+            selectedSubMenu.addClass('active');
+        }
+
+        if(typeof document.menu.subMenuChild !== "undefined"){
+            $('#' + document.menu.subMenu.id + ' > a :nth-child(2)').addClass('open').addClass('active');
+            var selectedSubMenuChild = $('#' + document.menu.subMenuChild.id);
+            selectedSubMenuChild.addClass('active');
         }
     });
 
