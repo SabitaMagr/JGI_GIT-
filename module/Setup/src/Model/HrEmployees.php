@@ -84,6 +84,12 @@ class HrEmployees extends Model
     public $status;
     public $createdDt;
 
+    public $serviceTypeId;
+    public $positionId;
+    public $designationId;
+    public $departmentId;
+    public $branchId;
+
     public $countryId;
 
 
@@ -162,6 +168,12 @@ class HrEmployees extends Model
         'salaryPf'=>'SALARY_PF',
         'remarks'=>'REMARKS',
         'status'=>'STATUS',
+
+        'serviceTypeId'=>'SERVICE_TYPE_ID',
+        'positionId'=>'POSITION_ID',
+        'designationId'=>'DESIGNATION_ID',
+        'departmentId'=>'DEPARTMENT_ID',
+        'branchId'=>'BRANCH_ID',
 
         'createdDt'=>'CREATED_DT',
         'countryId'=>'COUNTRY_ID',
