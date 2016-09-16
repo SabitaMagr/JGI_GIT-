@@ -59,11 +59,6 @@ if ($this->messages) {
                         <th class="sorting_asc" tabindex="0" aria-controls="tableWithExportOptions" rowspan="1"
                             colspan="1" aria-sort="ascending"
                             aria-label="Rendering engine: activate to sort column descending">
-                            Gender
-                        </th>
-                        <th class="sorting_asc" tabindex="0" aria-controls="tableWithExportOptions" rowspan="1"
-                            colspan="1" aria-sort="ascending"
-                            aria-label="Rendering engine: activate to sort column descending">
                             Branch
                         </th>
 
@@ -92,11 +87,6 @@ if ($this->messages) {
                             aria-label="Rendering engine: activate to sort column descending">
                             Fiscal Year
                         </th>
-                        <th class="sorting_asc" tabindex="0" aria-controls="tableWithExportOptions" rowspan="1"
-                            colspan="1" aria-sort="ascending"
-                            aria-label="Rendering engine: activate to sort column descending">
-                            Remark
-                        </th>
 
                         <th class="sorting_asc" tabindex="0" aria-controls="tableWithExportOptions" rowspan="1"
                             colspan="1" aria-sort="ascending"
@@ -116,11 +106,7 @@ if ($this->messages) {
                                     <?php print $this->escapeHtml($holiday[\HolidayManagement\Model\Holiday::HOLIDAY_CODE]); ?>
                                 </p>
                             </td>
-                            <td class="">
-                                <p>
-                                    <?php print $this->escapeHtml($holiday["GENDER_NAME"]); ?>
-                                </p>
-                            </td>
+
                             <td class="">
                                 <p>
                                     <?php
@@ -153,11 +139,7 @@ if ($this->messages) {
                                     <?php print $this->escapeHtml($holiday[\HolidayManagement\Model\Holiday::FISCAL_YEAR]); ?>
                                 </p>
                             </td>
-                            <td class="">
-                                <p>
-                                    <?php print $this->escapeHtml($holiday[\HolidayManagement\Model\Holiday::REMARKS]); ?>
-                                </p>
-                            </td>
+
                             <td class="">
                                 <a href="<?= $this->url("holidaysetup", ["action" => "edit", "id" => $holiday[\HolidayManagement\Model\Holiday::HOLIDAY_ID]]) ?>">Edit</a>
                                 /

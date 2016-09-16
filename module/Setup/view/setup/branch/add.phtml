@@ -34,12 +34,10 @@ print $this->form()->openTag($form);
     </script>
 
     <div class="row">
-        <div class="col-sm-2">
 
-        </div>
         <div class="col-sm-8 bg-light-color padding-30">
             <div class="panel-heading panel-title-head">
-                <h4>Branch</h4>
+                <h4>Add New</h4>
             </div>
             <div class="panel-body " >
                 <div class="form-group form-group-default <?= empty($branchCode->getMessages()) ? "" : "error" ?>">
@@ -95,6 +93,10 @@ print $this->form()->openTag($form);
                 <?php print $this->formSubmit($submit); ?>
                 </div>
             </div>
+
+        </div>
+
+        <div class="col-sm-2">
 
         </div>
     </div>
