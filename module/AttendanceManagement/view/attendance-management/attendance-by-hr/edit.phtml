@@ -16,7 +16,7 @@ $totalHour = $form->get('totalHour');
 $employeeId->setValueOptions($employees);
 
 $submit = $form->get('submit');
-$submit->setAttribute('value','Edit');
+$submit->setAttribute('value','UPDATE');
 
 $form->setAttribute('action', $this->url('attendancebyhr', ['action' => 'edit','id'=>$id]));
 
@@ -29,7 +29,6 @@ if ($this->messages) {
 }
 
 $form->prepare();
-print $this->form()->openTag($form);
 
 ?>
     <script>
@@ -37,14 +36,28 @@ print $this->form()->openTag($form);
     </script>
 
     <div class="row">
-        <div class="col-sm-2">
-
-        </div>
         <div class="col-sm-8 bg-light-color padding-30">
-            <div class="panel-heading panel-title-head">
-                <h4>Attendance Entry</h4>
+            <div class="row panel-title-head" style="margin-bottom: 2%">
+                <div class="col-xs-9 col-sm-9 col-md-9">
+                    <div class="panel-heading padding-5">
+                        <h4>Edit Attendance</h4>
+                    </div>
+                </div>
+
+                <div class="col-xs-3 col-sm-3 col-md-3 pull-right">
+                    <div class="pull-right m-b-10">
+                        <a href="<?= $this->url("attendancebyhr",["action","index"])?>" style="margin-left:16%;">
+                            <button class="btn btn-default btn-cons"><i class="fa fa-arrow-left"></i>
+                                <span>Back </span></button>
+                        </a>
+                    </div>
+                </div>
             </div>
-            <div class="panel-body " >
+
+            <div class="panel-body padding-0" >
+                <?php
+                print $this->form()->openTag($form);
+                ?>
                 <div class="form-group form-group-default form-group-default-select2 <?= empty($employeeId->getMessages()) ? "" : "error" ?>">
                     <?php print $this->formLabel($employeeId); ?>
                     <?php print $this->formElement($employeeId); ?>
@@ -87,16 +100,16 @@ print $this->form()->openTag($form);
                 </div>
                 <?php print $this->formElementErrors()->render($totalHour, ['class' => 'help-block error']); ?>
 
-
-
-
                 <div class="">
-                    <?php print $this->formSubmit($submit); ?>
+                    <?php
+                    print $this->formSubmit($submit);
+                    print $this->form()->closeTag();
+                    ?>
                 </div>
             </div>
 
         </div>
+        <div class="col-sm-2">
+
+        </div>
     </div>
-<?php
-print $this->form()->closeTag();
-?>

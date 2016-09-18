@@ -8,7 +8,7 @@ $remarks = $form->get('remarks');
 $status = $form->get('status');
 
 $submit = $form->get('submit');
-$submit->setAttribute('value','Edit Service Type');
+$submit->setAttribute('value','UPDATE');
 
 $form->setAttribute('action', $this->url('serviceType', ['action' => 'edit','id'=>$id]));
 
@@ -19,22 +19,35 @@ if ($this->messages) {
 	}
 	print '</ul>';
 }
-
 $form->prepare();
-print $this->form()->openTag($form);
-
 ?>
 	<script>
 		document.menu=<?php $menu = ["id" => "menuSetup","subMenu"=>["id"=>"subMenuServiceType"]];echo json_encode($menu);?>;
 	</script>
 
 	<div class="row">
-		<div class="col-sm-2"></div>
+
 		<div class="col-sm-8 padding-30 bg-light-color">
-			<div class="panel-heading panel-title-head">
-				<h4>Service Type</h4>
+			<div class="row panel-title-head" style="margin-bottom: 2%">
+				<div class="col-xs-9 col-sm-9 col-md-9">
+					<div class="panel-heading padding-5">
+						<h4>Edit Service Type</h4>
+					</div>
+				</div>
+
+				<div class="col-xs-3 col-sm-3 col-md-3 pull-right">
+					<div class="pull-right m-b-10">
+						<a href="<?= $this->url("serviceType",["action","index"])?>" style="margin-left:16%;">
+							<button class="btn btn-default btn-cons"><i class="fa fa-arrow-left"></i>
+								<span>Back </span></button>
+						</a>
+					</div>
+				</div>
 			</div>
-			<div class="panel-body padding-5" >
+			<div class="panel-body padding-0" >
+				<?php
+				print $this->form()->openTag($form);
+				?>
 				<div class="form-group form-group-default ">
 					<?php print $this->formLabel($serviceTypeCode); ?>
 					<?php print $this->formElement($serviceTypeCode); ?>
@@ -58,14 +71,13 @@ print $this->form()->openTag($form);
 					<?php print $this->formElementErrors()->render($status, ['class' => 'help-block']); ?>
 				</div>
 
-				<?php print $this->formSubmit($submit); ?>
+				<?php
+				print $this->formSubmit($submit);
+				print $this->form()->closeTag();
+				?>
 
 			</div>
 
 		</div>
+		<div class="col-sm-2"></div>
 	</div>
-<?php
-
-print $this->form()->closeTag();
-
-?>

@@ -57,3 +57,23 @@ legend.scheduler-border {
 	padding-top: 4px !important;
 	padding-bottom: 4px !important;
 }
+
+.customTable thead tr th
+{
+	border-bottom: 1px solid #f0f0f0 !important;
+}
+.customTable tbody tr td {
+	background: #e6e6e6 !important;
+	border-bottom: 1px solid #f0f0f0 !important;
+	padding-top: 8px !important;
+	padding-bottom: 8px !important;
+	/*padding-top: 8px !important;
+	padding-bottom: 8px !important;
+	font-style: normal;
+	white-space: normal;
+	font-size: 12px;
+	color: #626262;*/
+}
+.customTable tbody tr:hover td {
+	background: #fff !important;
+}

@@ -13,7 +13,7 @@ $countryId=$form->get('countryId');
 $countryId->setValueOptions($countries);
 
 $submit = $form->get('submit');
-$submit->setAttribute('value','Add Branch');
+$submit->setAttribute('value','SUBMIT');
 
 $form->setAttribute('action', $this->url('branch', ['action' => 'add']));
 
@@ -24,24 +24,32 @@ if ($this->messages) {
     }
     print '</ul>';
 }
-
 $form->prepare();
-print $this->form()->openTag($form);
-
 ?>
     <script>
         document.menu=<?php $menu = ["id" => "menuSetup","subMenu"=>["id"=>"subMenuBranch"]];echo json_encode($menu);?>;
     </script>
 
     <div class="row">
-        <div class="col-sm-2">
-
-        </div>
         <div class="col-sm-8 bg-light-color padding-30">
-            <div class="panel-heading panel-title-head">
-                <h4>Branch</h4>
+            <div class="row panel-title-head" style="margin-bottom: 2%">
+                <div class="col-xs-9 col-sm-9 col-md-9">
+                    <div class="panel-heading padding-5">
+                        <h4>Add Branch</h4>
+                    </div>
+                </div>
+
+                <div class="col-xs-3 col-sm-3 col-md-3 pull-right">
+                    <div class="pull-right m-b-10">
+                        <a href="<?= $this->url("branch",["action","index"])?>" style="margin-left:16%;">
+                        <button class="btn btn-default btn-cons"><i class="fa fa-arrow-left"></i>
+                            <span>Back </span></button>
+                        </a>
+                    </div>
+                </div>
             </div>
-            <div class="panel-body " >
+            <div class="panel-body padding-0" >
+                <?php print $this->form()->openTag($form);?>
                 <div class="form-group form-group-default <?= empty($branchCode->getMessages()) ? "" : "error" ?>">
                     <?php print $this->formLabel($branchCode); ?>
                     <?php print $this->formElement($branchCode); ?>
@@ -94,10 +102,14 @@ print $this->form()->openTag($form);
                 <div class="">
                 <?php print $this->formSubmit($submit); ?>
                 </div>
+                <?php
+                print $this->form()->closeTag();
+                ?>
             </div>
 
         </div>
+
+        <div class="col-sm-2">
+
+        </div>
     </div>
-<?php
-print $this->form()->closeTag();
-?>

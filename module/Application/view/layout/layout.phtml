@@ -62,8 +62,9 @@
     <?php $this->headScript()->captureEnd(); ?>
 
 </head>
-<body class="fixed-header dashboard pace-done menu-pin menu-behind">
+<body class="fixed-header pace-done sidebar-visible">
 <?php
+
 /**
  * SIDEBAR
  */
@@ -143,6 +144,9 @@ print $this->partial("partials/sidebar.phtml");
     ->prependFile($this->basePath('plugins/modernizr.custom.js'))
     ->prependFile($this->basePath('plugins/jquery/jquery-2.2.4.min.js'))
     ->prependFile($this->basePath('plugins/pace/pace.min.js'));
+
+
+
 
 ?>
 

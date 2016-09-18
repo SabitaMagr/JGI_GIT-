@@ -17,17 +17,20 @@ $this->headScript()->appendFile($this->basePath('js/datatables.js'));
 
 <?php
 if ($this->messages) {
-    print '<ul class="help-block bg-danger" style="background:#f3e250;">';
+    print '<div class="alert alert-success" role="alert"><button class="close" data-dismiss="alert"></button>';
     foreach ($this->messages as $message) {
-        print '<li>' . $message . '</li>';
+        print '<strong>Success: </strong>' . $message;
     }
-    print '</ul>';
+    print '</div>';
 }
 ?>
 
-<div class="panel panel-transparent">
-    <div class="panel-heading">
-        <div class="btn-group pull-right m-b-10">
+<div class="panel panel-transparent bg-light-color">
+    <div class="panel-heading p-b-0">
+        <div class="panel-title">
+            <h5 class="m-b-0 m-t-0">Attendance List</h5>
+        </div>
+        <div class="btn-group pull-right">
             <a class="btn btn-default" href="<?= $this->url('attendancebyhr', ['action' => 'add']) ?>">
                 Attendance Entry
             </a>
@@ -41,93 +44,93 @@ if ($this->messages) {
                 </li>
             </ul>
         </div>
+        <div class="pull-right">
+            <div class="col-xs-12">
+                <input type="text" id="search-table" class="form-control pull-right" placeholder="Search">
+            </div>
+        </div>
         <div class="clearfix"></div>
     </div>
     <div class="panel-body">
-        <div id="tableWithDynamicRows_wrapper" class="dataTables_wrapper form-inline no-footer">
-            <div class="table-responsive">
-                <table class="table table-hover demo-table-dynamic dataTable no-footer" id="tableWithDynamicRows"
-                       role="grid" aria-describedby="tableWithDynamicRows_info">
-                    <thead>
-                    <tr role="row">
-                        <th class="sorting_asc" tabindex="0" aria-controls="tableWithExportOptions" rowspan="1" colspan="1" aria-sort="ascending"
-                            aria-label="Rendering engine: activate to sort column descending">
-                            Employee Name
-                        </th>
-                        <th class="sorting_asc" tabindex="0" aria-controls="tableWithExportOptions" rowspan="1" colspan="1" aria-sort="ascending"
-                            aria-label="Rendering engine: activate to sort column descending">
-                            Attendance Date
-                        </th>
-                        <th class="sorting_asc" tabindex="0" aria-controls="tableWithExportOptions" rowspan="1" colspan="1" aria-sort="ascending"
-                            aria-label="Rendering engine: activate to sort column descending">
-                            Check In
-                        </th>
-                        <th class="sorting_asc" tabindex="0" aria-controls="tableWithExportOptions" rowspan="1" colspan="1" aria-sort="ascending"
-                            aria-label="Rendering engine: activate to sort column descending">
-                            Check Out
-                        </th>
-                        <th class="sorting_asc" tabindex="0" aria-controls="tableWithExportOptions" rowspan="1" colspan="1" aria-sort="ascending"
-                            aria-label="Rendering engine: activate to sort column descending">
-                            Late In Reason
-                        </th>
-                        <th class="sorting_asc" tabindex="0" aria-controls="tableWithExportOptions" rowspan="1" colspan="1" aria-sort="ascending"
-                            aria-label="Rendering engine: activate to sort column descending">
-                            Early Out Reason
-                        </th>
-                        <th class="sorting_asc" tabindex="0" aria-controls="tableWithExportOptions" rowspan="1" colspan="1" aria-sort="ascending"
-                            aria-label="Rendering engine: activate to sort column descending">
-                            Action
-                        </th>
+        <table class="table customTable demo-table-search" id="tableWithSearch">
+            <thead>
+            <tr role="row">
+                <th class="sorting_asc" tabindex="0" aria-controls="tableWithExportOptions" rowspan="1" colspan="1" aria-sort="ascending"
+                    aria-label="Rendering engine: activate to sort column descending">
+                    Employee Name
+                </th>
+                <th class="sorting_asc" tabindex="0" aria-controls="tableWithExportOptions" rowspan="1" colspan="1" aria-sort="ascending"
+                    aria-label="Rendering engine: activate to sort column descending">
+                    Attendance Date
+                </th>
+                <th class="sorting_asc" tabindex="0" aria-controls="tableWithExportOptions" rowspan="1" colspan="1" aria-sort="ascending"
+                    aria-label="Rendering engine: activate to sort column descending">
+                    Check In
+                </th>
+                <th class="sorting_asc" tabindex="0" aria-controls="tableWithExportOptions" rowspan="1" colspan="1" aria-sort="ascending"
+                    aria-label="Rendering engine: activate to sort column descending">
+                    Check Out
+                </th>
+                <th class="sorting_asc" tabindex="0" aria-controls="tableWithExportOptions" rowspan="1" colspan="1" aria-sort="ascending"
+                    aria-label="Rendering engine: activate to sort column descending">
+                    Late In Reason
+                </th>
+                <th class="sorting_asc" tabindex="0" aria-controls="tableWithExportOptions" rowspan="1" colspan="1" aria-sort="ascending"
+                    aria-label="Rendering engine: activate to sort column descending">
+                    Early Out Reason
+                </th>
+                <th class="sorting_asc" tabindex="0" aria-controls="tableWithExportOptions" rowspan="1" colspan="1" aria-sort="ascending"
+                    aria-label="Rendering engine: activate to sort column descending">
+                    Action
+                </th>
 
-                    </tr>
-                    </thead>
-                    <tbody>
+            </tr>
+            </thead>
+            <tbody>
 
-                    <?php foreach ($attendanceList as $attendances):
-                        ?>
-                        <tr role="row">
-                            <td class="">
-                                <p>
-                                    <?php
-                                    print $this->escapeHtml($attendances['FIRST_NAME']." ".$attendances['MIDDLE_NAME']." ".$attendances['LAST_NAME']); ?>
-                                </p>
-                            </td>
-                            <td class="">
-                                <p>
-                                    <?php print $this->escapeHtml($attendances['ATTENDANCE_DT']); ?>
-                                </p>
-                            </td>
-                            <td class="">
-                                <p>
-                                    <?php print $this->escapeHtml($attendances['IN_TIME']); ?>
-                                </p>
-                            </td>
-                            <td class="">
-                                <p>
-                                    <?php print $this->escapeHtml($attendances['OUT_TIME']); ?>
-                                </p>
-                            </td>
-                            <td class="">
-                                <p>
-                                    <?php print $this->escapeHtml($attendances['IN_REMARKS']); ?>
-                                </p>
-                            </td>
-                            <td class="">
-                                <p>
-                                    <?php print $this->escapeHtml($attendances['OUT_REMARKS']); ?>
-                                </p>
-                            </td>
+            <?php foreach ($attendanceList as $attendances):
+                ?>
+                <tr role="row">
+                    <td class="">
+                        <p>
+                            <?php
+                            print $this->escapeHtml($attendances['FIRST_NAME']." ".$attendances['MIDDLE_NAME']." ".$attendances['LAST_NAME']); ?>
+                        </p>
+                    </td>
+                    <td class="">
+                        <p>
+                            <?php print $this->escapeHtml($attendances['ATTENDANCE_DT']); ?>
+                        </p>
+                    </td>
+                    <td class="">
+                        <p>
+                            <?php print $this->escapeHtml($attendances['IN_TIME']); ?>
+                        </p>
+                    </td>
+                    <td class="">
+                        <p>
+                            <?php print $this->escapeHtml($attendances['OUT_TIME']); ?>
+                        </p>
+                    </td>
+                    <td class="">
+                        <p>
+                            <?php print $this->escapeHtml($attendances['IN_REMARKS']); ?>
+                        </p>
+                    </td>
+                    <td class="">
+                        <p>
+                            <?php print $this->escapeHtml($attendances['OUT_REMARKS']); ?>
+                        </p>
+                    </td>
 
-                            <td class="">
-                                <a href="<?= $this->url("attendancebyhr", ["action" => "edit", "id" => $attendances['ID']]) ?>">Edit</a>
-                            </td>
-                        </tr>
+                    <td class="">
+                        <a href="<?= $this->url("attendancebyhr", ["action" => "edit", "id" => $attendances['ID']]) ?>">Edit</a>
+                    </td>
+                </tr>
 
-                    <?php endforeach; ?>
+            <?php endforeach; ?>
 
-                    </tbody>
-                </table>
-            </div>
-        </div>
+            </tbody>
+        </table>
     </div>
 </div>
