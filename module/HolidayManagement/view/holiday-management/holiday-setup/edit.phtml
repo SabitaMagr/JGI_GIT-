@@ -47,16 +47,32 @@ $branchId->setValueOptions($branches);
 $form->setAttribute('role', 'form');
 $form->setAttribute('action', $this->url('holidaysetup', ['action' => 'edit','id'=>$id]));
 $form->prepare();
-print $this->form()->openTag($form);
+
 ?>
 
 <div class="row">
-    <div class="col-sm-2"></div>
+
     <div class="col-sm-8 padding-30 bg-light-color">
-        <div class="panel-heading panel-title-head">
-            <h4>Holiday</h4>
+        <div class="row panel-title-head" style="margin-bottom: 2%">
+            <div class="col-xs-9 col-sm-9 col-md-9">
+                <div class="panel-heading">
+                    <h4>Edit</h4>
+                </div>
+            </div>
+
+            <div class="col-xs-3 col-sm-3 col-md-3 pull-right">
+                <div class="pull-right m-b-10">
+                    <a href="<?= $this->url("holidaysetup",["action","index"])?>" style="margin-left:16%;">
+                        <button class="btn btn-default btn-cons"><i class="fa fa-arrow-left"></i>
+                            <span>Back </span></button>
+                    </a>
+                </div>
+            </div>
         </div>
-        <div class="panel-body">
+        <div class="panel-body padding-0">
+            <?php
+                print $this->form()->openTag($form);
+            ?>
             <div class="form-group form-group-default <?= empty($holidayCode->getMessages()) ? "" : "error" ?>">
                 <?php print $this->formLabel($holidayCode); ?>
                 <?php print $this->formElement($holidayCode); ?>
@@ -122,8 +138,12 @@ print $this->form()->openTag($form);
             <?php print $this->formElementErrors()->render($remarks, ['class' => 'help-block error']); ?>
 
 
-            <?php print $this->formSubmit($submit); ?>
+            <?php
+            print $this->formSubmit($submit);
+            print $this->form()->closeTag();
+            ?>
         </div>
 
     </div>
+    <div class="col-sm-2"></div>
 </div>
