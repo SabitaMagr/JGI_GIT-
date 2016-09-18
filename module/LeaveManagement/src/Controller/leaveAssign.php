@@ -64,13 +64,14 @@ class leaveAssign extends AbstractActionController
         $leaveFormElement = new Select();
         $leaveFormElement->setName("leave");
         $leaveFormElement->setLabel("Leave Type");
-        $leaveFormElement->setValueOptions(\Application\Helper\EntityHelper::getTableKVList($this->adapter, LeaveMaster::TABLE_NAME, LeaveMaster::LEAVE_ID, [LeaveMaster::LEAVE_ENAME]));
+        $leaveFormElement->setValueOptions(\Application\Helper\EntityHelper::getTableKVList($this->adapter, LeaveMaster::TABLE_NAME, LeaveMaster::LEAVE_ID, [LeaveMaster::LEAVE_ENAME],[LeaveMaster::STATUS." ='E'"]));
         $leaveFormElement->setAttributes(["id" => "leaveId", "class" => "full-width select2-offscreen", "data-init-plugin" => "select2"]);
 
         $branchFormElement = new Select();
         $branchFormElement->setName("branch");
         $branches=\Application\Helper\EntityHelper::getTableKVList($this->adapter, Branch::TABLE_NAME, Branch::BRANCH_ID, [Branch::BRANCH_NAME]);
         $branches[-1]="All";
+        ksort($branches);
         $branchFormElement->setValueOptions($branches);
         $branchFormElement->setAttributes(["id" => "branchId", "class" => "full-width select2-offscreen", "data-init-plugin" => "select2"]);
         $branchFormElement->setLabel("Branch");
@@ -79,6 +80,7 @@ class leaveAssign extends AbstractActionController
         $departmentFormElement->setName("department");
         $departments=\Application\Helper\EntityHelper::getTableKVList($this->adapter, Department::TABLE_NAME, Department::DEPARTMENT_ID, [Department::DEPARTMENT_NAME]);
         $departments[-1]="All";
+        ksort($departments);
         $departmentFormElement->setValueOptions($departments);
         $departmentFormElement->setAttributes(["id" => "departmentId", "class" => "full-width select2-offscreen", "data-init-plugin" => "select2"]);
         $departmentFormElement->setLabel("Department");
@@ -87,6 +89,7 @@ class leaveAssign extends AbstractActionController
         $genderFormElement->setName("gender");
         $genders=\Application\Helper\EntityHelper::getTableKVList($this->adapter,"HR_GENDERS","GENDER_ID" , ["GENDER_NAME"]);
         $genders[-1]="All";
+        ksort($genders);
         $genderFormElement->setValueOptions($genders);
         $genderFormElement->setAttributes(["id" => "genderId", "class" => "full-width select2-offscreen", "data-init-plugin" => "select2"]);
         $genderFormElement->setLabel("Gender");
@@ -95,6 +98,7 @@ class leaveAssign extends AbstractActionController
         $designationFormElement->setName("designation");
         $designations=\Application\Helper\EntityHelper::getTableKVList($this->adapter,Designation::TABLE_NAME,Designation::DESIGNATION_ID , [Designation::DESIGNATION_TITLE]);
         $designations[-1]="All";
+        ksort($designations);
         $designationFormElement->setValueOptions($designations);
         $designationFormElement->setAttributes(["id" => "designationId", "class" => "full-width select2-offscreen", "data-init-plugin" => "select2"]);
         $designationFormElement->setLabel("Designation");

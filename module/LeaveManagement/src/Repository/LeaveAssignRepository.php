@@ -38,7 +38,8 @@ class LeaveAssignRepository implements RepositoryInterface
     public function edit(Model $model, $id)
     {
         $array = $model->getArrayCopyForDB();
-        $this->tableGateway->update($array, [LeaveAssign::EMPLOYEE_LEAVE_ASSIGN_ID => $id]);
+        $leaveId=LeaveAssign::LEAVE_ID;
+        $this->tableGateway->update($array, ["EMPLOYEE_ID=$id[1]","${leaveId} =$id[0]"]);
     }
 
     public function fetchAll()
@@ -85,6 +86,9 @@ class LeaveAssignRepository implements RepositoryInterface
         }
         $select->where(["(L.LEAVE_ID=$leaveId OR L.LEAVE_ID IS NULL)"]);
         $statement = $sql->prepareStatementForSqlObject($select);
+//        print "<pre>";
+//        print_r($statement->getSql());
+//        exit;
         $result = $statement->execute();
         return $result;
 

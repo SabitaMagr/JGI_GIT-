@@ -2,6 +2,8 @@
 
 namespace Setup\Controller;
 
+use Application\Helper\Helper;
+use LeaveManagement\Model\LeaveAssign;
 use LeaveManagement\Repository\LeaveAssignRepository;
 use Setup\Helper\EntityHelper;
 use Zend\Db\Adapter\AdapterInterface;
@@ -58,10 +60,34 @@ class WebServiceController extends AbstractActionController
                     foreach ($temp as $item) {
                         array_push($tempArray, $item);
                     }
+                    $responseData = [
+                        "success" => true,
+                        "data" => $tempArray
+                    ];
+                    break;
 
-                    print "<pre>";
-                    print_r($tempArray);
-                    exit;
+                case "pushEmployeeLeave":
+                    $data = $postedData->data;
+                    $leaveAssign = new LeaveAssign();
+                    $leaveAssign->balance = $data['balance'];
+                    $leaveAssign->employeeId = $data['employeeId'];
+                    $leaveAssign->leaveId = $data['leave'];
+
+                    $leaveAssignRepo = new LeaveAssignRepository($this->adapter);
+                    if (empty($data['leaveId'])) {
+                        $leaveAssign->createdDt = Helper::getcurrentExpressionDate();
+                        $leaveAssignRepo->add($leaveAssign);
+                    } else {
+                        $leaveAssign->modifiedDt = Helper::getcurrentExpressionDate();
+                        unset($leaveAssign->employeeId);
+                        unset($leaveAssign->leaveId);
+                        $leaveAssignRepo->edit($leaveAssign, [$data['leaveId'], $data['employeeId']]);
+                    }
+
+                    $responseData = [
+                        "success" => true,
+                        "data" => $postedData
+                    ];
                     break;
                 default:
                     $responseData = [

@@ -16,7 +16,10 @@
         }
 
         if(typeof document.menu.subMenuChild !== "undefined"){
+            selectedMenu.addClass('open');
             $('#' + document.menu.subMenu.id + ' > a :nth-child(2)').addClass('open').addClass('active');
+            $('#' + document.menu.subMenu.id + ' > ul').css('display','block');
+
             var selectedSubMenuChild = $('#' + document.menu.subMenuChild.id);
             selectedSubMenuChild.addClass('active');
         }
