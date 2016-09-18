@@ -33,6 +33,8 @@ class HolidaySetup extends AbstractActionController
 
     public function indexAction()
     {
+        
+
        $holidayList= $this->repository->fetchAll();
        $viewModel= new ViewModel(Helper::addFlashMessagesToArray($this, [
             'holidayList' => $holidayList,
