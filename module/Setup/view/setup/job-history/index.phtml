@@ -12,11 +12,11 @@ $this->headScript()->appendFile($this->basePath('js/datatables.js'));
 ?>
 <?php
 if ($this->messages) {
-    print '<ul class="help-block bg-danger" style="background:#f3e250;">';
+    print '<div class="alert alert-success" role="alert"><button class="close" data-dismiss="alert"></button>';
     foreach ($this->messages as $message) {
-        print '<li>' . $message . '</li>';
+        print '<strong>Success: </strong>' . $message;
     }
-    print '</ul>';
+    print '</div>';
 }
 ?>
 <script>
