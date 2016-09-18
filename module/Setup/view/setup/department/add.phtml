@@ -13,7 +13,7 @@ $parentDepartment->setValueOptions(array_merge(["0"=>"none"],$departments));
 $countryId = $form->get('countryId');
 $countryId->setValueOptions($countries);
 $submit = $form->get('submit');
-$submit->setAttribute('value','Add Department');
+$submit->setAttribute('value','SUBMIT');
 
 $form->setAttribute('action', $this->url('department', ['action' => 'add']));
 
@@ -34,8 +34,8 @@ $form->prepare();
         <div class="col-sm-8 bg-light-color padding-30" >
             <div class="row panel-title-head" style="margin-bottom: 2%">
                 <div class="col-xs-9 col-sm-9 col-md-9">
-                    <div class="panel-heading">
-                        <h4>Add New</h4>
+                    <div class="panel-heading padding-5">
+                        <h4>Add Department</h4>
                     </div>
                 </div>
 
