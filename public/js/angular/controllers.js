@@ -91,32 +91,3 @@ angular.module('hris', [])
         };
     });
 
-angular.module('hris', [])
-    .controller('holidayController', function ($scope, $http) {
-
-        $scope.filter = function(){
-            var holidayId = angular.element(document.getElementById('holidayId')).val();
-            var branchId = angular.element(document.getElementById('branchId')).val();
-            var genderId = angular.element(document.getElementById('genderId')).val();
-
-            window.app.pullDataById(document.url, {
-                action: 'pullHolidayList',
-                id:{
-                    holidayId:holidayId,
-                    branchId:branchId,
-                    genderId:genderId
-                }
-            }).then(function (success) {
-                $scope.$apply(function(){
-                    // console.log(success.data);
-
-                    $scope.holidayList=success.data;
-                });
-            }, function (failure) {
-                console.log(failure);
-            });
-        };
-
-
-
-    });

@@ -12,6 +12,7 @@ use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\JsonModel;
 use Application\Helper\EntityHelper as ApplicationEntityHelper;
 use HolidayManagement\Repository\HolidayRepository;
+use HolidayManagement\Model\Holiday;
 
 class WebServiceController extends AbstractActionController
 {
@@ -103,6 +104,37 @@ class WebServiceController extends AbstractActionController
                     $responseData = [
                         "success" => true,
                         "data" => $tempArray
+                    ];
+                    break;
+                case "pullHolidayDetail":
+                    $holidayRepository = new HolidayRepository($this->adapter);
+                    $filtersId = $postedData->id;
+                    $resultSet = $holidayRepository->fetchById($filtersId);
+
+                    $responseData = [
+                        "success" => true,
+                        "data" => $resultSet
+                    ];
+                    break;
+                case "updateHolidayDetail":
+                    $holidayModel = new Holiday();
+                    $holidayRepository = new HolidayRepository($this->adapter);
+                    $filtersId = $postedData->data;
+                    $data = $filtersId['dataArray'];
+                    $holidayModel->holidayCode=$data['holidayCode'];
+                    $holidayModel->genderId=$data['genderId'];
+                    $holidayModel->holidayEname=$data['holidayEname'];
+                    $holidayModel->holidayLname=$data['holidayLname'];
+                    $holidayModel->startDate=$data['startDate'];
+                    $holidayModel->endDate=$data['endDate'];
+                    $holidayModel->halfday=$data['halfday'];
+                    $holidayModel->remarks=$data['remarks'];
+                    $holidayModel->modifiedDt = Helper::getcurrentExpressionDate();
+                    $resultSet = $holidayRepository->edit($holidayModel,$filtersId['holidayId']);
+
+                    $responseData = [
+                        "success" => true,
+                        "data"=>"Holiday Detail Updated Successfully!!!"
                     ];
                     break;
                 default:

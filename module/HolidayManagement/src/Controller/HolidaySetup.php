@@ -35,7 +35,7 @@ class HolidaySetup extends AbstractActionController
 
     public function indexAction()
     {
-
+        $this->initializeForm();
         $holidayFormElement = new Select();
         $holidayFormElement->setName("branch");
         $holidays=\Application\Helper\EntityHelper::getTableKVList($this->adapter, Holiday::TABLE_NAME, Holiday::HOLIDAY_ID, [Holiday::HOLIDAY_ENAME]);
@@ -68,7 +68,10 @@ class HolidaySetup extends AbstractActionController
             'holidayList' => $holidayList,
             'holidayFormElement'=>$holidayFormElement,
             'branchFormElement'=>$branchFormElement,
-            'genderFormElement'=>$genderFormElement
+            'genderFormElement'=>$genderFormElement,
+            'form'=>$this->form,
+            'customRenderer' => Helper::renderCustomView(),
+            "genders" => EntityHelper::getTableKVList($this->adapter, EntityHelper::HR_GENDERS),
         ]));
         return $viewModel;
     }

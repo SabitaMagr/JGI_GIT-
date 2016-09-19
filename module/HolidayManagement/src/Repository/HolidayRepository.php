@@ -58,9 +58,7 @@ class HolidayRepository implements RepositoryInterface
             new Expression("H.REMARKS AS REMARKS"),
             ], true);
         $select->from(['H' => Holiday::TABLE_NAME])
-            ->join(['G' => 'HR_GENDERS'], 'H.GENDER_ID=G.GENDER_ID', ['GENDER_NAME'])
-          ->join(['HB'=> 'HR_HOLIDAY_BRANCH'],'H.HOLIDAY_ID=HB.HOLIDAY_ID',['BRANCH_ID'])
-          ->join(['B' => "HR_BRANCHES"], 'HB.BRANCH_ID=B.BRANCH_ID', ['BRANCH_NAME']);
+            ->join(['G' => 'HR_GENDERS'], 'H.GENDER_ID=G.GENDER_ID', ['GENDER_NAME']);
 
         $select->where(["H.STATUS='E'"]);
         $statement = $sql->prepareStatementForSqlObject($select);
@@ -122,4 +120,5 @@ class HolidayRepository implements RepositoryInterface
         $result = $statement->execute();
         return $result;
     }
+
 }
