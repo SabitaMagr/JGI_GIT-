@@ -41,7 +41,7 @@ angular.module('hris', [])
 
         $scope.update = function(){
             var holidayId = angular.element(document.getElementById('holidayId')).val();
-            console.log($scope.holidayDtl);
+
             window.app.pullDataById(document.url, {
                 action: 'updateHolidayDetail',
                 data:{
@@ -50,10 +50,7 @@ angular.module('hris', [])
                 },
             }).then(function (success) {
                 $scope.$apply(function(){
-                   //console.log(success.data);
                     alert(success.data);
-                    //$scope.holidayDtl=success.data;
-
                 });
             }, function (failure) {
                 console.log(failure);
