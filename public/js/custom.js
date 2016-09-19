@@ -59,13 +59,18 @@ window.app = (function ($) {
         }
     }
 
+    var notification=function (message,config) {
+        $.notify(message,config);
+    }
+
     return {
         format: format,
         pullDataById: pullDataById,
         populateSelectElement: populateSelectElement,
         addDatePicker: addDatePicker,
         addTimePicker: addTimePicker,
-        fetchAndPopulate:fetchAndPopulate
+        fetchAndPopulate:fetchAndPopulate,
+        notification:notification
     };
 })(window.jQuery);
 

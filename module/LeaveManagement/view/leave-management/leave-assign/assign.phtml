@@ -2,13 +2,15 @@
 /**
  * Load Javascript files here
  */
-$this->headScript()->appendFile($this->basePath('plugins/jquery-datatable/media/js/jquery.dataTables.min.js'));
-$this->headScript()->appendFile($this->basePath('plugins/jquery-datatable/extensions/TableTools/js/dataTables.tableTools.min.js'));
-$this->headScript()->appendFile($this->basePath('plugins/jquery-datatable/media/js/dataTables.bootstrap.js'));
-$this->headScript()->appendFile($this->basePath('plugins/jquery-datatable/extensions/Bootstrap/jquery-datatable-bootstrap.js'));
-$this->headScript()->appendFile($this->basePath('plugins/datatables-responsive/js/datatables.responsive.js'));
-$this->headScript()->appendFile($this->basePath('plugins/datatables-responsive/js/lodash.min.js'));
-$this->headScript()->appendFile($this->basePath('js/datatables.js'));
+//$this->headScript()->appendFile($this->basePath('plugins/jquery-datatable/media/js/jquery.dataTables.min.js'));
+//$this->headScript()->appendFile($this->basePath('plugins/jquery-datatable/extensions/TableTools/js/dataTables.tableTools.min.js'));
+//$this->headScript()->appendFile($this->basePath('plugins/jquery-datatable/media/js/dataTables.bootstrap.js'));
+//$this->headScript()->appendFile($this->basePath('plugins/jquery-datatable/extensions/Bootstrap/jquery-datatable-bootstrap.js'));
+//$this->headScript()->appendFile($this->basePath('plugins/datatables-responsive/js/datatables.responsive.js'));
+//$this->headScript()->appendFile($this->basePath('plugins/datatables-responsive/js/lodash.min.js'));
+//$this->headScript()->appendFile($this->basePath('js/datatables.js'));
+$this->headScript()->appendFile($this->basePath('plugins/notify.min.js'));
+
 $this->headScript()->appendFile($this->basePath('plugins/angular.min.js'));
 $this->headScript()->appendFile($this->basePath('js/angular/http.js'));
 $this->headScript()->appendFile($this->basePath('js/angular/controllers.js'));
@@ -63,7 +65,7 @@ $designationFormElement->setAttribute("ng-model", "designationId");
                     <?php print $this->formElement($departmentFormElement); ?>
                 </div>
             </div>
-            <div class="col-sm-2">
+            <div class="col-sm-1 col-sm-offset-1">
                 <div class="form-group">
                     <label for="departmentId">&nbsp</label>
                     <button ng-click="view()" id="viewEmployees" class="btn btn-block btn-primary pull-center">

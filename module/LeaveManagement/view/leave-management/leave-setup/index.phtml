@@ -8,7 +8,9 @@ $this->headScript()->appendFile($this->basePath('plugins/jquery-datatable/media/
 $this->headScript()->appendFile($this->basePath('plugins/jquery-datatable/extensions/Bootstrap/jquery-datatable-bootstrap.js'));
 $this->headScript()->appendFile($this->basePath('plugins/datatables-responsive/js/datatables.responsive.js'));
 $this->headScript()->appendFile($this->basePath('plugins/datatables-responsive/js/lodash.min.js'));
-$this->headScript()->appendFile($this->basePath('js/datatables.js'));
+//$this->headScript()->appendFile($this->basePath('js/datatables.js'));
+
+$this->headScript()->appendFile($this->basePath('js/leave-setup/index.js'));
 ?>
 
 <script>
@@ -44,37 +46,43 @@ if ($this->messages) {
         <div class="clearfix"></div>
     </div>
     <div class="panel-body">
-        <div id="tableWithDynamicRows_wrapper" class="dataTables_wrapper form-inline no-footer">
-            <div class="table-responsive">
-                <table class="table table-hover demo-table-dynamic dataTable no-footer" id="tableWithDynamicRows"
-                       role="grid" aria-describedby="tableWithDynamicRows_info">
-                    <thead>
+        <div class="table-responsive">
+            <div id="condensedTable_wrapper" class="dataTables_wrapper form-inline no-footer">
+                <table class="table table-hover table-condensed dataTable no-footer" id="condensedTable" role="grid">
+                <thead>
                     <tr role="row">
-                        <th class="sorting_asc" tabindex="0" aria-controls="tableWithExportOptions" rowspan="1" colspan="1" aria-sort="ascending"
+                        <th class="sorting_asc" tabindex="0" aria-controls="condensedTable" rowspan="1"
+                            colspan="1" aria-sort="ascending"
                             aria-label="Rendering engine: activate to sort column descending">
                             Leave Code
                         </th>
-                        <th class="sorting_asc" tabindex="0" aria-controls="tableWithExportOptions" rowspan="1" colspan="1" aria-sort="ascending"
+                        <th class="sorting_asc" tabindex="0" aria-controls="tableWithExportOptions" rowspan="1"
+                            colspan="1" aria-sort="ascending"
                             aria-label="Rendering engine: activate to sort column descending">
                             Leave Name
                         </th>
-                        <th class="sorting_asc" tabindex="0" aria-controls="tableWithExportOptions" rowspan="1" colspan="1" aria-sort="ascending"
+                        <th class="sorting_asc" tabindex="0" aria-controls="tableWithExportOptions" rowspan="1"
+                            colspan="1" aria-sort="ascending"
                             aria-label="Rendering engine: activate to sort column descending">
                             Allow Halfday
                         </th>
-                        <th class="sorting_asc" tabindex="0" aria-controls="tableWithExportOptions" rowspan="1" colspan="1" aria-sort="ascending"
+                        <th class="sorting_asc" tabindex="0" aria-controls="tableWithExportOptions" rowspan="1"
+                            colspan="1" aria-sort="ascending"
                             aria-label="Rendering engine: activate to sort column descending">
                             Default Days
                         </th>
-                        <th class="sorting_asc" tabindex="0" aria-controls="tableWithExportOptions" rowspan="1" colspan="1" aria-sort="ascending"
+                        <th class="sorting_asc" tabindex="0" aria-controls="tableWithExportOptions" rowspan="1"
+                            colspan="1" aria-sort="ascending"
                             aria-label="Rendering engine: activate to sort column descending">
                             Carry Forward
                         </th>
-                        <th class="sorting_asc" tabindex="0" aria-controls="tableWithExportOptions" rowspan="1" colspan="1" aria-sort="ascending"
+                        <th class="sorting_asc" tabindex="0" aria-controls="tableWithExportOptions" rowspan="1"
+                            colspan="1" aria-sort="ascending"
                             aria-label="Rendering engine: activate to sort column descending">
                             Cashable
                         </th>
-                        <th class="sorting_asc" tabindex="0" aria-controls="tableWithExportOptions" rowspan="1" colspan="1" aria-sort="ascending"
+                        <th class="sorting_asc" tabindex="0" aria-controls="tableWithExportOptions" rowspan="1"
+                            colspan="1" aria-sort="ascending"
                             aria-label="Rendering engine: activate to sort column descending">
                             Action
                         </th>
@@ -117,7 +125,8 @@ if ($this->messages) {
                                 </p>
                             </td>
                             <td class="">
-                                <a href="<?= $this->url("leavesetup", ["action" => "edit", "id" => $leave['LEAVE_ID']]) ?>">Edit</a> /
+                                <a href="<?= $this->url("leavesetup", ["action" => "edit", "id" => $leave['LEAVE_ID']]) ?>">Edit</a>
+                                /
                                 <a href="<?= $this->url("leavesetup", ["action" => "delete", "id" => $leave['LEAVE_ID']]); ?>"
                                    onclick="return confirm('Are you sure you want to delete this item?');">Delete</a>
                             </td>

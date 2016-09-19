@@ -61,16 +61,16 @@ class LeaveAssignRepository implements RepositoryInterface
 
     }
 
-    public function filter($leaveId, $branchId, $departmentId, $genderId, $designationId)
+    public function filter( $branchId, $departmentId, $genderId, $designationId)
     {
         $sql = new Sql($this->adapter);
         $select = $sql->select();
 
         $select->columns(["EMPLOYEE_ID", "FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], true);
         $select->from(['E' => "HR_EMPLOYEES"])
-            ->join(['L' => LeaveAssign::TABLE_NAME], 'E.EMPLOYEE_ID=L.EMPLOYEE_ID', [LeaveAssign::LEAVE_ID, LeaveAssign::BALANCE], \Zend\Db\Sql\Select::JOIN_LEFT)
             ->join(['DE'=>'HR_DESIGNATIONS'],'DE.DESIGNATION_ID=E.DESIGNATION_ID',["DESIGNATION_ID","DESIGNATION_TITLE"])
             ->join(['B'=>'HR_BRANCHES'],'B.BRANCH_ID=E.BRANCH_ID',["BRANCH_ID","BRANCH_NAME"])
+//            ->join(['L' => LeaveAssign::TABLE_NAME], 'E.EMPLOYEE_ID=L.EMPLOYEE_ID', [LeaveAssign::LEAVE_ID, LeaveAssign::BALANCE], \Zend\Db\Sql\Select::JOIN_LEFT)
         ;
         if ($branchId != -1) {
             $select->where(["E.BRANCH_ID=$branchId"]);
@@ -84,13 +84,21 @@ class LeaveAssignRepository implements RepositoryInterface
         if ($designationId != -1) {
             $select->where(["E.DESIGNATION_ID=$designationId"]);
         }
-        $select->where(["(L.LEAVE_ID=$leaveId OR L.LEAVE_ID IS NULL)"]);
+//        $select->where(["(L.LEAVE_ID=$leaveId )"]);
+//        $select->where(["(L.LEAVE_ID IS NULL )"]);
+
         $statement = $sql->prepareStatementForSqlObject($select);
 //        print "<pre>";
 //        print_r($statement->getSql());
 //        exit;
         $result = $statement->execute();
         return $result;
+//OR L.LEAVE_ID IS NULL
+    }
+
+    public function filterByLeaveEmployeeId($leaveId,$employeeId){
+          $result= $this->tableGateway->select([LeaveAssign::LEAVE_ID=>$leaveId,LeaveAssign::EMPLOYEE_ID=>$employeeId]);
+       return $result->current();
 
     }
 

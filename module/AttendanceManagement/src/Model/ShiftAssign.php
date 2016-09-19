@@ -11,31 +11,26 @@ namespace AttendanceManagement\Model;
 use Application\Model\Model;
 
 class ShiftAssign extends  Model {
-    const TABLE_NAME="EMPLOYEE_SHIFT_ASSIGN";
+    const TABLE_NAME="HR_EMPLOYEE_SHIFT_ASSIGN";
 
-    const SHIFT_ASSIGN_ID="SHIFT_ASSIGN_ID";
-    const EMPLOYEE_CODE="EMPLOYEE_CODE";
-    const FROM_DATE="FROM_DATE";
-    const TO_DATE="TO_DATE";
-    const SHIFT_CODE="SHIFT_CODE";
-    const SUN="SUN";
-    const MON="MON";
-    const TUE="TUE";
-    const WED="WED";
-    const THU="THU";
-    const FRI="FRI";
-    const SAT="SAT";
+    const EMPLOYEE_ID="EMPLOYEE_ID";
+    const SHIFT_ID="SHIFT_ID";
+    const CREATED_DT="CREATED_DT";
+    const MODIFIED_DT="MODIFIED_DT";
+    const REMARKS="REMARKS";
 
-    public $shiftAssignId;
-    public $employeeCode;
-    public $fromDate;
-    public $toDate;
-    public $shiftCode;
-    public $sun;
-    public $mon;
-    public $tue;
-    public $wed;
-    public $thu;
-    public $fri;
-    public $sat;
+    public $employeeId;
+    public $shiftId;
+    public $createdDt;
+    public $modifiedDt;
+    public $remarks;
+
+    public $mappings=[
+        'employeeId'=>self::EMPLOYEE_ID,
+        'shiftId'=>self::SHIFT_ID,
+        'createdDt'=>self::CREATED_DT,
+        'modifiedDt'=>self::MODIFIED_DT,
+        'remarks'=>self::REMARKS
+    ];
+
 }
