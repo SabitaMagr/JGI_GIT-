@@ -43,7 +43,8 @@
             "HolidayManagement\\":"module/HolidayManagement/src/",
             "Setup\\":"module/Setup/src/",
             "AttendanceManagement\\":"module/AttendanceManagement/src/",
-            "SelfService\\":"module/SelfService/src/"
+            "SelfService\\":"module/SelfService/src/",
+            "RestfulService\\":"module/RestfulService/src/"
         }
     },
     "autoload-dev": {

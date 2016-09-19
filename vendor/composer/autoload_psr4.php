@@ -55,6 +55,7 @@ return array(
     'Symfony\\Component\\Yaml\\' => array($vendorDir . '/symfony/yaml'),
     'Setup\\' => array($baseDir . '/module/Setup/src'),
     'SelfService\\' => array($baseDir . '/module/SelfService/src'),
+    'RestfulService\\' => array($baseDir . '/module/RestfulService/src'),
     'Psr\\Http\\Message\\' => array($vendorDir . '/psr/http-message/src'),
     'LeaveManagement\\' => array($baseDir . '/module/LeaveManagement/src'),
     'Interop\\Container\\' => array($vendorDir . '/container-interop/container-interop/src/Interop/Container'),

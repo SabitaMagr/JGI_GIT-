@@ -4,7 +4,7 @@
 angular.module('hris', [])
     .controller('assignController', function ($scope, $http) {
         $scope.leaveList = [];
-        $scope.all=false;
+        $scope.all = false;
         $scope.daysForAll = 0;
         $scope.daysForAllFlag = false;
 
@@ -13,7 +13,7 @@ angular.module('hris', [])
                 $scope.leaveList[i].checked = item;
             }
 
-                $scope.daysForAllFlag = item && $scope.leaveList.length>0;
+            $scope.daysForAllFlag = item && $scope.leaveList.length > 0;
         };
 
         $scope.daysForAllChange = function (days) {
@@ -38,10 +38,10 @@ angular.module('hris', [])
         $scope.assign = function (index) {
             console.log($scope.leaveList[index]);
 
+            var promises = [];
             for (var index in $scope.leaveList) {
-                console.log($scope.leaveList[index]);
                 if ($scope.leaveList[index].checked) {
-                    window.app.pullDataById(document.url, {
+                    promises.push(window.app.pullDataById(document.url, {
                         action: 'pushEmployeeLeave',
                         data: {
                             leaveId: $scope.leaveList[index].LEAVE_ID,
@@ -49,17 +49,18 @@ angular.module('hris', [])
                             balance: $scope.leaveList[index].BALANCE,
                             leave: leaveId
                         }
-                    }).then(function (success) {
-                        console.log(success);
-                    });
-
+                    }));
                 }
             }
+            Promise.all(promises).then(function (success) {
+                console.log(success);
+                window.app.notification("Leave assigned successfully!", {position: "top right", className: "success"});
+            });
         };
         var leaveId;
         $scope.view = function () {
             $scope.daysForAllFlag = false;
-            $scope.all=false;
+            $scope.all = false;
             leaveId = angular.element(document.getElementById('leaveId')).val();
             var branchId = angular.element(document.getElementById('branchId')).val();
             var departmentId = angular.element(document.getElementById('departmentId')).val();
@@ -89,5 +90,39 @@ angular.module('hris', [])
 
             });
         };
+    });
+
+
+angular.module('hris', [])
+    .controller('shiftAssignController', function ($scope, $http) {
+        $scope.employeeShiftList=[];
+
+        $scope.view=function () {
+            var branchId = angular.element(document.getElementById('branchId')).val();
+            var departmentId = angular.element(document.getElementById('departmentId')).val();
+            var designationId = angular.element(document.getElementById('designationId')).val();
+            var positionId = angular.element(document.getElementById('positionId')).val();
+            var serviceTypeId = angular.element(document.getElementById('serviceTypeId')).val();
+
+            window.app.pullDataById(document.url, {
+                action: 'pullEmployeeForShiftAssign',
+                id: {
+                    branchId: branchId,
+                    departmentId: departmentId,
+                    designationId: designationId,
+                    positionId: positionId,
+                    serviceTypeId: serviceTypeId,
+                }
+            }).then(function (success) {
+                console.log("shift Assign Filter Success Response",success);
+                $scope.$apply(function () {
+                    $scope.employeeShiftList=success.data;
+                });
+
+            }, function (failure) {
+                console.log("shift Assign Filter Failure Response",failure);
+            });
+        };
+
     });
 

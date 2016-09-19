@@ -1,4 +1,105 @@
+<script>
+    document.menu =<?php $menu = ["id" => "menuAttendanceManagement", "subMenu" => ["id" => "subMenuShiftAssign"]];echo json_encode($menu);?>;
+    document.url = '<?= $this->url("restful", ["action" => "index"]) ?>';
+</script>
 <?php
-echo 'hellow this is your shift assign detail';
-
+$this->headScript()->appendFile($this->basePath('plugins/angular.min.js'));
+$this->headScript()->appendFile($this->basePath('js/angular/controllers.js'));
 ?>
+
+<div ng-app="hris" ng-controller="shiftAssignController">
+
+    <div class="row">
+        <div class="col-sm-2">
+            <div class=" form-group form-group-default-select2">
+                <?php print $this->formLabel($branches); ?>
+                <?php print $this->formElement($branches); ?>
+            </div>
+        </div>
+        <div class="col-sm-2">
+            <div class=" form-group form-group-default-select2">
+                <?php print $this->formLabel($departments); ?>
+                <?php print $this->formElement($departments); ?>
+            </div>
+
+        </div>
+        <div class="col-sm-2">
+            <div class=" form-group form-group-default-select2">
+                <?php print $this->formLabel($designations); ?>
+                <?php print $this->formElement($designations); ?>
+            </div>
+
+        </div>
+        <div class="col-sm-2">
+            <div class=" form-group form-group-default-select2">
+                <?php print $this->formLabel($positions); ?>
+                <?php print $this->formElement($positions); ?>
+            </div>
+        </div>
+        <div class="col-sm-2">
+            <div class=" form-group form-group-default-select2">
+                <?php print $this->formLabel($serviceTypes); ?>
+                <?php print $this->formElement($serviceTypes); ?>
+            </div>
+
+        </div>
+        <div class="col-sm-2">
+            <div class="form-group">
+                <label for="viewEmployees">&nbsp</label>
+                <button ng-click="view()" id="viewEmployees" class="btn btn-block btn-primary pull-center">
+                    View
+                </button>
+            </div>
+        </div>
+    </div>
+    <div>
+        <table class="table small-table">
+            <thead>
+            <tr>
+                <th>
+                    Employee
+                </th>
+                <th>
+                    Branch
+                </th>
+                <th>
+                    Department
+                </th>
+                <th>
+                    Designation
+                </th>
+                <th>
+                    Position
+                </th>
+                <th>
+                    Service Type
+                </th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="employeeShift in employeeShiftList">
+                <td>
+                    {{employeeShift.FIRST_NAME}} {{employeeShift.MIDDLE_NAME}} {{employeeShift.LAST_NAME}}
+                </td>
+                <td>
+                    {{employeeShift.BRANCH_NAME}}
+                </td>
+                <td>
+                    {{employeeShift.DEPARTMENT_NAME}}
+
+                </td>
+                <td>
+                    {{employeeShift.DESIGNATION_TITLE}}
+
+                </td>
+                <td>
+                    {{employeeShift.POSITION_NAME}}
+
+                </td>
+
+            </tr>
+            </tbody>
+        </table>
+
+    </div>
+</div>
