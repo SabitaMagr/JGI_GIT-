@@ -5,6 +5,7 @@ window.app = (function ($) {
     var pullDataById = function (url, data) {
         return new Promise(function (resolve, reject) {
             $.ajax({
+
                 url: url,
                 data: data,
                 type: 'POST',
@@ -12,7 +13,6 @@ window.app = (function ($) {
                     reject(error);
                 },
                 success: function (data) {
-                    console.log(data);
                     resolve(data);
                 }
 
@@ -33,6 +33,8 @@ window.app = (function ($) {
 
     var fetchAndPopulate = function (url, id, element, callback) {
         pullDataById(url, {id: id}).then(function (data) {
+
+
             populateSelectElement(element, data);
             if (typeof callback !== 'undefined') {
                 callback();

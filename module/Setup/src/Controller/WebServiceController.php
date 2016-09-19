@@ -10,6 +10,8 @@ use Zend\Db\Adapter\AdapterInterface;
 use Zend\EventManager\EventManagerInterface;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\JsonModel;
+use Application\Helper\EntityHelper as ApplicationEntityHelper;
+use HolidayManagement\Repository\HolidayRepository;
 
 class WebServiceController extends AbstractActionController
 {
@@ -98,6 +100,20 @@ class WebServiceController extends AbstractActionController
                         "data" => $postedData
                     ];
                     break;
+                case "pullHolidayList":
+                    $holidayRepository = new HolidayRepository($this->adapter);
+                    $filtersId = $postedData->id;
+                    $resultSet = $holidayRepository->filterRecords($filtersId['holidayId'],$filtersId['branchId'],$filtersId['genderId']);
+
+                    $tempArray = [];
+                    foreach ($resultSet as $item) {
+                        array_push($tempArray, $item);
+                    }
+                    $responseData = [
+                        "success" => true,
+                        "data" => $tempArray
+                    ];
+                    break;
                 default:
                     $responseData = [
                         "success" => false
@@ -139,4 +155,13 @@ class WebServiceController extends AbstractActionController
         }
     }
 
+    public function branchListAction(){
+        $request = $this->getRequest();
+        if($request->isPost()){
+            $id = $request->getPost()->id;
+            return new JsonModel([
+                'data'=>ApplicationEntityHelper::getColumnsList($this->adapter,$id,"BRANCH_ID", ["BRANCH_NAME"])
+            ]);
+        }
+    }
 }
