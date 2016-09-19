@@ -12,6 +12,8 @@ use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 use HolidayManagement\Model\HolidayBranch;
+use Setup\Model\Branch;
+use Zend\Form\Element\Select;
 
 class HolidaySetup extends AbstractActionController
 {
@@ -33,11 +35,40 @@ class HolidaySetup extends AbstractActionController
 
     public function indexAction()
     {
-        
 
-       $holidayList= $this->repository->fetchAll();
-       $viewModel= new ViewModel(Helper::addFlashMessagesToArray($this, [
+        $holidayFormElement = new Select();
+        $holidayFormElement->setName("branch");
+        $holidays=\Application\Helper\EntityHelper::getTableKVList($this->adapter, Holiday::TABLE_NAME, Holiday::HOLIDAY_ID, [Holiday::HOLIDAY_ENAME]);
+        $holidays[-1]="All";
+        ksort($holidays);
+        $holidayFormElement->setValueOptions($holidays);
+        $holidayFormElement->setAttributes(["id" => "holidayId", "class" => "full-width select2-offscreen", "data-init-plugin" => "select2"]);
+        $holidayFormElement->setLabel("Holiday");
+
+        $branchFormElement = new Select();
+        $branchFormElement->setName("branch");
+        $branches=\Application\Helper\EntityHelper::getTableKVList($this->adapter, Branch::TABLE_NAME, Branch::BRANCH_ID, [Branch::BRANCH_NAME]);
+        $branches[-1]="All";
+        ksort($branches);
+        $branchFormElement->setValueOptions($branches);
+        $branchFormElement->setAttributes(["id" => "branchId", "class" => "full-width select2-offscreen", "data-init-plugin" => "select2"]);
+        $branchFormElement->setLabel("Branch");
+
+        $genderFormElement = new Select();
+        $genderFormElement->setName("gender");
+        $genders=\Application\Helper\EntityHelper::getTableKVList($this->adapter,"HR_GENDERS","GENDER_ID" , ["GENDER_NAME"]);
+        $genders[-1]="All";
+        ksort($genders);
+        $genderFormElement->setValueOptions($genders);
+        $genderFormElement->setAttributes(["id" => "genderId", "class" => "full-width select2-offscreen", "data-init-plugin" => "select2"]);
+        $genderFormElement->setLabel("Gender");
+
+        $holidayList= $this->repository->fetchAll();
+        $viewModel= new ViewModel(Helper::addFlashMessagesToArray($this, [
             'holidayList' => $holidayList,
+            'holidayFormElement'=>$holidayFormElement,
+            'branchFormElement'=>$branchFormElement,
+            'genderFormElement'=>$genderFormElement
         ]));
         return $viewModel;
     }

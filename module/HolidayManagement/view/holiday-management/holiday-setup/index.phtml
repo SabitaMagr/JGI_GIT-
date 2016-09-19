@@ -9,10 +9,18 @@ $this->headScript()->appendFile($this->basePath('plugins/jquery-datatable/extens
 $this->headScript()->appendFile($this->basePath('plugins/datatables-responsive/js/datatables.responsive.js'));
 $this->headScript()->appendFile($this->basePath('plugins/datatables-responsive/js/lodash.min.js'));
 $this->headScript()->appendFile($this->basePath('js/datatables.js'));
+$this->headScript()->appendFile($this->basePath('js/holiday/index.js'));
+
+$this->headScript()->appendFile($this->basePath('plugins/angular.min.js'));
+$this->headScript()->appendFile($this->basePath('js/angular/http.js'));
+$this->headScript()->appendFile($this->basePath('js/angular/controllers.js'));
+
 ?>
 
 <script>
     document.menu =<?php $menu = ["id" => "menuHolidayManagement", "subMenu" => ["id" => "subMenuHolidaySetup"]];echo json_encode($menu);?>;
+    document.urlBranchList = '<?= $this->url("webService", ["action" => "branchList"]) ?>';
+    document.url = '<?= $this->url("webService", ["action" => "index"]) ?>';
 </script>
 
 <?php
@@ -23,10 +31,44 @@ if ($this->messages) {
     }
     print '</div>';
 }
+
+$holidayFormElement->setAttributes(["ng-model" => "holidayId"]);
+$branchFormElement->setAttribute("ng-model", "branchId");
+$genderFormElement->setAttribute("ng-model", "genderId");
 ?>
-
-
+<div ng-app="hris" ng-controller="holidayController">
 <div class="panel panel-transparent bg-light-color">
+    <div class="p-t-20 p-r-10 p-l-20">
+        <div class="row">
+            <div class="col-md-2">
+                <div class="form-group form-group-default-select2">
+                    <?php print $this->formLabel($holidayFormElement); ?>
+                    <?php print $this->formElement($holidayFormElement); ?>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="form-group form-group-default-select2">
+                    <?php print $this->formLabel($branchFormElement); ?>
+                    <?php print $this->formElement($branchFormElement); ?>
+                </div>
+             </div>
+            <div class="col-md-2">
+                <div class="form-group form-group-default-select2">
+                    <?php print $this->formLabel($genderFormElement); ?>
+                    <?php print $this->formElement($genderFormElement); ?>
+                </div>
+            </div>
+            <div class="col-md-1">
+                <div class="form-group">
+                    <label for="departmentId">&nbsp</label>
+                    <button ng-click="filter()" id="viewHolidays" class="btn btn-block btn-primary pull-center">
+                        Filter
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="panel-heading p-b-0">
         <div class="panel-title">
             <h5 class="m-b-0 m-t-0">Holiday<span style="font-size:10px;"> Setup</span></h5>
@@ -101,47 +143,45 @@ if ($this->messages) {
 
             </tr>
             </thead>
-            <tbody>
+            <tbody id="target">
 
             <?php foreach ($holidayList as $holiday):
                 ?>
-                <tr role="row">
+                <tr role="row" ng-repeat="holiday in holidayList">
                     <td class="">
                         <p>
-                            <?php print $this->escapeHtml($holiday[\HolidayManagement\Model\Holiday::HOLIDAY_CODE]); ?>
+                            {{holiday.HOLIDAY_CODE}}
                         </p>
                     </td>
 
                     <td class="">
                         <p>
-                            <?php
-                             print $this->escapeHtml($holiday['BRANCH_NAME']);
-                            ?>
+                            {{holiday.BRANCH_NAME}}
                         </p>
                     </td>
                     <td class="">
                         <p>
-                            <?php print $this->escapeHtml($holiday[\HolidayManagement\Model\Holiday::HOLIDAY_ENAME]); ?>
+                            {{holiday.HOLIDAY_ENAME}}
                         </p>
                     </td>
                     <td class="">
                         <p>
-                            <?php print $this->escapeHtml($holiday[\HolidayManagement\Model\Holiday::START_DATE]); ?>
+                            {{holiday.START_DATE}}
                         </p>
                     </td>
                     <td class="">
                         <p>
-                            <?php print $this->escapeHtml($holiday[\HolidayManagement\Model\Holiday::END_DATE]); ?>
+                            {{holiday.END_DATE}}
+                        </p>
+                    </td>
+                    <td class="">
+                        <p>{{holiday.HALFDAY}}
+
                         </p>
                     </td>
                     <td class="">
                         <p>
-                            <?php print $this->escapeHtml($holiday[\HolidayManagement\Model\Holiday::HALFDAY]); ?>
-                        </p>
-                    </td>
-                    <td class="">
-                        <p>
-                            <?php print $this->escapeHtml($holiday[\HolidayManagement\Model\Holiday::FISCAL_YEAR]); ?>
+                            {{holiday.FISCAL_YEAR}}
                         </p>
                     </td>
 
@@ -157,4 +197,5 @@ if ($this->messages) {
             </tbody>
         </table>
     </div>
+</div>
 </div>

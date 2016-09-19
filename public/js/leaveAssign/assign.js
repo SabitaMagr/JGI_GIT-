@@ -26,7 +26,4 @@
 
     var leavelist={};
 
-
-
-
 })(window.jQuery, window.app);

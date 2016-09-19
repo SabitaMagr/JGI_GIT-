@@ -94,7 +94,6 @@ class HolidayForm
      */
     public $remarks;
 
-
     /**
      * @Annotation\Type("Zend\Form\Element\Submit")
      * @Annotation\Attributes({"value":"Submit","class":"btn btn-primary pull-right"})
