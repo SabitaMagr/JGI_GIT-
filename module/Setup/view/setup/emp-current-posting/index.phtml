@@ -23,16 +23,14 @@ if ($this->messages) {
 <script>
     document.menu=<?php $menu = ["id" => "menuSetup","subMenu"=>["id"=>"subMenuCurrentPosting"]];echo json_encode($menu);?>;
 </script>
-<div class="panel panel-transparent bg-light-color">
-    <div class="panel-heading p-b-0">
-        <div class="panel-title">
-            <h5 class="m-b-0 m-t-0">Employee Current Posting</h5>
-        </div>
+<div class="panel panel-white">
+    <div class="panel-heading">
+
         <div class="btn-group pull-right">
-            <a class="btn btn-default" href="<?= $this->url('empCurrentPosting', ['action' => 'add']) ?>">
+            <a class="btn btn-success" href="<?= $this->url('empCurrentPosting', ['action' => 'add']) ?>">
                 Add new
             </a>
-            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+            <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
                 <span class="caret"></span>
             </button>
             <ul class="dropdown-menu" role="menu">
@@ -42,98 +40,107 @@ if ($this->messages) {
                 </li>
             </ul>
         </div>
-        <div class="pull-right">
-            <div class="col-xs-12">
+        <div class="pull-left">
+            <div class="">
                 <input type="text" id="search-table" class="form-control pull-right" placeholder="Search">
             </div>
         </div>
         <div class="clearfix"></div>
     </div>
     <div class="panel-body">
-        <table class="table customTable demo-table-search" id="tableWithSearch">
-            <thead>
-            <tr role="row">
-                <th aria-label="Title: activate to sort column ascending" aria-sort="descending" colspan="1"
-                    rowspan="1"
-                    aria-controls="basicTable" tabindex="0" class="sorting_desc" style="width: 218px;">Employee
-                    Name
-                </th>
-                <th aria-label="Places: activate to sort column ascending" colspan="1" rowspan="1"
-                    aria-controls="basicTable"
-                    tabindex="0" class="sorting" style="width: 219px;">Service Type
-                </th>
-                <th aria-label="Places: activate to sort column ascending" colspan="1" rowspan="1"
-                    aria-controls="basicTable"
-                    tabindex="0" class="sorting" style="width: 219px;">Branch Name
-                </th>
-                <th aria-label="Places: activate to sort column ascending" colspan="1" rowspan="1"
-                    aria-controls="basicTable"
-                    tabindex="0" class="sorting" style="width: 219px;">Department Name
-                </th>
-                <th aria-label="Places: activate to sort column ascending" colspan="1" rowspan="1"
-                    aria-controls="basicTable"
-                    tabindex="0" class="sorting" style="width: 219px;">Designation Title
-                </th>
-                <th aria-label="Places: activate to sort column ascending" colspan="1" rowspan="1"
-                    aria-controls="basicTable"
-                    tabindex="0" class="sorting" style="width: 219px;">Position Name
-                </th>
-                <th aria-label="Last Update: activate to sort column ascending" colspan="1" rowspan="1"
-                    aria-controls="basicTable" tabindex="0" class="sorting" style="width: 155px;">
-                    Action
-                </th>
-            </tr>
-            </thead>
-            <tbody>
-
-            <?php
-
-            foreach ($empCurrentPostingList as $empCurrentPosting):?>
+        <div class="table-responsive">
+            <table class="table table-bordered bg-master-lighter table-striped small-table" id="tableWithSearch">
+                <thead>
                 <tr role="row">
-                    <td class="v-align-middle sorting_1">
-                        <p>
-                            <?php print $this->escapeHtml($empCurrentPosting['FIRST_NAME'].' '.$empCurrentPosting['MIDDLE_NAME']." ".$empCurrentPosting['LAST_NAME']); ?>
-                        </p>
-                    </td>
-                    <td class="v-align-middle sorting_1">
-                        <p>
-                            <?php
-                            print $this->escapeHtml($empCurrentPosting['SERVICE_TYPE_NAME']); ?>
-                        </p>
-                    </td>
-                    <td class="v-align-middle sorting_1">
-                        <p>
-                            <?php
-                            print $this->escapeHtml($empCurrentPosting['BRANCH_NAME']); ?>
-                        </p>
-                    </td>
-                    <td class="v-align-middle sorting_1">
-                        <p>
-                            <?php print $this->escapeHtml($empCurrentPosting['DEPARTMENT_NAME']); ?>
-                        </p>
-                    </td>
-                    <td class="v-align-middle sorting_1">
-                        <p>
-                            <?php print $this->escapeHtml($empCurrentPosting['DESIGNATION_TITLE']); ?>
-                        </p>
-                    </td>
-
-                    <td class="v-align-middle sorting_1">
-                        <p>
-                            <?php print $this->escapeHtml($empCurrentPosting['POSITION_NAME']); ?>
-                        </p>
-                    </td>
-                    <td class="v-align-middle sorting_1">
-                        <a href="<?= $this->url("empCurrentPosting", ["action" => "edit", "id" => $empCurrentPosting['EMPLOYEE_ID']]) ?>">Edit</a> /
-                        <a href="<?= $this->url("empCurrentPosting", ["action" => "delete", "id" => $empCurrentPosting['EMPLOYEE_ID']]); ?>"
-                           onclick="return confirm('Are you sure you want to delete this item?');">Delete</a>
-                    </td>
+                    <th aria-label="Title: activate to sort column ascending" aria-sort="descending" colspan="1"
+                        rowspan="1"
+                        aria-controls="basicTable" tabindex="0" class="sorting_desc" style="width: 218px;">Employee
+                        Name
+                    </th>
+                    <th aria-label="Places: activate to sort column ascending" colspan="1" rowspan="1"
+                        aria-controls="basicTable"
+                        tabindex="0" class="sorting" style="width: 219px;">Service Type
+                    </th>
+                    <th aria-label="Places: activate to sort column ascending" colspan="1" rowspan="1"
+                        aria-controls="basicTable"
+                        tabindex="0" class="sorting" style="width: 219px;">Branch Name
+                    </th>
+                    <th aria-label="Places: activate to sort column ascending" colspan="1" rowspan="1"
+                        aria-controls="basicTable"
+                        tabindex="0" class="sorting" style="width: 219px;">Department Name
+                    </th>
+                    <th aria-label="Places: activate to sort column ascending" colspan="1" rowspan="1"
+                        aria-controls="basicTable"
+                        tabindex="0" class="sorting" style="width: 219px;">Designation Title
+                    </th>
+                    <th aria-label="Places: activate to sort column ascending" colspan="1" rowspan="1"
+                        aria-controls="basicTable"
+                        tabindex="0" class="sorting" style="width: 219px;">Position Name
+                    </th>
+                    <th aria-label="Last Update: activate to sort column ascending" colspan="1" rowspan="1"
+                        aria-controls="basicTable" tabindex="0" class="sorting" style="width: 155px;">
+                        Action
+                    </th>
                 </tr>
+                </thead>
+                <tbody>
 
-            <?php endforeach; ?>
+                <?php
 
-            </tbody>
-         </table>
+                foreach ($empCurrentPostingList as $empCurrentPosting):?>
+                    <tr role="row">
+                        <td class="v-align-middle sorting_1">
+                            <p>
+                                <?php print $this->escapeHtml($empCurrentPosting['FIRST_NAME'].' '.$empCurrentPosting['MIDDLE_NAME']." ".$empCurrentPosting['LAST_NAME']); ?>
+                            </p>
+                        </td>
+                        <td class="v-align-middle sorting_1">
+                            <p>
+                                <?php
+                                print $this->escapeHtml($empCurrentPosting['SERVICE_TYPE_NAME']); ?>
+                            </p>
+                        </td>
+                        <td class="v-align-middle sorting_1">
+                            <p>
+                                <?php
+                                print $this->escapeHtml($empCurrentPosting['BRANCH_NAME']); ?>
+                            </p>
+                        </td>
+                        <td class="v-align-middle sorting_1">
+                            <p>
+                                <?php print $this->escapeHtml($empCurrentPosting['DEPARTMENT_NAME']); ?>
+                            </p>
+                        </td>
+                        <td class="v-align-middle sorting_1">
+                            <p>
+                                <?php print $this->escapeHtml($empCurrentPosting['DESIGNATION_TITLE']); ?>
+                            </p>
+                        </td>
 
+                        <td class="v-align-middle sorting_1">
+                            <p>
+                                <?php print $this->escapeHtml($empCurrentPosting['POSITION_NAME']); ?>
+                            </p>
+                        </td>
+                        <td class="v-align-middle sorting_1">
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-default">
+                                    <a class="fa fa-edit btn-link"
+                                       href="<?= $this->url("empCurrentPosting", ["action" => "edit", "id" => $empCurrentPosting['EMPLOYEE_ID']]) ?>">
+                                    </a>
+                                </button>
+                                <button type="button" class="btn btn-default">
+                                    <a class="fa fa-trash-o btn-link"
+                                       href="<?= $this->url("empCurrentPosting", ["action" => "delete", "id" => $empCurrentPosting['EMPLOYEE_ID']]);  ?>"></a>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+
+                <?php endforeach; ?>
+
+                </tbody>
+             </table>
+        </div>
     </div>
 </div>
