@@ -35,11 +35,10 @@ class HolidaySetup extends AbstractActionController
 
     public function indexAction()
     {
-
+        $this->initializeForm();
         $holidayFormElement = new Select();
         $holidayFormElement->setName("branch");
         $holidays=\Application\Helper\EntityHelper::getTableKVList($this->adapter, Holiday::TABLE_NAME, Holiday::HOLIDAY_ID, [Holiday::HOLIDAY_ENAME]);
-        $holidays[-1]="All";
         ksort($holidays);
         $holidayFormElement->setValueOptions($holidays);
         $holidayFormElement->setAttributes(["id" => "holidayId", "class" => "full-width select2-offscreen", "data-init-plugin" => "select2"]);
@@ -48,10 +47,9 @@ class HolidaySetup extends AbstractActionController
         $branchFormElement = new Select();
         $branchFormElement->setName("branch");
         $branches=\Application\Helper\EntityHelper::getTableKVList($this->adapter, Branch::TABLE_NAME, Branch::BRANCH_ID, [Branch::BRANCH_NAME]);
-        $branches[-1]="All";
         ksort($branches);
         $branchFormElement->setValueOptions($branches);
-        $branchFormElement->setAttributes(["id" => "branchId", "class" => "full-width select2-offscreen", "data-init-plugin" => "select2"]);
+        $branchFormElement->setAttributes(["id" => "branchId", "class" => "full-width select2-offscreen", "multiple"=>"multiple", "data-init-plugin" => "select2"]);
         $branchFormElement->setLabel("Branch");
 
         $genderFormElement = new Select();
@@ -59,16 +57,16 @@ class HolidaySetup extends AbstractActionController
         $genders=\Application\Helper\EntityHelper::getTableKVList($this->adapter,"HR_GENDERS","GENDER_ID" , ["GENDER_NAME"]);
         $genders[-1]="All";
         ksort($genders);
-        $genderFormElement->setValueOptions($genders);
-        $genderFormElement->setAttributes(["id" => "genderId", "class" => "full-width select2-offscreen", "data-init-plugin" => "select2"]);
-        $genderFormElement->setLabel("Gender");
 
         $holidayList= $this->repository->fetchAll();
         $viewModel= new ViewModel(Helper::addFlashMessagesToArray($this, [
             'holidayList' => $holidayList,
             'holidayFormElement'=>$holidayFormElement,
             'branchFormElement'=>$branchFormElement,
-            'genderFormElement'=>$genderFormElement
+            'genderFormElement'=>$genderFormElement,
+            'form'=>$this->form,
+            'customRenderer' => Helper::renderCustomView(),
+            "genders" => EntityHelper::getTableKVList($this->adapter, EntityHelper::HR_GENDERS),
         ]));
         return $viewModel;
     }

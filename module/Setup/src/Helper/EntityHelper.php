@@ -90,6 +90,9 @@ class EntityHelper
         foreach ($resultset as $result) {
             $entitiesArray[$result[$key]] = $result[$value];
         }
+        if($tableName==self::HR_GENDERS){
+            $entitiesArray[-1]='All';
+        }
         return $entitiesArray;
     }
 

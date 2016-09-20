@@ -2,18 +2,14 @@
 /**
  * Load Javascript files here
  */
-$this->headScript()->appendFile($this->basePath('plugins/jquery-datatable/media/js/jquery.dataTables.min.js'));
-$this->headScript()->appendFile($this->basePath('plugins/jquery-datatable/extensions/TableTools/js/dataTables.tableTools.min.js'));
-$this->headScript()->appendFile($this->basePath('plugins/jquery-datatable/media/js/dataTables.bootstrap.js'));
-$this->headScript()->appendFile($this->basePath('plugins/jquery-datatable/extensions/Bootstrap/jquery-datatable-bootstrap.js'));
-$this->headScript()->appendFile($this->basePath('plugins/datatables-responsive/js/datatables.responsive.js'));
-$this->headScript()->appendFile($this->basePath('plugins/datatables-responsive/js/lodash.min.js'));
-$this->headScript()->appendFile($this->basePath('js/datatables.js'));
+$this->headScript()->appendFile($this->basePath('js/holiday/add.js'));
+
 $this->headScript()->appendFile($this->basePath('js/holiday/index.js'));
 
+$this->headScript()->appendFile($this->basePath('plugins/notify.min.js'));
 $this->headScript()->appendFile($this->basePath('plugins/angular.min.js'));
 $this->headScript()->appendFile($this->basePath('js/angular/http.js'));
-$this->headScript()->appendFile($this->basePath('js/angular/controllers.js'));
+$this->headScript()->appendFile($this->basePath('js/angular/holidayController.js'));
 
 ?>
 
@@ -35,167 +31,139 @@ if ($this->messages) {
 $holidayFormElement->setAttributes(["ng-model" => "holidayId"]);
 $branchFormElement->setAttribute("ng-model", "branchId");
 $genderFormElement->setAttribute("ng-model", "genderId");
+
+$holidayCode = $form->get('holidayCode');
+$genderId = $form->get('genderId');
+$branchId = $form->get('branchId');
+$holidayEname = $form->get('holidayEname');
+$holidayLname = $form->get('holidayLname');
+$startDate = $form->get('startDate');
+$endDate = $form->get('endDate');
+$halfday = $form->get('halfday');
+$remarks = $form->get('remarks');
+$submit = $form->get('submit');
+$submit->setAttribute('value', 'UPDATE');
+
+$genderId->setValueOptions($genders);
+
+$form->setAttribute('role', 'form');
+$form->setAttribute('action', $this->url('holidaysetup', ['action' => 'edit']));
+$form->prepare();
+
 ?>
 <div ng-app="hris" ng-controller="holidayController">
-<div class="panel panel-transparent bg-light-color">
-    <div class="p-t-20 p-r-10 p-l-20">
+    <div class="p-t-20">
         <div class="row">
-            <div class="col-md-2">
+            <div class="col-xs-5 col-sm-5 col-md-5">
                 <div class="form-group form-group-default-select2">
-                    <?php print $this->formLabel($holidayFormElement); ?>
                     <?php print $this->formElement($holidayFormElement); ?>
                 </div>
             </div>
-            <div class="col-md-2">
-                <div class="form-group form-group-default-select2">
+            <div class="col-xs-3 col-sm-3 col-md-3 m-b-5">
+                <div class="btn-group pull-right">
+                    <a class="btn btn-default" href="<?= $this->url('holidaysetup', ['action' => 'add']) ?>">
+                        Add new
+                    </a>
+                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                        <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu" role="menu">
+                        <li><a href="#">Settings</a>
+                        </li>
+                        <li><a href="#">Help</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-xs-4 col-sm-4 col-md-4"></div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-8 padding-30 bg-light-color">
+            <div class="row panel-title-head" style="margin-bottom: 2%">
+                <div class="col-md-12">
+                    <div class="panel-heading padding-5">
+                        <h4>Holiday Detail</h4>
+                    </div>
+                </div>
+                <div class="col-xs-9 col-sm-9 col-md-9">
+                    <div class="form-group form-group-default-select2">
+
+                    </div>
+                </div>
+
+                <div class="col-xs-3 col-sm-3 col-md-3 pull-right m-b-5">
+
+                </div>
+            </div>
+
+            <div class="panel-body padding-0">
+                <div class="form-group form-group-default">
+                    <label for="holidayCode" class="fade">Holiday Code</label>
+                    <input name="holidayCode" required="required" id="holidayCode" class="form-control" type="text" ng-model="holidayDtl.holidayCode">
+                </div>
+                <div class="form-group padding-10">
+                    <label for="genderId">Gender</label>
+                    <div class="radio radio-success">
+                    <div class="radio radio-success">
+                        <input checked="checked" type="radio" value="1" name="genderId" id="genderId+Male" ng-model="holidayDtl.genderId">
+                        <label for="genderId+Male">Male</label>
+                        <input type="radio" value="2" name="genderId" id="genderId+Female" ng-model="holidayDtl.genderId">
+                        <label for="genderId+Female">Female</label>
+                        <input type="radio" value="3" name="genderId" id="genderId+Other" ng-model="holidayDtl.genderId">
+                        <label for="genderId+Other">Other</label>
+                        <input type="radio" value="-1" name="genderId" id="genderId+All" ng-model="holidayDtl.genderId">
+                        <label for="genderId+All">All</label>
+                    </div>
+                    </div>
+                </div>
+                <div class="form-group form-group-default form-group-default-select2">
                     <?php print $this->formLabel($branchFormElement); ?>
                     <?php print $this->formElement($branchFormElement); ?>
                 </div>
-             </div>
-            <div class="col-md-2">
-                <div class="form-group form-group-default-select2">
-                    <?php print $this->formLabel($genderFormElement); ?>
-                    <?php print $this->formElement($genderFormElement); ?>
+
+                <div class="form-group form-group-default">
+                    <label for="holidayEname">Holiday Ename</label>
+                    <input name="holidayEname" required="required" id="holidayEname" class="form-control" type="text" value="" ng-model="holidayDtl.holidayEname">
                 </div>
-            </div>
-            <div class="col-md-1">
-                <div class="form-group">
-                    <label for="departmentId">&nbsp</label>
-                    <button ng-click="filter()" id="viewHolidays" class="btn btn-block btn-primary pull-center">
-                        Filter
-                    </button>
+
+                <div class="form-group form-group-default">
+                    <label for="holidayLname">Holiday Lname</label>
+                    <input name="holidayLname" required="required" id="holidayLname" class="form-control" type="text" value="" ng-model="holidayDtl.holidayLname">
                 </div>
+
+                <div class="form-group form-group-default required input-group">
+                    <label for="startDate">Start Date</label>
+                    <input type="text" name="startDate" required="required" id="startDate" class="form-control" value="" ng-model="holidayDtl.startDate">
+                    <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                </div>
+
+                <div class="form-group form-group-default required input-group">
+                    <label for="endDate">End Date</label>
+                    <input type="text" name="endDate" required="required" id="endDate" class="form-control" value="" ng-model="holidayDtl.endDate">
+                    <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                </div>
+
+                <div class="form-group padding-10">
+                    <label for="halfday">Halfday</label>
+                    <div class="radio radio-success">
+                        <input checked="checked" type="radio" value="F" name="halfday" id="halfday+First Half" ng-model="holidayDtl.halfday">
+                        <label for="halfday+First Half">First Half</label>
+                        <input type="radio" value="S" name="halfday" id="halfday+Second Half" ng-model="holidayDtl.halfday">
+                        <label for="halfday+Second Half">Second Half</label>
+                        <input type="radio" value="N" name="halfday" id="halfday+Full Day" ng-model="holidayDtl.halfday">
+                        <label for="halfday+Full Day">Full Day</label>
+                    </div>
+                </div>
+
+                <div class="form-group form-group-default">
+                    <label for="remarks">Remarks</label>
+                    <input name="remarks" id="remarks" class="form-control" type="text"value="" ng-model="holidayDtl.remarks">
+                </div>
+                <button ng-click="update()" id="updateHoliday"  class="btn btn-primary pull-right">
+                    UPDATE
+                </button>
             </div>
         </div>
     </div>
-
-    <div class="panel-heading p-b-0">
-        <div class="panel-title">
-            <h5 class="m-b-0 m-t-0">Holiday<span style="font-size:10px;"> Setup</span></h5>
-        </div>
-        <div class="btn-group pull-right">
-            <a class="btn btn-default" href="<?= $this->url('holidaysetup', ['action' => 'add']) ?>">
-                Add new
-            </a>
-            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-                <span class="caret"></span>
-            </button>
-            <ul class="dropdown-menu" role="menu">
-                <li><a href="#">Settings</a>
-                </li>
-                <li><a href="#">Help</a>
-                </li>
-            </ul>
-        </div>
-        <div class="pull-right">
-            <div class="col-xs-12">
-                <input type="text" id="search-table" class="form-control pull-right" placeholder="Search">
-            </div>
-        </div>
-        <div class="clearfix"></div>
-    </div>
-    <div class="panel-body">
-        <table class="table customTable demo-table-search" id="tableWithSearch">
-            <thead>
-            <tr role="row">
-                <th class="" tabindex="0" aria-controls="tableWithExportOptions" rowspan="1"
-                    colspan="1" aria-sort="ascending"
-                    aria-label="Rendering engine: activate to sort column descending">
-                    Holiday Code
-                </th>
-                <th class="sorting_asc" tabindex="0" aria-controls="tableWithExportOptions" rowspan="1"
-                    colspan="1" aria-sort="ascending"
-                    aria-label="Rendering engine: activate to sort column descending">
-                    Branch
-                </th>
-
-                <th class="sorting_asc" tabindex="0" aria-controls="tableWithExportOptions" rowspan="1"
-                    colspan="1" aria-sort="ascending"
-                    aria-label="Rendering engine: activate to sort column descending">
-                    Holiday Ename
-                </th>
-                <th class="sorting_asc" tabindex="0" aria-controls="tableWithExportOptions" rowspan="1"
-                    colspan="1" aria-sort="ascending"
-                    aria-label="Rendering engine: activate to sort column descending">
-                    Start Date
-                </th>
-                <th class="sorting_asc" tabindex="0" aria-controls="tableWithExportOptions" rowspan="1"
-                    colspan="1" aria-sort="ascending"
-                    aria-label="Rendering engine: activate to sort column descending">
-                    End Date
-                </th>
-                <th class="sorting_asc" tabindex="0" aria-controls="tableWithExportOptions" rowspan="1"
-                    colspan="1" aria-sort="ascending"
-                    aria-label="Rendering engine: activate to sort column descending">
-                    Half Day
-                </th>
-                <th class="sorting_asc" tabindex="0" aria-controls="tableWithExportOptions" rowspan="1"
-                    colspan="1" aria-sort="ascending"
-                    aria-label="Rendering engine: activate to sort column descending">
-                    Fiscal Year
-                </th>
-
-                <th class="sorting_asc" tabindex="0" aria-controls="tableWithExportOptions" rowspan="1"
-                    colspan="1" aria-sort="ascending"
-                    aria-label="Rendering engine: activate to sort column descending">
-                    Action
-                </th>
-
-            </tr>
-            </thead>
-            <tbody id="target">
-
-            <?php foreach ($holidayList as $holiday):
-                ?>
-                <tr role="row" ng-repeat="holiday in holidayList">
-                    <td class="">
-                        <p>
-                            {{holiday.HOLIDAY_CODE}}
-                        </p>
-                    </td>
-
-                    <td class="">
-                        <p>
-                            {{holiday.BRANCH_NAME}}
-                        </p>
-                    </td>
-                    <td class="">
-                        <p>
-                            {{holiday.HOLIDAY_ENAME}}
-                        </p>
-                    </td>
-                    <td class="">
-                        <p>
-                            {{holiday.START_DATE}}
-                        </p>
-                    </td>
-                    <td class="">
-                        <p>
-                            {{holiday.END_DATE}}
-                        </p>
-                    </td>
-                    <td class="">
-                        <p>{{holiday.HALFDAY}}
-
-                        </p>
-                    </td>
-                    <td class="">
-                        <p>
-                            {{holiday.FISCAL_YEAR}}
-                        </p>
-                    </td>
-
-                    <td class="">
-                        <a href="<?= $this->url("holidaysetup", ["action" => "edit", "id" => $holiday[\HolidayManagement\Model\Holiday::HOLIDAY_ID]]) ?>">Edit</a>
-                        /
-                        <a href="<?= $this->url("holidaysetup", ["action" => "delete", "id" => $holiday[\HolidayManagement\Model\Holiday::HOLIDAY_ID]]); ?>"
-                           onclick="return confirm('Are you sure you want to delete this item?');">Delete</a>
-                    </td>
-                </tr>
-            <?php endforeach; ?>
-
-            </tbody>
-        </table>
-    </div>
-</div>
 </div>
