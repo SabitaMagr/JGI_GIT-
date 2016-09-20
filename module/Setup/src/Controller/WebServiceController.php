@@ -13,6 +13,7 @@ use Zend\View\Model\JsonModel;
 use Application\Helper\EntityHelper as ApplicationEntityHelper;
 use HolidayManagement\Repository\HolidayRepository;
 use HolidayManagement\Model\Holiday;
+use HolidayManagement\Model\HolidayBranch;
 
 class WebServiceController extends AbstractActionController
 {
@@ -127,8 +128,10 @@ class WebServiceController extends AbstractActionController
                     break;
                 case "updateHolidayDetail":
                     $holidayModel = new Holiday();
+                    $holidayBranchModel = new HolidayBranch();
                     $holidayRepository = new HolidayRepository($this->adapter);
                     $filtersId = $postedData->data;
+                    $branchIds = $filtersId['branchIds'];
                     $data = $filtersId['dataArray'];
                     $holidayModel->holidayCode=$data['holidayCode'];
                     $holidayModel->genderId=$data['genderId'];
@@ -141,9 +144,30 @@ class WebServiceController extends AbstractActionController
                     $holidayModel->modifiedDt = Helper::getcurrentExpressionDate();
                     $resultSet = $holidayRepository->edit($holidayModel,$filtersId['holidayId']);
 
+                    $holidayBranchResult = $holidayRepository->selectHolidayBranch($filtersId['holidayId']);
+
+                    // delete database record if database record doesn't exist on submitted value
+                    $branchTemp = [];
+                    foreach ($holidayBranchResult as $holidayBranchList){
+                        $branchId = $holidayBranchList['BRANCH_ID'];
+                        if(!in_array($branchId,$branchIds)){
+                            $holidayRepository->deleteHolidayBranch($filtersId['holidayId'],$branchId);
+                        }
+                        array_push($branchTemp,$branchId);
+                    }
+
+                    // insert database record if submitted value doesn't exist on database
+                    foreach($branchIds as $branchIdList){
+                        if(!in_array($branchIdList,$branchTemp)){
+                            $holidayBranchModel->branchId=$branchIdList;
+                            $holidayBranchModel->holidayId=$filtersId['holidayId'];
+                            $holidayRepository->addHolidayBranch($holidayBranchModel);
+                        }
+                    }
+
                     $responseData = [
                         "success" => true,
-                        "data"=>"Holiday Detail Updated Successfully!!!"
+                        "data"=>"Holiday Successfully Updated!!"
                     ];
                     break;
                 default:

@@ -3,15 +3,10 @@
  * Load Javascript files here
  */
 $this->headScript()->appendFile($this->basePath('js/holiday/add.js'));
-$this->headScript()->appendFile($this->basePath('plugins/jquery-datatable/media/js/jquery.dataTables.min.js'));
-$this->headScript()->appendFile($this->basePath('plugins/jquery-datatable/extensions/TableTools/js/dataTables.tableTools.min.js'));
-$this->headScript()->appendFile($this->basePath('plugins/jquery-datatable/media/js/dataTables.bootstrap.js'));
-$this->headScript()->appendFile($this->basePath('plugins/jquery-datatable/extensions/Bootstrap/jquery-datatable-bootstrap.js'));
-$this->headScript()->appendFile($this->basePath('plugins/datatables-responsive/js/datatables.responsive.js'));
-$this->headScript()->appendFile($this->basePath('plugins/datatables-responsive/js/lodash.min.js'));
-$this->headScript()->appendFile($this->basePath('js/datatables.js'));
+
 $this->headScript()->appendFile($this->basePath('js/holiday/index.js'));
 
+$this->headScript()->appendFile($this->basePath('plugins/notify.min.js'));
 $this->headScript()->appendFile($this->basePath('plugins/angular.min.js'));
 $this->headScript()->appendFile($this->basePath('js/angular/http.js'));
 $this->headScript()->appendFile($this->basePath('js/angular/holidayController.js'));
@@ -57,65 +52,52 @@ $form->prepare();
 
 ?>
 <div ng-app="hris" ng-controller="holidayController">
-<div class="panel panel-transparent bg-light-color">
-    <div class="p-t-20 p-r-10 p-l-20">
+    <div class="p-t-20">
         <div class="row">
-            <div class="col-md-2">
+            <div class="col-xs-5 col-sm-5 col-md-5">
                 <div class="form-group form-group-default-select2">
-                    <label for="departmentId">Holiday</label>
-                    <select name="holidayId" id="holidayId" ng-model="holidayDtl.holidayId" class="full-width select2-offscreen" data-init-plugin= "select2">
-                        <?php foreach($holidayList as $holidays){?>
-                            <option value="<?php print $holidays['HOLIDAY_ID']; ?>"><?php print $holidays['HOLIDAY_ENAME'];?></option>
-                        <?php } ?>
-                    </select>
+                    <?php print $this->formElement($holidayFormElement); ?>
                 </div>
             </div>
-            <div class="col-md-2">
-                <div class="form-group form-group-default-select2">
-                    <?php print $this->formLabel($branchFormElement); ?>
-                    <?php print $this->formElement($branchFormElement); ?>
-                </div>
-             </div>
-            <div class="col-md-2">
-                <div class="form-group form-group-default-select2">
-                    <?php print $this->formLabel($genderFormElement); ?>
-                    <?php print $this->formElement($genderFormElement); ?>
-                </div>
-            </div>
-            <div class="col-md-1">
-                <div class="form-group">
-                    <label for="departmentId">&nbsp</label>
-                    <button ng-click="filter()" id="viewHolidays" class="btn btn-block btn-primary pull-center">
-                        Filter
+            <div class="col-xs-3 col-sm-3 col-md-3 m-b-5">
+                <div class="btn-group pull-right">
+                    <a class="btn btn-default" href="<?= $this->url('holidaysetup', ['action' => 'add']) ?>">
+                        Add new
+                    </a>
+                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                        <span class="caret"></span>
                     </button>
+                    <ul class="dropdown-menu" role="menu">
+                        <li><a href="#">Settings</a>
+                        </li>
+                        <li><a href="#">Help</a>
+                        </li>
+                    </ul>
                 </div>
             </div>
+            <div class="col-xs-4 col-sm-4 col-md-4"></div>
         </div>
     </div>
+    <div class="row">
+        <div class="col-md-8 padding-30 bg-light-color">
+            <div class="row panel-title-head" style="margin-bottom: 2%">
+                <div class="col-md-12">
+                    <div class="panel-heading padding-5">
+                        <h4>Holiday Detail</h4>
+                    </div>
+                </div>
+                <div class="col-xs-9 col-sm-9 col-md-9">
+                    <div class="form-group form-group-default-select2">
 
-    <div class="panel-heading p-b-0">
-        <div class="panel-title">
-            <h5 class="m-b-0 m-t-0">Holiday<span style="font-size:10px;"> Setup</span></h5>
-        </div>
-        <div class="btn-group pull-right">
-            <a class="btn btn-default" href="<?= $this->url('holidaysetup', ['action' => 'add']) ?>">
-                Add new
-            </a>
-            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-                <span class="caret"></span>
-            </button>
-            <ul class="dropdown-menu" role="menu">
-                <li><a href="#">Settings</a>
-                </li>
-                <li><a href="#">Help</a>
-                </li>
-            </ul>
-        </div>
-        <div class="clearfix"></div>
-    </div>
-    <div class="panel-body">
-        <div class="row">
-            <div class="col-md-6">
+                    </div>
+                </div>
+
+                <div class="col-xs-3 col-sm-3 col-md-3 pull-right m-b-5">
+
+                </div>
+            </div>
+
+            <div class="panel-body padding-0">
                 <div class="form-group form-group-default">
                     <label for="holidayCode" class="fade">Holiday Code</label>
                     <input name="holidayCode" required="required" id="holidayCode" class="form-control" type="text" ng-model="holidayDtl.holidayCode">
@@ -134,6 +116,10 @@ $form->prepare();
                         <label for="genderId+All">All</label>
                     </div>
                     </div>
+                </div>
+                <div class="form-group form-group-default form-group-default-select2">
+                    <?php print $this->formLabel($branchFormElement); ?>
+                    <?php print $this->formElement($branchFormElement); ?>
                 </div>
 
                 <div class="form-group form-group-default">
@@ -178,18 +164,6 @@ $form->prepare();
                     UPDATE
                 </button>
             </div>
-
-            <div class="col-md-6">
-                <h5>Branch List</h5>
-                <ul>
-                    <li>Jawalakhel <a href="#">Delete</a></li>
-                    <li>Lagankhel <a href="#">Delete</a></li>
-                    <li>New Road <a href="#">Delete</a></li>
-                </ul>
-                <a href="#">Add More</a>
-            </div>
-
         </div>
     </div>
-</div>
 </div>
