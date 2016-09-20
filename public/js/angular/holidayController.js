@@ -55,7 +55,6 @@ angular.module('hris', [])
             });
         }
         holidayId.on("change",getHolidayDetail);
-
         getHolidayDetail();
 
         $scope.update = function () {
@@ -71,7 +70,7 @@ angular.module('hris', [])
                 },
             }).then(function (success) {
                 $scope.$apply(function () {
-                   // console.log(success.data);
+                    document.getElementById('holidayId').options[document.getElementById('holidayId').selectedIndex].text=$scope.holidayDtl.holidayEname;
                     window.app.notification(success.data, {position: "top right", className: "success"})
                 });
             }, function (failure) {
