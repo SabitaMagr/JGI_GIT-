@@ -18,19 +18,22 @@ class ShiftAssign extends  Model {
     const CREATED_DT="CREATED_DT";
     const MODIFIED_DT="MODIFIED_DT";
     const REMARKS="REMARKS";
+    const STATUS="STATUS";
 
     public $employeeId;
     public $shiftId;
     public $createdDt;
     public $modifiedDt;
     public $remarks;
+    public $status;
 
     public $mappings=[
         'employeeId'=>self::EMPLOYEE_ID,
         'shiftId'=>self::SHIFT_ID,
         'createdDt'=>self::CREATED_DT,
         'modifiedDt'=>self::MODIFIED_DT,
-        'remarks'=>self::REMARKS
+        'remarks'=>self::REMARKS,
+        'status'=>self::STATUS
     ];
 
 }

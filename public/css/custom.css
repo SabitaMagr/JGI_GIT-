@@ -77,3 +77,7 @@ legend.scheduler-border {
 .customTable tbody tr:hover td {
 	background: #fff !important;
 }
+
+.customPanel{
+	margin-bottom: 0px !important;
+}

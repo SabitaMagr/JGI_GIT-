@@ -23,8 +23,6 @@
     <meta content="" name="author"/>
 
     <?php print $this->headLink(['rel'=>'shortcut icon', 'type'=>'image/vnd.microsoft.icon', 'href'=>$this->basePath('ico/favicon.png')])
-
-
         ->prependStylesheet(['rel'=>'stylesheet', 'type'=>'text/css','href'=>$this->basePath('datatables-responsive/css/datatables.responsive.css')])
         ->prependStylesheet(['rel'=>'stylesheet', 'type'=>'text/css','href'=>$this->basePath('plugins/jquery-datatable/extensions/FixedColumns/css/dataTables.fixedColumns.min.css')])
         ->prependStylesheet(['rel'=>'stylesheet', 'type'=>'text/css','href'=>$this->basePath('plugins/jquery-datatable/media/css/dataTables.bootstrap.min.css')])
@@ -80,7 +78,7 @@ print $this->partial("partials/sidebar.phtml");
 
     <div class="page-content-wrapper ">
         <div class="content sm-gutter">
-            <div class="container-fluid padding-25 sm-padding-10">
+            <div class="container-fluid padding-25 sm-padding-10 bg-master-light">
                 <?php print $this->content; ?>
             </div>
         </div>

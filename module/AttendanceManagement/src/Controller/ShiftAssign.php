@@ -2,6 +2,9 @@
 namespace AttendanceManagement\Controller;
 
 
+use Application\Helper\EntityHelper;
+use Application\Helper\Helper;
+use AttendanceManagement\Model\ShiftSetup;
 use AttendanceManagement\Repository\ShiftAssignRepository;
 use Setup\Model\Branch;
 use Setup\Model\Department;
@@ -73,12 +76,21 @@ class ShiftAssign extends AbstractActionController
         $serviceTypeFormElement->setAttributes(["id" => "serviceTypeId", "class" => "full-width select2-offscreen", "data-init-plugin" => "select2"]);
         $serviceTypeFormElement->setLabel("Service Type");
 
+        $shifts=EntityHelper::getTableKVList($this->adapter,ShiftSetup::TABLE_NAME,ShiftSetup::SHIFT_ID,[ShiftSetup::SHIFT_ENAME]);
+
+        $shiftFormElement = new Select();
+        $shiftFormElement->setName("shift");
+        $shiftFormElement->setValueOptions($shifts);
+        $shiftFormElement->setAttributes(["id" => "shiftId", "class" => "full-width select2-offscreen", "data-init-plugin" => "select2"]);
+        $shiftFormElement->setLabel("Shift");
+
         return new ViewModel([
             "branches"=>$branchFormElement,
             "departments"=>$departmentFormElement,
             'designations'=>$designationFormElement,
             'positions'=>$positionFormElement,
-            'serviceTypes'=>$serviceTypeFormElement
+            'serviceTypes'=>$serviceTypeFormElement,
+            'shiftFormElement'=>$shiftFormElement
         ]);
     }
 

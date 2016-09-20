@@ -1,6 +1,7 @@
 <?php
 namespace RestfulService\Controller;
 
+use Application\Helper\Helper;
 use AttendanceManagement\Controller\ShiftSetup;
 use AttendanceManagement\Model\ShiftAssign;
 use AttendanceManagement\Repository\ShiftAssignRepository;
@@ -44,18 +45,54 @@ class RestfulService extends AbstractRestfulController
                     $tempArray = [];
                     foreach ($result as $item) {
                         $tmp = $shiftAssignRepo->filterByEmployeeId($item['EMPLOYEE_ID']);
-                        if($tmp!=null){
-                            $item[ShiftAssign::SHIFT_ID]=$tmp->{ShiftAssign::SHIFT_ID};
-                            $item[\AttendanceManagement\Model\ShiftSetup::SHIFT_ENAME]=$tmp->{\AttendanceManagement\Model\ShiftSetup::SHIFT_ENAME};
-                        }else{
-                            $item[ShiftAssign::SHIFT_ID]="";
-                            $item[\AttendanceManagement\Model\ShiftSetup::SHIFT_ENAME]="";
+                        if ($tmp != null) {
+                            $item[ShiftAssign::SHIFT_ID] = $tmp[ShiftAssign::SHIFT_ID];
+                            $item[\AttendanceManagement\Model\ShiftSetup::SHIFT_ENAME] = $tmp[\AttendanceManagement\Model\ShiftSetup::SHIFT_ENAME];
+                        } else {
+                            $item[ShiftAssign::SHIFT_ID] = "";
+                            $item[\AttendanceManagement\Model\ShiftSetup::SHIFT_ENAME] = "";
                         }
                         array_push($tempArray, $item);
                     }
                     $responseData = [
                         "success" => true,
                         "data" => $tempArray
+                    ];
+                    break;
+
+                case "assignEmployeeShift":
+                    $data = $postedData->data;
+                    $shiftAssign = new ShiftAssign();
+
+                    $shiftAssign->employeeId = $data['employeeId'];
+                    $shiftAssign->shiftId = $data['shiftId'];
+
+                    $shiftAssignRepo = new ShiftAssignRepository($this->adapter);
+                    if (!empty($data['oldShiftId'])) {
+                        $shiftAssignClone=clone $shiftAssign;
+
+                        unset($shiftAssignClone->employeeId);
+                        unset($shiftAssignClone->shiftId);
+                        unset($shiftAssignClone->createdDt);
+
+                        $shiftAssignClone->status='D';
+                        $shiftAssignClone->modifiedDt=Helper::getcurrentExpressionDate();
+                        $shiftAssignRepo->edit($shiftAssignClone,[$data['employeeId'],$data['oldShiftId']]);
+
+                        $shiftAssign->createdDt = Helper::getcurrentExpressionDate();
+                        $shiftAssign->status = 'E';
+                        $shiftAssignRepo->add($shiftAssign);
+                    } else {
+                        $shiftAssign->createdDt = Helper::getcurrentExpressionDate();
+                        $shiftAssign->status = 'E';
+                        $shiftAssignRepo->add($shiftAssign);
+
+                    }
+
+
+                    $responseData = [
+                        "success" => true,
+                        "data" => $postedData
                     ];
                     break;
 

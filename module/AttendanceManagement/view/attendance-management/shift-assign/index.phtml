@@ -1,10 +1,13 @@
+<?php
+?>
 <script>
     document.menu =<?php $menu = ["id" => "menuAttendanceManagement", "subMenu" => ["id" => "subMenuShiftAssign"]];echo json_encode($menu);?>;
     document.url = '<?= $this->url("restful", ["action" => "index"]) ?>';
 </script>
 <?php
+$this->headScript()->appendFile($this->basePath('plugins/notify.min.js'));
 $this->headScript()->appendFile($this->basePath('plugins/angular.min.js'));
-$this->headScript()->appendFile($this->basePath('js/angular/controllers.js'));
+$this->headScript()->appendFile($this->basePath('js/shift/controller.js'));
 ?>
 
 <div ng-app="hris" ng-controller="shiftAssignController">
@@ -43,16 +46,16 @@ $this->headScript()->appendFile($this->basePath('js/angular/controllers.js'));
             </div>
 
         </div>
-        <div class="col-sm-2">
+        <div class="col-sm-2 ">
             <div class="form-group">
                 <label for="viewEmployees">&nbsp</label>
-                <button ng-click="view()" id="viewEmployees" class="btn btn-block btn-primary pull-center">
+                <button ng-click="view()" id="viewEmployees" class="btn btn-block btn-primary ">
                     View
                 </button>
             </div>
         </div>
     </div>
-    <div>
+    <div class="table-responsive" style="max-height: 500px; min-height: 300px;">
         <table class="table small-table">
             <thead>
             <tr>
@@ -73,6 +76,14 @@ $this->headScript()->appendFile($this->basePath('js/angular/controllers.js'));
                 </th>
                 <th>
                     Service Type
+                </th>
+                <th>
+                    Shift Assigned
+                </th>
+                <th>
+                    <p class="text-left">
+                        <input class="" type="checkbox" ng-model="all" ng-click="checkAll(all)"/>
+                    </p>
                 </th>
             </tr>
             </thead>
@@ -96,10 +107,39 @@ $this->headScript()->appendFile($this->basePath('js/angular/controllers.js'));
                     {{employeeShift.POSITION_NAME}}
 
                 </td>
+                <td>
+                    {{employeeShift.SERVICE_TYPE_NAME}}
 
+                </td>
+                <td>
+                    {{employeeShift.SHIFT_ENAME || "Default"}}
+
+                </td>
+                <td>
+                    <p class="text-left">
+                        <input class="" ng-model="employeeShift.checked" type="checkbox"
+                               ng-change="checkUnit(item.checked)"/>
+                    </p>
+                </td>
             </tr>
             </tbody>
         </table>
+    </div>
+    <div>
+        <div class="row" ng-show="assignShowHide">
+            <div class="col-sm-2 col-sm-offset-9">
+                <div class=" form-group form-group-default-select2">
+                    <?php print $this->formElement($shiftFormElement); ?>
+                </div>
 
+
+
+            </div>
+                <div class="col-sm-1">
+                <button class="btn btn-success" ng-click="assign()">
+                    Assign
+                </button>
+                </div>
+        </div>
     </div>
 </div>
