@@ -23,13 +23,13 @@ if ($this->messages) {
     document.menu =<?php $menu = ["id" => "menuServiceHistory"];echo json_encode($menu);?>;
 </script>
 
-<div class="panel panel-transparent">
-    <div class="panel-heading p-b-0">
+<div class="panel panel-white">
+    <div class="panel-heading">
         <div class="btn-group pull-right">
-            <a class="btn btn-default" href="<?= $this->url('jobHistory', ['action' => 'add']) ?>">
+            <a class="btn btn-success" href="<?= $this->url('jobHistory', ['action' => 'add']) ?>">
                 Add new
             </a>
-            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+            <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
                 <span class="caret"></span>
             </button>
             <ul class="dropdown-menu" role="menu">
@@ -42,106 +42,112 @@ if ($this->messages) {
         <div class="clearfix"></div>
     </div>
     <div class="panel-body">
-        <div id="tableWithDynamicRows_wrapper" class="dataTables_wrapper form-inline no-footer">
-            <div class="table-responsive">
-                <table class="table table-hover demo-table-dynamic dataTable no-footer" id="tableWithDynamicRows"
-                       role="grid" aria-describedby="tableWithDynamicRows_info">
-                    <thead>
+        <div class="table-responsive">
+            <table class="table table-bordered bg-master-lighter table-striped small-table" id="tableWithSearch">
+                <thead>
+                <tr role="row">
+                    <th class="sorting_disabled size-10" rowspan="1" colspan="1">
+                        Employee Name
+                    </th>
+                    <th class="sorting_disabled size-10" rowspan="1" colspan="1">
+                        Start Date
+                    </th>
+                    <th class="sorting_disabled size-10" rowspan="1" colspan="1">
+                        End Date
+                    </th>
+                    <th class="sorting_disabled size-10" rowspan="1" colspan="1">
+                        Service Type
+                    </th>
+                    <th class="sorting_disabled size-10" rowspan="1" colspan="1">
+                        From Position
+                    </th>
+                    <th class="sorting_disabled size-10" rowspan="1" colspan="1">
+                        To Position
+                    </th>
+                    <th class="sorting_disabled size-10" rowspan="1" colspan="1">
+                        From Department
+                    </th>
+                    <th class="sorting_disabled size-10" rowspan="1" colspan="1">
+                        To Department
+                    </th>
+                    <th class="sorting_disabled size-10" rowspan="1" colspan="1">
+                        From Designation
+                    </th>
+                    <th class="sorting_disabled size-10" rowspan="1" colspan="1">
+                        To Designation
+                    </th>
+                    <th class="sorting_disabled size-10" rowspan="1" colspan="1">
+                        From Position
+                    </th>
+                    <th class="sorting_disabled size-10" rowspan="1" colspan="1">
+                        To Position
+                    </th>
+                    <th class="sorting_disabled size-10" rowspan="1" colspan="1">
+                        Action
+                    </th>
+
+                </tr>
+                </thead>
+                <tbody>
+                <?php foreach ($jobHistoryList as $jobHistory): ?>
                     <tr role="row">
-                        <th class="sorting_disabled size-10" rowspan="1" colspan="1">
-                            Employee Name
-                        </th>
-                        <th class="sorting_disabled size-10" rowspan="1" colspan="1">
-                            Start Date
-                        </th>
-                        <th class="sorting_disabled size-10" rowspan="1" colspan="1">
-                            End Date
-                        </th>
-                        <th class="sorting_disabled size-10" rowspan="1" colspan="1">
-                            Service Type
-                        </th>
-                        <th class="sorting_disabled size-10" rowspan="1" colspan="1">
-                            From Position
-                        </th>
-                        <th class="sorting_disabled size-10" rowspan="1" colspan="1">
-                            To Position
-                        </th>
-                        <th class="sorting_disabled size-10" rowspan="1" colspan="1">
-                            From Department
-                        </th>
-                        <th class="sorting_disabled size-10" rowspan="1" colspan="1">
-                            To Department
-                        </th>
-                        <th class="sorting_disabled size-10" rowspan="1" colspan="1">
-                            From Designation
-                        </th>
-                        <th class="sorting_disabled size-10" rowspan="1" colspan="1">
-                            To Designation
-                        </th>
-                        <th class="sorting_disabled size-10" rowspan="1" colspan="1">
-                            From Position
-                        </th>
-                        <th class="sorting_disabled size-10" rowspan="1" colspan="1">
-                            To Position
-                        </th>
-                        <th class="sorting_disabled size-10" rowspan="1" colspan="1">
-                            Action
-                        </th>
+                        <td class="v-align-middle size-10">
+                            <?php print $this->escapeHtml($jobHistory['FIRST_NAME']); ?>
+                        </td>
+                        <td class="v-align-middle size-10">
+                            <?php print $this->escapeHtml($jobHistory['START_DATE']); ?>
+                        </td>
+                        <td class="v-align-middle size-10">
+                            <?php print $this->escapeHtml($jobHistory['END_DATE']); ?>
+                        </td>
+                        <td class="v-align-middle size-10">
+                            <?php print $this->escapeHtml($jobHistory['SERVICE_TYPE_NAME']); ?>
+                        </td>
+                        <td class="v-align-middle size-10">
+                            <?php print $this->escapeHtml($jobHistory['FROM_POSITION_NAME']); ?>
+                        </td>
+                        <td class="v-align-middle size-10">
+                            <?php print $this->escapeHtml($jobHistory['TO_POSITION_NAME']); ?>
+                        </td>
 
+                        <td class="v-align-middle size-10">
+                            <?php print $this->escapeHtml($jobHistory['FROM_DESIGNATION_TITLE']); ?>
+                        </td>
+                        <td class="v-align-middle  size-10">
+                            <?php print $this->escapeHtml($jobHistory['TO_DESIGNATION_TITLE']); ?>
+                        </td>
+                        <td class="v-align-middle size-10">
+                            <?php print $this->escapeHtml($jobHistory['FROM_DEPARTMENT_NAME']); ?>
+                        </td>
+                        <td class="v-align-middle size-10">
+                            <?php print $this->escapeHtml($jobHistory['TO_DEPARTMENT_NAME']); ?>
+                        </td>
+                        <td class="v-align-middle size-10">
+                            <?php print $this->escapeHtml($jobHistory['FROM_BRANCH_NAME']); ?>
+                        </td>
+                        <td class="v-align-middle size-10">
+                            <?php print $this->escapeHtml($jobHistory['TO_BRANCH_NAME']); ?>
+                        </td>
+                        <td class="v-align-middle size-10">
+                            <p>
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-default">
+                                    <a class="fa fa-edit btn-link"
+                                       href="<?= $this->url("jobHistory", ["action" => "edit", "id" => $jobHistory['JOB_HISTORY_ID']]); ?>">
+                                    </a>
+                                </button>
+                                <button type="button" class="btn btn-default">
+                                    <a class="fa fa-trash-o btn-link"
+                                       href="<?= $this->url("jobHistory", ["action" => "delete", "id" => $jobHistory['JOB_HISTORY_ID']]); ?>"></a>
+                                </button>
+                            </div>
+                            </p>
+                        </td>
                     </tr>
-                    </thead>
-                    <tbody>
-                    <?php foreach ($jobHistoryList as $jobHistory): ?>
-                        <tr role="row">
-                            <td class="v-align-middle size-10">
-                                <?php print $this->escapeHtml($jobHistory['FIRST_NAME']); ?>
-                            </td>
-                            <td class="v-align-middle size-10">
-                                <?php print $this->escapeHtml($jobHistory['START_DATE']); ?>
-                            </td>
-                            <td class="v-align-middle size-10">
-                                <?php print $this->escapeHtml($jobHistory['END_DATE']); ?>
-                            </td>
-                            <td class="v-align-middle size-10">
-                                <?php print $this->escapeHtml($jobHistory['SERVICE_TYPE_NAME']); ?>
-                            </td>
-                            <td class="v-align-middle size-10">
-                                <?php print $this->escapeHtml($jobHistory['FROM_POSITION_NAME']); ?>
-                            </td>
-                            <td class="v-align-middle size-10">
-                                <?php print $this->escapeHtml($jobHistory['TO_POSITION_NAME']); ?>
-                            </td>
-
-                            <td class="v-align-middle size-10">
-                                <?php print $this->escapeHtml($jobHistory['FROM_DESIGNATION_TITLE']); ?>
-                            </td>
-                            <td class="v-align-middle  size-10">
-                                <?php print $this->escapeHtml($jobHistory['TO_DESIGNATION_TITLE']); ?>
-                            </td>
-                            <td class="v-align-middle size-10">
-                                <?php print $this->escapeHtml($jobHistory['FROM_DEPARTMENT_NAME']); ?>
-                            </td>
-                            <td class="v-align-middle size-10">
-                                <?php print $this->escapeHtml($jobHistory['TO_DEPARTMENT_NAME']); ?>
-                            </td>
-                            <td class="v-align-middle size-10">
-                                <?php print $this->escapeHtml($jobHistory['FROM_BRANCH_NAME']); ?>
-                            </td>
-                            <td class="v-align-middle size-10">
-                                <?php print $this->escapeHtml($jobHistory['TO_BRANCH_NAME']); ?>
-                            </td>
-                            <td class="v-align-middle size-10">
-                                <p>
-                                    <a href="<?= $this->url("jobHistory", ["action" => "edit", "id" => $jobHistory['JOB_HISTORY_ID']]) ?>">Edit</a>
-                                    /
-                                    <a href="<?= $this->url("jobHistory", ["action" => "delete", "id" => $jobHistory['JOB_HISTORY_ID']]) ?>">Delete</a>
-                                </p>
-                            </td>
-                        </tr>
-                    <?php endforeach; ?>
-                    </tbody>
-                </table>
-            </div>
+                <?php endforeach; ?>
+                </tbody>
+            </table>
         </div>
+
     </div>
 </div>
