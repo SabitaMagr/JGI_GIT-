@@ -31,7 +31,9 @@ print $this->form()->openTag($form);
     <script>
         document.menu =<?php $menu = ["id" => "menuLeaveManagement", "subMenu" => ["id" => "subMenuLeaveApply"]];echo json_encode($menu);?>;
     </script>
-
+    <div class="container">
+        <?= $this->navigation('Zend\Navigation\leaveapply')->breadcrumbs()->setMinDepth(0) ?>
+    </div>
     <div class="row">
         <div class="col-sm-8 col-sm-offset-2">
             <div class="panel panel-default customShadow">

@@ -30,7 +30,9 @@ print $this->form()->openTag($form);
     <script>
         document.menu =<?php $menu = ["id" => "menuLeaveManagement", "subMenu" => ["id" => "subMenuLeaveAssign"]];echo json_encode($menu);?>;
     </script>
-
+    <div class="container">
+        <?= $this->navigation('Zend\Navigation\leaveassign')->breadcrumbs()->setMinDepth(0) ?>
+    </div>
     <div class="row">
         <div class="col-sm-2"></div>
         <div class="col-sm-8 padding-30 bg-light-color">

@@ -16,7 +16,9 @@ $this->headScript()->appendFile($this->basePath('js/leave-setup/index.js'));
 <script>
     document.menu =<?php $menu = ["id" => "menuLeaveManagement", "subMenu" => ["id" => "subMenuLeaveSetup"]];echo json_encode($menu);?>;
 </script>
-
+<div class="container">
+    <?= $this->navigation('navigation')->breadcrumbs()->setMinDepth(0) ?>
+</div>
 <?php
 if ($this->messages) {
     print '<ul class="help-block bg-danger" style="background:#f3e250;">';

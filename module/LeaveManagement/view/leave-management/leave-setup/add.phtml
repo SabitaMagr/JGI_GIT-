@@ -33,7 +33,9 @@ print $this->form()->openTag($form);
 <script>
     document.menu =<?php $menu = ["id" => "menuLeaveManagement", "subMenu" => ["id" => "subMenuLeaveSetup"]];echo json_encode($menu);?>;
 </script>
-
+<div class="container">
+    <?= $this->navigation('navigation')->breadcrumbs()->setMinDepth(0) ?>
+</div>
 <div class="row">
     <div class="col-sm-8 col-sm-offset-2">
         <div class="panel panel-default customShadow">

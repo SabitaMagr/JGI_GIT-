@@ -23,7 +23,9 @@ if ($this->messages) {
 <script>
     document.menu =<?php $menu = ["id" => "menuLeaveManagement", "subMenu" => ["id" => "subMenuLeaveAssign"]];echo json_encode($menu);?>;
 </script>
-
+<div class="container">
+    <?= $this->navigation('Zend\Navigation\leaveassign')->breadcrumbs()->setMinDepth(0) ?>
+</div>
 <div class="panel panel-transparent">
     <div class="panel-heading">
         <div class="pull-right">

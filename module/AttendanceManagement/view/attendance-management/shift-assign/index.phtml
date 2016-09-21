@@ -4,6 +4,9 @@
     document.menu =<?php $menu = ["id" => "menuAttendanceManagement", "subMenu" => ["id" => "subMenuShiftAssign"]];echo json_encode($menu);?>;
     document.url = '<?= $this->url("restful", ["action" => "index"]) ?>';
 </script>
+<div class="container">
+    <?= $this->navigation('Zend\Navigation\shiftassign')->breadcrumbs()->setMinDepth(0) ?>
+</div>
 <?php
 $this->headScript()->appendFile($this->basePath('plugins/notify.min.js'));
 $this->headScript()->appendFile($this->basePath('plugins/angular.min.js'));

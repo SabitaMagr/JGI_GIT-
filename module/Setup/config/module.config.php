@@ -224,11 +224,11 @@ return [
         'company' => [
 
             [
-                'label' => 'Designation',
+                'label' => 'Company',
                 'route' => 'company',
             ],
             [
-                'label' => 'Designation',
+                'label' => 'Company',
                 'route' => 'company',
                 'pages' => [
                     [
@@ -244,6 +244,146 @@ return [
                     [
                         'label' => 'Edit',
                         'route' => 'company',
+                        'action' => 'edit',
+                    ],
+                ]
+            ]
+        ],
+        'branch' => [
+
+            [
+                'label' => 'Branch',
+                'route' => 'branch',
+            ],
+            [
+                'label' => 'Branch',
+                'route' => 'branch',
+                'pages' => [
+                    [
+                        'label' => 'List',
+                        'route' => 'branch',
+                        'action' => 'index',
+                    ],
+                    [
+                        'label' => 'Add',
+                        'route' => 'branch',
+                        'action' => 'add',
+                    ],
+                    [
+                        'label' => 'Edit',
+                        'route' => 'branch',
+                        'action' => 'edit',
+                    ],
+                ]
+            ]
+        ],
+        'department' => [
+
+            [
+                'label' => 'Department',
+                'route' => 'department',
+            ],
+            [
+                'label' => 'Department',
+                'route' => 'department',
+                'pages' => [
+                    [
+                        'label' => 'List',
+                        'route' => 'department',
+                        'action' => 'index',
+                    ],
+                    [
+                        'label' => 'Add',
+                        'route' => 'department',
+                        'action' => 'add',
+                    ],
+                    [
+                        'label' => 'Edit',
+                        'route' => 'department',
+                        'action' => 'edit',
+                    ],
+                ]
+            ]
+        ],
+        'position' => [
+
+            [
+                'label' => 'Position',
+                'route' => 'position',
+            ],
+            [
+                'label' => 'Position',
+                'route' => 'position',
+                'pages' => [
+                    [
+                        'label' => 'List',
+                        'route' => 'position',
+                        'action' => 'index',
+                    ],
+                    [
+                        'label' => 'Add',
+                        'route' => 'position',
+                        'action' => 'add',
+                    ],
+                    [
+                        'label' => 'Edit',
+                        'route' => 'position',
+                        'action' => 'edit',
+                    ],
+                ]
+            ]
+        ],
+        'serviceType' => [
+
+            [
+                'label' => 'Service Type',
+                'route' => 'serviceType',
+            ],
+            [
+                'label' => 'Service Type',
+                'route' => 'serviceType',
+                'pages' => [
+                    [
+                        'label' => 'List',
+                        'route' => 'serviceType',
+                        'action' => 'index',
+                    ],
+                    [
+                        'label' => 'Add',
+                        'route' => 'serviceType',
+                        'action' => 'add',
+                    ],
+                    [
+                        'label' => 'Edit',
+                        'route' => 'serviceType',
+                        'action' => 'edit',
+                    ],
+                ]
+            ]
+        ],
+        'empCurrentPosting' => [
+
+            [
+                'label' => 'Employee Current Posting',
+                'route' => 'empCurrentPosting',
+            ],
+            [
+                'label' => 'Employee Current Posting',
+                'route' => 'empCurrentPosting',
+                'pages' => [
+                    [
+                        'label' => 'List',
+                        'route' => 'empCurrentPosting',
+                        'action' => 'index',
+                    ],
+                    [
+                        'label' => 'Add',
+                        'route' => 'empCurrentPosting',
+                        'action' => 'add',
+                    ],
+                    [
+                        'label' => 'Edit',
+                        'route' => 'empCurrentPosting',
                         'action' => 'edit',
                     ],
                 ]

@@ -60,6 +60,89 @@ return [
             ],
         ],
     ],
+    'navigation' => [
+        'default' => [
+            [
+                'label' => 'Shift',
+                'route' => 'shiftsetup',
+            ],
+            [
+                'label' => 'Shift',
+                'route' => 'shiftsetup',
+                'pages' => [
+                    [
+                        'label' => 'List',
+                        'route' => 'shiftsetup',
+                        'action' => 'index',
+                    ],
+                    [
+                        'label' => 'Add',
+                        'route' => 'shiftsetup',
+                        'action' => 'add',
+                    ],
+                    [
+                        'label' => 'Edit',
+                        'route' => 'shiftsetup',
+                        'action' => 'edit',
+                    ],
+                ],
+            ],
+        ],
+        'attendancebyhr' => [
+            [
+                'label' => 'Attendance',
+                'route' => 'attendancebyhr',
+            ],
+            [
+                'label' => 'Attendance',
+                'route' => 'attendancebyhr',
+                'pages' => [
+                    [
+                        'label' => 'List',
+                        'route' => 'attendancebyhr',
+                        'action' => 'index',
+                    ],
+                    [
+                        'label' => 'Entry',
+                        'route' => 'attendancebyhr',
+                        'action' => 'add',
+                    ],
+                    [
+                        'label' => 'Edit',
+                        'route' => 'attendancebyhr',
+                        'action' => 'edit',
+                    ],
+                ],
+            ],
+        ],
+        'shiftassign' => [
+            [
+                'label' => 'Shift Assign',
+                'route' => 'shiftassign',
+            ],
+            [
+                'label' => 'Shift Assign',
+                'route' => 'shiftassign',
+                'pages' => [
+                    [
+                        'label' => 'List',
+                        'route' => 'shiftassign',
+                        'action' => 'index',
+                    ],
+                    [
+                        'label' => 'Add',
+                        'route' => 'shiftassign',
+                        'action' => 'add',
+                    ],
+                    [
+                        'label' => 'Edit',
+                        'route' => 'shiftassign',
+                        'action' => 'edit',
+                    ],
+                ],
+            ],
+        ],
+    ],
 
     'controllers' => [
         'factories' => [

@@ -46,7 +46,10 @@ $submit = $form->get('submit');
 $submit->setAttribute('value', 'UPDATE');
 
 ?>
-
+<div class="container">
+    <?php // add the following line: ?>
+    <?= $this->navigation('navigation')->breadcrumbs()->setMinDepth(0) ?>
+</div>
 <?php
 if ($this->messages) {
     print '<ul class="help-block bg-danger" style="background:#f3e250;">';

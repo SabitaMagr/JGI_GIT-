@@ -25,8 +25,9 @@ if ($this->messages) {
 <script>
     document.menu =<?php $menu = ["id" => "menuSetup", "subMenu" => ["id" => "subMenuBranch"]];echo json_encode($menu);?>;
 </script>
-
-
+<div class="container">
+    <?= $this->navigation('Zend\Navigation\Branch')->breadcrumbs()->setMinDepth(0) ?>
+</div>
 <div class="panel bg-white m-b-0 customShadow">
     <div class="panel-heading">
         <div class="btn-group pull-right">

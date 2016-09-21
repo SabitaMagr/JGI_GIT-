@@ -40,6 +40,94 @@ return [
             ],
         ]
     ],
+    'navigation' => [
+        'default' => [
+            [
+                'label' => 'Leave Setup',
+                'route' => 'leavesetup',
+            ],
+            [
+                'label' => 'Leave Setup',
+                'route' => 'leavesetup',
+                'pages' => [
+                    [
+                        'label' => 'List',
+                        'route' => 'leavesetup',
+                        'action' => 'index',
+                    ],
+                    [
+                        'label' => 'Add',
+                        'route' => 'leavesetup',
+                        'action' => 'add',
+                    ],
+                    [
+                        'label' => 'Edit',
+                        'route' => 'leavesetup',
+                        'action' => 'edit',
+                    ],
+                ]
+            ]
+        ],
+        'leaveassign' => [
+            [
+                'label' => 'Leave Assign',
+                'route' => 'leaveassign',
+            ],
+            [
+                'label' => 'Leave Assign',
+                'route' => 'leaveassign',
+                'pages' => [
+                    [
+                        'label' => 'List',
+                        'route' => 'leaveassign',
+                        'action' => 'index',
+                    ],
+                    [
+                        'label' => 'Add',
+                        'route' => 'leaveassign',
+                        'action' => 'add',
+                    ],
+                    [
+                        'label' => 'Assign',
+                        'route' => 'leaveassign',
+                        'action' => 'assign',
+                    ],
+                    [
+                        'label' => 'Edit',
+                        'route' => 'leaveassign',
+                        'action' => 'edit',
+                    ],
+                ]
+            ]
+        ],
+        'leaveapply' => [
+            [
+                'label' => 'Leave Apply',
+                'route' => 'leaveapply',
+            ],
+            [
+                'label' => 'Leave Apply',
+                'route' => 'leaveapply',
+                'pages' => [
+                    [
+                        'label' => 'List',
+                        'route' => 'leaveapply',
+                        'action' => 'index',
+                    ],
+                    [
+                        'label' => 'Add',
+                        'route' => 'leaveapply',
+                        'action' => 'add',
+                    ],
+                    [
+                        'label' => 'Edit',
+                        'route' => 'leaveapply',
+                        'action' => 'edit',
+                    ],
+                ]
+            ]
+        ],
+    ],
     'controllers' => [
         'factories' => [
             Controller\LeaveSetup::class => ControllerFactory::class,

@@ -23,17 +23,22 @@ return [
     'navigation' => [
         'default' => [
             [
-                'label' => 'Holiday Setup',
+                'label' => 'Holiday',
                 'route' => 'holidaysetup',
             ],
             [
-                'label' => 'Holiday Setup',
+                'label' => 'Holiday',
                 'route' => 'holidaysetup',
                 'pages' => [
                     [
-                        'label' => 'Add',
+                        'label' => 'Detail',
                         'route' => 'holidaysetup',
                         'action' => 'index',
+                    ],
+                    [
+                        'label' => 'Add',
+                        'route' => 'holidaysetup',
+                        'action' => 'add',
                     ],
                 ]
             ]
