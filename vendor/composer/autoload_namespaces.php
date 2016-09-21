@@ -8,7 +8,6 @@ $baseDir = dirname($vendorDir);
 return array(
     'ZfcTwig\\' => array($vendorDir . '/zf-commons/zfc-twig/src'),
     'Twig_' => array($vendorDir . '/twig/twig/lib'),
-    'Psr\\Log\\' => array($vendorDir . '/psr/log'),
     'Prophecy\\' => array($vendorDir . '/phpspec/prophecy/src'),
     'Doctrine\\Common\\Lexer\\' => array($vendorDir . '/doctrine/lexer/lib'),
     'Doctrine\\Common\\Inflector\\' => array($vendorDir . '/doctrine/inflector/lib'),

@@ -18,7 +18,7 @@ $halfDay = $form->get('halfDay');
 $submit = $form->get('submit');
 $submit->setAttribute('value', 'Apply Leave');
 
-$form->setAttribute('action', $this->url('leaveapply', ['action' => 'add','id'=>$id]));
+$form->setAttribute('action', $this->url('leaveapply', ['action' => 'add', 'id' => $id]));
 
 if ($this->messages) {
     print '<ul class="help-block bg-danger" style="background:#f3e250;">';
@@ -39,56 +39,60 @@ print $this->form()->openTag($form);
     </script>
 
     <div class="row">
-        <div class="col-sm-2"></div>
-        <div class="col-sm-8 padding-30 bg-light-color">
-            <div class="panel-heading panel-title-head">
-                <h4>Apply Leave</h4>
-            </div>
-            <div class="panel-body">
-                <div class="form-group form-group-default form-group-default-select2">
-                    <?php print $this->formLabel($leaveId); ?>
-                    <?php print $this->formElement($leaveId); ?>
-                </div>
-                <?php print $this->formElementErrors()->render($leaveId, ['class' => 'help-block error']) ?>
-
-                <div
-                    class="form-group form-group-default required input-group <?= empty($startDate->getMessages()) ? "" : "error" ?>">
-                    <?php print $this->formLabel($startDate) ?>
-                    <?php print $this->formElement($startDate) ?>
-                    <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                </div>
-                <?php print $this->formElementErrors()->render($startDate, ['class' => 'help-block error']) ?>
-
-                <div
-                    class="form-group form-group-default required input-group <?= empty($endDate->getMessages()) ? "" : "error" ?>">
-                    <?php print $this->formLabel($endDate) ?>
-                    <?php print $this->formElement($endDate) ?>
-                    <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                </div>
-                <?php print $this->formElementErrors()->render($endDate, ['class' => 'help-block error']) ?>
-
-                <div class="form-group form-group-default disabled">
-                    <label for="noOfDays">Available Days</label>
-                    <input type="number" id="availableDays" disabled class="form-control" >
-                </div>
-                <div
-                    class="form-group form-group-default required <?= empty($noOfDays->getMessages()) ? "" : "error" ?>">
-                    <?php print $this->formLabel($noOfDays); ?>
-                    <?php print $this->formElement($noOfDays); ?>
-                </div>
-                <?php print $this->formElementErrors()->render($noOfDays, ['class' => 'help-block error']); ?>
-
-                <div class="form-group padding-15">
-                    <?php print $this->formLabel($halfDay); ?>
-                    <div class="radio radio-success">
-                        <?php $customRenderer($halfDay); ?>
+        <div class="col-sm-8 col-sm-offset-2">
+            <div class="panel panel-default customShadow">
+                <div class="panel-heading bg-master-lighter">
+                    <div class="panel-title">
+                        <h3 class="panel-title">Apply Leave</h3>
                     </div>
                 </div>
-                <?php print $this->formElementErrors()->render($halfDay, ['class' => 'help-block error']); ?>
-                <?php print $this->formSubmit($submit); ?>
+                <div class="panel-body p-t-5">
+                    <div class="form-group form-group-sm form-group-default-select2">
+                        <?php print $this->formLabel($leaveId); ?>
+                        <?php print $this->formElement($leaveId); ?>
+                    </div>
+                    <?php print $this->formElementErrors()->render($leaveId, ['class' => 'help-block error']) ?>
 
+                    <div
+                        class="form-group form-group-sm required input-group <?= empty($startDate->getMessages()) ? "" : "error" ?>">
+                        <?php print $this->formLabel($startDate) ?>
+                        <?php print $this->formElement($startDate) ?>
+                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                    </div>
+                    <?php print $this->formElementErrors()->render($startDate, ['class' => 'help-block error']) ?>
+
+                    <div
+                        class="form-group form-group-sm required input-group <?= empty($endDate->getMessages()) ? "" : "error" ?>">
+                        <?php print $this->formLabel($endDate) ?>
+                        <?php print $this->formElement($endDate) ?>
+                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                    </div>
+                    <?php print $this->formElementErrors()->render($endDate, ['class' => 'help-block error']) ?>
+
+                    <div class="form-group form-group-sm disabled">
+                        <label for="noOfDays">Available Days</label>
+                        <input type="number" id="availableDays" disabled class="form-control">
+                    </div>
+                    <div
+                        class="form-group form-group-sm required <?= empty($noOfDays->getMessages()) ? "" : "error" ?>">
+                        <?php print $this->formLabel($noOfDays); ?>
+                        <?php print $this->formElement($noOfDays); ?>
+                    </div>
+                    <?php print $this->formElementErrors()->render($noOfDays, ['class' => 'help-block error']); ?>
+
+                    <div class="form-group padding-0">
+                        <?php print $this->formLabel($halfDay); ?>
+                        <div class="radio radio-success">
+                            <?php $customRenderer($halfDay); ?>
+                        </div>
+                    </div>
+                    <?php print $this->formElementErrors()->render($halfDay, ['class' => 'help-block error']); ?>
+                    <?php print $this->formSubmit($submit); ?>
+
+                </div>
             </div>
         </div>
+    </div>
 <?php
 
 print $this->form()->closeTag();

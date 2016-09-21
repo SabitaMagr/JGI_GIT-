@@ -16,7 +16,7 @@ $positionId = $form->get('positionId');
 $positionId->setValueOptions($positions);
 
 $submit = $form->get('submit');
-$submit->setAttribute('value','Change Employee Posting');
+$submit->setAttribute('value', 'Change Employee Posting');
 
 $form->setAttribute('action', $this->url('empCurrentPosting', ['action' => 'add']));
 
@@ -31,60 +31,50 @@ if ($this->messages) {
 $form->prepare();
 ?>
 
-    <script>
-        document.menu=<?php $menu = ["id" => "menuSetup","subMenu"=>["id"=>"subMenuCurrentPosting"]];echo json_encode($menu);?>;
-    </script>
+<script>
+    document.menu =<?php $menu = ["id" => "menuSetup", "subMenu" => ["id" => "subMenuCurrentPosting"]];echo json_encode($menu);?>;
+</script>
 
-    <div class="row">
-        <div class="col-sm-8 padding-30 bg-light-color">
-            <div class="row panel-title-head" style="margin-bottom: 2%">
-                <div class="col-xs-9 col-sm-9 col-md-9">
-                    <div class="panel-heading padding-5">
-                        <h4>Add New</h4>
-                    </div>
-                </div>
-
-                <div class="col-xs-3 col-sm-3 col-md-3 pull-right">
-                    <div class="pull-right m-b-10">
-                        <a href="<?= $this->url("empCurrentPosting",["action","index"])?>" style="margin-left:16%;">
-                            <button class="btn btn-default btn-cons"><i class="fa fa-arrow-left"></i>
-                                <span>Back </span></button>
-                        </a>
-                    </div>
+<div class="row">
+    <div class="col-sm-8 col-sm-offset-2">
+        <div class="panel panel-default customShadow">
+            <div class="panel-heading bg-master-lighter">
+                <div class="panel-title">
+                    <h3 class="panel-title">Employee Current Posting</h3>
                 </div>
             </div>
-            <div class="panel-body padding-0">
-                <?php  print $this->form()->openTag($form); ?>
-                <div class="form-group form-group-default form-group-default-select2">
+            <div class="panel-body p-t-5">
+                <?php print $this->form()->openTag($form); ?>
+                <div class="form-group form-group-sm form-group-default-select2">
                     <?php print $this->formLabel($employeeId); ?>
                     <?php print $this->formElement($employeeId); ?>
                     <?php print $this->formElementErrors()->render($employeeId, ['class' => 'help-block']); ?>
                 </div>
-                <div class="form-group form-group-default form-group-default-select2">
+                <div class="form-group form-group-sm form-group-default-select2">
                     <?php print $this->formLabel($serviceTypeId); ?>
                     <?php print $this->formElement($serviceTypeId); ?>
                     <?php print $this->formElementErrors()->render($serviceTypeId, ['class' => 'help-block']); ?>
                 </div>
 
-                <div class="form-group form-group-default form-group-default-select2">
+                <div class="form-group form-group-sm form-group-default-select2">
                     <?php print $this->formLabel($branchId); ?>
                     <?php print $this->formElement($branchId); ?>
                     <?php print $this->formElementErrors()->render($branchId, ['class' => 'help-block']); ?>
                 </div>
 
-                <div class="form-group form-group-default form-group-default-select2">
+                <div class="form-group form-group-sm form-group-default-select2">
                     <?php print $this->formLabel($departmentId); ?>
                     <?php print $this->formElement($departmentId); ?>
                     <?php print $this->formElementErrors()->render($departmentId, ['class' => 'help-block']); ?>
                 </div>
 
-                <div class="form-group form-group-default form-group-default-select2">
+                <div class="form-group form-group-sm form-group-default-select2">
                     <?php print $this->formLabel($designationId); ?>
                     <?php print $this->formElement($designationId); ?>
                     <?php print $this->formElementErrors()->render($designationId, ['class' => 'help-block']); ?>
                 </div>
 
-                <div class="form-group form-group-default form-group-default-select2">
+                <div class="form-group form-group-sm form-group-default-select2">
                     <?php print $this->formLabel($positionId); ?>
                     <?php print $this->formElement($positionId); ?>
                     <?php print $this->formElementErrors()->render($positionId, ['class' => 'help-block']); ?>
@@ -96,7 +86,5 @@ $form->prepare();
                 ?>
             </div>
         </div>
-        <div class="col-sm-2">
-
-        </div>
     </div>
+</div>

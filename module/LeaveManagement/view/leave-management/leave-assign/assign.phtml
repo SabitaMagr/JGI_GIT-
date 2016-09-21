@@ -2,13 +2,13 @@
 /**
  * Load Javascript files here
  */
-//$this->headScript()->appendFile($this->basePath('plugins/jquery-datatable/media/js/jquery.dataTables.min.js'));
-//$this->headScript()->appendFile($this->basePath('plugins/jquery-datatable/extensions/TableTools/js/dataTables.tableTools.min.js'));
-//$this->headScript()->appendFile($this->basePath('plugins/jquery-datatable/media/js/dataTables.bootstrap.js'));
-//$this->headScript()->appendFile($this->basePath('plugins/jquery-datatable/extensions/Bootstrap/jquery-datatable-bootstrap.js'));
-//$this->headScript()->appendFile($this->basePath('plugins/datatables-responsive/js/datatables.responsive.js'));
-//$this->headScript()->appendFile($this->basePath('plugins/datatables-responsive/js/lodash.min.js'));
-//$this->headScript()->appendFile($this->basePath('js/datatables.js'));
+$this->headScript()->appendFile($this->basePath('plugins/jquery-datatable/media/js/jquery.dataTables.min.js'));
+$this->headScript()->appendFile($this->basePath('plugins/jquery-datatable/extensions/TableTools/js/dataTables.tableTools.min.js'));
+$this->headScript()->appendFile($this->basePath('plugins/jquery-datatable/media/js/dataTables.bootstrap.js'));
+$this->headScript()->appendFile($this->basePath('plugins/jquery-datatable/extensions/Bootstrap/jquery-datatable-bootstrap.js'));
+$this->headScript()->appendFile($this->basePath('plugins/datatables-responsive/js/datatables.responsive.js'));
+$this->headScript()->appendFile($this->basePath('plugins/datatables-responsive/js/lodash.min.js'));
+$this->headScript()->appendFile($this->basePath('js/datatables.js'));
 $this->headScript()->appendFile($this->basePath('plugins/notify.min.js'));
 
 $this->headScript()->appendFile($this->basePath('plugins/angular.min.js'));
@@ -29,121 +29,125 @@ $departmentFormElement->setAttribute("ng-model", "departmentId");
 $genderFormElement->setAttribute("ng-model", "genderId");
 $designationFormElement->setAttribute("ng-model", "designationId");
 ?>
-<div ng-app="hris" ng-controller="assignController">
-    <div class="panel-primary padding-20">
-        <div class="row">
-            <div class="col-sm-2">
-                <div class="form-group form-group-default-select2">
-                    <?php print $this->formLabel($leaveFormElement); ?>
-                    <?php print $this->formElement($leaveFormElement); ?>
+<div class="panel bg-white customShadow">
+    <div ng-app="hris" ng-controller="assignController">
+        <div class="panel-primary p-t-20 p-l-20 p-r-20">
+            <div class="row">
+                <div class="col-sm-2">
+                    <div class="form-group form-group-default-select2">
+                        <?php print $this->formLabel($leaveFormElement); ?>
+                        <?php print $this->formElement($leaveFormElement); ?>
+                    </div>
+
+                </div>
+                <div class="col-sm-2">
+                    <div class=" form-group form-group-default-select2">
+                        <?php print $this->formLabel($genderFormElement); ?>
+                        <?php print $this->formElement($genderFormElement); ?>
+                    </div>
+                </div>
+                <div class="col-sm-2">
+                    <div class=" form-group form-group-default-select2">
+                        <?php print $this->formLabel($branchFormElement); ?>
+                        <?php print $this->formElement($branchFormElement); ?>
+                    </div>
+                </div>
+                <div class="col-sm-2 ">
+                    <div class=" form-group form-group-default-select2">
+                        <?php print $this->formLabel($designationFormElement); ?>
+                        <?php print $this->formElement($designationFormElement); ?>
+                    </div>
+
+                </div>
+                <div class="col-sm-2">
+                    <div class=" form-group form-group-default-select2">
+                        <?php print $this->formLabel($departmentFormElement); ?>
+                        <?php print $this->formElement($departmentFormElement); ?>
+                    </div>
+                </div>
+                <div class="col-sm-1 col-sm-offset-1">
+                    <div class="form-group">
+                        <label for="departmentId" class="m-b-0">&nbsp</label>
+                        <button ng-click="view()" id="viewEmployees" class="btn btn-block btn-primary pull-center">
+                            View
+                        </button>
+                    </div>
                 </div>
 
             </div>
-            <div class="col-sm-2">
-                <div class=" form-group form-group-default-select2">
-                    <?php print $this->formLabel($genderFormElement); ?>
-                    <?php print $this->formElement($genderFormElement); ?>
+
+        </div>
+        <div class="panel panel-transparent">
+            <div class="panel-body p-t-0">
+                <div class="row">
+                    <div class="col-sm-2 col-sm-offset-10">
+                        <input class="form-control" type="number" ng-model="daysForAll"
+                               ng-change="daysForAllChange(daysForAll)"
+                               ng-show="daysForAllFlag"/>
+                    </div>
                 </div>
-            </div>
-            <div class="col-sm-2">
-                <div class=" form-group form-group-default-select2">
-                    <?php print $this->formLabel($branchFormElement); ?>
-                    <?php print $this->formElement($branchFormElement); ?>
-                </div>
-            </div>
-            <div class="col-sm-2 ">
-                <div class=" form-group form-group-default-select2">
-                    <?php print $this->formLabel($designationFormElement); ?>
-                    <?php print $this->formElement($designationFormElement); ?>
+                <div class="table-responsive" style="max-height: 500px; min-height: 300px;">
+                    <table class="table small-table" >
+                        <thead>
+                        <tr role="row">
+                            <th>Name</th>
+                            <th>Leave</th>
+                            <th>Job Title</th>
+                            <th>Branch</th>
+                            <th>Days</th>
+                            <th>
+                                <p class="text-left">
+                                    <input class="" type="checkbox" ng-model="all" ng-click="checkAll(all)"/>
+                                </p>
+                            </th>
+                        </tr>
+                        </thead>
+                        <tbody id="target">
+                        <tr ng-repeat="item in leaveList">
+                            <td><p class="text-left">
+                                    {{ item.FIRST_NAME }} {{ item.MIDDLE_NAME }} {{ item.LAST_NAME }}
+
+                                </p>
+                            </td>
+                            <td>
+                                <p class="text-left">
+                                    {{item.LEAVE_ID}}
+                                </p>
+                            </td>
+                            <td>
+                                <p class="text-left">
+                                    {{item.DESIGNATION_TITLE}}
+                                </p>
+                            </td>
+                            <td>
+                                <p class="text-left">
+                                    {{item.BRANCH_NAME}}
+                                </p>
+                            </td>
+                            <td>
+                                <p class="text-left">
+                                    <input class="text" id="balance" type="text" min="0" ng-model="item.BALANCE"/>
+                                </p>
+                            </td>
+                            <td>
+                                <p class="text-left">
+                                    <input class="" ng-model="item.checked" type="checkbox"
+                                           ng-change="checkUnit(item.checked)"/>
+                                </p>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
                 </div>
 
-            </div>
-            <div class="col-sm-2">
-                <div class=" form-group form-group-default-select2">
-                    <?php print $this->formLabel($departmentFormElement); ?>
-                    <?php print $this->formElement($departmentFormElement); ?>
-                </div>
-            </div>
-            <div class="col-sm-1 col-sm-offset-1">
-                <div class="form-group">
-                    <label for="departmentId">&nbsp</label>
-                    <button ng-click="view()" id="viewEmployees" class="btn btn-block btn-primary pull-center">
-                        View
-                    </button>
+
+                <div class="row">
+                    <div class="col-sm-1 col-sm-offset-11">
+                        <button class="btn btn-block btn-primary" ng-click="assign()">Assign</button>
+                    </div>
                 </div>
             </div>
 
         </div>
-
-    </div>
-    <div class="panel panel-transparent">
-        <div class="panel-body">
-            <div class="row">
-                <div class="col-sm-2 col-sm-offset-10">
-                    <input class="form-control" type="number" ng-model="daysForAll" ng-change="daysForAllChange(daysForAll)"
-                           ng-show="daysForAllFlag"/>
-                </div>
-            </div>
-            <div class="table-responsive" style="max-height: 500px; min-height: 300px;">
-                <table class="table small-table">
-                    <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Leave</th>
-                        <th>Job Title</th>
-                        <th>Branch</th>
-                        <th>Days</th>
-                        <th>
-                            <p class="text-left">
-                            <input class="" type="checkbox" ng-model="all" ng-click="checkAll(all)"/>
-                            </p>
-                        </th>
-                    </tr>
-                    </thead>
-                    <tbody id="target">
-                    <tr ng-repeat="item in leaveList">
-                        <td><p class="text-left">
-                            {{ item.FIRST_NAME }} {{ item.MIDDLE_NAME }} {{ item.LAST_NAME }}
-
-                            </p>
-                        </td>
-                        <td>
-                            <p class="text-left">
-                            {{item.LEAVE_ID}}
-                            </p>
-                        </td>
-                        <td>
-                            <p class="text-left">
-                            {{item.DESIGNATION_TITLE}}
-                            </p>
-                        </td>
-                        <td>
-                            <p class="text-left">
-                            {{item.BRANCH_NAME}}
-                            </p>
-                        </td>
-                        <td>
-                            <p class="text-left">
-                            <input class="text" id="balance" type="text" min="0" ng-model="item.BALANCE"/>
-                       </p>
-                        </td>
-                        <td>
-                            <p class="text-left">
-                            <input class="" ng-model="item.checked" type="checkbox" ng-change="checkUnit(item.checked)"/>
-                        </p>
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
-            </div>
-
-
-            <div class="row">
-                <div class="col-sm-1 col-sm-offset-11">
-                    <button class="btn btn-block btn-primary" ng-click="assign()">Assign</button>
-                </div>
-            </div>
-        </div>
-
     </div>
 </div>

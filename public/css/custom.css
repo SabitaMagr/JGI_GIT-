@@ -81,7 +81,15 @@ legend.scheduler-border {
 .customPanel{
 	margin-bottom: 0px !important;
 }
+.customBreadcrumb a{
+	margin-left: 0px !important;
+    margin-right: 0px !important;
+}
 
 .customShadow{
 	z-index: 798; box-shadow: 0 4px 11px -3px rgba(0,0,0,0.5);
+}
+
+.customShadowHeader{
+	z-index: 900; box-shadow: 0 4px 11px -3px rgba(0,0,0,0.5);
 }

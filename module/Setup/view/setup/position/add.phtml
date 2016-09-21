@@ -25,42 +25,31 @@ $form->prepare();
         document.menu=<?php $menu = ["id" => "menuSetup","subMenu"=>["id"=>"subMenuPosition"]];echo json_encode($menu);?>;
     </script>
 
-    <div class="row">
-        <div class="col-sm-8 padding-30 bg-light-color">
-            <div class="row panel-title-head" style="margin-bottom: 2%">
-                <div class="col-xs-9 col-sm-9 col-md-9">
-                    <div class="panel-heading padding-5">
-                        <h4>Add Position</h4>
-                    </div>
-                </div>
-
-                <div class="col-xs-3 col-sm-3 col-md-3 pull-right">
-                    <div class="pull-right m-b-10">
-                        <a href="<?= $this->url("position",["action","index"])?>" style="margin-left:16%;">
-                            <button class="btn btn-default btn-cons"><i class="fa fa-arrow-left"></i>
-                                <span>Back </span></button>
-                        </a>
-                    </div>
+<div class="row">
+    <div class="col-sm-8 col-sm-offset-2">
+        <div class="panel panel-default customShadow">
+            <div class="panel-heading bg-master-lighter">
+                <div class="panel-title">
+                    <h3 class="panel-title">Position</h3>
                 </div>
             </div>
-
-            <div class="panel-body padding-0" >
+            <div class="panel-body p-t-5">
                 <?php
                 print $this->form()->openTag($form);
                 ?>
-                <div class="form-group form-group-default ">
+                <div class="form-group form-group-sm ">
                     <?php print $this->formLabel($positionName); ?>
                     <?php print $this->formElement($positionName); ?>
                     <?php print $this->formElementErrors()->render($positionName, ['class' => 'help-block']); ?>
                 </div>
 
-                <div class="form-group form-group-default" >
+                <div class="form-group form-group-sm" >
                     <?php print $this->formLabel($remarks); ?>
                     <?php print $this->formElement($remarks); ?>
                     <?php print $this->formElementErrors()->render($remarks, ['class' => 'help-block']); ?>
                 </div>
 
-                <div class="form-group form-group-default form-group-default-select2">
+                <div class="form-group form-group-sm form-group-default-select2">
                     <?php print $this->formLabel($status); ?>
                     <?php print $this->formElement($status); ?>
                     <?php print $this->formElementErrors()->render($status, ['class' => 'help-block']); ?>
@@ -74,5 +63,5 @@ $form->prepare();
             </div>
 
         </div>
-        <div class="col-sm-2"></div>
     </div>
+</div>

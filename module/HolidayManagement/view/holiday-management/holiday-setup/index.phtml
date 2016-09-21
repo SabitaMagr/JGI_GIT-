@@ -56,117 +56,117 @@ $form->prepare();
     <?= $this->navigation('navigation')->breadcrumbs()->setMinDepth(0) ?>
 </div>
 <div ng-app="hris" ng-controller="holidayController">
-    <div class="p-t-20">
-        <div class="row">
-            <div class="col-xs-5 col-sm-5 col-md-5">
-                <div class="form-group form-group-default-select2">
-                    <?php print $this->formElement($holidayFormElement); ?>
-                </div>
-            </div>
-            <div class="col-xs-3 col-sm-3 col-md-3 m-b-5">
-                <div class="btn-group pull-right">
-                    <a class="btn btn-default" href="<?= $this->url('holidaysetup', ['action' => 'add']) ?>">
-                        Add new
-                    </a>
-                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-                        <span class="caret"></span>
-                    </button>
-                    <ul class="dropdown-menu" role="menu">
-                        <li><a href="#">Settings</a>
-                        </li>
-                        <li><a href="#">Help</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-            <div class="col-xs-4 col-sm-4 col-md-4"></div>
-        </div>
-    </div>
     <div class="row">
-        <div class="col-md-8 padding-30 bg-light-color">
-            <div class="row panel-title-head" style="margin-bottom: 2%">
-                <div class="col-md-12">
-                    <div class="panel-heading padding-5">
-                        <h4>Holiday Detail</h4>
+        <div class="col-sm-8 col-sm-offset-2">
+            <div class="panel bg-white customShadow">
+                <div class="p-t-20 p-l-20 p-r-20 panel-title-head">
+                    <div class="row">
+                        <div class="col-xs-5 col-sm-5 col-md-5">
+                            <div class="form-group form-group-default-select2">
+                                <?php print $this->formElement($holidayFormElement); ?>
+                            </div>
+                        </div>
+                        <div class="col-xs-7 col-sm-7 col-md-7 m-b-5">
+                            <div class="btn-group pull-right">
+                                <a class="btn btn-success"
+                                   href="<?= $this->url('holidaysetup', ['action' => 'add']) ?>">
+                                    Add new
+                                </a>
+                                <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown"
+                                        aria-expanded="false">
+                                    <span class="caret"></span>
+                                </button>
+                                <ul class="dropdown-menu" role="menu">
+                                    <li><a href="#">Settings</a>
+                                    </li>
+                                    <li><a href="#">Help</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="col-xs-4 col-sm-4 col-md-4"></div>
                     </div>
                 </div>
-                <div class="col-xs-9 col-sm-9 col-md-9">
-                    <div class="form-group form-group-default-select2">
-
+                <div class="panel-body p-t-10">
+                    <div class="form-group form-group-sm">
+                        <label for="holidayCode" >Holiday Code</label>
+                        <input name="holidayCode" required="required" id="holidayCode" class="form-control"
+                               type="text" ng-model="holidayDtl.holidayCode">
                     </div>
-                </div>
-
-                <div class="col-xs-3 col-sm-3 col-md-3 pull-right m-b-5">
-
-                </div>
-            </div>
-
-            <div class="panel-body padding-0">
-                <div class="form-group form-group-default">
-                    <label for="holidayCode" class="fade">Holiday Code</label>
-                    <input name="holidayCode" required="required" id="holidayCode" class="form-control" type="text" ng-model="holidayDtl.holidayCode">
-                </div>
-                <div class="form-group padding-10">
-                    <label for="genderId">Gender</label>
-                    <div class="radio radio-success">
-                    <div class="radio radio-success">
-                        <input checked="checked" type="radio" value="1" name="genderId" id="genderId+Male" ng-model="holidayDtl.genderId">
-                        <label for="genderId+Male">Male</label>
-                        <input type="radio" value="2" name="genderId" id="genderId+Female" ng-model="holidayDtl.genderId">
-                        <label for="genderId+Female">Female</label>
-                        <input type="radio" value="3" name="genderId" id="genderId+Other" ng-model="holidayDtl.genderId">
-                        <label for="genderId+Other">Other</label>
-                        <input type="radio" value="-1" name="genderId" id="genderId+All" ng-model="holidayDtl.genderId">
-                        <label for="genderId+All">All</label>
+                    <div class="form-group padding-0">
+                        <label for="genderId">Gender</label>
+                        <div class="radio radio-success">
+                            <div class="radio radio-success">
+                                <input checked="checked" type="radio" value="1" name="genderId"
+                                       id="genderId+Male" ng-model="holidayDtl.genderId">
+                                <label for="genderId+Male">Male</label>
+                                <input type="radio" value="2" name="genderId" id="genderId+Female"
+                                       ng-model="holidayDtl.genderId">
+                                <label for="genderId+Female">Female</label>
+                                <input type="radio" value="3" name="genderId" id="genderId+Other"
+                                       ng-model="holidayDtl.genderId">
+                                <label for="genderId+Other">Other</label>
+                                <input type="radio" value="-1" name="genderId" id="genderId+All"
+                                       ng-model="holidayDtl.genderId">
+                                <label for="genderId+All">All</label>
+                            </div>
+                        </div>
                     </div>
+                    <div class="form-group form-group-sm form-group-default-select2">
+                        <?php print $this->formLabel($branchFormElement); ?>
+                        <?php print $this->formElement($branchFormElement); ?>
                     </div>
-                </div>
-                <div class="form-group form-group-default form-group-default-select2">
-                    <?php print $this->formLabel($branchFormElement); ?>
-                    <?php print $this->formElement($branchFormElement); ?>
-                </div>
 
-                <div class="form-group form-group-default">
-                    <label for="holidayEname">Holiday Ename</label>
-                    <input name="holidayEname" required="required" id="holidayEname" class="form-control" type="text" value="" ng-model="holidayDtl.holidayEname">
-                </div>
-
-                <div class="form-group form-group-default">
-                    <label for="holidayLname">Holiday Lname</label>
-                    <input name="holidayLname" required="required" id="holidayLname" class="form-control" type="text" value="" ng-model="holidayDtl.holidayLname">
-                </div>
-
-                <div class="form-group form-group-default required input-group">
-                    <label for="startDate">Start Date</label>
-                    <input type="text" name="startDate" required="required" id="startDate" class="form-control" value="" ng-model="holidayDtl.startDate">
-                    <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                </div>
-
-                <div class="form-group form-group-default required input-group">
-                    <label for="endDate">End Date</label>
-                    <input type="text" name="endDate" required="required" id="endDate" class="form-control" value="" ng-model="holidayDtl.endDate">
-                    <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                </div>
-
-                <div class="form-group padding-10">
-                    <label for="halfday">Halfday</label>
-                    <div class="radio radio-success">
-                        <input checked="checked" type="radio" value="F" name="halfday" id="halfday+First Half" ng-model="holidayDtl.halfday">
-                        <label for="halfday+First Half">First Half</label>
-                        <input type="radio" value="S" name="halfday" id="halfday+Second Half" ng-model="holidayDtl.halfday">
-                        <label for="halfday+Second Half">Second Half</label>
-                        <input type="radio" value="N" name="halfday" id="halfday+Full Day" ng-model="holidayDtl.halfday">
-                        <label for="halfday+Full Day">Full Day</label>
+                    <div class="form-group form-group-sm">
+                        <label for="holidayEname">Holiday Ename</label>
+                        <input name="holidayEname" required="required" id="holidayEname" class="form-control"
+                               type="text" value="" ng-model="holidayDtl.holidayEname">
                     </div>
-                </div>
 
-                <div class="form-group form-group-default">
-                    <label for="remarks">Remarks</label>
-                    <input name="remarks" id="remarks" class="form-control" type="text"value="" ng-model="holidayDtl.remarks">
+                    <div class="form-group form-group-sm">
+                        <label for="holidayLname">Holiday Lname</label>
+                        <input name="holidayLname" required="required" id="holidayLname" class="form-control"
+                               type="text" value="" ng-model="holidayDtl.holidayLname">
+                    </div>
+
+                    <div class="form-group form-group-sm required input-group">
+                        <label for="startDate">Start Date</label>
+                        <input type="text" name="startDate" required="required" id="startDate"
+                               class="form-control" value="" ng-model="holidayDtl.startDate">
+                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                    </div>
+
+                    <div class="form-group form-group-sm required input-group">
+                        <label for="endDate">End Date</label>
+                        <input type="text" name="endDate" required="required" id="endDate" class="form-control"
+                               value="" ng-model="holidayDtl.endDate">
+                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                    </div>
+
+                    <div class="form-group padding-0">
+                        <label for="halfday">Halfday</label>
+                        <div class="radio radio-success">
+                            <input checked="checked" type="radio" value="F" name="halfday"
+                                   id="halfday+First Half" ng-model="holidayDtl.halfday">
+                            <label for="halfday+First Half">First Half</label>
+                            <input type="radio" value="S" name="halfday" id="halfday+Second Half"
+                                   ng-model="holidayDtl.halfday">
+                            <label for="halfday+Second Half">Second Half</label>
+                            <input type="radio" value="N" name="halfday" id="halfday+Full Day"
+                                   ng-model="holidayDtl.halfday">
+                            <label for="halfday+Full Day">Full Day</label>
+                        </div>
+                    </div>
+
+                    <div class="form-group form-group-sm">
+                        <label for="remarks">Remarks</label>
+                        <input name="remarks" id="remarks" class="form-control" type="text" value=""
+                               ng-model="holidayDtl.remarks">
+                    </div>
+                    <button ng-click="update()" id="updateHoliday" class="btn btn-success pull-left">
+                        UPDATE
+                    </button>
                 </div>
-                <button ng-click="update()" id="updateHoliday"  class="btn btn-primary pull-right">
-                    UPDATE
-                </button>
             </div>
         </div>
     </div>

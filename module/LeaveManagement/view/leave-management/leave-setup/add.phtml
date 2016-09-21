@@ -15,7 +15,7 @@ $remarks = $form->get('remarks');
 $fiscalYear->setValueOptions($fiscalYears);
 
 $submit = $form->get('submit');
-$submit->setAttribute('value', 'Add Leave');
+$submit->setAttribute('value', 'SUBMIT');
 
 $form->setAttribute('action', $this->url('leavesetup', ['action' => 'add']));
 
@@ -30,36 +30,39 @@ if ($this->messages) {
 $form->prepare();
 print $this->form()->openTag($form);
 ?>
-    <script>
-        document.menu =<?php $menu = ["id" => "menuLeaveManagement", "subMenu" => ["id" => "subMenuLeaveSetup"]];echo json_encode($menu);?>;
-    </script>
+<script>
+    document.menu =<?php $menu = ["id" => "menuLeaveManagement", "subMenu" => ["id" => "subMenuLeaveSetup"]];echo json_encode($menu);?>;
+</script>
 
-    <div class="row">
-        <div class="col-sm-2"></div>
-        <div class="col-sm-8 padding-30 bg-light-color">
-            <div class="panel-heading panel-title-head">
-                <h4>Leave</h4>
+<div class="row">
+    <div class="col-sm-8 col-sm-offset-2">
+        <div class="panel panel-default customShadow">
+            <div class="panel-heading bg-master-lighter">
+                <div class="panel-title">
+                    <h3 class="panel-title">Leave</h3>
+                </div>
             </div>
-            <div class="panel-body">
-                <div class="form-group form-group-default <?= empty($leaveCode->getMessages()) ? "" : "error" ?>">
+            <div class="panel-body p-t-5">
+                <div class="form-group form-group-sm <?= empty($leaveCode->getMessages()) ? "" : "error" ?>">
                     <?php print $this->formLabel($leaveCode); ?>
                     <?php print $this->formElement($leaveCode); ?>
                 </div>
                 <?php print $this->formElementErrors()->render($leaveCode, ['class' => 'help-block error']); ?>
 
-                <div class="form-group form-group-default <?= empty($leaveEname->getMessages()) ? "" : "error" ?>">
+                <div class="form-group form-group-sm <?= empty($leaveEname->getMessages()) ? "" : "error" ?>">
                     <?php print $this->formLabel($leaveEname); ?>
                     <?php print $this->formElement($leaveEname); ?>
                 </div>
                 <?php print $this->formElementErrors()->render($leaveEname, ['class' => 'help-block error']); ?>
 
-                <div class="form-group form-group-default <?= empty($leaveLname->getMessages()) ? "" : "error" ?>">
+                <div class="form-group form-group-sm <?= empty($leaveLname->getMessages()) ? "" : "error" ?>">
                     <?php print $this->formLabel($leaveLname); ?>
                     <?php print $this->formElement($leaveLname); ?>
                 </div>
                 <?php print $this->formElementErrors()->render($leaveLname, ['class' => 'help-block error']); ?>
 
-                <div class="form-group form-group-default form-group-default-select2 <?= empty($fiscalYear->getMessages()) ? "" : "error" ?>">
+                <div
+                    class="form-group form-group-sm form-group-default-select2 <?= empty($fiscalYear->getMessages()) ? "" : "error" ?>">
                     <?php print $this->formLabel($fiscalYear); ?>
                     <?php print $this->formElement($fiscalYear); ?>
                 </div>
@@ -69,14 +72,14 @@ print $this->form()->openTag($form);
                 <div class="padding-5">
                     <div class="row  bg-master-lightest">
                         <div class=" col-sm-6 ">
-                            <div class="form-group padding-15">
+                            <div class="form-group padding-0">
                                 <?php print $this->formLabel($allowHalfday); ?>
                                 <div class="radio radio-success">
                                     <?php $customRenderer($allowHalfday); ?>
                                 </div>
                             </div>
                             <?php print $this->formElementErrors()->render($allowHalfday, ['class' => 'help-block error']); ?>
-                            <div class="form-group padding-15">
+                            <div class="form-group padding-0">
                                 <?php print $this->formLabel($defaultDays); ?>
                                 <div class="radio radio-success">
                                     <?php $customRenderer($defaultDays); ?>
@@ -86,7 +89,7 @@ print $this->form()->openTag($form);
                         </div>
                         <div class="col-sm-6">
 
-                            <div class="form-group padding-15">
+                            <div class="form-group padding-0">
                                 <?php print $this->formLabel($cashable); ?>
                                 <div class="radio radio-success">
                                     <?php $customRenderer($cashable); ?>
@@ -95,7 +98,7 @@ print $this->form()->openTag($form);
                             <?php print $this->formElementErrors()->render($cashable, ['class' => 'help-block error']); ?>
 
 
-                            <div class="form-group padding-15">
+                            <div class="form-group padding-0">
                                 <?php print $this->formLabel($carryForward); ?>
                                 <div class="radio radio-success">
                                     <?php $customRenderer($carryForward); ?>
@@ -105,22 +108,15 @@ print $this->form()->openTag($form);
                         </div>
                     </div>
                 </div>
-
-
-                <div class="form-group form-group-default">
+                <div class="form-group form-group-sm">
                     <?php print $this->formLabel($remarks); ?>
                     <?php print $this->formElement($remarks); ?>
                     <?php print $this->formElementErrors()->render($remarks, ['class' => 'help-block']); ?>
                 </div>
 
                 <?php print $this->formSubmit($submit); ?>
-
+                <?php print $this->form()->closeTag(); ?>
             </div>
-
         </div>
     </div>
-<?php
-
-print $this->form()->closeTag();
-
-?>
+</div>

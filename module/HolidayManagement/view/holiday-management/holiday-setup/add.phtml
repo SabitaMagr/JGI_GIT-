@@ -55,99 +55,90 @@ $form->prepare();
 </div>
 
 <div class="row">
-    <div class="col-sm-8 padding-30 bg-light-color">
-        <div class="row panel-title-head" style="margin-bottom: 2%">
-            <div class="col-xs-9 col-sm-9 col-md-9">
-                <div class="panel-heading padding-5">
-                    <h4>Add Holiday</h4>
+    <div class="col-sm-8 col-sm-offset-2">
+        <div class="panel panel-default customShadow">
+            <div class="panel-heading bg-master-lighter">
+                <div class="panel-title">
+                    <h3 class="panel-title">Holiday</h3>
                 </div>
+            </div>
+            <div class="panel-body p-t-5">
+                <?php
+                print $this->form()->openTag($form);
+                ?>
+                <div class="form-group form-group-sm <?= empty($holidayCode->getMessages()) ? "" : "error" ?>">
+                    <?php print $this->formLabel($holidayCode); ?>
+                    <?php print $this->formElement($holidayCode); ?>
+                </div>
+                <?php print $this->formElementErrors()->render($holidayCode, ['class' => 'help-block error']); ?>
+
+
+                <div class="form-group padding-0">
+                    <?php print $this->formLabel($genderId); ?>
+                    <div class="radio radio-success">
+                        <?php $customRenderer($genderId); ?>
+                    </div>
+                </div>
+                <?php print $this->formElementErrors()->render($genderId, ['class' => 'help-block error']); ?>
+
+                <div class="form-group form-group-sm form-group-default-select2">
+                    <?php print $this->formLabel($branchId); ?>
+                    <?php print $this->formElement($branchId); ?>
+                </div>
+                <?php print $this->formElementErrors()->render($branchId, ['class' => 'help-block error']) ?>
+
+
+                <div class="form-group form-group-sm <?= empty($holidayEname->getMessages()) ? "" : "error" ?>">
+                    <?php print $this->formLabel($holidayEname); ?>
+                    <?php print $this->formElement($holidayEname); ?>
+                </div>
+                <?php print $this->formElementErrors()->render($holidayEname, ['class' => 'help-block error']); ?>
+
+                <div class="form-group form-group-sm <?= empty($holidayLname->getMessages()) ? "" : "error" ?>">
+                    <?php print $this->formLabel($holidayLname); ?>
+                    <?php print $this->formElement($holidayLname); ?>
+                </div>
+                <?php print $this->formElementErrors()->render($holidayLname, ['class' => 'help-block error']); ?>
+
+                <div
+                    class="form-group form-group-sm required input-group <?= empty($startDate->getMessages()) ? "" : "error" ?>">
+                    <?php print $this->formLabel($startDate) ?>
+                    <?php print $this->formElement($startDate) ?>
+                    <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                </div>
+                <?php print $this->formElementErrors()->render($startDate, ['class' => 'help-block error']) ?>
+
+
+                <div
+                    class="form-group form-group-sm required input-group <?= empty($endDate->getMessages()) ? "" : "error" ?>">
+                    <?php print $this->formLabel($endDate) ?>
+                    <?php print $this->formElement($endDate) ?>
+                    <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                </div>
+                <?php print $this->formElementErrors()->render($endDate, ['class' => 'help-block error']) ?>
+
+
+                <div class="form-group padding-0">
+                    <?php print $this->formLabel($halfday); ?>
+                    <div class="radio radio-success">
+                        <?php $customRenderer($halfday); ?>
+                    </div>
+                </div>
+                <?php print $this->formElementErrors()->render($halfday, ['class' => 'help-block error']); ?>
+
+                <div class="form-group form-group-sm">
+                    <?php print $this->formLabel($remarks); ?>
+                    <?php print $this->formElement($remarks); ?>
+                </div>
+                <?php print $this->formElementErrors()->render($remarks, ['class' => 'help-block error']); ?>
+
+
+                <?php
+                print $this->formSubmit($submit);
+                print $this->form()->closeTag();
+                ?>
             </div>
 
-            <div class="col-xs-3 col-sm-3 col-md-3 pull-right">
-                <div class="pull-right m-b-10">
-                    <a href="<?= $this->url("holidaysetup",["action","index"])?>" style="margin-left:16%;">
-                        <button class="btn btn-default btn-cons"><i class="fa fa-arrow-left"></i>
-                            <span>Back </span></button>
-                    </a>
-                </div>
-            </div>
         </div>
-
-        <div class="panel-body padding-0">
-            <?php
-            print $this->form()->openTag($form);
-            ?>
-            <div class="form-group form-group-default <?= empty($holidayCode->getMessages()) ? "" : "error" ?>">
-                <?php print $this->formLabel($holidayCode); ?>
-                <?php print $this->formElement($holidayCode); ?>
-            </div>
-            <?php print $this->formElementErrors()->render($holidayCode, ['class' => 'help-block error']); ?>
-
-
-            <div class="form-group padding-10">
-                <?php print $this->formLabel($genderId); ?>
-                <div class="radio radio-success">
-                    <?php $customRenderer($genderId); ?>
-                </div>
-            </div>
-            <?php print $this->formElementErrors()->render($genderId, ['class' => 'help-block error']); ?>
-
-            <div class="form-group form-group-default form-group-default-select2">
-                <?php print $this->formLabel($branchId); ?>
-                <?php print $this->formElement($branchId); ?>
-            </div>
-            <?php print $this->formElementErrors()->render($branchId, ['class' => 'help-block error']) ?>
-
-
-            <div class="form-group form-group-default <?= empty($holidayEname->getMessages()) ? "" : "error" ?>">
-                <?php print $this->formLabel($holidayEname); ?>
-                <?php print $this->formElement($holidayEname); ?>
-            </div>
-            <?php print $this->formElementErrors()->render($holidayEname, ['class' => 'help-block error']); ?>
-
-            <div class="form-group form-group-default <?= empty($holidayLname->getMessages()) ? "" : "error" ?>">
-                <?php print $this->formLabel($holidayLname); ?>
-                <?php print $this->formElement($holidayLname); ?>
-            </div>
-            <?php print $this->formElementErrors()->render($holidayLname, ['class' => 'help-block error']); ?>
-
-            <div class="form-group form-group-default required input-group <?= empty($startDate->getMessages()) ? "" : "error" ?>">
-                <?php print $this->formLabel($startDate) ?>
-                <?php print $this->formElement($startDate) ?>
-                <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-            </div>
-            <?php print $this->formElementErrors()->render($startDate, ['class' => 'help-block error']) ?>
-
-
-            <div class="form-group form-group-default required input-group <?= empty($endDate->getMessages()) ? "" : "error" ?>">
-                <?php print $this->formLabel($endDate) ?>
-                <?php print $this->formElement($endDate) ?>
-                <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-            </div>
-            <?php print $this->formElementErrors()->render($endDate, ['class' => 'help-block error']) ?>
-
-
-            <div class="form-group padding-10">
-                <?php print $this->formLabel($halfday); ?>
-                <div class="radio radio-success">
-                    <?php $customRenderer($halfday); ?>
-                </div>
-            </div>
-            <?php print $this->formElementErrors()->render($halfday, ['class' => 'help-block error']); ?>
-
-            <div class="form-group form-group-default">
-                <?php print $this->formLabel($remarks); ?>
-                <?php print $this->formElement($remarks); ?>
-            </div>
-            <?php print $this->formElementErrors()->render($remarks, ['class' => 'help-block error']); ?>
-
-
-            <?php
-            print $this->formSubmit($submit);
-            print $this->form()->closeTag();
-            ?>
-        </div>
-
     </div>
-    <div class="col-sm-2"></div>
 </div>

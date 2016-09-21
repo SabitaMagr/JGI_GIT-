@@ -31,7 +31,7 @@ $form->prepare();
 </script>
 <div class="row">
     <div class="col-sm-8 col-sm-offset-2">
-        <div class="panel panel-default">
+        <div class="panel panel-default customShadow">
             <div class="panel-heading bg-master-lighter">
                 <div class="panel-title">
                     <h3 class="panel-title">Branch</h3>
@@ -86,11 +86,7 @@ $form->prepare();
                     <?php print $this->formElement($remarks); ?>
                     <?php print $this->formElementErrors()->render($remarks, ['class' => 'help-block error']); ?>
                 </div>
-
-
-                <div class="">
-                    <?php print $this->formSubmit($submit); ?>
-                </div>
+                <?php print $this->formSubmit($submit); ?>
                 <?php
                 print $this->form()->closeTag();
                 ?>
