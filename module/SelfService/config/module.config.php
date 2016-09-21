@@ -11,8 +11,8 @@ use Zend\Router\Http\Segment;
 use Application\Controller\ControllerFactory;
 
 return [
-    'router'=>[
-        'routes'=>[
+    'router' => [
+        'routes' => [
             'myattendance' => [
                 'type' => Segment::class,
                 'options' => [
@@ -29,15 +29,44 @@ return [
             ],
         ],
     ],
+    'navigation' => [
+        'myattendance' => [
+            [
+                'label' => 'Attendance',
+                'route' => 'myattendance',
+            ],
+            [
+                'label' => 'Attendance',
+                'route' => 'myattendance',
+                'pages' => [
+                    [
+                        'label' => 'List',
+                        'route' => 'myattendance',
+                        'action' => 'index',
+                    ],
+                    [
+                        'label' => 'Entry',
+                        'route' => 'myattendance',
+                        'action' => 'add',
+                    ],
+                    [
+                        'label' => 'Edit',
+                        'route' => 'myattendance',
+                        'action' => 'edit',
+                    ],
+                ],
+            ],
+        ],
+    ],
 
     'controllers' => [
         'factories' => [
-            Controller\MyAttendance::class=>ControllerFactory::class
+            Controller\MyAttendance::class => ControllerFactory::class
         ],
     ],
-    'view_manager'=>[
-        'template_path_stack'=>[
-            __DIR__.'/../view',
+    'view_manager' => [
+        'template_path_stack' => [
+            __DIR__ . '/../view',
         ]
     ]
 ];

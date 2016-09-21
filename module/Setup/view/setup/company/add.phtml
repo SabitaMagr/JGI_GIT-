@@ -30,8 +30,9 @@ $form->prepare();
 <script>
     document.menu =<?php $menu = ["id" => "menuSetup", "subMenu" => ["id" => "subMenuCompany"]];echo json_encode($menu);?>;
 </script>
-
-
+<div class="container">
+    <?= $this->navigation('Zend\Navigation\Company')->breadcrumbs()->setMinDepth(0) ?>
+</div>
 <div class="row">
     <div class="col-sm-8 col-sm-offset-2">
         <div class="panel panel-default customShadow">

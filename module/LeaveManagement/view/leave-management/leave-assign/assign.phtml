@@ -21,7 +21,9 @@ $this->headScript()->appendFile($this->basePath('js/angular/controllers.js'));
     document.menu =<?php $menu = ["id" => "menuLeaveManagement", "subMenu" => ["id" => "subMenuLeaveAssign"], "subMenuChild" => ["id" => "subMenuChildLeaveAssign"]];echo json_encode($menu);?>;
     document.url = '<?= $this->url("webService", ["action" => "index"]) ?>';
 </script>
-
+<div class="container">
+    <?= $this->navigation('Zend\Navigation\leaveassign')->breadcrumbs()->setMinDepth(0) ?>
+</div>
 <?php
 $leaveFormElement->setAttributes(["ng-model" => "leaveId"]);
 $branchFormElement->setAttribute("ng-model", "branchId");

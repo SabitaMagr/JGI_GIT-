@@ -23,6 +23,9 @@ if ($this->messages) {
 <script>
     document.menu=<?php $menu = ["id" => "menuSetup","subMenu"=>["id"=>"subMenuCurrentPosting"]];echo json_encode($menu);?>;
 </script>
+<div class="container">
+    <?= $this->navigation('Zend\Navigation\empCurrentPosting')->breadcrumbs()->setMinDepth(0) ?>
+</div>
 <div class="panel panel-white customShadow">
     <div class="panel-heading">
 

@@ -14,7 +14,9 @@ $this->headScript()->appendFile($this->basePath('js/datatables.js'));
 <script>
     document.menu =<?php $menu = ["id" => "menuAttendanceManagement", "subMenu" => ["id" => "subMenuAttendanceByHr"]];echo json_encode($menu);?>;
 </script>
-
+<div class="container">
+    <?= $this->navigation('Zend\Navigation\attendancebyhr')->breadcrumbs()->setMinDepth(0) ?>
+</div>
 <?php
 if ($this->messages) {
     print '<div class="alert alert-success" role="alert"><button class="close" data-dismiss="alert"></button>';
