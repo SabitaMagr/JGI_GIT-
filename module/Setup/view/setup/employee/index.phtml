@@ -23,8 +23,11 @@ if ($this->messages) {
     document.menu=<?php $menu = ["id" => "menuSetup","subMenu"=>["id"=>"subMenuEmployee"]];echo json_encode($menu);?>;
 </script>
 
+<div class="container">
+    <?= $this->navigation('navigation')->breadcrumbs()->setMinDepth(0) ?>
+</div>
 <div class="panel bg-white customShadow">
-    <div class="panel-heading">
+    <div class="panel-heading p-b-0">
         <div class="btn-group pull-right">
            <a class="btn btn-success" href="<?= $this->url("employee", ["action" => "add"]) ?>">
                 Add new

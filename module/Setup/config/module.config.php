@@ -164,6 +164,93 @@ return [
 
         ]
     ],
+    'navigation' => [
+        'default' => [
+            [
+                'label' => 'Employee',
+                'route' => 'employee',
+            ],
+            [
+                'label' => 'Employee',
+                'route' => 'employee',
+                'pages' => [
+                    [
+                        'label' => 'List',
+                        'route' => 'employee',
+                        'action' => 'index',
+                    ],
+                    [
+                        'label' => 'Add',
+                        'route' => 'employee',
+                        'action' => 'add',
+                    ],
+                    [
+                        'label' => 'Edit',
+                        'route' => 'employee',
+                        'action' => 'edit',
+                    ],
+                ]
+            ]
+        ],
+        'designation' => [
+
+            [
+                'label' => 'Designation',
+                'route' => 'designation',
+            ],
+            [
+                'label' => 'Designation',
+                'route' => 'designation',
+                'pages' => [
+                    [
+                        'label' => 'List',
+                        'route' => 'designation',
+                        'action' => 'index',
+                    ],
+
+                    [
+                        'label' => 'Add',
+                        'route' => 'designation',
+                        'action' => 'add',
+                    ],
+                    [
+                        'label' => 'Edit',
+                        'route' => 'designation',
+                        'action' => 'edit',
+                    ],
+                ]
+            ]
+        ],
+        'company' => [
+
+            [
+                'label' => 'Designation',
+                'route' => 'company',
+            ],
+            [
+                'label' => 'Designation',
+                'route' => 'company',
+                'pages' => [
+                    [
+                        'label' => 'List',
+                        'route' => 'company',
+                        'action' => 'index',
+                    ],
+                    [
+                        'label' => 'Add',
+                        'route' => 'company',
+                        'action' => 'add',
+                    ],
+                    [
+                        'label' => 'Edit',
+                        'route' => 'company',
+                        'action' => 'edit',
+                    ],
+                ]
+            ]
+        ],
+
+    ],
     'controllers' => [
         'factories' => [
             Controller\EmployeeController::class => ControllerFactory::class,
