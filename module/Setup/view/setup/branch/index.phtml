@@ -26,19 +26,8 @@ if ($this->messages) {
     document.menu =<?php $menu = ["id" => "menuSetup", "subMenu" => ["id" => "subMenuBranch"]];echo json_encode($menu);?>;
 </script>
 
-<div class="row">
-    <div class="col-md-6">
-        <ul class="breadcrumb customBreadcrumb padding-0 m-b-5">
-            <li>
-                <a href="#">Home</a>
-            </li>
-            <li><a href="#" class="active">Branch</a>
-            </li>
-        </ul>
-    </div>
-</div>
 
-<div class="panel bg-white">
+<div class="panel bg-white m-b-0 customShadow">
     <div class="panel-heading">
         <div class="btn-group pull-right">
             <a class="btn btn-success" href="<?= $this->url('branch', ['action' => 'add']) ?>">

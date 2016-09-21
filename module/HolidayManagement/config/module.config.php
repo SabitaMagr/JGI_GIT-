@@ -20,9 +20,28 @@ return [
             ],
         ]
     ],
+    'navigation' => [
+        'default' => [
+            [
+                'label' => 'Holiday Setup',
+                'route' => 'holidaysetup',
+            ],
+            [
+                'label' => 'Holiday Setup',
+                'route' => 'holidaysetup',
+                'pages' => [
+                    [
+                        'label' => 'Add',
+                        'route' => 'holidaysetup',
+                        'action' => 'index',
+                    ],
+                ]
+            ]
+        ]
+    ],
     'controllers' => [
         'factories' => [
-            Controller\HolidaySetup::class=>ControllerFactory::class,
+            Controller\HolidaySetup::class => ControllerFactory::class,
         ],
 
     ],
