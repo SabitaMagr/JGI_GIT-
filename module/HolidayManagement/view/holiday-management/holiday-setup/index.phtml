@@ -51,6 +51,10 @@ $form->setAttribute('action', $this->url('holidaysetup', ['action' => 'edit']));
 $form->prepare();
 
 ?>
+<div class="container">
+    <?php // add the following line: ?>
+    <?= $this->navigation('navigation')->breadcrumbs()->setMinDepth(0) ?>
+</div>
 <div ng-app="hris" ng-controller="holidayController">
     <div class="p-t-20">
         <div class="row">

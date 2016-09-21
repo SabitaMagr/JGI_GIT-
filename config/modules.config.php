@@ -13,6 +13,7 @@
 
 
 return [
+    'Zend\Navigation',
     'Zend\Db',
     'Zend\ServiceManager\Di',
     'Zend\Session',
@@ -26,6 +27,7 @@ return [
     'Zend\Cache',
     'Zend\Router',
     'Zend\Validator',
+    'Zend\Navigation',
     'Application',
     'Setup',
     'LeaveManagement',
