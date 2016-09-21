@@ -49,6 +49,10 @@ $form->setAttribute('action', $this->url('holidaysetup', ['action' => 'add']));
 $form->prepare();
 
 ?>
+<div class="container">
+    <?php // add the following line: ?>
+    <?= $this->navigation('navigation')->breadcrumbs()->setMinDepth(0) ?>
+</div>
 
 <div class="row">
     <div class="col-sm-8 col-sm-offset-2">
