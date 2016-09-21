@@ -64,7 +64,7 @@ class ServiceTypeForm
 
     /**
      * @Annotation\Type("Zend\Form\Element\Submit")
-     * @Annotation\Attributes({"value":"Submit","class":"btn btn-primary pull-right"})
+     * @Annotation\Attributes({"value":"Submit","class":"btn btn-primary pull-left"})
      */
     public $submit;
 

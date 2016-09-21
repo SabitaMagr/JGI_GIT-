@@ -171,711 +171,741 @@ if ($this->messages) {
     document.currentTab = '<?= $tab ?>'
 </script>
 
-<div id="rootwizard" class="m-t-50">
-    <ul class="nav nav-tabs nav-tabs-linetriangle nav-tabs-separator nav-stack-sm">
-        <li class="active">
-            <a data-toggle="tab" href="#tab1"><i class="fa fa-info-circle tab-icon"></i>
-                <span>General</span>
-            </a>
-        </li>
-        <li class="">
-            <a data-toggle="tab" href="#tab2"><i class="fa fa-info-circle tab-icon"></i>
-                <span>Family</span>
-            </a>
-        </li>
-        <li class="">
-            <a data-toggle="tab" href="#tab3"><i class="fa fa-info-circle tab-icon"></i>
-                <span>Identification</span>
-            </a>
-        </li>
-        <li class="">
-            <a data-toggle="tab" href="#tab4"><i class="fa fa-info-circle tab-icon"></i>
-                <span>Status & Integration</span>
-            </a>
-        </li>
-        <li class="">
-            <a data-toggle="tab" href="#tab5"><i class="fa fa-upload tab-icon"></i>
-                <span>Upload Image</span>
-            </a>
-        </li>
-        <li class="">
-            <a data-toggle="tab" href="#tab6"><i class="fa fa-info-circle tab-icon"></i>
-                <span>Add. Information</span>
-            </a>
-        </li>
-    </ul>
+<div class="row">
+    <div class="col-md-12">
+        <div class="panel panel-default">
+            <div class="panel-body p-t-5">
 
-    <div class="tab-content bg-light-color">
-        <div class="tab-pane padding-10 active slide-left" id="tab1">
-            <?php
-            $formOne->setAttribute('action', $this->url('employee', ['action' => 'edit', 'id' => $empId, 'tab' => 1]));
-            $formOne->setAttribute("name", "employeeForm");
-            $formOne->prepare();
-            print $this->form()->openTag($formOne);
-            ?>
-            <p>Personal Information</p>
-            <div class="row clearfix">
-                <div class="col-sm-6">
-                    <div class="form-group form-group-default required ">
-                        <?php print $this->formLabel($employeeCode); ?>
-                        <?php print $this->formElement($employeeCode); ?>
-                    </div>
-                    <?php print $this->formElementErrors()->render($employeeCode, ['class' => 'help-block error']) ?>
-                    <div class="form-group form-group-default required form-group-default-select2">
-                        <?php print $this->formLabel($companyId); ?>
-                        <?php print $this->formElement($companyId); ?>
-                    </div>
-                    <?php print $this->formElementErrors()->render($companyId, ['class' => 'help-block error']) ?>
-                    <div class="form-group form-group-default required ">
-                        <?php print $this->formLabel($firstName) ?>
-                        <?php print $this->formElement($firstName) ?>
-                    </div>
-                    <?php print $this->formElementErrors()->render($firstName, ['class' => 'help-block error']) ?>
-                    <div class="form-group form-group-default <?= empty($middleName->getMessages()) ? "" : "error" ?>">
-                        <?php print $this->formLabel($middleName) ?>
-                        <?php print $this->formElement($middleName) ?>
-                    </div>
-                    <?php print $this->formElementErrors()->render($middleName, ['class' => 'help-block error']) ?>
-                    <div class="form-group form-group-default required">
-                        <?php print $this->formLabel($lastName) ?>
-                        <?php print $this->formElement($lastName) ?>
-                    </div>
-                    <?php print $this->formElementErrors()->render($lastName, ['class' => 'help-block error']) ?>
+                <div id="rootwizard" class="">
+                    <ul class="nav nav-tabs nav-tabs-linetriangle nav-tabs-separator nav-stack-sm">
+                        <li class="active">
+                            <a data-toggle="tab" href="#tab1"><i class="fa fa-info-circle tab-icon"></i>
+                                <span>General</span>
+                            </a>
+                        </li>
+                        <li class="">
+                            <a data-toggle="tab" href="#tab2"><i class="fa fa-info-circle tab-icon"></i>
+                                <span>Family</span>
+                            </a>
+                        </li>
+                        <li class="">
+                            <a data-toggle="tab" href="#tab3"><i class="fa fa-info-circle tab-icon"></i>
+                                <span>Identification</span>
+                            </a>
+                        </li>
+                        <li class="">
+                            <a data-toggle="tab" href="#tab4"><i class="fa fa-info-circle tab-icon"></i>
+                                <span>Status & Integration</span>
+                            </a>
+                        </li>
+                        <li class="">
+                            <a data-toggle="tab" href="#tab5"><i class="fa fa-upload tab-icon"></i>
+                                <span>Upload Image</span>
+                            </a>
+                        </li>
+                        <li class="">
+                            <a data-toggle="tab" href="#tab6"><i class="fa fa-info-circle tab-icon"></i>
+                                <span>Add. Information</span>
+                            </a>
+                        </li>
+                    </ul>
 
-                    <div class="form-group form-group-default <?= empty($nameNepali->getMessages()) ? "" : "error" ?>">
-                        <?php print $this->formLabel($nameNepali); ?>
-                        <?php print $this->formElement($nameNepali); ?>
-                    </div>
-                    <?php print $this->formElementErrors()->render($nameNepali, ['class' => ' error']); ?>
+                    <div class="tab-content bg-master-lighter">
+                        <div class="tab-pane padding-10 active slide-left" id="tab1">
+                            <?php
+                            $formOne->setAttribute('action', $this->url('employee', ['action' => 'edit', 'id' => $empId, 'tab' => 1]));
+                            $formOne->setAttribute("name", "employeeForm");
+                            $formOne->prepare();
+                            print $this->form()->openTag($formOne);
+                            ?>
+                            <p>Personal Information</p>
+                            <div class="row clearfix">
+                                <div class="col-sm-6">
+                                    <div class="form-group form-group-sm required ">
+                                        <?php print $this->formLabel($employeeCode); ?>
+                                        <?php print $this->formElement($employeeCode); ?>
+                                    </div>
+                                    <?php print $this->formElementErrors()->render($employeeCode, ['class' => 'help-block error']) ?>
+                                    <div class="form-group form-group-sm required form-group-default-select2">
+                                        <?php print $this->formLabel($companyId); ?>
+                                        <?php print $this->formElement($companyId); ?>
+                                    </div>
+                                    <?php print $this->formElementErrors()->render($companyId, ['class' => 'help-block error']) ?>
+                                    <div class="form-group form-group-sm required ">
+                                        <?php print $this->formLabel($firstName) ?>
+                                        <?php print $this->formElement($firstName) ?>
+                                    </div>
+                                    <?php print $this->formElementErrors()->render($firstName, ['class' => 'help-block error']) ?>
+                                    <div
+                                        class="form-group form-group-sm <?= empty($middleName->getMessages()) ? "" : "error" ?>">
+                                        <?php print $this->formLabel($middleName) ?>
+                                        <?php print $this->formElement($middleName) ?>
+                                    </div>
+                                    <?php print $this->formElementErrors()->render($middleName, ['class' => 'help-block error']) ?>
+                                    <div class="form-group form-group-sm required">
+                                        <?php print $this->formLabel($lastName) ?>
+                                        <?php print $this->formElement($lastName) ?>
+                                    </div>
+                                    <?php print $this->formElementErrors()->render($lastName, ['class' => 'help-block error']) ?>
 
-                    <div class="form-group form-group-default required form-group-default-select2">
-                        <?php print $this->formLabel($genderId); ?>
-                        <?php print $this->formElement($genderId); ?>
-                    </div>
-                    <?php print $this->formElementErrors()->render($genderId, ['class' => 'help-block error']); ?>
-                    <div class="form-group form-group-default required form-group-default-select2">
-                        <?php print $this->formLabel($bloodGroupId) ?>
-                        <?php print $this->formElement($bloodGroupId) ?>
-                    </div>
-                    <?php print $this->formElementErrors()->render($bloodGroupId, ['class' => 'help-block error']) ?>
+                                    <div
+                                        class="form-group form-group-sm <?= empty($nameNepali->getMessages()) ? "" : "error" ?>">
+                                        <?php print $this->formLabel($nameNepali); ?>
+                                        <?php print $this->formElement($nameNepali); ?>
+                                    </div>
+                                    <?php print $this->formElementErrors()->render($nameNepali, ['class' => ' error']); ?>
 
-                    <div class="form-group form-group-default required input-group">
-                        <?php print $this->formLabel($birthDate) ?>
-                        <?php print $this->formElement($birthDate) ?>
-                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                    </div>
-                    <?php print $this->formElementErrors()->render($birthDate, ['class' => 'help-block error']) ?>
+                                    <div class="form-group form-group-sm required form-group-default-select2">
+                                        <?php print $this->formLabel($genderId); ?>
+                                        <?php print $this->formElement($genderId); ?>
+                                    </div>
+                                    <?php print $this->formElementErrors()->render($genderId, ['class' => 'help-block error']); ?>
+                                    <div class="form-group form-group-sm required form-group-default-select2">
+                                        <?php print $this->formLabel($bloodGroupId) ?>
+                                        <?php print $this->formElement($bloodGroupId) ?>
+                                    </div>
+                                    <?php print $this->formElementErrors()->render($bloodGroupId, ['class' => 'help-block error']) ?>
 
-                </div>
-                <div class="col-sm-6">
-                    <div
-                        class="form-group form-group-default <?= empty($socialActivity->getMessages()) ? "" : "error" ?>">
-                        <?php print $this->formLabel($socialActivity) ?>
-                        <?php print $this->formElement($socialActivity) ?>
-                    </div>
-                    <?php print $this->formElementErrors()->render($socialActivity, ['class' => 'help-block error']) ?>
+                                    <div class="form-group form-group-sm required input-group">
+                                        <?php print $this->formLabel($birthDate) ?>
+                                        <?php print $this->formElement($birthDate) ?>
+                                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                    </div>
+                                    <?php print $this->formElementErrors()->render($birthDate, ['class' => 'help-block error']) ?>
 
-                    <div class="form-group form-group-default required form-group-default-select2">
-                        <?php print $this->formLabel($religionId) ?>
-                        <?php print $this->formElement($religionId) ?>
-                    </div>
-                    <?php print $this->formElementErrors()->render($religionId, ['class' => 'help-block error']) ?>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div
+                                        class="form-group form-group-sm <?= empty($socialActivity->getMessages()) ? "" : "error" ?>">
+                                        <?php print $this->formLabel($socialActivity) ?>
+                                        <?php print $this->formElement($socialActivity) ?>
+                                    </div>
+                                    <?php print $this->formElementErrors()->render($socialActivity, ['class' => 'help-block error']) ?>
 
-                    <div class="form-group form-group-default <?= empty($telephoneNo->getMessages()) ? "" : "error" ?>">
-                        <?php print $this->formLabel($telephoneNo); ?>
-                        <?php print $this->formElement($telephoneNo); ?>
-                    </div>
-                    <?php print $this->formElementErrors()->render($telephoneNo, ['class' => 'help-block error']); ?>
+                                    <div class="form-group form-group-sm required form-group-default-select2">
+                                        <?php print $this->formLabel($religionId) ?>
+                                        <?php print $this->formElement($religionId) ?>
+                                    </div>
+                                    <?php print $this->formElementErrors()->render($religionId, ['class' => 'help-block error']) ?>
 
-                    <div class="form-group form-group-default required ">
-                        <?php print $this->formLabel($mobileNo); ?>
-                        <?php print $this->formElement($mobileNo); ?>
-                    </div>
-                    <?php print $this->formElementErrors()->render($mobileNo, ['class' => 'help-block error']); ?>
+                                    <div
+                                        class="form-group form-group-sm <?= empty($telephoneNo->getMessages()) ? "" : "error" ?>">
+                                        <?php print $this->formLabel($telephoneNo); ?>
+                                        <?php print $this->formElement($telephoneNo); ?>
+                                    </div>
+                                    <?php print $this->formElementErrors()->render($telephoneNo, ['class' => 'help-block error']); ?>
 
-                    <div class="form-group form-group-default <?= empty($extensionNo->getMessages()) ? "" : "error" ?>">
-                        <?php print $this->formLabel($extensionNo); ?>
-                        <?php print $this->formElement($extensionNo); ?>
-                    </div>
-                    <?php print $this->formElementErrors()->render($extensionNo, ['class' => 'help-block error']); ?>
+                                    <div class="form-group form-group-sm required ">
+                                        <?php print $this->formLabel($mobileNo); ?>
+                                        <?php print $this->formElement($mobileNo); ?>
+                                    </div>
+                                    <?php print $this->formElementErrors()->render($mobileNo, ['class' => 'help-block error']); ?>
 
-                    <div
-                        class="form-group form-group-default <?= empty($emailOfficial->getMessages()) ? "" : "error" ?>">
-                        <?php print $this->formLabel($emailOfficial); ?>
-                        <?php print $this->formElement($emailOfficial); ?>
-                    </div>
-                    <?php
-                    if (key($emailOfficial->getMessages()) == "regexNotMatch") {
-                        $emailOfficial->setMessages(["regexNotMatch" => "Value is not a valid Email"]);
-                    }
-                    if (key($emailPersonal->getMessages()) == "regexNotMatch") {
-                        $emailPersonal->setMessages(["regexNotMatch" => "Value is not a valid Email"]);
-                    }
-                    ?>
+                                    <div
+                                        class="form-group form-group-sm <?= empty($extensionNo->getMessages()) ? "" : "error" ?>">
+                                        <?php print $this->formLabel($extensionNo); ?>
+                                        <?php print $this->formElement($extensionNo); ?>
+                                    </div>
+                                    <?php print $this->formElementErrors()->render($extensionNo, ['class' => 'help-block error']); ?>
 
-                    <?php print $this->formElementErrors()->render($emailOfficial, ['class' => 'help-block error']); ?>
+                                    <div
+                                        class="form-group form-group-sm <?= empty($emailOfficial->getMessages()) ? "" : "error" ?>">
+                                        <?php print $this->formLabel($emailOfficial); ?>
+                                        <?php print $this->formElement($emailOfficial); ?>
+                                    </div>
+                                    <?php
+                                    if (key($emailOfficial->getMessages()) == "regexNotMatch") {
+                                        $emailOfficial->setMessages(["regexNotMatch" => "Value is not a valid Email"]);
+                                    }
+                                    if (key($emailPersonal->getMessages()) == "regexNotMatch") {
+                                        $emailPersonal->setMessages(["regexNotMatch" => "Value is not a valid Email"]);
+                                    }
+                                    ?>
 
-                    <div
-                        class="form-group form-group-default <?= empty($emailPersonal->getMessages()) ? "" : "error" ?>">
-                        <?php print $this->formLabel($emailPersonal); ?>
-                        <?php print $this->formElement($emailPersonal); ?>
-                    </div>
-                    <?php print $this->formElementErrors()->render($emailPersonal, ['class' => 'help-block error']); ?>
+                                    <?php print $this->formElementErrors()->render($emailOfficial, ['class' => 'help-block error']); ?>
 
-                    <div
-                        class="form-group form-group-default <?= empty($socialNetwork->getMessages()) ? "" : "error" ?>">
-                        <?php print $this->formLabel($socialNetwork); ?>
-                        <?php print $this->formElement($socialNetwork); ?>
-                    </div>
-                    <?php print $this->formElementErrors()->render($socialNetwork, ['class' => 'help-block error']); ?>
+                                    <div
+                                        class="form-group form-group-sm <?= empty($emailPersonal->getMessages()) ? "" : "error" ?>">
+                                        <?php print $this->formLabel($emailPersonal); ?>
+                                        <?php print $this->formElement($emailPersonal); ?>
+                                    </div>
+                                    <?php print $this->formElementErrors()->render($emailPersonal, ['class' => 'help-block error']); ?>
 
-                    <div
-                        class="form-group form-group-default form-group-default-select2 <?= empty($countryId->getMessages()) ? "" : "error" ?>">
-                        <?php print $this->formLabel($countryId); ?>
-                        <?php print $this->formElement($countryId); ?>
-                    </div>
-                    <?php print $this->formElementErrors()->render($countryId, ['class' => 'help-block error']); ?>
+                                    <div
+                                        class="form-group form-group-sm <?= empty($socialNetwork->getMessages()) ? "" : "error" ?>">
+                                        <?php print $this->formLabel($socialNetwork); ?>
+                                        <?php print $this->formElement($socialNetwork); ?>
+                                    </div>
+                                    <?php print $this->formElementErrors()->render($socialNetwork, ['class' => 'help-block error']); ?>
 
-                </div>
-            </div>
+                                    <div
+                                        class="form-group form-group-sm form-group-default-select2 <?= empty($countryId->getMessages()) ? "" : "error" ?>">
+                                        <?php print $this->formLabel($countryId); ?>
+                                        <?php print $this->formElement($countryId); ?>
+                                    </div>
+                                    <?php print $this->formElementErrors()->render($countryId, ['class' => 'help-block error']); ?>
 
-            <p>In Case Of Emergency</p>
-            <div class="row clearfix">
-                <div class="col-sm-6">
-                    <div
-                        class="form-group form-group-default <?= empty($emergContactName->getMessages()) ? "" : "error" ?>">
-                        <?php print $this->formLabel($emergContactName); ?>
-                        <?php print $this->formElement($emergContactName); ?>
-                    </div>
-                    <?php print $this->formElementErrors()->render($emergContactName, ['class' => 'help-block error']); ?>
-                </div>
-                <div class="col-sm-6">
-                    <div
-                        class="form-group form-group-default <?= empty($emergContactRelationship->getMessages()) ? "" : "error" ?>">
-                        <?php print $this->formLabel($emergContactRelationship); ?>
-                        <?php print $this->formElement($emergContactRelationship); ?>
-                    </div>
-                    <?php print $this->formElementErrors()->render($emergContactRelationship, ['class' => 'help-block error']); ?>
-                </div>
-            </div>
-            <div class="row clearfix">
-                <div class="col-sm-6">
-                    <div
-                        class="form-group form-group-default <?= empty($emergContactAddress->getMessages()) ? "" : "error" ?>">
-                        <?php print $this->formLabel($emergContactAddress); ?>
-                        <?php print $this->formElement($emergContactAddress); ?>
-                    </div>
-                    <?php print $this->formElementErrors()->render($emergContactAddress, ['class' => 'help-block error']); ?>
-                </div>
-                <div class="col-sm-6">
-                    <div
-                        class="form-group form-group-default <?= empty($emergContactNo->getMessages()) ? "" : "error" ?>">
-                        <?php print $this->formLabel($emergContactNo); ?>
-                        <?php print $this->formElement($emergContactNo); ?>
-                    </div>
-                    <?php print $this->formElementErrors()->render($emergContactNo, ['class' => 'help-block error']); ?>
+                                </div>
+                            </div>
 
-                </div>
-            </div>
-            <p>Address Information</p>
-            <div class="row clearfix">
-                <div class="col-sm-6">
-                    <p>Permanent Address</p>
-                    <div
-                        class="form-group form-group-default <?= empty($addrPermHouseNo->getMessages()) ? "" : "error" ?>">
-                        <?php print $this->formLabel($addrPermHouseNo); ?>
-                        <?php print $this->formElement($addrPermHouseNo); ?>
-                    </div>
-                    <?php print $this->formElementErrors()->render($addrPermHouseNo, ['class' => 'help-block error']); ?>
+                            <p>In Case Of Emergency</p>
+                            <div class="row clearfix">
+                                <div class="col-sm-6">
+                                    <div
+                                        class="form-group form-group-sm <?= empty($emergContactName->getMessages()) ? "" : "error" ?>">
+                                        <?php print $this->formLabel($emergContactName); ?>
+                                        <?php print $this->formElement($emergContactName); ?>
+                                    </div>
+                                    <?php print $this->formElementErrors()->render($emergContactName, ['class' => 'help-block error']); ?>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div
+                                        class="form-group form-group-sm <?= empty($emergContactRelationship->getMessages()) ? "" : "error" ?>">
+                                        <?php print $this->formLabel($emergContactRelationship); ?>
+                                        <?php print $this->formElement($emergContactRelationship); ?>
+                                    </div>
+                                    <?php print $this->formElementErrors()->render($emergContactRelationship, ['class' => 'help-block error']); ?>
+                                </div>
+                            </div>
+                            <div class="row clearfix">
+                                <div class="col-sm-6">
+                                    <div
+                                        class="form-group form-group-sm <?= empty($emergContactAddress->getMessages()) ? "" : "error" ?>">
+                                        <?php print $this->formLabel($emergContactAddress); ?>
+                                        <?php print $this->formElement($emergContactAddress); ?>
+                                    </div>
+                                    <?php print $this->formElementErrors()->render($emergContactAddress, ['class' => 'help-block error']); ?>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div
+                                        class="form-group form-group-sm <?= empty($emergContactNo->getMessages()) ? "" : "error" ?>">
+                                        <?php print $this->formLabel($emergContactNo); ?>
+                                        <?php print $this->formElement($emergContactNo); ?>
+                                    </div>
+                                    <?php print $this->formElementErrors()->render($emergContactNo, ['class' => 'help-block error']); ?>
 
-                    <div
-                        class="form-group form-group-default <?= empty($addrPermWardNo->getMessages()) ? "" : "error" ?>">
-                        <?php print $this->formLabel($addrPermWardNo); ?>
-                        <?php print $this->formElement($addrPermWardNo); ?>
-                    </div>
-                    <?php print $this->formElementErrors()->render($addrPermWardNo, ['class' => 'help-block error']); ?>
+                                </div>
+                            </div>
+                            <p>Address Information</p>
+                            <div class="row clearfix">
+                                <div class="col-sm-6">
+                                    <p>Permanent Address</p>
+                                    <div
+                                        class="form-group form-group-sm <?= empty($addrPermHouseNo->getMessages()) ? "" : "error" ?>">
+                                        <?php print $this->formLabel($addrPermHouseNo); ?>
+                                        <?php print $this->formElement($addrPermHouseNo); ?>
+                                    </div>
+                                    <?php print $this->formElementErrors()->render($addrPermHouseNo, ['class' => 'help-block error']); ?>
 
-                    <div
-                        class="form-group form-group-default <?= empty($addrPermStreetAddress->getMessages()) ? "" : "error" ?>">
-                        <?php print $this->formLabel($addrPermStreetAddress); ?>
-                        <?php print $this->formElement($addrPermStreetAddress); ?>
-                    </div>
-                    <?php print $this->formElementErrors()->render($addrPermStreetAddress, ['class' => 'help-block error']); ?>
+                                    <div
+                                        class="form-group form-group-sm <?= empty($addrPermWardNo->getMessages()) ? "" : "error" ?>">
+                                        <?php print $this->formLabel($addrPermWardNo); ?>
+                                        <?php print $this->formElement($addrPermWardNo); ?>
+                                    </div>
+                                    <?php print $this->formElementErrors()->render($addrPermWardNo, ['class' => 'help-block error']); ?>
 
-                    <div
-                        class="form-group form-group-default form-group-default-select2 <?= empty($addrPermZoneId->getMessages()) ? "" : "error" ?>">
-                        <?php print $this->formLabel($addrPermZoneId); ?>
-                        <?php print $this->formElement($addrPermZoneId); ?>
-                    </div>
-                    <?php print $this->formElementErrors()->render($addrPermZoneId, ['class' => 'help-block error']); ?>
+                                    <div
+                                        class="form-group form-group-sm <?= empty($addrPermStreetAddress->getMessages()) ? "" : "error" ?>">
+                                        <?php print $this->formLabel($addrPermStreetAddress); ?>
+                                        <?php print $this->formElement($addrPermStreetAddress); ?>
+                                    </div>
+                                    <?php print $this->formElementErrors()->render($addrPermStreetAddress, ['class' => 'help-block error']); ?>
 
-                    <div
-                        class="form-group form-group-default form-group-default-select2 <?= empty($addrPermDistrictId->getMessages()) ? "" : "error" ?>">
-                        <?php print $this->formLabel($addrPermDistrictId); ?>
-                        <?php print $this->formElement($addrPermDistrictId); ?>
-                    </div>
-                    <?php print $this->formElementErrors()->render($addrPermDistrictId, ['class' => 'help-block error']); ?>
+                                    <div
+                                        class="form-group form-group-sm form-group-default-select2 <?= empty($addrPermZoneId->getMessages()) ? "" : "error" ?>">
+                                        <?php print $this->formLabel($addrPermZoneId); ?>
+                                        <?php print $this->formElement($addrPermZoneId); ?>
+                                    </div>
+                                    <?php print $this->formElementErrors()->render($addrPermZoneId, ['class' => 'help-block error']); ?>
 
-                    <div
-                        class="form-group form-group-default form-group-default-select2 <?= empty($addrPermVdcMunicipalityId->getMessages()) ? "" : "error" ?>">
-                        <?php print $this->formLabel($addrPermVdcMunicipalityId); ?>
-                        <?php print $this->formElement($addrPermVdcMunicipalityId); ?>
-                    </div>
-                    <?php print $this->formElementErrors()->render($addrPermVdcMunicipalityId, ['class' => 'help-block error']); ?>
+                                    <div
+                                        class="form-group form-group-sm form-group-default-select2 <?= empty($addrPermDistrictId->getMessages()) ? "" : "error" ?>">
+                                        <?php print $this->formLabel($addrPermDistrictId); ?>
+                                        <?php print $this->formElement($addrPermDistrictId); ?>
+                                    </div>
+                                    <?php print $this->formElementErrors()->render($addrPermDistrictId, ['class' => 'help-block error']); ?>
 
-                </div>
-                <div class="col-sm-6">
-                    <p>Contact Address</p>
-                    <div
-                        class="form-group form-group-default <?= empty($addrTempHouseNo->getMessages()) ? "" : "error" ?>">
-                        <?php print $this->formLabel($addrTempHouseNo); ?>
-                        <?php print $this->formElement($addrTempHouseNo); ?>
-                    </div>
-                    <?php print $this->formElementErrors()->render($addrTempHouseNo, ['class' => 'help-block error']); ?>
+                                    <div
+                                        class="form-group form-group-sm form-group-default-select2 <?= empty($addrPermVdcMunicipalityId->getMessages()) ? "" : "error" ?>">
+                                        <?php print $this->formLabel($addrPermVdcMunicipalityId); ?>
+                                        <?php print $this->formElement($addrPermVdcMunicipalityId); ?>
+                                    </div>
+                                    <?php print $this->formElementErrors()->render($addrPermVdcMunicipalityId, ['class' => 'help-block error']); ?>
 
-                    <div
-                        class="form-group form-group-default <?= empty($addrTempWardNo->getMessages()) ? "" : "error" ?>">
-                        <?php print $this->formLabel($addrTempWardNo); ?>
-                        <?php print $this->formElement($addrTempWardNo); ?>
-                    </div>
-                    <?php print $this->formElementErrors()->render($addrTempWardNo, ['class' => 'help-block error']); ?>
+                                </div>
+                                <div class="col-sm-6">
+                                    <p>Contact Address</p>
+                                    <div
+                                        class="form-group form-group-sm <?= empty($addrTempHouseNo->getMessages()) ? "" : "error" ?>">
+                                        <?php print $this->formLabel($addrTempHouseNo); ?>
+                                        <?php print $this->formElement($addrTempHouseNo); ?>
+                                    </div>
+                                    <?php print $this->formElementErrors()->render($addrTempHouseNo, ['class' => 'help-block error']); ?>
 
-                    <div
-                        class="form-group form-group-default <?= empty($addrTempStreetAddress->getMessages()) ? "" : "error" ?>">
-                        <?php print $this->formLabel($addrTempStreetAddress); ?>
-                        <?php print $this->formElement($addrTempStreetAddress); ?>
-                    </div>
-                    <?php print $this->formElementErrors()->render($addrTempStreetAddress, ['class' => 'help-block error']); ?>
+                                    <div
+                                        class="form-group form-group-sm <?= empty($addrTempWardNo->getMessages()) ? "" : "error" ?>">
+                                        <?php print $this->formLabel($addrTempWardNo); ?>
+                                        <?php print $this->formElement($addrTempWardNo); ?>
+                                    </div>
+                                    <?php print $this->formElementErrors()->render($addrTempWardNo, ['class' => 'help-block error']); ?>
 
-                    <div
-                        class="form-group form-group-default form-group-default-select2 <?= empty($addrTempZoneId->getMessages()) ? "" : "error" ?>">
-                        <?php print $this->formLabel($addrTempZoneId); ?>
-                        <?php print $this->formElement($addrTempZoneId); ?>
-                    </div>
-                    <?php print $this->formElementErrors()->render($addrTempZoneId, ['class' => 'help-block error']); ?>
+                                    <div
+                                        class="form-group form-group-sm <?= empty($addrTempStreetAddress->getMessages()) ? "" : "error" ?>">
+                                        <?php print $this->formLabel($addrTempStreetAddress); ?>
+                                        <?php print $this->formElement($addrTempStreetAddress); ?>
+                                    </div>
+                                    <?php print $this->formElementErrors()->render($addrTempStreetAddress, ['class' => 'help-block error']); ?>
 
-                    <div
-                        class="form-group form-group-default form-group-default-select2 <?= empty($addrTempDistrictId->getMessages()) ? "" : "error" ?>">
-                        <?php print $this->formLabel($addrTempDistrictId); ?>
-                        <?php print $this->formElement($addrTempDistrictId); ?>
-                    </div>
-                    <?php print $this->formElementErrors()->render($addrTempDistrictId, ['class' => 'help-block error']); ?>
+                                    <div
+                                        class="form-group form-group-sm form-group-default-select2 <?= empty($addrTempZoneId->getMessages()) ? "" : "error" ?>">
+                                        <?php print $this->formLabel($addrTempZoneId); ?>
+                                        <?php print $this->formElement($addrTempZoneId); ?>
+                                    </div>
+                                    <?php print $this->formElementErrors()->render($addrTempZoneId, ['class' => 'help-block error']); ?>
 
-                    <div
-                        class="form-group form-group-default form-group-default-select2 <?= empty($addrTempVdcMunicipalityId->getMessages()) ? "" : "error" ?>">
-                        <?php print $this->formLabel($addrTempVdcMunicipalityId); ?>
-                        <?php print $this->formElement($addrTempVdcMunicipalityId); ?>
-                    </div>
-                    <?php print $this->formElementErrors()->render($addrTempVdcMunicipalityId, ['class' => 'help-block error']); ?>
+                                    <div
+                                        class="form-group form-group-sm form-group-default-select2 <?= empty($addrTempDistrictId->getMessages()) ? "" : "error" ?>">
+                                        <?php print $this->formLabel($addrTempDistrictId); ?>
+                                        <?php print $this->formElement($addrTempDistrictId); ?>
+                                    </div>
+                                    <?php print $this->formElementErrors()->render($addrTempDistrictId, ['class' => 'help-block error']); ?>
 
-                </div>
-            </div>
-            <input type="submit" class="hidden" id="btnform1" value="submit">
-            <?php
-            print $this->form()->closeTag();
-            ?>
-        </div>
+                                    <div
+                                        class="form-group form-group-sm form-group-default-select2 <?= empty($addrTempVdcMunicipalityId->getMessages()) ? "" : "error" ?>">
+                                        <?php print $this->formLabel($addrTempVdcMunicipalityId); ?>
+                                        <?php print $this->formElement($addrTempVdcMunicipalityId); ?>
+                                    </div>
+                                    <?php print $this->formElementErrors()->render($addrTempVdcMunicipalityId, ['class' => 'help-block error']); ?>
 
-        <div class="tab-pane slide-left padding-10" id="tab2">
-            <?php
-            $formTwo->setAttribute('action', $this->url('employee', ['action' => 'edit', 'id' => $empId, 'tab' => 2]));
-            $formTwo->setAttribute("name", "employeeForm");
-            $formTwo->prepare();
-            print $this->form()->openTag($formTwo);
-            ?>
-            <div class="row clearfix">
-                <div class="col-sm-6">
-                    <div
-                        class="form-group form-group-default <?= empty($famFatherName->getMessages()) ? "" : "error" ?>">
-                        <?php print $this->formLabel($famFatherName); ?>
-                        <?php print $this->formElement($famFatherName); ?>
-                    </div>
-                    <?php print $this->formElementErrors()->render($famFatherName, ['class' => 'help-block error']); ?>
+                                </div>
+                            </div>
+                            <input type="submit" class="hidden" id="btnform1" value="submit">
+                            <?php
+                            print $this->form()->closeTag();
+                            ?>
+                        </div>
 
-                    <div
-                        class="form-group form-group-default <?= empty($famFatherOccupation->getMessages()) ? "" : "error" ?>">
-                        <?php print $this->formLabel($famFatherOccupation); ?>
-                        <?php print $this->formElement($famFatherOccupation); ?>
-                    </div>
-                    <?php print $this->formElementErrors()->render($famFatherOccupation, ['class' => 'help-block error']); ?>
+                        <div class="tab-pane slide-left padding-10" id="tab2">
+                            <?php
+                            $formTwo->setAttribute('action', $this->url('employee', ['action' => 'edit', 'id' => $empId, 'tab' => 2]));
+                            $formTwo->setAttribute("name", "employeeForm");
+                            $formTwo->prepare();
+                            print $this->form()->openTag($formTwo);
+                            ?>
+                            <div class="row clearfix">
+                                <div class="col-sm-6">
+                                    <div
+                                        class="form-group form-group-sm <?= empty($famFatherName->getMessages()) ? "" : "error" ?>">
+                                        <?php print $this->formLabel($famFatherName); ?>
+                                        <?php print $this->formElement($famFatherName); ?>
+                                    </div>
+                                    <?php print $this->formElementErrors()->render($famFatherName, ['class' => 'help-block error']); ?>
 
-                    <div
-                        class="form-group form-group-default <?= empty($famGrandFatherName->getMessages()) ? "" : "error" ?>">
-                        <?php print $this->formLabel($famGrandFatherName); ?>
-                        <?php print $this->formElement($famGrandFatherName); ?>
-                    </div>
-                    <?php print $this->formElementErrors()->render($famGrandFatherName, ['class' => 'help-block error']); ?>
+                                    <div
+                                        class="form-group form-group-sm <?= empty($famFatherOccupation->getMessages()) ? "" : "error" ?>">
+                                        <?php print $this->formLabel($famFatherOccupation); ?>
+                                        <?php print $this->formElement($famFatherOccupation); ?>
+                                    </div>
+                                    <?php print $this->formElementErrors()->render($famFatherOccupation, ['class' => 'help-block error']); ?>
 
-                    <div class="form-group form-group-default required form-group-default-select2">
-                        <?php print $this->formLabel($maritualStatus); ?>
-                        <?php print $this->formElement($maritualStatus); ?>
-                    </div>
-                    <?php print $this->formElementErrors()->render($maritualStatus, ['class' => 'help-block error']); ?>
+                                    <div
+                                        class="form-group form-group-sm <?= empty($famGrandFatherName->getMessages()) ? "" : "error" ?>">
+                                        <?php print $this->formLabel($famGrandFatherName); ?>
+                                        <?php print $this->formElement($famGrandFatherName); ?>
+                                    </div>
+                                    <?php print $this->formElementErrors()->render($famGrandFatherName, ['class' => 'help-block error']); ?>
 
-                    <div
-                        class="form-group form-group-default <?= empty($famSpouseName->getMessages()) ? "" : "error" ?>">
-                        <?php print $this->formLabel($famSpouseName); ?>
-                        <?php print $this->formElement($famSpouseName); ?>
-                    </div>
-                    <?php print $this->formElementErrors()->render($famSpouseName, ['class' => 'help-block error']); ?>
+                                    <div class="form-group form-group-sm required form-group-default-select2">
+                                        <?php print $this->formLabel($maritualStatus); ?>
+                                        <?php print $this->formElement($maritualStatus); ?>
+                                    </div>
+                                    <?php print $this->formElementErrors()->render($maritualStatus, ['class' => 'help-block error']); ?>
 
-                    <div
-                        class="form-group form-group-default <?= empty($famSpouseOccupation->getMessages()) ? "" : "error" ?>">
-                        <?php print $this->formLabel($famSpouseOccupation); ?>
-                        <?php print $this->formElement($famSpouseOccupation); ?>
-                    </div>
-                    <?php print $this->formElementErrors()->render($famSpouseOccupation, ['class' => 'help-block error']); ?>
+                                    <div
+                                        class="form-group form-group-sm <?= empty($famSpouseName->getMessages()) ? "" : "error" ?>">
+                                        <?php print $this->formLabel($famSpouseName); ?>
+                                        <?php print $this->formElement($famSpouseName); ?>
+                                    </div>
+                                    <?php print $this->formElementErrors()->render($famSpouseName, ['class' => 'help-block error']); ?>
 
-                </div>
-                <div class="col-sm-6">
-                    <div
-                        class="form-group form-group-default <?= empty($famMotherName->getMessages()) ? "" : "error" ?>">
-                        <?php print $this->formLabel($famMotherName); ?>
-                        <?php print $this->formElement($famMotherName); ?>
-                    </div>
-                    <?php print $this->formElementErrors()->render($famMotherName, ['class' => 'help-block error']); ?>
+                                    <div
+                                        class="form-group form-group-sm <?= empty($famSpouseOccupation->getMessages()) ? "" : "error" ?>">
+                                        <?php print $this->formLabel($famSpouseOccupation); ?>
+                                        <?php print $this->formElement($famSpouseOccupation); ?>
+                                    </div>
+                                    <?php print $this->formElementErrors()->render($famSpouseOccupation, ['class' => 'help-block error']); ?>
 
-                    <div
-                        class="form-group form-group-default <?= empty($famMotherOccupation->getMessages()) ? "" : "error" ?>">
-                        <?php print $this->formLabel($famMotherOccupation); ?>
-                        <?php print $this->formElement($famMotherOccupation); ?>
-                    </div>
-                    <?php print $this->formElementErrors()->render($famMotherOccupation, ['class' => 'help-block error']); ?>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div
+                                        class="form-group form-group-sm <?= empty($famMotherName->getMessages()) ? "" : "error" ?>">
+                                        <?php print $this->formLabel($famMotherName); ?>
+                                        <?php print $this->formElement($famMotherName); ?>
+                                    </div>
+                                    <?php print $this->formElementErrors()->render($famMotherName, ['class' => 'help-block error']); ?>
 
-                    <div
-                        class="form-group form-group-default <?= empty($famGrandMotherName->getMessages()) ? "" : "error" ?>">
-                        <?php print $this->formLabel($famGrandMotherName); ?>
-                        <?php print $this->formElement($famGrandMotherName); ?>
-                    </div>
-                    <?php print $this->formElementErrors()->render($famGrandMotherName, ['class' => 'help-block error']); ?>
+                                    <div
+                                        class="form-group form-group-sm <?= empty($famMotherOccupation->getMessages()) ? "" : "error" ?>">
+                                        <?php print $this->formLabel($famMotherOccupation); ?>
+                                        <?php print $this->formElement($famMotherOccupation); ?>
+                                    </div>
+                                    <?php print $this->formElementErrors()->render($famMotherOccupation, ['class' => 'help-block error']); ?>
 
-                    <div
-                        class="form-group form-group-default input-group <?= empty($famSpouseBirthDate->getMessages()) ? "" : "error" ?>">
-                        <?php print $this->formLabel($famSpouseBirthDate); ?>
-                        <?php print $this->formElement($famSpouseBirthDate); ?>
-                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                    </div>
-                    <?php print $this->formElementErrors()->render($famSpouseBirthDate, ['class' => 'help-block error']); ?>
+                                    <div
+                                        class="form-group form-group-sm <?= empty($famGrandMotherName->getMessages()) ? "" : "error" ?>">
+                                        <?php print $this->formLabel($famGrandMotherName); ?>
+                                        <?php print $this->formElement($famGrandMotherName); ?>
+                                    </div>
+                                    <?php print $this->formElementErrors()->render($famGrandMotherName, ['class' => 'help-block error']); ?>
 
-                    <div
-                        class="form-group form-group-default input-group <?= empty($famSpouseWeddingAnniversary->getMessages()) ? "" : "error" ?>">
-                        <?php print $this->formLabel($famSpouseWeddingAnniversary); ?>
-                        <?php print $this->formElement($famSpouseWeddingAnniversary); ?>
-                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                    </div>
-                    <?php print $this->formElementErrors()->render($famSpouseWeddingAnniversary, ['class' => 'help-block error']); ?>
+                                    <div
+                                        class="form-group form-group-sm input-group <?= empty($famSpouseBirthDate->getMessages()) ? "" : "error" ?>">
+                                        <?php print $this->formLabel($famSpouseBirthDate); ?>
+                                        <?php print $this->formElement($famSpouseBirthDate); ?>
+                                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                    </div>
+                                    <?php print $this->formElementErrors()->render($famSpouseBirthDate, ['class' => 'help-block error']); ?>
+
+                                    <div
+                                        class="form-group form-group-sm input-group <?= empty($famSpouseWeddingAnniversary->getMessages()) ? "" : "error" ?>">
+                                        <?php print $this->formLabel($famSpouseWeddingAnniversary); ?>
+                                        <?php print $this->formElement($famSpouseWeddingAnniversary); ?>
+                                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                    </div>
+                                    <?php print $this->formElementErrors()->render($famSpouseWeddingAnniversary, ['class' => 'help-block error']); ?>
 
 
-                </div>
-            </div>
-            <input type="submit" class="hidden" id="btnform2" value="submit">
-            <?php
-            print $this->form()->closeTag();
-            ?>
-        </div>
+                                </div>
+                            </div>
+                            <input type="submit" class="hidden" id="btnform2" value="submit">
+                            <?php
+                            print $this->form()->closeTag();
+                            ?>
+                        </div>
 
-        <div class="tab-pane slide-left padding-10" id="tab3">
-            <?php
-            $formThree->setAttribute('action', $this->url('employee', ['action' => 'edit', 'id' => $empId, 'tab' => 3]));
-            $formThree->setAttribute("name", "employeeForm");
-            $formThree->prepare();
-            print $this->form()->openTag($formThree);
-            ?>
-            <div class="row clearfix">
-                <div class="col-sm-6">
-                    <div class="form-group form-group-default <?= empty($idCardNo->getMessages()) ? "" : "error" ?>">
-                        <?php print $this->formLabel($idCardNo); ?>
-                        <?php print $this->formElement($idCardNo); ?>
-                    </div>
-                    <?php print $this->formElementErrors()->render($idCardNo, ['class' => 'help-block error']); ?>
+                        <div class="tab-pane slide-left padding-10" id="tab3">
+                            <?php
+                            $formThree->setAttribute('action', $this->url('employee', ['action' => 'edit', 'id' => $empId, 'tab' => 3]));
+                            $formThree->setAttribute("name", "employeeForm");
+                            $formThree->prepare();
+                            print $this->form()->openTag($formThree);
+                            ?>
+                            <div class="row clearfix">
+                                <div class="col-sm-6">
+                                    <div
+                                        class="form-group form-group-sm <?= empty($idCardNo->getMessages()) ? "" : "error" ?>">
+                                        <?php print $this->formLabel($idCardNo); ?>
+                                        <?php print $this->formElement($idCardNo); ?>
+                                    </div>
+                                    <?php print $this->formElementErrors()->render($idCardNo, ['class' => 'help-block error']); ?>
 
-                    <div class="form-group form-group-default <?= empty($idLbrf->getMessages()) ? "" : "error" ?>">
-                        <?php print $this->formLabel($idLbrf); ?>
-                        <?php print $this->formElement($idLbrf); ?>
-                    </div>
-                    <?php print $this->formElementErrors()->render($idLbrf, ['class' => 'help-block error']); ?>
+                                    <div
+                                        class="form-group form-group-sm <?= empty($idLbrf->getMessages()) ? "" : "error" ?>">
+                                        <?php print $this->formLabel($idLbrf); ?>
+                                        <?php print $this->formElement($idLbrf); ?>
+                                    </div>
+                                    <?php print $this->formElementErrors()->render($idLbrf, ['class' => 'help-block error']); ?>
 
-                    <div class="form-group form-group-default <?= empty($idBarCode->getMessages()) ? "" : "error" ?>">
-                        <?php print $this->formLabel($idBarCode); ?>
-                        <?php print $this->formElement($idBarCode); ?>
-                    </div>
-                    <?php print $this->formElementErrors()->render($idBarCode, ['class' => 'help-block error']); ?>
+                                    <div
+                                        class="form-group form-group-sm <?= empty($idBarCode->getMessages()) ? "" : "error" ?>">
+                                        <?php print $this->formLabel($idBarCode); ?>
+                                        <?php print $this->formElement($idBarCode); ?>
+                                    </div>
+                                    <?php print $this->formElementErrors()->render($idBarCode, ['class' => 'help-block error']); ?>
 
-                    <div
-                        class="form-group form-group-default <?= empty($idProvidentFundNo->getMessages()) ? "" : "error" ?>">
-                        <?php print $this->formLabel($idProvidentFundNo); ?>
-                        <?php print $this->formElement($idProvidentFundNo); ?>
-                    </div>
-                    <?php print $this->formElementErrors()->render($idProvidentFundNo, ['class' => 'help-block error']); ?>
+                                    <div
+                                        class="form-group form-group-sm <?= empty($idProvidentFundNo->getMessages()) ? "" : "error" ?>">
+                                        <?php print $this->formLabel($idProvidentFundNo); ?>
+                                        <?php print $this->formElement($idProvidentFundNo); ?>
+                                    </div>
+                                    <?php print $this->formElementErrors()->render($idProvidentFundNo, ['class' => 'help-block error']); ?>
 
-                    <div
-                        class="form-group form-group-default <?= empty($idDrivingLicenseNo->getMessages()) ? "" : "error" ?>">
-                        <?php print $this->formLabel($idDrivingLicenseNo); ?>
-                        <?php print $this->formElement($idDrivingLicenseNo); ?>
-                    </div>
-                    <?php print $this->formElementErrors()->render($idDrivingLicenseNo, ['class' => 'help-block error']); ?>
+                                    <div
+                                        class="form-group form-group-sm <?= empty($idDrivingLicenseNo->getMessages()) ? "" : "error" ?>">
+                                        <?php print $this->formLabel($idDrivingLicenseNo); ?>
+                                        <?php print $this->formElement($idDrivingLicenseNo); ?>
+                                    </div>
+                                    <?php print $this->formElementErrors()->render($idDrivingLicenseNo, ['class' => 'help-block error']); ?>
 
-                    <div
-                        class="form-group form-group-default input-group <?= empty($idDrivingLicenseExpiry->getMessages()) ? "" : "error" ?>">
-                        <?php print $this->formLabel($idDrivingLicenseExpiry); ?>
-                        <?php print $this->formElement($idDrivingLicenseExpiry); ?>
-                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                    </div>
-                    <?php print $this->formElementErrors()->render($idDrivingLicenseExpiry, ['class' => 'help-block error']); ?>
+                                    <div
+                                        class="form-group form-group-sm input-group <?= empty($idDrivingLicenseExpiry->getMessages()) ? "" : "error" ?>">
+                                        <?php print $this->formLabel($idDrivingLicenseExpiry); ?>
+                                        <?php print $this->formElement($idDrivingLicenseExpiry); ?>
+                                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                    </div>
+                                    <?php print $this->formElementErrors()->render($idDrivingLicenseExpiry, ['class' => 'help-block error']); ?>
 
-                    <div
-                        class="form-group form-group-default <?= empty($idDrivingLicenseType->getMessages()) ? "" : "error" ?>">
-                        <?php print $this->formLabel($idDrivingLicenseType); ?>
-                        <?php print $this->formElement($idDrivingLicenseType); ?>
-                    </div>
-                    <?php print $this->formElementErrors()->render($idDrivingLicenseType, ['class' => 'help-block error']); ?>
+                                    <div
+                                        class="form-group form-group-sm <?= empty($idDrivingLicenseType->getMessages()) ? "" : "error" ?>">
+                                        <?php print $this->formLabel($idDrivingLicenseType); ?>
+                                        <?php print $this->formElement($idDrivingLicenseType); ?>
+                                    </div>
+                                    <?php print $this->formElementErrors()->render($idDrivingLicenseType, ['class' => 'help-block error']); ?>
 
-                    <div
-                        class="form-group form-group-default <?= empty($idPassportNo->getMessages()) ? "" : "error" ?>">
-                        <?php print $this->formLabel($idPassportNo); ?>
-                        <?php print $this->formElement($idPassportNo); ?>
-                    </div>
-                    <?php print $this->formElementErrors()->render($idPassportNo, ['class' => 'help-block error']); ?>
+                                    <div
+                                        class="form-group form-group-sm <?= empty($idPassportNo->getMessages()) ? "" : "error" ?>">
+                                        <?php print $this->formLabel($idPassportNo); ?>
+                                        <?php print $this->formElement($idPassportNo); ?>
+                                    </div>
+                                    <?php print $this->formElementErrors()->render($idPassportNo, ['class' => 'help-block error']); ?>
 
-                </div>
-                <div class="col-sm-6">
-                    <div class="form-group form-group-default <?= empty($idThumbId->getMessages()) ? "" : "error" ?>">
-                        <?php print $this->formLabel($idThumbId); ?>
-                        <?php print $this->formElement($idThumbId); ?>
-                    </div>
-                    <?php print $this->formElementErrors()->render($idThumbId, ['class' => 'help-block error']); ?>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div
+                                        class="form-group form-group-sm <?= empty($idThumbId->getMessages()) ? "" : "error" ?>">
+                                        <?php print $this->formLabel($idThumbId); ?>
+                                        <?php print $this->formElement($idThumbId); ?>
+                                    </div>
+                                    <?php print $this->formElementErrors()->render($idThumbId, ['class' => 'help-block error']); ?>
 
-                    <div class="form-group form-group-default <?= empty($idPanNo->getMessages()) ? "" : "error" ?>">
-                        <?php print $this->formLabel($idPanNo); ?>
-                        <?php print $this->formElement($idPanNo); ?>
-                    </div>
-                    <?php print $this->formElementErrors()->render($idPanNo, ['class' => 'help-block error']); ?>
+                                    <div
+                                        class="form-group form-group-sm <?= empty($idPanNo->getMessages()) ? "" : "error" ?>">
+                                        <?php print $this->formLabel($idPanNo); ?>
+                                        <?php print $this->formElement($idPanNo); ?>
+                                    </div>
+                                    <?php print $this->formElementErrors()->render($idPanNo, ['class' => 'help-block error']); ?>
 
-                    <div class="form-group form-group-default <?= empty($idAccountId->getMessages()) ? "" : "error" ?>">
-                        <?php print $this->formLabel($idAccountId); ?>
-                        <?php print $this->formElement($idAccountId); ?>
-                    </div>
-                    <?php print $this->formElementErrors()->render($idAccountId, ['class' => 'help-block error']); ?>
+                                    <div
+                                        class="form-group form-group-sm <?= empty($idAccountId->getMessages()) ? "" : "error" ?>">
+                                        <?php print $this->formLabel($idAccountId); ?>
+                                        <?php print $this->formElement($idAccountId); ?>
+                                    </div>
+                                    <?php print $this->formElementErrors()->render($idAccountId, ['class' => 'help-block error']); ?>
 
-                    <div
-                        class="form-group form-group-default <?= empty($idRetirementNo->getMessages()) ? "" : "error" ?>">
-                        <?php print $this->formLabel($idRetirementNo); ?>
-                        <?php print $this->formElement($idRetirementNo); ?>
-                    </div>
-                    <?php print $this->formElementErrors()->render($idRetirementNo, ['class' => 'help-block error']); ?>
+                                    <div
+                                        class="form-group form-group-sm <?= empty($idRetirementNo->getMessages()) ? "" : "error" ?>">
+                                        <?php print $this->formLabel($idRetirementNo); ?>
+                                        <?php print $this->formElement($idRetirementNo); ?>
+                                    </div>
+                                    <?php print $this->formElementErrors()->render($idRetirementNo, ['class' => 'help-block error']); ?>
 
-                    <div
-                        class="form-group form-group-default <?= empty($idCitizenshipNo->getMessages()) ? "" : "error" ?>">
-                        <?php print $this->formLabel($idCitizenshipNo); ?>
-                        <?php print $this->formElement($idCitizenshipNo); ?>
-                    </div>
-                    <?php print $this->formElementErrors()->render($idCitizenshipNo, ['class' => 'help-block error']); ?>
+                                    <div
+                                        class="form-group form-group-sm <?= empty($idCitizenshipNo->getMessages()) ? "" : "error" ?>">
+                                        <?php print $this->formLabel($idCitizenshipNo); ?>
+                                        <?php print $this->formElement($idCitizenshipNo); ?>
+                                    </div>
+                                    <?php print $this->formElementErrors()->render($idCitizenshipNo, ['class' => 'help-block error']); ?>
 
-                    <div
-                        class="form-group form-group-default input-group <?= empty($idCitizenshipIssueDate->getMessages()) ? "" : "error" ?>">
-                        <?php print $this->formLabel($idCitizenshipIssueDate); ?>
-                        <?php print $this->formElement($idCitizenshipIssueDate); ?>
-                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                    </div>
-                    <?php print $this->formElementErrors()->render($idCitizenshipIssueDate, ['class' => 'help-block error']); ?>
+                                    <div
+                                        class="form-group form-group-sm input-group <?= empty($idCitizenshipIssueDate->getMessages()) ? "" : "error" ?>">
+                                        <?php print $this->formLabel($idCitizenshipIssueDate); ?>
+                                        <?php print $this->formElement($idCitizenshipIssueDate); ?>
+                                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                    </div>
+                                    <?php print $this->formElementErrors()->render($idCitizenshipIssueDate, ['class' => 'help-block error']); ?>
 
-                    <div
-                        class="form-group form-group-default <?= empty($idCitizenshipIssuePlace->getMessages()) ? "" : "error" ?>
+                                    <div
+                                        class="form-group form-group-sm <?= empty($idCitizenshipIssuePlace->getMessages()) ? "" : "error" ?>
                             <?= ($idCitizenshipIssuePlace->getAttributes()['type'] == "text") ? "" : "form-group-default-select2" ?> ">
-                        <?php print $this->formLabel($idCitizenshipIssuePlace); ?>
-                        <?php print $this->formElement($idCitizenshipIssuePlace); ?>
-                    </div>
-                    <?php print $this->formElementErrors()->render($idCitizenshipIssuePlace, ['class' => 'help-block error']); ?>
-                    <div
-                        class="form-group form-group-default input-group <?= empty($idPassportExpiry->getMessages()) ? "" : "error" ?>">
-                        <?php print $this->formLabel($idPassportExpiry); ?>
-                        <?php print $this->formElement($idPassportExpiry); ?>
-                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                    </div>
-                    <?php print $this->formElementErrors()->render($idPassportExpiry, ['class' => 'help-block error']); ?>
-                </div>
-            </div>
-            <input type="submit" class="hidden" id="btnform3" value="submit">
-            <?php
-            print $this->form()->closeTag();
-            ?>
-        </div>
+                                        <?php print $this->formLabel($idCitizenshipIssuePlace); ?>
+                                        <?php print $this->formElement($idCitizenshipIssuePlace); ?>
+                                    </div>
+                                    <?php print $this->formElementErrors()->render($idCitizenshipIssuePlace, ['class' => 'help-block error']); ?>
+                                    <div
+                                        class="form-group form-group-sm input-group <?= empty($idPassportExpiry->getMessages()) ? "" : "error" ?>">
+                                        <?php print $this->formLabel($idPassportExpiry); ?>
+                                        <?php print $this->formElement($idPassportExpiry); ?>
+                                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                    </div>
+                                    <?php print $this->formElementErrors()->render($idPassportExpiry, ['class' => 'help-block error']); ?>
+                                </div>
+                            </div>
+                            <input type="submit" class="hidden" id="btnform3" value="submit">
+                            <?php
+                            print $this->form()->closeTag();
+                            ?>
+                        </div>
 
-        <div class="tab-pane slide-left padding-10" id="tab4">
-            <?php
-            $formFour->setAttribute('action', $this->url('employee', ['action' => 'edit', 'id' => $empId, 'tab' => 4]));
-            $formFour->setAttribute("name", "employeeForm");
-            $formFour->prepare();
-            print $this->form()->openTag($formFour);
-            ?>
-            <div class="row clearfix">
-                <div class="col-sm-6">
-                    <div class="form-group form-group-default required input-group">
-                        <?php print $this->formLabel($joinDate); ?>
-                        <?php print $this->formElement($joinDate); ?>
-                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                    </div>
-                    <?php print $this->formElementErrors()->render($joinDate, ['class' => 'help-block error']); ?>
-                    <div class="form-group form-group-default <?= empty($salary->getMessages()) ? "" : "error" ?>">
-                        <?php print $this->formLabel($salary); ?>
-                        <?php print $this->formElement($salary); ?>
-                    </div>
-                    <?php print $this->formElementErrors()->render($salary, ['class' => 'help-block error']); ?>
-                    <div class="form-group form-group-default <?= empty($salaryPf->getMessages()) ? "" : "error" ?>">
-                        <?php print $this->formLabel($salaryPf); ?>
-                        <?php print $this->formElement($salaryPf); ?>
-                    </div>
-                    <?php print $this->formElementErrors()->render($salaryPf, ['class' => 'help-block error']); ?>
+                        <div class="tab-pane slide-left padding-10" id="tab4">
+                            <?php
+                            $formFour->setAttribute('action', $this->url('employee', ['action' => 'edit', 'id' => $empId, 'tab' => 4]));
+                            $formFour->setAttribute("name", "employeeForm");
+                            $formFour->prepare();
+                            print $this->form()->openTag($formFour);
+                            ?>
+                            <div class="row clearfix">
+                                <div class="col-sm-6">
+                                    <div class="form-group form-group-sm required input-group">
+                                        <?php print $this->formLabel($joinDate); ?>
+                                        <?php print $this->formElement($joinDate); ?>
+                                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                    </div>
+                                    <?php print $this->formElementErrors()->render($joinDate, ['class' => 'help-block error']); ?>
+                                    <div
+                                        class="form-group form-group-sm <?= empty($salary->getMessages()) ? "" : "error" ?>">
+                                        <?php print $this->formLabel($salary); ?>
+                                        <?php print $this->formElement($salary); ?>
+                                    </div>
+                                    <?php print $this->formElementErrors()->render($salary, ['class' => 'help-block error']); ?>
+                                    <div
+                                        class="form-group form-group-sm <?= empty($salaryPf->getMessages()) ? "" : "error" ?>">
+                                        <?php print $this->formLabel($salaryPf); ?>
+                                        <?php print $this->formElement($salaryPf); ?>
+                                    </div>
+                                    <?php print $this->formElementErrors()->render($salaryPf, ['class' => 'help-block error']); ?>
 
-                    <div class="form-group form-group-default form-group-default-select2 <?= empty($serviceTypeId->getMessages()) ? "" : "error" ?>">
-                        <?php print $this->formLabel($serviceTypeId); ?>
-                        <?php print $this->formElement($serviceTypeId); ?>
-                    </div>
-                    <?php print $this->formElementErrors()->render($serviceTypeId, ['class' => 'help-block error']); ?>
+                                    <div
+                                        class="form-group form-group-sm form-group-default-select2 <?= empty($serviceTypeId->getMessages()) ? "" : "error" ?>">
+                                        <?php print $this->formLabel($serviceTypeId); ?>
+                                        <?php print $this->formElement($serviceTypeId); ?>
+                                    </div>
+                                    <?php print $this->formElementErrors()->render($serviceTypeId, ['class' => 'help-block error']); ?>
 
-                </div>
-                <div class="col-sm-6">
-                    <div class="form-group form-group-default form-group-default-select2 <?= empty($positionId->getMessages()) ? "" : "error" ?>">
-                        <?php print $this->formLabel($positionId); ?>
-                        <?php print $this->formElement($positionId); ?>
-                    </div>
-                    <?php print $this->formElementErrors()->render($positionId, ['class' => 'help-block error']); ?>
-                    <div class="form-group form-group-default form-group-default-select2 <?= empty($designationId->getMessages()) ? "" : "error" ?>">
-                        <?php print $this->formLabel($designationId); ?>
-                        <?php print $this->formElement($designationId); ?>
-                    </div>
-                    <?php print $this->formElementErrors()->render($designationId, ['class' => 'help-block error']); ?>
-                    <div class="form-group form-group-default form-group-default-select2 <?= empty($departmentId->getMessages()) ? "" : "error" ?>">
-                        <?php print $this->formLabel($departmentId); ?>
-                        <?php print $this->formElement($departmentId); ?>
-                    </div>
-                    <?php print $this->formElementErrors()->render($departmentId, ['class' => 'help-block error']); ?>
-                    <div class="form-group form-group-default form-group-default-select2 <?= empty($branchId->getMessages()) ? "" : "error" ?>">
-                        <?php print $this->formLabel($branchId); ?>
-                        <?php print $this->formElement($branchId); ?>
-                    </div>
-                    <?php print $this->formElementErrors()->render($branchId, ['class' => 'help-block error']); ?>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div
+                                        class="form-group form-group-sm form-group-default-select2 <?= empty($positionId->getMessages()) ? "" : "error" ?>">
+                                        <?php print $this->formLabel($positionId); ?>
+                                        <?php print $this->formElement($positionId); ?>
+                                    </div>
+                                    <?php print $this->formElementErrors()->render($positionId, ['class' => 'help-block error']); ?>
+                                    <div
+                                        class="form-group form-group-sm form-group-default-select2 <?= empty($designationId->getMessages()) ? "" : "error" ?>">
+                                        <?php print $this->formLabel($designationId); ?>
+                                        <?php print $this->formElement($designationId); ?>
+                                    </div>
+                                    <?php print $this->formElementErrors()->render($designationId, ['class' => 'help-block error']); ?>
+                                    <div
+                                        class="form-group form-group-sm form-group-default-select2 <?= empty($departmentId->getMessages()) ? "" : "error" ?>">
+                                        <?php print $this->formLabel($departmentId); ?>
+                                        <?php print $this->formElement($departmentId); ?>
+                                    </div>
+                                    <?php print $this->formElementErrors()->render($departmentId, ['class' => 'help-block error']); ?>
+                                    <div
+                                        class="form-group form-group-sm form-group-default-select2 <?= empty($branchId->getMessages()) ? "" : "error" ?>">
+                                        <?php print $this->formLabel($branchId); ?>
+                                        <?php print $this->formElement($branchId); ?>
+                                    </div>
+                                    <?php print $this->formElementErrors()->render($branchId, ['class' => 'help-block error']); ?>
 
-                </div>
-            </div>
-            <input type="submit" class="hidden" id="btnform4" value="submit">
-            <?php
-            print $this->form()->closeTag();
-            ?>
-
-        </div>
-
-        <div class="tab-pane slide-left padding-10" id="tab5">
-            <?php
-            $formFive->setAttribute('action', $this->url('employee', ['action' => 'edit', 'id' => $empId, 'tab' => 5]));
-            $formFive->setAttribute("name", "employeeForm");
-            $formFive->prepare();
-            print $this->form()->openTag($formFive);
-            ?>
-            <div class="row clearfix">
-                <div class="col-sm-6">
-                    <div
-                        class="form-group form-group-default form-group-default-select2 <?= empty($fileTypeCode->getMessages()) ? "" : "error" ?>">
-                        <?php print $this->formLabel($fileTypeCode); ?>
-                        <?php print $this->formElement($fileTypeCode); ?>
-                    </div>
-                    <?php print $this->formElementErrors()->render($fileTypeCode, ['class' => 'help-block error']); ?>
-                    <div class="form-group form-group-default <?= empty($filePath->getMessages()) ? "" : "error" ?>">
-                        <?php print $this->formLabel($filePath); ?>
-                        <?php print $this->formElement($filePath); ?>
-                    </div>
-                    <?php print $this->formElementErrors()->render($filePath, ['class' => 'help-block error']); ?>
-
-                    <?php
-                    $temp = $filePath->getValue();
-                    ?>
-                    <div class="row">
-                        <div class="col-lg-2"></div>
-                        <div class="col-lg-8">
-                    <img id="previewUpload" src="<?php echo (empty($temp) || is_array($temp)) ? "" : $this->basePath("uploads/${temp}"); ?>"
-                         class="<?php echo (empty($temp) || is_array($temp)) ? "hidden" : ""; ?> image-responsive-height"/>
+                                </div>
+                            </div>
+                            <input type="submit" class="hidden" id="btnform4" value="submit">
+                            <?php
+                            print $this->form()->closeTag();
+                            ?>
 
                         </div>
+
+                        <div class="tab-pane slide-left padding-10" id="tab5">
+                            <?php
+                            $formFive->setAttribute('action', $this->url('employee', ['action' => 'edit', 'id' => $empId, 'tab' => 5]));
+                            $formFive->setAttribute("name", "employeeForm");
+                            $formFive->prepare();
+                            print $this->form()->openTag($formFive);
+                            ?>
+                            <div class="row clearfix">
+                                <div class="col-sm-6">
+                                    <div
+                                        class="form-group form-group-sm form-group-default-select2 <?= empty($fileTypeCode->getMessages()) ? "" : "error" ?>">
+                                        <?php print $this->formLabel($fileTypeCode); ?>
+                                        <?php print $this->formElement($fileTypeCode); ?>
+                                    </div>
+                                    <?php print $this->formElementErrors()->render($fileTypeCode, ['class' => 'help-block error']); ?>
+                                    <div
+                                        class="form-group form-group-sm <?= empty($filePath->getMessages()) ? "" : "error" ?>">
+                                        <?php print $this->formLabel($filePath); ?>
+                                        <?php print $this->formElement($filePath); ?>
+                                    </div>
+                                    <?php print $this->formElementErrors()->render($filePath, ['class' => 'help-block error']); ?>
+
+                                    <?php
+                                    $temp = $filePath->getValue();
+                                    ?>
+                                    <div class="row">
+                                        <div class="col-lg-2"></div>
+                                        <div class="col-lg-8">
+                                            <img id="previewUpload"
+                                                 src="<?php echo (empty($temp) || is_array($temp)) ? "" : $this->basePath("uploads/${temp}"); ?>"
+                                                 class="<?php echo (empty($temp) || is_array($temp)) ? "hidden" : ""; ?> image-responsive-height"/>
+
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="col-sm-6" style="padding-left:5px;">
+
+                                </div>
+                            </div>
+                            <input type="submit" class="hidden" id="btnform5" value="submit">
+                            <?php
+                            print $this->form()->closeTag();
+                            ?>
+
+                        </div>
+
+                        <div class="tab-pane slide-left padding-10" id="tab6">
+                            <div class="row clearfix">
+
+                                <div class="col-sm-6" style="padding-left:5px;">
+                                    <p><u><i>Experience</i></u></p>
+                                </div>
+
+                                <div class="col-sm-6" style="padding-right:5px;">
+                                    <p><u><i>Qualification</i></u></p>
+                                </div>
+                            </div>
+
+                            <div class="row clearfix">
+                                <div class="col-sm-6" style="padding-left:5px;">
+                                    <p><u><i>References</i></u></p>
+                                </div>
+
+                                <div class="col-sm-6" style="padding-right:5px;">
+                                    <p><u><i>Training</i></u></p>
+                                </div>
+                            </div>
+
+                            <div class="row clearfix">
+                                <div class="col-sm-6" style="padding-left:5px;">
+                                    <p><u><i>Relative Working in Related Organisation</i></u></p>
+
+                                </div>
+                                <div class="col-sm-6" style="padding-right:5px;">
+                                    <p><u><i>Children Information</i></u></p>
+                                    <div id="child_div">
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <div class="padding-20">
+                            <ul class="pager wizard">
+                                <li class="next">
+                                    <button
+                                        class="btn btn-primary btn-cons btn-animated from-left fa fa-truck pull-right"
+                                        type="button">
+                                        <span>Next</span>
+                                    </button>
+                                </li>
+                                <li class="next finish hidden">
+                                    <button id="finishBtn"
+                                            class="btn btn-primary btn-cons btn-animated from-left fa fa-cog pull-right"
+                                            type="button">
+                                        <span>Finish</span>
+                                    </button>
+                                </li>
+                                <li class="previous first hidden">
+                                    <button class="btn btn-default btn-cons btn-animated from-left fa fa-cog pull-right"
+                                            type="button">
+                                        <span>First</span>
+                                    </button>
+                                </li>
+                                <li class="previous">
+                                    <button class="btn btn-default btn-cons pull-right" type="button">
+                                        <span>Previous</span>
+                                    </button>
+                                </li>
+                            </ul>
+                        </div>
+
                     </div>
 
                 </div>
-                <div class="col-sm-6" style="padding-left:5px;">
-
-                </div>
-            </div>
-            <input type="submit" class="hidden" id="btnform5" value="submit">
-            <?php
-            print $this->form()->closeTag();
-            ?>
-
-        </div>
-
-        <div class="tab-pane slide-left padding-10" id="tab6">
-            <div class="row clearfix">
-
-                <div class="col-sm-6" style="padding-left:5px;">
-                    <p><u><i>Experience</i></u></p>
-                </div>
-
-                <div class="col-sm-6" style="padding-right:5px;">
-                    <p><u><i>Qualification</i></u></p>
-                </div>
-            </div>
-
-            <div class="row clearfix">
-                <div class="col-sm-6" style="padding-left:5px;">
-                    <p><u><i>References</i></u></p>
-                </div>
-
-                <div class="col-sm-6" style="padding-right:5px;">
-                    <p><u><i>Training</i></u></p>
-                </div>
-            </div>
-
-            <div class="row clearfix">
-                <div class="col-sm-6" style="padding-left:5px;">
-                    <p><u><i>Relative Working in Related Organisation</i></u></p>
-
-                </div>
-                <div class="col-sm-6" style="padding-right:5px;">
-                    <p><u><i>Children Information</i></u></p>
-                    <div id="child_div">
-                    </div>
-                </div>
-
             </div>
         </div>
-
-        <div class="padding-20">
-            <ul class="pager wizard">
-                <li class="next">
-                    <button class="btn btn-primary btn-cons btn-animated from-left fa fa-truck pull-right"
-                            type="button">
-                        <span>Next</span>
-                    </button>
-                </li>
-                <li class="next finish hidden">
-                    <button id="finishBtn" class="btn btn-primary btn-cons btn-animated from-left fa fa-cog pull-right"
-                            type="button">
-                        <span>Finish</span>
-                    </button>
-                </li>
-                <li class="previous first hidden">
-                    <button class="btn btn-default btn-cons btn-animated from-left fa fa-cog pull-right"
-                            type="button">
-                        <span>First</span>
-                    </button>
-                </li>
-                <li class="previous">
-                    <button class="btn btn-default btn-cons pull-right" type="button">
-                        <span>Previous</span>
-                    </button>
-                </li>
-            </ul>
-        </div>
-
     </div>
-
 </div>
 
 

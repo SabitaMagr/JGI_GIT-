@@ -21,7 +21,7 @@ if ($this->messages) {
 }
 ?>
 <script>
-    document.menu=<?php $menu = ["id" => "menuSetup","subMenu"=>["id"=>"subMenuDesignation"]];echo json_encode($menu);?>;
+    document.menu =<?php $menu = ["id" => "menuSetup", "subMenu" => ["id" => "subMenuDesignation"]];echo json_encode($menu);?>;
 </script>
 
 <div class="panel panel-white">
@@ -83,7 +83,7 @@ if ($this->messages) {
                             </p>
                         </td>
                         <td class="v-align-middle sorting_1">
-                              <div class="btn-group">
+                            <div class="btn-group">
                                 <button type="button" class="btn btn-default">
                                     <a class="fa fa-edit btn-link"
                                        href="<?= $this->url("designation", ["action" => "edit", "id" => $designation->DESIGNATION_ID]) ?>">

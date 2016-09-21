@@ -8,12 +8,12 @@ $departmentName = $form->get('departmentName');
 $remarks = $form->get('remarks');
 $parentDepartment = $form->get('parentDepartment');
 
-$parentDepartment->setValueOptions(array_merge(["0"=>"none"],$departments));
+$parentDepartment->setValueOptions(array_merge(["0" => "none"], $departments));
 
 $countryId = $form->get('countryId');
 $countryId->setValueOptions($countries);
 $submit = $form->get('submit');
-$submit->setAttribute('value','SUBMIT');
+$submit->setAttribute('value', 'SUBMIT');
 
 $form->setAttribute('action', $this->url('department', ['action' => 'add']));
 
@@ -26,63 +26,50 @@ if ($this->messages) {
 }
 $form->prepare();
 ?>
-    <script>
-        document.menu=<?php $menu = ["id" => "menuSetup","subMenu"=>["id"=>"subMenuDepartment"]];echo json_encode($menu);?>;
-    </script>
+<script>
+    document.menu =<?php $menu = ["id" => "menuSetup", "subMenu" => ["id" => "subMenuDepartment"]];echo json_encode($menu);?>;
+</script>
 
-    <div class="row">
-        <div class="col-sm-8 bg-light-color padding-30" >
-            <div class="row panel-title-head" style="margin-bottom: 2%">
-                <div class="col-xs-9 col-sm-9 col-md-9">
-                    <div class="panel-heading padding-5">
-                        <h4>Add Department</h4>
-                    </div>
-                </div>
-
-                <div class="col-xs-3 col-sm-3 col-md-3 pull-right">
-                    <div class="pull-right m-b-10">
-                        <a href="<?= $this->url("department",["action","index"])?>" style="margin-left:16%;">
-                            <button class="btn btn-default btn-cons"><i class="fa fa-arrow-left"></i>
-                                <span>Back </span></button>
-                        </a>
-                    </div>
+<div class="row">
+    <div class="col-sm-8 col-sm-offset-2">
+        <div class="panel panel-default">
+            <div class="panel-heading bg-master-lighter">
+                <div class="panel-title">
+                    <h3 class="panel-title">Department</h3>
                 </div>
             </div>
-            <div class="panel-body padding-0" >
+            <div class="panel-body p-t-5">
                 <?php print $this->form()->openTag($form); ?>
-                <div class="form-group form-group-default">
+                <div class="form-group form-group-sm">
                     <?php print $this->formLabel($departmentCode); ?>
                     <?php print $this->formElement($departmentCode); ?>
                     <?php print $this->formElementErrors()->render($departmentCode, ['class' => 'help-block']); ?>
                 </div>
-                <div class="form-group form-group-default  ">
+                <div class="form-group form-group-sm  ">
                     <?php print $this->formLabel($departmentName); ?>
                     <?php print $this->formElement($departmentName); ?>
                     <?php print $this->formElementErrors()->render($departmentName, ['class' => 'help-block']); ?>
                 </div>
-                <div class="form-group form-group-default form-group-default-select2">
+                <div class="form-group form-group-sm form-group-default-select2">
                     <?php print $this->formLabel($countryId); ?>
                     <?php print $this->formElement($countryId); ?>
                     <?php print $this->formElementErrors()->render($countryId, ['class' => 'help-block']); ?>
                 </div>
-                <div class="form-group form-group-default  ">
+                <div class="form-group form-group-sm  ">
                     <?php print $this->formLabel($remarks); ?>
                     <?php print $this->formElement($remarks); ?>
                     <?php print $this->formElementErrors()->render($remarks, ['class' => 'help-block']); ?>
                 </div>
-                <div class="form-group form-group-default  form-group-default-select2">
+                <div class="form-group form-group-sm  form-group-default-select2">
                     <?php print $this->formLabel($parentDepartment); ?>
                     <?php print $this->formElement($parentDepartment); ?>
                     <?php print $this->formElementErrors()->render($parentDepartment, ['class' => 'help-block']); ?>
                 </div>
-
+                <?php
+                print $this->formSubmit($submit);
+                print $this->form()->closeTag();
+                ?>
             </div>
-            <?php
-            print $this->formSubmit($submit);
-            print $this->form()->closeTag();
-            ?>
-        </div>
-        <div class="col-sm-2">
-
         </div>
     </div>
+</div>

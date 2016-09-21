@@ -23,13 +23,13 @@ if ($this->messages) {
     document.menu=<?php $menu = ["id" => "menuSetup","subMenu"=>["id"=>"subMenuEmployee"]];echo json_encode($menu);?>;
 </script>
 
-<div class="panel panel-transparent">
-    <div class="panel-heading p-b-0">
+<div class="panel bg-white">
+    <div class="panel-heading">
         <div class="btn-group pull-right">
-           <a class="btn btn-default" href="<?= $this->url("employee", ["action" => "add"]) ?>">
+           <a class="btn btn-success" href="<?= $this->url("employee", ["action" => "add"]) ?>">
                 Add new
            </a>
-            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+            <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
                 <span class="caret"></span>
             </button>
             <ul class="dropdown-menu" role="menu">
@@ -39,80 +39,90 @@ if ($this->messages) {
                 </li>
             </ul>
         </div>
+        <div class="pull-left">
+            <div class="">
+                <input type="text" id="search-table" class="form-control pull-left" placeholder="Search">
+            </div>
+        </div>
         <div class="clearfix"></div>
     </div>
-    <div class="panel-body">
-        <div id="tableWithDynamicRows_wrapper" class="dataTables_wrapper form-inline no-footer">
-            <div class="table-responsive">
-                <table class="table table-hover demo-table-dynamic dataTable no-footer" id="tableWithDynamicRows"
-                       role="grid" aria-describedby="tableWithDynamicRows_info">
-                    <thead>
-                    <tr role="row">
-                        <th aria-label="Title: activate to sort column ascending" aria-sort="descending" colspan="1" rowspan="1" aria-controls="basicTable" tabindex="0" class="sorting_desc" style="width: 218px;">
-                            Employee Code
-                        </th>
-                        <th aria-label="Places: activate to sort column ascending" colspan="1" rowspan="1"  aria-controls="basicTable" tabindex="0" class="sorting" style="width: 219px;">
-                            First Name
-                        </th>
-                        <th aria-label="Activities: activate to sort column ascending" colspan="1" rowspan="1"  aria-controls="basicTable" tabindex="0" class="sorting" style="width: 333px;">
-                            Middle Name
-                        </th>
-                        <th aria-label="Status: activate to sort column ascending" colspan="1" rowspan="1"  aria-controls="basicTable"  tabindex="0" class="sorting" style="width: 155px;">
-                            Last Name
-                        </th>
-                        <th aria-label="Last Update: activate to sort column ascending" colspan="1" rowspan="1"
-                            aria-controls="basicTable" tabindex="0" class="sorting" style="width: 155px;">
-                            Date of Birth
-                        </th>
-                        <th aria-label="Last Update: activate to sort column ascending" colspan="1" rowspan="1"
-                            aria-controls="basicTable" tabindex="0" class="sorting" style="width: 155px;">
-                            Action
-                        </th>
-                    </tr>
-                    </thead>
+    <div class="panel-body panel-info">
+        <div class="table-responsive">
 
-                    <tbody>
+            <table class="table table-bordered bg-master-lighter table-striped small-table" id="tableWithSearch">
+                <thead>
+                <tr role="row">
+                    <th aria-label="Title: activate to sort column ascending" aria-sort="descending" colspan="1" rowspan="1" aria-controls="basicTable" tabindex="0" class="sorting_desc" style="width: 218px;">
+                        Employee Code
+                    </th>
+                    <th aria-label="Places: activate to sort column ascending" colspan="1" rowspan="1"  aria-controls="basicTable" tabindex="0" class="sorting" style="width: 219px;">
+                        First Name
+                    </th>
+                    <th aria-label="Activities: activate to sort column ascending" colspan="1" rowspan="1"  aria-controls="basicTable" tabindex="0" class="sorting" style="width: 333px;">
+                        Middle Name
+                    </th>
+                    <th aria-label="Status: activate to sort column ascending" colspan="1" rowspan="1"  aria-controls="basicTable"  tabindex="0" class="sorting" style="width: 155px;">
+                        Last Name
+                    </th>
+                    <th aria-label="Last Update: activate to sort column ascending" colspan="1" rowspan="1"
+                        aria-controls="basicTable" tabindex="0" class="sorting" style="width: 155px;">
+                        Date of Birth
+                    </th>
+                    <th aria-label="Last Update: activate to sort column ascending" colspan="1" rowspan="1"
+                        aria-controls="basicTable" tabindex="0" class="sorting" style="width: 155px;">
+                        Action
+                    </th>
+                </tr>
+                </thead>
+
+                <tbody>
 
 
-                    <?php $counter = 1; ?>
-                    <?php foreach ($list as $employee) : ?>
-                        <tr class="<?= ($counter % 2) == 0 ? "even" : "odd" ?>" role="row">
-                            <td class="v-align-middle sorting_1">
-                                <p>
-                                    <?php print $this->escapeHtml($employee->employeeCode) ?>
-                                </p>
-                            </td>
-                            <td class="v-align-middle">
-                                <p>
-                                    <?php print $this->escapeHtml($employee->firstName) ?>
-                                </p>
-                            </td>
-                            <td class="v-align-middle">
-                                <p>
-                                    <?php print $this->escapeHtml($employee->middleName) ?>
-                                </p>
-                            </td>
-                            <td class="v-align-middle">
-                                <p>
-                                    <?php print $this->escapeHtml($employee->lastName) ?>
-
-                                </p>
-                            <td>
-                                <?php print $this->escapeHtml($employee->birthDate) ?></td>
+                <?php $counter = 1; ?>
+                <?php foreach ($list as $employee) : ?>
+                    <tr class="<?= ($counter % 2) == 0 ? "even" : "odd" ?>" role="row">
+                        <td class="v-align-middle sorting_1">
+                            <p>
+                                <?php print $this->escapeHtml($employee->employeeCode) ?>
                             </p>
-                            </td>
-                            <td class="v-align-middle">
-                                <p>
-                                    <a href="<?= $this->url("employee", ["action" => "edit", "id" => $employee->employeeId,'tab'=>1]) ?>">Edit</a> /
-                                    <a href="<?= $this->url("employee", ["action" => "delete", "id" => $employee->employeeId]) ?>">Delete</a>
-                                </p>
-                            </td>
-                        </tr>
-                        <?php $counter++; ?>
-                    <?php endforeach; ?>
-                    </tbody>
-                </table>
-            </div>
+                        </td>
+                        <td class="v-align-middle">
+                            <p>
+                                <?php print $this->escapeHtml($employee->firstName) ?>
+                            </p>
+                        </td>
+                        <td class="v-align-middle">
+                            <p>
+                                <?php print $this->escapeHtml($employee->middleName) ?>
+                            </p>
+                        </td>
+                        <td class="v-align-middle">
+                            <p>
+                                <?php print $this->escapeHtml($employee->lastName) ?>
+
+                            </p>
+                        <td>
+                            <?php print $this->escapeHtml($employee->birthDate) ?></td>
+                        </p>
+                        </td>
+                        <td class="v-align-middle">
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-default">
+                                    <a class="fa fa-edit btn-link"
+                                       href="<?= $this->url("employee", ["action" => "edit", "id" => $employee->employeeId,'tab'=>1])  ?>">
+                                    </a>
+                                </button>
+                                <button type="button" class="btn btn-default">
+                                    <a class="fa fa-trash-o btn-link"
+                                       href="<?= $this->url("employee", ["action" => "delete", "id" => $employee->employeeId]); ?>"></a>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                    <?php $counter++; ?>
+                <?php endforeach; ?>
+                </tbody>
+            </table>
         </div>
     </div>
 </div>

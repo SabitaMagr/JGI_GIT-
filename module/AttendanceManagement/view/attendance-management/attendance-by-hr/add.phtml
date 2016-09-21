@@ -16,7 +16,7 @@ $totalHour = $form->get('totalHour');
 $employeeId->setValueOptions($employees);
 
 $submit = $form->get('submit');
-$submit->setAttribute('value','SUBMIT');
+$submit->setAttribute('value', 'SUBMIT');
 
 $form->setAttribute('action', $this->url('attendancebyhr', ['action' => 'add']));
 
@@ -30,77 +30,64 @@ if ($this->messages) {
 
 $form->prepare();
 ?>
-    <script>
-        document.menu=<?php $menu = ["id" => "menuAttendanceManagement","subMenu"=>["id"=>"subMenuAttendanceByHr"]];echo json_encode($menu);?>;
-    </script>
+<script>
+    document.menu =<?php $menu = ["id" => "menuAttendanceManagement", "subMenu" => ["id" => "subMenuAttendanceByHr"]];echo json_encode($menu);?>;
+</script>
 
-    <div class="row">
-
-        <div class="col-sm-8 bg-light-color padding-30">
-            <div class="row panel-title-head" style="margin-bottom: 2%">
-                <div class="col-xs-9 col-sm-9 col-md-9">
-                    <div class="panel-heading padding-5">
-                        <h4>Attendance Entry</h4>
-                    </div>
-                </div>
-
-                <div class="col-xs-3 col-sm-3 col-md-3 pull-right">
-                    <div class="pull-right m-b-10">
-                        <a href="<?= $this->url("attendancebyhr",["action","index"])?>" style="margin-left:16%;">
-                            <button class="btn btn-default btn-cons"><i class="fa fa-arrow-left"></i>
-                                <span>Back </span></button>
-                        </a>
-                    </div>
+<div class="row">
+    <div class="col-sm-8 col-sm-offset-2">
+        <div class="panel panel-default">
+            <div class="panel-heading bg-master-lighter">
+                <div class="panel-title">
+                    <h3 class="panel-title">Attendance Entry</h3>
                 </div>
             </div>
-
-            <div class="panel-body padding-0" >
+            <div class="panel-body p-t-5">
                 <?php
                 print $this->form()->openTag($form);
                 ?>
-                <div class="form-group form-group-default form-group-default-select2 <?= empty($employeeId->getMessages()) ? "" : "error" ?> ">
+                <div
+                    class="form-group form-group-sm form-group-default-select2 <?= empty($employeeId->getMessages()) ? "" : "error" ?> ">
                     <?php print $this->formLabel($employeeId); ?>
                     <?php print $this->formElement($employeeId); ?>
                 </div>
                 <?php print $this->formElementErrors()->render($employeeId, ['class' => 'help-block error']); ?>
 
-                <div class="form-group form-group-default <?= empty($attendanceDt->getMessages()) ? "" : "error" ?>">
+                <div class="form-group form-group-sm <?= empty($attendanceDt->getMessages()) ? "" : "error" ?>">
                     <?php print $this->formLabel($attendanceDt); ?>
                     <?php print $this->formElement($attendanceDt); ?>
                 </div>
                 <?php print $this->formElementErrors()->render($attendanceDt, ['class' => 'help-block error']); ?>
 
-                <div class="form-group form-group-default  <?= empty($inTime->getMessages()) ? "" : "error" ?>">
+                <div class="form-group form-group-sm  <?= empty($inTime->getMessages()) ? "" : "error" ?>">
                     <?php print $this->formLabel($inTime); ?>
                     <?php print $this->formElement($inTime); ?>
                 </div>
                 <?php print $this->formElementErrors()->render($inTime, ['class' => 'help-block error']); ?>
 
-                <div class="form-group form-group-default <?= empty($outTime->getMessages()) ? "" : "error" ?>">
+                <div class="form-group form-group-sm <?= empty($outTime->getMessages()) ? "" : "error" ?>">
                     <?php print $this->formLabel($outTime); ?>
                     <?php print $this->formElement($outTime); ?>
                 </div>
                 <?php print $this->formElementErrors()->render($outTime, ['class' => 'help-block error']); ?>
 
-                <div class="form-group form-group-default <?= empty($inRemarks->getMessages()) ? "" : "error" ?>">
+                <div class="form-group form-group-sm <?= empty($inRemarks->getMessages()) ? "" : "error" ?>">
                     <?php print $this->formLabel($inRemarks); ?>
                     <?php print $this->formElement($inRemarks); ?>
                 </div>
                 <?php print $this->formElementErrors()->render($inRemarks, ['class' => 'help-block error']); ?>
 
-                <div class="form-group form-group-default <?= empty($outRemarks->getMessages()) ? "" : "error" ?>">
+                <div class="form-group form-group-sm <?= empty($outRemarks->getMessages()) ? "" : "error" ?>">
                     <?php print $this->formLabel($outRemarks); ?>
                     <?php print $this->formElement($outRemarks); ?>
                 </div>
                 <?php print $this->formElementErrors()->render($outRemarks, ['class' => 'help-block error']); ?>
 
-                <div class="form-group form-group-default <?= empty($totalHour->getMessages()) ? "" : "error" ?>">
+                <div class="form-group form-group-sm <?= empty($totalHour->getMessages()) ? "" : "error" ?>">
                     <?php print $this->formLabel($totalHour); ?>
                     <?php print $this->formElement($totalHour); ?>
                 </div>
                 <?php print $this->formElementErrors()->render($totalHour, ['class' => 'help-block error']); ?>
-
-
 
 
                 <div class="">
@@ -112,7 +99,5 @@ $form->prepare();
             </div>
 
         </div>
-        <div class="col-sm-2">
-
-        </div>
     </div>
+</div>
