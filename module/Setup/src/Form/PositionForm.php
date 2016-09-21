@@ -51,7 +51,7 @@ class PositionForm
 
     /**
      * @Annotation\Type("Zend\Form\Element\Submit")
-     * @Annotation\Attributes({"value":"Submit","class":"btn btn-primary pull-left"})
+     * @Annotation\Attributes({"value":"Submit","class":"btn btn-success pull-left"})
      */
     public $submit;
 

@@ -40,7 +40,7 @@ class Tel extends Element implements InputProviderInterface
     protected function getValidator()
     {
         if (null === $this->validator) {
-            $this->validator = new RegexValidator("/\b\d{3}[-.]?\d{3}[-.]?\d{4}\b/");
+            $this->validator = new RegexValidator("/^[^\r\n]*$/");
         }
         return $this->validator;
     }
