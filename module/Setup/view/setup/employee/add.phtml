@@ -150,7 +150,9 @@ if ($this->messages) {
     document.urlMunicipality = '<?= $this->url("webService", ["action" => "municipality"]) ?>';
     document.urlEmployeeList = '<?= $this->url("employee", ["action" => "index"]) ?>'
 </script>
-
+<div class="container">
+    <?= $this->navigation('navigation')->breadcrumbs()->setMinDepth(0) ?>
+</div>
 <div class="row">
     <div class="col-md-12">
         <div class="panel panel-default customShadow">
