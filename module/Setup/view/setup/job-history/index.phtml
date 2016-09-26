@@ -2,13 +2,10 @@
 /**
  * Load Javascript files here
  */
-$this->headScript()->appendFile($this->basePath('plugins/jquery-datatable/media/js/jquery.dataTables.min.js'));
-$this->headScript()->appendFile($this->basePath('plugins/jquery-datatable/extensions/TableTools/js/dataTables.tableTools.min.js'));
-$this->headScript()->appendFile($this->basePath('plugins/jquery-datatable/media/js/dataTables.bootstrap.js'));
-$this->headScript()->appendFile($this->basePath('plugins/jquery-datatable/extensions/Bootstrap/jquery-datatable-bootstrap.js'));
-$this->headScript()->appendFile($this->basePath('plugins/datatables-responsive/js/datatables.responsive.js'));
-$this->headScript()->appendFile($this->basePath('plugins/datatables-responsive/js/lodash.min.js'));
-$this->headScript()->appendFile($this->basePath('js/datatables.js'));
+$this->headScript()
+    ->appendFile($this->basePath('plugins/datatables/media/js/jquery.dataTables.min.js'))
+    ->appendFile($this->basePath('plugins/datatables/plugins/bootstrap/dataTables.bootstrap.js'))
+    ->appendFile($this->basePath('js/datatables.js'));
 ?>
 <?php
 if ($this->messages) {
@@ -22,132 +19,124 @@ if ($this->messages) {
 <script>
     document.menu =<?php $menu = ["id" => "menuServiceHistory"];echo json_encode($menu);?>;
 </script>
+<div class="menu-bar">
+    <?= $this->navigation('navigation')->breadcrumbs()->setMinDepth(0) ?>
+</div>
 
-<div class="panel panel-white customShadow">
-    <div class="panel-heading">
-        <div class="btn-group pull-right">
-            <a class="btn btn-success" href="<?= $this->url('jobHistory', ['action' => 'add']) ?>">
-                Add new
-            </a>
-            <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-                <span class="caret"></span>
-            </button>
-            <ul class="dropdown-menu" role="menu">
-                <li><a href="#">Settings</a>
-                </li>
-                <li><a href="#">Help</a>
-                </li>
-            </ul>
+<div class="portlet box green">
+    <div class="portlet-title">
+        <div class="caption">
+            <i class="fa fa-user"></i>Table
         </div>
-        <div class="clearfix"></div>
+        <div class="actions">
+            <a href="<?= $this->url('jobHistory', ['action' => 'add']) ?>" class="btn btn-default btn-sm">
+                <i class="fa fa-pencil"></i> Add </a>
+        </div>
     </div>
-    <div class="panel-body">
-        <div class="table-responsive">
-            <table class="table table-bordered bg-master-lighter table-striped small-table" id="tableWithSearch">
-                <thead>
+    <div class="portlet-body">
+        <table class="table" id="">
+            <thead>
+            <tr role="row">
+                <th>
+                    Employee Name
+                </th>
+                <th>
+                    Start Date
+                </th>
+                <th>
+                    End Date
+                </th>
+                <th>
+                    Service Type
+                </th>
+                <th>
+                    From Position
+                </th>
+                <th>
+                    To Position
+                </th>
+                <th>
+                    From Department
+                </th>
+                <th>
+                    To Department
+                </th>
+                <th>
+                    From Designation
+                </th>
+                <th>
+                    To Designation
+                </th>
+                <th>
+                    From Position
+                </th>
+                <th>
+                    To Position
+                </th>
+                <th>
+                    Action
+                </th>
+
+            </tr>
+            </thead>
+            <tbody>
+            <?php foreach ($jobHistoryList as $jobHistory): ?>
                 <tr role="row">
-                    <th class="sorting_disabled size-10" rowspan="1" colspan="1">
-                        Employee Name
-                    </th>
-                    <th class="sorting_disabled size-10" rowspan="1" colspan="1">
-                        Start Date
-                    </th>
-                    <th class="sorting_disabled size-10" rowspan="1" colspan="1">
-                        End Date
-                    </th>
-                    <th class="sorting_disabled size-10" rowspan="1" colspan="1">
-                        Service Type
-                    </th>
-                    <th class="sorting_disabled size-10" rowspan="1" colspan="1">
-                        From Position
-                    </th>
-                    <th class="sorting_disabled size-10" rowspan="1" colspan="1">
-                        To Position
-                    </th>
-                    <th class="sorting_disabled size-10" rowspan="1" colspan="1">
-                        From Department
-                    </th>
-                    <th class="sorting_disabled size-10" rowspan="1" colspan="1">
-                        To Department
-                    </th>
-                    <th class="sorting_disabled size-10" rowspan="1" colspan="1">
-                        From Designation
-                    </th>
-                    <th class="sorting_disabled size-10" rowspan="1" colspan="1">
-                        To Designation
-                    </th>
-                    <th class="sorting_disabled size-10" rowspan="1" colspan="1">
-                        From Position
-                    </th>
-                    <th class="sorting_disabled size-10" rowspan="1" colspan="1">
-                        To Position
-                    </th>
-                    <th class="sorting_disabled size-10" rowspan="1" colspan="1">
-                        Action
-                    </th>
+                    <td>
+                        <?php print $this->escapeHtml($jobHistory['FIRST_NAME']); ?>
+                    </td>
+                    <td>
+                        <?php print $this->escapeHtml($jobHistory['START_DATE']); ?>
+                    </td>
+                    <td>
+                        <?php print $this->escapeHtml($jobHistory['END_DATE']); ?>
+                    </td>
+                    <td>
+                        <?php print $this->escapeHtml($jobHistory['SERVICE_TYPE_NAME']); ?>
+                    </td>
+                    <td>
+                        <?php print $this->escapeHtml($jobHistory['FROM_POSITION_NAME']); ?>
+                    </td>
+                    <td>
+                        <?php print $this->escapeHtml($jobHistory['TO_POSITION_NAME']); ?>
+                    </td>
 
+                    <td>
+                        <?php print $this->escapeHtml($jobHistory['FROM_DESIGNATION_TITLE']); ?>
+                    </td>
+                    <td>
+                        <?php print $this->escapeHtml($jobHistory['TO_DESIGNATION_TITLE']); ?>
+                    </td>
+                    <td>
+                        <?php print $this->escapeHtml($jobHistory['FROM_DEPARTMENT_NAME']); ?>
+                    </td>
+                    <td>
+                        <?php print $this->escapeHtml($jobHistory['TO_DEPARTMENT_NAME']); ?>
+                    </td>
+                    <td>
+                        <?php print $this->escapeHtml($jobHistory['FROM_BRANCH_NAME']); ?>
+                    </td>
+                    <td>
+                        <?php print $this->escapeHtml($jobHistory['TO_BRANCH_NAME']); ?>
+                    </td>
+                    <td>
+                        <p>
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-default">
+                                <a class="fa fa-edit btn-link"
+                                   href="<?= $this->url("jobHistory", ["action" => "edit", "id" => $jobHistory['JOB_HISTORY_ID']]); ?>">
+                                </a>
+                            </button>
+                            <button type="button" class="btn btn-default">
+                                <a class="fa fa-trash-o btn-link"
+                                   href="<?= $this->url("jobHistory", ["action" => "delete", "id" => $jobHistory['JOB_HISTORY_ID']]); ?>"></a>
+                            </button>
+                        </div>
+                        </p>
+                    </td>
                 </tr>
-                </thead>
-                <tbody>
-                <?php foreach ($jobHistoryList as $jobHistory): ?>
-                    <tr role="row">
-                        <td class="v-align-middle size-10">
-                            <?php print $this->escapeHtml($jobHistory['FIRST_NAME']); ?>
-                        </td>
-                        <td class="v-align-middle size-10">
-                            <?php print $this->escapeHtml($jobHistory['START_DATE']); ?>
-                        </td>
-                        <td class="v-align-middle size-10">
-                            <?php print $this->escapeHtml($jobHistory['END_DATE']); ?>
-                        </td>
-                        <td class="v-align-middle size-10">
-                            <?php print $this->escapeHtml($jobHistory['SERVICE_TYPE_NAME']); ?>
-                        </td>
-                        <td class="v-align-middle size-10">
-                            <?php print $this->escapeHtml($jobHistory['FROM_POSITION_NAME']); ?>
-                        </td>
-                        <td class="v-align-middle size-10">
-                            <?php print $this->escapeHtml($jobHistory['TO_POSITION_NAME']); ?>
-                        </td>
-
-                        <td class="v-align-middle size-10">
-                            <?php print $this->escapeHtml($jobHistory['FROM_DESIGNATION_TITLE']); ?>
-                        </td>
-                        <td class="v-align-middle  size-10">
-                            <?php print $this->escapeHtml($jobHistory['TO_DESIGNATION_TITLE']); ?>
-                        </td>
-                        <td class="v-align-middle size-10">
-                            <?php print $this->escapeHtml($jobHistory['FROM_DEPARTMENT_NAME']); ?>
-                        </td>
-                        <td class="v-align-middle size-10">
-                            <?php print $this->escapeHtml($jobHistory['TO_DEPARTMENT_NAME']); ?>
-                        </td>
-                        <td class="v-align-middle size-10">
-                            <?php print $this->escapeHtml($jobHistory['FROM_BRANCH_NAME']); ?>
-                        </td>
-                        <td class="v-align-middle size-10">
-                            <?php print $this->escapeHtml($jobHistory['TO_BRANCH_NAME']); ?>
-                        </td>
-                        <td class="v-align-middle size-10">
-                            <p>
-                            <div class="btn-group">
-                                <button type="button" class="btn btn-default">
-                                    <a class="fa fa-edit btn-link"
-                                       href="<?= $this->url("jobHistory", ["action" => "edit", "id" => $jobHistory['JOB_HISTORY_ID']]); ?>">
-                                    </a>
-                                </button>
-                                <button type="button" class="btn btn-default">
-                                    <a class="fa fa-trash-o btn-link"
-                                       href="<?= $this->url("jobHistory", ["action" => "delete", "id" => $jobHistory['JOB_HISTORY_ID']]); ?>"></a>
-                                </button>
-                            </div>
-                            </p>
-                        </td>
-                    </tr>
-                <?php endforeach; ?>
-                </tbody>
-            </table>
-        </div>
-
+            <?php endforeach; ?>
+            </tbody>
+        </table>
     </div>
 </div>

@@ -2,13 +2,7 @@
 /**
  * Load Javascript files here
  */
-$this->headScript()->appendFile($this->basePath('plugins/jquery-datatable/media/js/jquery.dataTables.min.js'));
-$this->headScript()->appendFile($this->basePath('plugins/jquery-datatable/extensions/TableTools/js/dataTables.tableTools.min.js'));
-$this->headScript()->appendFile($this->basePath('plugins/jquery-datatable/media/js/dataTables.bootstrap.js'));
-$this->headScript()->appendFile($this->basePath('plugins/jquery-datatable/extensions/Bootstrap/jquery-datatable-bootstrap.js'));
-$this->headScript()->appendFile($this->basePath('plugins/datatables-responsive/js/datatables.responsive.js'));
-$this->headScript()->appendFile($this->basePath('plugins/datatables-responsive/js/lodash.min.js'));
-$this->headScript()->appendFile($this->basePath('js/datatables.js'));
+
 ?>
 <?php
 if ($this->messages) {
@@ -22,48 +16,30 @@ if ($this->messages) {
 <script>
     document.menu=<?php $menu = ["id" => "menuSetup","subMenu"=>["id"=>"subMenuServiceType"]];echo json_encode($menu);?>;
 </script>
-<div class="container">
+<div class="menu-bar">
     <?= $this->navigation('Zend\Navigation\serviceType')->breadcrumbs()->setMinDepth(0) ?>
 </div>
-<div class="panel panel-white customShadow">
-    <div class="panel-heading">
-        <div class="btn-group pull-right">
-            <a class="btn btn-success" href="<?= $this->url('serviceType', ["action" => "add"]) ?>">
-                Add new
-            </a>
-            <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-                <span class="caret"></span>
-            </button>
-            <ul class="dropdown-menu" role="menu">
-                <li><a href="#">Settings</a>
-                </li>
-                <li><a href="#">Help</a>
-                </li>
-            </ul>
+<div class="portlet box green">
+    <div class="portlet-title">
+        <div class="caption">
+            <i class="fa fa-user"></i>Table
         </div>
-        <div class="pull-left">
-            <div class="">
-                <input type="text" id="search-table" class="form-control pull-right" placeholder="Search">
-            </div>
+        <div class="actions">
+            <a href="<?= $this->url('serviceType', ['action' => 'add']) ?>" class="btn btn-default btn-sm">
+                <i class="fa fa-pencil"></i> Add </a>
         </div>
-        <div class="clearfix"></div>
     </div>
-    <div class="panel-body">
-        <div class="table-responsive">
-            <table class="table table-bordered bg-master-lighter table-striped small-table" id="tableWithSearch">
+    <div class="portlet-body">
+            <table class="table">
                 <thead>
                 <tr role="row">
-                    <th aria-label="Title: activate to sort column ascending" aria-sort="descending" colspan="1"
-                        rowspan="1"
-                        aria-controls="basicTable" tabindex="0" class="sorting_desc" style="width: 218px;">Service
-                        Type Code
+                    <th>
+                        Service Type Code
                     </th>
-                    <th aria-label="Places: activate to sort column ascending" colspan="1" rowspan="1"
-                        aria-controls="basicTable"
-                        tabindex="0" class="sorting" style="width: 219px;">Service Type Name
+                    <th>
+                        Service Type Name
                     </th>
-                    <th aria-label="Last Update: activate to sort column ascending" colspan="1" rowspan="1"
-                        aria-controls="basicTable" tabindex="0" class="sorting" style="width: 155px;">
+                    <th>
                         Action
                     </th>
                 </tr>
@@ -72,17 +48,13 @@ if ($this->messages) {
 
                 <?php foreach ($serviceTypeList as $serviceType): ?>
                     <tr role="row">
-                        <td class="v-align-middle sorting_1">
-                            <p>
+                        <td>
                                 <?php print $this->escapeHtml($serviceType->SERVICE_TYPE_CODE); ?>
-                            </p>
                         </td>
-                        <td class="v-align-middle sorting_1">
-                            <p>
+                        <td>
                                 <?php print $this->escapeHtml($serviceType->SERVICE_TYPE_NAME); ?>
-                            </p>
                         </td>
-                        <td class="v-align-middle sorting_1">
+                        <td>
                             <div class="btn-group">
                                 <button type="button" class="btn btn-default">
                                     <a class="fa fa-edit btn-link"

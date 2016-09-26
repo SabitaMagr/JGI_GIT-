@@ -2,13 +2,11 @@
 /**
  * Load Javascript files here
  */
-$this->headScript()->appendFile($this->basePath('plugins/jquery-datatable/media/js/jquery.dataTables.min.js'));
-$this->headScript()->appendFile($this->basePath('plugins/jquery-datatable/extensions/TableTools/js/dataTables.tableTools.min.js'));
-$this->headScript()->appendFile($this->basePath('plugins/jquery-datatable/media/js/dataTables.bootstrap.js'));
-$this->headScript()->appendFile($this->basePath('plugins/jquery-datatable/extensions/Bootstrap/jquery-datatable-bootstrap.js'));
-$this->headScript()->appendFile($this->basePath('plugins/datatables-responsive/js/datatables.responsive.js'));
-$this->headScript()->appendFile($this->basePath('plugins/datatables-responsive/js/lodash.min.js'));
-$this->headScript()->appendFile($this->basePath('js/datatables.js'));
+$this->headScript()
+    ->appendFile($this->basePath('plugins/datatables/media/js/jquery.dataTables.min.js'))
+    ->appendFile($this->basePath('plugins/datatables/plugins/bootstrap/dataTables.bootstrap.js'))
+    ->appendFile($this->basePath('js/datatables.js'));
+
 ?>
 
 
@@ -25,113 +23,104 @@ if ($this->messages) {
 <script>
     document.menu =<?php $menu = ["id" => "menuSetup", "subMenu" => ["id" => "subMenuBranch"]];echo json_encode($menu);?>;
 </script>
-<div class="container">
+<div class="page-bar">
     <?= $this->navigation('Zend\Navigation\Branch')->breadcrumbs()->setMinDepth(0) ?>
 </div>
-<div class="panel bg-white m-b-0 customShadow">
-    <div class="panel-heading">
-        <div class="btn-group pull-right">
-            <a class="btn btn-success" href="<?= $this->url('branch', ['action' => 'add']) ?>">
-                Add new
-            </a>
-            <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-                <span class="caret"></span>
-            </button>
-            <ul class="dropdown-menu" role="menu">
-                <li><a href="#">Settings</a>
-                </li>
-                <li><a href="#">Help</a>
-                </li>
-            </ul>
 
+<div class="portlet box green">
+    <div class="portlet-title">
+        <div class="caption">
+            <i class="fa fa-user"></i>Table
         </div>
-
-        <div class="pull-left">
-            <div class="">
-                <input type="text" id="search-table" class="form-control pull-left" placeholder="Search">
+        <div class="actions">
+            <a href="<?= $this->url('branch', ['action' => 'add']) ?>" class="btn btn-default btn-sm">
+                <i class="fa fa-pencil"></i> Add </a>
+            <div class="btn-group">
+                <a class="btn btn-default btn-sm" href="javascript:;" data-toggle="dropdown" aria-expanded="false">
+                    <i class="fa fa-cogs"></i> Tools <i class="fa fa-angle-down"></i>
+                </a>
+                <ul class="dropdown-menu pull-right">
+                    <li>
+                        <a href="javascript:;">
+                            <i class="fa fa-pencil"></i> Edit </a>
+                    </li>
+                    <li>
+                        <a href="javascript:;">
+                            <i class="fa fa-trash-o"></i> Delete </a>
+                    </li>
+                    <li>
+                        <a href="javascript:;">
+                            <i class="fa fa-ban"></i> Ban </a>
+                    </li>
+                    <li class="divider">
+                    </li>
+                    <li>
+                        <a href="javascript:;">
+                            <i class="i"></i> Make admin </a>
+                    </li>
+                </ul>
             </div>
         </div>
-        <div class="clearfix"></div>
     </div>
+    <div class="portlet-body">
+        <table class="table" id="tableWithSearch">
+            <thead>
+            <tr role="row">
+                <th>
+                    Branch Name
+                </th>
+                <th>
+                    Telephone
+                </th>
+                <th>
+                    Fax
+                </th>
+                <th>
+                    Email
+                </th>
 
-    <div class="panel-body panel-info">
-        <div class="table-responsive">
-            <table class="table table-bordered bg-master-lighter table-striped small-table" id="tableWithSearch">
-                <thead>
-                <tr role="row">
-                    <th aria-label="Title: activate to sort column ascending" aria-sort="descending" colspan="1"
-                        rowspan="1"
-                        aria-controls="basicTable" tabindex="0" class="sorting_desc">
-                        Branch Name
-                    </th>
-                    <th aria-label="Places: activate to sort column ascending" colspan="1" rowspan="1"
-                        aria-controls="basicTable"
-                        tabindex="0" class="sorting">
-                        Telephone
-                    </th>
-                    <th aria-label="Places: activate to sort column ascending" colspan="1" rowspan="1"
-                        aria-controls="basicTable"
-                        tabindex="0" class="sorting">
-                        Fax
-                    </th>
-                    <th aria-label="Places: activate to sort column ascending" colspan="1" rowspan="1"
-                        aria-controls="basicTable"
-                        tabindex="0" class="sorting">
-                        Email
-                    </th>
+                <th>
+                    Action
+                </th>
+            </tr>
+            </thead>
+            <tbody>
 
-                    <th aria-label="Last Update: activate to sort column ascending" colspan="1" rowspan="1"
-                        aria-controls="basicTable" tabindex="0" class="sorting">
-                        Action
-                    </th>
+            <?php foreach ($branches as $branch): ?>
+                <tr role="row table-info">
+                    <td>
+                        <?php print $this->escapeHtml($branch->BRANCH_NAME); ?>
+                    </td>
+                    <td>
+                        <?php print $this->escapeHtml($branch->TELEPHONE); ?>
+                    </td>
+                    <td>
+                        <?php print $this->escapeHtml($branch->FAX); ?>
+                    </td>
+                    <td>
+                        <?php print $this->escapeHtml($branch->EMAIL); ?>
+                    </td>
+
+                    <td>
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-default">
+                                <a class="fa fa-edit btn-link"
+                                   href="<?= $this->url("branch", ["action" => "edit", "id" => $branch->BRANCH_ID]) ?>">
+                                </a>
+                            </button>
+                            <button type="button" class="btn btn-default">
+                                <a class="fa fa-trash-o btn-link"
+                                   href="<?= $this->url("branch", ["action" => "delete", "id" => $branch->BRANCH_ID]); ?>"></a>
+                            </button>
+                        </div>
+
+                    </td>
                 </tr>
-                </thead>
-                <tbody>
 
-                <?php foreach ($branches as $branch): ?>
-                    <tr role="row table-info">
-                        <td class="v-align-middle sorting_1">
-                            <p>
-                                <?php print $this->escapeHtml($branch->BRANCH_NAME); ?>
-                            </p>
-                        </td>
-                        <td class="v-align-middle sorting_1">
-                            <p>
-                                <?php print $this->escapeHtml($branch->TELEPHONE); ?>
-                            </p>
-                        </td>
-                        <td class="v-align-middle sorting_1">
-                            <p>
-                                <?php print $this->escapeHtml($branch->FAX); ?>
-                            </p>
-                        </td>
-                        <td class="v-align-middle sorting_1">
-                            <p>
-                                <?php print $this->escapeHtml($branch->EMAIL); ?>
-                            </p>
-                        </td>
+            <?php endforeach; ?>
 
-                        <td class="v-align-middle sorting_1">
-                            <div class="btn-group">
-                                <button type="button" class="btn btn-default">
-                                    <a class="fa fa-edit btn-link"
-                                       href="<?= $this->url("branch", ["action" => "edit", "id" => $branch->BRANCH_ID]) ?>">
-                                    </a>
-                                </button>
-                                <button type="button" class="btn btn-default">
-                                    <a class="fa fa-trash-o btn-link"
-                                       href="<?= $this->url("branch", ["action" => "delete", "id" => $branch->BRANCH_ID]); ?>"></a>
-                                </button>
-                            </div>
-
-                        </td>
-                    </tr>
-
-                <?php endforeach; ?>
-
-                </tbody>
-            </table>
-        </div>
-
+            </tbody>
+        </table>
     </div>
 </div>
+

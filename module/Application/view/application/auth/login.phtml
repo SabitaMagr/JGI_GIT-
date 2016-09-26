@@ -11,31 +11,28 @@ $form->setAttribute('class', 'login-form');
 
 $username = $form->get("username");
 $username->setAttribute('id', 'form-username');
-$username->setAttribute('class', 'form-username form-control');
+$username->setAttribute('class', 'form-control form-control-solid placeholder-no-fix');
 $username->setAttribute('placeholder', 'Username...');
-$username->setAttribute('required', false);
+$username->setAttribute('required', true);
 
 $password = $form->get('password');
 $password->setAttribute('id', 'form-password');
-$password->setAttribute('class', 'form-password form-control');
+$password->setAttribute('class', 'form-control form-control-solid placeholder-no-fix');
 $password->setAttribute('placeholder', 'Password...');
-$password->setAttribute('required', false);
+$password->setAttribute('required', true);
 
 $rememberme = $form->get('rememberme');
 $rememberme->setAttribute('class', '');
 
 $submit = $form->get('submit');
-$submit->setAttribute('class', 'btn');
+$submit->setAttribute('class', 'btn btn-primary btn-block uppercase');
 
 $form->setAttribute('action', $this->url('auth/process', ['action' => 'authenticate']));
 $form->prepare();
 
 print $this->form()->openTag($form);
-
-//echo $this->form()->openTag($form);
-//echo $this->formCollection($form);
-//echo $this->form()->closeTag();
-
+?>
+<?php
 if ($this->messages) {
     print '<ul class="help-block bg-danger" style="background:#f3e250;">';
     foreach ($this->messages as $message) {
@@ -44,27 +41,64 @@ if ($this->messages) {
     print '</ul>';
 }
 ?>
+    <div class="form-title">
+        <span class="form-title">Welcome.</span>
+        <span class="form-subtitle">Please login.</span>
+    </div>
+    <div class="alert alert-danger display-hide">
+        <button class="close" data-close="alert"></button>
+        <span>
+			Enter any username and password. </span>
+    </div>
+    <div class="form-group">
+        <!--ie8, ie9 does not support html5 placeholder, so we just show field title for that-->
+        <label class="control-label visible-ie8 visible-ie9">Username</label>
+        <?php print $this->formElement($username); ?>
+        <?php print $this->formElementErrors()->render($username, ['class' => 'help-block']) ?>
+    </div>
+    <div class="form-group">
+        <label class="control-label visible-ie8 visible-ie9">Password</label>
+        <?php print $this->formElement($password); ?>
+        <?php print $this->formElementErrors()->render($password, ['class' => 'help-block']) ?>
+    </div>
+    <div class="form-actions">
+        <?php
+        print $this->formSubmit($submit);
+        ?>
+    </div>
+    <div class="form-actions">
+        <div class="pull-left">
+            <label class="rememberme check">
 
-<div class="form-group">
-    <?php print $this->formLabel($username) ?>
-    <?php print $this->formElement($username) ?>
-    <?php print $this->formElementErrors()->render($username, ['class' => 'help-block']) ?>
-</div>
-
-<div class="form-group">
-    <?php print $this->formLabel($password) ?>
-    <?php print $this->formElement($password) ?>
-    <?php print $this->formElementErrors()->render($password, ['class' => 'help-block']) ?>
-</div>
-
-<div class="form-group">
-    <?php print $this->formLabel($rememberme) ?>
-    <?php print $this->formElement($rememberme) ?>
-    <?php //print $this->formRow($rememberme) ?>
-    <?php print $this->formElementErrors()->render($rememberme, ['class' => 'help-block']) ?>
-</div>
-
+        <?php print $this->formElement($rememberme); ?>
+                Remember me </label>
+        </div>
+        <div class="pull-right forget-password-block">
+            <a href="javascript:;" id="forget-password" class="forget-password">Forgot Password?</a>
+        </div>
+    </div>
+    <div class="login-options">
+        <h4 class="pull-left">Or login with</h4>
+        <ul class="social-icons pull-right">
+            <li>
+                <a class="social-icon-color facebook" data-original-title="facebook" href="javascript:;"></a>
+            </li>
+            <li>
+                <a class="social-icon-color twitter" data-original-title="Twitter" href="javascript:;"></a>
+            </li>
+            <li>
+                <a class="social-icon-color googleplus" data-original-title="Goole Plus" href="javascript:;"></a>
+            </li>
+            <li>
+                <a class="social-icon-color linkedin" data-original-title="Linkedin" href="javascript:;"></a>
+            </li>
+        </ul>
+    </div>
+    <div class="create-account">
+        <p>
+            <a href="javascript:;" id="register-btn">Create an account</a>
+        </p>
+    </div>
 <?php
-print $this->formSubmit($submit);
 print $this->form()->closeTag();
 

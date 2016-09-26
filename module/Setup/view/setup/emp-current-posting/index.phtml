@@ -2,13 +2,10 @@
 /**
  * Load Javascript files here
  */
-$this->headScript()->appendFile($this->basePath('plugins/jquery-datatable/media/js/jquery.dataTables.min.js'));
-$this->headScript()->appendFile($this->basePath('plugins/jquery-datatable/extensions/TableTools/js/dataTables.tableTools.min.js'));
-$this->headScript()->appendFile($this->basePath('plugins/jquery-datatable/media/js/dataTables.bootstrap.js'));
-$this->headScript()->appendFile($this->basePath('plugins/jquery-datatable/extensions/Bootstrap/jquery-datatable-bootstrap.js'));
-$this->headScript()->appendFile($this->basePath('plugins/datatables-responsive/js/datatables.responsive.js'));
-$this->headScript()->appendFile($this->basePath('plugins/datatables-responsive/js/lodash.min.js'));
-$this->headScript()->appendFile($this->basePath('js/datatables.js'));
+$this->headScript()
+    ->appendFile($this->basePath('plugins/datatables/media/js/jquery.dataTables.min.js'))
+    ->appendFile($this->basePath('plugins/datatables/plugins/bootstrap/dataTables.bootstrap.js'))
+    ->appendFile($this->basePath('js/datatables.js'));
 ?>
 <?php
 if ($this->messages) {
@@ -21,129 +18,91 @@ if ($this->messages) {
 ?>
 
 <script>
-    document.menu=<?php $menu = ["id" => "menuSetup","subMenu"=>["id"=>"subMenuCurrentPosting"]];echo json_encode($menu);?>;
+    document.menu =<?php $menu = ["id" => "menuSetup", "subMenu" => ["id" => "subMenuCurrentPosting"]];echo json_encode($menu);?>;
 </script>
-<div class="container">
+<div class="page-bar">
     <?= $this->navigation('Zend\Navigation\empCurrentPosting')->breadcrumbs()->setMinDepth(0) ?>
 </div>
-<div class="panel panel-white customShadow">
-    <div class="panel-heading">
 
-        <div class="btn-group pull-right">
-            <a class="btn btn-success" href="<?= $this->url('empCurrentPosting', ['action' => 'add']) ?>">
-                Add new
-            </a>
-            <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-                <span class="caret"></span>
-            </button>
-            <ul class="dropdown-menu" role="menu">
-                <li><a href="#">Settings</a>
-                </li>
-                <li><a href="#">Help</a>
-                </li>
-            </ul>
+<div class="portlet box green">
+    <div class="portlet-title">
+        <div class="caption">
+            <i class="fa fa-user"></i>Table
         </div>
-        <div class="pull-left">
-            <div class="">
-                <input type="text" id="search-table" class="form-control pull-right" placeholder="Search">
-            </div>
+        <div class="actions">
+            <a href="<?= $this->url('empCurrentPosting', ['action' => 'add']) ?>" class="btn btn-default btn-sm">
+                <i class="fa fa-pencil"></i> Add </a>
         </div>
-        <div class="clearfix"></div>
     </div>
-    <div class="panel-body">
-        <div class="table-responsive">
-            <table class="table table-bordered bg-master-lighter table-striped small-table" id="tableWithSearch">
-                <thead>
+    <div class="portlet-body">
+        <table class="table table-bordered" id="tableWithSearch">
+            <thead>
+            <tr role="row">
+                <th>
+                    Employee Name
+                </th>
+                <th>
+                    Service Type
+                </th>
+                <th>
+                    Branch Name
+                </th>
+                <th>
+                    Department Name
+                </th>
+                <th>
+                    Designation Title
+                </th>
+                <th>
+                    Position Name
+                </th>
+                <th>
+                    Action
+                </th>
+            </tr>
+            </thead>
+            <tbody>
+
+            <?php
+
+            foreach ($empCurrentPostingList as $empCurrentPosting):?>
                 <tr role="row">
-                    <th aria-label="Title: activate to sort column ascending" aria-sort="descending" colspan="1"
-                        rowspan="1"
-                        aria-controls="basicTable" tabindex="0" class="sorting_desc" style="width: 218px;">Employee
-                        Name
-                    </th>
-                    <th aria-label="Places: activate to sort column ascending" colspan="1" rowspan="1"
-                        aria-controls="basicTable"
-                        tabindex="0" class="sorting" style="width: 219px;">Service Type
-                    </th>
-                    <th aria-label="Places: activate to sort column ascending" colspan="1" rowspan="1"
-                        aria-controls="basicTable"
-                        tabindex="0" class="sorting" style="width: 219px;">Branch Name
-                    </th>
-                    <th aria-label="Places: activate to sort column ascending" colspan="1" rowspan="1"
-                        aria-controls="basicTable"
-                        tabindex="0" class="sorting" style="width: 219px;">Department Name
-                    </th>
-                    <th aria-label="Places: activate to sort column ascending" colspan="1" rowspan="1"
-                        aria-controls="basicTable"
-                        tabindex="0" class="sorting" style="width: 219px;">Designation Title
-                    </th>
-                    <th aria-label="Places: activate to sort column ascending" colspan="1" rowspan="1"
-                        aria-controls="basicTable"
-                        tabindex="0" class="sorting" style="width: 219px;">Position Name
-                    </th>
-                    <th aria-label="Last Update: activate to sort column ascending" colspan="1" rowspan="1"
-                        aria-controls="basicTable" tabindex="0" class="sorting" style="width: 155px;">
-                        Action
-                    </th>
+                    <td>
+                        <?php print $this->escapeHtml($empCurrentPosting['FIRST_NAME'] . ' ' . $empCurrentPosting['MIDDLE_NAME'] . " " . $empCurrentPosting['LAST_NAME']); ?>
+                    </td>
+                    <td>
+                        <?php print $this->escapeHtml($empCurrentPosting['SERVICE_TYPE_NAME']); ?>
+                    </td>
+                    <td>
+                        <?php print $this->escapeHtml($empCurrentPosting['BRANCH_NAME']); ?>
+                    </td>
+                    <td>
+                        <?php print $this->escapeHtml($empCurrentPosting['DEPARTMENT_NAME']); ?>
+                    </td>
+                    <td>
+                        <?php print $this->escapeHtml($empCurrentPosting['DESIGNATION_TITLE']); ?>
+                    </td>
+                    <td>
+                        <?php print $this->escapeHtml($empCurrentPosting['POSITION_NAME']); ?>
+                    </td>
+                    <td>
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-default">
+                                <a class="fa fa-edit btn-link"
+                                   href="<?= $this->url("empCurrentPosting", ["action" => "edit", "id" => $empCurrentPosting['EMPLOYEE_ID']]) ?>">
+                                </a>
+                            </button>
+                            <button type="button" class="btn btn-default">
+                                <a class="fa fa-trash-o btn-link"
+                                   href="<?= $this->url("empCurrentPosting", ["action" => "delete", "id" => $empCurrentPosting['EMPLOYEE_ID']]); ?>"></a>
+                            </button>
+                        </div>
+                    </td>
                 </tr>
-                </thead>
-                <tbody>
 
-                <?php
+            <?php endforeach; ?>
 
-                foreach ($empCurrentPostingList as $empCurrentPosting):?>
-                    <tr role="row">
-                        <td class="v-align-middle sorting_1">
-                            <p>
-                                <?php print $this->escapeHtml($empCurrentPosting['FIRST_NAME'].' '.$empCurrentPosting['MIDDLE_NAME']." ".$empCurrentPosting['LAST_NAME']); ?>
-                            </p>
-                        </td>
-                        <td class="v-align-middle sorting_1">
-                            <p>
-                                <?php
-                                print $this->escapeHtml($empCurrentPosting['SERVICE_TYPE_NAME']); ?>
-                            </p>
-                        </td>
-                        <td class="v-align-middle sorting_1">
-                            <p>
-                                <?php
-                                print $this->escapeHtml($empCurrentPosting['BRANCH_NAME']); ?>
-                            </p>
-                        </td>
-                        <td class="v-align-middle sorting_1">
-                            <p>
-                                <?php print $this->escapeHtml($empCurrentPosting['DEPARTMENT_NAME']); ?>
-                            </p>
-                        </td>
-                        <td class="v-align-middle sorting_1">
-                            <p>
-                                <?php print $this->escapeHtml($empCurrentPosting['DESIGNATION_TITLE']); ?>
-                            </p>
-                        </td>
-
-                        <td class="v-align-middle sorting_1">
-                            <p>
-                                <?php print $this->escapeHtml($empCurrentPosting['POSITION_NAME']); ?>
-                            </p>
-                        </td>
-                        <td class="v-align-middle sorting_1">
-                            <div class="btn-group">
-                                <button type="button" class="btn btn-default">
-                                    <a class="fa fa-edit btn-link"
-                                       href="<?= $this->url("empCurrentPosting", ["action" => "edit", "id" => $empCurrentPosting['EMPLOYEE_ID']]) ?>">
-                                    </a>
-                                </button>
-                                <button type="button" class="btn btn-default">
-                                    <a class="fa fa-trash-o btn-link"
-                                       href="<?= $this->url("empCurrentPosting", ["action" => "delete", "id" => $empCurrentPosting['EMPLOYEE_ID']]);  ?>"></a>
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
-
-                <?php endforeach; ?>
-
-                </tbody>
-             </table>
-        </div>
+            </tbody>
+        </table>
     </div>
 </div>

@@ -1,154 +1,216 @@
-<?php
-/**
- * Created by PhpStorm.
- * User: himal
- * Date: 7/22/16
- * Time: 4:04 PM
- */
-?>
-
-<?php print $this->doctype() ?>
-
+<!DOCTYPE html>
+<!--
+Template Name: Metronic - Responsive Admin Dashboard Template build with Twitter Bootstrap 3.3.7
+Version: 4.7
+Author: KeenThemes
+Website: http://www.keenthemes.com/
+Contact: support@keenthemes.com
+Follow: www.twitter.com/keenthemes
+Dribbble: www.dribbble.com/keenthemes
+Like: www.facebook.com/keenthemes
+Purchase: http://themeforest.net/item/metronic-responsive-admin-dashboard-template/4021469?ref=keenthemes
+Renew Support: http://themeforest.net/item/metronic-responsive-admin-dashboard-template/4021469?ref=keenthemes
+License: You must have a valid license purchased only from themeforest(the above link) in order to legally use the theme for your project.
+-->
+<!--[if IE 8]>
+<html lang="en" class="ie8 no-js"> <![endif]-->
+<!--[if IE 9]>
+<html lang="en" class="ie9 no-js"> <![endif]-->
+<!--[if !IE]><!-->
 <html lang="en">
+<!--<![endif]-->
+<!-- BEGIN HEAD -->
 
+
+<!-- Mirrored from keenthemes.com/preview/metronic/theme/admin_1_material_design/index.html by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 23 Sep 2016 07:58:15 GMT -->
+<!-- Added by HTTrack -->
+<meta http-equiv="content-type" content="text/html;charset=UTF-8"/><!-- /Added by HTTrack -->
 <head>
-    <meta http-equiv="content-type" content="text/html;charset=UTF-8"/>
     <meta charset="utf-8"/>
-    <title>Neo::HRIS</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no"/>
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-touch-fullscreen" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="default">
-    <meta content="" name="description"/>
+    <title>Metronic Admin Theme #1 | Admin Dashboard</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta content="width=device-width, initial-scale=1" name="viewport"/>
+    <meta content="Preview page of Metronic Admin Theme #1 for statistics, charts, recent events and reports"
+          name="description"/>
     <meta content="" name="author"/>
+    <!-- BEGIN GLOBAL MANDATORY STYLES -->
+    <link href="http://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700&amp;subset=all" rel="stylesheet"
+          type="text/css"/>
+    <link href="<?= $this->basePath('assets/global/plugins/font-awesome/css/font-awesome.min.css') ?>" rel="stylesheet"
+          type="text/css"/>
+    <link href="<?= $this->basePath('assets/global/plugins/simple-line-icons/simple-line-icons.min.css') ?>"
+          rel="stylesheet" type="text/css"/>
+    <link href="<?= $this->basePath('assets/global/plugins/bootstrap/css/bootstrap.min.css') ?>" rel="stylesheet"
+          type="text/css"/>
+    <link href="<?= $this->basePath('assets/global/plugins/bootstrap-switch/css/bootstrap-switch.min.css') ?>"
+          rel="stylesheet" type="text/css"/>
+    <!-- END GLOBAL MANDATORY STYLES -->
+    <!-- BEGIN PAGE LEVEL PLUGINS -->
+    <link href="<?= $this->basePath('assets/global/plugins/bootstrap-daterangepicker/daterangepicker.min.css') ?>"
+          rel="stylesheet" type="text/css"/>
+    <link href="<?= $this->basePath('assets/global/plugins/morris/morris.css') ?>" rel="stylesheet" type="text/css"/>
+    <link href="<?= $this->basePath('assets/global/plugins/fullcalendar/fullcalendar.min.css') ?>" rel="stylesheet"
+          type="text/css"/>
+    <link href="<?= $this->basePath('assets/global/plugins/jqvmap/jqvmap/jqvmap.css') ?>" rel="stylesheet"
+          type="text/css"/>
+    <link href="<?= $this->basePath('assets/global/plugins/datatables/datatables.min.css') ?>" rel="stylesheet"
+          type="text/css"/>
+    <link href="<?= $this->basePath('assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap.css') ?>"
+          rel="stylesheet" type="text/css"/>
 
-    <?php print $this->headLink(['rel'=>'shortcut icon', 'type'=>'image/vnd.microsoft.icon', 'href'=>$this->basePath('ico/favicon.png')])
-        ->prependStylesheet(['rel'=>'stylesheet', 'type'=>'text/css','href'=>$this->basePath('datatables-responsive/css/datatables.responsive.css')])
-        ->prependStylesheet(['rel'=>'stylesheet', 'type'=>'text/css','href'=>$this->basePath('plugins/jquery-datatable/extensions/FixedColumns/css/dataTables.fixedColumns.min.css')])
-        ->prependStylesheet(['rel'=>'stylesheet', 'type'=>'text/css','href'=>$this->basePath('plugins/jquery-datatable/media/css/dataTables.bootstrap.min.css')])
-        ->prependStylesheet(['rel'=>'stylesheet', 'type'=>'text/css','href'=>$this->basePath('css/custom.css')])
 
-        ->prependStylesheet(['rel'=>'apple-touch-icon-precomposed', 'sizes'=>'152x152', 'href'=>$this->basePath('ico/152.png')])
-        ->prependStylesheet(['rel'=>'apple-touch-icon-precomposed', 'sizes'=>'120x120', 'href'=>$this->basePath('ico/120.png')])
-        ->prependStylesheet(['rel'=>'apple-touch-icon-precomposed', 'sizes'=>'76x76', 'href'=>$this->basePath('ico/76.png')])
-        ->prependStylesheet(['rel'=>'apple-touch-icon-precomposed', 'sizes'=>'60x60', 'href'=>$this->basePath('ico/60.png')])
-        ->prependStylesheet(['rel'=>'stylesheet', 'type'=>'text/css', 'class'=>'main-stylesheet', 'href'=>$this->basePath('pages/css/pages.css')])
-        ->prependStylesheet(['rel'=>'stylesheet', 'type'=>'text/css', 'href'=>$this->basePath('pages/css/pages-icons.css')])
-        ->prependStylesheet(['rel'=>'stylesheet', 'type'=>'text/css', 'media'=>'screen', 'href'=>$this->basePath('plugins/jquery-metrojs/MetroJs.css')])
-        ->prependStylesheet(['rel'=>'stylesheet', 'type'=>'text/css', 'media'=>'screen', 'href'=>$this->basePath('plugins/bootstrap-datepicker/css/datepicker3.css')])
-        ->prependStylesheet(['rel'=>'stylesheet', 'type'=>'text/css', 'media'=>'screen', 'href'=>$this->basePath('plugins/bootstrap-timepicker/bootstrap-timepicker.min.css')])
-        ->prependStylesheet(['rel'=>'stylesheet', 'type'=>'text/css', 'href'=>$this->basePath('plugins/rickshaw/rickshaw.min.css')])
-        ->prependStylesheet(['rel'=>'stylesheet', 'type'=>'text/css', 'href'=>$this->basePath('plugins/mapplic/css/mapplic.css')])
-        ->prependStylesheet(['rel'=>'stylesheet', 'type'=>'text/css', 'media'=>'screen', 'href'=>$this->basePath('plugins/nvd3/nv.d3.min.css')])
-        ->prependStylesheet(['rel'=>'stylesheet', 'type'=>'text/css', 'media'=>'screen', 'href'=>$this->basePath('plugins/switchery/css/switchery.min.css')])
-        ->prependStylesheet(['rel'=>'stylesheet', 'type'=>'text/css', 'media'=>'screen', 'href'=>$this->basePath('plugins/bootstrap-select2/select2.css')])
-        ->prependStylesheet(['rel'=>'stylesheet', 'type'=>'text/css', 'media'=>'screen', 'href'=>$this->basePath('plugins/jquery-scrollbar/jquery.scrollbar.css')])
-        ->prependStylesheet(['rel'=>'stylesheet', 'type'=>'text/css','href'=>$this->basePath('plugins/font-awesome/css/font-awesome.min.css')])
-        ->prependStylesheet(['rel'=>'stylesheet', 'type'=>'text/css','href'=>$this->basePath('plugins/bootstrap-v3.3.6/css/bootstrap.min.css')])
-        ->prependStylesheet(['rel'=>'stylesheet', 'type'=>'text/css','href'=>$this->basePath('plugins/pace/pace-theme-flash.css')]);
+    <!-- END PAGE LEVEL PLUGINS -->
+    <!-- BEGIN THEME GLOBAL STYLES -->
+    <link href="<?= $this->basePath('assets/global/css/components-md.min.css') ?>" rel="stylesheet" type="text/css"/>
+    <link href="<?= $this->basePath('assets/global/css/plugins-md.min.css') ?>" rel="stylesheet" type="text/css"/>
+    <!-- END THEME GLOBAL STYLES -->
+    <!-- BEGIN THEME LAYOUT STYLES -->
+    <link href="<?= $this->basePath('assets/layouts/layout/css/layout.min.css') ?>" rel="stylesheet" type="text/css"/>
+    <link href="<?= $this->basePath('assets/layouts/layout/css/themes/darkblue.min.css') ?>" rel="stylesheet"
+          type="text/css"/>
+    <link href="<?= $this->basePath('assets/layouts/layout/css/custom.min.css') ?>" rel="stylesheet" type="text/css"/>
+    <!-- END THEME LAYOUT STYLES -->
 
-       
-    ?>
-    <!--[if lte IE 9]>
-    <link href="<?php print $this->basePath('plugins/codrops-dialogFx/dialog.ie.css'); ?>" rel="stylesheet" type="text/css" media="screen" />
-    <![endif]-->
-
-    <?php $this->headScript()->captureStart(); ?>
-    site = {
-    basePath: "<?php print $this->basePath(); ?>"
-    };
-    <?php $this->headScript()->captureEnd(); ?>
-
+    <!--Kendo styles-->
+    <link href="<?= $this->basePath('telerik_kendoui/styles/kendo.common.min.css') ?>" rel="stylesheet"
+          type="text/css"/>
+    <link href="<?= $this->basePath('telerik_kendoui/styles/kendo.rtl.min.css') ?>" rel="stylesheet" type="text/css"/>
+    <link href="<?= $this->basePath('telerik_kendoui/styles/kendo.default.min.css') ?>" rel="stylesheet"
+          type="text/css"/>
+    <link href="<?= $this->basePath('telerik_kendoui/styles/kendo.dataviz.min.css') ?>" rel="stylesheet"
+          type="text/css"/>
+    <link href="<?= $this->basePath('telerik_kendoui/styles/kendo.dataviz.default.min.css') ?>" rel="stylesheet"
+          type="text/css"/>
+    <!--end kendo styles-->
+    <link rel="shortcut icon" href="<?= $this->basePath('favicon.ico') ?>"/>
 </head>
-<body class="fixed-header pace-done sidebar-visible">
-<?php
+<!-- END HEAD -->
 
-/**
- * SIDEBAR
- */
-print $this->partial("partials/sidebar.phtml");
-?>
-<div class="page-container ">
+
+<body class="page-header-fixed page-sidebar-closed-hide-logo page-content-white page-md">
+<div class="page-wrapper">
+    <!-- BEGIN HEADER -->
     <?php
-    /**
-     * HEADER
-     */
-    print $this->partial("partials/header.phtml");
+    print $this->partial('partials/header.phtml');
     ?>
-
-    <div class="page-content-wrapper ">
-        <div class="content sm-gutter bg-master-light">
-            <div class="container-fluid padding-25 sm-padding-10">
-                <?php print $this->content; ?>
-            </div>
-        </div>
-
+    <!-- END HEADER -->
+    <!-- BEGIN HEADER & CONTENT DIVIDER -->
+    <div class="clearfix"></div>
+    <!-- END HEADER & CONTENT DIVIDER -->
+    <!-- BEGIN CONTAINER -->
+    <div class="page-container">
+        <!-- BEGIN SIDEBAR -->
         <?php
-        /**
-         * FOOTER
-         */
-        print $this->partial("partials/footer.phtml");
+        print $this->partial('partials/sidebar.phtml');
+
         ?>
+        <!-- END SIDEBAR -->
+        <!-- BEGIN CONTENT -->
+        <div class="page-content-wrapper">
+            <!-- BEGIN CONTENT BODY -->
+            <div class="page-content">
+                <?php
+                print $this->content;
+                ?>
+            </div>
+            <!-- END CONTENT BODY -->
+        </div>
+        <!-- END CONTENT -->
+        <!-- BEGIN QUICK SIDEBAR -->
+        <?php
+        print $this->partial('partials/quick-sidebar.phtml');
+        ?>
+        <!-- END QUICK SIDEBAR -->
     </div>
+    <!-- END CONTAINER -->
+    <!-- BEGIN FOOTER -->
+    <?php
+    print $this->partial('partials/footer.phtml');
+    ?>
+    <!-- END FOOTER -->
 </div>
+<!-- BEGIN QUICK NAV -->
+<nav class="quick-nav">
+    <a class="quick-nav-trigger" href="#0">
+        <span aria-hidden="true"></span>
+    </a>
+    <ul>
+        <li>
+            <a href="https://themeforest.net/item/metronic-responsive-admin-dashboard-template/4021469?ref=keenthemes"
+               target="_blank" class="active">
+                <span>Purchase Metronic</span>
+                <i class="icon-basket"></i>
+            </a>
+        </li>
+        <li>
+            <a href="https://themeforest.net/item/metronic-responsive-admin-dashboard-template/reviews/4021469?ref=keenthemes"
+               target="_blank">
+                <span>Customer Reviews</span>
+                <i class="icon-users"></i>
+            </a>
+        </li>
+        <li>
+            <a href="http://keenthemes.com/showcast/" target="_blank">
+                <span>Showcase</span>
+                <i class="icon-user"></i>
+            </a>
+        </li>
+        <li>
+            <a href="http://keenthemes.com/metronic-theme/changelog/" target="_blank">
+                <span>Changelog</span>
+                <i class="icon-graph"></i>
+            </a>
+        </li>
+    </ul>
+    <span aria-hidden="true" class="quick-nav-bg"></span>
+</nav>
+<div class="quick-nav-overlay"></div>
+<!-- END QUICK NAV -->
+<!--[if lt IE 9]>
+<script src="<?= $this->basePath('assets/global/plugins/respond.min.js') ?>"></script>
+<script src="<?= $this->basePath('assets/global/plugins/excanvas.min.js') ?>"></script>
+<script src="<?= $this->basePath('assets/global/plugins/ie8.fix.min.js') ?>"></script>
+<![endif]-->
 
+<!--Kendo plugin-->
+<?php
+$this->headScript()
+    ->prependFile($this->basePath('telerik_kendoui/js/kendo.all.min.js'));
+?>
+<!--end of kendo plugin-->
 
-<?php print $this->headScript()
-
-    ->prependFile($this->basePath('js/menu.js'))
-    ->prependFile($this->basePath('js/custom.js'))
-
-    //for form tab<<
-    ->prependFile($this->basePath('js/form/form_wizard.js'))
-    //>>
-
-
-    //for form tab<<
-    ->prependFile($this->basePath('js/form/boostrap-form-wizard/js/jquery.bootstrap.wizard.min.js'))
-    //>>
-
-    ->prependFile($this->basePath('js/demo.js'))
-    ->prependFile($this->basePath('js/scripts.js'))
-//    ->prependFile($this->basePath('js/dashboard.js'))
-    ->prependFile($this->basePath('pages/js/pages.min.js'))
-    ->prependFile($this->basePath('plugins/bootstrap-datepicker/js/bootstrap-datepicker.js'))
-
-    ->prependFile($this->basePath('plugins/skycons/skycons.js'))
-    ->prependFile($this->basePath('plugins/jquery-sparkline/jquery.sparkline.min.js'))
-    ->prependFile($this->basePath('plugins/jquery-metrojs/MetroJs.min.js'))
-//    ->prependFile($this->basePath('plugins/rickshaw/rickshaw.min.js'))
-    ->prependFile($this->basePath('plugins/mapplic/js/mapplic.js'))
-    ->prependFile($this->basePath('plugins/mapplic/js/jquery.mousewheel.js'))
-    ->prependFile($this->basePath('plugins/mapplic/js/hammer.js'))
-    ->prependFile($this->basePath('plugins/nvd3/src/models/lineWithFocusChart.js'))
-    ->prependFile($this->basePath('plugins/nvd3/src/models/line.js'))
-    ->prependFile($this->basePath('plugins/nvd3/src/models/axis.js'))
-    ->prependFile($this->basePath('plugins/nvd3/src/interactiveLayer.js'))
-    ->prependFile($this->basePath('plugins/nvd3/src/tooltip.js'))
-    ->prependFile($this->basePath('plugins/nvd3/src/utils.js'))
-    ->prependFile($this->basePath('plugins/nvd3/nv.d3.min.js'))
-    ->prependFile($this->basePath('plugins/nvd3/lib/d3.v3.js'))
-    ->prependFile($this->basePath('plugins/switchery/js/switchery.min.js'))
-    ->prependFile($this->basePath('plugins/classie/classie.js'))
-    ->prependFile($this->basePath('plugins/bootstrap-select2/select2.min.js'))
-    ->prependFile($this->basePath('plugins/jquery-scrollbar/jquery.scrollbar.min.js'))
-    ->prependFile($this->basePath('plugins/jquery-actual/jquery.actual.min.js'))
-    ->prependFile($this->basePath('plugins/jquery-ios-list/jquery.ioslist.min.js'))
-    ->prependFile($this->basePath('plugins/jquery-bez/jquery.bez.min.js'))
-    ->prependFile($this->basePath('plugins/jquery-unveil/jquery.unveil.min.js'))
-    ->prependFile($this->basePath('plugins/jquery/jquery-easy.js'))
-    ->prependFile($this->basePath('plugins/bootstrap-v3.3.6/js/bootstrap.min.js'))
-    ->prependFile($this->basePath('plugins/jquery-ui/jquery-ui.min.js'))
-    ->prependFile($this->basePath('plugins/modernizr.custom.js'))
-    ->prependFile($this->basePath('plugins/jquery/jquery-2.2.4.min.js'))
-    ->prependFile($this->basePath('plugins/pace/pace.min.js'));
-
-
-
-
+<?php
+$this->headScript()
+    ->prependFile($this->basePath('js/menu.js'));
 ?>
 
+<!-- BEGIN THEME LAYOUT SCRIPTS -->
+<?php
+$this->headScript()
+    ->prependFile($this->basePath('assets/layouts/global/scripts/quick-nav.min.js'))
+    ->prependFile($this->basePath('assets/layouts/global/scripts/quick-sidebar.min.js'))
+    ->prependFile($this->basePath('assets/layouts/layout/scripts/demo.min.js'))
+    ->prependFile($this->basePath('assets/layouts/layout/scripts/layout.min.js'));
+?>
+<!-- END THEME LAYOUT SCRIPTS -->
+<!-- BEGIN THEME GLOBAL SCRIPTS -->
+<?php
+$this->headScript()
+    ->prependFile($this->basePath('assets/global/scripts/app.min.js'));
+?>
+<!-- END THEME GLOBAL SCRIPTS -->
+
+<!-- BEGIN CORE PLUGINS -->
+<?php
+print $this->headScript()
+    ->prependFile($this->basePath('assets/global/plugins/bootstrap-switch/js/bootstrap-switch.min.js'))
+    ->prependFile($this->basePath('assets/global/plugins/jquery.blockui.min.js'))
+    ->prependFile($this->basePath('assets/global/plugins/jquery-slimscroll/jquery.slimscroll.min.js'))
+    ->prependFile($this->basePath('assets/global/plugins/js.cookie.min.js'))
+    ->prependFile($this->basePath('assets/global/plugins/bootstrap/js/bootstrap.min.js'))
+    ->prependFile($this->basePath('assets/global/plugins/jquery.min.js'));
+?>
+<!-- END CORE PLUGINS -->
+<!-- End -->
 </body>
-
 </html>
-

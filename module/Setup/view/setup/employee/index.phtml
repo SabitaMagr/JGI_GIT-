@@ -1,14 +1,6 @@
 <?php
-/**
- * Load Javascript files here
- */
-$this->headScript()->appendFile($this->basePath('plugins/jquery-datatable/media/js/jquery.dataTables.min.js'));
-$this->headScript()->appendFile($this->basePath('plugins/jquery-datatable/extensions/TableTools/js/dataTables.tableTools.min.js'));
-$this->headScript()->appendFile($this->basePath('plugins/jquery-datatable/media/js/dataTables.bootstrap.js'));
-$this->headScript()->appendFile($this->basePath('plugins/jquery-datatable/extensions/Bootstrap/jquery-datatable-bootstrap.js'));
-$this->headScript()->appendFile($this->basePath('plugins/datatables-responsive/js/datatables.responsive.js'));
-$this->headScript()->appendFile($this->basePath('plugins/datatables-responsive/js/lodash.min.js'));
-$this->headScript()->appendFile($this->basePath('js/datatables.js'));
+//Load JS files here
+
 ?>
 <?php
 if ($this->messages) {
@@ -20,113 +12,83 @@ if ($this->messages) {
 }
 ?>
 <script>
-    document.menu=<?php $menu = ["id" => "menuSetup","subMenu"=>["id"=>"subMenuEmployee"]];echo json_encode($menu);?>;
+    document.menu =<?php $menu = ["id" => "menuSetup", "subMenu" => ["id" => "subMenuEmployee"]];echo json_encode($menu);?>;
 </script>
 
-<div class="container">
+<div class="page-bar">
+    <ul class="page-breadcrumb">
     <?= $this->navigation('navigation')->breadcrumbs()->setMinDepth(0) ?>
-</div>
-<div class="panel bg-white customShadow">
-    <div class="panel-heading p-b-0">
-        <div class="btn-group pull-right">
-           <a class="btn btn-success" href="<?= $this->url("employee", ["action" => "add"]) ?>">
-                Add new
-           </a>
-            <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-                <span class="caret"></span>
-            </button>
-            <ul class="dropdown-menu" role="menu">
-                <li><a href="#">Settings</a>
-                </li>
-                <li><a href="#">Help</a>
-                </li>
-            </ul>
-        </div>
-        <div class="pull-left">
-            <div class="">
-                <input type="text" id="search-table" class="form-control pull-left" placeholder="Search">
-            </div>
-        </div>
-        <div class="clearfix"></div>
-    </div>
-    <div class="panel-body panel-info">
-        <div class="table-responsive">
+    </ul>
 
-            <table class="table table-bordered bg-master-lighter table-striped small-table" id="tableWithSearch">
-                <thead>
-                <tr role="row">
-                    <th aria-label="Title: activate to sort column ascending" aria-sort="descending" colspan="1" rowspan="1" aria-controls="basicTable" tabindex="0" class="sorting_desc" style="width: 218px;">
-                        Employee Code
-                    </th>
-                    <th aria-label="Places: activate to sort column ascending" colspan="1" rowspan="1"  aria-controls="basicTable" tabindex="0" class="sorting" style="width: 219px;">
-                        First Name
-                    </th>
-                    <th aria-label="Activities: activate to sort column ascending" colspan="1" rowspan="1"  aria-controls="basicTable" tabindex="0" class="sorting" style="width: 333px;">
-                        Middle Name
-                    </th>
-                    <th aria-label="Status: activate to sort column ascending" colspan="1" rowspan="1"  aria-controls="basicTable"  tabindex="0" class="sorting" style="width: 155px;">
-                        Last Name
-                    </th>
-                    <th aria-label="Last Update: activate to sort column ascending" colspan="1" rowspan="1"
-                        aria-controls="basicTable" tabindex="0" class="sorting" style="width: 155px;">
-                        Date of Birth
-                    </th>
-                    <th aria-label="Last Update: activate to sort column ascending" colspan="1" rowspan="1"
-                        aria-controls="basicTable" tabindex="0" class="sorting" style="width: 155px;">
-                        Action
-                    </th>
+</div>
+
+<div class="portlet box purple margin-top-10">
+    <div class="portlet-title">
+        <div class="caption">
+            <i class="fa fa-user"></i>Table
+        </div>
+        <div class="actions">
+            <a href="<?= $this->url('employee', ['action' => 'add']) ?>" class="btn btn-info btn-sm">
+                <i class="fa fa-plus"></i>
+                Add
+            </a>
+        </div>
+    </div>
+    <div class="portlet-body">
+        <table class="table table-bordered">
+            <thead>
+            <tr class="row">
+                <th>
+                    Employee Code
+                </th>
+                <th>
+                    First Name
+                </th>
+                <th>
+                    Middle Name
+                </th>
+                <th>
+                    Last Name
+                </th>
+                <th>
+                    Date of Birth
+                </th>
+                <th>
+                    Action
+                </th>
+            </tr>
+            </thead>
+
+            <tbody>
+            <?php foreach ($list as $employee) : ?>
+                <tr class="row">
+                    <td>
+                        <?php print $this->escapeHtml($employee->employeeCode) ?>
+                    </td>
+
+                    <td>
+                        <?php print $this->escapeHtml($employee->firstName) ?>
+                    </td>
+                    <td>
+                        <?php print $this->escapeHtml($employee->middleName) ?>
+                    </td>
+                    <td>
+                        <?php print $this->escapeHtml($employee->lastName) ?>
+                    </td>
+                    <td>
+                        <?php print $this->escapeHtml($employee->birthDate) ?>
+                    </td>
+                    <td>
+                                <a href="<?= $this->url("employee", ["action" => "edit", "id" => $employee->employeeId, 'tab' => 1]) ?>"> Edit
+                                </a> /
+                                <a class=""
+                                   href="<?= $this->url("employee", ["action" => "delete", "id" => $employee->employeeId]); ?>">Delete</a>
+                    </td>
                 </tr>
-                </thead>
-
-                <tbody>
-
-
-                <?php $counter = 1; ?>
-                <?php foreach ($list as $employee) : ?>
-                    <tr class="<?= ($counter % 2) == 0 ? "even" : "odd" ?>" role="row">
-                        <td class="v-align-middle sorting_1">
-                            <p>
-                                <?php print $this->escapeHtml($employee->employeeCode) ?>
-                            </p>
-                        </td>
-                        <td class="v-align-middle">
-                            <p>
-                                <?php print $this->escapeHtml($employee->firstName) ?>
-                            </p>
-                        </td>
-                        <td class="v-align-middle">
-                            <p>
-                                <?php print $this->escapeHtml($employee->middleName) ?>
-                            </p>
-                        </td>
-                        <td class="v-align-middle">
-                            <p>
-                                <?php print $this->escapeHtml($employee->lastName) ?>
-
-                            </p>
-                        <td>
-                            <?php print $this->escapeHtml($employee->birthDate) ?></td>
-                        </p>
-                        </td>
-                        <td class="v-align-middle">
-                            <div class="btn-group">
-                                <button type="button" class="btn btn-default">
-                                    <a class="fa fa-edit btn-link"
-                                       href="<?= $this->url("employee", ["action" => "edit", "id" => $employee->employeeId,'tab'=>1])  ?>">
-                                    </a>
-                                </button>
-                                <button type="button" class="btn btn-default">
-                                    <a class="fa fa-trash-o btn-link"
-                                       href="<?= $this->url("employee", ["action" => "delete", "id" => $employee->employeeId]); ?>"></a>
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
-                    <?php $counter++; ?>
-                <?php endforeach; ?>
-                </tbody>
-            </table>
-        </div>
+            <?php endforeach; ?>
+            </tbody>
+        </table>
     </div>
 </div>
+
 
