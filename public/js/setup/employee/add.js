@@ -1,6 +1,7 @@
 (function ($, app) {
     'use strict';
     $(document).ready(function () {
+        $('select').select2();
         var addrPermZoneId = $('#addrPermZoneId')
         var addrPermDistrictId = $('#addrPermDistrictId');
         var addrPermVdcMunicipalityId = $('#addrPermVdcMunicipalityId');
@@ -58,10 +59,8 @@
             }
         });
         if (typeof document.currentTab !== "undefined") {
-            // $('[href="#tab'+document.currentTab+'"]').click();
             $('#rootwizard').bootstrapWizard('show', parseInt(document.currentTab) - 1);
         }
-        // $('#formEmployee').validate({rules: {'form-employeeCode': 'required'}, messages: {'form-employeeCode': "ee"}});
 
 
         app.addDatePicker(

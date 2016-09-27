@@ -24,12 +24,11 @@ window.app = (function ($) {
         element.html('');
         for (var key in data) {
             element.append($('<option>', {value: key, text: data[key]}));
-
         }
-        var keys = Object.keys(data);
-        if (keys.length > 0) {
-           element.select2('val', keys[0]);
-        }
+        // var keys = Object.keys(data);
+        // if (keys.length > 0) {
+        //    element.select2('val', keys[0]);
+        // }
     }
 
     var fetchAndPopulate = function (url, id, element, callback) {

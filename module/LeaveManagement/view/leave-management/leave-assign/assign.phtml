@@ -21,7 +21,7 @@ $departmentFormElement->setAttribute("ng-model", "departmentId");
 $genderFormElement->setAttribute("ng-model", "genderId");
 $designationFormElement->setAttribute("ng-model", "designationId");
 ?>
-<div ng-app="hris" class="margin-top-20" ng-controller="assignController">
+<div ng-app="hris" ng-controller="assignController">
     <div class="row">
         <div class="col-sm-2">
             <?php print $this->formLabel($leaveFormElement); ?>
@@ -74,7 +74,6 @@ $designationFormElement->setAttribute("ng-model", "designationId");
         </div>
 
     </div>
-
     <div class="margin-top-20">
         <table class="table table-striped table-bordered table-hover no-footer">
             <thead>
