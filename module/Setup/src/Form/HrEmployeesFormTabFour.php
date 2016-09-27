@@ -47,7 +47,7 @@ class HrEmployeesFormTabFour extends Model
      * @Annotation\Required(false)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"disable_inarray_validator":"true","label":"Service Type Name"})
-     * @Annotation\Attributes({ "id":"serviceTypeId","class":"full-width select2-offscreen","data-init-plugin":"select2"})
+     * @Annotation\Attributes({ "id":"serviceTypeId","class":"form-control"})
      */
     public $serviceTypeId;
 
@@ -56,7 +56,7 @@ class HrEmployeesFormTabFour extends Model
      * @Annotation\Required(false)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"disable_inarray_validator":"true","label":"Position Name"})
-     * @Annotation\Attributes({ "id":"positionId","class":"full-width select2-offscreen","data-init-plugin":"select2"})
+     * @Annotation\Attributes({ "id":"positionId","class":"form-control"})
      */
     public $positionId;
 
@@ -65,7 +65,7 @@ class HrEmployeesFormTabFour extends Model
      * @Annotation\Required(false)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"disable_inarray_validator":"true","label":"Designation Name"})
-     * @Annotation\Attributes({ "id":"designationId","class":"full-width select2-offscreen","data-init-plugin":"select2"})
+     * @Annotation\Attributes({ "id":"designationId","class":"form-control"})
      */
     public $designationId;
 
@@ -74,7 +74,7 @@ class HrEmployeesFormTabFour extends Model
      * @Annotation\Required(false)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"disable_inarray_validator":"true","label":"Department Name"})
-     * @Annotation\Attributes({ "id":"departmentId","class":"full-width select2-offscreen","data-init-plugin":"select2"})
+     * @Annotation\Attributes({ "id":"departmentId","class":"form-control"})
      */
     public $departmentId;
 
@@ -83,7 +83,7 @@ class HrEmployeesFormTabFour extends Model
      * @Annotation\Required(false)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"disable_inarray_validator":"true","label":"Branch Name"})
-     * @Annotation\Attributes({ "id":"branchId","class":"full-width select2-offscreen","data-init-plugin":"select2"})
+     * @Annotation\Attributes({ "id":"branchId","class":"form-control"})
      */
     public $branchId;
 

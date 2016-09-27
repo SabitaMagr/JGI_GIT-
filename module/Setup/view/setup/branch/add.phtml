@@ -30,13 +30,11 @@ $form->prepare();
 <script>
     document.menu =<?php $menu = ["id" => "menuSetup", "subMenu" => ["id" => "subMenuBranch"]];echo json_encode($menu);?>;
 </script>
-
-<div class="page-bar custom-breadcrumb">
-    <?= $this->navigation('Zend\Navigation\Branch')->breadcrumbs()->setMinDepth(0) ?>
+<div class="page-bar">
+    <?= $this->navigation('Zend\Navigation\Branch')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
-
-<div class="row">
-    <div class="col-sm-8">
+<div class="row margin-top-20">
+    <div class="col-sm-8 col-sm-offset-2">
         <div class="portlet box custom-box">
             <div class="portlet-title">
                 <div class="caption">
