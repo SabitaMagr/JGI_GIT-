@@ -3,9 +3,7 @@
  * Load Javascript files here
  */
 $this->headScript()
-    ->appendFile($this->basePath('plugins/datatables/media/js/jquery.dataTables.min.js'))
-    ->appendFile($this->basePath('plugins/datatables/plugins/bootstrap/dataTables.bootstrap.js'))
-    ->appendFile($this->basePath('js/datatables.js'));
+    ->appendFile($this->basePath('js/kendoDataTable.js'));
 ?>
 
 <?php
@@ -22,64 +20,79 @@ if ($this->messages) {
 </script>
 
 <div class="page-bar">
-    <?= $this->navigation('Zend\Navigation\Designation')->breadcrumbs()->setMinDepth(0) ?>
+    <?= $this->navigation('Zend\Navigation\Designation')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
-<div class="portlet box green">
-    <div class="portlet-title">
-        <div class="caption">
-            <i class="fa fa-user"></i>Table
-        </div>
-        <div class="actions">
-            <a href="<?= $this->url('designation', ['action' => 'add']) ?>" class="btn btn-default btn-sm">
-                <i class="fa fa-pencil"></i> Add </a>
+
+
+<div class="margin-top-20">
+    <div class="table-toolbar">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="btn-group">
+                    <a href="<?= $this->url('designation', ['action' => 'add']) ?>" id="sample_editable_1_new"
+                       class="btn green"> Add New
+                        <!--                        <i class="fa fa-plus"></i>-->
+                    </a>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="btn-group pull-right">
+                    <button class="btn green btn-outline dropdown-toggle" data-toggle="dropdown">Tools
+                        <i class="fa fa-angle-down"></i>
+                    </button>
+                    <ul class="dropdown-menu pull-right">
+                        <li>
+                            <a href="javascript:;"> Print </a>
+                        </li>
+                        <li>
+                            <a href="javascript:;"> Save as PDF </a>
+                        </li>
+                        <li>
+                            <a href="javascript:;"> Export to Excel </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
         </div>
     </div>
-    <div class="portlet-body">
-        <table class="table table-bordered bg-master-lighter table-striped small-table" id="tableWithSearch">
-            <thead>
+    <table class="table" id="dataTable">
+        <thead>
+        <tr role="row">
+            <th>
+                Designation Title
+                Code
+            </th>
+            <th>
+                Designation Detail
+            </th>
+            <th>
+                Action
+            </th>
+        </tr>
+        </thead>
+        <tbody>
+
+        <?php foreach ($designations as $designation): ?>
             <tr role="row">
-                <th>
-                    Designation Title
-                    Code
-                </th>
-                <th>
-                    Designation Detail
-                </th>
-                <th>
-                    Action
-                </th>
+                <td>
+                    <?php print $this->escapeHtml($designation->DESIGNATION_CODE) ?>
+                </td>
+                <td>
+                    <?php print $this->escapeHtml($designation->DESIGNATION_TITLE) ?>
+                </td>
+                <td>
+                    <a href="<?= $this->url("designation", ["action" => "edit", "id" => $designation->DESIGNATION_ID]) ?>">
+                        Edit
+                    </a> /
+                    <a href="<?= $this->url("designation", ["action" => "delete", "id" => $designation->DESIGNATION_ID]); ?>">
+                        Delete
+                    </a>
+                </td>
             </tr>
-            </thead>
-            <tbody>
 
-            <?php foreach ($designations as $designation): ?>
-                <tr role="row">
-                    <td>
-                            <?php print $this->escapeHtml($designation->DESIGNATION_CODE) ?>
-                    </td>
-                    <td>
-                            <?php print $this->escapeHtml($designation->DESIGNATION_TITLE) ?>
-                    </td>
-                    <td>
-                        <div class="btn-group">
-                            <button type="button" class="btn btn-default">
-                                <a class="fa fa-edit btn-link"
-                                   href="<?= $this->url("designation", ["action" => "edit", "id" => $designation->DESIGNATION_ID]) ?>">
-                                </a>
-                            </button>
-                            <button type="button" class="btn btn-default">
-                                <a class="fa fa-trash-o btn-link"
-                                   href="<?= $this->url("designation", ["action" => "delete", "id" => $designation->DESIGNATION_ID]); ?>"></a>
-                            </button>
-                        </div>
+        <?php endforeach; ?>
 
-                    </td>
-                </tr>
+        </tbody>
+    </table>
 
-            <?php endforeach; ?>
-
-            </tbody>
-        </table>
-
-    </div>
-    </div>
+</div>
