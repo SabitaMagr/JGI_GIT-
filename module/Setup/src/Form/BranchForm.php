@@ -53,7 +53,7 @@ class BranchForm
      * @Annotation\Required(true)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"disable_inarray_validator":"true","label":"Country"})
-     * @Annotation\Attributes({ "id":"countryId","class":"form-control","data-init-plugin":"select2"})
+     * @Annotation\Attributes({ "id":"countryId","class":"form-control"})
      */
     public $countryId;
 

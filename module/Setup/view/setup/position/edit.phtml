@@ -7,7 +7,7 @@ $remarks = $form->get('remarks');
 $status = $form->get('status');
 
 $submit = $form->get('submit');
-$submit->setAttribute('value', 'UPDATE');
+$submit->setAttribute('value', 'SUBMIT');
 
 $form->setAttribute('action', $this->url('position', ['action' => 'edit', 'id' => $id]));
 
@@ -24,34 +24,34 @@ $form->prepare();
 <script>
     document.menu =<?php $menu = ["id" => "menuSetup", "subMenu" => ["id" => "subMenuPosition"]];echo json_encode($menu);?>;
 </script>
-<div class="container">
-    <?= $this->navigation('Zend\Navigation\Position')->breadcrumbs()->setMinDepth(0) ?>
+<div class="page-bar">
+    <?= $this->navigation('Zend\Navigation\Position')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
-<div class="row">
+<div class="row margin-top-20">
     <div class="col-sm-8 col-sm-offset-2">
-        <div class="panel panel-default customShadow">
-            <div class="panel-heading bg-master-lighter">
-                <div class="panel-title">
-                    <h3 class="panel-title">Position</h3>
+        <div class="portlet box custom-box">
+            <div class="portlet-title">
+                <div class="caption">
+                    <i class="fa fa-user"></i>Update
                 </div>
             </div>
-            <div class="panel-body p-t-5">
+            <div class="portlet-body">
                 <?php
                 print $this->form()->openTag($form);
                 ?>
-                <div class="form-group form-group-sm ">
+                <div class="form-group">
                     <?php print $this->formLabel($positionName); ?>
                     <?php print $this->formElement($positionName); ?>
                     <?php print $this->formElementErrors()->render($positionName, ['class' => 'help-block']); ?>
                 </div>
 
-                <div class="form-group form-group-sm">
+                <div class="form-group">
                     <?php print $this->formLabel($remarks); ?>
                     <?php print $this->formElement($remarks); ?>
                     <?php print $this->formElementErrors()->render($remarks, ['class' => 'help-block']); ?>
                 </div>
 
-                <div class="form-group form-group-sm form-group-default-select2">
+                <div class="form-group">
                     <?php print $this->formLabel($status); ?>
                     <?php print $this->formElement($status); ?>
                     <?php print $this->formElementErrors()->render($status, ['class' => 'help-block']); ?>

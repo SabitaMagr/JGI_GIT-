@@ -158,8 +158,16 @@ class Helper
                         $temp = 'checked=checked';
                     }
                 }
-                echo "<input $temp  type='radio' value='$key' name='$name' id='$name+$value'>";
-                echo "<label for='$name+$value'>$value</label>";
+
+                echo "<div class='md-radio'>";
+               echo "<input $temp  type='radio' value='$key' name='$name' id='$name+$value' class='md-radiobtn'>";
+
+               echo "<label for='$name+$value'>
+                    <span></span>
+                    <span class='check'></span>
+                    <span class='box'></span> $value 
+                </label>";
+                echo "</div>";
                 $counter++;
             }
 

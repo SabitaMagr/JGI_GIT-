@@ -62,7 +62,7 @@ class LeaveMasterForm
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Required(true)
      * @Annotation\Options({"disable_inarray_validator":"true","label":"Fiscal Year"})
-     * @Annotation\Attributes({ "id":"fiscalYear","class":"full-width select2-offscreen","data-init-plugin":"select2"})
+     * @Annotation\Attributes({ "id":"fiscalYear","class":"form-control"})
      */
     public $fiscalYear;
 
@@ -94,7 +94,7 @@ class LeaveMasterForm
 
     /**
      * @Annotation\Type("Zend\Form\Element\Submit")
-     * @Annotation\Attributes({"value":"Submit","class":"btn btn-success pull-left"})
+     * @Annotation\Attributes({"value":"Submit","class":"btn btn-success"})
      */
     public $submit;
 }

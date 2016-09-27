@@ -16,7 +16,7 @@ $positionId = $form->get('positionId');
 $positionId->setValueOptions($positions);
 
 $submit = $form->get('submit');
-$submit->setAttribute('value','Edit Changed Employee Posting');
+$submit->setAttribute('value','SUBMIT');
 
 $form->setAttribute('action', $this->url('empCurrentPosting', ['action' => 'edit','id'=>$id]));
 
@@ -34,51 +34,51 @@ $form->prepare();
 	<script>
 		document.menu=<?php $menu = ["id" => "menuSetup","subMenu"=>["id"=>"subMenuCurrentPosting"]];echo json_encode($menu);?>;
 	</script>
-<div class="container">
-	<?= $this->navigation('Zend\Navigation\empCurrentPosting')->breadcrumbs()->setMinDepth(0) ?>
+<div class="page-bar">
+	<?= $this->navigation('Zend\Navigation\empCurrentPosting')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
-<div class="row">
+<div class="row margin-top-20">
 	<div class="col-sm-8 col-sm-offset-2">
-		<div class="panel panel-default customShadow">
-			<div class="panel-heading bg-master-lighter">
-				<div class="panel-title">
-					<h3 class="panel-title">Employee Current Posting</h3>
+		<div class="portlet box custom-box">
+			<div class="portlet-title">
+				<div class="caption">
+					<i class="fa fa-user"></i>Update
 				</div>
 			</div>
-			<div class="panel-body p-t-5">
+			<div class="portlet-body">
 				<?php
 				print $this->form()->openTag($form);
 				?>
-				<div class="form-group form-group-sm form-group-default-select2">
+				<div class="form-group">
 					<?php print $this->formLabel($employeeId); ?>
 					<?php print $this->formElement($employeeId); ?>
 					<?php print $this->formElementErrors()->render($employeeId, ['class' => 'help-block']); ?>
 				</div>
-				<div class="form-group form-group-sm form-group-default-select2">
+				<div class="form-group">
 					<?php print $this->formLabel($serviceTypeId); ?>
 					<?php print $this->formElement($serviceTypeId); ?>
 					<?php print $this->formElementErrors()->render($serviceTypeId, ['class' => 'help-block']); ?>
 				</div>
 
-				<div class="form-group form-group-sm form-group-default-select2">
+				<div class="form-group">
 					<?php print $this->formLabel($branchId); ?>
 					<?php print $this->formElement($branchId); ?>
 					<?php print $this->formElementErrors()->render($branchId, ['class' => 'help-block']); ?>
 				</div>
 
-				<div class="form-group form-group-sm form-group-default-select2">
+				<div class="form-group">
 					<?php print $this->formLabel($departmentId); ?>
 					<?php print $this->formElement($departmentId); ?>
 					<?php print $this->formElementErrors()->render($departmentId, ['class' => 'help-block']); ?>
 				</div>
 
-				<div class="form-group form-group-sm form-group-default-select2">
+				<div class="form-group">
 					<?php print $this->formLabel($designationId); ?>
 					<?php print $this->formElement($designationId); ?>
 					<?php print $this->formElementErrors()->render($designationId, ['class' => 'help-block']); ?>
 				</div>
 
-				<div class="form-group form-group-sm form-group-default-select2">
+				<div class="form-group">
 					<?php print $this->formLabel($positionId); ?>
 					<?php print $this->formElement($positionId); ?>
 					<?php print $this->formElementErrors()->render($positionId, ['class' => 'help-block']); ?>

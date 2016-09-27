@@ -30,48 +30,48 @@ $form->prepare();
 <script>
     document.menu =<?php $menu = ["id" => "menuSetup", "subMenu" => ["id" => "subMenuCompany"]];echo json_encode($menu);?>;
 </script>
-<div class="container">
-    <?= $this->navigation('Zend\Navigation\Company')->breadcrumbs()->setMinDepth(0) ?>
+<div class="page-bar">
+    <?= $this->navigation('Zend\Navigation\Company')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
-<div class="row">
+<div class="row margin-top-20">
     <div class="col-sm-8 col-sm-offset-2">
-        <div class="panel panel-default customShadow">
-            <div class="panel-heading bg-master-lighter">
-                <div class="panel-title">
-                    <h3 class="panel-title">Company</h3>
+        <div class="portlet box custom-box">
+            <div class="portlet-title">
+                <div class="caption">
+                    <i class="fa fa-user"></i>New Entry
                 </div>
             </div>
-            <div class="panel-body p-t-5">
+            <div class="portlet-body">
                 <?php
                 print $this->form()->openTag($form);
                 ?>
-                <div class="form-group form-group-sm required ">
+                <div class="form-group required ">
                     <?php print $this->formLabel($companyCode); ?>
                     <?php print $this->formElement($companyCode); ?>
                     <?php print $this->formElementErrors()->render($companyCode, ['class' => 'help-block']); ?>
                 </div>
-                <div class="form-group form-group-sm required ">
+                <div class="form-group required ">
                     <?php print $this->formLabel($companyName); ?>
                     <?php print $this->formElement($companyName); ?>
                     <?php print $this->formElementErrors()->render($companyName, ['class' => 'help-block']); ?>
                 </div>
-                <div class="form-group form-group-sm required ">
+                <div class="form-group required ">
                     <?php print $this->formLabel($address); ?>
                     <?php print $this->formElement($address); ?>
                     <?php print $this->formElementErrors()->render($address, ['class' => 'help-block']); ?>
                 </div>
-                <div class="form-group form-group-sm">
+                <div class="form-group">
                     <?php print $this->formLabel($telephone); ?>
                     <?php print $this->formElement($telephone); ?>
                     <?php print $this->formElementErrors()->render($telephone, ['class' => 'help-block']); ?>
                 </div>
 
-                <div class="form-group form-group-sm">
+                <div class="form-group">
                     <?php print $this->formLabel($fax); ?>
                     <?php print $this->formElement($fax); ?>
                     <?php print $this->formElementErrors()->render($fax, ['class' => 'help-block']); ?>
                 </div>
-                <div class="form-group form-group-sm">
+                <div class="form-group">
                     <?php print $this->formLabel($swift); ?>
                     <?php print $this->formElement($swift); ?>
                     <?php print $this->formElementErrors()->render($swift, ['class' => 'help-block']); ?>

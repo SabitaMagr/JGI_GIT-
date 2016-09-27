@@ -58,13 +58,13 @@ class DesignationForm
      * @Annotation\Required(false)
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
      * @Annotation\Options({"label":"Status","value_options":{"E":"Enabled","D":"Disabled"}})
-     * @Annotation\Attributes({ "id":"form-status","class":"full-width select2-offscreen","data-init-plugin":"select2"})
+     * @Annotation\Attributes({ "id":"form-status","class":"form-control"})
      */
     public $status;
 
     /**
      * @Annotation\Type("Zend\Form\Element\Submit")
-     * @Annotation\Attributes({"value":"Submit","class":"btn btn-success pull-left"})
+     * @Annotation\Attributes({"value":"Submit","class":"btn btn-success"})
     */
     public $submit;
 

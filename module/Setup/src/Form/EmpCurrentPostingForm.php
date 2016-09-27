@@ -25,7 +25,7 @@ class EmpCurrentPostingForm {
      * @Annotation\Required({"required":"true"})
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
      * @Annotation\Options({"disable_inarray_validator":"true","label":"Employee Name"})
-     * @Annotation\Attributes({ "id":"employeeId","class":"full-width select2-offscreen","data-init-plugin":"select2"})
+     * @Annotation\Attributes({ "id":"employeeId","class":"form-control"})
      */
     public $employeeId;
 
@@ -34,7 +34,7 @@ class EmpCurrentPostingForm {
      * @Annotation\Required({"required":"true"})
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
      * @Annotation\Options({"disable_inarray_validator":"true","label":"Service Type Name"})
-     * @Annotation\Attributes({ "id":"serviceTypeId","class":"full-width select2-offscreen","data-init-plugin":"select2"})
+     * @Annotation\Attributes({ "id":"serviceTypeId","class":"form-control"})
      */
     public $serviceTypeId;
 
@@ -44,7 +44,7 @@ class EmpCurrentPostingForm {
      * @Annotation\Required({"required":"true"})
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
      * @Annotation\Options({"disable_inarray_validator":"true","label":"Branch Name"})
-     * @Annotation\Attributes({ "id":"branchId","class":"full-width select2-offscreen","data-init-plugin":"select2"})
+     * @Annotation\Attributes({ "id":"branchId","class":"form-control"})
      */
     public $branchId;
 
@@ -53,7 +53,7 @@ class EmpCurrentPostingForm {
      * @Annotation\Required({"required":"true"})
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
      * @Annotation\Options({"disable_inarray_validator":"true","label":"Department Name"})
-     * @Annotation\Attributes({ "id":"departmentId","class":"full-width select2-offscreen","data-init-plugin":"select2"})
+     * @Annotation\Attributes({ "id":"departmentId","class":"form-control"})
      */
     public $departmentId;
 
@@ -62,7 +62,7 @@ class EmpCurrentPostingForm {
      * @Annotation\Required({"required":"true"})
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
      * @Annotation\Options({"disable_inarray_validator":"true","label":"Designation Name"})
-     * @Annotation\Attributes({ "id":"designationId","class":"full-width select2-offscreen","data-init-plugin":"select2"})
+     * @Annotation\Attributes({ "id":"designationId","class":"form-control"})
      */
     public $designationId;
 
@@ -71,13 +71,13 @@ class EmpCurrentPostingForm {
      * @Annotation\Required({"required":"true"})
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
      * @Annotation\Options({"disable_inarray_validator":"true","label":"Position Name"})
-     * @Annotation\Attributes({ "id":"positionId","class":"full-width select2-offscreen","data-init-plugin":"select2"})
+     * @Annotation\Attributes({ "id":"positionId","class":"form-control"})
      */
     public $positionId;
 
     /**
      * @Annotation\Type("Zend\Form\Element\Submit")
-     * @Annotation\Attributes({"value":"Submit","class":"btn btn-success pull-left"})
+     * @Annotation\Attributes({"value":"Submit","class":"btn btn-success"})
     */
     public $submit;
 

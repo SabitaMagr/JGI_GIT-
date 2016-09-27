@@ -21,7 +21,7 @@ class LeaveApplyForm
      * @Annotation\Required(true)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"disable_inarray_validator":"true","label":"Leave"})
-     * @Annotation\Attributes({ "id":"leaveId","class":"full-width select2-offscreen","data-init-plugin":"select2"})
+     * @Annotation\Attributes({ "id":"leaveId","class":"form-control"})
      */
     public $leaveId;
 
@@ -65,7 +65,7 @@ class LeaveApplyForm
 
     /**
      * @Annotation\Type("Zend\Form\Element\Submit")
-     * @Annotation\Attributes({"value":"Submit","class":"btn btn-success pull-left"})
+     * @Annotation\Attributes({"value":"Submit","class":"btn btn-success"})
      */
     public $submit;
 }
