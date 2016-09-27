@@ -49,14 +49,13 @@ $form->setAttribute('action', $this->url('holidaysetup', ['action' => 'edit']));
 $form->prepare();
 
 ?>
-<div class="container">
-    <?php // add the following line: ?>
-    <?= $this->navigation('navigation')->breadcrumbs()->setMinDepth(0) ?>
+<div class="page-bar">
+    <?= $this->navigation('navigation')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
 <div ng-app="hris" ng-controller="holidayController">
     <div class="row">
         <div class="col-sm-8 col-sm-offset-2">
-            <div class="panel bg-white customShadow">
+            <div class="portlet box custom-box">
                 <div class="p-t-20 p-l-20 p-r-20 panel-title-head">
                     <div class="row">
                         <div class="col-xs-5 col-sm-5 col-md-5">
