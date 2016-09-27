@@ -35,7 +35,7 @@ class ShiftAssign extends AbstractActionController
         $branches[-1]="All";
         ksort($branches);
         $branchFormElement->setValueOptions($branches);
-        $branchFormElement->setAttributes(["id" => "branchId", "class" => "full-width select2-offscreen", "data-init-plugin" => "select2"]);
+        $branchFormElement->setAttributes(["id" => "branchId", "class" => "form-control"]);
         $branchFormElement->setLabel("Branch");
         $branchFormElement->setAttribute("ng-click","view()");
 
@@ -46,7 +46,7 @@ class ShiftAssign extends AbstractActionController
         $departments[-1]="All";
         ksort($departments);
         $departmentFormElement->setValueOptions($departments);
-        $departmentFormElement->setAttributes(["id" => "departmentId", "class" => "full-width select2-offscreen", "data-init-plugin" => "select2"]);
+        $departmentFormElement->setAttributes(["id" => "departmentId", "class" => "form-control"]);
         $departmentFormElement->setLabel("Department");
 
         $designationFormElement = new Select();
@@ -55,7 +55,7 @@ class ShiftAssign extends AbstractActionController
         $designations[-1]="All";
         ksort($designations);
         $designationFormElement->setValueOptions($designations);
-        $designationFormElement->setAttributes(["id" => "designationId", "class" => "full-width select2-offscreen", "data-init-plugin" => "select2"]);
+        $designationFormElement->setAttributes(["id" => "designationId", "class" => "form-control"]);
         $designationFormElement->setLabel("Designation");
 
         $positionFormElement = new Select();
@@ -64,7 +64,7 @@ class ShiftAssign extends AbstractActionController
         $positions[-1]="All";
         ksort($positions);
         $positionFormElement->setValueOptions($positions);
-        $positionFormElement->setAttributes(["id" => "positionId", "class" => "full-width select2-offscreen", "data-init-plugin" => "select2"]);
+        $positionFormElement->setAttributes(["id" => "positionId", "class" => "form-control"]);
         $positionFormElement->setLabel("Position");
 
         $serviceTypeFormElement = new Select();
@@ -73,7 +73,7 @@ class ShiftAssign extends AbstractActionController
         $serviceTypes[-1]="All";
         ksort($serviceTypes);
         $serviceTypeFormElement->setValueOptions($serviceTypes);
-        $serviceTypeFormElement->setAttributes(["id" => "serviceTypeId", "class" => "full-width select2-offscreen", "data-init-plugin" => "select2"]);
+        $serviceTypeFormElement->setAttributes(["id" => "serviceTypeId", "class" => "form-control"]);
         $serviceTypeFormElement->setLabel("Service Type");
 
         $shifts=EntityHelper::getTableKVList($this->adapter,ShiftSetup::TABLE_NAME,ShiftSetup::SHIFT_ID,[ShiftSetup::SHIFT_ENAME]);
@@ -81,7 +81,7 @@ class ShiftAssign extends AbstractActionController
         $shiftFormElement = new Select();
         $shiftFormElement->setName("shift");
         $shiftFormElement->setValueOptions($shifts);
-        $shiftFormElement->setAttributes(["id" => "shiftId", "class" => "full-width select2-offscreen", "data-init-plugin" => "select2"]);
+        $shiftFormElement->setAttributes(["id" => "shiftId", "class" => "form-control"]);
         $shiftFormElement->setLabel("Shift");
 
         return new ViewModel([

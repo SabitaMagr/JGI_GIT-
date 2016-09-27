@@ -1,147 +1,151 @@
 <?php
+/**
+ * Load Javascript files here
+ */
+$this->headScript()->appendFile($this->basePath('js/angular.min.js'));
+$this->headScript()->appendFile($this->basePath('js/AttendanceManagement/ShiftAssign/shiftController.js'));
+
 ?>
+
 <script>
     document.menu =<?php $menu = ["id" => "menuAttendanceManagement", "subMenu" => ["id" => "subMenuShiftAssign"]];echo json_encode($menu);?>;
     document.url = '<?= $this->url("restful", ["action" => "index"]) ?>';
 </script>
-<div class="container">
-    <?= $this->navigation('Zend\Navigation\shiftassign')->breadcrumbs()->setMinDepth(0) ?>
+<div class="page-bar">
+    <?= $this->navigation('Zend\Navigation\shiftassign')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
-<?php
-$this->headScript()->appendFile($this->basePath('plugins/notify.min.js'));
-$this->headScript()->appendFile($this->basePath('plugins/angular.min.js'));
-$this->headScript()->appendFile($this->basePath('js/shift/controller.js'));
-?>
+<div class="margin-top-20" ng-app="hris" ng-controller="shiftAssignController">
+    <div class="row">
+        <div class="col-sm-2">
+            <?php print $this->formLabel($branches); ?>
+        </div>
+        <div class="col-sm-2">
+            <?php print $this->formLabel($departments); ?>
 
-<div class="panel bg-white customShadow" ng-app="hris" ng-controller="shiftAssignController">
-    <div class="panel-heading bg-complete-lighter">
-        <div class="row">
-            <div class="col-sm-2">
-                <div class="form-group form-group-default-select2">
-                    <?php print $this->formLabel($branches); ?>
-                    <?php print $this->formElement($branches); ?>
-                </div>
-            </div>
-            <div class="col-sm-2">
-                <div class=" form-group form-group-default-select2">
-                    <?php print $this->formLabel($departments); ?>
-                    <?php print $this->formElement($departments); ?>
-                </div>
+        </div>
+        <div class="col-sm-2">
+            <?php print $this->formLabel($designations); ?>
 
-            </div>
-            <div class="col-sm-2">
-                <div class=" form-group form-group-default-select2">
-                    <?php print $this->formLabel($designations); ?>
-                    <?php print $this->formElement($designations); ?>
-                </div>
+        </div>
+        <div class="col-sm-2">
+            <?php print $this->formLabel($positions); ?>
+        </div>
+        <div class="col-sm-2">
+            <?php print $this->formLabel($serviceTypes); ?>
+        </div>
+        <div class="col-sm-2">
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-2">
+            <?php print $this->formElement($branches); ?>
+        </div>
+        <div class="col-sm-2">
+            <?php print $this->formElement($departments); ?>
 
-            </div>
-            <div class="col-sm-2">
-                <div class=" form-group form-group-default-select2">
-                    <?php print $this->formLabel($positions); ?>
-                    <?php print $this->formElement($positions); ?>
-                </div>
-            </div>
-            <div class="col-sm-2">
-                <div class=" form-group form-group-default-select2">
-                    <?php print $this->formLabel($serviceTypes); ?>
-                    <?php print $this->formElement($serviceTypes); ?>
-                </div>
-
-            </div>
-            <div class="col-sm-2 ">
-                <div class="form-group p-l-100">
-                    <label for="viewEmployees">&nbsp</label>
-                    <button ng-click="view()" id="viewEmployees" class="btn btn-block btn-success">
-                        View
-                    </button>
-                </div>
-            </div>
+        </div>
+        <div class="col-sm-2">
+            <?php print $this->formElement($designations); ?>
+        </div>
+        <div class="col-sm-2">
+            <?php print $this->formElement($positions); ?>
+        </div>
+        <div class="col-sm-2">
+            <?php print $this->formElement($serviceTypes); ?>
+        </div>
+        <div class="col-sm-2 ">
+            <button ng-click="view()" id="viewEmployees" class="btn btn-success pull-right">
+                View
+            </button>
         </div>
     </div>
 
-    <div class="panel-body panel-info">
-        <div class="table-responsive" style="max-height: 500px; min-height: 300px;">
-            <table class="table table-bordered bg-master-lighter table-striped small-table">
-                <thead>
-                <tr>
-                    <th>
-                        Employee
-                    </th>
-                    <th>
-                        Branch
-                    </th>
-                    <th>
-                        Department
-                    </th>
-                    <th>
-                        Designation
-                    </th>
-                    <th>
-                        Position
-                    </th>
-                    <th>
-                        Service Type
-                    </th>
-                    <th>
-                        Shift Assigned
-                    </th>
-                    <th>
-                        <div class="pull-right">
-                            <input class="" type="checkbox" ng-model="all" ng-click="checkAll(all)"/>
-                        </div>
-                    </th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr ng-repeat="employeeShift in employeeShiftList">
-                    <td>
-                        {{employeeShift.FIRST_NAME}} {{employeeShift.MIDDLE_NAME}} {{employeeShift.LAST_NAME}}
-                    </td>
-                    <td>
-                        {{employeeShift.BRANCH_NAME}}
-                    </td>
-                    <td>
-                        {{employeeShift.DEPARTMENT_NAME}}
+    <div class="margin-top-20">
+        <table class="table table-striped table-bordered table-hover no-footer">
+            <thead>
+            <tr>
+                <th>
+                    Employee
+                </th>
+                <th>
+                    Branch
+                </th>
+                <th>
+                    Department
+                </th>
+                <th>
+                    Designation
+                </th>
+                <th>
+                    Position
+                </th>
+                <th>
+                    Service Type
+                </th>
+                <th>
+                    Shift Assigned
+                </th>
+                <th class="bs-checkbox " style="width: 36px; " data-field="state" tabindex="0">
+                    <div class="th-inner ">
+                        <label class="mt-checkbox mt-checkbox-single mt-checkbox-outline">
+                        <input class="" type="checkbox" ng-model="all" ng-click="checkAll(all)"/>
+                            <span></span>
+                        </label>
+                    </div>
+                    <div class="fht-cell" style="width: 46px;"></div>
+                </th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="employeeShift in employeeShiftList">
+                <td>
+                    {{employeeShift.FIRST_NAME}} {{employeeShift.MIDDLE_NAME}} {{employeeShift.LAST_NAME}}
+                </td>
+                <td>
+                    {{employeeShift.BRANCH_NAME}}
+                </td>
+                <td>
+                    {{employeeShift.DEPARTMENT_NAME}}
 
-                    </td>
-                    <td>
-                        {{employeeShift.DESIGNATION_TITLE}}
+                </td>
+                <td>
+                    {{employeeShift.DESIGNATION_TITLE}}
 
-                    </td>
-                    <td>
-                        {{employeeShift.POSITION_NAME}}
+                </td>
+                <td>
+                    {{employeeShift.POSITION_NAME}}
 
-                    </td>
-                    <td>
-                        {{employeeShift.SERVICE_TYPE_NAME}}
+                </td>
+                <td>
+                    {{employeeShift.SERVICE_TYPE_NAME}}
 
-                    </td>
-                    <td>
-                        {{employeeShift.SHIFT_ENAME || "Default"}}
+                </td>
+                <td>
+                    {{employeeShift.SHIFT_ENAME || "Default"}}
 
-                    </td>
-                    <td>
-                        <div class="pull-right">
-                            <input class="" ng-model="employeeShift.checked" type="checkbox"
-                                   ng-change="checkUnit(item.checked)"/>
-                        </div>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
+                </td>
+                <td class="bs-checkbox " style="width: 36px; " data-field="state" tabindex="0">
+                    <div class="th-inner ">
+                        <label class="mt-checkbox mt-checkbox-single mt-checkbox-outline">
+                        <input class="" ng-model="employeeShift.checked" type="checkbox"
+                               ng-change="checkUnit(item.checked)"/>
+                            <span></span>
+                        </label>
+                    </div>
+                    <div class="fht-cell" style="width: 46px;"></div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="row" ng-show="assignShowHide">
+        <div class="col-sm-offset-9 col-sm-2">
+                <?php print $this->formElement($shiftFormElement); ?>
         </div>
-        <div class="row" ng-show="assignShowHide">
-            <div class="pull-right">
-                <button class="btn btn-success" ng-click="assign()">
-                    Assign
-                </button>
-            </div>
-            <div class="pull-right">
-                <div class=" form-group-default-select2">
-                    <?php print $this->formElement($shiftFormElement); ?>
-                </div>
-            </div>
+        <div class="col-sm-1 ">
+            <button class="btn btn-success pull-right" ng-click="assign()">
+                Assign
+            </button>
         </div>
     </div>
 </div>

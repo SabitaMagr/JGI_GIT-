@@ -44,6 +44,9 @@ License: You must have a valid license purchased only from themeforest(the above
           type="text/css"/>
     <link href="<?= $this->basePath('assets/global/plugins/bootstrap-switch/css/bootstrap-switch.min.css') ?>"
           rel="stylesheet" type="text/css"/>
+    <link href="<?= $this->basePath('assets/global/plugins/bootstrap-toastr/toastr.min.css') ?>"
+          rel="stylesheet" type="text/css"/>
+
     <!-- END GLOBAL MANDATORY STYLES -->
     <!-- BEGIN PAGE LEVEL PLUGINS -->
     <link href="<?= $this->basePath('assets/global/plugins/bootstrap-daterangepicker/daterangepicker.min.css') ?>"
@@ -182,7 +185,8 @@ $this->headScript()
 
 <?php
 $this->headScript()
-    ->prependFile($this->basePath('js/menu.js'));
+    ->prependFile($this->basePath('js/menu.js'))
+    ->prependFile($this->basePath('js/custom.js'));
 ?>
 
 <!-- BEGIN THEME LAYOUT SCRIPTS -->
@@ -204,6 +208,7 @@ $this->headScript()
 <!-- BEGIN CORE PLUGINS -->
 <?php
 print $this->headScript()
+    ->prependFile($this->basePath('assets/global/plugins/bootstrap-toastr/toastr.min.js'))
     ->prependFile($this->basePath('assets/global/plugins/bootstrap-switch/js/bootstrap-switch.min.js'))
     ->prependFile($this->basePath('assets/global/plugins/jquery.blockui.min.js'))
     ->prependFile($this->basePath('assets/global/plugins/jquery-slimscroll/jquery.slimscroll.min.js'))
