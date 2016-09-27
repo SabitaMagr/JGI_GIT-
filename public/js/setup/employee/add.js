@@ -1,7 +1,7 @@
 (function ($, app) {
     'use strict';
     $(document).ready(function () {
-        $('select').select2();
+
         var addrPermZoneId = $('#addrPermZoneId')
         var addrPermDistrictId = $('#addrPermDistrictId');
         var addrPermVdcMunicipalityId = $('#addrPermVdcMunicipalityId');
