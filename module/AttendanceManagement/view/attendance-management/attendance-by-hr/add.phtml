@@ -33,59 +33,59 @@ $form->prepare();
 <script>
     document.menu =<?php $menu = ["id" => "menuAttendanceManagement", "subMenu" => ["id" => "subMenuAttendanceByHr"]];echo json_encode($menu);?>;
 </script>
-<div class="container">
-    <?= $this->navigation('Zend\Navigation\attendancebyhr')->breadcrumbs()->setMinDepth(0) ?>
+<div class="page-bar">
+    <?= $this->navigation('Zend\Navigation\attendancebyhr')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
-<div class="row">
+<div class="row margin-top-20">
     <div class="col-sm-8 col-sm-offset-2">
-        <div class="panel panel-default customShadow">
-            <div class="panel-heading bg-master-lighter">
-                <div class="panel-title">
-                    <h3 class="panel-title">Attendance Entry</h3>
+        <div class="portlet box custom-box">
+            <div class="portlet-title">
+                <div class="caption">
+                    <i class="fa fa-user"></i>Attendance Entry
                 </div>
             </div>
-            <div class="panel-body p-t-5">
+            <div class="portlet-body">
                 <?php
                 print $this->form()->openTag($form);
                 ?>
                 <div
-                    class="form-group form-group-sm form-group-default-select2 <?= empty($employeeId->getMessages()) ? "" : "error" ?> ">
+                    class="form-group <?= empty($employeeId->getMessages()) ? "" : "error" ?> ">
                     <?php print $this->formLabel($employeeId); ?>
                     <?php print $this->formElement($employeeId); ?>
                 </div>
                 <?php print $this->formElementErrors()->render($employeeId, ['class' => 'help-block error']); ?>
 
-                <div class="form-group form-group-sm <?= empty($attendanceDt->getMessages()) ? "" : "error" ?>">
+                <div class="form-group <?= empty($attendanceDt->getMessages()) ? "" : "error" ?>">
                     <?php print $this->formLabel($attendanceDt); ?>
                     <?php print $this->formElement($attendanceDt); ?>
                 </div>
                 <?php print $this->formElementErrors()->render($attendanceDt, ['class' => 'help-block error']); ?>
 
-                <div class="form-group form-group-sm  <?= empty($inTime->getMessages()) ? "" : "error" ?>">
+                <div class="form-group  <?= empty($inTime->getMessages()) ? "" : "error" ?>">
                     <?php print $this->formLabel($inTime); ?>
                     <?php print $this->formElement($inTime); ?>
                 </div>
                 <?php print $this->formElementErrors()->render($inTime, ['class' => 'help-block error']); ?>
 
-                <div class="form-group form-group-sm <?= empty($outTime->getMessages()) ? "" : "error" ?>">
+                <div class="form-group  <?= empty($outTime->getMessages()) ? "" : "error" ?>">
                     <?php print $this->formLabel($outTime); ?>
                     <?php print $this->formElement($outTime); ?>
                 </div>
                 <?php print $this->formElementErrors()->render($outTime, ['class' => 'help-block error']); ?>
 
-                <div class="form-group form-group-sm <?= empty($inRemarks->getMessages()) ? "" : "error" ?>">
+                <div class="form-group  <?= empty($inRemarks->getMessages()) ? "" : "error" ?>">
                     <?php print $this->formLabel($inRemarks); ?>
                     <?php print $this->formElement($inRemarks); ?>
                 </div>
                 <?php print $this->formElementErrors()->render($inRemarks, ['class' => 'help-block error']); ?>
 
-                <div class="form-group form-group-sm <?= empty($outRemarks->getMessages()) ? "" : "error" ?>">
+                <div class="form-group <?= empty($outRemarks->getMessages()) ? "" : "error" ?>">
                     <?php print $this->formLabel($outRemarks); ?>
                     <?php print $this->formElement($outRemarks); ?>
                 </div>
                 <?php print $this->formElementErrors()->render($outRemarks, ['class' => 'help-block error']); ?>
 
-                <div class="form-group form-group-sm <?= empty($totalHour->getMessages()) ? "" : "error" ?>">
+                <div class="form-group <?= empty($totalHour->getMessages()) ? "" : "error" ?>">
                     <?php print $this->formLabel($totalHour); ?>
                     <?php print $this->formElement($totalHour); ?>
                 </div>

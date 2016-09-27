@@ -35,7 +35,7 @@
 .custom-box.box>.portlet-title {
     color:rgba(102, 102, 102, 0.92) !important;
 }
-.dropdown-select{
+.dropdown-select select{
     height: 34px;
     padding: 6px 12px;
     font-size: 14px;

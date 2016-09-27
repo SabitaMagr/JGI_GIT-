@@ -71,4 +71,3 @@ window.app = (function ($) {
         fetchAndPopulate:fetchAndPopulate
     };
 })(window.jQuery);
-

@@ -43,7 +43,7 @@ class ShiftForm
      * @Annotation\Required(true)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Start Time"})
-     * @Annotation\Attributes({ "id":"startTime", "class":"form-control" })
+     * @Annotation\Attributes({ "id":"startTime", "data-format":"h:mm a", "data-template":"hh : mm A", "class":"form-control" })
      */
     public $startTime;
 
@@ -52,7 +52,7 @@ class ShiftForm
      * @Annotation\Required(true)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"End Time"})
-     * @Annotation\Attributes({ "id":"endTime", "class":"form-control" })
+     * @Annotation\Attributes({ "id":"endTime", "data-format":"h:mm a", "data-template":"hh : mm A", "class":"form-control"})
      */
     public $endTime;
 
@@ -61,7 +61,7 @@ class ShiftForm
      * @Annotation\Required(true)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Half Day End Time"})
-     * @Annotation\Attributes({ "id":"halfDayEndTime", "class":"form-control" })
+     * @Annotation\Attributes({ "id":"halfDayEndTime", "data-format":"h:mm a", "data-template":"hh : mm A", "class":"form-control"})
      */
     public $halfDayEndTime;
 
@@ -71,7 +71,7 @@ class ShiftForm
      * @Annotation\Required(true)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Half Time"})
-     * @Annotation\Attributes({ "id":"halfTime", "class":"form-control" })
+     * @Annotation\Attributes({ "id":"halfTime", "data-format":"h:mm a", "data-template":"hh : mm A", "class":"form-control"})
      */
     public $halfTime;
 

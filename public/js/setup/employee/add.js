@@ -71,9 +71,7 @@
             $("#idCitizenshipIssueDate"),
             $("#idDrivingLicenseExpiry"),
             $("#famSpouseWeddingAnniversary"),
-            $("#famSpouseBirthDate"),
-            $("#startDate"),
-            $("#endDate")
+            $("#famSpouseBirthDate")
         );
 
         $('#filePath').on('change', function () {
