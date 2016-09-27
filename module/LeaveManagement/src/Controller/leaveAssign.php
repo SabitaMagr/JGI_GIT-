@@ -59,13 +59,13 @@ class leaveAssign extends AbstractActionController
         $empFormElement = new Select();
         $empFormElement->setName("employee");
         $empFormElement->setValueOptions(\Application\Helper\EntityHelper::getTableKVList($this->adapter, "HR_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"]));
-        $empFormElement->setAttributes(["id" => "employeeId", "class" => "full-width select2-offscreen", "data-init-plugin" => "select2"]);
+        $empFormElement->setAttributes(["id" => "employeeId", "class" => "form-control", "data-init-plugin" => "select2"]);
 
         $leaveFormElement = new Select();
         $leaveFormElement->setName("leave");
         $leaveFormElement->setLabel("Leave Type");
         $leaveFormElement->setValueOptions(\Application\Helper\EntityHelper::getTableKVList($this->adapter, LeaveMaster::TABLE_NAME, LeaveMaster::LEAVE_ID, [LeaveMaster::LEAVE_ENAME],[LeaveMaster::STATUS." ='E'"]));
-        $leaveFormElement->setAttributes(["id" => "leaveId", "class" => "full-width select2-offscreen", "data-init-plugin" => "select2"]);
+        $leaveFormElement->setAttributes(["id" => "leaveId", "class" => "form-control", "data-init-plugin" => "select2"]);
 
         $branchFormElement = new Select();
         $branchFormElement->setName("branch");
@@ -73,7 +73,7 @@ class leaveAssign extends AbstractActionController
         $branches[-1]="All";
         ksort($branches);
         $branchFormElement->setValueOptions($branches);
-        $branchFormElement->setAttributes(["id" => "branchId", "class" => "full-width select2-offscreen", "data-init-plugin" => "select2"]);
+        $branchFormElement->setAttributes(["id" => "branchId", "class" => "form-control", "data-init-plugin" => "select2"]);
         $branchFormElement->setLabel("Branch");
 
         $departmentFormElement = new Select();
@@ -82,7 +82,7 @@ class leaveAssign extends AbstractActionController
         $departments[-1]="All";
         ksort($departments);
         $departmentFormElement->setValueOptions($departments);
-        $departmentFormElement->setAttributes(["id" => "departmentId", "class" => "full-width select2-offscreen", "data-init-plugin" => "select2"]);
+        $departmentFormElement->setAttributes(["id" => "departmentId", "class" => "form-control", "data-init-plugin" => "select2"]);
         $departmentFormElement->setLabel("Department");
 
         $genderFormElement = new Select();
@@ -91,7 +91,7 @@ class leaveAssign extends AbstractActionController
         $genders[-1]="All";
         ksort($genders);
         $genderFormElement->setValueOptions($genders);
-        $genderFormElement->setAttributes(["id" => "genderId", "class" => "full-width select2-offscreen", "data-init-plugin" => "select2"]);
+        $genderFormElement->setAttributes(["id" => "genderId", "class" => "form-control", "data-init-plugin" => "select2"]);
         $genderFormElement->setLabel("Gender");
 
         $designationFormElement = new Select();
@@ -100,7 +100,7 @@ class leaveAssign extends AbstractActionController
         $designations[-1]="All";
         ksort($designations);
         $designationFormElement->setValueOptions($designations);
-        $designationFormElement->setAttributes(["id" => "designationId", "class" => "full-width select2-offscreen", "data-init-plugin" => "select2"]);
+        $designationFormElement->setAttributes(["id" => "designationId", "class" => "form-control", "data-init-plugin" => "select2"]);
         $designationFormElement->setLabel("Designation");
 
         return Helper::addFlashMessagesToArray($this, [

@@ -113,29 +113,33 @@ $form->prepare();
                     <div class="col-sm-6">
                         <div class="form-group">
                             <?php print $this->formLabel($startTime) ?>
-                            <div class="row">
-                                <div class="col-sm-4">
-                                    <select class="form-control" name="hour">
+                            <div class="input-group" style="width:100%">
+                                    <select name="hour" class="dropdown-select">
                                         <?php for($j=1; $j<=12; $j++){ ?>
                                             <option><?php echo $j; ?></option>
                                         <?php } ?>
                                     </select>
-                                </div>
-                                <div class="col-sm-5">
-                                    <select class="form-control" name="menute">
+                                    :
+                                    <select name="menute" class="dropdown-select">
                                         <?php for($i=1; $i<=60; $i++){ ?>
                                             <option><?php echo $i; ?></option>
                                         <?php } ?>
                                     </select>
-                                </div>
-                                <div class="col-sm-3">
-                                    <select class="form-control" name="am">
+
+                                    <select name="am" class="dropdown-select" style="margin-left:2%">
                                         <option>AM</option>
                                         <option>PM</option>
                                     </select>
-                                </div>
                             </div>
+
+                            <input type="text" id="datetime12" data-format="DD-MM-YYYY h:mm a" data-template="DD / MM / YYYY     hh : mm a" name="datetime" value="21-12-2012 8:30 pm">
+                            <script>
+                                $(function(){
+                                    $('#datetime12').combodate();
+                                });
+                            </script>
                         </div>
+
                         <?php print $this->formElementErrors()->render($startTime, ['class' => 'help-block error']) ?>
 
                         <div class="form-group required">
