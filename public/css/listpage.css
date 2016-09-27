@@ -1,0 +1,36 @@
+.custom-page-title{
+    margin: 0 0 10px 0 !important;
+    display: inline !important;
+}
+
+.custom-page-title small{
+    font-size: 13px !important;
+}
+
+.custom-breadcrumb{
+    color: #888;
+    font-size: 13px;
+    text-shadow: none;
+    margin-bottom:15px !important;
+    margin-top:2px !important;
+}
+
+.custom-breadcrumb a{
+    color: #888;
+    font-size: 13px;
+    text-shadow: none;
+}
+.custom-header{
+    margin-bottom: 20px !important;
+}
+
+.custom-box{
+    box-shadow: 0 3px 6px rgba(0,0,0,.16),0 3px 6px rgba(0,0,0,.22)!important;
+    background-color: #eaedf2;
+    color: #666;
+    border: 1px solid #eaedf2;
+}
+
+.custom-box.box>.portlet-title {
+    color:rgba(102, 102, 102, 0.92) !important;
+}

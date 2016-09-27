@@ -53,7 +53,7 @@ class BranchForm
      * @Annotation\Required(true)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"disable_inarray_validator":"true","label":"Country"})
-     * @Annotation\Attributes({ "id":"countryId","class":"full-width select2-offscreen","data-init-plugin":"select2"})
+     * @Annotation\Attributes({ "id":"countryId","class":"form-control","data-init-plugin":"select2"})
      */
     public $countryId;
 
@@ -97,7 +97,7 @@ class BranchForm
 
     /**
      * @Annotation\Type("Zend\Form\Element\Submit")
-     * @Annotation\Attributes({"value":"Submit","class":"btn btn-success pull-left"})
+     * @Annotation\Attributes({"value":"Submit","class":"btn btn-success"})
      */
     public $submit;
 

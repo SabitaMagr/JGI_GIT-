@@ -1,3 +1,4 @@
+<link href="<?= $this->basePath('css/listpage.css') ?>" rel="stylesheet" type="text/css"/>
 <?php
 /**
  * Load Javascript files here
@@ -23,11 +24,12 @@ if ($this->messages) {
 <script>
     document.menu =<?php $menu = ["id" => "menuSetup", "subMenu" => ["id" => "subMenuBranch"]];echo json_encode($menu);?>;
 </script>
-<div class="page-bar">
+
+<div class="page-bar custom-breadcrumb">
     <?= $this->navigation('Zend\Navigation\Branch')->breadcrumbs()->setMinDepth(0) ?>
 </div>
 
-<div class="portlet box green">
+<div class="portlet box custom-box">
     <div class="portlet-title">
         <div class="caption">
             <i class="fa fa-user"></i>Table
