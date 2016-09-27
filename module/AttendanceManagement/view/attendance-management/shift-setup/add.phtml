@@ -2,9 +2,10 @@
 /**
  * Load Javascript files here
  */
-$this->headScript()->appendFile($this->basePath('plugins/bootstrap-timepicker/bootstrap-timepicker.min.js'));
-$this->headScript()->appendFile($this->basePath('js/shift/add.js'));
+$this->headScript()->appendFile($this->basePath('assets/global/plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js'));
+$this->headScript()->appendFile($this->basePath('js/setup/employee/add.js'));
 ?>
+<link href="<?= $this->basePath('assets/global/plugins/bootstrap-datepicker/css/bootstrap-datepicker3.min.css') ?>" rel="stylesheet" type="text/css"/>
 <script>
     document.menu =<?php $menu = ["id" => "menuAttendanceManagement", "subMenu" => ["id" => "subMenuShiftSetup"]];echo json_encode($menu);?>;
 </script>
@@ -46,10 +47,6 @@ $submit = $form->get('submit');
 $submit->setAttribute('value', 'SUBMIT');
 
 ?>
-<div class="container">
-    <?php // add the following line: ?>
-    <?= $this->navigation('navigation')->breadcrumbs()->setMinDepth(0) ?>
-</div>
 <?php
 if ($this->messages) {
     print '<ul class="help-block bg-danger" style="background:#f3e250;">';
@@ -66,22 +63,25 @@ $form->setAttribute('action', $this->url('shiftsetup', ['action' => 'add']));
 $form->prepare();
 
 ?>
-<div class="row">
-    <div class="col-md-12">
-        <div class="panel panel-default customShadow">
-            <div class="panel-heading bg-master-lighter">
-                <div class="panel-title">
-                    <h3 class="panel-title">Shift</h3>
+<div class="page-bar">
+    <?= $this->navigation('navigation')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
+</div>
+<div class="row margin-top-20">
+    <div class="col-sm-12">
+        <div class="portlet box custom-box">
+            <div class="portlet-title">
+                <div class="caption">
+                    <i class="fa fa-user"></i>New Entry
                 </div>
             </div>
-            <div class="panel-body p-t-5 p-l-25">
+            <div class="portlet-body">
                 <?php
                 print $this->form()->openTag($form);
                 ?>
                 <div class="row">
                     <div class="col-sm-6">
                         <div
-                            class="form-group form-group-sm  <?= empty($shiftCode->getMessages()) ? "" : "error" ?>">
+                            class="form-group  <?= empty($shiftCode->getMessages()) ? "" : "error" ?>">
                             <?php print $this->formLabel($shiftCode); ?>
                             <?php print $this->formElement($shiftCode); ?>
                         </div>
@@ -93,7 +93,7 @@ $form->prepare();
                 <div class="row">
                     <div class="col-sm-6">
                         <div
-                            class="form-group form-group-sm  <?= empty($shiftEname->getMessages()) ? "" : "error" ?>">
+                            class="form-group  <?= empty($shiftEname->getMessages()) ? "" : "error" ?>">
                             <?php print $this->formLabel($shiftEname); ?>
                             <?php print $this->formElement($shiftEname); ?>
                         </div>
@@ -102,7 +102,7 @@ $form->prepare();
                     </div>
                     <div class="col-sm-6">
                         <div
-                            class="form-group form-group-sm  <?= empty($shiftLname->getMessages()) ? "" : "error" ?>">
+                            class="form-group  <?= empty($shiftLname->getMessages()) ? "" : "error" ?>">
                             <?php print $this->formLabel($shiftLname); ?>
                             <?php print $this->formElement($shiftLname); ?>
                         </div>
@@ -111,33 +111,59 @@ $form->prepare();
                 </div>
                 <div class="row">
                     <div class="col-sm-6">
-                        <div class="form-group form-group-sm required input-group bootstrap-timepicker ">
+                        <div class="form-group">
                             <?php print $this->formLabel($startTime) ?>
-                            <?php print $this->formElement($startTime) ?>
-                            <span class="input-group-addon"><i class="pg-clock"></i></span>
+                            <div class="row">
+                                <div class="col-sm-4">
+                                    <select class="form-control" name="hour">
+                                        <?php for($j=1; $j<=12; $j++){ ?>
+                                            <option><?php echo $j; ?></option>
+                                        <?php } ?>
+                                    </select>
+                                </div>
+                                <div class="col-sm-5">
+                                    <select class="form-control" name="menute">
+                                        <?php for($i=1; $i<=60; $i++){ ?>
+                                            <option><?php echo $i; ?></option>
+                                        <?php } ?>
+                                    </select>
+                                </div>
+                                <div class="col-sm-3">
+                                    <select class="form-control" name="am">
+                                        <option>AM</option>
+                                        <option>PM</option>
+                                    </select>
+                                </div>
+                            </div>
                         </div>
                         <?php print $this->formElementErrors()->render($startTime, ['class' => 'help-block error']) ?>
 
-                        <div class="form-group form-group-sm required input-group bootstrap-timepicker">
+                        <div class="form-group required">
                             <?php print $this->formLabel($endTime) ?>
-                            <?php print $this->formElement($endTime) ?>
-                            <span class="input-group-addon"><i class="pg-clock"></i></span>
+                            <div class="input-group bootstrap-timepicker">
+                                <?php print $this->formElement($endTime) ?>
+                                <span class="input-group-addon"><i class="glyphicon glyphicon-time"></i></span>
+                            </div>
                         </div>
                         <?php print $this->formElementErrors()->render($endTime, ['class' => 'help-block error']) ?>
 
                     </div>
                     <div class="col-sm-6">
-                        <div class="form-group form-group-sm required input-group bootstrap-timepicker">
+                        <div class="form-group required">
                             <?php print $this->formLabel($halfDayEndTime) ?>
-                            <?php print $this->formElement($halfDayEndTime) ?>
-                            <span class="input-group-addon"><i class="pg-clock"></i></span>
+                            <div class="input-group bootstrap-timepicker">
+                                <?php print $this->formElement($halfDayEndTime) ?>
+                                <span class="input-group-addon"><i class="glyphicon glyphicon-time"></i></span>
+                            </div>
                         </div>
                         <?php print $this->formElementErrors()->render($halfDayEndTime, ['class' => 'help-block error']) ?>
 
-                        <div class="form-group form-group-sm required input-group bootstrap-timepicker">
+                        <div class="form-group required">
                             <?php print $this->formLabel($halfTime) ?>
-                            <?php print $this->formElement($halfTime) ?>
-                            <span class="input-group-addon"><i class="pg-clock"></i></span>
+                            <div class="input-group bootstrap-timepicker">
+                                <?php print $this->formElement($halfTime) ?>
+                                <span class="input-group-addon"><i class="glyphicon glyphicon-time"></i></span>
+                            </div>
                         </div>
                         <?php print $this->formElementErrors()->render($halfTime, ['class' => 'help-block error']) ?>
 
@@ -147,7 +173,7 @@ $form->prepare();
                     <div class="col-sm-6">
                         <div class="form-group padding-0">
                             <?php print $this->formLabel($lateIn); ?>
-                            <div class="radio radio-complete">
+                            <div class="md-radio-inline">
                                 <?php $customRenderer($lateIn); ?>
                             </div>
                         </div>
@@ -157,7 +183,7 @@ $form->prepare();
                     <div class="col-sm-6">
                         <div class="form-group padding-0">
                             <?php print $this->formLabel($earlyOut); ?>
-                            <div class="radio radio-success">
+                            <div class="md-radio-inline">
                                 <?php $customRenderer($earlyOut); ?>
                             </div>
                         </div>
@@ -168,30 +194,33 @@ $form->prepare();
                 <div class="row">
                     <div class="col-sm-6">
                         <div
-                            class="form-group form-group-sm required input-group <?= empty($startDate->getMessages()) ? "" : "error" ?>">
+                            class="form-group  required  <?= empty($startDate->getMessages()) ? "" : "error" ?>">
                             <?php print $this->formLabel($startDate) ?>
-                            <?php print $this->formElement($startDate) ?>
-                            <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                            <div class="input-group">
+                                <?php print $this->formElement($startDate) ?>
+                                <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                            </div>
                         </div>
                         <?php print $this->formElementErrors()->render($startDate, ['class' => 'help-block error']) ?>
 
                     </div>
                     <div class="col-sm-6">
                         <div
-                            class="form-group form-group-sm required input-group <?= empty($endDate->getMessages()) ? "" : "error" ?>">
+                            class="form-group required  <?= empty($endDate->getMessages()) ? "" : "error" ?>">
                             <?php print $this->formLabel($endDate) ?>
-                            <?php print $this->formElement($endDate) ?>
-                            <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                            <div class="input-group">
+                                <?php print $this->formElement($endDate) ?>
+                                <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                            </div>
                         </div>
                         <?php print $this->formElementErrors()->render($endDate, ['class' => 'help-block error']) ?>
-
                     </div>
                 </div>
                 <div class="row bg-master-lightest">
                     <div class="col-sm-6 ">
                         <div class="form-group padding-0">
                             <?php print $this->formLabel($weekday1); ?>
-                            <div class="radio radio-success">
+                            <div class="md-radio-inline">
                                 <?php $customRenderer($weekday1); ?>
                             </div>
                         </div>
@@ -199,7 +228,7 @@ $form->prepare();
 
                         <div class="form-group  padding-0">
                             <?php print $this->formLabel($weekday3); ?>
-                            <div class="radio radio-success">
+                            <div class="md-radio-inline">
                                 <?php $customRenderer($weekday3); ?>
                             </div>
                         </div>
@@ -207,7 +236,7 @@ $form->prepare();
 
                         <div class="form-group padding-0">
                             <?php print $this->formLabel($weekday5); ?>
-                            <div class="radio radio-success">
+                            <div class="md-radio-inline">
                                 <?php $customRenderer($weekday5); ?>
                             </div>
                         </div>
@@ -219,7 +248,7 @@ $form->prepare();
                     <div class="col-sm-6 ">
                         <div class="form-group padding-0">
                             <?php print $this->formLabel($weekday2); ?>
-                            <div class="radio radio-success">
+                            <div class="md-radio-inline">
                                 <?php $customRenderer($weekday2); ?>
                             </div>
                         </div>
@@ -228,7 +257,7 @@ $form->prepare();
 
                         <div class="form-group padding-0">
                             <?php print $this->formLabel($weekday4); ?>
-                            <div class="radio radio-success">
+                            <div class="md-radio-inline">
                                 <?php $customRenderer($weekday4); ?>
                             </div>
                         </div>
@@ -236,7 +265,7 @@ $form->prepare();
 
                         <div class="form-group padding-0">
                             <?php print $this->formLabel($weekday6); ?>
-                            <div class="radio radio-success">
+                            <div class="md-radio-inline">
                                 <?php $customRenderer($weekday6); ?>
                             </div>
                         </div>
@@ -244,7 +273,7 @@ $form->prepare();
 
                         <div class="form-group padding-0">
                             <?php print $this->formLabel($weekday7); ?>
-                            <div class="radio radio-success">
+                            <div class="md-radio-inline">
                                 <?php $customRenderer($weekday7); ?>
                             </div>
                         </div>
@@ -257,7 +286,7 @@ $form->prepare();
                     <div class="col-sm-6">
                         <div class="form-group padding-0">
                             <?php print $this->formLabel($currentShift); ?>
-                            <div class="radio radio-success">
+                            <div class="md-radio-inline">
                                 <?php $customRenderer($currentShift); ?>
                             </div>
                         </div>
@@ -265,7 +294,7 @@ $form->prepare();
 
                         <div class="form-group padding-0">
                             <?php print $this->formLabel($defaultShift); ?>
-                            <div class="radio radio-success">
+                            <div class="md-radio-inline">
                                 <?php $customRenderer($defaultShift); ?>
                             </div>
                         </div>
@@ -274,7 +303,7 @@ $form->prepare();
                     <div class="col-sm-6">
                         <div class="form-group padding-0 ">
                             <?php print $this->formLabel($twoDayShift); ?>
-                            <div class="radio radio-success">
+                            <div class="md-radio-inline">
                                 <?php $customRenderer($twoDayShift); ?>
                             </div>
                         </div>
@@ -284,7 +313,7 @@ $form->prepare();
                 </div>
                 <div class="row">
                     <div class="col-sm-6">
-                        <div class="form-group form-group-sm">
+                        <div class="form-group">
                             <?php print $this->formLabel($remarks); ?>
                             <?php print $this->formElement($remarks); ?>
                         </div>
