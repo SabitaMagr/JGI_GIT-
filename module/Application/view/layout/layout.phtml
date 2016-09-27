@@ -85,6 +85,11 @@ License: You must have a valid license purchased only from themeforest(the above
     <link href="<?= $this->basePath('telerik_kendoui/styles/kendo.dataviz.default.min.css') ?>" rel="stylesheet"
           type="text/css"/>
     <!--end kendo styles-->
+    <!--Select2 -->
+    <link href="<?= $this->basePath('assets/global/plugins/select2/css/select2.min.css') ?>" rel="stylesheet" type="text/css"/>
+    <link href="<?= $this->basePath('assets/global/plugins/select2/css/select2-bootstrap.min.css') ?>" rel="stylesheet" type="text/css"/>
+
+    <!--End Select2-->
     <link rel="shortcut icon" href="<?= $this->basePath('favicon.ico') ?>"/>
     <link href="<?= $this->basePath('css/listpage.css') ?>" rel="stylesheet" type="text/css"/>
 </head>
@@ -204,7 +209,12 @@ $this->headScript()
     ->prependFile($this->basePath('assets/global/scripts/app.min.js'));
 ?>
 <!-- END THEME GLOBAL SCRIPTS -->
-
+<!--Select 2-->
+<?php
+$this->headScript()
+    ->prependFile($this->basePath('assets/global/plugins/select2/js/select2.full.min.js'));
+?>
+<!--End Select 2-->
 <!-- BEGIN CORE PLUGINS -->
 <?php
 print $this->headScript()

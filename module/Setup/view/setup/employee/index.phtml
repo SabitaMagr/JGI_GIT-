@@ -18,12 +18,12 @@ if ($this->messages) {
 
 <div class="page-bar">
     <ul class="page-breadcrumb">
-    <?= $this->navigation('navigation')->breadcrumbs()->setMinDepth(0) ?>
+    <?= $this->navigation('navigation')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
     </ul>
 </div>
 
 
-<div class="padding-top-10px">
+<div class="margin-top-20">
     <div class="table-toolbar">
         <div class="row">
             <div class="col-md-6">
