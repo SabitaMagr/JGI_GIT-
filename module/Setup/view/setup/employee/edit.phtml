@@ -517,7 +517,8 @@ if ($this->messages) {
                     </div>
                     <?php print $this->formElementErrors()->render($famGrandFatherName, ['class' => 'help-block error']); ?>
 
-                    <div class="form-group">
+                    <div
+                        class="form-group  <?= empty($maritualStatus->getMessages()) ? "" : "error" ?>">
                         <?php print $this->formLabel($maritualStatus); ?>
                         <?php print $this->formElement($maritualStatus); ?>
                     </div>
