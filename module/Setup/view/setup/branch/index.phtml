@@ -3,10 +3,7 @@
  * Load Javascript files here
  */
 $this->headScript()
-    ->appendFile($this->basePath('plugins/datatables/media/js/jquery.dataTables.min.js'))
-    ->appendFile($this->basePath('plugins/datatables/plugins/bootstrap/dataTables.bootstrap.js'))
-    ->appendFile($this->basePath('js/datatables.js'));
-
+    ->appendFile($this->basePath('js/kendoDataTable.js'));
 ?>
 
 
@@ -24,46 +21,40 @@ if ($this->messages) {
     document.menu =<?php $menu = ["id" => "menuSetup", "subMenu" => ["id" => "subMenuBranch"]];echo json_encode($menu);?>;
 </script>
 <div class="page-bar">
-    <?= $this->navigation('Zend\Navigation\Branch')->breadcrumbs()->setMinDepth(0) ?>
+    <?= $this->navigation('Zend\Navigation\Branch')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
 
-<div class="portlet box green">
-    <div class="portlet-title">
-        <div class="caption">
-            <i class="fa fa-user"></i>Table
-        </div>
-        <div class="actions">
-            <a href="<?= $this->url('branch', ['action' => 'add']) ?>" class="btn btn-default btn-sm">
-                <i class="fa fa-pencil"></i> Add </a>
-            <div class="btn-group">
-                <a class="btn btn-default btn-sm" href="javascript:;" data-toggle="dropdown" aria-expanded="false">
-                    <i class="fa fa-cogs"></i> Tools <i class="fa fa-angle-down"></i>
-                </a>
-                <ul class="dropdown-menu pull-right">
-                    <li>
-                        <a href="javascript:;">
-                            <i class="fa fa-pencil"></i> Edit </a>
-                    </li>
-                    <li>
-                        <a href="javascript:;">
-                            <i class="fa fa-trash-o"></i> Delete </a>
-                    </li>
-                    <li>
-                        <a href="javascript:;">
-                            <i class="fa fa-ban"></i> Ban </a>
-                    </li>
-                    <li class="divider">
-                    </li>
-                    <li>
-                        <a href="javascript:;">
-                            <i class="i"></i> Make admin </a>
-                    </li>
-                </ul>
+<div class="margin-top-20">
+    <div class="table-toolbar">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="btn-group">
+                    <a href="<?= $this->url('branch', ['action' => 'add']) ?>" id="sample_editable_1_new" class="btn green"> Add New
+                        <i class="fa fa-plus"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="btn-group pull-right">
+                    <button class="btn green btn-outline dropdown-toggle" data-toggle="dropdown">Tools
+                        <i class="fa fa-angle-down"></i>
+                    </button>
+                    <ul class="dropdown-menu pull-right">
+                        <li>
+                            <a href="javascript:;"> Print </a>
+                        </li>
+                        <li>
+                            <a href="javascript:;"> Save as PDF </a>
+                        </li>
+                        <li>
+                            <a href="javascript:;"> Export to Excel </a>
+                        </li>
+                    </ul>
+                </div>
             </div>
         </div>
     </div>
-    <div class="portlet-body">
-        <table class="table" id="tableWithSearch">
+        <table class="table" id="dataTable">
             <thead>
             <tr role="row">
                 <th>
@@ -102,17 +93,14 @@ if ($this->messages) {
                     </td>
 
                     <td>
-                        <div class="btn-group">
-                            <button type="button" class="btn btn-default">
-                                <a class="fa fa-edit btn-link"
+                                <a class=""
                                    href="<?= $this->url("branch", ["action" => "edit", "id" => $branch->BRANCH_ID]) ?>">
+                                    Edit
+                                </a> /
+                                <a class=""
+                                   href="<?= $this->url("branch", ["action" => "delete", "id" => $branch->BRANCH_ID]); ?>">
+                                    Delete
                                 </a>
-                            </button>
-                            <button type="button" class="btn btn-default">
-                                <a class="fa fa-trash-o btn-link"
-                                   href="<?= $this->url("branch", ["action" => "delete", "id" => $branch->BRANCH_ID]); ?>"></a>
-                            </button>
-                        </div>
 
                     </td>
                 </tr>
@@ -122,5 +110,4 @@ if ($this->messages) {
             </tbody>
         </table>
     </div>
-</div>
 

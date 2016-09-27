@@ -1,6 +1,7 @@
 <?php
 //Load JS files here
-
+$this->headScript()
+->appendFile($this->basePath('js/kendoDataTable.js'));
 ?>
 <?php
 if ($this->messages) {
@@ -19,76 +20,91 @@ if ($this->messages) {
     <ul class="page-breadcrumb">
     <?= $this->navigation('navigation')->breadcrumbs()->setMinDepth(0) ?>
     </ul>
-
 </div>
 
-<div class="portlet box purple margin-top-10">
-    <div class="portlet-title">
-        <div class="caption">
-            <i class="fa fa-user"></i>Table
-        </div>
-        <div class="actions">
-            <a href="<?= $this->url('employee', ['action' => 'add']) ?>" class="btn btn-info btn-sm">
-                <i class="fa fa-plus"></i>
-                Add
-            </a>
+
+<div class="padding-top-10px">
+    <div class="table-toolbar">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="btn-group">
+                    <a href="<?= $this->url('employee', ['action' => 'add']) ?>" id="sample_editable_1_new" class="btn green"> Add New
+                        <i class="fa fa-plus"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="btn-group pull-right">
+                    <button class="btn green btn-outline dropdown-toggle" data-toggle="dropdown">Tools
+                        <i class="fa fa-angle-down"></i>
+                    </button>
+                    <ul class="dropdown-menu pull-right">
+                        <li>
+                            <a href="javascript:;"> Print </a>
+                        </li>
+                        <li>
+                            <a href="javascript:;"> Save as PDF </a>
+                        </li>
+                        <li>
+                            <a href="javascript:;"> Export to Excel </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
         </div>
     </div>
-    <div class="portlet-body">
-        <table class="table table-bordered">
-            <thead>
+    <table class="" id="dataTable">
+        <thead>
+        <tr class="row">
+            <th>
+                Employee Code
+            </th>
+            <th>
+                First Name
+            </th>
+            <th>
+                Middle Name
+            </th>
+            <th>
+                Last Name
+            </th>
+            <th>
+                Date of Birth
+            </th>
+            <th>
+                Action
+            </th>
+        </tr>
+        </thead>
+
+        <tbody>
+        <?php foreach ($list as $employee) : ?>
             <tr class="row">
-                <th>
-                    Employee Code
-                </th>
-                <th>
-                    First Name
-                </th>
-                <th>
-                    Middle Name
-                </th>
-                <th>
-                    Last Name
-                </th>
-                <th>
-                    Date of Birth
-                </th>
-                <th>
-                    Action
-                </th>
+                <td>
+                    <?php print $this->escapeHtml($employee->employeeCode) ?>
+                </td>
+
+                <td>
+                    <?php print $this->escapeHtml($employee->firstName) ?>
+                </td>
+                <td>
+                    <?php print $this->escapeHtml($employee->middleName) ?>
+                </td>
+                <td>
+                    <?php print $this->escapeHtml($employee->lastName) ?>
+                </td>
+                <td>
+                    <?php print $this->escapeHtml($employee->birthDate) ?>
+                </td>
+                <td>
+                    <a href="<?= $this->url("employee", ["action" => "edit", "id" => $employee->employeeId, 'tab' => 1]) ?>"> Edit
+                    </a> /
+                    <a class=""
+                       href="<?= $this->url("employee", ["action" => "delete", "id" => $employee->employeeId]); ?>">Delete</a>
+                </td>
             </tr>
-            </thead>
+        <?php endforeach; ?>
+        </tbody>
+    </table>
 
-            <tbody>
-            <?php foreach ($list as $employee) : ?>
-                <tr class="row">
-                    <td>
-                        <?php print $this->escapeHtml($employee->employeeCode) ?>
-                    </td>
-
-                    <td>
-                        <?php print $this->escapeHtml($employee->firstName) ?>
-                    </td>
-                    <td>
-                        <?php print $this->escapeHtml($employee->middleName) ?>
-                    </td>
-                    <td>
-                        <?php print $this->escapeHtml($employee->lastName) ?>
-                    </td>
-                    <td>
-                        <?php print $this->escapeHtml($employee->birthDate) ?>
-                    </td>
-                    <td>
-                                <a href="<?= $this->url("employee", ["action" => "edit", "id" => $employee->employeeId, 'tab' => 1]) ?>"> Edit
-                                </a> /
-                                <a class=""
-                                   href="<?= $this->url("employee", ["action" => "delete", "id" => $employee->employeeId]); ?>">Delete</a>
-                    </td>
-                </tr>
-            <?php endforeach; ?>
-            </tbody>
-        </table>
-    </div>
 </div>
-
-

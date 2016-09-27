@@ -337,11 +337,11 @@ var Metronic = function() {
             $('a[href="#' + tabid + '"]').click();
         }
 
-        if ($().tabdrop) {
-            $('.tabbable-tabdrop .nav-pills, .tabbable-tabdrop .nav-tabs').tabdrop({
-                text: '<i class="fa fa-ellipsis-v"></i>&nbsp;<i class="fa fa-angle-down"></i>'
-            });
-        }
+        // if ($().tabdrop) {
+        //     $('.tabbable-tabdrop .nav-pills, .tabbable-tabdrop .nav-tabs').tabdrop({
+        //         text: '<i class="fa fa-ellipsis-v"></i>&nbsp;<i class="fa fa-angle-down"></i>'
+        //     });
+        // }
     };
 
     // Handles Bootstrap Modals.

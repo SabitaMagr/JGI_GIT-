@@ -75,7 +75,7 @@ class HrEmployeesFormTabTwo extends Model
      * @Annotation\Required(true)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"disable_inarray_validator":"true","label":"Maritual Status"})
-     * @Annotation\Attributes({ "id":"maritualStatus","class":"full-width select2-offscreen","data-init-plugin":"select2"})
+     * @Annotation\Attributes({ "id":"maritualStatus","class":"form-control"})
      */
     public $maritualStatus;
 

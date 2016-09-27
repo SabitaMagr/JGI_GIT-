@@ -22,7 +22,7 @@ class HrEmployeesFormTabFive extends Model
      * @Annotation\Type("Zend\Form\Element\Select")
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"disable_inarray_validator":"true","label":"File Type"})
-     * @Annotation\Attributes({ "id":"fileType","class":"full-width select2-offscreen","data-init-plugin":"select2"})
+     * @Annotation\Attributes({ "id":"fileType","class":"form-control"})
      */
     public $fileTypeCode;
 
