@@ -3,18 +3,23 @@ angular.module('hris', [])
         $scope.employeeShiftList = [];
         $scope.all = false;
         $scope.assignShowHide = false;
+        var l;
 
         $scope.checkAll = function (item) {
             for (var i = 0; i < $scope.employeeShiftList.length; i++) {
                 $scope.employeeShiftList[i].checked = item;
             }
             $scope.assignShowHide = item && ($scope.employeeShiftList.length > 0);
+            if($scope.assignShowHide){
+                    l = Ladda.create(document.querySelector('#assignBtn'));
+            }
         };
 
         $scope.checkUnit = function (item) {
             for (var i = 0; i < $scope.employeeShiftList.length; i++) {
                 if ($scope.employeeShiftList[i].checked) {
                     $scope.assignShowHide = true;
+                    l = Ladda.create(document.querySelector('#assignBtn'));
                     break;
                 }
                 $scope.assignShowHide = false;
@@ -57,9 +62,10 @@ angular.module('hris', [])
         };
 
         $scope.assign = function () {
+            l.start();
+            l.setProgress(0.5);
             var shiftId = angular.element(document.getElementById('shiftId')).val();
             var shiftName = document.getElementById('shiftId').options[document.getElementById('shiftId').selectedIndex].text;
-
             console.log(shiftName);
             var promises = [];
             for (var index in $scope.employeeShiftList) {
@@ -70,13 +76,14 @@ angular.module('hris', [])
                         data: {
                             employeeId: $scope.employeeShiftList[index].EMPLOYEE_ID,
                             shiftId: shiftId,
-                            oldShiftId:$scope.employeeShiftList[index].SHIFT_ID
+                            oldShiftId: $scope.employeeShiftList[index].SHIFT_ID
                         }
                     }));
                 }
             }
             Promise.all(promises).then(function (success) {
                 console.log(success);
+                l.stop();
                 $scope.$apply(function () {
                     for (var index in $scope.employeeShiftList) {
                         if ($scope.employeeShiftList[index].checked) {
@@ -85,7 +92,7 @@ angular.module('hris', [])
                         }
                     }
                 });
-                window.toastr.info("Shift assigned successfully!","Notification");
+                window.toastr.info("Shift assigned successfully!", "Notification");
                 // window.app.notification("Shift assigned successfully!", {position: "top right", className: "success"});
             });
         };
