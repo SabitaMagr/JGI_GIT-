@@ -33,7 +33,7 @@ class HolidayForm
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Required(false)
      * @Annotation\Options({"disable_inarray_validator":"true","label":"Branch"})
-     * @Annotation\Attributes({ "id":"branchId","class":"full-width","data-init-plugin"="select2", "multiple":"multiple"})
+     * @Annotation\Attributes({ "id":"branchId","class":"form-control","multiple":"multiple"})
      */
     public $branchId;
 
@@ -96,7 +96,7 @@ class HolidayForm
 
     /**
      * @Annotation\Type("Zend\Form\Element\Submit")
-     * @Annotation\Attributes({"value":"Submit","class":"btn btn-success pull-left"})
+     * @Annotation\Attributes({"value":"Submit","class":"btn btn-success"})
      */
     public $submit;
 

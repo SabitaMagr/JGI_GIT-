@@ -41,15 +41,16 @@ class HolidaySetup extends AbstractActionController
         $holidays=\Application\Helper\EntityHelper::getTableKVList($this->adapter, Holiday::TABLE_NAME, Holiday::HOLIDAY_ID, [Holiday::HOLIDAY_ENAME]);
         ksort($holidays);
         $holidayFormElement->setValueOptions($holidays);
-        $holidayFormElement->setAttributes(["id" => "holidayId", "class" => "full-width select2-offscreen", "data-init-plugin" => "select2"]);
+        $holidayFormElement->setAttributes(["id" => "holidayId", "class" => "form-control"]);
         $holidayFormElement->setLabel("Holiday");
 
         $branchFormElement = new Select();
         $branchFormElement->setName("branch");
-        $branches=\Application\Helper\EntityHelper::getTableKVList($this->adapter, Branch::TABLE_NAME, Branch::BRANCH_ID, [Branch::BRANCH_NAME]);
+        $branches=\Application\Helper\EntityHelper::getTableKVList($this->adapter, Branch::TABLE_NAME, Branch::BRANCH_ID, [Branch::BRANCH_NAME],["STATUS"=>"E"]);
+
         ksort($branches);
         $branchFormElement->setValueOptions($branches);
-        $branchFormElement->setAttributes(["id" => "branchId", "class" => "full-width select2-offscreen", "multiple"=>"multiple", "data-init-plugin" => "select2"]);
+        $branchFormElement->setAttributes(["id" => "branchId", "class" => "form-control", "multiple"=>"multiple"]);
         $branchFormElement->setLabel("Branch");
 
         $genderFormElement = new Select();

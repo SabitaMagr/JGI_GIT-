@@ -45,10 +45,19 @@ angular.module('hris', [])
             }).then(function (data) {
                 $scope.$apply(function () {
                     var valArray = [];
-                    for (var key in data) {
-                        valArray.push(key);
+
+                    // $.each(data, function( key, value ) {
+                    //    valArray.push({id:key,text:value,selected:true});
+                    //     $("#branchId option[value='" + key + "']").prop("selected", true);
+                    //
+                    // });
+
+                    for ( key in data){
+                       valArray.push(key);
                     }
-                    branchId.select2('val', valArray);
+                    console.log(valArray);
+                    var multiSelect = branchId.select2();
+                   branchId.val(valArray);
                 });
             }, function (failure) {
                 console.log(failure);
