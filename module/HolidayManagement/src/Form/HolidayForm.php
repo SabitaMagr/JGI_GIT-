@@ -22,7 +22,7 @@ class HolidayForm
     /**
      * @Annotation\Type("Zend\Form\Element\Radio")
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
-     * @Annotation\Required(true)
+     * @Annotation\Required(false)
      * @Annotation\Options({"disable_inarray_validator":"true","label":"Gender"})
      * @Annotation\Attributes({ "id":"genderId"})
      */

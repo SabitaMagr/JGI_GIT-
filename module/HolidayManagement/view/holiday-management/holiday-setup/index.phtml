@@ -54,7 +54,7 @@ $form->prepare();
         <div class="col-sm-8 col-sm-offset-2">
             <div class="portlet box custom-box">
                 <div class="padding-top-20 padding-left-20 padding-right-20 portlet-title">
-                    <div class="row">
+                    <div class="row margin-top-10">
                         <div class="col-xs-5 col-sm-5 col-md-5">
                             <div class="form-group">
                                 <?php print $this->formElement($holidayFormElement); ?>
@@ -115,7 +115,7 @@ $form->prepare();
                                     </label>
                                 </div>
                                 <div class='md-radio'>
-                                    <input type='radio' value='-1' name='genderId' id='genderId+All' class='md-radiobtn' ng-model="holidayDtl.genderId">
+                                    <input type='radio' checked value='-1' name='genderId' id='genderId+All' class='md-radiobtn' ng-model="holidayDtl.genderId">
                                     <label for='genderId+All'>
                                         <span></span>
                                         <span class='check'></span>
@@ -182,7 +182,7 @@ $form->prepare();
                             </div>
                             <div class='md-radio'>
                                 <input type='radio' value='N' name='halfday' id='halfday+Full Day' class='md-radiobtn' ng-model="holidayDtl.halfday">
-                                <label for='halfday+Full Dayr'>
+                                <label for='halfday+Full Day'>
                                     <span></span>
                                     <span class='check'></span>
                                     <span class='box'></span> Full Day

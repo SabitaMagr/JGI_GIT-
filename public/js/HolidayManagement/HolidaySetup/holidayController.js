@@ -28,7 +28,11 @@ angular.module('hris', [])
                 $scope.$apply(function () {
                     var temp = success.data;
                     $scope.holidayDtl.holidayCode = temp.HOLIDAY_CODE;
-                    $scope.holidayDtl.genderId = temp.GENDER_ID;
+                    if(temp.GENDER_ID==null){
+                        $scope.holidayDtl.genderId =-1;
+                    }else {
+                        $scope.holidayDtl.genderId =temp.GENDER_ID;
+                    }
                     $scope.holidayDtl.holidayEname = temp.HOLIDAY_ENAME;
                     $scope.holidayDtl.holidayLname = temp.HOLIDAY_LNAME;
                     $scope.holidayDtl.startDate = temp.START_DATE;
@@ -60,6 +64,8 @@ angular.module('hris', [])
         $scope.update = function () {
             var holidayId = angular.element(document.getElementById('holidayId')).val();
             var branchIdValue = branchId.val();
+
+            console.log($scope.holidayDtl);
             window.app.pullDataById(document.url, {
                 action: 'updateHolidayDetail',
                 data: {
@@ -73,14 +79,6 @@ angular.module('hris', [])
                    // var holidayEname = $scope.holidayDtl.holidayEname;
                    //  console.log(holidayEname);
                     //angular.element(document.getElementById('holidayId')).text("holiday").trigger("change");
-
-                    $('#holidayId').select2({
-                        data: [{
-                                id:holidayId,
-                                text: 'Text to display'
-                            }]
-                    }).trigger("change");
-
                    // $("#holidayId").select2('data', { id:holidayId, text:$scope.holidayDtl.holidayEname}).trigger("change");
                     window.toastr.info(success.data, "Notifications");
                 });
