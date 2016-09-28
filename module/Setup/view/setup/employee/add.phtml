@@ -705,18 +705,19 @@ if ($this->messages) {
             ?>
             <div class="row clearfix">
                 <div class="col-sm-6">
-                    <div class="form-group   ">
+                    <div class="form-group">
                         <?php print $this->formLabel($joinDate); ?>
                         <?php print $this->formElement($joinDate); ?>
-                       
                     </div>
                     <?php print $this->formElementErrors()->render($joinDate, ['class' => 'help-block error']); ?>
+
                     <div
                         class="form-group  <?= empty($salary->getMessages()) ? "" : "error" ?>">
                         <?php print $this->formLabel($salary); ?>
                         <?php print $this->formElement($salary); ?>
                     </div>
                     <?php print $this->formElementErrors()->render($salary, ['class' => 'help-block error']); ?>
+
                     <div
                         class="form-group  <?= empty($salaryPf->getMessages()) ? "" : "error" ?>">
                         <?php print $this->formLabel($salaryPf); ?>
@@ -733,8 +734,7 @@ if ($this->messages) {
 
                 </div>
                 <div class="col-sm-6">
-                    <div
-                        class="form-group   <?= empty($positionId->getMessages()) ? "" : "error" ?>">
+                    <div class="form-group   <?= empty($positionId->getMessages()) ? "" : "error" ?>">
                         <?php print $this->formLabel($positionId); ?>
                         <?php print $this->formElement($positionId); ?>
                     </div>
@@ -745,14 +745,15 @@ if ($this->messages) {
                         <?php print $this->formElement($designationId); ?>
                     </div>
                     <?php print $this->formElementErrors()->render($designationId, ['class' => 'help-block error']); ?>
+
                     <div
                         class="form-group   <?= empty($departmentId->getMessages()) ? "" : "error" ?>">
                         <?php print $this->formLabel($departmentId); ?>
                         <?php print $this->formElement($departmentId); ?>
                     </div>
                     <?php print $this->formElementErrors()->render($departmentId, ['class' => 'help-block error']); ?>
-                    <div
-                        class="form-group<?= empty($branchId->getMessages()) ? "" : "error" ?>">
+
+                    <div class="form-group <?= empty($branchId->getMessages()) ? "" : "error" ?>">
                         <?php print $this->formLabel($branchId); ?>
                         <?php print $this->formElement($branchId); ?>
                     </div>
