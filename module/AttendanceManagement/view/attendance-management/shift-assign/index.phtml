@@ -2,6 +2,8 @@
 /**
  * Load Javascript files here
  */
+$this->headScript()->appendFile($this->basePath('assets/global/plugins/ladda/spin.min.js'));
+$this->headScript()->appendFile($this->basePath('assets/global/plugins/ladda/ladda.min.js'));
 $this->headScript()->appendFile($this->basePath('js/angular.min.js'));
 $this->headScript()->appendFile($this->basePath('js/AttendanceManagement/ShiftAssign/shiftController.js'));
 
@@ -143,7 +145,7 @@ $this->headScript()->appendFile($this->basePath('js/AttendanceManagement/ShiftAs
                 <?php print $this->formElement($shiftFormElement); ?>
         </div>
         <div class="col-sm-1 ">
-            <button class="btn btn-success pull-right" ng-click="assign()">
+            <button class="pull-right btn btn-primary mt-ladda-btn ladda-button mt-progress-demo" id="assignBtn" ng-click="assign()">
                 Assign
             </button>
         </div>
