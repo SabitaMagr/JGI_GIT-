@@ -45,19 +45,10 @@ angular.module('hris', [])
             }).then(function (data) {
                 $scope.$apply(function () {
                     var valArray = [];
-
-                    // $.each(data, function( key, value ) {
-                    //    valArray.push({id:key,text:value,selected:true});
-                    //     $("#branchId option[value='" + key + "']").prop("selected", true);
-                    //
-                    // });
-
                     for ( key in data){
                        valArray.push(key);
                     }
-                    console.log(valArray);
-                    var multiSelect = branchId.select2();
-                   branchId.val(valArray);
+                    branchId.val(valArray).trigger("change");
                 });
             }, function (failure) {
                 console.log(failure);
@@ -69,7 +60,6 @@ angular.module('hris', [])
         $scope.update = function () {
             var holidayId = angular.element(document.getElementById('holidayId')).val();
             var branchIdValue = branchId.val();
-            console.log(branchIdValue);
             window.app.pullDataById(document.url, {
                 action: 'updateHolidayDetail',
                 data: {
@@ -79,8 +69,20 @@ angular.module('hris', [])
                 },
             }).then(function (success) {
                 $scope.$apply(function () {
-                    document.getElementById('holidayId').options[document.getElementById('holidayId').selectedIndex].text=$scope.holidayDtl.holidayEname;
-                    window.app.notification(success.data, {position: "top right", className: "success"})
+                   // document.getElementById('holidayId').options[document.getElementById('holidayId').selectedIndex].text=$scope.holidayDtl.holidayEname;
+                   // var holidayEname = $scope.holidayDtl.holidayEname;
+                   //  console.log(holidayEname);
+                    //angular.element(document.getElementById('holidayId')).text("holiday").trigger("change");
+
+                    $('#holidayId').select2({
+                        data: [{
+                                id:holidayId,
+                                text: 'Text to display'
+                            }]
+                    }).trigger("change");
+
+                   // $("#holidayId").select2('data', { id:holidayId, text:$scope.holidayDtl.holidayEname}).trigger("change");
+                    window.toastr.info(success.data, "Notifications");
                 });
             }, function (failure) {
                 console.log(failure);
