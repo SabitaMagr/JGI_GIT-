@@ -2,22 +2,15 @@
 /**
  * Load Javascript files here
  */
-$this->headScript()->appendFile($this->basePath('plugins/jquery-datatable/media/js/jquery.dataTables.min.js'));
-$this->headScript()->appendFile($this->basePath('plugins/jquery-datatable/extensions/TableTools/js/dataTables.tableTools.min.js'));
-$this->headScript()->appendFile($this->basePath('plugins/jquery-datatable/media/js/dataTables.bootstrap.js'));
-$this->headScript()->appendFile($this->basePath('plugins/jquery-datatable/extensions/Bootstrap/jquery-datatable-bootstrap.js'));
-$this->headScript()->appendFile($this->basePath('plugins/datatables-responsive/js/datatables.responsive.js'));
-$this->headScript()->appendFile($this->basePath('plugins/datatables-responsive/js/lodash.min.js'));
-$this->headScript()->appendFile($this->basePath('js/datatables.js'));
-
-$this->headScript()->appendFile($this->basePath('js/leave-setup/index.js'));
+$this->headScript()
+    ->appendFile($this->basePath('js/kendoDataTable.js'));
 ?>
 
 <script>
     document.menu =<?php $menu = ["id" => "menuLeaveManagement", "subMenu" => ["id" => "subMenuLeaveSetup"]];echo json_encode($menu);?>;
 </script>
-<div class="container">
-    <?= $this->navigation('navigation')->breadcrumbs()->setMinDepth(0) ?>
+<div class="page-bar">
+    <?= $this->navigation('navigation')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
 <?php
 if ($this->messages) {
@@ -29,129 +22,102 @@ if ($this->messages) {
 }
 ?>
 
-<div class="panel bg-white customShadow">
-    <div class="panel-heading">
-        <div class="btn-group pull-right">
-            <a class="btn btn-success" href="<?= $this->url('leavesetup', ['action' => 'add']) ?>">
-                Add new
-            </a>
-            <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-                <span class="caret"></span>
-            </button>
-            <ul class="dropdown-menu" role="menu">
-                <li><a href="#">Settings</a>
-                </li>
-                <li><a href="#">Help</a>
-                </li>
-            </ul>
-        </div>
-        <div class="pull-left">
-            <div class="">
-                <input type="text" id="search-table" class="form-control pull-left" placeholder="Search">
+<div class="margin-top-20">
+    <div class="table-toolbar">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="btn-group">
+                    <a href="<?= $this->url('leavesetup', ['action' => 'add']) ?>" id="sample_editable_1_new"
+                       class="btn green"> Add New
+                        <i class="fa fa-plus"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="btn-group pull-right">
+                    <button class="btn green btn-outline dropdown-toggle" data-toggle="dropdown">Tools
+                        <i class="fa fa-angle-down"></i>
+                    </button>
+                    <ul class="dropdown-menu pull-right">
+                        <li>
+                            <a href="javascript:;"> Print </a>
+                        </li>
+                        <li>
+                            <a href="javascript:;"> Save as PDF </a>
+                        </li>
+                        <li>
+                            <a href="javascript:;"> Export to Excel </a>
+                        </li>
+                    </ul>
+                </div>
             </div>
         </div>
-        <div class="clearfix"></div>
     </div>
-    <div class="panel-body panel-info">
-        <div class="table-responsive">
-            <table class="table table-bordered bg-master-lighter table-striped small-table" id="tableWithSearch">
-                <thead>
-                <tr role="row">
-                    <th aria-label="Title: activate to sort column ascending" aria-sort="descending" colspan="1"
-                        rowspan="1"
-                        aria-controls="basicTable" tabindex="0" class="sorting_desc">
-                        Leave Code
-                    </th>
+    <table class="table" id="dataTable">
+        <thead>
+        <tr role="row">
+            <th>
+                Leave Code
+            </th>
 
-                    <th aria-label="Title: activate to sort column ascending" aria-sort="descending" colspan="1"
-                        rowspan="1"
-                        aria-controls="basicTable" tabindex="0" class="sorting_desc">
-                        Leave Name
-                    </th>
-                    <th aria-label="Title: activate to sort column ascending" aria-sort="descending" colspan="1"
-                        rowspan="1"
-                        aria-controls="basicTable" tabindex="0" class="sorting_desc">
-                        Allow Halfday
-                    </th>
-                    <th aria-label="Title: activate to sort column ascending" aria-sort="descending" colspan="1"
-                        rowspan="1"
-                        aria-controls="basicTable" tabindex="0" class="sorting_desc">
-                        Default Days
-                    </th>
+            <th>
+                Leave Name
+            </th>
+            <th>
+                Allow Halfday
+            </th>
+            <th>
+                Default Days
+            </th>
 
-                    <th aria-label="Title: activate to sort column ascending" aria-sort="descending" colspan="1"
-                        rowspan="1"
-                        aria-controls="basicTable" tabindex="0" class="sorting_desc">
-                        Carry Forward
-                    </th>
-                    <th aria-label="Title: activate to sort column ascending" aria-sort="descending" colspan="1"
-                        rowspan="1"
-                        aria-controls="basicTable" tabindex="0" class="sorting_desc">
-                        Cashable
-                    </th>
-                    <th aria-label="Title: activate to sort column ascending" aria-sort="descending" colspan="1"
-                        rowspan="1"
-                        aria-controls="basicTable" tabindex="0" class="sorting_desc">
-                       Action
-                    </th>
+            <th>
+                Carry Forward
+            </th>
+            <th>
+                Cashable
+            </th>
+            <th>
+                Action
+            </th>
 
-                </tr>
-                </thead>
-                <tbody>
+        </tr>
+        </thead>
+        <tbody>
 
-                <?php foreach ($leaveList as $leave):
-                    ?>
-                    <tr role="row">
-                        <td class="">
-                            <p>
-                                <?php print $this->escapeHtml($leave['LEAVE_CODE']); ?>
-                            </p>
-                        </td>
-                        <td class="">
-                            <p>
-                                <?php print $this->escapeHtml($leave['LEAVE_ENAME']); ?>
-                            </p>
-                        </td>
-                        <td class="">
-                            <p>
-                                <?php print $this->escapeHtml($getValue($leave['ALLOW_HALFDAY'])); ?>
-                            </p>
-                        </td>
-                        <td class="">
-                            <p>
-                                <?php print $this->escapeHtml($getValue($leave['DEFAULT_DAYS'])); ?>
-                            </p>
-                        </td>
-                        <td class="">
-                            <p>
-                                <?php print $this->escapeHtml($getValue($leave['CARRY_FORWARD'])); ?>
-                            </p>
-                        </td>
-                        <td class="">
-                            <p>
-                                <?php print $this->escapeHtml($getValue($leave['CASHABLE'])); ?>
-                            </p>
-                        </td>
-                        <td class="">
-                            <div class="btn-group">
-                                <button type="button" class="btn btn-default">
-                                    <a class="fa fa-edit btn-link"
-                                       href="<?= $this->url("leavesetup", ["action" => "edit", "id" => $leave['LEAVE_ID']]); ?>">
-                                    </a>
-                                </button>
-                                <button type="button" class="btn btn-default">
-                                    <a class="fa fa-trash-o btn-link"
-                                       href="<?= $this->url("leavesetup", ["action" => "delete", "id" => $leave['LEAVE_ID']]); ?>"></a>
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
+        <?php foreach ($leaveList as $leave):
+            ?>
+            <tr role="row">
+                <td class="">
+                    <?php print $this->escapeHtml($leave['LEAVE_CODE']); ?>
+                </td>
+                <td class="">
+                    <?php print $this->escapeHtml($leave['LEAVE_ENAME']); ?>
+                </td>
+                <td class="">
+                    <?php print $this->escapeHtml($getValue($leave['ALLOW_HALFDAY'])); ?>
+                </td>
+                <td class="">
+                    <?php print $this->escapeHtml($getValue($leave['DEFAULT_DAYS'])); ?>
+                </td>
+                <td class="">
+                    <?php print $this->escapeHtml($getValue($leave['CARRY_FORWARD'])); ?>
+                </td>
+                <td class="">
+                    <?php print $this->escapeHtml($getValue($leave['CASHABLE'])); ?>
+                </td>
+                <td class="">
+                    <a href="<?= $this->url("leavesetup", ["action" => "edit", "id" => $leave['LEAVE_ID']]); ?>">
+                        Edit
+                    </a>
+                    <a href="<?= $this->url("leavesetup", ["action" => "delete", "id" => $leave['LEAVE_ID']]); ?>">
+                        Delete
+                    </a>
+                </td>
+            </tr>
 
-                <?php endforeach; ?>
+        <?php endforeach; ?>
 
-                </tbody>
-            </table>
-        </div>
+        </tbody>
+    </table>
 
-    </div>
 </div>

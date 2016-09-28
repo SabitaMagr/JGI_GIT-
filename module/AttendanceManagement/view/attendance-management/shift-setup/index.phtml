@@ -2,13 +2,15 @@
 /**
  * Load Javascript files here
  */
+$this->headScript()
+    ->appendFile($this->basePath('js/kendoDataTable.js'));
+?>
 ?>
 <script>
     document.menu =<?php $menu = ["id" => "menuAttendanceManagement", "subMenu" => ["id" => "subMenuShiftSetup"]];echo json_encode($menu);?>;
 </script>
 <div class="page-bar">
-    <?php // add the following line: ?>
-    <?= $this->navigation('navigation')->breadcrumbs()->setMinDepth(0) ?>
+    <?= $this->navigation('navigation')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
 <?php
 if ($this->messages) {
@@ -20,101 +22,89 @@ if ($this->messages) {
 }
 ?>
 
-<div class="portlet box green">
-    <div class="portlet-title">
-        <div class="caption">
-            <i class="fa fa-user"></i>Table
-        </div>
-        <div class="actions">
-            <a href="<?= $this->url('shiftsetup', ['action' => 'add']) ?>" class="btn btn-default btn-sm">
-                <i class="fa fa-pencil"></i> Add </a>
-            <div class="btn-group">
-                <a class="btn btn-default btn-sm" href="javascript:;" data-toggle="dropdown" aria-expanded="false">
-                    <i class="fa fa-cogs"></i> Tools <i class="fa fa-angle-down"></i>
-                </a>
-                <ul class="dropdown-menu pull-right">
-                    <li>
-                        <a href="javascript:;">
-                            <i class="fa fa-pencil"></i> Edit </a>
-                    </li>
-                    <li>
-                        <a href="javascript:;">
-                            <i class="fa fa-trash-o"></i> Delete </a>
-                    </li>
-                    <li>
-                        <a href="javascript:;">
-                            <i class="fa fa-ban"></i> Ban </a>
-                    </li>
-                    <li class="divider">
-                    </li>
-                    <li>
-                        <a href="javascript:;">
-                            <i class="i"></i> Make admin </a>
-                    </li>
-                </ul>
+<div class="margin-top-20">
+    <div class="table-toolbar">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="btn-group">
+                    <a href="<?= $this->url('shiftsetup', ['action' => 'add']) ?>" id="sample_editable_1_new"
+                       class="btn green"> Add New
+                        <i class="fa fa-plus"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="btn-group pull-right">
+                    <button class="btn green btn-outline dropdown-toggle" data-toggle="dropdown">Tools
+                        <i class="fa fa-angle-down"></i>
+                    </button>
+                    <ul class="dropdown-menu pull-right">
+                        <li>
+                            <a href="javascript:;"> Print </a>
+                        </li>
+                        <li>
+                            <a href="javascript:;"> Save as PDF </a>
+                        </li>
+                        <li>
+                            <a href="javascript:;"> Export to Excel </a>
+                        </li>
+                    </ul>
+                </div>
             </div>
         </div>
     </div>
-    <div class="portlet-body">
-        <div class="table-responsive">
-            <table class="table table-bordered" id="dataTable">
-                <thead>
-                <tr role="row">
-                    <th>
-                        Shift Code
-                    </th>
-                    <th>
-                    Shift Ename
-                    </th>
-                    <th>
-                        Start Time
-                    </th>
-                    <th>
-                        End Time
-                    </th>
-                    <th>
-                        Action
-                    </th>
-                </tr>
-                </thead>
-                <tbody>
 
-                <?php foreach ($shiftList as $shift):
-                    ?>
-                    <tr role="row">
-                        <td>
-                                <?php print $this->escapeHtml($shift['SHIFT_CODE']); ?>
-                        </td>
-                        <td>
-                                <?php print $this->escapeHtml($shift['SHIFT_ENAME']); ?>
-                        </td>
-                        <td>
-                                <?php print $this->escapeHtml($shift['START_TIME']); ?>
-                        </td>
-                        <td>
-                            <?php print $this->escapeHtml($shift['END_TIME']); ?>
-                        </td>
-                        <td>
-                            <div class="btn-group">
-                                <button type="button" class="btn btn-default">
-                                    <a class="fa fa-edit btn-link"
-                                       href="<?= $this->url("shiftsetup", ["action" => "edit", "id" => $shift['SHIFT_ID']]); ?>">
-                                    </a>
-                                </button>
-                                <button type="button" class="btn btn-default">
-                                    <a class="fa fa-trash-o btn-link"
-                                       href="<?= $this->url("shiftsetup", ["action" => "delete", "id" => $shift['SHIFT_ID']]); ?>"></a>
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
+    <table class="table" id="dataTable">
+        <thead>
+        <tr role="row">
+            <th>
+                Shift Code
+            </th>
+            <th>
+                Shift Ename
+            </th>
+            <th>
+                Start Time
+            </th>
+            <th>
+                End Time
+            </th>
+            <th>
+                Action
+            </th>
+        </tr>
+        </thead>
+        <tbody>
 
-                <?php endforeach; ?>
+        <?php foreach ($shiftList as $shift):
+            ?>
+            <tr role="row">
+                <td>
+                    <?php print $this->escapeHtml($shift['SHIFT_CODE']); ?>
+                </td>
+                <td>
+                    <?php print $this->escapeHtml($shift['SHIFT_ENAME']); ?>
+                </td>
+                <td>
+                    <?php print $this->escapeHtml($shift['START_TIME']); ?>
+                </td>
+                <td>
+                    <?php print $this->escapeHtml($shift['END_TIME']); ?>
+                </td>
+                <td>
+                    <a href="<?= $this->url("shiftsetup", ["action" => "edit", "id" => $shift['SHIFT_ID']]); ?>">
+                        Edit
+                    </a>
+                    <a href="<?= $this->url("shiftsetup", ["action" => "delete", "id" => $shift['SHIFT_ID']]); ?>">
+                        Delete
+                    </a>
+                </td>
+            </tr>
 
-                </tbody>
-            </table>
+        <?php endforeach; ?>
 
-        </div>
+        </tbody>
+    </table>
 
-    </div>
+
 </div>
