@@ -65,7 +65,6 @@ angular.module('hris', [])
             var holidayId = angular.element(document.getElementById('holidayId')).val();
             var branchIdValue = branchId.val();
 
-            console.log($scope.holidayDtl);
             window.app.pullDataById(document.url, {
                 action: 'updateHolidayDetail',
                 data: {
@@ -75,11 +74,23 @@ angular.module('hris', [])
                 },
             }).then(function (success) {
                 $scope.$apply(function () {
-                   // document.getElementById('holidayId').options[document.getElementById('holidayId').selectedIndex].text=$scope.holidayDtl.holidayEname;
-                   // var holidayEname = $scope.holidayDtl.holidayEname;
-                   //  console.log(holidayEname);
-                    //angular.element(document.getElementById('holidayId')).text("holiday").trigger("change");
-                   // $("#holidayId").select2('data', { id:holidayId, text:$scope.holidayDtl.holidayEname}).trigger("change");
+
+                    var data = {id:1,text:"hellow"};
+                    var val=document.getElementById('holidayId');
+
+                    document.holidays=document.holidays.map(function(item){
+                        if(item.id==val.value){
+                            item.text=$scope.holidayDtl.holidayEname;
+                            item.selected=true;
+                        }
+                        return item;
+                    });
+
+                    $('#holidayId').text("");
+                    $('#holidayId').select2({
+                        data:document.holidays
+                    });
+
                     window.toastr.info(success.data, "Notifications");
                 });
             }, function (failure) {
