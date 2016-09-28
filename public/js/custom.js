@@ -1,7 +1,7 @@
 window.app = (function ($) {
     'use strict';
     var format = "d-M-yyyy";
-    $('select').select2();
+    // $('select').select2();
 
     var pullDataById = function (url, data) {
         return new Promise(function (resolve, reject) {

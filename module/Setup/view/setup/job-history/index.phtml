@@ -67,26 +67,14 @@ if ($this->messages) {
             <th>
                 Service Type
             </th>
-            <th>
-                From Position
-            </th>
-            <th>
+             <th>
                 To Position
-            </th>
-            <th>
-                From Department
             </th>
             <th>
                 To Department
             </th>
             <th>
-                From Designation
-            </th>
-            <th>
                 To Designation
-            </th>
-            <th>
-                From Position
             </th>
             <th>
                 To Position
@@ -113,41 +101,25 @@ if ($this->messages) {
                     <?php print $this->escapeHtml($jobHistory['SERVICE_TYPE_NAME']); ?>
                 </td>
                 <td>
-                    <?php print $this->escapeHtml($jobHistory['FROM_POSITION_NAME']); ?>
-                </td>
-                <td>
                     <?php print $this->escapeHtml($jobHistory['TO_POSITION_NAME']); ?>
                 </td>
 
                 <td>
-                    <?php print $this->escapeHtml($jobHistory['FROM_DESIGNATION_TITLE']); ?>
-                </td>
-                <td>
                     <?php print $this->escapeHtml($jobHistory['TO_DESIGNATION_TITLE']); ?>
-                </td>
-                <td>
-                    <?php print $this->escapeHtml($jobHistory['FROM_DEPARTMENT_NAME']); ?>
                 </td>
                 <td>
                     <?php print $this->escapeHtml($jobHistory['TO_DEPARTMENT_NAME']); ?>
                 </td>
                 <td>
-                    <?php print $this->escapeHtml($jobHistory['FROM_BRANCH_NAME']); ?>
-                </td>
-                <td>
                     <?php print $this->escapeHtml($jobHistory['TO_BRANCH_NAME']); ?>
                 </td>
                 <td>
-                    <p>
-                        <a
-                           href="<?= $this->url("jobHistory", ["action" => "edit", "id" => $jobHistory['JOB_HISTORY_ID']]); ?>">
+                        <a href="<?= $this->url("jobHistory", ["action" => "edit", "id" => $jobHistory['JOB_HISTORY_ID']]); ?>">
                             Edit
-                        </a>
-                        <a
-                           href="<?= $this->url("jobHistory", ["action" => "delete", "id" => $jobHistory['JOB_HISTORY_ID']]); ?>">
+                        </a> /
+                        <a href="<?= $this->url("jobHistory", ["action" => "delete", "id" => $jobHistory['JOB_HISTORY_ID']]); ?>">
                             Delete
                         </a>
-                    </p>
                 </td>
             </tr>
         <?php endforeach; ?>

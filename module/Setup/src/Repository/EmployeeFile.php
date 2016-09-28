@@ -4,6 +4,7 @@ namespace Setup\Repository;
 use Application\Model\Model;
 use Application\Repository\RepositoryInterface;
 use Zend\Db\Adapter\AdapterInterface;
+use Zend\Db\Sql\Select;
 use Zend\Db\TableGateway\TableGateway;
 
 class EmployeeFile implements RepositoryInterface
@@ -37,7 +38,11 @@ class EmployeeFile implements RepositoryInterface
 
     public function fetchById($id)
     {
-        $rowset= $this->tableGateway->select(['EMPLOYEE_ID'=>$id]);
+//        $rowset= $this->tableGateway->select(['EMPLOYEE_ID'=>$id]);
+        $rowset= $this->tableGateway->select(function (Select $select) use ($id) {
+            $select->where(['EMPLOYEE_ID'=>$id]);
+            $select->order('CREATED_DT DESC')->limit(1);
+        });
         return $rowset->current();
     }
 

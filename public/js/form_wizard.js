@@ -3,6 +3,7 @@
     $(document).ready(function () {
         $('#rootwizard').bootstrapWizard({
             onTabShow: function (tab, navigation, index) {
+                $('#tab'+(index + 1)+" select").select2();
                 var $total = navigation.find('li').length;
                 var $current = index + 1;
                 if ($current >= $total) {
@@ -59,6 +60,7 @@
             }, onPrevious: function (tab, navigation, index) {
                 console.log("Showing previous tab");
             }, onInit: function () {
+                console.log("On Init");
                 $('#rootwizard ul').removeClass('nav-pills');
 
             }
