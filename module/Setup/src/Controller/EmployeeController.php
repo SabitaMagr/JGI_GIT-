@@ -9,24 +9,20 @@
 namespace Setup\Controller;
 
 
+use Application\Helper\EntityHelper as ApplicationHelper;
 use Application\Helper\Helper;
-use Setup\Form\HrEmployeesForm;
 use Setup\Form\HrEmployeesFormTabFive;
 use Setup\Form\HrEmployeesFormTabFour;
 use Setup\Form\HrEmployeesFormTabOne;
 use Setup\Form\HrEmployeesFormTabThree;
 use Setup\Form\HrEmployeesFormTabTwo;
 use Setup\Helper\EntityHelper;
-use Setup\Model\HrEmployees;
 use Setup\Repository\EmployeeFile;
 use Setup\Repository\EmployeeRepository;
 use Zend\Db\Adapter\AdapterInterface;
-use Zend\Db\Sql\Sql;
 use Zend\Form\Annotation\AnnotationBuilder;
-use Zend\Hydrator;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
-use Application\Helper\EntityHelper as ApplicationHelper;
 
 class EmployeeController extends AbstractActionController
 {
@@ -34,7 +30,7 @@ class EmployeeController extends AbstractActionController
     private $form;
     private $repository;
     private $employeeFileRepo;
-    const UPLOAD_DIR = "/var/www/html/neo-hris/public/uploads/";
+    const UPLOAD_DIR = "/var/www/html/neo/neo-hris-metronic/public/uploads/";
 
     public function __construct(AdapterInterface $adapter)
     {
@@ -210,7 +206,7 @@ class EmployeeController extends AbstractActionController
                         $uploadedFile = $post['filePath'];
                         $ext = pathinfo($uploadedFile['name'], PATHINFO_EXTENSION);
                         $newFileName = Helper::generateUniqueName() . "." . $ext;
-                        $success = move_uploaded_file($uploadedFile['tmp_name'], self::UPLOAD_DIR . $newFileName);
+                        $success = move_uploaded_file($uploadedFile['tmp_name'],self::UPLOAD_DIR. $newFileName );
                         if ($success) {
                             $formFiveModel->fileCode=((int) Helper::getMaxId($this->adapter,'HR_EMPLOYEE_FILE','FILE_CODE'))+1;
                             $formFiveModel->employeeId=$id;
