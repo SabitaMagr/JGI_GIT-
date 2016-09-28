@@ -55,7 +55,7 @@ if ($this->messages) {
     </div>
     <table class="" id="dataTable">
         <thead>
-        <tr class="row">
+        <tr >
             <th>
                 Employee Code
             </th>
@@ -79,7 +79,7 @@ if ($this->messages) {
 
         <tbody>
         <?php foreach ($list as $employee) : ?>
-            <tr class="row">
+            <tr>
                 <td>
                     <?php print $this->escapeHtml($employee->employeeCode) ?>
                 </td>
