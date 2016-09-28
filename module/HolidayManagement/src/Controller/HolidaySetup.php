@@ -82,6 +82,9 @@ class HolidaySetup extends AbstractActionController
                 $holiday = new Holiday();
                 $holidayBranch = new HolidayBranch();
                 $holiday->exchangeArrayFromForm($this->form->getData());
+                if($holiday->genderId==-1){
+                   unset($holiday->genderId);
+                }
                 $holiday->createdDt = Helper::getcurrentExpressionDate();
                 $holiday->status = 'E';
                 $holiday->fiscalYear=(int) Helper::getMaxId($this->adapter,"HR_FISCAL_YEARS","FISCAL_YEAR_ID");
@@ -107,7 +110,7 @@ class HolidaySetup extends AbstractActionController
                 'form' => $this->form,
                 'customRenderer' => Helper::renderCustomView(),
                 "genders" => EntityHelper::getTableKVList($this->adapter, EntityHelper::HR_GENDERS),
-                'branches' => EntityHelper::getTableKVList($this->adapter, EntityHelper::HR_BRANCHES),
+                'branches' => \Application\Helper\EntityHelper::getTableKVList($this->adapter, Branch::TABLE_NAME, Branch::BRANCH_ID, [Branch::BRANCH_NAME],["STATUS"=>"E"]),
             ]
         )
         );

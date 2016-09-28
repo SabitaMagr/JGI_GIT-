@@ -134,7 +134,11 @@ class WebServiceController extends AbstractActionController
                     $branchIds = $filtersId['branchIds'];
                     $data = $filtersId['dataArray'];
                     $holidayModel->holidayCode=$data['holidayCode'];
-                    $holidayModel->genderId=$data['genderId'];
+                    if($data['genderId']=='-1'){
+                        $holidayModel->genderId = "";
+                    }else {
+                        $holidayModel->genderId = $data['genderId'];
+                    }
                     $holidayModel->holidayEname=$data['holidayEname'];
                     $holidayModel->holidayLname=$data['holidayLname'];
                     $holidayModel->startDate=$data['startDate'];
@@ -166,6 +170,7 @@ class WebServiceController extends AbstractActionController
                     }
 
                     $responseData = [
+                        "data1"=>$holidayModel,
                         "success" => true,
                         "data"=>"Holiday Successfully Updated!!"
                     ];
