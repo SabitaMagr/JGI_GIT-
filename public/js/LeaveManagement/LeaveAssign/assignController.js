@@ -3,6 +3,7 @@
  */
 angular.module('hris', [])
     .controller('assignController', function ($scope, $http) {
+        $('select').select2();
         $scope.leaveList = [];
         $scope.all = false;
         $scope.daysForAll = 0;
@@ -32,9 +33,7 @@ angular.module('hris', [])
                 }
                 $scope.daysForAllFlag = false;
             }
-
         };
-
         $scope.assign = function () {
 
             var promises = [];
@@ -53,14 +52,18 @@ angular.module('hris', [])
             }
             Promise.all(promises).then(function (success) {
                 console.log(success);
-               window.toastr.info("Leave assigned successfully", "Notifications");
+                window.toastr.info("Leave assigned successfully", "Notifications");
             });
         };
         var leaveId;
+        $scope.leaveName;
         $scope.view = function () {
             $scope.daysForAllFlag = false;
             $scope.all = false;
             leaveId = angular.element(document.getElementById('leaveId')).val();
+            var leaveList = document.querySelector('#leaveId');
+            $scope.leaveName = leaveList.options[leaveList.selectedIndex].text;
+            console.log($scope.leaveName);
             var branchId = angular.element(document.getElementById('branchId')).val();
             var departmentId = angular.element(document.getElementById('departmentId')).val();
             var genderId = angular.element(document.getElementById('genderId')).val();
