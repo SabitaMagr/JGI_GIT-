@@ -6,21 +6,19 @@ $this->headScript()
     ->appendFile($this->basePath('js/kendoDataTable.js'));
 ?>
 
+<?php
+if($this->messages) { ?>
+    <script>
+        document.messages=<?php echo json_encode($this->messages); ?>
+    </script>
+<?php } ?>
+
 <script>
     document.menu =<?php $menu = ["id" => "menuLeaveManagement", "subMenu" => ["id" => "subMenuLeaveSetup"]];echo json_encode($menu);?>;
 </script>
 <div class="page-bar">
     <?= $this->navigation('navigation')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
-<?php
-if ($this->messages) {
-    print '<ul class="help-block bg-danger" style="background:#f3e250;">';
-    foreach ($this->messages as $message) {
-        print '<li>' . $message . '</li>';
-    }
-    print '</ul>';
-}
-?>
 
 <div class="margin-top-20">
     <div class="table-toolbar">
