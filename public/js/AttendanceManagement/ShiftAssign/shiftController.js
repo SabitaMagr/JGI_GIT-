@@ -1,5 +1,6 @@
 angular.module('hris', [])
     .controller('shiftAssignController', function ($scope, $http) {
+        $('select').select2();
         $scope.employeeShiftList = [];
         $scope.all = false;
         $scope.assignShowHide = false;

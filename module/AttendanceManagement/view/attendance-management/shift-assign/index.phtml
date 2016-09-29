@@ -56,8 +56,10 @@ $this->headScript()->appendFile($this->basePath('js/AttendanceManagement/ShiftAs
             <?php print $this->formElement($serviceTypes); ?>
         </div>
         <div class="col-sm-2 ">
-            <button ng-click="view()" id="viewEmployees" class="btn btn-success pull-right">
-                View
+
+            <button ng-click="view()" id="viewEmployees" class="btn btn-sm yellow pull-right">
+                Search
+                <i class="fa fa-search"></i>
             </button>
         </div>
     </div>
@@ -101,29 +103,22 @@ $this->headScript()->appendFile($this->basePath('js/AttendanceManagement/ShiftAs
             <tbody>
             <tr ng-repeat="employeeShift in employeeShiftList">
                 <td>
-                    {{employeeShift.FIRST_NAME}} {{employeeShift.MIDDLE_NAME}} {{employeeShift.LAST_NAME}}
+                    <span ng-bind="employeeShift.FIRST_NAME"></span>
+                    <span ng-bind="employeeShift.MIDDLE_NAME"></span>
+                    <span ng-bind="employeeShift.LAST_NAME"></span>
                 </td>
-                <td>
-                    {{employeeShift.BRANCH_NAME}}
+                <td ng-bind="employeeShift.BRANCH_NAME">
                 </td>
-                <td>
-                    {{employeeShift.DEPARTMENT_NAME}}
+                <td ng-bind="employeeShift.DEPARTMENT_NAME">
 
                 </td>
-                <td>
-                    {{employeeShift.DESIGNATION_TITLE}}
-
+                <td ng-bind="employeeShift.DESIGNATION_TITLE">
                 </td>
-                <td>
-                    {{employeeShift.POSITION_NAME}}
-
+                <td ng-bind="employeeShift.POSITION_NAME">
                 </td>
-                <td>
-                    {{employeeShift.SERVICE_TYPE_NAME}}
-
+                <td ng-bind="employeeShift.SERVICE_TYPE_NAME">
                 </td>
-                <td>
-                    {{employeeShift.SHIFT_ENAME || "Default"}}
+                <td ng-bind="employeeShift.SHIFT_ENAME || 'Default'">
 
                 </td>
                 <td class="bs-checkbox " style="width: 36px; " data-field="state" tabindex="0">
@@ -141,12 +136,13 @@ $this->headScript()->appendFile($this->basePath('js/AttendanceManagement/ShiftAs
         </table>
     </div>
     <div class="row" ng-show="assignShowHide">
-        <div class="col-sm-offset-9 col-sm-2">
+        <div class="col-sm-offset-8 col-sm-2">
                 <?php print $this->formElement($shiftFormElement); ?>
         </div>
-        <div class="col-sm-1 ">
-            <button class="pull-right btn btn-primary mt-ladda-btn ladda-button mt-progress-demo" id="assignBtn" ng-click="assign()">
+        <div class="col-sm-2 ">
+            <button class="pull-right btn btn-sm green mt-ladda-btn ladda-button mt-progress-demo" id="assignBtn" ng-click="assign()">
                 Assign
+                <i class="fa fa-edit"></i>
             </button>
         </div>
     </div>
