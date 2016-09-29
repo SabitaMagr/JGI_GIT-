@@ -27,6 +27,62 @@ return [
                     ]
                 ],
             ],
+            'holiday' => [
+                'type' => Segment::class,
+                'options' => [
+                    'route' => '/selfservice/holiday[/:action[/:id]]',
+                    'constants' => [
+                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'id' => '[0-9]+',
+                    ],
+                    'defaults' => [
+                        'controller' => Controller\Holiday::class,
+                        'action' => 'index',
+                    ]
+                ],
+            ],
+            'leave' => [
+                'type' => Segment::class,
+                'options' => [
+                    'route' => '/selfservice/leave[/:action[/:id]]',
+                    'constants' => [
+                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'id' => '[0-9]+',
+                    ],
+                    'defaults' => [
+                        'controller' => Controller\Leave::class,
+                        'action' => 'index',
+                    ]
+                ],
+            ],
+            'leaverequest' => [
+                'type' => Segment::class,
+                'options' => [
+                    'route' => '/selfservice/leaverequest[/:action[/:id]]',
+                    'constants' => [
+                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'id' => '[0-9]+',
+                    ],
+                    'defaults' => [
+                        'controller' => Controller\LeaveRequest::class,
+                        'action' => 'index',
+                    ]
+                ],
+            ],
+            'attendancerequest' => [
+                'type' => Segment::class,
+                'options' => [
+                    'route' => '/selfservice/attendancerequest[/:action[/:id]]',
+                    'constants' => [
+                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'id' => '[0-9]+',
+                    ],
+                    'defaults' => [
+                        'controller' => Controller\AttendanceRequest::class,
+                        'action' => 'index',
+                    ]
+                ],
+            ],
         ],
     ],
     'navigation' => [
@@ -61,7 +117,11 @@ return [
 
     'controllers' => [
         'factories' => [
-            Controller\MyAttendance::class => ControllerFactory::class
+            Controller\MyAttendance::class => ControllerFactory::class,
+            Controller\Holiday::class => ControllerFactory::class,
+            Controller\Leave::class => ControllerFactory::class,
+            Controller\LeaveRequest::class => ControllerFactory::class,
+            Controller\AttendanceRequest::class => ControllerFactory::class
         ],
     ],
     'view_manager' => [
