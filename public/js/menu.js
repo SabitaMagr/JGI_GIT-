@@ -7,6 +7,7 @@
         var selectedMenu = $('#' + document.menu.id);
         selectedMenu.addClass('open').addClass('active');
         $('#' + document.menu.id + ' > a :nth-child(2)').addClass('active').addClass('open');
+        $( '<span class="selected"></span>' ).insertAfter( '#' + document.menu.id + ' > a :nth-child(2)' );
         $('#' + document.menu.id + " > span").addClass("bg-success")
 
             var selectedSubMenu;
