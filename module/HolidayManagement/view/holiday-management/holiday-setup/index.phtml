@@ -8,6 +8,13 @@ $this->headScript()->appendFile($this->basePath('js/HolidayManagement/HolidaySet
 
 ?>
 
+<?php
+if($this->messages) { ?>
+    <script>
+        document.messages=<?php echo json_encode($this->messages); ?>
+    </script>
+<?php } ?>
+
 <script>
     document.menu =<?php $menu = ["id" => "menuHolidayManagement", "subMenu" => ["id" => "subMenuHolidaySetup"]];echo json_encode($menu);?>;
     document.urlBranchList = '<?= $this->url("webService", ["action" => "branchList"]) ?>';
@@ -15,13 +22,6 @@ $this->headScript()->appendFile($this->basePath('js/HolidayManagement/HolidaySet
 </script>
 
 <?php
-if ($this->messages) {
-    print '<div class="alert alert-success" role="alert"><button class="close" data-dismiss="alert"></button>';
-    foreach ($this->messages as $message) {
-        print '<strong>Success: </strong>' . $message;
-    }
-    print '</div>';
-}
 
 $holidayFormElement->setAttributes(["ng-model" => "holidayId"]);
 $branchFormElement->setAttribute("ng-model", "branchId");
@@ -53,35 +53,41 @@ $form->prepare();
     <div class="row margin-top-20">
         <div class="col-sm-8 col-sm-offset-2">
             <div class="portlet box custom-box">
-                <div class="padding-top-20 padding-left-20 padding-right-20 portlet-title">
-                    <div class="row margin-top-10">
-                        <div class="col-xs-5 col-sm-5 col-md-5">
-                            <div class="form-group">
-                                <?php print $this->formElement($holidayFormElement); ?>
-                            </div>
-                        </div>
-                        <div class="col-xs-7 col-sm-7 col-md-7 margin-bottom-5">
-                            <div class="btn-group pull-right">
-                                <a class="btn btn-success"
-                                   href="<?= $this->url('holidaysetup', ['action' => 'add']) ?>">
-                                    Add new
-                                </a>
-                                <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown"
-                                        aria-expanded="false">
-                                    <span class="caret"></span>
-                                </button>
-                                <ul class="dropdown-menu" role="menu">
-                                    <li><a href="#">Settings</a>
-                                    </li>
-                                    <li><a href="#">Help</a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                        <div class="col-xs-4 col-sm-4 col-md-4"></div>
+                <div class="portlet-title">
+                    <div class="caption">
+                        <i class="fa fa-user"></i>Holiday Detail
                     </div>
                 </div>
                 <div class="portlet-body">
+                    <div class="border-bottom margin-bottom-20">
+                        <div class="row margin-top-5">
+                            <div class="col-xs-5 col-sm-5 col-md-5">
+                                <div class="form-group">
+                                    <?php print $this->formElement($holidayFormElement); ?>
+                                </div>
+                            </div>
+                            <div class="col-xs-7 col-sm-7 col-md-7 margin-bottom-5">
+                                <div class="btn-group pull-right">
+                                    <a class="btn btn-success"
+                                       href="<?= $this->url('holidaysetup', ['action' => 'add']) ?>">
+                                        Add new
+                                    </a>
+                                    <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown"
+                                            aria-expanded="false">
+                                        <span class="caret"></span>
+                                    </button>
+                                    <ul class="dropdown-menu" role="menu">
+                                        <li><a href="#">Settings</a>
+                                        </li>
+                                        <li><a href="#">Help</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="col-xs-4 col-sm-4 col-md-4"></div>
+                        </div>
+                    </div>
+
                     <div class="form-group">
                         <label for="holidayCode" >Holiday Code</label>
                         <input name="holidayCode" required="required" id="holidayCode" class="form-control"

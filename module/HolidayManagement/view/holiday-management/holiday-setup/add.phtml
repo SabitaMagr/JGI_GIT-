@@ -12,18 +12,14 @@ $this->headScript()->appendFile($this->basePath('js/HolidayManagement/HolidaySet
     document.menu =<?php $menu = ["id" => "menuHolidayManagement", "subMenu" => ["id" => "subMenuHolidaySetup"]];echo json_encode($menu);?>;
 </script>
 
+
 <?php
-/*
- * flash message
- * */
-if ($this->messages) {
-    print '<ul class="help-block bg-danger" style="background:#f3e250;">';
-    foreach ($this->messages as $message) {
-        print '<li>' . $message . '</li>';
-    }
-    print '</ul>';
-}
-?>
+if($this->messages) { ?>
+    <script>
+        document.messages=<?php echo json_encode($this->messages); ?>
+    </script>
+<?php } ?>
+
 <?php
 
 $holidayCode = $form->get('holidayCode');

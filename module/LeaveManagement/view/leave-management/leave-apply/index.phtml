@@ -10,16 +10,14 @@ $this->headScript()->appendFile($this->basePath('plugins/datatables-responsive/j
 $this->headScript()->appendFile($this->basePath('plugins/datatables-responsive/js/lodash.min.js'));
 $this->headScript()->appendFile($this->basePath('js/datatables.js'));
 ?>
-<?php
-if ($this->messages) {
-    print '<ul class="help-block bg-danger" style="background:#f3e250;">';
-    foreach ($this->messages as $message) {
-        print '<li>' . $message . '</li>';
-    }
-    print '</ul>';
-}
 
-?>
+<?php
+if($this->messages) { ?>
+    <script>
+        document.messages=<?php echo json_encode($this->messages); ?>
+    </script>
+<?php } ?>
+
 <script>
     document.menu =<?php $menu = ["id" => "menuLeaveManagement", "subMenu" => ["id" => "subMenuLeaveApply"]];echo json_encode($menu);?>;
 </script>

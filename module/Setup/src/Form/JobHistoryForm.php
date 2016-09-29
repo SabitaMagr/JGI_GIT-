@@ -25,7 +25,7 @@ class JobHistoryForm
      * @Annotation\Required({"required":"true"})
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
      * @Annotation\Options({"label":"Employee Name","value_options":{"1":"Emp1","2":"Emp2"}})
-     * @Annotation\Attributes({ "id":"employeeId","class":"full-width select2-offscreen","data-init-plugin":"select2"})
+     * @Annotation\Attributes({ "id":"employeeId","class":"form-control"})
      */
     public $employeeId;
 
@@ -52,7 +52,7 @@ class JobHistoryForm
      * @Annotation\Required({"required":"true"})
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
      * @Annotation\Options({"disable_inarray_validator":"true","label":"Service Type Name"})
-     * @Annotation\Attributes({ "id":"serviceTypeId","class":"full-width select2-offscreen","data-init-plugin":"select2"})
+     * @Annotation\Attributes({ "id":"serviceTypeId","class":"form-control"})
      */
     public $serviceTypeId;
 
@@ -61,7 +61,7 @@ class JobHistoryForm
      * @Annotation\Required({"required":"true"})
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
      * @Annotation\Options({"disable_inarray_validator":"true","label":"From Branch Name"})
-     * @Annotation\Attributes({ "id":"fromBranchId","class":"full-width select2-offscreen","data-init-plugin":"select2"})
+     * @Annotation\Attributes({ "id":"fromBranchId","class":"form-control"})
      */
     public $fromBranchId;
 
@@ -70,7 +70,7 @@ class JobHistoryForm
      * @Annotation\Required({"required":"true"})
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
      * @Annotation\Options({"disable_inarray_validator":"true","label":"To Branch Name"})
-     * @Annotation\Attributes({ "id":"toBranchId","class":"full-width select2-offscreen","data-init-plugin":"select2"})
+     * @Annotation\Attributes({ "id":"toBranchId","class":"form-control"})
      */
     public $toBranchId;
 
@@ -79,7 +79,7 @@ class JobHistoryForm
      * @Annotation\Required({"required":"true"})
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
      * @Annotation\Options({"disable_inarray_validator":"true","label":"From Department Name"})
-     * @Annotation\Attributes({ "id":"fromDepartmentId","class":"full-width select2-offscreen","data-init-plugin":"select2"})
+     * @Annotation\Attributes({ "id":"fromDepartmentId","class":"form-control"})
      */
     public $fromDepartmentId;
 
@@ -88,7 +88,7 @@ class JobHistoryForm
      * @Annotation\Required({"required":"true"})
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
      * @Annotation\Options({"disable_inarray_validator":"true","label":"To Department Name"})
-     * @Annotation\Attributes({ "id":"toDepartmentId","class":"full-width select2-offscreen","data-init-plugin":"select2"})
+     * @Annotation\Attributes({ "id":"toDepartmentId","class":"form-control"})
      */
     public $toDepartmentId;
 
@@ -97,8 +97,7 @@ class JobHistoryForm
      * @Annotation\Required({"required":"true"})
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
      * @Annotation\Options({"disable_inarray_validator":"true","label":"From Designation Name"})
-     * @Annotation\Attributes({ "id":"form-fromDesignationId","data-init-plugin":"cs-select","class":"cs-select cs-skin-slide form-fromDesignationId form-control"})
-     * @Annotation\Attributes({ "id":"fromDesignationId","class":"full-width select2-offscreen","data-init-plugin":"select2"})
+     * @Annotation\Attributes({ "id":"fromDesignationId","class":"form-control"})
      */
     public $fromDesignationId;
 
@@ -107,7 +106,7 @@ class JobHistoryForm
      * @Annotation\Required({"required":"true"})
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
      * @Annotation\Options({"disable_inarray_validator":"true","label":"To Designation Name"})
-     * @Annotation\Attributes({ "id":"toDesignationId","class":"full-width select2-offscreen","data-init-plugin":"select2"})
+     * @Annotation\Attributes({ "id":"toDesignationId","class":"form-control"})
      */
     public $toDesignationId;
 
@@ -116,7 +115,7 @@ class JobHistoryForm
      * @Annotation\Required({"required":"true"})
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
      * @Annotation\Options({"disable_inarray_validator":"true","label":"From Position Name"})
-     * @Annotation\Attributes({ "id":"fromPositionId","class":"full-width select2-offscreen","data-init-plugin":"select2"})
+     * @Annotation\Attributes({ "id":"fromPositionId","class":"form-control"})
      */
     public $fromPositionId;
 
@@ -125,7 +124,7 @@ class JobHistoryForm
      * @Annotation\Required({"required":"true"})
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
      * @Annotation\Options({"disable_inarray_validator":"true","label":"To Position Name"})
-     * @Annotation\Attributes({ "id":"toPositionId","class":"full-width select2-offscreen","data-init-plugin":"select2"})
+     * @Annotation\Attributes({ "id":"toPositionId","class":"form-control"})
      */
     public $toPositionId;
 

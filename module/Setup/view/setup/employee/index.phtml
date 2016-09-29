@@ -4,14 +4,12 @@ $this->headScript()
 ->appendFile($this->basePath('js/kendoDataTable.js'));
 ?>
 <?php
-if ($this->messages) {
-    print '<div class="alert alert-success" role="alert"><button class="close" data-dismiss="alert"></button>';
-    foreach ($this->messages as $message) {
-        print '<strong>Success: </strong>' . $message;
-    }
-    print '</div>';
-}
-?>
+if($this->messages) { ?>
+    <script>
+        document.messages=<?php echo json_encode($this->messages); ?>
+    </script>
+<?php } ?>
+
 <script>
     document.menu =<?php $menu = ["id" => "menuSetup", "subMenu" => ["id" => "subMenuEmployee"]];echo json_encode($menu);?>;
 </script>

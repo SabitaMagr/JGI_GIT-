@@ -1,4 +1,4 @@
-window.app = (function ($) {
+window.app = (function ($,toastr) {
     'use strict';
     var format = "d-M-yyyy";
     // $('select').select2();
@@ -62,12 +62,20 @@ window.app = (function ($) {
         }
     }
 
+    var successMessage = function (message) {
+        if(message) {
+            window.toastr.success(message, "Notifications");
+        }
+    }
+    successMessage(document.messages);
+
     return {
         format: format,
         pullDataById: pullDataById,
         populateSelectElement: populateSelectElement,
         addDatePicker: addDatePicker,
         addTimePicker: addTimePicker,
-        fetchAndPopulate:fetchAndPopulate
+        fetchAndPopulate:fetchAndPopulate,
+        successMessage:successMessage
     };
-})(window.jQuery);
+})(window.jQuery,window.toastr);

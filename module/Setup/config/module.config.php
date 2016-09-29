@@ -389,6 +389,34 @@ return [
                 ]
             ]
         ],
+        'jobHistory' => [
+
+            [
+                'label' => 'Job History',
+                'route' => 'jobHistory',
+            ],
+            [
+                'label' => 'Job History',
+                'route' => 'jobHistory',
+                'pages' => [
+                    [
+                        'label' => 'List',
+                        'route' => 'jobHistory',
+                        'action' => 'index',
+                    ],
+                    [
+                        'label' => 'Add',
+                        'route' => 'jobHistory',
+                        'action' => 'add',
+                    ],
+                    [
+                        'label' => 'Edit',
+                        'route' => 'jobHistory',
+                        'action' => 'edit',
+                    ],
+                ]
+            ]
+        ],
 
     ],
     'controllers' => [
