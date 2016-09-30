@@ -3,7 +3,30 @@
     $(document).ready(function () {
         $('#rootwizard').bootstrapWizard({
             onTabShow: function (tab, navigation, index) {
-                $('#tab'+(index + 1)+" select").select2();
+                $('#tab' + (index + 1) + " select").select2();
+
+                switch (index + 1) {
+                    case 1:
+                        window.app.addDatePicker($("#employeeBirthDate"));
+                        break;
+                    case 2:
+                        app.addDatePicker(
+                            $("#famSpouseWeddingAnniversary"),
+                            $("#famSpouseBirthDate")
+                        );
+                        break;
+                    case 3:
+                        window.app.addDatePicker(
+                            $("#idPassportExpiry"),
+                            $("#idDrivingLicenseExpiry"),
+                            $("#idCitizenshipIssueDate"));
+                        break;
+                    case 4:
+                        window.app.addDatePicker($("#joinDate"));
+                        break;
+
+                }
+
                 var $total = navigation.find('li').length;
                 var $current = index + 1;
                 if ($current >= $total) {
@@ -42,15 +65,15 @@
             }, onNext: function (tab, navigation, index) {
                 console.log("Showing next tab");
                 if (typeof document.currentTab !== 'undefined') {
-                    if(index <=5){
-                    $('#btnform' + index).click();
-                    }else{
+                    if (index <= 5) {
+                        $('#btnform' + index).click();
+                    } else {
                         return true;
                     }
-                } else{
+                } else {
                     if (index == 1) {
                         $('#btnform' + index).click();
-                    }else{
+                    } else {
                         return true;
                     }
                 }

@@ -63,15 +63,7 @@
         }
 
 
-        app.addDatePicker(
-            $("#employeeBirthDate"),
-            $("#joinDate"),
-            $("#idPassportExpiry"),
-            $("#idCitizenshipIssueDate"),
-            $("#idDrivingLicenseExpiry"),
-            $("#famSpouseWeddingAnniversary"),
-            $("#famSpouseBirthDate")
-        );
+
 
         $('#filePath').on('change', function () {
             if (this.files && this.files[0]) {
