@@ -68,8 +68,9 @@ $designationFormElement->setAttribute("ng-model", "designationId");
             </div>
         </div>
         <div class="col-sm-2 ">
-            <button ng-click="view()" id="viewEmployees" class="btn btn-primary pull-right">
+            <button ng-click="view()" id="viewEmployees" class="btn btn-sm yellow pull-right">
                 View
+                <i class="fa fa-search"></i>
             </button>
         </div>
 
@@ -97,17 +98,19 @@ $designationFormElement->setAttribute("ng-model", "designationId");
             <tbody id="target">
             <tr role="row" ng-repeat="item in leaveList">
                 <td>
-                    {{ item.FIRST_NAME }} {{ item.MIDDLE_NAME }} {{ item.LAST_NAME }}
+                    <span ng-bind="item.FIRST_NAME">
+                    </span>
+                    <span ng-bind="item.MIDDLE_NAME">
+                    </span>
+                    <span ng-bind="item.LAST_NAME">
+                    </span>
 
                 </td>
-                <td>
-                    {{leaveName}}
+                <td ng-bind="leaveName">
                 </td>
-                <td>
-                    {{item.DESIGNATION_TITLE}}
+                <td ng-bind="item.DESIGNATION_TITLE">
                 </td>
-                <td>
-                    {{item.BRANCH_NAME}}
+                <td ng-bind="item.BRANCH_NAME">
                 </td>
                 <td>
                     <input class="form-control input-sm" id="balance" style="width: 100px;" type="text" min="0" ng-model="item.BALANCE"/>
@@ -134,7 +137,10 @@ $designationFormElement->setAttribute("ng-model", "designationId");
                        ng-show="daysForAllFlag"/>
             </div>
             <div class="col-sm-2">
-                <button class="btn btn-info pull-right" ng-click="assign()">Assign</button>
+                <button ng-show="daysForAllFlag" class="btn btn-sm green pull-right" ng-click="assign()">
+                    Assign
+                <i class="fa fa-edit"></i>
+                </button>
             </div>
         </div>
     </div>
