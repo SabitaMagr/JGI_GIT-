@@ -7,10 +7,10 @@ $this->headScript()
 ?>
 
 <script>
-    document.menu =<?php $menu = ["id" => "menuSelfService", "subMenu" => ["id" => "subMenuLeave"]];echo json_encode($menu);?>;
+    document.menu =<?php $menu = ["id" => "menuSelfService", "subMenu" => ["id" => "subMenuLeaveRequest"]];echo json_encode($menu);?>;
 </script>
 <div class="page-bar">
-    <?= $this->navigation('Zend\Navigation\leave')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
+    <?= $this->navigation('Zend\Navigation\leaverequest')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
 <?php
 if($this->messages) { ?>
@@ -23,7 +23,12 @@ if($this->messages) { ?>
     <div class="table-toolbar">
         <div class="row">
             <div class="col-md-6">
-
+                <div class="btn-group">
+                    <a href="<?= $this->url('department', ['action' => 'add']) ?>" id="sample_editable_1_new"
+                       class="btn green">Apply For Leave
+                        <!--                        <i class="fa fa-plus"></i>-->
+                    </a>
+                </div>
             </div>
             <div class="col-md-6">
                 <div class="btn-group pull-right">
