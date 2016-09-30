@@ -113,6 +113,114 @@ return [
                 ],
             ],
         ],
+        'holiday' => [
+            [
+                'label' => 'Holiday',
+                'route' => 'holiday',
+            ],
+            [
+                'label' => 'Holiday',
+                'route' => 'holiday',
+                'pages' => [
+                    [
+                        'label' => 'List',
+                        'route' => 'holiday',
+                        'action' => 'index',
+                    ],
+                    [
+                        'label' => 'Add',
+                        'route' => 'holiday',
+                        'action' => 'add',
+                    ],
+                    [
+                        'label' => 'Edit',
+                        'route' => 'holiday',
+                        'action' => 'edit',
+                    ],
+                ],
+            ],
+        ],
+        'leave' => [
+            [
+                'label' => 'Leave',
+                'route' => 'leave',
+            ],
+            [
+                'label' => 'Leave',
+                'route' => 'leave',
+                'pages' => [
+                    [
+                        'label' => 'List',
+                        'route' => 'leave',
+                        'action' => 'index',
+                    ],
+                    [
+                        'label' => 'Add',
+                        'route' => 'leave',
+                        'action' => 'add',
+                    ],
+                    [
+                        'label' => 'Edit',
+                        'route' => 'leave',
+                        'action' => 'edit',
+                    ],
+                ],
+            ],
+        ],
+        'leaverequest' => [
+            [
+                'label' => 'Leave Request',
+                'route' => 'leaverequest',
+            ],
+            [
+                'label' => 'Leave Request',
+                'route' => 'leaverequest',
+                'pages' => [
+                    [
+                        'label' => 'List',
+                        'route' => 'leaverequest',
+                        'action' => 'index',
+                    ],
+                    [
+                        'label' => 'Add',
+                        'route' => 'leaverequest',
+                        'action' => 'add',
+                    ],
+                    [
+                        'label' => 'Edit',
+                        'route' => 'leaverequest',
+                        'action' => 'edit',
+                    ],
+                ],
+            ],
+        ],
+        'attendancerequest' => [
+            [
+                'label' => 'Attendance Request',
+                'route' => 'attendancerequest',
+            ],
+            [
+                'label' => 'Attendance Request',
+                'route' => 'attendancerequest',
+                'pages' => [
+                    [
+                        'label' => 'List',
+                        'route' => 'attendancerequest',
+                        'action' => 'index',
+                    ],
+                    [
+                        'label' => 'Add',
+                        'route' => 'attendancerequest',
+                        'action' => 'add',
+                    ],
+                    [
+                        'label' => 'Edit',
+                        'route' => 'attendancerequest',
+                        'action' => 'edit',
+                    ],
+                ],
+            ],
+        ],
     ],
 
     'controllers' => [
