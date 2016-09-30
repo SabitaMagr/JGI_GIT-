@@ -11,16 +11,20 @@ use Zend\View\Model\ViewModel;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\Authentication\AuthenticationService;
-
+use SelfService\Repository\HolidayRepository;
+use Application\Helper\Helper;
 
 class Holiday extends AbstractActionController
 {
     private $authService;
     private $user_id;
     private $employee_id;
+    private $holidayRepository;
 
-    public function __construct()
+    public function __construct(AdapterInterface $adapter)
     {
+        $this->holidayRepository = new HolidayRepository($adapter);
+
         $this->authService = new AuthenticationService();
         $recordDetail = $this->authService->getIdentity();
         $this->user_id = $recordDetail['user_id'];
@@ -29,7 +33,7 @@ class Holiday extends AbstractActionController
 
     public function indexAction()
     {
-
-        return new ViewModel(["username" => $this->employee_id]);
+        $holidays = $this->holidayRepository->selectAll($this->employee_id);
+        return Helper::addFlashMessagesToArray($this, ['holidays' => $holidays]);
     }
 }

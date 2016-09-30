@@ -82,6 +82,7 @@ class WebServiceController extends AbstractActionController
                 case "pushEmployeeLeave":
                     $data = $postedData->data;
                     $leaveAssign = new LeaveAssign();
+                    $leaveAssign->totalDays = $data['balance'];
                     $leaveAssign->balance = $data['balance'];
                     $leaveAssign->employeeId = $data['employeeId'];
                     $leaveAssign->leaveId = $data['leave'];

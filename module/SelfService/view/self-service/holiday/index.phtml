@@ -1,4 +1,114 @@
 <?php
-print_r($username)."user<br/>";
-echo "hellow this is holiday list";
+/**
+ * Load Javascript files here
+ */
+$this->headScript()
+    ->appendFile($this->basePath('js/kendoDataTable.js'));
 ?>
+
+<script>
+    document.menu =<?php $menu = ["id" => "menuSelfService", "subMenu" => ["id" => "subMenuHoliday"]];echo json_encode($menu);?>;
+</script>
+<div class="page-bar">
+    <?= $this->navigation('Zend\Navigation\holiday')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
+</div>
+<?php
+if($this->messages) { ?>
+    <script>
+        document.messages=<?php echo json_encode($this->messages); ?>
+    </script>
+<?php } ?>
+
+<div class="margin-top-20">
+    <div class="table-toolbar">
+        <div class="row">
+            <div class="col-md-6">
+
+            </div>
+            <div class="col-md-6">
+                <div class="btn-group pull-right">
+                    <button class="btn green btn-outline dropdown-toggle" data-toggle="dropdown">Tools
+                        <i class="fa fa-angle-down"></i>
+                    </button>
+                    <ul class="dropdown-menu pull-right">
+                        <li>
+                            <a href="javascript:;"> Print </a>
+                        </li>
+                        <li>
+                            <a href="javascript:;"> Save as PDF </a>
+                        </li>
+                        <li>
+                            <a href="javascript:;"> Export to Excel </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <table class="table" id="dataTable">
+        <thead>
+        <tr role="row">
+            <th>
+                Holiday Code
+            </th>
+            <th>
+                Holiday Name
+            </th>
+            <th>
+                Start Date
+            </th>
+            <th>
+                End Date
+            </th>
+            <th>
+                Half Day
+            </th>
+        </tr>
+        </thead>
+        <tbody>
+
+        <?php foreach ($holidays as $holidayList):
+            ?>
+            <tr role="row">
+                <td>
+                    <?php
+                    print $this->escapeHtml($holidayList['HOLIDAY_CODE']);
+                     ?>
+                </td>
+                <td>
+                    <?php
+                    print $this->escapeHtml($holidayList['HOLIDAY_ENAME']);
+                    ?>
+                </td>
+                <td>
+                    <?php
+                    print $this->escapeHtml($holidayList['START_DATE']);
+                    ?>
+                </td>
+                <td>
+                    <?php
+                    print $this->escapeHtml($holidayList['END_DATE']);
+                     ?>
+                </td>
+                <td>
+                    <?php
+                     $halfday= $this->escapeHtml($holidayList['HALFDAY']);
+                    if($halfday=="F"){
+                        ECHO "First Half";
+                    }else if($halfday=="S"){
+                        ECHO "Second Half";
+                    }else if($halfday=="N"){
+                        ECHO "Full Day";
+                    }
+                    ?>
+                </td>
+            </tr>
+
+        <?php endforeach; ?>
+
+        </tbody>
+    </table>
+
+
+</div>

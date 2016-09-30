@@ -1,2 +1,133 @@
 <?php
-echo "leave request";
+/**
+ * Load Javascript files here
+ */
+$this->headScript()
+    ->appendFile($this->basePath('js/kendoDataTable.js'));
+?>
+
+<script>
+    document.menu =<?php $menu = ["id" => "menuSelfService", "subMenu" => ["id" => "subMenuLeave"]];echo json_encode($menu);?>;
+</script>
+<div class="page-bar">
+    <?= $this->navigation('Zend\Navigation\leave')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
+</div>
+<?php
+if($this->messages) { ?>
+    <script>
+        document.messages=<?php echo json_encode($this->messages); ?>
+    </script>
+<?php } ?>
+
+<div class="margin-top-20">
+    <div class="table-toolbar">
+        <div class="row">
+            <div class="col-md-6">
+
+            </div>
+            <div class="col-md-6">
+                <div class="btn-group pull-right">
+                    <button class="btn green btn-outline dropdown-toggle" data-toggle="dropdown">Tools
+                        <i class="fa fa-angle-down"></i>
+                    </button>
+                    <ul class="dropdown-menu pull-right">
+                        <li>
+                            <a href="javascript:;"> Print </a>
+                        </li>
+                        <li>
+                            <a href="javascript:;"> Save as PDF </a>
+                        </li>
+                        <li>
+                            <a href="javascript:;"> Export to Excel </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <table class="table" id="dataTable">
+        <thead>
+        <tr role="row">
+            <th>
+                Leave Code
+            </th>
+            <th>
+                Leave Name
+            </th>
+            <th>
+                From Date
+            </th>
+            <th>
+                To Date
+            </th>
+            <th>
+                Duration
+            </th>
+            <th>
+                Status
+            </th>
+            <th>
+                Operation
+            </th>
+        </tr>
+        </thead>
+        <tbody>
+
+        <?php foreach ($leaveRequest as $leaveRequestList):
+            ?>
+            <tr role="row">
+                <td>
+                    <?php
+                    print $this->escapeHtml($leaveRequestList['LEAVE_CODE']);
+                    ?>
+                </td>
+                <td>
+                    <?php
+                    print $this->escapeHtml($leaveRequestList['LEAVE_ENAME']);
+                    ?>
+                </td>
+                <td>
+                    <?php
+                    print $this->escapeHtml($leaveRequestList['FROM_DATE']);
+                    ?>
+                </td>
+                <td>
+                    <?php
+                    print $this->escapeHtml($leaveRequestList['TO_DATE']);
+                    ?>
+                </td>
+                <td>
+                    <?php
+                    $from_date = $this->escapeHtml($leaveRequestList['FROM_DATE']);
+                    $to_date = $this->escapeHtml($leaveRequestList['TO_DATE']);
+
+                    $d1 = new DateTime($from_date);
+                    $d2 = new DateTime($to_date);
+                    $dDiff = $d1->diff($d2);
+                    //echo $dDiff->format('%R'); // use for point out relation: smaller/greater
+                    echo $dDiff->days;
+                    ?>
+                </td>
+                <td>
+                    <?php
+                        $status = $this->escapeHtml($leaveRequestList['STATUS']);
+                        if($status=='RQ'){
+                            echo "Pending";
+                        }
+                    ?>
+                </td>
+                <td>
+                    <?php
+
+                    ?>
+                </td>
+            </tr>
+
+        <?php endforeach; ?>
+
+        </tbody>
+    </table>
+
+
+</div>
