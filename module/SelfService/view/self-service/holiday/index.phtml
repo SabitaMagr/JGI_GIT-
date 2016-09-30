@@ -94,7 +94,13 @@ if($this->messages) { ?>
                 <td>
                     <?php
                      $halfday= $this->escapeHtml($holidayList['HALFDAY']);
-                    if($halfday==)
+                    if($halfday=="F"){
+                        ECHO "First Half";
+                    }else if($halfday=="S"){
+                        ECHO "Second Half";
+                    }else if($halfday=="N"){
+                        ECHO "Full Day";
+                    }
                     ?>
                 </td>
             </tr>
