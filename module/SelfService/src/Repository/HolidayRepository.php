@@ -55,20 +55,23 @@ class HolidayRepository implements RepositoryInterface
            new Expression("H.FISCAL_YEAR AS FISCAL_YEAR"),
            new Expression("H.REMARKS AS REMARKS"),
        ], true);
+
        $select->from(['H' => Holiday::TABLE_NAME])
-           ->join(['G' => 'HR_GENDERS'], 'H.GENDER_ID=G.GENDER_ID', ['GENDER_NAME'])
-           ->join(['E' => 'HR_EMPLOYEES'], 'E.GENDER_ID=G.GENDER_ID', ['GENDER_ID'])
-           ->join(['HB' => 'HR_HOLIDAY_BRANCH'], 'HB.HOLIDAY_ID=H.HOLIDAY_ID', ['BRANCH_ID']);
+                ->join(['HB'=>'HR_HOLIDAY_BRANCH'],"HB.HOLIDAY_ID=H.HOLIDAY_ID",['HOLIDAY_ID'])
+                ->join(['E'=>'HR_EMPLOYEES'],"H.GENDER_ID=E.GENDER_ID AND E.BRANCH_ID=HB.BRANCH_ID",['GENDER_ID']);
 
-       $select->where(["H.STATUS='E'","HB.BRANCH_ID=E.BRANCH_ID"]);
+       $select->where([
+           "H.STATUS='E'",
+           "E.EMPLOYEE_ID=".$employeeId
+       ]);
+
        $statement = $sql->prepareStatementForSqlObject($select);
-       print_r($statement->getSql());die();
-
        $result = $statement->execute();
        return $result;
    }
    function fetchById($id)
    {
        // TODO: Implement fetchById() method.
+
    }
 }

@@ -23,12 +23,7 @@ if($this->messages) { ?>
     <div class="table-toolbar">
         <div class="row">
             <div class="col-md-6">
-                <div class="btn-group">
-                    <a href="<?= $this->url('shiftsetup', ['action' => 'add']) ?>" id="sample_editable_1_new"
-                       class="btn green"> Add New
-                        <i class="fa fa-plus"></i>
-                    </a>
-                </div>
+
             </div>
             <div class="col-md-6">
                 <div class="btn-group pull-right">
@@ -69,9 +64,6 @@ if($this->messages) { ?>
             <th>
                 Half Day
             </th>
-            <th>
-                Action
-            </th>
         </tr>
         </thead>
         <tbody>
@@ -101,16 +93,9 @@ if($this->messages) { ?>
                 </td>
                 <td>
                     <?php
-                    print $this->escapeHtml($holidayList['HALFDAY']);
+                     $halfday= $this->escapeHtml($holidayList['HALFDAY']);
+                    if($halfday==)
                     ?>
-                </td>
-                <td>
-                    <a href="<?= $this->url("shiftsetup", ["action" => "edit", "id" => $holidayList['HOLIDAY_ID']]); ?>">
-                        Edit
-                    </a>
-                    <a href="<?= $this->url("shiftsetup", ["action" => "delete", "id" => $holidayList['HOLIDAY_ID']]); ?>">
-                        Delete
-                    </a>
                 </td>
             </tr>
 
