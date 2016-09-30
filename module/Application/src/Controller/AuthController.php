@@ -93,6 +93,9 @@ class AuthController extends AbstractActionController
                     $this->flashmessenger()->addMessage($message);
                 }
                 if ($result->isValid()) {
+                    //after authentication success get the user specific details
+                    $resultRow = $this->getAuthService()->getAdapter()->getResultRowObject();
+
                     $redirect = 'dashboard';
                     //check if it has rememberMe :
                     if (1 == $request->getPost('rememberme')) {
@@ -101,7 +104,7 @@ class AuthController extends AbstractActionController
                         //set storage again
                         $this->getAuthService()->setStorage($this->getSessionStorage());
                     }
-                    $this->getAuthService()->getStorage()->write($request->getPost('username'));
+                    $this->getAuthService()->getStorage()->write(["user_name"=>$request->getPost('username'),"user_id"=>$resultRow->USER_ID,"employee_id"=>$resultRow->EMPLOYEE_ID]);
                 }
             }
         }
