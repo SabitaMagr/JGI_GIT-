@@ -14,6 +14,7 @@ use Application\Helper\EntityHelper as ApplicationEntityHelper;
 use HolidayManagement\Repository\HolidayRepository;
 use HolidayManagement\Model\Holiday;
 use HolidayManagement\Model\HolidayBranch;
+use SelfService\Repository\LeaveRequestRepository;
 
 class WebServiceController extends AbstractActionController
 {
@@ -176,6 +177,32 @@ class WebServiceController extends AbstractActionController
                         "data"=>"Holiday Successfully Updated!!"
                     ];
                     break;
+                case "pullLeaveDetail":
+                    $leaveRequestRepository = new LeaveRequestRepository($this->adapter);
+                    $filtersId = $postedData->data;
+                    $leaveId = $filtersId['leaveId'];
+                    $employeeId = $filtersId['employeeId'];
+                    $leaveDetail =$leaveRequestRepository->getLeaveDetail($employeeId,$leaveId);
+
+                    $responseData = [
+                        "success" => true,
+                        "data" => $leaveDetail
+                    ];
+                    break;
+
+//                case "pullLeaveDetail":
+//                    $leaveRequestRepository = new LeaveRequestRepository();
+//                    $filtersId = $postedData->data;
+////                    $leaveId = $filtersId['leaveId'];
+////                    $employeeId = $filtersId['employeeId'];
+////
+////                    $leaveDetail =$leaveRequestRepository->getLeaveDetail($employeeId,$leaveId);
+//
+//                    $responseData = [
+//                        "data"=>$filtersId,
+//                        "success" => true
+//                    ];
+//                    break;
                 default:
                     $responseData = [
                         "success" => false

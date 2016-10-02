@@ -24,7 +24,7 @@ if($this->messages) { ?>
         <div class="row">
             <div class="col-md-6">
                 <div class="btn-group">
-                    <a href="<?= $this->url('department', ['action' => 'add']) ?>" id="sample_editable_1_new"
+                    <a href="<?= $this->url('leaverequest', ['action' => 'add']) ?>" id="sample_editable_1_new"
                        class="btn green">Apply For Leave
                         <!--                        <i class="fa fa-plus"></i>-->
                     </a>
@@ -119,13 +119,18 @@ if($this->messages) { ?>
                         $status = $this->escapeHtml($leaveRequestList['STATUS']);
                         if($status=='RQ'){
                             echo "Pending";
+                        }else if($status='RC'){
+                            echo "Cancelled";
                         }
                     ?>
                 </td>
                 <td>
-                    <?php
-
-                    ?>
+                   <?php if($status=='RQ'){ ?>
+                    <a class=""
+                       href="<?= $this->url("leaverequest", ["action" => "delete", "id" =>$leaveRequestList['ID']]); ?>">
+                        Cancel Request
+                    </a>
+                   <?php } ?>
                 </td>
             </tr>
 

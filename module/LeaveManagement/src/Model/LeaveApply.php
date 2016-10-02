@@ -27,7 +27,9 @@ class LeaveApply extends Model
     const APPROVED_DT="APPROVED_DT";
     const HALF_DAY="HALF_DAY";
     const REQUESTED_DT="REQUESTED_DT";
+    const ID="ID";
 
+    public $id;
     public $employeeId;
     public $leaveId;
     public $startDate;
@@ -43,6 +45,7 @@ class LeaveApply extends Model
 
 
     public $mappings=[
+        'id'=>self::ID,
         'employeeId'=>self::EMPLOYEE_ID,
         'leaveId'=>self::LEAVE_ID,
         'startDate'=>self::START_DATE,
