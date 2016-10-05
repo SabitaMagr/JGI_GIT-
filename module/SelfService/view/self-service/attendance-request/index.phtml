@@ -1,2 +1,112 @@
 <?php
-echo "hellow this is attendance request";
+/**
+ * Load Javascript files here
+ */
+$this->headScript()
+    ->appendFile($this->basePath('js/kendoDataTable.js'));
+?>
+
+<?php
+if($this->messages) { ?>
+    <script>
+        document.messages=<?php echo json_encode($this->messages); ?>
+    </script>
+<?php } ?>
+
+<script>
+    document.menu =<?php $menu = ["id" => "menuSelfService", "subMenu" => ["id" => "subMenuAttendanceRequest"]];echo json_encode($menu);?>;
+</script>
+
+<div class="page-bar">
+    <?= $this->navigation('Zend\Navigation\attendancerequest')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
+</div>
+
+<div class="margin-top-20">
+    <div class="table-toolbar">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="btn-group">
+                    <a href="<?= $this->url('attendancerequest', ['action' => 'add']) ?>" id="sample_editable_1_new"
+                       class="btn green"> Add New
+                        <i class="fa fa-plus"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="btn-group pull-right">
+                    <button class="btn green btn-outline dropdown-toggle" data-toggle="dropdown">Tools
+                        <i class="fa fa-angle-down"></i>
+                    </button>
+                    <ul class="dropdown-menu pull-right">
+                        <li>
+                            <a href="javascript:;"> Print </a>
+                        </li>
+                        <li>
+                            <a href="javascript:;"> Save as PDF </a>
+                        </li>
+                        <li>
+                            <a href="javascript:;"> Export to Excel </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <table class="table" id="dataTable">
+        <thead>
+        <tr role="row">
+            <th>
+                Attendance Date
+            </th>
+            <th>
+                Check In
+            </th>
+            <th>
+                Check Out
+            </th>
+            <th>
+                Late In Reason
+            </th>
+            <th>
+                Early Out Reason
+            </th>
+            <th>
+                Action
+            </th>
+
+        </tr>
+        </thead>
+        <tbody>
+
+        <?php foreach ($attendanceList as $attendances):
+            ?>
+            <tr role="row">
+
+                <td class="">
+                    <?php print $this->escapeHtml($attendances['ATTENDANCE_DT']); ?>
+                </td>
+                <td class="">
+                    <?php print $this->escapeHtml($attendances['IN_TIME']); ?>
+                </td>
+                <td class="">
+                    <?php print $this->escapeHtml($attendances['OUT_TIME']); ?>
+                </td>
+                <td class="">
+                    <?php print $this->escapeHtml($attendances['IN_REMARKS']); ?>
+                </td>
+                <td class="">
+                    <?php print $this->escapeHtml($attendances['OUT_REMARKS']); ?>
+                </td>
+
+                <td class="">
+                    <a href="<?= $this->url("attendancerequest", ["action" => "edit", "id" => $attendances['ID']]); ?>">Edit
+                    </a>
+                </td>
+            </tr>
+
+        <?php endforeach; ?>
+
+        </tbody>
+    </table>
+
+</div>

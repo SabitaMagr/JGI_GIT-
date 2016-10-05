@@ -57,7 +57,7 @@ class LeaveApplyForm
      * @Annotation\Type("Zend\Form\Element\Number")
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"No of Days"})
-     * @Annotation\Required(false)
+     * @Annotation\Required(true)
      * @Annotation\Validator({"name":"StringLength", "options":{"max":"2"}})
      * @Annotation\Attributes({ "id":"noOfDays","readonly":"readonly", "class":"form-control","min":"0","max":"99"  })
      */

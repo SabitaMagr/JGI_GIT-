@@ -59,6 +59,7 @@ return array(
     'RestfulService\\' => array($baseDir . '/module/RestfulService/src'),
     'Psr\\Log\\' => array($vendorDir . '/psr/log/Psr/Log'),
     'Psr\\Http\\Message\\' => array($vendorDir . '/psr/http-message/src'),
+    'ManagerService\\' => array($baseDir . '/module/ManagerService/src'),
     'LeaveManagement\\' => array($baseDir . '/module/LeaveManagement/src'),
     'Interop\\Container\\' => array($vendorDir . '/container-interop/container-interop/src/Interop/Container'),
     'HolidayManagement\\' => array($baseDir . '/module/HolidayManagement/src'),

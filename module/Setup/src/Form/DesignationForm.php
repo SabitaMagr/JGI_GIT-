@@ -72,6 +72,15 @@ class DesignationForm
     public $withinBranch;
 
     /**
+     * @Annotation\Type("Zend\Form\Element\Radio")
+     * @Annotation\Required(false)
+     * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
+     * @Annotation\Options({"label":"Within Department","value_options":{"Y":"Yes","N":"No"}})
+     * @Annotation\Attributes({"id":"form-withinDepartment","class":"form-control"})
+     */
+    public $withinDepartment;
+
+    /**
      * @Annotation\Type("Zend\Form\Element\Select")
      * @Annotation\Required(false)
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})

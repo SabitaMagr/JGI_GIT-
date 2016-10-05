@@ -5,6 +5,7 @@ $form->setAttribute('role', 'form');
 $form->setAttribute('class', 'jobHistory-form');
 
 $employeeId = $form->get('employeeId');
+$employeeId->setValueOptions($employees);
 $startDate = $form->get('startDate');
 $endDate = $form->get('endDate');
 $serviceTypeId = $form->get('serviceTypeId');

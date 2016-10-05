@@ -11,6 +11,7 @@ $status = $form->get("status");
 $parentDesignation = $form->get("parentDesignation");
 $parentDesignation->setValueOptions($designationList);
 $withinBranch = $form->get("withinBranch");
+$withinDepartment = $form->get("withinDepartment");
 
 $submit = $form->get("submit");
 $submit->setAttribute('value', 'SUBMIT');
@@ -64,14 +65,29 @@ $form->prepare();
                     <?= $this->formElement($parentDesignation); ?>
                     <?= $this->formElementErrors()->render($parentDesignation, ['class' => 'help-block']) ?>
                 </div>
-                <div class="form-group">
-                    <?= $this->formLabel($withinBranch) ?>
+                <div class="row" id="scopeArea">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <?= $this->formLabel($withinBranch) ?>
 
-                    <div class="md-radio-inline">
-                        <?php
-                        $customRender($withinBranch); ?>
+                            <div class="md-radio-inline">
+                                <?php
+                                $customRender($withinBranch); ?>
+                            </div>
+                            <?= $this->formElementErrors()->render($withinBranch, ['class' => 'help-block']) ?>
+                        </div>
                     </div>
-                    <?= $this->formElementErrors()->render($withinBranch, ['class' => 'help-block']) ?>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <?= $this->formLabel($withinDepartment) ?>
+
+                            <div class="md-radio-inline">
+                                <?php
+                                $customRender($withinDepartment); ?>
+                            </div>
+                            <?= $this->formElementErrors()->render($withinDepartment, ['class' => 'help-block']) ?>
+                        </div>
+                    </div>
                 </div>
                 <div class="form-group">
                     <?php print $this->formLabel($status); ?>

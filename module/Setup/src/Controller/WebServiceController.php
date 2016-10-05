@@ -15,6 +15,8 @@ use HolidayManagement\Repository\HolidayRepository;
 use HolidayManagement\Model\Holiday;
 use HolidayManagement\Model\HolidayBranch;
 use SelfService\Repository\LeaveRequestRepository;
+use Setup\Repository\RecommendApproveRepository;
+use Setup\Repository\EmployeeRepository;
 
 class WebServiceController extends AbstractActionController
 {
@@ -190,19 +192,58 @@ class WebServiceController extends AbstractActionController
                     ];
                     break;
 
-//                case "pullLeaveDetail":
-//                    $leaveRequestRepository = new LeaveRequestRepository();
-//                    $filtersId = $postedData->data;
-////                    $leaveId = $filtersId['leaveId'];
-////                    $employeeId = $filtersId['employeeId'];
-////
-////                    $leaveDetail =$leaveRequestRepository->getLeaveDetail($employeeId,$leaveId);
-//
-//                    $responseData = [
-//                        "data"=>$filtersId,
-//                        "success" => true
-//                    ];
-//                    break;
+                case "pullRecommendApproveList":
+                    $employeeRepository = new EmployeeRepository($this->adapter);
+                    $recommendApproveRepository = new RecommendApproveRepository($this->adapter);
+                    $employeeId = $postedData->employeeId;
+                    $employeeDetail = $employeeRepository->fetchById($employeeId);
+                    $branchId = $employeeDetail['BRANCH_ID'];
+                    $departmentId = $employeeDetail['DEPARTMENT_ID'];
+                    $designations =$recommendApproveRepository->getDesignationList($employeeId);
+
+                    $recommender = array();
+                    $approver = array();
+                    foreach($designations as $key=>$designationList){
+                        $withinBranch = $designationList['WITHIN_BRANCH'];
+                        $withinDepartment = $designationList['WITHIN_DEPARTMENT'];
+                        $designationId = $designationList['DESIGNATION_ID'];
+                        $employees = $recommendApproveRepository->getEmployeeList($withinBranch,$withinDepartment,$designationId,$branchId,$departmentId);
+
+                        if($key==1){
+                            $i=0;
+                            foreach($employees as $employeeList){
+                               // array_push($recommender,$employeeList);
+                                $recommender [$i]["id"]=$employeeList['EMPLOYEE_ID'];
+                                $recommender [$i]["name"]= $employeeList['FIRST_NAME']." ".$employeeList['MIDDLE_NAME']." ".$employeeList['LAST_NAME'];
+                                $i++;
+                            }
+                        }else if($key==2){
+                            $i=0;
+                            foreach($employees as $employeeList){
+                                //array_push($approver,$employeeList);
+                                $approver [$i]["id"]=$employeeList['EMPLOYEE_ID'];
+                                $approver [$i]["name"]= $employeeList['FIRST_NAME']." ".$employeeList['MIDDLE_NAME']." ".$employeeList['LAST_NAME'];
+                                $i++;
+                            }
+                        }
+                    }
+                    $responseData = [
+                        "success" => true,
+                        "recommender" => $recommender,
+                        "approver"=>$approver
+                    ];
+                    break;
+
+                case "pullEmpRecommendApproveDtl":
+                    $recommendApproveRepository = new RecommendApproveRepository($this->adapter);
+                    $employeeId = $postedData->employeeId;
+                    $result = $recommendApproveRepository->fetchById($employeeId);
+                    $responseData = [
+                        "success"=>true,
+                        "data"=>$result
+                    ];
+                    break;
+
                 default:
                     $responseData = [
                         "success" => false

@@ -56,13 +56,24 @@
                 var oneDay = 24 * 60 * 60 * 1000; // hours*minutes*seconds*milliseconds
                 var diffDays = Math.abs((startDate.getTime() - endDate.getTime()) / (oneDay));
                 var newValue = diffDays + 1;
-                $("#noOfDays").val(newValue);
+                var availableDays = $("#availableDays").val();
+
+                if(newValue>availableDays){
+                    $("#noOfDays").val(newValue);
+                    $("#errorMsg").html("* Applied days can't be more than available days");
+                    $("input[type=submit]").attr("disabled", "disabled");
+                }else {
+                    $("#noOfDays").val(newValue);
+                    $("#errorMsg").html("");
+                    $("input[type=submit]").removeAttr("disabled");
+                }
             }
         };
         $("#endDate").on("change", dateDifference);
         $("#startDate").on("change", dateDifference);
 
         dateDifference();
+
     });
 })(window.jQuery, window.app);
 

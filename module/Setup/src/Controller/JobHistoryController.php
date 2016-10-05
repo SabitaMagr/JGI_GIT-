@@ -9,6 +9,7 @@ use Setup\Repository\JobHistoryRepository;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\Mvc\Controller\AbstractActionController;
+use Application\Helper\EntityHelper as EntityHelper1;
 
 class JobHistoryController extends AbstractActionController
 {
@@ -62,6 +63,7 @@ class JobHistoryController extends AbstractActionController
             [
                 'form' => $this->form,
                 'messages' => $this->flashmessenger()->getMessages(),
+                'employees' => EntityHelper1::getTableKVList($this->adapter,"HR_EMPLOYEES","EMPLOYEE_ID",["FIRST_NAME","MIDDLE_NAME","LAST_NAME"],["STATUS"=>"E"]),
                 'departments' => EntityHelper::getTableKVList($this->adapter, EntityHelper::HR_DEPARTMENTS),
                 'designations' => EntityHelper::getTableKVList($this->adapter, EntityHelper::HR_DESIGNATIONS),
                 'branches' => EntityHelper::getTableKVList($this->adapter, EntityHelper::HR_BRANCHES),
@@ -105,6 +107,7 @@ class JobHistoryController extends AbstractActionController
                 'form' => $this->form,
                 'id' => $id,
                 'messages' => $this->flashmessenger()->getMessages(),
+                'employees' => EntityHelper1::getTableKVList($this->adapter,"HR_EMPLOYEES","EMPLOYEE_ID",["FIRST_NAME","MIDDLE_NAME","LAST_NAME"],["STATUS"=>"E"]),
                 'departments' => EntityHelper::getTableKVList($this->adapter, EntityHelper::HR_DEPARTMENTS),
                 'designations' => EntityHelper::getTableKVList($this->adapter, EntityHelper::HR_DESIGNATIONS),
                 'branches' => EntityHelper::getTableKVList($this->adapter, EntityHelper::HR_BRANCHES),

@@ -17,8 +17,10 @@ use LeaveManagement\Form\LeaveApplyForm;
 use LeaveManagement\Model\LeaveApply;
 use Zend\Form\Annotation\AnnotationBuilder;
 use Application\Helper\EntityHelper;
-use LeaveManagement\Model\LeaveMaster;
 use Zend\Form\Element\Select;
+use Setup\Repository\RecommendApproveRepository;
+use Setup\Repository\EmployeeRepository;
+
 
 class LeaveRequest extends AbstractActionController{
 
@@ -54,6 +56,18 @@ class LeaveRequest extends AbstractActionController{
         $this->initializeForm();
         $request = $this->getRequest();
 
+        $recommendApproveRepository =  new RecommendApproveRepository($this->adapter);
+        $empRecommendApprove  = $recommendApproveRepository->fetchById($this->employeeId);
+
+        if($empRecommendApprove!=null){
+            $recommendBy = $empRecommendApprove['RECOMMEND_BY'];
+            $approvedBy = $empRecommendApprove['APPROVED_BY'];
+        }else{
+            $result = $this->recommendApproveList();
+            $recommendBy=$result['recommender'][0]['id'];
+            $approvedBy=$result['approver'][0]['id'];
+        }
+
         $leaveFormElement = new Select();
         $leaveFormElement->setName("leave");
         $leaveFormElement->setLabel("Leave");
@@ -71,6 +85,8 @@ class LeaveRequest extends AbstractActionController{
                 $leaveRequest->employeeId=$this->employeeId;
                 $leaveRequest->startDate=Helper::getExpressionDate($leaveRequest->startDate);
                 $leaveRequest->endDate=Helper::getExpressionDate($leaveRequest->endDate);
+                $leaveRequest->recommendedBy=$recommendBy;
+                $leaveRequest->approvedBy=$approvedBy;
                 $leaveRequest->requestedDt = Helper::getcurrentExpressionDate();
                 $leaveRequest->status = "RQ";
 
@@ -97,6 +113,48 @@ class LeaveRequest extends AbstractActionController{
         $this->leaveRequestRepository->delete($id);
         $this->flashmessenger()->addMessage("Leave Request Successfully Cancelled!!!");
         return $this->redirect()->toRoute('leaverequest');
+    }
+
+    public function recommendApproveList(){
+        $employeeRepository = new EmployeeRepository($this->adapter);
+        $recommendApproveRepository = new RecommendApproveRepository($this->adapter);
+        $employeeId = $this->employeeId;
+        $employeeDetail = $employeeRepository->fetchById($employeeId);
+        $branchId = $employeeDetail['BRANCH_ID'];
+        $departmentId = $employeeDetail['DEPARTMENT_ID'];
+        $designations =$recommendApproveRepository->getDesignationList($employeeId);
+
+        $recommender = array();
+        $approver = array();
+        foreach($designations as $key=>$designationList){
+            $withinBranch = $designationList['WITHIN_BRANCH'];
+            $withinDepartment = $designationList['WITHIN_DEPARTMENT'];
+            $designationId = $designationList['DESIGNATION_ID'];
+            $employees = $recommendApproveRepository->getEmployeeList($withinBranch,$withinDepartment,$designationId,$branchId,$departmentId);
+
+            if($key==1){
+                $i=0;
+                foreach($employees as $employeeList){
+                    // array_push($recommender,$employeeList);
+                    $recommender [$i]["id"]=$employeeList['EMPLOYEE_ID'];
+                    $recommender [$i]["name"]= $employeeList['FIRST_NAME']." ".$employeeList['MIDDLE_NAME']." ".$employeeList['LAST_NAME'];
+                    $i++;
+                }
+            }else if($key==2){
+                $i=0;
+                foreach($employees as $employeeList){
+                    //array_push($approver,$employeeList);
+                    $approver [$i]["id"]=$employeeList['EMPLOYEE_ID'];
+                    $approver [$i]["name"]= $employeeList['FIRST_NAME']." ".$employeeList['MIDDLE_NAME']." ".$employeeList['LAST_NAME'];
+                    $i++;
+                }
+            }
+        }
+        $responseData = [
+            "recommender" => $recommender,
+            "approver"=>$approver
+        ];
+        return $responseData;
     }
 
 }
