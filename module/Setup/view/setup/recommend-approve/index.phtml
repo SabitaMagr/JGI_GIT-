@@ -5,7 +5,6 @@
 $this->headScript()
     ->appendFile($this->basePath('js/kendoDataTable.js'));
 ?>
-
 <?php
 if($this->messages) { ?>
     <script>
@@ -14,11 +13,10 @@ if($this->messages) { ?>
 <?php } ?>
 
 <script>
-    document.menu =<?php $menu = ["id" => "menuSetup", "subMenu" => ["id" => "subMenuDesignation"]];echo json_encode($menu);?>;
+    document.menu =<?php $menu = ["id" => "menuSetup", "subMenu" => ["id" => "subMenuRecommendApprove"]];echo json_encode($menu);?>;
 </script>
-
 <div class="page-bar">
-    <?= $this->navigation('Zend\Navigation\Designation')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
+    <?= $this->navigation('Zend\Navigation\recommendapprove')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
 
 
@@ -27,7 +25,7 @@ if($this->messages) { ?>
         <div class="row">
             <div class="col-md-6">
                 <div class="btn-group">
-                    <a href="<?= $this->url('designation', ['action' => 'add']) ?>" id="sample_editable_1_new"
+                    <a href="<?= $this->url('recommendapprove', ['action' => 'add']) ?>" id="sample_editable_1_new"
                        class="btn green"> Add New
                         <!--                        <i class="fa fa-plus"></i>-->
                     </a>
@@ -53,18 +51,18 @@ if($this->messages) { ?>
             </div>
         </div>
     </div>
-    <table class="table" id="dataTable">
+
+    <table class="table " id="dataTable">
         <thead>
         <tr role="row">
             <th>
-                Designation Title
-                Code
+                Employee Name
             </th>
             <th>
-                Designation Detail
+                Recommender
             </th>
             <th>
-                Parent Designation
+                Approver
             </th>
             <th>
                 Action
@@ -73,28 +71,32 @@ if($this->messages) { ?>
         </thead>
         <tbody>
 
-        <?php foreach ($designations as $designation): ?>
+        <?php foreach ($list as $allList){  ?>
             <tr role="row">
                 <td>
-                    <?php print $this->escapeHtml($designation->DESIGNATION_CODE); ?>
+                    <?php
+                    print $this->escapeHtml($allList['FIRST_NAME'])." ".$this->escapeHtml($allList['MIDDLE_NAME'])." ".$this->escapeHtml($allList['LAST_NAME']);
+                    ?>
+                </td>
+                <td class="v-align-middle sorting_1">
+                    <?php
+                    print $this->escapeHtml($allList['FIRST_NAME_R'])." ".$this->escapeHtml($allList['MIDDLE_NAME_R'])." ".$this->escapeHtml($allList['LAST_NAME_R']);
+                    ?>
                 </td>
                 <td>
-                    <?php print $this->escapeHtml($designation->DESIGNATION_TITLE); ?>
+                    <?php
+                    print $this->escapeHtml($allList['FIRST_NAME_A'])." ".$this->escapeHtml($allList['MIDDLE_NAME_A'])." ".$this->escapeHtml($allList['LAST_NAME_A']);
+                    ?>
                 </td>
                 <td>
-                    <?php print $this->escapeHtml($designation->PARENT_DESIGNATION); ?>
-                </td>
-                <td>
-                    <a href="<?= $this->url("designation", ["action" => "edit", "id" => $designation->DESIGNATION_ID]) ?>">
+                    <a
+                        href="<?= $this->url("recommendapprove", ["action" => "edit", "id" =>$allList['EMPLOYEE_ID']]); ?>">
                         Edit
-                    </a> /
-                    <a href="<?= $this->url("designation", ["action" => "delete", "id" => $designation->DESIGNATION_ID]); ?>">
-                        Delete
                     </a>
                 </td>
             </tr>
 
-        <?php endforeach; ?>
+        <?php } ?>
 
         </tbody>
     </table>

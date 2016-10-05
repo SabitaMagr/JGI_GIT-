@@ -57,6 +57,33 @@ class DesignationForm
      * @Annotation\Type("Zend\Form\Element\Select")
      * @Annotation\Required(false)
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
+     * @Annotation\Options({"disable_inarray_validator":"true","label":"Parent Designation"})
+     * @Annotation\Attributes({ "id":"form-parentDesignation","class":"form-control"})
+     */
+    public $parentDesignation;
+
+    /**
+     * @Annotation\Type("Zend\Form\Element\Radio")
+     * @Annotation\Required(false)
+     * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
+     * @Annotation\Options({"label":"Within Branch","value_options":{"Y":"Yes","N":"No"}})
+     * @Annotation\Attributes({"id":"form-withinBranch","class":"form-control"})
+     */
+    public $withinBranch;
+
+    /**
+     * @Annotation\Type("Zend\Form\Element\Radio")
+     * @Annotation\Required(false)
+     * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
+     * @Annotation\Options({"label":"Within Department","value_options":{"Y":"Yes","N":"No"}})
+     * @Annotation\Attributes({"id":"form-withinDepartment","class":"form-control"})
+     */
+    public $withinDepartment;
+
+    /**
+     * @Annotation\Type("Zend\Form\Element\Select")
+     * @Annotation\Required(false)
+     * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
      * @Annotation\Options({"label":"Status","value_options":{"E":"Enabled","D":"Disabled"}})
      * @Annotation\Attributes({ "id":"form-status","class":"form-control"})
      */

@@ -13,6 +13,7 @@ namespace Setup\Controller;
  */
 
 use Application\Helper\Helper;
+use Application\Helper\EntityHelper;
 use Setup\Form\DesignationForm;
 use Setup\Model\Designation;
 use Zend\Form\Annotation\AnnotationBuilder;
@@ -29,7 +30,7 @@ class DesignationController extends AbstractActionController
 
     function __construct(AdapterInterface $adapter)
     {
-        $this->adapter=$adapter;
+        $this->adapter = $adapter;
         $this->repository = new DesignationRepository($adapter);
     }
 
@@ -60,17 +61,22 @@ class DesignationController extends AbstractActionController
                 $designation = new Designation();
                 $designation->exchangeArrayFromForm($this->form->getData());
                 $designation->createdDt = Helper::getcurrentExpressionDate();
-                $designation->designationId=((int) Helper::getMaxId($this->adapter,"HR_DESIGNATIONS","DESIGNATION_ID"))+1;
+                $designation->designationId = ((int)Helper::getMaxId($this->adapter, "HR_DESIGNATIONS", "DESIGNATION_ID")) + 1;
                 $this->repository->add($designation);
 
                 $this->flashmessenger()->addMessage("Designation Successfully added!!!");
                 return $this->redirect()->toRoute("designation");
             }
         }
+        $designationList = EntityHelper::getTableKVList($this->adapter, Designation::TABLE_NAME, Designation::DESIGNATION_ID, [Designation::DESIGNATION_TITLE], ["STATUS" => "E"]);
+        $designationList[""] = "none";
+        ksort($designationList);
         return new ViewModel(Helper::addFlashMessagesToArray(
             $this,
             [
                 'form' => $this->form,
+                'customRender' => Helper::renderCustomView(),
+                'designationList' => $designationList,
                 'messages' => $this->flashmessenger()->getMessages()
             ]
         )
@@ -104,8 +110,18 @@ class DesignationController extends AbstractActionController
                 return $this->redirect()->toRoute("designation");
             }
         }
-        return Helper::addFlashMessagesToArray(
-            $this, ['form' => $this->form, 'id' => $id]
+        $designationList = EntityHelper::getTableKVList($this->adapter, Designation::TABLE_NAME, Designation::DESIGNATION_ID, [Designation::DESIGNATION_TITLE], ["STATUS" => "E"]);
+        $designationList[-1] = "none";
+        ksort($designationList);
+        return new ViewModel(Helper::addFlashMessagesToArray(
+            $this,
+            [
+                'form' => $this->form,
+                'customRender' => Helper::renderCustomView(),
+                'designationList' => $designationList,
+                'messages' => $this->flashmessenger()->getMessages(),
+                'id' => $id
+            ])
         );
     }
 
@@ -120,5 +136,6 @@ class DesignationController extends AbstractActionController
         return $this->redirect()->toRoute('designation');
     }
 }
+
 /* End of file DesignationController.php */
 /* Location: ./Setup/src/Controller/DesignationController.php */

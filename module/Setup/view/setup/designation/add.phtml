@@ -6,6 +6,11 @@ $form->setAttribute('class', 'designation-form');
 
 $designationCode = $form->get('designationCode');
 $designationTitle = $form->get("designationTitle");
+$parentDesignation = $form->get("parentDesignation");
+$parentDesignation->setValueOptions($designationList);
+$withinBranch = $form->get("withinBranch");
+$withinDepartment = $form->get("withinDepartment");
+
 $basicSalary = $form->get("basicSalary");
 $status = $form->get("status");
 
@@ -54,6 +59,35 @@ $form->prepare();
                     <?= $this->formLabel($basicSalary) ?>
                     <?= $this->formElement($basicSalary); ?>
                     <?= $this->formElementErrors()->render($basicSalary, ['class' => 'help-block']) ?>
+                </div>
+                <div class="form-group">
+                    <?= $this->formLabel($parentDesignation) ?>
+                    <?= $this->formElement($parentDesignation); ?>
+                    <?= $this->formElementErrors()->render($parentDesignation, ['class' => 'help-block']) ?>
+                </div>
+                <div class="row" id="scopeArea">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <?= $this->formLabel($withinBranch) ?>
+
+                            <div class="md-radio-inline">
+                                <?php
+                                $customRender($withinBranch); ?>
+                            </div>
+                            <?= $this->formElementErrors()->render($withinBranch, ['class' => 'help-block']) ?>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <?= $this->formLabel($withinDepartment) ?>
+
+                            <div class="md-radio-inline">
+                                <?php
+                                $customRender($withinDepartment); ?>
+                            </div>
+                            <?= $this->formElementErrors()->render($withinDepartment, ['class' => 'help-block']) ?>
+                        </div>
+                    </div>
                 </div>
                 <div class="form-group">
                     <?php print $this->formLabel($status); ?>

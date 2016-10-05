@@ -131,6 +131,11 @@
                                 Service Type
                         </a>
                     </li>
+                    <li id="subMenuRecommendApprove">
+                        <a href="<?= $this->url("recommendapprove", ["action" => "index"]) ?>" class="nav-link">
+                            <span class="title">Recommender/Approver</span>
+                        </a>
+                    </li>
                 </ul>
             </li>
             <li id="menuLeaveManagement" class="nav-item">
@@ -208,6 +213,20 @@
                         </a>
                     </li>
                 </ul>
+            </li><li id="menuManagerService" class="nav-item">
+                <a href="javascript:;" class="nav-link nav-toggle">
+                    <i class="icon-folder"></i>
+                    <span class="title">Manager Service</span>
+                    <span class="arrow"></span>
+                </a>
+                <ul class="sub-menu">
+                    <li id="subMenuLeaveApprove" class="nav-item">
+                        <a href="<?= $this->url("leaveapprove", ["action" => "index"]); ?>">
+                            <i class="icon-pencil"></i>
+                            Leaves to Approve
+                        </a>
+                    </li>
+                </ul>
             </li>
             <li id="menuSelfService" class="nav-item">
                 <a href="javascript:;" class="nav-link nav-toggle">
@@ -216,10 +235,10 @@
                     <span class="arrow"></span>
                 </a>
                 <ul class="sub-menu">
-                    <li id="subMenuMyAttendance" class="nav-item">
-                        <a href="<?= $this->url("myattendance", ["action" => "index"]); ?>">
+                    <li id="subMenuAttendanceRequest" class="nav-item">
+                        <a href="<?= $this->url("attendancerequest", ["action" => "index"]); ?>">
                             <i class="icon-pencil"></i>
-                            My Attendance
+                             Attendance Request
                         </a>
                     </li>
                     <li id="subMenuHoliday" class="nav-item">
@@ -240,10 +259,10 @@
                             Leave Apply
                         </a>
                     </li>
-                    <li id="subMenuAttendanceRequest" class="nav-item">
-                        <a href="<?= $this->url("attendancerequest", ["action" => "index"]); ?>">
+                    <li id="subMenuMyAttendance" class="nav-item">
+                        <a href="<?= $this->url("myattendance", ["action" => "index"]); ?>">
                             <i class="icon-pencil"></i>
-                            Attendance Request
+                            My Attendance
                         </a>
                     </li>
                 </ul>

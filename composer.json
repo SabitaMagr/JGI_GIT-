@@ -46,7 +46,8 @@
             "AttendanceManagement\\":"module/AttendanceManagement/src/",
             "SelfService\\":"module/SelfService/src/",
             "RestfulService\\":"module/RestfulService/src/",
-            "Payroll\\":"module/Payroll/src/"
+            "Payroll\\":"module/Payroll/src/",
+            "ManagerService\\":"module/ManagerService/src/"
         }
     },
     "autoload-dev": {

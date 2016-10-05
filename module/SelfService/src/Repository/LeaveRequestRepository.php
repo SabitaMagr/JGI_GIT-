@@ -30,7 +30,7 @@ class LeaveRequestRepository implements RepositoryInterface {
 
     public function add(Model $model)
     {
-        // TODO: Implement add() method.
+        $this->tableGateway->insert($model->getArrayCopyForDB());
     }
 
     public function edit(Model $model, $id)
@@ -43,6 +43,7 @@ class LeaveRequestRepository implements RepositoryInterface {
         // TODO: Implement fetchAll() method.
     }
 
+    //to get the all applied leave request list
     public function selectAll($employeeId){
 
         $sql = new Sql($this->adapter);
@@ -51,6 +52,7 @@ class LeaveRequestRepository implements RepositoryInterface {
             new Expression("TO_CHAR(LA.START_DATE, 'DD-MON-YYYY') AS FROM_DATE"),
             new Expression("TO_CHAR(LA.END_DATE, 'DD-MON-YYYY') AS TO_DATE"),
             new Expression("LA.STATUS AS STATUS"),
+            new Expression("LA.ID AS ID"),
         ], true);
 
         $select->from(['LA' => LeaveApply::TABLE_NAME])
@@ -67,6 +69,49 @@ class LeaveRequestRepository implements RepositoryInterface {
         return $result;
     }
 
+    //to get the leave detail based on assigned employee id
+    public function getLeaveDetail($employeeId,$leaveId){
+        $sql = new Sql($this->adapter);
+        $select = $sql->select();
+        $select->columns([new Expression("LA.BALANCE AS BALANCE")], true);
+
+        $select->from(['LA' => LeaveAssign::TABLE_NAME])
+            ->join(['E'=>"HR_EMPLOYEES"],"E.EMPLOYEE_ID=LA.EMPLOYEE_ID",['FIRST_NAME','MIDDLE_NAME','LAST_NAME'])
+            ->join(['L'=>'HR_LEAVE_MASTER_SETUP'],"L.LEAVE_ID=LA.LEAVE_ID",['LEAVE_CODE','LEAVE_ENAME','ALLOW_HALFDAY']);
+
+        $select->where([
+            "L.STATUS='E'",
+            "E.EMPLOYEE_ID=".$employeeId,
+            "L.LEAVE_ID=".$leaveId
+        ]);
+
+        $statement = $sql->prepareStatementForSqlObject($select);
+        $result = $statement->execute();
+        return $result->current();
+    }
+
+    //to get the leave list based on assigned employee id for select option
+    public function getLeaveList($employeeId){
+        $sql  = new Sql($this->adapter);
+        $select = $sql->select();
+        $select->from(['LA'=>LeaveAssign::TABLE_NAME])
+            ->join(['L'=>'HR_LEAVE_MASTER_SETUP'],"L.LEAVE_ID=LA.LEAVE_ID",['LEAVE_CODE','LEAVE_ENAME']);
+        $select->where([
+           "L.STATUS='E'",
+            "LA.EMPLOYEE_ID=".$employeeId
+        ]);
+
+        $statement = $sql->prepareStatementForSqlObject($select);
+
+        $resultset = $statement->execute();
+
+        $entitiesArray = array();
+        foreach ($resultset as $result) {
+            $entitiesArray[$result['LEAVE_ID']] = $result['LEAVE_ENAME'];
+        }
+        return $entitiesArray;
+    }
+
     public function fetchById($id)
     {
         // TODO: Implement fetchById() method.
@@ -74,6 +119,6 @@ class LeaveRequestRepository implements RepositoryInterface {
 
     public function delete($id)
     {
-        // TODO: Implement delete() method.
+        $this->tableGateway->update([LeaveApply::STATUS=>'RC'],[LeaveApply::ID=>$id]);
     }
 }

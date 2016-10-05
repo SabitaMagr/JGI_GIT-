@@ -17,6 +17,9 @@ class Designation extends Model
     const CREATED_DT="CREATED_DT";
     const MODIFIED_DT="MODIFIED_DT";
     const STATUS="STATUS";
+    const PARENT_DESIGNATION="PARENT_DESIGNATION";
+    const WITHIN_BRANCH="WITHIN_BRANCH";
+    const WITHIN_DEPARTMENT="WITHIN_DEPARTMENT";
 
     public $designationId;
     public $designationCode;
@@ -25,6 +28,9 @@ class Designation extends Model
     public $status;
     public $createdDt;
     public $modifiedDt;
+    public $parentDesignation;
+    public $withinBranch;
+    public $withinDepartment;
 
 
     public $mappings =[
@@ -34,6 +40,9 @@ class Designation extends Model
         'basicSalary'=>self::BASIC_SALARY,
         'createdDt'=>self::CREATED_DT,
         'modifiedDt'=>self::MODIFIED_DT,
+        'parentDesignation'=>self::PARENT_DESIGNATION,
+        'withinBranch'=>self::WITHIN_BRANCH,
+        'withinDepartment'=>self::WITHIN_DEPARTMENT,
         'status'=>self::STATUS,
     ];
 }

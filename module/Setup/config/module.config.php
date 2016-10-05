@@ -147,6 +147,20 @@ return [
                     ]
                 ],
             ],
+            'recommendapprove'=>[
+              'type'=>segment::class,
+                'options'=>[
+                    'route'=>'/setup/recommendapprove[/:action[/:id]]',
+                    'constants'=>[
+                      'action'=>'[a-zA-Z][a-zA-Z0-9_-]*',
+                        'id'=>'[0-9]+',
+                    ],
+                    'defaults' => [
+                        'controller' => Controller\RecommendApproveController::class,
+                        'action' => 'index',
+                    ]
+                ],
+            ],
 //            'leave' => [
 //                'type' => segment::class,
 //                'options' => [
@@ -417,6 +431,34 @@ return [
                 ]
             ]
         ],
+        'recommendapprove' => [
+
+            [
+                'label' => 'Recommender And Approver',
+                'route' => 'recommendapprove',
+            ],
+            [
+                'label' => 'Recommender And Approver',
+                'route' => 'recommendapprove',
+                'pages' => [
+                    [
+                        'label' => 'List',
+                        'route' => 'recommendapprove',
+                        'action' => 'index',
+                    ],
+                    [
+                        'label' => 'Add',
+                        'route' => 'recommendapprove',
+                        'action' => 'add',
+                    ],
+                    [
+                        'label' => 'Edit',
+                        'route' => 'recommendapprove',
+                        'action' => 'edit',
+                    ],
+                ]
+            ]
+        ],
 
     ],
     'controllers' => [
@@ -431,6 +473,7 @@ return [
             Controller\EmpCurrentPostingController::class => ControllerFactory::class,
             Controller\JobHistoryController::class => ControllerFactory::class,
             Controller\WebServiceController::class => ControllerFactory::class,
+            Controller\RecommendApproveController::class=>ControllerFactory::class
 //            Controller\LeaveMasterController::class => Controller\ControllerFactory::class,
         ],
 
