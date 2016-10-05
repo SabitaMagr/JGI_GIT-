@@ -1,0 +1,108 @@
+<?php
+$this->headScript()
+    ->appendFile($this->basePath('js/kendoDataTable.js'));
+?>
+<script>
+    document.menu =<?php $menu = ["id" => "menuPayroll", "subMenu" => ["id" => "subMenuMonthlyValue"], "subMenuChild" => ["id" => "subMenuChildMonthlyValueSetup"]];echo json_encode($menu);?>;
+</script>
+<?php if ($this->messages) { ?>
+    <script>
+        document.messages =<?php echo json_encode($this->messages); ?>
+    </script>
+<?php } ?>
+
+<div class="page-bar">
+    <?= $this->navigation('Zend\Navigation\monthlyValue')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
+</div>
+
+<div class="margin-top-20">
+    <div class="table-toolbar">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="btn-group">
+                    <a href="<?= $this->url('monthlyValue', ['action' => 'add']) ?>" id="sample_editable_1_new"
+                       class="btn green"> Add New
+                        <i class="fa fa-plus"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="btn-group pull-right">
+                    <button class="btn green btn-outline dropdown-toggle" data-toggle="dropdown">Tools
+                        <i class="fa fa-angle-down"></i>
+                    </button>
+                    <ul class="dropdown-menu pull-right">
+                        <li>
+                            <a href="javascript:;"> Print </a>
+                        </li>
+                        <li>
+                            <a href="javascript:;"> Save as PDF </a>
+                        </li>
+                        <li>
+                            <a href="javascript:;"> Export to Excel </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <table class="table" id="dataTable">
+        <thead>
+        <tr>
+            <th>
+                Code
+            </th>
+            <th>
+                EDesc
+            </th>
+            <th>
+                NDesc
+            </th>
+            <th>
+                Show At Rule
+            </th>
+            <th>
+                Index No
+            </th>
+            <th>
+                Action
+            </th>
+        </tr>
+        </thead>
+        <tbody>
+        <?php foreach ($monthlyValues as $monthlyValue): ?>
+            <tr role="row table-info">
+                <td>
+                    <?php print $this->escapeHtml($monthlyValue['MTH_CODE']); ?>
+                </td>
+                <td>
+                    <?php print $this->escapeHtml($monthlyValue['MTH_EDESC']); ?>
+                </td>
+                <td>
+                    <?php print $this->escapeHtml($monthlyValue['MTH_LDESC']); ?>
+                </td>
+                <td>
+                    <?php print $this->escapeHtml($constraint[$monthlyValue['SHOW_AT_RULE']]); ?>
+                </td>
+                <td>
+                    <?php print $this->escapeHtml($monthlyValue['SH_INDEX_NO']); ?>
+                </td>
+
+                <td>
+                    <a class=""
+                       href="<?= $this->url("monthlyValue", ["action" => "edit", "id" => $monthlyValue['MTH_ID']]) ?>">
+                        Edit
+                    </a> /
+                    <a class=""
+                       href="<?= $this->url("monthlyValue", ["action" => "delete", "id" => $monthlyValue['MTH_ID']]); ?>">
+                        Delete
+                    </a>
+
+                </td>
+            </tr>
+
+        <?php endforeach; ?>
+        </tbody>
+    </table>
+
+</div>

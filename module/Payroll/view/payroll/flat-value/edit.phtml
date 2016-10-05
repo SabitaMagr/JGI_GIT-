@@ -1,0 +1,84 @@
+<?php
+//load js files here
+?>
+
+<script>
+    document.menu =<?php $menu = ["id" => "menuPayroll", "subMenu" => ["id" => "subMenuFlatValue"],"subMenuChild"=>["id"=>"subMenuChildFlatValueSetup"]];echo json_encode($menu);?>;
+</script>
+<?php
+if ($this->messages) { ?>
+    <script>
+        document.messages =<?php echo json_encode($this->messages); ?>
+    </script>
+<?php } ?>
+
+<?php
+$flatCode = $form->get('flatCode');
+$flatEdesc = $form->get('flatEdesc');
+$flatLdesc = $form->get('flatLdesc');
+$showAtRule = $form->get('showAtRule');
+$remarks = $form->get('remarks');
+$submit = $form->get('submit');
+
+$submit->setAttribute('value', 'Edit');
+$form->setAttribute('action', $this->url('flatValue', ['action' => 'edit','id'=>$id]));
+?>
+
+<div class="page-bar">
+    <?= $this->navigation('Zend\Navigation\flatValue')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
+</div>
+
+
+<div class="row margin-top-20">
+    <div class="col-sm-8 col-sm-offset-2">
+        <div class="portlet box custom-box">
+            <div class="portlet-title">
+                <div class="caption">
+                    <i class="fa fa-user"></i>New Entry
+                </div>
+            </div>
+            <div class="portlet-body">
+                <?php print $this->form()->openTag($form); ?>
+                <div class="form-group<?= empty($flatCode->getMessages()) ? "" : "error" ?>">
+                    <?php print $this->formLabel($flatCode); ?>
+                    <?php print $this->formElement($flatCode); ?>
+                </div>
+                <?php print $this->formElementErrors()->render($flatCode, ['class' => 'help-block error']); ?>
+
+                <div class="form-group<?= empty($flatEdesc->getMessages()) ? "" : "error" ?>">
+                    <?php print $this->formLabel($flatEdesc); ?>
+                    <?php print $this->formElement($flatEdesc); ?>
+                </div>
+                <?php print $this->formElementErrors()->render($flatEdesc, ['class' => 'help-block error']); ?>
+
+                <div class="form-group <?= empty($flatLdesc->getMessages()) ? "" : "error" ?>">
+                    <?php print $this->formLabel($flatLdesc); ?>
+                    <?php print $this->formElement($flatLdesc); ?>
+                </div>
+                <?php print $this->formElementErrors()->render($flatLdesc, ['class' => 'help-block error']); ?>
+
+                <div class="form-group">
+                    <?php print $this->formLabel($showAtRule); ?>
+                    <div class="md-radio-inline">
+                        <?php $customRenderer($showAtRule); ?>
+                    </div>
+                </div>
+
+                <?php print $this->formElementErrors()->render($showAtRule, ['class' => 'help-block error']); ?>
+
+                <div class="form-group <?= empty($remarks->getMessages()) ? "" : "error" ?>">
+                    <?php print $this->formLabel($remarks); ?>
+                    <?php print $this->formElement($remarks); ?>
+                </div>
+                <?php print $this->formElementErrors()->render($remarks, ['class' => 'help-block error']); ?>
+
+
+                <?php print $this->formSubmit($submit); ?>
+                <?php
+                print $this->form()->closeTag();
+                ?>
+            </div>
+        </div>
+    </div>
+
+</div>

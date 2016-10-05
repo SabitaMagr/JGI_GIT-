@@ -1,0 +1,114 @@
+<?php
+/**
+ * Load Javascript files here
+ */
+$this->headScript()->appendFile($this->basePath('js/angular.min.js'));
+$this->headScript()->appendFile($this->basePath('js/Payroll/MonthlyValue/detailController.js'));
+?>
+
+<script>
+    document.menu =<?php $menu = ["id" => "menuPayroll", "subMenu" => ["id" => "subMenuMonthlyValue"], "subMenuChild" => ["id" => "subMenuChildMonthlyValueDetail"]];echo json_encode($menu);?>;
+    document.url = '<?= $this->url("restful", ["action" => "index"]) ?>';
+    document.branches =<?= json_encode($branches)?>;
+    document.departments =<?= json_encode($departments)?>;
+    document.designations =<?= json_encode($designations)?>;
+    document.monthlyValues =<?= json_encode($monthlyValues)?>;
+</script>
+<div class="page-bar">
+    <?= $this->navigation('Zend\Navigation\monthlyValue')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
+</div>
+
+<div ng-app="hris" ng-controller="monthlyValueDetailController">
+    <div class="row">
+        <div class="col-sm-2">
+            <label>Branch</label>
+        </div>
+        <div class="col-sm-2">
+            <label>Department</label>
+        </div>
+        <div class="col-sm-2">
+            <label>Designation</label>
+        </div>
+        <div class="col-sm-2">
+            <label>Monthly Values</label>
+        </div>
+        <div class="col-sm-2">
+        </div>
+        <div class="col-sm-2">
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-2">
+            <select class="form-control" ng-model="branch" ng-options="key as branch for (key,branch) in branches">
+                <option value="">All</option>
+            </select>
+        </div>
+        <div class="col-sm-2">
+            <select class="form-control" ng-model="department"
+                    ng-options="key as department for (key,department) in departments">
+                <option value="">All</option>
+            </select>
+        </div>
+        <div class="col-sm-2">
+            <select class="form-control" ng-model="designation"
+                    ng-options="key as designation for (key,designation) in designations">
+                <option value="">All</option>
+            </select>
+        </div>
+        <div class="col-sm-2">
+            <div class="mt-checkbox-list" style=" overflow: scroll;height: 100px;">
+                <label class="mt-checkbox mt-checkbox-outline">
+                    All
+                    <input
+                        type="checkbox"
+                        value="-1"
+                        ng-model="allMonthlyValue"
+                        ng-change="selectAllMonthlyValue(allMonthlyValue)">
+                    <span></span>
+                </label>
+                <label class="mt-checkbox mt-checkbox-outline" ng-repeat="monthlyValue in monthlyValues">
+                    {{monthlyValue.text}}
+                    <input
+                        type="checkbox"
+                        value="{{monthlyValue.id}}"
+                        ng-model="monthlyValue.selected">
+                    <span></span>
+                </label>
+            </div>
+        </div>
+        <div class="col-sm-2">
+        </div>
+        <div class="col-sm-2">
+            <button ng-click="view()" class="btn btn-sm yellow pull-right">
+                View
+                <i class="fa fa-search"></i>
+            </button>
+        </div>
+    </div>
+    <table>
+        <thead>
+        <tr>
+            <th>
+                Employee Id
+            </th>
+            <th>
+                Employee Name
+            </th>
+            <th ng-repeat="keys in monthlyValuekeys">{{monthlyValuesI[keys]}}</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr ng-repeat="row in tableData">
+            <td>{{row.EMPLOYEE_ID}}</td>
+            <td>
+                <span ng-bind="row.FIRST_NAME"></span>
+                <span ng-bind="row.MIDDLE_NAME"></span>
+                <span ng-bind="row.LAST_NAME"></span>
+            </td>
+            <td ng-repeat="keys in monthlyValuekeys">{{row[keys]}}</td>
+        </tr>
+
+        </tbody>
+    </table>
+
+</div>

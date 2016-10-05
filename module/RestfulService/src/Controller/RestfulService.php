@@ -5,6 +5,7 @@ use Application\Helper\Helper;
 use AttendanceManagement\Controller\ShiftSetup;
 use AttendanceManagement\Model\ShiftAssign;
 use AttendanceManagement\Repository\ShiftAssignRepository;
+use Payroll\Repository\MonthlyValueDetailRepo;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Adapter\Driver\ResultInterface;
 use Zend\Mvc\Controller\AbstractRestfulController;
@@ -69,15 +70,15 @@ class RestfulService extends AbstractRestfulController
 
                     $shiftAssignRepo = new ShiftAssignRepository($this->adapter);
                     if (!empty($data['oldShiftId'])) {
-                        $shiftAssignClone=clone $shiftAssign;
+                        $shiftAssignClone = clone $shiftAssign;
 
                         unset($shiftAssignClone->employeeId);
                         unset($shiftAssignClone->shiftId);
                         unset($shiftAssignClone->createdDt);
 
-                        $shiftAssignClone->status='D';
-                        $shiftAssignClone->modifiedDt=Helper::getcurrentExpressionDate();
-                        $shiftAssignRepo->edit($shiftAssignClone,[$data['employeeId'],$data['oldShiftId']]);
+                        $shiftAssignClone->status = 'D';
+                        $shiftAssignClone->modifiedDt = Helper::getcurrentExpressionDate();
+                        $shiftAssignRepo->edit($shiftAssignClone, [$data['employeeId'], $data['oldShiftId']]);
 
                         $shiftAssign->createdDt = Helper::getcurrentExpressionDate();
                         $shiftAssign->status = 'E';
@@ -89,11 +90,43 @@ class RestfulService extends AbstractRestfulController
 
                     }
 
-
                     $responseData = [
                         "success" => true,
                         "data" => $postedData
                     ];
+                    break;
+
+                case "pullEmployeeMonthlyValue":
+                    $data = $postedData->id;
+                    $monValDetRepo = new MonthlyValueDetailRepo($this->adapter);
+                    $empListRaw = $monValDetRepo->fetchEmployees($data['branch'], $data['department'], $data['designation']);
+                    $empList = [];
+                    $mthIds = $data['monthlyValues'];
+
+                    $mthVal=[];
+                    foreach ($mthIds as $mthId) {
+                        $tempData = $monValDetRepo->filter($data['branch'], $data['department'], $data['designation'], $mthId);
+                        $tempOutput=[];
+                        foreach ($tempData as $key => $val) {
+                            $val['MTH_ID']=$mthId;
+                            array_push($tempOutput,$val);
+                        }
+                        array_push($mthVal,$tempOutput);
+
+                    }
+
+                    foreach ($empListRaw as $key => $val) {
+                        foreach ($mthVal as $mthValUnit){
+                            $val[$mthValUnit[$key-1]['MTH_ID']]=($mthValUnit[$key-1]['MTH_VALUE'] == null)?0:$mthValUnit[$key-1]['MTH_VALUE'];
+                        }
+                        $empList[$key] = $val;
+                    }
+
+                    $responseData = [
+                        "success" => true,
+                        "data" => $empList
+                    ];
+
                     break;
 
                 default:

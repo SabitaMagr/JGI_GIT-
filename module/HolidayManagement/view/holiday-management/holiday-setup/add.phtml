@@ -14,9 +14,9 @@ $this->headScript()->appendFile($this->basePath('js/HolidayManagement/HolidaySet
 
 
 <?php
-if($this->messages) { ?>
+if ($this->messages) { ?>
     <script>
-        document.messages=<?php echo json_encode($this->messages); ?>
+        document.messages =<?php echo json_encode($this->messages); ?>
     </script>
 <?php } ?>
 
@@ -115,7 +115,7 @@ $form->prepare();
                     <?php print $this->formElementErrors()->render($startDate, ['class' => 'help-block error']) ?>
                 </div>
 
-                <div class="form-group padding-0">
+                <div class="form-group">
                     <?php print $this->formLabel($halfday); ?>
                     <div class="md-radio-inline">
                         <?php $customRenderer($halfday); ?>

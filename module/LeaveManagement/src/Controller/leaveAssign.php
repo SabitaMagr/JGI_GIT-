@@ -56,10 +56,10 @@ class leaveAssign extends AbstractActionController
 
     public function assignAction()
     {
-        $empFormElement = new Select();
-        $empFormElement->setName("employee");
-        $empFormElement->setValueOptions(\Application\Helper\EntityHelper::getTableKVList($this->adapter, "HR_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"]));
-        $empFormElement->setAttributes(["id" => "employeeId", "class" => "form-control", "data-init-plugin" => "select2"]);
+//        $empFormElement = new Select();
+//        $empFormElement->setName("employee");
+//        $empFormElement->setValueOptions(\Application\Helper\EntityHelper::getTableKVList($this->adapter, "HR_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"]));
+//        $empFormElement->setAttributes(["id" => "employeeId", "class" => "form-control", "data-init-plugin" => "select2"]);
 
         $leaveFormElement = new Select();
         $leaveFormElement->setName("leave");
@@ -104,7 +104,6 @@ class leaveAssign extends AbstractActionController
         $designationFormElement->setLabel("Designation");
 
         return Helper::addFlashMessagesToArray($this, [
-            "employeesFormElement" => $empFormElement,
             'leaveFormElement'=>$leaveFormElement,
             'branchFormElement'=>$branchFormElement,
             'departmentFormElement'=>$departmentFormElement,
