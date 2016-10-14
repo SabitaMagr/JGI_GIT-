@@ -10,8 +10,12 @@ namespace Payroll\Controller;
 
 
 use Application\Helper\ConstraintHelper;
+use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
 use Payroll\Repository\FlatValueRepository;
+use Setup\Model\Branch;
+use Setup\Model\Department;
+use Setup\Model\Designation;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\Mvc\Controller\AbstractActionController;
@@ -113,5 +117,20 @@ class FlatValue extends AbstractActionController
         $this->repository->delete($id);
         $this->flashmessenger()->addMessage("Flat Value Successfully Deleted!!!");
         return $this->redirect()->toRoute('flatValue');
+    }
+
+
+    public function detailAction(){
+        $branches = EntityHelper::getTableKVList($this->adapter, Branch::TABLE_NAME, Branch::BRANCH_ID, [Branch::BRANCH_NAME]);
+        $departments = EntityHelper::getTableKVList($this->adapter, Department::TABLE_NAME, Department::DEPARTMENT_ID, [Department::DEPARTMENT_NAME]);
+        $designations = EntityHelper::getTableKVList($this->adapter, Designation::TABLE_NAME, Designation::DESIGNATION_ID, [Designation::DESIGNATION_TITLE]);
+        $flatValues = EntityHelper::getTableKVList($this->adapter, FlatValueModel::TABLE_NAME, FlatValueModel::FLAT_ID, [FlatValueModel::FLAT_EDESC]);
+
+        return Helper::addFlashMessagesToArray($this, [
+            'branches' => $branches,
+            'departments' => $departments,
+            'designations' => $designations,
+            'flatValues'=>$flatValues
+        ]);
     }
 }

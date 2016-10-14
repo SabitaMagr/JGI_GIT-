@@ -3,22 +3,22 @@
  * Load Javascript files here
  */
 $this->headScript()->appendFile($this->basePath('js/angular.min.js'));
-$this->headScript()->appendFile($this->basePath('js/Payroll/MonthlyValue/detailController.js'));
+$this->headScript()->appendFile($this->basePath('js/Payroll/FlatValue/flatValueDetailController.js'));
 ?>
 
 <script>
-    document.menu =<?php $menu = ["id" => "menuPayroll", "subMenu" => ["id" => "subMenuMonthlyValue"], "subMenuChild" => ["id" => "subMenuChildMonthlyValueDetail"]];echo json_encode($menu);?>;
+    document.menu =<?php $menu = ["id" => "menuPayroll", "subMenu" => ["id" => "subMenuflatValue"], "subMenuChild" => ["id" => "subMenuChildflatValueDetail"]];echo json_encode($menu);?>;
     document.url = '<?= $this->url("restful", ["action" => "index"]) ?>';
     document.branches =<?= json_encode($branches)?>;
     document.departments =<?= json_encode($departments)?>;
     document.designations =<?= json_encode($designations)?>;
-    document.monthlyValues =<?= json_encode($monthlyValues)?>;
+    document.flatValues =<?= json_encode($flatValues)?>;
 </script>
 <div class="page-bar">
-    <?= $this->navigation('Zend\Navigation\monthlyValue')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
+    <?= $this->navigation('Zend\Navigation\flatValue')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
 
-<div ng-app="hris" ng-controller="monthlyValueDetailController">
+<div ng-app="hris" ng-controller="flatValueDetailController">
     <div class="row">
         <div class="col-sm-2">
             <label>Branch</label>
@@ -30,7 +30,7 @@ $this->headScript()->appendFile($this->basePath('js/Payroll/MonthlyValue/detailC
             <label>Designation</label>
         </div>
         <div class="col-sm-2">
-            <label>Monthly Values</label>
+            <label>flat Values</label>
         </div>
         <div class="col-sm-2">
         </div>
@@ -62,17 +62,17 @@ $this->headScript()->appendFile($this->basePath('js/Payroll/MonthlyValue/detailC
                     <input
                         type="checkbox"
                         value="-1"
-                        ng-model="allMonthlyValue"
-                        ng-change="selectAllMonthlyValue(allMonthlyValue)">
+                        ng-model="allflatValue"
+                        ng-change="selectAllflatValue(allflatValue)">
                     <span></span>
                 </label>
-                <label class="mt-checkbox mt-checkbox-outline" ng-repeat="monthlyValue in monthlyValues">
-                    {{monthlyValue.text}}
+                <label class="mt-checkbox mt-checkbox-outline" ng-repeat="flatValue in flatValues">
+                    {{flatValue.text}}
                     <input
                         ng-change="updateSelectAll()"
                         type="checkbox"
-                        value="{{monthlyValue.id}}"
-                        ng-model="monthlyValue.selected">
+                        value="{{flatValue.id}}"
+                        ng-model="flatValue.selected">
                     <span></span>
                 </label>
             </div>
@@ -96,7 +96,7 @@ $this->headScript()->appendFile($this->basePath('js/Payroll/MonthlyValue/detailC
                 <th>
                     Employee Name
                 </th>
-                <th ng-repeat="keys in monthlyValuekeys" ng-bind="monthlyValuesI[keys]">
+                <th ng-repeat="keys in flatValuekeys" ng-bind="flatValuesI[keys]">
 
                 </th>
             </tr>
@@ -111,7 +111,7 @@ $this->headScript()->appendFile($this->basePath('js/Payroll/MonthlyValue/detailC
                     <span ng-bind="row.MIDDLE_NAME"></span>
                     <span ng-bind="row.LAST_NAME"></span>
                 </td>
-                <td ng-repeat="keys in monthlyValuekeys">
+                <td ng-repeat="keys in flatValuekeys">
                     <input class="form-control" type="number" ng-model="row[keys]">
                 </td>
             </tr>
@@ -126,7 +126,7 @@ $this->headScript()->appendFile($this->basePath('js/Payroll/MonthlyValue/detailC
                 <td>
 
                 </td>
-                <td ng-repeat="keys in monthlyValuekeys">
+                <td ng-repeat="keys in flatValuekeys">
                     <input class="form-control" type="number" ng-model="colVal"
                            ng-change="changeAllColVal(keys,colVal)">
                 </td>
@@ -135,7 +135,7 @@ $this->headScript()->appendFile($this->basePath('js/Payroll/MonthlyValue/detailC
         </table>
 
     </div>
-<div class="row">
-    <button class="btn btn-success pull-right" ng-click="setMonthlyValue()">Assign Monthly Value</button>
-</div>
+    <div class="row">
+        <button class="btn btn-success pull-right" ng-click="setflatValue()">Assign flat Value</button>
+    </div>
 </div>
