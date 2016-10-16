@@ -1,5 +1,6 @@
 <?php
-$this->headScript()->appendFile($this->basePath('plugins/bootstrap-timepicker/bootstrap-timepicker.min.js'));
+$this->headScript()->appendFile($this->basePath('assets/global/plugins/combodate/js/moment.min.js'));
+$this->headScript()->appendFile($this->basePath('assets/global/plugins/combodate/js/combodate.js'));
 $this->headScript()->appendFile($this->basePath('js/AttendanceManagement/attendance/add.js'));
 
 $form->setAttribute('role', 'form');
@@ -12,6 +13,7 @@ $outTime = $form->get('outTime');
 $inRemarks = $form->get('inRemarks');
 $outRemarks = $form->get('outRemarks');
 $totalHour = $form->get('totalHour');
+$totalHour->setAttributes(['readonly' => "readonly"]);
 
 $employeeId->setValueOptions($employees);
 
@@ -62,17 +64,27 @@ $form->prepare();
                 </div>
                 <?php print $this->formElementErrors()->render($attendanceDt, ['class' => 'help-block error']); ?>
 
-                <div class="form-group  <?= empty($inTime->getMessages()) ? "" : "error" ?>">
-                    <?php print $this->formLabel($inTime); ?>
-                    <?php print $this->formElement($inTime); ?>
-                </div>
-                <?php print $this->formElementErrors()->render($inTime, ['class' => 'help-block error']); ?>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group <?= empty($inTime->getMessages()) ? "" : "error" ?>">
+                            <?php print $this->formLabel($inTime) ?>
+                            <div class="input-group dropdown-select">
+                                <?php print $this->formElement($inTime) ?>
+                            </div>
+                            <?php print $this->formElementErrors()->render($inTime, ['class' => 'help-block error']); ?>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group <?= empty($outTime->getMessages()) ? "" : "error" ?> pull-right">
+                            <?php print $this->formLabel($outTime) ?>
+                            <div class="input-group dropdown-select">
+                                <?php print $this->formElement($outTime) ?>
+                            </div>
+                        </div>
+                        <?php print $this->formElementErrors()->render($outTime, ['class' => 'help-block error']); ?>
 
-                <div class="form-group  <?= empty($outTime->getMessages()) ? "" : "error" ?>">
-                    <?php print $this->formLabel($outTime); ?>
-                    <?php print $this->formElement($outTime); ?>
+                    </div>
                 </div>
-                <?php print $this->formElementErrors()->render($outTime, ['class' => 'help-block error']); ?>
 
                 <div class="form-group  <?= empty($inRemarks->getMessages()) ? "" : "error" ?>">
                     <?php print $this->formLabel($inRemarks); ?>

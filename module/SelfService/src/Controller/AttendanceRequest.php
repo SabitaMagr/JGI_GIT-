@@ -125,10 +125,17 @@ class AttendanceRequest extends  AbstractActionController
         );
     }
 
-    public function deleteAction()
-    {
+    public function deleteAction(){
+        $id = (int)$this->params()->fromRoute("id");
 
+        if (!$id) {
+            return $this->redirect()->toRoute('attendancerequest');
+        }
+        $this->repository->delete($id);
+        $this->flashmessenger()->addMessage("Attendance Request Successfully Cancelled!!!");
+        return $this->redirect()->toRoute('attendancerequest');
     }
+
     public function approverList(){
         $employeeRepository = new EmployeeRepository($this->adapter);
         $recommendApproveRepository = new RecommendApproveRepository($this->adapter);

@@ -58,7 +58,7 @@ class AttendanceRequestForm
 
     /**
      * @Annotion\Type("Zend\Form\Element\Number")
-     * @Annotation\Required(true)
+     * @Annotation\Required(false)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Total Hour"})
      * @Annotation\Attributes({ "id":"totalHour", "class":"form-control" })
