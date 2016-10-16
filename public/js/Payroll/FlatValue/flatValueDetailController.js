@@ -1,57 +1,54 @@
-/**
- * Created by ukesh on 10/4/16.
- */
 angular.module('hris', [])
-    .controller('monthlyValueDetailController', function ($scope, $http) {
+    .controller('flatValueDetailController', function ($scope, $http) {
         $scope.branches = document.branches;
         $scope.departments = document.departments;
         $scope.designations = document.designations;
-        $scope.monthlyValuesI = document.monthlyValues;
-        $scope.monthlyValues = [];
-        for (var index in $scope.monthlyValuesI) {
-            $scope.monthlyValues.push({id: index, text: $scope.monthlyValuesI[index], selected: false});
+        $scope.flatValuesI = document.flatValues;
+        $scope.flatValues = [];
+        for (var index in $scope.flatValuesI) {
+            $scope.flatValues.push({id: index, text: $scope.flatValuesI[index], selected: false});
         }
 
         $scope.branch;
         $scope.department;
         $scope.designation;
 
-        $scope.monthlyValuekeys = [];
+        $scope.flatValuekeys = [];
         var tableData;
         $scope.tableDataCopy;
-        $scope.selectAllMonthlyValue = function (allMonthlyValue) {
-            for (var index in $scope.monthlyValues) {
-                $scope.monthlyValues[index].selected = allMonthlyValue;
+        $scope.selectAllflatValue = function (allflatValue) {
+            for (var index in $scope.flatValues) {
+                $scope.flatValues[index].selected = allflatValue;
             }
         };
 
         $scope.view = function () {
-            var tempMonthlyValueCheckedFlag = false;
-            for (var index in $scope.monthlyValues) {
-                if ($scope.monthlyValues[index].selected) {
-                    tempMonthlyValueCheckedFlag = true;
+            var tempflatValueCheckedFlag = false;
+            for (var index in $scope.flatValues) {
+                if ($scope.flatValues[index].selected) {
+                    tempflatValueCheckedFlag = true;
                 }
             }
 
-            if (!tempMonthlyValueCheckedFlag) {
-                window.toastr.info("No Monthly Value selected!", "Notification");
+            if (!tempflatValueCheckedFlag) {
+                window.toastr.info("No flat Value selected!", "Notification");
                 return;
             }
 
 
-            $scope.monthlyValuekeys = [];
-            $scope.monthlyValues.filter(function (monthlyValue) {
-                if (monthlyValue.selected) {
-                    $scope.monthlyValuekeys.push(monthlyValue.id);
+            $scope.flatValuekeys = [];
+            $scope.flatValues.filter(function (flatValue) {
+                if (flatValue.selected) {
+                    $scope.flatValuekeys.push(flatValue.id);
                 }
             });
             window.app.pullDataById(document.url, {
-                action: 'pullEmployeeMonthlyValue',
+                action: 'pullEmployeeFlatValue',
                 id: {
                     branch: (($scope.branch === null) || (typeof $scope.branch === 'undefined')) ? -1 : $scope.branch,
                     department: (($scope.department === null) || (typeof $scope.department === 'undefined')) ? -1 : $scope.department,
                     designation: (($scope.designation === null) || (typeof $scope.designation === 'undefined')) ? -1 : $scope.designation,
-                    monthlyValues: $scope.monthlyValuekeys
+                    flatValues: $scope.flatValuekeys
                 }
             }).then(function (success) {
                 console.log(success);
@@ -66,18 +63,18 @@ angular.module('hris', [])
             });
         };
 
-        $scope.setMonthlyValue = function () {
+        $scope.setflatValue = function () {
             var promises = [];
-            for (key in $scope.monthlyValuekeys) {
-                var loopKey = $scope.monthlyValuekeys[key];
+            for (key in $scope.flatValuekeys) {
+                var loopKey = $scope.flatValuekeys[key];
                 for (var tableColData in tableData) {
                     if (tableData[tableColData][loopKey] != $scope.tableDataCopy[tableColData][loopKey]) {
                         console.log($scope.tableDataCopy[tableColData]);
                         promises.push(window.app.pullDataById(document.url, {
-                            action: 'pushEmployeeMonthlyValue',
+                            action: 'pushEmployeeFlatValue',
                             id: {
                                 employeeId: $scope.tableDataCopy[tableColData]["EMPLOYEE_ID"],
-                                mthId: loopKey,
+                                flatId: loopKey,
                                 value: $scope.tableDataCopy[tableColData][loopKey]
                             }
                         }));
@@ -92,7 +89,7 @@ angular.module('hris', [])
                         // tableData = angular.copy(success.data);
                         // $scope.tableDataCopy = success.data;
                     });
-                    window.toastr.info("Monthly value assigned successfully!", "Notification");
+                    window.toastr.info("flat value assigned successfully!", "Notification");
 
                 }, function (failure) {
                     console.log("failure", failure);
@@ -110,12 +107,12 @@ angular.module('hris', [])
         };
 
         $scope.updateSelectAll = function () {
-            for (var index in $scope.monthlyValues) {
-                if (!$scope.monthlyValues[index].selected) {
-                    $scope.allMonthlyValue = false;
+            for (var index in $scope.flatValues) {
+                if (!$scope.flatValues[index].selected) {
+                    $scope.allflatValue = false;
                     break;
                 } else {
-                    $scope.allMonthlyValue = true;
+                    $scope.allflatValue = true;
                 }
             }
         };

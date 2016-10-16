@@ -1,16 +1,11 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: ukesh
- * Date: 10/4/16
- * Time: 12:06 PM
- */
 
 namespace Payroll\Repository;
 
 
 use Application\Model\Model;
 use Application\Repository\RepositoryInterface;
+use Payroll\Model\FlatValueDetail;
 use Payroll\Model\MonthlyValueDetail;
 use Setup\Model\Branch;
 use Setup\Model\Department;
@@ -21,7 +16,7 @@ use Zend\Db\Sql\Select;
 use Zend\Db\Sql\Sql;
 use Zend\Db\TableGateway\TableGateway;
 
-class MonthlyValueDetailRepo implements RepositoryInterface
+class FlatValueDetailRepo implements RepositoryInterface
 {
     private $adapter;
     private $gateway;
@@ -29,7 +24,7 @@ class MonthlyValueDetailRepo implements RepositoryInterface
     public function __construct(AdapterInterface $adapter)
     {
         $this->adapter = $adapter;
-        $this->gateway = new TableGateway(MonthlyValueDetail::TABLE_NAME, $adapter);
+        $this->gateway = new TableGateway(FlatValueDetail::TABLE_NAME, $adapter);
     }
 
     public function add(Model $model)
@@ -39,7 +34,7 @@ class MonthlyValueDetailRepo implements RepositoryInterface
 
     public function edit(Model $model, $id)
     {
-        $this->gateway->update($model->getArrayCopyForDB(), [MonthlyValueDetail::EMPLOYEE_ID=>$id[0],MonthlyValueDetail::MTH_ID=>$id[1]]);
+        $this->gateway->update($model->getArrayCopyForDB(), [FlatValueDetail::EMPLOYEE_ID => $id[0], FlatValueDetail::FLAT_ID => $id[1]]);
     }
 
     public function fetchAll()
@@ -47,14 +42,14 @@ class MonthlyValueDetailRepo implements RepositoryInterface
 
     }
 
-    public function filter($branchId, $departmentId, $designationId,$id)
+    public function filter($branchId, $departmentId, $designationId, $id)
     {
         $sql = new Sql($this->adapter);
         $select = $sql->select();
 
         $select->columns(["EMPLOYEE_ID", "FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], true);
         $select->from(['E' => "HR_EMPLOYEES"])
-        ->join(['M' => MonthlyValueDetail::TABLE_NAME], 'M.'.MonthlyValueDetail::EMPLOYEE_ID.'=E.EMPLOYEE_ID', [MonthlyValueDetail::MTH_ID, MonthlyValueDetail::MTH_VALUE],Select::JOIN_LEFT);
+            ->join(['M' => FlatValueDetail::TABLE_NAME], 'M.' . FlatValueDetail::EMPLOYEE_ID . '=E.EMPLOYEE_ID', [FlatValueDetail::FLAT_ID, FlatValueDetail::FLAT_VALUE], Select::JOIN_LEFT);
         if ($branchId != -1) {
             $select->where(["E." . Branch::BRANCH_ID . "=$branchId"]);
         }
@@ -64,8 +59,7 @@ class MonthlyValueDetailRepo implements RepositoryInterface
         if ($designationId != -1) {
             $select->where(["E." . Designation::DESIGNATION_ID . "=$designationId"]);
         }
-//        $select->where("M.".MonthlyValueDetail::MTH_ID."=".$id." OR M.".MonthlyValueDetail::MTH_ID." IS NULL");
-        $select->where("M.".MonthlyValueDetail::MTH_ID."=".$id);
+        $select->where("M." . FlatValueDetail::FLAT_ID . "=" . $id);
         $select->order("E.EMPLOYEE_ID ASC");
 
         $statement = $sql->prepareStatementForSqlObject($select);
@@ -73,10 +67,6 @@ class MonthlyValueDetailRepo implements RepositoryInterface
         return $result;
     }
 
-    public function delete($id)
-    {
-        // TODO: Implement delete() method.
-    }
 
     public function fetchEmployees($branchId, $departmentId, $designationId)
     {
@@ -103,6 +93,11 @@ class MonthlyValueDetailRepo implements RepositoryInterface
 
     public function fetchById($id)
     {
-      return  $this->gateway->select([MonthlyValueDetail::MTH_ID=>$id[1],MonthlyValueDetail::EMPLOYEE_ID=>$id[0]])->current();
+        return $this->gateway->select([FlatValueDetail::FLAT_ID => $id[1], FlatValueDetail::EMPLOYEE_ID => $id[0]])->current();
+    }
+
+    public function delete($id)
+    {
+        // TODO: Implement delete() method.
     }
 }
