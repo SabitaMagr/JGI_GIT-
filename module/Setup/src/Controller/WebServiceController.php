@@ -17,6 +17,7 @@ use HolidayManagement\Model\HolidayBranch;
 use SelfService\Repository\LeaveRequestRepository;
 use Setup\Repository\RecommendApproveRepository;
 use Setup\Repository\EmployeeRepository;
+use SelfService\Repository\AttendanceRepository;
 
 class WebServiceController extends AbstractActionController
 {
@@ -242,6 +243,26 @@ class WebServiceController extends AbstractActionController
                         "success"=>true,
                         "data"=>$result
                     ];
+                    break;
+                case "pullAttendanceList":
+                    $attendanceRepository =  new AttendanceRepository($this->adapter);
+                    $filtersDetail = $postedData->data;
+                    $employeeId = $filtersDetail['employeeId'];
+                    $fromDate= $filtersDetail['fromDate'];
+                    $toDate= $filtersDetail['toDate'];
+
+                    $result = $attendanceRepository->recordFilter($fromDate,$toDate,$employeeId);
+
+                    $temArray = [];
+                    foreach($result as $row){
+                        array_push($temArray,$row);
+                    }
+
+                    $responseData = [
+                        "success"=>true,
+                        "data"=>$temArray
+                    ];
+                    break;
                     break;
 
                 default:

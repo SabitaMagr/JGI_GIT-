@@ -24,6 +24,16 @@ return [
                     ]
                 ]
             ],
+            'attedanceapprove'=>[
+                'type' => Segment::class,
+                'options' => [
+                    'route' => '/managerservice/attendanceapprove[/:action[/:id][/:role]]',
+                    'defaults' => [
+                        'controller' => Controller\AttendanceApproveController::class,
+                        'action' => 'index'
+                    ]
+                ]
+            ],
         ]
     ],
     'navigation' => [
@@ -59,10 +69,33 @@ return [
                 ]
             ]
         ],
+        'attedanceapprove' => [
+            [
+                'label' => 'Attendance Request',
+                'route' => 'attedanceapprove',
+            ],
+            [
+                'label' => 'Attendance Request',
+                'route' => 'attedanceapprove',
+                'pages' => [
+                    [
+                        'label' => 'List',
+                        'route' => 'attedanceapprove',
+                        'action' => 'index',
+                    ],
+                    [
+                        'label' => 'View',
+                        'route' => 'attedanceapprove',
+                        'action' => 'view',
+                    ],
+                ]
+            ]
+        ],
     ],
     'controllers' => [
         'factories' => [
             Controller\LeaveApproveController::class => ControllerFactory::class,
+            Controller\AttendanceApproveController::class=>ControllerFactory::class
         ],
 
     ],

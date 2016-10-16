@@ -6,6 +6,12 @@ $this->headScript()
     ->appendFile($this->basePath('js/kendoDataTable.js'));
 ?>
 
+<script>
+    document.menu =<?php $menu = ["id" => "menuManagerService", "subMenu" => ["id" => "subMenuAttendanceApprove"]];echo json_encode($menu);?>;
+</script>
+<div class="page-bar">
+    <?= $this->navigation('Zend\Navigation\attedanceapprove')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
+</div>
 <?php
 if($this->messages) { ?>
     <script>
@@ -13,24 +19,10 @@ if($this->messages) { ?>
     </script>
 <?php } ?>
 
-<script>
-    document.menu =<?php $menu = ["id" => "menuSelfService", "subMenu" => ["id" => "subMenuAttendanceRequest"]];echo json_encode($menu);?>;
-</script>
-
-<div class="page-bar">
-    <?= $this->navigation('Zend\Navigation\attendancerequest')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
-</div>
-
 <div class="margin-top-20">
     <div class="table-toolbar">
         <div class="row">
             <div class="col-md-6">
-                <div class="btn-group">
-                    <a href="<?= $this->url('attendancerequest', ['action' => 'add']) ?>" id="sample_editable_1_new"
-                       class="btn green"> Add New
-                        <i class="fa fa-plus"></i>
-                    </a>
-                </div>
             </div>
             <div class="col-md-6">
                 <div class="btn-group pull-right">
@@ -52,9 +44,13 @@ if($this->messages) { ?>
             </div>
         </div>
     </div>
+
     <table class="table" id="dataTable">
         <thead>
         <tr role="row">
+            <th>
+                Employee Name
+            </th>
             <th>
                 Attendance Date
             </th>
@@ -68,49 +64,60 @@ if($this->messages) { ?>
                 Late In Reason
             </th>
             <th>
-                Early Out Reason
+                Late Out Reason
             </th>
             <th>
-                Status
+                Your Role
             </th>
             <th>
-                Action
+                Operation
             </th>
-
         </tr>
         </thead>
         <tbody>
 
-        <?php foreach ($attendanceList as $attendances):
+        <?php foreach ($list as $attendanceList):
             ?>
             <tr role="row">
-
-                <td class="">
-                    <?php print $this->escapeHtml($attendances['ATTENDANCE_DT']); ?>
-                </td>
-                <td class="">
-                    <?php print $this->escapeHtml($attendances['IN_TIME']); ?>
-                </td>
-                <td class="">
-                    <?php print $this->escapeHtml($attendances['OUT_TIME']); ?>
-                </td>
-                <td class="">
-                    <?php print $this->escapeHtml($attendances['IN_REMARKS']); ?>
-                </td>
-                <td class="">
-                    <?php print $this->escapeHtml($attendances['OUT_REMARKS']); ?>
-                </td>
-                <td class="">
+                <td>
                     <?php
-                    $status = $this->escapeHtml(trim($attendances['STATUS']));
-                    if($status=="RQ"){
-                        echo "Pending";
-                    }
+                    print $this->escapeHtml($attendanceList['FIRST_NAME'])." ".$this->escapeHtml($attendanceList['MIDDLE_NAME'])." ".$this->escapeHtml($attendanceList['LAST_NAME']);
                     ?>
                 </td>
-
-                <td class="">
-                    <a href="<?= $this->url("attendancerequest", ["action" => "edit", "id" => $attendances['ID']]); ?>">Edit
+                <td>
+                    <?php
+                    print $this->escapeHtml($attendanceList['ATTENDANCE_DT']);
+                    ?>
+                </td>
+                <td>
+                    <?php
+                    print $this->escapeHtml($attendanceList['IN_TIME']);
+                    ?>
+                </td>
+                <td>
+                    <?php
+                    print $this->escapeHtml($attendanceList['OUT_TIME']);
+                    ?>
+                </td>
+                <td>
+                    <?php
+                    print $this->escapeHtml($attendanceList['IN_REMARKS']);
+                    ?>
+                </td>
+                <td>
+                    <?php
+                    print $this->escapeHtml($attendanceList['OUT_REMARKS']);
+                    ?>
+                </td>
+                <td>
+                    <?php
+                        echo "APPROVER";
+                    ?>
+                </td>
+                <td>
+                    <a class=""
+                       href="<?= $this->url("attedanceapprove", ["action" => "view", "id" =>$attendanceList['ID']]); ?>">
+                        View
                     </a>
                 </td>
             </tr>
@@ -119,5 +126,6 @@ if($this->messages) { ?>
 
         </tbody>
     </table>
+
 
 </div>

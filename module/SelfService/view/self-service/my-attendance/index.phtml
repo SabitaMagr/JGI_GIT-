@@ -1,2 +1,108 @@
 <?php
-echo "hellow this is attendance request";
+/**
+ * Load Javascript files here
+ */
+$this->headScript()
+    ->appendFile($this->basePath('js/kendoDataTable.js'));
+$this->headScript()->appendFile($this->basePath('js/angular.min.js'));
+$this->headScript()->appendFile($this->basePath('js/AttendanceManagement/attendance/index.js'));
+?>
+
+<?php
+if ($this->messages) { ?>
+    <script>
+        document.messages =<?php echo json_encode($this->messages); ?>
+    </script>
+<?php } ?>
+
+<script>
+    document.menu =<?php $menu = ["id" => "menuSelfService", "subMenu" => ["id" => "subMenuMyAttendance"]];echo json_encode($menu);?>;
+    document.url = '<?= $this->url("webService", ["action" => "index"]) ?>';
+</script>
+
+<div class="page-bar">
+    <?= $this->navigation('Zend\Navigation\myattendance')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
+</div>
+<div ng-app="hris" ng-controller="attendanceController">
+    <div class="margin-top-20">
+        <div class="table-toolbar">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="row">
+                        <div class="col-md-5">
+                            <input type="text" name="fromDate" ng-model="fromDate" id="fromDate" class="form-control"/>
+                        </div>
+                        <div class="col-md-5">
+                            <input type="text" name="toDate" ng-model="toDate" id="toDate" class="form-control"/>
+                            <input type="hidden" name="employeeId" ng-model="employeeId" id="employeeId" value="<?php echo $employeeId; ?>"/>
+                        </div>
+                        <div class="col-md-2">
+                            <button ng-click="view()" id="myAttendance" class="btn btn-success">
+                                VIEW
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="btn-group pull-right">
+                        <button class="btn green btn-outline dropdown-toggle" data-toggle="dropdown">Tools
+                            <i class="fa fa-angle-down"></i>
+                        </button>
+                        <ul class="dropdown-menu pull-right">
+                            <li>
+                                <a href="javascript:;"> Print </a>
+                            </li>
+                            <li>
+                                <a href="javascript:;"> Save as PDF </a>
+                            </li>
+                            <li>
+                                <a href="javascript:;"> Export to Excel </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <table class="table table-striped table-bordered table-hover no-footer">
+            <thead>
+            <tr role="row">
+                <th>
+                    Attendance Date
+                </th>
+                <th>
+                    Check In
+                </th>
+                <th>
+                    Check Out
+                </th>
+                <th>
+                    Late In Reason
+                </th>
+                <th>
+                    Early Out Reason
+                </th>
+
+            </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="attendanceDtl in attendanceList">
+                    <td ng-bind="attendanceDtl.ATTENDANCE_DT">
+                    </td>
+                    <td >
+                        <span ng-bind="attendanceDtl.IN_TIME"></span>
+                    </td>
+                    <td>
+                        <span ng-bind="attendanceDtl.OUT_TIME"></span>
+                    </td>
+                    <td >
+                        <span ng-bind="attendanceDtl.IN_REMARKS"></span>
+                    </td>
+                    <td>
+                        <span ng-bind="attendanceDtl.OUT_REMARKS"></span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+    </div>
+</div>

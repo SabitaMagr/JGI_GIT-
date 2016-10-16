@@ -25,7 +25,7 @@ class LeaveApproveController extends AbstractActionController {
     private $adapter;
     private $employeeId;
     private $userId;
-    private $authSerivce;
+    private $authService;
     private $form;
 
     public function __construct(AdapterInterface $adapter)
