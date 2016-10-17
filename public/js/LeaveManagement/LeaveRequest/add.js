@@ -6,6 +6,9 @@
     $(document).ready(function () {
         $('select').select2();
 
+        var dateDiff = "";
+        $("#remarks").hide();
+
         var dateDifference = function () {
             var id = (typeof this === "undefined") ? "selectedDate" : $(this).attr('id');
             var startDate="";
@@ -57,6 +60,7 @@
                 var diffDays = Math.abs((startDate.getTime() - endDate.getTime()) / (oneDay));
                 var newValue = diffDays + 1;
                 var availableDays = $("#availableDays").val();
+                dateDiff = newValue;
 
                 if(newValue>availableDays){
                     $("#noOfDays").val(newValue);
@@ -73,6 +77,17 @@
         $("#startDate").on("change", dateDifference);
 
         dateDifference();
+
+        $("#noOfDays").on("keyup",function () {
+           var noOfDays = $(this).val();
+            if(noOfDays!=dateDiff){
+                $("#form-remarks").attr('required','required');
+                $("#remarks").slideDown();
+            }else{
+                $("#form-remarks").removeAttr('required');
+                $("#remarks").slideUp();
+            }
+        })
 
     });
 })(window.jQuery, window.app);
