@@ -1,0 +1,112 @@
+<?php
+/**
+ * Load Javascript files here
+ */
+$this->headScript()
+    ->appendFile($this->basePath('js/kendoDataTable.js'));
+?>
+
+
+<?php
+if($this->messages) { ?>
+    <script>
+        document.messages=<?php echo json_encode($this->messages); ?>
+    </script>
+<?php } ?>
+
+<script>
+    document.menu =<?php $menu = ["id" => "menuSystem", "subMenu" => ["id" => "subMenuUserSetup"]];echo json_encode($menu);?>;
+</script>
+<div class="page-bar">
+    <?= $this->navigation('Zend\Navigation\usersetup')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
+</div>
+
+<div class="margin-top-20">
+    <div class="table-toolbar">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="btn-group">
+                    <a href="<?= $this->url('usersetup', ['action' => 'add']) ?>" id="sample_editable_1_new" class="btn green"> Add New
+                        <i class="fa fa-plus"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="btn-group pull-right">
+                    <button class="btn green btn-outline dropdown-toggle" data-toggle="dropdown">Tools
+                        <i class="fa fa-angle-down"></i>
+                    </button>
+                    <ul class="dropdown-menu pull-right">
+                        <li>
+                            <a href="javascript:;"> Print </a>
+                        </li>
+                        <li>
+                            <a href="javascript:;"> Save as PDF </a>
+                        </li>
+                        <li>
+                            <a href="javascript:;"> Export to Excel </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <table class="table" id="dataTable">
+        <thead>
+        <tr role="row">
+            <th>
+                S.N.
+            </th>
+            <th>
+                Employee Name
+            </th>
+            <th>
+                User Name
+            </th>
+            <th>
+                Role Name
+            </th>
+            <th>
+                Action
+            </th>
+        </tr>
+        </thead>
+        <tbody>
+
+        <?php
+        $i=1;
+        foreach ($list as $userList): ?>
+            <tr role="row table-info">
+                <td>
+                    <?php print $i; ?>
+                </td>
+                <td>
+                    <?php print $this->escapeHtml($userList['FIRST_NAME'])." ".$this->escapeHtml($userList['MIDDLE_NAME'])." ".$this->escapeHtml($userList['LAST_NAME']); ?>
+                </td>
+                <td>
+                    <?php print $this->escapeHtml($userList['USER_NAME']); ?>
+                </td>
+                <td>
+                    <?php print $this->escapeHtml($userList['ROLE_NAME']); ?>
+                </td>
+                <td>
+                    <a class=""
+                       href="<?= $this->url("usersetup", ["action" => "edit", "id" => $userList['USER_ID']]) ?>">
+                        Edit
+                    </a> /
+                    <a class=""
+                       href="<?= $this->url("usersetup", ["action" => "delete", "id" => $userList['USER_ID']]); ?>">
+                        Delete
+                    </a>
+
+                </td>
+            </tr>
+
+            <?php
+            $i+=1;
+        endforeach; ?>
+
+        </tbody>
+    </table>
+</div>
+

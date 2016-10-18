@@ -1,0 +1,57 @@
+<?php
+$form->setAttribute('role', 'form');
+$form->setAttribute('class', 'rolesetup-form');
+
+$roleName = $form->get('roleName');
+$remarks = $form->get('remarks');
+$submit = $form->get('submit');
+$submit->setAttribute('value', 'SUBMIT');
+
+$form->setAttribute('action', $this->url('rolesetup', ['action' => 'edit','id'=>$id]));
+
+if ($this->messages) {
+    print '<ul class="help-block bg-danger" style="background:#f3e250;">';
+    foreach ($this->messages as $message) {
+        print '<li>' . $message . '</li>';
+    }
+    print '</ul>';
+}
+$form->prepare();
+?>
+<script>
+    document.menu =<?php $menu = ["id" => "menuSystem", "subMenu" => ["id" => "subMenuRoleSetup"]];echo json_encode($menu);?>;
+</script>
+<div class="page-bar">
+    <?= $this->navigation('Zend\Navigation\rolesetup')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
+</div>
+<div class="row margin-top-20">
+    <div class="col-sm-8 col-sm-offset-2">
+        <div class="portlet box custom-box">
+            <div class="portlet-title">
+                <div class="caption">
+                    <i class="fa fa-user"></i>Update
+                </div>
+            </div>
+            <div class="portlet-body">
+                <?php print $this->form()->openTag($form); ?>
+                <div class="form-group<?= empty($roleName->getMessages()) ? "" : "error" ?>">
+                    <?php print $this->formLabel($roleName); ?>
+                    <?php print $this->formElement($roleName); ?>
+                </div>
+                <?php print $this->formElementErrors()->render($roleName, ['class' => 'help-block error']); ?>
+
+                <div class="form-group">
+                    <?php print $this->formLabel($remarks); ?>
+                    <?php print $this->formElement($remarks); ?>
+                    <?php print $this->formElementErrors()->render($remarks, ['class' => 'help-block error']); ?>
+                </div>
+
+                <?php print $this->formSubmit($submit); ?>
+                <?php
+                print $this->form()->closeTag();
+                ?>
+            </div>
+        </div>
+    </div>
+
+</div>
