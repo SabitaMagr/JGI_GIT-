@@ -17,7 +17,7 @@ use Zend\Db\Adapter\Driver\ResultInterface;
 use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\Mvc\Controller\AbstractRestfulController;
 use Zend\View\Model\JsonModel;
-
+use System\Repository\MenuSetupRepository;
 
 class RestfulService extends AbstractRestfulController
 {
@@ -71,6 +71,9 @@ class RestfulService extends AbstractRestfulController
                     break;
                 case "pullRule":
                     $responseData = $this->pullRule($postedData->data);
+                    break;
+                case "menu":
+                    $responseData= $this->menu();
                     break;
 
                 default:
@@ -345,5 +348,35 @@ class RestfulService extends AbstractRestfulController
     {
         $repository = new RulesRepository($this->adapter);
         return ["success" => true, "message" => "Rule successfully added", "data" => ["rule" => $repository->fetchById($data['ruleId'])]];
+    }
+
+    private function menu($parent_menu=null)
+    {
+        $menuSetupRepository = new MenuSetupRepository($this->adapter);
+        $result = $menuSetupRepository->getHierarchicalMenu($parent_menu);
+        $num = count($result);
+        if ($num > 0) {
+            $temArray = array();
+            foreach ($result as $row) {
+                $children =  $this->menu($row['MENU_ID']);
+                if($children){
+                    $temArray[] = array(
+                        "text" => $row['MENU_NAME'],
+                        "id"=>$row['MENU_ID'],
+                        "icon" => "fa fa-folder icon-state-success",
+                        "children" =>$children
+                    );
+                }else{
+                    $temArray[] = array(
+                        "text" => $row['MENU_NAME'],
+                        "id"=>$row['MENU_ID'],
+                        "icon" => "fa fa-folder icon-state-success"
+                    );
+                }
+            }
+            return  $temArray;
+        } else {
+            return false;
+        }
     }
 }
