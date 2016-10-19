@@ -1,0 +1,113 @@
+<?php
+/**
+ * Load Javascript files here
+ */
+$this->headScript()
+    ->appendFile($this->basePath('js/kendoDataTable.js'));
+?>
+
+
+<?php
+if($this->messages) { ?>
+    <script>
+        document.messages=<?php echo json_encode($this->messages); ?>
+    </script>
+<?php } ?>
+
+<script>
+    document.menu =<?php $menu = ["id" => "menuSystem", "subMenu" => ["id" => "subMenuMenuSetup"]];echo json_encode($menu);?>;
+</script>
+<div class="page-bar">
+    <?= $this->navigation('Zend\Navigation\menusetup')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
+</div>
+
+<div class="margin-top-20">
+    <div class="table-toolbar">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="btn-group">
+                    <a href="<?= $this->url('menusetup', ['action' => 'add']) ?>" id="sample_editable_1_new" class="btn green"> Add New
+                        <i class="fa fa-plus"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="btn-group pull-right">
+                    <button class="btn green btn-outline dropdown-toggle" data-toggle="dropdown">Tools
+                        <i class="fa fa-angle-down"></i>
+                    </button>
+                    <ul class="dropdown-menu pull-right">
+                        <li>
+                            <a href="javascript:;"> Print </a>
+                        </li>
+                        <li>
+                            <a href="javascript:;"> Save as PDF </a>
+                        </li>
+                        <li>
+                            <a href="javascript:;"> Export to Excel </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <table class="table" id="dataTable">
+        <thead>
+        <tr role="row">
+            <th>
+                S.N.
+            </th>
+            <th>
+                Menu Name
+            </th>
+            <th>
+                Url
+            </th>
+            <th>
+                Menu Description
+            </th>
+            <th>
+                Action
+            </th>
+        </tr>
+        </thead>
+        <tbody>
+
+        <?php
+        $i=1;
+        foreach ($list as $menus): ?>
+            <tr role="row table-info">
+                <td>
+                    <?php print $i; ?>
+                </td>
+                <td>
+                    <?php print $this->escapeHtml($menus->MENU_NAME); ?>
+                </td>
+                <td>
+                    <?php print $this->escapeHtml($menus->URL); ?>
+                </td>
+                <td>
+                    <?php print $this->escapeHtml($menus->MENU_DESCRIPTION); ?>
+                </td>
+
+                <td>
+                    <a class=""
+                       href="<?= $this->url("menusetup", ["action" => "edit", "id" => $menus->MENU_ID]) ?>">
+                        Edit
+                    </a> /
+                    <a class=""
+                       href="<?= $this->url("menusetup", ["action" => "delete", "id" => $menus->MENU_ID]); ?>">
+                        Delete
+                    </a>
+
+                </td>
+            </tr>
+
+            <?php
+            $i+=1;
+        endforeach; ?>
+
+        </tbody>
+    </table>
+</div>
+

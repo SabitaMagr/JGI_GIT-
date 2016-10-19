@@ -1,0 +1,59 @@
+<?php
+$this->headScript()
+    ->prependFile($this->basePath('js/system/menu-setup/index.js'))
+    ->prependFile($this->basePath('assets/global/plugins/jstree/dist/jstree.min.js'));
+?>
+<link href="<?= $this->basePath('assets/global/plugins/simple-line-icons/simple-line-icons.min.css') ?>"
+      rel="stylesheet" type="text/css"/>
+<link href="<?= $this->basePath('assets/global/plugins/jstree/dist/themes/default/style.min.css') ?>"
+      rel="stylesheet" type="text/css"/>
+
+<script>
+    document.menu =<?php $menu = ["id" => "menuSystem", "subMenu" => ["id" => "subMenuMenuSetup"]];echo json_encode($menu);?>;
+    document.url = '<?= $this->url("webService", ["action" => "menu"]) ?>';
+</script>
+<div class="page-bar">
+    <?= $this->navigation('Zend\Navigation\menusetup')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
+</div>
+<div class="row margin-top-20">
+    <div class="col-sm-4">
+        <div class="portlet box custom-box">
+            <div class="portlet-title">
+                <div class="row">
+                    <div class="col-md-9" style="padding-right: 0px;">
+                        <div class="input-group" style="margin-top:2%;">
+                            <span class="input-group-addon" id="basic-addon1"><i class="fa fa-search"></i></span>
+                            <input type="text" id="search" class="form-control" placeholder="Menus" aria-describedby="basic-addon1">
+                        </div>
+                    </div>
+                    <div class="col-md-3 rlPadding">
+                        <div class="btn-group open" style="margin-top:12%;">
+                            <a class="btn btn-success btn-sm" href="#">
+                                <i class="fa fa-plus"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="portlet-body">
+                <div id="tree_3" class="tree-demo"> </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-8">
+        <div class="portlet box custom-box">
+            <div class="portlet-title">
+                <div class="caption">
+                    Setup
+                </div>
+                <div class="btn-group pull-right open" style="margin-top:1%">
+                    <a class="btn btn-success btn-sm" href="#">
+                        <i class="fa fa-plus"></i>Add Child
+                    </a>
+                </div>
+            </div>
+            <div class="portlet-body">
+            </div>
+        </div>
+    </div>
+</div>

@@ -18,6 +18,7 @@ use SelfService\Repository\LeaveRequestRepository;
 use Setup\Repository\RecommendApproveRepository;
 use Setup\Repository\EmployeeRepository;
 use SelfService\Repository\AttendanceRepository;
+use System\Repository\MenuSetupRepository;
 
 class WebServiceController extends AbstractActionController
 {
@@ -263,6 +264,10 @@ class WebServiceController extends AbstractActionController
                         "data"=>$temArray
                     ];
                     break;
+
+                case "menuList":
+
+
                     break;
 
                 default:
@@ -276,6 +281,28 @@ class WebServiceController extends AbstractActionController
                 "success" => false
             ];
         }
+        return new JsonModel(['data' => $responseData]);
+    }
+
+    public function getMenuList($parent_menu=null){
+        $menuSetupRepository = new MenuSetupRepository($this->adapter);
+        $result = $menuSetupRepository->getHierarchicalMenu();
+        $temArray = array();
+        foreach($result as $row){
+//            $subResult = $this->getMenuList($row['MENU_ID']);
+//            $subArray = array();
+            $temArray[] = array(
+                "text"=>$row['MENU_NAME'],
+                "id"=>$row['MENU_ID'],
+                "children"=>$this->getMenuList($row['MENU_ID'])
+
+            );
+        }
+        $responseData = [
+            "success"=>true,
+            "data"=>$temArray
+        ];
+
         return new JsonModel(['data' => $responseData]);
     }
 
