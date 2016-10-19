@@ -27,6 +27,16 @@ return [
                         'action' => 'index'
                     ]
                 ]
+            ],
+            'rules'=>[
+                'type'=>Segment::class,
+                'options'=>[
+                    'route'=>'/payroll/rules[/:action[/:id]]',
+                    'defaults'=>[
+                        'controller'=>Controller\Rules::class,
+                        'action'=>'index'
+                    ]
+                ]
             ]
         ]
     ],
@@ -95,12 +105,40 @@ return [
                 ]
             ]
         ],
+        'rules' => [
+            [
+                'label' => 'Rules',
+                'route' => 'rules',
+            ],
+            [
+                'label' => 'Rules',
+                'route' => 'rules',
+                'pages' => [
+                    [
+                        'label' => 'List',
+                        'route' => 'rules',
+                        'action' => 'index',
+                    ],
+                    [
+                        'label' => 'Add',
+                        'route' => 'rules',
+                        'action' => 'add',
+                    ],
+                    [
+                        'label' => 'Edit',
+                        'route' => 'rules',
+                        'action' => 'edit',
+                    ],
+                ]
+            ]
+        ],
     ],
 
     'controllers' => [
         'factories' => [
             Controller\MonthlyValue::class => ControllerFactory::class,
             Controller\FlatValue::class => ControllerFactory::class,
+            Controller\Rules::class => ControllerFactory::class,
         ],
     ],
 

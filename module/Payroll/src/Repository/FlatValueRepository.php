@@ -18,7 +18,7 @@ use Zend\Db\TableGateway\TableGateway;
 class FlatValueRepository implements RepositoryInterface
 {
     private $adapter;
-    private $gateway;
+    private $tableGateway;
 
     public function __construct(AdapterInterface $adapter)
     {

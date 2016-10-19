@@ -1,0 +1,245 @@
+<?php
+//load js files here
+$this->headScript()->appendFile($this->basePath('assets/global/plugins/bootstrap-wizard/jquery.bootstrap.wizard.min.js'));
+$this->headScript()->appendFile($this->basePath('assets/global/plugins/jquery-validation/js/jquery.validate.min.js'));
+$this->headScript()->appendFile($this->basePath('js/Payroll/Rules/form-wizard.js'));
+?>
+
+<script>
+    document.menu =<?php $menu = ["id" => "menuPayroll", "subMenu" => ["id" => "subMenuRoles"], "subMenuChild" => ["id" => "subMenuChildRoleSetup"]];echo json_encode($menu);?>;
+    document.url = '<?= $this->url("restful", ["action" => "index"]) ?>';
+    document.monthlyValues =<?= json_encode($monthlyValues)?>;
+    document.flatValues =<?= json_encode($flatValues)?>;
+    document.ruleId =<?= json_encode($id)?>;
+</script>
+
+<?php
+if ($this->messages) { ?>
+    <script>
+        document.messages =<?php echo json_encode($this->messages); ?>
+    </script>
+<?php } ?>
+
+
+<div class="page-bar">
+    <?= $this->navigation('Zend\Navigation\rules')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
+</div>
+
+
+<div class="portlet light bordered" id="form_wizard_1">
+    <div class="portlet-title">
+        <div class="caption">
+            <i class=" icon-layers font-red"></i>
+            <span class="caption-subject font-red bold uppercase">
+                Form Wizard -
+                <span class="step-title"> Step 1 of 4 </span>
+            </span>
+        </div>
+        <div class="actions">
+            <a class="btn btn-circle btn-icon-only btn-default" href="javascript:;">
+                <i class="icon-cloud-upload"></i>
+            </a>
+            <a class="btn btn-circle btn-icon-only btn-default" href="javascript:;">
+                <i class="icon-wrench"></i>
+            </a>
+            <a class="btn btn-circle btn-icon-only btn-default" href="javascript:;">
+                <i class="icon-trash"></i>
+            </a>
+        </div>
+    </div>
+    <div class="portlet-body form">
+        <div class="form-wizard">
+            <ul class="nav nav-pills nav-justified steps">
+                <li>
+                    <a href="#tab1" data-toggle="tab" class="step">
+                        <span class="number"> 1 </span>
+                        <span class="desc">
+                                    <i class="fa fa-check"></i> Account Setup </span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#tab2" data-toggle="tab" class="step">
+                        <span class="number"> 2 </span>
+                        <span class="desc">
+                                    <i class="fa fa-check"></i> Profile Setup </span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#tab3" data-toggle="tab" class="step active">
+                        <span class="number"> 3 </span>
+                        <span class="desc">
+                                    <i class="fa fa-check"></i> Billing Setup </span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#tab4" data-toggle="tab" class="step">
+                        <span class="number"> 4 </span>
+                        <span class="desc">
+                                    <i class="fa fa-check"></i> Confirm </span>
+                    </a>
+                </li>
+            </ul>
+            <div id="bar" class="progress progress-striped" role="progressbar">
+                <div class="progress-bar progress-bar-success"></div>
+            </div>
+            <div class="tab-content">
+                <div class="alert alert-danger display-none">
+                    <button class="close" data-dismiss="alert"></button>
+                    You have some form errors. Please check below.
+                </div>
+                <div class="alert alert-success display-none">
+                    <button class="close" data-dismiss="alert"></button>
+                    Your form validation is successful!
+                </div>
+                <div class="tab-pane active" id="tab1">
+                    <h3 class="block">Provide your account details</h3>
+                    <form method="POST" name="Rules" action="/neo/neo-hris-metronic/public/payroll/rules/add"
+                          id="Rules">
+                        <div class="form-group">
+                            <label for="payCode">Pay Code</label>
+                            <input type="text"
+                                   name="payCode"
+                                   id="payCode"
+                                   class="form-control">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="payEdesc">Pay EDesc</label>
+                            <textarea name="payEdesc"
+                                      required="required"
+                                      id="payEdesc"
+                                      class="form-control"></textarea></div>
+
+                        <div class="form-group ">
+                            <label for="payLdesc">Pay LDesc</label>
+                            <textarea name="payLdesc"
+                                      required="required"
+                                      id="payLdesc"
+                                      class="form-control"></textarea></div>
+
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="payTypeFlag">Pay Type</label>
+                                    <div class="md-radio-inline">
+                                        <div class="md-radio">
+                                            <input
+                                                checked="checked"
+                                                type="radio"
+                                                value="A"
+                                                name="payTypeFlag"
+                                                id="payTypeFlag+Addition"
+                                                class="md-radiobtn">
+                                            <label
+                                                for="payTypeFlag+Addition">
+                                                <span></span>
+                                                <span class="check"></span>
+                                                <span class="box"></span>
+                                                Addition
+                                            </label>
+                                        </div>
+                                        <div class="md-radio">
+                                            <input
+                                                type="radio"
+                                                value="D"
+                                                name="payTypeFlag"
+                                                id="payTypeFlag+Deduction"
+                                                class="md-radiobtn">
+                                            <label
+                                                for="payTypeFlag+Deduction">
+                                                <span></span>
+                                                <span class="check"></span>
+                                                <span class="box"></span>
+                                                Deduction
+                                            </label></div>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="col-sm-6 ">
+                                <div class="form-group ">
+                                    <label for="priorityIndex">Priority Index</label>
+                                    <input type="number"
+                                           name="priorityIndex"
+                                           id="priorityIndex"
+                                           class="form-control"
+                                           value=""></div>
+                            </div>
+                        </div>
+                        <div class="form-group ">
+                            <label for="remarks">Remarks</label>
+                            <textarea
+                                ng-model="rule.remarks"
+                                name="remarks"
+                                id="remarks"
+                                class="form-control"></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="tab-pane" id="tab2">
+                    <h3 class="block">Provide your profile details</h3>
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <ul id="monthlyValueList">
+                            </ul>
+
+                        </div>
+                        <div class="col-sm-3">
+                            <ul id="flatValueList">
+                            </ul>
+                        </div>
+                        <div class="col-sm-3">
+                            <ul id="functionList">
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <textarea id="rule">
+
+                            </textarea>
+                        </div>
+                    </div>
+
+
+                </div>
+                <div class="tab-pane" id="tab3">
+                    <h3 class="block">Provide your billing and credit card details</h3>
+
+                </div>
+                <div class="tab-pane" id="tab4">
+                    <h3 class="block">Confirm your account</h3>
+                    <h4 class="form-section">Account</h4>
+                    <div class="form-group">
+                        <label class="control-label col-md-3">Username:</label>
+                        <div class="col-md-4">
+                            <p class="form-control-static" data-display="username"></p>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-md-3">Email:</label>
+                        <div class="col-md-4">
+                            <p class="form-control-static" data-display="email"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="form-actions">
+            <div class="row">
+                <div class="col-md-offset-3 col-md-9">
+                    <a href="javascript:;" class="btn default button-previous">
+                        <i class="fa fa-angle-left"></i> Back </a>
+                    <a href="javascript:;" class="btn btn-outline green button-next"> Continue
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+                    <a href="javascript:;" class="btn green button-submit">
+                        Submit
+                        <i class="fa fa-check"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
