@@ -31,4 +31,6 @@ var UITree = function () {
 }();
 App.isAngularJsApp() === !1 && jQuery(document).ready(function () {
     UITree.init()
+
+    $('#myModal').on('shown.bs.modal', function () { $('#myInput').focus() })
 });

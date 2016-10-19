@@ -38,7 +38,33 @@ class MenuSetupController extends AbstractActionController {
     public function indexAction()
     {
         $list = $this->repository->fetchAll();
-        return Helper::addFlashMessagesToArray($this,["list"=>$list]);
+
+        $request = $this->getRequest();
+        $this->initializeForm();
+
+        $menuList = EntityHelper::getTableKVList($this->adapter,MenuSetup::TABLE_NAME,MenuSetup::MENU_ID,[MenuSetup::MENU_NAME],[MenuSetup::STATUS=>"E"]);
+        $menuList[-1]="None";
+        ksort($menuList);
+
+        if($request->isPost()){
+            $menuSetup = new MenuSetup();
+            $this->form->setData($request->getPost());
+            if($this->form->isValid()){
+                $menuSetup->exchangeArrayFromForm($this->form->getData());
+                $menuSetup->menuId = ((int)Helper::getMaxId($this->adapter, MenuSetup::TABLE_NAME, MenuSetup::MENU_ID)) + 1;
+                $menuSetup->createdDt = Helper::getcurrentExpressionDate();
+                $menuSetup->status='E';
+                $this->repository->add($menuSetup);
+
+                $this->flashmessenger()->addMessage("Menu Successfully Added!!!");
+                return $this->redirect()->toRoute("menusetup");
+            }
+        }
+        return Helper::addFlashMessagesToArray($this,[
+            'form'=>$this->form,
+            'menuList'=> $menuList,
+            "list"=>$list
+        ]);
     }
 
     public function addAction(){
