@@ -105,13 +105,23 @@ if($this->messages) { ?>
                     $status = $this->escapeHtml(trim($attendances['STATUS']));
                     if($status=="RQ"){
                         echo "Pending";
+                    }else if($status=="R"){
+                        echo "Rejected";
+                    }else if($status=="AP"){
+                        echo "Approved";
+                    }else if($status=="RC"){
+                        echo "Cancelled";
                     }
                     ?>
                 </td>
 
                 <td class="">
-                    <a href="<?= $this->url("attendancerequest", ["action" => "edit", "id" => $attendances['ID']]); ?>">Edit
+                    <?php if($status=="RQ"){ ?>
+                    <a class=""
+                       href="<?= $this->url("attendancerequest", ["action" => "delete", "id" =>$attendances['ID']]); ?>">
+                        Cancel Request
                     </a>
+                    <?php } ?>
                 </td>
             </tr>
 

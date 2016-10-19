@@ -16,6 +16,7 @@ $startDate = $form->get('startDate');
 $endDate = $form->get('endDate');
 $noOfDays = $form->get('noOfDays');
 $halfDay = $form->get('halfDay');
+$remarks = $form->get('remarks');
 
 $submit = $form->get('submit');
 $submit->setAttribute('value', 'Apply Leave');
@@ -103,6 +104,11 @@ print $this->form()->openTag($form);
                         </div>
                     </div>
                     <?php print $this->formElementErrors()->render($halfDay, ['class' => 'help-block error']); ?>
+                    <div class="form-group padding-0" id="remarks">
+                        <?php print $this->formLabel($remarks); ?>
+                        <?php print $this->formElement($remarks); ?>
+                    </div>
+                    <?php print $this->formElementErrors()->render($remarks, ['class' => 'help-block error']); ?>
                     <?php print $this->formSubmit($submit); ?>
 
                 </div>

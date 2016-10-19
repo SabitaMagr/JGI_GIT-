@@ -59,7 +59,7 @@ class LeaveApplyForm
      * @Annotation\Options({"label":"No of Days"})
      * @Annotation\Required(true)
      * @Annotation\Validator({"name":"StringLength", "options":{"max":"2"}})
-     * @Annotation\Attributes({ "id":"noOfDays","readonly":"readonly", "class":"form-control","min":"0","max":"99"  })
+     * @Annotation\Attributes({ "id":"noOfDays", "class":"form-control","min":"0","max":"99"  })
      */
     public $noOfDays;
 
@@ -71,6 +71,15 @@ class LeaveApplyForm
      * @Annotation\Attributes({ "id":"halfDay"})
      */
     public $halfDay;
+
+    /**
+     * @Annotation\Type("Zend\Form\Element\Textarea")
+     * @Annotation\Required(false)
+     * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
+     * @Annotation\Options({"label":"Remarks"})
+     * @Annotation\Attributes({"id":"form-remarks","class":"form-remarks form-control","style":"    height: 50px; font-size:12px"})
+     */
+    public $remarks;
 
 
     /**

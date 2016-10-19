@@ -12,6 +12,7 @@ $outTime = $form->get('outTime');
 $inRemarks = $form->get('inRemarks');
 $outRemarks = $form->get('outRemarks');
 $totalHour = $form->get('totalHour');
+$totalHour->setAttributes(['readonly' => "readonly"]);
 
 $submit = $form->get('submit');
 $submit->setAttribute('value', 'SUBMIT');
