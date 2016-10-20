@@ -11,8 +11,16 @@ var UITree = function () {
                 file: {icon: "fa fa-file icon-state-warning icon-lg"}
             },
             state: {key: "demo2"},
-            plugins: [ "dnd", "state", "types"]
-        })
+            plugins: ["search","dnd", "types"]
+        });
+        var to = false;
+        $('#search').keyup(function () {
+            if(to) { clearTimeout(to); }
+            to = setTimeout(function () {
+                var v = $('#search').val();
+                $('#tree_3').jstree(true).search(v);
+            }, 250);
+        });
     };
 
     return {
@@ -20,17 +28,18 @@ var UITree = function () {
             window.app.pullDataById(document.url, {
                 action: 'menu',
             }).then(function (success) {
-                console.log("success",success);
+                console.log("success", success);
                 n(success);
             }, function (failure) {
-                console.log("failure",failure);
+                console.log("failure", failure);
             });
         },
-        populateTree:n
+        populateTree: n
     }
 }();
 App.isAngularJsApp() === !1 && jQuery(document).ready(function () {
-    UITree.init()
-
-    $('#myModal').on('shown.bs.modal', function () { $('#myInput').focus() })
+    UITree.init();
+    $('#draggable').on('hidden.bs.modal', function(){
+        $(this).find('form')[0].reset();
+    });
 });

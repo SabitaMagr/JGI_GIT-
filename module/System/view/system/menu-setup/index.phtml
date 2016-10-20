@@ -1,22 +1,14 @@
 <?php
 $this->headScript()
-    ->prependFile($this->basePath('js/system/menu-setup/index.js'))
-    ->prependFile($this->basePath('assets/global/plugins/jstree/dist/jstree.min.js'))
-    ->prependFile($this->basePath('assets/pages/scripts/ui-modals.min.js'))
-    ->prependFile($this->basePath('assets/global/plugins/jquery-ui/jquery-ui.min.js'));
-
+    ->appendFile($this->basePath('assets/global/plugins/jquery-ui/jquery-ui.min.js'))
+    ->appendFile($this->basePath('assets/pages/scripts/ui-modals.min.js'))
+    ->appendFile($this->basePath('assets/global/plugins/jstree/dist/jstree.min.js'))
+    ->appendFile($this->basePath('js/system/menu-setup/index.js'))
+    ->appendFile($this->basePath('js/angular.min.js'))
+    ->appendFile($this->basePath('js/system/menu-setup/menuController.js'));
 
 $form->setAttribute('role', 'form');
 $form->setAttribute('class', 'menusetup-form');
-
-$menuCode = $form->get('menuCode');
-$menuName = $form->get('menuName');
-$url = $form->get('url');
-$parentMenu = $form->get('parentMenu');
-$parentMenu->setValueOptions($menuList);
-$menuDescription = $form->get('menuDescription');
-$submit = $form->get('submit');
-$submit->setAttribute('value', 'SUBMIT');
 
 $form->setAttribute('action', $this->url('menusetup', ['action' => 'index']));
 
@@ -34,95 +26,132 @@ $form->prepare();
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\menusetup')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
-<div class="row margin-top-20">
-    <div class="col-sm-4">
-        <div class="portlet box custom-box">
-            <div class="portlet-title">
-                <div class="row">
-                    <div class="col-md-9" style="padding-right: 0px;">
-                        <div class="input-group" style="margin-top:2%;">
-                            <span class="input-group-addon" id="basic-addon1"><i class="fa fa-search"></i></span>
-                            <input type="text" id="search" class="form-control" placeholder="Menus"
-                                   aria-describedby="basic-addon1">
+<div ng-app="hris">
+    <div class="row margin-top-20">
+        <div ng-controller="menuUpdateController">
+            <div class="col-sm-4">
+                <div class="portlet box custom-box">
+                    <div class="portlet-title">
+                        <div class="row">
+                            <div class="col-md-9" style="padding-right: 0px;">
+                                <div class="input-group" style="margin-top:2%;">
+                                    <span class="input-group-addon" id="basic-addon1"><i
+                                            class="fa fa-search"></i></span>
+                                    <input type="text" id="search" class="form-control" placeholder="Menus"
+                                           aria-describedby="basic-addon1">
+                                </div>
+                            </div>
+                            <div class="col-md-3 rlPadding">
+                                <div class="btn-group open" style="margin-top:12%;">
+                                    <a class="btn btn-success btn-sm" data-toggle="modal" id="addParent"
+                                       href="#draggable">
+                                        <i class="fa fa-plus"></i>
+                                    </a>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                    <div class="col-md-3 rlPadding">
-                        <div class="btn-group open" style="margin-top:12%;">
-                            <a class="btn btn-success btn-sm" data-toggle="modal" href="#draggable">
-                                <i class="fa fa-plus"></i>
+                    <div class="portlet-body">
+                        <div id="tree_3" class="tree-demo"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-8">
+                <div class="portlet box custom-box">
+                    <div class="portlet-title">
+                        <div class="caption">
+                            <span ng-bind="menuDtl.menuName"></span>
+                        </div>
+                        <div class="btn-group pull-right open" style="margin-top:1%">
+                            <a class="btn btn-success btn-sm" id="addChild" data-toggle="modal">
+                                <i class="fa fa-plus"></i>Add Child
                             </a>
                         </div>
                     </div>
+                    <div class="portlet-body">
+                        <div id="editForm" style="display: none;">
+                            <div class="form-group">
+                                <label for="form-menuCode">Menu Code</label>
+                                <input name="menuCode" required="required" id="form-menuCode"
+                                       class="form-menuCode form-control"
+                                       type="text" value="" ng-model="menuDtl.menuCode">
+                                <input name="menuId" required="required" id="form-menuId"
+                                       class="form-menuId form-control"
+                                       type="hidden" value="" ng-model="menuDtl.menuId">
+                            </div>
+                            <div class="form-group">
+                                <label for="form-menuName">Menu Name</label>
+                                <input name="menuName" required="required" id="form-menuName"
+                                       class="form-menuName form-control"
+                                       type="text" value="" ng-model="menuDtl.menuName">
+                            </div>
+                            <div class="form-group">
+                                <label for="form-url">Url</label>
+                                <input name="url" required="required" id="form-url" class="form-url form-control"
+                                       type="text"
+                                       value="" ng-model="menuDtl.url">
+                            </div>
+                            <div class="form-group">
+                                <label for="form-menuDescription">Menu Description</label>
+                                <textarea name="menuDescription" id="form-menuDescription"
+                                          class="form-menuDescription form-control"
+                                          style="height: 50px;" ng-model="menuDtl.menuDescription"></textarea>
+                            </div>
+                            <button type="button" class="btn green" ng-click="submit()">Submit</button>
+                        </div>
+                    </div>
                 </div>
-            </div>
-            <div class="portlet-body">
-                <div id="tree_3" class="tree-demo"></div>
             </div>
         </div>
     </div>
-    <div class="col-sm-8">
-        <div class="portlet box custom-box">
-            <div class="portlet-title">
-                <div class="caption">
-                    Setup
-                </div>
-                <div class="btn-group pull-right open" style="margin-top:1%">
-                    <a class="btn btn-success btn-sm" href="#">
-                        <i class="fa fa-plus"></i>Add Child
-                    </a>
-                </div>
-            </div>
-            <div class="portlet-body">
-            </div>
-        </div>
-    </div>
-</div>
 
-<div class="modal fade draggable-modal" id="draggable" tabindex="-1" role="basic" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-                <h4 class="modal-title">New Entry</h4>
+    <div ng-controller="menuController">
+        <div class="modal fade draggable-modal" id="draggable" tabindex="-1" role="basic" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content custom-box">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                        <h4 class="modal-title">New Entry</h4>
+                    </div>
+                    <?php print $this->form()->openTag($form); ?>
+                    <div class="modal-body" style="background-color:#ffffff">
+                        <div class="form-group">
+                            <label for="form-menuCode">Menu Code</label>
+                            <input name="menuCode" required="required" id="form-menuCode"
+                                   class="form-menuCode form-control"
+                                   type="text" value="" ng-model="menuDtl.menuCode">
+                        </div>
+                        <div class="form-group">
+                            <label for="form-menuName">Menu Name</label>
+                            <input name="menuName" required="required" id="form-menuName"
+                                   class="form-menuName form-control"
+                                   type="text" value="" ng-model="menuDtl.menuName">
+                        </div>
+                        <div class="form-group">
+                            <label for="form-url">Url</label>
+                            <input name="url" required="required" id="form-url" class="form-url form-control"
+                                   type="text"
+                                   value="" ng-model="menuDtl.url">
+                        </div>
+                        <div class="form-group">
+                            <label for="form-menuDescription">Menu Description</label>
+                            <textarea name="menuDescription" id="form-menuDescription"
+                                      class="form-menuDescription form-control"
+                                      style="height: 50px;" ng-model="menuDtl.menuDescription"></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn dark btn-outline" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn green" ng-click="submit()">Submit</button>
+                    </div>
+                    <?php
+                    print $this->form()->closeTag();
+                    ?>
+                </div>
+                <!-- /.modal-content -->
             </div>
-            <?php print $this->form()->openTag($form); ?>
-            <div class="modal-body">
-                <div class="form-group">
-                    <?php print $this->formLabel($menuCode); ?>
-                    <?php print $this->formElement($menuCode); ?>
-                    <?php print $this->formElementErrors()->render($menuCode, ['class' => 'help-block error']); ?>
-                </div>
-                <div class="form-group">
-                    <?php print $this->formLabel($menuName); ?>
-                    <?php print $this->formElement($menuName); ?>
-                    <?php print $this->formElementErrors()->render($menuName, ['class' => 'help-block error']); ?>
-                </div>
-                <div class="form-group<?= empty($url->getMessages()) ? "" : "error" ?>">
-                    <?php print $this->formLabel($url); ?>
-                    <?php print $this->formElement($url); ?>
-                </div>
-                <?php print $this->formElementErrors()->render($url, ['class' => 'help-block error']); ?>
-
-                <div class="form-group">
-                    <?php print $this->formLabel($parentMenu); ?>
-                    <?php print $this->formElement($parentMenu); ?>
-                    <?php print $this->formElementErrors()->render($parentMenu, ['class' => 'help-block error']); ?>
-                </div>
-                <div class="form-group">
-                    <?php print $this->formLabel($menuDescription); ?>
-                    <?php print $this->formElement($menuDescription); ?>
-                    <?php print $this->formElementErrors()->render($menuDescription, ['class' => 'help-block']); ?>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn dark btn-outline" data-dismiss="modal">Close</button>
-                <button type="submit" class="btn green">Save changes</button>
-            </div>
-            <?php
-            print $this->form()->closeTag();
-            ?>
+            <!-- /.modal-dialog -->
         </div>
-        <!-- /.modal-content -->
     </div>
-    <!-- /.modal-dialog -->
+
 </div>
