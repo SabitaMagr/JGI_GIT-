@@ -66,7 +66,6 @@ class UserSetupController extends AbstractActionController {
         ]);
     }
 
-
     public function editAction(){
         $id = (int)$this->params()->fromRoute("id");
         $this->initializeForm();
@@ -98,6 +97,7 @@ class UserSetupController extends AbstractActionController {
             'roleList'=>EntityHelper::getTableKVList($this->adapter,"HR_ROLES","ROLE_ID",["ROLE_NAME"],["STATUS"=>"E"])
         ]);
     }
+
     public function deleteAction(){
         $id = (int)$this->params()->fromRoute("id");
 

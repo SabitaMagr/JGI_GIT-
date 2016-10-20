@@ -19,7 +19,7 @@ use Zend\Db\Adapter\Driver\ResultInterface;
 use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\Mvc\Controller\AbstractRestfulController;
 use Zend\View\Model\JsonModel;
-
+use System\Repository\MenuSetupRepository;
 
 class RestfulService extends AbstractRestfulController
 {
@@ -74,11 +74,16 @@ class RestfulService extends AbstractRestfulController
                 case "pullRule":
                     $responseData = $this->pullRule($postedData->data);
                     break;
+<<<<<<< HEAD
                 case "pushRuleDetail":
                     $responseData = $this->pushRuleDetail($postedData->data);
                     break;
                 case "pullRuleDetailByPayId":
                     $responseData = $this->pullRuleDetailByPayId($postedData->data);
+=======
+                case "menu":
+                    $responseData= $this->menu();
+>>>>>>> 666f98817ea9e268a6b0c618a297b7a885b0e935
                     break;
 
                 default:
@@ -355,6 +360,7 @@ class RestfulService extends AbstractRestfulController
         return ["success" => true, "message" => "Rule successfully added", "data" => ["rule" => $repository->fetchById($data['ruleId'])]];
     }
 
+<<<<<<< HEAD
     private function pushRuleDetail(array $data = null)
     {
         $repository = new RulesDetailRepo($this->adapter);
@@ -383,5 +389,35 @@ class RestfulService extends AbstractRestfulController
         $payDetail = $repository->fetchById($data["payId"]);
         return ["success" => true, "data" => $payDetail];
 
+=======
+    private function menu($parent_menu=null)
+    {
+        $menuSetupRepository = new MenuSetupRepository($this->adapter);
+        $result = $menuSetupRepository->getHierarchicalMenu($parent_menu);
+        $num = count($result);
+        if ($num > 0) {
+            $temArray = array();
+            foreach ($result as $row) {
+                $children =  $this->menu($row['MENU_ID']);
+                if($children){
+                    $temArray[] = array(
+                        "text" => $row['MENU_NAME'],
+                        "id"=>$row['MENU_ID'],
+                        "icon" => "fa fa-folder icon-state-success",
+                        "children" =>$children
+                    );
+                }else{
+                    $temArray[] = array(
+                        "text" => $row['MENU_NAME'],
+                        "id"=>$row['MENU_ID'],
+                        "icon" => "fa fa-folder icon-state-success"
+                    );
+                }
+            }
+            return  $temArray;
+        } else {
+            return false;
+        }
+>>>>>>> 666f98817ea9e268a6b0c618a297b7a885b0e935
     }
 }

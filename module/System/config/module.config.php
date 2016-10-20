@@ -41,6 +41,20 @@ return [
                     ],
                 ],
             ],
+            'menusetup' => [
+                'type' => Segment::class,
+                'options' => [
+                    'route' => '/system/menusetup[/:action[/:id][/:role]]',
+                    'constraints' => [
+                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'id' => '[0-9]+',
+                    ],
+                    'defaults' => [
+                        'controller' => Controller\MenuSetupController::class,
+                        'action' => 'index'
+                    ],
+                ],
+            ],
         ],
     ],
     'navigation' => [
@@ -102,12 +116,42 @@ return [
             ],
 
         ],
+        'menusetup' => [
+            [
+
+                'label' => "Menu Setup",
+                'route' => "menusetup"
+            ],
+            [
+                'label' => "Menu Setup",
+                'route' => "menusetup",
+                'pages' => [
+                    [
+                        'label' => 'List',
+                        'route' => 'menusetup',
+                        'action' => 'index',
+                    ],
+                    [
+                        'label' => 'Add',
+                        'route' => 'menusetup',
+                        'action' => 'add',
+                    ],
+                    [
+                        'label' => 'Edit',
+                        'route' => 'menusetup',
+                        'action' => 'edit',
+                    ],
+                ],
+            ],
+
+        ],
     ],
 
     'controllers' => [
         'factories' => [
             Controller\RoleSetupController::class => ControllerFactory::class,
             Controller\UserSetupController::class => ControllerFactory::class,
+            Controller\MenuSetupController::class => ControllerFactory::class,
         ],
 
     ],

@@ -263,6 +263,10 @@ class WebServiceController extends AbstractActionController
                         "data"=>$temArray
                     ];
                     break;
+
+                case "menuList":
+
+
                     break;
 
                 default:

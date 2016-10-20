@@ -62,3 +62,6 @@
 .border-bottom{
     border-bottom: 1px solid #ddd;
 }
+.rlPadding {
+    padding: 0px 14px;
+}
