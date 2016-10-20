@@ -2,6 +2,7 @@
 //load js files here
 $this->headScript()->appendFile($this->basePath('assets/global/plugins/bootstrap-wizard/jquery.bootstrap.wizard.min.js'));
 $this->headScript()->appendFile($this->basePath('assets/global/plugins/jquery-validation/js/jquery.validate.min.js'));
+$this->headScript()->appendFile($this->basePath('assets/global/plugins/codemirror-5.19.0/lib/codemirror.js'));
 $this->headScript()->appendFile($this->basePath('js/Payroll/Rules/form-wizard.js'));
 ?>
 
@@ -177,30 +178,34 @@ if ($this->messages) { ?>
                     </form>
                 </div>
                 <div class="tab-pane" id="tab2">
-                    <h3 class="block">Provide your profile details</h3>
                     <div class="row">
                         <div class="col-sm-3">
-                            <ul id="monthlyValueList">
-                            </ul>
 
-                        </div>
-                        <div class="col-sm-3">
-                            <ul id="flatValueList">
+                        <div style="overflow: scroll;height: 150px;" >
+                            <ul   class="list-group" id="monthlyValueList">
                             </ul>
                         </div>
+                        <div class="margin-top-10" style="overflow: scroll;height: 150px;" >
+                            <ul  class="list-group" id="flatValueList">
+                            </ul>
+                        </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <textarea style="width: 100%;" class="form-control" id="rule">
+
+                            </textarea>
+                            <button id="check" class="btn btn-danger">Check</button>
+                        </div>
+                    </div>
+                    <div class="row margin-top-10">
+
+
                         <div class="col-sm-3">
                             <ul id="functionList">
                             </ul>
                         </div>
                     </div>
 
-                    <div class="row">
-                        <div class="col-sm-4">
-                            <textarea id="rule">
-
-                            </textarea>
-                        </div>
-                    </div>
 
 
                 </div>

@@ -8,8 +8,10 @@ use AttendanceManagement\Repository\ShiftAssignRepository;
 use Payroll\Model\FlatValueDetail;
 use Payroll\Model\MonthlyValueDetail;
 use Payroll\Model\Rules;
+use Payroll\Model\RulesDetail;
 use Payroll\Repository\FlatValueDetailRepo;
 use Payroll\Repository\MonthlyValueDetailRepo;
+use Payroll\Repository\RulesDetailRepo;
 use Payroll\Repository\RulesRepository;
 use Zend\Authentication\AuthenticationService;
 use Zend\Db\Adapter\AdapterInterface;
@@ -73,8 +75,13 @@ class RestfulService extends AbstractRestfulController
                 case "pullRule":
                     $responseData = $this->pullRule($postedData->data);
                     break;
+                case "pushRuleDetail":
+                    $responseData = $this->pushRuleDetail($postedData->data);
+                    break;
+                case "pullRuleDetailByPayId":
+                    $responseData = $this->pullRuleDetailByPayId($postedData->data);
                 case "menu":
-                    $responseData= $this->menu();
+                    $responseData = $this->menu();
                     break;
                 case "menuInsertion":
                     $responseData = $this->menuInsertion($postedData->data);
@@ -332,7 +339,7 @@ class RestfulService extends AbstractRestfulController
         $rulesValue = new Rules();
         $rulesValue->exchangeArrayFromForm($data);
         if ($rulesValue->payId != NULL) {
-            $payId=$rulesValue->payId;
+            $payId = $rulesValue->payId;
             unset($rulesValue->payId);
             unset($rulesValue->createdDt);
             unset($rulesValue->createdBy);
@@ -341,8 +348,8 @@ class RestfulService extends AbstractRestfulController
 
             $rulesValue->modifiedDt = Helper::getcurrentExpressionDate();
             $rulesValue->modifiedBy = $auth->getStorage()->read()['user_id'];
-            $repository->edit($rulesValue,$payId);
-        return ["success" => true, "message" => "Rule successfully edited"];
+            $repository->edit($rulesValue, $payId);
+            return ["success" => true, "message" => "Rule successfully edited"];
 
         } else {
             $rulesValue->payId = ((int)Helper::getMaxId($this->adapter, Rules::TABLE_NAME, Rules::PAY_ID)) + 1;
@@ -352,7 +359,7 @@ class RestfulService extends AbstractRestfulController
 
             $rulesValue->createdBy = $auth->getStorage()->read()['user_id'];
             $repository->add($rulesValue);
-        return ["success" => true, "message" => "Rule successfully added", "data" => ["payId" => $rulesValue->payId]];
+            return ["success" => true, "message" => "Rule successfully added", "data" => ["payId" => $rulesValue->payId]];
         }
     }
 
@@ -362,7 +369,36 @@ class RestfulService extends AbstractRestfulController
         return ["success" => true, "message" => "Rule successfully added", "data" => ["rule" => $repository->fetchById($data['ruleId'])]];
     }
 
-    private function menu($parent_menu=null)
+    private function pushRuleDetail(array $data = null)
+    {
+        $repository = new RulesDetailRepo($this->adapter);
+        $ruleDetail = new RulesDetail();
+
+        $ruleDetail->payId = $data['payId'];
+        $ruleDetail->mnenonicName = $data['mnenonicName'];
+        if ($data['srNo'] == null) {
+            $ruleDetail->srNo = 1;
+            $repository->add($ruleDetail);
+            return ["success" => true, "data" => $data];
+
+        } else {
+            $payId = $ruleDetail->payId;
+            unset($ruleDetail->payId);
+            $repository->edit($ruleDetail, [RulesDetail::PAY_ID => $payId]);
+            $ruleDetail->srNo = $data['srNo'];
+        }
+
+
+    }
+
+    private function pullRuleDetailByPayId(array $data = null)
+    {
+        $repository = new RulesDetailRepo($this->adapter);
+        $payDetail = $repository->fetchById($data["payId"]);
+        return ["success" => true, "data" => $payDetail];
+    }
+
+    private function menu($parent_menu = null)
     {
         $menuSetupRepository = new MenuSetupRepository($this->adapter);
         $result = $menuSetupRepository->getHierarchicalMenu($parent_menu);
@@ -370,23 +406,23 @@ class RestfulService extends AbstractRestfulController
         if ($num > 0) {
             $temArray = array();
             foreach ($result as $row) {
-                $children =  $this->menu($row['MENU_ID']);
-                if($children){
+                $children = $this->menu($row['MENU_ID']);
+                if ($children) {
                     $temArray[] = array(
                         "text" => $row['MENU_NAME'],
-                        "id"=>$row['MENU_ID'],
+                        "id" => $row['MENU_ID'],
                         "icon" => "fa fa-folder icon-state-success",
-                        "children" =>$children
+                        "children" => $children
                     );
-                }else{
+                } else {
                     $temArray[] = array(
                         "text" => $row['MENU_NAME'],
-                        "id"=>$row['MENU_ID'],
+                        "id" => $row['MENU_ID'],
                         "icon" => "fa fa-folder icon-state-success"
                     );
                 }
             }
-            return  $temArray;
+            return $temArray;
         } else {
             return false;
         }

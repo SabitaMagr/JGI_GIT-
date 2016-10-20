@@ -18,7 +18,7 @@
             this.priorityIndex = rules.PRIORITY_INDEX;
             this.remarks = rules.REMARKS;
         },
-        setRulesFromView: function ( payCode, payEdesc, payLdesc, payTypeFlag, priorityIndex, remarks) {
+        setRulesFromView: function (payCode, payEdesc, payLdesc, payTypeFlag, priorityIndex, remarks) {
             this.payCode = payCode;
             this.payEdesc = payEdesc;
             this.payLdesc = payLdesc;
@@ -26,6 +26,33 @@
             this.priorityIndex = priorityIndex;
             this.remarks = remarks;
 
+        }
+    };
+    var ruleDetail={
+        srNo:null,
+        mnenonicName:"",
+        setRuleDetailFromRemote:function (ruleDetail) {
+            this.srNo=ruleDetail.SR_NO;
+            this.mnenonicName=ruleDetail.MNENONIC_NAME;
+        },
+        updateModel:function (mne) {
+            this.mnenonicName=mne;
+        },
+        updateView:function(){
+            $('#rule').val(this.mnenonicName);
+        },
+        pullRuleDetailByPayId:function (payId) {
+            var obj=this;
+            app.pullDataById(document.url, {
+                action: 'pullRuleDetailByPayId',
+                data: {payId:payId}
+            }).then(function (success) {
+                console.log("success", success);
+                obj.setRuleDetailFromRemote(success.data)
+                obj.updateView();
+            }, function (failure) {
+                console.log("failure", failure);
+            });
         }
     };
 
@@ -40,6 +67,27 @@
         // $("input[name=payTypeFlag]:checked").val();
         $('#priorityIndex').val(rulesForm.priorityIndex);
         $('#remarks').val(rulesForm.remarks);
+    };
+    var pushRuleDetail = function () {
+        ruleDetail.payId=rulesForm.payId;
+        ruleDetail.updateModel($('#rule').val());
+        app.pullDataById(document.url, {
+            action: 'pushRuleDetail',
+            data: JSON.parse(JSON.stringify(ruleDetail))
+        }).then(function (success) {
+            console.log("success", success);
+            eclickFlag = true;
+            $('.button-next').click();
+            eclickFlag = false;
+        }, function (failure) {
+            console.log("failure", failure);
+        });
+    };
+
+    var initializeCodeMirror=function () {
+        var editor = CodeMirror.fromTextArea(document.getElementById('rule'), {
+            lineNumbers: true
+        });
     };
 
     var FormWizard = function () {
@@ -81,6 +129,9 @@
                                 case 1:
                                     $('#Rules').submit();
                                     break;
+                                case 2:
+                                    pushRuleDetail();
+                                    break;
                             }
                             return false;
 
@@ -101,6 +152,27 @@
             }
         }
     }();
+
+    var replaceAll = function (rule, val, newVal) {
+        if (rule.indexOf(val) >= 0) {
+            rule = rule.replace(val, newVal);
+            return replaceAll(rule, val, newVal);
+        } else {
+            return rule;
+        }
+    }
+    var addValue = function (item) {
+        console.log($(item).val());
+
+    };
+
+    var monthlyValues = document.monthlyValues;
+    var flatValues = document.flatValues;
+
+    window.MAX = function (val) {
+        return 100 * val;
+    }
+
 
     $(document).ready(function () {
         FormWizard.init();
@@ -134,14 +206,15 @@
                     action: 'pushRule',
                     data: JSON.parse(JSON.stringify(rulesForm))
                 }).then(function (success) {
-                    if(typeof success.data !== 'undefined'){
-                    rulesForm.payId = success.data.payId;
+                    if (typeof success.data !== 'undefined') {
+                        rulesForm.payId = success.data.payId;
                     }
 
                     eclickFlag = true;
                     $('.button-next').click();
                     eclickFlag = false;
-
+                    initializeCodeMirror();
+                    ruleDetail.pullRuleDetailByPayId(rulesForm.payId);
 
                 }, function (failure) {
                     console.log("failure", failure);
@@ -163,14 +236,50 @@
             });
         }
 
-        var monthlyValues=document.monthlyValues;
-        for(var i in monthlyValues){
-            $('#monthlyValueList').append("<li>"+monthlyValues[i]+"</li>");
+
+
+        for (var i in monthlyValues) {
+            monthlyValues[i] = replaceAll(monthlyValues[i], " ", "_");
+            $('#monthlyValueList').append("<button class='list-group-item btn' id='vars'>" + monthlyValues[i] + "</button>");
         }
 
-        var flatValues=document.flatValues;
-        for(var i in flatValues){
-            $('#flatValueList').append("<li>"+flatValues[i]+"</li>");
+        for (var i in flatValues) {
+            flatValues[i] = replaceAll(flatValues[i], " ", "_")
+            $('#flatValueList').append("<button class='list-group-item btn' id='vars'> " + flatValues[i] + "</button>");
+        }
+
+
+        $('#check').on("click", function (event) {
+            var rule = $('#rule').val();
+            for (var i in monthlyValues) {
+                rule = replaceAll(rule, monthlyValues[i], 1);
+            }
+
+            for (var i in flatValues) {
+                rule = replaceAll(rule, flatValues[i], 1);
+            }
+            try {
+                console.log(eval(rule));
+            } catch (e) {
+                if (e instanceof SyntaxError) {
+                    alert(e.message);
+                }
+            }
+
+
+        });
+
+
+        var vars = document.querySelectorAll('#vars');
+        for (var i = 0; i < vars.length; i++) {
+            $(vars[i]).on('click', function () {
+                var $this = $(this);
+                var rule = $('#rule');
+                console.log($this.text());
+                // $('#rule').append($this.text());
+                rule.val(rule.val() + $this.text());
+
+            });
         }
 
 
