@@ -11,7 +11,7 @@ var UITree = function () {
                 file: {icon: "fa fa-file icon-state-warning icon-lg"}
             },
             state: {key: "demo2"},
-            plugins: ["search","dnd", "types"]
+            plugins: ["search", "types"]
         });
         var to = false;
         $('#search').keyup(function () {
