@@ -43,7 +43,6 @@ class MenuSetupController extends AbstractActionController {
         $this->initializeForm();
 
         $menuList = EntityHelper::getTableKVList($this->adapter,MenuSetup::TABLE_NAME,MenuSetup::MENU_ID,[MenuSetup::MENU_NAME],[MenuSetup::STATUS=>"E"]);
-        $menuList[-1]="None";
         ksort($menuList);
 
         if($request->isPost()){

@@ -76,7 +76,7 @@ class MenuSetupRepository implements RepositoryInterface
             $where .= " AND PARENT_MENU=" . $parent_menu;
         }
 
-        $sql = "SELECT MENU_NAME,MENU_ID ,PARENT_MENU,URL, LEVEL,CONNECT_BY_ISLEAF is_leaf FROM HR_MENUS WHERE STATUS = 'E'" . $where . " CONNECT BY PRIOR MENU_ID = PARENT_MENU START WITH PARENT_MENU=-1";
+        $sql = "SELECT MENU_NAME,MENU_ID ,PARENT_MENU,URL, LEVEL,CONNECT_BY_ISLEAF is_leaf FROM HR_MENUS WHERE STATUS = 'E'" . $where . " CONNECT BY PRIOR MENU_ID = PARENT_MENU START WITH PARENT_MENU IS NULL ORDER BY MENU_ID ASC";
 
         $statement = $this->adapter->query($sql);
         $resultset = $statement->execute();

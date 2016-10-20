@@ -20,6 +20,7 @@ use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\Mvc\Controller\AbstractRestfulController;
 use Zend\View\Model\JsonModel;
 use System\Repository\MenuSetupRepository;
+use System\Model\MenuSetup;
 
 class RestfulService extends AbstractRestfulController
 {
@@ -81,6 +82,17 @@ class RestfulService extends AbstractRestfulController
                     $responseData = $this->pullRuleDetailByPayId($postedData->data);
                 case "menu":
                     $responseData = $this->menu();
+                    break;
+                case "menuInsertion":
+                    $responseData = $this->menuInsertion($postedData->data);
+                    break;
+
+                case "menuUpdate":
+                    $responseData = $this->menuUpdate($postedData->data);
+                    break;
+
+                case "pullMenuDetail":
+                    $responseData = $this->pullMenuDetail($postedData->data);
                     break;
 
                 default:
@@ -414,5 +426,64 @@ class RestfulService extends AbstractRestfulController
         } else {
             return false;
         }
+    }
+
+    private function menuInsertion($data){
+        $record = $data['dataArray'];
+        $model = new MenuSetup();
+        $repository = new MenuSetupRepository($this->adapter);
+        $model->menuId =Helper::getMaxId($this->adapter,MenuSetup::TABLE_NAME,MenuSetup::MENU_ID)+1;
+        $model->menuCode = $record['menuCode'];
+        $model->menuName = $record['menuName'];
+        $model->url = $record['url'];
+        if($data['parentMenu']!=null) {
+            $model->parentMenu = $data['parentMenu'];
+        }
+        $model->menuDescription = $record['menuDescription'];
+        $model->status = 'E';
+        $model->createdDt = Helper::getcurrentExpressionDate();
+        $repository->add($model);
+        $menuData = $this->menu();
+        return $responseData = [
+            "success" => true,
+            "data"=>"Menu Successfully Added!!",
+            "menuData"=>$menuData
+        ];
+    }
+
+    public function pullMenuDetail($data){
+        $menuId = $data['id'];
+        $repository = new MenuSetupRepository($this->adapter);
+        $result = $repository->fetchById($menuId);
+
+        return $responseData = [
+            "data"=>$result
+        ];
+    }
+
+    public function menuUpdate($data){
+        $record = $data['dataArray'];
+        $model = new MenuSetup();
+        $repository = new MenuSetupRepository($this->adapter);
+        $menuId = $record['menuId'];
+        $model->modifiedDt = Helper::getcurrentExpressionDate();
+        $model->menuCode = $record['menuCode'];
+        $model->menuName = $record['menuName'];
+        $model->url = $record['url'];
+
+        $model->menuDescription = $record['menuDescription'];
+
+        unset($model->status);
+        unset($model->parentMenu);
+        unset($model->menuId);
+        unset($model->createdDt);
+
+        $repository->edit($model,$menuId);
+        $menuData = $this->menu();
+        return $responseData = [
+            "success" => true,
+            "data"=>"Menu Successfully Updated!!",
+            "menuData"=>$menuData
+        ];
     }
 }
