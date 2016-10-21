@@ -28,28 +28,30 @@
 
         }
     };
-    var ruleDetail={
-        srNo:null,
-        mnenonicName:"",
-        setRuleDetailFromRemote:function (ruleDetail) {
-            this.srNo=ruleDetail.SR_NO;
-            this.mnenonicName=ruleDetail.MNENONIC_NAME;
+    var ruleDetail = {
+        srNo: null,
+        mnenonicName: "",
+        setRuleDetailFromRemote: function (ruleDetail) {
+            this.srNo = ruleDetail.SR_NO;
+            this.mnenonicName = ruleDetail.MNENONIC_NAME;
         },
-        updateModel:function (mne) {
-            this.mnenonicName=mne;
+        updateModel: function (mne) {
+            this.mnenonicName = mne;
         },
-        updateView:function(){
+        updateView: function () {
             $('#rule').val(this.mnenonicName);
         },
-        pullRuleDetailByPayId:function (payId) {
-            var obj=this;
+        pullRuleDetailByPayId: function (payId) {
+            var obj = this;
             app.pullDataById(document.url, {
                 action: 'pullRuleDetailByPayId',
-                data: {payId:payId}
+                data: {payId: payId}
             }).then(function (success) {
                 console.log("success", success);
-                obj.setRuleDetailFromRemote(success.data)
-                obj.updateView();
+                if (typeof success.data !== 'undefined') {
+                    obj.setRuleDetailFromRemote(success.data)
+                    obj.updateView();
+                }
             }, function (failure) {
                 console.log("failure", failure);
             });
@@ -69,8 +71,8 @@
         $('#remarks').val(rulesForm.remarks);
     };
     var pushRuleDetail = function () {
-        ruleDetail.payId=rulesForm.payId;
-        ruleDetail.updateModel($('#rule').val());
+        ruleDetail.payId = rulesForm.payId;
+        ruleDetail.updateModel(editor.getValue());
         app.pullDataById(document.url, {
             action: 'pushRuleDetail',
             data: JSON.parse(JSON.stringify(ruleDetail))
@@ -83,9 +85,10 @@
             console.log("failure", failure);
         });
     };
+    var editor;
 
-    var initializeCodeMirror=function () {
-        var editor = CodeMirror.fromTextArea(document.getElementById('rule'), {
+    var initializeCodeMirror = function () {
+        editor = CodeMirror.fromTextArea(document.getElementById('rule'), {
             lineNumbers: true
         });
     };
@@ -166,8 +169,6 @@
 
     };
 
-    var monthlyValues = document.monthlyValues;
-    var flatValues = document.flatValues;
 
     window.MAX = function (val) {
         return 100 * val;
@@ -236,21 +237,23 @@
             });
         }
 
+        var monthlyValues = document.monthlyValues;
+        var flatValues = document.flatValues;
 
 
         for (var i in monthlyValues) {
             monthlyValues[i] = replaceAll(monthlyValues[i], " ", "_");
-            $('#monthlyValueList').append("<button class='list-group-item btn' id='vars'>" + monthlyValues[i] + "</button>");
+            $('#monthlyValueList').append("<button class='list-group-item btn' id='vars' >" + monthlyValues[i] + "</button>");
         }
 
         for (var i in flatValues) {
             flatValues[i] = replaceAll(flatValues[i], " ", "_")
-            $('#flatValueList').append("<button class='list-group-item btn' id='vars'> " + flatValues[i] + "</button>");
+            $('#flatValueList').append("<button class='list-group-item btn' id='vars' > " + flatValues[i] + "</button>");
         }
 
 
         $('#check').on("click", function (event) {
-            var rule = $('#rule').val();
+            var rule = editor.getValue();
             for (var i in monthlyValues) {
                 rule = replaceAll(rule, monthlyValues[i], 1);
             }
@@ -259,6 +262,7 @@
                 rule = replaceAll(rule, flatValues[i], 1);
             }
             try {
+                console.log("before eval",rule);
                 console.log(eval(rule));
             } catch (e) {
                 if (e instanceof SyntaxError) {
@@ -274,10 +278,7 @@
         for (var i = 0; i < vars.length; i++) {
             $(vars[i]).on('click', function () {
                 var $this = $(this);
-                var rule = $('#rule');
-                console.log($this.text());
-                // $('#rule').append($this.text());
-                rule.val(rule.val() + $this.text());
+                editor.setValue(editor.getValue() + $this.text());
 
             });
         }
