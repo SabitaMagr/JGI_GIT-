@@ -1,25 +1,21 @@
-/**
- * Created by root on 10/19/16.
- */
-var angularApp = angular.module('hris',['ui.bootstrap']);
+var angularApp = angular.module('hris', ['ui.bootstrap']);
 
-var menuId="";
-angularApp.controller('menuUpdateController',function($scope,$http){
+angularApp.controller('menuUpdateController', function ($scope, $uibModal, $log, $document) {
+    var menuId = "";
     $scope.menuDtl = {
-        menuCode:'',
-        menuName:'',
-        url:'',
-        menuDescription:'',
-        menuId:''
+        menuCode: '',
+        menuName: '',
+        url: '',
+        menuDescription: '',
+        menuId: ''
     };
 
-    $( document ).on( 'click', '#tree_3 ul li a', function() {
-
-        $("#addChild").attr("data-target","#draggable");
-        $('#editForm').css('display','block');
+    $(document).on('click', '#tree_3 ul li a', function () {
+        $("#addChild").attr("data-target", "#draggable");
+        $('#editForm').css('display', 'block');
 
         var attrId = $(this).attr("id");
-        menuId =  attrId.split("_")[0];
+        menuId = attrId.split("_")[0];
 
         window.app.pullDataById(document.url, {
             action: 'pullMenuDetail',
@@ -61,114 +57,75 @@ angularApp.controller('menuUpdateController',function($scope,$http){
         }
         ;
     }
-});
 
-angularApp.controller('menuInsertionController',function($scope,$http){
-    $scope.menuDtl = {
-        menuCode:'',
-        menuName:'',
-        url:'',
-        menuDescription:''
+// MODEL CODE
+    $ctrl = this;
+    $ctrl.animationsEnabled = false;
+
+    $scope.open = function (type) {
+        var modalInstance = $uibModal.open({
+            animation: $ctrl.animationsEnabled,
+            ariaLabelledBy: 'modal-title',
+            ariaDescribedBy: 'modal-body',
+            templateUrl: 'myModalContent.html',
+            controller: function ($scope, $uibModalInstance, menuId) {
+                $scope.cancel = function () {
+                    $uibModalInstance.dismiss('cancel');
+                };
+                $scope.menuDtl = {
+                    menuCode: '',
+                    menuName: '',
+                    url: '',
+                    menuDescription: ''
+                };
+
+                $scope.submitForm = function () {
+                    if ($scope.userForm.$valid) {
+                        window.app.pullDataById(document.url, {
+                            action: 'menuInsertion',
+                            data: {
+                                dataArray: $scope.menuDtl,
+                                parentMenu: menuId
+                            },
+                        }).then(function (success) {
+                            $scope.$apply(function () {
+                                var newData = success.menuData;
+                                $("#tree_3").jstree(true).settings.core.data = newData;
+                                $("#tree_3").jstree(true).refresh();
+
+                                // $uibModalInstance.dismiss('cancel');
+                                $uibModalInstance.close('cancel');
+
+                                window.toastr.success(success.data, "Notifications");
+                            });
+                        }, function (failure) {
+                            console.log(failure);
+                        });
+                    }
+                }
+            },
+            controllerAs: '$ctrl',
+            resolve: {
+                menuId: function () {
+                    return type ? menuId : null;
+                }
+            }
+        });
+
+        modalInstance.result.then(function (selectedItem) {
+            console.log("Model closed with following result", selectedItem);
+        }, function () {
+            console.log("Model Disposed");
+        });
     };
-    var parentMenu = "";
-    $("#addParent").on("click",function () {
-        parentMenu=null;
-    });
-    $("#addChild").on("click",function () {
-        parentMenu=menuId;
-    });
-    $scope.submitForm = function () {
-        if ($scope.userForm.$valid) {
-            window.app.pullDataById(document.url, {
-                action: 'menuInsertion',
-                data: {
-                    dataArray: $scope.menuDtl,
-                    parentMenu: parentMenu
-                },
-            }).then(function (success) {
-                $scope.$apply(function () {
-                    var newData = success.menuData;
-                    $("#tree_3").jstree(true).settings.core.data = newData;
-                    $("#tree_3").jstree(true).refresh();
 
-                    $(".menusForm").modal("toggle");
-                    window.toastr.success(success.data, "Notifications");
-                });
-            }, function (failure) {
-                console.log(failure);
-            });
-       }
-    }
+//   END OF MODEL CODE
+
+
 });
 
 
 
-// angularApp.controller('ModalDemoCtrl', function ($uibModal, $log, $document) {
-//     var $ctrl = this;
-//
-//     $ctrl.open = function (size, parentSelector) {
-//         var parentElem = parentSelector ?
-//             angular.element($document[0].querySelector('.modal-demo ' + parentSelector)) : undefined;
-//         var modalInstance = $uibModal.open({
-//             animation: $ctrl.animationsEnabled,
-//             ariaLabelledBy: 'modal-title',
-//             ariaDescribedBy: 'modal-body',
-//             templateUrl: 'myModalContent.html',
-//             controller: 'ModalInstanceCtrl',
-//             controllerAs: '$ctrl',
-//             size: size,
-//             appendTo: parentElem
-//
-//         });
-//     };
-// });
-//
-// angularApp.controller('ModalInstanceCtrl', function ($scope,$uibModalInstance) {
-//     var $ctrl = this;
-//
-//     $ctrl.cancel = function () {
-//         $uibModalInstance.dismiss('cancel');
-//     };
-//
-//     $scope.menuDtl = {
-//         menuCode:'',
-//         menuName:'',
-//         url:'',
-//         menuDescription:''
-//     };
-//     var parentMenu = "";
-//     $("#addParent").on("click",function () {
-//         parentMenu=null;
-//     });
-//     $("#addChild").on("click",function () {
-//         parentMenu=menuId;
-//     });
-//     $scope.submitForm = function () {
-//         if ($scope.userForm.$valid) {
-//             window.app.pullDataById(document.url, {
-//                 action: 'menuInsertion',
-//                 data: {
-//                     dataArray: $scope.menuDtl,
-//                     parentMenu: parentMenu
-//                 },
-//             }).then(function (success) {
-//                 $scope.$apply(function () {
-//                     var newData = success.menuData;
-//                     $("#tree_3").jstree(true).settings.core.data = newData;
-//                     $("#tree_3").jstree(true).refresh();
-//
-//                     $uibModalInstance.dismiss('cancel');
-//                     window.toastr.success(success.data, "Notifications");
-//                 });
-//             }, function (failure) {
-//                 console.log(failure);
-//             });
-//        }
-//     }
-//
-// });
-
-// Please note that the close and dismiss bindings are from $uibModalInstance.
 
 
 
