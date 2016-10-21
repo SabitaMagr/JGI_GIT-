@@ -11,7 +11,7 @@ var UITree = function () {
                 file: {icon: "fa fa-file icon-state-warning icon-lg"}
             },
             state: {key: "demo2"},
-            plugins: ["search","dnd", "types"]
+            plugins: ["search", "types"]
         });
         var to = false;
         $('#search').keyup(function () {
@@ -39,7 +39,7 @@ var UITree = function () {
 }();
 App.isAngularJsApp() === !1 && jQuery(document).ready(function () {
     UITree.init();
-    $('#draggable').on('hidden.bs.modal', function(){
+    $('.menusForm').on('hidden.bs.modal', function(){
         $(this).find('form')[0].reset();
     });
 });
