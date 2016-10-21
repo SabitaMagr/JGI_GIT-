@@ -5,14 +5,8 @@ $this->headScript()
     ->appendFile($this->basePath('assets/global/plugins/jstree/dist/jstree.min.js'))
     ->appendFile($this->basePath('js/system/menu-setup/index.js'))
     ->appendFile($this->basePath('js/angular.min.js'))
+    ->appendFile($this->basePath('assets/global/plugins/bootstrap-master/ui-bootstrap-tpls-2.2.0.min.js'))
     ->appendFile($this->basePath('js/system/menu-setup/menuController.js'));
-
-$form->setAttribute('role', 'form');
-$form->setAttribute('class', 'menusetup-form');
-
-$form->setAttribute('action', $this->url('menusetup', ['action' => 'index']));
-
-$form->prepare();
 ?>
 <link href="<?= $this->basePath('assets/global/plugins/simple-line-icons/simple-line-icons.min.css') ?>"
       rel="stylesheet" type="text/css"/>
@@ -43,8 +37,7 @@ $form->prepare();
                             </div>
                             <div class="col-md-3 rlPadding">
                                 <div class="btn-group open" style="margin-top:12%;">
-                                    <a class="btn btn-success btn-sm" data-toggle="modal" id="addParent"
-                                       href="#draggable">
+                                    <a class="btn btn-success btn-sm" data-toggle="modal" data-target="#draggable" id="addParent">
                                         <i class="fa fa-plus"></i>
                                     </a>
                                 </div>
@@ -70,34 +63,51 @@ $form->prepare();
                     </div>
                     <div class="portlet-body">
                         <div id="editForm" style="display: none;">
-                            <div class="form-group">
-                                <label for="form-menuCode">Menu Code</label>
-                                <input name="menuCode" required="required" id="form-menuCode"
-                                       class="form-menuCode form-control"
-                                       type="text" value="" ng-model="menuDtl.menuCode">
-                                <input name="menuId" required="required" id="form-menuId"
-                                       class="form-menuId form-control"
-                                       type="hidden" value="" ng-model="menuDtl.menuId">
-                            </div>
-                            <div class="form-group">
-                                <label for="form-menuName">Menu Name</label>
-                                <input name="menuName" required="required" id="form-menuName"
-                                       class="form-menuName form-control"
-                                       type="text" value="" ng-model="menuDtl.menuName">
-                            </div>
-                            <div class="form-group">
-                                <label for="form-url">Url</label>
-                                <input name="url" required="required" id="form-url" class="form-url form-control"
-                                       type="text"
-                                       value="" ng-model="menuDtl.url">
-                            </div>
-                            <div class="form-group">
-                                <label for="form-menuDescription">Menu Description</label>
-                                <textarea name="menuDescription" id="form-menuDescription"
-                                          class="form-menuDescription form-control"
-                                          style="height: 50px;" ng-model="menuDtl.menuDescription"></textarea>
-                            </div>
-                            <button type="button" class="btn green" ng-click="submit()">Submit</button>
+                            <form name="userForm" ng-submit="submitForm()" novalidate>
+                                <div class="form-group">
+                                    <label for="form-menuCode">Menu Code</label>
+                                    <input name="menuCode" required="required" id="form-menuCode"
+                                           class="form-menuCode form-control"
+                                           type="text" value="" ng-model="menuDtl.menuCode">
+                                    <div ng-show="userForm.$submitted || userForm.menuCode.$touched">
+                                        <ul ng-show="userForm.menuCode.$error.required" class="help-block error">
+                                            <li>Menu Code is required.</li>
+                                        </ul>
+                                    </div>
+                                    <input name="menuId" required="required" id="form-menuId"
+                                           class="form-menuId form-control"
+                                           type="hidden" value="" ng-model="menuDtl.menuId">
+                                </div>
+                                <div class="form-group">
+                                    <label for="form-menuName">Menu Name</label>
+                                    <input name="menuName" required="required" id="form-menuName"
+                                           class="form-menuName form-control"
+                                           type="text" value="" ng-model="menuDtl.menuName">
+                                    <div ng-show="userForm.$submitted || userForm.menuName.$touched">
+                                        <ul ng-show="userForm.menuName.$error.required" class="help-block error">
+                                            <li>Menu Name is required.</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="form-url">Url</label>
+                                    <input name="url" required="required" id="form-url" class="form-url form-control"
+                                           type="text"
+                                           value="" ng-model="menuDtl.url">
+                                    <div ng-show="userForm.$submitted || userForm.url.$touched">
+                                        <ul ng-show="userForm.url.$error.required" class="help-block error">
+                                            <li>Url Code is required.</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="form-menuDescription">Menu Description</label>
+                                    <textarea name="menuDescription" id="form-menuDescription"
+                                              class="form-menuDescription form-control"
+                                              style="height: 50px;" ng-model="menuDtl.menuDescription"></textarea>
+                                </div>
+                                <button type="submit" class="btn green">Submit</button>
+                            </form>
                         </div>
                     </div>
                 </div>
@@ -105,53 +115,66 @@ $form->prepare();
         </div>
     </div>
 
-    <div ng-controller="menuController">
-        <div class="modal fade draggable-modal" id="draggable" tabindex="-1" role="basic" aria-hidden="true">
-            <div class="modal-dialog">
+    <div ng-controller="menuInsertionController">
+        <div class="modal fade menusForm" id="draggable" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+             aria-hidden="true">
+            <div class="modal-dialog" role="document">
                 <div class="modal-content custom-box">
                     <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"></button>
                         <h4 class="modal-title">New Entry</h4>
                     </div>
-                    <?php print $this->form()->openTag($form); ?>
-                    <div class="modal-body" style="background-color:#ffffff">
-                        <div class="form-group">
-                            <label for="form-menuCode">Menu Code</label>
-                            <input name="menuCode" required="required" id="form-menuCode"
-                                   class="form-menuCode form-control"
-                                   type="text" value="" ng-model="menuDtl.menuCode">
+                    <form name="userForm" ng-submit="submitForm()" novalidate>
+                        <div class="modal-body" style="background-color:#ffffff">
+                            <div class="form-group">
+                                <label for="form-menuCode">Menu Code</label>
+                                <input name="menuCode" required="required" id="form-menuCode"
+                                       class="form-menuCode form-control"
+                                       type="text" value="" ng-model="menuDtl.menuCode">
+                                <div ng-show="userForm.$submitted || userForm.menuCode.$touched">
+                                    <ul ng-show="userForm.menuCode.$error.required" class="help-block error">
+                                        <li>Menu Code is required.</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="form-menuName">Menu Name</label>
+                                <input name="menuName" required="required" id="form-menuName"
+                                       class="form-menuName form-control"
+                                       type="text" value="" ng-model="menuDtl.menuName">
+                                <div ng-show="userForm.$submitted || userForm.menuName.$touched">
+                                    <ul ng-show="userForm.menuName.$error.required" class="help-block error">
+                                        <li>Menu Name is required.</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="form-url">Url</label>
+                                <input name="url" required="required" id="form-url" class="form-url form-control"
+                                       type="text"
+                                       value="" ng-model="menuDtl.url">
+                                <div ng-show="userForm.$submitted || userForm.url.$touched">
+                                    <ul ng-show="userForm.url.$error.required" class="help-block error">
+                                        <li>Url is required.</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="form-menuDescription">Menu Description</label>
+                                <textarea name="menuDescription" id="form-menuDescription"
+                                          class="form-menuDescription form-control"
+                                          style="height: 50px;" ng-model="menuDtl.menuDescription"></textarea>
+                            </div>
                         </div>
-                        <div class="form-group">
-                            <label for="form-menuName">Menu Name</label>
-                            <input name="menuName" required="required" id="form-menuName"
-                                   class="form-menuName form-control"
-                                   type="text" value="" ng-model="menuDtl.menuName">
+                        <div class="modal-footer">
+                            <button type="button" class="btn dark btn-outline" data-dismiss="modal">Close</button>
+                            <button type="submit" class="btn green">Submit</button>
                         </div>
-                        <div class="form-group">
-                            <label for="form-url">Url</label>
-                            <input name="url" required="required" id="form-url" class="form-url form-control"
-                                   type="text"
-                                   value="" ng-model="menuDtl.url">
-                        </div>
-                        <div class="form-group">
-                            <label for="form-menuDescription">Menu Description</label>
-                            <textarea name="menuDescription" id="form-menuDescription"
-                                      class="form-menuDescription form-control"
-                                      style="height: 50px;" ng-model="menuDtl.menuDescription"></textarea>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn dark btn-outline" data-dismiss="modal">Close</button>
-                        <button type="button" class="btn green" ng-click="submit()">Submit</button>
-                    </div>
-                    <?php
-                    print $this->form()->closeTag();
-                    ?>
+                    </form>
                 </div>
-                <!-- /.modal-content -->
             </div>
-            <!-- /.modal-dialog -->
         </div>
     </div>
+
 
 </div>

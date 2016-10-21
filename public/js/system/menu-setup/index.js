@@ -39,7 +39,7 @@ var UITree = function () {
 }();
 App.isAngularJsApp() === !1 && jQuery(document).ready(function () {
     UITree.init();
-    $('#draggable').on('hidden.bs.modal', function(){
+    $('.menusForm').on('hidden.bs.modal', function(){
         $(this).find('form')[0].reset();
     });
 });
