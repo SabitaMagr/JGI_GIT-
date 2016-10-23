@@ -28,13 +28,23 @@ return [
                     ]
                 ]
             ],
-            'rules'=>[
-                'type'=>Segment::class,
-                'options'=>[
-                    'route'=>'/payroll/rules[/:action[/:id]]',
-                    'defaults'=>[
-                        'controller'=>Controller\Rules::class,
-                        'action'=>'index'
+            'rules' => [
+                'type' => Segment::class,
+                'options' => [
+                    'route' => '/payroll/rules[/:action[/:id]]',
+                    'defaults' => [
+                        'controller' => Controller\Rules::class,
+                        'action' => 'index'
+                    ]
+                ]
+            ],
+            'generate' => [
+                'type' => Segment::class,
+                'options' => [
+                    'route' => '/payroll/generate[/:action[/:id]]',
+                    'defaults' => [
+                        'controller' => Controller\Generate::class,
+                        'action' => 'index'
                     ]
                 ]
             ]
@@ -131,6 +141,22 @@ return [
                     ],
                 ]
             ]
+        ],'generate' => [
+            [
+                'label' => 'Generate',
+                'route' => 'generate',
+            ],
+            [
+                'label' => 'Generate',
+                'route' => 'generate',
+                'pages' => [
+                    [
+                        'label' => 'List',
+                        'route' => 'generate',
+                        'action' => 'index',
+                    ],
+                ]
+            ]
         ],
     ],
 
@@ -139,6 +165,7 @@ return [
             Controller\MonthlyValue::class => ControllerFactory::class,
             Controller\FlatValue::class => ControllerFactory::class,
             Controller\Rules::class => ControllerFactory::class,
+            Controller\Generate::class => ControllerFactory::class,
         ],
     ],
 
