@@ -58,7 +58,7 @@ $this->headScript()
                             <span ng-bind="menuDtl.menuName"></span>
                         </div>
                         <div class="btn-group pull-right open" style="margin-top:1%">
-                            <a class="btn btn-success btn-sm" ng-click="open(true)"  id="addChild">
+                            <a class="btn btn-success btn-sm" ng-click="!isDisabled && open(true)"  id="addChild">
                                 <i class="fa fa-plus"></i>Add Child
                             </a>
                         </div>

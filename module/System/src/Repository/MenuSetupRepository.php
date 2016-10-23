@@ -96,5 +96,22 @@ class MenuSetupRepository implements RepositoryInterface
         return $resultset;
     }
 
+    public function getAllParentMenu($menuId){
+        $sql = "SELECT MENU_ID,MENU_NAME,PARENT_MENU,STATUS, LEVEL
+      FROM HR_MENUS WHERE STATUS='E'
+      START WITH MENU_ID =".$menuId."
+      CONNECT BY PRIOR PARENT_MENU = MENU_ID
+      ORDER SIBLINGS BY MENU_ID";
+
+        $statement = $this->adapter->query($sql);
+        $resultset = $statement->execute();
+        return $resultset;
+    }
+
+    public function getMenuListOfSameParent($menuId){
+        return $this->tableGateway->select([MenuSetup::STATUS => "E",MenuSetup::PARENT_MENU=>$menuId]);
+    }
+
+
 
 }

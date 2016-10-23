@@ -505,10 +505,31 @@ class RestfulService extends AbstractRestfulController
         $menuId = $data['menuId'];
         $checked = $data['checked'];
 
-        $menuList = $menuSetupRepository->getAllCHildMenu($menuId);
+        $menuDtl = $menuSetupRepository->fetchById($menuId);
+        $menuListOfSameParent = $menuSetupRepository->getMenuListOfSameParent($menuDtl['PARENT_MENU']);
+        $numMenuListOfSameParent = count($menuListOfSameParent);
+
+        $childMenuList = $menuSetupRepository->getAllCHildMenu($menuId);
+        $parentMenuList = $menuSetupRepository->getAllParentMenu($menuId);
 
         if($checked=="true") {
-            foreach ($menuList as $row) {
+            foreach ($childMenuList as $row) {
+
+                $result = $rolePermissionRepository->selectRoleMenu($row['MENU_ID'],$roleId);
+                $num = count($result);
+                if($num>0){
+                    $rolePermissionRepository->updateDetail($row['MENU_ID'],$roleId);
+                }else {
+
+                    $rolePermissionModel->roleId = $roleId;
+                    $rolePermissionModel->menuId = $row['MENU_ID'];
+                    $rolePermissionModel->createdDt = Helper::getcurrentExpressionDate();
+                    $rolePermissionModel->status = 'E';
+
+                    $rolePermissionRepository->add($rolePermissionModel);
+                }
+            }
+            foreach ($parentMenuList as $row) {
 
                 $result = $rolePermissionRepository->selectRoleMenu($row['MENU_ID'],$roleId);
                 $num = count($result);
@@ -526,8 +547,15 @@ class RestfulService extends AbstractRestfulController
             }
             $data = "Role Successfully Assigned";
         }else if($checked=="false"){
-            foreach ($menuList as $row) {
+            foreach ($childMenuList as $row) {
                 $rolePermissionRepository->deleteAll($row['MENU_ID'], $roleId);
+            }
+            if($numMenuListOfSameParent==1) {
+                foreach ($parentMenuList as $row) {
+                    $rolePermissionRepository->deleteAll($row['MENU_ID'], $roleId);
+                }
+            }else{
+                $rolePermissionRepository->deleteAll($menuId, $roleId);
             }
             $data = "Role Assign Successfully Removed";
         }

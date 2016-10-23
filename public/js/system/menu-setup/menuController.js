@@ -61,11 +61,10 @@ angularApp.controller('menuUpdateController', function ($scope, $uibModal, $log,
         }, function (failure) {
             console.log(failure);
         });
-
     }
-
+    $scope.isDisabled = true;
     $(document).on('click', '#tree_3 ul li a', function () {
-        $("#addChild").attr("data-target", "#draggable");
+        //$("a#addChild").attr("ng-click", "open(true)");
         $('#editForm').css('display', 'block');
 
         var attrId = $(this).attr("id");
@@ -88,6 +87,7 @@ angularApp.controller('menuUpdateController', function ($scope, $uibModal, $log,
                 $scope.menuDtl.menuName = temp.MENU_NAME;
                 $scope.menuDtl.url = temp.URL;
                 $scope.menuDtl.menuDescription = temp.MENU_DESCRIPTION;
+                $scope.isDisabled = false;
             });
         }, function (failure) {
             console.log(failure);
