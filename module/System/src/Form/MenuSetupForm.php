@@ -41,6 +41,15 @@ class MenuSetupForm{
     public $url;
 
     /**
+     * @Annotion\Type("Zend\Form\Element\Text")
+     * @Annotation\Required(true)
+     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
+     * @Annotation\Options({"label":"Icon Class"})
+     * @Annotation\Attributes({ "id":"form-iconClass", "class":"form-iconClass form-control" })
+     */
+    public $iconClass;
+
+    /**
      * @Annotation\Type("Zend\Form\Element\Select")
      * @Annotation\Required({"required":"true"})
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})

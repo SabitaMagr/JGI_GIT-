@@ -445,6 +445,7 @@ class RestfulService extends AbstractRestfulController
         $model->menuCode = $record['menuCode'];
         $model->menuName = $record['menuName'];
         $model->url = $record['url'];
+        $model->iconClass = $record['iconClass'];
         if($data['parentMenu']!=null) {
             $model->parentMenu = $data['parentMenu'];
         }
@@ -479,6 +480,7 @@ class RestfulService extends AbstractRestfulController
         $model->menuCode = $record['menuCode'];
         $model->menuName = $record['menuName'];
         $model->url = $record['url'];
+        $model->iconClass = $record['iconClass'];
 
         $model->menuDescription = $record['menuDescription'];
 

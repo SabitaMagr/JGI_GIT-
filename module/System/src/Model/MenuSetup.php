@@ -20,6 +20,7 @@ class MenuSetup extends Model {
     const STATUS = 'STATUS';
     const CREATED_DT = 'CREATED_DT';
     const MODIFIED_DT = 'MODIFIED_DT';
+    const ICON_CLASS = "ICON_CLASS";
 
     public $menuId;
     public $menuCode;
@@ -30,6 +31,7 @@ class MenuSetup extends Model {
     public $status;
     public $createdDt;
     public $modifiedDt;
+    public $iconClass;
 
     public $mappings = [
         'menuId'=>self::MENU_ID,
@@ -40,6 +42,7 @@ class MenuSetup extends Model {
         'menuDescription'=>self::MENU_DESCRIPTION,
         'status'=>self::STATUS,
         'createdDt'=>self::CREATED_DT,
-        'modifiedDt'=>self::MODIFIED_DT
+        'modifiedDt'=>self::MODIFIED_DT,
+        'iconClass'=>self::ICON_CLASS
     ];
 }
