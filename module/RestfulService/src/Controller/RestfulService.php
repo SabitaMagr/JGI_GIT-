@@ -83,6 +83,7 @@ class RestfulService extends AbstractRestfulController
                     break;
                 case "pullRuleDetailByPayId":
                     $responseData = $this->pullRuleDetailByPayId($postedData->data);
+                    break;
                 case "menu":
                     $responseData = $this->menu();
                     break;
