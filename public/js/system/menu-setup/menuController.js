@@ -1,25 +1,80 @@
 /**
  * Created by root on 10/19/16.
  */
-var angularApp = angular.module('hris',['ui.bootstrap']);
+var angularApp = angular.module('hris', ['ui.bootstrap']);
 
-var menuId="";
-angularApp.controller('menuUpdateController',function($scope,$http){
+var menuId = "";
+angularApp.controller('menuUpdateController', function ($scope, $http) {
     $scope.menuDtl = {
-        menuCode:'',
-        menuName:'',
-        url:'',
-        menuDescription:'',
-        menuId:''
+        menuCode: '',
+        menuName: '',
+        url: '',
+        menuDescription: '',
+        menuId: ''
     };
 
-    $( document ).on( 'click', '#tree_3 ul li a', function() {
+    $scope.test = function (menuId) {
+        window.app.pullDataById(document.url, {
+            action: 'pullRolePermissionList',
+            data: {
+                menuId: menuId
+            },
+        }).then(function (success) {
+            $scope.$apply(function () {
+                $scope.roleList = success.data;
+                $scope.assignedList = success.data1;
 
-        $("#addChild").attr("data-target","#draggable");
-        $('#editForm').css('display','block');
+                console.log($scope.roleList);
+
+                for (var i in $scope.roleList) {
+                    for (var j in $scope.assignedList) {
+                        if ($scope.roleList[i].ROLE_ID == $scope.assignedList[j].ROLE_ID) {
+                            $scope.roleList[i].checked=true;
+                            break;
+                        }
+                    }
+                }
+                console.log($scope.roleList);
+
+
+            });
+        }, function (failure) {
+            console.log(failure);
+        });
+
+    };
+    $scope.test1=function(abc){
+        var roleId = abc.ROLE_ID;
+        var checked = abc.checked;
+        var selectedMenu = menuId;
+
+        window.app.pullDataById(document.url, {
+            action: 'permissionAssign',
+            data: {
+                roleId: roleId,
+                menuId: selectedMenu,
+                checked:checked
+            },
+        }).then(function (success) {
+            window.toastr.success(success.data, "Notifications");
+
+        }, function (failure) {
+            console.log(failure);
+        });
+
+    }
+
+    $(document).on('click', '#tree_3 ul li a', function () {
+
+        $("#addChild").attr("data-target", "#draggable");
+        $('#editForm').css('display', 'block');
 
         var attrId = $(this).attr("id");
-        menuId =  attrId.split("_")[0];
+        menuId = attrId.split("_")[0];
+
+        $scope.$apply(function () {
+            $scope.test(menuId);
+        });
 
         window.app.pullDataById(document.url, {
             action: 'pullMenuDetail',
@@ -39,6 +94,7 @@ angularApp.controller('menuUpdateController',function($scope,$http){
             console.log(failure);
         });
     });
+
 
     $scope.submitForm = function () {
         if ($scope.userForm.$valid) {
@@ -63,19 +119,19 @@ angularApp.controller('menuUpdateController',function($scope,$http){
     }
 });
 
-angularApp.controller('menuInsertionController',function($scope,$http){
+angularApp.controller('menuInsertionController', function ($scope, $http) {
     $scope.menuDtl = {
-        menuCode:'',
-        menuName:'',
-        url:'',
-        menuDescription:''
+        menuCode: '',
+        menuName: '',
+        url: '',
+        menuDescription: ''
     };
     var parentMenu = "";
-    $("#addParent").on("click",function () {
-        parentMenu=null;
+    $("#addParent").on("click", function () {
+        parentMenu = null;
     });
-    $("#addChild").on("click",function () {
-        parentMenu=menuId;
+    $("#addChild").on("click", function () {
+        parentMenu = menuId;
     });
     $scope.submitForm = function () {
         if ($scope.userForm.$valid) {
@@ -97,10 +153,9 @@ angularApp.controller('menuInsertionController',function($scope,$http){
             }, function (failure) {
                 console.log(failure);
             });
-       }
+        }
     }
 });
-
 
 
 // angularApp.controller('ModalDemoCtrl', function ($uibModal, $log, $document) {
@@ -171,5 +226,29 @@ angularApp.controller('menuInsertionController',function($scope,$http){
 // Please note that the close and dismiss bindings are from $uibModalInstance.
 
 
+$(document).ready(function () {
+    $('.permission_assign').each(function () {
+        $(this).on("click", function () {
+            var child_class = $(this).children("i");
+            var roleId = $(this).attr("id");
+            var selectedMenu = menuId;
 
+            window.app.pullDataById(document.url, {
+                action: 'permissionAssign',
+                data: {
+                    roleId: roleId,
+                    menuId: selectedMenu
+                },
+            }).then(function (success) {
 
+                console.log(success.data);
+                window.toastr.success(success.data, "Notifications");
+
+                child_class.removeClass("fa fa-check pull-right").addClass('fa fa-close pull-right');
+
+            }, function (failure) {
+                console.log(failure);
+            });
+        });
+    });
+});

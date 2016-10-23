@@ -13,6 +13,9 @@ use Payroll\Repository\FlatValueDetailRepo;
 use Payroll\Repository\MonthlyValueDetailRepo;
 use Payroll\Repository\RulesDetailRepo;
 use Payroll\Repository\RulesRepository;
+use System\Model\RolePermission;
+use System\Repository\RolePermissionRepository;
+use System\Repository\RoleSetupRepository;
 use Zend\Authentication\AuthenticationService;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Adapter\Driver\ResultInterface;
@@ -94,7 +97,12 @@ class RestfulService extends AbstractRestfulController
                 case "pullMenuDetail":
                     $responseData = $this->pullMenuDetail($postedData->data);
                     break;
-
+                case "permissionAssign":
+                    $responseData = $this->permissionAssign($postedData->data);
+                    break;
+                case "pullRolePermissionList":
+                    $responseData = $this->pullRolePermissionList($postedData->data);
+                    break;
                 default:
                     $responseData = [
                         "success" => false
@@ -484,6 +492,74 @@ class RestfulService extends AbstractRestfulController
             "success" => true,
             "data"=>"Menu Successfully Updated!!",
             "menuData"=>$menuData
+        ];
+    }
+
+    public function permissionAssign($data){
+        $rolePermissionRepository = new RolePermissionRepository($this->adapter);
+        $menuSetupRepository = new MenuSetupRepository($this->adapter);
+        $rolePermissionModel = new RolePermission();
+
+        $roleId = $data['roleId'];
+        $menuId = $data['menuId'];
+        $checked = $data['checked'];
+
+        $menuList = $menuSetupRepository->getAllCHildMenu($menuId);
+
+        if($checked=="true") {
+            foreach ($menuList as $row) {
+
+                $result = $rolePermissionRepository->selectRoleMenu($row['MENU_ID'],$roleId);
+                $num = count($result);
+                if($num>0){
+                    $rolePermissionRepository->updateDetail($row['MENU_ID'],$roleId);
+                }else {
+
+                    $rolePermissionModel->roleId = $roleId;
+                    $rolePermissionModel->menuId = $row['MENU_ID'];
+                    $rolePermissionModel->createdDt = Helper::getcurrentExpressionDate();
+                    $rolePermissionModel->status = 'E';
+
+                    $rolePermissionRepository->add($rolePermissionModel);
+                }
+            }
+            $data = "Role Successfully Assigned";
+        }else if($checked=="false"){
+            foreach ($menuList as $row) {
+                $rolePermissionRepository->deleteAll($row['MENU_ID'], $roleId);
+            }
+            $data = "Role Assign Successfully Removed";
+        }
+        return $responseData = [
+            "success"=>true,
+            "data"=>$data
+        ];
+
+    }
+
+    public function pullRolePermissionList($data){
+        $menuId = $data['menuId'];
+
+        $rolePermissionRepository = new RolePermissionRepository($this->adapter);
+        $roleRepository = new RoleSetupRepository($this->adapter);
+
+        $result = $roleRepository->fetchAll();
+        $rolePermissionList = $rolePermissionRepository->findAllRoleByMenuId($menuId);
+
+        $tempArray = [];
+        foreach ($result as $item) {
+            array_push($tempArray,$item);
+        }
+
+        $temArray1 = [];
+        foreach($rolePermissionList as $row){
+            array_push($temArray1,$row);
+        }
+
+        return $reponseData = [
+            "success"=>true,
+            "data"=>$tempArray,
+            "data1"=>$temArray1
         ];
     }
 }

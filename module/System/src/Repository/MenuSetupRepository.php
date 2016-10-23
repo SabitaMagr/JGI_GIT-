@@ -82,4 +82,19 @@ class MenuSetupRepository implements RepositoryInterface
         $resultset = $statement->execute();
         return $resultset;
     }
+
+    public function getAllCHildMenu($menuId)
+    {
+        $sql = "SELECT MENU_ID,MENU_NAME,PARENT_MENU,STATUS, LEVEL
+      FROM HR_MENUS WHERE STATUS='E'
+      START WITH MENU_ID =".$menuId."
+      CONNECT BY PRIOR MENU_ID = PARENT_MENU
+      ORDER SIBLINGS BY MENU_ID";
+
+        $statement = $this->adapter->query($sql);
+        $resultset = $statement->execute();
+        return $resultset;
+    }
+
+
 }

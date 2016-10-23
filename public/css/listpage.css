@@ -65,3 +65,27 @@
 .rlPadding {
     padding: 0px 14px;
 }
+
+ul#roleList{
+    display: block;
+    position: relative;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+ul#roleList li{
+    border: 1px solid #ccc;
+    display: block;
+    position: relative;
+    font-size: 14px;
+    line-height: 20px;
+
+    height: 30px;
+    margin: 5px 0;
+    padding: 4px 10px 5px 10px;
+    color: #666;
+    text-decoration: none;
+    font-weight: 400;
+    border-radius: 3px;
+}
