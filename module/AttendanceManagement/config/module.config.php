@@ -61,7 +61,7 @@ return [
         ],
     ],
     'navigation' => [
-        'default' => [
+        'shiftsetup' => [
             [
                 'label' => 'Shift',
                 'route' => 'shiftsetup',

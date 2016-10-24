@@ -37,7 +37,7 @@ return [
         ]
     ],
     'navigation' => [
-        'default' => [
+        'leaveapprove' => [
             [
                 'label' => 'Leave Request',
                 'route' => 'leaveapprove',

@@ -41,7 +41,7 @@ return [
         ]
     ],
     'navigation' => [
-        'default' => [
+        'leavesetup' => [
             [
                 'label' => 'Leave Setup',
                 'route' => 'leavesetup',

@@ -21,7 +21,7 @@ return [
         ]
     ],
     'navigation' => [
-        'default' => [
+        'holidaysetup' => [
             [
                 'label' => 'Holiday',
                 'route' => 'holidaysetup',

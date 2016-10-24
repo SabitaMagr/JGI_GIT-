@@ -179,7 +179,7 @@ return [
         ]
     ],
     'navigation' => [
-        'default' => [
+        'employee' => [
             [
                 'label' => 'Employee',
                 'route' => 'employee',
