@@ -76,6 +76,6 @@ class AttendanceRequestRepository implements RepositoryInterface {
 
     public function delete($id)
     {
-        $this->tableGateway->update([AttendanceRequestModel::STATUS=>'RC'],[AttendanceRequestModel::ID=>$id]);
+        $this->tableGateway->update([AttendanceRequestModel::STATUS=>'C'],[AttendanceRequestModel::ID=>$id]);
     }
 }

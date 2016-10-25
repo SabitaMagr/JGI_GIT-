@@ -38,6 +38,16 @@ return [
                     ]
                 ]
             ],
+            'leavestatus' => [
+                'type' => Segment::class,
+                'options' => [
+                    'route' => '/leave/leavestatus[/:action[/:id]]',
+                    'defaults' => [
+                        'controller' => Controller\LeaveStatus::class,
+                        'action' => 'index'
+                    ]
+                ]
+            ],
         ]
     ],
     'navigation' => [
@@ -127,12 +137,40 @@ return [
                 ]
             ]
         ],
+        'leavestatus' => [
+            [
+                'label' => 'Leave Request Status',
+                'route' => 'leavestatus',
+            ],
+            [
+                'label' => 'Leave Request Status',
+                'route' => 'leavestatus',
+                'pages' => [
+                    [
+                        'label' => 'List',
+                        'route' => 'leavestatus',
+                        'action' => 'index',
+                    ],
+                    [
+                        'label' => 'Add',
+                        'route' => 'leavestatus',
+                        'action' => 'add',
+                    ],
+                    [
+                        'label' => 'Detail',
+                        'route' => 'leavestatus',
+                        'action' => 'view',
+                    ],
+                ]
+            ]
+        ],
     ],
     'controllers' => [
         'factories' => [
             Controller\LeaveSetup::class => ControllerFactory::class,
             Controller\leaveAssign::class => ControllerFactory::class,
             Controller\LeaveApply::class => ControllerFactory::class,
+            Controller\LeaveStatus::class => ControllerFactory::class
         ],
 
     ],

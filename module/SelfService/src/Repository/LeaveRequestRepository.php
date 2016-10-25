@@ -119,6 +119,6 @@ class LeaveRequestRepository implements RepositoryInterface {
 
     public function delete($id)
     {
-        $this->tableGateway->update([LeaveApply::STATUS=>'RC'],[LeaveApply::ID=>$id]);
+        $this->tableGateway->update([LeaveApply::STATUS=>'C'],[LeaveApply::ID=>$id]);
     }
 }

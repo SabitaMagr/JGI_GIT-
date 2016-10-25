@@ -102,6 +102,7 @@ class LeaveApproveController extends AbstractActionController {
 
                     $this->flashmessenger()->addMessage("Leave Request Approved");
                 }
+                unset($leaveApply->halfDay);
                 $this->repository->edit($leaveApply,$id);
             }
             return $this->redirect()->toRoute("leaveapprove");

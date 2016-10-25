@@ -1,0 +1,124 @@
+<?php
+/**
+ * Load Javascript files here
+ */
+$this->headScript()
+    ->appendFile($this->basePath('js/kendoDataTable.js'));
+?>
+
+<script>
+    document.menu =<?php $menu = ["id" => "menuAttendanceManagement", "subMenu" => ["id" => "subMenuAttendanceStatus"]];echo json_encode($menu);?>;
+</script>
+<div class="page-bar">
+    <?= $this->navigation('Zend\Navigation\attendancestatus')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
+</div>
+<?php
+if($this->messages) { ?>
+    <script>
+        document.messages=<?php echo json_encode($this->messages); ?>
+    </script>
+<?php } ?>
+
+<div class="margin-top-20">
+
+    <table class="table" id="dataTable">
+        <thead>
+        <tr role="row">
+            <th>
+                Employee Name
+            </th>
+            <th>
+                Attendance Date
+            </th>
+            <th>
+                Check In
+            </th>
+            <th>
+                Check Out
+            </th>
+            <th>
+                Late In Reason
+            </th>
+            <th>
+                Late Out Reason
+            </th>
+            <th>
+                Approver
+            </th>
+            <th>
+                Status
+            </th>
+            <th>
+                Operation
+            </th>
+        </tr>
+        </thead>
+        <tbody>
+
+        <?php foreach ($list as $attendanceList):
+            ?>
+            <tr role="row">
+                <td>
+                    <?php
+                    print $this->escapeHtml($attendanceList['FIRST_NAME'])." ".$this->escapeHtml($attendanceList['MIDDLE_NAME'])." ".$this->escapeHtml($attendanceList['LAST_NAME']);
+                    ?>
+                </td>
+                <td>
+                    <?php
+                    print $this->escapeHtml($attendanceList['ATTENDANCE_DT']);
+                    ?>
+                </td>
+                <td>
+                    <?php
+                    print $this->escapeHtml($attendanceList['IN_TIME']);
+                    ?>
+                </td>
+                <td>
+                    <?php
+                    print $this->escapeHtml($attendanceList['OUT_TIME']);
+                    ?>
+                </td>
+                <td>
+                    <?php
+                    print $this->escapeHtml($attendanceList['IN_REMARKS']);
+                    ?>
+                </td>
+                <td>
+                    <?php
+                    print $this->escapeHtml($attendanceList['OUT_REMARKS']);
+                    ?>
+                </td>
+                <td>
+                    <?php
+                    print $this->escapeHtml($attendanceList['FIRST_NAME1'])." ".$this->escapeHtml($attendanceList['MIDDLE_NAME1'])." ".$this->escapeHtml($attendanceList['LAST_NAME1']);
+                    ?>
+                </td>
+                <td>
+                    <?php
+                    $status = $this->escapeHtml(trim($attendanceList['STATUS']));
+                    if($status=="RQ"){
+                        echo "Pending";
+                    }else if($status=="R"){
+                        echo "Rejected";
+                    }else if($status=="AP"){
+                        echo "Approved";
+                    }else if($status=="C"){
+                        echo "Cancelled";
+                    }
+                    ?>
+                </td>
+                <td>
+                    <a class=""
+                       href="<?= $this->url("attendancestatus", ["action" => "view", "id" =>$attendanceList['ID']]); ?>">
+                        View
+                    </a>
+                </td>
+            </tr>
+
+        <?php endforeach; ?>
+
+        </tbody>
+    </table>
+
+
+</div>

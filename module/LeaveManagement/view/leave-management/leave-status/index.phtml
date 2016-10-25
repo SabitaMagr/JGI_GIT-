@@ -1,0 +1,133 @@
+<?php
+/**
+ * Load Javascript files here
+ */
+$this->headScript()
+    ->appendFile($this->basePath('js/kendoDataTable.js'));
+?>
+
+<script>
+    document.menu =<?php $menu = ["id" => "menuLeave", "subMenu" => ["id" => "subMenuLeaveStatus"]];echo json_encode($menu);?>;
+</script>
+<div class="page-bar">
+    <?= $this->navigation('Zend\Navigation\leavestatus')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
+</div>
+<?php
+if($this->messages) { ?>
+    <script>
+        document.messages=<?php echo json_encode($this->messages); ?>
+    </script>
+<?php } ?>
+
+<div class="margin-top-20">
+    <table class="table" id="dataTable">
+        <thead>
+        <tr role="row">
+            <th>
+                Employee Name
+            </th>
+            <th>
+                Leave Name
+            </th>
+            <th>
+                Requested Date
+            </th>
+            <th>
+                Recommender
+            </th>
+            <th>
+                Approver
+            </th>
+            <th>
+                From Date
+            </th>
+            <th>
+                To Date
+            </th>
+            <th>
+                Duration
+            </th>
+            <th>
+                Status
+            </th>
+            <th>
+                Operation
+            </th>
+        </tr>
+        </thead>
+        <tbody>
+
+        <?php foreach ($list as $leaveRequestList):
+            ?>
+            <tr role="row">
+                <td>
+                    <?php
+                    print $this->escapeHtml($leaveRequestList['FIRST_NAME'])." ".$this->escapeHtml($leaveRequestList['MIDDLE_NAME'])." ".$this->escapeHtml($leaveRequestList['LAST_NAME']);
+                    ?>
+                </td>
+                <td>
+                    <?php
+                    print $this->escapeHtml($leaveRequestList['LEAVE_ENAME']);
+                    ?>
+                </td>
+                <td>
+                    <?php
+                    print $this->escapeHtml($leaveRequestList['FN1'])." ".$this->escapeHtml($leaveRequestList['MN1'])." ".$this->escapeHtml($leaveRequestList['LN1']);
+                    ?>
+                </td>
+                <td>
+                    <?php
+                    print $this->escapeHtml($leaveRequestList['FN2'])." ".$this->escapeHtml($leaveRequestList['MN2'])." ".$this->escapeHtml($leaveRequestList['LN2']);
+                    ?>
+                </td>
+                <td>
+                    <?php
+                    print $this->escapeHtml($leaveRequestList['APPROVER']);
+                    ?>
+                </td>
+                <td>
+                    <?php
+                    print $this->escapeHtml($leaveRequestList['START_DATE']);
+                    ?>
+                </td>
+                <td>
+                    <?php
+                    print $this->escapeHtml($leaveRequestList['END_DATE']);
+                    ?>
+                </td>
+                <td>
+                    <?php
+                    print $this->escapeHtml($leaveRequestList['NO_OF_DAYS']);
+                    ?>
+                </td>
+                <td>
+                    <?php
+                    $status = $this->escapeHtml($leaveRequestList['STATUS']);
+                    if($status=='RQ'){
+                        echo "Pending";
+                    }else if($status=='RC'){
+                        echo "Recommended";
+                    }else if($status=='AP'){
+                        echo "Approved";
+                    }else if($status=="R"){
+                        echo "Rejected";
+                    }else if($status=="C"){
+                        echo "Cancelled";
+                    }
+                    ?>
+                </td>
+                <td>
+                    <a class=""
+                       href="<?= $this->url("leavestatus", ["action" => "view", "id" =>$leaveRequestList['ID']]); ?>">
+                        View
+                    </a>
+                </td>
+            </tr>
+
+        <?php endforeach; ?>
+
+        </tbody>
+    </table>
+
+
+</div>
