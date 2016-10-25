@@ -12,16 +12,23 @@ use Application\Repository\RepositoryInterface;
 use System\Model\MenuSetup;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\TableGateway\TableGateway;
+use Zend\Authentication\AuthenticationService;
 
 class MenuSetupRepository implements RepositoryInterface
 {
     private $adapter;
     private $tableGateway;
+    private $roleId;
+    private $authService;
 
     public function __construct(AdapterInterface $adapter)
     {
         $this->adapter = $adapter;
         $this->tableGateway = new TableGateway(MenuSetup::TABLE_NAME, $adapter);
+
+        $this->authService = new AuthenticationService();
+        $recordDetail = $this->authService->getIdentity();
+        $this->roleId = $recordDetail['role_id'];
     }
 
     public function add(Model $model)
@@ -76,7 +83,7 @@ class MenuSetupRepository implements RepositoryInterface
             $where .= " AND PARENT_MENU=" . $parent_menu;
         }
 
-        $sql = "SELECT MENU_NAME,MENU_ID ,PARENT_MENU,URL, LEVEL,CONNECT_BY_ISLEAF is_leaf FROM HR_MENUS WHERE STATUS = 'E'" . $where . " CONNECT BY PRIOR MENU_ID = PARENT_MENU START WITH PARENT_MENU IS NULL ORDER BY MENU_ID ASC";
+        $sql = "SELECT MENU_NAME,MENU_ID ,PARENT_MENU,ROUTE,ACTION,ICON_CLASS, LEVEL,CONNECT_BY_ISLEAF is_leaf FROM HR_MENUS WHERE STATUS = 'E'" . $where . " CONNECT BY PRIOR MENU_ID = PARENT_MENU START WITH PARENT_MENU IS NULL ORDER BY MENU_ID ASC";
 
         $statement = $this->adapter->query($sql);
         $resultset = $statement->execute();
@@ -87,7 +94,7 @@ class MenuSetupRepository implements RepositoryInterface
     {
         $sql = "SELECT MENU_ID,MENU_NAME,PARENT_MENU,STATUS, LEVEL
       FROM HR_MENUS WHERE STATUS='E'
-      START WITH MENU_ID =".$menuId."
+      START WITH MENU_ID =" . $menuId . "
       CONNECT BY PRIOR MENU_ID = PARENT_MENU
       ORDER SIBLINGS BY MENU_ID";
 
@@ -96,10 +103,11 @@ class MenuSetupRepository implements RepositoryInterface
         return $resultset;
     }
 
-    public function getAllParentMenu($menuId){
+    public function getAllParentMenu($menuId)
+    {
         $sql = "SELECT MENU_ID,MENU_NAME,PARENT_MENU,STATUS, LEVEL
       FROM HR_MENUS WHERE STATUS='E'
-      START WITH MENU_ID =".$menuId."
+      START WITH MENU_ID =" . $menuId . "
       CONNECT BY PRIOR PARENT_MENU = MENU_ID
       ORDER SIBLINGS BY MENU_ID";
 
@@ -108,10 +116,33 @@ class MenuSetupRepository implements RepositoryInterface
         return $resultset;
     }
 
-    public function getMenuListOfSameParent($menuId){
-        return $this->tableGateway->select([MenuSetup::STATUS => "E",MenuSetup::PARENT_MENU=>$menuId]);
+    public function getMenuListOfSameParent($menuId)
+    {
+        return $this->tableGateway->select([MenuSetup::STATUS => "E", MenuSetup::PARENT_MENU => $menuId]);
     }
 
+    public function getHierarchicalMenuWithRoleId($parent_menu = null)
+    {
+        $where = "";
+        if ($parent_menu == null) {
+            $where .= " AND PARENT_MENU IS NULL";
+        } else {
+            $where .= " AND PARENT_MENU=" . $parent_menu;
+        }
+        $where .= " AND HR.ROLE_ID=" . $this->roleId;
 
+        $sql = "SELECT MENU_NAME,HM.MENU_ID,PARENT_MENU,ROUTE,ACTION,ICON_CLASS
+			             FROM HR_MENUS HM, HR_ROLE_PERMISSIONS HR
+			            WHERE HM.STATUS = 'E'
+			            AND HR.STATUS = 'E'
+    AND HM.MENU_ID = HR.MENU_ID
+			            " . $where . "
+			ORDER BY HM.MENU_ID ASC";
+
+        $statement = $this->adapter->query($sql);
+        //return $statement->getSql();
+        $resultset = $statement->execute();
+        return $resultset;
+    }
 
 }

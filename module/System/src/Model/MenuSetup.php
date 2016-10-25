@@ -14,7 +14,8 @@ class MenuSetup extends Model {
     const MENU_ID = 'MENU_ID';
     const MENU_CODE = 'MENU_CODE';
     const MENU_NAME = 'MENU_NAME';
-    const URL = 'URL';
+    const ROUTE = 'ROUTE';
+    const ACTION = 'ACTION';
     const PARENT_MENU = 'PARENT_MENU';
     const MENU_DESCRIPTION = 'MENU_DESCRIPTION';
     const STATUS = 'STATUS';
@@ -25,7 +26,8 @@ class MenuSetup extends Model {
     public $menuId;
     public $menuCode;
     public $menuName;
-    public $url;
+    public $route;
+    public $action;
     public $parentMenu;
     public $menuDescription;
     public $status;
@@ -37,7 +39,8 @@ class MenuSetup extends Model {
         'menuId'=>self::MENU_ID,
         'menuCode'=>self::MENU_CODE,
         'menuName'=>self::MENU_NAME,
-        'url'=>self::URL,
+        'route'=>self::ROUTE,
+        'action'=>self::ACTION,
         'parentMenu'=>self::PARENT_MENU,
         'menuDescription'=>self::MENU_DESCRIPTION,
         'status'=>self::STATUS,

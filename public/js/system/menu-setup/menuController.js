@@ -8,7 +8,8 @@ angularApp.controller('menuUpdateController', function ($scope, $uibModal, $log,
     $scope.menuDtl = {
         menuCode: '',
         menuName: '',
-        url: '',
+        route: '',
+        action:'',
         iconClass:'',
         menuDescription: '',
         menuId: ''
@@ -86,7 +87,8 @@ angularApp.controller('menuUpdateController', function ($scope, $uibModal, $log,
                 $scope.menuDtl.menuId = temp.MENU_ID;
                 $scope.menuDtl.menuCode = temp.MENU_CODE;
                 $scope.menuDtl.menuName = temp.MENU_NAME;
-                $scope.menuDtl.url = temp.URL;
+                $scope.menuDtl.route = temp.ROUTE;
+                $scope.menuDtl.action = temp.ACTION;
                 $scope.menuDtl.iconClass = temp.ICON_CLASS;
                 $scope.menuDtl.menuDescription = temp.MENU_DESCRIPTION;
                 $scope.isDisabled = false;
@@ -135,7 +137,8 @@ angularApp.controller('menuUpdateController', function ($scope, $uibModal, $log,
                 $scope.menuDtl = {
                     menuCode: '',
                     menuName: '',
-                    url: '',
+                    route: '',
+                    action:'',
                     iconClass:'',
                     menuDescription: ''
                 };

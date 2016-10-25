@@ -104,13 +104,24 @@ $this->headScript()
                                             </div>
                                         </div>
                                         <div class="form-group">
-                                            <label for="form-url">Url</label>
-                                            <input name="url" required="required" id="form-url" class="form-url form-control"
+                                            <label for="form-route">Route</label>
+                                            <input name="route" required="required" id="form-route" class="form-route form-control"
                                                    type="text"
-                                                   value="" ng-model="menuDtl.url">
-                                            <div ng-show="userForm.$submitted || userForm.url.$touched">
-                                                <ul ng-show="userForm.url.$error.required" class="help-block error">
-                                                    <li>Url Code is required.</li>
+                                                   value="" ng-model="menuDtl.route">
+                                            <div ng-show="userForm.$submitted || userForm.route.$touched">
+                                                <ul ng-show="userForm.route.$error.required" class="help-block error">
+                                                    <li>Route is required.</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="form-action">Action</label>
+                                            <input name="action" required="required" id="form-action" class="form-action form-control"
+                                                   type="text"
+                                                   value="" ng-model="menuDtl.action">
+                                            <div ng-show="userForm.$submitted || userForm.action.$touched">
+                                                <ul ng-show="userForm.action.$error.required" class="help-block error">
+                                                    <li>Action is required.</li>
                                                 </ul>
                                             </div>
                                         </div>
@@ -179,13 +190,24 @@ $this->headScript()
                     </div>
                 </div>
                 <div class="form-group">
-                    <label for="form-url">Url</label>
-                    <input name="url" required="required" id="form-url" class="form-url form-control"
+                    <label for="form-route">Route</label>
+                    <input name="route" required="required" id="form-route" class="form-route form-control"
                            type="text"
-                           value="" ng-model="menuDtl.url">
-                    <div ng-show="userForm.$submitted || userForm.url.$touched">
-                        <ul ng-show="userForm.url.$error.required" class="help-block error">
-                            <li>Url is required.</li>
+                           value="" ng-model="menuDtl.route">
+                    <div ng-show="userForm.$submitted || userForm.route.$touched">
+                        <ul ng-show="userForm.route.$error.required" class="help-block error">
+                            <li>Route is required.</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="form-action">Action</label>
+                    <input name="action" required="required" id="form-action" class="form-action form-control"
+                           type="text"
+                           value="" ng-model="menuDtl.action">
+                    <div ng-show="userForm.$submitted || userForm.action.$touched">
+                        <ul ng-show="userForm.action.$error.required" class="help-block error">
+                            <li>Action is required.</li>
                         </ul>
                     </div>
                 </div>

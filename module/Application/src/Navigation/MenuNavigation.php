@@ -13,6 +13,7 @@ class MenuNavigation extends DefaultNavigationFactory
      * @return string
      */
     private $adapter;
+    private $roleId;
     protected function getPages(ContainerInterface $container)
     {
         if (null === $this->pages) {
@@ -20,7 +21,8 @@ class MenuNavigation extends DefaultNavigationFactory
             $adapter=$container->get(AdapterInterface::class);
             $this->adapter = $adapter;
             $repository = new MenuSetupRepository($adapter);
-            $data = $repository->getHierarchicalMenu();
+            $data = $repository->getHierarchicalMenuWithRoleId();
+            //print_r($data); die();
 
             foreach($data as $key=>$row)
             {
@@ -28,16 +30,17 @@ class MenuNavigation extends DefaultNavigationFactory
                     $configuration['navigation'][$this->getName()][$row['MENU_NAME']] =
                         array(
                             "label" => $row['MENU_NAME'],
-                            "route" => 'leavesetup',
-                            "action" => "add",
+                            "icon"=>$row['ICON_CLASS'],
+                            'uri' => 'javascript::',
                             "pages"=>$this->menu($row['MENU_ID'])
                         );
                 }else{
                     $configuration['navigation'][$this->getName()][$row['MENU_NAME']] =
                         array(
                             "label" => $row['MENU_NAME'],
-                            "route" => 'leavesetup',
-                            "action" => "add"
+                            "icon"=>$row['ICON_CLASS'],
+                            "route" => $row['ROUTE'],
+                            "action" => $row['ACTION']
                         );
                 }
 
@@ -65,7 +68,7 @@ class MenuNavigation extends DefaultNavigationFactory
     private function menu($parent_menu = null)
     {
         $menuSetupRepository = new MenuSetupRepository($this->adapter);
-        $result = $menuSetupRepository->getHierarchicalMenu($parent_menu);
+        $result = $menuSetupRepository->getHierarchicalMenuWithRoleId($parent_menu);
         $num = count($result);
 
         if ($num > 0) {
@@ -75,15 +78,16 @@ class MenuNavigation extends DefaultNavigationFactory
                 if ($children) {
                     $temArray[] = array(
                         "label" => $row['MENU_NAME'],
-                        "route" => 'leavesetup',
-                        "action" => "add",
+                        "icon"=>$row['ICON_CLASS'],
+                        'uri' => 'javascript::',
                         "pages" =>$children
                     );
                 } else {
                     $temArray[] = array(
                         "label" => $row['MENU_NAME'],
-                        "route" => 'leavesetup',
-                        "action" => "add"
+                        "icon"=>$row['ICON_CLASS'],
+                        "route" => $row['ROUTE'],
+                        "action" => $row['ACTION']
                     );
                 }
             }

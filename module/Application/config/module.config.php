@@ -146,7 +146,7 @@ return [
 
     'service_manager'=>[
         'factories' => [
-            'navigation-example' => 'Application\Navigation\NavigationFactory',
+            'navigation-menu' => 'Application\Navigation\NavigationFactory',
         ]
     ],
 

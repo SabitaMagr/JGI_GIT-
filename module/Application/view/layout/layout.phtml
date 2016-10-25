@@ -119,7 +119,11 @@ License: You must have a valid license purchased only from themeforest(the above
     <div class="page-container">
         <!-- BEGIN SIDEBAR -->
         <?php
-        print $this->partial('partials/sidebar.phtml');
+        $this->navigation('navigation-menu')->menu()->setPartial('partials/sidebar');
+
+        echo $this->navigation('navigation-menu')->menu()->render();
+
+        //echo $this->navigation('navigation-menu')->menu()->setUlClass('nav');
 
         ?>
         <!-- END SIDEBAR -->

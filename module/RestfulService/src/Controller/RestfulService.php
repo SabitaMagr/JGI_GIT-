@@ -444,7 +444,8 @@ class RestfulService extends AbstractRestfulController
         $model->menuId =Helper::getMaxId($this->adapter,MenuSetup::TABLE_NAME,MenuSetup::MENU_ID)+1;
         $model->menuCode = $record['menuCode'];
         $model->menuName = $record['menuName'];
-        $model->url = $record['url'];
+        $model->route = $record['route'];
+        $model->action = $record['action'];
         $model->iconClass = $record['iconClass'];
         if($data['parentMenu']!=null) {
             $model->parentMenu = $data['parentMenu'];
@@ -479,7 +480,8 @@ class RestfulService extends AbstractRestfulController
         $model->modifiedDt = Helper::getcurrentExpressionDate();
         $model->menuCode = $record['menuCode'];
         $model->menuName = $record['menuName'];
-        $model->url = $record['url'];
+        $model->route = $record['route'];
+        $model->action = $record['action'];
         $model->iconClass = $record['iconClass'];
 
         $model->menuDescription = $record['menuDescription'];

@@ -35,10 +35,19 @@ class MenuSetupForm{
      * @Annotion\Type("Zend\Form\Element\Text")
      * @Annotation\Required(true)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
-     * @Annotation\Options({"label":"Url"})
-     * @Annotation\Attributes({ "id":"form-url", "class":"form-url form-control" })
+     * @Annotation\Options({"label":"Route"})
+     * @Annotation\Attributes({ "id":"form-route", "class":"form-route form-control" })
      */
-    public $url;
+    public $route;
+
+    /**
+     * @Annotion\Type("Zend\Form\Element\Text")
+     * @Annotation\Required(true)
+     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
+     * @Annotation\Options({"label":"Action"})
+     * @Annotation\Attributes({ "id":"form-action", "class":"form-action form-control" })
+     */
+    public $action;
 
     /**
      * @Annotion\Type("Zend\Form\Element\Text")
