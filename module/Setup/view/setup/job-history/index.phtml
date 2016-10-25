@@ -13,7 +13,7 @@ if($this->messages) { ?>
 <?php } ?>
 
 <script>
-    document.menu =<?php $menu = ["id" => "menuServiceHistory"];echo json_encode($menu);?>;
+    document.menu =<?php $menu = ["id" => "menuService"];echo json_encode($menu);?>;
 </script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\jobHistory')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>

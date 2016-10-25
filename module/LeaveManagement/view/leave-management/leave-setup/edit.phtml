@@ -31,7 +31,7 @@ $form->prepare();
 print $this->form()->openTag($form);
 ?>
 <script>
-    document.menu =<?php $menu = ["id" => "menuLeaveManagement", "subMenu" => ["id" => "subMenuLeaveSetup"]];echo json_encode($menu);?>;
+    document.menu =<?php $menu = ["id" => "menuLeave", "subMenu" => ["id" => "subMenuLeaveSetup"]];echo json_encode($menu);?>;
 </script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\leavesetup')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>

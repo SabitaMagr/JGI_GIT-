@@ -41,7 +41,7 @@ $form->prepare();
 print $this->form()->openTag($form);
 ?>
     <script>
-        document.menu =<?php $menu = ["id" => "menuManagerService", "subMenu" => ["id" => "subMenuLeaveApprove"]];echo json_encode($menu);?>;
+        document.menu =<?php $menu = ["id" => "menuManagerService", "subMenu" => ["id" => "subMenuLeavetoApprove"]];echo json_encode($menu);?>;
         document.url = '<?= $this->url("webService", ["action" => "index"]) ?>';
     </script>
 

@@ -7,7 +7,7 @@ $this->headScript()->appendFile($this->basePath('js/LeaveManagement/LeaveAssign/
 ?>
 
 <script>
-    document.menu =<?php $menu = ["id" => "menuLeaveManagement", "subMenu" => ["id" => "subMenuLeaveAssign"], "subMenuChild" => ["id" => "subMenuChildLeaveAssign"]];echo json_encode($menu);?>;
+    document.menu =<?php $menu = ["id" => "menuLeave", "subMenu" => ["id" => "subMenuLeaveAssign"], "subMenuChild" => ["id" => "subMenuChildGroupAssign"]];echo json_encode($menu);?>;
     document.url = '<?= $this->url("webService", ["action" => "index"]) ?>';
 </script>
 <div class="page-bar">

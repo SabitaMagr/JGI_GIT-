@@ -36,7 +36,7 @@ if ($this->messages) {
 $form->prepare();
 ?>
 <script>
-    document.menu =<?php $menu = ["id" => "menuSelfService", "subMenu" => ["id" => "subMenuAttendanceRequest"]];echo json_encode($menu);?>;
+    document.menu =<?php $menu = ["id" => "menuManagerService", "subMenu" => ["id" => "subMenuAttendancetoApprove"]];echo json_encode($menu);?>;
 </script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\attedanceapprove')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>

@@ -7,7 +7,7 @@ $this->headScript()->appendFile($this->basePath('js/Payroll/FlatValue/flatValueD
 ?>
 
 <script>
-    document.menu =<?php $menu = ["id" => "menuPayroll", "subMenu" => ["id" => "subMenuflatValue"], "subMenuChild" => ["id" => "subMenuChildflatValueDetail"]];echo json_encode($menu);?>;
+    document.menu =<?php $menu = ["id" => "menuPayroll", "subMenu" => ["id" => "subMenuFlatValue"], "subMenuChild" => ["id" => "subMenuChildFlatValueDetail"]];echo json_encode($menu);?>;
     document.url = '<?= $this->url("restful", ["action" => "index"]) ?>';
     document.branches =<?= json_encode($branches)?>;
     document.departments =<?= json_encode($departments)?>;

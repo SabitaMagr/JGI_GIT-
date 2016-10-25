@@ -7,7 +7,7 @@ $this->headScript()
 ?>
 
 <script>
-    document.menu =<?php $menu = ["id" => "menuManagerService", "subMenu" => ["id" => "subMenuLeaveApprove"]];echo json_encode($menu);?>;
+    document.menu =<?php $menu = ["id" => "menuManagerService", "subMenu" => ["id" => "subMenuLeavetoApprove"]];echo json_encode($menu);?>;
 </script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\leaveapprove')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
