@@ -64,7 +64,8 @@ print $this->form()->openTag($form);
                                     <tr height="30">
                                         <td>
                                             Employee Name
-                                        </td><td width="15">:</td>
+                                        </td>
+                                        <td width="15">:</td>
                                         <td>
                                             <?php echo $employeeName; ?>
                                         </td>
@@ -72,9 +73,23 @@ print $this->form()->openTag($form);
                                     <tr height="30">
                                         <td>
                                             Requested Date
-                                        </td><td width="15">:</td>
+                                        </td>
+                                        <td width="15">:</td>
                                         <td>
                                             <?php echo $requestedDt; ?>
+                                        </td>
+                                    </tr>
+                                    <tr height="30">
+                                        <td>
+                                            Your Role
+                                        </td>
+                                        <td width="15">:</td>
+                                        <td>
+                                            <?php if ($role == 'A') {
+                                                echo 'Approver';
+                                            } else if ($role == 'R') {
+                                                echo 'Recommender';
+                                            } ?>
                                         </td>
                                     </tr>
                                 </table>
@@ -84,7 +99,8 @@ print $this->form()->openTag($form);
                                     <tr height="30">
                                         <td>
                                             Total Assigned Days
-                                        </td><td width="15">:</td>
+                                        </td>
+                                        <td width="15">:</td>
                                         <td>
                                             <?php echo $totalDays; ?>
                                         </td>
@@ -92,7 +108,8 @@ print $this->form()->openTag($form);
                                     <tr height="30">
                                         <td>
                                             Available Days
-                                        </td><td width="15">:</td>
+                                        </td>
+                                        <td width="15">:</td>
                                         <td>
                                             <?php echo $availableDays; ?>
                                         </td>
@@ -142,8 +159,13 @@ print $this->form()->openTag($form);
                         </div>
                     </div>
                     <?php print $this->formElementErrors()->render($halfDay, ['class' => 'help-block error']); ?>
-                    <?php print $this->formSubmit($submit); ?>
-                    <input type="submit" name="submit" class="btn btn-success pull-right" value="Reject">
+
+                    <?php
+                    if ($status=='RC' || $status=='RQ') {
+                        print $this->formSubmit($submit);
+                        ?>
+                        <input type="submit" name="submit" class="btn btn-success pull-right" value="Reject">
+                    <?php } ?>
 
                 </div>
             </div>

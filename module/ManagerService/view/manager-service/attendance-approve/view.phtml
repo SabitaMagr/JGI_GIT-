@@ -128,10 +128,13 @@ $form->prepare();
 
 
                 <div class="">
-                    <?php print $this->formSubmit($submit);?>
-                    <input type="submit" name="submit" class="btn btn-success pull-right" value="Reject">
                     <?php
-                    print $this->form()->closeTag();
+                    if($status=='RQ' || $status=='RC') {
+                        print $this->formSubmit($submit); ?>
+                        <input type="submit" name="submit" class="btn btn-success pull-right" value="Reject">
+                        <?php
+                        print $this->form()->closeTag();
+                    }
                     ?>
                 </div>
             </div>

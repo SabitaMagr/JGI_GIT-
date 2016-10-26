@@ -114,9 +114,25 @@ class LeaveApproveController extends AbstractActionController {
             'requestedDt'=>$detail['REQUESTED_DT'],
             'role'=>$role,
             'availableDays'=>$preBalance,
+            'status'=>$detail['STATUS'],
             'totalDays'=>$result['TOTAL_DAYS'],
             'leave' => $leaveRequestRepository->getLeaveList($detail['EMPLOYEE_ID']),
             'customRenderer'=>Helper::renderCustomView()
+        ]);
+    }
+
+    public function statusAction(){
+        $pendingList = $this->repository->getAllRequest($this->employeeId);
+        $recommendedList = $this->repository->getAllRequest($this->employeeId,'RC');
+        $approvedList = $this->repository->getAllRequest($this->employeeId,'AP');
+        $rejectedList = $this->repository->getAllRequest($this->employeeId,'R');
+
+        return Helper::addFlashMessagesToArray($this, [
+            'pendingList' => $pendingList,
+            'id'=>$this->employeeId,
+            'recommendedList'=>$recommendedList,
+            'approvedList'=>$approvedList,
+            'rejectedList'=>$rejectedList
         ]);
     }
 }

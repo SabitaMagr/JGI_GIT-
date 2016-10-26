@@ -37,12 +37,18 @@ class AttendanceStatusRepository implements RepositoryInterface {
         // TODO: Implement fetchAll() method.
     }
 
-    public function getAllRequest()
+    public function getAllRequest($status=null)
     {
+        if($status!=null){
+            $where = "AR.STATUS ='".$status."'";
+        }else{
+            $where ="";
+        }
         $sql = new Sql($this->adapter);
         $select = $sql->select();
         $select->columns([
             new Expression("TO_CHAR(AR.REQUESTED_DT, 'DD-MON-YYYY') AS REQUESTED_DT"),
+            new Expression("TO_CHAR(AR.APPROVED_DT, 'DD-MON-YYYY') AS APPROVED_DT"),
             new Expression("TO_CHAR(AR.ATTENDANCE_DT, 'DD-MON-YYYY') AS ATTENDANCE_DT"),
             new Expression("AR.STATUS AS STATUS"),
             new Expression("AR.ID AS ID"),
@@ -57,6 +63,8 @@ class AttendanceStatusRepository implements RepositoryInterface {
         $select->from(['AR' => AttendanceRequestModel::TABLE_NAME])
             ->join(['E'=>"HR_EMPLOYEES"],"E.EMPLOYEE_ID=AR.EMPLOYEE_ID",['FIRST_NAME','MIDDLE_NAME','LAST_NAME'])
             ->join(['E1'=>"HR_EMPLOYEES"],"E1.EMPLOYEE_ID=AR.APPROVED_BY",['FIRST_NAME1'=>"FIRST_NAME",'MIDDLE_NAME1'=>"MIDDLE_NAME",'LAST_NAME1'=>"LAST_NAME"]);
+
+        $select->where([$where]);
 
         $statement = $sql->prepareStatementForSqlObject($select);
         $result = $statement->execute();

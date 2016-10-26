@@ -52,9 +52,9 @@ return [
                         'action' => 'index',
                     ],
                     [
-                        'label' => 'Add',
+                        'label' => 'Status',
                         'route' => 'leaveapprove',
-                        'action' => 'add',
+                        'action' => 'status',
                     ],
                     [
                         'label' => 'Edit',
@@ -82,6 +82,11 @@ return [
                         'label' => 'List',
                         'route' => 'attedanceapprove',
                         'action' => 'index',
+                    ],
+                    [
+                        'label' => 'Status',
+                        'route' => 'attedanceapprove',
+                        'action' => 'status',
                     ],
                     [
                         'label' => 'View',

@@ -35,7 +35,7 @@ class LeaveApproveRepository implements RepositoryInterface
         // TODO: Implement add() method.
     }
 
-    public function getAllRequest($id = null)
+    public function getAllRequest($id = null,$status=null)
     {
         $sql = "SELECT L.LEAVE_ENAME,LA.NO_OF_DAYS,LA.START_DATE
                 ,LA.END_DATE,LA.REQUESTED_DT AS APPLIED_DATE,
@@ -53,8 +53,20 @@ class LeaveApproveRepository implements RepositoryInterface
                 L.LEAVE_ID=LA.LEAVE_ID AND
                 E.EMPLOYEE_ID=LA.EMPLOYEE_ID AND
                 E1.EMPLOYEE_ID=LA.RECOMMENDED_BY AND
-                E2.EMPLOYEE_ID=LA.APPROVED_BY AND
-                ((LA.RECOMMENDED_BY=".$id." AND LA.STATUS='RQ') OR (LA.APPROVED_BY=".$id." AND LA.STATUS='RC') )";
+                E2.EMPLOYEE_ID=LA.APPROVED_BY AND";
+        if($status==null){
+            $sql .=" ((LA.RECOMMENDED_BY=".$id." AND LA.STATUS='RQ') OR (LA.APPROVED_BY=".$id." AND LA.STATUS='RC') )";
+        }else if($status=='RC'){
+            $sql .= " LA.STATUS='RC' AND
+                LA.RECOMMENDED_BY=".$id;
+        }else if($status=='AP'){
+            $sql .= " LA.STATUS='AP' AND
+                LA.APPROVED_BY=".$id;
+        }else if($status=='R'){
+            $sql .=" LA.STATUS='".$status."' AND
+                ((LA.RECOMMENDED_BY=".$id." AND LA.RECOMMENDED_DT IS NOT NULL) OR (LA.APPROVED_BY=".$id.") )";
+        }
+
         $statement = $this->adapter->query($sql);
         $result = $statement->execute();
         return $result;

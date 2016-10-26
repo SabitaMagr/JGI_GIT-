@@ -31,12 +31,19 @@ class LeaveStatusRepository implements RepositoryInterface {
     {
         // TODO: Implement edit() method.
     }
-    public function getAllRequest()
+    public function getAllRequest($status=null)
     {
+        if($status!=null){
+            $where = "LA.STATUS ='".$status."'";
+        }else{
+            $where ="";
+        }
         $sql = "SELECT L.LEAVE_ENAME,LA.NO_OF_DAYS,LA.START_DATE
                 ,LA.END_DATE,LA.REQUESTED_DT AS APPLIED_DATE,
                 LA.STATUS AS STATUS,
                 LA.ID AS ID,
+                LA.RECOMMENDED_DT AS RECOMMENDED_DT,
+                LA.APPROVED_DT AS APPROVED_DT,
                 E.FIRST_NAME,E.MIDDLE_NAME,E.LAST_NAME,
                 E1.FIRST_NAME AS FN1,E1.MIDDLE_NAME AS MN1,E1.LAST_NAME AS LN1,
                 E2.FIRST_NAME AS FN2,E2.MIDDLE_NAME AS MN2,E2.LAST_NAME AS LN2,
@@ -51,8 +58,9 @@ class LeaveStatusRepository implements RepositoryInterface {
                 L.LEAVE_ID=LA.LEAVE_ID AND
                 E.EMPLOYEE_ID=LA.EMPLOYEE_ID AND
                 E1.EMPLOYEE_ID=LA.RECOMMENDED_BY AND
-                E2.EMPLOYEE_ID=LA.APPROVED_BY";
+                E2.EMPLOYEE_ID=LA.APPROVED_BY AND ".$where;
         $statement = $this->adapter->query($sql);
+        //return $statement->getSql();
         $result = $statement->execute();
         return $result;
     }

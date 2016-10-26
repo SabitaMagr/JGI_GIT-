@@ -34,7 +34,7 @@ class AttendanceApproveRepository implements RepositoryInterface
         // TODO: Implement add() method.
     }
 
-    public function getAllRequest($id = null)
+    public function getAllRequest($id = null,$status)
     {
         $sql = new Sql($this->adapter);
         $select = $sql->select();
@@ -56,7 +56,7 @@ class AttendanceApproveRepository implements RepositoryInterface
             ->join(['E1'=>"HR_EMPLOYEES"],"E1.EMPLOYEE_ID=AR.APPROVED_BY",['FIRST_NAME1'=>"FIRST_NAME",'MIDDLE_NAME1'=>"MIDDLE_NAME",'LAST_NAME1'=>"LAST_NAME"]);
 
         $select->where([
-            "AR.STATUS='RQ'",
+            "AR.STATUS='".$status."'",
             "AR.APPROVED_BY=".$id
         ]);
         $statement = $sql->prepareStatementForSqlObject($select);
@@ -79,7 +79,7 @@ class AttendanceApproveRepository implements RepositoryInterface
     {
         $sql = new Sql($this->adapter);
         $select = $sql->select();
-        $select->columns([new Expression("TO_CHAR(A.ATTENDANCE_DT, 'DD-MON-YYYY') AS ATTENDANCE_DT"),new Expression("TO_CHAR(A.IN_TIME, 'HH:MI AM') AS IN_TIME"),new Expression("TO_CHAR(A.OUT_TIME, 'HH:MI AM') AS OUT_TIME"), new Expression("E.EMPLOYEE_ID AS EMPLOYEE_ID"), new Expression("A.ID AS ID"),new Expression("A.IN_REMARKS AS IN_REMARKS"),new Expression("A.OUT_REMARKS AS OUT_REMARKS"),new Expression("A.TOTAL_HOUR AS TOTAL_HOUR"),new Expression("A.REQUESTED_DT AS REQUESTED_DT")], true);
+        $select->columns([new Expression("TO_CHAR(A.ATTENDANCE_DT, 'DD-MON-YYYY') AS ATTENDANCE_DT"),new Expression("TO_CHAR(A.IN_TIME, 'HH:MI AM') AS IN_TIME"),new Expression("TO_CHAR(A.OUT_TIME, 'HH:MI AM') AS OUT_TIME"), new Expression("E.EMPLOYEE_ID AS EMPLOYEE_ID"), new Expression("A.ID AS ID"),new Expression("A.STATUS AS STATUS"),new Expression("A.IN_REMARKS AS IN_REMARKS"),new Expression("A.OUT_REMARKS AS OUT_REMARKS"),new Expression("A.TOTAL_HOUR AS TOTAL_HOUR"),new Expression("A.REQUESTED_DT AS REQUESTED_DT")], true);
         $select->from(['A'=>AttendanceRequestModel::TABLE_NAME])
             ->join(['E' => 'HR_EMPLOYEES'], 'A.EMPLOYEE_ID=E.EMPLOYEE_ID', ['FIRST_NAME','MIDDLE_NAME','LAST_NAME']);
         $select->where([AttendanceRequestModel::ID=>$id]);

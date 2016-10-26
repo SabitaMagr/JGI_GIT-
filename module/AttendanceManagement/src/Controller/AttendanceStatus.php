@@ -38,8 +38,14 @@ class AttendanceStatus extends AbstractActionController {
 
     public function indexAction()
     {
-        $list = $this->repository->getAllRequest();
-        return Helper::addFlashMessagesToArray($this,['list'=>$list]);
+        $pendingList = $this->repository->getAllRequest('RQ');
+        $approvedList = $this->repository->getAllRequest('AP');
+        $rejectedList = $this->repository->getAllRequest('R');
+        return Helper::addFlashMessagesToArray($this,[
+            'pendingList'=>$pendingList,
+            'approvedList'=>$approvedList,
+            'rejectedList'=>$rejectedList
+        ]);
     }
 
     public function viewAction(){

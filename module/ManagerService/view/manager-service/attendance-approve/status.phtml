@@ -7,15 +7,15 @@ $this->headScript()
 ?>
 
 <script>
-    document.menu =<?php $menu = ["id" => "menuAttendanceManagement", "subMenu" => ["id" => "subMenuAttendanceStatus"]];echo json_encode($menu);?>;
+    document.menu =<?php $menu = ["id" => "menuManagerService", "subMenu" => ["id" => "subMenuAttendanceStatus"]];echo json_encode($menu);?>;
 </script>
 <div class="page-bar">
-    <?= $this->navigation('Zend\Navigation\attendancestatus')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
+    <?= $this->navigation('Zend\Navigation\attedanceapprove')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
 <?php
-if($this->messages) { ?>
+if ($this->messages) { ?>
     <script>
-        document.messages=<?php echo json_encode($this->messages); ?>
+        document.messages =<?php echo json_encode($this->messages); ?>
     </script>
 <?php } ?>
 
@@ -53,7 +53,7 @@ if($this->messages) { ?>
                             Late Out Reason
                         </th>
                         <th>
-                            Approver
+                            Your Role
                         </th>
                         <th>
                             Operation
@@ -67,7 +67,7 @@ if($this->messages) { ?>
                         <tr role="row">
                             <td>
                                 <?php
-                                print $this->escapeHtml($attendanceList['FIRST_NAME'])." ".$this->escapeHtml($attendanceList['MIDDLE_NAME'])." ".$this->escapeHtml($attendanceList['LAST_NAME']);
+                                print $this->escapeHtml($attendanceList['FIRST_NAME']) . " " . $this->escapeHtml($attendanceList['MIDDLE_NAME']) . " " . $this->escapeHtml($attendanceList['LAST_NAME']);
                                 ?>
                             </td>
                             <td>
@@ -97,13 +97,12 @@ if($this->messages) { ?>
                             </td>
                             <td>
                                 <?php
-                                print $this->escapeHtml($attendanceList['FIRST_NAME1'])." ".$this->escapeHtml($attendanceList['MIDDLE_NAME1'])." ".$this->escapeHtml($attendanceList['LAST_NAME1']);
+                                echo "APPROVER";
                                 ?>
                             </td>
-
                             <td>
                                 <a class=""
-                                   href="<?= $this->url("attendancestatus", ["action" => "view", "id" =>$attendanceList['ID']]); ?>">
+                                   href="<?= $this->url("attedanceapprove", ["action" => "view", "id" => $attendanceList['ID']]); ?>">
                                     View
                                 </a>
                             </td>
@@ -152,10 +151,7 @@ if($this->messages) { ?>
                             Late Out Reason
                         </th>
                         <th>
-                            Approver
-                        </th>
-                        <th>
-                            Approved Date
+                            Your Role
                         </th>
                         <th>
                             Operation
@@ -169,7 +165,7 @@ if($this->messages) { ?>
                         <tr role="row">
                             <td>
                                 <?php
-                                print $this->escapeHtml($attendanceList['FIRST_NAME'])." ".$this->escapeHtml($attendanceList['MIDDLE_NAME'])." ".$this->escapeHtml($attendanceList['LAST_NAME']);
+                                print $this->escapeHtml($attendanceList['FIRST_NAME']) . " " . $this->escapeHtml($attendanceList['MIDDLE_NAME']) . " " . $this->escapeHtml($attendanceList['LAST_NAME']);
                                 ?>
                             </td>
                             <td>
@@ -199,17 +195,12 @@ if($this->messages) { ?>
                             </td>
                             <td>
                                 <?php
-                                print $this->escapeHtml($attendanceList['FIRST_NAME1'])." ".$this->escapeHtml($attendanceList['MIDDLE_NAME1'])." ".$this->escapeHtml($attendanceList['LAST_NAME1']);
-                                ?>
-                            </td>
-                            <td>
-                                <?php
-                                echo $this->escapeHtml(trim($attendanceList['APPROVED_DT']));
+                                echo "APPROVER";
                                 ?>
                             </td>
                             <td>
                                 <a class=""
-                                   href="<?= $this->url("attendancestatus", ["action" => "view", "id" =>$attendanceList['ID']]); ?>">
+                                   href="<?= $this->url("attedanceapprove", ["action" => "view", "id" => $attendanceList['ID']]); ?>">
                                     View
                                 </a>
                             </td>
@@ -258,10 +249,7 @@ if($this->messages) { ?>
                             Late Out Reason
                         </th>
                         <th>
-                            Approver
-                        </th>
-                        <th>
-                            Rejected Date
+                            Your Role
                         </th>
                         <th>
                             Operation
@@ -275,7 +263,7 @@ if($this->messages) { ?>
                         <tr role="row">
                             <td>
                                 <?php
-                                print $this->escapeHtml($attendanceList['FIRST_NAME'])." ".$this->escapeHtml($attendanceList['MIDDLE_NAME'])." ".$this->escapeHtml($attendanceList['LAST_NAME']);
+                                print $this->escapeHtml($attendanceList['FIRST_NAME']) . " " . $this->escapeHtml($attendanceList['MIDDLE_NAME']) . " " . $this->escapeHtml($attendanceList['LAST_NAME']);
                                 ?>
                             </td>
                             <td>
@@ -305,17 +293,12 @@ if($this->messages) { ?>
                             </td>
                             <td>
                                 <?php
-                                print $this->escapeHtml($attendanceList['FIRST_NAME1'])." ".$this->escapeHtml($attendanceList['MIDDLE_NAME1'])." ".$this->escapeHtml($attendanceList['LAST_NAME1']);
-                                ?>
-                            </td>
-                            <td>
-                                <?php
-                                echo $this->escapeHtml(trim($attendanceList['APPROVED_DT']));
+                                echo "APPROVER";
                                 ?>
                             </td>
                             <td>
                                 <a class=""
-                                   href="<?= $this->url("attendancestatus", ["action" => "view", "id" =>$attendanceList['ID']]); ?>">
+                                   href="<?= $this->url("attedanceapprove", ["action" => "view", "id" => $attendanceList['ID']]); ?>">
                                     View
                                 </a>
                             </td>
