@@ -74,7 +74,12 @@ class RolePermissionRepository implements RepositoryInterface {
         return $result;
     }
     public function selectRoleMenu($menuId,$roleId){
-        return $this->tableGateway->select(['MENU_ID'=>$menuId,'ROLE_ID'=>$roleId]);
+        $result = $this->tableGateway->select(['MENU_ID'=>$menuId,'ROLE_ID'=>$roleId]);
+        return $result->current();
+    }
+    public function getActiveRoleMenu($menuId,$roleId){
+        $result = $this->tableGateway->select(['MENU_ID'=>$menuId,'ROLE_ID'=>$roleId,'STATUS'=>'E']);
+        return $result->current();
     }
     public function updateDetail($menuId,$roleId){
         $this->tableGateway->update(['STATUS'=>'E'],['MENU_ID'=>$menuId,'ROLE_ID'=>$roleId]);

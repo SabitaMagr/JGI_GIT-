@@ -509,9 +509,16 @@ class RestfulService extends AbstractRestfulController
         $menuId = $data['menuId'];
         $checked = $data['checked'];
 
+        //if child of same parent menu were assigned on same roleId then don't need to deactivate parent menu list
         $menuDtl = $menuSetupRepository->fetchById($menuId);
         $menuListOfSameParent = $menuSetupRepository->getMenuListOfSameParent($menuDtl['PARENT_MENU']);
-        $numMenuListOfSameParent = count($menuListOfSameParent);
+        $numMenuListOfSameParent = 0;
+        foreach($menuListOfSameParent as $childOfSameParent){
+            $existChildDtl = $rolePermissionRepository->getActiveRoleMenu($childOfSameParent['MENU_ID'],$roleId);
+            if($existChildDtl){
+                $numMenuListOfSameParent +=1;
+            }
+        }
 
         $childMenuList = $menuSetupRepository->getAllCHildMenu($menuId);
         $parentMenuList = $menuSetupRepository->getAllParentMenu($menuId);
@@ -520,8 +527,8 @@ class RestfulService extends AbstractRestfulController
             foreach ($childMenuList as $row) {
 
                 $result = $rolePermissionRepository->selectRoleMenu($row['MENU_ID'],$roleId);
-                $num = count($result);
-                if($num>0){
+                //$num = count($result);
+                if($result){
                     $rolePermissionRepository->updateDetail($row['MENU_ID'],$roleId);
                 }else {
 
@@ -536,8 +543,8 @@ class RestfulService extends AbstractRestfulController
             foreach ($parentMenuList as $row) {
 
                 $result = $rolePermissionRepository->selectRoleMenu($row['MENU_ID'],$roleId);
-                $num = count($result);
-                if($num>0){
+                //$num = count($result);
+                if($result){
                     $rolePermissionRepository->updateDetail($row['MENU_ID'],$roleId);
                 }else {
 
@@ -557,6 +564,15 @@ class RestfulService extends AbstractRestfulController
             if($numMenuListOfSameParent==1) {
                 foreach ($parentMenuList as $row) {
                     $rolePermissionRepository->deleteAll($row['MENU_ID'], $roleId);
+
+                    //need to activate those parent key whose another child key is assigned on same roleId
+                    $childMenuList1 = $menuSetupRepository->getMenuListOfSameParent($row['MENU_ID']);
+                    foreach($childMenuList1 as $childRow){
+                        $getPermissionDtl = $rolePermissionRepository->getActiveRoleMenu($childRow['MENU_ID'],$roleId);
+                        if($getPermissionDtl){
+                            $rolePermissionRepository->updateDetail($row['MENU_ID'],$roleId);
+                        }
+                    }
                 }
             }else{
                 $rolePermissionRepository->deleteAll($menuId, $roleId);

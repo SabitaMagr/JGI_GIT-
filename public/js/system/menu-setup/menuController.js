@@ -26,8 +26,6 @@ angularApp.controller('menuUpdateController', function ($scope, $uibModal, $log,
                 $scope.roleList = success.data;
                 $scope.assignedList = success.data1;
 
-                console.log($scope.roleList);
-
                 for (var i in $scope.roleList) {
                     for (var j in $scope.assignedList) {
                         if ($scope.roleList[i].ROLE_ID == $scope.assignedList[j].ROLE_ID) {
@@ -36,9 +34,6 @@ angularApp.controller('menuUpdateController', function ($scope, $uibModal, $log,
                         }
                     }
                 }
-                console.log($scope.roleList);
-
-
             });
         }, function (failure) {
             console.log(failure);
