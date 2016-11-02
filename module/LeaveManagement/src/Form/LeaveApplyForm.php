@@ -68,7 +68,7 @@ class LeaveApplyForm
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"value_options":{"F":"First Half","S":"Second Half","N":"Full Day"},"label":"Early Out"})
      * @Annotation\Required(false)
-     * @Annotation\Attributes({ "id":"halfDay"})
+     * @Annotation\Attributes({ "id":"halfDay","value":"N"})
      */
     public $halfDay;
 
