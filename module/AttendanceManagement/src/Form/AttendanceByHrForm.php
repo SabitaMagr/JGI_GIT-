@@ -47,7 +47,7 @@ class AttendanceByHrForm
      * @Annotation\Required(true)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Out Time"})
-     * @Annotation\Attributes({ "id":"outTime",  "data-format":"h:mm a", "data-template":"hh : mm A", "class":"form-control"  })
+     * @Annotation\Attributes({ "id":"outTime", "data-format":"h:mm a", "data-template":"hh : mm A", "class":"form-control"  })
      */
     public $outTime;
 

@@ -9,7 +9,9 @@ $form->setAttribute('class', 'attendanceByHr-form');
 
 $attendanceDt = $form->get('attendanceDt');
 $inTime = $form->get('inTime');
+$inTime->setValue("10:00 AM");
 $outTime = $form->get('outTime');
+$outTime->setValue("5:00 PM");
 $inRemarks = $form->get('inRemarks');
 $outRemarks = $form->get('outRemarks');
 $totalHour = $form->get('totalHour');
