@@ -7,7 +7,7 @@ $this->headScript()->appendFile($this->basePath('js/Payroll/Rules/form-wizard.js
 ?>
 
 <script>
-    document.menu =<?php $menu = ["id" => "menuPayroll", "subMenu" => ["id" => "subMenuRoles"], "subMenuChild" => ["id" => "subMenuChildRoleSetup"]];echo json_encode($menu);?>;
+    document.menu =<?php $menu = ["id" => "menuPayroll", "subMenu" => ["id" => "subMenuRules"], "subMenuChild" => ["id" => "subMenuChildRuleSetup"]];echo json_encode($menu);?>;
     document.url = '<?= $this->url("restful", ["action" => "index"]) ?>';
     document.monthlyValues =<?= json_encode($monthlyValues)?>;
     document.flatValues =<?= json_encode($flatValues)?>;
