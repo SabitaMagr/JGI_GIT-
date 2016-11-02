@@ -89,17 +89,17 @@
             }
         });
 
-        $("#halfDay").on("click",function () {
-           // var val = $(this).val();
-           //  alert(val);
-
-            var favorite = [];
-            $. each($("input[name='halfDay']:checked"), function(){
-                favorite. push($(this). val());
-            });
-            var last = favorite.length;
-            console.log(favorite);
-        });
+        // $("#halfDay").on("click",function () {
+        //    // var val = $(this).val();
+        //    //  alert(val);
+        //
+        //     var favorite = [];
+        //     $. each($("input[name='halfDay']:checked"), function(){
+        //         favorite. push($(this). val());
+        //     });
+        //     var last = favorite.length;
+        //     console.log(favorite);
+        // });
     });
 })(window.jQuery, window.app);
 
