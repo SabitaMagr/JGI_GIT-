@@ -58,10 +58,24 @@ return [
                     ]
                 ],
             ],
+            'attendancestatus' => [
+                'type' => Segment::class,
+                'options' => [
+                    'route' => '/attendance/attendancestatus[/:action[/:id]]',
+                    'constants' => [
+                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'id' => '[0-9]+',
+                    ],
+                    'defaults' => [
+                        'controller' => Controller\AttendanceStatus::class,
+                        'action' => 'index',
+                    ]
+                ],
+            ],
         ],
     ],
     'navigation' => [
-        'default' => [
+        'shiftsetup' => [
             [
                 'label' => 'Shift',
                 'route' => 'shiftsetup',
@@ -142,6 +156,33 @@ return [
                 ],
             ],
         ],
+        'attendancestatus' => [
+            [
+                'label' => 'Attendance Request Status',
+                'route' => 'attendancestatus',
+            ],
+            [
+                'label' => 'Attendance Request Status',
+                'route' => 'attendancestatus',
+                'pages' => [
+                    [
+                        'label' => 'List',
+                        'route' => 'attendancestatus',
+                        'action' => 'index',
+                    ],
+                    [
+                        'label' => 'Add',
+                        'route' => 'attendancestatus',
+                        'action' => 'add',
+                    ],
+                    [
+                        'label' => 'Detail',
+                        'route' => 'attendancestatus',
+                        'action' => 'view',
+                    ],
+                ],
+            ],
+        ],
     ],
 
     'controllers' => [
@@ -149,6 +190,7 @@ return [
             Controller\ShiftAssign::class=>ControllerFactory::class,
             Controller\AttendanceByHr::class=>ControllerFactory::class,
             Controller\ShiftSetup::class=>ControllerFactory::class,
+            Controller\AttendanceStatus::class=>ControllerFactory::class,
         ],
 
     ],

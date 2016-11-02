@@ -76,305 +76,78 @@
             <li class="heading">
                 <h3 class="uppercase">Features</h3>
             </li>
-            <li id="menuSetup" class="nav-item">
-                <a href="javascript:;" class="nav-link nav-toggle">
-                    <i class="fa fa-wrench"></i>
-                    <span class="title">Setup</span>
-                    <span class="arrow"></span>
-                </a>
-                <ul class="sub-menu">
-                    <li id="subMenuEmployee" class="nav-item">
-                        <a href="<?= $this->url("employee", ["action" => "index"]) ?>" class="nav-link">
-                            <i class="fa fa-users"></i>
-                            Employee
-                        </a>
-                    </li>
-                    <li id="subMenuBranch" class="nav-item">
-                        <a href="<?= $this->url("branch", ["action" => "index"]) ?>" class="nav-link">
-                            <i class="icon-pencil"></i>
-                            Branch
-                        </a>
-                    </li>
-                    <li id="subMenuCompany" class="nav-item">
-                        <a href="<?= $this->url("company", ["action" => "index"]) ?>" class="nav-link">
-                            <i class="icon-pencil"></i>
-                                Company
-                        </a>
-                    </li>
-                    <li id="subMenuDepartment" class="nav-item">
-                        <a href="<?= $this->url("department", ["action" => "index"]) ?>" class="nav-link">
-                            <i class="icon-pencil"></i>
-                                Department
-                        </a>
-                    </li>
-                    <li id="subMenuDesignation" class="nav-item">
-                        <a href="<?= $this->url("designation", ["action" => "index"]) ?>" class="nav-link">
-                            <i class="icon-pencil"></i>
-                                Designation
-                        </a>
-                    </li>
-                    <li id="subMenuCurrentPosting" class="nav-item">
-                        <a href="<?= $this->url("empCurrentPosting", ["action" => "index"]) ?>" class="nav-link">
-                            <i class="icon-pencil"></i>
-                                Current Posting
-                        </a>
-                    </li>
-                    <li id="subMenuPosition">
-                        <a href="<?= $this->url("position", ["action" => "index"]) ?>" class="nav-link">
-                            <i class="icon-pencil"></i>
-                                Position
-                        </a>
-                    </li>
-                    <li id="subMenuServiceType">
-                        <a href="<?= $this->url("serviceType", ["action" => "index"]) ?>" class="nav-link">
-                            <i class="icon-pencil"></i>
-                                Service Type
-                        </a>
-                    </li>
-                    <li id="subMenuRecommendApprove">
-                        <a href="<?= $this->url("recommendapprove", ["action" => "index"]) ?>" class="nav-link">
-                            <span class="title">Recommender/Approver</span>
-                        </a>
-                    </li>
-                </ul>
-            </li>
-            <li id="menuLeaveManagement" class="nav-item">
-                <a href="javascript:;" class="nav-link nav-toggle">
-                    <i class="icon-folder"></i>
-                    <span class="title">Leave</span>
-                    <span class="arrow "></span>
-                </a>
-                <ul class="sub-menu">
-                    <li id="subMenuLeaveSetup" class="nav-item">
-                        <a href="<?= $this->url("leavesetup", ["action" => "index"]) ?>">
-                            <i class="icon-pencil"></i>
-                            Leave Setup</a>
-                    </li>
-                    <li id="subMenuLeaveAssign" class="nav-item">
-                        <a href="javascript:;" class="nav-link nav-toggle">
-                            <i class="icon-settings"></i> Leave Assign
-                            <span class="arrow"></span>
-                        </a>
-                        <ul class="sub-menu">
-                            <li class="nav-item">
-                                <a href="#" class="nav-link">
-                                    <i class="icon-power"></i>Export</a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="#" class="nav-link">
-                                    <i class="icon-paper-plane"></i>Import</a>
-                            </li>
-                            <li class="nav-item" id="subMenuChildLeaveAssign">
-                                <a href="<?= $this->url("leaveassign", ["action" => "assign"]) ?>" class="nav-link">
-                                    <i class="icon-star"></i>Group Assign</a>
-                            </li>
-                        </ul>
-                    </li>
 
-                </ul>
-            </li>
-            <li id="menuHolidayManagement" class="nav-item">
-                <a href="javascript:;" class="nav-link nav-toggle">
-                    <i class="icon-folder"></i>
-                    <span class="title">Holiday Management</span>
-                    <span class="arrow "></span>
+        <?php foreach ($this->container as $page):
+            /** @var Zend\Navigation\Page\AbstractPage $page */ ?>
+            <li id="menu<?php echo preg_replace('/[^a-zA-Z]/', '', $page->getLabel()); ?>" class="nav-item <?= $page->isActive()? 'active open' : '' ?>">
+                <a href="<?php echo $page->getHref() ?>" target="<?php echo $page->getTarget() ?>"
+                    <?php echo $page->hasPages() ? 'class="nav-link nav-toggle"' : '' ?>>
+                    <i class="<?php echo $page->icon; ?>"></i>
+                    <span class="title"><?php echo $page->getLabel() ?></span>
+                    <?php if ($page->hasPages()): ?>
+                        <span class="arrow"></span>
+                    <?php endif; ?>
                 </a>
-                <ul class="sub-menu">
-                    <li id="subMenuHolidaySetup" class="nav-item">
-                        <a href="<?= $this->url("holidaysetup", ["action" => "index"]) ?>">
-                            <i class="icon-pencil"></i>
-                            Holiday Setup</a>
-                    </li>
-                </ul>
-            </li>
-            <li id="menuAttendanceManagement" class="nav-item">
-                <a href="javascript:;" class="nav-link nav-toggle">
-                    <i class="icon-folder"></i>
-                    <span class="title">Attendance Management</span>
-                    <span class="arrow"></span>
-                </a>
-                <ul class="sub-menu">
-                    <li id="subMenuShiftSetup" class="nav-item">
-                        <a href="<?= $this->url("shiftsetup", ["action" => "index"]) ?>">
-                            <i class="icon-pencil"></i>
-                            Shift Setup
-                        </a>
-                    </li>
-                    <li id="subMenuShiftAssign" class="nav-item">
-                        <a href="<?= $this->url("shiftassign", ["action" => "index"]); ?>">
-                            <i class="icon-pencil"></i>
-                            Shift Assign
-                        </a>
-                    </li>
-                    <li id="subMenuAttendanceByHr" class="nav-item">
-                        <a href="<?= $this->url("attendancebyhr", ["action" => "index"]); ?>">
-                            <i class="icon-pencil"></i>
-                            Attendance By Hr
-                        </a>
-                    </li>
-                </ul>
-            </li><li id="menuManagerService" class="nav-item">
-                <a href="javascript:;" class="nav-link nav-toggle">
-                    <i class="icon-folder"></i>
-                    <span class="title">Manager Service</span>
-                    <span class="arrow"></span>
-                </a>
-                <ul class="sub-menu">
-                    <li id="subMenuLeaveApprove" class="nav-item">
-                        <a href="<?= $this->url("leaveapprove", ["action" => "index"]); ?>">
-                            <i class="icon-pencil"></i>
-                            Leave to Approve
-                        </a>
-                    </li>
-                    <li id="subMenuAttendanceApprove" class="nav-item">
-                        <a href="<?= $this->url("attedanceapprove", ["action" => "index"]); ?>">
-                            <i class="icon-pencil"></i>
-                            Attendance to Approve
-                        </a>
-                    </li>
-                </ul>
-            </li>
-            <li id="menuSelfService" class="nav-item">
-                <a href="javascript:;" class="nav-link nav-toggle">
-                    <i class="icon-folder"></i>
-                    <span class="title">Self Service</span>
-                    <span class="arrow"></span>
-                </a>
-                <ul class="sub-menu">
-                    <li id="subMenuAttendanceRequest" class="nav-item">
-                        <a href="<?= $this->url("attendancerequest", ["action" => "index"]); ?>">
-                            <i class="icon-pencil"></i>
-                             Attendance Request
-                        </a>
-                    </li>
-                    <li id="subMenuHoliday" class="nav-item">
-                        <a href="<?= $this->url("holiday", ["action" => "index"]); ?>">
-                            <i class="icon-pencil"></i>
-                            Holiday List
-                        </a>
-                    </li>
-                    <li id="subMenuLeave" class="nav-item">
-                        <a href="<?= $this->url("leave", ["action" => "index"]); ?>">
-                            <i class="icon-pencil"></i>
-                            Leave List
-                        </a>
-                    </li>
-                    <li id="subMenuLeaveRequest" class="nav-item">
-                        <a href="<?= $this->url("leaverequest", ["action" => "index"]); ?>">
-                            <i class="icon-pencil"></i>
-                            Leave Apply
-                        </a>
-                    </li>
-                    <li id="subMenuMyAttendance" class="nav-item">
-                        <a href="<?= $this->url("myattendance", ["action" => "index"]); ?>">
-                            <i class="icon-pencil"></i>
-                            My Attendance
-                        </a>
-                    </li>
-                </ul>
-            </li>
-            <li id="menuServiceHistory" class="nav-item">
-                <a href="<?= $this->url("jobHistory", ["action" => "index"]) ?>">
-                    <i class="icon-pencil"></i>
-                    <span class="title">Service</span>
-                </a>
-            </li>
-            <li id="menuPayroll" class="nav-item">
-                <a href="javascript:;" class="nav-link nav-toggle">
-                    <i class="icon-folder"></i>
-                    <span class="title">Payroll</span>
-                    <span class="arrow"></span>
-                </a>
-                <ul class="sub-menu">
-                    <li id="subMenuFlatValue" class="nav-item">
-                        <a href="javascript:;" class="nav-link nav-toggle">
-                            <i class="icon-settings"></i>
-                            Flat Value
-                            <span class="arrow"></span>
-                        </a>
-                        <ul class="sub-menu">
-                            <li class="nav-item" id="subMenuChildFlatValueSetup">
-                                <a href="<?= $this->url("flatValue", ["action" => "index"]) ?>" class="nav-link">
-                                    <i class="icon-power"></i>
-                                    Flat Value Setup
+                <?php if ($page->hasPages()): ?>
+                    <ul class="sub-menu">
+                        <?php foreach ($page->getPages() as $child):
+                            /** @var Zend\Navigation\Page\AbstractPage $child */ ?>
+                            <li id="subMenu<?php echo preg_replace('/[^a-zA-Z]/', '', $child->getLabel()); ?>" class="nav-item <?= $child->isActive()? 'active open' : '' ?>">
+                                <a href="<?php echo $child->getHref() ?>"
+                                    <?php echo $child->hasPages() ? 'class="nav-link nav-toggle"' : '' ?>>
+                                    <i class="<?php echo $child->icon; ?>"></i>
+                                    <span class="title"><?php echo $child->getLabel() ?></span>
+                                    <?php if ($child->hasPages()): ?>
+                                        <span class="arrow"></span>
+                                    <?php endif; ?>
                                 </a>
+                                <?php if ($child->hasPages()): ?>
+                                    <ul class="sub-menu">
+                                        <?php foreach ($child->getPages() as $subChild):
+                                            /** @var Zend\Navigation\Page\AbstractPage $child */ ?>
+                                            <li id="subMenuChild<?php echo preg_replace('/[^a-zA-Z]/', '', $subChild->getLabel());?>" class="nav-item <?= $subChild->isActive()? 'active open' : '' ?>">
+                                                <a href="<?php echo $subChild->getHref() ?>" class="nav-link">
+                                                    <i class="<?php echo $subChild->icon; ?>"></i>
+                                                    <span class="title"><?php echo $subChild->getLabel() ?></span>
+                                                </a>
+                                                <?php if ($subChild->hasPages()): ?>
+                                                    <ul class="sub-menu">
+                                                        <?php foreach ($subChild->getPages() as $subChildSecond):
+                                                            /** @var Zend\Navigation\Page\AbstractPage $child */ ?>
+                                                            <li id="subMenuChildSecond<?php echo preg_replace('/[^a-zA-Z]/', '', $subChildSecond->getLabel());?>" class="nav-item <?= $subChildSecond->isActive()? 'active open' : '' ?>">
+                                                                <a href="<?php echo $subChildSecond->getHref() ?>" class="nav-link">
+                                                                    <i class="<?php echo $subChildSecond->icon; ?>"></i>
+                                                                    <span class="title"><?php echo $subChildSecond->getLabel() ?></span>
+                                                                </a>
+                                                                <?php if ($subChildSecond->hasPages()): ?>
+                                                                    <ul class="sub-menu">
+                                                                        <?php foreach ($subChildSecond->getPages() as $subChildThird):
+                                                                            /** @var Zend\Navigation\Page\AbstractPage $child */ ?>
+                                                                            <li id="subMenuChildThird<?php echo preg_replace('/[^a-zA-Z]/', '', $subChildThird->getLabel());?>" class="nav-item <?= $subChildThird->isActive()? 'active open' : '' ?>">
+                                                                                <a href="<?php echo $subChildThird->getHref() ?>" class="nav-link">
+                                                                                    <i class="<?php echo $subChildThird->icon; ?>"></i>
+                                                                                    <span class="title"><?php echo $subChildThird->getLabel() ?></span>
+                                                                                </a>
+                                                                            </li>
+                                                                        <?php endforeach; ?>
+                                                                    </ul>
+                                                                <?php endif; ?>
+                                                            </li>
+                                                        <?php endforeach; ?>
+                                                    </ul>
+                                                <?php endif; ?>
+                                            </li>
+                                        <?php endforeach; ?>
+                                    </ul>
+                                <?php endif; ?>
                             </li>
-                            <li class="nav-item" id="subMenuChildFlatValueAssign">
-                                <a href="<?= $this->url("flatValue", ["action" => "detail"]) ?>" class="nav-link">
-                                    <i class="icon-paper-plane"></i>
-                                    Flat Value Detail
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
-                    <li id="subMenuMonthlyValue" class="nav-item">
-                        <a href="javascript:;" class="nav-link nav-toggle">
-                            <i class="icon-settings"></i>
-                            Monthly Value
-                            <span class="arrow"></span>
-                        </a>
-                        <ul class="sub-menu">
-                            <li class="nav-item" id="subMenuChildMonthlyValueSetup">
-                                <a href="<?= $this->url("monthlyValue", ["action" => "index"]) ?>" class="nav-link">
-                                    <i class="icon-power"></i>
-                                    Monthly Val Setup
-                                </a>
-                            </li>
-                            <li class="nav-item" id="subMenuChildMonthlyValueDetail">
-                                <a href="<?= $this->url("monthlyValue", ["action" => "detail"]) ?>" class="nav-link">
-                                    <i class="icon-paper-plane"></i>
-                                 Monthly Val Detail
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
+                        <?php endforeach; ?>
+                    </ul>
+                <?php endif; ?>
+            </li>
+        <?php endforeach; ?>
 
-                    <li id="subMenuRules" class="nav-item">
-                        <a href="javascript:;" class="nav-link nav-toggle">
-                            <i class="icon-settings"></i>
-                            Rules
-                            <span class="arrow"></span>
-                        </a>
-                        <ul class="sub-menu">
-                            <li class="nav-item" id="subMenuChildRuleSetup">
-                                <a href="<?= $this->url("rules", ["action" => "index"]) ?>" class="nav-link">
-                                    <i class="icon-power"></i>
-                                    Rule Setup
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
-                </ul>
-            </li>
-            <li id="menuSystem" class="nav-item">
-                <a href="javascript:;" class="nav-link nav-toggle">
-                    <i class="icon-folder"></i>
-                    <span class="title">System</span>
-                    <span class="arrow"></span>
-                </a>
-                <ul class="sub-menu">
-                    <li id="subMenuRoleSetup" class="nav-item">
-                        <a href="<?= $this->url("rolesetup", ["action" => "index"]) ?>" class="nav-link">
-                            <i class="icon-pencil"></i>
-                            Role Setup
-                        </a>
-                    </li>
-                    <li id="subMenuUserSetup" class="nav-item">
-                        <a href="<?= $this->url("usersetup", ["action" => "index"]) ?>" class="nav-link">
-                            <i class="icon-pencil"></i>
-                            User Setup
-                        </a>
-                    </li>
-                    <li id="subMenuUserSetup" class="nav-item">
-                        <a href="<?= $this->url("menusetup", ["action" => "index"]) ?>" class="nav-link">
-                            <i class="icon-pencil"></i>
-                            Menu Setup
-                        </a>
-                    </li>
-                </ul>
-            </li>
-        </ul>
-        <!-- END SIDEBAR MENU -->
+
     </div>
     <!-- END SIDEBAR -->
 </div>

@@ -16,6 +16,7 @@ use Zend\Db\Adapter\AdapterInterface;
 use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Helper\Navigation\Menu;
+use System\Repository\RoleSetupRepository;
 
 class MenuSetupController extends AbstractActionController {
 
@@ -45,6 +46,9 @@ class MenuSetupController extends AbstractActionController {
         $menuList = EntityHelper::getTableKVList($this->adapter,MenuSetup::TABLE_NAME,MenuSetup::MENU_ID,[MenuSetup::MENU_NAME],[MenuSetup::STATUS=>"E"]);
         ksort($menuList);
 
+        $roleSetupRepository = new RoleSetupRepository($this->adapter);
+        $roleList = $roleSetupRepository->fetchAll();
+
         if($request->isPost()){
             $menuSetup = new MenuSetup();
             $this->form->setData($request->getPost());
@@ -62,7 +66,8 @@ class MenuSetupController extends AbstractActionController {
         return Helper::addFlashMessagesToArray($this,[
             'form'=>$this->form,
             'menuList'=> $menuList,
-            "list"=>$list
+            "list"=>$list,
+            "roleList"=>$roleList
         ]);
     }
 
@@ -136,4 +141,5 @@ class MenuSetupController extends AbstractActionController {
         $this->flashmessenger()->addMessage("Menu Successfully Deleted!!!");
         return $this->redirect()->toRoute('menusetup');
     }
+
 }

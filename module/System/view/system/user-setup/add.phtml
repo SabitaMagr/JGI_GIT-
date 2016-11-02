@@ -57,9 +57,8 @@ $form->prepare();
                 <?php print $this->formElementErrors()->render($userName, ['class' => 'help-block error']); ?>
 
                 <div class="form-group">
-                    <?php print $this->formLabel($password); ?>
-                    <?php print $this->formElement($password); ?>
-                    <?php print $this->formElementErrors()->render($password, ['class' => 'help-block error']); ?>
+                    <label for="form-password">Password</label>
+                    <input name="password" required="required" id="form-password" class="form-password form-control" type="password" value="">
                 </div>
 
                 <?php print $this->formSubmit($submit); ?>

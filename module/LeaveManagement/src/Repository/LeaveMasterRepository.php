@@ -50,7 +50,15 @@ class LeaveMasterRepository implements RepositoryInterface
     public function fetchById($id)
     {
         $rowset= $this->tableGateway->select([LeaveMaster::LEAVE_ID=>$id,LeaveMaster::STATUS=>'E']);
-        return $rowset->current();
+       return $result =  $rowset->current();
+//        if($result!=null){
+//            $r = $result->getArrayCopy();
+//            print_r(($r));
+//        }
+
+//        //print_r($result->getArrayCopy());
+//         die();
+
     }
 
     public function fetchActiveRecord()

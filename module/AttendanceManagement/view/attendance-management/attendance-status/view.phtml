@@ -1,0 +1,160 @@
+<?php
+$this->headScript()->appendFile($this->basePath('assets/global/plugins/combodate/js/moment.min.js'));
+$this->headScript()->appendFile($this->basePath('assets/global/plugins/combodate/js/combodate.js'));
+$this->headScript()->appendFile($this->basePath('js/AttendanceManagement/attendance/view.js'));
+
+
+$form->setAttribute('role', 'form');
+$form->setAttribute('class', 'attendanceByHr-form');
+
+$attendanceDt = $form->get('attendanceDt');
+$attendanceDt->setAttributes(['disabled' => "disabled"]);
+$inTime = $form->get('inTime');
+$inTime->setAttributes(['disabled' => "disabled"]);
+$outTime = $form->get('outTime');
+$outTime->setAttributes(['disabled' => "disabled"]);
+$inRemarks = $form->get('inRemarks');
+$inRemarks->setAttributes(['disabled' => "disabled"]);
+$outRemarks = $form->get('outRemarks');
+$outRemarks->setAttributes(['disabled' => "disabled"]);
+$totalHour = $form->get('totalHour');
+$totalHour->setAttributes(['disabled' => "disabled"]);
+
+$submit = $form->get('submit');
+$submit->setAttribute('value', 'Approve');
+
+$form->setAttribute('action', $this->url('attendancestatus', ['action' => 'view','id'=>$id]));
+
+$form->prepare();
+?>
+<script>
+    document.menu =<?php $menu = ["id" => "menuAttendanceManagement", "subMenu" => ["id" => "subMenuAttendanceStatus"]];echo json_encode($menu);?>;
+</script>
+<div class="page-bar">
+    <?= $this->navigation('Zend\Navigation\attendancestatus')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
+</div>
+<div class="row margin-top-20">
+    <div class="col-sm-8 col-sm-offset-2">
+        <div class="portlet box custom-box">
+            <div class="portlet-title">
+                <div class="caption">
+                    <i class="fa fa-user"></i>Attendance Request
+                </div>
+            </div>
+            <div class="portlet-body">
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <table>
+                                <tr height="30">
+                                    <td>
+                                        Employee Name
+                                    </td><td width="15">:</td>
+                                    <td>
+                                        <?php echo $employeeName; ?>
+                                    </td>
+                                </tr>
+                                <tr height="30">
+                                    <td>
+                                        Approver
+                                    </td><td width="15">:</td>
+                                    <td>
+                                        <?php echo $approver; ?>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="col-md-6">
+                            <table>
+                                <tr height="30">
+                                    <td>
+                                        Requested Date
+                                    </td><td width="15">:</td>
+                                    <td>
+                                        <?php echo $requestedDt; ?>
+                                    </td>
+                                </tr>
+                                <tr height="30">
+                                    <td>
+                                        Status
+                                    </td><td width="15">:</td>
+                                    <td>
+                                        <?php
+                                        if($status=="RQ"){
+                                            echo "Pending";
+                                        }else if($status=="R"){
+                                            echo "Rejected";
+                                        }else if($status=="AP"){
+                                            echo "Approved";
+                                        }else if($status=="C"){
+                                            echo "Cancelled";
+                                        }?>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <?php
+                print $this->form()->openTag($form);
+                ?>
+                <div class="form-group <?= empty($attendanceDt->getMessages()) ? "" : "error" ?>">
+                    <?php print $this->formLabel($attendanceDt); ?>
+                    <?php print $this->formElement($attendanceDt); ?>
+                </div>
+                <?php print $this->formElementErrors()->render($attendanceDt, ['class' => 'help-block error']); ?>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group <?= empty($inTime->getMessages()) ? "" : "error" ?>">
+                            <?php print $this->formLabel($inTime) ?>
+                            <div class="input-group dropdown-select">
+                                <?php print $this->formElement($inTime) ?>
+                            </div>
+                            <?php print $this->formElementErrors()->render($inTime, ['class' => 'help-block error']); ?>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group <?= empty($outTime->getMessages()) ? "" : "error" ?> pull-right">
+                            <?php print $this->formLabel($outTime) ?>
+                            <div class="input-group dropdown-select">
+                                <?php print $this->formElement($outTime) ?>
+                            </div>
+                        </div>
+                        <?php print $this->formElementErrors()->render($outTime, ['class' => 'help-block error']); ?>
+
+                    </div>
+                </div>
+                <div class="form-group <?= empty($inRemarks->getMessages()) ? "" : "error" ?>">
+                    <?php print $this->formLabel($inRemarks); ?>
+                    <?php print $this->formElement($inRemarks); ?>
+                </div>
+                <?php print $this->formElementErrors()->render($inRemarks, ['class' => 'help-block error']); ?>
+
+                <div class="form-group <?= empty($outRemarks->getMessages()) ? "" : "error" ?>">
+                    <?php print $this->formLabel($outRemarks); ?>
+                    <?php print $this->formElement($outRemarks); ?>
+                </div>
+                <?php print $this->formElementErrors()->render($outRemarks, ['class' => 'help-block error']); ?>
+
+                <div class="form-group <?= empty($totalHour->getMessages()) ? "" : "error" ?>">
+                    <?php print $this->formLabel($totalHour); ?>
+                    <?php print $this->formElement($totalHour); ?>
+                </div>
+                <?php print $this->formElementErrors()->render($totalHour, ['class' => 'help-block error']); ?>
+
+
+                <div class="">
+                    <?php if($status=='RQ'){ ?>
+                        <?php print $this->formSubmit($submit); ?>
+                        <input type="submit" name="submit" class="btn btn-success pull-right" value="Reject">
+                        <?php
+                        print $this->form()->closeTag();
+                    }
+                    ?>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>

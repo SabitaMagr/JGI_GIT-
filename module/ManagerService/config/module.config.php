@@ -37,7 +37,7 @@ return [
         ]
     ],
     'navigation' => [
-        'default' => [
+        'leaveapprove' => [
             [
                 'label' => 'Leave Request',
                 'route' => 'leaveapprove',
@@ -52,9 +52,9 @@ return [
                         'action' => 'index',
                     ],
                     [
-                        'label' => 'Add',
+                        'label' => 'List',
                         'route' => 'leaveapprove',
-                        'action' => 'add',
+                        'action' => 'status',
                     ],
                     [
                         'label' => 'Edit',
@@ -82,6 +82,11 @@ return [
                         'label' => 'List',
                         'route' => 'attedanceapprove',
                         'action' => 'index',
+                    ],
+                    [
+                        'label' => 'List',
+                        'route' => 'attedanceapprove',
+                        'action' => 'status',
                     ],
                     [
                         'label' => 'View',

@@ -44,7 +44,7 @@ class UserSetupForm{
 
     /**
      * @Annotion\Type("Zend\Form\Element\Password")
-     * @Annotation\Required(true)
+     * @Annotation\Required(false)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Password"})
      * @Annotation\Attributes({ "id":"form-password", "class":"form-password form-control" })

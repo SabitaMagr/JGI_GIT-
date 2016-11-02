@@ -115,6 +115,7 @@ class Module implements AutoloaderProviderInterface
                     return $authService;
                 },
             ],
+
         ];
     }
 

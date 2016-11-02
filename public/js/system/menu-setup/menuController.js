@@ -1,3 +1,6 @@
+/**
+ * Created by root on 10/19/16.
+ */
 var angularApp = angular.module('hris', ['ui.bootstrap']);
 
 angularApp.controller('menuUpdateController', function ($scope, $uibModal, $log, $document) {
@@ -5,17 +8,68 @@ angularApp.controller('menuUpdateController', function ($scope, $uibModal, $log,
     $scope.menuDtl = {
         menuCode: '',
         menuName: '',
-        url: '',
+        route: '',
+        action:'',
+        iconClass:'',
         menuDescription: '',
         menuId: ''
     };
 
+    $scope.permissionList = function (menuId) {
+        window.app.pullDataById(document.url, {
+            action: 'pullRolePermissionList',
+            data: {
+                menuId: menuId
+            },
+        }).then(function (success) {
+            $scope.$apply(function () {
+                $scope.roleList = success.data;
+                $scope.assignedList = success.data1;
+
+                for (var i in $scope.roleList) {
+                    for (var j in $scope.assignedList) {
+                        if ($scope.roleList[i].ROLE_ID == $scope.assignedList[j].ROLE_ID) {
+                            $scope.roleList[i].checked=true;
+                            break;
+                        }
+                    }
+                }
+            });
+        }, function (failure) {
+            console.log(failure);
+        });
+
+    };
+    $scope.assignRole=function(roleDtl){
+        var roleId = roleDtl.ROLE_ID;
+        var checked = roleDtl.checked;
+        var selectedMenu = menuId;
+
+        window.app.pullDataById(document.url, {
+            action: 'permissionAssign',
+            data: {
+                roleId: roleId,
+                menuId: selectedMenu,
+                checked:checked
+            },
+        }).then(function (success) {
+            window.toastr.success(success.data, "Notifications");
+
+        }, function (failure) {
+            console.log(failure);
+        });
+    }
+    $scope.isDisabled = true;
     $(document).on('click', '#tree_3 ul li a', function () {
-        $("#addChild").attr("data-target", "#draggable");
+        //$("a#addChild").attr("ng-click", "open(true)");
         $('#editForm').css('display', 'block');
 
         var attrId = $(this).attr("id");
         menuId = attrId.split("_")[0];
+
+        $scope.$apply(function () {
+            $scope.permissionList(menuId);
+        });
 
         window.app.pullDataById(document.url, {
             action: 'pullMenuDetail',
@@ -28,8 +82,11 @@ angularApp.controller('menuUpdateController', function ($scope, $uibModal, $log,
                 $scope.menuDtl.menuId = temp.MENU_ID;
                 $scope.menuDtl.menuCode = temp.MENU_CODE;
                 $scope.menuDtl.menuName = temp.MENU_NAME;
-                $scope.menuDtl.url = temp.URL;
+                $scope.menuDtl.route = temp.ROUTE;
+                $scope.menuDtl.action = temp.ACTION;
+                $scope.menuDtl.iconClass = temp.ICON_CLASS;
                 $scope.menuDtl.menuDescription = temp.MENU_DESCRIPTION;
+                $scope.isDisabled = false;
             });
         }, function (failure) {
             console.log(failure);
@@ -75,7 +132,9 @@ angularApp.controller('menuUpdateController', function ($scope, $uibModal, $log,
                 $scope.menuDtl = {
                     menuCode: '',
                     menuName: '',
-                    url: '',
+                    route: '',
+                    action:'',
+                    iconClass:'',
                     menuDescription: ''
                 };
 
@@ -121,9 +180,7 @@ angularApp.controller('menuUpdateController', function ($scope, $uibModal, $log,
 
 //   END OF MODEL CODE
 
-
 });
-
 
 
 

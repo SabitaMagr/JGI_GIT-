@@ -13,6 +13,9 @@ use Payroll\Repository\FlatValueDetailRepo;
 use Payroll\Repository\MonthlyValueDetailRepo;
 use Payroll\Repository\RulesDetailRepo;
 use Payroll\Repository\RulesRepository;
+use System\Model\RolePermission;
+use System\Repository\RolePermissionRepository;
+use System\Repository\RoleSetupRepository;
 use Zend\Authentication\AuthenticationService;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Adapter\Driver\ResultInterface;
@@ -95,7 +98,12 @@ class RestfulService extends AbstractRestfulController
                 case "pullMenuDetail":
                     $responseData = $this->pullMenuDetail($postedData->data);
                     break;
-
+                case "permissionAssign":
+                    $responseData = $this->permissionAssign($postedData->data);
+                    break;
+                case "pullRolePermissionList":
+                    $responseData = $this->pullRolePermissionList($postedData->data);
+                    break;
                 default:
                     $responseData = [
                         "success" => false
@@ -436,7 +444,9 @@ class RestfulService extends AbstractRestfulController
         $model->menuId =Helper::getMaxId($this->adapter,MenuSetup::TABLE_NAME,MenuSetup::MENU_ID)+1;
         $model->menuCode = $record['menuCode'];
         $model->menuName = $record['menuName'];
-        $model->url = $record['url'];
+        $model->route = $record['route'];
+        $model->action = $record['action'];
+        $model->iconClass = $record['iconClass'];
         if($data['parentMenu']!=null) {
             $model->parentMenu = $data['parentMenu'];
         }
@@ -470,7 +480,9 @@ class RestfulService extends AbstractRestfulController
         $model->modifiedDt = Helper::getcurrentExpressionDate();
         $model->menuCode = $record['menuCode'];
         $model->menuName = $record['menuName'];
-        $model->url = $record['url'];
+        $model->route = $record['route'];
+        $model->action = $record['action'];
+        $model->iconClass = $record['iconClass'];
 
         $model->menuDescription = $record['menuDescription'];
 
@@ -485,6 +497,118 @@ class RestfulService extends AbstractRestfulController
             "success" => true,
             "data"=>"Menu Successfully Updated!!",
             "menuData"=>$menuData
+        ];
+    }
+
+    public function permissionAssign($data){
+        $rolePermissionRepository = new RolePermissionRepository($this->adapter);
+        $menuSetupRepository = new MenuSetupRepository($this->adapter);
+        $rolePermissionModel = new RolePermission();
+
+        $roleId = $data['roleId'];
+        $menuId = $data['menuId'];
+        $checked = $data['checked'];
+
+        //if child of same parent menu were assigned on same roleId then don't need to deactivate parent menu list
+        $menuDtl = $menuSetupRepository->fetchById($menuId);
+        $menuListOfSameParent = $menuSetupRepository->getMenuListOfSameParent($menuDtl['PARENT_MENU']);
+        $numMenuListOfSameParent = 0;
+        foreach($menuListOfSameParent as $childOfSameParent){
+            $existChildDtl = $rolePermissionRepository->getActiveRoleMenu($childOfSameParent['MENU_ID'],$roleId);
+            if($existChildDtl){
+                $numMenuListOfSameParent +=1;
+            }
+        }
+
+        $childMenuList = $menuSetupRepository->getAllCHildMenu($menuId);
+        $parentMenuList = $menuSetupRepository->getAllParentMenu($menuId);
+
+        if($checked=="true") {
+            foreach ($childMenuList as $row) {
+
+                $result = $rolePermissionRepository->selectRoleMenu($row['MENU_ID'],$roleId);
+                //$num = count($result);
+                if($result){
+                    $rolePermissionRepository->updateDetail($row['MENU_ID'],$roleId);
+                }else {
+
+                    $rolePermissionModel->roleId = $roleId;
+                    $rolePermissionModel->menuId = $row['MENU_ID'];
+                    $rolePermissionModel->createdDt = Helper::getcurrentExpressionDate();
+                    $rolePermissionModel->status = 'E';
+
+                    $rolePermissionRepository->add($rolePermissionModel);
+                }
+            }
+            foreach ($parentMenuList as $row) {
+
+                $result = $rolePermissionRepository->selectRoleMenu($row['MENU_ID'],$roleId);
+                //$num = count($result);
+                if($result){
+                    $rolePermissionRepository->updateDetail($row['MENU_ID'],$roleId);
+                }else {
+
+                    $rolePermissionModel->roleId = $roleId;
+                    $rolePermissionModel->menuId = $row['MENU_ID'];
+                    $rolePermissionModel->createdDt = Helper::getcurrentExpressionDate();
+                    $rolePermissionModel->status = 'E';
+
+                    $rolePermissionRepository->add($rolePermissionModel);
+                }
+            }
+            $data = "Role Successfully Assigned";
+        }else if($checked=="false"){
+            foreach ($childMenuList as $row) {
+                $rolePermissionRepository->deleteAll($row['MENU_ID'], $roleId);
+            }
+            if($numMenuListOfSameParent==1) {
+                foreach ($parentMenuList as $row) {
+                    $rolePermissionRepository->deleteAll($row['MENU_ID'], $roleId);
+
+                    //need to activate those parent key whose another child key is assigned on same roleId
+                    $childMenuList1 = $menuSetupRepository->getMenuListOfSameParent($row['MENU_ID']);
+                    foreach($childMenuList1 as $childRow){
+                        $getPermissionDtl = $rolePermissionRepository->getActiveRoleMenu($childRow['MENU_ID'],$roleId);
+                        if($getPermissionDtl){
+                            $rolePermissionRepository->updateDetail($row['MENU_ID'],$roleId);
+                        }
+                    }
+                }
+            }else{
+                $rolePermissionRepository->deleteAll($menuId, $roleId);
+            }
+            $data = "Role Assign Successfully Removed";
+        }
+        return $responseData = [
+            "success"=>true,
+            "data"=>$data
+        ];
+
+    }
+
+    public function pullRolePermissionList($data){
+        $menuId = $data['menuId'];
+
+        $rolePermissionRepository = new RolePermissionRepository($this->adapter);
+        $roleRepository = new RoleSetupRepository($this->adapter);
+
+        $result = $roleRepository->fetchAll();
+        $rolePermissionList = $rolePermissionRepository->findAllRoleByMenuId($menuId);
+
+        $tempArray = [];
+        foreach ($result as $item) {
+            array_push($tempArray,$item);
+        }
+
+        $temArray1 = [];
+        foreach($rolePermissionList as $row){
+            array_push($temArray1,$row);
+        }
+
+        return $reponseData = [
+            "success"=>true,
+            "data"=>$tempArray,
+            "data1"=>$temArray1
         ];
     }
 }

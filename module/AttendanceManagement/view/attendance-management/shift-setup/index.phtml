@@ -10,7 +10,7 @@ $this->headScript()
     document.menu =<?php $menu = ["id" => "menuAttendanceManagement", "subMenu" => ["id" => "subMenuShiftSetup"]];echo json_encode($menu);?>;
 </script>
 <div class="page-bar">
-    <?= $this->navigation('navigation')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
+    <?= $this->navigation('Zend\Navigation\shiftsetup')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb');?>
 </div>
 
 <?php

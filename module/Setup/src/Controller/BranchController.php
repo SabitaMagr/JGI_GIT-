@@ -17,6 +17,7 @@ use Setup\Form\BranchForm;
 use Setup\Helper\EntityHelper;
 use Setup\Model\Branch;
 use Setup\Repository\BranchRepository;
+use System\Repository\MenuSetupRepository;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\Mvc\Controller\AbstractActionController;

@@ -48,7 +48,7 @@ class AttendanceApproveController extends AbstractActionController {
 
     public function indexAction()
     {
-        $list = $this->repository->getAllRequest($this->employeeId);
+        $list = $this->repository->getAllRequest($this->employeeId,'RQ');
         return Helper::addFlashMessagesToArray($this, ['list' => $list]);
     }
 
@@ -101,8 +101,19 @@ class AttendanceApproveController extends AbstractActionController {
         return Helper::addFlashMessagesToArray($this,[
             'form'=>$this->form,
             'id'=>$id,
+            'status'=>$detail['STATUS'],
             'employeeName'=>$employeeName,
             'requestedDt'=>$detail['REQUESTED_DT'],
+        ]);
+    }
+    public function statusAction(){
+        $pendingList = $this->repository->getAllRequest($this->employeeId,'RQ');
+        $approvedList = $this->repository->getAllRequest($this->employeeId,'AP');
+        $rejectedList = $this->repository->getAllRequest($this->employeeId,'R');
+        return Helper::addFlashMessagesToArray($this,[
+            'pendingList'=>$pendingList,
+            'approvedList'=>$approvedList,
+            'rejectedList'=>$rejectedList
         ]);
     }
 }

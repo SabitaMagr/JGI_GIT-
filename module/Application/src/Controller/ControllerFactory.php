@@ -4,6 +4,7 @@ namespace Application\Controller;
 use Interop\Container\ContainerInterface;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\ServiceManager\Factory\FactoryInterface;
+use Zend\ServiceManager\ServiceLocatorInterface;
 
 class ControllerFactory implements FactoryInterface
 {

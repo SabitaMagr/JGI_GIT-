@@ -36,7 +36,7 @@ if ($this->messages) {
 $form->prepare();
 ?>
 <script>
-    document.menu =<?php $menu = ["id" => "menuSelfService", "subMenu" => ["id" => "subMenuAttendanceRequest"]];echo json_encode($menu);?>;
+    document.menu =<?php $menu = ["id" => "menuManagerService", "subMenu" => ["id" => "subMenuAttendancetoApprove"]];echo json_encode($menu);?>;
 </script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\attedanceapprove')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
@@ -128,10 +128,13 @@ $form->prepare();
 
 
                 <div class="">
-                    <?php print $this->formSubmit($submit);?>
-                    <input type="submit" name="submit" class="btn btn-success pull-right" value="Reject">
                     <?php
-                    print $this->form()->closeTag();
+                    if($status=='RQ' || $status=='RC') {
+                        print $this->formSubmit($submit); ?>
+                        <input type="submit" name="submit" class="btn btn-success pull-right" value="Reject">
+                        <?php
+                        print $this->form()->closeTag();
+                    }
                     ?>
                 </div>
             </div>

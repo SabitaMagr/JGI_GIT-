@@ -1,0 +1,478 @@
+<?php
+/**
+ * Load Javascript files here
+ */
+$this->headScript()
+    ->appendFile($this->basePath('js/kendoDataTable.js'));
+?>
+
+<script>
+    document.menu =<?php $menu = ["id" => "menuLeave", "subMenu" => ["id" => "subMenuLeaveStatus"]];echo json_encode($menu);?>;
+</script>
+<div class="page-bar">
+    <?= $this->navigation('Zend\Navigation\leavestatus')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
+</div>
+<?php
+if ($this->messages) { ?>
+    <script>
+        document.messages =<?php echo json_encode($this->messages); ?>
+    </script>
+<?php } ?>
+
+<div class="row margin-top-20">
+    <div class="col-md-12">
+        <div class="portlet box">
+            <div class="portlet-title">
+                <div class="border-bottom">
+                    <div class="caption" style="padding-bottom:1.5%; color:rgba(102, 102, 102, 0.92) !important;">
+                        <i class="icon-layers"></i>
+                        <span class="caption-subject sbold uppercase">Pending Request</span>
+                    </div>
+                </div>
+            </div>
+            <div class="portlet-body">
+                <table class="table" id="dataTable">
+                    <thead>
+                    <tr role="row">
+                        <th>
+                            Employee Name
+                        </th>
+                        <th>
+                            Leave Name
+                        </th>
+                        <th>
+                            Requested Date
+                        </th>
+                        <th>
+                            Recommender
+                        </th>
+                        <th>
+                            Approver
+                        </th>
+                        <th>
+                            From Date
+                        </th>
+                        <th>
+                            To Date
+                        </th>
+                        <th>
+                            Duration
+                        </th>
+                        <th>
+                            Operation
+                        </th>
+                    </tr>
+                    </thead>
+                    <tbody>
+
+                    <?php foreach ($pendingList as $leaveRequestList):
+                        ?>
+                        <tr role="row">
+                            <td>
+                                <?php
+                                print $this->escapeHtml($leaveRequestList['FIRST_NAME']) . " " . $this->escapeHtml($leaveRequestList['MIDDLE_NAME']) . " " . $this->escapeHtml($leaveRequestList['LAST_NAME']);
+                                ?>
+                            </td>
+                            <td>
+                                <?php
+                                print $this->escapeHtml($leaveRequestList['LEAVE_ENAME']);
+                                ?>
+                            </td>
+                            <td>
+                                <?php
+                                print $this->escapeHtml($leaveRequestList['APPLIED_DATE']);
+                                ?>
+                            </td>
+                            <td>
+                                <?php
+                                print $this->escapeHtml($leaveRequestList['FN1']) . " " . $this->escapeHtml($leaveRequestList['MN1']) . " " . $this->escapeHtml($leaveRequestList['LN1']);
+                                ?>
+                            </td>
+                            <td>
+                                <?php
+                                print $this->escapeHtml($leaveRequestList['FN2']) . " " . $this->escapeHtml($leaveRequestList['MN2']) . " " . $this->escapeHtml($leaveRequestList['LN2']);
+                                ?>
+                            </td>
+                            <td>
+                                <?php
+                                print $this->escapeHtml($leaveRequestList['START_DATE']);
+                                ?>
+                            </td>
+                            <td>
+                                <?php
+                                print $this->escapeHtml($leaveRequestList['END_DATE']);
+                                ?>
+                            </td>
+                            <td>
+                                <?php
+                                print $this->escapeHtml($leaveRequestList['NO_OF_DAYS']);
+                                ?>
+                            </td>
+                            <td>
+                                <a class=""
+                                   href="<?= $this->url("leavestatus", ["action" => "view", "id" => $leaveRequestList['ID']]); ?>">
+                                    View
+                                </a>
+                            </td>
+                        </tr>
+
+                    <?php endforeach; ?>
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="portlet box">
+            <div class="portlet-title">
+                <div class="border-bottom">
+                    <div class="caption" style="padding-bottom:1.5%;">
+                        <i class="font-green icon-layers"></i>
+                        <span class="caption-subject font-green sbold uppercase">Recommended Request</span>
+                    </div>
+                </div>
+            </div>
+            <div class="portlet-body">
+                <table class="table" id="dataTable1">
+                    <thead>
+                    <tr role="row">
+                        <th>
+                            Employee Name
+                        </th>
+                        <th>
+                            Leave Name
+                        </th>
+                        <th>
+                            Requested Date
+                        </th>
+                        <th>
+                            Recommender
+                        </th>
+                        <th>
+                            Approver
+                        </th>
+                        <th>
+                            From Date
+                        </th>
+                        <th>
+                            To Date
+                        </th>
+                        <th>
+                            Duration
+                        </th>
+                        <th>
+                            Recommended Date
+                        </th>
+                        <th>
+                            Operation
+                        </th>
+                    </tr>
+                    </thead>
+                    <tbody>
+
+                    <?php foreach ($recommendedList as $leaveRequestList1):
+                        ?>
+                        <tr role="row">
+                            <td>
+                                <?php
+                                print $this->escapeHtml($leaveRequestList1['FIRST_NAME']) . " " . $this->escapeHtml($leaveRequestList1['MIDDLE_NAME']) . " " . $this->escapeHtml($leaveRequestList1['LAST_NAME']);
+                                ?>
+                            </td>
+                            <td>
+                                <?php
+                                print $this->escapeHtml($leaveRequestList1['LEAVE_ENAME']);
+                                ?>
+                            </td>
+                            <td>
+                                <?php
+                                print $this->escapeHtml($leaveRequestList1['APPLIED_DATE']);
+                                ?>
+                            </td>
+                            <td>
+                                <?php
+                                print $this->escapeHtml($leaveRequestList1['FN1']) . " " . $this->escapeHtml($leaveRequestList1['MN1']) . " " . $this->escapeHtml($leaveRequestList1['LN1']);
+                                ?>
+                            </td>
+                            <td>
+                                <?php
+                                print $this->escapeHtml($leaveRequestList1['FN2']) . " " . $this->escapeHtml($leaveRequestList1['MN2']) . " " . $this->escapeHtml($leaveRequestList1['LN2']);
+                                ?>
+                            </td>
+                            <td>
+                                <?php
+                                print $this->escapeHtml($leaveRequestList1['START_DATE']);
+                                ?>
+                            </td>
+                            <td>
+                                <?php
+                                print $this->escapeHtml($leaveRequestList1['END_DATE']);
+                                ?>
+                            </td>
+                            <td>
+                                <?php
+                                print $this->escapeHtml($leaveRequestList1['NO_OF_DAYS']);
+                                ?>
+                            </td>
+                            <td>
+                                <?php
+                                $recommendedDt = $this->escapeHtml($leaveRequestList1['RECOMMENDED_DT']);
+                                echo $recommendedDt;
+                                ?>
+                            </td>
+                            <td>
+                                <a class=""
+                                   href="<?= $this->url("leavestatus", ["action" => "view", "id" => $leaveRequestList1['ID']]); ?>">
+                                    View
+                                </a>
+                            </td>
+                        </tr>
+
+                    <?php endforeach; ?>
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="portlet box">
+            <div class="portlet-title">
+                <div class="border-bottom">
+                    <div class="caption" style="padding-bottom:1.5%;">
+                        <i class="font-green icon-layers"></i>
+                        <span class="caption-subject font-green sbold uppercase">Approved Request</span>
+                    </div>
+                </div>
+            </div>
+            <div class="portlet-body">
+                <table class="table" id="dataTable2">
+                    <thead>
+                    <tr role="row">
+                        <th>
+                            Employee Name
+                        </th>
+                        <th>
+                            Leave Name
+                        </th>
+                        <th>
+                            Requested Date
+                        </th>
+                        <th>
+                            Recommender
+                        </th>
+                        <th>
+                            Approver
+                        </th>
+                        <th>
+                            From Date
+                        </th>
+                        <th>
+                            To Date
+                        </th>
+                        <th>
+                            Duration
+                        </th>
+                        <th>
+                            Approved Date
+                        </th>
+                        <th>
+                            Operation
+                        </th>
+                    </tr>
+                    </thead>
+                    <tbody>
+
+                    <?php foreach ($approvedList as $leaveRequestList1):
+                        ?>
+                        <tr role="row">
+                            <td>
+                                <?php
+                                print $this->escapeHtml($leaveRequestList1['FIRST_NAME']) . " " . $this->escapeHtml($leaveRequestList1['MIDDLE_NAME']) . " " . $this->escapeHtml($leaveRequestList1['LAST_NAME']);
+                                ?>
+                            </td>
+                            <td>
+                                <?php
+                                print $this->escapeHtml($leaveRequestList1['LEAVE_ENAME']);
+                                ?>
+                            </td>
+                            <td>
+                                <?php
+                                print $this->escapeHtml($leaveRequestList1['APPLIED_DATE']);
+                                ?>
+                            </td>
+                            <td>
+                                <?php
+                                print $this->escapeHtml($leaveRequestList1['FN1']) . " " . $this->escapeHtml($leaveRequestList1['MN1']) . " " . $this->escapeHtml($leaveRequestList1['LN1']);
+                                ?>
+                            </td>
+                            <td>
+                                <?php
+                                print $this->escapeHtml($leaveRequestList1['FN2']) . " " . $this->escapeHtml($leaveRequestList1['MN2']) . " " . $this->escapeHtml($leaveRequestList1['LN2']);
+                                ?>
+                            </td>
+                            <td>
+                                <?php
+                                print $this->escapeHtml($leaveRequestList1['START_DATE']);
+                                ?>
+                            </td>
+                            <td>
+                                <?php
+                                print $this->escapeHtml($leaveRequestList1['END_DATE']);
+                                ?>
+                            </td>
+                            <td>
+                                <?php
+                                print $this->escapeHtml($leaveRequestList1['NO_OF_DAYS']);
+                                ?>
+                            </td>
+                            <td>
+                                <?php
+                                $approvedDt = $this->escapeHtml($leaveRequestList1['APPROVED_DT']);
+                                echo $approvedDt;
+                                ?>
+                            </td>
+                            <td>
+                                <a class=""
+                                   href="<?= $this->url("leavestatus", ["action" => "view", "id" => $leaveRequestList1['ID']]); ?>">
+                                    View
+                                </a>
+                            </td>
+                        </tr>
+
+                    <?php endforeach; ?>
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="portlet box">
+            <div class="portlet-title">
+                <div class="border-bottom">
+                    <div class="caption" style="padding-bottom:1.5%;">
+                        <i class="font-red icon-layers"></i>
+                        <span class="caption-subject font-red sbold uppercase">Rejected Request</span>
+                    </div>
+                </div>
+            </div>
+            <div class="portlet-body">
+                <table class="table" id="dataTable3">
+                    <thead>
+                    <tr role="row">
+                        <th>
+                            Employee Name
+                        </th>
+                        <th>
+                            Leave Name
+                        </th>
+                        <th>
+                            Requested Date
+                        </th>
+                        <th>
+                            Recommender
+                        </th>
+                        <th>
+                            Approver
+                        </th>
+                        <th>
+                            From Date
+                        </th>
+                        <th>
+                            To Date
+                        </th>
+                        <th>
+                            Duration
+                        </th>
+                        <th>
+                            Rejected Date
+                        </th>
+                        <th>
+                            Operation
+                        </th>
+                    </tr>
+                    </thead>
+                    <tbody>
+
+                    <?php foreach ($rejectedList as $leaveRequestList1):
+                        ?>
+                        <tr role="row">
+                            <td>
+                                <?php
+                                print $this->escapeHtml($leaveRequestList1['FIRST_NAME']) . " " . $this->escapeHtml($leaveRequestList1['MIDDLE_NAME']) . " " . $this->escapeHtml($leaveRequestList1['LAST_NAME']);
+                                ?>
+                            </td>
+                            <td>
+                                <?php
+                                print $this->escapeHtml($leaveRequestList1['LEAVE_ENAME']);
+                                ?>
+                            </td>
+                            <td>
+                                <?php
+                                print $this->escapeHtml($leaveRequestList1['APPLIED_DATE']);
+                                ?>
+                            </td>
+                            <td>
+                                <?php
+                                print $this->escapeHtml($leaveRequestList1['FN1']) . " " . $this->escapeHtml($leaveRequestList1['MN1']) . " " . $this->escapeHtml($leaveRequestList1['LN1']);
+                                ?>
+                            </td>
+                            <td>
+                                <?php
+                                print $this->escapeHtml($leaveRequestList1['FN2']) . " " . $this->escapeHtml($leaveRequestList1['MN2']) . " " . $this->escapeHtml($leaveRequestList1['LN2']);
+                                ?>
+                            </td>
+
+                            <td>
+                                <?php
+                                print $this->escapeHtml($leaveRequestList1['START_DATE']);
+                                ?>
+                            </td>
+                            <td>
+                                <?php
+                                print $this->escapeHtml($leaveRequestList1['END_DATE']);
+                                ?>
+                            </td>
+                            <td>
+                                <?php
+                                print $this->escapeHtml($leaveRequestList1['NO_OF_DAYS']);
+                                ?>
+                            </td>
+                            <td>
+                                <?php
+                                $recommendedDt = $this->escapeHtml($leaveRequestList1['RECOMMENDED_DT']);
+                                $approvedDt = $this->escapeHtml($leaveRequestList1['APPROVED_DT']);
+                                if ($recommendedDt !=null && $approvedDt==null) {
+                                    echo $recommendedDt;
+                                } else if ($approvedDt !=null) {
+                                    echo $approvedDt;
+                                }
+                                ?>
+                            </td>
+                            <td>
+                                <a class=""
+                                   href="<?= $this->url("leavestatus", ["action" => "view", "id" => $leaveRequestList1['ID']]); ?>">
+                                    View
+                                </a>
+                            </td>
+                        </tr>
+
+                    <?php endforeach; ?>
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

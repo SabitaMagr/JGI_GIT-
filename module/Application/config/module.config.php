@@ -104,12 +104,59 @@ return [
             ]
         ],
     ],
+    'navigation' => [
+        'navigation-example' => [
+            [
+                'label' => 'Google',
+                'uri' => 'https://www.google.com',
+                'target' => '_blank'
+            ],
+            [
+                'label' => 'Home',
+                'route' => 'leavesetup'
+            ],
+            [
+                'label' => 'Modules',
+                'uri' => '#',
+                'pages' => [
+                    [
+                        'label' => 'LearnZF2Ajax',
+                        'route' => 'leavesetup'
+                    ],
+                    [
+                        'label' => 'LearnZF2FormUsage',
+                        'route' => 'leavesetup'
+                    ],
+                    [
+                        'label' => 'LearnZF2Barcode',
+                        'route' => 'leavesetup'
+                    ],
+                    [
+                        'label' => 'LearnZF2Pagination',
+                        'route' => 'leavesetup'
+                    ],
+                    [
+                        'label' => 'LearnZF2Log',
+                        'route' => 'leavesetup'
+                    ],
+                ],
+            ],
+        ],
+    ],
+
+    'service_manager'=>[
+        'factories' => [
+            'navigation-menu' => 'Application\Navigation\NavigationFactory',
+        ]
+    ],
+
     'controllers' => [
         'factories' => [
             Controller\IndexController::class => InvokableFactory::class,
-            Controller\DashboardController::class => InvokableFactory::class,
+            Controller\DashboardController::class => InvokableFactory::class
         ],
     ],
+
     'view_manager' => [
         'display_not_found_reason' => true,
         'display_exceptions'       => true,

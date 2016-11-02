@@ -72,8 +72,9 @@ class UserSetupController extends AbstractActionController {
         $request = $this->getRequest();
 
         $userSetup = new UserSetup();
+        $detail = $this->repository->fetchById($id)->getArrayCopy();
+        //print_r($detail['PASSWORD']); die();
         if (!$request->isPost()) {
-            $detail = $this->repository->fetchById($id)->getArrayCopy();
             $userSetup->exchangeArrayFromDB($detail);
             $this->form->bind($userSetup);
         } else {
@@ -93,6 +94,7 @@ class UserSetupController extends AbstractActionController {
         return Helper::addFlashMessagesToArray($this,[
             'form'=>$this->form,
             'id'=>$id,
+            'passwordDtl'=>$detail['PASSWORD'],
             'employeeList'=>$this->repository->getEmployeeList($detail['EMPLOYEE_ID']),
             'roleList'=>EntityHelper::getTableKVList($this->adapter,"HR_ROLES","ROLE_ID",["ROLE_NAME"],["STATUS"=>"E"])
         ]);
