@@ -10,25 +10,29 @@ namespace Payroll\Controller;
 
 
 use Application\Helper\EntityHelper;
+use Payroll\Model\FlatValue as FlatValueModel;
+use Payroll\Model\MonthlyValue as MonthlyValueModel;
 use Payroll\Model\RulesDetail;
+use Payroll\Repository\FlatValueDetailRepo;
+use Payroll\Repository\MonthlyValueDetailRepo;
 use Payroll\Repository\RulesDetailRepo;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Mvc\Controller\AbstractActionController;
-use Payroll\Model\MonthlyValue as MonthlyValueModel;
-use Payroll\Model\FlatValue as FlatValueModel;
 
 
 class Generate extends AbstractActionController
 {
 
     private $adapter;
-    private $repository;
+    private $flatValueDetRepo;
+    private $monthlyValueDetRepo;
     private $form;
 
     public function __construct(AdapterInterface $adapter)
     {
         $this->adapter = $adapter;
-//        $this->repository = new FlatValueRepository($adapter);
+        $this->flatValueDetRepo = new FlatValueDetailRepo($adapter);
+        $this->monthlyValueDetRepo=new MonthlyValueDetailRepo($adapter);
     }
 
     public function indexAction()
@@ -40,10 +44,14 @@ class Generate extends AbstractActionController
         $this->sanitizeStringArray($flatValues);
 
         print "<pre>";
-        $employeeId = 1;
 
         $ruleDetailRepo = new RulesDetailRepo($this->adapter);
         $rule = $ruleDetailRepo->fetchById(1)->{RulesDetail::MNENONIC_NAME};
+        foreach ($monthlyValues as $key=>$monthlyValue) {
+            $rule = $this->convertConstantToValue($rule,$key, $monthlyValue);
+        }
+        echo eval("echo ".$rule.";");
+        echo eval($rule);
         exit;
     }
 
@@ -54,17 +62,19 @@ class Generate extends AbstractActionController
         }
     }
 
-    private function convertConstantToValue($rule,$constant){
-            if(strpos($constant,$rule)>=0){
-               $rule=str_replace($constant,$this->generateValue($constant),$rule) ;
-                return $this->convertConstantToValue($rule,$constant);
-            }else{
-                return $rule;
-            }
+    private function convertConstantToValue($rule,$key, $constant)
+    {
+
+        if (strpos($rule, $constant) !== false) {
+            return str_replace($constant, $this->generateValue($key), $rule);
+        } else {
+            return $rule;
+        }
 
     }
 
-    private function generateValue($constant){
-        return 1;
+    private function generateValue($constant)
+    {
+        return $this->monthlyValueDetRepo->fetchById([1,$constant])['MTH_VALUE'];
     }
 }

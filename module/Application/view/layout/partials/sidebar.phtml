@@ -77,75 +77,90 @@
                 <h3 class="uppercase">Features</h3>
             </li>
 
-        <?php foreach ($this->container as $page):
-            /** @var Zend\Navigation\Page\AbstractPage $page */ ?>
-            <li id="menu<?php echo preg_replace('/[^a-zA-Z]/', '', $page->getLabel()); ?>" class="nav-item <?= $page->isActive()? 'active open' : '' ?>">
-                <a href="<?php echo $page->getHref() ?>" target="<?php echo $page->getTarget() ?>"
-                    <?php echo $page->hasPages() ? 'class="nav-link nav-toggle"' : '' ?>>
-                    <i class="<?php echo $page->icon; ?>"></i>
-                    <span class="title"><?php echo $page->getLabel() ?></span>
+            <?php foreach ($this->container as $page): ?>
+                <li id="menu<?php echo preg_replace('/[^a-zA-Z]/', '', $page->getLabel()); ?>"
+                    class="nav-item <?= $page->isActive() ? 'active open' : '' ?>">
+                    <a href="<?php echo $page->getHref() ?>" target="<?php echo $page->getTarget() ?>"
+                        <?php echo $page->hasPages() ? 'class="nav-link nav-toggle"' : '' ?>>
+                        <i class="<?php echo $page->icon; ?>"></i>
+                        <span class="title"><?php echo $page->getLabel() ?></span>
+                        <?php if ($page->hasPages()): ?>
+                            <span class="arrow"></span>
+                        <?php endif; ?>
+                    </a>
                     <?php if ($page->hasPages()): ?>
-                        <span class="arrow"></span>
-                    <?php endif; ?>
-                </a>
-                <?php if ($page->hasPages()): ?>
-                    <ul class="sub-menu">
-                        <?php foreach ($page->getPages() as $child):
-                            /** @var Zend\Navigation\Page\AbstractPage $child */ ?>
-                            <li id="subMenu<?php echo preg_replace('/[^a-zA-Z]/', '', $child->getLabel()); ?>" class="nav-item <?= $child->isActive()? 'active open' : '' ?>">
-                                <a href="<?php echo $child->getHref() ?>"
-                                    <?php echo $child->hasPages() ? 'class="nav-link nav-toggle"' : '' ?>>
-                                    <i class="<?php echo $child->icon; ?>"></i>
-                                    <span class="title"><?php echo $child->getLabel() ?></span>
+                        <ul class="sub-menu">
+                            <?php foreach ($page->getPages() as $child): ?>
+                                <li id="subMenu<?php echo preg_replace('/[^a-zA-Z]/', '', $child->getLabel()); ?>"
+                                    class="nav-item <?= $child->isActive() ? 'active open' : '' ?>">
+                                    <a href="<?php echo $child->getHref() ?>"
+                                        <?php echo $child->hasPages() ? 'class="nav-link nav-toggle"' : '' ?>>
+                                        <i class="<?php echo $child->icon; ?>"></i>
+                                        <span class="title"><?php echo $child->getLabel() ?></span>
+                                        <?php if ($child->hasPages()): ?>
+                                            <span class="arrow"></span>
+                                        <?php endif; ?>
+                                    </a>
                                     <?php if ($child->hasPages()): ?>
-                                        <span class="arrow"></span>
+                                        <ul class="sub-menu">
+                                            <?php foreach ($child->getPages() as $subChild): ?>
+                                                <li id="subMenuChild<?php echo preg_replace('/[^a-zA-Z]/', '', $subChild->getLabel()); ?>"
+                                                    class="nav-item <?= $subChild->isActive() ? 'active open' : '' ?>">
+                                                    <a href="<?php echo $subChild->getHref() ?>" class="nav-link">
+                                                        <i class="<?php echo $subChild->icon; ?>"></i>
+                                                        <span class="title"><?php echo $subChild->getLabel() ?></span>
+                                                    </a>
+
+                                                    <?php if ($subChild->hasPages()): ?>
+                                                        <ul class="sub-menu">
+
+                                                            <?php foreach ($subChild->getPages() as $subChildSecond): ?>
+                                                                <li id="subMenuChildSecond<?php echo preg_replace('/[^a-zA-Z]/', '', $subChildSecond->getLabel()); ?>"
+                                                                    class="nav-item <?= $subChildSecond->isActive() ? 'active open' : '' ?>">
+                                                                    <a href="<?php echo $subChildSecond->getHref() ?>"
+                                                                       class="nav-link">
+                                                                        <i class="<?php echo $subChildSecond->icon; ?>"></i>
+                                                                        <span
+                                                                            class="title"><?php echo $subChildSecond->getLabel() ?></span>
+                                                                    </a>
+
+                                                                    <?php if ($subChildSecond->hasPages()): ?>
+                                                                        <ul class="sub-menu">
+                                                                            <?php foreach ($subChildSecond->getPages() as $subChildThird): ?>
+                                                                                <li id="subMenuChildThird<?php echo preg_replace('/[^a-zA-Z]/', '', $subChildThird->getLabel()); ?>"
+                                                                                    class="nav-item <?= $subChildThird->isActive() ? 'active open' : '' ?>">
+                                                                                    <a href="<?php echo $subChildThird->getHref() ?>"
+                                                                                       class="nav-link">
+                                                                                        <i class="<?php echo $subChildThird->icon; ?>"></i>
+                                                                                        <span
+                                                                                            class="title"><?php echo $subChildThird->getLabel() ?></span>
+                                                                                    </a>
+                                                                                </li>
+                                                                            <?php endforeach; ?>
+
+                                                                        </ul>
+                                                                    <?php endif; ?>
+
+                                                                </li>
+                                                            <?php endforeach; ?>
+
+                                                        </ul>
+                                                    <?php endif; ?>
+
+                                                </li>
+                                            <?php endforeach; ?>
+
+                                        </ul>
                                     <?php endif; ?>
-                                </a>
-                                <?php if ($child->hasPages()): ?>
-                                    <ul class="sub-menu">
-                                        <?php foreach ($child->getPages() as $subChild):
-                                            /** @var Zend\Navigation\Page\AbstractPage $child */ ?>
-                                            <li id="subMenuChild<?php echo preg_replace('/[^a-zA-Z]/', '', $subChild->getLabel());?>" class="nav-item <?= $subChild->isActive()? 'active open' : '' ?>">
-                                                <a href="<?php echo $subChild->getHref() ?>" class="nav-link">
-                                                    <i class="<?php echo $subChild->icon; ?>"></i>
-                                                    <span class="title"><?php echo $subChild->getLabel() ?></span>
-                                                </a>
-                                                <?php if ($subChild->hasPages()): ?>
-                                                    <ul class="sub-menu">
-                                                        <?php foreach ($subChild->getPages() as $subChildSecond):
-                                                            /** @var Zend\Navigation\Page\AbstractPage $child */ ?>
-                                                            <li id="subMenuChildSecond<?php echo preg_replace('/[^a-zA-Z]/', '', $subChildSecond->getLabel());?>" class="nav-item <?= $subChildSecond->isActive()? 'active open' : '' ?>">
-                                                                <a href="<?php echo $subChildSecond->getHref() ?>" class="nav-link">
-                                                                    <i class="<?php echo $subChildSecond->icon; ?>"></i>
-                                                                    <span class="title"><?php echo $subChildSecond->getLabel() ?></span>
-                                                                </a>
-                                                                <?php if ($subChildSecond->hasPages()): ?>
-                                                                    <ul class="sub-menu">
-                                                                        <?php foreach ($subChildSecond->getPages() as $subChildThird):
-                                                                            /** @var Zend\Navigation\Page\AbstractPage $child */ ?>
-                                                                            <li id="subMenuChildThird<?php echo preg_replace('/[^a-zA-Z]/', '', $subChildThird->getLabel());?>" class="nav-item <?= $subChildThird->isActive()? 'active open' : '' ?>">
-                                                                                <a href="<?php echo $subChildThird->getHref() ?>" class="nav-link">
-                                                                                    <i class="<?php echo $subChildThird->icon; ?>"></i>
-                                                                                    <span class="title"><?php echo $subChildThird->getLabel() ?></span>
-                                                                                </a>
-                                                                            </li>
-                                                                        <?php endforeach; ?>
-                                                                    </ul>
-                                                                <?php endif; ?>
-                                                            </li>
-                                                        <?php endforeach; ?>
-                                                    </ul>
-                                                <?php endif; ?>
-                                            </li>
-                                        <?php endforeach; ?>
-                                    </ul>
-                                <?php endif; ?>
-                            </li>
-                        <?php endforeach; ?>
-                    </ul>
-                <?php endif; ?>
-            </li>
-        <?php endforeach; ?>
+
+                                </li>
+                            <?php endforeach; ?>
+
+                        </ul>
+                    <?php endif; ?>
+
+                </li>
+            <?php endforeach; ?>
 
 
     </div>
