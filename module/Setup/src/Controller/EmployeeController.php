@@ -11,12 +11,12 @@ namespace Setup\Controller;
 
 use Application\Helper\EntityHelper as ApplicationHelper;
 use Application\Helper\Helper;
+use Setup\Helper\EntityHelper;
 use Setup\Form\HrEmployeesFormTabFive;
 use Setup\Form\HrEmployeesFormTabFour;
 use Setup\Form\HrEmployeesFormTabOne;
 use Setup\Form\HrEmployeesFormTabThree;
 use Setup\Form\HrEmployeesFormTabTwo;
-use Setup\Helper\EntityHelper;
 use Setup\Repository\EmployeeFile;
 use Setup\Repository\EmployeeRepository;
 use Zend\Db\Adapter\AdapterInterface;
