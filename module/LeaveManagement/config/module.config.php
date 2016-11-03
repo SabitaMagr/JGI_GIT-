@@ -48,6 +48,16 @@ return [
                     ]
                 ]
             ],
+            'leavebalance' => [
+                'type' => Segment::class,
+                'options' => [
+                    'route' => '/leave/leavebalance[/:action[/:id]]',
+                    'defaults' => [
+                        'controller' => Controller\LeaveBalance::class,
+                        'action' => 'index'
+                    ]
+                ]
+            ],
         ]
     ],
     'navigation' => [
@@ -164,13 +174,41 @@ return [
                 ]
             ]
         ],
+        'leavebalance' => [
+            [
+                'label' => 'Leave Balance',
+                'route' => 'leavebalance',
+            ],
+            [
+                'label' => 'Leave Request Status',
+                'route' => 'leavebalance',
+                'pages' => [
+                    [
+                        'label' => 'List',
+                        'route' => 'leavebalance',
+                        'action' => 'index',
+                    ],
+                    [
+                        'label' => 'Add',
+                        'route' => 'leavebalance',
+                        'action' => 'add',
+                    ],
+                    [
+                        'label' => 'Detail',
+                        'route' => 'leavebalance',
+                        'action' => 'view',
+                    ],
+                ]
+            ]
+        ],
     ],
     'controllers' => [
         'factories' => [
             Controller\LeaveSetup::class => ControllerFactory::class,
             Controller\leaveAssign::class => ControllerFactory::class,
             Controller\LeaveApply::class => ControllerFactory::class,
-            Controller\LeaveStatus::class => ControllerFactory::class
+            Controller\LeaveStatus::class => ControllerFactory::class,
+            Controller\LeaveBalance::class => ControllerFactory::class
         ],
 
     ],

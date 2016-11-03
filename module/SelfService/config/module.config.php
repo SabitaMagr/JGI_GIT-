@@ -100,7 +100,7 @@ return [
             'profile' => [
                 'type' => Segment::class,
                 'options' => [
-                    'route' => '/selfservice/profile[/:action[/:id]]',
+                    'route' => '/selfservice/profile[/:action[/:id[/:tab]]]',
                     'constants' => [
                         'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
                         'id' => '[0-9]+',
@@ -252,22 +252,22 @@ return [
         ],
         'service' => [
             [
-                'label' => 'Attendance Request',
+                'label' => 'Service',
                 'route' => 'service',
             ],
             [
-                'label' => 'Attendance Request',
+                'label' => 'Service',
                 'route' => 'service',
                 'pages' => [
                     [
-                        'label' => 'List',
+                        'label' => 'History',
                         'route' => 'service',
                         'action' => 'index',
                     ],
                     [
-                        'label' => 'Add',
+                        'label' => 'Detail',
                         'route' => 'service',
-                        'action' => 'add',
+                        'action' => 'view',
                     ],
                     [
                         'label' => 'Edit',
@@ -279,15 +279,15 @@ return [
         ],
         'profile' => [
             [
-                'label' => 'Attendance Request',
+                'label' => 'Profile',
                 'route' => 'profile',
             ],
             [
-                'label' => 'Attendance Request',
+                'label' => 'Profile',
                 'route' => 'profile',
                 'pages' => [
                     [
-                        'label' => 'List',
+                        'label' => 'Detail',
                         'route' => 'profile',
                         'action' => 'index',
                     ],

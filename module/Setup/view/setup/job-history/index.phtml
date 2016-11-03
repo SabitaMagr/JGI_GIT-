@@ -66,7 +66,7 @@ if($this->messages) { ?>
                 Service Type
             </th>
              <th>
-                To Position
+                To Branch
             </th>
             <th>
                 To Department
@@ -99,17 +99,16 @@ if($this->messages) { ?>
                     <?php print $this->escapeHtml($jobHistory['SERVICE_TYPE_NAME']); ?>
                 </td>
                 <td>
-                    <?php print $this->escapeHtml($jobHistory['TO_POSITION_NAME']); ?>
-                </td>
-
-                <td>
-                    <?php print $this->escapeHtml($jobHistory['TO_DESIGNATION_TITLE']); ?>
+                    <?php print $this->escapeHtml($jobHistory['TO_BRANCH_NAME']); ?>
                 </td>
                 <td>
                     <?php print $this->escapeHtml($jobHistory['TO_DEPARTMENT_NAME']); ?>
                 </td>
                 <td>
-                    <?php print $this->escapeHtml($jobHistory['TO_BRANCH_NAME']); ?>
+                    <?php print $this->escapeHtml($jobHistory['TO_DESIGNATION_TITLE']); ?>
+                </td>
+                <td>
+                    <?php print $this->escapeHtml($jobHistory['TO_POSITION_NAME']); ?>
                 </td>
                 <td>
                         <a href="<?= $this->url("jobHistory", ["action" => "edit", "id" => $jobHistory['JOB_HISTORY_ID']]); ?>">

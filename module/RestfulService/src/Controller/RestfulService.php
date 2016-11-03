@@ -13,6 +13,7 @@ use Payroll\Repository\FlatValueDetailRepo;
 use Payroll\Repository\MonthlyValueDetailRepo;
 use Payroll\Repository\RulesDetailRepo;
 use Payroll\Repository\RulesRepository;
+use SelfService\Repository\ServiceRepository;
 use System\Model\RolePermission;
 use System\Repository\RolePermissionRepository;
 use System\Repository\RoleSetupRepository;
@@ -103,6 +104,9 @@ class RestfulService extends AbstractRestfulController
                     break;
                 case "pullRolePermissionList":
                     $responseData = $this->pullRolePermissionList($postedData->data);
+                    break;
+                case "pullServiceHistory":
+                    $responseData = $this->pullServiceHistory($postedData->data);
                     break;
                 default:
                     $responseData = [
@@ -610,6 +614,24 @@ class RestfulService extends AbstractRestfulController
             "success"=>true,
             "data"=>$tempArray,
             "data1"=>$temArray1
+        ];
+    }
+    public function pullServiceHistory($data){
+        $employeeId = $data['employeeId'];
+        $fromDate = $data['fromDate'];
+        $toDate = $data['toDate'];
+
+        $serviceRepository = new ServiceRepository($this->adapter);
+        $history = $serviceRepository->getAllHistoryWidEmpId($employeeId,$fromDate,$toDate);
+
+        $data = [];
+        foreach($history as $row){
+            array_push($data,$row);
+        }
+
+        return $responseData = [
+            "success"=>true,
+            "data"=>$data
         ];
     }
 }
