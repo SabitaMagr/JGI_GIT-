@@ -83,6 +83,35 @@ return [
                     ]
                 ],
             ],
+            'service' => [
+                'type' => Segment::class,
+                'options' => [
+                    'route' => '/selfservice/service[/:action[/:id]]',
+                    'constants' => [
+                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'id' => '[0-9]+',
+                    ],
+                    'defaults' => [
+                        'controller' => Controller\Service::class,
+                        'action' => 'index',
+                    ]
+                ],
+            ],
+            'profile' => [
+                'type' => Segment::class,
+                'options' => [
+                    'route' => '/selfservice/profile[/:action[/:id]]',
+                    'constants' => [
+                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'id' => '[0-9]+',
+                    ],
+                    'defaults' => [
+                        'controller' => Controller\Profile::class,
+                        'action' => 'index',
+                    ]
+                ],
+            ],
+
         ],
     ],
     'navigation' => [
@@ -221,6 +250,60 @@ return [
                 ],
             ],
         ],
+        'service' => [
+            [
+                'label' => 'Attendance Request',
+                'route' => 'service',
+            ],
+            [
+                'label' => 'Attendance Request',
+                'route' => 'service',
+                'pages' => [
+                    [
+                        'label' => 'List',
+                        'route' => 'service',
+                        'action' => 'index',
+                    ],
+                    [
+                        'label' => 'Add',
+                        'route' => 'service',
+                        'action' => 'add',
+                    ],
+                    [
+                        'label' => 'Edit',
+                        'route' => 'service',
+                        'action' => 'edit',
+                    ],
+                ],
+            ],
+        ],
+        'profile' => [
+            [
+                'label' => 'Attendance Request',
+                'route' => 'profile',
+            ],
+            [
+                'label' => 'Attendance Request',
+                'route' => 'profile',
+                'pages' => [
+                    [
+                        'label' => 'List',
+                        'route' => 'profile',
+                        'action' => 'index',
+                    ],
+                    [
+                        'label' => 'Add',
+                        'route' => 'profile',
+                        'action' => 'add',
+                    ],
+                    [
+                        'label' => 'Edit',
+                        'route' => 'profile',
+                        'action' => 'edit',
+                    ],
+                ],
+            ],
+        ],
     ],
 
     'controllers' => [
@@ -229,7 +312,9 @@ return [
             Controller\Holiday::class => ControllerFactory::class,
             Controller\Leave::class => ControllerFactory::class,
             Controller\LeaveRequest::class => ControllerFactory::class,
-            Controller\AttendanceRequest::class => ControllerFactory::class
+            Controller\AttendanceRequest::class => ControllerFactory::class,
+            Controller\Profile::class => ControllerFactory::class,
+            Controller\Service::class => ControllerFactory::class
         ],
     ],
     'view_manager' => [

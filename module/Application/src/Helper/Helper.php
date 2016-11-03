@@ -160,7 +160,7 @@ class Helper
                 }
 
                 echo "<div class='md-radio'>";
-               echo "<input $temp  type='radio' value='$key' name='$name' id='$name+$value' class='md-radiobtn'>";
+               echo "<input $temp  type='radio' value='$key' name='$name' id='$name+$value' class='md-radiobtn radioButton'>";
 
                echo "<label for='$name+$value'>
                     <span></span>
