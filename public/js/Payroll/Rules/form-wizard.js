@@ -70,6 +70,7 @@
         $('#priorityIndex').val(rulesForm.priorityIndex);
         $('#remarks').val(rulesForm.remarks);
     };
+
     var pushRuleDetail = function () {
         ruleDetail.payId = rulesForm.payId;
         ruleDetail.updateModel(editor.getValue());
@@ -262,7 +263,7 @@
                 rule = replaceAll(rule, flatValues[i], 1);
             }
             try {
-                console.log("before eval",rule);
+                console.log("before eval", rule);
                 console.log(eval(rule));
             } catch (e) {
                 if (e instanceof SyntaxError) {
@@ -279,7 +280,6 @@
             $(vars[i]).on('click', function () {
                 var $this = $(this);
                 editor.setValue(editor.getValue() + $this.text());
-
             });
         }
 

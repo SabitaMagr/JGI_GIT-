@@ -14,31 +14,29 @@ class MenuNavigation extends DefaultNavigationFactory
      */
     private $adapter;
     private $roleId;
+
     protected function getPages(ContainerInterface $container)
     {
         if (null === $this->pages) {
-            //FETCH data from table menu :
-            $adapter=$container->get(AdapterInterface::class);
+            $adapter = $container->get(AdapterInterface::class);
             $this->adapter = $adapter;
             $repository = new MenuSetupRepository($adapter);
             $data = $repository->getHierarchicalMenuWithRoleId();
-            //print_r($data); die();
 
-            foreach($data as $key=>$row)
-            {
-                if($this->menu($row['MENU_ID'])){
+            foreach ($data as $key => $row) {
+                if ($this->menu($row['MENU_ID'])) {
                     $configuration['navigation'][$this->getName()][$row['MENU_NAME']] =
                         array(
                             "label" => $row['MENU_NAME'],
-                            "icon"=>$row['ICON_CLASS'],
+                            "icon" => $row['ICON_CLASS'],
                             'uri' => 'javascript::',
-                            "pages"=>$this->menu($row['MENU_ID'])
+                            "pages" => $this->menu($row['MENU_ID'])
                         );
-                }else{
+                } else {
                     $configuration['navigation'][$this->getName()][$row['MENU_NAME']] =
                         array(
                             "label" => $row['MENU_NAME'],
-                            "icon"=>$row['ICON_CLASS'],
+                            "icon" => $row['ICON_CLASS'],
                             "route" => $row['ROUTE'],
                             "action" => $row['ACTION']
                         );
@@ -57,14 +55,15 @@ class MenuNavigation extends DefaultNavigationFactory
             }
 
             $application = $container->get('Application');
-            $routeMatch  = $application->getMvcEvent()->getRouteMatch();
-            $router      = $application->getMvcEvent()->getRouter();
-            $pages       = $this->getPagesFromConfig($configuration['navigation'][$this->getName()]);
+            $routeMatch = $application->getMvcEvent()->getRouteMatch();
+            $router = $application->getMvcEvent()->getRouter();
+            $pages = $this->getPagesFromConfig($configuration['navigation'][$this->getName()]);
 
             $this->pages = $this->injectComponents($pages, $routeMatch, $router);
         }
         return $this->pages;
     }
+
     private function menu($parent_menu = null)
     {
         $menuSetupRepository = new MenuSetupRepository($this->adapter);
@@ -78,14 +77,14 @@ class MenuNavigation extends DefaultNavigationFactory
                 if ($children) {
                     $temArray[] = array(
                         "label" => $row['MENU_NAME'],
-                        "icon"=>$row['ICON_CLASS'],
+                        "icon" => $row['ICON_CLASS'],
                         'uri' => 'javascript::',
-                        "pages" =>$children
+                        "pages" => $children
                     );
                 } else {
                     $temArray[] = array(
                         "label" => $row['MENU_NAME'],
-                        "icon"=>$row['ICON_CLASS'],
+                        "icon" => $row['ICON_CLASS'],
                         "route" => $row['ROUTE'],
                         "action" => $row['ACTION']
                     );
