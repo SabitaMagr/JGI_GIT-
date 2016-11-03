@@ -39,7 +39,7 @@
             this.mnenonicName = mne;
         },
         updateView: function () {
-            $('#rule').val(this.mnenonicName);
+            editor.setValue(this.mnenonicName);
         },
         pullRuleDetailByPayId: function (payId) {
             var obj = this;

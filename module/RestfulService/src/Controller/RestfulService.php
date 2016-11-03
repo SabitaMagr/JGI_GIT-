@@ -393,7 +393,8 @@ class RestfulService extends AbstractRestfulController
         } else {
             $payId = $ruleDetail->payId;
             unset($ruleDetail->payId);
-            $repository->edit($ruleDetail, [RulesDetail::PAY_ID => $payId]);
+//            $repository->edit($ruleDetail, [RulesDetail::PAY_ID => $payId]);
+            $repository->edit($ruleDetail,$payId);
             $ruleDetail->srNo = $data['srNo'];
         }
 

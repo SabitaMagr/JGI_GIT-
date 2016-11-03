@@ -30,7 +30,8 @@
         "zf-commons/zfc-twig": "dev-master",
         "zendframework/zend-debug": "^2.5",
         "doctrine/common" : ">=2.1",
-        "zendframework/zend-navigation": "^2.8"
+        "zendframework/zend-navigation": "^2.8",
+        "phpoffice/phpexcel": "^1.8"
     },
     "autoload": {
         "psr-0": {

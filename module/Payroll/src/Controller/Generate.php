@@ -10,12 +10,16 @@ namespace Payroll\Controller;
 
 
 use Application\Helper\EntityHelper;
+use Application\Repository\RepositoryInterface;
 use Payroll\Model\FlatValue as FlatValueModel;
+use Payroll\Model\FlatValueDetail;
 use Payroll\Model\MonthlyValue as MonthlyValueModel;
+use Payroll\Model\MonthlyValueDetail;
 use Payroll\Model\RulesDetail;
 use Payroll\Repository\FlatValueDetailRepo;
 use Payroll\Repository\MonthlyValueDetailRepo;
 use Payroll\Repository\RulesDetailRepo;
+use PHPExcel;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Mvc\Controller\AbstractActionController;
 
@@ -32,7 +36,7 @@ class Generate extends AbstractActionController
     {
         $this->adapter = $adapter;
         $this->flatValueDetRepo = new FlatValueDetailRepo($adapter);
-        $this->monthlyValueDetRepo=new MonthlyValueDetailRepo($adapter);
+        $this->monthlyValueDetRepo = new MonthlyValueDetailRepo($adapter);
     }
 
     public function indexAction()
@@ -47,12 +51,22 @@ class Generate extends AbstractActionController
 
         $ruleDetailRepo = new RulesDetailRepo($this->adapter);
         $rule = $ruleDetailRepo->fetchById(1)->{RulesDetail::MNENONIC_NAME};
-        foreach ($monthlyValues as $key=>$monthlyValue) {
-            $rule = $this->convertConstantToValue($rule,$key, $monthlyValue);
+        foreach ($monthlyValues as $key => $monthlyValue) {
+            $rule = $this->convertConstantToValue($rule, $key, $monthlyValue, $this->monthlyValueDetRepo);
         }
-        echo eval("echo ".$rule.";");
-        echo eval($rule);
-        exit;
+
+        foreach ($flatValues as $key => $flatValue) {
+            $rule = $this->convertConstantToValue($rule, $key, $flatValue, $this->flatValueDetRepo);
+        }
+//        $cell=new \PHPExcel_Cell();
+//        $cell->setValue("343");
+//
+//        $objPHPExcel = new PHPExcel();
+//        echo $objPHPExcel->getCalculationEngine()->calculate()
+//        echo eval("echo " . $rule . ";");
+
+       eval($rule);
+       exit;
     }
 
     private function sanitizeStringArray(array &$stringArray)
@@ -62,19 +76,22 @@ class Generate extends AbstractActionController
         }
     }
 
-    private function convertConstantToValue($rule,$key, $constant)
+    private function convertConstantToValue($rule, $key, $constant, RepositoryInterface $repository)
     {
-
         if (strpos($rule, $constant) !== false) {
-            return str_replace($constant, $this->generateValue($key), $rule);
+            return str_replace($constant, $this->generateValue($key, $repository), $rule);
         } else {
             return $rule;
         }
-
     }
 
-    private function generateValue($constant)
+    private function generateValue($constant, RepositoryInterface $repository)
     {
-        return $this->monthlyValueDetRepo->fetchById([1,$constant])['MTH_VALUE'];
+        if ($repository instanceof MonthlyValueDetailRepo) {
+            return $repository->fetchById([1, $constant])[MonthlyValueDetail::MTH_VALUE];
+        } else if ($repository instanceof FlatValueDetailRepo) {
+            return $repository->fetchById([1, $constant])[FlatValueDetail::FLAT_VALUE];
+        }
+
     }
 }
