@@ -20,7 +20,7 @@ $outRemarks->setAttributes(['disabled' => "disabled"]);
 $totalHour = $form->get('totalHour');
 $totalHour->setAttributes(['disabled' => "disabled"]);
 $approvedRemarks = $form->get('approvedRemarks');
-$approvedRemarks->setAttributes(['required' => 'true']);
+$approvedRemarks->setAttributes(['disabled' => 'disabled']);
 
 $submit = $form->get('submit');
 $submit->setAttribute('value', 'Approve');
@@ -38,10 +38,10 @@ if ($this->messages) {
 $form->prepare();
 ?>
 <script>
-    document.menu =<?php $menu = ["id" => "menuManagerService", "subMenu" => ["id" => "subMenuAttendancetoApprove"]];echo json_encode($menu);?>;
+    document.menu =<?php $menu = ["id" => "menuSelfService", "subMenu" => ["id" => "subMenuAttendanceRequest"]];echo json_encode($menu);?>;
 </script>
 <div class="page-bar">
-    <?= $this->navigation('Zend\Navigation\attedanceapprove')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
+    <?= $this->navigation('Zend\Navigation\attendancerequest')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
 <div class="row margin-top-20">
     <div class="col-sm-8 col-sm-offset-2">
@@ -68,11 +68,11 @@ $form->prepare();
                                     </tr>
                                     <tr height="30">
                                         <td>
-                                            Role
+                                            Approver
                                         </td>
                                         <td width="15">:</td>
                                         <td>
-                                            <?php echo 'Approver'; ?>
+                                            <?php echo $approver; ?>
                                         </td>
                                     </tr>
                                 </table>
@@ -95,13 +95,13 @@ $form->prepare();
                                         <td width="15">:</td>
                                         <td>
                                             <?php
-                                            if($status=="RQ"){
+                                            if ($status == "RQ") {
                                                 echo "Pending";
-                                            }else if($status=="R"){
+                                            } else if ($status == "R") {
                                                 echo "Rejected";
-                                            }else if($status=="AP"){
+                                            } else if ($status == "AP") {
                                                 echo "Approved";
-                                            }else if($status=="C"){
+                                            } else if ($status == "C") {
                                                 echo "Cancelled";
                                             } ?>
                                         </td>
@@ -166,16 +166,6 @@ $form->prepare();
                 </div>
                 <?php print $this->formElementErrors()->render($approvedRemarks, ['class' => 'help-block error']); ?>
 
-                <div class="">
-                    <?php
-                    if ($status == 'RQ' || $status == 'RC') {
-                        print $this->formSubmit($submit); ?>
-                        <input type="submit" name="submit" class="btn btn-success pull-right" value="Reject">
-                        <?php
-                        print $this->form()->closeTag();
-                    }
-                    ?>
-                </div>
             </div>
 
         </div>

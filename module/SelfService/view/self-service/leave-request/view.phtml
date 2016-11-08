@@ -2,10 +2,13 @@
 /**
  * Load Javascript files here
  */
-
+$this->headScript()->appendFile($this->basePath('js/LeaveManagement/LeaveRequest/add.js'));
 $this->headScript()->appendFile($this->basePath('js/angular.min.js'));
 $this->headScript()->appendFile($this->basePath('js/LeaveManagement/LeaveRequest/leaveRequestController.js'));
+?>
 
+
+<?php
 
 $form->setAttribute('role', 'form');
 
@@ -22,16 +25,15 @@ $halfDay = $form->get('halfDay');
 $halfDay->setAttributes(['disabled' => "disabled"]);
 $remarks = $form->get('remarks');
 $remarks->setAttributes(['disabled' => 'disabled']);
-
 $recommendedRemarks = $form->get('recommendedRemarks');
-$recommendedRemarks->setAttributes(['required' => 'true']);
+$recommendedRemarks->setAttributes(['disabled' => 'disabled']);
 $approvedRemarks = $form->get('approvedRemarks');
-$approvedRemarks->setAttributes(['required' => 'true']);
+$approvedRemarks->setAttributes(['disabled' => 'disabled']);
 
 $submit = $form->get('submit');
 $submit->setAttribute('value', 'Approve');
 
-$form->setAttribute('action', $this->url('leavestatus', ['action' => 'view', 'id' => $id]));
+$form->setAttribute('action', $this->url('leaveapprove', ['action' => 'view', 'id' => $id]));
 
 if ($this->messages) {
     print '<ul class="help-block bg-danger" style="background:#f3e250;">';
@@ -45,12 +47,12 @@ $form->prepare();
 print $this->form()->openTag($form);
 ?>
     <script>
-        document.menu =<?php $menu = ["id" => "menuLeave", "subMenu" => ["id" => "subMenuLeaveStatus"]];echo json_encode($menu);?>;
+        document.menu =<?php $menu = ["id" => "menuSelfService", "subMenu" => ["id" => "subMenuLeaveApply"]];echo json_encode($menu);?>;
         document.url = '<?= $this->url("webService", ["action" => "index"]) ?>';
     </script>
 
     <div class="page-bar">
-        <?= $this->navigation('Zend\Navigation\leavestatus')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb'); ?>
+        <?= $this->navigation('Zend\Navigation\leaverequest')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb'); ?>
     </div>
     <div class="row margin-top-20">
         <div class="col-sm-8 col-sm-offset-2">
@@ -61,7 +63,7 @@ print $this->form()->openTag($form);
                     </div>
                 </div>
                 <div class="portlet-body">
-                    <div class="border-bottom margin-bottom-10">
+                    <div class="border-bottom">
                         <div class="form-group">
                             <div class="row">
                                 <div class="col-md-6">
@@ -148,7 +150,6 @@ print $this->form()->openTag($form);
                                 </div>
                             </div>
                         </div>
-
                         <div
                             class="form-group required <?= empty($leaveId->getMessages()) ? "" : "error" ?>">
                             <?php print $this->formLabel($leaveId); ?>
@@ -191,32 +192,24 @@ print $this->form()->openTag($form);
                         </div>
                         <?php print $this->formElementErrors()->render($halfDay, ['class' => 'help-block error']); ?>
 
-                        <?php if ($remarkDtl != null) { ?>
-                            <div class="form-group padding-0">
+                        <?php if ($remarksDtl != null) { ?>
+                            <div
+                                class="form-group required <?= empty($remarks->getMessages()) ? "" : "error" ?>">
                                 <?php print $this->formLabel($remarks); ?>
                                 <?php print $this->formElement($remarks); ?>
                             </div>
                         <?php } ?>
                     </div>
-
-                    <?php if ($status == 'RC' || $status == 'AP' || $status == 'R') {
-                        $recommendedRemarks->setAttributes(['disabled' => 'disabled']);
-                        ?>
-                        <div class="form-group padding-0">
-                            <?php print $this->formLabel($recommendedRemarks); ?>
-                            <?php print $this->formElement($recommendedRemarks); ?>
-                        </div>
-                    <?php } ?>
-
-                    <div class="form-group padding-0">
+                    <div
+                        class="form-group margin-top-10 required <?= empty($recommendedRemarks->getMessages()) ? "" : "error" ?>">
+                        <?php print $this->formLabel($recommendedRemarks); ?>
+                        <?php print $this->formElement($recommendedRemarks); ?>
+                    </div>
+                    <div
+                        class="form-group required <?= empty($approvedRemarks->getMessages()) ? "" : "error" ?>">
                         <?php print $this->formLabel($approvedRemarks); ?>
                         <?php print $this->formElement($approvedRemarks); ?>
                     </div>
-
-                    <?php if ($status == 'RQ' || $status == 'RC') { ?>
-                        <?php print $this->formSubmit($submit); ?>
-                        <input type="submit" name="submit" class="btn btn-success pull-right" value="Reject">
-                    <?php } ?>
                 </div>
             </div>
         </div>

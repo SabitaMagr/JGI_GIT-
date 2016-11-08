@@ -7,6 +7,7 @@
  */
 namespace SelfService\Controller;
 
+use ManagerService\Repository\LeaveApproveRepository;
 use Zend\View\Model\ViewModel;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Mvc\Controller\AbstractActionController;
@@ -29,6 +30,7 @@ class LeaveRequest extends AbstractActionController{
     private $userId;
     private $authService;
     private $form;
+    private $adapter;
 
     public function __construct(AdapterInterface $adapter)
     {
@@ -113,6 +115,48 @@ class LeaveRequest extends AbstractActionController{
         $this->leaveRequestRepository->delete($id);
         $this->flashmessenger()->addMessage("Leave Request Successfully Cancelled!!!");
         return $this->redirect()->toRoute('leaverequest');
+    }
+
+    public function viewAction(){
+        $this->initializeForm();
+        $id = (int) $this->params()->fromRoute('id');
+        $leaveApproveRepository = new LeaveApproveRepository($this->adapter);
+
+        if($id===0){
+            return $this->redirect()->toRoute("leaveapprove");
+        }
+        $leaveApply = new LeaveApply();
+        $request = $this->getRequest();
+
+        $detail = $leaveApproveRepository->fetchById($id);
+        $employeeName = $detail['FIRST_NAME']." ".$detail['MIDDLE_NAME']." ".$detail['LAST_NAME'];
+        $recommender = $detail['FN1']." ".$detail['MN1']." ".$detail['LN1'];
+        $approver = $detail['FN2']." ".$detail['MN2']." ".$detail['LN2'];
+
+        //to get the previous balance of selected leave from assigned leave detail
+        $result = $leaveApproveRepository->assignedLeaveDetail($detail['LEAVE_ID'],$detail['EMPLOYEE_ID'])->getArrayCopy();
+        $preBalance = $result['BALANCE'];
+
+        if(!$request->isPost()){
+            $leaveApply->exchangeArrayFromDB($detail);
+            $this->form->bind($leaveApply);
+        }
+        return Helper::addFlashMessagesToArray($this, [
+            'form' => $this->form,
+            'id'=>$id,
+            'employeeName'=>$employeeName,
+            'requestedDt'=>$detail['REQUESTED_DT'],
+            'availableDays'=>$preBalance,
+            'status'=>$detail['STATUS'],
+            'recommender'=>$recommender,
+            'approver'=>$approver,
+            'remarksDtl'=>$detail['REMARKS'],
+            'totalDays'=>$result['TOTAL_DAYS'],
+            'recommendedBy'=>$detail['RECOMMENDED_BY'],
+            'employeeId'=>$this->employeeId,
+            'leave' => $this->leaveRequestRepository->getLeaveList($detail['EMPLOYEE_ID']),
+            'customRenderer'=>Helper::renderCustomView()
+        ]);
     }
 
     public function recommendApproveList(){

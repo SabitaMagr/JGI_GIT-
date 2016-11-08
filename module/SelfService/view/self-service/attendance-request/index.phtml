@@ -122,6 +122,10 @@ if($this->messages) { ?>
                         Cancel Request
                     </a>
                     <?php } ?>
+                    <a class=""
+                       href="<?= $this->url("attendancerequest", ["action" => "view", "id" =>$attendances['ID']]); ?>">
+                        View
+                    </a>
                 </td>
             </tr>
 

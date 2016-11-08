@@ -137,6 +137,10 @@ if($this->messages) { ?>
                         Cancel Request
                     </a>
                    <?php } ?>
+                    <a class=""
+                       href="<?= $this->url("leaverequest", ["action" => "view", "id" =>$leaveRequestList['ID']]); ?>">
+                        View
+                    </a>
                 </td>
             </tr>
 

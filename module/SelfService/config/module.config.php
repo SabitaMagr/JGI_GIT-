@@ -220,6 +220,11 @@ return [
                         'route' => 'leaverequest',
                         'action' => 'edit',
                     ],
+                    [
+                        'label' => 'Detail',
+                        'route' => 'leaverequest',
+                        'action' => 'view',
+                    ],
                 ],
             ],
         ],
@@ -246,6 +251,11 @@ return [
                         'label' => 'Edit',
                         'route' => 'attendancerequest',
                         'action' => 'edit',
+                    ],
+                    [
+                        'label' => 'Detail',
+                        'route' => 'attendancerequest',
+                        'action' => 'view',
                     ],
                 ],
             ],
