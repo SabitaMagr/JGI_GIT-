@@ -51,7 +51,7 @@ return [
             'leavebalance' => [
                 'type' => Segment::class,
                 'options' => [
-                    'route' => '/leave/leavebalance[/:action[/:id]]',
+                    'route' => '/leave/leavebalance[/:action[/:eid[/:id]]]',
                     'defaults' => [
                         'controller' => Controller\LeaveBalance::class,
                         'action' => 'index'
@@ -128,7 +128,7 @@ return [
             [
                 'label' => 'Leave Apply',
                 'route' => 'leaveapply',
-                'pages' => [
+                'pageleaverequests' => [
                     [
                         'label' => 'List',
                         'route' => 'leaveapply',
@@ -180,7 +180,7 @@ return [
                 'route' => 'leavebalance',
             ],
             [
-                'label' => 'Leave Request Status',
+                'label' => 'Leave Balance',
                 'route' => 'leavebalance',
                 'pages' => [
                     [
@@ -189,9 +189,9 @@ return [
                         'action' => 'index',
                     ],
                     [
-                        'label' => 'Add',
+                        'label' => 'Leave Apply',
                         'route' => 'leavebalance',
-                        'action' => 'add',
+                        'action' => 'apply',
                     ],
                     [
                         'label' => 'Detail',

@@ -87,6 +87,7 @@ class LeaveApproveController extends AbstractActionController {
                     $leaveApply->status="RC";
                     $this->flashmessenger()->addMessage("Leave Request Approved!!!");
                 }
+                $leaveApply->recommendedRemarks=$getData->recommendedRemarks;
                 $this->repository->edit($leaveApply,$id);
             }else if($role=="A"){
                 $leaveApply->approvedDt=Helper::getcurrentExpressionDate();
@@ -103,6 +104,7 @@ class LeaveApproveController extends AbstractActionController {
                     $this->flashmessenger()->addMessage("Leave Request Approved");
                 }
                 unset($leaveApply->halfDay);
+                $leaveApply->approvedRemarks=$getData->approvedRemarks;
                 $this->repository->edit($leaveApply,$id);
             }
             return $this->redirect()->toRoute("leaveapprove");
@@ -115,7 +117,10 @@ class LeaveApproveController extends AbstractActionController {
             'role'=>$role,
             'availableDays'=>$preBalance,
             'status'=>$detail['STATUS'],
+            'remarksDtl'=>$detail['REMARKS'],
             'totalDays'=>$result['TOTAL_DAYS'],
+            'recommendedBy'=>$detail['RECOMMENDED_BY'],
+            'employeeId'=>$this->employeeId,
             'leave' => $leaveRequestRepository->getLeaveList($detail['EMPLOYEE_ID']),
             'customRenderer'=>Helper::renderCustomView()
         ]);

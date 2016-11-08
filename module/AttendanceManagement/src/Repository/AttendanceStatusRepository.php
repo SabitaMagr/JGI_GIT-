@@ -87,6 +87,7 @@ class AttendanceStatusRepository implements RepositoryInterface {
                 new Expression("A.OUT_REMARKS AS OUT_REMARKS"),
                 new Expression("A.TOTAL_HOUR AS TOTAL_HOUR"),
                 new Expression("A.STATUS AS STATUS"),
+                new Expression("A.APPROVED_REMARKS AS APPROVED_REMARKS"),
                 new Expression("TO_CHAR(A.REQUESTED_DT, 'DD-MON-YYYY') AS REQUESTED_DT")
             ], true);
         $select->from(['A'=>AttendanceRequestModel::TABLE_NAME])
