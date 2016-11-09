@@ -48,7 +48,7 @@
                 data: {payId: payId}
             }).then(function (success) {
                 console.log("success", success);
-                if (typeof success.data !== 'undefined') {
+                if (!((typeof success.data === 'undefined') || (success.data == null))) {
                     obj.setRuleDetailFromRemote(success.data)
                     obj.updateView();
                 }
@@ -57,6 +57,133 @@
             });
         }
     };
+    var positionAssigned = {
+        remotePositions: [],
+        positions: [],
+        setPositionsFromRemote: function (positions) {
+            for (var i in positions) {
+                this.remotePositions.push(positions[i]["POSITION_ID"]);
+                this.positions.push(positions[i]["POSITION_ID"]);
+            }
+        },
+        updatePositions: function (id, status) {
+            var filtered = this.positions.filter(function (value) {
+                return value == id;
+            });
+            if (status && (filtered.length == 0)) {
+                this.positions.push(id);
+            } else if (!status && (filtered.length > 0)) {
+                this.positions.splice(this.positions.indexOf(id), 1);
+            }
+        },
+        updateView: function (id) {
+            var positionListUl = $("#" + id);
+            positionListUl.empty();
+            var positionIds = Object.keys(document.positions);
+            for (var pI in positionIds) {
+                var checked = false;
+                for (var sI in this.positions) {
+                    if (positionIds[pI] == this.positions[sI]) {
+                        checked = true;
+                    }
+                }
+                var checkedHtml = checked ? 'checked' : '';
+                positionListUl.append("<div class='md-checkbox'>" +
+                    "<input type='checkbox' class='md-check' id='positionCB" + positionIds[pI] + "'  p-id='" + positionIds[pI] + "' " + checkedHtml + ">" +
+                    "<label for='positionCB" + positionIds[pI] + "'>" +
+                    "<span></span>" +
+                    "<span class='check'></span>" +
+                    "<span class='box'></span>" +
+                    document.positions[positionIds[pI]] +
+                    "</label>" +
+                    "</div>")
+                $("#positionCB" + positionIds[pI]).on('change', function () {
+                    console.log($(this).prop('checked'));
+                    positionAssigned.updatePositions($(this).attr('p-id'), $(this).prop('checked'));
+                });
+            }
+
+        },
+        pullPositionAssignedByPayId: function (payId) {
+            var obj = this;
+            app.pullDataById(document.url, {
+                action: 'pullPositionsAssignedByPayId',
+                data: {payId: payId}
+            }).then(function (success) {
+                console.log("success", success);
+                if (typeof success.data !== 'undefined') {
+                    obj.setPositionsFromRemote(success.data)
+                    obj.updateView("positionList");
+                }
+            }, function (failure) {
+                console.log("failure", failure);
+            });
+        },
+        pushPositionAssigned: function () {
+            var notChangedPositions = [];
+            var needsToBeDeleted = [];
+            var needsToBeAdded = [];
+            for (var i in this.remotePositions) {
+                var isNotChanged = false;
+                for (var j in this.positions) {
+                    if (this.remotePositions[i] == this.positions[j]) {
+                        isNotChanged = true;
+                    }
+                }
+                if (isNotChanged) {
+                    notChangedPositions.push(this.remotePositions[i]);
+                } else {
+                    needsToBeDeleted.push(this.remotePositions[i]);
+                }
+            }
+
+
+            for (var i in this.positions) {
+                var common = false;
+                for (var j in notChangedPositions) {
+                    if (this.positions[i] == notChangedPositions[j]) {
+                        common = true;
+                    }
+                }
+                if (!common) {
+                    needsToBeAdded.push(this.positions[i]);
+                }
+            }
+            console.log("not changed", notChangedPositions);
+            console.log("delete", needsToBeDeleted);
+            console.log("add", needsToBeAdded);
+
+            var promises = [];
+            if (needsToBeAdded.length > 0) {
+                promises.push(app.pullDataById(document.url, {
+                    action: 'addPositionAssigned',
+                    data: {
+                        positions: needsToBeAdded,
+                        payId: rulesForm.payId
+                    }
+                }));
+            }
+
+            if (needsToBeDeleted.length > 0) {
+                promises.push(app.pullDataById(document.url, {
+                    action: 'deletePositionAssigned',
+                    data: {
+                        positions: needsToBeDeleted,
+                        payId: rulesForm.payId
+                    }
+                }));
+            }
+            Promise.all(promises)
+                .then(function (success) {
+                    console.log('PositionAssigned', success);
+                    eclickFlag = true;
+                    $('.button-next').click();
+                    eclickFlag = false;
+                }, function (failure) {
+                    console.log('PositionAssigned', failure);
+                });
+        }
+    }
 
     var setFormData = function () {
         $('#payCode').val(rulesForm.payCode);
@@ -81,6 +208,7 @@
             console.log("success", success);
             eclickFlag = true;
             $('.button-next').click();
+            positionAssigned.pullPositionAssignedByPayId(rulesForm.payId);
             eclickFlag = false;
         }, function (failure) {
             console.log("failure", failure);
@@ -135,6 +263,9 @@
                                     break;
                                 case 2:
                                     pushRuleDetail();
+                                    break;
+                                case 3:
+                                    positionAssigned.pushPositionAssigned();
                                     break;
                             }
                             return false;
@@ -225,7 +356,7 @@
             }
         });
 
-        if (typeof  document.ruleId !== 'undefined') {
+        if ((typeof  document.ruleId !== 'undefined') && (document.ruleId != 0)) {
             app.pullDataById(document.url, {
                 action: 'pullRule',
                 data: {ruleId: document.ruleId}
@@ -240,17 +371,30 @@
 
         var monthlyValues = document.monthlyValues;
         var flatValues = document.flatValues;
-
+        var variables=document.variables;
+        var systemRules=document.systemRules;
 
         for (var i in monthlyValues) {
             monthlyValues[i] = replaceAll(monthlyValues[i], " ", "_");
+            monthlyValues[i]=monthlyValues[i].toUpperCase();
             $('#monthlyValueList').append("<button class='list-group-item btn' id='vars' >" + monthlyValues[i] + "</button>");
         }
 
         for (var i in flatValues) {
-            flatValues[i] = replaceAll(flatValues[i], " ", "_")
+            flatValues[i] = replaceAll(flatValues[i], " ", "_");
+            flatValues[i]=flatValues[i].toUpperCase();
             $('#flatValueList').append("<button class='list-group-item btn' id='vars' > " + flatValues[i] + "</button>");
         }
+
+        for (var i in variables) {
+            $('#variables').append("<button class='list-group-item btn' id='vars' >" + variables[i] + "</button>");
+        }
+
+        for (var i in systemRules) {
+            $('#systemRules').append("<button class='list-group-item btn' id='vars' >" + systemRules[i] + "</button>");
+        }
+
+
 
 
         $('#check').on("click", function (event) {
