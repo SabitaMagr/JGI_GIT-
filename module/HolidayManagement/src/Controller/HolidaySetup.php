@@ -125,35 +125,45 @@ class HolidaySetup extends AbstractActionController
             return $this->redirect()->toRoute("holidaysetup");
         }
 
-        $request = $this->getRequest();
-        $holiday = new Holiday();
-        if (!$request->isPost()) {
-            $holiday->exchangeArrayFromDB($this->repository->fetchById($id)->getArrayCopy());
-            $this->form->bind($holiday);
-        } else {
+        $this->initializeForm();
+        $holidayFormElement = new Select();
+        $holidayFormElement->setName("holiday");
+        $holidays=\Application\Helper\EntityHelper::getTableKVList($this->adapter, Holiday::TABLE_NAME, Holiday::HOLIDAY_ID, [Holiday::HOLIDAY_ENAME]);
+        ksort($holidays);
+        $holidayFormElement->setValueOptions($holidays);
+        $holidayFormElement->setAttributes(["id" => "holidayId", "class" => "form-control"]);
+        $holidayFormElement->setLabel("Holiday");
 
-            $this->form->setData($request->getPost());
-            if ($this->form->isValid()) {
-                $holiday->exchangeArrayFromForm($this->form->getData());
-                $holiday->modifiedDt = Helper::getcurrentExpressionDate();
-                unset($holiday->holidayId);
-                unset($holiday->createdDt);
-                unset($holiday->status);
+        //print_r($holidayFormElement); die();
 
-                $this->repository->edit($holiday, $id);
-                $this->flashmessenger()->addMessage("holiday Successfuly Updated!!!");
-                return $this->redirect()->toRoute("holidaysetup");
-            }
-        }
-        return new ViewModel(Helper::addFlashMessagesToArray(
-            $this,
-            [
-                'form' => $this->form,
-                'id'=>$id,
-                'customRenderer' => Helper::renderCustomView(),
-                "genders" => EntityHelper::getTableKVList($this->adapter, EntityHelper::HR_GENDERS),
-                'branches' => EntityHelper::getTableKVList($this->adapter, EntityHelper::HR_BRANCHES),
-            ]));
+        $branchFormElement = new Select();
+        $branchFormElement->setName("branch");
+        $branches=\Application\Helper\EntityHelper::getTableKVList($this->adapter, Branch::TABLE_NAME, Branch::BRANCH_ID, [Branch::BRANCH_NAME],["STATUS"=>"E"]);
+
+        ksort($branches);
+        $branchFormElement->setValueOptions($branches);
+        $branchFormElement->setAttributes(["id" => "branchId", "class" => "form-control", "multiple"=>"multiple"]);
+        $branchFormElement->setLabel("Branch");
+
+        $genderFormElement = new Select();
+        $genderFormElement->setName("gender");
+        $genders=\Application\Helper\EntityHelper::getTableKVList($this->adapter,"HR_GENDERS","GENDER_ID" , ["GENDER_NAME"]);
+        $genders[-1]="All";
+        ksort($genders);
+
+        $holidayList= $this->repository->fetchAll();
+        $viewModel= new ViewModel(Helper::addFlashMessagesToArray($this, [
+            'holidayList' => $holidays,
+            'selectedHoliday' => $id,
+            'holidayFormElement'=>$holidayFormElement,
+            'branchFormElement'=>$branchFormElement,
+            'genderFormElement'=>$genderFormElement,
+            'form'=>$this->form,
+            'customRenderer' => Helper::renderCustomView(),
+            "genders" => EntityHelper::getTableKVList($this->adapter, EntityHelper::HR_GENDERS),
+        ]));
+        return $viewModel;
+
     }
 
     public function deleteAction(){

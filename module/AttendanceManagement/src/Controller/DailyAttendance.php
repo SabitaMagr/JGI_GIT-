@@ -34,7 +34,7 @@ class DailyAttendance extends AbstractActionController {
             if($checkForHoliday==null){
                 
             }else{
-                
+//                echo $checkForHoliday->
             }
         }
         exit;

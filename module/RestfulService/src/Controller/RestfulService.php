@@ -746,7 +746,7 @@ class RestfulService extends AbstractRestfulController
         }
 
         $holidayRepository = new HolidayRepository($this->adapter);
-        $list = $holidayRepository->filterRecords($fromDate, $toDate, $branchId, $genderId);
+        $list = $holidayRepository->filterRecords($fromDate, $toDate,$branchId, $genderId);
 
         $data = [];
         foreach ($list as $row) {
@@ -755,7 +755,26 @@ class RestfulService extends AbstractRestfulController
             } else {
                 $row['GENDER_NAME'] = 'All';
             }
-            array_push($data, $row);
+
+            if($row['HALFDAY']=='F'){
+                $row['HALFDAY']='First Half';
+            }else if($row['HALFDAY']=='S'){
+                $row['HALFDAY']='Second Half';
+            }else if($row['HALFDAY']=='N'){
+                $row['HALFDAY']='Full Day';
+            }
+
+            if($branchId!=-1){
+                array_push($data, $row);
+            }else if($branchId==-1){
+                $holidayBranch = $holidayRepository->selectHolidayBranch($row['HOLIDAY_ID']);
+                $childData = [];
+                foreach($holidayBranch as $childRow){
+                    array_push($childData,$childRow);
+                }
+                $row['BRANCHES']=$childData;
+                array_push($data, $row);
+            }
         }
         return $responseData = [
             "success" => true,
