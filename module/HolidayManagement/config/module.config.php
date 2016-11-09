@@ -45,6 +45,11 @@ return [
                         'route' => 'holidaysetup',
                         'action' => 'list',
                     ],
+                    [
+                        'label' => 'Edit',
+                        'route' => 'holidaysetup',
+                        'action' => 'edit',
+                    ],
                 ]
             ]
         ]

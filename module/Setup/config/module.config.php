@@ -161,6 +161,20 @@ return [
                     ]
                 ],
             ],
+            'serviceEventType'=>[
+                'type'=>segment::class,
+                'options'=>[
+                    'route'=>'/setup/serviceEventType[/:action[/:id]]',
+                    'constants'=>[
+                        'action'=>'[a-zA-Z][a-zA-Z0-9_-]*',
+                        'id'=>'[0-9]+',
+                    ],
+                    'defaults' => [
+                        'controller' => Controller\ServiceEventTypeController::class,
+                        'action' => 'index',
+                    ]
+                ],
+            ],
 //            'leave' => [
 //                'type' => segment::class,
 //                'options' => [
@@ -459,7 +473,34 @@ return [
                 ]
             ]
         ],
+        'serviceEventType' => [
 
+            [
+                'label' => 'Service Event Type',
+                'route' => 'serviceEventType',
+            ],
+            [
+                'label' => 'Service Event Type',
+                'route' => 'serviceEventType',
+                'pages' => [
+                    [
+                        'label' => 'List',
+                        'route' => 'serviceEventType',
+                        'action' => 'index',
+                    ],
+                    [
+                        'label' => 'Add',
+                        'route' => 'serviceEventType',
+                        'action' => 'add',
+                    ],
+                    [
+                        'label' => 'Edit',
+                        'route' => 'serviceEventType',
+                        'action' => 'edit',
+                    ],
+                ]
+            ]
+        ],
     ],
     'controllers' => [
         'factories' => [
@@ -473,7 +514,8 @@ return [
             Controller\EmpCurrentPostingController::class => ControllerFactory::class,
             Controller\JobHistoryController::class => ControllerFactory::class,
             Controller\WebServiceController::class => ControllerFactory::class,
-            Controller\RecommendApproveController::class=>ControllerFactory::class
+            Controller\RecommendApproveController::class=>ControllerFactory::class,
+            Controller\ServiceEventTypeController::class=>ControllerFactory::class
 //            Controller\LeaveMasterController::class => Controller\ControllerFactory::class,
         ],
 

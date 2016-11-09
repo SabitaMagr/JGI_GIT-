@@ -21,7 +21,6 @@ angular.module('hris', [])
                 }
             }).then(function (success) {
                 $scope.$apply(function () {
-                    console.log(success.data);
                     $scope.holidayList = success.data;
                 });
             }, function (failure) {

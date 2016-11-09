@@ -86,6 +86,9 @@ if ($this->messages) { ?>
                     Gender
                 </th>
                 <th>
+                    Branch
+                </th>
+                <th>
                     Half Day
                 </th>
                 <th>
@@ -109,24 +112,21 @@ if ($this->messages) { ?>
                     </td>
                     <td class="">
                         <span ng-bind="holiday.GENDER_NAME"></span>
-                        <?php
-//                        $gender = $this->escapeHtml($holiday['GENDER_NAME']);
-//                        if ($gender != null) {
-//                            print $gender;
-//                        } else {
-//                            print "All";
-//                        }
-                        ?>
+                    </td>
+                    <td class="">
+                        <ul ng-if="holiday.BRANCHES" id="branchList">
+                            <li ng-repeat="values in holiday.BRANCHES">
+                                - <span ng-bind="values.BRANCH_NAME"></span>
+                            </li>
+                        </ul>
+                        <span ng-if="holiday.BRANCH_NAME" ng-bind="holiday.BRANCH_NAME"></span>
                     </td>
                     <td class="">
                         <span ng-bind="holiday.HALFDAY"></span>
                     </td>
                     <td class="">
-                        <a href="<?= $this->url("holidaysetup", ["action" => "edit"]); ?>">
+                        <a href="<?= $this->url("holidaysetup", ["action" => "edit"]); ?>/{{holiday.HOLIDAY_ID}}">
                             Edit
-                        </a>
-                        <a href="<?= $this->url("holidaysetup", ["action" => "delete"]); ?>">
-                            Delete
                         </a>
                     </td>
                 </tr>

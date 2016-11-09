@@ -49,41 +49,6 @@ WHERE A.STATUS='E'";
         $result = $statement->execute();
         return $result;
     }
-    public function filterRecords($fromDate,$toDate,$branchId,$genderId){
-        $sql = "SELECT A.HOLIDAY_ID,A.HOLIDAY_CODE,A.HOLIDAY_ENAME,A.HOLIDAY_LNAME,B.GENDER_NAME,A.HALFDAY,D.BRANCH_NAME
-FROM HR_HOLIDAY_MASTER_SETUP A 
-LEFT OUTER JOIN HR_GENDERS B 
-ON A.GENDER_ID=B.GENDER_ID
-INNER JOIN HR_HOLIDAY_BRANCH C
-ON A.HOLIDAY_ID=C.HOLIDAY_ID 
-INNER JOIN HR_BRANCHES D
-ON C.BRANCH_ID=D.BRANCH_ID
-WHERE A.STATUS ='E'";
-
-        if($fromDate!=null){
-            $sql .=" AND A.START_DATE>=".$fromDate;
-        }
-
-        if($fromDate!=null){
-            $sql .=" AND A.END_DATE<=".$toDate;
-        }
-
-        if($genderId==null){
-            $sql .=" AND B.GENDER_NAME is null";
-        }else if($genderId!=null){
-            $sql .=" AND B.GENDER_ID=".$genderId;
-        }
-
-        if($branchId!=-1){
-            $sql .=" AND C.BRANCH_ID=".$branchId;
-        }
-
-        $statement = $this->adapter->query($sql);
-       // return $statement->getSql();
-        $result = $statement->execute();
-        return $result;
-
-    }
 
     public function fetchById($id)
     {
@@ -125,9 +90,66 @@ WHERE A.STATUS ='E'";
             ->join(['B' => "HR_BRANCHES"], 'HB.BRANCH_ID=B.BRANCH_ID', ['BRANCH_NAME']);
 
         $select->where(["HB.HOLIDAY_ID" => $holidayId]);
+        $select->where(["B.STATUS" => 'E']);
         $statement = $sql->prepareStatementForSqlObject($select);
         $resultset = $statement->execute();
         return $resultset;
+    }
+
+    public function selectHolidayBranchWidHidBid($holidayId, $branchId)
+    {
+        $sql = new Sql($this->adapter);
+        $select = $sql->select();
+        $select->from(['HB' => HolidayBranch::TABLE_NAME])
+            ->join(['B' => "HR_BRANCHES"], 'HB.BRANCH_ID=B.BRANCH_ID', ['BRANCH_NAME']);
+
+        $select->where(["HB.HOLIDAY_ID" => $holidayId]);
+        $select->where(["HB.BRANCH_ID" => $branchId]);
+        $statement = $sql->prepareStatementForSqlObject($select);
+        $resultset = $statement->execute();
+        return $resultset;
+    }
+
+    public function filterRecords($fromDate, $toDate,$branchId, $genderId)
+    {
+        $branchName="";
+        $joinQuery="";
+        if($branchId!=-1){
+            $branchName = ",D.BRANCH_NAME";
+            $joinQuery = "INNER JOIN HR_HOLIDAY_BRANCH C
+ON A.HOLIDAY_ID=C.HOLIDAY_ID 
+INNER JOIN HR_BRANCHES D
+ON C.BRANCH_ID=D.BRANCH_ID";
+        }
+
+        $sql = "SELECT A.START_DATE,A.END_DATE, A.HOLIDAY_ID,A.HOLIDAY_CODE,A.HOLIDAY_ENAME,A.HOLIDAY_LNAME,B.GENDER_NAME,A.HALFDAY
+".$branchName." FROM HR_HOLIDAY_MASTER_SETUP A 
+LEFT OUTER JOIN HR_GENDERS B 
+ON A.GENDER_ID=B.GENDER_ID ".$joinQuery." WHERE A.STATUS ='E'";
+
+        if ($fromDate != null) {
+            $sql .= " AND A.START_DATE>=TO_DATE('" . $fromDate . "','DD-MM-YYYY')";
+        }
+
+        if ($fromDate != null) {
+            $sql .= " AND A.END_DATE<=TO_DATE('" . $toDate . "','DD-MM-YYYY')";
+        }
+
+        if ($genderId == null) {
+            $sql .= " AND B.GENDER_NAME is null";
+        } else if ($genderId != null) {
+            $sql .= " AND B.GENDER_ID=" . $genderId;
+        }
+
+        if ($branchId != -1) {
+            $sql .= " AND C.BRANCH_ID=" . $branchId;
+        }
+
+        $statement = $this->adapter->query($sql);
+        // return $statement->getSql();
+        $result = $statement->execute();
+        return $result;
+
     }
 
 
