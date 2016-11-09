@@ -153,7 +153,7 @@ return [
     'controllers' => [
         'factories' => [
             Controller\IndexController::class => InvokableFactory::class,
-            Controller\DashboardController::class => InvokableFactory::class
+            Controller\DashboardController::class => InvokableFactory::class,
         ],
     ],
 
@@ -178,5 +178,6 @@ return [
             __DIR__ . '/../view',
         ],
     ],
+
 
 ];

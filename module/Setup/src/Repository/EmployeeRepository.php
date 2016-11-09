@@ -36,7 +36,6 @@ class  EmployeeRepository implements RepositoryInterface
         foreach ($result as $item) {
             $tempObject = new HrEmployees();
             $tempObject->exchangeArrayFromDB($item);
-
             array_push($tempArray, $tempObject);
         }
         return $tempArray;

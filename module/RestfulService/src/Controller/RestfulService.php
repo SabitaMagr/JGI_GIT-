@@ -1,16 +1,20 @@
 <?php
 namespace RestfulService\Controller;
 
+use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
 use AttendanceManagement\Controller\ShiftSetup;
 use AttendanceManagement\Model\ShiftAssign;
 use AttendanceManagement\Repository\ShiftAssignRepository;
+use Payroll\Controller\PayrollGenerator;
 use Payroll\Model\FlatValueDetail;
 use Payroll\Model\MonthlyValueDetail;
+use Payroll\Model\PayPositionSetup;
 use Payroll\Model\Rules;
 use Payroll\Model\RulesDetail;
 use Payroll\Repository\FlatValueDetailRepo;
 use Payroll\Repository\MonthlyValueDetailRepo;
+use Payroll\Repository\PayPositionRepo;
 use Payroll\Repository\RulesDetailRepo;
 use Payroll\Repository\RulesRepository;
 use SelfService\Repository\ServiceRepository;
@@ -107,6 +111,18 @@ class RestfulService extends AbstractRestfulController
                     break;
                 case "pullServiceHistory":
                     $responseData = $this->pullServiceHistory($postedData->data);
+                    break;
+                case "pullPositionsAssignedByPayId":
+                    $responseData = $this->pullPositionsAssignedByPayId($postedData->data);
+                    break;
+                case "addPositionAssigned":
+                    $responseData = $this->addPositionAssigned($postedData->data);
+                    break;
+                case "deletePositionAssigned":
+                    $responseData = $this->deletePositionAssigned($postedData->data);
+                    break;
+                case "generataMonthlySheet":
+                    $responseData = $this->generataMonthlySheet($postedData->data);
                     break;
                 default:
                     $responseData = [
@@ -398,7 +414,7 @@ class RestfulService extends AbstractRestfulController
             $payId = $ruleDetail->payId;
             unset($ruleDetail->payId);
 //            $repository->edit($ruleDetail, [RulesDetail::PAY_ID => $payId]);
-            $repository->edit($ruleDetail,$payId);
+            $repository->edit($ruleDetail, $payId);
             $ruleDetail->srNo = $data['srNo'];
         }
 
@@ -442,17 +458,18 @@ class RestfulService extends AbstractRestfulController
         }
     }
 
-    private function menuInsertion($data){
+    private function menuInsertion($data)
+    {
         $record = $data['dataArray'];
         $model = new MenuSetup();
         $repository = new MenuSetupRepository($this->adapter);
-        $model->menuId =Helper::getMaxId($this->adapter,MenuSetup::TABLE_NAME,MenuSetup::MENU_ID)+1;
+        $model->menuId = Helper::getMaxId($this->adapter, MenuSetup::TABLE_NAME, MenuSetup::MENU_ID) + 1;
         $model->menuCode = $record['menuCode'];
         $model->menuName = $record['menuName'];
         $model->route = $record['route'];
         $model->action = $record['action'];
         $model->iconClass = $record['iconClass'];
-        if($data['parentMenu']!=null) {
+        if ($data['parentMenu'] != null) {
             $model->parentMenu = $data['parentMenu'];
         }
         $model->menuDescription = $record['menuDescription'];
@@ -462,22 +479,24 @@ class RestfulService extends AbstractRestfulController
         $menuData = $this->menu();
         return $responseData = [
             "success" => true,
-            "data"=>"Menu Successfully Added!!",
-            "menuData"=>$menuData
+            "data" => "Menu Successfully Added!!",
+            "menuData" => $menuData
         ];
     }
 
-    public function pullMenuDetail($data){
+    public function pullMenuDetail($data)
+    {
         $menuId = $data['id'];
         $repository = new MenuSetupRepository($this->adapter);
         $result = $repository->fetchById($menuId);
 
         return $responseData = [
-            "data"=>$result
+            "data" => $result
         ];
     }
 
-    public function menuUpdate($data){
+    public function menuUpdate($data)
+    {
         $record = $data['dataArray'];
         $model = new MenuSetup();
         $repository = new MenuSetupRepository($this->adapter);
@@ -496,16 +515,17 @@ class RestfulService extends AbstractRestfulController
         unset($model->menuId);
         unset($model->createdDt);
 
-        $repository->edit($model,$menuId);
+        $repository->edit($model, $menuId);
         $menuData = $this->menu();
         return $responseData = [
             "success" => true,
-            "data"=>"Menu Successfully Updated!!",
-            "menuData"=>$menuData
+            "data" => "Menu Successfully Updated!!",
+            "menuData" => $menuData
         ];
     }
 
-    public function permissionAssign($data){
+    public function permissionAssign($data)
+    {
         $rolePermissionRepository = new RolePermissionRepository($this->adapter);
         $menuSetupRepository = new MenuSetupRepository($this->adapter);
         $rolePermissionModel = new RolePermission();
@@ -518,24 +538,24 @@ class RestfulService extends AbstractRestfulController
         $menuDtl = $menuSetupRepository->fetchById($menuId);
         $menuListOfSameParent = $menuSetupRepository->getMenuListOfSameParent($menuDtl['PARENT_MENU']);
         $numMenuListOfSameParent = 0;
-        foreach($menuListOfSameParent as $childOfSameParent){
-            $existChildDtl = $rolePermissionRepository->getActiveRoleMenu($childOfSameParent['MENU_ID'],$roleId);
-            if($existChildDtl){
-                $numMenuListOfSameParent +=1;
+        foreach ($menuListOfSameParent as $childOfSameParent) {
+            $existChildDtl = $rolePermissionRepository->getActiveRoleMenu($childOfSameParent['MENU_ID'], $roleId);
+            if ($existChildDtl) {
+                $numMenuListOfSameParent += 1;
             }
         }
 
         $childMenuList = $menuSetupRepository->getAllCHildMenu($menuId);
         $parentMenuList = $menuSetupRepository->getAllParentMenu($menuId);
 
-        if($checked=="true") {
+        if ($checked == "true") {
             foreach ($childMenuList as $row) {
 
-                $result = $rolePermissionRepository->selectRoleMenu($row['MENU_ID'],$roleId);
+                $result = $rolePermissionRepository->selectRoleMenu($row['MENU_ID'], $roleId);
                 //$num = count($result);
-                if($result){
-                    $rolePermissionRepository->updateDetail($row['MENU_ID'],$roleId);
-                }else {
+                if ($result) {
+                    $rolePermissionRepository->updateDetail($row['MENU_ID'], $roleId);
+                } else {
 
                     $rolePermissionModel->roleId = $roleId;
                     $rolePermissionModel->menuId = $row['MENU_ID'];
@@ -547,11 +567,11 @@ class RestfulService extends AbstractRestfulController
             }
             foreach ($parentMenuList as $row) {
 
-                $result = $rolePermissionRepository->selectRoleMenu($row['MENU_ID'],$roleId);
+                $result = $rolePermissionRepository->selectRoleMenu($row['MENU_ID'], $roleId);
                 //$num = count($result);
-                if($result){
-                    $rolePermissionRepository->updateDetail($row['MENU_ID'],$roleId);
-                }else {
+                if ($result) {
+                    $rolePermissionRepository->updateDetail($row['MENU_ID'], $roleId);
+                } else {
 
                     $rolePermissionModel->roleId = $roleId;
                     $rolePermissionModel->menuId = $row['MENU_ID'];
@@ -562,36 +582,37 @@ class RestfulService extends AbstractRestfulController
                 }
             }
             $data = "Role Successfully Assigned";
-        }else if($checked=="false"){
+        } else if ($checked == "false") {
             foreach ($childMenuList as $row) {
                 $rolePermissionRepository->deleteAll($row['MENU_ID'], $roleId);
             }
-            if($numMenuListOfSameParent==1) {
+            if ($numMenuListOfSameParent == 1) {
                 foreach ($parentMenuList as $row) {
                     $rolePermissionRepository->deleteAll($row['MENU_ID'], $roleId);
 
                     //need to activate those parent key whose another child key is assigned on same roleId
                     $childMenuList1 = $menuSetupRepository->getMenuListOfSameParent($row['MENU_ID']);
-                    foreach($childMenuList1 as $childRow){
-                        $getPermissionDtl = $rolePermissionRepository->getActiveRoleMenu($childRow['MENU_ID'],$roleId);
-                        if($getPermissionDtl){
-                            $rolePermissionRepository->updateDetail($row['MENU_ID'],$roleId);
+                    foreach ($childMenuList1 as $childRow) {
+                        $getPermissionDtl = $rolePermissionRepository->getActiveRoleMenu($childRow['MENU_ID'], $roleId);
+                        if ($getPermissionDtl) {
+                            $rolePermissionRepository->updateDetail($row['MENU_ID'], $roleId);
                         }
                     }
                 }
-            }else{
+            } else {
                 $rolePermissionRepository->deleteAll($menuId, $roleId);
             }
             $data = "Role Assign Successfully Removed";
         }
         return $responseData = [
-            "success"=>true,
-            "data"=>$data
+            "success" => true,
+            "data" => $data
         ];
 
     }
 
-    public function pullRolePermissionList($data){
+    public function pullRolePermissionList($data)
+    {
         $menuId = $data['menuId'];
 
         $rolePermissionRepository = new RolePermissionRepository($this->adapter);
@@ -602,36 +623,104 @@ class RestfulService extends AbstractRestfulController
 
         $tempArray = [];
         foreach ($result as $item) {
-            array_push($tempArray,$item);
+            array_push($tempArray, $item);
         }
 
         $temArray1 = [];
-        foreach($rolePermissionList as $row){
-            array_push($temArray1,$row);
+        foreach ($rolePermissionList as $row) {
+            array_push($temArray1, $row);
         }
 
         return $reponseData = [
-            "success"=>true,
-            "data"=>$tempArray,
-            "data1"=>$temArray1
+            "success" => true,
+            "data" => $tempArray,
+            "data1" => $temArray1
         ];
     }
-    public function pullServiceHistory($data){
+
+    public function pullServiceHistory($data)
+    {
         $employeeId = $data['employeeId'];
         $fromDate = $data['fromDate'];
         $toDate = $data['toDate'];
 
         $serviceRepository = new ServiceRepository($this->adapter);
-        $history = $serviceRepository->getAllHistoryWidEmpId($employeeId,$fromDate,$toDate);
+        $history = $serviceRepository->getAllHistoryWidEmpId($employeeId, $fromDate, $toDate);
 
         $data = [];
-        foreach($history as $row){
-            array_push($data,$row);
+        foreach ($history as $row) {
+            array_push($data, $row);
         }
 
         return $responseData = [
-            "success"=>true,
-            "data"=>$data
+            "success" => true,
+            "data" => $data
         ];
+    }
+
+    public function pullPositionsAssignedByPayId($data)
+    {
+        $payId = $data["payId"];
+        $payPositionRepo = new PayPositionRepo($this->adapter);
+        $positions = $payPositionRepo->fetchById($payId);
+
+        $data = [];
+        foreach ($positions as $position) {
+            array_push($data, $position);
+        }
+
+        return [
+            "success" => true,
+            "data" => $data
+        ];
+    }
+
+
+    public function addPositionAssigned($data)
+    {
+        $payId = $data['payId'];
+        $positions = $data['positions'];
+        $payPositionRepo = new PayPositionRepo($this->adapter);
+        $payPosition = new PayPositionSetup();
+        $payPosition->payId = $payId;
+        foreach ($positions as $position) {
+            $payPosition->positionId = $position;
+            $payPositionRepo->add($payPosition);
+        }
+
+        return ["success" => true, "data" => null];
+    }
+
+
+    private function deletePositionAssigned($data)
+    {
+        $payId = $data['payId'];
+        $positions = $data['positions'];
+        $payPositionRepo = new PayPositionRepo($this->adapter);
+        foreach ($positions as $position) {
+            $payPositionRepo->delete([$payId, $position]);
+        }
+        return ["success" => true, "data" => null];
+    }
+
+    private function generataMonthlySheet($data)
+    {
+        $employeeId = $data['employee'];
+//        print "<pre>";
+        $results = [];
+        if ($employeeId == -1) {
+            $employeeList = EntityHelper::getTableKVList($this->adapter, "HR_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => 'E'], ' ');
+            foreach ($employeeList as $key => $employee) {
+                $generateMonthlySheet = new PayrollGenerator($this->adapter);
+                $result = $generateMonthlySheet->generate($key);
+                $results[$key] = $result;
+            }
+        } else {
+            $generateMonthlySheet = new PayrollGenerator($this->adapter);
+            $result = $generateMonthlySheet->generate($employeeId);
+            $results[$employeeId] = $result;
+        }
+//        exit;
+        return ["success" => true, "data" => $results];
     }
 }
