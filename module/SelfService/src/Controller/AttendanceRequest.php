@@ -136,6 +136,34 @@ class AttendanceRequest extends  AbstractActionController
         return $this->redirect()->toRoute('attendancerequest');
     }
 
+    public function viewAction(){
+        $this->initializeForm();
+        $id = (int)$this->params()->fromRoute('id');
+
+        if($id===0){
+            return $this->redirect()->toRoute("attedanceapprove");
+        }
+
+        $request = $this->getRequest();
+        $model = new AttendanceRequestModel();
+        $detail = $this->repository->fetchById($id);
+        $employeeName = $detail['FIRST_NAME']." ".$detail['MIDDLE_NAME']." ".$detail['LAST_NAME'];
+        $approver = $detail['FIRST_NAME1']." ".$detail['MIDDLE_NAME1']." ".$detail['LAST_NAME1'];
+
+        if (!$request->isPost()) {
+            $model->exchangeArrayFromDB($detail);
+            $this->form->bind($model);
+        }
+        return Helper::addFlashMessagesToArray($this,[
+            'form'=>$this->form,
+            'id'=>$id,
+            'approver'=>$approver,
+            'status'=>$detail['STATUS'],
+            'employeeName'=>$employeeName,
+            'requestedDt'=>$detail['REQUESTED_DT'],
+        ]);
+    }
+
     public function approverList(){
         $employeeRepository = new EmployeeRepository($this->adapter);
         $recommendApproveRepository = new RecommendApproveRepository($this->adapter);

@@ -69,7 +69,8 @@ class LeaveAssignRepository implements RepositoryInterface
         $select->columns(["EMPLOYEE_ID", "FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], true);
         $select->from(['E' => "HR_EMPLOYEES"])
             ->join(['DE'=>'HR_DESIGNATIONS'],'DE.DESIGNATION_ID=E.DESIGNATION_ID',["DESIGNATION_ID","DESIGNATION_TITLE"])
-            ->join(['B'=>'HR_BRANCHES'],'B.BRANCH_ID=E.BRANCH_ID',["BRANCH_ID","BRANCH_NAME"])
+            ->join(['B'=>'HR_BRANCHES'],'B.BRANCH_ID=E.BRANCH_ID',["BRANCH_ID","BRANCH_NAME"]);
+        $select->where(["E.STATUS='E'"]);
 //            ->join(['L' => LeaveAssign::TABLE_NAME], 'E.EMPLOYEE_ID=L.EMPLOYEE_ID', [LeaveAssign::LEAVE_ID, LeaveAssign::BALANCE], \Zend\Db\Sql\Select::JOIN_LEFT)
         ;
         if ($branchId != -1) {

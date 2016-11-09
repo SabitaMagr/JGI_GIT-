@@ -1,3 +1,90 @@
 <?php
-echo $list;
+/**
+ * Load Javascript files here
+ */
+$this->headScript()
+    ->appendFile($this->basePath('js/kendoDataTable.js'))
+    ->appendFile($this->basePath('js/angular.min.js'))
+    ->appendFile($this->basePath('js/LeaveManagement/LeaveBalance/leaveBalanceController.js'));
 ?>
+
+<script>
+    document.menu =<?php $menu = ["id" => "menuLeave", "subMenu" => ["id" => "subMenuLeaveBalance"]];echo json_encode($menu);?>;
+    document.url = '<?= $this->url("restful", ["action" => "index"]) ?>';
+</script>
+<div class="page-bar">
+    <?= $this->navigation('Zend\Navigation\leavebalance')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
+</div>
+<?php
+if ($this->messages) { ?>
+    <script>
+        document.messages =<?php echo json_encode($this->messages); ?>
+    </script>
+<?php } ?>
+<div ng-app="hris" ng-controller="leaveBalanceController">
+    <div class="margin-top-20">
+        <div class="row">
+            <div class="col-sm-3">
+                <?php print $this->formLabel($employees); ?>
+                <?php print $this->formElement($employees); ?>
+            </div>
+            <div class="col-sm-3">
+                <?php print $this->formLabel($branches); ?>
+                <?php print $this->formElement($branches); ?>
+            </div>
+            <div class="col-sm-3">
+                <?php print $this->formLabel($departments); ?>
+                <?php print $this->formElement($departments); ?>
+            </div>
+            <div class="col-sm-3">
+                <?php print $this->formLabel($designations); ?>
+                <?php print $this->formElement($designations); ?>
+            </div>
+
+        </div>
+        <div class="row margin-top-10">
+            <div class="col-sm-3">
+                <?php print $this->formLabel($positions); ?>
+                <?php print $this->formElement($positions); ?>
+            </div>
+            <div class="col-sm-3">
+                <?php print $this->formLabel($serviceTypes); ?>
+                <?php print $this->formElement($serviceTypes); ?>
+            </div>
+            <div class="col-sm-2">
+                <label height="45"></label>
+                <button ng-click="view()" id="viewEmployees" class="btn btn-sm yellow form-control">
+                    Search
+                    <i class="fa fa-search"></i>
+                </button>
+            </div>
+        </div>
+        <div class="margin-top-10">
+            <table class="table table-striped table-bordered table-hover no-footer">
+                <thead>
+                <tr role="row">
+                    <th>
+                        Employee Name
+                    </th>
+                    <?php foreach ($leaveList as $leave) { ?>
+                        <th>
+                            <?php
+                            print $this->escapeHtml($leave['LEAVE_ENAME']);
+                            ?>
+                        </th>
+                    <?php } ?>
+                </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="(key,value) in allList">
+                        <td><span ng-bind="key"></span></td>
+                        <td ng-repeat="values in value">
+                            <a ng-show="values.BALANCE > 0" ng-bind="values.BALANCE" href="<?= $this->url("leavebalance", ["action" => "apply"])?>/{{values.EMPLOYEE_ID}}/{{values.LEAVE_ID}}"></a>
+                            <span ng-show="values.BALANCE ==0" ng-bind="values.BALANCE"></span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

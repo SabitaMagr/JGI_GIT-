@@ -6,6 +6,8 @@ use Application\Helper\Helper;
 use AttendanceManagement\Controller\ShiftSetup;
 use AttendanceManagement\Model\ShiftAssign;
 use AttendanceManagement\Repository\ShiftAssignRepository;
+
+use HolidayManagement\Repository\HolidayRepository;
 use Payroll\Controller\PayrollGenerator;
 use Payroll\Model\FlatValueDetail;
 use Payroll\Model\MonthlyValueDetail;
@@ -29,6 +31,7 @@ use Zend\Mvc\Controller\AbstractRestfulController;
 use Zend\View\Model\JsonModel;
 use System\Repository\MenuSetupRepository;
 use System\Model\MenuSetup;
+use LeaveManagement\Repository\LeaveBalanceRepository;
 
 class RestfulService extends AbstractRestfulController
 {
@@ -112,6 +115,11 @@ class RestfulService extends AbstractRestfulController
                 case "pullServiceHistory":
                     $responseData = $this->pullServiceHistory($postedData->data);
                     break;
+                case "pullLeaveBalanceDetail":
+                    $responseData = $this->pullLeaveBalanceDetail($postedData->data);
+                    break;
+                case "pullHolidayList":
+                    $responseData = $this->pullHolidayList($postedData->data);
                 case "pullPositionsAssignedByPayId":
                     $responseData = $this->pullPositionsAssignedByPayId($postedData->data);
                     break;
@@ -674,7 +682,85 @@ class RestfulService extends AbstractRestfulController
             "data" => $data
         ];
     }
+    public function pullLeaveBalanceDetail($data){
+        $emplyoeeId = $data['employeeId'];
+        $branchId = $data['branchId'];
+        $departmentId = $data['departmentId'];
+        $designationId = $data['designationId'];
+        $positionId  = $data['positionId'];
+        $serviceTypeId = $data['serviceTypeId'];
 
+        $repository = new LeaveBalanceRepository($this->adapter);
+        $employeeList = $repository->getAllEmployee($emplyoeeId,$branchId,$departmentId,$designationId,$positionId,$serviceTypeId);
+
+        $mainArray = [];
+        foreach($employeeList as $row){
+            $employeeId = $row['EMPLOYEE_ID'];
+            if($row['MIDDLE_NAME']==''){
+                $employeeName = $row['FIRST_NAME']." ".$row['LAST_NAME'];
+            }else if($row['MIDDLE_NAME']!=''){
+                $employeeName = $row['FIRST_NAME']." ".$row['MIDDLE_NAME']." ".$row['LAST_NAME'];
+            }
+            $leaveList = $repository->getAllLeave();
+            $childArray = [];
+            //loop through list of leave and if leave is not assigned then set leave balance to zero
+            foreach($leaveList as $leaveRow){
+                $leaveId = $leaveRow['LEAVE_ID'];
+                $leaveBalanceDtl = $repository->getByEmpIdLeaveId($employeeId,$leaveId);
+                if($leaveBalanceDtl==false){
+                    $leaveBalance=[
+                        'BALANCE'=>0,
+                        'LEAVE_ID'=>$leaveId,
+                        'EMPLOYEE_ID'=>$employeeId
+                    ];
+                }else if($leaveBalanceDtl!=false && $leaveBalanceDtl['BALANCE']==NULL){
+                    $leaveBalance=[
+                        'BALANCE'=>0,
+                        'LEAVE_ID'=>$leaveId,
+                        'EMPLOYEE_ID'=>$employeeId
+                    ];
+                }else{
+                    $leaveBalance = $leaveBalanceDtl;
+                }
+                array_push($childArray,$leaveBalance);
+            }
+           $mainArray[$employeeName] = $childArray;
+        }
+        return $reponseData = [
+            "success"=>true,
+            "allList"=>$mainArray
+        ];
+    }
+    public function pullHolidayList($data)
+    {
+        $fromDate = $data['fromDate'];
+        $toDate = $data['toDate'];
+        $branchId = $data['branchId'];
+        $genderId = $data['genderId'];
+
+        if ($genderId == -1) {
+            $genderId = null;
+        } else {
+            $genderId = $genderId;
+        }
+
+        $holidayRepository = new HolidayRepository($this->adapter);
+        $list = $holidayRepository->filterRecords($fromDate, $toDate, $branchId, $genderId);
+
+        $data = [];
+        foreach ($list as $row) {
+            if ($row['GENDER_NAME'] != null) {
+                $row['GENDER_NAME'] = $row['GENDER_NAME'];
+            } else {
+                $row['GENDER_NAME'] = 'All';
+            }
+            array_push($data, $row);
+        }
+        return $responseData = [
+            "success" => true,
+            "data" => $data
+        ];
+    }
 
     public function addPositionAssigned($data)
     {

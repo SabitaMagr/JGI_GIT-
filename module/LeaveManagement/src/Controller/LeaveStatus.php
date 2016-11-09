@@ -76,6 +76,7 @@ class LeaveStatus extends AbstractActionController {
             $this->form->bind($leaveApply);
         }else{
             $getData = $request->getPost();
+            $reason = $getData->approvedRemarks;
             $action = $getData->submit;
 
             $leaveApply->approvedDt=Helper::getcurrentExpressionDate();
@@ -92,6 +93,7 @@ class LeaveStatus extends AbstractActionController {
                 $this->flashmessenger()->addMessage("Leave Request Approved");
             }
             unset($leaveApply->halfDay);
+            $leaveApply->approvedRemarks = $reason;
             $leaveApproveRepository->edit($leaveApply,$id);
 
             return $this->redirect()->toRoute("leavestatus");
@@ -105,6 +107,7 @@ class LeaveStatus extends AbstractActionController {
             'totalDays'=>$result['TOTAL_DAYS'],
             'recommender'=>$recommender,
             'approver'=>$approver,
+            'remarkDtl'=>$detail['REMARKS'],
             'status'=>$status,
             'leave' => $leaveRequestRepository->getLeaveList($detail['EMPLOYEE_ID']),
             'customRenderer'=>Helper::renderCustomView()

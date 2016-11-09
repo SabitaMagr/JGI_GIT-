@@ -120,8 +120,12 @@ if($this->messages) { ?>
                     <a class=""
                        href="<?= $this->url("attendancerequest", ["action" => "delete", "id" =>$attendances['ID']]); ?>">
                         Cancel Request
-                    </a>
+                    </a> |
                     <?php } ?>
+                    <a class=""
+                       href="<?= $this->url("attendancerequest", ["action" => "view", "id" =>$attendances['ID']]); ?>">
+                        View
+                    </a>
                 </td>
             </tr>
 

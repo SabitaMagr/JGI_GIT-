@@ -51,6 +51,7 @@ angular.module('hris', [])
                 console.log("shift Assign Filter Success Response", success);
                 $scope.$apply(function () {
                     $scope.employeeShiftList = success.data;
+                    console.log(success.data);
                     for (var i = 0; i < $scope.employeeShiftList.length; i++) {
                         $scope.employeeShiftList[i].checked = false;
                     }

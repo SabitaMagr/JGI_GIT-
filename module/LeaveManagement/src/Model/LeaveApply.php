@@ -29,6 +29,8 @@ class LeaveApply extends Model
     const REQUESTED_DT="REQUESTED_DT";
     const ID="ID";
     const REMARKS="REMARKS";
+    const RECOMMENDED_REMARKS="RECOMMENDED_REMARKS";
+    const APPROVED_REMARKS="APPROVED_REMARKS";
 
     public $id;
     public $employeeId;
@@ -44,7 +46,8 @@ class LeaveApply extends Model
     public $halfDay;
     public $requestedDt;
     public $remarks;
-
+    public $recommendedRemarks;
+    public $approvedRemarks;
 
     public $mappings=[
         'id'=>self::ID,
@@ -60,7 +63,9 @@ class LeaveApply extends Model
         'approvedDt'=>self::APPROVED_DT,
         'halfDay'=>self::HALF_DAY,
         'requestedDt'=>self::REQUESTED_DT,
-        'remarks'=>self::REMARKS
+        'remarks'=>self::REMARKS,
+        'recommendedRemarks'=>self::RECOMMENDED_REMARKS,
+        'approvedRemarks'=>self::APPROVED_REMARKS
     ];
 
 }

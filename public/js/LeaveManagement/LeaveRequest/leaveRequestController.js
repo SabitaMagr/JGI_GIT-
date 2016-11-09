@@ -37,4 +37,18 @@ angular.module('hris', [])
     });
 
 
+$(function() {
+    $('body').on('keydown', '#form-recommendedRemarks', function(e) {
+        if (e.which === 32 &&  e.target.selectionStart === 0) {
+            return false;
+        }
+    });
+});
 
+$(function() {
+    $('body').on('keydown', '#form-approvedRemarks', function(e) {
+        if (e.which === 32 &&  e.target.selectionStart === 0) {
+            return false;
+        }
+    });
+});

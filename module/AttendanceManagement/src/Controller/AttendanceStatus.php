@@ -72,6 +72,7 @@ class AttendanceStatus extends AbstractActionController {
             $this->form->bind($model);
         } else {
             $getData = $request->getPost();
+            $reason = $getData->approvedRemarks;
             $action = $getData->submit;
 
             $model->approvedDt=Helper::getcurrentExpressionDate();
@@ -94,6 +95,7 @@ class AttendanceStatus extends AbstractActionController {
                 $model->status="R";
                 $this->flashmessenger()->addMessage("Attendance Request Rejected!!!");
             }
+            $model->approvedRemarks=$reason;
             $attendanceRequestRepository->edit($model,$id);
             return $this->redirect()->toRoute("attendancestatus");
         }

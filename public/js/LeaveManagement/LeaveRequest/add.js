@@ -18,15 +18,15 @@
                 $('#noOfDays').attr('readonly', true);
                 if (startDate != endDate) {
                     $("#errorMsgDate").html("* Start date and end date must be same in the case of half day leave");
-                    $("input[type=submit]").attr("disabled", "disabled");
+                    $("#request").attr("disabled", "disabled");
                 }else if(startDate==endDate){
                     $("#errorMsgDate").html("");
                     $("#errorMsg").html("");
-                    $("input[type=submit]").removeAttr("disabled");
+                    $("#request").removeAttr("disabled");
                 }
             } else if (halfDay == 'N'){
                 $("#errorMsgDate").html("");
-                $("input[type=submit]").removeAttr("disabled");
+                $("#request").removeAttr("disabled");
                 if(startDate==endDate){
                     $('#noOfDays').attr('readonly', true);
                 }else{
@@ -95,10 +95,10 @@
 
                 if (newValue > availableDays) {
                     $("#errorMsg").html("* Applied days can't be more than available days");
-                    $("input[type=submit]").attr("disabled", "disabled");
+                    $("#request").attr("disabled", "disabled");
                 } else if((newValue<=availableDays) && halfDay1=='N'){
                     $("#errorMsg").html("");
-                    $("input[type=submit]").removeAttr("disabled");
+                    $("#request").removeAttr("disabled");
                 }
             }
         };

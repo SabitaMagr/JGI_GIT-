@@ -20,20 +20,28 @@ $outRemarks->setAttributes(['disabled' => "disabled"]);
 $totalHour = $form->get('totalHour');
 $totalHour->setAttributes(['disabled' => "disabled"]);
 $approvedRemarks = $form->get('approvedRemarks');
-$approvedRemarks->setAttributes(['required'=>'true']);
+$approvedRemarks->setAttributes(['disabled' => 'disabled']);
 
 $submit = $form->get('submit');
 $submit->setAttribute('value', 'Approve');
 
-$form->setAttribute('action', $this->url('attendancestatus', ['action' => 'view', 'id' => $id]));
+$form->setAttribute('action', $this->url('attedanceapprove', ['action' => 'view', 'id' => $id]));
+
+if ($this->messages) {
+    print '<ul class="help-block bg-danger" style="background:#f3e250;">';
+    foreach ($this->messages as $message) {
+        print '<li>' . $message . '</li>';
+    }
+    print '</ul>';
+}
 
 $form->prepare();
 ?>
 <script>
-    document.menu =<?php $menu = ["id" => "menuAttendanceManagement", "subMenu" => ["id" => "subMenuAttendanceStatus"]];echo json_encode($menu);?>;
+    document.menu =<?php $menu = ["id" => "menuSelfService", "subMenu" => ["id" => "subMenuAttendanceRequest"]];echo json_encode($menu);?>;
 </script>
 <div class="page-bar">
-    <?= $this->navigation('Zend\Navigation\attendancestatus')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
+    <?= $this->navigation('Zend\Navigation\attendancerequest')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
 <div class="row margin-top-20">
     <div class="col-sm-8 col-sm-offset-2">
@@ -149,22 +157,15 @@ $form->prepare();
                         <?php print $this->formElement($totalHour); ?>
                     </div>
                     <?php print $this->formElementErrors()->render($totalHour, ['class' => 'help-block error']); ?>
+
                 </div>
+
                 <div class="form-group margin-top-10 <?= empty($approvedRemarks->getMessages()) ? "" : "error" ?>">
-                    <?php print $this->formLabel($approvedRemarks); ?>
+                    <label>Reason for action [From Approver]</label>
                     <?php print $this->formElement($approvedRemarks); ?>
                 </div>
                 <?php print $this->formElementErrors()->render($approvedRemarks, ['class' => 'help-block error']); ?>
 
-                <div class="">
-                    <?php if ($status == 'RQ') { ?>
-                        <?php print $this->formSubmit($submit); ?>
-                        <input type="submit" name="submit" class="btn btn-success pull-right" value="Reject">
-                        <?php
-                        print $this->form()->closeTag();
-                    }
-                    ?>
-                </div>
             </div>
 
         </div>
