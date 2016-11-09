@@ -14,6 +14,7 @@ use Application\Helper\Helper;
 use Payroll\Model\FlatValue;
 use Payroll\Model\MonthlyValue;
 use Payroll\Repository\RulesRepository;
+use Setup\Model\Position;
 use Zend\Authentication\AuthenticationService;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Form\Annotation\AnnotationBuilder;
@@ -44,46 +45,9 @@ class Rules extends AbstractActionController
 
     public function indexAction()
     {
-//        print_r($auth->getStorage()->read()['user_id']);
         return Helper::addFlashMessagesToArray($this, [
             'rules' => $this->repository->fetchAll(),
         ]);
-    }
-
-    public function addAction()
-    {
-        $this->initializeForm();
-        $monthlyValues = EntityHelper::getTableKVList($this->adapter, MonthlyValue::TABLE_NAME, MonthlyValue::MTH_ID, [MonthlyValue::MTH_EDESC]);
-        $flatValues = EntityHelper::getTableKVList($this->adapter, FlatValue::TABLE_NAME, FlatValue::FLAT_ID, [FlatValue::FLAT_EDESC]);
-
-        $request = $this->getRequest();
-        if ($request->isPost()) {
-            $this->form->setData($request->getPost());
-            if ($this->form->isValid()) {
-                $rulesValue = new RulesModel();
-                $rulesValue->exchangeArrayFromForm($this->form->getData());
-                $rulesValue->payId = ((int)Helper::getMaxId($this->adapter, RulesModel::TABLE_NAME, RulesModel::PAY_ID)) + 1;
-                $rulesValue->createdDt = Helper::getcurrentExpressionDate();
-                $rulesValue->status = 'E';
-                $rulesValue->refRuleFlag = 'N';
-
-                $auth = new AuthenticationService();
-                $rulesValue->createdBy = $auth->getStorage()->read()['user_id'];
-
-                $this->repository->add($rulesValue);
-                $this->flashmessenger()->addMessage("Rule added Successfully!!");
-                return $this->redirect()->toRoute("rules");
-            }
-        }
-        return Helper::addFlashMessagesToArray($this,
-            [
-                'form' => $this->form,
-                'customRenderer' => Helper::renderCustomView(),
-                'monthlyValues' => $monthlyValues,
-                'flatValues' => $flatValues
-            ]
-        );
-
     }
 
     public function editAction()
@@ -91,11 +55,15 @@ class Rules extends AbstractActionController
         $id = (int) $this->params()->fromRoute("id");
         $monthlyValues = EntityHelper::getTableKVList($this->adapter, MonthlyValue::TABLE_NAME, MonthlyValue::MTH_ID, [MonthlyValue::MTH_EDESC]);
         $flatValues = EntityHelper::getTableKVList($this->adapter, FlatValue::TABLE_NAME, FlatValue::FLAT_ID, [FlatValue::FLAT_EDESC]);
+        $positions = EntityHelper::getTableKVList($this->adapter, Position::TABLE_NAME, Position::POSITION_ID, [Position::POSITION_NAME]);
 
         return Helper::addFlashMessagesToArray($this,
             [
                 'monthlyValues' => $monthlyValues,
                 'flatValues' => $flatValues,
+                'positions'=>$positions,
+                "variables"=>PayrollGenerator::VARIABLES,
+                "systemRules"=>PayrollGenerator::SYSTEM_RULE,
                 'id' => $id
             ]
         );

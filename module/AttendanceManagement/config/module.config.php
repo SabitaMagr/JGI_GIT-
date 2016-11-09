@@ -72,6 +72,20 @@ return [
                     ]
                 ],
             ],
+            'dailyAttendance'=>[
+                'type' => Segment::class,
+                'options' => [
+                    'route' => '/attendance/dailyAttendance[/:action[/:id]]',
+                    'constants' => [
+                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'id' => '[0-9]+',
+                    ],
+                    'defaults' => [
+                        'controller' => Controller\DailyAttendance::class,
+                        'action' => 'index',
+                    ]
+                ],
+            ]
         ],
     ],
     'navigation' => [
@@ -183,6 +197,7 @@ return [
                 ],
             ],
         ],
+
     ],
 
     'controllers' => [
@@ -191,6 +206,7 @@ return [
             Controller\AttendanceByHr::class=>ControllerFactory::class,
             Controller\ShiftSetup::class=>ControllerFactory::class,
             Controller\AttendanceStatus::class=>ControllerFactory::class,
+            Controller\DailyAttendance::class=>ControllerFactory::class,
         ],
 
     ],
