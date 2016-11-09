@@ -120,6 +120,7 @@ class RestfulService extends AbstractRestfulController
                     break;
                 case "pullHolidayList":
                     $responseData = $this->pullHolidayList($postedData->data);
+                    break;
                 case "pullPositionsAssignedByPayId":
                     $responseData = $this->pullPositionsAssignedByPayId($postedData->data);
                     break;
