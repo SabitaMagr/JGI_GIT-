@@ -27,7 +27,7 @@ class DailyAttendance extends AbstractActionController
         $employeeList = $this->pullEmployeeList();
         print "<pre>";
         foreach ($employeeList as $employee) {
-            
+
         }
             exit;
         return [];
