@@ -203,7 +203,7 @@ print $this->form()->openTag($form);
                         $recommendedRemarks->setAttributes(['disabled' => 'disabled']);
                         ?>
                         <div class="form-group padding-0">
-                            <?php print $this->formLabel($recommendedRemarks); ?>
+                            <label>Reason for action [From Recommender]</label>
                             <?php print $this->formElement($recommendedRemarks); ?>
                         </div>
                     <?php } ?>

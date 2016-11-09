@@ -5,6 +5,7 @@ use Application\Helper\Helper;
 use AttendanceManagement\Controller\ShiftSetup;
 use AttendanceManagement\Model\ShiftAssign;
 use AttendanceManagement\Repository\ShiftAssignRepository;
+use HolidayManagement\Repository\HolidayRepository;
 use Payroll\Model\FlatValueDetail;
 use Payroll\Model\MonthlyValueDetail;
 use Payroll\Model\Rules;
@@ -111,6 +112,9 @@ class RestfulService extends AbstractRestfulController
                     break;
                 case "pullLeaveBalanceDetail":
                     $responseData = $this->pullLeaveBalanceDetail($postedData->data);
+                    break;
+                case "pullHolidayList":
+                    $responseData = $this->pullHolidayList($postedData->data);
                     break;
                 default:
                     $responseData = [
@@ -684,6 +688,35 @@ class RestfulService extends AbstractRestfulController
         return $reponseData = [
             "success"=>true,
             "allList"=>$mainArray
+        ];
+    }
+    public function pullHolidayList($data){
+        $fromDate = $data['fromDate'];
+        $toDate = $data['toDate'];
+        $branchId = $data['branchId'];
+        $genderId = $data['genderId'];
+
+        if($genderId==-1){
+            $genderId=null;
+        }else{
+            $genderId=$genderId;
+        }
+
+        $holidayRepository = new HolidayRepository($this->adapter);
+        $list = $holidayRepository->filterRecords($fromDate,$toDate,$branchId,$genderId);
+
+        $data = [];
+        foreach($list as $row){
+            if($row['GENDER_NAME']!=null){
+                $row['GENDER_NAME']=$row['GENDER_NAME'];
+            }else{
+                $row['GENDER_NAME']='All';
+            }
+            array_push($data,$row);
+        }
+        return $responseData = [
+            "success"=>true,
+            "data"=>$data
         ];
     }
 }

@@ -20,7 +20,7 @@ class HolidayRepository implements RepositoryInterface
     public function __construct(AdapterInterface $adapter)
     {
         $this->tableGateway = new TableGateway(Holiday::TABLE_NAME, $adapter);
-        $this->tableGatewayHolidayBranch = new TableGateway(HolidayBranch::TABLE_NAME,$adapter);
+        $this->tableGatewayHolidayBranch = new TableGateway(HolidayBranch::TABLE_NAME, $adapter);
         $this->adapter = $adapter;
     }
 
@@ -40,25 +40,49 @@ class HolidayRepository implements RepositoryInterface
     public function fetchAll()
     {
 
-        $sql = new Sql($this->adapter);
-        $select = $sql->select();
-        $select->columns([
-            new Expression("TO_CHAR(H.START_DATE, 'DD-MON-YYYY') AS START_DATE"),
-            new Expression("TO_CHAR(H.END_DATE, 'DD-MON-YYYY') AS END_DATE"),
-            new Expression("H.HOLIDAY_ID AS HOLIDAY_ID"),
-            new Expression("H.HOLIDAY_CODE AS HOLIDAY_CODE"),
-            new Expression("H.HOLIDAY_ENAME AS HOLIDAY_ENAME"),
-            new Expression("H.HALFDAY AS HALFDAY"),
-            new Expression("H.FISCAL_YEAR AS FISCAL_YEAR"),
-            new Expression("H.REMARKS AS REMARKS"),
-            ], true);
-        $select->from(['H' => Holiday::TABLE_NAME])
-            ->join(['G' => 'HR_GENDERS'], 'H.GENDER_ID=G.GENDER_ID', ['GENDER_NAME']);
-
-        $select->where(["H.STATUS='E'"]);
-        $statement = $sql->prepareStatementForSqlObject($select);
+        $sql = "SELECT A.START_DATE,A.END_DATE,A.HOLIDAY_ID,A.HOLIDAY_CODE,A.HOLIDAY_ENAME,A.HOLIDAY_LNAME,B.GENDER_NAME,A.HALFDAY
+FROM HR_HOLIDAY_MASTER_SETUP A 
+LEFT OUTER JOIN HR_GENDERS B 
+ON A.GENDER_ID=B.GENDER_ID
+WHERE A.STATUS='E'";
+        $statement = $this->adapter->query($sql);
         $result = $statement->execute();
         return $result;
+    }
+    public function filterRecords($fromDate,$toDate,$branchId,$genderId){
+        $sql = "SELECT A.HOLIDAY_ID,A.HOLIDAY_CODE,A.HOLIDAY_ENAME,A.HOLIDAY_LNAME,B.GENDER_NAME,A.HALFDAY,D.BRANCH_NAME
+FROM HR_HOLIDAY_MASTER_SETUP A 
+LEFT OUTER JOIN HR_GENDERS B 
+ON A.GENDER_ID=B.GENDER_ID
+INNER JOIN HR_HOLIDAY_BRANCH C
+ON A.HOLIDAY_ID=C.HOLIDAY_ID 
+INNER JOIN HR_BRANCHES D
+ON C.BRANCH_ID=D.BRANCH_ID
+WHERE A.STATUS ='E'";
+
+        if($fromDate!=null){
+            $sql .=" AND A.START_DATE>=".$fromDate;
+        }
+
+        if($fromDate!=null){
+            $sql .=" AND A.END_DATE<=".$toDate;
+        }
+
+        if($genderId==null){
+            $sql .=" AND B.GENDER_NAME is null";
+        }else if($genderId!=null){
+            $sql .=" AND B.GENDER_ID=".$genderId;
+        }
+
+        if($branchId!=-1){
+            $sql .=" AND C.BRANCH_ID=".$branchId;
+        }
+
+        $statement = $this->adapter->query($sql);
+       // return $statement->getSql();
+        $result = $statement->execute();
+        return $result;
+
     }
 
     public function fetchById($id)
@@ -85,7 +109,7 @@ class HolidayRepository implements RepositoryInterface
         $this->tableGatewayHolidayBranch->insert($model->getArrayCopyForDB());
     }
 
-    public function deleteHolidayBranch($holidayId,$branchId)
+    public function deleteHolidayBranch($holidayId, $branchId)
     {
         $this->tableGatewayHolidayBranch->delete([
             HolidayBranch::HOLIDAY_ID => $holidayId,
@@ -93,18 +117,18 @@ class HolidayRepository implements RepositoryInterface
         ]);
     }
 
-    public function selectHolidayBranch($holidayId){
+    public function selectHolidayBranch($holidayId)
+    {
         $sql = new Sql($this->adapter);
         $select = $sql->select();
-        $select->from(['HB'=> HolidayBranch::TABLE_NAME])
+        $select->from(['HB' => HolidayBranch::TABLE_NAME])
             ->join(['B' => "HR_BRANCHES"], 'HB.BRANCH_ID=B.BRANCH_ID', ['BRANCH_NAME']);
 
-        $select->where(["HB.HOLIDAY_ID"=>$holidayId]);
+        $select->where(["HB.HOLIDAY_ID" => $holidayId]);
         $statement = $sql->prepareStatementForSqlObject($select);
         $resultset = $statement->execute();
         return $resultset;
     }
-
 
 
 }

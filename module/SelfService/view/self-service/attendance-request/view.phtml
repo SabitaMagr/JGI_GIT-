@@ -161,7 +161,7 @@ $form->prepare();
                 </div>
 
                 <div class="form-group margin-top-10 <?= empty($approvedRemarks->getMessages()) ? "" : "error" ?>">
-                    <?php print $this->formLabel($approvedRemarks); ?>
+                    <label>Reason for action [From Approver]</label>
                     <?php print $this->formElement($approvedRemarks); ?>
                 </div>
                 <?php print $this->formElementErrors()->render($approvedRemarks, ['class' => 'help-block error']); ?>

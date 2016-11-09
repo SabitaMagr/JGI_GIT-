@@ -167,5 +167,34 @@ class HolidaySetup extends AbstractActionController
         return $this->redirect()->toRoute('holidaysetup');
 
     }
+    public function listAction(){
+        $list = $this->repository->fetchAll();
+
+        $branches=\Application\Helper\EntityHelper::getTableKVList($this->adapter, Branch::TABLE_NAME, Branch::BRANCH_ID, [Branch::BRANCH_NAME],["STATUS"=>"E"]);
+        $branches[-1]="All";
+        ksort($branches);
+
+        $branchFormElement = new Select();
+        $branchFormElement->setName("branch");
+        $branchFormElement->setValueOptions($branches);
+        $branchFormElement->setAttributes(["id" => "branchId", "class" => "form-control"]);
+        $branchFormElement->setLabel("Branch");
+
+        $genders=\Application\Helper\EntityHelper::getTableKVList($this->adapter,"HR_GENDERS","GENDER_ID" , ["GENDER_NAME"]);
+        $genders[-1]="All";
+        ksort($genders);
+
+        $genderFormElement = new Select();
+        $genderFormElement->setName("gender");
+        $genderFormElement->setValueOptions($genders);
+        $genderFormElement->setAttributes(["id" => "genderId", "class" => "form-control"]);
+        $genderFormElement->setLabel("Gender");
+
+        return Helper::addFlashMessagesToArray($this,[
+            'holidayList'=>$list,
+            'branches'=>$branchFormElement,
+            'genders'=>$genderFormElement
+        ]);
+    }
 
 }

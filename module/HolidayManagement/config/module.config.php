@@ -14,7 +14,7 @@ return [
                     'route' => '/holiday/holidaysetup[/:action[/:id]]',
                     'defaults' => [
                         'controller' => Controller\HolidaySetup::class,
-                        'action' => 'index'
+                        'action' => 'list'
                     ]
                 ]
             ],
@@ -39,6 +39,11 @@ return [
                         'label' => 'Add',
                         'route' => 'holidaysetup',
                         'action' => 'add',
+                    ],
+                    [
+                        'label' => 'List',
+                        'route' => 'holidaysetup',
+                        'action' => 'list',
                     ],
                 ]
             ]
