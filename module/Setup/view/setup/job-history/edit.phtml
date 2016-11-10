@@ -1,4 +1,6 @@
 <?php
+$this->headScript()->appendFile($this->basePath('js/setup/job-history/add.js'));
+
 $form->setAttribute('role', 'form');
 $form->setAttribute('class', 'jobHistory-form');
 
@@ -6,8 +8,12 @@ $employeeId = $form->get('employeeId');
 $employeeId->setValueOptions($employees);
 $startDate = $form->get('startDate');
 $endDate = $form->get('endDate');
-$serviceTypeId = $form->get('serviceTypeId');
-$serviceTypeId->setValueOptions($serviceTypes);
+$serviceEventTypeId = $form->get('serviceEventTypeId');
+$serviceEventTypeId->setValueOptions($serviceEventTypes);
+$fromServiceTypeId = $form->get('fromServiceTypeId');
+$fromServiceTypeId->setValueOptions($serviceTypes);
+$toServiceTypeId = $form->get('toServiceTypeId');
+$toServiceTypeId->setValueOptions($serviceTypes);
 $fromBranchId = $form->get('fromBranchId');
 $fromBranchId->setValueOptions($branches);
 $toBranchId = $form->get('toBranchId');
@@ -26,7 +32,7 @@ $toPositionId = $form->get('toPositionId');
 $toPositionId->setValueOptions($positions);
 
 $submit = $form->get('submit');
-$submit->setAttribute('value','SUBMIT');
+$submit->setAttribute('value', 'SUBMIT');
 
 $form->setAttribute('action', $this->url('jobHistory', ['action' => 'edit','id'=>$id]));
 
@@ -44,9 +50,8 @@ print $this->form()->openTag($form);
 	<script>
 		document.menu =<?php $menu = ["id" => "menuService"];echo json_encode($menu);?>;
 	</script>
-
 	<div class="page-bar">
-		<?= $this->navigation('Zend\Navigation\jobHistory')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb'); ?>
+		<?= $this->navigation('Zend\Navigation\jobHistory')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 	</div>
 	<div class="row margin-top-20">
 		<div class="col-sm-12">
@@ -73,6 +78,11 @@ print $this->form()->openTag($form);
 								<?php print $this->formElementErrors()->render($startDate, ['class' => 'help-block']); ?>
 							</div>
 							<div class="form-group">
+								<?php print $this->formLabel($fromServiceTypeId); ?>
+								<?php print $this->formElement($fromServiceTypeId); ?>
+								<?php print $this->formElementErrors()->render($fromServiceTypeId, ['class' => 'help-block']); ?>
+							</div>
+							<div class="form-group">
 								<?php print $this->formLabel($fromBranchId); ?>
 								<?php print $this->formElement($fromBranchId); ?>
 								<?php print $this->formElementErrors()->render($fromBranchId, ['class' => 'help-block']); ?>
@@ -96,9 +106,9 @@ print $this->form()->openTag($form);
 						</div>
 						<div class="col-sm-6">
 							<div class="form-group">
-								<?php print $this->formLabel($serviceTypeId); ?>
-								<?php print $this->formElement($serviceTypeId); ?>
-								<?php print $this->formElementErrors()->render($serviceTypeId, ['class' => 'help-block']); ?>
+								<?php print $this->formLabel($serviceEventTypeId); ?>
+								<?php print $this->formElement($serviceEventTypeId); ?>
+								<?php print $this->formElementErrors()->render($serviceEventTypeId, ['class' => 'help-block']); ?>
 							</div>
 							<div class="form-group">
 								<?php print $this->formLabel($endDate); ?>
@@ -108,8 +118,11 @@ print $this->form()->openTag($form);
 								</div>
 								<?php print $this->formElementErrors()->render($endDate, ['class' => 'help-block']); ?>
 							</div>
-
-
+							<div class="form-group">
+								<?php print $this->formLabel($toServiceTypeId); ?>
+								<?php print $this->formElement($toServiceTypeId); ?>
+								<?php print $this->formElementErrors()->render($toServiceTypeId, ['class' => 'help-block']); ?>
+							</div>
 							<div class="form-group">
 								<?php print $this->formLabel($toBranchId); ?>
 								<?php print $this->formElement($toBranchId); ?>

@@ -85,11 +85,19 @@ class HrEmployees extends Model
     public $status;
     public $createdDt;
 
+    public $serviceEventTypeId;
     public $serviceTypeId;
     public $positionId;
     public $designationId;
     public $departmentId;
     public $branchId;
+
+    public $curServiceEventTypeId;
+    public $curServiceTypeId;
+    public $curPositionId;
+    public $curDesignationId;
+    public $curDepartmentId;
+    public $curBranchId;
 
     public $countryId;
 
@@ -156,16 +164,25 @@ const SOCIAL_NETWORK="SOCIAL_NETWORK";
     const SALARY_PF="SALARY_PF";
     const REMARKS="REMARKS";
     const STATUS="STATUS";
+
+    const SERVICE_EVENT_TYPE_ID="SERVICE_EVENT_TYPE_ID";
     const SERVICE_TYPE_ID="SERVICE_TYPE_ID";
     const POSITION_ID="POSITION_ID";
     const DESIGNATION_ID="DESIGNATION_ID";
     const DEPARTMENT_ID="DEPARTMENT_ID";
     const BRANCH_ID="BRANCH_ID";
+
+    const CUR_SERVICE_EVENT_TYPE_ID="CUR_SERVICE_EVENT_TYPE_ID";
+    const CUR_SERVICE_TYPE_ID="CUR_SERVICE_TYPE_ID";
+    const CUR_POSITION_ID="CUR_POSITION_ID";
+    const CUR_DESIGNATION_ID="CUR_DESIGNATION_ID";
+    const CUR_DEPARTMENT_ID="CUR_DEPARTMENT_ID";
+    const CUR_BRANCH_ID="CUR_BRANCH_ID";
+
     const CREATED_DT="CREATED_DT";
     const COUNTRY_ID="COUNTRY_ID";
     const ADDR_PERM_COUNTRY_ID="ADDR_PERM_COUNTRY_ID";
     const ADDR_TEMP_COUNTRY_ID="ADDR_TEMP_COUNTRY_ID";
-
 
     public $mappings=[
         'employeeId'=>self::EMPLOYEE_ID,
@@ -243,11 +260,19 @@ const SOCIAL_NETWORK="SOCIAL_NETWORK";
         'remarks'=>self::REMARKS,
         'status'=>self::STATUS,
 
+        'serviceEventTypeId'=>self::SERVICE_EVENT_TYPE_ID,
         'serviceTypeId'=>self::SERVICE_TYPE_ID,
         'positionId'=>self::POSITION_ID,
         'designationId'=>self::DESIGNATION_ID,
         'departmentId'=>self::DEPARTMENT_ID,
         'branchId'=>self::BRANCH_ID,
+
+        'curServiceEventTypeId'=>self::CUR_SERVICE_EVENT_TYPE_ID,
+        'curServiceTypeId'=>self::CUR_SERVICE_TYPE_ID,
+        'curPositionId'=>self::CUR_POSITION_ID,
+        'curDesignationId'=>self::CUR_DESIGNATION_ID,
+        'curDepartmentId'=>self::CUR_DEPARTMENT_ID,
+        'curBranchId'=>self::CUR_BRANCH_ID,
 
         'createdDt'=>self::CREATED_DT,
         'countryId'=>self::COUNTRY_ID,

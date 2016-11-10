@@ -63,7 +63,10 @@ if($this->messages) { ?>
                 End Date
             </th>
             <th>
-                Service Type
+                ServiceEvent Type
+            </th>
+            <th>
+                To Service Type
             </th>
              <th>
                 To Branch
@@ -96,7 +99,10 @@ if($this->messages) { ?>
                     <?php print $this->escapeHtml($jobHistory['END_DATE']); ?>
                 </td>
                 <td>
-                    <?php print $this->escapeHtml($jobHistory['SERVICE_TYPE_NAME']); ?>
+                    <?php print $this->escapeHtml($jobHistory['SERVICE_EVENT_TYPE_NAME']); ?>
+                </td>
+                <td>
+                    <?php print $this->escapeHtml($jobHistory['TO_SERVICE_NAME']); ?>
                 </td>
                 <td>
                     <?php print $this->escapeHtml($jobHistory['TO_BRANCH_NAME']); ?>
