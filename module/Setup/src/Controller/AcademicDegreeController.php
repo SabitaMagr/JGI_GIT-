@@ -13,7 +13,7 @@ use Zend\Mvc\Controller\AbstractActionController;
 class AcademicDegreeController extends AbstractActionController {
     public function indexAction()
     {
-        return Helper::addFlashMessagesToArray($this,['list'=>'hellow']);
+        return Helper::addFlashMessagesToArray($this,['list'=>'hellow degree']);
     }
 }
 

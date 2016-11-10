@@ -10,9 +10,9 @@ namespace Setup\Controller;
 use Application\Helper\Helper;
 use Zend\Mvc\Controller\AbstractActionController;
 
-class AcademicUniversity extends AbstractActionController {
+class AcademicUniversityController extends AbstractActionController {
     public function indexAction()
     {
-        return Helper::addFlashMessagesToArray($this,['list'=>'hellow']);
+        return Helper::addFlashMessagesToArray($this,['list'=>'hellow university']);
     }
 }

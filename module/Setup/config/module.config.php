@@ -185,7 +185,7 @@ return [
                         'id'=>'[0-9]+',
                     ],
                     'defaults' => [
-                        'controller' => Controller\AcademiceDegreeController::class,
+                        'controller' => Controller\AcademicDegreeController::class,
                         'action' => 'index',
                     ]
                 ],
