@@ -175,6 +175,66 @@ return [
                     ]
                 ],
             ],
+
+            'academicDegree'=>[
+                'type'=>segment::class,
+                'options'=>[
+                    'route'=>'/setup/academicDegree[/:action[/:id]]',
+                    'constants'=>[
+                        'action'=>'[a-zA-Z][a-zA-Z0-9_-]*',
+                        'id'=>'[0-9]+',
+                    ],
+                    'defaults' => [
+                        'controller' => Controller\AcademiceDegreeController::class,
+                        'action' => 'index',
+                    ]
+                ],
+            ],
+
+            'academicUniversity'=>[
+                'type'=>segment::class,
+                'options'=>[
+                    'route'=>'/setup/academicUniversity[/:action[/:id]]',
+                    'constants'=>[
+                        'action'=>'[a-zA-Z][a-zA-Z0-9_-]*',
+                        'id'=>'[0-9]+',
+                    ],
+                    'defaults' => [
+                        'controller' => Controller\AcademicUniversityController::class,
+                        'action' => 'index',
+                    ]
+                ],
+            ],
+
+            'academicProgram'=>[
+                'type'=>segment::class,
+                'options'=>[
+                    'route'=>'/setup/academicProgram[/:action[/:id]]',
+                    'constants'=>[
+                        'action'=>'[a-zA-Z][a-zA-Z0-9_-]*',
+                        'id'=>'[0-9]+',
+                    ],
+                    'defaults' => [
+                        'controller' => Controller\AcademicProgramController::class,
+                        'action' => 'index',
+                    ]
+                ],
+            ],
+
+            'academicCourse'=>[
+                'type'=>segment::class,
+                'options'=>[
+                    'route'=>'/setup/academicCourse[/:action[/:id]]',
+                    'constants'=>[
+                        'action'=>'[a-zA-Z][a-zA-Z0-9_-]*',
+                        'id'=>'[0-9]+',
+                    ],
+                    'defaults' => [
+                        'controller' => Controller\AcademicCourseController::class,
+                        'action' => 'index',
+                    ]
+                ],
+            ],
 //            'leave' => [
 //                'type' => segment::class,
 //                'options' => [
@@ -501,6 +561,118 @@ return [
                 ]
             ]
         ],
+        'academicDegree' => [
+
+            [
+                'label' => 'Academic Degree',
+                'route' => 'academicDegree',
+            ],
+            [
+                'label' => 'Academic Degree',
+                'route' => 'academicDegree',
+                'pages' => [
+                    [
+                        'label' => 'List',
+                        'route' => 'academicDegree',
+                        'action' => 'index',
+                    ],
+                    [
+                        'label' => 'Add',
+                        'route' => 'academicDegree',
+                        'action' => 'add',
+                    ],
+                    [
+                        'label' => 'Edit',
+                        'route' => 'academicDegree',
+                        'action' => 'edit',
+                    ],
+                ]
+            ]
+        ],
+        'academicUniversity' => [
+
+            [
+                'label' => 'Academic University',
+                'route' => 'academicUniversity',
+            ],
+            [
+                'label' => 'Academic University',
+                'route' => 'academicUniversity',
+                'pages' => [
+                    [
+                        'label' => 'List',
+                        'route' => 'academicUniversity',
+                        'action' => 'index',
+                    ],
+                    [
+                        'label' => 'Add',
+                        'route' => 'academicUniversity',
+                        'action' => 'add',
+                    ],
+                    [
+                        'label' => 'Edit',
+                        'route' => 'academicUniversity',
+                        'action' => 'edit',
+                    ],
+                ]
+            ]
+        ],
+        'academicProgram' => [
+
+            [
+                'label' => 'Academic Program',
+                'route' => 'academicProgram',
+            ],
+            [
+                'label' => 'Academic Program',
+                'route' => 'academicProgram',
+                'pages' => [
+                    [
+                        'label' => 'List',
+                        'route' => 'academicProgram',
+                        'action' => 'index',
+                    ],
+                    [
+                        'label' => 'Add',
+                        'route' => 'academicProgram',
+                        'action' => 'add',
+                    ],
+                    [
+                        'label' => 'Edit',
+                        'route' => 'academicProgram',
+                        'action' => 'edit',
+                    ],
+                ]
+            ]
+        ],
+        'academicCourse' => [
+
+            [
+                'label' => 'Academic Course',
+                'route' => 'academicCourse',
+            ],
+            [
+                'label' => 'Academic Course',
+                'route' => 'academicCourse',
+                'pages' => [
+                    [
+                        'label' => 'List',
+                        'route' => 'academicCourse',
+                        'action' => 'index',
+                    ],
+                    [
+                        'label' => 'Add',
+                        'route' => 'academicCourse',
+                        'action' => 'add',
+                    ],
+                    [
+                        'label' => 'Edit',
+                        'route' => 'academicCourse',
+                        'action' => 'edit',
+                    ],
+                ]
+            ]
+        ],
     ],
     'controllers' => [
         'factories' => [
@@ -515,7 +687,11 @@ return [
             Controller\JobHistoryController::class => ControllerFactory::class,
             Controller\WebServiceController::class => ControllerFactory::class,
             Controller\RecommendApproveController::class=>ControllerFactory::class,
-            Controller\ServiceEventTypeController::class=>ControllerFactory::class
+            Controller\ServiceEventTypeController::class=>ControllerFactory::class,
+            Controller\AcademicDegreeController::class=>ControllerFactory::class,
+            Controller\AcademicUniversityController::class=>ControllerFactory::class,
+            Controller\AcademicProgramController::class=>ControllerFactory::class,
+            Controller\AcademicCourseController::class=>ControllerFactory::class
 //            Controller\LeaveMasterController::class => Controller\ControllerFactory::class,
         ],
 
