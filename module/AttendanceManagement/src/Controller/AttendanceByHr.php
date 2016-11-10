@@ -48,12 +48,24 @@ class AttendanceByHr extends AbstractActionController {
             $this->form->setData($request->getPost());
             if ($this->form->isValid()) {
                 $attendanceByHrModel = new AttendanceByHrModel();
-                $attendanceByHrModel->exchangeArrayFromForm($this->form->getData());
+                $formData = $this->form->getData();
+                $attendanceByHrModel->exchangeArrayFromForm($formData);
                 $attendanceByHrModel->attendanceDt = Helper::getExpressionDate($attendanceByHrModel->attendanceDt);
                 $attendanceByHrModel->id = ((int) Helper::getMaxId($this->adapter, AttendanceByHrModel::TABLE_NAME, "ID")) + 1;
                 $attendanceByHrModel->inTime = Helper::getExpressionTime($attendanceByHrModel->inTime);
                 $attendanceByHrModel->outTime = Helper::getExpressionTime($attendanceByHrModel->outTime);
-                $this->repository->add($attendanceByHrModel);
+
+                $employeeId = $attendanceByHrModel->employeeId;
+                $attendanceDt = $formData['attendanceDt'];
+
+                $previousDtl = $this->repository->getDtlWidEmpIdDate($employeeId,$attendanceDt);
+
+                if($previousDtl==null){
+                    $this->repository->add($attendanceByHrModel);
+                }else{
+                    $this->repository->edit($attendanceByHrModel,$previousDtl['ID']);
+                }
+
                 $this->flashmessenger()->addMessage("Attendance Submitted Successfully!!");
                 return $this->redirect()->toRoute("attendancebyhr");
             }

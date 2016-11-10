@@ -88,7 +88,17 @@ class AttendanceApproveController extends AbstractActionController {
                 $attendanceDetail->totalHour = $detail['TOTAL_HOUR'];
                 $attendanceDetail->employeeId = $detail['EMPLOYEE_ID'];
                 $attendanceDetail->id = (int)Helper::getMaxId($this->adapter,AttendanceByHr::TABLE_NAME,AttendanceByHr::ID)+1;
-                $attendanceRepository->add($attendanceDetail);
+
+                $employeeId = $detail['EMPLOYEE_ID'];
+                $attendanceDt = $detail['ATTENDANCE_DT'];
+
+                $previousDtl = $attendanceRepository->getDtlWidEmpIdDate($employeeId,$attendanceDt);
+
+                if($previousDtl==null){
+                    $attendanceRepository->add($attendanceDetail);
+                }else{
+                    $attendanceRepository->edit($attendanceDetail,$previousDtl['ID']);
+                }
 
                 $this->flashmessenger()->addMessage("Attendance Request Approved!!!");
 
