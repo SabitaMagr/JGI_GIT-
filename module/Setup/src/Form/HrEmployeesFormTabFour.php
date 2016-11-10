@@ -55,6 +55,15 @@ class HrEmployeesFormTabFour extends Model
      * @Annotation\Type("Zend\Form\Element\Select")
      * @Annotation\Required(false)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
+     * @Annotation\Options({"disable_inarray_validator":"true","label":"Service Event Type Name"})
+     * @Annotation\Attributes({ "id":"serviceEventTypeId","class":"form-control"})
+     */
+    public $serviceEventTypeId;
+
+    /**
+     * @Annotation\Type("Zend\Form\Element\Select")
+     * @Annotation\Required(false)
+     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"disable_inarray_validator":"true","label":"Position Name"})
      * @Annotation\Attributes({ "id":"positionId","class":"form-control"})
      */
@@ -92,6 +101,7 @@ class HrEmployeesFormTabFour extends Model
         'salary'=>'SALARY',
         'salaryPf'=>'SALARY_PF',
         'serviceTypeId'=>'SERVICE_TYPE_ID',
+        'serviceEventTypeId'=>'SERVICE_EVENT_TYPE_ID',
         'positionId'=>'POSITION_ID',
         'designationId'=>'DESIGNATION_ID',
         'departmentId'=>'DEPARTMENT_ID',

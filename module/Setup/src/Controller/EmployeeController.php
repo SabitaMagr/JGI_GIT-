@@ -117,11 +117,12 @@ class EmployeeController extends AbstractActionController
             "companies" => EntityHelper::getTableKVList($this->adapter, EntityHelper::HR_COMPANY),
             "countries" => EntityHelper::getTableKVList($this->adapter, EntityHelper::HR_COUNTRIES),
             'filetypes'=>EntityHelper::getTableKVList($this->adapter,EntityHelper::HR_FILE_TYPE),
-            'serviceTypes'=>ApplicationHelper::getTableKVList($this->adapter,"HR_SERVICE_TYPES","SERVICE_TYPE_ID",["SERVICE_TYPE_NAME"]),
-            'positions'=>ApplicationHelper::getTableKVList($this->adapter,"HR_POSITIONS","POSITION_ID",["POSITION_NAME"]),
-            'designations'=>ApplicationHelper::getTableKVList($this->adapter,"HR_DESIGNATIONS","DESIGNATION_ID",["DESIGNATION_TITLE"]),
-            'departments'=>ApplicationHelper::getTableKVList($this->adapter,"HR_DEPARTMENTS","DEPARTMENT_ID",["DEPARTMENT_NAME"]),
-            'branches'=>ApplicationHelper::getTableKVList($this->adapter,"HR_BRANCHES","BRANCH_ID",["BRANCH_NAME"])
+            'serviceTypes'=>ApplicationHelper::getTableKVList($this->adapter,"HR_SERVICE_TYPES","SERVICE_TYPE_ID",["SERVICE_TYPE_NAME"],["STATUS"=>'E']),
+            'positions'=>ApplicationHelper::getTableKVList($this->adapter,"HR_POSITIONS","POSITION_ID",["POSITION_NAME"],["STATUS"=>'E']),
+            'designations'=>ApplicationHelper::getTableKVList($this->adapter,"HR_DESIGNATIONS","DESIGNATION_ID",["DESIGNATION_TITLE"],["STATUS"=>'E']),
+            'departments'=>ApplicationHelper::getTableKVList($this->adapter,"HR_DEPARTMENTS","DEPARTMENT_ID",["DEPARTMENT_NAME"],["STATUS"=>'E']),
+            'branches'=>ApplicationHelper::getTableKVList($this->adapter,"HR_BRANCHES","BRANCH_ID",["BRANCH_NAME"],["STATUS"=>'E']),
+            'serviceEventTypes'=>ApplicationHelper::getTableKVList($this->adapter,"HR_SERVICE_EVENT_TYPES","SERVICE_EVENT_TYPE_ID",["SERVICE_EVENT_TYPE_NAME"],["STATUS"=>'E'])
         ]);
 
 
@@ -269,11 +270,12 @@ class EmployeeController extends AbstractActionController
             "companies" => EntityHelper::getTableKVList($this->adapter, EntityHelper::HR_COMPANY),
             "countries" => EntityHelper::getTableKVList($this->adapter, EntityHelper::HR_COUNTRIES),
             'filetypes'=>EntityHelper::getTableKVList($this->adapter,EntityHelper::HR_FILE_TYPE),
-            'serviceTypes'=>ApplicationHelper::getTableKVList($this->adapter,"HR_SERVICE_TYPES","SERVICE_TYPE_ID",["SERVICE_TYPE_NAME"]),
-            'positions'=>ApplicationHelper::getTableKVList($this->adapter,"HR_POSITIONS","POSITION_ID",["POSITION_NAME"]),
-            'designations'=>ApplicationHelper::getTableKVList($this->adapter,"HR_DESIGNATIONS","DESIGNATION_ID",["DESIGNATION_TITLE"]),
-            'departments'=>ApplicationHelper::getTableKVList($this->adapter,"HR_DEPARTMENTS","DEPARTMENT_ID",["DEPARTMENT_NAME"]),
-            'branches'=>ApplicationHelper::getTableKVList($this->adapter,"HR_BRANCHES","BRANCH_ID",["BRANCH_NAME"])
+            'serviceTypes'=>ApplicationHelper::getTableKVList($this->adapter,"HR_SERVICE_TYPES","SERVICE_TYPE_ID",["SERVICE_TYPE_NAME"],["STATUS"=>'E']),
+            'positions'=>ApplicationHelper::getTableKVList($this->adapter,"HR_POSITIONS","POSITION_ID",["POSITION_NAME"],["STATUS"=>'E']),
+            'designations'=>ApplicationHelper::getTableKVList($this->adapter,"HR_DESIGNATIONS","DESIGNATION_ID",["DESIGNATION_TITLE"],["STATUS"=>'E']),
+            'departments'=>ApplicationHelper::getTableKVList($this->adapter,"HR_DEPARTMENTS","DEPARTMENT_ID",["DEPARTMENT_NAME"],["STATUS"=>'E']),
+            'branches'=>ApplicationHelper::getTableKVList($this->adapter,"HR_BRANCHES","BRANCH_ID",["BRANCH_NAME"],["STATUS"=>'E']),
+            'serviceEventTypes'=>ApplicationHelper::getTableKVList($this->adapter,"HR_SERVICE_EVENT_TYPES","SERVICE_EVENT_TYPE_ID",["SERVICE_EVENT_TYPE_NAME"],["STATUS"=>'E'])
         ]);
 
 

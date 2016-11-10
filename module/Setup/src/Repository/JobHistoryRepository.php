@@ -44,7 +44,9 @@ class JobHistoryRepository implements RepositoryInterface
         $select->columns([new Expression("TO_CHAR(H.START_DATE, 'DD-MON-YYYY') AS START_DATE"), new Expression("TO_CHAR(H.END_DATE, 'DD-MON-YYYY') AS END_DATE"), new Expression("H.EMPLOYEE_ID AS EMPLOYEE_ID"), new Expression("H.JOB_HISTORY_ID AS JOB_HISTORY_ID")], true);
         $select->from(['H' => "HR_JOB_HISTORY"])
             ->join(['E' => 'HR_EMPLOYEES'], 'H.EMPLOYEE_ID=E.EMPLOYEE_ID', ["FIRST_NAME" => 'FIRST_NAME'])
-            ->join(['ST' => 'HR_SERVICE_TYPES'], 'H.SERVICE_TYPE_ID=ST.SERVICE_TYPE_ID', ['SERVICE_TYPE_NAME' => 'SERVICE_TYPE_NAME'])
+            ->join(['ST' => 'HR_SERVICE_EVENT_TYPES'], 'H.SERVICE_EVENT_TYPE_ID=ST.SERVICE_EVENT_TYPE_ID', ['SERVICE_EVENT_TYPE_NAME' => 'SERVICE_EVENT_TYPE_NAME'])
+            ->join(['ST1' => 'HR_SERVICE_TYPES'], 'ST1.SERVICE_TYPE_ID=H.FROM_SERVICE_TYPE_ID', ['FROM_SERVICE_NAME' => 'SERVICE_TYPE_NAME'])
+            ->join(['ST2' => 'HR_SERVICE_TYPES'], 'ST2.SERVICE_TYPE_ID=H.TO_SERVICE_TYPE_ID', ['TO_SERVICE_NAME' => 'SERVICE_TYPE_NAME'])
             ->join(['P1' => 'HR_POSITIONS'], 'P1.POSITION_ID=H.FROM_POSITION_ID', ['FROM_POSITION_NAME' => 'POSITION_NAME'])
             ->join(['P2' => 'HR_POSITIONS'], 'P2.POSITION_ID=H.TO_POSITION_ID', ['TO_POSITION_NAME' => 'POSITION_NAME'])
             ->join(['D1' => 'HR_DESIGNATIONS'], 'D1.DESIGNATION_ID=H.FROM_DESIGNATION_ID', ['FROM_DESIGNATION_TITLE' => 'DESIGNATION_TITLE'])
@@ -55,6 +57,7 @@ class JobHistoryRepository implements RepositoryInterface
             ->join(['B2' => 'HR_BRANCHES'], 'B2.BRANCH_ID=H.TO_BRANCH_ID', ['TO_BRANCH_NAME' => 'BRANCH_NAME']);
 
         $statement = $sql->prepareStatementForSqlObject($select);
+        //print_r($statement->getSql()); die();
         $result = $statement->execute();
 //        print '<pre>';
 //        print_r($result->current());

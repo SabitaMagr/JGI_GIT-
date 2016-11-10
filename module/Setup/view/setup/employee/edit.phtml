@@ -111,6 +111,9 @@ $joinDate = $formFour->get('joinDate');
 $salary = $formFour->get('salary');
 $salaryPf = $formFour->get('salaryPf');
 
+$serviceEventTypeId = $formFour->get('serviceEventTypeId');
+$serviceEventTypeId->setValueOptions($serviceEventTypes);
+
 $serviceTypeId = $formFour->get('serviceTypeId');
 $serviceTypeId->setValueOptions($serviceTypes);
 
@@ -164,7 +167,8 @@ if ($this->messages) {
     print '</ul>';
 }
 ?>
-
+$serviceEventTypeId = $formFour->get('serviceEventTypeId');
+$serviceEventTypeId->setValueOptions($serviceEventTypes);
 <script>
     document.menu =<?php $menu = ["id" => "menuSetup", "subMenu" => ["id" => "subMenuEmployee"]];echo json_encode($menu);?>;
     document.urlDistrict = '<?= $this->url("webService", ["action" => "district"]) ?>';
@@ -174,9 +178,7 @@ if ($this->messages) {
 </script>
 
 <div class="page-bar">
-    <ul class="page-breadcrumb">
         <?= $this->navigation('Zend\Navigation\Employee')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
-    </ul>
 </div>
 
 <div id="rootwizard" class="tabbable-custom">
@@ -750,6 +752,13 @@ if ($this->messages) {
                         <?php print $this->formElement($serviceTypeId); ?>
                     </div>
                     <?php print $this->formElementErrors()->render($serviceTypeId, ['class' => 'help-block error']); ?>
+
+                    <div
+                        class="form-group   <?= empty($serviceEventTypeId->getMessages()) ? "" : "error" ?>">
+                        <?php print $this->formLabel($serviceEventTypeId); ?>
+                        <?php print $this->formElement($serviceEventTypeId); ?>
+                    </div>
+                    <?php print $this->formElementErrors()->render($serviceEventTypeId, ['class' => 'help-block error']); ?>
 
                 </div>
                 <div class="col-sm-6">

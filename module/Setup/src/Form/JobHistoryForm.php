@@ -24,7 +24,7 @@ class JobHistoryForm
      * @Annotation\Type("Zend\Form\Element\Select")
      * @Annotation\Required({"required":"true"})
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
-     * @Annotation\Options({"label":"Employee Name","value_options":{"1":"Emp1","2":"Emp2"}})
+     * @Annotation\Options({"disable_inarray_validator":"true","label":"Employee Name","value_options":{"1":"Emp1","2":"Emp2"}})
      * @Annotation\Attributes({ "id":"employeeId","class":"form-control"})
      */
     public $employeeId;
@@ -51,10 +51,28 @@ class JobHistoryForm
      * @Annotation\Type("Zend\Form\Element\Select")
      * @Annotation\Required({"required":"true"})
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
-     * @Annotation\Options({"disable_inarray_validator":"true","label":"Service Type Name"})
-     * @Annotation\Attributes({ "id":"serviceTypeId","class":"form-control"})
+     * @Annotation\Options({"disable_inarray_validator":"true","label":"Service Event Type Name"})
+     * @Annotation\Attributes({ "id":"serviceEventTypeId","class":"form-control"})
      */
-    public $serviceTypeId;
+    public $serviceEventTypeId;
+
+    /**
+     * @Annotation\Type("Zend\Form\Element\Select")
+     * @Annotation\Required({"required":"true"})
+     * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
+     * @Annotation\Options({"disable_inarray_validator":"true","label":"From Service Type Name"})
+     * @Annotation\Attributes({ "id":"fromServiceTypeId","class":"form-control"})
+     */
+    public $fromServiceTypeId;
+
+    /**
+     * @Annotation\Type("Zend\Form\Element\Select")
+     * @Annotation\Required({"required":"true"})
+     * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
+     * @Annotation\Options({"disable_inarray_validator":"true","label":"To Service Type Name"})
+     * @Annotation\Attributes({ "id":"toServiceTypeId","class":"form-control"})
+     */
+    public $toServiceTypeId;
 
     /**
      * @Annotation\Type("Zend\Form\Element\Select")
