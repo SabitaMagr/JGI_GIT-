@@ -15,6 +15,7 @@ use AttendanceManagement\Model\AttendanceByHr;
 use Zend\Db\Sql\Sql;
 use Application\Helper\Helper;
 use Zend\Db\Sql\Expression;
+use AttendanceManagement\Model\Attendance;
 
 class AttendanceByHrRepository implements RepositoryInterface
 {
@@ -64,6 +65,13 @@ class AttendanceByHrRepository implements RepositoryInterface
     public function delete($id)
     {
 
+    }
+    
+    
+    
+    public function addAttendance($model){
+        $attendanceTableGateway=new TableGateway(Attendance::TABLE_NAME, $this->adapter);
+       return $attendanceTableGateway->insert($model->getArrayCopyForDB());
     }
 
 
