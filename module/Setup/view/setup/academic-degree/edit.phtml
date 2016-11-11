@@ -1,0 +1,76 @@
+<?php
+
+$form->setAttribute('role', 'form');
+$form->setAttribute('class', 'academicDegree-form');
+
+$academicDegreeCode = $form->get('academicDegreeCode');
+$academicDegreeName = $form->get('academicDegreeName');
+$remarks = $form->get('remarks');
+$weight = $form->get('weight');
+
+$submit = $form->get('submit');
+$submit->setAttribute('value', 'SUBMIT');
+
+$form->setAttribute('action', $this->url('academicDegree', ['action' => 'edit','id'=>$id]));
+
+if ($this->messages) {
+    print '<ul class="help-block bg-danger" style="background:#f3e250;">';
+    foreach ($this->messages as $message) {
+        print '<li>' . $message . '</li>';
+    }
+    print '</ul>';
+}
+
+$form->prepare();
+?>
+<script>
+    document.menu =<?php $menu = ["id" => "menuSetup", "subMenu" => ["id" => "subMenuAcademicDegree"]];echo json_encode($menu);?>;
+</script>
+<div class="page-bar">
+    <?= $this->navigation('Zend\Navigation\academicDegree')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
+</div>
+<div class="row margin-top-20">
+    <div class="col-sm-8 col-sm-offset-2">
+        <div class="portlet box custom-box">
+            <div class="portlet-title">
+                <div class="caption">
+                    <i class="fa fa-user"></i>Update
+                </div>
+            </div>
+            <div class="portlet-body">
+                <?php
+                print $this->form()->openTag($form);
+                ?>
+                <div class="form-group">
+                    <?php print $this->formLabel($academicDegreeCode); ?>
+                    <?php print $this->formElement($academicDegreeCode); ?>
+                    <?php print $this->formElementErrors()->render($academicDegreeCode, ['class' => 'help-block']); ?>
+                </div>
+                <div class="form-group">
+                    <?php print $this->formLabel($academicDegreeName); ?>
+                    <?php print $this->formElement($academicDegreeName); ?>
+                    <?php print $this->formElementErrors()->render($academicDegreeName, ['class' => 'help-block']); ?>
+                </div>
+
+                <div class="form-group">
+                    <?php print $this->formLabel($weight); ?>
+                    <?php print $this->formElement($weight); ?>
+                    <?php print $this->formElementErrors()->render($weight, ['class' => 'help-block']); ?>
+                </div>
+
+                <div class="form-group">
+                    <?php print $this->formLabel($remarks); ?>
+                    <?php print $this->formElement($remarks); ?>
+                    <?php print $this->formElementErrors()->render($remarks, ['class' => 'help-block']); ?>
+                </div>
+
+                <?php
+                print $this->formSubmit($submit);
+                print $this->form()->closeTag();
+                ?>
+
+            </div>
+
+        </div>
+    </div>
+</div>

@@ -15,7 +15,7 @@ use Zend\Form\Annotation;
 
 /**
  * @Annotation\Hydrator("Zend\Hydrator\ObjectProperty")
- * @Annotation\Name("JobHistoryForm")
+ * @Annotation\Name("EmpCurrentPosting")
 */
 
 class EmpCurrentPostingForm {

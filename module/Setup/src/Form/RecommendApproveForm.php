@@ -5,7 +5,7 @@ use Zend\Form\Annotation;
 
 /**
  * @Annotation\Hydrator("Zend\Hydrator\ObjectProperty")
- * @Annotation\Name("Department")
+ * @Annotation\Name("RecommendApprove")
  */
 class RecommendApproveForm
 
