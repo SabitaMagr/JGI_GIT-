@@ -1,27 +1,21 @@
 <?php
 
-/**
- * Created by PhpStorm.
- * User: root
- * Date: 11/9/16
- * Time: 12:23 PM
- */
-
-namespace AttendanceManagement\Controller;
+namespace Application\Controller;
 
 use Application\Helper\Helper;
+use AttendanceManagement\Model\Attendance;
+use AttendanceManagement\Model\AttendanceByHr;
+use AttendanceManagement\Repository\AttendanceByHrRepository;
+use HolidayManagement\Model\Holiday;
+use HolidayManagement\Repository\HolidayRepository;
+use LeaveManagement\Model\LeaveApply;
+use SelfService\Repository\LeaveRequestRepository;
 use Setup\Model\HrEmployees;
 use Setup\Repository\EmployeeRepository;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Mvc\Controller\AbstractActionController;
-use HolidayManagement\Repository\HolidayRepository;
-use HolidayManagement\Model\Holiday;
-use SelfService\Repository\LeaveRequestRepository;
-use AttendanceManagement\Repository\AttendanceByHrRepository;
-use AttendanceManagement\Model\Attendance;
-use AttendanceManagement\Model\AttendanceByHr;
 
-class DailyAttendance extends AbstractActionController {
+class CronController extends AbstractActionController {
 
     private $adapter;
     private $date;
@@ -52,7 +46,7 @@ class DailyAttendance extends AbstractActionController {
                 if ($checkForleave == null) {
                     $attendanceRepo->add($attendanceDetail);
                 } else {
-                    $attendanceDetail->leaveId = $checkForleave[\LeaveManagement\Model\LeaveApply::LEAVE_ID];
+                    $attendanceDetail->leaveId = $checkForleave[LeaveApply::LEAVE_ID];
                     $attendanceRepo->add($attendanceDetail);
                 }
             } else {
