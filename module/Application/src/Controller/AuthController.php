@@ -1,4 +1,5 @@
 <?php
+
 namespace Application\Controller;
 
 use Zend\Mvc\Application;
@@ -10,20 +11,18 @@ use Application\Model\HrisAuthStorage;
 use Zend\Authentication\AuthenticationService;
 use Zend\EventManager\EventManagerInterface;
 
-class AuthController extends AbstractActionController
-{
+class AuthController extends AbstractActionController {
+
     protected $form;
     protected $storage;
     protected $authservice;
 
-    public function __construct(AuthenticationService $authService)
-    {
+    public function __construct(AuthenticationService $authService) {
         $this->authservice = $authService;
         $this->storage = $authService->getStorage();
     }
 
-    public function setEventManager(EventManagerInterface $events)
-    {
+    public function setEventManager(EventManagerInterface $events) {
         parent::setEventManager($events);
         $controller = $this;
         $events->attach('dispatch', function ($e) use ($controller) {
@@ -31,26 +30,23 @@ class AuthController extends AbstractActionController
         }, 100);
     }
 
-    public function getAuthService()
-    {
+    public function getAuthService() {
         if (!$this->authservice) {
             $this->authservice = $this->getServiceLocator()
-                ->get('AuthService');
+                    ->get('AuthService');
         }
         return $this->authservice;
     }
 
-    public function getSessionStorage()
-    {
+    public function getSessionStorage() {
         if (!$this->storage) {
             $this->storage = $this->getServiceLocator()
-                ->get(HrisAuthStorage::class);
+                    ->get(HrisAuthStorage::class);
         }
         return $this->storage;
     }
 
-    public function getForm()
-    {
+    public function getForm() {
         if (!$this->form) {
             $user = new User();
             $builder = new AnnotationBuilder();
@@ -60,8 +56,7 @@ class AuthController extends AbstractActionController
         return $this->form;
     }
 
-    public function loginAction()
-    {
+    public function loginAction() {
         //if already login, redirect to success page
         if ($this->getAuthService()->hasIdentity()) {
             return $this->redirect()->toRoute('dashboard');
@@ -75,8 +70,7 @@ class AuthController extends AbstractActionController
         ]);
     }
 
-    public function authenticateAction()
-    {
+    public function authenticateAction() {
         $form = $this->getForm();
         $redirect = 'login';
         $request = $this->getRequest();
@@ -85,8 +79,8 @@ class AuthController extends AbstractActionController
             if ($form->isValid()) {
                 //check authentication...
                 $this->getAuthService()->getAdapter()
-                    ->setIdentity($request->getPost('username'))
-                    ->setCredential($request->getPost('password'));
+                        ->setIdentity($request->getPost('username'))
+                        ->setCredential($request->getPost('password'));
                 $result = $this->getAuthService()->authenticate();
                 foreach ($result->getMessages() as $message) {
                     //save message temporary into flashmessenger
@@ -100,23 +94,23 @@ class AuthController extends AbstractActionController
                     //check if it has rememberMe :
                     if (1 == $request->getPost('rememberme')) {
                         $this->getSessionStorage()
-                            ->setRememberMe(1);
+                                ->setRememberMe(1);
                         //set storage again
                         $this->getAuthService()->setStorage($this->getSessionStorage());
                     }
-                    $this->getAuthService()->getStorage()->write(["user_name"=>$request->getPost('username'),"user_id"=>$resultRow->USER_ID,"employee_id"=>$resultRow->EMPLOYEE_ID,"role_id"=>$resultRow->ROLE_ID]);
+                    $this->getAuthService()->getStorage()->write(["user_name" => $request->getPost('username'), "user_id" => $resultRow->USER_ID, "employee_id" => $resultRow->EMPLOYEE_ID, "role_id" => $resultRow->ROLE_ID]);
                 }
             }
         }
         return $this->redirect()->toRoute($redirect);
     }
 
-    public function logoutAction()
-    {
+    public function logoutAction() {
         $this->getSessionStorage()->forgetMe();
         $this->getAuthService()->clearIdentity();
 
         $this->flashmessenger()->addMessage("You've been logged out");
         return $this->redirect()->toRoute('login');
     }
+
 }

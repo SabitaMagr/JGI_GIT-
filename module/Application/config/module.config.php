@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link      http://github.com/zendframework/ZendSkeletonApplication for the canonical source repository
  * @copyright Copyright (c) 2005-2016 Zend Technologies USA Inc. (http://www.zend.com)
@@ -12,6 +13,21 @@ use Zend\Router\Http\Segment;
 use Zend\ServiceManager\Factory\InvokableFactory;
 
 return [
+    'console' => [
+        'router' => [
+            'routes' => [
+                'user-reset-password' => [
+                    'options' => [
+                        'route' => 'attendance daily-attendance',
+                        'defaults' => [
+                            'controller' => Controller\CronController::class,
+                            'action' => 'index',
+                        ],
+                    ],
+                ],
+            ],
+        ],
+    ],
     'router' => [
         'routes' => [
             'home' => [
@@ -106,36 +122,36 @@ return [
     ],
     'navigation' => [
         'navigation-example' => [
-            [
+                [
                 'label' => 'Google',
                 'uri' => 'https://www.google.com',
                 'target' => '_blank'
             ],
-            [
+                [
                 'label' => 'Home',
                 'route' => 'leavesetup'
             ],
-            [
+                [
                 'label' => 'Modules',
                 'uri' => '#',
                 'pages' => [
-                    [
+                        [
                         'label' => 'LearnZF2Ajax',
                         'route' => 'leavesetup'
                     ],
-                    [
+                        [
                         'label' => 'LearnZF2FormUsage',
                         'route' => 'leavesetup'
                     ],
-                    [
+                        [
                         'label' => 'LearnZF2Barcode',
                         'route' => 'leavesetup'
                     ],
-                    [
+                        [
                         'label' => 'LearnZF2Pagination',
                         'route' => 'leavesetup'
                     ],
-                    [
+                        [
                         'label' => 'LearnZF2Log',
                         'route' => 'leavesetup'
                     ],
@@ -143,20 +159,18 @@ return [
             ],
         ],
     ],
-
     'service_manager' => [
         'factories' => [
             'navigation-menu' => 'Application\Navigation\NavigationFactory',
         ]
     ],
-
     'controllers' => [
         'factories' => [
             Controller\IndexController::class => InvokableFactory::class,
             Controller\DashboardController::class => InvokableFactory::class,
+            Controller\CronController::class => Controller\ControllerFactory::class
         ],
     ],
-
     'view_manager' => [
         'display_not_found_reason' => true,
         'display_exceptions' => true,
@@ -169,6 +183,7 @@ return [
             'application/index/index' => __DIR__ . '/../view/application/index/index.phtml',
             'error/404' => __DIR__ . '/../view/error/404.phtml',
             'error/index' => __DIR__ . '/../view/error/index.phtml',
+            'error/no_access' => __DIR__ . '/../view/error/no_access.phtml',
             'partial/header' => __DIR__ . '/../view/layout/partials/header.phtml',
             'partial/footer' => __DIR__ . '/../view/layout/partials/footer.phtml',
             'partial/sidebar' => __DIR__ . '/../view/layout/partials/sidebar.phtml',
@@ -178,6 +193,4 @@ return [
             __DIR__ . '/../view',
         ],
     ],
-
-
 ];

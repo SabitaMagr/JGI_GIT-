@@ -64,11 +64,11 @@ class DailyAttendance extends AbstractActionController {
 
         return [];
     }
-    
-    public function employeeAttendanceAction(){
+
+    public function employeeAttendanceAction() {
         
     }
-    
+
     private function pullEmployeeList() {
         $employeeRepo = new EmployeeRepository($this->adapter);
         return $employeeRepo->fetchAll();
