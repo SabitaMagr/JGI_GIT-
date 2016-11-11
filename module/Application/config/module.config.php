@@ -183,6 +183,7 @@ return [
             'application/index/index' => __DIR__ . '/../view/application/index/index.phtml',
             'error/404' => __DIR__ . '/../view/error/404.phtml',
             'error/index' => __DIR__ . '/../view/error/index.phtml',
+            'error/no_access' => __DIR__ . '/../view/error/no_access.phtml',
             'partial/header' => __DIR__ . '/../view/layout/partials/header.phtml',
             'partial/footer' => __DIR__ . '/../view/layout/partials/footer.phtml',
             'partial/sidebar' => __DIR__ . '/../view/layout/partials/sidebar.phtml',

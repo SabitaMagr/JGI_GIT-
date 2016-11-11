@@ -21,6 +21,7 @@ use Zend\ModuleManager\Feature\AutoloaderProviderInterface;
 use Zend\ModuleManager\Feature\ConsoleUsageProviderInterface;
 use Zend\Mvc\ModuleRouteListener;
 use Zend\Mvc\MvcEvent;
+use RestfulService\Controller\RestfulService;
 
 class Module implements AutoloaderProviderInterface, ConsoleUsageProviderInterface {
 
@@ -62,6 +63,7 @@ class Module implements AutoloaderProviderInterface, ConsoleUsageProviderInterfa
             AuthController::class . '-login',
             AuthController::class . '-logout',
             AuthController::class . '-authenticate',
+            RestfulService::class . '-restful'
         ];
         $app = $event->getApplication();
         //$routeMatch = $event->getRouteMatch();
@@ -70,40 +72,39 @@ class Module implements AutoloaderProviderInterface, ConsoleUsageProviderInterfa
         $requestUri = $request->getRequestUri();
         $controller = $event->getRouteMatch()->getParam('controller');
         $action = $event->getRouteMatch()->getParam('action');
-        $route=$event->getRouteMatch()->getMatchedRouteName();
-        
-        
-        print "<pre>";
-        $auth = new AuthenticationService();
-        $roleId=$auth->getStorage()->read()['role_id'];
-        print $roleId;
+        $route = $event->getRouteMatch()->getMatchedRouteName();
 
-        $repository = new RolePermissionRepository($app->getServiceManager()->get(DbAdapterInterface::class));
-        $data = $repository->fetchAllMenuByRoleId($roleId);
-        $allowFlag=false;
-        foreach ($data as $d) {
-            if($d[MenuSetup::ROUTE] == $route){
-                print "allowed";
-                $allowFlag=true;
-                break;
+
+        $auth = new AuthenticationService();
+        $roleId = $auth->getStorage()->read()['role_id'];
+
+        if ($roleId != null) {
+
+            $repository = new RolePermissionRepository($app->getServiceManager()->get(DbAdapterInterface::class));
+            $data = $repository->fetchAllMenuByRoleId($roleId);
+            $allowFlag = false;
+            foreach ($data as $d) {
+                if ($d[MenuSetup::ROUTE] == $route) {
+                    $allowFlag = true;
+                    break;
+                } else if ($route == 'application' || $route == "home" || $route == 'auth' || $route == 'login' || $route == 'logout') {
+                    $allowFlag = true;
+                }
+            }
+
+            if (!$allowFlag) {
+                $response = $event->getResponse();
+                $response->getHeaders()->addHeaderLine(
+                        'Location', $event->getRouter()->assemble(
+                                ['action' => 'accessDenied'], ['name' => 'application']
+                        )
+                );
+                $response->setStatusCode(302);
+                $response->sendHeaders();
+                return $response;
             }
         }
-        
-        if(!$allowFlag){
-           $response = $event->getResponse();
-            $response->getHeaders()->addHeaderLine(
-                    'Location', $event->getRouter()->assemble(
-                            [], ['name' => 'home']
-                    )
-            );
-            print_r($event->getRouter()->assemble(
-                            ['action'=>'accessDenied'], ['name' => 'application']
-                    ));
-//            $response->setStatusCode(302);
-//            $response->sendHeaders();
-//            return $response;    
-        }
-       
+
         $requestedResourse = $controller . "-" . $action;
 
         if (!$auth->hasIdentity() && !in_array($requestedResourse, $whiteList)) {
