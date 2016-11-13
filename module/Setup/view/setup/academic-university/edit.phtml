@@ -1,0 +1,69 @@
+<?php
+
+$form->setAttribute('role', 'form');
+$form->setAttribute('class', 'academicUniversity-form');
+
+$academicUniversityCode = $form->get('academicUniversityCode');
+$academicUniversityName = $form->get('academicUniversityName');
+$remarks = $form->get('remarks');
+
+$submit = $form->get('submit');
+$submit->setAttribute('value', 'SUBMIT');
+
+$form->setAttribute('action', $this->url('academicUniversity', ['action' => 'edit','id'=>$id]));
+
+if ($this->messages) {
+    print '<ul class="help-block bg-danger" style="background:#f3e250;">';
+    foreach ($this->messages as $message) {
+        print '<li>' . $message . '</li>';
+    }
+    print '</ul>';
+}
+
+$form->prepare();
+?>
+<script>
+    document.menu =<?php $menu = ["id" => "menuSetup", "subMenu" => ["id" => "subMenuAcademicUniversity"]];echo json_encode($menu);?>;
+</script>
+<div class="page-bar">
+    <?= $this->navigation('Zend\Navigation\academicUniversity')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
+</div>
+<div class="row margin-top-20">
+    <div class="col-sm-8 col-sm-offset-2">
+        <div class="portlet box custom-box">
+            <div class="portlet-title">
+                <div class="caption">
+                    <i class="fa fa-user"></i>Update
+                </div>
+            </div>
+            <div class="portlet-body">
+                <?php
+                print $this->form()->openTag($form);
+                ?>
+                <div class="form-group">
+                    <?php print $this->formLabel($academicUniversityCode); ?>
+                    <?php print $this->formElement($academicUniversityCode); ?>
+                    <?php print $this->formElementErrors()->render($academicUniversityCode, ['class' => 'help-block']); ?>
+                </div>
+                <div class="form-group">
+                    <?php print $this->formLabel($academicUniversityName); ?>
+                    <?php print $this->formElement($academicUniversityName); ?>
+                    <?php print $this->formElementErrors()->render($academicUniversityName, ['class' => 'help-block']); ?>
+                </div>
+
+                <div class="form-group">
+                    <?php print $this->formLabel($remarks); ?>
+                    <?php print $this->formElement($remarks); ?>
+                    <?php print $this->formElementErrors()->render($remarks, ['class' => 'help-block']); ?>
+                </div>
+
+                <?php
+                print $this->formSubmit($submit);
+                print $this->form()->closeTag();
+                ?>
+
+            </div>
+
+        </div>
+    </div>
+</div>
