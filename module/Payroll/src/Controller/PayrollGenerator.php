@@ -120,7 +120,6 @@ class PayrollGenerator
             foreach (self::VARIABLES as $variable) {
                 $rule = $this->convertVariableToValue($rule, $variable);
             }
-
             $ruleValue = eval($rule);
             if ($operationType == 'A') {
                 $calculatedValue = $calculatedValue + $ruleValue;

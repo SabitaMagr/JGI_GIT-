@@ -166,11 +166,7 @@ class Module implements AutoloaderProviderInterface, ConsoleUsageProviderInterfa
 
     public function getConsoleUsage(AdapterInterface $console) {
         return [
-            // Describe available commands
-            'user resetpassword [--verbose|-v] EMAIL' => 'Reset password for a user',
-            // Describe expected parameters
-            ['EMAIL', 'Email of the user for a password reset'],
-                ['--verbose|-v', '(optional) turn on verbose mode'],
+            'attendance daily-attendance' => 'Daily Attendance'
         ];
     }
 

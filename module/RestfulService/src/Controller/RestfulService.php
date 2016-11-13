@@ -1,13 +1,14 @@
 <?php
+
 namespace RestfulService\Controller;
 
 use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
-use AttendanceManagement\Controller\ShiftSetup;
 use AttendanceManagement\Model\ShiftAssign;
+use AttendanceManagement\Model\ShiftSetup;
 use AttendanceManagement\Repository\ShiftAssignRepository;
-
 use HolidayManagement\Repository\HolidayRepository;
+use LeaveManagement\Repository\LeaveBalanceRepository;
 use Payroll\Controller\PayrollGenerator;
 use Payroll\Model\FlatValueDetail;
 use Payroll\Model\MonthlyValueDetail;
@@ -20,31 +21,27 @@ use Payroll\Repository\PayPositionRepo;
 use Payroll\Repository\RulesDetailRepo;
 use Payroll\Repository\RulesRepository;
 use SelfService\Repository\ServiceRepository;
+use System\Model\MenuSetup;
 use System\Model\RolePermission;
+use System\Repository\MenuSetupRepository;
 use System\Repository\RolePermissionRepository;
 use System\Repository\RoleSetupRepository;
 use Zend\Authentication\AuthenticationService;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Adapter\Driver\ResultInterface;
-use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\Mvc\Controller\AbstractRestfulController;
 use Zend\View\Model\JsonModel;
-use System\Repository\MenuSetupRepository;
-use System\Model\MenuSetup;
-use LeaveManagement\Repository\LeaveBalanceRepository;
+use Setup\Repository\EmployeeRepository;
 
-class RestfulService extends AbstractRestfulController
-{
+class RestfulService extends AbstractRestfulController {
 
     private $adapter;
 
-    public function __construct(AdapterInterface $adapter)
-    {
+    public function __construct(AdapterInterface $adapter) {
         $this->adapter = $adapter;
     }
 
-    public function convertResultInterfaceIntoArray(ResultInterface $result)
-    {
+    public function convertResultInterfaceIntoArray(ResultInterface $result) {
         $tempArray = [];
         foreach ($result as $unit) {
             array_push($tempArray, $unit);
@@ -52,8 +49,7 @@ class RestfulService extends AbstractRestfulController
         return $tempArray;
     }
 
-    public function indexAction()
-    {
+    public function indexAction() {
         $request = $this->getRequest();
         $responseData = [];
         if ($request->isPost()) {
@@ -133,6 +129,9 @@ class RestfulService extends AbstractRestfulController
                 case "generataMonthlySheet":
                     $responseData = $this->generataMonthlySheet($postedData->data);
                     break;
+                case "pullEmployeeDetailById":
+                    $responseData=$this->pullEmployeeDetailById($postedData->data);
+                    break;
                 default:
                     $responseData = [
                         "success" => false
@@ -147,8 +146,7 @@ class RestfulService extends AbstractRestfulController
         return new JsonModel(['data' => $responseData]);
     }
 
-    private function pullEmployeeForShiftAssign(array $ids)
-    {
+    private function pullEmployeeForShiftAssign(array $ids) {
         $shiftAssignRepo = new ShiftAssignRepository($this->adapter);
         $result = $shiftAssignRepo->filter($ids['branchId'], $ids['departmentId'], $ids['designationId'], $ids['positionId'], $ids['serviceTypeId']);
 
@@ -157,10 +155,10 @@ class RestfulService extends AbstractRestfulController
             $tmp = $shiftAssignRepo->filterByEmployeeId($item['EMPLOYEE_ID']);
             if ($tmp != null) {
                 $item[ShiftAssign::SHIFT_ID] = $tmp[ShiftAssign::SHIFT_ID];
-                $item[\AttendanceManagement\Model\ShiftSetup::SHIFT_ENAME] = $tmp[\AttendanceManagement\Model\ShiftSetup::SHIFT_ENAME];
+                $item[ShiftSetup::SHIFT_ENAME] = $tmp[ShiftSetup::SHIFT_ENAME];
             } else {
                 $item[ShiftAssign::SHIFT_ID] = "";
-                $item[\AttendanceManagement\Model\ShiftSetup::SHIFT_ENAME] = "";
+                $item[ShiftSetup::SHIFT_ENAME] = "";
             }
             array_push($tempArray, $item);
         }
@@ -170,8 +168,7 @@ class RestfulService extends AbstractRestfulController
         ];
     }
 
-    private function assignEmployeeShift($data)
-    {
+    private function assignEmployeeShift($data) {
         $shiftAssign = new ShiftAssign();
 
         $shiftAssign->employeeId = $data['employeeId'];
@@ -204,8 +201,7 @@ class RestfulService extends AbstractRestfulController
         ];
     }
 
-    private function pullEmployeeMonthlyValue(array $data)
-    {
+    private function pullEmployeeMonthlyValue(array $data) {
         $monValDetRepo = new MonthlyValueDetailRepo($this->adapter);
         $empListRaw = $monValDetRepo->fetchEmployees($data['branch'], $data['department'], $data['designation']);
         $empListP = [];
@@ -224,7 +220,6 @@ class RestfulService extends AbstractRestfulController
                 array_push($tempOutput, $val);
             }
             array_push($mthVal, $tempOutput);
-
         }
 //                    foreach ($empListRaw as $key => $val) {
 //
@@ -263,8 +258,7 @@ class RestfulService extends AbstractRestfulController
         ];
     }
 
-    private function pushEmployeeMonthlyValue(array $data)
-    {
+    private function pushEmployeeMonthlyValue(array $data) {
         $monValDet = new MonthlyValueDetail();
         $monValDet->employeeId = $data['employeeId'];
         $monValDet->mthId = $data['mthId'];
@@ -292,8 +286,7 @@ class RestfulService extends AbstractRestfulController
         ];
     }
 
-    private function pullEmployeeFlatValue(array $data)
-    {
+    private function pullEmployeeFlatValue(array $data) {
         $flatValDetRepo = new FlatValueDetailRepo($this->adapter);
         $empListRaw = $flatValDetRepo->fetchEmployees($data['branch'], $data['department'], $data['designation']);
         $empListP = [];
@@ -312,7 +305,6 @@ class RestfulService extends AbstractRestfulController
                 array_push($tempOutput, $val);
             }
             array_push($mthVal, $tempOutput);
-
         }
         $counter = 0;
         foreach ($mthVal as $mthValUnit) {
@@ -337,11 +329,9 @@ class RestfulService extends AbstractRestfulController
             "success" => true,
             "data" => $empList
         ];
-
     }
 
-    private function pushEmployeeFlatValue(array $data)
-    {
+    private function pushEmployeeFlatValue(array $data) {
         $flatValDet = new FlatValueDetail();
         $flatValDet->employeeId = $data['employeeId'];
         $flatValDet->flatId = $data['flatId'];
@@ -369,8 +359,7 @@ class RestfulService extends AbstractRestfulController
         ];
     }
 
-    private function pushRule(array $data = null)
-    {
+    private function pushRule(array $data = null) {
         $repository = new RulesRepository($this->adapter);
         $auth = new AuthenticationService();
 
@@ -388,9 +377,8 @@ class RestfulService extends AbstractRestfulController
             $rulesValue->modifiedBy = $auth->getStorage()->read()['user_id'];
             $repository->edit($rulesValue, $payId);
             return ["success" => true, "message" => "Rule successfully edited"];
-
         } else {
-            $rulesValue->payId = ((int)Helper::getMaxId($this->adapter, Rules::TABLE_NAME, Rules::PAY_ID)) + 1;
+            $rulesValue->payId = ((int) Helper::getMaxId($this->adapter, Rules::TABLE_NAME, Rules::PAY_ID)) + 1;
             $rulesValue->createdDt = Helper::getcurrentExpressionDate();
             $rulesValue->status = 'E';
             $rulesValue->refRuleFlag = 'N';
@@ -401,14 +389,12 @@ class RestfulService extends AbstractRestfulController
         }
     }
 
-    private function pullRule(array $data = null)
-    {
+    private function pullRule(array $data = null) {
         $repository = new RulesRepository($this->adapter);
         return ["success" => true, "message" => "Rule successfully added", "data" => ["rule" => $repository->fetchById($data['ruleId'])]];
     }
 
-    private function pushRuleDetail(array $data = null)
-    {
+    private function pushRuleDetail(array $data = null) {
         $repository = new RulesDetailRepo($this->adapter);
         $ruleDetail = new RulesDetail();
 
@@ -418,7 +404,6 @@ class RestfulService extends AbstractRestfulController
             $ruleDetail->srNo = 1;
             $repository->add($ruleDetail);
             return ["success" => true, "data" => $data];
-
         } else {
             $payId = $ruleDetail->payId;
             unset($ruleDetail->payId);
@@ -426,19 +411,15 @@ class RestfulService extends AbstractRestfulController
             $repository->edit($ruleDetail, $payId);
             $ruleDetail->srNo = $data['srNo'];
         }
-
-
     }
 
-    private function pullRuleDetailByPayId(array $data = null)
-    {
+    private function pullRuleDetailByPayId(array $data = null) {
         $repository = new RulesDetailRepo($this->adapter);
         $payDetail = $repository->fetchById($data["payId"]);
         return ["success" => true, "data" => $payDetail];
     }
 
-    private function menu($parent_menu = null)
-    {
+    private function menu($parent_menu = null) {
         $menuSetupRepository = new MenuSetupRepository($this->adapter);
         $result = $menuSetupRepository->getHierarchicalMenu($parent_menu);
         $num = count($result);
@@ -467,8 +448,7 @@ class RestfulService extends AbstractRestfulController
         }
     }
 
-    private function menuInsertion($data)
-    {
+    private function menuInsertion($data) {
         $record = $data['dataArray'];
         $model = new MenuSetup();
         $repository = new MenuSetupRepository($this->adapter);
@@ -493,8 +473,7 @@ class RestfulService extends AbstractRestfulController
         ];
     }
 
-    public function pullMenuDetail($data)
-    {
+    public function pullMenuDetail($data) {
         $menuId = $data['id'];
         $repository = new MenuSetupRepository($this->adapter);
         $result = $repository->fetchById($menuId);
@@ -504,8 +483,7 @@ class RestfulService extends AbstractRestfulController
         ];
     }
 
-    public function menuUpdate($data)
-    {
+    public function menuUpdate($data) {
         $record = $data['dataArray'];
         $model = new MenuSetup();
         $repository = new MenuSetupRepository($this->adapter);
@@ -533,8 +511,7 @@ class RestfulService extends AbstractRestfulController
         ];
     }
 
-    public function permissionAssign($data)
-    {
+    public function permissionAssign($data) {
         $rolePermissionRepository = new RolePermissionRepository($this->adapter);
         $menuSetupRepository = new MenuSetupRepository($this->adapter);
         $rolePermissionModel = new RolePermission();
@@ -617,11 +594,9 @@ class RestfulService extends AbstractRestfulController
             "success" => true,
             "data" => $data
         ];
-
     }
 
-    public function pullRolePermissionList($data)
-    {
+    public function pullRolePermissionList($data) {
         $menuId = $data['menuId'];
 
         $rolePermissionRepository = new RolePermissionRepository($this->adapter);
@@ -647,8 +622,7 @@ class RestfulService extends AbstractRestfulController
         ];
     }
 
-    public function pullServiceHistory($data)
-    {
+    public function pullServiceHistory($data) {
         $employeeId = $data['employeeId'];
         $fromDate = $data['fromDate'];
         $toDate = $data['toDate'];
@@ -667,8 +641,7 @@ class RestfulService extends AbstractRestfulController
         ];
     }
 
-    public function pullPositionsAssignedByPayId($data)
-    {
+    public function pullPositionsAssignedByPayId($data) {
         $payId = $data["payId"];
         $payPositionRepo = new PayPositionRepo($this->adapter);
         $positions = $payPositionRepo->fetchById($payId);
@@ -683,57 +656,58 @@ class RestfulService extends AbstractRestfulController
             "data" => $data
         ];
     }
-    public function pullLeaveBalanceDetail($data){
+
+    public function pullLeaveBalanceDetail($data) {
         $emplyoeeId = $data['employeeId'];
         $branchId = $data['branchId'];
         $departmentId = $data['departmentId'];
         $designationId = $data['designationId'];
-        $positionId  = $data['positionId'];
+        $positionId = $data['positionId'];
         $serviceTypeId = $data['serviceTypeId'];
 
         $repository = new LeaveBalanceRepository($this->adapter);
-        $employeeList = $repository->getAllEmployee($emplyoeeId,$branchId,$departmentId,$designationId,$positionId,$serviceTypeId);
+        $employeeList = $repository->getAllEmployee($emplyoeeId, $branchId, $departmentId, $designationId, $positionId, $serviceTypeId);
 
         $mainArray = [];
-        foreach($employeeList as $row){
+        foreach ($employeeList as $row) {
             $employeeId = $row['EMPLOYEE_ID'];
-            if($row['MIDDLE_NAME']==''){
-                $employeeName = $row['FIRST_NAME']." ".$row['LAST_NAME'];
-            }else if($row['MIDDLE_NAME']!=''){
-                $employeeName = $row['FIRST_NAME']." ".$row['MIDDLE_NAME']." ".$row['LAST_NAME'];
+            if ($row['MIDDLE_NAME'] == '') {
+                $employeeName = $row['FIRST_NAME'] . " " . $row['LAST_NAME'];
+            } else if ($row['MIDDLE_NAME'] != '') {
+                $employeeName = $row['FIRST_NAME'] . " " . $row['MIDDLE_NAME'] . " " . $row['LAST_NAME'];
             }
             $leaveList = $repository->getAllLeave();
             $childArray = [];
             //loop through list of leave and if leave is not assigned then set leave balance to zero
-            foreach($leaveList as $leaveRow){
+            foreach ($leaveList as $leaveRow) {
                 $leaveId = $leaveRow['LEAVE_ID'];
-                $leaveBalanceDtl = $repository->getByEmpIdLeaveId($employeeId,$leaveId);
-                if($leaveBalanceDtl==false){
-                    $leaveBalance=[
-                        'BALANCE'=>0,
-                        'LEAVE_ID'=>$leaveId,
-                        'EMPLOYEE_ID'=>$employeeId
+                $leaveBalanceDtl = $repository->getByEmpIdLeaveId($employeeId, $leaveId);
+                if ($leaveBalanceDtl == false) {
+                    $leaveBalance = [
+                        'BALANCE' => 0,
+                        'LEAVE_ID' => $leaveId,
+                        'EMPLOYEE_ID' => $employeeId
                     ];
-                }else if($leaveBalanceDtl!=false && $leaveBalanceDtl['BALANCE']==NULL){
-                    $leaveBalance=[
-                        'BALANCE'=>0,
-                        'LEAVE_ID'=>$leaveId,
-                        'EMPLOYEE_ID'=>$employeeId
+                } else if ($leaveBalanceDtl != false && $leaveBalanceDtl['BALANCE'] == NULL) {
+                    $leaveBalance = [
+                        'BALANCE' => 0,
+                        'LEAVE_ID' => $leaveId,
+                        'EMPLOYEE_ID' => $employeeId
                     ];
-                }else{
+                } else {
                     $leaveBalance = $leaveBalanceDtl;
                 }
-                array_push($childArray,$leaveBalance);
+                array_push($childArray, $leaveBalance);
             }
-           $mainArray[$employeeName] = $childArray;
+            $mainArray[$employeeName] = $childArray;
         }
         return $reponseData = [
-            "success"=>true,
-            "allList"=>$mainArray
+            "success" => true,
+            "allList" => $mainArray
         ];
     }
-    public function pullHolidayList($data)
-    {
+
+    public function pullHolidayList($data) {
         $fromDate = $data['fromDate'];
         $toDate = $data['toDate'];
         $branchId = $data['branchId'];
@@ -746,7 +720,7 @@ class RestfulService extends AbstractRestfulController
         }
 
         $holidayRepository = new HolidayRepository($this->adapter);
-        $list = $holidayRepository->filterRecords($fromDate, $toDate,$branchId, $genderId);
+        $list = $holidayRepository->filterRecords($fromDate, $toDate, $branchId, $genderId);
 
         $data = [];
         foreach ($list as $row) {
@@ -756,23 +730,23 @@ class RestfulService extends AbstractRestfulController
                 $row['GENDER_NAME'] = 'All';
             }
 
-            if($row['HALFDAY']=='F'){
-                $row['HALFDAY']='First Half';
-            }else if($row['HALFDAY']=='S'){
-                $row['HALFDAY']='Second Half';
-            }else if($row['HALFDAY']=='N'){
-                $row['HALFDAY']='Full Day';
+            if ($row['HALFDAY'] == 'F') {
+                $row['HALFDAY'] = 'First Half';
+            } else if ($row['HALFDAY'] == 'S') {
+                $row['HALFDAY'] = 'Second Half';
+            } else if ($row['HALFDAY'] == 'N') {
+                $row['HALFDAY'] = 'Full Day';
             }
 
-            if($branchId!=-1){
+            if ($branchId != -1) {
                 array_push($data, $row);
-            }else if($branchId==-1){
+            } else if ($branchId == -1) {
                 $holidayBranch = $holidayRepository->selectHolidayBranch($row['HOLIDAY_ID']);
                 $childData = [];
-                foreach($holidayBranch as $childRow){
-                    array_push($childData,$childRow);
+                foreach ($holidayBranch as $childRow) {
+                    array_push($childData, $childRow);
                 }
-                $row['BRANCHES']=$childData;
+                $row['BRANCHES'] = $childData;
                 array_push($data, $row);
             }
         }
@@ -782,8 +756,7 @@ class RestfulService extends AbstractRestfulController
         ];
     }
 
-    public function addPositionAssigned($data)
-    {
+    public function addPositionAssigned($data) {
         $payId = $data['payId'];
         $positions = $data['positions'];
         $payPositionRepo = new PayPositionRepo($this->adapter);
@@ -797,9 +770,7 @@ class RestfulService extends AbstractRestfulController
         return ["success" => true, "data" => null];
     }
 
-
-    private function deletePositionAssigned($data)
-    {
+    private function deletePositionAssigned($data) {
         $payId = $data['payId'];
         $positions = $data['positions'];
         $payPositionRepo = new PayPositionRepo($this->adapter);
@@ -809,8 +780,7 @@ class RestfulService extends AbstractRestfulController
         return ["success" => true, "data" => null];
     }
 
-    private function generataMonthlySheet($data)
-    {
+    private function generataMonthlySheet($data) {
         $employeeId = $data['employee'];
 //        print "<pre>";
         $results = [];
@@ -829,4 +799,12 @@ class RestfulService extends AbstractRestfulController
 //        exit;
         return ["success" => true, "data" => $results];
     }
+
+    private function pullEmployeeDetailById($data) {
+        $employeeId = $data["employeeId"];
+        $employeeRepo = new EmployeeRepository($this->adapter);
+        $employee = $employeeRepo->fetchById($employeeId);
+        return ["success" => true, "data" => $employee];
+    }
+
 }
