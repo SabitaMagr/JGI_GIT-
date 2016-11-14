@@ -167,7 +167,7 @@ return [
     'controllers' => [
         'factories' => [
             Controller\IndexController::class => InvokableFactory::class,
-            Controller\DashboardController::class => InvokableFactory::class,
+            Controller\DashboardController::class => Factory\DashBoardFactory::class,
             Controller\CronController::class => Controller\ControllerFactory::class
         ],
     ],
@@ -188,10 +188,14 @@ return [
             'partial/footer' => __DIR__ . '/../view/layout/partials/footer.phtml',
             'partial/sidebar' => __DIR__ . '/../view/layout/partials/sidebar.phtml',
             'partial/breadcrumb' => __DIR__ . '/../view/layout/partials/breadcrumb.phtml',
-            'partial/profile'=>__DIR__.'/../view/layout/partials/profile.phtml',
+            'partial/profile' => __DIR__ . '/../view/layout/partials/profile.phtml',
+            'dashboard-item/holiday-list' => __DIR__ . '/../view/layout/dashboard-items/holiday-list.phtml',
         ],
         'template_path_stack' => [
             __DIR__ . '/../view',
         ],
+    ],
+    'dashboard-items' => [
+        'holiday-list' => 'dashboard-item/holiday-list',
     ],
 ];
