@@ -4,33 +4,28 @@ namespace Setup\Model;
 
 use Application\Model\Model;
 
-class HrEmployees extends Model
-{
+class HrEmployees extends Model {
 
     public $employeeId;
     public $companyId;
     public $employeeCode;
     public $firstName;
     public $middleName;
-
     public $lastName;
     public $nameNepali;
     public $genderId;
     public $birthDate;
     public $bloodGroupId;
-
     public $religionId;
     public $socialActivity;
     public $telephoneNo;
     public $mobileNo;
     public $extensionNo;
-
     public $emailOfficial;
     public $emailPersonal;
     public $socialNetwork;
     public $emergContactName;
     public $emergContactNo;
-
     public $emergContactAddress;
     public $emergContactRelationship;
     public $addrPermHouseNo;
@@ -43,244 +38,214 @@ class HrEmployees extends Model
     public $addrTempWardNo;
     public $addrTempStreetAddress;
     public $addrTempCountryId;
-
     public $addrTempVdcMunicipalityId;
     public $famFatherName;
     public $famFatherOccupation;
     public $famMotherName;
-
     public $famMotherOccupation;
     public $famGrandFatherName;
     public $famGrandMotherName;
     public $maritualStatus;
     public $famSpouseName;
-
     public $famSpouseOccupation;
     public $famSpouseBirthDate;
     public $famSpouseWeddingAnniversary;
     public $idCardNo;
     public $idLbrf;
-
     public $idBarCode;
     public $idProvidentFundNo;
     public $idDrivingLicenseNo;
     public $idDrivingLicenseType;
     public $idDrivingLicenseExpiry;
-
     public $idThumbId;
     public $idPanNo;
     public $idAccountId;
     public $idRetirementNo;
     public $idCitizenshipNo;
-
     public $idCitizenshipIssueDate;
     public $idCitizenshipIssuePlace;
     public $idPassportNo;
     public $idPassportExpiry;
     public $joinDate;
-
     public $salary;
     public $salaryPf;
     public $remarks;
     public $status;
     public $createdDt;
-
     public $serviceEventTypeId;
     public $serviceTypeId;
     public $positionId;
     public $designationId;
     public $departmentId;
     public $branchId;
-
     public $curServiceEventTypeId;
     public $curServiceTypeId;
     public $curPositionId;
     public $curDesignationId;
     public $curDepartmentId;
     public $curBranchId;
-
     public $countryId;
 
-    const EMPLOYEE_ID="EMPLOYEE_ID";
-    const COMPANY_ID="COMPANY_ID";
-    const EMPLOYEE_CODE="EMPLOYEE_CODE";
-    const FIRST_NAME='FIRST_NAME';
-    const MIDDLE_NAME='MIDDLE_NAME';
-    const LAST_NAME='LAST_NAME';
-    const NAME_NEPALI='NAME_NEPALI';
-    const GENDER_ID='GENDER_ID';
-    const BIRTH_DATE="BIRTH_DATE";
-    const BLOOD_GROUP_ID="BLOOD_GROUP_ID";
-    const RELIGION_ID='RELIGION_ID';
-    const SOCIAL_ACTIVITY='SOCIAL_ACTIVITY';
-    const TELEPHONE_NO='TELEPHONE_NO';
-    const MOBILE_NO='MOBILE_NO';
-    const EXTENSION_NO='EXTENSION_NO';
-    const EMAIL_OFFICIAL="EMAIL_OFFICIAL";
-    const EMAIL_PERSONAL="EMAIL_PERSONAL";
-const SOCIAL_NETWORK="SOCIAL_NETWORK";
-    const EMRG_CONTACT_NAME="EMRG_CONTACT_NAME";
-    const EMERG_CONTACT_NO="EMERG_CONTACT_NO";
-    const EMERG_CONTACT_ADDRESS="EMERG_CONTACT_ADDRESS";
-    const EMERG_CONTACT_RELATIONSHIP="EMERG_CONTACT_RELATIONSHIP";
-    const ADDR_PERM_HOUSE_NO='ADDR_PERM_HOUSE_NO';
-    const ADDR_PERM_WARD_NO='ADDR_PERM_WARD_NO';
-    const ADDR_PERM_STREET_ADDRESS="ADDR_PERM_STREET_ADDRESS";
-    const ADDR_PERM_VDC_MUNICIPALITY_ID="ADDR_PERM_VDC_MUNICIPALITY_ID";
-    const ADDR_TEMP_HOUSE_NO="ADDR_TEMP_HOUSE_NO";
-    const ADDR_TEMP_WARD_NO='ADDR_TEMP_WARD_NO';
-    const ADDR_TEMP_STREET_ADDRESS="ADDR_TEMP_STREET_ADDRESS";
-    const ADDR_TEMP_VDC_MUNICIPALITY_ID="ADDR_TEMP_VDC_MUNICIPALITY_ID";
-    const FAM_FATHER_NAME="FAM_FATHER_NAME";
-    const FAM_FATHER_OCCUPATION="FAM_FATHER_OCCUPATION";
-    const FAM_MOTHER_NAME="FAM_MOTHER_NAME";
-    const FAM_MOTHER_OCCUPATION="FAM_MOTHER_OCCUPATION";
-    const FAM_GRAND_FATHER_NAME="FAM_GRAND_FATHER_NAME";
-    const FAM_GRAND_MOTHER_NAME="FAM_GRAND_MOTHER_NAME";
-    const MARITAL_STATUS="MARITAL_STATUS";
+    const TABLE_NAME="HR_EMPLOYEES";
+    
+    const EMPLOYEE_ID = "EMPLOYEE_ID";
+    const COMPANY_ID = "COMPANY_ID";
+    const EMPLOYEE_CODE = "EMPLOYEE_CODE";
+    const FIRST_NAME = 'FIRST_NAME';
+    const MIDDLE_NAME = 'MIDDLE_NAME';
+    const LAST_NAME = 'LAST_NAME';
+    const NAME_NEPALI = 'NAME_NEPALI';
+    const GENDER_ID = 'GENDER_ID';
+    const BIRTH_DATE = "BIRTH_DATE";
+    const BLOOD_GROUP_ID = "BLOOD_GROUP_ID";
+    const RELIGION_ID = 'RELIGION_ID';
+    const SOCIAL_ACTIVITY = 'SOCIAL_ACTIVITY';
+    const TELEPHONE_NO = 'TELEPHONE_NO';
+    const MOBILE_NO = 'MOBILE_NO';
+    const EXTENSION_NO = 'EXTENSION_NO';
+    const EMAIL_OFFICIAL = "EMAIL_OFFICIAL";
+    const EMAIL_PERSONAL = "EMAIL_PERSONAL";
+    const SOCIAL_NETWORK = "SOCIAL_NETWORK";
+    const EMRG_CONTACT_NAME = "EMRG_CONTACT_NAME";
+    const EMERG_CONTACT_NO = "EMERG_CONTACT_NO";
+    const EMERG_CONTACT_ADDRESS = "EMERG_CONTACT_ADDRESS";
+    const EMERG_CONTACT_RELATIONSHIP = "EMERG_CONTACT_RELATIONSHIP";
+    const ADDR_PERM_HOUSE_NO = 'ADDR_PERM_HOUSE_NO';
+    const ADDR_PERM_WARD_NO = 'ADDR_PERM_WARD_NO';
+    const ADDR_PERM_STREET_ADDRESS = "ADDR_PERM_STREET_ADDRESS";
+    const ADDR_PERM_VDC_MUNICIPALITY_ID = "ADDR_PERM_VDC_MUNICIPALITY_ID";
+    const ADDR_TEMP_HOUSE_NO = "ADDR_TEMP_HOUSE_NO";
+    const ADDR_TEMP_WARD_NO = 'ADDR_TEMP_WARD_NO';
+    const ADDR_TEMP_STREET_ADDRESS = "ADDR_TEMP_STREET_ADDRESS";
+    const ADDR_TEMP_VDC_MUNICIPALITY_ID = "ADDR_TEMP_VDC_MUNICIPALITY_ID";
+    const FAM_FATHER_NAME = "FAM_FATHER_NAME";
+    const FAM_FATHER_OCCUPATION = "FAM_FATHER_OCCUPATION";
+    const FAM_MOTHER_NAME = "FAM_MOTHER_NAME";
+    const FAM_MOTHER_OCCUPATION = "FAM_MOTHER_OCCUPATION";
+    const FAM_GRAND_FATHER_NAME = "FAM_GRAND_FATHER_NAME";
+    const FAM_GRAND_MOTHER_NAME = "FAM_GRAND_MOTHER_NAME";
+    const MARITAL_STATUS = "MARITAL_STATUS";
+    const FAM_SPOUSE_NAME = "FAM_SPOUSE_NAME";
+    const FAM_SPOUSE_OCCUPATION = "FAM_SPOUSE_OCCUPATION";
+    const FAM_SPOUSE_BIRTH_DATE = 'FAM_SPOUSE_BIRTH_DATE';
+    const FAM_SPOUSE_WEDDING_ANNIVERSARY = "FAM_SPOUSE_WEDDING_ANNIVERSARY";
+    const ID_CARD_NO = "ID_CARD_NO";
+    const ID_LBRF = "ID_LBRF";
+    const ID_BAR_CODE = "ID_BAR_CODE";
+    const ID_PROVIDENT_FUND_NO = "ID_PROVIDENT_FUND_NO";
+    const ID_DRIVING_LICENCE_NO = "ID_DRIVING_LICENCE_NO";
+    const ID_DRIVING_LICENCE_TYPE = "ID_DRIVING_LICENCE_TYPE";
+    const ID_DRIVING_LICENCE_EXPIRY = "ID_DRIVING_LICENCE_EXPIRY";
+    const ID_THUMB_ID = "ID_THUMB_ID";
+    const ID_PAN_NO = "ID_PAN_NO";
+    const ID_ACCOUNT_NO = "ID_ACCOUNT_NO";
+    const ID_RETIREMENT_NO = "ID_RETIREMENT_NO";
+    const ID_CITIZENSHIP_NO = "ID_CITIZENSHIP_NO";
+    const ID_CITIZENSHIP_ISSUE_DATE = "ID_CITIZENSHIP_ISSUE_DATE";
+    const ID_CITIZENSHIP_ISSUE_PLACE = "ID_CITIZENSHIP_ISSUE_PLACE";
+    const ID_PASSPORT_NO = "ID_PASSPORT_NO";
+    const ID_PASSPORT_EXPIRY = "ID_PASSPORT_EXPIRY";
+    const JOIN_DATE = "JOIN_DATE";
+    const SALARY = "SALARY";
+    const SALARY_PF = "SALARY_PF";
+    const REMARKS = "REMARKS";
+    const STATUS = "STATUS";
+    const SERVICE_EVENT_TYPE_ID = "SERVICE_EVENT_TYPE_ID";
+    const SERVICE_TYPE_ID = "SERVICE_TYPE_ID";
+    const POSITION_ID = "POSITION_ID";
+    const DESIGNATION_ID = "DESIGNATION_ID";
+    const DEPARTMENT_ID = "DEPARTMENT_ID";
+    const BRANCH_ID = "BRANCH_ID";
+    const CUR_SERVICE_EVENT_TYPE_ID = "CUR_SERVICE_EVENT_TYPE_ID";
+    const CUR_SERVICE_TYPE_ID = "CUR_SERVICE_TYPE_ID";
+    const CUR_POSITION_ID = "CUR_POSITION_ID";
+    const CUR_DESIGNATION_ID = "CUR_DESIGNATION_ID";
+    const CUR_DEPARTMENT_ID = "CUR_DEPARTMENT_ID";
+    const CUR_BRANCH_ID = "CUR_BRANCH_ID";
+    const CREATED_DT = "CREATED_DT";
+    const COUNTRY_ID = "COUNTRY_ID";
+    const ADDR_PERM_COUNTRY_ID = "ADDR_PERM_COUNTRY_ID";
+    const ADDR_TEMP_COUNTRY_ID = "ADDR_TEMP_COUNTRY_ID";
 
-    const FAM_SPOUSE_NAME="FAM_SPOUSE_NAME";
-    const FAM_SPOUSE_OCCUPATION="FAM_SPOUSE_OCCUPATION";
-    const FAM_SPOUSE_BIRTH_DATE='FAM_SPOUSE_BIRTH_DATE';
-    const FAM_SPOUSE_WEDDING_ANNIVERSARY="FAM_SPOUSE_WEDDING_ANNIVERSARY";
-    const ID_CARD_NO="ID_CARD_NO";
-    const ID_LBRF="ID_LBRF";
-    const ID_BAR_CODE="ID_BAR_CODE";
-    const ID_PROVIDENT_FUND_NO="ID_PROVIDENT_FUND_NO";
-    const ID_DRIVING_LICENCE_NO="ID_DRIVING_LICENCE_NO";
-    const ID_DRIVING_LICENCE_TYPE="ID_DRIVING_LICENCE_TYPE";
-    const ID_DRIVING_LICENCE_EXPIRY="ID_DRIVING_LICENCE_EXPIRY";
-    const ID_THUMB_ID="ID_THUMB_ID";
-    const ID_PAN_NO="ID_PAN_NO";
-    const ID_ACCOUNT_NO="ID_ACCOUNT_NO";
-    const ID_RETIREMENT_NO="ID_RETIREMENT_NO";
-    const ID_CITIZENSHIP_NO="ID_CITIZENSHIP_NO";
-    const ID_CITIZENSHIP_ISSUE_DATE="ID_CITIZENSHIP_ISSUE_DATE";
-    const ID_CITIZENSHIP_ISSUE_PLACE="ID_CITIZENSHIP_ISSUE_PLACE";
-    const ID_PASSPORT_NO="ID_PASSPORT_NO";
-    const ID_PASSPORT_EXPIRY="ID_PASSPORT_EXPIRY";
-    const JOIN_DATE="JOIN_DATE";
-    const SALARY="SALARY";
-    const SALARY_PF="SALARY_PF";
-    const REMARKS="REMARKS";
-    const STATUS="STATUS";
-
-    const SERVICE_EVENT_TYPE_ID="SERVICE_EVENT_TYPE_ID";
-    const SERVICE_TYPE_ID="SERVICE_TYPE_ID";
-    const POSITION_ID="POSITION_ID";
-    const DESIGNATION_ID="DESIGNATION_ID";
-    const DEPARTMENT_ID="DEPARTMENT_ID";
-    const BRANCH_ID="BRANCH_ID";
-
-    const CUR_SERVICE_EVENT_TYPE_ID="CUR_SERVICE_EVENT_TYPE_ID";
-    const CUR_SERVICE_TYPE_ID="CUR_SERVICE_TYPE_ID";
-    const CUR_POSITION_ID="CUR_POSITION_ID";
-    const CUR_DESIGNATION_ID="CUR_DESIGNATION_ID";
-    const CUR_DEPARTMENT_ID="CUR_DEPARTMENT_ID";
-    const CUR_BRANCH_ID="CUR_BRANCH_ID";
-
-    const CREATED_DT="CREATED_DT";
-    const COUNTRY_ID="COUNTRY_ID";
-    const ADDR_PERM_COUNTRY_ID="ADDR_PERM_COUNTRY_ID";
-    const ADDR_TEMP_COUNTRY_ID="ADDR_TEMP_COUNTRY_ID";
-
-    public $mappings=[
-        'employeeId'=>self::EMPLOYEE_ID,
-        'companyId'=>self::COMPANY_ID,
-        'employeeCode'=>self::EMPLOYEE_CODE,
-        'firstName'=>self::FIRST_NAME,
-        'middleName'=>self::MIDDLE_NAME,
-        'lastName'=>self::LAST_NAME,
-
-        'nameNepali'=>self::NAME_NEPALI,
-        'genderId'=>self::GENDER_ID,
-        'birthDate'=>self::BIRTH_DATE,
-        'bloodGroupId'=>self::BLOOD_GROUP_ID,
-        'religionId'=>self::RELIGION_ID,
-
-        'socialActivity'=>self::SOCIAL_ACTIVITY,
-        'telephoneNo'=>self::TELEPHONE_NO,
-        'mobileNo'=>self::MOBILE_NO,
-        'extensionNo'=>self::EXTENSION_NO,
-        'emailOfficial'=>self::EMAIL_OFFICIAL,
-
-        'emailPersonal'=>self::EMAIL_PERSONAL,
-        'socialNetwork'=>self::SOCIAL_NETWORK,
-        'emergContactName'=>self::EMRG_CONTACT_NAME,
-        'emergContactNo'=>self::EMERG_CONTACT_NO,
-        'emergContactAddress'=>self::EMERG_CONTACT_ADDRESS,
-
-        'emergContactRelationship'=>self::EMERG_CONTACT_RELATIONSHIP,
-        'addrPermHouseNo'=>self::ADDR_PERM_HOUSE_NO,
-        'addrPermWardNo'=>self::ADDR_PERM_WARD_NO,
-        'addrPermStreetAddress'=>self::ADDR_PERM_STREET_ADDRESS,
-        'addrPermVdcMunicipalityId'=>self::ADDR_PERM_VDC_MUNICIPALITY_ID,
-
-        'addrTempHouseNo'=>self::ADDR_TEMP_HOUSE_NO,
-        'addrTempWardNo'=>self::ADDR_TEMP_WARD_NO,
-        'addrTempStreetAddress'=>self::ADDR_TEMP_STREET_ADDRESS,
-
-        'addrTempVdcMunicipalityId'=>self::ADDR_TEMP_VDC_MUNICIPALITY_ID,
-        'famFatherName'=>self::FAM_FATHER_NAME,
-        'famFatherOccupation'=>self::FAM_FATHER_OCCUPATION,
-
-        'famMotherName'=>self::FAM_MOTHER_NAME,
-        'famMotherOccupation'=>self::FAM_MOTHER_OCCUPATION,
-        'famGrandFatherName'=>self::FAM_GRAND_FATHER_NAME,
-        'famGrandMotherName'=>self::FAM_GRAND_MOTHER_NAME,
-        'maritualStatus'=>self::MARITAL_STATUS,
-
-        'famSpouseName'=>self::FAM_SPOUSE_NAME,
-        'famSpouseOccupation'=>self::FAM_SPOUSE_OCCUPATION,
-        'famSpouseBirthDate'=>self::FAM_SPOUSE_BIRTH_DATE,
-        'famSpouseWeddingAnniversary'=>self::FAM_SPOUSE_WEDDING_ANNIVERSARY,
-        'idCardNo'=>self::ID_CARD_NO,
-
-        'idLbrf'=>self::ID_LBRF,
-        'idBarCode'=>self::ID_BAR_CODE,
-        'idProvidentFundNo'=>self::ID_PROVIDENT_FUND_NO,
-        'idDrivingLicenseNo'=>self::ID_DRIVING_LICENCE_NO,
-        'idDrivingLicenseType'=>self::ID_DRIVING_LICENCE_TYPE,
-
-        'idDrivingLicenseExpiry'=>self::ID_DRIVING_LICENCE_EXPIRY,
-        'idThumbId'=>self::ID_THUMB_ID,
-        'idPanNo'=>self::ID_PAN_NO,
-        'idAccountId'=>self::ID_ACCOUNT_NO,
-        'idRetirementNo'=>self::ID_RETIREMENT_NO,
-
-        'idCitizenshipNo'=>self::ID_CITIZENSHIP_NO,
-        'idCitizenshipIssueDate'=>self::ID_CITIZENSHIP_ISSUE_DATE,
-        'idCitizenshipIssuePlace'=>self::ID_CITIZENSHIP_ISSUE_PLACE,
-        'idPassportNo'=>self::ID_PASSPORT_NO,
-        'idPassportExpiry'=>self::ID_PASSPORT_EXPIRY,
-
-        'joinDate'=>self::JOIN_DATE,
-        'salary'=>self::SALARY,
-        'salaryPf'=>self::SALARY_PF,
-        'remarks'=>self::REMARKS,
-        'status'=>self::STATUS,
-
-        'serviceEventTypeId'=>self::SERVICE_EVENT_TYPE_ID,
-        'serviceTypeId'=>self::SERVICE_TYPE_ID,
-        'positionId'=>self::POSITION_ID,
-        'designationId'=>self::DESIGNATION_ID,
-        'departmentId'=>self::DEPARTMENT_ID,
-        'branchId'=>self::BRANCH_ID,
-
-        'curServiceEventTypeId'=>self::CUR_SERVICE_EVENT_TYPE_ID,
-        'curServiceTypeId'=>self::CUR_SERVICE_TYPE_ID,
-        'curPositionId'=>self::CUR_POSITION_ID,
-        'curDesignationId'=>self::CUR_DESIGNATION_ID,
-        'curDepartmentId'=>self::CUR_DEPARTMENT_ID,
-        'curBranchId'=>self::CUR_BRANCH_ID,
-
-        'createdDt'=>self::CREATED_DT,
-        'countryId'=>self::COUNTRY_ID,
-        'addrPermCountryId'=>self::ADDR_PERM_COUNTRY_ID,
-        'addrTempCountryId'=>self::ADDR_TEMP_COUNTRY_ID
+    public $mappings = [
+        'employeeId' => self::EMPLOYEE_ID,
+        'companyId' => self::COMPANY_ID,
+        'employeeCode' => self::EMPLOYEE_CODE,
+        'firstName' => self::FIRST_NAME,
+        'middleName' => self::MIDDLE_NAME,
+        'lastName' => self::LAST_NAME,
+        'nameNepali' => self::NAME_NEPALI,
+        'genderId' => self::GENDER_ID,
+        'birthDate' => self::BIRTH_DATE,
+        'bloodGroupId' => self::BLOOD_GROUP_ID,
+        'religionId' => self::RELIGION_ID,
+        'socialActivity' => self::SOCIAL_ACTIVITY,
+        'telephoneNo' => self::TELEPHONE_NO,
+        'mobileNo' => self::MOBILE_NO,
+        'extensionNo' => self::EXTENSION_NO,
+        'emailOfficial' => self::EMAIL_OFFICIAL,
+        'emailPersonal' => self::EMAIL_PERSONAL,
+        'socialNetwork' => self::SOCIAL_NETWORK,
+        'emergContactName' => self::EMRG_CONTACT_NAME,
+        'emergContactNo' => self::EMERG_CONTACT_NO,
+        'emergContactAddress' => self::EMERG_CONTACT_ADDRESS,
+        'emergContactRelationship' => self::EMERG_CONTACT_RELATIONSHIP,
+        'addrPermHouseNo' => self::ADDR_PERM_HOUSE_NO,
+        'addrPermWardNo' => self::ADDR_PERM_WARD_NO,
+        'addrPermStreetAddress' => self::ADDR_PERM_STREET_ADDRESS,
+        'addrPermVdcMunicipalityId' => self::ADDR_PERM_VDC_MUNICIPALITY_ID,
+        'addrTempHouseNo' => self::ADDR_TEMP_HOUSE_NO,
+        'addrTempWardNo' => self::ADDR_TEMP_WARD_NO,
+        'addrTempStreetAddress' => self::ADDR_TEMP_STREET_ADDRESS,
+        'addrTempVdcMunicipalityId' => self::ADDR_TEMP_VDC_MUNICIPALITY_ID,
+        'famFatherName' => self::FAM_FATHER_NAME,
+        'famFatherOccupation' => self::FAM_FATHER_OCCUPATION,
+        'famMotherName' => self::FAM_MOTHER_NAME,
+        'famMotherOccupation' => self::FAM_MOTHER_OCCUPATION,
+        'famGrandFatherName' => self::FAM_GRAND_FATHER_NAME,
+        'famGrandMotherName' => self::FAM_GRAND_MOTHER_NAME,
+        'maritualStatus' => self::MARITAL_STATUS,
+        'famSpouseName' => self::FAM_SPOUSE_NAME,
+        'famSpouseOccupation' => self::FAM_SPOUSE_OCCUPATION,
+        'famSpouseBirthDate' => self::FAM_SPOUSE_BIRTH_DATE,
+        'famSpouseWeddingAnniversary' => self::FAM_SPOUSE_WEDDING_ANNIVERSARY,
+        'idCardNo' => self::ID_CARD_NO,
+        'idLbrf' => self::ID_LBRF,
+        'idBarCode' => self::ID_BAR_CODE,
+        'idProvidentFundNo' => self::ID_PROVIDENT_FUND_NO,
+        'idDrivingLicenseNo' => self::ID_DRIVING_LICENCE_NO,
+        'idDrivingLicenseType' => self::ID_DRIVING_LICENCE_TYPE,
+        'idDrivingLicenseExpiry' => self::ID_DRIVING_LICENCE_EXPIRY,
+        'idThumbId' => self::ID_THUMB_ID,
+        'idPanNo' => self::ID_PAN_NO,
+        'idAccountId' => self::ID_ACCOUNT_NO,
+        'idRetirementNo' => self::ID_RETIREMENT_NO,
+        'idCitizenshipNo' => self::ID_CITIZENSHIP_NO,
+        'idCitizenshipIssueDate' => self::ID_CITIZENSHIP_ISSUE_DATE,
+        'idCitizenshipIssuePlace' => self::ID_CITIZENSHIP_ISSUE_PLACE,
+        'idPassportNo' => self::ID_PASSPORT_NO,
+        'idPassportExpiry' => self::ID_PASSPORT_EXPIRY,
+        'joinDate' => self::JOIN_DATE,
+        'salary' => self::SALARY,
+        'salaryPf' => self::SALARY_PF,
+        'remarks' => self::REMARKS,
+        'status' => self::STATUS,
+        'serviceEventTypeId' => self::SERVICE_EVENT_TYPE_ID,
+        'serviceTypeId' => self::SERVICE_TYPE_ID,
+        'positionId' => self::POSITION_ID,
+        'designationId' => self::DESIGNATION_ID,
+        'departmentId' => self::DEPARTMENT_ID,
+        'branchId' => self::BRANCH_ID,
+        'curServiceEventTypeId' => self::CUR_SERVICE_EVENT_TYPE_ID,
+        'curServiceTypeId' => self::CUR_SERVICE_TYPE_ID,
+        'curPositionId' => self::CUR_POSITION_ID,
+        'curDesignationId' => self::CUR_DESIGNATION_ID,
+        'curDepartmentId' => self::CUR_DEPARTMENT_ID,
+        'curBranchId' => self::CUR_BRANCH_ID,
+        'createdDt' => self::CREATED_DT,
+        'countryId' => self::COUNTRY_ID,
+        'addrPermCountryId' => self::ADDR_PERM_COUNTRY_ID,
+        'addrTempCountryId' => self::ADDR_TEMP_COUNTRY_ID
     ];
 
-
-
 }
-

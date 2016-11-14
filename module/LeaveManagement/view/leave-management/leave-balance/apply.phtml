@@ -38,6 +38,7 @@ print $this->form()->openTag($form);
     <script>
         document.menu =<?php $menu = ["id" => "menuLeave", "subMenu" => ["id" => "subMenuLeaveBalance"]];echo json_encode($menu);?>;
         document.url = '<?= $this->url("webService", ["action" => "index"]) ?>';
+        document.employeeId=<?= json_encode($employeeId) ?>;
     </script>
 
 <div class="page-bar">

@@ -69,13 +69,17 @@ window.app = (function ($, toastr) {
     successMessage(document.messages);
 
     var floatingProfile = {
+        minStatus: false,
         obj: document.querySelector('#floating-profile'),
         view: {
             name: $('#floating-profile  #name'),
             gender: $('#floating-profile #gender'),
             birthDate: $('#floating-profile #birthDate'),
             mobileNo: $('#floating-profile #mobileNo'),
-
+            image: $('#floating-profile #profile-image'),
+            header: $('#floating-profile #profile-header'),
+            body: $('#floating-profile #profile-body'),
+            minMaxBtn: $('#floating-profile #min-max-btn')
         },
         data: {
             firstName: null,
@@ -108,8 +112,10 @@ window.app = (function ($, toastr) {
                 this.data.genderId = success.data['GENDER_ID'];
                 this.data.birthDate = success.data['BIRTH_DATE'];
                 this.data.mobileNo = success.data['MOBILE_NO'];
+                this.data.imageFilePath = success.data['FILE_PATH'];
 
                 this.refreshView();
+                this.show();
             }.bind(this), function (failure) {
                 console.log(failure);
             });
@@ -123,11 +129,38 @@ window.app = (function ($, toastr) {
             this.view.gender.text(this.data.genderId == 1 ? "Male" : this.data.genderId == 2 ? "Female" : "Other");
             this.view.birthDate.text(this.data.birthDate);
             this.view.mobileNo.text(this.data.mobileNo);
+            if (this.data.imageFilePath != null && (typeof this.data.imageFilePath !== "undefined") && this.data.imageFilePath.length >= 4) {
+                this.view.image.attr('src', document.basePath + "/uploads/" + this.data.imageFilePath);
+            }
+        },
+        minimize: function () {
+            this.view.body.hide();
+            this.view.minMaxBtn.removeClass("fa-minus");
+            this.view.minMaxBtn.addClass("fa-plus");
+            $(this.obj).css("height", 20);
+            this.minStatus = true;
+        },
+        maximize: function () {
+            this.view.body.show();
+            this.view.minMaxBtn.removeClass("fa-plus");
+            this.view.minMaxBtn.addClass("fa-minus");
+            $(this.obj).css("height", 200);
+            this.minStatus = false;
+        },
+        initialize: function () {
+            this.makeDraggable();
+            this.hide();
+            this.view.minMaxBtn.on("click", function () {
+                if (this.minStatus) {
+                    this.maximize();
+                } else {
+                    this.minimize();
+                }
+            }.bind(this));
         }
+    };
+    floatingProfile.initialize();
 
-    }
-    floatingProfile.makeDraggable();
-    floatingProfile.hide();
     return {
         format: format,
         pullDataById: pullDataById,

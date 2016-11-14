@@ -130,7 +130,7 @@ class RestfulService extends AbstractRestfulController {
                     $responseData = $this->generataMonthlySheet($postedData->data);
                     break;
                 case "pullEmployeeDetailById":
-                    $responseData=$this->pullEmployeeDetailById($postedData->data);
+                    $responseData = $this->pullEmployeeDetailById($postedData->data);
                     break;
                 default:
                     $responseData = [
@@ -803,7 +803,8 @@ class RestfulService extends AbstractRestfulController {
     private function pullEmployeeDetailById($data) {
         $employeeId = $data["employeeId"];
         $employeeRepo = new EmployeeRepository($this->adapter);
-        $employee = $employeeRepo->fetchById($employeeId);
+//        $employee = $employeeRepo->fetchById($employeeId);
+        $employee = $employeeRepo->fetchForProfileById($employeeId);
         return ["success" => true, "data" => $employee];
     }
 

@@ -8,15 +8,14 @@ use Zend\Db\ResultSet\ResultSet;
 use Zend\Db\Sql\Expression;
 use Zend\Db\Sql\Sql;
 
-class Helper
-{
+class Helper {
+
     const ORACLE_DATE_FORMAT = "DD-MON-YYYY";
     const ORACLE_TIME_FORMAT = "HH:MI AM";
     const MYSQL_DATE_FORMAT = "";
     const PHP_DATE_FORMAT = "d-M-Y";
 
-    public static function addFlashMessagesToArray($context, $return)
-    {
+    public static function addFlashMessagesToArray($context, $return) {
         $flashMessenger = $context->flashMessenger();
         if ($flashMessenger->hasMessages()) {
             $return['messages'] = $flashMessenger->getMessages();
@@ -24,8 +23,7 @@ class Helper
         return $return;
     }
 
-    public static function getMaxId(AdapterInterface $adapter, $tableName, $columnName)
-    {
+    public static function getMaxId(AdapterInterface $adapter, $tableName, $columnName) {
         $sql = new Sql($adapter);
         $select = $sql->select();
         $select->from($tableName);
@@ -36,31 +34,27 @@ class Helper
         $result = $statement->execute();
         $row = $result->current();
         return $row["MAX_{$columnName}"];
-
     }
 
-    public static function convertColumnDateFormat(AdapterInterface $adapter, Model $table, $attrs=null,$timeAttrs=null)
-    {
+    public static function convertColumnDateFormat(AdapterInterface $adapter, Model $table, $attrs = null, $timeAttrs = null) {
         $format = 'DD-MON-YYYY HH24:MI:SS';
 
         $temp = get_object_vars($table);
-        if($attrs!=null){
-        foreach ($attrs as $attr) {
-            unset($temp[$attr]);
+        if ($attrs != null) {
+            foreach ($attrs as $attr) {
+                unset($temp[$attr]);
+            }
         }
 
-        }
-
-        if($timeAttrs!=null){
-        foreach ($timeAttrs as $attr){
-            unset($temp[$attr]);
-        }
-
+        if ($timeAttrs != null) {
+            foreach ($timeAttrs as $attr) {
+                unset($temp[$attr]);
+            }
         }
 
         unset($temp['mappings']);
 
-        if($timeAttrs!=null) {
+        if ($timeAttrs != null) {
             foreach ($timeAttrs as $attr) {
                 unset($temp[$attr]);
             }
@@ -70,22 +64,22 @@ class Helper
 
         $tempCols = [];
 
-        if($attrs!=null) {
+        if ($attrs != null) {
             foreach ($attrs as $attr) {
                 array_push($tempCols, Helper::appendDateFormat($adapter, $table->mappings[$attr], self::ORACLE_DATE_FORMAT));
             }
         }
 
-        if($timeAttrs!=null) {
+        if ($timeAttrs != null) {
             foreach ($timeAttrs as $attr) {
                 array_push($tempCols, Helper::appendDateFormat($adapter, $table->mappings[$attr], self::ORACLE_TIME_FORMAT));
             }
         }
 
-        if($timeAttrs!=null){
-        foreach ($timeAttrs as $attr) {
-            array_push($tempCols, Helper::appendDateFormat($adapter, $table->mappings[$attr], self::ORACLE_TIME_FORMAT));
-        }
+        if ($timeAttrs != null) {
+            foreach ($timeAttrs as $attr) {
+                array_push($tempCols, Helper::appendDateFormat($adapter, $table->mappings[$attr], self::ORACLE_TIME_FORMAT));
+            }
         }
 
         foreach ($attributes as $attribute) {
@@ -94,8 +88,7 @@ class Helper
         return $tempCols;
     }
 
-    public static function appendDateFormat($adapter, $columnName, $format)
-    {
+    public static function appendDateFormat($adapter, $columnName, $format) {
 
         $tempStr = "";
         switch (strtolower($adapter->getPlatform()->getName())) {
@@ -108,41 +101,55 @@ class Helper
                 break;
         }
         return $tempStr;
-
-
     }
 
-    public static function getExpressionDate($dateStr)
-    {
+    public static function dateExpression($columnName, $shortForm = null) {
         $format = Helper::ORACLE_DATE_FORMAT;
-        return new Expression("TO_DATE('{$dateStr}', '{$format}')");
+        $pre = "";
+        if ($shortForm != null && sizeof($shortForm) != 0) {
+            $pre = $shortForm . ".";
+        }
+        $tempStr = "TO_CHAR({$pre}{$columnName}, '{$format}') AS {$columnName}";
+        return new Expression($tempStr);
     }
 
-    public static function getExpressionTime($dateStr)
-    {
+    public static function columnExpression($columnName, $shortForm = null) {
+        $pre = "";
+        if ($shortForm != null && sizeof($shortForm) != 0) {
+            $pre = $shortForm . ".";
+        }
+        $tempStr = "{$pre}{$columnName} AS {$columnName}";
+        return new Expression($tempStr);
+    }
+
+    public static function getExpressionDate($dateStr) {
+        $format = Helper::ORACLE_DATE_FORMAT;
+        return new Expression("TO_DATE('{$dateStr}', '{$format}')"
+        );
+    }
+
+    public static function getExpressionTime($dateStr) {
         $format = Helper::ORACLE_TIME_FORMAT;
         return new Expression("TO_DATE('{$dateStr}', '{$format}')");
     }
 
-    public static function getcurrentExpressionDate()
-    {
+    public static function getcurrentExpressionDate() {
         $currentDate = date(self::PHP_DATE_FORMAT);
         return self::getExpressionDate($currentDate);
     }
 
-    public static function hydrate($class, ResultSet $resultSet)
-    {
+    public static function hydrate($class, ResultSet $resultSet) {
         $tempArray = [];
         foreach ($resultSet as $item) {
             $model = new $class();
-            $model->exchangeArrayFromDB($item->getArrayCopy());
+            $model->exchangeArrayFromDB(
+                    $item->getArrayCopy());
             array_push($tempArray, $model);
         }
         return $tempArray;
     }
 
-    public static function renderCustomView()
-    {
+    public static function renderCustomView() {
         return function ($object) {
             $elems = $object->getValueOptions();
             $counter = 1;
@@ -159,26 +166,24 @@ class Helper
                     }
                 }
 
-                echo "<div class='md-radio'>";
-               echo "<input $temp  type='radio' value='$key' name='$name' id='$name+$value' class='md-radiobtn radioButton'>";
+                echo "<div class = 'md-radio'>";
+                echo "<input $temp type = 'radio' value = '$key' name = '$name' id = '$name+$value' class = 'md-radiobtn radioButton'>";
 
-               echo "<label for='$name+$value'>
-                    <span></span>
-                    <span class='check'></span>
-                    <span class='box'></span> $value 
+                echo "<label for = '$name+$value'>
+                <span></span>
+                <span class = 'check'></span>
+                <span class = 'box'></span> $value
                 </label>";
                 echo "</div>";
                 $counter++;
             }
-
         };
     }
 
-    public static function generateUniqueName()
-    {
+    public static function generateUniqueName() {
         $date = new \DateTime();
         $t = $date->getTimestamp();
         return $t + rand(0, 1000);
-
     }
+
 }
