@@ -106,6 +106,10 @@ License: You must have a valid license purchased only from themeforest(the above
 
 
 <body class="page-header-fixed page-sidebar-closed-hide-logo page-content-white page-md">
+    <script>
+    document.restfulUrl = '<?= $this->url("restful", ["action" => "index"]) ?>';
+    document.basePath='<?= $this->basePath() ?>';
+    </script>
 <div class="page-wrapper">
     <!-- BEGIN HEADER -->
     <?php
@@ -153,6 +157,10 @@ License: You must have a valid license purchased only from themeforest(the above
     <?php
     print $this->partial('partials/footer.phtml');
     ?>
+    <?php
+    print $this->partial('partials/profile.phtml');
+    ?>
+    
     <!-- END FOOTER -->
 </div>
 <!-- BEGIN QUICK NAV -->
@@ -239,6 +247,7 @@ $this->headScript()
 <!-- BEGIN CORE PLUGINS -->
 <?php
 print $this->headScript()
+    ->prependFile($this->basePath('assets/global/plugins/jquery-ui/jquery-ui.min.js'))
     ->prependFile($this->basePath('assets/global/plugins/bootstrap-toastr/toastr.min.js'))
     ->prependFile($this->basePath('assets/global/plugins/bootstrap-switch/js/bootstrap-switch.min.js'))
     ->prependFile($this->basePath('assets/global/plugins/jquery.blockui.min.js'))

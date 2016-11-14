@@ -62,6 +62,7 @@ class LeaveStatus extends AbstractActionController {
         $request = $this->getRequest();
 
         $detail = $this->repository->fetchById($id);
+        $employeeId=$detail['EMPLOYEE_ID'];
         $employeeName = $detail['FIRST_NAME']." ".$detail['MIDDLE_NAME']." ".$detail['LAST_NAME'];
         $recommender = $detail['FN1']." ".$detail['MN1']." ".$detail['LN1'];
         $approver = $detail['FN2']." ".$detail['MN2']." ".$detail['LN2'];
@@ -101,6 +102,7 @@ class LeaveStatus extends AbstractActionController {
         return Helper::addFlashMessagesToArray($this, [
             'form' => $this->form,
             'id'=>$id,
+            'employeeId'=>$employeeId,
             'employeeName'=>$employeeName,
             'requestedDt'=>$detail['REQUESTED_DT'],
             'availableDays'=>$preBalance,

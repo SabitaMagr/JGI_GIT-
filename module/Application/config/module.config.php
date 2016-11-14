@@ -188,6 +188,7 @@ return [
             'partial/footer' => __DIR__ . '/../view/layout/partials/footer.phtml',
             'partial/sidebar' => __DIR__ . '/../view/layout/partials/sidebar.phtml',
             'partial/breadcrumb' => __DIR__ . '/../view/layout/partials/breadcrumb.phtml',
+            'partial/profile'=>__DIR__.'/../view/layout/partials/profile.phtml',
         ],
         'template_path_stack' => [
             __DIR__ . '/../view',
