@@ -2,6 +2,7 @@
 /**
  * Load Javascript files here
  */
+$this->headScript()->appendFile($this->basePath('js/angular.min.js'));
 $this->headScript()->appendFile($this->basePath('assets/global/plugins/boostrap-form-wizard/js/jquery.bootstrap.wizard.min.js'));
 $this->headScript()->appendFile($this->basePath('js/form_wizard.js'));
 $this->headScript()->appendFile($this->basePath('js/custom.js'));
@@ -134,8 +135,21 @@ $branchId->setValueOptions($branches);
 $formFive->setAttribute('id', 'form5');
 $fileTypeCode = $formFive->get('fileTypeCode');
 $filePath = $formFive->get('filePath');
-
 $fileTypeCode->setValueOptions($filetypes);
+
+$formSix->setAttribute('id', 'form6');
+$academicDegreeId = $formSix->get('academicDegreeId');
+$academicDegreeId->setValueOptions($academicDegree);
+$academicUniversityId = $formSix->get('academicUniversityId');
+$academicUniversityId->setValueOptions($academicUniversity);
+$academicProgramId = $formSix->get('academicProgramId');
+$academicProgramId->setValueOptions($academicProgram);
+$academicCourseId = $formSix->get('academicCourseId');
+$academicCourseId->setValueOptions($academicCourse);
+$rankType = $formSix->get('rankType');
+$rankType->setValueOptions($rankTypes);
+$rankValue = $formSix->get('rankValue');
+$passedYr = $formSix->get('passedYr');
 
 $empId = isset($id) ? $id : -1;
 ?>
@@ -154,7 +168,8 @@ if ($this->messages) {
     document.menu =<?php $menu = ["id" => "menuSetup", "subMenu" => ["id" => "subMenuEmployee"]];echo json_encode($menu);?>;
     document.urlDistrict = '<?= $this->url("webService", ["action" => "district"]) ?>';
     document.urlMunicipality = '<?= $this->url("webService", ["action" => "municipality"]) ?>';
-    document.urlEmployeeList = '<?= $this->url("employee", ["action" => "index"]) ?>'
+    document.urlEmployeeList = '<?= $this->url("employee", ["action" => "index"]) ?>';
+    document.urlQualificationDtl = '<?= $this->url("restful", ["action" => "index"]) ?>'
 </script>
 
 <div class="page-bar">
@@ -192,6 +207,11 @@ if ($this->messages) {
         </li>
         <li class="">
             <a data-toggle="tab" href="#tab6">
+                Qualification
+            </a>
+        </li>
+        <li class="">
+            <a data-toggle="tab" href="#tab7">
                 Add. Information
             </a>
         </li>
@@ -615,7 +635,7 @@ if ($this->messages) {
                         class="form-group   <?= empty($idDrivingLicenseExpiry->getMessages()) ? "" : "error" ?>">
                         <?php print $this->formLabel($idDrivingLicenseExpiry); ?>
                         <?php print $this->formElement($idDrivingLicenseExpiry); ?>
-                       
+
                     </div>
                     <?php print $this->formElementErrors()->render($idDrivingLicenseExpiry, ['class' => 'help-block error']); ?>
 
@@ -674,7 +694,7 @@ if ($this->messages) {
                         class="form-group   <?= empty($idCitizenshipIssueDate->getMessages()) ? "" : "error" ?>">
                         <?php print $this->formLabel($idCitizenshipIssueDate); ?>
                         <?php print $this->formElement($idCitizenshipIssueDate); ?>
-                       
+
                     </div>
                     <?php print $this->formElementErrors()->render($idCitizenshipIssueDate, ['class' => 'help-block error']); ?>
 
@@ -688,7 +708,7 @@ if ($this->messages) {
                         class="form-group   <?= empty($idPassportExpiry->getMessages()) ? "" : "error" ?>">
                         <?php print $this->formLabel($idPassportExpiry); ?>
                         <?php print $this->formElement($idPassportExpiry); ?>
-                       
+
                     </div>
                     <?php print $this->formElementErrors()->render($idPassportExpiry, ['class' => 'help-block error']); ?>
                 </div>
@@ -818,8 +838,94 @@ if ($this->messages) {
             ?>
 
         </div>
-
         <div class="tab-pane" id="tab6">
+            <div class="row">
+                <div ng-app="hris" ng-controller="qualificationController">
+                    <input type="hidden" name="employeeId" id="employeeId" value="0">
+                    <div class="col-sm-12">
+                        <table class="table table-striped table-bordered table-hover no-footer" id="qualificationTbl">
+                            <tr>
+                                <td><?php print $this->formLabel($academicDegreeId); ?></td>
+                                <td><?php print $this->formLabel($academicUniversityId); ?></td>
+                                <td><?php print $this->formLabel($academicProgramId); ?></td>
+                                <td><?php print $this->formLabel($academicCourseId); ?></td>
+                                <td><?php print $this->formLabel($rankType); ?></td>
+                                <td><?php print $this->formLabel($rankValue); ?></td>
+                                <td><?php print $this->formLabel($passedYr); ?></td>
+                                <td width="1%">
+                                </td>
+                            </tr>
+                            <tr ng-repeat="qualificationForm in qualificationFormList">
+                                <td>
+                                    <input type="hidden" ng-model="qualificationForm.id"/>
+                                    <select class="form-control" ng-options="degree.name for degree in degreeList track by degree.id" ng-model="qualificationForm.academicDegreeId">
+                                    </select>
+                                </td>
+                                <td>
+                                    <select class="form-control" ng-options="university.name for university in universityList track by university.id" ng-model="qualificationForm.academicUniversityId">
+                                    </select>
+                                </td>
+                                <td>
+                                    <select class="form-control" ng-options="program.name for program in programList track by program.id" ng-model="qualificationForm.academicProgramId">
+                                    </select>
+                                </td>
+                                <td>
+                                    <select class="form-control" ng-options="course.name for course in courseList track by course.id" ng-model="qualificationForm.academicCourseId">
+                                    </select>
+                                </td>
+                                <td>
+                                    <select class="form-control" ng-options="rankTypes.name for rankTypes in rankType track by rankTypes.id" ng-model="qualificationForm.rankType">
+                                    </select>
+                                </td>
+
+
+                                <td>
+                                    <input ng-model="qualificationForm.rankValue" required="required"
+                                           class="rankValue-weight form-control" size="7" type="text" value="">
+                                </td>
+                                <td>
+                                    <input type="text" class="form-passedYr form-control" value=""
+                                           ng-model="qualificationForm.passedYr">
+                                </td>
+                                <td width="1%" style="padding:15px;">
+                                    <div class="md-checkbox">
+                                        <input type="checkbox" id="{{qualificationForm.checkbox}}" class="md-check" ng-model="qualificationForm.checked">
+                                        <label for="{{qualificationForm.checkbox}}">
+                                            <span class="inc"></span>
+                                            <span class="check"></span>
+                                            <span class="box"></span>
+                                        </label>
+                                    </div>
+
+                                </td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td>
+                                    <a href="javascript:;" class="btn btn-icon-only default pull-right"
+                                       ng-click="view()">
+                                        <i class="fa fa-plus"></i>
+                                    </a>
+                                </td>
+                                <td>
+                                    <a href="javascript:;" class="btn btn-icon-only default" ng-click="delete()">
+                                        <i class="fa fa-trash-o"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    <button ng-click="addQualification()">Submit</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="tab-pane" id="tab7">
             <div class="row clearfix">
                 <div class="col-sm-6">
                     <div class="form-group">
@@ -875,7 +981,7 @@ if ($this->messages) {
             <ul class="pager wizard">
                 <li class="next">
                     <button
-                        class="btn btn-success pull-right">
+                        class="btn btn-success pull-right" >
                         <span>Next</span>
                     </button>
                 </li>

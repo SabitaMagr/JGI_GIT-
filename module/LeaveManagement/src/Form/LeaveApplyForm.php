@@ -48,8 +48,7 @@ class LeaveApplyForm
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Available Days"})
      * @Annotation\Required(true)
-     * @Annotation\Validator({"name":"StringLength", "options":{"max":"2"}})
-     * @Annotation\Attributes({ "id":"availableDays","disabled":"disabled", "class":"form-control","min":"0","max":"99"  })
+     * @Annotation\Attributes({ "id":"availableDays","disabled":"disabled", "class":"form-control"})
      */
     public $availableDays;
 
@@ -58,8 +57,7 @@ class LeaveApplyForm
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"No of Days"})
      * @Annotation\Required(true)
-     * @Annotation\Validator({"name":"StringLength", "options":{"max":"2"}})
-     * @Annotation\Attributes({ "id":"noOfDays", "class":"form-control","min":"0","max":"99"  })
+     * @Annotation\Attributes({ "id":"noOfDays", "class":"form-control"})
      */
     public $noOfDays;
 

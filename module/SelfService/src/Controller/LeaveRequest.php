@@ -79,6 +79,8 @@ class LeaveRequest extends AbstractActionController{
         if($request->isPost()){
             $this->form->setData($request->getPost());
 
+            //print_R($request->getPost()); die();
+
             if($this->form->isValid()){
                 $leaveRequest = new LeaveApply();
                 $leaveRequest->exchangeArrayFromForm($this->form->getData());

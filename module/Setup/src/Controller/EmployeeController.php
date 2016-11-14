@@ -11,6 +11,7 @@ namespace Setup\Controller;
 
 use Application\Helper\EntityHelper as ApplicationHelper;
 use Application\Helper\Helper;
+use Setup\Form\HrEmployeesFormTabSix;
 use Setup\Helper\EntityHelper;
 use Setup\Form\HrEmployeesFormTabFive;
 use Setup\Form\HrEmployeesFormTabFour;
@@ -52,6 +53,7 @@ class EmployeeController extends AbstractActionController
     private $formThree;
     private $formFour;
     private $formFive;
+    private $formSix;
 
     public function initializeForm()
     {
@@ -61,6 +63,7 @@ class EmployeeController extends AbstractActionController
         $formTabThree = new HrEmployeesFormTabThree();
         $formTabFour = new HrEmployeesFormTabFour();
         $formTabFive = new HrEmployeesFormTabFive();
+        $formTabSix = new HrEmployeesFormTabSix();
 
         if (!$this->formOne) {
             $this->formOne = $builder->createForm($formTabOne);
@@ -76,6 +79,9 @@ class EmployeeController extends AbstractActionController
         }
         if (!$this->formFive) {
             $this->formFive = $builder->createForm($formTabFive);
+        }
+        if (!$this->formSix) {
+            $this->formSix = $builder->createForm($formTabSix);
         }
 
     }
@@ -102,12 +108,17 @@ class EmployeeController extends AbstractActionController
             }
 
         }
+        $rankTypes = array(
+            'GPA'=>"GPA",
+            'PER'=>'Percentage'
+        );
         return new ViewModel([
             'formOne' => $this->formOne,
             'formTwo' => $this->formTwo,
             'formThree' => $this->formThree,
             'formFour' => $this->formFour,
             'formFive' => $this->formFive,
+            'formSix'=>$this->formSix,
             "bloodGroups" => EntityHelper::getTableKVList($this->adapter, EntityHelper::HR_BLOOD_GROUPS),
             "districts" => EntityHelper::getTableKVList($this->adapter, EntityHelper::HR_DISTRICTS),
             "genders" => EntityHelper::getTableKVList($this->adapter, EntityHelper::HR_GENDERS),
@@ -122,7 +133,12 @@ class EmployeeController extends AbstractActionController
             'designations'=>ApplicationHelper::getTableKVList($this->adapter,"HR_DESIGNATIONS","DESIGNATION_ID",["DESIGNATION_TITLE"],["STATUS"=>'E']),
             'departments'=>ApplicationHelper::getTableKVList($this->adapter,"HR_DEPARTMENTS","DEPARTMENT_ID",["DEPARTMENT_NAME"],["STATUS"=>'E']),
             'branches'=>ApplicationHelper::getTableKVList($this->adapter,"HR_BRANCHES","BRANCH_ID",["BRANCH_NAME"],["STATUS"=>'E']),
-            'serviceEventTypes'=>ApplicationHelper::getTableKVList($this->adapter,"HR_SERVICE_EVENT_TYPES","SERVICE_EVENT_TYPE_ID",["SERVICE_EVENT_TYPE_NAME"],["STATUS"=>'E'])
+            'serviceEventTypes'=>ApplicationHelper::getTableKVList($this->adapter,"HR_SERVICE_EVENT_TYPES","SERVICE_EVENT_TYPE_ID",["SERVICE_EVENT_TYPE_NAME"],["STATUS"=>'E']),
+            'academicDegree'=>ApplicationHelper::getTableKVList($this->adapter,"HR_ACADEMIC_DEGREES","ACADEMIC_DEGREE_ID",["ACADEMIC_DEGREE_NAME"],["STATUS"=>'E']),
+            'academicUniversity'=>ApplicationHelper::getTableKVList($this->adapter,"HR_ACADEMIC_UNIVERSITY","ACADEMIC_UNIVERSITY_ID",["ACADEMIC_UNIVERSITY_NAME"],["STATUS"=>'E']),
+            'academicProgram'=>ApplicationHelper::getTableKVList($this->adapter,"HR_ACADEMIC_PROGRAMS","ACADEMIC_PROGRAM_ID",["ACADEMIC_PROGRAM_NAME"],["STATUS"=>'E']),
+            'academicCourse'=>ApplicationHelper::getTableKVList($this->adapter,"HR_ACADEMIC_COURSES","ACADEMIC_COURSE_ID",["ACADEMIC_COURSE_NAME"],["STATUS"=>'E']),
+            'rankTypes'=>$rankTypes
         ]);
 
 
@@ -149,6 +165,7 @@ class EmployeeController extends AbstractActionController
         $formThreeModel = new HrEmployeesFormTabThree();
         $formFourModel = new HrEmployeesFormTabFour();
         $formFiveModel = new HrEmployeesFormTabFive();
+        $formSixModel = new HrEmployeesFormTabSix();
 
         $employeeData = (array)$this->repository->fetchById($id);
 
@@ -222,6 +239,14 @@ class EmployeeController extends AbstractActionController
 
                     }
                     break;
+
+                case 6:
+                    $this->formSix->setData($postData);
+
+                    if($this->formSix->isValid()){
+
+                    }
+                    break;
             }
 
         }
@@ -252,6 +277,15 @@ class EmployeeController extends AbstractActionController
 //            print_r($this->formFive->get('filePath'));
 //            exit;
         }
+        if ($tab != 6 || !$request->isPost()) {
+            $formSixModel->exchangeArrayFromDB($employeeData);
+            $this->formSix->bind($formSixModel);
+        }
+
+        $rankTypes = array(
+            'GPA'=>"GPA",
+            'PER'=>'Percentage'
+        );
 
         return Helper::addFlashMessagesToArray($this, [
             'formOne' => $this->formOne,
@@ -259,6 +293,7 @@ class EmployeeController extends AbstractActionController
             'formThree' => $this->formThree,
             'formFour' => $this->formFour,
             'formFive' => $this->formFive,
+            'formSix' => $this->formSix,
             'tab' => $tab,
             "id" => $id,
             "bloodGroups" => EntityHelper::getTableKVList($this->adapter, EntityHelper::HR_BLOOD_GROUPS),
@@ -275,10 +310,13 @@ class EmployeeController extends AbstractActionController
             'designations'=>ApplicationHelper::getTableKVList($this->adapter,"HR_DESIGNATIONS","DESIGNATION_ID",["DESIGNATION_TITLE"],["STATUS"=>'E']),
             'departments'=>ApplicationHelper::getTableKVList($this->adapter,"HR_DEPARTMENTS","DEPARTMENT_ID",["DEPARTMENT_NAME"],["STATUS"=>'E']),
             'branches'=>ApplicationHelper::getTableKVList($this->adapter,"HR_BRANCHES","BRANCH_ID",["BRANCH_NAME"],["STATUS"=>'E']),
-            'serviceEventTypes'=>ApplicationHelper::getTableKVList($this->adapter,"HR_SERVICE_EVENT_TYPES","SERVICE_EVENT_TYPE_ID",["SERVICE_EVENT_TYPE_NAME"],["STATUS"=>'E'])
+            'serviceEventTypes'=>ApplicationHelper::getTableKVList($this->adapter,"HR_SERVICE_EVENT_TYPES","SERVICE_EVENT_TYPE_ID",["SERVICE_EVENT_TYPE_NAME"],["STATUS"=>'E']),
+            'academicDegree'=>ApplicationHelper::getTableKVList($this->adapter,"HR_ACADEMIC_DEGREES","ACADEMIC_DEGREE_ID",["ACADEMIC_DEGREE_NAME"],["STATUS"=>'E']),
+            'academicUniversity'=>ApplicationHelper::getTableKVList($this->adapter,"HR_ACADEMIC_UNIVERSITY","ACADEMIC_UNIVERSITY_ID",["ACADEMIC_UNIVERSITY_NAME"],["STATUS"=>'E']),
+            'academicProgram'=>ApplicationHelper::getTableKVList($this->adapter,"HR_ACADEMIC_PROGRAMS","ACADEMIC_PROGRAM_ID",["ACADEMIC_PROGRAM_NAME"],["STATUS"=>'E']),
+            'academicCourse'=>ApplicationHelper::getTableKVList($this->adapter,"HR_ACADEMIC_COURSES","ACADEMIC_COURSE_ID",["ACADEMIC_COURSE_NAME"],["STATUS"=>'E']),
+            'rankTypes'=>$rankTypes
         ]);
-
-
     }
 
     public function deleteAction()
