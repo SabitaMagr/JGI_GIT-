@@ -172,3 +172,5 @@ window.app = (function ($, toastr) {
         floatingProfile: floatingProfile
     };
 })(window.jQuery, window.toastr);
+
+//
