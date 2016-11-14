@@ -90,6 +90,7 @@ print $this->form()->openTag($form);
                     <div class="form-group disabled">
                         <label for="leaveId">Available Days</label>
                         <input type="text" READONLY name="availableDays" ng-model="availableDays" required="required" id="availableDays"  class="form-control"  value="">
+                        <?php print $this->formElementErrors()->render($noOfDays, ['class' => 'help-block error']); ?>
                     </div>
                     <div
                         class="form-group required <?= empty($noOfDays->getMessages()) ? "" : "error" ?>">

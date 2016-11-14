@@ -20,6 +20,12 @@ use Payroll\Repository\PayPositionRepo;
 use Payroll\Repository\RulesDetailRepo;
 use Payroll\Repository\RulesRepository;
 use SelfService\Repository\ServiceRepository;
+use Setup\Model\EmployeeQualification;
+use Setup\Repository\AcademicCourseRepository;
+use Setup\Repository\AcademicDegreeRepository;
+use Setup\Repository\AcademicProgramRepository;
+use Setup\Repository\AcademicUniversityRepository;
+use Setup\Repository\EmployeeQualificationRepository;
 use System\Model\RolePermission;
 use System\Repository\RolePermissionRepository;
 use System\Repository\RoleSetupRepository;
@@ -32,6 +38,7 @@ use Zend\View\Model\JsonModel;
 use System\Repository\MenuSetupRepository;
 use System\Model\MenuSetup;
 use LeaveManagement\Repository\LeaveBalanceRepository;
+use ZF\DevelopmentMode\Help;
 
 class RestfulService extends AbstractRestfulController
 {
@@ -132,6 +139,15 @@ class RestfulService extends AbstractRestfulController
                     break;
                 case "generataMonthlySheet":
                     $responseData = $this->generataMonthlySheet($postedData->data);
+                    break;
+                case "pullAcademicDetail":
+                    $responseData = $this->pullAcademicDetail($postedData->data);
+                    break;
+                case "submitQualificationDtl":
+                    $responseData = $this->submitQualificationDtl($postedData->data);
+                    break;
+                case "deleteQualificationDtl":
+                    $responseData = $this->deleteQualificationDtl($postedData->data);
                     break;
                 default:
                     $responseData = [
@@ -828,5 +844,152 @@ class RestfulService extends AbstractRestfulController
         }
 //        exit;
         return ["success" => true, "data" => $results];
+    }
+
+    public function pullAcademicDetail($data){
+        $academicDegreeRepository = new AcademicDegreeRepository($this->adapter);
+        $academicUniversityRepository = new AcademicUniversityRepository($this->adapter);
+        $academicProgramRepository = new AcademicProgramRepository($this->adapter);
+        $academicCourseRepository = new AcademicCourseRepository($this->adapter);
+        $employeeQualificationRepository = new EmployeeQualificationRepository($this->adapter);
+
+        $degreeList = [];
+        $universityList = [];
+        $programList = [];
+        $courseList = [];
+        $employeeQualificationList = [];
+
+        $degrees = $academicDegreeRepository->fetchAll();
+        $universities = $academicUniversityRepository->fetchAll();
+        $programs = $academicProgramRepository->fetchAll();
+        $courses = $academicCourseRepository->fetchAll();
+        $employeeQualifications = $employeeQualificationRepository->fetchByEmployeeId($data['employeeId']);
+
+        foreach($degrees as $row){
+            array_push($degreeList,[
+                'id'=>$row['ACADEMIC_DEGREE_ID'],
+                'name'=>$row['ACADEMIC_DEGREE_NAME']
+            ]);
+        }
+        foreach($universities as $row){
+            array_push($universityList,[
+                'id'=>$row['ACADEMIC_UNIVERSITY_ID'],
+                'name'=>$row['ACADEMIC_UNIVERSITY_NAME']
+            ]);
+        }
+        foreach($programs as $row){
+            array_push($programList, [
+                'id'=>$row['ACADEMIC_PROGRAM_ID'],
+                'name'=>$row['ACADEMIC_PROGRAM_NAME']
+            ]);
+        }
+        foreach($courses as $row){
+            array_push($courseList, [
+                'id'=>$row['ACADEMIC_COURSE_ID'],
+                'name'=>$row['ACADEMIC_COURSE_NAME']
+            ]);
+        }
+        foreach ($employeeQualifications as $row) {
+            $degreeRow = $academicDegreeRepository->fetchById($row['ACADEMIC_DEGREE_ID']);
+            $degreeDtl = [
+                'id' => $degreeRow['ACADEMIC_DEGREE_ID'],
+                'name' => $degreeRow['ACADEMIC_DEGREE_NAME']
+            ];
+            $universityRow = $academicUniversityRepository->fetchById($row['ACADEMIC_UNIVERSITY_ID']);
+            $universityDtl = [
+                'id'=>$universityRow['ACADEMIC_UNIVERSITY_ID'],
+                'name'=>$universityRow['ACADEMIC_UNIVERSITY_NAME']
+            ];
+            $programRow = $academicProgramRepository->fetchById($row['ACADEMIC_PROGRAM_ID']);
+            $programDtl =[
+                'id'=>$programRow['ACADEMIC_PROGRAM_ID'],
+                'name'=>$programRow['ACADEMIC_PROGRAM_NAME']
+            ];
+            $courseRow = $academicCourseRepository->fetchById($row['ACADEMIC_COURSE_ID']);
+            $courseDtl = [
+                'id'=>$courseRow['ACADEMIC_COURSE_ID'],
+                'name'=>$courseRow['ACADEMIC_COURSE_NAME']
+            ];
+
+            array_push($employeeQualificationList,[
+                'degreeDtl'=>$degreeDtl,
+                'universityDtl'=>$universityDtl,
+                'programDtl'=>$programDtl,
+                'courseDtl'=>$courseDtl,
+                'rankType'=>$row['RANK_TYPE'],
+                'rankValue'=>$row['RANK_VALUE'],
+                'passedYr'=>$row['PASSED_YR'],
+                'id'=>$row['ID']
+            ]);
+        }
+
+        $data = [
+            'degreeList'=>$degreeList,
+            'universityList'=>$universityList,
+            'programList'=>$programList,
+            'courseList'=>$courseList,
+            'employeeQualificationList'=>$employeeQualificationList
+        ];
+
+        return [
+            'success'=>true,
+            'data'=> $data
+        ];
+
+    }
+
+    public function submitQualificationDtl($data){
+        //$qualificationDtl = $data;
+        $repository = new EmployeeQualificationRepository($this->adapter);
+        $empQualificationModel = new EmployeeQualification();
+
+        foreach($data['qualificationRecord'] as $qualificationDtl) {
+            $id = $qualificationDtl['id'];
+            $academicDegreeId = $qualificationDtl['academicDegreeId'];
+            $academicUniversityId = $qualificationDtl['academicUniversityId'];
+            $academicProgramId = $qualificationDtl['academicProgramId'];
+            $academicCourseId = $qualificationDtl['academicCourseId'];
+            $rankType = $qualificationDtl['rankType'];
+            $rankValue = $qualificationDtl['rankValue'];
+            $passedYr = $qualificationDtl['passedYr'];
+            $employeeId = $data['employeeId'];
+
+            $empQualificationModel->employeeId =$employeeId;
+            $empQualificationModel->academicDegreeId =$academicDegreeId['id'];
+            $empQualificationModel->academicUniversityId =$academicUniversityId['id'];
+            $empQualificationModel->academicProgramId =$academicProgramId['id'];
+            $empQualificationModel->academicCourseId = $academicCourseId['id'];
+            $empQualificationModel->rankType = $rankType['id'];
+            $empQualificationModel->rankValue = $rankValue;
+            $empQualificationModel->passedYr = $passedYr;
+            $empQualificationModel->createdDt = Helper::getcurrentExpressionDate();
+            $empQualificationModel->status='E';
+
+            if($id!=0){
+                $empQualificationModel->modifiedDt = Helper::getcurrentExpressionDate();
+                $repository->edit($empQualificationModel,$id);
+            }else if($id==0){
+                $empQualificationModel->id = Helper::getMaxId($this->adapter,EmployeeQualification::TABLE_NAME,EmployeeQualification::ID)+1;
+                $repository->add($empQualificationModel);
+            }
+        }
+//        $empDtlId = [
+//          'employeeId'=>$data['employeeId']
+//        ];
+//        return $data = $this->pullAcademicDetail($empDtlId);
+
+        return [
+            "success"=>true,
+            "data"=>"Qualification Detail Successfully Added"
+        ];
+    }
+    public function deleteQualificationDtl($data){
+        $id = $data['id'];
+        $repository = new EmployeeQualificationRepository($this->adapter);
+        $repository->delete($id);
+        return[
+            "success"=>true,
+            "data"=>"Qualification Detail Successfully Removed"
+        ];
     }
 }

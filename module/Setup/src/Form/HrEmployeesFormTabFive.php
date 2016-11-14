@@ -37,11 +37,19 @@ class HrEmployeesFormTabFive extends Model
      */
     public $filePath;
 
+    /**
+     * @Annotation\Required(true)
+     * @Annotation\Type("Zend\Form\Element\Text")
+     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
+     * @Annotation\Options({"label":"File Description"})
+     * @Annotation\Attributes({ "id":"remarks","class":"form-control"})
+     */
+    public $remarks;
+
 
     public $status;
     public $createdDt;
     public $modifiedDt;
-    public $remarks;
 
     public $mappings=[
         'fileCode'=>'FILE_CODE',
