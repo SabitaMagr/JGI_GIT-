@@ -63,6 +63,7 @@ class AttendanceApproveController extends AbstractActionController {
         $request = $this->getRequest();
         $model = new AttendanceRequestModel();
         $detail = $this->repository->fetchById($id);
+        $employeeId = $detail['EMPLOYEE_ID'];
         $employeeName = $detail['FIRST_NAME']." ".$detail['MIDDLE_NAME']." ".$detail['LAST_NAME'];
 
         $attendanceDetail = new AttendanceByHr();
@@ -115,6 +116,7 @@ class AttendanceApproveController extends AbstractActionController {
             'id'=>$id,
             'status'=>$detail['STATUS'],
             'employeeName'=>$employeeName,
+            'employeeId'=>$employeeId,
             'requestedDt'=>$detail['REQUESTED_DT'],
         ]);
     }

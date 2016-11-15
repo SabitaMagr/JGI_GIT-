@@ -7,7 +7,9 @@ angular.module('hris', [])
 
         var employeeId = angular.element(document.getElementById('employeeId')).val();
         var halfDay = angular.element(document.getElementById('halfDay'));
+
         window.app.floatingProfile.setDataFromRemote(document.employeeId);
+
         $scope.change = function() {
             var leaveId = angular.element(document.getElementById('leaveId')).val();
             window.app.pullDataById(document.url, {

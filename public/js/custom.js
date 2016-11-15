@@ -73,9 +73,20 @@ window.app = (function ($, toastr) {
         obj: document.querySelector('#floating-profile'),
         view: {
             name: $('#floating-profile  #name'),
-            gender: $('#floating-profile #gender'),
-            birthDate: $('#floating-profile #birthDate'),
             mobileNo: $('#floating-profile #mobileNo'),
+            appointDate:$('#floating-profile #appointDate'),
+            appointBranch: $('#floating-profile #appointBranch'),
+            appointDepartment: $('#floating-profile #appointDepartment'),
+            appointDesignation: $('#floating-profile #appointDesignation'),
+            appointPosition: $('#floating-profile #appointPosition'),
+            appointServiceType: $('#floating-profile #appointServiceType'),
+            appointServiceEventType: $('#floating-profile #appointServiceEventType'),
+            curBranch: $('#floating-profile #curBranch'),
+            curDepartment: $('#floating-profile #curDepartment'),
+            curDesignation: $('#floating-profile #curDesignation'),
+            curPosition: $('#floating-profile #curPosition'),
+            curServiceType: $('#floating-profile #curServiceType'),
+            curServiceEventType: $('#floating-profile #curServiceEventType'),
             image: $('#floating-profile #profile-image'),
             header: $('#floating-profile #profile-header'),
             body: $('#floating-profile #profile-body'),
@@ -85,8 +96,19 @@ window.app = (function ($, toastr) {
             firstName: null,
             middleName: null,
             lastName: null,
-            genderId: null,
-            birthDate: null,
+            appointDate: null,
+            appointBranch: null,
+            appointDepartment: null,
+            appointDesignation: null,
+            appointPosition: null,
+            appointServiceType: null,
+            appointServiceEventType: null,
+            curBranch: null,
+            curDepartment: null,
+            curDesignation: null,
+            curPosition: null,
+            curServiceType: null,
+            curServiceEventType: null,
             mobileNo: null,
             imageFilePath: null
         },
@@ -109,8 +131,22 @@ window.app = (function ($, toastr) {
                 this.data.firstName = success.data['FIRST_NAME'];
                 this.data.middleName = success.data['MIDDLE_NAME'];
                 this.data.lastName = success.data['LAST_NAME'];
-                this.data.genderId = success.data['GENDER_ID'];
-                this.data.birthDate = success.data['BIRTH_DATE'];
+                this.data.appointDate = success.data['JOIN_DATE'];
+
+                this.data.appointBranch = success.data['APPOINT_BRANCH'];
+                this.data.appointDepartment = success.data['APPOINT_DEPARTMENT'];
+                this.data.appointDesignation = success.data['APPOINT_DESIGNATION'];
+                this.data.appointPosition = success.data['APPOINT_POSITION'];
+                this.data.appointServiceType = success.data['APPOINT_SERVICE_TYPE'];
+                this.data.appointServiceEventType = success.data['APPOINT_SERVICE_EVENT_TYPE'];
+
+                this.data.curBranch = success.data['CUR_BRANCH'];
+                this.data.curDepartment = success.data['CUR_DEPARTMENT'];
+                this.data.curDesignation = success.data['CUR_DESIGNATION'];
+                this.data.curPosition = success.data['CUR_POSITION'];
+                this.data.curServiceType = success.data['CUR_SERVICE_TYPE'];
+                this.data.curServiceEventType = success.data['CUR_SERVICE_EVENT_TYPE'];
+
                 this.data.mobileNo = success.data['MOBILE_NO'];
                 this.data.imageFilePath = success.data['FILE_PATH'];
 
@@ -126,8 +162,24 @@ window.app = (function ($, toastr) {
         refreshView: function () {
             console.log(this.data.lastName);
             this.view.name.text(this.data.firstName + " " + this.data.middleName + " " + this.data.lastName);
-            this.view.gender.text(this.data.genderId == 1 ? "Male" : this.data.genderId == 2 ? "Female" : "Other");
-            this.view.birthDate.text(this.data.birthDate);
+            //this.view.gender.text(this.data.genderId == 1 ? "Male" : this.data.genderId == 2 ? "Female" : "Other");
+
+            this.view.appointDate.text(this.data.appointDate);
+
+            this.view.appointBranch.text(this.data.appointBranch);
+            this.view.appointDepartment.text(this.data.appointDepartment);
+            this.view.appointDesignation.text(this.data.appointDesignation);
+            this.view.appointPosition.text(this.data.appointPosition);
+            this.view.appointServiceType.text(this.data.appointServiceType);
+            this.view.appointServiceEventType.text(this.data.appointServiceEventType);
+
+            this.view.curBranch.text(this.data.curBranch);
+            this.view.curDepartment.text(this.data.curDepartment);
+            this.view.curDesignation.text(this.data.curDesignation);
+            this.view.curPosition.text(this.data.curPosition);
+            this.view.curServiceType.text(this.data.curServiceType);
+            this.view.curServiceEventType.text(this.data.curServiceEventType);
+
             this.view.mobileNo.text(this.data.mobileNo);
             if (this.data.imageFilePath != null && (typeof this.data.imageFilePath !== "undefined") && this.data.imageFilePath.length >= 4) {
                 this.view.image.attr('src', document.basePath + "/uploads/" + this.data.imageFilePath);
@@ -144,7 +196,7 @@ window.app = (function ($, toastr) {
             this.view.body.show();
             this.view.minMaxBtn.removeClass("fa-plus");
             this.view.minMaxBtn.addClass("fa-minus");
-            $(this.obj).css("height", 200);
+            $(this.obj).css("height", 400);
             this.minStatus = false;
         },
         initialize: function () {

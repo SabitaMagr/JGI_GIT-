@@ -1,6 +1,9 @@
 (function ($,app) {
     'use strict';
     $(document).ready(function () {
+        
+        var employeeId = $('#employeeId').val();
+        window.app.floatingProfile.setDataFromRemote(employeeId);
 
         $('select').select2();
         $('#inTime').combodate({

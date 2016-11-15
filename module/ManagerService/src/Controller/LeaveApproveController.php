@@ -65,6 +65,7 @@ class LeaveApproveController extends AbstractActionController {
         $request = $this->getRequest();
 
         $detail = $this->repository->fetchById($id);
+        $requestedEmployeeID = $detail['EMPLOYEE_ID'];
         $employeeName = $detail['FIRST_NAME']." ".$detail['MIDDLE_NAME']." ".$detail['LAST_NAME'];
 
         //to get the previous balance of selected leave from assigned leave detail
@@ -121,6 +122,7 @@ class LeaveApproveController extends AbstractActionController {
             'totalDays'=>$result['TOTAL_DAYS'],
             'recommendedBy'=>$detail['RECOMMENDED_BY'],
             'employeeId'=>$this->employeeId,
+            'requestedEmployeeId'=>$requestedEmployeeID,
             'leave' => $leaveRequestRepository->getLeaveList($detail['EMPLOYEE_ID']),
             'customRenderer'=>Helper::renderCustomView()
         ]);

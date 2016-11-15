@@ -6,7 +6,9 @@ angular.module('hris', [])
 
             $scope.change = function () {
                 var employeeId = angular.element(document.getElementById("employeeId")).val();
+                
                 window.app.floatingProfile.setDataFromRemote(employeeId);
+                
                 window.app.pullDataById(document.url, {
                     action: 'pullRecommendApproveList',
                     employeeId: employeeId

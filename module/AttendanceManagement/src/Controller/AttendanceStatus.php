@@ -59,6 +59,7 @@ class AttendanceStatus extends AbstractActionController {
         $request = $this->getRequest();
         $model = new AttendanceRequestModel();
         $detail = $this->repository->fetchById($id);
+        $employeeId = $detail['EMPLOYEE_ID'];
         $employeeName = $detail['FIRST_NAME']." ".$detail['MIDDLE_NAME']." ".$detail['LAST_NAME'];
         $approver = $detail['FIRST_NAME1']." ".$detail['MIDDLE_NAME1']." ".$detail['LAST_NAME1'];
         $status = $detail['STATUS'];
@@ -104,6 +105,7 @@ class AttendanceStatus extends AbstractActionController {
             'id'=>$id,
             'employeeName'=>$employeeName,
             'approver'=>$approver,
+            'employeeId'=>$employeeId,
             'status'=>$status,
             'requestedDt'=>$detail['REQUESTED_DT'],
         ]);
