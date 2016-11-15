@@ -87,6 +87,7 @@
 angular.module("hris", [])
     .controller('qualificationController', function ($scope, $http) {
 
+        //for qualification detail [add and delete]
         $scope.degreeList = [];
         $scope.universityList = [];
         $scope.programList = [];
@@ -227,7 +228,43 @@ angular.module("hris", [])
             console.log(failure);
         });
 
-        $scope.employeeFileRow =  function(){
-            
-        }
+        //for document including both image as well as file upload and remove
+        $scope.fileTypes=[];
+        $scope.employeeFileUploadFormList = [];
+
+        window.app.pullDataById(document.urlQualificationDtl,{
+            action: 'pullFileTypeList'
+        }).then(function(success){
+            $scope.$apply(function(){
+               //console.log(success.data);
+                $scope.fileTypes=success.data;
+
+                $scope.employeeFileUploadFormList.push({
+                    fileType:$scope.fileTypes[0],
+                    filePath:[],
+                    remarks:""
+                });
+
+                $scope.employeeFileRow = function(){
+                    $scope.employeeFileUploadFormList.push({
+                        fileType:$scope.fileTypes[0],
+                        filePath:[],
+                        remarks:""
+                    });
+                }
+                $scope.addDocumentList = function(){
+                    var record = $scope.employeeFileUploadFormList;
+                    console.log(record);
+
+                }
+
+                $scope.deleteEmployeeFile = function(){
+                    console.log("hellow this is employee File remove");
+                }
+
+            });
+        },function(failure){
+           console.log(failure);
+        });
+
     });

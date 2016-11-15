@@ -10,11 +10,12 @@ use Zend\Db\TableGateway\TableGateway;
 class EmployeeFile implements RepositoryInterface
 {
     private $tableGateway;
+    private $fileTypeTableGateway;
 
     public function __construct(AdapterInterface $adapter)
     {
         $this->tableGateway=new TableGateway('HR_EMPLOYEE_FILE',$adapter);
-
+        $this->fileTypeTableGateway = new TableGateway('HR_FILE_TYPE',$adapter);
     }
 
     public function add(Model $model)
@@ -49,5 +50,8 @@ class EmployeeFile implements RepositoryInterface
     public function delete($id)
     {
         $this->tableGateway->delete(['FILE_CODE'=>$id]);
+    }
+    public function fetchAllFileType(){
+        return $this->fileTypeTableGateway->select(['STATUS'=>'E']);
     }
 }

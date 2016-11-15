@@ -26,6 +26,7 @@ use Setup\Repository\AcademicCourseRepository;
 use Setup\Repository\AcademicDegreeRepository;
 use Setup\Repository\AcademicProgramRepository;
 use Setup\Repository\AcademicUniversityRepository;
+use Setup\Repository\EmployeeFile;
 use Setup\Repository\EmployeeQualificationRepository;
 use System\Model\MenuSetup;
 use System\Model\RolePermission;
@@ -147,6 +148,9 @@ class RestfulService extends AbstractRestfulController {
                     break;
                 case "pullEmployeeDetailById":
                     $responseData = $this->pullEmployeeDetailById($postedData->data);
+                    break;
+                case "pullFileTypeList":
+                    $responseData = $this->pullFileTypeList();
                     break;
                 default:
                     $responseData = [
@@ -968,6 +972,22 @@ class RestfulService extends AbstractRestfulController {
 //        $employee = $employeeRepo->fetchById($employeeId);
         $employee = $employeeRepo->fetchForProfileById($employeeId);
         return ["success" => true, "data" => $employee];
+    }
+
+    public function pullFileTypeList(){
+        $fileTypeRepository = new EmployeeFile($this->adapter);
+        $fileTypes = [];
+        $result = $fileTypeRepository->fetchAllFileType();
+        foreach($result as $row){
+            array_push($fileTypes,[
+                'id'=>$row['FILETYPE_CODE'],
+                'name'=>$row['NAME']
+            ]);
+        }
+        return [
+            "success"=>true,
+            'data'=>$fileTypes
+        ];
     }
 
 }
