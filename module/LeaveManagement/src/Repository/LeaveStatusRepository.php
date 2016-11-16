@@ -32,7 +32,7 @@ class LeaveStatusRepository implements RepositoryInterface {
         // TODO: Implement edit() method.
     }
 
-    public function getAllRequest($status = null) {
+    public function getAllRequest($status = null,$date=null) {
         if ($status != null) {
             $where = "AND LA.STATUS ='" . $status . "'";
         } else {

@@ -194,6 +194,7 @@ return [
             'dashboard-item/leave-apply' => __DIR__ . '/../view/layout/dashboard-items/leave-apply.phtml',
             'dashboard-item/present-absent' => __DIR__ . '/../view/layout/dashboard-items/present-absent.phtml',
             'dashboard-item/employee-count-by-branch' => __DIR__ . '/../view/layout/dashboard-items/employee-count-by-branch.phtml',
+            'dashboard-item/today-leave'=>__DIR__.'/../view/layout/dashboard-items/today-leave.phtml'
         ],
         'template_path_stack' => [
             __DIR__ . '/../view',
@@ -204,6 +205,7 @@ return [
         'attendance-request' => 'dashboard-item/attendance-request',
         'leave-apply' => 'dashboard-item/leave-apply',
         'present-absent' => 'dashboard-item/present-absent',
-        'emp-cnt-by-branch' => 'dashboard-item/employee-count-by-branch'
+        'emp-cnt-by-branch' => 'dashboard-item/employee-count-by-branch',
+        'today-leave'=>'dashboard-item/today-leave'
     ],
 ];

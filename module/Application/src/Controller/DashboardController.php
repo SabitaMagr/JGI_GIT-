@@ -21,6 +21,7 @@ use Setup\Repository\EmployeeRepository;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
+use LeaveManagement\Repository\LeaveApplyRepository;
 
 class DashboardController extends AbstractActionController {
 
@@ -107,8 +108,19 @@ class DashboardController extends AbstractActionController {
                         array_push($branchEmpCountList, $branchEmpCount);
                     }
                 }
-
                 $data['empCountByBranch'] = $branchEmpCountList;
+                break;
+                
+            case 'today-leave':
+                $leaveStatusRepo = new LeaveStatusRepository($this->adapter);
+                $today = Helper::getcurrentExpressionDate();
+                $approvedLeaveRawList = $leaveStatusRepo->getAllRequest('AP',$today);
+                $approvedLeaveList = [];
+
+                foreach ($approvedLeaveRawList as $approvedLeave) {
+                    array_push($approvedLeaveList, $approvedLeave);
+                }
+                $data['approvedLeaveList'] = $approvedLeaveList;
                 break;
         }
         return $data;
