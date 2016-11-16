@@ -72,27 +72,25 @@ class EmployeeRepository implements RepositoryInterface {
             Helper::columnExpression(HrEmployees::LAST_NAME, "E"),
             Helper::columnExpression(HrEmployees::GENDER_ID, "E"),
             Helper::columnExpression(HrEmployees::MOBILE_NO, "E"),
-
             Helper::dateExpression(HrEmployees::JOIN_DATE, "E"),
-
                 ], true);
-        $select->join(['B1'=>Branch::TABLE_NAME],"E." . HrEmployees::BRANCH_ID ."=B1.".Branch::BRANCH_ID,['APPOINT_BRANCH'=>'BRANCH_NAME'],'left')
-                ->join(['B2'=>Branch::TABLE_NAME],"E." . HrEmployees::CUR_BRANCH_ID ."=B2.".Branch::BRANCH_ID,['CUR_BRANCH'=>'BRANCH_NAME'],'left')
-                ->join(['D1'=>Department::TABLE_NAME],"E." . HrEmployees::DEPARTMENT_ID ."=D1.".Department::DEPARTMENT_ID,['APPOINT_DEPARTMENT'=>'DEPARTMENT_NAME'],'left')
-                ->join(['D2'=>Department::TABLE_NAME],"E." . HrEmployees::CUR_DEPARTMENT_ID ."=D2.".Department::DEPARTMENT_ID,['CUR_DEPARTMENT'=>'DEPARTMENT_NAME'],'left')
-                ->join(['DES1'=>Designation::TABLE_NAME],"E." . HrEmployees::DESIGNATION_ID ."=DES1.".Designation::DESIGNATION_ID,['APPOINT_DESIGNATION'=>'DESIGNATION_TITLE'],'left')
-                ->join(['DES2'=>Designation::TABLE_NAME],"E." . HrEmployees::CUR_DESIGNATION_ID ."=DES2.".Designation::DESIGNATION_ID,['CUR_DESIGNATION'=>'DESIGNATION_TITLE'],'left')
-                ->join(['P1'=>Position::TABLE_NAME],"E." . HrEmployees::POSITION_ID ."=P1.".Position::POSITION_ID,['APPOINT_POSITION'=>'POSITION_NAME'],'left')
-                ->join(['P2'=>Position::TABLE_NAME],"E." . HrEmployees::CUR_POSITION_ID ."=P2.".Position::POSITION_ID,['CUR_POSITION'=>'POSITION_NAME'],'left')
-                ->join(['S1'=>ServiceType::TABLE_NAME],"E." . HrEmployees::SERVICE_TYPE_ID ."=S1.".ServiceType::SERVICE_TYPE_ID,['APPOINT_SERVICE_TYPE'=>'SERVICE_TYPE_NAME'],'left')
-                ->join(['S2'=>ServiceType::TABLE_NAME],"E." . HrEmployees::CUR_SERVICE_TYPE_ID."=S2.".ServiceType::SERVICE_TYPE_ID,['CUR_SERVICE_TYPE'=>'SERVICE_TYPE_NAME'],'left')
-                ->join(['SE1'=>ServiceEventType::TABLE_NAME],"E." . HrEmployees::SERVICE_EVENT_TYPE_ID ."=SE1.".ServiceEventType::SERVICE_EVENT_TYPE_ID,['APPOINT_SERVICE_EVENT_TYPE'=>'SERVICE_EVENT_TYPE_NAME'],'left')
-                ->join(['SE2'=>ServiceEventType::TABLE_NAME],"E." . HrEmployees::CUR_SERVICE_EVENT_TYPE_ID."=SE2.".ServiceEventType::SERVICE_EVENT_TYPE_ID,['CUR_SERVICE_EVENT_TYPE'=>'SERVICE_EVENT_TYPE_NAME'],'left');
+        $select->join(['B1' => Branch::TABLE_NAME], "E." . HrEmployees::BRANCH_ID . "=B1." . Branch::BRANCH_ID, ['APPOINT_BRANCH' => 'BRANCH_NAME'], 'left')
+                ->join(['B2' => Branch::TABLE_NAME], "E." . HrEmployees::CUR_BRANCH_ID . "=B2." . Branch::BRANCH_ID, ['CUR_BRANCH' => 'BRANCH_NAME'], 'left')
+                ->join(['D1' => Department::TABLE_NAME], "E." . HrEmployees::DEPARTMENT_ID . "=D1." . Department::DEPARTMENT_ID, ['APPOINT_DEPARTMENT' => 'DEPARTMENT_NAME'], 'left')
+                ->join(['D2' => Department::TABLE_NAME], "E." . HrEmployees::CUR_DEPARTMENT_ID . "=D2." . Department::DEPARTMENT_ID, ['CUR_DEPARTMENT' => 'DEPARTMENT_NAME'], 'left')
+                ->join(['DES1' => Designation::TABLE_NAME], "E." . HrEmployees::DESIGNATION_ID . "=DES1." . Designation::DESIGNATION_ID, ['APPOINT_DESIGNATION' => 'DESIGNATION_TITLE'], 'left')
+                ->join(['DES2' => Designation::TABLE_NAME], "E." . HrEmployees::CUR_DESIGNATION_ID . "=DES2." . Designation::DESIGNATION_ID, ['CUR_DESIGNATION' => 'DESIGNATION_TITLE'], 'left')
+                ->join(['P1' => Position::TABLE_NAME], "E." . HrEmployees::POSITION_ID . "=P1." . Position::POSITION_ID, ['APPOINT_POSITION' => 'POSITION_NAME'], 'left')
+                ->join(['P2' => Position::TABLE_NAME], "E." . HrEmployees::CUR_POSITION_ID . "=P2." . Position::POSITION_ID, ['CUR_POSITION' => 'POSITION_NAME'], 'left')
+                ->join(['S1' => ServiceType::TABLE_NAME], "E." . HrEmployees::SERVICE_TYPE_ID . "=S1." . ServiceType::SERVICE_TYPE_ID, ['APPOINT_SERVICE_TYPE' => 'SERVICE_TYPE_NAME'], 'left')
+                ->join(['S2' => ServiceType::TABLE_NAME], "E." . HrEmployees::CUR_SERVICE_TYPE_ID . "=S2." . ServiceType::SERVICE_TYPE_ID, ['CUR_SERVICE_TYPE' => 'SERVICE_TYPE_NAME'], 'left')
+                ->join(['SE1' => ServiceEventType::TABLE_NAME], "E." . HrEmployees::SERVICE_EVENT_TYPE_ID . "=SE1." . ServiceEventType::SERVICE_EVENT_TYPE_ID, ['APPOINT_SERVICE_EVENT_TYPE' => 'SERVICE_EVENT_TYPE_NAME'], 'left')
+                ->join(['SE2' => ServiceEventType::TABLE_NAME], "E." . HrEmployees::CUR_SERVICE_EVENT_TYPE_ID . "=SE2." . ServiceEventType::SERVICE_EVENT_TYPE_ID, ['CUR_SERVICE_EVENT_TYPE' => 'SERVICE_EVENT_TYPE_NAME'], 'left');
 
-        $select->where(["E.".HrEmployees::EMPLOYEE_ID."=$id"]);
+        $select->where(["E." . HrEmployees::EMPLOYEE_ID . "=$id"]);
 
         $statement = $sql->prepareStatementForSqlObject($select);
-       // return $statement->getSql();
+        // return $statement->getSql();
         $result = $statement->execute();
 
         return $result->current();
