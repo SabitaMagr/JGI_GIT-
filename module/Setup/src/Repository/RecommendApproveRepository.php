@@ -33,7 +33,7 @@ class RecommendApproveRepository implements RepositoryInterface
     {
         $sql = "SELECT  DESIGNATION_ID, DESIGNATION_TITLE, PARENT_DESIGNATION, WITHIN_BRANCH, WITHIN_DEPARTMENT, LEVEL 
                 FROM HR_DESIGNATIONS WHERE (LEVEL=2 OR LEVEL=3)
-                START WITH DESIGNATION_ID = (SELECT E.DESIGNATION_ID FROM HR_EMPLOYEES E WHERE E.EMPLOYEE_ID=".$employeeId.")
+                START WITH DESIGNATION_ID = (SELECT E.CUR_DESIGNATION_ID FROM HR_EMPLOYEES E WHERE E.EMPLOYEE_ID=".$employeeId.")
                 CONNECT BY PRIOR  PARENT_DESIGNATION=DESIGNATION_ID";
 
         $statement = $this->adapter->query($sql);
@@ -43,14 +43,14 @@ class RecommendApproveRepository implements RepositoryInterface
 
     //to get recommender and approver based on designation and branch id
     public function getEmployeeList($withinBranch,$withinDepartment,$designationId,$branchId,$departmentId){
-        $sql = "SELECT EMPLOYEE_ID,FIRST_NAME,MIDDLE_NAME,LAST_NAME FROM HR_EMPLOYEES WHERE DESIGNATION_ID=".$designationId;
+        $sql = "SELECT EMPLOYEE_ID,FIRST_NAME,MIDDLE_NAME,LAST_NAME FROM HR_EMPLOYEES WHERE CUR_DESIGNATION_ID=".$designationId;
 
         if($withinBranch!=null && $withinBranch!="N"){
-            $sql.=" AND BRANCH_ID=".$branchId;
+            $sql.=" AND CUR_BRANCH_ID=".$branchId;
         }
 
         if($withinDepartment!=null && $withinDepartment!="N"){
-            $sql.=" AND DEPARTMENT_ID=".$departmentId;
+            $sql.=" AND CUR_DEPARTMENT_ID=".$departmentId;
         }
 
         $statement = $this->adapter->query($sql);
