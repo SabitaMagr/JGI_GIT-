@@ -104,14 +104,7 @@ if($this->messages) { ?>
                 </td>
                 <td>
                     <?php
-                    $from_date = $this->escapeHtml($leaveRequestList['FROM_DATE']);
-                    $to_date = $this->escapeHtml($leaveRequestList['TO_DATE']);
-
-                    $d1 = new DateTime($from_date);
-                    $d2 = new DateTime($to_date);
-                    $dDiff = $d1->diff($d2);
-                    //echo $dDiff->format('%R'); // use for point out relation: smaller/greater
-                    echo $dDiff->days;
+                    print $this->escapeHtml($leaveRequestList['NO_OF_DAYS']);
                     ?>
                 </td>
                 <td>

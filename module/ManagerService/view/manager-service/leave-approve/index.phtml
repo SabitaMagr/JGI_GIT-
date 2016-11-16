@@ -115,10 +115,10 @@ if($this->messages) { ?>
                     $approver = $this->escapeHtml($leaveRequestList['APPROVER']);
                     if($id==$recommender){
                         echo "RECOMMENDER";
-                        $role = "R";
+                        $role = 2;
                     }else if($id==$approver){
                         echo "APPROVER";
-                        $role = "A";
+                        $role = 3;
                     }
                     ?>
                 </td>

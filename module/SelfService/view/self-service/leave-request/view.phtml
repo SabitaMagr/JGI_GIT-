@@ -184,6 +184,7 @@ print $this->form()->openTag($form);
                         </div>
                         <?php print $this->formElementErrors()->render($noOfDays, ['class' => 'help-block error']); ?>
 
+                        <?php if($allowHalfDay=='Y'){  ?>
                         <div class="form-group padding-0" id="halfDay">
                             <?php print $this->formLabel($halfDay); ?>
                             <div class="md-radio-inline">
@@ -191,7 +192,8 @@ print $this->form()->openTag($form);
                             </div>
                         </div>
                         <?php print $this->formElementErrors()->render($halfDay, ['class' => 'help-block error']); ?>
-
+                        <?php } ?>
+                        
                         <?php if ($remarksDtl != null) { ?>
                             <div
                                 class="form-group required <?= empty($remarks->getMessages()) ? "" : "error" ?>">

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Created by PhpStorm.
  * User: punam
@@ -29,8 +30,7 @@ class AttendanceApproveController extends AbstractActionController {
     private $authService;
     private $form;
 
-    public function __construct(AdapterInterface $adapter)
-    {
+    public function __construct(AdapterInterface $adapter) {
         $this->adapter = $adapter;
         $this->repository = new AttendanceApproveRepository($adapter);
 
@@ -40,30 +40,30 @@ class AttendanceApproveController extends AbstractActionController {
         $this->employeeId = $recordDetail['employee_id'];
     }
 
-    public function initializeForm(){
+    public function initializeForm() {
         $attendanceRequestForm = new AttendanceRequestForm();
         $builder = new AnnotationBuilder();
         $this->form = $builder->createForm($attendanceRequestForm);
     }
 
-    public function indexAction()
-    {
-        $list = $this->repository->getAllRequest($this->employeeId,'RQ');
+    public function indexAction() {
+        $list = $this->repository->getAllRequest($this->employeeId, 'RQ');
         return Helper::addFlashMessagesToArray($this, ['list' => $list]);
     }
 
-    public function viewAction(){
+    public function viewAction() {
         $this->initializeForm();
-        $id = (int)$this->params()->fromRoute('id');
+        $id = (int) $this->params()->fromRoute('id');
 
-        if($id===0){
+        if ($id === 0) {
             return $this->redirect()->toRoute("attedanceapprove");
         }
 
         $request = $this->getRequest();
         $model = new AttendanceRequestModel();
         $detail = $this->repository->fetchById($id);
-        $employeeName = $detail['FIRST_NAME']." ".$detail['MIDDLE_NAME']." ".$detail['LAST_NAME'];
+        $employeeId = $detail['EMPLOYEE_ID'];
+        $employeeName = $detail['FIRST_NAME'] . " " . $detail['MIDDLE_NAME'] . " " . $detail['LAST_NAME'];
 
         $attendanceDetail = new AttendanceDetail();
         $attendanceRepository = new AttendanceDetailRepository($this->adapter);
@@ -76,56 +76,58 @@ class AttendanceApproveController extends AbstractActionController {
             $reason = $getData->approvedRemarks;
             $action = $getData->submit;
 
-            $model->approvedDt=Helper::getcurrentExpressionDate();
+            $model->approvedDt = Helper::getcurrentExpressionDate();
 
-            if($action=="Approve"){
-                $model->status="AP";
-                $attendanceDetail->attendanceDt=Helper::getcurrentExpressionDate($detail['ATTENDANCE_DT']);
+            if ($action == "Approve") {
+                $model->status = "AP";
+                $attendanceDetail->attendanceDt = Helper::getcurrentExpressionDate($detail['ATTENDANCE_DT']);
                 $attendanceDetail->inTime = Helper::getExpressionTime($detail['IN_TIME']);
                 $attendanceDetail->inRemarks = $detail['IN_REMARKS'];
-                $attendanceDetail->outTime =  Helper::getExpressionTime($detail['OUT_TIME']);
+                $attendanceDetail->outTime = Helper::getExpressionTime($detail['OUT_TIME']);
                 $attendanceDetail->outRemarks = $detail['OUT_REMARKS'];
                 $attendanceDetail->totalHour = $detail['TOTAL_HOUR'];
                 $attendanceDetail->employeeId = $detail['EMPLOYEE_ID'];
-                $attendanceDetail->id = (int)Helper::getMaxId($this->adapter,AttendanceDetail::TABLE_NAME,AttendanceDetail::ID)+1;
+                $attendanceDetail->id = (int) Helper::getMaxId($this->adapter, AttendanceDetail::TABLE_NAME, AttendanceDetail::ID) + 1;
 
                 $employeeId = $detail['EMPLOYEE_ID'];
                 $attendanceDt = $detail['ATTENDANCE_DT'];
 
-                $previousDtl = $attendanceRepository->getDtlWidEmpIdDate($employeeId,$attendanceDt);
+                $previousDtl = $attendanceRepository->getDtlWidEmpIdDate($employeeId, $attendanceDt);
 
-                if($previousDtl==null){
+                if ($previousDtl == null) {
                     $attendanceRepository->add($attendanceDetail);
-                }else{
-                    $attendanceRepository->edit($attendanceDetail,$previousDtl['ID']);
+                } else {
+                    $attendanceRepository->edit($attendanceDetail, $previousDtl['ID']);
                 }
 
                 $this->flashmessenger()->addMessage("Attendance Request Approved!!!");
-
-            }else if($action=="Reject"){
-                $model->status="R";
+            } else if ($action == "Reject") {
+                $model->status = "R";
                 $this->flashmessenger()->addMessage("Attendance Request Rejected!!!");
             }
             $model->approvedRemarks = $reason;
-            $this->repository->edit($model,$id);
+            $this->repository->edit($model, $id);
             return $this->redirect()->toRoute("attedanceapprove");
         }
-        return Helper::addFlashMessagesToArray($this,[
-            'form'=>$this->form,
-            'id'=>$id,
-            'status'=>$detail['STATUS'],
-            'employeeName'=>$employeeName,
-            'requestedDt'=>$detail['REQUESTED_DT'],
+        return Helper::addFlashMessagesToArray($this, [
+                    'form' => $this->form,
+                    'id' => $id,
+                    'status' => $detail['STATUS'],
+                    'employeeName' => $employeeName,
+                    'employeeId' => $employeeId,
+                    'requestedDt' => $detail['REQUESTED_DT'],
         ]);
     }
-    public function statusAction(){
-        $pendingList = $this->repository->getAllRequest($this->employeeId,'RQ');
-        $approvedList = $this->repository->getAllRequest($this->employeeId,'AP');
-        $rejectedList = $this->repository->getAllRequest($this->employeeId,'R');
-        return Helper::addFlashMessagesToArray($this,[
-            'pendingList'=>$pendingList,
-            'approvedList'=>$approvedList,
-            'rejectedList'=>$rejectedList
+
+    public function statusAction() {
+        $pendingList = $this->repository->getAllRequest($this->employeeId, 'RQ');
+        $approvedList = $this->repository->getAllRequest($this->employeeId, 'AP');
+        $rejectedList = $this->repository->getAllRequest($this->employeeId, 'R');
+        return Helper::addFlashMessagesToArray($this, [
+                    'pendingList' => $pendingList,
+                    'approvedList' => $approvedList,
+                    'rejectedList' => $rejectedList
         ]);
     }
+
 }

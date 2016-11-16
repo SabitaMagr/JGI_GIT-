@@ -73,7 +73,10 @@ if ($this->messages) { ?>
                     End Date
                 </th>
                 <th>
-                    Service Type
+                    Service Event Type
+                </th>
+                <th>
+                    To Service Type
                 </th>
                 <th>
                     To Branch
@@ -100,8 +103,11 @@ if ($this->messages) { ?>
                 <td >
                     <span ng-bind="serviceDtl.END_DATE"></span>
                 </td>
-                <td >
-                    <span ng-bind="serviceDtl.SERVICE_TYPE_NAME"></span>
+                <td>
+                    <span ng-bind="serviceDtl.SERVICE_EVENT_TYPE_NAME"></span>
+                </td>
+                <td>
+                    <span ng-bind="serviceDtl.TO_SERVICE_TYPE_NAME"></span>
                 </td>
                 <td>
                     <span ng-bind="serviceDtl.TO_BRANCH_NAME"></span>

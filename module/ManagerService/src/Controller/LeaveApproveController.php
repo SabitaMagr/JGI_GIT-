@@ -18,6 +18,7 @@ use LeaveManagement\Form\LeaveApplyForm;
 use Zend\Form\Annotation\AnnotationBuilder;
 use LeaveManagement\Model\LeaveApply;
 use SelfService\Repository\LeaveRequestRepository;
+use LeaveManagement\Repository\LeaveMasterRepository;
 
 class LeaveApproveController extends AbstractActionController {
 
@@ -65,6 +66,12 @@ class LeaveApproveController extends AbstractActionController {
         $request = $this->getRequest();
 
         $detail = $this->repository->fetchById($id);
+        
+        $leaveId = $detail['LEAVE_ID'];
+        $leaveRepository = new LeaveMasterRepository($this->adapter);
+        $leaveDtl  = $leaveRepository->fetchById($leaveId);
+        
+        $requestedEmployeeID = $detail['EMPLOYEE_ID'];
         $employeeName = $detail['FIRST_NAME']." ".$detail['MIDDLE_NAME']." ".$detail['LAST_NAME'];
 
         //to get the previous balance of selected leave from assigned leave detail
@@ -78,7 +85,7 @@ class LeaveApproveController extends AbstractActionController {
             $getData = $request->getPost();
             $action = $getData->submit;
 
-            if($role=="R"){
+            if($role==2){
                 $leaveApply->recommendedDt=Helper::getcurrentExpressionDate();
                 if($action=="Reject"){
                     $leaveApply->status="R";
@@ -89,7 +96,7 @@ class LeaveApproveController extends AbstractActionController {
                 }
                 $leaveApply->recommendedRemarks=$getData->recommendedRemarks;
                 $this->repository->edit($leaveApply,$id);
-            }else if($role=="A"){
+            }else if($role==3){
                 $leaveApply->approvedDt=Helper::getcurrentExpressionDate();
                 if($action=="Reject"){
                     $leaveApply->status="R";
@@ -121,6 +128,8 @@ class LeaveApproveController extends AbstractActionController {
             'totalDays'=>$result['TOTAL_DAYS'],
             'recommendedBy'=>$detail['RECOMMENDED_BY'],
             'employeeId'=>$this->employeeId,
+            'requestedEmployeeId'=>$requestedEmployeeID,
+            'allowHalfDay'=>$leaveDtl['ALLOW_HALFDAY'],
             'leave' => $leaveRequestRepository->getLeaveList($detail['EMPLOYEE_ID']),
             'customRenderer'=>Helper::renderCustomView()
         ]);

@@ -125,6 +125,22 @@ $this->headScript()
                                             </div>
                                         </div>
                                         <div class="form-group">
+                                            <label for="form-menuIndex">Menu Index</label>
+                                            <input name="menuIndex" required="required" id="form-menuIndex" class="form-menuIndex form-control"
+                                                   type="number"
+                                                   value="" ng-model="menuDtl.menuIndex" min="0" max="99"/>
+                                            <span id="menuIndexErr" ng-show="menuIndexErr">
+                                                <ul class="help-block error">
+                                                    <li>Menu Index Already Exist!!</li>
+                                                </ul>
+                                            </span>
+                                            <div ng-show="userForm.$submitted || userForm.menuIndex.$touched">
+                                                <ul ng-show="userForm.menuIndex.$error.required" class="help-block error">
+                                                    <li>Menu Index is required.</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
                                             <label for="form-menuName">Icon Class</label>
                                             <input name="iconClass" id="form-iconClass" class="form-iconClass form-control" type="text" value="" ng-model="menuDtl.iconClass">
                                         </div>
@@ -207,6 +223,22 @@ $this->headScript()
                     <div ng-show="userForm.$submitted || userForm.action.$touched">
                         <ul ng-show="userForm.action.$error.required" class="help-block error">
                             <li>Action is required.</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="form-menuIndex">Menu Index</label>
+                    <input name="menuIndex" required="required" id="form-menuIndex" class="form-menuIndex form-control"
+                           type="number"
+                           value="" ng-model="menuDtl.menuIndex">
+                    <span id="menuIndexErr" ng-show="menuIndexErr">
+                        <ul class="help-block error">
+                            <li>Menu Index Already Exist!!</li>
+                        </ul>
+                    </span>
+                    <div ng-show="userForm.$submitted || userForm.menuIndex.$touched">
+                        <ul ng-show="userForm.menuIndex.$error.required" class="help-block error">
+                            <li>Menu Index is required.</li>
                         </ul>
                     </div>
                 </div>

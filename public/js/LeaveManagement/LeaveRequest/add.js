@@ -4,6 +4,10 @@
 (function ($, app) {
     'use strict';
     $(document).ready(function () {
+        
+        var employeeId = $('#employeeId').val();
+        window.app.floatingProfile.setDataFromRemote(employeeId);
+        
         $('select').select2();
 
         var dateDiff = "";
@@ -90,17 +94,23 @@
                 dateDiff = newValue;
                 $("#noOfDays").val(newValue);
 
-                var halfDay1 = $("input[name='halfDay']:checked").val();
+                var halfDay1 = $("input[name='halfDay']:checked");
+                var halfDay2=""
+                if (typeof(halfDay1.val()) == "undefined"){
+                    halfDay2 = "N";
+                }else{
+                    halfDay2 = halfDay1.val();
+                }
                 checkHalfDay();
 
                 if (newValue > availableDays) {
                     $("#errorMsg").html("* Applied days can't be more than available days");
                     $("#request").attr("disabled", "disabled");
-                } else if((newValue<=availableDays) && halfDay1=='N'){
+                } else if((newValue<=availableDays) && halfDay2=='N'){
                     $("#errorMsg").html("");
                     $("#request").removeAttr("disabled");
                 }
-            }
+            }    
         };
         $("#endDate").on("change", dateDifference);
         $("#startDate").on("change", dateDifference);

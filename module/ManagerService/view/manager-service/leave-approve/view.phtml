@@ -71,6 +71,7 @@ print $this->form()->openTag($form);
                                     <tr height="30">
                                         <td>
                                             Employee Name
+                                            <input type="hidden" id="employeeId"value="<?php echo $requestedEmployeeId; ?>"/>
                                         </td>
                                         <td width="15">:</td>
                                         <td>
@@ -92,9 +93,9 @@ print $this->form()->openTag($form);
                                         </td>
                                         <td width="15">:</td>
                                         <td>
-                                            <?php if ($role == 'A') {
+                                            <?php if ($role == 3) {
                                                 echo 'Approver';
-                                            } else if ($role == 'R') {
+                                            } else if ($role == 2) {
                                                 echo 'Recommender';
                                             } ?>
                                         </td>
@@ -179,14 +180,16 @@ print $this->form()->openTag($form);
                     </div>
                     <?php print $this->formElementErrors()->render($noOfDays, ['class' => 'help-block error']); ?>
 
-                    <div class="form-group padding-0" id="halfDay">
-                        <?php print $this->formLabel($halfDay); ?>
-                        <div class="md-radio-inline">
-                            <?php $customRenderer($halfDay); ?>
+                    <?php if($allowHalfDay=='Y'){  ?>
+                        <div class="form-group padding-0" id="halfDay">
+                            <?php print $this->formLabel($halfDay); ?>
+                            <div class="md-radio-inline">
+                                <?php $customRenderer($halfDay); ?>
+                            </div>
                         </div>
-                    </div>
-                    <?php print $this->formElementErrors()->render($halfDay, ['class' => 'help-block error']); ?>
-
+                        <?php print $this->formElementErrors()->render($halfDay, ['class' => 'help-block error']); ?>
+                    <?php } ?>
+                        
                     <?php if ($remarksDtl != null) { ?>
                         <div
                             class="form-group required <?= empty($remarks->getMessages()) ? "" : "error" ?>">
@@ -196,7 +199,7 @@ print $this->form()->openTag($form);
                     <?php } ?>
                     </div>
 
-                    <?php if ($role == 'R') { ?>
+                    <?php if ($role == 2) { ?>
                         <div
                             class="form-group margin-top-10 required <?= empty($recommendedRemarks->getMessages()) ? "" : "error" ?>">
                             <?php print $this->formLabel($recommendedRemarks); ?>
@@ -204,7 +207,7 @@ print $this->form()->openTag($form);
                         </div>
                     <?php } ?>
 
-                    <?php if ($role == 'A') {
+                    <?php if ($role == 3) {
                         $recommendedRemarks->setAttributes(['disabled'=>'disabled']);
                         ?>
                         <div
