@@ -1,10 +1,12 @@
 <?php
+
 /**
  * Created by PhpStorm.
  * User: root
  * Date: 10/18/16
  * Time: 2:14 PM
  */
+
 namespace System\Repository;
 
 use Application\Model\Model;
@@ -14,15 +16,14 @@ use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\TableGateway\TableGateway;
 use Zend\Authentication\AuthenticationService;
 
-class MenuSetupRepository implements RepositoryInterface
-{
+class MenuSetupRepository implements RepositoryInterface {
+
     private $adapter;
     private $tableGateway;
     private $roleId;
     private $authService;
 
-    public function __construct(AdapterInterface $adapter)
-    {
+    public function __construct(AdapterInterface $adapter) {
         $this->adapter = $adapter;
         $this->tableGateway = new TableGateway(MenuSetup::TABLE_NAME, $adapter);
 
@@ -31,34 +32,28 @@ class MenuSetupRepository implements RepositoryInterface
         $this->roleId = $recordDetail['role_id'];
     }
 
-    public function add(Model $model)
-    {
+    public function add(Model $model) {
         $this->tableGateway->insert($model->getArrayCopyForDB());
     }
 
-    public function edit(Model $model, $id)
-    {
+    public function edit(Model $model, $id) {
         $this->tableGateway->update($model->getArrayCopyForDB(), [MenuSetup::MENU_ID => $id]);
     }
 
-    public function fetchAll()
-    {
+    public function fetchAll() {
         return $this->tableGateway->select([MenuSetup::STATUS => "E"]);
     }
 
-    public function fetchById($id)
-    {
+    public function fetchById($id) {
         $result = $this->tableGateway->select([MenuSetup::MENU_ID => $id]);
         return $result->current();
     }
 
-    public function delete($id)
-    {
+    public function delete($id) {
         $this->tableGateway->update([MenuSetup::STATUS => "D"], [MenuSetup::MENU_ID => $id]);
     }
 
-    public function getMenuList($id)
-    {
+    public function getMenuList($id) {
         $sql = "SELECT * FROM HR_MENUS WHERE STATUS='E'";
 
         $statement = $this->adapter->query($sql);
@@ -74,8 +69,7 @@ class MenuSetupRepository implements RepositoryInterface
         return $entitiesArray;
     }
 
-    public function getHierarchicalMenu($parent_menu = null)
-    {
+    public function getHierarchicalMenu($parent_menu = null) {
         $where = "";
         if ($parent_menu == null) {
             $where .= " AND LEVEL=1";
@@ -90,8 +84,7 @@ class MenuSetupRepository implements RepositoryInterface
         return $resultset;
     }
 
-    public function getAllCHildMenu($menuId)
-    {
+    public function getAllCHildMenu($menuId) {
         $sql = "SELECT MENU_ID,MENU_NAME,PARENT_MENU,STATUS, LEVEL
       FROM HR_MENUS WHERE STATUS='E'
       START WITH MENU_ID =" . $menuId . "
@@ -103,8 +96,7 @@ class MenuSetupRepository implements RepositoryInterface
         return $resultset;
     }
 
-    public function getAllParentMenu($menuId)
-    {
+    public function getAllParentMenu($menuId) {
         $sql = "SELECT MENU_ID,MENU_NAME,PARENT_MENU,STATUS, LEVEL
       FROM HR_MENUS WHERE STATUS='E'
       START WITH MENU_ID =" . $menuId . "
@@ -116,13 +108,11 @@ class MenuSetupRepository implements RepositoryInterface
         return $resultset;
     }
 
-    public function getMenuListOfSameParent($menuId)
-    {
+    public function getMenuListOfSameParent($menuId) {
         return $this->tableGateway->select([MenuSetup::STATUS => "E", MenuSetup::PARENT_MENU => $menuId]);
     }
 
-    public function getHierarchicalMenuWithRoleId($parent_menu = null)
-    {
+    public function getHierarchicalMenuWithRoleId($parent_menu = null) {
         $where = "";
         if ($parent_menu == null) {
             $where .= " AND PARENT_MENU IS NULL";
@@ -144,15 +134,15 @@ class MenuSetupRepository implements RepositoryInterface
         $resultset = $statement->execute();
         return $resultset;
     }
-    
-    public function checkMenuIndex($menuIdex,$menuId=null){
-        if($menuId!=null){
-            $select = MenuSetup::MENU_INDEX."=".$menuIdex." AND ".MenuSetup::MENU_ID."!=".$menuId;
-        }else{
-            $select =  MenuSetup::MENU_INDEX."=".$menuIdex;
+
+    public function checkMenuIndex($menuIdex, $menuId = null) {
+        if ($menuId != null) {
+            $select = MenuSetup::MENU_INDEX . "=" . $menuIdex . " AND " . MenuSetup::MENU_ID . "!=" . $menuId;
+        } else {
+            $select = MenuSetup::MENU_INDEX . "=" . $menuIdex;
         }
         $result = $this->tableGateway->select([$select]);
         return $result->current();
     }
-    
+
 }
