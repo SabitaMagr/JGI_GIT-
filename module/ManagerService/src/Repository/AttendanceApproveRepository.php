@@ -11,7 +11,7 @@ use Application\Model\Model;
 use Application\Repository\RepositoryInterface;
 use Zend\Db\Adapter\AdapterInterface;
 use SelfService\Model\AttendanceRequestModel;
-use AttendanceManagement\Model\AttendanceByHr;
+use AttendanceManagement\Model\AttendanceDetail;
 use Zend\Db\TableGateway\TableGateway;
 use Zend\Db\Sql\Expression;
 use Zend\Db\Sql\Sql;
@@ -25,7 +25,7 @@ class AttendanceApproveRepository implements RepositoryInterface
     public function __construct(AdapterInterface $adapter)
     {
         $this->tableGateway = new TableGateway(AttendanceRequestModel::TABLE_NAME, $adapter);
-        $this->tableGatewayAttendance = new TableGateway(AttendanceByHr::TABLE_NAME, $adapter);
+        $this->tableGatewayAttendance = new TableGateway(AttendanceDetail::TABLE_NAME, $adapter);
         $this->adapter = $adapter;
     }
 

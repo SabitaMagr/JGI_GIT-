@@ -190,6 +190,10 @@ return [
             'partial/breadcrumb' => __DIR__ . '/../view/layout/partials/breadcrumb.phtml',
             'partial/profile' => __DIR__ . '/../view/layout/partials/profile.phtml',
             'dashboard-item/holiday-list' => __DIR__ . '/../view/layout/dashboard-items/holiday-list.phtml',
+            'dashboard-item/attendance-request' => __DIR__ . '/../view/layout/dashboard-items/attendance-request.phtml',
+            'dashboard-item/leave-apply' => __DIR__ . '/../view/layout/dashboard-items/leave-apply.phtml',
+            'dashboard-item/present-absent' => __DIR__ . '/../view/layout/dashboard-items/present-absent.phtml',
+            'dashboard-item/employee-count-by-branch' => __DIR__ . '/../view/layout/dashboard-items/employee-count-by-branch.phtml',
         ],
         'template_path_stack' => [
             __DIR__ . '/../view',
@@ -197,5 +201,9 @@ return [
     ],
     'dashboard-items' => [
         'holiday-list' => 'dashboard-item/holiday-list',
+        'attendance-request' => 'dashboard-item/attendance-request',
+        'leave-apply' => 'dashboard-item/leave-apply',
+        'present-absent' => 'dashboard-item/present-absent',
+        'emp-cnt-by-branch' => 'dashboard-item/employee-count-by-branch'
     ],
 ];

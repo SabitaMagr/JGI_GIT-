@@ -17,9 +17,9 @@ use Zend\Mvc\Controller\AbstractActionController;
 use HolidayManagement\Repository\HolidayRepository;
 use HolidayManagement\Model\Holiday;
 use SelfService\Repository\LeaveRequestRepository;
-use AttendanceManagement\Repository\AttendanceByHrRepository;
+use AttendanceManagement\Repository\AttendanceDetailRepository;
 use AttendanceManagement\Model\Attendance;
-use AttendanceManagement\Model\AttendanceByHr;
+use AttendanceManagement\Model\AttendanceDetail;
 
 class DailyAttendance extends AbstractActionController {
 
@@ -34,17 +34,17 @@ class DailyAttendance extends AbstractActionController {
     public function indexAction() {
 
         $employeeList = $this->pullEmployeeList();
-        $attendanceRepo = new AttendanceByHrRepository($this->adapter);
+        $attendanceRepo = new AttendanceDetailRepository($this->adapter);
         foreach ($employeeList as $employee) {
             $attendance = new Attendance();
             $attendance->employeeId = $employee->employeeId;
             $attendance->attendanceDt = Helper::getcurrentExpressionDate();
             $attendanceRepo->addAttendance($attendance);
 
-            $attendanceDetail = new AttendanceByHr();
+            $attendanceDetail = new AttendanceDetail();
             $attendanceDetail->attendanceDt = $attendance->attendanceDt;
             $attendanceDetail->employeeId = $attendance->employeeId;
-            $attendanceDetail->id = ((int) Helper::getMaxId($this->adapter, AttendanceByHr::TABLE_NAME, AttendanceByHr::ID)) + 1;
+            $attendanceDetail->id = ((int) Helper::getMaxId($this->adapter, AttendanceDetail::TABLE_NAME, AttendanceDetail::ID)) + 1;
 
             $checkForHoliday = $this->checkForHoliday($employee, $this->date);
             if ($checkForHoliday == null) {

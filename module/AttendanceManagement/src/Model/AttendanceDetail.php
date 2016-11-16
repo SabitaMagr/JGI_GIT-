@@ -11,7 +11,7 @@ namespace AttendanceManagement\Model;
 use Zend\View\Model\ModelInterface;
 use Application\Model\Model;
 
-class AttendanceByHr extends Model {
+class AttendanceDetail extends Model {
 
     const TABLE_NAME="HR_ATTENDANCE_DETAIL";
 

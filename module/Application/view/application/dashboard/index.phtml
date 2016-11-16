@@ -4,5 +4,21 @@ $menu = ["id" => "menuDashBoard", "subMenu" => ["id" => "subMenuDashBoard"]];
 echo json_encode($menu);
 ?>;
 </script>
+<?php $counter = 0; ?>
+<?php foreach ($dashboardItems as $dashboardItem) : ?>
+    <?php if ($counter % 2 == 0) { ?>
+        <div class="row">
+        <?php } ?>
+        <?php
+        print $this->partial($dashboardItem['path'], $dashboardItem['data']);
+        ?>
+        <?php if ($counter % 2 == 1 || ($counter + 1 == sizeof($dashboardItems))) { ?>
+        </div>
+    <?php } ?>
+<?php $counter++; ?>
+<?php endforeach; ?>
 
-<?= $this->partial('dashboard-item/holiday-list') ?>
+
+
+
+

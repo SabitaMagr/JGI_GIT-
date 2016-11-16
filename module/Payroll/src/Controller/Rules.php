@@ -11,7 +11,7 @@ namespace Payroll\Controller;
 
 use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
-use AttendanceManagement\Repository\AttendanceByHrRepository;
+use AttendanceManagement\Repository\AttendanceDetailRepository;
 use Payroll\Form\Rules as RuleForm;
 use Payroll\Model\FlatValue;
 use Payroll\Model\MonthlyValue;

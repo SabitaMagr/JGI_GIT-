@@ -15,8 +15,8 @@ use Zend\Mvc\Controller\AbstractActionController;
 use SelfService\Form\AttendanceRequestForm;
 use SelfService\Model\AttendanceRequestModel;
 use Zend\Form\Annotation\AnnotationBuilder;
-use AttendanceManagement\Model\AttendanceByHr;
-use AttendanceManagement\Repository\AttendanceByHrRepository;
+use AttendanceManagement\Model\AttendanceDetail;
+use AttendanceManagement\Repository\AttendanceDetailRepository;
 
 class AttendanceStatus extends AbstractActionController {
 
@@ -63,8 +63,8 @@ class AttendanceStatus extends AbstractActionController {
         $approver = $detail['FIRST_NAME1']." ".$detail['MIDDLE_NAME1']." ".$detail['LAST_NAME1'];
         $status = $detail['STATUS'];
 
-        $attendanceDetail = new AttendanceByHr();
-        $attendanceRepository = new AttendanceByHrRepository($this->adapter);
+        $attendanceDetail = new AttendanceDetail();
+        $attendanceRepository = new AttendanceDetailRepository($this->adapter);
         $attendanceRequestRepository = new AttendanceRequestRepository($this->adapter);
 
         if (!$request->isPost()) {
@@ -86,7 +86,7 @@ class AttendanceStatus extends AbstractActionController {
                 $attendanceDetail->outRemarks = $detail['OUT_REMARKS'];
                 $attendanceDetail->totalHour = $detail['TOTAL_HOUR'];
                 $attendanceDetail->employeeId = $detail['EMPLOYEE_ID'];
-                $attendanceDetail->id = (int)Helper::getMaxId($this->adapter,AttendanceByHr::TABLE_NAME,AttendanceByHr::ID)+1;
+                $attendanceDetail->id = (int)Helper::getMaxId($this->adapter,AttendanceDetail::TABLE_NAME,AttendanceDetail::ID)+1;
                 $attendanceRepository->add($attendanceDetail);
 
                 $this->flashmessenger()->addMessage("Attendance Request Approved!!!");

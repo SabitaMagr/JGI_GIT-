@@ -1,10 +1,12 @@
 <?php
+
 /**
  * Created by PhpStorm.
  * User: root
  * Date: 10/25/16
  * Time: 12:08 PM
  */
+
 namespace LeaveManagement\Repository;
 
 use Application\Model\Model;
@@ -17,26 +19,24 @@ use LeaveManagement\Model\LeaveApply;
 class LeaveStatusRepository implements RepositoryInterface {
 
     private $adapter;
-    public function __construct(AdapterInterface $adapter)
-    {
+
+    public function __construct(AdapterInterface $adapter) {
         $this->adapter = $adapter;
     }
 
-    public function add(Model $model)
-    {
+    public function add(Model $model) {
         // TODO: Implement add() method.
     }
 
-    public function edit(Model $model, $id)
-    {
+    public function edit(Model $model, $id) {
         // TODO: Implement edit() method.
     }
-    public function getAllRequest($status=null)
-    {
-        if($status!=null){
-            $where = "LA.STATUS ='".$status."'";
-        }else{
-            $where ="";
+
+    public function getAllRequest($status = null) {
+        if ($status != null) {
+            $where = "AND LA.STATUS ='" . $status . "'";
+        } else {
+            $where = "";
         }
         $sql = "SELECT L.LEAVE_ENAME,LA.NO_OF_DAYS,LA.START_DATE
                 ,LA.END_DATE,LA.REQUESTED_DT AS APPLIED_DATE,
@@ -58,20 +58,18 @@ class LeaveStatusRepository implements RepositoryInterface {
                 L.LEAVE_ID=LA.LEAVE_ID AND
                 E.EMPLOYEE_ID=LA.EMPLOYEE_ID AND
                 E1.EMPLOYEE_ID=LA.RECOMMENDED_BY AND
-                E2.EMPLOYEE_ID=LA.APPROVED_BY AND ".$where;
+                E2.EMPLOYEE_ID=LA.APPROVED_BY  " . $where;
         $statement = $this->adapter->query($sql);
         //return $statement->getSql();
         $result = $statement->execute();
         return $result;
     }
 
-    public function fetchAll()
-    {
+    public function fetchAll() {
         // TODO: Implement fetchAll() method.
     }
 
-    public function fetchById($id)
-    {
+    public function fetchById($id) {
         $sql = new Sql($this->adapter);
         $select = $sql->select();
         $select->columns([
@@ -87,15 +85,15 @@ class LeaveStatusRepository implements RepositoryInterface {
             new Expression("LA.REMARKS AS REMARKS"),
             new Expression("LA.RECOMMENDED_REMARKS AS RECOMMENDED_REMARKS"),
             new Expression("LA.APPROVED_REMARKS AS APPROVED_REMARKS"),
-        ], true);
+                ], true);
 
         $select->from(['LA' => LeaveApply::TABLE_NAME])
-            ->join(['E'=>"HR_EMPLOYEES"],"E.EMPLOYEE_ID=LA.EMPLOYEE_ID",['FIRST_NAME','MIDDLE_NAME','LAST_NAME'])
-            ->join(['E1'=>"HR_EMPLOYEES"],"E1.EMPLOYEE_ID=LA.RECOMMENDED_BY",['FN1'=>'FIRST_NAME','MN1'=>'MIDDLE_NAME','LN1'=>'LAST_NAME'])
-            ->join(['E2'=>"HR_EMPLOYEES"],"E2.EMPLOYEE_ID=LA.APPROVED_BY",['FN2'=>'FIRST_NAME','MN2'=>'MIDDLE_NAME','LN2'=>'LAST_NAME']);
+                ->join(['E' => "HR_EMPLOYEES"], "E.EMPLOYEE_ID=LA.EMPLOYEE_ID", ['FIRST_NAME', 'MIDDLE_NAME', 'LAST_NAME'])
+                ->join(['E1' => "HR_EMPLOYEES"], "E1.EMPLOYEE_ID=LA.RECOMMENDED_BY", ['FN1' => 'FIRST_NAME', 'MN1' => 'MIDDLE_NAME', 'LN1' => 'LAST_NAME'])
+                ->join(['E2' => "HR_EMPLOYEES"], "E2.EMPLOYEE_ID=LA.APPROVED_BY", ['FN2' => 'FIRST_NAME', 'MN2' => 'MIDDLE_NAME', 'LN2' => 'LAST_NAME']);
 
         $select->where([
-            "LA.ID=".$id
+            "LA.ID=" . $id
         ]);
 
         $statement = $sql->prepareStatementForSqlObject($select);
@@ -103,8 +101,9 @@ class LeaveStatusRepository implements RepositoryInterface {
         $result = $statement->execute();
         return $result->current();
     }
-    public function delete($id)
-    {
+
+    public function delete($id) {
         // TODO: Implement delete() method.
     }
+
 }

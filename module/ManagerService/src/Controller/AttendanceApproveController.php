@@ -17,8 +17,8 @@ use Application\Helper\Helper;
 use SelfService\Form\AttendanceRequestForm;
 use Zend\Form\Annotation\AnnotationBuilder;
 use SelfService\Model\AttendanceRequestModel;
-use AttendanceManagement\Model\AttendanceByHr;
-use AttendanceManagement\Repository\AttendanceByHrRepository;
+use AttendanceManagement\Model\AttendanceDetail;
+use AttendanceManagement\Repository\AttendanceDetailRepository;
 
 class AttendanceApproveController extends AbstractActionController {
 
@@ -65,8 +65,8 @@ class AttendanceApproveController extends AbstractActionController {
         $detail = $this->repository->fetchById($id);
         $employeeName = $detail['FIRST_NAME']." ".$detail['MIDDLE_NAME']." ".$detail['LAST_NAME'];
 
-        $attendanceDetail = new AttendanceByHr();
-        $attendanceRepository = new AttendanceByHrRepository($this->adapter);
+        $attendanceDetail = new AttendanceDetail();
+        $attendanceRepository = new AttendanceDetailRepository($this->adapter);
 
         if (!$request->isPost()) {
             $model->exchangeArrayFromDB($detail);
@@ -87,7 +87,7 @@ class AttendanceApproveController extends AbstractActionController {
                 $attendanceDetail->outRemarks = $detail['OUT_REMARKS'];
                 $attendanceDetail->totalHour = $detail['TOTAL_HOUR'];
                 $attendanceDetail->employeeId = $detail['EMPLOYEE_ID'];
-                $attendanceDetail->id = (int)Helper::getMaxId($this->adapter,AttendanceByHr::TABLE_NAME,AttendanceByHr::ID)+1;
+                $attendanceDetail->id = (int)Helper::getMaxId($this->adapter,AttendanceDetail::TABLE_NAME,AttendanceDetail::ID)+1;
 
                 $employeeId = $detail['EMPLOYEE_ID'];
                 $attendanceDt = $detail['ATTENDANCE_DT'];

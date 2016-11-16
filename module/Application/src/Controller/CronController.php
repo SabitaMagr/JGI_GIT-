@@ -4,8 +4,8 @@ namespace Application\Controller;
 
 use Application\Helper\Helper;
 use AttendanceManagement\Model\Attendance;
-use AttendanceManagement\Model\AttendanceByHr;
-use AttendanceManagement\Repository\AttendanceByHrRepository;
+use AttendanceManagement\Model\AttendanceDetail;
+use AttendanceManagement\Repository\AttendanceDetailRepository;
 use HolidayManagement\Model\Holiday;
 use HolidayManagement\Repository\HolidayRepository;
 use LeaveManagement\Model\LeaveApply;
@@ -28,17 +28,17 @@ class CronController extends AbstractActionController {
     public function indexAction() {
 
         $employeeList = $this->pullEmployeeList();
-        $attendanceRepo = new AttendanceByHrRepository($this->adapter);
+        $attendanceRepo = new AttendanceDetailRepository($this->adapter);
         foreach ($employeeList as $employee) {
             $attendance = new Attendance();
             $attendance->employeeId = $employee->employeeId;
             $attendance->attendanceDt = Helper::getcurrentExpressionDate();
             $attendanceRepo->addAttendance($attendance);
 
-            $attendanceDetail = new AttendanceByHr();
+            $attendanceDetail = new AttendanceDetail();
             $attendanceDetail->attendanceDt = $attendance->attendanceDt;
             $attendanceDetail->employeeId = $attendance->employeeId;
-            $attendanceDetail->id = ((int) Helper::getMaxId($this->adapter, AttendanceByHr::TABLE_NAME, AttendanceByHr::ID)) + 1;
+            $attendanceDetail->id = ((int) Helper::getMaxId($this->adapter, AttendanceDetail::TABLE_NAME, AttendanceDetail::ID)) + 1;
 
             $checkForHoliday = $this->checkForHoliday($employee, $this->date);
             if ($checkForHoliday == null) {

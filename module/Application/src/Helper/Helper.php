@@ -113,12 +113,26 @@ class Helper {
         return new Expression($tempStr);
     }
 
-    public static function columnExpression($columnName, $shortForm = null) {
+    public static function timeExpression($columnName, $shortForm = null) {
+        $format = Helper::ORACLE_TIME_FORMAT;
         $pre = "";
         if ($shortForm != null && sizeof($shortForm) != 0) {
             $pre = $shortForm . ".";
         }
-        $tempStr = "{$pre}{$columnName} AS {$columnName}";
+        $tempStr = "TO_CHAR({$pre}{$columnName}, '{$format}') AS {$columnName}";
+        return new Expression($tempStr);
+    }
+
+    public static function columnExpression($columnName, $shortForm = null, $function = null) {
+        $pre = "";
+        if ($shortForm != null && sizeof($shortForm) != 0) {
+            $pre = $shortForm . ".";
+        }
+        if ($function == NULL) {
+            $tempStr = "{$pre}{$columnName} AS {$columnName}";
+        } else {
+            $tempStr = "${function}({$pre}{$columnName}) AS {$columnName}";
+        }
         return new Expression($tempStr);
     }
 

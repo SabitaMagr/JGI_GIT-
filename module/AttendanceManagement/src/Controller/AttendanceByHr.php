@@ -13,11 +13,11 @@ use Zend\Db\Adapter\AdapterInterface;
 use Zend\View\Model\ViewModel;
 use Zend\Mvc\Controller\AbstractActionController;
 use AttendanceManagement\Form\AttendanceByHrForm;
-use AttendanceManagement\Repository\AttendanceByHrRepository;
+use AttendanceManagement\Repository\AttendanceDetailRepository;
 use Zend\Form\Annotation\AnnotationBuilder;
 use Application\Helper\Helper;
 use Setup\Helper\EntityHelper;
-use AttendanceManagement\Model\AttendanceByHr as AttendanceByHrModel;
+use AttendanceManagement\Model\AttendanceDetail as AttendanceByHrModel;
 
 class AttendanceByHr extends AbstractActionController {
 
@@ -27,7 +27,7 @@ class AttendanceByHr extends AbstractActionController {
 
     public function __construct(AdapterInterface $adapter) {
         $this->adapter = $adapter;
-        $this->repository = new AttendanceByHrRepository($adapter);
+        $this->repository = new AttendanceDetailRepository($adapter);
     }
 
     public function initializeForm() {

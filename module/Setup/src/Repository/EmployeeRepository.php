@@ -5,6 +5,7 @@ namespace Setup\Repository;
 use Application\Helper\Helper;
 use Application\Model\Model;
 use Application\Repository\RepositoryInterface;
+use Setup\Model\Branch;
 use Setup\Model\EmployeeFile;
 use Setup\Model\HrEmployees;
 use Zend\Db\Adapter\AdapterInterface;
@@ -69,10 +70,10 @@ class EmployeeRepository implements RepositoryInterface {
             Helper::columnExpression(HrEmployees::MOBILE_NO, "E"),
                 ], true);
         $select->join(['F' => EmployeeFile::TABLE_NAME], "E." . HrEmployees::EMPLOYEE_ID . "=F." . EmployeeFile::EMPLOYEE_ID);
-        $select->where(["E.".HrEmployees::EMPLOYEE_ID."=$id"]);
+        $select->where(["E." . HrEmployees::EMPLOYEE_ID . "=$id"]);
         $statement = $sql->prepareStatementForSqlObject($select);
         $result = $statement->execute();
-        
+
         return $result->current();
     }
 
@@ -98,6 +99,21 @@ class EmployeeRepository implements RepositoryInterface {
             unset($tempArray['STATUS']);
         }
         $this->gateway->update($tempArray, ['EMPLOYEE_ID' => $id]);
+    }
+
+    public function branchEmpCount() {
+        $sql = new Sql($this->adapter);
+        $select = $sql->select();
+
+        $select->columns([Helper::columnExpression(HrEmployees::EMPLOYEE_ID, 'E', "COUNT"), HrEmployees::BRANCH_ID], true);
+        $select->from(['E' => HrEmployees::TABLE_NAME]);
+//        $select->join(["B" => Branch::TABLE_NAME], "E." . HrEmployees::BRANCH_ID . " = B." . Branch::BRANCH_ID,[Branch::BRANCH_ID, Branch::BRANCH_NAME]);
+        $select->group(["E." . HrEmployees::BRANCH_ID]);
+
+        $statement = $sql->prepareStatementForSqlObject($select);
+//        print_r($statement->getSql());
+//        exit;
+        return $statement->execute();
     }
 
 }

@@ -11,7 +11,7 @@ namespace Payroll\Controller;
 
 use Application\Helper\DateHelper;
 use Application\Helper\Helper;
-use AttendanceManagement\Repository\AttendanceByHrRepository;
+use AttendanceManagement\Repository\AttendanceDetailRepository;
 use Setup\Model\HrEmployees;
 use Setup\Repository\EmployeeRepository;
 
@@ -37,7 +37,7 @@ class VariableProcessor {
             case PayrollGenerator::VARIABLES[1]:
                 $currentMonth = date('m');
                 $firstLastDate = DateHelper::getMonthFirstLastDate($currentMonth);
-                $attendanceDetail = new AttendanceByHrRepository($this->adapter);
+                $attendanceDetail = new AttendanceDetailRepository($this->adapter);
                 $firstDayExp = Helper::getExpressionDate($firstLastDate['firstDay']);
                 $lastDayExp = Helper::getExpressionDate($firstLastDate['lastDay']);
 
@@ -50,7 +50,7 @@ class VariableProcessor {
             case PayrollGenerator::VARIABLES[2]:
                 $currentMonth = date('m');
                 $firstLastDate = DateHelper::getMonthFirstLastDate($currentMonth);
-                $attendanceDetail = new AttendanceByHrRepository($this->adapter);
+                $attendanceDetail = new AttendanceDetailRepository($this->adapter);
                 $firstDayExp = Helper::getExpressionDate($firstLastDate['firstDay']);
                 $lastDayExp = Helper::getExpressionDate($firstLastDate['lastDay']);
 
@@ -60,7 +60,7 @@ class VariableProcessor {
             case PayrollGenerator::VARIABLES[3]:
                 $currentMonth = date('m');
                 $firstLastDate = DateHelper::getMonthFirstLastDate($currentMonth);
-                $attendanceDetail = new AttendanceByHrRepository($this->adapter);
+                $attendanceDetail = new AttendanceDetailRepository($this->adapter);
                 $firstDayExp = Helper::getExpressionDate($firstLastDate['firstDay']);
                 $lastDayExp = Helper::getExpressionDate($firstLastDate['lastDay']);
 
