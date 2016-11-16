@@ -6,8 +6,8 @@ use Application\Helper\Helper;
 use Application\Model\Model;
 use Application\Repository\RepositoryInterface;
 use Setup\Model\Branch;
+use Setup\Model\Department;
 use Setup\Model\Designation;
-use Setup\Model\EmployeeFile;
 use Setup\Model\HrEmployees;
 use Setup\Model\Position;
 use Setup\Model\ServiceEventType;
@@ -16,8 +16,6 @@ use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Sql\Select;
 use Zend\Db\Sql\Sql;
 use Zend\Db\TableGateway\TableGateway;
-use Setup\Model\Branch;
-use Setup\Model\Department;
 
 class EmployeeRepository implements RepositoryInterface {
 
