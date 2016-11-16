@@ -85,7 +85,7 @@ class LeaveApproveController extends AbstractActionController {
             $getData = $request->getPost();
             $action = $getData->submit;
 
-            if($role=="R"){
+            if($role==2){
                 $leaveApply->recommendedDt=Helper::getcurrentExpressionDate();
                 if($action=="Reject"){
                     $leaveApply->status="R";
@@ -96,7 +96,7 @@ class LeaveApproveController extends AbstractActionController {
                 }
                 $leaveApply->recommendedRemarks=$getData->recommendedRemarks;
                 $this->repository->edit($leaveApply,$id);
-            }else if($role=="A"){
+            }else if($role==3){
                 $leaveApply->approvedDt=Helper::getcurrentExpressionDate();
                 if($action=="Reject"){
                     $leaveApply->status="R";

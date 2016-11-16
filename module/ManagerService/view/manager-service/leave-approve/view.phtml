@@ -93,9 +93,9 @@ print $this->form()->openTag($form);
                                         </td>
                                         <td width="15">:</td>
                                         <td>
-                                            <?php if ($role == 'A') {
+                                            <?php if ($role == 3) {
                                                 echo 'Approver';
-                                            } else if ($role == 'R') {
+                                            } else if ($role == 2) {
                                                 echo 'Recommender';
                                             } ?>
                                         </td>
@@ -199,7 +199,7 @@ print $this->form()->openTag($form);
                     <?php } ?>
                     </div>
 
-                    <?php if ($role == 'R') { ?>
+                    <?php if ($role == 2) { ?>
                         <div
                             class="form-group margin-top-10 required <?= empty($recommendedRemarks->getMessages()) ? "" : "error" ?>">
                             <?php print $this->formLabel($recommendedRemarks); ?>
@@ -207,7 +207,7 @@ print $this->form()->openTag($form);
                         </div>
                     <?php } ?>
 
-                    <?php if ($role == 'A') {
+                    <?php if ($role == 3) {
                         $recommendedRemarks->setAttributes(['disabled'=>'disabled']);
                         ?>
                         <div
