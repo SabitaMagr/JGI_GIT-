@@ -18,6 +18,7 @@ use LeaveManagement\Form\LeaveApplyForm;
 use Zend\Form\Annotation\AnnotationBuilder;
 use LeaveManagement\Model\LeaveApply;
 use SelfService\Repository\LeaveRequestRepository;
+use LeaveManagement\Repository\LeaveMasterRepository;
 
 class LeaveApproveController extends AbstractActionController {
 
@@ -65,6 +66,11 @@ class LeaveApproveController extends AbstractActionController {
         $request = $this->getRequest();
 
         $detail = $this->repository->fetchById($id);
+        
+        $leaveId = $detail['LEAVE_ID'];
+        $leaveRepository = new LeaveMasterRepository($this->adapter);
+        $leaveDtl  = $leaveRepository->fetchById($leaveId);
+        
         $requestedEmployeeID = $detail['EMPLOYEE_ID'];
         $employeeName = $detail['FIRST_NAME']." ".$detail['MIDDLE_NAME']." ".$detail['LAST_NAME'];
 
@@ -123,6 +129,7 @@ class LeaveApproveController extends AbstractActionController {
             'recommendedBy'=>$detail['RECOMMENDED_BY'],
             'employeeId'=>$this->employeeId,
             'requestedEmployeeId'=>$requestedEmployeeID,
+            'allowHalfDay'=>$leaveDtl['ALLOW_HALFDAY'],
             'leave' => $leaveRequestRepository->getLeaveList($detail['EMPLOYEE_ID']),
             'customRenderer'=>Helper::renderCustomView()
         ]);

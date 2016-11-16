@@ -21,6 +21,7 @@ use Application\Helper\EntityHelper;
 use Zend\Form\Element\Select;
 use Setup\Repository\RecommendApproveRepository;
 use Setup\Repository\EmployeeRepository;
+use LeaveManagement\Repository\LeaveMasterRepository;
 
 
 class LeaveRequest extends AbstractActionController{
@@ -131,6 +132,11 @@ class LeaveRequest extends AbstractActionController{
         $request = $this->getRequest();
 
         $detail = $leaveApproveRepository->fetchById($id);
+        
+        $leaveId = $detail['LEAVE_ID'];
+        $leaveRepository = new LeaveMasterRepository($this->adapter);
+        $leaveDtl  = $leaveRepository->fetchById($leaveId);
+        
         $employeeName = $detail['FIRST_NAME']." ".$detail['MIDDLE_NAME']." ".$detail['LAST_NAME'];
         $recommender = $detail['FN1']." ".$detail['MN1']." ".$detail['LN1'];
         $approver = $detail['FN2']." ".$detail['MN2']." ".$detail['LN2'];
@@ -156,6 +162,7 @@ class LeaveRequest extends AbstractActionController{
             'totalDays'=>$result['TOTAL_DAYS'],
             'recommendedBy'=>$detail['RECOMMENDED_BY'],
             'employeeId'=>$this->employeeId,
+            'allowHalfDay'=>$leaveDtl['ALLOW_HALFDAY'],
             'leave' => $this->leaveRequestRepository->getLeaveList($detail['EMPLOYEE_ID']),
             'customRenderer'=>Helper::renderCustomView()
         ]);

@@ -65,10 +65,19 @@ class AttendanceRepository implements RepositoryInterface
         $select = $sql->select();
         $select->columns([new Expression("TO_CHAR(A.ATTENDANCE_DT, 'DD-MON-YYYY') AS ATTENDANCE_DT"), new Expression("TO_CHAR(A.IN_TIME, 'HH:MI AM') AS IN_TIME"), new Expression("TO_CHAR(A.OUT_TIME, 'HH:MI AM') AS OUT_TIME"), new Expression("A.ID AS ID"), new Expression("A.IN_REMARKS AS IN_REMARKS"), new Expression("A.OUT_REMARKS AS OUT_REMARKS"), new Expression("A.TOTAL_HOUR AS TOTAL_HOUR")], true);
         $select->from(['A' => AttendanceByHr::TABLE_NAME]);
+        if($fromDate!=null){
+            $startDate = " AND A.ATTENDANCE_DT>=TO_DATE('".$fromDate."','DD-MM-YYYY')";
+        }else{
+            $startDate="";
+        }
+        if($toDate!=null){
+            $endDate=" AND A.ATTENDANCE_DT<=TO_DATE('".$toDate."','DD-MM-YYYY')";
+        }else{
+            $endDate="";
+        }
         $select->where([
-            'A.EMPLOYEE_ID='.$employeeId,
-            "A.ATTENDANCE_DT>=TO_DATE('".$fromDate."','DD-MM-YYYY')",
-            "A.ATTENDANCE_DT<=TO_DATE('".$toDate."','DD-MM-YYYY')",
+            'A.EMPLOYEE_ID='.$employeeId.
+            $startDate.$endDate
         ]);
         $statement = $sql->prepareStatementForSqlObject($select);
         $result = $statement->execute();

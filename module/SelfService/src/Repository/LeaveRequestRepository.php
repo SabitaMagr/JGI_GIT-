@@ -50,6 +50,7 @@ class LeaveRequestRepository implements RepositoryInterface {
             new Expression("TO_CHAR(LA.START_DATE, 'DD-MON-YYYY') AS FROM_DATE"),
             new Expression("TO_CHAR(LA.END_DATE, 'DD-MON-YYYY') AS TO_DATE"),
             new Expression("LA.STATUS AS STATUS"),
+            new Expression("LA.NO_OF_DAYS AS NO_OF_DAYS"),
             new Expression("LA.ID AS ID"),
                 ], true);
 
