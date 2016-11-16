@@ -10,6 +10,7 @@ angularApp.controller('menuUpdateController', function ($scope, $uibModal, $log,
         menuName: '',
         route: '',
         action:'',
+        menuIndex:'',
         iconClass:'',
         menuDescription: '',
         menuId: ''
@@ -79,11 +80,13 @@ angularApp.controller('menuUpdateController', function ($scope, $uibModal, $log,
         }).then(function (success) {
             $scope.$apply(function () {
                 var temp = success.data;
+                console.log(temp);
                 $scope.menuDtl.menuId = temp.MENU_ID;
                 $scope.menuDtl.menuCode = temp.MENU_CODE;
                 $scope.menuDtl.menuName = temp.MENU_NAME;
                 $scope.menuDtl.route = temp.ROUTE;
                 $scope.menuDtl.action = temp.ACTION;
+                $scope.menuDtl.menuIndex = parseInt(temp.MENU_INDEX);
                 $scope.menuDtl.iconClass = temp.ICON_CLASS;
                 $scope.menuDtl.menuDescription = temp.MENU_DESCRIPTION;
                 $scope.isDisabled = false;
@@ -106,7 +109,14 @@ angularApp.controller('menuUpdateController', function ($scope, $uibModal, $log,
                     $("#tree_3").jstree(true).settings.core.data = newData;
                     $("#tree_3").jstree(true).refresh();
 
-                    window.toastr.success(success.data, "Notifications");
+                    if(success.data!=""){
+                        window.toastr.success(success.data, "Notifications");
+                    }  
+                    if(success.menuIndexErr!=""){
+                        $scope.menuIndexErr = success.menuIndexErr;
+                    }else{
+                        $scope.menuIndexErr=null;
+                    }
                 });
             }, function (failure) {
                 console.log(failure);
@@ -134,11 +144,11 @@ angularApp.controller('menuUpdateController', function ($scope, $uibModal, $log,
                     menuName: '',
                     route: '',
                     action:'',
+                    menuIndex:'',
                     iconClass:'',
-                    menuDescription: ''
+                    menuDescription: '',
                 };
-
-                $scope.submitForm = function () {
+              $scope.submitForm = function () {              
                     if ($scope.userForm.$valid) {
                         window.app.pullDataById(document.url, {
                             action: 'menuInsertion',
@@ -153,9 +163,15 @@ angularApp.controller('menuUpdateController', function ($scope, $uibModal, $log,
                                 $("#tree_3").jstree(true).refresh();
 
                                 // $uibModalInstance.dismiss('cancel');
-                                $uibModalInstance.close('cancel');
-
-                                window.toastr.success(success.data, "Notifications");
+                                if(success.data!=""){
+                                    window.toastr.success(success.data, "Notifications");
+                                    $uibModalInstance.close('cancel');
+                                }  
+                                if(success.menuIndexErr!=""){
+                                    $scope.menuIndexErr = success.menuIndexErr;
+                                }else{
+                                    $scope.menuIndexErr=null;
+                                }
                             });
                         }, function (failure) {
                             console.log(failure);

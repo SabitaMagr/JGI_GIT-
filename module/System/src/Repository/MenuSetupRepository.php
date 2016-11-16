@@ -137,12 +137,22 @@ class MenuSetupRepository implements RepositoryInterface
 			            AND HR.STATUS = 'E'
     AND HM.MENU_ID = HR.MENU_ID
 			            " . $where . "
-			ORDER BY HM.MENU_ID ASC";
+			ORDER BY HM.MENU_INDEX ASC";
 
         $statement = $this->adapter->query($sql);
         //return $statement->getSql();
         $resultset = $statement->execute();
         return $resultset;
+    }
+    
+    public function checkMenuIndex($menuIdex,$menuId=null){
+        if($menuId!=null){
+            $select = MenuSetup::MENU_INDEX."=".$menuIdex." AND ".MenuSetup::MENU_ID."!=".$menuId;
+        }else{
+            $select =  MenuSetup::MENU_INDEX."=".$menuIdex;
+        }
+        $result = $this->tableGateway->select([$select]);
+        return $result->current();
     }
     
 }

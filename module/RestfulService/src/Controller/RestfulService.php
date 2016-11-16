@@ -477,6 +477,7 @@ class RestfulService extends AbstractRestfulController {
         $model->menuName = $record['menuName'];
         $model->route = $record['route'];
         $model->action = $record['action'];
+        $model->menuIndex = $record['menuIndex'];
         $model->iconClass = $record['iconClass'];
         if ($data['parentMenu'] != null) {
             $model->parentMenu = $data['parentMenu'];
@@ -484,12 +485,22 @@ class RestfulService extends AbstractRestfulController {
         $model->menuDescription = $record['menuDescription'];
         $model->status = 'E';
         $model->createdDt = Helper::getcurrentExpressionDate();
-        $repository->add($model);
+        
+        $menuIndex = $repository->checkMenuIndex($record['menuIndex']);
+        if($menuIndex){
+            $menuIndexErr = "Menu Index Already Exist!!!";
+            $data = "";
+        }else{
+            $menuIndexErr="";
+            $repository->add($model);
+            $data = "Menu Successfully Added!!";
+        }
         $menuData = $this->menu();
         return $responseData = [
             "success" => true,
-            "data" => "Menu Successfully Added!!",
-            "menuData" => $menuData
+            "data" => $data,
+            "menuData" => $menuData,
+            "menuIndexErr"=>$menuIndexErr
         ];
     }
 
@@ -513,6 +524,7 @@ class RestfulService extends AbstractRestfulController {
         $model->menuName = $record['menuName'];
         $model->route = $record['route'];
         $model->action = $record['action'];
+        $model->menuIndex = $record['menuIndex'];
         $model->iconClass = $record['iconClass'];
 
         $model->menuDescription = $record['menuDescription'];
@@ -521,13 +533,22 @@ class RestfulService extends AbstractRestfulController {
         unset($model->parentMenu);
         unset($model->menuId);
         unset($model->createdDt);
-
-        $repository->edit($model, $menuId);
+        
+        $menuIndex = $repository->checkMenuIndex($record['menuIndex'],$menuId);
+        if($menuIndex){
+            $menuIndexErr = "Menu Index Already Exist!!!";
+            $data = "";
+        }else{
+            $menuIndexErr="";
+            $repository->edit($model, $menuId);
+            $data = "Menu Successfully Updated!!";
+        }
         $menuData = $this->menu();
         return $responseData = [
             "success" => true,
-            "data" => "Menu Successfully Updated!!",
-            "menuData" => $menuData
+            "data" => $data,
+            "menuData" => $menuData,
+            "menuIndexErr"=>$menuIndexErr
         ];
     }
 
