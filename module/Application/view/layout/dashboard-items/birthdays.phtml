@@ -4,28 +4,30 @@
         <div class="portlet-title">
             <div class="caption">
                 <i class="icon-speech"></i>
-                <span class="caption-subject bold uppercase"> Total Employee</span>
-                <span class="caption-helper">Branch wise</span>
+                <span class="caption-subject bold uppercase">Birthdays</span>
+                <span class="caption-helper">Today</span>
             </div>
         </div>
         <div class="portlet-body">
             <div class="mt-element-list scroller"  style="height:200px">
                 <div class="mt-list-container list-simple ext-1">
                     <ul>
-                        <?php foreach ($empCountByBranch as $empCount): ?>
+                        <?php foreach ($employeeList as $employee): ?>
                             <li class="mt-list-item done">
                                 <div class="list-icon-container">
                                     <i class="icon-check"></i>
                                 </div>
                                 <div class="list-datetime"> 
                                     <label style="font-size: 0.8em;">
-                                        <?php print $empCount['EMPLOYEE_ID']; ?>
+                                        <?php print $employee['BIRTH_DATE']; ?>
                                     </label>
                                 </div>
                                 <div class="list-item-content">
                                     <h3 class="uppercase">
-                                        <a href="javascript:;">
-                                            <?php print $empCount['BRANCH_NAME']; ?> 
+                                        <a href="<?= $this->url("employee", ["action" => "edit",'id'=>$employee['EMPLOYEE_ID'],'tab'=>1]) ?>">
+                                            <?php print $employee['FIRST_NAME']; ?>
+                                            <?php print $employee['MIDDLE_NAME']; ?>
+                                            <?php print $employee['LAST_NAME']; ?>
                                         </a>
                                     </h3>
                                 </div>

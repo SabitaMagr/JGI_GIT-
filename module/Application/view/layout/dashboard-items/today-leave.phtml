@@ -4,28 +4,32 @@
         <div class="portlet-title">
             <div class="caption">
                 <i class="icon-speech"></i>
-                <span class="caption-subject bold uppercase"> Total Employee</span>
-                <span class="caption-helper">Branch wise</span>
+                <span class="caption-subject bold uppercase">Leave</span>
+                <span class="caption-helper">Today</span>
             </div>
         </div>
         <div class="portlet-body">
             <div class="mt-element-list scroller"  style="height:200px">
                 <div class="mt-list-container list-simple ext-1">
                     <ul>
-                        <?php foreach ($empCountByBranch as $empCount): ?>
+                        <?php foreach ($approvedLeaveList as $approvedLeave): ?>
                             <li class="mt-list-item done">
                                 <div class="list-icon-container">
                                     <i class="icon-check"></i>
                                 </div>
                                 <div class="list-datetime"> 
                                     <label style="font-size: 0.8em;">
-                                        <?php print $empCount['EMPLOYEE_ID']; ?>
+                                        <?php print $approvedLeave['START_DATE']; ?>
+                                        <?php print $approvedLeave['END_DATE']; ?>
+
                                     </label>
                                 </div>
                                 <div class="list-item-content">
                                     <h3 class="uppercase">
-                                        <a href="javascript:;">
-                                            <?php print $empCount['BRANCH_NAME']; ?> 
+                                        <a href="<?= $this->url("leavestatus",['action'=>"view",'id'=>$approvedLeave['ID']]) ?>">
+                                            <?php print $approvedLeave['FIRST_NAME']; ?>
+                                            <?php print $approvedLeave['MIDDLE_NAME']; ?>
+                                            <?php print $approvedLeave['LAST_NAME']; ?>
                                         </a>
                                     </h3>
                                 </div>

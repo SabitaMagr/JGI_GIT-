@@ -51,6 +51,10 @@ echo json_encode($menu); ?>;
                 <?php print $this->formLabel($serviceTypes); ?>
                 <?php print $this->formElement($serviceTypes); ?>
             </div>
+            <div class="col-sm-3">
+                <?php print $this->formLabel($serviceEventTypes); ?>
+                <?php print $this->formElement($serviceEventTypes); ?>
+            </div>
             <div class="col-sm-2">
                 <label height="45"></label>
                 <button ng-click="view()" id="viewEmployees" class="btn btn-sm yellow form-control">

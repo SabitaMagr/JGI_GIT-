@@ -19,12 +19,12 @@
                                 </div>
                                 <div class="list-datetime"> 
                                     <label style="font-size: 0.8em;">
-                                        <?php print $attendanceRequest['REQUESTED_DT']; ?>
+                                        <?php print $attendanceRequest['ATTENDANCE_DT']; ?>
                                     </label>
                                 </div>
                                 <div class="list-item-content">
                                     <h3 class="uppercase">
-                                        <a href="javascript:;">
+                                        <a href="<?= $this->url("attendancestatus",['action'=>'view','id'=>$attendanceRequest['ID']]) ?>">
                                             <?php print $attendanceRequest['FIRST_NAME']; ?> 
                                             <?php print $attendanceRequest['MIDDLE_NAME']; ?> 
                                             <?php print $attendanceRequest['LAST_NAME']; ?>

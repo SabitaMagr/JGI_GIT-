@@ -14,22 +14,22 @@
             <div class="mt-element-list scroller"  style="height:200px">
                 <div class="mt-list-container list-simple ext-1">
                     <ul>
-                        <?php foreach ($holidayList as $leaveApply): ?>
+                        <?php foreach ($holidayList as $holiday): ?>
                             <li class="mt-list-item done">
                                 <div class="list-icon-container">
                                     <i class="icon-check"></i>
                                 </div>
                                 <div class="list-datetime"> 
                                     <label style="font-size: 0.8em;">
-                                        <?php print $leaveApply['START_DATE']; ?> 
-                                        <?php print $leaveApply['END_DATE']; ?> 
+                                        <?php print $holiday['START_DATE']; ?> 
+                                        <?php print $holiday['END_DATE']; ?> 
 
                                     </label>
                                 </div>
                                 <div class="list-item-content">
                                     <h3 class="uppercase">
-                                        <a href="javascript:;">
-                                            <?php print $leaveApply['HOLIDAY_ENAME']; ?>
+                                        <a href="<?php print $this->url("holidaysetup",['action'=>'edit','id'=>$holiday['HOLIDAY_ID']]) ?>">
+                                            <?php print $holiday['HOLIDAY_ENAME']; ?>
                                         </a>
                                     </h3>
                                 </div>
