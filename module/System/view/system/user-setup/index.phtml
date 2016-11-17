@@ -3,19 +3,19 @@
  * Load Javascript files here
  */
 $this->headScript()
-    ->appendFile($this->basePath('js/kendoDataTable.js'));
+        ->appendFile($this->basePath('js/kendoDataTable.js'));
 ?>
 
 
-<?php
-if($this->messages) { ?>
+<?php if ($this->messages) { ?>
     <script>
-        document.messages=<?php echo json_encode($this->messages); ?>
+        document.messages =<?php echo json_encode($this->messages); ?>
     </script>
 <?php } ?>
 
 <script>
-    document.menu =<?php $menu = ["id" => "menuSystem", "subMenu" => ["id" => "subMenuUserSetup"]];echo json_encode($menu);?>;
+    document.menu =<?php $menu = ["id" => "menuSystem", "subMenu" => ["id" => "subMenuUserSetup"]];
+echo json_encode($menu); ?>;
 </script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\usersetup')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
@@ -53,58 +53,60 @@ if($this->messages) { ?>
     </div>
     <table class="table" id="dataTable">
         <thead>
-        <tr role="row">
-            <th>
-                S.N.
-            </th>
-            <th>
-                Employee Name
-            </th>
-            <th>
-                User Name
-            </th>
-            <th>
-                Role Name
-            </th>
-            <th>
-                Action
-            </th>
-        </tr>
+            <tr role="row">
+                <th>
+                    S.N.
+                </th>
+                <th>
+                    Employee Name
+                </th>
+                <th>
+                    User Name
+                </th>
+                <th>
+                    Role Name
+                </th>
+                <th>
+                    Action
+                </th>
+            </tr>
         </thead>
         <tbody>
 
-        <?php
-        $i=1;
-        foreach ($list as $userList): ?>
-            <tr role="row table-info">
-                <td>
-                    <?php print $i; ?>
-                </td>
-                <td>
-                    <?php print $this->escapeHtml($userList['FIRST_NAME'])." ".$this->escapeHtml($userList['MIDDLE_NAME'])." ".$this->escapeHtml($userList['LAST_NAME']); ?>
-                </td>
-                <td>
-                    <?php print $this->escapeHtml($userList['USER_NAME']); ?>
-                </td>
-                <td>
-                    <?php print $this->escapeHtml($userList['ROLE_NAME']); ?>
-                </td>
-                <td>
-                    <a class=""
-                       href="<?= $this->url("usersetup", ["action" => "edit", "id" => $userList['USER_ID']]) ?>">
-                        Edit
-                    </a> /
-                    <a class=""
-                       href="<?= $this->url("usersetup", ["action" => "delete", "id" => $userList['USER_ID']]); ?>">
-                        Delete
-                    </a>
-
-                </td>
-            </tr>
-
             <?php
-            $i+=1;
-        endforeach; ?>
+            $i = 1;
+            foreach ($list as $userList):
+                ?>
+                <tr role="row table-info">
+                    <td>
+    <?php print $i; ?>
+                    </td>
+                    <td>
+    <?php print $this->escapeHtml($userList['FIRST_NAME']) . " " . $this->escapeHtml($userList['MIDDLE_NAME']) . " " . $this->escapeHtml($userList['LAST_NAME']); ?>
+                    </td>
+                    <td>
+    <?php print $this->escapeHtml($userList['USER_NAME']); ?>
+                    </td>
+                    <td>
+    <?php print $this->escapeHtml($userList['ROLE_NAME']); ?>
+                    </td>
+                    <td>
+                        <a class=""
+                           href="<?= $this->url("usersetup", ["action" => "edit", "id" => $userList['USER_ID']]) ?>">
+                            Edit
+                        </a> /
+                        <a class=""
+                           href="<?= $this->url("usersetup", ["action" => "delete", "id" => $userList['USER_ID']]); ?>">
+                            Delete
+                        </a>
+
+                    </td>
+                </tr>
+
+                <?php
+                $i += 1;
+            endforeach;
+            ?>
 
         </tbody>
     </table>

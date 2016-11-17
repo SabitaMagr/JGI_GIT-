@@ -11,15 +11,15 @@ $this->headScript()->appendFile($this->basePath('plugins/datatables-responsive/j
 $this->headScript()->appendFile($this->basePath('js/datatables.js'));
 ?>
 
-<?php
-if($this->messages) { ?>
+<?php if ($this->messages) { ?>
     <script>
-        document.messages=<?php echo json_encode($this->messages); ?>
+        document.messages =<?php echo json_encode($this->messages); ?>
     </script>
 <?php } ?>
 
 <script>
-    document.menu =<?php $menu = ["id" => "menuLeaveManagement", "subMenu" => ["id" => "subMenuLeaveApply"]];echo json_encode($menu);?>;
+    document.menu =<?php $menu = ["id" => "menuLeaveManagement", "subMenu" => ["id" => "subMenuLeaveApply"]];
+echo json_encode($menu); ?>;
 </script>
 <div class="container">
     <?= $this->navigation('Zend\Navigation\leaveapply')->breadcrumbs()->setMinDepth(0) ?>
@@ -37,65 +37,65 @@ if($this->messages) { ?>
         <div class="table-responsive">
             <table class="table table-bordered bg-master-lighter table-striped small-table" id="tableWithSearch">
                 <thead>
-                <tr role="row">
-                    <th aria-label="Title: activate to sort column ascending" aria-sort="descending" colspan="1"
-                        rowspan="1" aria-controls="basicTable" tabindex="0" class="sorting_desc">
-                        Employee Code
-                    </th>
-                    <th aria-label="Places: activate to sort column ascending" colspan="1" rowspan="1"
-                        aria-controls="basicTable" tabindex="0" class="sorting">
-                        First Name
-                    </th>
-                    <th aria-label="Activities: activate to sort column ascending" colspan="1" rowspan="1"
-                        aria-controls="basicTable" tabindex="0" class="sorting">
-                        Middle Name
-                    </th>
-                    <th aria-label="Status: activate to sort column ascending" colspan="1" rowspan="1"
-                        aria-controls="basicTable" tabindex="0" class="sorting">
-                        Last Name
-                    </th>
-                    <th aria-label="Last Update: activate to sort column ascending" colspan="1" rowspan="1"
-                        aria-controls="basicTable" tabindex="0" class="sorting">
-                        Date of Birth
-                    </th>
-                    <th aria-label="Last Update: activate to sort column ascending" colspan="1" rowspan="1"
-                        aria-controls="basicTable" tabindex="0" class="sorting">
-                        Action
-                    </th>
-                </tr>
+                    <tr role="row">
+                        <th aria-label="Title: activate to sort column ascending" aria-sort="descending" colspan="1"
+                            rowspan="1" aria-controls="basicTable" tabindex="0" class="sorting_desc">
+                            Employee Code
+                        </th>
+                        <th aria-label="Places: activate to sort column ascending" colspan="1" rowspan="1"
+                            aria-controls="basicTable" tabindex="0" class="sorting">
+                            First Name
+                        </th>
+                        <th aria-label="Activities: activate to sort column ascending" colspan="1" rowspan="1"
+                            aria-controls="basicTable" tabindex="0" class="sorting">
+                            Middle Name
+                        </th>
+                        <th aria-label="Status: activate to sort column ascending" colspan="1" rowspan="1"
+                            aria-controls="basicTable" tabindex="0" class="sorting">
+                            Last Name
+                        </th>
+                        <th aria-label="Last Update: activate to sort column ascending" colspan="1" rowspan="1"
+                            aria-controls="basicTable" tabindex="0" class="sorting">
+                            Date of Birth
+                        </th>
+                        <th aria-label="Last Update: activate to sort column ascending" colspan="1" rowspan="1"
+                            aria-controls="basicTable" tabindex="0" class="sorting">
+                            Action
+                        </th>
+                    </tr>
                 </thead>
                 <tbody>
-                <?php foreach ($employeeList as $employee) : ?>
-                    <tr role="row">
-                        <td class="v-align-middle sorting_1">
-                            <p>
-                                <?php print $this->escapeHtml($employee->employeeCode) ?>
-                            </p>
-                        </td>
-                        <td class="v-align-middle">
-                            <p>
-                                <?php print $this->escapeHtml($employee->firstName) ?>
-                            </p>
-                        </td>
-                        <td class="v-align-middle">
-                            <p>
-                                <?php print $this->escapeHtml($employee->middleName) ?>
-                            </p>
-                        </td>
-                        <td class="v-align-middle">
-                            <p>
-                                <?php print $this->escapeHtml($employee->lastName) ?>
-                            </p>
-                        <td>
-                            <?php print $this->escapeHtml($employee->birthDate) ?>
-                        </td>
-                        <td class="v-align-middle">
-                            <p>
-                                <a href="<?= $this->url("leaveapply", ["action" => "add", "id" => $employee->employeeId]) ?>">Apply</a>
-                            </p>
-                        </td>
-                    </tr>
-                <?php endforeach; ?>
+                    <?php foreach ($employeeList as $employee) : ?>
+                        <tr role="row">
+                            <td class="v-align-middle sorting_1">
+                                <p>
+                                    <?php print $this->escapeHtml($employee->employeeCode) ?>
+                                </p>
+                            </td>
+                            <td class="v-align-middle">
+                                <p>
+                                    <?php print $this->escapeHtml($employee->firstName) ?>
+                                </p>
+                            </td>
+                            <td class="v-align-middle">
+                                <p>
+                                    <?php print $this->escapeHtml($employee->middleName) ?>
+                                </p>
+                            </td>
+                            <td class="v-align-middle">
+                                <p>
+                                    <?php print $this->escapeHtml($employee->lastName) ?>
+                                </p>
+                            <td>
+                                <?php print $this->escapeHtml($employee->birthDate) ?>
+                            </td>
+                            <td class="v-align-middle">
+                                <p>
+                                    <a href="<?= $this->url("leaveapply", ["action" => "add", "id" => $employee->employeeId]) ?>">Apply</a>
+                                </p>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
                 </tbody>
             </table>
         </div>

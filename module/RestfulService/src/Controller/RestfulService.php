@@ -28,8 +28,11 @@ use Setup\Repository\AcademicProgramRepository;
 use Setup\Repository\AcademicUniversityRepository;
 use Setup\Repository\EmployeeFile;
 use Setup\Repository\EmployeeQualificationRepository;
+use Setup\Repository\EmployeeRepository;
+use System\Model\DashboardDetail;
 use System\Model\MenuSetup;
 use System\Model\RolePermission;
+use System\Repository\DashboardDetailRepo;
 use System\Repository\MenuSetupRepository;
 use System\Repository\RolePermissionRepository;
 use System\Repository\RoleSetupRepository;
@@ -38,8 +41,6 @@ use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Adapter\Driver\ResultInterface;
 use Zend\Mvc\Controller\AbstractRestfulController;
 use Zend\View\Model\JsonModel;
-use ZF\DevelopmentMode\Help;
-use Setup\Repository\EmployeeRepository;
 
 class RestfulService extends AbstractRestfulController {
 
@@ -151,6 +152,12 @@ class RestfulService extends AbstractRestfulController {
                     break;
                 case "pullFileTypeList":
                     $responseData = $this->pullFileTypeList();
+                    break;
+                case "fetchRoleDashboards":
+                    $responseData = $this->fetchRoleDashboards($postedData->data);
+                    break;
+                case "assignDashboard":
+                    $responseData = $this->assignDashboard($postedData->data);
                     break;
                 default:
                     $responseData = [
@@ -485,13 +492,13 @@ class RestfulService extends AbstractRestfulController {
         $model->menuDescription = $record['menuDescription'];
         $model->status = 'E';
         $model->createdDt = Helper::getcurrentExpressionDate();
-        
+
         $menuIndex = $repository->checkMenuIndex($record['menuIndex']);
-        if($menuIndex){
+        if ($menuIndex) {
             $menuIndexErr = "Menu Index Already Exist!!!";
             $data = "";
-        }else{
-            $menuIndexErr="";
+        } else {
+            $menuIndexErr = "";
             $repository->add($model);
             $data = "Menu Successfully Added!!";
         }
@@ -500,7 +507,7 @@ class RestfulService extends AbstractRestfulController {
             "success" => true,
             "data" => $data,
             "menuData" => $menuData,
-            "menuIndexErr"=>$menuIndexErr
+            "menuIndexErr" => $menuIndexErr
         ];
     }
 
@@ -533,13 +540,13 @@ class RestfulService extends AbstractRestfulController {
         unset($model->parentMenu);
         unset($model->menuId);
         unset($model->createdDt);
-        
-        $menuIndex = $repository->checkMenuIndex($record['menuIndex'],$menuId);
-        if($menuIndex){
+
+        $menuIndex = $repository->checkMenuIndex($record['menuIndex'], $menuId);
+        if ($menuIndex) {
             $menuIndexErr = "Menu Index Already Exist!!!";
             $data = "";
-        }else{
-            $menuIndexErr="";
+        } else {
+            $menuIndexErr = "";
             $repository->edit($model, $menuId);
             $data = "Menu Successfully Updated!!";
         }
@@ -548,7 +555,7 @@ class RestfulService extends AbstractRestfulController {
             "success" => true,
             "data" => $data,
             "menuData" => $menuData,
-            "menuIndexErr"=>$menuIndexErr
+            "menuIndexErr" => $menuIndexErr
         ];
     }
 
@@ -841,7 +848,7 @@ class RestfulService extends AbstractRestfulController {
         return ["success" => true, "data" => $results];
     }
 
-    public function pullAcademicDetail($data){
+    public function pullAcademicDetail($data) {
         $academicDegreeRepository = new AcademicDegreeRepository($this->adapter);
         $academicUniversityRepository = new AcademicUniversityRepository($this->adapter);
         $academicProgramRepository = new AcademicProgramRepository($this->adapter);
@@ -860,28 +867,28 @@ class RestfulService extends AbstractRestfulController {
         $courses = $academicCourseRepository->fetchAll();
         $employeeQualifications = $employeeQualificationRepository->fetchByEmployeeId($data['employeeId']);
 
-        foreach($degrees as $row){
-            array_push($degreeList,[
-                'id'=>$row['ACADEMIC_DEGREE_ID'],
-                'name'=>$row['ACADEMIC_DEGREE_NAME']
+        foreach ($degrees as $row) {
+            array_push($degreeList, [
+                'id' => $row['ACADEMIC_DEGREE_ID'],
+                'name' => $row['ACADEMIC_DEGREE_NAME']
             ]);
         }
-        foreach($universities as $row){
-            array_push($universityList,[
-                'id'=>$row['ACADEMIC_UNIVERSITY_ID'],
-                'name'=>$row['ACADEMIC_UNIVERSITY_NAME']
+        foreach ($universities as $row) {
+            array_push($universityList, [
+                'id' => $row['ACADEMIC_UNIVERSITY_ID'],
+                'name' => $row['ACADEMIC_UNIVERSITY_NAME']
             ]);
         }
-        foreach($programs as $row){
+        foreach ($programs as $row) {
             array_push($programList, [
-                'id'=>$row['ACADEMIC_PROGRAM_ID'],
-                'name'=>$row['ACADEMIC_PROGRAM_NAME']
+                'id' => $row['ACADEMIC_PROGRAM_ID'],
+                'name' => $row['ACADEMIC_PROGRAM_NAME']
             ]);
         }
-        foreach($courses as $row){
+        foreach ($courses as $row) {
             array_push($courseList, [
-                'id'=>$row['ACADEMIC_COURSE_ID'],
-                'name'=>$row['ACADEMIC_COURSE_NAME']
+                'id' => $row['ACADEMIC_COURSE_ID'],
+                'name' => $row['ACADEMIC_COURSE_NAME']
             ]);
         }
         foreach ($employeeQualifications as $row) {
@@ -892,53 +899,52 @@ class RestfulService extends AbstractRestfulController {
             ];
             $universityRow = $academicUniversityRepository->fetchById($row['ACADEMIC_UNIVERSITY_ID']);
             $universityDtl = [
-                'id'=>$universityRow['ACADEMIC_UNIVERSITY_ID'],
-                'name'=>$universityRow['ACADEMIC_UNIVERSITY_NAME']
+                'id' => $universityRow['ACADEMIC_UNIVERSITY_ID'],
+                'name' => $universityRow['ACADEMIC_UNIVERSITY_NAME']
             ];
             $programRow = $academicProgramRepository->fetchById($row['ACADEMIC_PROGRAM_ID']);
-            $programDtl =[
-                'id'=>$programRow['ACADEMIC_PROGRAM_ID'],
-                'name'=>$programRow['ACADEMIC_PROGRAM_NAME']
+            $programDtl = [
+                'id' => $programRow['ACADEMIC_PROGRAM_ID'],
+                'name' => $programRow['ACADEMIC_PROGRAM_NAME']
             ];
             $courseRow = $academicCourseRepository->fetchById($row['ACADEMIC_COURSE_ID']);
             $courseDtl = [
-                'id'=>$courseRow['ACADEMIC_COURSE_ID'],
-                'name'=>$courseRow['ACADEMIC_COURSE_NAME']
+                'id' => $courseRow['ACADEMIC_COURSE_ID'],
+                'name' => $courseRow['ACADEMIC_COURSE_NAME']
             ];
 
-            array_push($employeeQualificationList,[
-                'degreeDtl'=>$degreeDtl,
-                'universityDtl'=>$universityDtl,
-                'programDtl'=>$programDtl,
-                'courseDtl'=>$courseDtl,
-                'rankType'=>$row['RANK_TYPE'],
-                'rankValue'=>$row['RANK_VALUE'],
-                'passedYr'=>$row['PASSED_YR'],
-                'id'=>$row['ID']
+            array_push($employeeQualificationList, [
+                'degreeDtl' => $degreeDtl,
+                'universityDtl' => $universityDtl,
+                'programDtl' => $programDtl,
+                'courseDtl' => $courseDtl,
+                'rankType' => $row['RANK_TYPE'],
+                'rankValue' => $row['RANK_VALUE'],
+                'passedYr' => $row['PASSED_YR'],
+                'id' => $row['ID']
             ]);
         }
 
         $data = [
-            'degreeList'=>$degreeList,
-            'universityList'=>$universityList,
-            'programList'=>$programList,
-            'courseList'=>$courseList,
-            'employeeQualificationList'=>$employeeQualificationList
+            'degreeList' => $degreeList,
+            'universityList' => $universityList,
+            'programList' => $programList,
+            'courseList' => $courseList,
+            'employeeQualificationList' => $employeeQualificationList
         ];
 
         return [
-            'success'=>true,
-            'data'=> $data
+            'success' => true,
+            'data' => $data
         ];
-
     }
 
-    public function submitQualificationDtl($data){
+    public function submitQualificationDtl($data) {
         //$qualificationDtl = $data;
         $repository = new EmployeeQualificationRepository($this->adapter);
         $empQualificationModel = new EmployeeQualification();
 
-        foreach($data['qualificationRecord'] as $qualificationDtl) {
+        foreach ($data['qualificationRecord'] as $qualificationDtl) {
             $id = $qualificationDtl['id'];
             $academicDegreeId = $qualificationDtl['academicDegreeId'];
             $academicUniversityId = $qualificationDtl['academicUniversityId'];
@@ -949,22 +955,22 @@ class RestfulService extends AbstractRestfulController {
             $passedYr = $qualificationDtl['passedYr'];
             $employeeId = $data['employeeId'];
 
-            $empQualificationModel->employeeId =$employeeId;
-            $empQualificationModel->academicDegreeId =$academicDegreeId['id'];
-            $empQualificationModel->academicUniversityId =$academicUniversityId['id'];
-            $empQualificationModel->academicProgramId =$academicProgramId['id'];
+            $empQualificationModel->employeeId = $employeeId;
+            $empQualificationModel->academicDegreeId = $academicDegreeId['id'];
+            $empQualificationModel->academicUniversityId = $academicUniversityId['id'];
+            $empQualificationModel->academicProgramId = $academicProgramId['id'];
             $empQualificationModel->academicCourseId = $academicCourseId['id'];
             $empQualificationModel->rankType = $rankType['id'];
             $empQualificationModel->rankValue = $rankValue;
             $empQualificationModel->passedYr = $passedYr;
             $empQualificationModel->createdDt = Helper::getcurrentExpressionDate();
-            $empQualificationModel->status='E';
+            $empQualificationModel->status = 'E';
 
-            if($id!=0){
+            if ($id != 0) {
                 $empQualificationModel->modifiedDt = Helper::getcurrentExpressionDate();
-                $repository->edit($empQualificationModel,$id);
-            }else if($id==0){
-                $empQualificationModel->id = Helper::getMaxId($this->adapter,EmployeeQualification::TABLE_NAME,EmployeeQualification::ID)+1;
+                $repository->edit($empQualificationModel, $id);
+            } else if ($id == 0) {
+                $empQualificationModel->id = Helper::getMaxId($this->adapter, EmployeeQualification::TABLE_NAME, EmployeeQualification::ID) + 1;
                 $repository->add($empQualificationModel);
             }
         }
@@ -974,19 +980,21 @@ class RestfulService extends AbstractRestfulController {
 //        return $data = $this->pullAcademicDetail($empDtlId);
 
         return [
-            "success"=>true,
-            "data"=>"Qualification Detail Successfully Added"
+            "success" => true,
+            "data" => "Qualification Detail Successfully Added"
         ];
     }
-    public function deleteQualificationDtl($data){
+
+    public function deleteQualificationDtl($data) {
         $id = $data['id'];
         $repository = new EmployeeQualificationRepository($this->adapter);
         $repository->delete($id);
         return[
-            "success"=>true,
-            "data"=>"Qualification Detail Successfully Removed"
+            "success" => true,
+            "data" => "Qualification Detail Successfully Removed"
         ];
     }
+
     private function pullEmployeeDetailById($data) {
         $employeeId = $data["employeeId"];
         $employeeRepo = new EmployeeRepository($this->adapter);
@@ -995,19 +1003,57 @@ class RestfulService extends AbstractRestfulController {
         return ["success" => true, "data" => $employee];
     }
 
-    public function pullFileTypeList(){
+    public function pullFileTypeList() {
         $fileTypeRepository = new EmployeeFile($this->adapter);
         $fileTypes = [];
         $result = $fileTypeRepository->fetchAllFileType();
-        foreach($result as $row){
-            array_push($fileTypes,[
-                'id'=>$row['FILETYPE_CODE'],
-                'name'=>$row['NAME']
+        foreach ($result as $row) {
+            array_push($fileTypes, [
+                'id' => $row['FILETYPE_CODE'],
+                'name' => $row['NAME']
             ]);
         }
         return [
-            "success"=>true,
-            'data'=>$fileTypes
+            "success" => true,
+            'data' => $fileTypes
+        ];
+    }
+
+    public function fetchRoleDashboards($data) {
+        $roleId = $data['roleId'];
+        $dashboardRepo = new DashboardDetailRepo($this->adapter);
+        $result = $dashboardRepo->fetchById($roleId);
+        $dashboards = [];
+        foreach ($result as $dashboard) {
+            array_push($dashboards, $dashboard);
+        }
+
+        return ["success" => true,
+            "data" => $dashboards];
+    }
+
+    public function assignDashboard($data) {
+        $dashboard = $data['dashboard'];
+        $roleId = $data['roleId'];
+        $status = $data['status'];
+
+        $dashboardRepo = new DashboardDetailRepo($this->adapter);
+
+        $dashboardDetail = new DashboardDetail;
+        $dashboardDetail->dashboard = $dashboard;
+        $dashboardDetail->roleId = $roleId;
+        $dashboardDetail->roleType = 'E';
+        if ($status == 'true') {
+            $dashboardRepo->add($dashboardDetail);
+        } else {
+            $ids['dashboard'] = $dashboard;
+            $ids['roleId'] = $roleId;
+            $dashboardRepo->delete($ids);
+        }
+
+        return [
+            "success" => true,
+            "data" => $data
         ];
     }
 

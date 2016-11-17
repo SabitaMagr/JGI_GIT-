@@ -1,11 +1,11 @@
 <?php
 $this->headScript()
-    ->appendFile($this->basePath('assets/pages/scripts/ui-modals.min.js'))
-    ->appendFile($this->basePath('assets/global/plugins/jstree/dist/jstree.min.js'))
-    ->appendFile($this->basePath('js/system/menu-setup/index.js'))
-    ->appendFile($this->basePath('js/angular.min.js'))
-    ->appendFile($this->basePath('assets/global/plugins/bootstrap-master/ui-bootstrap-tpls-2.2.0.min.js'))
-    ->appendFile($this->basePath('js/system/menu-setup/menuController.js'));
+        ->appendFile($this->basePath('assets/pages/scripts/ui-modals.min.js'))
+        ->appendFile($this->basePath('assets/global/plugins/jstree/dist/jstree.min.js'))
+        ->appendFile($this->basePath('js/system/menu-setup/index.js'))
+        ->appendFile($this->basePath('js/angular.min.js'))
+        ->appendFile($this->basePath('assets/global/plugins/bootstrap-master/ui-bootstrap-tpls-2.2.0.min.js'))
+        ->appendFile($this->basePath('js/system/menu-setup/menuController.js'));
 ?>
 <link href="<?= $this->basePath('assets/global/plugins/simple-line-icons/simple-line-icons.min.css') ?>"
       rel="stylesheet" type="text/css"/>
@@ -15,11 +15,12 @@ $this->headScript()
 <link href="<?= $this->basePath('assets/global/plugins/jquery-nestable/jquery.nestable.css') ?>"
       rel="stylesheet" type="text/css"/>
 <script>
-    document.menu =<?php $menu = ["id" => "menuSystem", "subMenu" => ["id" => "subMenuMenuSetup"]];echo json_encode($menu);?>;
-    document.url = '<?= $this->url("restful", ["action" => "action"]) ?>';
+    document.menu =<?php $menu = ["id" => "menuSystem", "subMenu" => ["id" => "subMenuMenuSetup"]];
+echo json_encode($menu); ?>;
+    document.url = '<?= $this->url("restful", ["action" => "index"]) ?>';
 </script>
 <div class="page-bar">
-    <?= $this->navigation('Zend\Navigation\menusetup')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
+<?= $this->navigation('Zend\Navigation\menusetup')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
 <div ng-app="hris">
     <div class="row margin-top-20">
@@ -177,86 +178,86 @@ $this->headScript()
 
     <script type="text/ng-template" id="myModalContent.html">
         <div class="modal-header">
-            <button type="button" class="close" ng-click="cancel()" aria-hidden="true"></button>
-            <h4 class="modal-title">New Entry</h4>
+        <button type="button" class="close" ng-click="cancel()" aria-hidden="true"></button>
+        <h4 class="modal-title">New Entry</h4>
         </div>
         <form name="userForm" novalidate>
-            <div class="modal-body" style="background-color:#ffffff">
-                <div class="form-group">
-                    <label for="form-menuCode">Menu Code</label>
-                    <input name="menuCode" required="required" id="form-menuCode"
-                           class="form-menuCode form-control"
-                           type="text" value="" ng-model="menuDtl.menuCode">
-                    <div ng-show="userForm.$submitted || userForm.menuCode.$touched">
-                        <ul ng-show="userForm.menuCode.$error.required" class="help-block error">
-                            <li>Menu Code is required.</li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="form-menuName">Menu Name</label>
-                    <input name="menuName" required="required" id="form-menuName"
-                           class="form-menuName form-control"
-                           type="text" value="" ng-model="menuDtl.menuName">
-                    <div ng-show="userForm.$submitted || userForm.menuName.$touched">
-                        <ul ng-show="userForm.menuName.$error.required" class="help-block error">
-                            <li>Menu Name is required.</li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="form-route">Route</label>
-                    <input name="route" required="required" id="form-route" class="form-route form-control"
-                           type="text"
-                           value="" ng-model="menuDtl.route">
-                    <div ng-show="userForm.$submitted || userForm.route.$touched">
-                        <ul ng-show="userForm.route.$error.required" class="help-block error">
-                            <li>Route is required.</li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="form-action">Action</label>
-                    <input name="action" required="required" id="form-action" class="form-action form-control"
-                           type="text"
-                           value="" ng-model="menuDtl.action">
-                    <div ng-show="userForm.$submitted || userForm.action.$touched">
-                        <ul ng-show="userForm.action.$error.required" class="help-block error">
-                            <li>Action is required.</li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="form-menuIndex">Menu Index</label>
-                    <input name="menuIndex" required="required" id="form-menuIndex" class="form-menuIndex form-control"
-                           type="number"
-                           value="" ng-model="menuDtl.menuIndex">
-                    <span id="menuIndexErr" ng-show="menuIndexErr">
-                        <ul class="help-block error">
-                            <li>Menu Index Already Exist!!</li>
-                        </ul>
-                    </span>
-                    <div ng-show="userForm.$submitted || userForm.menuIndex.$touched">
-                        <ul ng-show="userForm.menuIndex.$error.required" class="help-block error">
-                            <li>Menu Index is required.</li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="form-menuName">Icon Class</label>
-                    <input name="iconClass" id="form-iconClass" class="form-iconClass form-control" type="text" value="" ng-model="menuDtl.iconClass">
-                </div>
-                <div class="form-group">
-                    <label for="form-menuDescription">Menu Description</label>
-                    <textarea name="menuDescription" id="form-menuDescription"
-                              class="form-menuDescription form-control"
-                              style="height: 50px;" ng-model="menuDtl.menuDescription"></textarea>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn dark btn-outline" ng-click="cancel()">Close</button>
-                <button type="submit" class="btn green" ng-click="submitForm()">Submit</button>
-            </div>
+        <div class="modal-body" style="background-color:#ffffff">
+        <div class="form-group">
+        <label for="form-menuCode">Menu Code</label>
+        <input name="menuCode" required="required" id="form-menuCode"
+        class="form-menuCode form-control"
+        type="text" value="" ng-model="menuDtl.menuCode">
+        <div ng-show="userForm.$submitted || userForm.menuCode.$touched">
+        <ul ng-show="userForm.menuCode.$error.required" class="help-block error">
+        <li>Menu Code is required.</li>
+        </ul>
+        </div>
+        </div>
+        <div class="form-group">
+        <label for="form-menuName">Menu Name</label>
+        <input name="menuName" required="required" id="form-menuName"
+        class="form-menuName form-control"
+        type="text" value="" ng-model="menuDtl.menuName">
+        <div ng-show="userForm.$submitted || userForm.menuName.$touched">
+        <ul ng-show="userForm.menuName.$error.required" class="help-block error">
+        <li>Menu Name is required.</li>
+        </ul>
+        </div>
+        </div>
+        <div class="form-group">
+        <label for="form-route">Route</label>
+        <input name="route" required="required" id="form-route" class="form-route form-control"
+        type="text"
+        value="" ng-model="menuDtl.route">
+        <div ng-show="userForm.$submitted || userForm.route.$touched">
+        <ul ng-show="userForm.route.$error.required" class="help-block error">
+        <li>Route is required.</li>
+        </ul>
+        </div>
+        </div>
+        <div class="form-group">
+        <label for="form-action">Action</label>
+        <input name="action" required="required" id="form-action" class="form-action form-control"
+        type="text"
+        value="" ng-model="menuDtl.action">
+        <div ng-show="userForm.$submitted || userForm.action.$touched">
+        <ul ng-show="userForm.action.$error.required" class="help-block error">
+        <li>Action is required.</li>
+        </ul>
+        </div>
+        </div>
+        <div class="form-group">
+        <label for="form-menuIndex">Menu Index</label>
+        <input name="menuIndex" required="required" id="form-menuIndex" class="form-menuIndex form-control"
+        type="number"
+        value="" ng-model="menuDtl.menuIndex">
+        <span id="menuIndexErr" ng-show="menuIndexErr">
+        <ul class="help-block error">
+        <li>Menu Index Already Exist!!</li>
+        </ul>
+        </span>
+        <div ng-show="userForm.$submitted || userForm.menuIndex.$touched">
+        <ul ng-show="userForm.menuIndex.$error.required" class="help-block error">
+        <li>Menu Index is required.</li>
+        </ul>
+        </div>
+        </div>
+        <div class="form-group">
+        <label for="form-menuName">Icon Class</label>
+        <input name="iconClass" id="form-iconClass" class="form-iconClass form-control" type="text" value="" ng-model="menuDtl.iconClass">
+        </div>
+        <div class="form-group">
+        <label for="form-menuDescription">Menu Description</label>
+        <textarea name="menuDescription" id="form-menuDescription"
+        class="form-menuDescription form-control"
+        style="height: 50px;" ng-model="menuDtl.menuDescription"></textarea>
+        </div>
+        </div>
+        <div class="modal-footer">
+        <button type="button" class="btn dark btn-outline" ng-click="cancel()">Close</button>
+        <button type="submit" class="btn green" ng-click="submitForm()">Submit</button>
+        </div>
         </form>
     </script>
 

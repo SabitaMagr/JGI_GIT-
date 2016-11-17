@@ -25,10 +25,11 @@ if ($this->messages) {
 $form->prepare();
 ?>
 <script>
-    document.menu =<?php $menu = ["id" => "menuSystem", "subMenu" => ["id" => "subMenuUserSetup"]];echo json_encode($menu);?>;
+    document.menu =<?php $menu = ["id" => "menuSystem", "subMenu" => ["id" => "subMenuUserSetup"]];
+echo json_encode($menu); ?>;
 </script>
 <div class="page-bar">
-    <?= $this->navigation('Zend\Navigation\usersetup')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
+<?= $this->navigation('Zend\Navigation\usersetup')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
 <div class="row margin-top-20">
     <div class="col-sm-8 col-sm-offset-2">
@@ -39,22 +40,22 @@ $form->prepare();
                 </div>
             </div>
             <div class="portlet-body">
-                <?php print $this->form()->openTag($form); ?>
+                    <?php print $this->form()->openTag($form); ?>
                 <div class="form-group">
                     <?php print $this->formLabel($employeeId); ?>
                     <?php print $this->formElement($employeeId); ?>
-                    <?php print $this->formElementErrors()->render($employeeId, ['class' => 'help-block error']); ?>
+<?php print $this->formElementErrors()->render($employeeId, ['class' => 'help-block error']); ?>
                 </div>
                 <div class="form-group">
                     <?php print $this->formLabel($roleId); ?>
                     <?php print $this->formElement($roleId); ?>
-                    <?php print $this->formElementErrors()->render($roleId, ['class' => 'help-block error']); ?>
+<?php print $this->formElementErrors()->render($roleId, ['class' => 'help-block error']); ?>
                 </div>
                 <div class="form-group<?= empty($userName->getMessages()) ? "" : "error" ?>">
                     <?php print $this->formLabel($userName); ?>
-                    <?php print $this->formElement($userName); ?>
+                <?php print $this->formElement($userName); ?>
                 </div>
-                <?php print $this->formElementErrors()->render($userName, ['class' => 'help-block error']); ?>
+<?php print $this->formElementErrors()->render($userName, ['class' => 'help-block error']); ?>
 
                 <div class="form-group">
                     <label for="form-password">Password</label>

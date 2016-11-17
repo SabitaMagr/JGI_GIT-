@@ -206,4 +206,9 @@ return [
         'present-absent' => 'dashboard-item/present-absent',
         'emp-cnt-by-branch' => 'dashboard-item/employee-count-by-branch'
     ],
+    'role-types' => [
+        'A'=>'Admin',
+        'B'=>'Branch Manager',
+        'E'=>'Employee'
+    ]
 ];

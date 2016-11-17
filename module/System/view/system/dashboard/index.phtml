@@ -1,5 +1,62 @@
 <?php
-
-print "<pre>";
-print_r($dashboardItems);
+/**
+ * Load Javascript files here
+ */
+$this->headScript()
+        ->appendFile($this->basePath('js/angular.min.js'))
+        ->appendFile($this->basePath('js/system/dashboard/DashboardController.js'));
 ?>
+
+<?php if ($this->messages) { ?>
+    <script>
+        document.messages =<?php echo json_encode($this->messages); ?>
+    </script>
+<?php } ?>
+
+<script>
+    document.menu =<?php
+$menu = ["id" => "menuSystem", "subMenu" => ["id" => "subMenuDashboard"]];
+echo json_encode($menu);
+?>;
+    document.roles =<?= json_encode($roles) ?>;
+    document.dashboardItems =<?= json_encode($dashboardItems) ?>;
+    document.roleTypes =<?= json_encode($roleTypes) ?>;
+</script>
+<div ng-app="hris" ng-controller="dashboardController">
+    <div class="row">
+        <div class="col-sm-2">
+            <select class="form-control" ng-model="role"
+                    ng-change="roleChange(role)"
+                    ng-options="item as item.ROLE_NAME for item in roles track by item.ROLE_ID">
+                <option value="">All</option>
+            </select>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-4">
+            <ul id="roleList">
+                <li ng-repeat="dashboard in dashboardItems">
+                    {{dashboard.value}}
+                    <span>
+                        <select ng-model="dashboard.roleType">
+                            <option ng-repeat="(key,roleType) in roleTypes" value="{{key}}">
+                            <label> {{roleType}}</label>
+                            </option>
+                        </select>
+                    </span>
+                    <span class="md-checkbox pull-right">
+                        <input ng-model="chk" ng-click="assign(dashboard.value, chk)" type="checkbox" id="{{dashboard.value}}" class="md-check"  ng-checked="dashboard.checked" >
+                        <label for="{{dashboard.value}}">
+                            <span class="inc"></span>
+                            <span class="check"></span>
+                            <span class="box"></span></label>
+                    </span>
+
+                </li>
+            </ul>
+        </div>
+
+    </div>
+</div>
+
+

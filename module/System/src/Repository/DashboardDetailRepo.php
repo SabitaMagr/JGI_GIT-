@@ -23,7 +23,7 @@ class DashboardDetailRepo implements RepositoryInterface {
     }
 
     public function delete($id) {
-        
+        $this->tableGateway->delete([DashboardDetail::DASHBOARD => $id['dashboard'], DashboardDetail::ROLE_ID => $id['roleId']]);
     }
 
     public function edit(Model $model, $id) {

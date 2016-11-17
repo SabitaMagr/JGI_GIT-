@@ -19,11 +19,14 @@ class DashboardController extends AbstractActionController {
 
     public function indexAction() {
         $roleRepo = new RoleSetupRepository($this->adapter);
-        print "<pre>";
-        print_r($roleRepo->fetchAll());
-        exit;
+        $rolesRaw = $roleRepo->fetchAll();
+        $roles = [];
+        foreach ($rolesRaw as $value) {
+            array_push($roles, $value);
+        }
         $dashboardItems = $this->container->get("config")['dashboard-items'];
-        return ['dashboardItems' => $dashboardItems];
+        $roleTypes = $this->container->get("config")['role-types'];
+        return ['dashboardItems' => $dashboardItems, 'roles' => $roles, 'roleTypes' => $roleTypes];
     }
 
 }
