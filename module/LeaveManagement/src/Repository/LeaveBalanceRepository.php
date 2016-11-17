@@ -42,7 +42,7 @@ class LeaveBalanceRepository implements RepositoryInterface {
         $result = $statement->execute();
         return $result;
     }
-    public function getAllEmployee($emplyoeeId,$branchId,$departmentId,$designationId,$positionId,$serviceTypeId){
+    public function getAllEmployee($emplyoeeId,$branchId,$departmentId,$designationId,$positionId,$serviceTypeId,$serviceEventTypeId){
         $sql = new Sql($this->adapter);
         $select = $sql->select();
         $select->columns([
@@ -65,27 +65,32 @@ class LeaveBalanceRepository implements RepositoryInterface {
         }
         if($branchId!=-1){
             $select->where([
-                "E.BRANCH_ID=".$branchId
+                "E.CUR_BRANCH_ID=".$branchId
             ]);
         }
         if($departmentId!=-1){
             $select->where([
-                "E.DEPARTMENT_ID=".$departmentId
+                "E.CUR_DEPARTMENT_ID=".$departmentId
             ]);
         }
         if($designationId!=-1){
             $select->where([
-                "E.DESIGNATION_ID=".$designationId
+                "E.CUR_DESIGNATION_ID=".$designationId
             ]);
         }
         if($positionId!=-1){
             $select->where([
-                "E.POSITION_ID=".$positionId
+                "E.CUR_POSITION_ID=".$positionId
             ]);
         }
         if($serviceTypeId!=-1){
             $select->where([
-                "E.SERVICE_TYPE_ID=".$serviceTypeId
+                "E.CUR_SERVICE_TYPE_ID=".$serviceTypeId
+            ]);
+        }
+        if($serviceEventTypeId!=-1){
+            $select->where([
+                "E.CUR_SERVICE_EVENT_TYPE_ID=".$serviceEventTypeId
             ]);
         }
 

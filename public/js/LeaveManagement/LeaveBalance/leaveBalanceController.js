@@ -10,6 +10,7 @@ angular.module('hris',[])
             var designationId = angular.element(document.getElementById('designationId')).val();
             var positionId = angular.element(document.getElementById('positionId')).val();
             var serviceTypeId = angular.element(document.getElementById('serviceTypeId')).val();
+            var serviceEventTypeId = angular.element(document.getElementById('serviceEventTypeId')).val();
 
             //console.log(employeeId+","+branchId+","+departmentId+","+designationId+","+positionId+","+serviceTypeId);
 
@@ -21,7 +22,8 @@ angular.module('hris',[])
                     'departmentId': departmentId,
                     'designationId':designationId,
                     'positionId':positionId,
-                    'serviceTypeId':serviceTypeId
+                    'serviceTypeId':serviceTypeId,
+                    'serviceEventTypeId':serviceEventTypeId
                 }
             }).then(function (success) {
                 $scope.$apply(function () {

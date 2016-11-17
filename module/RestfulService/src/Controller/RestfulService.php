@@ -152,6 +152,9 @@ class RestfulService extends AbstractRestfulController {
                 case "pullFileTypeList":
                     $responseData = $this->pullFileTypeList();
                     break;
+                case "pullEmployeeList":
+                    $responseData = $this->pullEmployeeList($postedData->data);
+                    break;
                 default:
                     $responseData = [
                         "success" => false
@@ -705,9 +708,10 @@ class RestfulService extends AbstractRestfulController {
         $designationId = $data['designationId'];
         $positionId = $data['positionId'];
         $serviceTypeId = $data['serviceTypeId'];
+        $serviceEventTypeId = $data['serviceEventTypeId'];
 
         $repository = new LeaveBalanceRepository($this->adapter);
-        $employeeList = $repository->getAllEmployee($emplyoeeId, $branchId, $departmentId, $designationId, $positionId, $serviceTypeId);
+        $employeeList = $repository->getAllEmployee($emplyoeeId, $branchId, $departmentId, $designationId, $positionId, $serviceTypeId,$serviceEventTypeId);
 
         $mainArray = [];
         foreach ($employeeList as $row) {
@@ -1008,6 +1012,23 @@ class RestfulService extends AbstractRestfulController {
         return [
             "success"=>true,
             'data'=>$fileTypes
+        ];
+    }
+    public function pullEmployeeList($data){
+        $emplyoeeId = $data['employeeId'];
+        $branchId = $data['branchId'];
+        $departmentId = $data['departmentId'];
+        $designationId = $data['designationId'];
+        $positionId = $data['positionId'];
+        $serviceTypeId = $data['serviceTypeId'];
+        $serviceEventTypeId = $data['serviceEventTypeId'];
+
+        $repository = new EmployeeRepository($this->adapter);
+        $employeeList = $repository->filterRecords($emplyoeeId, $branchId, $departmentId, $designationId, $positionId, $serviceTypeId,$serviceEventTypeId);
+        
+        return [
+            'success'=>true,
+            'data'=>$employeeList
         ];
     }
 
