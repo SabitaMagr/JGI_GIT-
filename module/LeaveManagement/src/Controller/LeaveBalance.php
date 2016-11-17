@@ -16,6 +16,7 @@ use Setup\Model\Department;
 use Setup\Model\Designation;
 use Setup\Model\Position;
 use Setup\Model\ServiceType;
+use Setup\Model\ServiceEventType;
 use Zend\Form\Element\Select;
 use Zend\Form\Annotation\AnnotationBuilder;
 use LeaveManagement\Form\LeaveApplyForm;
@@ -101,6 +102,15 @@ class LeaveBalance extends AbstractActionController {
         $serviceTypeFormElement->setValueOptions($serviceTypes);
         $serviceTypeFormElement->setAttributes(["id" => "serviceTypeId", "class" => "form-control"]);
         $serviceTypeFormElement->setLabel("Service Type");
+        
+        $serviceEventTypeFormElement = new Select();
+        $serviceEventTypeFormElement->setName("serviceEventType");
+        $serviceEventTypes=\Application\Helper\EntityHelper::getTableKVList($this->adapter,ServiceEventType::TABLE_NAME,ServiceEventType::SERVICE_EVENT_TYPE_ID , [ServiceEventType::SERVICE_EVENT_TYPE_NAME],[ServiceEventType::STATUS=>'E']);
+        $serviceEventTypes[-1]="All";
+        ksort($serviceEventTypes);
+        $serviceEventTypeFormElement->setValueOptions($serviceEventTypes);
+        $serviceEventTypeFormElement->setAttributes(["id" => "serviceEventTypeId", "class" => "form-control"]);
+        $serviceEventTypeFormElement->setLabel("Service Event Type");
 
         $leaveList = $this->repository->getAllLeave();
         $num = count($leaveList);
@@ -113,6 +123,7 @@ class LeaveBalance extends AbstractActionController {
             'designations'=>$designationFormElement,
             'positions'=>$positionFormElement,
             'serviceTypes'=>$serviceTypeFormElement,
+            'serviceEventTypes'=>$serviceEventTypeFormElement,
             'employees'=>$employeeNameFormElement
         ]);
     }

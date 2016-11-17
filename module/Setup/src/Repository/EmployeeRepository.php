@@ -134,5 +134,80 @@ class EmployeeRepository implements RepositoryInterface {
 //        exit;
         return $statement->execute();
     }
+    public function filterRecords($emplyoeeId, $branchId, $departmentId, $designationId, $positionId, $serviceTypeId,$serviceEventTypeId){
+        $sql = new Sql($this->adapter);
+        $select = $sql->select();
+        $select->from("HR_EMPLOYEES");
+        $select->columns(Helper::convertColumnDateFormat($this->adapter, new HrEmployees(), ['birthDate']), false);
+        
+        $select->where(['STATUS' => 'E']);
+        
+        if($emplyoeeId!=-1){
+            $select->where([
+                "EMPLOYEE_ID=".$emplyoeeId
+            ]);
+        }
+        if($branchId!=-1){
+            $select->where([
+                "CUR_BRANCH_ID=".$branchId
+            ]);
+        }
+        if($departmentId!=-1){
+            $select->where([
+                "CUR_DEPARTMENT_ID=".$departmentId
+            ]);
+        }
+        if($designationId!=-1){
+            $select->where([
+                "CUR_DESIGNATION_ID=".$designationId
+            ]);
+        }
+        if($positionId!=-1){
+            $select->where([
+                "CUR_POSITION_ID=".$positionId
+            ]);
+        }
+        if($serviceTypeId!=-1){
+            $select->where([
+                "CUR_SERVICE_TYPE_ID=".$serviceTypeId
+            ]);
+        }
+        if($serviceEventTypeId!=-1){
+            $select->where([
+                "CUR_SERVICE_EVENT_TYPE_ID=".$serviceEventTypeId
+            ]);
+        }
+        
+        $statement = $sql->prepareStatementForSqlObject($select);
+        $result = $statement->execute();
+        
+        $tempArray = [];
+        foreach ($result as $item) {
+            $tempObject = new HrEmployees();
+            $tempObject->exchangeArrayFromDB($item);
+            array_push($tempArray, $tempObject);
+        }
+        return $tempArray;
+    }
+    public function getEmployeeListOfBirthday(){
+        $sql = new Sql($this->adapter);
+        $select = $sql->select();
+        $select->from("HR_EMPLOYEES");
+        $select->columns(Helper::convertColumnDateFormat($this->adapter, new HrEmployees(), ['birthDate']), false);
+        $select->where(["STATUS='E'"]);
+        $statement = $sql->prepareStatementForSqlObject($select);
+        $result = $statement->execute();
+        $employeeList = [];
+        
+        foreach($result as $row){
+            $today = date('d-M');
+            $time = strtotime($row['BIRTH_DATE']);
+            $date =  date('d-M', $time);
+            if($date==$today){
+                array_push($employeeList, $row); 
+            }
+       }
+       return $employeeList;
+    }
 
 }

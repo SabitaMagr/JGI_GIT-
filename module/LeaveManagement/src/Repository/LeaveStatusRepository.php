@@ -32,12 +32,8 @@ class LeaveStatusRepository implements RepositoryInterface {
         // TODO: Implement edit() method.
     }
 
-    public function getAllRequest($status = null) {
-        if ($status != null) {
-            $where = "AND LA.STATUS ='" . $status . "'";
-        } else {
-            $where = "";
-        }
+    public function getAllRequest($status = null,$date=null) {
+        
         $sql = "SELECT L.LEAVE_ENAME,LA.NO_OF_DAYS,LA.START_DATE
                 ,LA.END_DATE,LA.REQUESTED_DT AS APPLIED_DATE,
                 LA.STATUS AS STATUS,
@@ -55,12 +51,22 @@ class LeaveStatusRepository implements RepositoryInterface {
                 HR_EMPLOYEES E1,
                 HR_EMPLOYEES E2
                 WHERE 
+                L.STATUS='E' AND
+                E.STATUS='E' AND
+                E1.STATUS='E' AND
+                E2.STATUS='E' AND
                 L.LEAVE_ID=LA.LEAVE_ID AND
                 E.EMPLOYEE_ID=LA.EMPLOYEE_ID AND
                 E1.EMPLOYEE_ID=LA.RECOMMENDED_BY AND
-                E2.EMPLOYEE_ID=LA.APPROVED_BY  " . $where;
+                E2.EMPLOYEE_ID=LA.APPROVED_BY";
+        if ($status != null) {
+            $sql .= " AND LA.STATUS ='" . $status . "'";
+        } 
+        if($date!=null){
+            $sql .= "AND (".$date->getExpression()." between LA.START_DATE AND LA.END_DATE)";
+         }
         $statement = $this->adapter->query($sql);
-        //return $statement->getSql();
+        //print_r($statement->getSql()); die();
         $result = $statement->execute();
         return $result;
     }

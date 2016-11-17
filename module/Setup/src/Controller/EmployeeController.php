@@ -24,6 +24,13 @@ use Zend\Db\Adapter\AdapterInterface;
 use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
+use Setup\Model\Branch;
+use Setup\Model\Department;
+use Setup\Model\Designation;
+use Setup\Model\Position;
+use Setup\Model\ServiceType;
+use Setup\Model\ServiceEventType;
+use Zend\Form\Element\Select;
 
 class EmployeeController extends AbstractActionController
 {
@@ -44,8 +51,83 @@ class EmployeeController extends AbstractActionController
 
     public function indexAction()
     {
+        $employeeNameFormElement = new Select();
+        $employeeNameFormElement->setName("branch");
+        $employeeName=\Application\Helper\EntityHelper::getTableKVList($this->adapter,"HR_EMPLOYEES","EMPLOYEE_ID",["FIRST_NAME","MIDDLE_NAME","LAST_NAME"],["STATUS"=>"E"]);
+        $employeeName[-1]="All";
+        ksort($employeeName);
+        $employeeNameFormElement->setValueOptions($employeeName);
+        $employeeNameFormElement->setAttributes(["id" => "employeeId", "class" => "form-control"]);
+        $employeeNameFormElement->setLabel("Employee");
+        $employeeNameFormElement->setAttribute("ng-click","view()");
+
+        $branchFormElement = new Select();
+        $branchFormElement->setName("branch");
+        $branches=\Application\Helper\EntityHelper::getTableKVList($this->adapter, Branch::TABLE_NAME, Branch::BRANCH_ID, [Branch::BRANCH_NAME],[Branch::STATUS=>'E']);
+        $branches[-1]="All";
+        ksort($branches);
+        $branchFormElement->setValueOptions($branches);
+        $branchFormElement->setAttributes(["id" => "branchId", "class" => "form-control"]);
+        $branchFormElement->setLabel("Branch");
+        $branchFormElement->setAttribute("ng-click","view()");
+
+
+        $departmentFormElement = new Select();
+        $departmentFormElement->setName("department");
+        $departments=\Application\Helper\EntityHelper::getTableKVList($this->adapter, Department::TABLE_NAME, Department::DEPARTMENT_ID, [Department::DEPARTMENT_NAME],[Department::STATUS=>'E']);
+        $departments[-1]="All";
+        ksort($departments);
+        $departmentFormElement->setValueOptions($departments);
+        $departmentFormElement->setAttributes(["id" => "departmentId", "class" => "form-control"]);
+        $departmentFormElement->setLabel("Department");
+
+        $designationFormElement = new Select();
+        $designationFormElement->setName("designation");
+        $designations=\Application\Helper\EntityHelper::getTableKVList($this->adapter,Designation::TABLE_NAME,Designation::DESIGNATION_ID , [Designation::DESIGNATION_TITLE],[Designation::STATUS=>'E']);
+        $designations[-1]="All";
+        ksort($designations);
+        $designationFormElement->setValueOptions($designations);
+        $designationFormElement->setAttributes(["id" => "designationId", "class" => "form-control"]);
+        $designationFormElement->setLabel("Designation");
+
+        $positionFormElement = new Select();
+        $positionFormElement->setName("position");
+        $positions=\Application\Helper\EntityHelper::getTableKVList($this->adapter,Position::TABLE_NAME,Position::POSITION_ID , [Position::POSITION_NAME],[Position::STATUS=>'E']);
+        $positions[-1]="All";
+        ksort($positions);
+        $positionFormElement->setValueOptions($positions);
+        $positionFormElement->setAttributes(["id" => "positionId", "class" => "form-control"]);
+        $positionFormElement->setLabel("Position");
+
+        $serviceTypeFormElement = new Select();
+        $serviceTypeFormElement->setName("serviceType");
+        $serviceTypes=\Application\Helper\EntityHelper::getTableKVList($this->adapter,ServiceType::TABLE_NAME,ServiceType::SERVICE_TYPE_ID , [ServiceType::SERVICE_TYPE_NAME],[ServiceType::STATUS=>'E']);
+        $serviceTypes[-1]="All";
+        ksort($serviceTypes);
+        $serviceTypeFormElement->setValueOptions($serviceTypes);
+        $serviceTypeFormElement->setAttributes(["id" => "serviceTypeId", "class" => "form-control"]);
+        $serviceTypeFormElement->setLabel("Service Type");
+        
+        $serviceEventTypeFormElement = new Select();
+        $serviceEventTypeFormElement->setName("serviceEventType");
+        $serviceEventTypes=\Application\Helper\EntityHelper::getTableKVList($this->adapter,ServiceEventType::TABLE_NAME,ServiceEventType::SERVICE_EVENT_TYPE_ID , [ServiceEventType::SERVICE_EVENT_TYPE_NAME],[ServiceEventType::STATUS=>'E']);
+        $serviceEventTypes[-1]="All";
+        ksort($serviceEventTypes);
+        $serviceEventTypeFormElement->setValueOptions($serviceEventTypes);
+        $serviceEventTypeFormElement->setAttributes(["id" => "serviceEventTypeId", "class" => "form-control"]);
+        $serviceEventTypeFormElement->setLabel("Service Event Type");
+        
         $employees = $this->repository->fetchAll();
-        return Helper::addFlashMessagesToArray($this, ['list' => $employees]);
+        return Helper::addFlashMessagesToArray($this, [
+            'list' => $employees,
+            "branches"=>$branchFormElement,
+            "departments"=>$departmentFormElement,
+            'designations'=>$designationFormElement,
+            'positions'=>$positionFormElement,
+            'serviceTypes'=>$serviceTypeFormElement,
+            'serviceEventTypes'=>$serviceEventTypeFormElement,
+            'employees'=>$employeeNameFormElement
+                ]);
     }
 
     private $formOne;

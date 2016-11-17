@@ -34,13 +34,16 @@ class HolidayRepository implements RepositoryInterface {
         ]);
     }
 
-    public function fetchAll() {
+    public function fetchAll($today=null) {
 
         $sql = "SELECT A.START_DATE,A.END_DATE,A.HOLIDAY_ID,A.HOLIDAY_CODE,A.HOLIDAY_ENAME,A.HOLIDAY_LNAME,B.GENDER_NAME,A.HALFDAY
                 FROM HR_HOLIDAY_MASTER_SETUP A 
                 LEFT OUTER JOIN HR_GENDERS B 
                 ON A.GENDER_ID=B.GENDER_ID
                 WHERE A.STATUS='E'";
+        if($today!=null){
+            $sql .= " AND (".$today->getExpression()." between A.START_DATE AND A.END_DATE) OR ".$today->getExpression()." <= A.START_DATE";
+        }
         $statement = $this->adapter->query($sql);
         $result = $statement->execute();
         return $result;

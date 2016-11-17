@@ -21,6 +21,7 @@ use Setup\Repository\EmployeeRepository;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
+use LeaveManagement\Repository\LeaveApplyRepository;
 
 class DashboardController extends AbstractActionController {
 
@@ -53,7 +54,8 @@ class DashboardController extends AbstractActionController {
         switch ($item) {
             case 'holiday-list':
                 $holidayRepo = new HolidayRepository($this->adapter);
-                $holidayRawList = $holidayRepo->fetchAll();
+                $today = Helper::getcurrentExpressionDate();
+                $holidayRawList = $holidayRepo->fetchAll($today);
                 $holidayList = [];
                 foreach ($holidayRawList as $holiday) {
                     array_push($holidayList, $holiday);
@@ -62,7 +64,7 @@ class DashboardController extends AbstractActionController {
                 break;
             case 'attendance-request':
                 $attendanceStatusRepo = new AttendanceStatusRepository($this->adapter);
-                $attendanceReqRawList = $attendanceStatusRepo->getAllRequest();
+                $attendanceReqRawList = $attendanceStatusRepo->getAllRequest('RQ');
                 $attendanceReqList = [];
                 foreach ($attendanceReqRawList as $attendanceReq) {
                     array_push($attendanceReqList, $attendanceReq);
@@ -71,7 +73,7 @@ class DashboardController extends AbstractActionController {
                 break;
             case 'leave-apply':
                 $attendanceStatusRepo = new LeaveStatusRepository($this->adapter);
-                $leaveApplyRawList = $attendanceStatusRepo->getAllRequest();
+                $leaveApplyRawList = $attendanceStatusRepo->getAllRequest('RQ');
                 $leaveApplyList = [];
 
                 foreach ($leaveApplyRawList as $leaveApply) {
@@ -107,8 +109,28 @@ class DashboardController extends AbstractActionController {
                         array_push($branchEmpCountList, $branchEmpCount);
                     }
                 }
-
                 $data['empCountByBranch'] = $branchEmpCountList;
+                break;
+                
+            case 'today-leave':
+                $leaveStatusRepo = new LeaveStatusRepository($this->adapter);
+                $today = Helper::getcurrentExpressionDate();
+                $approvedLeaveRawList = $leaveStatusRepo->getAllRequest('AP',$today);
+                $approvedLeaveList = [];
+
+                foreach ($approvedLeaveRawList as $approvedLeave) {
+                    array_push($approvedLeaveList, $approvedLeave);
+                }
+                $data['approvedLeaveList'] = $approvedLeaveList;
+                break;
+            case 'birthdays':
+                $employeeRepository = new EmployeeRepository($this->adapter);
+                $employeeRowList = $employeeRepository->getEmployeeListOfBirthday();
+                $employeeList = [];
+                foreach($employeeRowList as $employeeData){
+                    array_push($employeeList, $employeeData);
+                }
+                $data['employeeList']= $employeeList;
                 break;
         }
         return $data;

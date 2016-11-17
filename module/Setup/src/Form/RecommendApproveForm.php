@@ -30,7 +30,7 @@ class RecommendApproveForm
 
     /**
      * @Annotation\Type("Zend\Form\Element\Select")
-     * @Annotation\Required(false)
+     * @Annotation\Required({"required":"true"})
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
      * @Annotation\Options({"disable_inarray_validator":"true","label":"Approver"})
      * @Annotation\Attributes({ "id":"approvedBy","class":"form-control"})
