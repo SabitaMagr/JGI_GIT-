@@ -24,7 +24,7 @@
                                 </div>
                                 <div class="list-item-content">
                                     <h3 class="uppercase">
-                                        <a href="javascript:;">
+                                        <a href="<?= $this->url("employee", ["action" => "edit",'id'=>$employee['EMPLOYEE_ID'],'tab'=>1]) ?>">
                                             <?php print $employee['FIRST_NAME']; ?>
                                             <?php print $employee['MIDDLE_NAME']; ?>
                                             <?php print $employee['LAST_NAME']; ?>

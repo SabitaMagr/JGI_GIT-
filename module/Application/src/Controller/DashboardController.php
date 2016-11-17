@@ -54,7 +54,8 @@ class DashboardController extends AbstractActionController {
         switch ($item) {
             case 'holiday-list':
                 $holidayRepo = new HolidayRepository($this->adapter);
-                $holidayRawList = $holidayRepo->fetchAll();
+                $today = Helper::getcurrentExpressionDate();
+                $holidayRawList = $holidayRepo->fetchAll($today);
                 $holidayList = [];
                 foreach ($holidayRawList as $holiday) {
                     array_push($holidayList, $holiday);
@@ -63,7 +64,7 @@ class DashboardController extends AbstractActionController {
                 break;
             case 'attendance-request':
                 $attendanceStatusRepo = new AttendanceStatusRepository($this->adapter);
-                $attendanceReqRawList = $attendanceStatusRepo->getAllRequest();
+                $attendanceReqRawList = $attendanceStatusRepo->getAllRequest('RQ');
                 $attendanceReqList = [];
                 foreach ($attendanceReqRawList as $attendanceReq) {
                     array_push($attendanceReqList, $attendanceReq);
@@ -72,7 +73,7 @@ class DashboardController extends AbstractActionController {
                 break;
             case 'leave-apply':
                 $attendanceStatusRepo = new LeaveStatusRepository($this->adapter);
-                $leaveApplyRawList = $attendanceStatusRepo->getAllRequest();
+                $leaveApplyRawList = $attendanceStatusRepo->getAllRequest('RQ');
                 $leaveApplyList = [];
 
                 foreach ($leaveApplyRawList as $leaveApply) {

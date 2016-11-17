@@ -121,7 +121,7 @@ class AttendanceDetailRepository implements RepositoryInterface {
     public function getEmployeesAttendanceByDate($date, bool $flag) {
         $sql = new Sql($this->adapter);
         $select = $sql->select();
-        $select->columns([Helper::timeExpression(AttendanceDetail::IN_TIME,'A')],true);
+        $select->columns([Helper::timeExpression(AttendanceDetail::IN_TIME,'A'),new Expression("A.ID AS ID")],true);
         $select->from(['A' => AttendanceDetail::TABLE_NAME]);
         $select->join(['E' => HrEmployees::TABLE_NAME], "A." . AttendanceDetail::EMPLOYEE_ID . "=" . "E." . HrEmployees::EMPLOYEE_ID, [HrEmployees::FIRST_NAME, HrEmployees::MIDDLE_NAME, HrEmployees::LAST_NAME]);
         $select->where(['A.' . AttendanceDetail::LEAVE_ID . " IS NULL", 'A.' . AttendanceDetail::HOLIDAY_ID . " IS NULL", 'A.' . AttendanceDetail::TRAINING_ID . " IS NULL"]);

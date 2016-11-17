@@ -26,7 +26,7 @@
                                 </div>
                                 <div class="list-item-content">
                                     <h3 class="uppercase">
-                                        <a href="javascript:;">
+                                        <a href="<?= $this->url("leavestatus",['action'=>"view",'id'=>$approvedLeave['ID']]) ?>">
                                             <?php print $approvedLeave['FIRST_NAME']; ?>
                                             <?php print $approvedLeave['MIDDLE_NAME']; ?>
                                             <?php print $approvedLeave['LAST_NAME']; ?>

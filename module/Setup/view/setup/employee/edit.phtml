@@ -183,8 +183,6 @@ if ($this->messages) {
     print '</ul>';
 }
 ?>
-$serviceEventTypeId = $formFour->get('serviceEventTypeId');
-$serviceEventTypeId->setValueOptions($serviceEventTypes);
 <script>
     document.menu =<?php $menu = ["id" => "menuSetup", "subMenu" => ["id" => "subMenuEmployee"]];echo json_encode($menu);?>;
     document.urlDistrict = '<?= $this->url("webService", ["action" => "district"]) ?>';
