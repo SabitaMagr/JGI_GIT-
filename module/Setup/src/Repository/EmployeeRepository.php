@@ -189,5 +189,25 @@ class EmployeeRepository implements RepositoryInterface {
         }
         return $tempArray;
     }
+    public function getEmployeeListOfBirthday(){
+        $sql = new Sql($this->adapter);
+        $select = $sql->select();
+        $select->from("HR_EMPLOYEES");
+        $select->columns(Helper::convertColumnDateFormat($this->adapter, new HrEmployees(), ['birthDate']), false);
+        $select->where(["STATUS='E'"]);
+        $statement = $sql->prepareStatementForSqlObject($select);
+        $result = $statement->execute();
+        $employeeList = [];
+        
+        foreach($result as $row){
+            $today = date('d-M');
+            $time = strtotime($row['BIRTH_DATE']);
+            $date =  date('d-M', $time);
+            if($date==$today){
+                array_push($employeeList, $row); 
+            }
+       }
+       return $employeeList;
+    }
 
 }

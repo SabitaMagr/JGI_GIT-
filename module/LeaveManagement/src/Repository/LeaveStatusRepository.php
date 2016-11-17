@@ -51,6 +51,10 @@ class LeaveStatusRepository implements RepositoryInterface {
                 HR_EMPLOYEES E1,
                 HR_EMPLOYEES E2
                 WHERE 
+                L.STATUS='E' AND
+                E.STATUS='E' AND
+                E1.STATUS='E' AND
+                E2.STATUS='E' AND
                 L.LEAVE_ID=LA.LEAVE_ID AND
                 E.EMPLOYEE_ID=LA.EMPLOYEE_ID AND
                 E1.EMPLOYEE_ID=LA.RECOMMENDED_BY AND

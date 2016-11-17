@@ -122,6 +122,15 @@ class DashboardController extends AbstractActionController {
                 }
                 $data['approvedLeaveList'] = $approvedLeaveList;
                 break;
+            case 'birthdays':
+                $employeeRepository = new EmployeeRepository($this->adapter);
+                $employeeRowList = $employeeRepository->getEmployeeListOfBirthday();
+                $employeeList = [];
+                foreach($employeeRowList as $employeeData){
+                    array_push($employeeList, $employeeData);
+                }
+                $data['employeeList']= $employeeList;
+                break;
         }
         return $data;
     }
