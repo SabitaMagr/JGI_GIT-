@@ -45,7 +45,7 @@ class RolePermissionRepository implements RepositoryInterface {
     }
 
     public function delete($id) {
-        
+        $this->tableGateway->update(['STATUS'=>'D'],['MENU_ID'=>$id]);
     }
 
     public function deleteAll($menuId, $roleId) {

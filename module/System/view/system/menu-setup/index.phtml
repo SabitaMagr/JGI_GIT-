@@ -151,23 +151,26 @@ echo json_encode($menu); ?>;
                                                       class="form-menuDescription form-control"
                                                       style="height: 50px;" ng-model="menuDtl.menuDescription"></textarea>
                                         </div>
-                                        <button type="submit" class="btn green">Submit</button>
+                                        <button type="submit" value="add" class="btn green">Submit</button>
+                                        <input type="button" class="btn green pull-right" ng-click="deleteMenu();" id="delete" value="Delete" />
                                     </form>
                                 </div>
                             </div>
                             <div class="tab-pane" id="portlet_tab2_2">
-                                <ul id="roleList">
-                                    <li ng-repeat="role1 in roleList">
-                                        {{role1.ROLE_NAME}}
-                                        <div class="md-checkbox pull-right">
-                                            <input type="checkbox" id="{{role1.ROLE_NAME}}" class="md-check" ng-click="assignRole(role1)" ng-model="role1.checked">
-                                            <label for="{{role1.ROLE_NAME}}">
-                                                <span class="inc"></span>
-                                                <span class="check"></span>
-                                                <span class="box"></span></label>
-                                        </div>
-                                    </li>
-                                </ul>
+                                <div id="rolePanel"  style="display: none;">
+                                    <ul id="roleList">
+                                        <li ng-repeat="role1 in roleList">
+                                            {{role1.ROLE_NAME}}
+                                            <div class="md-checkbox pull-right">
+                                                <input type="checkbox" id="{{role1.ROLE_NAME}}" class="md-check" ng-click="assignRole(role1)" ng-model="role1.checked">
+                                                <label for="{{role1.ROLE_NAME}}">
+                                                    <span class="inc"></span>
+                                                    <span class="check"></span>
+                                                    <span class="box"></span></label>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
                             </div>
                         </div>
                     </div>
