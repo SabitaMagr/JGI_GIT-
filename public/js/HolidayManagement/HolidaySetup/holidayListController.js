@@ -6,8 +6,8 @@ angular.module('hris', [])
     .controller('holidayListController', function ($scope, $http) {
         $scope.holidayList = [];
         $scope.view = function () {
-            var startDate = angular.element($("#startDate")).val();
-            var endDate = angular.element($("#endDate")).val();
+            var startDate = angular.element($("#startDate1")).val();
+            var endDate = angular.element($("#endDate1")).val();
             var branchId = angular.element($("#branchId")).val();
             var genderId = angular.element($("#genderId")).val();
 

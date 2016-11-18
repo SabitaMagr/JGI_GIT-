@@ -50,7 +50,10 @@ $form->prepare();
                 ?>
                 <div class="form-group <?= empty($attendanceDt->getMessages()) ? "" : "error" ?>">
                     <?php print $this->formLabel($attendanceDt); ?>
-                    <?php print $this->formElement($attendanceDt); ?>
+                    <div class="input-group date" id="attendanceDt">
+                        <?php print $this->formElement($attendanceDt); ?>
+                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                    </div>
                 </div>
                 <?php print $this->formElementErrors()->render($attendanceDt, ['class' => 'help-block error']); ?>
 

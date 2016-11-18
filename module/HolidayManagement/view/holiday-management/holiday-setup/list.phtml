@@ -28,13 +28,19 @@ if ($this->messages) { ?>
         <div class="row" style="position: relative;">
             <div class="col-sm-2">
                 <label>From Date</label>
-                <input type="text" placeholder="From Date" name="startDate" ng-model="startDate" id="startDate"
-                       class="form-control"/>
+                <div class="input-group date" id="startDate">
+                    <input type="text" placeholder="From Date" name="startDate" ng-model="startDate" id="startDate1"
+                           class="form-control"/>
+                    <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                </div>
             </div>
             <div class="col-sm-2">
                 <label>To Date</label>
-                <input type="text" placeholder="To Date" name="endDate" ng-model="endDate" id="endDate"
-                       class="form-control"/>
+                <div class="input-group date" id="endDate">
+                    <input type="text" placeholder="To Date" name="endDate" ng-model="endDate" id="endDate1"
+                           class="form-control"/>
+                    <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                </div>
             </div>
             <div class="col-sm-2">
                 <?php print $this->formLabel($branches); ?>

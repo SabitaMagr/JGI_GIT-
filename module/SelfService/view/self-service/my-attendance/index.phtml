@@ -30,10 +30,16 @@ if ($this->messages) { ?>
                 <div class="col-md-6">
                     <div class="row">
                         <div class="col-md-5">
-                            <input type="text" placeholder="From Date" name="fromDate" ng-model="fromDate" id="fromDate" class="form-control"/>
+                            <div class="input-group date" id="fromDate">
+                                <input type="text" placeholder="From Date" id="fromDate1" name="fromDate" ng-model="fromDate" class="form-control"/>
+                                <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                            </div>
                         </div>
                         <div class="col-md-5">
-                            <input type="text" placeholder="To Date" name="toDate" ng-model="toDate" id="toDate" class="form-control"/>
+                            <div class="input-group date" id="toDate">
+                                <input type="text" placeholder="To Date" id="toDate1" name="toDate" ng-model="toDate" class="form-control"/>
+                                <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                            </div>
                             <input type="hidden" name="employeeId" ng-model="employeeId" id="employeeId" value="<?php echo $employeeId; ?>"/>
                         </div>
                         <div class="col-md-2">

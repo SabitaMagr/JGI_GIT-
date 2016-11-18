@@ -83,7 +83,7 @@ class HrEmployeesFormTabOne extends Model
      * @Annotation\Required(true)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Birth Date"})
-     * @Annotation\Attributes({ "id":"employeeBirthDate", "class":"form-control" })
+     * @Annotation\Attributes({ "class":"form-control" })
      */
     public $birthDate;
 
