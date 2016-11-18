@@ -22,6 +22,10 @@ echo json_encode($menu);
     document.dashboardItems =<?= json_encode($dashboardItems) ?>;
     document.roleTypes =<?= json_encode($roleTypes) ?>;
 </script>
+
+<div class="page-bar">
+    <?= $this->navigation('Zend\Navigation\dashboardsetup')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
+</div>
 <div ng-app="hris" ng-controller="dashboardController">
     <div class="row">
         <div class="col-sm-2">
@@ -34,7 +38,7 @@ echo json_encode($menu);
     </div>
     <div class="row " ng-repeat="dashboard in dashboardItems">
         <div class="col-sm-2">
-            <select class="form-control"   ng-model="dashboard.roleType">
+            <select class="form-control"   ng-model="dashboard.roleType" ng-change="roleTypeChange(dashboard)">
                 <option ng-repeat="(key,roleType) in roleTypes" value="{{key}}">
                 <label> {{roleType}}</label>
                 </option>
@@ -45,7 +49,7 @@ echo json_encode($menu);
                 <li >
                     {{dashboard.value}}
                     <span class="md-checkbox pull-right">
-                        <input ng-model="chk" ng-click="assign(dashboard.value, chk)" type="checkbox" id="{{dashboard.value}}" class="md-check"  ng-checked="dashboard.checked" >
+                        <input ng-model="dashboard.checked" ng-click="assign(dashboard)" type="checkbox" id="{{dashboard.value}}" class="md-check" >
                         <label for="{{dashboard.value}}">
                             <span class="inc"></span>
                             <span class="check"></span>

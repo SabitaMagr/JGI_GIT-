@@ -27,7 +27,7 @@ class DashboardDetailRepo implements RepositoryInterface {
     }
 
     public function edit(Model $model, $id) {
-        $this->tableGateway->update($model->getArrayCopyForDB(), [DashboardDetail::ROLE_ID => $id]);
+        $this->tableGateway->update($model->getArrayCopyForDB(), $id);
     }
 
     public function fetchAll() {

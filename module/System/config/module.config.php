@@ -160,6 +160,23 @@ return [
                 ],
             ],
         ],
+        'dashboardsetup' => [
+                [
+                'label' => "Dashboard Setup",
+                'route' => "dashboardsetup"
+            ],
+                [
+                'label' => "Dashboard Setup",
+                'route' => "dashboardsetup",
+                'pages' => [
+                        [
+                        'label' => 'Assign Dashboard',
+                        'route' => 'dashboardsetup',
+                        'action' => 'index',
+                    ],
+                ],
+            ],
+        ]
     ],
     'controllers' => [
         'factories' => [
