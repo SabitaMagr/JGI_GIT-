@@ -15,6 +15,7 @@ $outTime->setValue("5:00 PM");
 $inRemarks = $form->get('inRemarks');
 $outRemarks = $form->get('outRemarks');
 $totalHour = $form->get('totalHour');
+$totalHour->setValue("7.0");
 $totalHour->setAttributes(['readonly' => "readonly"]);
 
 $employeeId->setValueOptions($employees);
@@ -61,7 +62,10 @@ $form->prepare();
 
                 <div class="form-group <?= empty($attendanceDt->getMessages()) ? "" : "error" ?>">
                     <?php print $this->formLabel($attendanceDt); ?>
-                    <?php print $this->formElement($attendanceDt); ?>
+                    <div class="input-group date" id="attendanceDt">
+                        <?php print $this->formElement($attendanceDt); ?>
+                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                    </div>
                 </div>
                 <?php print $this->formElementErrors()->render($attendanceDt, ['class' => 'help-block error']); ?>
 

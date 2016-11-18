@@ -57,22 +57,35 @@ class JobHistoryRepository implements RepositoryInterface
             ->join(['B2' => 'HR_BRANCHES'], 'B2.BRANCH_ID=H.TO_BRANCH_ID', ['TO_BRANCH_NAME' => 'BRANCH_NAME']);
 
         $statement = $sql->prepareStatementForSqlObject($select);
-        //print_r($statement->getSql()); die();
         $result = $statement->execute();
-//        print '<pre>';
-//        print_r($result->current());
-//        exit;
-
-//        $result= $this->tableGateway->select(function(Select $select){
-//            $select->columns(Helper::convertColumnDateFormat($this->adapter, new JobHistory(), ['startDate','endDate']),false);
-//        });
-//        return    Helper::hydrate(JobHistory::class,$result);
         return $result;
     }
 
     public function fetchById($id)
     {
-        $row = $this->tableGateway->select([JobHistory::JOB_HISTORY_ID => $id]);
-        return $row->current();
+        $sql = new Sql($this->adapter);
+        $select = $sql->select();
+        $select->columns([
+            new Expression("TO_CHAR(H.START_DATE, 'DD-MON-YYYY') AS START_DATE"),
+            new Expression("TO_CHAR(H.END_DATE, 'DD-MON-YYYY') AS END_DATE"), 
+            new Expression("H.EMPLOYEE_ID AS EMPLOYEE_ID"),
+            new Expression("H.JOB_HISTORY_ID AS JOB_HISTORY_ID"),
+            new Expression("H.SERVICE_EVENT_TYPE_ID AS SERVICE_EVENT_TYPE_ID"),
+            new Expression("H.FROM_BRANCH_ID AS FROM_BRANCH_ID"),
+            new Expression("H.TO_BRANCH_ID AS TO_BRANCH_ID"),
+            new Expression("H.FROM_DEPARTMENT_ID AS FROM_DEPARTMENT_ID"),
+            new Expression("H.TO_DEPARTMENT_ID AS TO_DEPARTMENT_ID"),
+            new Expression("H.FROM_DESIGNATION_ID AS FROM_DESIGNATION_ID"),
+            new Expression("H.TO_DESIGNATION_ID AS TO_DESIGNATION_ID"),
+            new Expression("H.FROM_POSITION_ID AS FROM_POSITION_ID"),
+            new Expression("H.TO_POSITION_ID AS TO_POSITION_ID"),
+            new Expression("H.FROM_SERVICE_TYPE_ID AS FROM_SERVICE_TYPE_ID"),
+            new Expression("H.TO_SERVICE_TYPE_ID AS TO_SERVICE_TYPE_ID"),         
+           ], true);
+        $select->from(['H' => "HR_JOB_HISTORY"]);
+        $select ->where(['H.JOB_HISTORY_ID'=>$id]);
+        $statement = $sql->prepareStatementForSqlObject($select);
+        $result = $statement->execute();
+        return $result->current();
     }
 }

@@ -29,7 +29,7 @@ class AttendanceByHrForm
      * @Annotation\Required(true)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Attendance Date"})
-     * @Annotation\Attributes({ "id":"attendanceDt", "class":"form-control" })
+     * @Annotation\Attributes({"class":"form-control" })
      */
     public $attendanceDt;
 

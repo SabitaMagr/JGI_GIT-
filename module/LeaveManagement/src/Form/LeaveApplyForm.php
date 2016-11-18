@@ -30,7 +30,7 @@ class LeaveApplyForm
      * @Annotation\Required(true)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Start Date"})
-     * @Annotation\Attributes({ "id":"startDate", "class":"form-control" })
+     * @Annotation\Attributes({"id":"startDate", "class":"form-control" })
      */
     public $startDate;
 
@@ -39,7 +39,7 @@ class LeaveApplyForm
      * @Annotation\Required(true)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"End Date"})
-     * @Annotation\Attributes({ "id":"endDate", "class":"form-control" })
+     * @Annotation\Attributes({ "id":"endDate","class":"form-control" })
      */
     public $endDate;
 

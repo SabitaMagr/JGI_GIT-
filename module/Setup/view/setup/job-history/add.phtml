@@ -71,7 +71,7 @@ print $this->form()->openTag($form);
                             </div>
                             <div class="form-group">
                                 <?php print $this->formLabel($startDate); ?>
-                                <div class="input-group">
+                                <div class="input-group date" id="startDate">
                                     <?php print $this->formElement($startDate) ?>
                                     <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
                                 </div>
@@ -112,7 +112,7 @@ print $this->form()->openTag($form);
                             </div>
                             <div class="form-group">
                                 <?php print $this->formLabel($endDate); ?>
-                                <div class="input-group">
+                                <div class="input-group date" id="endDate">
                                     <?php print $this->formElement($endDate) ?>
                                     <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
                                 </div>

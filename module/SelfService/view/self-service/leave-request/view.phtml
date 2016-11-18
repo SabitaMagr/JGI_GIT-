@@ -159,20 +159,14 @@ print $this->form()->openTag($form);
                         <div
                             class="form-group required  <?= empty($startDate->getMessages()) ? "" : "error" ?>">
                             <?php print $this->formLabel($startDate) ?>
-                            <div class="input-group">
-                                <?php print $this->formElement($startDate) ?>
-                                <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                            </div>
+                            <?php print $this->formElement($startDate) ?>
                         </div>
                         <?php print $this->formElementErrors()->render($startDate, ['class' => 'help-block error']) ?>
 
                         <div
                             class="form-group required <?= empty($endDate->getMessages()) ? "" : "error" ?>">
                             <?php print $this->formLabel($endDate) ?>
-                            <div class="input-group">
-                                <?php print $this->formElement($endDate) ?>
-                                <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                            </div>
+                            <?php print $this->formElement($endDate) ?>
                         </div>
                         <?php print $this->formElementErrors()->render($endDate, ['class' => 'help-block error']) ?>
 

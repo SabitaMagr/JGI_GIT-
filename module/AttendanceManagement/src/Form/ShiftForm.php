@@ -99,7 +99,7 @@ class ShiftForm
      * @Annotation\Required(true)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"StartDate"})
-     * @Annotation\Attributes({ "id":"startDate", "class":"form-control" })
+     * @Annotation\Attributes({ "class":"form-control" })
      */
     public $startDate;
 
@@ -108,7 +108,7 @@ class ShiftForm
      * @Annotation\Required(true)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"End Date"})
-     * @Annotation\Attributes({ "id":"endDate", "class":"form-control" })
+     * @Annotation\Attributes({ "class":"form-control" })
      */
     public $endDate;
 

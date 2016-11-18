@@ -9,12 +9,20 @@ $form->setAttribute('class', 'attendanceByHr-form');
 $employeeId = $form->get('employeeId');
 $attendanceDt = $form->get('attendanceDt');
 $inTime = $form->get('inTime');
+if($inTime->getValue()==null || $inTime->getValue()==""){
+    $inTime->setValue("10:00 AM");
+}
 $outTime = $form->get('outTime');
+if($outTime->getValue()==null || $outTime->getValue()==""){
+    $outTime->setValue("5:00 PM");
+}
 $inRemarks = $form->get('inRemarks');
 $outRemarks = $form->get('outRemarks');
 $totalHour = $form->get('totalHour');
 $totalHour->setAttributes(['readonly' => "readonly"]);
-
+if($totalHour->getValue()==null || $totalHour->getValue()==""){
+    $totalHour->setValue("7.0");
+}
 $employeeId->setValueOptions($employees);
 
 $submit = $form->get('submit');
@@ -60,7 +68,10 @@ $form->prepare();
 
                 <div class="form-group <?= empty($attendanceDt->getMessages()) ? "" : "error" ?>">
                     <?php print $this->formLabel($attendanceDt); ?>
-                    <?php print $this->formElement($attendanceDt); ?>
+                    <div class="input-group date" id="attendanceDt">
+                        <?php print $this->formElement($attendanceDt); ?>
+                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                    </div>
                 </div>
                 <?php print $this->formElementErrors()->render($attendanceDt, ['class' => 'help-block error']); ?>
 

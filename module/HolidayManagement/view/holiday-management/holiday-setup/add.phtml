@@ -97,8 +97,8 @@ $form->prepare();
 
                 <div class="form-group required ">
                     <label for="startDate">Start Date</label>
-                    <div class="input-group">
-                        <input type="text" name="startDate" required="required" id="startDate"
+                    <div class="input-group date" id="startDate">
+                        <input type="text" name="startDate" required="required"
                                class="form-control" value="" ng-model="holidayDtl.startDate">
                         <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
                     </div>
@@ -107,8 +107,8 @@ $form->prepare();
 
                 <div class="form-group required">
                     <label for="endDate">End Date</label>
-                    <div class="input-group">
-                        <input type="text" name="endDate" required="required" id="endDate" class="form-control"
+                    <div class="input-group date" id="endDate">
+                        <input type="text" name="endDate" required="required" class="form-control"
                                value="" ng-model="holidayDtl.endDate">
                         <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
                     </div>
