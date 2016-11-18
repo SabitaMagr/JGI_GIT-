@@ -25,7 +25,7 @@ class JobHistoryForm
      * @Annotation\Required({"required":"true"})
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
      * @Annotation\Options({"disable_inarray_validator":"true","label":"Employee Name","value_options":{"1":"Emp1","2":"Emp2"}})
-     * @Annotation\Attributes({ "id":"employeeId","class":"form-control"})
+     * @Annotation\Attributes({ "id":"employeeID","class":"form-control"})
      */
     public $employeeId;
 

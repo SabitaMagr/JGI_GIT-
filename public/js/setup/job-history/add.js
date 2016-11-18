@@ -9,6 +9,13 @@
             $("#startDate"),
             $("#endDate")
         );
+        var employeeId = $("#employeeID").val();
+        window.app.floatingProfile.setDataFromRemote(employeeId);
+        
+        $("#employeeID").on("change",function(){
+           var employeeId = $(this).val();
+           window.app.floatingProfile.setDataFromRemote(employeeId);
+        });
     });
 })(window.jQuery,window.app);
 

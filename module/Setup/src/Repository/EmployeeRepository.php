@@ -128,6 +128,7 @@ class EmployeeRepository implements RepositoryInterface {
         $select->from(['E' => HrEmployees::TABLE_NAME]);
 //        $select->join(["B" => Branch::TABLE_NAME], "E." . HrEmployees::BRANCH_ID . " = B." . Branch::BRANCH_ID,[Branch::BRANCH_ID, Branch::BRANCH_NAME]);
         $select->group(["E." . HrEmployees::BRANCH_ID]);
+        $select->where(['E.STATUS'=>'E']);
 
         $statement = $sql->prepareStatementForSqlObject($select);
 //        print_r($statement->getSql());
