@@ -118,10 +118,10 @@ class AttendanceDetailRepository implements RepositoryInterface {
         return $this->getNoOfDaysInDayInterval($employeeId, $startDate, $endDate) - $this->getNoOfDaysAbsent($employeeId, $startDate, $endDate);
     }
 
-    public function getEmployeesAttendanceByDate($date, bool $flag) {
+    public function getEmployeesAttendanceByDate($date, bool $flag, $branchId = null) {
         $sql = new Sql($this->adapter);
         $select = $sql->select();
-        $select->columns([Helper::timeExpression(AttendanceDetail::IN_TIME,'A'),new Expression("A.ID AS ID")],true);
+        $select->columns([Helper::timeExpression(AttendanceDetail::IN_TIME, 'A'), new Expression("A.ID AS ID")], true);
         $select->from(['A' => AttendanceDetail::TABLE_NAME]);
         $select->join(['E' => HrEmployees::TABLE_NAME], "A." . AttendanceDetail::EMPLOYEE_ID . "=" . "E." . HrEmployees::EMPLOYEE_ID, [HrEmployees::FIRST_NAME, HrEmployees::MIDDLE_NAME, HrEmployees::LAST_NAME]);
         $select->where(['A.' . AttendanceDetail::LEAVE_ID . " IS NULL", 'A.' . AttendanceDetail::HOLIDAY_ID . " IS NULL", 'A.' . AttendanceDetail::TRAINING_ID . " IS NULL"]);
@@ -132,6 +132,10 @@ class AttendanceDetailRepository implements RepositoryInterface {
             $select->where(['A.' . AttendanceDetail::IN_TIME . " IS NOT NULL"]);
         } else {
             $select->where(['A.' . AttendanceDetail::IN_TIME . " IS NULL"]);
+        }
+
+        if ($branchId != null) {
+            $select->where(["E." . AttendanceDetail::EMPLOYEE_ID . " IN (SELECT " . HrEmployees::EMPLOYEE_ID . " FROM " . HrEmployees::TABLE_NAME . " WHERE " . HrEmployees::BRANCH_ID . "= $branchId)"]);
         }
 
         $statement = $sql->prepareStatementForSqlObject($select);

@@ -42,7 +42,7 @@ class DashboardController extends AbstractActionController {
     public function indexAction() {
         $auth = new AuthenticationService();
         $roleId = $auth->getStorage()->read()['role_id'];
-        $userId = $auth->getStorage()->read()['user_id'];
+        $userId = $auth->getStorage()->read()['employee_id'];
 
         $this->roleId = $roleId;
         $this->userId = $userId;
@@ -96,8 +96,21 @@ class DashboardController extends AbstractActionController {
                 $data["holidayList"] = $holidayList;
                 break;
             case 'attendance-request':
-                $attendanceStatusRepo = new AttendanceStatusRepository($this->adapter);
-                $attendanceReqRawList = $attendanceStatusRepo->getAllRequest('RQ');
+                switch ($roleType) {
+                    case 'A':
+                        $attendanceStatusRepo = new AttendanceStatusRepository($this->adapter);
+                        $attendanceReqRawList = $attendanceStatusRepo->getAllRequest('RQ');
+                        break;
+                    case 'B':
+                        $branchId = EntityHelper::getTableKVList($this->adapter, HrEmployees::TABLE_NAME, HrEmployees::EMPLOYEE_ID, [HrEmployees::BRANCH_ID], HrEmployees::EMPLOYEE_ID . " = " . $this->userId, null)[$this->userId];
+                        $attendanceStatusRepo = new AttendanceStatusRepository($this->adapter);
+                        $attendanceReqRawList = $attendanceStatusRepo->getAllRequest('RQ', $branchId);
+                        break;
+                    case 'E':
+                        $attendanceStatusRepo = new AttendanceStatusRepository($this->adapter);
+                        $attendanceReqRawList = $attendanceStatusRepo->getAllRequest('RQ', null, $this->userId);
+                        break;
+                }
                 $attendanceReqList = [];
                 foreach ($attendanceReqRawList as $attendanceReq) {
                     array_push($attendanceReqList, $attendanceReq);
@@ -105,8 +118,21 @@ class DashboardController extends AbstractActionController {
                 $data['attendanceRequestList'] = $attendanceReqList;
                 break;
             case 'leave-apply':
-                $attendanceStatusRepo = new LeaveStatusRepository($this->adapter);
-                $leaveApplyRawList = $attendanceStatusRepo->getAllRequest('RQ');
+                switch ($roleType) {
+                    case 'A':
+                        $attendanceStatusRepo = new LeaveStatusRepository($this->adapter);
+                        $leaveApplyRawList = $attendanceStatusRepo->getAllRequest('RQ');
+                        break;
+                    case 'B':
+                        $branchId = EntityHelper::getTableKVList($this->adapter, HrEmployees::TABLE_NAME, HrEmployees::EMPLOYEE_ID, [HrEmployees::BRANCH_ID], HrEmployees::EMPLOYEE_ID . " = " . $this->userId, null)[$this->userId];
+                        $attendanceStatusRepo = new LeaveStatusRepository($this->adapter);
+                        $leaveApplyRawList = $attendanceStatusRepo->getAllRequest('RQ', null, $branchId);
+                        break;
+                    case 'E':
+                        $attendanceStatusRepo = new LeaveStatusRepository($this->adapter);
+                        $leaveApplyRawList = $attendanceStatusRepo->getAllRequest('RQ', null, null, $this->userId);
+                        break;
+                }
                 $leaveApplyList = [];
 
                 foreach ($leaveApplyRawList as $leaveApply) {
@@ -115,8 +141,21 @@ class DashboardController extends AbstractActionController {
                 $data['leaveApplyList'] = $leaveApplyList;
                 break;
             case 'present-absent':
-                $attendanceDetailRepo = new AttendanceDetailRepository($this->adapter);
-                $presentEmpRawList = $attendanceDetailRepo->getEmployeesAttendanceByDate(Helper::getcurrentExpressionDate(), TRUE);
+                switch ($roleType) {
+                    case 'A':
+                        $attendanceDetailRepo = new AttendanceDetailRepository($this->adapter);
+                        $presentEmpRawList = $attendanceDetailRepo->getEmployeesAttendanceByDate(Helper::getcurrentExpressionDate(), TRUE);
+                        break;
+                    case 'B':
+                        $branchId = EntityHelper::getTableKVList($this->adapter, HrEmployees::TABLE_NAME, HrEmployees::EMPLOYEE_ID, [HrEmployees::BRANCH_ID], HrEmployees::EMPLOYEE_ID . " = " . $this->userId, null)[$this->userId];
+                        $attendanceDetailRepo = new AttendanceDetailRepository($this->adapter);
+                        $presentEmpRawList = $attendanceDetailRepo->getEmployeesAttendanceByDate(Helper::getcurrentExpressionDate(), TRUE, $branchId);
+                        break;
+                    case 'C':
+                        $attendanceDetailRepo = new AttendanceDetailRepository($this->adapter);
+                        $presentEmpRawList = $attendanceDetailRepo->getEmployeesAttendanceByDate(Helper::getcurrentExpressionDate(), TRUE);
+                        break;
+                }
                 $presentEmpList = [];
                 foreach ($presentEmpRawList as $present) {
                     array_push($presentEmpList, $present);

@@ -11,10 +11,11 @@ namespace AttendanceManagement\Repository;
 
 use Application\Model\Model;
 use Application\Repository\RepositoryInterface;
-use Zend\Db\Adapter\AdapterInterface;
-use Zend\Db\Sql\Sql;
-use Zend\Db\Sql\Expression;
 use SelfService\Model\AttendanceRequestModel;
+use Setup\Model\HrEmployees;
+use Zend\Db\Adapter\AdapterInterface;
+use Zend\Db\Sql\Expression;
+use Zend\Db\Sql\Sql;
 
 class AttendanceStatusRepository implements RepositoryInterface {
 
@@ -36,7 +37,7 @@ class AttendanceStatusRepository implements RepositoryInterface {
         // TODO: Implement fetchAll() method.
     }
 
-    public function getAllRequest($status = null) {
+    public function getAllRequest($status = null, $branchId = null, $employeeId = null) {
         $sql = new Sql($this->adapter);
         $select = $sql->select();
         $select->columns([
@@ -60,6 +61,14 @@ class AttendanceStatusRepository implements RepositoryInterface {
         if ($status != null) {
             $where = "AR.STATUS ='" . $status . "'";
             $select->where([$where]);
+        }
+
+        if ($branchId != null) {
+            $select->where(["E." . HrEmployees::EMPLOYEE_ID . " IN (SELECT " . HrEmployees::EMPLOYEE_ID . " FROM " . HrEmployees::TABLE_NAME . " WHERE " . HrEmployees::BRANCH_ID . "= $branchId)"]);
+        }
+
+        if ($employeeId != null) {
+            $select->where(["E." . HrEmployees::EMPLOYEE_ID . " = $employeeId"]);
         }
 
         $statement = $sql->prepareStatementForSqlObject($select);
