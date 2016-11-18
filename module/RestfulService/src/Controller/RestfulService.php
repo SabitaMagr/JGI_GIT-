@@ -165,6 +165,9 @@ class RestfulService extends AbstractRestfulController {
                 case "updateDashboardAssign":
                     $responseData = $this->updateDashboardAssign($postedData->data);
                     break;
+                case "menuDelete":
+                    $responseData = $this->menuDelete($postedData->data);
+                    break;
                 default:
                     $responseData = [
                         "success" => false
@@ -1080,6 +1083,23 @@ class RestfulService extends AbstractRestfulController {
         return [
             'success' => true,
             'data' => $employeeList
+        ];
+    }
+    public function menuDelete($data){
+        $menuId = $data['menuId'];
+        $menuRepository = new MenuSetupRepository($this->adapter);
+        $rolePermissionRepository = new RolePermissionRepository($this->adapter);
+        
+        $allChildMenuList = $menuRepository->getAllCHildMenu($menuId);
+        foreach($allChildMenuList as $allChildMenu){
+           $menuDeleteResult = $menuRepository->delete($allChildMenu['MENU_ID']); 
+           $rolePermissionResult = $rolePermissionRepository->delete($allChildMenu['MENU_ID']); 
+        }
+        $menuData = $this->menu();   
+        return [
+            "success"=> true,
+            "menuData"=>$menuData,
+            "data"=> "Menu with all respective detail successfully deleted!!"
         ];
     }
 

@@ -9,14 +9,15 @@ angularApp.controller('menuUpdateController', function ($scope, $uibModal, $log,
         menuCode: '',
         menuName: '',
         route: '',
-        action:'',
-        menuIndex:'',
-        iconClass:'',
+        action: '',
+        menuIndex: '',
+        iconClass: '',
         menuDescription: '',
         menuId: ''
     };
 
     $scope.permissionList = function (menuId) {
+        $('#rolePanel').css('display', 'block');
         window.app.pullDataById(document.url, {
             action: 'pullRolePermissionList',
             data: {
@@ -30,7 +31,7 @@ angularApp.controller('menuUpdateController', function ($scope, $uibModal, $log,
                 for (var i in $scope.roleList) {
                     for (var j in $scope.assignedList) {
                         if ($scope.roleList[i].ROLE_ID == $scope.assignedList[j].ROLE_ID) {
-                            $scope.roleList[i].checked=true;
+                            $scope.roleList[i].checked = true;
                             break;
                         }
                     }
@@ -41,7 +42,7 @@ angularApp.controller('menuUpdateController', function ($scope, $uibModal, $log,
         });
 
     };
-    $scope.assignRole=function(roleDtl){
+    $scope.assignRole = function (roleDtl) {
         var roleId = roleDtl.ROLE_ID;
         var checked = roleDtl.checked;
         var selectedMenu = menuId;
@@ -51,7 +52,7 @@ angularApp.controller('menuUpdateController', function ($scope, $uibModal, $log,
             data: {
                 roleId: roleId,
                 menuId: selectedMenu,
-                checked:checked
+                checked: checked
             },
         }).then(function (success) {
             window.toastr.success(success.data, "Notifications");
@@ -80,7 +81,6 @@ angularApp.controller('menuUpdateController', function ($scope, $uibModal, $log,
         }).then(function (success) {
             $scope.$apply(function () {
                 var temp = success.data;
-                console.log(temp);
                 $scope.menuDtl.menuId = temp.MENU_ID;
                 $scope.menuDtl.menuCode = temp.MENU_CODE;
                 $scope.menuDtl.menuName = temp.MENU_NAME;
@@ -109,13 +109,13 @@ angularApp.controller('menuUpdateController', function ($scope, $uibModal, $log,
                     $("#tree_3").jstree(true).settings.core.data = newData;
                     $("#tree_3").jstree(true).refresh();
 
-                    if(success.data!=""){
+                    if (success.data != "") {
                         window.toastr.success(success.data, "Notifications");
-                    }  
-                    if(success.menuIndexErr!=""){
+                    }
+                    if (success.menuIndexErr != "") {
                         $scope.menuIndexErr = success.menuIndexErr;
-                    }else{
-                        $scope.menuIndexErr=null;
+                    } else {
+                        $scope.menuIndexErr = null;
                     }
                 });
             }, function (failure) {
@@ -123,6 +123,29 @@ angularApp.controller('menuUpdateController', function ($scope, $uibModal, $log,
             });
         }
         ;
+    }
+    $scope.deleteMenu = function () {
+        window.app.pullDataById(document.url, {
+            action: 'menuDelete',
+            data: {
+                menuId: menuId
+            },
+        }).then(function (success) {
+            $scope.$apply(function () {
+                var newData = success.menuData;
+                $('#editForm').css('display', 'none');
+                $('#rolePanel').css('display', 'none');
+                $scope.menuDtl.menuName = "";
+                $scope.isDisabled = true;
+                
+                $("#tree_3").jstree(true).settings.core.data = newData;
+                $("#tree_3").jstree(true).refresh();
+
+                window.toastr.success(success.data, "Notifications");
+            });
+        }, function (failure) {
+            console.log(failure);
+        });
     }
 
 // MODEL CODE
@@ -143,12 +166,12 @@ angularApp.controller('menuUpdateController', function ($scope, $uibModal, $log,
                     menuCode: '',
                     menuName: '',
                     route: '',
-                    action:'',
-                    menuIndex:'',
-                    iconClass:'',
+                    action: '',
+                    menuIndex: '',
+                    iconClass: '',
                     menuDescription: '',
                 };
-              $scope.submitForm = function () {              
+                $scope.submitForm = function () {
                     if ($scope.userForm.$valid) {
                         window.app.pullDataById(document.url, {
                             action: 'menuInsertion',
@@ -163,14 +186,14 @@ angularApp.controller('menuUpdateController', function ($scope, $uibModal, $log,
                                 $("#tree_3").jstree(true).refresh();
 
                                 // $uibModalInstance.dismiss('cancel');
-                                if(success.data!=""){
+                                if (success.data != "") {
                                     window.toastr.success(success.data, "Notifications");
                                     $uibModalInstance.close('cancel');
-                                }  
-                                if(success.menuIndexErr!=""){
+                                }
+                                if (success.menuIndexErr != "") {
                                     $scope.menuIndexErr = success.menuIndexErr;
-                                }else{
-                                    $scope.menuIndexErr=null;
+                                } else {
+                                    $scope.menuIndexErr = null;
                                 }
                             });
                         }, function (failure) {
