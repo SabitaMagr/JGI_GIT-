@@ -1040,13 +1040,14 @@ class RestfulService extends AbstractRestfulController {
         $dashboard = $data['dashboard'];
         $roleId = $data['roleId'];
         $status = $data['status'];
+        $roleType = $data['roleType'];
 
         $dashboardRepo = new DashboardDetailRepo($this->adapter);
 
         $dashboardDetail = new DashboardDetail;
         $dashboardDetail->dashboard = $dashboard;
         $dashboardDetail->roleId = $roleId;
-        $dashboardDetail->roleType = 'E';
+        $dashboardDetail->roleType = $roleType;
         if ($status == 'true') {
             $dashboardRepo->add($dashboardDetail);
         } else {

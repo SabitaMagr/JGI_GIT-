@@ -32,18 +32,18 @@ echo json_encode($menu);
             </select>
         </div>
     </div>
-    <div class="row">
+    <div class="row " ng-repeat="dashboard in dashboardItems">
+        <div class="col-sm-2">
+            <select class="form-control"   ng-model="dashboard.roleType">
+                <option ng-repeat="(key,roleType) in roleTypes" value="{{key}}">
+                <label> {{roleType}}</label>
+                </option>
+            </select>
+        </div>
         <div class="col-sm-4">
             <ul id="roleList">
-                <li ng-repeat="dashboard in dashboardItems">
+                <li >
                     {{dashboard.value}}
-                    <span>
-                        <select ng-model="dashboard.roleType">
-                            <option ng-repeat="(key,roleType) in roleTypes" value="{{key}}">
-                            <label> {{roleType}}</label>
-                            </option>
-                        </select>
-                    </span>
                     <span class="md-checkbox pull-right">
                         <input ng-model="chk" ng-click="assign(dashboard.value, chk)" type="checkbox" id="{{dashboard.value}}" class="md-check"  ng-checked="dashboard.checked" >
                         <label for="{{dashboard.value}}">

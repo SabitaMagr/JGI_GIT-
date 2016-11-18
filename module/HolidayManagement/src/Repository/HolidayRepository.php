@@ -5,11 +5,11 @@ namespace HolidayManagement\Repository;
 use Application\Model\Model;
 use Application\Repository\RepositoryInterface;
 use HolidayManagement\Model\Holiday;
+use HolidayManagement\Model\HolidayBranch;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Sql\Expression;
 use Zend\Db\Sql\Sql;
 use Zend\Db\TableGateway\TableGateway;
-use HolidayManagement\Model\HolidayBranch;
 
 class HolidayRepository implements RepositoryInterface {
 
@@ -34,15 +34,15 @@ class HolidayRepository implements RepositoryInterface {
         ]);
     }
 
-    public function fetchAll($today=null) {
+    public function fetchAll($today = null) {
 
         $sql = "SELECT A.START_DATE,A.END_DATE,A.HOLIDAY_ID,A.HOLIDAY_CODE,A.HOLIDAY_ENAME,A.HOLIDAY_LNAME,B.GENDER_NAME,A.HALFDAY
                 FROM HR_HOLIDAY_MASTER_SETUP A 
                 LEFT OUTER JOIN HR_GENDERS B 
                 ON A.GENDER_ID=B.GENDER_ID
                 WHERE A.STATUS='E'";
-        if($today!=null){
-            $sql .= " AND (".$today->getExpression()." between A.START_DATE AND A.END_DATE) OR ".$today->getExpression()." <= A.START_DATE";
+        if ($today != null) {
+            $sql .= " AND (" . $today->getExpression() . " between A.START_DATE AND A.END_DATE) OR " . $today->getExpression() . " <= A.START_DATE";
         }
         $statement = $this->adapter->query($sql);
         $result = $statement->execute();
@@ -134,7 +134,7 @@ ON A.GENDER_ID=B.GENDER_ID " . $joinQuery . " WHERE A.STATUS ='E'";
             $sql .= " AND A.START_DATE>=TO_DATE('" . $fromDate . "','DD-MM-YYYY')";
         }
 
-        if ($fromDate != null) {
+        if ($toDate != null) {
             $sql .= " AND A.END_DATE<=TO_DATE('" . $toDate . "','DD-MM-YYYY')";
         }
 
@@ -149,9 +149,34 @@ ON A.GENDER_ID=B.GENDER_ID " . $joinQuery . " WHERE A.STATUS ='E'";
         }
 
         $statement = $this->adapter->query($sql);
-        // return $statement->getSql();
         $result = $statement->execute();
         return $result;
+    }
+
+    public function filter($branchId, $genderId, Expression $date) {
+        $sql = new Sql($this->adapter);
+        $select = $sql->select();
+
+        $select->from(["H" => Holiday::TABLE_NAME]);
+
+        if ($branchId != null) {
+            $select->join(["HB" => HolidayBranch::TABLE_NAME], "H." . Holiday::HOLIDAY_ID . " = HB." . HolidayBranch::HOLIDAY_ID);
+            $select->where(["HB." . HolidayBranch::BRANCH_ID . "= $branchId"]);
+        }
+
+        if ($genderId != null) {
+            $select->where(["(H." . Holiday::GENDER_ID . "= $genderId OR " . "H." . Holiday::GENDER_ID . " IS NULL)"]);
+        }
+
+        if ($date != null) {
+            $select->where(["H." . Holiday::START_DATE . ">= " . $date->getExpression()]);
+        }
+
+        $statement = $sql->prepareStatementForSqlObject($select);
+//        print "<pre>";
+//        print_r($statement->getSql());
+//        exit;
+        return $statement->execute();
     }
 
 }

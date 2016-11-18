@@ -151,7 +151,8 @@ class Helper {
         $currentDate = date(self::PHP_DATE_FORMAT);
         return self::getExpressionDate($currentDate);
     }
-    public static function getcurrentMonthDayExpression(){
+
+    public static function getcurrentMonthDayExpression() {
         $currentDate = date('d-M');
         $format = 'DD-MON';
         return new Expression("TO_DATE('{$currentDate}','{$format}')");

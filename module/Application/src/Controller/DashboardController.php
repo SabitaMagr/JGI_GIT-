@@ -17,17 +17,21 @@ use HolidayManagement\Repository\HolidayRepository;
 use Interop\Container\ContainerInterface;
 use LeaveManagement\Repository\LeaveStatusRepository;
 use Setup\Model\Branch;
+use Setup\Model\HrEmployees;
 use Setup\Repository\EmployeeRepository;
+use System\Repository\DashboardDetailRepo;
+use Zend\Authentication\AuthenticationService;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
-use LeaveManagement\Repository\LeaveApplyRepository;
 
 class DashboardController extends AbstractActionController {
 
     private $container;
     private $dashboardItems;
     private $adapter;
+    private $roleId;
+    private $userId;
 
     public function __construct(ContainerInterface $container) {
         $this->container = $container;
@@ -36,26 +40,55 @@ class DashboardController extends AbstractActionController {
     }
 
     public function indexAction() {
+        $auth = new AuthenticationService();
+        $roleId = $auth->getStorage()->read()['role_id'];
+        $userId = $auth->getStorage()->read()['user_id'];
+
+        $this->roleId = $roleId;
+        $this->userId = $userId;
+
+        $dashboardDetailRepo = new DashboardDetailRepo($this->adapter);
+        $result = $dashboardDetailRepo->fetchById($roleId);
+        $dashboards = [];
+        foreach ($result as $dashboard) {
+            array_push($dashboards, $dashboard);
+        }
+
         $itemDetail = [];
 
-        foreach ($this->dashboardItems as $key => $value) {
-            $itemDetail[$key] = [
-                "path" => $value,
-                "data" => $this->getDashBoardData($key)
+        foreach ($dashboards as $value) {
+
+            $itemDetail[$value['DASHBOARD']] = [
+                "path" => $this->dashboardItems[$value['DASHBOARD']],
+                "data" => $this->getDashBoardData($value['DASHBOARD'], $value['ROLE_TYPE'])
             ];
         }
+
         return new ViewModel([
             'dashboardItems' => $itemDetail
         ]);
     }
 
-    public function getDashBoardData($item) {
+    public function getDashBoardData($item, $roleType) {
         $data = [];
         switch ($item) {
             case 'holiday-list':
                 $holidayRepo = new HolidayRepository($this->adapter);
                 $today = Helper::getcurrentExpressionDate();
-                $holidayRawList = $holidayRepo->fetchAll($today);
+                switch ($roleType) {
+                    case 'A':
+                        $holidayRawList = $holidayRepo->fetchAll($today);
+                        break;
+                    case 'B':
+                        $branchId = EntityHelper::getTableKVList($this->adapter, HrEmployees::TABLE_NAME, HrEmployees::EMPLOYEE_ID, [HrEmployees::BRANCH_ID], HrEmployees::EMPLOYEE_ID . " = " . $this->userId, null)[$this->userId];
+                        $holidayRawList = $holidayRepo->filter($branchId, null, Helper::getcurrentExpressionDate());
+                        break;
+                    case 'E':
+                        $branchId = EntityHelper::getTableKVList($this->adapter, HrEmployees::TABLE_NAME, HrEmployees::EMPLOYEE_ID, [HrEmployees::BRANCH_ID], HrEmployees::EMPLOYEE_ID . " = " . $this->userId, null)[$this->userId];
+                        $genderId = EntityHelper::getTableKVList($this->adapter, HrEmployees::TABLE_NAME, HrEmployees::EMPLOYEE_ID, [HrEmployees::GENDER_ID], HrEmployees::EMPLOYEE_ID . " = " . $this->userId, null)[$this->userId];
+                        $holidayRawList = $holidayRepo->filter($branchId, $genderId, Helper::getcurrentExpressionDate());
+                        break;
+                }
                 $holidayList = [];
                 foreach ($holidayRawList as $holiday) {
                     array_push($holidayList, $holiday);
@@ -111,11 +144,11 @@ class DashboardController extends AbstractActionController {
                 }
                 $data['empCountByBranch'] = $branchEmpCountList;
                 break;
-                
+
             case 'today-leave':
                 $leaveStatusRepo = new LeaveStatusRepository($this->adapter);
                 $today = Helper::getcurrentExpressionDate();
-                $approvedLeaveRawList = $leaveStatusRepo->getAllRequest('AP',$today);
+                $approvedLeaveRawList = $leaveStatusRepo->getAllRequest('AP', $today);
                 $approvedLeaveList = [];
 
                 foreach ($approvedLeaveRawList as $approvedLeave) {
@@ -127,10 +160,10 @@ class DashboardController extends AbstractActionController {
                 $employeeRepository = new EmployeeRepository($this->adapter);
                 $employeeRowList = $employeeRepository->getEmployeeListOfBirthday();
                 $employeeList = [];
-                foreach($employeeRowList as $employeeData){
+                foreach ($employeeRowList as $employeeData) {
                     array_push($employeeList, $employeeData);
                 }
-                $data['employeeList']= $employeeList;
+                $data['employeeList'] = $employeeList;
                 break;
         }
         return $data;
