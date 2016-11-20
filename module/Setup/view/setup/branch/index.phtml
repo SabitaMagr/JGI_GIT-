@@ -3,19 +3,23 @@
  * Load Javascript files here
  */
 $this->headScript()
-    ->appendFile($this->basePath('js/kendoDataTable.js'));
+        ->appendFile($this->basePath('telerik_kendoui/js/kendo.all.min.js'))
+        ->appendFile($this->basePath('js/setup/branch/index.js'));
 ?>
 
 
-<?php
-if($this->messages) { ?>
+<?php if ($this->messages) { ?>
     <script>
-        document.messages=<?php echo json_encode($this->messages); ?>
+        document.messages =<?php echo json_encode($this->messages); ?>
     </script>
 <?php } ?>
 
 <script>
-    document.menu =<?php $menu = ["id" => "menuSetup", "subMenu" => ["id" => "subMenuBranch"]];echo json_encode($menu);?>;
+    document.branches =<?= json_encode($branches) ?>;
+    document.menu =<?php
+$menu = ["id" => "menuSetup", "subMenu" => ["id" => "subMenuBranch"]];
+echo json_encode($menu);
+?>;
 </script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\Branch')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
@@ -51,60 +55,40 @@ if($this->messages) { ?>
             </div>
         </div>
     </div>
-        <table class="table" id="dataTable">
-            <thead>
-            <tr role="row">
-                <th>
-                    Branch Name
-                </th>
-                <th>
-                    Telephone
-                </th>
-                <th>
-                    Fax
-                </th>
-                <th>
-                    Email
-                </th>
 
-                <th>
-                    Action
-                </th>
-            </tr>
-            </thead>
-            <tbody>
+    <div id="branchTable">
 
-            <?php foreach ($branches as $branch): ?>
-                <tr role="row table-info">
-                    <td>
-                        <?php print $this->escapeHtml($branch->BRANCH_NAME); ?>
-                    </td>
-                    <td>
-                        <?php print $this->escapeHtml($branch->TELEPHONE); ?>
-                    </td>
-                    <td>
-                        <?php print $this->escapeHtml($branch->FAX); ?>
-                    </td>
-                    <td>
-                        <?php print $this->escapeHtml($branch->EMAIL); ?>
-                    </td>
-
-                    <td>
-                                <a class=""
-                                   href="<?= $this->url("branch", ["action" => "edit", "id" => $branch->BRANCH_ID]) ?>">
-                                    Edit
-                                </a> /
-                                <a class=""
-                                   href="<?= $this->url("branch", ["action" => "delete", "id" => $branch->BRANCH_ID]); ?>">
-                                    Delete
-                                </a>
-
-                    </td>
-                </tr>
-
-            <?php endforeach; ?>
-
-            </tbody>
-        </table>
     </div>
+
+    <script id="rowTemplate" type="text/x-kendo-tmpl">
+        <tr>
+        <td>    
+        #: BRANCH_CODE #
+        </td>
+        <td>
+        #: BRANCH_NAME #  
+        </td>
+        <td>
+        #: STREET_ADDRESS #
+        </td>
+        <td>
+        #: TELEPHONE #
+        </td>
+        <td>
+        #: EMAIL #
+        </td>
+        <td>
+        <a class=""
+        href="<?= $this->url("branch", ["action" => "edit"]) ?>/#:BRANCH_ID #">
+        Edit
+        </a> /
+        <a class=""
+        href="<?= $this->url("branch", ["action" => "delete"]); ?>/#:BRANCH_ID #">
+        Delete
+        </a>
+        </td>
+
+        </tr>
+    </script>
+</div>
 

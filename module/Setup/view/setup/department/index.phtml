@@ -3,18 +3,22 @@
  * Load Javascript files here
  */
 $this->headScript()
-    ->appendFile($this->basePath('js/kendoDataTable.js'));
+        ->appendFile($this->basePath('telerik_kendoui/js/kendo.all.min.js'))
+        ->appendFile($this->basePath('js/setup/department/index.js'));
 ?>
 
-<?php
-if($this->messages) { ?>
+<?php if ($this->messages) { ?>
     <script>
-        document.messages=<?php echo json_encode($this->messages); ?>
+        document.messages =<?php echo json_encode($this->messages); ?>
     </script>
 <?php } ?>
 
 <script>
-    document.menu =<?php $menu = ["id" => "menuSetup", "subMenu" => ["id" => "subMenuDepartment"]];echo json_encode($menu);?>;
+    document.departments =<?= json_encode($departments) ?>;
+    document.menu =<?php
+$menu = ["id" => "menuSetup", "subMenu" => ["id" => "subMenuDepartment"]];
+echo json_encode($menu);
+?>;
 </script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\Department')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
@@ -51,44 +55,29 @@ if($this->messages) { ?>
             </div>
         </div>
     </div>
-    <table class="table" id="dataTable">
-        <thead>
-        <tr role="row">
-            <th>
-                Department Code
-            </th>
-            <th>Department Name
-            </th>
-            <th>
-                Action
-            </th>
+    <div id="departmentTable">
+
+    </div>
+    <script id="rowTemplate" type="text/x-kendo-tmpl">
+        <tr>
+        <td>    
+        #: DEPARTMENT_CODE #
+        </td>
+        <td>    
+        #: DEPARTMENT_NAME #
+        </td>
+
+        <td>
+        <a class=""
+        href="<?= $this->url("department", ["action" => "edit"]); ?>/#:DEPARTMENT_ID#">
+        Edit
+        </a>
+        <a class=""
+        href="<?= $this->url("department", ["action" => "delete"]); ?>/#:DEPARTMENT_ID#">
+        Delete
+        </a>
+        </td>
+
         </tr>
-        </thead>
-        <tbody>
-
-        <?php foreach ($departments as $department): ?>
-            <tr role="row">
-                <td>
-                    <?php print $this->escapeHtml($department->DEPARTMENT_CODE) ?>
-                </td>
-                <td>
-                    <?php print $this->escapeHtml($department->DEPARTMENT_NAME) ?>
-                </td>
-                <td>
-                    <div class="btn-group">
-                        <a class=""
-                           href="<?= $this->url("department", ["action" => "edit", "id" => $department->DEPARTMENT_ID]); ?>">
-                            Edit
-                        </a>
-                        <a class=""
-                           href="<?= $this->url("department", ["action" => "delete", "id" => $department->DEPARTMENT_ID]); ?>">
-                            Delete
-                        </a>
-                    </div>
-                </td>
-            </tr>
-        <?php endforeach; ?>
-
-        </tbody>
-    </table>
+    </script>
 </div>

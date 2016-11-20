@@ -206,4 +206,12 @@ class Helper {
         return $t + rand(0, 1000);
     }
 
+    public static function extractDbData($rawArray): array {
+        $extractedArray = [];
+        foreach ($rawArray as $item) {
+            array_push($extractedArray, $item);
+        }
+        return $extractedArray;
+    }
+
 }

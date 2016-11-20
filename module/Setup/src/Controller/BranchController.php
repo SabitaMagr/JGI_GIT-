@@ -11,7 +11,6 @@ namespace Setup\Controller;
  * Last Modified By: Somkala Pachhai
  * Last Modified Date: August 10,2016, Wednesday
  */
-
 use Application\Helper\Helper;
 use Setup\Form\BranchForm;
 use Setup\Helper\EntityHelper;
@@ -23,21 +22,18 @@ use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 
-class BranchController extends AbstractActionController
-{
+class BranchController extends AbstractActionController {
+
     private $form;
     private $repository;
     private $adapter;
 
-    function __construct(AdapterInterface $adapter)
-    {
+    function __construct(AdapterInterface $adapter) {
         $this->adapter = $adapter;
         $this->repository = new BranchRepository($adapter);
     }
 
-
-    public function initializeForm()
-    {
+    public function initializeForm() {
         $branchForm = new BranchForm();
         $builder = new AnnotationBuilder();
         if (!$this->form) {
@@ -45,20 +41,26 @@ class BranchController extends AbstractActionController
         }
     }
 
-    public function indexAction()
-    {
-        $branches = $this->repository->fetchAll();
-        $view=new ViewModel(Helper::addFlashMessagesToArray($this, ['branches' => $branches]));
+    public function indexAction() {
+        $branchesRaw = $this->repository->fetchAll();
+        $branches = [];
+
+        foreach ($branchesRaw as $branch) {
+            array_push($branches, $branch);
+        }
+
+        return Helper::addFlashMessagesToArray($this, ['branches' => $branches]);
+
+
+//        $view=new ViewModel(Helper::addFlashMessagesToArray($this, ['branches' => $branches]));
 //        $view->setCaptureTo('login');
 //        $view->setTerminal(true);
 //        $layout=$this->layout();
 //$layout->setTemplate('layout/login');
 //        return $view;
-        return Helper::addFlashMessagesToArray($this, ['branches' => $branches]);
     }
 
-    public function addAction()
-    {
+    public function addAction() {
         $this->initializeForm();
         $request = $this->getRequest();
         if ($request->isPost()) {
@@ -67,9 +69,9 @@ class BranchController extends AbstractActionController
             if ($this->form->isValid()) {
                 $branch = new Branch();
                 $branch->exchangeArrayFromForm($this->form->getData());
-                $branch->branchId = ((int)Helper::getMaxId($this->adapter, "HR_BRANCHES", "BRANCH_ID")) + 1;
+                $branch->branchId = ((int) Helper::getMaxId($this->adapter, "HR_BRANCHES", "BRANCH_ID")) + 1;
                 $branch->createdDt = Helper::getcurrentExpressionDate();
-                $branch->status='E';
+                $branch->status = 'E';
 
                 $this->repository->add($branch);
 
@@ -77,19 +79,16 @@ class BranchController extends AbstractActionController
                 return $this->redirect()->toRoute("branch");
             }
         }
-        return Helper::addFlashMessagesToArray($this,
-            [
-                'form' => $this->form,
-                'countries' => EntityHelper::getTableKVList($this->adapter, EntityHelper::HR_COUNTRIES),
-                'customRenderer'=>Helper::renderCustomView()
-
-            ]
+        return Helper::addFlashMessagesToArray($this, [
+                    'form' => $this->form,
+                    'countries' => EntityHelper::getTableKVList($this->adapter, EntityHelper::HR_COUNTRIES),
+                    'customRenderer' => Helper::renderCustomView()
+                        ]
         );
     }
 
-    public function editAction()
-    {
-        $id = (int)$this->params()->fromRoute("id");
+    public function editAction() {
+        $id = (int) $this->params()->fromRoute("id");
         $this->initializeForm();
         $request = $this->getRequest();
 
@@ -112,18 +111,15 @@ class BranchController extends AbstractActionController
             }
         }
         return Helper::addFlashMessagesToArray($this, [
-            'form' => $this->form,
-            'id' => $id,
-            'countries' => EntityHelper::getTableKVList($this->adapter, EntityHelper::HR_COUNTRIES),
-            'customRenderer'=>Helper::renderCustomView()
-
-
+                    'form' => $this->form,
+                    'id' => $id,
+                    'countries' => EntityHelper::getTableKVList($this->adapter, EntityHelper::HR_COUNTRIES),
+                    'customRenderer' => Helper::renderCustomView()
         ]);
     }
 
-    public function deleteAction()
-    {
-        $id = (int)$this->params()->fromRoute("id");
+    public function deleteAction() {
+        $id = (int) $this->params()->fromRoute("id");
 
         if (!$id) {
             return $this->redirect()->toRoute('branch');
@@ -134,7 +130,6 @@ class BranchController extends AbstractActionController
     }
 
 }
-
 
 /* End of file BranchController.php */
 /* Location: ./Setup/src/Controller/BranchController.php */
