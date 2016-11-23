@@ -1,12 +1,28 @@
-/* 
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-angular.module('hris', [])
+angular.module('hris', ["kendo.directives"])
         .controller('employeeListController', function ($scope, $http) {
+            $scope.gridData = new kendo.data.ObservableArray([
+            ]);
+            $scope.gridColumns = [
+                {field: "employeeCode", title: "Employee Code"},
+                {field: "firstName", title: "Name"},
+                {field: "birthDate", title: "Birth Date"},
+                {field: "mobileNo", title: "Mobile No"},
+                {field: "emailOfficial", title: "Email Official"},
+                {title: "Action"}
+            ];
+            $scope.test = {
+                height: 550,
+                scrollable: true,
+                sortable: true,
+                filterable: true,
+                rowTemplate: kendo.template($("#rowTemplate").html()),
+                pageable: {
+                    input: true,
+                    numeric: false
+                }
+            };
             $scope.view = function () {
-                console.log("hellow");
+
                 var employeeId = angular.element(document.getElementById('employeeId')).val();
                 var branchId = angular.element(document.getElementById('branchId')).val();
                 var departmentId = angular.element(document.getElementById('departmentId')).val();
@@ -28,9 +44,10 @@ angular.module('hris', [])
                     }
                 }).then(function (success) {
                     $scope.$apply(function () {
-                        $scope.employeeList = success.data;
-                      
-                        console.log($scope.employeeList);
+                        $scope.gridData.splice(0, $scope.gridData.length);
+                        angular.forEach(success.data, function (value, key) {
+                            $scope.gridData.push(value);
+                        });
                     });
                 }, function (failure) {
                     console.log(failure);

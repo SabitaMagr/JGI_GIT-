@@ -47,7 +47,7 @@ class DepartmentController extends AbstractActionController
     public function indexAction()
     {
         $departmentList = $this->repository->fetchAll();
-        return Helper::addFlashMessagesToArray($this, ['departments' => $departmentList]);
+        return Helper::addFlashMessagesToArray($this, ['departments' => Helper::extractDbData($departmentList)]);
     }
 
     public function addAction()

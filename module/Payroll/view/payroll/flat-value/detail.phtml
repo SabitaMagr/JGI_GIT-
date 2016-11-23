@@ -7,19 +7,25 @@ $this->headScript()->appendFile($this->basePath('js/Payroll/FlatValue/flatValueD
 ?>
 
 <script>
-    document.menu =<?php $menu = ["id" => "menuPayroll", "subMenu" => ["id" => "subMenuFlatValue"], "subMenuChild" => ["id" => "subMenuChildFlatValueDetail"]];echo json_encode($menu);?>;
+    document.menu =<?php
+$menu = ["id" => "menuPayroll", "subMenu" => ["id" => "subMenuFlatValue"], "subMenuChild" => ["id" => "subMenuChildFlatValueDetail"]];
+echo json_encode($menu);
+?>;
     document.url = '<?= $this->url("restful", ["action" => "index"]) ?>';
-    document.branches =<?= json_encode($branches)?>;
-    document.departments =<?= json_encode($departments)?>;
-    document.designations =<?= json_encode($designations)?>;
-    document.flatValues =<?= json_encode($flatValues)?>;
+    document.branches =<?= json_encode($branches) ?>;
+    document.departments =<?= json_encode($departments) ?>;
+    document.designations =<?= json_encode($designations) ?>;
+    document.flatValues =<?= json_encode($flatValues) ?>;
 </script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\flatValue')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
 
 <div ng-app="hris" ng-controller="flatValueDetailController">
-    <div class="row">
+    <div class="row margin-top-20">
+        <div class="col-sm-3">
+            <label>flat Values</label>
+        </div>
         <div class="col-sm-2">
             <label>Branch</label>
         </div>
@@ -29,34 +35,14 @@ $this->headScript()->appendFile($this->basePath('js/Payroll/FlatValue/flatValueD
         <div class="col-sm-2">
             <label>Designation</label>
         </div>
-        <div class="col-sm-2">
-            <label>flat Values</label>
-        </div>
-        <div class="col-sm-2">
+        <div class="col-sm-1">
         </div>
         <div class="col-sm-2">
         </div>
     </div>
     <div class="row">
-        <div class="col-sm-2">
-            <select class="form-control" ng-model="branch" ng-options="key as branch for (key,branch) in branches">
-                <option value="">All</option>
-            </select>
-        </div>
-        <div class="col-sm-2">
-            <select class="form-control" ng-model="department"
-                    ng-options="key as department for (key,department) in departments">
-                <option value="">All</option>
-            </select>
-        </div>
-        <div class="col-sm-2">
-            <select class="form-control" ng-model="designation"
-                    ng-options="key as designation for (key,designation) in designations">
-                <option value="">All</option>
-            </select>
-        </div>
-        <div class="col-sm-2">
-            <div class="mt-checkbox-list" style=" overflow: scroll;height: 100px;">
+        <div class="col-sm-3">
+            <div class="mt-checkbox-list scroller" style="height: 100px;">
                 <label class="mt-checkbox mt-checkbox-outline">
                     All
                     <input
@@ -78,6 +64,24 @@ $this->headScript()->appendFile($this->basePath('js/Payroll/FlatValue/flatValueD
             </div>
         </div>
         <div class="col-sm-2">
+            <select class="form-control" ng-model="branch" ng-options="key as branch for (key,branch) in branches">
+                <option value="">All</option>
+            </select>
+        </div>
+        <div class="col-sm-2">
+            <select class="form-control" ng-model="department"
+                    ng-options="key as department for (key,department) in departments">
+                <option value="">All</option>
+            </select>
+        </div>
+        <div class="col-sm-2">
+            <select class="form-control" ng-model="designation"
+                    ng-options="key as designation for (key,designation) in designations">
+                <option value="">All</option>
+            </select>
+        </div>
+
+        <div class="col-sm-1">
         </div>
         <div class="col-sm-2">
             <button ng-click="view()" class="btn btn-sm yellow pull-right">
@@ -86,51 +90,51 @@ $this->headScript()->appendFile($this->basePath('js/Payroll/FlatValue/flatValueD
             </button>
         </div>
     </div>
-    <div class="margin-top-20" style="overflow: scroll;max-height: 400px;height: 400px;">
-        <table class="table" >
+    <div class="margin-top-20 scroller" style="height: 400px;">
+        <table class="table "  >
             <thead>
-            <tr>
-                <th>
-                    Employee Id
-                </th>
-                <th>
-                    Employee Name
-                </th>
-                <th ng-repeat="keys in flatValuekeys" ng-bind="flatValuesI[keys]">
+                <tr>
+                    <th>
+                        Employee Id
+                    </th>
+                    <th>
+                        Employee Name
+                    </th>
+                    <th ng-repeat="keys in flatValuekeys" ng-bind="flatValuesI[keys]">
 
-                </th>
-            </tr>
+                    </th>
+                </tr>
             </thead>
-            <tbody>
-            <tr ng-repeat="row in tableDataCopy">
-                <td ng-bind="row.EMPLOYEE_ID">
+            <tbody >
+                <tr ng-repeat="row in tableDataCopy">
+                    <td ng-bind="row.EMPLOYEE_ID">
 
-                </td>
-                <td>
-                    <span ng-bind="row.FIRST_NAME"></span>
-                    <span ng-bind="row.MIDDLE_NAME"></span>
-                    <span ng-bind="row.LAST_NAME"></span>
-                </td>
-                <td ng-repeat="keys in flatValuekeys">
-                    <input class="form-control" type="number" ng-model="row[keys]">
-                </td>
-            </tr>
+                    </td>
+                    <td>
+                        <span ng-bind="row.FIRST_NAME"></span>
+                        <span ng-bind="row.MIDDLE_NAME"></span>
+                        <span ng-bind="row.LAST_NAME"></span>
+                    </td>
+                    <td ng-repeat="keys in flatValuekeys">
+                        <input class="form-control" type="number" ng-model="row[keys]">
+                    </td>
+                </tr>
 
 
             </tbody>
             <tfoot>
-            <tr>
-                <td>
+                <tr>
+                    <td>
 
-                </td>
-                <td>
+                    </td>
+                    <td>
 
-                </td>
-                <td ng-repeat="keys in flatValuekeys">
-                    <input class="form-control" type="number" ng-model="colVal"
-                           ng-change="changeAllColVal(keys,colVal)">
-                </td>
-            </tr>
+                    </td>
+                    <td ng-repeat="keys in flatValuekeys">
+                        <input class="form-control" type="number" ng-model="colVal"
+                               ng-change="changeAllColVal(keys, colVal)">
+                    </td>
+                </tr>
             </tfoot>
         </table>
 

@@ -173,9 +173,6 @@ ON A.GENDER_ID=B.GENDER_ID " . $joinQuery . " WHERE A.STATUS ='E'";
         }
 
         $statement = $sql->prepareStatementForSqlObject($select);
-//        print "<pre>";
-//        print_r($statement->getSql());
-//        exit;
         return $statement->execute();
     }
 

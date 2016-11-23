@@ -3,18 +3,22 @@
  * Load Javascript files here
  */
 $this->headScript()
-    ->appendFile($this->basePath('js/kendoDataTable.js'));
+        ->appendFile($this->basePath('telerik_kendoui/js/kendo.all.min.js'))
+        ->appendFile($this->basePath('js/setup/company/index.js'));
 ?>
 
-<?php
-if($this->messages) { ?>
-    <script>
-        document.messages=<?php echo json_encode($this->messages); ?>
-    </script>
+<?php if ($this->messages) { ?>
+        <script>
+            document.messages =<?php echo json_encode($this->messages); ?>
+        </script>
 <?php } ?>
 
 <script>
-    document.menu =<?php $menu = ["id" => "menuSetup", "subMenu" => ["id" => "subMenuCompany"]];echo json_encode($menu);?>;
+    document.companyList =<?= json_encode($companyList) ?>;
+    document.menu =<?php
+$menu = ["id" => "menuSetup", "subMenu" => ["id" => "subMenuCompany"]];
+echo json_encode($menu);
+?>;
 </script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\Company')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
@@ -50,44 +54,32 @@ if($this->messages) { ?>
             </div>
         </div>
     </div>
-    <table class="table" id="dataTable">
-        <thead>
-        <tr role="row">
-            <th>Company
-                Code
-            </th>
-            <th>Company Name
-            </th>
-            <th>
-                Action
-            </th>
-        </tr>
-        </thead>
-        <tbody>
+    <div id="companyTable">
 
-        <?php foreach ($companyList as $company): ?>
-            <tr role="row">
-                <td>
-                    <?php print $this->escapeHtml($company->COMPANY_CODE) ?>
-                </td>
-                <td>
-                    <?php print $this->escapeHtml($company->COMPANY_NAME) ?>
-                </td>
-                <td>
-                    <a class=""
-                       href="<?= $this->url("company", ["action" => "edit", "id" => $company->COMPANY_ID]); ?>">
-                        Edit
-                    </a> /
-                    <a class=""
-                       href="<?= $this->url("company", ["action" => "delete", "id" => $company->COMPANY_ID]); ?>">
-                        Delete
-                    </a>
-                </td>
-            </tr>
+    </div>
 
-        <?php endforeach; ?>
+    <script id="rowTemplate" type="text/x-kendo-tmpl">
+    <tr>
+        <td>    
+            #: COMPANY_CODE #
+        </td>
+        <td>    
+            #: COMPANY_NAME #
+        </td>
 
-        </tbody>
-    </table>
+        <td>
+            <a class=""
+               href="<?= $this->url("company", ["action" => "edit"]); ?>/#:COMPANY_ID#">
+                Edit
+            </a> /
+            <a class=""
+        href="<?= $this->url("company", ["action" => "delete"]); ?>/#:COMPANY_ID#">
+        Delete
+    </a>
+</td>
+
+</tr>
+</script>
+
 </div>
 

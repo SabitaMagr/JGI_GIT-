@@ -42,22 +42,26 @@ angular.module('hris', [])
                     console.log("failure", failure);
                 });
             };
-            $scope.assign = function (dashboard, checked) {
-                console.log(checked);
+            $scope.assign = function (item) {
+
                 if ($scope.role == null) {
                     alert("cannot assign ");
                     return;
                 }
-                var roleType = $scope.dashboardItems.filter(function (item) {
-                    return  item.value == dashboard;
-                })[0].roleType;
+//                var roleType = $scope.dashboardItems.filter(function (item) {
+//                    return  item.value == dashboard;
+//                })[0].roleType;
+                var dashboard = item.value;
+                var checked = item.checked;
+                var roleType = item.roleType;
+
                 window.app.pullDataById(document.restfulUrl, {
                     action: 'assignDashboard',
                     data: {
                         roleId: $scope.role["ROLE_ID"],
                         dashboard: dashboard,
                         roleType: roleType,
-                        status: checked
+                        status: (typeof checked !== 'undefined') ? checked : false
                     }
                 }).then(function (success) {
                     console.log(success);
@@ -68,7 +72,25 @@ angular.module('hris', [])
                     console.log("failure", failure);
                 });
             };
-            console.log($scope.roles);
-            console.log($scope.dashboardItems);
-            console.log($scope.roleTypes);
+
+            $scope.roleTypeChange = function (dashboard) {
+                console.log(dashboard);
+                if (dashboard.checked) {
+                    window.app.pullDataById(document.restfulUrl, {
+                        action: 'updateDashboardAssign',
+                        data: {
+                            roleId: $scope.role["ROLE_ID"],
+                            dashboard: dashboard.value,
+                            roleType: dashboard.roleType
+                        }
+                    }).then(function (success) {
+                        console.log(success);
+                        $scope.$apply(function () {
+
+                        });
+                    }, function (failure) {
+                        console.log("failure", failure);
+                    });
+                }
+            };
         });

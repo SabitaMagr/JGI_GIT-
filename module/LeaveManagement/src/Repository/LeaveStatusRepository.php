@@ -11,10 +11,11 @@ namespace LeaveManagement\Repository;
 
 use Application\Model\Model;
 use Application\Repository\RepositoryInterface;
-use Zend\Db\Adapter\AdapterInterface;
-use Zend\Db\Sql\Sql;
-use Zend\Db\Sql\Expression;
 use LeaveManagement\Model\LeaveApply;
+use Setup\Model\HrEmployees;
+use Zend\Db\Adapter\AdapterInterface;
+use Zend\Db\Sql\Expression;
+use Zend\Db\Sql\Sql;
 
 class LeaveStatusRepository implements RepositoryInterface {
 
@@ -32,8 +33,8 @@ class LeaveStatusRepository implements RepositoryInterface {
         // TODO: Implement edit() method.
     }
 
-    public function getAllRequest($status = null,$date=null) {
-        
+    public function getAllRequest($status = null, $date = null, $branchId = NULL, $employeeId = NULL) {
+
         $sql = "SELECT L.LEAVE_ENAME,LA.NO_OF_DAYS,LA.START_DATE
                 ,LA.END_DATE,LA.REQUESTED_DT AS APPLIED_DATE,
                 LA.STATUS AS STATUS,
@@ -61,12 +62,20 @@ class LeaveStatusRepository implements RepositoryInterface {
                 E2.EMPLOYEE_ID=LA.APPROVED_BY";
         if ($status != null) {
             $sql .= " AND LA.STATUS ='" . $status . "'";
-        } 
-        if($date!=null){
-            $sql .= "AND (".$date->getExpression()." between LA.START_DATE AND LA.END_DATE)";
-         }
+        }
+        if ($date != null) {
+            $sql .= "AND (" . $date->getExpression() . " between LA.START_DATE AND LA.END_DATE)";
+        }
+
+        if ($branchId != null) {
+            $sql .= " AND E." . HrEmployees::EMPLOYEE_ID . " IN (SELECT " . HrEmployees::EMPLOYEE_ID . " FROM " . HrEmployees::TABLE_NAME . " WHERE " . HrEmployees::BRANCH_ID . "= $branchId)";
+        }
+
+        if ($employeeId != null) {
+            $sql .= "AND E." . HrEmployees::EMPLOYEE_ID . " = $employeeId";
+        }
         $statement = $this->adapter->query($sql);
-        //print_r($statement->getSql()); die();
+
         $result = $statement->execute();
         return $result;
     }

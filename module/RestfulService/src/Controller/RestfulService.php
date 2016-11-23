@@ -162,6 +162,9 @@ class RestfulService extends AbstractRestfulController {
                 case "pullEmployeeList":
                     $responseData = $this->pullEmployeeList($postedData->data);
                     break;
+                case "updateDashboardAssign":
+                    $responseData = $this->updateDashboardAssign($postedData->data);
+                    break;
                 case "menuDelete":
                     $responseData = $this->menuDelete($postedData->data);
                     break;
@@ -1097,6 +1100,25 @@ class RestfulService extends AbstractRestfulController {
             "success"=> true,
             "menuData"=>$menuData,
             "data"=> "Menu with all respective detail successfully deleted!!"
+        ];
+    }
+
+    public function updateDashboardAssign($data) {
+        $dashboard = $data['dashboard'];
+        $roleId = $data['roleId'];
+        $roleType = $data['roleType'];
+
+        $dashboardRepo = new DashboardDetailRepo($this->adapter);
+
+        $dashboardDetail = new DashboardDetail;
+        $dashboardDetail->roleType = $roleType;
+
+        $dashboardRepo->edit($dashboardDetail, [DashboardDetail::ROLE_ID => $roleId, DashboardDetail::DASHBOARD => $dashboard]);
+
+
+        return [
+            "success" => true,
+            "data" => $data
         ];
     }
 

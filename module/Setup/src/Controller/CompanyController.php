@@ -1,4 +1,5 @@
 <?php
+
 namespace Setup\Controller;
 
 use Application\Helper\Helper;
@@ -11,21 +12,18 @@ use Zend\Mvc\Controller\AbstractActionController;
 use Setup\Form\CompanyForm;
 use Setup\Repository\CompanyRepository;
 
-class CompanyController extends AbstractActionController
-{
+class CompanyController extends AbstractActionController {
 
     private $repository;
     private $form;
     private $adapter;
 
-    function __construct(AdapterInterface $adapter)
-    {
+    function __construct(AdapterInterface $adapter) {
         $this->adapter = $adapter;
         $this->repository = new CompanyRepository($adapter);
     }
 
-    public function initializeForm()
-    {
+    public function initializeForm() {
         $companyForm = new CompanyForm();
         $builder = new AnnotationBuilder();
         if (!$this->form) {
@@ -33,16 +31,12 @@ class CompanyController extends AbstractActionController
         }
     }
 
-    public function indexAction()
-    {
+    public function indexAction() {
         $companyList = $this->repository->fetchAll();
-        $request = $this->getRequest();
-
-        return Helper::addFlashMessagesToArray($this, ['companyList' => $companyList]);
+        return Helper::addFlashMessagesToArray($this, ['companyList' => Helper::extractDbData($companyList)]);
     }
 
-    public function addAction()
-    {
+    public function addAction() {
         $this->initializeForm();
         $request = $this->getRequest();
         if ($request->isPost()) {
@@ -51,28 +45,25 @@ class CompanyController extends AbstractActionController
                 $company = new Company();
                 $company->exchangeArrayFromForm($this->form->getData());
                 $company->createdDt = Helper::getcurrentExpressionDate();
-                $company->companyId = ((int) Helper::getMaxId($this->adapter, Company::TABLE_NAME, Company::COMPANY_ID))+1;
-                $company->status='E';
+                $company->companyId = ((int) Helper::getMaxId($this->adapter, Company::TABLE_NAME, Company::COMPANY_ID)) + 1;
+                $company->status = 'E';
                 $this->repository->add($company);
                 $this->flashmessenger()->addMessage("Company Successfully added!!!");
                 return $this->redirect()->toRoute("company");
-
             }
         }
         return new ViewModel(Helper::addFlashMessagesToArray(
-            $this,
-            [
-                'form' => $this->form,
-                'messages' => $this->flashmessenger()->getMessages()
-            ]
-        )
+                        $this, [
+                    'form' => $this->form,
+                    'messages' => $this->flashmessenger()->getMessages()
+                        ]
+                )
         );
     }
 
-    public function editAction()
-    {
+    public function editAction() {
 
-        $id = (int)$this->params()->fromRoute("id");
+        $id = (int) $this->params()->fromRoute("id");
         if ($id === 0) {
             return $this->redirect()->toRoute('company');
         }
@@ -97,18 +88,17 @@ class CompanyController extends AbstractActionController
             }
         }
         return Helper::addFlashMessagesToArray(
-            $this, ['form' => $this->form, 'id' => $id]
+                        $this, ['form' => $this->form, 'id' => $id]
         );
-
     }
 
-    public function deleteAction()
-    {
-        $id = (int)$this->params()->fromRoute("id");
+    public function deleteAction() {
+        $id = (int) $this->params()->fromRoute("id");
         $this->repository->delete($id);
         $this->flashmessenger()->addMessage("Company Successfully Deleted!!!");
         return $this->redirect()->toRoute('company');
     }
+
 }
 
 ?>
