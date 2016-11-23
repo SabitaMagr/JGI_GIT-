@@ -172,7 +172,7 @@ class LeaveBalance extends AbstractActionController {
 
                 $this->leaveRequestRepository->add($leaveRequest);
                 $this->flashmessenger()->addMessage("Leave Request Successfully added!!!");
-                return $this->redirect()->toRoute("leavebalance");
+                return $this->redirect()->toRoute("leavestatus");
             }
         }
 

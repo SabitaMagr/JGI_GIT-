@@ -46,14 +46,7 @@ class LeaveApply extends AbstractActionController
 
     public function addAction(){
         $this->initializeForm();
-        $id = (int)$this->params()->fromRoute("id");
-
-        if ($id === 0) {
-            return $this->redirect()->toRoute("leaveapply");
-        }
-
-        $employeeRepo = new EmployeeRepository($this->adapter);
-        $employee = $employeeRepo->fetchById($id);
+       
 
         $this->initializeForm();
         $request = $this->getRequest();
@@ -73,15 +66,13 @@ class LeaveApply extends AbstractActionController
                 return $this->redirect()->toRoute("leaveapply");
             }
         }
-        return Helper::addFlashMessagesToArray(
-            $this,
-            [
-                'form' => $this->form,
-                'id' => $id,
-                'employee' => $employee,
-                'customRenderer'=>Helper::renderCustomView()
-            ]
-        );
+        return Helper::addFlashMessagesToArray($this, [
+            'form' => $this->form,
+            'employeeId'=>1,
+            'leaveId'=>2,
+            'employees' => \Application\Helper\EntityHelper::getTableKVList($this->adapter, "HR_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"],["STATUS"=>'E']), 
+            'customRenderer'=>Helper::renderCustomView()
+        ]);
 
     }
 

@@ -2,23 +2,28 @@
 /**
  * Load Javascript files here
  */
-$this->headScript()->appendFile($this->basePath('js/leaveAssign/add.js'));
+$this->headScript()->appendFile($this->basePath('js/LeaveManagement/LeaveRequest/add.js'));
+$this->headScript()->appendFile($this->basePath('js/angular.min.js'));
+$this->headScript()->appendFile($this->basePath('js/LeaveManagement/LeaveRequest/leaveRequestController.js'));
 ?>
 
 
 <?php
+
 $form->setAttribute('role', 'form');
 
-$leaveId = $form->get('leaveId');
 $startDate = $form->get('startDate');
 $endDate = $form->get('endDate');
 $noOfDays = $form->get('noOfDays');
 $halfDay = $form->get('halfDay');
-
+$remarks = $form->get('remarks');
+$employeeId = $form->get('employeeId');
+$employeeId->setValueOptions($employees);
 $submit = $form->get('submit');
 $submit->setAttribute('value', 'Apply Leave');
+$submit->setAttribute('id', 'request');
 
-$form->setAttribute('action', $this->url('leaveapply', ['action' => 'add', 'id' => $id]));
+$form->setAttribute('action', $this->url('leaverequest', ['action' => 'add']));
 
 if ($this->messages) {
     print '<ul class="help-block bg-danger" style="background:#f3e250;">';
@@ -32,69 +37,89 @@ $form->prepare();
 print $this->form()->openTag($form);
 ?>
     <script>
-        document.menu =<?php $menu = ["id" => "menuLeaveManagement", "subMenu" => ["id" => "subMenuLeaveApply"]];echo json_encode($menu);?>;
-        document.urlAssignedLeaves = '<?= $this->url("webService", ["action" => "index"]) ?>';
-        document.id =<?= $id ?>;
-
+        document.menu =<?php $menu = ["id" => "menuSelfService", "subMenu" => ["id" => "subMenuLeaveApply"]];echo json_encode($menu);?>;
+        document.url = '<?= $this->url("webService", ["action" => "index"]) ?>';
     </script>
-    <div class="container">
-        <?= $this->navigation('Zend\Navigation\leaveapply')->breadcrumbs()->setMinDepth(0) ?>
-    </div>
-    <div class="row">
+
+<div class="page-bar">
+    <?= $this->navigation('Zend\Navigation\leaverequest')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
+</div>
+<div ng-app="hris" ng-controller="leaveRequestController">
+    <div class="row margin-top-20" >
         <div class="col-sm-8 col-sm-offset-2">
-            <div class="panel panel-default customShadow">
-                <div class="panel-heading bg-master-lighter">
-                    <div class="panel-title">
-                        <h3 class="panel-title">Apply Leave</h3>
+            <div class="portlet box custom-box">
+                <div class="portlet-title">
+                    <div class="caption">
+                        <i class="fa fa-user"></i>Apply For Leave
                     </div>
                 </div>
-                <div class="panel-body p-t-5">
-                    <div class="form-group form-group-sm form-group-default-select2">
-                        <?php print $this->formLabel($leaveId); ?>
-                        <?php print $this->formElement($leaveId); ?>
+                <div class="portlet-body">
+                    <div class="form-group">
+                        <input type="hidden" id="employeeId" value="<?php echo $employeeId; ?>"/>
                     </div>
-                    <?php print $this->formElementErrors()->render($leaveId, ['class' => 'help-block error']) ?>
-
                     <div
-                        class="form-group form-group-sm required input-group <?= empty($startDate->getMessages()) ? "" : "error" ?>">
+                        class="form-group <?= empty($employeeId->getMessages()) ? "" : "error" ?> ">
+                        <?php print $this->formLabel($employeeId); ?>
+                        <?php print $this->formElement($employeeId); ?>
+                    </div>
+                    <?php print $this->formElementErrors()->render($employeeId, ['class' => 'help-block error']); ?>
+
+                    <div class="form-group">
+                        <label for="leaveId">Leave Type</label>
+                        <select name="leaveId" required="required" ng-model="leaveId" ng-change="change()" id="leaveId" class="form-control">
+                            <option value="" disabled="" selected="" class="ng-binding">Please select</option>
+                            <?php foreach($leave as $key => $value){ ?>
+                                <option value="<?php echo $key?>"><?php echo $value?></option>
+                            <?php } ?>
+                        </select>
+                    </div>
+                    <div
+                        class="form-group required  <?= empty($startDate->getMessages()) ? "" : "error" ?>">
                         <?php print $this->formLabel($startDate) ?>
                         <?php print $this->formElement($startDate) ?>
-                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
                     </div>
                     <?php print $this->formElementErrors()->render($startDate, ['class' => 'help-block error']) ?>
 
                     <div
-                        class="form-group form-group-sm required input-group <?= empty($endDate->getMessages()) ? "" : "error" ?>">
+                        class="form-group required <?= empty($endDate->getMessages()) ? "" : "error" ?>">
                         <?php print $this->formLabel($endDate) ?>
                         <?php print $this->formElement($endDate) ?>
-                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                        <span id="errorMsgDate" style="font-size:11px; color:red;"></span>
                     </div>
                     <?php print $this->formElementErrors()->render($endDate, ['class' => 'help-block error']) ?>
 
-                    <div class="form-group form-group-sm disabled">
-                        <label for="noOfDays">Available Days</label>
-                        <input type="number" id="availableDays" disabled class="form-control">
+                    <div class="form-group disabled">
+                        <label for="leaveId">Available Days</label>
+                        <input type="text" READONLY name="availableDays" ng-model="availableDays" required="required" id="availableDays"  class="form-control"  value="">
+                        <?php print $this->formElementErrors()->render($noOfDays, ['class' => 'help-block error']); ?>
                     </div>
                     <div
-                        class="form-group form-group-sm required <?= empty($noOfDays->getMessages()) ? "" : "error" ?>">
+                        class="form-group required <?= empty($noOfDays->getMessages()) ? "" : "error" ?>">
                         <?php print $this->formLabel($noOfDays); ?>
                         <?php print $this->formElement($noOfDays); ?>
+                        <span id="errorMsg" style="font-size:11px; color:red;"></span>
                     </div>
                     <?php print $this->formElementErrors()->render($noOfDays, ['class' => 'help-block error']); ?>
 
-                    <div class="form-group padding-0">
+                    <div class="form-group padding-0" id="halfDay">
                         <?php print $this->formLabel($halfDay); ?>
-                        <div class="radio radio-success">
+                        <div class="md-radio-inline">
                             <?php $customRenderer($halfDay); ?>
                         </div>
                     </div>
                     <?php print $this->formElementErrors()->render($halfDay, ['class' => 'help-block error']); ?>
+                    <div class="form-group padding-0" id="remarks">
+                        <?php print $this->formLabel($remarks); ?>
+                        <?php print $this->formElement($remarks); ?>
+                    </div>
+                    <?php print $this->formElementErrors()->render($remarks, ['class' => 'help-block error']); ?>
                     <?php print $this->formSubmit($submit); ?>
 
                 </div>
             </div>
         </div>
     </div>
+</div>
 <?php
 
 print $this->form()->closeTag();
