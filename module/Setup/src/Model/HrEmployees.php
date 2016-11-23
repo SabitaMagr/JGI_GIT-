@@ -78,12 +78,12 @@ class HrEmployees extends Model {
     public $designationId;
     public $departmentId;
     public $branchId;
-    public $curServiceEventTypeId;
-    public $curServiceTypeId;
-    public $curPositionId;
-    public $curDesignationId;
-    public $curDepartmentId;
-    public $curBranchId;
+    public $appServiceEventTypeId;
+    public $appServiceTypeId;
+    public $appPositionId;
+    public $appDesignationId;
+    public $appDepartmentId;
+    public $appBranchId;
     public $countryId;
 
     const TABLE_NAME="HR_EMPLOYEES";
@@ -156,12 +156,12 @@ class HrEmployees extends Model {
     const DESIGNATION_ID = "DESIGNATION_ID";
     const DEPARTMENT_ID = "DEPARTMENT_ID";
     const BRANCH_ID = "BRANCH_ID";
-    const CUR_SERVICE_EVENT_TYPE_ID = "CUR_SERVICE_EVENT_TYPE_ID";
-    const CUR_SERVICE_TYPE_ID = "CUR_SERVICE_TYPE_ID";
-    const CUR_POSITION_ID = "CUR_POSITION_ID";
-    const CUR_DESIGNATION_ID = "CUR_DESIGNATION_ID";
-    const CUR_DEPARTMENT_ID = "CUR_DEPARTMENT_ID";
-    const CUR_BRANCH_ID = "CUR_BRANCH_ID";
+    const APP_SERVICE_EVENT_TYPE_ID = "APP_SERVICE_EVENT_TYPE_ID";
+    const APP_SERVICE_TYPE_ID = "APP_SERVICE_TYPE_ID";
+    const APP_POSITION_ID = "APP_POSITION_ID";
+    const APP_DESIGNATION_ID = "APP_DESIGNATION_ID";
+    const APP_DEPARTMENT_ID = "APP_DEPARTMENT_ID";
+    const APP_BRANCH_ID = "APP_BRANCH_ID";
     const CREATED_DT = "CREATED_DT";
     const COUNTRY_ID = "COUNTRY_ID";
     const ADDR_PERM_COUNTRY_ID = "ADDR_PERM_COUNTRY_ID";
@@ -236,12 +236,12 @@ class HrEmployees extends Model {
         'designationId' => self::DESIGNATION_ID,
         'departmentId' => self::DEPARTMENT_ID,
         'branchId' => self::BRANCH_ID,
-        'curServiceEventTypeId' => self::CUR_SERVICE_EVENT_TYPE_ID,
-        'curServiceTypeId' => self::CUR_SERVICE_TYPE_ID,
-        'curPositionId' => self::CUR_POSITION_ID,
-        'curDesignationId' => self::CUR_DESIGNATION_ID,
-        'curDepartmentId' => self::CUR_DEPARTMENT_ID,
-        'curBranchId' => self::CUR_BRANCH_ID,
+        'appServiceEventTypeId' => self::APP_SERVICE_EVENT_TYPE_ID,
+        'appServiceTypeId' => self::APP_SERVICE_TYPE_ID,
+        'appPositionId' => self::APP_POSITION_ID,
+        'appDesignationId' => self::APP_DESIGNATION_ID,
+        'appDepartmentId' => self::APP_DEPARTMENT_ID,
+        'appBranchId' => self::APP_BRANCH_ID,
         'createdDt' => self::CREATED_DT,
         'countryId' => self::COUNTRY_ID,
         'addrPermCountryId' => self::ADDR_PERM_COUNTRY_ID,

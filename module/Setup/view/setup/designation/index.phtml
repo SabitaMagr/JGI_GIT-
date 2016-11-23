@@ -3,13 +3,15 @@
  * Load Javascript files here
  */
 $this->headScript()
-    ->appendFile($this->basePath('js/kendoDataTable.js'));
+    ->appendFile($this->basePath('js/kendoDataTable.js'))
+->appendFile($this->basePath('js/setup/designation/add.js'));
 ?>
 
 <?php
 if($this->messages) { ?>
     <script>
         document.messages=<?php echo json_encode($this->messages); ?>
+        document.designations=<?php echo json_encode($designations);?>
     </script>
 <?php } ?>
 
@@ -53,50 +55,33 @@ if($this->messages) { ?>
             </div>
         </div>
     </div>
-    <table class="table" id="dataTable">
-        <thead>
-        <tr role="row">
-            <th>
-                Designation Title
-                Code
-            </th>
-            <th>
-                Designation Detail
-            </th>
-            <th>
-                Parent Designation
-            </th>
-            <th>
-                Action
-            </th>
+    <div id="designationTable">
+    </div>
+    <script id="rowTemplate" type="text/x-kendo-tmpl">
+        <tr>
+            <td>    
+            #: DESIGNATION_CODE #
+            </td>
+            <td>
+            #: DESIGNATION_TITLE #  
+            </td>
+            <td>
+            #: PARENT_DESIGNATION #
+            </td>
+            <td>
+            #: BASIC_SALARY #
+            </td>
+            <td>
+                <a class=""
+                href="<?= $this->url("branch", ["action" => "edit"]) ?>/#:BRANCH_ID #">
+                Edit
+                </a> /
+                <a class=""
+                href="<?= $this->url("branch", ["action" => "delete"]); ?>/#:BRANCH_ID #">
+                Delete
+                </a>
+            </td>
         </tr>
-        </thead>
-        <tbody>
-
-        <?php foreach ($designations as $designation): ?>
-            <tr role="row">
-                <td>
-                    <?php print $this->escapeHtml($designation->DESIGNATION_CODE); ?>
-                </td>
-                <td>
-                    <?php print $this->escapeHtml($designation->DESIGNATION_TITLE); ?>
-                </td>
-                <td>
-                    <?php print $this->escapeHtml($designation->PARENT_DESIGNATION); ?>
-                </td>
-                <td>
-                    <a href="<?= $this->url("designation", ["action" => "edit", "id" => $designation->DESIGNATION_ID]) ?>">
-                        Edit
-                    </a> /
-                    <a href="<?= $this->url("designation", ["action" => "delete", "id" => $designation->DESIGNATION_ID]); ?>">
-                        Delete
-                    </a>
-                </td>
-            </tr>
-
-        <?php endforeach; ?>
-
-        </tbody>
-    </table>
+    </script>
 
 </div>
