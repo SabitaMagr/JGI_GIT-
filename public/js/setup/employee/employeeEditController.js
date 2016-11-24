@@ -206,9 +206,8 @@
                 };
 
                 $scope.post = function () {
-
                     window.app.pullDataById(document.urlQualificationDtl, {
-                        action: 'pushEmployeeFile',
+                        action: 'pushEmployeeProfile',
                         data: {
                             'fileCode': $scope.file.fileCode,
                             'fileTypeCode': $scope.file.fileTypeCode,
@@ -264,27 +263,62 @@
                         },
                         controller: function ($scope, $uibModalInstance, fileTypes) {
                             $scope.ok = function () {
-                                $uibModalInstance.close();
+                                if (typeof document.uploadResponse === "undefined" || document.uploadResponse == null) {
+                                    $scope.valid = false;
+                                } else {
+                                    $uibModalInstance.close({fileTypeCode: $scope.fileTypeCode, fileName: document.uploadResponse.fileName});
+                                    document.uploadResponse = null;
+                                }
                             };
 
                             $scope.cancel = function () {
                                 $uibModalInstance.dismiss('cancel');
                             };
-
+                            $scope.valid = true;
                             $scope.fileTypes = fileTypes;
-                            $scope.fileTypeCode = null;
+                            $scope.fileTypeCode = Object.keys($scope.fileTypes)[0];
+
+
                         }
                     });
 
                     modalInstance.rendered.then(function () {
                         console.log("sdf");
                         var myDropzone = new Dropzone("#dropZoneContainer", {url: document.restfulUrl});
-                        my.on("success", function (file, success) {
+                        myDropzone.on("success", function (file, success) {
 
                             $scope.$apply(function () {
-                                    console.log(success);
+                                document.uploadResponse = success.data;
                             });
                         });
+                    });
+
+                    modalInstance.result.then(function (selectedItem) {
+                        console.log(selectedItem);
+                        window.app.pullDataById(document.urlQualificationDtl, {
+                            action: 'pushEmployeeDocument',
+                            data: {
+                                'fileTypeCode': selectedItem.fileTypeCode,
+                                'filePath': selectedItem.fileName,
+                                'employeeId': document.employeeId
+                            }
+                        }).then(function (success) {
+                            $scope.$apply(function () {
+                                console.log(success.data);
+                                if (success.data != null) {
+                                    $scope.employeeDocuments.push({
+                                        FILE_CODE: success.data.fileCode,
+                                        FILE_PATH: selectedItem.fileName,
+                                        FILETYPE_CODE: selectedItem.fileTypeCode
+                                    });
+                                }
+                            });
+
+                        }, function (failure) {
+                            console.log(failure);
+                        });
+                    }, function () {
+                        console.log("Modal Action Cancelled");
                     });
                 };
 
