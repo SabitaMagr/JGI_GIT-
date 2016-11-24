@@ -65,32 +65,32 @@ class LeaveBalanceRepository implements RepositoryInterface {
         }
         if($branchId!=-1){
             $select->where([
-                "E.CUR_BRANCH_ID=".$branchId
+                "E.BRANCH_ID=".$branchId
             ]);
         }
         if($departmentId!=-1){
             $select->where([
-                "E.CUR_DEPARTMENT_ID=".$departmentId
+                "E.DEPARTMENT_ID=".$departmentId
             ]);
         }
         if($designationId!=-1){
             $select->where([
-                "E.CUR_DESIGNATION_ID=".$designationId
+                "E.DESIGNATION_ID=".$designationId
             ]);
         }
         if($positionId!=-1){
             $select->where([
-                "E.CUR_POSITION_ID=".$positionId
+                "E.POSITION_ID=".$positionId
             ]);
         }
         if($serviceTypeId!=-1){
             $select->where([
-                "E.CUR_SERVICE_TYPE_ID=".$serviceTypeId
+                "E.SERVICE_TYPE_ID=".$serviceTypeId
             ]);
         }
         if($serviceEventTypeId!=-1){
             $select->where([
-                "E.CUR_SERVICE_EVENT_TYPE_ID=".$serviceEventTypeId
+                "E.SERVICE_EVENT_TYPE_ID=".$serviceEventTypeId
             ]);
         }
 

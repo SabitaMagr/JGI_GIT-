@@ -114,23 +114,23 @@ $salary->setAttributes(['disabled' => "disabled"]);
 $salaryPf = $formFour->get('salaryPf');
 $salaryPf->setAttributes(['disabled' => "disabled"]);
 
-$serviceTypeId = $formFour->get('serviceTypeId');
+$serviceTypeId = $formFour->get('appServiceTypeId');
 $serviceTypeId->setValueOptions($serviceTypes);
 $serviceTypeId->setAttributes(['disabled' => "disabled"]);
 
-$positionId = $formFour->get('positionId');
+$positionId = $formFour->get('appPositionId');
 $positionId->setValueOptions($positions);
 $positionId->setAttributes(['disabled' => "disabled"]);
 
-$designationId = $formFour->get('designationId');
+$designationId = $formFour->get('appDesignationId');
 $designationId->setValueOptions($designations);
 $designationId->setAttributes(['disabled' => "disabled"]);
 
-$departmentId = $formFour->get('departmentId');
+$departmentId = $formFour->get('appDepartmentId');
 $departmentId->setValueOptions($departments);
 $departmentId->setAttributes(['disabled' => "disabled"]);
 
-$branchId = $formFour->get('branchId');
+$branchId = $formFour->get('appBranchId');
 $branchId->setValueOptions($branches);
 $branchId->setAttributes(['disabled' => "disabled"]);
 

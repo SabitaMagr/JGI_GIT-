@@ -118,7 +118,7 @@ class DesignationController extends AbstractActionController
             }
         }
         $designationList = EntityHelper::getTableKVList($this->adapter, Designation::TABLE_NAME, Designation::DESIGNATION_ID, [Designation::DESIGNATION_TITLE], ["STATUS" => "E"]);
-        $designationList[-1] = "none";
+        $designationList[""] = "none";
         ksort($designationList);
         return new ViewModel(Helper::addFlashMessagesToArray(
             $this,

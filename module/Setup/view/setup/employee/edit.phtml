@@ -112,22 +112,22 @@ $joinDate = $formFour->get('joinDate');
 $salary = $formFour->get('salary');
 $salaryPf = $formFour->get('salaryPf');
 
-$serviceEventTypeId = $formFour->get('serviceEventTypeId');
+$serviceEventTypeId = $formFour->get('appServiceEventTypeId');
 $serviceEventTypeId->setValueOptions($serviceEventTypes);
 
-$serviceTypeId = $formFour->get('serviceTypeId');
+$serviceTypeId = $formFour->get('appServiceTypeId');
 $serviceTypeId->setValueOptions($serviceTypes);
 
-$positionId = $formFour->get('positionId');
+$positionId = $formFour->get('appPositionId');
 $positionId->setValueOptions($positions);
 
-$designationId = $formFour->get('designationId');
+$designationId = $formFour->get('appDesignationId');
 $designationId->setValueOptions($designations);
 
-$departmentId = $formFour->get('departmentId');
+$departmentId = $formFour->get('appDepartmentId');
 $departmentId->setValueOptions($departments);
 
-$branchId = $formFour->get('branchId');
+$branchId = $formFour->get('appBranchId');
 $branchId->setValueOptions($branches);
 
 
