@@ -74,19 +74,19 @@ window.app = (function ($, toastr) {
         view: {
             name: $('#floating-profile  #name'),
             mobileNo: $('#floating-profile #mobileNo'),
-            appointDate: $('#floating-profile #appointDate'),
-            appointBranch: $('#floating-profile #appointBranch'),
-            appointDepartment: $('#floating-profile #appointDepartment'),
-            appointDesignation: $('#floating-profile #appointDesignation'),
-            appointPosition: $('#floating-profile #appointPosition'),
-            appointServiceType: $('#floating-profile #appointServiceType'),
-            appointServiceEventType: $('#floating-profile #appointServiceEventType'),
-            curBranch: $('#floating-profile #curBranch'),
-            curDepartment: $('#floating-profile #curDepartment'),
-            curDesignation: $('#floating-profile #curDesignation'),
-            curPosition: $('#floating-profile #curPosition'),
-            curServiceType: $('#floating-profile #curServiceType'),
-            curServiceEventType: $('#floating-profile #curServiceEventType'),
+            appDate:$('#floating-profile #appDate'),
+            appBranch: $('#floating-profile #appBranch'),
+            appDepartment: $('#floating-profile #appDepartment'),
+            appDesignation: $('#floating-profile #appDesignation'),
+            appPosition: $('#floating-profile #appPosition'),
+            appServiceType: $('#floating-profile #appServiceType'),
+            appServiceEventType: $('#floating-profile #appServiceEventType'),
+            branch: $('#floating-profile #branch'),
+            department: $('#floating-profile #department'),
+            designation: $('#floating-profile #designation'),
+            position: $('#floating-profile #position'),
+            serviceType: $('#floating-profile #serviceType'),
+            serviceEventType: $('#floating-profile #serviceEventType'),
             image: $('#floating-profile #profile-image'),
             header: $('#floating-profile #profile-header'),
             body: $('#floating-profile #profile-body'),
@@ -96,19 +96,19 @@ window.app = (function ($, toastr) {
             firstName: null,
             middleName: null,
             lastName: null,
-            appointDate: null,
-            appointBranch: null,
-            appointDepartment: null,
-            appointDesignation: null,
-            appointPosition: null,
-            appointServiceType: null,
-            appointServiceEventType: null,
-            curBranch: null,
-            curDepartment: null,
-            curDesignation: null,
-            curPosition: null,
-            curServiceType: null,
-            curServiceEventType: null,
+            apptDate: null,
+            appBranch: null,
+            appDepartment: null,
+            appDesignation: null,
+            appPosition: null,
+            appServiceType: null,
+            appServiceEventType: null,
+            branch: null,
+            department: null,
+            designation: null,
+            position: null,
+            serviceType: null,
+            serviceEventType: null,
             mobileNo: null,
             imageFilePath: null
         },
@@ -131,21 +131,21 @@ window.app = (function ($, toastr) {
                 this.data.firstName = success.data['FIRST_NAME'];
                 this.data.middleName = success.data['MIDDLE_NAME'];
                 this.data.lastName = success.data['LAST_NAME'];
-                this.data.appointDate = success.data['JOIN_DATE'];
+                this.data.appDate = success.data['JOIN_DATE'];
 
-                this.data.appointBranch = success.data['APPOINT_BRANCH'];
-                this.data.appointDepartment = success.data['APPOINT_DEPARTMENT'];
-                this.data.appointDesignation = success.data['APPOINT_DESIGNATION'];
-                this.data.appointPosition = success.data['APPOINT_POSITION'];
-                this.data.appointServiceType = success.data['APPOINT_SERVICE_TYPE'];
-                this.data.appointServiceEventType = success.data['APPOINT_SERVICE_EVENT_TYPE'];
+                this.data.appBranch = success.data['APP_BRANCH'];
+                this.data.appDepartment = success.data['APP_DEPARTMENT'];
+                this.data.appDesignation = success.data['APP_DESIGNATION'];
+                this.data.appPosition = success.data['APP_POSITION'];
+                this.data.appServiceType = success.data['APP_SERVICE_TYPE'];
+                this.data.appServiceEventType = success.data['APP_SERVICE_EVENT_TYPE'];
 
-                this.data.curBranch = success.data['CUR_BRANCH'];
-                this.data.curDepartment = success.data['CUR_DEPARTMENT'];
-                this.data.curDesignation = success.data['CUR_DESIGNATION'];
-                this.data.curPosition = success.data['CUR_POSITION'];
-                this.data.curServiceType = success.data['CUR_SERVICE_TYPE'];
-                this.data.curServiceEventType = success.data['CUR_SERVICE_EVENT_TYPE'];
+                this.data.branch = success.data['BRANCH'];
+                this.data.department = success.data['DEPARTMENT'];
+                this.data.designation = success.data['DESIGNATION'];
+                this.data.position = success.data['POSITION'];
+                this.data.serviceType = success.data['SERVICE_TYPE'];
+                this.data.serviceEventType = success.data['SERVICE_EVENT_TYPE'];
 
                 this.data.mobileNo = success.data['MOBILE_NO'];
                 this.data.imageFilePath = success.data['FILE_PATH'];
@@ -164,21 +164,21 @@ window.app = (function ($, toastr) {
             this.view.name.text(this.data.firstName + " " + this.data.middleName + " " + this.data.lastName);
             //this.view.gender.text(this.data.genderId == 1 ? "Male" : this.data.genderId == 2 ? "Female" : "Other");
 
-            this.view.appointDate.text(this.data.appointDate);
+            this.view.appDate.text(this.data.appDate);
 
-            this.view.appointBranch.text(this.data.appointBranch);
-            this.view.appointDepartment.text(this.data.appointDepartment);
-            this.view.appointDesignation.text(this.data.appointDesignation);
-            this.view.appointPosition.text(this.data.appointPosition);
-            this.view.appointServiceType.text(this.data.appointServiceType);
-            this.view.appointServiceEventType.text(this.data.appointServiceEventType);
+            this.view.appBranch.text(this.data.appBranch);
+            this.view.appDepartment.text(this.data.appDepartment);
+            this.view.appDesignation.text(this.data.appDesignation);
+            this.view.appPosition.text(this.data.appPosition);
+            this.view.appServiceType.text(this.data.appServiceType);
+            this.view.appServiceEventType.text(this.data.appServiceEventType);
 
-            this.view.curBranch.text(this.data.curBranch);
-            this.view.curDepartment.text(this.data.curDepartment);
-            this.view.curDesignation.text(this.data.curDesignation);
-            this.view.curPosition.text(this.data.curPosition);
-            this.view.curServiceType.text(this.data.curServiceType);
-            this.view.curServiceEventType.text(this.data.curServiceEventType);
+            this.view.branch.text(this.data.branch);
+            this.view.department.text(this.data.department);
+            this.view.designation.text(this.data.designation);
+            this.view.position.text(this.data.position);
+            this.view.serviceType.text(this.data.serviceType);
+            this.view.serviceEventType.text(this.data.serviceEventType);
 
             this.view.mobileNo.text(this.data.mobileNo);
             if (this.data.imageFilePath != null && (typeof this.data.imageFilePath !== "undefined") && this.data.imageFilePath.length >= 4) {

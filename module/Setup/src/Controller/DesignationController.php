@@ -46,7 +46,14 @@ class DesignationController extends AbstractActionController
     public function indexAction()
     {
         $designations = $this->repository->fetchAll();
-        return Helper::addFlashMessagesToArray($this, ["designations" => $designations]);
+        
+        $designationList = [];
+        
+        foreach($designations as $designationRow){
+            array_push($designationList, $designationRow);
+        }
+        
+        return Helper::addFlashMessagesToArray($this, ["designations" => $designationList]);
     }
 
     public function addAction()
