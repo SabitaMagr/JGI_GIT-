@@ -87,11 +87,10 @@ class Module implements AutoloaderProviderInterface, ConsoleUsageProviderInterfa
                 if ($d[MenuSetup::ROUTE] == $route) {
                     $allowFlag = true;
                     break;
-                } else if ($route == 'application' || $route == "home" || $route == 'auth' || $route == 'login' || $route == 'logout') {
+                } else if ($route == 'application' || $route == "home" || $route == 'auth' || $route == 'login' || $route == 'logout' || $route == 'restful') {
                     $allowFlag = true;
                 }
             }
-
             if (!$allowFlag) {
                 $response = $event->getResponse();
                 $response->getHeaders()->addHeaderLine(

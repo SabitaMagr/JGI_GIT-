@@ -201,7 +201,6 @@ window.app = (function ($, toastr) {
         },
         initialize: function () {
             this.makeDraggable();
-            this.hide();
             this.view.minMaxBtn.on("click", function () {
                 if (this.minStatus) {
                     this.maximize();

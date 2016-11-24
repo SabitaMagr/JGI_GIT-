@@ -2,11 +2,15 @@
 /**
  * Load Javascript files here
  */
+$this->headScript()->appendFile($this->basePath('assets/pages/scripts/ui-modals.min.js'));
 $this->headScript()->appendFile($this->basePath('js/angular.min.js'));
+$this->headScript()->appendFile($this->basePath('assets/global/plugins/bootstrap-master/ui-bootstrap-tpls-2.2.0.min.js'));
 $this->headScript()->appendFile($this->basePath('assets/global/plugins/boostrap-form-wizard/js/jquery.bootstrap.wizard.min.js'));
 $this->headScript()->appendFile($this->basePath('js/form_wizard.js'));
 $this->headScript()->appendFile($this->basePath('js/custom.js'));
 $this->headScript()->appendFile($this->basePath('js/setup/employee/add.js'));
+$this->headScript()->appendFile($this->basePath('js/setup/employee/employeeEditController.js'));
+$this->headScript()->appendFile($this->basePath('dropzone/dropzone.min.js'));
 ?>
 
 <?php
@@ -131,11 +135,7 @@ $branchId = $formFour->get('appBranchId');
 $branchId->setValueOptions($branches);
 
 
-$formFive->setAttribute('id', 'form5');
-$fileTypeCode = $formFive->get('fileTypeCode');
-$filePath = $formFive->get('filePath');
-$fileTypeCode->setValueOptions($filetypes);
-$remarks = $formFive->get('remarks');
+
 
 $formSix->setAttribute('id', 'form6');
 $academicDegreeId = $formSix->get('academicDegreeId');
@@ -182,14 +182,18 @@ if ($this->messages) {
 }
 ?>
 <script>
-    document.menu =<?php $menu = ["id" => "menuSetup", "subMenu" => ["id" => "subMenuEmployee"]];
-echo json_encode($menu); ?>;
+    document.menu =<?php
+$menu = ["id" => "menuSetup", "subMenu" => ["id" => "subMenuEmployee"]];
+echo json_encode($menu);
+?>;
     document.urlDistrict = '<?= $this->url("webService", ["action" => "district"]) ?>';
     document.urlMunicipality = '<?= $this->url("webService", ["action" => "municipality"]) ?>';
     document.urlEmployeeList = '<?= $this->url("employee", ["action" => "index"]) ?>'
             document.currentTab = '<?= $tab ?>';
     document.urlQualificationDtl = '<?= $this->url('restful', ["action" => 'index']); ?>'
-</script>
+            document.fileTypes = <?= json_encode($filetypes); ?>;
+    document.profilePictureId =<?= ($profilePictureId == null) ? -1 : $profilePictureId ?>;
+    document.employeeId =<?= $id ?>;</script>
 
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\Employee')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
@@ -219,12 +223,12 @@ echo json_encode($menu); ?>;
             </li>
             <li class="">
                 <a data-toggle="tab" href="#tab5">
-                    Upload Image
+                    Qualification
                 </a>
             </li>
             <li class="">
                 <a data-toggle="tab" href="#tab6">
-                    Qualification
+                    Upload Image
                 </a>
             </li>
             <li class="">
@@ -375,7 +379,7 @@ echo json_encode($menu); ?>;
                 </div>
 
                 <p>In Case Of Emergency</p>
-                <div class="row clearfix">
+                <div class="row clearfix ">
                     <div class="col-sm-6">
                         <div
                             class="form-group  <?= empty($emergContactName->getMessages()) ? "" : "error" ?>">
@@ -831,89 +835,9 @@ echo json_encode($menu); ?>;
                 ?>
 
             </div>
+
+
             <div class="tab-pane" id="tab5">
-                <?php
-                $formFive->setAttribute('action', $this->url('employee', ['action' => 'edit', 'id' => $empId, 'tab' => 5]));
-                $formFive->setAttribute("name", "employeeForm");
-                $formFive->prepare();
-                //print $this->form()->openTag($formFive);
-                ?>
-                <div class="row clearfix">
-                    <div class="col-sm-12">
-                        <table class="table table-striped table-bordered table-hover no-footer" id="employeeFileDtl">
-                            <tr>
-                                <td width="20%"><?php print $this->formLabel($fileTypeCode); ?></td>
-                                <td><?php print $this->formLabel($filePath); ?></td>
-                                <td><?php print $this->formLabel($remarks); ?></td>
-                                <td></td>
-                            </tr>
-                            <tr ng-repeat="employeeFileUploadForm in employeeFileUploadFormList">
-                                <td>
-                                    <select name="fileTypeCode"
-                                            ng-options="fileType.name for fileType in fileTypes track by fileType.id"
-                                            ng-model="employeeFileUploadForm.fileType"
-                                            required="required" id="fileType" class="form-control">
-                                    </select>
-                                </td>
-                                <td>
-                                    <input type="file" ng-model="employeeFileUploadForm.filePath" name="filePath" id="filePath" class="form-control">
-                                </td>
-                                <td>
-                                    <input type="text" ng-model="employeeFileUploadForm.remarks" name="remarks" required="required" id="remarks" class="form-control" value="">
-                                </td>
-                                <td style="padding:15px;">
-                                    <div class="md-checkbox">
-                                        <input type="checkbox" id="f1" class="md-check">
-                                        <label for="f1">
-                                            <span class="inc"></span>
-                                            <span class="check"></span>
-                                            <span class="box"></span>
-                                        </label>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td></td>
-                                <td></td>
-                                <td>
-                                    <a href="javascript:;" class="btn btn-icon-only default pull-right"
-                                       ng-click="employeeFileRow()">
-                                        <i class="fa fa-plus"></i>
-                                    </a>
-                                </td>
-                                <td>
-                                    <a href="javascript:;" class="btn btn-icon-only default"
-                                       ng-click="deleteEmployeeFile()">
-                                        <i class="fa fa-trash-o"></i>
-                                    </a>
-                                </td>
-                            </tr>
-                        </table>
-
-                        <button ng-click="addDocumentList()">Submit</button>
-
-                        <?php
-                        $temp = $filePath->getValue();
-                        ?>
-                        <div class="row">
-                            <div class="col-lg-2"></div>
-                            <div class="col-lg-8">
-                                <img id="previewUpload"
-                                     src="<?php echo (empty($temp) || is_array($temp)) ? "" : $this->basePath("uploads/${temp}"); ?>"
-                                     class="<?php echo (empty($temp) || is_array($temp)) ? "hidden" : ""; ?> image-responsive-height"/>
-
-                            </div>
-                        </div>
-
-                    </div>
-                </div>
-                <input type="submit" class="hidden" id="btnform5" value="submit">
-                <?php
-                // print $this->form()->closeTag();
-                ?>
-            </div>
-
-            <div class="tab-pane" id="tab6">
                 <div class="row">
 
                     <input type="hidden" name="employeeId" id="employeeId" value="<?php echo $id; ?>">
@@ -1010,6 +934,91 @@ echo json_encode($menu); ?>;
                 </div>
             </div>
 
+            <div class="tab-pane" id="tab6">
+                <div class="row">
+                    <div class="col-sm-4">
+                        <form ng-show="(file.fileCode == null || file.editMode)" action="<?= $this->url("restful", ["action" => "index"]) ?>"
+                              class="dropzone"
+                              id="my-awesome-dropzone">
+                        </form>
+                        <div ng-hide="(file.fileCode == null || file.editMode)" class="cbp-caption-defaultWrap">
+                            <image style="width:200px;height:200px;"   src="{{viewImage(file.filePath)}}"/>
+                        </div>
+
+                    </div>
+
+                    <div class="col-sm-2">
+                        <select class="full-width" ng-model="file.fileTypeCode">
+                            <option ng-repeat="(key,fileType) in fileTypes" value="{{key}}">{{fileType}}</option>
+                        </select>
+                    </div>
+                    <div class="2">
+                        <button class="btn btn-success" ng-show="(file.fileCode == null || file.editMode)" ng-click="post()">
+                            Post
+                        </button>
+                        <button class="btn btn-default" ng-hide="(file.fileCode == null || file.editMode)" ng-click="edit()">
+                            Edit
+                        </button>
+                    </div>
+
+                </div>
+
+                <div class="row">
+                    <div class="col-sm-12">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>
+                                        Document Name
+                                    </th>
+                                    <th>
+                                        File Type
+                                    </th>
+                                    <th>
+                                        Action
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="(key,empDoc) in employeeDocuments">
+                                    <td>
+                                        <label ng-bind="empDoc.FILE_PATH">
+                                        </label>
+                                    </td>
+                                    <td>
+                                        <label ng-bind="empDoc.FILETYPE_CODE">
+                                        </label>
+
+                                    </td>
+                                    <td>
+                                        <button ng-click="drop(empDoc.FILE_CODE, key)">
+                                            Delete
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr >
+                                    <td>
+                                    </td>
+                                    <td>
+                                    </td>
+                                    <td>
+                                        <button ng-click="addDocument()">
+                                            Add
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+
+                        </table>
+                    </div>
+                </div>
+
+
+
+
+            </div>
+
+
             <div class="tab-pane" id="tab7">
                 <div class="row clearfix">
                     <div class="col-sm-6">
@@ -1094,6 +1103,37 @@ echo json_encode($menu); ?>;
         </div>
 
     </div>
+
+    <script type="text/ng-template" id="myModalContent.html">
+        <div class="modal-header">
+        <h3 class="modal-title" id="modal-title">I'm a modal!</h3>
+        </div>
+        <div class="modal-body" id="modal-body">
+        <div class="row">
+        <div class="col-sm-12">
+        <div id="dropZoneContainer" class="dropzone">
+        Drop Me
+        </div>
+        
+        </div>
+        </div>
+        <div class="row margin-top-10">
+        <div class="col-sm-2">
+                <select class="full-width" ng-model="fileTypeCode">
+                    <option ng-repeat="(key,fileType) in fileTypes" value="{{key}}">{{fileType}}</option>
+                </select>
+        </div>
+        
+        </div>
+        
+
+    </div>
+        </div>
+        <div class="modal-footer">
+        <button class="btn btn-primary" type="button" ng-click="ok()">OK</button>
+        <button class="btn btn-warning" type="button" ng-click="cancel()">Cancel</button>
+        </div>
+    </script>
 </div>
 
 

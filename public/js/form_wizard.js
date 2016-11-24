@@ -11,15 +11,15 @@
                         break;
                     case 2:
                         app.addDatePicker(
-                            $("#famSpouseWeddingAnniversary"),
-                            $("#famSpouseBirthDate")
-                        );
+                                $("#famSpouseWeddingAnniversary"),
+                                $("#famSpouseBirthDate")
+                                );
                         break;
                     case 3:
                         window.app.addDatePicker(
-                            $("#idPassportExpiry"),
-                            $("#idDrivingLicenseExpiry"),
-                            $("#idCitizenshipIssueDate"));
+                                $("#idPassportExpiry"),
+                                $("#idDrivingLicenseExpiry"),
+                                $("#idCitizenshipIssueDate"));
                         break;
                     case 4:
                         window.app.addDatePicker($("#joinDate"));
@@ -46,26 +46,26 @@
                     });
                 }
 
-                if ($current > 1 && $current < $total) {
-                    var nextIcon = li.next().find('.fa');
-                    var nextIconClass = nextIcon.attr('class').match(/fa-[\w-]*/).join();
-                    removeIcons(btnNext);
-                    btnNext.addClass(nextIconClass + ' btn-animated from-left fa');
-                    var prevIcon = li.prev().find('.fa');
-                    var prevIconClass = prevIcon.attr('class').match(/fa-[\w-]*/).join();
-                    removeIcons(btnPrev);
-                    btnPrev.addClass(prevIconClass + ' btn-animated from-left fa');
-                } else if ($current == 1) {
-                    btnPrev.removeClass('btn-animated from-left fa');
-                    removeIcons(btnPrev);
-                } else {
-                    btnNext.removeClass('btn-animated from-left fa');
-                    removeIcons(btnNext);
-                }
+//                if ($current > 1 && $current < $total) {
+//                    var nextIcon = li.next().find('.fa');
+////                    var nextIconClass = nextIcon.attr('class').match(/fa-[\w-]*/).join();
+//                    removeIcons(btnNext);
+////                    btnNext.addClass(nextIconClass + ' btn-animated from-left fa');
+//                    var prevIcon = li.prev().find('.fa');
+//                    var prevIconClass = prevIcon.attr('class').match(/fa-[\w-]*/).join();
+//                    removeIcons(btnPrev);
+//                    btnPrev.addClass(prevIconClass + ' btn-animated from-left fa');
+//                } else if ($current == 1) {
+//                    btnPrev.removeClass('btn-animated from-left fa');
+//                    removeIcons(btnPrev);
+//                } else {
+//                    btnNext.removeClass('btn-animated from-left fa');
+//                    removeIcons(btnNext);
+//                }
             }, onNext: function (tab, navigation, index) {
                 console.log("Showing next tab");
                 if (typeof document.currentTab !== 'undefined') {
-                    if (index <= 5) {
+                    if (index <= 4) {
                         $('#btnform' + index).click();
                     } else {
                         return true;
