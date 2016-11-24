@@ -74,7 +74,7 @@ window.app = (function ($, toastr) {
         view: {
             name: $('#floating-profile  #name'),
             mobileNo: $('#floating-profile #mobileNo'),
-            appointDate:$('#floating-profile #appointDate'),
+            appointDate: $('#floating-profile #appointDate'),
             appointBranch: $('#floating-profile #appointBranch'),
             appointDepartment: $('#floating-profile #appointDepartment'),
             appointDesignation: $('#floating-profile #appointDesignation'),
@@ -201,7 +201,6 @@ window.app = (function ($, toastr) {
         },
         initialize: function () {
             this.makeDraggable();
-            this.hide();
             this.view.minMaxBtn.on("click", function () {
                 if (this.minStatus) {
                     this.maximize();

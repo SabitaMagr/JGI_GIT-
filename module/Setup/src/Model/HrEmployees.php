@@ -85,9 +85,9 @@ class HrEmployees extends Model {
     public $curDepartmentId;
     public $curBranchId;
     public $countryId;
+    public $profilePictureId;
 
-    const TABLE_NAME="HR_EMPLOYEES";
-    
+    const TABLE_NAME = "HR_EMPLOYEES";
     const EMPLOYEE_ID = "EMPLOYEE_ID";
     const COMPANY_ID = "COMPANY_ID";
     const EMPLOYEE_CODE = "EMPLOYEE_CODE";
@@ -166,6 +166,7 @@ class HrEmployees extends Model {
     const COUNTRY_ID = "COUNTRY_ID";
     const ADDR_PERM_COUNTRY_ID = "ADDR_PERM_COUNTRY_ID";
     const ADDR_TEMP_COUNTRY_ID = "ADDR_TEMP_COUNTRY_ID";
+    const PROFILE_PICTURE_ID = "PROFILE_PICTURE_ID";
 
     public $mappings = [
         'employeeId' => self::EMPLOYEE_ID,
@@ -245,7 +246,8 @@ class HrEmployees extends Model {
         'createdDt' => self::CREATED_DT,
         'countryId' => self::COUNTRY_ID,
         'addrPermCountryId' => self::ADDR_PERM_COUNTRY_ID,
-        'addrTempCountryId' => self::ADDR_TEMP_COUNTRY_ID
+        'addrTempCountryId' => self::ADDR_TEMP_COUNTRY_ID,
+        'profilePictureId' => self::PROFILE_PICTURE_ID
     ];
 
 }

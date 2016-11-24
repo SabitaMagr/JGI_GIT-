@@ -26,7 +26,6 @@ use Setup\Repository\AcademicCourseRepository;
 use Setup\Repository\AcademicDegreeRepository;
 use Setup\Repository\AcademicProgramRepository;
 use Setup\Repository\AcademicUniversityRepository;
-use Setup\Repository\EmployeeFile;
 use Setup\Repository\EmployeeQualificationRepository;
 use Setup\Repository\EmployeeRepository;
 use System\Model\DashboardDetail;
@@ -60,8 +59,17 @@ class RestfulService extends AbstractRestfulController {
 
     public function indexAction() {
         $request = $this->getRequest();
+
         $responseData = [];
-        if ($request->isPost()) {
+        $files = $request->getFiles()->toArray();
+        if (sizeof($files) > 0) {
+            $ext = pathinfo($files['file']['name'], PATHINFO_EXTENSION);
+            $newFileName = Helper::generateUniqueName() . "." . $ext;
+            $success = move_uploaded_file($files['file']['tmp_name'], \Setup\Controller\EmployeeController::UPLOAD_DIR . "/" . $newFileName);
+            if ($success) {
+                $responseData = ["success" => true, "data" => ["fileName" => $newFileName]];
+            }
+        } else if ($request->isPost()) {
             $postedData = $request->getPost();
             switch ($postedData->action) {
                 case "pullEmployeeForShiftAssign":
@@ -167,6 +175,18 @@ class RestfulService extends AbstractRestfulController {
                     break;
                 case "menuDelete":
                     $responseData = $this->menuDelete($postedData->data);
+                    break;
+                case "pullEmployeeFile":
+                    $responseData = $this->pullEmployeeFile($postedData->data);
+                    break;
+                case "pushEmployeeFile":
+                    $responseData = $this->pushEmployeeFile($postedData->data);
+                    break;
+                case "pullEmployeeFileByEmpId":
+                    $responseData = $this->pullEmployeeFileByEmpId($postedData->data);
+                    break;
+                case "dropEmployeeFile":
+                    $responseData = $this->dropEmployeeFile($postedData->data);
                     break;
                 default:
                     $responseData = [
@@ -923,7 +943,8 @@ class RestfulService extends AbstractRestfulController {
                 'name' => $courseRow['ACADEMIC_COURSE_NAME']
             ];
 
-            array_push($employeeQualificationList, [
+
+            $documentRow = array_push($employeeQualificationList, [
                 'degreeDtl' => $degreeDtl,
                 'universityDtl' => $universityDtl,
                 'programDtl' => $programDtl,
@@ -1013,22 +1034,6 @@ class RestfulService extends AbstractRestfulController {
         return ["success" => true, "data" => $employee];
     }
 
-    public function pullFileTypeList() {
-        $fileTypeRepository = new EmployeeFile($this->adapter);
-        $fileTypes = [];
-        $result = $fileTypeRepository->fetchAllFileType();
-        foreach ($result as $row) {
-            array_push($fileTypes, [
-                'id' => $row['FILETYPE_CODE'],
-                'name' => $row['NAME']
-            ]);
-        }
-        return [
-            "success" => true,
-            'data' => $fileTypes
-        ];
-    }
-
     public function fetchRoleDashboards($data) {
         $roleId = $data['roleId'];
         $dashboardRepo = new DashboardDetailRepo($this->adapter);
@@ -1085,21 +1090,22 @@ class RestfulService extends AbstractRestfulController {
             'data' => $employeeList
         ];
     }
-    public function menuDelete($data){
+
+    public function menuDelete($data) {
         $menuId = $data['menuId'];
         $menuRepository = new MenuSetupRepository($this->adapter);
         $rolePermissionRepository = new RolePermissionRepository($this->adapter);
-        
+
         $allChildMenuList = $menuRepository->getAllCHildMenu($menuId);
-        foreach($allChildMenuList as $allChildMenu){
-           $menuDeleteResult = $menuRepository->delete($allChildMenu['MENU_ID']); 
-           $rolePermissionResult = $rolePermissionRepository->delete($allChildMenu['MENU_ID']); 
+        foreach ($allChildMenuList as $allChildMenu) {
+            $menuDeleteResult = $menuRepository->delete($allChildMenu['MENU_ID']);
+            $rolePermissionResult = $rolePermissionRepository->delete($allChildMenu['MENU_ID']);
         }
-        $menuData = $this->menu();   
+        $menuData = $this->menu();
         return [
-            "success"=> true,
-            "menuData"=>$menuData,
-            "data"=> "Menu with all respective detail successfully deleted!!"
+            "success" => true,
+            "menuData" => $menuData,
+            "data" => "Menu with all respective detail successfully deleted!!"
         ];
     }
 
@@ -1120,6 +1126,58 @@ class RestfulService extends AbstractRestfulController {
             "success" => true,
             "data" => $data
         ];
+    }
+
+    public function pullEmployeeFile($data) {
+        $employeeFileId = $data["employeeFileId"];
+
+        $employeeFileRepo = new \Setup\Repository\EmployeeFile($this->adapter);
+        $employeeFile = $employeeFileRepo->fetchById($employeeFileId);
+
+        return ["success" => true, "data" => $employeeFile];
+    }
+
+    public function pullEmployeeFileByEmpId($data) {
+        $employeeId = $data['employeeId'];
+        $employeeFileRepo = new \Setup\Repository\EmployeeFile($this->adapter);
+        $employeeFile = $employeeFileRepo->fetchByEmpId($employeeId);
+
+        return ["success" => true, "data" => $employeeFile];
+    }
+
+    public function pushEmployeeFile($data) {
+        $employeefile = new \Setup\Model\EmployeeFile();
+
+        if ($data['fileCode'] == null) {
+            $employeefile->fileCode = ((int) Helper::getMaxId($this->adapter, 'HR_EMPLOYEE_FILE', 'FILE_CODE')) + 1;
+            $employeefile->employeeId = $data['employeeId'];
+            $employeefile->filetypeCode = $data['fileTypeCode'];
+            $employeefile->filePath = $data['filePath'];
+            $employeefile->status = 'E';
+            $employeefile->createdDt = Helper::getcurrentExpressionDate();
+
+            $employeeFileRepo = new \Setup\Repository\EmployeeFile($this->adapter);
+            $employeeFileRepo->add($employeefile);
+
+            $employeeRepo = new EmployeeRepository($this->adapter);
+            $employeeModel = new \Setup\Model\HrEmployees();
+            $employeeModel->profilePictureId = $employeefile->fileCode;
+            $employeeRepo->edit($employeeModel, $employeefile->employeeId);
+            return["success" => true, "data" => ['fileCode' => $employeefile->fileCode]];
+        } else {
+            $employeefile->filetypeCode = $data['fileTypeCode'];
+            $employeefile->filePath = $data['filePath'];
+
+            $employeeFileRepo = new \Setup\Repository\EmployeeFile($this->adapter);
+            $employeeFileRepo->edit($employeefile, $data['fileCode']);
+            return["success" => true, "data" => ['fileCode' => $data['fileCode']]];
+        }
+    }
+
+    public function dropEmployeeFile($data) {
+        $employeeRepo = new \Setup\Repository\EmployeeFile($this->adapter);
+        $employeeRepo->delete($data['fileCode']);
+        return["success" => true, "data" => ['fileCode' => $data['fileCode']]];
     }
 
 }
