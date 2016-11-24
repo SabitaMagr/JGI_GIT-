@@ -276,6 +276,12 @@ class EmployeeController extends AbstractActionController {
                     $this->formFour->setData($postData);
                     if ($this->formFour->isValid()) {
                         $formFourModel->exchangeArrayFromForm($this->formFour->getData());
+                        $formFourModel->branchId = $formFourModel->appBranchId;
+                        $formFourModel->departmentId = $formFourModel->appDepartmentId;
+                        $formFourModel->designationId = $formFourModel->appDesignationId;
+                        $formFourModel->positionId = $formFourModel->appPositionId;
+                        $formFourModel->serviceTypeId = $formFourModel->appServiceTypeId;
+                        $formFourModel->serviceEventTypeId = $formFourModel->appServiceEventTypeId;
                         $this->repository->edit($formFourModel, $id);
                         return $this->redirect()->toRoute('employee', ['action' => 'edit', 'id' => $id, 'tab' => 5]);
                     }

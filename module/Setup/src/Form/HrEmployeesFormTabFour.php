@@ -49,7 +49,7 @@ class HrEmployeesFormTabFour extends Model
      * @Annotation\Options({"disable_inarray_validator":"true","label":"Service Type Name"})
      * @Annotation\Attributes({ "id":"serviceTypeId","class":"form-control"})
      */
-    public $serviceTypeId;
+    public $appServiceTypeId;
 
     /**
      * @Annotation\Type("Zend\Form\Element\Select")
@@ -58,7 +58,7 @@ class HrEmployeesFormTabFour extends Model
      * @Annotation\Options({"disable_inarray_validator":"true","label":"Service Event Type Name"})
      * @Annotation\Attributes({ "id":"serviceEventTypeId","class":"form-control"})
      */
-    public $serviceEventTypeId;
+    public $appServiceEventTypeId;
 
     /**
      * @Annotation\Type("Zend\Form\Element\Select")
@@ -67,7 +67,7 @@ class HrEmployeesFormTabFour extends Model
      * @Annotation\Options({"disable_inarray_validator":"true","label":"Position Name"})
      * @Annotation\Attributes({ "id":"positionId","class":"form-control"})
      */
-    public $positionId;
+    public $appPositionId;
 
     /**
      * @Annotation\Type("Zend\Form\Element\Select")
@@ -76,7 +76,7 @@ class HrEmployeesFormTabFour extends Model
      * @Annotation\Options({"disable_inarray_validator":"true","label":"Designation Name"})
      * @Annotation\Attributes({ "id":"designationId","class":"form-control"})
      */
-    public $designationId;
+    public $appDesignationId;
 
     /**
      * @Annotation\Type("Zend\Form\Element\Select")
@@ -85,7 +85,7 @@ class HrEmployeesFormTabFour extends Model
      * @Annotation\Options({"disable_inarray_validator":"true","label":"Department Name"})
      * @Annotation\Attributes({ "id":"departmentId","class":"form-control"})
      */
-    public $departmentId;
+    public $appDepartmentId;
 
     /**
      * @Annotation\Type("Zend\Form\Element\Select")
@@ -94,17 +94,30 @@ class HrEmployeesFormTabFour extends Model
      * @Annotation\Options({"disable_inarray_validator":"true","label":"Branch Name"})
      * @Annotation\Attributes({ "id":"branchId","class":"form-control"})
      */
+    public $appBranchId;
+    
     public $branchId;
-
+    public $departmentId;
+    public $designationId;
+    public $positionId;
+    public $serviceTypeId;
+    public $serviceEventTypeId;
+    
     public $mappings=[
         'joinDate'=>'JOIN_DATE',
         'salary'=>'SALARY',
         'salaryPf'=>'SALARY_PF',
-        'serviceTypeId'=>'SERVICE_TYPE_ID',
-        'serviceEventTypeId'=>'SERVICE_EVENT_TYPE_ID',
-        'positionId'=>'POSITION_ID',
-        'designationId'=>'DESIGNATION_ID',
+        'appServiceTypeId'=>'APP_SERVICE_TYPE_ID',
+        'appServiceEventTypeId'=>'APP_SERVICE_EVENT_TYPE_ID',
+        'appPositionId'=>'APP_POSITION_ID',
+        'appDesignationId'=>'APP_DESIGNATION_ID',
+        'appDepartmentId'=>'APP_DEPARTMENT_ID',
+        'appBranchId'=>'APP_BRANCH_ID',
+        'branchId'=>'BRANCH_ID',
         'departmentId'=>'DEPARTMENT_ID',
-        'branchId'=>'BRANCH_ID'
+        'designationId'=>'DESIGNATION_ID',
+        'positionId'=>'POSITION_ID',
+        'serviceTypeId'=>'SERVICE_TYPE_ID',
+        'serviceEventTypeId'=>'SERVICE_EVENT_TYPE_ID'
     ];
 }
