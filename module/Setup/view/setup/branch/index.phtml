@@ -59,34 +59,32 @@ echo json_encode($menu);
     <div id="branchTable">
     </div>
     <script id="rowTemplate" type="text/x-kendo-tmpl">
-        <tr>
+    <tr>
         <td>    
-        #: BRANCH_CODE #
+            #: BRANCH_CODE #
+            </td>
+        <td>
+            #: BRANCH_NAME #  
+            </td>
+        <td>
+            #: STREET_ADDRESS #
+            </td>
+        <td>
+            #: TELEPHONE #
+            </td>
+            <td>
+            #: EMAIL #
         </td>
         <td>
-        #: BRANCH_NAME #  
-        </td>
-        <td>
-        #: STREET_ADDRESS #
-        </td>
-        <td>
-        #: TELEPHONE #
-        </td>
-        <td>
-        #: EMAIL #
-        </td>
-        <td>
-        <a class=""
-        href="<?= $this->url("branch", ["action" => "edit"]) ?>/#:BRANCH_ID #">
-        Edit
-        </a> /
-        <a class=""
-        href="<?= $this->url("branch", ["action" => "delete"]); ?>/#:BRANCH_ID #">
-        Delete
-        </a>
+            <a class ="" href="<?= $this->url("branch", ["action" => "edit"]) ?>/#:BRANCH_ID #">
+                Edit
+            </a> /
+            <a class="" href="<?= $this->url("branch", ["action" => "delete"]); ?>/#:BRANCH_ID #">
+                Delete
+            </a>
         </td>
 
-        </tr>
+    </tr>
     </script>
 </div>
 
