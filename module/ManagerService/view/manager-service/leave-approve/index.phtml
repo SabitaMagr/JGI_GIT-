@@ -3,11 +3,13 @@
  * Load Javascript files here
  */
 $this->headScript()
-    ->appendFile($this->basePath('js/kendoDataTable.js'));
+    ->appendFile($this->basePath('telerik_kendoui/js/kendo.all.min.js'))
+    ->appendFile($this->basePath('js/manager-service/leave-approve/index.js'));
 ?>
 
 <script>
     document.menu =<?php $menu = ["id" => "menuManagerService", "subMenu" => ["id" => "subMenuLeavetoApprove"]];echo json_encode($menu);?>;
+    document.leaveApprove=<?php echo json_encode($leaveApprove); ?>;
 </script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\leaveapprove')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
@@ -45,95 +47,38 @@ if($this->messages) { ?>
         </div>
     </div>
 
-    <table class="table" id="dataTable">
-        <thead>
-        <tr role="row">
-            <th>
-                Employee Name
-            </th>
-            <th>
-                Leave Name
-            </th>
-            <th>
-                Requested Date
-            </th>
-            <th>
-                From Date
-            </th>
-            <th>
-                To Date
-            </th>
-            <th>
-                Duration
-            </th>
-            <th>
-                Your Role
-            </th>
-            <th>
-                Operation
-            </th>
+    <div id="leaveApproveTable">
+    </div>
+    
+    <script id="rowTemplate" type="text/x-kendo-tmpl">
+        <tr>
+        <td>
+        #:FIRST_NAME #  #:MIDDLE_NAME # #:LAST_NAME #
+        </td>
+        <td>
+        #: LEAVE_ENAME #
+        </td>
+        <td>
+        #: APPLIED_DATE #
+        </td>
+        <td>
+        #: START_DATE #
+        </td>
+        <td>
+        #: END_DATE #
+        </td>
+        <td>
+        #: NO_OF_DAYS #
+        </td>
+        <td>
+        #: YOUR_ROLE #
+        </td>
+        <td>
+        <a class=""
+        href="<?= $this->url("leaveapprove", ["action" => "view"]); ?>/#:ID #/#:ROLE #">
+        View
+        </a>
+        </td>
         </tr>
-        </thead>
-        <tbody>
-
-        <?php foreach ($list as $leaveRequestList):
-            ?>
-            <tr role="row">
-                <td>
-                    <?php
-                    print $this->escapeHtml($leaveRequestList['FIRST_NAME'])." ".$this->escapeHtml($leaveRequestList['MIDDLE_NAME'])." ".$this->escapeHtml($leaveRequestList['LAST_NAME']);
-                    ?>
-                </td>
-                <td>
-                    <?php
-                    print $this->escapeHtml($leaveRequestList['LEAVE_ENAME']);
-                    ?>
-                </td>
-                <td>
-                    <?php
-                    print $this->escapeHtml($leaveRequestList['APPLIED_DATE']);
-                    ?>
-                </td>
-                <td>
-                    <?php
-                    print $this->escapeHtml($leaveRequestList['START_DATE']);
-                    ?>
-                </td>
-                <td>
-                    <?php
-                    print $this->escapeHtml($leaveRequestList['END_DATE']);
-                    ?>
-                </td>
-                <td>
-                    <?php
-                    print $this->escapeHtml($leaveRequestList['NO_OF_DAYS']);
-                    ?>
-                </td>
-                <td>
-                    <?php
-                    $recommender = $this->escapeHtml($leaveRequestList['RECOMMENDER']);
-                    $approver = $this->escapeHtml($leaveRequestList['APPROVER']);
-                    if($id==$recommender){
-                        echo "RECOMMENDER";
-                        $role = 2;
-                    }else if($id==$approver){
-                        echo "APPROVER";
-                        $role = 3;
-                    }
-                    ?>
-                </td>
-                <td>
-                    <a class=""
-                       href="<?= $this->url("leaveapprove", ["action" => "view", "id" =>$leaveRequestList['ID'],"role"=>$role]); ?>">
-                        View
-                    </a>
-                </td>
-            </tr>
-
-        <?php endforeach; ?>
-
-        </tbody>
-    </table>
-
-
+    </script>
 </div>

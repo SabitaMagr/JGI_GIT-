@@ -40,7 +40,11 @@ class AcademicDegreeController extends AbstractActionController {
     public function indexAction()
     {
         $degreeList = $this->repository->fetchAll();
-        return Helper::addFlashMessagesToArray($this, ['degrees' => $degreeList]);
+        $academicDegrees = [];
+        foreach($degreeList as $degreeRow){
+            array_push($academicDegrees, $degreeRow);
+        }
+        return Helper::addFlashMessagesToArray($this, ['academicDegrees' => $academicDegrees]);
     }
 
     public function addAction()

@@ -38,7 +38,11 @@ class ShiftSetup extends AbstractActionController
     public function indexAction()
     {
         $shiftList = $this->repository->fetchAll();
-        return Helper::addFlashMessagesToArray($this, ['shiftList' => $shiftList]);
+        $shifts = [];
+        foreach($shiftList as $shiftRow){
+            array_push($shifts, $shiftRow);
+        }
+        return Helper::addFlashMessagesToArray($this, ['shifts' => $shifts]);
     }
 
     public function initializeForm()

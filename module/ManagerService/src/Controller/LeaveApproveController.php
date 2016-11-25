@@ -50,7 +50,39 @@ class LeaveApproveController extends AbstractActionController {
     {
         //print_r($this->employeeId); die();
         $list = $this->repository->getAllRequest($this->employeeId);
-        return Helper::addFlashMessagesToArray($this, ['list' => $list,'id'=>$this->employeeId]);
+        
+        $leaveApprove = [];
+        $getValue = function($recommender,$approver){
+            if($this->employeeId==$recommender){
+                return 'RECOMMENDER';
+            }else if($this->employeeId==$approver){
+                return 'APPROVER';
+            }
+        };
+        $getRole = function($recommender,$approver){
+            if($this->employeeId==$recommender){
+                return 2;
+            }else if($this->employeeId==$approver){
+                return 3;
+            }
+        };
+        foreach($list as $row){
+            array_push($leaveApprove,[
+                'FIRST_NAME'=>$row['FIRST_NAME'],
+                'MIDDLE_NAME'=>$row['MIDDLE_NAME'],
+                'LAST_NAME'=>$row['LAST_NAME'],
+                'START_DATE'=>$row['START_DATE'],
+                'END_DATE'=>$row['END_DATE'],
+                'APPLIED_DATE'=>$row['APPLIED_DATE'],
+                'NO_OF_DAYS'=>$row['NO_OF_DAYS'],
+                'LEAVE_ENAME'=>$row['LEAVE_ENAME'],
+                'ID'=>$row['ID'],
+                'YOUR_ROLE'=>$getValue($row['RECOMMENDER'],$row['APPROVER']),
+                'ROLE'=>$getRole($row['RECOMMENDER'],$row['APPROVER'])
+            ]);
+        }
+        //print_r($leaveApprove); die();
+        return Helper::addFlashMessagesToArray($this, ['leaveApprove' => $leaveApprove,'id'=>$this->employeeId]);
     }
     public function viewAction(){
         $this->initializeForm();

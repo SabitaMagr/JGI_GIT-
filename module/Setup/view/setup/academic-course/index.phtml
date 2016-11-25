@@ -3,7 +3,8 @@
  * Load Javascript files here
  */
 $this->headScript()
-    ->appendFile($this->basePath('js/kendoDataTable.js'));
+    ->appendFile($this->basePath('telerik_kendoui/js/kendo.all.min.js'))
+    ->appendFile($this->basePath('js/setup/academic-course/index.js'));
 ?>
 
 <?php
@@ -15,6 +16,7 @@ if($this->messages) { ?>
 
 <script>
     document.menu =<?php $menu = ["id" => "menuSetup", "subMenu" => ["id" => "subMenuAcademicCourse"]];echo json_encode($menu);?>;
+    document.academicCourses = <?php echo json_encode($academicCourses); ?>;
 </script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\academicCourse')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
@@ -52,53 +54,30 @@ if($this->messages) { ?>
             </div>
         </div>
     </div>
-
-
-    <table class="table" id="dataTable">
-        <thead>
-        <tr role="row">
-            <th>
-                Academic Course Code
-            </th>
-            <th>
-                Academic Course Name
-            </th>
-            <th>
-                Academic Program Name
-            </th>
-            <th>
-                Action
-            </th>
+    <div id="academicCourseTable">
+    </div>
+    
+    <script id="rowTemplate" type="text/x-kendo-tmpl">
+        <tr>
+        <td>
+        #:ACADEMIC_COURSE_CODE # 
+        </td>
+        <td>
+        #: ACADEMIC_COURSE_NAME #
+        </td>
+        <td>
+        #: ACADEMIC_PROGRAM_NAME #
+        </td>
+        <td>
+        <a class=""
+        href="<?= $this->url("academicCourse", ["action" => "edit"]) ?>/#:ACADEMIC_COURSE_ID #">
+        Edit
+        </a> /
+        <a class=""
+        href="<?= $this->url("academicCourse", ["action" => "delete"]); ?>/#:ACADEMIC_COURSE_ID #">
+        Delete
+        </a>
+        </td>
         </tr>
-        </thead>
-        <tbody>
-
-        <?php foreach ($courses as $list):
-            ?>
-            <tr role="row">
-                <td>
-                    <?php print $this->escapeHtml($list['ACADEMIC_COURSE_CODE']); ?>
-                </td>
-                <td>
-                    <?php print $this->escapeHtml($list['ACADEMIC_COURSE_NAME']); ?>
-                </td>
-                <td>
-                    <?php print $this->escapeHtml($list['ACADEMIC_PROGRAM_NAME']); ?>
-                </td>
-                <td>
-                    <a
-                        href="<?= $this->url("academicCourse", ["action" => "edit", "id" => $list['ACADEMIC_COURSE_ID']]); ?>">
-                        Edit
-                    </a> /
-                    <a
-                        href="<?= $this->url("academicCourse", ["action" => "delete", "id" => $list['ACADEMIC_COURSE_ID']]); ?>">
-                        Delete
-                    </a>
-                </td>
-            </tr>
-
-        <?php endforeach; ?>
-
-        </tbody>
-    </table>
+    </script>
 </div>

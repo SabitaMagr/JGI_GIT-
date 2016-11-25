@@ -3,17 +3,19 @@
  * Load Javascript files here
  */
 $this->headScript()
-    ->appendFile($this->basePath('js/kendoDataTable.js'));
+        ->appendFile($this->basePath('telerik_kendoui/js/kendo.all.min.js'))
+        ->appendFile($this->basePath('js/setup/position/index.js'));
 ?>
-<?php
-if($this->messages) { ?>
+<?php if ($this->messages) { ?>
     <script>
-        document.messages=<?php echo json_encode($this->messages); ?>
+        document.messages =<?php echo json_encode($this->messages); ?>
     </script>
 <?php } ?>
 
 <script>
-    document.menu =<?php $menu = ["id" => "menuSetup", "subMenu" => ["id" => "subMenuPosition"]];echo json_encode($menu);?>;
+    document.menu =<?php $menu = ["id" => "menuSetup", "subMenu" => ["id" => "subMenuPosition"]];
+echo json_encode($menu); ?>;
+    document.positions =<?php echo json_encode($positions); ?>
 </script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\Position')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
@@ -52,45 +54,27 @@ if($this->messages) { ?>
         </div>
     </div>
 
-    <table class="table " id="dataTable">
-        <thead>
-        <tr role="row">
-            <th>
-                Position Code
-            </th>
-            <th>
-                Position Name
-            </th>
-            <th>
-                Action
-            </th>
+    <div id="positionTable">
+    </div>
+    <script id="rowTemplate" type="text/x-kendo-tmpl">
+        <tr>
+        <td>
+        #: SN #  
+        </td>
+        <td>
+        #: POSITION_NAME #  
+        </td>
+        <td>
+        <a class=""
+        href="<?= $this->url("position", ["action" => "edit"]) ?>/#:POSITION_ID #">
+        Edit
+        </a> /
+        <a class=""
+        href="<?= $this->url("position", ["action" => "delete"]); ?>/#:POSITION_ID #">
+        Delete
+        </a>
+        </td>
         </tr>
-        </thead>
-        <tbody>
-
-        <?php foreach ($positions as $position): ?>
-            <tr role="row">
-                <td>
-                    <?php print $this->escapeHtml($position->POSITION_ID); ?>
-                </td>
-                <td class="v-align-middle sorting_1">
-                    <?php print $this->escapeHtml($position->POSITION_NAME); ?>
-                </td>
-                <td>
-                            <a
-                               href="<?= $this->url("position", ["action" => "edit", "id" => $position->POSITION_ID]); ?>">
-                           Edit
-                            </a> /
-                            <a
-                               href="<?= $this->url("position", ["action" => "delete", "id" => $position->POSITION_ID]); ?>">
-                                Delete
-                            </a>
-                </td>
-            </tr>
-
-        <?php endforeach; ?>
-
-        </tbody>
-    </table>
+    </script>
 
 </div>

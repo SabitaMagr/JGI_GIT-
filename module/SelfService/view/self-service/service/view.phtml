@@ -9,9 +9,15 @@ $startDate = $form->get('startDate');
 $startDate->setAttributes(['disabled' => "disabled"]);
 $endDate = $form->get('endDate');
 $endDate->setAttributes(['disabled' => "disabled"]);
-$serviceTypeId = $form->get('serviceTypeId');
-$serviceTypeId->setValueOptions($serviceTypes);
-$serviceTypeId->setAttributes(['disabled' => "disabled"]);
+$serviceEventTypeId = $form->get('serviceEventTypeId');
+$serviceEventTypeId->setValueOptions($serviceEventTypes);
+$serviceEventTypeId->setAttributes(['disabled' => "disabled"]);
+$fromServiceTypeId = $form->get('fromServiceTypeId');
+$fromServiceTypeId->setValueOptions($serviceTypes);
+$fromServiceTypeId->setAttributes(['disabled' => "disabled"]);
+$toServiceTypeId = $form->get('toServiceTypeId');
+$toServiceTypeId->setValueOptions($serviceTypes);
+$toServiceTypeId->setAttributes(['disabled' => "disabled"]);
 $fromBranchId = $form->get('fromBranchId');
 $fromBranchId->setValueOptions($branches);
 $fromBranchId->setAttributes(['disabled' => "disabled"]);
@@ -79,6 +85,11 @@ print $this->form()->openTag($form);
                                 </div>
                                 <?php print $this->formElementErrors()->render($startDate, ['class' => 'help-block']); ?>
                             </div>
+                             <div class="form-group">
+                                <?php print $this->formLabel($fromServiceTypeId); ?>
+                                <?php print $this->formElement($fromServiceTypeId); ?>
+                                <?php print $this->formElementErrors()->render($fromServiceTypeId, ['class' => 'help-block']); ?>
+                            </div>
                             <div class="form-group">
                                 <?php print $this->formLabel($fromBranchId); ?>
                                 <?php print $this->formElement($fromBranchId); ?>
@@ -103,9 +114,9 @@ print $this->form()->openTag($form);
                         </div>
                         <div class="col-sm-6">
                             <div class="form-group">
-                                <?php print $this->formLabel($serviceTypeId); ?>
-                                <?php print $this->formElement($serviceTypeId); ?>
-                                <?php print $this->formElementErrors()->render($serviceTypeId, ['class' => 'help-block']); ?>
+                                <?php print $this->formLabel($serviceEventTypeId); ?>
+                                <?php print $this->formElement($serviceEventTypeId); ?>
+                                <?php print $this->formElementErrors()->render($serviceEventTypeId, ['class' => 'help-block']); ?>
                             </div>
                             <div class="form-group">
                                 <?php print $this->formLabel($endDate); ?>
@@ -115,8 +126,11 @@ print $this->form()->openTag($form);
                                 </div>
                                 <?php print $this->formElementErrors()->render($endDate, ['class' => 'help-block']); ?>
                             </div>
-
-
+                            <div class="form-group">
+                                <?php print $this->formLabel($toServiceTypeId); ?>
+                                <?php print $this->formElement($toServiceTypeId); ?>
+                                <?php print $this->formElementErrors()->render($toServiceTypeId, ['class' => 'help-block']); ?>
+                            </div>
                             <div class="form-group">
                                 <?php print $this->formLabel($toBranchId); ?>
                                 <?php print $this->formElement($toBranchId); ?>

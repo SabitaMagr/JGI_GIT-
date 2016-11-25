@@ -3,7 +3,8 @@
  * Load Javascript files here
  */
 $this->headScript()
-    ->appendFile($this->basePath('js/kendoDataTable.js'));
+    ->appendFile($this->basePath('telerik_kendoui/js/kendo.all.min.js'))
+    ->appendFile($this->basePath('js/setup/recommend-approve/index.js'));
 ?>
 <?php
 if($this->messages) { ?>
@@ -14,6 +15,7 @@ if($this->messages) { ?>
 
 <script>
     document.menu =<?php $menu = ["id" => "menuSetup", "subMenu" => ["id" => "subMenuRecommenderApprover"]];echo json_encode($menu);?>;
+    document.recommendApproves=<?php echo json_encode($recommendApproves); ?>;
 </script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\recommendapprove')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
@@ -51,54 +53,30 @@ if($this->messages) { ?>
             </div>
         </div>
     </div>
-
-    <table class="table " id="dataTable">
-        <thead>
-        <tr role="row">
-            <th>
-                Employee Name
-            </th>
-            <th>
-                Recommender
-            </th>
-            <th>
-                Approver
-            </th>
-            <th>
-                Action
-            </th>
+    
+    <div id="recommendApproveTable">
+    </div>
+    <script id="rowTemplate" type="text/x-kendo-tmpl">
+        <tr>
+        <td>
+        #: FIRST_NAME # #:MIDDLE_NAME # #:LAST_NAME  # 
+        </td>
+        <td>
+        #: FIRST_NAME_R # #:MIDDLE_NAME_R # #:LAST_NAME_R #
+        </td>
+        <td>
+        #: FIRST_NAME_A # #:MIDDLE_NAME_A # #:LAST_NAME_A #
+        </td>
+        <td>
+        <a class=""
+        href="<?= $this->url("recommendapprove", ["action" => "edit"]) ?>/#:EMPLOYEE_ID #">
+        Edit
+        </a> /
+        <a class=""
+        href="<?= $this->url("recommendapprove", ["action" => "delete"]); ?>/#:EMPLOYEE_ID #">
+        Delete
+        </a>
+        </td>
         </tr>
-        </thead>
-        <tbody>
-
-        <?php foreach ($list as $allList){  ?>
-            <tr role="row">
-                <td>
-                    <?php
-                    print $this->escapeHtml($allList['FIRST_NAME'])." ".$this->escapeHtml($allList['MIDDLE_NAME'])." ".$this->escapeHtml($allList['LAST_NAME']);
-                    ?>
-                </td>
-                <td class="v-align-middle sorting_1">
-                    <?php
-                    print $this->escapeHtml($allList['FIRST_NAME_R'])." ".$this->escapeHtml($allList['MIDDLE_NAME_R'])." ".$this->escapeHtml($allList['LAST_NAME_R']);
-                    ?>
-                </td>
-                <td>
-                    <?php
-                    print $this->escapeHtml($allList['FIRST_NAME_A'])." ".$this->escapeHtml($allList['MIDDLE_NAME_A'])." ".$this->escapeHtml($allList['LAST_NAME_A']);
-                    ?>
-                </td>
-                <td>
-                    <a
-                        href="<?= $this->url("recommendapprove", ["action" => "edit", "id" =>$allList['EMPLOYEE_ID']]); ?>">
-                        Edit
-                    </a>
-                </td>
-            </tr>
-
-        <?php } ?>
-
-        </tbody>
-    </table>
-
+    </script>
 </div>

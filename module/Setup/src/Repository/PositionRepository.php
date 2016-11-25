@@ -30,7 +30,18 @@ class PositionRepository implements RepositoryInterface{
 	}
 	public function fetchActiveRecord()
     {
-         return  $rowset= $this->tableGateway->select([Position::STATUS=>'E']);
+        $rowset= $this->tableGateway->select([Position::STATUS=>'E']);
+        $result = [];
+        $i=1;
+        foreach($rowset as $row){
+            array_push($result, [
+                'SN'=>$i,
+                'POSITION_ID'=>$row['POSITION_ID'],
+                'POSITION_NAME'=>$row['POSITION_NAME']
+            ]);
+            $i+=1;
+        }
+        return $result;
     }
 	public function fetchById($id){
 		$row = $this->tableGateway->select([Position::POSITION_ID=>$id]);
