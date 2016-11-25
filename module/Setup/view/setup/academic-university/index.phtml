@@ -3,7 +3,8 @@
  * Load Javascript files here
  */
 $this->headScript()
-    ->appendFile($this->basePath('js/kendoDataTable.js'));
+    ->appendFile($this->basePath('telerik_kendoui/js/kendo.all.min.js'))
+    ->appendFile($this->basePath('js/setup/academic-university/index.js'));
 ?>
 
 <?php
@@ -15,6 +16,7 @@ if($this->messages) { ?>
 
 <script>
     document.menu =<?php $menu = ["id" => "menuSetup", "subMenu" => ["id" => "subMenuAcademicUniversity"]];echo json_encode($menu);?>;
+    document.academicUniversities=<?php echo json_encode($academicUniversities); ?>;
 </script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\academicUniversity')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
@@ -53,45 +55,27 @@ if($this->messages) { ?>
         </div>
     </div>
 
-
-    <table class="table" id="dataTable">
-        <thead>
-        <tr role="row">
-            <th>
-                Academic University Code
-            </th>
-            <th>
-                Academic University Name
-            </th>
-            <th>
-                Action
-            </th>
+    <div id="academicUniversityTable">
+    </div>
+    
+    <script id="rowTemplate" type="text/x-kendo-tmpl">
+        <tr>
+        <td>
+        #:ACADEMIC_UNIVERSITY_CODE # 
+        </td>
+        <td>
+        #: ACADEMIC_UNIVERSITY_NAME #
+        </td>
+        <td>
+        <a class=""
+        href="<?= $this->url("academicUniversity", ["action" => "edit"]) ?>/#:ACADEMIC_UNIVERSITY_ID #">
+        Edit
+        </a> /
+        <a class=""
+        href="<?= $this->url("academicUniversity", ["action" => "delete"]); ?>/#:ACADEMIC_UNIVERSITY_ID #">
+        Delete
+        </a>
+        </td>
         </tr>
-        </thead>
-        <tbody>
-
-        <?php foreach ($universities as $list): ?>
-            <tr role="row">
-                <td>
-                    <?php print $this->escapeHtml($list->ACADEMIC_UNIVERSITY_CODE); ?>
-                </td>
-                <td>
-                    <?php print $this->escapeHtml($list->ACADEMIC_UNIVERSITY_NAME); ?>
-                </td>
-                <td>
-                    <a
-                        href="<?= $this->url("academicUniversity", ["action" => "edit", "id" => $list->ACADEMIC_UNIVERSITY_ID]); ?>">
-                        Edit
-                    </a> /
-                    <a
-                        href="<?= $this->url("academicUniversity", ["action" => "delete", "id" => $list->ACADEMIC_UNIVERSITY_ID]); ?>">
-                        Delete
-                    </a>
-                </td>
-            </tr>
-
-        <?php endforeach; ?>
-
-        </tbody>
-    </table>
+    </script>
 </div>

@@ -39,7 +39,11 @@ class AcademicUniversityController extends AbstractActionController {
     public function indexAction()
     {
         $universityList = $this->repository->fetchAll();
-        return Helper::addFlashMessagesToArray($this, ['universities' => $universityList]);
+        $academicUniversities = [];
+        foreach($universityList  as $universityRow){
+            array_push($academicUniversities, $universityRow);
+        }
+        return Helper::addFlashMessagesToArray($this, ['academicUniversities' => $academicUniversities]);
     }
 
     public function addAction()

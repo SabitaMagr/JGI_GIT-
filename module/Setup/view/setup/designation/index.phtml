@@ -3,20 +3,20 @@
  * Load Javascript files here
  */
 $this->headScript()
-    ->appendFile($this->basePath('js/kendoDataTable.js'))
-->appendFile($this->basePath('js/setup/designation/add.js'));
+    ->appendFile($this->basePath('telerik_kendoui/js/kendo.all.min.js'))
+    ->appendFile($this->basePath('js/setup/designation/index.js'));
 ?>
 
 <?php
 if($this->messages) { ?>
     <script>
         document.messages=<?php echo json_encode($this->messages); ?>
-        document.designations=<?php echo json_encode($designations);?>
     </script>
 <?php } ?>
 
 <script>
     document.menu =<?php $menu = ["id" => "menuSetup", "subMenu" => ["id" => "subMenuDesignation"]];echo json_encode($menu);?>;
+    document.designations=<?php echo json_encode($designations);?>
 </script>
 
 <div class="page-bar">
@@ -54,33 +54,33 @@ if($this->messages) { ?>
                 </div>
             </div>
         </div>
-    </div>
+    </div>    
     <div id="designationTable">
     </div>
     <script id="rowTemplate" type="text/x-kendo-tmpl">
         <tr>
-            <td>    
-            #: DESIGNATION_CODE #
-            </td>
-            <td>
-            #: DESIGNATION_TITLE #  
-            </td>
-            <td>
-            #: PARENT_DESIGNATION #
-            </td>
-            <td>
-            #: BASIC_SALARY #
-            </td>
-            <td>
-                <a class=""
-                href="<?= $this->url("branch", ["action" => "edit"]) ?>/#:BRANCH_ID #">
-                Edit
-                </a> /
-                <a class=""
-                href="<?= $this->url("branch", ["action" => "delete"]); ?>/#:BRANCH_ID #">
-                Delete
-                </a>
-            </td>
+        <td>    
+        #: DESIGNATION_CODE #
+        </td>
+        <td>
+        #: DESIGNATION_TITLE #  
+        </td>
+        <td>
+        #: PARENT_DESIGNATION_TITLE #
+        </td>
+        <td>
+        #: BASIC_SALARY #
+        </td>
+        <td>
+        <a class=""
+        href="<?= $this->url("designation", ["action" => "edit"]) ?>/#:DESIGNATION_ID #">
+        Edit
+        </a> /
+        <a class=""
+        href="<?= $this->url("designation", ["action" => "delete"]); ?>/#:DESIGNATION_ID #">
+        Delete
+        </a>
+        </td>
         </tr>
     </script>
 

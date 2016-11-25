@@ -3,11 +3,13 @@
  * Load Javascript files here
  */
 $this->headScript()
-    ->appendFile($this->basePath('js/kendoDataTable.js'));
+    ->appendFile($this->basePath('telerik_kendoui/js/kendo.all.min.js'))
+    ->appendFile($this->basePath('js/SelfService/leave/index.js'));
 ?>
 
 <script>
     document.menu =<?php $menu = ["id" => "menuSelfService", "subMenu" => ["id" => "subMenuLeaveList"]];echo json_encode($menu);?>;
+    document.leaves=<?php echo json_encode($leaves); ?>;
 </script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\leave')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
@@ -46,63 +48,26 @@ if($this->messages) { ?>
         </div>
     </div>
 
-    <table class="table" id="dataTable">
-        <thead>
-        <tr role="row">
-            <th>
-                Leave Code
-            </th>
-            <th>
-                Leave Name
-            </th>
-            <th>
-                Total Days
-            </th>
-            <th>
-                Leave Taken
-            </th>
-            <th>
-                Available Days
-            </th>
+    <div id="leaveTable">
+    </div>
+    
+    <script id="rowTemplate" type="text/x-kendo-tmpl">
+        <tr>
+        <td>
+        #: LEAVE_CODE #
+        </td>
+        <td>
+        #: LEAVE_ENAME #
+        </td>
+        <td>
+        #: TOTAL_DAYS #
+        </td>
+        <td>
+        #: LEAVE_TAKEN #
+        </td>
+        <td>
+        #: BALANCE #
+        </td>
         </tr>
-        </thead>
-        <tbody>
-
-        <?php foreach ($leaves as $leaveList):
-            ?>
-            <tr role="row">
-                <td>
-                    <?php
-                    print $this->escapeHtml($leaveList['LEAVE_CODE']);
-                    ?>
-                </td>
-                <td>
-                    <?php
-                    print $this->escapeHtml($leaveList['LEAVE_ENAME']);
-                    ?>
-                </td>
-                <td>
-                    <?php
-                    print $totalDays = $this->escapeHtml($leaveList['TOTAL_DAYS']);
-                    $balance =  $this->escapeHtml($leaveList['BALANCE']);
-                    ?>
-                </td>
-                <td>
-                    <?php
-                        print $totalDays-$balance;
-                    ?>
-                </td>
-                <td>
-                    <?php
-                    print $balance;
-                    ?>
-                </td>
-            </tr>
-
-        <?php endforeach; ?>
-
-        </tbody>
-    </table>
-
-
+    </script>
 </div>

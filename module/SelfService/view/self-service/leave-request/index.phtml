@@ -3,11 +3,13 @@
  * Load Javascript files here
  */
 $this->headScript()
-    ->appendFile($this->basePath('js/kendoDataTable.js'));
+    ->appendFile($this->basePath('telerik_kendoui/js/kendo.all.min.js'))
+    ->appendFile($this->basePath('js/SelfService/leave-request/index.js'));
 ?>
 
 <script>
     document.menu =<?php $menu = ["id" => "menuSelfService", "subMenu" => ["id" => "subMenuLeaveApply"]];echo json_encode($menu);?>;
+    document.leaveRequest=<?= json_encode($leaveRequest); ?>;
 </script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\leaverequest')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
@@ -50,97 +52,37 @@ if($this->messages) { ?>
             </div>
         </div>
     </div>
-
-    <table class="table" id="dataTable">
-        <thead>
-        <tr role="row">
-            <th>
-                Leave Code
-            </th>
-            <th>
-                Leave Name
-            </th>
-            <th>
-                From Date
-            </th>
-            <th>
-                To Date
-            </th>
-            <th>
-                Duration
-            </th>
-            <th>
-                Status
-            </th>
-            <th>
-                Operation
-            </th>
+    
+    <div id="leaveRequestTable">
+    </div>
+    
+    <script id="rowTemplate" type="text/x-kendo-tmpl">
+        <tr>
+        <td>
+        #: LEAVE_CODE #
+        </td>
+        <td>
+        #: LEAVE_ENAME #
+        </td>
+        <td>
+        #: FROM_DATE #
+        </td>
+        <td>
+        #: TO_DATE #
+        </td>
+        <td>
+        #: NO_OF_DAYS #
+        </td>
+        <td>
+        #: STATUS #
+        </td>
+        <td>
+        <a class=""
+        href="<?= $this->url("leaverequest"); ?>/#:ACTION #/#:ID #">
+        #:ACTION_TEXT #
+        </a>
+        </td>
         </tr>
-        </thead>
-        <tbody>
-
-        <?php foreach ($leaveRequest as $leaveRequestList):
-            ?>
-            <tr role="row">
-                <td>
-                    <?php
-                    print $this->escapeHtml($leaveRequestList['LEAVE_CODE']);
-                    ?>
-                </td>
-                <td>
-                    <?php
-                    print $this->escapeHtml($leaveRequestList['LEAVE_ENAME']);
-                    ?>
-                </td>
-                <td>
-                    <?php
-                    print $this->escapeHtml($leaveRequestList['FROM_DATE']);
-                    ?>
-                </td>
-                <td>
-                    <?php
-                    print $this->escapeHtml($leaveRequestList['TO_DATE']);
-                    ?>
-                </td>
-                <td>
-                    <?php
-                    print $this->escapeHtml($leaveRequestList['NO_OF_DAYS']);
-                    ?>
-                </td>
-                <td>
-                    <?php
-                        $status = $this->escapeHtml($leaveRequestList['STATUS']);
-                        if($status=='RQ'){
-                            echo "Pending";
-                        }else if($status=='RC'){
-                            echo "Recommended";
-                        }else if($status=='AP'){
-                            echo "Approved";
-                        }else if($status=="R"){
-                            echo "Rejected";
-                        }else if($status=="C"){
-                            echo "Cancelled";
-                        }
-                    ?>
-                </td>
-                <td>
-                   <?php if($status=='RQ'){ ?>
-                    <a class=""
-                       href="<?= $this->url("leaverequest", ["action" => "delete", "id" =>$leaveRequestList['ID']]); ?>">
-                        Cancel Request
-                    </a> |
-                   <?php } ?>
-                    <a class=""
-                       href="<?= $this->url("leaverequest", ["action" => "view", "id" =>$leaveRequestList['ID']]); ?>">
-                        View
-                    </a>
-                </td>
-            </tr>
-
-        <?php endforeach; ?>
-
-        </tbody>
-    </table>
-
+    </script>
 
 </div>

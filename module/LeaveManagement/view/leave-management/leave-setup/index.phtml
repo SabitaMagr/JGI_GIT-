@@ -3,7 +3,8 @@
  * Load Javascript files here
  */
 $this->headScript()
-    ->appendFile($this->basePath('js/kendoDataTable.js'));
+    ->appendFile($this->basePath('telerik_kendoui/js/kendo.all.min.js'))
+    ->appendFile($this->basePath('js/LeaveManagement/LeaveSetup/index.js'));
 ?>
 
 <?php
@@ -15,6 +16,7 @@ if($this->messages) { ?>
 
 <script>
     document.menu =<?php $menu = ["id" => "menuLeave", "subMenu" => ["id" => "subMenuLeaveSetup"]];echo json_encode($menu);?>;
+    document.leaves=<?= json_encode($leaves); ?>;
 </script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\leavesetup')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
@@ -51,71 +53,40 @@ if($this->messages) { ?>
             </div>
         </div>
     </div>
-    <table class="table" id="dataTable">
-        <thead>
-        <tr role="row">
-            <th>
-                Leave Code
-            </th>
-
-            <th>
-                Leave Name
-            </th>
-            <th>
-                Allow Halfday
-            </th>
-            <th>
-                Default Days
-            </th>
-
-            <th>
-                Carry Forward
-            </th>
-            <th>
-                Cashable
-            </th>
-            <th>
-                Action
-            </th>
-
+    
+    <div id="leaveTable">
+    </div>
+    
+    <script id="rowTemplate" type="text/x-kendo-tmpl">
+        <tr>
+        <td>
+        #:LEAVE_CODE # 
+        </td>
+        <td>
+        #: LEAVE_ENAME #
+        </td>
+        <td>
+        #: ALLOW_HALFDAY #
+        </td>
+        <td>
+        #: DEFAULT_DAYS #
+        </td>
+        <td>
+        #: CARRY_FORWARD #
+        </td>
+        <td>
+        #: CASHABLE #
+        </td>
+        <td>
+        <a class=""
+        href="<?= $this->url("leavesetup", ["action" => "edit"]); ?>/#:LEAVE_ID #">
+        Edit
+        </a> /
+        <a class=""
+        href="<?= $this->url("leavesetup", ["action" => "delete"]); ?>/#:LEAVE_ID #">
+        Delete
+        </a>
+        </td>
         </tr>
-        </thead>
-        <tbody>
-
-        <?php foreach ($leaveList as $leave):
-            ?>
-            <tr role="row">
-                <td class="">
-                    <?php print $this->escapeHtml($leave['LEAVE_CODE']); ?>
-                </td>
-                <td class="">
-                    <?php print $this->escapeHtml($leave['LEAVE_ENAME']); ?>
-                </td>
-                <td class="">
-                    <?php print $this->escapeHtml($getValue($leave['ALLOW_HALFDAY'])); ?>
-                </td>
-                <td class="">
-                    <?php print $this->escapeHtml($getValue($leave['DEFAULT_DAYS'])); ?>
-                </td>
-                <td class="">
-                    <?php print $this->escapeHtml($getValue($leave['CARRY_FORWARD'])); ?>
-                </td>
-                <td class="">
-                    <?php print $this->escapeHtml($getValue($leave['CASHABLE'])); ?>
-                </td>
-                <td class="">
-                    <a href="<?= $this->url("leavesetup", ["action" => "edit", "id" => $leave['LEAVE_ID']]); ?>">
-                        Edit
-                    </a>
-                    <a href="<?= $this->url("leavesetup", ["action" => "delete", "id" => $leave['LEAVE_ID']]); ?>">
-                        Delete
-                    </a>
-                </td>
-            </tr>
-
-        <?php endforeach; ?>
-
-        </tbody>
-    </table>
-
+    </script>
 </div>

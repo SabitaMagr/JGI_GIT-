@@ -3,7 +3,8 @@
  * Load Javascript files here
  */
 $this->headScript()
-    ->appendFile($this->basePath('js/kendoDataTable.js'));
+    ->appendFile($this->basePath('telerik_kendoui/js/kendo.all.min.js'))
+    ->appendFile($this->basePath('js/setup/service-type/index.js'));
 ?>
 
 <?php
@@ -15,6 +16,7 @@ if($this->messages) { ?>
 
 <script>
     document.menu =<?php $menu = ["id" => "menuSetup", "subMenu" => ["id" => "subMenuServiceType"]];echo json_encode($menu);?>;
+    document.serviceTypes =<?php echo json_encode($serviceTypes); ?>
 </script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\serviceType')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
@@ -52,46 +54,27 @@ if($this->messages) { ?>
             </div>
         </div>
     </div>
-
-
-    <table class="table" id="dataTable">
-        <thead>
-        <tr role="row">
-            <th>
-                Service Type Code
-            </th>
-            <th>
-                Service Type Name
-            </th>
-            <th>
-                Action
-            </th>
+    
+    <div id="serviceTypeTable">
+    </div>
+    <script id="rowTemplate" type="text/x-kendo-tmpl">
+        <tr>
+        <td>
+        #: SERVICE_TYPE_CODE #  
+        </td>
+        <td>
+        #: SERVICE_TYPE_NAME #  
+        </td>
+        <td>
+        <a class=""
+        href="<?= $this->url("serviceType", ["action" => "edit"]) ?>/#:SERVICE_TYPE_ID #">
+        Edit
+        </a> /
+        <a class=""
+        href="<?= $this->url("serviceType", ["action" => "delete"]); ?>/#:SERVICE_TYPE_ID #">
+        Delete
+        </a>
+        </td>
         </tr>
-        </thead>
-        <tbody>
-
-        <?php foreach ($serviceTypeList as $serviceType): ?>
-            <tr role="row">
-                <td>
-                    <?php print $this->escapeHtml($serviceType->SERVICE_TYPE_CODE); ?>
-                </td>
-                <td>
-                    <?php print $this->escapeHtml($serviceType->SERVICE_TYPE_NAME); ?>
-                </td>
-                <td>
-                    <a
-                        href="<?= $this->url("serviceType", ["action" => "edit", "id" => $serviceType->SERVICE_TYPE_ID]); ?>">
-                        Edit
-                    </a> /
-                    <a
-                        href="<?= $this->url("serviceType", ["action" => "delete", "id" => $serviceType->SERVICE_TYPE_ID]); ?>">
-                        Delete
-                    </a>
-                </td>
-            </tr>
-
-        <?php endforeach; ?>
-
-        </tbody>
-    </table>
+    </script>
 </div>

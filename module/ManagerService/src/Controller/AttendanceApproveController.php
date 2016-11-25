@@ -48,7 +48,12 @@ class AttendanceApproveController extends AbstractActionController {
 
     public function indexAction() {
         $list = $this->repository->getAllRequest($this->employeeId, 'RQ');
-        return Helper::addFlashMessagesToArray($this, ['list' => $list]);
+        $attendanceApprove = [];
+        foreach($list as $row){
+            $new_row = array_merge($row,['YOUR_ROLE'=>'APPROVER']);
+            array_push($attendanceApprove,$new_row);
+        }
+        return Helper::addFlashMessagesToArray($this, ['attendanceApprove' => $attendanceApprove]);
     }
 
     public function viewAction() {

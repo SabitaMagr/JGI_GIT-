@@ -3,11 +3,13 @@
  * Load Javascript files here
  */
 $this->headScript()
-    ->appendFile($this->basePath('js/kendoDataTable.js'));
+    ->appendFile($this->basePath('telerik_kendoui/js/kendo.all.min.js'))
+    ->appendFile($this->basePath('js/AttendanceManagement/by-hr/index.js'));
 ?>
 
 <script>
     document.menu =<?php $menu = ["id" => "menuAttendanceManagement", "subMenu" => ["id" => "subMenuAttendanceByHr"]];echo json_encode($menu);?>;
+    document.attendanceByHr=<?php echo json_encode($attendanceByHr); ?>
 </script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\attendancebyhr')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
@@ -51,70 +53,41 @@ if($this->messages) { ?>
             </div>
         </div>
     </div>
-    <table class="table" id="dataTable">
-        <thead>
-        <tr role="row">
-            <th>
-                Employee Name
-            </th>
-            <th>
-                Attendance Date
-            </th>
-            <th>
-                Check In
-            </th>
-            <th>
-                Check Out
-            </th>
-            <th>
-                Late In Reason
-            </th>
-            <th>
-                Early Out Reason
-            </th>
-            <th>
-                Action
-            </th>
-
+    
+    <div id="attendanceByHrTable">
+    </div>
+    
+    <script id="rowTemplate" type="text/x-kendo-tmpl">
+        <tr>
+        <td>
+        #:FIRST_NAME #  #:MIDDLE_NAME # #:LAST_NAME #
+        </td>
+        <td>
+        #: ATTENDANCE_DT #
+        </td>
+        <td>
+        #: IN_TIME #
+        </td>
+        <td>
+        #: OUT_TIME #
+        </td>
+        <td>
+        #: IN_REMARKS #
+        </td>
+        <td>
+        #: OUT_REMARKS #
+        </td>
+        <td>
+        <a class=""
+        href="<?= $this->url("attendancebyhr", ["action" => "edit"]); ?>/#:ID #">
+        Edit
+        </a> /
+        <a class=""
+        href="<?= $this->url("attendancebyhr", ["action" => "delete"]); ?>/#:ID #">
+        Delete
+        </a>
+        </td>
         </tr>
-        </thead>
-        <tbody>
-
-        <?php foreach ($attendanceList as $attendances):
-            ?>
-            <tr role="row">
-                <td class="">
-                        <?php
-                        print $this->escapeHtml($attendances['FIRST_NAME']." ".$attendances['MIDDLE_NAME']." ".$attendances['LAST_NAME']); ?>
-                </td>
-                <td class="">
-                        <?php print $this->escapeHtml($attendances['ATTENDANCE_DT']); ?>
-                </td>
-                <td class="">
-                        <?php print $this->escapeHtml($attendances['IN_TIME']); ?>
-                </td>
-                <td class="">
-                        <?php print $this->escapeHtml($attendances['OUT_TIME']); ?>
-                </td>
-                <td class="">
-                        <?php print $this->escapeHtml($attendances['IN_REMARKS']); ?>
-                </td>
-                <td class="">
-                        <?php print $this->escapeHtml($attendances['OUT_REMARKS']); ?>
-                </td>
-
-                <td class="">
-                            <a
-                               href="<?= $this->url("attendancebyhr", ["action" => "edit", "id" => $attendances['ID']]); ?>">Edit
-                            </a>
-
-                </td>
-            </tr>
-
-        <?php endforeach; ?>
-
-        </tbody>
-    </table>
-
+    </script>
 
     </div>

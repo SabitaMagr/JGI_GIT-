@@ -40,7 +40,11 @@ class ServiceEventTypeController extends AbstractActionController
     public function indexAction()
     {
         $serviceEventTypeList = $this->repository->fetchActiveRecord();
-        return Helper::addFlashMessagesToArray($this, ['serviceEventType' => $serviceEventTypeList]);
+        $serviceEventTypes =[];
+        foreach($serviceEventTypeList as $serviceEventTypeRow){
+            array_push($serviceEventTypes, $serviceEventTypeRow);
+        }
+        return Helper::addFlashMessagesToArray($this, ['serviceEventTypes' => $serviceEventTypes]);
     }
 
     public function addAction()

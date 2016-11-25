@@ -3,11 +3,13 @@
  * Load Javascript files here
  */
 $this->headScript()
-    ->appendFile($this->basePath('js/kendoDataTable.js'));
+    ->appendFile($this->basePath('telerik_kendoui/js/kendo.all.min.js'))
+    ->appendFile($this->basePath('js/SelfService/holiday/index.js'));
 ?>
 
 <script>
     document.menu =<?php $menu = ["id" => "menuSelfService", "subMenu" => ["id" => "subMenuHolidayList"]];echo json_encode($menu);?>;
+    document.holidays=<?php echo json_encode($holidays); ?>;
 </script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\holiday')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
@@ -45,70 +47,29 @@ if($this->messages) { ?>
             </div>
         </div>
     </div>
-
-    <table class="table" id="dataTable">
-        <thead>
-        <tr role="row">
-            <th>
-                Holiday Code
-            </th>
-            <th>
-                Holiday Name
-            </th>
-            <th>
-                Start Date
-            </th>
-            <th>
-                End Date
-            </th>
-            <th>
-                Half Day
-            </th>
+    
+    <div id="holidayTable">
+    </div>
+    
+    <script id="rowTemplate" type="text/x-kendo-tmpl">
+        <tr>
+        <td>
+        #: HOLIDAY_CODE #
+        </td>
+        <td>
+        #: HOLIDAY_ENAME #
+        </td>
+        <td>
+        #: START_DATE #
+        </td>
+        <td>
+        #: END_DATE #
+        </td>
+        <td>
+        #: HALF_DAY #
+        </td>
+        </td>
         </tr>
-        </thead>
-        <tbody>
-
-        <?php foreach ($holidays as $holidayList):
-            ?>
-            <tr role="row">
-                <td>
-                    <?php
-                    print $this->escapeHtml($holidayList['HOLIDAY_CODE']);
-                     ?>
-                </td>
-                <td>
-                    <?php
-                    print $this->escapeHtml($holidayList['HOLIDAY_ENAME']);
-                    ?>
-                </td>
-                <td>
-                    <?php
-                    print $this->escapeHtml($holidayList['START_DATE']);
-                    ?>
-                </td>
-                <td>
-                    <?php
-                    print $this->escapeHtml($holidayList['END_DATE']);
-                     ?>
-                </td>
-                <td>
-                    <?php
-                     $halfday= $this->escapeHtml($holidayList['HALFDAY']);
-                    if($halfday=="F"){
-                        ECHO "First Half";
-                    }else if($halfday=="S"){
-                        ECHO "Second Half";
-                    }else if($halfday=="N"){
-                        ECHO "Full Day";
-                    }
-                    ?>
-                </td>
-            </tr>
-
-        <?php endforeach; ?>
-
-        </tbody>
-    </table>
-
+    </script>
 
 </div>

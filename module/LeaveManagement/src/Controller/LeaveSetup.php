@@ -28,13 +28,30 @@ class LeaveSetup extends AbstractActionController
     public function indexAction()
     {
         $leaveList = $this->repository->fetchAll();
-        $getValue=function(){
-            $kv=['Y'=>'Yes','N'=>'No'];
-            return function($key) use ($kv){
-                return $kv[$key];
-            };
+        $leaves = [];
+        
+        $getValue=function($kv){
+          if($kv=='Y'){
+              return 'Yes';
+          }else if($kv=='N'){
+              return 'No';
+          }
         };
-        return Helper::addFlashMessagesToArray($this, ['leaveList' => $leaveList,'getValue'=>$getValue()]);
+        
+        foreach($leaveList as $leaveRow){
+            array_push($leaves,
+                    [
+                        'LEAVE_ID'=>$leaveRow['LEAVE_ID'],
+                        'LEAVE_CODE'=>$leaveRow['LEAVE_CODE'],
+                        'LEAVE_ENAME'=>$leaveRow['LEAVE_ENAME'],
+                        'ALLOW_HALFDAY'=>$getValue($leaveRow['ALLOW_HALFDAY']),
+                        'DEFAULT_DAYS'=>$getValue($leaveRow['DEFAULT_DAYS']),
+                        'CARRY_FORWARD'=>$getValue($leaveRow['CARRY_FORWARD']),
+                        'CASHABLE'=>$getValue($leaveRow['CASHABLE']),
+                    ]
+                    );
+        }
+        return Helper::addFlashMessagesToArray($this, ['leaves' => $leaves]);
     }
 
     public function initializeForm()

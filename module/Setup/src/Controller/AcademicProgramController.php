@@ -39,7 +39,11 @@ class AcademicProgramController extends AbstractActionController {
     public function indexAction()
     {
         $programList = $this->repository->fetchAll();
-        return Helper::addFlashMessagesToArray($this, ['programs' => $programList]);
+        $academicPrograms = [];
+        foreach($programList as $programRow){
+            array_push($academicPrograms, $programRow);
+        }
+        return Helper::addFlashMessagesToArray($this, ['academicPrograms' => $academicPrograms]);
     }
 
     public function addAction()

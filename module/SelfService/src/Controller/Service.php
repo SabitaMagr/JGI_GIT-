@@ -69,11 +69,12 @@ class Service extends AbstractActionController {
                 'id' => $id,
                 'messages' => $this->flashmessenger()->getMessages(),
                 'employees' => EntityHelper1::getTableKVList($this->adapter,"HR_EMPLOYEES","EMPLOYEE_ID",["FIRST_NAME","MIDDLE_NAME","LAST_NAME"],["STATUS"=>"E"]),
-                'departments' => EntityHelper::getTableKVList($this->adapter, EntityHelper::HR_DEPARTMENTS),
-                'designations' => EntityHelper::getTableKVList($this->adapter, EntityHelper::HR_DESIGNATIONS),
-                'branches' => EntityHelper::getTableKVList($this->adapter, EntityHelper::HR_BRANCHES),
-                'positions' => EntityHelper::getTableKVList($this->adapter, EntityHelper::HR_POSITIONS),
-                'serviceTypes' => EntityHelper::getTableKVList($this->adapter, EntityHelper::HR_SERVICE_TYPES),
+                'departments' => EntityHelper1::getTableKVList($this->adapter,"HR_DEPARTMENTS","DEPARTMENT_ID",["DEPARTMENT_NAME"],["STATUS"=>'E']),
+                'designations' => EntityHelper1::getTableKVList($this->adapter, "HR_DESIGNATIONS","DESIGNATION_ID",["DESIGNATION_TITLE"],["STATUS"=>'E']),
+                'branches' => EntityHelper1::getTableKVList($this->adapter, "HR_BRANCHES","BRANCH_ID",["BRANCH_NAME"],["STATUS"=>'E']),
+                'positions' => EntityHelper1::getTableKVList($this->adapter,"HR_POSITIONS","POSITION_ID",["POSITION_NAME"] ,["STATUS"=>'E']),
+                'serviceTypes' => EntityHelper1::getTableKVList($this->adapter,"HR_SERVICE_TYPES","SERVICE_TYPE_ID",["SERVICE_TYPE_NAME"],["STATUS"=>'E']),
+                'serviceEventTypes'=>EntityHelper1::getTableKVList($this->adapter,"HR_SERVICE_EVENT_TYPES","SERVICE_EVENT_TYPE_ID",["SERVICE_EVENT_TYPE_NAME"],["STATUS"=>'E'])
             ]
         );
     }

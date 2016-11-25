@@ -30,7 +30,11 @@ class RecommendApproveController extends AbstractActionController {
     public function indexAction()
     {
         $list = $this->repository->fetchAll();
-        return Helper::addFlashMessagesToArray($this, ['list' => $list]);
+        $recommendApproves = [];
+        foreach($list  as $row){
+            array_push($recommendApproves, $row);
+        }
+        return Helper::addFlashMessagesToArray($this, ['recommendApproves' => $recommendApproves]);
     }
     public function initializeForm(){
         $builder = new AnnotationBuilder();

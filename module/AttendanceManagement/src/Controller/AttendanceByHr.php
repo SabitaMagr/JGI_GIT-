@@ -38,7 +38,11 @@ class AttendanceByHr extends AbstractActionController {
 
     public function indexAction() {
         $attendanceList = $this->repository->fetchAll();
-        return Helper::addFlashMessagesToArray($this, ['attendanceList' => $attendanceList]);
+        $attendanceByHr = [];
+        foreach($attendanceList as $attendanceRow){
+            array_push($attendanceByHr, $attendanceRow);
+        }
+        return Helper::addFlashMessagesToArray($this, ['attendanceByHr' => $attendanceByHr]);
     }
 
     public function addAction() {
