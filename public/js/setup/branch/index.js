@@ -22,8 +22,19 @@
                 {field: "TELEPHONE", title: "Telephone"},
                 {field: "EMAIL", title: "Email"},
                 {title: "Action"}
-            ]
+            ],
+            toolbar: ["excel"],
+            excel: {
+                fileName: "Kendo UI Grid Export.xlsx",
+                proxyURL: "//demos.telerik.com/kendo-ui/service/export",
+                filterable: true
+            },
         });
 
+        $('#saveAsPdfBtn').on("click", function () {
+            var grid = $("#branchTable").data("kendoGrid");
+            console.log(grid);
+//            grid.saveAsPDF();
+        });
     });
 })(window.jQuery);
