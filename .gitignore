@@ -4,10 +4,10 @@ nbproject
 .~lock.*
 #.buildpath
 #.DS_Store
-#.idea
+.idea
 #.project
 #.settings
-#vendor/
+vendor/
 #config/autoload/global.php
 #config/autoload/doctrine.global.php
 #composer.phar
