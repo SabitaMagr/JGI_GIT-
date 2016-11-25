@@ -1,10 +1,10 @@
 (function ($) {
     'use strict';
     $(document).ready(function () {    
-       console.log(document.flatValues);
-        $("#flatValueTable").kendoGrid({
+       
+        $("#monthlyValueTable").kendoGrid({
             dataSource: {
-                data: document.flatValues,
+                data: document.monthlyValues,
                 pageSize: 20
             },
             height: 450,
@@ -17,10 +17,11 @@
             },
             rowTemplate: kendo.template($("#rowTemplate").html()),
             columns: [
-                {field: "FLAT_CODE", title: "Code"},
-                {field: "FLAT_EDESC", title: "EDesc"},
-                {field: "FLAT_LDESC", title: "LDesc"},
+                {field: "MTH_CODE", title: "Code"},
+                {field: "MTH_EDESC", title: "EDesc"},
+                {field: "MTH_LDESC", title: "NDesc"},
                 {field: "SHOW_AT_RULE", title: "Show At Rule"},
+                {field: "SH_INDEX_NO", title: "Index No"},
                 {title: "Action"}
             ]
         });    

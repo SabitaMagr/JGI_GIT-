@@ -35,7 +35,18 @@ class RoleSetupRepository implements RepositoryInterface {
 
     public function fetchAll()
     {
-        return $this->tableGateway->select([RoleSetup::STATUS=>"E"]);
+        $rowset = $this->tableGateway->select([RoleSetup::STATUS=>"E"]);
+        $result = [];
+        $i=1;
+        foreach($rowset as $row){
+            array_push($result, [
+                'SN'=>$i,
+                'ROLE_ID'=>$row['ROLE_ID'],
+                'ROLE_NAME'=>$row['ROLE_NAME']
+            ]);
+            $i+=1;
+        }
+        return $result;
     }
 
     public function fetchById($id)

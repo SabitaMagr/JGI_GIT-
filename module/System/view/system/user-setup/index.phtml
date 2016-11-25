@@ -3,7 +3,8 @@
  * Load Javascript files here
  */
 $this->headScript()
-        ->appendFile($this->basePath('js/kendoDataTable.js'));
+        ->appendFile($this->basePath('telerik_kendoui/js/kendo.all.min.js'))
+        ->appendFile($this->basePath('js/system/user-setup/index.js'));
 ?>
 
 
@@ -16,6 +17,7 @@ $this->headScript()
 <script>
     document.menu =<?php $menu = ["id" => "menuSystem", "subMenu" => ["id" => "subMenuUserSetup"]];
 echo json_encode($menu); ?>;
+    document.users=<?= json_encode($users); ?>;
 </script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\usersetup')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
@@ -51,64 +53,32 @@ echo json_encode($menu); ?>;
             </div>
         </div>
     </div>
-    <table class="table" id="dataTable">
-        <thead>
-            <tr role="row">
-                <th>
-                    S.N.
-                </th>
-                <th>
-                    Employee Name
-                </th>
-                <th>
-                    User Name
-                </th>
-                <th>
-                    Role Name
-                </th>
-                <th>
-                    Action
-                </th>
-            </tr>
-        </thead>
-        <tbody>
 
-            <?php
-            $i = 1;
-            foreach ($list as $userList):
-                ?>
-                <tr role="row table-info">
-                    <td>
-    <?php print $i; ?>
-                    </td>
-                    <td>
-    <?php print $this->escapeHtml($userList['FIRST_NAME']) . " " . $this->escapeHtml($userList['MIDDLE_NAME']) . " " . $this->escapeHtml($userList['LAST_NAME']); ?>
-                    </td>
-                    <td>
-    <?php print $this->escapeHtml($userList['USER_NAME']); ?>
-                    </td>
-                    <td>
-    <?php print $this->escapeHtml($userList['ROLE_NAME']); ?>
-                    </td>
-                    <td>
-                        <a class=""
-                           href="<?= $this->url("usersetup", ["action" => "edit", "id" => $userList['USER_ID']]) ?>">
-                            Edit
-                        </a> /
-                        <a class=""
-                           href="<?= $this->url("usersetup", ["action" => "delete", "id" => $userList['USER_ID']]); ?>">
-                            Delete
-                        </a>
-
-                    </td>
-                </tr>
-
-                <?php
-                $i += 1;
-            endforeach;
-            ?>
-
-        </tbody>
-    </table>
+    <div id="userTable">
+    </div>
+    
+    <script id="rowTemplate" type="text/x-kendo-tmpl">
+        <tr>
+        <td>
+        #: FIRST_NAME # #: MIDDLE_NAME # #: LAST_NAME #
+        </td>
+        <td>
+        #: USER_NAME #
+        </td>
+        <td>
+        #: ROLE_NAME #
+        </td>
+        <td>
+        <a class=""
+        href="<?= $this->url("usersetup", ["action" => "edit"]); ?>/#:USER_ID #">
+        Edit
+        </a> | 
+         <a class=""
+        href="<?= $this->url("usersetup", ["action" => "delete"]); ?>/#:USER_ID #">
+        Delete
+        </a>
+        </td>
+        </tr>
+    </script>
 </div>
 

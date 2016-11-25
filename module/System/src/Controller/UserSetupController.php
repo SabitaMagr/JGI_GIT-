@@ -38,7 +38,11 @@ class UserSetupController extends AbstractActionController {
     public function indexAction()
     {
         $list = $this->repository->fetchAll();
-        return Helper::addFlashMessagesToArray($this, ['list' => $list]);
+        $users = [];
+        foreach($list as $row){
+            array_push($users, $row);
+        }
+        return Helper::addFlashMessagesToArray($this, ['users' => $users]);
     }
     public function addAction(){
         $request = $this->getRequest();
