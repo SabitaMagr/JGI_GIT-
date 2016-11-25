@@ -23,12 +23,11 @@
                 {field: "EMAIL", title: "Email"},
                 {title: "Action"}
             ],
-            toolbar: ["excel"],
+            toolbar: ["Excel"],
             excel: {
                 fileName: "Kendo UI Grid Export.xlsx",
-                proxyURL: "//demos.telerik.com/kendo-ui/service/export",
-                filterable: true
-            },
+                allPages: true
+            }
         });
 
         $('#saveAsPdfBtn').on("click", function () {

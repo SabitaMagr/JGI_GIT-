@@ -1,9 +1,9 @@
 <?php
 //Load JS files here
 $this->headScript()
-        ->appendFile($this->basePath('js/angular.min.js'))
         ->appendFile($this->basePath('telerik_kendoui/js/kendo.all.min.js'))
-        ->appendFile($this->basePath('js/kendoDataTable.js'))
+        ->appendFile($this->basePath('js/angular.min.js'))
+//        ->appendFile($this->basePath('js/kendoDataTable.js'))
         ->appendFile($this->basePath('js/setup/employee/employeeListController.js'));
 ?>
 <?php if ($this->messages) { ?>
@@ -97,8 +97,11 @@ echo json_encode($menu);
             </div>
         </div>
 
-        <kendo-grid options="test" k-data-source="gridData"  k-columns="gridColumns">
-        </kendo-grid>
+        <!--        <kendo-grid options="kendoGridOptions" k-data-source="gridData"  k-columns="gridColumns">
+                </kendo-grid>-->
+
+        <div id="employeeTable">
+        </div>
     </div>
 
     <script id="rowTemplate" type="text/x-kendo-tmpl">
