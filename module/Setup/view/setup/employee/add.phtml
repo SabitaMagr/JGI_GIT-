@@ -2,11 +2,11 @@
 /**
  * Load Javascript files here
  */
-$this->headScript()->appendFile($this->basePath('js/angular.min.js'));
 $this->headScript()->appendFile($this->basePath('assets/global/plugins/boostrap-form-wizard/js/jquery.bootstrap.wizard.min.js'));
 $this->headScript()->appendFile($this->basePath('js/form_wizard.js'));
 $this->headScript()->appendFile($this->basePath('js/custom.js'));
 $this->headScript()->appendFile($this->basePath('js/setup/employee/add.js'));
+$this->headScript()->appendFile($this->basePath('dropzone/dropzone.min.js'));
 ?>
 
 <?php
@@ -131,10 +131,6 @@ $branchId = $formFour->get('appBranchId');
 $branchId->setValueOptions($branches);
 
 
-$formFive->setAttribute('id', 'form5');
-$fileTypeCode = $formFive->get('fileTypeCode');
-$filePath = $formFive->get('filePath');
-$fileTypeCode->setValueOptions($filetypes);
 
 $formSix->setAttribute('id', 'form6');
 $academicDegreeId = $formSix->get('academicDegreeId');
@@ -164,13 +160,14 @@ if ($this->messages) {
 ?>
 
 <script>
-    document.menu =<?php $menu = ["id" => "menuSetup", "subMenu" => ["id" => "subMenuEmployee"]];
-echo json_encode($menu); ?>;
+    document.menu =<?php
+$menu = ["id" => "menuSetup", "subMenu" => ["id" => "subMenuEmployee"]];
+echo json_encode($menu);
+?>;
     document.urlDistrict = '<?= $this->url("webService", ["action" => "district"]) ?>';
     document.urlMunicipality = '<?= $this->url("webService", ["action" => "municipality"]) ?>';
     document.urlEmployeeList = '<?= $this->url("employee", ["action" => "index"]) ?>';
-    document.urlQualificationDtl = '<?= $this->url("restful", ["action" => "index"]) ?>'
-</script>
+    document.urlQualificationDtl = '<?= $this->url("restful", ["action" => "index"]) ?>';</script>
 
 <div class="page-bar">
     <ul class="page-breadcrumb">
@@ -202,12 +199,12 @@ echo json_encode($menu); ?>;
         </li>
         <li class="">
             <a data-toggle="tab" href="#tab5">
-                Upload Image
+                Qualification
             </a>
         </li>
         <li class="">
             <a data-toggle="tab" href="#tab6">
-                Qualification
+                Upload Image
             </a>
         </li>
         <li class="">
@@ -817,46 +814,6 @@ echo json_encode($menu); ?>;
         </div>
 
         <div class="tab-pane" id="tab5">
-            <?php
-            $formFive->setAttribute('action', $this->url('employee', ['action' => 'edit', 'id' => $empId, 'tab' => 5]));
-            $formFive->setAttribute("name", "employeeForm");
-            $formFive->prepare();
-            print $this->form()->openTag($formFive);
-            ?>
-            <div class="row clearfix">
-                <div class="col-sm-6">
-                    <div
-                        class="form-group<?= empty($fileTypeCode->getMessages()) ? "" : "error" ?>">
-                            <?php print $this->formLabel($fileTypeCode); ?>
-                            <?php print $this->formElement($fileTypeCode); ?>
-                    </div>
-                    <?php print $this->formElementErrors()->render($fileTypeCode, ['class' => 'help-block error']); ?>
-
-                    <div
-                        class="form-group<?= empty($filePath->getMessages()) ? "" : "error" ?>">
-                            <?php print $this->formLabel($filePath); ?>
-                            <?php print $this->formElement($filePath); ?>
-                    </div>
-                    <?php print $this->formElementErrors()->render($filePath, ['class' => 'help-block error']); ?>
-                    <div class="row">
-                        <div class="col-lg-2"></div>
-                        <div class="col-lg-8">
-                            <img id="previewUpload"
-                                 class="hidden image-responsive-height"/>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-sm-6" style="padding-left:5px;">
-
-                </div>
-            </div>
-            <input type="submit" class="hidden" id="btnform5" value="submit">
-            <?php
-            print $this->form()->closeTag();
-            ?>
-
-        </div>
-        <div class="tab-pane" id="tab6">
             <div class="row">
                 <div ng-app="hris" ng-controller="qualificationController">
                     <input type="hidden" name="employeeId" id="employeeId" value="0">
@@ -938,7 +895,70 @@ echo json_encode($menu); ?>;
                             </tr>
                         </table>
                     </div>
-                    <button ng-click="addQualification()">Submit</button>
+                </div>
+            </div>
+        </div>
+        <div class="tab-pane" id="tab6">
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="row">
+                        <div class="col-sm-6 col-sm-offset-3">
+                            <form  action="<?= $this->url("restful", ["action" => "index"]) ?>"
+                                   class="dropzone"
+                                   id="my-awesome-dropzone">
+                            </form>
+
+                        </div>
+                    </div>
+                    <div class="row margin-top-10">
+                        <div class="col-sm-3 col-sm-offset-3">
+                            <select class="form-control" >
+                                <option></option>
+                            </select>
+                        </div>
+                        <div class="col-sm-3">
+                            <button class="btn btn-block btn-animated" >
+                                Post
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>
+                                            Document Name
+                                        </th>
+                                        <th>
+                                            File Type
+                                        </th>
+                                        <th>
+                                            Action
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr >
+                                        <td>
+                                        </td>
+                                        <td>
+                                        </td>
+                                        <td>
+                                            <button class="btn btn-link" >
+                                                Add
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+
+                            </table>
+                        </div>
+                    </div>
+
                 </div>
             </div>
         </div>

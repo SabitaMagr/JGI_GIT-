@@ -67,6 +67,9 @@
                 if (typeof document.currentTab !== 'undefined') {
                     if (index <= 4) {
                         $('#btnform' + index).click();
+                    } else if (index == 5) {
+                        angular.element('#quaConId').scope().addQualification();
+                        return true;
                     } else {
                         return true;
                     }

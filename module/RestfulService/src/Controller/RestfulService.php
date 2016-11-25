@@ -179,8 +179,11 @@ class RestfulService extends AbstractRestfulController {
                 case "pullEmployeeFile":
                     $responseData = $this->pullEmployeeFile($postedData->data);
                     break;
-                case "pushEmployeeFile":
-                    $responseData = $this->pushEmployeeFile($postedData->data);
+                case "pushEmployeeProfile":
+                    $responseData = $this->pushEmployeeProfile($postedData->data);
+                    break;
+                case "pushEmployeeDocument":
+                    $responseData = $this->pushEmployeeDocument($postedData->data);
                     break;
                 case "pullEmployeeFileByEmpId":
                     $responseData = $this->pullEmployeeFileByEmpId($postedData->data);
@@ -1145,7 +1148,7 @@ class RestfulService extends AbstractRestfulController {
         return ["success" => true, "data" => $employeeFile];
     }
 
-    public function pushEmployeeFile($data) {
+    public function pushEmployeeProfile($data) {
         $employeefile = new \Setup\Model\EmployeeFile();
 
         if ($data['fileCode'] == null) {
@@ -1178,6 +1181,21 @@ class RestfulService extends AbstractRestfulController {
         $employeeRepo = new \Setup\Repository\EmployeeFile($this->adapter);
         $employeeRepo->delete($data['fileCode']);
         return["success" => true, "data" => ['fileCode' => $data['fileCode']]];
+    }
+
+    public function pushEmployeeDocument($data) {
+        $employeefile = new \Setup\Model\EmployeeFile();
+        $employeefile->fileCode = ((int) Helper::getMaxId($this->adapter, 'HR_EMPLOYEE_FILE', 'FILE_CODE')) + 1;
+        $employeefile->employeeId = $data['employeeId'];
+        $employeefile->filetypeCode = $data['fileTypeCode'];
+        $employeefile->filePath = $data['filePath'];
+        $employeefile->status = 'E';
+        $employeefile->createdDt = Helper::getcurrentExpressionDate();
+
+        $employeeFileRepo = new \Setup\Repository\EmployeeFile($this->adapter);
+        $employeeFileRepo->add($employeefile);
+
+        return["success" => true, "data" => ['fileCode' => $employeefile->fileCode]];
     }
 
 }

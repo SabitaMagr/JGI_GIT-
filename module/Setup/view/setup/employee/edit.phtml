@@ -136,7 +136,6 @@ $branchId->setValueOptions($branches);
 
 
 
-
 $formSix->setAttribute('id', 'form6');
 $academicDegreeId = $formSix->get('academicDegreeId');
 $academicDegreeId->setValueOptions($academicDegree);
@@ -198,7 +197,7 @@ echo json_encode($menu);
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\Employee')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
-<div ng-app="hris" ng-controller="qualificationController">
+<div id="quaConId" ng-app="hris" ng-controller="qualificationController">
     <div id="rootwizard" class="tabbable-custom">
         <ul class="nav nav-tabs">
             <li class="active">
@@ -930,95 +929,96 @@ echo json_encode($menu);
                             </tr>
                         </table>
                     </div>
-                    <button ng-click="addQualification()">Submit</button>
+                    <!--<button id="qualificationSubmitBtn" ng-click="addQualification()">Submit</button>-->
                 </div>
             </div>
 
             <div class="tab-pane" id="tab6">
                 <div class="row">
-                    <div class="col-sm-4">
-                        <form ng-show="(file.fileCode == null || file.editMode)" action="<?= $this->url("restful", ["action" => "index"]) ?>"
-                              class="dropzone"
-                              id="my-awesome-dropzone">
-                        </form>
-                        <div ng-hide="(file.fileCode == null || file.editMode)" class="cbp-caption-defaultWrap">
-                            <image style="width:200px;height:200px;"   src="{{viewImage(file.filePath)}}"/>
+                    <div class="col-sm-6">
+                        <div class="row">
+                            <div class="col-sm-6 col-sm-offset-3">
+                                <form ng-show="(file.fileCode == null || file.editMode)" action="<?= $this->url("restful", ["action" => "index"]) ?>"
+                                      class="dropzone"
+                                      id="my-awesome-dropzone">
+                                </form>
+                                <div ng-hide="(file.fileCode == null || file.editMode)" class="cbp-caption-defaultWrap">
+                                    <image style="width:100%;height:144px;"   src="{{viewImage(file.filePath)}}"/>
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="row margin-top-10">
+                            <div class="col-sm-3 col-sm-offset-3">
+                                <select class="form-control" ng-model="file.fileTypeCode">
+                                    <option ng-repeat="(key,fileType) in fileTypes" value="{{key}}">{{fileType}}</option>
+                                </select>
+                            </div>
+                            <div class="col-sm-3">
+                                <button class="btn btn-block btn-animated" ng-show="(file.fileCode == null || file.editMode)" ng-click="post()">
+                                    Post
+                                </button>
+                                <button class="btn btn-block btn-link" ng-hide="(file.fileCode == null || file.editMode)" ng-click="edit()">
+                                    Edit
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <table class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>
+                                                Document Name
+                                            </th>
+                                            <th>
+                                                File Type
+                                            </th>
+                                            <th>
+                                                Action
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr ng-repeat="(key,empDoc) in employeeDocuments">
+                                            <td>
+                                                <label ng-bind="empDoc.FILE_PATH">
+                                                </label>
+                                            </td>
+                                            <td>
+                                                <label ng-bind="empDoc.FILETYPE_CODE">
+                                                </label>
+
+                                            </td>
+                                            <td>
+                                                <button class="btn btn-danger" ng-click="drop(empDoc.FILE_CODE, key)">
+                                                    Delete
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        <tr >
+                                            <td>
+                                            </td>
+                                            <td>
+                                            </td>
+                                            <td>
+                                                <button class="btn btn-link" ng-click="addDocument()">
+                                                    Add
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+
+                                </table>
+                            </div>
                         </div>
 
                     </div>
-
-                    <div class="col-sm-2">
-                        <select class="full-width" ng-model="file.fileTypeCode">
-                            <option ng-repeat="(key,fileType) in fileTypes" value="{{key}}">{{fileType}}</option>
-                        </select>
-                    </div>
-                    <div class="2">
-                        <button class="btn btn-success" ng-show="(file.fileCode == null || file.editMode)" ng-click="post()">
-                            Post
-                        </button>
-                        <button class="btn btn-default" ng-hide="(file.fileCode == null || file.editMode)" ng-click="edit()">
-                            Edit
-                        </button>
-                    </div>
-
                 </div>
-
-                <div class="row">
-                    <div class="col-sm-12">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>
-                                        Document Name
-                                    </th>
-                                    <th>
-                                        File Type
-                                    </th>
-                                    <th>
-                                        Action
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr ng-repeat="(key,empDoc) in employeeDocuments">
-                                    <td>
-                                        <label ng-bind="empDoc.FILE_PATH">
-                                        </label>
-                                    </td>
-                                    <td>
-                                        <label ng-bind="empDoc.FILETYPE_CODE">
-                                        </label>
-
-                                    </td>
-                                    <td>
-                                        <button ng-click="drop(empDoc.FILE_CODE, key)">
-                                            Delete
-                                        </button>
-                                    </td>
-                                </tr>
-                                <tr >
-                                    <td>
-                                    </td>
-                                    <td>
-                                    </td>
-                                    <td>
-                                        <button ng-click="addDocument()">
-                                            Add
-                                        </button>
-                                    </td>
-                                </tr>
-                            </tbody>
-
-                        </table>
-                    </div>
-                </div>
-
-
-
-
             </div>
-
-
             <div class="tab-pane" id="tab7">
                 <div class="row clearfix">
                     <div class="col-sm-6">
@@ -1114,20 +1114,21 @@ echo json_encode($menu);
         <div id="dropZoneContainer" class="dropzone">
         Drop Me
         </div>
-        
+        <div class="error" ng-show="!valid">Please upload Image.</div>
+
         </div>
         </div>
         <div class="row margin-top-10">
-        <div class="col-sm-2">
-                <select class="full-width" ng-model="fileTypeCode">
-                    <option ng-repeat="(key,fileType) in fileTypes" value="{{key}}">{{fileType}}</option>
-                </select>
+        <div class="col-sm-4">
+        <select class="form-control " ng-options="key as value for (key,value) in fileTypes" ng-model="fileTypeCode">
+        <!--<option ng-repeat="(key,fileType) in fileTypes" value="{{key}}">{{fileType}}</option>-->
+        </select>
         </div>
-        
-        </div>
-        
 
-    </div>
+        </div>
+
+
+        </div>
         </div>
         <div class="modal-footer">
         <button class="btn btn-primary" type="button" ng-click="ok()">OK</button>

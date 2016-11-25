@@ -79,7 +79,6 @@
             }
         });
 
-//        var myDropzone = new Dropzone("div#dropzoneDiv", {url: document.restfulUrl});
         
     });
 
