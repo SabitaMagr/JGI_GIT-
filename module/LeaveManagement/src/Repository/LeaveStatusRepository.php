@@ -121,7 +121,7 @@ class LeaveStatusRepository implements RepositoryInterface {
         // TODO: Implement delete() method.
     }
     
-    public function getFilteredRecord($data){
+    public function getFilteredRecord($data,$recomApproveId=null){
         $fromDate = $data['fromDate'];
         $toDate = $data['toDate'];
         $employeeId = $data['employeeId'];
@@ -158,8 +158,27 @@ class LeaveStatusRepository implements RepositoryInterface {
                 E.EMPLOYEE_ID=LA.EMPLOYEE_ID AND
                 E1.EMPLOYEE_ID=LA.RECOMMENDED_BY AND
                 E2.EMPLOYEE_ID=LA.APPROVED_BY";
-        if ($leaveRequestStatusId != -1) {
-            $sql .= " AND LA.STATUS ='" . $leaveRequestStatusId . "'";
+        if($recomApproveId==null){
+            if ($leaveRequestStatusId != -1) {
+                $sql .= " AND LA.STATUS ='" . $leaveRequestStatusId . "'";
+            }
+        }
+        if($recomApproveId!=null){
+            if($leaveRequestStatusId==-1){
+                $sql .=" AND ((LA.RECOMMENDED_BY=".$recomApproveId." AND  ( LA.STATUS='RQ' OR LA.STATUS='RC' OR (LA.STATUS='R' AND LA.APPROVED_DT IS NULL))) OR (LA.APPROVED_BY=".$recomApproveId." AND ( LA.STATUS='RC' OR LA.STATUS='AP' OR (LA.STATUS='R' AND LA.APPROVED_DT IS NOT NULL))) )";
+            }else if($leaveRequestStatusId=='RQ'){
+                $sql .=" AND ((LA.RECOMMENDED_BY=".$recomApproveId." AND LA.STATUS='RQ') OR (LA.APPROVED_BY=".$recomApproveId." AND LA.STATUS='RC') )";
+            }
+            else if($leaveRequestStatusId=='RC'){
+                $sql .= " AND LA.STATUS='RC' AND
+                    LA.RECOMMENDED_BY=".$recomApproveId;
+            }else if($leaveRequestStatusId=='AP'){
+                $sql .= " AND LA.STATUS='AP' AND
+                    LA.APPROVED_BY=".$recomApproveId;
+            }else if($leaveRequestStatusId=='R'){
+                $sql .=" AND LA.STATUS='".$leaveRequestStatusId."' AND
+                    ((LA.RECOMMENDED_BY=".$recomApproveId." AND LA.APPROVED_DT IS NULL) OR (LA.APPROVED_BY=".$recomApproveId." AND LA.APPROVED_DT IS NOT NULL) )";
+            }
         }
         
         if ($leaveId != -1) {

@@ -1233,10 +1233,34 @@ class RestfulService extends AbstractRestfulController {
         ];     
     }
     public function pullLeaveRequestStatusList($data){    
-        $leaveStatusRepository = new LeaveStatusRepository($this->adapter);       
-        $result = $leaveStatusRepository->getFilteredRecord($data);
+        $leaveStatusRepository = new LeaveStatusRepository($this->adapter); 
+        if(key_exists('recomApproveId', $data)){
+            $recomApproveId = $data['recomApproveId'];
+        }else{
+            $recomApproveId=null;
+        }
+        $result = $leaveStatusRepository->getFilteredRecord($data,$recomApproveId);
         
-        $recordList = [];
+        $recordList = [];              
+        $getRoleDtl = function($recommender,$approver,$recomApproveId){
+            if($recomApproveId==$recommender){
+                return 'RECOMMENDER';
+            }else if($recomApproveId==$approver){
+                return 'APPROVER';
+            }else{
+                return null;
+            }
+        };
+        $getRole = function($recommender,$approver,$recomApproveId){
+            if($recomApproveId==$recommender){
+                return 2;
+            }else if($recomApproveId==$approver){
+                return 3;
+            }else{
+                return null;
+            }
+        };
+        
         $getValue = function($status) {
             if ($status == "RQ") {
                 return "Pending";
@@ -1250,21 +1274,37 @@ class RestfulService extends AbstractRestfulController {
                 return "Cancelled";
             }
         };
+        
         foreach($result as $row){       
             $status = $getValue($row['STATUS']);
+            $role = $getRole($row['RECOMMENDER'],$row['APPROVER'],$recomApproveId);
+            if($role==3 && $row['STATUS']=='RC'){
+               $status = "Pending";
+            }
+            $role = [
+                'YOUR_ROLE'=>$getRoleDtl($row['RECOMMENDER'],$row['APPROVER'],$recomApproveId),
+                'ROLE'=>$role
+                ];
             $new_row = array_merge($row,['STATUS'=>$status]);
-            array_push($recordList, $new_row);
+            $final_record = array_merge($new_row,$role);
+            array_push($recordList, $final_record);
         }
         
         return [
             "success"=>"true",
             "data"=>$recordList,
-            "num"=>count($recordList)
+            "num"=>count($recordList),
+            "recomApproveId"=>$recomApproveId
         ];
     }
     public function pullAttendanceRequestStatusList($data){
         $attendanceStatusRepository = new AttendanceStatusRepository($this->adapter);       
-        $result = $attendanceStatusRepository->getFilteredRecord($data);
+        if(key_exists('approverId', $data)){
+            $approverId = $data['approverId'];
+        }else{
+            $approverId=null;
+        }
+        $result = $attendanceStatusRepository->getFilteredRecord($data,$approverId);
         
         $recordList = [];
         $getValue = function($status) {
@@ -1280,7 +1320,7 @@ class RestfulService extends AbstractRestfulController {
         };
         foreach($result as $row){       
             $status = $getValue($row['STATUS']);
-            $new_row = array_merge($row,['STATUS'=>$status]);
+            $new_row = array_merge($row,['STATUS'=>$status,'YOUR_ROLE'=>'Approver']);
             array_push($recordList, $new_row);
         }
         
