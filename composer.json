@@ -31,7 +31,9 @@
         "zendframework/zend-debug": "^2.5",
         "doctrine/common" : ">=2.1",
         "zendframework/zend-navigation": "^2.8",
-        "phpoffice/phpexcel": "^1.8"
+        "phpoffice/phpexcel": "^1.8",
+        "intervention/image": "^2.3",
+        "phpixie/image": "^3.2"
     },
     "autoload": {
         "psr-0": {

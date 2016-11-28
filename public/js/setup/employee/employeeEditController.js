@@ -157,7 +157,8 @@
                     fileCode: null,
                     fileTypeCode: '',
                     filePath: '',
-                    editMode: false
+                    editMode: false,
+                    fileName: ''
                 };
                 $scope.dropZone;
                 Dropzone.options.myAwesomeDropzone = {
@@ -170,10 +171,10 @@
                         }.bind(this));
 
                         this.on("success", function (file, success) {
-
                             $scope.$apply(function () {
                                 if (success.success) {
                                     $scope.file.filePath = success.data.fileName;
+                                    $scope.file.fileName = success.data.oldFileName;
                                 }
                             });
                         });
@@ -212,6 +213,7 @@
                             'fileCode': $scope.file.fileCode,
                             'fileTypeCode': $scope.file.fileTypeCode,
                             'filePath': $scope.file.filePath,
+                            'fileName':$scope.file.fileName,
                             'employeeId': document.employeeId
                         }
                     }).then(function (success) {
@@ -266,7 +268,11 @@
                                 if (typeof document.uploadResponse === "undefined" || document.uploadResponse == null) {
                                     $scope.valid = false;
                                 } else {
-                                    $uibModalInstance.close({fileTypeCode: $scope.fileTypeCode, fileName: document.uploadResponse.fileName});
+                                    $uibModalInstance.close({
+                                        fileTypeCode: $scope.fileTypeCode,
+                                        fileName: document.uploadResponse.fileName,
+                                        oldFileName: document.uploadResponse.oldFileName
+                                    });
                                     document.uploadResponse = null;
                                 }
                             };
@@ -286,7 +292,6 @@
                         console.log("sdf");
                         var myDropzone = new Dropzone("#dropZoneContainer", {url: document.restfulUrl});
                         myDropzone.on("success", function (file, success) {
-
                             $scope.$apply(function () {
                                 document.uploadResponse = success.data;
                             });
@@ -300,6 +305,7 @@
                             data: {
                                 'fileTypeCode': selectedItem.fileTypeCode,
                                 'filePath': selectedItem.fileName,
+                                'oldFileName': selectedItem.oldFileName,
                                 'employeeId': document.employeeId
                             }
                         }).then(function (success) {

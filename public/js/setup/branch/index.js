@@ -4,16 +4,13 @@
         $("#branchTable").kendoGrid({
             dataSource: {
                 data: document.branches,
-                pageSize: 20
+                page: 1,
             },
             height: 450,
             scrollable: true,
             sortable: true,
             filterable: true,
-            pageable: {
-                input: true,
-                numeric: false
-            },
+            pageable: true,
             rowTemplate: kendo.template($("#rowTemplate").html()),
             columns: [
                 {field: "BRANCH_CODE", title: "Branch Code"},
@@ -23,17 +20,7 @@
                 {field: "EMAIL", title: "Email"},
                 {title: "Action"}
             ],
-            toolbar: ["Excel"],
-            excel: {
-                fileName: "Kendo UI Grid Export.xlsx",
-                allPages: true
-            }
         });
 
-        $('#saveAsPdfBtn').on("click", function () {
-            var grid = $("#branchTable").data("kendoGrid");
-            console.log(grid);
-//            grid.saveAsPDF();
-        });
     });
 })(window.jQuery);
