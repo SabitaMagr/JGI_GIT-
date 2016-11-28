@@ -43,6 +43,9 @@ use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Adapter\Driver\ResultInterface;
 use Zend\Mvc\Controller\AbstractRestfulController;
 use Zend\View\Model\JsonModel;
+use Setup\Repository\JobHistoryRepository;
+use LeaveManagement\Repository\LeaveStatusRepository;
+use AttendanceManagement\Repository\AttendanceStatusRepository;
 
 class RestfulService extends AbstractRestfulController {
 
@@ -1264,5 +1267,32 @@ class RestfulService extends AbstractRestfulController {
             "num" => count($recordList)
         ];
     }
-
+    public function pullAttendanceRequestStatusList($data){
+        $attendanceStatusRepository = new AttendanceStatusRepository($this->adapter);       
+        $result = $attendanceStatusRepository->getFilteredRecord($data);
+        
+        $recordList = [];
+        $getValue = function($status) {
+            if ($status == "RQ") {
+                return "Pending";
+            } else if ($status == "R") {
+                return "Rejected";
+            } else if ($status == "AP") {
+                return "Approved";
+            } else if ($status == "C") {
+                return "Cancelled";
+            }
+        };
+        foreach($result as $row){       
+            $status = $getValue($row['STATUS']);
+            $new_row = array_merge($row,['STATUS'=>$status]);
+            array_push($recordList, $new_row);
+        }
+        
+        return [
+            "success"=>"true",
+            "data"=>$recordList,
+            "num"=>count($recordList)
+        ];
+    }
 }

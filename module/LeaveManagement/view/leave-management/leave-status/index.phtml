@@ -24,7 +24,7 @@ if ($this->messages) { ?>
 <div ng-app="hris" ng-controller="leaveStatusListController">
     <div class="margin-top-20">
         <div class="row">
-            <div class="col-sm-2">
+            <div class="col-sm-4">
                 <?php print $this->formLabel($employees); ?>
                 <?php print $this->formElement($employees); ?>
             </div>
@@ -43,13 +43,13 @@ if ($this->messages) { ?>
             <div class="col-sm-2">
                 <?php print $this->formLabel($positions); ?>
                 <?php print $this->formElement($positions); ?>
-            </div>
+            </div>            
+        </div>
+        <div class="row margin-top-10">    
             <div class="col-sm-2">
                 <?php print $this->formLabel($serviceTypes); ?>
                 <?php print $this->formElement($serviceTypes); ?>
             </div>
-        </div>
-        <div class="row margin-top-10">            
             <div class="col-sm-2">
                 <?php print $this->formLabel($leaves); ?>
                 <?php print $this->formElement($leaves); ?>

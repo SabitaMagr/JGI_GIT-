@@ -33,7 +33,6 @@ angular.module('hris', [])
             });
         }
         $scope.initializeKendoGrid = function (serviceHistoryRecord){
-            console.log(serviceHistoryRecord);
             $("#serviceHistoryTable").kendoGrid({
                 dataSource: {
                     data: serviceHistoryRecord,
@@ -48,6 +47,7 @@ angular.module('hris', [])
                     input: true,
                     numeric: false
                 },
+                dataBound:gridDataBound,
                 rowTemplate: kendo.template($("#rowTemplate").html()),
                 columns: [
                     {field: "START_DATE", title: "Start Date",width: 120 },
@@ -61,5 +61,14 @@ angular.module('hris', [])
                     {title: "Action" ,width: 100}
                 ]
             });
+            function gridDataBound(e) {
+                var grid = e.sender;
+                if (grid.dataSource.total() == 0) {
+                    var colCount = grid.columns.length;
+                    $(e.sender.wrapper)
+                        .find('tbody')
+                        .append('<tr class="kendo-data-row"><td colspan="' + colCount + '" class="no-data">There is no data to show in the grid.</td></tr>');
+                }
+            };
         }
     });
