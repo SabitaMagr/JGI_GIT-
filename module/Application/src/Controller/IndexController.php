@@ -18,9 +18,17 @@ class IndexController extends AbstractActionController {
     }
 
     public function accessDeniedAction() {
-        $viewModel=new ViewModel();
+        $viewModel = new ViewModel();
+        $viewModel->setTerminal(true);
         $viewModel->setTemplate('error/no_access');
         return $viewModel;
+
+//        $view = new ViewModel();
+//        $view->setCaptureTo('login');
+//        $view->setTerminal(true);
+//        $layout = $this->layout();
+//        $layout->setTemplate('error/no_access');
+//        return $view;
     }
 
 }

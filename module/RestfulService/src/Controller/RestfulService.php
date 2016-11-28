@@ -6,9 +6,11 @@ use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
 use AttendanceManagement\Model\ShiftAssign;
 use AttendanceManagement\Model\ShiftSetup;
+use AttendanceManagement\Repository\AttendanceStatusRepository;
 use AttendanceManagement\Repository\ShiftAssignRepository;
 use HolidayManagement\Repository\HolidayRepository;
 use LeaveManagement\Repository\LeaveBalanceRepository;
+use LeaveManagement\Repository\LeaveStatusRepository;
 use Payroll\Controller\PayrollGenerator;
 use Payroll\Model\FlatValueDetail;
 use Payroll\Model\MonthlyValueDetail;
@@ -28,6 +30,7 @@ use Setup\Repository\AcademicProgramRepository;
 use Setup\Repository\AcademicUniversityRepository;
 use Setup\Repository\EmployeeQualificationRepository;
 use Setup\Repository\EmployeeRepository;
+use Setup\Repository\JobHistoryRepository;
 use System\Model\DashboardDetail;
 use System\Model\MenuSetup;
 use System\Model\RolePermission;
@@ -40,9 +43,6 @@ use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Adapter\Driver\ResultInterface;
 use Zend\Mvc\Controller\AbstractRestfulController;
 use Zend\View\Model\JsonModel;
-use Setup\Repository\JobHistoryRepository;
-use LeaveManagement\Repository\LeaveStatusRepository;
-use AttendanceManagement\Repository\AttendanceStatusRepository;
 
 class RestfulService extends AbstractRestfulController {
 
@@ -68,9 +68,10 @@ class RestfulService extends AbstractRestfulController {
         if (sizeof($files) > 0) {
             $ext = pathinfo($files['file']['name'], PATHINFO_EXTENSION);
             $fileName = pathinfo($files['file']['name'], PATHINFO_FILENAME);
-            $newFileName = Helper::generateUniqueName() . "." . $ext;
+            $unique = Helper::generateUniqueName();
+            $newFileName = $unique . "." . $ext;
             $success = move_uploaded_file($files['file']['tmp_name'], \Setup\Controller\EmployeeController::UPLOAD_DIR . "/" . $newFileName);
-            if ($success) {
+            if ($success) {                
                 $responseData = ["success" => true, "data" => ["fileName" => $newFileName, "oldFileName" => $fileName . "." . $ext]];
             }
         } else if ($request->isPost()) {
@@ -613,7 +614,7 @@ class RestfulService extends AbstractRestfulController {
         $menuId = $data['menuId'];
         $checked = $data['checked'];
 
-        //if child of same parent menu were assigned on same roleId then don't need to deactivate parent menu list
+//if child of same parent menu were assigned on same roleId then don't need to deactivate parent menu list
         $menuDtl = $menuSetupRepository->fetchById($menuId);
         $menuListOfSameParent = $menuSetupRepository->getMenuListOfSameParent($menuDtl['PARENT_MENU']);
         $numMenuListOfSameParent = 0;
@@ -631,7 +632,7 @@ class RestfulService extends AbstractRestfulController {
             foreach ($childMenuList as $row) {
 
                 $result = $rolePermissionRepository->selectRoleMenu($row['MENU_ID'], $roleId);
-                //$num = count($result);
+//$num = count($result);
                 if ($result) {
                     $rolePermissionRepository->updateDetail($row['MENU_ID'], $roleId);
                 } else {
@@ -647,7 +648,7 @@ class RestfulService extends AbstractRestfulController {
             foreach ($parentMenuList as $row) {
 
                 $result = $rolePermissionRepository->selectRoleMenu($row['MENU_ID'], $roleId);
-                //$num = count($result);
+//$num = count($result);
                 if ($result) {
                     $rolePermissionRepository->updateDetail($row['MENU_ID'], $roleId);
                 } else {
@@ -669,7 +670,7 @@ class RestfulService extends AbstractRestfulController {
                 foreach ($parentMenuList as $row) {
                     $rolePermissionRepository->deleteAll($row['MENU_ID'], $roleId);
 
-                    //need to activate those parent key whose another child key is assigned on same roleId
+//need to activate those parent key whose another child key is assigned on same roleId
                     $childMenuList1 = $menuSetupRepository->getMenuListOfSameParent($row['MENU_ID']);
                     foreach ($childMenuList1 as $childRow) {
                         $getPermissionDtl = $rolePermissionRepository->getActiveRoleMenu($childRow['MENU_ID'], $roleId);
@@ -772,7 +773,7 @@ class RestfulService extends AbstractRestfulController {
             }
             $leaveList = $repository->getAllLeave();
             $childArray = [];
-            //loop through list of leave and if leave is not assigned then set leave balance to zero
+//loop through list of leave and if leave is not assigned then set leave balance to zero
             foreach ($leaveList as $leaveRow) {
                 $leaveId = $leaveRow['LEAVE_ID'];
                 $leaveBalanceDtl = $repository->getByEmpIdLeaveId($employeeId, $leaveId);
@@ -987,7 +988,7 @@ class RestfulService extends AbstractRestfulController {
     }
 
     public function submitQualificationDtl($data) {
-        //$qualificationDtl = $data;
+//$qualificationDtl = $data;
         $repository = new EmployeeQualificationRepository($this->adapter);
         $empQualificationModel = new EmployeeQualification();
 
@@ -1169,7 +1170,7 @@ class RestfulService extends AbstractRestfulController {
             $employeefile->employeeId = $data['employeeId'];
             $employeefile->filetypeCode = $data['fileTypeCode'];
             $employeefile->filePath = $data['filePath'];
-            $employeefile->fileName=$data['fileName'];
+            $employeefile->fileName = $data['fileName'];
             $employeefile->status = 'E';
             $employeefile->createdDt = Helper::getcurrentExpressionDate();
 
@@ -1203,7 +1204,7 @@ class RestfulService extends AbstractRestfulController {
         $employeefile->employeeId = $data['employeeId'];
         $employeefile->filetypeCode = $data['fileTypeCode'];
         $employeefile->filePath = $data['filePath'];
-        $employeefile->fileName=$data['oldFileName'];
+        $employeefile->fileName = $data['oldFileName'];
         $employeefile->status = 'E';
         $employeefile->createdDt = Helper::getcurrentExpressionDate();
 
@@ -1212,25 +1213,25 @@ class RestfulService extends AbstractRestfulController {
 
         return["success" => true, "data" => ['fileCode' => $employeefile->fileCode]];
     }
-    
-    public function pullJobHistoryList($data){
+
+    public function pullJobHistoryList($data) {
         $fromDate = $data['fromDate'];
         $toDate = $data['toDate'];
         $employeeId = $data['employeeId'];
         $serviceEventTypeId = $data['serviceEventTypeId'];
-        
+
         $jobHistoryRepository = new JobHistoryRepository($this->adapter);
-        $result = $jobHistoryRepository->filter($fromDate,$toDate,$employeeId,$serviceEventTypeId);
-        
-        $jobHistoryRecord =[];
-        foreach($result as $row){
+        $result = $jobHistoryRepository->filter($fromDate, $toDate, $employeeId, $serviceEventTypeId);
+
+        $jobHistoryRecord = [];
+        foreach ($result as $row) {
             array_push($jobHistoryRecord, $row);
         }
-        
+
         return [
-            "success"=>"true",
-            "data"=>$jobHistoryRecord
-        ];     
+            "success" => "true",
+            "data" => $jobHistoryRecord
+        ];
     }
     public function pullLeaveRequestStatusList($data){    
         $leaveStatusRepository = new LeaveStatusRepository($this->adapter); 
@@ -1260,7 +1261,7 @@ class RestfulService extends AbstractRestfulController {
                 return null;
             }
         };
-        
+
         $getValue = function($status) {
             if ($status == "RQ") {
                 return "Pending";
@@ -1274,7 +1275,7 @@ class RestfulService extends AbstractRestfulController {
                 return "Cancelled";
             }
         };
-        
+       
         foreach($result as $row){       
             $status = $getValue($row['STATUS']);
             $role = $getRole($row['RECOMMENDER'],$row['APPROVER'],$recomApproveId);
@@ -1288,8 +1289,9 @@ class RestfulService extends AbstractRestfulController {
             $new_row = array_merge($row,['STATUS'=>$status]);
             $final_record = array_merge($new_row,$role);
             array_push($recordList, $final_record);
+
         }
-        
+
         return [
             "success"=>"true",
             "data"=>$recordList,

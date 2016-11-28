@@ -1,4 +1,5 @@
 <?php
+
 namespace Application\Navigation;
 
 use Zend\Navigation\Service\DefaultNavigationFactory;
@@ -7,16 +8,15 @@ use System\Repository\MenuSetupRepository;
 use Zend\Db\Adapter\AdapterInterface;
 use Interop\Container\ContainerInterface;
 
-class MenuNavigation extends DefaultNavigationFactory
-{
+class MenuNavigation extends DefaultNavigationFactory {
+
     /**
      * @return string
      */
     private $adapter;
     private $roleId;
 
-    protected function getPages(ContainerInterface $container)
-    {
+    protected function getPages(ContainerInterface $container) {
         if (null === $this->pages) {
             $adapter = $container->get(AdapterInterface::class);
             $this->adapter = $adapter;
@@ -25,23 +25,20 @@ class MenuNavigation extends DefaultNavigationFactory
 
             foreach ($data as $key => $row) {
                 if ($this->menu($row['MENU_ID'])) {
-                    $configuration['navigation'][$this->getName()][$row['MENU_NAME']] =
-                        array(
-                            "label" => $row['MENU_NAME'],
-                            "icon" => $row['ICON_CLASS'],
-                            'uri' => 'javascript::',
-                            "pages" => $this->menu($row['MENU_ID'])
-                        );
+                    $configuration['navigation'][$this->getName()][$row['MENU_NAME']] = array(
+                        "label" => $row['MENU_NAME'],
+                        "icon" => $row['ICON_CLASS'],
+                        'uri' => 'javascript::',
+                        "pages" => $this->menu($row['MENU_ID'])
+                    );
                 } else {
-                    $configuration['navigation'][$this->getName()][$row['MENU_NAME']] =
-                        array(
-                            "label" => $row['MENU_NAME'],
-                            "icon" => $row['ICON_CLASS'],
-                            "route" => $row['ROUTE'],
-                            "action" => $row['ACTION']
-                        );
+                    $configuration['navigation'][$this->getName()][$row['MENU_NAME']] = array(
+                        "label" => $row['MENU_NAME'],
+                        "icon" => $row['ICON_CLASS'],
+                        "route" => $row['ROUTE'],
+                        "action" => $row['ACTION']
+                    );
                 }
-
             }
 
             if (!isset($configuration['navigation'])) {
@@ -49,8 +46,7 @@ class MenuNavigation extends DefaultNavigationFactory
             }
             if (!isset($configuration['navigation'][$this->getName()])) {
                 throw new Exception\InvalidArgumentException(sprintf(
-                    'Failed to find a navigation container by the name "%s"',
-                    $this->getName()
+                        'Failed to find a navigation container by the name "%s"', $this->getName()
                 ));
             }
 
@@ -64,8 +60,7 @@ class MenuNavigation extends DefaultNavigationFactory
         return $this->pages;
     }
 
-    private function menu($parent_menu = null)
-    {
+    private function menu($parent_menu = null) {
         $menuSetupRepository = new MenuSetupRepository($this->adapter);
         $result = $menuSetupRepository->getHierarchicalMenuWithRoleId($parent_menu);
         $num = count($result);
@@ -95,5 +90,5 @@ class MenuNavigation extends DefaultNavigationFactory
             return false;
         }
     }
-}
 
+}

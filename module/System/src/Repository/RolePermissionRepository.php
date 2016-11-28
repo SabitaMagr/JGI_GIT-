@@ -45,7 +45,7 @@ class RolePermissionRepository implements RepositoryInterface {
     }
 
     public function delete($id) {
-        $this->tableGateway->update(['STATUS'=>'D'],['MENU_ID'=>$id]);
+        $this->tableGateway->update(['STATUS' => 'D'], ['MENU_ID' => $id]);
     }
 
     public function deleteAll($menuId, $roleId) {
@@ -96,6 +96,8 @@ class RolePermissionRepository implements RepositoryInterface {
                 ->join(['RP' => RolePermission::TABLE_NAME], 'M.' . MenuSetup::MENU_ID . "=RP." . RolePermission::MENU_ID, []);
 
         $select->where(["RP." . RolePermission::ROLE_ID . "=" . $roleId]);
+        $select->where(["RP." . RolePermission::STATUS . "='E'"]);
+        $select->where(["M." . MenuSetup::STATUS . "='E'"]);
         $statement = $sql->prepareStatementForSqlObject($select);
         $result = $statement->execute();
         return $result;
