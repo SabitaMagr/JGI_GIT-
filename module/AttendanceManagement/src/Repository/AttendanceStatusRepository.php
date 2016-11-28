@@ -109,7 +109,7 @@ class AttendanceStatusRepository implements RepositoryInterface {
     public function delete($id) {
         // TODO: Implement delete() method.
     }
-    public function getFilteredRecord($data){
+    public function getFilteredRecord($data,$approverId=null){
         $fromDate = $data['fromDate'];
         $toDate = $data['toDate'];
         $employeeId = $data['employeeId'];
@@ -143,6 +143,11 @@ class AttendanceStatusRepository implements RepositoryInterface {
         $select->where([
             "E.STATUS='E'"
         ]);
+        if($approverId!=null){
+            $select->where([
+               "AR.APPROVED_BY=".$approverId 
+            ]);
+        }
         
         if ($attendanceRequestStatusId != -1) {
             $select->where([

@@ -64,7 +64,7 @@ class LeaveApproveRepository implements RepositoryInterface
                 LA.APPROVED_BY=".$id;
         }else if($status=='R'){
             $sql .=" LA.STATUS='".$status."' AND
-                ((LA.RECOMMENDED_BY=".$id." AND LA.RECOMMENDED_DT IS NOT NULL) OR (LA.APPROVED_BY=".$id.") )";
+                ((LA.RECOMMENDED_BY=".$id." AND LA.APPROVED_DT IS NULL) OR (LA.APPROVED_BY=".$id." AND LA.APPROVED_DT IS NOT NULL) )";
         }
 
         $statement = $this->adapter->query($sql);

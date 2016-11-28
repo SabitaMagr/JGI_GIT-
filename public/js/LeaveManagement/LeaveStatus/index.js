@@ -69,7 +69,7 @@ angular.module('hris', [])
                         {field: "FN1", title: "Recommender",width:200},
                         {field: "FN2", title: "Approver",width:200},
                         {field: "NO_OF_DAYS", title: "Duration",width:120},
-                        {field: "STATUS", title: "Status",width:100},
+                        {field: "STATUS", title: "Status",width:140},
                         {title: "Action",width:100}
                     ]
                 });
