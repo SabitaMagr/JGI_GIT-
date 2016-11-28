@@ -30,7 +30,7 @@ $form->setAttribute('action', $this->url('attendancestatus', ['action' => 'view'
 $form->prepare();
 ?>
 <script>
-    document.menu =<?php $menu = ["id" => "menuAttendanceManagement", "subMenu" => ["id" => "subMenuAttendanceStatus"]];echo json_encode($menu);?>;
+    document.menu =<?php $menu = ["id" => "menuAttendance", "subMenu" => ["id" => "subMenuAttendanceStatus"]];echo json_encode($menu);?>;
 </script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\attendancestatus')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>

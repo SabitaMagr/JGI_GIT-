@@ -67,6 +67,7 @@ class ServiceRepository implements RepositoryInterface {
             ->join(['B2' => 'HR_BRANCHES'], 'B2.BRANCH_ID=H.TO_BRANCH_ID', ['TO_BRANCH_NAME' => 'BRANCH_NAME'])
             ->join(['S1' => 'HR_SERVICE_TYPES'], 'S1.SERVICE_TYPE_ID=H.FROM_SERVICE_TYPE_ID', ['FROM_SERVICE_TYPE_NAME' => 'SERVICE_TYPE_NAME'])
             ->join(['S2' => 'HR_SERVICE_TYPES'], 'S2.SERVICE_TYPE_ID=H.TO_SERVICE_TYPE_ID', ['TO_SERVICE_TYPE_NAME' => 'SERVICE_TYPE_NAME']);
+        
         if($fromDate!=null){
             $startDate = " AND H.START_DATE>=TO_DATE('".$fromDate."','DD-MM-YYYY')";
         }else{

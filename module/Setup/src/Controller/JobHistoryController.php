@@ -10,6 +10,8 @@ use Zend\Db\Adapter\AdapterInterface;
 use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\Mvc\Controller\AbstractActionController;
 use Application\Helper\EntityHelper as EntityHelper1;
+use Setup\Model\ServiceEventType;
+use Zend\Form\Element\Select;
 
 class JobHistoryController extends AbstractActionController
 {
@@ -35,8 +37,30 @@ class JobHistoryController extends AbstractActionController
 
     public function indexAction()
     {
+        $employeeNameFormElement = new Select();
+        $employeeNameFormElement->setName("branch");
+        $employeeName = EntityHelper1::getTableKVList($this->adapter, "HR_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => "E"]);
+        $employeeName[-1] = "All";
+        ksort($employeeName);
+        $employeeNameFormElement->setValueOptions($employeeName);
+        $employeeNameFormElement->setAttributes(["id" => "employeeId", "class" => "form-control"]);
+        $employeeNameFormElement->setLabel("Employee");        
+        
+        $serviceEventTypeFormElement = new Select();
+        $serviceEventTypeFormElement->setName("serviceEventType");
+        $serviceEventTypes = EntityHelper1::getTableKVList($this->adapter, ServiceEventType::TABLE_NAME, ServiceEventType::SERVICE_EVENT_TYPE_ID, [ServiceEventType::SERVICE_EVENT_TYPE_NAME], [ServiceEventType::STATUS => 'E']);
+        $serviceEventTypes[-1] = "All";
+        ksort($serviceEventTypes);
+        $serviceEventTypeFormElement->setValueOptions($serviceEventTypes);
+        $serviceEventTypeFormElement->setAttributes(["id" => "serviceEventTypeId", "class" => "form-control"]);
+        $serviceEventTypeFormElement->setLabel("Service Event Type");
+        
         $jobHistory = $this->repository->fetchAll();
-        return Helper::addFlashMessagesToArray($this, ['jobHistoryList' => $jobHistory]);
+        return Helper::addFlashMessagesToArray($this, [
+            'jobHistoryList' => $jobHistory,
+            'serviceEventTypes' => $serviceEventTypeFormElement,
+            'employees' => $employeeNameFormElement
+                ]);
     }
 
     public function addAction()

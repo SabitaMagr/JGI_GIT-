@@ -3,10 +3,10 @@
  * Load Javascript files here
  */
 $this->headScript()
-    ->appendFile($this->basePath('js/kendoDataTable.js'));
-$this->headScript()->appendFile($this->basePath('js/HolidayManagement/HolidaySetup/add.js'));
-$this->headScript()->appendFile($this->basePath('js/angular.min.js'));
-$this->headScript()->appendFile($this->basePath('js/HolidayManagement/HolidaySetup/holidayListController.js'));
+        ->appendFile($this->basePath('telerik_kendoui/js/kendo.all.min.js'))
+        ->appendFile($this->basePath('js/HolidayManagement/HolidaySetup/add.js'))
+        ->appendFile($this->basePath('js/angular.min.js'))
+        ->appendFile($this->basePath('js/HolidayManagement/HolidaySetup/holidayListController.js'));
 ?>
 
 <?php
@@ -17,7 +17,7 @@ if ($this->messages) { ?>
 <?php } ?>
 
 <script>
-    document.menu =<?php $menu = ["id" => "menuHolidayManagement", "subMenu" => ["id" => "subMenuHolidaySetup"]];echo json_encode($menu);?>;
+    document.menu =<?php $menu = ["id" => "menuHolidays", "subMenu" => ["id" => "subMenuHolidaySetup"]];echo json_encode($menu);?>;
     document.url ="<?= $this->url('restful',['action','index']); ?>";
 </script>
 <div class="page-bar">

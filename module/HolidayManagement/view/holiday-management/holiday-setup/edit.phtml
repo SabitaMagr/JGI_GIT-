@@ -16,7 +16,7 @@ if ($this->messages) { ?>
 <?php } ?>
 
 <script>
-    document.menu =<?php $menu = ["id" => "menuHolidayManagement", "subMenu" => ["id" => "subMenuHolidaySetup"]];echo json_encode($menu);?>;
+    document.menu =<?php $menu = ["id" => "menuHolidays", "subMenu" => ["id" => "subMenuHolidaySetup"]];echo json_encode($menu);?>;
     document.urlBranchList = '<?= $this->url("webService", ["action" => "branchList"]) ?>';
     document.url = '<?= $this->url("webService", ["action" => "index"]) ?>';
 </script>

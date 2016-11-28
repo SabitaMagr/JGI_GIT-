@@ -7,7 +7,7 @@ $this->headScript()->appendFile($this->basePath('assets/global/plugins/combodate
 $this->headScript()->appendFile($this->basePath('js/AttendanceManagement/ShiftSetup/shiftSetup.js'));
 ?>
 <script>
-    document.menu =<?php $menu = ["id" => "menuAttendanceManagement", "subMenu" => ["id" => "subMenuShiftSetup"]];echo json_encode($menu);?>;
+    document.menu =<?php $menu = ["id" => "menuAttendance", "subMenu" => ["id" => "subMenuShiftSetup"]];echo json_encode($menu);?>;
 </script>
 
 <?php

@@ -3,7 +3,7 @@
  * Load Javascript files here
  */
 $this->headScript()
-    ->appendFile($this->basePath('js/kendoDataTable.js'));
+   ->appendFile($this->basePath('telerik_kendoui/js/kendo.all.min.js'));
 $this->headScript()->appendFile($this->basePath('js/angular.min.js'));
 $this->headScript()->appendFile($this->basePath('js/SelfService/Service/index.js'));
 ?>
@@ -70,72 +70,43 @@ if ($this->messages) { ?>
                 </div>
             </div>
         </div>
-        <table class="table table-striped table-bordered table-hover no-footer">
-            <thead>
-            <tr role="row">
-                <th>
-                    Start Date
-                </th>
-                <th>
-                    End Date
-                </th>
-                <th>
-                    Service Event Type
-                </th>
-                <th>
-                    To Service Type
-                </th>
-                <th>
-                    To Branch
-                </th>
-                <th>
-                    To Department
-                </th>
-                <th>
-                    To Designation
-                </th>
-                <th>
-                    To Position
-                </th>
-                <th>
-                    Opertion
-                </th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr ng-repeat="serviceDtl in serviceHistory">
+       
+            <div id="serviceHistoryTable" >           
+            </div>
+        
+        <script id="rowTemplate" type="text/x-kendo-tmpl">
+            <tr>
                 <td>
-                    <span ng-bind="serviceDtl.START_DATE"></span>
+                #: START_DATE #
                 </td>
-                <td >
-                    <span ng-bind="serviceDtl.END_DATE"></span>
+                <td>    
+                #: END_DATE #
                 </td>
                 <td>
-                    <span ng-bind="serviceDtl.SERVICE_EVENT_TYPE_NAME"></span>
+                #: SERVICE_EVENT_TYPE_NAME #
                 </td>
                 <td>
-                    <span ng-bind="serviceDtl.TO_SERVICE_TYPE_NAME"></span>
+                #: FROM_SERVICE_TYPE_NAME # - #: TO_SERVICE_TYPE_NAME #
                 </td>
                 <td>
-                    <span ng-bind="serviceDtl.TO_BRANCH_NAME"></span>
-                </td>
-                <td >
-                    <span ng-bind="serviceDtl.TO_DEPARTMENT_NAME"></span>
+                #: FROM_BRANCH_NAME # - #: TO_BRANCH_NAME #
                 </td>
                 <td>
-                    <span ng-bind="serviceDtl.TO_DESIGNATION_TITLE"></span>
+                #: FROM_DEPARTMENT_NAME # - #: TO_DEPARTMENT_NAME #
                 </td>
                 <td>
-                    <span ng-bind="serviceDtl.TO_POSITION_NAME"></span>
+                #: FROM_DESIGNATION_TITLE # - #: TO_DESIGNATION_TITLE #
                 </td>
                 <td>
-                    <a href="<?= $this->url("service",["action"=>'view']) ?>/{{serviceDtl.JOB_HISTORY_ID}}">
+                #: FROM_POSITION_NAME # - #: TO_POSITION_NAME #
+                </td>
+                <td>
+                 <a class=""
+                 href="<?= $this->url("service",["action"=>'view']) ?>/#: JOB_HISTORY_ID #">
                         View
                     </a>
                 </td>
             </tr>
-            </tbody>
-        </table>
-
+        </script>
     </div>
 </div>
