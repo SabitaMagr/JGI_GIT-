@@ -12,6 +12,7 @@ class EmployeeFile extends Model {
     const FILETYPE_CODE = "FILETYPE_CODE";
     const FILE_PATH = "FILE_PATH";
     const STATUS = "STATUS";
+    const FILE_NAME = "FILE_NAME";
     const CREATED_DT = "CREATED_DT";
     const MODIFIED_DT = "MODIFIED_DT";
     const REMARKS = "REMARKS";
@@ -21,6 +22,7 @@ class EmployeeFile extends Model {
     public $filetypeCode;
     public $filePath;
     public $status;
+    public $fileName;
     public $createdDt;
     public $modifiedDt;
     public $remarks;
@@ -30,6 +32,7 @@ class EmployeeFile extends Model {
         'filetypeCode' => self::FILETYPE_CODE,
         'filePath' => self::FILE_PATH,
         'status' => self::STATUS,
+        'fileName' => self::FILE_NAME,
         'createdDt' => self::CREATED_DT,
         'modifiedDt' => self::MODIFIED_DT,
         'remarks' => self::REMARKS

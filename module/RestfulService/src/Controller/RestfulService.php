@@ -67,10 +67,11 @@ class RestfulService extends AbstractRestfulController {
         $files = $request->getFiles()->toArray();
         if (sizeof($files) > 0) {
             $ext = pathinfo($files['file']['name'], PATHINFO_EXTENSION);
+            $fileName = pathinfo($files['file']['name'], PATHINFO_FILENAME);
             $newFileName = Helper::generateUniqueName() . "." . $ext;
             $success = move_uploaded_file($files['file']['tmp_name'], \Setup\Controller\EmployeeController::UPLOAD_DIR . "/" . $newFileName);
             if ($success) {
-                $responseData = ["success" => true, "data" => ["fileName" => $newFileName]];
+                $responseData = ["success" => true, "data" => ["fileName" => $newFileName, "oldFileName" => $fileName . "." . $ext]];
             }
         } else if ($request->isPost()) {
             $postedData = $request->getPost();
@@ -1168,6 +1169,7 @@ class RestfulService extends AbstractRestfulController {
             $employeefile->employeeId = $data['employeeId'];
             $employeefile->filetypeCode = $data['fileTypeCode'];
             $employeefile->filePath = $data['filePath'];
+            $employeefile->fileName=$data['fileName'];
             $employeefile->status = 'E';
             $employeefile->createdDt = Helper::getcurrentExpressionDate();
 
@@ -1201,6 +1203,7 @@ class RestfulService extends AbstractRestfulController {
         $employeefile->employeeId = $data['employeeId'];
         $employeefile->filetypeCode = $data['fileTypeCode'];
         $employeefile->filePath = $data['filePath'];
+        $employeefile->fileName=$data['oldFileName'];
         $employeefile->status = 'E';
         $employeefile->createdDt = Helper::getcurrentExpressionDate();
 

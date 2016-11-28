@@ -4,6 +4,7 @@
  */
 $this->headScript()
         ->appendFile($this->basePath('telerik_kendoui/js/kendo.all.min.js'))
+        ->appendFile($this->basePath('jszip/dist/jszip.min.js'))
         ->appendFile($this->basePath('js/setup/branch/index.js'));
 ?>
 
@@ -65,26 +66,40 @@ echo json_encode($menu);
             </td>
         <td>
             #: BRANCH_NAME #  
-            </td>
-        <td>
-            #: STREET_ADDRESS #
-            </td>
-        <td>
-            #: TELEPHONE #
-            </td>
-            <td>
-            #: EMAIL #
         </td>
         <td>
-            <a class ="" href="<?= $this->url("branch", ["action" => "edit"]) ?>/#:BRANCH_ID #">
+            #: STREET_ADDRESS #
+        </td>
+        <td>
+            #: TELEPHONE #
+        </td>
+        <td>
+        #: EMAIL #
+        </td>
+        <td>
+            <a class            =""
+               href="<?= $this->url("branch", ["action" => "edit"]) ?>/#:BRANCH_ID #">
                 Edit
             </a> /
-            <a class="" href="<?= $this->url("branch", ["action" => "delete"]); ?>/#:BRANCH_ID #">
+            <a class=""
+               href="<?= $this->url("branch", ["action" => "delete"]); ?>/#:BRANCH_ID #">
                 Delete
             </a>
         </td>
 
     </tr>
+    </script>
+    <script type="text/x-kendo-template" id="toolbar-template">
+        <div class="k-header k-grid-toolbar">
+
+        <a class="k-button k-button-icontext k-grid-excel" href="javascript">
+        <i class="fa fa-file-excel-o"></i>
+        </a>
+
+        <a class="k-button k-button-icontext k-grid-pdf" href="javas        cript">
+        <i class="fa fa-file-pdf-o"></i>
+        </a>
+        </div>
     </script>
 </div>
 
