@@ -40,6 +40,8 @@ use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Adapter\Driver\ResultInterface;
 use Zend\Mvc\Controller\AbstractRestfulController;
 use Zend\View\Model\JsonModel;
+use Setup\Repository\JobHistoryRepository;
+use LeaveManagement\Repository\LeaveStatusRepository;
 
 class RestfulService extends AbstractRestfulController {
 
@@ -191,6 +193,15 @@ class RestfulService extends AbstractRestfulController {
                     break;
                 case "dropEmployeeFile":
                     $responseData = $this->dropEmployeeFile($postedData->data);
+                    break;
+                case "pullJobHistoryList":
+                    $responseData = $this->pullJobHistoryList($postedData->data);
+                    break;
+                case 'pullLeaveRequestStatusList':
+                    $responseData = $this->pullLeaveRequestStatusList($postedData->data);
+                    break;
+                case 'pullAttendanceRequestStatusList':
+                    $responseData = $this->pullAttendanceRequestStatusList($postedData->data);
                     break;
                 default:
                     $responseData = [
@@ -1200,5 +1211,54 @@ class RestfulService extends AbstractRestfulController {
 
         return["success" => true, "data" => ['fileCode' => $employeefile->fileCode]];
     }
-
+    
+    public function pullJobHistoryList($data){
+        $fromDate = $data['fromDate'];
+        $toDate = $data['toDate'];
+        $employeeId = $data['employeeId'];
+        $serviceEventTypeId = $data['serviceEventTypeId'];
+        
+        $jobHistoryRepository = new JobHistoryRepository($this->adapter);
+        $result = $jobHistoryRepository->filter($fromDate,$toDate,$employeeId,$serviceEventTypeId);
+        
+        $jobHistoryRecord =[];
+        foreach($result as $row){
+            array_push($jobHistoryRecord, $row);
+        }
+        
+        return [
+            "success"=>"true",
+            "data"=>$jobHistoryRecord
+        ];     
+    }
+    public function pullLeaveRequestStatusList($data){    
+        $leaveStatusRepository = new LeaveStatusRepository($this->adapter);       
+        $result = $leaveStatusRepository->getFilteredRecord($data);
+        
+        $recordList = [];
+        $getValue = function($status) {
+            if ($status == "RQ") {
+                return "Pending";
+            } else if ($status == 'RC') {
+                return "Recommended";
+            } else if ($status == "R") {
+                return "Rejected";
+            } else if ($status == "AP") {
+                return "Approved";
+            } else if ($status == "C") {
+                return "Cancelled";
+            }
+        };
+        foreach($result as $row){       
+            $status = $getValue($row['STATUS']);
+            $new_row = array_merge($row,['STATUS'=>$status]);
+            array_push($recordList, $new_row);
+        }
+        
+        return [
+            "success"=>"true",
+            "data"=>$recordList,
+            "num"=>count($recordList)
+        ];
+    }
 }

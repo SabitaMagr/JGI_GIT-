@@ -1,9 +1,11 @@
 <?php
 $this->headScript()
-    ->appendFile($this->basePath('js/kendoDataTable.js'));
+    ->appendFile($this->basePath('telerik_kendoui/js/kendo.all.min.js'))
+    ->appendFile($this->basePath('js/Payroll/Rules/index.js'));
 ?>
 <script>
     document.menu =<?php $menu = ["id" => "menuPayroll", "subMenu" => ["id" => "subMenuRules"], "subMenuChild" => ["id" => "subMenuChildRuleSetup"]];echo json_encode($menu);?>;
+    document.rules=<?= json_encode($rules); ?>;
 </script>
 
 <?php if ($this->messages) { ?>
@@ -48,51 +50,31 @@ $this->headScript()
             </div>
         </div>
     </div>
-    <table class="table" id="dataTable">
-        <thead>
+
+    <div id="ruleTable">
+    </div>
+    
+    <script id="rowTemplate" type="text/x-kendo-tmpl">
         <tr>
-            <th>
-                Pay Code
-            </th>
-            <th>
-                EDesc
-            </th>
-            <th>
-                Type
-            </th>
-            <th>
-                Action
-            </th>
+        <td>
+        #: PAY_CODE #
+        </td>
+        <td>
+        #: PAY_EDESC #
+        </td>
+        <td>
+        #: PAY_TYPE_FLAG #
+        </td>
+        <td>
+        <a class=""
+        href="<?= $this->url("rules", ["action" => "view"]); ?>/#:PAY_ID #">
+        View
+        </a> | 
+         <a class=""
+        href="<?= $this->url("rules", ["action" => "delete"]); ?>/#:PAY_ID #">
+        Delete
+        </a>
+        </td>
         </tr>
-        </thead>
-        <tbody>
-        <?php foreach ($rules as $rule): ?>
-            <tr role="row table-info">
-                <td>
-                    <?php print $this->escapeHtml($rule['PAY_CODE']); ?>
-                </td>
-                <td>
-                    <?php print $this->escapeHtml($rule['PAY_EDESC']); ?>
-                </td>
-                <td>
-                    <?php print $this->escapeHtml($rule['PAY_TYPE_FLAG']); ?>
-                </td>
-
-                <td>
-                    <a class=""
-                       href="<?= $this->url("rules", ["action" => "edit", "id" => $rule['PAY_ID']]) ?>">
-                        Edit
-                    </a> /
-                    <a class=""
-                       href="<?= $this->url("rules", ["action" => "delete", "id" => $rule['PAY_ID']]); ?>">
-                        Delete
-                    </a>
-
-                </td>
-            </tr>
-
-        <?php endforeach; ?>
-        </tbody>
-    </table>
-
+    </script>
 </div>

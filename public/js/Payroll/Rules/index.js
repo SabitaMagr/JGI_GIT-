@@ -1,10 +1,10 @@
 (function ($) {
     'use strict';
     $(document).ready(function () {    
-       console.log(document.flatValues);
-        $("#flatValueTable").kendoGrid({
+       
+        $("#ruleTable").kendoGrid({
             dataSource: {
-                data: document.flatValues,
+                data: document.rules,
                 pageSize: 20
             },
             height: 450,
@@ -17,10 +17,9 @@
             },
             rowTemplate: kendo.template($("#rowTemplate").html()),
             columns: [
-                {field: "FLAT_CODE", title: "Code"},
-                {field: "FLAT_EDESC", title: "EDesc"},
-                {field: "FLAT_LDESC", title: "LDesc"},
-                {field: "SHOW_AT_RULE", title: "Show At Rule"},
+                {field: "PAY_CODE", title: "Pay Code"},
+                {field: "PAY_EDESC", title: "EDesc"},
+                {field: "PAY_TYPE_FLAG", title: "Type"},
                 {title: "Action"}
             ]
         });    
