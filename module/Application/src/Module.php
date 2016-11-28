@@ -84,6 +84,9 @@ class Module implements AutoloaderProviderInterface, ConsoleUsageProviderInterfa
             $repository = new RolePermissionRepository($adapter);
             $data = $repository->fetchAllMenuByRoleId($roleId);
             $allowFlag = false;
+            if ($route == 'application') {
+                $allowFlag = true;
+            }
             foreach ($data as $d) {
                 if ($d[MenuSetup::ROUTE] == $route) {
                     $allowFlag = true;
@@ -103,6 +106,20 @@ class Module implements AutoloaderProviderInterface, ConsoleUsageProviderInterfa
                 $response->sendHeaders();
                 return $response;
             }
+
+            $employeeId = $auth->getStorage()->read()['employee_id'];
+            if ($employeeId != null) {
+                $employeeFileId = EntityHelper::getTableKVList($adapter, \Setup\Model\HrEmployees::TABLE_NAME, \Setup\Model\HrEmployees::EMPLOYEE_ID, [\Setup\Model\HrEmployees::PROFILE_PICTURE_ID], [\Setup\Model\HrEmployees::EMPLOYEE_ID => $employeeId], null)[$employeeId];
+                $employeeName = EntityHelper::getTableKVList($adapter, \Setup\Model\HrEmployees::TABLE_NAME, \Setup\Model\HrEmployees::EMPLOYEE_ID, [\Setup\Model\HrEmployees::FIRST_NAME], [\Setup\Model\HrEmployees::EMPLOYEE_ID => $employeeId], null)[$employeeId];
+                if ($employeeFileId != null) {
+                    $filePath = EntityHelper::getTableKVList($adapter, \Setup\Model\EmployeeFile::TABLE_NAME, \Setup\Model\EmployeeFile::FILE_CODE, [\Setup\Model\EmployeeFile::FILE_PATH], [\Setup\Model\EmployeeFile::FILE_CODE => $employeeFileId], null)[$employeeFileId];
+                    $event->getViewModel()->setVariable("profilePictureUrl", $filePath);
+                    $event->getViewModel()->setVariable("employeeName", $employeeName);
+                } else {
+                    $event->getViewModel()->setVariable("profilePictureUrl", "1480316755.jpg");
+                    $event->getViewModel()->setVariable("employeeName", "Nick");
+                }
+            }
         }
 
         $requestedResourse = $controller . "-" . $action;
@@ -119,19 +136,7 @@ class Module implements AutoloaderProviderInterface, ConsoleUsageProviderInterfa
             return $response;
         }
 
-        $employeeId = $auth->getStorage()->read()['employee_id'];
-        if ($employeeId != null) {
-            $employeeFileId = EntityHelper::getTableKVList($adapter, \Setup\Model\HrEmployees::TABLE_NAME, \Setup\Model\HrEmployees::EMPLOYEE_ID, [\Setup\Model\HrEmployees::PROFILE_PICTURE_ID], [\Setup\Model\HrEmployees::EMPLOYEE_ID => $employeeId], null)[$employeeId];
-            $employeeName = EntityHelper::getTableKVList($adapter, \Setup\Model\HrEmployees::TABLE_NAME, \Setup\Model\HrEmployees::EMPLOYEE_ID, [\Setup\Model\HrEmployees::FIRST_NAME], [\Setup\Model\HrEmployees::EMPLOYEE_ID => $employeeId], null)[$employeeId];
-            if ($employeeFileId != null) {
-                $filePath = EntityHelper::getTableKVList($adapter, \Setup\Model\EmployeeFile::TABLE_NAME, \Setup\Model\EmployeeFile::FILE_CODE, [\Setup\Model\EmployeeFile::FILE_PATH], [\Setup\Model\EmployeeFile::FILE_CODE => $employeeFileId], null)[$employeeFileId];
-                $event->getViewModel()->setVariable("profilePictureUrl", $filePath);
-                $event->getViewModel()->setVariable("employeeName", $employeeName);
-            } else {
-                $event->getViewModel()->setVariable("profilePictureUrl", "1480316755.jpg");
-                $event->getViewModel()->setVariable("employeeName", "Nick");
-            }
-        }
+
 
         //print "Called before any controller action called. Do any operation.";
     }

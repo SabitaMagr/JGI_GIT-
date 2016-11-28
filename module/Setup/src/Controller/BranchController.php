@@ -50,14 +50,6 @@ class BranchController extends AbstractActionController {
         }
 
         return Helper::addFlashMessagesToArray($this, ['branches' => $branches]);
-
-
-//        $view=new ViewModel(Helper::addFlashMessagesToArray($this, ['branches' => $branches]));
-//        $view->setCaptureTo('login');
-//        $view->setTerminal(true);
-//        $layout=$this->layout();
-//$layout->setTemplate('layout/login');
-//        return $view;
     }
 
     public function addAction() {

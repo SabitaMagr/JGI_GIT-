@@ -6,6 +6,7 @@ use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
 use AttendanceManagement\Model\ShiftAssign;
 use AttendanceManagement\Model\ShiftSetup;
+use AttendanceManagement\Repository\AttendanceStatusRepository;
 use AttendanceManagement\Repository\ShiftAssignRepository;
 use HolidayManagement\Repository\HolidayRepository;
 use LeaveManagement\Repository\LeaveBalanceRepository;
@@ -21,7 +22,6 @@ use Payroll\Repository\MonthlyValueDetailRepo;
 use Payroll\Repository\PayPositionRepo;
 use Payroll\Repository\RulesDetailRepo;
 use Payroll\Repository\RulesRepository;
-use PHPixie\Image;
 use SelfService\Repository\ServiceRepository;
 use Setup\Model\EmployeeQualification;
 use Setup\Repository\AcademicCourseRepository;
@@ -43,9 +43,6 @@ use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Adapter\Driver\ResultInterface;
 use Zend\Mvc\Controller\AbstractRestfulController;
 use Zend\View\Model\JsonModel;
-use Setup\Repository\JobHistoryRepository;
-use LeaveManagement\Repository\LeaveStatusRepository;
-use AttendanceManagement\Repository\AttendanceStatusRepository;
 
 class RestfulService extends AbstractRestfulController {
 
