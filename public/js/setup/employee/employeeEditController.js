@@ -171,6 +171,7 @@
                         }.bind(this));
 
                         this.on("success", function (file, success) {
+                            console.log("Upload Image Response",success);
                             $scope.$apply(function () {
                                 if (success.success) {
                                     $scope.file.filePath = success.data.fileName;
@@ -213,7 +214,7 @@
                             'fileCode': $scope.file.fileCode,
                             'fileTypeCode': $scope.file.fileTypeCode,
                             'filePath': $scope.file.filePath,
-                            'fileName':$scope.file.fileName,
+                            'fileName': $scope.file.fileName,
                             'employeeId': document.employeeId
                         }
                     }).then(function (success) {
@@ -292,6 +293,7 @@
                         console.log("sdf");
                         var myDropzone = new Dropzone("#dropZoneContainer", {url: document.restfulUrl});
                         myDropzone.on("success", function (file, success) {
+                            console.log("File Upload Response", success);
                             $scope.$apply(function () {
                                 document.uploadResponse = success.data;
                             });
