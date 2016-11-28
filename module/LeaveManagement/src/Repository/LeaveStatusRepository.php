@@ -120,5 +120,83 @@ class LeaveStatusRepository implements RepositoryInterface {
     public function delete($id) {
         // TODO: Implement delete() method.
     }
+    
+    public function getFilteredRecord($data){
+        $fromDate = $data['fromDate'];
+        $toDate = $data['toDate'];
+        $employeeId = $data['employeeId'];
+        $branchId = $data['branchId'];
+        $departmentId = $data['departmentId'];
+        $designationId = $data['designationId'];
+        $positionId = $data['positionId'];
+        $serviceTypeId = $data['serviceTypeId'];
+        $leaveId = $data['leaveId'];
+        $leaveRequestStatusId = $data['leaveRequestStatusId'];
+        
+        $sql = "SELECT L.LEAVE_ENAME,LA.NO_OF_DAYS,LA.START_DATE
+                ,LA.END_DATE,LA.REQUESTED_DT AS APPLIED_DATE,
+                LA.STATUS AS STATUS,
+                LA.ID AS ID,
+                LA.RECOMMENDED_DT AS RECOMMENDED_DT,
+                LA.APPROVED_DT AS APPROVED_DT,
+                E.FIRST_NAME,E.MIDDLE_NAME,E.LAST_NAME,
+                E1.FIRST_NAME AS FN1,E1.MIDDLE_NAME AS MN1,E1.LAST_NAME AS LN1,
+                E2.FIRST_NAME AS FN2,E2.MIDDLE_NAME AS MN2,E2.LAST_NAME AS LN2,
+                LA.RECOMMENDED_BY AS RECOMMENDER,
+                LA.APPROVED_BY AS APPROVER
+                FROM HR_EMPLOYEE_LEAVE_REQUEST LA, 
+                HR_LEAVE_MASTER_SETUP L,
+                HR_EMPLOYEES E,
+                HR_EMPLOYEES E1,
+                HR_EMPLOYEES E2
+                WHERE 
+                L.STATUS='E' AND
+                E.STATUS='E' AND
+                E1.STATUS='E' AND
+                E2.STATUS='E' AND
+                L.LEAVE_ID=LA.LEAVE_ID AND
+                E.EMPLOYEE_ID=LA.EMPLOYEE_ID AND
+                E1.EMPLOYEE_ID=LA.RECOMMENDED_BY AND
+                E2.EMPLOYEE_ID=LA.APPROVED_BY";
+        if ($leaveRequestStatusId != -1) {
+            $sql .= " AND LA.STATUS ='" . $leaveRequestStatusId . "'";
+        }
+        
+        if ($leaveId != -1) {
+            $sql .= " AND LA.LEAVE_ID ='" . $leaveId . "'";
+        }
+     
+        if($fromDate!=null){
+            $sql .= " AND LA.START_DATE>=TO_DATE('".$fromDate."','DD-MM-YYYY')";
+        }
+        
+        if($toDate!=null){   
+            $sql .= "AND LA.END_DATE<=TO_DATE('".$toDate."','DD-MM-YYYY')";
+        }
+
+        if ($employeeId != -1) {
+            $sql .= "AND E." . HrEmployees::EMPLOYEE_ID . " = $employeeId";
+        }
+        
+        if ($branchId != -1) {
+            $sql .= " AND E." . HrEmployees::EMPLOYEE_ID . " IN (SELECT " . HrEmployees::EMPLOYEE_ID . " FROM " . HrEmployees::TABLE_NAME . " WHERE " . HrEmployees::BRANCH_ID . "= $branchId)";
+        }
+        if ($departmentId != -1) {
+            $sql .= " AND E." . HrEmployees::EMPLOYEE_ID . " IN (SELECT " . HrEmployees::EMPLOYEE_ID . " FROM " . HrEmployees::TABLE_NAME . " WHERE " . HrEmployees::DEPARTMENT_ID . "= $departmentId)";
+        }
+        if ($designationId != -1) {
+            $sql .= " AND E." . HrEmployees::EMPLOYEE_ID . " IN (SELECT " . HrEmployees::EMPLOYEE_ID . " FROM " . HrEmployees::TABLE_NAME . " WHERE " . HrEmployees::DESIGNATION_ID . "= $designationId)";
+        }
+        if ($positionId != -1) {
+            $sql .= " AND E." . HrEmployees::EMPLOYEE_ID . " IN (SELECT " . HrEmployees::EMPLOYEE_ID . " FROM " . HrEmployees::TABLE_NAME . " WHERE " . HrEmployees::POSITION_ID . "= $positionId)";
+        }
+        if ($serviceTypeId != -1) {
+            $sql .= " AND E." . HrEmployees::EMPLOYEE_ID . " IN (SELECT " . HrEmployees::EMPLOYEE_ID . " FROM " . HrEmployees::TABLE_NAME . " WHERE " . HrEmployees::SERVICE_TYPE_ID . "= $serviceTypeId)";
+        }
+
+        $statement = $this->adapter->query($sql);
+        $result = $statement->execute();
+        return $result;
+    }
 
 }

@@ -8,7 +8,7 @@ $this->headScript()
 ?>
 
 <script>
-    document.menu =<?php $menu = ["id" => "menuAttendanceManagement", "subMenu" => ["id" => "subMenuAttendanceByHr"]];echo json_encode($menu);?>;
+    document.menu =<?php $menu = ["id" => "menuAttendance", "subMenu" => ["id" => "subMenuAttendanceByHr"]];echo json_encode($menu);?>;
     document.attendanceByHr=<?php echo json_encode($attendanceByHr); ?>
 </script>
 <div class="page-bar">

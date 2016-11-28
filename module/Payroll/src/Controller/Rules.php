@@ -39,8 +39,13 @@ class Rules extends AbstractActionController {
     }
 
     public function indexAction() {
+        $ruleList = $this->repository->fetchAll();
+        $rules = [];
+        foreach($ruleList as $ruleRow){
+            array_push($rules, $ruleRow);
+        }
         return Helper::addFlashMessagesToArray($this, [
-                    'rules' => $this->repository->fetchAll(),
+                    'rules' => $rules
         ]);
     }
 

@@ -1,9 +1,11 @@
 <?php
 $this->headScript()
-    ->appendFile($this->basePath('js/kendoDataTable.js'));
+    ->appendFile($this->basePath('telerik_kendoui/js/kendo.all.min.js'))
+    ->appendFile($this->basePath('js/Payroll/FlatValue/index.js'));
 ?>
 <script>
     document.menu =<?php $menu = ["id" => "menuPayroll", "subMenu" => ["id" => "subMenuFlatValue"],"subMenuChild"=>["id"=>"subMenuChildFlatValueSetup"]];echo json_encode($menu);?>;
+    document.flatValues=<?= json_encode($flatValues); ?>;
 </script>
 <?php if ($this->messages) { ?>
     <script>
@@ -46,57 +48,33 @@ $this->headScript()
             </div>
         </div>
     </div>
-    <table class="table" id="dataTable">
-        <thead>
+    <div id="flatValueTable">
+    </div>
+    
+    <script id="rowTemplate" type="text/x-kendo-tmpl">
         <tr>
-            <th>
-                Code
-            </th>
-            <th>
-                EDesc
-            </th>
-            <th>
-                LDesc
-            </th>
-            <th>
-                Show At Rule
-            </th>
-            <th>
-                Action
-            </th>
+        <td>
+        #: FLAT_CODE #
+        </td>
+        <td>
+        #: FLAT_EDESC #
+        </td>
+        <td>
+        #: FLAT_LDESC #
+        </td>
+        <td>
+        #: SHOW_AT_RULE #
+        </td>   
+        <td>
+        <a class=""
+        href="<?= $this->url("flatValue", ["action" => "edit"]); ?>/#:FLAT_ID #">
+        Edit
+        </a> | 
+         <a class=""
+        href="<?= $this->url("flatValue", ["action" => "delete"]); ?>/#:FLAT_ID #">
+        Delete
+        </a>
+        </td>
         </tr>
-        </thead>
-        <tbody>
-        <?php foreach ($flatValues as $flatValue): ?>
-            <tr role="row">
-                <td>
-                    <?php print $this->escapeHtml($flatValue['FLAT_CODE']); ?>
-                </td>
-                <td>
-                    <?php print $this->escapeHtml($flatValue['FLAT_EDESC']); ?>
-                </td>
-                <td>
-                    <?php print $this->escapeHtml($flatValue['FLAT_LDESC']); ?>
-                </td>
-                <td>
-                    <?php print $this->escapeHtml($constraint[$flatValue['SHOW_AT_RULE']]); ?>
-                </td>
-
-                <td>
-                    <a class=""
-                       href="<?= $this->url("flatValue", ["action" => "edit", "id" => $flatValue['FLAT_ID']]) ?>">
-                        Edit
-                    </a> /
-                    <a class=""
-                       href="<?= $this->url("flatValue", ["action" => "delete", "id" => $flatValue['FLAT_ID']]); ?>">
-                        Delete
-                    </a>
-
-                </td>
-            </tr>
-
-        <?php endforeach; ?>
-        </tbody>
-    </table>
-
+    </script>
     </div>

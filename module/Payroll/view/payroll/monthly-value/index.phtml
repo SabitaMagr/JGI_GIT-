@@ -1,9 +1,11 @@
 <?php
 $this->headScript()
-    ->appendFile($this->basePath('js/kendoDataTable.js'));
+    ->appendFile($this->basePath('telerik_kendoui/js/kendo.all.min.js'))
+    ->appendFile($this->basePath('js/Payroll/MonthlyValue/index.js'));
 ?>
 <script>
     document.menu =<?php $menu = ["id" => "menuPayroll", "subMenu" => ["id" => "subMenuMonthlyValue"], "subMenuChild" => ["id" => "subMenuChildMonthlyValSetup"]];echo json_encode($menu);?>;
+    document.monthlyValues = <?= json_encode($monthlyValues); ?>;
 </script>
 <?php if ($this->messages) { ?>
     <script>
@@ -46,63 +48,36 @@ $this->headScript()
             </div>
         </div>
     </div>
-    <table class="table" id="dataTable">
-        <thead>
+    <div id="monthlyValueTable">
+    </div>
+    
+    <script id="rowTemplate" type="text/x-kendo-tmpl">
         <tr>
-            <th>
-                Code
-            </th>
-            <th>
-                EDesc
-            </th>
-            <th>
-                NDesc
-            </th>
-            <th>
-                Show At Rule
-            </th>
-            <th>
-                Index No
-            </th>
-            <th>
-                Action
-            </th>
+        <td>
+        #: MTH_CODE #
+        </td>
+        <td>
+        #: MTH_EDESC #
+        </td>
+        <td>
+        #: MTH_LDESC #
+        </td>
+        <td>
+        #: SHOW_AT_RULE #
+        </td>
+        <td>
+        #: SH_INDEX_NO #
+        </td>
+        <td>
+        <a class=""
+        href="<?= $this->url("monthlyValue", ["action" => "edit"]); ?>/#:MTH_ID #">
+        Edit
+        </a> | 
+         <a class=""
+        href="<?= $this->url("monthlyValue", ["action" => "delete"]); ?>/#:MTH_ID #">
+        Delete
+        </a>
+        </td>
         </tr>
-        </thead>
-        <tbody>
-        <?php foreach ($monthlyValues as $monthlyValue): ?>
-            <tr role="row table-info">
-                <td>
-                    <?php print $this->escapeHtml($monthlyValue['MTH_CODE']); ?>
-                </td>
-                <td>
-                    <?php print $this->escapeHtml($monthlyValue['MTH_EDESC']); ?>
-                </td>
-                <td>
-                    <?php print $this->escapeHtml($monthlyValue['MTH_LDESC']); ?>
-                </td>
-                <td>
-                    <?php print $this->escapeHtml($constraint[$monthlyValue['SHOW_AT_RULE']]); ?>
-                </td>
-                <td>
-                    <?php print $this->escapeHtml($monthlyValue['SH_INDEX_NO']); ?>
-                </td>
-
-                <td>
-                    <a class=""
-                       href="<?= $this->url("monthlyValue", ["action" => "edit", "id" => $monthlyValue['MTH_ID']]) ?>">
-                        Edit
-                    </a> /
-                    <a class=""
-                       href="<?= $this->url("monthlyValue", ["action" => "delete", "id" => $monthlyValue['MTH_ID']]); ?>">
-                        Delete
-                    </a>
-
-                </td>
-            </tr>
-
-        <?php endforeach; ?>
-        </tbody>
-    </table>
-
+    </script>
 </div>

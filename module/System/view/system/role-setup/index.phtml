@@ -3,7 +3,8 @@
  * Load Javascript files here
  */
 $this->headScript()
-    ->appendFile($this->basePath('js/kendoDataTable.js'));
+    ->appendFile($this->basePath('telerik_kendoui/js/kendo.all.min.js'))
+    ->appendFile($this->basePath('js/system/role-setup/index.js'));
 ?>
 
 
@@ -16,6 +17,7 @@ if($this->messages) { ?>
 
 <script>
     document.menu =<?php $menu = ["id" => "menuSystem", "subMenu" => ["id" => "subMenuRoleSetup"]];echo json_encode($menu);?>;
+    document.roles=<?= json_encode($roles); ?>;
 </script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\rolesetup')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
@@ -51,51 +53,29 @@ if($this->messages) { ?>
             </div>
         </div>
     </div>
-    <table class="table" id="dataTable">
-        <thead>
-        <tr role="row">
-            <th>
-                S.N.
-            </th>
-            <th>
-                Role Name
-            </th>
-            <th>
-                Action
-            </th>
+ 
+    <div id="roleTable">
+    </div>
+    
+    <script id="rowTemplate" type="text/x-kendo-tmpl">
+        <tr>
+        <td>
+        #: SN #
+        </td>
+        <td>
+        #: ROLE_NAME #
+        </td>
+        <td>
+        <a class=""
+        href="<?= $this->url("rolesetup", ["action" => "edit"]); ?>/#:ROLE_ID #">
+        View
+        </a> | 
+         <a class=""
+        href="<?= $this->url("rolesetup", ["action" => "delete"]); ?>/#:ROLE_ID #">
+        Delete
+        </a>
+        </td>
         </tr>
-        </thead>
-        <tbody>
-
-        <?php
-        $i=1;
-        foreach ($list as $role): ?>
-            <tr role="row table-info">
-                <td>
-                    <?php print $i; ?>
-                </td>
-                <td>
-                    <?php print $this->escapeHtml($role->ROLE_NAME); ?>
-                </td>
-
-                <td>
-                    <a class=""
-                       href="<?= $this->url("rolesetup", ["action" => "edit", "id" => $role->ROLE_ID]) ?>">
-                        Edit
-                    </a> /
-                    <a class=""
-                       href="<?= $this->url("rolesetup", ["action" => "delete", "id" => $role->ROLE_ID]); ?>">
-                        Delete
-                    </a>
-
-                </td>
-            </tr>
-
-        <?php
-        $i+=1;
-        endforeach; ?>
-
-        </tbody>
-    </table>
+    </script>
 </div>
 

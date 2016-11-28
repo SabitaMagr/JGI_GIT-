@@ -36,8 +36,8 @@ class RoleSetupController extends AbstractActionController {
 
     public function indexAction()
     {
-        $list = $this->repository->fetchAll();
-        return Helper::addFlashMessagesToArray($this, ['list' => $list]);
+        $roles = $this->repository->fetchAll();
+        return Helper::addFlashMessagesToArray($this, ['roles' => $roles]);
     }
     public function addAction(){
         $request = $this->getRequest();

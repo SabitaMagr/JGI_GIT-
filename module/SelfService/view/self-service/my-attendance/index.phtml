@@ -3,7 +3,7 @@
  * Load Javascript files here
  */
 $this->headScript()
-    ->appendFile($this->basePath('js/kendoDataTable.js'));
+    ->appendFile($this->basePath('telerik_kendoui/js/kendo.all.min.js'));
 $this->headScript()->appendFile($this->basePath('js/angular.min.js'));
 $this->headScript()->appendFile($this->basePath('js/AttendanceManagement/attendance/index.js'));
 ?>
@@ -69,46 +69,29 @@ if ($this->messages) { ?>
                 </div>
             </div>
         </div>
-        <table class="table table-striped table-bordered table-hover no-footer">
-            <thead>
-            <tr role="row">
-                <th>
-                    Attendance Date
-                </th>
-                <th>
-                    Check In
-                </th>
-                <th>
-                    Check Out
-                </th>
-                <th>
-                    Late In Reason
-                </th>
-                <th>
-                    Early Out Reason
-                </th>
-
+        <div id="attendanceTable">
+        </div>
+        <script id="rowTemplate" type="text/x-kendo-tmpl">
+            <tr>
+                <td>
+                #: ATTENDANCE_DT #
+                </td>
+                <td>    
+                #: IN_TIME #
+                </td>
+                <td>
+                #: OUT_TIME #
+                </td>
+                <td>
+                #: TOTAL_HOUR #
+                </td>
+                <td>
+                #: IN_REMARKS #
+                </td>
+                <td>
+                #: OUT_REMARKS #
+                </td>
             </tr>
-            </thead>
-            <tbody>
-                <tr ng-repeat="attendanceDtl in attendanceList">
-                    <td ng-bind="attendanceDtl.ATTENDANCE_DT">
-                    </td>
-                    <td >
-                        <span ng-bind="attendanceDtl.IN_TIME"></span>
-                    </td>
-                    <td>
-                        <span ng-bind="attendanceDtl.OUT_TIME"></span>
-                    </td>
-                    <td >
-                        <span ng-bind="attendanceDtl.IN_REMARKS"></span>
-                    </td>
-                    <td>
-                        <span ng-bind="attendanceDtl.OUT_REMARKS"></span>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-
+        </script>
     </div>
 </div>

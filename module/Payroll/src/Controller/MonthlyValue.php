@@ -36,9 +36,17 @@ class MonthlyValue extends AbstractActionController
 
     public function indexAction()
     {
+        $constraint = ConstraintHelper::CONSTRAINTS['YN'];
+        $monthlyValueList = $this->repository->fetchAll();
+        $montlyValues = [];
+        foreach($monthlyValueList as $monthlyValueRow){
+            $showAtRule = $constraint[$monthlyValueRow['SHOW_AT_RULE']];
+            $rowRecord = $monthlyValueRow->getArrayCopy();
+            $new_row = array_merge($rowRecord,['SHOW_AT_RULE'=>$showAtRule]);
+            array_push($montlyValues, $new_row);            
+        }
         return Helper::addFlashMessagesToArray($this, [
-            'monthlyValues' => $this->repository->fetchAll(),
-            'constraint' => ConstraintHelper::CONSTRAINTS['YN']
+            'monthlyValues' => $montlyValues            
         ]);
     }
 

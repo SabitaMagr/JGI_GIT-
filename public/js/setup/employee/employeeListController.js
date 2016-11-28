@@ -1,4 +1,11 @@
 //angular.module('hris', ["kendo.directives"])
+(function ($, app) {
+    'use strict';
+    $(document).ready(function () {
+       $("select").select2();
+    });
+})(window.jQuery, window.app);
+
 angular.module('hris', [])
         .controller('employeeListController', function ($scope, $http) {
 //            $scope.gridData = new kendo.data.ObservableArray([
