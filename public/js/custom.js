@@ -1,5 +1,5 @@
 window.app = (function ($, toastr) {
-    'use strict';
+    "use strict";
     var format = "d-M-yyyy";
     // $('select').select2();
 
@@ -127,7 +127,7 @@ window.app = (function ($, toastr) {
                 action: 'pullEmployeeDetailById',
                 data: {employeeId: empId}
             }).then(function (success) {
-                console.log(success);
+                console.log("profile detail response", success);
                 this.data.firstName = success.data['FIRST_NAME'];
                 this.data.middleName = (success.data['MIDDLE_NAME'] == null) ? "" : success.data['MIDDLE_NAME'];
                 this.data.lastName = success.data['LAST_NAME'];
@@ -148,7 +148,7 @@ window.app = (function ($, toastr) {
                 this.data.serviceEventType = (success.data['SERVICE_EVENT_TYPE'] == null) ? "" : success.data['SERVICE_EVENT_TYPE'];
 
                 this.data.mobileNo = (success.data['MOBILE_NO'] == null) ? "" : success.data['MOBILE_NO'];
-                this.data.imageFilePath = (success.data['FILE_PATH'] = null) ? "" : success.data['FILE_PATH'];
+                this.data.imageFilePath = (success.data['FILE_NAME'] == null) ? "" : success.data['FILE_NAME'];
 
                 this.refreshView();
                 this.show();

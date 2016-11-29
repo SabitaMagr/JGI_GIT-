@@ -6,15 +6,16 @@
     right:0;
     margin: 10px;
     width: 250px;
-    height: 400px;
+    height: 350px;
     background-color: whitesmoke;
     z-index: 1000;
 }
 
 .profile-image{
-    margin-top: 10px;
-    width: 80px;
-    margin-left: 50px;
+    display: inline-block;
+    text-align: center;
+    max-width: 61%;
+    margin-left: 20%;
 }
 
 .profile-body{
@@ -30,6 +31,6 @@
 }
 
 #myWindow {
-  width: 400px;
-  overflow-x: scroll;
+    width: 400px;
+    overflow-x: scroll;
 }
