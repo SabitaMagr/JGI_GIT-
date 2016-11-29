@@ -2,6 +2,7 @@
 
 namespace Setup;
 
+use Application\Helper\SessionHelper;
 use Zend\ModuleManager\Feature\ConfigProviderInterface;
 use Zend\Mvc\ModuleRouteListener;
 use Zend\Mvc\MvcEvent;
@@ -25,7 +26,7 @@ class Module implements ConfigProviderInterface {
     }
 
     function beforeDispatch(MvcEvent $event) {
-        \Application\Helper\SessionHelper::sessionCheck($event);
+        SessionHelper::sessionCheck($event);
     }
 
 }
