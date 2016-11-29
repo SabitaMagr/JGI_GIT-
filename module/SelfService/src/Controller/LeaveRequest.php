@@ -94,8 +94,16 @@ class LeaveRequest extends AbstractActionController {
             $approvedBy = $empRecommendApprove['APPROVED_BY'];
         } else {
             $result = $this->recommendApproveList();
-            $recommendBy = $result['recommender'][0]['id'];
-            $approvedBy = $result['approver'][0]['id'];
+            if(count($result['recommender'])>0){
+                $recommendBy=$result['recommender'][0]['id'];
+            }else{
+                $recommendBy=null;
+            }
+            if(count($result['approver'])>0){
+                $approvedBy=$result['approver'][0]['id'];
+            }else{
+                $approvedBy=null;
+            } 
         }
 
         $leaveFormElement = new Select();

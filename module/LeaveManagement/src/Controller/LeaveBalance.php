@@ -149,8 +149,16 @@ class LeaveBalance extends AbstractActionController {
             $approvedBy = $empRecommendApprove['APPROVED_BY'];
         }else{
             $result = $this->recommendApproveList($employeeId);
-            $recommendBy=$result['recommender'][0]['id'];
-            $approvedBy=$result['approver'][0]['id'];
+            if(count($result['recommender'])>0){
+                $recommendBy=$result['recommender'][0]['id'];
+            }else{
+                $recommendBy=null;
+            }
+            if(count($result['approver'])>0){
+                $approvedBy=$result['approver'][0]['id'];
+            }else{
+                $approvedBy=null;
+            }           
         }
         
         if($request->isPost()){
@@ -172,7 +180,7 @@ class LeaveBalance extends AbstractActionController {
 
                 $this->leaveRequestRepository->add($leaveRequest);
                 $this->flashmessenger()->addMessage("Leave Request Successfully added!!!");
-                return $this->redirect()->toRoute("leavestatus");
+                return $this->redirect()->toRoute("leavebalance");
             }
         }
 

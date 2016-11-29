@@ -39,6 +39,7 @@ angular.module('hris', [])
                         'toDate':toDate
                     }
                 }).then(function (success) {
+                    console.log(success.data);
                     $scope.initializekendoGrid(success.data);
                 }, function (failure) {
                     console.log(failure);
