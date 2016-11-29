@@ -107,19 +107,21 @@ echo json_encode($menu);
     <script id="rowTemplate" type="text/x-kendo-tmpl">
         <tr>
         <td>    
-        #: employeeCode #
+        #: (employeeCode == null) ? '-' : employeeCode #
         </td>
         <td>
-        #: firstName #  #: middleName # #: lastName #
+            #: (firstName == null) ? ' ' : firstName #
+            #: (middleName == null) ? ' ' : middleName #
+            #: (lastName == null) ? ' ' : lastName #
         </td>
         <td>
-        #: birthDate #
+        #: (birthDate == null) ? '-' : birthDate #
         </td>
         <td>
-        #: mobileNo #
+        #: (mobileNo == null) ? '-' : mobileNo #
         </td>
         <td>
-        #: emailOfficial #
+        #: (emailOfficial == null) ? '-' : emailOfficial #
         </td>
         <td>
         <a href="<?= $this->url("employee", ["action" => "edit"]) ?>/#:employeeId#/1"> Edit

@@ -62,19 +62,19 @@ echo json_encode($menu);
     <script id="rowTemplate" type="text/x-kendo-tmpl">
     <tr>
         <td>    
-            #: BRANCH_CODE #
+            #: (BRANCH_CODE == null) ? '-' : BRANCH_CODE #
             </td>
-        <td>
-            #: BRANCH_NAME #  
+        <td> 
+            #: (BRANCH_NAME == null) ? '-' : BRANCH_NAME #
         </td>
         <td>
-            #: STREET_ADDRESS #
+            #: (STREET_ADDRESS == null) ? '-' : STREET_ADDRESS #
         </td>
         <td>
-            #: TELEPHONE #
+            #: (TELEPHONE == null) ? '-' : TELEPHONE #
         </td>
         <td>
-        #: EMAIL #
+            #: (EMAIL == null) ? '-' : EMAIL #
         </td>
         <td>
             <a class            =""

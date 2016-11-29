@@ -61,10 +61,10 @@ if($this->messages) { ?>
     <script id="rowTemplate" type="text/x-kendo-tmpl">
         <tr>
         <td>
-        #:ACADEMIC_DEGREE_CODE # 
+        #: (ACADEMIC_DEGREE_CODE == null) ? '-' : ACADEMIC_DEGREE_CODE #
         </td>
         <td>
-        #: ACADEMIC_DEGREE_NAME #
+        #: (ACADEMIC_DEGREE_NAME == null) ? '-' : ACADEMIC_DEGREE_NAME #
         </td>
         <td>
         #: WEIGHT #

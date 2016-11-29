@@ -60,16 +60,16 @@ if($this->messages) { ?>
     <script id="rowTemplate" type="text/x-kendo-tmpl">
         <tr>
         <td>    
-        #: DESIGNATION_CODE #
+        #: (DESIGNATION_CODE == null) ? '-' : DESIGNATION_CODE #
+        </td>
+        <td> 
+        #: (DESIGNATION_TITLE == null) ? '-' : DESIGNATION_TITLE #
         </td>
         <td>
-        #: DESIGNATION_TITLE #  
+        #: (PARENT_DESIGNATION_TITLE == null) ? '-' : PARENT_DESIGNATION_TITLE #
         </td>
         <td>
-        #: PARENT_DESIGNATION_TITLE #
-        </td>
-        <td>
-        #: BASIC_SALARY #
+        #: (BASIC_SALARY == null) ? '-' : BASIC_SALARY #
         </td>
         <td>
         <a class=""
