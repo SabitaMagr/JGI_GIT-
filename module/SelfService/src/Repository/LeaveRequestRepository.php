@@ -129,5 +129,58 @@ class LeaveRequestRepository implements RepositoryInterface {
         $result = $statement->execute();
         return $result->current();
     }
+    
+    public function getfilterRecords($data){
+        $employeeId = $data['employeeId'];
+        $leaveId = $data['leaveId'];
+        $leaveRequestStatusId = $data['leaveRequestStatusId'];
+        $fromDate = $data['fromDate'];
+        $toDate = $data['toDate'];
+        
+        $sql = new Sql($this->adapter);
+        $select = $sql->select();
+        $select->columns([
+            new Expression("TO_CHAR(LA.START_DATE, 'DD-MON-YYYY') AS FROM_DATE"),
+            new Expression("TO_CHAR(LA.END_DATE, 'DD-MON-YYYY') AS TO_DATE"),
+            new Expression("LA.STATUS AS STATUS"),
+            new Expression("LA.NO_OF_DAYS AS NO_OF_DAYS"),
+            new Expression("LA.ID AS ID"),
+                ], true);
+
+        $select->from(['LA' => LeaveApply::TABLE_NAME])
+                ->join(['E' => "HR_EMPLOYEES"], "E.EMPLOYEE_ID=LA.EMPLOYEE_ID", ['FIRST_NAME', 'MIDDLE_NAME', 'LAST_NAME'])
+                ->join(['L' => 'HR_LEAVE_MASTER_SETUP'], "L.LEAVE_ID=LA.LEAVE_ID", ['LEAVE_CODE', 'LEAVE_ENAME']);
+
+        $select->where([
+            "L.STATUS='E'",
+            "E.EMPLOYEE_ID=" . $employeeId
+        ]);
+        
+        if($leaveId!=-1){
+           $select->where([
+                "LA.LEAVE_ID=" . $leaveId
+            ]);  
+        }
+        if($leaveRequestStatusId!=-1){
+            $select->where([
+                "LA.STATUS='" . $leaveRequestStatusId."'"
+            ]);
+        }
+        
+        if($fromDate!=null){
+            $select->where([
+                "LA.START_DATE>=TO_DATE('".$fromDate."','DD-MM-YYYY')"
+            ]);
+        }
+        if($toDate!=null){
+            $select->where([
+                "LA.END_DATE<=TO_DATE('".$toDate."','DD-MM-YYYY')"
+            ]);
+        }
+
+        $statement = $sql->prepareStatementForSqlObject($select);
+        $result = $statement->execute();
+        return $result;
+    }
 
 }

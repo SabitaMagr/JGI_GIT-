@@ -3,59 +3,93 @@
  * Load Javascript files here
  */
 $this->headScript()
-    ->appendFile($this->basePath('telerik_kendoui/js/kendo.all.min.js'))
-    ->appendFile($this->basePath('js/SelfService/leave-request/index.js'));
+        ->appendFile($this->basePath('telerik_kendoui/js/kendo.all.min.js'))
+        ->appendFile($this->basePath('js/angular.min.js'))
+        ->appendFile($this->basePath('js/SelfService/leave-request/index.js'));
 ?>
 
 <script>
-    document.menu =<?php $menu = ["id" => "menuSelfService", "subMenu" => ["id" => "subMenuLeaveApply"]];echo json_encode($menu);?>;
-    document.leaveRequest=<?= json_encode($leaveRequest); ?>;
+    document.menu =<?php $menu = ["id" => "menuSelfService", "subMenu" => ["id" => "subMenuLeaveApply"]];
+echo json_encode($menu); ?>;
+    document.url = '<?= $this->url("restful", ["action" => "index"]) ?>';
 </script>
 <div class="page-bar">
-    <?= $this->navigation('Zend\Navigation\leaverequest')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
+<?= $this->navigation('Zend\Navigation\leaverequest')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
-<?php
-if($this->messages) { ?>
+<?php if ($this->messages) { ?>
     <script>
-        document.messages=<?php echo json_encode($this->messages); ?>
+        document.messages =<?php echo json_encode($this->messages); ?>
     </script>
 <?php } ?>
 
-<div class="margin-top-20">
-    <div class="table-toolbar">
-        <div class="row">
-            <div class="col-md-6">
-                <div class="btn-group">
-                    <a href="<?= $this->url('leaverequest', ['action' => 'add']) ?>" id="sample_editable_1_new"
-                       class="btn green">Apply For Leave
-                        <!--                        <i class="fa fa-plus"></i>-->
-                    </a>
-                </div>
+<div ng-app="hris" ng-controller="leaveRequestListController">
+    <div class="row margin-top-20">
+        <div class="col-sm-2">
+            <?php print $this->formLabel($leaves); ?>
+            <?php print $this->formElement($leaves); ?>
+        </div>
+        <div class="col-sm-2">
+            <?php print $this->formLabel($leaveStatus); ?>
+            <?php print $this->formElement($leaveStatus); ?>
+        </div>    
+        <div class="col-sm-2">
+            <label for="fromDate">From Date</label>
+            <input type="hidden" id="employeeId" value="<?php echo $employeeId; ?>"/>
+            <div class="input-group date" id="fromDate">
+                <input type="text" placeholder="From Date" id="fromDate1" name="fromDate" ng-model="fromDate" class="form-control"/>
+                <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
             </div>
-            <div class="col-md-6">
-                <div class="btn-group pull-right">
-                    <button class="btn green btn-outline dropdown-toggle" data-toggle="dropdown">Tools
-                        <i class="fa fa-angle-down"></i>
-                    </button>
-                    <ul class="dropdown-menu pull-right">
-                        <li>
-                            <a href="javascript:;"> Print </a>
-                        </li>
-                        <li>
-                            <a href="javascript:;"> Save as PDF </a>
-                        </li>
-                        <li>
-                            <a href="javascript:;"> Export to Excel </a>
-                        </li>
-                    </ul>
+        </div>
+        <div class="col-sm-2">
+            <label for="toDate">To Date</label>
+            <div class="input-group date" id="toDate">
+                <input type="text" placeholder="To Date" id="toDate1" name="toDate" ng-model="toDate" class="form-control"/>
+                <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+            </div>
+        </div>
+        <div class="col-sm-2">
+            <label height="45"></label>
+            <button ng-click="view()" id="viewLeaveRequestStatus" class="btn btn-sm yellow form-control">
+                Search
+                <i class="fa fa-search"></i>
+            </button>
+        </div>
+    </div>
+    <div class="margin-top-20">
+        <div class="table-toolbar">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="btn-group">
+                        <a href="<?= $this->url('leaverequest', ['action' => 'add']) ?>" id="sample_editable_1_new"
+                           class="btn green">Apply For Leave
+                            <!--                        <i class="fa fa-plus"></i>-->
+                        </a>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="btn-group pull-right">
+                        <button class="btn green btn-outline dropdown-toggle" data-toggle="dropdown">Tools
+                            <i class="fa fa-angle-down"></i>
+                        </button>
+                        <ul class="dropdown-menu pull-right">
+                            <li>
+                                <a href="javascript:;"> Print </a>
+                            </li>
+                            <li>
+                                <a href="javascript:;"> Save as PDF </a>
+                            </li>
+                            <li>
+                                <a href="javascript:;"> Export to Excel </a>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-    
-    <div id="leaveRequestTable">
-    </div>
-    
+
+        <div id="leaveRequestTable">
+        </div>
+    </div> 
     <script id="rowTemplate" type="text/x-kendo-tmpl">
         <tr>
         <td>

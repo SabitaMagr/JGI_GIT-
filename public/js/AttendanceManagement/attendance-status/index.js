@@ -38,11 +38,6 @@ angular.module('hris', [])
                     }
                 }).then(function (success) {
                     $scope.initializekendoGrid(success.data);
-//                    if (success.num > 0) {
-//                        $scope.initializekendoGrid(success.data);
-//                    }else{
-//                        
-//                    }
                 }, function (failure) {
                     console.log(failure);
                 });

@@ -21,6 +21,7 @@ use Setup\Helper\EntityHelper;
 use SelfService\Model\AttendanceRequestModel;
 use Setup\Repository\EmployeeRepository;
 use Setup\Repository\RecommendApproveRepository;
+use Zend\Form\Element\Select;
 
 class AttendanceRequest extends AbstractActionController {
 
@@ -46,25 +47,22 @@ class AttendanceRequest extends AbstractActionController {
     }
 
     public function indexAction() {
-        $attendanceList = $this->repository->fetchByEmpId($this->employeeId);
-        $attendanceRequest = [];
-        $getValue = function($status) {
-            if ($status == "RQ") {
-                return "Pending";
-            } else if ($status == "R") {
-                return "Rejected";
-            } else if ($status == "AP") {
-                return "Approved";
-            } else if ($status == "C") {
-                return "Cancelled";
-            }
-        };
-        foreach ($attendanceList as $attendanceRow) {
-            $status = $getValue($attendanceRow['STATUS']);
-            $new_row = array_merge($attendanceRow,['A_STATUS'=>$status]);
-            array_push($attendanceRequest, $new_row);
-        }
-        return Helper::addFlashMessagesToArray($this, ['attendanceRequest' => $attendanceRequest]);
+        $attendanceStatus = [
+            '-1'=>'All',
+            'RQ'=>'Pending',
+            'AP'=>'Approved',
+            'R'=>'Rejected'
+        ];
+        $attendanceStatusFormElement = new Select();
+        $attendanceStatusFormElement->setName("attendanceStatus");
+        $attendanceStatusFormElement->setValueOptions($attendanceStatus);
+        $attendanceStatusFormElement->setAttributes(["id" => "attendanceRequestStatusId", "class" => "form-control"]);
+        $attendanceStatusFormElement->setLabel("Attendance Request Status");
+
+        return Helper::addFlashMessagesToArray($this, [
+            'attendanceStatus'=>$attendanceStatusFormElement,
+            'employeeId'=>$this->employeeId
+                ]);
     }
 
     public function addAction() {
