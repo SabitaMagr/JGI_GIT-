@@ -90,22 +90,22 @@ echo json_encode($menu); ?>;
         <script id="rowTemplate" type="text/x-kendo-tmpl">
             <tr>
             <td>
-            #: ATTENDANCE_DT #
+            #: (ATTENDANCE_DT == null) ? '-' : ATTENDANCE_DT #
             </td>
             <td>
-            #: IN_TIME #
+            #: (IN_TIME == null) ? '-' : IN_TIME #
             </td>
             <td>
-            #: OUT_TIME #
+            #: (OUT_TIME == null) ? '-' : OUT_TIME #
             </td>
             <td>
-            #: IN_REMARKS #
+            #: (IN_REMARKS == null) ? '-' : IN_REMARKS #
             </td>
             <td>
-            #: OUT_REMARKS #
+            #: (OUT_REMARKS == null) ? '-' : OUT_REMARKS #
             </td>
             <td>
-            #: A_STATUS #
+            #: (A_STATUS == null) ? '-' : A_STATUS #
             </td>
             <td>
             <a class=""

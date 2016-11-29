@@ -228,6 +228,14 @@ class WebServiceController extends AbstractActionController
                             }
                         }
                     }
+                    if(count($recommender)==0){
+                        $recommender[0]["id"]=" ";
+                        $recommender[0]["name"]="--";
+                    }
+                    if(count($approver)==0){
+                        $approver[0]["id"]=" ";
+                        $approver[0]["name"]="--";
+                    }
                     $responseData = [
                         "success" => true,
                         "recommender" => $recommender,

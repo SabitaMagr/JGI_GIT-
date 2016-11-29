@@ -52,25 +52,27 @@ if($this->messages) { ?>
     <script id="rowTemplate" type="text/x-kendo-tmpl">
         <tr>
         <td>
-        #:FIRST_NAME #  #:MIDDLE_NAME # #:LAST_NAME #
+        #: (FIRST_NAME == null) ? ' ' : FIRST_NAME #
+        #: (MIDDLE_NAME == null) ? ' ' : MIDDLE_NAME #
+        #: (LAST_NAME == null) ? ' ' : LAST_NAME #
         </td>
         <td>
-        #: ATTENDANCE_DT #
+        #: (ATTENDANCE_DT == null) ? '-' : ATTENDANCE_DT #
         </td>
         <td>
-        #: IN_TIME #
+        #: (IN_TIME == null) ? '-' : IN_TIME #
         </td>
         <td>
-        #: OUT_TIME #
+        #: (OUT_TIME == null) ? '-' : OUT_TIME #
         </td>
         <td>
-        #: IN_REMARKS #
+        #: (IN_REMARKS == null) ? '-' : IN_REMARKS #
         </td>
         <td>
-        #: OUT_REMARKS #
+        #: (OUT_REMARKS == null) ? '-' : OUT_REMARKS #
         </td>
         <td>
-        #: YOUR_ROLE #
+        #: (YOUR_ROLE == null) ? '-' : YOUR_ROLE #
         </td>
         <td>
         <a class=""

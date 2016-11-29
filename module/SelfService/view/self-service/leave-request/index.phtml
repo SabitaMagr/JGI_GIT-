@@ -93,22 +93,22 @@ echo json_encode($menu); ?>;
     <script id="rowTemplate" type="text/x-kendo-tmpl">
         <tr>
         <td>
-        #: LEAVE_CODE #
+        #: (LEAVE_CODE == null) ? '-' : LEAVE_CODE #
         </td>
         <td>
-        #: LEAVE_ENAME #
+        #: (LEAVE_ENAME == null) ? '-' : LEAVE_ENAME #
         </td>
         <td>
-        #: FROM_DATE #
+        #: (FROM_DATE == null) ? '-' : FROM_DATE #
         </td>
         <td>
-        #: TO_DATE #
+        #: (TO_DATE == null) ? '-' : TO_DATE #
         </td>
         <td>
-        #: NO_OF_DAYS #
+        #: (NO_OF_DAYS == null) ? '-' : NO_OF_DAYS #
         </td>
         <td>
-        #: STATUS #
+        #: (STATUS == null) ? '-' : STATUS #
         </td>
         <td>
         <a class=""
