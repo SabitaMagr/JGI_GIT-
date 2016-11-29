@@ -59,16 +59,16 @@ if($this->messages) { ?>
     <script id="rowTemplate" type="text/x-kendo-tmpl">
         <tr>
         <td>
-        #:SHIFT_CODE # 
+        #: (SHIFT_CODE == null) ? '-' : SHIFT_CODE #
         </td>
         <td>
-        #: SHIFT_ENAME #
+        #: (SHIFT_ENAME == null) ? '-' : SHIFT_ENAME #
         </td>
         <td>
-        #: START_TIME #
+        #: (START_TIME == null) ? '-' : START_TIME #
         </td>
         <td>
-        #: END_TIME #
+        #: (END_TIME == null) ? '-' : END_TIME #
         </td>
         <td>
         <a class=""

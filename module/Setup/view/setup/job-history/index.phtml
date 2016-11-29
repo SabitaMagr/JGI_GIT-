@@ -107,19 +107,19 @@ echo json_encode($menu); ?>;
                 #: (SERVICE_EVENT_TYPE_NAME == null) ? '-' : SERVICE_EVENT_TYPE_NAME #
                 </td>
                 <td>
-                #: (FROM_SERVICE_NAME == null) ? '-' : FROM_SERVICE_NAME # - #: (TO_SERVICE_NAME == null) ? '-' : TO_SERVICE_NAME #
+                #: (FROM_SERVICE_NAME == null) ? ' ' : FROM_SERVICE_NAME # - #: (TO_SERVICE_NAME == null) ? ' ' : TO_SERVICE_NAME #
                 </td>
                 <td>
-                #: (FROM_BRANCH_NAME == null) ? '-' : FROM_BRANCH_NAME # - #: (TO_BRANCH_NAME == null) ? '-' : TO_BRANCH_NAME #
+                #: (FROM_BRANCH_NAME == null) ? ' ' : FROM_BRANCH_NAME # - #: (TO_BRANCH_NAME == null) ? ' ' : TO_BRANCH_NAME #
                 </td>
                 <td>
-                #: (FROM_DEPARTMENT_NAME == null) ? '-' : FROM_DEPARTMENT_NAME # - #: (TO_DEPARTMENT_NAME == null) ? '-' : TO_DEPARTMENT_NAME #
+                #: (FROM_DEPARTMENT_NAME == null) ? ' ' : FROM_DEPARTMENT_NAME # - #: (TO_DEPARTMENT_NAME == null) ? ' ' : TO_DEPARTMENT_NAME #
                 </td>
                 <td>
-                 #: (FROM_DESIGNATION_TITLE == null) ? '-' : FROM_DESIGNATION_TITLE # - #: (TO_DESIGNATION_TITLE == null) ? '-' : TO_DESIGNATION_TITLE #
+                 #: (FROM_DESIGNATION_TITLE == null) ? ' ' : FROM_DESIGNATION_TITLE # - #: (TO_DESIGNATION_TITLE == null) ? ' ' : TO_DESIGNATION_TITLE #
                 </td>
                 <td>
-                 #: (FROM_POSITION_NAME == null) ? '-' : FROM_POSITION_NAME # - #: (TO_POSITION_NAME == null) ? '-' : TO_POSITION_NAME #
+                 #: (FROM_POSITION_NAME == null) ? ' ' : FROM_POSITION_NAME # - #: (TO_POSITION_NAME == null) ? ' ' : TO_POSITION_NAME #
                 </td>
                 <td>
                 <a href="<?= $this->url("jobHistory", ["action" => "edit"])?>/#: JOB_HISTORY_ID #">

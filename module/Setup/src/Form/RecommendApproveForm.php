@@ -23,7 +23,7 @@ class RecommendApproveForm
      * @Annotation\Type("Zend\Form\Element\Select")
      * @Annotation\Required({"required":"true"})
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
-     * @Annotation\Validator({"name":"StringLength", "options":{"min":"5"}})
+     * @Annotation\Validator({"name":"NotEmpty"})
      * @Annotation\Options({"disable_inarray_validator":"true","label":"Recommender"})
      * @Annotation\Attributes({ "id":"recommendBy","class":"form-control"})
      */
@@ -31,9 +31,8 @@ class RecommendApproveForm
 
     /**
      * @Annotation\Type("Zend\Form\Element\Select")
-     * @Annotation\Required({"required":"true"})
+     * @Annotation\Required(false)
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
-     * @Annotation\Validator({"name":"StringLength", "options":{"min":"5"}})
      * @Annotation\Options({"disable_inarray_validator":"true","label":"Approver"})
      * @Annotation\Attributes({ "id":"approvedBy","class":"form-control"})
      */

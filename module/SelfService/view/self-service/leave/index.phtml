@@ -54,19 +54,19 @@ if($this->messages) { ?>
     <script id="rowTemplate" type="text/x-kendo-tmpl">
         <tr>
         <td>
-        #: LEAVE_CODE #
+        #: (LEAVE_CODE == null) ? '-' : LEAVE_CODE #
         </td>
         <td>
-        #: LEAVE_ENAME #
+        #: (LEAVE_ENAME == null) ? '-' : LEAVE_ENAME #
         </td>
         <td>
-        #: TOTAL_DAYS #
+        #: (TOTAL_DAYS == null) ? '-' : TOTAL_DAYS #
         </td>
         <td>
-        #: LEAVE_TAKEN #
+        #: (LEAVE_TAKEN == null) ? '-' : LEAVE_TAKEN #
         </td>
         <td>
-        #: BALANCE #
+        #: (BALANCE == null) ? '-' : BALANCE #
         </td>
         </tr>
     </script>

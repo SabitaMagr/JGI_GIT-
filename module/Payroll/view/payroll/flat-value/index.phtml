@@ -54,16 +54,16 @@ $this->headScript()
     <script id="rowTemplate" type="text/x-kendo-tmpl">
         <tr>
         <td>
-        #: FLAT_CODE #
+        #: (FLAT_CODE == null) ? '-' : FLAT_CODE #
         </td>
         <td>
-        #: FLAT_EDESC #
+        #: (FLAT_EDESC == null) ? '-' : FLAT_EDESC #
         </td>
         <td>
-        #: FLAT_LDESC #
+        #: (FLAT_LDESC == null) ? '-' : FLAT_LDESC #
         </td>
         <td>
-        #: SHOW_AT_RULE #
+        #: (SHOW_AT_RULE == null) ? '-' : SHOW_AT_RULE #
         </td>   
         <td>
         <a class=""

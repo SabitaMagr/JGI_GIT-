@@ -19,8 +19,7 @@ angular.module('hris', [])
                         $scope.recommenderSelected = $scope.recommenderOptions[0];
 
                         $scope.approverOptions = success.approver;
-                        $scope.approverSelected = $scope.approverOptions[0];
-
+                        $scope.approverSelected = $scope.approverOptions[0]; 
                     });
                 }, function (failure) {
                     console.log(failure);

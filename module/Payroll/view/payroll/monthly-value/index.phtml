@@ -54,19 +54,19 @@ $this->headScript()
     <script id="rowTemplate" type="text/x-kendo-tmpl">
         <tr>
         <td>
-        #: MTH_CODE #
+        #: (MTH_CODE == null) ? '-' : MTH_CODE #
         </td>
         <td>
-        #: MTH_EDESC #
+        #: (MTH_EDESC == null) ? '-' : MTH_EDESC #
         </td>
         <td>
-        #: MTH_LDESC #
+        #: (MTH_LDESC == null) ? '-' : MTH_LDESC #
         </td>
         <td>
-        #: SHOW_AT_RULE #
+        #: (SHOW_AT_RULE == null) ? '-' : SHOW_AT_RULE #
         </td>
         <td>
-        #: SH_INDEX_NO #
+        #: (SH_INDEX_NO == null) ? '-' : SH_INDEX_NO #
         </td>
         <td>
         <a class=""
