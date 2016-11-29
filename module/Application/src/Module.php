@@ -78,7 +78,7 @@ class Module implements AutoloaderProviderInterface, ConsoleUsageProviderInterfa
 
         $auth = new AuthenticationService();
         $roleId = $auth->getStorage()->read()['role_id'];
-
+        
         if ($roleId != null) {
             $adapter = $app->getServiceManager()->get(DbAdapterInterface::class);
             $repository = new RolePermissionRepository($adapter);

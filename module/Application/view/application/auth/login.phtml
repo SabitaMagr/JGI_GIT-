@@ -5,7 +5,6 @@
  * Date: 7/20/16
  * Time: 4:15 PM
  */
-
 $form->setAttribute('role', 'form');
 $form->setAttribute('class', 'login-form');
 
@@ -32,23 +31,25 @@ $form->prepare();
 
 print $this->form()->openTag($form);
 ?>
-<?php
-if ($this->messages) {
-    print '<ul class="help-block bg-danger" style="background:#f3e250;">';
-    foreach ($this->messages as $message) {
-        print '<li>' . $message . '</li>';
-    }
-    print '</ul>';
-}
-?>
 <div class="form-title">
-    <span class="form-title">Welcome.</span>
-    <span class="form-subtitle">Please login.</span>
+    <?php
+    if ($this->messages) {
+        foreach ($this->messages as $message) {
+            print '<span class="form-subtitle">' . $message . '</span>';
+            print '<span class="form-subtitle">Please login to continue.</span>';
+        }
+    } else {
+        ?>
+        <span class="form-title">Welcome.</span>
+        <span class="form-subtitle">Please login.</span>
+        <?php
+    }
+    ?>
 </div>
 <div class="alert alert-danger display-hide">
     <button class="close" data-close="alert"></button>
     <span>
-			Enter any username and password.
+        Enter any username and password.
     </span>
 </div>
 <div class="form-group">

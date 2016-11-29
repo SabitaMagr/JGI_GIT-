@@ -2,14 +2,13 @@
 
 namespace Application\Controller;
 
-use Zend\Mvc\Application;
-use Zend\Mvc\Controller\AbstractActionController;
-use Zend\Form\Annotation\AnnotationBuilder;
-use Zend\View\Model\ViewModel;
-use Application\Model\User;
 use Application\Model\HrisAuthStorage;
+use Application\Model\User;
 use Zend\Authentication\AuthenticationService;
 use Zend\EventManager\EventManagerInterface;
+use Zend\Form\Annotation\AnnotationBuilder;
+use Zend\Mvc\Controller\AbstractActionController;
+use Zend\View\Model\ViewModel;
 
 class AuthController extends AbstractActionController {
 
