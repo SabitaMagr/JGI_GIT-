@@ -64,9 +64,10 @@ class DashboardController extends AbstractActionController {
             ];
         }
 
-        return new ViewModel([
-            'dashboardItems' => $itemDetail
-        ]);
+        return new ViewModel(
+                Helper::addFlashMessagesToArray($this, [
+                    'dashboardItems' => $itemDetail
+        ]));
     }
 
     public function getDashBoardData($item, $roleType) {
