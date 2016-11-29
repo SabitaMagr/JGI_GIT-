@@ -65,7 +65,7 @@ $form->prepare();
 
                     <div class="form-group">
                         <?php print $this->formLabel($approvedBy); ?>
-                        <select name="approvedBy" id="approvedBy" class="form-control" ng-options="approve.name for approve in approverOptions track by approve.id" ng-model="approverSelected">
+                        <select name="approvedBy" required="required" id="approvedBy" class="form-control" ng-options="approve.name for approve in approverOptions track by approve.id" ng-model="approverSelected">
                         </select>
                         <?php print $this->formElementErrors()->render($approvedBy, ['class' => 'help-block']); ?>
                     </div>

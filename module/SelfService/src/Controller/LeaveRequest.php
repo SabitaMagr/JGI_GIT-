@@ -24,6 +24,7 @@ use Zend\Form\Element\Select;
 use Setup\Repository\RecommendApproveRepository;
 use Setup\Repository\EmployeeRepository;
 use LeaveManagement\Repository\LeaveMasterRepository;
+use LeaveManagement\Model\LeaveMaster;
 
 class LeaveRequest extends AbstractActionController {
 
@@ -51,35 +52,33 @@ class LeaveRequest extends AbstractActionController {
     }
 
     public function indexAction() {
-        $leaveRequestList = $this->leaveRequestRepository->selectAll($this->employeeId);
-        $leaveRequest = [];
-        $getValue = function($status) {
-            if ($status == "RQ") {
-                return "Pending";
-            } else if ($status == 'RC') {
-                return "Recommended";
-            } else if ($status == "R") {
-                return "Rejected";
-            } else if ($status == "AP") {
-                return "Approved";
-            } else if ($status == "C") {
-                return "Cancelled";
-            }
-        };
-        $getAction = function($status){
-          if ($status == "RQ") {
-                return ["delete"=>'Cancel Request'];
-            }else{
-                return ["view"=>'View'];
-            }  
-        };
-        foreach ($leaveRequestList as $leaveRequestRow) {
-            $status = $getValue($leaveRequestRow['STATUS']);
-            $action = $getAction($leaveRequestRow['STATUS']);
-            $new_row = array_merge($leaveRequestRow,['STATUS'=>$status,'ACTION'=>key($action),'ACTION_TEXT'=>$action[key($action)]]);
-            array_push($leaveRequest, $new_row);
-        }
-        return Helper::addFlashMessagesToArray($this, ['leaveRequest' => $leaveRequest]);
+        $leaveFormElement = new Select();
+        $leaveFormElement->setName("leave");
+        $leaves = \Application\Helper\EntityHelper::getTableKVList($this->adapter, LeaveMaster::TABLE_NAME, LeaveMaster::LEAVE_ID, [LeaveMaster::LEAVE_ENAME], [LeaveMaster::STATUS => 'E']);
+        $leaves[-1] = "All";
+        ksort($leaves);
+        $leaveFormElement->setValueOptions($leaves);
+        $leaveFormElement->setAttributes(["id" => "leaveId", "class" => "form-control"]);
+        $leaveFormElement->setLabel("Leave Type");
+        
+        $leaveStatus = [
+            '-1'=>'All',
+            'RQ'=>'Pending',
+            'RC'=>'Recommended',
+            'AP'=>'Approved',
+            'R'=>'Rejected'
+        ];
+        $leaveStatusFormElement = new Select();
+        $leaveStatusFormElement->setName("leaveStatus");
+        $leaveStatusFormElement->setValueOptions($leaveStatus);
+        $leaveStatusFormElement->setAttributes(["id" => "leaveRequestStatusId", "class" => "form-control"]);
+        $leaveStatusFormElement->setLabel("Leave Request Status");
+
+        return Helper::addFlashMessagesToArray($this, [
+            'leaves' => $leaveFormElement,
+            'leaveStatus'=>$leaveStatusFormElement,
+            'employeeId'=>$this->employeeId
+                ]);
     }
 
     public function addAction() {

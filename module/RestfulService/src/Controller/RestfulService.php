@@ -43,6 +43,8 @@ use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Adapter\Driver\ResultInterface;
 use Zend\Mvc\Controller\AbstractRestfulController;
 use Zend\View\Model\JsonModel;
+use SelfService\Repository\LeaveRequestRepository;
+use SelfService\Repository\AttendanceRequestRepository;
 
 class RestfulService extends AbstractRestfulController {
 
@@ -204,6 +206,12 @@ class RestfulService extends AbstractRestfulController {
                     break;
                 case 'pullAttendanceRequestStatusList':
                     $responseData = $this->pullAttendanceRequestStatusList($postedData->data);
+                    break;
+                case 'pullLeaveRequestList':
+                    $responseData = $this->pullLeaveRequestList($postedData->data);
+                    break;
+                case 'pullAttendanceRequestList':
+                    $responseData = $this->pullAttendanceRequestList($postedData->data);
                     break;
                 default:
                     $responseData = [
@@ -1330,6 +1338,66 @@ class RestfulService extends AbstractRestfulController {
             "success"=>"true",
             "data"=>$recordList,
             "num"=>count($recordList)
+        ];
+    }
+    public function pullLeaveRequestList($data){
+        $leaveRequestRepository = new LeaveRequestRepository($this->adapter);
+        $leaveRequestList = $leaveRequestRepository->getfilterRecords($data);
+        $leaveRequest = [];
+        $getValue = function($status) {
+            if ($status == "RQ") {
+                return "Pending";
+            } else if ($status == 'RC') {
+                return "Recommended";
+            } else if ($status == "R") {
+                return "Rejected";
+            } else if ($status == "AP") {
+                return "Approved";
+            } else if ($status == "C") {
+                return "Cancelled";
+            }
+        };
+        $getAction = function($status){
+          if ($status == "RQ") {
+                return ["delete"=>'Cancel Request'];
+            }else{
+                return ["view"=>'View'];
+            }  
+        };
+        foreach ($leaveRequestList as $leaveRequestRow) {
+            $status = $getValue($leaveRequestRow['STATUS']);
+            $action = $getAction($leaveRequestRow['STATUS']);
+            $new_row = array_merge($leaveRequestRow,['STATUS'=>$status,'ACTION'=>key($action),'ACTION_TEXT'=>$action[key($action)]]);
+            array_push($leaveRequest, $new_row);
+        }
+        return [
+            "success"=>"true",
+            "data"=>$leaveRequest
+        ];      
+    }
+    public function pullAttendanceRequestList($data){
+        $attendanceRequestRepository = new AttendanceRequestRepository($this->adapter);
+        $attendanceList = $attendanceRequestRepository->getFilterRecords($data);
+        $attendanceRequest = [];
+        $getValue = function($status) {
+            if ($status == "RQ") {
+                return "Pending";
+            } else if ($status == "R") {
+                return "Rejected";
+            } else if ($status == "AP") {
+                return "Approved";
+            } else if ($status == "C") {
+                return "Cancelled";
+            }
+        };
+        foreach ($attendanceList as $attendanceRow) {
+            $status = $getValue($attendanceRow['STATUS']);
+            $new_row = array_merge($attendanceRow,['A_STATUS'=>$status]);
+            array_push($attendanceRequest, $new_row);
+        }
+        return [
+            "success"=>"true",
+            "data"=>$attendanceRequest
         ];
     }
 }
