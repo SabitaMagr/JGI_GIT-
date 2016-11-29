@@ -74,7 +74,7 @@ window.app = (function ($, toastr) {
         view: {
             name: $('#floating-profile  #name'),
             mobileNo: $('#floating-profile #mobileNo'),
-            appDate:$('#floating-profile #appDate'),
+            appDate: $('#floating-profile #appDate'),
             appBranch: $('#floating-profile #appBranch'),
             appDepartment: $('#floating-profile #appDepartment'),
             appDesignation: $('#floating-profile #appDesignation'),
@@ -129,26 +129,26 @@ window.app = (function ($, toastr) {
             }).then(function (success) {
                 console.log(success);
                 this.data.firstName = success.data['FIRST_NAME'];
-                this.data.middleName = success.data['MIDDLE_NAME'];
+                this.data.middleName = (success.data['MIDDLE_NAME'] == null) ? "" : success.data['MIDDLE_NAME'];
                 this.data.lastName = success.data['LAST_NAME'];
                 this.data.appDate = success.data['JOIN_DATE'];
 
                 this.data.appBranch = success.data['APP_BRANCH'];
                 this.data.appDepartment = success.data['APP_DEPARTMENT'];
                 this.data.appDesignation = success.data['APP_DESIGNATION'];
-                this.data.appPosition = success.data['APP_POSITION'];
-                this.data.appServiceType = success.data['APP_SERVICE_TYPE'];
-                this.data.appServiceEventType = success.data['APP_SERVICE_EVENT_TYPE'];
+                this.data.appPosition = (success.data['APP_POSITION'] == null) ? "" : success.data['APP_POSITION'];
+                this.data.appServiceType = (success.data['APP_SERVICE_TYPE'] == null) ? "" : success.data['APP_SERVICE_TYPE'];
+                this.data.appServiceEventType = (success.data['APP_SERVICE_EVENT_TYPE'] == null) ? "" : success.data['APP_SERVICE_EVENT_TYPE'];
 
-                this.data.branch = success.data['BRANCH'];
+                this.data.branch = (success.data['BRANCH'] == null) ? "" : success.data['BRANCH'];
                 this.data.department = success.data['DEPARTMENT'];
                 this.data.designation = success.data['DESIGNATION'];
-                this.data.position = success.data['POSITION'];
-                this.data.serviceType = success.data['SERVICE_TYPE'];
-                this.data.serviceEventType = success.data['SERVICE_EVENT_TYPE'];
+                this.data.position = (success.data['POSITION'] == null) ? "" : success.data['POSITION'];
+                this.data.serviceType = (success.data['SERVICE_TYPE'] == null) ? "" : success.data['SERVICE_TYPE'];
+                this.data.serviceEventType = (success.data['SERVICE_EVENT_TYPE'] == null) ? "" : success.data['SERVICE_EVENT_TYPE'];
 
-                this.data.mobileNo = success.data['MOBILE_NO'];
-                this.data.imageFilePath = success.data['FILE_PATH'];
+                this.data.mobileNo = (success.data['MOBILE_NO'] == null) ? "" : success.data['MOBILE_NO'];
+                this.data.imageFilePath = (success.data['FILE_PATH'] = null) ? "" : success.data['FILE_PATH'];
 
                 this.refreshView();
                 this.show();
@@ -160,7 +160,6 @@ window.app = (function ($, toastr) {
             this.data = emp;
         },
         refreshView: function () {
-            console.log(this.data.lastName);
             this.view.name.text(this.data.firstName + " " + this.data.middleName + " " + this.data.lastName);
             //this.view.gender.text(this.data.genderId == 1 ? "Male" : this.data.genderId == 2 ? "Female" : "Other");
 
