@@ -199,7 +199,7 @@ window.app = (function ($, toastr) {
             this.minStatus = false;
         },
         initialize: function () {
-            this.makeDraggable();
+//            this.makeDraggable();
             this.view.minMaxBtn.on("click", function () {
                 if (this.minStatus) {
                     this.maximize();
