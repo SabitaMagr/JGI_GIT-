@@ -950,8 +950,7 @@ echo json_encode($menu);
                         </div>
                         <div class="row margin-top-10">
                             <div class="col-sm-3 col-sm-offset-3">
-                                <select class="form-control" ng-model="file.fileTypeCode">
-                                    <option ng-repeat="(key,fileType) in fileTypes" value="{{key}}">{{fileType}}</option>
+                                <select class="form-control" ng-model="file.fileTypeCode" ng-options="key as value for (key,value) in fileTypes">
                                 </select>
                             </div>
                             <div class="col-sm-3">
