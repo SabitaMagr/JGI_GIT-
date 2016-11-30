@@ -138,9 +138,10 @@ ON A.GENDER_ID=B.GENDER_ID " . $joinQuery . " WHERE A.STATUS ='E'";
             $sql .= " AND A.END_DATE<=TO_DATE('" . $toDate . "','DD-MM-YYYY')";
         }
 
-        if ($genderId == null) {
-            $sql .= " AND B.GENDER_NAME is null";
-        } else if ($genderId != null) {
+//        if ($genderId == null) {
+//            $sql .= " AND B.GENDER_NAME is null";
+//        } else 
+        if ($genderId != null) {
             $sql .= " AND B.GENDER_ID=" . $genderId;
         }
 
