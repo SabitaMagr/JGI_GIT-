@@ -65,7 +65,7 @@ window.app = (function ($, toastr) {
         if (message) {
             window.toastr.success(message, "Notifications");
         }
-    }
+    };
     successMessage(document.messages);
 
     var floatingProfile = {

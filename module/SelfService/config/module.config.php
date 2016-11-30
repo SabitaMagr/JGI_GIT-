@@ -100,7 +100,7 @@ return [
             'profile' => [
                 'type' => Segment::class,
                 'options' => [
-                    'route' => '/selfservice/profile[/:action[/:id[/:tab]]]',
+                    'route' => '/selfservice/profile[/:action[/:tab]]',
                     'constants' => [
                         'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
                         'id' => '[0-9]+',
