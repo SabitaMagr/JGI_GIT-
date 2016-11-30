@@ -8,7 +8,7 @@ angular.module('hris', [])
             var employeeId1 = angular.element(document.getElementById('employeeId')).val();
             var halfDay = angular.element(document.getElementById('halfDay'));
 
-            window.app.floatingProfile.setDataFromRemote(document.employeeId1);
+            window.app.floatingProfile.setDataFromRemote(employeeId1);
 
             $scope.change = function () {
                 var leaveId = angular.element(document.getElementById('leaveId')).val();
@@ -41,9 +41,25 @@ angular.module('hris', [])
                 var leaveId = angular.element(document.getElementById('leaveId')).val();
                 var employeeId = angular.element(document.getElementById('employeeId')).val();
                 
+                window.app.floatingProfile.setDataFromRemote(employeeId);
                 
-                window.app.floatingProfile.setDataFromRemote(document.employeeId);
-                console.log("hellow"+leaveId+employeeId);
+                window.app.pullDataById(document.url, {
+                    action: 'pullLeaveDetail',
+                    data: {
+                        'leaveId': leaveId,
+                        'employeeId': employeeId
+                    }
+                }).then(function (success) {
+                    $scope.$apply(function () {
+                        var temp = success.data;
+                        $scope.leaveList = success.leaveList;
+                        $scope.leaveId = $scope.leaveList[0];
+                       // $scope.availableDays = temp.BALANCE;
+                    });
+                }, function (failure) {
+                    console.log(failure);
+                });
+                
             }
 
         });
