@@ -185,18 +185,31 @@ class WebServiceController extends AbstractActionController
                     $filtersId = $postedData->data;
                     $leaveId = $filtersId['leaveId'];
                     $employeeId = $filtersId['employeeId'];
-                   // $leaveDetail =$leaveRequestRepository->getLeaveDetail($employeeId,$leaveId);
+                    $leaveDetail =$leaveRequestRepository->getLeaveDetail($employeeId,$leaveId);
+
+                    $responseData = [
+                        "success" => true,
+                        "data" => $leaveDetail,
+                    ];
+                    break;
+                case "pullLeaveDetailWidEmployeeId":
+                    $leaveRequestRepository = new LeaveRequestRepository($this->adapter);
+                    $filtersId = $postedData->data;
+                    $employeeId = $filtersId['employeeId'];
                     $leaveList = $leaveRequestRepository->getLeaveList($employeeId);
-                    
+
                     $leaveRow = [];
                     foreach($leaveList as $key=>$value){
                         array_push($leaveRow,["id"=>$key,"name"=>$value]);
                     }
+                    
+                    $empLeaveId = $leaveRow[0]['id'];
+                    $leaveDetail =$leaveRequestRepository->getLeaveDetail($employeeId,$empLeaveId);
 
                     $responseData = [
                         "success" => true,
-                        //"data" => $leaveDetail,
-                        "leaveList"=>$leaveRow
+                        "data" => $leaveDetail,
+                        'leaveList'=>$leaveRow
                     ];
                     break;
 

@@ -30,6 +30,17 @@ angular.module('hris', [])
                         } else {
                             halfDay.slideDown();
                         }
+                        
+                        var availableDays = parseInt(temp.BALANCE);
+                        var newValue = parseInt($("#noOfDays").val());
+ 
+                        if ((availableDays!="" && newValue!="" ) && newValue > availableDays) {
+                            $("#errorMsg").html("* Applied days can't be more than available days");
+                            $("#request").attr("disabled", "disabled");
+                        } else if((availableDays!="" && newValue!="" ) && (newValue<=availableDays)){
+                            $("#errorMsg").html("");
+                            $("#request").removeAttr("disabled");
+                        }
 
                     });
                 }, function (failure) {
@@ -38,15 +49,13 @@ angular.module('hris', [])
             }
             
             $scope.employeeChange = function(){
-                var leaveId = angular.element(document.getElementById('leaveId')).val();
                 var employeeId = angular.element(document.getElementById('employeeId')).val();
                 
                 window.app.floatingProfile.setDataFromRemote(employeeId);
                 
                 window.app.pullDataById(document.url, {
-                    action: 'pullLeaveDetail',
+                    action: 'pullLeaveDetailWidEmployeeId',
                     data: {
-                        'leaveId': leaveId,
                         'employeeId': employeeId
                     }
                 }).then(function (success) {
@@ -54,7 +63,24 @@ angular.module('hris', [])
                         var temp = success.data;
                         $scope.leaveList = success.leaveList;
                         $scope.leaveId = $scope.leaveList[0];
-                       // $scope.availableDays = temp.BALANCE;
+                        $scope.availableDays = temp.BALANCE;
+                        $scope.allowHalfDay = temp.ALLOW_HALFDAY;
+
+                        if ($scope.allowHalfDay == 'N') {
+                            halfDay.slideUp();
+                        } else {
+                            halfDay.slideDown();
+                        }
+                        var availableDays = parseInt(temp.BALANCE);
+                        var newValue = parseInt($("#noOfDays").val());
+ 
+                        if ((availableDays!="" && newValue!="" ) && newValue > availableDays) {
+                            $("#errorMsg").html("* Applied days can't be more than available days");
+                            $("#request").attr("disabled", "disabled");
+                        } else if((availableDays!="" && newValue!="" ) && (newValue<=availableDays)){
+                            $("#errorMsg").html("");
+                            $("#request").removeAttr("disabled");
+                        }
                     });
                 }, function (failure) {
                     console.log(failure);
