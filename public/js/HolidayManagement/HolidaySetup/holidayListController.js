@@ -33,7 +33,7 @@ angular.module('hris', [])
                 $("#holidayTable").kendoGrid({
                     dataSource: {
                         data: holidayList,
-                        pageSize: 20
+                        pageSize: 35
                     },
                     height: 450,
                     scrollable: true,
