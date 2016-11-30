@@ -86,7 +86,7 @@
             }, onPrevious: function (tab, navigation, index) {
                 console.log("Showing previous tab");
             }, onInit: function () {
-                console.log("On Init");
+                console.log("Tab initialized");
                 $('#rootwizard ul').removeClass('nav-pills');
 
             }
