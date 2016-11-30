@@ -45,6 +45,7 @@ use Zend\Mvc\Controller\AbstractRestfulController;
 use Zend\View\Model\JsonModel;
 use SelfService\Repository\LeaveRequestRepository;
 use SelfService\Repository\AttendanceRequestRepository;
+use Setup\Repository\BranchRepository;
 
 class RestfulService extends AbstractRestfulController {
 
@@ -842,6 +843,11 @@ class RestfulService extends AbstractRestfulController {
             }
 
             if ($branchId != -1) {
+                $branchRepository = new BranchRepository($this->adapter);
+                $branchDtl = $branchRepository->fetchById($branchId);
+                $childData = [];
+                array_push($childData, $branchDtl);
+                $row['BRANCHES'] = $childData;
                 array_push($data, $row);
             } else if ($branchId == -1) {
                 $holidayBranch = $holidayRepository->selectHolidayBranch($row['HOLIDAY_ID']);
