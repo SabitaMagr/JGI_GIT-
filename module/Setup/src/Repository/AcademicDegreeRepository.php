@@ -25,7 +25,12 @@ class AcademicDegreeRepository implements RepositoryInterface {
 
     public function add(Model $model)
     {
-        $this->tableGateway->insert($model->getArrayCopyForDB());
+        try{
+            $this->tableGateway->insert($model->getArrayCopyForDB());
+        } catch (Zend_Db_Adapter_Exception $ex) {
+            print_r($ex); die();
+        }
+        
     }
 
     public function edit(Model $model,$id)

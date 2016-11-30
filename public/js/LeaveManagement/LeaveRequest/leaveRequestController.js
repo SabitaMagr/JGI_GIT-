@@ -5,15 +5,14 @@
 angular.module('hris', [])
         .controller('leaveRequestController', function ($scope, $http) {
 
-            var employeeId = angular.element(document.getElementById('employeeId')).val();
+            var employeeId1 = angular.element(document.getElementById('employeeId')).val();
             var halfDay = angular.element(document.getElementById('halfDay'));
-//            console.log("sdfs",document.employeeId);
-//            if (typeof document.employeeId !== 'undefined') {
-            window.app.floatingProfile.setDataFromRemote(document.employeeId);
-//            }
+
+            window.app.floatingProfile.setDataFromRemote(document.employeeId1);
 
             $scope.change = function () {
                 var leaveId = angular.element(document.getElementById('leaveId')).val();
+                var employeeId = angular.element(document.getElementById('employeeId')).val();
                 window.app.pullDataById(document.url, {
                     action: 'pullLeaveDetail',
                     data: {
@@ -36,6 +35,15 @@ angular.module('hris', [])
                 }, function (failure) {
                     console.log(failure);
                 });
+            }
+            
+            $scope.employeeChange = function(){
+                var leaveId = angular.element(document.getElementById('leaveId')).val();
+                var employeeId = angular.element(document.getElementById('employeeId')).val();
+                
+                
+                window.app.floatingProfile.setDataFromRemote(document.employeeId);
+                console.log("hellow"+leaveId+employeeId);
             }
 
         });
