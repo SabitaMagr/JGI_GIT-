@@ -18,13 +18,13 @@
             dataBound:gridDataBound,
             rowTemplate: kendo.template($("#rowTemplate").html()),
             columns: [
-                {field: "FIRST_NAME", title: "Employee Name"},
-                {field: "ATTENDANCE_DT", title: "Attendance Date"},
-                {field: "IN_TIME", title: "Check In"},
-                {field: "OUT_TIME", title: "Check Out"},
-                {field: "IN_REMARKS", title: "Late In Reason"},
-                {field: "OUT_REMARKS", title: "Late Out Reason"},
-                {title: "Action"}
+                {field: "FIRST_NAME", title: "Employee Name",width:220},
+                {field: "ATTENDANCE_DT", title: "Attendance Date",width:150},
+                {field: "IN_TIME", title: "Check In",width:100},
+                {field: "OUT_TIME", title: "Check Out",width:120},
+                {field: "IN_REMARKS", title: "Late In Reason",width:150},
+                {field: "OUT_REMARKS", title: "Late Out Reason",width:150},
+                {title: "Action",width:100}
             ]
         }); 
         function gridDataBound(e) {

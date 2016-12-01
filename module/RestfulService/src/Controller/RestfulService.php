@@ -46,6 +46,7 @@ use Zend\View\Model\JsonModel;
 use SelfService\Repository\LeaveRequestRepository;
 use SelfService\Repository\AttendanceRequestRepository;
 use Setup\Repository\BranchRepository;
+use Application\Helper\ConstraintHelper;
 
 class RestfulService extends AbstractRestfulController {
 
@@ -213,6 +214,9 @@ class RestfulService extends AbstractRestfulController {
                     break;
                 case 'pullAttendanceRequestList':
                     $responseData = $this->pullAttendanceRequestList($postedData->data);
+                    break;
+                case "checkUniqueConstraint":
+                    $responseData = $this->checkUniqueConstraint($postedData->data);
                     break;
                 default:
                     $responseData = [
@@ -1409,6 +1413,16 @@ class RestfulService extends AbstractRestfulController {
         return [
             "success" => "true",
             "data" => $attendanceRequest
+        ];
+    }
+    public function checkUniqueConstraint($data){
+        $tableName = $data['tableName'];
+        $columnsWidValues = $data['columnsWidValues'];
+        
+        $result = ConstraintHelper::checkUniqueConstraint($this->adapter, $tableName, $columnsWidValues);
+        return [
+            "success"=>"true",
+            "data"=>$result
         ];
     }
 
