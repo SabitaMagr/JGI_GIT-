@@ -25,6 +25,7 @@ $form->prepare();
 ?>
     <script>
         document.menu=<?php $menu = ["id" => "menuSetup","subMenu"=>["id"=>"subMenuPosition"]];echo json_encode($menu);?>;
+        document.url = '<?= $this->url("restful", ["action" => "index"]) ?>';
     </script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\Position')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>

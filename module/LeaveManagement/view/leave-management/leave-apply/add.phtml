@@ -20,7 +20,8 @@ $submit = $form->get('submit');
 $submit->setAttribute('value', 'Apply Leave');
 $submit->setAttribute('id', 'request');
 
-$form->setAttribute('action', $this->url('leaverequest', ['action' => 'add']));
+$form->setAttribute('action', $this->url('leavebalance', ['action' => 'apply']));
+
 
 if ($this->messages) {
     print '<ul class="help-block bg-danger" style="background:#f3e250;">';

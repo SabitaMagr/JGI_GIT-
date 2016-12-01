@@ -128,11 +128,16 @@ class LeaveBalance extends AbstractActionController {
         ]);
     }
     public function applyAction(){
-        $leaveId = $this->params()->fromRoute('id');
-        $employeeId = $this->params()->fromRoute('eid');
-
-        $this->initializeForm();
         $request = $this->getRequest();
+        $leaveId = (int)$this->params()->fromRoute('id');
+        $employeeId = (int)$this->params()->fromRoute('eid');
+        
+        if ($leaveId === 0 && $employeeId===0) {
+            $postData = $request->getPost();
+            $employeeId = $postData['employeeId'];
+            $leaveId = $postData['leaveId'];
+        }
+        $this->initializeForm();
 
         $recommendApproveRepository =  new RecommendApproveRepository($this->adapter);
         $empRecommendApprove  = $recommendApproveRepository->fetchById($employeeId);
@@ -180,7 +185,7 @@ class LeaveBalance extends AbstractActionController {
 
                 $this->leaveRequestRepository->add($leaveRequest);
                 $this->flashmessenger()->addMessage("Leave Request Successfully added!!!");
-                return $this->redirect()->toRoute("leavebalance");
+                return $this->redirect()->toRoute("leavestatus");
             }
         }
 
