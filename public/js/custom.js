@@ -182,6 +182,8 @@ window.app = (function ($, toastr) {
             this.view.mobileNo.text(this.data.mobileNo);
             if (this.data.imageFilePath != null && (typeof this.data.imageFilePath !== "undefined") && this.data.imageFilePath.length >= 4) {
                 this.view.image.attr('src', document.basePath + "/uploads/" + this.data.imageFilePath);
+            }else{
+                this.view.image.attr('src', document.basePath + "/img/profile_empty.jpg");
             }
         },
         minimize: function () {
