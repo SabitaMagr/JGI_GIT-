@@ -225,6 +225,7 @@
                                 $scope.file.editMode = false;
                                 $scope.file.fileCode = success.data.fileCode
                             }
+                            window.app.successMessage("Profile Image set successfully");
                         });
 
                     }, function (failure) {
