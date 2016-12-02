@@ -53,6 +53,7 @@ $menu = ["id" => "menuService"];
 echo json_encode($menu);
 ?>;
     document.jobHistoryId =<?= $id ?>;
+    document.employeeId =<?= $empId ?>;
 </script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\jobHistory')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>

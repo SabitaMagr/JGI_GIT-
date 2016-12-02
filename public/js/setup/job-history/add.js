@@ -1,6 +1,11 @@
 (function ($, app) {
     'use strict';
     $(document).ready(function () {
+        app.addDatePicker(
+                $("#startDate"),
+                $("#endDate"));
+        var editMode = typeof document.employeeId !== "undefined";
+
         var $employeeId = $("#employeeID");
         var $fromServiceTypeId = $('#fromServiceTypeId');
         var $fromBranchId = $('#fromBranchId');
@@ -8,17 +13,19 @@
         var $fromDesignationId = $('#fromDesignationId');
         var $fromPositionId = $('#fromPositionId');
 
-//        if (typeof document.employeeId !== "undefined") {
-//            $employeeId.val(document.employeeId);
-//        } else {
-//        }
 
-//            $employeeId.select2();
 
-        app.addDatePicker(
-                $("#startDate"),
-                $("#endDate"));
+        var disableEmployeeInfo = function () {
+            $fromBranchId.prop("disabled", true);
+            $fromServiceTypeId.prop("disabled", true);
+            $fromDepartmentId.prop("disabled", true);
+            $fromDesignationId.prop("disabled", true);
+            $fromPositionId.prop("disabled", true);
+        };
 
+        var disableEmployee = function () {
+            $employeeId.prop("disabled", true);
+        };
 
         var updateView = function (employee) {
             $fromServiceTypeId.val(employee.SERVICE_TYPE_ID);
@@ -38,16 +45,25 @@
                 console.log("pullEmployeeById failure", failure);
             });
         };
-        pullEmployeeDetail($employeeId.val());
 
 
-        app.floatingProfile.setDataFromRemote($employeeId.val());
         $employeeId.on("change", function () {
             var employeeId = $(this).val();
             app.floatingProfile.setDataFromRemote($employeeId.val());
-            pullEmployeeDetail($employeeId.val())
+            if (!editMode) {
+                pullEmployeeDetail($employeeId.val())
+            }
         });
 
+
+        app.floatingProfile.setDataFromRemote($employeeId.val());
+//        disableEmployeeInfo();
+        if (editMode) {
+            $employeeId.val(document.employeeId);
+            disableEmployee();
+        } else {
+            pullEmployeeDetail($employeeId.val());
+        }
 
 
 

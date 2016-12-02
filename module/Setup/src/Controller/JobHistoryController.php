@@ -74,6 +74,7 @@ class JobHistoryController extends AbstractActionController {
                 $jobHistory->jobHistoryId = ((int) Helper::getMaxId($this->adapter, JobHistory::TABLE_NAME, JobHistory::JOB_HISTORY_ID)) + 1;
                 $jobHistory->startDate = Helper::getExpressionDate($jobHistory->startDate);
                 $jobHistory->endDate = Helper::getExpressionDate($jobHistory->endDate);
+                $jobHistory->status='E';
                 $this->repository->add($jobHistory);
                 $this->flashmessenger()->addMessage("Job History Successfully added!!!");
                 return $this->redirect()->toRoute("jobHistory");
@@ -125,6 +126,7 @@ class JobHistoryController extends AbstractActionController {
                         $this, [
                     'form' => $this->form,
                     'id' => $id,
+                    'empId' => EntityHelper1::getTableKVList($this->adapter, JobHistory::TABLE_NAME, JobHistory::JOB_HISTORY_ID, [JobHistory::EMPLOYEE_ID], [JobHistory::JOB_HISTORY_ID => $id], null)[$id],
                     'messages' => $this->flashmessenger()->getMessages(),
                     'employees' => EntityHelper1::getTableKVList($this->adapter, "HR_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => "E"]),
                     'departments' => EntityHelper1::getTableKVList($this->adapter, "HR_DEPARTMENTS", "DEPARTMENT_ID", ["DEPARTMENT_NAME"], ["STATUS" => 'E']),
