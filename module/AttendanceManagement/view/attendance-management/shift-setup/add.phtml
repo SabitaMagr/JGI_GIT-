@@ -5,6 +5,7 @@
 $this->headScript()->appendFile($this->basePath('assets/global/plugins/combodate/js/moment.min.js'));
 $this->headScript()->appendFile($this->basePath('assets/global/plugins/combodate/js/combodate.js'));
 $this->headScript()->appendFile($this->basePath('js/AttendanceManagement/ShiftSetup/shiftSetup.js'));
+$this->headScript()->appendFile($this->basePath('js/AttendanceManagement/ShiftSetup/add.js'));
 ?>
 
 <script>
@@ -12,11 +13,12 @@ $this->headScript()->appendFile($this->basePath('js/AttendanceManagement/ShiftSe
 
 <script>
     document.menu =<?php $menu = ["id" => "menuAttendance", "subMenu" => ["id" => "subMenuShiftSetup"]];echo json_encode($menu);?>;
+    document.url = '<?= $this->url("restful", ["action" => "index"]) ?>';
 </script>
 
 <?php
 $form->setAttribute('role', 'form');
-$form->setAttribute('class', 'position-form');
+$form->setAttribute('id', 'shiftSetup-form');
 
 $shiftCode = $form->get('shiftCode');
 $shiftEname = $form->get('shiftEname');
@@ -88,6 +90,7 @@ $form->prepare();
                             class="form-group  <?= empty($shiftCode->getMessages()) ? "" : "error" ?>">
                             <?php print $this->formLabel($shiftCode); ?>
                             <?php print $this->formElement($shiftCode); ?>
+                            <span class="errorMsg" style="font-size:11px; color:red;"></span>
                         </div>
                         <?php print $this->formElementErrors()->render($shiftCode, ['class' => 'help-block error']); ?>
                     </div>
@@ -100,6 +103,7 @@ $form->prepare();
                             class="form-group  <?= empty($shiftEname->getMessages()) ? "" : "error" ?>">
                             <?php print $this->formLabel($shiftEname); ?>
                             <?php print $this->formElement($shiftEname); ?>
+                            <span class="errorMsg" style="font-size:11px; color:red;"></span>
                         </div>
                         <?php print $this->formElementErrors()->render($shiftEname, ['class' => 'help-block error']); ?>
 
@@ -109,6 +113,7 @@ $form->prepare();
                             class="form-group  <?= empty($shiftLname->getMessages()) ? "" : "error" ?>">
                             <?php print $this->formLabel($shiftLname); ?>
                             <?php print $this->formElement($shiftLname); ?>
+                            <span class="errorMsg" style="font-size:11px; color:red;"></span>
                         </div>
                         <?php print $this->formElementErrors()->render($shiftLname, ['class' => 'help-block error']); ?>
                     </div>

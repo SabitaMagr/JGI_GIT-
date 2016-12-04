@@ -1,5 +1,8 @@
 <?php
+$this->headScript()->appendFile($this->basePath('js/LeaveManagement/LeaveSetup/addForm.js'));
+
 $form->setAttribute('role', 'form');
+$form->setAttribute('id', 'leaveSetup-form');
 
 $leaveCode = $form->get('leaveCode');
 $leaveEname = $form->get('leaveEname');
@@ -32,6 +35,7 @@ print $this->form()->openTag($form);
 ?>
 <script>
     document.menu =<?php $menu = ["id" => "menuLeave", "subMenu" => ["id" => "subMenuLeaveSetup"]];echo json_encode($menu);?>;
+    document.url = '<?= $this->url("restful", ["action" => "index"]) ?>';
 </script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\leavesetup')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
@@ -48,18 +52,22 @@ print $this->form()->openTag($form);
                 <div class="form-group <?= empty($leaveCode->getMessages()) ? "" : "error" ?>">
                     <?php print $this->formLabel($leaveCode); ?>
                     <?php print $this->formElement($leaveCode); ?>
+                    <input type="hidden" id="leaveId" value="<?php echo $id; ?>"/>
+                    <span class="errorMsg" style="font-size:11px; color:red;"></span>
                 </div>
                 <?php print $this->formElementErrors()->render($leaveCode, ['class' => 'help-block error']); ?>
 
                 <div class="form-group  <?= empty($leaveEname->getMessages()) ? "" : "error" ?>">
                     <?php print $this->formLabel($leaveEname); ?>
                     <?php print $this->formElement($leaveEname); ?>
+                    <span class="errorMsg" style="font-size:11px; color:red;"></span>
                 </div>
                 <?php print $this->formElementErrors()->render($leaveEname, ['class' => 'help-block error']); ?>
 
                 <div class="form-group <?= empty($leaveLname->getMessages()) ? "" : "error" ?>">
                     <?php print $this->formLabel($leaveLname); ?>
                     <?php print $this->formElement($leaveLname); ?>
+                    <span class="errorMsg" style="font-size:11px; color:red;"></span>
                 </div>
                 <?php print $this->formElementErrors()->render($leaveLname, ['class' => 'help-block error']); ?>
 

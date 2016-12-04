@@ -58,14 +58,20 @@ class ConstraintHelper
         return null;
     }
     
-    public static function checkUniqueConstraint(AdapterInterface $adapter,$tableName,array $columnsWidValues){
+    public static function checkUniqueConstraint(AdapterInterface $adapter,$tableName,array $columnsWidValues,$checkColumnName,$selfId){
         $tableGateway = new TableGateway($tableName,$adapter);
         
         $uniqueConstraintsError = array();
-        foreach($columnsWidValues as $column=>$value){
-            $result = $tableName->select([$column=>$value]);
-            array_push($uniqueConstraintsError,$result);
+        $column = key($columnsWidValues);
+        $value = "'".$columnsWidValues[$column]."'";
+        if($selfId!=0){
+            $sql = " AND ".$checkColumnName."!=".$selfId;
+        }else{
+            $sql="";
         }
-        return $uniqueConstraintsError;
+
+        $result =Helper::extractDbData($tableGateway->select([$column."=".$value,"STATUS='E'".$sql]));
+        $num = count($result);       
+        return $num;
     }
 }

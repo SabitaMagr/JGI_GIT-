@@ -2,7 +2,7 @@
 $this->headScript()->appendFile($this->basePath('js/setup/designation/add.js'));
 
 $form->setAttribute('role', 'form');
-$form->setAttribute('class', 'designation-form');
+$form->setAttribute('id', 'designation-form');
 
 $designationCode = $form->get('designationCode');
 $designationTitle = $form->get("designationTitle");
@@ -31,6 +31,7 @@ $form->prepare();
 ?>
 <script>
     document.menu =<?php $menu = ["id" => "menuSetup", "subMenu" => ["id" => "subMenuDesignation"]];echo json_encode($menu);?>;
+    document.url = '<?= $this->url("restful", ["action" => "index"]) ?>';
 </script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\Designation')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
@@ -49,11 +50,13 @@ $form->prepare();
                     <?= $this->formLabel($designationCode) ?>
                     <?= $this->formElement($designationCode); ?>
                     <?= $this->formElementErrors()->render($designationCode, ['class' => 'help-block']) ?>
+                    <span class="errorMsg" style="font-size:11px; color:red;"></span>
                 </div>
                 <div class="form-group">
                     <?= $this->formLabel($designationTitle) ?>
                     <?= $this->formElement($designationTitle); ?>
                     <?= $this->formElementErrors()->render($designationTitle, ['class' => 'help-block']) ?>
+                    <span class="errorMsg" style="font-size:11px; color:red;"></span>
                 </div>
                 <div class="form-group">
                     <?= $this->formLabel($basicSalary) ?>

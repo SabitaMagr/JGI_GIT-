@@ -1,6 +1,8 @@
 <?php
+$this->headScript()->appendFile($this->basePath('js/setup/company/add.js'));
+
 $form->setAttribute('role', 'form');
-$form->setAttribute('class', 'company-form');
+$form->setAttribute('id', 'company-form');
 
 $companyCode = $form->get('companyCode');
 $companyName = $form->get('companyName');
@@ -29,6 +31,7 @@ $form->prepare();
 ?>
 <script>
     document.menu =<?php $menu = ["id" => "menuSetup", "subMenu" => ["id" => "subMenuCompany"]];echo json_encode($menu);?>;
+    document.url = '<?= $this->url("restful", ["action" => "index"]) ?>';
 </script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\Company')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
@@ -47,11 +50,14 @@ $form->prepare();
                     <?php print $this->formLabel($companyCode); ?>
                     <?php print $this->formElement($companyCode); ?>
                     <?php print $this->formElementErrors()->render($companyCode, ['class' => 'help-block']); ?>
+                    <input type="hidden" id="companyId" value="<?php echo $id; ?>"/>
+                    <span class="errorMsg" style="font-size:11px; color:red;"></span>
                 </div>
                 <div class="form-group required ">
                     <?php print $this->formLabel($companyName); ?>
                     <?php print $this->formElement($companyName); ?>
                     <?php print $this->formElementErrors()->render($companyName, ['class' => 'help-block']); ?>
+                    <span class="errorMsg" style="font-size:11px; color:red;"></span>
                 </div>
                 <div class="form-group required ">
                     <?php print $this->formLabel($address); ?>

@@ -2,7 +2,7 @@
 $this->headScript()->appendFile($this->basePath('js/setup/branch/add.js'));
 
 $form->setAttribute('role', 'form');
-$form->setAttribute('class', 'branch-form');
+$form->setAttribute('id', 'branch-form');
 
 $branchCode = $form->get('branchCode');
 $branchName = $form->get('branchName');
@@ -29,9 +29,10 @@ if ($this->messages) {
 }
 $form->prepare();
 ?>
-	<script>
-		document.menu=<?php $menu = ["id" => "menuSetup","subMenu"=>["id"=>"subMenuBranch"]];echo json_encode($menu);?>;
-	</script>
+<script>
+        document.menu=<?php $menu = ["id" => "menuSetup","subMenu"=>["id"=>"subMenuBranch"]];echo json_encode($menu);?>;
+        document.url = '<?= $this->url("restful", ["action" => "index"]) ?>';
+</script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\Branch')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
@@ -50,12 +51,15 @@ $form->prepare();
 				<div class="form-group<?= empty($branchCode->getMessages()) ? "" : "error" ?>">
 					<?php print $this->formLabel($branchCode); ?>
 					<?php print $this->formElement($branchCode); ?>
+                                        <span class="errorMsg" style="font-size:11px; color:red;"></span>
+                                        <input type="hidden" id="branchId" value="<?php echo $id; ?>" />
 				</div>
 				<?php print $this->formElementErrors()->render($branchCode, ['class' => 'help-block error']); ?>
 
 				<div class="form-group<?= empty($branchName->getMessages()) ? "" : "error" ?>">
 					<?php print $this->formLabel($branchName); ?>
 					<?php print $this->formElement($branchName); ?>
+                                        <span class="errorMsg" style="font-size:11px; color:red;"></span>
 				</div>
 				<?php print $this->formElementErrors()->render($branchName, ['class' => 'help-block error']); ?>
 

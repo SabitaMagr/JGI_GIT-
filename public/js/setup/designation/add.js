@@ -19,5 +19,17 @@
         };
         $("#form-parentDesignation").on("change",scopeArea);
         scopeArea();      
+        
+        var inputFieldId = "form-designationTitle";
+        var formId = "designation-form";
+        var tableName =  "HR_DESIGNATIONS";
+        var columnName = "DESIGNATION_TITLE";
+        var checkColumnName = "DESIGNATION_ID";
+        var selfId = $("#designationId").val();
+        if (typeof(selfId) == "undefined"){
+            selfId=0;
+        }
+        window.app.checkUniqueConstraints(inputFieldId,formId,tableName,columnName,checkColumnName,selfId);
+        window.app.checkUniqueConstraints("form-designationCode",formId,tableName,"DESIGNATION_CODE",checkColumnName,selfId);
     });
 })(window.jQuery,window.app);
