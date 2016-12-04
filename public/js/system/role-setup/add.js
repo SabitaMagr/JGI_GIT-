@@ -4,14 +4,13 @@
 (function ($, app) {
     'use strict';
     $(document).ready(function () {
-        $('select').select2();
         
-        var inputFieldId = "form-positionName";
-        var formId = "position-form";
-        var tableName =  "HR_POSITIONS";
-        var columnName = "POSITION_NAME";
-        var checkColumnName = "POSITION_ID";
-        var selfId = $("#positionId").val();
+        var inputFieldId = "form-roleName";
+        var formId = "rolesetup-form";
+        var tableName =  "HR_ROLES";
+        var columnName = "ROLE_NAME";
+        var checkColumnName = "ROLE_ID";
+        var selfId = $("#roleId").val();
         if (typeof(selfId) == "undefined"){
             selfId=0;
         }

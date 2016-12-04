@@ -1418,11 +1418,13 @@ class RestfulService extends AbstractRestfulController {
     public function checkUniqueConstraint($data){
         $tableName = $data['tableName'];
         $columnsWidValues = $data['columnsWidValues'];
-        
-        $result = ConstraintHelper::checkUniqueConstraint($this->adapter, $tableName, $columnsWidValues);
+        $selfId =  $data['selfId'];   
+        $checkColumnName = $data['checkColumnName'];
+        $result = ConstraintHelper::checkUniqueConstraint($this->adapter, $tableName, $columnsWidValues,$checkColumnName,$selfId);
         return [
             "success"=>"true",
-            "data"=>$result
+            "data"=>$result,
+            "msg"=>"* Already Exist!!!"
         ];
     }
 

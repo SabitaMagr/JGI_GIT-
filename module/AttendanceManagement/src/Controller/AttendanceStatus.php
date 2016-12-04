@@ -111,7 +111,7 @@ class AttendanceStatus extends AbstractActionController {
         $attendanceStatusFormElement->setName("attendanceStatus");
         $attendanceStatusFormElement->setValueOptions($attendanceStatus);
         $attendanceStatusFormElement->setAttributes(["id" => "attendanceRequestStatusId", "class" => "form-control"]);
-        $attendanceStatusFormElement->setLabel("Attendance Request Status");
+        $attendanceStatusFormElement->setLabel("Status");
         
         return Helper::addFlashMessagesToArray($this,[
             "branches" => $branchFormElement,

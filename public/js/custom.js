@@ -211,6 +211,51 @@ window.app = (function ($, toastr) {
     };
     floatingProfile.initialize();
 
+    var checkUniqueConstraints = function (inputFieldId, formId, tableName, columnName,checkColumnName,selfId) {
+        $('#' + inputFieldId).on("blur", function () {
+            var id = $(this);
+            var nameValue = id.val();
+            var parentId = id.parent(".form-group");
+            var childId = parentId.children(".errorMsg");
+            var columnsWidValues = {};
+            columnsWidValues[columnName] = nameValue;
+
+            window.app.pullDataById(document.url, {
+                action: 'checkUniqueConstraint',
+                data: {
+                    tableName: tableName,
+                    selfId : selfId,
+                    checkColumnName:checkColumnName,
+                    columnsWidValues: columnsWidValues
+                }
+            }).then(function (success) {
+                var num = parseInt(success.data);
+                if (num > 0) {
+                    childId.html(success.msg);
+                    id.focus();
+                } else if (num === 0) {
+                    childId.html("");
+                }
+            }, function (failure) {
+                console.log(failure);
+            });
+        });
+
+        $('#' + formId).submit(function (e) {
+            var err = [];
+            $(".errorMsg").each(function () {
+                var erroMsg = $.trim($(this).html());
+                if (erroMsg !== "") {
+                    err.push("error");
+                }
+            });
+            if (err.length > 0)
+            {
+                return false;
+            }
+        });
+    };
+
     return {
         format: format,
         pullDataById: pullDataById,
@@ -219,7 +264,8 @@ window.app = (function ($, toastr) {
         addTimePicker: addTimePicker,
         fetchAndPopulate: fetchAndPopulate,
         successMessage: successMessage,
-        floatingProfile: floatingProfile
+        floatingProfile: floatingProfile,
+        checkUniqueConstraints:checkUniqueConstraints
     };
 })(window.jQuery, window.toastr);
 

@@ -19,6 +19,7 @@ use Zend\Db\Adapter\AdapterInterface;
 use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
+use Application\Helper\ConstraintHelper;
 
 class PositionController extends AbstractActionController
 {
@@ -50,6 +51,12 @@ class PositionController extends AbstractActionController
 
     public function addAction()
     {
+//        $tableName = "HR_POSITIONS";
+//        $columnsWidValues = ["POSITION_NAME"=>"Junior Officer"];
+//
+//        $result = ConstraintHelper::checkUniqueConstraint($this->adapter, $tableName, $columnsWidValues);
+//        die ();
+                
         $this->initializeForm();
         $request = $this->getRequest();
 
