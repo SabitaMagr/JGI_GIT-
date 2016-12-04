@@ -167,6 +167,9 @@ class RestfulService extends AbstractRestfulController {
                 case "pullEmployeeDetailById":
                     $responseData = $this->pullEmployeeDetailById($postedData->data);
                     break;
+                case "pullEmployeeById":
+                    $responseData = $this->pullEmployeeById($postedData->data);
+                    break;
                 case "pullFileTypeList":
                     $responseData = $this->pullFileTypeList();
                     break;
@@ -1065,9 +1068,13 @@ class RestfulService extends AbstractRestfulController {
         $employeeId = $data["employeeId"];
         $employeeRepo = new EmployeeRepository($this->adapter);
         $employee = $employeeRepo->fetchForProfileById($employeeId);
-//        print "<pre>";
-//        print_r($employee);
-//        exit;
+        return ["success" => true, "data" => $employee];
+    }
+
+    private function pullEmployeeById($data) {
+        $employeeId = $data["employeeId"];
+        $employeeRepo = new EmployeeRepository($this->adapter);
+        $employee = $employeeRepo->fetchById($employeeId);
         return ["success" => true, "data" => $employee];
     }
 

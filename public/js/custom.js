@@ -122,12 +122,19 @@ window.app = (function ($, toastr) {
             $(this.obj).hide();
         },
         setDataFromRemote: function (empId) {
+            if (typeof empId === "undefined" || empId == null || empId < 0) {
+                console.log("Unknown Employee Id");
+                return;
+            }
             var tempData = this.data;
             pullDataById(document.restfulUrl, {
                 action: 'pullEmployeeDetailById',
                 data: {employeeId: empId}
             }).then(function (success) {
                 console.log("profile detail response", success);
+                if (typeof success.data === "undefined" || success.data == null) {
+                    return;
+                }
                 this.data.firstName = success.data['FIRST_NAME'];
                 this.data.middleName = (success.data['MIDDLE_NAME'] == null) ? "" : success.data['MIDDLE_NAME'];
                 this.data.lastName = success.data['LAST_NAME'];
@@ -182,6 +189,8 @@ window.app = (function ($, toastr) {
             this.view.mobileNo.text(this.data.mobileNo);
             if (this.data.imageFilePath != null && (typeof this.data.imageFilePath !== "undefined") && this.data.imageFilePath.length >= 4) {
                 this.view.image.attr('src', document.basePath + "/uploads/" + this.data.imageFilePath);
+            } else {
+                this.view.image.attr('src', document.basePath + "/img/profile_empty.jpg");
             }
         },
         minimize: function () {

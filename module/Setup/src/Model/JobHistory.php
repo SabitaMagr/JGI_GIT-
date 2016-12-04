@@ -29,6 +29,7 @@ class JobHistory extends Model
     const TO_POSITION_ID="TO_POSITION_ID";
     const FROM_SERVICE_TYPE_ID="FROM_SERVICE_TYPE_ID";
     const TO_SERVICE_TYPE_ID="TO_SERVICE_TYPE_ID";
+    const STATUS="STATUS";
 
     public $jobHistoryId;
     public $employeeId;
@@ -45,7 +46,8 @@ class JobHistory extends Model
     public $toDesignationId;
     public $fromPositionId;
     public $toPositionId;
-
+    public $status;
+    
     public $mappings = [
         'jobHistoryId' => self::JOB_HISTORY_ID,
         'employeeId' => self::EMPLOYEE_ID,
@@ -61,6 +63,7 @@ class JobHistory extends Model
         'fromDesignationId' => self::FROM_DESIGNATION_ID,
         'toDesignationId' => self::TO_DESIGNATION_ID,
         'fromPositionId' => self::FROM_POSITION_ID,
-        'toPositionId' => self::TO_POSITION_ID
+        'toPositionId' => self::TO_POSITION_ID,
+        'status'=>self::STATUS
     ];
 }
