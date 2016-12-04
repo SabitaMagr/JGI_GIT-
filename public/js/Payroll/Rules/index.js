@@ -1,7 +1,6 @@
 (function ($) {
     'use strict';
     $(document).ready(function () {    
-       
         $("#ruleTable").kendoGrid({
             dataSource: {
                 data: document.rules,
@@ -21,6 +20,7 @@
                 {field: "PAY_CODE", title: "Pay Code"},
                 {field: "PAY_EDESC", title: "EDesc"},
                 {field: "PAY_TYPE_FLAG", title: "Type"},
+                {field: "PRIORITY_INDEX", title: "Priority Index"},
                 {title: "Action"}
             ]
         });  

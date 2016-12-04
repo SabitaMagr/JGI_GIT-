@@ -62,8 +62,12 @@ $this->headScript()
         <td>
         #: (PAY_EDESC == null) ? '-' : PAY_EDESC #
         </td>
+         
         <td>
-        #: (PAY_TYPE_FLAG == null) ? '-' : PAY_TYPE_FLAG #
+        #: (PAY_TYPE_FLAG == null) ? '-' : (PAY_TYPE_FLAG=='A') ? 'Addition' : 'Deduction' #
+        </td>
+        <td>
+        #: (PRIORITY_INDEX == null) ? '-' : PRIORITY_INDEX #
         </td>
         <td>
         <a class=""

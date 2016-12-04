@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Created by PhpStorm.
  * User: root
@@ -7,7 +8,6 @@
  */
 
 namespace Payroll\Controller;
-
 
 use Application\Helper\EntityHelper;
 use Application\Repository\RepositoryInterface;
@@ -25,8 +25,8 @@ use Payroll\Repository\RulesDetailRepo;
 use Payroll\Repository\RulesRepository;
 use Setup\Entity\HrEmployees;
 
-class PayrollGenerator
-{
+class PayrollGenerator {
+
     private $adapter;
     private $flatValueDetRepo;
     private $monthlyValueDetRepo;
@@ -34,7 +34,6 @@ class PayrollGenerator
     private $ruleDetailRepo;
     private $ruleRepo;
     private $employeeId;
-
     private $monthlyValues;
     private $flatValues;
 
@@ -51,7 +50,6 @@ class PayrollGenerator
         "MARITUAL_STATUS",
         "TOTAL_DAYS_FROM_JOIN_DATE"
     ];
-
     const SYSTEM_RULE = [
         "LEAST_VALUE",
         "GREATEST_VALUE",
@@ -65,9 +63,7 @@ class PayrollGenerator
         "EMPLOYEE_GRADE"
     ];
 
-
-    public function __construct($adapter)
-    {
+    public function __construct($adapter) {
         $this->adapter = $adapter;
         $this->flatValueDetRepo = new FlatValueDetailRepo($adapter);
         $this->monthlyValueDetRepo = new MonthlyValueDetailRepo($adapter);
@@ -80,34 +76,29 @@ class PayrollGenerator
 
         $this->sanitizeStringArray($this->monthlyValues);
         $this->sanitizeStringArray($this->flatValues);
-
     }
 
-    private function getPositionId($id)
-    {
+    private function getPositionId($id) {
         return EntityHelper::getTableKVList($this->adapter, "HR_EMPLOYEES", "EMPLOYEE_ID", ["POSITION_ID"], ["EMPLOYEE_ID" => $id], null)[$id];
     }
 
-    public function generate($id)
-    {
+    public function generate($id) {
         $this->employeeId = $id;
 
         $positionId = $this->getPositionId($id);
-        $payPositionList = $this->payPositionRepo->fetchByPositionId($positionId);
-
+        $payPositionList = $this->payPositionRepo->test($positionId);
         $payList = [];
 
         foreach ($payPositionList as $payPosition) {
-            array_push($payList, $payPosition[PayPositionSetup::PAY_ID]);
+            array_push($payList, $payPosition);
         }
-
         $calculatedValue = 0;
         $ruleValueKV = [];
 
-        foreach ($payList as $ruleId) {
+        foreach ($payList as $ruleObj) {
+            $ruleId = $ruleObj[PayPositionSetup::PAY_ID];
             $rule = $this->ruleDetailRepo->fetchById($ruleId)->{RulesDetail::MNENONIC_NAME};
-            $ruleObj = $this->ruleRepo->fetchById($ruleId);
-            $operationType = $ruleObj->{Rules::PAY_TYPE_FLAG};
+            $operationType = $ruleObj[Rules::PAY_TYPE_FLAG];
 
             foreach ($this->monthlyValues as $key => $monthlyValue) {
                 $rule = $this->convertConstantToValue($rule, $key, $monthlyValue, $this->monthlyValueDetRepo);
@@ -132,16 +123,14 @@ class PayrollGenerator
         return ["ruleValueKV" => $ruleValueKV, "calculatedValue" => $calculatedValue];
     }
 
-    private function sanitizeStringArray(array &$stringArray)
-    {
+    private function sanitizeStringArray(array &$stringArray) {
         foreach ($stringArray as &$string) {
             $string = str_replace(" ", "_", $string);
             $string = strtoupper($string);
         }
     }
 
-    private function convertConstantToValue($rule, $key, $constant, RepositoryInterface $repository)
-    {
+    private function convertConstantToValue($rule, $key, $constant, RepositoryInterface $repository) {
         if (strpos($rule, $constant) !== false) {
             return str_replace($constant, $this->generateValue($key, $repository), $rule);
         } else {
@@ -149,25 +138,21 @@ class PayrollGenerator
         }
     }
 
-    private function generateValue($constant, RepositoryInterface $repository)
-    {
+    private function generateValue($constant, RepositoryInterface $repository) {
         if ($repository instanceof MonthlyValueDetailRepo) {
             return $repository->fetchById([$this->employeeId, $constant])[MonthlyValueDetail::MTH_VALUE];
         } else if ($repository instanceof FlatValueDetailRepo) {
             return $repository->fetchById([$this->employeeId, $constant])[FlatValueDetail::FLAT_VALUE];
         }
-
     }
 
-    private function convertVariableToValue($rule, $variable)
-    {
+    private function convertVariableToValue($rule, $variable) {
         if (strpos($rule, $variable) !== false) {
             $variableProcessor = new VariableProcessor($this->adapter, $this->employeeId);
             return str_replace($variable, $variableProcessor->processVariable($variable), $rule);
         } else {
             return $rule;
         }
-
     }
 
 }

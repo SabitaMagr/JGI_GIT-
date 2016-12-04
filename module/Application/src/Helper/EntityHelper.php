@@ -10,8 +10,9 @@
 namespace Application\Helper;
 
 use Zend\Db\Adapter\AdapterInterface;
-use Zend\Db\TableGateway\TableGateway;
+use Zend\Db\Sql\Select;
 use Zend\Db\Sql\Sql;
+use Zend\Db\TableGateway\TableGateway;
 
 class EntityHelper {
 
@@ -23,6 +24,36 @@ class EntityHelper {
         } else {
             $resultset = $gateway->select($where);
         }
+        $concatWith = ($concatWith == null) ? " " : ($concatWith == null) ? "" : $concatWith;
+
+        $entitiesArray = array();
+        foreach ($resultset as $result) {
+            $concattedValue = "";
+            for ($i = 0; $i < count($values); $i++) {
+                if ($i == 0) {
+                    $concattedValue = $result[$values[$i]];
+                    continue;
+                }
+                $concattedValue = $concattedValue . $concatWith . $result[$values[$i]];
+            }
+            $entitiesArray[$result[$key]] = $concattedValue;
+        }
+        return $entitiesArray;
+    }
+
+    public static function getTableKVListWithSortOption(AdapterInterface $adapter, $tableName, $key, array $values, $where = null, $orderBy = null, $orderAs = null, $concatWith = null) {
+        $gateway = new TableGateway($tableName, $adapter);
+
+
+        $resultset = $gateway->select(function(Select $select) use($where, $orderBy, $orderAs) {
+            if ($select != null) {
+                $select->where($where);
+            }
+            if ($orderBy != null) {
+                $orderAs = ($orderAs != null) ? $orderAs : "";
+                $select->order($orderBy . " " . $orderAs);
+            }
+        });
         $concatWith = ($concatWith == null) ? " " : ($concatWith == null) ? "" : $concatWith;
 
         $entitiesArray = array();
