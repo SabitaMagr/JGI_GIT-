@@ -2,9 +2,9 @@
     <!-- BEGIN Portlet PORTLET-->
     <div class="portlet light bg-inverse">
         <div class="portlet-title">
-            <div class="caption">
+            <div class="caption cborder">
                 <i class="icon-speech"></i>
-                <span class="caption-subject bold uppercase"> Leave Applied</span>
+                <span class="caption-subject bold"> Leave Applied</span>
                 <span class="caption-helper">pending...</span>
             </div>
         </div>
@@ -19,13 +19,13 @@
                                 </div>
                                 <div class="list-datetime"> 
                                     <label style="font-size: 0.8em;">
-                                        <?php print $leaveApply['START_DATE']; ?>
+                                        <?php print $leaveApply['START_DATE']; ?>&nbsp-&nbsp 
                                         <?php print $leaveApply['END_DATE']; ?>
 
                                     </label>
                                 </div>
                                 <div class="list-item-content">
-                                    <h3 class="uppercase">
+                                    <h3 class="head-title">
                                         <a href="<?= $this->url("leavestatus",['action'=>'view','id'=>$leaveApply['ID']]) ?>">
                                             <?php print $leaveApply['FIRST_NAME']; ?>
                                             <?php print $leaveApply['MIDDLE_NAME']; ?>
