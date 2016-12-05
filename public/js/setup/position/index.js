@@ -35,7 +35,7 @@ var UIConfirmations = function () {
             alert("You confirmed action #1")
         }),
             $("#bs_confirmation_demo_1").on("canceled.bs.confirmation", function () {
-            alert("You canceled action #1")
+            //alert("You canceled action #1")
         })
     };
     return{init: function () {
