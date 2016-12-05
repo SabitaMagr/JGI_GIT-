@@ -1,7 +1,8 @@
 <?php
+$this->headScript()->appendFile($this->basePath('js/setup/academic-university/add.js'));
 
 $form->setAttribute('role', 'form');
-$form->setAttribute('class', 'academicUniversity-form');
+$form->setAttribute('id', 'academicUniversity-form');
 
 $academicUniversityCode = $form->get('academicUniversityCode');
 $academicUniversityName = $form->get('academicUniversityName');
@@ -24,6 +25,7 @@ $form->prepare();
 ?>
 <script>
     document.menu =<?php $menu = ["id" => "menuSetup", "subMenu" => ["id" => "subMenuAcademicUniversity"]];echo json_encode($menu);?>;
+    document.url = '<?= $this->url("restful", ["action" => "index"]) ?>';
 </script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\academicUniversity')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
@@ -44,11 +46,13 @@ $form->prepare();
                     <?php print $this->formLabel($academicUniversityCode); ?>
                     <?php print $this->formElement($academicUniversityCode); ?>
                     <?php print $this->formElementErrors()->render($academicUniversityCode, ['class' => 'help-block']); ?>
+                    <span class="errorMsg" style="font-size:11px; color:red;"></span>
                 </div>
                 <div class="form-group">
                     <?php print $this->formLabel($academicUniversityName); ?>
                     <?php print $this->formElement($academicUniversityName); ?>
                     <?php print $this->formElementErrors()->render($academicUniversityName, ['class' => 'help-block']); ?>
+                    <span class="errorMsg" style="font-size:11px; color:red;"></span>
                 </div>
 
                 <div class="form-group">

@@ -60,22 +60,22 @@ if($this->messages) { ?>
     <script id="rowTemplate" type="text/x-kendo-tmpl">
         <tr>
         <td>
-        #:LEAVE_CODE # 
+         #: (LEAVE_CODE == null) ? '-' : LEAVE_CODE #
         </td>
         <td>
-        #: LEAVE_ENAME #
+         #: (LEAVE_ENAME == null) ? '-' : LEAVE_ENAME #
         </td>
         <td>
-        #: ALLOW_HALFDAY #
+         #: (ALLOW_HALFDAY == null) ? '-' : ALLOW_HALFDAY #
         </td>
         <td>
-        #: DEFAULT_DAYS #
+         #: (DEFAULT_DAYS == null) ? '-' : DEFAULT_DAYS #
         </td>
         <td>
-        #: CARRY_FORWARD #
+         #: (CARRY_FORWARD == null) ? '-' : CARRY_FORWARD #
         </td>
         <td>
-        #: CASHABLE #
+         #: (CASHABLE == null) ? '-' : CASHABLE #
         </td>
         <td>
         <a class=""

@@ -167,11 +167,16 @@ echo json_encode($menu);
     document.urlQualificationDtl = '<?= $this->url("restful", ["action" => "index"]) ?>';</script>
 
 <div class="page-bar">
+<<<<<<< HEAD
   <ul class="page-breadcrumb">
     <?= $this->navigation('Zend\Navigation\Employee')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb'); ?>
   </ul>
+=======
+    <?= $this->navigation('Zend\Navigation\Employee')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb'); ?>
+>>>>>>> ffe9aee42be7f255e74690109ec4e05076e56f3c
 </div>
 <div id="rootwizard" class="tabbable-custom">
+<<<<<<< HEAD
   <ul class="nav nav-tabs">
     <li class="active"> <a data-toggle="tab" href="#tab1"> General </a> </li>
     <li class=""> <a data-toggle="tab" href="#tab2"> Family </a> </li>
@@ -184,6 +189,48 @@ echo json_encode($menu);
   <div class="tab-content">
     <div class="tab-pane active" id="tab1">
       <?php
+=======
+    <ul class="nav nav-tabs">
+        <li class="active">
+            <a data-toggle="tab" href="#tab1">
+                General
+            </a>
+        </li>
+        <li class="">
+            <a data-toggle="tab" href="#tab2">
+                Family
+            </a>
+        </li>
+        <li class="">
+            <a data-toggle="tab" href="#tab3">
+                Identification
+            </a>
+        </li>
+        <li class="">
+            <a data-toggle="tab" href="#tab4">
+                Status & Integration
+            </a>
+        </li>
+        <li class="">
+            <a data-toggle="tab" href="#tab5">
+                Qualification
+            </a>
+        </li>
+        <li class="">
+            <a data-toggle="tab" href="#tab6">
+                Upload Image
+            </a>
+        </li>
+        <li class="">
+            <a data-toggle="tab" href="#tab7">
+                Add. Information
+            </a>
+        </li>
+    </ul>
+    <div class="tab-content">
+        <div class="tab-pane active" id="tab1" style="min-height: 400px;">
+            <?php
+>>>>>>> ffe9aee42be7f255e74690109ec4e05076e56f3c
             $formOne->setAttribute('action', $this->url('employee', ['action' => 'add']));
             $formOne->setAttribute("name", "employeeForm");
             $formOne->prepare();
@@ -363,9 +410,16 @@ echo json_encode($menu);
       <?php
             print $this->form()->closeTag();
             ?>
+<<<<<<< HEAD
     </div>
     <div class="tab-pane" id="tab2">
       <?php
+=======
+        </div>
+
+        <div class="tab-pane" id="tab2" style="min-height: 400px;">
+            <?php
+>>>>>>> ffe9aee42be7f255e74690109ec4e05076e56f3c
             $formTwo->setAttribute('action', $this->url('employee', ['action' => 'edit', 'id' => $empId, 'tab' => 2]));
             $formTwo->setAttribute("name", "employeeForm");
             $formTwo->prepare();
@@ -464,9 +518,16 @@ echo json_encode($menu);
       <?php
             print $this->form()->closeTag();
             ?>
+<<<<<<< HEAD
     </div>
     <div class="tab-pane" id="tab3">
       <?php
+=======
+        </div>
+
+        <div class="tab-pane" id="tab3" style="min-height: 400px;">
+            <?php
+>>>>>>> ffe9aee42be7f255e74690109ec4e05076e56f3c
             $formThree->setAttribute('action', $this->url('employee', ['action' => 'edit', 'id' => $empId, 'tab' => 3]));
             $formThree->setAttribute("name", "employeeForm");
             $formThree->prepare();
@@ -596,9 +657,16 @@ echo json_encode($menu);
       <?php
             print $this->form()->closeTag();
             ?>
+<<<<<<< HEAD
     </div>
     <div class="tab-pane" id="tab4">
       <?php
+=======
+        </div>
+
+        <div class="tab-pane" id="tab4" style="min-height: 400px;">
+            <?php
+>>>>>>> ffe9aee42be7f255e74690109ec4e05076e56f3c
             $formFour->setAttribute('action', $this->url('employee', ['action' => 'edit', 'id' => $empId, 'tab' => 4]));
             $formFour->setAttribute("name", "employeeForm");
             $formFour->prepare();
@@ -682,6 +750,7 @@ echo json_encode($menu);
       <?php
             print $this->form()->closeTag();
             ?>
+<<<<<<< HEAD
     </div>
     <div class="tab-pane" id="tab5">
       <div class="row">
@@ -742,16 +811,133 @@ echo json_encode($menu);
           <div class="row">
             <div class="col-sm-6 col-sm-offset-3">
               <form  action="<?= $this->url("restful", ["action" => "index"]) ?>"
+=======
+
+        </div>
+
+        <div class="tab-pane" id="tab5" style="min-height: 400px;">
+            <div class="row">
+                <div ng-app="hris" ng-controller="qualificationController">
+                    <input type="hidden" name="employeeId" id="employeeId" value="0">
+                    <div class="col-sm-12">
+                        <table class="table table-striped table-bordered table-hover no-footer" id="qualificationTbl">
+                            <tr>
+                                <td><?php print $this->formLabel($academicDegreeId); ?></td>
+                                <td><?php print $this->formLabel($academicUniversityId); ?></td>
+                                <td><?php print $this->formLabel($academicProgramId); ?></td>
+                                <td><?php print $this->formLabel($academicCourseId); ?></td>
+                                <td><?php print $this->formLabel($rankType); ?></td>
+                                <td><?php print $this->formLabel($rankValue); ?></td>
+                                <td><?php print $this->formLabel($passedYr); ?></td>
+                                <td width="1%">
+                                </td>
+                            </tr>
+                            <tr ng-repeat="qualificationForm in qualificationFormList">
+                                <td>
+                                    <input type="hidden" ng-model="qualificationForm.id"/>
+                                    <select class="form-control" ng-options="degree.name for degree in degreeList track by degree.id" ng-model="qualificationForm.academicDegreeId">
+                                    </select>
+                                </td>
+                                <td>
+                                    <select class="form-control" ng-options="university.name for university in universityList track by university.id" ng-model="qualificationForm.academicUniversityId">
+                                    </select>
+                                </td>
+                                <td>
+                                    <select class="form-control" ng-options="program.name for program in programList track by program.id" ng-model="qualificationForm.academicProgramId">
+                                    </select>
+                                </td>
+                                <td>
+                                    <select class="form-control" ng-options="course.name for course in courseList track by course.id" ng-model="qualificationForm.academicCourseId">
+                                    </select>
+                                </td>
+                                <td>
+                                    <select class="form-control" ng-options="rankTypes.name for rankTypes in rankType track by rankTypes.id" ng-model="qualificationForm.rankType">
+                                    </select>
+                                </td>
+
+
+                                <td>
+                                    <input ng-model="qualificationForm.rankValue" required="required"
+                                           class="rankValue-weight form-control" size="7" type="text" value="">
+                                </td>
+                                <td>
+                                    <input type="text" class="form-passedYr form-control" value=""
+                                           ng-model="qualificationForm.passedYr">
+                                </td>
+                                <td width="1%" style="padding:15px;">
+                                    <div class="md-checkbox">
+                                        <input type="checkbox" id="{{qualificationForm.checkbox}}" class="md-check" ng-model="qualificationForm.checked">
+                                        <label for="{{qualificationForm.checkbox}}">
+                                            <span class="inc"></span>
+                                            <span class="check"></span>
+                                            <span class="box"></span>
+                                        </label>
+                                    </div>
+
+                                </td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td>
+                                    <a href="javascript:;" class="btn btn-icon-only default pull-right"
+                                       ng-click="view()">
+                                        <i class="fa fa-plus"></i>
+                                    </a>
+                                </td>
+                                <td>
+                                    <a href="javascript:;" class="btn btn-icon-only default" ng-click="delete()">
+                                        <i class="fa fa-trash-o"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="tab-pane" id="tab6" style="min-height: 400px;">
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="row">
+                        <div class="col-sm-6 col-sm-offset-3">
+                            <form  action="<?= $this->url("restful", ["action" => "index"]) ?>"
+>>>>>>> ffe9aee42be7f255e74690109ec4e05076e56f3c
                                    class="dropzone"
                                    id="my-awesome-dropzone">
               </form>
             </div>
+<<<<<<< HEAD
           </div>
           <div class="row margin-top-10">
             <div class="col-sm-3 col-sm-offset-3">
               <select class="form-control" >
                 <option></option>
               </select>
+=======
+        </div>
+
+        <div class="tab-pane" id="tab7" style="min-height: 400px;">
+            <div class="row clearfix">
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label>
+                            Experience
+                        </label>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label>
+                            Qualification
+                        </label>
+                    </div>
+                </div>
+>>>>>>> ffe9aee42be7f255e74690109ec4e05076e56f3c
             </div>
             <div class="col-sm-3">
               <button class="btn btn-block btn-animated" > Post </button>
@@ -780,6 +966,7 @@ echo json_encode($menu);
             </div>
           </div>
         </div>
+<<<<<<< HEAD
       </div>
     </div>
     <div class="tab-pane" id="tab7">
@@ -788,6 +975,36 @@ echo json_encode($menu);
           <div class="form-group">
             <label> Experience </label>
           </div>
+=======
+
+        <div class="padding-20">
+            <ul class="pager wizard">
+                <li class="next">
+                    <button
+                        class="btn btn-success pull-right" >
+                        <span>Next</span>
+                    </button>
+                </li>
+                <li class="next finish hidden">
+                    <button id="finishBtn"
+                            class="btn btn-success  pull-right"
+                            type="button">
+                        <span>Finish</span>
+                    </button>
+                </li>
+                <li class="previous first hidden">
+                    <button class="btn btn-default btn-cons btn-animated from-left fa fa-cog pull-right"
+                            type="button">
+                        <span>First</span>
+                    </button>
+                </li>
+                <li class="previous">
+                    <button class="btn btn-default pull-left" type="button">
+                        <span>Previous</span>
+                    </button>
+                </li>
+            </ul>
+>>>>>>> ffe9aee42be7f255e74690109ec4e05076e56f3c
         </div>
         <div class="col-sm-6">
           <div class="form-group">

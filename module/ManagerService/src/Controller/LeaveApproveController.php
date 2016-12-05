@@ -240,7 +240,7 @@ class LeaveApproveController extends AbstractActionController {
         ksort($leaves);
         $leaveFormElement->setValueOptions($leaves);
         $leaveFormElement->setAttributes(["id" => "leaveId", "class" => "form-control"]);
-        $leaveFormElement->setLabel("Leave Type");
+        $leaveFormElement->setLabel("Type");
         
         $leaveStatus = [
             '-1'=>'All',
@@ -253,7 +253,7 @@ class LeaveApproveController extends AbstractActionController {
         $leaveStatusFormElement->setName("leaveStatus");
         $leaveStatusFormElement->setValueOptions($leaveStatus);
         $leaveStatusFormElement->setAttributes(["id" => "leaveRequestStatusId", "class" => "form-control"]);
-        $leaveStatusFormElement->setLabel("Leave Request Status");
+        $leaveStatusFormElement->setLabel("Status");
         
         return Helper::addFlashMessagesToArray($this,[
             "branches" => $branchFormElement,

@@ -2,7 +2,7 @@
 $this->headScript()->appendFile($this->basePath('js/setup/department/add.js'));
 
 $form->setAttribute('role', 'form');
-$form->setAttribute('class', 'department-form');
+$form->setAttribute('id', 'department-form');
 
 $departmentCode = $form->get('departmentCode');
 $departmentName = $form->get('departmentName');
@@ -30,6 +30,7 @@ $form->prepare();
 ?>
 <script>
     document.menu =<?php $menu = ["id" => "menuSetup", "subMenu" => ["id" => "subMenuDepartment"]];echo json_encode($menu);?>;
+    document.url = '<?= $this->url("restful", ["action" => "index"]) ?>';
 </script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\Department')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
@@ -48,11 +49,13 @@ $form->prepare();
                     <?php print $this->formLabel($departmentCode); ?>
                     <?php print $this->formElement($departmentCode); ?>
                     <?php print $this->formElementErrors()->render($departmentCode, ['class' => 'help-block']); ?>
+                    <span class="errorMsg" style="font-size:11px; color:red;"></span>
                 </div>
                 <div class="form-group">
                     <?php print $this->formLabel($departmentName); ?>
                     <?php print $this->formElement($departmentName); ?>
                     <?php print $this->formElementErrors()->render($departmentName, ['class' => 'help-block']); ?>
+                    <span class="errorMsg" style="font-size:11px; color:red;"></span>
                 </div>
                 <div class="form-group">
                     <?php print $this->formLabel($countryId); ?>

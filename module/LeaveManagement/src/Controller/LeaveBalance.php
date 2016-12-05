@@ -128,11 +128,16 @@ class LeaveBalance extends AbstractActionController {
         ]);
     }
     public function applyAction(){
-        $leaveId = $this->params()->fromRoute('id');
-        $employeeId = $this->params()->fromRoute('eid');
-
-        $this->initializeForm();
         $request = $this->getRequest();
+        $leaveId = (int)$this->params()->fromRoute('id');
+        $employeeId = (int)$this->params()->fromRoute('eid');
+        
+        if ($leaveId === 0 && $employeeId===0) {
+            $postData = $request->getPost();
+            $employeeId = $postData['employeeId'];
+            $leaveId = $postData['leaveId'];
+        }
+        $this->initializeForm();
 
         $recommendApproveRepository =  new RecommendApproveRepository($this->adapter);
         $empRecommendApprove  = $recommendApproveRepository->fetchById($employeeId);
@@ -149,8 +154,16 @@ class LeaveBalance extends AbstractActionController {
             $approvedBy = $empRecommendApprove['APPROVED_BY'];
         }else{
             $result = $this->recommendApproveList($employeeId);
-            $recommendBy=$result['recommender'][0]['id'];
-            $approvedBy=$result['approver'][0]['id'];
+            if(count($result['recommender'])>0){
+                $recommendBy=$result['recommender'][0]['id'];
+            }else{
+                $recommendBy=null;
+            }
+            if(count($result['approver'])>0){
+                $approvedBy=$result['approver'][0]['id'];
+            }else{
+                $approvedBy=null;
+            }           
         }
         
         if($request->isPost()){

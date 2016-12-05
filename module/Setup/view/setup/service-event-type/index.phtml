@@ -60,10 +60,10 @@ if($this->messages) { ?>
     <script id="rowTemplate" type="text/x-kendo-tmpl">
         <tr>
         <td>
-        #:SERVICE_EVENT_TYPE_CODE # 
+        #: (SERVICE_EVENT_TYPE_CODE == null) ? '-' : SERVICE_EVENT_TYPE_CODE #
         </td>
         <td>
-        #: SERVICE_EVENT_TYPE_NAME #
+        #: (SERVICE_EVENT_TYPE_NAME == null) ? '-' : SERVICE_EVENT_TYPE_NAME #
         </td>
         <td>
         <a class=""

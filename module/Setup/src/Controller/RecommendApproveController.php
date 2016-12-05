@@ -46,12 +46,12 @@ class RecommendApproveController extends AbstractActionController {
         $this->initializeForm();
         if($request->isPost()){
             $this->form->setData($request->getPost());
+            
             if($this->form->isValid()){
                 $recommendApprove = new RecommendApprove();
                 $recommendApprove->exchangeArrayFromForm($this->form->getData());
                 $recommendApprove->createdDt = Helper::getcurrentExpressionDate();
                 $recommendApprove->status='E';
-
                 $this->repository->add($recommendApprove);
 
                 $this->flashmessenger()->addMessage("Recommender And Approver Successfully Assigned!!!");

@@ -89,32 +89,38 @@ if ($this->messages) { ?>
 
     <script id="rowTemplate" type="text/x-kendo-tmpl">
         <tr>
-        <td>    
-        #: FIRST_NAME #  #: MIDDLE_NAME #  #: LAST_NAME #
+        <td> 
+            #: (FIRST_NAME == null) ? ' ' : FIRST_NAME #
+            #: (MIDDLE_NAME == null) ? ' ' : MIDDLE_NAME #
+            #: (LAST_NAME == null) ? ' ' : LAST_NAME #
         </td>
         <td>
-        #: LEAVE_ENAME #
+            #: (LEAVE_ENAME == null) ? '-' : LEAVE_ENAME #
         </td>
         <td>
-        #: APPLIED_DATE #
+            #: (APPLIED_DATE == null) ? '-' : APPLIED_DATE #
         </td>        
         <td>
-        #: START_DATE #
+            #: (START_DATE == null) ? '-' : START_DATE #
         </td>
         <td>
-        #: END_DATE #
+            #: (END_DATE == null) ? '-' : END_DATE #
         </td>
         <td>
-        #: FN1 # #: MN1 # #: LN1 #
+            #: (FN1 == null) ? ' ' : FN1 #
+            #: (MN1 == null) ? ' ' : MN1 #
+            #: (LN1 == null) ? ' ' : LN1 #
         </td>
         <td>
-        #: FN2 # #: MN2 # #: LN2 #
+            #: (FN2 == null) ? ' ' : FN2 #
+            #: (MN2 == null) ? ' ' : MN2 #
+            #: (LN2 == null) ? ' ' : LN2 #
         </td>
         <td>
-        #: NO_OF_DAYS #
+            #: (NO_OF_DAYS == null) ? '-' : NO_OF_DAYS #
         </td>
         <td>
-        #: STATUS #
+             #: (STATUS == null) ? '-' : STATUS #
         </td>
         <td>
             <a class=""

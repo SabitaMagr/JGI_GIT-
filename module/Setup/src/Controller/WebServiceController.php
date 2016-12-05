@@ -189,7 +189,27 @@ class WebServiceController extends AbstractActionController
 
                     $responseData = [
                         "success" => true,
-                        "data" => $leaveDetail
+                        "data" => $leaveDetail,
+                    ];
+                    break;
+                case "pullLeaveDetailWidEmployeeId":
+                    $leaveRequestRepository = new LeaveRequestRepository($this->adapter);
+                    $filtersId = $postedData->data;
+                    $employeeId = $filtersId['employeeId'];
+                    $leaveList = $leaveRequestRepository->getLeaveList($employeeId);
+
+                    $leaveRow = [];
+                    foreach($leaveList as $key=>$value){
+                        array_push($leaveRow,["id"=>$key,"name"=>$value]);
+                    }
+                    
+                    $empLeaveId = $leaveRow[0]['id'];
+                    $leaveDetail =$leaveRequestRepository->getLeaveDetail($employeeId,$empLeaveId);
+
+                    $responseData = [
+                        "success" => true,
+                        "data" => $leaveDetail,
+                        'leaveList'=>$leaveRow
                     ];
                     break;
 
@@ -227,6 +247,14 @@ class WebServiceController extends AbstractActionController
                                 $i++;
                             }
                         }
+                    }
+                    if(count($recommender)==0){
+                        $recommender[0]["id"]=" ";
+                        $recommender[0]["name"]="--";
+                    }
+                    if(count($approver)==0){
+                        $approver[0]["id"]=" ";
+                        $approver[0]["name"]="--";
                     }
                     $responseData = [
                         "success" => true,

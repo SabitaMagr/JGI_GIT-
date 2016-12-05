@@ -104,8 +104,8 @@ class LeaveStatusRepository implements RepositoryInterface {
 
         $select->from(['LA' => LeaveApply::TABLE_NAME])
                 ->join(['E' => "HR_EMPLOYEES"], "E.EMPLOYEE_ID=LA.EMPLOYEE_ID", ['FIRST_NAME', 'MIDDLE_NAME', 'LAST_NAME'])
-                ->join(['E1' => "HR_EMPLOYEES"], "E1.EMPLOYEE_ID=LA.RECOMMENDED_BY", ['FN1' => 'FIRST_NAME', 'MN1' => 'MIDDLE_NAME', 'LN1' => 'LAST_NAME'])
-                ->join(['E2' => "HR_EMPLOYEES"], "E2.EMPLOYEE_ID=LA.APPROVED_BY", ['FN2' => 'FIRST_NAME', 'MN2' => 'MIDDLE_NAME', 'LN2' => 'LAST_NAME']);
+                ->join(['E1' => "HR_EMPLOYEES"], "E1.EMPLOYEE_ID=LA.RECOMMENDED_BY", ['FN1' => 'FIRST_NAME', 'MN1' => 'MIDDLE_NAME', 'LN1' => 'LAST_NAME'],"left")
+                ->join(['E2' => "HR_EMPLOYEES"], "E2.EMPLOYEE_ID=LA.APPROVED_BY", ['FN2' => 'FIRST_NAME', 'MN2' => 'MIDDLE_NAME', 'LN2' => 'LAST_NAME'],"left");
 
         $select->where([
             "LA.ID=" . $id
@@ -144,20 +144,24 @@ class LeaveStatusRepository implements RepositoryInterface {
                 E2.FIRST_NAME AS FN2,E2.MIDDLE_NAME AS MN2,E2.LAST_NAME AS LN2,
                 LA.RECOMMENDED_BY AS RECOMMENDER,
                 LA.APPROVED_BY AS APPROVER
-                FROM HR_EMPLOYEE_LEAVE_REQUEST LA, 
-                HR_LEAVE_MASTER_SETUP L,
-                HR_EMPLOYEES E,
-                HR_EMPLOYEES E1,
-                HR_EMPLOYEES E2
+                FROM HR_EMPLOYEE_LEAVE_REQUEST LA
+                LEFT OUTER JOIN HR_LEAVE_MASTER_SETUP L ON
+                L.LEAVE_ID=LA.LEAVE_ID 
+                LEFT OUTER JOIN HR_EMPLOYEES E ON
+                E.EMPLOYEE_ID=LA.EMPLOYEE_ID
+                LEFT OUTER JOIN HR_EMPLOYEES E1 ON
+                E1.EMPLOYEE_ID=LA.RECOMMENDED_BY
+                LEFT OUTER JOIN HR_EMPLOYEES E2 ON
+                E2.EMPLOYEE_ID=LA.APPROVED_BY
                 WHERE 
                 L.STATUS='E' AND
                 E.STATUS='E' AND
-                E1.STATUS='E' AND
-                E2.STATUS='E' AND
-                L.LEAVE_ID=LA.LEAVE_ID AND
-                E.EMPLOYEE_ID=LA.EMPLOYEE_ID AND
-                E1.EMPLOYEE_ID=LA.RECOMMENDED_BY AND
-                E2.EMPLOYEE_ID=LA.APPROVED_BY";
+                (E1.STATUS = CASE WHEN E1.STATUS IS NOT NULL
+                         THEN ('E')     
+                    END OR  E1.STATUS is null) AND
+                (E2.STATUS = CASE WHEN E2.STATUS IS NOT NULL
+                         THEN ('E')       
+                    END OR  E2.STATUS is null)";
         if($recomApproveId==null){
             if ($leaveRequestStatusId != -1) {
                 $sql .= " AND LA.STATUS ='" . $leaveRequestStatusId . "'";
@@ -214,6 +218,7 @@ class LeaveStatusRepository implements RepositoryInterface {
         }
 
         $statement = $this->adapter->query($sql);
+        //print_r($statement->getSql()); 
         $result = $statement->execute();
         return $result;
     }

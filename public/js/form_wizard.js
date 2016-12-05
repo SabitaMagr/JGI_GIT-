@@ -3,8 +3,8 @@
     $(document).ready(function () {
         $('#rootwizard').bootstrapWizard({
             onTabShow: function (tab, navigation, index) {
-                $('#tab' + (index + 1) + " select").select2();
 
+                $('#tab' + (index + 1) + " select").select2();
                 switch (index + 1) {
                     case 1:
                         window.app.addDatePicker($("#employeeBirthDate"));
@@ -86,7 +86,7 @@
             }, onPrevious: function (tab, navigation, index) {
                 console.log("Showing previous tab");
             }, onInit: function () {
-                console.log("On Init");
+                console.log("Tab initialized");
                 $('#rootwizard ul').removeClass('nav-pills');
 
             }

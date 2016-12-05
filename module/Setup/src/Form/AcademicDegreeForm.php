@@ -36,11 +36,11 @@ class AcademicDegreeForm{
     public $academicDegreeName;
 
     /**
-     * @Annotion\Type("Zend\Form\Element\Number")
-     * @Annotation\Required({"required":"true"})
+     * @Annotation\Type("Zend\Form\Element\Number")
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Weight"})
-     * @Annotation\Attributes({ "id":"form-weight", "class":"form-weight form-control" })
+     * @Annotation\Required(true)
+     * @Annotation\Attributes({ "id":"form-weight", "class":"form-weight form-control"})
      */
     public $weight;
 

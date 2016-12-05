@@ -8,6 +8,8 @@
 
 namespace Application\Helper;
 
+use Zend\Db\Adapter\AdapterInterface;
+use Zend\Db\TableGateway\TableGateway;
 
 class ConstraintHelper
 {
@@ -55,5 +57,21 @@ class ConstraintHelper
         }
         return null;
     }
+    
+    public static function checkUniqueConstraint(AdapterInterface $adapter,$tableName,array $columnsWidValues,$checkColumnName,$selfId){
+        $tableGateway = new TableGateway($tableName,$adapter);
+        
+        $uniqueConstraintsError = array();
+        $column = key($columnsWidValues);
+        $value = "'".$columnsWidValues[$column]."'";
+        if($selfId!=0){
+            $sql = " AND ".$checkColumnName."!=".$selfId;
+        }else{
+            $sql="";
+        }
 
+        $result =Helper::extractDbData($tableGateway->select([$column."=".$value,"STATUS='E'".$sql]));
+        $num = count($result);       
+        return $num;
+    }
 }

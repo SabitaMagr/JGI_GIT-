@@ -71,72 +71,52 @@ if ($this->messages) { ?>
             </div>
         </div>
     </div>
-
+    
     <div class="margin-top-20">
-        <table class="table table-striped table-bordered table-hover no-footer">
-            <thead>
-            <tr role="row">
-                <th>
-                    Holiday Code
-                </th>
-                <th>
-                    Holiday Name
-                </th>
-                <th>
-                    From Date
-                </th>
-                <th>
-                    To Date
-                </th>
-                <th>
-                    Gender
-                </th>
-                <th>
-                    Branch
-                </th>
-                <th>
-                    Half Day
-                </th>
-                <th>
-                    Action
-                </th>
-            </tr>
-            </thead>
-            <tbody>
-                <tr role="row" ng-repeat="holiday in holidayList">
-                    <td class="">
-                        <span ng-bind="holiday.HOLIDAY_CODE"></span>
-                    </td>
-                    <td class="">
-                        <span ng-bind="holiday.HOLIDAY_ENAME"></span>
-                    </td>
-                    <td class="">
-                        <span ng-bind="holiday.START_DATE"></span>
-                    </td>
-                    <td class="">
-                        <span ng-bind="holiday.END_DATE"></span>
-                    </td>
-                    <td class="">
-                        <span ng-bind="holiday.GENDER_NAME"></span>
-                    </td>
-                    <td class="">
-                        <ul ng-if="holiday.BRANCHES" id="branchList">
-                            <li ng-repeat="values in holiday.BRANCHES">
-                                - <span ng-bind="values.BRANCH_NAME"></span>
-                            </li>
-                        </ul>
-                        <span ng-if="holiday.BRANCH_NAME" ng-bind="holiday.BRANCH_NAME"></span>
-                    </td>
-                    <td class="">
-                        <span ng-bind="holiday.HALFDAY"></span>
-                    </td>
-                    <td class="">
-                        <a href="<?= $this->url("holidaysetup", ["action" => "edit"]); ?>/{{holiday.HOLIDAY_ID}}">
-                            Edit
-                        </a>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+        <div id="holidayTable"></div>
     </div>
+    
+    <script id="rowTemplate" type="text/x-kendo-tmpl">
+        <tr>
+        <td>    
+        #: (HOLIDAY_CODE == null) ? '-' : HOLIDAY_CODE #
+        </td>
+        <td>
+        #: (HOLIDAY_ENAME == null) ? '-' : HOLIDAY_ENAME #
+        </td>
+        <td>
+        #: (START_DATE == null) ? '-' : START_DATE #
+        </td>
+        <td>
+        #: (END_DATE == null) ? '-' : END_DATE #
+        </td>
+        <td>
+        #: (GENDER_NAME == null) ? '-' : GENDER_NAME #
+        </td>
+        <td>
+            <ul id="branchList">  
+                # (BRANCHES.length >3) ? ln=3 : ln=BRANCHES.length #
+                #for(var i=0; i<ln; i++) { #
+                    <li>
+                    - #=BRANCHES[i].BRANCH_NAME #
+                    </li>
+                #}#
+                <li>              
+                # if (BRANCHES.length >3) { #
+                <a href="<?= $this->url("holidaysetup", ["action" => "edit"]) ?>/#:HOLIDAY_ID#" style="margin-left:8px;"> (View More)
+                </a>
+                # } #
+                </li>
+            </ul>
+        </td>
+        <td>
+        #: (HALFDAY == null) ? '-' : HALFDAY #
+        </td>
+        <td>
+        <a href="<?= $this->url("holidaysetup", ["action" => "edit"]) ?>/#:HOLIDAY_ID#"> Edit
+        </a>
+        </tr>
+    </script>
+    
+    
 </div>

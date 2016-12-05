@@ -4,7 +4,8 @@
  */
 $this->headScript()
         ->appendFile($this->basePath('telerik_kendoui/js/kendo.all.min.js'))
-        ->appendFile($this->basePath('js/setup/position/index.js'));
+        ->appendFile($this->basePath('js/setup/position/index.js'))
+        ->appendFile($this->basePath('assets/global/plugins/bootstrap-confirmation/bootstrap-confirmation.min.js'));
 ?>
 <?php if ($this->messages) { ?>
     <script>
@@ -51,6 +52,7 @@ echo json_encode($menu); ?>;
                     </ul>
                 </div>
             </div>
+            <button class="btn yellow-mint uppercase btn-circle" data-toggle="confirmation" id="bs_confirmation_demo_1">Confirmation 1</button>  
         </div>
     </div>
 
@@ -59,10 +61,10 @@ echo json_encode($menu); ?>;
     <script id="rowTemplate" type="text/x-kendo-tmpl">
         <tr>
         <td>
-        #: SN #  
+        #: (SN == null) ? '-' : SN #
         </td>
         <td>
-        #: POSITION_NAME #  
+        #: (POSITION_NAME == null) ? '-' : POSITION_NAME #
         </td>
         <td>
         <a class=""

@@ -78,7 +78,6 @@ class Module implements AutoloaderProviderInterface, ConsoleUsageProviderInterfa
 
         $auth = new AuthenticationService();
         $roleId = $auth->getStorage()->read()['role_id'];
-
         if ($roleId != null) {
             $adapter = $app->getServiceManager()->get(DbAdapterInterface::class);
             $repository = new RolePermissionRepository($adapter);
@@ -107,19 +106,7 @@ class Module implements AutoloaderProviderInterface, ConsoleUsageProviderInterfa
                 return $response;
             }
 
-            $employeeId = $auth->getStorage()->read()['employee_id'];
-            if ($employeeId != null) {
-                $employeeFileId = EntityHelper::getTableKVList($adapter, \Setup\Model\HrEmployees::TABLE_NAME, \Setup\Model\HrEmployees::EMPLOYEE_ID, [\Setup\Model\HrEmployees::PROFILE_PICTURE_ID], [\Setup\Model\HrEmployees::EMPLOYEE_ID => $employeeId], null)[$employeeId];
-                $employeeName = EntityHelper::getTableKVList($adapter, \Setup\Model\HrEmployees::TABLE_NAME, \Setup\Model\HrEmployees::EMPLOYEE_ID, [\Setup\Model\HrEmployees::FIRST_NAME], [\Setup\Model\HrEmployees::EMPLOYEE_ID => $employeeId], null)[$employeeId];
-                if ($employeeFileId != null) {
-                    $filePath = EntityHelper::getTableKVList($adapter, \Setup\Model\EmployeeFile::TABLE_NAME, \Setup\Model\EmployeeFile::FILE_CODE, [\Setup\Model\EmployeeFile::FILE_PATH], [\Setup\Model\EmployeeFile::FILE_CODE => $employeeFileId], null)[$employeeFileId];
-                    $event->getViewModel()->setVariable("profilePictureUrl", $filePath);
-                    $event->getViewModel()->setVariable("employeeName", $employeeName);
-                } else {
-                    $event->getViewModel()->setVariable("profilePictureUrl", "1480316755.jpg");
-                    $event->getViewModel()->setVariable("employeeName", "Nick");
-                }
-            }
+            Helper\SessionHelper::sessionCheck($event);
         }
 
         $requestedResourse = $controller . "-" . $action;

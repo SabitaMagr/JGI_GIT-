@@ -1,5 +1,5 @@
 window.app = (function ($, toastr) {
-    'use strict';
+    "use strict";
     var format = "d-M-yyyy";
     // $('select').select2();
 
@@ -65,7 +65,7 @@ window.app = (function ($, toastr) {
         if (message) {
             window.toastr.success(message, "Notifications");
         }
-    }
+    };
     successMessage(document.messages);
 
     var floatingProfile = {
@@ -74,7 +74,7 @@ window.app = (function ($, toastr) {
         view: {
             name: $('#floating-profile  #name'),
             mobileNo: $('#floating-profile #mobileNo'),
-            appDate:$('#floating-profile #appDate'),
+            appDate: $('#floating-profile #appDate'),
             appBranch: $('#floating-profile #appBranch'),
             appDepartment: $('#floating-profile #appDepartment'),
             appDesignation: $('#floating-profile #appDesignation'),
@@ -122,33 +122,40 @@ window.app = (function ($, toastr) {
             $(this.obj).hide();
         },
         setDataFromRemote: function (empId) {
+            if (typeof empId === "undefined" || empId == null || empId < 0) {
+                console.log("Unknown Employee Id");
+                return;
+            }
             var tempData = this.data;
             pullDataById(document.restfulUrl, {
                 action: 'pullEmployeeDetailById',
                 data: {employeeId: empId}
             }).then(function (success) {
-                console.log(success);
+                console.log("profile detail response", success);
+                if (typeof success.data === "undefined" || success.data == null) {
+                    return;
+                }
                 this.data.firstName = success.data['FIRST_NAME'];
-                this.data.middleName = success.data['MIDDLE_NAME'];
+                this.data.middleName = (success.data['MIDDLE_NAME'] == null) ? "" : success.data['MIDDLE_NAME'];
                 this.data.lastName = success.data['LAST_NAME'];
                 this.data.appDate = success.data['JOIN_DATE'];
 
                 this.data.appBranch = success.data['APP_BRANCH'];
                 this.data.appDepartment = success.data['APP_DEPARTMENT'];
                 this.data.appDesignation = success.data['APP_DESIGNATION'];
-                this.data.appPosition = success.data['APP_POSITION'];
-                this.data.appServiceType = success.data['APP_SERVICE_TYPE'];
-                this.data.appServiceEventType = success.data['APP_SERVICE_EVENT_TYPE'];
+                this.data.appPosition = (success.data['APP_POSITION'] == null) ? "" : success.data['APP_POSITION'];
+                this.data.appServiceType = (success.data['APP_SERVICE_TYPE'] == null) ? "" : success.data['APP_SERVICE_TYPE'];
+                this.data.appServiceEventType = (success.data['APP_SERVICE_EVENT_TYPE'] == null) ? "" : success.data['APP_SERVICE_EVENT_TYPE'];
 
-                this.data.branch = success.data['BRANCH'];
+                this.data.branch = (success.data['BRANCH'] == null) ? "" : success.data['BRANCH'];
                 this.data.department = success.data['DEPARTMENT'];
                 this.data.designation = success.data['DESIGNATION'];
-                this.data.position = success.data['POSITION'];
-                this.data.serviceType = success.data['SERVICE_TYPE'];
-                this.data.serviceEventType = success.data['SERVICE_EVENT_TYPE'];
+                this.data.position = (success.data['POSITION'] == null) ? "" : success.data['POSITION'];
+                this.data.serviceType = (success.data['SERVICE_TYPE'] == null) ? "" : success.data['SERVICE_TYPE'];
+                this.data.serviceEventType = (success.data['SERVICE_EVENT_TYPE'] == null) ? "" : success.data['SERVICE_EVENT_TYPE'];
 
-                this.data.mobileNo = success.data['MOBILE_NO'];
-                this.data.imageFilePath = success.data['FILE_PATH'];
+                this.data.mobileNo = (success.data['MOBILE_NO'] == null) ? "" : success.data['MOBILE_NO'];
+                this.data.imageFilePath = (success.data['FILE_NAME'] == null) ? "" : success.data['FILE_NAME'];
 
                 this.refreshView();
                 this.show();
@@ -160,7 +167,6 @@ window.app = (function ($, toastr) {
             this.data = emp;
         },
         refreshView: function () {
-            console.log(this.data.lastName);
             this.view.name.text(this.data.firstName + " " + this.data.middleName + " " + this.data.lastName);
             //this.view.gender.text(this.data.genderId == 1 ? "Male" : this.data.genderId == 2 ? "Female" : "Other");
 
@@ -183,6 +189,8 @@ window.app = (function ($, toastr) {
             this.view.mobileNo.text(this.data.mobileNo);
             if (this.data.imageFilePath != null && (typeof this.data.imageFilePath !== "undefined") && this.data.imageFilePath.length >= 4) {
                 this.view.image.attr('src', document.basePath + "/uploads/" + this.data.imageFilePath);
+            } else {
+                this.view.image.attr('src', document.basePath + "/img/profile_empty.jpg");
             }
         },
         minimize: function () {
@@ -200,7 +208,7 @@ window.app = (function ($, toastr) {
             this.minStatus = false;
         },
         initialize: function () {
-            this.makeDraggable();
+//            this.makeDraggable();
             this.view.minMaxBtn.on("click", function () {
                 if (this.minStatus) {
                     this.maximize();
@@ -212,6 +220,51 @@ window.app = (function ($, toastr) {
     };
     floatingProfile.initialize();
 
+    var checkUniqueConstraints = function (inputFieldId, formId, tableName, columnName, checkColumnName, selfId) {
+        $('#' + inputFieldId).on("blur", function () {
+            var id = $(this);
+            var nameValue = id.val();
+            var parentId = id.parent(".form-group");
+            var childId = parentId.children(".errorMsg");
+            var columnsWidValues = {};
+            columnsWidValues[columnName] = nameValue;
+
+            window.app.pullDataById(document.url, {
+                action: 'checkUniqueConstraint',
+                data: {
+                    tableName: tableName,
+                    selfId: selfId,
+                    checkColumnName: checkColumnName,
+                    columnsWidValues: columnsWidValues
+                }
+            }).then(function (success) {
+                var num = parseInt(success.data);
+                if (num > 0) {
+                    childId.html(success.msg);
+                    id.focus();
+                } else if (num === 0) {
+                    childId.html("");
+                }
+            }, function (failure) {
+                console.log(failure);
+            });
+        });
+
+        $('#' + formId).submit(function (e) {
+            var err = [];
+            $(".errorMsg").each(function () {
+                var erroMsg = $.trim($(this).html());
+                if (erroMsg !== "") {
+                    err.push("error");
+                }
+            });
+            if (err.length > 0)
+            {
+                return false;
+            }
+        });
+    };
+
     return {
         format: format,
         pullDataById: pullDataById,
@@ -220,7 +273,8 @@ window.app = (function ($, toastr) {
         addTimePicker: addTimePicker,
         fetchAndPopulate: fetchAndPopulate,
         successMessage: successMessage,
-        floatingProfile: floatingProfile
+        floatingProfile: floatingProfile,
+        checkUniqueConstraints: checkUniqueConstraints
     };
 })(window.jQuery, window.toastr);
 

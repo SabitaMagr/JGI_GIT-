@@ -54,19 +54,19 @@ if($this->messages) { ?>
     <script id="rowTemplate" type="text/x-kendo-tmpl">
         <tr>
         <td>
-        #: HOLIDAY_CODE #
+        #: (HOLIDAY_CODE == null) ? '-' : HOLIDAY_CODE #
         </td>
         <td>
-        #: HOLIDAY_ENAME #
+        #: (HOLIDAY_ENAME == null) ? '-' : HOLIDAY_ENAME #
         </td>
         <td>
-        #: START_DATE #
+        #: (START_DATE == null) ? '-' : START_DATE #
         </td>
         <td>
-        #: END_DATE #
+        #: (END_DATE == null) ? '-' : END_DATE #
         </td>
         <td>
-        #: HALF_DAY #
+        #: (HALF_DAY == null) ? '-' : HALF_DAY #
         </td>
         </td>
         </tr>
