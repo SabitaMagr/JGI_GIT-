@@ -25,3 +25,23 @@
     
     });   
 })(window.jQuery, window.app);
+
+
+
+
+var UIConfirmations = function () {
+    var n = function () {
+        $("#bs_confirmation_demo_1").on("confirmed.bs.confirmation", function () {
+            alert("You confirmed action #1")
+        }),
+            $("#bs_confirmation_demo_1").on("canceled.bs.confirmation", function () {
+            alert("You canceled action #1")
+        })
+    };
+    return{init: function () {
+            n()
+        }}
+}();
+jQuery(document).ready(function () {
+    UIConfirmations.init()
+});
