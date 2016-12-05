@@ -89,14 +89,14 @@
                 }
                 var checkedHtml = checked ? 'checked' : '';
                 positionListUl.append("<div class='md-checkbox'>" +
-                    "<input type='checkbox' class='md-check' id='positionCB" + positionIds[pI] + "'  p-id='" + positionIds[pI] + "' " + checkedHtml + ">" +
-                    "<label for='positionCB" + positionIds[pI] + "'>" +
-                    "<span></span>" +
-                    "<span class='check'></span>" +
-                    "<span class='box'></span>" +
-                    document.positions[positionIds[pI]] +
-                    "</label>" +
-                    "</div>")
+                        "<input type='checkbox' class='md-check' id='positionCB" + positionIds[pI] + "'  p-id='" + positionIds[pI] + "' " + checkedHtml + ">" +
+                        "<label for='positionCB" + positionIds[pI] + "'>" +
+                        "<span></span>" +
+                        "<span class='check'></span>" +
+                        "<span class='box'></span>" +
+                        document.positions[positionIds[pI]] +
+                        "</label>" +
+                        "</div>")
                 $("#positionCB" + positionIds[pI]).on('change', function () {
                     console.log($(this).prop('checked'));
                     positionAssigned.updatePositions($(this).attr('p-id'), $(this).prop('checked'));
@@ -174,14 +174,14 @@
                 }));
             }
             Promise.all(promises)
-                .then(function (success) {
-                    console.log('PositionAssigned', success);
-                    eclickFlag = true;
-                    $('.button-next').click();
-                    eclickFlag = false;
-                }, function (failure) {
-                    console.log('PositionAssigned', failure);
-                });
+                    .then(function (success) {
+                        console.log('PositionAssigned', success);
+                        eclickFlag = true;
+                        $('.button-next').click();
+                        eclickFlag = false;
+                    }, function (failure) {
+                        console.log('PositionAssigned', failure);
+                    });
         }
     }
 
@@ -234,7 +234,13 @@
                     var a = function () {
                         $("#tab4 .form-control-static", r).each(function () {
                             var e = $('[name="' + $(this).attr("data-display") + '"]', r);
-                            if (e.is(":radio") && (e = $('[name="' + $(this).attr("data-display") + '"]:checked', r)), e.is(":text") || e.is("textarea"))$(this).html(e.val()); else if (e.is("select"))$(this).html(e.find("option:selected").text()); else if (e.is(":radio") && e.is(":checked"))$(this).html(e.attr("data-title")); else if ("payment[]" == $(this).attr("data-display")) {
+                            if (e.is(":radio") && (e = $('[name="' + $(this).attr("data-display") + '"]:checked', r)), e.is(":text") || e.is("textarea"))
+                                $(this).html(e.val());
+                            else if (e.is("select"))
+                                $(this).html(e.find("option:selected").text());
+                            else if (e.is(":radio") && e.is(":checked"))
+                                $(this).html(e.attr("data-title"));
+                            else if ("payment[]" == $(this).attr("data-display")) {
                                 var t = [];
                                 $('[name="payment[]"]:checked', r).each(function () {
                                     t.push($(this).attr("data-title"))
@@ -244,7 +250,8 @@
                     }, o = function (e, r, t) {
                         var i = r.find("li").length, o = t + 1;
                         $(".step-title", $("#form_wizard_1")).text("Step " + (t + 1) + " of " + i), jQuery("li", $("#form_wizard_1")).removeClass("done");
-                        for (var n = r.find("li"), s = 0; t > s; s++)jQuery(n[s]).addClass("done");
+                        for (var n = r.find("li"), s = 0; t > s; s++)
+                            jQuery(n[s]).addClass("done");
                         1 == o ? $("#form_wizard_1").find(".button-previous").hide() : $("#form_wizard_1").find(".button-previous").show(), o >= i ? ($("#form_wizard_1").find(".button-next").hide(), $("#form_wizard_1").find(".button-submit").show(), a()) : ($("#form_wizard_1").find(".button-next").show(), $("#form_wizard_1").find(".button-submit").hide()), App.scrollTo($(".page-title"))
                     };
                     $("#form_wizard_1").bootstrapWizard({
@@ -324,13 +331,13 @@
             messages: {},
             submitHandler: function (form) {
                 rulesForm.setRulesFromView(
-                    $('#payCode').val(),
-                    $('#payEdesc').val(),
-                    $('#payLdesc').val(),
-                    $("input[name=payTypeFlag]:checked").val(),
-                    $('#priorityIndex').val(),
-                    $('#remarks').val()
-                );
+                        $('#payCode').val(),
+                        $('#payEdesc').val(),
+                        $('#payLdesc').val(),
+                        $("input[name=payTypeFlag]:checked").val(),
+                        $('#priorityIndex').val(),
+                        $('#remarks').val()
+                        );
 
                 console.log(rulesForm);
 
@@ -356,7 +363,7 @@
             }
         });
 
-        if ((typeof  document.ruleId !== 'undefined') && (document.ruleId != 0)) {
+        if ((typeof document.ruleId !== 'undefined') && (document.ruleId != 0)) {
             app.pullDataById(document.url, {
                 action: 'pullRule',
                 data: {ruleId: document.ruleId}
@@ -371,27 +378,27 @@
 
         var monthlyValues = document.monthlyValues;
         var flatValues = document.flatValues;
-        var variables=document.variables;
-        var systemRules=document.systemRules;
+        var variables = document.variables;
+        var systemRules = document.systemRules;
 
         for (var i in monthlyValues) {
             monthlyValues[i] = replaceAll(monthlyValues[i], " ", "_");
-            monthlyValues[i]=monthlyValues[i].toUpperCase();
-            $('#monthlyValueList').append("<button class='list-group-item btn' id='vars' >" + monthlyValues[i] + "</button>");
+            monthlyValues[i] = monthlyValues[i].toUpperCase();
+            $('#monthlyValueList').append("<button class='list-group-item ' id='vars' >" + monthlyValues[i] + "</button>");
         }
 
         for (var i in flatValues) {
             flatValues[i] = replaceAll(flatValues[i], " ", "_");
-            flatValues[i]=flatValues[i].toUpperCase();
-            $('#flatValueList').append("<button class='list-group-item btn' id='vars' > " + flatValues[i] + "</button>");
+            flatValues[i] = flatValues[i].toUpperCase();
+            $('#flatValueList').append("<button class='list-group-item ' id='vars' > " + flatValues[i] + "</button>");
         }
 
         for (var i in variables) {
-            $('#variables').append("<button class='list-group-item btn' id='vars' >" + variables[i] + "</button>");
+            $('#variables').append("<button class='list-group-item .list-group-item-text' id='vars' >" + variables[i] + "</button>");
         }
 
         for (var i in systemRules) {
-            $('#systemRules').append("<button class='list-group-item btn' id='vars' >" + systemRules[i] + "</button>");
+            $('#systemRules').append("<button class='list-group-item ' id='vars' >" + systemRules[i] + "</button>");
         }
 
 

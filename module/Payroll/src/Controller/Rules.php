@@ -41,7 +41,7 @@ class Rules extends AbstractActionController {
     public function indexAction() {
         $ruleList = $this->repository->fetchAll();
         $rules = [];
-        foreach($ruleList as $ruleRow){
+        foreach ($ruleList as $ruleRow) {
             array_push($rules, $ruleRow);
         }
         return Helper::addFlashMessagesToArray($this, [
@@ -53,7 +53,7 @@ class Rules extends AbstractActionController {
         $id = (int) $this->params()->fromRoute("id");
         $monthlyValues = EntityHelper::getTableKVList($this->adapter, MonthlyValue::TABLE_NAME, MonthlyValue::MTH_ID, [MonthlyValue::MTH_EDESC]);
         $flatValues = EntityHelper::getTableKVList($this->adapter, FlatValue::TABLE_NAME, FlatValue::FLAT_ID, [FlatValue::FLAT_EDESC]);
-        $positions = EntityHelper::getTableKVList($this->adapter, Position::TABLE_NAME, Position::POSITION_ID, [Position::POSITION_NAME]);
+        $positions = EntityHelper::getTableKVList($this->adapter, Position::TABLE_NAME, Position::POSITION_ID, [Position::POSITION_NAME],[Position::STATUS=>'E']);
 
         return Helper::addFlashMessagesToArray($this, [
                     'monthlyValues' => $monthlyValues,
