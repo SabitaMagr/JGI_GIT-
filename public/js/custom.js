@@ -220,7 +220,7 @@ window.app = (function ($, toastr) {
     };
     floatingProfile.initialize();
 
-    var checkUniqueConstraints = function (inputFieldId, formId, tableName, columnName,checkColumnName,selfId) {
+    var checkUniqueConstraints = function (inputFieldId, formId, tableName, columnName, checkColumnName, selfId) {
         $('#' + inputFieldId).on("blur", function () {
             var id = $(this);
             var nameValue = id.val();
@@ -233,8 +233,8 @@ window.app = (function ($, toastr) {
                 action: 'checkUniqueConstraint',
                 data: {
                     tableName: tableName,
-                    selfId : selfId,
-                    checkColumnName:checkColumnName,
+                    selfId: selfId,
+                    checkColumnName: checkColumnName,
                     columnsWidValues: columnsWidValues
                 }
             }).then(function (success) {
@@ -274,7 +274,7 @@ window.app = (function ($, toastr) {
         fetchAndPopulate: fetchAndPopulate,
         successMessage: successMessage,
         floatingProfile: floatingProfile,
-        checkUniqueConstraints:checkUniqueConstraints
+        checkUniqueConstraints: checkUniqueConstraints
     };
 })(window.jQuery, window.toastr);
 
