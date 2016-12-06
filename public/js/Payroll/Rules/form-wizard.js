@@ -31,15 +31,22 @@
     var ruleDetail = {
         srNo: null,
         mnenonicName: "",
+        isMonthly: false,
         setRuleDetailFromRemote: function (ruleDetail) {
             this.srNo = ruleDetail.SR_NO;
             this.mnenonicName = ruleDetail.MNENONIC_NAME;
+            this.isMonthly = (ruleDetail.IS_MONTHLY == "Y") ? true : false;
         },
         updateModel: function (mne) {
             this.mnenonicName = mne;
         },
+        updateIsMonthly: function (isMonthly) {
+            this.isMonthly = isMonthly;
+        },
         updateView: function () {
-            editor.setValue(this.mnenonicName);
+            console.log("fn updateView", this);
+            editor.setValue((this.mnenonicName == null) ? "" : this.mnenonicName);
+            isMonthlyCB.attr('checked', this.isMonthly);
         },
         pullRuleDetailByPayId: function (payId) {
             var obj = this;
@@ -47,7 +54,7 @@
                 action: 'pullRuleDetailByPayId',
                 data: {payId: payId}
             }).then(function (success) {
-                console.log("success", success);
+                console.log("pullRuleDetailByPayId res", success);
                 if (!((typeof success.data === 'undefined') || (success.data == null))) {
                     obj.setRuleDetailFromRemote(success.data)
                     obj.updateView();
@@ -201,6 +208,8 @@
     var pushRuleDetail = function () {
         ruleDetail.payId = rulesForm.payId;
         ruleDetail.updateModel(editor.getValue());
+//        console.log("ruledetail", JSON.parse(JSON.stringify(ruleDetail)));
+//        return;
         app.pullDataById(document.url, {
             action: 'pushRuleDetail',
             data: JSON.parse(JSON.stringify(ruleDetail))
@@ -215,12 +224,16 @@
         });
     };
     var editor;
-
     var initializeCodeMirror = function () {
         editor = CodeMirror.fromTextArea(document.getElementById('rule'), {
             lineNumbers: true
         });
     };
+
+    var isMonthlyCB = $('#isMonthly');
+    isMonthlyCB.on("change", function (e) {
+        ruleDetail.updateIsMonthly(e.target.checked)
+    });
 
     var FormWizard = function () {
         return {

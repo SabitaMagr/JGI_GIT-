@@ -221,6 +221,7 @@ window.app = (function ($, toastr) {
     floatingProfile.initialize();
 
     var checkUniqueConstraints = function (inputFieldId, formId, tableName, columnName, checkColumnName, selfId) {
+        console.log("arguments", arguments);
         $('#' + inputFieldId).on("blur", function () {
             var id = $(this);
             var nameValue = id.val();
@@ -229,7 +230,7 @@ window.app = (function ($, toastr) {
             var columnsWidValues = {};
             columnsWidValues[columnName] = nameValue;
 
-            window.app.pullDataById(document.url, {
+            window.app.pullDataById(document.restfulUrl, {
                 action: 'checkUniqueConstraint',
                 data: {
                     tableName: tableName,
@@ -238,6 +239,7 @@ window.app = (function ($, toastr) {
                     columnsWidValues: columnsWidValues
                 }
             }).then(function (success) {
+                console.log("checkUniqueConstraint res", success);
                 var num = parseInt(success.data);
                 if (num > 0) {
                     childId.html(success.msg);
@@ -246,7 +248,7 @@ window.app = (function ($, toastr) {
                     childId.html("");
                 }
             }, function (failure) {
-                console.log(failure);
+                console.log("checkUniqueConstraint failure", failure);
             });
         });
 

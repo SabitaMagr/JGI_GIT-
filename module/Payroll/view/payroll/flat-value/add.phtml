@@ -1,12 +1,18 @@
 <?php
 //load js files here
+$this->headScript()->appendFile($this->basePath('js/Payroll/FlatValue/addEdit.js'));
 ?>
 
 <script>
-    document.menu =<?php $menu = ["id" => "menuPayroll", "subMenu" => ["id" => "subMenuFlatValue"],"subMenuChild"=>["id"=>"subMenuChildFlatValueSetup"]];echo json_encode($menu);?>;
+    document.menu =<?php
+$menu = ["id" => "menuPayroll", "subMenu" => ["id" => "subMenuFlatValue"], "subMenuChild" => ["id" => "subMenuChildFlatValueSetup"]];
+echo json_encode($menu);
+?>;
+    document.tableName = '<?= Payroll\Model\FlatValue::TABLE_NAME ?>';
+    document.flatCodeAttr = '<?= Payroll\Model\FlatValue::FLAT_CODE ?>';
+    document.flatIdAttr = '<?= Payroll\Model\FlatValue::FLAT_ID ?>';
 </script>
-<?php
-if ($this->messages) { ?>
+<?php if ($this->messages) { ?>
     <script>
         document.messages =<?php echo json_encode($this->messages); ?>
     </script>
@@ -22,6 +28,7 @@ $submit = $form->get('submit');
 
 $submit->setAttribute('value', 'Submit');
 $form->setAttribute('action', $this->url('flatValue', ['action' => 'add']));
+$form->setAttribute("id", "flatValueFormId");
 ?>
 
 <div class="page-bar">
@@ -42,6 +49,7 @@ $form->setAttribute('action', $this->url('flatValue', ['action' => 'add']));
                 <div class="form-group<?= empty($flatCode->getMessages()) ? "" : "error" ?>">
                     <?php print $this->formLabel($flatCode); ?>
                     <?php print $this->formElement($flatCode); ?>
+                    <span class="errorMsg" style="color:red;"></span>
                 </div>
                 <?php print $this->formElementErrors()->render($flatCode, ['class' => 'help-block error']); ?>
 
@@ -82,3 +90,4 @@ $form->setAttribute('action', $this->url('flatValue', ['action' => 'add']));
     </div>
 
 </div>
+
