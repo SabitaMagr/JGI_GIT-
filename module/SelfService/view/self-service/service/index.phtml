@@ -3,9 +3,11 @@
  * Load Javascript files here
  */
 $this->headScript()
+   ->appendFile($this->basePath('jszip/dist/jszip.min.js'))
    ->appendFile($this->basePath('telerik_kendoui/js/kendo.all.min.js'));
 $this->headScript()->appendFile($this->basePath('js/angular.min.js'));
-$this->headScript()->appendFile($this->basePath('js/SelfService/Service/index.js'));
+$this->headScript()->appendFile($this->basePath('js/SelfService/Service/index.js'))
+      ->appendFile($this->basePath('assets/global/plugins/bootstrap-confirmation/bootstrap-confirmation.min.js'));
 ?>
 
 <?php
@@ -57,13 +59,7 @@ if ($this->messages) { ?>
                         </button>
                         <ul class="dropdown-menu pull-right">
                             <li>
-                                <a href="javascript:;"> Print </a>
-                            </li>
-                            <li>
-                                <a href="javascript:;"> Save as PDF </a>
-                            </li>
-                            <li>
-                                <a href="javascript:;"> Export to Excel </a>
+                                <a href="javascript:;" id="export"> Export to Excel </a>
                             </li>
                         </ul>
                     </div>
@@ -101,9 +97,9 @@ if ($this->messages) { ?>
                  #: (FROM_POSITION_NAME == null) ? ' ' : FROM_POSITION_NAME # - #: (TO_POSITION_NAME == null) ? ' ' : TO_POSITION_NAME #
                 </td>
                 <td>
-                 <a class=""
-                 href="<?= $this->url("service",["action"=>'view']) ?>/#: JOB_HISTORY_ID #">
-                        View
+                 <a class="btn  btn-icon-only btn-success"
+                 href="<?= $this->url("service",["action"=>'view']) ?>/#: JOB_HISTORY_ID #" style="height:17px;" title="view">
+                        <i class="fa fa-search-plus"></i>
                     </a>
                 </td>
             </tr>

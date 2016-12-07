@@ -3,6 +3,11 @@
     $(document).ready(function () {    
         
         $("#leaveTable").kendoGrid({
+            excel: {
+                fileName: "LeaveList.xlsx",
+                filterable: true,
+                allPages: true
+            },
             dataSource: {
                 data: document.leaves,
                 pageSize: 20
@@ -36,6 +41,12 @@
                         .append('<tr class="kendo-data-row"><td colspan="' + colCount + '" class="no-data">There is no data to show in the grid.</td></tr>');
             }
         };
+        
+        $("#export").click(function (e) {
+            var grid = $("#leaveTable").data("kendoGrid");
+            grid.saveAsExcel();
+        });
+        window.app.UIConfirmations();
     
     });   
 })(window.jQuery, window.app);

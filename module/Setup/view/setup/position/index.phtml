@@ -3,6 +3,7 @@
  * Load Javascript files here
  */
 $this->headScript()
+        ->appendFile($this->basePath('jszip/dist/jszip.min.js'))
         ->appendFile($this->basePath('telerik_kendoui/js/kendo.all.min.js'))
         ->appendFile($this->basePath('js/setup/position/index.js'))
         ->appendFile($this->basePath('assets/global/plugins/bootstrap-confirmation/bootstrap-confirmation.min.js'));
@@ -16,7 +17,8 @@ $this->headScript()
 <script>
     document.menu =<?php $menu = ["id" => "menuSetup", "subMenu" => ["id" => "subMenuPosition"]];
 echo json_encode($menu); ?>;
-    document.positions =<?php echo json_encode($positions); ?>
+    document.positions =<?php echo json_encode($positions); ?>;
+    document.deleteURL ='<?= $this->url("restful", ["action" => "index"]) ?>';
 </script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\Position')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
@@ -39,20 +41,13 @@ echo json_encode($menu); ?>;
                     <button class="btn green btn-outline dropdown-toggle" data-toggle="dropdown">Tools
                         <i class="fa fa-angle-down"></i>
                     </button>
-                    <ul class="dropdown-menu pull-right">
+                    <ul class="dropdown-menu pull-right">      
                         <li>
-                            <a href="javascript:;"> Print </a>
-                        </li>
-                        <li>
-                            <a href="javascript:;"> Save as PDF </a>
-                        </li>
-                        <li>
-                            <a href="javascript:;"> Export to Excel </a>
+                            <a href="javascript:;" id="export"> Export to Excel </a>
                         </li>
                     </ul>
                 </div>
-            </div>
-            <button class="btn yellow-mint uppercase btn-circle" data-toggle="confirmation" id="bs_confirmation_demo_1">Confirmation 1</button>  
+            </div>      
         </div>
     </div>
 
@@ -66,16 +61,16 @@ echo json_encode($menu); ?>;
         <td>
         #: (POSITION_NAME == null) ? '-' : POSITION_NAME #
         </td>
-        <td>
-        <a class=""
-        href="<?= $this->url("position", ["action" => "edit"]) ?>/#:POSITION_ID #">
-        Edit
-        </a> /
-        <a class=""
-        href="<?= $this->url("position", ["action" => "delete"]); ?>/#:POSITION_ID #">
-        Delete
+        <td>      
+        <a class="btn  btn-icon-only btn-success" 
+        href="<?= $this->url("position", ["action" => "edit"]) ?>/#:POSITION_ID #" style="height:17px;" title="edit">
+            <i class="fa fa-edit"></i>
         </a>
-        </td>
+        <a class="btn btn-icon-only btn-danger confirmation" 
+        href="<?= $this->url("position", ["action" => "delete"]) ?>/#:POSITION_ID #" id="bs_#:POSITION_ID #" style="height:17px;">
+            <i class="fa fa-trash-o"></i>
+        </a>
+         </td>
         </tr>
     </script>
 

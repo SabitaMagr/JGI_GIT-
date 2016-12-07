@@ -363,7 +363,7 @@ class EmployeeController extends AbstractActionController {
     }
 
     public function deleteAction() {
-        $id = (int) $this->params()->fromRoute("id");
+        $id = (int) $this->params()->fromRoute("id");  
         $this->repository->delete($id);
         $this->flashmessenger()->addMessage("Employee Successfully Deleted!!!");
         return $this->redirect()->toRoute('employee');

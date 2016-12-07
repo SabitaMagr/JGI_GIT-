@@ -3,8 +3,10 @@
  * Load Javascript files here
  */
 $this->headScript()
+        ->appendFile($this->basePath('jszip/dist/jszip.min.js'))
         ->appendFile($this->basePath('telerik_kendoui/js/kendo.all.min.js'))
-        ->appendFile($this->basePath('js/setup/department/index.js'));
+        ->appendFile($this->basePath('js/setup/department/index.js'))
+        ->appendFile($this->basePath('assets/global/plugins/bootstrap-confirmation/bootstrap-confirmation.min.js'));
 ?>
 
 <?php if ($this->messages) { ?>
@@ -40,15 +42,9 @@ echo json_encode($menu);
                     <button class="btn green btn-outline dropdown-toggle" data-toggle="dropdown">Tools
                         <i class="fa fa-angle-down"></i>
                     </button>
-                    <ul class="dropdown-menu pull-right">
+                    <ul class="dropdown-menu pull-right">                      
                         <li>
-                            <a href="javascript:;"> Print </a>
-                        </li>
-                        <li>
-                            <a href="javascript:;"> Save as PDF </a>
-                        </li>
-                        <li>
-                            <a href="javascript:;"> Export to Excel </a>
+                            <a href="javascript:;" id="export"> Export to Excel </a>
                         </li>
                     </ul>
                 </div>
@@ -68,13 +64,13 @@ echo json_encode($menu);
         </td>
 
         <td>
-        <a class=""
-        href="<?= $this->url("department", ["action" => "edit"]); ?>/#:DEPARTMENT_ID#">
-        Edit
+        <a class="btn  btn-icon-only btn-success"
+        href="<?= $this->url("department", ["action" => "edit"]); ?>/#:DEPARTMENT_ID#" style="height:17px;">
+        <i class="fa fa-edit"></i>
         </a>
-        <a class=""
-        href="<?= $this->url("department", ["action" => "delete"]); ?>/#:DEPARTMENT_ID#">
-        Delete
+        <a class="btn btn-icon-only btn-danger confirmation"
+        href="<?= $this->url("department", ["action" => "delete"]); ?>/#:DEPARTMENT_ID#" id="bs_#:DEPARTMENT_ID #" style="height:17px;"> 
+        <i class="fa fa-trash-o"></i></a>
         </a>
         </td>
 

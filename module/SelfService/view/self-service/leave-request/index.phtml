@@ -3,9 +3,11 @@
  * Load Javascript files here
  */
 $this->headScript()
+        ->appendFile($this->basePath('jszip/dist/jszip.min.js'))
         ->appendFile($this->basePath('telerik_kendoui/js/kendo.all.min.js'))
         ->appendFile($this->basePath('js/angular.min.js'))
-        ->appendFile($this->basePath('js/SelfService/leave-request/index.js'));
+        ->appendFile($this->basePath('js/SelfService/leave-request/index.js'))
+       ->appendFile($this->basePath('assets/global/plugins/bootstrap-confirmation/bootstrap-confirmation.min.js'));
 ?>
 
 <script>
@@ -73,13 +75,7 @@ echo json_encode($menu); ?>;
                         </button>
                         <ul class="dropdown-menu pull-right">
                             <li>
-                                <a href="javascript:;"> Print </a>
-                            </li>
-                            <li>
-                                <a href="javascript:;"> Save as PDF </a>
-                            </li>
-                            <li>
-                                <a href="javascript:;"> Export to Excel </a>
+                                <a href="javascript:;" id="export"> Export to Excel </a>
                             </li>
                         </ul>
                     </div>
@@ -111,9 +107,14 @@ echo json_encode($menu); ?>;
         #: (STATUS == null) ? '-' : STATUS #
         </td>
         <td>
-        <a class=""
-        href="<?= $this->url("leaverequest"); ?>/#:ACTION #/#:ID #">
-        #:ACTION_TEXT #
+        <a class="btn  btn-icon-only btn-success"
+        href="<?= $this->url("leaverequest"); ?>/#:ACTION #/#:ID #" style="height:17px;" title="#:ACTION_TEXT #">
+        # if (ACTION_TEXT=="Cancel Request") { #
+                <i class="fa fa-trash-o"></i>
+                    # } #
+                    # if (ACTION_TEXT=="View") { #
+                <i class="fa fa-search-plus"></i>
+                    # } #
         </a>
         </td>
         </tr>

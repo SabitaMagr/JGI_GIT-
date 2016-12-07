@@ -69,6 +69,7 @@ class PositionController extends AbstractActionController
                 $position->exchangeArrayFromForm($this->form->getData());
                 $position->positionId=((int) Helper::getMaxId($this->adapter,Position::TABLE_NAME,Position::POSITION_ID))+1;
                 $position->createdDt = Helper::getcurrentExpressionDate();
+                $position->status = 'E';
                 $this->repository->add($position);
 
                 $this->flashmessenger()->addMessage("Position Successfully added!!!");

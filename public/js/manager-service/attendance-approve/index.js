@@ -3,6 +3,11 @@
     $(document).ready(function () {    
 
         $("#attendanceApproveTable").kendoGrid({
+            excel: {
+                fileName: "AttendanceRequestList.xlsx",
+                filterable: true,
+                allPages: true
+            },
             dataSource: {
                 data: document.attendanceApprove,
                 pageSize: 20
@@ -18,14 +23,14 @@
             dataBound:gridDataBound,
             rowTemplate: kendo.template($("#rowTemplate").html()),
             columns: [
-                {field: "FIRST_NAME", title: "Employee Name"},
-                {field: "ATTENDANCE_DT", title: "Attendance Date"},
-                {field: "IN_TIME", title: "Check In"},
-                {field: "OUT_TIME", title: "Check Out"},
-                {field: "IN_REMARKS", title: "Late In Reason"},
-                {field: "OUT_REMARKS", title: "Late Out Reason"},
-                {field: "YOUR_ROLE", title: "Your Role"},
-                {title: "Action"}
+                {field: "FIRST_NAME", title: "Employee Name",width:200},
+                {field: "ATTENDANCE_DT", title: "Attendance Date",width:180},
+                {field: "IN_TIME", title: "Check In",width:120},
+                {field: "OUT_TIME", title: "Check Out",width:140},
+                {field: "IN_REMARKS", title: "Late In Reason",width:170},
+                {field: "OUT_REMARKS", title: "Late Out Reason",width:180},
+                {field: "YOUR_ROLE", title: "Your Role",width:140},
+                {title: "Action",width:80}
             ]
         });  
         function gridDataBound(e) {
@@ -37,5 +42,9 @@
                     .append('<tr class="kendo-data-row"><td colspan="' + colCount + '" class="no-data">There is no data to show in the grid.</td></tr>');
             }
         };
+        $("#export").click(function (e) {
+            var grid = $("#attendanceApproveTable").data("kendoGrid");
+            grid.saveAsExcel();
+        });
     });   
 })(window.jQuery, window.app);

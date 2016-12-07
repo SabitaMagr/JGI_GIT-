@@ -1,8 +1,13 @@
 (function ($) {
     'use strict';
-    $(document).ready(function () {    
-       
+    $(document).ready(function () {
+
         $("#leaveTable").kendoGrid({
+            excel: {
+                fileName: "LeaveList.xlsx",
+                filterable: true,
+                allPages: true
+            },
             dataSource: {
                 data: document.leaves,
                 pageSize: 20
@@ -15,7 +20,7 @@
                 input: true,
                 numeric: false
             },
-            dataBound:gridDataBound,
+            dataBound: gridDataBound,
             rowTemplate: kendo.template($("#rowTemplate").html()),
             columns: [
                 {field: "LEAVE_CODE", title: "Leave Code"},
@@ -33,6 +38,11 @@
                         .find('tbody')
                         .append('<tr class="kendo-data-row"><td colspan="' + colCount + '" class="no-data">There is no data to show in the grid.</td></tr>');
             }
-        };
-    });   
+        }
+        ;
+        $("#export").click(function (e) {
+            var grid = $("#leaveTable").data("kendoGrid");
+            grid.saveAsExcel();
+        });
+    });
 })(window.jQuery, window.app);
