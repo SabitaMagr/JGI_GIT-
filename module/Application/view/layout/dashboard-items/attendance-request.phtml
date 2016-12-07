@@ -2,9 +2,9 @@
     <!-- BEGIN Portlet PORTLET-->
     <div class="portlet light bg-inverse">
         <div class="portlet-title">
-            <div class="caption">
+            <div class="caption cborder">
                 <i class="icon-speech"></i>
-                <span class="caption-subject bold uppercase"> Attendance Request</span>
+                <span class="caption-subject bold"> Attendance Request</span>
                 <span class="caption-helper">Pending...</span>
             </div>
         </div>
@@ -23,7 +23,7 @@
                                     </label>
                                 </div>
                                 <div class="list-item-content">
-                                    <h3 class="uppercase">
+                                    <h3 class="head-title">
                                         <a href="<?= $this->url("attendancestatus",['action'=>'view','id'=>$attendanceRequest['ID']]) ?>">
                                             <?php print $attendanceRequest['FIRST_NAME']; ?> 
                                             <?php print $attendanceRequest['MIDDLE_NAME']; ?> 
