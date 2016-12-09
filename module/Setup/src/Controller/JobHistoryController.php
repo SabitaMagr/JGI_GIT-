@@ -85,11 +85,11 @@ class JobHistoryController extends AbstractActionController {
                     'form' => $this->form,
                     'messages' => $this->flashmessenger()->getMessages(),
                     'employees' => EntityHelper1::getTableKVList($this->adapter, "HR_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => "E"]),
-                    'departments' => EntityHelper1::getTableKVList($this->adapter, "HR_DEPARTMENTS", "DEPARTMENT_ID", ["DEPARTMENT_NAME"], ["STATUS" => 'E']),
-                    'designations' => EntityHelper1::getTableKVList($this->adapter, "HR_DESIGNATIONS", "DESIGNATION_ID", ["DESIGNATION_TITLE"], ["STATUS" => 'E']),
-                    'branches' => EntityHelper1::getTableKVList($this->adapter, "HR_BRANCHES", "BRANCH_ID", ["BRANCH_NAME"], ["STATUS" => 'E']),
-                    'positions' => EntityHelper1::getTableKVList($this->adapter, "HR_POSITIONS", "POSITION_ID", ["POSITION_NAME"], ["STATUS" => 'E']),
-                    'serviceTypes' => EntityHelper1::getTableKVList($this->adapter, "HR_SERVICE_TYPES", "SERVICE_TYPE_ID", ["SERVICE_TYPE_NAME"], ["STATUS" => 'E']),
+                    'departments' => EntityHelper1::getTableKVList($this->adapter, "HR_DEPARTMENTS", "DEPARTMENT_ID", ["DEPARTMENT_NAME"], ["STATUS" => 'E'],null,true),
+                    'designations' => EntityHelper1::getTableKVList($this->adapter, "HR_DESIGNATIONS", "DESIGNATION_ID", ["DESIGNATION_TITLE"], ["STATUS" => 'E'],null,true),
+                    'branches' => EntityHelper1::getTableKVList($this->adapter, "HR_BRANCHES", "BRANCH_ID", ["BRANCH_NAME"], ["STATUS" => 'E'],null,true),
+                    'positions' => EntityHelper1::getTableKVList($this->adapter, "HR_POSITIONS", "POSITION_ID", ["POSITION_NAME"], ["STATUS" => 'E'],null,true),
+                    'serviceTypes' => EntityHelper1::getTableKVList($this->adapter, "HR_SERVICE_TYPES", "SERVICE_TYPE_ID", ["SERVICE_TYPE_NAME"], ["STATUS" => 'E'],null,true),
                     'serviceEventTypes' => EntityHelper1::getTableKVList($this->adapter, "HR_SERVICE_EVENT_TYPES", "SERVICE_EVENT_TYPE_ID", ["SERVICE_EVENT_TYPE_NAME"], ["STATUS" => 'E'])
                         ]
         );
