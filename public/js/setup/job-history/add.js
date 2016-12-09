@@ -13,7 +13,8 @@
         var $fromDesignationId = $('#fromDesignationId');
         var $fromPositionId = $('#fromPositionId');
 
-
+        var $serviceEventTypeId = $("#serviceEventTypeId");
+        console.log($serviceEventTypeId.val());
 
         var disableEmployeeInfo = function () {
             $fromBranchId.prop("disabled", true);
@@ -50,6 +51,13 @@
         $employeeId.on("change", function () {
             var employeeId = $(this).val();
             app.floatingProfile.setDataFromRemote($employeeId.val());
+            // console.log($serviceEventTypeId.val());
+            var selectobject=document.getElementById("serviceEventTypeId")
+            for (var i=0; i<selectobject.length; i++){
+            if (selectobject.options[i].value == 'Appointment' )
+               selectobject.remove(i);
+            }
+      
             if (!editMode) {
                 pullEmployeeDetail($employeeId.val())
             }
