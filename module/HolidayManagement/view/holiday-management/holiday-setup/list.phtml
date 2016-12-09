@@ -3,10 +3,12 @@
  * Load Javascript files here
  */
 $this->headScript()
+        ->appendFile($this->basePath('jszip/dist/jszip.min.js'))
         ->appendFile($this->basePath('telerik_kendoui/js/kendo.all.min.js'))
         ->appendFile($this->basePath('js/HolidayManagement/HolidaySetup/add.js'))
         ->appendFile($this->basePath('js/angular.min.js'))
-        ->appendFile($this->basePath('js/HolidayManagement/HolidaySetup/holidayListController.js'));
+        ->appendFile($this->basePath('js/HolidayManagement/HolidaySetup/holidayListController.js'))
+        ->appendFile($this->basePath('assets/global/plugins/bootstrap-confirmation/bootstrap-confirmation.min.js'));
 ?>
 
 <?php
@@ -52,18 +54,30 @@ if ($this->messages) { ?>
             </div>
             <div class="col-sm-4" style="position: absolute; bottom:0; right: 0;" >
                 <div class="row">
-                    <div class="col-sm-6">
+                    <div class="col-sm-4">
                         <button ng-click="view()" id="viewHolidays" class="btn btn-sm yellow form-control">
                             View
                             <i class="fa fa-search"></i>
                         </button>
                     </div>
-                    <div class="col-sm-6">
+                    <div class="col-sm-4">
                         <div class="btn-group">
                             <a href="<?= $this->url('holidaysetup', ['action' => 'add']) ?>" id="sample_editable_1_new"
                                class="btn green"> Add New
                                 <i class="fa fa-plus"></i>
                             </a>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="btn-group pull-right">
+                            <button class="btn green btn-outline dropdown-toggle" data-toggle="dropdown">Tools
+                                <i class="fa fa-angle-down"></i>
+                            </button>
+                            <ul class="dropdown-menu pull-right">
+                                <li>
+                                    <a href="javascript:;" id="export"> Export to Excel </a>
+                                </li>
+                            </ul>
                         </div>
                     </div>
                 </div>
@@ -113,8 +127,10 @@ if ($this->messages) { ?>
         #: (HALFDAY == null) ? '-' : HALFDAY #
         </td>
         <td>
-        <a href="<?= $this->url("holidaysetup", ["action" => "edit"]) ?>/#:HOLIDAY_ID#"> Edit
-        </a>
+        <a class="btn  btn-icon-only btn-success"
+        href="<?= $this->url("holidaysetup", ["action" => "edit"]) ?>/#:HOLIDAY_ID#" style="height:17px;"> 
+        <i class="fa fa-edit"></i>
+            </a>
         </tr>
     </script>
     

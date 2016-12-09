@@ -36,7 +36,7 @@ angular.module('hris', [])
                         'attendanceRequestStatusId': attendanceRequestStatusId,
                         'fromDate': fromDate,
                         'toDate': toDate,
-                        'approverId':approverId
+                        'approverId': approverId
                     }
                 }).then(function (success) {
                     $scope.initializekendoGrid(success.data);
@@ -46,6 +46,11 @@ angular.module('hris', [])
             }
             $scope.initializekendoGrid = function (attendanceRequestStatus) {
                 $("#attendanceRequestStatusTable").kendoGrid({
+                    excel: {
+                        fileName: "AttendanceRequestList.xlsx",
+                        filterable: true,
+                        allPages: true
+                    },
                     dataSource: {
                         data: attendanceRequestStatus,
                         pageSize: 20
@@ -58,7 +63,7 @@ angular.module('hris', [])
                         input: true,
                         numeric: false
                     },
-                    dataBound:gridDataBound,                   
+                    dataBound: gridDataBound,
                     rowTemplate: kendo.template($("#rowTemplate").html()),
                     columns: [
                         {field: "FIRST_NAME", title: "Employee Name", width: 200},
@@ -72,15 +77,20 @@ angular.module('hris', [])
                         {title: "Action", width: 100}
                     ]
                 });
-                
+
                 function gridDataBound(e) {
                     var grid = e.sender;
                     if (grid.dataSource.total() == 0) {
                         var colCount = grid.columns.length;
                         $(e.sender.wrapper)
-                            .find('tbody')
-                            .append('<tr class="kendo-data-row"><td colspan="' + colCount + '" class="no-data">There is no data to show in the grid.</td></tr>');
+                                .find('tbody')
+                                .append('<tr class="kendo-data-row"><td colspan="' + colCount + '" class="no-data">There is no data to show in the grid.</td></tr>');
                     }
-                };
+                }
+                ;
+                $("#export").click(function (e) {
+                    var grid = $("#attendanceRequestStatusTable").data("kendoGrid");
+                    grid.saveAsExcel();
+                });
             };
         });

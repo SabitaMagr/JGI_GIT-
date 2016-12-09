@@ -1,7 +1,9 @@
 <?php
 $this->headScript()
+    ->appendFile($this->basePath('jszip/dist/jszip.min.js'))
     ->appendFile($this->basePath('telerik_kendoui/js/kendo.all.min.js'))
-    ->appendFile($this->basePath('js/Payroll/FlatValue/index.js'));
+    ->appendFile($this->basePath('js/Payroll/FlatValue/index.js'))
+    ->appendFile($this->basePath('assets/global/plugins/bootstrap-confirmation/bootstrap-confirmation.min.js'));
 ?>
 <script>
     document.menu =<?php $menu = ["id" => "menuPayroll", "subMenu" => ["id" => "subMenuFlatValue"],"subMenuChild"=>["id"=>"subMenuChildFlatValueSetup"]];echo json_encode($menu);?>;
@@ -35,13 +37,7 @@ $this->headScript()
                     </button>
                     <ul class="dropdown-menu pull-right">
                         <li>
-                            <a href="javascript:;"> Print </a>
-                        </li>
-                        <li>
-                            <a href="javascript:;"> Save as PDF </a>
-                        </li>
-                        <li>
-                            <a href="javascript:;"> Export to Excel </a>
+                            <a href="javascript:;" id="export"> Export to Excel </a>
                         </li>
                     </ul>
                 </div>
@@ -66,13 +62,13 @@ $this->headScript()
         #: (SHOW_AT_RULE == null) ? '-' : SHOW_AT_RULE #
         </td>   
         <td>
-        <a class=""
-        href="<?= $this->url("flatValue", ["action" => "edit"]); ?>/#:FLAT_ID #">
-        Edit
-        </a> | 
-         <a class=""
-        href="<?= $this->url("flatValue", ["action" => "delete"]); ?>/#:FLAT_ID #">
-        Delete
+        <a class="btn  btn-icon-only btn-success"
+        href="<?= $this->url("flatValue", ["action" => "edit"]); ?>/#:FLAT_ID #" style="height:17px;">
+        <i class="fa fa-edit"></i>
+        </a> 
+         <a class="btn btn-icon-only btn-danger confirmation"
+        href="<?= $this->url("flatValue", ["action" => "delete"]); ?>/#:FLAT_ID #" id="bs_#:FLAT_ID #" style="height:17px;">
+        <i class="fa fa-trash-o"></i></a>
         </a>
         </td>
         </tr>

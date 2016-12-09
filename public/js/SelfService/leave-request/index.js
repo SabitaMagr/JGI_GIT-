@@ -35,6 +35,11 @@ angular.module('hris', [])
             }
             $scope.initializekendoGrid = function (leaveRequest) {
                 $("#leaveRequestTable").kendoGrid({
+                    excel: {
+                        fileName: "LeaveRequestList.xlsx",
+                        filterable: true,
+                        allPages: true
+                    },
                     dataSource: {
                         data: leaveRequest,
                         pageSize: 20
@@ -67,7 +72,11 @@ angular.module('hris', [])
                                 .find('tbody')
                                 .append('<tr class="kendo-data-row"><td colspan="' + colCount + '" class="no-data">There is no data to show in the grid.</td></tr>');
                     }
-                };
-
+                }
+                ;
+                $("#export").click(function (e) {
+                    var grid = $("#leaveRequestTable").data("kendoGrid");
+                    grid.saveAsExcel();
+                });
             };
         });

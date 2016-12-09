@@ -34,6 +34,11 @@ angular.module('hris', [])
             }
             $scope.initializekendoGrid = function (attendanceRequestList) {
                 $("#attendanceRequestTable").kendoGrid({
+                    excel: {
+                        fileName: "AttendanceRequestList.xlsx",
+                        filterable: true,
+                        allPages: true
+                    },
                     dataSource: {
                         data: attendanceRequestList,
                         pageSize: 20
@@ -68,5 +73,9 @@ angular.module('hris', [])
                     }
                 }
                 ;
+                $("#export").click(function (e) {
+                    var grid = $("#attendanceRequestTable").data("kendoGrid");
+                    grid.saveAsExcel();
+                });
             };
         });

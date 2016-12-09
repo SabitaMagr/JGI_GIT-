@@ -39,7 +39,7 @@ class EmployeeController extends AbstractActionController {
     private $repository;
     private $employeeFileRepo;
 
-    const UPLOAD_DIR = "/var/www/html/neo/neo-hris-metronic/public/uploads";
+    const UPLOAD_DIR = "/var/www/html/neo-hris/public/uploads";
 
     public function __construct(AdapterInterface $adapter) {
         $this->adapter = $adapter;
@@ -363,7 +363,7 @@ class EmployeeController extends AbstractActionController {
     }
 
     public function deleteAction() {
-        $id = (int) $this->params()->fromRoute("id");
+        $id = (int) $this->params()->fromRoute("id");  
         $this->repository->delete($id);
         $this->flashmessenger()->addMessage("Employee Successfully Deleted!!!");
         return $this->redirect()->toRoute('employee');

@@ -3,9 +3,11 @@
  * Load Javascript files here
  */
 $this->headScript()
+     ->appendFile($this->basePath('jszip/dist/jszip.min.js'))
      ->appendFile($this->basePath('telerik_kendoui/js/kendo.all.min.js'))
      ->appendFile($this->basePath('js/angular.min.js'))
-     ->appendFile($this->basePath('js/AttendanceManagement/attendance-status/index.js'));
+     ->appendFile($this->basePath('js/AttendanceManagement/attendance-status/index.js'))
+     ->appendFile($this->basePath('assets/global/plugins/bootstrap-confirmation/bootstrap-confirmation.min.js'));
 ?>
 
 <script>
@@ -78,9 +80,23 @@ echo json_encode($menu);
                     <i class="fa fa-search"></i>
                 </button>
             </div>
+            <div class="col-sm-1">
+                <label height="45"></label>
+                <div class="btn-group pull-right">
+                    <button class="btn green btn-outline dropdown-toggle" data-toggle="dropdown">Tools
+                        <i class="fa fa-angle-down"></i>
+                    </button>
+                    <ul class="dropdown-menu pull-right">
+                        <li>
+                            <a href="javascript:;" id="export"> Export to Excel </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
         </div>
     </div>
     <div class="margin-top-20">   
+            
         <div id="attendanceRequestStatusTable">
         </div>
     </div>
@@ -116,9 +132,9 @@ echo json_encode($menu);
         #: (STATUS == null) ? '-' : STATUS #
         </td>
         <td>
-        <a class=""
-        href="<?= $this->url("attendancestatus", ["action" => "view"]) ?>/#: ID #">
-        View
+        <a class="btn  btn-icon-only btn-success" 
+        href="<?= $this->url("attendancestatus", ["action" => "view"]) ?>/#: ID #" style="height:17px;">
+        <i class="fa fa-search-plus"></i>
         </a>
         </td>
         </tr>

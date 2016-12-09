@@ -3,9 +3,11 @@
  * Load Javascript files here
  */
 $this->headScript()
+    ->appendFile($this->basePath('jszip/dist/jszip.min.js'))
     ->appendFile($this->basePath('telerik_kendoui/js/kendo.all.min.js'))
     ->appendFile($this->basePath('js/angular.min.js'))
-    ->appendFile($this->basePath('js/manager-service/leave-approve/status.js'));
+    ->appendFile($this->basePath('js/manager-service/leave-approve/status.js'))
+    ->appendFile($this->basePath('assets/global/plugins/bootstrap-confirmation/bootstrap-confirmation.min.js'));
 ?>
 
 <script>
@@ -83,8 +85,20 @@ if ($this->messages) { ?>
             </div>
         </div>
     </div>
-    
-    <div class="margin-top-20">   
+    <div class="row">
+    <div class="btn-group pull-right">
+            <button class="btn green btn-outline dropdown-toggle" data-toggle="dropdown">Tools
+                <i class="fa fa-angle-down"></i>
+            </button>
+            <ul class="dropdown-menu pull-right">
+                <li>
+                    <a href="javascript:;" id="export"> Export to Excel </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="margin-top-20">  
+        
         <div id="leaveRequestStatusTable">
         </div>
     </div>
@@ -118,9 +132,9 @@ if ($this->messages) { ?>
         #: (STATUS == null) ? '-' : STATUS #
         </td>
         <td>
-            <a class=""
-               href="<?= $this->url("leaveapprove", ["action" => "view"])?>/#: ID #/#: ROLE #">
-                View
+            <a class="btn  btn-icon-only btn-success"
+               href="<?= $this->url("leaveapprove", ["action" => "view"])?>/#: ID #/#: ROLE #" style="height:17px;" title="view">
+                <i class="fa fa-search-plus"></i></a>
             </a>
         </td>
         </tr>

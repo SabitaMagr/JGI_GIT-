@@ -3,6 +3,11 @@
     $(document).ready(function () {    
        console.log(document.flatValues);
         $("#flatValueTable").kendoGrid({
+            excel: {
+                fileName: "FlatValueList.xlsx",
+                filterable: true,
+                allPages: true
+            },
             dataSource: {
                 data: document.flatValues,
                 pageSize: 20
@@ -34,5 +39,10 @@
                         .append('<tr class="kendo-data-row"><td colspan="' + colCount + '" class="no-data">There is no data to show in the grid.</td></tr>');
             }
         };
+        $("#export").click(function (e) {
+            var grid = $("#flatValueTable").data("kendoGrid");
+            grid.saveAsExcel();
+        });
+        window.app.UIConfirmations();
     });   
 })(window.jQuery, window.app);

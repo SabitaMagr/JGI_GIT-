@@ -3,6 +3,11 @@
     $(document).ready(function () {    
        
         $("#monthlyValueTable").kendoGrid({
+            excel: {
+                fileName: "MonthlyValueList.xlsx",
+                filterable: true,
+                allPages: true
+            },
             dataSource: {
                 data: document.monthlyValues,
                 pageSize: 20
@@ -35,5 +40,10 @@
                         .append('<tr class="kendo-data-row"><td colspan="' + colCount + '" class="no-data">There is no data to show in the grid.</td></tr>');
             }
         };
+        $("#export").click(function (e) {
+            var grid = $("#monthlyValueTable").data("kendoGrid");
+            grid.saveAsExcel();
+        });
+        window.app.UIConfirmations();
     });   
 })(window.jQuery, window.app);

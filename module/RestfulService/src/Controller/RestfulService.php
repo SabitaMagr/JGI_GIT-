@@ -49,6 +49,11 @@ use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Adapter\Driver\ResultInterface;
 use Zend\Mvc\Controller\AbstractRestfulController;
 use Zend\View\Model\JsonModel;
+use SelfService\Repository\LeaveRequestRepository;
+use SelfService\Repository\AttendanceRequestRepository;
+use Setup\Repository\BranchRepository;
+use Application\Helper\ConstraintHelper;
+use Application\Helper\DeleteHelper;
 
 class RestfulService extends AbstractRestfulController {
 
@@ -225,6 +230,9 @@ class RestfulService extends AbstractRestfulController {
                     break;
                 case "pullMonthsByFiscalYear":
                     $responseData = $this->pullMonthsByFiscalYear($postedData->data);
+                    break;
+                case "deleteContent":
+                    $responseData = $this->deleteContent($postedData->data);
                     break;
                 default:
                     $responseData = [
@@ -1479,6 +1487,19 @@ class RestfulService extends AbstractRestfulController {
         return [
             "success" => true,
             "data" => $months
+        ];
+    }
+
+    public function deleteContent($data) {
+        $tableName = $data['tableName'];
+        $columnName = $data['columnName'];
+        $id = $data['id'];
+
+        $result = DeleteHelper::deleteContent($this->adapter, $tableName, $columnName, $id);
+
+        return [
+            "success" => "true",
+            "msg" => "Record Successfully Deleted!!!"
         ];
     }
 

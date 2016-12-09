@@ -2,7 +2,7 @@
 (function ($, app) {
     'use strict';
     $(document).ready(function () {
-       $("select").select2();
+        $("select").select2();
     });
 })(window.jQuery, window.app);
 
@@ -65,9 +65,14 @@ angular.module('hris', [])
 
             $scope.initializekendoGrid = function (employees) {
                 $("#employeeTable").kendoGrid({
+                    excel: {
+                        fileName: "EmployeeList.xlsx",
+                        filterable: true,
+                        allPages: true
+                    },
                     dataSource: {
                         data: employees,
-                        pageSize: 20
+                        pageSize: 20,
                     },
                     height: 450,
                     scrollable: true,
@@ -79,14 +84,21 @@ angular.module('hris', [])
                     },
                     rowTemplate: kendo.template($("#rowTemplate").html()),
                     columns: [
-                        {field: "employeeCode", title: "Employee Code"},
-                        {field: "firstName", title: "Name"},
-                        {field: "birthDate", title: "Birth Date"},
-                        {field: "mobileNo", title: "Mobile No"},
-                        {field: "emailOfficial", title: "Email Official"},
-                        {title: "Action"}
+                        {field: "employeeCode", title: "Employee Code",width:130},
+                        {field: "firstName", title: "Name",width:220},
+                        {field: "birthDate", title: "Birth Date",width:120},
+                        {field: "mobileNo", title: "Mobile No",width:130},
+                        {field: "emailOfficial", title: "Email Official",width:200},
+                        {title: "Action",width:120}
                     ]
                 });
+
+                $("#export").click(function (e) {
+                    var grid = $("#employeeTable").data("kendoGrid");
+                    grid.saveAsExcel();
+                });
+                window.app.UIConfirmations();               
             };
+
         });
 

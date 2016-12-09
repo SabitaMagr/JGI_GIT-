@@ -266,6 +266,58 @@ window.app = (function ($, toastr) {
             }
         });
     };
+    var removeByAttr = function (arr, attr, value) {
+        var i = arr.length;
+        while (i--) {
+            if (arr[i]
+                    && arr[i].hasOwnProperty(attr)
+                    && (arguments.length > 2 && arr[i][attr] === value)) {
+
+                arr.splice(i, 1);
+
+            }
+        }
+        return arr;
+    }
+    
+    
+    var UIConfirmations = function () {
+        $(".confirmation").each(function () {
+            var confirmationBtnId = $(this).attr("id");
+            var id = confirmationBtnId.split("_").pop(-1);
+            var href =  $(this).attr("href");
+            $(this).on("click", function (e) {
+                e.preventDefault();
+                $("#" + confirmationBtnId).confirmation('show');
+            });
+
+            $("#" + confirmationBtnId).on("confirmed.bs.confirmation", function () {
+                //console.log(href);
+                
+//                window.app.pullDataById(document.deleteURL, {
+//                    action: 'deleteContent',
+//                    data: {
+//                        'tableName': tableName,
+//                        'columnName': columnName,
+//                        'id': id
+//                    }
+//                }).then(function (success) {
+//                    removeByAttr(listData, columnName, id);
+//
+//                    $("#" + kendoGridId).data('kendoGrid').dataSource.read();
+//                    $("#" + kendoGridId).data('kendoGrid').refresh();
+//                    window.toastr.success(success.msg, "Notifications");  
+//                    window.app.UIConfirmations(tableName, columnName, kendoGridId, listData);
+//                    
+//                }, function (failure) {
+//                    console.log(failure);
+//                });
+            }),
+                    $("#" + confirmationBtnId).on("canceled.bs.confirmation", function () {
+            });
+        });
+    };
+
 
     return {
         format: format,
@@ -276,7 +328,8 @@ window.app = (function ($, toastr) {
         fetchAndPopulate: fetchAndPopulate,
         successMessage: successMessage,
         floatingProfile: floatingProfile,
-        checkUniqueConstraints: checkUniqueConstraints
+        checkUniqueConstraints: checkUniqueConstraints,
+        UIConfirmations: UIConfirmations
     };
 })(window.jQuery, window.toastr);
 

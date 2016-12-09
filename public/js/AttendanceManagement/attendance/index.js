@@ -36,6 +36,11 @@ angular.module('hris', [])
 
             $scope.initializekendoGrid = function (attendanceRecord) {
                 $("#attendanceTable").kendoGrid({
+                    excel: {
+                        fileName: "AttendanceList.xlsx",
+                        filterable: true,
+                        allPages: true
+                    },
                     dataSource: {
                         data: attendanceRecord,
                         pageSize: 20
@@ -68,5 +73,9 @@ angular.module('hris', [])
                                 .append('<tr class="kendo-data-row"><td colspan="' + colCount + '" class="no-data">There is no data to show in the grid.</td></tr>');
                     }
                 };
+                $("#export").click(function (e) {
+                    var grid = $("#attendanceTable").data("kendoGrid");
+                    grid.saveAsExcel();
+                });
             }
         });

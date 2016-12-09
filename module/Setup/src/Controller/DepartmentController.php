@@ -20,6 +20,7 @@ use Zend\Db\Adapter\AdapterInterface;
 use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
+use Application\Helper\EntityHelper  as ApplicationEntityHelper;
 
 
 class DepartmentController extends AbstractActionController
@@ -78,7 +79,7 @@ class DepartmentController extends AbstractActionController
             $this,
             [
                 'form' => $this->form,
-                'departments' => EntityHelper::getTableKVList($this->adapter, EntityHelper::HR_DEPARTMENTS),
+                'departments' => ApplicationEntityHelper::getTableKVList($this->adapter, Department::TABLE_NAME, Department::DEPARTMENT_ID, [Department::DEPARTMENT_NAME], ["STATUS" => "E"]),
                 'countries' => EntityHelper::getTableKVList($this->adapter, EntityHelper::HR_COUNTRIES)
             ]
         )

@@ -114,4 +114,7 @@ class LeaveAssignRepository implements RepositoryInterface
         $this->tableGateway->delete([LeaveAssign::EMPLOYEE_LEAVE_ASSIGN_ID => $id]);
 
     }
+    public function updatePreYrBalance($employeeId, $leaveId, $preYrBalance,$totalDays,$balance){
+        $this->tableGateway->update([LeaveAssign::PREVIOUS_YEAR_BAL=>$preYrBalance, LeaveAssign::TOTAL_DAYS=>$totalDays, LeaveAssign::BALANCE=>$balance],[LeaveAssign::EMPLOYEE_ID=>$employeeId, LeaveAssign::LEAVE_ID=>$leaveId]);
+    }
 }

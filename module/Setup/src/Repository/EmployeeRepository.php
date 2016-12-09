@@ -148,7 +148,7 @@ class EmployeeRepository implements RepositoryInterface {
         $select->from("HR_EMPLOYEES");
         $select->columns(Helper::convertColumnDateFormat($this->adapter, new HrEmployees(), ['birthDate']), false);
 
-        $select->where(['STATUS' => 'E']);
+        $select->where(["STATUS='E'"]);
 
         if ($emplyoeeId != -1) {
             $select->where([
