@@ -4,9 +4,9 @@
     <!-- BEGIN Portlet PORTLET-->
     <div class="portlet light bg-inverse">
         <div class="portlet-title">
-            <div class="caption">
+            <div class="caption cborder">
                 <i class="icon-speech"></i>
-                <span class="caption-subject bold uppercase"> Holidays</span>
+                <span class="caption-subject bold"> Holidays</span>
                 <span class="caption-helper">Upcoming...</span>
             </div>
         </div>
@@ -21,13 +21,13 @@
                                 </div>
                                 <div class="list-datetime"> 
                                     <label style="font-size: 0.8em;">
-                                        <?php print $holiday['START_DATE']; ?> 
+                                        <?php print $holiday['START_DATE']; ?> &nbsp-&nbsp 
                                         <?php print $holiday['END_DATE']; ?> 
 
                                     </label>
                                 </div>
                                 <div class="list-item-content">
-                                    <h3 class="uppercase">
+                                    <h3 class="head-title">
                                         <a href="<?php print $this->url("holidaysetup",['action'=>'edit','id'=>$holiday['HOLIDAY_ID']]) ?>">
                                             <?php print $holiday['HOLIDAY_ENAME']; ?>
                                         </a>

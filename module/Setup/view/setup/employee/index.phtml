@@ -25,7 +25,7 @@ echo json_encode($menu);
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\Employee')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
-<div ng-app="hris" ng-controller="employeeListController">
+<div class="formbg arrowtop" ng-app="hris" ng-controller="employeeListController">
     <div class="margin-top-20">
         <div class="row">
             <div class="col-sm-3">
@@ -61,7 +61,7 @@ echo json_encode($menu);
             </div>
             <div class="col-sm-2">
                 <label height="45"></label>
-                <button ng-click="view()" id="viewEmployees" class="btn btn-sm yellow form-control">
+                <button ng-click="view()" id="viewEmployees" class="btn green form-control i-search">
                     Search
                     <i class="fa fa-search"></i>
                 </button>
@@ -73,14 +73,14 @@ echo json_encode($menu);
             <div class="row">
                 <div class="col-md-6">
                     <div class="btn-group">
-                        <a href="<?= $this->url('employee', ['action' => 'add']) ?>" id="sample_editable_1_new" class="btn green"> Add New
+                        <a href="<?= $this->url('employee', ['action' => 'add']) ?>" id="sample_editable_1_new" class="btn cbtn"> Add New
                             <i class="fa fa-plus"></i>
                         </a>
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="btn-group pull-right">
-                        <button class="btn green btn-outline dropdown-toggle" data-toggle="dropdown">Tools
+                        <button class="btn cbtn btn-outline dropdown-toggle" data-toggle="dropdown">Tools
                             <i class="fa fa-angle-down"></i>
                         </button>
                         <ul class="dropdown-menu pull-right">

@@ -29,6 +29,8 @@ class PayrollGenerator {
     private $employeeId;
     private $monthlyValues;
     private $flatValues;
+    private $calculatedValue = 0;
+    private $ruleDetailList = [];
 
     const VARIABLES = [
         "BASIC_PER_MONTH",
@@ -41,19 +43,13 @@ class PayrollGenerator {
         "GENDER",
         "EMP_TYPE",
         "MARITUAL_STATUS",
-        "TOTAL_DAYS_FROM_JOIN_DATE"
+        "TOTAL_DAYS_FROM_JOIN_DATE",
+        "SERVICE_TYPE"
     ];
     const SYSTEM_RULE = [
-        "LEAST_VALUE",
-        "GREATEST_VALUE",
-        "CALC_BASIC_CURRENT",
-        "CALC_BASIC_OLD",
-        "SUM_VALUE",
         "MONTH",
-        "JOIN_MONTH",
-        "AGE",
-        "CURRENT_MONTH",
-        "EMPLOYEE_GRADE"
+        "RESULT",
+        "YEARLY_VALUE"
     ];
 
     public function __construct($adapter) {
@@ -79,18 +75,23 @@ class PayrollGenerator {
         $this->employeeId = $id;
 
         $positionId = $this->getPositionId($id);
-        $payPositionList = $this->payPositionRepo->test($positionId);
+        if ($positionId == null) {
+            $payPositionList = [];
+        } else {
+            $payPositionList = $this->payPositionRepo->test($positionId);
+        }
         $payList = [];
 
         foreach ($payPositionList as $payPosition) {
             array_push($payList, $payPosition);
         }
-        $calculatedValue = 0;
         $ruleValueKV = [];
-
+//        print "<pre>";
+        $counter = 0;
         foreach ($payList as $ruleObj) {
             $ruleId = $ruleObj[PayPositionSetup::PAY_ID];
-            $rule = $this->ruleDetailRepo->fetchById($ruleId)->{RulesDetail::MNENONIC_NAME};
+            $ruleDetail = $this->ruleDetailRepo->fetchById($ruleId)->getArrayCopy();
+            $rule = $ruleDetail[RulesDetail::MNENONIC_NAME];
             $operationType = $ruleObj[Rules::PAY_TYPE_FLAG];
 
             foreach ($this->monthlyValues as $key => $monthlyValue) {
@@ -104,16 +105,36 @@ class PayrollGenerator {
             foreach (self::VARIABLES as $variable) {
                 $rule = $this->convertVariableToValue($rule, $variable);
             }
+
+            foreach (self::SYSTEM_RULE as $systemRule) {
+                $rule = $this->convertSystemRuleToValue($rule, $systemRule);
+            }
+//            if ($counter == 1) {
+//                print "<pre>";
+//                print_r($rule);
+//                exit;
+//            }
+//            print($rule);
+//            try {
             $ruleValue = eval($rule);
+//            } catch (\Exception $e) {
+//                print "<pre>";
+//                print($rule);
+//                exit;
+//            }
+            array_push($this->ruleDetailList, ["ruleValue" => $ruleValue, "rule" => $ruleObj, "ruleDetail" => $ruleDetail]);
+
             if ($operationType == 'A') {
-                $calculatedValue = $calculatedValue + $ruleValue;
+                $this->calculatedValue = $this->calculatedValue + $ruleValue;
             } else if ($operationType == 'D') {
-                $calculatedValue = $calculatedValue - $ruleValue;
+                $this->calculatedValue = $this->calculatedValue - $ruleValue;
             }
             $ruleValueKV[$ruleId] = $ruleValue;
+            $counter++;
         }
+//        exit;
 
-        return ["ruleValueKV" => $ruleValueKV, "calculatedValue" => $calculatedValue];
+        return ["ruleValueKV" => $ruleValueKV, "calculatedValue" => $this->calculatedValue];
     }
 
     private function sanitizeStringArray(array &$stringArray) {
@@ -142,7 +163,28 @@ class PayrollGenerator {
     private function convertVariableToValue($rule, $variable) {
         if (strpos($rule, $variable) !== false) {
             $variableProcessor = new VariableProcessor($this->adapter, $this->employeeId);
-            return str_replace($variable, $variableProcessor->processVariable($variable), $rule);
+//            return str_replace($variable, $variableProcessor->processVariable($variable), $rule);
+            $processedVariable = $variableProcessor->processVariable($variable);
+            if (is_string($processedVariable)) {
+                return str_replace($variable, "'" . $processedVariable . "'", $rule);
+            } else {
+                return str_replace($variable, $processedVariable, $rule);
+            }
+        } else {
+            return $rule;
+        }
+    }
+
+    private function convertSystemRuleToValue($rule, $variable) {
+        if (strpos($rule, $variable) !== false) {
+            $systemRuleProcessor = new SystemRuleProcessor($this->adapter, $this->employeeId, $this->calculatedValue, $this->ruleDetailList);
+//            return str_replace($variable, $systemRuleProcessor->processSystemRule($variable), $rule);
+            $processedSystemRule = $systemRuleProcessor->processSystemRule($variable);
+            if (is_string($processedSystemRule)) {
+                return str_replace($variable, "'" . $processedSystemRule . "'", $rule);
+            } else {
+                return str_replace($variable, $processedSystemRule, $rule);
+            }
         } else {
             return $rule;
         }

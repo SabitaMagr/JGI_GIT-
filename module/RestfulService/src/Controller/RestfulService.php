@@ -493,6 +493,7 @@ class RestfulService extends AbstractRestfulController {
 
         $ruleDetail->payId = $data['payId'];
         $ruleDetail->mnenonicName = $data['mnenonicName'];
+        $ruleDetail->isMonthly = ($data['isMonthly']=='true') ? 'Y' : 'N';
         if ($data['srNo'] == null) {
             $ruleDetail->srNo = 1;
             $repository->add($ruleDetail);
@@ -503,6 +504,7 @@ class RestfulService extends AbstractRestfulController {
 //            $repository->edit($ruleDetail, [RulesDetail::PAY_ID => $payId]);
             $repository->edit($ruleDetail, $payId);
             $ruleDetail->srNo = $data['srNo'];
+            return ["success" => true, "data" => $data];
         }
     }
 
@@ -1426,16 +1428,17 @@ class RestfulService extends AbstractRestfulController {
             "data" => $attendanceRequest
         ];
     }
-    public function checkUniqueConstraint($data){
+
+    public function checkUniqueConstraint($data) {
         $tableName = $data['tableName'];
         $columnsWidValues = $data['columnsWidValues'];
-        $selfId =  $data['selfId'];   
+        $selfId = $data['selfId'];
         $checkColumnName = $data['checkColumnName'];
-        $result = ConstraintHelper::checkUniqueConstraint($this->adapter, $tableName, $columnsWidValues,$checkColumnName,$selfId);
+        $result = ConstraintHelper::checkUniqueConstraint($this->adapter, $tableName, $columnsWidValues, $checkColumnName, $selfId);
         return [
-            "success"=>"true",
-            "data"=>$result,
-            "msg"=>"* Already Exist!!!"
+            "success" => "true",
+            "data" => $result,
+            "msg" => "* Already Exist!!!"
         ];
     }
     public function deleteContent($data){

@@ -3,11 +3,17 @@
 ?>
 
 <script>
-    document.menu =<?php $menu = ["id" => "menuPayroll", "subMenu" => ["id" => "subMenuMonthlyValue"], "subMenuChild" => ["id" => "subMenuChildMonthlyValSetup"]];echo json_encode($menu);?>;
+    document.menu =<?php
+$menu = ["id" => "menuPayroll", "subMenu" => ["id" => "subMenuMonthlyValue"], "subMenuChild" => ["id" => "subMenuChildMonthlyValSetup"]];
+echo json_encode($menu);
+?>;
+    document.tableName = '<?= \Payroll\Model\MonthlyValue::TABLE_NAME ?>';
+    document.mthCodeAttr = '<?= \Payroll\Model\MonthlyValue::MTH_CODE ?>';
+    document.mthIdAttr = '<?= \Payroll\Model\MonthlyValue::MTH_ID ?>';
+    document.mthId = <?= $id ?>;
 </script>
 
-<?php
-if ($this->messages) { ?>
+<?php if ($this->messages) { ?>
     <script>
         document.messages =<?php echo json_encode($this->messages); ?>
     </script>
@@ -22,11 +28,12 @@ $shIndexNo = $form->get('shIndexNo');
 $submit = $form->get('submit');
 
 $submit->setAttribute('value', 'Edit');
-$form->setAttribute('action', $this->url('monthlyValue', ['action' => 'edit','id'=>$id]));
+$form->setAttribute('action', $this->url('monthlyValue', ['action' => 'edit', 'id' => $id]));
+$form->setAttribute('id', "monthlyValueFormId");
 ?>
 
 <div class="page-bar">
-    <?= $this->navigation('Zend\Navigation\monthlyValue')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
+<?= $this->navigation('Zend\Navigation\monthlyValue')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
 
 
@@ -39,42 +46,42 @@ $form->setAttribute('action', $this->url('monthlyValue', ['action' => 'edit','id
                 </div>
             </div>
             <div class="portlet-body">
-                <?php print $this->form()->openTag($form); ?>
+                    <?php print $this->form()->openTag($form); ?>
                 <div class="form-group<?= empty($mthCode->getMessages()) ? "" : "error" ?>">
                     <?php print $this->formLabel($mthCode); ?>
-                    <?php print $this->formElement($mthCode); ?>
+                <?php print $this->formElement($mthCode); ?>
                 </div>
-                <?php print $this->formElementErrors()->render($mthCode, ['class' => 'help-block error']); ?>
+<?php print $this->formElementErrors()->render($mthCode, ['class' => 'help-block error']); ?>
 
                 <div class="form-group<?= empty($mthEdesc->getMessages()) ? "" : "error" ?>">
                     <?php print $this->formLabel($mthEdesc); ?>
-                    <?php print $this->formElement($mthEdesc); ?>
+                <?php print $this->formElement($mthEdesc); ?>
                 </div>
-                <?php print $this->formElementErrors()->render($mthEdesc, ['class' => 'help-block error']); ?>
+<?php print $this->formElementErrors()->render($mthEdesc, ['class' => 'help-block error']); ?>
 
                 <div class="form-group <?= empty($mthLdesc->getMessages()) ? "" : "error" ?>">
                     <?php print $this->formLabel($mthLdesc); ?>
-                    <?php print $this->formElement($mthLdesc); ?>
+                <?php print $this->formElement($mthLdesc); ?>
                 </div>
-                <?php print $this->formElementErrors()->render($mthLdesc, ['class' => 'help-block error']); ?>
+<?php print $this->formElementErrors()->render($mthLdesc, ['class' => 'help-block error']); ?>
 
                 <div class="row">
                     <div class="col-sm-2">
                         <div class="form-group <?= empty($shIndexNo->getMessages()) ? "" : "error" ?>">
                             <?php print $this->formLabel($shIndexNo); ?>
-                            <?php print $this->formElement($shIndexNo); ?>
+                        <?php print $this->formElement($shIndexNo); ?>
                         </div>
-                        <?php print $this->formElementErrors()->render($shIndexNo, ['class' => 'help-block error']); ?>
+<?php print $this->formElementErrors()->render($shIndexNo, ['class' => 'help-block error']); ?>
                     </div>
                     <div class="col-sm-6 col-sm-offset-4">
                         <div class="form-group">
-                            <?php print $this->formLabel($showAtRule); ?>
+                                <?php print $this->formLabel($showAtRule); ?>
                             <div class="md-radio-inline">
-                                <?php $customRenderer($showAtRule); ?>
+<?php $customRenderer($showAtRule); ?>
                             </div>
                         </div>
 
-                        <?php print $this->formElementErrors()->render($showAtRule, ['class' => 'help-block error']); ?>
+<?php print $this->formElementErrors()->render($showAtRule, ['class' => 'help-block error']); ?>
                     </div>
                 </div>
 

@@ -7,18 +7,20 @@ $this->headScript()->appendFile($this->basePath('js/Payroll/Rules/form-wizard.js
 ?>
 
 <script>
-    document.menu =<?php $menu = ["id" => "menuPayroll", "subMenu" => ["id" => "subMenuRules"], "subMenuChild" => ["id" => "subMenuChildRuleSetup"]];echo json_encode($menu);?>;
+    document.menu =<?php
+$menu = ["id" => "menuPayroll", "subMenu" => ["id" => "subMenuRules"], "subMenuChild" => ["id" => "subMenuChildRuleSetup"]];
+echo json_encode($menu);
+?>;
     document.url = '<?= $this->url("restful", ["action" => "index"]) ?>';
-    document.monthlyValues =<?= json_encode($monthlyValues)?>;
-    document.flatValues =<?= json_encode($flatValues)?>;
-    document.variables =<?= json_encode($variables)?>;
-    document.systemRules =<?= json_encode($systemRules)?>;
-    document.positions =<?= json_encode($positions)?>;
-    document.ruleId =<?= json_encode($id)?>;
+    document.monthlyValues =<?= json_encode($monthlyValues) ?>;
+    document.flatValues =<?= json_encode($flatValues) ?>;
+    document.variables =<?= json_encode($variables) ?>;
+    document.systemRules =<?= json_encode($systemRules) ?>;
+    document.positions =<?= json_encode($positions) ?>;
+    document.ruleId =<?= json_encode($id) ?>;
 </script>
 
-<?php
-if ($this->messages) { ?>
+<?php if ($this->messages) { ?>
     <script>
         document.messages =<?php echo json_encode($this->messages); ?>
     </script>
@@ -26,7 +28,7 @@ if ($this->messages) { ?>
 
 
 <div class="page-bar">
-    <?= $this->navigation('Zend\Navigation\rules')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
+<?= $this->navigation('Zend\Navigation\rules')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
 
 
@@ -58,28 +60,28 @@ if ($this->messages) { ?>
                     <a href="#tab1" data-toggle="tab" class="step">
                         <span class="number"> 1 </span>
                         <span class="desc">
-                                    <i class="fa fa-check"></i> Rule Setup </span>
+                            <i class="fa fa-check"></i> Rule Setup </span>
                     </a>
                 </li>
                 <li>
                     <a href="#tab2" data-toggle="tab" class="step">
                         <span class="number"> 2 </span>
                         <span class="desc">
-                                    <i class="fa fa-check"></i> Rule Detail Setup </span>
+                            <i class="fa fa-check"></i> Rule Detail Setup </span>
                     </a>
                 </li>
                 <li>
                     <a href="#tab3" data-toggle="tab" class="step active">
                         <span class="number"> 3 </span>
                         <span class="desc">
-                                    <i class="fa fa-check"></i> Assign Rule </span>
+                            <i class="fa fa-check"></i> Assign Rule </span>
                     </a>
                 </li>
                 <li>
                     <a href="#tab4" data-toggle="tab" class="step">
                         <span class="number"> 4 </span>
                         <span class="desc">
-                                    <i class="fa fa-check"></i> Confirm </span>
+                            <i class="fa fa-check"></i> Confirm </span>
                     </a>
                 </li>
             </ul>
@@ -198,7 +200,10 @@ if ($this->messages) { ?>
                         <div class="col-sm-6">
                             <h4>Rule</h4>
                             <textarea id="rule"></textarea>
-                            <button id="check" class="margin-top-10 pull-right btn btn-danger">Check</button>
+                            <!--<button id="check" class="margin-top-10 pull-right btn btn-danger">Check</button>-->
+                            <div class="checkbox margin-top-10 pull-right">
+                                <label><input type="checkbox" id="isMonthly" value="">Monthly</label>
+                            </div>
                         </div>
 
                         <div class="col-sm-3">

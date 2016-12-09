@@ -2,9 +2,9 @@
     <!-- BEGIN Portlet PORTLET-->
     <div class="portlet light bg-inverse">
         <div class="portlet-title">
-            <div class="caption">
+            <div class="caption cborder">
                 <i class="icon-speech"></i>
-                <span class="caption-subject bold uppercase">Leave</span>
+                <span class="caption-subject bold">Leave</span>
                 <span class="caption-helper">Today</span>
             </div>
         </div>
@@ -19,13 +19,13 @@
                                 </div>
                                 <div class="list-datetime"> 
                                     <label style="font-size: 0.8em;">
-                                        <?php print $approvedLeave['START_DATE']; ?>
+                                        <?php print $approvedLeave['START_DATE']; ?>&nbsp-&nbsp 
                                         <?php print $approvedLeave['END_DATE']; ?>
 
                                     </label>
                                 </div>
                                 <div class="list-item-content">
-                                    <h3 class="uppercase">
+                                    <h3 class="head-title">
                                         <a href="<?= $this->url("leavestatus",['action'=>"view",'id'=>$approvedLeave['ID']]) ?>">
                                             <?php print $approvedLeave['FIRST_NAME']; ?>
                                             <?php print $approvedLeave['MIDDLE_NAME']; ?>
