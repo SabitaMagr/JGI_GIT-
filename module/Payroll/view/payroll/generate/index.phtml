@@ -6,13 +6,16 @@ $this->headScript()->appendFile($this->basePath('js/Payroll/Generate/generate.js
 
 
 <script>
-    document.menu =<?php $menu = ["id" => "menuPayroll", "subMenu" => ["id" => "subMenuGenerate"]];echo json_encode($menu);?>;
+    document.menu =<?php
+$menu = ["id" => "menuPayroll", "subMenu" => ["id" => "subMenuGenerate"]];
+echo json_encode($menu);
+?>;
     document.url = '<?= $this->url("restful", ["action" => "index"]) ?>';
-    document.rules =<?= json_encode($rules)?>;
-    document.employeeList =<?= json_encode($employeeList)?>;
-</script>
-<?php
-if ($this->messages) { ?>
+    document.rules =<?= json_encode($rules) ?>;
+    document.employeeList =<?= json_encode($employeeList) ?>;
+    document.branches =<?= json_encode($branches) ?>;
+    document.fiscalYears =<?= json_encode($fiscalYears) ?>;</script>
+<?php if ($this->messages) { ?>
     <script>
         document.messages =<?php echo json_encode($this->messages); ?>
     </script>
@@ -22,14 +25,36 @@ if ($this->messages) { ?>
     <?= $this->navigation('Zend\Navigation\generate')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
 <div ng-app="hris" ng-controller="generateController">
+    <div class="row">
+        <div class="col-sm-3">
+            <label>Fiscal year</label>
+            <select class="form-control" ng-change="changeYear()" ng-model="fiscalYearId" ng-options="key as fiscalYear for (key, fiscalYear) in fiscalYears">
+                <option value="">Select Year</option>
+            </select>
+        </div>
+
+        <div class="col-sm-3">
+            <label>Fiscal year</label>
+            <select class="form-control" ng-model="monthId" ng-options="month.MONTH_ID as month.MONTH_EDESC for month in months">
+                <option value="">Select Month</option>
+            </select>
+        </div>
+    </div>
     <div class="row margin-top-20">
         <div class="col-sm-3">
-            <select class="form-control" ng-model="employeeId" ng-options="key as employee for (key,employee) in employeeList">
+            <label>Branch</label>
+            <select class="form-control" ng-change="changeBranch()" ng-model="branchId" ng-options="key as branch for (key, branch) in branches">
+                <option value="">All</option>
+            </select>
+        </div>
+        <div class="col-sm-3">
+            <label>Employee</label>
+            <select class="form-control" ng-model="employeeId" ng-options="key as employee for (key, employee) in employeeList">
                 <option value="">All</option>
             </select>
         </div>
         <div class="col-sm-2">
-            <button id="generateBtn" class="btn btn-info">
+            <button id="generateBtn" class="btn btn-info  form-control">
                 Generate
             </button>
         </div>
@@ -48,14 +73,14 @@ if ($this->messages) { ?>
             </th>
             </thead>
             <tbody>
-            <tr ng-repeat="(key,empDataVal) in employeeRuleValues">
-                <td ng-bind="employeeList[key]"></td>
-                <td ng-repeat="(ruleId,rule) in rules" ng-bind="empDataVal.ruleValueKV[ruleId]">
-                </td>
-                <td ng-bind="empDataVal.calculatedValue">
+                <tr ng-repeat="(key, empDataVal) in employeeRuleValues">
+                    <td ng-bind="employeeList[key]"></td>
+                    <td ng-repeat="(ruleId, rule) in rules" ng-bind="empDataVal.ruleValueKV[ruleId]">
+                    </td>
+                    <td ng-bind="empDataVal.calculatedValue">
 
-                </td>
-            </tr>
+                    </td>
+                </tr>
 
             </tbody>
         </table>

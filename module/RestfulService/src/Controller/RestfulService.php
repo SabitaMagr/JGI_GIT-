@@ -2,8 +2,11 @@
 
 namespace RestfulService\Controller;
 
+use Application\Helper\ConstraintHelper;
+use Application\Helper\DeleteHelper;
 use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
+use Application\Repository\MonthRepository;
 use AttendanceManagement\Model\ShiftAssign;
 use AttendanceManagement\Model\ShiftSetup;
 use AttendanceManagement\Repository\AttendanceStatusRepository;
@@ -12,6 +15,7 @@ use HolidayManagement\Repository\HolidayRepository;
 use LeaveManagement\Repository\LeaveBalanceRepository;
 use LeaveManagement\Repository\LeaveStatusRepository;
 use Payroll\Controller\PayrollGenerator;
+use Payroll\Controller\SalarySheet as SalarySheetController;
 use Payroll\Model\FlatValueDetail;
 use Payroll\Model\MonthlyValueDetail;
 use Payroll\Model\PayPositionSetup;
@@ -22,12 +26,15 @@ use Payroll\Repository\MonthlyValueDetailRepo;
 use Payroll\Repository\PayPositionRepo;
 use Payroll\Repository\RulesDetailRepo;
 use Payroll\Repository\RulesRepository;
+use SelfService\Repository\AttendanceRequestRepository;
+use SelfService\Repository\LeaveRequestRepository;
 use SelfService\Repository\ServiceRepository;
 use Setup\Model\EmployeeQualification;
 use Setup\Repository\AcademicCourseRepository;
 use Setup\Repository\AcademicDegreeRepository;
 use Setup\Repository\AcademicProgramRepository;
 use Setup\Repository\AcademicUniversityRepository;
+use Setup\Repository\BranchRepository;
 use Setup\Repository\EmployeeQualificationRepository;
 use Setup\Repository\EmployeeRepository;
 use Setup\Repository\JobHistoryRepository;
@@ -43,10 +50,6 @@ use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Adapter\Driver\ResultInterface;
 use Zend\Mvc\Controller\AbstractRestfulController;
 use Zend\View\Model\JsonModel;
-use SelfService\Repository\LeaveRequestRepository;
-use SelfService\Repository\AttendanceRequestRepository;
-use Setup\Repository\BranchRepository;
-use Application\Helper\ConstraintHelper;
 
 class RestfulService extends AbstractRestfulController {
 
@@ -220,6 +223,12 @@ class RestfulService extends AbstractRestfulController {
                     break;
                 case "checkUniqueConstraint":
                     $responseData = $this->checkUniqueConstraint($postedData->data);
+                    break;
+                case "pullMonthsByFiscalYear":
+                    $responseData = $this->pullMonthsByFiscalYear($postedData->data);
+                    break;
+                case "deleteContent":
+                    $responseData = $this->deleteContent($postedData->data);
                     break;
                 default:
                     $responseData = [
@@ -489,6 +498,7 @@ class RestfulService extends AbstractRestfulController {
 
         $ruleDetail->payId = $data['payId'];
         $ruleDetail->mnenonicName = $data['mnenonicName'];
+        $ruleDetail->isMonthly = ($data['isMonthly'] == 'true') ? 'Y' : 'N';
         if ($data['srNo'] == null) {
             $ruleDetail->srNo = 1;
             $repository->add($ruleDetail);
@@ -499,6 +509,7 @@ class RestfulService extends AbstractRestfulController {
 //            $repository->edit($ruleDetail, [RulesDetail::PAY_ID => $payId]);
             $repository->edit($ruleDetail, $payId);
             $ruleDetail->srNo = $data['srNo'];
+            return ["success" => true, "data" => $data];
         }
     }
 
@@ -898,20 +909,58 @@ class RestfulService extends AbstractRestfulController {
 
     private function generataMonthlySheet($data) {
         $employeeId = $data['employee'];
-//        print "<pre>";
+        $branchId = $data['branch'];
+        $monthId = $data['month'];
+
         $results = [];
-        if ($employeeId == -1) {
+        $salarySheetController = new SalarySheetController($this->adapter);
+
+        if ($salarySheetController->checkIfGenerated($monthId)) {
+            
+        } else {
             $employeeList = EntityHelper::getTableKVList($this->adapter, "HR_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => 'E'], ' ');
             foreach ($employeeList as $key => $employee) {
                 $generateMonthlySheet = new PayrollGenerator($this->adapter);
                 $result = $generateMonthlySheet->generate($key);
                 $results[$key] = $result;
             }
-        } else {
-            $generateMonthlySheet = new PayrollGenerator($this->adapter);
-            $result = $generateMonthlySheet->generate($employeeId);
-            $results[$employeeId] = $result;
+
+            $addSalarySheetRes = $salarySheetController->addSalarySheet($monthId);
+            if ($addSalarySheetRes != null) {
+                $salarySheetController->addSalarySheetDetail($monthId, $results, $addSalarySheetRes[\Payroll\Model\SalarySheet::SHEET_NO]);
+            } else {
+//            handle failure here
+            }
         }
+
+
+//        if ($branchId == -1) {
+//            if ($employeeId == -1) {
+//                $employeeList = EntityHelper::getTableKVList($this->adapter, "HR_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => 'E'], ' ');
+//                foreach ($employeeList as $key => $employee) {
+//                    $generateMonthlySheet = new PayrollGenerator($this->adapter);
+//                    $result = $generateMonthlySheet->generate($key);
+//                    $results[$key] = $result;
+//                }
+//            } else {
+//                $generateMonthlySheet = new PayrollGenerator($this->adapter);
+//                $result = $generateMonthlySheet->generate($employeeId);
+//                $results[$employeeId] = $result;
+//            }
+//        } else {
+//            if ($employeeId == -1) {
+//                $employeeList = EntityHelper::getTableKVList($this->adapter, "HR_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => 'E', HrEmployees::BRANCH_ID => $branchId], ' ');
+//                foreach ($employeeList as $key => $employee) {
+//                    $generateMonthlySheet = new PayrollGenerator($this->adapter);
+//                    $result = $generateMonthlySheet->generate($key);
+//                    $results[$key] = $result;
+//                }
+//            } else {
+//                $generateMonthlySheet = new PayrollGenerator($this->adapter);
+//                $result = $generateMonthlySheet->generate($employeeId);
+//                $results[$employeeId] = $result;
+//            }
+//        }
 //        exit;
         return ["success" => true, "data" => $results];
     }
@@ -1422,16 +1471,42 @@ class RestfulService extends AbstractRestfulController {
             "data" => $attendanceRequest
         ];
     }
-    public function checkUniqueConstraint($data){
+
+    public function checkUniqueConstraint($data) {
         $tableName = $data['tableName'];
         $columnsWidValues = $data['columnsWidValues'];
-        $selfId =  $data['selfId'];   
+        $selfId = $data['selfId'];
         $checkColumnName = $data['checkColumnName'];
-        $result = ConstraintHelper::checkUniqueConstraint($this->adapter, $tableName, $columnsWidValues,$checkColumnName,$selfId);
+        $result = ConstraintHelper::checkUniqueConstraint($this->adapter, $tableName, $columnsWidValues, $checkColumnName, $selfId);
         return [
-            "success"=>"true",
-            "data"=>$result,
-            "msg"=>"* Already Exist!!!"
+            "success" => "true",
+            "data" => $result,
+            "msg" => "* Already Exist!!!"
+        ];
+    }
+
+    private function pullMonthsByFiscalYear($data) {
+        $fiscalYearId = $data['fiscalYearId'];
+        $monthRepo = new MonthRepository($this->adapter);
+        $rawMonths = $monthRepo->fetchById($fiscalYearId);
+
+        $months = Helper::extractDbData($rawMonths);
+        return [
+            "success" => true,
+            "data" => $months
+        ];
+    }
+
+    public function deleteContent($data) {
+        $tableName = $data['tableName'];
+        $columnName = $data['columnName'];
+        $id = $data['id'];
+
+        $result = DeleteHelper::deleteContent($this->adapter, $tableName, $columnName, $id);
+
+        return [
+            "success" => "true",
+            "msg" => "Record Successfully Deleted!!!"
         ];
     }
 

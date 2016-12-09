@@ -56,12 +56,6 @@ $form->prepare();
                     <?php print $this->formElementErrors()->render($remarks, ['class' => 'help-block']); ?>
                 </div>
 
-                <div class="form-group">
-                    <?php print $this->formLabel($status); ?>
-                    <?php print $this->formElement($status); ?>
-                    <?php print $this->formElementErrors()->render($status, ['class' => 'help-block']); ?>
-                </div>
-
                 <?php
                     print $this->formSubmit($submit);
                     print $this->form()->closeTag();

@@ -37,7 +37,8 @@ class PositionRepository implements RepositoryInterface{
             array_push($result, [
                 'SN'=>$i,
                 'POSITION_ID'=>$row['POSITION_ID'],
-                'POSITION_NAME'=>$row['POSITION_NAME']
+                'POSITION_NAME'=>$row['POSITION_NAME'],
+                'REMARKS'=>$row['REMARKS']
             ]);
             $i+=1;
         }

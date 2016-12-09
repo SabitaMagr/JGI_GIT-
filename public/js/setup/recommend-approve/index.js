@@ -2,6 +2,11 @@
     'use strict';
     $(document).ready(function () {
         $("#recommendApproveTable").kendoGrid({
+            excel: {
+                fileName: "RecommenderApproverList.xlsx",
+                filterable: true,
+                allPages: true
+            },
             dataSource: {
                 data: document.recommendApproves,
                 pageSize: 20
@@ -16,12 +21,17 @@
             },
             rowTemplate: kendo.template($("#rowTemplate").html()),
             columns: [
-                {field: "FIRST_NAME", title: "Employee Name"},
-                {field: "FIRST_NAME_R", title: "Recommender"},
-                {field: "FIRST_NAME_A", title: "Approver"},
-                {title: "Action"}
+                {field: "FIRST_NAME", title: "Employee Name",width:200},
+                {field: "FIRST_NAME_R", title: "Recommender",width:200},
+                {field: "FIRST_NAME_A", title: "Approver",width:200},
+                {title: "Action",width:80}
             ]
         });
+        $("#export").click(function (e) {
+            var grid = $("#recommendApproveTable").data("kendoGrid");
+            grid.saveAsExcel();
+        });
+        window.app.UIConfirmations();
 
     });
 })(window.jQuery);

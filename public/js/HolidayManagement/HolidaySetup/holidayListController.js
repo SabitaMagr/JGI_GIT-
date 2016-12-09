@@ -31,6 +31,11 @@ angular.module('hris', [])
             }
             $scope.initializekendoGrid = function (holidayList) {
                 $("#holidayTable").kendoGrid({
+                    excel: {
+                        fileName: "HolidayList.xlsx",
+                        filterable: true,
+                        allPages: true
+                    },
                     dataSource: {
                         data: holidayList,
                         pageSize: 35
@@ -46,14 +51,14 @@ angular.module('hris', [])
                     dataBound: gridDataBound,
                     rowTemplate: kendo.template($("#rowTemplate").html()),
                     columns: [
-                        {field: "HOLIDAY_CODE", title: "Holiday Code",width:130},
-                        {field: "HOLIDAY_ENAME", title: "Holiday Name",width:150},
-                        {field: "START_DATE", title: "From Date",width:130},
-                        {field: "END_DATE", title: "To Date",width:130},
-                        {field: "GENDER_NAME", title: "Gender",width:100},
-                        {field: "BRANCHES", title: "Branch",width:200},
-                        {field: "HALFDAY", title: "Half Day",width:100},
-                        {title: "Action",width:100}
+                        {field: "HOLIDAY_CODE", title: "Holiday Code", width: 130},
+                        {field: "HOLIDAY_ENAME", title: "Holiday Name", width: 150},
+                        {field: "START_DATE", title: "From Date", width: 130},
+                        {field: "END_DATE", title: "To Date", width: 130},
+                        {field: "GENDER_NAME", title: "Gender", width: 100},
+                        {field: "BRANCHES", title: "Branch", width: 200},
+                        {field: "HALFDAY", title: "Half Day", width: 100},
+                        {title: "Action", width: 100}
                     ]
                 });
                 function gridDataBound(e) {
@@ -66,5 +71,10 @@ angular.module('hris', [])
                     }
                 }
                 ;
+                $("#export").click(function (e) {
+                    var grid = $("#holidayTable").data("kendoGrid");
+                    grid.saveAsExcel();
+                });
+                window.app.UIConfirmations();
             };
         });

@@ -2,6 +2,11 @@
     'use strict';
     $(document).ready(function () {
         $("#designationTable").kendoGrid({
+            excel: {
+                fileName: "DesignationList.xlsx",
+                filterable: true,
+                allPages: true
+            },
             dataSource: {
                 data: document.designations,
                 pageSize: 20
@@ -16,12 +21,17 @@
             },
             rowTemplate: kendo.template($("#rowTemplate").html()),
             columns: [
-                {field: "DESIGNATION_CODE", title: "Designation Code"},
-                {field: "DESIGNATION_TITLE", title: "Designation Name"},
-                {field: "PARENT_DESIGNATION_TITLE", title: "Parent Designation"},
-                {field: "BASIC_SALARY", title: "Basic Salary"},
-                {title: "Action"}
+                {field: "DESIGNATION_CODE", title: "Designation Code",width:120},
+                {field: "DESIGNATION_TITLE", title: "Designation Name",width:200},
+                {field: "PARENT_DESIGNATION_TITLE", title: "Parent Designation",width:200},
+                {field: "BASIC_SALARY", title: "Basic Salary",width:120},
+                {title: "Action",width:100}
             ]
         });
+        $("#export").click(function (e) {
+            var grid = $("#designationTable").data("kendoGrid");
+            grid.saveAsExcel();
+        });
+        window.app.UIConfirmations();
     });
 })(window.jQuery, window.app);

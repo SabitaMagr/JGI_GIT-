@@ -144,4 +144,43 @@ class LeaveBalanceRepository implements RepositoryInterface {
     {
         // TODO: Implement delete() method.
     }
+    
+    public function getOnlyCarryForwardedRecord(){
+        $sql = new Sql($this->adapter);
+        $select = $sql->select();
+        $select->columns([
+            new Expression("LA.TOTAL_DAYS AS TOTAL_DAYS"),
+            new Expression("LA.BALANCE AS BALANCE"),
+            new Expression("LA.LEAVE_ID AS LEAVE_ID"),
+            new Expression("LA.EMPLOYEE_ID AS EMPLOYEE_ID"),
+        ], true);
+
+        $select->from(['LA' => LeaveAssign::TABLE_NAME])
+            ->join(['E'=>"HR_EMPLOYEES"],"E.EMPLOYEE_ID=LA.EMPLOYEE_ID",['FIRST_NAME','MIDDLE_NAME','LAST_NAME'])
+            ->join(['L'=>'HR_LEAVE_MASTER_SETUP'],"L.LEAVE_ID=LA.LEAVE_ID",['LEAVE_CODE','LEAVE_ENAME']);
+
+        $select->where([
+            "L.STATUS='E'",
+            "E.STATUS='E'",
+            "L.CASHABLE='N'",
+            "L.CARRY_FORWARD='Y'"
+        ]);
+        $select->order(['LA.EMPLOYEE_ID']);
+
+        $statement = $sql->prepareStatementForSqlObject($select);
+        $result = $statement->execute();
+     
+       // $result =  $this->tableGateway->select();
+        
+        $record = [];
+        foreach($result as $row){
+            array_push($record,[
+                'EMPLOYEE_ID'=>$row['EMPLOYEE_ID'],
+                'LEAVE_ID'=>$row['LEAVE_ID'],
+                'BALANCE'=>$row['BALANCE'],
+                'TOTAL_DAYS'=>$row['TOTAL_DAYS']
+            ]);
+        }
+        return $record;
+    }
 }

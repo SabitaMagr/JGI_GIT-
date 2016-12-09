@@ -67,6 +67,7 @@ class ServiceTypeController extends AbstractActionController
                     $serviceType->exchangeArrayFromForm($this->form->getData());
                     $serviceType->serviceTypeId=((int) Helper::getMaxId($this->adapter,ServiceType::TABLE_NAME,ServiceType::SERVICE_TYPE_ID))+1;
                     $serviceType->createdDt=Helper::getcurrentExpressionDate();
+                    $serviceType->status='E';
                     $this->repository->add($serviceType);
 
                     $this->flashmessenger()->addMessage("Service Type Successfully Added!!!");

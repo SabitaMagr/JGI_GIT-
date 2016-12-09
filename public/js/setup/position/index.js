@@ -1,7 +1,6 @@
 (function ($) {
     'use strict';
     $(document).ready(function () {
-       
         $("#positionTable").kendoGrid({
             dataSource: {
                 data: document.positions,
@@ -17,31 +16,78 @@
             },
             rowTemplate: kendo.template($("#rowTemplate").html()),
             columns: [
-                {field: "SN", title: "S.N."},
-                {field: "POSITION_NAME", title: "Position Name"},
-                {title: "Action"}
+                {field: "SN", title: "S.N.", width: 100},
+                {field: "POSITION_NAME", title: "Position Name", width: 400},
+                {field: "REMARKS", title: "Remarks", hidden: true},
+                {title: "Action", width: 80}
             ]
-        }); 
-    
-    });   
+        });
+
+        $("#export").click(function (e) {
+            //            var grid = $("#positionTable").data("kendoGrid");
+            //            grid.saveAsExcel();
+            var rows = [{
+                    cells: [
+                        {value: "SN"},
+                        {value: "Position Name"},
+                        {value: "Remarks"}
+                    ]
+                }];
+            var dataSource = $("#positionTable").data("kendoGrid").dataSource;
+            var filteredDataSource = new kendo.data.DataSource({
+                data: dataSource.data(),
+                filter: dataSource.filter()
+            });
+
+            filteredDataSource.read();
+            var data = filteredDataSource.view();
+            
+            for (var i = 0; i < data.length; i++) {
+                var dataItem = data[i];
+                rows.push({
+                    cells: [
+                        {value: dataItem.SN},
+                        {value: dataItem.POSITION_NAME},
+                        {value: dataItem.REMARKS}
+                    ]
+                });
+            }
+            excelExport(rows);
+            e.preventDefault();
+        });
+        
+        function excelExport(rows) {
+            var workbook = new kendo.ooxml.Workbook({
+                sheets: [
+                    {
+                        columns: [
+                            {autoWidth: true},
+                            {autoWidth: true},
+                            {autoWidth: true}
+                        ],
+                        title: "Employee",
+                        rows: rows
+                    }
+                ]
+            });
+            kendo.saveAs({dataURI: workbook.toDataURL(), fileName: "PositionList.xlsx"});
+        }
+        window.app.UIConfirmations();
+
+//        var exportFlag = true;
+//        $("#positionTable").data("kendoGrid").bind("excelExport", function (e) {
+//            if (exportFlag) {
+//                e.sender.showColumn("REMARKS");
+//                e.preventDefault();
+//                exportFlag = false;
+//                e.sender.saveAsExcel();
+//            } else {
+//                e.sender.hideColumn("REMARKS");
+//                exportFlag = true;
+//            }
+//        });
+    });
 })(window.jQuery, window.app);
 
 
 
-
-var UIConfirmations = function () {
-    var n = function () {
-        $("#bs_confirmation_demo_1").on("confirmed.bs.confirmation", function () {
-            alert("You confirmed action #1")
-        }),
-            $("#bs_confirmation_demo_1").on("canceled.bs.confirmation", function () {
-            alert("You canceled action #1")
-        })
-    };
-    return{init: function () {
-            n()
-        }}
-}();
-jQuery(document).ready(function () {
-    UIConfirmations.init()
-});

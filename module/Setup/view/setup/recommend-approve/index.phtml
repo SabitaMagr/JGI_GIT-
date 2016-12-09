@@ -3,8 +3,10 @@
  * Load Javascript files here
  */
 $this->headScript()
+    ->appendFile($this->basePath('jszip/dist/jszip.min.js'))
     ->appendFile($this->basePath('telerik_kendoui/js/kendo.all.min.js'))
-    ->appendFile($this->basePath('js/setup/recommend-approve/index.js'));
+    ->appendFile($this->basePath('js/setup/recommend-approve/index.js'))
+    ->appendFile($this->basePath('assets/global/plugins/bootstrap-confirmation/bootstrap-confirmation.min.js'));
 ?>
 <?php
 if($this->messages) { ?>
@@ -40,13 +42,7 @@ if($this->messages) { ?>
                     </button>
                     <ul class="dropdown-menu pull-right">
                         <li>
-                            <a href="javascript:;"> Print </a>
-                        </li>
-                        <li>
-                            <a href="javascript:;"> Save as PDF </a>
-                        </li>
-                        <li>
-                            <a href="javascript:;"> Export to Excel </a>
+                            <a href="javascript:;" id="export"> Export to Excel </a>
                         </li>
                     </ul>
                 </div>
@@ -74,9 +70,9 @@ if($this->messages) { ?>
             #: (LAST_NAME_A == null) ? ' ' : LAST_NAME_A #
         </td>
         <td>
-        <a class=""
-        href="<?= $this->url("recommendapprove", ["action" => "edit"]) ?>/#:EMPLOYEE_ID #">
-        Edit
+        <a class="btn  btn-icon-only btn-success"
+        href="<?= $this->url("recommendapprove", ["action" => "edit"]) ?>/#:EMPLOYEE_ID #" style="height:17px;">
+        <i class="fa fa-edit"></i>
         </a> 
         </td>
         </tr>

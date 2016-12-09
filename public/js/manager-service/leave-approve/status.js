@@ -23,7 +23,7 @@ angular.module('hris', [])
                 var leaveRequestStatusId = angular.element(document.getElementById('leaveRequestStatusId')).val();
                 var fromDate = angular.element(document.getElementById('fromDate1')).val();
                 var toDate = angular.element(document.getElementById('toDate1')).val();
-                var recomApproveId  = angular.element(document.getElementById('recomApproveId')).val();
+                var recomApproveId = angular.element(document.getElementById('recomApproveId')).val();
 
                 window.app.pullDataById(document.url, {
                     action: 'pullLeaveRequestStatusList',
@@ -35,10 +35,10 @@ angular.module('hris', [])
                         'positionId': positionId,
                         'serviceTypeId': serviceTypeId,
                         'leaveId': leaveId,
-                        'leaveRequestStatusId':leaveRequestStatusId,
-                        'fromDate':fromDate,
-                        'toDate':toDate,
-                        'recomApproveId':recomApproveId
+                        'leaveRequestStatusId': leaveRequestStatusId,
+                        'fromDate': fromDate,
+                        'toDate': toDate,
+                        'recomApproveId': recomApproveId
                     }
                 }).then(function (success) {
                     console.log(success.recomApproveId);
@@ -50,6 +50,11 @@ angular.module('hris', [])
             $scope.initializekendoGrid = function (leaveRequestStatus) {
                 console.log(leaveRequestStatus);
                 $("#leaveRequestStatusTable").kendoGrid({
+                    excel: {
+                        fileName: "LeaveRequestList.xlsx",
+                        filterable: true,
+                        allPages: true
+                    },
                     dataSource: {
                         data: leaveRequestStatus,
                         pageSize: 20
@@ -62,18 +67,18 @@ angular.module('hris', [])
                         input: true,
                         numeric: false
                     },
-                    dataBound:gridDataBound,
+                    dataBound: gridDataBound,
                     rowTemplate: kendo.template($("#rowTemplate").html()),
                     columns: [
-                        {field: "FIRST_NAME", title: "Employee Name",width:200},
-                        {field: "LEAVE_ENAME", title: "Leave Name",width:150},
-                        {field: "APPLIED_DATE", title: "Requested Date",width:180},                        
-                        {field: "START_DATE", title: "From Date",width:150},
-                        {field: "END_DATE", title: "To Date",width:150},                        
-                        {field: "NO_OF_DAYS", title: "Duration",width:120},
-                        {field: "YOUR_ROLE", title: "Your Role",width:200},
-                        {field: "STATUS", title: "Status",width:140},
-                        {title: "Action",width:100}
+                        {field: "FIRST_NAME", title: "Employee Name", width: 200},
+                        {field: "LEAVE_ENAME", title: "Leave Name", width: 150},
+                        {field: "APPLIED_DATE", title: "Requested Date", width: 150},
+                        {field: "START_DATE", title: "From Date", width: 120},
+                        {field: "END_DATE", title: "To Date", width: 120},
+                        {field: "NO_OF_DAYS", title: "Duration", width: 110},
+                        {field: "YOUR_ROLE", title: "Your Role", width: 150},
+                        {field: "STATUS", title: "Status", width: 100},
+                        {title: "Action", width: 80}
                     ]
                 });
                 function gridDataBound(e) {
@@ -81,9 +86,14 @@ angular.module('hris', [])
                     if (grid.dataSource.total() == 0) {
                         var colCount = grid.columns.length;
                         $(e.sender.wrapper)
-                            .find('tbody')
-                            .append('<tr class="kendo-data-row"><td colspan="' + colCount + '" class="no-data">There is no data to show in the grid.</td></tr>');
+                                .find('tbody')
+                                .append('<tr class="kendo-data-row"><td colspan="' + colCount + '" class="no-data">There is no data to show in the grid.</td></tr>');
                     }
-                };
+                }
+                ;
+                $("#export").click(function (e) {
+                    var grid = $("#leaveRequestStatusTable").data("kendoGrid");
+                    grid.saveAsExcel();
+                });
             };
         });

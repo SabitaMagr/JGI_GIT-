@@ -3,9 +3,11 @@
  * Load Javascript files here
  */
 $this->headScript()
+     ->appendFile($this->basePath('jszip/dist/jszip.min.js'))
      ->appendFile($this->basePath('telerik_kendoui/js/kendo.all.min.js'))
      ->appendFile($this->basePath('js/angular.min.js'))
-     ->appendFile($this->basePath('js/LeaveManagement/LeaveStatus/index.js'));
+     ->appendFile($this->basePath('js/LeaveManagement/LeaveStatus/index.js'))
+        ->appendFile($this->basePath('assets/global/plugins/bootstrap-confirmation/bootstrap-confirmation.min.js'));
 ?>
 
 <script>
@@ -24,7 +26,7 @@ if ($this->messages) { ?>
 <div ng-app="hris" ng-controller="leaveStatusListController">
     <div class="margin-top-20">
         <div class="row">
-            <div class="col-sm-4">
+            <div class="col-sm-2">
                 <?php print $this->formLabel($employees); ?>
                 <?php print $this->formElement($employees); ?>
             </div>
@@ -43,13 +45,14 @@ if ($this->messages) { ?>
             <div class="col-sm-2">
                 <?php print $this->formLabel($positions); ?>
                 <?php print $this->formElement($positions); ?>
-            </div>            
-        </div>
-        <div class="row margin-top-10">    
+            </div> 
             <div class="col-sm-2">
                 <?php print $this->formLabel($serviceTypes); ?>
                 <?php print $this->formElement($serviceTypes); ?>
             </div>
+        </div>
+        <div class="row margin-top-10">    
+            
             <div class="col-sm-2">
                 <?php print $this->formLabel($leaves); ?>
                 <?php print $this->formElement($leaves); ?>
@@ -79,10 +82,23 @@ if ($this->messages) { ?>
                     <i class="fa fa-search"></i>
                 </button>
             </div>
+            <div class="col-sm-2">
+                <label height="45"></label>
+                <div class="btn-group">
+                    <button class="btn green btn-outline dropdown-toggle" data-toggle="dropdown">Tools
+                        <i class="fa fa-angle-down"></i>
+                    </button>
+                    <ul class="dropdown-menu pull-right">
+                        <li>
+                            <a href="javascript:;" id="export"> Export to Excel </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
         </div>
     </div>
     
-    <div class="margin-top-20">   
+    <div class="margin-top-20">
         <div id="leaveRequestStatusTable">
         </div>
     </div>
@@ -123,9 +139,9 @@ if ($this->messages) { ?>
              #: (STATUS == null) ? '-' : STATUS #
         </td>
         <td>
-            <a class=""
-               href="<?= $this->url("leavestatus", ["action" => "view"])?>/#: ID #">
-                View
+            <a class="btn  btn-icon-only btn-success"
+               href="<?= $this->url("leavestatus", ["action" => "view"])?>/#: ID #" style="height:17px;" title="view">
+                <i class="fa fa-search-plus"></i>
             </a>
         </td>
         </tr>

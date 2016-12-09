@@ -1,15 +1,22 @@
 <?php
 //load js files here
+$this->headScript()->appendFile($this->basePath('js/Payroll/MonthlyValue/addEdit.js'));
 ?>
 
 <script>
-    document.menu =<?php $menu = ["id" => "menuPayroll", "subMenu" => ["id" => "subMenuMonthlyValue"], "subMenuChild" => ["id" => "subMenuChildMonthlyValSetup"]];echo json_encode($menu);?>;
+    document.menu =<?php
+$menu = ["id" => "menuPayroll", "subMenu" => ["id" => "subMenuMonthlyValue"], "subMenuChild" => ["id" => "subMenuChildMonthlyValSetup"]];
+echo json_encode($menu);
+?>;
+    document.tableName = '<?= \Payroll\Model\MonthlyValue::TABLE_NAME ?>';
+    document.mthCodeAttr = '<?= \Payroll\Model\MonthlyValue::MTH_CODE ?>';
+    document.mthIdAttr = '<?= \Payroll\Model\MonthlyValue::MTH_ID ?>';
 </script>
 
-<?php
-if ($this->messages) { ?>
+<?php if ($this->messages) { ?>
     <script>
-        document.messages =<?php echo json_encode($this->messages); ?>
+        document.messages =<?php echo json_encode($this->messages); ?>;
+
     </script>
 <?php } ?>
 
@@ -23,6 +30,7 @@ $submit = $form->get('submit');
 
 $submit->setAttribute('value', 'Submit');
 $form->setAttribute('action', $this->url('monthlyValue', ['action' => 'add']));
+$form->setAttribute('id', "monthlyValueFormId");
 ?>
 
 <div class="page-bar">
@@ -43,6 +51,7 @@ $form->setAttribute('action', $this->url('monthlyValue', ['action' => 'add']));
                 <div class="form-group<?= empty($mthCode->getMessages()) ? "" : "error" ?>">
                     <?php print $this->formLabel($mthCode); ?>
                     <?php print $this->formElement($mthCode); ?>
+                    <span class="errorMsg" style="color:red;"></span>
                 </div>
                 <?php print $this->formElementErrors()->render($mthCode, ['class' => 'help-block error']); ?>
 
