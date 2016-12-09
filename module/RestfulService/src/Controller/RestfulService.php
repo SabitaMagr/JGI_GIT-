@@ -3,6 +3,7 @@
 namespace RestfulService\Controller;
 
 use Application\Helper\ConstraintHelper;
+use Application\Helper\DeleteHelper;
 use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
 use Application\Repository\MonthRepository;
@@ -49,11 +50,6 @@ use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Adapter\Driver\ResultInterface;
 use Zend\Mvc\Controller\AbstractRestfulController;
 use Zend\View\Model\JsonModel;
-use SelfService\Repository\LeaveRequestRepository;
-use SelfService\Repository\AttendanceRequestRepository;
-use Setup\Repository\BranchRepository;
-use Application\Helper\ConstraintHelper;
-use Application\Helper\DeleteHelper;
 
 class RestfulService extends AbstractRestfulController {
 
@@ -925,7 +921,12 @@ class RestfulService extends AbstractRestfulController {
         }
 
         $salarySheetController = new SalarySheetController($this->adapter);
-        $salarySheetController->addSalarySheet($monthId, $results);
+        $addSalarySheetRes = $salarySheetController->addSalarySheet($monthId);
+        if ($addSalarySheetRes != null) {
+            $salarySheetController->addSalarySheetDetail($monthId, $results, $addSalarySheetRes[\Payroll\Model\SalarySheet::SHEET_NO]);
+        } else {
+//            handle failure here
+        }
 
 //        if ($branchId == -1) {
 //            if ($employeeId == -1) {
