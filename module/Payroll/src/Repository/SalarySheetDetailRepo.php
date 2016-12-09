@@ -35,7 +35,7 @@ class SalarySheetDetailRepo implements RepositoryInterface {
     }
 
     public function fetchById($id) {
-        
+        return $this->gateway->select($id);
     }
 
 }
