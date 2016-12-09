@@ -125,7 +125,7 @@ class PositionController extends AbstractActionController
         $this->repository->delete($id);
         $this->flashmessenger()->addMessage("Position Successfully Deleted!!!");
         return $this->redirect()->toRoute('position');
-    }
+    }  
 }
 
 /* End of file PositionController.php */

@@ -39,7 +39,7 @@ class EmployeeController extends AbstractActionController {
     private $repository;
     private $employeeFileRepo;
 
-    const UPLOAD_DIR = "/var/www/html/neo/neo-hris-metronic/public/uploads";
+    const UPLOAD_DIR = "/var/www/html/neo-hris/public/uploads";
 
     public function __construct(AdapterInterface $adapter) {
         $this->adapter = $adapter;
