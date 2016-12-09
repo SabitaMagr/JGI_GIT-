@@ -27,7 +27,7 @@ angular.module('hris', [])
                         'serviceEventTypeId': serviceEventTypeId
                     }
                 }).then(function (success) {
-                    console.log(success.data);
+                    console.log(success);
                     $scope.initializekendoGrid(success.data);
                 }, function (failure) {
                     console.log(failure);
