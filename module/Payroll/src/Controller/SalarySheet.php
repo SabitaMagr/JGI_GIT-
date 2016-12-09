@@ -4,6 +4,7 @@ namespace Payroll\Controller;
 
 use Application\Helper\Helper;
 use Payroll\Model\SalarySheet as SalarySheetModel;
+use Payroll\Model\SalarySheetDetail as SalarySheetDetailModel;
 use Payroll\Repository\SalarySheetDetailRepo;
 use Payroll\Repository\SalarySheetRepo;
 
@@ -26,14 +27,23 @@ class SalarySheet {
         $salarySheetModal->createdDt = Helper::getcurrentExpressionDate();
         $salarySheetModal->status = 'E';
 
-        print "<pre>";
-        print $this->salarySheetRepo->add($salarySheetModal);
-        exit;
-        return [SalarySheetModel::SHEET_NO => $salarySheetModal->sheetNo];
+        if ($this->salarySheetRepo->add($salarySheetModal)) {
+            return [SalarySheetModel::SHEET_NO => $salarySheetModal->sheetNo];
+        } else {
+            return null;
+        }
     }
 
-    public function addSalarySheetDetail() {
-        
+    public function addSalarySheetDetail(int $monthId, array $salarySheetDetails, int $salarySheet) {
+        foreach ($salarySheetDetails as $empId => $salarySheetDetail) {
+            $salarySheetDetailModel = new SalarySheetDetailModel($this->adapter);
+            $salarySheetDetailModel->employeeId = $empId;
+            $salarySheetDetailModel->monthId = $monthId;
+
+            print "<pre>";
+            print_r($salarySheetDetail);
+            exit;
+        }
     }
 
     public function viewSalarySheet() {
