@@ -505,7 +505,7 @@ class HrEmployeesForm
     /**
      * @Annotation\Type("Zend\Form\Element\Text")
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
-     * @Annotation\Options({"label":"Citizenship Issue Place"})
+     * @Annotation\Options({"label":"CitizenshipIssue Place"})
      * @Annotation\Attributes({ "id":"idCitizenshipIssuePlace", "class":"form-control" })
      */
     public $idCitizenshipIssuePlace;
