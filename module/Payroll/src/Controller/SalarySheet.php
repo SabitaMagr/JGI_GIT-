@@ -3,8 +3,10 @@
 namespace Payroll\Controller;
 
 use Application\Helper\Helper;
+use Payroll\Model\Rules;
 use Payroll\Model\SalarySheet as SalarySheetModel;
 use Payroll\Model\SalarySheetDetail as SalarySheetDetailModel;
+use Payroll\Repository\RulesRepository;
 use Payroll\Repository\SalarySheetDetailRepo;
 use Payroll\Repository\SalarySheetRepo;
 
@@ -39,18 +41,44 @@ class SalarySheet {
             $salarySheetDetailModel = new SalarySheetDetailModel($this->adapter);
             $salarySheetDetailModel->employeeId = $empId;
             $salarySheetDetailModel->monthId = $monthId;
+            $salarySheetDetailModel->sheetNo = $salarySheet;
 
-            foreach ($salarySheetDetail['ruleValueKV'] as $ruleId => $ruleValue) {
-                $salarySheetDetailModel->payId = $ruleId;
-                $salarySheetDetailModel->val = $ruleValue;
+            $payRepo = new RulesRepository($this->adapter);
+            $payListRaw = $payRepo->fetchAll();
+
+            $payList = Helper::extractDbData($payListRaw);
+
+            foreach ($payList as $pay) {
+                $payId = $pay[Rules::PAY_ID];
+                $salarySheetDetailModel->payId = $payId;
+                $salarySheetDetailModel->val = isset($salarySheetDetail['ruleValueKV'][$payId]) ? $salarySheetDetail['ruleValueKV'][$payId] : 0;
                 $salarySheetDetailModel->totalVal = $salarySheetDetail['calculatedValue'];
                 $this->salarySheetDetailRepo->add($salarySheetDetailModel);
             }
         }
     }
 
-    public function viewSalarySheet() {
-        
+    public function viewSalarySheet(int $monthId, array $employeeList) {
+        $results = [];
+        foreach ($employeeList as $empId => $empDetail) {
+            $filter = [];
+            $filter[SalarySheetDetailModel::EMPLOYEE_ID] = $empId;
+            $filter[SalarySheetDetailModel::MONTH_ID] = $monthId;
+            $test = $this->salarySheetDetailRepo->fetchById($filter);
+
+            print "<pre>";
+            print_r(Helper::extractDbData($test));
+            exit;
+        }
+    }
+
+    public function checkIfGenerated(int $monthId) {
+        $salarySheets = $this->salarySheetRepo->fetchByIds([SalarySheetModel::MONTH_ID => $monthId]);
+        if ($salarySheets->count() > 0) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
 }

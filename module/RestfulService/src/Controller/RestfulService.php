@@ -913,20 +913,26 @@ class RestfulService extends AbstractRestfulController {
         $monthId = $data['month'];
 
         $results = [];
-        $employeeList = EntityHelper::getTableKVList($this->adapter, "HR_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => 'E'], ' ');
-        foreach ($employeeList as $key => $employee) {
-            $generateMonthlySheet = new PayrollGenerator($this->adapter);
-            $result = $generateMonthlySheet->generate($key);
-            $results[$key] = $result;
+        $salarySheetController = new SalarySheetController($this->adapter);
+
+        if ($salarySheetController->checkIfGenerated($monthId)) {
+            
+        } else {
+            $employeeList = EntityHelper::getTableKVList($this->adapter, "HR_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => 'E'], ' ');
+            foreach ($employeeList as $key => $employee) {
+                $generateMonthlySheet = new PayrollGenerator($this->adapter);
+                $result = $generateMonthlySheet->generate($key);
+                $results[$key] = $result;
+            }
+
+            $addSalarySheetRes = $salarySheetController->addSalarySheet($monthId);
+            if ($addSalarySheetRes != null) {
+                $salarySheetController->addSalarySheetDetail($monthId, $results, $addSalarySheetRes[\Payroll\Model\SalarySheet::SHEET_NO]);
+            } else {
+//            handle failure here
+            }
         }
 
-        $salarySheetController = new SalarySheetController($this->adapter);
-        $addSalarySheetRes = $salarySheetController->addSalarySheet($monthId);
-        if ($addSalarySheetRes != null) {
-            $salarySheetController->addSalarySheetDetail($monthId, $results, $addSalarySheetRes[\Payroll\Model\SalarySheet::SHEET_NO]);
-        } else {
-//            handle failure here
-        }
 
 //        if ($branchId == -1) {
 //            if ($employeeId == -1) {
