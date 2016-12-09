@@ -20,7 +20,7 @@ class SalarySheet {
         $this->salarySheetDetailRepo = new SalarySheetDetailRepo($this->adapter);
     }
 
-    public function addSalarySheet(int $monthId, array $salarySheetDetail) {
+    public function addSalarySheet(int $monthId) {
         $salarySheetModal = new SalarySheetModel();
         $salarySheetModal->sheetNo = ((int) Helper::getMaxId($this->adapter, SalarySheetModel::TABLE_NAME, SalarySheetModel::SHEET_NO)) + 1;
         $salarySheetModal->monthId = $monthId;
@@ -40,9 +40,12 @@ class SalarySheet {
             $salarySheetDetailModel->employeeId = $empId;
             $salarySheetDetailModel->monthId = $monthId;
 
-            print "<pre>";
-            print_r($salarySheetDetail);
-            exit;
+            foreach ($salarySheetDetail['ruleValueKV'] as $ruleId => $ruleValue) {
+                $salarySheetDetailModel->payId = $ruleId;
+                $salarySheetDetailModel->val = $ruleValue;
+                $salarySheetDetailModel->totalVal = $salarySheetDetail['calculatedValue'];
+                $this->salarySheetDetailRepo->add($salarySheetDetailModel);
+            }
         }
     }
 
