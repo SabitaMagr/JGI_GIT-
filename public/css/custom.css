@@ -368,6 +368,8 @@ form.k-filter-menu .k-widget, form.k-filter-menu .k-textbox
     height:22px !important;
     border-radius:0px !important;
     padding-top:2px !important;
+    font-size: 11px;
+ 
 }
 
 #viewEmployees
@@ -410,13 +412,14 @@ form.k-filter-menu .k-widget, form.k-filter-menu .k-textbox
     padding-right:15px;
     /*width: 50%;*/
     width:42%;
-}s
+}
 .cgap-2
 {
     width:58%;
     padding-left: 0;
     padding-right:15px;
 }
+
 .cgap-3
 {
     width:54%;
@@ -464,6 +467,11 @@ form.k-filter-menu .k-widget, form.k-filter-menu .k-textbox
 .tabbable-custom > .nav-tabs > li.active
 {
     border-top: 3px solid #2f9e1e;	
+}
+.tabbable-custom > .nav-tabs > li.active a i
+{
+    color:#2f9e1e;;
+    
 }
 #qualificationTbl tr td label
 {
@@ -600,6 +608,43 @@ form.k-filter-menu .k-widget, form.k-filter-menu .k-textbox
     padding-top: 9px !important;   
 
 }
+.customtbl tr td
+{
+ padding-top:5px !important;
+ padding-bottom: 5px !important;
+    
+}
+.rankwidth{
+    width:13%;
+}
+.customtbl tr td input{
+    font-size: 11px !important;
+    color:#555;
+}
+.btn-edit,.btn-delete
+{
+   font-size:15px; 
+   text-decoration:none;
+}
+.btn-edit
+{
+ color:#63ab6a;   
+ padding-right: 5px;
+}
+.btn-delete
+{
+ color:gray;     
+}
+
+.btn-edit,.btn-delete {
+    background-color: #eee;
+    border: 1px solid #ddd;
+    padding-left: 5px;
+    padding-right: 5px;
+}
+
+
+
 
 /* Large desktops and laptops */
 @media (min-width: 1200px) {
@@ -713,10 +758,20 @@ form.k-filter-menu .k-widget, form.k-filter-menu .k-textbox
         width:48% !important;
     }
     .post-btn
-    {margin-top: 0px;
-     margin-bottom: 0px;}
+    {
+        margin-top: 0px;
+     margin-bottom: 0px;
+  
 }
 
+.tabbable-custom > .nav-tabs > li{
+    width:100%;
+}
+.tabbable-custom > .nav-tabs > li.active
+{
+    border-bottom: solid #eee 1px;
+}
+}
 
 
 
