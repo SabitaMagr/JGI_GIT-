@@ -13,7 +13,8 @@
         var $fromDesignationId = $('#fromDesignationId');
         var $fromPositionId = $('#fromPositionId');
 
-
+        var $serviceEventTypeId = $("#serviceEventTypeId");
+        console.log($serviceEventTypeId.val());
 
         var disableEmployeeInfo = function () {
             $fromBranchId.prop("disabled", true);
@@ -41,11 +42,28 @@
             }).then(function (success) {
                 console.log("pullEmployeeById response", success);
                 updateView(success.data);
+                var employeeDtl = success.data;
+                if (employeeDtl.APP_BRANCH_ID == null && employeeDtl.APP_DEPARTMENT_ID == null && employeeDtl.APP_DESIGNATION_ID == null && employeeDtl.APP_POSITION_ID == null && employeeDtl.APP_SERVICE_EVENT_TYPE_ID == null && employeeDtl.APP_SERVICE_TYPE_ID == null) {
+                    var selectobject = document.getElementById("serviceEventTypeId")
+                    var app = false;    
+                    for (var i = 0; i < selectobject.length; i++) {
+                            if (selectobject.options[i].value != 2)
+                               app = true;
+                    }
+                    if(app){
+                        $serviceEventTypeId.append('<option value="2">Appoinment</option>');
+                    }
+                } else {
+                    var selectobject = document.getElementById("serviceEventTypeId")
+                    for (var i = 0; i < selectobject.length; i++) {
+                        if (selectobject.options[i].value == 2)
+                            selectobject.remove(i);
+                    }
+                }
             }, function (failure) {
                 console.log("pullEmployeeById failure", failure);
             });
         };
-
 
         $employeeId.on("change", function () {
             var employeeId = $(this).val();
