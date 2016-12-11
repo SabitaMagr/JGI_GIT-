@@ -480,11 +480,11 @@ return [
         'jobHistory' => [
 
             [
-                'label' => 'Job History',
+                'label' => 'Service Status Update',
                 'route' => 'jobHistory',
             ],
             [
-                'label' => 'Job History',
+                'label' => 'Service Status Update',
                 'route' => 'jobHistory',
                 'pages' => [
                     [
