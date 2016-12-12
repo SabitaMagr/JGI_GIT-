@@ -28,6 +28,7 @@ angular.module('hris', [])
             $scope.branches = document.branches;
             $scope.fiscalYears = document.fiscalYears;
             $scope.months = [];
+            $scope.payRollGeneratedMonths = [];
 
             $scope.employeeId;
             $scope.branchId;
@@ -46,22 +47,27 @@ angular.module('hris', [])
                     branch: ((typeof $scope.branchId === 'undefined') || ($scope.branchId === null)) ? -1 : $scope.branchId,
                     employee: (($scope.employeeId === null) || (typeof $scope.employeeId === 'undefined')) ? -1 : $scope.employeeId,
                 });
+                $scope.pullMonthlySheet({
+                    month: $scope.monthId,
+                    branch: ((typeof $scope.branchId === 'undefined') || ($scope.branchId === null)) ? -1 : $scope.branchId,
+                    employee: (($scope.employeeId === null) || (typeof $scope.employeeId === 'undefined')) ? -1 : $scope.employeeId,
+                });
+            });
+
+            $scope.pullMonthlySheet = function (reqParams) {
                 window.app.pullDataById(document.url, {
                     action: 'generataMonthlySheet',
-                    data: {
-                        month: $scope.monthId,
-                        branch: ((typeof $scope.branchId === 'undefined') || ($scope.branchId === null)) ? -1 : $scope.branchId,
-                        employee: (($scope.employeeId === null) || (typeof $scope.employeeId === 'undefined')) ? -1 : $scope.employeeId,
-                    }
+                    data: reqParams
                 }).then(function (success) {
                     $scope.$apply(function () {
-                        console.log("generateMonthlySheet",success);
+                        console.log("generateMonthlySheet", success);
                         $scope.employeeRuleValues = success.data;
                     });
                 }, function (failure) {
                     console.log(failure);
                 });
-            });
+
+            };
 
             $scope.changeBranch = function () {
                 window.app.pullDataById(document.url, {
@@ -109,6 +115,30 @@ angular.module('hris', [])
                     });
                 }
 
+            };
+
+            $scope.fetchPayRollGeneratedMonths = function () {
+                window.app.pullDataById(document.url, {
+                    action: 'pullPayRollGeneratedMonths',
+                    data: {
+                    }
+                }).then(function (success) {
+                    $scope.$apply(function () {
+                        console.log("pullPayRollGeneratedMonths res", success.data);
+                        $scope.payRollGeneratedMonths = success.data;
+                    });
+                }, function (failure) {
+                    console.log("pullPayRollGeneratedMonths fail", failure);
+                });
+            };
+            $scope.fetchPayRollGeneratedMonths();
+
+            $scope.viewMonthlySheet = function (monthId) {
+                $scope.pullMonthlySheet({
+                    month: monthId,
+                    branch: ((typeof $scope.branchId === 'undefined') || ($scope.branchId === null)) ? -1 : $scope.branchId,
+                    employee: (($scope.employeeId === null) || (typeof $scope.employeeId === 'undefined')) ? -1 : $scope.employeeId,
+                });
             };
 
         });

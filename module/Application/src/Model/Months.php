@@ -2,7 +2,7 @@
 
 namespace Application\Model;
 
-class Months {
+class Months extends Model {
 
     const TABLE_NAME = "HR_MONTH_CODE";
     const FISCAL_YEAR_ID = "FISCAL_YEAR_ID";

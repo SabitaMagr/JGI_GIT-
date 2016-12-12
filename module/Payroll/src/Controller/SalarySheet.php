@@ -64,12 +64,21 @@ class SalarySheet {
             $filter = [];
             $filter[SalarySheetDetailModel::EMPLOYEE_ID] = $empId;
             $filter[SalarySheetDetailModel::MONTH_ID] = $monthId;
-            $test = $this->salarySheetDetailRepo->fetchById($filter);
+            $payDetails = Helper::extractDbData($this->salarySheetDetailRepo->fetchById($filter));
 
-            print "<pre>";
-            print_r(Helper::extractDbData($test));
-            exit;
+            $payDet = [];
+            $payDet['ruleValueKV'] = [];
+            foreach ($payDetails as $payDetail) {
+                $payDet['calculatedValue'] = $payDetail[SalarySheetDetailModel::TOTAL_VAL];
+                $payDet['ruleValueKV'][$payDetail[SalarySheetDetailModel::PAY_ID]] = $payDetail[SalarySheetDetailModel::VAL];
+            }
+
+            $results[$empId] = $payDet;
         }
+//        print "<pre>";
+//        print_r($results);
+//        exit;
+        return $results;
     }
 
     public function checkIfGenerated(int $monthId) {
