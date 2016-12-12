@@ -82,6 +82,7 @@ class ServiceRepository implements RepositoryInterface {
             'H.EMPLOYEE_ID='.$employeeId.
             $startDate.$endDate
         ]);
+        $select->order("H.JOB_HISTORY_ID DESC");
 
         $statement = $sql->prepareStatementForSqlObject($select);
         //return $statement->getSql();

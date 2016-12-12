@@ -101,6 +101,7 @@ class JobHistoryRepository implements RepositoryInterface
                 "H.SERVICE_EVENT_TYPE_ID=".$serviceEventTypeId
             ]);
         }    
+        $select->order("H.JOB_HISTORY_ID DESC");
         $statement = $sql->prepareStatementForSqlObject($select);
         //return $statement->getSql();
         $result = $statement->execute();

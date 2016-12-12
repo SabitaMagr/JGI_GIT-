@@ -27,7 +27,7 @@ class DesignationRepository implements RepositoryInterface
         $select = $sql->select();
         
         $select->from(["D1" => Designation::TABLE_NAME])
-                ->join(["D2" => Designation::TABLE_NAME],'D1.PARENT_DESIGNATION=D2.DESIGNATION_ID',["PARENT_DESIGNATION_TITLE"=>"DESIGNATION_TITLE"]);
+                ->join(["D2" => Designation::TABLE_NAME],'D1.PARENT_DESIGNATION=D2.DESIGNATION_ID',["PARENT_DESIGNATION_TITLE"=>"DESIGNATION_TITLE"],"left");
         $select->where(["D1.STATUS= 'E'"]);
         
         $statement = $sql->prepareStatementForSqlObject($select);

@@ -84,12 +84,12 @@ class JobHistoryController extends AbstractActionController {
                         $this, [
                     'form' => $this->form,
                     'messages' => $this->flashmessenger()->getMessages(),
-                    'employees' => EntityHelper1::getTableKVList($this->adapter, "HR_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => "E"]),
-                    'departments' => EntityHelper1::getTableKVList($this->adapter, "HR_DEPARTMENTS", "DEPARTMENT_ID", ["DEPARTMENT_NAME"], ["STATUS" => 'E']),
-                    'designations' => EntityHelper1::getTableKVList($this->adapter, "HR_DESIGNATIONS", "DESIGNATION_ID", ["DESIGNATION_TITLE"], ["STATUS" => 'E']),
-                    'branches' => EntityHelper1::getTableKVList($this->adapter, "HR_BRANCHES", "BRANCH_ID", ["BRANCH_NAME"], ["STATUS" => 'E']),
-                    'positions' => EntityHelper1::getTableKVList($this->adapter, "HR_POSITIONS", "POSITION_ID", ["POSITION_NAME"], ["STATUS" => 'E']),
-                    'serviceTypes' => EntityHelper1::getTableKVList($this->adapter, "HR_SERVICE_TYPES", "SERVICE_TYPE_ID", ["SERVICE_TYPE_NAME"], ["STATUS" => 'E']),
+                    'employees' => EntityHelper1::getTableKVList($this->adapter, "HR_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => "E"]," "),
+                    'departments' => EntityHelper1::getTableKVList($this->adapter, "HR_DEPARTMENTS", "DEPARTMENT_ID", ["DEPARTMENT_NAME"], ["STATUS" => 'E'],null,true),
+                    'designations' => EntityHelper1::getTableKVList($this->adapter, "HR_DESIGNATIONS", "DESIGNATION_ID", ["DESIGNATION_TITLE"], ["STATUS" => 'E'],null,true),
+                    'branches' => EntityHelper1::getTableKVList($this->adapter, "HR_BRANCHES", "BRANCH_ID", ["BRANCH_NAME"], ["STATUS" => 'E'],null,true),
+                    'positions' => EntityHelper1::getTableKVList($this->adapter, "HR_POSITIONS", "POSITION_ID", ["POSITION_NAME"], ["STATUS" => 'E'],null,true),
+                    'serviceTypes' => EntityHelper1::getTableKVList($this->adapter, "HR_SERVICE_TYPES", "SERVICE_TYPE_ID", ["SERVICE_TYPE_NAME"], ["STATUS" => 'E'],null,true),
                     'serviceEventTypes' => EntityHelper1::getTableKVList($this->adapter, "HR_SERVICE_EVENT_TYPES", "SERVICE_EVENT_TYPE_ID", ["SERVICE_EVENT_TYPE_NAME"], ["STATUS" => 'E'])
                         ]
         );
@@ -105,7 +105,21 @@ class JobHistoryController extends AbstractActionController {
 
         $jobHistory = new JobHistory();
         if (!$request->isPost()) {
-            $jobHistory->exchangeArrayFromDb($this->repository->fetchById($id));
+            $jobHistoryDetail = $this->repository->fetchById($id);
+            $employeeId = $jobHistoryDetail['EMPLOYEE_ID'];
+            
+            $getJobHistoryByEmployeeId = $this->repository->filter(null,null,$employeeId,-1);
+            $empJobHistoryList = [];
+            foreach($getJobHistoryByEmployeeId as $row){
+                array_push($empJobHistoryList, $row);
+            }
+            if(count($empJobHistoryList)>=1){
+                $latestJobHistoryId = $empJobHistoryList[0]['JOB_HISTORY_ID'];
+            }else{
+                $latestJobHistoryId=0;
+            }         
+            
+            $jobHistory->exchangeArrayFromDb($jobHistoryDetail);
             $this->form->bind($jobHistory);
         } else {
 
@@ -126,6 +140,7 @@ class JobHistoryController extends AbstractActionController {
                         $this, [
                     'form' => $this->form,
                     'id' => $id,
+                    'latestJobHistoryId'=>$latestJobHistoryId,
                     'empId' => EntityHelper1::getTableKVList($this->adapter, JobHistory::TABLE_NAME, JobHistory::JOB_HISTORY_ID, [JobHistory::EMPLOYEE_ID], [JobHistory::JOB_HISTORY_ID => $id], null)[$id],
                     'messages' => $this->flashmessenger()->getMessages(),
                     'employees' => EntityHelper1::getTableKVList($this->adapter, "HR_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => "E"]),

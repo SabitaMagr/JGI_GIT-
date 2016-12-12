@@ -49,7 +49,7 @@ print $this->form()->openTag($form);
 ?>
 <script>
     document.menu =<?php
-$menu = ["id" => "menuService"];
+$menu = ["id" => "menuServiceStatusUpdate"];
 echo json_encode($menu);
 ?>;
     document.jobHistoryId =<?= $id ?>;
@@ -154,16 +154,15 @@ echo json_encode($menu);
                             <?php print $this->formElement($toPositionId); ?>
                             <?php print $this->formElementErrors()->render($toPositionId, ['class' => 'help-block']); ?>
                         </div>
-
-
-
-
                     </div>
                 </div>
-                <div class="form-group">
-                    <?php print $this->formSubmit($submit); ?>
-                </div>
-
+                <?php if($latestJobHistoryId==$id){ ?>
+                    <div class="form-group">
+                        <?php print $this->formSubmit($submit); ?>
+                    </div>
+                <?php }else{ ?>
+                <div class="form-group" style="font-size:11px;">[note:You can only view this detail. If you wish to update, you need to go through latest service status of selected employee!!!!]</div>
+                <?php } ?>
             </div>
         </div>
     </div>
