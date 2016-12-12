@@ -3,9 +3,12 @@
 namespace Payroll\Repository;
 
 use Application\Model\Model;
+use Application\Model\Months;
 use Application\Repository\RepositoryInterface;
+use AttendanceManagement\Model\AttendanceDetail;
 use Payroll\Model\SalarySheet;
 use Zend\Db\Adapter\AdapterInterface;
+use Zend\Db\Sql\Sql;
 use Zend\Db\TableGateway\TableGateway;
 
 class SalarySheetRepo implements RepositoryInterface {
@@ -40,6 +43,23 @@ class SalarySheetRepo implements RepositoryInterface {
 
     public function fetchByIds(array $ids) {
         return $this->gateway->select($ids);
+    }
+
+    public function joinWithMonth($monthId = null) {
+        $sql = new Sql($this->adapter);
+        $select = $sql->select();
+        $select->columns([]);
+        $select->from(['S' => SalarySheet::TABLE_NAME])
+                ->join(['M' => Months::TABLE_NAME], 'S.' . SalarySheet::MONTH_ID . '=M.' . Months::MONTH_ID);
+        if ($monthId != null) {
+            $select->where([Months::MONTH_ID => $monthId]);
+        }
+        $select->where(["M." . Months::STATUS . " = " . "'E'"]);
+        $select->where(["S." . SalarySheet::STATUS . " = " . "'E'"]);
+
+        $statement = $sql->prepareStatementForSqlObject($select);
+        $result = $statement->execute();
+        return $result;
     }
 
 }

@@ -326,9 +326,15 @@
         return 100 * val;
     }
 
+    var registerForUniqueInput = function () {
+        app.checkUniqueConstraints("payCode", "Rules", document.ruleTableName, document.ruleTableUniqueColName1, document.ruleTablePKColName, rulesForm.payId);
+        app.checkUniqueConstraints("priorityIndex", "Rules", document.ruleTableName, document.ruleTableUniqueColName2, document.ruleTablePKColName, rulesForm.payId);
+    };
+
 
     $(document).ready(function () {
         FormWizard.init();
+        registerForUniqueInput();
         $('#Rules').validate({
             doNotHideMessage: !0,
             errorElement: "span",

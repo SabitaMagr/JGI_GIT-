@@ -18,6 +18,11 @@ echo json_encode($menu);
     document.systemRules =<?= json_encode($systemRules) ?>;
     document.positions =<?= json_encode($positions) ?>;
     document.ruleId =<?= json_encode($id) ?>;
+
+    document.ruleTableName = '<?= Payroll\Model\Rules::TABLE_NAME ?>';
+    document.ruleTableUniqueColName1 = '<?= Payroll\Model\Rules::PAY_CODE ?>';
+    document.ruleTableUniqueColName2 = '<?= Payroll\Model\Rules::PRIORITY_INDEX ?>';
+    document.ruleTablePKColName = '<?= Payroll\Model\Rules::PAY_ID ?>';
 </script>
 
 <?php if ($this->messages) { ?>
@@ -28,7 +33,7 @@ echo json_encode($menu);
 
 
 <div class="page-bar">
-<?= $this->navigation('Zend\Navigation\rules')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
+    <?= $this->navigation('Zend\Navigation\rules')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
 
 
@@ -107,6 +112,7 @@ echo json_encode($menu);
                                    name="payCode"
                                    id="payCode"
                                    class="form-control">
+                            <span class="errorMsg"></span>
                         </div>
 
                         <div class="form-group">
@@ -169,7 +175,9 @@ echo json_encode($menu);
                                            name="priorityIndex"
                                            id="priorityIndex"
                                            class="form-control"
-                                           value=""></div>
+                                           value="">
+                                    <span class="errorMsg"></span>
+                                </div>
                             </div>
                         </div>
                         <div class="form-group ">

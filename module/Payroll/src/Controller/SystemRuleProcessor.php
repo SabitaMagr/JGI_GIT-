@@ -11,21 +11,24 @@ class SystemRuleProcessor {
     private $employeeRepo;
     private $calculatedValue;
     private $ruleDetailList;
+    private $monthId;
 
-    public function __construct($adapter, $employeeId, $calculatedValue, $ruleDetailList) {
+    public function __construct($adapter, $employeeId, $calculatedValue, $ruleDetailList, int $monthId) {
         $this->adapter = $adapter;
         $this->employeeId = $employeeId;
         $this->employeeRepo = new EmployeeRepository($adapter);
         $this->calculatedValue = $calculatedValue;
         $this->ruleDetailList = $ruleDetailList;
+        $this->monthId = $monthId;
     }
 
     public function processSystemRule($systemRule) {
         $processedValue = "";
         switch ($systemRule) {
             case PayrollGenerator::SYSTEM_RULE[0]:
-                $currentMonth = date('m');
-                $processedValue = $currentMonth;
+//                $currentMonth = date('m');
+//                $processedValue = $currentMonth;
+                $processedValue = $this->monthId;
                 break;
             case PayrollGenerator::SYSTEM_RULE[1]:
                 $processedValue = $this->calculatedValue;
