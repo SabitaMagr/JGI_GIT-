@@ -1,5 +1,4 @@
 (function ($, app) {
-    'use strict';
     $(document).ready(function () {
         $('select').select2();
         app.addDatePicker(
@@ -99,7 +98,7 @@
             pullEmployeeDetail($employeeId.val());
         }
         var checkAppointmentOption = function (employeeDtl) {
-            if (employeeDtl.APP_BRANCH_ID == null && employeeDtl.APP_DEPARTMENT_ID == null && employeeDtl.APP_DESIGNATION_ID == null && employeeDtl.APP_POSITION_ID == null && employeeDtl.APP_SERVICE_EVENT_TYPE_ID == null && employeeDtl.APP_SERVICE_TYPE_ID == null) {
+            if (employeeDtl.APP_BRANCH_ID == null && employeeDtl.APP_DEPARTMENT_ID == null && employeeDtl.APP_DESIGNATION_ID == null && employeeDtl.APP_POSITION_ID == null && employeeDtl.APP_SERVICE_TYPE_ID == null) {
                 var selectobject = document.getElementById("serviceEventTypeId")
                 var app = false;
                 for (var i = 0; i < selectobject.length; i++) {
@@ -113,14 +112,24 @@
                 enableEmployeeInfo();
 
             } else {
-                if (employeeDtl.APP_SERVICE_EVENT_TYPE_ID != 2) {
+                var serviceEventTypeId = parseInt(employeeDtl.APP_SERVICE_EVENT_TYPE_ID);
+                if (serviceEventTypeId != 2) {
                     var selectobject = document.getElementById("serviceEventTypeId")
                     for (var i = 0; i < selectobject.length; i++) {
                         if (selectobject.options[i].value == 2)
                             selectobject.remove(i);
-                    }
-                }
-                disableEmployeeInfo();
+                    }                                
+                }                 
+                 if (editMode) {
+                     var formServiceEventTypeId = parseInt($serviceEventTypeId.val()); 
+                     if(formServiceEventTypeId==2){
+                        enableEmployeeInfo();
+                     }else{
+                        disableEmployeeInfo(); 
+                     }
+                 }else{
+                     disableEmployeeInfo();  
+                 }
             }
         }
         $fromServiceTypeId.on("change", function () {

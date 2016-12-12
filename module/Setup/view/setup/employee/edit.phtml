@@ -121,23 +121,26 @@ $serviceEventTypeId->setValueOptions($serviceEventTypes);
 
 $serviceTypeId = $formFour->get('appServiceTypeId');
 $serviceTypeId->setValueOptions($serviceTypes);
-$serviceTypeId->setAttributes(["disabled"=>"disabled"]);
 
 $positionId = $formFour->get('appPositionId');
 $positionId->setValueOptions($positions);
-$positionId->setAttributes(["disabled"=>"disabled"]);
 
 $designationId = $formFour->get('appDesignationId');
 $designationId->setValueOptions($designations);
-$designationId->setAttributes(["disabled"=>"disabled"]);
 
 $departmentId = $formFour->get('appDepartmentId');
 $departmentId->setValueOptions($departments);
-$departmentId->setAttributes(["disabled"=>"disabled"]);
 
 $branchId = $formFour->get('appBranchId');
 $branchId->setValueOptions($branches);
-$branchId->setAttributes(["disabled"=>"disabled"]);
+
+if($jobHistoryListNum>0){
+    $departmentId->setAttributes(["disabled"=>"disabled"]);
+    $branchId->setAttributes(["disabled"=>"disabled"]);
+    $designationId->setAttributes(["disabled"=>"disabled"]);
+    $positionId->setAttributes(["disabled"=>"disabled"]);
+    $serviceTypeId->setAttributes(["disabled"=>"disabled"]);
+}
 
 
 $formSix->setAttribute('id', 'form6');
@@ -263,6 +266,7 @@ echo json_encode($menu);
                                         <?php print $this->formElement($employeeCode); ?>
                                     </div>
                                     <?php print $this->formElementErrors()->render($employeeCode, ['class' => 'error']) ?>
+                                    <span class="errorMsg" style="font-size:11px; color:red;"></span>
                                 </div>
                             </div>   
                         </div>

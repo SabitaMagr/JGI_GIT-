@@ -78,8 +78,22 @@
                 reader.readAsDataURL(this.files[0]);
             }
         });
-
+        $('form').bind('submit', function () {
+            $(this).find(':disabled').removeAttr('disabled');
+        });
         
+//        var inputFieldId = "employeeCode";
+//        var formId = "form1";
+//        var tableName =  "HR_EMPLOYEES";
+//        var columnName = "EMPLOYEE_CODE";
+//        var checkColumnName = "EMPLOYEE_ID";
+//        var selfId = $("#employeeId").val();
+//        if (typeof(selfId) == "undefined"){
+//            selfId=0;
+//        }
+//        window.app.checkUniqueConstraints(inputFieldId,formId,tableName,columnName,checkColumnName,selfId);
+//
+//        
     });
 
 
