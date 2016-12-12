@@ -121,19 +121,23 @@ $serviceEventTypeId->setValueOptions($serviceEventTypes);
 
 $serviceTypeId = $formFour->get('appServiceTypeId');
 $serviceTypeId->setValueOptions($serviceTypes);
+$serviceTypeId->setAttributes(["disabled"=>"disabled"]);
 
 $positionId = $formFour->get('appPositionId');
 $positionId->setValueOptions($positions);
+$positionId->setAttributes(["disabled"=>"disabled"]);
 
 $designationId = $formFour->get('appDesignationId');
 $designationId->setValueOptions($designations);
+$designationId->setAttributes(["disabled"=>"disabled"]);
 
 $departmentId = $formFour->get('appDepartmentId');
 $departmentId->setValueOptions($departments);
+$departmentId->setAttributes(["disabled"=>"disabled"]);
 
 $branchId = $formFour->get('appBranchId');
 $branchId->setValueOptions($branches);
-
+$branchId->setAttributes(["disabled"=>"disabled"]);
 
 
 $formSix->setAttribute('id', 'form6');
@@ -1304,7 +1308,7 @@ echo json_encode($menu);
                                         <input type="text" class="form-passedYr form-control" value=""
                                                ng-model="qualificationForm.passedYr">
                                     </td>
-                                    <td width="1%" style="padding:15px; class="checkboxgap">
+                                    <td width="1%" style="padding:15px;" class="checkboxgap">
                                         <div class="md-checkbox">
                                             <input type="checkbox" id="{{qualificationForm.checkbox}}" class="md-check"
                                                    ng-model="qualificationForm.checked">
