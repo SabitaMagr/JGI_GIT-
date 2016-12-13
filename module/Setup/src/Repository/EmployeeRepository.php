@@ -16,16 +16,24 @@ use Setup\Model\ServiceType;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Sql\Select;
 use Zend\Db\Sql\Sql;
+use Setup\Model\Company;
 use Zend\Db\TableGateway\TableGateway;
+use Setup\Model\Gender;
 
 class EmployeeRepository implements RepositoryInterface {
 
     private $gateway;
     private $adapter;
+    private $vdcGateway;
+    private $districtGateway;
+    private $zoneGateway;
 
     public function __construct(AdapterInterface $adapter) {
         $this->adapter = $adapter;
         $this->gateway = new TableGateway('HR_EMPLOYEES', $adapter);
+        $this->vdcGateway = new TableGateway('HR_VDC_MUNICIPALITIES', $adapter);
+        $this->districtGateway = new TableGateway('HR_DISTRICTS', $adapter);
+        $this->zoneGateway = new TableGateway('HR_ZONES', $adapter);
     }
 
     public function fetchAll() {
@@ -57,10 +65,45 @@ class EmployeeRepository implements RepositoryInterface {
                         'idPassportExpiry',
                         'joinDate'
                     ]), false);
-
             $select->where(['EMPLOYEE_ID' => $id]);
         });
         return $rowset->current();
+    }
+
+    public function getById($id) {
+        $sql = new Sql($this->adapter);
+        $select = $sql->select();
+        $select->from(['E'=>HrEmployees::TABLE_NAME]);
+        $select->columns(Helper::convertColumnDateFormat($this->adapter, new HrEmployees(), [
+                        'birthDate',
+                        'famSpouseBirthDate',
+                        'famSpouseWeddingAnniversary',
+                        'idDrivingLicenseExpiry',
+                        'idCitizenshipIssueDate',
+                        'idPassportExpiry',
+                        'joinDate'
+                    ],NULL,'E'), false);
+        
+        $select->join(['B' => Branch::TABLE_NAME], "E." . HrEmployees::BRANCH_ID . "=B." . Branch::BRANCH_ID, ['BRANCH_NAME'], 'left')
+                ->join(['C' => Company::TABLE_NAME], "E." . HrEmployees::COMPANY_ID . "=C." . Company::COMPANY_ID, ['COMPANY_NAME'], 'left')
+                ->join(['G' => Gender::TABLE_NAME], "E." . HrEmployees::GENDER_ID . "=G." . Gender::GENDER_ID, ['GENDER_NAME'], 'left')
+                ->join(['BG' => "HR_BLOOD_GROUPS"], "E." . HrEmployees::BLOOD_GROUP_ID . "=BG.BLOOD_GROUP_ID", ['BLOOD_GROUP_CODE'], 'left')
+                ->join(['RG' => "HR_RELIGIONS"], "E." . HrEmployees::RELIGION_ID . "=RG.RELIGION_ID", ['RELIGION_NAME'], 'left')
+                ->join(['CN' => "HR_COUNTRIES"], "E." . HrEmployees::COUNTRY_ID . "=CN.COUNTRY_ID", ['COUNTRY_NAME'], 'left')
+//                ->join(['Z' => "HR_ZONES"], "E." . HrEmployees::ZON . "=Z.ZONE_ID", ['ZONE_NAME'], 'left')
+//                ->join(['D' => "HR_DISTRICTS"], "E." . HrEmployees::DISTRICT_ID . "=D.DISTRICT_ID", ['DISTRICT_NAME'], 'left')
+                ->join(['VM' => "HR_VDC_MUNICIPALITIES"], "E." . HrEmployees::ADDR_PERM_VDC_MUNICIPALITY_ID . "=VM.VDC_MUNICIPALITY_ID", ['VDC_MUNICIPALITY_NAME'], 'left')
+                ->join(['VM1' => "HR_VDC_MUNICIPALITIES"], "E." . HrEmployees::ADDR_TEMP_VDC_MUNICIPALITY_ID . "=VM1.VDC_MUNICIPALITY_ID", ['VDC_MUNICIPALITY_NAME_TEMP'=>'VDC_MUNICIPALITY_NAME'], 'left')
+                ->join(['D1' => Department::TABLE_NAME], "E." . HrEmployees::APP_DEPARTMENT_ID . "=D1." . Department::DEPARTMENT_ID, ['DEPARTMENT_NAME'], 'left')
+                ->join(['DES1' => Designation::TABLE_NAME], "E." . HrEmployees::APP_DESIGNATION_ID . "=DES1." . Designation::DESIGNATION_ID, ['DESIGNATION_TITLE'], 'left')
+                ->join(['P1' => Position::TABLE_NAME], "E." . HrEmployees::APP_POSITION_ID . "=P1." . Position::POSITION_ID, ['POSITION_NAME'], 'left')
+                ->join(['S1' => ServiceType::TABLE_NAME], "E." . HrEmployees::APP_SERVICE_TYPE_ID . "=S1." . ServiceType::SERVICE_TYPE_ID, ['SERVICE_TYPE_NAME'], 'left')
+                ->join(['SE1' => ServiceEventType::TABLE_NAME], "E." . HrEmployees::APP_SERVICE_EVENT_TYPE_ID . "=SE1." . ServiceEventType::SERVICE_EVENT_TYPE_ID, ['SERVICE_EVENT_TYPE_NAME'], 'left');
+        $select->where(["E." . HrEmployees::EMPLOYEE_ID . "=$id"]);
+        $statement = $sql->prepareStatementForSqlObject($select);
+        //print_r($statement->getSql()); die();
+        $result = $statement->execute();
+        return $result->current();
     }
 
     public function fetchForProfileById($id = null) {
@@ -217,6 +260,22 @@ class EmployeeRepository implements RepositoryInterface {
             }
         }
         return $employeeList;
+    }
+    
+    
+    public function getVdcMunicipalityDtl($id){
+        $result = $this->vdcGateway->select(['VDC_MUNICIPALITY_ID'=>$id]);
+        return $result->current();
+    }
+    
+    public function getDistrictDtl($id){
+        $result = $this->districtGateway->select(['DISTRICT_ID'=>$id]);
+        return $result->current();
+    }
+    
+    public function getZoneDtl($id){
+        $result = $this->zoneGateway->select(['ZONE_ID'=>$id]);
+        return $result->current();
     }
 
 }

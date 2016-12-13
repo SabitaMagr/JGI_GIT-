@@ -36,7 +36,7 @@ class Helper {
         return $row["MAX_{$columnName}"];
     }
 
-    public static function convertColumnDateFormat(AdapterInterface $adapter, Model $table, $attrs = null, $timeAttrs = null) {
+    public static function convertColumnDateFormat(AdapterInterface $adapter, Model $table, $attrs = null, $timeAttrs = null, $shortForm = null) {
         $format = 'DD-MON-YYYY HH24:MI:SS';
 
         $temp = get_object_vars($table);
@@ -66,34 +66,38 @@ class Helper {
 
         if ($attrs != null) {
             foreach ($attrs as $attr) {
-                array_push($tempCols, Helper::appendDateFormat($adapter, $table->mappings[$attr], self::ORACLE_DATE_FORMAT));
+//                array_push($tempCols, Helper::appendDateFormat($adapter, $table->mappings[$attr], self::ORACLE_DATE_FORMAT));
+                array_push($tempCols, Helper::appendDateFormat($adapter, $table->mappings[$attr], self::ORACLE_DATE_FORMAT,$shortForm));
             }
         }
 
         if ($timeAttrs != null) {
             foreach ($timeAttrs as $attr) {
-                array_push($tempCols, Helper::appendDateFormat($adapter, $table->mappings[$attr], self::ORACLE_TIME_FORMAT));
+                array_push($tempCols, Helper::appendDateFormat($adapter, $table->mappings[$attr], self::ORACLE_TIME_FORMAT,$shortForm));
             }
         }
 
         if ($timeAttrs != null) {
             foreach ($timeAttrs as $attr) {
-                array_push($tempCols, Helper::appendDateFormat($adapter, $table->mappings[$attr], self::ORACLE_TIME_FORMAT));
+                array_push($tempCols, Helper::appendDateFormat($adapter, $table->mappings[$attr], self::ORACLE_TIME_FORMAT,$shortForm));
             }
         }
 
         foreach ($attributes as $attribute) {
-            array_push($tempCols, $table->mappings[$attribute]);
+            array_push($tempCols, Helper::columnExpression( $table->mappings[$attribute],$shortForm,null));
         }
         return $tempCols;
     }
 
-    public static function appendDateFormat($adapter, $columnName, $format) {
-
+    public static function appendDateFormat($adapter, $columnName, $format, $shortForm = null) {
+        $pre = "";
+        if ($shortForm != null && sizeof($shortForm) != 0) {
+            $pre = $shortForm . ".";
+        }
         $tempStr = "";
         switch (strtolower($adapter->getPlatform()->getName())) {
             case strtolower("Oracle"):
-                $tempStr = "TO_CHAR({$columnName}, '{$format}') AS {$columnName}";
+                $tempStr = "TO_CHAR({$pre}{$columnName}, '{$format}') AS {$columnName}";
                 break;
 
             case strtolower("Mysql"):
