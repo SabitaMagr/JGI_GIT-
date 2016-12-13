@@ -73,11 +73,11 @@ echo json_encode($menu);
             #: (EMAIL == null) ? '-' : EMAIL #
         </td>
         <td>
-            <a class="btn  btn-icon-only btn-success"
+            <a class="btn-edit"
                href="<?= $this->url("branch", ["action" => "edit"]) ?>/#:BRANCH_ID #" style="height:17px;">
                 <i class="fa fa-edit"></i>
             </a>
-            <a class="btn btn-icon-only btn-danger confirmation"
+            <a class="confirmation btn-delete"
                href="<?= $this->url("branch", ["action" => "delete"]); ?>/#:BRANCH_ID #" id="bs_#:BRANCH_ID #" style="height:17px;"> 
                 <i class="fa fa-trash-o"></i></a>
             </a>

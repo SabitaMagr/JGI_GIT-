@@ -9,27 +9,38 @@
     height: 320px;
     background-color: whitesmoke;
     z-index: 1000;
+    
+    box-shadow:2px 6px 9px #999;
+    -moz-box-shadow:2px 6px 9px #999;
+    o-box-shadow:2px 6px 9px #999;
+    -webkit-box-shadow:2px 6px 9px #999;
+    background-color:#eee;
 }
 
 .profile-image{
     display: inline-block;
     text-align: center;
-    max-width: 61%;
-    margin-left: 20%;
+   margin-left: 28%;
+    max-width: 38%;
 }
 
 .profile-body{
     padding:10px;
+    background-color: #475059;
+    color:#fff;
 }
 
 .profile-header{
-    padding-top: 0.1em;
+    padding-top:3px;
     padding-left: 10px;
     padding-right: 10px;
-    height: 1.6em;
-    background-color: wheat;
+    height: 23px;
+    background-color:rgba(0,0,0,0.8);
+    color:#fff;
 }
-
+.page-footer{
+    height:auto !important;
+}
 #myWindow {
     width: 400px;
     overflow-x: scroll;
@@ -341,7 +352,11 @@ form.k-filter-menu .k-widget, form.k-filter-menu .k-textbox
     position: absolute;
     text-decoration: none;
     top:-10px;
-    transform: rotate(180deg) !important;
+    transform: rotate(180deg) !important; 
+    -moz-transform: rotate(180deg) !important;
+      -o-transform: rotate(180deg) !important;
+       -webkit-transform: rotate(180deg) !important;
+    
     width: 20px;	
 }
 .btn.green:not(.btn-outline),.green
@@ -363,11 +378,15 @@ form.k-filter-menu .k-widget, form.k-filter-menu .k-textbox
 {
     color:#2f9e1e;	
 }
+.btn.btn-default.form-control.i-search {
+    margin-top: 3px;
+    padding: 3px;
+}
 .form-control,.select2-selection--single 
 {
     height:22px !important;
     border-radius:0px !important;
-    padding-top:2px !important;
+    padding-top:2px;
     font-size: 11px;
  
 }
@@ -385,8 +404,8 @@ form.k-filter-menu .k-widget, form.k-filter-menu .k-textbox
 .rightalign{
     text-align: right !important;
     padding-right: 5 !important;
-    /*width:50% !important;*/
-    width:58% !important;
+    width:49% !important;
+/*    width:58% !important;*/
 }
 .rightalign-2
 {
@@ -410,8 +429,8 @@ form.k-filter-menu .k-widget, form.k-filter-menu .k-textbox
 .cgap {
     padding-left: 0;
     padding-right:15px;
-    /*width: 50%;*/
-    width:42%;
+width: 51% !important;
+/*    width:42%;*/
 }
 .cgap-2
 {
@@ -456,6 +475,9 @@ form.k-filter-menu .k-widget, form.k-filter-menu .k-textbox
 .btn.btn-link{
     border:solid #ddd 1px;
     box-shadow:0px 3px 3px 1px #ddd;
+        -moz-box-shadow:0px 3px 3px 1px #ddd;
+            -o-box-shadow:0px 3px 3px 1px #ddd;
+                -webkit-box-shadow:0px 3px 3px 1px #ddd;
 }
 
 .post-btn
@@ -529,7 +551,7 @@ form.k-filter-menu .k-widget, form.k-filter-menu .k-textbox
 }
 
 .e-setup input{
-    color:#333f;
+    color:#333f !important;
 
 }
 .tabbable-custom ul li a
@@ -625,27 +647,102 @@ form.k-filter-menu .k-widget, form.k-filter-menu .k-textbox
 {
    font-size:15px; 
    text-decoration:none;
+   display: inline-block;
+       padding: 3px 5px;
+      
+ 
+ 
 }
 .btn-edit
 {
- color:#63ab6a;   
- padding-right: 5px;
+ color:#63ab6a; 
+ 
 }
 .btn-delete
 {
- color:gray;     
+ color:gray;   
+ margin-left:6px;
 }
+.btn-edit:hover,.btn-delete:hover
+{
+    background-color:#63ab6a;
+            -moz-transform: scale(1.1);
+  -webkit-transform: scale(1.1);
+  transform: scale(1.1);
+    -moz-transition: all 0.3s;
+  -webkit-transition: all 0.3s;
+  transition: all 0.3s;
+ 
 
+}
+.btn-edit:hover i,.btn-delete:hover i
+{
+       color: #fff;
+ 
+     
+}
 .btn-edit,.btn-delete {
     background-color: #eee;
     border: 1px solid #ddd;
-    padding-left: 5px;
-    padding-right: 5px;
+
 }
-
-
-
-
+.dropdown-menu.dropdown-menu-default > li{
+    border-bottom:solid #eee 1px;
+}
+.dropdown-menu.dropdown-menu-default a
+{
+    font-size: 12px !important;
+}
+.k-state-border-down span
+{
+    
+    transform:rotate(180deg);
+      -moz-transform:rotate(180deg);
+          -o-transform:rotate(180deg);
+              -webkit-transform:rotate(180deg);
+}
+.portlet > .portlet-title > .caption > i {
+    color: #999;
+    display: inline-block;
+    float: left;
+    font-size: 20px;
+    margin-right: 5px;
+    margin-top: 2px;
+}
+.company-form input
+{
+    padding-top:0px !important;
+}
+ .dropdown-select select 
+ {
+     height:22px !important;
+     padding-top:1px !important;
+     font-size: 11px !important;
+ }
+ .input-group.date{
+     width:100%;
+ }
+/* .academic,.program{
+     width:17%;
+ }
+ .university,.degree{
+     width:20%;
+ }
+ .rank
+ {
+     width:15%;
+ }
+ .rankvalue{
+     width:10%;
+ }
+ .passyr
+ {
+      
+ }
+ .checkbtn{
+     width:1%;
+ }*/
+ 
 /* Large desktops and laptops */
 @media (min-width: 1200px) {
 
