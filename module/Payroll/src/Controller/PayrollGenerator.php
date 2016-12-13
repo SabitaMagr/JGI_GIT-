@@ -31,9 +31,10 @@ class PayrollGenerator {
     private $flatValues;
     private $calculatedValue = 0;
     private $ruleDetailList = [];
+    private $monthId = 0;
 
     const VARIABLES = [
-        "BASIC_PER_MONTH",
+        "BASIC_SALARY",
         "NO_OF_DAYS_IN_CURRENT_MONTH",
         "NO_OF_DAYS_ABSENT",
         "NO_OF_DAYS_WORKED",
@@ -47,13 +48,14 @@ class PayrollGenerator {
         "SERVICE_TYPE"
     ];
     const SYSTEM_RULE = [
-        "MONTH",
-        "RESULT",
-        "YEARLY_VALUE"
+        "CUR_MTH_VAL",
+        "MTH_RESULT",
+        "YR_RESULT"
     ];
 
-    public function __construct($adapter) {
+    public function __construct($adapter, int $monthId) {
         $this->adapter = $adapter;
+        $this->monthId = $monthId;
         $this->flatValueDetRepo = new FlatValueDetailRepo($adapter);
         $this->monthlyValueDetRepo = new MonthlyValueDetailRepo($adapter);
         $this->payPositionRepo = new PayPositionRepo($adapter);
@@ -162,7 +164,7 @@ class PayrollGenerator {
 
     private function convertVariableToValue($rule, $variable) {
         if (strpos($rule, $variable) !== false) {
-            $variableProcessor = new VariableProcessor($this->adapter, $this->employeeId);
+            $variableProcessor = new VariableProcessor($this->adapter, $this->employeeId, $this->monthId);
 //            return str_replace($variable, $variableProcessor->processVariable($variable), $rule);
             $processedVariable = $variableProcessor->processVariable($variable);
             if (is_string($processedVariable)) {
@@ -177,7 +179,7 @@ class PayrollGenerator {
 
     private function convertSystemRuleToValue($rule, $variable) {
         if (strpos($rule, $variable) !== false) {
-            $systemRuleProcessor = new SystemRuleProcessor($this->adapter, $this->employeeId, $this->calculatedValue, $this->ruleDetailList);
+            $systemRuleProcessor = new SystemRuleProcessor($this->adapter, $this->employeeId, $this->calculatedValue, $this->ruleDetailList, $this->monthId);
 //            return str_replace($variable, $systemRuleProcessor->processSystemRule($variable), $rule);
             $processedSystemRule = $systemRuleProcessor->processSystemRule($variable);
             if (is_string($processedSystemRule)) {

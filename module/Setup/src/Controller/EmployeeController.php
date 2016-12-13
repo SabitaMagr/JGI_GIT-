@@ -31,6 +31,8 @@ use Setup\Model\Position;
 use Setup\Model\ServiceType;
 use Setup\Model\ServiceEventType;
 use Zend\Form\Element\Select;
+use Setup\Repository\JobHistoryRepository;
+use Setup\Model\JobHistory;
 
 class EmployeeController extends AbstractActionController {
 
@@ -38,6 +40,7 @@ class EmployeeController extends AbstractActionController {
     private $form;
     private $repository;
     private $employeeFileRepo;
+    private $jobHistoryRepo;
 
     const UPLOAD_DIR = "/var/www/html/neo-hris/public/uploads";
 
@@ -45,6 +48,7 @@ class EmployeeController extends AbstractActionController {
         $this->adapter = $adapter;
         $this->repository = new EmployeeRepository($adapter);
         $this->employeeFileRepo = new EmployeeFile($this->adapter);
+        $this->jobHistoryRepo = new JobHistoryRepository($this->adapter);
     }
 
     public function indexAction() {
@@ -198,12 +202,12 @@ class EmployeeController extends AbstractActionController {
             "companies" => EntityHelper::getTableKVList($this->adapter, EntityHelper::HR_COMPANY),
             "countries" => EntityHelper::getTableKVList($this->adapter, EntityHelper::HR_COUNTRIES),
             'filetypes' => EntityHelper::getTableKVList($this->adapter, EntityHelper::HR_FILE_TYPE),
-            'serviceTypes' => ApplicationHelper::getTableKVList($this->adapter, "HR_SERVICE_TYPES", "SERVICE_TYPE_ID", ["SERVICE_TYPE_NAME"], ["STATUS" => 'E']),
-            'positions' => ApplicationHelper::getTableKVList($this->adapter, "HR_POSITIONS", "POSITION_ID", ["POSITION_NAME"], ["STATUS" => 'E']),
-            'designations' => ApplicationHelper::getTableKVList($this->adapter, "HR_DESIGNATIONS", "DESIGNATION_ID", ["DESIGNATION_TITLE"], ["STATUS" => 'E']),
-            'departments' => ApplicationHelper::getTableKVList($this->adapter, "HR_DEPARTMENTS", "DEPARTMENT_ID", ["DEPARTMENT_NAME"], ["STATUS" => 'E']),
-            'branches' => ApplicationHelper::getTableKVList($this->adapter, "HR_BRANCHES", "BRANCH_ID", ["BRANCH_NAME"], ["STATUS" => 'E']),
-            'serviceEventTypes' => ApplicationHelper::getTableKVList($this->adapter, "HR_SERVICE_EVENT_TYPES", "SERVICE_EVENT_TYPE_ID", ["SERVICE_EVENT_TYPE_NAME"], ["STATUS" => 'E']),
+            'serviceTypes' => ApplicationHelper::getTableKVList($this->adapter, "HR_SERVICE_TYPES", "SERVICE_TYPE_ID", ["SERVICE_TYPE_NAME"], ["STATUS" => 'E'], null, true),
+            'positions' => ApplicationHelper::getTableKVList($this->adapter, "HR_POSITIONS", "POSITION_ID", ["POSITION_NAME"], ["STATUS" => 'E'], null, true),
+            'designations' => ApplicationHelper::getTableKVList($this->adapter, "HR_DESIGNATIONS", "DESIGNATION_ID", ["DESIGNATION_TITLE"], ["STATUS" => 'E'], null, true),
+            'departments' => ApplicationHelper::getTableKVList($this->adapter, "HR_DEPARTMENTS", "DEPARTMENT_ID", ["DEPARTMENT_NAME"], ["STATUS" => 'E'], null, true),
+            'branches' => ApplicationHelper::getTableKVList($this->adapter, "HR_BRANCHES", "BRANCH_ID", ["BRANCH_NAME"], ["STATUS" => 'E'], null, true),
+            'serviceEventTypes' => ApplicationHelper::getTableKVList($this->adapter, "HR_SERVICE_EVENT_TYPES", "SERVICE_EVENT_TYPE_ID", ["SERVICE_EVENT_TYPE_NAME"], ["STATUS" => 'E'], null, true),
             'academicDegree' => ApplicationHelper::getTableKVList($this->adapter, "HR_ACADEMIC_DEGREES", "ACADEMIC_DEGREE_ID", ["ACADEMIC_DEGREE_NAME"], ["STATUS" => 'E']),
             'academicUniversity' => ApplicationHelper::getTableKVList($this->adapter, "HR_ACADEMIC_UNIVERSITY", "ACADEMIC_UNIVERSITY_ID", ["ACADEMIC_UNIVERSITY_NAME"], ["STATUS" => 'E']),
             'academicProgram' => ApplicationHelper::getTableKVList($this->adapter, "HR_ACADEMIC_PROGRAMS", "ACADEMIC_PROGRAM_ID", ["ACADEMIC_PROGRAM_NAME"], ["STATUS" => 'E']),
@@ -235,6 +239,13 @@ class EmployeeController extends AbstractActionController {
 
         $employeeData = (array) $this->repository->fetchById($id);
         $profilePictureId = $employeeData[\Setup\Model\HrEmployees::PROFILE_PICTURE_ID];
+
+        $getJobHistoryByEmployeeId = $this->jobHistoryRepo->filter(null, null, $id, -1);
+        $empJobHistoryList = [];
+        foreach ($getJobHistoryByEmployeeId as $row) {
+            array_push($empJobHistoryList, $row);
+        }
+        $jobHistoryListNum = count($empJobHistoryList);
 
         if ($request->isPost()) {
             $postData = $request->getPost();
@@ -274,6 +285,7 @@ class EmployeeController extends AbstractActionController {
                     break;
                 case 4:
                     $this->formFour->setData($postData);
+                    $jobHistoryModel = new JobHistory();
                     if ($this->formFour->isValid()) {
                         $formFourModel->exchangeArrayFromForm($this->formFour->getData());
                         $formFourModel->branchId = $formFourModel->appBranchId;
@@ -283,6 +295,28 @@ class EmployeeController extends AbstractActionController {
                         $formFourModel->serviceTypeId = $formFourModel->appServiceTypeId;
                         $formFourModel->serviceEventTypeId = $formFourModel->appServiceEventTypeId;
                         $this->repository->edit($formFourModel, $id);
+
+                        if ($jobHistoryListNum == 0) {
+                            if ($formFourModel->appBranchId != null && $formFourModel->appDepartmentId != null && $formFourModel->appDesignationId != null && $formFourModel->appPositionId != null && $formFourModel->appServiceTypeId != null) {
+                                $jobHistoryModel->jobHistoryId = (int) Helper::getMaxId($this->adapter, $jobHistoryModel::TABLE_NAME, $jobHistoryModel::JOB_HISTORY_ID) + 1;
+                                $jobHistoryModel->employeeId = $id;
+                                $jobHistoryModel->startDate = Helper::getExpressionDate($formFourModel->joinDate);
+                                $jobHistoryModel->serviceEventTypeId = $formFourModel->appServiceEventTypeId;
+                                $jobHistoryModel->fromBranchId = $formFourModel->appBranchId;
+                                $jobHistoryModel->fromDepartmentId = $formFourModel->appDepartmentId;
+                                $jobHistoryModel->fromDesignationId = $formFourModel->appDesignationId;
+                                $jobHistoryModel->fromPositionId = $formFourModel->appPositionId;
+                                $jobHistoryModel->fromServiceTypeId = $formFourModel->appServiceTypeId;
+                                $jobHistoryModel->toBranchId = $formFourModel->appBranchId;
+                                $jobHistoryModel->toDepartmentId = $formFourModel->appDepartmentId;
+                                $jobHistoryModel->toDesignationId = $formFourModel->appDesignationId;
+                                $jobHistoryModel->toPositionId = $formFourModel->appPositionId;
+                                $jobHistoryModel->toServiceTypeId = $formFourModel->appServiceTypeId;
+                                $jobHistoryModel->status = 'E';
+                                $this->jobHistoryRepo->add($jobHistoryModel);
+                            }
+                        }
+
                         return $this->redirect()->toRoute('employee', ['action' => 'edit', 'id' => $id, 'tab' => 5]);
                     }
                     break;
@@ -338,6 +372,7 @@ class EmployeeController extends AbstractActionController {
                     'formSix' => $this->formSix,
                     'tab' => $tab,
                     "id" => $id,
+                    "jobHistoryListNum" => $jobHistoryListNum,
                     "bloodGroups" => EntityHelper::getTableKVList($this->adapter, EntityHelper::HR_BLOOD_GROUPS),
                     "districts" => EntityHelper::getTableKVList($this->adapter, EntityHelper::HR_DISTRICTS),
                     "genders" => EntityHelper::getTableKVList($this->adapter, EntityHelper::HR_GENDERS),
@@ -347,11 +382,11 @@ class EmployeeController extends AbstractActionController {
                     "companies" => EntityHelper::getTableKVList($this->adapter, EntityHelper::HR_COMPANY),
                     "countries" => EntityHelper::getTableKVList($this->adapter, EntityHelper::HR_COUNTRIES),
                     'filetypes' => EntityHelper::getTableKVList($this->adapter, EntityHelper::HR_FILE_TYPE),
-                    'serviceTypes' => ApplicationHelper::getTableKVList($this->adapter, "HR_SERVICE_TYPES", "SERVICE_TYPE_ID", ["SERVICE_TYPE_NAME"], ["STATUS" => 'E']),
-                    'positions' => ApplicationHelper::getTableKVList($this->adapter, "HR_POSITIONS", "POSITION_ID", ["POSITION_NAME"], ["STATUS" => 'E']),
-                    'designations' => ApplicationHelper::getTableKVList($this->adapter, "HR_DESIGNATIONS", "DESIGNATION_ID", ["DESIGNATION_TITLE"], ["STATUS" => 'E']),
-                    'departments' => ApplicationHelper::getTableKVList($this->adapter, "HR_DEPARTMENTS", "DEPARTMENT_ID", ["DEPARTMENT_NAME"], ["STATUS" => 'E']),
-                    'branches' => ApplicationHelper::getTableKVList($this->adapter, "HR_BRANCHES", "BRANCH_ID", ["BRANCH_NAME"], ["STATUS" => 'E']),
+                    'serviceTypes' => ApplicationHelper::getTableKVList($this->adapter, "HR_SERVICE_TYPES", "SERVICE_TYPE_ID", ["SERVICE_TYPE_NAME"], ["STATUS" => 'E'], null, true),
+                    'positions' => ApplicationHelper::getTableKVList($this->adapter, "HR_POSITIONS", "POSITION_ID", ["POSITION_NAME"], ["STATUS" => 'E'], null, true),
+                    'designations' => ApplicationHelper::getTableKVList($this->adapter, "HR_DESIGNATIONS", "DESIGNATION_ID", ["DESIGNATION_TITLE"], ["STATUS" => 'E'], null, true),
+                    'departments' => ApplicationHelper::getTableKVList($this->adapter, "HR_DEPARTMENTS", "DEPARTMENT_ID", ["DEPARTMENT_NAME"], ["STATUS" => 'E'], null, true),
+                    'branches' => ApplicationHelper::getTableKVList($this->adapter, "HR_BRANCHES", "BRANCH_ID", ["BRANCH_NAME"], ["STATUS" => 'E'], null, true),
                     'serviceEventTypes' => ApplicationHelper::getTableKVList($this->adapter, "HR_SERVICE_EVENT_TYPES", "SERVICE_EVENT_TYPE_ID", ["SERVICE_EVENT_TYPE_NAME"], ["STATUS" => 'E']),
                     'academicDegree' => ApplicationHelper::getTableKVList($this->adapter, "HR_ACADEMIC_DEGREES", "ACADEMIC_DEGREE_ID", ["ACADEMIC_DEGREE_NAME"], ["STATUS" => 'E']),
                     'academicUniversity' => ApplicationHelper::getTableKVList($this->adapter, "HR_ACADEMIC_UNIVERSITY", "ACADEMIC_UNIVERSITY_ID", ["ACADEMIC_UNIVERSITY_NAME"], ["STATUS" => 'E']),
@@ -363,7 +398,7 @@ class EmployeeController extends AbstractActionController {
     }
 
     public function deleteAction() {
-        $id = (int) $this->params()->fromRoute("id");  
+        $id = (int) $this->params()->fromRoute("id");
         $this->repository->delete($id);
         $this->flashmessenger()->addMessage("Employee Successfully Deleted!!!");
         return $this->redirect()->toRoute('employee');

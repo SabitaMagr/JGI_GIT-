@@ -21,11 +21,13 @@ use Payroll\Model\MonthlyValueDetail;
 use Payroll\Model\PayPositionSetup;
 use Payroll\Model\Rules;
 use Payroll\Model\RulesDetail;
+use Payroll\Model\SalarySheet;
 use Payroll\Repository\FlatValueDetailRepo;
 use Payroll\Repository\MonthlyValueDetailRepo;
 use Payroll\Repository\PayPositionRepo;
 use Payroll\Repository\RulesDetailRepo;
 use Payroll\Repository\RulesRepository;
+use Payroll\Repository\SalarySheetRepo;
 use SelfService\Repository\AttendanceRequestRepository;
 use SelfService\Repository\LeaveRequestRepository;
 use SelfService\Repository\ServiceRepository;
@@ -229,6 +231,9 @@ class RestfulService extends AbstractRestfulController {
                     break;
                 case "deleteContent":
                     $responseData = $this->deleteContent($postedData->data);
+                    break;
+                case "pullPayRollGeneratedMonths":
+                    $responseData = $this->pullPayRollGeneratedMonths($postedData->data);
                     break;
                 default:
                     $responseData = [
@@ -916,19 +921,50 @@ class RestfulService extends AbstractRestfulController {
         $salarySheetController = new SalarySheetController($this->adapter);
 
         if ($salarySheetController->checkIfGenerated($monthId)) {
-            
+            $employeeList = null;
+            if ($branchId == -1) {
+                if ($employeeId == -1) {
+                    $employeeList = EntityHelper::getTableKVList($this->adapter, "HR_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => 'E'], ' ');
+                } else {
+                    $employeeList[$employeeId] = "";
+                }
+            } else {
+                if ($employeeId == -1) {
+                    $employeeList = EntityHelper::getTableKVList($this->adapter, "HR_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => 'E', \Setup\Model\HrEmployees::BRANCH_ID => $branchId], ' ');
+                } else {
+                    $employeeList[$employeeId] = "";
+                }
+            }
+            $results = $salarySheetController->viewSalarySheet($monthId, $employeeList);
         } else {
             $employeeList = EntityHelper::getTableKVList($this->adapter, "HR_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => 'E'], ' ');
             foreach ($employeeList as $key => $employee) {
-                $generateMonthlySheet = new PayrollGenerator($this->adapter);
+                $generateMonthlySheet = new PayrollGenerator($this->adapter, $monthId);
                 $result = $generateMonthlySheet->generate($key);
                 $results[$key] = $result;
             }
 
             $addSalarySheetRes = $salarySheetController->addSalarySheet($monthId);
             if ($addSalarySheetRes != null) {
-                $salarySheetController->addSalarySheetDetail($monthId, $results, $addSalarySheetRes[\Payroll\Model\SalarySheet::SHEET_NO]);
+                $salarySheetController->addSalarySheetDetail($monthId, $results, $addSalarySheetRes[SalarySheet::SHEET_NO]);
+
+                $employeeList = null;
+                if ($branchId == -1) {
+                    if ($employeeId == -1) {
+                        $employeeList = EntityHelper::getTableKVList($this->adapter, "HR_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => 'E'], ' ');
+                    } else {
+                        $employeeList[$employeeId] = "";
+                    }
+                } else {
+                    if ($employeeId == -1) {
+                        $employeeList = EntityHelper::getTableKVList($this->adapter, "HR_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => 'E', \Setup\Model\HrEmployees::BRANCH_ID => $branchId], ' ');
+                    } else {
+                        $employeeList[$employeeId] = "";
+                    }
+                }
+                $results = $salarySheetController->viewSalarySheet($monthId, $employeeList);
             } else {
+                $results = null;
 //            handle failure here
             }
         }
@@ -1507,6 +1543,15 @@ class RestfulService extends AbstractRestfulController {
         return [
             "success" => "true",
             "msg" => "Record Successfully Deleted!!!"
+        ];
+    }
+
+    public function pullPayRollGeneratedMonths($data) {
+        $salarySheetRepo = new SalarySheetRepo($this->adapter);
+        $generatedSalarySheets = Helper::extractDbData($salarySheetRepo->joinWithMonth());
+        return [
+            "success" => "true",
+            "data" => $generatedSalarySheets
         ];
     }
 

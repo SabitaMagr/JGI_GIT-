@@ -56,7 +56,7 @@ class HrEmployeesFormTabFour extends Model
      * @Annotation\Required(false)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"disable_inarray_validator":"true","label":"Service Event Type Name"})
-     * @Annotation\Attributes({ "id":"serviceEventTypeId","class":"form-control"})
+     * @Annotation\Attributes({ "id":"serviceEventTypeId","class":"form-control","value":"2","disabled":"disabled"})
      */
     public $appServiceEventTypeId;
 

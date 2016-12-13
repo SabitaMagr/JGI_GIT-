@@ -12,22 +12,27 @@ $serviceEventTypeId = $form->get('serviceEventTypeId');
 $serviceEventTypeId->setValueOptions($serviceEventTypes);
 $fromServiceTypeId = $form->get('fromServiceTypeId');
 $fromServiceTypeId->setValueOptions($serviceTypes);
+//$fromServiceTypeId->setAttributes(['disabled' => "disabled"]);
 $toServiceTypeId = $form->get('toServiceTypeId');
 $toServiceTypeId->setValueOptions($serviceTypes);
 $fromBranchId = $form->get('fromBranchId');
 $fromBranchId->setValueOptions($branches);
+//$fromBranchId->setAttributes(['disabled' => "disabled"]);
 $toBranchId = $form->get('toBranchId');
 $toBranchId->setValueOptions($branches);
 $fromDepartmentId = $form->get('fromDepartmentId');
 $fromDepartmentId->setValueOptions($departments);
+//$fromDepartmentId->setAttributes(['disabled' => "disabled"]);
 $toDepartmentId = $form->get('toDepartmentId');
 $toDepartmentId->setValueOptions($departments);
 $fromDesignationId = $form->get('fromDesignationId');
 $fromDesignationId->setValueOptions($designations);
+//$fromDesignationId->setAttributes(['disabled' => "disabled"]);
 $toDesignationId = $form->get('toDesignationId');
 $toDesignationId->setValueOptions($designations);
 $fromPositionId = $form->get('fromPositionId');
 $fromPositionId->setValueOptions($positions);
+//$fromPositionId->setAttributes(['disabled' => "disabled"]);
 $toPositionId = $form->get('toPositionId');
 $toPositionId->setValueOptions($positions);
 
@@ -48,7 +53,7 @@ $form->prepare();
 print $this->form()->openTag($form);
 ?>
     <script>
-        document.menu =<?php $menu = ["id" => "menuService"];echo json_encode($menu);?>;
+        document.menu =<?php $menu = ["id" => "menuServiceStatusUpdate"];echo json_encode($menu);?>;
     </script>
     <div class="page-bar">
         <?= $this->navigation('Zend\Navigation\jobHistory')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>

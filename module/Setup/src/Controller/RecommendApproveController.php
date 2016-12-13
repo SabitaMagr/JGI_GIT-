@@ -96,4 +96,41 @@ class RecommendApproveController extends AbstractActionController {
             'employees' => $this->repository->getEmployees($id)
         ]);
     }
+    
+    public function groupAssignAction(){
+                $branchFormElement = new Select();
+        $branchFormElement->setName("branch");
+        $branches=\Application\Helper\EntityHelper::getTableKVList($this->adapter, Branch::TABLE_NAME, Branch::BRANCH_ID, [Branch::BRANCH_NAME]);
+        $branches[-1]="All";
+        ksort($branches);
+        $branchFormElement->setValueOptions($branches);
+        $branchFormElement->setAttributes(["id" => "branchId", "class" => "form-control"]);
+        $branchFormElement->setLabel("Branch");
+        $branchFormElement->setAttribute("ng-click","view()");
+
+
+        $departmentFormElement = new Select();
+        $departmentFormElement->setName("department");
+        $departments=\Application\Helper\EntityHelper::getTableKVList($this->adapter, Department::TABLE_NAME, Department::DEPARTMENT_ID, [Department::DEPARTMENT_NAME]);
+        $departments[-1]="All";
+        ksort($departments);
+        $departmentFormElement->setValueOptions($departments);
+        $departmentFormElement->setAttributes(["id" => "departmentId", "class" => "form-control"]);
+        $departmentFormElement->setLabel("Department");
+
+        $designationFormElement = new Select();
+        $designationFormElement->setName("designation");
+        $designations=\Application\Helper\EntityHelper::getTableKVList($this->adapter,Designation::TABLE_NAME,Designation::DESIGNATION_ID , [Designation::DESIGNATION_TITLE]);
+        $designations[-1]="All";
+        ksort($designations);
+        $designationFormElement->setValueOptions($designations);
+        $designationFormElement->setAttributes(["id" => "designationId", "class" => "form-control"]);
+        $designationFormElement->setLabel("Designation");
+        
+        return Helper::addFlashMessagesToArray($this, [
+            "branches"=>$branchFormElement,
+            "departments"=>$departmentFormElement,
+            'designations'=>$designationFormElement
+            ]);
+    }
 }

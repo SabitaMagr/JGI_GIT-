@@ -480,11 +480,11 @@ return [
         'jobHistory' => [
 
             [
-                'label' => 'Job History',
+                'label' => 'Service Status Update',
                 'route' => 'jobHistory',
             ],
             [
-                'label' => 'Job History',
+                'label' => 'Service Status Update',
                 'route' => 'jobHistory',
                 'pages' => [
                     [
@@ -529,6 +529,11 @@ return [
                         'label' => 'Edit',
                         'route' => 'recommendapprove',
                         'action' => 'edit',
+                    ],
+                    [
+                        'label' => 'Group Assign',
+                        'route' => 'recommendapprove',
+                        'action' => 'groupAssign',
                     ],
                 ]
             ]

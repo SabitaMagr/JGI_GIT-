@@ -105,7 +105,21 @@ class JobHistoryController extends AbstractActionController {
 
         $jobHistory = new JobHistory();
         if (!$request->isPost()) {
-            $jobHistory->exchangeArrayFromDb($this->repository->fetchById($id));
+            $jobHistoryDetail = $this->repository->fetchById($id);
+            $employeeId = $jobHistoryDetail['EMPLOYEE_ID'];
+            
+            $getJobHistoryByEmployeeId = $this->repository->filter(null,null,$employeeId,-1);
+            $empJobHistoryList = [];
+            foreach($getJobHistoryByEmployeeId as $row){
+                array_push($empJobHistoryList, $row);
+            }
+            if(count($empJobHistoryList)>=1){
+                $latestJobHistoryId = $empJobHistoryList[0]['JOB_HISTORY_ID'];
+            }else{
+                $latestJobHistoryId=0;
+            }         
+            
+            $jobHistory->exchangeArrayFromDb($jobHistoryDetail);
             $this->form->bind($jobHistory);
         } else {
 
@@ -126,6 +140,7 @@ class JobHistoryController extends AbstractActionController {
                         $this, [
                     'form' => $this->form,
                     'id' => $id,
+                    'latestJobHistoryId'=>$latestJobHistoryId,
                     'empId' => EntityHelper1::getTableKVList($this->adapter, JobHistory::TABLE_NAME, JobHistory::JOB_HISTORY_ID, [JobHistory::EMPLOYEE_ID], [JobHistory::JOB_HISTORY_ID => $id], null)[$id],
                     'messages' => $this->flashmessenger()->getMessages(),
                     'employees' => EntityHelper1::getTableKVList($this->adapter, "HR_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => "E"]),

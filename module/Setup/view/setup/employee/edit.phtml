@@ -134,6 +134,13 @@ $departmentId->setValueOptions($departments);
 $branchId = $formFour->get('appBranchId');
 $branchId->setValueOptions($branches);
 
+if($jobHistoryListNum>0){
+    $departmentId->setAttributes(["disabled"=>"disabled"]);
+    $branchId->setAttributes(["disabled"=>"disabled"]);
+    $designationId->setAttributes(["disabled"=>"disabled"]);
+    $positionId->setAttributes(["disabled"=>"disabled"]);
+    $serviceTypeId->setAttributes(["disabled"=>"disabled"]);
+}
 
 
 $formSix->setAttribute('id', 'form6');
@@ -259,6 +266,7 @@ echo json_encode($menu);
                                         <?php print $this->formElement($employeeCode); ?>
                                     </div>
                                     <?php print $this->formElementErrors()->render($employeeCode, ['class' => 'error']) ?>
+                                    <span class="errorMsg" style="font-size:11px; color:red;"></span>
                                 </div>
                             </div>   
                         </div>
@@ -1304,7 +1312,7 @@ echo json_encode($menu);
                                         <input type="text" class="form-passedYr form-control" value=""
                                                ng-model="qualificationForm.passedYr">
                                     </td>
-                                    <td width="1%" style="padding:15px; class="checkboxgap">
+                                    <td width="1%" style="padding:15px;" class="checkboxgap">
                                         <div class="md-checkbox">
                                             <input type="checkbox" id="{{qualificationForm.checkbox}}" class="md-check"
                                                    ng-model="qualificationForm.checked">

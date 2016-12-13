@@ -12,6 +12,8 @@ namespace Payroll\Controller;
 use Application\Helper\DateHelper;
 use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
+use Application\Model\Months;
+use Application\Repository\MonthRepository;
 use AttendanceManagement\Repository\AttendanceDetailRepository;
 use Setup\Model\HrEmployees;
 use Setup\Model\ServiceType;
@@ -36,10 +38,12 @@ class VariableProcessor {
     private $adapter;
     private $employeeId;
     private $employeeRepo;
+    private $monthId;
 
-    public function __construct($adapter, $employeeId) {
+    public function __construct($adapter, $employeeId, int $monthId) {
         $this->adapter = $adapter;
         $this->employeeId = $employeeId;
+        $this->monthId = $monthId;
         $this->employeeRepo = new EmployeeRepository($adapter);
     }
 
@@ -52,14 +56,14 @@ class VariableProcessor {
                 break;
             case PayrollGenerator::VARIABLES[1]:
                 $currentMonth = date('m');
-                $firstLastDate = DateHelper::getMonthFirstLastDate($currentMonth);
+                $monthsRepo = new MonthRepository($this->adapter);
+                $firstLastDate = $monthsRepo->fetchByMonthId($this->monthId);
                 $attendanceDetail = new AttendanceDetailRepository($this->adapter);
-                $firstDayExp = Helper::getExpressionDate($firstLastDate['firstDay']);
-                $lastDayExp = Helper::getExpressionDate($firstLastDate['lastDay']);
+                $firstDayExp = Helper::getExpressionDate($firstLastDate[Months::FROM_DATE]);
+                $lastDayExp = Helper::getExpressionDate($firstLastDate[Months::TO_DATE]);
 
                 $days = $attendanceDetail->getNoOfDaysInDayInterval($this->employeeId, $firstDayExp, $lastDayExp);
 
-//                $processedValue = cal_days_in_month(CAL_GREGORIAN, (int) date('n'), (int) date('Y'));
                 $processedValue = $days;
 
                 break;
