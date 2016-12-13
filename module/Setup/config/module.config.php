@@ -530,6 +530,11 @@ return [
                         'route' => 'recommendapprove',
                         'action' => 'edit',
                     ],
+                    [
+                        'label' => 'Group Assign',
+                        'route' => 'recommendapprove',
+                        'action' => 'groupAssign',
+                    ],
                 ]
             ]
         ],
