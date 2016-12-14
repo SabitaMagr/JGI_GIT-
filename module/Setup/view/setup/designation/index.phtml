@@ -68,11 +68,11 @@ if($this->messages) { ?>
         #: (BASIC_SALARY == null) ? '-' : BASIC_SALARY #
         </td>
         <td>
-        <a class="btn  btn-icon-only btn-success"
+        <a class="btn-edit"
         href="<?= $this->url("designation", ["action" => "edit"]) ?>/#:DESIGNATION_ID #" style="height:17px;">
         <i class="fa fa-edit"></i>
         </a> 
-        <a class="btn btn-icon-only btn-danger confirmation"
+        <a class="btn-delete confirmation"
         href="<?= $this->url("designation", ["action" => "delete"]); ?>/#:DESIGNATION_ID #" id="bs_#:DESIGNATION_ID #" style="height:17px;">
         <i class="fa fa-trash-o"></i></a>
         </a>

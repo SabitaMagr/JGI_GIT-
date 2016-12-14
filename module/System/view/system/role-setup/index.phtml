@@ -62,11 +62,11 @@ if($this->messages) { ?>
         #: (ROLE_NAME == null) ? '-' : ROLE_NAME #
         </td>
         <td>
-        <a class="btn  btn-icon-only btn-success"
+        <a class="btn-edit"
         href="<?= $this->url("rolesetup", ["action" => "edit"]); ?>/#:ROLE_ID #" style="height:17px;">
         <i class="fa fa-edit"></i>
         </a> 
-         <a class="btn btn-icon-only btn-danger confirmation"
+         <a class="btn-delete confirmation"
         href="<?= $this->url("rolesetup", ["action" => "delete"]); ?>/#:ROLE_ID #" id="bs_#:ROLE_ID #" style="height:17px;">
         <i class="fa fa-trash-o"></i></a>
         </a>

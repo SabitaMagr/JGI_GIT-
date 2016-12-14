@@ -63,11 +63,11 @@ if($this->messages) { ?>
         #: (ACADEMIC_PROGRAM_NAME == null) ? '-' : ACADEMIC_PROGRAM_NAME #
         </td>
         <td>
-        <a class="btn  btn-icon-only btn-success"
+        <a class="btn-edit"
         href="<?= $this->url("academicProgram", ["action" => "edit"]) ?>/#:ACADEMIC_PROGRAM_ID #" style="height:17px;">
         <i class="fa fa-edit"></i>
         </a> 
-        <a class="btn btn-icon-only btn-danger confirmation"
+        <a class="btn-delete confirmation"
         href="<?= $this->url("academicProgram", ["action" => "delete"]); ?>/#:ACADEMIC_PROGRAM_ID #" id="bs_#:ACADEMIC_PROGRAM_ID #" style="height:17px;">
         <i class="fa fa-trash-o"></i></a>
         </a>

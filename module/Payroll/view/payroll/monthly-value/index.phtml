@@ -65,11 +65,11 @@ $this->headScript()
         #: (SH_INDEX_NO == null) ? '-' : SH_INDEX_NO #
         </td>
         <td>
-        <a class="btn  btn-icon-only btn-success"
+        <a class="btn-edit"
         href="<?= $this->url("monthlyValue", ["action" => "edit"]); ?>/#:MTH_ID #" style="height:17px;">
         <i class="fa fa-edit"></i>
         </a> 
-         <a class="btn btn-icon-only btn-danger confirmation"
+         <a class="btn-delete confirmation"
         href="<?= $this->url("monthlyValue", ["action" => "delete"]); ?>/#:MTH_ID #" id="bs_#:MTH_ID #" style="height:17px;">
         <i class="fa fa-trash-o"></i></a>
         </a>

@@ -162,7 +162,6 @@ class LeaveBalanceRepository implements RepositoryInterface {
         $select->where([
             "L.STATUS='E'",
             "E.STATUS='E'",
-            "L.CASHABLE='N'",
             "L.CARRY_FORWARD='Y'"
         ]);
         $select->order(['LA.EMPLOYEE_ID']);
