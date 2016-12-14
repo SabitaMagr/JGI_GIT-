@@ -73,17 +73,17 @@ class EmployeeRepository implements RepositoryInterface {
     public function getById($id) {
         $sql = new Sql($this->adapter);
         $select = $sql->select();
-        $select->from(['E'=>HrEmployees::TABLE_NAME]);
+        $select->from(['E' => HrEmployees::TABLE_NAME]);
         $select->columns(Helper::convertColumnDateFormat($this->adapter, new HrEmployees(), [
-                        'birthDate',
-                        'famSpouseBirthDate',
-                        'famSpouseWeddingAnniversary',
-                        'idDrivingLicenseExpiry',
-                        'idCitizenshipIssueDate',
-                        'idPassportExpiry',
-                        'joinDate'
-                    ],NULL,'E'), false);
-        
+                    'birthDate',
+                    'famSpouseBirthDate',
+                    'famSpouseWeddingAnniversary',
+                    'idDrivingLicenseExpiry',
+                    'idCitizenshipIssueDate',
+                    'idPassportExpiry',
+                    'joinDate'
+                        ], NULL, 'E'), false);
+
         $select->join(['B' => Branch::TABLE_NAME], "E." . HrEmployees::BRANCH_ID . "=B." . Branch::BRANCH_ID, ['BRANCH_NAME'], 'left')
                 ->join(['C' => Company::TABLE_NAME], "E." . HrEmployees::COMPANY_ID . "=C." . Company::COMPANY_ID, ['COMPANY_NAME'], 'left')
                 ->join(['G' => Gender::TABLE_NAME], "E." . HrEmployees::GENDER_ID . "=G." . Gender::GENDER_ID, ['GENDER_NAME'], 'left')
@@ -93,7 +93,7 @@ class EmployeeRepository implements RepositoryInterface {
 //                ->join(['Z' => "HR_ZONES"], "E." . HrEmployees::ZON . "=Z.ZONE_ID", ['ZONE_NAME'], 'left')
 //                ->join(['D' => "HR_DISTRICTS"], "E." . HrEmployees::DISTRICT_ID . "=D.DISTRICT_ID", ['DISTRICT_NAME'], 'left')
                 ->join(['VM' => "HR_VDC_MUNICIPALITIES"], "E." . HrEmployees::ADDR_PERM_VDC_MUNICIPALITY_ID . "=VM.VDC_MUNICIPALITY_ID", ['VDC_MUNICIPALITY_NAME'], 'left')
-                ->join(['VM1' => "HR_VDC_MUNICIPALITIES"], "E." . HrEmployees::ADDR_TEMP_VDC_MUNICIPALITY_ID . "=VM1.VDC_MUNICIPALITY_ID", ['VDC_MUNICIPALITY_NAME_TEMP'=>'VDC_MUNICIPALITY_NAME'], 'left')
+                ->join(['VM1' => "HR_VDC_MUNICIPALITIES"], "E." . HrEmployees::ADDR_TEMP_VDC_MUNICIPALITY_ID . "=VM1.VDC_MUNICIPALITY_ID", ['VDC_MUNICIPALITY_NAME_TEMP' => 'VDC_MUNICIPALITY_NAME'], 'left')
                 ->join(['D1' => Department::TABLE_NAME], "E." . HrEmployees::APP_DEPARTMENT_ID . "=D1." . Department::DEPARTMENT_ID, ['DEPARTMENT_NAME'], 'left')
                 ->join(['DES1' => Designation::TABLE_NAME], "E." . HrEmployees::APP_DESIGNATION_ID . "=DES1." . Designation::DESIGNATION_ID, ['DESIGNATION_TITLE'], 'left')
                 ->join(['P1' => Position::TABLE_NAME], "E." . HrEmployees::APP_POSITION_ID . "=P1." . Position::POSITION_ID, ['POSITION_NAME'], 'left')
@@ -185,7 +185,7 @@ class EmployeeRepository implements RepositoryInterface {
         return $statement->execute();
     }
 
-    public function filterRecords($emplyoeeId, $branchId, $departmentId, $designationId, $positionId, $serviceTypeId, $serviceEventTypeId) {
+    public function filterRecords($emplyoeeId, $branchId, $departmentId, $designationId, $positionId, $serviceTypeId, $serviceEventTypeId, $getResult = null) {
         $sql = new Sql($this->adapter);
         $select = $sql->select();
         $select->from("HR_EMPLOYEES");
@@ -228,17 +228,20 @@ class EmployeeRepository implements RepositoryInterface {
                 "SERVICE_EVENT_TYPE_ID=" . $serviceEventTypeId
             ]);
         }
-
+        $select->order("EMPLOYEE_ID DESC");
         $statement = $sql->prepareStatementForSqlObject($select);
         $result = $statement->execute();
-
-        $tempArray = [];
-        foreach ($result as $item) {
-            $tempObject = new HrEmployees();
-            $tempObject->exchangeArrayFromDB($item);
-            array_push($tempArray, $tempObject);
+        if ($getResult != null) {
+            return $result;
+        } else {
+            $tempArray = [];
+            foreach ($result as $item) {
+                $tempObject = new HrEmployees();
+                $tempObject->exchangeArrayFromDB($item);
+                array_push($tempArray, $tempObject);
+            }
+            return $tempArray;
         }
-        return $tempArray;
     }
 
     public function getEmployeeListOfBirthday() {
@@ -261,20 +264,19 @@ class EmployeeRepository implements RepositoryInterface {
         }
         return $employeeList;
     }
-    
-    
-    public function getVdcMunicipalityDtl($id){
-        $result = $this->vdcGateway->select(['VDC_MUNICIPALITY_ID'=>$id]);
+
+    public function getVdcMunicipalityDtl($id) {
+        $result = $this->vdcGateway->select(['VDC_MUNICIPALITY_ID' => $id]);
         return $result->current();
     }
-    
-    public function getDistrictDtl($id){
-        $result = $this->districtGateway->select(['DISTRICT_ID'=>$id]);
+
+    public function getDistrictDtl($id) {
+        $result = $this->districtGateway->select(['DISTRICT_ID' => $id]);
         return $result->current();
     }
-    
-    public function getZoneDtl($id){
-        $result = $this->zoneGateway->select(['ZONE_ID'=>$id]);
+
+    public function getZoneDtl($id) {
+        $result = $this->zoneGateway->select(['ZONE_ID' => $id]);
         return $result->current();
     }
 

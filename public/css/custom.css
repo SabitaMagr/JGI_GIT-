@@ -142,7 +142,7 @@
 .table-toolbar {
     margin-bottom: 10px;
 }
-.k-grid td
+.k-grid td, .customTable td
 {
     font-size:11px !important;
     border-bottom:solid #eee 1px !important; 
