@@ -35,17 +35,19 @@ class PayrollGenerator {
 
     const VARIABLES = [
         "BASIC_SALARY",
-        "NO_OF_DAYS_IN_CURRENT_MONTH",
+        "NO_OF_WORKING_DAYS",
         "NO_OF_DAYS_ABSENT",
         "NO_OF_DAYS_WORKED",
         "NO_OF_PAID_LEAVES",
-        "NO_OF_HOLIDAYS",
+        "NO_OF_UNPAID_LEAVES",
         "TOTAL_DAYS_TO_PAY",
         "GENDER",
         "EMP_TYPE",
         "MARITUAL_STATUS",
         "TOTAL_DAYS_FROM_JOIN_DATE",
-        "SERVICE_TYPE"
+        "SERVICE_TYPE",
+        "NO_OF_WORKING_DAYS_INC_HOLIDAYS",
+        "TOTAL_NO_OF_WORK_DAYS_INC_HOLIDAYS"
     ];
     const SYSTEM_RULE = [
         "CUR_MTH_VAL",
@@ -111,7 +113,7 @@ class PayrollGenerator {
             foreach (self::SYSTEM_RULE as $systemRule) {
                 $rule = $this->convertSystemRuleToValue($rule, $systemRule);
             }
-//            if ($counter == 1) {
+//            if ($counter == 3) {
 //                print "<pre>";
 //                print_r($rule);
 //                exit;
@@ -124,6 +126,8 @@ class PayrollGenerator {
 //                print($rule);
 //                exit;
 //            }
+
+
             array_push($this->ruleDetailList, ["ruleValue" => $ruleValue, "rule" => $ruleObj, "ruleDetail" => $ruleDetail]);
 
             if ($operationType == 'A') {
@@ -147,8 +151,8 @@ class PayrollGenerator {
     }
 
     private function convertConstantToValue($rule, $key, $constant, RepositoryInterface $repository) {
-        if (strpos($rule, $constant) !== false) {
-            return str_replace($constant, $this->generateValue($key, $repository), $rule);
+        if (strpos($rule, $this->wrapWithLargeBracket($constant)) !== false) {
+            return str_replace($this->wrapWithLargeBracket($constant), $this->generateValue($key, $repository), $rule);
         } else {
             return $rule;
         }
@@ -163,14 +167,14 @@ class PayrollGenerator {
     }
 
     private function convertVariableToValue($rule, $variable) {
-        if (strpos($rule, $variable) !== false) {
+        if (strpos($rule, $this->wrapWithLargeBracket($variable)) !== false) {
             $variableProcessor = new VariableProcessor($this->adapter, $this->employeeId, $this->monthId);
 //            return str_replace($variable, $variableProcessor->processVariable($variable), $rule);
             $processedVariable = $variableProcessor->processVariable($variable);
             if (is_string($processedVariable)) {
-                return str_replace($variable, "'" . $processedVariable . "'", $rule);
+                return str_replace($this->wrapWithLargeBracket($variable), "'" . $processedVariable . "'", $rule);
             } else {
-                return str_replace($variable, $processedVariable, $rule);
+                return str_replace($this->wrapWithLargeBracket($variable), $processedVariable, $rule);
             }
         } else {
             return $rule;
@@ -178,18 +182,28 @@ class PayrollGenerator {
     }
 
     private function convertSystemRuleToValue($rule, $variable) {
-        if (strpos($rule, $variable) !== false) {
+        if (strpos($rule, $this->wrapWithLargeBracket($variable)) !== false) {
             $systemRuleProcessor = new SystemRuleProcessor($this->adapter, $this->employeeId, $this->calculatedValue, $this->ruleDetailList, $this->monthId);
 //            return str_replace($variable, $systemRuleProcessor->processSystemRule($variable), $rule);
             $processedSystemRule = $systemRuleProcessor->processSystemRule($variable);
             if (is_string($processedSystemRule)) {
-                return str_replace($variable, "'" . $processedSystemRule . "'", $rule);
+                return str_replace($this->wrapWithLargeBracket($variable), "'" . $processedSystemRule . "'", $rule);
             } else {
-                return str_replace($variable, $processedSystemRule, $rule);
+                return str_replace($this->wrapWithLargeBracket($variable), $processedSystemRule, $rule);
             }
         } else {
             return $rule;
         }
+    }
+
+    private function wrapWithLargeBracket($input) {
+        return "[" . $input . "]";
+    }
+
+    private function unwrapWithLargeBracket($input) {
+        $temp = str_replace("[", "", $input);
+        $temp = str_replace("]", "", $temp);
+        return $temp;
     }
 
 }

@@ -123,15 +123,19 @@ class Helper {
         return new Expression($tempStr);
     }
 
-    public static function columnExpression($columnName, $shortForm = null, $function = null) {
+    public static function columnExpression($columnName, $shortForm = null, $function = null, $customColumnName = null) {
         $pre = "";
         if ($shortForm != null && sizeof($shortForm) != 0) {
             $pre = $shortForm . ".";
         }
+
+        if ($customColumnName == null) {
+            $customColumnName = $columnName;
+        }
         if ($function == NULL) {
             $tempStr = "{$pre}{$columnName} AS {$columnName}";
         } else {
-            $tempStr = "${function}({$pre}{$columnName}) AS {$columnName}";
+            $tempStr = "${function}({$pre}{$columnName}) AS {$customColumnName}";
         }
         return new Expression($tempStr);
     }

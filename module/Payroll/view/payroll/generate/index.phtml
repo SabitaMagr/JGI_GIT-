@@ -1,7 +1,10 @@
 <?php
 //load js scripts
-$this->headScript()->appendFile($this->basePath('js/angular.min.js'));
-$this->headScript()->appendFile($this->basePath('js/Payroll/Generate/generate.js'));
+$this->headScript()
+        ->appendFile($this->basePath('jszip/dist/jszip.min.js'))
+        ->appendFile($this->basePath('telerik_kendoui/js/kendo.all.min.js'))
+        ->appendFile($this->basePath('js/angular.min.js'))
+        ->appendFile($this->basePath('js/Payroll/Generate/generate.js'));
 ?>
 
 
@@ -37,7 +40,7 @@ echo json_encode($menu);
 
                 <div class="col-sm-6">
                     <label>Fiscal year</label>
-                    <select class="form-control" ng-model="monthId" ng-options="month.MONTH_ID as month.MONTH_EDESC for month in months">
+                    <select class="form-control" ng-model="monthId" ng-options="month.MONTH_ID as month.MONTH_EDESC for month in months" ng-change="viewMonthlySheetIfAvailable()">
                         <option value="">Select Month</option>
                     </select>
                 </div>
@@ -58,23 +61,24 @@ echo json_encode($menu);
             </div>
             <div class="row margin-top-10">
                 <div class="col-sm-6">
-                    <button id="generateBtn" class="btn btn-info btn-block">
+                    <button id="generateBtn" class="btn btn-info btn-block" regenerateFlag="false">
                         Generate
                     </button>
                 </div>
             </div>
         </div>
-        <div class="col-sm-6 " >
+        <div class="col-sm-offset-2 col-sm-3 " >
+            <h5>Generated Months</h5>
             <div class="scroller" style="height: 100px;" >
-                <div class="list-group">
+                <div class="list-group generate-month">
                     <a href="#" ng-click="viewMonthlySheet(month.MONTH_ID)" class="list-group-item" ng-repeat="month in payRollGeneratedMonths" ng-bind="month.MONTH_EDESC"></a>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="row">
-        <table class="table">
+    <div class="row margin-top-10">
+<!--        <table class="table">
             <thead>
             <th>
                 Employee Name
@@ -97,7 +101,12 @@ echo json_encode($menu);
                 </tr>
 
             </tbody>
-        </table>
+        </table>-->
+
+        <div class="col-sm-12">
+            <div id="salarySheetTable">
+            </div>
+        </div>
     </div>
 
 </div>

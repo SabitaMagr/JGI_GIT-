@@ -644,7 +644,11 @@ form.k-filter-menu .k-widget, form.k-filter-menu .k-textbox
 }
 
 
-
+.generate-month a{
+    font-size:12px !important;
+    padding-top:4px !important;
+    padding-bottom: 4px !important;
+}
 
 /* Large desktops and laptops */
 @media (min-width: 1200px) {

@@ -8,35 +8,30 @@ use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\TableGateway\TableGateway;
 use Setup\Model\LeaveMaster;
 
-class LeaveMasterRepository implements RepositoryInterface
-{
+class LeaveMasterRepository implements RepositoryInterface {
+
     private $tableGateway;
     private $adapter;
 
-    public function __construct(AdapterInterface $adapter)
-    {
-        $this->tableGateway = new TableGateway(LeaveMaster::TABLE_NAME,$adapter);
-        $this->adapter=$adapter;
+    public function __construct(AdapterInterface $adapter) {
+        $this->tableGateway = new TableGateway(LeaveMaster::TABLE_NAME, $adapter);
+        $this->adapter = $adapter;
     }
 
-    public function add(Model $model)
-    {
+    public function add(Model $model) {
         $this->tableGateway->insert($model->getArrayCopyForDB());
     }
 
-
-    public function edit(Model $model,$id)
-    {
+    public function edit(Model $model, $id) {
         $array = $model->getArrayCopyForDB();
         unset($array[LeaveMaster::LEAVE_ID]);
         unset($array[LeaveMaster::CREATED_DT]);
         unset($array[LeaveMaster::STATUS]);
-        $this->tableGateway->update($array,[LeaveMaster::LEAVE_ID=>$id]);
+        $this->tableGateway->update($array, [LeaveMaster::LEAVE_ID => $id]);
     }
 
-    public function fetchAll()
-    {
-        return $this->tableGateway->select([LeaveMaster::STATUS=>'E']);
+    public function fetchAll() {
+        return $this->tableGateway->select([LeaveMaster::STATUS => 'E']);
 //        $sql = new Sql($this->adapter);
 //        $select = $sql->select();
 //        $select->from("HR_LEAVE_MASTER_SETUP");
@@ -47,29 +42,29 @@ class LeaveMasterRepository implements RepositoryInterface
 //        return $result;
     }
 
-    public function fetchById($id)
-    {
-        $rowset= $this->tableGateway->select([LeaveMaster::LEAVE_ID=>$id,LeaveMaster::STATUS=>'E']);
-       return $result =  $rowset->current();
+    public function fetchById($id) {
+        $rowset = $this->tableGateway->select([LeaveMaster::LEAVE_ID => $id, LeaveMaster::STATUS => 'E']);
+        return $result = $rowset->current();
 //        if($result!=null){
 //            $r = $result->getArrayCopy();
 //            print_r(($r));
 //        }
-
 //        //print_r($result->getArrayCopy());
 //         die();
-
     }
 
-    public function fetchActiveRecord()
-    {
-        return  $rowset= $this->tableGateway->select([LeaveMaster::STATUS=>'E']);
+    public function fetchActiveRecord() {
+        return $rowset = $this->tableGateway->select([LeaveMaster::STATUS => 'E']);
     }
 
-    public function delete($id)
-    {
+    public function delete($id) {
 //    	$this->tableGateway->delete(['SHIFT_ID'=>$id]);
-        $this->tableGateway->update([LeaveMaster::STATUS=>'D'],[LeaveMaster::LEAVE_ID=>$id]);
-
+        $this->tableGateway->update([LeaveMaster::STATUS => 'D'], [LeaveMaster::LEAVE_ID => $id]);
     }
+
+    public function checkIfCashable(int $leaveId) {
+        $leave = $this->tableGateway->select([LeaveMaster::LEAVE_ID => $leaveId, LeaveMaster::STATUS => 'E'])->current();
+        return ($leave[LeaveMaster::CASHABLE] == 'Y') ? true : false;
+    }
+
 }

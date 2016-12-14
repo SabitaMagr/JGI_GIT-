@@ -1088,6 +1088,24 @@ return array (
           ),
         ),
       ),
+      'payslip' => 
+      array (
+        'type' => 'Zend\\Router\\Http\\Segment',
+        'options' => 
+        array (
+          'route' => '/selfservice/payslip[/:action]',
+          'constants' => 
+          array (
+            'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+            'id' => '[0-9]+',
+          ),
+          'defaults' => 
+          array (
+            'controller' => 'SelfService\\Controller\\PaySlip',
+            'action' => 'index',
+          ),
+        ),
+      ),
       'restful' => 
       array (
         'type' => 'Zend\\Router\\Http\\Literal',
@@ -1268,6 +1286,30 @@ return array (
             array (
               'controller' => 'Application\\Controller\\CronController',
               'action' => 'index',
+            ),
+          ),
+        ),
+        'test' => 
+        array (
+          'options' => 
+          array (
+            'route' => 'test',
+            'defaults' => 
+            array (
+              'controller' => 'Application\\Controller\\CronController',
+              'action' => 'test',
+            ),
+          ),
+        ),
+        'check-update' => 
+        array (
+          'options' => 
+          array (
+            'route' => 'attendance check-update',
+            'defaults' => 
+            array (
+              'controller' => 'Application\\Controller\\CronController',
+              'action' => 'check',
             ),
           ),
         ),
@@ -1599,12 +1641,12 @@ return array (
     array (
       0 => 
       array (
-        'label' => 'Job History',
+        'label' => 'Service Status Update',
         'route' => 'jobHistory',
       ),
       1 => 
       array (
-        'label' => 'Job History',
+        'label' => 'Service Status Update',
         'route' => 'jobHistory',
         'pages' => 
         array (
@@ -2811,6 +2853,7 @@ return array (
       'SelfService\\Controller\\AttendanceRequest' => 'Application\\Controller\\ControllerFactory',
       'SelfService\\Controller\\Profile' => 'Application\\Controller\\ControllerFactory',
       'SelfService\\Controller\\Service' => 'Application\\Controller\\ControllerFactory',
+      'SelfService\\Controller\\PaySlip' => 'Application\\Controller\\ControllerFactory',
       'RestfulService\\Controller\\RestfulService' => 'Application\\Controller\\ControllerFactory',
       'Payroll\\Controller\\MonthlyValue' => 'Application\\Controller\\ControllerFactory',
       'Payroll\\Controller\\FlatValue' => 'Application\\Controller\\ControllerFactory',

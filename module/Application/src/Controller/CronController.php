@@ -59,6 +59,14 @@ class CronController extends AbstractActionController {
         return [];
     }
 
+    public function testAction() {
+        print "Hello from console";
+    }
+
+    public function checkAction() {
+        print "under process";
+    }
+
     public function employeeAttendanceAction() {
         
     }

@@ -122,7 +122,7 @@
                 }
                 disableEmployeeInfo();
             }
-        }
+        };
         $fromServiceTypeId.on("change", function () {
             $toServiceTypeId.val($(this).val()).trigger("change");
         });

@@ -916,11 +916,12 @@ class RestfulService extends AbstractRestfulController {
         $employeeId = $data['employee'];
         $branchId = $data['branch'];
         $monthId = $data['month'];
+        $regenerateFlag = ($data['regenerateFlag'] == "true") ? 1 : 0;
 
         $results = [];
         $salarySheetController = new SalarySheetController($this->adapter);
 
-        if ($salarySheetController->checkIfGenerated($monthId)) {
+        if ($salarySheetController->checkIfGenerated($monthId) && !$regenerateFlag) {
             $employeeList = null;
             if ($branchId == -1) {
                 if ($employeeId == -1) {
@@ -937,13 +938,19 @@ class RestfulService extends AbstractRestfulController {
             }
             $results = $salarySheetController->viewSalarySheet($monthId, $employeeList);
         } else {
+            if ($regenerateFlag) {
+                $salarySheetController->deleteSalarySheetDetail($monthId);
+                $salarySheetController->deleteSalarySheet($monthId);
+            }
             $employeeList = EntityHelper::getTableKVList($this->adapter, "HR_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => 'E'], ' ');
+//            print "<pre>";
             foreach ($employeeList as $key => $employee) {
+//                print $key;
                 $generateMonthlySheet = new PayrollGenerator($this->adapter, $monthId);
                 $result = $generateMonthlySheet->generate($key);
                 $results[$key] = $result;
             }
-
+//            exit;
             $addSalarySheetRes = $salarySheetController->addSalarySheet($monthId);
             if ($addSalarySheetRes != null) {
                 $salarySheetController->addSalarySheetDetail($monthId, $results, $addSalarySheetRes[SalarySheet::SHEET_NO]);

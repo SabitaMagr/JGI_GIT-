@@ -86,13 +86,16 @@ class AttendanceDetailRepository implements RepositoryInterface {
         return $attendanceTableGateway->insert($model->getArrayCopyForDB());
     }
 
-    public function getNoOfDaysInDayInterval(int $employeeId, $startDate, $endDate) {
+    public function getNoOfDaysInDayInterval(int $employeeId, $startDate, $endDate, $includeHoliday = true) {
         $sql = new Sql($this->adapter);
         $select = $sql->select();
         $select->from(['A' => AttendanceDetail::TABLE_NAME]);
         $select->where(['A.' . AttendanceDetail::EMPLOYEE_ID . "=$employeeId"]);
         $select->where(['A.' . AttendanceDetail::ATTENDANCE_DT . " BETWEEN " . $startDate->getExpression() . " AND " . $endDate->getExpression()]);
-        $select->where(['A.' . AttendanceDetail::HOLIDAY_ID . " IS NULL"]);
+
+        if ($includeHoliday) {
+            $select->where(['A.' . AttendanceDetail::HOLIDAY_ID . " IS NULL"]);
+        }
 
         $statement = $sql->prepareStatementForSqlObject($select);
         $result = $statement->execute();
@@ -141,6 +144,38 @@ class AttendanceDetailRepository implements RepositoryInterface {
         $statement = $sql->prepareStatementForSqlObject($select);
 //        print $statement->getSql();
         return $statement->execute();
+    }
+
+    public function getleaveIdCount(int $employeeId, Expression $startDate, Expression $endDate) {
+        $sql = new Sql($this->adapter);
+        $select = $sql->select();
+        $select->from(['A' => AttendanceDetail::TABLE_NAME]);
+        $select->columns([Helper::columnExpression(AttendanceDetail::LEAVE_ID, "A", "COUNT", AttendanceDetail::LEAVE_ID . "_NO"), AttendanceDetail::LEAVE_ID], true);
+        $select->where(['A.' . AttendanceDetail::EMPLOYEE_ID . "=$employeeId"]);
+        $select->where(['A.' . AttendanceDetail::ATTENDANCE_DT . " BETWEEN " . $startDate->getExpression() . " AND " . $endDate->getExpression()]);
+        $select->where(['A.' . AttendanceDetail::LEAVE_ID . " IS NOT NULL"]);
+        $select->group(['A.' . AttendanceDetail::LEAVE_ID]);
+        $statement = $sql->prepareStatementForSqlObject($select);
+        $result = $statement->execute();
+        return $result;
+    }
+
+    public function getTotalNoOfWorkingDays(Expression $startDate, Expression $endDate) {
+        $sql = new Sql($this->adapter);
+        $select = $sql->select();
+        $select->from(['A' => AttendanceDetail::TABLE_NAME]);
+        $select->columns([Helper::columnExpression(AttendanceDetail::ATTENDANCE_DT, "DISTINCT  A", null, null)]);
+        $select->where(['A.' . AttendanceDetail::ATTENDANCE_DT . " BETWEEN " . $startDate->getExpression() . " AND " . $endDate->getExpression()]);
+//        $select->where(['A.' . AttendanceDetail::HOLIDAY_ID . " IS NULL"]);
+//        $select->group(['A.' . AttendanceDetail::ATTENDANCE_DT]);
+
+        $statement = $sql->prepareStatementForSqlObject($select);
+        $result = $statement->execute();
+
+        return $result->count();
+    }
+
+    public function checkAndUpdateLeaves(Expression $date) {
     }
 
 }

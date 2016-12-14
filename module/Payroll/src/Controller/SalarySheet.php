@@ -36,6 +36,10 @@ class SalarySheet {
         }
     }
 
+    public function deleteSalarySheet(int $monthId) {
+        return $this->salarySheetRepo->delete($monthId);
+    }
+
     public function addSalarySheetDetail(int $monthId, array $salarySheetDetails, int $salarySheet) {
         foreach ($salarySheetDetails as $empId => $salarySheetDetail) {
             $salarySheetDetailModel = new SalarySheetDetailModel($this->adapter);
@@ -56,6 +60,10 @@ class SalarySheet {
                 $this->salarySheetDetailRepo->add($salarySheetDetailModel);
             }
         }
+    }
+
+    public function deleteSalarySheetDetail(int $monthId) {
+        return $this->salarySheetDetailRepo->delete($monthId);
     }
 
     public function viewSalarySheet(int $monthId, array $employeeList) {
