@@ -67,11 +67,11 @@ if($this->messages) { ?>
         #: (END_TIME == null) ? '-' : END_TIME #
         </td>
         <td>
-        <a class="btn  btn-icon-only btn-success" 
+        <a class="btn-edit" 
         href="<?= $this->url("shiftsetup", ["action" => "edit"]); ?>/#:SHIFT_ID #" style="height:17px;">
         <i class="fa fa-edit"></i>
         </a> 
-        <a class="btn  btn-icon-only btn-danger confirmation" 
+        <a class="btn-delete confirmation" 
         href="<?= $this->url("shiftsetup", ["action" => "delete"]); ?>/#:SHIFT_ID #" id="bs_#:SHIFT_ID #" style="height:17px;">
         <i class="fa fa-trash-o"></i>
         </a>

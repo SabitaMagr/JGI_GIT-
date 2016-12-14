@@ -1,5 +1,11 @@
 (function () {
     'use strict';
+//    $('#qualificationTbl').delegate("select", "DOMNodeInserted", function () {
+//        $(this).select2();
+//    });
+    
+    //$(selector).live( eventName, function(){} );
+
     angular.module("hris", ['ui.bootstrap'])
             .controller('qualificationController', function ($scope, $uibModal, $log, $document) {
 
@@ -72,6 +78,7 @@
                             }
                         }
                         $scope.view = function () {
+
                             $scope.qualificationFormList.push({
                                 id: 0,
                                 academicDegreeId: $scope.degreeList[0],
@@ -85,6 +92,7 @@
                                 checked: false
                             });
                             $scope.counter++;
+                            $("select").select2();
                         };
 
 

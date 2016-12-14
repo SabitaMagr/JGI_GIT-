@@ -29,10 +29,17 @@ if($this->messages) { ?>
         <div class="row">
             <div class="col-md-6">
                 <div class="btn-group">
-                    <a href="<?= $this->url('recommendapprove', ['action' => 'add']) ?>" id="sample_editable_1_new"
-                       class="btn green"> Add New
-                        <!--                        <i class="fa fa-plus"></i>-->
-                    </a>
+                    <button class="btn green btn-outline dropdown-toggle" data-toggle="dropdown">Add New
+                        <i class="fa fa-angle-down"></i>
+                    </button>
+                    <ul class="dropdown-menu pull-right">
+                        <li>
+                            <a href="<?= $this->url('recommendapprove', ['action' => 'add']) ?>"> Designation Wise </a>
+                        </li>
+                        <li>
+                            <a href="<?= $this->url('recommendapprove', ['action' => 'groupAssign']) ?>"> Group Wise</a>
+                        </li>
+                    </ul>
                 </div>
             </div>
             <div class="col-md-6">
@@ -70,7 +77,7 @@ if($this->messages) { ?>
             #: (LAST_NAME_A == null) ? ' ' : LAST_NAME_A #
         </td>
         <td>
-        <a class="btn  btn-icon-only btn-success"
+        <a class="btn-edit"
         href="<?= $this->url("recommendapprove", ["action" => "edit"]) ?>/#:EMPLOYEE_ID #" style="height:17px;">
         <i class="fa fa-edit"></i>
         </a> 

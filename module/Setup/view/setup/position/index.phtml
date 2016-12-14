@@ -61,11 +61,11 @@ echo json_encode($menu); ?>;
         #: (POSITION_NAME == null) ? '-' : POSITION_NAME #
         </td>
         <td>      
-        <a class="btn  btn-icon-only btn-success" 
+        <a class="btn-edit" 
         href="<?= $this->url("position", ["action" => "edit"]) ?>/#:POSITION_ID #" style="height:17px;" title="edit">
             <i class="fa fa-edit"></i>
         </a>
-        <a class="btn btn-icon-only btn-danger confirmation" 
+        <a class="btn-delete confirmation" 
         href="<?= $this->url("position", ["action" => "delete"]) ?>/#:POSITION_ID #" id="bs_#:POSITION_ID #" style="height:17px;">
             <i class="fa fa-trash-o"></i>
         </a>

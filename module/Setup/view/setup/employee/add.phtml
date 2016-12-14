@@ -234,7 +234,8 @@ echo json_encode($menu);
                                 <div class="col-xs-6 col-sm-6 col-md-6 rightalign"> <?php print $this->formLabel($employeeCode); ?></div>
                                 <div class="col-xs-6 col-sm-6 col-md-6 cgap"> <?php print $this->formElement($employeeCode); ?> </div>
                                 <?php print $this->formElementErrors()->render($employeeCode, ['class' => 'error']) ?>
-                            </div>
+                                <span class="errorMsg" style="font-size:11px; color:red;"></span>
+                            </div>                            
                         </div>
                     </div>
 
@@ -482,7 +483,7 @@ echo json_encode($menu);
 
 
             <div class="permanent-info">
-      <!--<p>Address Information</p> -->
+       
                 <p> <i class="fa fa-address-book ticon" aria-hidden="true"></i>
 
 

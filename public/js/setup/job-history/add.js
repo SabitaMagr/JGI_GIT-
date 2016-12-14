@@ -1,11 +1,13 @@
 (function ($, app) {
-    'use strict';
     $(document).ready(function () {
         $('select').select2();
         app.addDatePicker(
                 $("#startDate"),
                 $("#endDate"));
         var editMode = typeof document.employeeId !== "undefined";
+        
+        var selectobject = document.getElementById("serviceEventTypeId")
+        console.log(selectobject.length);
 
         var $employeeId = $("#employeeID");
         var $fromServiceTypeId = $('#fromServiceTypeId');
@@ -70,7 +72,7 @@
                 action: 'pullEmployeeById',
                 data: {employeeId: employeeId}
             }).then(function (success) {
-                console.log("pullEmployeeById response", success);
+                //console.log("pullEmployeeById response", success);
                 if (!editMode) {
                     updateView(success.data);
                 }
@@ -99,28 +101,46 @@
             pullEmployeeDetail($employeeId.val());
         }
         var checkAppointmentOption = function (employeeDtl) {
-            if (employeeDtl.APP_BRANCH_ID == null && employeeDtl.APP_DEPARTMENT_ID == null && employeeDtl.APP_DESIGNATION_ID == null && employeeDtl.APP_POSITION_ID == null && employeeDtl.APP_SERVICE_EVENT_TYPE_ID == null && employeeDtl.APP_SERVICE_TYPE_ID == null) {
-                var selectobject = document.getElementById("serviceEventTypeId")
-                var app = false;
+            if (employeeDtl.APP_BRANCH_ID == null && employeeDtl.APP_DEPARTMENT_ID == null && employeeDtl.APP_DESIGNATION_ID == null && employeeDtl.APP_POSITION_ID == null && employeeDtl.APP_SERVICE_TYPE_ID == null) {
+                var selectobject = document.getElementById("serviceEventTypeId");
+                var optionValue = [];
                 for (var i = 0; i < selectobject.length; i++) {
-                    if (selectobject.options[i].value != 2)
-                        app = true;
+                    optionValue.push(selectobject.options[i].value);
                 }
-                if (app) {
+                if (optionValue.indexOf("2") == -1) {
                     $serviceEventTypeId.append('<option value="2">Appoinment</option>');
                 }
                 $serviceEventTypeId.val(2).trigger("change");
                 enableEmployeeInfo();
-
             } else {
-                if (employeeDtl.APP_SERVICE_EVENT_TYPE_ID != 2) {
-                    var selectobject = document.getElementById("serviceEventTypeId")
-                    for (var i = 0; i < selectobject.length; i++) {
-                        if (selectobject.options[i].value == 2)
-                            selectobject.remove(i);
+                if (editMode) {
+                    var selectobject2 = document.getElementById("serviceEventTypeId");
+                    var app = [];
+                    for (var i = 0; i < selectobject2.length; i++) {
+                        app.push(selectobject2.options[i].value);
                     }
+                    if (app.indexOf("2") == -1) {
+                        $serviceEventTypeId.append('<option value="2">Appoinment</option>');
+                    }
+                    var formServiceEventTypeId = parseInt($serviceEventTypeId.val());
+                    if (formServiceEventTypeId == 2) {
+                        enableEmployeeInfo();
+                    } else {
+                        var selectobject3 = document.getElementById("serviceEventTypeId")
+                        for (var i = 0; i < selectobject3.length; i++) {
+                            if (selectobject3.options[i].value == 2)
+                                selectobject3.remove(i);
+                        }
+                        disableEmployeeInfo();
+                    }
+                } else if(!editMode) {
+                    var selectobject1 = document.getElementById("serviceEventTypeId");
+                    for (var i = 0; i < selectobject1.length; i++) {
+                        if (selectobject1.options[i].value == 2)
+                            selectobject1.remove(i);
+                    }
+                    disableEmployeeInfo();
                 }
-                disableEmployeeInfo();
             }
         };
         $fromServiceTypeId.on("change", function () {

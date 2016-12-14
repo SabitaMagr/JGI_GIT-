@@ -40,7 +40,7 @@ class JobHistoryForm
 
     /**
      * @Annotation\Type("Zend\Form\Element\Text")
-     * @Annotation\Required({false})
+     * @Annotation\Required(false)
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
      * @Annotation\Options({"label":"End Date"})
      * @Annotation\Attributes({ "class":"form-control"})

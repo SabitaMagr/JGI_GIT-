@@ -158,7 +158,7 @@ class leaveAssign extends AbstractActionController {
             if ($this->form->isValid()) {
                 $leaveAssign = new \LeaveManagement\Model\LeaveAssign();
                 $leaveAssign->exchangeArrayFromForm($this->form->getData());
-               // $leaveAssign->employeeLeaveAssignId = ((int) Helper::getMaxId($this->adapter, LeaveAssignController::TABLE_NAME, LeaveAssignController::EMPLOYEE_LEAVE_ASSIGN_ID)) + 1;
+                // $leaveAssign->employeeLeaveAssignId = ((int) Helper::getMaxId($this->adapter, LeaveAssignController::TABLE_NAME, LeaveAssignController::EMPLOYEE_LEAVE_ASSIGN_ID)) + 1;
                 $leaveAssign->createdDt = Helper::getcurrentExpressionDate();
                 $leaveAssign->employeeId = $id;
                 $this->repository->add($leaveAssign);
@@ -274,14 +274,12 @@ class leaveAssign extends AbstractActionController {
                     $leaveId = $row[1];
                     $preYrBalance = $row[2];
                     $totalDays = $row[3];
-                    $balance = $preYrBalance+$totalDays;
+                    $balance = $preYrBalance + $totalDays;
 
                     $leaveDetail = $leaveRepository->fetchById($leaveId);
-                    if ($leaveDetail['CASHABLE'] == 'N' && $leaveDetail['CARRY_FORWARD'] == 'Y' && $leaveDetail['STATUS'] == 'E') {
-                        
-                        $empLeaveBalanceDetail = $leaveBalanceRepository->getByEmpIdLeaveId($employeeId,$leaveId);
-                        
-                        if($empLeaveBalanceDetail==NULL){                                 
+                    if ($leaveDetail['STATUS'] == 'E') {
+                        $empLeaveBalanceDetail = $leaveBalanceRepository->getByEmpIdLeaveId($employeeId, $leaveId);
+                        if ($empLeaveBalanceDetail == NULL) {
                             $leaveAssign = new \LeaveManagement\Model\LeaveAssign();
                             //$leaveAssign->employeeLeaveAssignId = ((int) Helper::getMaxId($this->adapter, LeaveAssignController::TABLE_NAME, LeaveAssignController::EMPLOYEE_LEAVE_ASSIGN_ID)) + 1;
                             $leaveAssign->createdDt = Helper::getcurrentExpressionDate();
@@ -289,18 +287,21 @@ class leaveAssign extends AbstractActionController {
                             $leaveAssign->leaveId = $leaveId;
                             $leaveAssign->totalDays = $totalDays;
                             $leaveAssign->previousYearBalance = $preYrBalance;
-                            $leaveAssign->balance = $balance;                          
-                            $this->repository->add($leaveAssign);                              
-                        } else{
-                            $updatePreYrBalance = $this->repository->updatePreYrBalance($employeeId, $leaveId, $preYrBalance,$totalDays,$balance);                        
-                        }                           
+                            $leaveAssign->balance = $balance;
+                            $this->repository->add($leaveAssign);
+                        } else {
+                            if ($leaveDetail['CARRY_FORWARD'] == 'Y') {
+                                $updatePreYrBalance = $this->repository->updatePreYrBalance($employeeId, $leaveId, $preYrBalance, $totalDays, $balance);
+                            }
+                        }
                     }
                 }
                 unlink(EmployeeController::UPLOAD_DIR . "/" . $newFileName);
             }
-            
+
             $this->flashmessenger()->addMessage("Previous Year Balance Successfully Updated!!!");
             return $this->redirect()->toRoute("leaveassign", ['action' => 'assign', 'eid' => $eid]);
-        }       
+        }
     }
+
 }

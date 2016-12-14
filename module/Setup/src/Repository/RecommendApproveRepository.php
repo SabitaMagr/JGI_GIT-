@@ -80,7 +80,10 @@ class RecommendApproveRepository implements RepositoryInterface
             ->join(['E2'=>"HR_EMPLOYEES"],"E2.EMPLOYEE_ID=RA.APPROVED_BY",['FIRST_NAME_A'=>"FIRST_NAME","MIDDLE_NAME_A"=>'MIDDLE_NAME',"LAST_NAME_A"=>'LAST_NAME'],"left");
 
         $select->where([
-            "RA.STATUS='E'"
+            "RA.STATUS='E'",
+            "E.STATUS='E'",
+            "E1.STATUS='E'",
+            "E2.STATUS='E'"
         ]);
 
         $statement = $sql->prepareStatementForSqlObject($select);
@@ -120,5 +123,31 @@ class RecommendApproveRepository implements RepositoryInterface
     public function fetchById($id){
         $row = $this->tableGateway->select([RecommendApprove::EMPLOYEE_ID=>$id]);
         return $row->current();
+    }
+    public function getDetailByEmployeeID($employeeId){
+        $sql = new Sql($this->adapter);
+        $select = $sql->select();
+        $select->columns([
+            new Expression("RA.STATUS AS STATUS"),
+            new Expression("RA.EMPLOYEE_ID AS EMPLOYEE_ID"),
+            new Expression("RA.RECOMMEND_BY AS RECOMMEND_BY"),
+            new Expression("RA.APPROVED_BY AS APPROVED_BY"),
+        ], true);
+        $select->from(['RA' => RecommendApprove::TABLE_NAME])
+            ->join(['E'=>"HR_EMPLOYEES"],"E.EMPLOYEE_ID=RA.EMPLOYEE_ID",['FIRST_NAME','MIDDLE_NAME','LAST_NAME'])
+            ->join(['E1'=>"HR_EMPLOYEES"],"E1.EMPLOYEE_ID=RA.RECOMMEND_BY",['FIRST_NAME_R'=>"FIRST_NAME","MIDDLE_NAME_R"=>'MIDDLE_NAME',"LAST_NAME_R"=>'LAST_NAME'],"left")
+            ->join(['E2'=>"HR_EMPLOYEES"],"E2.EMPLOYEE_ID=RA.APPROVED_BY",['FIRST_NAME_A'=>"FIRST_NAME","MIDDLE_NAME_A"=>'MIDDLE_NAME',"LAST_NAME_A"=>'LAST_NAME'],"left");
+
+        $select->where([
+            "RA.STATUS='E'",
+            "E.STATUS='E'",
+            "E1.STATUS='E'",
+            "E2.STATUS='E'",
+            "RA.EMPLOYEE_ID=".$employeeId,           
+        ]);
+
+        $statement = $sql->prepareStatementForSqlObject($select);
+        $result = $statement->execute();
+        return $result->current();
     }
 }

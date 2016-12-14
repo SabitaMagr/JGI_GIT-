@@ -62,11 +62,11 @@ $this->headScript()
         #: (SHOW_AT_RULE == null) ? '-' : SHOW_AT_RULE #
         </td>   
         <td>
-        <a class="btn  btn-icon-only btn-success"
+        <a class="btn-edit"
         href="<?= $this->url("flatValue", ["action" => "edit"]); ?>/#:FLAT_ID #" style="height:17px;">
         <i class="fa fa-edit"></i>
         </a> 
-         <a class="btn btn-icon-only btn-danger confirmation"
+         <a class="btn-delete confirmation"
         href="<?= $this->url("flatValue", ["action" => "delete"]); ?>/#:FLAT_ID #" id="bs_#:FLAT_ID #" style="height:17px;">
         <i class="fa fa-trash-o"></i></a>
         </a>

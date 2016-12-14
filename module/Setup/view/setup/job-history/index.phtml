@@ -118,11 +118,11 @@ echo json_encode($menu); ?>;
                  #: (FROM_POSITION_NAME == null) ? ' ' : FROM_POSITION_NAME # - #: (TO_POSITION_NAME == null) ? ' ' : TO_POSITION_NAME #
                 </td>
                 <td>
-                <a class="btn  btn-icon-only btn-success"
+                <a class="btn-edit"
                 href="<?= $this->url("jobHistory", ["action" => "edit"])?>/#: JOB_HISTORY_ID #" style="height:17px;">
                     <i class="fa fa-edit"></i>
                 </a>
-                <a class="btn btn-icon-only btn-danger confirmation"
+                <a class="btn-delete confirmation"
                 href="<?= $this->url("jobHistory", ["action" => "delete"])?>/#: JOB_HISTORY_ID #" id="bs_#:JOB_HISTORY_ID #" style="height:17px;">
                     <i class="fa fa-trash-o"></i></a>
                 </a>
