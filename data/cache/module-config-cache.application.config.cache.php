@@ -1702,6 +1702,12 @@ return array (
             'route' => 'recommendapprove',
             'action' => 'edit',
           ),
+          3 => 
+          array (
+            'label' => 'Group Assign',
+            'route' => 'recommendapprove',
+            'action' => 'groupAssign',
+          ),
         ),
       ),
     ),
@@ -2473,6 +2479,28 @@ return array (
             'label' => 'Edit',
             'route' => 'profile',
             'action' => 'edit',
+          ),
+        ),
+      ),
+    ),
+    'payslip' => 
+    array (
+      0 => 
+      array (
+        'label' => 'PaySlip',
+        'route' => 'payslip',
+      ),
+      1 => 
+      array (
+        'label' => 'PaySlip',
+        'route' => 'payslip',
+        'pages' => 
+        array (
+          0 => 
+          array (
+            'label' => 'Detail',
+            'route' => 'payslip',
+            'action' => 'index',
           ),
         ),
       ),

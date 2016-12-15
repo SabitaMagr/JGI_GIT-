@@ -1,1 +1,37 @@
-Hello Ukesh
+<?php
+$this->headScript()
+        ->appendFile($this->basePath('jszip/dist/jszip.min.js'))
+        ->appendFile($this->basePath('telerik_kendoui/js/kendo.all.min.js'))
+        ->appendFile($this->basePath('js/angular.min.js'))
+        ->appendFile($this->basePath('js/SelfService/pay-slip/index.js'));
+?>
+
+<script>
+    document.menu =<?php
+$menu = ["id" => "menuSelfService", "subMenu" => ["id" => "subMenuPaySlip"]];
+echo json_encode($menu);
+?>;
+</script>
+<?php if ($this->messages) { ?>
+    <script>
+        document.messages =<?php echo json_encode($this->messages); ?>
+    </script>
+<?php } ?>
+
+<div class="page-bar">
+<?= $this->navigation('Zend\Navigation\payslip')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
+</div>
+
+<div ng-app="hris" ng-controller="paySlipController">
+    <div class="row">
+        <div class="col-sm-offset-2 col-sm-3 " >
+            <h5>Generated Months</h5>
+            <div class="scroller" style="height: 100px;" >
+                <div class="list-group generate-month">
+                    <a href="#" ng-click="viewMonthlySheet(month.MONTH_ID)" class="list-group-item" ng-repeat="month in payRollGeneratedMonths" ng-bind="month.MONTH_EDESC"></a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
