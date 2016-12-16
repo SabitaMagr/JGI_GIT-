@@ -2483,6 +2483,28 @@ return array (
         ),
       ),
     ),
+    'payslip' => 
+    array (
+      0 => 
+      array (
+        'label' => 'PaySlip',
+        'route' => 'payslip',
+      ),
+      1 => 
+      array (
+        'label' => 'PaySlip',
+        'route' => 'payslip',
+        'pages' => 
+        array (
+          0 => 
+          array (
+            'label' => 'Detail',
+            'route' => 'payslip',
+            'action' => 'index',
+          ),
+        ),
+      ),
+    ),
     'monthlyValue' => 
     array (
       0 => 

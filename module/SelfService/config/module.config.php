@@ -336,6 +336,23 @@ return [
                 ],
             ],
         ],
+        'payslip' => [
+            [
+                'label' => 'PaySlip',
+                'route' => 'payslip',
+            ],
+            [
+                'label' => 'PaySlip',
+                'route' => 'payslip',
+                'pages' => [
+                    [
+                        'label' => 'Detail',
+                        'route' => 'payslip',
+                        'action' => 'index',
+                    ],
+                ],
+            ],
+        ],
     ],
 
     'controllers' => [
