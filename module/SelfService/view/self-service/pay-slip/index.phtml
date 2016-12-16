@@ -11,6 +11,7 @@ $this->headScript()
 $menu = ["id" => "menuSelfService", "subMenu" => ["id" => "subMenuPaySlip"]];
 echo json_encode($menu);
 ?>;
+    document.rules =<?= $rules ?>;
 </script>
 <?php if ($this->messages) { ?>
     <script>
@@ -19,16 +20,62 @@ echo json_encode($menu);
 <?php } ?>
 
 <div class="page-bar">
-<?= $this->navigation('Zend\Navigation\payslip')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
+    <?= $this->navigation('Zend\Navigation\payslip')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
 
 <div ng-app="hris" ng-controller="paySlipController">
-    <div class="row">
-        <div class="col-sm-offset-2 col-sm-3 " >
-            <h5>Generated Months</h5>
-            <div class="scroller" style="height: 100px;" >
-                <div class="list-group generate-month">
-                    <a href="#" ng-click="viewMonthlySheet(month.MONTH_ID)" class="list-group-item" ng-repeat="month in payRollGeneratedMonths" ng-bind="month.MONTH_EDESC"></a>
+    <div class="row margin-top-10">
+        <div class="col-sm-3 " >
+            <div class="portlet solid purple">
+                <div class="portlet-title">
+                    <div class="caption">
+                        <i class="icon-speech"></i>
+                        <span class="caption-subject bold uppercase"> Months</span>
+                        <span class="caption-helper">generated...</span>
+                    </div>
+                </div>
+                <div class="portlet-body">
+                    <div class="scroller" style="height:400px" data-rail-visible="1" data-rail-color="yellow" data-handle-color="#a1b2bd">
+                        <div class="mt-radio-list">
+                            <label class="mt-radio"  ng-repeat="month in payRollGeneratedMonths"> 
+                                {{month.MONTH_EDESC}}
+                                <input ng-click="changeMonths(month.MONTH_ID)" type="radio" value="month.MONTH_ID" name="test" />
+                                <span></span>
+                            </label>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-9">
+            <div class="portlet solid green">
+                <div class="portlet-title">
+                    <div class="caption">
+                        <i class="icon-speech"></i>
+                        <span class="caption-subject bold uppercase"> PaySlip</span>
+                        <span class="caption-helper"></span>
+                    </div>
+                </div>
+                <div class="portlet-body">
+                    <div class="scroller" style="height:400px" data-rail-visible="1" data-rail-color="yellow" data-handle-color="#a1b2bd">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>
+                                        Facilities and Renumerations (+)
+                                    </th>
+                                    <th>
+                                        Deductions and Savings (-)
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            </tbody>
+                        </table>
+
+                    </div>
                 </div>
             </div>
         </div>

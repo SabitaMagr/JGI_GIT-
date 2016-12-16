@@ -31,9 +31,9 @@ class CronController extends AbstractActionController {
         $attendanceRepo = new AttendanceDetailRepository($this->adapter);
         foreach ($employeeList as $employee) {
             $attendance = new Attendance();
-            $attendance->employeeId = $employee->employeeId;
-            $attendance->attendanceDt = Helper::getcurrentExpressionDate();
-            $attendanceRepo->addAttendance($attendance);
+//            $attendance->employeeId = $employee->employeeId;
+//            $attendance->attendanceDt = Helper::getcurrentExpressionDate();
+//            $attendanceRepo->addAttendance($attendance);
 
             $attendanceDetail = new AttendanceDetail();
             $attendanceDetail->attendanceDt = $attendance->attendanceDt;

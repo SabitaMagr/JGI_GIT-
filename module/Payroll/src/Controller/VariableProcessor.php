@@ -15,7 +15,6 @@ use Application\Model\Months;
 use Application\Repository\MonthRepository;
 use AttendanceManagement\Model\AttendanceDetail;
 use AttendanceManagement\Repository\AttendanceDetailRepository;
-use HolidayManagement\Repository\HolidayRepository;
 use LeaveManagement\Repository\LeaveMasterRepository;
 use Setup\Model\HrEmployees;
 use Setup\Model\ServiceType;
@@ -25,17 +24,19 @@ class VariableProcessor {
 
     const VARIABLES = [
         "BASIC_SALARY",
-        "NO_OF_DAYS_IN_CURRENT_MONTH",
+        "NO_OF_WORKING_DAYS",
         "NO_OF_DAYS_ABSENT",
         "NO_OF_DAYS_WORKED",
         "NO_OF_PAID_LEAVES",
-        "NO_OF_HOLIDAYS",
+        "NO_OF_UNPAID_LEAVES",
         "TOTAL_DAYS_TO_PAY",
         "GENDER",
         "EMP_TYPE",
         "MARITUAL_STATUS",
         "TOTAL_DAYS_FROM_JOIN_DATE",
-        "SERVICE_TYPE"
+        "SERVICE_TYPE",
+        "NO_OF_WORKING_DAYS_INC_HOLIDAYS",
+        "TOTAL_NO_OF_WORK_DAYS_INC_HOLIDAYS"
     ];
 
     private $adapter;

@@ -14,7 +14,7 @@
     -moz-box-shadow:2px 6px 9px #999;
     o-box-shadow:2px 6px 9px #999;
     -webkit-box-shadow:2px 6px 9px #999;
-    background-color:#eee;
+    background-color:#000;
 }
 
 .profile-image{
@@ -756,6 +756,7 @@ form.k-filter-menu .k-widget, form.k-filter-menu .k-textbox
  .checkbtn{
      width:1%;
  }*/
+<<<<<<< HEAD
  
 .profilepic {
     border: 2px solid #eee;
@@ -836,6 +837,12 @@ select{
      box-shadow:2px 2px 2px #eee;
  }
  
+=======
+.slimScrollDiv
+{
+    min-height: 169px;
+}
+>>>>>>> 9757dfa109d95c6d23bd8b16ad01bb4b1f102e0c
 /* Large desktops and laptops */
 @media (min-width: 1200px) {
 
@@ -995,6 +1002,13 @@ select{
     margin-right: 90px;
     max-width: 44%;
 
+<<<<<<< HEAD
+=======
+.msgForError{
+    padding:15px;
+    color:red;
+    font-size:11px;
+>>>>>>> 9757dfa109d95c6d23bd8b16ad01bb4b1f102e0c
 }
 
     }
