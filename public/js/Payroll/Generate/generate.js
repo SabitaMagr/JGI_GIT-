@@ -57,6 +57,9 @@ angular.module('hris', [])
                         initializeHeaders($scope.rules);
                         initializeDatas($scope.rules, $scope.employeeRuleValues);
                         initializekendoGrid(headers, datas);
+                        if (!reqParams.regenerateFlag) {
+                            $scope.fetchPayRollGeneratedMonths();
+                        }
                     });
                 }, function (failure) {
                     console.log(failure);
@@ -84,6 +87,7 @@ angular.module('hris', [])
                         for (var i = 0; i < empList.length; i++) {
                             $scope.employeeList[empList[i]['employeeId']] = empList[i]['firstName'];
                         }
+                        $scope.viewMonthlySheetIfAvailable();
                     });
                 }, function (failure) {
                     console.log(failure);
@@ -131,12 +135,24 @@ angular.module('hris', [])
             $scope.fetchPayRollGeneratedMonths();
 
             $scope.viewMonthlySheet = function (monthId) {
+                if (typeof monthId === "undefined" || monthId == null) {
+                    console.log("fn:viewMonthlySheet", "undefined month");
+                    return;
+                }
                 $scope.pullMonthlySheet({
                     month: monthId,
                     branch: ((typeof $scope.branchId === 'undefined') || ($scope.branchId === null)) ? -1 : $scope.branchId,
                     employee: (($scope.employeeId === null) || (typeof $scope.employeeId === 'undefined')) ? -1 : $scope.employeeId,
                     regenerateFlag: false
                 });
+            };
+            $scope.removeTable = function () {
+//                var temp = $("#salarySheetTable").data("kendoGrid");
+//                if (typeof temp !== "undefined") {
+//                    temp.destroy();
+//
+//                }
+                $("#salarySheetTable").empty();
             };
 
             $scope.viewMonthlySheetIfAvailable = function () {
@@ -149,6 +165,10 @@ angular.module('hris', [])
                         generateBtn.attr("regenerateFlag", true);
                         break;
                     }
+                }
+                if (generateBtn.attr("regenerateFlag") == "false") {
+                    console.log("hello world");
+                    $scope.removeTable();
                 }
 
             };

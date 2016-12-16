@@ -14,7 +14,7 @@
     -moz-box-shadow:2px 6px 9px #999;
     o-box-shadow:2px 6px 9px #999;
     -webkit-box-shadow:2px 6px 9px #999;
-    background-color:#eee;
+    background-color:#000;
 }
 
 .profile-image{
@@ -752,7 +752,10 @@ form.k-filter-menu .k-widget, form.k-filter-menu .k-textbox
  .checkbtn{
      width:1%;
  }*/
-
+.slimScrollDiv
+{
+    min-height: 169px;
+}
 /* Large desktops and laptops */
 @media (min-width: 1200px) {
 

@@ -23,6 +23,8 @@ echo json_encode($menu);
     document.ruleTableUniqueColName1 = '<?= Payroll\Model\Rules::PAY_CODE ?>';
     document.ruleTableUniqueColName2 = '<?= Payroll\Model\Rules::PRIORITY_INDEX ?>';
     document.ruleTablePKColName = '<?= Payroll\Model\Rules::PAY_ID ?>';
+
+    document.rulesIndexUrl = '<?= $this->url("rules", ["action" => "index"]) ?>';
 </script>
 
 <?php if ($this->messages) { ?>
@@ -82,13 +84,7 @@ echo json_encode($menu);
                             <i class="fa fa-check"></i> Assign Rule </span>
                     </a>
                 </li>
-                <li>
-                    <a href="#tab4" data-toggle="tab" class="step">
-                        <span class="number"> 4 </span>
-                        <span class="desc">
-                            <i class="fa fa-check"></i> Confirm </span>
-                    </a>
-                </li>
+
             </ul>
             <div id="bar" class="progress progress-striped" role="progressbar">
                 <div class="progress-bar progress-bar-success"></div>
@@ -251,22 +247,7 @@ echo json_encode($menu);
                         </div>
                     </div>
                 </div>
-                <div class="tab-pane" id="tab4">
-                    <h3 class="block">Confirm your account</h3>
-                    <h4 class="form-section">Account</h4>
-                    <div class="form-group">
-                        <label class="control-label col-md-3">Username:</label>
-                        <div class="col-md-4">
-                            <p class="form-control-static" data-display="username"></p>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="control-label col-md-3">Email:</label>
-                        <div class="col-md-4">
-                            <p class="form-control-static" data-display="email"></p>
-                        </div>
-                    </div>
-                </div>
+
             </div>
         </div>
         <div class="form-actions">

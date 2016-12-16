@@ -122,6 +122,8 @@ class EmployeeRepository implements RepositoryInterface {
             Helper::columnExpression(HrEmployees::LAST_NAME, "E"),
             Helper::columnExpression(HrEmployees::GENDER_ID, "E"),
             Helper::columnExpression(HrEmployees::MOBILE_NO, "E"),
+            Helper::columnExpression(HrEmployees::MARITAL_STATUS, "E"),
+            Helper::columnExpression(HrEmployees::EMPLOYEE_CODE, "E"),
             Helper::dateExpression(HrEmployees::JOIN_DATE, "E"),
                 ], true);
         $select->join(['B1' => Branch::TABLE_NAME], "E." . HrEmployees::BRANCH_ID . "=B1." . Branch::BRANCH_ID, ['BRANCH' => 'BRANCH_NAME'], 'left')

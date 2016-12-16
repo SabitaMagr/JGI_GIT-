@@ -28,56 +28,75 @@ echo json_encode($menu);
     <?= $this->navigation('Zend\Navigation\generate')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
 <div ng-app="hris" ng-controller="generateController">
-    <div class="row margin-top-20">
-        <div class="col-sm-6">
-            <div class="row">
-                <div class="col-sm-6">
-                    <label>Fiscal year</label>
-                    <select class="form-control" ng-change="changeYear()" ng-model="fiscalYearId" ng-options="key as fiscalYear for (key, fiscalYear) in fiscalYears">
-                        <option value="">Select Year</option>
-                    </select>
-                </div>
-
-                <div class="col-sm-6">
-                    <label>Fiscal year</label>
-                    <select class="form-control" ng-model="monthId" ng-options="month.MONTH_ID as month.MONTH_EDESC for month in months" ng-change="viewMonthlySheetIfAvailable()">
-                        <option value="">Select Month</option>
-                    </select>
-                </div>
-            </div>
-            <div class="row margin-top-10">
-                <div class="col-sm-6">
-                    <label>Branch</label>
-                    <select class="form-control" ng-change="changeBranch()" ng-model="branchId" ng-options="key as branch for (key, branch) in branches">
-                        <option value="">All</option>
-                    </select>
-                </div>
-                <div class="col-sm-6">
-                    <label>Employee</label>
-                    <select class="form-control" ng-model="employeeId" ng-options="key as employee for (key, employee) in employeeList">
-                        <option value="">All</option>
-                    </select>
-                </div>
-            </div>
-            <div class="row margin-top-10">
-                <div class="col-sm-6">
-                    <button id="generateBtn" class="btn btn-info btn-block" regenerateFlag="false">
-                        Generate
-                    </button>
+    <div class="row margin-top-10">
+        <div class="col-sm-2">
+            <div class="portlet solid grey-cap">
+                <div class="portlet-body">
+                    <div class="row">
+                        <div class="col-sm-12 " >
+                            <label>Generated Months</label>
+                            <select class="form-control" ng-model="generatedMonthId" ng-change="viewMonthlySheet(generatedMonthId)" ng-options="month.MONTH_ID as month.MONTH_EDESC for month in payRollGeneratedMonths">
+                                <option value="">Select Month</option>
+                            </select>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-        <div class="col-sm-offset-2 col-sm-3 " >
-            <h5>Generated Months</h5>
-            <div class="scroller" style="height: 100px;" >
-                <div class="list-group generate-month">
-                    <a href="#" ng-click="viewMonthlySheet(month.MONTH_ID)" class="list-group-item" ng-repeat="month in payRollGeneratedMonths" ng-bind="month.MONTH_EDESC"></a>
+        <div class="col-sm-10">
+            <div class="portlet solid ">
+                <div class="portlet-body">
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <label>Fiscal year</label>
+                            <select class="form-control" ng-change="changeYear()" ng-model="fiscalYearId" ng-options="key as fiscalYear for (key, fiscalYear) in fiscalYears">
+                                <option value="">Select Year</option>
+                            </select>
+                        </div>
+                        <div class="col-sm-3">
+                            <label>Months</label>
+                            <select class="form-control" ng-model="monthId" ng-options="month.MONTH_ID as month.MONTH_EDESC for month in months" ng-change="viewMonthlySheetIfAvailable()">
+                                <option value="">Select Month</option>
+                            </select>
+                        </div>
+                        <div class="col-sm-2">
+                            <label>Branch</label>
+                            <select class="form-control" ng-change="changeBranch()" ng-model="branchId" ng-options="key as branch for (key, branch) in branches">
+                                <option value="">All</option>
+                            </select>
+                        </div>
+                        <div class="col-sm-2">
+                            <label>Employee</label>
+                            <select class="form-control" ng-change="viewMonthlySheetIfAvailable()"  ng-model="employeeId" ng-options="key as employee for (key, employee) in employeeList">
+                                <option value="">All</option>
+                            </select>
+                        </div>
+                        <div class="col-sm-2">
+                            <label>
+                                &nbsp;
+                            </label>
+                            <button id="generateBtn" class=" form-control red " regenerateFlag="false">
+                                Generate
+                            </button>
+                        </div>
+                    </div>
+
                 </div>
             </div>
         </div>
     </div>
 
+
+
     <div class="row margin-top-10">
+        <div class="col-sm-12">
+            <div id="salarySheetTable">
+            </div>
+        </div>
+    </div>
+
+</div>
+
 <!--        <table class="table">
             <thead>
             <th>
@@ -102,11 +121,3 @@ echo json_encode($menu);
 
             </tbody>
         </table>-->
-
-        <div class="col-sm-12">
-            <div id="salarySheetTable">
-            </div>
-        </div>
-    </div>
-
-</div>

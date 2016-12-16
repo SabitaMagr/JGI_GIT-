@@ -204,7 +204,7 @@ window.app = (function ($, toastr) {
             this.view.body.show();
             this.view.minMaxBtn.removeClass("fa-plus");
             this.view.minMaxBtn.addClass("fa-minus");
-            $(this.obj).css("height", 400);
+            $(this.obj).css("height", 320);
             this.minStatus = false;
         },
         initialize: function () {

@@ -184,7 +184,9 @@
                     .then(function (success) {
                         console.log('PositionAssigned', success);
                         eclickFlag = true;
-                        $('.button-next').click();
+//                        $('.button-next').click();
+                        app.successMessage("Setup complete!");
+                        location.href = document.rulesIndexUrl;
                         eclickFlag = false;
                     }, function (failure) {
                         console.log('PositionAssigned', failure);
@@ -286,7 +288,7 @@
                                     pushRuleDetail();
                                     break;
                                 case 3:
-                                    positionAssigned.pushPositionAssigned();
+//                                    positionAssigned.pushPositionAssigned();
                                     break;
                             }
                             return false;
@@ -299,9 +301,12 @@
                             var i = r.find("li").length, a = t + 1, o = a / i * 100;
                             $("#form_wizard_1").find(".progress-bar").css({width: o + "%"})
                         }
-                    }), $("#form_wizard_1").find(".button-previous").hide(), $("#form_wizard_1 .button-submit").click(function () {
-                        alert("Finished! Hope you like it :)")
-                    }).hide(), $("#country_list", r).change(function () {
+                    }),
+                            $("#form_wizard_1").find(".button-previous").hide(),
+                            $("#form_wizard_1 .button-submit").click(function () {
+                        positionAssigned.pushPositionAssigned();
+                    }).hide(),
+                            $("#country_list", r).change(function () {
                         r.validate().element($(this))
                     })
                 }

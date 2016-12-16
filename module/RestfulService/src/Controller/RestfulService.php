@@ -40,6 +40,7 @@ use Setup\Repository\BranchRepository;
 use Setup\Repository\EmployeeQualificationRepository;
 use Setup\Repository\EmployeeRepository;
 use Setup\Repository\JobHistoryRepository;
+use Setup\Repository\RecommendApproveRepository;
 use System\Model\DashboardDetail;
 use System\Model\MenuSetup;
 use System\Model\RolePermission;
@@ -52,7 +53,6 @@ use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Adapter\Driver\ResultInterface;
 use Zend\Mvc\Controller\AbstractRestfulController;
 use Zend\View\Model\JsonModel;
-use Setup\Repository\RecommendApproveRepository;
 
 class RestfulService extends AbstractRestfulController {
 
@@ -90,7 +90,7 @@ class RestfulService extends AbstractRestfulController {
                 case "pullEmployeeForShiftAssign":
                     $responseData = $this->pullEmployeeForShiftAssign($postedData->id);
                     break;
-                
+
                 case "pullEmployeeForRecomApproverAssign":
                     $responseData = $this->pullEmployeeForRecomApproverAssign($postedData->data);
                     break;
@@ -239,6 +239,9 @@ class RestfulService extends AbstractRestfulController {
                     break;
                 case "pullPayRollGeneratedMonths":
                     $responseData = $this->pullPayRollGeneratedMonths($postedData->data);
+                    break;
+                case "fetchEmployeePaySlip":
+                    $responseData = $this->fetchEmployeePaySlip($postedData->data);
                     break;
                 default:
                     $responseData = [
@@ -897,8 +900,8 @@ class RestfulService extends AbstractRestfulController {
 
     private function generataMonthlySheet($data) {
         $employeeId = $data['employee'];
-        $branchId = $data['branch'];
         $monthId = $data['month'];
+        $branchId = $data['branch'];
         $regenerateFlag = ($data['regenerateFlag'] == "true") ? 1 : 0;
 
         $results = [];
@@ -988,6 +991,23 @@ class RestfulService extends AbstractRestfulController {
 //            }
 //        }
 //        exit;
+        return ["success" => true, "data" => $results];
+    }
+
+    private function fetchEmployeePaySlip($data) {
+        $monthId = $data['month'];
+        $auth = new AuthenticationService();
+        $employeeId = $auth->getStorage()->read()['employee_id'];
+
+        $salarySheetController = new SalarySheetController($this->adapter);
+        if ($salarySheetController->checkIfGenerated($monthId)) {
+            $employeeList[$employeeId] = "";
+            $results = $salarySheetController->viewSalarySheet($monthId, $employeeList)[$employeeId];
+        }
+
+        $employeeRepo = new EmployeeRepository($this->adapter);
+        $employee = $employeeRepo->fetchForProfileById($employeeId);
+        $results['employeeDetail'] = $employee;
         return ["success" => true, "data" => $results];
     }
 
@@ -1544,7 +1564,7 @@ class RestfulService extends AbstractRestfulController {
             "data" => $generatedSalarySheets
         ];
     }
-    
+
     private function pullEmployeeForShiftAssign(array $ids) {
         $shiftAssignRepo = new ShiftAssignRepository($this->adapter);
         $result = $shiftAssignRepo->filter($ids['branchId'], $ids['departmentId'], $ids['designationId'], $ids['positionId'], $ids['serviceTypeId']);
@@ -1566,30 +1586,30 @@ class RestfulService extends AbstractRestfulController {
             "data" => $tempArray
         ];
     }
-    
-    public function pullEmployeeForRecomApproverAssign($data){
+
+    public function pullEmployeeForRecomApproverAssign($data) {
         $branchId = $data['branchId'];
         $departmentId = $data['departmentId'];
         $designationId = $data['designationId'];
         $employeeId = $data['employeeId'];
-        
+
         $recommApproverRepo = new RecommendApproveRepository($this->adapter);
-        
+
         $employeeRepo = new EmployeeRepository($this->adapter);
-        $employeeResult = $employeeRepo->filterRecords($employeeId, $branchId, $departmentId, $designationId, -1, -1, -1,1);
-       
+        $employeeResult = $employeeRepo->filterRecords($employeeId, $branchId, $departmentId, $designationId, -1, -1, -1, 1);
+
         $employeeList = [];
-        foreach($employeeResult as $employeeRow){
+        foreach ($employeeResult as $employeeRow) {
             $employeeId = $employeeRow['EMPLOYEE_ID'];
             $recommedApproverList = $recommApproverRepo->getDetailByEmployeeID($employeeId);
-            if($recommedApproverList!=null){
+            if ($recommedApproverList != null) {
                 $employeeRow['FIRST_NAME_R'] = $recommedApproverList['FIRST_NAME_R'];
                 $employeeRow['MIDDLE_NAME_R'] = $recommedApproverList['MIDDLE_NAME_R'];
                 $employeeRow['LAST_NAME_R'] = $recommedApproverList['LAST_NAME_R'];
                 $employeeRow['FIRST_NAME_A'] = $recommedApproverList['FIRST_NAME_A'];
                 $employeeRow['MIDDLE_NAME_A'] = $recommedApproverList['MIDDLE_NAME_A'];
                 $employeeRow['LAST_NAME_A'] = $recommedApproverList['LAST_NAME_A'];
-            }else{
+            } else {
                 $employeeRow['FIRST_NAME_R'] = "";
                 $employeeRow['MIDDLE_NAME_R'] = "";
                 $employeeRow['LAST_NAME_R'] = "";
@@ -1597,13 +1617,13 @@ class RestfulService extends AbstractRestfulController {
                 $employeeRow['MIDDLE_NAME_A'] = "";
                 $employeeRow['LAST_NAME_A'] = "";
             }
-            array_push($employeeList,$employeeRow);
-            
+            array_push($employeeList, $employeeRow);
         }
-       ///  print_r($employeeList); die();
+        ///  print_r($employeeList); die();
         return [
-            "success"=>true,
-            "data"=>$employeeList
+            "success" => true,
+            "data" => $employeeList
         ];
     }
+
 }
