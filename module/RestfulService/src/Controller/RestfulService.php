@@ -53,7 +53,8 @@ use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Adapter\Driver\ResultInterface;
 use Zend\Mvc\Controller\AbstractRestfulController;
 use Zend\View\Model\JsonModel;
-
+use Setup\Repository\RecommendApproveRepository;
+use Setup\Model\RecommendApprove;
 class RestfulService extends AbstractRestfulController {
 
     private $adapter;
@@ -94,7 +95,9 @@ class RestfulService extends AbstractRestfulController {
                 case "pullEmployeeForRecomApproverAssign":
                     $responseData = $this->pullEmployeeForRecomApproverAssign($postedData->data);
                     break;
-
+                case "assignEmployeeReportingHierarchy":
+                    $responseData = $this->assignEmployeeReportingHierarchy($postedData->data);
+                    break;
                 case "assignEmployeeShift":
                     $responseData = $this->assignEmployeeShift($postedData->data);
                     break;
@@ -134,7 +137,9 @@ class RestfulService extends AbstractRestfulController {
                 case "menuUpdate":
                     $responseData = $this->menuUpdate($postedData->data);
                     break;
-
+                case "pullEmployeeListForReportingRole":
+                    $responseData = $this->pullEmployeeListForReportingRole($postedData->data);
+                    break;
                 case "pullMenuDetail":
                     $responseData = $this->pullMenuDetail($postedData->data);
                     break;
@@ -1230,6 +1235,32 @@ class RestfulService extends AbstractRestfulController {
         ];
     }
 
+    public function pullEmployeeListForReportingRole($data) {
+        $branchId = $data['branchId'];
+        $departmentId = $data['departmentId'];
+        $designationId = $data['designationId'];
+
+        $repository = new EmployeeRepository($this->adapter);
+        $employeeResult = $repository->filterRecords(-1, $branchId, $departmentId, $designationId, -1, -1, -1, 1);
+
+        $employeeList = [];
+        $i = 0;
+        foreach ($employeeResult as $employeeRow) {
+            if ($employeeRow['MIDDLE_NAME'] != null) {
+                $middleName = " " . $employeeRow['MIDDLE_NAME'] . " ";
+            } else {
+                $middleName = " ";
+            }
+            $employeeList [$i]["id"] = $employeeRow['EMPLOYEE_ID'];
+            $employeeList [$i]["name"] = $employeeRow['FIRST_NAME'] . $middleName . $employeeRow['LAST_NAME'];
+            $i++;
+        }
+        return [
+            'success' => true,
+            'data' => $employeeList
+        ];
+    }
+
     public function menuDelete($data) {
         $menuId = $data['menuId'];
         $menuRepository = new MenuSetupRepository($this->adapter);
@@ -1603,19 +1634,21 @@ class RestfulService extends AbstractRestfulController {
             $employeeId = $employeeRow['EMPLOYEE_ID'];
             $recommedApproverList = $recommApproverRepo->getDetailByEmployeeID($employeeId);
             if ($recommedApproverList != null) {
-                $employeeRow['FIRST_NAME_R'] = $recommedApproverList['FIRST_NAME_R'];
-                $employeeRow['MIDDLE_NAME_R'] = $recommedApproverList['MIDDLE_NAME_R'];
-                $employeeRow['LAST_NAME_R'] = $recommedApproverList['LAST_NAME_R'];
-                $employeeRow['FIRST_NAME_A'] = $recommedApproverList['FIRST_NAME_A'];
-                $employeeRow['MIDDLE_NAME_A'] = $recommedApproverList['MIDDLE_NAME_A'];
-                $employeeRow['LAST_NAME_A'] = $recommedApproverList['LAST_NAME_A'];
+                if ($recommedApproverList['MIDDLE_NAME_R'] != null) {
+                    $middleNameR = " " . $recommedApproverList['MIDDLE_NAME_R'] . " ";
+                } else {
+                    $middleNameR = " ";
+                }
+                if ($recommedApproverList['MIDDLE_NAME_A'] != null) {
+                    $middleNameA = " " . $recommedApproverList['MIDDLE_NAME_A'] . " ";
+                } else {
+                    $middleNameA = " ";
+                }
+                $employeeRow['RECOMMENDER_NAME'] = $recommedApproverList['FIRST_NAME_R'] . $middleNameR . $recommedApproverList['LAST_NAME_R'];
+                $employeeRow['APPROVER_NAME'] = $recommedApproverList['FIRST_NAME_A'] . $middleNameR . $recommedApproverList['LAST_NAME_A'];
             } else {
-                $employeeRow['FIRST_NAME_R'] = "";
-                $employeeRow['MIDDLE_NAME_R'] = "";
-                $employeeRow['LAST_NAME_R'] = "";
-                $employeeRow['FIRST_NAME_A'] = "";
-                $employeeRow['MIDDLE_NAME_A'] = "";
-                $employeeRow['LAST_NAME_A'] = "";
+                $employeeRow['RECOMMENDER_NAME'] = "";
+                $employeeRow['APPROVER_NAME'] = "";
             }
             array_push($employeeList, $employeeRow);
         }
@@ -1624,6 +1657,55 @@ class RestfulService extends AbstractRestfulController {
             "success" => true,
             "data" => $employeeList
         ];
+    }
+
+    public function assignEmployeeReportingHierarchy($data) {
+        $employeeId = $data['employeeId'];
+        $recommenderId = $data['recommenderId'];
+        $approverId = $data['approverId'];
+        
+        if($recommenderId=="" || $recommenderId==null){
+           $recommenderIdNew = null; 
+        }else if($employeeId==$recommenderId){
+            $recommenderIdNew = "";
+        }else{
+            $recommenderIdNew = $recommenderId;
+        }
+        
+        if($approverId=="" || $approverId==null){
+           $approverIdNew = null; 
+        }else if($employeeId==$approverId){
+            $approverIdNew = "";
+        }else{
+            $approverIdNew = $approverId;
+        }
+        
+        
+
+        $recommApproverRepo = new RecommendApproveRepository($this->adapter);
+        $recommendApprove = new RecommendApprove();
+        $employeePreDtl = $recommApproverRepo->fetchById($employeeId);
+        if ($employeePreDtl == null) {           
+            $recommendApprove->employeeId = $employeeId;
+            $recommendApprove->recommendBy = $recommenderIdNew;
+            $recommendApprove->approvedBy = $approverIdNew;
+            $recommendApprove->createdDt = Helper::getcurrentExpressionDate();
+            $recommendApprove->status = 'E';
+            $recommApproverRepo->add($recommendApprove);
+        } else if ($employeePreDtl != null) {
+            $id = $employeePreDtl['EMPLOYEE_ID'];
+            $recommendApprove->employeeId = $employeeId;
+            $recommendApprove->recommendBy = $recommenderIdNew;
+            $recommendApprove->approvedBy = $approverIdNew;
+            $recommendApprove->modifiedDt = Helper::getcurrentExpressionDate();
+            $recommendApprove->status = 'E';
+            $recommApproverRepo->edit($recommendApprove,$id);
+        }
+        return [
+            "success" => true,
+            "data" => $data
+        ];
+
     }
 
 }

@@ -4,12 +4,13 @@
  */
 $this->headScript()->appendFile($this->basePath('assets/global/plugins/ladda/spin.min.js'));
 $this->headScript()->appendFile($this->basePath('assets/global/plugins/ladda/ladda.min.js'));
-$this->headScript()->appendFile($this->basePath('js/angular.min.js'));
+$this->headScript()->appendFile($this->basePath('js/angular.min.js'))
+        ->appendFile($this->basePath('assets/global/plugins/bootstrap-master/ui-bootstrap-tpls-2.2.0.min.js'));
 $this->headScript()->appendFile($this->basePath('js/setup/recommend-approve/groupAssignController.js'));
 ?>
 
 <script>
-    document.menu =<?php $menu = ["id" => "menuSetup", "subMenu" => ["id" => "subMenuRecomandApprover"]];
+    document.menu =<?php $menu = ["id" => "menuSetup", "subMenu" => ["id" => "subMenuReportingHierarchy"]];
 echo json_encode($menu); ?>;
     document.url = '<?= $this->url("restful", ["action" => "index"]) ?>';
 </script>
@@ -82,15 +83,11 @@ echo json_encode($menu); ?>;
                         <span ng-bind="employee.MIDDLE_NAME"></span>
                         <span ng-bind="employee.LAST_NAME"></span>
                     </td>
-                    <td>
-                        <span ng-bind="employee.FIRST_NAME_R"></span>
-                        <span ng-bind="employee.MIDDLE_NAME_R"></span>
-                        <span ng-bind="employee.LAST_NAME_R"></span>
+                    <td>                       
+                        <span ng-bind="employee.RECOMMENDER_NAME"></span>
                     </td>
                     <td>
-                        <span ng-bind="employee.FIRST_NAME_A"></span>
-                        <span ng-bind="employee.MIDDLE_NAME_A"></span>
-                        <span ng-bind="employee.LAST_NAME_A"></span>
+                        <span ng-bind="employee.APPROVER_NAME"></span>
                     </td>
 
                     <td class="bs-checkbox " style="width: 36px; " data-field="state" tabindex="0">
@@ -108,55 +105,80 @@ echo json_encode($menu); ?>;
         </table>
     </div>
     </div>
-    <div class="row margin-top-20" >                   
-        <div class="col-sm-2">
-            <label for="designationId">Recommender</label>
-            <div class="input-group">
-            <?php print $this->formElement($designations); ?>
-                <span class="input-group-addon" style="cursor: pointer;" id="recommenderFilter" data-toggle="modal" data-target="#myModal"><i class="fa fa-search"></i></span>
+    <div class="row margin-top-20" ng-show="assignShowHide">                   
+        <div class="col-sm-3">
+            <label for="designationId" style="width:100%">Recommender</label>
+            <div class="row">
+                <div class="col-md-9 parentDiv" style="padding-right: 0px;">                                
+                    <select name="recommendBy" required="required" id="recommenderId" class="form-control" ng-options="recomm.name for recomm in recommenderOptions track by recomm.id" ng-model="recommenderSelected">
+                    </select>   
+                </div>
+                <div class="col-md-3 rlPadding recommenderWrap" style="padding:0px 0px !important;">
+                    <a class="btn-edit" href="javascript::" ng-click="open(2)" style="height:22px; padding: 0px 7px !important;">
+                        <i class="fa fa-search" style="height:17px;"></i>
+                    </a>
+                    <label class="mt-checkbox mt-checkbox-single mt-checkbox-outline">
+                        <input class="" ng-model="recommenderAssign" ng-click="checkReportingHierarchy()" type="checkbox" id="recommenderAssign"/>
+                        <span></span>
+                    </label>
+                </div>  
             </div>
-
         </div>
-        <div class="col-sm-2">
-            <label for="designationId">Approver</label>
-            <div class="input-group">
-                <?php print $this->formElement($designations); ?>
-                <span class="input-group-addon" style="cursor: pointer;" id="approverFilter" ng-click="open()"><i class="fa fa-search"></i></span>
+        
+        <div class="col-sm-3">
+            <label for="designationId" style="width:100%">Approver</label>             
+            <div class="row">
+                <div class="col-md-9 parentDiv" style="padding-right: 0px;">                                
+                    <select name="approvedBy" id="approverId" class="form-control" ng-options="approve.name for approve in approverOptions track by approve.id" ng-model="approverSelected">
+                    </select>   
+                </div>
+                <div class="col-md-3 rlPadding approverWrap" style="padding:0px 0px !important;">
+                    <a class="btn-edit" href="javascript::" ng-click="open(3)" style="height:22px; padding: 0px 7px !important;">
+                        <i class="fa fa-search" style="height:17px;"></i>
+                    </a>
+                    <label class="mt-checkbox mt-checkbox-single mt-checkbox-outline">
+                        <input class="" ng-model="approverAssign" ng-click="checkReportingHierarchy()" type="checkbox" id="approverAssign"/>
+                        <span></span>
+                    </label>
+                </div>  
             </div>
-        </div>
-        <div class="col-sm-2 ">
+        </div>      
+        <div class="col-sm-2 " ng-show="showHideAssignBtn">
             <label height="45"></label>
-                <button id="assignBtn" ng-click="assign()" class="btn btn-default form-control i-search">
+            <button id="assignBtn" ng-click="assign()" class="btn btn-default form-control i-search mt-ladda-btn ladda-button mt-progress-demo">
                     Assign
                 <i class="fa fa-edit"></i>
-                </button>
+            </button>
+            
         </div>
     </div>
     
      <script type="text/ng-template" id="myModalContent.html">
          <div class="modal-header"> 
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <button type="button" class="close" ng-click="cancel()" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span> 
                 </button> 
-                <h4 class="modal-title">Filter Recommender</h4> 
+                <h4 class="modal-title">Filter For <span ng-bind="role"></span> </h4> 
             </div>
             <div class="modal-body"> 
                 <div class="row">
-                    <div class="col-sm-3">
+                    <div class="col-sm-4">
                         <?php print $this->formLabel($branches); ?>
                         <?php print $this->formElement($branches); ?>
                     </div>
-                    <div class="col-sm-3">
+                    <div class="col-sm-4">
                         <?php print $this->formLabel($departments); ?>
                         <?php print $this->formElement($departments); ?>
                     </div>
-                    <div class="col-sm-3">
+                    <div class="col-sm-4">
                         <?php print $this->formLabel($designations); ?>
                         <?php print $this->formElement($designations); ?>
                     </div>
+                </div>
+                <div class="row">                   
                     <div class="col-sm-3">
                         <label height="45"></label>
-                        <button ng-click="view()" id="viewEmployees" class="btn btn-default form-control i-search">
+                        <button ng-click="filterForRole()" id="filterForRole" class="btn btn-default form-control i-search">
                             Search
                             <i class="fa fa-search"></i>
                         </button>
@@ -167,79 +189,3 @@ echo json_encode($menu); ?>;
      </script>
 </div>
 
-<!-- Button trigger modal --> 
-
-<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"> 
-    <div class="modal-dialog" role="document">
-        <div class="modal-content"> 
-            <div class="modal-header"> 
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span> 
-                </button> 
-                <h4 class="modal-title">Filter Recommender</h4> 
-            </div>
-            <div class="modal-body"> 
-                <div class="row">
-                    <div class="col-sm-3">
-                        <?php print $this->formLabel($branches); ?>
-                        <?php print $this->formElement($branches); ?>
-                    </div>
-                    <div class="col-sm-3">
-                        <?php print $this->formLabel($departments); ?>
-                        <?php print $this->formElement($departments); ?>
-                    </div>
-                    <div class="col-sm-3">
-                        <?php print $this->formLabel($designations); ?>
-                        <?php print $this->formElement($designations); ?>
-                    </div>
-                    <div class="col-sm-3">
-                        <label height="45"></label>
-                        <button ng-click="view()" id="viewEmployees" class="btn btn-default form-control i-search">
-                            Search
-                            <i class="fa fa-search"></i>
-                        </button>
-                    </div>
-                    
-                </div>
-            </div> 
-        </div><!-- /.modal-content --> 
-    </div><!-- /.modal-dialog --> 
-</div><!-- /.modal -->
-
-<div class="modal fade" id="myModalApprover" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"> 
-    <div class="modal-dialog" role="document">
-        <div class="modal-content"> 
-            <div class="modal-header"> 
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span> 
-                </button> 
-                <h4 class="modal-title">Filter Approver</h4> 
-            </div>
-            <div class="modal-body"> 
-                <div class="row">
-                    <div class="col-sm-3">
-                        <input type="hidden" value="<?php echo $approverType; ?>"
-                        <?php print $this->formLabel($branches); ?>
-                        <?php print $this->formElement($branches); ?>
-                    </div>
-                    <div class="col-sm-3">
-                        <?php print $this->formLabel($departments); ?>
-                        <?php print $this->formElement($departments); ?>
-                    </div>
-                    <div class="col-sm-3">
-                        <?php print $this->formLabel($designations); ?>
-                        <?php print $this->formElement($designations); ?>
-                    </div>
-                    <div class="col-sm-3">
-                        <label height="45"></label>
-                        <button ng-click="view()" id="viewEmployees" class="btn btn-default form-control i-search">
-                            Search
-                            <i class="fa fa-search"></i>
-                        </button>
-                    </div>
-                    
-                </div>
-            </div> 
-        </div><!-- /.modal-content --> 
-    </div><!-- /.modal-dialog --> 
-</div><!-- /.modal -->

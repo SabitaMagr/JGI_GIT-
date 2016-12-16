@@ -141,8 +141,6 @@ class RecommendApproveRepository implements RepositoryInterface
         $select->where([
             "RA.STATUS='E'",
             "E.STATUS='E'",
-            "E1.STATUS='E'",
-            "E2.STATUS='E'",
             "RA.EMPLOYEE_ID=".$employeeId,           
         ]);
 
