@@ -226,7 +226,8 @@
     var editor;
     var initializeCodeMirror = function () {
         editor = CodeMirror.fromTextArea(document.getElementById('rule'), {
-            lineNumbers: true
+            lineNumbers: true,
+            mode: "htmlmixed"
         });
     };
 
@@ -409,7 +410,7 @@
         for (var i in flatValues) {
             flatValues[i] = replaceAll(flatValues[i], " ", "_");
             flatValues[i] = flatValues[i].toUpperCase();
-            $('#flatValueList').append("<button class='list-group-item ' id='vars' > " + flatValues[i] + "</button>");
+            $('#flatValueList').append("<button class='list-group-item ' id='vars' >" + flatValues[i] + "</button>");
         }
 
         for (var i in variables) {
@@ -444,12 +445,15 @@
 
         });
 
-
+        var insertAt = function (concatTo, concatWith, pos) {
+            return [concatTo.slice(0, pos), concatWith, concatTo.slice(pos)].join('');
+        };
         var vars = document.querySelectorAll('#vars');
         for (var i = 0; i < vars.length; i++) {
             $(vars[i]).on('click', function () {
                 var $this = $(this);
-                editor.setValue(editor.getValue() + $this.text());
+                var cursor = editor.getCursor();
+                editor.replaceRange("[" + $this.text() + "]", cursor, null);
             });
         }
 

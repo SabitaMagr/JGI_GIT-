@@ -1273,31 +1273,31 @@ echo json_encode($menu);
                                 <tr ng-repeat="qualificationForm in qualificationFormList">
                                     <td>
                                         <input type="hidden" ng-model="qualificationForm.id"/>
-                                        <select class="form-control"
+                                        <select class="form-control academicSelect"
                                                 ng-options="degree.name for degree in degreeList track by degree.id"
                                                 ng-model="qualificationForm.academicDegreeId">
                                         </select>
                                     </td>
                                     <td>
-                                        <select class="form-control"
+                                        <select class="form-control academicSelect"
                                                 ng-options="university.name for university in universityList track by university.id"
                                                 ng-model="qualificationForm.academicUniversityId">
                                         </select>
                                     </td>
                                     <td>
-                                        <select class="form-control"
+                                        <select class="form-control academicSelect"
                                                 ng-options="program.name for program in programList track by program.id"
                                                 ng-model="qualificationForm.academicProgramId">
                                         </select>
                                     </td>
                                     <td>
-                                        <select class="form-control"
+                                        <select class="form-control academicSelect"
                                                 ng-options="course.name for course in courseList track by course.id"
                                                 ng-model="qualificationForm.academicCourseId">
                                         </select>
                                     </td>
                                     <td>
-                                        <select class="form-control"
+                                        <select class="form-control academicSelect"
                                                 ng-options="rankTypes.name for rankTypes in rankType track by rankTypes.id"
                                                 ng-model="qualificationForm.rankType">
                                         </select>
@@ -1306,11 +1306,11 @@ echo json_encode($menu);
 
                                     <td>
                                         <input ng-model="qualificationForm.rankValue" required="required"
-                                               class="rankValue-weight form-control" size="7" type="text" value="">
+                                               class="rankValue-weight form-control" size="1" type="text" value="">
                                     </td>
                                     <td>
                                         <input type="text" class="form-passedYr form-control" value=""
-                                               ng-model="qualificationForm.passedYr">
+                                               ng-model="qualificationForm.passedYr" size="2">
                                     </td>
                                     <td width="1%" style="padding:15px;" class="checkboxgap">
                                         <div class="md-checkbox">

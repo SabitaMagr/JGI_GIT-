@@ -6,6 +6,8 @@ use Application\Model\Model;
 use Application\Repository\RepositoryInterface;
 use HolidayManagement\Model\Holiday;
 use HolidayManagement\Model\HolidayBranch;
+use Setup\Model\Branch;
+use Setup\Model\HrEmployees;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Sql\Expression;
 use Zend\Db\Sql\Sql;
@@ -175,6 +177,26 @@ ON A.GENDER_ID=B.GENDER_ID " . $joinQuery . " WHERE A.STATUS ='E'";
 
         $statement = $sql->prepareStatementForSqlObject($select);
         return $statement->execute();
+    }
+
+    public function selectHolidayOfEmployee(int $empId, Expression $startDate = null, Expression $endDate = null) {
+//       "NO_OF_HOLIDAYS_MONTHLY"
+//        
+//        $sql = new Sql($this->adapter);
+//        $select = $sql->select();
+//
+//        $select->columns([]);
+//        $select->from(['E' => HrEmployees::TABLE_NAME])
+//                ->join(['HB' => HolidayBranch::TABLE_NAME], 'E.' . HrEmployees::BRANCH_ID . ' = ' . 'HB.' . HolidayBranch::BRANCH_ID, [])
+//                ->join(['H' => Holiday::TABLE_NAME], 'HB.' . HolidayBranch::HOLIDAY_ID . ' = ' . 'H.' . Holiday::HOLIDAY_ID);
+//
+//        $select->where(["E." . HrEmployees::EMPLOYEE_ID . ' = ' . $empId]);
+//        $select->where(["( " . "H." . Holiday::GENDER_ID . ' = ' . "E." . HrEmployees::GENDER_ID . " OR " . "H." . Holiday::GENDER_ID . ' IS NULL ' . ")"]);
+//        $select->where(['( H.' . Holiday::END_DATE . " >= " . $startDate->getExpression() . " OR " . 'H.' . Holiday::START_DATE . " <= " . $endDate->getExpression()." )"]);
+//        $statement = $sql->prepareStatementForSqlObject($select);
+//        print "<pre>";
+//        print($statement->getSql());
+//        exit;
     }
 
 }

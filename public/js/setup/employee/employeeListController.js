@@ -51,6 +51,7 @@ angular.module('hris', [])
                     }
                 }).then(function (success) {
                     $scope.initializekendoGrid(success.data);
+                    console.log("pullEmployeeList", success.data);
                     $scope.$apply(function () {
 //                        $scope.gridData.splice(0, $scope.gridData.length);
 //                        angular.forEach(success.data, function (value, key) {
@@ -84,12 +85,12 @@ angular.module('hris', [])
                     },
                     rowTemplate: kendo.template($("#rowTemplate").html()),
                     columns: [
-                        {field: "employeeCode", title: "Employee Code",width:130},
-                        {field: "firstName", title: "Name",width:220},
-                        {field: "birthDate", title: "Birth Date",width:120},
-                        {field: "mobileNo", title: "Mobile No",width:130},
-                        {field: "emailOfficial", title: "Email Official",width:200},
-                        {title: "Action",width:120}
+                        {field: "employeeCode", title: "Employee Code", width: 130},
+                        {field: "firstName", title: "Name", width: 220},
+                        {field: "birthDate", title: "Birth Date", width: 120},
+                        {field: "mobileNo", title: "Mobile No", width: 130},
+                        {field: "emailOfficial", title: "Email Official", width: 200},
+                        {title: "Action", width: 120}
                     ]
                 });
 
@@ -97,7 +98,7 @@ angular.module('hris', [])
                     var grid = $("#employeeTable").data("kendoGrid");
                     grid.saveAsExcel();
                 });
-                window.app.UIConfirmations();               
+                window.app.UIConfirmations();
             };
 
         });

@@ -61,11 +61,11 @@ class ShiftAssignRepository implements RepositoryInterface
 
         $select->columns(["EMPLOYEE_ID", "FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], true);
         $select->from(['E' => "HR_EMPLOYEES"])
-            ->join(['B' => 'HR_BRANCHES'], 'B.BRANCH_ID=E.BRANCH_ID', ["BRANCH_ID", "BRANCH_NAME"])
-            ->join(['DEP' => Department::TABLE_NAME], 'DEP.' . Department::DEPARTMENT_ID . '=E.' . Department::DEPARTMENT_ID . '', [Department::DEPARTMENT_ID, Department::DEPARTMENT_NAME])
-            ->join(['DE' => 'HR_DESIGNATIONS'], 'DE.DESIGNATION_ID=E.DESIGNATION_ID', ["DESIGNATION_ID", "DESIGNATION_TITLE"])
-            ->join(['P' => Position::TABLE_NAME], 'P.' . Position::POSITION_ID . '=E.' . Position::POSITION_ID . '', [Position::POSITION_ID, Position::POSITION_NAME])
-            ->join(['ST' => ServiceType::TABLE_NAME], 'ST.' . ServiceType::SERVICE_TYPE_ID . '=E.' . ServiceType::SERVICE_TYPE_ID . '', [ServiceType::SERVICE_TYPE_ID, ServiceType::SERVICE_TYPE_NAME]);
+            ->join(['B' => 'HR_BRANCHES'], 'B.BRANCH_ID=E.BRANCH_ID', ["BRANCH_ID", "BRANCH_NAME"],"left")
+            ->join(['DEP' => Department::TABLE_NAME], 'DEP.' . Department::DEPARTMENT_ID . '=E.' . Department::DEPARTMENT_ID . '', [Department::DEPARTMENT_ID, Department::DEPARTMENT_NAME],"left")
+            ->join(['DE' => 'HR_DESIGNATIONS'], 'DE.DESIGNATION_ID=E.DESIGNATION_ID', ["DESIGNATION_ID", "DESIGNATION_TITLE"],"left")
+            ->join(['P' => Position::TABLE_NAME], 'P.' . Position::POSITION_ID . '=E.' . Position::POSITION_ID . '', [Position::POSITION_ID, Position::POSITION_NAME],"left")
+            ->join(['ST' => ServiceType::TABLE_NAME], 'ST.' . ServiceType::SERVICE_TYPE_ID . '=E.' . ServiceType::SERVICE_TYPE_ID . '', [ServiceType::SERVICE_TYPE_ID, ServiceType::SERVICE_TYPE_NAME],"left");
         if ($branchId != -1) {
             $select->where(["E.BRANCH_ID=$branchId"]);
         }

@@ -52,6 +52,7 @@ use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Adapter\Driver\ResultInterface;
 use Zend\Mvc\Controller\AbstractRestfulController;
 use Zend\View\Model\JsonModel;
+use Setup\Repository\RecommendApproveRepository;
 
 class RestfulService extends AbstractRestfulController {
 
@@ -89,9 +90,13 @@ class RestfulService extends AbstractRestfulController {
                 case "pullEmployeeForShiftAssign":
                     $responseData = $this->pullEmployeeForShiftAssign($postedData->id);
                     break;
+                
+                case "pullEmployeeForRecomApproverAssign":
+                    $responseData = $this->pullEmployeeForRecomApproverAssign($postedData->data);
+                    break;
 
                 case "assignEmployeeShift":
-                    $responseData = assignEmployeeShift($postedData->data);
+                    $responseData = $this->assignEmployeeShift($postedData->data);
                     break;
 
                 case "pullEmployeeMonthlyValue":
@@ -247,28 +252,6 @@ class RestfulService extends AbstractRestfulController {
             ];
         }
         return new JsonModel(['data' => $responseData]);
-    }
-
-    private function pullEmployeeForShiftAssign(array $ids) {
-        $shiftAssignRepo = new ShiftAssignRepository($this->adapter);
-        $result = $shiftAssignRepo->filter($ids['branchId'], $ids['departmentId'], $ids['designationId'], $ids['positionId'], $ids['serviceTypeId']);
-
-        $tempArray = [];
-        foreach ($result as $item) {
-            $tmp = $shiftAssignRepo->filterByEmployeeId($item['EMPLOYEE_ID']);
-            if ($tmp != null) {
-                $item[ShiftAssign::SHIFT_ID] = $tmp[ShiftAssign::SHIFT_ID];
-                $item[ShiftSetup::SHIFT_ENAME] = $tmp[ShiftSetup::SHIFT_ENAME];
-            } else {
-                $item[ShiftAssign::SHIFT_ID] = "";
-                $item[ShiftSetup::SHIFT_ENAME] = "";
-            }
-            array_push($tempArray, $item);
-        }
-        return [
-            "success" => true,
-            "data" => $tempArray
-        ];
     }
 
     private function assignEmployeeShift($data) {
@@ -916,11 +899,12 @@ class RestfulService extends AbstractRestfulController {
         $employeeId = $data['employee'];
         $branchId = $data['branch'];
         $monthId = $data['month'];
+        $regenerateFlag = ($data['regenerateFlag'] == "true") ? 1 : 0;
 
         $results = [];
         $salarySheetController = new SalarySheetController($this->adapter);
 
-        if ($salarySheetController->checkIfGenerated($monthId)) {
+        if ($salarySheetController->checkIfGenerated($monthId) && !$regenerateFlag) {
             $employeeList = null;
             if ($branchId == -1) {
                 if ($employeeId == -1) {
@@ -937,13 +921,19 @@ class RestfulService extends AbstractRestfulController {
             }
             $results = $salarySheetController->viewSalarySheet($monthId, $employeeList);
         } else {
+            if ($regenerateFlag) {
+                $salarySheetController->deleteSalarySheetDetail($monthId);
+                $salarySheetController->deleteSalarySheet($monthId);
+            }
             $employeeList = EntityHelper::getTableKVList($this->adapter, "HR_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => 'E'], ' ');
+//            print "<pre>";
             foreach ($employeeList as $key => $employee) {
+//                print $key;
                 $generateMonthlySheet = new PayrollGenerator($this->adapter, $monthId);
                 $result = $generateMonthlySheet->generate($key);
                 $results[$key] = $result;
             }
-
+//            exit;
             $addSalarySheetRes = $salarySheetController->addSalarySheet($monthId);
             if ($addSalarySheetRes != null) {
                 $salarySheetController->addSalarySheetDetail($monthId, $results, $addSalarySheetRes[SalarySheet::SHEET_NO]);
@@ -1554,5 +1544,66 @@ class RestfulService extends AbstractRestfulController {
             "data" => $generatedSalarySheets
         ];
     }
+    
+    private function pullEmployeeForShiftAssign(array $ids) {
+        $shiftAssignRepo = new ShiftAssignRepository($this->adapter);
+        $result = $shiftAssignRepo->filter($ids['branchId'], $ids['departmentId'], $ids['designationId'], $ids['positionId'], $ids['serviceTypeId']);
 
+        $tempArray = [];
+        foreach ($result as $item) {
+            $tmp = $shiftAssignRepo->filterByEmployeeId($item['EMPLOYEE_ID']);
+            if ($tmp != null) {
+                $item[ShiftAssign::SHIFT_ID] = $tmp[ShiftAssign::SHIFT_ID];
+                $item[ShiftSetup::SHIFT_ENAME] = $tmp[ShiftSetup::SHIFT_ENAME];
+            } else {
+                $item[ShiftAssign::SHIFT_ID] = "";
+                $item[ShiftSetup::SHIFT_ENAME] = "";
+            }
+            array_push($tempArray, $item);
+        }
+        return [
+            "success" => true,
+            "data" => $tempArray
+        ];
+    }
+    
+    public function pullEmployeeForRecomApproverAssign($data){
+        $branchId = $data['branchId'];
+        $departmentId = $data['departmentId'];
+        $designationId = $data['designationId'];
+        $employeeId = $data['employeeId'];
+        
+        $recommApproverRepo = new RecommendApproveRepository($this->adapter);
+        
+        $employeeRepo = new EmployeeRepository($this->adapter);
+        $employeeResult = $employeeRepo->filterRecords($employeeId, $branchId, $departmentId, $designationId, -1, -1, -1,1);
+       
+        $employeeList = [];
+        foreach($employeeResult as $employeeRow){
+            $employeeId = $employeeRow['EMPLOYEE_ID'];
+            $recommedApproverList = $recommApproverRepo->getDetailByEmployeeID($employeeId);
+            if($recommedApproverList!=null){
+                $employeeRow['FIRST_NAME_R'] = $recommedApproverList['FIRST_NAME_R'];
+                $employeeRow['MIDDLE_NAME_R'] = $recommedApproverList['MIDDLE_NAME_R'];
+                $employeeRow['LAST_NAME_R'] = $recommedApproverList['LAST_NAME_R'];
+                $employeeRow['FIRST_NAME_A'] = $recommedApproverList['FIRST_NAME_A'];
+                $employeeRow['MIDDLE_NAME_A'] = $recommedApproverList['MIDDLE_NAME_A'];
+                $employeeRow['LAST_NAME_A'] = $recommedApproverList['LAST_NAME_A'];
+            }else{
+                $employeeRow['FIRST_NAME_R'] = "";
+                $employeeRow['MIDDLE_NAME_R'] = "";
+                $employeeRow['LAST_NAME_R'] = "";
+                $employeeRow['FIRST_NAME_A'] = "";
+                $employeeRow['MIDDLE_NAME_A'] = "";
+                $employeeRow['LAST_NAME_A'] = "";
+            }
+            array_push($employeeList,$employeeRow);
+            
+        }
+       ///  print_r($employeeList); die();
+        return [
+            "success"=>true,
+            "data"=>$employeeList
+        ];
+    }
 }

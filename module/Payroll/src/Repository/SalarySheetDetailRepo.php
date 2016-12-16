@@ -23,7 +23,7 @@ class SalarySheetDetailRepo implements RepositoryInterface {
     }
 
     public function delete($id) {
-        
+        return $this->gateway->delete([SalarySheetDetail::MONTH_ID => $id]);
     }
 
     public function edit(Model $model, $id) {

@@ -62,11 +62,11 @@ if($this->messages) { ?>
         #: (SERVICE_EVENT_TYPE_NAME == null) ? '-' : SERVICE_EVENT_TYPE_NAME #
         </td>
         <td>
-        <a class="btn  btn-icon-only btn-success"
+        <a class="btn-edit"
         href="<?= $this->url("serviceEventType", ["action" => "edit"]) ?>/#:SERVICE_EVENT_TYPE_ID #" style="height:17px;">
         <i class="fa fa-edit"></i>
         </a> 
-        <a class="btn btn-icon-only btn-danger confirmation"
+        <a class="btn-delete confirmation"
         href="<?= $this->url("serviceEventType", ["action" => "delete"]); ?>/#:SERVICE_EVENT_TYPE_ID #" id="bs_#:SERVICE_EVENT_TYPE_ID #" style="height:17px;">
         <i class="fa fa-trash-o"></i></a>
         </a>

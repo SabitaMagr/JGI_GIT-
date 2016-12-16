@@ -7,8 +7,16 @@
  */
 namespace SelfService;
 
-use Zend\Router\Http\Segment;
 use Application\Controller\ControllerFactory;
+use SelfService\Controller\AttendanceRequest;
+use SelfService\Controller\Holiday;
+use SelfService\Controller\Leave;
+use SelfService\Controller\LeaveRequest;
+use SelfService\Controller\MyAttendance;
+use SelfService\Controller\PaySlip;
+use SelfService\Controller\Profile;
+use SelfService\Controller\Service;
+use Zend\Router\Http\Segment;
 
 return [
     'router' => [
@@ -22,7 +30,7 @@ return [
                         'id' => '[0-9]+',
                     ],
                     'defaults' => [
-                        'controller' => Controller\MyAttendance::class,
+                        'controller' => MyAttendance::class,
                         'action' => 'index',
                     ]
                 ],
@@ -36,7 +44,7 @@ return [
                         'id' => '[0-9]+',
                     ],
                     'defaults' => [
-                        'controller' => Controller\Holiday::class,
+                        'controller' => Holiday::class,
                         'action' => 'index',
                     ]
                 ],
@@ -50,7 +58,7 @@ return [
                         'id' => '[0-9]+',
                     ],
                     'defaults' => [
-                        'controller' => Controller\Leave::class,
+                        'controller' => Leave::class,
                         'action' => 'index',
                     ]
                 ],
@@ -64,7 +72,7 @@ return [
                         'id' => '[0-9]+',
                     ],
                     'defaults' => [
-                        'controller' => Controller\LeaveRequest::class,
+                        'controller' => LeaveRequest::class,
                         'action' => 'index',
                     ]
                 ],
@@ -78,7 +86,7 @@ return [
                         'id' => '[0-9]+',
                     ],
                     'defaults' => [
-                        'controller' => Controller\AttendanceRequest::class,
+                        'controller' => AttendanceRequest::class,
                         'action' => 'index',
                     ]
                 ],
@@ -92,7 +100,7 @@ return [
                         'id' => '[0-9]+',
                     ],
                     'defaults' => [
-                        'controller' => Controller\Service::class,
+                        'controller' => Service::class,
                         'action' => 'index',
                     ]
                 ],
@@ -106,7 +114,21 @@ return [
                         'id' => '[0-9]+',
                     ],
                     'defaults' => [
-                        'controller' => Controller\Profile::class,
+                        'controller' => Profile::class,
+                        'action' => 'index',
+                    ]
+                ],
+            ],
+            'payslip' => [
+                'type' => Segment::class,
+                'options' => [
+                    'route' => '/selfservice/payslip[/:action]',
+                    'constants' => [
+                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'id' => '[0-9]+',
+                    ],
+                    'defaults' => [
+                        'controller' => PaySlip::class,
                         'action' => 'index',
                     ]
                 ],
@@ -314,17 +336,35 @@ return [
                 ],
             ],
         ],
+        'payslip' => [
+            [
+                'label' => 'PaySlip',
+                'route' => 'payslip',
+            ],
+            [
+                'label' => 'PaySlip',
+                'route' => 'payslip',
+                'pages' => [
+                    [
+                        'label' => 'Detail',
+                        'route' => 'payslip',
+                        'action' => 'index',
+                    ],
+                ],
+            ],
+        ],
     ],
 
     'controllers' => [
         'factories' => [
-            Controller\MyAttendance::class => ControllerFactory::class,
-            Controller\Holiday::class => ControllerFactory::class,
-            Controller\Leave::class => ControllerFactory::class,
-            Controller\LeaveRequest::class => ControllerFactory::class,
-            Controller\AttendanceRequest::class => ControllerFactory::class,
-            Controller\Profile::class => ControllerFactory::class,
-            Controller\Service::class => ControllerFactory::class
+            MyAttendance::class => ControllerFactory::class,
+            Holiday::class => ControllerFactory::class,
+            Leave::class => ControllerFactory::class,
+            LeaveRequest::class => ControllerFactory::class,
+            AttendanceRequest::class => ControllerFactory::class,
+            Profile::class => ControllerFactory::class,
+            Service::class => ControllerFactory::class,
+            PaySlip::class => ControllerFactory::class
         ],
     ],
     'view_manager' => [

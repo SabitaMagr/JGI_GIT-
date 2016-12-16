@@ -9,7 +9,7 @@
     height: 320px;
     background-color: whitesmoke;
     z-index: 1000;
-    
+
     box-shadow:2px 6px 9px #999;
     -moz-box-shadow:2px 6px 9px #999;
     o-box-shadow:2px 6px 9px #999;
@@ -20,7 +20,7 @@
 .profile-image{
     display: inline-block;
     text-align: center;
-   margin-left: 28%;
+    margin-left: 28%;
     max-width: 38%;
 }
 
@@ -142,7 +142,7 @@
 .table-toolbar {
     margin-bottom: 10px;
 }
-.k-grid td
+.k-grid td, .customTable td
 {
     font-size:11px !important;
     border-bottom:solid #eee 1px !important; 
@@ -326,10 +326,10 @@ form.k-filter-menu .k-widget, form.k-filter-menu .k-textbox
     margin-top: 5px;
     padding: 5px;	
     border:solid #ddd  1px;
-    box-shadow:3px 0px #dddd;
-    moz-box-shadow:3px 0px #dddd;
-    -o-box-shadow:3px 0px #dddd;
-    -webkit-box-shadow:3px 0px #ddd;
+    box-shadow:3px 3px 11px #ccc;
+    moz-box-shadow:3px 3px 11px #ccc;
+    -o-box-shadow:3px 3px 11px #ccc;
+    -webkit-box-shadow:3px 3px 11px #ccc;
 
 }
 .arrowtop
@@ -354,9 +354,9 @@ form.k-filter-menu .k-widget, form.k-filter-menu .k-textbox
     top:-10px;
     transform: rotate(180deg) !important; 
     -moz-transform: rotate(180deg) !important;
-      -o-transform: rotate(180deg) !important;
-       -webkit-transform: rotate(180deg) !important;
-    
+    -o-transform: rotate(180deg) !important;
+    -webkit-transform: rotate(180deg) !important;
+
     width: 20px;	
 }
 .btn.green:not(.btn-outline),.green
@@ -384,11 +384,11 @@ form.k-filter-menu .k-widget, form.k-filter-menu .k-textbox
 }
 .form-control,.select2-selection--single 
 {
-    height:22px !important;
+    height:24px !important;
     border-radius:0px !important;
     padding-top:2px;
-    font-size: 11px;
- 
+    font-size: 11px !important;
+
 }
 
 #viewEmployees
@@ -405,7 +405,7 @@ form.k-filter-menu .k-widget, form.k-filter-menu .k-textbox
     text-align: right !important;
     padding-right: 5 !important;
     width:49% !important;
-/*    width:58% !important;*/
+    /*    width:58% !important;*/
 }
 .rightalign-2
 {
@@ -429,8 +429,8 @@ form.k-filter-menu .k-widget, form.k-filter-menu .k-textbox
 .cgap {
     padding-left: 0;
     padding-right:15px;
-width: 51% !important;
-/*    width:42%;*/
+    width: 51% !important;
+    /*    width:42%;*/
 }
 .cgap-2
 {
@@ -475,9 +475,9 @@ width: 51% !important;
 .btn.btn-link{
     border:solid #ddd 1px;
     box-shadow:0px 3px 3px 1px #ddd;
-        -moz-box-shadow:0px 3px 3px 1px #ddd;
-            -o-box-shadow:0px 3px 3px 1px #ddd;
-                -webkit-box-shadow:0px 3px 3px 1px #ddd;
+    -moz-box-shadow:0px 3px 3px 1px #ddd;
+    -o-box-shadow:0px 3px 3px 1px #ddd;
+    -webkit-box-shadow:0px 3px 3px 1px #ddd;
 }
 
 .post-btn
@@ -493,7 +493,7 @@ width: 51% !important;
 .tabbable-custom > .nav-tabs > li.active a i
 {
     color:#2f9e1e;;
-    
+
 }
 #qualificationTbl tr td label
 {
@@ -567,6 +567,10 @@ width: 51% !important;
 {
     border:solid #ddd 1px;
     margin-top:10px; 
+    box-shadow:3px 3px 2px 0px #ddd;
+    -moz-box-shadow:3px 3px 2px 0px #ddd;
+    o-box-shadow:3px 3px 2px 0px #ddd;
+   webkit-shadow:3px 3px 2px 0px #ddd;
 
 }
 
@@ -632,9 +636,9 @@ width: 51% !important;
 }
 .customtbl tr td
 {
- padding-top:5px !important;
- padding-bottom: 5px !important;
-    
+    padding-top:5px !important;
+    padding-bottom: 5px !important;
+
 }
 .rankwidth{
     width:13%;
@@ -645,47 +649,57 @@ width: 51% !important;
 }
 .btn-edit,.btn-delete
 {
-   font-size:15px; 
-   text-decoration:none;
-   display: inline-block;
-       padding: 3px 5px;
-      
- 
- 
+    font-size:15px; 
+    text-decoration:none;
+    display: inline-block;
+    padding: 3px 5px;
+
+
+
 }
 .btn-edit
 {
- color:#63ab6a; 
- 
+    color:#63ab6a; 
+
 }
 .btn-delete
 {
- color:gray;   
- margin-left:6px;
+    color:gray;   
+    margin-left:6px;
 }
 .btn-edit:hover,.btn-delete:hover
 {
     background-color:#63ab6a;
-            -moz-transform: scale(1.1);
-  -webkit-transform: scale(1.1);
-  transform: scale(1.1);
+    -moz-transform: scale(1.1);
+    -webkit-transform: scale(1.1);
+    transform: scale(1.1);
     -moz-transition: all 0.3s;
-  -webkit-transition: all 0.3s;
-  transition: all 0.3s;
- 
+    -webkit-transition: all 0.3s;
+    transition: all 0.3s;
+
 
 }
 .btn-edit:hover i,.btn-delete:hover i
 {
-       color: #fff;
- 
-     
+    color: #fff;
+
+
 }
 .btn-edit,.btn-delete {
     background-color: #eee;
     border: 1px solid #ddd;
-
+    padding-left: 5px;
+    padding-right: 5px;
 }
+
+
+.generate-month a{
+    font-size:12px !important;
+    padding-top:4px !important;
+    padding-bottom: 4px !important;
+}
+
+
 .dropdown-menu.dropdown-menu-default > li{
     border-bottom:solid #eee 1px;
 }
@@ -695,11 +709,11 @@ width: 51% !important;
 }
 .k-state-border-down span
 {
-    
+
     transform:rotate(180deg);
-      -moz-transform:rotate(180deg);
-          -o-transform:rotate(180deg);
-              -webkit-transform:rotate(180deg);
+    -moz-transform:rotate(180deg);
+    -o-transform:rotate(180deg);
+    -webkit-transform:rotate(180deg);
 }
 .portlet > .portlet-title > .caption > i {
     color: #999;
@@ -713,15 +727,15 @@ width: 51% !important;
 {
     padding-top:0px !important;
 }
- .dropdown-select select 
- {
-     height:22px !important;
-     padding-top:1px !important;
-     font-size: 11px !important;
- }
- .input-group.date{
-     width:100%;
- }
+.dropdown-select select 
+{
+    height:22px !important;
+    padding-top:1px !important;
+    font-size: 11px !important;
+}
+.input-group.date{
+    width:100%;
+}
 /* .academic,.program{
      width:17%;
  }
@@ -742,6 +756,7 @@ width: 51% !important;
  .checkbtn{
      width:1%;
  }*/
+ 
 .profilepic {
     border: 2px solid #eee;
     float: left;
@@ -754,6 +769,72 @@ width: 51% !important;
 {
     font-size: 12px;
 }
+.btn.btn-outline.green{
+    color:#fff !important;
+    border:solid #fff 1px !important;
+}
+.btn.btn-outline.green:hover
+{
+   background-color: #eee!important; 
+ 
+    
+}
+select{
+    
+    padding-top:0px !important;
+    color:#333 !important;
+}
+.btnsearch
+{
+    padding:1px 18px !important;
+    margin-top: -3px;
+    margin-right: 62px;
+    background-color: #ddd !important;
+    color:#333 !important;
+    border:solid #fff !important;
+    border-radius:15px !important;
+}
+.table-toolbar a,.btn.green,.btn.cbtn.btn-outline.dropdown-toggle
+{
+    font-size:11px !important;
+}
+.btn.btn-outline.green.active, .btn.btn-outline.green:active, .btn.btn-outline.green:active:focus, .btn.btn-outline.green:active:hover, .btn.btn-outline.green:focus, .btn.btn-outline.green:hover
+ {
+     background-color:#4FBA3A !important;
+     color:#fff !important;
+ }
+ .first
+ {
+     background-color:#eee !important;
+ }
+ #min-max-btn:hover
+ {
+  cursor:pointer;
+ }
+ #viewHolidays
+ {
+     margin-top:7px !important;
+ }
+ 
+ .btnsearch
+ {
+ padding:10px !important;
+ }
+ .gaptop{
+     margin-top: 20px;
+     margin-right: 15px;
+ }
+ .i-search 
+ {
+     border-radius:15px !important;
+      background-color: #eee;
+ 
+ }
+ .i-search:hover{
+  
+     background-color:#ccc;
+     box-shadow:2px 2px 2px #eee;
+ }
  
 /* Large desktops and laptops */
 @media (min-width: 1200px) {
@@ -781,6 +862,14 @@ width: 51% !important;
     {
         margin-top: 8px;
     }
+    .profilepic {
+ 
+ 
+    margin-bottom: 20px;
+    margin-left: 13px;
+ float:none !important;
+    max-width: 20%;
+}
 
 }
 
@@ -799,7 +888,16 @@ width: 51% !important;
         margin-top: 8px;
     }
 
+.profilepic
+{
+ 
+    margin-bottom: 20px;
+    margin-left: 35px;
+    margin-right: 90px;
+    max-width: 16%;
+        float:none !important;
 
+}
 
 }
 
@@ -835,11 +933,14 @@ width: 51% !important;
     {
         margin-top: 8px;
     }
-    .profilepic {
- float: left;
-    margin-bottom: 30px;
-    margin-left: 53px;
-  max-width: 24%;
+.profilepic
+{
+ 
+    margin-bottom: 20px;
+    margin-left: 35px;
+    margin-right: 90px;
+    max-width: 16%;
+
 
 }
 
@@ -876,10 +977,9 @@ width: 51% !important;
     .post-btn
     {
         margin-top: 0px;
-     margin-bottom: 0px;
-  
-}
+        margin-bottom: 0px;
 
+    }
 .tabbable-custom > .nav-tabs > li{
     width:100%;
 }
@@ -896,16 +996,10 @@ width: 51% !important;
     max-width: 44%;
 
 }
-}
 
+    }
 
-
-
-
-
-
-
-
+  
 
 /*rajan's css new end here*/
 

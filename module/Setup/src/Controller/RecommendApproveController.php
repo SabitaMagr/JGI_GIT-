@@ -16,6 +16,10 @@ use Zend\Form\Annotation\AnnotationBuilder;
 use Application\Helper\Helper;
 use Application\Helper\EntityHelper;
 use Setup\Repository\RecommendApproveRepository;
+use Zend\Form\Element\Select;
+use Setup\Model\Branch;
+use Setup\Model\Department;
+use Setup\Model\Designation;
 
 class RecommendApproveController extends AbstractActionController {
     private $form;
@@ -98,7 +102,16 @@ class RecommendApproveController extends AbstractActionController {
     }
     
     public function groupAssignAction(){
-                $branchFormElement = new Select();
+        $employeeNameFormElement = new Select();
+        $employeeNameFormElement->setName("branch");
+        $employeeName = \Application\Helper\EntityHelper::getTableKVList($this->adapter, "HR_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => "E"]," ");
+        $employeeName[-1] = "All";
+        ksort($employeeName);
+        $employeeNameFormElement->setValueOptions($employeeName);
+        $employeeNameFormElement->setAttributes(["id" => "employeeId", "class" => "form-control"]);
+        $employeeNameFormElement->setLabel("Employee");
+        
+        $branchFormElement = new Select();
         $branchFormElement->setName("branch");
         $branches=\Application\Helper\EntityHelper::getTableKVList($this->adapter, Branch::TABLE_NAME, Branch::BRANCH_ID, [Branch::BRANCH_NAME]);
         $branches[-1]="All";
@@ -130,7 +143,8 @@ class RecommendApproveController extends AbstractActionController {
         return Helper::addFlashMessagesToArray($this, [
             "branches"=>$branchFormElement,
             "departments"=>$departmentFormElement,
-            'designations'=>$designationFormElement
+            'designations'=>$designationFormElement,
+            'employees'=>$employeeNameFormElement
             ]);
     }
 }

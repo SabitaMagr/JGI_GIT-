@@ -7,15 +7,17 @@ $this->headScript()->appendFile($this->basePath('js/Payroll/MonthlyValue/detailC
 ?>
 
 <script>
-    document.menu =<?php $menu = ["id" => "menuPayroll", "subMenu" => ["id" => "subMenuMonthlyValue"], "subMenuChild" => ["id" => "subMenuChildMonthlyValDetail"]];echo json_encode($menu);?>;
+    document.menu =<?php $menu = ["id" => "menuPayroll", "subMenu" => ["id" => "subMenuMonthlyValue"], "subMenuChild" => ["id" => "subMenuChildMonthlyValDetail"]];
+echo json_encode($menu);
+?>;
     document.url = '<?= $this->url("restful", ["action" => "index"]) ?>';
-    document.branches =<?= json_encode($branches)?>;
-    document.departments =<?= json_encode($departments)?>;
-    document.designations =<?= json_encode($designations)?>;
-    document.monthlyValues =<?= json_encode($monthlyValues)?>;
+    document.branches =<?= json_encode($branches) ?>;
+    document.departments =<?= json_encode($departments) ?>;
+    document.designations =<?= json_encode($designations) ?>;
+    document.monthlyValues =<?= json_encode($monthlyValues) ?>;
 </script>
 <div class="page-bar">
-    <?= $this->navigation('Zend\Navigation\monthlyValue')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
+<?= $this->navigation('Zend\Navigation\monthlyValue')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
 
 <div ng-app="hris" ng-controller="monthlyValueDetailController">
@@ -56,7 +58,7 @@ $this->headScript()->appendFile($this->basePath('js/Payroll/MonthlyValue/detailC
             </select>
         </div>
         <div class="col-sm-2">
-            <div class="mt-checkbox-list" style=" overflow: scroll;height: 100px;">
+            <div class="mt-checkbox-list scroller" style=" height: 100px;">
                 <label class="mt-checkbox mt-checkbox-outline">
                     All
                     <input
@@ -86,56 +88,58 @@ $this->headScript()->appendFile($this->basePath('js/Payroll/MonthlyValue/detailC
             </button>
         </div>
     </div>
-    <div class="margin-top-20" style="overflow: scroll;max-height: 400px;height: 400px;">
+    <div class="margin-top-20 scroller" style="height: 400px;">
         <table class="table" >
             <thead>
-            <tr>
-                <th>
-                    Employee Id
-                </th>
-                <th>
-                    Employee Name
-                </th>
-                <th ng-repeat="keys in monthlyValuekeys" ng-bind="monthlyValuesI[keys]">
+                <tr>
+                    <th>
+                        Employee Id
+                    </th>
+                    <th>
+                        Employee Name
+                    </th>
+                    <th ng-repeat="keys in monthlyValuekeys" ng-bind="monthlyValuesI[keys]">
 
-                </th>
-            </tr>
+                    </th>
+                </tr>
             </thead>
             <tbody>
-            <tr ng-repeat="row in tableDataCopy">
-                <td ng-bind="row.EMPLOYEE_ID">
+                <tr ng-repeat="row in tableDataCopy">
+                    <td ng-bind="row.EMPLOYEE_ID">
 
-                </td>
-                <td>
-                    <span ng-bind="row.FIRST_NAME"></span>
-                    <span ng-bind="row.MIDDLE_NAME"></span>
-                    <span ng-bind="row.LAST_NAME"></span>
-                </td>
-                <td ng-repeat="keys in monthlyValuekeys">
-                    <input class="form-control" type="number" ng-model="row[keys]">
-                </td>
-            </tr>
+                    </td>
+                    <td>
+                        <span ng-bind="row.FIRST_NAME"></span>
+                        <span ng-bind="row.MIDDLE_NAME"></span>
+                        <span ng-bind="row.LAST_NAME"></span>
+                    </td>
+                    <td ng-repeat="keys in monthlyValuekeys">
+                        <input class="form-control" type="number" ng-model="row[keys]">
+                    </td>
+                </tr>
 
 
             </tbody>
             <tfoot>
-            <tr>
-                <td>
+                <tr>
+                    <td>
 
-                </td>
-                <td>
+                    </td>
+                    <td>
 
-                </td>
-                <td ng-repeat="keys in monthlyValuekeys">
-                    <input class="form-control" type="number" ng-model="colVal"
-                           ng-change="changeAllColVal(keys,colVal)">
-                </td>
-            </tr>
+                    </td>
+                    <td ng-repeat="keys in monthlyValuekeys">
+                        <input class="form-control" type="number" ng-model="colVal"
+                               ng-change="changeAllColVal(keys, colVal)">
+                    </td>
+                </tr>
             </tfoot>
         </table>
 
     </div>
-<div class="row">
-    <button class="btn btn-success pull-right" ng-click="setMonthlyValue()">Assign Monthly Value</button>
-</div>
+    <div class="row">
+        <div class="col-sm-12">
+            <button class="btn btn-success pull-right" ng-click="setMonthlyValue()">Assign Monthly Value</button>
+        </div>
+    </div>
 </div>

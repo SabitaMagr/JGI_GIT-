@@ -5,131 +5,241 @@
 $this->headScript()->appendFile($this->basePath('assets/global/plugins/ladda/spin.min.js'));
 $this->headScript()->appendFile($this->basePath('assets/global/plugins/ladda/ladda.min.js'));
 $this->headScript()->appendFile($this->basePath('js/angular.min.js'));
-$this->headScript()->appendFile($this->basePath('js/AttendanceManagement/ShiftAssign/shiftController.js'));
-
+$this->headScript()->appendFile($this->basePath('js/setup/recommend-approve/groupAssignController.js'));
 ?>
 
 <script>
-    document.menu =<?php $menu = ["id" => "menuAttendance", "subMenu" => ["id" => "subMenuShiftAssign"]];echo json_encode($menu);?>;
+    document.menu =<?php $menu = ["id" => "menuSetup", "subMenu" => ["id" => "subMenuRecomandApprover"]];
+echo json_encode($menu); ?>;
     document.url = '<?= $this->url("restful", ["action" => "index"]) ?>';
 </script>
 <div class="page-bar">
-    <?= $this->navigation('Zend\Navigation\shiftassign')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
+    <?= $this->navigation('Zend\Navigation\recommendapprove')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
-<div class="margin-top-20" ng-app="hris" ng-controller="shiftAssignController">
-    <div class="row">
-        <div class="col-sm-2">
-            <?php print $this->formLabel($branches); ?>
+<div class="" ng-app="hris" ng-controller="groupAssignController">
+    <div class="formbg arrowtop ng-scope">
+        <div class="margin-top-20">
+            <div class="row">
+                <div class="col-sm-2">
+                    <?php print $this->formLabel($employees); ?>
+                    <?php print $this->formElement($employees); ?>
+                </div>
+                <div class="col-sm-2">
+                    <?php print $this->formLabel($branches); ?>
+                    <?php print $this->formElement($branches); ?>
+                </div>
+                <div class="col-sm-2">
+                    <?php print $this->formLabel($departments); ?>
+                    <?php print $this->formElement($departments); ?>
+                </div>
+                <div class="col-sm-2">
+                    <?php print $this->formLabel($designations); ?>
+                    <?php print $this->formElement($designations); ?>
+                </div>
+                <div class="col-sm-2">
+                    <label height="45"></label>
+                    <button ng-click="view()" id="viewEmployees" class="btn btn-default form-control i-search">
+                        Search
+                        <i class="fa fa-search"></i>
+                    </button>
+                </div>
+            </div>
         </div>
-        <div class="col-sm-2">
-            <?php print $this->formLabel($departments); ?>
-
-        </div>
-        <div class="col-sm-2">
-            <?php print $this->formLabel($designations); ?>
-
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-sm-2">
-            <?php print $this->formElement($branches); ?>
-        </div>
-        <div class="col-sm-2">
-            <?php print $this->formElement($departments); ?>
-
-        </div>
-        <div class="col-sm-2">
-            <?php print $this->formElement($designations); ?>
-        </div>
-        <div class="col-sm-2 ">
-
-            <button ng-click="view()" id="viewEmployees" class="btn btn-sm yellow pull-right">
-                Search
-                <i class="fa fa-search"></i>
-            </button>
-        </div>
-    </div>
-
     <div class="margin-top-20">
-        <table class="table table-striped table-bordered table-hover no-footer">
+        <table class="table table-striped table-bordered table-hover no-footer customTable">
             <thead>
-            <tr>
-                <th>
-                    Employee
-                </th>
-                <th>
-                    Branch
-                </th>
-                <th>
-                    Department
-                </th>
-                <th>
-                    Designation
-                </th>
-                <th>
-                    Position
-                </th>
-                <th>
-                    Service Type
-                </th>
-                <th>
-                    Shift Assigned
-                </th>
-                <th class="bs-checkbox " style="width: 36px; " data-field="state" tabindex="0">
-                    <div class="th-inner ">
-                        <label class="mt-checkbox mt-checkbox-single mt-checkbox-outline">
-                        <input class="" type="checkbox" ng-model="all" ng-click="checkAll(all)"/>
-                            <span></span>
-                        </label>
-                    </div>
-                    <div class="fht-cell" style="width: 46px;"></div>
-                </th>
-            </tr>
+                <tr>
+                    <th>
+                        Employee Code
+                    </th>
+                    <th>
+                        Employee Name
+                    </th>
+                    <th>
+                        Recommender Assigned
+                    </th>
+                    <th>
+                        Approver Assigned
+                    </th>
+                    <th class="bs-checkbox " style="width: 36px; " data-field="state" tabindex="0">
+                        <div class="th-inner ">
+                            <label class="mt-checkbox mt-checkbox-single mt-checkbox-outline">
+                                <input class="" type="checkbox" ng-model="all" ng-click="checkAll(all)"/>
+                                <span></span>
+                            </label>
+                        </div>
+                        <div class="fht-cell" style="width: 46px;"></div>
+                    </th>
+                </tr>
             </thead>
             <tbody>
-            <tr ng-repeat="employeeShift in employeeShiftList">
-                <td>
-                    <span ng-bind="employeeShift.FIRST_NAME"></span>
-                    <span ng-bind="employeeShift.MIDDLE_NAME"></span>
-                    <span ng-bind="employeeShift.LAST_NAME"></span>
-                </td>
-                <td ng-bind="employeeShift.BRANCH_NAME">
-                </td>
-                <td ng-bind="employeeShift.DEPARTMENT_NAME">
+                <tr ng-repeat="employee in employeeList">
+                    <td>
+                        <span ng-bind="employee.EMPLOYEE_CODE"></span>
+                    </td>
+                    <td>
+                        <span ng-bind="employee.FIRST_NAME"></span>
+                        <span ng-bind="employee.MIDDLE_NAME"></span>
+                        <span ng-bind="employee.LAST_NAME"></span>
+                    </td>
+                    <td>
+                        <span ng-bind="employee.FIRST_NAME_R"></span>
+                        <span ng-bind="employee.MIDDLE_NAME_R"></span>
+                        <span ng-bind="employee.LAST_NAME_R"></span>
+                    </td>
+                    <td>
+                        <span ng-bind="employee.FIRST_NAME_A"></span>
+                        <span ng-bind="employee.MIDDLE_NAME_A"></span>
+                        <span ng-bind="employee.LAST_NAME_A"></span>
+                    </td>
 
-                </td>
-                <td ng-bind="employeeShift.DESIGNATION_TITLE">
-                </td>
-                <td ng-bind="employeeShift.POSITION_NAME">
-                </td>
-                <td ng-bind="employeeShift.SERVICE_TYPE_NAME">
-                </td>
-                <td ng-bind="employeeShift.SHIFT_ENAME || 'Default'">
-
-                </td>
-                <td class="bs-checkbox " style="width: 36px; " data-field="state" tabindex="0">
-                    <div class="th-inner ">
-                        <label class="mt-checkbox mt-checkbox-single mt-checkbox-outline">
-                        <input class="" ng-model="employeeShift.checked" type="checkbox"
-                               ng-change="checkUnit(item.checked)"/>
-                            <span></span>
-                        </label>
-                    </div>
-                    <div class="fht-cell" style="width: 46px;"></div>
-                </td>
-            </tr>
+                    <td class="bs-checkbox " style="width: 36px; " data-field="state" tabindex="0">
+                        <div class="th-inner ">
+                            <label class="mt-checkbox mt-checkbox-single mt-checkbox-outline">
+                                <input class="" ng-model="employee.checked" type="checkbox"
+                                       ng-change="checkUnit(item.checked)"/>
+                                <span></span>
+                            </label>
+                        </div>
+                        <div class="fht-cell" style="width: 46px;"></div>
+                    </td>
+                </tr>
             </tbody>
         </table>
     </div>
-    <div class="row" ng-show="assignShowHide">
-        <div class="col-sm-offset-8 col-sm-2">
-                <?php print $this->formElement($shiftFormElement); ?>
+    </div>
+    <div class="row margin-top-20" >                   
+        <div class="col-sm-2">
+            <label for="designationId">Recommender</label>
+            <div class="input-group">
+            <?php print $this->formElement($designations); ?>
+                <span class="input-group-addon" style="cursor: pointer;" id="recommenderFilter" data-toggle="modal" data-target="#myModal"><i class="fa fa-search"></i></span>
+            </div>
+
+        </div>
+        <div class="col-sm-2">
+            <label for="designationId">Approver</label>
+            <div class="input-group">
+                <?php print $this->formElement($designations); ?>
+                <span class="input-group-addon" style="cursor: pointer;" id="approverFilter" ng-click="open()"><i class="fa fa-search"></i></span>
+            </div>
         </div>
         <div class="col-sm-2 ">
-            <button class="pull-right btn btn-sm green mt-ladda-btn ladda-button mt-progress-demo" id="assignBtn" ng-click="assign()">
-                Assign
+            <label height="45"></label>
+                <button id="assignBtn" ng-click="assign()" class="btn btn-default form-control i-search">
+                    Assign
                 <i class="fa fa-edit"></i>
-            </button>
+                </button>
         </div>
     </div>
+    
+     <script type="text/ng-template" id="myModalContent.html">
+         <div class="modal-header"> 
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span> 
+                </button> 
+                <h4 class="modal-title">Filter Recommender</h4> 
+            </div>
+            <div class="modal-body"> 
+                <div class="row">
+                    <div class="col-sm-3">
+                        <?php print $this->formLabel($branches); ?>
+                        <?php print $this->formElement($branches); ?>
+                    </div>
+                    <div class="col-sm-3">
+                        <?php print $this->formLabel($departments); ?>
+                        <?php print $this->formElement($departments); ?>
+                    </div>
+                    <div class="col-sm-3">
+                        <?php print $this->formLabel($designations); ?>
+                        <?php print $this->formElement($designations); ?>
+                    </div>
+                    <div class="col-sm-3">
+                        <label height="45"></label>
+                        <button ng-click="view()" id="viewEmployees" class="btn btn-default form-control i-search">
+                            Search
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+                    
+                </div>
+            </div> 
+     </script>
 </div>
+
+<!-- Button trigger modal --> 
+
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"> 
+    <div class="modal-dialog" role="document">
+        <div class="modal-content"> 
+            <div class="modal-header"> 
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span> 
+                </button> 
+                <h4 class="modal-title">Filter Recommender</h4> 
+            </div>
+            <div class="modal-body"> 
+                <div class="row">
+                    <div class="col-sm-3">
+                        <?php print $this->formLabel($branches); ?>
+                        <?php print $this->formElement($branches); ?>
+                    </div>
+                    <div class="col-sm-3">
+                        <?php print $this->formLabel($departments); ?>
+                        <?php print $this->formElement($departments); ?>
+                    </div>
+                    <div class="col-sm-3">
+                        <?php print $this->formLabel($designations); ?>
+                        <?php print $this->formElement($designations); ?>
+                    </div>
+                    <div class="col-sm-3">
+                        <label height="45"></label>
+                        <button ng-click="view()" id="viewEmployees" class="btn btn-default form-control i-search">
+                            Search
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+                    
+                </div>
+            </div> 
+        </div><!-- /.modal-content --> 
+    </div><!-- /.modal-dialog --> 
+</div><!-- /.modal -->
+
+<div class="modal fade" id="myModalApprover" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"> 
+    <div class="modal-dialog" role="document">
+        <div class="modal-content"> 
+            <div class="modal-header"> 
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span> 
+                </button> 
+                <h4 class="modal-title">Filter Approver</h4> 
+            </div>
+            <div class="modal-body"> 
+                <div class="row">
+                    <div class="col-sm-3">
+                        <input type="hidden" value="<?php echo $approverType; ?>"
+                        <?php print $this->formLabel($branches); ?>
+                        <?php print $this->formElement($branches); ?>
+                    </div>
+                    <div class="col-sm-3">
+                        <?php print $this->formLabel($departments); ?>
+                        <?php print $this->formElement($departments); ?>
+                    </div>
+                    <div class="col-sm-3">
+                        <?php print $this->formLabel($designations); ?>
+                        <?php print $this->formElement($designations); ?>
+                    </div>
+                    <div class="col-sm-3">
+                        <label height="45"></label>
+                        <button ng-click="view()" id="viewEmployees" class="btn btn-default form-control i-search">
+                            Search
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+                    
+                </div>
+            </div> 
+        </div><!-- /.modal-content --> 
+    </div><!-- /.modal-dialog --> 
+</div><!-- /.modal -->

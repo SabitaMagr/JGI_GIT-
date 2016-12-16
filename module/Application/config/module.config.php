@@ -25,6 +25,24 @@ return [
                         ],
                     ],
                 ],
+                'test' => [
+                    'options' => [
+                        'route' => 'test',
+                        'defaults' => [
+                            'controller' => Controller\CronController::class,
+                            'action' => 'test',
+                        ],
+                    ],
+                ],
+                'check-update' => [
+                    'options' => [
+                        'route' => 'attendance check-update',
+                        'defaults' => [
+                            'controller' => Controller\CronController::class,
+                            'action' => 'check',
+                        ],
+                    ],
+                ],
             ],
         ],
     ],
@@ -194,8 +212,8 @@ return [
             'dashboard-item/leave-apply' => __DIR__ . '/../view/layout/dashboard-items/leave-apply.phtml',
             'dashboard-item/present-absent' => __DIR__ . '/../view/layout/dashboard-items/present-absent.phtml',
             'dashboard-item/employee-count-by-branch' => __DIR__ . '/../view/layout/dashboard-items/employee-count-by-branch.phtml',
-            'dashboard-item/today-leave'=>__DIR__.'/../view/layout/dashboard-items/today-leave.phtml',
-            'dashboard-item/birthdays'=>__DIR__.'/../view/layout/dashboard-items/birthdays.phtml'
+            'dashboard-item/today-leave' => __DIR__ . '/../view/layout/dashboard-items/today-leave.phtml',
+            'dashboard-item/birthdays' => __DIR__ . '/../view/layout/dashboard-items/birthdays.phtml'
         ],
         'template_path_stack' => [
             __DIR__ . '/../view',
@@ -207,12 +225,12 @@ return [
         'leave-apply' => 'dashboard-item/leave-apply',
         'present-absent' => 'dashboard-item/present-absent',
         'emp-cnt-by-branch' => 'dashboard-item/employee-count-by-branch',
-        'today-leave'=>'dashboard-item/today-leave',
-        'birthdays'=>'dashboard-item/birthdays'
+        'today-leave' => 'dashboard-item/today-leave',
+        'birthdays' => 'dashboard-item/birthdays'
     ],
     'role-types' => [
-        'A'=>'Admin',
-        'B'=>'Branch Manager',
-        'E'=>'Employee'
+        'A' => 'Admin',
+        'B' => 'Branch Manager',
+        'E' => 'Employee'
     ]
 ];

@@ -64,11 +64,11 @@ echo json_encode($menu);
         </td>
 
         <td>
-            <a class="btn  btn-icon-only btn-success"
+            <a class="btn-edit"
                href="<?= $this->url("company", ["action" => "edit"]); ?>/#:COMPANY_ID#" style="height:17px;">
                 <i class="fa fa-edit"></i>
             </a> 
-            <a class="btn btn-icon-only btn-danger confirmation"
+            <a class="btn-edit confirmation"
         href="<?= $this->url("company", ["action" => "delete"]); ?>/#:COMPANY_ID#" id="bs_#:COMPANY_ID #" style="height:17px;">
         <i class="fa fa-trash-o"></i></a>
     </a>
