@@ -19,7 +19,6 @@ class PaySlip extends AbstractActionController {
 
     public function indexAction() {
         $rules = EntityHelper::getTableKVListWithSortOption($this->adapter, Rules::TABLE_NAME, Rules::PAY_ID, [Rules::PAY_EDESC], [Rules::STATUS => 'E'], Rules::PRIORITY_INDEX, Select::ORDER_ASCENDING, null);
-
         return Helper::addFlashMessagesToArray($this, [
                     'rules' => $rules,
         ]);

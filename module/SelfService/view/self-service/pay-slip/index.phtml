@@ -11,7 +11,7 @@ $this->headScript()
 $menu = ["id" => "menuSelfService", "subMenu" => ["id" => "subMenuPaySlip"]];
 echo json_encode($menu);
 ?>;
-    document.rules =<?= $rules ?>;
+    document.rules =<?= json_encode($rules) ?>;
 </script>
 <?php if ($this->messages) { ?>
     <script>
