@@ -880,6 +880,11 @@ form.k-filter-menu .k-widget, form.k-filter-menu .k-textbox
     }
 }
 
+.msgForError{
+    padding:15px;
+    color:red;
+    font-size:11px;
+}
 
 
 

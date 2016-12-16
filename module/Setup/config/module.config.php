@@ -508,11 +508,11 @@ return [
         'recommendapprove' => [
 
             [
-                'label' => 'Recommender And Approver',
+                'label' => 'Reporting Hierarchy',
                 'route' => 'recommendapprove',
             ],
             [
-                'label' => 'Recommender And Approver',
+                'label' => 'Reporting Hierarchy',
                 'route' => 'recommendapprove',
                 'pages' => [
                     [

@@ -20,7 +20,7 @@ class ExcelImportForm
     
     /**
      * @Annotation\Type("Zend\Form\Element\Submit")
-     * @Annotation\Attributes({"value":"Submit","class":"btn btn-success"})
+     * @Annotation\Attributes({"value":"Submit","class":"btn btn-default form-control i-search"})
      */
     public $submit;
     

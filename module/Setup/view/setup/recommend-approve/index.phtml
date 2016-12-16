@@ -16,7 +16,7 @@ if($this->messages) { ?>
 <?php } ?>
 
 <script>
-    document.menu =<?php $menu = ["id" => "menuSetup", "subMenu" => ["id" => "subMenuRecommenderApprover"]];echo json_encode($menu);?>;
+    document.menu =<?php $menu = ["id" => "menuSetup", "subMenu" => ["id" => "subMenuReportingHierarchy"]];echo json_encode($menu);?>;
     document.recommendApproves=<?php echo json_encode($recommendApproves); ?>;
 </script>
 <div class="page-bar">
@@ -75,12 +75,6 @@ if($this->messages) { ?>
             #: (FIRST_NAME_A == null) ? ' ' : FIRST_NAME_A #
             #: (MIDDLE_NAME_A == null) ? ' ' : MIDDLE_NAME_A #
             #: (LAST_NAME_A == null) ? ' ' : LAST_NAME_A #
-        </td>
-        <td>
-        <a class="btn-edit"
-        href="<?= $this->url("recommendapprove", ["action" => "edit"]) ?>/#:EMPLOYEE_ID #" style="height:17px;">
-        <i class="fa fa-edit"></i>
-        </a> 
         </td>
         </tr>
     </script>
