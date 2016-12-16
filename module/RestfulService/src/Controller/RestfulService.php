@@ -53,7 +53,6 @@ use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Adapter\Driver\ResultInterface;
 use Zend\Mvc\Controller\AbstractRestfulController;
 use Zend\View\Model\JsonModel;
-use Setup\Repository\RecommendApproveRepository;
 use Setup\Model\RecommendApprove;
 class RestfulService extends AbstractRestfulController {
 
