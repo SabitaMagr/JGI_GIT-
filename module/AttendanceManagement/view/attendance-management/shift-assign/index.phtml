@@ -12,7 +12,7 @@ $this->headScript()->appendFile($this->basePath('js/AttendanceManagement/ShiftAs
 <script>
     document.menu =<?php $menu = ["id" => "menuAttendance", "subMenu" => ["id" => "subMenuShiftAssign"]];echo json_encode($menu);?>;
     document.url = '<?= $this->url("restful", ["action" => "index"]) ?>';
-</script>
+</script>sear
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\shiftassign')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
@@ -57,7 +57,7 @@ $this->headScript()->appendFile($this->basePath('js/AttendanceManagement/ShiftAs
         </div>
         <div class="col-sm-2 ">
 
-            <button ng-click="view()" id="viewEmployees" class="btn btn-sm yellow pull-right">
+            <button ng-click="view()" id="viewEmployees" class="btn btn-sm yellow pull-right btnsearch">
                 Search
                 <i class="fa fa-search"></i>
             </button>
