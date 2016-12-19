@@ -36,10 +36,10 @@ return [
                 ],
                 'check-update' => [
                     'options' => [
-                        'route' => 'attendance check-update',
+                        'route' => 'attendance employee-attendance <employeeId> <attendanceDt> <attendanceTime>',
                         'defaults' => [
                             'controller' => Controller\CronController::class,
-                            'action' => 'check',
+                            'action' => 'employeeAttendance',
                         ],
                     ],
                 ],

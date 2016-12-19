@@ -45,7 +45,7 @@ class SalarySheetRepo implements RepositoryInterface {
         return $this->gateway->select($ids);
     }
 
-    public function joinWithMonth($monthId = null) {
+    public function joinWithMonth($monthId = null, $employeeJoinDate = null) {
         $sql = new Sql($this->adapter);
         $select = $sql->select();
         $select->columns([]);
@@ -56,6 +56,10 @@ class SalarySheetRepo implements RepositoryInterface {
         }
         $select->where(["M." . Months::STATUS . " = " . "'E'"]);
         $select->where(["S." . SalarySheet::STATUS . " = " . "'E'"]);
+
+        if ($employeeJoinDate != null) {
+            $select->where(["'" . $employeeJoinDate . "'" . " <= " . "M." . Months::TO_DATE]);
+        }
 
         $statement = $sql->prepareStatementForSqlObject($select);
         $result = $statement->execute();

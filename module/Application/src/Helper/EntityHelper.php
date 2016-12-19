@@ -16,7 +16,7 @@ use Zend\Db\TableGateway\TableGateway;
 
 class EntityHelper {
 
-    public static function getTableKVList(AdapterInterface $adapter, $tableName, $key, array $values, $where = null, $concatWith = null,$emptyColumn=null) {
+    public static function getTableKVList(AdapterInterface $adapter, $tableName, $key = null, array $values, $where = null, $concatWith = null, $emptyColumn = null) {
         $gateway = new TableGateway($tableName, $adapter);
 
         if ($where == null) {
@@ -27,9 +27,9 @@ class EntityHelper {
         $concatWith = ($concatWith == null) ? " " : ($concatWith == null) ? "" : $concatWith;
 
         $entitiesArray = array();
-        if($emptyColumn){
-            $entitiesArray[null]="----";
-        }        
+        if ($emptyColumn) {
+            $entitiesArray[null] = "----";
+        }
         foreach ($resultset as $result) {
             $concattedValue = "";
             for ($i = 0; $i < count($values); $i++) {
@@ -39,7 +39,11 @@ class EntityHelper {
                 }
                 $concattedValue = $concattedValue . $concatWith . $result[$values[$i]];
             }
-            $entitiesArray[$result[$key]] = $concattedValue;
+            if ($key == null) {
+                array_push($entitiesArray, $concattedValue);
+            } else {
+                $entitiesArray[$result[$key]] = $concattedValue;
+            }
         }
         return $entitiesArray;
     }
