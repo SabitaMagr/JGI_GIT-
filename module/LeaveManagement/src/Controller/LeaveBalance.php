@@ -50,7 +50,7 @@ class LeaveBalance extends AbstractActionController {
     public function indexAction() {
         $employeeNameFormElement = new Select();
         $employeeNameFormElement->setName("branch");
-        $employeeName = \Application\Helper\EntityHelper::getTableKVList($this->adapter, "HR_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => "E"]);
+        $employeeName = \Application\Helper\EntityHelper::getTableKVList($this->adapter, "HR_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => "E"]," ");
         $employeeName[-1] = "All";
         ksort($employeeName);
         $employeeNameFormElement->setValueOptions($employeeName);
@@ -115,10 +115,17 @@ class LeaveBalance extends AbstractActionController {
         $serviceEventTypeFormElement->setLabel("Service Event Type");
 
         $leaveList = $this->repository->getAllLeave();
+        
+        $leaves = [];
+        foreach($leaveList as $leaveRow){
+            array_push($leaves, ['LEAVE_ENAME'=>$leaveRow['LEAVE_ENAME']]);
+        }
+        
         $num = count($leaveList);
 
         return Helper::addFlashMessagesToArray($this, [
                     'leaveList' => $leaveList,
+                    'leavesArrray'=>$leaves,
                     'num' => $num,
                     "branches" => $branchFormElement,
                     "departments" => $departmentFormElement,

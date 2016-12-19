@@ -172,15 +172,18 @@ echo json_encode($menu);
                 </a>
             </li>
         </ul>
-        <div class="tab-content">
+        <div class="tab-content clearfix">
             <div class="tab-pane active" id="tab1" style="min-height: 400px;">
-                <img alt="" height="150" width="150" class="img-circle" src="<?= $this->basePath("uploads/" . $filePath) ?>" />
+              
 
                 <div class="personal-info">
                     <p><i class="fa fa-user ticon" aria-hidden="true"></i>
                         Personal Information</p>
+                    <div class="profile-img-box">
+                      <img alt="profile image"  class="profilepic" src="<?= $this->basePath("uploads/" . $filePath) ?>" />
+                    </div>
                     <div class="row clearfix e-setup">
-
+                       
                         <div class="col-xs-12 col-sm-6 col-md-3 col-box">
                             <div class="row bottomgap">
 
@@ -458,6 +461,7 @@ echo json_encode($menu);
                         </div>
 
                     </div>
+                </div>
                     <div class="Temporary-info">
                         <p><i class="fa fa-address-card ticon" aria-hidden="true"></i>
                             Temporary Address</p>
@@ -535,7 +539,7 @@ echo json_encode($menu);
                     </div>
 
 
-                </div>
+               
 
                 <div class="Emergency-info">
                     <p><i class="fa fa-map-marker ticon" aria-hidden="true"></i>
@@ -1073,8 +1077,8 @@ echo json_encode($menu);
 
                     <input type="hidden" name="employeeId" id="employeeId" value="<?php echo $id; ?>">
                     <div class="col-sm-12">
-                        <table class="table table-striped table-bordered table-hover no-footer customtbl" id="qualificationTbl">
-                            <tr>
+                        <table class="table table-striped table-bordered table-hover no-footer customtbl profile-table-header" id="qualificationTbl">
+                            <tr class="first">
                                 <td><?php print $this->formLabel($academicDegreeId); ?></td>
                                 <td><?php print $this->formLabel($academicUniversityId); ?></td>
                                 <td><?php print $this->formLabel($academicProgramId); ?></td>
