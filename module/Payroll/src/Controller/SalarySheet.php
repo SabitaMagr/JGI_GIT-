@@ -77,8 +77,10 @@ class SalarySheet {
             $payDet = [];
             $payDet['ruleValueKV'] = [];
             foreach ($payDetails as $payDetail) {
-                $payDet['calculatedValue'] = $payDetail[SalarySheetDetailModel::TOTAL_VAL];
-                $payDet['ruleValueKV'][$payDetail[SalarySheetDetailModel::PAY_ID]] = $payDetail[SalarySheetDetailModel::VAL];
+                $tempTotalVal = $payDetail[SalarySheetDetailModel::TOTAL_VAL];
+                $payDet['calculatedValue'] = Helper::maintainFloatNumberFormat($tempTotalVal);
+                $tempVal = $payDetail[SalarySheetDetailModel::VAL];
+                $payDet['ruleValueKV'][$payDetail[SalarySheetDetailModel::PAY_ID]] = Helper::maintainFloatNumberFormat($tempVal);
             }
 
             $results[$empId] = $payDet;

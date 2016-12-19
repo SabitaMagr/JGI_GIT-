@@ -29,6 +29,7 @@ angular.module('hris', [])
                 window.app.pullDataById(document.restfulUrl, {
                     action: 'pullPayRollGeneratedMonths',
                     data: {
+                        employeeId: document.employeeId
                     }
                 }).then(function (success) {
                     $scope.$apply(function () {

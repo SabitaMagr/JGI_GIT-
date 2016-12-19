@@ -2,12 +2,10 @@
 
 namespace SelfService\Controller;
 
-use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
-use Payroll\Model\Rules;
 use Payroll\Repository\RulesRepository;
+use Zend\Authentication\AuthenticationService;
 use Zend\Db\Adapter\AdapterInterface;
-use Zend\Db\Sql\Select;
 use Zend\Mvc\Controller\AbstractActionController;
 
 class PaySlip extends AbstractActionController {
@@ -22,8 +20,13 @@ class PaySlip extends AbstractActionController {
         $rulesRepo = new RulesRepository($this->adapter);
         $rulesRaw = $rulesRepo->fetchAll();
         $rules = Helper::extractDbData($rulesRaw);
+
+
+        $auth = new AuthenticationService();
+        $employeeId = $auth->getStorage()->read()['employee_id'];
         return Helper::addFlashMessagesToArray($this, [
                     'rules' => $rules,
+                    'employeeId' => $employeeId
         ]);
     }
 

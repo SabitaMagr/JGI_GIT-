@@ -15,6 +15,7 @@ $menu = ["id" => "menuSelfService", "subMenu" => ["id" => "subMenuPaySlip"]];
 echo json_encode($menu);
 ?>;
     document.rules =<?= json_encode($rules) ?>;
+    document.employeeId=<?= $employeeId?>;
 </script>
 <?php if ($this->messages) { ?>
     <script>

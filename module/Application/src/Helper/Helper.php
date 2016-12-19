@@ -14,6 +14,7 @@ class Helper {
     const ORACLE_TIME_FORMAT = "HH:MI AM";
     const MYSQL_DATE_FORMAT = "";
     const PHP_DATE_FORMAT = "d-M-Y";
+    const FLOAT_ROUNDING_DIGIT_NO = 2;
 
     public static function addFlashMessagesToArray($context, $return) {
         $flashMessenger = $context->flashMessenger();
@@ -222,6 +223,10 @@ class Helper {
             array_push($extractedArray, $item);
         }
         return $extractedArray;
+    }
+
+    public static function maintainFloatNumberFormat($floatNumber) {
+        return number_format($floatNumber, self::FLOAT_ROUNDING_DIGIT_NO, '.', '');
     }
 
 }
