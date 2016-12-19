@@ -39,7 +39,7 @@ angular.module('hris', [])
                 var serviceEventTypeId = angular.element(document.getElementById('serviceEventTypeId')).val();
 
                 window.app.pullDataById(document.url, {
-                    action: 'pullEmployeeList',
+                    action: 'pullEmployeeListForEmployeeTable',
                     data: {
                         'employeeId': employeeId,
                         'branchId': branchId,
@@ -50,8 +50,8 @@ angular.module('hris', [])
                         'serviceEventTypeId': serviceEventTypeId
                     }
                 }).then(function (success) {
-                    $scope.initializekendoGrid(success.data);
                     console.log("pullEmployeeList", success.data);
+                    $scope.initializekendoGrid(success.data);                
                     $scope.$apply(function () {
 //                        $scope.gridData.splice(0, $scope.gridData.length);
 //                        angular.forEach(success.data, function (value, key) {
@@ -85,11 +85,11 @@ angular.module('hris', [])
                     },
                     rowTemplate: kendo.template($("#rowTemplate").html()),
                     columns: [
-                        {field: "employeeCode", title: "Employee Code", width: 130},
-                        {field: "firstName", title: "Name", width: 220},
-                        {field: "birthDate", title: "Birth Date", width: 120},
-                        {field: "mobileNo", title: "Mobile No", width: 130},
-                        {field: "emailOfficial", title: "Email Official", width: 200},
+                        {field: "EMPLOYEE_CODE", title: "Employee Code", width: 130},
+                        {field: "FIRST_NAME", title: "Name", width: 220},
+                        {field: "BIRTH_DATE", title: "Birth Date", width: 120},
+                        {field: "MOBILE_NO", title: "Mobile No", width: 130},
+                        {field: "EMAIL_ADDRESS", title: "Email Official", width: 200},
                         {title: "Action", width: 120}
                     ]
                 });
@@ -165,8 +165,6 @@ angular.module('hris', [])
                                 {value: "Salary"},
                                 {value: "Salary PF"},
                                 {value: "Service Type Name"},
-                                {value: "Salary PF"},
-                                {value: "Service Type Name"},
                                 {value: "Service Event Type Name"},
                                 {value: "Position Name"},
                                 {value: "Designation Name"},
@@ -185,11 +183,82 @@ angular.module('hris', [])
 
                     for (var i = 0; i < data.length; i++) {
                         var dataItem = data[i];
+                        if(dataItem.MIDDLE_NAME!=null){
+                            var MIDDLE_NAME = " "+dataItem.MIDDLE_NAME+" ";
+                        }else{
+                            var MIDDLE_NAME = " ";
+                        }
+                        var employeeName =  dataItem.FIRST_NAME+MIDDLE_NAME+dataItem.LAST_NAME;
                         rows.push({
                             cells: [
-                                {value: dataItem.SN},
+                                {value: dataItem.EMPLOYEE_CODE},
+                                {value:employeeName},
+                                {value: dataItem.NAME_NEPALI},
+                                {value: dataItem.GENDER_NAME},
+                                {value: dataItem.BIRTH_DATE},
+                                {value: dataItem.COUNTRY_NAME},
+                                {value: dataItem.RELIGION_NAME},
+                                {value: dataItem.COMPANY_NAME},
+                                {value: dataItem.BLOOD_GROUP_NAME},
+                                {value: dataItem.MOBILE_NO},
+                                {value: dataItem.TELEPHONE_NO},
+                                {value: dataItem.SOCIAL_ACTIVITY},
+                                {value: dataItem.EXTENSION_NO},
+                                {value: dataItem.EMAIL_OFFICIAL},
+                                {value: dataItem.EMAIL_PERSONAL},
+                                {value: dataItem.SOCIAL_NETWORK},
+                                {value: dataItem.ADDR_PERM_HOUSE_NO},
+                                {value: dataItem.ADDR_PERM_WARD_NO},
+                                {value: dataItem.ADDR_PERM_STREET_ADDRESS},
+                                {value: dataItem.ADDR_PERM_ZONE_NAME},
+                                {value: dataItem.ADDR_PERM_DISTRICT_NAME},
+                                {value: dataItem.VDC_MUNICIPALITY_NAME},
+                                {value: dataItem.ADDR_TEMP_HOUSE_NO},
+                                {value: dataItem.ADDR_TEMP_WARD_NO},
+                                {value: dataItem.ADDR_TEMP_STREET_ADDRESS},
+                                {value: dataItem.ADDR_TEMP_ZONE_NAME},
+                                {value: dataItem.ADDR_TEMP_DISTRICT_NAME},
+                                {value: dataItem.VDC_MUNICIPALITY_NAME_TEMP},
+                                {value: dataItem.EMRG_CONTACT_NAME},
+                                {value: dataItem.EMERG_CONTACT_RELATIONSHIP},
+                                {value: dataItem.EMERG_CONTACT_ADDRESS},
+                                {value: dataItem.EMERG_CONTACT_NO},
+                                {value: dataItem.FAM_FATHER_NAME},
+                                {value: dataItem.FAM_FATHER_OCCUPATION},
+                                {value: dataItem.FAM_GRAND_FATHER_NAME},
+                                {value: dataItem.MARITAL_STATUS},
+                                {value: dataItem.FAM_SPOUSE_NAME},
+                                {value: dataItem.FAM_SPOUSE_OCCUPATION},
+                                {value: dataItem.FAM_MOTHER_NAME},
+                                {value: dataItem.FAM_MOTHER_OCCUPATION},
+                                {value: dataItem.FAM_GRAND_MOTHER_NAME},
+                                {value: dataItem.FAM_SPOUSE_BIRTH_DATE},
+                                {value: dataItem.FAM_SPOUSE_WEDDING_ANNIVERSARY},
+                                {value: dataItem.ID_CARD_NO},
+                                {value: dataItem.ID_LBRF},
+                                {value: dataItem.ID_BAR_CODE},
+                                {value: dataItem.ID_PROVIDENT_FUND_NO},
+                                {value: dataItem.ID_DRIVING_LICENCE_NO},
+                                {value: dataItem.ID_DRIVING_LICENCE_EXPIRY},
+                                {value: dataItem.ID_DRIVING_LICENCE_TYPE},
+                                {value: dataItem.ID_PASSPORT_NO},
+                                {value: dataItem.ID_CITIZENSHIP_NO},
+                                {value: dataItem.ID_CIT_ISSUE_PLACE_NAME},
+                                {value: dataItem.ID_THUMB_ID},
+                                {value: dataItem.ID_PAN_NO},
+                                {value: dataItem.ID_ACCOUNT_NO},
+                                {value: dataItem.ID_RETIREMENT_NO},
+                                {value: dataItem.ID_CITIZENSHIP_ISSUE_DATE},
+                                {value: dataItem.ID_PASSPORT_EXPIRY},
+                                {value: dataItem.JOIN_DATE},
+                                {value: dataItem.SALARY},
+                                {value: dataItem.SALARY_PF},
+                                {value: dataItem.SERVICE_TYPE_NAME},
+                                {value: dataItem.SERVICE_EVENT_TYPE_NAME},
                                 {value: dataItem.POSITION_NAME},
-                                {value: dataItem.REMARKS}
+                                {value: dataItem.DESIGNATION_TITLE},
+                                {value: dataItem.DEPARTMENT_NAME},
+                                {value: dataItem.BRANCH_NAME}
                             ]
                         });
                     }
@@ -202,6 +271,45 @@ angular.module('hris', [])
                         sheets: [
                             {
                                 columns: [
+                                    {autoWidth: true},
+                                    {autoWidth: true},
+                                    {autoWidth: true},
+                                    {autoWidth: true},
+                                    {autoWidth: true},
+                                    {autoWidth: true},
+                                    {autoWidth: true},
+                                    {autoWidth: true},
+                                    {autoWidth: true},
+                                    {autoWidth: true},
+                                    {autoWidth: true},
+                                    {autoWidth: true},
+                                    {autoWidth: true},
+                                    {autoWidth: true},
+                                    {autoWidth: true},
+                                    {autoWidth: true},
+                                    {autoWidth: true},
+                                    {autoWidth: true},
+                                    {autoWidth: true},
+                                    {autoWidth: true},
+                                    {autoWidth: true},
+                                    {autoWidth: true},
+                                    {autoWidth: true},
+                                    {autoWidth: true},
+                                    {autoWidth: true},
+                                    {autoWidth: true},
+                                    {autoWidth: true},
+                                    {autoWidth: true},
+                                    {autoWidth: true},
+                                    {autoWidth: true},
+                                    {autoWidth: true},
+                                    {autoWidth: true},
+                                    {autoWidth: true},
+                                    {autoWidth: true},
+                                    {autoWidth: true},
+                                    {autoWidth: true},
+                                    {autoWidth: true},
+                                    {autoWidth: true},
+                                    {autoWidth: true},
                                     {autoWidth: true},
                                     {autoWidth: true},
                                     {autoWidth: true}

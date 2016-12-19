@@ -12,7 +12,7 @@ angular.module('hris', [])
         .controller('leaveBalanceController', function ($scope, $http) {
             $scope.leaves = document.leaves;
             $scope.allList = {};
-            console.log($scope.leaves);
+            // console.log($scope.leaves);
 
             $scope.view = function () {
                 var employeeId = angular.element(document.getElementById('employeeId')).val();
@@ -54,39 +54,45 @@ angular.module('hris', [])
 
             var headers = [];
             var datas = [];
+            var headerForExcel = [];
+            var datasForExcel = [];
 
             var initializeHeaders = function (cols) {
                 headers = [];
+                headerForExcel = [];
                 headers.push({field: "EMPLOYEE_NAME", title: "Employee Name"});
+                headerForExcel.push({value: "Employee Name"});
                 for (var i in cols) {
                     headers.push({
                         field: "h" + i,
                         title: cols[i].LEAVE_ENAME,
-                        template:'#if(h'+i+'.val>0){# <a href="'+document.leaveApplyUrl+'/#=h'+i+'.eID#/#=h'+i+'.leaveId#">#=h'+i+'.val#</a> #}else{# #=h'+i+'.val#  #}#'
-                    });       
+                        template: '#if(h' + i + '.val>0){# <a href="' + document.leaveApplyUrl + '/#=h' + i + '.eID#/#=h' + i + '.leaveId#">#=h' + i + '.val#</a> #}else{# #=h' + i + '.val#  #}#'
+                    });
+                    headerForExcel.push({value: cols[i].LEAVE_ENAME});
                 }
             };
 
             var initializeDatas = function (cols, rows) {
                 datas = [];
+                datasForExcel = [];
                 for (var i in rows) {
                     var temp = {};
+                    var tempForExcel = [];
                     temp.EMPLOYEE_NAME = i;
+                    tempForExcel.push({value: i});
                     for (var j in rows[i]) {
-                        temp["h" + j  ] ={val: rows[i][j].BALANCE,eID:rows[i][j].EMPLOYEE_ID,leaveId:rows[i][j].LEAVE_ID};
+                        temp["h" + j  ] = {val: rows[i][j].BALANCE, eID: rows[i][j].EMPLOYEE_ID, leaveId: rows[i][j].LEAVE_ID};
+                        tempForExcel.push({value: rows[i][j].BALANCE});
+
                     }
                     datas.push(temp);
+                    datasForExcel.push(tempForExcel);
                 }
             };
+
             var initializekendoGrid = function (columns, datas) {
-               // console.log(datas);
+                // console.log(datas);
                 $("#leaveBalanceTable").kendoGrid({
-                    //toolbar: ["excel"],
-                    excel: {
-                        fileName: "LeaveBalance.xlsx",
-                        filterable: true,
-                        allPages: true
-                    },
                     dataSource: {
                         data: datas,
                         pageSize: 20,
@@ -112,10 +118,35 @@ angular.module('hris', [])
                             .find('tbody')
                             .append('<tr class="kendo-data-row"><td colspan="' + colCount + '" class="no-data">There is no data to show in the grid.</td></tr>');
                 }
-            };
+            }
+            ;
+            $("#export").click(function (e) {
+                var rows = [{
+                        cells: headerForExcel
+                    }];
+                for (var i in  datasForExcel) {
+                    rows.push({
+                        cells: datasForExcel[i]
+                    });
+                }
+                excelExport(rows);
+                e.preventDefault();
+            });
 
-//            $("#export").click(function (e) {
-//                var grid = $("#leaveBalanceTable").data("kendoGrid");
-//                grid.saveAsExcel();
-//            });
+            function excelExport(rows) {
+                var workbook = new kendo.ooxml.Workbook({
+                    sheets: [
+                        {
+                            columns: [
+                                {autoWidth: true},
+                                {autoWidth: true},
+                                {autoWidth: true}
+                            ],
+                            title: "Leave Balance",
+                            rows: rows
+                        }
+                    ]
+                });
+                kendo.saveAs({dataURI: workbook.toDataURL(), fileName: "LeaveBalanceReport.xlsx"});
+            }
         });

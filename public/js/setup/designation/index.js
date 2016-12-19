@@ -2,11 +2,6 @@
     'use strict';
     $(document).ready(function () {
         $("#designationTable").kendoGrid({
-            excel: {
-                fileName: "DesignationList.xlsx",
-                filterable: true,
-                allPages: true
-            },
             dataSource: {
                 data: document.designations,
                 pageSize: 20
@@ -28,10 +23,64 @@
                 {title: "Action",width:100}
             ]
         });
-        $("#export").click(function (e) {
-            var grid = $("#designationTable").data("kendoGrid");
-            grid.saveAsExcel();
+               $("#export").click(function (e) {
+            var rows = [{
+                    cells: [
+                        {value: "Designation Code"},
+                        {value: "Designation Name"},                        
+                        {value: "Basic Salary"},
+                        {value: "Parent Designation Name"},
+                        {value: "Within Branch"},
+                       {value: "Within Department"}
+                    ]
+                }];
+            var dataSource = $("#designationTable").data("kendoGrid").dataSource;
+            var filteredDataSource = new kendo.data.DataSource({
+                data: dataSource.data(),
+                filter: dataSource.filter()
+            });
+
+            filteredDataSource.read();
+            var data = filteredDataSource.view();
+            
+            for (var i = 0; i < data.length; i++) {
+                var dataItem = data[i];
+                var withinBranch = dataItem.WITHIN_BRANCH=='Y'?'Yes':'No';
+                var withinDepartment = dataItem.WITHIN_DEPARTMENT=='Y'?'Yes':'No';
+                rows.push({
+                    cells: [
+                        {value: dataItem.DESIGNATION_CODE},
+                        {value: dataItem.DESIGNATION_TITLE},
+                        {value: dataItem.BASIC_SALARY},
+                        {value: dataItem.PARENT_DESIGNATION_TITLE},
+                        {value: withinBranch},
+                        {value: withinDepartment}
+                    ]
+                });
+            }
+            excelExport(rows);
+            e.preventDefault();
         });
+        
+        function excelExport(rows) {
+            var workbook = new kendo.ooxml.Workbook({
+                sheets: [
+                    {
+                        columns: [
+                            {autoWidth: true},
+                            {autoWidth: true},
+                            {autoWidth: true},
+                            {autoWidth: true},
+                            {autoWidth: true},
+                            {autoWidth: true}
+                        ],
+                        title: "Designation",
+                        rows: rows
+                    }
+                ]
+            });
+            kendo.saveAs({dataURI: workbook.toDataURL(), fileName: "DesignationList.xlsx"});
+        }
         window.app.UIConfirmations();
     });
 })(window.jQuery, window.app);

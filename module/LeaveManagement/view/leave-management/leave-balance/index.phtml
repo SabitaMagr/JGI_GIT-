@@ -65,14 +65,20 @@ echo json_encode($menu); ?>;
                     <i class="fa fa-search"></i>
                 </button>
             </div>
+            <div class="col-md-1">
+                <div class="btn-group pull-right">
+                    <button class="btn green btn-outline dropdown-toggle" data-toggle="dropdown">Tools
+                        <i class="fa fa-angle-down"></i>
+                    </button>
+                    <ul class="dropdown-menu pull-right">
+                        <li>
+                            <a href="javascript:;" id="export"> Export to Excel </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
         </div>       
-    </div>
-
-    <script id="tmpl-name-template" type="text/x-kendo-template">
-        <a href="">#= h1 #</a>
-    </script>
-
-      
+    </div>      
     <div class="row margin-top-10">
         <div class="col-sm-12">
             <div id="leaveBalanceTable">

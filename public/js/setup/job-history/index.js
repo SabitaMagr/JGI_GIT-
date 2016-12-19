@@ -76,11 +76,74 @@ angular.module('hris', [])
                                 .find('tbody')
                                 .append('<tr class="kendo-data-row"><td colspan="' + colCount + '" class="no-data">There is no data to show in the grid.</td></tr>');
                     }
-                };
+                }
+                ;
                 $("#export").click(function (e) {
-                    var grid = $("#jobHistoryTable").data("kendoGrid");
-                    grid.saveAsExcel();
+                    var rows = [{
+                            cells: [
+                                {value: "Employee Name"},
+                                {value: "Start Date"},
+                                {value: "End Date"},
+                                {value: "Service Event Type"},
+                                {value: "Service Type (From-To)"},
+                                {value: "Branch (From-To)"},
+                                {value: "Department (From-To)"},
+                                {value: "Designation (From-To)"},
+                                {value: "Position (From-To)"}
+                            ]
+                        }];
+                    var dataSource = $("#jobHistoryTable").data("kendoGrid").dataSource;
+                    var filteredDataSource = new kendo.data.DataSource({
+                        data: dataSource.data(),
+                        filter: dataSource.filter()
+                    });
+
+                    filteredDataSource.read();
+                    var data = filteredDataSource.view();
+
+                    for (var i = 0; i < data.length; i++) {
+                        var dataItem = data[i];
+                        var middleName = dataItem.MIDDLE_NAME!=null ?" "+dataItem.MIDDLE_NAME+" " : " ";
+                        rows.push({
+                            cells: [
+                                {value: dataItem.FIRST_NAME+middleName+dataItem.LAST_NAME},
+                                {value: dataItem.START_DATE},
+                                {value: dataItem.END_DATE},
+                                {value: dataItem.SERVICE_EVENT_TYPE_NAME},
+                                {value: dataItem.FROM_SERVICE_NAME + "-" + dataItem.TO_SERVICE_NAME},
+                                {value: dataItem.FROM_BRANCH_NAME + "-" + dataItem.TO_BRANCH_NAME},
+                                {value: dataItem.FROM_DEPARTMENT_NAME + "-" + dataItem.TO_DEPARTMENT_NAME},
+                                {value: dataItem.FROM_DESIGNATION_TITLE + "-" + dataItem.TO_DESIGNATION_TITLE},
+                                {value: dataItem.FROM_POSITION_NAME + "-" + dataItem.TO_POSITION_NAME}
+                            ]
+                        });
+                    }
+                    excelExport(rows);
+                    e.preventDefault();
                 });
+
+                function excelExport(rows) {
+                    var workbook = new kendo.ooxml.Workbook({
+                        sheets: [
+                            {
+                                columns: [
+                                    {autoWidth: true},
+                                    {autoWidth: true},
+                                    {autoWidth: true},
+                                    {autoWidth: true},
+                                    {autoWidth: true},
+                                    {autoWidth: true},
+                                    {autoWidth: true},
+                                    {autoWidth: true},
+                                    {autoWidth: true}
+                                ],
+                                title: "Service Status History",
+                                rows: rows
+                            }
+                        ]
+                    });
+                    kendo.saveAs({dataURI: workbook.toDataURL(), fileName: "ServiceStatusHistory.xlsx"});
+                }
                 window.app.UIConfirmations();
             }
         });

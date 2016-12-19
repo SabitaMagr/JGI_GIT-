@@ -24,8 +24,6 @@
         });
 
         $("#export").click(function (e) {
-            //            var grid = $("#positionTable").data("kendoGrid");
-            //            grid.saveAsExcel();
             var rows = [{
                     cells: [
                         {value: "SN"},
@@ -65,13 +63,14 @@
                             {autoWidth: true},
                             {autoWidth: true}
                         ],
-                        title: "Employee",
+                        title: "Position",
                         rows: rows
                     }
                 ]
             });
             kendo.saveAs({dataURI: workbook.toDataURL(), fileName: "PositionList.xlsx"});
         }
+       
         window.app.UIConfirmations();
 
 //        var exportFlag = true;

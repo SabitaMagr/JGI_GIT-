@@ -254,7 +254,7 @@ class LeaveBalance extends AbstractActionController {
     }
 
     public function exportAction() {
-        $leaveBalanceList = $this->repository->getOnlyCarryForwardedRecord();       
+        $leaveBalanceList = $this->repository->getOnlyCarryForwardedRecord();      
         $num = count($leaveBalanceList);
         if ($num == 0) {
             $this->flashmessenger()->addMessage("There is no record found to export!!!");
@@ -275,8 +275,9 @@ class LeaveBalance extends AbstractActionController {
             foreach ($leaveBalanceList as $leaveBalanceRow) {
                 $objPHPExcel->getActiveSheet()->SetCellValue('A' . $rowCount, $leaveBalanceRow['EMPLOYEE_ID']);
                 $objPHPExcel->getActiveSheet()->SetCellValue('B' . $rowCount, $leaveBalanceRow['LEAVE_ID']);
-                $objPHPExcel->getActiveSheet()->SetCellValue('C' . $rowCount, $leaveBalanceRow['BALANCE']);
+                $objPHPExcel->getActiveSheet()->SetCellValue('C' . $rowCount, $leaveBalanceRow['PREVIOUS_YEAR_BAL']);
                 $objPHPExcel->getActiveSheet()->SetCellValue('D' . $rowCount, $leaveBalanceRow['TOTAL_DAYS']);
+                $objPHPExcel->getActiveSheet()->SetCellValue('E' . $rowCount, $leaveBalanceRow['BALANCE']);
                 $rowCount++;
             }
 

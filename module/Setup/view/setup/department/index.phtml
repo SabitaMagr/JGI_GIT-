@@ -62,7 +62,9 @@ echo json_encode($menu);
         <td>    
         #: (DEPARTMENT_NAME == null) ? '-' : DEPARTMENT_NAME #
         </td>
-
+        <td>    
+        #: (PARENT_DEPARTMENT == null) ? '-' : PARENT_DEPARTMENT #
+        </td>
         <td>
         <a class="btn-edit"
         href="<?= $this->url("department", ["action" => "edit"]); ?>/#:DEPARTMENT_ID#" style="height:17px;">

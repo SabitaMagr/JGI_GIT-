@@ -134,6 +134,7 @@ class AttendanceStatusRepository implements RepositoryInterface {
             new Expression("AR.OUT_REMARKS AS OUT_REMARKS"),
             new Expression("AR.EMPLOYEE_ID AS EMPLOYEE_ID"),
             new Expression("AR.TOTAL_HOUR AS TOTAL_HOUR"),
+            new Expression("AR.APPROVED_REMARKS AS APPROVED_REMARKS"),
                 ], true);
 
         $select->from(['AR' => AttendanceRequestModel::TABLE_NAME])

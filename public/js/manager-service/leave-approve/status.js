@@ -91,9 +91,80 @@ angular.module('hris', [])
                     }
                 }
                 ;
+
                 $("#export").click(function (e) {
-                    var grid = $("#leaveRequestStatusTable").data("kendoGrid");
-                    grid.saveAsExcel();
+                    var rows = [{
+                            cells: [
+                                {value: "Employee Name"},
+                                {value: "Leave Name"},
+                                {value: "Requested Date"},
+                                {value: "From Date"},
+                                {value: "To Date"},
+                                {value: "Your Role"},
+                                {value: "Duration"},
+                                {value: "Status"},
+                                {value: "Remarks By Employee"},
+                                {value: "Remarks By Recommender"},
+                                {value: "Remarks By Approver"}
+                            ]
+                        }];
+                    var dataSource = $("#leaveRequestStatusTable").data("kendoGrid").dataSource;
+                    var filteredDataSource = new kendo.data.DataSource({
+                        data: dataSource.data(),
+                        filter: dataSource.filter()
+                    });
+
+                    filteredDataSource.read();
+                    var data = filteredDataSource.view();
+
+                    for (var i = 0; i < data.length; i++) {
+                        var dataItem = data[i];
+                        var middleName = dataItem.MIDDLE_NAME!=null ? " "+dataItem.MIDDLE_NAME+" ": " ";
+                        
+                        rows.push({
+                            cells: [
+                                {value: dataItem.FIRST_NAME+middleName+dataItem.LAST_NAME},
+                                {value: dataItem.LEAVE_ENAME},
+                                {value: dataItem.APPLIED_DATE},
+                                {value: dataItem.START_DATE},
+                                {value: dataItem.END_DATE},
+                                {value: dataItem.YOUR_ROLE},
+                                {value: dataItem.NO_OF_DAYS},
+                                {value: dataItem.STATUS},
+                                {value: dataItem.REMARKS},
+                                {value: dataItem.RECOMMENDED_REMARKS},
+                                {value: dataItem.APPROVED_REMARKS}
+                            ]
+                        });
+                    }
+                    excelExport(rows);
+                    e.preventDefault();
                 });
+
+                function excelExport(rows) {
+                    var workbook = new kendo.ooxml.Workbook({
+                        sheets: [
+                            {
+                                columns: [
+                                    {autoWidth: true},
+                                    {autoWidth: true},
+                                    {autoWidth: true},
+                                    {autoWidth: true},
+                                    {autoWidth: true},
+                                    {autoWidth: true},
+                                    {autoWidth: true},
+                                    {autoWidth: true},
+                                    {autoWidth: true},
+                                    {autoWidth: true},
+                                    {autoWidth: true},
+                                    {autoWidth: true}
+                                ],
+                                title: "Leave Request List",
+                                rows: rows
+                            }
+                        ]
+                    });
+                    kendo.saveAs({dataURI: workbook.toDataURL(), fileName: "LeaveRequestList.xlsx"});
+                }
             };
         });
