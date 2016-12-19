@@ -210,6 +210,7 @@ angular.module('hris', [])
                         data: datas,
                         pageSize: 20,
                     },
+                    columnMenu: true,
                     height: 450,
                     scrollable: true,
                     sortable: true,

@@ -3,7 +3,9 @@
  * Load Javascript files here
  */
 $this->headScript()->appendFile($this->basePath('js/angular.min.js'));
+$this->headScript()->appendFile($this->basePath('js/ng-bootstrap-multiselect.js'));
 $this->headScript()->appendFile($this->basePath('js/Payroll/FlatValue/flatValueDetailController.js'));
+$this->headScript()->appendFile($this->basePath('assets/global/plugins/bootstrap-multiselect/js/bootstrap-multiselect.js'));
 ?>
 
 <script>
@@ -24,71 +26,79 @@ echo json_encode($menu);
 <div ng-app="hris" ng-controller="flatValueDetailController">
     <div class="row margin-top-20">
         <div class="col-sm-3">
-            <label>flat Values</label>
-        </div>
-        <div class="col-sm-2">
-            <label>Branch</label>
-        </div>
-        <div class="col-sm-2">
-            <label>Department</label>
-        </div>
-        <div class="col-sm-2">
-            <label>Designation</label>
-        </div>
-        <div class="col-sm-1">
-        </div>
-        <div class="col-sm-2">
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-sm-3">
-            <div class="mt-checkbox-list scroller" style="height: 100px;">
-                <label class="mt-checkbox mt-checkbox-outline">
-                    All
-                    <input
-                        type="checkbox"
-                        value="-1"
-                        ng-model="allflatValue"
-                        ng-change="selectAllflatValue(allflatValue)">
-                    <span></span>
-                </label>
-                <label class="mt-checkbox mt-checkbox-outline" ng-repeat="flatValue in flatValues">
-                    {{flatValue.text}}
-                    <input
-                        ng-change="updateSelectAll()"
-                        type="checkbox"
-                        value="{{flatValue.id}}"
-                        ng-model="flatValue.selected">
-                    <span></span>
-                </label>
+
+            <div class="portlet solid grey">
+                <div class="portlet-body">
+                    <div class="row">
+                        <div class="col-sm-12 " >
+                            <label>
+                                Flat Values
+                            </label>
+                            <div>
+                                <multiselect
+                                    ng-change="selectedFlatValuesChange()"
+                                    ng-model="selectedFlatValues"
+                                    options="flatValue.text for flatValue in flatValues"    
+                                    data-multiple="true"                 
+                                    data-compare-by="id"                 
+                                    scroll-after-rows="5"                
+                                    filter-after-rows="5"      
+                                    max-width="100"                      
+                                    tabindex="-1">                     
+                                </multiselect>
+                                <button ng-click="selectAllFlagFN()" class="" ng-bind="selectAllFlag ? 'Deselect All' : 'Select All'">
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
-        <div class="col-sm-2">
-            <select class="form-control" ng-model="branch" ng-options="key as branch for (key,branch) in branches">
-                <option value="">All</option>
-            </select>
-        </div>
-        <div class="col-sm-2">
-            <select class="form-control" ng-model="department"
-                    ng-options="key as department for (key,department) in departments">
-                <option value="">All</option>
-            </select>
-        </div>
-        <div class="col-sm-2">
-            <select class="form-control" ng-model="designation"
-                    ng-options="key as designation for (key,designation) in designations">
-                <option value="">All</option>
-            </select>
+        <div class="col-sm-9">
+            <div class="portlet solid grey">
+                <div class="portlet-body">
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <label>
+                                Branch
+                            </label>
+                            <select id="branch" class="form-control" ng-model="branch" ng-options="key as branch for (key,branch) in branches">
+                                <option value="">All</option>
+                            </select>
+                        </div>
+                        <div class="col-sm-3">
+                            <label>
+                                Department
+                            </label>
+                            <select id="department" class="form-control" ng-model="department"
+                                    ng-options="key as department for (key,department) in departments">
+                                <option value="">All</option>
+                            </select>
+                        </div>
+                        <div class="col-sm-3">
+                            <label>
+                                Designation
+                            </label>
+                            <select id="designation" class="form-control" ng-model="designation"
+                                    ng-options="key as designation for (key,designation) in designations">
+                                <option value="">All</option>
+                            </select>
+                        </div>
+
+                        <div class="col-sm-3">
+                            <label>
+                                &nbsp;
+                            </label>
+                            <button ng-click="view()" class="btn btn-block yellow pull-right">
+                                View
+                                <i class="fa fa-search"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
 
-        <div class="col-sm-1">
-        </div>
-        <div class="col-sm-2">
-            <button ng-click="view()" class="btn btn-sm yellow pull-right">
-                View
-                <i class="fa fa-search"></i>
-            </button>
-        </div>
     </div>
     <div class="margin-top-20 scroller" style="height: 400px;">
         <table class="table "  >

@@ -29,7 +29,7 @@
         "zendframework/zend-servicemanager-di": "^1.0",
         "zf-commons/zfc-twig": "dev-master",
         "zendframework/zend-debug": "^2.5",
-        "doctrine/common" : ">=2.1",
+        "doctrine/common": ">=2.1",
         "zendframework/zend-navigation": "^2.8",
         "phpoffice/phpexcel": "^1.8",
         "intervention/image": "^2.3",
@@ -43,15 +43,15 @@
             "Application\\": "module/Application/src/",
             "Album\\": "module/Album/src/",
             "Test\\": "module/Test/src/",
-            "LeaveManagement\\":"module/LeaveManagement/src/",
-            "HolidayManagement\\":"module/HolidayManagement/src/",
-            "Setup\\":"module/Setup/src/",
-            "AttendanceManagement\\":"module/AttendanceManagement/src/",
-            "SelfService\\":"module/SelfService/src/",
-            "RestfulService\\":"module/RestfulService/src/",
-            "Payroll\\":"module/Payroll/src/",
-            "ManagerService\\":"module/ManagerService/src/",
-            "System\\":"module/System/src/"
+            "LeaveManagement\\": "module/LeaveManagement/src/",
+            "HolidayManagement\\": "module/HolidayManagement/src/",
+            "Setup\\": "module/Setup/src/",
+            "AttendanceManagement\\": "module/AttendanceManagement/src/",
+            "SelfService\\": "module/SelfService/src/",
+            "RestfulService\\": "module/RestfulService/src/",
+            "Payroll\\": "module/Payroll/src/",
+            "ManagerService\\": "module/ManagerService/src/",
+            "System\\": "module/System/src/"
         }
     },
     "autoload-dev": {

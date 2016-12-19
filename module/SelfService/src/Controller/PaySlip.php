@@ -5,6 +5,7 @@ namespace SelfService\Controller;
 use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
 use Payroll\Model\Rules;
+use Payroll\Repository\RulesRepository;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Sql\Select;
 use Zend\Mvc\Controller\AbstractActionController;
@@ -18,7 +19,9 @@ class PaySlip extends AbstractActionController {
     }
 
     public function indexAction() {
-        $rules = EntityHelper::getTableKVListWithSortOption($this->adapter, Rules::TABLE_NAME, Rules::PAY_ID, [Rules::PAY_EDESC], [Rules::STATUS => 'E'], Rules::PRIORITY_INDEX, Select::ORDER_ASCENDING, null);
+        $rulesRepo = new RulesRepository($this->adapter);
+        $rulesRaw = $rulesRepo->fetchAll();
+        $rules = Helper::extractDbData($rulesRaw);
         return Helper::addFlashMessagesToArray($this, [
                     'rules' => $rules,
         ]);

@@ -67,24 +67,24 @@ class Helper {
         if ($attrs != null) {
             foreach ($attrs as $attr) {
 //                array_push($tempCols, Helper::appendDateFormat($adapter, $table->mappings[$attr], self::ORACLE_DATE_FORMAT));
-                array_push($tempCols, Helper::appendDateFormat($adapter, $table->mappings[$attr], self::ORACLE_DATE_FORMAT,$shortForm));
+                array_push($tempCols, Helper::appendDateFormat($adapter, $table->mappings[$attr], self::ORACLE_DATE_FORMAT, $shortForm));
             }
         }
 
         if ($timeAttrs != null) {
             foreach ($timeAttrs as $attr) {
-                array_push($tempCols, Helper::appendDateFormat($adapter, $table->mappings[$attr], self::ORACLE_TIME_FORMAT,$shortForm));
+                array_push($tempCols, Helper::appendDateFormat($adapter, $table->mappings[$attr], self::ORACLE_TIME_FORMAT, $shortForm));
             }
         }
 
         if ($timeAttrs != null) {
             foreach ($timeAttrs as $attr) {
-                array_push($tempCols, Helper::appendDateFormat($adapter, $table->mappings[$attr], self::ORACLE_TIME_FORMAT,$shortForm));
+                array_push($tempCols, Helper::appendDateFormat($adapter, $table->mappings[$attr], self::ORACLE_TIME_FORMAT, $shortForm));
             }
         }
 
         foreach ($attributes as $attribute) {
-            array_push($tempCols, Helper::columnExpression( $table->mappings[$attribute],$shortForm,null));
+            array_push($tempCols, Helper::columnExpression($table->mappings[$attribute], $shortForm, null));
         }
         return $tempCols;
     }
@@ -150,8 +150,10 @@ class Helper {
         );
     }
 
-    public static function getExpressionTime($dateStr) {
-        $format = Helper::ORACLE_TIME_FORMAT;
+    public static function getExpressionTime($dateStr, $format = null) {
+        if ($format == null) {
+            $format = Helper::ORACLE_TIME_FORMAT;
+        }
         return new Expression("TO_DATE('{$dateStr}', '{$format}')");
     }
 

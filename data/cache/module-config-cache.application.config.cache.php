@@ -1305,11 +1305,11 @@ return array (
         array (
           'options' => 
           array (
-            'route' => 'attendance check-update',
+            'route' => 'attendance employee-attendance <employeeId> <attendanceDt> <attendanceTime>',
             'defaults' => 
             array (
               'controller' => 'Application\\Controller\\CronController',
-              'action' => 'check',
+              'action' => 'employeeAttendance',
             ),
           ),
         ),
