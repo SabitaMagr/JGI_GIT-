@@ -1305,6 +1305,24 @@ return array (
           ),
         ),
       ),
+      'trainingAssign' => 
+      array (
+        'type' => 'Zend\\Router\\Http\\Segment',
+        'options' => 
+        array (
+          'route' => '/training/trainingAssign[/:action[/:id]]',
+          'constraints' => 
+          array (
+            'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+            'id' => '[0-9]+',
+          ),
+          'defaults' => 
+          array (
+            'controller' => 'System\\Controller\\TrainingAssignController',
+            'action' => 'index',
+          ),
+        ),
+      ),
       'appraisal-setup' => 
       array (
         'type' => 'Zend\\Router\\Http\\Literal',
@@ -2961,6 +2979,40 @@ return array (
         ),
       ),
     ),
+    'trainingAssign' => 
+    array (
+      0 => 
+      array (
+        'label' => 'Training Assign',
+        'route' => 'trainingAssign',
+      ),
+      1 => 
+      array (
+        'label' => 'Training Assign',
+        'route' => 'trainingAssign',
+        'pages' => 
+        array (
+          0 => 
+          array (
+            'label' => 'List',
+            'route' => 'trainingAssign',
+            'action' => 'index',
+          ),
+          1 => 
+          array (
+            'label' => 'Add',
+            'route' => 'trainingAssign',
+            'action' => 'add',
+          ),
+          2 => 
+          array (
+            'label' => 'Edit',
+            'route' => 'trainingAssign',
+            'action' => 'edit',
+          ),
+        ),
+      ),
+    ),
   ),
   'controllers' => 
   array (
@@ -3017,6 +3069,7 @@ return array (
       'System\\Controller\\UserSetupController' => 'Application\\Controller\\ControllerFactory',
       'System\\Controller\\MenuSetupController' => 'Application\\Controller\\ControllerFactory',
       'System\\Controller\\DashboardController' => 'Application\\Factory\\DashBoardFactory',
+      'Training\\Controller\\TrainingAssignController' => 'Application\\Controller\\ControllerFactory',
       'Appraisal\\Controller\\Appraisal' => 'Application\\Controller\\ControllerFactory',
     ),
   ),
@@ -3061,7 +3114,8 @@ return array (
       7 => '/var/www/html/neo/neo-hris-metronic/module/Payroll/config/../view',
       8 => '/var/www/html/neo/neo-hris-metronic/module/ManagerService/config/../view',
       9 => '/var/www/html/neo/neo-hris-metronic/module/System/config/../view',
-      10 => '/var/www/html/neo/neo-hris-metronic/module/Appraisal/config/../view',
+      10 => '/var/www/html/neo/neo-hris-metronic/module/Training/config/../view',
+      11 => '/var/www/html/neo/neo-hris-metronic/module/Appraisal/config/../view',
     ),
   ),
   'dashboard-items' => 
