@@ -1,9 +1,12 @@
 (function ($) {
     'use strict';
     $(document).ready(function () {
+        var pathName = window.location.pathname;
+        var indexOfSlash = pathName.lastIndexOf("/");
+        var newPathName = pathName.substring(0, indexOfSlash);
         $('#rootwizard').bootstrapWizard({
             onTabShow: function (tab, navigation, index) {
-
+                window.history.pushState("", "", newPathName + "/" + (index + 1));
                 $('#tab' + (index + 1) + " select").select2();
                 switch (index + 1) {
                     case 1:

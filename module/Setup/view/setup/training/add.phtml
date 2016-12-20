@@ -1,17 +1,19 @@
 <?php
-$this->headScript()->appendFile($this->basePath('js/setup/position/add.js'));
+$this->headScript()->appendFile($this->basePath('js/setup/training/index.js'));
 
 $form->setAttribute('role', 'form');
-$form->setAttribute('id', 'position-form');
+$form->setAttribute('id', 'training-form');
 
-$positionName = $form->get('positionName');
+$trainingCode = $form->get('trainingCode');
+$trainingName = $form->get('trainingName');
 $remarks = $form->get('remarks');
-$status = $form->get('status');
+$startDate = $form->get('startDate');
+$endDate = $form->get('endDate');
 
 $submit = $form->get('submit');
 $submit->setAttribute('value','SUBMIT');
 
-$form->setAttribute('action', $this->url('position', ['action' => 'add']));
+$form->setAttribute('action', $this->url('training', ['action' => 'add']));
 
 if ($this->messages) {
     print '<ul class="help-block bg-danger" style="background:#f3e250;">';
@@ -24,11 +26,11 @@ if ($this->messages) {
 $form->prepare();
 ?>
     <script>
-        document.menu=<?php $menu = ["id" => "menuSetup","subMenu"=>["id"=>"subMenuPosition"]];echo json_encode($menu);?>;
+        document.menu=<?php $menu = ["id" => "menuSetup","subMenu"=>["id"=>"subMenuTraining"]];echo json_encode($menu);?>;
         document.url = '<?= $this->url("restful", ["action" => "index"]) ?>';
     </script>
 <div class="page-bar">
-    <?= $this->navigation('Zend\Navigation\Position')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
+    <?= $this->navigation('Zend\Navigation\training')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
 <div class="row margin-top-20">
     <div class="col-sm-8 col-sm-offset-2">
@@ -43,10 +45,30 @@ $form->prepare();
                 print $this->form()->openTag($form);
                 ?>
                 <div class="form-group">
-                    <?php print $this->formLabel($positionName); ?>
-                    <?php print $this->formElement($positionName); ?>
-                    <?php print $this->formElementErrors()->render($positionName, ['class' => 'help-block']); ?>
-                    <span class="errorMsg" style="font-size:11px; color:red;"></span>
+                    <?php print $this->formLabel($trainingCode); ?>
+                    <?php print $this->formElement($trainingCode); ?>
+                    <?php print $this->formElementErrors()->render($trainingCode, ['class' => 'help-block']); ?>
+                </div>
+                <div class="form-group">
+                    <?php print $this->formLabel($trainingName); ?>
+                    <?php print $this->formElement($trainingName); ?>
+                    <?php print $this->formElementErrors()->render($trainingName, ['class' => 'help-block']); ?>
+                </div>
+                <div class="form-group">
+                    <?php print $this->formLabel($startDate); ?>
+                    <div class="input-group date" id="startDate">
+                    <?php print $this->formElement($startDate); ?>
+                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                    </div>
+                    <?php print $this->formElementErrors()->render($startDate, ['class' => 'help-block']); ?>
+                </div>
+                <div class="form-group">
+                    <?php print $this->formLabel($endDate); ?>
+                    <div class="input-group date" id="endDate">
+                        <?php print $this->formElement($endDate) ?>
+                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                    </div>
+                    <?php print $this->formElementErrors()->render($endDate, ['class' => 'help-block']); ?>
                 </div>
 
                 <div class="form-group" >

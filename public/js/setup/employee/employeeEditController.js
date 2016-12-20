@@ -3,7 +3,7 @@
 //    $('#qualificationTbl').delegate("select", "DOMNodeInserted", function () {
 //        $(this).select2();
 //    });
-    
+
     //$(selector).live( eventName, function(){} );
 
     angular.module("hris", ['ui.bootstrap'])
@@ -20,9 +20,7 @@
                     {"id": "PER", "name": "Percentage"},
                 ];
                 var employeeId = angular.element(document.getElementById('employeeId')).val();
-
                 $scope.qualificationFormList = [];
-
                 window.app.pullDataById(document.urlQualificationDtl, {
                     action: 'pullAcademicDetail',
                     data: {
@@ -39,7 +37,6 @@
                         $scope.courseList = data.courseList;
                         $scope.employeeQualificationList = data.employeeQualificationList;
                         var num = data.employeeQualificationList.length;
-
                         if (num == 0) {
                             $scope.counter = 1;
                             $scope.qualificationFormList.push({
@@ -94,15 +91,12 @@
                             $scope.counter++;
                             $("select").select2();
                         };
-
-
                         $scope.addQualification = function () {
                             var qualificationRecord = $scope.qualificationFormList;
                             console.log(qualificationRecord);
                             for (var l = 0; l < $scope.qualificationFormList.length; l++) {
                                 var rankValue = $scope.qualificationFormList[l].rankValue;
                                 var passedYr = $scope.qualificationFormList[l].passedYr;
-
                                 console.log(rankValue, passedYr);
                             }
 
@@ -116,12 +110,10 @@
                                 $scope.$apply(function () {
                                     console.log(success.data);
                                 });
-
                             }, function (failure) {
                                 console.log(failure);
                             });
                         };
-
                         $scope.delete = function () {
                             var tempC = 0;
                             var length = $scope.qualificationFormList.length;
@@ -138,7 +130,6 @@
                                             $scope.$apply(function () {
                                                 console.log(success.data);
                                             });
-
                                         }, function (failure) {
                                             console.log(failure);
                                         });
@@ -152,11 +143,9 @@
                 }, function (failure) {
                     console.log(failure);
                 });
-
                 $scope.upload = function () {
 
                 };
-
                 //for document including both image as well as file upload and remove
                 $scope.profilePictureId = document.profilePictureId;
                 $scope.fileTypes = document.fileTypes;
@@ -169,22 +158,25 @@
                 };
                 var fileTypeKeys = Object.keys($scope.fileTypes);
                 $scope.file.fileTypeCode = (fileTypeKeys.length > 0) ? fileTypeKeys[0] : null;
-
                 $scope.dropZone;
+                $scope.noImageSelected = false;
                 Dropzone.options.myAwesomeDropzone = {
                     maxFiles: 1,
                     acceptedFiles: 'image/*',
+                    autoProcessQueue: false,
+                    addRemoveLinks: true,
                     init: function () {
                         $scope.$apply(function () {
                             $scope.dropZone = this;
                         }.bind(this));
-
                         this.on("success", function (file, success) {
                             console.log("Upload Image Response ", success);
                             $scope.$apply(function () {
                                 if (success.success) {
                                     $scope.file.filePath = success.data.fileName;
                                     $scope.file.fileName = success.data.oldFileName;
+                                    $scope.noImageSelected = false;
+                                    $scope.imageUploadResponseSuccess();
                                 }
                             });
                         });
@@ -206,7 +198,6 @@
                                 $scope.file.filePath = success.data['FILE_PATH'];
                             }
                         });
-
                     }, function (failure) {
                         console.log("pullEmployeeFile failure", failure);
                     });
@@ -215,8 +206,15 @@
                 $scope.viewImage = function (image) {
                     return document.basePath + "/uploads/" + image;
                 };
-
                 $scope.post = function () {
+                    if ($scope.dropZone.files.length == 0) {
+                        $scope.noImageSelected = true;
+                        return;
+                    }
+                    $scope.dropZone.processQueue();
+                };
+
+                $scope.imageUploadResponseSuccess = function () {
                     window.app.pullDataById(document.urlQualificationDtl, {
                         action: 'pushEmployeeProfile',
                         data: {
@@ -235,17 +233,15 @@
                             }
                             window.app.successMessage("Profile Image set successfully");
                         });
-
                     }, function (failure) {
                         console.log("pushEmployeeProfile failure", failure);
                     });
+
                 };
                 $scope.edit = function () {
                     $scope.file.editMode = true;
                     $scope.dropZone.removeAllFiles();
                 };
-
-
                 $scope.employeeDocuments = [];
                 $scope.drop = function (fileCode, key) {
                     window.app.pullDataById(document.urlQualificationDtl, {
@@ -258,12 +254,10 @@
                         $scope.$apply(function () {
                             $scope.employeeDocuments.splice(key, 1);
                         });
-
                     }, function (failure) {
                         console.log("dropEmployeeFile failure", failure);
                     });
                 };
-
                 $scope.addDocument = function () {
                     var modalInstance = $uibModal.open({
                         ariaLabelledBy: 'modal-title',
@@ -276,39 +270,41 @@
                         },
                         controller: function ($scope, $uibModalInstance, fileTypes) {
                             $scope.ok = function () {
-                                if (typeof document.uploadResponse === "undefined" || document.uploadResponse == null) {
+                                if (document.myDropzone.files.length == 0) {
                                     $scope.valid = false;
-                                } else {
-                                    $uibModalInstance.close({
-                                        fileTypeCode: $scope.fileTypeCode,
-                                        fileName: document.uploadResponse.fileName,
-                                        oldFileName: document.uploadResponse.oldFileName
-                                    });
-                                    document.uploadResponse = null;
+                                    return;
                                 }
+                                document.fileTypeCode = $scope.fileTypeCode;
+                                document.myDropzone.processQueue();
                             };
-
                             $scope.cancel = function () {
                                 $uibModalInstance.dismiss('cancel');
                             };
                             $scope.valid = true;
                             $scope.fileTypes = fileTypes;
                             $scope.fileTypeCode = Object.keys($scope.fileTypes)[0];
-
-
                         }
                     });
-
+                    console.log("modalInstance", modalInstance);
                     modalInstance.rendered.then(function () {
-                        var myDropzone = new Dropzone("#dropZoneContainer", {url: document.restfulUrl});
-                        myDropzone.on("success", function (file, success) {
+                        document.myDropzone = new Dropzone("#dropZoneContainer", {
+                            url: document.restfulUrl,
+                            autoProcessQueue: false,
+                            maxFiles: 1,
+                            addRemoveLinks: true
+                        });
+                        document.myDropzone.on("success", function (file, success) {
                             console.log("File Upload Response", success);
                             $scope.$apply(function () {
-                                document.uploadResponse = success.data;
+                                var uploadResponse = success.data;
+                                modalInstance.close({
+                                    fileTypeCode: document.fileTypeCode,
+                                    fileName: uploadResponse.fileName,
+                                    oldFileName: uploadResponse.oldFileName
+                                });
                             });
                         });
                     });
-
                     modalInstance.result.then(function (selectedItem) {
                         console.log("Angular Modal close response", selectedItem);
                         window.app.pullDataById(document.urlQualificationDtl, {
@@ -326,11 +322,12 @@
                                     $scope.employeeDocuments.push({
                                         FILE_CODE: success.data.fileCode,
                                         FILE_PATH: selectedItem.fileName,
+                                        FILE_NAME: selectedItem.oldFileName,
                                         FILETYPE_CODE: selectedItem.fileTypeCode
                                     });
+                                    console.log($scope.employeeDocuments);
                                 }
                             });
-
                         }, function (failure) {
                             console.log("pushEmployeeDocument failure", failure);
                         });
@@ -338,7 +335,6 @@
                         console.log("Modal Action Cancelled");
                     });
                 };
-
                 window.app.pullDataById(document.urlQualificationDtl, {
                     action: 'pullEmployeeFileByEmpId',
                     data: {
@@ -349,13 +345,10 @@
                     $scope.$apply(function () {
                         $scope.employeeDocuments = success.data;
                     });
-
                 }, function (failure) {
                     console.log("pullEmployeeFileByEmpId failure", failure);
                 });
-
-
-
             });
-})();
+})
+        ();
 

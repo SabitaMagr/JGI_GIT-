@@ -17,7 +17,6 @@ $this->headScript()
 <script>
     document.menu =<?php $menu = ["id" => "menuSetup", "subMenu" => ["id" => "subMenuTraining"]];
 echo json_encode($menu); ?>;
-    document.positions =<?php echo json_encode($positions); ?>;
     document.deleteURL ='<?= $this->url("restful", ["action" => "index"]) ?>';
 </script>
 <div class="page-bar">
@@ -50,8 +49,8 @@ echo json_encode($menu); ?>;
             </div>      
         </div>
     </div>    
-    <div id="positionTable">
-        <table class="table table-striped table-bordered table-hover no-footer customTable" id="trainingTable">
+    <div id="trainingTable">
+        <table id="grid">
             <thead>
             <tr>
                 <th>Training Code</th>

@@ -85,9 +85,6 @@ class SalarySheet {
 
             $results[$empId] = $payDet;
         }
-//        print "<pre>";
-//        print_r($results);
-//        exit;
         return $results;
     }
 
