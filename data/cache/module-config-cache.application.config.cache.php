@@ -794,6 +794,45 @@ return array (
           ),
         ),
       ),
+<<<<<<< HEAD
+=======
+      'training' => 
+      array (
+        'type' => 'Zend\\Router\\Http\\Segment',
+        'options' => 
+        array (
+          'route' => '/setup/training[/:action[/:id]]',
+          'constants' => 
+          array (
+            'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+            'id' => '[0-9]+',
+          ),
+          'defaults' => 
+          array (
+            'controller' => 'Setup\\Controller\\TrainingController',
+            'action' => 'index',
+          ),
+        ),
+      ),
+      'loanAdvance' => 
+      array (
+        'type' => 'Zend\\Router\\Http\\Segment',
+        'options' => 
+        array (
+          'route' => '/setup/loanAdvance[/:action[/:id]]',
+          'constants' => 
+          array (
+            'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+            'id' => '[0-9]+',
+          ),
+          'defaults' => 
+          array (
+            'controller' => 'Setup\\Controller\\LoanAdvanceController',
+            'action' => 'index',
+          ),
+        ),
+      ),
+>>>>>>> 77bffc8df841785dbedfa7230cf11a97e8deefb6
       'leavesetup' => 
       array (
         'type' => 'Zend\\Router\\Http\\Segment',
@@ -1305,11 +1344,19 @@ return array (
         array (
           'options' => 
           array (
+<<<<<<< HEAD
             'route' => 'attendance check-update',
             'defaults' => 
             array (
               'controller' => 'Application\\Controller\\CronController',
               'action' => 'check',
+=======
+            'route' => 'attendance employee-attendance <employeeId> <attendanceDt> <attendanceTime>',
+            'defaults' => 
+            array (
+              'controller' => 'Application\\Controller\\CronController',
+              'action' => 'employeeAttendance',
+>>>>>>> 77bffc8df841785dbedfa7230cf11a97e8deefb6
             ),
           ),
         ),
@@ -1881,6 +1928,77 @@ return array (
         ),
       ),
     ),
+<<<<<<< HEAD
+=======
+    'training' => 
+    array (
+      0 => 
+      array (
+        'label' => 'Training',
+        'route' => 'training',
+      ),
+      1 => 
+      array (
+        'label' => 'Training',
+        'route' => 'training',
+        'pages' => 
+        array (
+          0 => 
+          array (
+            'label' => 'List',
+            'route' => 'training',
+            'action' => 'index',
+          ),
+          1 => 
+          array (
+            'label' => 'Add',
+            'route' => 'training',
+            'action' => 'add',
+          ),
+          2 => 
+          array (
+            'label' => 'Edit',
+            'route' => 'training',
+            'action' => 'edit',
+          ),
+        ),
+      ),
+    ),
+    'loanAdvance' => 
+    array (
+      0 => 
+      array (
+        'label' => 'Loan And Advance',
+        'route' => 'loanAdvance',
+      ),
+      1 => 
+      array (
+        'label' => 'Loan And Advance',
+        'route' => 'loanAdvance',
+        'pages' => 
+        array (
+          0 => 
+          array (
+            'label' => 'List',
+            'route' => 'loanAdvance',
+            'action' => 'index',
+          ),
+          1 => 
+          array (
+            'label' => 'Add',
+            'route' => 'loanAdvance',
+            'action' => 'add',
+          ),
+          2 => 
+          array (
+            'label' => 'Edit',
+            'route' => 'loanAdvance',
+            'action' => 'edit',
+          ),
+        ),
+      ),
+    ),
+>>>>>>> 77bffc8df841785dbedfa7230cf11a97e8deefb6
     'leavesetup' => 
     array (
       0 => 
@@ -2863,6 +2981,11 @@ return array (
       'Setup\\Controller\\AcademicUniversityController' => 'Application\\Controller\\ControllerFactory',
       'Setup\\Controller\\AcademicProgramController' => 'Application\\Controller\\ControllerFactory',
       'Setup\\Controller\\AcademicCourseController' => 'Application\\Controller\\ControllerFactory',
+<<<<<<< HEAD
+=======
+      'Setup\\Controller\\TrainingController' => 'Application\\Controller\\ControllerFactory',
+      'Setup\\Controller\\LoanAdvanceController' => 'Application\\Controller\\ControllerFactory',
+>>>>>>> 77bffc8df841785dbedfa7230cf11a97e8deefb6
       'LeaveManagement\\Controller\\LeaveSetup' => 'Application\\Controller\\ControllerFactory',
       'LeaveManagement\\Controller\\leaveAssign' => 'Application\\Controller\\ControllerFactory',
       'LeaveManagement\\Controller\\LeaveApply' => 'Application\\Controller\\ControllerFactory',
@@ -2904,6 +3027,7 @@ return array (
     'exception_template' => 'error/index',
     'template_map' => 
     array (
+<<<<<<< HEAD
       'layout/layout' => 'C:\\php7\\htdocs\\neo-hris\\module\\Application\\config/../view/layout/layout.phtml',
       'layout/login' => 'C:\\php7\\htdocs\\neo-hris\\module\\Application\\config/../view/layout/login.phtml',
       'application/index/index' => 'C:\\php7\\htdocs\\neo-hris\\module\\Application\\config/../view/application/index/index.phtml',
@@ -2935,6 +3059,39 @@ return array (
       7 => 'C:\\php7\\htdocs\\neo-hris\\module\\Payroll\\config/../view',
       8 => 'C:\\php7\\htdocs\\neo-hris\\module\\ManagerService\\config/../view',
       9 => 'C:\\php7\\htdocs\\neo-hris\\module\\System\\config/../view',
+=======
+      'layout/layout' => '/var/www/html/neo-hris/module/Application/config/../view/layout/layout.phtml',
+      'layout/login' => '/var/www/html/neo-hris/module/Application/config/../view/layout/login.phtml',
+      'application/index/index' => '/var/www/html/neo-hris/module/Application/config/../view/application/index/index.phtml',
+      'error/404' => '/var/www/html/neo-hris/module/Application/config/../view/error/404.phtml',
+      'error/index' => '/var/www/html/neo-hris/module/Application/config/../view/error/index.phtml',
+      'error/no_access' => '/var/www/html/neo-hris/module/Application/config/../view/error/no_access.phtml',
+      'partial/header' => '/var/www/html/neo-hris/module/Application/config/../view/layout/partials/header.phtml',
+      'partial/footer' => '/var/www/html/neo-hris/module/Application/config/../view/layout/partials/footer.phtml',
+      'partial/sidebar' => '/var/www/html/neo-hris/module/Application/config/../view/layout/partials/sidebar.phtml',
+      'partial/breadcrumb' => '/var/www/html/neo-hris/module/Application/config/../view/layout/partials/breadcrumb.phtml',
+      'partial/profile' => '/var/www/html/neo-hris/module/Application/config/../view/layout/partials/profile.phtml',
+      'dashboard-item/holiday-list' => '/var/www/html/neo-hris/module/Application/config/../view/layout/dashboard-items/holiday-list.phtml',
+      'dashboard-item/attendance-request' => '/var/www/html/neo-hris/module/Application/config/../view/layout/dashboard-items/attendance-request.phtml',
+      'dashboard-item/leave-apply' => '/var/www/html/neo-hris/module/Application/config/../view/layout/dashboard-items/leave-apply.phtml',
+      'dashboard-item/present-absent' => '/var/www/html/neo-hris/module/Application/config/../view/layout/dashboard-items/present-absent.phtml',
+      'dashboard-item/employee-count-by-branch' => '/var/www/html/neo-hris/module/Application/config/../view/layout/dashboard-items/employee-count-by-branch.phtml',
+      'dashboard-item/today-leave' => '/var/www/html/neo-hris/module/Application/config/../view/layout/dashboard-items/today-leave.phtml',
+      'dashboard-item/birthdays' => '/var/www/html/neo-hris/module/Application/config/../view/layout/dashboard-items/birthdays.phtml',
+    ),
+    'template_path_stack' => 
+    array (
+      0 => '/var/www/html/neo-hris/module/Application/config/../view',
+      1 => '/var/www/html/neo-hris/module/Setup/config/../view',
+      2 => '/var/www/html/neo-hris/module/LeaveManagement/config/../view',
+      3 => '/var/www/html/neo-hris/module/HolidayManagement/config/../view',
+      4 => '/var/www/html/neo-hris/module/AttendanceManagement/config/../view',
+      5 => '/var/www/html/neo-hris/module/SelfService/config/../view',
+      6 => '/var/www/html/neo-hris/module/RestfulService/config/../view',
+      7 => '/var/www/html/neo-hris/module/Payroll/config/../view',
+      8 => '/var/www/html/neo-hris/module/ManagerService/config/../view',
+      9 => '/var/www/html/neo-hris/module/System/config/../view',
+>>>>>>> 77bffc8df841785dbedfa7230cf11a97e8deefb6
     ),
   ),
   'dashboard-items' => 

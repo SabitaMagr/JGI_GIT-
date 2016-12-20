@@ -67,7 +67,7 @@ class LeaveApply extends AbstractActionController
         return Helper::addFlashMessagesToArray($this, [
             'form' => $this->form,
             'leaves'=> \Application\Helper\EntityHelper::getTableKVList($this->adapter, "HR_LEAVE_MASTER_SETUP", "LEAVE_ID", ["LEAVE_ENAME"],["STATUS"=>'E']),
-            'employees' => \Application\Helper\EntityHelper::getTableKVList($this->adapter, "HR_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"],["STATUS"=>'E']), 
+            'employees' => \Application\Helper\EntityHelper::getTableKVList($this->adapter, "HR_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"],["STATUS"=>'E']," "), 
             'customRenderer'=>Helper::renderCustomView()
         ]);
 

@@ -86,12 +86,85 @@ angular.module('hris', [])
                                 .find('tbody')
                                 .append('<tr class="kendo-data-row"><td colspan="' + colCount + '" class="no-data">There is no data to show in the grid.</td></tr>');
                     }
-                }
-                ;
+                };                
+
                 $("#export").click(function (e) {
-                    var grid = $("#leaveRequestStatusTable").data("kendoGrid");
-                    grid.saveAsExcel();
+                    var rows = [{
+                            cells: [
+                                {value: "Employee Name"},
+                                {value: "Leave Name"},
+                                {value: "Requested Date"},
+                                {value: "From Date"},
+                                {value: "To Date"},
+                                {value: "Recommender"},
+                                {value: "Approver"},
+                                {value: "Duration"},
+                                {value: "Status"},
+                                {value: "Remarks By Employee"},
+                                {value: "Remarks By Recommender"},
+                                {value: "Remarks By Approver"}
+                            ]
+                        }];
+                    var dataSource = $("#leaveRequestStatusTable").data("kendoGrid").dataSource;
+                    var filteredDataSource = new kendo.data.DataSource({
+                        data: dataSource.data(),
+                        filter: dataSource.filter()
+                    });
+
+                    filteredDataSource.read();
+                    var data = filteredDataSource.view();
+
+                    for (var i = 0; i < data.length; i++) {
+                        var dataItem = data[i];
+                        var middleName = dataItem.MIDDLE_NAME!=null ? " "+dataItem.MIDDLE_NAME+" ": " ";
+                        var mn1 = dataItem.MN1!=null ? " "+dataItem.MN1+" ": " ";
+                        var mn2 = dataItem.MN2!=null ? " "+dataItem.MN2+" ": " ";
+                        rows.push({
+                            cells: [
+                                {value: dataItem.FIRST_NAME+middleName+dataItem.LAST_NAME},
+                                {value: dataItem.LEAVE_ENAME},
+                                {value: dataItem.APPLIED_DATE},
+                                {value: dataItem.START_DATE},
+                                {value: dataItem.END_DATE},
+                                {value: dataItem.FN1+mn1+dataItem.LN1},
+                                {value: dataItem.FN2+mn2+dataItem.LN2},
+                                {value: dataItem.NO_OF_DAYS},
+                                {value: dataItem.STATUS},
+                                {value: dataItem.REMARKS},
+                                {value: dataItem.RECOMMENDED_REMARKS},
+                                {value: dataItem.APPROVED_REMARKS}
+                            ]
+                        });
+                    }
+                    excelExport(rows);
+                    e.preventDefault();
                 });
+
+                function excelExport(rows) {
+                    var workbook = new kendo.ooxml.Workbook({
+                        sheets: [
+                            {
+                                columns: [
+                                    {autoWidth: true},
+                                    {autoWidth: true},
+                                    {autoWidth: true},
+                                    {autoWidth: true},
+                                    {autoWidth: true},
+                                    {autoWidth: true},
+                                    {autoWidth: true},
+                                    {autoWidth: true},
+                                    {autoWidth: true},
+                                    {autoWidth: true},
+                                    {autoWidth: true},
+                                    {autoWidth: true}
+                                ],
+                                title: "Leave Request",
+                                rows: rows
+                            }
+                        ]
+                    });
+                    kendo.saveAs({dataURI: workbook.toDataURL(), fileName: "LeaveRequestList.xlsx"});
+                }
                 window.app.UIConfirmations();
             };
         });

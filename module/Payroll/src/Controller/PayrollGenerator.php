@@ -120,6 +120,13 @@ class PayrollGenerator {
 //            }
 //            print($rule);
 //            try {
+
+
+
+
+
+
+            $temp = "try{" . $rule . '}catch(\Exception $e){print "<pre>";echo ' . $rule . ";exit;}";
             $ruleValue = eval($rule);
 //            } catch (\Exception $e) {
 //                print "<pre>";
@@ -160,9 +167,13 @@ class PayrollGenerator {
 
     private function generateValue($constant, RepositoryInterface $repository) {
         if ($repository instanceof MonthlyValueDetailRepo) {
-            return $repository->fetchById([$this->employeeId, $constant])[MonthlyValueDetail::MTH_VALUE];
+            $monthlyValTmp = $repository->fetchById([$this->employeeId, $constant])[MonthlyValueDetail::MTH_VALUE];
+            $monthlyValTmp = (!isset($monthlyValTmp)) ? 0 : $monthlyValTmp;
+            return $monthlyValTmp;
         } else if ($repository instanceof FlatValueDetailRepo) {
-            return $repository->fetchById([$this->employeeId, $constant])[FlatValueDetail::FLAT_VALUE];
+            $flatValTmp = $repository->fetchById([$this->employeeId, $constant])[FlatValueDetail::FLAT_VALUE];
+            $flatValTmp = (isset($flatValTmp)) ? $flatValTmp : 0;
+            return $flatValTmp;
         }
     }
 

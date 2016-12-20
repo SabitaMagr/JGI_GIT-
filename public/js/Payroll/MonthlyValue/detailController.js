@@ -1,12 +1,12 @@
 (function ($, app) {
     'use strict';
     $(document).ready(function () {
+        $('.mt-multiselect').multiselect()
         $("select").select2();
     });
 })(window.jQuery, window.app);
 
-
-angular.module('hris', [])
+angular.module('hris', ["ui.multiselect"])
         .controller('monthlyValueDetailController', function ($scope, $http) {
             $scope.branches = document.branches;
             $scope.departments = document.departments;
@@ -24,32 +24,19 @@ angular.module('hris', [])
             $scope.monthlyValuekeys = [];
             var tableData;
             $scope.tableDataCopy;
-            $scope.selectAllMonthlyValue = function (allMonthlyValue) {
-                for (var index in $scope.monthlyValues) {
-                    $scope.monthlyValues[index].selected = allMonthlyValue;
-                }
-            };
 
             $scope.view = function () {
-                var tempMonthlyValueCheckedFlag = false;
-                for (var index in $scope.monthlyValues) {
-                    if ($scope.monthlyValues[index].selected) {
-                        tempMonthlyValueCheckedFlag = true;
-                    }
-                }
 
-                if (!tempMonthlyValueCheckedFlag) {
+                if ($scope.selectedMonthlyValues.length == 0) {
                     window.toastr.info("No Monthly Value selected!", "Notification");
                     return;
                 }
 
 
                 $scope.monthlyValuekeys = [];
-                $scope.monthlyValues.filter(function (monthlyValue) {
-                    if (monthlyValue.selected) {
-                        $scope.monthlyValuekeys.push(monthlyValue.id);
-                    }
-                });
+                for (var i = 0; i < $scope.selectedMonthlyValues.length; i++) {
+                    $scope.monthlyValuekeys.push($scope.selectedMonthlyValues[i].id);
+                }
                 window.app.pullDataById(document.url, {
                     action: 'pullEmployeeMonthlyValue',
                     id: {
@@ -114,15 +101,26 @@ angular.module('hris', [])
                 }
             };
 
-            $scope.updateSelectAll = function () {
-                for (var index in $scope.monthlyValues) {
-                    if (!$scope.monthlyValues[index].selected) {
-                        $scope.allMonthlyValue = false;
-                        break;
-                    } else {
-                        $scope.allMonthlyValue = true;
-                    }
+            $scope.selectAllFlag = false;
+            $scope.selectedMonthlyValues = [];
+            $scope.selectedMonthlyValuesChange = function () {
+                if ($scope.selectedMonthlyValues.length == $scope.monthlyValues.length) {
+                    $scope.selectAllFlag = true;
+                } else {
+                    $scope.selectAllFlag = false;
+                }
+
+            };
+
+            $scope.selectAllFlagFN = function () {
+                if ($scope.selectAllFlag) {
+                    $scope.selectedMonthlyValues = [];
+                    $scope.selectAllFlag = false;
+                } else {
+                    $scope.selectedMonthlyValues = $scope.monthlyValues;
+                    $scope.selectAllFlag = true;
                 }
             };
+
 
         });

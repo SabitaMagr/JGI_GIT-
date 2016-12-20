@@ -14,6 +14,7 @@ class Helper {
     const ORACLE_TIME_FORMAT = "HH:MI AM";
     const MYSQL_DATE_FORMAT = "";
     const PHP_DATE_FORMAT = "d-M-Y";
+    const FLOAT_ROUNDING_DIGIT_NO = 2;
 
     public static function addFlashMessagesToArray($context, $return) {
         $flashMessenger = $context->flashMessenger();
@@ -67,24 +68,24 @@ class Helper {
         if ($attrs != null) {
             foreach ($attrs as $attr) {
 //                array_push($tempCols, Helper::appendDateFormat($adapter, $table->mappings[$attr], self::ORACLE_DATE_FORMAT));
-                array_push($tempCols, Helper::appendDateFormat($adapter, $table->mappings[$attr], self::ORACLE_DATE_FORMAT,$shortForm));
+                array_push($tempCols, Helper::appendDateFormat($adapter, $table->mappings[$attr], self::ORACLE_DATE_FORMAT, $shortForm));
             }
         }
 
         if ($timeAttrs != null) {
             foreach ($timeAttrs as $attr) {
-                array_push($tempCols, Helper::appendDateFormat($adapter, $table->mappings[$attr], self::ORACLE_TIME_FORMAT,$shortForm));
+                array_push($tempCols, Helper::appendDateFormat($adapter, $table->mappings[$attr], self::ORACLE_TIME_FORMAT, $shortForm));
             }
         }
 
         if ($timeAttrs != null) {
             foreach ($timeAttrs as $attr) {
-                array_push($tempCols, Helper::appendDateFormat($adapter, $table->mappings[$attr], self::ORACLE_TIME_FORMAT,$shortForm));
+                array_push($tempCols, Helper::appendDateFormat($adapter, $table->mappings[$attr], self::ORACLE_TIME_FORMAT, $shortForm));
             }
         }
 
         foreach ($attributes as $attribute) {
-            array_push($tempCols, Helper::columnExpression( $table->mappings[$attribute],$shortForm,null));
+            array_push($tempCols, Helper::columnExpression($table->mappings[$attribute], $shortForm, null));
         }
         return $tempCols;
     }
@@ -150,8 +151,10 @@ class Helper {
         );
     }
 
-    public static function getExpressionTime($dateStr) {
-        $format = Helper::ORACLE_TIME_FORMAT;
+    public static function getExpressionTime($dateStr, $format = null) {
+        if ($format == null) {
+            $format = Helper::ORACLE_TIME_FORMAT;
+        }
         return new Expression("TO_DATE('{$dateStr}', '{$format}')");
     }
 
@@ -220,6 +223,10 @@ class Helper {
             array_push($extractedArray, $item);
         }
         return $extractedArray;
+    }
+
+    public static function maintainFloatNumberFormat($floatNumber) {
+        return number_format($floatNumber, self::FLOAT_ROUNDING_DIGIT_NO, '.', '');
     }
 
 }

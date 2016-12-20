@@ -6,6 +6,7 @@ use Application\Helper\ConstraintHelper;
 use Application\Helper\DeleteHelper;
 use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
+use Application\Model\Months;
 use Application\Repository\MonthRepository;
 use AttendanceManagement\Model\ShiftAssign;
 use AttendanceManagement\Model\ShiftSetup;
@@ -16,6 +17,7 @@ use LeaveManagement\Repository\LeaveBalanceRepository;
 use LeaveManagement\Repository\LeaveStatusRepository;
 use Payroll\Controller\PayrollGenerator;
 use Payroll\Controller\SalarySheet as SalarySheetController;
+use Payroll\Controller\VariableProcessor;
 use Payroll\Model\FlatValueDetail;
 use Payroll\Model\MonthlyValueDetail;
 use Payroll\Model\PayPositionSetup;
@@ -32,6 +34,7 @@ use SelfService\Repository\AttendanceRequestRepository;
 use SelfService\Repository\LeaveRequestRepository;
 use SelfService\Repository\ServiceRepository;
 use Setup\Model\EmployeeQualification;
+use Setup\Model\RecommendApprove;
 use Setup\Repository\AcademicCourseRepository;
 use Setup\Repository\AcademicDegreeRepository;
 use Setup\Repository\AcademicProgramRepository;
@@ -53,7 +56,7 @@ use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Adapter\Driver\ResultInterface;
 use Zend\Mvc\Controller\AbstractRestfulController;
 use Zend\View\Model\JsonModel;
-use Setup\Model\RecommendApprove;
+
 class RestfulService extends AbstractRestfulController {
 
     private $adapter;
@@ -216,6 +219,9 @@ class RestfulService extends AbstractRestfulController {
                     break;
                 case "dropEmployeeFile":
                     $responseData = $this->dropEmployeeFile($postedData->data);
+                    break;
+                case "pullEmployeeListForEmployeeTable":
+                    $responseData = $this->pullEmployeeListForEmployeeTable($postedData->data);
                     break;
                 case "pullJobHistoryList":
                     $responseData = $this->pullJobHistoryList($postedData->data);
@@ -408,7 +414,6 @@ class RestfulService extends AbstractRestfulController {
                 foreach ($mthValUnit as $key1 => $val1) {
                     if ($val['EMPLOYEE_ID'] == $val1['EMPLOYEE_ID']) {
                         $empList[$key][$val1['FLAT_ID']] = floatval($val1['FLAT_VALUE']);
-
                         break;
                     } else {
                         $empList[$key][$val1['FLAT_ID']] = floatval("0");
@@ -908,6 +913,9 @@ class RestfulService extends AbstractRestfulController {
         $branchId = $data['branch'];
         $regenerateFlag = ($data['regenerateFlag'] == "true") ? 1 : 0;
 
+        $monthRepo = new MonthRepository($this->adapter);
+        $monthDetail = $monthRepo->fetchByMonthId($monthId);
+
         $results = [];
         $salarySheetController = new SalarySheetController($this->adapter);
 
@@ -915,15 +923,15 @@ class RestfulService extends AbstractRestfulController {
             $employeeList = null;
             if ($branchId == -1) {
                 if ($employeeId == -1) {
-                    $employeeList = EntityHelper::getTableKVList($this->adapter, "HR_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => 'E'], ' ');
+                    $employeeList = EntityHelper::getTableKVList($this->adapter, "HR_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => 'E', \Setup\Model\HrEmployees::JOIN_DATE . " <= " . Helper::getExpressionDate($monthDetail[Months::TO_DATE])->getExpression()], ' ');
                 } else {
-                    $employeeList[$employeeId] = "";
+                    $employeeList = EntityHelper::getTableKVList($this->adapter, "HR_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => 'E', \Setup\Model\HrEmployees::JOIN_DATE . " <= " . Helper::getExpressionDate($monthDetail[Months::TO_DATE])->getExpression(), \Setup\Model\HrEmployees::EMPLOYEE_ID => $employeeId], ' ');
                 }
             } else {
                 if ($employeeId == -1) {
-                    $employeeList = EntityHelper::getTableKVList($this->adapter, "HR_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => 'E', \Setup\Model\HrEmployees::BRANCH_ID => $branchId], ' ');
+                    $employeeList = EntityHelper::getTableKVList($this->adapter, "HR_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => 'E', \Setup\Model\HrEmployees::BRANCH_ID => $branchId, \Setup\Model\HrEmployees::JOIN_DATE . " <= " . Helper::getExpressionDate($monthDetail[Months::TO_DATE])->getExpression()], ' ');
                 } else {
-                    $employeeList[$employeeId] = "";
+                    $employeeList = EntityHelper::getTableKVList($this->adapter, "HR_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => 'E', \Setup\Model\HrEmployees::BRANCH_ID => $branchId, \Setup\Model\HrEmployees::JOIN_DATE . " <= " . Helper::getExpressionDate($monthDetail[Months::TO_DATE])->getExpression(), \Setup\Model\HrEmployees::EMPLOYEE_ID => $employeeId], ' ');
                 }
             }
             $results = $salarySheetController->viewSalarySheet($monthId, $employeeList);
@@ -932,7 +940,7 @@ class RestfulService extends AbstractRestfulController {
                 $salarySheetController->deleteSalarySheetDetail($monthId);
                 $salarySheetController->deleteSalarySheet($monthId);
             }
-            $employeeList = EntityHelper::getTableKVList($this->adapter, "HR_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => 'E'], ' ');
+            $employeeList = EntityHelper::getTableKVList($this->adapter, "HR_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => 'E', \Setup\Model\HrEmployees::JOIN_DATE . " <= " . Helper::getExpressionDate($monthDetail[Months::TO_DATE])->getExpression()], ' ');
 //            print "<pre>";
             foreach ($employeeList as $key => $employee) {
 //                print $key;
@@ -948,15 +956,15 @@ class RestfulService extends AbstractRestfulController {
                 $employeeList = null;
                 if ($branchId == -1) {
                     if ($employeeId == -1) {
-                        $employeeList = EntityHelper::getTableKVList($this->adapter, "HR_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => 'E'], ' ');
+                        $employeeList = EntityHelper::getTableKVList($this->adapter, "HR_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => 'E', \Setup\Model\HrEmployees::JOIN_DATE . " <= " . Helper::getExpressionDate($monthDetail[Months::TO_DATE])->getExpression()], ' ');
                     } else {
-                        $employeeList[$employeeId] = "";
+                        $employeeList = EntityHelper::getTableKVList($this->adapter, "HR_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => 'E', \Setup\Model\HrEmployees::JOIN_DATE . " <= " . Helper::getExpressionDate($monthDetail[Months::TO_DATE])->getExpression(), \Setup\Model\HrEmployees::EMPLOYEE_ID => $employeeId], ' ');
                     }
                 } else {
                     if ($employeeId == -1) {
-                        $employeeList = EntityHelper::getTableKVList($this->adapter, "HR_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => 'E', \Setup\Model\HrEmployees::BRANCH_ID => $branchId], ' ');
+                        $employeeList = EntityHelper::getTableKVList($this->adapter, "HR_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => 'E', \Setup\Model\HrEmployees::BRANCH_ID => $branchId, \Setup\Model\HrEmployees::JOIN_DATE . " >= " . Helper::getExpressionDate($monthDetail[Months::TO_DATE])->getExpression()], ' ');
                     } else {
-                        $employeeList[$employeeId] = "";
+                        $employeeList = EntityHelper::getTableKVList($this->adapter, "HR_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => 'E', \Setup\Model\HrEmployees::BRANCH_ID => $branchId, \Setup\Model\HrEmployees::JOIN_DATE . " >= " . Helper::getExpressionDate($monthDetail[Months::TO_DATE])->getExpression(), \Setup\Model\HrEmployees::EMPLOYEE_ID => $employeeId], ' ');
                     }
                 }
                 $results = $salarySheetController->viewSalarySheet($monthId, $employeeList);
@@ -1012,6 +1020,13 @@ class RestfulService extends AbstractRestfulController {
         $employeeRepo = new EmployeeRepository($this->adapter);
         $employee = $employeeRepo->fetchForProfileById($employeeId);
         $results['employeeDetail'] = $employee;
+
+        $variableProcessor = new VariableProcessor($this->adapter, $employeeId, $monthId);
+        $absentDays = $variableProcessor->processVariable(PayrollGenerator::VARIABLES[2]);
+        $results["absentDays"] = $absentDays;
+
+        $presentDays = $variableProcessor->processVariable(PayrollGenerator::VARIABLES[3]);
+        $results["presentDays"] = $presentDays;
         return ["success" => true, "data" => $results];
     }
 
@@ -1233,6 +1248,46 @@ class RestfulService extends AbstractRestfulController {
             'data' => $employeeList
         ];
     }
+    public function pullEmployeeListForEmployeeTable($data) {
+        $emplyoeeId = $data['employeeId'];
+        $branchId = $data['branchId'];
+        $departmentId = $data['departmentId'];
+        $designationId = $data['designationId'];
+        $positionId = $data['positionId'];
+        $serviceTypeId = $data['serviceTypeId'];
+        $serviceEventTypeId = $data['serviceEventTypeId'];
+
+        $repository = new EmployeeRepository($this->adapter);
+        $result = $repository->filterRecords($emplyoeeId, $branchId, $departmentId, $designationId, $positionId, $serviceTypeId, $serviceEventTypeId,1);
+
+        $employeeList = [];
+        foreach($result as $row){
+            if($row['MARITAL_STATUS']=='U'){
+                $row['MARITAL_STATUS']="Unmarried";
+            }else{
+                $row['MARITAL_STATUS']="Married";
+            }
+            $perVdcMunicipalityDtl = $repository->getVdcMunicipalityDtl($row['ADDR_PERM_VDC_MUNICIPALITY_ID']);       
+            $perDistrictDtl = $repository->getDistrictDtl($perVdcMunicipalityDtl['DISTRICT_ID']);       
+            $perZoneDtl = $repository->getZoneDtl($perDistrictDtl['ZONE_ID']);
+
+            $tempVdcMunicipalityDtl = $repository->getVdcMunicipalityDtl($row['ADDR_TEMP_VDC_MUNICIPALITY_ID']);       
+            $tempDistrictDtl = $repository->getDistrictDtl($tempVdcMunicipalityDtl['DISTRICT_ID']);       
+            $tempZoneDtl = $repository->getZoneDtl($tempDistrictDtl['ZONE_ID']);
+            
+            $row['ADDR_PERM_DISTRICT_NAME'] = $perDistrictDtl['DISTRICT_NAME'];
+            $row['ADDR_TEMP_DISTRICT_NAME'] = $tempDistrictDtl['DISTRICT_NAME'];
+            $row['ADDR_PERM_ZONE_NAME'] = $perZoneDtl['ZONE_NAME'];
+            $row['ADDR_TEMP_ZONE_NAME'] = $tempZoneDtl['ZONE_NAME'];
+
+            array_push($employeeList, $row);
+        }
+        
+        return [
+            'success' => true,
+            'data' => $employeeList
+        ];
+    }
 
     public function pullEmployeeListForReportingRole($data) {
         $branchId = $data['branchId'];
@@ -1429,6 +1484,7 @@ class RestfulService extends AbstractRestfulController {
             }
         };
 
+
         foreach ($result as $row) {
             $status = $getValue($row['STATUS']);
             $role = $getRole($row['RECOMMENDER'], $row['APPROVER'], $recomApproveId);
@@ -1587,8 +1643,19 @@ class RestfulService extends AbstractRestfulController {
     }
 
     public function pullPayRollGeneratedMonths($data) {
+        $employeeId = null;
+        $joinDate = null;
+        if (isset($data['employeeId'])) {
+            $employeeId = $data['employeeId'];
+        }
+        if ($employeeId != null) {
+            $result = EntityHelper::getTableKVList($this->adapter, \Setup\Model\HrEmployees::TABLE_NAME, null, [\Setup\Model\HrEmployees::JOIN_DATE], [\Setup\Model\HrEmployees::EMPLOYEE_ID => $employeeId], null, null);
+            if (sizeof($result) > 0) {
+                $joinDate = $result[0];
+            }
+        }
         $salarySheetRepo = new SalarySheetRepo($this->adapter);
-        $generatedSalarySheets = Helper::extractDbData($salarySheetRepo->joinWithMonth());
+        $generatedSalarySheets = Helper::extractDbData($salarySheetRepo->joinWithMonth(null, $joinDate));
         return [
             "success" => "true",
             "data" => $generatedSalarySheets
@@ -1662,29 +1729,29 @@ class RestfulService extends AbstractRestfulController {
         $employeeId = $data['employeeId'];
         $recommenderId = $data['recommenderId'];
         $approverId = $data['approverId'];
-        
-        if($recommenderId=="" || $recommenderId==null){
-           $recommenderIdNew = null; 
-        }else if($employeeId==$recommenderId){
+
+        if ($recommenderId == "" || $recommenderId == null) {
+            $recommenderIdNew = null;
+        } else if ($employeeId == $recommenderId) {
             $recommenderIdNew = "";
-        }else{
+        } else {
             $recommenderIdNew = $recommenderId;
         }
-        
-        if($approverId=="" || $approverId==null){
-           $approverIdNew = null; 
-        }else if($employeeId==$approverId){
+
+        if ($approverId == "" || $approverId == null) {
+            $approverIdNew = null;
+        } else if ($employeeId == $approverId) {
             $approverIdNew = "";
-        }else{
+        } else {
             $approverIdNew = $approverId;
         }
-        
-        
+
+
 
         $recommApproverRepo = new RecommendApproveRepository($this->adapter);
         $recommendApprove = new RecommendApprove();
         $employeePreDtl = $recommApproverRepo->fetchById($employeeId);
-        if ($employeePreDtl == null) {           
+        if ($employeePreDtl == null) {
             $recommendApprove->employeeId = $employeeId;
             $recommendApprove->recommendBy = $recommenderIdNew;
             $recommendApprove->approvedBy = $approverIdNew;
@@ -1698,13 +1765,12 @@ class RestfulService extends AbstractRestfulController {
             $recommendApprove->approvedBy = $approverIdNew;
             $recommendApprove->modifiedDt = Helper::getcurrentExpressionDate();
             $recommendApprove->status = 'E';
-            $recommApproverRepo->edit($recommendApprove,$id);
+            $recommApproverRepo->edit($recommendApprove, $id);
         }
         return [
             "success" => true,
             "data" => $data
         ];
-
     }
 
 }

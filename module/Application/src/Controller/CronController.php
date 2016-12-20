@@ -31,8 +31,8 @@ class CronController extends AbstractActionController {
         $attendanceRepo = new AttendanceDetailRepository($this->adapter);
         foreach ($employeeList as $employee) {
             $attendance = new Attendance();
-//            $attendance->employeeId = $employee->employeeId;
-//            $attendance->attendanceDt = Helper::getcurrentExpressionDate();
+            $attendance->employeeId = $employee->employeeId;
+            $attendance->attendanceDt = Helper::getcurrentExpressionDate();
 //            $attendanceRepo->addAttendance($attendance);
 
             $attendanceDetail = new AttendanceDetail();
@@ -63,12 +63,30 @@ class CronController extends AbstractActionController {
         print "Hello from console";
     }
 
-    public function checkAction() {
-        print "under process";
-    }
-
     public function employeeAttendanceAction() {
-        
+        $request = $this->getRequest();
+        $employeeId = $request->getParam('employeeId');
+        $attendanceDt = $request->getParam('attendanceDt');
+        $attendanceTime = $request->getParam('attendanceTime');
+
+
+        $attendance = new Attendance();
+        $attendance->employeeId = $employeeId;
+
+//        $attendanceDt = "18-DEC-2016";
+//        $attendanceTime = "08:11 AM";
+
+        $attendance->attendanceDt = Helper::getExpressionDate($attendanceDt);
+        $attendance->attendanceTime = Helper::getExpressionTime($attendanceTime);
+
+        $attendanceRepo = new AttendanceDetailRepository($this->adapter);
+        $check = $attendanceRepo->addAttendance($attendance);
+
+        if ($check) {
+            print "eId: $employeeId attendanceDt: $attendanceDt attendanceTime $attendanceTime";
+        } else {
+            print "Action unsuccessful";
+        }
     }
 
     private function pullEmployeeList() {

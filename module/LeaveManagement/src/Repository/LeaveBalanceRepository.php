@@ -148,11 +148,12 @@ class LeaveBalanceRepository implements RepositoryInterface {
     public function getOnlyCarryForwardedRecord(){
         $sql = new Sql($this->adapter);
         $select = $sql->select();
-        $select->columns([
-            new Expression("LA.TOTAL_DAYS AS TOTAL_DAYS"),
+        $select->columns([            
             new Expression("LA.BALANCE AS BALANCE"),
+            new Expression("LA.TOTAL_DAYS AS TOTAL_DAYS"),
+            new Expression("LA.PREVIOUS_YEAR_BAL AS PREVIOUS_YEAR_BAL"),
             new Expression("LA.LEAVE_ID AS LEAVE_ID"),
-            new Expression("LA.EMPLOYEE_ID AS EMPLOYEE_ID"),
+            new Expression("LA.EMPLOYEE_ID AS EMPLOYEE_ID")           
         ], true);
 
         $select->from(['LA' => LeaveAssign::TABLE_NAME])
@@ -176,8 +177,10 @@ class LeaveBalanceRepository implements RepositoryInterface {
             array_push($record,[
                 'EMPLOYEE_ID'=>$row['EMPLOYEE_ID'],
                 'LEAVE_ID'=>$row['LEAVE_ID'],
+                'PREVIOUS_YEAR_BAL'=>$row['PREVIOUS_YEAR_BAL'],
+                'TOTAL_DAYS'=>$row['TOTAL_DAYS'],
                 'BALANCE'=>$row['BALANCE'],
-                'TOTAL_DAYS'=>$row['TOTAL_DAYS']
+                
             ]);
         }
         return $record;

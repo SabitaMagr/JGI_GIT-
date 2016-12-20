@@ -40,12 +40,65 @@
                         .find('tbody')
                         .append('<tr class="kendo-data-row"><td colspan="' + colCount + '" class="no-data">There is no data to show in the grid.</td></tr>');
             }
-        }
-        ;
+        };
+        
         $("#export").click(function (e) {
-            var grid = $("#attendanceByHrTable").data("kendoGrid");
-            grid.saveAsExcel();
+            var rows = [{
+                    cells: [
+                        {value: "Employee Name"},
+                        {value: "Attendance Date"},
+                        {value: "Check In Time"},
+                        {value: "Check Out Time"},
+                        {value: "Late In Reason"},
+                        {value: "Late Out Reason"},
+                        {value: "Total Hour"}
+                    ]
+                }];
+            var dataSource = $("#attendanceByHrTable").data("kendoGrid").dataSource;
+            var filteredDataSource = new kendo.data.DataSource({
+                data: dataSource.data(),
+                filter: dataSource.filter()
+            });
+
+            filteredDataSource.read();
+            var data = filteredDataSource.view();
+            
+            for (var i = 0; i < data.length; i++) {
+                var dataItem = data[i];
+                var middleName = dataItem.MIDDLE_NAME!=null ? " "+dataItem.MIDDLE_NAME+" " : " ";
+                rows.push({
+                    cells: [
+                        {value: dataItem.FIRST_NAME+middleName+dataItem.LAST_NAME},
+                        {value: dataItem.ATTENDANCE_DT},
+                        {value: dataItem.IN_TIME},
+                        {value: dataItem.OUT_TIME},
+                        {value: dataItem.IN_REMARKS},
+                        {value: dataItem.OUT_REMARKS},
+                        {value: dataItem.TOTAL_HOUR}
+                    ]
+                });
+            }
+            excelExport(rows);
+            e.preventDefault();
         });
+        
+        function excelExport(rows) {
+            var workbook = new kendo.ooxml.Workbook({
+                sheets: [
+                    {
+                        columns: [
+                            {autoWidth: true},
+                            {autoWidth: true},
+                            {autoWidth: true}
+                        ],
+                        title: "Attendance Report",
+                        rows: rows
+                    }
+                ]
+            });
+            kendo.saveAs({dataURI: workbook.toDataURL(), fileName: "AttendanceList.xlsx"});
+        }
+        
         window.app.UIConfirmations();
 
     });

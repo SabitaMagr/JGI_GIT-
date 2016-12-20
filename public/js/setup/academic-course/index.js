@@ -3,11 +3,7 @@
     $(document).ready(function () {
 
         $("#academicCourseTable").kendoGrid({
-            excel: {
-                fileName: "AcademicCourseList.xlsx",
-                filterable: true,
-                allPages: true
-            },
+
             dataSource: {
                 data: document.academicCourses,
                 pageSize: 20
@@ -37,12 +33,54 @@
                         .find('tbody')
                         .append('<tr class="kendo-data-row"><td colspan="' + colCount + '" class="no-data">There is no data to show in the grid.</td></tr>');
             }
-        }
-        ;
+        };
         $("#export").click(function (e) {
-            var grid = $("#academicCourseTable").data("kendoGrid");
-            grid.saveAsExcel();
+            var rows = [{
+                    cells: [
+                        {value: "Academic Course Code"},
+                        {value: "Academic Course Name"},
+                        {value: "Academic Program Name"}
+                    ]
+                }];
+            var dataSource = $("#academicCourseTable").data("kendoGrid").dataSource;
+            var filteredDataSource = new kendo.data.DataSource({
+                data: dataSource.data(),
+                filter: dataSource.filter()
+            });
+
+            filteredDataSource.read();
+            var data = filteredDataSource.view();
+            
+            for (var i = 0; i < data.length; i++) {
+                var dataItem = data[i];
+                rows.push({
+                    cells: [
+                        {value: dataItem.ACADEMIC_COURSE_CODE},
+                        {value: dataItem.ACADEMIC_COURSE_NAME},
+                        {value: dataItem.ACADEMIC_PROGRAM_NAME}
+                    ]
+                });
+            }
+            excelExport(rows);
+            e.preventDefault();
         });
+        
+        function excelExport(rows) {
+            var workbook = new kendo.ooxml.Workbook({
+                sheets: [
+                    {
+                        columns: [
+                            {autoWidth: true},
+                            {autoWidth: true},
+                            {autoWidth: true}
+                        ],
+                        title: "Academic Course",
+                        rows: rows
+                    }
+                ]
+            });
+            kendo.saveAs({dataURI: workbook.toDataURL(), fileName: "AcademicCourseList.xlsx"});
+        }
         window.app.UIConfirmations();
 
     });

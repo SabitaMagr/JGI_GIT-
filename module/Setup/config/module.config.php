@@ -235,6 +235,36 @@ return [
                     ]
                 ],
             ],
+            'training' => [
+                'type' => segment::class,
+                'options' => [
+                    'route' => '/setup/training[/:action[/:id]]',
+                    'constants' => [
+                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'id' => '[0-9]+',
+                    ],
+                    'defaults' => [
+                        'controller' => Controller\TrainingController::class,
+                        'action' => 'index',
+                    ]
+                ],
+            ],
+
+            'loanAdvance' => [
+                'type' => segment::class,
+                'options' => [
+                    'route' => '/setup/loanAdvance[/:action[/:id]]',
+                    'constants' => [
+                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'id' => '[0-9]+',
+                    ],
+                    'defaults' => [
+                        'controller' => Controller\LoanAdvanceController::class,
+                        'action' => 'index',
+                    ]
+                ],
+            ],
+
 //            'leave' => [
 //                'type' => segment::class,
 //                'options' => [
@@ -678,6 +708,62 @@ return [
                 ]
             ]
         ],
+        'training' => [
+
+            [
+                'label' => 'Training',
+                'route' => 'training',
+            ],
+            [
+                'label' => 'Training',
+                'route' => 'training',
+                'pages' => [
+                    [
+                        'label' => 'List',
+                        'route' => 'training',
+                        'action' => 'index',
+                    ],
+                    [
+                        'label' => 'Add',
+                        'route' => 'training',
+                        'action' => 'add',
+                    ],
+                    [
+                        'label' => 'Edit',
+                        'route' => 'training',
+                        'action' => 'edit',
+                    ],
+                ]
+            ]
+        ],
+        'loanAdvance' => [
+
+            [
+                'label' => 'Loan And Advance',
+                'route' => 'loanAdvance',
+            ],
+            [
+                'label' => 'Loan And Advance',
+                'route' => 'loanAdvance',
+                'pages' => [
+                    [
+                        'label' => 'List',
+                        'route' => 'loanAdvance',
+                        'action' => 'index',
+                    ],
+                    [
+                        'label' => 'Add',
+                        'route' => 'loanAdvance',
+                        'action' => 'add',
+                    ],
+                    [
+                        'label' => 'Edit',
+                        'route' => 'loanAdvance',
+                        'action' => 'edit',
+                    ],
+                ]
+            ]
+        ],
     ],
     'controllers' => [
         'factories' => [
@@ -696,7 +782,9 @@ return [
             Controller\AcademicDegreeController::class=>ControllerFactory::class,
             Controller\AcademicUniversityController::class=>ControllerFactory::class,
             Controller\AcademicProgramController::class=>ControllerFactory::class,
-            Controller\AcademicCourseController::class=>ControllerFactory::class
+            Controller\AcademicCourseController::class=>ControllerFactory::class,
+            Controller\TrainingController::class=>ControllerFactory::class,
+            Controller\LoanAdvanceController::class=>ControllerFactory::class
 //            Controller\LeaveMasterController::class => Controller\ControllerFactory::class,
         ],
 

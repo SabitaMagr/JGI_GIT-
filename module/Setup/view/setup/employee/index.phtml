@@ -103,29 +103,29 @@ echo json_encode($menu);
     <script id="rowTemplate" type="text/x-kendo-tmpl">
         <tr>
         <td>    
-        #: (employeeCode == null) ? '-' : employeeCode #
+        #: (EMPLOYEE_CODE == null) ? '-' : EMPLOYEE_CODE #
         </td>
         <td>
-            #: (firstName == null) ? ' ' : firstName #
-            #: (middleName == null) ? ' ' : middleName #
-            #: (lastName == null) ? ' ' : lastName #
+            #: (FIRST_NAME == null) ? ' ' : FIRST_NAME #
+            #: (MIDDLE_NAME == null) ? ' ' : MIDDLE_NAME #
+            #: (LAST_NAME == null) ? ' ' : LAST_NAME #
         </td>
         <td>
-        #: (birthDate == null) ? '-' : birthDate #
+        #: (BIRTH_DATE == null) ? '-' : BIRTH_DATE #
         </td>
         <td>
-        #: (mobileNo == null) ? '-' : mobileNo #
+        #: (MOBILE_NO == null) ? '-' : MOBILE_NO #
         </td>
         <td>
-        #: (emailOfficial == null) ? '-' : emailOfficial #
+        #: (EMAIL_OFFICIAL == null) ? '-' : EMAIL_OFFICIAL #
         </td>
         <td>
         <a class="btn-edit"
-        href="<?= $this->url("employee", ["action" => "edit"]) ?>/#:employeeId#/1" style="height:17px;">
+        href="<?= $this->url("employee", ["action" => "edit"]) ?>/#:EMPLOYEE_ID#/1" style="height:17px;">
             <i class="fa fa-edit"></i>
         </a> 
         <a class="confirmation btn-delete"
-        href="<?= $this->url("employee", ["action" => "delete"]) ?>/#:employeeId#" id="bs_#:employeeId #" style="height:17px;">
+        href="<?= $this->url("employee", ["action" => "delete"]) ?>/#:EMPLOYEE_ID#" id="bs_#:employeeId #" style="height:17px;">
             <i class="fa fa-trash-o"></i></a>
         </td>
 

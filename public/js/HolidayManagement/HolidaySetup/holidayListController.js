@@ -1,6 +1,16 @@
 /**
  * Created by root on 11/9/16.
  */
+(function ($, app) {
+    'use strict';
+    $(document).ready(function () {
+        app.addDatePicker(
+                $("#startDate"),
+                $("#endDate")
+                );
+    });
+})(window.jQuery, window.app);
+
 
 angular.module('hris', [])
         .controller('holidayListController', function ($scope, $http) {
@@ -21,7 +31,7 @@ angular.module('hris', [])
                     }
                 }).then(function (success) {
                     $scope.$apply(function () {
-                        console.log(success.data);
+                        // console.log(success.data);
                         //$scope.holidayList = success.data;
                         $scope.initializekendoGrid(success.data);
                     });
@@ -71,10 +81,76 @@ angular.module('hris', [])
                     }
                 }
                 ;
+
                 $("#export").click(function (e) {
-                    var grid = $("#holidayTable").data("kendoGrid");
-                    grid.saveAsExcel();
+                    var rows = [{
+                            cells: [
+                                {value: "Holiday Code"},
+                                {value: "Holiday Name"},
+                                {value: "From Date"},
+                                {value: "To Date"},
+                                {value: "Gender"},
+                                {value: "Branches"},
+                                {value: "Half Day"},
+                                {value: "Remarks"}
+                            ]
+                        }];
+                    var dataSource = $("#holidayTable").data("kendoGrid").dataSource;
+                    var filteredDataSource = new kendo.data.DataSource({
+                        data: dataSource.data(),
+                        filter: dataSource.filter()
+                    });
+
+                    filteredDataSource.read();
+                    var data = filteredDataSource.view();
+
+                    for (var i = 0; i < data.length; i++) {
+                        var dataItem = data[i];
+                        var branch = [];
+                        for(var j = 0; j < dataItem.BRANCHES.length; j++){
+                            branch.push(dataItem.BRANCHES[j].BRANCH_NAME);
+                        }
+                        console.log(branch, "hellow branches");
+                        var branch1 = branch.toString();;
+                        console.log(branch1);
+                        rows.push({
+                            cells: [
+                                {value: dataItem.HOLIDAY_CODE},
+                                {value: dataItem.HOLIDAY_ENAME},
+                                {value: dataItem.START_DATE},
+                                {value: dataItem.END_DATE},
+                                {value: dataItem.GENDER_NAME},
+                                {value: branch1},
+                                {value: dataItem.HALFDAY},
+                                {value: dataItem.REMARKS}
+                            ]
+                        });
+                    }
+                    excelExport(rows);
+                    e.preventDefault();
                 });
+
+                function excelExport(rows) {
+                    var workbook = new kendo.ooxml.Workbook({
+                        sheets: [
+                            {
+                                columns: [
+                                    {autoWidth: true},
+                                    {autoWidth: true},
+                                    {autoWidth: true},
+                                    {autoWidth: true},
+                                    {autoWidth: true},
+                                    {autoWidth: true},
+                                    {autoWidth: true},
+                                    {autoWidth: true}
+                                ],
+                                title: "Holiday List",
+                                rows: rows
+                            }
+                        ]
+                    });
+                    kendo.saveAs({dataURI: workbook.toDataURL(), fileName: "HolidayList.xlsx"});
+                }
                 window.app.UIConfirmations();
             };
         });

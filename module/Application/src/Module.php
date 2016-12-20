@@ -172,7 +172,8 @@ class Module implements AutoloaderProviderInterface, ConsoleUsageProviderInterfa
 
     public function getConsoleUsage(AdapterInterface $console) {
         return [
-            'attendance daily-attendance' => 'Daily Attendance'
+            'attendance daily-attendance' => 'Daily Attendance',
+            'attendance employee-attendance <employeeId> <attendanceDt> <attendanceTime>'=>'Employee Daily Attendance'
         ];
     }
 
