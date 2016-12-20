@@ -51,14 +51,7 @@ angular.module('hris', [])
                     }
                 }).then(function (success) {
                     console.log("pullEmployeeList", success.data);
-                    $scope.initializekendoGrid(success.data);                
-                    $scope.$apply(function () {
-//                        $scope.gridData.splice(0, $scope.gridData.length);
-//                        angular.forEach(success.data, function (value, key) {
-//                            $scope.gridData.push(value);
-//                        });
-
-                    });
+                    $scope.initializekendoGrid(success.data);
                 }, function (failure) {
                     console.log(failure);
                 });
@@ -79,6 +72,7 @@ angular.module('hris', [])
                     scrollable: true,
                     sortable: true,
                     filterable: true,
+                    dataBound: gridDataBound,
                     pageable: {
                         input: true,
                         numeric: false
@@ -93,6 +87,17 @@ angular.module('hris', [])
                         {title: "Action", width: 120}
                     ]
                 });
+
+                function gridDataBound(e) {
+                    var grid = e.sender;
+                    if (grid.dataSource.total() == 0) {
+                        var colCount = grid.columns.length;
+                        $(e.sender.wrapper)
+                                .find('tbody')
+                                .append('<tr class="kendo-data-row"><td colspan="' + colCount + '" class="no-data">There is no data to show in the grid.</td></tr>');
+                    }
+                }
+                ;
 
 //                $("#export").click(function (e) {
 //                    var grid = $("#employeeTable").data("kendoGrid");
@@ -183,16 +188,16 @@ angular.module('hris', [])
 
                     for (var i = 0; i < data.length; i++) {
                         var dataItem = data[i];
-                        if(dataItem.MIDDLE_NAME!=null){
-                            var MIDDLE_NAME = " "+dataItem.MIDDLE_NAME+" ";
-                        }else{
+                        if (dataItem.MIDDLE_NAME != null) {
+                            var MIDDLE_NAME = " " + dataItem.MIDDLE_NAME + " ";
+                        } else {
                             var MIDDLE_NAME = " ";
                         }
-                        var employeeName =  dataItem.FIRST_NAME+MIDDLE_NAME+dataItem.LAST_NAME;
+                        var employeeName = dataItem.FIRST_NAME + MIDDLE_NAME + dataItem.LAST_NAME;
                         rows.push({
                             cells: [
                                 {value: dataItem.EMPLOYEE_CODE},
-                                {value:employeeName},
+                                {value: employeeName},
                                 {value: dataItem.NAME_NEPALI},
                                 {value: dataItem.GENDER_NAME},
                                 {value: dataItem.BIRTH_DATE},

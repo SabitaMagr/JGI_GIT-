@@ -18,7 +18,6 @@ use Setup\Model\HrEmployees;
 
 class RecommendApproveRepository implements RepositoryInterface
 {
-
     private $tableGateway;
     private $adapter;
 

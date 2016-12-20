@@ -414,7 +414,6 @@ class RestfulService extends AbstractRestfulController {
                 foreach ($mthValUnit as $key1 => $val1) {
                     if ($val['EMPLOYEE_ID'] == $val1['EMPLOYEE_ID']) {
                         $empList[$key][$val1['FLAT_ID']] = floatval($val1['FLAT_VALUE']);
-
                         break;
                     } else {
                         $empList[$key][$val1['FLAT_ID']] = floatval("0");
