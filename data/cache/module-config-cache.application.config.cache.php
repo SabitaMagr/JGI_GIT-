@@ -2906,6 +2906,7 @@ return array (
     array (
       'layout/layout' => '/var/www/html/neo/neo-hris-metronic/module/Application/config/../view/layout/layout.phtml',
       'layout/login' => '/var/www/html/neo/neo-hris-metronic/module/Application/config/../view/layout/login.phtml',
+      'layout/json' => '/var/www/html/neo/neo-hris-metronic/module/Application/config/../view/layout/json.phtml',
       'application/index/index' => '/var/www/html/neo/neo-hris-metronic/module/Application/config/../view/application/index/index.phtml',
       'error/404' => '/var/www/html/neo/neo-hris-metronic/module/Application/config/../view/error/404.phtml',
       'error/index' => '/var/www/html/neo/neo-hris-metronic/module/Application/config/../view/error/index.phtml',

@@ -299,8 +299,12 @@ class leaveAssign extends AbstractActionController {
                 unlink(EmployeeController::UPLOAD_DIR . "/" . $newFileName);
             }
 
-            $this->flashmessenger()->addMessage("Previous Year Balance Successfully Updated!!!");
-            return $this->redirect()->toRoute("leaveassign", ['action' => 'assign', 'eid' => $eid]);
+//            $this->flashmessenger()->addMessage("Previous Year Balance Successfully Updated!!!");
+//            return $this->redirect()->toRoute("leaveassign", ['action' => 'assign', 'eid' => $eid]);
+            $viewModel = new ViewModel([$data => ['eid' => $eid]]);
+            $viewModel->setTerminal(true);
+            $viewModel->setTemplate('layout/json');
+            return $viewModel;
         }
     }
 

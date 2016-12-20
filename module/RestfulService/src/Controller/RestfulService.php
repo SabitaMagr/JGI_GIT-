@@ -1249,6 +1249,7 @@ class RestfulService extends AbstractRestfulController {
             'data' => $employeeList
         ];
     }
+
     public function pullEmployeeListForEmployeeTable($data) {
         $emplyoeeId = $data['employeeId'];
         $branchId = $data['branchId'];
@@ -1259,23 +1260,23 @@ class RestfulService extends AbstractRestfulController {
         $serviceEventTypeId = $data['serviceEventTypeId'];
 
         $repository = new EmployeeRepository($this->adapter);
-        $result = $repository->filterRecords($emplyoeeId, $branchId, $departmentId, $designationId, $positionId, $serviceTypeId, $serviceEventTypeId,1);
+        $result = $repository->filterRecords($emplyoeeId, $branchId, $departmentId, $designationId, $positionId, $serviceTypeId, $serviceEventTypeId, 1);
 
         $employeeList = [];
-        foreach($result as $row){
-            if($row['MARITAL_STATUS']=='U'){
-                $row['MARITAL_STATUS']="Unmarried";
-            }else{
-                $row['MARITAL_STATUS']="Married";
+        foreach ($result as $row) {
+            if ($row['MARITAL_STATUS'] == 'U') {
+                $row['MARITAL_STATUS'] = "Unmarried";
+            } else {
+                $row['MARITAL_STATUS'] = "Married";
             }
-            $perVdcMunicipalityDtl = $repository->getVdcMunicipalityDtl($row['ADDR_PERM_VDC_MUNICIPALITY_ID']);       
-            $perDistrictDtl = $repository->getDistrictDtl($perVdcMunicipalityDtl['DISTRICT_ID']);       
+            $perVdcMunicipalityDtl = $repository->getVdcMunicipalityDtl($row['ADDR_PERM_VDC_MUNICIPALITY_ID']);
+            $perDistrictDtl = $repository->getDistrictDtl($perVdcMunicipalityDtl['DISTRICT_ID']);
             $perZoneDtl = $repository->getZoneDtl($perDistrictDtl['ZONE_ID']);
 
-            $tempVdcMunicipalityDtl = $repository->getVdcMunicipalityDtl($row['ADDR_TEMP_VDC_MUNICIPALITY_ID']);       
-            $tempDistrictDtl = $repository->getDistrictDtl($tempVdcMunicipalityDtl['DISTRICT_ID']);       
+            $tempVdcMunicipalityDtl = $repository->getVdcMunicipalityDtl($row['ADDR_TEMP_VDC_MUNICIPALITY_ID']);
+            $tempDistrictDtl = $repository->getDistrictDtl($tempVdcMunicipalityDtl['DISTRICT_ID']);
             $tempZoneDtl = $repository->getZoneDtl($tempDistrictDtl['ZONE_ID']);
-            
+
             $row['ADDR_PERM_DISTRICT_NAME'] = $perDistrictDtl['DISTRICT_NAME'];
             $row['ADDR_TEMP_DISTRICT_NAME'] = $tempDistrictDtl['DISTRICT_NAME'];
             $row['ADDR_PERM_ZONE_NAME'] = $perZoneDtl['ZONE_NAME'];
@@ -1283,7 +1284,7 @@ class RestfulService extends AbstractRestfulController {
 
             array_push($employeeList, $row);
         }
-        
+
         return [
             'success' => true,
             'data' => $employeeList
@@ -1375,7 +1376,7 @@ class RestfulService extends AbstractRestfulController {
 
         if ($data['fileCode'] == null) {
             $employeefile->fileCode = ((int) Helper::getMaxId($this->adapter, 'HR_EMPLOYEE_FILE', 'FILE_CODE')) + 1;
-            $employeefile->employeeId = $data['employeeId'];
+//            $employeefile->employeeId = $data['employeeId'];
             $employeefile->filetypeCode = $data['fileTypeCode'];
             $employeefile->filePath = $data['filePath'];
             $employeefile->fileName = $data['fileName'];
@@ -1388,7 +1389,7 @@ class RestfulService extends AbstractRestfulController {
             $employeeRepo = new EmployeeRepository($this->adapter);
             $employeeModel = new \Setup\Model\HrEmployees();
             $employeeModel->profilePictureId = $employeefile->fileCode;
-            $employeeRepo->edit($employeeModel, $employeefile->employeeId);
+            $employeeRepo->edit($employeeModel, $data['employeeId']);
             return["success" => true, "data" => ['fileCode' => $employeefile->fileCode]];
         } else {
             $employeefile->filetypeCode = $data['fileTypeCode'];
