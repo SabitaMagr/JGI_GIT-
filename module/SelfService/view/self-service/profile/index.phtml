@@ -174,16 +174,16 @@ echo json_encode($menu);
         </ul>
         <div class="tab-content clearfix">
             <div class="tab-pane active" id="tab1" style="min-height: 400px;">
-              
+
 
                 <div class="personal-info">
                     <p><i class="fa fa-user ticon" aria-hidden="true"></i>
                         Personal Information</p>
                     <div class="profile-img-box">
-                      <img alt="profile image"  class="profilepic" src="<?= $this->basePath("uploads/" . $filePath) ?>" />
+                        <img alt="profile image"  class="profilepic" src="<?= $this->basePath("uploads/" . $filePath) ?>" />
                     </div>
                     <div class="row clearfix e-setup">
-                       
+
                         <div class="col-xs-12 col-sm-6 col-md-3 col-box">
                             <div class="row bottomgap">
 
@@ -462,84 +462,84 @@ echo json_encode($menu);
 
                     </div>
                 </div>
-                    <div class="Temporary-info">
-                        <p><i class="fa fa-address-card ticon" aria-hidden="true"></i>
-                            Temporary Address</p>
+                <div class="Temporary-info">
+                    <p><i class="fa fa-address-card ticon" aria-hidden="true"></i>
+                        Temporary Address</p>
 
-                        <div class="row clearfix e-setup">
-                            <div class="col-xs-12 col-sm-6 col-md-3 col-box">
-                                <div class="row bottomgap">
+                    <div class="row clearfix e-setup">
+                        <div class="col-xs-12 col-sm-6 col-md-3 col-box">
+                            <div class="row bottomgap">
 
-                                    <div class="form-group  <?= empty($addrTempHouseNo->getMessages()) ? "" : "error" ?>">
-                                        <div class="col-xs-6 col-sm-6 col-md-6 rightalign">
-                                            <?php print $this->formLabel($addrTempHouseNo); ?></div>
-                                        <div class="col-xs-6 col-sm-6 col-md-6 cgap">
-                                            <?php print $employeeData[\Setup\Model\HrEmployees::ADDR_TEMP_HOUSE_NO]; ?></div>
-                                    </div>
+                                <div class="form-group  <?= empty($addrTempHouseNo->getMessages()) ? "" : "error" ?>">
+                                    <div class="col-xs-6 col-sm-6 col-md-6 rightalign">
+                                        <?php print $this->formLabel($addrTempHouseNo); ?></div>
+                                    <div class="col-xs-6 col-sm-6 col-md-6 cgap">
+                                        <?php print $employeeData[\Setup\Model\HrEmployees::ADDR_TEMP_HOUSE_NO]; ?></div>
                                 </div>
                             </div>
+                        </div>
 
 
 
-                            <div class="col-xs-12 col-sm-6 col-md-3 col-box">
-                                <div class="row bottomgap">
-                                    <div class="form-group  <?= empty($addrTempWardNo->getMessages()) ? "" : "error" ?>">
-                                        <div class="col-xs-6 col-sm-6 col-md-6 rightalign">
-                                            <?php print $this->formLabel($addrTempWardNo); ?></div>
-                                        <div class="col-xs-6 col-sm-6 col-md-6 cgap">
-                                            <?php print $employeeData[\Setup\Model\HrEmployees::ADDR_TEMP_WARD_NO]; ?></div>
-                                    </div>
+                        <div class="col-xs-12 col-sm-6 col-md-3 col-box">
+                            <div class="row bottomgap">
+                                <div class="form-group  <?= empty($addrTempWardNo->getMessages()) ? "" : "error" ?>">
+                                    <div class="col-xs-6 col-sm-6 col-md-6 rightalign">
+                                        <?php print $this->formLabel($addrTempWardNo); ?></div>
+                                    <div class="col-xs-6 col-sm-6 col-md-6 cgap">
+                                        <?php print $employeeData[\Setup\Model\HrEmployees::ADDR_TEMP_WARD_NO]; ?></div>
                                 </div>
                             </div>
+                        </div>
 
-                            <div class="col-xs-12 col-sm-6 col-md-3 col-box">
-                                <div class="row bottomgap">
-                                    <div class="form-group  <?= empty($addrTempStreetAddress->getMessages()) ? "" : "error" ?>">
-                                        <div class="col-xs-6 col-sm-6 col-md-6 rightalign">
-                                            <?php print $this->formLabel($addrTempStreetAddress); ?></div>
-                                        <div class="col-xs-6 col-sm-6 col-md-6 cgap">
-                                            <?php print $employeeData[\Setup\Model\HrEmployees::ADDR_TEMP_STREET_ADDRESS]; ?></div>
-                                    </div>
+                        <div class="col-xs-12 col-sm-6 col-md-3 col-box">
+                            <div class="row bottomgap">
+                                <div class="form-group  <?= empty($addrTempStreetAddress->getMessages()) ? "" : "error" ?>">
+                                    <div class="col-xs-6 col-sm-6 col-md-6 rightalign">
+                                        <?php print $this->formLabel($addrTempStreetAddress); ?></div>
+                                    <div class="col-xs-6 col-sm-6 col-md-6 cgap">
+                                        <?php print $employeeData[\Setup\Model\HrEmployees::ADDR_TEMP_STREET_ADDRESS]; ?></div>
                                 </div>
                             </div>
-                            <div class="col-xs-12 col-sm-6 col-md-3 col-box">
-                                <div class="row bottomgap">
+                        </div>
+                        <div class="col-xs-12 col-sm-6 col-md-3 col-box">
+                            <div class="row bottomgap">
 
-                                    <div class="form-group  <?= empty($addrTempZoneId->getMessages()) ? "" : "error" ?>">
-                                        <div class="col-xs-6 col-sm-6 col-md-6 rightalign">
-                                            <?php print $this->formLabel($addrTempZoneId); ?></div>
-                                        <div class="col-xs-6 col-sm-6 col-md-6 cgap">
-                                            <?php print $tempZoneName; ?></div>
-                                    </div>
+                                <div class="form-group  <?= empty($addrTempZoneId->getMessages()) ? "" : "error" ?>">
+                                    <div class="col-xs-6 col-sm-6 col-md-6 rightalign">
+                                        <?php print $this->formLabel($addrTempZoneId); ?></div>
+                                    <div class="col-xs-6 col-sm-6 col-md-6 cgap">
+                                        <?php print $tempZoneName; ?></div>
                                 </div>
                             </div>
+                        </div>
 
-                            <div class="col-xs-12 col-sm-6 col-md-3 col-box">
-                                <div class="row bottomgap">
-                                    <div class="form-group  <?= empty($addrTempDistrictId->getMessages()) ? "" : "error" ?>">
-                                        <div class="col-xs-6 col-sm-6 col-md-6 rightalign">
-                                            <?php print $this->formLabel($addrTempDistrictId); ?></div>
-                                        <div class="col-xs-6 col-sm-6 col-md-6 cgap">
-                                            <?php print $tempDistrictName; ?></div>
-                                    </div>
+                        <div class="col-xs-12 col-sm-6 col-md-3 col-box">
+                            <div class="row bottomgap">
+                                <div class="form-group  <?= empty($addrTempDistrictId->getMessages()) ? "" : "error" ?>">
+                                    <div class="col-xs-6 col-sm-6 col-md-6 rightalign">
+                                        <?php print $this->formLabel($addrTempDistrictId); ?></div>
+                                    <div class="col-xs-6 col-sm-6 col-md-6 cgap">
+                                        <?php print $tempDistrictName; ?></div>
                                 </div>
                             </div>
+                        </div>
 
-                            <div class="col-xs-12 col-sm-6 col-md-3 col-box">
-                                <div class="row bottomgap">
-                                    <div class="form-group  <?= empty($addrTempVdcMunicipalityId->getMessages()) ? "" : "error" ?>">
-                                        <div class="col-xs-6 col-sm-6 col-md-6 rightalign">
-                                            <?php print $this->formLabel($addrTempVdcMunicipalityId); ?></div>
-                                        <div class="col-xs-6 col-sm-6 col-md-6 cgap">
-                                            <?php print $employeeData['VDC_MUNICIPALITY_NAME_TEMP']; ?></div>
-                                    </div>
+                        <div class="col-xs-12 col-sm-6 col-md-3 col-box">
+                            <div class="row bottomgap">
+                                <div class="form-group  <?= empty($addrTempVdcMunicipalityId->getMessages()) ? "" : "error" ?>">
+                                    <div class="col-xs-6 col-sm-6 col-md-6 rightalign">
+                                        <?php print $this->formLabel($addrTempVdcMunicipalityId); ?></div>
+                                    <div class="col-xs-6 col-sm-6 col-md-6 cgap">
+                                        <?php print $employeeData['VDC_MUNICIPALITY_NAME_TEMP']; ?></div>
                                 </div>
                             </div>
                         </div>
                     </div>
+                </div>
 
 
-               
+
 
                 <div class="Emergency-info">
                     <p><i class="fa fa-map-marker ticon" aria-hidden="true"></i>
@@ -669,7 +669,7 @@ echo json_encode($menu);
                                         <div class="col-xs-6 col-sm-6 col-md-6 rightalign-2">
                                             <?php print $this->formLabel($famSpouseName); ?></div>
                                         <div class="col-xs-6 col-sm-6 col-md-6 cgap-2">
-<?php print $employeeData[\Setup\Model\HrEmployees::FAM_SPOUSE_NAME]; ?></div>
+                                            <?php print $employeeData[\Setup\Model\HrEmployees::FAM_SPOUSE_NAME]; ?></div>
                                     </div>
                                 </div>
                             </div>
@@ -679,7 +679,7 @@ echo json_encode($menu);
                                         <div class="col-xs-6 col-sm-6 col-md-6 rightalign-2">
                                             <?php print $this->formLabel($famSpouseOccupation); ?></div>
                                         <div class="col-xs-6 col-sm-6 col-md-6 cgap-2">
-<?php print $employeeData[\Setup\Model\HrEmployees::FAM_SPOUSE_OCCUPATION]; ?></div>
+                                            <?php print $employeeData[\Setup\Model\HrEmployees::FAM_SPOUSE_OCCUPATION]; ?></div>
                                     </div>
                                 </div>
 
@@ -693,7 +693,7 @@ echo json_encode($menu);
                                         <div class="col-xs-6 col-sm-6 col-md-6 rightalign-2">
                                             <?php print $this->formLabel($famMotherName); ?></div>
                                         <div class="col-xs-6 col-sm-6 col-md-6 cgap-2">
-<?php print $employeeData[\Setup\Model\HrEmployees::FAM_MOTHER_NAME]; ?></div>
+                                            <?php print $employeeData[\Setup\Model\HrEmployees::FAM_MOTHER_NAME]; ?></div>
                                     </div>
                                 </div>
                             </div>
@@ -704,7 +704,7 @@ echo json_encode($menu);
                                         <div class="col-xs-6 col-sm-6 col-md-6 rightalign-2">
                                             <?php print $this->formLabel($famMotherOccupation); ?></div>
                                         <div class="col-xs-6 col-sm-6 col-md-6 cgap-2">
-<?php print $employeeData[\Setup\Model\HrEmployees::FAM_MOTHER_OCCUPATION]; ?></div>
+                                            <?php print $employeeData[\Setup\Model\HrEmployees::FAM_MOTHER_OCCUPATION]; ?></div>
                                     </div>
                                 </div>
                             </div>
@@ -715,7 +715,7 @@ echo json_encode($menu);
                                         <div class="col-xs-6 col-sm-6 col-md-6 rightalign-2">
                                             <?php print $this->formLabel($famGrandMotherName); ?></div>
                                         <div class="col-xs-6 col-sm-6 col-md-6 cgap-2">
-<?php print $employeeData[\Setup\Model\HrEmployees::FAM_GRAND_MOTHER_NAME]; ?></div>
+                                            <?php print $employeeData[\Setup\Model\HrEmployees::FAM_GRAND_MOTHER_NAME]; ?></div>
                                     </div>
                                 </div>
                             </div>
@@ -728,7 +728,7 @@ echo json_encode($menu);
                                             <?php print $this->formLabel($famSpouseBirthDate); ?></div>
                                         <div class="col-xs-6 col-sm-6 col-md-6 cgap-2">
 
-<?php print $employeeData[\Setup\Model\HrEmployees::FAM_SPOUSE_BIRTH_DATE]; ?>
+                                            <?php print $employeeData[\Setup\Model\HrEmployees::FAM_SPOUSE_BIRTH_DATE]; ?>
 
                                         </div>
                                     </div>
@@ -741,7 +741,7 @@ echo json_encode($menu);
                                         <div class="col-xs-6 col-sm-6 col-md-6 rightalign-2">
                                             <?php print $this->formLabel($famSpouseWeddingAnniversary); ?></div>
                                         <div class="col-xs-6 col-sm-6 col-md-6 cgap-2">
-<?php print $employeeData[\Setup\Model\HrEmployees::FAM_SPOUSE_WEDDING_ANNIVERSARY]; ?>
+                                            <?php print $employeeData[\Setup\Model\HrEmployees::FAM_SPOUSE_WEDDING_ANNIVERSARY]; ?>
                                         </div>
                                     </div>
                                 </div>
@@ -766,7 +766,7 @@ echo json_encode($menu);
                                         <div class="col-xs-6 col-sm-6 col-md-6 rightalign-3">
                                             <?php print $this->formLabel($idCardNo); ?></div>
                                         <div class="col-xs-6 col-sm-6 col-md-6 cgap-3">
-<?php print $employeeData[\Setup\Model\HrEmployees::ID_CARD_NO]; ?></div>
+                                            <?php print $employeeData[\Setup\Model\HrEmployees::ID_CARD_NO]; ?></div>
                                     </div>
                                 </div>
                             </div>
@@ -777,7 +777,7 @@ echo json_encode($menu);
                                             <?php print $this->formLabel($idLbrf); ?>
                                         </div>
                                         <div class="col-xs-6 col-sm-6 col-md-6 cgap-3">
-<?php print $employeeData[\Setup\Model\HrEmployees::ID_LBRF]; ?>
+                                            <?php print $employeeData[\Setup\Model\HrEmployees::ID_LBRF]; ?>
                                         </div>
                                     </div>
                                 </div>
@@ -790,7 +790,7 @@ echo json_encode($menu);
                                             <?php print $this->formLabel($idBarCode); ?>
                                         </div>
                                         <div class="col-xs-6 col-sm-6 col-md-6 cgap-3">
-<?php print $employeeData[\Setup\Model\HrEmployees::ID_BAR_CODE]; ?>
+                                            <?php print $employeeData[\Setup\Model\HrEmployees::ID_BAR_CODE]; ?>
                                         </div>
                                     </div>
                                 </div>
@@ -801,7 +801,7 @@ echo json_encode($menu);
                                         <div class="col-xs-6 col-sm-6 col-md-6 rightalign-3">
                                             <?php print $this->formLabel($idProvidentFundNo); ?></div>
                                         <div class="col-xs-6 col-sm-6 col-md-6 cgap-3">
-<?php print $employeeData[\Setup\Model\HrEmployees::ID_PROVIDENT_FUND_NO]; ?></div>
+                                            <?php print $employeeData[\Setup\Model\HrEmployees::ID_PROVIDENT_FUND_NO]; ?></div>
                                     </div>
                                 </div>
                             </div>
@@ -811,7 +811,7 @@ echo json_encode($menu);
                                         <div class="col-xs-6 col-sm-6 col-md-6 rightalign-3">
                                             <?php print $this->formLabel($idDrivingLicenseNo); ?></div>
                                         <div class="col-xs-6 col-sm-6 col-md-6 cgap-3">
-<?php print $employeeData[\Setup\Model\HrEmployees::ID_DRIVING_LICENCE_NO]; ?></div>
+                                            <?php print $employeeData[\Setup\Model\HrEmployees::ID_DRIVING_LICENCE_NO]; ?></div>
                                     </div>
                                 </div>
                             </div>
@@ -822,7 +822,7 @@ echo json_encode($menu);
                                         <div class="col-xs-6 col-sm-6 col-md-6 rightalign-3">
                                             <?php print $this->formLabel($idDrivingLicenseExpiry); ?></div>
                                         <div class="col-xs-6 col-sm-6 col-md-6 cgap-3">  
-<?php print $employeeData[\Setup\Model\HrEmployees::ID_DRIVING_LICENCE_EXPIRY]; ?>
+                                            <?php print $employeeData[\Setup\Model\HrEmployees::ID_DRIVING_LICENCE_EXPIRY]; ?>
                                         </div>
                                     </div>
                                 </div>
@@ -834,7 +834,7 @@ echo json_encode($menu);
                                         <div class="col-xs-6 col-sm-6 col-md-6 rightalign-3">
                                             <?php print $this->formLabel($idDrivingLicenseType); ?></div>
                                         <div class="col-xs-6 col-sm-6 col-md-6 cgap-3">  
-<?php print $employeeData[\Setup\Model\HrEmployees::ID_DRIVING_LICENCE_TYPE]; ?></div>
+                                            <?php print $employeeData[\Setup\Model\HrEmployees::ID_DRIVING_LICENCE_TYPE]; ?></div>
                                     </div>
                                 </div>
                             </div>
@@ -845,7 +845,7 @@ echo json_encode($menu);
                                         <div class="col-xs-6 col-sm-6 col-md-6 rightalign-3">
                                             <?php print $this->formLabel($idPassportNo); ?></div>
                                         <div class="col-xs-6 col-sm-6 col-md-6 cgap-3"> 
-<?php print $employeeData[\Setup\Model\HrEmployees::ID_PASSPORT_NO]; ?></div>
+                                            <?php print $employeeData[\Setup\Model\HrEmployees::ID_PASSPORT_NO]; ?></div>
                                     </div>
                                 </div>
 
@@ -859,8 +859,9 @@ echo json_encode($menu);
                                         <div class="col-xs-6 col-sm-6 col-md-6 rightalign-3">
                                             <?php print $this->formLabel($idThumbId); ?></div>
                                         <div class="col-xs-6 col-sm-6 col-md-6 cgap-3">
-<?php print $employeeData[\Setup\Model\HrEmployees::ID_THUMB_ID];
-; ?></div>
+                                            <?php print $employeeData[\Setup\Model\HrEmployees::ID_THUMB_ID];
+                                            ;
+                                            ?></div>
                                     </div>
                                 </div>
                             </div>
@@ -869,7 +870,7 @@ echo json_encode($menu);
                                 <div class="row bottomgap">
                                     <div class="form-group  <?= empty($idPanNo->getMessages()) ? "" : "error" ?>">
                                         <div class="col-xs-6 col-sm-6 col-md-6 rightalign-3">
-<?php print $this->formLabel($idPanNo); ?></div>
+                                            <?php print $this->formLabel($idPanNo); ?></div>
                                         <div class="col-xs-6 col-sm-6 col-md-6 cgap-3">
 <?php print $employeeData[\Setup\Model\HrEmployees::ID_PAN_NO]; ?></div>
                                     </div>
@@ -879,7 +880,7 @@ echo json_encode($menu);
                                 <div class="row bottomgap">
                                     <div class="form-group  <?= empty($idAccountId->getMessages()) ? "" : "error" ?>">
                                         <div class="col-xs-6 col-sm-6 col-md-6 rightalign-3">
-<?php print $this->formLabel($idAccountId); ?></div>
+                                            <?php print $this->formLabel($idAccountId); ?></div>
                                         <div class="col-xs-6 col-sm-6 col-md-6 cgap-3">
 <?php print $employeeData[\Setup\Model\HrEmployees::ID_ACCOUNT_NO]; ?></div>
                                     </div>
@@ -889,7 +890,7 @@ echo json_encode($menu);
                                 <div class="row bottomgap">
                                     <div class="form-group  <?= empty($idRetirementNo->getMessages()) ? "" : "error" ?>">
                                         <div class="col-xs-6 col-sm-6 col-md-6 rightalign-3">
-<?php print $this->formLabel($idRetirementNo); ?></div>
+                                            <?php print $this->formLabel($idRetirementNo); ?></div>
                                         <div class="col-xs-6 col-sm-6 col-md-6 cgap-3">
 <?php print $employeeData[\Setup\Model\HrEmployees::ID_RETIREMENT_NO]; ?></div>
                                     </div>
@@ -900,10 +901,11 @@ echo json_encode($menu);
                                 <div class="row bottomgap">
                                     <div class="form-group  <?= empty($idCitizenshipNo->getMessages()) ? "" : "error" ?>">
                                         <div class="col-xs-6 col-sm-6 col-md-6 rightalign-3">
-<?php print $this->formLabel($idCitizenshipNo); ?></div>
+                                            <?php print $this->formLabel($idCitizenshipNo); ?></div>
                                         <div class="col-xs-6 col-sm-6 col-md-6 cgap-3">
-<?php print $employeeData[\Setup\Model\HrEmployees::ID_CITIZENSHIP_NO];
-; ?></div>
+                                            <?php print $employeeData[\Setup\Model\HrEmployees::ID_CITIZENSHIP_NO];
+                                            ;
+                                            ?></div>
                                     </div>
                                 </div>
                             </div>
@@ -911,7 +913,7 @@ echo json_encode($menu);
                                 <div class="row bottomgap">
                                     <div class="form-group   <?= empty($idCitizenshipIssueDate->getMessages()) ? "" : "error" ?>">
                                         <div class="col-xs-6 col-sm-6 col-md-6 rightalign-3">
-<?php print $this->formLabel($idCitizenshipIssueDate); ?></div>
+                                                <?php print $this->formLabel($idCitizenshipIssueDate); ?></div>
                                         <div class="col-xs-6 col-sm-6 col-md-6 cgap-3">
                                             <div class="input-group">
 <?php print $employeeData[\Setup\Model\HrEmployees::ID_CITIZENSHIP_ISSUE_DATE]; ?>
@@ -925,7 +927,7 @@ echo json_encode($menu);
                                 <div class="row bottomgap">
                                     <div class="form-group  <?= empty($idCitizenshipIssuePlace->getMessages()) ? "" : "error" ?>">
                                         <div class="col-xs-6 col-sm-6 col-md-6 rightalign-3">
-<?php print $this->formLabel($idCitizenshipIssuePlace); ?></div>
+                                            <?php print $this->formLabel($idCitizenshipIssuePlace); ?></div>
                                         <div class="col-xs-6 col-sm-6 col-md-6 cgap-3">
 <?php print $employeeData['ID_CIT_ISSUE_PLACE_NAME']; ?></div>
                                     </div>
@@ -935,7 +937,7 @@ echo json_encode($menu);
                                 <div class="row bottomgap">
                                     <div class="form-group   <?= empty($idPassportExpiry->getMessages()) ? "" : "error" ?>">
                                         <div class="col-xs-6 col-sm-6 col-md-6 rightalign-3">
-<?php print $this->formLabel($idPassportExpiry); ?></div>
+                                                <?php print $this->formLabel($idPassportExpiry); ?></div>
                                         <div class="col-xs-6 col-sm-6 col-md-6 cgap-3">
                                             <div class="input-group">
 <?php print $employeeData[\Setup\Model\HrEmployees::ID_PASSPORT_EXPIRY]; ?>
@@ -960,7 +962,7 @@ echo json_encode($menu);
                                 <div class="row bottomgap">
                                     <div class="form-group">
                                         <div class="col-xs-6 col-sm-6 col-md-6 rightalign-4">
-<?php print $this->formLabel($joinDate); ?></div>
+                                                <?php print $this->formLabel($joinDate); ?></div>
                                         <div class="col-xs-6 col-sm-6 cgap-4">
                                             <div class="input-group"> 
 <?php print $employeeData[\Setup\Model\HrEmployees::JOIN_DATE]; ?>
@@ -975,7 +977,7 @@ echo json_encode($menu);
 
                                     <div class="form-group  <?= empty($salary->getMessages()) ? "" : "error" ?>">
                                         <div class="col-xs-6 col-sm-6 col-md-6 rightalign-4">
-<?php print $this->formLabel($salary); ?></div>
+                                            <?php print $this->formLabel($salary); ?></div>
                                         <div class="col-xs-6 col-sm-6 cgap-4">
 <?php print $employeeData[\Setup\Model\HrEmployees::SALARY]; ?></div>
                                     </div>
@@ -986,7 +988,7 @@ echo json_encode($menu);
                                 <div class="row bottomgap">
                                     <div class="form-group  <?= empty($salaryPf->getMessages()) ? "" : "error" ?>">
                                         <div class="col-xs-6 col-sm-6 col-md-6 rightalign-4">
-<?php print $this->formLabel($salaryPf); ?></div>
+                                            <?php print $this->formLabel($salaryPf); ?></div>
                                         <div class="col-xs-6 col-sm-6 cgap-4">
 <?php print $employeeData[\Setup\Model\HrEmployees::SALARY_PF]; ?></div>
                                     </div>
@@ -997,7 +999,7 @@ echo json_encode($menu);
                                 <div class="row bottomgap">
                                     <div class="form-group   <?= empty($serviceTypeId->getMessages()) ? "" : "error" ?>">
                                         <div class="col-xs-6 col-sm-6 col-md-6 rightalign-4">
-<?php print $this->formLabel($serviceTypeId); ?></div>
+                                            <?php print $this->formLabel($serviceTypeId); ?></div>
                                         <div class="col-xs-6 col-sm-6 cgap-4">
 <?php print $employeeData[Setup\Model\ServiceType::SERVICE_TYPE_NAME]; ?></div>
                                     </div>
@@ -1008,7 +1010,7 @@ echo json_encode($menu);
                                 <div class="row bottomgap">
                                     <div class="form-group   <?= empty($serviceEventTypeId->getMessages()) ? "" : "error" ?>">
                                         <div class="col-xs-6 col-sm-6 col-md-6 rightalign-4">
-<?php print $this->formLabel($serviceEventTypeId); ?></div>
+                                            <?php print $this->formLabel($serviceEventTypeId); ?></div>
                                         <div class="col-xs-6 col-sm-6 cgap-4">
 <?php print $employeeData[Setup\Model\ServiceEventType::SERVICE_EVENT_TYPE_NAME]; ?></div>
                                     </div>
@@ -1023,7 +1025,7 @@ echo json_encode($menu);
 
                                     <div class="form-group   <?= empty($positionId->getMessages()) ? "" : "error" ?>">
                                         <div class="col-xs-6 col-sm-6 col-md-6 rightalign-4">
-<?php print $this->formLabel($positionId); ?></div>
+                                            <?php print $this->formLabel($positionId); ?></div>
                                         <div class="col-xs-6 col-sm-6 cgap-4">
 <?php print $employeeData[Setup\Model\Position::POSITION_NAME]; ?></div>
                                     </div>
@@ -1035,7 +1037,7 @@ echo json_encode($menu);
                                     <div class="form-group   <?= empty($designationId->getMessages()) ? "" : "error" ?>">
                                         <div class="col-xs-6 col-sm-6 col-md-6 rightalign-4">
 
-<?php print $this->formLabel($designationId); ?></div>
+                                            <?php print $this->formLabel($designationId); ?></div>
                                         <div class="col-xs-6 col-sm-6 cgap-4">
 <?php print $employeeData[Setup\Model\Designation::DESIGNATION_TITLE]; ?></div>
                                     </div>
@@ -1046,7 +1048,7 @@ echo json_encode($menu);
                                 <div class="row bottomgap">
                                     <div class="form-group   <?= empty($departmentId->getMessages()) ? "" : "error" ?>">
                                         <div class="col-xs-6 col-sm-6 col-md-6 rightalign-4">
-<?php print $this->formLabel($departmentId); ?></div>
+                                            <?php print $this->formLabel($departmentId); ?></div>
                                         <div class="col-xs-6 col-sm-6 cgap-4">
 <?php print $employeeData[\Setup\Model\Department::DEPARTMENT_NAME]; ?></div>
                                     </div>
@@ -1057,7 +1059,7 @@ echo json_encode($menu);
                                 <div class="row bottomgap">
                                     <div class="form-group<?= empty($branchId->getMessages()) ? "" : "error" ?>">
                                         <div class="col-xs-6 col-sm-6 col-md-6 rightalign-4">
-<?php print $this->formLabel($branchId); ?></div>
+                                            <?php print $this->formLabel($branchId); ?></div>
                                         <div class="col-xs-6 col-sm-6 cgap-4">
 <?php print $employeeData[\Setup\Model\Branch::BRANCH_NAME]; ?></div>
                                     </div>
@@ -1094,13 +1096,13 @@ echo json_encode($menu);
                                 ?>
                                 <tr>
                                     <td>
-    <?php print $empQualificationRow['ACADEMIC_DEGREE_NAME']; ?>
+                                        <?php print $empQualificationRow['ACADEMIC_DEGREE_NAME']; ?>
                                     </td>
                                     <td>
-    <?php print $empQualificationRow['ACADEMIC_UNIVERSITY_NAME']; ?>
+                                        <?php print $empQualificationRow['ACADEMIC_UNIVERSITY_NAME']; ?>
                                     </td>
                                     <td>
-    <?php print $empQualificationRow['ACADEMIC_PROGRAM_NAME']; ?>
+                                        <?php print $empQualificationRow['ACADEMIC_PROGRAM_NAME']; ?>
                                     </td>
                                     <td>
                                         <?php print $empQualificationRow['ACADEMIC_COURSE_NAME']; ?>
@@ -1119,7 +1121,7 @@ echo json_encode($menu);
                                         <?php print $empQualificationRow['RANK_VALUE']; ?>
                                     </td>
                                     <td>
-                                <?php print $empQualificationRow['PASSED_YR']; ?>
+    <?php print $empQualificationRow['PASSED_YR']; ?>
                                     </td>
 
                                 </tr>

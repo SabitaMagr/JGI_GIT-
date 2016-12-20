@@ -24,7 +24,7 @@ if ($this->messages) { ?>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\holidaysetup')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
-<div ng-app="hris" ng-controller="holidayListController">
+<div ng-app="hris" ng-controller="holidayListController" class="formbg">
     <div class="margin-top-20">
         <div class="row" style="position: relative;">
             <div class="col-sm-2">
@@ -51,15 +51,20 @@ if ($this->messages) { ?>
                 <?php print $this->formLabel($genders); ?>
                 <?php print $this->formElement($genders); ?>
             </div>
-            <div class="col-sm-4" style="position: absolute; bottom:0; right: 0;" >
-                <div class="row">
-                    <div class="col-sm-4">
-                        <button ng-click="view()" id="viewHolidays" class="btn btn-default form-control i-search">
+              <div class="col-sm-2">
+                 
+                  <button ng-click="view()" id="viewHolidays" class="btn btn-default form-control i-search" style="margin-top:22px !important;">
                             View
                             <i class="fa fa-search"></i>
                         </button>
                     </div>
-                    <div class="col-sm-4">
+        </div>
+            
+ 
+           <div class="margin-top-20">
+                <div class="row">
+
+                    <div class="col-sm-6">
                         <div class="btn-group">
                             <a href="<?= $this->url('holidaysetup', ['action' => 'add']) ?>" id="sample_editable_1_new"
                                class="btn green"> Add New
@@ -67,7 +72,7 @@ if ($this->messages) { ?>
                             </a>
                         </div>
                     </div>
-                    <div class="col-sm-4">
+                    <div class="col-sm-6">
                         <div class="btn-group pull-right">
                             <button class="btn green btn-outline dropdown-toggle" data-toggle="dropdown">Tools
                                 <i class="fa fa-angle-down"></i>
@@ -80,10 +85,11 @@ if ($this->messages) { ?>
                         </div>
                     </div>
                 </div>
+    
 
             </div>
         </div>
-    </div>
+   
     
     <div class="margin-top-20">
         <div id="holidayTable"></div>
