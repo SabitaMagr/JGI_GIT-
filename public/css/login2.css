@@ -228,6 +228,15 @@ Login page
   color: #c9dce9;
   font-size: 13px;
 }
+.loginbtn
+{
+    width:auto !important;
+    
+}
+.login .btn-primary
+{
+    padding:6px 15px !important;
+}
 .loginbtn:hover
 {
     background-color:#333 !important;
@@ -249,6 +258,7 @@ Login page
  padding-left:0px !important;
   width:47%;
  }
+ 
 @media (max-width: 1400px) {
   .login .logo {
     margin-top: 5px;
