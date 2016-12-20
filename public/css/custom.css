@@ -876,6 +876,7 @@ select{
 }
 .form-group input{
     padding-right:0px !important;
+    padding-left:5px !important;
     
 }
 .portlet > .portlet-title > .caption{
@@ -888,6 +889,28 @@ form label
 #form_wizard_1
 {
      margin-top: 10px;
+}
+.input-group.date input
+{
+    padding-left:5px !important;
+}
+.select2-selection__rendered,.select2-selection.select2-selection--multiple
+{
+    height:23px !important;
+    min-height: 23px !important;
+    border-radius: 0px !important;
+      padding-bottom: 2px;
+
+    font-size: 11px !important;
+    padding-top: 2px;
+}
+.select2-selection__choice
+{
+      margin-top: 0px !important;  
+}
+.select2-search__field
+{
+    height:23px !important;
 }
 /* Large desktops and laptops */
 @media (min-width: 1200px) {
