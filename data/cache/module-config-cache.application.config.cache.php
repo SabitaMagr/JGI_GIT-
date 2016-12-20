@@ -1325,7 +1325,7 @@ return array (
       ),
       'appraisal-setup' => 
       array (
-        'type' => 'Zend\\Router\\Http\\Literal',
+        'type' => 'Zend\\Router\\Http\\Segment',
         'options' => 
         array (
           'route' => '/appraisal[/:action[/:id]]',
@@ -2267,6 +2267,43 @@ return array (
             'label' => 'Edit',
             'route' => 'shiftsetup',
             'action' => 'edit',
+          ),
+        ),
+      ),
+      2 => 
+      array (
+        'label' => 'Appraisal',
+        'route' => 'appraisal-setup',
+      ),
+      3 => 
+      array (
+        'label' => 'Appraisal',
+        'route' => 'appraisal-setup',
+        'pages' => 
+        array (
+          0 => 
+          array (
+            'label' => 'List',
+            'route' => 'appraisal-setup',
+            'action' => 'index',
+          ),
+          1 => 
+          array (
+            'label' => 'Add',
+            'route' => 'appraisal-setup',
+            'action' => 'add',
+          ),
+          2 => 
+          array (
+            'label' => 'Edit',
+            'route' => 'appraisal-setup',
+            'action' => 'edit',
+          ),
+          3 => 
+          array (
+            'label' => 'Review',
+            'route' => 'appraisal-setup',
+            'action' => 'review',
           ),
         ),
       ),

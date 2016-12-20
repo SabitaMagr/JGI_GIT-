@@ -3,14 +3,13 @@
 namespace Appraisal;
 
 use Application\Controller\ControllerFactory;
-use Appraisal\Controller\Appraisal;
-use Zend\Router\Http\Literal;
+use Zend\Router\Http\Segment;
 
 return [
     'router' => [
         'routes' => [
             'appraisal-setup' => [
-                'type' => Literal::class,
+                'type' => Segment::class,
                 'options' => [
                     'route' => '/appraisal[/:action[/:id]]',
                     'constants' => [
@@ -18,8 +17,42 @@ return [
                         'id' => '[0-9]+',
                     ],
                     'defaults' => [
-                        'controller' => Appraisal::class,
+                        'controller' => Controller\Appraisal::class,
                         'action' => 'index',
+                    ]
+                ],
+            ],
+        ],
+    ],
+    'navigation' => [
+        'shiftsetup' => [
+                [
+                'label' => 'Appraisal',
+                'route' => 'appraisal-setup',
+            ],
+                [
+                'label' => 'Appraisal',
+                'route' => 'appraisal-setup',
+                'pages' => [
+                        [
+                        'label' => 'List',
+                        'route' => 'appraisal-setup',
+                        'action' => 'index',
+                    ],
+                        [
+                        'label' => 'Add',
+                        'route' => 'appraisal-setup',
+                        'action' => 'add',
+                    ],
+                        [
+                        'label' => 'Edit',
+                        'route' => 'appraisal-setup',
+                        'action' => 'edit',
+                    ],
+                        [
+                        'label' => 'Review',
+                        'route' => 'appraisal-setup',
+                        'action' => 'review',
                     ],
                 ],
             ],
@@ -27,7 +60,7 @@ return [
     ],
     'controllers' => [
         'factories' => [
-            Appraisal::class => ControllerFactory::class,
+            Controller\Appraisal::class => ControllerFactory::class,
         ],
     ],
     'view_manager' => [
@@ -36,3 +69,4 @@ return [
         ]
     ]
 ];
+
