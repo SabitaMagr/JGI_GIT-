@@ -3,7 +3,7 @@ Login page
 ***/
 /* bg color */
 .login {
-  background-color: #5c97bd;
+  background-color: #fff !important;
 }
 .login a {
   color: #edf4f8 !important;
@@ -17,8 +17,16 @@ Login page
 }
 
 .login .content {
-  width: 400px;
-  margin: 40px auto 40px auto;
+/*background-color: #eee;*/
+ 
+    margin: 130px auto 10px;
+    overflow: hidden;
+    padding: 10px 30px 30px;
+    position: relative;
+    width: 400px;
+   box-shadow: 4px 4px 8px 2px #ccc;
+   border:solid #ddd 1px !important;
+   background-color:#eee;
 }
 
 .login .form-title {
@@ -26,14 +34,14 @@ Login page
 }
 
 .login .form-title {
-  color: #edf4f8;
-  font-size: 19px;
+  color: #333;
+  font-size: 15px;
   font-weight: 400 !important;
 }
 
 .login .form-subtitle {
-  color: #c9dce9;
-  font-size: 17px;
+  color: #555;
+  font-size: 14px;
   font-weight: 300 !important;
   padding-left: 10px;
 }
@@ -57,16 +65,16 @@ Login page
 
 .login .content .form-control {
   border: none;
-  background-color: #6ba3c8;
-  border: 1px solid #6ba3c8;
+  background-color: #fff;
+  border: 1px solid #ddd;
   height: 43px;
-  color: #d9ecf9;
+  color: #555;
 }
 .login .content .form-control:focus, .login .content .form-control:active {
-  border: 1px solid #83b8db;
+  border: 1px solid #4BB830 !important;
 }
 .login .content .form-control::-moz-placeholder {
-  color: #d9ecf9;
+  color: #555;
   opacity: 1;
 }
 .login .content .form-control:-ms-input-placeholder {
@@ -158,9 +166,9 @@ Login page
 }
 
 .login .btn-primary {
-  background-color: #5995bb;
+  background-color:#3DB223;
   border: 1px solid #72a9cc;
-  color: #8fc4e5;
+  color: #fff;
   font-weight: 600;
   padding: 10px 25px !important;
 }
@@ -184,7 +192,7 @@ Login page
 }
 
 .login .content .forget-password {
-  color: #d7eaf7;
+  color: #333 !important;
   font-size: 15px;
 }
 
@@ -193,7 +201,7 @@ Login page
 }
 
 .login .content .check {
-  color: #c9dce9 !important;
+  color: #333 !important;
 }
 
 .login .content .create-account {
@@ -220,10 +228,31 @@ Login page
   color: #c9dce9;
   font-size: 13px;
 }
-
+.loginbtn:hover
+{
+    background-color:#333 !important;
+    color:#fff !important;
+    box-shadow: none !important;
+    
+}
+.error-message
+{
+    color:red !important;
+}
+.bigtext
+{
+    font-weight:bold !important;
+}
+ .signin-btn
+ {
+     margin-left:0px !important;
+ padding-left:0px !important;
+  width:47%;
+ }
 @media (max-width: 1400px) {
   .login .logo {
-    margin-top: 100px;
+    margin-top: 5px;
+    margin-bottom: 30px;
   }
 }
 @media (max-width: 480px) {
@@ -234,7 +263,9 @@ Login page
     margin-top: 30px;
     padding: 0px;
   }
-
+  .signin-btn{
+      width:100%;
+  }
   .login .content {
     width: 245px;
   }
