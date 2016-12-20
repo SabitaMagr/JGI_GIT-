@@ -26,7 +26,7 @@ class BranchRepository implements RepositoryInterface {
         $this->tableGateway->update($array, [Branch::BRANCH_ID => $id]);
     }
 
-    public function fetchAll() {
+    public function fetchAll() {        
         return $this->tableGateway->select([Branch::STATUS => 'E']);
     }
 

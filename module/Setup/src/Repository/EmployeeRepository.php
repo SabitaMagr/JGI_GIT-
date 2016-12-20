@@ -41,7 +41,7 @@ class EmployeeRepository implements RepositoryInterface {
         $select = $sql->select();
         $select->from("HR_EMPLOYEES");
         $select->columns(Helper::convertColumnDateFormat($this->adapter, new HrEmployees(), ['birthDate']), false);
-        $select->where(['STATUS' => 'E']);
+        $select->where(['STATUS' => 'E','RETIRED_FLAG'=>'N']);
         $statement = $sql->prepareStatementForSqlObject($select);
 
         $result = $statement->execute();
@@ -180,7 +180,7 @@ class EmployeeRepository implements RepositoryInterface {
         $select->from(['E' => HrEmployees::TABLE_NAME]);
 //        $select->join(["B" => Branch::TABLE_NAME], "E." . HrEmployees::BRANCH_ID . " = B." . Branch::BRANCH_ID,[Branch::BRANCH_ID, Branch::BRANCH_NAME]);
         $select->group(["E." . HrEmployees::BRANCH_ID]);
-        $select->where(['E.STATUS' => 'E']);
+        $select->where(['E.STATUS' => 'E', 'E.RETIRED_FLAG'=>'N']);
 
         $statement = $sql->prepareStatementForSqlObject($select);
 //        print_r($statement->getSql());
@@ -220,44 +220,51 @@ class EmployeeRepository implements RepositoryInterface {
                 ->join(['SE1' => ServiceEventType::TABLE_NAME], "E." . HrEmployees::APP_SERVICE_EVENT_TYPE_ID . "=SE1." . ServiceEventType::SERVICE_EVENT_TYPE_ID, ['SERVICE_EVENT_TYPE_NAME'], 'left');
         
         $select->where(["E.STATUS='E'"]);
-
+        
+        if($serviceEventTypeId==5 || $serviceEventTypeId==8 || $serviceEventTypeId==14){
+            $select->where(["E.RETIRED_FLAG='Y'"]);
+        }else{
+            $select->where(["E.RETIRED_FLAG='N'"]);
+        }
+        
         if ($emplyoeeId != -1) {
             $select->where([
-                "EMPLOYEE_ID=" . $emplyoeeId
+                "E.EMPLOYEE_ID=" . $emplyoeeId
             ]);
         }
         if ($branchId != -1) {
             $select->where([
-                "BRANCH_ID=" . $branchId
+                "E.BRANCH_ID=" . $branchId
             ]);
         }
         if ($departmentId != -1) {
             $select->where([
-                "DEPARTMENT_ID=" . $departmentId
+                "E.DEPARTMENT_ID=" . $departmentId
             ]);
         }
         if ($designationId != -1) {
             $select->where([
-                "DESIGNATION_ID=" . $designationId
+                "E.DESIGNATION_ID=" . $designationId
             ]);
         }
         if ($positionId != -1) {
             $select->where([
-                "POSITION_ID=" . $positionId
+                "E.POSITION_ID=" . $positionId
             ]);
         }
         if ($serviceTypeId != -1) {
             $select->where([
-                "SERVICE_TYPE_ID=" . $serviceTypeId
+                "E.SERVICE_TYPE_ID=" . $serviceTypeId
             ]);
         }
         if ($serviceEventTypeId != -1) {
             $select->where([
-                "SERVICE_EVENT_TYPE_ID=" . $serviceEventTypeId
+                "E.SERVICE_EVENT_TYPE_ID=" . $serviceEventTypeId
             ]);
         }
-        $select->order("EMPLOYEE_ID DESC");
+        $select->order("E.FIRST_NAME ASC");
         $statement = $sql->prepareStatementForSqlObject($select);
+//        return $statement->getSql();
         $result = $statement->execute();
         if ($getResult != null) {
             return $result;
@@ -277,7 +284,7 @@ class EmployeeRepository implements RepositoryInterface {
         $select = $sql->select();
         $select->from("HR_EMPLOYEES");
         $select->columns(Helper::convertColumnDateFormat($this->adapter, new HrEmployees(), ['birthDate']), false);
-        $select->where(["STATUS='E'"]);
+        $select->where(["STATUS='E' AND RETIRED_FLAG='N'"]);
         $statement = $sql->prepareStatementForSqlObject($select);
         $result = $statement->execute();
         $employeeList = [];
