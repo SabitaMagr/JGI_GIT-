@@ -3,7 +3,7 @@ Login page
 ***/
 /* bg color */
 .login {
-  background-color: #fff !important;
+  background-color:#EEEEEE !important;
 }
 .login a {
   color: #edf4f8 !important;
@@ -26,7 +26,7 @@ Login page
     width: 400px;
    box-shadow: 4px 4px 8px 2px #ccc;
    border:solid #ddd 1px !important;
-   background-color:#eee;
+   background-color:#fff;
 }
 
 .login .form-title {
