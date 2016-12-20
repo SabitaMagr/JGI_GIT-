@@ -24,7 +24,7 @@ echo json_encode($menu); ?>;
     <?= $this->navigation('Zend\Navigation\jobHistory')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
 
-<div ng-app="hris" ng-controller="jobHistoryController">
+<div ng-app="hris" ng-controller="jobHistoryController" class="formbg">
     <div class="margin-top-20">
         <div class="row">
             <div class="col-sm-2">
@@ -51,7 +51,7 @@ echo json_encode($menu); ?>;
             </div>
             <div class="col-sm-2">
                 <label height="45"></label>
-                <button ng-click="view()" id="viewEmployees" class="btn btn-sm yellow form-control">
+                <button ng-click="view()" id="viewEmployees" class="btn btn-default form-control i-search">
                     Search
                     <i class="fa fa-search"></i>
                 </button>

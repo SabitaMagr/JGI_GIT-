@@ -23,7 +23,7 @@ if ($this->messages) { ?>
         document.messages =<?php echo json_encode($this->messages); ?>
     </script>
 <?php } ?>
-<div ng-app="hris" ng-controller="leaveStatusListController">
+    <div ng-app="hris" ng-controller="leaveStatusListController" class="formbg">
     <div class="margin-top-20">
         <div class="row">
             <div class="col-sm-2">
@@ -77,14 +77,19 @@ if ($this->messages) { ?>
             </div>
             <div class="col-sm-2">
                 <label height="45"></label>
-                <button ng-click="view()" id="viewLeaveRequestStatus" class="btn btn-sm yellow form-control">
+                <button ng-click="view()" id="viewLeaveRequestStatus" class="btn btn-default form-control i-search form-control">
                     Search
                     <i class="fa fa-search"></i>
                 </button>
             </div>
-            <div class="col-sm-2">
+        </div>
+    </div>
+        <div class="margin-top-20">
+           <div class="table-toolbar">
+            <div class="row">
+                <div class="col-md-offset-6 col-md-6">
                 <label height="45"></label>
-                <div class="btn-group">
+                <div class="btn-group pull-right">
                     <button class="btn green btn-outline dropdown-toggle" data-toggle="dropdown">Tools
                         <i class="fa fa-angle-down"></i>
                     </button>
@@ -95,8 +100,9 @@ if ($this->messages) { ?>
                     </ul>
                 </div>
             </div>
+            </div> </div>
         </div>
-    </div>
+    
     
     <div class="margin-top-20">
         <div id="leaveRequestStatusTable">

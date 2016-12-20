@@ -322,7 +322,7 @@ form.k-filter-menu .k-widget, form.k-filter-menu .k-textbox
 
 .formbg
 {
-    background-color: #eee;
+   background-color: #eee;
     margin-top: 5px;
     padding: 5px;	
     border:solid #ddd  1px;
@@ -330,6 +330,8 @@ form.k-filter-menu .k-widget, form.k-filter-menu .k-textbox
     moz-box-shadow:3px 3px 11px #ccc;
     -o-box-shadow:3px 3px 11px #ccc;
     -webkit-box-shadow:3px 3px 11px #ccc;
+   
+
 
 }
 .arrowtop
@@ -361,7 +363,7 @@ form.k-filter-menu .k-widget, form.k-filter-menu .k-textbox
 }
 .btn.green:not(.btn-outline),.green
 {
-    background-color:#2f9e1e;	
+    background-color:#63AB6A !important;	
     border-color:#fff !important;
 }
 .cbtn
@@ -384,10 +386,12 @@ form.k-filter-menu .k-widget, form.k-filter-menu .k-textbox
 }
 .form-control,.select2-selection--single 
 {
-    height:24px !important;
+    height:23px !important;
     border-radius:0px !important;
     padding-top:2px;
+    padding-bottom: 2px;
     font-size: 11px !important;
+    padding-right:0px !important;
 
 }
 
@@ -404,7 +408,7 @@ form.k-filter-menu .k-widget, form.k-filter-menu .k-textbox
 .rightalign{
     text-align: right !important;
     padding-right: 5 !important;
-    width:49% !important;
+    width:50% !important;
     /*    width:58% !important;*/
 }
 .rightalign-2
@@ -429,7 +433,7 @@ form.k-filter-menu .k-widget, form.k-filter-menu .k-textbox
 .cgap {
     padding-left: 0;
     padding-right:15px;
-    width: 51% !important;
+    width: 50% !important;
     /*    width:42%;*/
 }
 .cgap-2
@@ -608,7 +612,8 @@ form.k-filter-menu .k-widget, form.k-filter-menu .k-textbox
 }
 .e-setup input{
 
-    height:22px;
+    height:22px !important;
+    padding-left:5px !important;
 }
 .select2-container--bootstrap .select2-selection--single{
     padding-top: 2px !important;
@@ -719,7 +724,7 @@ form.k-filter-menu .k-widget, form.k-filter-menu .k-textbox
     color: #999;
     display: inline-block;
     float: left;
-    font-size: 20px;
+    font-size: 16px;
     margin-right: 5px;
     margin-top: 2px;
 }
@@ -841,7 +846,49 @@ select{
 {
     min-height: 169px;
 }
-
+#export{
+    font-size: 11px;
+}
+.file,input[type="file"]  
+    
+{
+    padding-bottom: 28px !important;
+}
+ .form-control
+ {
+     color:#333 !important;
+ }
+ .help-block.error {
+    color: red;
+    font-size: 11px;
+    list-style: outside none none;
+    margin-top: -13px;
+    padding-left: 0;
+}
+.custometbletwo td
+{
+    font-size:11px !important;
+}
+.custom-box
+{
+    box-shadow: 0 10px 10px -10px rgba(0, 0, 0, 0.5) !important;
+    
+}
+.form-group input{
+    padding-right:0px !important;
+    
+}
+.portlet > .portlet-title > .caption{
+    font-size: 14px !important;
+}
+form label
+{
+    font-size: 11px !important;
+}
+#form_wizard_1
+{
+     margin-top: 10px;
+}
 /* Large desktops and laptops */
 @media (min-width: 1200px) {
 
