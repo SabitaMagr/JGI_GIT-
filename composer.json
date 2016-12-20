@@ -51,7 +51,8 @@
             "RestfulService\\": "module/RestfulService/src/",
             "Payroll\\": "module/Payroll/src/",
             "ManagerService\\": "module/ManagerService/src/",
-            "System\\": "module/System/src/"
+            "System\\": "module/System/src/",
+            "Appraisal\\": "module/Appraisal/src/"
         }
     },
     "autoload-dev": {

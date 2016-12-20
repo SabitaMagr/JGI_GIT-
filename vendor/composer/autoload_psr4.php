@@ -75,6 +75,7 @@ return array(
     'Doctrine\\Common\\' => array($vendorDir . '/doctrine/common/lib/Doctrine/Common'),
     'DeepCopy\\' => array($vendorDir . '/myclabs/deep-copy/src/DeepCopy'),
     'AttendanceManagement\\' => array($baseDir . '/module/AttendanceManagement/src'),
+    'Appraisal\\' => array($baseDir . '/module/Appraisal/src'),
     'Application\\' => array($baseDir . '/module/Application/src'),
     'ApplicationTest\\' => array($baseDir . '/module/Application/test'),
     'Album\\' => array($baseDir . '/module/Album/src'),

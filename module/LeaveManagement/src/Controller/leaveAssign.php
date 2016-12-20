@@ -10,11 +10,14 @@
 namespace LeaveManagement\Controller;
 
 use Application\Helper\Helper;
+use LeaveManagement\Form\ExcelImportForm;
 use LeaveManagement\Form\LeaveAssignForm;
 use LeaveManagement\Helper\EntityHelper;
 use LeaveManagement\Model\LeaveMaster;
 use LeaveManagement\Repository\LeaveAssignRepository;
-use Setup\Entity\HrGenders;
+use LeaveManagement\Repository\LeaveBalanceRepository;
+use LeaveManagement\Repository\LeaveMasterRepository;
+use Setup\Controller\EmployeeController;
 use Setup\Model\Branch;
 use Setup\Model\Department;
 use Setup\Model\Designation;
@@ -24,11 +27,7 @@ use Zend\Db\Adapter\AdapterInterface;
 use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\Form\Element\Select;
 use Zend\Mvc\Controller\AbstractActionController;
-use LeaveManagement\Model\LeaveAssign as LeaveAssignController;
-use Setup\Controller\EmployeeController;
-use LeaveManagement\Repository\LeaveMasterRepository;
-use LeaveManagement\Form\ExcelImportForm;
-use LeaveManagement\Repository\LeaveBalanceRepository;
+use Zend\View\Model\ViewModel;
 
 class leaveAssign extends AbstractActionController {
 
@@ -299,9 +298,7 @@ class leaveAssign extends AbstractActionController {
                 unlink(EmployeeController::UPLOAD_DIR . "/" . $newFileName);
             }
 
-//            $this->flashmessenger()->addMessage("Previous Year Balance Successfully Updated!!!");
-//            return $this->redirect()->toRoute("leaveassign", ['action' => 'assign', 'eid' => $eid]);
-            $viewModel = new ViewModel([$data => ['eid' => $eid]]);
+            $viewModel = new ViewModel(['data' => ['success' => true]]);
             $viewModel->setTerminal(true);
             $viewModel->setTemplate('layout/json');
             return $viewModel;

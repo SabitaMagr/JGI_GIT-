@@ -24,16 +24,6 @@ $departmentFormElement->setAttribute("ng-model", "departmentId");
 $genderFormElement->setAttribute("ng-model", "genderId");
 $designationFormElement->setAttribute("ng-model", "designationId");
 
-$form->setAttribute('role', 'form');
-$form->setAttribute('id', 'excelImport-form');
-
-$file = $form->get('file');
-
-$submit = $form->get('submit');
-$submit->setAttribute('value', 'UPLOAD');
-
-$form->setAttribute('action', $this->url('leaveassign', ["action" => "import"]));
-$form->prepare();
 ?>
 <div ng-app="hris" ng-controller="assignController">
     <div class="row">
@@ -97,7 +87,6 @@ $form->prepare();
                         <a href="<?php echo $this->url('leavebalance', ['action' => 'export']); ?>" id="export"> Export To Excel </a>
                     </li>
                     <li>
-                        <!--<a href="javascript:;" data-toggle="modal" data-target="#myModal"> Import From Excel </a>-->
                         <a ng-click="importExcel()"> Import From Excel </a>
                     </li>                        
                 </ul>
@@ -200,40 +189,4 @@ $form->prepare();
 
 
 </div>
-
-
-<!-- Modal -->
-<!--<div id="myModal" class="modal fade" role="dialog">
-    <div class="modal-dialog modal-sm">
-
-         Modal content
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
-                <h4 class="modal-title">Import From Excel</h4>
-            </div>
-            <div class="modal-body">
-                <div class="row">
-<?php
-print $this->form()->openTag($form);
-?>
-                    <div class="col-sm-12">            
-                        <div class="form-group" style="margin-top: 5px !important;">
-<?php print $this->formElement($file); ?>
-<?php print $this->formElementErrors()->render($file, ['class' => 'help-block']); ?>
-                            <span class="errorMsg" style="font-size:11px; color:red;"></span>
-                        </div>
-                    </div>
-                    <div class="col-sm-6">
-<?php
-print $this->formSubmit($submit);
-print $this->form()->closeTag();
-?>  
-                    </div>
-                </div>
-            </div>
-        </div>
-
-    </div>
-</div>-->
 

@@ -124,7 +124,7 @@ angular.module('hris', ['ui.bootstrap'])
                     });
                     document.myDropzone.on("success", function (file, success) {
                         console.log("File Upload Response", success);
-                        document.myDropzone.close({test: "test"});
+                        modalInstance.close({test: "test"});
 //                        $scope.$apply(function () {
 //
 //                        });
