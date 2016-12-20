@@ -1305,6 +1305,24 @@ return array (
           ),
         ),
       ),
+      'trainingAssign' => 
+      array (
+        'type' => 'Zend\\Router\\Http\\Segment',
+        'options' => 
+        array (
+          'route' => '/training/trainingAssign[/:action[/:id][/:role]]',
+          'constraints' => 
+          array (
+            'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+            'id' => '[0-9]+',
+          ),
+          'defaults' => 
+          array (
+            'controller' => 'System\\Controller\\TrainingAssignController',
+            'action' => 'index',
+          ),
+        ),
+      ),
     ),
   ),
   'console' => 
@@ -2943,6 +2961,40 @@ return array (
         ),
       ),
     ),
+    'trainingAssign' => 
+    array (
+      0 => 
+      array (
+        'label' => 'Training Assign',
+        'route' => 'trainingAssign',
+      ),
+      1 => 
+      array (
+        'label' => 'Training Assign',
+        'route' => 'trainingAssign',
+        'pages' => 
+        array (
+          0 => 
+          array (
+            'label' => 'List',
+            'route' => 'trainingAssign',
+            'action' => 'index',
+          ),
+          1 => 
+          array (
+            'label' => 'Add',
+            'route' => 'trainingAssign',
+            'action' => 'add',
+          ),
+          2 => 
+          array (
+            'label' => 'Edit',
+            'route' => 'trainingAssign',
+            'action' => 'edit',
+          ),
+        ),
+      ),
+    ),
   ),
   'controllers' => 
   array (
@@ -2999,6 +3051,7 @@ return array (
       'System\\Controller\\UserSetupController' => 'Application\\Controller\\ControllerFactory',
       'System\\Controller\\MenuSetupController' => 'Application\\Controller\\ControllerFactory',
       'System\\Controller\\DashboardController' => 'Application\\Factory\\DashBoardFactory',
+      'Training\\Controller\\TrainingAssignController' => 'Application\\Controller\\ControllerFactory',
     ),
   ),
   'view_manager' => 
@@ -3041,6 +3094,7 @@ return array (
       7 => '/var/www/html/neo-hris/module/Payroll/config/../view',
       8 => '/var/www/html/neo-hris/module/ManagerService/config/../view',
       9 => '/var/www/html/neo-hris/module/System/config/../view',
+      10 => '/var/www/html/neo-hris/module/Training/config/../view',
     ),
   ),
   'dashboard-items' => 

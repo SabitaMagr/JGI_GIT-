@@ -52,6 +52,7 @@ return array(
     'ZendDeveloperTools\\' => array($vendorDir . '/zendframework/zend-developer-tools/src'),
     'ZF\\DevelopmentMode\\' => array($vendorDir . '/zfcampus/zf-development-mode/src'),
     'Webmozart\\Assert\\' => array($vendorDir . '/webmozart/assert/src'),
+    'Training\\' => array($baseDir . '/module/Training/src'),
     'Test\\' => array($baseDir . '/module/Test/src'),
     'System\\' => array($baseDir . '/module/System/src'),
     'Symfony\\Component\\Yaml\\' => array($vendorDir . '/symfony/yaml'),

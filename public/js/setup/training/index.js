@@ -3,9 +3,12 @@
     $(document).ready(function () {
         $('select').select2();
         app.addDatePicker(
-                $("#fromDate"),
-                $("#toDate")
+                $("#startDate"),
+                $("#endDate")
                 );
-        $("#trainingTable").kendoGrid();
+        $("#grid").kendoGrid({
+            height: 450,
+            sortable: true
+        });
     });
 })(window.jQuery, window.app);
