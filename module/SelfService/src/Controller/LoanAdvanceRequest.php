@@ -17,6 +17,6 @@ class LoanAdvanceRequest extends AbstractActionController{
         return Helper::addFlashMessagesToArray($this, ['list'=>'list']);
     }
     public function addAction(){
-        
+        return Helper::addFlashMessagesToArray($this,['add'=>'add']);
     }
 }

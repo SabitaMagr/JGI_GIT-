@@ -133,6 +133,21 @@ return [
                     ]
                 ],
             ],
+            
+            'loanAdvanceRequest' => [
+                'type' => Segment::class,
+                'options' => [
+                    'route' => '/selfservice/loanAdvanceRequest[/:action]',
+                    'constants' => [
+                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'id' => '[0-9]+',
+                    ],
+                    'defaults' => [
+                        'controller' => LoanAdvanceRequest::class,
+                        'action' => 'index',
+                    ]
+                ],
+            ],
 
         ],
     ],
@@ -353,6 +368,33 @@ return [
                 ],
             ],
         ],
+        'loanAdvanceRequest' => [
+            [
+                'label' => 'Loan/Advance Request',
+                'route' => 'loanAdvanceRequest',
+            ],
+            [
+                'label' => 'Loan/Advance Request',
+                'route' => 'loanAdvanceRequest',
+                'pages' => [
+                    [
+                        'label' => 'Detail',
+                        'route' => 'loanAdvanceRequest',
+                        'action' => 'index',
+                    ],
+                    [
+                        'label' => 'Add',
+                        'route' => 'loanAdvanceRequest',
+                        'action' => 'add',
+                    ],
+                    [
+                        'label' => 'Edit',
+                        'route' => 'loanAdvanceRequest',
+                        'action' => 'edit',
+                    ],
+                ],
+            ],
+        ],
     ],
 
     'controllers' => [
@@ -364,7 +406,8 @@ return [
             AttendanceRequest::class => ControllerFactory::class,
             Profile::class => ControllerFactory::class,
             Service::class => ControllerFactory::class,
-            PaySlip::class => ControllerFactory::class
+            PaySlip::class => ControllerFactory::class,
+            LoanAdvanceRequest::class => ControllerFactory::class
         ],
     ],
     'view_manager' => [
