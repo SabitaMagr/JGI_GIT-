@@ -19,6 +19,7 @@ use SelfService\Controller\Service;
 use Zend\Router\Http\Segment;
 use SelfService\Controller\LoanAdvanceRequest;
 use Training\Controller\TrainingAssignController;
+use SelfService\Controller\TrainingList;
 
 return [
     'router' => [
@@ -417,7 +418,7 @@ return [
                 'route' => 'trainingList',
             ],
             [
-                'label' => 'Loan/Advance Request',
+                'label' => 'Training List',
                 'route' => 'trainingList',
                 'pages' => [
                     [
