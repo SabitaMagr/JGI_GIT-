@@ -9,22 +9,22 @@ use Zend\Form\Annotation;
  */
 class TrainingAssignForm
 {
-
+    
     /**
-     * @Annotion\Type("Zend\Form\Element\Select")
-     * @Annotation\Required({"required":"true"})
-     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
-     * @Annotation\Options({"label":"Employee Name"})
-     * @Annotation\Attributes({ "id":"form-employeeId", "class":"form-employeeId form-control" })
+     * @Annotation\Type("Zend\Form\Element\Select")
+     * @Annotation\Required(false)
+     * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
+     * @Annotation\Options({"disable_inarray_validator":"true","label":"Employee Name"})
+     * @Annotation\Attributes({ "id":"form-employeeId","class":"form-control"})
      */
     public $employeeId;
     
     /**
-     * @Annotion\Type("Zend\Form\Element\Select")
-     * @Annotation\Required({"required":"true"})
-     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
-     * @Annotation\Options({"label":"Training Name"})
-     * @Annotation\Attributes({ "id":"form-trainingId", "class":"form-trainingId form-control" })
+     * @Annotation\Type("Zend\Form\Element\Select")
+     * @Annotation\Required(false)
+     * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
+     * @Annotation\Options({"disable_inarray_validator":"true","label":"Training Name"})
+     * @Annotation\Attributes({ "id":"form-trainingId","class":"form-control"})
      */
     public $trainingId;
      /**
@@ -52,6 +52,15 @@ class TrainingAssignForm
      * @Annotation\Attributes({ "id":"form-duration", "class":"form-duration form-control" })
      */
     public $duration;
+    
+    /**
+     * @Annotion\Type("Zend\Form\Element\Text")
+     * @Annotation\Required({"required":"true"})
+     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
+     * @Annotation\Options({"label":"Location"})
+     * @Annotation\Attributes({ "id":"form-location", "class":"form-location form-control" })
+     */
+    public $location;
     
     /**
      * @Annotion\Type("Zend\Form\Element\Text")
