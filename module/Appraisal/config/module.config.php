@@ -3,14 +3,13 @@
 namespace Appraisal;
 
 use Application\Controller\ControllerFactory;
-use Appraisal\Controller\Appraisal;
-use Zend\Router\Http\Literal;
+use Zend\Router\Http\Segment;
 
 return [
     'router' => [
         'routes' => [
             'appraisal-setup' => [
-                'type' => Literal::class,
+                'type' => Segment::class,
                 'options' => [
                     'route' => '/appraisal[/:action[/:id]]',
                     'constants' => [
@@ -18,7 +17,134 @@ return [
                         'id' => '[0-9]+',
                     ],
                     'defaults' => [
-                        'controller' => Appraisal::class,
+                        'controller' => Controller\Appraisal::class,
+                        'action' => 'index',
+                    ]
+                ],
+            ],
+            'appraisal-evaluation' => [
+                'type' => Segment::class,
+                'options' => [
+                    'route' => '/managerservice/appraisal[/:action[/:id]]',
+                    'constants' => [
+                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'id' => '[0-9]+',
+                    ],
+                    'defaults' => [
+                        'controller' => Controller\EvaluationAndReview::class,
+                        'action' => 'evaluation',
+                    ]
+                ],
+            ],
+            'appraisal-review' => [
+                'type' => Segment::class,
+                'options' => [
+                    'route' => '/managerservice/appraisal[/:action[/:id]]',
+                    'constants' => [
+                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'id' => '[0-9]+',
+                    ],
+                    'defaults' => [
+                        'controller' => Controller\EvaluationAndReview::class,
+                        'action' => 'review',
+                    ]
+                ],
+            ],
+            'performance-appraisal' => [
+                'type' => Segment::class,
+                'options' => [
+                    'route' => '/selfservice/performanceappraisal[/:action[/:id]]',
+                    'constants' => [
+                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'id' => '[0-9]+',
+                    ],
+                    'defaults' => [
+                        'controller' => Controller\PerformanceAppraisal::class,
+                        'action' => 'index',
+                    ]
+                ],
+            ],
+        ],
+    ],
+    'navigation' => [
+        'appraisal-setup' => [
+                [
+                'label' => 'Appraisal',
+                'route' => 'appraisal-setup',
+            ],
+                [
+                'label' => 'Appraisal',
+                'route' => 'appraisal-setup',
+                'pages' => [
+                        [
+                        'label' => 'List',
+                        'route' => 'appraisal-setup',
+                        'action' => 'index',
+                    ],
+                        [
+                        'label' => 'Add',
+                        'route' => 'appraisal-setup',
+                        'action' => 'add',
+                    ],
+                        [
+                        'label' => 'Edit',
+                        'route' => 'appraisal-setup',
+                        'action' => 'edit',
+                    ],
+                        [
+                        'label' => 'Review',
+                        'route' => 'appraisal-setup',
+                        'action' => 'review',
+                    ],
+                ],
+            ],
+        ],
+        'appraisal-evaluation' => [
+                [
+                'label' => 'Appraisal',
+                'route' => 'appraisal-evaluation',
+            ],
+                [
+                'label' => 'Appraisal',
+                'route' => 'appraisal-evaluation',
+                'pages' => [
+                        [
+                        'label' => 'Evaluation',
+                        'route' => 'appraisal-evaluation',
+                        'action' => 'index',
+                    ],
+                ],
+            ],
+        ],
+        'appraisal-review' => [
+                [
+                'label' => 'Appraisal',
+                'route' => 'appraisal-review',
+            ],
+                [
+                'label' => 'Appraisal',
+                'route' => 'appraisal-review',
+                'pages' => [
+                        [
+                        'label' => 'Review',
+                        'route' => 'appraisal-review',
+                        'action' => 'review',
+                    ],
+                ],
+            ],
+        ],
+        'performance-appraisal' => [
+                [
+                'label' => 'Appraisal',
+                'route' => 'performance-appraisal',
+            ],
+                [
+                'label' => 'Appraisal',
+                'route' => 'performance-appraisal',
+                'pages' => [
+                        [
+                        'label' => 'Review',
+                        'route' => 'performance-appraisal',
                         'action' => 'index',
                     ],
                 ],
@@ -27,7 +153,9 @@ return [
     ],
     'controllers' => [
         'factories' => [
-            Appraisal::class => ControllerFactory::class,
+            Controller\Appraisal::class => ControllerFactory::class,
+            Controller\EvaluationAndReview::class => ControllerFactory::class,
+            Controller\PerformanceAppraisal::class => ControllerFactory::class,
         ],
     ],
     'view_manager' => [
@@ -36,3 +164,4 @@ return [
         ]
     ]
 ];
+
