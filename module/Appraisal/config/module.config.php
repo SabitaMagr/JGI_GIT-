@@ -85,35 +85,23 @@ return [
                 ],
             ],
         ],
-        'appraisal-evaluation' => [
+        'appraisal-evaluation-review' => [
                 [
                 'label' => 'Appraisal',
-                'route' => 'appraisal-evaluation',
+                'route' => 'appraisal-evaluation-review',
             ],
                 [
                 'label' => 'Appraisal',
-                'route' => 'appraisal-evaluation',
+                'route' => 'appraisal-evaluation-review',
                 'pages' => [
                         [
                         'label' => 'Evaluation',
-                        'route' => 'appraisal-evaluation',
-                        'action' => 'index',
+                        'route' => 'appraisal-evaluation-review',
+                        'action' => 'evaluation',
                     ],
-                ],
-            ],
-        ],
-        'appraisal-review' => [
-                [
-                'label' => 'Appraisal',
-                'route' => 'appraisal-review',
-            ],
-                [
-                'label' => 'Appraisal',
-                'route' => 'appraisal-review',
-                'pages' => [
                         [
                         'label' => 'Review',
-                        'route' => 'appraisal-review',
+                        'route' => 'appraisal-evaluation-review',
                         'action' => 'review',
                     ],
                 ],
@@ -121,15 +109,15 @@ return [
         ],
         'performance-appraisal' => [
                 [
-                'label' => 'Appraisal',
+                'label' => 'Performance Appraisal',
                 'route' => 'performance-appraisal',
             ],
                 [
-                'label' => 'Appraisal',
+                'label' => 'Performance Appraisal',
                 'route' => 'performance-appraisal',
                 'pages' => [
                         [
-                        'label' => 'Review',
+                        'label' => 'List',
                         'route' => 'performance-appraisal',
                         'action' => 'index',
                     ],

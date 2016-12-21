@@ -1142,6 +1142,24 @@ return array (
           ),
         ),
       ),
+      'loanAdvanceRequest' => 
+      array (
+        'type' => 'Zend\\Router\\Http\\Segment',
+        'options' => 
+        array (
+          'route' => '/selfservice/loanAdvanceRequest[/:action]',
+          'constants' => 
+          array (
+            'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+            'id' => '[0-9]+',
+          ),
+          'defaults' => 
+          array (
+            'controller' => 'SelfService\\LoanAdvanceRequest',
+            'action' => 'index',
+          ),
+        ),
+      ),
       'restful' => 
       array (
         'type' => 'Zend\\Router\\Http\\Literal',
@@ -2681,6 +2699,40 @@ return array (
         ),
       ),
     ),
+    'loanAdvanceRequest' => 
+    array (
+      0 => 
+      array (
+        'label' => 'Loan/Advance Request',
+        'route' => 'loanAdvanceRequest',
+      ),
+      1 => 
+      array (
+        'label' => 'Loan/Advance Request',
+        'route' => 'loanAdvanceRequest',
+        'pages' => 
+        array (
+          0 => 
+          array (
+            'label' => 'Detail',
+            'route' => 'loanAdvanceRequest',
+            'action' => 'index',
+          ),
+          1 => 
+          array (
+            'label' => 'Add',
+            'route' => 'loanAdvanceRequest',
+            'action' => 'add',
+          ),
+          2 => 
+          array (
+            'label' => 'Edit',
+            'route' => 'loanAdvanceRequest',
+            'action' => 'edit',
+          ),
+        ),
+      ),
+    ),
     'monthlyValue' => 
     array (
       0 => 
@@ -3089,45 +3141,29 @@ return array (
         ),
       ),
     ),
-    'appraisal-evaluation' => 
+    'appraisal-evaluation-review' => 
     array (
       0 => 
       array (
         'label' => 'Appraisal',
-        'route' => 'appraisal-evaluation',
+        'route' => 'appraisal-evaluation-review',
       ),
       1 => 
       array (
         'label' => 'Appraisal',
-        'route' => 'appraisal-evaluation',
+        'route' => 'appraisal-evaluation-review',
         'pages' => 
         array (
           0 => 
           array (
             'label' => 'Evaluation',
-            'route' => 'appraisal-evaluation',
-            'action' => 'index',
+            'route' => 'appraisal-evaluation-review',
+            'action' => 'evaluation',
           ),
-        ),
-      ),
-    ),
-    'appraisal-review' => 
-    array (
-      0 => 
-      array (
-        'label' => 'Appraisal',
-        'route' => 'appraisal-review',
-      ),
-      1 => 
-      array (
-        'label' => 'Appraisal',
-        'route' => 'appraisal-review',
-        'pages' => 
-        array (
-          0 => 
+          1 => 
           array (
             'label' => 'Review',
-            'route' => 'appraisal-review',
+            'route' => 'appraisal-evaluation-review',
             'action' => 'review',
           ),
         ),
@@ -3137,18 +3173,18 @@ return array (
     array (
       0 => 
       array (
-        'label' => 'Appraisal',
+        'label' => 'Performance Appraisal',
         'route' => 'performance-appraisal',
       ),
       1 => 
       array (
-        'label' => 'Appraisal',
+        'label' => 'Performance Appraisal',
         'route' => 'performance-appraisal',
         'pages' => 
         array (
           0 => 
           array (
-            'label' => 'Review',
+            'label' => 'List',
             'route' => 'performance-appraisal',
             'action' => 'index',
           ),
@@ -3200,6 +3236,7 @@ return array (
       'SelfService\\Controller\\Profile' => 'Application\\Controller\\ControllerFactory',
       'SelfService\\Controller\\Service' => 'Application\\Controller\\ControllerFactory',
       'SelfService\\Controller\\PaySlip' => 'Application\\Controller\\ControllerFactory',
+      'SelfService\\LoanAdvanceRequest' => 'Application\\Controller\\ControllerFactory',
       'RestfulService\\Controller\\RestfulService' => 'Application\\Controller\\ControllerFactory',
       'Payroll\\Controller\\MonthlyValue' => 'Application\\Controller\\ControllerFactory',
       'Payroll\\Controller\\FlatValue' => 'Application\\Controller\\ControllerFactory',

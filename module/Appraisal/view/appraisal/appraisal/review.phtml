@@ -1,1 +1,15 @@
 
+<?php
+/**
+ * Load Javascript files here
+ */
+$this->headScript()
+    ->appendFile($this->basePath('telerik_kendoui/js/kendo.all.min.js'));
+?>
+
+<script>
+    document.menu =<?php $menu = ["id" => "menuAppraisal", "subMenu" => ["id" => "subMenuReview"]];echo json_encode($menu);?>;
+</script>
+<div class="page-bar">
+    <?= $this->navigation('Zend\Navigation\appraisal-setup')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
+</div>

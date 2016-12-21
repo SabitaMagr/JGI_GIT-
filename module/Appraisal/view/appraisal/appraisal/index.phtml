@@ -1,1 +1,78 @@
-Hello world
+<?php
+/**
+ * Load Javascript files here
+ */
+$this->headScript()
+        ->appendFile($this->basePath('telerik_kendoui/js/kendo.all.min.js'));
+?>
+
+<script>
+    document.menu =<?php
+$menu = ["id" => "menuAppraisal", "subMenu" => ["id" => "subMenuSetup"]];
+echo json_encode($menu);
+?>;
+</script>
+<div class="page-bar">
+    <?= $this->navigation('Zend\Navigation\appraisal-setup')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
+</div>
+
+
+<div class="margin-top-20">
+    <div class="table-toolbar">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="btn-group">
+                    <a href="<?= $this->url('appraisal-setup', ['action' => 'add']) ?>" id="sample_editable_1_new"
+                       class="btn green"> Add New
+                        <i class="fa fa-plus"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="btn-group pull-right">
+                    <button class="btn green btn-outline dropdown-toggle" data-toggle="dropdown">Tools
+                        <i class="fa fa-angle-down"></i>
+                    </button>
+                    <ul class="dropdown-menu pull-right">
+                        <li>
+                            <a href="javascript:;" id="export"> Export to Excel </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="row">
+    <div class="col-sm-12">
+        <table>
+            <thead>
+                <tr>
+                    <th>
+                        Appraisal Code
+                    </th>
+                    <th>
+                        Appraisal Name
+                    </th>
+                    <th>
+                        Appraisal Type
+                    </th>
+                    <th>
+                        Appraisal Status
+                    </th>
+                    <th>
+                        Start Date
+                    </th>
+                    <th>
+                        End Date
+                    </th>
+                    <th>
+                        Action
+                    </th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+</div>
