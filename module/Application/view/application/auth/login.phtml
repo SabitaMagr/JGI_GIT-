@@ -24,7 +24,7 @@ $rememberme = $form->get('rememberme');
 $rememberme->setAttribute('class', '');
 
 $submit = $form->get('submit');
-$submit->setAttribute('class', 'btn btn-primary btn-block uppercase');
+$submit->setAttribute('class', 'btn btn-primary btn-block uppercase loginbtn');
 
 $form->setAttribute('action', $this->url('auth/process', ['action' => 'authenticate']));
 $form->prepare();
@@ -35,8 +35,8 @@ print $this->form()->openTag($form);
     <?php
     if ($this->messages) {
         foreach ($this->messages as $message) {
-            print '<span class="form-subtitle">' . $message . '</span>';
-            print '<span class="form-subtitle">Please login to continue.</span>';
+            print '<span class="form-subtitle error-message">' . $message . '</span>';
+            print '<span class="form-subtitle error-message bigtext">Please login to continue.</span>';
         }
     } else {
         ?>
@@ -63,12 +63,12 @@ print $this->form()->openTag($form);
     <?php print $this->formElement($password); ?>
     <?php print $this->formElementErrors()->render($password, ['class' => 'help-block']) ?>
 </div>
-<div class="form-actions">
+<div class="form-actions signin-btn">
     <?php
     print $this->formSubmit($submit);
     ?>
 </div>
-<div class="form-actions">
+<div class="form-actions ">
     <div class="pull-left">
         <label class="rememberme check">
 
