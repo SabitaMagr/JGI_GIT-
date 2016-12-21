@@ -22,80 +22,54 @@ class LoanAdvanceRequestForm{
      * @Annotation\Type("Zend\Form\Element\Select")
      * @Annotation\Required(false)
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
-     * @Annotation\Options({"disable_inarray_validator":"true","label":"Training Name"})
-     * @Annotation\Attributes({ "id":"form-trainingId","class":"form-control"})
+     * @Annotation\Options({"disable_inarray_validator":"true","label":"Loan/Advance Name"})
+     * @Annotation\Attributes({ "id":"form-loanAdvanceId","class":"form-control"})
      */
-    public $trainingId;
+    public $loanAdvanceId;
      /**
      * @Annotion\Type("Zend\Form\Element\Text")
      * @Annotation\Required({"required":"true"})
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
-     * @Annotation\Options({"label":"Start Date"})
-     * @Annotation\Attributes({ "id":"form-startDate", "class":"form-startDate form-control" })
+     * @Annotation\Options({"label":"Request Amount"})
+     * @Annotation\Attributes({ "id":"form-requestAmount", "class":"form-requestAmount form-control" })
      */
-    public $startDate;
+    public $requestAmount;
      /**
      * @Annotion\Type("Zend\Form\Element\Text")
      * @Annotation\Required({"required":"true"})
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
-     * @Annotation\Options({"label":"End Date"})
-     * @Annotation\Attributes({ "id":"form-endDate", "class":"form-endDate form-control" })
+     * @Annotation\Options({"label":"Repayment Period"})
+     * @Annotation\Attributes({ "id":"form-repaymentPeriod", "class":"form-repaymentPeriod form-control" })
      */
-    public $endDate;
+    public $repaymentPeriod;
     
     /**
      * @Annotion\Type("Zend\Form\Element\Text")
      * @Annotation\Required({"required":"true"})
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
-     * @Annotation\Options({"label":"Duration in Hour"})
-     * @Annotation\Attributes({ "id":"form-duration", "class":"form-duration form-control" })
+     * @Annotation\Options({"label":"Advance Amount"})
+     * @Annotation\Attributes({ "id":"form-advanceAmount", "class":"form-advanceAmount form-control" })
      */
-    public $duration;
+    public $advanceAmount;
     
     /**
      * @Annotion\Type("Zend\Form\Element\Text")
      * @Annotation\Required({"required":"true"})
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
-     * @Annotation\Options({"label":"Location"})
-     * @Annotation\Attributes({ "id":"form-location", "class":"form-location form-control" })
+     * @Annotation\Options({"label":"Repayment Amount"})
+     * @Annotation\Attributes({ "id":"form-repaymentAmount", "class":"form-repaymentAmount form-control" })
      */
-    public $location;
+    public $repaymentAmount;
     
-    /**
-     * @Annotion\Type("Zend\Form\Element\Text")
-     * @Annotation\Required({"required":"true"})
-     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
-     * @Annotation\Options({"label":"Cost"})
-     * @Annotation\Attributes({ "id":"form-cost", "class":"form-cost form-control" })
-     */
-    public $cost;
-    
-    /**
-     * @Annotion\Type("Zend\Form\Element\Text")
-     * @Annotation\Required({"required":"true"})
-     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
-     * @Annotation\Options({"label":"Instructor Name"})
-     * @Annotation\Attributes({ "id":"form-instructorName", "class":"form-instructorName form-control" })
-     */
-    public $instructorName;
-    
-    /**
-     * @Annotion\Type("Zend\Form\Element\Text")
-     * @Annotation\Required({"required":"true"})
-     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
-     * @Annotation\Options({"label":"Training Institute"})
-     * @Annotation\Attributes({ "id":"form-trainingInstitute", "class":"form-trainingInstitute form-control" })
-     */
-    public $trainingInstitute;
 
     /**
      * @Annotation\Type("Zend\Form\Element\Textarea")
      * @Annotation\Required(false)
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
-     * @Annotation\Options({"label":"Remarks"})
-     * @Annotation\Attributes({"id":"form-remarks","class":"form-remarks form-control","style":"    height: 50px; font-size:12px"})
+     * @Annotation\Options({"label":"Reason"})
+     * @Annotation\Attributes({"id":"form-reason","class":"form-reason form-control","style":"    height: 50px; font-size:12px"})
      */
-    public $remarks;
+    public $reason;
 
     /**
      * @Annotation\Type("Zend\Form\Element\Submit")
