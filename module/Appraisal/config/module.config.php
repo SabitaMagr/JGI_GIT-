@@ -22,7 +22,7 @@ return [
                     ]
                 ],
             ],
-            'appraisal-evaluation' => [
+            'appraisal-evaluation-review' => [
                 'type' => Segment::class,
                 'options' => [
                     'route' => '/managerservice/appraisal[/:action[/:id]]',
@@ -32,21 +32,7 @@ return [
                     ],
                     'defaults' => [
                         'controller' => Controller\EvaluationAndReview::class,
-                        'action' => 'evaluation',
-                    ]
-                ],
-            ],
-            'appraisal-review' => [
-                'type' => Segment::class,
-                'options' => [
-                    'route' => '/managerservice/appraisal[/:action[/:id]]',
-                    'constants' => [
-                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
-                        'id' => '[0-9]+',
-                    ],
-                    'defaults' => [
-                        'controller' => Controller\EvaluationAndReview::class,
-                        'action' => 'review',
+                        'action' => 'index',
                     ]
                 ],
             ],

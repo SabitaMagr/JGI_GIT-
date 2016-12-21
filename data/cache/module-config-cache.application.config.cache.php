@@ -1318,7 +1318,7 @@ return array (
           ),
           'defaults' => 
           array (
-            'controller' => 'System\\Controller\\TrainingAssignController',
+            'controller' => 'Training\\Controller\\TrainingAssignController',
             'action' => 'index',
           ),
         ),
@@ -1341,7 +1341,7 @@ return array (
           ),
         ),
       ),
-      'appraisal-evaluation' => 
+      'appraisal-evaluation-review' => 
       array (
         'type' => 'Zend\\Router\\Http\\Segment',
         'options' => 
@@ -1355,25 +1355,7 @@ return array (
           'defaults' => 
           array (
             'controller' => 'Appraisal\\Controller\\EvaluationAndReview',
-            'action' => 'evaluation',
-          ),
-        ),
-      ),
-      'appraisal-review' => 
-      array (
-        'type' => 'Zend\\Router\\Http\\Segment',
-        'options' => 
-        array (
-          'route' => '/managerservice/appraisal[/:action[/:id]]',
-          'constants' => 
-          array (
-            'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
-            'id' => '[0-9]+',
-          ),
-          'defaults' => 
-          array (
-            'controller' => 'Appraisal\\Controller\\EvaluationAndReview',
-            'action' => 'review',
+            'action' => 'index',
           ),
         ),
       ),
