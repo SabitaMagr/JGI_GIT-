@@ -1341,6 +1341,60 @@ return array (
           ),
         ),
       ),
+      'appraisal-evaluation' => 
+      array (
+        'type' => 'Zend\\Router\\Http\\Segment',
+        'options' => 
+        array (
+          'route' => '/managerservice/appraisal[/:action[/:id]]',
+          'constants' => 
+          array (
+            'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+            'id' => '[0-9]+',
+          ),
+          'defaults' => 
+          array (
+            'controller' => 'Appraisal\\Controller\\EvaluationAndReview',
+            'action' => 'evaluation',
+          ),
+        ),
+      ),
+      'appraisal-review' => 
+      array (
+        'type' => 'Zend\\Router\\Http\\Segment',
+        'options' => 
+        array (
+          'route' => '/managerservice/appraisal[/:action[/:id]]',
+          'constants' => 
+          array (
+            'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+            'id' => '[0-9]+',
+          ),
+          'defaults' => 
+          array (
+            'controller' => 'Appraisal\\Controller\\EvaluationAndReview',
+            'action' => 'review',
+          ),
+        ),
+      ),
+      'performance-appraisal' => 
+      array (
+        'type' => 'Zend\\Router\\Http\\Segment',
+        'options' => 
+        array (
+          'route' => '/selfservice/performanceappraisal[/:action[/:id]]',
+          'constants' => 
+          array (
+            'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+            'id' => '[0-9]+',
+          ),
+          'defaults' => 
+          array (
+            'controller' => 'Appraisal\\Controller\\PerformanceAppraisal',
+            'action' => 'index',
+          ),
+        ),
+      ),
     ),
   ),
   'console' => 
@@ -2270,43 +2324,6 @@ return array (
           ),
         ),
       ),
-      2 => 
-      array (
-        'label' => 'Appraisal',
-        'route' => 'appraisal-setup',
-      ),
-      3 => 
-      array (
-        'label' => 'Appraisal',
-        'route' => 'appraisal-setup',
-        'pages' => 
-        array (
-          0 => 
-          array (
-            'label' => 'List',
-            'route' => 'appraisal-setup',
-            'action' => 'index',
-          ),
-          1 => 
-          array (
-            'label' => 'Add',
-            'route' => 'appraisal-setup',
-            'action' => 'add',
-          ),
-          2 => 
-          array (
-            'label' => 'Edit',
-            'route' => 'appraisal-setup',
-            'action' => 'edit',
-          ),
-          3 => 
-          array (
-            'label' => 'Review',
-            'route' => 'appraisal-setup',
-            'action' => 'review',
-          ),
-        ),
-      ),
     ),
     'attendancebyhr' => 
     array (
@@ -3050,6 +3067,112 @@ return array (
         ),
       ),
     ),
+    'appraisal-setup' => 
+    array (
+      0 => 
+      array (
+        'label' => 'Appraisal',
+        'route' => 'appraisal-setup',
+      ),
+      1 => 
+      array (
+        'label' => 'Appraisal',
+        'route' => 'appraisal-setup',
+        'pages' => 
+        array (
+          0 => 
+          array (
+            'label' => 'List',
+            'route' => 'appraisal-setup',
+            'action' => 'index',
+          ),
+          1 => 
+          array (
+            'label' => 'Add',
+            'route' => 'appraisal-setup',
+            'action' => 'add',
+          ),
+          2 => 
+          array (
+            'label' => 'Edit',
+            'route' => 'appraisal-setup',
+            'action' => 'edit',
+          ),
+          3 => 
+          array (
+            'label' => 'Review',
+            'route' => 'appraisal-setup',
+            'action' => 'review',
+          ),
+        ),
+      ),
+    ),
+    'appraisal-evaluation' => 
+    array (
+      0 => 
+      array (
+        'label' => 'Appraisal',
+        'route' => 'appraisal-evaluation',
+      ),
+      1 => 
+      array (
+        'label' => 'Appraisal',
+        'route' => 'appraisal-evaluation',
+        'pages' => 
+        array (
+          0 => 
+          array (
+            'label' => 'Evaluation',
+            'route' => 'appraisal-evaluation',
+            'action' => 'index',
+          ),
+        ),
+      ),
+    ),
+    'appraisal-review' => 
+    array (
+      0 => 
+      array (
+        'label' => 'Appraisal',
+        'route' => 'appraisal-review',
+      ),
+      1 => 
+      array (
+        'label' => 'Appraisal',
+        'route' => 'appraisal-review',
+        'pages' => 
+        array (
+          0 => 
+          array (
+            'label' => 'Review',
+            'route' => 'appraisal-review',
+            'action' => 'review',
+          ),
+        ),
+      ),
+    ),
+    'performance-appraisal' => 
+    array (
+      0 => 
+      array (
+        'label' => 'Appraisal',
+        'route' => 'performance-appraisal',
+      ),
+      1 => 
+      array (
+        'label' => 'Appraisal',
+        'route' => 'performance-appraisal',
+        'pages' => 
+        array (
+          0 => 
+          array (
+            'label' => 'Review',
+            'route' => 'performance-appraisal',
+            'action' => 'index',
+          ),
+        ),
+      ),
+    ),
   ),
   'controllers' => 
   array (
@@ -3108,6 +3231,8 @@ return array (
       'System\\Controller\\DashboardController' => 'Application\\Factory\\DashBoardFactory',
       'Training\\Controller\\TrainingAssignController' => 'Application\\Controller\\ControllerFactory',
       'Appraisal\\Controller\\Appraisal' => 'Application\\Controller\\ControllerFactory',
+      'Appraisal\\Controller\\EvaluationAndReview' => 'Application\\Controller\\ControllerFactory',
+      'Appraisal\\Controller\\PerformanceAppraisal' => 'Application\\Controller\\ControllerFactory',
     ),
   ),
   'view_manager' => 

@@ -13,4 +13,12 @@ class EvaluationAndReview extends AbstractActionController {
         $this->adapter = $adapter;
     }
 
+    public function evaluationAction() {
+        
+    }
+
+    public function reviewAction() {
+        
+    }
+
 }

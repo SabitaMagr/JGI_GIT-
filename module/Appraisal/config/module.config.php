@@ -22,10 +22,52 @@ return [
                     ]
                 ],
             ],
+            'appraisal-evaluation' => [
+                'type' => Segment::class,
+                'options' => [
+                    'route' => '/managerservice/appraisal[/:action[/:id]]',
+                    'constants' => [
+                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'id' => '[0-9]+',
+                    ],
+                    'defaults' => [
+                        'controller' => Controller\EvaluationAndReview::class,
+                        'action' => 'evaluation',
+                    ]
+                ],
+            ],
+            'appraisal-review' => [
+                'type' => Segment::class,
+                'options' => [
+                    'route' => '/managerservice/appraisal[/:action[/:id]]',
+                    'constants' => [
+                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'id' => '[0-9]+',
+                    ],
+                    'defaults' => [
+                        'controller' => Controller\EvaluationAndReview::class,
+                        'action' => 'review',
+                    ]
+                ],
+            ],
+            'performance-appraisal' => [
+                'type' => Segment::class,
+                'options' => [
+                    'route' => '/selfservice/performanceappraisal[/:action[/:id]]',
+                    'constants' => [
+                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'id' => '[0-9]+',
+                    ],
+                    'defaults' => [
+                        'controller' => Controller\PerformanceAppraisal::class,
+                        'action' => 'index',
+                    ]
+                ],
+            ],
         ],
     ],
     'navigation' => [
-        'shiftsetup' => [
+        'appraisal-setup' => [
                 [
                 'label' => 'Appraisal',
                 'route' => 'appraisal-setup',
@@ -57,10 +99,63 @@ return [
                 ],
             ],
         ],
+        'appraisal-evaluation' => [
+                [
+                'label' => 'Appraisal',
+                'route' => 'appraisal-evaluation',
+            ],
+                [
+                'label' => 'Appraisal',
+                'route' => 'appraisal-evaluation',
+                'pages' => [
+                        [
+                        'label' => 'Evaluation',
+                        'route' => 'appraisal-evaluation',
+                        'action' => 'index',
+                    ],
+                ],
+            ],
+        ],
+        'appraisal-review' => [
+                [
+                'label' => 'Appraisal',
+                'route' => 'appraisal-review',
+            ],
+                [
+                'label' => 'Appraisal',
+                'route' => 'appraisal-review',
+                'pages' => [
+                        [
+                        'label' => 'Review',
+                        'route' => 'appraisal-review',
+                        'action' => 'review',
+                    ],
+                ],
+            ],
+        ],
+        'performance-appraisal' => [
+                [
+                'label' => 'Appraisal',
+                'route' => 'performance-appraisal',
+            ],
+                [
+                'label' => 'Appraisal',
+                'route' => 'performance-appraisal',
+                'pages' => [
+                        [
+                        'label' => 'Review',
+                        'route' => 'performance-appraisal',
+                        'action' => 'index',
+                    ],
+                ],
+            ],
+        ],
     ],
     'controllers' => [
         'factories' => [
             Controller\Appraisal::class => ControllerFactory::class,
+            Controller\EvaluationAndReview::class => ControllerFactory::class,
+            Controller\PerformanceAppraisal::class => ControllerFactory::class,
         ],
     ],
     'view_manager' => [

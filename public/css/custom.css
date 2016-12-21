@@ -322,7 +322,7 @@ form.k-filter-menu .k-widget, form.k-filter-menu .k-textbox
 
 .formbg
 {
-   background-color: #eee;
+    background-color: #eee;
     margin-top: 5px;
     padding: 5px;	
     border:solid #ddd  1px;
@@ -330,7 +330,7 @@ form.k-filter-menu .k-widget, form.k-filter-menu .k-textbox
     moz-box-shadow:3px 3px 11px #ccc;
     -o-box-shadow:3px 3px 11px #ccc;
     -webkit-box-shadow:3px 3px 11px #ccc;
-   
+
 
 
 }
@@ -574,7 +574,7 @@ form.k-filter-menu .k-widget, form.k-filter-menu .k-textbox
     box-shadow:3px 3px 2px 0px #ddd;
     -moz-box-shadow:3px 3px 2px 0px #ddd;
     o-box-shadow:3px 3px 2px 0px #ddd;
-   webkit-shadow:3px 3px 2px 0px #ddd;
+    webkit-shadow:3px 3px 2px 0px #ddd;
 
 }
 
@@ -780,12 +780,12 @@ form.k-filter-menu .k-widget, form.k-filter-menu .k-textbox
 }
 .btn.btn-outline.green:hover
 {
-   background-color: #eee!important; 
- 
-    
+    background-color: #eee!important; 
+
+
 }
 select{
-    
+
     padding-top:0px !important;
     color:#333 !important;
 }
@@ -804,43 +804,43 @@ select{
     font-size:11px !important;
 }
 .btn.btn-outline.green.active, .btn.btn-outline.green:active, .btn.btn-outline.green:active:focus, .btn.btn-outline.green:active:hover, .btn.btn-outline.green:focus, .btn.btn-outline.green:hover
- {
-     background-color:#4FBA3A !important;
-     color:#fff !important;
- }
- .first
- {
-     background-color:#eee !important;
- }
- #min-max-btn:hover
- {
-  cursor:pointer;
- }
- #viewHolidays
- {
-     margin-top:7px !important;
- }
- 
- .btnsearch
- {
- padding:10px !important;
- }
- .gaptop{
-     margin-top: 20px;
-     margin-right: 15px;
- }
- .i-search 
- {
-     border-radius:15px !important;
-      background-color: #eee;
- 
- }
- .i-search:hover{
-  
-     background-color:#ccc;
-     box-shadow:2px 2px 2px #eee;
- }
- 
+{
+    background-color:#4FBA3A !important;
+    color:#fff !important;
+}
+.first
+{
+    background-color:#eee !important;
+}
+#min-max-btn:hover
+{
+    cursor:pointer;
+}
+#viewHolidays
+{
+    margin-top:7px !important;
+}
+
+.btnsearch
+{
+    padding:10px !important;
+}
+.gaptop{
+    margin-top: 20px;
+    margin-right: 15px;
+}
+.i-search 
+{
+    border-radius:15px !important;
+    background-color: #eee;
+
+}
+.i-search:hover{
+
+    background-color:#ccc;
+    box-shadow:2px 2px 2px #eee;
+}
+
 
 .slimScrollDiv
 {
@@ -850,15 +850,15 @@ select{
     font-size: 11px;
 }
 .file,input[type="file"]  
-    
+
 {
     padding-bottom: 28px !important;
 }
- .form-control
- {
-     color:#333 !important;
- }
- .help-block.error {
+.form-control
+{
+    color:#333 !important;
+}
+.help-block.error {
     color: red;
     font-size: 11px;
     list-style: outside none none;
@@ -872,12 +872,12 @@ select{
 .custom-box
 {
     box-shadow: 0 10px 10px -10px rgba(0, 0, 0, 0.5) !important;
-    
+
 }
 .form-group input{
     padding-right:0px !important;
     padding-left:5px !important;
-    
+
 }
 .portlet > .portlet-title > .caption{
     font-size: 14px !important;
@@ -888,7 +888,7 @@ form label
 }
 #form_wizard_1
 {
-     margin-top: 10px;
+    margin-top: 10px;
 }
 .input-group.date input
 {
@@ -899,19 +899,24 @@ form label
     height:23px !important;
     min-height: 23px !important;
     border-radius: 0px !important;
-      padding-bottom: 2px;
+    padding-bottom: 2px;
 
     font-size: 11px !important;
     padding-top: 2px;
 }
 .select2-selection__choice
 {
-      margin-top: 0px !important;  
+    margin-top: 0px !important;  
 }
 .select2-search__field
 {
     height:23px !important;
 }
+.input-group.date input{
+    padding-left:5px !important;
+}
+
+
 /* Large desktops and laptops */
 @media (min-width: 1200px) {
 
@@ -939,13 +944,13 @@ form label
         margin-top: 8px;
     }
     .profilepic {
- 
- 
-    margin-bottom: 20px;
-    margin-left: 13px;
- float:none !important;
-    max-width: 20%;
-}
+
+
+        margin-bottom: 20px;
+        margin-left: 13px;
+        float:none !important;
+        max-width: 20%;
+    }
 
 }
 
@@ -964,16 +969,16 @@ form label
         margin-top: 8px;
     }
 
-.profilepic
-{
- 
-    margin-bottom: 20px;
-    margin-left: 35px;
-    margin-right: 90px;
-    max-width: 16%;
+    .profilepic
+    {
+
+        margin-bottom: 20px;
+        margin-left: 35px;
+        margin-right: 90px;
+        max-width: 16%;
         float:none !important;
 
-}
+    }
 
 }
 
@@ -1009,16 +1014,16 @@ form label
     {
         margin-top: 8px;
     }
-.profilepic
-{
- 
-    margin-bottom: 20px;
-    margin-left: 35px;
-    margin-right: 90px;
-    max-width: 16%;
+    .profilepic
+    {
+
+        margin-bottom: 20px;
+        margin-left: 35px;
+        margin-right: 90px;
+        max-width: 16%;
 
 
-}
+    }
 
 }
 
@@ -1056,32 +1061,32 @@ form label
         margin-bottom: 0px;
 
     }
-.tabbable-custom > .nav-tabs > li{
-    width:100%;
-}
-.tabbable-custom > .nav-tabs > li.active
-{
-    border-bottom: solid #eee 1px;
-}
-.profilepic {
- 
-    float: left;
-    margin-bottom: 20px;
-    margin-left: 67px;
-    margin-right: 90px;
-    max-width: 44%;
+    .tabbable-custom > .nav-tabs > li{
+        width:100%;
+    }
+    .tabbable-custom > .nav-tabs > li.active
+    {
+        border-bottom: solid #eee 1px;
+    }
+    .profilepic {
 
+        float: left;
+        margin-bottom: 20px;
+        margin-left: 67px;
+        margin-right: 90px;
+        max-width: 44%;
+    }
 
-.msgForError{
-    padding:15px;
-    color:red;
-    font-size:11px;
-
-}
+    .msgForError{
+        padding:15px;
+        color:red;
+        font-size:11px;
 
     }
 
-  
+}
+
+
 
 /*rajan's css new end here*/
 

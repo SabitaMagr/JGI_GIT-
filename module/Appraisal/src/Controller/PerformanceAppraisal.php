@@ -13,4 +13,8 @@ class PerformanceAppraisal extends AbstractActionController {
         $this->adapter = $adapter;
     }
 
+    public function indexAction() {
+        
+    }
+
 }
