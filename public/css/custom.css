@@ -218,13 +218,21 @@ form.k-filter-menu .k-widget, form.k-filter-menu .k-textbox
 {
     border-bottom:none !important;	
 }
-.custom-footer{
+.custom-footer,.page-footer{
     background-color:#ddd;
-    height: 50px !important;
+    height:auto !important;
+   
 }
 .page-footer .page-footer-inner
 {
     padding-top:12px;
+}
+.page-footer{
+    
+}
+.page-footer .page-footer-inner
+{
+    padding-top:0px !important;
 }
 .scroll-to-top > i,.copyright a,.copyright
 {
@@ -832,8 +840,11 @@ select{
 .i-search 
 {
     border-radius:15px !important;
-    background-color: #eee;
-
+    border-bottom: 2px solid #b2b1b1;
+    text-shadow: 0px 1px 0px #fafafa;
+     background: #ccc !important;
+    background: -webkit-gradient(linear, left top, left bottom, from(#ccc), to(#e2e2e2));
+    background: -moz-linear-gradient(top,  #eee,  #e2e2e2);     
 }
 .i-search:hover{
 
