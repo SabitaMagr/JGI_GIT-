@@ -1426,6 +1426,42 @@ return array (
           ),
         ),
       ),
+      'loanAdvanceStatus' => 
+      array (
+        'type' => 'Zend\\Router\\Http\\Segment',
+        'options' => 
+        array (
+          'route' => '/loanAdvance/status[/:action[/:id]]',
+          'constraints' => 
+          array (
+            'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+            'id' => '[0-9]+',
+          ),
+          'defaults' => 
+          array (
+            'controller' => 'LoanAdvance\\Controller\\LoanAdvanceStatus',
+            'action' => 'index',
+          ),
+        ),
+      ),
+      'loanAdvanceApply' => 
+      array (
+        'type' => 'Zend\\Router\\Http\\Segment',
+        'options' => 
+        array (
+          'route' => '/loanAdvance/apply[/:action[/:id]]',
+          'constraints' => 
+          array (
+            'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+            'id' => '[0-9]+',
+          ),
+          'defaults' => 
+          array (
+            'controller' => 'LoanAdvance\\Controller\\LoanAdvanceApply',
+            'action' => 'index',
+          ),
+        ),
+      ),
     ),
   ),
   'console' => 
@@ -3290,6 +3326,74 @@ return array (
         ),
       ),
     ),
+    'loanAdvanceStatus' => 
+    array (
+      0 => 
+      array (
+        'label' => 'Loan/Advance Request',
+        'route' => 'loanAdvanceStatus',
+      ),
+      1 => 
+      array (
+        'label' => 'Loan/Advance Request',
+        'route' => 'loanAdvanceStatus',
+        'pages' => 
+        array (
+          0 => 
+          array (
+            'label' => 'List',
+            'route' => 'loanAdvanceStatus',
+            'action' => 'index',
+          ),
+          1 => 
+          array (
+            'label' => 'Add',
+            'route' => 'loanAdvanceStatus',
+            'action' => 'add',
+          ),
+          2 => 
+          array (
+            'label' => 'Edit',
+            'route' => 'loanAdvanceStatus',
+            'action' => 'edit',
+          ),
+        ),
+      ),
+    ),
+    'loanAdvanceApply' => 
+    array (
+      0 => 
+      array (
+        'label' => 'Loan/Advance Apply',
+        'route' => 'loanAdvanceApply',
+      ),
+      1 => 
+      array (
+        'label' => 'Loan/Advance Apply',
+        'route' => 'loanAdvanceApply',
+        'pages' => 
+        array (
+          0 => 
+          array (
+            'label' => 'List',
+            'route' => 'loanAdvanceApply',
+            'action' => 'index',
+          ),
+          1 => 
+          array (
+            'label' => 'Add',
+            'route' => 'loanAdvanceApply',
+            'action' => 'add',
+          ),
+          2 => 
+          array (
+            'label' => 'Edit',
+            'route' => 'loanAdvanceApply',
+            'action' => 'edit',
+          ),
+        ),
+      ),
+    ),
   ),
   'controllers' => 
   array (
@@ -3352,6 +3456,8 @@ return array (
       'Appraisal\\Controller\\Appraisal' => 'Application\\Controller\\ControllerFactory',
       'Appraisal\\Controller\\EvaluationAndReview' => 'Application\\Controller\\ControllerFactory',
       'Appraisal\\Controller\\PerformanceAppraisal' => 'Application\\Controller\\ControllerFactory',
+      'LoanAdvance\\Controller\\LoanAdvanceStatus' => 'Application\\Controller\\ControllerFactory',
+      'LoanAdvance\\Controller\\LoanAdvanceApply' => 'Application\\Controller\\ControllerFactory',
     ),
   ),
   'view_manager' => 
@@ -3397,6 +3503,7 @@ return array (
       9 => '/var/www/html/neo/neo-hris-metronic/module/System/config/../view',
       10 => '/var/www/html/neo/neo-hris-metronic/module/Training/config/../view',
       11 => '/var/www/html/neo/neo-hris-metronic/module/Appraisal/config/../view',
+      12 => '/var/www/html/neo/neo-hris-metronic/module/LoanAdvance/config/../view',
     ),
   ),
   'dashboard-items' => 
