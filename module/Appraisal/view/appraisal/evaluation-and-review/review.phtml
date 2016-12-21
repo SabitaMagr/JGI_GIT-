@@ -3,14 +3,61 @@
  * Load Javascript files here
  */
 $this->headScript()
-        ->appendFile($this->basePath('telerik_kendoui/js/kendo.all.min.js'));
+        ->appendFile($this->basePath('telerik_kendoui/js/kendo.all.min.js'))
+        ->appendFile($this->basePath('js/kendoDataTable.js'));
 ?>
 
 <script>
     document.menu =<?php $menu = ["id" => "menuManagerService", "subMenu" => ["id" => "subMenuAppraisalReview"]];
-echo json_encode($menu); ?>;
+echo json_encode($menu);
+?>;
 </script>
 <div class="page-bar">
 <?= $this->navigation('Zend\Navigation\appraisal-evaluation-review')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
 
+
+
+<div class="row">
+    <div class="col-sm-12">
+        <table id="dataTable">
+            <thead>
+                <tr>
+                    <th>
+                        Appraisal Name
+                    </th>
+                    <th>
+                        Appraisee Name
+                    </th>
+                    <th>
+                        Branch
+                    </th>
+                    <th>
+                        Corporate Level
+                    </th>
+                    <th>
+                        Functional Title
+                    </th>
+                    <th>
+                        Reviewer
+                    </th>
+                    <th>
+                        Appraiser Rating
+                    </th>
+                    <th>
+                        Evaluated?
+                    </th>
+                    <th>
+                        Final Rating Accepted
+                    </th>
+                    <th>
+                        Operation
+                    </th>
+                    <th>
+                        View
+                    </th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+</div>
