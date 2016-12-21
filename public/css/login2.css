@@ -68,20 +68,20 @@ Login page
   background-color: #fff;
   border: 1px solid #ddd;
   height: 43px;
-  color: #555;
+  color: #555 !important;
 }
 .login .content .form-control:focus, .login .content .form-control:active {
   border: 1px solid #4BB830 !important;
 }
-.login .content .form-control::-moz-placeholder {
-  color: #555;
+.login .content .form-control::-moz-placeholder{
+  color: #999 !important;
   opacity: 1;
 }
 .login .content .form-control:-ms-input-placeholder {
-  color: #d9ecf9;
+  color: #999 !important;
 }
 .login .content .form-control::-webkit-input-placeholder {
-  color: #d9ecf9;
+  color: #999 !important;
 }
 
 .login .content select.form-control {
