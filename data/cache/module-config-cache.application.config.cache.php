@@ -1173,7 +1173,7 @@ return array (
           ),
           'defaults' => 
           array (
-            'controller' => 'SelfService\\TrainingList',
+            'controller' => 'SelfService\\Controller\\TrainingList',
             'action' => 'index',
           ),
         ),
@@ -1265,6 +1265,19 @@ return array (
           'defaults' => 
           array (
             'controller' => 'ManagerService\\Controller\\AttendanceApproveController',
+            'action' => 'index',
+          ),
+        ),
+      ),
+      'loanApprove' => 
+      array (
+        'type' => 'Zend\\Router\\Http\\Segment',
+        'options' => 
+        array (
+          'route' => '/managerservice/loanApprove[/:action[/:id][/:role]]',
+          'defaults' => 
+          array (
+            'controller' => 'ManagerService\\Controller\\LoanApproveController',
             'action' => 'index',
           ),
         ),
@@ -2760,7 +2773,7 @@ return array (
       ),
       1 => 
       array (
-        'label' => 'Loan/Advance Request',
+        'label' => 'Training List',
         'route' => 'trainingList',
         'pages' => 
         array (
@@ -2990,6 +3003,40 @@ return array (
           array (
             'label' => 'View',
             'route' => 'attedanceapprove',
+            'action' => 'view',
+          ),
+        ),
+      ),
+    ),
+    'loanApprove' => 
+    array (
+      0 => 
+      array (
+        'label' => 'Loan/Advance Request',
+        'route' => 'loanApprove',
+      ),
+      1 => 
+      array (
+        'label' => 'Loan/Advance Request',
+        'route' => 'loanApprove',
+        'pages' => 
+        array (
+          0 => 
+          array (
+            'label' => 'List',
+            'route' => 'loanApprove',
+            'action' => 'index',
+          ),
+          1 => 
+          array (
+            'label' => 'List',
+            'route' => 'loanApprove',
+            'action' => 'status',
+          ),
+          2 => 
+          array (
+            'label' => 'View',
+            'route' => 'loanApprove',
             'action' => 'view',
           ),
         ),
@@ -3289,14 +3336,14 @@ return array (
       'SelfService\\Controller\\Service' => 'Application\\Controller\\ControllerFactory',
       'SelfService\\Controller\\PaySlip' => 'Application\\Controller\\ControllerFactory',
       'SelfService\\Controller\\LoanAdvanceRequest' => 'Application\\Controller\\ControllerFactory',
-      'SelfService\\TrainingList' => 'Application\\Controller\\ControllerFactory',
+      'SelfService\\Controller\\TrainingList' => 'Application\\Controller\\ControllerFactory',
       'RestfulService\\Controller\\RestfulService' => 'Application\\Controller\\ControllerFactory',
       'Payroll\\Controller\\MonthlyValue' => 'Application\\Controller\\ControllerFactory',
       'Payroll\\Controller\\FlatValue' => 'Application\\Controller\\ControllerFactory',
       'Payroll\\Controller\\Rules' => 'Application\\Controller\\ControllerFactory',
       'Payroll\\Controller\\Generate' => 'Application\\Controller\\ControllerFactory',
       'ManagerService\\Controller\\LeaveApproveController' => 'Application\\Controller\\ControllerFactory',
-      'ManagerService\\Controller\\AttendanceApproveController' => 'Application\\Controller\\ControllerFactory',
+      'ManagerService\\Controller\\LoanApproveController' => 'Application\\Controller\\ControllerFactory',
       'System\\Controller\\RoleSetupController' => 'Application\\Controller\\ControllerFactory',
       'System\\Controller\\UserSetupController' => 'Application\\Controller\\ControllerFactory',
       'System\\Controller\\MenuSetupController' => 'Application\\Controller\\ControllerFactory',

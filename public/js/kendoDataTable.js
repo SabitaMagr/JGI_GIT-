@@ -1,6 +1,6 @@
 (function ($) {
     'use strict';
-    $('#dataTable').kendoGrid({height: 300,
+    $('#dataTable').kendoGrid({height: 400,
         groupable: false,
         sortable: true,
         pageable: {

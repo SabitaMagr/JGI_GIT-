@@ -7,10 +7,41 @@ $this->headScript()
 ?>
 
 <script>
-    document.menu =<?php $menu = ["id" => "menuSelfService", "subMenu" => ["id" => "subMenuPerformanceAppraisal"]];
-echo json_encode($menu); ?>;
+    document.menu =<?php
+$menu = ["id" => "menuSelfService", "subMenu" => ["id" => "subMenuPerformanceAppraisal"]];
+echo json_encode($menu);
+?>;
 </script>
 <div class="page-bar">
 <?= $this->navigation('Zend\Navigation\performance-appraisal')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
 
+
+<div class="row">
+    <div class="col-sm-12">
+        <table id="dataTable">
+            <thead>
+                <tr>
+                    <th>
+                        Appraisal Name
+                    </th>
+                    <th>
+                        Appraisee Status
+                    </th>
+                    <th>
+                        Appraisal Type
+                    </th>
+                    <th>
+                        From Date
+                    </th>
+                    <th>
+                        To Date
+                    </th>
+                    <th>
+                        Operation
+                    </th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+</div>
