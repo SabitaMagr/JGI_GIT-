@@ -34,6 +34,16 @@ return [
                     ]
                 ]
             ],
+            'loanApprove'=>[
+                'type' => Segment::class,
+                'options' => [
+                    'route' => '/managerservice/loanApprove[/:action[/:id][/:role]]',
+                    'defaults' => [
+                        'controller' => Controller\LoanApproveController::class,
+                        'action' => 'index'
+                    ]
+                ]
+            ],
         ]
     ],
     'navigation' => [
@@ -96,11 +106,38 @@ return [
                 ]
             ]
         ],
+        'loanApprove' => [
+            [
+                'label' => 'Loan/Advance Request',
+                'route' => 'loanApprove',
+            ],
+            [
+                'label' => 'Loan/Advance Request',
+                'route' => 'loanApprove',
+                'pages' => [
+                    [
+                        'label' => 'List',
+                        'route' => 'loanApprove',
+                        'action' => 'index',
+                    ],
+                    [
+                        'label' => 'List',
+                        'route' => 'loanApprove',
+                        'action' => 'status',
+                    ],
+                    [
+                        'label' => 'View',
+                        'route' => 'loanApprove',
+                        'action' => 'view',
+                    ],
+                ]
+            ]
+        ],
     ],
     'controllers' => [
         'factories' => [
             Controller\LeaveApproveController::class => ControllerFactory::class,
-            Controller\AttendanceApproveController::class=>ControllerFactory::class
+            Controller\LoanApproveController::class=>ControllerFactory::class
         ],
 
     ],
