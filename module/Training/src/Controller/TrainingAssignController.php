@@ -27,9 +27,9 @@ class TrainingAssignController extends AbstractActionController{
        $this->initializeForm();
        $employee = EntityHelper::getTableKVList($this->adapter, HrEmployees::TABLE_NAME , HrEmployees::EMPLOYEE_ID, [ HrEmployees::FIRST_NAME, HrEmployees::MIDDLE_NAME, HrEmployees::LAST_NAME], [HrEmployees::STATUS=>'E'], " ");
        $trainingList = array(
-           '1' =>'',
-           '2'=>'',
-           '3'=>''
+           '1' =>'Organizational Hard Skills',
+           '2'=>'Organizational',
+           '3'=>'Organizational Soft Skills'
        );
        return Helper::addFlashMessagesToArray($this, [
            'form'=>$this->form,

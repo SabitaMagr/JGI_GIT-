@@ -1,16 +1,8 @@
 <?php
-
-/**
- * Created by PhpStorm.
- * User: root
- * Date: 10/17/16
- * Time: 1:12 PM
- */
-
 namespace Training;
 
 use Application\Controller\ControllerFactory;
-use System\Controller\TrainingAssignController;
+use Training\Controller\TrainingAssignController;
 use Zend\Router\Http\Segment;
 
 return [
