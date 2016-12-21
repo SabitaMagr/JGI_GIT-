@@ -53,7 +53,8 @@
             "ManagerService\\": "module/ManagerService/src/",
             "System\\": "module/System/src/",
             "Training\\": "module/Training/src/",
-            "Appraisal\\": "module/Appraisal/src/"
+            "Appraisal\\": "module/Appraisal/src/",
+            "LoanAdvance\\": "module/LoanAdvance/src/"
         }
     },
     "autoload-dev": {

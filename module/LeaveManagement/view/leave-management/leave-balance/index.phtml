@@ -24,7 +24,7 @@ echo json_encode($menu); ?>;
         document.messages =<?php echo json_encode($this->messages); ?>
     </script>
 <?php } ?>
-<div ng-app="hris" ng-controller="leaveBalanceController">
+    <div ng-app="hris" ng-controller="leaveBalanceController" class="formbg">
     <div class="margin-top-20">
         <div class="row">
             <div class="col-sm-3">
@@ -65,7 +65,11 @@ echo json_encode($menu); ?>;
                     <i class="fa fa-search"></i>
                 </button>
             </div>
-            <div class="col-md-1">
+          
+        </div>   
+        <div class="margin-top-20">
+        <div class="row">
+              <div class="col-md-offset-6 col-md-6">
                 <div class="btn-group pull-right">
                     <button class="btn green btn-outline dropdown-toggle" data-toggle="dropdown">Tools
                         <i class="fa fa-angle-down"></i>
@@ -77,7 +81,8 @@ echo json_encode($menu); ?>;
                     </ul>
                 </div>
             </div>
-        </div>       
+        </div>
+        </div>
     </div>      
     <div class="row margin-top-10">
         <div class="col-sm-12">

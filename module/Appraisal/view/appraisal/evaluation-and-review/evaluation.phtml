@@ -9,7 +9,8 @@ $this->headScript()
 ?>
 
 <script>
-    document.menu =<?php $menu = ["id" => "menuManagerService", "subMenu" => ["id" => "subMenuAppraisalEvaluation"]];
+    document.menu =<?php
+$menu = ["id" => "menuManagerService", "subMenu" => ["id" => "subMenuAppraisalEvaluation"]];
 echo json_encode($menu);
 ?>;
 </script>
@@ -25,49 +26,37 @@ echo json_encode($menu);
             <thead>
                 <tr>
                     <th>
-                        Appraisal
+                        Appraisal Name
                     </th>
                     <th>
-                        Start Date
+                        Appraisee Name
                     </th>
                     <th>
-                        End Date
+                        Branch
                     </th>
                     <th>
-                        Appraisee
+                        Corporate Level
                     </th>
                     <th>
-                        Appraiser
+                        Functional Title
                     </th>
                     <th>
                         Reviewer
                     </th>
                     <th>
-                        Approved?
+                        Appraiser Rating
                     </th>
                     <th>
-                        Rating
+                        Evaluated?
                     </th>
                     <th>
-                        Objective Set?
+                        Final Rating Accepted
                     </th>
                     <th>
-                        Appraiser Evaluation?
+                        Operation
                     </th>
                     <th>
-                        Reviewer View?
-                    </th>
-                    <th>
-                        Final Rating?
-                    </th>
-                    <th>
-                        Status
-                    </th>
-                    <th>
-                        &nbsp;
-                    </th>
-                    <th>
-                        &nbsp;
+                        View
                     </th>
                 </tr>
             </thead>
