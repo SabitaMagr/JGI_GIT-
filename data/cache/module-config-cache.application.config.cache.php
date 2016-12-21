@@ -1142,6 +1142,42 @@ return array (
           ),
         ),
       ),
+      'loanAdvanceRequest' => 
+      array (
+        'type' => 'Zend\\Router\\Http\\Segment',
+        'options' => 
+        array (
+          'route' => '/selfservice/loanAdvanceRequest[/:action]',
+          'constants' => 
+          array (
+            'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+            'id' => '[0-9]+',
+          ),
+          'defaults' => 
+          array (
+            'controller' => 'SelfService\\Controller\\LoanAdvanceRequest',
+            'action' => 'index',
+          ),
+        ),
+      ),
+      'trainingList' => 
+      array (
+        'type' => 'Zend\\Router\\Http\\Segment',
+        'options' => 
+        array (
+          'route' => '/selfservice/trainingList[/:action]',
+          'constants' => 
+          array (
+            'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+            'id' => '[0-9]+',
+          ),
+          'defaults' => 
+          array (
+            'controller' => 'Training\\Controller\\TrainingAssignController',
+            'action' => 'index',
+          ),
+        ),
+      ),
       'restful' => 
       array (
         'type' => 'Zend\\Router\\Http\\Literal',
@@ -2681,6 +2717,74 @@ return array (
         ),
       ),
     ),
+    'loanAdvanceRequest' => 
+    array (
+      0 => 
+      array (
+        'label' => 'Loan/Advance Request',
+        'route' => 'loanAdvanceRequest',
+      ),
+      1 => 
+      array (
+        'label' => 'Loan/Advance Request',
+        'route' => 'loanAdvanceRequest',
+        'pages' => 
+        array (
+          0 => 
+          array (
+            'label' => 'Detail',
+            'route' => 'loanAdvanceRequest',
+            'action' => 'index',
+          ),
+          1 => 
+          array (
+            'label' => 'Add',
+            'route' => 'loanAdvanceRequest',
+            'action' => 'add',
+          ),
+          2 => 
+          array (
+            'label' => 'Edit',
+            'route' => 'loanAdvanceRequest',
+            'action' => 'edit',
+          ),
+        ),
+      ),
+    ),
+    'trainingList' => 
+    array (
+      0 => 
+      array (
+        'label' => 'Training List',
+        'route' => 'trainingList',
+      ),
+      1 => 
+      array (
+        'label' => 'Loan/Advance Request',
+        'route' => 'trainingList',
+        'pages' => 
+        array (
+          0 => 
+          array (
+            'label' => 'Detail',
+            'route' => 'trainingList',
+            'action' => 'index',
+          ),
+          1 => 
+          array (
+            'label' => 'Add',
+            'route' => 'trainingList',
+            'action' => 'add',
+          ),
+          2 => 
+          array (
+            'label' => 'Edit',
+            'route' => 'trainingList',
+            'action' => 'edit',
+          ),
+        ),
+      ),
+    ),
     'monthlyValue' => 
     array (
       0 => 
@@ -3200,6 +3304,8 @@ return array (
       'SelfService\\Controller\\Profile' => 'Application\\Controller\\ControllerFactory',
       'SelfService\\Controller\\Service' => 'Application\\Controller\\ControllerFactory',
       'SelfService\\Controller\\PaySlip' => 'Application\\Controller\\ControllerFactory',
+      'SelfService\\Controller\\LoanAdvanceRequest' => 'Application\\Controller\\ControllerFactory',
+      'Training\\Controller\\TrainingAssignController' => 'Application\\Controller\\ControllerFactory',
       'RestfulService\\Controller\\RestfulService' => 'Application\\Controller\\ControllerFactory',
       'Payroll\\Controller\\MonthlyValue' => 'Application\\Controller\\ControllerFactory',
       'Payroll\\Controller\\FlatValue' => 'Application\\Controller\\ControllerFactory',
@@ -3211,7 +3317,6 @@ return array (
       'System\\Controller\\UserSetupController' => 'Application\\Controller\\ControllerFactory',
       'System\\Controller\\MenuSetupController' => 'Application\\Controller\\ControllerFactory',
       'System\\Controller\\DashboardController' => 'Application\\Factory\\DashBoardFactory',
-      'Training\\Controller\\TrainingAssignController' => 'Application\\Controller\\ControllerFactory',
       'Appraisal\\Controller\\Appraisal' => 'Application\\Controller\\ControllerFactory',
       'Appraisal\\Controller\\EvaluationAndReview' => 'Application\\Controller\\ControllerFactory',
       'Appraisal\\Controller\\PerformanceAppraisal' => 'Application\\Controller\\ControllerFactory',
@@ -3226,40 +3331,40 @@ return array (
     'exception_template' => 'error/index',
     'template_map' => 
     array (
-      'layout/layout' => '/var/www/html/neo/neo-hris-metronic/module/Application/config/../view/layout/layout.phtml',
-      'layout/login' => '/var/www/html/neo/neo-hris-metronic/module/Application/config/../view/layout/login.phtml',
-      'layout/json' => '/var/www/html/neo/neo-hris-metronic/module/Application/config/../view/layout/json.phtml',
-      'application/index/index' => '/var/www/html/neo/neo-hris-metronic/module/Application/config/../view/application/index/index.phtml',
-      'error/404' => '/var/www/html/neo/neo-hris-metronic/module/Application/config/../view/error/404.phtml',
-      'error/index' => '/var/www/html/neo/neo-hris-metronic/module/Application/config/../view/error/index.phtml',
-      'error/no_access' => '/var/www/html/neo/neo-hris-metronic/module/Application/config/../view/error/no_access.phtml',
-      'partial/header' => '/var/www/html/neo/neo-hris-metronic/module/Application/config/../view/layout/partials/header.phtml',
-      'partial/footer' => '/var/www/html/neo/neo-hris-metronic/module/Application/config/../view/layout/partials/footer.phtml',
-      'partial/sidebar' => '/var/www/html/neo/neo-hris-metronic/module/Application/config/../view/layout/partials/sidebar.phtml',
-      'partial/breadcrumb' => '/var/www/html/neo/neo-hris-metronic/module/Application/config/../view/layout/partials/breadcrumb.phtml',
-      'partial/profile' => '/var/www/html/neo/neo-hris-metronic/module/Application/config/../view/layout/partials/profile.phtml',
-      'dashboard-item/holiday-list' => '/var/www/html/neo/neo-hris-metronic/module/Application/config/../view/layout/dashboard-items/holiday-list.phtml',
-      'dashboard-item/attendance-request' => '/var/www/html/neo/neo-hris-metronic/module/Application/config/../view/layout/dashboard-items/attendance-request.phtml',
-      'dashboard-item/leave-apply' => '/var/www/html/neo/neo-hris-metronic/module/Application/config/../view/layout/dashboard-items/leave-apply.phtml',
-      'dashboard-item/present-absent' => '/var/www/html/neo/neo-hris-metronic/module/Application/config/../view/layout/dashboard-items/present-absent.phtml',
-      'dashboard-item/employee-count-by-branch' => '/var/www/html/neo/neo-hris-metronic/module/Application/config/../view/layout/dashboard-items/employee-count-by-branch.phtml',
-      'dashboard-item/today-leave' => '/var/www/html/neo/neo-hris-metronic/module/Application/config/../view/layout/dashboard-items/today-leave.phtml',
-      'dashboard-item/birthdays' => '/var/www/html/neo/neo-hris-metronic/module/Application/config/../view/layout/dashboard-items/birthdays.phtml',
+      'layout/layout' => '/var/www/html/neo-hris/module/Application/config/../view/layout/layout.phtml',
+      'layout/login' => '/var/www/html/neo-hris/module/Application/config/../view/layout/login.phtml',
+      'layout/json' => '/var/www/html/neo-hris/module/Application/config/../view/layout/json.phtml',
+      'application/index/index' => '/var/www/html/neo-hris/module/Application/config/../view/application/index/index.phtml',
+      'error/404' => '/var/www/html/neo-hris/module/Application/config/../view/error/404.phtml',
+      'error/index' => '/var/www/html/neo-hris/module/Application/config/../view/error/index.phtml',
+      'error/no_access' => '/var/www/html/neo-hris/module/Application/config/../view/error/no_access.phtml',
+      'partial/header' => '/var/www/html/neo-hris/module/Application/config/../view/layout/partials/header.phtml',
+      'partial/footer' => '/var/www/html/neo-hris/module/Application/config/../view/layout/partials/footer.phtml',
+      'partial/sidebar' => '/var/www/html/neo-hris/module/Application/config/../view/layout/partials/sidebar.phtml',
+      'partial/breadcrumb' => '/var/www/html/neo-hris/module/Application/config/../view/layout/partials/breadcrumb.phtml',
+      'partial/profile' => '/var/www/html/neo-hris/module/Application/config/../view/layout/partials/profile.phtml',
+      'dashboard-item/holiday-list' => '/var/www/html/neo-hris/module/Application/config/../view/layout/dashboard-items/holiday-list.phtml',
+      'dashboard-item/attendance-request' => '/var/www/html/neo-hris/module/Application/config/../view/layout/dashboard-items/attendance-request.phtml',
+      'dashboard-item/leave-apply' => '/var/www/html/neo-hris/module/Application/config/../view/layout/dashboard-items/leave-apply.phtml',
+      'dashboard-item/present-absent' => '/var/www/html/neo-hris/module/Application/config/../view/layout/dashboard-items/present-absent.phtml',
+      'dashboard-item/employee-count-by-branch' => '/var/www/html/neo-hris/module/Application/config/../view/layout/dashboard-items/employee-count-by-branch.phtml',
+      'dashboard-item/today-leave' => '/var/www/html/neo-hris/module/Application/config/../view/layout/dashboard-items/today-leave.phtml',
+      'dashboard-item/birthdays' => '/var/www/html/neo-hris/module/Application/config/../view/layout/dashboard-items/birthdays.phtml',
     ),
     'template_path_stack' => 
     array (
-      0 => '/var/www/html/neo/neo-hris-metronic/module/Application/config/../view',
-      1 => '/var/www/html/neo/neo-hris-metronic/module/Setup/config/../view',
-      2 => '/var/www/html/neo/neo-hris-metronic/module/LeaveManagement/config/../view',
-      3 => '/var/www/html/neo/neo-hris-metronic/module/HolidayManagement/config/../view',
-      4 => '/var/www/html/neo/neo-hris-metronic/module/AttendanceManagement/config/../view',
-      5 => '/var/www/html/neo/neo-hris-metronic/module/SelfService/config/../view',
-      6 => '/var/www/html/neo/neo-hris-metronic/module/RestfulService/config/../view',
-      7 => '/var/www/html/neo/neo-hris-metronic/module/Payroll/config/../view',
-      8 => '/var/www/html/neo/neo-hris-metronic/module/ManagerService/config/../view',
-      9 => '/var/www/html/neo/neo-hris-metronic/module/System/config/../view',
-      10 => '/var/www/html/neo/neo-hris-metronic/module/Training/config/../view',
-      11 => '/var/www/html/neo/neo-hris-metronic/module/Appraisal/config/../view',
+      0 => '/var/www/html/neo-hris/module/Application/config/../view',
+      1 => '/var/www/html/neo-hris/module/Setup/config/../view',
+      2 => '/var/www/html/neo-hris/module/LeaveManagement/config/../view',
+      3 => '/var/www/html/neo-hris/module/HolidayManagement/config/../view',
+      4 => '/var/www/html/neo-hris/module/AttendanceManagement/config/../view',
+      5 => '/var/www/html/neo-hris/module/SelfService/config/../view',
+      6 => '/var/www/html/neo-hris/module/RestfulService/config/../view',
+      7 => '/var/www/html/neo-hris/module/Payroll/config/../view',
+      8 => '/var/www/html/neo-hris/module/ManagerService/config/../view',
+      9 => '/var/www/html/neo-hris/module/System/config/../view',
+      10 => '/var/www/html/neo-hris/module/Training/config/../view',
+      11 => '/var/www/html/neo-hris/module/Appraisal/config/../view',
     ),
   ),
   'dashboard-items' => 

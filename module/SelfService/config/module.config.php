@@ -17,6 +17,8 @@ use SelfService\Controller\PaySlip;
 use SelfService\Controller\Profile;
 use SelfService\Controller\Service;
 use Zend\Router\Http\Segment;
+use SelfService\Controller\LoanAdvanceRequest;
+use Training\Controller\TrainingAssignController;
 
 return [
     'router' => [
@@ -144,6 +146,20 @@ return [
                     ],
                     'defaults' => [
                         'controller' => LoanAdvanceRequest::class,
+                        'action' => 'index',
+                    ]
+                ],
+            ],
+            'trainingList' => [
+                'type' => Segment::class,
+                'options' => [
+                    'route' => '/selfservice/trainingList[/:action]',
+                    'constants' => [
+                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'id' => '[0-9]+',
+                    ],
+                    'defaults' => [
+                        'controller' => TrainingList::class,
                         'action' => 'index',
                     ]
                 ],
@@ -395,6 +411,33 @@ return [
                 ],
             ],
         ],
+        'trainingList' => [
+            [
+                'label' => 'Training List',
+                'route' => 'trainingList',
+            ],
+            [
+                'label' => 'Loan/Advance Request',
+                'route' => 'trainingList',
+                'pages' => [
+                    [
+                        'label' => 'Detail',
+                        'route' => 'trainingList',
+                        'action' => 'index',
+                    ],
+                    [
+                        'label' => 'Add',
+                        'route' => 'trainingList',
+                        'action' => 'add',
+                    ],
+                    [
+                        'label' => 'Edit',
+                        'route' => 'trainingList',
+                        'action' => 'edit',
+                    ],
+                ],
+            ],
+        ],
     ],
 
     'controllers' => [
@@ -407,7 +450,8 @@ return [
             Profile::class => ControllerFactory::class,
             Service::class => ControllerFactory::class,
             PaySlip::class => ControllerFactory::class,
-            LoanAdvanceRequest::class => ControllerFactory::class
+            LoanAdvanceRequest::class => ControllerFactory::class,
+            TrainingList::class => ControllerFactory::class
         ],
     ],
     'view_manager' => [

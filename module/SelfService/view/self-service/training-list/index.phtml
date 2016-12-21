@@ -5,7 +5,7 @@
 $this->headScript()
         ->appendFile($this->basePath('jszip/dist/jszip.min.js'))
         ->appendFile($this->basePath('telerik_kendoui/js/kendo.all.min.js'))
-        ->appendFile($this->basePath('js/SelfService/loan-advance-request/index.js'))
+        ->appendFile($this->basePath('js/training/training-assign/index.js'))
         ->appendFile($this->basePath('assets/global/plugins/bootstrap-confirmation/bootstrap-confirmation.min.js'));
 ?>
 <?php if ($this->messages) { ?>
@@ -15,26 +15,18 @@ $this->headScript()
 <?php } ?>
 
 <script>
-    document.menu =<?php $menu = ["id" => "menuSelfService", "subMenu" => ["id" => "subMenuLoanAndAdvanceRequest"]];
+    document.menu =<?php $menu = ["id" => "menuSelfService", "subMenu" => ["id" => "subMenuTrainingList"]];
 echo json_encode($menu); ?>;
     document.deleteURL ='<?= $this->url("restful", ["action" => "index"]) ?>';
 </script>
 <div class="page-bar">
-    <?= $this->navigation('Zend\Navigation\loanAdvanceRequest')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
+    <?= $this->navigation('Zend\Navigation\trainingList')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
 
 
 <div class="margin-top-20">
     <div class="table-toolbar">
         <div class="row">
-            <div class="col-md-6">
-                <div class="btn-group">
-                    <a href="<?= $this->url('loanAdvanceRequest', ['action' => 'add']) ?>" id="sample_editable_1_new"
-                       class="btn green"> Add New
-                        <!--                        <i class="fa fa-plus"></i>-->
-                    </a>
-                </div>
-            </div>
             <div class="col-md-6">
                 <div class="btn-group pull-right">
                     <button class="btn green btn-outline dropdown-toggle" data-toggle="dropdown">Tools
@@ -54,27 +46,26 @@ echo json_encode($menu); ?>;
             <thead>
             <tr>
                 <th>Employee Name</th>
-                <th>Loan/Advance Name</th>
-                <th>Request Date</th>
-                <th>Requested Amount</th>
-                <th>Advance Amount</th>
-                <th>Repayment Amount</th>
-                <th>Repayment Period</th>
-                <th>Action</th>
+                <th>Training Name</th>
+                <th>Start Date</th>
+                <th>To Date</th>
+                <th>Location</th>
+                <th>Instructor Name</th>
             </tr>
             </thead>
             <tbody>
                 <tr>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>                    
+                    <td>Rama Kumari Thapa</td>
+                    <td>Organizational</td>
+                    <td>02-Jan-2016</td>
+                    <td>07-Jan-2016</td>
+                    <td>Jawalakhel</td>
+                    <td>Ramesh Chhetri</td>
+                  
                 </tr>             
             </tbody>
         </table>
     </div>
+ 
+
 </div>
