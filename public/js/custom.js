@@ -33,8 +33,6 @@ window.app = (function ($, toastr) {
 
     var fetchAndPopulate = function (url, id, element, callback) {
         pullDataById(url, {id: id}).then(function (data) {
-
-
             populateSelectElement(element, data);
             if (typeof callback !== 'undefined') {
                 callback();

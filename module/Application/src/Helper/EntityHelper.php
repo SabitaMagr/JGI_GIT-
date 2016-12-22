@@ -16,7 +16,7 @@ use Zend\Db\TableGateway\TableGateway;
 
 class EntityHelper {
 
-    public static function getTableKVList(AdapterInterface $adapter, $tableName, $key = null, array $values, $where = null, $concatWith = null, $emptyColumn = null) {
+    public static function getTableKVList(AdapterInterface $adapter, $tableName, $key = null, array $values, $where = null, $concatWith = null, $emptyColumn = false) {
         $gateway = new TableGateway($tableName, $adapter);
 
         if ($where == null) {
