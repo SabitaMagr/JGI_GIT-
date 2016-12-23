@@ -10,29 +10,33 @@
 namespace Setup\Controller;
 
 use Application\Helper\EntityHelper as ApplicationHelper;
+use Application\Helper\EntityHelper as EntityHelper2;
 use Application\Helper\Helper;
-use Setup\Form\HrEmployeesFormTabSix;
-use Setup\Helper\EntityHelper;
 use Setup\Form\HrEmployeesFormTabFive;
 use Setup\Form\HrEmployeesFormTabFour;
 use Setup\Form\HrEmployeesFormTabOne;
+use Setup\Form\HrEmployeesFormTabSix;
 use Setup\Form\HrEmployeesFormTabThree;
 use Setup\Form\HrEmployeesFormTabTwo;
-use Setup\Repository\EmployeeFile;
-use Setup\Repository\EmployeeRepository;
-use Zend\Db\Adapter\AdapterInterface;
-use Zend\Form\Annotation\AnnotationBuilder;
-use Zend\Mvc\Controller\AbstractActionController;
-use Zend\View\Model\ViewModel;
+use Setup\Helper\EntityHelper;
 use Setup\Model\Branch;
 use Setup\Model\Department;
 use Setup\Model\Designation;
-use Setup\Model\Position;
-use Setup\Model\ServiceType;
-use Setup\Model\ServiceEventType;
-use Zend\Form\Element\Select;
-use Setup\Repository\JobHistoryRepository;
+use Setup\Model\District;
+use Setup\Model\HrEmployees;
 use Setup\Model\JobHistory;
+use Setup\Model\Position;
+use Setup\Model\ServiceEventType;
+use Setup\Model\ServiceType;
+use Setup\Model\VdcMunicipalities;
+use Setup\Repository\EmployeeFile;
+use Setup\Repository\EmployeeRepository;
+use Setup\Repository\JobHistoryRepository;
+use Zend\Db\Adapter\AdapterInterface;
+use Zend\Form\Annotation\AnnotationBuilder;
+use Zend\Form\Element\Select;
+use Zend\Mvc\Controller\AbstractActionController;
+use Zend\View\Model\ViewModel;
 
 class EmployeeController extends AbstractActionController {
 
@@ -54,7 +58,7 @@ class EmployeeController extends AbstractActionController {
     public function indexAction() {
         $employeeNameFormElement = new Select();
         $employeeNameFormElement->setName("branch");
-        $employeeName = \Application\Helper\EntityHelper::getTableKVList($this->adapter, "HR_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => "E"]," ");
+        $employeeName = EntityHelper2::getTableKVList($this->adapter, "HR_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => "E"], " ");
         $employeeName[-1] = "All";
         ksort($employeeName);
         $employeeNameFormElement->setValueOptions($employeeName);
@@ -64,7 +68,7 @@ class EmployeeController extends AbstractActionController {
 
         $branchFormElement = new Select();
         $branchFormElement->setName("branch");
-        $branches = \Application\Helper\EntityHelper::getTableKVList($this->adapter, Branch::TABLE_NAME, Branch::BRANCH_ID, [Branch::BRANCH_NAME], [Branch::STATUS => 'E']);
+        $branches = EntityHelper2::getTableKVList($this->adapter, Branch::TABLE_NAME, Branch::BRANCH_ID, [Branch::BRANCH_NAME], [Branch::STATUS => 'E']);
         $branches[-1] = "All";
         ksort($branches);
         $branchFormElement->setValueOptions($branches);
@@ -75,7 +79,7 @@ class EmployeeController extends AbstractActionController {
 
         $departmentFormElement = new Select();
         $departmentFormElement->setName("department");
-        $departments = \Application\Helper\EntityHelper::getTableKVList($this->adapter, Department::TABLE_NAME, Department::DEPARTMENT_ID, [Department::DEPARTMENT_NAME], [Department::STATUS => 'E']);
+        $departments = EntityHelper2::getTableKVList($this->adapter, Department::TABLE_NAME, Department::DEPARTMENT_ID, [Department::DEPARTMENT_NAME], [Department::STATUS => 'E']);
         $departments[-1] = "All";
         ksort($departments);
         $departmentFormElement->setValueOptions($departments);
@@ -84,7 +88,7 @@ class EmployeeController extends AbstractActionController {
 
         $designationFormElement = new Select();
         $designationFormElement->setName("designation");
-        $designations = \Application\Helper\EntityHelper::getTableKVList($this->adapter, Designation::TABLE_NAME, Designation::DESIGNATION_ID, [Designation::DESIGNATION_TITLE], [Designation::STATUS => 'E']);
+        $designations = EntityHelper2::getTableKVList($this->adapter, Designation::TABLE_NAME, Designation::DESIGNATION_ID, [Designation::DESIGNATION_TITLE], [Designation::STATUS => 'E']);
         $designations[-1] = "All";
         ksort($designations);
         $designationFormElement->setValueOptions($designations);
@@ -93,7 +97,7 @@ class EmployeeController extends AbstractActionController {
 
         $positionFormElement = new Select();
         $positionFormElement->setName("position");
-        $positions = \Application\Helper\EntityHelper::getTableKVList($this->adapter, Position::TABLE_NAME, Position::POSITION_ID, [Position::POSITION_NAME], [Position::STATUS => 'E']);
+        $positions = EntityHelper2::getTableKVList($this->adapter, Position::TABLE_NAME, Position::POSITION_ID, [Position::POSITION_NAME], [Position::STATUS => 'E']);
         $positions[-1] = "All";
         ksort($positions);
         $positionFormElement->setValueOptions($positions);
@@ -102,7 +106,7 @@ class EmployeeController extends AbstractActionController {
 
         $serviceTypeFormElement = new Select();
         $serviceTypeFormElement->setName("serviceType");
-        $serviceTypes = \Application\Helper\EntityHelper::getTableKVList($this->adapter, ServiceType::TABLE_NAME, ServiceType::SERVICE_TYPE_ID, [ServiceType::SERVICE_TYPE_NAME], [ServiceType::STATUS => 'E']);
+        $serviceTypes = EntityHelper2::getTableKVList($this->adapter, ServiceType::TABLE_NAME, ServiceType::SERVICE_TYPE_ID, [ServiceType::SERVICE_TYPE_NAME], [ServiceType::STATUS => 'E']);
         $serviceTypes[-1] = "All";
         ksort($serviceTypes);
         $serviceTypeFormElement->setValueOptions($serviceTypes);
@@ -111,7 +115,7 @@ class EmployeeController extends AbstractActionController {
 
         $serviceEventTypeFormElement = new Select();
         $serviceEventTypeFormElement->setName("serviceEventType");
-        $serviceEventTypes = \Application\Helper\EntityHelper::getTableKVList($this->adapter, ServiceEventType::TABLE_NAME, ServiceEventType::SERVICE_EVENT_TYPE_ID, [ServiceEventType::SERVICE_EVENT_TYPE_NAME], [ServiceEventType::STATUS => 'E']);
+        $serviceEventTypes = EntityHelper2::getTableKVList($this->adapter, ServiceEventType::TABLE_NAME, ServiceEventType::SERVICE_EVENT_TYPE_ID, [ServiceEventType::SERVICE_EVENT_TYPE_NAME], [ServiceEventType::STATUS => 'E']);
         $serviceEventTypes[-1] = "All";
         ksort($serviceEventTypes);
         $serviceEventTypeFormElement->setValueOptions($serviceEventTypes);
@@ -238,8 +242,8 @@ class EmployeeController extends AbstractActionController {
         $formSixModel = new HrEmployeesFormTabSix();
 
         $employeeData = (array) $this->repository->fetchById($id);
-        $profilePictureId = $employeeData[\Setup\Model\HrEmployees::PROFILE_PICTURE_ID];
-
+        $profilePictureId = $employeeData[HrEmployees::PROFILE_PICTURE_ID];
+        $address = [];
         $getJobHistoryByEmployeeId = $this->jobHistoryRepo->filter(null, null, $id, -1);
         $empJobHistoryList = [];
         foreach ($getJobHistoryByEmployeeId as $row) {
@@ -334,6 +338,37 @@ class EmployeeController extends AbstractActionController {
         }
         if ($tab != 1 || !$request->isPost()) {
             $formOneModel->exchangeArrayFromDB($employeeData);
+
+            if (isset($formOneModel->addrPermVdcMunicipalityId)) {
+                $address['addrPermVdcMunicipalityId'] = $formOneModel->addrPermVdcMunicipalityId;
+                $tempArray = ApplicationHelper::getTableKVList($this->adapter, VdcMunicipalities::TABLE_NAME, null, [VdcMunicipalities::DISTRICT_ID], [VdcMunicipalities::VDC_MUNICIPALITY_ID => $formOneModel->addrPermVdcMunicipalityId], null);
+                if (isset($tempArray) && (sizeof($tempArray) > 0)) {
+                    $formOneModel->addrPermDistrictId = $tempArray[0];
+                    $address["addrPermDistrictId"] = $tempArray[0];
+                }
+            }
+            if (isset($formOneModel->addrPermDistrictId)) {
+                $tempArray = ApplicationHelper::getTableKVList($this->adapter, District::TABLE_NAME, null, [District::ZONE_ID], [District::DISTRICT_ID => $formOneModel->addrPermDistrictId], null);
+                if (isset($tempArray) && (sizeof($tempArray) > 0)) {
+                    $formOneModel->addrPermZoneId = $tempArray[0];
+                    $address["addrPermZoneId"] = $tempArray[0];
+                }
+            }
+            if (isset($formOneModel->addrTempVdcMunicipalityId)) {
+                $address['addrTempVdcMunicipalityId'] = $formOneModel->addrTempVdcMunicipalityId;
+                $tempArray = ApplicationHelper::getTableKVList($this->adapter, VdcMunicipalities::TABLE_NAME, null, [VdcMunicipalities::DISTRICT_ID], [VdcMunicipalities::VDC_MUNICIPALITY_ID => $formOneModel->addrTempVdcMunicipalityId], null);
+                if (isset($tempArray) && (sizeof($tempArray) > 0)) {
+                    $formOneModel->addrTempDistrictId = $tempArray[0];
+                    $address["addrTempDistrictId"] = $tempArray[0];
+                }
+            }
+            if (isset($formOneModel->addrTempDistrictId)) {
+                $tempArray = ApplicationHelper::getTableKVList($this->adapter, District::TABLE_NAME, null, [District::ZONE_ID], [District::DISTRICT_ID => $formOneModel->addrTempDistrictId], null);
+                if (isset($tempArray) && (sizeof($tempArray) > 0)) {
+                    $formOneModel->addrTempZoneId = $tempArray[0];
+                    $address["addrTempZoneId"] = $tempArray[0];
+                }
+            }
             $this->formOne->bind($formOneModel);
         }
 
@@ -393,7 +428,8 @@ class EmployeeController extends AbstractActionController {
                     'academicProgram' => ApplicationHelper::getTableKVList($this->adapter, "HR_ACADEMIC_PROGRAMS", "ACADEMIC_PROGRAM_ID", ["ACADEMIC_PROGRAM_NAME"], ["STATUS" => 'E']),
                     'academicCourse' => ApplicationHelper::getTableKVList($this->adapter, "HR_ACADEMIC_COURSES", "ACADEMIC_COURSE_ID", ["ACADEMIC_COURSE_NAME"], ["STATUS" => 'E']),
                     'rankTypes' => $rankTypes,
-                    'profilePictureId' => $profilePictureId
+                    'profilePictureId' => $profilePictureId,
+                    'address' => $address,
         ]);
     }
 
