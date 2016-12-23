@@ -12,6 +12,8 @@ use Application\Repository\RepositoryInterface;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\TableGateway\TableGateway;
 use Setup\Model\AcademicUniversity;
+use Zend\Db\Sql\Sql;
+use Zend\Db\Sql\Select;
 
 class AcademicUniversityRepository implements RepositoryInterface {
 
@@ -35,7 +37,10 @@ class AcademicUniversityRepository implements RepositoryInterface {
 
     public function fetchAll()
     {
-        return $this->tableGateway->select([AcademicUniversity::STATUS=>'E']);
+        return $this->tableGateway->select(function(Select $select){
+            $select->where([AcademicUniversity::STATUS=>'E']);
+            $select->order(AcademicUniversity::ACADEMIC_UNIVERSITY_NAME." ASC");
+        });
     }
 
 

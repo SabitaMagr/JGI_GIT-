@@ -5,7 +5,6 @@
  * Date: 9/8/16
  * Time: 5:16 PM
  */
-
 namespace LeaveManagement\Controller;
 
 
@@ -66,12 +65,10 @@ class LeaveApply extends AbstractActionController
         }
         return Helper::addFlashMessagesToArray($this, [
             'form' => $this->form,
-            'leaves'=> \Application\Helper\EntityHelper::getTableKVList($this->adapter, "HR_LEAVE_MASTER_SETUP", "LEAVE_ID", ["LEAVE_ENAME"],["STATUS"=>'E']),
-            'employees' => \Application\Helper\EntityHelper::getTableKVList($this->adapter, "HR_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"],["STATUS"=>'E']," "), 
+            'leaves'=> \Application\Helper\EntityHelper::getTableKVListWithSortOption($this->adapter, "HR_LEAVE_MASTER_SETUP", "LEAVE_ID", ["LEAVE_ENAME"],["STATUS"=>'E'],"LEAVE_ENAME","ASC"),
+            'employees' => \Application\Helper\EntityHelper::getTableKVListWithSortOption($this->adapter, "HR_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"],["STATUS"=>'E','RETIRED_FLAG'=>'N'],"FIRST_NAME","ASC"," "), 
             'customRenderer'=>Helper::renderCustomView()
         ]);
 
     }
-
-
 }

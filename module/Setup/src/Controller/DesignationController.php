@@ -76,15 +76,14 @@ class DesignationController extends AbstractActionController
                 return $this->redirect()->toRoute("designation");
             }
         }
-        $designationList = EntityHelper::getTableKVList($this->adapter, Designation::TABLE_NAME, Designation::DESIGNATION_ID, [Designation::DESIGNATION_TITLE], ["STATUS" => "E"]);
-        $designationList[""] = "none";
-        ksort($designationList);
+        $designationList = EntityHelper::getTableKVListWithSortOption($this->adapter, Designation::TABLE_NAME, Designation::DESIGNATION_ID, [Designation::DESIGNATION_TITLE], ["STATUS" => "E"],"DESIGNATION_TITLE","ASC");
+        $designationList1 = [""=>"none"]+$designationList;
         return new ViewModel(Helper::addFlashMessagesToArray(
             $this,
             [
                 'form' => $this->form,
                 'customRender' => Helper::renderCustomView(),
-                'designationList' => $designationList,
+                'designationList' => $designationList1,
                 'messages' => $this->flashmessenger()->getMessages()
             ]
         )
@@ -119,14 +118,13 @@ class DesignationController extends AbstractActionController
             }
         }
         $designationList = EntityHelper::getTableKVList($this->adapter, Designation::TABLE_NAME, Designation::DESIGNATION_ID, [Designation::DESIGNATION_TITLE], ["STATUS" => "E"]);
-        $designationList[""] = "none";
-        ksort($designationList);
+        $designationList1 = [""=>"none"]+$designationList;
         return new ViewModel(Helper::addFlashMessagesToArray(
             $this,
             [
                 'form' => $this->form,
                 'customRender' => Helper::renderCustomView(),
-                'designationList' => $designationList,
+                'designationList' => $designationList1,
                 'messages' => $this->flashmessenger()->getMessages(),
                 'id' => $id
             ])

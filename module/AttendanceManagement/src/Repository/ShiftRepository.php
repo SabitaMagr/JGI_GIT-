@@ -9,6 +9,7 @@ use AttendanceManagement\Model\ShiftSetup;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Sql\Sql;
 use Zend\Db\TableGateway\TableGateway;
+use Zend\Db\Sql\Select;
 
 class ShiftRepository implements RepositoryInterface
 {
@@ -44,6 +45,7 @@ class ShiftRepository implements RepositoryInterface
         $select->from(ShiftSetup::TABLE_NAME);
         $select->columns(Helper::convertColumnDateFormat($this->adapter, new ShiftSetup(), ['startDate','endDate'],['startTime','endTime']),false);
         $select->where([ShiftSetup::STATUS=>'E']);
+        $select->order(ShiftSetup::SHIFT_ENAME." ASC");
         $statement = $sql->prepareStatementForSqlObject($select);
 
         $result = $statement->execute();
@@ -65,7 +67,10 @@ class ShiftRepository implements RepositoryInterface
     }
     public function fetchActiveRecord()
     {
-         return  $rowset= $this->tableGateway->select([ShiftSetup::STATUS=>'E']);
+         return  $rowset= $this->tableGateway->select(function(Select $select){
+             $select->where([ShiftSetup::STATUS=>'E']);
+             $select->order(ShiftSetup::SHIFT_ENAME." ASC");
+         });
     }
 
     public function delete($id)

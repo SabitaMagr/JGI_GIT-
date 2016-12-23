@@ -51,14 +51,18 @@ echo json_encode($menu);
             
         </div>
         <div class="row margin-top-10"> 
-            <div class="col-sm-3">
+            <div class="col-sm-2">
                 <?php print $this->formLabel($attendanceStatus); ?>
                 <?php print $this->formElement($attendanceStatus); ?>
             </div>  
             <div class="col-sm-3">
                 <?php print $this->formLabel($serviceTypes); ?>
                 <?php print $this->formElement($serviceTypes); ?>
-            </div>              
+            </div>      
+            <div class="col-sm-2">
+                <?php print $this->formLabel($serviceEventTypes); ?>
+                <?php print $this->formElement($serviceEventTypes); ?>
+            </div> 
             <div class="col-sm-2">
                 <label for="fromDate">From Date</label>
                 <div class="input-group date" id="fromDate">

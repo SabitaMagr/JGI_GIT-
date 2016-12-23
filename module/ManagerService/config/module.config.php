@@ -137,6 +137,7 @@ return [
     'controllers' => [
         'factories' => [
             Controller\LeaveApproveController::class => ControllerFactory::class,
+            Controller\AttendanceApproveController::class=>ControllerFactory::class,
             Controller\LoanApproveController::class=>ControllerFactory::class
         ],
 

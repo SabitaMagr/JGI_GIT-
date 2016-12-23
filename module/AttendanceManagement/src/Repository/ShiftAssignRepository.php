@@ -66,6 +66,8 @@ class ShiftAssignRepository implements RepositoryInterface
             ->join(['DE' => 'HR_DESIGNATIONS'], 'DE.DESIGNATION_ID=E.DESIGNATION_ID', ["DESIGNATION_ID", "DESIGNATION_TITLE"],"left")
             ->join(['P' => Position::TABLE_NAME], 'P.' . Position::POSITION_ID . '=E.' . Position::POSITION_ID . '', [Position::POSITION_ID, Position::POSITION_NAME],"left")
             ->join(['ST' => ServiceType::TABLE_NAME], 'ST.' . ServiceType::SERVICE_TYPE_ID . '=E.' . ServiceType::SERVICE_TYPE_ID . '', [ServiceType::SERVICE_TYPE_ID, ServiceType::SERVICE_TYPE_NAME],"left");
+       $select->where(["E.STATUS='E'"]);
+       $select->where(["E.RETIRED_FLAG='N'"]);
         if ($branchId != -1) {
             $select->where(["E.BRANCH_ID=$branchId"]);
         }
@@ -81,7 +83,7 @@ class ShiftAssignRepository implements RepositoryInterface
         if ($serviceTypeId != -1) {
             $select->where(['E.' . ServiceType::SERVICE_TYPE_ID . "=$serviceTypeId"]);
         }
-
+        $select->order("E.FIRST_NAME ASC");
         $statement = $sql->prepareStatementForSqlObject($select);
         $result = $statement->execute();
         return $result;
@@ -93,15 +95,12 @@ class ShiftAssignRepository implements RepositoryInterface
         $select = $sql->select();
 
         $select->from(['SA' => ShiftAssign::TABLE_NAME])
-            ->join(['SH' => ShiftSetup::TABLE_NAME], 'SA.' . ShiftSetup::SHIFT_ID . '=SH.' . ShiftSetup::SHIFT_ID . '', [ShiftSetup::SHIFT_ENAME]);
+            ->join(['SH' => ShiftSetup::TABLE_NAME], 'SA.' . ShiftSetup::SHIFT_ID . '=SH.' . ShiftSetup::SHIFT_ID . '', [ShiftSetup::SHIFT_ENAME],"left");
         $select->where(["SA.".ShiftAssign::STATUS." ='E'","SA.".ShiftAssign::EMPLOYEE_ID." =$employeeId"]);
         $select->order('SA.'.ShiftAssign::CREATED_DT.' DESC');
         $statement = $sql->prepareStatementForSqlObject($select);
         $result = $statement->execute();
-        return     $result->current();
-
-
-
+        return $result->current();
     }
 
 }

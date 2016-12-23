@@ -1,5 +1,4 @@
 <?php
-
 namespace LeaveManagement\Controller;
 
 use Application\Helper\EntityHelper;

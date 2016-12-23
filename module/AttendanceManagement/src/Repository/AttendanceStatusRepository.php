@@ -55,11 +55,12 @@ class AttendanceStatusRepository implements RepositoryInterface {
                 ], true);
 
         $select->from(['AR' => AttendanceRequestModel::TABLE_NAME])
-                ->join(['E' => "HR_EMPLOYEES"], "E.EMPLOYEE_ID=AR.EMPLOYEE_ID", ['FIRST_NAME', 'MIDDLE_NAME', 'LAST_NAME'])
-                ->join(['E1' => "HR_EMPLOYEES"], "E1.EMPLOYEE_ID=AR.APPROVED_BY", ['FIRST_NAME1' => "FIRST_NAME", 'MIDDLE_NAME1' => "MIDDLE_NAME", 'LAST_NAME1' => "LAST_NAME"]);
+                ->join(['E' => "HR_EMPLOYEES"], "E.EMPLOYEE_ID=AR.EMPLOYEE_ID", ['FIRST_NAME', 'MIDDLE_NAME', 'LAST_NAME'],"left")
+                ->join(['E1' => "HR_EMPLOYEES"], "E1.EMPLOYEE_ID=AR.APPROVED_BY", ['FIRST_NAME1' => "FIRST_NAME", 'MIDDLE_NAME1' => "MIDDLE_NAME", 'LAST_NAME1' => "LAST_NAME"],"left");
 
         $select->where([
-            "E.STATUS='E'"
+            "E.STATUS='E'",
+            "E.RETIRED_FLAG='N'"
         ]);
         if ($status != null) {
             $where = "AR.STATUS ='" . $status . "'";
@@ -73,7 +74,7 @@ class AttendanceStatusRepository implements RepositoryInterface {
         if ($employeeId != null) {
             $select->where(["E." . HrEmployees::EMPLOYEE_ID . " = $employeeId"]);
         }
-
+        $select->order("E.FIRST_NAME ASC");
         $statement = $sql->prepareStatementForSqlObject($select);
         $result = $statement->execute();
         return $result;
@@ -97,8 +98,8 @@ class AttendanceStatusRepository implements RepositoryInterface {
             new Expression("TO_CHAR(A.REQUESTED_DT, 'DD-MON-YYYY') AS REQUESTED_DT")
                 ], true);
         $select->from(['A' => AttendanceRequestModel::TABLE_NAME])
-                ->join(['E' => 'HR_EMPLOYEES'], 'A.EMPLOYEE_ID=E.EMPLOYEE_ID', ['FIRST_NAME', 'MIDDLE_NAME', 'LAST_NAME'])
-                ->join(['E1' => "HR_EMPLOYEES"], "E1.EMPLOYEE_ID=A.APPROVED_BY", ['FIRST_NAME1' => "FIRST_NAME", 'MIDDLE_NAME1' => "MIDDLE_NAME", 'LAST_NAME1' => "LAST_NAME"]);
+                ->join(['E' => 'HR_EMPLOYEES'], 'A.EMPLOYEE_ID=E.EMPLOYEE_ID', ['FIRST_NAME', 'MIDDLE_NAME', 'LAST_NAME'],"left")
+                ->join(['E1' => "HR_EMPLOYEES"], "E1.EMPLOYEE_ID=A.APPROVED_BY", ['FIRST_NAME1' => "FIRST_NAME", 'MIDDLE_NAME1' => "MIDDLE_NAME", 'LAST_NAME1' => "LAST_NAME"],"left");
 
         $select->where([AttendanceRequestModel::ID => $id]);
         $statement = $sql->prepareStatementForSqlObject($select);
@@ -118,6 +119,7 @@ class AttendanceStatusRepository implements RepositoryInterface {
         $designationId = $data['designationId'];
         $positionId = $data['positionId'];
         $serviceTypeId = $data['serviceTypeId'];
+        $serviceEventTypeId = $data['serviceEventTypeId'];
         $attendanceRequestStatusId = $data['attendanceRequestStatusId'];
         
         $sql = new Sql($this->adapter);
@@ -138,12 +140,18 @@ class AttendanceStatusRepository implements RepositoryInterface {
                 ], true);
 
         $select->from(['AR' => AttendanceRequestModel::TABLE_NAME])
-                ->join(['E' => "HR_EMPLOYEES"], "E.EMPLOYEE_ID=AR.EMPLOYEE_ID", ['FIRST_NAME', 'MIDDLE_NAME', 'LAST_NAME'])
-                ->join(['E1' => "HR_EMPLOYEES"], "E1.EMPLOYEE_ID=AR.APPROVED_BY", ['FIRST_NAME1' => "FIRST_NAME", 'MIDDLE_NAME1' => "MIDDLE_NAME", 'LAST_NAME1' => "LAST_NAME"]);
+                ->join(['E' => "HR_EMPLOYEES"], "E.EMPLOYEE_ID=AR.EMPLOYEE_ID", ['FIRST_NAME', 'MIDDLE_NAME', 'LAST_NAME'],"left")
+                ->join(['E1' => "HR_EMPLOYEES"], "E1.EMPLOYEE_ID=AR.APPROVED_BY", ['FIRST_NAME1' => "FIRST_NAME", 'MIDDLE_NAME1' => "MIDDLE_NAME", 'LAST_NAME1' => "LAST_NAME"],"left");
         
         $select->where([
             "E.STATUS='E'"
         ]);
+        if($serviceEventTypeId==5 || $serviceEventTypeId==8 || $serviceEventTypeId==14){
+            $select->where(["E.RETIRED_FLAG='Y'"]);
+        }else{
+            $select->where(["E.RETIRED_FLAG='N'"]);
+        }
+        
         if($approverId!=null){
             $select->where([
                "AR.APPROVED_BY=".$approverId 
@@ -200,7 +208,12 @@ class AttendanceStatusRepository implements RepositoryInterface {
                 "E." . HrEmployees::EMPLOYEE_ID . " IN (SELECT " . HrEmployees::EMPLOYEE_ID . " FROM " . HrEmployees::TABLE_NAME . " WHERE " . HrEmployees::SERVICE_TYPE_ID . "= $serviceTypeId)"
             ]);            
         }
-
+        if ($serviceEventTypeId != -1) {
+            $select->where([
+                "E." . HrEmployees::EMPLOYEE_ID . " IN (SELECT " . HrEmployees::EMPLOYEE_ID . " FROM " . HrEmployees::TABLE_NAME . " WHERE " . HrEmployees::SERVICE_EVENT_TYPE_ID . "= $serviceEventTypeId)"
+            ]);            
+        }
+        $select->order("AR.REQUESTED_DT DESC");
         $statement = $sql->prepareStatementForSqlObject($select);
         $result = $statement->execute();
         return $result;

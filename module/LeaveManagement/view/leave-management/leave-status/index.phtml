@@ -60,7 +60,11 @@ if ($this->messages) { ?>
             <div class="col-sm-2">
                 <?php print $this->formLabel($leaveStatus); ?>
                 <?php print $this->formElement($leaveStatus); ?>
-            </div>    
+            </div>  
+            <div class="col-sm-2">
+                <?php print $this->formLabel($serviceEventTypes); ?>
+                <?php print $this->formElement($serviceEventTypes); ?>
+            </div>
             <div class="col-sm-2">
                 <label for="fromDate">From Date</label>
                 <div class="input-group date" id="fromDate">

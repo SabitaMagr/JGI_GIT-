@@ -103,7 +103,7 @@ class LeaveStatusRepository implements RepositoryInterface {
                 ], true);
 
         $select->from(['LA' => LeaveApply::TABLE_NAME])
-                ->join(['E' => "HR_EMPLOYEES"], "E.EMPLOYEE_ID=LA.EMPLOYEE_ID", ['FIRST_NAME', 'MIDDLE_NAME', 'LAST_NAME'])
+                ->join(['E' => "HR_EMPLOYEES"], "E.EMPLOYEE_ID=LA.EMPLOYEE_ID", ['FIRST_NAME', 'MIDDLE_NAME', 'LAST_NAME'],"left")
                 ->join(['E1' => "HR_EMPLOYEES"], "E1.EMPLOYEE_ID=LA.RECOMMENDED_BY", ['FN1' => 'FIRST_NAME', 'MN1' => 'MIDDLE_NAME', 'LN1' => 'LAST_NAME'],"left")
                 ->join(['E2' => "HR_EMPLOYEES"], "E2.EMPLOYEE_ID=LA.APPROVED_BY", ['FN2' => 'FIRST_NAME', 'MN2' => 'MIDDLE_NAME', 'LN2' => 'LAST_NAME'],"left");
 
@@ -130,8 +130,15 @@ class LeaveStatusRepository implements RepositoryInterface {
         $designationId = $data['designationId'];
         $positionId = $data['positionId'];
         $serviceTypeId = $data['serviceTypeId'];
+        $serviceEventTypeId = $data['serviceEventTypeId'];
         $leaveId = $data['leaveId'];
         $leaveRequestStatusId = $data['leaveRequestStatusId'];
+        
+        if($serviceEventTypeId==5 || $serviceEventTypeId==8 || $serviceEventTypeId==14){
+            $retiredFlag = " AND E.RETIRED_FLAG='Y' ";
+        }else{
+            $retiredFlag = " AND E.RETIRED_FLAG='N' ";
+        }
         
         $sql = "SELECT L.LEAVE_ENAME,LA.NO_OF_DAYS,LA.START_DATE
                 ,LA.END_DATE,LA.REQUESTED_DT AS APPLIED_DATE,
@@ -157,7 +164,8 @@ class LeaveStatusRepository implements RepositoryInterface {
                 E2.EMPLOYEE_ID=LA.APPROVED_BY
                 WHERE 
                 L.STATUS='E' AND
-                E.STATUS='E' AND
+                E.STATUS='E'".$retiredFlag."              
+                AND
                 (E1.STATUS = CASE WHEN E1.STATUS IS NOT NULL
                          THEN ('E')     
                     END OR  E1.STATUS is null) AND
@@ -218,6 +226,11 @@ class LeaveStatusRepository implements RepositoryInterface {
         if ($serviceTypeId != -1) {
             $sql .= " AND E." . HrEmployees::EMPLOYEE_ID . " IN (SELECT " . HrEmployees::EMPLOYEE_ID . " FROM " . HrEmployees::TABLE_NAME . " WHERE " . HrEmployees::SERVICE_TYPE_ID . "= $serviceTypeId)";
         }
+        if ($serviceEventTypeId != -1) {
+            $sql .= " AND E." . HrEmployees::EMPLOYEE_ID . " IN (SELECT " . HrEmployees::EMPLOYEE_ID . " FROM " . HrEmployees::TABLE_NAME . " WHERE " . HrEmployees::SERVICE_EVENT_TYPE_ID . "= $serviceEventTypeId)";
+        }
+        
+        $sql .=" ORDER BY LA.REQUESTED_DT DESC";
 
         $statement = $this->adapter->query($sql);
         //print_r($statement->getSql()); 

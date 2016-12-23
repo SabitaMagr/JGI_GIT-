@@ -150,7 +150,7 @@ ON A.GENDER_ID=B.GENDER_ID " . $joinQuery . " WHERE A.STATUS ='E'";
         if ($branchId != -1) {
             $sql .= " AND C.BRANCH_ID=" . $branchId;
         }
-
+        $sql .=" ORDER BY A.START_DATE DESC";
         $statement = $this->adapter->query($sql);
         $result = $statement->execute();
         return $result;

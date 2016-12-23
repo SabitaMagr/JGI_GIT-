@@ -7,6 +7,8 @@ use Application\Repository\RepositoryInterface;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\TableGateway\TableGateway;
 use Setup\Model\LeaveMaster;
+use Zend\Db\Sql\Select;
+use Zend\Db\Sql\Sql;
 
 class LeaveMasterRepository implements RepositoryInterface {
 
@@ -31,7 +33,10 @@ class LeaveMasterRepository implements RepositoryInterface {
     }
 
     public function fetchAll() {
-        return $this->tableGateway->select([LeaveMaster::STATUS => 'E']);
+        return $this->tableGateway->select(function(Select $select){
+            $select->where([LeaveMaster::STATUS => 'E']);
+            $select->order(LeaveMaster::LEAVE_ENAME." ASC");
+        });
 //        $sql = new Sql($this->adapter);
 //        $select = $sql->select();
 //        $select->from("HR_LEAVE_MASTER_SETUP");
@@ -54,7 +59,10 @@ class LeaveMasterRepository implements RepositoryInterface {
     }
 
     public function fetchActiveRecord() {
-        return $rowset = $this->tableGateway->select([LeaveMaster::STATUS => 'E']);
+        return $rowset = $this->tableGateway->select(function(Select $select){
+            $select->where([LeaveMaster::STATUS => 'E']);
+            $select->order(LeaveMaster::LEAVE_ENAME." ASC");
+        });
     }
 
     public function delete($id) {
