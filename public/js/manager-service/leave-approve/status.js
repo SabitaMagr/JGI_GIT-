@@ -19,6 +19,7 @@ angular.module('hris', [])
                 var designationId = angular.element(document.getElementById('designationId')).val();
                 var positionId = angular.element(document.getElementById('positionId')).val();
                 var serviceTypeId = angular.element(document.getElementById('serviceTypeId')).val();
+                var serviceEventTypeId = angular.element(document.getElementById('serviceEventTypeId')).val();
                 var leaveId = angular.element(document.getElementById('leaveId')).val();
                 var leaveRequestStatusId = angular.element(document.getElementById('leaveRequestStatusId')).val();
                 var fromDate = angular.element(document.getElementById('fromDate1')).val();
@@ -34,6 +35,7 @@ angular.module('hris', [])
                         'designationId': designationId,
                         'positionId': positionId,
                         'serviceTypeId': serviceTypeId,
+                        'serviceEventTypeId':serviceEventTypeId,
                         'leaveId': leaveId,
                         'leaveRequestStatusId': leaveRequestStatusId,
                         'fromDate': fromDate,

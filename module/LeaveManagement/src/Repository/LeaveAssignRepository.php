@@ -71,6 +71,7 @@ class LeaveAssignRepository implements RepositoryInterface
             ->join(['DE'=>'HR_DESIGNATIONS'],'DE.DESIGNATION_ID=E.DESIGNATION_ID',["DESIGNATION_ID","DESIGNATION_TITLE"],"left")
             ->join(['B'=>'HR_BRANCHES'],'B.BRANCH_ID=E.BRANCH_ID',["BRANCH_ID","BRANCH_NAME"],"left");
         $select->where(["E.STATUS='E'"]);
+        $select->where(["E.RETIRED_FLAG='N'"]);
 //            ->join(['L' => LeaveAssign::TABLE_NAME], 'E.EMPLOYEE_ID=L.EMPLOYEE_ID', [LeaveAssign::LEAVE_ID, LeaveAssign::BALANCE], \Zend\Db\Sql\Select::JOIN_LEFT)
         ;
         if ($branchId != -1) {
@@ -87,7 +88,7 @@ class LeaveAssignRepository implements RepositoryInterface
         }
 //        $select->where(["(L.LEAVE_ID=$leaveId )"]);
 //        $select->where(["(L.LEAVE_ID IS NULL )"]);
-
+        $select->order("E.FIRST_NAME ASC");
         $statement = $sql->prepareStatementForSqlObject($select);
 //        print "<pre>";
 //        print_r($statement->getSql());

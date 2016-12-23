@@ -30,8 +30,8 @@ echo json_encode($menu);
 <div ng-app="hris" ng-controller="paySlipController">
     <div class="row margin-top-10">
         <div class="col-sm-3 " >
-            <div class="portlet solid default">
-                <div class="portlet-title">
+            <div class="portlet solid default borderline shadow">
+                <div class="portlet-title border-bottom">
                     <div class="caption">
                         <i class="icon-speech"></i>
                         <span class="caption-subject bold uppercase"> Months</span>
@@ -39,9 +39,9 @@ echo json_encode($menu);
                     </div>
                 </div>
                 <div class="portlet-body">
-                    <div class="scroller" style="height:400px" data-rail-visible="1" data-rail-color="yellow" data-handle-color="#a1b2bd">
+                    <div class="scroller" style="height:400px" data-rail-visible="1" data-rail-color="#fff" data-handle-color="#a1b2bd">
                         <div class="mt-radio-list">
-                            <label class="mt-radio"  ng-repeat="month in payRollGeneratedMonths"> 
+                            <label class="c-mt-radio mt-radio"  ng-repeat="month in payRollGeneratedMonths"> 
                                 {{month.MONTH_EDESC}}
                                 <input ng-click="changeMonths(month.MONTH_ID)" type="radio" value="month.MONTH_ID" name="test" />
                                 <span></span>
@@ -53,7 +53,7 @@ echo json_encode($menu);
             </div>
         </div>
         <div class="col-sm-9">
-            <div class="portlet light ">
+            <div class="portlet light tbl-box-shadow">
                 <div class="portlet-title">
                     <div class="caption">
                         <i class="icon-speech"></i>
@@ -70,7 +70,8 @@ echo json_encode($menu);
                     <div ng-hide="paySlip == null"  data-rail-visible="1" data-rail-color="yellow" data-handle-color="#a1b2bd">
                         <div class="row">
                             <div class="col-sm-12">
-                                <table class="table table-responsive">
+                                <div class="table-responsive">
+                                <table class="table customTable">
                                     <caption>
                                         Employee Detail
                                     </caption>
@@ -144,12 +145,13 @@ echo json_encode($menu);
                                     </tbody>
 
                                 </table>
-
+                                </div>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-sm-6">
-                                <table class="table">
+                                <div class="table-responsive">
+                                <table class="table customTable">
                                     <caption>
                                         Facilities and Renumerations (+)
                                     </caption>
@@ -163,9 +165,11 @@ echo json_encode($menu);
                                         </tr>
                                     </tbody>
                                 </table>
+                                </div>
                             </div>
                             <div class="col-sm-6">
-                                <table class="table">
+                                   <div class="table-responsive">
+                                <table class="table customTable">
                                     <caption>
                                         Deductions and Savings (-)
                                     </caption>
@@ -179,6 +183,7 @@ echo json_encode($menu);
                                         </tr>
                                     </tbody>
                                 </table>
+                                   </div>
                             </div>
                         </div>
 

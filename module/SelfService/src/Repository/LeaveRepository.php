@@ -56,7 +56,7 @@ class LeaveRepository implements RepositoryInterface
             "L.STATUS='E'",
             "E.EMPLOYEE_ID=".$employeeId
         ]);
-
+        $select->order("L.LEAVE_ENAME ASC");
         $statement = $sql->prepareStatementForSqlObject($select);
         $result = $statement->execute();
         return $result;

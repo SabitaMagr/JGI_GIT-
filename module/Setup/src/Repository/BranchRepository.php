@@ -8,6 +8,7 @@ use Setup\Model\Branch;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Sql\Sql;
 use Zend\Db\TableGateway\TableGateway;
+use Zend\Db\Sql\Select;
 
 class BranchRepository implements RepositoryInterface {
 
@@ -27,7 +28,10 @@ class BranchRepository implements RepositoryInterface {
     }
 
     public function fetchAll() {        
-        return $this->tableGateway->select([Branch::STATUS => 'E']);
+        return $this->tableGateway->select(function(Select $select){
+            $select->where([Branch::STATUS => 'E']);
+            $select->order(Branch::BRANCH_NAME." ASC");
+        });
     }
 
     public function fetchById($id) {

@@ -79,7 +79,7 @@ class DepartmentController extends AbstractActionController
             $this,
             [
                 'form' => $this->form,
-                'departments' => ApplicationEntityHelper::getTableKVList($this->adapter, Department::TABLE_NAME, Department::DEPARTMENT_ID, [Department::DEPARTMENT_NAME], ["STATUS" => "E"]),
+                'departments' => ApplicationEntityHelper::getTableKVListWithSortOption($this->adapter, Department::TABLE_NAME, Department::DEPARTMENT_ID, [Department::DEPARTMENT_NAME], ["STATUS" => "E"],"DEPARTMENT_NAME","ASC"),
                 'countries' => EntityHelper::getTableKVList($this->adapter, EntityHelper::HR_COUNTRIES)
             ]
         )
@@ -121,7 +121,7 @@ class DepartmentController extends AbstractActionController
             $this,
             [
                 'form' => $this->form, 'id' => $id,
-                'departments' => EntityHelper::getTableKVList($this->adapter, EntityHelper::HR_DEPARTMENTS),
+                'departments' => ApplicationEntityHelper::getTableKVListWithSortOption($this->adapter, Department::TABLE_NAME, Department::DEPARTMENT_ID, [Department::DEPARTMENT_NAME], ["STATUS" => "E"],"DEPARTMENT_NAME","ASC"),
                 'countries' => EntityHelper::getTableKVList($this->adapter, EntityHelper::HR_COUNTRIES)
             ]
         );

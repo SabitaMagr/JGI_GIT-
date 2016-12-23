@@ -49,7 +49,7 @@ class AcademicCourseController extends AbstractActionController {
     }
 
     public function addAction()
-    {
+    {                    
         $this->initializeForm();
         $request = $this->getRequest();
 
@@ -74,7 +74,7 @@ class AcademicCourseController extends AbstractActionController {
             [
                 'form' => $this->form,
                 'messages' => $this->flashmessenger()->getMessages(),
-                'programs' => EntityHelper::getTableKVList($this->adapter,AcademicProgram::TABLE_NAME,AcademicProgram::ACADEMIC_PROGRAM_ID,["ACADEMIC_PROGRAM_NAME"],["STATUS"=>'E'])
+                'programs' => EntityHelper::getTableKVListWithSortOption($this->adapter, AcademicProgram::TABLE_NAME, AcademicProgram::ACADEMIC_PROGRAM_ID, ["ACADEMIC_PROGRAM_NAME"], ["STATUS"=>'E'], "ACADEMIC_PROGRAM_NAME", "ASC")
             ]
         )
         );
@@ -109,7 +109,7 @@ class AcademicCourseController extends AbstractActionController {
             $this, [
                 'form' => $this->form,
                 'id' => $id,
-                'programs' => EntityHelper::getTableKVList($this->adapter,AcademicProgram::TABLE_NAME,AcademicProgram::ACADEMIC_PROGRAM_ID,["ACADEMIC_PROGRAM_NAME"],["STATUS"=>'E'])
+                'programs' => EntityHelper::getTableKVListWithSortOption($this->adapter, AcademicProgram::TABLE_NAME, AcademicProgram::ACADEMIC_PROGRAM_ID, ["ACADEMIC_PROGRAM_NAME"], ["STATUS"=>'E'], "ACADEMIC_PROGRAM_NAME", "ASC")
             ]
         );
     }

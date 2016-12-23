@@ -42,7 +42,7 @@ class RecommendApproveRepository implements RepositoryInterface
 
     //to get recommender and approver based on designation and branch id
     public function getEmployeeList($withinBranch,$withinDepartment,$designationId,$branchId,$departmentId){
-        $sql = "SELECT EMPLOYEE_ID,FIRST_NAME,MIDDLE_NAME,LAST_NAME FROM HR_EMPLOYEES WHERE STATUS='E' AND DESIGNATION_ID=".$designationId;
+        $sql = "SELECT EMPLOYEE_ID,FIRST_NAME,MIDDLE_NAME,LAST_NAME FROM HR_EMPLOYEES WHERE STATUS='E' AND RETIRED_FLAG='N' AND DESIGNATION_ID=".$designationId;
 
         if($withinBranch!=null && $withinBranch!="N"){
             $sql.=" AND BRANCH_ID=".$branchId;
@@ -74,17 +74,20 @@ class RecommendApproveRepository implements RepositoryInterface
             new Expression("RA.APPROVED_BY AS APPROVED_BY"),
         ], true);
         $select->from(['RA' => RecommendApprove::TABLE_NAME])
-            ->join(['E'=>"HR_EMPLOYEES"],"E.EMPLOYEE_ID=RA.EMPLOYEE_ID",['FIRST_NAME','MIDDLE_NAME','LAST_NAME'])
+            ->join(['E'=>"HR_EMPLOYEES"],"E.EMPLOYEE_ID=RA.EMPLOYEE_ID",['FIRST_NAME','MIDDLE_NAME','LAST_NAME'],"left")
             ->join(['E1'=>"HR_EMPLOYEES"],"E1.EMPLOYEE_ID=RA.RECOMMEND_BY",['FIRST_NAME_R'=>"FIRST_NAME","MIDDLE_NAME_R"=>'MIDDLE_NAME',"LAST_NAME_R"=>'LAST_NAME'],"left")
             ->join(['E2'=>"HR_EMPLOYEES"],"E2.EMPLOYEE_ID=RA.APPROVED_BY",['FIRST_NAME_A'=>"FIRST_NAME","MIDDLE_NAME_A"=>'MIDDLE_NAME',"LAST_NAME_A"=>'LAST_NAME'],"left");
 
         $select->where([
             "RA.STATUS='E'",
             "E.STATUS='E'",
+            "E.RETIRED_FLAG='N'",
             "E1.STATUS='E'",
-            "E2.STATUS='E'"
+            "E1.RETIRED_FLAG='N'",
+            "E2.STATUS='E'",
+            "E2.RETIRED_FLAG='N'"
         ]);
-
+        $select->order("E.FIRST_NAME ASC");
         $statement = $sql->prepareStatementForSqlObject($select);
         $result = $statement->execute();
         return $result;
@@ -98,7 +101,7 @@ class RecommendApproveRepository implements RepositoryInterface
             $entitiesArray[$empresult['EMPLOYEE_ID']] = $empresult['FIRST_NAME'] . " " . $empresult['MIDDLE_NAME'] . " " . $empresult['LAST_NAME'];
         }
         $sql = "SELECT EMPLOYEE_ID,FIRST_NAME,MIDDLE_NAME,LAST_NAME FROM 
-                HR_EMPLOYEES WHERE STATUS='E' 
+                HR_EMPLOYEES WHERE STATUS='E' AND RETIRED_FLAG='N'
                 AND EMPLOYEE_ID NOT IN 
                 (SELECT EMPLOYEE_ID FROM HR_RECOMMENDER_APPROVER WHERE STATUS='E')";
 
@@ -133,16 +136,20 @@ class RecommendApproveRepository implements RepositoryInterface
             new Expression("RA.APPROVED_BY AS APPROVED_BY"),
         ], true);
         $select->from(['RA' => RecommendApprove::TABLE_NAME])
-            ->join(['E'=>"HR_EMPLOYEES"],"E.EMPLOYEE_ID=RA.EMPLOYEE_ID",['FIRST_NAME','MIDDLE_NAME','LAST_NAME'])
+            ->join(['E'=>"HR_EMPLOYEES"],"E.EMPLOYEE_ID=RA.EMPLOYEE_ID",['FIRST_NAME','MIDDLE_NAME','LAST_NAME'],"left")
             ->join(['E1'=>"HR_EMPLOYEES"],"E1.EMPLOYEE_ID=RA.RECOMMEND_BY",['FIRST_NAME_R'=>"FIRST_NAME","MIDDLE_NAME_R"=>'MIDDLE_NAME',"LAST_NAME_R"=>'LAST_NAME'],"left")
             ->join(['E2'=>"HR_EMPLOYEES"],"E2.EMPLOYEE_ID=RA.APPROVED_BY",['FIRST_NAME_A'=>"FIRST_NAME","MIDDLE_NAME_A"=>'MIDDLE_NAME',"LAST_NAME_A"=>'LAST_NAME'],"left");
 
         $select->where([
             "RA.STATUS='E'",
             "E.STATUS='E'",
+            "E1.STATUS='E'",
+            "E2.STATUS='E'",
+            "E1.RETIRED_FLAG='N'",
+            "E2.RETIRED_FLAG='N'",
             "RA.EMPLOYEE_ID=".$employeeId,           
         ]);
-
+        $select->order("E.FIRST_NAME ASC");
         $statement = $sql->prepareStatementForSqlObject($select);
         $result = $statement->execute();
         return $result->current();

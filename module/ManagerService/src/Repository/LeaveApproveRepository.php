@@ -66,7 +66,7 @@ class LeaveApproveRepository implements RepositoryInterface
             $sql .=" LA.STATUS='".$status."' AND
                 ((LA.RECOMMENDED_BY=".$id." AND LA.APPROVED_DT IS NULL) OR (LA.APPROVED_BY=".$id." AND LA.APPROVED_DT IS NOT NULL) )";
         }
-
+        $sql .= " AND E.STATUS='E' AND E.RETIRED_FLAG='N' ORDER BY LA.REQUESTED_DT ASC";
         $statement = $this->adapter->query($sql);
         $result = $statement->execute();
         return $result;
@@ -104,9 +104,9 @@ class LeaveApproveRepository implements RepositoryInterface
         ], true);
 
         $select->from(['LA' => LeaveApply::TABLE_NAME])
-            ->join(['E'=>"HR_EMPLOYEES"],"E.EMPLOYEE_ID=LA.EMPLOYEE_ID",['FIRST_NAME','MIDDLE_NAME','LAST_NAME'])
-            ->join(['E1'=>"HR_EMPLOYEES"],"E1.EMPLOYEE_ID=LA.RECOMMENDED_BY",['FN1'=>'FIRST_NAME','MN1'=>'MIDDLE_NAME','LN1'=>'LAST_NAME'])
-            ->join(['E2'=>"HR_EMPLOYEES"],"E2.EMPLOYEE_ID=LA.APPROVED_BY",['FN2'=>'FIRST_NAME','MN2'=>'MIDDLE_NAME','LN2'=>'LAST_NAME']);
+            ->join(['E'=>"HR_EMPLOYEES"],"E.EMPLOYEE_ID=LA.EMPLOYEE_ID",['FIRST_NAME','MIDDLE_NAME','LAST_NAME'],"left")
+            ->join(['E1'=>"HR_EMPLOYEES"],"E1.EMPLOYEE_ID=LA.RECOMMENDED_BY",['FN1'=>'FIRST_NAME','MN1'=>'MIDDLE_NAME','LN1'=>'LAST_NAME'],"left")
+            ->join(['E2'=>"HR_EMPLOYEES"],"E2.EMPLOYEE_ID=LA.APPROVED_BY",['FN2'=>'FIRST_NAME','MN2'=>'MIDDLE_NAME','LN2'=>'LAST_NAME'],"left");
 
         $select->where([
             "LA.ID=".$id

@@ -15,10 +15,9 @@ use Zend\Db\Sql\Sql;
 use Zend\Db\TableGateway\TableGateway;
 
 class EntityHelper {
-
     public static function getTableKVList(AdapterInterface $adapter, $tableName, $key = null, array $values, $where = null, $concatWith = null, $emptyColumn = false) {
         $gateway = new TableGateway($tableName, $adapter);
-
+        
         if ($where == null) {
             $resultset = $gateway->select();
         } else {
@@ -48,9 +47,8 @@ class EntityHelper {
         return $entitiesArray;
     }
 
-    public static function getTableKVListWithSortOption(AdapterInterface $adapter, $tableName, $key, array $values, $where = null, $orderBy = null, $orderAs = null, $concatWith = null) {
+    public static function getTableKVListWithSortOption(AdapterInterface $adapter, $tableName, $key, array $values, $where = null, $orderBy = null, $orderAs = null, $concatWith = null, $emptyColumn = false) {
         $gateway = new TableGateway($tableName, $adapter);
-
 
         $resultset = $gateway->select(function(Select $select) use($where, $orderBy, $orderAs) {
             if ($select != null) {
@@ -64,6 +62,9 @@ class EntityHelper {
         $concatWith = ($concatWith == null) ? " " : ($concatWith == null) ? "" : $concatWith;
 
         $entitiesArray = array();
+        if ($emptyColumn) {
+            $entitiesArray[null] = "----";
+        }
         foreach ($resultset as $result) {
             $concattedValue = "";
             for ($i = 0; $i < count($values); $i++) {

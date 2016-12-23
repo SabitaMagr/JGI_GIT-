@@ -71,25 +71,24 @@ class leaveAssign extends AbstractActionController {
         $leaveFormElement = new Select();
         $leaveFormElement->setName("leave");
         $leaveFormElement->setLabel("Leave Type");
-        $leaveFormElement->setValueOptions(\Application\Helper\EntityHelper::getTableKVList($this->adapter, LeaveMaster::TABLE_NAME, LeaveMaster::LEAVE_ID, [LeaveMaster::LEAVE_ENAME], [LeaveMaster::STATUS . " ='E'"]));
+        $leaveFormElement->setValueOptions(\Application\Helper\EntityHelper::getTableKVListWithSortOption($this->adapter, LeaveMaster::TABLE_NAME, LeaveMaster::LEAVE_ID, [LeaveMaster::LEAVE_ENAME], [LeaveMaster::STATUS . " ='E'"], \Setup\Model\LeaveMaster::LEAVE_ENAME,"ASC"));
         $leaveFormElement->setAttributes(["id" => "leaveId", "class" => "form-control", "data-init-plugin" => "select2"]);
 
         $branchFormElement = new Select();
         $branchFormElement->setName("branch");
-        $branches = \Application\Helper\EntityHelper::getTableKVList($this->adapter, Branch::TABLE_NAME, Branch::BRANCH_ID, [Branch::BRANCH_NAME]);
-        $branches[-1] = "All";
-        ksort($branches);
-        $branchFormElement->setValueOptions($branches);
-        $branchFormElement->setAttributes(["id" => "branchId", "class" => "form-control", "data-init-plugin" => "select2"]);
+        $branches = \Application\Helper\EntityHelper::getTableKVListWithSortOption($this->adapter, Branch::TABLE_NAME, Branch::BRANCH_ID, [Branch::BRANCH_NAME], [Branch::STATUS => 'E'], "BRANCH_NAME", "ASC");
+        $branches1 = [-1 => "All"] + $branches;
+        $branchFormElement->setValueOptions($branches1);
+        $branchFormElement->setAttributes(["id" => "branchId", "class" => "form-control"]);
         $branchFormElement->setLabel("Branch");
+        $branchFormElement->setAttribute("ng-click", "view()");
 
         $departmentFormElement = new Select();
         $departmentFormElement->setName("department");
-        $departments = \Application\Helper\EntityHelper::getTableKVList($this->adapter, Department::TABLE_NAME, Department::DEPARTMENT_ID, [Department::DEPARTMENT_NAME]);
-        $departments[-1] = "All";
-        ksort($departments);
-        $departmentFormElement->setValueOptions($departments);
-        $departmentFormElement->setAttributes(["id" => "departmentId", "class" => "form-control", "data-init-plugin" => "select2"]);
+        $departments = \Application\Helper\EntityHelper::getTableKVListWithSortOption($this->adapter, Department::TABLE_NAME, Department::DEPARTMENT_ID, [Department::DEPARTMENT_NAME], [Department::STATUS => 'E'], "DEPARTMENT_NAME", "ASC");
+        $departments1 = [-1 => "All"] + $departments;
+        $departmentFormElement->setValueOptions($departments1);
+        $departmentFormElement->setAttributes(["id" => "departmentId", "class" => "form-control"]);
         $departmentFormElement->setLabel("Department");
 
         $genderFormElement = new Select();
@@ -103,11 +102,10 @@ class leaveAssign extends AbstractActionController {
 
         $designationFormElement = new Select();
         $designationFormElement->setName("designation");
-        $designations = \Application\Helper\EntityHelper::getTableKVList($this->adapter, Designation::TABLE_NAME, Designation::DESIGNATION_ID, [Designation::DESIGNATION_TITLE]);
-        $designations[-1] = "All";
-        ksort($designations);
-        $designationFormElement->setValueOptions($designations);
-        $designationFormElement->setAttributes(["id" => "designationId", "class" => "form-control", "data-init-plugin" => "select2"]);
+        $designations = \Application\Helper\EntityHelper::getTableKVListWithSortOption($this->adapter, Designation::TABLE_NAME, Designation::DESIGNATION_ID, [Designation::DESIGNATION_TITLE], [Designation::STATUS => 'E'], "DESIGNATION_TITLE", "ASC");
+        $designations1 = [-1 => "All"] + $designations;
+        $designationFormElement->setValueOptions($designations1);
+        $designationFormElement->setAttributes(["id" => "designationId", "class" => "form-control"]);
         $designationFormElement->setLabel("Designation");
 
         return Helper::addFlashMessagesToArray($this, [
