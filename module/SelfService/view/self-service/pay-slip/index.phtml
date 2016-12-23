@@ -41,7 +41,7 @@ echo json_encode($menu);
                 <div class="portlet-body">
                     <div class="scroller" style="height:400px" data-rail-visible="1" data-rail-color="#fff" data-handle-color="#a1b2bd">
                         <div class="mt-radio-list">
-                            <label class="mt-radio"  ng-repeat="month in payRollGeneratedMonths"> 
+                            <label class="c-mt-radio mt-radio"  ng-repeat="month in payRollGeneratedMonths"> 
                                 {{month.MONTH_EDESC}}
                                 <input ng-click="changeMonths(month.MONTH_ID)" type="radio" value="month.MONTH_ID" name="test" />
                                 <span></span>

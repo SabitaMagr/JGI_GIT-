@@ -970,7 +970,7 @@ form label
     border-bottom:solid #ccc 1px !important;
     padding-bottom:8px !important;
 }
-.mt-checkbox > span, .mt-radio > span
+ .c-mt-radio > span
 {
     background-color:#999 !important;
     
