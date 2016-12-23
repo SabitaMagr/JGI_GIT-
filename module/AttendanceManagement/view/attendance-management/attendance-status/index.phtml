@@ -25,14 +25,14 @@ echo json_encode($menu);
         document.messages =<?php echo json_encode($this->messages); ?>
     </script>
 <?php } ?>
-<div ng-app="hris" ng-controller="attendanceStatusListController">
+    <div ng-app="hris" ng-controller="attendanceStatusListController" class="formbg">
     <div class="margin-top-20">
         <div class="row">
             <div class="col-sm-3">
                 <?php print $this->formLabel($employees); ?>
                 <?php print $this->formElement($employees); ?>
             </div>
-            <div class="col-sm-2">
+            <div class="col-sm-3">
                 <?php print $this->formLabel($branches); ?>
                 <?php print $this->formElement($branches); ?>
             </div>
@@ -55,7 +55,7 @@ echo json_encode($menu);
                 <?php print $this->formLabel($attendanceStatus); ?>
                 <?php print $this->formElement($attendanceStatus); ?>
             </div>  
-            <div class="col-sm-2">
+            <div class="col-sm-3">
                 <?php print $this->formLabel($serviceTypes); ?>
                 <?php print $this->formElement($serviceTypes); ?>
             </div>      
@@ -84,7 +84,11 @@ echo json_encode($menu);
                     <i class="fa fa-search"></i>
                 </button>
             </div>
-            <div class="col-sm-1">
+         
+        </div>
+           <div class="margin-top-20">
+               <div class="row">
+           <div class="col-sm-offset-6 col-sm-6">
                 <label height="45"></label>
                 <div class="btn-group pull-right">
                     <button class="btn green btn-outline dropdown-toggle" data-toggle="dropdown">Tools
@@ -97,7 +101,7 @@ echo json_encode($menu);
                     </ul>
                 </div>
             </div>
-        </div>
+               </div>
     </div>
     <div class="margin-top-20">   
             

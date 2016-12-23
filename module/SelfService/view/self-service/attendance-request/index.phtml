@@ -25,7 +25,7 @@ echo json_encode($menu); ?>;
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\attendancerequest')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
-<div ng-app="hris" ng-controller="attendanceRequestListController">
+<div ng-app="hris" ng-controller="attendanceRequestListController" class="formbg">
     <div class="row margin-top-20">
         <div class="col-sm-3">
             <?php print $this->formLabel($attendanceStatus); ?>
@@ -48,7 +48,7 @@ echo json_encode($menu); ?>;
         </div>
         <div class="col-sm-2">
             <label height="45"></label>
-            <button ng-click="view()" id="viewAttendanceRequestStatus" class="btn btn-sm yellow form-control">
+            <button ng-click="view()" id="viewAttendanceRequestStatus" class="btn btn-default form-control i-search">
                 Search
                 <i class="fa fa-search"></i>
             </button>

@@ -57,7 +57,6 @@ $addrPermStreetAddress = $formOne->get('addrPermStreetAddress');
 $addrPermVdcMunicipalityId = $formOne->get('addrPermVdcMunicipalityId');
 $addrPermDistrictId = $formOne->get('addrPermDistrictId');
 $addrPermZoneId = $formOne->get('addrPermZoneId');
-
 $addrTempHouseNo = $formOne->get('addrTempHouseNo');
 $addrTempWardNo = $formOne->get('addrTempWardNo');
 $addrTempStreetAddress = $formOne->get('addrTempStreetAddress');
@@ -72,6 +71,21 @@ $addrPermZoneId->setOptions(["value_options" => $zones]);
 $addrTempZoneId->setOptions(["value_options" => $zones]);
 $companyId->setOptions(["value_options" => $companies]);
 $countryId->setValueOptions($countries);
+
+//Custom validation
+if (key($mobileNo->getMessages()) == "regexNotMatch") {
+    $mobileNo->setMessages(["regexNotMatch" => "Invalid Mobile Number"]);
+}
+if (key($emailOfficial->getMessages()) == "regexNotMatch") {
+    $emailOfficial->setMessages(["regexNotMatch" => "Invalid Email Address"]);
+}
+if (key($emailPersonal->getMessages()) == "regexNotMatch") {
+    $emailPersonal->setMessages(["regexNotMatch" => "Invalid Email Address"]);
+}
+if (key($telephoneNo->getMessages()) == "regexNotMatch") {
+    $telephoneNo->setMessages(["regexNotMatch" => "Invalid Telephone Number"]);
+}
+
 
 
 $formTwo->setAttribute('id', 'form2');
@@ -200,8 +214,10 @@ echo json_encode($menu);
     document.urlQualificationDtl = '<?= $this->url('restful', ["action" => 'index']); ?>'
             document.fileTypes = <?= json_encode($filetypes); ?>;
     document.profilePictureId =<?= ($profilePictureId == null) ? -1 : $profilePictureId ?>;
-    document.employeeId =<?= $id ?>;</script>
-
+    document.employeeId =<?= $id ?>;
+    document.address =<?=
+json_encode($address);
+?>;</script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\Employee')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
@@ -408,7 +424,8 @@ echo json_encode($menu);
                                         <?php print $this->formLabel($mobileNo); ?>
                                     </div>
                                     <div class="col-xs-6 col-sm-6 col-md-6 cgap">
-                                        <?php print $this->formElement($mobileNo); ?></div>
+                                        <?php print $this->formElement($mobileNo); ?>
+                                    </div>
                                     <?php print $this->formElementErrors()->render($mobileNo, ['class' => 'help-block error']); ?>
                                 </div>
                             </div>
@@ -434,15 +451,6 @@ echo json_encode($menu);
                                         <?php print $this->formElement($emailOfficial); ?></div>
                                 </div>
                             </div>
-                            <?php
-                            if (key($emailOfficial->getMessages()) == "regexNotMatch") {
-                                $emailOfficial->setMessages(["regexNotMatch" => "Value is not a valid Email"]);
-                            }
-                            if (key($emailPersonal->getMessages()) == "regexNotMatch") {
-                                $emailPersonal->setMessages(["regexNotMatch" => "Value is not a valid Email"]);
-                            }
-                            ?>
-
                             <?php print $this->formElementErrors()->render($emailOfficial, ['class' => 'help-block error']); ?>
                         </div> 
 

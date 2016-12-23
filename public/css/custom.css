@@ -88,7 +88,7 @@
 }
 .page-sidebar .page-sidebar-menu > li.active.open > a:hover, .page-sidebar .page-sidebar-menu > li.active > a:hover, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu > li.active.open > a:hover, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu > li.active > a:hover 
 {
-    background-color:#C1DA3F !important;
+    background-color:#559767 !important;
 
 }
 .page-logo img
@@ -612,7 +612,7 @@ form.k-filter-menu .k-widget, form.k-filter-menu .k-textbox
 }
 .bottomgap{
 
-    margin-bottom:10px;
+    margin-bottom:8px;
 }
 .margin
 {
@@ -873,7 +873,7 @@ select{
     color: red;
     font-size: 11px;
     list-style: outside none none;
-    margin-top: -13px;
+    margin-top:0px;
     padding-left: 0;
 }
 .custometbletwo td
@@ -926,8 +926,64 @@ form label
 .input-group.date input{
     padding-left:5px !important;
 }
+.jstree-default .jstree-anchor,ul#roleList li 
+{font-size: 12px !important;}
+.tabbable-line ul li a{
+    font-size: 12px !important;
+}
+.jstree-default .jstree-icon:empty{
+    color:#559767;
+}
+.btn-success{
+  background-color: #559767 !important;
+    border-color: #559767 !important;
+    color: #fff !important;
+    padding:2px 18px !important;
+    margin-bottom:5px;
+}
+.md-checkbox label > .box {
+    border: 1px solid #999 !important;
+}
+.md-checkbox label > .check{
+ border-color:-moz-use-text-color #559767 #559767 -moz-use-text-color   
+}  
+.menusetuptab > .nav-tabs > li.active,.menusetuptab > .nav-tabs > li:hover
 
+ {
+   border-bottom: 4px solid #999 !important;
+ }
 
+.borderline
+{
+    border:solid #ccc 1px !important;
+ 
+    
+}
+.shadow
+{
+    box-shadow:2px 0px 4px 2px #ddd;
+   
+    
+}
+.border-bottom
+{
+    border-bottom:solid #ccc 1px !important;
+    padding-bottom:8px !important;
+}
+.mt-checkbox > span, .mt-radio > span
+{
+    background-color:#999 !important;
+    
+}
+.tbl-box-shadow
+{
+ box-shadow:6px 2px 32px -3px #ccc !important;   
+}
+.mt-radio > span::after
+{
+   background-color:#fff !important;
+    
+}
 /* Large desktops and laptops */
 @media (min-width: 1200px) {
 

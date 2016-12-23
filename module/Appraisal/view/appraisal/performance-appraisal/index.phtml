@@ -3,7 +3,8 @@
  * Load Javascript files here
  */
 $this->headScript()
-        ->appendFile($this->basePath('telerik_kendoui/js/kendo.all.min.js'));
+        ->appendFile($this->basePath('telerik_kendoui/js/kendo.all.min.js'))
+        ->appendFile($this->basePath('js/kendoDataTable.js'));
 ?>
 
 <script>
@@ -13,7 +14,7 @@ echo json_encode($menu);
 ?>;
 </script>
 <div class="page-bar">
-<?= $this->navigation('Zend\Navigation\performance-appraisal')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
+    <?= $this->navigation('Zend\Navigation\performance-appraisal')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
 
 
