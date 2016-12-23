@@ -1016,6 +1016,15 @@ form label
     color:#fff;
       
    }
+   .k-icon.k-i-filter:after, .k-icon.k-i-filter:before
+   {
+       font-family:fontawesome !important;
+       content:":" !important;
+       background-image:none !important;
+       color:red !important
+   
+    
+    }
 /* Large desktops and laptops */
 @media (min-width: 1200px) {
 
