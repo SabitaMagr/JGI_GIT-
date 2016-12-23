@@ -28,6 +28,7 @@ angular.module('hris', [])
                         'toDate': toDate
                     }
                 }).then(function (success) {
+                    console.log(success.data);
                     $scope.initializekendoGrid(success.data);
                 }, function (failure) {
                     console.log(failure);
@@ -57,6 +58,7 @@ angular.module('hris', [])
                     columns: [
                         {field: "LEAVE_CODE", title: "Leave Code"},
                         {field: "LEAVE_ENAME", title: "Leave Name"},
+                        {field: "REQUESTED_DT", title: "Applied Date"},
                         {field: "FROM_DATE", title: "From Date"},
                         {field: "TO_DATE", title: "To Date"},
                         {field: "NO_OF_DAYS", title: "Duration"},

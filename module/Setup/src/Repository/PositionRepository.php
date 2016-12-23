@@ -6,6 +6,8 @@ use Application\Repository\RepositoryInterface;
 use Zend\Db\TableGateway\TableGateway;
 use Zend\Db\Adapter\AdapterInterface;
 use Setup\Model\Position;
+use Zend\Db\Sql\Sql;
+use Zend\Db\Sql\Select;
 
 class PositionRepository implements RepositoryInterface{
 	private $tableGateway;
@@ -30,7 +32,10 @@ class PositionRepository implements RepositoryInterface{
 	}
 	public function fetchActiveRecord()
     {
-        $rowset= $this->tableGateway->select([Position::STATUS=>'E']);
+        $rowset= $this->tableGateway->select(function(Select $select){
+                $select->where([Position::STATUS=>'E']);
+                $select->order(Position::POSITION_NAME." ASC");
+            });
         $result = [];
         $i=1;
         foreach($rowset as $row){

@@ -7,6 +7,8 @@ use Application\Repository\RepositoryInterface;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\TableGateway\TableGateway;
 use Setup\Model\ServiceType;
+use Zend\Db\Sql\Sql;
+use Zend\Db\Sql\Select;
 
 class ServiceTypeRepository implements RepositoryInterface
 {
@@ -42,7 +44,10 @@ class ServiceTypeRepository implements RepositoryInterface
     }
     public function fetchActiveRecord()
     {
-         return  $rowset= $this->tableGateway->select([ServiceType::STATUS=>'E']);
+         return  $rowset= $this->tableGateway->select(function(Select $select){
+             $select->where([ServiceType::STATUS=>'E']);
+             $select->order(ServiceType::SERVICE_TYPE_NAME." ASC");
+         });
     }
 
     public function delete($id)

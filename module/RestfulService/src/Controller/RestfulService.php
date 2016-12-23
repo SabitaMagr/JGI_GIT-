@@ -808,13 +808,15 @@ class RestfulService extends AbstractRestfulController {
                     $leaveBalance = [
                         'BALANCE' => 0,
                         'LEAVE_ID' => $leaveId,
-                        'EMPLOYEE_ID' => $employeeId
+                        'EMPLOYEE_ID' => $employeeId,
+                        'SERVICE_EVENT_TYPE_ID'=>0
                     ];
                 } else if ($leaveBalanceDtl != false && $leaveBalanceDtl['BALANCE'] == NULL) {
                     $leaveBalance = [
                         'BALANCE' => 0,
                         'LEAVE_ID' => $leaveId,
-                        'EMPLOYEE_ID' => $employeeId
+                        'EMPLOYEE_ID' => $employeeId,
+                        'SERVICE_EVENT_TYPE_ID'=>0
                     ];
                 } else {
                     $leaveBalance = $leaveBalanceDtl;

@@ -40,6 +40,8 @@ angular.module('hris', [])
                     $scope.$apply(function () {
                         $scope.allList = success.allList;
                         $scope.num = success.num;
+                        
+                        console.log(success.allList);
 
                         initializeHeaders($scope.leaves);
                         initializeDatas($scope.leaves, $scope.allList);
@@ -66,7 +68,7 @@ angular.module('hris', [])
                     headers.push({
                         field: "h" + i,
                         title: cols[i].LEAVE_ENAME,
-                        template: '#if(h' + i + '.val>0){# <a href="' + document.leaveApplyUrl + '/#=h' + i + '.eID#/#=h' + i + '.leaveId#">#=h' + i + '.val#</a> #}else{# #=h' + i + '.val#  #}#'
+                        template: '#if(h' + i + '.val>0 && h'+i+'.serviceEventTypeId!=8 && h'+i+'.serviceEventTypeId!=5 && h'+i+'.serviceEventTypeId!=14){# <a href="' + document.leaveApplyUrl + '/#=h' + i + '.eID#/#=h' + i + '.leaveId#">#=h' + i + '.val#</a> #}else{# #=h' + i + '.val#  #}#'
                     });
                     headerForExcel.push({value: cols[i].LEAVE_ENAME});
                 }
@@ -81,7 +83,7 @@ angular.module('hris', [])
                     temp.EMPLOYEE_NAME = i;
                     tempForExcel.push({value: i});
                     for (var j in rows[i]) {
-                        temp["h" + j  ] = {val: rows[i][j].BALANCE, eID: rows[i][j].EMPLOYEE_ID, leaveId: rows[i][j].LEAVE_ID};
+                        temp["h" + j  ] = {val: rows[i][j].BALANCE, eID: rows[i][j].EMPLOYEE_ID, leaveId: rows[i][j].LEAVE_ID, serviceEventTypeId: rows[i][j].SERVICE_EVENT_TYPE_ID};
                         tempForExcel.push({value: rows[i][j].BALANCE});
 
                     }

@@ -7,6 +7,8 @@ use Application\Repository\RepositoryInterface;
 use Setup\Model\Company;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\TableGateway\TableGateway;
+use Zend\Db\Sql\Sql;
+use Zend\Db\Sql\Select;
 
 class CompanyRepository implements RepositoryInterface
 {
@@ -36,7 +38,10 @@ class CompanyRepository implements RepositoryInterface
 
     public function fetchAll()
     {
-        return $this->tableGateway->select([Company::STATUS=>'E']);
+        return $this->tableGateway->select(function(Select $select){
+            $select->where([Company::STATUS=>'E']);
+            $select->order(Company::COMPANY_NAME." ASC");
+        });
     }
 
     public function fetchById($id)

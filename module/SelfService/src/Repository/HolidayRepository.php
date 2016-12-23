@@ -56,15 +56,16 @@ class HolidayRepository implements RepositoryInterface
        ], true);
 
        $select->from(['H' => Holiday::TABLE_NAME])
-                ->join(['HB'=>HolidayBranch::TABLE_NAME],"HB.HOLIDAY_ID=H.HOLIDAY_ID",['HOLIDAY_ID'])
-                ->join(['E'=>'HR_EMPLOYEES'],"E.BRANCH_ID=HB.BRANCH_ID",['GENDER_ID']);
+                ->join(['HB'=>HolidayBranch::TABLE_NAME],"HB.HOLIDAY_ID=H.HOLIDAY_ID",['HOLIDAY_ID'],"left")
+                ->join(['E'=>'HR_EMPLOYEES'],"E.BRANCH_ID=HB.BRANCH_ID",['GENDER_ID'],"left");
 
        $select->where([
            "H.STATUS='E'",
            "E.EMPLOYEE_ID=".$employeeId,
            "((H.GENDER_ID IS NOT NULL AND H.GENDER_ID=E.GENDER_ID) OR H.GENDER_ID IS NULL)"
        ]);
-
+       
+       $select->order("H.START_DATE DESC");
        $statement = $sql->prepareStatementForSqlObject($select);
        $result = $statement->execute();
        return $result;

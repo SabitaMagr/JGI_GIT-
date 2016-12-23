@@ -52,8 +52,9 @@ class AcademicCourseRepository implements RepositoryInterface
             ]
             , true);
         $select->from(['AC' => AcademicCourse::TABLE_NAME])
-            ->join(['AP' => AcademicProgram::TABLE_NAME], 'AC.ACADEMIC_PROGRAM_ID=AP.ACADEMIC_PROGRAM_ID', ["ACADEMIC_PROGRAM_NAME" => 'ACADEMIC_PROGRAM_NAME']);
+            ->join(['AP' => AcademicProgram::TABLE_NAME], 'AC.ACADEMIC_PROGRAM_ID=AP.ACADEMIC_PROGRAM_ID', ["ACADEMIC_PROGRAM_NAME" => 'ACADEMIC_PROGRAM_NAME'],"left");
         $select->where(["AC.STATUS='E'"]);
+        $select->order("AC.ACADEMIC_COURSE_NAME ASC");
         $statement = $sql->prepareStatementForSqlObject($select);
         //print_r($statement->getSql()); die();
         $result = $statement->execute();

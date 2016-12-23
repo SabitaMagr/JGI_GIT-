@@ -57,6 +57,12 @@ class LeaveBalanceRepository implements RepositoryInterface {
         $select->where([
             "E.STATUS='E'"
         ]);
+        
+        if($serviceEventTypeId==5 || $serviceEventTypeId==8 || $serviceEventTypeId==14){
+            $select->where(["E.RETIRED_FLAG='Y'"]);
+        }else{
+            $select->where(["E.RETIRED_FLAG='N'"]);
+        }
 
         if($emplyoeeId!=-1){
             $select->where([
@@ -93,7 +99,7 @@ class LeaveBalanceRepository implements RepositoryInterface {
                 "E.SERVICE_EVENT_TYPE_ID=".$serviceEventTypeId
             ]);
         }
-
+        $select->order("E.FIRST_NAME ASC");
         $statement = $sql->prepareStatementForSqlObject($select);
         $result = $statement->execute();
         return $result;
@@ -109,8 +115,8 @@ class LeaveBalanceRepository implements RepositoryInterface {
         ], true);
 
         $select->from(['LA' => LeaveAssign::TABLE_NAME])
-            ->join(['E'=>"HR_EMPLOYEES"],"E.EMPLOYEE_ID=LA.EMPLOYEE_ID",['FIRST_NAME','MIDDLE_NAME','LAST_NAME'])
-            ->join(['L'=>'HR_LEAVE_MASTER_SETUP'],"L.LEAVE_ID=LA.LEAVE_ID",['LEAVE_CODE','LEAVE_ENAME']);
+            ->join(['E'=>"HR_EMPLOYEES"],"E.EMPLOYEE_ID=LA.EMPLOYEE_ID",['FIRST_NAME','MIDDLE_NAME','LAST_NAME','SERVICE_EVENT_TYPE_ID'],"left")
+            ->join(['L'=>'HR_LEAVE_MASTER_SETUP'],"L.LEAVE_ID=LA.LEAVE_ID",['LEAVE_CODE','LEAVE_ENAME'],"left");
 
         $select->where([
             "L.STATUS='E'",
@@ -157,12 +163,13 @@ class LeaveBalanceRepository implements RepositoryInterface {
         ], true);
 
         $select->from(['LA' => LeaveAssign::TABLE_NAME])
-            ->join(['E'=>"HR_EMPLOYEES"],"E.EMPLOYEE_ID=LA.EMPLOYEE_ID",['FIRST_NAME','MIDDLE_NAME','LAST_NAME'])
-            ->join(['L'=>'HR_LEAVE_MASTER_SETUP'],"L.LEAVE_ID=LA.LEAVE_ID",['LEAVE_CODE','LEAVE_ENAME']);
+            ->join(['E'=>"HR_EMPLOYEES"],"E.EMPLOYEE_ID=LA.EMPLOYEE_ID",['FIRST_NAME','MIDDLE_NAME','LAST_NAME'],"left")
+            ->join(['L'=>'HR_LEAVE_MASTER_SETUP'],"L.LEAVE_ID=LA.LEAVE_ID",['LEAVE_CODE','LEAVE_ENAME'],"left");
 
         $select->where([
             "L.STATUS='E'",
             "E.STATUS='E'",
+            "E.RETIRED_FLAG='N'",
             "L.CARRY_FORWARD='Y'"
         ]);
         $select->order(['LA.EMPLOYEE_ID']);

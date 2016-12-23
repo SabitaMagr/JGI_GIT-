@@ -24,6 +24,7 @@ use Setup\Model\Department;
 use Setup\Model\Designation;
 use Setup\Model\Position;
 use Setup\Model\ServiceType;
+use Setup\Model\ServiceEventType;
 use Zend\Form\Element\Select;
 use LeaveManagement\Model\LeaveMaster;
 
@@ -175,70 +176,69 @@ class LeaveApproveController extends AbstractActionController {
     }
 
     public function statusAction(){
-        
         $employeeNameFormElement = new Select();
         $employeeNameFormElement->setName("branch");
-        $employeeName = \Application\Helper\EntityHelper::getTableKVList($this->adapter, "HR_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => "E"]," ");
-        $employeeName[-1] = "All";
-        ksort($employeeName);
-        $employeeNameFormElement->setValueOptions($employeeName);
+        $employeeName = \Application\Helper\EntityHelper::getTableKVListWithSortOption($this->adapter, "HR_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => "E"], "FIRST_NAME", "ASC", " ");
+        $employeeName1 = [-1 => "All"] + $employeeName;
+        $employeeNameFormElement->setValueOptions($employeeName1);
         $employeeNameFormElement->setAttributes(["id" => "employeeId", "class" => "form-control"]);
         $employeeNameFormElement->setLabel("Employee");
         $employeeNameFormElement->setAttribute("ng-click", "view()");
 
         $branchFormElement = new Select();
         $branchFormElement->setName("branch");
-        $branches = \Application\Helper\EntityHelper::getTableKVList($this->adapter, Branch::TABLE_NAME, Branch::BRANCH_ID, [Branch::BRANCH_NAME], [Branch::STATUS => 'E']);
-        $branches[-1] = "All";
-        ksort($branches);
-        $branchFormElement->setValueOptions($branches);
+        $branches = \Application\Helper\EntityHelper::getTableKVListWithSortOption($this->adapter, Branch::TABLE_NAME, Branch::BRANCH_ID, [Branch::BRANCH_NAME], [Branch::STATUS => 'E'], "BRANCH_NAME", "ASC");
+        $branches1 = [-1 => "All"] + $branches;
+        $branchFormElement->setValueOptions($branches1);
         $branchFormElement->setAttributes(["id" => "branchId", "class" => "form-control"]);
         $branchFormElement->setLabel("Branch");
         $branchFormElement->setAttribute("ng-click", "view()");
 
-
         $departmentFormElement = new Select();
         $departmentFormElement->setName("department");
-        $departments = \Application\Helper\EntityHelper::getTableKVList($this->adapter, Department::TABLE_NAME, Department::DEPARTMENT_ID, [Department::DEPARTMENT_NAME], [Department::STATUS => 'E']);
-        $departments[-1] = "All";
-        ksort($departments);
-        $departmentFormElement->setValueOptions($departments);
+        $departments = \Application\Helper\EntityHelper::getTableKVListWithSortOption($this->adapter, Department::TABLE_NAME, Department::DEPARTMENT_ID, [Department::DEPARTMENT_NAME], [Department::STATUS => 'E'], "DEPARTMENT_NAME", "ASC");
+        $departments1 = [-1 => "All"] + $departments;
+        $departmentFormElement->setValueOptions($departments1);
         $departmentFormElement->setAttributes(["id" => "departmentId", "class" => "form-control"]);
         $departmentFormElement->setLabel("Department");
 
         $designationFormElement = new Select();
         $designationFormElement->setName("designation");
-        $designations = \Application\Helper\EntityHelper::getTableKVList($this->adapter, Designation::TABLE_NAME, Designation::DESIGNATION_ID, [Designation::DESIGNATION_TITLE], [Designation::STATUS => 'E']);
-        $designations[-1] = "All";
-        ksort($designations);
-        $designationFormElement->setValueOptions($designations);
+        $designations = \Application\Helper\EntityHelper::getTableKVListWithSortOption($this->adapter, Designation::TABLE_NAME, Designation::DESIGNATION_ID, [Designation::DESIGNATION_TITLE], [Designation::STATUS => 'E'], "DESIGNATION_TITLE", "ASC");
+        $designations1 = [-1 => "All"] + $designations;
+        $designationFormElement->setValueOptions($designations1);
         $designationFormElement->setAttributes(["id" => "designationId", "class" => "form-control"]);
         $designationFormElement->setLabel("Designation");
 
         $positionFormElement = new Select();
         $positionFormElement->setName("position");
-        $positions = \Application\Helper\EntityHelper::getTableKVList($this->adapter, Position::TABLE_NAME, Position::POSITION_ID, [Position::POSITION_NAME], [Position::STATUS => 'E']);
-        $positions[-1] = "All";
-        ksort($positions);
-        $positionFormElement->setValueOptions($positions);
+        $positions = \Application\Helper\EntityHelper::getTableKVListWithSortOption($this->adapter, Position::TABLE_NAME, Position::POSITION_ID, [Position::POSITION_NAME], [Position::STATUS => 'E'], "POSITION_NAME", "ASC");
+        $positions1 = [-1 => "All"] + $positions;
+        $positionFormElement->setValueOptions($positions1);
         $positionFormElement->setAttributes(["id" => "positionId", "class" => "form-control"]);
         $positionFormElement->setLabel("Position");
 
         $serviceTypeFormElement = new Select();
         $serviceTypeFormElement->setName("serviceType");
-        $serviceTypes = \Application\Helper\EntityHelper::getTableKVList($this->adapter, ServiceType::TABLE_NAME, ServiceType::SERVICE_TYPE_ID, [ServiceType::SERVICE_TYPE_NAME], [ServiceType::STATUS => 'E']);
-        $serviceTypes[-1] = "All";
-        ksort($serviceTypes);
-        $serviceTypeFormElement->setValueOptions($serviceTypes);
+        $serviceTypes = \Application\Helper\EntityHelper::getTableKVListWithSortOption($this->adapter, ServiceType::TABLE_NAME, ServiceType::SERVICE_TYPE_ID, [ServiceType::SERVICE_TYPE_NAME], [ServiceType::STATUS => 'E'], "SERVICE_TYPE_NAME", "ASC");
+        $serviceTypes1 = [-1 => "All"] + $serviceTypes;
+        $serviceTypeFormElement->setValueOptions($serviceTypes1);
         $serviceTypeFormElement->setAttributes(["id" => "serviceTypeId", "class" => "form-control"]);
         $serviceTypeFormElement->setLabel("Service Type");
+
+        $serviceEventTypeFormElement = new Select();
+        $serviceEventTypeFormElement->setName("serviceEventType");
+        $serviceEventTypes = \Application\Helper\EntityHelper::getTableKVListWithSortOption($this->adapter, ServiceEventType::TABLE_NAME, ServiceEventType::SERVICE_EVENT_TYPE_ID, [ServiceEventType::SERVICE_EVENT_TYPE_NAME], [ServiceEventType::STATUS => 'E'], "SERVICE_EVENT_TYPE_NAME", "ASC");
+        $serviceEventTypes1 = [-1 => "Working"] + $serviceEventTypes;
+        $serviceEventTypeFormElement->setValueOptions($serviceEventTypes1);
+        $serviceEventTypeFormElement->setAttributes(["id" => "serviceEventTypeId", "class" => "form-control"]);
+        $serviceEventTypeFormElement->setLabel("Service Event Type");
         
         $leaveFormElement = new Select();
         $leaveFormElement->setName("leave");
         $leaves = \Application\Helper\EntityHelper::getTableKVList($this->adapter, LeaveMaster::TABLE_NAME, LeaveMaster::LEAVE_ID, [LeaveMaster::LEAVE_ENAME], [LeaveMaster::STATUS => 'E']);
-        $leaves[-1] = "All";
-        ksort($leaves);
-        $leaveFormElement->setValueOptions($leaves);
+        $leaves1 = [-1 => "All"] + $leaves;
+        $leaveFormElement->setValueOptions($leaves1);
         $leaveFormElement->setAttributes(["id" => "leaveId", "class" => "form-control"]);
         $leaveFormElement->setLabel("Type");
         
@@ -265,6 +265,7 @@ class LeaveApproveController extends AbstractActionController {
             'employees' => $employeeNameFormElement,
             'leaveStatus'=>$leaveStatusFormElement,
             'recomApproveId'=>$this->employeeId,
+            'serviceEventTypes'=>$serviceEventTypeFormElement
         ]);        
     }
 }

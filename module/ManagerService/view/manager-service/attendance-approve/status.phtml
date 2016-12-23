@@ -57,7 +57,11 @@ if ($this->messages) { ?>
             <div class="col-sm-2">
                 <?php print $this->formLabel($serviceTypes); ?>
                 <?php print $this->formElement($serviceTypes); ?>
-            </div>              
+            </div> 
+            <div class="col-sm-2">
+                <?php print $this->formLabel($serviceEventTypes); ?>
+                <?php print $this->formElement($serviceEventTypes); ?>
+            </div>
             <div class="col-sm-2">
                 <label for="fromDate">From Date</label>
                 <input type="hidden" id="approverId" value="<?php echo $approverId; ?>"/>

@@ -12,6 +12,8 @@ use Application\Repository\RepositoryInterface;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\TableGateway\TableGateway;
 use Setup\Model\AcademicProgram;
+use Zend\Db\Sql\Sql;
+use Zend\Db\Sql\Select;
 
 class AcademicProgramRepository implements RepositoryInterface {
 
@@ -35,7 +37,10 @@ class AcademicProgramRepository implements RepositoryInterface {
 
     public function fetchAll()
     {
-        return $this->tableGateway->select([AcademicProgram::STATUS=>'E']);
+        return $this->tableGateway->select(function(Select $select){
+            $select->where([AcademicProgram::STATUS=>'E']);
+            $select->order(AcademicProgram::ACADEMIC_PROGRAM_NAME);
+        });
     }
 
 

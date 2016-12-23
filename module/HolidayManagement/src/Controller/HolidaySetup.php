@@ -46,9 +46,7 @@ class HolidaySetup extends AbstractActionController
 
         $branchFormElement = new Select();
         $branchFormElement->setName("branch");
-        $branches=\Application\Helper\EntityHelper::getTableKVList($this->adapter, Branch::TABLE_NAME, Branch::BRANCH_ID, [Branch::BRANCH_NAME],["STATUS"=>"E"]);
-
-        ksort($branches);
+        $branches=\Application\Helper\EntityHelper::getTableKVListWithSortOption($this->adapter, Branch::TABLE_NAME, Branch::BRANCH_ID, [Branch::BRANCH_NAME],["STATUS"=>"E"], Branch::BRANCH_NAME,"ASC");
         $branchFormElement->setValueOptions($branches);
         $branchFormElement->setAttributes(["id" => "branchId", "class" => "form-control", "multiple"=>"multiple"]);
         $branchFormElement->setLabel("Branch");
