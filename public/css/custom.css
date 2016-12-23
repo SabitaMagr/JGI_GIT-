@@ -953,6 +953,37 @@ form label
    border-bottom: 4px solid #999 !important;
  }
 
+.borderline
+{
+    border:solid #ccc 1px !important;
+ 
+    
+}
+.shadow
+{
+    box-shadow:2px 0px 4px 2px #ddd;
+   
+    
+}
+.border-bottom
+{
+    border-bottom:solid #ccc 1px !important;
+    padding-bottom:8px !important;
+}
+.mt-checkbox > span, .mt-radio > span
+{
+    background-color:#999 !important;
+    
+}
+.tbl-box-shadow
+{
+ box-shadow:6px 2px 32px -3px #ccc !important;   
+}
+.mt-radio > span::after
+{
+   background-color:#fff !important;
+    
+}
 /* Large desktops and laptops */
 @media (min-width: 1200px) {
 
