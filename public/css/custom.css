@@ -978,6 +978,9 @@ form label
 .tbl-box-shadow
 {
  box-shadow:6px 2px 32px -3px #ccc !important;   
+  -moz-box-shadow:6px 2px 32px -3px #ccc !important; 
+   -webkit-box-shadow:6px 2px 32px -3px #ccc !important; 
+    -o-box-shadow:6px 2px 32px -3px #ccc !important; 
 }
 .mt-radio > span::after
 {
