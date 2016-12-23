@@ -970,7 +970,7 @@ form label
     border-bottom:solid #ccc 1px !important;
     padding-bottom:8px !important;
 }
-.mt-checkbox > span, .mt-radio > span
+ .c-mt-radio > span
 {
     background-color:#999 !important;
     
@@ -978,6 +978,9 @@ form label
 .tbl-box-shadow
 {
  box-shadow:6px 2px 32px -3px #ccc !important;   
+  -moz-box-shadow:6px 2px 32px -3px #ccc !important; 
+   -webkit-box-shadow:6px 2px 32px -3px #ccc !important; 
+    -o-box-shadow:6px 2px 32px -3px #ccc !important; 
 }
 .mt-radio > span::after
 {
