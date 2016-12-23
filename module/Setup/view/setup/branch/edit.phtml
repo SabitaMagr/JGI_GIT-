@@ -38,12 +38,14 @@ if ($this->messages) {
 $form->prepare();
 ?>
 <script>
-    document.menu =<?php $menu = ["id" => "menuSetup", "subMenu" => ["id" => "subMenuBranch"]];
-echo json_encode($menu); ?>;
+    document.menu =<?php
+$menu = ["id" => "menuSetup", "subMenu" => ["id" => "subMenuBranch"]];
+echo json_encode($menu);
+?>;
     document.url = '<?= $this->url("restful", ["action" => "index"]) ?>';
 </script>
 <div class="page-bar">
-<?= $this->navigation('Zend\Navigation\Branch')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
+    <?= $this->navigation('Zend\Navigation\Branch')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
 <div class="row margin-top-20">
     <div class="col-sm-8 col-sm-offset-2">
@@ -57,60 +59,58 @@ echo json_encode($menu); ?>;
                 <?php
                 print $this->form()->openTag($form);
                 ?>
-                <div class="form-group<?= empty($branchCode->getMessages()) ? "" : "error" ?>">
+                <div class="form-group <?= empty($branchCode->getMessages()) ? "" : "has-error" ?>">
                     <?php print $this->formLabel($branchCode); ?>
-<?php print $this->formElement($branchCode); ?>
-                    <span class="errorMsg" style="font-size:11px; color:red;"></span>
+                    <?php print $this->formElement($branchCode); ?>
+                    <?php print $this->formElementErrors()->render($branchCode, ['class' => 'help-block error']); ?>
                     <input type="hidden" id="branchId" value="<?php echo $id; ?>" />
                 </div>
-<?php print $this->formElementErrors()->render($branchCode, ['class' => 'help-block error']); ?>
 
-                <div class="form-group<?= empty($branchName->getMessages()) ? "" : "error" ?>">
+                <div class="form-group <?= empty($branchName->getMessages()) ? "" : "has-error" ?>">
                     <?php print $this->formLabel($branchName); ?>
-<?php print $this->formElement($branchName); ?>
-                    <span class="errorMsg" style="font-size:11px; color:red;"></span>
+                    <?php print $this->formElement($branchName); ?>
+                    <?php print $this->formElementErrors()->render($branchName, ['class' => 'help-block error']); ?>
                 </div>
-<?php print $this->formElementErrors()->render($branchName, ['class' => 'help-block error']); ?>
 
-                <div class="form-group<?= empty($streetAddress->getMessages()) ? "" : "error" ?>">
+                <div class="form-group <?= empty($streetAddress->getMessages()) ? "" : "has-error" ?>">
                     <?php print $this->formLabel($streetAddress); ?>
-                <?php print $this->formElement($streetAddress); ?>
+                    <?php print $this->formElement($streetAddress); ?>
+                    <?php print $this->formElementErrors()->render($streetAddress, ['class' => 'help-block error']); ?>
                 </div>
-<?php print $this->formElementErrors()->render($streetAddress, ['class' => 'help-block error']); ?>
 
-                <div class="form-group form-group-default-select2">
+                <div class="form-group ">
                     <?php print $this->formLabel($countryId); ?>
-                <?php print $this->formElement($countryId); ?>
+                    <?php print $this->formElement($countryId); ?>
+                    <?php print $this->formElementErrors()->render($countryId, ['class' => 'help-block error']); ?>
                 </div>
-<?php print $this->formElementErrors()->render($countryId, ['class' => 'help-block error']); ?>
 
-                <div class="form-group <?= empty($telephone->getMessages()) ? "" : "error" ?>">
+                <div class="form-group <?= empty($telephone->getMessages()) ? "" : "has-error" ?>">
                     <?php print $this->formLabel($telephone); ?>
-                <?php print $this->formElement($telephone); ?>
+                    <?php print $this->formElement($telephone); ?>
+                    <?php print $this->formElementErrors()->render($telephone, ['class' => 'help-block error']); ?>
                 </div>
-<?php print $this->formElementErrors()->render($telephone, ['class' => 'help-block error']); ?>
 
-                <div class="form-group  <?= empty($fax->getMessages()) ? "" : "error" ?>">
+                <div class="form-group  <?= empty($fax->getMessages()) ? "" : "has-error" ?>">
                     <?php print $this->formLabel($fax); ?>
-                <?php print $this->formElement($fax); ?>
+                    <?php print $this->formElement($fax); ?>
+                    <?php print $this->formElementErrors()->render($fax, ['class' => 'help-block error']); ?>
                 </div>
-<?php print $this->formElementErrors()->render($fax, ['class' => 'help-block error']); ?>
 
-                <div class="form-group  <?= empty($email->getMessages()) ? "" : "error" ?>">
+                <div class="form-group  <?= empty($email->getMessages()) ? "" : "has-error" ?>">
                     <?php print $this->formLabel($email); ?>
-                <?php print $this->formElement($email); ?>
+                    <?php print $this->formElement($email); ?>
+                    <?php print $this->formElementErrors()->render($email, ['class' => 'help-block error']); ?>
                 </div>
-<?php print $this->formElementErrors()->render($email, ['class' => 'help-block error']); ?>
 
-                <div class="form-group" >
+                <div class="form-group <?= empty($remarks->getMessages()) ? "" : "has-error" ?>" >
                     <?php print $this->formLabel($remarks); ?>
                     <?php print $this->formElement($remarks); ?>
-<?php print $this->formElementErrors()->render($remarks, ['class' => 'help-block error']); ?>
+                    <?php print $this->formElementErrors()->render($remarks, ['class' => 'help-block error']); ?>
                 </div>
 
 
                 <div class="">
-<?php print $this->formSubmit($submit); ?>
+                    <?php print $this->formSubmit($submit); ?>
                 </div>
 
                 <?php

@@ -275,61 +275,65 @@ json_encode($address);
                         <div class="col-xs-12 col-sm-6 col-md-3 col-box">
                             <div class="row bottomgap">
 
-                                <div class="form-group">
+                                <div class="form-group " >
                                     <div class="col-xs-6 col-sm-6 col-md-6 rightalign">
                                         <?php print $this->formLabel($employeeCode); ?></div>
-                                    <div class="col-xs-6 col-sm-6 col-md-6 cgap">
+                                    <div class="col-xs-6 col-sm-6 col-md-6 cgap ">
                                         <?php print $this->formElement($employeeCode); ?>
+                                        <?php print $this->formElementErrors()->render($employeeCode, ['class' => 'error']) ?>
                                     </div>
-                                    <?php print $this->formElementErrors()->render($employeeCode, ['class' => 'error']) ?>
-                                    <span class="errorMsg" style="font-size:11px; color:red;"></span>
                                 </div>
                             </div>   
                         </div>
 
                         <div class="col-xs-12 col-sm-6 col-md-3 col-box">
                             <div class="row bottomgap">
-                                <div class="form-group">
+                                <div class="form-group <?= empty($companyId->getMessages()) ? '' : 'hasError' ?>">
                                     <div class="col-xs-6 col-sm-6 col-md-6 rightalign">
                                         <?php print $this->formLabel($companyId); ?></div>
                                     <div class="col-xs-6 col-sm-6 col-md-6 cgap">
-                                        <?php print $this->formElement($companyId); ?></div>
-                                    <?php print $this->formElementErrors()->render($companyId, ['class' => 'error']) ?>
+                                        <?php print $this->formElement($companyId); ?>
+                                        <?php print $this->formElementErrors()->render($companyId, ['class' => 'error']) ?>
+                                    </div>
                                 </div>
                             </div>
                         </div>
 
                         <div class="col-xs-12 col-sm-6 col-md-3 col-box">
                             <div class="row bottomgap">
-                                <div class="form-group">
+                                <div class="form-group <?= empty($firstName->getMessages()) ? '' : 'hasError' ?>">
                                     <div class="col-xs-6 col-sm-6 col-md-6 rightalign"> 
                                         <?php print $this->formLabel($firstName) ?></div>
                                     <div class="col-xs-6 col-sm-6 col-md-6 cgap">
-                                        <?php print $this->formElement($firstName) ?></div>
-                                    <?php print $this->formElementErrors()->render($firstName, ['class' => 'error']) ?>
+                                        <?php print $this->formElement($firstName) ?>
+                                        <?php print $this->formElementErrors()->render($firstName, ['class' => 'error']) ?>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                         <div class="col-xs-12 col-sm-6 col-md-3 col-box">
                             <div class="row bottomgap">
-                                <div class="form-group <?= empty($middleName->getMessages()) ? "" : "error" ?>">
+                                <div class="form-group <?= empty($middleName->getMessages()) ? "" : "hasError" ?>">
                                     <div class="col-xs-6 col-sm-6  col-md-6 rightalign">
                                         <?php print $this->formLabel($middleName) ?></div>
                                     <div class="col-xs-6 col-sm-6 col-md-6 cgap">
-                                        <?php print $this->formElement($middleName) ?></div>
-                                    <?php print $this->formElementErrors()->render($middleName, ['class' => 'error']) ?>
+                                        <?php print $this->formElement($middleName) ?>
+                                        <?php print $this->formElementErrors()->render($middleName, ['class' => 'error']) ?>
+                                    </div>
                                 </div>
                             </div> 
                         </div>
 
                         <div class="col-xs-12 col-sm-6 col-md-3 col-box">
                             <div class="row bottomgap">
-                                <div class="col-xs-6 col-sm-6  col-md-6 rightalign">
-                                    <?php print $this->formLabel($lastName) ?></div>
-                                <div class="col-xs-6 col-sm-6 col-md-6 cgap">
-                                    <?php print $this->formElement($lastName) ?>
+                                <div class="form-group  <?= empty($lastName->getMessages()) ? "" : "error" ?>">
+                                    <div class="col-xs-6 col-sm-6  col-md-6 rightalign">
+                                        <?php print $this->formLabel($lastName) ?></div>
+                                    <div class="col-xs-6 col-sm-6 col-md-6 cgap">
+                                        <?php print $this->formElement($lastName) ?>
+                                        <?php print $this->formElementErrors()->render($lastName, ['class' => 'error']) ?>
+                                    </div>
                                 </div>
-                                <?php print $this->formElementErrors()->render($lastName, ['class' => 'error']) ?>
                             </div>
                         </div>
 
@@ -339,28 +343,35 @@ json_encode($address);
                                     <div class="col-xs-6 col-sm-6  col-md-6 rightalign">
                                         <?php print $this->formLabel($nameNepali); ?></div>
                                     <div class="col-xs-6 col-sm-6 col-md-6 cgap">
-                                        <?php print $this->formElement($nameNepali); ?></div>
-                                    <?php print $this->formElementErrors()->render($nameNepali, ['class' => ' error']); ?>
+                                        <?php print $this->formElement($nameNepali); ?>
+                                        <?php print $this->formElementErrors()->render($nameNepali, ['class' => ' error']); ?>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                         <div class="col-xs-12 col-sm-6 col-md-3 col-box">
                             <div class="row bottomgap">
-                                <div class="col-xs-6 col-sm-6  col-md-6 rightalign">
-                                    <?php print $this->formLabel($genderId); ?></div>
-                                <div class="col-xs-6 col-sm-6 col-md-6 cgap">
-                                    <?php print $this->formElement($genderId); ?></div>
-                                <?php print $this->formElementErrors()->render($genderId, ['class' => 'help-block error']); ?>
+                                <div class="form-group  <?= empty($genderId->getMessages()) ? "" : "error" ?>">
+                                    <div class="col-xs-6 col-sm-6  col-md-6 rightalign">
+                                        <?php print $this->formLabel($genderId); ?></div>
+                                    <div class="col-xs-6 col-sm-6 col-md-6 cgap">
+                                        <?php print $this->formElement($genderId); ?>
+                                        <?php print $this->formElementErrors()->render($genderId, ['class' => 'help-block error']); ?>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
                         <div class="col-xs-12 col-sm-6 col-md-3 col-box">
                             <div class="row bottomgap">
-                                <div class="col-xs-6 col-sm-6  col-md-6 rightalign">
-                                    <?php print $this->formLabel($bloodGroupId) ?></div>
-                                <div class="col-xs-6 col-sm-6 col-md-6 cgap">
-                                    <?php print $this->formElement($bloodGroupId) ?></div>
-                                <?php print $this->formElementErrors()->render($bloodGroupId, ['class' => 'help-block error']) ?>
+                                <div class="form-group  <?= empty($bloodGroupId->getMessages()) ? "" : "error" ?>">
+                                    <div class="col-xs-6 col-sm-6  col-md-6 rightalign">
+                                        <?php print $this->formLabel($bloodGroupId) ?></div>
+                                    <div class="col-xs-6 col-sm-6 col-md-6 cgap">
+                                        <?php print $this->formElement($bloodGroupId) ?>
+                                        <?php print $this->formElementErrors()->render($bloodGroupId, ['class' => 'help-block error']) ?>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
@@ -406,12 +417,13 @@ json_encode($address);
 
                         <div class="col-xs-12 col-sm-6 col-md-3 col-box">
                             <div class="row bottomgap">
-                                <div class="form-group <?= empty($telephoneNo->getMessages()) ? "" : "error" ?>">
+                                <div class="form-group <?= empty($telephoneNo->getMessages()) ? "" : "hasError" ?>">
                                     <div class="col-xs-6 col-sm-6 col-md-6 rightalign">
                                         <?php print $this->formLabel($telephoneNo); ?></div>
                                     <div class="col-xs-6 col-sm-6 col-md-6 cgap">
-                                        <?php print $this->formElement($telephoneNo); ?></div>
-                                    <?php print $this->formElementErrors()->render($telephoneNo, ['class' => 'help-block error']); ?>
+                                        <?php print $this->formElement($telephoneNo); ?>
+                                        <?php print $this->formElementErrors()->render($telephoneNo, ['class' => 'help-block error']); ?>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -424,8 +436,8 @@ json_encode($address);
                                     </div>
                                     <div class="col-xs-6 col-sm-6 col-md-6 cgap">
                                         <?php print $this->formElement($mobileNo); ?>
+                                        <?php print $this->formElementErrors()->render($mobileNo, ['class' => 'help-block error']); ?>
                                     </div>
-                                    <?php print $this->formElementErrors()->render($mobileNo, ['class' => 'help-block error']); ?>
                                 </div>
                             </div>
                         </div>
@@ -435,8 +447,9 @@ json_encode($address);
                                     <div class="col-xs-6 col-sm-6 col-md-6 rightalign">
                                         <?php print $this->formLabel($extensionNo); ?></div>
                                     <div class="col-xs-6 col-sm-6 col-md-6 cgap">
-                                        <?php print $this->formElement($extensionNo); ?></div>
-                                    <?php print $this->formElementErrors()->render($extensionNo, ['class' => 'help-block error']); ?>
+                                        <?php print $this->formElement($extensionNo); ?>
+                                        <?php print $this->formElementErrors()->render($extensionNo, ['class' => 'help-block error']); ?>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -447,10 +460,11 @@ json_encode($address);
                                     <div class="col-xs-6 col-sm-6 col-md-6 rightalign">
                                         <?php print $this->formLabel($emailOfficial); ?></div>
                                     <div class="col-xs-6 col-sm-6 col-md-6 cgap">
-                                        <?php print $this->formElement($emailOfficial); ?></div>
+                                        <?php print $this->formElement($emailOfficial); ?>
+                                        <?php print $this->formElementErrors()->render($emailOfficial, ['class' => 'help-block error']); ?>
+                                    </div>
                                 </div>
                             </div>
-                            <?php print $this->formElementErrors()->render($emailOfficial, ['class' => 'help-block error']); ?>
                         </div> 
 
                         <div class="col-xs-12 col-sm-6 col-md-3 col-box">
@@ -459,8 +473,9 @@ json_encode($address);
                                     <div class="col-xs-6 col-sm-6 col-md-6 rightalign">
                                         <?php print $this->formLabel($emailPersonal); ?></div>
                                     <div class="col-xs-6 col-sm-6 col-md-6 cgap">
-                                        <?php print $this->formElement($emailPersonal); ?></div>
-                                    <?php print $this->formElementErrors()->render($emailPersonal, ['class' => 'help-block error']); ?>
+                                        <?php print $this->formElement($emailPersonal); ?>
+                                        <?php print $this->formElementErrors()->render($emailPersonal, ['class' => 'help-block error']); ?>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -471,8 +486,9 @@ json_encode($address);
                                     <div class="col-xs-6 col-sm-6 col-md-6 rightalign">
                                         <?php print $this->formLabel($socialNetwork); ?></div>
                                     <div class="col-xs-6 col-sm-6 col-md-6 cgap">
-                                        <?php print $this->formElement($socialNetwork); ?></div>
-                                    <?php print $this->formElementErrors()->render($socialNetwork, ['class' => 'help-block error']); ?>
+                                        <?php print $this->formElement($socialNetwork); ?>
+                                        <?php print $this->formElementErrors()->render($socialNetwork, ['class' => 'help-block error']); ?>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -483,8 +499,9 @@ json_encode($address);
                                         <?php print $this->formLabel($countryId); ?>
                                     </div>
                                     <div class="col-xs-6 col-sm-6 col-md-6 cgap">
-                                        <?php print $this->formElement($countryId); ?></div>
-                                    <?php print $this->formElementErrors()->render($countryId, ['class' => 'help-block error']); ?>
+                                        <?php print $this->formElement($countryId); ?>
+                                        <?php print $this->formElementErrors()->render($countryId, ['class' => 'help-block error']); ?>
+                                    </div>
                                 </div>
                             </div>
 
@@ -505,8 +522,9 @@ json_encode($address);
                                     <div class="col-xs-6 col-sm-6 col-md-6 rightalign">
                                         <?php print $this->formLabel($addrPermHouseNo); ?></div>
                                     <div class="col-xs-6 col-sm-6 col-md-6 cgap">
-                                        <?php print $this->formElement($addrPermHouseNo); ?></div>
-                                    <?php print $this->formElementErrors()->render($addrPermHouseNo, ['class' => 'help-block error']); ?>
+                                        <?php print $this->formElement($addrPermHouseNo); ?>
+                                        <?php print $this->formElementErrors()->render($addrPermHouseNo, ['class' => 'help-block error']); ?>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -517,8 +535,9 @@ json_encode($address);
                                     <div class="col-xs-6 col-sm-6 col-md-6 rightalign">
                                         <?php print $this->formLabel($addrPermWardNo); ?></div>
                                     <div class="col-xs-6 col-sm-6 col-md-6 cgap">
-                                        <?php print $this->formElement($addrPermWardNo); ?></div>
-                                    <?php print $this->formElementErrors()->render($addrPermWardNo, ['class' => 'help-block error']); ?>
+                                        <?php print $this->formElement($addrPermWardNo); ?>
+                                        <?php print $this->formElementErrors()->render($addrPermWardNo, ['class' => 'help-block error']); ?>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -529,8 +548,9 @@ json_encode($address);
                                     <div class="col-xs-6 col-sm-6 col-md-6 rightalign">
                                         <?php print $this->formLabel($addrPermStreetAddress); ?></div>
                                     <div class="col-xs-6 col-sm-6 col-md-6 cgap">
-                                        <?php print $this->formElement($addrPermStreetAddress); ?></div>
-                                    <?php print $this->formElementErrors()->render($addrPermStreetAddress, ['class' => 'help-block error']); ?>
+                                        <?php print $this->formElement($addrPermStreetAddress); ?>
+                                        <?php print $this->formElementErrors()->render($addrPermStreetAddress, ['class' => 'help-block error']); ?>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -541,8 +561,9 @@ json_encode($address);
                                     <div class="col-xs-6 col-sm-6 col-md-6 rightalign">
                                         <?php print $this->formLabel($addrPermZoneId); ?></div>
                                     <div class="col-xs-6 col-sm-6 col-md-6 cgap">
-                                        <?php print $this->formElement($addrPermZoneId); ?></div>
-                                    <?php print $this->formElementErrors()->render($addrPermZoneId, ['class' => 'help-block error']); ?>
+                                        <?php print $this->formElement($addrPermZoneId); ?>
+                                        <?php print $this->formElementErrors()->render($addrPermZoneId, ['class' => 'help-block error']); ?>
+                                    </div>
                                 </div>
                             </div>
                         </div>
