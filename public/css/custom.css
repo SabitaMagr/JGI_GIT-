@@ -1000,6 +1000,7 @@ form label
   color:#fff;
   margin-top:5px;
 }
+/* */
   .showhide.collapsed:before
 {
     content:"\f055";
