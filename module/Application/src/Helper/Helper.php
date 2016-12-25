@@ -15,6 +15,7 @@ class Helper {
     const MYSQL_DATE_FORMAT = "";
     const PHP_DATE_FORMAT = "d-M-Y";
     const FLOAT_ROUNDING_DIGIT_NO = 2;
+    const UPLOAD_DIR = __DIR__."/../../../../public/uploads";
 
     public static function addFlashMessagesToArray($context, $return) {
         $flashMessenger = $context->flashMessenger();

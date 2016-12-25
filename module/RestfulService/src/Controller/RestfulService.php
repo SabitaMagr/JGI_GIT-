@@ -83,7 +83,7 @@ class RestfulService extends AbstractRestfulController {
             $fileName = pathinfo($files['file']['name'], PATHINFO_FILENAME);
             $unique = Helper::generateUniqueName();
             $newFileName = $unique . "." . $ext;
-            $success = move_uploaded_file($files['file']['tmp_name'], \Setup\Controller\EmployeeController::UPLOAD_DIR . "/" . $newFileName);
+            $success = move_uploaded_file($files['file']['tmp_name'], Helper::UPLOAD_DIR . "/" . $newFileName);
             if ($success) {
                 $responseData = ["success" => true, "data" => ["fileName" => $newFileName, "oldFileName" => $fileName . "." . $ext]];
             }
