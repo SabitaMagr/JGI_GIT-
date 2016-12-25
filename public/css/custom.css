@@ -221,14 +221,14 @@ form.k-filter-menu .k-widget, form.k-filter-menu .k-textbox
 .custom-footer,.page-footer{
     background-color:#ddd;
     height:auto !important;
-   
+
 }
 .page-footer .page-footer-inner
 {
     padding-top:12px;
 }
 .page-footer{
-    
+
 }
 .page-footer .page-footer-inner
 {
@@ -720,7 +720,7 @@ form.k-filter-menu .k-widget, form.k-filter-menu .k-textbox
 {
     font-size: 12px !important;
 }
-.k-state-border-down span
+.k-state-border-down span.k-icon 
 {
 
     transform:rotate(180deg);
@@ -842,7 +842,7 @@ select{
     border-radius:15px !important;
     border-bottom: 2px solid #b2b1b1;
     text-shadow: 0px 1px 0px #fafafa;
-     background: #ccc !important;
+    background: #ccc !important;
     background: -webkit-gradient(linear, left top, left bottom, from(#ccc), to(#e2e2e2));
     background: -moz-linear-gradient(top,  #eee,  #e2e2e2);     
 }
@@ -935,7 +935,7 @@ form label
     color:#559767;
 }
 .btn-success{
-  background-color: #559767 !important;
+    background-color: #559767 !important;
     border-color: #559767 !important;
     color: #fff !important;
     padding:2px 18px !important;
@@ -945,77 +945,77 @@ form label
     border: 1px solid #999 !important;
 }
 .md-checkbox label > .check{
- border-color:-moz-use-text-color #559767 #559767 -moz-use-text-color   
+    border-color:-moz-use-text-color #559767 #559767 -moz-use-text-color   
 }  
 .menusetuptab > .nav-tabs > li.active,.menusetuptab > .nav-tabs > li:hover
 
- {
-   border-bottom: 4px solid #999 !important;
- }
+{
+    border-bottom: 4px solid #999 !important;
+}
 
 .borderline
 {
     border:solid #ccc 1px !important;
- 
-    
+
+
 }
 .shadow
 {
     box-shadow:2px 0px 4px 2px #ddd;
-   
-    
+
+
 }
 .border-bottom
 {
     border-bottom:solid #ccc 1px !important;
     padding-bottom:8px !important;
 }
- .c-mt-radio > span
+.c-mt-radio > span
 {
     background-color:#999 !important;
-    
+
 }
 .tbl-box-shadow
 {
- box-shadow:6px 2px 32px -3px #ccc !important;   
-  -moz-box-shadow:6px 2px 32px -3px #ccc !important; 
-   -webkit-box-shadow:6px 2px 32px -3px #ccc !important; 
+    box-shadow:6px 2px 32px -3px #ccc !important;   
+    -moz-box-shadow:6px 2px 32px -3px #ccc !important; 
+    -webkit-box-shadow:6px 2px 32px -3px #ccc !important; 
     -o-box-shadow:6px 2px 32px -3px #ccc !important; 
 }
 .mt-radio > span::after
 {
-   background-color:#fff !important;
-    
+    background-color:#fff !important;
+
 }
 .gapbottom .col-md-3
 {
-   margin-bottom: 10px !important;
-   
+    margin-bottom: 10px !important;
+
 }
 .showhide
 {
-  background-color: #559767;  
-  border:solid #ddd 1px;
-  padding:2px 5px;
-  color:#fff;
-  margin-top:5px;
+    background-color: #559767;  
+    border:solid #ddd 1px;
+    padding:2px 5px;
+    color:#fff;
+    margin-top:5px;
 }
 /* */
-  .showhide.collapsed:before
+.showhide.collapsed:before
 {
     content:"\f055";
     font-family:fontawesome;
     padding-right:5px;
-     color:#fff;
+    color:#fff;
 }
-   .showhide:before
-   {
-         content:"\f056";
+.showhide:before
+{
+    content:"\f056";
     font-family:fontawesome;
     padding-right:5px;
     color:#fff;
-      
-   }
+
+}
 /* Large desktops and laptops */
 @media (min-width: 1200px) {
 
@@ -1190,3 +1190,9 @@ form label
 /*rajan's css new end here*/
 
 
+/* ukesh's css */
+
+.errorMsg{
+    color:red;
+}
+/* end of ukesh's css */

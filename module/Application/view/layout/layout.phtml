@@ -6,9 +6,6 @@
 <!--[if !IE]><!-->
 <html lang="en">
     <!--<![endif]-->
-    <!-- BEGIN HEAD -->
-    <!-- Mirrored from keenthemes.com/preview/metronic/theme/admin_1_material_design/index.html by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 23 Sep 2016 07:58:15 GMT -->
-    <!-- Added by HTTrack -->
     <meta http-equiv="content-type" content="text/html;charset=UTF-8"/><!-- /Added by HTTrack -->
     <head>
         <meta charset="utf-8"/>
@@ -90,7 +87,6 @@
 
 
     </head>
-    <!-- END HEAD -->
 
 
     <body class="page-header-fixed page-sidebar-closed-hide-logo page-content-white page-md">
@@ -99,28 +95,18 @@
             document.basePath = '<?= $this->basePath() ?>';
         </script>
         <div class="page-wrapper">
-            <!-- BEGIN HEADER -->
             <?php
             print $this->partial('partials/header.phtml');
             ?>
-            <!-- END HEADER -->
-            <!-- BEGIN HEADER & CONTENT DIVIDER -->
+
             <div class="clearfix"></div>
-            <!-- END HEADER & CONTENT DIVIDER -->
-            <!-- BEGIN CONTAINER -->
             <div class="page-container">
-                <!-- BEGIN SIDEBAR -->
                 <?php
                 $this->navigation('navigation-menu')->menu()->setPartial('partials/sidebar');
-
                 echo $this->navigation('navigation-menu')->menu()->render();
-
                 //echo $this->navigation('navigation-menu')->menu()->setUlClass('nav');
                 ?>
-                <!-- END SIDEBAR -->
-                <!-- BEGIN CONTENT -->
                 <div class="page-content-wrapper">
-                    <!-- BEGIN CONTENT BODY -->
                     <div class="page-content">
                         <?php
                         print $this->content;
@@ -131,26 +117,18 @@
                         }
                         ?>
                     </div>
-                    <!-- END CONTENT BODY -->
                 </div>
-                <!-- END CONTENT -->
-                <!-- BEGIN QUICK SIDEBAR -->
                 <?php
                 print $this->partial('partials/quick-sidebar.phtml');
                 ?>
-                <!-- END QUICK SIDEBAR -->
             </div>
-            <!-- END CONTAINER -->
-            <!-- BEGIN FOOTER -->
             <?php
-//    print $this->partial('partials/footer.phtml');
             print $this->partial('partials/footer.phtml');
             ?>
             <?php
             print $this->partial('partials/profile.phtml');
             ?>
 
-            <!-- END FOOTER -->
         </div>
         <!-- BEGIN QUICK NAV -->
         <!--<nav class="quick-nav">-->
@@ -198,13 +176,6 @@
         <script src="<?= $this->basePath('assets/global/plugins/excanvas.min.js') ?>"></script>
         <script src="<?= $this->basePath('assets/global/plugins/ie8.fix.min.js') ?>"></script>
         <![endif]-->
-
-        <!--Kendo plugin-->
-        <?php
-//$this->headScript()
-//    ->prependFile($this->basePath('telerik_kendoui/js/kendo.all.min.js'));
-        ?>
-        <!--end of kendo plugin-->
 
         <?php
         $this->headScript()

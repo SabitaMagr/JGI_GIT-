@@ -1,7 +1,6 @@
 window.app = (function ($, toastr) {
     "use strict";
     var format = "d-M-yyyy";
-    // $('select').select2();
 
     var pullDataById = function (url, data) {
         return new Promise(function (resolve, reject) {
@@ -25,10 +24,6 @@ window.app = (function ($, toastr) {
         for (var key in data) {
             element.append($('<option>', {value: key, text: data[key]}));
         }
-        // var keys = Object.keys(data);
-        // if (keys.length > 0) {
-        //    element.select2('val', keys[0]);
-        // }
     }
 
     var fetchAndPopulate = function (url, id, element, callback) {
@@ -219,7 +214,6 @@ window.app = (function ($, toastr) {
     floatingProfile.initialize();
 
     var checkUniqueConstraints = function (inputFieldId, formId, tableName, columnName, checkColumnName, selfId) {
-        console.log("arguments", arguments);
         $('#' + inputFieldId).on("blur", function () {
             var id = $(this);
             var nameValue = id.val();
@@ -227,6 +221,27 @@ window.app = (function ($, toastr) {
             var childId = parentId.children(".errorMsg");
             var columnsWidValues = {};
             columnsWidValues[columnName] = nameValue;
+            var displayErrorMessage = function (formGroup, check, message) {
+                var flag = formGroup.find('span.errorMsg').length > 0;
+                if (flag) {
+                    var errorMsgSpan = formGroup.find('span.errorMsg');
+                    errorMsgSpan.each(function () {
+                        if (check > 0) {
+                            $(this).html(message);
+                        } else {
+                            $(this).remove();
+                        }
+                    });
+                } else {
+                    if (check > 0) {
+                        var errorMsgSpan = $('<span />', {
+                            "class": 'errorMsg',
+                            text: message
+                        });
+                        formGroup.append(errorMsgSpan);
+                    }
+                }
+            };
 
             window.app.pullDataById(document.restfulUrl, {
                 action: 'checkUniqueConstraint',
@@ -238,13 +253,7 @@ window.app = (function ($, toastr) {
                 }
             }).then(function (success) {
                 console.log("checkUniqueConstraint res", success);
-                var num = parseInt(success.data);
-                if (num > 0) {
-                    childId.html(success.msg);
-                    id.focus();
-                } else if (num === 0) {
-                    childId.html("");
-                }
+                displayErrorMessage(parentId, success.data, success.msg);
             }, function (failure) {
                 console.log("checkUniqueConstraint failure", failure);
             });
@@ -276,14 +285,14 @@ window.app = (function ($, toastr) {
             }
         }
         return arr;
-    }
-    
-    
+    };
+
+
     var UIConfirmations = function () {
         $(".confirmation").each(function () {
             var confirmationBtnId = $(this).attr("id");
             var id = confirmationBtnId.split("_").pop(-1);
-            var href =  $(this).attr("href");
+            var href = $(this).attr("href");
             $(this).on("click", function (e) {
                 e.preventDefault();
                 $("#" + confirmationBtnId).confirmation('show');
@@ -291,7 +300,7 @@ window.app = (function ($, toastr) {
 
             $("#" + confirmationBtnId).on("confirmed.bs.confirmation", function () {
                 //console.log(href);
-                
+
 //                window.app.pullDataById(document.deleteURL, {
 //                    action: 'deleteContent',
 //                    data: {

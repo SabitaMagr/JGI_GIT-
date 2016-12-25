@@ -2,42 +2,33 @@
 
 namespace Setup\Controller;
 
-/**
- * Master Setup for Department
- * Department controller.
- * Created By: Somkala Pachhai
- * Edited By: Somkala Pachhai
- * Date: August 5, 2016, Friday
- * Last Modified By: Somkala Pachhai
- * Last Modified Date: August 10,2016, Wednesday
- */
+use Application\Helper\EntityHelper as ApplicationEntityHelper;
 use Application\Helper\Helper;
 use Setup\Form\DepartmentForm;
 use Setup\Helper\EntityHelper;
 use Setup\Model\Department;
 use Setup\Repository\DepartmentRepository;
+use Zend\Authentication\AuthenticationService;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
-use Application\Helper\EntityHelper  as ApplicationEntityHelper;
 
-
-class DepartmentController extends AbstractActionController
-{
+class DepartmentController extends AbstractActionController {
 
     private $form;
     private $repository;
     private $adapter;
+    private $employeeId;
 
-    function __construct(AdapterInterface $adapter)
-    {
+    function __construct(AdapterInterface $adapter) {
         $this->repository = new DepartmentRepository($adapter);
         $this->adapter = $adapter;
+        $auth = new AuthenticationService();
+        $this->employeeId = $auth->getStorage()->read()['employee_id'];
     }
 
-    public function initializeForm()
-    {
+    public function initializeForm() {
         $departmentForm = new DepartmentForm();
         $builder = new AnnotationBuilder();
         if (!$this->form) {
@@ -45,14 +36,12 @@ class DepartmentController extends AbstractActionController
         }
     }
 
-    public function indexAction()
-    {
+    public function indexAction() {
         $departmentList = $this->repository->fetchAll();
         return Helper::addFlashMessagesToArray($this, ['departments' => Helper::extractDbData($departmentList)]);
     }
 
-    public function addAction()
-    {
+    public function addAction() {
         $this->initializeForm();
         $request = $this->getRequest();
 
@@ -67,7 +56,8 @@ class DepartmentController extends AbstractActionController
                     unset($department->parentDepartment);
                 }
                 $department->createdDt = Helper::getcurrentExpressionDate();
-                $department->departmentId = ((int)Helper::getMaxId($this->adapter, "HR_DEPARTMENTS", "DEPARTMENT_ID")) + 1;
+                $department->createdBy = $this->employeeId;
+                $department->departmentId = ((int) Helper::getMaxId($this->adapter, "HR_DEPARTMENTS", "DEPARTMENT_ID")) + 1;
                 $department->status = 'E';
 
                 $this->repository->add($department);
@@ -76,20 +66,18 @@ class DepartmentController extends AbstractActionController
             }
         }
         return new ViewModel(Helper::addFlashMessagesToArray(
-            $this,
-            [
-                'form' => $this->form,
-                'departments' => ApplicationEntityHelper::getTableKVListWithSortOption($this->adapter, Department::TABLE_NAME, Department::DEPARTMENT_ID, [Department::DEPARTMENT_NAME], ["STATUS" => "E"],"DEPARTMENT_NAME","ASC"),
-                'countries' => EntityHelper::getTableKVList($this->adapter, EntityHelper::HR_COUNTRIES)
-            ]
-        )
+                        $this, [
+                    'form' => $this->form,
+                    'departments' => ApplicationEntityHelper::getTableKVListWithSortOption($this->adapter, Department::TABLE_NAME, Department::DEPARTMENT_ID, [Department::DEPARTMENT_NAME], ["STATUS" => "E"], "DEPARTMENT_NAME", "ASC"),
+                    'countries' => EntityHelper::getTableKVList($this->adapter, EntityHelper::HR_COUNTRIES)
+                        ]
+                )
         );
     }
 
-    public function editAction()
-    {
+    public function editAction() {
 
-        $id = (int)$this->params()->fromRoute("id");
+        $id = (int) $this->params()->fromRoute("id");
         if ($id === 0) {
             return $this->redirect()->toRoute('department');
         }
@@ -108,28 +96,23 @@ class DepartmentController extends AbstractActionController
                     unset($department->parentDepartment);
                 }
                 $department->modifiedDt = Helper::getcurrentExpressionDate();
-                unset($department->departmentId);
-                unset($department->createdDt);
-                unset($department->status);
-
+                $department->modifiedBy = $this->employeeId;
                 $this->repository->edit($department, $id);
                 $this->flashmessenger()->addMessage("Department Successfully Updated!!!");
                 return $this->redirect()->toRoute("department");
             }
         }
         return Helper::addFlashMessagesToArray(
-            $this,
-            [
-                'form' => $this->form, 'id' => $id,
-                'departments' => ApplicationEntityHelper::getTableKVListWithSortOption($this->adapter, Department::TABLE_NAME, Department::DEPARTMENT_ID, [Department::DEPARTMENT_NAME], ["STATUS" => "E"],"DEPARTMENT_NAME","ASC"),
-                'countries' => EntityHelper::getTableKVList($this->adapter, EntityHelper::HR_COUNTRIES)
-            ]
+                        $this, [
+                    'form' => $this->form, 'id' => $id,
+                    'departments' => ApplicationEntityHelper::getTableKVListWithSortOption($this->adapter, Department::TABLE_NAME, Department::DEPARTMENT_ID, [Department::DEPARTMENT_NAME], ["STATUS" => "E"], "DEPARTMENT_NAME", "ASC"),
+                    'countries' => EntityHelper::getTableKVList($this->adapter, EntityHelper::HR_COUNTRIES)
+                        ]
         );
     }
 
-    public function deleteAction()
-    {
-        $id = (int)$this->params()->fromRoute("id");
+    public function deleteAction() {
+        $id = (int) $this->params()->fromRoute("id");
         if (!$id) {
             return $this->redirect()->toRoute('position');
         }
@@ -137,6 +120,7 @@ class DepartmentController extends AbstractActionController
         $this->flashmessenger()->addMessage("Department Successfully Deleted!!!");
         return $this->redirect()->toRoute('department');
     }
+
 }
 
 ?>

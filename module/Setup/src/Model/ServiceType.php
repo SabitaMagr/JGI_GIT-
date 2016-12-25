@@ -1,19 +1,21 @@
 <?php
+
 namespace Setup\Model;
 
 use Application\Model\Model;
 
-class ServiceType extends Model{
+class ServiceType extends Model {
 
-    const TABLE_NAME="HR_SERVICE_TYPES";
-
-    const SERVICE_TYPE_ID="SERVICE_TYPE_ID";
-    const SERVICE_TYPE_CODE="SERVICE_TYPE_CODE";
-    const SERVICE_TYPE_NAME="SERVICE_TYPE_NAME";
-    const REMARKS="REMARKS";
-    const STATUS="STATUS";
-    const CREATED_DT="CREATED_DT";
-    const MODIFIED_DT="MODIFIED_DT";
+    const TABLE_NAME = "HR_SERVICE_TYPES";
+    const SERVICE_TYPE_ID = "SERVICE_TYPE_ID";
+    const SERVICE_TYPE_CODE = "SERVICE_TYPE_CODE";
+    const SERVICE_TYPE_NAME = "SERVICE_TYPE_NAME";
+    const REMARKS = "REMARKS";
+    const STATUS = "STATUS";
+    const CREATED_DT = "CREATED_DT";
+    const MODIFIED_DT = "MODIFIED_DT";
+    const CREATED_BY = "CREATED_BY";
+    const MODIFIED_BY = "MODIFIED_BY";
 
     public $serviceTypeId;
     public $serviceTypeCode;
@@ -22,15 +24,18 @@ class ServiceType extends Model{
     public $status;
     public $createdDt;
     public $modifiedDt;
-
+    public $createdBy;
+    public $modifiedBy;
     public $mappings = [
-        'serviceTypeId'=>self::SERVICE_TYPE_ID,
-        'serviceTypeCode'=>self::SERVICE_TYPE_CODE,
-        'serviceTypeName'=>self::SERVICE_TYPE_NAME,
-        'remarks'=>self::REMARKS,
-        'status'=>self::STATUS,
-        'createdDt'=>self::CREATED_DT,
-        'modifiedDt'=>self::MODIFIED_DT
+        'serviceTypeId' => self::SERVICE_TYPE_ID,
+        'serviceTypeCode' => self::SERVICE_TYPE_CODE,
+        'serviceTypeName' => self::SERVICE_TYPE_NAME,
+        'remarks' => self::REMARKS,
+        'status' => self::STATUS,
+        'createdDt' => self::CREATED_DT,
+        'modifiedDt' => self::MODIFIED_DT,
+        'createdBy' => self::CREATED_BY,
+        'modifiedBy' => self::MODIFIED_BY,
     ];
 
 }
