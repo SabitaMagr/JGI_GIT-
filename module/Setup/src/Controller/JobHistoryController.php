@@ -142,7 +142,7 @@ class JobHistoryController extends AbstractActionController {
                     'latestJobHistoryId'=>$latestJobHistoryId,
                     'empId' => EntityHelper1::getTableKVList($this->adapter, JobHistory::TABLE_NAME, JobHistory::JOB_HISTORY_ID, [JobHistory::EMPLOYEE_ID], [JobHistory::JOB_HISTORY_ID => $id], null)[$id],
                     'messages' => $this->flashmessenger()->getMessages(),
-                    'employees' => EntityHelper1::getTableKVListWithSortOption($this->adapter, "HR_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => "E","RETIRED_FLAG"=>"N"], "FIRST_NAME", "ASC", " "),
+                    'employeesAll' => EntityHelper1::getTableKVListWithSortOption($this->adapter, "HR_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => "E"], "FIRST_NAME", "ASC", " "),
                     'departments' => EntityHelper1::getTableKVListWithSortOption($this->adapter, "HR_DEPARTMENTS", "DEPARTMENT_ID", ["DEPARTMENT_NAME"], ["STATUS" => 'E'],"DEPARTMENT_NAME","ASC",null,true),
                     'designations' => EntityHelper1::getTableKVListWithSortOption($this->adapter, "HR_DESIGNATIONS", "DESIGNATION_ID", ["DESIGNATION_TITLE"], ["STATUS" => 'E'],"DESIGNATION_TITLE","ASC",null,true),
                     'branches' => EntityHelper1::getTableKVListWithSortOption($this->adapter, "HR_BRANCHES", "BRANCH_ID", ["BRANCH_NAME"], ["STATUS" => 'E'],"BRANCH_NAME","ASC",null,true),

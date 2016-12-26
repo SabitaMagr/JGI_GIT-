@@ -66,7 +66,7 @@ class UserSetupRepository implements RepositoryInterface {
     //to get the employee list for select option
     public function getEmployeeList($employeeId=null){
 
-        $sql = "SELECT * FROM HR_EMPLOYEES WHERE STATUS='E' AND EMPLOYEE_ID NOT IN (SELECT EMPLOYEE_ID FROM HR_USERS WHERE STATUS='E'AND EMPLOYEE_ID IS NOT NULL)";
+        $sql = "SELECT * FROM HR_EMPLOYEES WHERE STATUS='E' AND RETIRED_FLAG='N' AND EMPLOYEE_ID NOT IN (SELECT EMPLOYEE_ID FROM HR_USERS WHERE STATUS='E'AND EMPLOYEE_ID IS NOT NULL)";
 
         if($employeeId!=null){
             $sql .= " UNION 
@@ -74,6 +74,7 @@ SELECT * FROM HR_EMPLOYEES WHERE STATUS='E' AND EMPLOYEE_ID IN (".$employeeId.")
         }
 
         $statement = $this->adapter->query($sql);
+       // print_r($statement->getSql());die();
         $resultset = $statement->execute();
 
         $entitiesArray = array();
