@@ -42,8 +42,8 @@ echo json_encode($menu);
 <div class="portlet light bordered" id="form_wizard_1">
     <div class="portlet-title">
         <div class="caption">
-            <i class=" icon-layers font-red"></i>
-            <span class="caption-subject font-red bold uppercase">
+            <i class=" icon-layers f-green"></i>
+            <span class="caption-subject f-green bold uppercase">
                 Form Wizard -
                 <span class="step-title"> Step 1 of 4 </span>
             </span>
@@ -102,6 +102,8 @@ echo json_encode($menu);
                     <h3 class="block">Provide your account details</h3>
                     <form method="POST" name="Rules" action="/neo/neo-hris-metronic/public/payroll/rules/add"
                           id="Rules">
+                        <div class="row">
+                            <div class="col-md-4">
                         <div class="form-group">
                             <label for="payCode">Pay Code</label>
                             <input type="text"
@@ -110,23 +112,26 @@ echo json_encode($menu);
                                    class="form-control">
                             <span class="errorMsg"></span>
                         </div>
-
+                            </div>
+                             <div class="col-md-4">
                         <div class="form-group">
                             <label for="payEdesc">Pay EDesc</label>
                             <textarea name="payEdesc"
                                       required="required"
                                       id="payEdesc"
                                       class="form-control"></textarea></div>
-
+                             </div>
+                             <div class="col-md-4">
                         <div class="form-group ">
                             <label for="payLdesc">Pay LDesc</label>
                             <textarea name="payLdesc"
                                       required="required"
                                       id="payLdesc"
                                       class="form-control"></textarea></div>
-
-                        <div class="row">
-                            <div class="col-sm-6">
+                           
+                        </div>
+                        
+                            <div class="col-md-4">
                                 <div class="form-group">
                                     <label for="payTypeFlag">Pay Type</label>
                                     <div class="md-radio-inline">
@@ -164,7 +169,7 @@ echo json_encode($menu);
                                 </div>
 
                             </div>
-                            <div class="col-sm-6 ">
+                            <div class="col-md-4 ">
                                 <div class="form-group ">
                                     <label for="priorityIndex">Priority Index</label>
                                     <input type="number"
@@ -174,8 +179,9 @@ echo json_encode($menu);
                                            value="">
                                     <span class="errorMsg"></span>
                                 </div>
-                            </div>
+                     
                         </div>
+                            <div class="col-sm-4">
                         <div class="form-group ">
                             <label for="remarks">Remarks</label>
                             <textarea
@@ -184,24 +190,26 @@ echo json_encode($menu);
                                 id="remarks"
                                 class="form-control"></textarea>
                         </div>
+                            </div>
+                        </div>
                     </form>
                 </div>
                 <div class="tab-pane" id="tab2">
                     <div class="row">
-                        <div class="col-sm-3">
+                        <div class="col-xs-12 col-sm-3 leftvalues">
                             <h4>Monthly Values</h4>
-                            <div class="scroller" style="height: 150px;">
+                            <div class="scroller" style="height: 144px;">
                                 <ul class="list-group" id="monthlyValueList">
                                 </ul>
                             </div>
 
-                            <h3>Flat Values</h3>
-                            <div class="margin-top-10 scroller" style="height: 150px;">
+                            <h4>Flat Values</h4>
+                            <div class="margin-top-10 scroller" style="height: 145px;">
                                 <ul class="list-group" id="flatValueList">
                                 </ul>
                             </div>
                         </div>
-                        <div class="col-sm-6">
+                        <div class="col-xs-12 col-sm-6 rules">
                             <h4>Rule</h4>
                             <textarea id="rule"></textarea>
                             <!--<button id="check" class="margin-top-10 pull-right btn btn-danger">Check</button>-->
@@ -210,14 +218,14 @@ echo json_encode($menu);
                             </div>
                         </div>
 
-                        <div class="col-sm-3">
+                        <div class="col-xs-12 col-sm-3 rightvalues">
                             <h4>Variables</h4>
-                            <div class="scroller" style="height: 150px;">
+                            <div class="scroller" style="height: 144px;">
                                 <ul class="list-group" id="variables">
                                 </ul>
                             </div>
 
-                            <h3>System Rules</h3>
+                            <h4>System Rules</h4>
                             <div class="margin-top-10 scroller" style="height: 150px;">
                                 <ul class="list-group" id="systemRules">
                                 </ul>
@@ -238,7 +246,7 @@ echo json_encode($menu);
                 <div class="tab-pane" id="tab3">
                     <h3 class="block">Assign Rule to positions.</h3>
                     <div class="md-checkbox-list" id="positionList">
-                        <div class="md-checkbox">
+                        <div class="md-checkbox c-chekkbox">
                             <input type="checkbox" id="checkbox1" class="md-check">
                             <label for="checkbox1">
                                 <span></span>
@@ -252,13 +260,13 @@ echo json_encode($menu);
         </div>
         <div class="form-actions">
             <div class="row">
-                <div class="col-md-offset-3 col-md-9">
-                    <a href="javascript:;" class="btn default button-previous">
+                <div class="col-md-12">
+                    <a href="javascript:;" class="btn default green button-previous pull-left">
                         <i class="fa fa-angle-left"></i> Back </a>
-                    <a href="javascript:;" class="btn btn-outline green button-next"> Continue
+                    <a href="javascript:;" class="btn btn-outline green button-next pull-right"> Continue
                         <i class="fa fa-angle-right"></i>
                     </a>
-                    <a href="javascript:;" class="btn green button-submit">
+                    <a href="javascript:;" class="btn green button-submit pull-right">
                         Submit
                         <i class="fa fa-check"></i>
                     </a>

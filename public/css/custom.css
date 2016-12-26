@@ -330,7 +330,7 @@ form.k-filter-menu .k-widget, form.k-filter-menu .k-textbox
 
 .formbg
 {
-    background-color: #eee;
+    background-color: #F7F7F7;
     margin-top: 5px;
     padding: 5px;	
     border:solid #ddd  1px;
@@ -391,6 +391,8 @@ form.k-filter-menu .k-widget, form.k-filter-menu .k-textbox
 .btn.btn-default.form-control.i-search {
     margin-top: 3px;
     padding: 3px;
+    width:100px !important;
+    display:block !important;
 }
 .form-control,.select2-selection--single 
 {
@@ -1016,19 +1018,130 @@ form label
     color:#fff;
       
    }
-   .k-icon.k-i-filter:after, .k-icon.k-i-filter:before
-   {
-       font-family:fontawesome !important;
-       content:":" !important;
-       background-image:none !important;
-       color:red !important
+  .topgapping
+  {
+      padding-top:5px;
+  }
+  
+ .btn.btn-default.dropdown-toggle
+ {
+     width:133px !important;
+ font-size: 11px !important;  
+ padding:3px 0px !important;
+ max-height:22px !important;
+ }
+  .btn.btn-default.dropdown-toggle span
+  {
+      top:9px !important;
+  }
+ .dropdown-menu li a
+ {
+        font-size: 11px !important;  
+ }
+ .select-option {
+    font-size: 12px !important;
+    padding: 0 12px !important;
+}
+ 
+.shadowlight
+{
+ background-color: #F7F7F7;
+     padding: 5px 5px 10px 5px;	
+    border:solid #ddd  1px;
+    box-shadow:3px 3px 11px #ccc;
+    moz-box-shadow:3px 3px 11px #ccc;
+    -o-box-shadow:3px 3px 11px #ccc;
+    -webkit-box-shadow:3px 3px 11px #ccc;
+}
+.help-block-error,.errorMsg {
+    color: red;
+    font-size: 11px;
+ 
+    float:left;
+}
+
+.f-green{
+    color:#559767 !important;
+}
+.form-wizard .steps > li.active > a.step .number{
+      background-color:#5CB85C !important; 
+}
+.progress-bar-success {
+    background-color: #5cb85c !important;
+}
+.form-wizard .steps > li.done > a.step .number {
+    background-color: #79bedb !important;
+    color: #fff;
+}
+.list-group-item {
+    font-size: 11px !important;
+  padding:6px !important;
+}
+
+#Rules .form-group
+{
+ min-height:45px;   
+
+}
+.list-group-item:before{
+    content:"\f0da";
+    font-family:fontawesome;
+    color:gray;
+    padding-right:5px;
+   font-size:11px;
+   padding-right:5px;
    
-    
-    }
+}
+.leftvalues
+{
+    width:28% !important;
+    padding-right:0px !important;
+}
+.rules {
+    padding-right: 0;
+    width: 44% !important;
+}
+.col-xs-12.col-sm-3.rightvalues{
+      padding-right: 0;
+    width: 28% !important;  
+}
+.c-chekkbox label,.md-checkbox label
+{
+    font-size:13px !important;
+}
+.p-heading
+{
+  padding: 9px !important;   
+   border-bottom: 2px solid #ddd;
+}
+.p-heading h4{
+    margin:0px !important;
+}
+.pbody{
+    padding-left:0px !important;
+}
+.summitbtn
+{
+ padding: 5px !important; 
+ background-color:#5c755e !important;
+ color:#fff !important;
+}
+.summitbtn:hover{
+    background-color:#5CB85C !important;
+}
+ 
+.page-container-bg-solid .page-bar, .page-content-white .page-bar {
+    background-color: #fff;
+    margin: -25px 0 0 !important;
+    padding: 0 0px !important;
+ 
+}
+
 /* Large desktops and laptops */
 @media (min-width: 1200px) {
 
 }
+
 
 /* Landscape tablets and medium desktops */
 @media (min-width: 992px) and (max-width: 1199px) {
