@@ -16,21 +16,23 @@ use Setup\Form\BranchForm;
 use Setup\Helper\EntityHelper;
 use Setup\Model\Branch;
 use Setup\Repository\BranchRepository;
-use System\Repository\MenuSetupRepository;
+use Zend\Authentication\AuthenticationService;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\Mvc\Controller\AbstractActionController;
-use Zend\View\Model\ViewModel;
 
 class BranchController extends AbstractActionController {
 
     private $form;
     private $repository;
     private $adapter;
+    private $employeeId;
 
     function __construct(AdapterInterface $adapter) {
         $this->adapter = $adapter;
         $this->repository = new BranchRepository($adapter);
+        $auth = new AuthenticationService();
+        $this->employeeId = $auth->getStorage()->read()['employee_id'];
     }
 
     public function initializeForm() {
@@ -63,6 +65,7 @@ class BranchController extends AbstractActionController {
                 $branch->exchangeArrayFromForm($this->form->getData());
                 $branch->branchId = ((int) Helper::getMaxId($this->adapter, "HR_BRANCHES", "BRANCH_ID")) + 1;
                 $branch->createdDt = Helper::getcurrentExpressionDate();
+                $branch->createdBy = $this->employeeId;
                 $branch->status = 'E';
 
                 $this->repository->add($branch);
@@ -94,9 +97,7 @@ class BranchController extends AbstractActionController {
             if ($this->form->isValid()) {
                 $branch->exchangeArrayFromForm($this->form->getData());
                 $branch->modifiedDt = Helper::getcurrentExpressionDate();
-                unset($branch->createdDt);
-                unset($branch->branchId);
-                unset($branch->status);
+                $branch->modifiedBy = $this->employeeId;
                 $this->repository->edit($branch, $id);
                 $this->flashmessenger()->addMessage("Branch Successfully Updated!!!");
                 return $this->redirect()->toRoute("branch");
@@ -122,6 +123,3 @@ class BranchController extends AbstractActionController {
     }
 
 }
-
-/* End of file BranchController.php */
-/* Location: ./Setup/src/Controller/BranchController.php */

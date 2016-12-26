@@ -27,11 +27,11 @@ class BranchRepository implements RepositoryInterface {
         $this->tableGateway->update($array, [Branch::BRANCH_ID => $id]);
     }
 
-    public function fetchAll() {        
-        return $this->tableGateway->select(function(Select $select){
-            $select->where([Branch::STATUS => 'E']);
-            $select->order(Branch::BRANCH_NAME." ASC");
-        });
+    public function fetchAll() {
+        return $this->tableGateway->select(function(Select $select) {
+                    $select->where([Branch::STATUS => 'E']);
+                    $select->order(Branch::BRANCH_NAME . " ASC");
+                });
     }
 
     public function fetchById($id) {
@@ -42,4 +42,5 @@ class BranchRepository implements RepositoryInterface {
     public function delete($id) {
         $this->tableGateway->update([Branch::STATUS => 'D'], [Branch::BRANCH_ID => $id]);
     }
+
 }

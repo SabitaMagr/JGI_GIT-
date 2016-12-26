@@ -57,7 +57,6 @@ class DashboardController extends AbstractActionController {
         $itemDetail = [];
 
         foreach ($dashboards as $value) {
-
             $itemDetail[$value['DASHBOARD']] = [
                 "path" => $this->dashboardItems[$value['DASHBOARD']],
                 "data" => $this->getDashBoardData($value['DASHBOARD'], $value['ROLE_TYPE'])

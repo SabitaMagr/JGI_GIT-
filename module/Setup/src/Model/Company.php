@@ -1,22 +1,24 @@
 <?php
+
 namespace Setup\Model;
 
 use Application\Model\Model;
 
-class Company extends Model
-{
-    const TABLE_NAME="HR_COMPANY";
+class Company extends Model {
 
-    const COMPANY_ID="COMPANY_ID";
-    const COMPANY_CODE="COMPANY_CODE";
-    const COMPANY_NAME="COMPANY_NAME";
-    const ADDRESS="ADDRESS";
-    const TELEPHONE="TELEPHONE";
-    const FAX="FAX";
-    const SWIFT="SWIFT";
-    const CREATED_DT="CREATED_DT";
-    const MODIFIED_DT="MODIFIED_DT";
-    const STATUS="STATUS";
+    const TABLE_NAME = "HR_COMPANY";
+    const COMPANY_ID = "COMPANY_ID";
+    const COMPANY_CODE = "COMPANY_CODE";
+    const COMPANY_NAME = "COMPANY_NAME";
+    const ADDRESS = "ADDRESS";
+    const TELEPHONE = "TELEPHONE";
+    const FAX = "FAX";
+    const SWIFT = "SWIFT";
+    const CREATED_DT = "CREATED_DT";
+    const MODIFIED_DT = "MODIFIED_DT";
+    const STATUS = "STATUS";
+    const CREATED_BY = "CREATED_BY";
+    const MODIFIED_BY = "MODIFIED_BY";
 
     public $companyId;
     public $companyCode;
@@ -28,8 +30,8 @@ class Company extends Model
     public $createdDt;
     public $modifiedDt;
     public $status;
-
-
+    public $createdBy;
+    public $modifiedBy;
     public $mappings = [
         'companyId' => self::COMPANY_ID,
         'companyCode' => self::COMPANY_CODE,
@@ -40,7 +42,9 @@ class Company extends Model
         'swift' => self::SWIFT,
         'createdDt' => self::CREATED_DT,
         'modifiedDt' => self::MODIFIED_DT,
-        'status'=>self::STATUS
+        'status' => self::STATUS,
+        'createdBy' => self::CREATED_BY,
+        'modifiedBy' => self::MODIFIED_BY,
     ];
 
 }

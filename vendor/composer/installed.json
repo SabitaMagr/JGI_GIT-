@@ -104,62 +104,6 @@
         ]
     },
     {
-        "name": "zendframework/zend-eventmanager",
-        "version": "3.0.1",
-        "version_normalized": "3.0.1.0",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/zendframework/zend-eventmanager.git",
-            "reference": "5c80bdee0e952be112dcec0968bad770082c3a6e"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/zendframework/zend-eventmanager/zipball/5c80bdee0e952be112dcec0968bad770082c3a6e",
-            "reference": "5c80bdee0e952be112dcec0968bad770082c3a6e",
-            "shasum": ""
-        },
-        "require": {
-            "php": "^5.5 || ^7.0"
-        },
-        "require-dev": {
-            "athletic/athletic": "^0.1",
-            "container-interop/container-interop": "^1.1.0",
-            "phpunit/phpunit": "~4.0",
-            "squizlabs/php_codesniffer": "^2.0",
-            "zendframework/zend-stdlib": "^2.7.3 || ^3.0"
-        },
-        "suggest": {
-            "container-interop/container-interop": "^1.1.0, to use the lazy listeners feature",
-            "zendframework/zend-stdlib": "^2.7.3 || ^3.0, to use the FilterChain feature"
-        },
-        "time": "2016-02-18 20:53:00",
-        "type": "library",
-        "extra": {
-            "branch-alias": {
-                "dev-master": "3.0-dev",
-                "dev-develop": "3.1-dev"
-            }
-        },
-        "installation-source": "dist",
-        "autoload": {
-            "psr-4": {
-                "Zend\\EventManager\\": "src/"
-            }
-        },
-        "notification-url": "https://packagist.org/downloads/",
-        "license": [
-            "BSD-3-Clause"
-        ],
-        "description": "Trigger and listen to events within a PHP application",
-        "homepage": "https://github.com/zendframework/zend-eventmanager",
-        "keywords": [
-            "event",
-            "eventmanager",
-            "events",
-            "zf2"
-        ]
-    },
-    {
         "name": "container-interop/container-interop",
         "version": "1.1.0",
         "version_normalized": "1.1.0.0",
@@ -584,77 +528,6 @@
         "homepage": "https://github.com/zendframework/zend-debug",
         "keywords": [
             "debug",
-            "zf2"
-        ]
-    },
-    {
-        "name": "zendframework/zend-cache",
-        "version": "2.7.1",
-        "version_normalized": "2.7.1.0",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/zendframework/zend-cache.git",
-            "reference": "2c68def8f96ce842d2f2a9a69e2f3508c2f5312d"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/zendframework/zend-cache/zipball/2c68def8f96ce842d2f2a9a69e2f3508c2f5312d",
-            "reference": "2c68def8f96ce842d2f2a9a69e2f3508c2f5312d",
-            "shasum": ""
-        },
-        "require": {
-            "php": "^5.5 || ^7.0",
-            "zendframework/zend-eventmanager": "^2.6.2 || ^3.0",
-            "zendframework/zend-servicemanager": "^2.7.5 || ^3.0.3",
-            "zendframework/zend-stdlib": "^2.7 || ^3.0"
-        },
-        "require-dev": {
-            "fabpot/php-cs-fixer": "1.7.*",
-            "phpbench/phpbench": "^0.10.0",
-            "phpunit/phpunit": "^4.5",
-            "zendframework/zend-serializer": "^2.6",
-            "zendframework/zend-session": "^2.6.2"
-        },
-        "suggest": {
-            "ext-apc": "APC or compatible extension, to use the APC storage adapter",
-            "ext-apcu": "APCU >= 5.1.0, to use the APCu storage adapter",
-            "ext-dba": "DBA, to use the DBA storage adapter",
-            "ext-memcache": "Memcache >= 2.0.0 to use the Memcache storage adapter",
-            "ext-memcached": "Memcached >= 1.0.0 to use the Memcached storage adapter",
-            "ext-mongo": "Mongo, to use MongoDb storage adapter",
-            "ext-redis": "Redis, to use Redis storage adapter",
-            "ext-wincache": "WinCache, to use the WinCache storage adapter",
-            "ext-xcache": "XCache, to use the XCache storage adapter",
-            "mongofill/mongofill": "Alternative to ext-mongo - a pure PHP implementation designed as a drop in replacement",
-            "zendframework/zend-serializer": "Zend\\Serializer component",
-            "zendframework/zend-session": "Zend\\Session component"
-        },
-        "time": "2016-05-12 21:47:55",
-        "type": "library",
-        "extra": {
-            "branch-alias": {
-                "dev-master": "2.7-dev",
-                "dev-develop": "2.8-dev"
-            },
-            "zf": {
-                "component": "Zend\\Cache",
-                "config-provider": "Zend\\Cache\\ConfigProvider"
-            }
-        },
-        "installation-source": "dist",
-        "autoload": {
-            "psr-4": {
-                "Zend\\Cache\\": "src/"
-            }
-        },
-        "notification-url": "https://packagist.org/downloads/",
-        "license": [
-            "BSD-3-Clause"
-        ],
-        "description": "provides a generic way to cache any data",
-        "homepage": "https://github.com/zendframework/zend-cache",
-        "keywords": [
-            "cache",
             "zf2"
         ]
     },
@@ -2101,63 +1974,6 @@
         ]
     },
     {
-        "name": "zendframework/zend-servicemanager",
-        "version": "3.1.1",
-        "version_normalized": "3.1.1.0",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/zendframework/zend-servicemanager.git",
-            "reference": "f701b0d322741b0c8d8ca1288f249a49438029cd"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/zendframework/zend-servicemanager/zipball/f701b0d322741b0c8d8ca1288f249a49438029cd",
-            "reference": "f701b0d322741b0c8d8ca1288f249a49438029cd",
-            "shasum": ""
-        },
-        "require": {
-            "container-interop/container-interop": "~1.0",
-            "php": "^5.5 || ^7.0"
-        },
-        "provide": {
-            "container-interop/container-interop-implementation": "^1.1"
-        },
-        "require-dev": {
-            "ocramius/proxy-manager": "^1.0 || ^2.0",
-            "phpbench/phpbench": "^0.10.0",
-            "phpunit/phpunit": "^4.6 || ^5.2.10",
-            "squizlabs/php_codesniffer": "^2.5.1"
-        },
-        "suggest": {
-            "ocramius/proxy-manager": "ProxyManager 1.* to handle lazy initialization of services",
-            "zendframework/zend-stdlib": "zend-stdlib ^2.5 if you wish to use the MergeReplaceKey or MergeRemoveKey features in Config instances"
-        },
-        "time": "2016-07-15 14:59:51",
-        "type": "library",
-        "extra": {
-            "branch-alias": {
-                "dev-master": "3.1-dev",
-                "dev-develop": "3.2-dev"
-            }
-        },
-        "installation-source": "dist",
-        "autoload": {
-            "psr-4": {
-                "Zend\\ServiceManager\\": "src/"
-            }
-        },
-        "notification-url": "https://packagist.org/downloads/",
-        "license": [
-            "BSD-3-Clause"
-        ],
-        "homepage": "https://github.com/zendframework/zend-servicemanager",
-        "keywords": [
-            "service-manager",
-            "servicemanager",
-            "zf"
-        ]
-    },
-    {
         "name": "zendframework/zend-escaper",
         "version": "2.5.2",
         "version_normalized": "2.5.2.0",
@@ -2841,73 +2657,6 @@
             "BSD-3-Clause"
         ],
         "description": "Composer plugin for automating component registration in zend-mvc and Expressive applications"
-    },
-    {
-        "name": "zendframework/zend-mvc",
-        "version": "3.0.3",
-        "version_normalized": "3.0.3.0",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/zendframework/zend-mvc.git",
-            "reference": "69ac3e4dcf0639101ac71478dcb39941ba4e7e7e"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/zendframework/zend-mvc/zipball/69ac3e4dcf0639101ac71478dcb39941ba4e7e7e",
-            "reference": "69ac3e4dcf0639101ac71478dcb39941ba4e7e7e",
-            "shasum": ""
-        },
-        "require": {
-            "container-interop/container-interop": "^1.1",
-            "php": "^5.6 || ^7.0",
-            "zendframework/zend-eventmanager": "^3.0",
-            "zendframework/zend-http": "^2.5.4",
-            "zendframework/zend-modulemanager": "^2.7.1",
-            "zendframework/zend-router": "^3.0.1",
-            "zendframework/zend-servicemanager": "^3.0.3",
-            "zendframework/zend-stdlib": "^3.0",
-            "zendframework/zend-view": "^2.6.7"
-        },
-        "require-dev": {
-            "fabpot/php-cs-fixer": "1.7.*",
-            "phpunit/phpunit": "^4.5",
-            "zendframework/zend-json": "^2.6.1 || ^3.0",
-            "zendframework/zend-psr7bridge": "^0.2"
-        },
-        "suggest": {
-            "zendframework/zend-json": "(^2.6.1 || ^3.0) To auto-deserialize JSON body content in AbstractRestfulController extensions, when json_decode is unavailable",
-            "zendframework/zend-mvc-console": "zend-mvc-console provides the ability to expose zend-mvc as a console application",
-            "zendframework/zend-mvc-i18n": "zend-mvc-i18n provides integration with zend-i18n, including a translation bridge and translatable route segments",
-            "zendframework/zend-mvc-plugin-fileprg": "To provide Post/Redirect/Get functionality around forms that container file uploads",
-            "zendframework/zend-mvc-plugin-flashmessenger": "To provide flash messaging capabilities between requests",
-            "zendframework/zend-mvc-plugin-identity": "To access the authenticated identity (per zend-authentication) in controllers",
-            "zendframework/zend-mvc-plugin-prg": "To provide Post/Redirect/Get functionality within controllers",
-            "zendframework/zend-psr7bridge": "(^0.2) To consume PSR-7 middleware within the MVC workflow",
-            "zendframework/zend-servicemanager-di": "zend-servicemanager-di provides utilities for integrating zend-di and zend-servicemanager in your zend-mvc application"
-        },
-        "time": "2016-08-29 18:41:32",
-        "type": "library",
-        "extra": {
-            "branch-alias": {
-                "dev-master": "3.0-dev",
-                "dev-develop": "3.1-dev"
-            }
-        },
-        "installation-source": "dist",
-        "autoload": {
-            "psr-4": {
-                "Zend\\Mvc\\": "src/"
-            }
-        },
-        "notification-url": "https://packagist.org/downloads/",
-        "license": [
-            "BSD-3-Clause"
-        ],
-        "homepage": "https://github.com/zendframework/zend-mvc",
-        "keywords": [
-            "mvc",
-            "zf2"
-        ]
     },
     {
         "name": "zendframework/zend-mvc-console",
@@ -4623,69 +4372,6 @@
         ]
     },
     {
-        "name": "twig/twig",
-        "version": "v1.29.0",
-        "version_normalized": "1.29.0.0",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/twigphp/Twig.git",
-            "reference": "74f723e542368ca2080b252740be5f1113ebb898"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/twigphp/Twig/zipball/74f723e542368ca2080b252740be5f1113ebb898",
-            "reference": "74f723e542368ca2080b252740be5f1113ebb898",
-            "shasum": ""
-        },
-        "require": {
-            "php": ">=5.2.7"
-        },
-        "require-dev": {
-            "symfony/debug": "~2.7",
-            "symfony/phpunit-bridge": "~3.2@dev"
-        },
-        "time": "2016-12-13 17:28:18",
-        "type": "library",
-        "extra": {
-            "branch-alias": {
-                "dev-master": "1.29-dev"
-            }
-        },
-        "installation-source": "dist",
-        "autoload": {
-            "psr-0": {
-                "Twig_": "lib/"
-            }
-        },
-        "notification-url": "https://packagist.org/downloads/",
-        "license": [
-            "BSD-3-Clause"
-        ],
-        "authors": [
-            {
-                "name": "Fabien Potencier",
-                "email": "fabien@symfony.com",
-                "homepage": "http://fabien.potencier.org",
-                "role": "Lead Developer"
-            },
-            {
-                "name": "Armin Ronacher",
-                "email": "armin.ronacher@active-4.com",
-                "role": "Project Founder"
-            },
-            {
-                "name": "Twig Team",
-                "homepage": "http://twig.sensiolabs.org/contributors",
-                "role": "Contributors"
-            }
-        ],
-        "description": "Twig, the flexible, fast, and secure template language for PHP",
-        "homepage": "http://twig.sensiolabs.org",
-        "keywords": [
-            "templating"
-        ]
-    },
-    {
         "name": "symfony/yaml",
         "version": "v3.2.1",
         "version_normalized": "3.2.1.0",
@@ -4804,71 +4490,6 @@
         ]
     },
     {
-        "name": "phpunit/php-code-coverage",
-        "version": "4.0.3",
-        "version_normalized": "4.0.3.0",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/sebastianbergmann/php-code-coverage.git",
-            "reference": "903fd6318d0a90b4770a009ff73e4a4e9c437929"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/sebastianbergmann/php-code-coverage/zipball/903fd6318d0a90b4770a009ff73e4a4e9c437929",
-            "reference": "903fd6318d0a90b4770a009ff73e4a4e9c437929",
-            "shasum": ""
-        },
-        "require": {
-            "php": "^5.6 || ^7.0",
-            "phpunit/php-file-iterator": "~1.3",
-            "phpunit/php-text-template": "~1.2",
-            "phpunit/php-token-stream": "^1.4.2",
-            "sebastian/code-unit-reverse-lookup": "~1.0",
-            "sebastian/environment": "^1.3.2 || ^2.0",
-            "sebastian/version": "~1.0|~2.0"
-        },
-        "require-dev": {
-            "ext-xdebug": ">=2.1.4",
-            "phpunit/phpunit": "^5.4"
-        },
-        "suggest": {
-            "ext-dom": "*",
-            "ext-xdebug": ">=2.4.0",
-            "ext-xmlwriter": "*"
-        },
-        "time": "2016-11-28 16:00:31",
-        "type": "library",
-        "extra": {
-            "branch-alias": {
-                "dev-master": "4.0.x-dev"
-            }
-        },
-        "installation-source": "dist",
-        "autoload": {
-            "classmap": [
-                "src/"
-            ]
-        },
-        "notification-url": "https://packagist.org/downloads/",
-        "license": [
-            "BSD-3-Clause"
-        ],
-        "authors": [
-            {
-                "name": "Sebastian Bergmann",
-                "email": "sb@sebastian-bergmann.de",
-                "role": "lead"
-            }
-        ],
-        "description": "Library that provides collection, processing, and rendering functionality for PHP code coverage information.",
-        "homepage": "https://github.com/sebastianbergmann/php-code-coverage",
-        "keywords": [
-            "coverage",
-            "testing",
-            "xunit"
-        ]
-    },
-    {
         "name": "phpunit/phpunit",
         "version": "5.7.4",
         "version_normalized": "5.7.4.0",
@@ -4948,6 +4569,391 @@
         "homepage": "https://phpunit.de/",
         "keywords": [
             "phpunit",
+            "testing",
+            "xunit"
+        ]
+    },
+    {
+        "name": "zendframework/zend-eventmanager",
+        "version": "3.1.0",
+        "version_normalized": "3.1.0.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/zendframework/zend-eventmanager.git",
+            "reference": "c3bce7b7d47c54040b9ae51bc55491c72513b75d"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/zendframework/zend-eventmanager/zipball/c3bce7b7d47c54040b9ae51bc55491c72513b75d",
+            "reference": "c3bce7b7d47c54040b9ae51bc55491c72513b75d",
+            "shasum": ""
+        },
+        "require": {
+            "php": "^5.6 || ^7.0"
+        },
+        "require-dev": {
+            "athletic/athletic": "^0.1",
+            "container-interop/container-interop": "^1.1.0",
+            "phpunit/phpunit": "^5.6",
+            "zendframework/zend-coding-standard": "~1.0.0",
+            "zendframework/zend-stdlib": "^2.7.3 || ^3.0"
+        },
+        "suggest": {
+            "container-interop/container-interop": "^1.1.0, to use the lazy listeners feature",
+            "zendframework/zend-stdlib": "^2.7.3 || ^3.0, to use the FilterChain feature"
+        },
+        "time": "2016-12-19 21:47:12",
+        "type": "library",
+        "extra": {
+            "branch-alias": {
+                "dev-master": "3.1-dev",
+                "dev-develop": "3.2-dev"
+            }
+        },
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "Zend\\EventManager\\": "src/"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "BSD-3-Clause"
+        ],
+        "description": "Trigger and listen to events within a PHP application",
+        "homepage": "https://github.com/zendframework/zend-eventmanager",
+        "keywords": [
+            "event",
+            "eventmanager",
+            "events",
+            "zf2"
+        ]
+    },
+    {
+        "name": "zendframework/zend-servicemanager",
+        "version": "3.2.0",
+        "version_normalized": "3.2.0.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/zendframework/zend-servicemanager.git",
+            "reference": "596a2cde85a92c3366514ae0f55ea32ef59536ac"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/zendframework/zend-servicemanager/zipball/596a2cde85a92c3366514ae0f55ea32ef59536ac",
+            "reference": "596a2cde85a92c3366514ae0f55ea32ef59536ac",
+            "shasum": ""
+        },
+        "require": {
+            "container-interop/container-interop": "~1.0",
+            "php": "^5.6 || ^7.0",
+            "zendframework/zend-stdlib": "^3.1"
+        },
+        "provide": {
+            "container-interop/container-interop-implementation": "^1.1"
+        },
+        "require-dev": {
+            "mikey179/vfsstream": "^1.6",
+            "ocramius/proxy-manager": "^1.0 || ^2.0",
+            "phpbench/phpbench": "^0.10.0",
+            "phpunit/phpunit": "^4.6 || ^5.2.10",
+            "zendframework/zend-coding-standard": "~1.0.0"
+        },
+        "suggest": {
+            "ocramius/proxy-manager": "ProxyManager 1.* to handle lazy initialization of services",
+            "zendframework/zend-stdlib": "zend-stdlib ^2.5 if you wish to use the MergeReplaceKey or MergeRemoveKey features in Config instances"
+        },
+        "time": "2016-12-19 20:04:51",
+        "bin": [
+            "bin/generate-deps-for-config-factory",
+            "bin/generate-factory-for-class"
+        ],
+        "type": "library",
+        "extra": {
+            "branch-alias": {
+                "dev-master": "3.2-dev",
+                "dev-develop": "3.3-dev"
+            }
+        },
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "Zend\\ServiceManager\\": "src/"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "BSD-3-Clause"
+        ],
+        "homepage": "https://github.com/zendframework/zend-servicemanager",
+        "keywords": [
+            "service-manager",
+            "servicemanager",
+            "zf"
+        ]
+    },
+    {
+        "name": "zendframework/zend-mvc",
+        "version": "3.0.4",
+        "version_normalized": "3.0.4.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/zendframework/zend-mvc.git",
+            "reference": "e25f04a71b70985620f5ff3e762475848d049025"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/zendframework/zend-mvc/zipball/e25f04a71b70985620f5ff3e762475848d049025",
+            "reference": "e25f04a71b70985620f5ff3e762475848d049025",
+            "shasum": ""
+        },
+        "require": {
+            "container-interop/container-interop": "^1.1",
+            "php": "^5.6 || ^7.0",
+            "zendframework/zend-eventmanager": "^3.0",
+            "zendframework/zend-http": "^2.5.4",
+            "zendframework/zend-modulemanager": "^2.7.1",
+            "zendframework/zend-router": "^3.0.1",
+            "zendframework/zend-servicemanager": "^3.0.3",
+            "zendframework/zend-stdlib": "^3.0",
+            "zendframework/zend-view": "^2.6.7"
+        },
+        "require-dev": {
+            "fabpot/php-cs-fixer": "1.7.*",
+            "phpunit/phpunit": "^4.5",
+            "zendframework/zend-json": "^2.6.1 || ^3.0",
+            "zendframework/zend-psr7bridge": "^0.2"
+        },
+        "suggest": {
+            "zendframework/zend-json": "(^2.6.1 || ^3.0) To auto-deserialize JSON body content in AbstractRestfulController extensions, when json_decode is unavailable",
+            "zendframework/zend-mvc-console": "zend-mvc-console provides the ability to expose zend-mvc as a console application",
+            "zendframework/zend-mvc-i18n": "zend-mvc-i18n provides integration with zend-i18n, including a translation bridge and translatable route segments",
+            "zendframework/zend-mvc-plugin-fileprg": "To provide Post/Redirect/Get functionality around forms that container file uploads",
+            "zendframework/zend-mvc-plugin-flashmessenger": "To provide flash messaging capabilities between requests",
+            "zendframework/zend-mvc-plugin-identity": "To access the authenticated identity (per zend-authentication) in controllers",
+            "zendframework/zend-mvc-plugin-prg": "To provide Post/Redirect/Get functionality within controllers",
+            "zendframework/zend-psr7bridge": "(^0.2) To consume PSR-7 middleware within the MVC workflow",
+            "zendframework/zend-servicemanager-di": "zend-servicemanager-di provides utilities for integrating zend-di and zend-servicemanager in your zend-mvc application"
+        },
+        "time": "2016-12-20 15:33:49",
+        "type": "library",
+        "extra": {
+            "branch-alias": {
+                "dev-master": "3.0-dev",
+                "dev-develop": "3.1-dev"
+            }
+        },
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "Zend\\Mvc\\": "src/"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "BSD-3-Clause"
+        ],
+        "homepage": "https://github.com/zendframework/zend-mvc",
+        "keywords": [
+            "mvc",
+            "zf2"
+        ]
+    },
+    {
+        "name": "zendframework/zend-cache",
+        "version": "2.7.2",
+        "version_normalized": "2.7.2.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/zendframework/zend-cache.git",
+            "reference": "c98331b96d3b9d9b24cf32d02660602edb34d039"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/zendframework/zend-cache/zipball/c98331b96d3b9d9b24cf32d02660602edb34d039",
+            "reference": "c98331b96d3b9d9b24cf32d02660602edb34d039",
+            "shasum": ""
+        },
+        "require": {
+            "php": "^5.5 || ^7.0",
+            "zendframework/zend-eventmanager": "^2.6.2 || ^3.0",
+            "zendframework/zend-servicemanager": "^2.7.5 || ^3.0.3",
+            "zendframework/zend-stdlib": "^2.7 || ^3.0"
+        },
+        "require-dev": {
+            "phpbench/phpbench": "^0.10.0",
+            "phpunit/phpunit": "^4.8",
+            "zendframework/zend-coding-standard": "~1.0.0",
+            "zendframework/zend-serializer": "^2.6",
+            "zendframework/zend-session": "^2.6.2"
+        },
+        "suggest": {
+            "ext-apc": "APC or compatible extension, to use the APC storage adapter",
+            "ext-apcu": "APCU >= 5.1.0, to use the APCu storage adapter",
+            "ext-dba": "DBA, to use the DBA storage adapter",
+            "ext-memcache": "Memcache >= 2.0.0 to use the Memcache storage adapter",
+            "ext-memcached": "Memcached >= 1.0.0 to use the Memcached storage adapter",
+            "ext-mongo": "Mongo, to use MongoDb storage adapter",
+            "ext-redis": "Redis, to use Redis storage adapter",
+            "ext-wincache": "WinCache, to use the WinCache storage adapter",
+            "ext-xcache": "XCache, to use the XCache storage adapter",
+            "mongofill/mongofill": "Alternative to ext-mongo - a pure PHP implementation designed as a drop in replacement",
+            "zendframework/zend-serializer": "Zend\\Serializer component",
+            "zendframework/zend-session": "Zend\\Session component"
+        },
+        "time": "2016-12-16 11:35:47",
+        "type": "library",
+        "extra": {
+            "branch-alias": {
+                "dev-master": "2.7-dev",
+                "dev-develop": "2.8-dev"
+            },
+            "zf": {
+                "component": "Zend\\Cache",
+                "config-provider": "Zend\\Cache\\ConfigProvider"
+            }
+        },
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "Zend\\Cache\\": "src/"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "BSD-3-Clause"
+        ],
+        "description": "provides a generic way to cache any data",
+        "homepage": "https://github.com/zendframework/zend-cache",
+        "keywords": [
+            "cache",
+            "zf2"
+        ]
+    },
+    {
+        "name": "twig/twig",
+        "version": "v1.30.0",
+        "version_normalized": "1.30.0.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/twigphp/Twig.git",
+            "reference": "c6ff71094fde15d12398eaba029434b013dc5e59"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/twigphp/Twig/zipball/c6ff71094fde15d12398eaba029434b013dc5e59",
+            "reference": "c6ff71094fde15d12398eaba029434b013dc5e59",
+            "shasum": ""
+        },
+        "require": {
+            "php": ">=5.2.7"
+        },
+        "require-dev": {
+            "symfony/debug": "~2.7",
+            "symfony/phpunit-bridge": "~3.2@dev"
+        },
+        "time": "2016-12-23 11:06:22",
+        "type": "library",
+        "extra": {
+            "branch-alias": {
+                "dev-master": "1.30-dev"
+            }
+        },
+        "installation-source": "dist",
+        "autoload": {
+            "psr-0": {
+                "Twig_": "lib/"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "BSD-3-Clause"
+        ],
+        "authors": [
+            {
+                "name": "Fabien Potencier",
+                "email": "fabien@symfony.com",
+                "homepage": "http://fabien.potencier.org",
+                "role": "Lead Developer"
+            },
+            {
+                "name": "Armin Ronacher",
+                "email": "armin.ronacher@active-4.com",
+                "role": "Project Founder"
+            },
+            {
+                "name": "Twig Team",
+                "homepage": "http://twig.sensiolabs.org/contributors",
+                "role": "Contributors"
+            }
+        ],
+        "description": "Twig, the flexible, fast, and secure template language for PHP",
+        "homepage": "http://twig.sensiolabs.org",
+        "keywords": [
+            "templating"
+        ]
+    },
+    {
+        "name": "phpunit/php-code-coverage",
+        "version": "4.0.4",
+        "version_normalized": "4.0.4.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/sebastianbergmann/php-code-coverage.git",
+            "reference": "c14196e64a78570034afd0b7a9f3757ba71c2a0a"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/sebastianbergmann/php-code-coverage/zipball/c14196e64a78570034afd0b7a9f3757ba71c2a0a",
+            "reference": "c14196e64a78570034afd0b7a9f3757ba71c2a0a",
+            "shasum": ""
+        },
+        "require": {
+            "php": "^5.6 || ^7.0",
+            "phpunit/php-file-iterator": "~1.3",
+            "phpunit/php-text-template": "~1.2",
+            "phpunit/php-token-stream": "^1.4.2",
+            "sebastian/code-unit-reverse-lookup": "~1.0",
+            "sebastian/environment": "^1.3.2 || ^2.0",
+            "sebastian/version": "~1.0|~2.0"
+        },
+        "require-dev": {
+            "ext-xdebug": ">=2.1.4",
+            "phpunit/phpunit": "^5.4"
+        },
+        "suggest": {
+            "ext-dom": "*",
+            "ext-xdebug": ">=2.4.0",
+            "ext-xmlwriter": "*"
+        },
+        "time": "2016-12-20 15:22:42",
+        "type": "library",
+        "extra": {
+            "branch-alias": {
+                "dev-master": "4.0.x-dev"
+            }
+        },
+        "installation-source": "dist",
+        "autoload": {
+            "classmap": [
+                "src/"
+            ]
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "BSD-3-Clause"
+        ],
+        "authors": [
+            {
+                "name": "Sebastian Bergmann",
+                "email": "sb@sebastian-bergmann.de",
+                "role": "lead"
+            }
+        ],
+        "description": "Library that provides collection, processing, and rendering functionality for PHP code coverage information.",
+        "homepage": "https://github.com/sebastianbergmann/php-code-coverage",
+        "keywords": [
+            "coverage",
             "testing",
             "xunit"
         ]
