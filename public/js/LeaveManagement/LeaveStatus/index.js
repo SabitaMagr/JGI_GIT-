@@ -2,10 +2,7 @@
     'use strict';
     $(document).ready(function () {
         $("select").select2();
-        app.addDatePicker(
-                $("#fromDate"),
-                $("#toDate")
-                );
+        app.startEndDatePicker("fromDate", "toDate");
     });
 })(window.jQuery, window.app);
 
@@ -34,7 +31,7 @@ angular.module('hris', [])
                         'designationId': designationId,
                         'positionId': positionId,
                         'serviceTypeId': serviceTypeId,
-                        'serviceEventTypeId':serviceEventTypeId,
+                        'serviceEventTypeId': serviceEventTypeId,
                         'leaveId': leaveId,
                         'leaveRequestStatusId': leaveRequestStatusId,
                         'fromDate': fromDate,
@@ -88,7 +85,8 @@ angular.module('hris', [])
                                 .find('tbody')
                                 .append('<tr class="kendo-data-row"><td colspan="' + colCount + '" class="no-data">There is no data to show in the grid.</td></tr>');
                     }
-                };                
+                }
+                ;
 
                 $("#export").click(function (e) {
                     var rows = [{
@@ -118,18 +116,18 @@ angular.module('hris', [])
 
                     for (var i = 0; i < data.length; i++) {
                         var dataItem = data[i];
-                        var middleName = dataItem.MIDDLE_NAME!=null ? " "+dataItem.MIDDLE_NAME+" ": " ";
-                        var mn1 = dataItem.MN1!=null ? " "+dataItem.MN1+" ": " ";
-                        var mn2 = dataItem.MN2!=null ? " "+dataItem.MN2+" ": " ";
+                        var middleName = dataItem.MIDDLE_NAME != null ? " " + dataItem.MIDDLE_NAME + " " : " ";
+                        var mn1 = dataItem.MN1 != null ? " " + dataItem.MN1 + " " : " ";
+                        var mn2 = dataItem.MN2 != null ? " " + dataItem.MN2 + " " : " ";
                         rows.push({
                             cells: [
-                                {value: dataItem.FIRST_NAME+middleName+dataItem.LAST_NAME},
+                                {value: dataItem.FIRST_NAME + middleName + dataItem.LAST_NAME},
                                 {value: dataItem.LEAVE_ENAME},
                                 {value: dataItem.APPLIED_DATE},
                                 {value: dataItem.START_DATE},
                                 {value: dataItem.END_DATE},
-                                {value: dataItem.FN1+mn1+dataItem.LN1},
-                                {value: dataItem.FN2+mn2+dataItem.LN2},
+                                {value: dataItem.FN1 + mn1 + dataItem.LN1},
+                                {value: dataItem.FN2 + mn2 + dataItem.LN2},
                                 {value: dataItem.NO_OF_DAYS},
                                 {value: dataItem.STATUS},
                                 {value: dataItem.REMARKS},
