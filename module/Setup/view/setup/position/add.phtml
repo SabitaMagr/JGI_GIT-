@@ -9,7 +9,7 @@ $remarks = $form->get('remarks');
 $status = $form->get('status');
 
 $submit = $form->get('submit');
-$submit->setAttribute('value','SUBMIT');
+$submit->setAttribute('value', 'SUBMIT');
 
 $form->setAttribute('action', $this->url('position', ['action' => 'add']));
 
@@ -23,12 +23,14 @@ if ($this->messages) {
 
 $form->prepare();
 ?>
-    <script>
-        document.menu=<?php $menu = ["id" => "menuSetup","subMenu"=>["id"=>"subMenuPosition"]];echo json_encode($menu);?>;
-        document.url = '<?= $this->url("restful", ["action" => "index"]) ?>';
-    </script>
+<script>
+    document.menu =<?php $menu = ["id" => "menuSetup", "subMenu" => ["id" => "subMenuPosition"]];
+echo json_encode($menu);
+?>;
+    document.url = '<?= $this->url("restful", ["action" => "index"]) ?>';
+</script>
 <div class="page-bar">
-    <?= $this->navigation('Zend\Navigation\Position')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
+<?= $this->navigation('Zend\Navigation\Position')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
 <div class="row margin-top-20">
     <div class="col-sm-8 col-sm-offset-2">
@@ -42,21 +44,20 @@ $form->prepare();
                 <?php
                 print $this->form()->openTag($form);
                 ?>
-                <div class="form-group">
+                <div class="form-group <?= empty($positionName->getMessages()) ? "" : "has-error" ?>">
                     <?php print $this->formLabel($positionName); ?>
                     <?php print $this->formElement($positionName); ?>
                     <?php print $this->formElementErrors()->render($positionName, ['class' => 'help-block']); ?>
-                    <span class="errorMsg" style="font-size:11px; color:red;"></span>
                 </div>
 
-                <div class="form-group" >
+                <div class="form-group <?= empty($remarks->getMessages()) ? "" : "has-error" ?>" >
                     <?php print $this->formLabel($remarks); ?>
                     <?php print $this->formElement($remarks); ?>
                     <?php print $this->formElementErrors()->render($remarks, ['class' => 'help-block']); ?>
                 </div>
                 <?php
-                    print $this->formSubmit($submit);
-                    print $this->form()->closeTag();
+                print $this->formSubmit($submit);
+                print $this->form()->closeTag();
                 ?>
             </div>
 

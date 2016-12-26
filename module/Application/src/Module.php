@@ -9,7 +9,6 @@
 namespace Application;
 
 use Application\Controller\AuthController;
-use Application\Helper\EntityHelper;
 use Application\Model\HrisAuthStorage;
 use RestfulService\Controller\RestfulService;
 use System\Model\MenuSetup;

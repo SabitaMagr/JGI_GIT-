@@ -3,24 +3,27 @@
 namespace Setup\Controller;
 
 use Application\Helper\Helper;
-use Setup\Model\Company;
-use Zend\Db\Adapter\AdapterInterface;
-use Zend\Db\Sql\Expression;
-use Zend\Form\Annotation\AnnotationBuilder;
-use Zend\View\Model\ViewModel;
-use Zend\Mvc\Controller\AbstractActionController;
 use Setup\Form\CompanyForm;
+use Setup\Model\Company;
 use Setup\Repository\CompanyRepository;
+use Zend\Authentication\AuthenticationService;
+use Zend\Db\Adapter\AdapterInterface;
+use Zend\Form\Annotation\AnnotationBuilder;
+use Zend\Mvc\Controller\AbstractActionController;
+use Zend\View\Model\ViewModel;
 
 class CompanyController extends AbstractActionController {
 
     private $repository;
     private $form;
     private $adapter;
+    private $employeeId;
 
     function __construct(AdapterInterface $adapter) {
         $this->adapter = $adapter;
         $this->repository = new CompanyRepository($adapter);
+        $auth = new AuthenticationService();
+        $this->employeeId = $auth->getStorage()->read()['employee_id'];
     }
 
     public function initializeForm() {
@@ -45,6 +48,7 @@ class CompanyController extends AbstractActionController {
                 $company = new Company();
                 $company->exchangeArrayFromForm($this->form->getData());
                 $company->createdDt = Helper::getcurrentExpressionDate();
+                $company->createdBy = $this->employeeId;
                 $company->companyId = ((int) Helper::getMaxId($this->adapter, Company::TABLE_NAME, Company::COMPANY_ID)) + 1;
                 $company->status = 'E';
                 $this->repository->add($company);
@@ -79,9 +83,7 @@ class CompanyController extends AbstractActionController {
             if ($this->form->isValid()) {
                 $company->exchangeArrayFromForm($this->form->getData());
                 $company->modifiedDt = Helper::getcurrentExpressionDate();
-                unset($company->createdDt);
-                unset($company->companyId);
-                unset($company->status);
+                $company->modifiedBy = $this->employeeId;
                 $this->repository->edit($company, $id);
                 $this->flashmessenger()->addMessage("Company Successfully Updated!!!");
                 return $this->redirect()->toRoute("company");

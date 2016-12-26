@@ -1,41 +1,32 @@
 <?php
-namespace Setup\Controller;
 
-/**
- * Master Setup for Position
- * Position controller.
- * Created By: Somkala Pachhai
- * Edited By: Somkala Pachhai
- * Date: August 2, 2016, Wednesday
- * Last Modified By: Somkala Pachhai
- * Last Modified Date: August 10,2016, Wednesday
- */
+namespace Setup\Controller;
 
 use Application\Helper\Helper;
 use Setup\Form\PositionForm;
 use Setup\Model\Position;
 use Setup\Repository\PositionRepository;
+use Zend\Authentication\AuthenticationService;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
-use Application\Helper\ConstraintHelper;
 
-class PositionController extends AbstractActionController
-{
+class PositionController extends AbstractActionController {
 
     private $repository;
     private $form;
     private $adapter;
+    private $employeeId;
 
-    public function __construct(AdapterInterface $adapter)
-    {
+    public function __construct(AdapterInterface $adapter) {
         $this->adapter = $adapter;
         $this->repository = new PositionRepository($adapter);
+        $auth = new AuthenticationService();
+        $this->employeeId = $auth->getStorage()->read()['employee_id'];
     }
 
-    public function initializeForm()
-    {
+    public function initializeForm() {
         $positionForm = new PositionForm();
         $builder = new AnnotationBuilder();
         if (!$this->form) {
@@ -43,20 +34,18 @@ class PositionController extends AbstractActionController
         }
     }
 
-    public function indexAction()
-    {
+    public function indexAction() {
         $positionList = $this->repository->fetchActiveRecord();
         return Helper::addFlashMessagesToArray($this, ['positions' => $positionList]);
     }
 
-    public function addAction()
-    {
+    public function addAction() {
 //        $tableName = "HR_POSITIONS";
 //        $columnsWidValues = ["POSITION_NAME"=>"Junior Officer"];
 //
 //        $result = ConstraintHelper::checkUniqueConstraint($this->adapter, $tableName, $columnsWidValues);
 //        die ();
-                
+
         $this->initializeForm();
         $request = $this->getRequest();
 
@@ -67,8 +56,9 @@ class PositionController extends AbstractActionController
             if ($this->form->isValid()) {
                 $position = new Position();
                 $position->exchangeArrayFromForm($this->form->getData());
-                $position->positionId=((int) Helper::getMaxId($this->adapter,Position::TABLE_NAME,Position::POSITION_ID))+1;
+                $position->positionId = ((int) Helper::getMaxId($this->adapter, Position::TABLE_NAME, Position::POSITION_ID)) + 1;
                 $position->createdDt = Helper::getcurrentExpressionDate();
+                $position->createdBy = $this->employeeId;
                 $position->status = 'E';
                 $this->repository->add($position);
 
@@ -77,18 +67,16 @@ class PositionController extends AbstractActionController
             }
         }
         return new ViewModel(Helper::addFlashMessagesToArray(
-            $this,
-            [
-                'form' => $this->form,
-                'messages' => $this->flashmessenger()->getMessages()
-            ]
-        )
+                        $this, [
+                    'form' => $this->form,
+                    'messages' => $this->flashmessenger()->getMessages()
+                        ]
+                )
         );
     }
 
-    public function editAction()
-    {
-        $id = (int)$this->params()->fromRoute("id");
+    public function editAction() {
+        $id = (int) $this->params()->fromRoute("id");
         if ($id === 0) {
             return $this->redirect()->toRoute('position');
         }
@@ -106,26 +94,27 @@ class PositionController extends AbstractActionController
             if ($this->form->isValid()) {
                 $position->exchangeArrayFromForm($this->form->getData());
                 $position->modifiedDt = Helper::getcurrentExpressionDate();
+                $position->modifiedBy = $this->employeeId;
                 $this->repository->edit($position, $id);
                 $this->flashmessenger()->addMessage("Position Successfully Updated!!!");
                 return $this->redirect()->toRoute("position");
             }
         }
         return Helper::addFlashMessagesToArray(
-            $this, ['form' => $this->form, 'id' => $id]
+                        $this, ['form' => $this->form, 'id' => $id]
         );
     }
 
-    public function deleteAction()
-    {
-        $id = (int)$this->params()->fromRoute("id");
+    public function deleteAction() {
+        $id = (int) $this->params()->fromRoute("id");
         if (!$id) {
             return $this->redirect()->toRoute('position');
         }
         $this->repository->delete($id);
         $this->flashmessenger()->addMessage("Position Successfully Deleted!!!");
         return $this->redirect()->toRoute('position');
-    }  
+    }
+
 }
 
 /* End of file PositionController.php */

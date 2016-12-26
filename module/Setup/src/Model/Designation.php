@@ -3,23 +3,22 @@
 namespace Setup\Model;
 
 use Application\Model\Model;
-use Zend\Form\Annotation;
-use Zend\View\Model\ModelInterface;
 
-class Designation extends Model
-{
-    const TABLE_NAME="HR_DESIGNATIONS";
+class Designation extends Model {
 
-    const DESIGNATION_ID="DESIGNATION_ID";
-    const DESIGNATION_CODE="DESIGNATION_CODE";
-    const DESIGNATION_TITLE="DESIGNATION_TITLE";
-    const BASIC_SALARY="BASIC_SALARY";
-    const CREATED_DT="CREATED_DT";
-    const MODIFIED_DT="MODIFIED_DT";
-    const STATUS="STATUS";
-    const PARENT_DESIGNATION="PARENT_DESIGNATION";
-    const WITHIN_BRANCH="WITHIN_BRANCH";
-    const WITHIN_DEPARTMENT="WITHIN_DEPARTMENT";
+    const TABLE_NAME = "HR_DESIGNATIONS";
+    const DESIGNATION_ID = "DESIGNATION_ID";
+    const DESIGNATION_CODE = "DESIGNATION_CODE";
+    const DESIGNATION_TITLE = "DESIGNATION_TITLE";
+    const BASIC_SALARY = "BASIC_SALARY";
+    const CREATED_DT = "CREATED_DT";
+    const MODIFIED_DT = "MODIFIED_DT";
+    const STATUS = "STATUS";
+    const PARENT_DESIGNATION = "PARENT_DESIGNATION";
+    const WITHIN_BRANCH = "WITHIN_BRANCH";
+    const WITHIN_DEPARTMENT = "WITHIN_DEPARTMENT";
+    const CREATED_BY = "CREATED_BY";
+    const MODIFIED_BY = "MODIFIED_BY";
 
     public $designationId;
     public $designationCode;
@@ -31,18 +30,21 @@ class Designation extends Model
     public $parentDesignation;
     public $withinBranch;
     public $withinDepartment;
-
-
-    public $mappings =[
-        'designationId'=>self::DESIGNATION_ID,
-        'designationCode'=>self::DESIGNATION_CODE,
-        'designationTitle'=>self::DESIGNATION_TITLE,
-        'basicSalary'=>self::BASIC_SALARY,
-        'createdDt'=>self::CREATED_DT,
-        'modifiedDt'=>self::MODIFIED_DT,
-        'parentDesignation'=>self::PARENT_DESIGNATION,
-        'withinBranch'=>self::WITHIN_BRANCH,
-        'withinDepartment'=>self::WITHIN_DEPARTMENT,
-        'status'=>self::STATUS,
+    public $createdBy;
+    public $modifiedBy;
+    public $mappings = [
+        'designationId' => self::DESIGNATION_ID,
+        'designationCode' => self::DESIGNATION_CODE,
+        'designationTitle' => self::DESIGNATION_TITLE,
+        'basicSalary' => self::BASIC_SALARY,
+        'createdDt' => self::CREATED_DT,
+        'modifiedDt' => self::MODIFIED_DT,
+        'parentDesignation' => self::PARENT_DESIGNATION,
+        'withinBranch' => self::WITHIN_BRANCH,
+        'withinDepartment' => self::WITHIN_DEPARTMENT,
+        'status' => self::STATUS,
+        'createdBy' => self::CREATED_BY,
+        'modifiedBy' => self::MODIFIED_BY,
     ];
+
 }

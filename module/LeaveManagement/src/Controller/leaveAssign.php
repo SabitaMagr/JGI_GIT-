@@ -244,9 +244,9 @@ class leaveAssign extends AbstractActionController {
                 $fileName = pathinfo($files['file']['name'], PATHINFO_FILENAME);
                 $unique = Helper::generateUniqueName();
                 $newFileName = $unique . "." . $ext;
-                $success = move_uploaded_file($files['file']['tmp_name'], EmployeeController::UPLOAD_DIR . "/" . $newFileName);
+                $success = move_uploaded_file($files['file']['tmp_name'], Helper::UPLOAD_DIR . "/" . $newFileName);
 
-                $file = EmployeeController::UPLOAD_DIR . "/" . $newFileName;
+                $file = Helper::UPLOAD_DIR . "/" . $newFileName;
 
                 $objPHPExcel = \PHPExcel_IOFactory::load($file);
                 $dataArr = array();
@@ -293,7 +293,7 @@ class leaveAssign extends AbstractActionController {
                         }
                     }
                 }
-                unlink(EmployeeController::UPLOAD_DIR . "/" . $newFileName);
+                unlink(Helper::UPLOAD_DIR . "/" . $newFileName);
             }
 
             $viewModel = new ViewModel(['data' => ['success' => true]]);
