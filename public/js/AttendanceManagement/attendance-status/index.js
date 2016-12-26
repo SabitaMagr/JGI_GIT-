@@ -2,10 +2,7 @@
     'use strict';
     $(document).ready(function () {
         $("select").select2();
-        app.addDatePicker(
-                $("#fromDate"),
-                $("#toDate")
-                );
+        app.startEndDatePicker('fromDate','toDate');
     });
 })(window.jQuery, window.app);
 

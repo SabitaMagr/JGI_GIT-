@@ -4,10 +4,10 @@
 (function ($, app) {
     'use strict';
     $(document).ready(function () {
-        
+
         var employeeId = $('#employeeId').val();
         window.app.floatingProfile.setDataFromRemote(employeeId);
-        
+
         $('select').select2();
 
         var dateDiff = "";
@@ -18,26 +18,26 @@
             var halfDay = $("input[name='halfDay']:checked").val();
             var startDate = $("#startDate").val();
             var endDate = $("#endDate").val();
-            var noOfDays1 =parseInt($("#noOfDays").val());
+            var noOfDays1 = parseInt($("#noOfDays").val());
             if (halfDay == 'F' || halfDay == "S") {
                 $('#noOfDays').attr('readonly', true);
                 if (startDate != endDate) {
                     $("#errorMsgDate").html("* Start date and end date must be same in the case of half day leave");
                     $("#request").attr("disabled", "disabled");
-                }else if(startDate==endDate){
+                } else if (startDate == endDate) {
                     $("#errorMsgDate").html("");
                     $("#errorMsg").html("");
                     $("#request").removeAttr("disabled");
                 }
-            } else if (halfDay == 'N'){
+            } else if (halfDay == 'N') {
                 $("#errorMsgDate").html("");
-                if(noOfDays1<=availableDays1){
-                  $("#errorMsg").html("");
-                  $("#request").removeAttr("disabled");  
+                if (noOfDays1 <= availableDays1) {
+                    $("#errorMsg").html("");
+                    $("#request").removeAttr("disabled");
                 }
-                if(startDate==endDate){
+                if (startDate == endDate) {
                     $('#noOfDays').attr('readonly', true);
-                }else{
+                } else {
                     $('#noOfDays').attr('readonly', false);
                 }
             }
@@ -70,11 +70,10 @@
                     $("#endDate").datepicker({
                         format: 'd-M-yyyy',
                         autoclose: true
-                    })
-                        .on('changeDate', function (selected) {
-                            var minDate = new Date(selected.date.valueOf());
-                            $('#startDate').datepicker('setEndDate', minDate);
-                        });
+                    }).on('changeDate', function (selected) {
+                        var minDate = new Date(selected.date.valueOf());
+                        $('#startDate').datepicker('setEndDate', minDate);
+                    });
                     break;
 
                 case "selectedDate":
@@ -94,33 +93,33 @@
                 var oneDay = 24 * 60 * 60 * 1000; // hours*minutes*seconds*milliseconds
                 var diffDays = Math.abs((startDate.getTime() - endDate.getTime()) / (oneDay));
                 var newValue = diffDays + 1;
-                var availableDays =parseInt($("#availableDays").val());
+                var availableDays = parseInt($("#availableDays").val());
                 dateDiff = newValue;
                 $("#noOfDays").val(newValue);
 
                 var halfDay1 = $("input[name='halfDay']:checked");
-                var halfDay2=""
-                if (typeof(halfDay1.val()) == "undefined"){
+                var halfDay2 = ""
+                if (typeof (halfDay1.val()) == "undefined") {
                     halfDay2 = "N";
-                }else{
+                } else {
                     halfDay2 = halfDay1.val();
                 }
                 checkHalfDay();
                 if (newValue > availableDays) {
                     $("#errorMsg").html("* Applied days can't be more than available days");
                     $("#request").attr("disabled", "disabled");
-                } else if((newValue<=availableDays) && halfDay2=='N'){
+                } else if ((newValue <= availableDays) && halfDay2 == 'N') {
                     $("#errorMsg").html("");
                     $("#request").removeAttr("disabled");
-                }else if((newValue==availableDays) && (halfDay2=='S' || halfDay2=='F')){
+                } else if ((newValue == availableDays) && (halfDay2 == 'S' || halfDay2 == 'F')) {
                     $("#errorMsg").html("");
                     $("#request").removeAttr("disabled");
                 }
-                
-                if((newValue<=availableDays) && (halfDay2=='S' || halfDay2=='F')){
+
+                if ((newValue <= availableDays) && (halfDay2 == 'S' || halfDay2 == 'F')) {
                     $("#errorMsg").html("")
                 }
-            }    
+            }
         };
         $("#endDate").on("change", dateDifference);
         $("#startDate").on("change", dateDifference);
@@ -128,14 +127,14 @@
         dateDifference();
 
         $("#noOfDays").on("keyup", function () {
-            var availableDays =  parseInt($("#availableDays").val());
-            var noOfDays =parseInt($(this).val());
-            if(noOfDays>availableDays){
+            var availableDays = parseInt($("#availableDays").val());
+            var noOfDays = parseInt($(this).val());
+            if (noOfDays > availableDays) {
                 $("#errorMsg").html("* Applied days can't be more than available days");
                 $("#request").attr("disabled", "disabled");
-            }else{
-               $("#errorMsg").html("");
-               $("#request").removeAttr("disabled"); 
+            } else {
+                $("#errorMsg").html("");
+                $("#request").removeAttr("disabled");
             }
             if (noOfDays != dateDiff) {
                 $("#form-remarks").attr('required', 'required');
@@ -146,8 +145,8 @@
             }
         });
 
-        $( ".radioButton" ).each(function() {
-            $(this).on("click",checkHalfDay);
+        $(".radioButton").each(function () {
+            $(this).on("click", checkHalfDay);
         });
 
     });

@@ -4,10 +4,7 @@
 (function ($, app) {
     'use strict';
     $(document).ready(function () {
-        app.addDatePicker(
-                $("#fromDate"),
-                $("#toDate")
-                );
+        app.startEndDatePicker('fromDate', 'toDate');
     });
 })(window.jQuery, window.app);
 
@@ -53,7 +50,7 @@ angular.module('hris', [])
                         input: true,
                         numeric: false
                     },
-                    dataBound:gridDataBound,
+                    dataBound: gridDataBound,
                     rowTemplate: kendo.template($("#rowTemplate").html()),
                     columns: [
                         {field: "ATTENDANCE_DT", title: "Attendance Date"},
@@ -72,7 +69,8 @@ angular.module('hris', [])
                                 .find('tbody')
                                 .append('<tr class="kendo-data-row"><td colspan="' + colCount + '" class="no-data">There is no data to show in the grid.</td></tr>');
                     }
-                };
+                }
+                ;
                 $("#export").click(function (e) {
                     var grid = $("#attendanceTable").data("kendoGrid");
                     grid.saveAsExcel();
