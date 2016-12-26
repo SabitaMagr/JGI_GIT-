@@ -1136,8 +1136,13 @@ form label
     padding: 0 0px !important;
  
 }
+#roleList li
+{
+    border-radius:0px !important
+  padding: 4px 0 0 5px !important;  
+}
 
-/* Large desktops and laptops */
+/*Large desktops and laptops*/
 @media (min-width: 1200px) {
 
 }
