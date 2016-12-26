@@ -408,7 +408,7 @@ form.k-filter-menu .k-widget, form.k-filter-menu .k-textbox
 #viewEmployees
 {
 
-    /*padding-bottom:22px;*/	
+ 	
 }
 .row.e-setup
 {
@@ -419,7 +419,7 @@ form.k-filter-menu .k-widget, form.k-filter-menu .k-textbox
     text-align: right !important;
     padding-right: 5 !important;
     width:50% !important;
-    /*    width:58% !important;*/
+ 
 }
 .rightalign-2
 {
@@ -1016,9 +1016,7 @@ form label
     font-family:fontawesome;
     padding-right:5px;
     color:#fff;
-<<<<<<< HEAD
-      
-   }
+  }
   .topgapping
   {
       padding-top:5px;
@@ -1095,16 +1093,16 @@ form label
 }
 .leftvalues
 {
-    width:28% !important;
+    width:28%;
     padding-right:0px !important;
 }
 .rules {
     padding-right: 0;
-    width: 44% !important;
+    width: 44%;
 }
 .col-xs-12.col-sm-3.rightvalues{
       padding-right: 0;
-    width: 28% !important;  
+    width: 28%;  
 }
 .c-chekkbox label,.md-checkbox label
 {
@@ -1142,7 +1140,14 @@ form label
     border-radius:0px !important
   padding: 4px 0 0 5px !important;  
 }
-
+#Rules .form-group{
+    clear:both !important;
+  min-height:70px !important;
+}
+input[type="radio"], input[type="checkbox"] {
+    line-height: normal;
+    margin: 4px 4px 0 !important;
+}
 /*Large desktops and laptops*/
 
 @media (min-width: 1200px) {
@@ -1183,10 +1188,9 @@ form label
 }
 
 /* Portrait tablets and small desktops */
-@media (min-width: 768px) and (max-width: 991px) {
+@media screen (min-width: 768px) and (max-width: 991px) {
     .rightalign {
-
-        width:40% !important;
+  width:40% !important;
     }
     .cgap {
 
@@ -1211,7 +1215,7 @@ form label
 }
 
 /* Landscape phones and portrait tablets */
-@media (max-width: 767px) {
+@media(max-width:767px) {
     .rightalign {
 
         width:25% !important;
@@ -1244,14 +1248,18 @@ form label
     }
     .profilepic
     {
-
-        margin-bottom: 20px;
+       margin-bottom: 20px;
         margin-left: 35px;
         margin-right: 90px;
-        max-width: 16%;
-
-
-    }
+        max-width:16%;
+ }
+  .leftvalues,.rules 
+  {
+width:33%!important;
+}
+.rightvalues {
+   width: 34%!important;
+}
 
 }
 
@@ -1311,17 +1319,13 @@ form label
         font-size:11px;
 
     }
+    .leftvalues,.rules,.rightvalues
+    {
+        width:100% !important;
+    }
 
 }
 
 
 
 /*rajan's css new end here*/
-
-
-/* ukesh's css */
-
-.errorMsg{
-    color:red;
-}
-/* end of ukesh's css */
