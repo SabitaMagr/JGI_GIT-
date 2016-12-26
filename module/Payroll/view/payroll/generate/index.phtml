@@ -30,8 +30,8 @@ echo json_encode($menu);
 <div ng-app="hris" ng-controller="generateController">
     <div class="row margin-top-10">
         <div class="col-sm-2">
-            <div class="portlet solid grey">
-                <div class="portlet-body">
+            <div class="portlet shadowlight">
+                <div class="portlet-body topgapping">
                     <div class="row">
                         <div class="col-sm-12 " >
                             <label>Generated Months</label>
@@ -44,8 +44,8 @@ echo json_encode($menu);
             </div>
         </div>
         <div class="col-sm-10">
-            <div class="portlet solid grey">
-                <div class="portlet-body">
+            <div class="portlet shadowlight">
+                <div class="portlet-body topgapping">
                     <div class="row">
                         <div class="col-sm-3">
                             <label>Fiscal year</label>
@@ -53,13 +53,13 @@ echo json_encode($menu);
                                 <option value="">Select Year</option>
                             </select>
                         </div>
-                        <div class="col-sm-3">
+                        <div class="col-sm-2">
                             <label>Months</label>
                             <select class="form-control" ng-model="monthId" ng-options="month.MONTH_ID as month.MONTH_EDESC for month in months" ng-change="viewMonthlySheetIfAvailable()">
                                 <option value="">Select Month</option>
                             </select>
                         </div>
-                        <div class="col-sm-2">
+                        <div class="col-sm-3">
                             <label>Branch</label>
                             <select class="form-control" ng-change="changeBranch()" ng-model="branchId" ng-options="key as branch for (key, branch) in branches">
                                 <option value="">All</option>
@@ -75,7 +75,7 @@ echo json_encode($menu);
                             <label>
                                 &nbsp;
                             </label>
-                            <button id="generateBtn" class=" form-control red " regenerateFlag="false">
+                            <button id="generateBtn" class="btn btn-default form-control i-search pull-right form-control " regenerateFlag="false" style="margin-top:20px;">
                                 Generate
                             </button>
                         </div>
