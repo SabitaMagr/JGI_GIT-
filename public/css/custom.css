@@ -1148,6 +1148,8 @@ input[type="radio"], input[type="checkbox"] {
     line-height: normal;
     margin: 4px 4px 0 !important;
 }
+
+
 /*Large desktops and laptops*/
 
 @media (min-width: 1200px) {
