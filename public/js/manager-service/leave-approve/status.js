@@ -2,10 +2,7 @@
     'use strict';
     $(document).ready(function () {
         $("select").select2();
-        app.addDatePicker(
-                $("#fromDate"),
-                $("#toDate")
-                );
+        app.startEndDatePicker('fromDate', 'toDate');
     });
 })(window.jQuery, window.app);
 
@@ -35,7 +32,7 @@ angular.module('hris', [])
                         'designationId': designationId,
                         'positionId': positionId,
                         'serviceTypeId': serviceTypeId,
-                        'serviceEventTypeId':serviceEventTypeId,
+                        'serviceEventTypeId': serviceEventTypeId,
                         'leaveId': leaveId,
                         'leaveRequestStatusId': leaveRequestStatusId,
                         'fromDate': fromDate,
@@ -121,11 +118,11 @@ angular.module('hris', [])
 
                     for (var i = 0; i < data.length; i++) {
                         var dataItem = data[i];
-                        var middleName = dataItem.MIDDLE_NAME!=null ? " "+dataItem.MIDDLE_NAME+" ": " ";
-                        
+                        var middleName = dataItem.MIDDLE_NAME != null ? " " + dataItem.MIDDLE_NAME + " " : " ";
+
                         rows.push({
                             cells: [
-                                {value: dataItem.FIRST_NAME+middleName+dataItem.LAST_NAME},
+                                {value: dataItem.FIRST_NAME + middleName + dataItem.LAST_NAME},
                                 {value: dataItem.LEAVE_ENAME},
                                 {value: dataItem.APPLIED_DATE},
                                 {value: dataItem.START_DATE},

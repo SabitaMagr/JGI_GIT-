@@ -2,10 +2,7 @@
     'use strict';
     $(document).ready(function () {
         $('select').select2();
-        app.addDatePicker(
-                $("#fromDate"),
-                $("#toDate")
-                );
+        app.startEndDatePicker('fromDate', 'toDate');
     });
 })(window.jQuery, window.app);
 
@@ -103,10 +100,10 @@ angular.module('hris', [])
 
                     for (var i = 0; i < data.length; i++) {
                         var dataItem = data[i];
-                        var middleName = dataItem.MIDDLE_NAME!=null ?" "+dataItem.MIDDLE_NAME+" " : " ";
+                        var middleName = dataItem.MIDDLE_NAME != null ? " " + dataItem.MIDDLE_NAME + " " : " ";
                         rows.push({
                             cells: [
-                                {value: dataItem.FIRST_NAME+middleName+dataItem.LAST_NAME},
+                                {value: dataItem.FIRST_NAME + middleName + dataItem.LAST_NAME},
                                 {value: dataItem.START_DATE},
                                 {value: dataItem.END_DATE},
                                 {value: dataItem.SERVICE_EVENT_TYPE_NAME},

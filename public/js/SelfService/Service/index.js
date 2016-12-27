@@ -4,10 +4,7 @@
 (function ($, app) {
     'use strict';
     $(document).ready(function () {
-        app.addDatePicker(
-                $("#fromDate"),
-                $("#toDate")
-                );
+        app.startEndDatePicker('fromDate', 'toDate');
     });
 })(window.jQuery, window.app);
 
@@ -106,11 +103,11 @@ angular.module('hris', [])
                                 {value: dataItem.START_DATE},
                                 {value: dataItem.END_DATE},
                                 {value: dataItem.SERVICE_EVENT_TYPE_NAME},
-                                {value: dataItem.FROM_SERVICE_TYPE_NAME+"-"+dataItem.TO_SERVICE_TYPE_NAME},
-                                {value: dataItem.FROM_BRANCH_NAME+"-"+dataItem.TO_BRANCH_NAME},
-                                {value: dataItem.FROM_DEPARTMENT_NAME+"-"+dataItem.TO_DEPARTMENT_NAME},
-                                {value: dataItem.FROM_DESIGNATION_TITLE+"-"+dataItem.TO_DESIGNATION_TITLE},
-                                {value: dataItem.FROM_POSITION_NAME+"-"+dataItem.TO_POSITION_NAME}
+                                {value: dataItem.FROM_SERVICE_TYPE_NAME + "-" + dataItem.TO_SERVICE_TYPE_NAME},
+                                {value: dataItem.FROM_BRANCH_NAME + "-" + dataItem.TO_BRANCH_NAME},
+                                {value: dataItem.FROM_DEPARTMENT_NAME + "-" + dataItem.TO_DEPARTMENT_NAME},
+                                {value: dataItem.FROM_DESIGNATION_TITLE + "-" + dataItem.TO_DESIGNATION_TITLE},
+                                {value: dataItem.FROM_POSITION_NAME + "-" + dataItem.TO_POSITION_NAME}
                             ]
                         });
                     }

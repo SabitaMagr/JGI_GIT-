@@ -1,11 +1,9 @@
 (function ($, app) {
     $(document).ready(function () {
         $('select').select2();
-        app.addDatePicker(
-                $("#startDate"),
-                $("#endDate"));
+        app.startEndDatePicker('startDate', 'endDate');
         var editMode = typeof document.employeeId !== "undefined";
-        
+
         var selectobject = document.getElementById("serviceEventTypeId")
         console.log(selectobject.length);
 
@@ -133,7 +131,7 @@
                         }
                         disableEmployeeInfo();
                     }
-                } else if(!editMode) {
+                } else if (!editMode) {
                     var selectobject1 = document.getElementById("serviceEventTypeId");
                     for (var i = 0; i < selectobject1.length; i++) {
                         if (selectobject1.options[i].value == 2)

@@ -15,7 +15,7 @@ class ShiftForm
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Shift Code"})
      * @Annotation\Attributes({ "id":"shiftCode", "class":"form-control" })
-     * @Annotation\Validator({"name":"StringLength", "options":{"max":"2"}})
+     * @Annotation\Validator({"name":"StringLength", "options":{"max":"6"}})
      */
     public $shiftCode;
 

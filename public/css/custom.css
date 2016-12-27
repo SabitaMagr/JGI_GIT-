@@ -330,7 +330,7 @@ form.k-filter-menu .k-widget, form.k-filter-menu .k-textbox
 
 .formbg
 {
-    background-color: #eee;
+    background-color: #F7F7F7;
     margin-top: 5px;
     padding: 5px;	
     border:solid #ddd  1px;
@@ -391,6 +391,8 @@ form.k-filter-menu .k-widget, form.k-filter-menu .k-textbox
 .btn.btn-default.form-control.i-search {
     margin-top: 3px;
     padding: 3px;
+    width:100px !important;
+    display:block !important;
 }
 .form-control,.select2-selection--single 
 {
@@ -406,7 +408,7 @@ form.k-filter-menu .k-widget, form.k-filter-menu .k-textbox
 #viewEmployees
 {
 
-    /*padding-bottom:22px;*/	
+ 	
 }
 .row.e-setup
 {
@@ -417,7 +419,7 @@ form.k-filter-menu .k-widget, form.k-filter-menu .k-textbox
     text-align: right !important;
     padding-right: 5 !important;
     width:50% !important;
-    /*    width:58% !important;*/
+ 
 }
 .rightalign-2
 {
@@ -893,7 +895,7 @@ select{
 .portlet > .portlet-title > .caption{
     font-size: 14px !important;
 }
-form label
+form label,.form-box label
 {
     font-size: 11px !important;
 }
@@ -1014,12 +1016,215 @@ form label
     font-family:fontawesome;
     padding-right:5px;
     color:#fff;
+  }
+  .topgapping
+  {
+      padding-top:5px;
+  }
+  
+ .btn.btn-default.dropdown-toggle
+ {
+     width:133px !important;
+ font-size: 11px !important;  
+ padding:3px 0px !important;
+ max-height:22px !important;
+ }
+  .btn.btn-default.dropdown-toggle span
+  {
+      top:9px !important;
+  }
+ .dropdown-menu li a
+ {
+        font-size: 11px !important;  
+ }
+ .select-option {
+    font-size: 12px !important;
+    padding: 0 12px !important;
+}
+ 
+.shadowlight
+{
+ background-color: #F7F7F7;
+     padding: 5px 5px 10px 5px;	
+    border:solid #ddd  1px;
+    box-shadow:3px 3px 11px #ccc;
+    moz-box-shadow:3px 3px 11px #ccc;
+    -o-box-shadow:3px 3px 11px #ccc;
+    -webkit-box-shadow:3px 3px 11px #ccc;
+}
+.help-block-error,.errorMsg {
+    color: red;
+    font-size: 11px;
+ 
+    float:left;
+}
+
+.f-green{
+    color:#559767 !important;
+}
+.form-wizard .steps > li.active > a.step .number{
+      background-color:#5CB85C !important; 
+}
+.progress-bar-success {
+    background-color: #5cb85c !important;
+}
+.form-wizard .steps > li.done > a.step .number {
+    background-color: #79bedb !important;
+    color: #fff;
+}
+.list-group-item {
+    font-size: 11px !important;
+  padding:6px !important;
+}
+
+#Rules .form-group
+{
+ min-height:45px;   
 
 }
-/* Large desktops and laptops */
+.list-group-item:before{
+    content:"\f0da";
+    font-family:fontawesome;
+    color:gray;
+    padding-right:5px;
+   font-size:11px;
+   padding-right:5px;
+   
+}
+.leftvalues
+{
+    width:28%;
+    padding-right:0px !important;
+}
+.rules {
+    padding-right: 0;
+    width: 44%;
+}
+.col-xs-12.col-sm-3.rightvalues{
+      padding-right: 0;
+    width: 28%;  
+}
+.c-chekkbox label,.md-checkbox label
+{
+    font-size:13px !important;
+}
+.p-heading
+{
+  padding: 9px !important;   
+   border-bottom: 2px solid #ddd;
+}
+.p-heading h4{
+    margin:0px !important;
+}
+.pbody{
+    padding-left:0px !important;
+}
+.summitbtn
+{
+ padding: 5px !important; 
+ background-color:#5c755e !important;
+ color:#fff !important;
+}
+.summitbtn:hover{
+    background-color:#5CB85C !important;
+}
+ 
+.page-container-bg-solid .page-bar, .page-content-white .page-bar {
+    background-color: #fff;
+    margin: -25px 0 0 !important;
+    padding: 0 0px !important;
+ 
+}
+#roleList li
+{
+    border-radius:0px !important
+  padding: 4px 0 0 5px !important;  
+}
+#Rules .form-group{
+    clear:both !important;
+/*  min-height:70px !important;*/
+}
+.k-link input
+ {
+    line-height: normal;
+    margin: 4px 4px 0 !important;
+}
+ul#roleList li {
+    
+    border-radius: 0 !important;
+       height: 22px !important;
+    margin: 0 0 10px !imporant;
+/*    padding: 0 10px 5px !important;*/
+padding:0 3px 4px 5px !important;
+    margin-bottom:10px !important;
+    margin-top:0px !important;
+  }
+
+  .md-checkbox label > .box {
+    border: 2px solid #666;
+    height: 17px !important;
+ left:9px !important;
+    top: 1px;
+    transition-delay: 0.2s;
+    width: 18px;
+    z-index: 5;
+        
+}
+.md-checkbox label > .check{
+    left:13px !important;
+}
+
+.md-checkbox label > span.inc {
+    animation: 0.3s ease 0s normal none 1 running growCircle;
+    background: #fff none repeat scroll 0 0;
+    border-radius: 50% !important;
+    height: 38px !important;
+    left:0px !important;
+    opacity: 0;
+    top: -11px !important;
+    width: 38px !important;
+}
+.checkboxspance
+{
+ left:0px !important;
+}
+.md-radio label > .box {
+    border: 1px solid #999 !important;
+}
+.md-radio label > .check {
+    background: gray !important;
+}
+.weekend{
+/*    background-color: #eee;*/
+ 
+ 
+    border-bottom:1px dashed #ccc;
+ 
+    margin-left: -5px;
+    margin-right: -5px;
+
+}
+.row.edetails,.currentshift,.time
+{
+    margin-left:-5px;
+    margin-right:-5px !important;
+    border-bottom:1px dashed #ccc;
+}
+.shiftdetails,.shiftcode,.time,.remarks
+{
+  margin-left:-5px;
+  margin-right:-5px;
+}
+.submit_button
+{
+ margin-left: 10px;
+     }
+/*Large desktops and laptops*/
+
 @media (min-width: 1200px) {
 
 }
+
 
 /* Landscape tablets and medium desktops */
 @media (min-width: 992px) and (max-width: 1199px) {
@@ -1054,10 +1259,9 @@ form label
 }
 
 /* Portrait tablets and small desktops */
-@media (min-width: 768px) and (max-width: 991px) {
+@media screen (min-width: 768px) and (max-width: 991px) {
     .rightalign {
-
-        width:40% !important;
+  width:40% !important;
     }
     .cgap {
 
@@ -1078,11 +1282,11 @@ form label
         float:none !important;
 
     }
-
+  
 }
 
 /* Landscape phones and portrait tablets */
-@media (max-width: 767px) {
+@media(max-width:767px) {
     .rightalign {
 
         width:25% !important;
@@ -1115,14 +1319,26 @@ form label
     }
     .profilepic
     {
-
-        margin-bottom: 20px;
+       margin-bottom: 20px;
         margin-left: 35px;
         margin-right: 90px;
-        max-width: 16%;
+        max-width:16%;
+ }
+  .leftvalues,.rules 
+  {
+width:33%!important;
+}
+.rightvalues {
+   width: 34%!important;
+}
+   ul#roleList li {
+    border-radius: 0 !important;
+    height: 22px !important;
+    margin-bottom: 10px !important;
+    margin-top: 10px !important;
+    padding: 0 3px 4px 5px !important;
+}
 
-
-    }
 
 }
 
@@ -1182,17 +1398,24 @@ form label
         font-size:11px;
 
     }
+    .leftvalues,.rules,.rightvalues
+    {
+        width:100% !important;
+    }
+    ul#roleList li {
+    border-radius: 0 !important;
+    height: 22px !important;
+    margin-bottom: 10px !important;
+    margin-top: 10px !important;
+    padding: 0 3px 4px 5px !important;
+}
+.md-radio-inline .md-radio
+{
+  margin-right:12px !important;
+}
 
 }
 
 
 
 /*rajan's css new end here*/
-
-
-/* ukesh's css */
-
-.errorMsg{
-    color:red;
-}
-/* end of ukesh's css */

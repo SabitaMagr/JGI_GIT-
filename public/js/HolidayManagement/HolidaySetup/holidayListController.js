@@ -1,14 +1,8 @@
-/**
- * Created by root on 11/9/16.
- */
 (function ($, app) {
     'use strict';
     $(document).ready(function () {
         $("select").select2();
-        app.addDatePicker(
-                $("#startDate"),
-                $("#endDate")
-                );
+        app.startEndDatePicker('startDate', 'endDate');
     });
 })(window.jQuery, window.app);
 
@@ -108,11 +102,12 @@ angular.module('hris', [])
                     for (var i = 0; i < data.length; i++) {
                         var dataItem = data[i];
                         var branch = [];
-                        for(var j = 0; j < dataItem.BRANCHES.length; j++){
+                        for (var j = 0; j < dataItem.BRANCHES.length; j++) {
                             branch.push(dataItem.BRANCHES[j].BRANCH_NAME);
                         }
                         console.log(branch, "hellow branches");
-                        var branch1 = branch.toString();;
+                        var branch1 = branch.toString();
+                        ;
                         console.log(branch1);
                         rows.push({
                             cells: [

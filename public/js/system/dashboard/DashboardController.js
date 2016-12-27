@@ -22,7 +22,7 @@ angular.module('hris', [])
                         roleId: $role['ROLE_ID']
                     }
                 }).then(function (success) {
-                    console.log(success);
+                    console.log('fetchRoleDashboards res', success);
                     $scope.$apply(function () {
                         for (var dashboardIndex in $scope.dashboardItems) {
                             $scope.dashboardItems[dashboardIndex].checked = false;
@@ -31,7 +31,7 @@ angular.module('hris', [])
                         var data = success.data;
                         for (var dashboard in data) {
                             for (var dashboardIndex in $scope.dashboardItems) {
-                                if ($scope.dashboardItems[dashboardIndex].value == data[dashboard]['DASHBOARD']) {
+                                if ($scope.dashboardItems[dashboardIndex].value.toUpperCase() == data[dashboard]['DASHBOARD'].toUpperCase()) {
                                     $scope.dashboardItems[dashboardIndex].checked = true;
                                     $scope.dashboardItems[dashboardIndex].roleType = data[dashboard].ROLE_TYPE;
                                 }
@@ -48,9 +48,6 @@ angular.module('hris', [])
                     alert("cannot assign ");
                     return;
                 }
-//                var roleType = $scope.dashboardItems.filter(function (item) {
-//                    return  item.value == dashboard;
-//                })[0].roleType;
                 var dashboard = item.value;
                 var checked = item.checked;
                 var roleType = item.roleType;

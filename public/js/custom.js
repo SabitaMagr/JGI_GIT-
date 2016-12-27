@@ -46,7 +46,26 @@ window.app = (function ($, toastr) {
             });
 
         }
-    }
+    };
+
+    var startEndDatePicker = function (fromDate, toDate) {
+        $("#" + fromDate).datepicker({
+            format: format,
+            todayBtn: 1,
+            autoclose: true,
+        }).on('changeDate', function (selected) {
+            var minDate = new Date(selected.date.valueOf());
+            $('#' + toDate).datepicker('setStartDate', minDate);
+        });
+
+        $("#" + toDate).datepicker({
+            format: format,
+            autoclose: true
+        }).on('changeDate', function (selected) {
+            var maxDate = new Date(selected.date.valueOf());
+            $('#' + fromDate).datepicker('setEndDate', maxDate);
+        });
+    };
 
     var addTimePicker = function () {
         for (var x in arguments) {
@@ -336,7 +355,8 @@ window.app = (function ($, toastr) {
         successMessage: successMessage,
         floatingProfile: floatingProfile,
         checkUniqueConstraints: checkUniqueConstraints,
-        UIConfirmations: UIConfirmations
+        UIConfirmations: UIConfirmations,
+        startEndDatePicker: startEndDatePicker
     };
 })(window.jQuery, window.toastr);
 

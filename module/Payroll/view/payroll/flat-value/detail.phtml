@@ -27,14 +27,14 @@ echo json_encode($menu);
     <div class="row margin-top-20">
         <div class="col-sm-3">
 
-            <div class="portlet solid grey">
-                <div class="portlet-body">
+            <div class="portlet shadowlight">
+                <div class="portlet-body topgapping">
                     <div class="row">
-                        <div class="col-sm-12 " >
+                        <div class="col-sm-12">
                             <label>
                                 Flat Values
                             </label>
-                            <div>
+                            <div class="mltselect">
                                 <multiselect
                                     ng-change="selectedFlatValuesChange()"
                                     ng-model="selectedFlatValues"
@@ -46,7 +46,7 @@ echo json_encode($menu);
                                     max-width="100"                      
                                     tabindex="-1">                     
                                 </multiselect>
-                                <button ng-click="selectAllFlagFN()" class="" ng-bind="selectAllFlag ? 'Deselect All' : 'Select All'">
+                                <button ng-click="selectAllFlagFN()" class="select-option" ng-bind="selectAllFlag ? 'Deselect All' : 'Select All'">
                                 </button>
                             </div>
                         </div>
@@ -55,8 +55,8 @@ echo json_encode($menu);
             </div>
         </div>
         <div class="col-sm-9">
-            <div class="portlet solid grey">
-                <div class="portlet-body">
+            <div class="portlet shadowlight">
+                <div class="portlet-body topgapping">
                     <div class="row">
                         <div class="col-sm-3">
                             <label>
@@ -85,11 +85,11 @@ echo json_encode($menu);
                             </select>
                         </div>
 
-                        <div class="col-sm-3">
-                            <label>
+                        <div class="col-sm-2">
+<!--                            <label>
                                 &nbsp;
-                            </label>
-                            <button ng-click="view()" class="btn btn-block yellow pull-right">
+                            </label>-->
+<button ng-click="view()" class="btn btn-default form-control i-search pull-right" style="margin-top:21px;">
                                 View
                                 <i class="fa fa-search"></i>
                             </button>
@@ -101,7 +101,8 @@ echo json_encode($menu);
 
     </div>
     <div class="margin-top-20 scroller" style="height: 400px;">
-        <table class="table "  >
+        <div class="table-responsive">
+        <table class="table customTable custom-width">
             <thead>
                 <tr>
                     <th>
@@ -147,9 +148,9 @@ echo json_encode($menu);
                 </tr>
             </tfoot>
         </table>
-
+        </div>
     </div>
-    <div class="row">
+    <div class="button-assign">
         <button class="btn btn-success pull-right" ng-click="setflatValue()">Assign flat Value</button>
     </div>
 </div>

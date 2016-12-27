@@ -182,11 +182,13 @@ $empId = isset($id) ? $id : -1;
 if ($countryId->getValue() == 168) {
     $name = $idCitizenshipIssuePlace->getAttributes()['name'];
     $label = $idCitizenshipIssuePlace->getLabel();
+    $value = $idCitizenshipIssuePlace->getValue();
 
     $idCitizenshipIssuePlace = clone($addrPermDistrictId);
     $idCitizenshipIssuePlace->setAttributes(['name' => $name]);
     $idCitizenshipIssuePlace->setValueOptions($districts);
     $idCitizenshipIssuePlace->setLabel($label);
+    $idCitizenshipIssuePlace->setValue($value);
 } else {
     $idCitizenshipIssuePlace->setAttributes(['value' => $countries[$countryId->getValue()]]);
     $idCitizenshipIssuePlace->setAttributes(["disabled" => 'true']);

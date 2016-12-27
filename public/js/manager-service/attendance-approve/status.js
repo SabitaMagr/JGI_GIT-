@@ -2,10 +2,7 @@
     'use strict';
     $(document).ready(function () {
         $("select").select2();
-        app.addDatePicker(
-                $("#fromDate"),
-                $("#toDate")
-                );
+        app.startEndDatePicker('fromDate', 'toDate');
     });
 })(window.jQuery, window.app);
 
@@ -34,7 +31,7 @@ angular.module('hris', [])
                         'designationId': designationId,
                         'positionId': positionId,
                         'serviceTypeId': serviceTypeId,
-                        'serviceEventTypeId':serviceEventTypeId,
+                        'serviceEventTypeId': serviceEventTypeId,
                         'attendanceRequestStatusId': attendanceRequestStatusId,
                         'fromDate': fromDate,
                         'toDate': toDate,
@@ -119,11 +116,11 @@ angular.module('hris', [])
 
                     for (var i = 0; i < data.length; i++) {
                         var dataItem = data[i];
-                        var middleName = dataItem.MIDDLE_NAME!=null ? " "+dataItem.MIDDLE_NAME+" " : " ";
-                        var middleName1 = dataItem.MIDDLE_NAME1!=null ? " "+dataItem.MIDDLE_NAME1+" " : " ";
+                        var middleName = dataItem.MIDDLE_NAME != null ? " " + dataItem.MIDDLE_NAME + " " : " ";
+                        var middleName1 = dataItem.MIDDLE_NAME1 != null ? " " + dataItem.MIDDLE_NAME1 + " " : " ";
                         rows.push({
                             cells: [
-                                {value: dataItem.FIRST_NAME+middleName+dataItem.LAST_NAME},
+                                {value: dataItem.FIRST_NAME + middleName + dataItem.LAST_NAME},
                                 {value: dataItem.REQUESTED_DT},
                                 {value: dataItem.ATTENDANCE_DT},
                                 {value: dataItem.IN_TIME},
