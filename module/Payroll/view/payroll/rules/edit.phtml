@@ -99,11 +99,11 @@ echo json_encode($menu);
                     Your form validation is successful!
                 </div>
                 <div class="tab-pane active" id="tab1">
-                    <h3 class="block">Provide your account details</h3>
+                    <h4 class="block">Provide your account details</h4>
                     <form method="POST" name="Rules" action="/neo/neo-hris-metronic/public/payroll/rules/add"
                           id="Rules">
                         <div class="row">
-                            <div class="col-md-4">
+                            <div class="col-sm-6 col-md-6">
                         <div class="form-group">
                             <label for="payCode">Pay Code</label>
                             <input type="text"
@@ -113,7 +113,9 @@ echo json_encode($menu);
                             <span class="errorMsg"></span>
                         </div>
                             </div>
-                             <div class="col-md-4">
+                        </div> 
+                        <div class="row">
+                           <div class="col-sm-6 col-md-6">
                         <div class="form-group">
                             <label for="payEdesc">Pay EDesc</label>
                             <textarea name="payEdesc"
@@ -121,7 +123,7 @@ echo json_encode($menu);
                                       id="payEdesc"
                                       class="form-control"></textarea></div>
                              </div>
-                             <div class="col-md-4">
+                         <div class="col-sm-6 col-md-6">
                         <div class="form-group ">
                             <label for="payLdesc">Pay LDesc</label>
                             <textarea name="payLdesc"
@@ -130,8 +132,9 @@ echo json_encode($menu);
                                       class="form-control"></textarea></div>
                            
                         </div>
-                        
-                            <div class="col-md-4">
+                        </div>
+                        <div class="row">
+                          <div class="col-sm-6 col-md-6">
                                 <div class="form-group">
                                     <label for="payTypeFlag">Pay Type</label>
                                     <div class="md-radio-inline">
@@ -169,7 +172,7 @@ echo json_encode($menu);
                                 </div>
 
                             </div>
-                            <div class="col-md-4 ">
+                               <div class="col-sm-6 col-md-6">
                                 <div class="form-group ">
                                     <label for="priorityIndex">Priority Index</label>
                                     <input type="number"
@@ -181,7 +184,9 @@ echo json_encode($menu);
                                 </div>
                      
                         </div>
-                            <div class="col-sm-4">
+                        </div>
+                        <div class="row">
+                        <div class="col-sm-6 col-md-6">
                         <div class="form-group ">
                             <label for="remarks">Remarks</label>
                             <textarea
@@ -192,6 +197,7 @@ echo json_encode($menu);
                         </div>
                             </div>
                         </div>
+           
                     </form>
                 </div>
                 <div class="tab-pane" id="tab2">

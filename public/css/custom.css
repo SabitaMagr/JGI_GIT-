@@ -1142,7 +1142,7 @@ form label,.form-box label
 }
 #Rules .form-group{
     clear:both !important;
-  min-height:70px !important;
+/*  min-height:70px !important;*/
 }
 .k-link input
  {
@@ -1188,6 +1188,37 @@ padding:0 3px 4px 5px !important;
 {
  left:0px !important;
 }
+.md-radio label > .box {
+    border: 1px solid #999 !important;
+}
+.md-radio label > .check {
+    background: gray !important;
+}
+.weekend{
+/*    background-color: #eee;*/
+ 
+ 
+    border-bottom:1px dashed #ccc;
+ 
+    margin-left: -5px;
+    margin-right: -5px;
+
+}
+.row.edetails,.currentshift,.time
+{
+    margin-left:-5px;
+    margin-right:-5px !important;
+    border-bottom:1px dashed #ccc;
+}
+.shiftdetails,.shiftcode,.time,.remarks
+{
+  margin-left:-5px;
+  margin-right:-5px;
+}
+.submit_button
+{
+ margin-left: 10px;
+     }
 /*Large desktops and laptops*/
 
 @media (min-width: 1200px) {
@@ -1377,6 +1408,10 @@ width:33%!important;
     margin-bottom: 10px !important;
     margin-top: 10px !important;
     padding: 0 3px 4px 5px !important;
+}
+.md-radio-inline .md-radio
+{
+  margin-right:12px !important;
 }
 
 }
