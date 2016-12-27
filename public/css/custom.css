@@ -1219,6 +1219,19 @@ padding:0 3px 4px 5px !important;
 {
  margin-left: 10px;
      }
+    .mgap {
+    padding-bottom: 9px !important;
+    padding-top: 9px !important;
+}
+  .cwidth2
+  {
+      width:10% !important;
+  }
+ .cwidth4,.cwidth5
+ {
+     width:20% !important;
+ }
+ 
 /*Large desktops and laptops*/
 
 @media (min-width: 1200px) {
@@ -1338,8 +1351,13 @@ width:33%!important;
     margin-top: 10px !important;
     padding: 0 3px 4px 5px !important;
 }
-
-
+.cwidth2,.cwidth4,.cwidth5{
+    width:100% !important;
+}
+.cwidth1,cwidth2,cwidth3,cwidth4,cwidth5
+{
+    margin-bottom:10px;
+}
 }
 
 /* Portrait phones and smaller */
@@ -1413,7 +1431,13 @@ width:33%!important;
 {
   margin-right:12px !important;
 }
-
+.cwidth2,.cwidth4,.cwidth5{
+    width:100% !important;
+}
+.cwidth1,cwidth2,cwidth3,cwidth4,cwidth5
+{
+    margin-bottom:10px;
+}
 }
 
 
