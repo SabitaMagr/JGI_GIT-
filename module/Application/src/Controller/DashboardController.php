@@ -1,12 +1,5 @@
 <?php
 
-/**
- * Created by PhpStorm.
- * User: himal
- * Date: 7/22/16
- * Time: 3:31 PM
- */
-
 namespace Application\Controller;
 
 use Application\Helper\EntityHelper;
@@ -58,7 +51,7 @@ class DashboardController extends AbstractActionController {
 
         foreach ($dashboards as $value) {
             $itemDetail[$value['DASHBOARD']] = [
-                "path" => $this->dashboardItems[$value['DASHBOARD']],
+                "path" => $this->dashboardItems[strtolower($value['DASHBOARD'])],
                 "data" => $this->getDashBoardData($value['DASHBOARD'], $value['ROLE_TYPE'])
             ];
         }
@@ -71,7 +64,7 @@ class DashboardController extends AbstractActionController {
 
     public function getDashBoardData($item, $roleType) {
         $data = [];
-        switch ($item) {
+        switch (strtolower($item)) {
             case 'holiday-list':
                 $holidayRepo = new HolidayRepository($this->adapter);
                 $today = Helper::getcurrentExpressionDate();
