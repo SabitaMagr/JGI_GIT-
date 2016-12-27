@@ -18,6 +18,8 @@ class RecommendApprove extends  Model{
     const CREATED_DT="CREATED_DT";
     const MODIFIED_DT="MODIFIED_DT";
     const STATUS="STATUS";
+    const CREATED_BY = "CREATED_BY";
+    const MODIFIED_BY = "MODIFIED_BY";
 
     public $employeeId;
     public $recommendBy;
@@ -25,6 +27,8 @@ class RecommendApprove extends  Model{
     public $status;
     public $createdDt;
     public $modifiedDt;
+    public $createdBy;
+    public $modifiedBy;
 
     public $mappings =[
         'employeeId'=>self::EMPLOYEE_ID,
@@ -33,5 +37,7 @@ class RecommendApprove extends  Model{
         'createdDt'=>self::CREATED_DT,
         'modifiedDt'=>self::MODIFIED_DT,
         'status'=>self::STATUS,
+        'createdBy' => self::CREATED_BY,
+        'modifiedBy' => self::MODIFIED_BY,
     ];
 }

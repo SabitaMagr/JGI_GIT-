@@ -36,8 +36,10 @@ class Leave extends AbstractActionController
         $leaveList = $this->leaveRepository->selectAll($this->employee_id);
         $leaves = [];
         foreach($leaveList as $leaveRow){
-            $leaveTaken =  $leaveRow['TOTAL_DAYS']-$leaveRow['BALANCE'];
-            $new_row = array_merge($leaveRow,['LEAVE_TAKEN'=>$leaveTaken]);
+            
+            $allTotalDays = $leaveRow['PREVIOUS_YEAR_BAL']+$leaveRow['TOTAL_DAYS'];
+            $leaveTaken =  $allTotalDays-$leaveRow['BALANCE'];
+            $new_row = array_merge($leaveRow,['LEAVE_TAKEN'=>$leaveTaken,'ALL_TOTAL_DAYS'=>$allTotalDays]);
             array_push($leaves, $new_row);
         }
         return Helper::addFlashMessagesToArray($this, ['leaves' => $leaves]);

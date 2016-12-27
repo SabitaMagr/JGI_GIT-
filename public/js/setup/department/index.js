@@ -19,7 +19,7 @@
                 {field: "DEPARTMENT_CODE", title: "Department Code",width:120},
                 {field: "DEPARTMENT_NAME", title: "Department Name",width:200},
                  {field: "PARENT_DEPARTMENT", title: "Paren Department Name",width:200},
-                {title: "Action",width:50}
+                {title: "Action",width:80}
             ]
         });
 

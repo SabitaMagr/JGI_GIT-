@@ -17,17 +17,21 @@ use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Helper\Navigation\Menu;
 use System\Repository\RoleSetupRepository;
+use Zend\Authentication\AuthenticationService;
 
 class MenuSetupController extends AbstractActionController {
 
     private $repository;
     private $adapter;
     private $form;
+    private $employeeId;
 
     public function __construct(AdapterInterface $adapter)
     {
         $this->repository = new MenuSetupRepository($adapter);
         $this->adapter = $adapter;
+        $auth = new AuthenticationService();
+        $this->employeeId = $auth->getStorage()->read()['employee_id'];
     }
 
     public function initializeForm(){
@@ -56,6 +60,7 @@ class MenuSetupController extends AbstractActionController {
                 $menuSetup->exchangeArrayFromForm($this->form->getData());
                 $menuSetup->menuId = ((int)Helper::getMaxId($this->adapter, MenuSetup::TABLE_NAME, MenuSetup::MENU_ID)) + 1;
                 $menuSetup->createdDt = Helper::getcurrentExpressionDate();
+                $menuSetup->createdBy = $this->employeeId;
                 $menuSetup->status='E';
                 $this->repository->add($menuSetup);
 
@@ -86,6 +91,7 @@ class MenuSetupController extends AbstractActionController {
                 $menuSetup->exchangeArrayFromForm($this->form->getData());
                 $menuSetup->menuId = ((int)Helper::getMaxId($this->adapter, MenuSetup::TABLE_NAME, MenuSetup::MENU_ID)) + 1;
                 $menuSetup->createdDt = Helper::getcurrentExpressionDate();
+                $menuSetup->createdBy = $this->employeeId;
                 $menuSetup->status='E';
                 $this->repository->add($menuSetup);
 
@@ -116,6 +122,7 @@ class MenuSetupController extends AbstractActionController {
             if ($this->form->isValid()) {
                 $menuSetup->exchangeArrayFromForm($this->form->getData());
                 $menuSetup->modifiedDt = Helper::getcurrentExpressionDate();
+                $menuSetup->modifiedBy = $this->employeeId;
                 unset($menuSetup->createdDt);
                 unset($menuSetup->menuId);
                 unset($menuSetup->status);

@@ -12,6 +12,7 @@ use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 use HolidayManagement\Model\HolidayBranch;
+use Zend\Authentication\AuthenticationService;
 use Setup\Model\Branch;
 use Zend\Form\Element\Select;
 
@@ -20,11 +21,14 @@ class HolidaySetup extends AbstractActionController
     private $repository;
     private $form;
     private $adapter;
+    private $employeeId;
 
     public function __construct(AdapterInterface $adapter)
     {
         $this->repository=new HolidayRepository($adapter);
         $this->adapter = $adapter;
+        $auth = new AuthenticationService();
+        $this->employeeId = $auth->getStorage()->read()['employee_id'];
     }
     public function initializeForm()
     {
@@ -84,6 +88,7 @@ class HolidaySetup extends AbstractActionController
                    unset($holiday->genderId);
                 }
                 $holiday->createdDt = Helper::getcurrentExpressionDate();
+                $holiday->createdBy = $this->employeeId;
                 $holiday->status = 'E';
                 $holiday->fiscalYear=(int) Helper::getMaxId($this->adapter,"HR_FISCAL_YEARS","FISCAL_YEAR_ID");
 

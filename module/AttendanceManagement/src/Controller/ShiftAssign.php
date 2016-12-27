@@ -12,6 +12,7 @@ use Setup\Model\Designation;
 use Setup\Model\Position;
 use Setup\Model\ServiceType;
 use Zend\Db\Adapter\AdapterInterface;
+use Zend\Authentication\AuthenticationService;
 use Zend\Form\Element\Select;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
@@ -20,11 +21,14 @@ class ShiftAssign extends AbstractActionController
 {
     private $repository;
     private $adapter;
+    private $employeeId;
 
     public function __construct(AdapterInterface $adapter)
     {
         $this->repository = new ShiftAssignRepository($adapter);
         $this->adapter=$adapter;
+        $auth = new AuthenticationService();
+        $this->employeeId = $auth->getStorage()->read()['employee_id'];
     }
 
     public function indexAction()

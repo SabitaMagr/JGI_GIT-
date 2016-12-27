@@ -18,6 +18,8 @@ class AcademicUniversity extends Model {
     const STATUS = "STATUS";
     const CREATED_DT = "CREATED_DT";
     const MODIFIED_DT = "MODIFIED_DT";
+    const CREATED_BY = "CREATED_BY";
+    const MODIFIED_BY = "MODIFIED_BY";
 
     public $academicUniversityId;
     public $academicUniversityCode;
@@ -26,6 +28,8 @@ class AcademicUniversity extends Model {
     public $status;
     public $createdDt;
     public $modifiedDt;
+    public $createdBy;
+    public $modifiedBy;
 
     public $mappings = [
         'academicUniversityId'=>Self::ACADEMIC_UNIVERSITY_ID,
@@ -34,6 +38,8 @@ class AcademicUniversity extends Model {
         'remarks'=>Self::REMARKS,
         'status'=>Self::STATUS,
         'createdDt'=>Self::CREATED_DT,
-        'modifiedDt'=>Self::MODIFIED_DT
+        'modifiedDt'=>Self::MODIFIED_DT,
+        'createdBy' => self::CREATED_BY,
+        'modifiedBy' => self::MODIFIED_BY,
     ];
 }

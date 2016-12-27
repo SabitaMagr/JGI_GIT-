@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Created by PhpStorm.
  * User: punam
@@ -37,8 +38,7 @@ class LeaveApproveController extends AbstractActionController {
     private $authService;
     private $form;
 
-    public function __construct(AdapterInterface $adapter)
-    {
+    public function __construct(AdapterInterface $adapter) {
         $this->adapter = $adapter;
         $this->repository = new LeaveApproveRepository($adapter);
 
@@ -48,134 +48,138 @@ class LeaveApproveController extends AbstractActionController {
         $this->employeeId = $recordDetail['employee_id'];
     }
 
-    public function initializeForm(){
+    public function initializeForm() {
         $leaveApplyForm = new LeaveApplyForm();
         $builder = new AnnotationBuilder();
         $this->form = $builder->createForm($leaveApplyForm);
     }
 
-    public function indexAction()
-    {
+    public function indexAction() {
         //print_r($this->employeeId); die();
         $list = $this->repository->getAllRequest($this->employeeId);
-        
+
         $leaveApprove = [];
-        $getValue = function($recommender,$approver){
-            if($this->employeeId==$recommender){
+        $getValue = function($recommender, $approver) {
+            if ($this->employeeId == $recommender) {
                 return 'RECOMMENDER';
-            }else if($this->employeeId==$approver){
+            } else if ($this->employeeId == $approver) {
                 return 'APPROVER';
             }
         };
-        $getRole = function($recommender,$approver){
-            if($this->employeeId==$recommender){
+        $getRole = function($recommender, $approver) {
+            if ($this->employeeId == $recommender) {
                 return 2;
-            }else if($this->employeeId==$approver){
+            } else if ($this->employeeId == $approver) {
                 return 3;
             }
         };
-        foreach($list as $row){
-            array_push($leaveApprove,[
-                'FIRST_NAME'=>$row['FIRST_NAME'],
-                'MIDDLE_NAME'=>$row['MIDDLE_NAME'],
-                'LAST_NAME'=>$row['LAST_NAME'],
-                'START_DATE'=>$row['START_DATE'],
-                'END_DATE'=>$row['END_DATE'],
-                'APPLIED_DATE'=>$row['APPLIED_DATE'],
-                'NO_OF_DAYS'=>$row['NO_OF_DAYS'],
-                'LEAVE_ENAME'=>$row['LEAVE_ENAME'],
-                'ID'=>$row['ID'],
-                'YOUR_ROLE'=>$getValue($row['RECOMMENDER'],$row['APPROVER']),
-                'ROLE'=>$getRole($row['RECOMMENDER'],$row['APPROVER'])
+        foreach ($list as $row) {
+            array_push($leaveApprove, [
+                'FIRST_NAME' => $row['FIRST_NAME'],
+                'MIDDLE_NAME' => $row['MIDDLE_NAME'],
+                'LAST_NAME' => $row['LAST_NAME'],
+                'START_DATE' => $row['START_DATE'],
+                'END_DATE' => $row['END_DATE'],
+                'APPLIED_DATE' => $row['APPLIED_DATE'],
+                'NO_OF_DAYS' => $row['NO_OF_DAYS'],
+                'LEAVE_ENAME' => $row['LEAVE_ENAME'],
+                'ID' => $row['ID'],
+                'YOUR_ROLE' => $getValue($row['RECOMMENDER'], $row['APPROVER']),
+                'ROLE' => $getRole($row['RECOMMENDER'], $row['APPROVER'])
             ]);
         }
         //print_r($leaveApprove); die();
-        return Helper::addFlashMessagesToArray($this, ['leaveApprove' => $leaveApprove,'id'=>$this->employeeId]);
+        return Helper::addFlashMessagesToArray($this, ['leaveApprove' => $leaveApprove, 'id' => $this->employeeId]);
     }
-    public function viewAction(){
+
+    public function viewAction() {
         $this->initializeForm();
         $leaveRequestRepository = new LeaveRequestRepository($this->adapter);
 
         $id = (int) $this->params()->fromRoute('id');
         $role = $this->params()->fromRoute('role');
 
-        if($id===0){
+        if ($id === 0) {
             return $this->redirect()->toRoute("leaveapprove");
         }
         $leaveApply = new LeaveApply();
         $request = $this->getRequest();
 
         $detail = $this->repository->fetchById($id);
-        
+
         $leaveId = $detail['LEAVE_ID'];
         $leaveRepository = new LeaveMasterRepository($this->adapter);
-        $leaveDtl  = $leaveRepository->fetchById($leaveId);
-        
+        $leaveDtl = $leaveRepository->fetchById($leaveId);
+
         $requestedEmployeeID = $detail['EMPLOYEE_ID'];
-        $employeeName = $detail['FIRST_NAME']." ".$detail['MIDDLE_NAME']." ".$detail['LAST_NAME'];
+        $employeeName = $detail['FIRST_NAME'] . " " . $detail['MIDDLE_NAME'] . " " . $detail['LAST_NAME'];
 
         //to get the previous balance of selected leave from assigned leave detail
-        $result = $this->repository->assignedLeaveDetail($detail['LEAVE_ID'],$detail['EMPLOYEE_ID'])->getArrayCopy();
+        $result = $this->repository->assignedLeaveDetail($detail['LEAVE_ID'], $detail['EMPLOYEE_ID'])->getArrayCopy();
         $preBalance = $result['BALANCE'];
 
-        if(!$request->isPost()){
+        if (!$request->isPost()) {
             $leaveApply->exchangeArrayFromDB($detail);
             $this->form->bind($leaveApply);
-        }else{
+        } else {
             $getData = $request->getPost();
             $action = $getData->submit;
 
-            if($role==2){
-                $leaveApply->recommendedDt=Helper::getcurrentExpressionDate();
-                if($action=="Reject"){
-                    $leaveApply->status="R";
+            if ($role == 2) {
+                $leaveApply->recommendedDt = Helper::getcurrentExpressionDate();
+                if ($action == "Reject") {
+                    $leaveApply->status = "R";
                     $this->flashmessenger()->addMessage("Leave Request Rejected!!!");
-                }else if($action=="Approve"){
-                    $leaveApply->status="RC";
+                } else if ($action == "Approve") {
+                    $leaveApply->status = "RC";
                     $this->flashmessenger()->addMessage("Leave Request Approved!!!");
                 }
-                $leaveApply->recommendedRemarks=$getData->recommendedRemarks;
-                $this->repository->edit($leaveApply,$id);
-            }else if($role==3){
-                $leaveApply->approvedDt=Helper::getcurrentExpressionDate();
-                if($action=="Reject"){
-                    $leaveApply->status="R";
+                $leaveApply->recommendedRemarks = $getData->recommendedRemarks;
+                $this->repository->edit($leaveApply, $id);
+            } else if ($role == 3) {
+                $leaveApply->approvedDt = Helper::getcurrentExpressionDate();
+                if ($action == "Reject") {
+                    $leaveApply->status = "R";
                     $this->flashmessenger()->addMessage("Leave Request Rejected!!!");
-                }else if($action=="Approve"){
-                    $leaveApply->status="AP";
-
-                    $newBalance = $preBalance-$detail['NO_OF_DAYS'];
+                } else if ($action == "Approve") {
+                    $leaveApply->status = "AP";
+                    if ($detail['HALF_DAY'] != 'N') {
+                        $leaveTaken = 0.5;
+                    } else {
+                        $leaveTaken = $detail['NO_OF_DAYS'];
+                    }
+                    $newBalance = $preBalance - $leaveTaken;
                     //to update the previous balance
-                    $this->repository->updateLeaveBalance($detail['LEAVE_ID'],$detail['EMPLOYEE_ID'],$newBalance);
+                    $this->repository->updateLeaveBalance($detail['LEAVE_ID'], $detail['EMPLOYEE_ID'], $newBalance);
 
                     $this->flashmessenger()->addMessage("Leave Request Approved");
                 }
                 unset($leaveApply->halfDay);
-                $leaveApply->approvedRemarks=$getData->approvedRemarks;
-                $this->repository->edit($leaveApply,$id);
+                $leaveApply->approvedRemarks = $getData->approvedRemarks;
+                $this->repository->edit($leaveApply, $id);
             }
             return $this->redirect()->toRoute("leaveapprove");
         }
         return Helper::addFlashMessagesToArray($this, [
-            'form' => $this->form,
-            'id'=>$id,
-            'employeeName'=>$employeeName,
-            'requestedDt'=>$detail['REQUESTED_DT'],
-            'role'=>$role,
-            'availableDays'=>$preBalance,
-            'status'=>$detail['STATUS'],
-            'remarksDtl'=>$detail['REMARKS'],
-            'totalDays'=>$result['TOTAL_DAYS'],
-            'recommendedBy'=>$detail['RECOMMENDED_BY'],
-            'employeeId'=>$this->employeeId,
-            'requestedEmployeeId'=>$requestedEmployeeID,
-            'allowHalfDay'=>$leaveDtl['ALLOW_HALFDAY'],
-            'leave' => $leaveRequestRepository->getLeaveList($detail['EMPLOYEE_ID']),
-            'customRenderer'=>Helper::renderCustomView()
+                    'form' => $this->form,
+                    'id' => $id,
+                    'employeeName' => $employeeName,
+                    'requestedDt' => $detail['REQUESTED_DT'],
+                    'role' => $role,
+                    'availableDays' => $preBalance,
+                    'status' => $detail['STATUS'],
+                    'remarksDtl' => $detail['REMARKS'],
+                    'totalDays' => $result['TOTAL_DAYS'],
+                    'recommendedBy' => $detail['RECOMMENDED_BY'],
+                    'employeeId' => $this->employeeId,
+                    'requestedEmployeeId' => $requestedEmployeeID,
+                    'allowHalfDay' => $leaveDtl['ALLOW_HALFDAY'],
+                    'leave' => $leaveRequestRepository->getLeaveList($detail['EMPLOYEE_ID']),
+                    'customRenderer' => Helper::renderCustomView()
         ]);
     }
 
-    public function statusAction(){
+    public function statusAction() {
         $employeeNameFormElement = new Select();
         $employeeNameFormElement->setName("branch");
         $employeeName = \Application\Helper\EntityHelper::getTableKVListWithSortOption($this->adapter, "HR_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => "E"], "FIRST_NAME", "ASC", " ");
@@ -233,7 +237,7 @@ class LeaveApproveController extends AbstractActionController {
         $serviceEventTypeFormElement->setValueOptions($serviceEventTypes1);
         $serviceEventTypeFormElement->setAttributes(["id" => "serviceEventTypeId", "class" => "form-control"]);
         $serviceEventTypeFormElement->setLabel("Service Event Type");
-        
+
         $leaveFormElement = new Select();
         $leaveFormElement->setName("leave");
         $leaves = \Application\Helper\EntityHelper::getTableKVList($this->adapter, LeaveMaster::TABLE_NAME, LeaveMaster::LEAVE_ID, [LeaveMaster::LEAVE_ENAME], [LeaveMaster::STATUS => 'E']);
@@ -241,31 +245,32 @@ class LeaveApproveController extends AbstractActionController {
         $leaveFormElement->setValueOptions($leaves1);
         $leaveFormElement->setAttributes(["id" => "leaveId", "class" => "form-control"]);
         $leaveFormElement->setLabel("Type");
-        
+
         $leaveStatus = [
-            '-1'=>'All',
-            'RQ'=>'Pending',
-            'RC'=>'Recommended',
-            'AP'=>'Approved',
-            'R'=>'Rejected'
+            '-1' => 'All',
+            'RQ' => 'Pending',
+            'RC' => 'Recommended',
+            'AP' => 'Approved',
+            'R' => 'Rejected'
         ];
         $leaveStatusFormElement = new Select();
         $leaveStatusFormElement->setName("leaveStatus");
         $leaveStatusFormElement->setValueOptions($leaveStatus);
         $leaveStatusFormElement->setAttributes(["id" => "leaveRequestStatusId", "class" => "form-control"]);
         $leaveStatusFormElement->setLabel("Status");
-        
-        return Helper::addFlashMessagesToArray($this,[
-            "branches" => $branchFormElement,
-            "departments" => $departmentFormElement,
-            'designations' => $designationFormElement,
-            'positions' => $positionFormElement,
-            'serviceTypes' => $serviceTypeFormElement,
-            'leaves' => $leaveFormElement,
-            'employees' => $employeeNameFormElement,
-            'leaveStatus'=>$leaveStatusFormElement,
-            'recomApproveId'=>$this->employeeId,
-            'serviceEventTypes'=>$serviceEventTypeFormElement
-        ]);        
+
+        return Helper::addFlashMessagesToArray($this, [
+                    "branches" => $branchFormElement,
+                    "departments" => $departmentFormElement,
+                    'designations' => $designationFormElement,
+                    'positions' => $positionFormElement,
+                    'serviceTypes' => $serviceTypeFormElement,
+                    'leaves' => $leaveFormElement,
+                    'employees' => $employeeNameFormElement,
+                    'leaveStatus' => $leaveStatusFormElement,
+                    'recomApproveId' => $this->employeeId,
+                    'serviceEventTypes' => $serviceEventTypeFormElement
+        ]);
     }
+
 }

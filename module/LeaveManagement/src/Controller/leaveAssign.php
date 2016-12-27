@@ -28,6 +28,7 @@ use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\Form\Element\Select;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
+use Zend\Authentication\AuthenticationService;
 
 class leaveAssign extends AbstractActionController {
 
@@ -35,10 +36,13 @@ class leaveAssign extends AbstractActionController {
     private $form;
     private $adapter;
     private $excelImportForm;
+    private $employeeId;
 
     public function __construct(AdapterInterface $adapter) {
         $this->repository = new LeaveAssignRepository($adapter);
         $this->adapter = $adapter;
+        $auth = new AuthenticationService();
+        $this->employeeId = $auth->getStorage()->read()['employee_id'];
     }
 
     public function initializeForm() {
@@ -157,6 +161,7 @@ class leaveAssign extends AbstractActionController {
                 $leaveAssign->exchangeArrayFromForm($this->form->getData());
                 // $leaveAssign->employeeLeaveAssignId = ((int) Helper::getMaxId($this->adapter, LeaveAssignController::TABLE_NAME, LeaveAssignController::EMPLOYEE_LEAVE_ASSIGN_ID)) + 1;
                 $leaveAssign->createdDt = Helper::getcurrentExpressionDate();
+                $leaveAssign->createdBy = $this->employeeId;
                 $leaveAssign->employeeId = $id;
                 $this->repository->add($leaveAssign);
                 $this->flashmessenger()->addMessage("Leave assigned Successfully!!!");
@@ -194,6 +199,8 @@ class leaveAssign extends AbstractActionController {
             if ($this->form->isValid()) {
                 $leaveAssign->exchangeArrayFromForm($this->form->getData());
                 $leaveAssign->modifiedDt = Helper::getcurrentExpressionDate();
+                $leaveAssign->modifiedBy = $this->employeeId;
+                
                 unset($leaveAssign->employeeLeaveAssignId);
                 unset($leaveAssign->createdDt);
                 $this->repository->edit($leaveAssign, $id);
@@ -280,6 +287,7 @@ class leaveAssign extends AbstractActionController {
                             $leaveAssign = new \LeaveManagement\Model\LeaveAssign();
                             //$leaveAssign->employeeLeaveAssignId = ((int) Helper::getMaxId($this->adapter, LeaveAssignController::TABLE_NAME, LeaveAssignController::EMPLOYEE_LEAVE_ASSIGN_ID)) + 1;
                             $leaveAssign->createdDt = Helper::getcurrentExpressionDate();
+                            $leaveAssign->createdBy = $this->employeeId;
                             $leaveAssign->employeeId = $employeeId;
                             $leaveAssign->leaveId = $leaveId;
                             $leaveAssign->totalDays = $totalDays;

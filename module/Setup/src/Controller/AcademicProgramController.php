@@ -12,6 +12,7 @@ use Zend\Mvc\Controller\AbstractActionController;
 use Setup\Model\AcademicProgram;
 use Setup\Form\AcademicProgramForm;
 use Setup\Repository\AcademicProgramRepository;
+use Zend\Authentication\AuthenticationService;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\View\Model\ViewModel;
@@ -20,11 +21,14 @@ class AcademicProgramController extends AbstractActionController {
     private $repository;
     private $form;
     private $adapter;
+    private $employeeId;
 
     public function __construct(AdapterInterface $adapter)
     {
         $this->adapter = $adapter;
+        $auth = new AuthenticationService();
         $this->repository = new AcademicProgramRepository($adapter);
+        $this->employeeId = $auth->getStorage()->read()['employee_id'];
     }
 
     public function initializeForm()
@@ -60,6 +64,7 @@ class AcademicProgramController extends AbstractActionController {
                 $academicProgram->exchangeArrayFromForm($this->form->getData());
                 $academicProgram->academicProgramId=((int) Helper::getMaxId($this->adapter,AcademicProgram::TABLE_NAME,AcademicProgram::ACADEMIC_PROGRAM_ID))+1;
                 $academicProgram->createdDt = Helper::getcurrentExpressionDate();
+                $academicProgram->createdBy = $this->employeeId;
                 $academicProgram->status ='E';
                 $this->repository->add($academicProgram);
 
@@ -97,6 +102,7 @@ class AcademicProgramController extends AbstractActionController {
             if ($this->form->isValid()) {
                 $academicProgram->exchangeArrayFromForm($this->form->getData());
                 $academicProgram->modifiedDt = Helper::getcurrentExpressionDate();
+                $academicProgram->modifiedBy = $this->employeeId;
                 $this->repository->edit($academicProgram, $id);
                 $this->flashmessenger()->addMessage("Academic Program Successfully Updated!!!");
                 return $this->redirect()->toRoute("academicProgram");

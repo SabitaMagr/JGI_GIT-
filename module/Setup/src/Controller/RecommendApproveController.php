@@ -16,6 +16,7 @@ use Zend\Form\Annotation\AnnotationBuilder;
 use Application\Helper\Helper;
 use Application\Helper\EntityHelper;
 use Setup\Repository\RecommendApproveRepository;
+use Zend\Authentication\AuthenticationService;
 use Zend\Form\Element\Select;
 use Setup\Model\Branch;
 use Setup\Model\Department;
@@ -25,11 +26,14 @@ class RecommendApproveController extends AbstractActionController {
     private $form;
     private $adapter;
     private $repository;
+    private $employeeId;
 
     public function __construct(AdapterInterface $adapter)
     {
         $this->adapter = $adapter;
+        $auth = new AuthenticationService();
         $this->repository = new RecommendApproveRepository($adapter);
+        $this->employeeId = $auth->getStorage()->read()['employee_id'];
     }
     public function indexAction()
     {
@@ -55,6 +59,7 @@ class RecommendApproveController extends AbstractActionController {
                 $recommendApprove = new RecommendApprove();
                 $recommendApprove->exchangeArrayFromForm($this->form->getData());
                 $recommendApprove->createdDt = Helper::getcurrentExpressionDate();
+                $recommendApprove->createdBy = $this->employeeId;
                 $recommendApprove->status='E';
                 $this->repository->add($recommendApprove);
 
@@ -87,6 +92,7 @@ class RecommendApproveController extends AbstractActionController {
             if ($this->form->isValid()) {
                 $recommendApprove->exchangeArrayFromForm($this->form->getData());
                 $recommendApprove->modifiedDt = Helper::getcurrentExpressionDate();
+                $recommendApprove->modifiedBy = $this->employeeId;
                 $this->repository->edit($recommendApprove, $id);
 
                 $this->flashmessenger()->addMessage("Recommender And Approver Successfully Assigned!!!");

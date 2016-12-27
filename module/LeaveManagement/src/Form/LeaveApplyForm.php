@@ -53,19 +53,21 @@ class LeaveApplyForm
     public $endDate;
 
     /**
-     * @Annotation\Type("Zend\Form\Element\Number")
+     * @Annotation\Type("Zend\Form\Element\Text")
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Available Days"})
      * @Annotation\Required(true)
+     * @Annotation\Validator({"name":"Float", "options":{"min":"5","locale":"en"}})
      * @Annotation\Attributes({ "id":"availableDays","disabled":"disabled", "class":"form-control"})
      */
     public $availableDays;
 
     /**
-     * @Annotation\Type("Zend\Form\Element\Number")
+     * @Annotation\Type("Zend\Form\Element\Text")
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"No of Days"})
      * @Annotation\Required(true)
+     * @Annotation\Validator({"name":"Float", "options":{"min":"5","locale":"en"}})
      * @Annotation\Attributes({ "id":"noOfDays", "class":"form-control"})
      */
     public $noOfDays;

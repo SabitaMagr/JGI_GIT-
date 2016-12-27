@@ -28,6 +28,8 @@ class LeaveMaster extends Model
     const MODIFIED_DT="MODIFIED_DT";
     const STATUS="STATUS";
     const REMARKS="REMARKS";
+    const CREATED_BY = "CREATED_BY";
+    const MODIFIED_BY = "MODIFIED_BY";
 
     public $leaveId;
     public $leaveCode;
@@ -42,6 +44,8 @@ class LeaveMaster extends Model
     public $modifiedDt;
     public $status;
     public $remarks;
+    public $createdBy;
+    public $modifiedBy;
 
     public $mappings=[
         'leaveId'=>self::LEAVE_ID,
@@ -56,7 +60,9 @@ class LeaveMaster extends Model
         'createdDt'=>self::CREATED_DT,
         'modifiedDt'=>self::MODIFIED_DT,
         'status'=>self::STATUS,
-        'remarks'=>self::REMARKS
+        'remarks'=>self::REMARKS,
+        'createdBy' => self::CREATED_BY,
+        'modifiedBy' => self::MODIFIED_BY
     ];
 
 
