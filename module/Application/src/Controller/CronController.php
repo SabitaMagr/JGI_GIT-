@@ -91,7 +91,7 @@ class CronController extends AbstractActionController {
 
     private function pullEmployeeList() {
         $employeeRepo = new EmployeeRepository($this->adapter);
-        return $employeeRepo->fetchAll();
+        return $employeeRepo->fetchAllForAttendance();
     }
 
     private function checkForHoliday(HrEmployees $employee, $date) {

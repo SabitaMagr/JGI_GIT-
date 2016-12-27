@@ -41,9 +41,34 @@ class EmployeeRepository implements RepositoryInterface {
         $select = $sql->select();
         $select->from("HR_EMPLOYEES");
         $select->columns(Helper::convertColumnDateFormat($this->adapter, new HrEmployees(), ['birthDate']), false);
-        $select->where(['STATUS' => 'E','RETIRED_FLAG'=>'N']);
-        $statement = $sql->prepareStatementForSqlObject($select);
+        $select->where(['STATUS' => 'E', 'RETIRED_FLAG' => 'N', "JOIN_DATE <= SYSDATE"]);
 
+        $statement = $sql->prepareStatementForSqlObject($select);
+        $result = $statement->execute();
+        $tempArray = [];
+        foreach ($result as $item) {
+            $tempObject = new HrEmployees();
+            $tempObject->exchangeArrayFromDB($item);
+            array_push($tempArray, $tempObject);
+        }
+        return $tempArray;
+    }
+
+    public function fetchAllForAttendance() {
+        $sql = "SELECT E.* FROM HR_EMPLOYEES E
+        JOIN HR_EMPLOYEE_SHIFT_ASSIGN ESA ON (E.EMPLOYEE_ID=ESA.EMPLOYEE_ID) JOIN HR_SHIFTS S ON (ESA.SHIFT_ID=S.SHIFT_ID) 
+        WHERE  
+        (CASE
+        WHEN  trim(TO_CHAR(SYSDATE, 'DY')) = 'SUN' THEN ( CASE WHEN (S.WEEKDAY1 = 'DAY_OFF') THEN 0 ELSE 1 END )
+        WHEN  trim(TO_CHAR(SYSDATE, 'DY')) = 'MON' THEN ( CASE WHEN (S.WEEKDAY2 = 'DAY_OFF') THEN 0 ELSE 1 END )
+        WHEN  trim(TO_CHAR(SYSDATE, 'DY')) = 'TUE' THEN ( CASE WHEN (S.WEEKDAY3 = 'DAY_OFF') THEN 0 ELSE 1 END )
+        WHEN  trim(TO_CHAR(SYSDATE, 'DY')) = 'WED' THEN ( CASE WHEN (S.WEEKDAY4 = 'DAY_OFF') THEN 0 ELSE 1 END )
+        WHEN  trim(TO_CHAR(SYSDATE, 'DY')) = 'THU' THEN ( CASE WHEN (S.WEEKDAY5 = 'DAY_OFF') THEN 0 ELSE 1 END )
+        WHEN  trim(TO_CHAR(SYSDATE, 'DY')) = 'FRI' THEN ( CASE WHEN (S.WEEKDAY6 = 'DAY_OFF') THEN 0 ELSE 1 END )
+        WHEN  trim(TO_CHAR(SYSDATE, 'DY')) = 'SAT' THEN ( CASE WHEN (S.WEEKDAY7 = 'DAY_OFF') THEN 0 ELSE 1 END )
+        END)=1 AND E.STATUS='E' AND E.RETIRED_FLAG='N' AND E.JOIN_DATE <= SYSDATE AND S.STATUS ='E'
+        ";
+        $statement = $this->adapter->query($sql);
         $result = $statement->execute();
         $tempArray = [];
         foreach ($result as $item) {
@@ -90,7 +115,7 @@ class EmployeeRepository implements RepositoryInterface {
                 ->join(['BG' => "HR_BLOOD_GROUPS"], "E." . HrEmployees::BLOOD_GROUP_ID . "=BG.BLOOD_GROUP_ID", ['BLOOD_GROUP_CODE'], 'left')
                 ->join(['RG' => "HR_RELIGIONS"], "E." . HrEmployees::RELIGION_ID . "=RG.RELIGION_ID", ['RELIGION_NAME'], 'left')
                 ->join(['CN' => "HR_COUNTRIES"], "E." . HrEmployees::COUNTRY_ID . "=CN.COUNTRY_ID", ['COUNTRY_NAME'], 'left')
-                ->join(['DT' => "HR_DISTRICTS"], "E." . HrEmployees::ID_CITIZENSHIP_ISSUE_PLACE . "=DT.DISTRICT_ID", ['ID_CIT_ISSUE_PLACE_NAME'=>'DISTRICT_NAME'], 'left')
+                ->join(['DT' => "HR_DISTRICTS"], "E." . HrEmployees::ID_CITIZENSHIP_ISSUE_PLACE . "=DT.DISTRICT_ID", ['ID_CIT_ISSUE_PLACE_NAME' => 'DISTRICT_NAME'], 'left')
 //                ->join(['Z' => "HR_ZONES"], "E." . HrEmployees::ZON . "=Z.ZONE_ID", ['ZONE_NAME'], 'left')
 //                ->join(['D' => "HR_DISTRICTS"], "E." . HrEmployees::DISTRICT_ID . "=D.DISTRICT_ID", ['DISTRICT_NAME'], 'left')
                 ->join(['VM' => "HR_VDC_MUNICIPALITIES"], "E." . HrEmployees::ADDR_PERM_VDC_MUNICIPALITY_ID . "=VM.VDC_MUNICIPALITY_ID", ['VDC_MUNICIPALITY_NAME'], 'left')
@@ -180,7 +205,7 @@ class EmployeeRepository implements RepositoryInterface {
         $select->from(['E' => HrEmployees::TABLE_NAME]);
 //        $select->join(["B" => Branch::TABLE_NAME], "E." . HrEmployees::BRANCH_ID . " = B." . Branch::BRANCH_ID,[Branch::BRANCH_ID, Branch::BRANCH_NAME]);
         $select->group(["E." . HrEmployees::BRANCH_ID]);
-        $select->where(['E.STATUS' => 'E', 'E.RETIRED_FLAG'=>'N']);
+        $select->where(['E.STATUS' => 'E', 'E.RETIRED_FLAG' => 'N']);
 
         $statement = $sql->prepareStatementForSqlObject($select);
 //        print_r($statement->getSql());
@@ -191,7 +216,7 @@ class EmployeeRepository implements RepositoryInterface {
     public function filterRecords($emplyoeeId, $branchId, $departmentId, $designationId, $positionId, $serviceTypeId, $serviceEventTypeId, $getResult = null) {
         $sql = new Sql($this->adapter);
         $select = $sql->select();
-        $select->from(["E"=>"HR_EMPLOYEES"]);
+        $select->from(["E" => "HR_EMPLOYEES"]);
         $select->columns(Helper::convertColumnDateFormat($this->adapter, new HrEmployees(), [
                     'birthDate',
                     'famSpouseBirthDate',
@@ -208,7 +233,7 @@ class EmployeeRepository implements RepositoryInterface {
                 ->join(['BG' => "HR_BLOOD_GROUPS"], "E." . HrEmployees::BLOOD_GROUP_ID . "=BG.BLOOD_GROUP_ID", ['BLOOD_GROUP_CODE'], 'left')
                 ->join(['RG' => "HR_RELIGIONS"], "E." . HrEmployees::RELIGION_ID . "=RG.RELIGION_ID", ['RELIGION_NAME'], 'left')
                 ->join(['CN' => "HR_COUNTRIES"], "E." . HrEmployees::COUNTRY_ID . "=CN.COUNTRY_ID", ['COUNTRY_NAME'], 'left')
-                ->join(['DT' => "HR_DISTRICTS"], "E." . HrEmployees::ID_CITIZENSHIP_ISSUE_PLACE . "=DT.DISTRICT_ID", ['ID_CIT_ISSUE_PLACE_NAME'=>'DISTRICT_NAME'], 'left')
+                ->join(['DT' => "HR_DISTRICTS"], "E." . HrEmployees::ID_CITIZENSHIP_ISSUE_PLACE . "=DT.DISTRICT_ID", ['ID_CIT_ISSUE_PLACE_NAME' => 'DISTRICT_NAME'], 'left')
 //                ->join(['Z' => "HR_ZONES"], "E." . HrEmployees::ZON . "=Z.ZONE_ID", ['ZONE_NAME'], 'left')
 //                ->join(['D' => "HR_DISTRICTS"], "E." . HrEmployees::DISTRICT_ID . "=D.DISTRICT_ID", ['DISTRICT_NAME'], 'left')
                 ->join(['VM' => "HR_VDC_MUNICIPALITIES"], "E." . HrEmployees::ADDR_PERM_VDC_MUNICIPALITY_ID . "=VM.VDC_MUNICIPALITY_ID", ['VDC_MUNICIPALITY_NAME'], 'left')
@@ -218,15 +243,15 @@ class EmployeeRepository implements RepositoryInterface {
                 ->join(['P1' => Position::TABLE_NAME], "E." . HrEmployees::APP_POSITION_ID . "=P1." . Position::POSITION_ID, ['POSITION_NAME'], 'left')
                 ->join(['S1' => ServiceType::TABLE_NAME], "E." . HrEmployees::APP_SERVICE_TYPE_ID . "=S1." . ServiceType::SERVICE_TYPE_ID, ['SERVICE_TYPE_NAME'], 'left')
                 ->join(['SE1' => ServiceEventType::TABLE_NAME], "E." . HrEmployees::APP_SERVICE_EVENT_TYPE_ID . "=SE1." . ServiceEventType::SERVICE_EVENT_TYPE_ID, ['SERVICE_EVENT_TYPE_NAME'], 'left');
-        
+
         $select->where(["E.STATUS='E'"]);
-        
-        if($serviceEventTypeId==5 || $serviceEventTypeId==8 || $serviceEventTypeId==14){
+
+        if ($serviceEventTypeId == 5 || $serviceEventTypeId == 8 || $serviceEventTypeId == 14) {
             $select->where(["E.RETIRED_FLAG='Y'"]);
-        }else{
+        } else {
             $select->where(["E.RETIRED_FLAG='N'"]);
         }
-        
+
         if ($emplyoeeId != -1) {
             $select->where([
                 "E.EMPLOYEE_ID=" . $emplyoeeId
