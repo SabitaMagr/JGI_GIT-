@@ -895,7 +895,7 @@ select{
 .portlet > .portlet-title > .caption{
     font-size: 14px !important;
 }
-form label
+form label,.form-box label
 {
     font-size: 11px !important;
 }
@@ -1144,12 +1144,49 @@ form label
     clear:both !important;
   min-height:70px !important;
 }
-input[type="radio"], input[type="checkbox"] {
+.k-link input
+ {
     line-height: normal;
     margin: 4px 4px 0 !important;
 }
+ul#roleList li {
+    
+    border-radius: 0 !important;
+       height: 22px !important;
+    margin: 0 0 10px !imporant;
+/*    padding: 0 10px 5px !important;*/
+padding:0 3px 4px 5px !important;
+    margin-bottom:10px !important;
+  }
 
+  .md-checkbox label > .box {
+    border: 2px solid #666;
+    height: 17px !important;
+ left:9px !important;
+    top: 1px;
+    transition-delay: 0.2s;
+    width: 18px;
+    z-index: 5;
+        
+}
+.md-checkbox label > .check{
+    left:13px !important;
+}
 
+.md-checkbox label > span.inc {
+    animation: 0.3s ease 0s normal none 1 running growCircle;
+    background: #fff none repeat scroll 0 0;
+    border-radius: 50% !important;
+    height: 38px !important;
+    left:0px !important;
+    opacity: 0;
+    top: -11px !important;
+    width: 38px !important;
+}
+.checkboxspance
+{
+ left:0px !important;
+}
 /*Large desktops and laptops*/
 
 @media (min-width: 1200px) {
@@ -1213,7 +1250,7 @@ input[type="radio"], input[type="checkbox"] {
         float:none !important;
 
     }
-
+  
 }
 
 /* Landscape phones and portrait tablets */

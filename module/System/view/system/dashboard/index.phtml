@@ -27,7 +27,7 @@ echo json_encode($menu);
     <?= $this->navigation('Zend\Navigation\dashboardsetup')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
 <div ng-app="hris" ng-controller="dashboardController" class="formbg">
-    <div class="row" style="margin-top:15px;margin-bottom:15px;">
+    <div class="row" style="margin-top:15px;margin-bottom:10px;">
         <div class="col-sm-2">
             <select class="form-control" ng-model="role"
                     ng-change="roleChange(role)"
