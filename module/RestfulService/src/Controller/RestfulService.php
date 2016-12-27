@@ -56,13 +56,17 @@ use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Adapter\Driver\ResultInterface;
 use Zend\Mvc\Controller\AbstractRestfulController;
 use Zend\View\Model\JsonModel;
+use AttendanceManagement\Repository\AttendanceDetailRepository;
 
 class RestfulService extends AbstractRestfulController {
 
     private $adapter;
+    private $loggedIdEmployeeId;
 
     public function __construct(AdapterInterface $adapter) {
         $this->adapter = $adapter;
+        $auth = new AuthenticationService();
+        $this->loggedIdEmployeeId = $auth->getStorage()->read()['employee_id'];
     }
 
     public function convertResultInterfaceIntoArray(ResultInterface $result) {
@@ -253,6 +257,9 @@ class RestfulService extends AbstractRestfulController {
                 case "fetchEmployeePaySlip":
                     $responseData = $this->fetchEmployeePaySlip($postedData->data);
                     break;
+                case "pullAttendanceList":
+                    $responseData = $this->pullAttendanceList($postedData->data);
+                    break;
                 default:
                     $responseData = [
                         "success" => false
@@ -283,13 +290,16 @@ class RestfulService extends AbstractRestfulController {
 
             $shiftAssignClone->status = 'D';
             $shiftAssignClone->modifiedDt = Helper::getcurrentExpressionDate();
+            $shiftAssignClone->modifiedDt = $this->loggedIdEmployeeId;
             $shiftAssignRepo->edit($shiftAssignClone, [$data['employeeId'], $data['oldShiftId']]);
 
             $shiftAssign->createdDt = Helper::getcurrentExpressionDate();
+            $shiftAssign->createdBy = $this->loggedIdEmployeeId;
             $shiftAssign->status = 'E';
             $shiftAssignRepo->add($shiftAssign);
         } else {
             $shiftAssign->createdDt = Helper::getcurrentExpressionDate();
+            $shiftAssign->createdBy = $this->loggedIdEmployeeId;
             $shiftAssign->status = 'E';
             $shiftAssignRepo->add($shiftAssign);
         }
@@ -565,6 +575,7 @@ class RestfulService extends AbstractRestfulController {
         $model->menuDescription = $record['menuDescription'];
         $model->status = 'E';
         $model->createdDt = Helper::getcurrentExpressionDate();
+        $model->createdBy = $this->loggedIdEmployeeId;
 
         $menuIndex = $repository->checkMenuIndex($record['menuIndex']);
         if ($menuIndex) {
@@ -600,6 +611,7 @@ class RestfulService extends AbstractRestfulController {
         $repository = new MenuSetupRepository($this->adapter);
         $menuId = $record['menuId'];
         $model->modifiedDt = Helper::getcurrentExpressionDate();
+        $model->modifiedBy = $this->loggedIdEmployeeId;
         $model->menuCode = $record['menuCode'];
         $model->menuName = $record['menuName'];
         $model->route = $record['route'];
@@ -1773,6 +1785,49 @@ class RestfulService extends AbstractRestfulController {
         return [
             "success" => true,
             "data" => $data
+        ];
+    }
+    
+    public function pullAttendanceList($data){
+        $attendanceDetailRepository = new AttendanceDetailRepository($this->adapter);
+        $employeeId = $data['employeeId'];
+        $branchId = $data['branchId'];
+        $departmentId = $data['departmentId'];
+        $positionId = $data['positionId'];
+        $designationId = $data['designationId'];
+        $serviceTypeId = $data['serviceTypeId'];
+        $serviceEventTypeId = $data['serviceEventTypeId'];
+        $fromDate = $data['fromDate'];
+        $toDate = $data['toDate'];
+        $status = $data['status'];
+        
+        $result = $attendanceDetailRepository->filterRecord($employeeId,$branchId,$departmentId,$positionId,$designationId,$serviceTypeId,$serviceEventTypeId,$fromDate,$toDate,$status);       
+        $list = [];
+        foreach($result as $row){
+            if($status=='L'){
+                $row['STATUS']= "On Leave[".$row['LEAVE_ENAME']."]";
+            }else if($status=='H'){
+                $row['STATUS']= "On Holiday[".$row['HOLIDAY_ENAME']."]";
+            }else if($status=='A'){
+                $row['STATUS']= "Absent";
+            }else if($status=='P'){
+                $row['STATUS']= "Present";
+            }else{
+                if($row['LEAVE_ENAME']!=null){
+                   $row['STATUS']= "On Leave[".$row['LEAVE_ENAME']."]"; 
+                }else if($row['HOLIDAY_ENAME']!=null){
+                   $row['STATUS']= "On Holiday[".$row['HOLIDAY_ENAME']."]";
+                }else if($row['HOLIDAY_ENAME']==null&&$row['LEAVE_ENAME']==null&&$row['IN_TIME']==null){
+                    $row['STATUS']= "Absent";
+                }else if($row['IN_TIME']!=null){
+                   $row['STATUS']= "Present"; 
+                }
+            }
+            array_push($list, $row);
+        }
+        return [
+          'success'=>"true",
+          "data"=>$list
         ];
     }
 

@@ -34,6 +34,8 @@ class ShiftSetup extends Model
     const MODIFIED_DT="MODIFIED_DT";
     const REMARKS="REMARKS";
     const STATUS="STATUS";
+    const CREATED_BY = "CREATED_BY";
+    const MODIFIED_BY = "MODIFIED_BY";
 
     public $shiftId;
     public $shiftCode;
@@ -61,6 +63,8 @@ class ShiftSetup extends Model
     public $modifiedDt;
     public $remarks;
     public $status;
+    public $createdBy;
+    public $modifiedBy;
 
     public $mappings = [
         'shiftId'=>self::SHIFT_ID,
@@ -88,7 +92,9 @@ class ShiftSetup extends Model
         'createdDt'=>self::CREATED_DT,
         'modifiedDt'=>self::MODIFIED_DT,
         'remarks'=>self::REMARKS,
-        'status'=>self::STATUS
+        'status'=>self::STATUS,
+        'createdBy' => self::CREATED_BY,
+        'modifiedBy' => self::MODIFIED_BY
         ];
 
 }

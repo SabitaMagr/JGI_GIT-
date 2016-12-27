@@ -13,6 +13,7 @@ use Setup\Model\AcademicProgram;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Form\Annotation\AnnotationBuilder;
+use Zend\Authentication\AuthenticationService;
 use Setup\Model\AcademicCourse;
 use Setup\Form\AcademicCourseForm;
 use Setup\Repository\AcademicCourseRepository;
@@ -22,11 +23,14 @@ class AcademicCourseController extends AbstractActionController {
     private $repository;
     private $form;
     private $adapter;
+    private $employeeId;
 
     public function __construct(AdapterInterface $adapter)
     {
         $this->adapter = $adapter;
+        $auth = new AuthenticationService();
         $this->repository = new AcademicCourseRepository($adapter);
+        $this->employeeId = $auth->getStorage()->read()['employee_id'];
     }
 
     public function initializeForm()
@@ -62,6 +66,7 @@ class AcademicCourseController extends AbstractActionController {
                 $academicCourse->exchangeArrayFromForm($this->form->getData());
                 $academicCourse->academicCourseId=((int) Helper::getMaxId($this->adapter,AcademicCourse::TABLE_NAME,AcademicCourse::ACADEMIC_COURSE_ID))+1;
                 $academicCourse->createdDt = Helper::getcurrentExpressionDate();
+                $academicCourse->createdBy = $this->employeeId;
                 $academicCourse->status ='E';
                 $this->repository->add($academicCourse);
 
@@ -100,6 +105,7 @@ class AcademicCourseController extends AbstractActionController {
             if ($this->form->isValid()) {
                 $academicCourse->exchangeArrayFromForm($this->form->getData());
                 $academicCourse->modifiedDt = Helper::getcurrentExpressionDate();
+                $academicCourse->modifiedBy = $this->employeeId;
                 $this->repository->edit($academicCourse, $id);
                 $this->flashmessenger()->addMessage("Academic Course Successfully Updated!!!");
                 return $this->redirect()->toRoute("academicCourse");

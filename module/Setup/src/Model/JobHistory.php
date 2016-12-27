@@ -30,6 +30,10 @@ class JobHistory extends Model
     const FROM_SERVICE_TYPE_ID="FROM_SERVICE_TYPE_ID";
     const TO_SERVICE_TYPE_ID="TO_SERVICE_TYPE_ID";
     const STATUS="STATUS";
+    const CREATED_DT = "CREATED_DT";
+    const MODIFIED_DT = "MODIFIED_DT";
+    const CREATED_BY = "CREATED_BY";
+    const MODIFIED_BY = "MODIFIED_BY";
 
     public $jobHistoryId;
     public $employeeId;
@@ -47,6 +51,10 @@ class JobHistory extends Model
     public $fromPositionId;
     public $toPositionId;
     public $status;
+    public $createdDt;
+    public $modifiedDt;
+    public $createdBy;
+    public $modifiedBy;
     
     public $mappings = [
         'jobHistoryId' => self::JOB_HISTORY_ID,
@@ -64,6 +72,10 @@ class JobHistory extends Model
         'toDesignationId' => self::TO_DESIGNATION_ID,
         'fromPositionId' => self::FROM_POSITION_ID,
         'toPositionId' => self::TO_POSITION_ID,
-        'status'=>self::STATUS
+        'status'=>self::STATUS,
+        'createdDt' => self::CREATED_DT,
+        'modifiedDt' => self::MODIFIED_DT,
+        'createdBy' => self::CREATED_BY,
+        'modifiedBy' => self::MODIFIED_BY
     ];
 }

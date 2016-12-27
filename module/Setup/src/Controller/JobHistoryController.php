@@ -12,16 +12,20 @@ use Zend\Db\Adapter\AdapterInterface;
 use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\Form\Element\Select;
 use Zend\Mvc\Controller\AbstractActionController;
+use Zend\Authentication\AuthenticationService;
 
 class JobHistoryController extends AbstractActionController {
 
     private $repository;
     private $form;
     private $adapter;
+    private $employeeId;
 
     public function __construct(AdapterInterface $adapter) {
         $this->repository = new JobHistoryRepository($adapter);
         $this->adapter = $adapter;
+        $auth = new AuthenticationService();
+        $this->employeeId = $auth->getStorage()->read()['employee_id'];
     }
 
     public function initializeForm() {
@@ -73,6 +77,8 @@ class JobHistoryController extends AbstractActionController {
                 $jobHistory->jobHistoryId = ((int) Helper::getMaxId($this->adapter, JobHistory::TABLE_NAME, JobHistory::JOB_HISTORY_ID)) + 1;
                 $jobHistory->startDate = Helper::getExpressionDate($jobHistory->startDate);
                 $jobHistory->endDate = Helper::getExpressionDate($jobHistory->endDate);
+                $jobHistory->createdDt = Helper::getcurrentExpressionDate();
+                $jobHistory->createdBy = $this->employeeId;
                 $jobHistory->status='E';
                 $this->repository->add($jobHistory);
                 $this->flashmessenger()->addMessage("Job History Successfully added!!!");
@@ -129,6 +135,8 @@ class JobHistoryController extends AbstractActionController {
 
                 $jobHistory->startDate = Helper::getExpressionDate($jobHistory->startDate);
                 $jobHistory->endDate = Helper::getExpressionDate($jobHistory->endDate);
+                $jobHistory->modifiedDt = Helper::getcurrentExpressionDate();
+                $jobHistory->modifiedBy = $this->employeeId;
 
                 $this->repository->edit($jobHistory, $id);
                 $this->flashmessenger()->addMessage("Job History Successfully Updated!!!");
@@ -142,7 +150,7 @@ class JobHistoryController extends AbstractActionController {
                     'latestJobHistoryId'=>$latestJobHistoryId,
                     'empId' => EntityHelper1::getTableKVList($this->adapter, JobHistory::TABLE_NAME, JobHistory::JOB_HISTORY_ID, [JobHistory::EMPLOYEE_ID], [JobHistory::JOB_HISTORY_ID => $id], null)[$id],
                     'messages' => $this->flashmessenger()->getMessages(),
-                    'employees' => EntityHelper1::getTableKVListWithSortOption($this->adapter, "HR_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => "E","RETIRED_FLAG"=>"N"], "FIRST_NAME", "ASC", " "),
+                    'employeesAll' => EntityHelper1::getTableKVListWithSortOption($this->adapter, "HR_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => "E"], "FIRST_NAME", "ASC", " "),
                     'departments' => EntityHelper1::getTableKVListWithSortOption($this->adapter, "HR_DEPARTMENTS", "DEPARTMENT_ID", ["DEPARTMENT_NAME"], ["STATUS" => 'E'],"DEPARTMENT_NAME","ASC",null,true),
                     'designations' => EntityHelper1::getTableKVListWithSortOption($this->adapter, "HR_DESIGNATIONS", "DESIGNATION_ID", ["DESIGNATION_TITLE"], ["STATUS" => 'E'],"DESIGNATION_TITLE","ASC",null,true),
                     'branches' => EntityHelper1::getTableKVListWithSortOption($this->adapter, "HR_BRANCHES", "BRANCH_ID", ["BRANCH_NAME"], ["STATUS" => 'E'],"BRANCH_NAME","ASC",null,true),

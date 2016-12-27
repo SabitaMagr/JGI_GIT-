@@ -23,6 +23,8 @@ class MenuSetup extends Model {
     const CREATED_DT = 'CREATED_DT';
     const MODIFIED_DT = 'MODIFIED_DT';
     const ICON_CLASS = "ICON_CLASS";
+    const CREATED_BY = "CREATED_BY";
+    const MODIFIED_BY = "MODIFIED_BY";
 
     public $menuId;
     public $menuCode;
@@ -36,6 +38,8 @@ class MenuSetup extends Model {
     public $createdDt;
     public $modifiedDt;
     public $iconClass;
+    public $createdBy;
+    public $modifiedBy;
 
     public $mappings = [
         'menuId'=>self::MENU_ID,
@@ -49,6 +53,8 @@ class MenuSetup extends Model {
         'status'=>self::STATUS,
         'createdDt'=>self::CREATED_DT,
         'modifiedDt'=>self::MODIFIED_DT,
-        'iconClass'=>self::ICON_CLASS
+        'iconClass'=>self::ICON_CLASS,
+        'createdBy' => self::CREATED_BY,
+        'modifiedBy' => self::MODIFIED_BY
     ];
 }

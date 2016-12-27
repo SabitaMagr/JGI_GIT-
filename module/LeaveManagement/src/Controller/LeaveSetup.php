@@ -10,6 +10,7 @@ use Zend\Db\Adapter\AdapterInterface;
 use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
+use Zend\Authentication\AuthenticationService;
 
 class LeaveSetup extends AbstractActionController
 {
@@ -17,11 +18,14 @@ class LeaveSetup extends AbstractActionController
     private $repository;
     private $form;
     private $adapter;
+    private $employeeId;
 
     public function __construct(AdapterInterface $adapter)
     {
         $this->repository = new LeaveMasterRepository($adapter);
         $this->adapter = $adapter;
+        $auth = new AuthenticationService();
+        $this->employeeId = $auth->getStorage()->read()['employee_id'];
     }
 
     public function indexAction()
@@ -71,6 +75,7 @@ class LeaveSetup extends AbstractActionController
                 $leaveMaster->exchangeArrayFromForm($this->form->getData());
                 $leaveMaster->leaveId = ((int)Helper::getMaxId($this->adapter, LeaveMaster::TABLE_NAME, LeaveMaster::LEAVE_ID)) + 1;
                 $leaveMaster->createdDt = Helper::getcurrentExpressionDate();
+                $leaveMaster->createdBy = $this->employeeId;
 
                 $leaveMaster->status = 'E';
                 $this->repository->add($leaveMaster);
@@ -109,6 +114,7 @@ class LeaveSetup extends AbstractActionController
             if ($this->form->isValid()) {
                 $leaveMaster->exchangeArrayFromForm($this->form->getData());
                 $leaveMaster->modifiedDt = Helper::getcurrentExpressionDate();
+                $leaveMaster->modifiedBy = $this->employeeId;
 
                 $this->repository->edit($leaveMaster, $id);
                 $this->flashmessenger()->addMessage("Leave Successfuly Updated!!!");

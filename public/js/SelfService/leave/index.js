@@ -25,7 +25,7 @@
             columns: [
                 {field: "LEAVE_CODE", title: "Leave Code"},
                 {field: "LEAVE_ENAME", title: "Leave Name"},
-                {field: "TOTAL_DAYS", title: "Total Days"},
+                {field: "ALL_TOTAL_DAYS", title: "Total Days"},
                 {field: "LEAVE_TAKEN", title: "Leave Taken"},
                 {field: "BALANCE", title: "Available Days"},
             ]

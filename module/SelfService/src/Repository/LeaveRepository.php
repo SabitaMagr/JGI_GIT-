@@ -46,6 +46,7 @@ class LeaveRepository implements RepositoryInterface
         $select->columns([
             new Expression("LA.TOTAL_DAYS AS TOTAL_DAYS"),
             new Expression("LA.BALANCE AS BALANCE"),
+            new Expression("LA.PREVIOUS_YEAR_BAL AS PREVIOUS_YEAR_BAL"),
         ], true);
 
         $select->from(['LA' => LeaveAssign::TABLE_NAME])

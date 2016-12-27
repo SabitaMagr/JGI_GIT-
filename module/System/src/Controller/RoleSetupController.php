@@ -15,17 +15,21 @@ use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 use Application\Helper\Helper;
 use System\Repository\RoleSetupRepository;
+use Zend\Authentication\AuthenticationService;
 
 class RoleSetupController extends AbstractActionController {
 
     private $form;
     private $adapter;
     private $repository;
+    private $employeeId;
 
     public function __construct(AdapterInterface $adapter)
     {
         $this->repository = new RoleSetupRepository($adapter);
         $this->adapter = $adapter;
+        $auth = new AuthenticationService();
+        $this->employeeId = $auth->getStorage()->read()['employee_id'];
     }
 
     public function initializeForm(){
@@ -50,6 +54,7 @@ class RoleSetupController extends AbstractActionController {
                 $roleSetup->exchangeArrayFromForm($this->form->getData());
                 $roleSetup->roleId = ((int)Helper::getMaxId($this->adapter, RoleSetup::TABLE_NAME, RoleSetup::ROLE_ID)) + 1;
                 $roleSetup->createdDt = Helper::getcurrentExpressionDate();
+                $roleSetup->createdBy = $this->employeeId;
                 $roleSetup->status='E';
 
                 $this->repository->add($roleSetup);
@@ -75,6 +80,7 @@ class RoleSetupController extends AbstractActionController {
             if ($this->form->isValid()) {
                 $roleSetup->exchangeArrayFromForm($this->form->getData());
                 $roleSetup->modifiedDt = Helper::getcurrentExpressionDate();
+                $roleSetup->modifiedBy = $this->employeeId;
                 unset($roleSetup->createdDt);
                 unset($roleSetup->roleId);
                 unset($roleSetup->status);

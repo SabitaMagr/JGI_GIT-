@@ -24,6 +24,8 @@ class LeaveAssign extends Model
     const REMARKS="REMARKS";
     const CREATED_DT="CREATED_DT";
     const MODIFIED_DT="MODIFIED_DT";
+    const CREATED_BY = "CREATED_BY";
+    const MODIFIED_BY = "MODIFIED_BY";
 
     public $employeeLeaveAssignId;
     public $employeeId;
@@ -35,6 +37,8 @@ class LeaveAssign extends Model
     public $remarks;
     public $createdDt;
     public $modifiedDt;
+    public $createdBy;
+    public $modifiedBy;
 
     public $mappings=[
         'employeeLeaveAssignId'=>self::EMPLOYEE_LEAVE_ASSIGN_ID,
@@ -46,6 +50,8 @@ class LeaveAssign extends Model
         'fiscalYear'=>self::FISCAL_YEAR,
         'remarks'=>self::REMARKS,
         'createdDt'=>self::CREATED_DT,
-        'modifiedDt'=>self::MODIFIED_DT
+        'modifiedDt'=>self::MODIFIED_DT,
+        'createdBy' => self::CREATED_BY,
+        'modifiedBy' => self::MODIFIED_BY
     ];
 }

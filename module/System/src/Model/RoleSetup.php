@@ -18,6 +18,8 @@ class RoleSetup extends Model {
     const REMARKS="REMARKS";
     const CREATED_DT = "CREATED_DT";
     const MODIFIED_DT = "MODIFIED_DT";
+    const CREATED_BY = "CREATED_BY";
+    const MODIFIED_BY = "MODIFIED_BY";
 
     public $roleId;
     public $roleName;
@@ -25,6 +27,8 @@ class RoleSetup extends Model {
     public $remarks;
     public $createdDt;
     public $modifiedDt;
+    public $createdBy;
+    public $modifiedBy;
 
     public $mappings=[
         'roleId'=>Self::ROLE_ID,
@@ -32,6 +36,8 @@ class RoleSetup extends Model {
         'status'=>Self::STATUS,
         'remarks'=>Self::REMARKS,
         'createdDt'=>Self::CREATED_DT,
-        'modifiedDt'=>Self::MODIFIED_DT
+        'modifiedDt'=>Self::MODIFIED_DT,
+        'createdBy' => self::CREATED_BY,
+        'modifiedBy' => self::MODIFIED_BY
         ];
 }
