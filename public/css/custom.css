@@ -777,7 +777,7 @@ form.k-filter-menu .k-widget, form.k-filter-menu .k-textbox
     float: left;
     margin-left: 13px;
     margin-right: 90px;
-    max-width: 14%;
+    max-width:85%;
     text-align: center !important;
 }
 .customtbl td
@@ -1238,6 +1238,14 @@ padding:0 3px 4px 5px !important;
  {
      overflow-x: hidden !important;
  }
+ .finfo-box
+ {
+     text-align:right;
+ }
+ .sidebar-search input
+ {
+     padding:0 10px !important;
+ }
 /*Large desktops and laptops*/
 
 @media (min-width: 1200px) {
@@ -1267,12 +1275,11 @@ padding:0 3px 4px 5px !important;
         margin-top: 8px;
     }
     .profilepic {
-
-
-        margin-bottom: 20px;
+  margin-bottom: 20px;
         margin-left: 13px;
         float:none !important;
         max-width: 20%;
+        border:solid #ddd 2px;
     }
 
 }
