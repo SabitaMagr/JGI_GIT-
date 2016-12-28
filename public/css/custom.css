@@ -1246,6 +1246,30 @@ padding:0 3px 4px 5px !important;
  {
      padding:0 10px !important;
  }
+ .id-width
+ {
+   width:10% !important;
+ }
+ .flatwidth
+ {
+     width:13% !important; 
+ }
+ .keyswidth
+ {
+/*       width:10% !important;*/
+ }
+ .scroller1
+ {
+     max-height:400px;
+     overflow:auto !important;
+ }
+ .dropdown-menu input {
+    border: 1px solid #ccc !important;
+    
+    font-size: 14px !important;
+    margin-top: 5px !important;
+    width: 100% !important;
+}
 /*Large desktops and laptops*/
 
 @media (min-width: 1200px) {
