@@ -20,32 +20,32 @@ $this->headScript()->appendFile($this->basePath('js/AttendanceManagement/ShiftAs
 <div class="" ng-app="hris" ng-controller="shiftAssignController">
     <div class="margin-top-20  formbg mgap">
     <div class="row">
-        <div class="col-sm-2">
+        <div class="col-sm-4 marginspace">
             <?php print $this->formLabel($branches); ?>
                  <?php print $this->formElement($branches); ?>
         </div>
-        <div class="col-sm-2">
+        <div class="col-sm-4 marginspace">
             <?php print $this->formLabel($departments); ?>
              <?php print $this->formElement($departments); ?>
 
         </div>
-        <div class="col-sm-2">
+        <div class="col-sm-4 marginspace">
             <?php print $this->formLabel($designations); ?>
   <?php print $this->formElement($designations); ?>
         </div>
-        <div class="col-sm-2">
+        <div class="col-sm-4 marginspace">
             <?php print $this->formLabel($positions); ?>
                <?php print $this->formElement($positions); ?>
         </div>
-        <div class="col-sm-2">
+        <div class="col-sm-4 marginspace">
             <?php print $this->formLabel($serviceTypes); ?>
                <?php print $this->formElement($serviceTypes); ?>
         </div>
         
         
-        <div class="col-sm-2 ">
+        <div class="col-sm-2">
 
-            <button ng-click="view()" id="viewEmployees" class=" btn btn-default  i-search  pull-right form-control" style="margin-top:-3px !important">
+            <button ng-click="view()" id="viewEmployees" class=" btn btn-default  i-search form-control" style="margin-top:21px !important">
                 Search
                 <i class="fa fa-search"></i>
             </button>

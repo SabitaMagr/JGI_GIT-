@@ -25,58 +25,58 @@ echo json_encode($menu);
         document.messages =<?php echo json_encode($this->messages); ?>
     </script>
 <?php } ?>
-    <div ng-app="hris" ng-controller="attendanceStatusListController" class="formbg">
-        <div class="margin-top-20">
+    <div ng-app="hris" ng-controller="attendanceStatusListController">
+        <div class="margin-top-20 formbg mgap" >
             <div class="row">
-                <div class="col-sm-3">
+                <div class="col-sm-3 topgap">
                     <?php print $this->formLabel($employees); ?>
                     <?php print $this->formElement($employees); ?>
                 </div>
-                <div class="col-sm-3">
+                <div class="col-sm-3 topgap">
                     <?php print $this->formLabel($branches); ?>
                     <?php print $this->formElement($branches); ?>
                 </div>
-                <div class="col-sm-2">
+                <div class="col-sm-3 topgap">
                     <?php print $this->formLabel($departments); ?>
                     <?php print $this->formElement($departments); ?>
                 </div>
-                <div class="col-sm-2">
+                <div class="col-sm-3 topgap">
                     <?php print $this->formLabel($designations); ?>
                     <?php print $this->formElement($designations); ?>
                 </div>
-                <div class="col-sm-2">
+                <div class="col-sm-3 topgap">
                     <?php print $this->formLabel($positions); ?>
                     <?php print $this->formElement($positions); ?>
                 </div>           
-            </div>
-            <div class="row margin-top-10"> 
-                <div class="col-sm-2">
+          
+    
+                <div class="col-sm-3 topgap">
                     <?php print $this->formLabel($attendanceStatus); ?>
                     <?php print $this->formElement($attendanceStatus); ?>
                 </div>  
-                <div class="col-sm-3">
+                <div class="col-sm-3 topgap">
                     <?php print $this->formLabel($serviceTypes); ?>
                     <?php print $this->formElement($serviceTypes); ?>
                 </div>      
-                <div class="col-sm-2">
+                <div class="col-sm-3 topgap">
                     <?php print $this->formLabel($serviceEventTypes); ?>
                     <?php print $this->formElement($serviceEventTypes); ?>
-                </div> 
-                <div class="col-sm-2">
+                </div>  
+                <div class="col-sm-3 topgap">
                     <label for="fromDate">From Date</label>
                     <div class="input-group date" id="fromDate">
                         <input type="text" placeholder="From Date" id="fromDate1" name="fromDate" ng-model="fromDate" class="form-control"/>
                         <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
                     </div>
                 </div>
-                <div class="col-sm-2">
+                <div class="col-sm-3 topgap">
                     <label for="toDate">To Date</label>
                     <div class="input-group date" id="toDate">
                         <input type="text" placeholder="To Date" id="toDate1" name="toDate" ng-model="toDate" class="form-control"/>
                         <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
                     </div>
                 </div>
-                <div class="col-sm-2">
+                <div class="col-sm-3 topgap">
                     <label height="45"></label>
                     <button ng-click="view()" id="viewAttendanceRequestStatus" class="btn btn-default i-search form-control">
                         Search
@@ -84,7 +84,7 @@ echo json_encode($menu);
                     </button>
                 </div>         
             </div>
-
+        </div>
                <div class="margin-top-20">
                    <div class="row">
                <div class="col-sm-offset-6 col-sm-6">

@@ -1231,7 +1231,13 @@ padding:0 3px 4px 5px !important;
  {
      width:20% !important;
  }
- 
+ .marginspace,.topgap{
+     margin-bottom:8px;
+ }
+ .k-grid.k-widget
+ {
+     overflow-x: hidden !important;
+ }
 /*Large desktops and laptops*/
 
 @media (min-width: 1200px) {

@@ -25,22 +25,22 @@ if($this->messages) { ?>
         document.messages=<?php echo json_encode($this->messages); ?>
     </script>
 <?php } ?>
-<div ng-app="hris" ng-controller="attendanceListController">
+    <div ng-app="hris" ng-controller="attendanceListController" class="formbg">
     <div class="margin-top-20">
     <div class="row">
-        <div class="col-sm-3">
+        <div class="col-sm-2">
             <?php print $this->formLabel($employees); ?>
             <?php print $this->formElement($employees); ?>
         </div>
-        <div class="col-sm-3">
+        <div class="col-sm-2">
             <?php print $this->formLabel($branches); ?>
             <?php print $this->formElement($branches); ?>
         </div>
-        <div class="col-sm-2">
+        <div class="col-sm-3">
             <?php print $this->formLabel($departments); ?>
             <?php print $this->formElement($departments); ?>
         </div>
-        <div class="col-sm-2">
+        <div class="col-sm-3">
             <?php print $this->formLabel($designations); ?>
             <?php print $this->formElement($designations); ?>
         </div>
