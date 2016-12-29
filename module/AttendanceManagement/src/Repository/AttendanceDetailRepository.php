@@ -185,18 +185,54 @@ class AttendanceDetailRepository implements RepositoryInterface {
         return $result->count();
     }
 
+//    public function getNoOfDaysAbsent(int $employeeId, Expression $startDate, Expression $endDate) {
+//        $sql = new Sql($this->adapter);
+//        $select = $sql->select();
+//        $select->from(['A' => AttendanceDetail::TABLE_NAME]);
+//        $select->where(['A.' . AttendanceDetail::EMPLOYEE_ID . "=$employeeId"]);
+//        $select->where(['A.' . AttendanceDetail::ATTENDANCE_DT . " BETWEEN " . $startDate->getExpression() . " AND " . $endDate->getExpression()]);
+//        $select->where(['A.' . AttendanceDetail::LEAVE_ID . " IS NOT NULL"]);
+//
+//        $statement = $sql->prepareStatementForSqlObject($select);
+//        $result = $statement->execute();
+//
+//        return $result->count();
+//    }
     public function getNoOfDaysAbsent(int $employeeId, Expression $startDate, Expression $endDate) {
-        $sql = new Sql($this->adapter);
-        $select = $sql->select();
-        $select->from(['A' => AttendanceDetail::TABLE_NAME]);
-        $select->where(['A.' . AttendanceDetail::EMPLOYEE_ID . "=$employeeId"]);
-        $select->where(['A.' . AttendanceDetail::ATTENDANCE_DT . " BETWEEN " . $startDate->getExpression() . " AND " . $endDate->getExpression()]);
-        $select->where(['A.' . AttendanceDetail::LEAVE_ID . " IS NOT NULL"]);
+        $startDt=$startDate->getExpression();
+        $endDt=$endDate->getExpression();
+        $sql = "SELECT SUM(LEAVE.LEAVE_COUNT) LEAVE_COUNT FROM (
+                (SELECT COUNT(LR.EMPLOYEE_ID) AS LEAVE_COUNT FROM HR_EMPLOYEE_LEAVE_REQUEST LR,
+                (SELECT  HAD.EMPLOYEE_ID, HAD.LEAVE_ID,HAD.ATTENDANCE_DT FROM HR_ATTENDANCE_DETAIL HAD
+                WHERE HAD.EMPLOYEE_ID=$employeeId 
+                AND (HAD.ATTENDANCE_DT BETWEEN 
+                $startDt AND $endDt)
+                AND HAD.LEAVE_ID IS NOT NULL
+                ) AD
+                WHERE
+                LR.EMPLOYEE_ID = AD.EMPLOYEE_ID AND 
+                LR.LEAVE_ID= AD.LEAVE_ID AND 
+                LR.HALF_DAY = 'N') UNION (SELECT COUNT(LR.EMPLOYEE_ID)/2 AS LEAVE_COUNT FROM HR_EMPLOYEE_LEAVE_REQUEST LR,
+                (SELECT  HAD.EMPLOYEE_ID, HAD.LEAVE_ID,HAD.ATTENDANCE_DT FROM HR_ATTENDANCE_DETAIL HAD
+                WHERE HAD.EMPLOYEE_ID=7 
+                AND (HAD.ATTENDANCE_DT BETWEEN 
+                $startDt AND $endDt)
+                AND HAD.LEAVE_ID IS NOT NULL
+                ) AD
+                WHERE
+                LR.EMPLOYEE_ID = AD.EMPLOYEE_ID AND 
+                LR.LEAVE_ID= AD.LEAVE_ID AND 
+                LR.HALF_DAY != 'N') 
+                ) LEAVE";
 
-        $statement = $sql->prepareStatementForSqlObject($select);
+        $statement = $this->adapter->query($sql);
         $result = $statement->execute();
-
-        return $result->count();
+        $extractedRes = Helper::extractDbData($result);
+        if (sizeof($extractedRes) > 0) {
+            return $extractedRes[0]['LEAVE_COUNT'];
+        } else {
+            return 0;
+        }
     }
 
     public function getNoOfDaysPresent(int $employeeId, Expression $startDate, Expression $endDate) {

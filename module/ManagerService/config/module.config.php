@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Created by PhpStorm.
  * User: punam
@@ -24,7 +25,7 @@ return [
                     ]
                 ]
             ],
-            'attedanceapprove'=>[
+            'attedanceapprove' => [
                 'type' => Segment::class,
                 'options' => [
                     'route' => '/managerservice/attendanceapprove[/:action[/:id][/:role]]',
@@ -34,7 +35,7 @@ return [
                     ]
                 ]
             ],
-            'loanApprove'=>[
+            'loanApprove' => [
                 'type' => Segment::class,
                 'options' => [
                     'route' => '/managerservice/loanApprove[/:action[/:id][/:role]]',
@@ -44,34 +45,44 @@ return [
                     ]
                 ]
             ],
+            'salaryReview' => [
+                'type' => Segment::class,
+                'options' => [
+                    'route' => '/managerservice/salaryreview[/:action[/:id]]',
+                    'defaults' => [
+                        'controller' => Controller\SalaryReviewController::class,
+                        'action' => 'index'
+                    ]
+                ]
+            ],
         ]
     ],
     'navigation' => [
         'leaveapprove' => [
-            [
+                [
                 'label' => 'Leave Request',
                 'route' => 'leaveapprove',
             ],
-            [
+                [
                 'label' => 'Leave Request',
                 'route' => 'leaveapprove',
                 'pages' => [
-                    [
+                        [
                         'label' => 'List',
                         'route' => 'leaveapprove',
                         'action' => 'index',
                     ],
-                    [
+                        [
                         'label' => 'List',
                         'route' => 'leaveapprove',
                         'action' => 'status',
                     ],
-                    [
+                        [
                         'label' => 'Edit',
                         'route' => 'leaveapprove',
                         'action' => 'edit',
                     ],
-                    [
+                        [
                         'label' => 'View',
                         'route' => 'leaveapprove',
                         'action' => 'view',
@@ -80,25 +91,25 @@ return [
             ]
         ],
         'attedanceapprove' => [
-            [
+                [
                 'label' => 'Attendance Request',
                 'route' => 'attedanceapprove',
             ],
-            [
+                [
                 'label' => 'Attendance Request',
                 'route' => 'attedanceapprove',
                 'pages' => [
-                    [
+                        [
                         'label' => 'List',
                         'route' => 'attedanceapprove',
                         'action' => 'index',
                     ],
-                    [
+                        [
                         'label' => 'List',
                         'route' => 'attedanceapprove',
                         'action' => 'status',
                     ],
-                    [
+                        [
                         'label' => 'View',
                         'route' => 'attedanceapprove',
                         'action' => 'view',
@@ -107,28 +118,45 @@ return [
             ]
         ],
         'loanApprove' => [
-            [
+                [
                 'label' => 'Loan/Advance Request',
                 'route' => 'loanApprove',
             ],
-            [
+                [
                 'label' => 'Loan/Advance Request',
                 'route' => 'loanApprove',
                 'pages' => [
-                    [
+                        [
                         'label' => 'List',
                         'route' => 'loanApprove',
                         'action' => 'index',
                     ],
-                    [
+                        [
                         'label' => 'List',
                         'route' => 'loanApprove',
                         'action' => 'status',
                     ],
-                    [
+                        [
                         'label' => 'View',
                         'route' => 'loanApprove',
                         'action' => 'view',
+                    ],
+                ]
+            ]
+        ],
+        'salaryReview' => [
+                [
+                'label' => 'SalaryReview',
+                'route' => 'salaryReview',
+            ],
+                [
+                'label' => 'SalaryReview',
+                'route' => 'salaryReview',
+                'pages' => [
+                        [
+                        'label' => 'List',
+                        'route' => 'salaryReview',
+                        'action' => 'index',
                     ],
                 ]
             ]
@@ -137,12 +165,11 @@ return [
     'controllers' => [
         'factories' => [
             Controller\LeaveApproveController::class => ControllerFactory::class,
-            Controller\AttendanceApproveController::class=>ControllerFactory::class,
-            Controller\LoanApproveController::class=>ControllerFactory::class
+            Controller\AttendanceApproveController::class => ControllerFactory::class,
+            Controller\LoanApproveController::class => ControllerFactory::class,
+            Controller\SalaryReviewController::class => ControllerFactory::class,
         ],
-
     ],
-
     'view_manager' => [
         'template_path_stack' => [
             __DIR__ . '/../view',

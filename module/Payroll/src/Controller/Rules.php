@@ -11,7 +11,7 @@ namespace Payroll\Controller;
 
 use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
-use AttendanceManagement\Repository\AttendanceDetailRepository;
+use Application\Model\FiscalYear;
 use Payroll\Form\Rules as RuleForm;
 use Payroll\Model\FlatValue;
 use Payroll\Model\MonthlyValue;
@@ -53,7 +53,8 @@ class Rules extends AbstractActionController {
         $id = (int) $this->params()->fromRoute("id");
         $monthlyValues = EntityHelper::getTableKVList($this->adapter, MonthlyValue::TABLE_NAME, MonthlyValue::MTH_ID, [MonthlyValue::MTH_EDESC]);
         $flatValues = EntityHelper::getTableKVList($this->adapter, FlatValue::TABLE_NAME, FlatValue::FLAT_ID, [FlatValue::FLAT_EDESC]);
-        $positions = EntityHelper::getTableKVList($this->adapter, Position::TABLE_NAME, Position::POSITION_ID, [Position::POSITION_NAME],[Position::STATUS=>'E']);
+        $positions = EntityHelper::getTableKVList($this->adapter, Position::TABLE_NAME, Position::POSITION_ID, [Position::POSITION_NAME], [Position::STATUS => 'E']);
+        $fiscalYears = EntityHelper::getTableKVList($this->adapter, FiscalYear::TABLE_NAME, FiscalYear::FISCAL_YEAR_ID, [FiscalYear::START_DATE, FiscalYear::END_DATE], [FiscalYear::STATUS => 'E'], "-");
 
         return Helper::addFlashMessagesToArray($this, [
                     'monthlyValues' => $monthlyValues,
@@ -61,8 +62,8 @@ class Rules extends AbstractActionController {
                     'positions' => $positions,
                     "variables" => PayrollGenerator::VARIABLES,
                     "systemRules" => PayrollGenerator::SYSTEM_RULE,
-                    'id' => $id
-                        ]
+                    'id' => $id,
+                    'fiscalYears' => $fiscalYears]
         );
     }
 

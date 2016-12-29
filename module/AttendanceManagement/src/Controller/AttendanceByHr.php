@@ -128,7 +128,6 @@ class AttendanceByHr extends AbstractActionController {
             'positions' => $positionFormElement,
             'serviceTypes' => $serviceTypeFormElement,
             'employees' => $employeeNameFormElement,
-            'attendanceStatus'=>$attendanceStatusFormElement,
             'serviceEventTypes'=>$serviceEventTypeFormElement,
             'status'=>$statusFormElement
                 ]);

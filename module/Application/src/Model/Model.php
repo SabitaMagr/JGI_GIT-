@@ -25,9 +25,9 @@ class Model {
         foreach ($this->mappings as $key => $value) {
             if (isset($this->{$key})) {
                 $tempValue = $this->{$key};
-                if (gettype($tempValue) == 'string') {
-                    $tempValue = ucwords($tempValue);
-                }
+//                if (gettype($tempValue) == 'string') {
+//                    $tempValue = ucwords($tempValue);
+//                }
                 $tempArray[$value] = $tempValue;
             }
         }

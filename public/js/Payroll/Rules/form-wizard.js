@@ -462,6 +462,114 @@
             });
         }
 
+//        var month = {
+//            fiscalYearId: null,
+//            monthId: null,
+//            monthEdesc: null,
+//            monthNdesc: null,
+//            fromDate: null,
+//            toDate: null,
+//        };
+
+        var Calendar = function (yearId, monthId, dayId, pickMonthId, $) {
+            this.$year = $("#" + yearId)
+            this.$month = $("#" + monthId);
+            this.$day = $("#" + dayId);
+            this.$pickMonth = $("#" + pickMonthId);
+            this.years = document.fiscalYears;
+            this.months = null;
+            var parent = this;
+
+            this.pullRemoteMonths = function (fiscalYearId) {
+                if (fiscalYearId != null) {
+                    app.pullDataById(document.restfulUrl, {
+                        action: 'pullMonthsByFiscalYear',
+                        data: {
+                            'fiscalYearId': fiscalYearId,
+                        }
+                    }).then(function (success) {
+                        console.log("pullMonthsByFiscalYear res", success);
+                        parent.months = success.data;
+                        parent.updateMonthView();
+                    }, function (failure) {
+                        console.log("pullMonthsByFiscalYear fail", failure);
+                    });
+                } else {
+                    this.months = [];
+                }
+
+            };
+            this.updateMonthView = function () {
+                this.$month.html("");
+                this.$month.append($("<option />").val(null).text('Select month'));
+                $.each(this.months, function () {
+                    parent.$month.append($("<option />").val(this.MONTH_ID).text(this.MONTH_EDESC));
+                });
+            };
+
+            this.updateDayView = function (month) {
+                console.log('month', month);
+                var fromDateLongVal = Date.parse(month.FROM_DATE);
+                var toDateLongVal = Date.parse(month.TO_DATE);
+
+                var fromDate = new Date(fromDateLongVal);
+                var toDate = new Date(toDateLongVal);
+
+                var diffValue = toDateLongVal - fromDateLongVal;
+                var dateDifference = diffValue / (1000 * 60 * 60 * 24);
+
+                this.$day.html("");
+                for (var i = 1; i <= dateDifference; i++) {
+                    var newDate = new Date();
+                    newDate.setDate(fromDate.getDate() + i);
+                    var newDateFormatted = "(" + (newDate.getMonth() + 1) + "-" + newDate.getDate() + "-" + newDate.getFullYear() + ")";
+                    this.$day.append($("<button></button>").text(i + "").attr("data-value", newDateFormatted));
+                }
+            };
+
+
+            this.initializeView = function () {
+                this.$year.append($("<option />").val(null).text('Select year'));
+                for (var key in this.years) {
+                    this.$year.append($("<option />").val(key).text(this.years[key]));
+                }
+                this.$year.on('change', function () {
+                    parent.pullRemoteMonths($(this).val());
+                });
+
+                this.$month.on('change', function () {
+                    var monthId = $(this).val();
+                    if (typeof monthId === 'undefined' || monthId == null || monthId == '') {
+                        console.log("not a monthId", monthId);
+                        return;
+                    }
+                    var month = parent.months.filter(function (item) {
+                        return item.MONTH_ID == monthId;
+                    });
+                    parent.updateDayView(month[0]);
+                });
+                this.$day.delegate('button', "click", function () {
+                    var $this = $(this);
+                    var cursor = editor.getCursor();
+                    editor.replaceRange($this.attr('data-value'), cursor, null);
+                });
+
+                this.$pickMonth.on("click", function () {
+                    var monthId = parent.$month.val();
+                    if (typeof monthId === 'undefined' || monthId == null) {
+                        return;
+                    }
+                    var cursor = editor.getCursor();
+                    editor.replaceRange(monthId, cursor, null);
+
+                });
+
+            };
+
+        };
+
+        var calendar = new Calendar('years', 'months', 'days', 'pickMonth', $);
+        calendar.initializeView();
 
     });
 

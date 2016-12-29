@@ -777,7 +777,7 @@ form.k-filter-menu .k-widget, form.k-filter-menu .k-textbox
     float: left;
     margin-left: 13px;
     margin-right: 90px;
-    max-width: 14%;
+    max-width:85%;
     text-align: center !important;
 }
 .customtbl td
@@ -1219,6 +1219,57 @@ padding:0 3px 4px 5px !important;
 {
  margin-left: 10px;
      }
+    .mgap {
+    padding-bottom: 9px !important;
+    padding-top: 9px !important;
+}
+  .cwidth2
+  {
+      width:10% !important;
+  }
+ .cwidth4,.cwidth5
+ {
+     width:20% !important;
+ }
+ .marginspace,.topgap{
+     margin-bottom:8px;
+ }
+ .k-grid.k-widget
+ {
+     overflow-x: hidden !important;
+ }
+ .finfo-box
+ {
+     text-align:right;
+ }
+ .sidebar-search input
+ {
+     padding:0 10px !important;
+ }
+ .id-width
+ {
+   width:10% !important;
+ }
+ .flatwidth
+ {
+     width:13% !important; 
+ }
+ .keyswidth
+ {
+/*       width:10% !important;*/
+ }
+ .scroller1
+ {
+     max-height:400px;
+     overflow:auto !important;
+ }
+ .dropdown-menu input {
+    border: 1px solid #ccc !important;
+    
+    font-size: 14px !important;
+    margin-top: 5px !important;
+    width: 100% !important;
+}
 /*Large desktops and laptops*/
 
 @media (min-width: 1200px) {
@@ -1248,12 +1299,11 @@ padding:0 3px 4px 5px !important;
         margin-top: 8px;
     }
     .profilepic {
-
-
-        margin-bottom: 20px;
+  margin-bottom: 20px;
         margin-left: 13px;
         float:none !important;
         max-width: 20%;
+        border:solid #ddd 2px;
     }
 
 }
@@ -1338,8 +1388,13 @@ width:33%!important;
     margin-top: 10px !important;
     padding: 0 3px 4px 5px !important;
 }
-
-
+.cwidth2,.cwidth4,.cwidth5{
+    width:100% !important;
+}
+.cwidth1,cwidth2,cwidth3,cwidth4,cwidth5
+{
+    margin-bottom:10px;
+}
 }
 
 /* Portrait phones and smaller */
@@ -1413,7 +1468,13 @@ width:33%!important;
 {
   margin-right:12px !important;
 }
-
+.cwidth2,.cwidth4,.cwidth5{
+    width:100% !important;
+}
+.cwidth1,cwidth2,cwidth3,cwidth4,cwidth5
+{
+    margin-bottom:10px;
+}
 }
 
 
