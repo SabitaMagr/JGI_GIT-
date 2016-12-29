@@ -5,13 +5,15 @@
 $this->headScript()
     ->appendFile($this->basePath('jszip/dist/jszip.min.js'))
     ->appendFile($this->basePath('telerik_kendoui/js/kendo.all.min.js'))
+    ->appendFile($this->basePath('js/angular.min.js'))    
     ->appendFile($this->basePath('js/AttendanceManagement/by-hr/index.js'))
     ->appendFile($this->basePath('assets/global/plugins/bootstrap-confirmation/bootstrap-confirmation.min.js'));
 ?>
 
 <script>
     document.menu =<?php $menu = ["id" => "menuAttendance", "subMenu" => ["id" => "subMenuAttendanceByHr"]];echo json_encode($menu);?>;
-    document.attendanceByHr=<?php echo json_encode($attendanceByHr); ?>
+    document.attendanceByHr=<?php echo json_encode($attendanceByHr); ?>;
+    document.url = '<?= $this->url("restful", ["action" => "index"]) ?>';
 </script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\attendancebyhr')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
@@ -23,9 +25,78 @@ if($this->messages) { ?>
         document.messages=<?php echo json_encode($this->messages); ?>
     </script>
 <?php } ?>
-
-<div class="margin-top-20">
-    <div class="table-toolbar">
+    <div ng-app="hris" ng-controller="attendanceListController" class="formbg">
+    <div class="margin-top-20">
+    <div class="row">
+        <div class="col-sm-2">
+            <?php print $this->formLabel($employees); ?>
+            <?php print $this->formElement($employees); ?>
+        </div>
+        <div class="col-sm-2">
+            <?php print $this->formLabel($branches); ?>
+            <?php print $this->formElement($branches); ?>
+        </div>
+        <div class="col-sm-3">
+            <?php print $this->formLabel($departments); ?>
+            <?php print $this->formElement($departments); ?>
+        </div>
+        <div class="col-sm-3">
+            <?php print $this->formLabel($designations); ?>
+            <?php print $this->formElement($designations); ?>
+        </div>
+        <div class="col-sm-2">
+            <?php print $this->formLabel($positions); ?>
+            <?php print $this->formElement($positions); ?>
+        </div>         
+    </div>
+    <div class="row margin-top-10"> 
+        <div class="col-sm-2">
+            <?php print $this->formLabel($serviceTypes); ?>
+            <?php print $this->formElement($serviceTypes); ?>
+        </div>      
+        <div class="col-sm-2">
+            <?php print $this->formLabel($serviceEventTypes); ?>
+            <?php print $this->formElement($serviceEventTypes); ?>
+        </div> 
+        <div class="col-sm-2">
+            <?php print $this->formLabel($status); ?>
+            <?php print $this->formElement($status); ?>
+        </div> 
+        <div class="col-sm-2">
+            <label for="fromDate">From Date</label>
+            <div class="input-group date" id="fromDate">
+                <input type="text" placeholder="From Date" id="fromDate1" name="fromDate" ng-model="fromDate" class="form-control"/>
+                <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+            </div>
+        </div>
+        <div class="col-sm-2">
+            <label for="toDate">To Date</label>
+            <div class="input-group date" id="toDate">
+                <input type="text" placeholder="To Date" id="toDate1" name="toDate" ng-model="toDate" class="form-control"/>
+                <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+            </div>
+        </div>
+ 
+        <!-- <div class="col-sm-2">
+            <label for="absentOnly">On Training</label>
+            <div class="th-inner ">
+                <label class="mt-checkbox mt-checkbox-single mt-checkbox-outline">
+                    <input class="" value="1" ng-model="onTraining" id="onTraining" name="onTraining" type="checkbox"/>
+                    <span></span>
+                </label>
+            </div>
+        </div> --->
+        <div class="col-sm-2">
+            <label height="45"></label>
+            <button ng-click="view()" id="viewAttendanceList" class="btn btn-default i-search form-control">
+                Search
+                <i class="fa fa-search"></i>
+            </button>
+        </div>         
+    </div>
+    
+    
+    <div class="table-toolbar margin-top-20">
         <div class="row">
             <div class="col-md-6">
                 <div class="btn-group">
@@ -76,6 +147,9 @@ if($this->messages) { ?>
         #: (OUT_REMARKS == null) ? '-' : OUT_REMARKS #
         </td>
         <td>
+        #: (STATUS == null) ? '-' : STATUS #
+        </td>
+        <td>
         <a class="btn-edit" 
         href="<?= $this->url("attendancebyhr", ["action" => "edit"]); ?>/#:ID #" style="height:17px;" title="edit">
             <i class="fa fa-edit"></i>
@@ -84,4 +158,5 @@ if($this->messages) { ?>
         </tr>
     </script>
 
-    </div>
+</div>   
+</div>

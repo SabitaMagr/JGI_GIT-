@@ -20,6 +20,8 @@ class UserSetup extends Model {
     const STATUS = "STATUS";
     const CREATED_DT = "CREATED_DT";
     const MODIFIED_DT = "MODIFIED_DT";
+    const CREATED_BY = "CREATED_BY";
+    const MODIFIED_BY = "MODIFIED_BY";
 
     public $userId;
     public $userName;
@@ -29,6 +31,8 @@ class UserSetup extends Model {
     public $status;
     public $createdDt;
     public $modifiedDt;
+    public $createdBy;
+    public $modifiedBy;
 
     public $mappings=[
         'userId'=>Self::USER_ID,
@@ -38,6 +42,8 @@ class UserSetup extends Model {
         'employeeId'=>Self::EMPLOYEE_ID,
         'status'=>Self::STATUS,
         'createdDt'=>Self::CREATED_DT,
-        'modifiedDt'=>Self::MODIFIED_DT
+        'modifiedDt'=>Self::MODIFIED_DT,
+        'createdBy' => self::CREATED_BY,
+        'modifiedBy' => self::MODIFIED_BY
     ];
 }

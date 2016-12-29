@@ -14,6 +14,7 @@ use Setup\Form\AcademicDegreeForm;
 use Setup\Model\AcademicDegree;
 use Setup\Repository\AcademicDegreeRepository;
 use Zend\Form\Annotation\AnnotationBuilder;
+use Zend\Authentication\AuthenticationService;
 use Zend\View\Model\ViewModel;
 
 class AcademicDegreeController extends AbstractActionController {
@@ -21,11 +22,14 @@ class AcademicDegreeController extends AbstractActionController {
     private $repository;
     private $form;
     private $adapter;
-
+    private $employeeId;
+    
     public function __construct(AdapterInterface $adapter)
     {
         $this->adapter = $adapter;
+        $auth = new AuthenticationService();
         $this->repository = new AcademicDegreeRepository($adapter);
+        $this->employeeId = $auth->getStorage()->read()['employee_id'];
     }
 
     public function initializeForm()
@@ -61,6 +65,7 @@ class AcademicDegreeController extends AbstractActionController {
                 $academicDegree->exchangeArrayFromForm($this->form->getData());
                 $academicDegree->academicDegreeId=((int) Helper::getMaxId($this->adapter,AcademicDegree::TABLE_NAME,AcademicDegree::ACADEMIC_DEGREE_ID))+1;
                 $academicDegree->createdDt = Helper::getcurrentExpressionDate();
+                $academicDegree->createdBy = $this->employeeId;
                 $academicDegree->status ='E';
                 $this->repository->add($academicDegree);
 
@@ -98,6 +103,7 @@ class AcademicDegreeController extends AbstractActionController {
             if ($this->form->isValid()) {
                 $academicDegree->exchangeArrayFromForm($this->form->getData());
                 $academicDegree->modifiedDt = Helper::getcurrentExpressionDate();
+                $academicDegree->modifiedBy = $this->employeeId;
 
                 $this->repository->edit($academicDegree, $id);
                 $this->flashmessenger()->addMessage("Academic Degree Successfully Updated!!!");

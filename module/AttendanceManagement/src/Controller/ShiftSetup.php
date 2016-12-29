@@ -18,6 +18,7 @@ use AttendanceManagement\Model\ShiftSetup as Shift;
 use AttendanceManagement\Repository\ShiftRepository;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Form\Annotation\AnnotationBuilder;
+use Zend\Authentication\AuthenticationService;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 use ZF\DevelopmentMode\Help;
@@ -28,11 +29,14 @@ class ShiftSetup extends AbstractActionController
     private $repository;
     private $form;
     private $adapter;
+    private $employeeId;
 
     public function __construct(AdapterInterface $adapter)
     {
         $this->repository = new ShiftRepository($adapter);
         $this->adapter=$adapter;
+        $auth = new AuthenticationService();
+        $this->employeeId = $auth->getStorage()->read()['employee_id'];
     }
 
     public function indexAction()
@@ -69,6 +73,7 @@ class ShiftSetup extends AbstractActionController
                 $shift->halfDayEndTime=Helper::getExpressionTime($shift->halfDayEndTime);
                 $shift->halfTime=Helper::getExpressionTime($shift->halfTime);
                 $shift->createdDt = Helper::getcurrentExpressionDate();
+                $shift->createdBy = $this->employeeId;
 
 //                $shift->shiftLname=mb_convert_encoding($shift->shiftLname, 'UTF-16LE');
 //                print "<pre>";
@@ -119,6 +124,7 @@ class ShiftSetup extends AbstractActionController
                 $shift->halfDayEndTime=Helper::getExpressionTime($shift->halfDayEndTime);
                 $shift->halfTime=Helper::getExpressionTime($shift->halfTime);
                 $shift->modifiedDt = Helper::getcurrentExpressionDate();
+                $shift->modifiedBy = $this->employeeId;
 
                 $this->repository->edit($shift, $id);
                 $this->flashmessenger()->addMessage("Shift Successfuly Updated!!!");

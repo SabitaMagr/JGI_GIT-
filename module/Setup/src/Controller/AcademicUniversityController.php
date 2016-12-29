@@ -11,6 +11,7 @@ use Application\Helper\Helper;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Form\Annotation\AnnotationBuilder;
+use Zend\Authentication\AuthenticationService;
 use Setup\Form\AcademicUniversityForm;
 use Setup\Repository\AcademicUniversityRepository;
 use Setup\Model\AcademicUniversity;
@@ -20,11 +21,14 @@ class AcademicUniversityController extends AbstractActionController {
     private $repository;
     private $form;
     private $adapter;
+    private $employeeId;
 
     public function __construct(AdapterInterface $adapter)
     {
         $this->adapter = $adapter;
+        $auth = new AuthenticationService();
         $this->repository = new AcademicUniversityRepository($adapter);
+        $this->employeeId = $auth->getStorage()->read()['employee_id'];
     }
 
     public function initializeForm()
@@ -60,6 +64,7 @@ class AcademicUniversityController extends AbstractActionController {
                 $academicUniversity->exchangeArrayFromForm($this->form->getData());
                 $academicUniversity->academicUniversityId=((int) Helper::getMaxId($this->adapter,AcademicUniversity::TABLE_NAME,AcademicUniversity::ACADEMIC_UNIVERSITY_ID))+1;
                 $academicUniversity->createdDt = Helper::getcurrentExpressionDate();
+                $academicUniversity->createdBy = $this->employeeId;
                 $academicUniversity->status ='E';
                 $this->repository->add($academicUniversity);
 
@@ -97,6 +102,7 @@ class AcademicUniversityController extends AbstractActionController {
             if ($this->form->isValid()) {
                 $academicUniversity->exchangeArrayFromForm($this->form->getData());
                 $academicUniversity->modifiedDt = Helper::getcurrentExpressionDate();
+                $academicUniversity->modifiedBy = $this->employeeId;
                 $this->repository->edit($academicUniversity, $id);
                 $this->flashmessenger()->addMessage("Academic University Successfully Updated!!!");
                 return $this->redirect()->toRoute("academicUniversity");

@@ -19,6 +19,8 @@ class AcademicDegree extends Model{
     const STATUS = "STATUS";
     const CREATED_DT = "CREATED_DT";
     const MODIFIED_DT = "MODIFIED_DT";
+    const CREATED_BY = "CREATED_BY";
+    const MODIFIED_BY = "MODIFIED_BY";
 
     public $academicDegreeId;
     public $academicDegreeCode;
@@ -28,6 +30,8 @@ class AcademicDegree extends Model{
     public $status;
     public $createdDt;
     public $modifiedDt;
+    public $createdBy;
+    public $modifiedBy;
 
     public $mappings =[
         'academicDegreeId'=>Self::ACADEMIC_DEGREE_ID,
@@ -37,7 +41,9 @@ class AcademicDegree extends Model{
         'remarks' => Self::REMARKS,
         'status' => Self::STATUS,
         'createdDt' => Self::CREATED_DT,
-        'modifiedDt' => Self::MODIFIED_DT
+        'modifiedDt' => Self::MODIFIED_DT,
+        'createdBy' => self::CREATED_BY,
+        'modifiedBy' => self::MODIFIED_BY,
     ];
 
 }

@@ -25,129 +25,129 @@ echo json_encode($menu);
         document.messages =<?php echo json_encode($this->messages); ?>
     </script>
 <?php } ?>
-    <div ng-app="hris" ng-controller="attendanceStatusListController" class="formbg">
-    <div class="margin-top-20">
-        <div class="row">
-            <div class="col-sm-3">
-                <?php print $this->formLabel($employees); ?>
-                <?php print $this->formElement($employees); ?>
-            </div>
-            <div class="col-sm-3">
-                <?php print $this->formLabel($branches); ?>
-                <?php print $this->formElement($branches); ?>
-            </div>
-            <div class="col-sm-2">
-                <?php print $this->formLabel($departments); ?>
-                <?php print $this->formElement($departments); ?>
-            </div>
-            <div class="col-sm-2">
-                <?php print $this->formLabel($designations); ?>
-                <?php print $this->formElement($designations); ?>
-            </div>
-            <div class="col-sm-2">
-                <?php print $this->formLabel($positions); ?>
-                <?php print $this->formElement($positions); ?>
-            </div>
-            
-        </div>
-        <div class="row margin-top-10"> 
-            <div class="col-sm-2">
-                <?php print $this->formLabel($attendanceStatus); ?>
-                <?php print $this->formElement($attendanceStatus); ?>
-            </div>  
-            <div class="col-sm-3">
-                <?php print $this->formLabel($serviceTypes); ?>
-                <?php print $this->formElement($serviceTypes); ?>
-            </div>      
-            <div class="col-sm-2">
-                <?php print $this->formLabel($serviceEventTypes); ?>
-                <?php print $this->formElement($serviceEventTypes); ?>
-            </div> 
-            <div class="col-sm-2">
-                <label for="fromDate">From Date</label>
-                <div class="input-group date" id="fromDate">
-                    <input type="text" placeholder="From Date" id="fromDate1" name="fromDate" ng-model="fromDate" class="form-control"/>
-                    <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+    <div ng-app="hris" ng-controller="attendanceStatusListController">
+        <div class="margin-top-20 formbg mgap" >
+            <div class="row">
+                <div class="col-sm-3 topgap">
+                    <?php print $this->formLabel($employees); ?>
+                    <?php print $this->formElement($employees); ?>
                 </div>
-            </div>
-            <div class="col-sm-2">
-                <label for="toDate">To Date</label>
-                <div class="input-group date" id="toDate">
-                    <input type="text" placeholder="To Date" id="toDate1" name="toDate" ng-model="toDate" class="form-control"/>
-                    <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                <div class="col-sm-3 topgap">
+                    <?php print $this->formLabel($branches); ?>
+                    <?php print $this->formElement($branches); ?>
                 </div>
-            </div>
-            <div class="col-sm-2">
-                <label height="45"></label>
-                <button ng-click="view()" id="viewAttendanceRequestStatus" class="btn btn-default i-search form-control">
-                    Search
-                    <i class="fa fa-search"></i>
-                </button>
-            </div>
-         
-        </div>
-           <div class="margin-top-20">
-               <div class="row">
-           <div class="col-sm-offset-6 col-sm-6">
-                <label height="45"></label>
-                <div class="btn-group pull-right">
-                    <button class="btn green btn-outline dropdown-toggle" data-toggle="dropdown">Tools
-                        <i class="fa fa-angle-down"></i>
+                <div class="col-sm-3 topgap">
+                    <?php print $this->formLabel($departments); ?>
+                    <?php print $this->formElement($departments); ?>
+                </div>
+                <div class="col-sm-3 topgap">
+                    <?php print $this->formLabel($designations); ?>
+                    <?php print $this->formElement($designations); ?>
+                </div>
+                <div class="col-sm-3 topgap">
+                    <?php print $this->formLabel($positions); ?>
+                    <?php print $this->formElement($positions); ?>
+                </div>           
+          
+    
+                <div class="col-sm-3 topgap">
+                    <?php print $this->formLabel($attendanceStatus); ?>
+                    <?php print $this->formElement($attendanceStatus); ?>
+                </div>  
+                <div class="col-sm-3 topgap">
+                    <?php print $this->formLabel($serviceTypes); ?>
+                    <?php print $this->formElement($serviceTypes); ?>
+                </div>      
+                <div class="col-sm-3 topgap">
+                    <?php print $this->formLabel($serviceEventTypes); ?>
+                    <?php print $this->formElement($serviceEventTypes); ?>
+                </div>  
+                <div class="col-sm-3 topgap">
+                    <label for="fromDate">From Date</label>
+                    <div class="input-group date" id="fromDate">
+                        <input type="text" placeholder="From Date" id="fromDate1" name="fromDate" ng-model="fromDate" class="form-control"/>
+                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                    </div>
+                </div>
+                <div class="col-sm-3 topgap">
+                    <label for="toDate">To Date</label>
+                    <div class="input-group date" id="toDate">
+                        <input type="text" placeholder="To Date" id="toDate1" name="toDate" ng-model="toDate" class="form-control"/>
+                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                    </div>
+                </div>
+                <div class="col-sm-3 topgap">
+                    <label height="45"></label>
+                    <button ng-click="view()" id="viewAttendanceRequestStatus" class="btn btn-default i-search form-control">
+                        Search
+                        <i class="fa fa-search"></i>
                     </button>
-                    <ul class="dropdown-menu pull-right">
-                        <li>
-                            <a href="javascript:;" id="export"> Export to Excel </a>
-                        </li>
-                    </ul>
-                </div>
+                </div>         
             </div>
-               </div>
-    </div>
-    <div class="margin-top-20">   
-            
-        <div id="attendanceRequestStatusTable">
         </div>
-    </div>
+               <div class="margin-top-20">
+                   <div class="row">
+               <div class="col-sm-offset-6 col-sm-6">
+                    <label height="45"></label>
+                    <div class="btn-group pull-right">
+                        <button class="btn green btn-outline dropdown-toggle" data-toggle="dropdown">Tools
+                            <i class="fa fa-angle-down"></i>
+                        </button>
+                        <ul class="dropdown-menu pull-right">
+                            <li>
+                                <a href="javascript:;" id="export"> Export to Excel </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                   </div>
+        </div>
+        <div class="margin-top-20">   
 
-    <script id="rowTemplate" type="text/x-kendo-tmpl">
-        <tr>
-        <td>    
-            #: (FIRST_NAME == null) ? ' ' : FIRST_NAME #
-            #: (MIDDLE_NAME == null) ? ' ' : MIDDLE_NAME #
-            #: (LAST_NAME == null) ? ' ' : LAST_NAME #
-        </td>
-        <td>
-        #: (REQUESTED_DT == null) ? '-' : REQUESTED_DT #
-        </td>
-        <td>
-        #: (ATTENDANCE_DT == null) ? '-' : ATTENDANCE_DT #
-        </td>
-        <td>
-        #: (IN_TIME == null) ? '-' : IN_TIME #
-        </td>        
-        <td>
-        #: (OUT_TIME == null) ? '-' : OUT_TIME #
-        </td>
-        <td>
-        #: (IN_REMARKS == null) ? '-' : IN_REMARKS #
-        </td>
-        <td>
-        #: (OUT_REMARKS == null) ? '-' : OUT_REMARKS #
-        </td>
-        <td>
-        #: (FIRST_NAME1 == null) ? ' ' : FIRST_NAME1 #
-        #: (MIDDLE_NAME1 == null) ? ' ' : MIDDLE_NAME1 #
-        #: (LAST_NAME1 == null) ? ' ' : LAST_NAME1 #
-        </td>
-        <td>
-        #: (STATUS == null) ? '-' : STATUS #
-        </td>
-        <td>
-        <a class="btn-edit" 
-        href="<?= $this->url("attendancestatus", ["action" => "view"]) ?>/#: ID #" style="height:17px;">
-        <i class="fa fa-search-plus"></i>
-        </a>
-        </td>
-        </tr>
-    </script>
+            <div id="attendanceRequestStatusTable">
+            </div>
+        </div>
+
+        <script id="rowTemplate" type="text/x-kendo-tmpl">
+            <tr>
+            <td>    
+                #: (FIRST_NAME == null) ? ' ' : FIRST_NAME #
+                #: (MIDDLE_NAME == null) ? ' ' : MIDDLE_NAME #
+                #: (LAST_NAME == null) ? ' ' : LAST_NAME #
+            </td>
+            <td>
+            #: (REQUESTED_DT == null) ? '-' : REQUESTED_DT #
+            </td>
+            <td>
+            #: (ATTENDANCE_DT == null) ? '-' : ATTENDANCE_DT #
+            </td>
+            <td>
+            #: (IN_TIME == null) ? '-' : IN_TIME #
+            </td>        
+            <td>
+            #: (OUT_TIME == null) ? '-' : OUT_TIME #
+            </td>
+            <td>
+            #: (IN_REMARKS == null) ? '-' : IN_REMARKS #
+            </td>
+            <td>
+            #: (OUT_REMARKS == null) ? '-' : OUT_REMARKS #
+            </td>
+            <td>
+            #: (FIRST_NAME1 == null) ? ' ' : FIRST_NAME1 #
+            #: (MIDDLE_NAME1 == null) ? ' ' : MIDDLE_NAME1 #
+            #: (LAST_NAME1 == null) ? ' ' : LAST_NAME1 #
+            </td>
+            <td>
+            #: (STATUS == null) ? '-' : STATUS #
+            </td>
+            <td>
+            <a class="btn-edit" 
+            href="<?= $this->url("attendancestatus", ["action" => "view"]) ?>/#: ID #" style="height:17px;">
+            <i class="fa fa-search-plus"></i>
+            </a>
+            </td>
+            </tr>
+        </script>
+    </div>
 </div>

@@ -15,6 +15,7 @@ use HolidayManagement\Repository\HolidayRepository;
 use HolidayManagement\Model\Holiday;
 use HolidayManagement\Model\HolidayBranch;
 use SelfService\Repository\LeaveRequestRepository;
+use Zend\Authentication\AuthenticationService;
 use Setup\Repository\RecommendApproveRepository;
 use Setup\Repository\EmployeeRepository;
 use SelfService\Repository\AttendanceRepository;
@@ -22,10 +23,13 @@ use SelfService\Repository\AttendanceRepository;
 class WebServiceController extends AbstractActionController
 {
     private $adapter;
+    private $loggedInEmployeeId;
 
     public function __construct(AdapterInterface $adapter)
     {
         $this->adapter = $adapter;
+        $auth = new AuthenticationService();
+        $this->loggedInEmployeeId = $auth->getStorage()->read()['employee_id'];
     }
 
     public function indexAction()
@@ -94,9 +98,11 @@ class WebServiceController extends AbstractActionController
                     $leaveAssignRepo = new LeaveAssignRepository($this->adapter);
                     if (empty($data['leaveId'])) {
                         $leaveAssign->createdDt = Helper::getcurrentExpressionDate();
+                        $leaveAssign->createdBy = $this->loggedInEmployeeId;
                         $leaveAssignRepo->add($leaveAssign);
                     } else {
                         $leaveAssign->modifiedDt = Helper::getcurrentExpressionDate();
+                        $leaveAssign->modifiedBy = $this->loggedInEmployeeId;
                         unset($leaveAssign->employeeId);
                         unset($leaveAssign->leaveId);
                         $leaveAssignRepo->edit($leaveAssign, [$data['leaveId'], $data['employeeId']]);
@@ -151,6 +157,7 @@ class WebServiceController extends AbstractActionController
                     $holidayModel->halfday=$data['halfday'];
                     $holidayModel->remarks=$data['remarks'];
                     $holidayModel->modifiedDt = Helper::getcurrentExpressionDate();
+                    $holidayModel->modifiedBy = $this->loggedInEmployeeId;
                     $resultSet = $holidayRepository->edit($holidayModel,$filtersId['holidayId']);
 
                     $holidayBranchResult = $holidayRepository->selectHolidayBranch($filtersId['holidayId']);

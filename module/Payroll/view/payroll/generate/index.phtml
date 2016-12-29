@@ -59,13 +59,13 @@ echo json_encode($menu);
                                 <option value="">Select Month</option>
                             </select>
                         </div>
-                        <div class="col-sm-3">
+                        <div class="col-sm-2">
                             <label>Branch</label>
                             <select class="form-control" ng-change="changeBranch()" ng-model="branchId" ng-options="key as branch for (key, branch) in branches">
                                 <option value="">All</option>
                             </select>
                         </div>
-                        <div class="col-sm-2">
+                        <div class="col-sm-3">
                             <label>Employee</label>
                             <select class="form-control" ng-change="viewMonthlySheetIfAvailable()"  ng-model="employeeId" ng-options="key as employee for (key, employee) in employeeList">
                                 <option value="">All</option>

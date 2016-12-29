@@ -100,18 +100,18 @@ echo json_encode($menu);
         </div>
 
     </div>
-    <div class="margin-top-20 scroller" style="height: 400px;">
+    <div class="margin-top-20 scroller1">
         <div class="table-responsive">
         <table class="table customTable custom-width">
             <thead>
                 <tr>
-                    <th>
+                    <th class="id-width">
                         Employee Id
                     </th>
-                    <th>
+                    <th class="flatwidth">
                         Employee Name
                     </th>
-                    <th ng-repeat="keys in flatValuekeys" ng-bind="flatValuesI[keys]">
+                    <th class="keyswidth" ng-repeat="keys in flatValuekeys" ng-bind="flatValuesI[keys]">
 
                     </th>
                 </tr>

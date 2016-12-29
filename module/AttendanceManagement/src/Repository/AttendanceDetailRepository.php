@@ -53,6 +53,85 @@ class AttendanceDetailRepository implements RepositoryInterface {
         return $result;
     }
 
+    public function filterRecord($employeeId, $branchId, $departmentId, $positionId, $designationId, $serviceTypeId, $serviceEventTypeId, $fromDate, $toDate, $status) {
+        $sql = new Sql($this->adapter);
+        $select = $sql->select();
+        $select->columns([new Expression("TO_CHAR(A.ATTENDANCE_DT, 'DD-MON-YYYY') AS ATTENDANCE_DT"), new Expression("TO_CHAR(A.IN_TIME, 'HH:MI AM') AS IN_TIME"), new Expression("TO_CHAR(A.OUT_TIME, 'HH:MI AM') AS OUT_TIME"), new Expression("E.EMPLOYEE_ID AS EMPLOYEE_ID"), new Expression("A.ID AS ID"), new Expression("A.IN_REMARKS AS IN_REMARKS"), new Expression("A.TOTAL_HOUR AS TOTAL_HOUR"), new Expression("A.OUT_REMARKS AS OUT_REMARKS")], true);
+        $select->from(['A' => AttendanceDetail::TABLE_NAME])
+                ->join(['E' => 'HR_EMPLOYEES'], 'A.EMPLOYEE_ID=E.EMPLOYEE_ID', ["FIRST_NAME" => 'FIRST_NAME', "MIDDLE_NAME" => 'MIDDLE_NAME', "LAST_NAME" => 'LAST_NAME'], "left")
+                ->join(['H' => 'HR_HOLIDAY_MASTER_SETUP'], 'A.HOLIDAY_ID=H.HOLIDAY_ID', ["HOLIDAY_ENAME" => 'HOLIDAY_ENAME'], "left")
+                ->join(['L' => 'HR_LEAVE_MASTER_SETUP'], 'A.LEAVE_ID=L.LEAVE_ID', ["LEAVE_ENAME" => 'LEAVE_ENAME'], "left");
+
+        if ($fromDate != null) {
+            $startDate = " AND A.ATTENDANCE_DT>=TO_DATE('" . $fromDate . "','DD-MM-YYYY')";
+        } else {
+            $startDate = "";
+        }
+        if ($toDate != null) {
+            $endDate = " AND A.ATTENDANCE_DT<=TO_DATE('" . $toDate . "','DD-MM-YYYY')";
+        } else {
+            $endDate = "";
+        }
+        $select->where(["E.STATUS='E'" . $startDate . $endDate]);
+
+        if ($serviceEventTypeId == 5 || $serviceEventTypeId == 8 || $serviceEventTypeId == 14) {
+            $select->where(["E.RETIRED_FLAG='Y'"]);
+        } else {
+            $select->where(["E.RETIRED_FLAG='N'"]);
+        }
+        if ($status != "All") {
+            if ($status == "A") {
+                $select->where(["A.IN_TIME IS NULL AND A.OUT_TIME IS NULL AND A.TRAINING_ID IS NULL AND A.HOLIDAY_ID IS NULL AND A.LEAVE_ID IS NULL"]);
+            }
+
+            if ($status == "H") {
+                $select->where(["A.IN_TIME IS NULL AND A.OUT_TIME IS NULL AND A.TRAINING_ID IS NULL AND A.HOLIDAY_ID IS NOT NULL AND A.LEAVE_ID IS NULL"]);
+            }
+
+            if ($status == "L") {
+                $select->where(["A.IN_TIME IS NULL AND A.OUT_TIME IS NULL AND A.TRAINING_ID IS NULL AND A.HOLIDAY_ID IS NULL AND A.LEAVE_ID IS NOT NULL"]);
+            }
+            
+            if ($status == "P") {
+                $select->where(["A.IN_TIME IS NOT NULL"]);
+            }
+        }
+
+        if ($employeeId != -1) {
+            $select->where(["E.EMPLOYEE_ID=" . $employeeId]);
+        }
+
+        if ($branchId != -1) {
+            $select->where(["E.BRANCH_ID=" . $branchId]);
+        }
+
+        if ($departmentId != -1) {
+            $select->where(["E.DEPARTMENT_ID=" . $departmentId]);
+        }
+
+        if ($designationId != -1) {
+            $select->where(["E.DESIGNATION_ID=" . $designationId]);
+        }
+
+        if ($positionId != -1) {
+            $select->where(["E.POSITION_ID=" . $positionId]);
+        }
+
+        if ($serviceTypeId != -1) {
+            $select->where(["E.SERVICE_TYPE_ID=" . $serviceTypeId]);
+        }
+
+        if ($serviceEventTypeId != -1) {
+            $select->where(["E.SERVICE_EVENT_TYPE_ID=" . $serviceEventTypeId]);
+        }
+
+        $select->order("E.FIRST_NAME,A.ATTENDANCE_DT DESC");
+        $statement = $sql->prepareStatementForSqlObject($select);
+        //return $statement->getSql();
+        $result = $statement->execute();
+        return $result;
+    }
+
     public function fetchById($id) {
         $sql = new Sql($this->adapter);
         $select = $sql->select();

@@ -26,6 +26,7 @@ class ServiceType extends Model {
     public $modifiedDt;
     public $createdBy;
     public $modifiedBy;
+    
     public $mappings = [
         'serviceTypeId' => self::SERVICE_TYPE_ID,
         'serviceTypeCode' => self::SERVICE_TYPE_CODE,
@@ -35,7 +36,7 @@ class ServiceType extends Model {
         'createdDt' => self::CREATED_DT,
         'modifiedDt' => self::MODIFIED_DT,
         'createdBy' => self::CREATED_BY,
-        'modifiedBy' => self::MODIFIED_BY,
+        'modifiedBy' => self::MODIFIED_BY
     ];
 
 }

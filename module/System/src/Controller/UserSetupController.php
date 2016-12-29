@@ -16,17 +16,21 @@ use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 use Application\Helper\Helper;
 use System\Repository\UserSetupRepository;
+use Zend\Authentication\AuthenticationService;
 
 class UserSetupController extends AbstractActionController {
 
     private $form;
     private $adapter;
     private $repository;
+    private $employeeId;
 
     public function __construct(AdapterInterface $adapter)
     {
         $this->repository = new UserSetupRepository($adapter);
         $this->adapter = $adapter;
+        $auth = new AuthenticationService();
+        $this->employeeId = $auth->getStorage()->read()['employee_id'];
     }
 
     public function initializeForm(){
@@ -55,6 +59,7 @@ class UserSetupController extends AbstractActionController {
                 $userSetup->exchangeArrayFromForm($this->form->getData());
                 $userSetup->userId = ((int)Helper::getMaxId($this->adapter, UserSetup::TABLE_NAME, UserSetup::USER_ID)) + 1;
                 $userSetup->createdDt = Helper::getcurrentExpressionDate();
+                $userSetup->createdBy = $this->employeeId;
                 $userSetup->status='E';
 
                 $this->repository->add($userSetup);
@@ -87,6 +92,7 @@ class UserSetupController extends AbstractActionController {
             if ($this->form->isValid()) {
                 $userSetup->exchangeArrayFromForm($this->form->getData());
                 $userSetup->modifiedDt = Helper::getcurrentExpressionDate();
+                $userSetup->modifiedBy = $this->employeeId;
                 unset($userSetup->createdDt);
                 unset($userSetup->userId);
                 unset($userSetup->status);

@@ -31,7 +31,7 @@ echo json_encode($menu); ?>;
             <?php print $this->formLabel($attendanceStatus); ?>
             <?php print $this->formElement($attendanceStatus); ?>
         </div>              
-        <div class="col-sm-2">
+        <div class="col-sm-3">
             <label for="fromDate">From Date</label>
             <input type="hidden" id="employeeId" value="<?php echo $employeeId; ?>"/>
             <div class="input-group date" id="fromDate">
@@ -39,14 +39,14 @@ echo json_encode($menu); ?>;
                 <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
             </div>
         </div>
-        <div class="col-sm-2">
+        <div class="col-sm-3">
             <label for="toDate">To Date</label>
             <div class="input-group date" id="toDate">
                 <input type="text" placeholder="To Date" id="toDate1" name="toDate" ng-model="toDate" class="form-control"/>
                 <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
             </div>
         </div>
-        <div class="col-sm-2">
+        <div class="col-sm-3">
             <label height="45"></label>
             <button ng-click="view()" id="viewAttendanceRequestStatus" class="btn btn-default form-control i-search">
                 Search

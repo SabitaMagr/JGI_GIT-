@@ -24,8 +24,8 @@ echo json_encode($menu); ?>;
         document.messages =<?php echo json_encode($this->messages); ?>
     </script>
 <?php } ?>
-    <div ng-app="hris" ng-controller="leaveBalanceController" class="formbg">
-    <div class="margin-top-20">
+    <div ng-app="hris" ng-controller="leaveBalanceController">
+    <div class="margin-top-20 formbg mgap">
         <div class="row">
             <div class="col-sm-3">
                 <?php print $this->formLabel($employees); ?>
@@ -67,6 +67,7 @@ echo json_encode($menu); ?>;
             </div>
           
         </div>   
+    </div>
         <div class="margin-top-20">
         <div class="row">
               <div class="col-md-offset-6 col-md-6">
