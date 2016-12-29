@@ -54,10 +54,12 @@ class VariableProcessor {
     public function processVariable($variable) {
         $processedValue = "";
         switch ($variable) {
+//            "BASIC_SALARY"
             case PayrollGenerator::VARIABLES[0]:
                 $processedValue = $this->employeeRepo->fetchById($this->employeeId)[HrEmployees::SALARY];
                 $processedValue = ($processedValue == null) ? 0 : $processedValue;
                 break;
+//            "NO_OF_WORKING_DAYS"
             case PayrollGenerator::VARIABLES[1]:
                 $monthsRepo = new MonthRepository($this->adapter);
                 $firstLastDate = $monthsRepo->fetchByMonthId($this->monthId);
@@ -66,10 +68,9 @@ class VariableProcessor {
                 $lastDayExp = Helper::getExpressionDate($firstLastDate[Months::TO_DATE]);
 
                 $days = $attendanceDetail->getNoOfDaysInDayInterval($this->employeeId, $firstDayExp, $lastDayExp);
-
                 $processedValue = $days;
-
                 break;
+//            "NO_OF_DAYS_ABSENT"
             case PayrollGenerator::VARIABLES[2]:
                 $monthsRepo = new MonthRepository($this->adapter);
                 $firstLastDate = $monthsRepo->fetchByMonthId($this->monthId);
@@ -80,6 +81,7 @@ class VariableProcessor {
                 $days = $attendanceDetail->getNoOfDaysAbsent($this->employeeId, $firstDayExp, $lastDayExp);
                 $processedValue = $days;
                 break;
+//            "NO_OF_DAYS_WORKED"
             case PayrollGenerator::VARIABLES[3]:
                 $monthsRepo = new MonthRepository($this->adapter);
                 $firstLastDate = $monthsRepo->fetchByMonthId($this->monthId);
@@ -88,8 +90,8 @@ class VariableProcessor {
                 $lastDayExp = Helper::getExpressionDate($firstLastDate[Months::TO_DATE]);
                 $days = $attendanceDetail->getNoOfDaysPresent($this->employeeId, $firstDayExp, $lastDayExp);
                 $processedValue = $days;
-
                 break;
+//            "NO_OF_PAID_LEAVES"
             case PayrollGenerator::VARIABLES[4]:
                 $monthsRepo = new MonthRepository($this->adapter);
                 $firstLastDate = $monthsRepo->fetchByMonthId($this->monthId);
@@ -112,6 +114,7 @@ class VariableProcessor {
                 }
                 $processedValue = $leaveInfo["PAID_LEAVE_NO"];
                 break;
+//                "NO_OF_UNPAID_LEAVES"                
             case PayrollGenerator::VARIABLES[5]:
                 $monthsRepo = new MonthRepository($this->adapter);
                 $firstLastDate = $monthsRepo->fetchByMonthId($this->monthId);
@@ -130,28 +133,31 @@ class VariableProcessor {
                 }
                 $processedValue = $unpaidLeaveCount;
                 break;
+//                "TOTAL_DAYS_TO_PAY"
             case PayrollGenerator::VARIABLES[6]:
 
 
                 break;
+//            "GENDER"
             case PayrollGenerator::VARIABLES[7]:
 
                 break;
+//            "EMP_TYPE"
             case PayrollGenerator::VARIABLES[8]:
 
 
                 break;
+//              "MARITUAL_STATUS"
             case PayrollGenerator::VARIABLES[9]:
                 $maritualStatus = EntityHelper::getTableKVList($this->adapter, HrEmployees::TABLE_NAME, HrEmployees::EMPLOYEE_ID, [HrEmployees::MARITAL_STATUS], [HrEmployees::EMPLOYEE_ID => $this->employeeId], null)[$this->employeeId];
                 $processedValue = ($maritualStatus == "M") ? 1 : 0;
-//                print "<pre>";
-//                print $processedValue;
-//                exit;
                 break;
+//            "TOTAL_DAYS_FROM_JOIN_DATE"
             case PayrollGenerator::VARIABLES[10]:
 
 
                 break;
+//            "SERVICE_TYPE"
             case PayrollGenerator::VARIABLES[11]:
                 $serviceTypeId = EntityHelper::getTableKVList($this->adapter, HrEmployees::TABLE_NAME, HrEmployees::EMPLOYEE_ID, [HrEmployees::SERVICE_TYPE_ID], [HrEmployees::EMPLOYEE_ID => $this->employeeId], null)[$this->employeeId];
                 if ($serviceTypeId == null) {
@@ -161,6 +167,7 @@ class VariableProcessor {
                     $processedValue = $serviceTypeCode;
                 }
                 break;
+//                "NO_OF_WORKING_DAYS_INC_HOLIDAYS"
             case PayrollGenerator::VARIABLES[12]:
                 $monthsRepo = new MonthRepository($this->adapter);
                 $firstLastDate = $monthsRepo->fetchByMonthId($this->monthId);
@@ -172,6 +179,7 @@ class VariableProcessor {
 
                 $processedValue = $days;
                 break;
+//            "TOTAL_NO_OF_WORK_DAYS_INC_HOLIDAYS"
             case PayrollGenerator::VARIABLES[13]:
                 $monthsRepo = new MonthRepository($this->adapter);
                 $firstLastDate = $monthsRepo->fetchByMonthId($this->monthId);
