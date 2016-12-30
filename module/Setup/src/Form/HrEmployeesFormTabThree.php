@@ -81,7 +81,7 @@ class HrEmployeesFormTabThree extends  Model
      * @Annotation\Type("Zend\Form\Element\Text")
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Driving License Expiry"})
-     * @Annotation\Attributes({"class":"form-control" })
+     * @Annotation\Attributes({"class":"form-control","id":"idDrivingLicenseExpiry" })
      */
     public $idDrivingLicenseExpiry;
 
@@ -143,7 +143,7 @@ class HrEmployeesFormTabThree extends  Model
      * @Annotation\Type("Zend\Form\Element\Text")
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Citizenship Issue Date"})
-     * @Annotation\Attributes({"class":"form-control" })
+     * @Annotation\Attributes({"class":"form-control","id":"idCitizenshipIssueDate" })
      */
     public $idCitizenshipIssueDate;
 
@@ -173,7 +173,7 @@ class HrEmployeesFormTabThree extends  Model
      * @Annotation\Required(false)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Passport Expiry"})
-     * @Annotation\Attributes({"class":"form-control" })
+     * @Annotation\Attributes({"class":"form-control","id":"idPassportExpiry" })
      */
     public $idPassportExpiry;
 
