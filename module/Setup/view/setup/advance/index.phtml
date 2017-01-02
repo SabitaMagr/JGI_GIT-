@@ -5,7 +5,7 @@
 $this->headScript()
         ->appendFile($this->basePath('jszip/dist/jszip.min.js'))
         ->appendFile($this->basePath('telerik_kendoui/js/kendo.all.min.js'))
-        ->appendFile($this->basePath('js/setup/loan/index.js'))
+        ->appendFile($this->basePath('js/setup/advance/index.js'))
         ->appendFile($this->basePath('assets/global/plugins/bootstrap-confirmation/bootstrap-confirmation.min.js'));
 ?>
 <?php if ($this->messages) { ?>
@@ -15,13 +15,13 @@ $this->headScript()
 <?php } ?>
 
 <script>
-    document.menu =<?php $menu = ["id" => "menuSetup", "subMenu" => ["id" => "subMenuLoan"]];
+    document.menu =<?php $menu = ["id" => "menuSetup", "subMenu" => ["id" => "subMenuAdvance"]];
 echo json_encode($menu); ?>;
     document.deleteURL ='<?= $this->url("restful", ["action" => "index"]) ?>';
     document.loans =<?php echo json_encode($list); ?>;
 </script>
 <div class="page-bar">
-    <?= $this->navigation('Zend\Navigation\loan')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
+    <?= $this->navigation('Zend\Navigation\advance')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
 
 
@@ -30,7 +30,7 @@ echo json_encode($menu); ?>;
         <div class="row">
             <div class="col-md-6">
                 <div class="btn-group">
-                    <a href="<?= $this->url('loan', ['action' => 'add']) ?>" id="sample_editable_1_new"
+                    <a href="<?= $this->url('advance', ['action' => 'add']) ?>" id="sample_editable_1_new"
                        class="btn green"> Add New
                                           <i class="fa fa-plus"></i>
                     </a>
@@ -56,30 +56,27 @@ echo json_encode($menu); ?>;
     <script id="rowTemplate" type="text/x-kendo-tmpl">
         <tr>
         <td>    
-        #: (LOAN_CODE == null) ? '-' : LOAN_CODE #
+        #: (ADVANCE_CODE == null) ? '-' : ADVANCE_CODE #
         </td>
         <td>    
-        #: (LOAN_NAME == null) ? '-' : LOAN_NAME #
+        #: (ADVANCE_NAME == null) ? '-' : ADVANCE_NAME #
         </td>
         <td>    
-        #: MIN_AMOUNT # - #: MAX_AMOUNT #
+        #: MIN_SALARY_AMT # - #: MAX_SALARY_AMT #
         </td>
         <td>    
-        #: (INTEREST_RATE == null) ? '-' : INTEREST_RATE #%
+        #: (AMOUNT_TO_ALLOW == null) ? '-' : AMOUNT_TO_ALLOW #%
         </td>
         <td>    
-        #: (REPAYMENT_AMOUNT == null) ? '-' : REPAYMENT_AMOUNT #%
-        </td>
-        <td>    
-        #: (REPAYMENT_PERIOD == null) ? '-' : REPAYMENT_PERIOD #
+        #: (MONTH_TO_ALLOW == null) ? '-' : MONTH_TO_ALLOW #
         </td>
         <td>
         <a class="btn-edit"
-        href="<?= $this->url("loan", ["action" => "edit"]); ?>/#:LOAN_ID#" style="height:17px;">
+        href="<?= $this->url("advance", ["action" => "edit"]); ?>/#:ADVANCE_ID#" style="height:17px;">
         <i class="fa fa-edit"></i>
         </a>
         <a class="btn-delete confirmation"
-        href="<?= $this->url("loan", ["action" => "delete"]); ?>/#:LOAN_ID#" id="bs_#:LOAN_ID #" style="height:17px;"> 
+        href="<?= $this->url("advance", ["action" => "delete"]); ?>/#:ADVANCE_ID#" id="bs_#:ADVANCE_ID #" style="height:17px;"> 
         <i class="fa fa-trash-o"></i></a>
         </a>
         </td>

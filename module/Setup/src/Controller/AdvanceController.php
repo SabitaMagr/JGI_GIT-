@@ -2,15 +2,15 @@
 namespace Setup\Controller;
 
 use Application\Helper\Helper;
-use Setup\Form\LoanForm;
-use Setup\Model\Loan;
-use Setup\Repository\LoanRepository;
+use Setup\Form\AdvanceForm;
+use Setup\Model\Advance;
+use Setup\Repository\AdvanceRepository;
 use Zend\Authentication\AuthenticationService;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\Mvc\Controller\AbstractActionController;
 
-class LoanController extends AbstractActionController{
+class AdvanceController extends AbstractActionController{
     private $form;
     private $adapter;
     private $repository;
@@ -18,13 +18,13 @@ class LoanController extends AbstractActionController{
         
     public function __construct(AdapterInterface $adapter){
         $this->adapter = $adapter;
-        $this->repository = new LoanRepository($adapter);
+        $this->repository = new AdvanceRepository($adapter);
         $auth = new AuthenticationService();
         $this->employeeId = $auth->getStorage()->read()['employee_id'];
     }
     public function initializeForm(){
         $builder = new AnnotationBuilder();
-        $form = new LoanForm();
+        $form = new AdvanceForm();
         $this->form = $builder->createForm($form);
     }
     
@@ -40,15 +40,15 @@ class LoanController extends AbstractActionController{
         if($request->isPost()){
             $this->form->setData($request->getPost());
             if($this->form->isValid()){
-               $loanModel = new Loan();   
-               $loanModel->exchangeArrayFromForm($this->form->getData());
-               $loanModel->loanId = ((int) Helper::getMaxId($this->adapter, Loan::TABLE_NAME, Loan::LOAN_ID))+1;
-               $loanModel->createdDate = Helper::getcurrentExpressionDate();
-               $loanModel->status = 'E';
-               $loanModel->createdBy = $this->employeeId;
-               $this->repository->add($loanModel);
-               $this->flashmessenger()->addMessage("Loan Successfully added!!!");
-               return $this->redirect()->toRoute('loan');
+               $advanceModel = new Advance();   
+               $advanceModel->exchangeArrayFromForm($this->form->getData());
+               $advanceModel->advanceId = ((int) Helper::getMaxId($this->adapter, Advance::TABLE_NAME, Advance::ADVANCE_ID))+1;
+               $advanceModel->createdDate = Helper::getcurrentExpressionDate();
+               $advanceModel->status = 'E';
+               $advanceModel->createdBy = $this->employeeId;
+               $this->repository->add($advanceModel);
+               $this->flashmessenger()->addMessage("Advance Successfully added!!!");
+               return $this->redirect()->toRoute('advance');
             }       
         }
         return Helper::addFlashMessagesToArray($this, ['form'=>$this->form]);              
@@ -57,26 +57,26 @@ class LoanController extends AbstractActionController{
     public function editAction() {
         $id = (int) $this->params()->fromRoute("id");
         if ($id === 0) {
-            return $this->redirect()->toRoute('loan');
+            return $this->redirect()->toRoute('advance');
         }
 
         $this->initializeForm();
         $request = $this->getRequest();
 
-        $loanModel = new Loan();
+        $advanceModel = new Advance();
         if (!$request->isPost()) {
-            $loanModel->exchangeArrayFromDB($this->repository->fetchById($id)->getArrayCopy());
-            $this->form->bind($loanModel);
+            $advanceModel->exchangeArrayFromDB($this->repository->fetchById($id)->getArrayCopy());
+            $this->form->bind($advanceModel);
         } else {
 
             $this->form->setData($request->getPost());
             if ($this->form->isValid()) {
-                $loanModel->exchangeArrayFromForm($this->form->getData());
-                $loanModel->modifiedDate = Helper::getcurrentExpressionDate();
-                $loanModel->modifiedBy = $this->employeeId;
-                $this->repository->edit($loanModel, $id);
-                $this->flashmessenger()->addMessage("Loan Successfully Updated!!!");
-                return $this->redirect()->toRoute("loan");
+                $advanceModel->exchangeArrayFromForm($this->form->getData());
+                $advanceModel->modifiedDate = Helper::getcurrentExpressionDate();
+                $advanceModel->modifiedBy = $this->employeeId;
+                $this->repository->edit($advanceModel, $id);
+                $this->flashmessenger()->addMessage("Advance Successfully Updated!!!");
+                return $this->redirect()->toRoute("advance");
             }
         }
         return Helper::addFlashMessagesToArray(
@@ -87,11 +87,11 @@ class LoanController extends AbstractActionController{
     public function deleteAction() {
         $id = (int) $this->params()->fromRoute("id");
         if (!$id) {
-            return $this->redirect()->toRoute('loan');
+            return $this->redirect()->toRoute('advance');
         }
         $this->repository->delete($id);
-        $this->flashmessenger()->addMessage("Loan Successfully Deleted!!!");
-        return $this->redirect()->toRoute('loan');
+        $this->flashmessenger()->addMessage("Advance Successfully Deleted!!!");
+        return $this->redirect()->toRoute('advance');
     }
 
 }

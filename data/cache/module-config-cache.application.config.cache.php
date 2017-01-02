@@ -826,6 +826,27 @@ return array (
           'defaults' => 
           array (
             'controller' => 'Setup\\Controller\\LoanController',
+<<<<<<< HEAD
+=======
+            'action' => 'index',
+          ),
+        ),
+      ),
+      'advance' => 
+      array (
+        'type' => 'Zend\\Router\\Http\\Segment',
+        'options' => 
+        array (
+          'route' => '/setup/advance[/:action[/:id]]',
+          'constants' => 
+          array (
+            'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+            'id' => '[0-9]+',
+          ),
+          'defaults' => 
+          array (
+            'controller' => 'Setup\\Controller\\AdvanceController',
+>>>>>>> faef0e4b4ee3307325ebc03959678391e4ea968d
             'action' => 'index',
           ),
         ),
@@ -2128,6 +2149,18 @@ return array (
       ),
     ),
     'loan' => 
+<<<<<<< HEAD
+    array (
+      0 => 
+      array (
+        'label' => 'Loan',
+        'route' => 'loan',
+      ),
+      1 => 
+      array (
+        'label' => 'Loan',
+        'route' => 'loan',
+=======
     array (
       0 => 
       array (
@@ -2156,6 +2189,53 @@ return array (
           array (
             'label' => 'Edit',
             'route' => 'loan',
+            'action' => 'edit',
+          ),
+        ),
+      ),
+    ),
+    'advance' => 
+    array (
+      0 => 
+      array (
+        'label' => 'Advance',
+        'route' => 'advance',
+      ),
+      1 => 
+      array (
+        'label' => 'Advance',
+        'route' => 'advance',
+>>>>>>> faef0e4b4ee3307325ebc03959678391e4ea968d
+        'pages' => 
+        array (
+          0 => 
+          array (
+            'label' => 'List',
+<<<<<<< HEAD
+            'route' => 'loan',
+=======
+            'route' => 'advance',
+>>>>>>> faef0e4b4ee3307325ebc03959678391e4ea968d
+            'action' => 'index',
+          ),
+          1 => 
+          array (
+            'label' => 'Add',
+<<<<<<< HEAD
+            'route' => 'loan',
+=======
+            'route' => 'advance',
+>>>>>>> faef0e4b4ee3307325ebc03959678391e4ea968d
+            'action' => 'add',
+          ),
+          2 => 
+          array (
+            'label' => 'Edit',
+<<<<<<< HEAD
+            'route' => 'loan',
+=======
+            'route' => 'advance',
+>>>>>>> faef0e4b4ee3307325ebc03959678391e4ea968d
             'action' => 'edit',
           ),
         ),
@@ -3473,6 +3553,10 @@ return array (
       'Setup\\Controller\\AcademicCourseController' => 'Application\\Controller\\ControllerFactory',
       'Setup\\Controller\\TrainingController' => 'Application\\Controller\\ControllerFactory',
       'Setup\\Controller\\LoanController' => 'Application\\Controller\\ControllerFactory',
+<<<<<<< HEAD
+=======
+      'Setup\\Controller\\AdvanceController' => 'Application\\Controller\\ControllerFactory',
+>>>>>>> faef0e4b4ee3307325ebc03959678391e4ea968d
       'LeaveManagement\\Controller\\LeaveSetup' => 'Application\\Controller\\ControllerFactory',
       'LeaveManagement\\Controller\\leaveAssign' => 'Application\\Controller\\ControllerFactory',
       'LeaveManagement\\Controller\\LeaveApply' => 'Application\\Controller\\ControllerFactory',
@@ -3524,41 +3608,41 @@ return array (
     'exception_template' => 'error/index',
     'template_map' => 
     array (
-      'layout/layout' => '/var/www/html/neo/neo-hris-metronic/module/Application/config/../view/layout/layout.phtml',
-      'layout/login' => '/var/www/html/neo/neo-hris-metronic/module/Application/config/../view/layout/login.phtml',
-      'layout/json' => '/var/www/html/neo/neo-hris-metronic/module/Application/config/../view/layout/json.phtml',
-      'application/index/index' => '/var/www/html/neo/neo-hris-metronic/module/Application/config/../view/application/index/index.phtml',
-      'error/404' => '/var/www/html/neo/neo-hris-metronic/module/Application/config/../view/error/404.phtml',
-      'error/index' => '/var/www/html/neo/neo-hris-metronic/module/Application/config/../view/error/index.phtml',
-      'error/no_access' => '/var/www/html/neo/neo-hris-metronic/module/Application/config/../view/error/no_access.phtml',
-      'partial/header' => '/var/www/html/neo/neo-hris-metronic/module/Application/config/../view/layout/partials/header.phtml',
-      'partial/footer' => '/var/www/html/neo/neo-hris-metronic/module/Application/config/../view/layout/partials/footer.phtml',
-      'partial/sidebar' => '/var/www/html/neo/neo-hris-metronic/module/Application/config/../view/layout/partials/sidebar.phtml',
-      'partial/breadcrumb' => '/var/www/html/neo/neo-hris-metronic/module/Application/config/../view/layout/partials/breadcrumb.phtml',
-      'partial/profile' => '/var/www/html/neo/neo-hris-metronic/module/Application/config/../view/layout/partials/profile.phtml',
-      'dashboard-item/holiday-list' => '/var/www/html/neo/neo-hris-metronic/module/Application/config/../view/layout/dashboard-items/holiday-list.phtml',
-      'dashboard-item/attendance-request' => '/var/www/html/neo/neo-hris-metronic/module/Application/config/../view/layout/dashboard-items/attendance-request.phtml',
-      'dashboard-item/leave-apply' => '/var/www/html/neo/neo-hris-metronic/module/Application/config/../view/layout/dashboard-items/leave-apply.phtml',
-      'dashboard-item/present-absent' => '/var/www/html/neo/neo-hris-metronic/module/Application/config/../view/layout/dashboard-items/present-absent.phtml',
-      'dashboard-item/employee-count-by-branch' => '/var/www/html/neo/neo-hris-metronic/module/Application/config/../view/layout/dashboard-items/employee-count-by-branch.phtml',
-      'dashboard-item/today-leave' => '/var/www/html/neo/neo-hris-metronic/module/Application/config/../view/layout/dashboard-items/today-leave.phtml',
-      'dashboard-item/birthdays' => '/var/www/html/neo/neo-hris-metronic/module/Application/config/../view/layout/dashboard-items/birthdays.phtml',
+      'layout/layout' => '/var/www/html/neo-hris/module/Application/config/../view/layout/layout.phtml',
+      'layout/login' => '/var/www/html/neo-hris/module/Application/config/../view/layout/login.phtml',
+      'layout/json' => '/var/www/html/neo-hris/module/Application/config/../view/layout/json.phtml',
+      'application/index/index' => '/var/www/html/neo-hris/module/Application/config/../view/application/index/index.phtml',
+      'error/404' => '/var/www/html/neo-hris/module/Application/config/../view/error/404.phtml',
+      'error/index' => '/var/www/html/neo-hris/module/Application/config/../view/error/index.phtml',
+      'error/no_access' => '/var/www/html/neo-hris/module/Application/config/../view/error/no_access.phtml',
+      'partial/header' => '/var/www/html/neo-hris/module/Application/config/../view/layout/partials/header.phtml',
+      'partial/footer' => '/var/www/html/neo-hris/module/Application/config/../view/layout/partials/footer.phtml',
+      'partial/sidebar' => '/var/www/html/neo-hris/module/Application/config/../view/layout/partials/sidebar.phtml',
+      'partial/breadcrumb' => '/var/www/html/neo-hris/module/Application/config/../view/layout/partials/breadcrumb.phtml',
+      'partial/profile' => '/var/www/html/neo-hris/module/Application/config/../view/layout/partials/profile.phtml',
+      'dashboard-item/holiday-list' => '/var/www/html/neo-hris/module/Application/config/../view/layout/dashboard-items/holiday-list.phtml',
+      'dashboard-item/attendance-request' => '/var/www/html/neo-hris/module/Application/config/../view/layout/dashboard-items/attendance-request.phtml',
+      'dashboard-item/leave-apply' => '/var/www/html/neo-hris/module/Application/config/../view/layout/dashboard-items/leave-apply.phtml',
+      'dashboard-item/present-absent' => '/var/www/html/neo-hris/module/Application/config/../view/layout/dashboard-items/present-absent.phtml',
+      'dashboard-item/employee-count-by-branch' => '/var/www/html/neo-hris/module/Application/config/../view/layout/dashboard-items/employee-count-by-branch.phtml',
+      'dashboard-item/today-leave' => '/var/www/html/neo-hris/module/Application/config/../view/layout/dashboard-items/today-leave.phtml',
+      'dashboard-item/birthdays' => '/var/www/html/neo-hris/module/Application/config/../view/layout/dashboard-items/birthdays.phtml',
     ),
     'template_path_stack' => 
     array (
-      0 => '/var/www/html/neo/neo-hris-metronic/module/Application/config/../view',
-      1 => '/var/www/html/neo/neo-hris-metronic/module/Setup/config/../view',
-      2 => '/var/www/html/neo/neo-hris-metronic/module/LeaveManagement/config/../view',
-      3 => '/var/www/html/neo/neo-hris-metronic/module/HolidayManagement/config/../view',
-      4 => '/var/www/html/neo/neo-hris-metronic/module/AttendanceManagement/config/../view',
-      5 => '/var/www/html/neo/neo-hris-metronic/module/SelfService/config/../view',
-      6 => '/var/www/html/neo/neo-hris-metronic/module/RestfulService/config/../view',
-      7 => '/var/www/html/neo/neo-hris-metronic/module/Payroll/config/../view',
-      8 => '/var/www/html/neo/neo-hris-metronic/module/ManagerService/config/../view',
-      9 => '/var/www/html/neo/neo-hris-metronic/module/System/config/../view',
-      10 => '/var/www/html/neo/neo-hris-metronic/module/Training/config/../view',
-      11 => '/var/www/html/neo/neo-hris-metronic/module/Appraisal/config/../view',
-      12 => '/var/www/html/neo/neo-hris-metronic/module/LoanAdvance/config/../view',
+      0 => '/var/www/html/neo-hris/module/Application/config/../view',
+      1 => '/var/www/html/neo-hris/module/Setup/config/../view',
+      2 => '/var/www/html/neo-hris/module/LeaveManagement/config/../view',
+      3 => '/var/www/html/neo-hris/module/HolidayManagement/config/../view',
+      4 => '/var/www/html/neo-hris/module/AttendanceManagement/config/../view',
+      5 => '/var/www/html/neo-hris/module/SelfService/config/../view',
+      6 => '/var/www/html/neo-hris/module/RestfulService/config/../view',
+      7 => '/var/www/html/neo-hris/module/Payroll/config/../view',
+      8 => '/var/www/html/neo-hris/module/ManagerService/config/../view',
+      9 => '/var/www/html/neo-hris/module/System/config/../view',
+      10 => '/var/www/html/neo-hris/module/Training/config/../view',
+      11 => '/var/www/html/neo-hris/module/Appraisal/config/../view',
+      12 => '/var/www/html/neo-hris/module/LoanAdvance/config/../view',
     ),
   ),
   'dashboard-items' => 

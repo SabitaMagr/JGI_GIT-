@@ -264,6 +264,20 @@ return [
                     ]
                 ],
             ],
+            'advance' => [
+                'type' => segment::class,
+                'options' => [
+                    'route' => '/setup/advance[/:action[/:id]]',
+                    'constants' => [
+                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'id' => '[0-9]+',
+                    ],
+                    'defaults' => [
+                        'controller' => Controller\AdvanceController::class,
+                        'action' => 'index',
+                    ]
+                ],
+            ],
 
 //            'leave' => [
 //                'type' => segment::class,
@@ -769,6 +783,33 @@ return [
                 ]
             ]
         ],
+        'advance' => [
+            [
+                'label' => 'Advance',
+                'route' => 'advance',
+            ],
+            [
+                'label' => 'Advance',
+                'route' => 'advance',
+                'pages' => [
+                    [
+                        'label' => 'List',
+                        'route' => 'advance',
+                        'action' => 'index',
+                    ],
+                    [
+                        'label' => 'Add',
+                        'route' => 'advance',
+                        'action' => 'add',
+                    ],
+                    [
+                        'label' => 'Edit',
+                        'route' => 'advance',
+                        'action' => 'edit',
+                    ],
+                ]
+            ]
+        ],
     ],
     'controllers' => [
         'factories' => [
@@ -789,7 +830,8 @@ return [
             Controller\AcademicProgramController::class=>ControllerFactory::class,
             Controller\AcademicCourseController::class=>ControllerFactory::class,
             Controller\TrainingController::class=>ControllerFactory::class,
-            Controller\LoanController::class=>ControllerFactory::class
+            Controller\LoanController::class=>ControllerFactory::class,
+            Controller\AdvanceController::class=> ControllerFactory::class
 //            Controller\LeaveMasterController::class => Controller\ControllerFactory::class,
         ],
 
