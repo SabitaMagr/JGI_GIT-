@@ -812,12 +812,12 @@ return array (
           ),
         ),
       ),
-      'loanAdvance' => 
+      'loan' => 
       array (
         'type' => 'Zend\\Router\\Http\\Segment',
         'options' => 
         array (
-          'route' => '/setup/loanAdvance[/:action[/:id]]',
+          'route' => '/setup/loan[/:action[/:id]]',
           'constants' => 
           array (
             'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
@@ -825,7 +825,7 @@ return array (
           ),
           'defaults' => 
           array (
-            'controller' => 'Setup\\Controller\\LoanAdvanceController',
+            'controller' => 'Setup\\Controller\\LoanController',
             'action' => 'index',
           ),
         ),
@@ -1602,6 +1602,12 @@ return array (
             'route' => 'employee',
             'action' => 'edit',
           ),
+          3 => 
+          array (
+            'label' => 'Detail',
+            'route' => 'employee',
+            'action' => 'view',
+          ),
         ),
       ),
     ),
@@ -2121,35 +2127,35 @@ return array (
         ),
       ),
     ),
-    'loanAdvance' => 
+    'loan' => 
     array (
       0 => 
       array (
-        'label' => 'Loan And Advance',
-        'route' => 'loanAdvance',
+        'label' => 'Loan',
+        'route' => 'loan',
       ),
       1 => 
       array (
-        'label' => 'Loan And Advance',
-        'route' => 'loanAdvance',
+        'label' => 'Loan',
+        'route' => 'loan',
         'pages' => 
         array (
           0 => 
           array (
             'label' => 'List',
-            'route' => 'loanAdvance',
+            'route' => 'loan',
             'action' => 'index',
           ),
           1 => 
           array (
             'label' => 'Add',
-            'route' => 'loanAdvance',
+            'route' => 'loan',
             'action' => 'add',
           ),
           2 => 
           array (
             'label' => 'Edit',
-            'route' => 'loanAdvance',
+            'route' => 'loan',
             'action' => 'edit',
           ),
         ),
@@ -3466,7 +3472,7 @@ return array (
       'Setup\\Controller\\AcademicProgramController' => 'Application\\Controller\\ControllerFactory',
       'Setup\\Controller\\AcademicCourseController' => 'Application\\Controller\\ControllerFactory',
       'Setup\\Controller\\TrainingController' => 'Application\\Controller\\ControllerFactory',
-      'Setup\\Controller\\LoanAdvanceController' => 'Application\\Controller\\ControllerFactory',
+      'Setup\\Controller\\LoanController' => 'Application\\Controller\\ControllerFactory',
       'LeaveManagement\\Controller\\LeaveSetup' => 'Application\\Controller\\ControllerFactory',
       'LeaveManagement\\Controller\\leaveAssign' => 'Application\\Controller\\ControllerFactory',
       'LeaveManagement\\Controller\\LeaveApply' => 'Application\\Controller\\ControllerFactory',

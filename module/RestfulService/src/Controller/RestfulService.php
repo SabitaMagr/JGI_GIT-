@@ -8,8 +8,10 @@ use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
 use Application\Model\Months;
 use Application\Repository\MonthRepository;
+use AttendanceManagement\Model\Attendance;
 use AttendanceManagement\Model\ShiftAssign;
 use AttendanceManagement\Model\ShiftSetup;
+use AttendanceManagement\Repository\AttendanceDetailRepository;
 use AttendanceManagement\Repository\AttendanceStatusRepository;
 use AttendanceManagement\Repository\ShiftAssignRepository;
 use HolidayManagement\Repository\HolidayRepository;
@@ -56,7 +58,6 @@ use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Adapter\Driver\ResultInterface;
 use Zend\Mvc\Controller\AbstractRestfulController;
 use Zend\View\Model\JsonModel;
-use AttendanceManagement\Repository\AttendanceDetailRepository;
 
 class RestfulService extends AbstractRestfulController {
 
@@ -260,6 +261,10 @@ class RestfulService extends AbstractRestfulController {
                 case "pullAttendanceList":
                     $responseData = $this->pullAttendanceList($postedData->data);
                     break;
+                case "employeeAttendanceApi":
+                    $responseData = $this->employeeAttendanceApi($postedData);
+                    break;
+
                 default:
                     $responseData = [
                         "success" => false
@@ -821,14 +826,14 @@ class RestfulService extends AbstractRestfulController {
                         'BALANCE' => 0,
                         'LEAVE_ID' => $leaveId,
                         'EMPLOYEE_ID' => $employeeId,
-                        'SERVICE_EVENT_TYPE_ID'=>0
+                        'SERVICE_EVENT_TYPE_ID' => 0
                     ];
                 } else if ($leaveBalanceDtl != false && $leaveBalanceDtl['BALANCE'] == NULL) {
                     $leaveBalance = [
                         'BALANCE' => 0,
                         'LEAVE_ID' => $leaveId,
                         'EMPLOYEE_ID' => $employeeId,
-                        'SERVICE_EVENT_TYPE_ID'=>0
+                        'SERVICE_EVENT_TYPE_ID' => 0
                     ];
                 } else {
                     $leaveBalance = $leaveBalanceDtl;
@@ -1787,8 +1792,8 @@ class RestfulService extends AbstractRestfulController {
             "data" => $data
         ];
     }
-    
-    public function pullAttendanceList($data){
+
+    public function pullAttendanceList($data) {
         $attendanceDetailRepository = new AttendanceDetailRepository($this->adapter);
         $employeeId = $data['employeeId'];
         $branchId = $data['branchId'];
@@ -1800,35 +1805,59 @@ class RestfulService extends AbstractRestfulController {
         $fromDate = $data['fromDate'];
         $toDate = $data['toDate'];
         $status = $data['status'];
-        
-        $result = $attendanceDetailRepository->filterRecord($employeeId,$branchId,$departmentId,$positionId,$designationId,$serviceTypeId,$serviceEventTypeId,$fromDate,$toDate,$status);       
+
+        $result = $attendanceDetailRepository->filterRecord($employeeId, $branchId, $departmentId, $positionId, $designationId, $serviceTypeId, $serviceEventTypeId, $fromDate, $toDate, $status);
         $list = [];
-        foreach($result as $row){
-            if($status=='L'){
-                $row['STATUS']= "On Leave[".$row['LEAVE_ENAME']."]";
-            }else if($status=='H'){
-                $row['STATUS']= "On Holiday[".$row['HOLIDAY_ENAME']."]";
-            }else if($status=='A'){
-                $row['STATUS']= "Absent";
-            }else if($status=='P'){
-                $row['STATUS']= "Present";
-            }else{
-                if($row['LEAVE_ENAME']!=null){
-                   $row['STATUS']= "On Leave[".$row['LEAVE_ENAME']."]"; 
-                }else if($row['HOLIDAY_ENAME']!=null){
-                   $row['STATUS']= "On Holiday[".$row['HOLIDAY_ENAME']."]";
-                }else if($row['HOLIDAY_ENAME']==null&&$row['LEAVE_ENAME']==null&&$row['IN_TIME']==null){
-                    $row['STATUS']= "Absent";
-                }else if($row['IN_TIME']!=null){
-                   $row['STATUS']= "Present"; 
+        foreach ($result as $row) {
+            if ($status == 'L') {
+                $row['STATUS'] = "On Leave[" . $row['LEAVE_ENAME'] . "]";
+            } else if ($status == 'H') {
+                $row['STATUS'] = "On Holiday[" . $row['HOLIDAY_ENAME'] . "]";
+            } else if ($status == 'A') {
+                $row['STATUS'] = "Absent";
+            } else if ($status == 'P') {
+                $row['STATUS'] = "Present";
+            } else {
+                if ($row['LEAVE_ENAME'] != null) {
+                    $row['STATUS'] = "On Leave[" . $row['LEAVE_ENAME'] . "]";
+                } else if ($row['HOLIDAY_ENAME'] != null) {
+                    $row['STATUS'] = "On Holiday[" . $row['HOLIDAY_ENAME'] . "]";
+                } else if ($row['HOLIDAY_ENAME'] == null && $row['LEAVE_ENAME'] == null && $row['IN_TIME'] == null) {
+                    $row['STATUS'] = "Absent";
+                } else if ($row['IN_TIME'] != null) {
+                    $row['STATUS'] = "Present";
                 }
             }
             array_push($list, $row);
         }
         return [
-          'success'=>"true",
-          "data"=>$list
+            'success' => "true",
+            "data" => $list
         ];
+    }
+
+    public function employeeAttendanceApi($data) {
+        if (isset($data['employeeId']) && isset($data['attendanceDt']) && isset($data['attendanceTime'])) {
+            try {
+                $employeeId = $data['employeeId'];
+                $attendanceDt = $data['attendanceDt'];
+                $attendanceTime = $data['attendanceTime'];
+
+                $attendance = new Attendance();
+                $attendance->employeeId = $employeeId;
+
+                $attendance->attendanceDt = Helper::getExpressionDate($attendanceDt);
+                $attendance->attendanceTime = Helper::getExpressionTime($attendanceTime);
+
+                $attendanceRepo = new AttendanceDetailRepository($this->adapter);
+                $check = $attendanceRepo->addAttendance($attendance);
+                return ["success" => $check ? true : false];
+            } catch (Exception $e) {
+                return ["success" => false];
+            }
+        } else {
+            return ["success" => false, "message" => "please supply required parameters"];
+        }
     }
 
 }

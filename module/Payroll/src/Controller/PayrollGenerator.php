@@ -117,27 +117,8 @@ class PayrollGenerator {
             foreach (self::SYSTEM_RULE as $systemRule) {
                 $rule = $this->convertSystemRuleToValue($rule, $systemRule);
             }
-//            if ($counter == 3) {
-//                print "<pre>";
-//                print_r($rule);
-//                exit;
-//            }
-//            print($rule);
-//            try {
-
-
-
-
-
-
-            $temp = "try{" . $rule . '}catch(\Exception $e){print "<pre>";echo ' . $rule . ";exit;}";
+            
             $ruleValue = eval($rule);
-//            } catch (\Exception $e) {
-//                print "<pre>";
-//                print($rule);
-//                exit;
-//            }
-
 
             array_push($this->ruleDetailList, ["ruleValue" => $ruleValue, "rule" => $ruleObj, "ruleDetail" => $ruleDetail]);
 
