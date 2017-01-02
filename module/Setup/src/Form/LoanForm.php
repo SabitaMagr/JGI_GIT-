@@ -71,15 +71,6 @@ class LoanForm
      * @Annotation\Attributes({ "id":"form-repaymentPeriod", "class":"form-repaymentPeriod form-control" })
      */
     public $repaymentPeriod;
-    
-    /**
-     * @Annotion\Type("Zend\Form\Element\Radio")
-     * @Annotation\Required({"required":"true"})
-     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
-     * @Annotation\Options({"label":"Deduct On Salary"})
-     * @Annotation\Attributes({ "id":"form-deductOnSalary", "class":"form-deductOnSalary form-control" })
-     */
-    public $deductOnSalary;
 
     /**
      * @Annotation\Type("Zend\Form\Element\Textarea")
