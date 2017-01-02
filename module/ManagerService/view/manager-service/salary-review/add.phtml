@@ -1,0 +1,67 @@
+
+<?php
+$this->headScript()
+        ->appendFile($this->basePath('jszip/dist/jszip.min.js'))
+        ->appendFile($this->basePath('telerik_kendoui/js/kendo.all.min.js'))
+        ->appendFile($this->basePath('js/manager-service/salary-review/add.js'));
+?>
+<?php if ($this->messages) { ?>
+    <script>
+        document.messages =<?php echo json_encode($this->messages); ?>
+    </script>
+<?php } ?>
+<script>
+    document.menu =<?php
+$menu = ["id" => "menuManagerService", "subMenu" => ["id" => "subMenuSalaryReview"]];
+echo json_encode($menu);
+?>;
+    document.serviceHistoryList = '<?= $this->url('salaryReview', ['action' => 'history']) ?>';
+    document.fetchLastSalaryReviewDate='<?= $this->url('salaryReview', ['action' => 'lastReviewDate']) ?>';
+</script>
+<div class="page-bar">
+    <?= $this->navigation('Zend\Navigation\salaryReview')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
+</div>
+
+<div class="row">
+    <div class="col-sm-8 col-sm-offset-2">
+        <div class="portlet box custom-box">
+            <div class="portlet-title">
+                <div class="caption">
+                    <i class="fa fa-money">
+                    </i>
+                    Salary Review
+                </div>
+            </div>
+            <div class="portlet-body">
+                <form action="<?= $this->url('salaryReview', ['action' => 'add']) ?>" method="POST">
+                    <div class="form-group">
+                        <?php print $this->formLabel($employeeElement); ?>
+                        <?php print $this->formElement($employeeElement); ?>
+                    </div>
+                    <div class="form-group">
+                        <label for="oldAmount">Old Amount</label>
+                        <input type="number" required id="oldAmount" name="oldAmount" class="form-control" >
+                    </div>
+                    <div class="form-group">
+                        <label for="oldAmount">New Amount</label>
+                        <input type="number" required id="newAmount" name="newAmount" class="form-control" >
+                    </div>
+                    <div class="form-group">
+                        <label for="effectiveDate">Effective Date</label>
+                        <input type="text" required id="effectiveDate" name="effectiveDate" class="form-control" >
+                    </div>
+                    <div class="form-group">
+                        <label for="jobHistoryId"> Service Events  </label>
+                        <select id="jobHistoryId" name="jobHistoryId" class="form-control" ></select>
+                    </div>
+
+                    <input type="submit" />
+
+                </form>
+
+            </div>
+        </div>
+    </div>
+
+
+</div>

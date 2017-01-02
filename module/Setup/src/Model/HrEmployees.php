@@ -86,6 +86,7 @@ class HrEmployees extends Model {
     public $appBranchId;
     public $countryId;
     public $profilePictureId;
+    public $retiredFlag;
 
     const TABLE_NAME = "HR_EMPLOYEES";
     const EMPLOYEE_ID = "EMPLOYEE_ID";
@@ -167,6 +168,7 @@ class HrEmployees extends Model {
     const ADDR_PERM_COUNTRY_ID = "ADDR_PERM_COUNTRY_ID";
     const ADDR_TEMP_COUNTRY_ID = "ADDR_TEMP_COUNTRY_ID";
     const PROFILE_PICTURE_ID = "PROFILE_PICTURE_ID";
+    const RETIRED_FLAG = "RETIRED_FLAG";
 
     public $mappings = [
         'employeeId' => self::EMPLOYEE_ID,
@@ -247,7 +249,8 @@ class HrEmployees extends Model {
         'countryId' => self::COUNTRY_ID,
         'addrPermCountryId' => self::ADDR_PERM_COUNTRY_ID,
         'addrTempCountryId' => self::ADDR_TEMP_COUNTRY_ID,
-        'profilePictureId' => self::PROFILE_PICTURE_ID
+        'profilePictureId' => self::PROFILE_PICTURE_ID,
+        'retiredFlag' => self::RETIRED_FLAG,
     ];
 
 }

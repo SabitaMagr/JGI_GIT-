@@ -6,6 +6,7 @@ use Application\Helper\Helper;
 use Application\Model\Model;
 use Application\Model\Months;
 use Zend\Db\Adapter\AdapterInterface;
+use Zend\Db\Sql\Expression;
 use Zend\Db\Sql\Select;
 use Zend\Db\Sql\Sql;
 use Zend\Db\Sql\Where;
@@ -85,6 +86,17 @@ class MonthRepository implements RepositoryInterface {
                     });
                     $select->order(Months::FROM_DATE . " " . Select::ORDER_ASCENDING);
                 });
+    }
+
+    public function fetchByDate(Expression $currentDate) {
+        return $this->gateway->select(function(Select $select) use($currentDate) {
+                    $select->where([Months::STATUS => 'E']);
+                    $select->where(function(Where $where) use ($currentDate) {
+//                        $where->lessThan(Months::TO_DATE, $currentDate);
+//                        $where->lessThan(Months::FROM_DATE, $currentDate);
+                        $where->between($currentDate, Months::TO_DATE, Months::FROM_DATE);
+                    });
+                })->current();
     }
 
 }

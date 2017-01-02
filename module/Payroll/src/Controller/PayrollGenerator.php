@@ -47,12 +47,16 @@ class PayrollGenerator {
         "TOTAL_DAYS_FROM_JOIN_DATE",
         "SERVICE_TYPE",
         "NO_OF_WORKING_DAYS_INC_HOLIDAYS",
-        "TOTAL_NO_OF_WORK_DAYS_INC_HOLIDAYS"
+        "TOTAL_NO_OF_WORK_DAYS_INC_HOLIDAYS",
+        "SALARY_REVIEW",
+        "SALARY_REVIEW_OLD_SALARY",
     ];
     const SYSTEM_RULE = [
         "CUR_MTH_VAL",
         "MTH_RESULT",
-        "YR_RESULT"
+        "YR_RESULT",
+        "CUR_MTH_START_VAL",
+        "CUR_MTH_END_VAL",
     ];
 
     public function __construct($adapter, int $monthId) {
