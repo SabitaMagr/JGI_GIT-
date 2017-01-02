@@ -848,6 +848,24 @@ return array (
           ),
         ),
       ),
+      'institute' => 
+      array (
+        'type' => 'Zend\\Router\\Http\\Segment',
+        'options' => 
+        array (
+          'route' => '/setup/institute[/:action[/:id]]',
+          'constants' => 
+          array (
+            'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+            'id' => '[0-9]+',
+          ),
+          'defaults' => 
+          array (
+            'controller' => 'Setup\\Controller\\InstituteController',
+            'action' => 'index',
+          ),
+        ),
+      ),
       'leavesetup' => 
       array (
         'type' => 'Zend\\Router\\Http\\Segment',
@@ -2213,6 +2231,40 @@ return array (
         ),
       ),
     ),
+    'institute' => 
+    array (
+      0 => 
+      array (
+        'label' => 'Institute',
+        'route' => 'institute',
+      ),
+      1 => 
+      array (
+        'label' => 'Institute',
+        'route' => 'institute',
+        'pages' => 
+        array (
+          0 => 
+          array (
+            'label' => 'List',
+            'route' => 'institute',
+            'action' => 'index',
+          ),
+          1 => 
+          array (
+            'label' => 'Add',
+            'route' => 'institute',
+            'action' => 'add',
+          ),
+          2 => 
+          array (
+            'label' => 'Edit',
+            'route' => 'institute',
+            'action' => 'edit',
+          ),
+        ),
+      ),
+    ),
     'leavesetup' => 
     array (
       0 => 
@@ -3526,6 +3578,7 @@ return array (
       'Setup\\Controller\\TrainingController' => 'Application\\Controller\\ControllerFactory',
       'Setup\\Controller\\LoanController' => 'Application\\Controller\\ControllerFactory',
       'Setup\\Controller\\AdvanceController' => 'Application\\Controller\\ControllerFactory',
+      'Setup\\Controller\\InstituteController' => 'Application\\Controller\\ControllerFactory',
       'LeaveManagement\\Controller\\LeaveSetup' => 'Application\\Controller\\ControllerFactory',
       'LeaveManagement\\Controller\\leaveAssign' => 'Application\\Controller\\ControllerFactory',
       'LeaveManagement\\Controller\\LeaveApply' => 'Application\\Controller\\ControllerFactory',

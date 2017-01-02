@@ -60,7 +60,7 @@ class AdvanceForm
      * @Annotion\Type("Zend\Form\Element\Number")
      * @Annotation\Required({"required":"true"})
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
-     * @Annotation\Options({"label":"Re-Payment Period(in month)"})
+     * @Annotation\Options({"label":"Month To Allow(in month)"})
      * @Annotation\Attributes({ "id":"form-monthToAllow", "class":"form-monthToAllow form-control" })
      */
     public $monthToAllow;
