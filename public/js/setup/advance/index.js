@@ -1,9 +1,9 @@
 (function ($, app) {
     'use strict';
     $(document).ready(function () {
-        $("#loanTable").kendoGrid({
+        $("#advanceTable").kendoGrid({
             dataSource: {
-                data: document.loans,
+                data: document.advances,
                 pageSize: 20
             },
             height: 450,
@@ -16,12 +16,12 @@
             },
             rowTemplate: kendo.template($("#rowTemplate").html()),
             columns: [
-                {field: "LOAN_CODE", title: "Loan Code",width:80},
-                {field: "LOAN_NAME", title: "Loan Name",width:130},
-                {field: "MIN_AMOUNT", title: "Amount Range",width:90},
-                {field: "INTEREST_RATE", title: "Interest Rate",width:90},
-                {field: "REPAYMENT_AMOUNT", title: "Repayment Amount",width:120},
-                {field: "REPAYMENT_PERIOD", title: "Repayment Period(in month)",width:150},
+                {field: "ADVANCE_CODE", title: "Advance Code",width:80},
+                {field: "ADVANCE_NAME", title: "Advance Name",width:130},
+                {field: "MIN_SALARY_AMT", title: "Min. Salary Amount",width:90},
+                {field: "MAX_SALARY_AMT", title: "Max Salary Amount",width:90},
+                {field: "AMOUNT_TO_ALLOW", title: "Amount To Allow",width:120},
+                {field: "MONTH_TO_ALLOW", title: "Month To Allow",width:150},
                 {title: "Action",width:100}
             ]
         });
@@ -29,16 +29,16 @@
         $("#export").click(function (e) {
             var rows = [{
                     cells: [
-                        {value: "Loan Code"},
-                        {value: "Loan Name"},
-                        {value: "Amount Range"},
-                        {value: "Interest Rate"},
-                        {value: "Repayment Amount"},
-                        {value: "Repayment Period"},
+                        {value: "Advance Code"},
+                        {value: "Advance Name"},
+                        {value: "Min. Salary Amount"},
+                        {value: "Max. Salary Amount"},
+                        {value: "Amount To Allow"},
+                        {value: "Month To Allow"},
                         {value: "Remarks"}
                     ]
                 }];
-            var dataSource = $("#loanTable").data("kendoGrid").dataSource;
+            var dataSource = $("#advanceTable").data("kendoGrid").dataSource;
             var filteredDataSource = new kendo.data.DataSource({
                 data: dataSource.data(),
                 filter: dataSource.filter()
@@ -51,12 +51,11 @@
                 var dataItem = data[i];
                 rows.push({
                     cells: [
-                        {value: dataItem.LOAN_CODE},
-                        {value: dataItem.LOAN_NAME},
-                        {value: dataItem.MIN_AMOUNT+"-"+dataItem.MAX_AMOUNT},
-                        {value: dataItem.INTEREST_RATE+"%"},
-                        {value: dataItem.REPAYMENT_AMOUNT},
-                        {value: dataItem.REPAYMENT_PERIOD},
+                        {value: dataItem.ADVANCE_CODE},
+                        {value: dataItem.ADVANCE_NAME},
+                        {value: dataItem.MIN_SALARY_AMT+"-"+dataItem.MAX_SALARY_AMT},
+                        {value: dataItem.AMOUNT_TO_ALLOW+"%"},
+                        {value: dataItem.MONTH_TO_ALLOW},
                         {value: dataItem.REMARKS}
                     ]
                 });
@@ -76,17 +75,15 @@
                             {autoWidth: true},
                             {autoWidth: true},
                             {autoWidth: true},
-                            {autoWidth: true},
                             {autoWidth: true}
                         ],
-                        title: "Loan",
+                        title: "Advance",
                         rows: rows
                     }
                 ]
             });
-            kendo.saveAs({dataURI: workbook.toDataURL(), fileName: "LoanList.xlsx"});
-        }
-        
+            kendo.saveAs({dataURI: workbook.toDataURL(), fileName: "AdvanceList.xlsx"});
+        }       
         window.app.UIConfirmations();
     });
 })(window.jQuery, window.app);

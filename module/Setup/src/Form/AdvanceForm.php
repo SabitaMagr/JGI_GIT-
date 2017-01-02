@@ -5,76 +5,65 @@ use Zend\Form\Annotation;
 
 /**
  * @Annotation\Hydrator("Zend\Hydrator\ObjectProperty")
- * @Annotation\Name("Loan")
+ * @Annotation\Name("Advance")
  */
-class LoanForm
+class AdvanceForm
 {
-
     /**
      * @Annotion\Type("Zend\Form\Element\Text")
      * @Annotation\Required({"required":"true"})
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
-     * @Annotation\Options({"label":"Loan Code"})
-     * @Annotation\Attributes({ "id":"form-loanCode", "class":"form-loanCode form-control" })
+     * @Annotation\Options({"label":"Advance Code"})
+     * @Annotation\Attributes({ "id":"form-advanceCode", "class":"form-advanceCode form-control" })
      */
-    public $loanCode;
+    public $advanceCode;
      /**
      * @Annotion\Type("Zend\Form\Element\Text")
      * @Annotation\Required({"required":"true"})
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
-     * @Annotation\Options({"label":"Loan Name"})
-     * @Annotation\Attributes({ "id":"form-loanName", "class":"form-loanName form-control" })
+     * @Annotation\Options({"label":"Advance Name"})
+     * @Annotation\Attributes({ "id":"form-advanceName", "class":"form-advanceName form-control" })
      */
-    public $loanName;
+    public $advanceName;
     
     /**
      * @Annotation\Type("Zend\Form\Element\Text")
      * @Annotation\Required({"required":"true"})
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
      * @Annotation\Validator({"name":"Float", "options":{"min":"5","locale":"en"}})
-     * @Annotation\Options({"label":"Min. Amount"})
-     * @Annotation\Attributes({ "id":"form-minAmount","class":"form-control"})
+     * @Annotation\Options({"label":"Min. Salary Amount"})
+     * @Annotation\Attributes({ "id":"form-minSalaryAmt","class":"form-control form-minSalaryAmt"})
      */
-    public $minAmount;
+    public $minSalaryAmt;
     
     /**
      * @Annotation\Type("Zend\Form\Element\Text")
      * @Annotation\Required({"required":"true"})
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
      * @Annotation\Validator({"name":"Float", "options":{"min":"5","locale":"en"}})
-     * @Annotation\Options({"label":"Max. Amount"})
+     * @Annotation\Options({"label":"Max. Salary Amount"})
      * @Annotation\Attributes({ "id":"form-maxAmount","class":"form-control"})
      */
-    public $maxAmount;
+    public $maxSalaryAmt;
 
      /**
      * @Annotion\Type("Zend\Form\Element\Text")
      * @Annotation\Required({"required":"true"})
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Validator({"name":"Float", "options":{"min":"5","locale":"en"}})
-     * @Annotation\Options({"label":"Interest Rate(in %)"})
-     * @Annotation\Attributes({ "id":"form-interestRate", "class":"form-interestRate form-control" })
+     * @Annotation\Options({"label":"Amount To Allow(in %)"})
+     * @Annotation\Attributes({ "id":"form-amountToAllow", "class":"form-amountToAllow form-control" })
      */
-    public $interestRate;
-    
-    /**
-     * @Annotion\Type("Zend\Form\Element\Text")
-     * @Annotation\Required({"required":"true"})
-     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
-     * @Annotation\Validator({"name":"Float", "options":{"min":"5","locale":"en"}})
-     * @Annotation\Options({"label":"Re-Payment Amount(in %)"})
-     * @Annotation\Attributes({ "id":"form-repaymentAmount", "class":"form-repaymentAmount form-control" })
-     */
-    public $repaymentAmount;
-    
+    public $amountToAllow;
+   
     /**
      * @Annotion\Type("Zend\Form\Element\Number")
      * @Annotation\Required({"required":"true"})
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Re-Payment Period(in month)"})
-     * @Annotation\Attributes({ "id":"form-repaymentPeriod", "class":"form-repaymentPeriod form-control" })
+     * @Annotation\Attributes({ "id":"form-monthToAllow", "class":"form-monthToAllow form-control" })
      */
-    public $repaymentPeriod;
+    public $monthToAllow;
 
     /**
      * @Annotation\Type("Zend\Form\Element\Textarea")
