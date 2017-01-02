@@ -1,6 +1,6 @@
 window.app = (function ($, toastr) {
     "use strict";
-    var format = "d-M-yyyy";
+    var format = "dd-M-yyyy";
 
     var pullDataById = function (url, data) {
         return new Promise(function (resolve, reject) {

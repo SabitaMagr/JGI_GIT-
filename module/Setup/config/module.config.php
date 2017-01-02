@@ -250,16 +250,16 @@ return [
                 ],
             ],
 
-            'loanAdvance' => [
+            'loan' => [
                 'type' => segment::class,
                 'options' => [
-                    'route' => '/setup/loanAdvance[/:action[/:id]]',
+                    'route' => '/setup/loan[/:action[/:id]]',
                     'constants' => [
                         'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
                         'id' => '[0-9]+',
                     ],
                     'defaults' => [
-                        'controller' => Controller\LoanAdvanceController::class,
+                        'controller' => Controller\LoanController::class,
                         'action' => 'index',
                     ]
                 ],
@@ -306,6 +306,11 @@ return [
                         'label' => 'Edit',
                         'route' => 'employee',
                         'action' => 'edit',
+                    ],
+                    [
+                        'label' => 'Detail',
+                        'route' => 'employee',
+                        'action' => 'view',
                     ],
                 ]
             ]
@@ -736,29 +741,29 @@ return [
                 ]
             ]
         ],
-        'loanAdvance' => [
+        'loan' => [
 
             [
-                'label' => 'Loan And Advance',
-                'route' => 'loanAdvance',
+                'label' => 'Loan',
+                'route' => 'loan',
             ],
             [
-                'label' => 'Loan And Advance',
-                'route' => 'loanAdvance',
+                'label' => 'Loan',
+                'route' => 'loan',
                 'pages' => [
                     [
                         'label' => 'List',
-                        'route' => 'loanAdvance',
+                        'route' => 'loan',
                         'action' => 'index',
                     ],
                     [
                         'label' => 'Add',
-                        'route' => 'loanAdvance',
+                        'route' => 'loan',
                         'action' => 'add',
                     ],
                     [
                         'label' => 'Edit',
-                        'route' => 'loanAdvance',
+                        'route' => 'loan',
                         'action' => 'edit',
                     ],
                 ]
@@ -784,7 +789,7 @@ return [
             Controller\AcademicProgramController::class=>ControllerFactory::class,
             Controller\AcademicCourseController::class=>ControllerFactory::class,
             Controller\TrainingController::class=>ControllerFactory::class,
-            Controller\LoanAdvanceController::class=>ControllerFactory::class
+            Controller\LoanController::class=>ControllerFactory::class
 //            Controller\LeaveMasterController::class => Controller\ControllerFactory::class,
         ],
 

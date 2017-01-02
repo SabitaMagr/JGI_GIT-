@@ -1,0 +1,82 @@
+<?php
+$this->headScript()->appendFile($this->basePath('js/setup/loan-advance/index.js'));
+
+$form->setAttribute('role', 'form');
+$form->setAttribute('id', 'loanAdvance-form');
+
+$loanCode = $form->get('loanCode');
+$loanName = $form->get('loanName');
+$loanType = $form->get('loanType');
+//$loanType->setValueOptions($loanTypeElement);
+$limitAmount = $form->get('limitAmount');
+$remarks = $form->get('remarks');
+
+$submit = $form->get('submit');
+$submit->setAttribute('value','SUBMIT');
+
+$form->setAttribute('action', $this->url('loan', ['action' => 'add']));
+
+if ($this->messages) {
+    print '<ul class="help-block bg-danger" style="background:#f3e250;">';
+    foreach ($this->messages as $message) {
+        print '<li>' . $message . '</li>';
+    }
+    print '</ul>';
+}
+
+$form->prepare();
+?>
+    <script>
+        document.menu=<?php $menu = ["id" => "menuSetup","subMenu"=>["id"=>"subMenuLoan"]];echo json_encode($menu);?>;
+        document.url = '<?= $this->url("restful", ["action" => "index"]) ?>';
+    </script>
+<div class="page-bar">
+    <?= $this->navigation('Zend\Navigation\loan')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
+</div>
+<div class="row margin-top-20">
+    <div class="col-sm-8 col-sm-offset-2">
+        <div class="portlet box custom-box">
+            <div class="portlet-title">
+                <div class="caption">
+                    <i class="fa fa-user"></i>New Entry
+                </div>
+            </div>
+            <div class="portlet-body">
+                <?php
+                print $this->form()->openTag($form);
+                ?>
+                <div class="form-group">
+                    <?php print $this->formLabel($loanCode); ?>
+                    <?php print $this->formElement($loanCode); ?>
+                    <?php print $this->formElementErrors()->render($loanCode, ['class' => 'help-block']); ?>
+                </div>
+                <div class="form-group">
+                    <?php print $this->formLabel($loanName); ?>
+                    <?php print $this->formElement($loanName); ?>
+                    <?php print $this->formElementErrors()->render($loanName, ['class' => 'help-block']); ?>
+                </div>
+                <div class="form-group">
+                    <?php print $this->formLabel($loanType); ?>
+                    <?php print $this->formElement($loanType); ?>
+                    <?php print $this->formElementErrors()->render($loanType, ['class' => 'help-block']); ?>
+                </div>
+                <div class="form-group">
+                    <?php print $this->formLabel($limitAmount); ?>
+                    <?php print $this->formElement($limitAmount); ?>
+                    <?php print $this->formElementErrors()->render($limitAmount, ['class' => 'help-block']); ?>
+                </div>
+
+                <div class="form-group" >
+                    <?php print $this->formLabel($remarks); ?>
+                    <?php print $this->formElement($remarks); ?>
+                    <?php print $this->formElementErrors()->render($remarks, ['class' => 'help-block']); ?>
+                </div>
+                <?php
+                    print $this->formSubmit($submit);
+                    print $this->form()->closeTag();
+                ?>
+            </div>
+
+        </div>
+    </div>
+</div>
