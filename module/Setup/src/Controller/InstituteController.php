@@ -2,15 +2,15 @@
 namespace Setup\Controller;
 
 use Application\Helper\Helper;
-use Setup\Form\AdvanceForm;
-use Setup\Model\Advance;
-use Setup\Repository\AdvanceRepository;
+use Setup\Form\InstituteForm;
+use Setup\Model\Institute;
+use Setup\Repository\InstituteRepository;
 use Zend\Authentication\AuthenticationService;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\Mvc\Controller\AbstractActionController;
 
-class AdvanceController extends AbstractActionController{
+class InstituteController extends AbstractActionController{
     private $form;
     private $adapter;
     private $repository;
@@ -18,13 +18,13 @@ class AdvanceController extends AbstractActionController{
         
     public function __construct(AdapterInterface $adapter){
         $this->adapter = $adapter;
-        $this->repository = new AdvanceRepository($adapter);
+        $this->repository = new InstituteRepository($adapter);
         $auth = new AuthenticationService();
         $this->employeeId = $auth->getStorage()->read()['employee_id'];
     }
     public function initializeForm(){
         $builder = new AnnotationBuilder();
-        $form = new AdvanceForm();
+        $form = new InstituteForm();
         $this->form = $builder->createForm($form);
     }
     
@@ -40,15 +40,15 @@ class AdvanceController extends AbstractActionController{
         if($request->isPost()){
             $this->form->setData($request->getPost());
             if($this->form->isValid()){
-               $advanceModel = new Advance();   
-               $advanceModel->exchangeArrayFromForm($this->form->getData());
-               $advanceModel->advanceId = ((int) Helper::getMaxId($this->adapter, Advance::TABLE_NAME, Advance::ADVANCE_ID))+1;
-               $advanceModel->createdDate = Helper::getcurrentExpressionDate();
-               $advanceModel->status = 'E';
-               $advanceModel->createdBy = $this->employeeId;               
-               $this->repository->add($advanceModel);
-               $this->flashmessenger()->addMessage("Advance Successfully added!!!");
-               return $this->redirect()->toRoute('advance');
+               $instituteModel = new Institute();   
+               $instituteModel->exchangeArrayFromForm($this->form->getData());
+               $instituteModel->instituteId = ((int) Helper::getMaxId($this->adapter, Institute::TABLE_NAME, Institute::INSTITUTE_ID))+1;
+               $instituteModel->createdDate = Helper::getcurrentExpressionDate();
+               $instituteModel->status = 'E';
+               $instituteModel->createdBy = $this->employeeId;               
+               $this->repository->add($instituteModel);
+               $this->flashmessenger()->addMessage("Institute Successfully added!!!");
+               return $this->redirect()->toRoute('institute');
             }       
         }
         return Helper::addFlashMessagesToArray($this, ['form'=>$this->form]);              
@@ -57,26 +57,26 @@ class AdvanceController extends AbstractActionController{
     public function editAction() {
         $id = (int) $this->params()->fromRoute("id");
         if ($id === 0) {
-            return $this->redirect()->toRoute('advance');
+            return $this->redirect()->toRoute('institute');
         }
 
         $this->initializeForm();
         $request = $this->getRequest();
 
-        $advanceModel = new Advance();
+        $instituteModel = new Institute();
         if (!$request->isPost()) {
-            $advanceModel->exchangeArrayFromDB($this->repository->fetchById($id)->getArrayCopy());
-            $this->form->bind($advanceModel);
+            $instituteModel->exchangeArrayFromDB($this->repository->fetchById($id)->getArrayCopy());
+            $this->form->bind($instituteModel);
         } else {
 
             $this->form->setData($request->getPost());
             if ($this->form->isValid()) {
-                $advanceModel->exchangeArrayFromForm($this->form->getData());
-                $advanceModel->modifiedDate = Helper::getcurrentExpressionDate();
-                $advanceModel->modifiedBy = $this->employeeId;
-                $this->repository->edit($advanceModel, $id);
-                $this->flashmessenger()->addMessage("Advance Successfully Updated!!!");
-                return $this->redirect()->toRoute("advance");
+                $instituteModel->exchangeArrayFromForm($this->form->getData());
+                $instituteModel->modifiedDate = Helper::getcurrentExpressionDate();
+                $instituteModel->modifiedBy = $this->employeeId;
+                $this->repository->edit($instituteModel, $id);
+                $this->flashmessenger()->addMessage("Institute Successfully Updated!!!");
+                return $this->redirect()->toRoute("institute");
             }
         }
         return Helper::addFlashMessagesToArray(
@@ -87,11 +87,11 @@ class AdvanceController extends AbstractActionController{
     public function deleteAction() {
         $id = (int) $this->params()->fromRoute("id");
         if (!$id) {
-            return $this->redirect()->toRoute('advance');
+            return $this->redirect()->toRoute('institute');
         }
         $this->repository->delete($id);
-        $this->flashmessenger()->addMessage("Advance Successfully Deleted!!!");
-        return $this->redirect()->toRoute('advance');
+        $this->flashmessenger()->addMessage("Institute Successfully Deleted!!!");
+        return $this->redirect()->toRoute('institute');
     }
 
 }

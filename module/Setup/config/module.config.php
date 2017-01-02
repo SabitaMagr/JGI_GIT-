@@ -278,6 +278,21 @@ return [
                     ]
                 ],
             ],
+            
+            'institute' => [
+                'type' => segment::class,
+                'options' => [
+                    'route' => '/setup/institute[/:action[/:id]]',
+                    'constants' => [
+                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'id' => '[0-9]+',
+                    ],
+                    'defaults' => [
+                        'controller' => Controller\InstituteController::class,
+                        'action' => 'index',
+                    ]
+                ],
+            ],
 
 //            'leave' => [
 //                'type' => segment::class,
@@ -810,6 +825,33 @@ return [
                 ]
             ]
         ],
+        'institute' => [
+            [
+                'label' => 'Institute',
+                'route' => 'institute',
+            ],
+            [
+                'label' => 'Institute',
+                'route' => 'institute',
+                'pages' => [
+                    [
+                        'label' => 'List',
+                        'route' => 'institute',
+                        'action' => 'index',
+                    ],
+                    [
+                        'label' => 'Add',
+                        'route' => 'institute',
+                        'action' => 'add',
+                    ],
+                    [
+                        'label' => 'Edit',
+                        'route' => 'institute',
+                        'action' => 'edit',
+                    ],
+                ]
+            ]
+        ],
     ],
     'controllers' => [
         'factories' => [
@@ -831,10 +873,10 @@ return [
             Controller\AcademicCourseController::class=>ControllerFactory::class,
             Controller\TrainingController::class=>ControllerFactory::class,
             Controller\LoanController::class=>ControllerFactory::class,
-            Controller\AdvanceController::class=> ControllerFactory::class
+            Controller\AdvanceController::class=> ControllerFactory::class,
+            Controller\InstituteController::class=> ControllerFactory::class
 //            Controller\LeaveMasterController::class => Controller\ControllerFactory::class,
         ],
-
     ],
 
     'view_manager' => [

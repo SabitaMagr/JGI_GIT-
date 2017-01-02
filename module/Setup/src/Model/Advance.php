@@ -34,7 +34,7 @@ class Advance extends Model{
     public $modifiedBy;
     
     public $mappings = [
-        'advanceeId'=>self::ADVANCE_ID,
+        'advanceId'=>self::ADVANCE_ID,
         'advanceCode'=>self::ADVANCE_CODE,
         'advanceName'=>self::ADVANCE_NAME,
         'minSalaryAmt'=>self::MIN_SALARY_AMT,

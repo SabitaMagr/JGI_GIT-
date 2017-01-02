@@ -54,6 +54,7 @@ $form->prepare();
                 <div class="form-group">
                     <?php print $this->formLabel($advanceName); ?>
                     <?php print $this->formElement($advanceName); ?>
+                    <input type="hidden" id="advanceID" value="<?php echo $id; ?>"/>
                     <?php print $this->formElementErrors()->render($advanceName, ['class' => 'help-block error']); ?>
                 </div>
                 <div class="row">
