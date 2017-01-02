@@ -1,6 +1,31 @@
 (function ($) {
     'use strict';
     $(document).ready(function () {
+        
+        $('#FromnepaliDate').nepaliDatePicker({
+            ndpEnglishInput: 'FromenglishDate'            
+        });
+        $('#TonepaliDate').nepaliDatePicker({
+            ndpEnglishInput: 'ToenglishDate'           
+        });
+
+        $('#FromenglishDate').datepicker({format: 'dd-M-yyyy',autoclose: true});
+        $('#FromenglishDate').change(function () {
+            $('#FromnepaliDate').val(AD2BS($('#FromenglishDate').val()));
+        });
+        $('#ToenglishDate').datepicker({format: 'dd-M-yyyy',autoclose: true});
+        $('#ToenglishDate').change(function () {
+            $('#TonepaliDate').val(AD2BS($('#ToenglishDate').val()));
+        });
+
+        $('#FromnepaliDate').change(function () {
+            $('#FromenglishDate').val(BS2AD($('#FromnepaliDate').val()));
+        });
+        $('#TonepaliDate').change(function () {
+            $('#ToenglishDate').val(BS2AD($('#TonepaliDate').val()));
+        });
+
+
         $("#positionTable").kendoGrid({
             dataSource: {
                 data: document.positions,
@@ -39,7 +64,7 @@
 
             filteredDataSource.read();
             var data = filteredDataSource.view();
-            
+
             for (var i = 0; i < data.length; i++) {
                 var dataItem = data[i];
                 rows.push({
@@ -53,7 +78,7 @@
             excelExport(rows);
             e.preventDefault();
         });
-        
+
         function excelExport(rows) {
             var workbook = new kendo.ooxml.Workbook({
                 sheets: [
@@ -70,7 +95,7 @@
             });
             kendo.saveAs({dataURI: workbook.toDataURL(), fileName: "PositionList.xlsx"});
         }
-       
+
         window.app.UIConfirmations();
 
 //        var exportFlag = true;

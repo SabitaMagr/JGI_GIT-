@@ -18,7 +18,7 @@ class HrEmployeesFormTabFour extends Model
      * @Annotation\Type("Zend\Form\Element\Text")
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Join Date"})
-     * @Annotation\Attributes({"class":"form-control" })
+     * @Annotation\Attributes({"class":"form-control","id":"joinDate" })
      */
     public $joinDate;
 

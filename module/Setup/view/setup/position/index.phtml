@@ -5,6 +5,7 @@
 $this->headScript()
         ->appendFile($this->basePath('jszip/dist/jszip.min.js'))
         ->appendFile($this->basePath('telerik_kendoui/js/kendo.all.min.js'))
+        ->appendFile($this->basePath('assets/global/plugins/nepalidate/nepali.datepicker.v2.1.min.js'))
         ->appendFile($this->basePath('js/setup/position/index.js'))
         ->appendFile($this->basePath('assets/global/plugins/bootstrap-confirmation/bootstrap-confirmation.min.js'));
 ?>
@@ -22,6 +23,23 @@ echo json_encode($menu); ?>;
 </script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\Position')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
+</div>
+
+<div class="row">
+    <label class="col-sm-1">From Date</label>
+    <div class="col-sm-3">
+        <input class="form-control" type="text" name='from_date' id="FromnepaliDate" style="width:100px;float:left;"
+               value="">
+        <input class="form-control" type="text" name='from_date' id="FromenglishDate" style="width:100px;"
+               value="">
+    </div>
+    <label class="col-sm-1">To Date</label>
+    <div class="col-sm-3">
+        <input class="form-control" type="text" name='to_date' id="TonepaliDate" style="width:100px;float:left;"
+               value="">
+        <input class="form-control" type="text" name='to_date' id="ToenglishDate" style="width:100px;"
+               value="">
+    </div>
 </div>
 
 
