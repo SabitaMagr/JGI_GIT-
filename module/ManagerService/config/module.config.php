@@ -157,6 +157,15 @@ return [
                         'label' => 'List',
                         'route' => 'salaryReview',
                         'action' => 'index',
+                    ], [
+                        'label' => 'Add',
+                        'route' => 'salaryReview',
+                        'action' => 'add',
+                    ],
+                        [
+                        'label' => 'Edit',
+                        'route' => 'loanApprove',
+                        'action' => 'edit',
                     ],
                 ]
             ]

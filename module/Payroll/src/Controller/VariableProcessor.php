@@ -16,28 +16,12 @@ use Application\Repository\MonthRepository;
 use AttendanceManagement\Model\AttendanceDetail;
 use AttendanceManagement\Repository\AttendanceDetailRepository;
 use LeaveManagement\Repository\LeaveMasterRepository;
+use ManagerService\Repository\SalaryDetailRepo;
 use Setup\Model\HrEmployees;
 use Setup\Model\ServiceType;
 use Setup\Repository\EmployeeRepository;
 
 class VariableProcessor {
-
-    const VARIABLES = [
-        "BASIC_SALARY",
-        "NO_OF_WORKING_DAYS",
-        "NO_OF_DAYS_ABSENT",
-        "NO_OF_DAYS_WORKED",
-        "NO_OF_PAID_LEAVES",
-        "NO_OF_UNPAID_LEAVES",
-        "TOTAL_DAYS_TO_PAY",
-        "GENDER",
-        "EMP_TYPE",
-        "MARITUAL_STATUS",
-        "TOTAL_DAYS_FROM_JOIN_DATE",
-        "SERVICE_TYPE",
-        "NO_OF_WORKING_DAYS_INC_HOLIDAYS",
-        "TOTAL_NO_OF_WORK_DAYS_INC_HOLIDAYS"
-    ];
 
     private $adapter;
     private $employeeId;
@@ -189,6 +173,41 @@ class VariableProcessor {
                 $workingDays = $attendanceDetail->getTotalNoOfWorkingDays($firstDayExp, $lastDayExp);
                 $processedValue = $workingDays;
                 break;
+//            "SALARY_REVIEW"
+            case PayrollGenerator::VARIABLES[14]:
+                $salaryDetailRepo = new SalaryDetailRepo($this->adapter);
+                $monthsRepo = new MonthRepository($this->adapter);
+                $firstLastDate = $monthsRepo->fetchByMonthId($this->monthId);
+                $attendanceDetail = new AttendanceDetailRepository($this->adapter);
+                $firstDayExp = Helper::getExpressionDate($firstLastDate[Months::FROM_DATE]);
+                $lastDayExp = Helper::getExpressionDate($firstLastDate[Months::TO_DATE]);
+                $salaryDetail = $salaryDetailRepo->fetchIfAvailable($firstDayExp, $lastDayExp, $this->employeeId);
+                if ($salaryDetail->count() > 0) {
+                    $salaryDetail = Helper::extractDbData($salaryDetail);
+                    $effectiveDate = $salaryDetail[0]['EFFECTIVE_DATE'];
+                    $dateObj = \DateTime::createFromFormat(Helper::PHP_DATE_FORMAT, $effectiveDate);
+                    $processedValue = $dateObj->format('d');
+                } else {
+                    $processedValue = 0;
+                }
+                break;
+//            "SALARY_REVIEW_OLD_SALARY"
+            case PayrollGenerator::VARIABLES[14]:
+                $salaryDetailRepo = new SalaryDetailRepo($this->adapter);
+                $monthsRepo = new MonthRepository($this->adapter);
+                $firstLastDate = $monthsRepo->fetchByMonthId($this->monthId);
+                $attendanceDetail = new AttendanceDetailRepository($this->adapter);
+                $firstDayExp = Helper::getExpressionDate($firstLastDate[Months::FROM_DATE]);
+                $lastDayExp = Helper::getExpressionDate($firstLastDate[Months::TO_DATE]);
+                $salaryDetail = $salaryDetailRepo->fetchIfAvailable($firstDayExp, $lastDayExp, $this->employeeId);
+                if ($salaryDetail->count() > 0) {
+                    $salaryDetail = Helper::extractDbData($salaryDetail);
+                    $processedValue = $salaryDetail[0]['OLD_AMOUNT'];
+                } else {
+                    $processedValue = 0;
+                }
+                break;
+
             default:
 
 

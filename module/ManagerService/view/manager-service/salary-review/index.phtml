@@ -1,1 +1,75 @@
-hello world
+<?php
+$this->headScript()
+        ->appendFile($this->basePath('jszip/dist/jszip.min.js'))
+        ->appendFile($this->basePath('telerik_kendoui/js/kendo.all.min.js'))
+        ->appendFile($this->basePath('js/manager-service/salary-review/index.js'))
+;
+?>
+<?php if ($this->messages) { ?>
+    <script>
+        document.messages =<?php echo json_encode($this->messages); ?>
+    </script>
+<?php } ?>
+
+<script>
+    document.menu =<?php
+$menu = ["id" => "menuManagerService", "subMenu" => ["id" => "subMenuSalaryReview"]];
+echo json_encode($menu);
+?>;
+    document.salaryDetails =<?= json_encode($salaryDetails) ?>;
+    
+</script>
+<div class="page-bar">
+    <?= $this->navigation('Zend\Navigation\salaryReview')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
+</div>
+
+
+
+<div class="margin-top-20">
+    <div class="table-toolbar">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="btn-group">
+                    <a href="<?= $this->url('salaryReview', ['action' => 'add']) ?>" id="sample_editable_1_new"
+                       class="btn green"> Add New
+                        <i class="fa fa-plus"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="btn-group pull-right">
+                    <button class="btn green btn-outline dropdown-toggle" data-toggle="dropdown">Tools
+                        <i class="fa fa-angle-down"></i>
+                    </button>
+                    <ul class="dropdown-menu pull-right">
+                        <li>
+                            <a href="javascript:;" id="export"> Export to Excel </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="salaryReviewTable">
+    </div>
+    <script id="rowTemplate" type="text/x-kendo-tmpl">
+        <tr>
+            <td>                 
+                #: (EMPLOYEE_ID == null) ? '-' : EMPLOYEE_ID #
+                  </td>
+            <td> 
+            #: (OLD_AMOUNT == null) ? '-' : OLD_AMOUNT #
+        </            td>
+            <td>
+            #: (NEW_AMOUNT == null) ? '-' : NEW_AMOUNT #
+        </            td>
+            <td>
+            #: (EFFECTIVE_DATE == null) ? '-' : EFFECTIVE_DATE #
+        </            td>
+            <td>
+            #: (JOB_HISTORY_ID == null) ? '-' : JOB_HISTORY_ID #
+        </td>
+
+    </tr>
+    </script>
+</div>

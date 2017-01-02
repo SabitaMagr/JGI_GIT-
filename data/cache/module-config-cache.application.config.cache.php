@@ -3110,6 +3110,18 @@ return array (
             'route' => 'salaryReview',
             'action' => 'index',
           ),
+          1 => 
+          array (
+            'label' => 'Add',
+            'route' => 'salaryReview',
+            'action' => 'add',
+          ),
+          2 => 
+          array (
+            'label' => 'Edit',
+            'route' => 'loanApprove',
+            'action' => 'edit',
+          ),
         ),
       ),
     ),
