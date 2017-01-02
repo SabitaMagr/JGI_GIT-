@@ -20,6 +20,7 @@ use Setup\Model\Position;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\Mvc\Controller\AbstractActionController;
+use Zend\View\Model\ViewModel;
 
 class Rules extends AbstractActionController {
 
@@ -65,6 +66,24 @@ class Rules extends AbstractActionController {
                     'id' => $id,
                     'fiscalYears' => $fiscalYears]
         );
+    }
+
+    public function pullReferencedRulesAction() {
+        $request = $this->getRequest();
+        $data = [];
+        if ($request->isPost()) {
+            $postedData = $request->getPost();
+            $payId = $postedData['payId'];
+            $refRules = $this->repository->fetchReferencingRules($payId);
+            $data = Helper::extractDbData($refRules);
+        } else {
+            $data = ['success' => FALSE, 'message' => 'Request should be of post method'];
+        }
+
+        $view = new ViewModel(['data' => $data]);
+        $view->setTerminal(true);
+        $view->setTemplate('layout/json');
+        return $view;
     }
 
 }

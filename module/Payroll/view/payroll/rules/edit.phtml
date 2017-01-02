@@ -26,6 +26,7 @@ echo json_encode($menu);
 
     document.rulesIndexUrl = '<?= $this->url("rules", ["action" => "index"]) ?>';
     document.fiscalYears =<?= json_encode($fiscalYears) ?>;
+    document.pullReferencedRules = '<?= $this->url("rules", ["action" => "pullReferencedRules"]) ?>';
 </script>
 
 <?php if ($this->messages) { ?>
