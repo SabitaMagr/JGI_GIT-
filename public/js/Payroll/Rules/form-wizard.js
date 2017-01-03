@@ -69,6 +69,17 @@
                 payId: payId
             }).then(function (success) {
                 console.log("pullReferencedRules res", success);
+                var referencingRules = success;
+                for (var i in referencingRules) {
+                    referencingRules[i].PAY_EDESC = replaceAll(referencingRules[i].PAY_EDESC, " ", "_");
+                    referencingRules[i].PAY_EDESC = referencingRules[i].PAY_EDESC.toUpperCase();
+                    $('#referencingRules').append("<button class='list-group-item refVars' ruleId=" + referencingRules[i].PAY_ID + ">" + referencingRules[i].PAY_EDESC + "</button>");
+                }
+                $('.refVars').on('click', function () {
+                    var $this = $(this);
+                    var cursor = editor.getCursor();
+                    editor.replaceRange("(" + $this.text() + ")", cursor, null);
+                });
             }, function (failure) {
                 console.log("pullReferencedrules fail", failure);
             });

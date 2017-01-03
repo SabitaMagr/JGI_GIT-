@@ -60,6 +60,7 @@ FROM HR_PAY_SETUP P,
 WHERE P.PRIORITY_INDEX < PS.PRIORITY_INDEX";
         $statement = $this->adapter->query($sql);
         $result = $statement->execute();
+        return $result;
     }
 
 }
