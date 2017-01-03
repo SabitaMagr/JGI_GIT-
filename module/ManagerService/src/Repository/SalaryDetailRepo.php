@@ -45,7 +45,7 @@ class SalaryDetailRepo implements RepositoryInterface {
                 FROM HR_SALARY_DETAIL SD
                 WHERE (SD.EFFECTIVE_DATE BETWEEN " . $fromDate->getExpression() . " AND " . $toDate->getExpression() . " )
                 AND SD.EMPLOYEE_ID=$employeeId
-                AND SD.STATUS='E'";
+                AND SD.STATUS='E' ORDER BY SD.EFFECTIVE_DATE DESC";
 
         $statement = $this->adapter->query($sql);
         $result = $statement->execute();

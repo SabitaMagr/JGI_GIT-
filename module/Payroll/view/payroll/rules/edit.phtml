@@ -26,6 +26,7 @@ echo json_encode($menu);
 
     document.rulesIndexUrl = '<?= $this->url("rules", ["action" => "index"]) ?>';
     document.fiscalYears =<?= json_encode($fiscalYears) ?>;
+    document.pullReferencedRules = '<?= $this->url("rules", ["action" => "pullReferencedRules"]) ?>';
 </script>
 
 <?php if ($this->messages) { ?>
@@ -245,19 +246,28 @@ echo json_encode($menu);
                         </div>
                         <div class="col-sm-3">
                             <div>
-                                <select id="years">
-                                </select>
-                            </div> 
-                            <div>
-                                <select id="months">
-                                </select>
-                                <button id="pickMonth" class="btn btn-success">
-                                    <span class="fa fa-youtube">
-                                    </span>
-                                </button>
-                            </div>
-                            <div id="days">
+                                <div>
+                                    <select id="years">
+                                    </select>
+                                </div> 
+                                <div>
+                                    <select id="months">
+                                    </select>
+                                    <button id="pickMonth" class="btn btn-success">
+                                        <span class="fa fa-youtube">
+                                        </span>
+                                    </button>
+                                </div>
+                                <div id="days">
 
+                                </div>
+                            </div>
+                            <div>
+                                <h4>Referencing Rules</h4>
+                                <div class="margin-top-10 scroller" style="height: 150px;">
+                                    <ul class="list-group" id="referencingRules">
+                                    </ul>
+                                </div>
                             </div>
                         </div>
 

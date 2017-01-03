@@ -3,20 +3,20 @@
 namespace Payroll\Controller;
 
 use Application\Helper\EntityHelper;
+use Application\Helper\Helper;
 use Application\Repository\RepositoryInterface;
+use Payroll\Model\FlatValue as FlatValueModel;
 use Payroll\Model\FlatValueDetail;
+use Payroll\Model\MonthlyValue as MonthlyValueModel;
 use Payroll\Model\MonthlyValueDetail;
 use Payroll\Model\PayPositionSetup;
 use Payroll\Model\Rules;
 use Payroll\Model\RulesDetail;
 use Payroll\Repository\FlatValueDetailRepo;
 use Payroll\Repository\MonthlyValueDetailRepo;
-use Payroll\Model\FlatValue as FlatValueModel;
-use Payroll\Model\MonthlyValue as MonthlyValueModel;
 use Payroll\Repository\PayPositionRepo;
 use Payroll\Repository\RulesDetailRepo;
 use Payroll\Repository\RulesRepository;
-use Setup\Entity\HrEmployees;
 
 class PayrollGenerator {
 
@@ -94,13 +94,16 @@ class PayrollGenerator {
             array_push($payList, $payPosition);
         }
         $ruleValueKV = [];
-//        print "<pre>";
         $counter = 0;
         foreach ($payList as $ruleObj) {
             $ruleId = $ruleObj[PayPositionSetup::PAY_ID];
             $ruleDetail = $this->ruleDetailRepo->fetchById($ruleId)->getArrayCopy();
             $rule = $ruleDetail[RulesDetail::MNENONIC_NAME];
             $operationType = $ruleObj[Rules::PAY_TYPE_FLAG];
+
+            $ruleRepo = new RulesRepository($this->adapter);
+            $refRules = $ruleRepo->fetchReferencingRules($ruleId);
+            $refRules = Helper::extractDbData($refRules);
 
             foreach ($this->monthlyValues as $key => $monthlyValue) {
                 $rule = $this->convertConstantToValue($rule, $key, $monthlyValue, $this->monthlyValueDetRepo);
@@ -117,27 +120,10 @@ class PayrollGenerator {
             foreach (self::SYSTEM_RULE as $systemRule) {
                 $rule = $this->convertSystemRuleToValue($rule, $systemRule);
             }
-//            if ($counter == 3) {
-//                print "<pre>";
-//                print_r($rule);
-//                exit;
-//            }
-//            print($rule);
-//            try {
 
+            $rule = $this->convertReferencingRuleToValue($rule, $refRules);
 
-
-
-
-
-            $temp = "try{" . $rule . '}catch(\Exception $e){print "<pre>";echo ' . $rule . ";exit;}";
             $ruleValue = eval($rule);
-//            } catch (\Exception $e) {
-//                print "<pre>";
-//                print($rule);
-//                exit;
-//            }
-
 
             array_push($this->ruleDetailList, ["ruleValue" => $ruleValue, "rule" => $ruleObj, "ruleDetail" => $ruleDetail]);
 
@@ -149,7 +135,6 @@ class PayrollGenerator {
             $ruleValueKV[$ruleId] = $ruleValue;
             $counter++;
         }
-//        exit;
 
         return ["ruleValueKV" => $ruleValueKV, "calculatedValue" => $this->calculatedValue];
     }
@@ -211,6 +196,34 @@ class PayrollGenerator {
         }
     }
 
+    private function convertReferencingRuleToValue($rule, $refRules) {
+        foreach ($refRules as $refRule) {
+            $payEdesc = $refRule['PAY_EDESC'];
+            $payEdesc = str_replace(" ", "_", $payEdesc);
+            $payEdesc = strtoupper($payEdesc);
+            if (strpos($rule, $this->wrapWithSmallBracket($payEdesc)) !== false) {
+                $processedRefRules = 0;
+                foreach ($this->ruleDetailList as $ruleDetail) {
+                    if ($ruleDetail['rule']['PAY_ID'] == $refRule['PAY_ID']) {
+                        if (!isset($ruleDetail['ruleValue'])) {
+                            print "<pre>";
+                            print 'not set';
+                            exit;
+                        }
+
+                        $processedRefRules = $ruleDetail['ruleValue'];
+                    }
+                }
+                if (is_string($processedRefRules)) {
+                    $rule = str_replace($payEdesc, "'" . $processedRefRules . "'", $rule);
+                } else {
+                    $rule = str_replace($payEdesc, $processedRefRules, $rule);
+                }
+            }
+        }
+        return $rule;
+    }
+
     private function wrapWithLargeBracket($input) {
         return "[" . $input . "]";
     }
@@ -218,6 +231,16 @@ class PayrollGenerator {
     private function unwrapWithLargeBracket($input) {
         $temp = str_replace("[", "", $input);
         $temp = str_replace("]", "", $temp);
+        return $temp;
+    }
+
+    private function wrapWithSmallBracket($input) {
+        return "(" . $input . ")";
+    }
+
+    private function unwrapWithSmallBracket($input) {
+        $temp = str_replace("(", "", $input);
+        $temp = str_replace(")", "", $temp);
         return $temp;
     }
 

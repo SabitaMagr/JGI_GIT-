@@ -49,6 +49,10 @@ window.app = (function ($, toastr) {
     };
 
     var startEndDatePicker = function (fromDate, toDate) {
+        if (typeof fromDate === 'undefined' || fromDate == null || typeof toDate === 'undefined' || toDate == null) {
+            return;
+        }
+
         $("#" + fromDate).datepicker({
             format: format,
             todayBtn: 1,

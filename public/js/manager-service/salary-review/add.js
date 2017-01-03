@@ -40,10 +40,19 @@
         };
 
         var fetchLastSalaryReviewDate = function ($this) {
+            console.log("currentMonth", document.currentMonth.FROM_DATE);
+
             app.pullDataById(document.fetchLastSalaryReviewDate, {
-                'employeeId': $this.val()
+                'employeeId': $this.val(),
+                'fromDate': document.currentMonth['FROM_DATE'],
+                'toDate': document.currentMonth['TO_DATE']
             }).then(function (success) {
                 console.log("fetchLastSalaryReviewDate", success);
+                if (success.lastReviewDateThisMonth) {
+                    $effectiveDate.datepicker('setStartDate', new Date(Date.parse(success.lastReviewDateThisMonth.EFFECTIVE_DATE)));
+                } else {
+                    $effectiveDate.datepicker('setStartDate', new Date(Date.parse(document.currentMonth.FROM_DATE)));
+                }
             }, function (failure) {
                 console.log("fetchLastSalaryReviewDate fail", failure);
             });
@@ -53,6 +62,7 @@
         $employeeId.on('change', function () {
             fetchEmployeeSalary($(this));
             fetchServiceEvents($(this));
+            fetchLastSalaryReviewDate($(this));
         });
         populateJobHistory();
 

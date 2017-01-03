@@ -90,12 +90,9 @@ class MonthRepository implements RepositoryInterface {
 
     public function fetchByDate(Expression $currentDate) {
         return $this->gateway->select(function(Select $select) use($currentDate) {
+                    $select->columns(Helper::convertColumnDateFormat($this->adapter, new Months(), ['fromDate', 'toDate'], null, null), FALSE);
                     $select->where([Months::STATUS => 'E']);
-                    $select->where(function(Where $where) use ($currentDate) {
-//                        $where->lessThan(Months::TO_DATE, $currentDate);
-//                        $where->lessThan(Months::FROM_DATE, $currentDate);
-                        $where->between($currentDate, Months::TO_DATE, Months::FROM_DATE);
-                    });
+                    $select->where([Months::FROM_DATE . " <=" . $currentDate->getExpression(), Months::TO_DATE . " >= " . $currentDate->getExpression()]);
                 })->current();
     }
 

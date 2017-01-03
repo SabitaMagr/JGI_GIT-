@@ -73,9 +73,7 @@ class SalaryReviewController extends AbstractActionController {
 
         $monthRepo = new MonthRepository($this->adapter);
         $currentMonth = $monthRepo->fetchByDate(Helper::getcurrentExpressionDate());
-        print "<pre>";
-        print_r($currentMonth);
-        exit;
+
         return Helper::addFlashMessagesToArray($this, [
                     'employeeElement' => $employeeSelect,
                     'currentMonth' => $currentMonth
@@ -126,10 +124,8 @@ class SalaryReviewController extends AbstractActionController {
         $data = [];
         if ($request->isPost()) {
             $postedData = $request->getPost();
-            $jobHistoryList = $jobHistoryRepo->fetchHistoryNotReview($postedData['employeeId']);
-
-
-            $data = ['lastReviewDateThisMonth' => $jobHistoryList];
+            $previousReview = $this->repo->fetchIfAvailable(Helper::getExpressionDate($postedData['fromDate']), Helper::getExpressionDate($postedData['toDate']), $postedData['employeeId']);
+            $data = ['lastReviewDateThisMonth' => $previousReview->current()];
         } else {
             $data = [];
         }

@@ -185,14 +185,17 @@ class VariableProcessor {
                 if ($salaryDetail->count() > 0) {
                     $salaryDetail = Helper::extractDbData($salaryDetail);
                     $effectiveDate = $salaryDetail[0]['EFFECTIVE_DATE'];
+                    $dateObjFrom = \DateTime::createFromFormat(Helper::PHP_DATE_FORMAT, $firstLastDate[Months::FROM_DATE]);
                     $dateObj = \DateTime::createFromFormat(Helper::PHP_DATE_FORMAT, $effectiveDate);
-                    $processedValue = $dateObj->format('d');
+                    $interval = $dateObjFrom->diff($dateObj);
+//                    $processedValue = $dateObj->format('d');
+                    $processedValue = $interval->d;
                 } else {
                     $processedValue = 0;
                 }
                 break;
 //            "SALARY_REVIEW_OLD_SALARY"
-            case PayrollGenerator::VARIABLES[14]:
+            case PayrollGenerator::VARIABLES[15]:
                 $salaryDetailRepo = new SalaryDetailRepo($this->adapter);
                 $monthsRepo = new MonthRepository($this->adapter);
                 $firstLastDate = $monthsRepo->fetchByMonthId($this->monthId);

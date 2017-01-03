@@ -16,7 +16,8 @@ $menu = ["id" => "menuManagerService", "subMenu" => ["id" => "subMenuSalaryRevie
 echo json_encode($menu);
 ?>;
     document.serviceHistoryList = '<?= $this->url('salaryReview', ['action' => 'history']) ?>';
-    document.fetchLastSalaryReviewDate='<?= $this->url('salaryReview', ['action' => 'lastReviewDate']) ?>';
+    document.fetchLastSalaryReviewDate = '<?= $this->url('salaryReview', ['action' => 'lastReviewDate']) ?>';
+    document.currentMonth = <?= json_encode($currentMonth) ?>;
 </script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\salaryReview')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>

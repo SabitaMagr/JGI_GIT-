@@ -61,8 +61,11 @@ class SystemRuleProcessor {
             case PayrollGenerator::SYSTEM_RULE[4]:
                 $monthRepo = new MonthRepository($this->adapter);
                 $month = $monthRepo->fetchByMonthId($this->monthId);
-                $dateObj = \DateTime::createFromFormat(Helper::PHP_DATE_FORMAT, $month['TO_DATE']);
-                $processedValue = $dateObj->format("d");
+                $dateObjFrom = \DateTime::createFromFormat(Helper::PHP_DATE_FORMAT, $month['FROM_DATE']);
+                $dateObjTo = \DateTime::createFromFormat(Helper::PHP_DATE_FORMAT, $month['TO_DATE']);
+                $interval = $dateObjFrom->diff($dateObjTo);
+//                $processedValue = $dateObj->format("d");
+                $processedValue = $interval->d;
                 break;
 //            case PayrollGenerator::SYSTEM_RULE[5]:
 //                break;

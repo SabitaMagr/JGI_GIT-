@@ -62,6 +62,27 @@
             }, function (failure) {
                 console.log("failure", failure);
             });
+        },
+        pullReferencedRules: function (payId) {
+            var obj = this;
+            app.pullDataById(document.pullReferencedRules, {
+                payId: payId
+            }).then(function (success) {
+                console.log("pullReferencedRules res", success);
+                var referencingRules = success;
+                for (var i in referencingRules) {
+                    referencingRules[i].PAY_EDESC = replaceAll(referencingRules[i].PAY_EDESC, " ", "_");
+                    referencingRules[i].PAY_EDESC = referencingRules[i].PAY_EDESC.toUpperCase();
+                    $('#referencingRules').append("<button class='list-group-item refVars' ruleId=" + referencingRules[i].PAY_ID + ">" + referencingRules[i].PAY_EDESC + "</button>");
+                }
+                $('.refVars').on('click', function () {
+                    var $this = $(this);
+                    var cursor = editor.getCursor();
+                    editor.replaceRange("(" + $this.text() + ")", cursor, null);
+                });
+            }, function (failure) {
+                console.log("pullReferencedrules fail", failure);
+            });
         }
     };
     var positionAssigned = {
@@ -210,8 +231,6 @@
     var pushRuleDetail = function () {
         ruleDetail.payId = rulesForm.payId;
         ruleDetail.updateModel(editor.getValue());
-//        console.log("ruledetail", JSON.parse(JSON.stringify(ruleDetail)));
-//        return;
         app.pullDataById(document.url, {
             action: 'pushRuleDetail',
             data: JSON.parse(JSON.stringify(ruleDetail))
@@ -380,6 +399,7 @@
                     eclickFlag = false;
                     initializeCodeMirror();
                     ruleDetail.pullRuleDetailByPayId(rulesForm.payId);
+                    ruleDetail.pullReferencedRules(rulesForm.payId);
 
                 }, function (failure) {
                     console.log("failure", failure);

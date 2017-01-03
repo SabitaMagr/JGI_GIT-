@@ -32,11 +32,11 @@ echo json_encode($menu);
             <select class="form-control" ng-model="role"
                     ng-change="roleChange(role)"
                     ng-options="item as item.ROLE_NAME for item in roles track by item.ROLE_ID">
-                <option value="">All</option>
+                <option value="">Select A Role</option>
             </select>
         </div>
     </div>
-    <div class="row " ng-repeat="dashboard in dashboardItems">
+    <div class="row " ng-repeat="dashboard in dashboardItems" ng-show="role != null">
         <div class="col-sm-2">
             <select class="form-control"   ng-model="dashboard.roleType" ng-change="roleTypeChange(dashboard)">
                 <option ng-repeat="(key,roleType) in roleTypes" value="{{key}}">
@@ -44,7 +44,7 @@ echo json_encode($menu);
                 </option>
             </select>
         </div>
-        <div class="col-sm-4">
+        <div class="col-sm-4" >
             <ul id="roleList">
                 <li>
                     {{dashboard.value}}

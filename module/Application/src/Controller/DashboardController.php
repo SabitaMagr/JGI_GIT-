@@ -144,7 +144,7 @@ class DashboardController extends AbstractActionController {
                         $attendanceDetailRepo = new AttendanceDetailRepository($this->adapter);
                         $presentEmpRawList = $attendanceDetailRepo->getEmployeesAttendanceByDate(Helper::getcurrentExpressionDate(), TRUE, $branchId);
                         break;
-                    case 'C':
+                    case 'E':
                         $attendanceDetailRepo = new AttendanceDetailRepository($this->adapter);
                         $presentEmpRawList = $attendanceDetailRepo->getEmployeesAttendanceByDate(Helper::getcurrentExpressionDate(), TRUE);
                         break;
