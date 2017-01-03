@@ -16,8 +16,8 @@ class LoanRepository implements RepositoryInterface{
 		$this->tableGateway = new TableGateway(Loan::TABLE_NAME,$adapter);
 	}
 	public function add(Model $model){
-		$this->tableGateway->insert($model->getArrayCopyForDB());
-	}
+                $this->tableGateway->insert($model->getArrayCopyForDB());
+        }
 	public function edit(Model $model,$id){
 		$array = $model->getArrayCopyForDB();
 		unset($array[Loan::LOAN_ID]);
