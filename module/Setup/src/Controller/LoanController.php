@@ -9,6 +9,11 @@ use Zend\Authentication\AuthenticationService;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\Mvc\Controller\AbstractActionController;
+use Zend\Form\Element\Select;
+use Application\Helper\EntityHelper as EntityHelper2;
+use Setup\Model\Designation;
+use Setup\Model\Position;
+use Setup\Model\ServiceType;
 
 class LoanController extends AbstractActionController{
     private $form;
@@ -40,24 +45,21 @@ class LoanController extends AbstractActionController{
         $designationFormElement = new Select();
         $designationFormElement->setName("designation");
         $designations = EntityHelper2::getTableKVListWithSortOption($this->adapter, Designation::TABLE_NAME, Designation::DESIGNATION_ID, [Designation::DESIGNATION_TITLE], [Designation::STATUS => 'E'], "DESIGNATION_TITLE", "ASC");
-        $designations1 = [-1 => "All"] + $designations;
-        $designationFormElement->setValueOptions($designations1);
+        $designationFormElement->setValueOptions($designations);
         $designationFormElement->setAttributes(["id" => "designationId", "class" => "form-control","multiple"=>"multiple"]);
         $designationFormElement->setLabel("Designation List");
 
         $positionFormElement = new Select();
         $positionFormElement->setName("position");
         $positions = EntityHelper2::getTableKVListWithSortOption($this->adapter, Position::TABLE_NAME, Position::POSITION_ID, [Position::POSITION_NAME], [Position::STATUS => 'E'], "POSITION_NAME", "ASC");
-        $positions1 = [-1 => "All"] + $positions;
-        $positionFormElement->setValueOptions($positions1);
+        $positionFormElement->setValueOptions($positions);
         $positionFormElement->setAttributes(["id" => "positionId", "class" => "form-control","multiple"=>"multiple"]);
         $positionFormElement->setLabel("Position List");
 
         $serviceTypeFormElement = new Select();
         $serviceTypeFormElement->setName("serviceType");
         $serviceTypes = EntityHelper2::getTableKVListWithSortOption($this->adapter, ServiceType::TABLE_NAME, ServiceType::SERVICE_TYPE_ID, [ServiceType::SERVICE_TYPE_NAME], [ServiceType::STATUS => 'E'], "SERVICE_TYPE_NAME", "ASC");
-        $serviceTypes1 = [-1 => "All"] + $serviceTypes;
-        $serviceTypeFormElement->setValueOptions($serviceTypes1);
+        $serviceTypeFormElement->setValueOptions($serviceTypes);
         $serviceTypeFormElement->setAttributes(["id" => "serviceTypeId", "class" => "form-control","multiple"=>"multiple"]);
         $serviceTypeFormElement->setLabel("Service Type List");
         

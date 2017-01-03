@@ -10,7 +10,7 @@ use Zend\Form\Annotation;
 class AdvanceForm
 {
     /**
-     * @Annotion\Type("Zend\Form\Element\Text")
+     * @Annotation\Type("Zend\Form\Element\Text")
      * @Annotation\Required({"required":"true"})
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Advance Code"})
@@ -18,7 +18,7 @@ class AdvanceForm
      */
     public $advanceCode;
      /**
-     * @Annotion\Type("Zend\Form\Element\Text")
+     * @Annotation\Type("Zend\Form\Element\Text")
      * @Annotation\Required({"required":"true"})
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Advance Name"})
@@ -47,7 +47,7 @@ class AdvanceForm
     public $maxSalaryAmt;
 
      /**
-     * @Annotion\Type("Zend\Form\Element\Text")
+     * @Annotation\Type("Zend\Form\Element\Text")
      * @Annotation\Required({"required":"true"})
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Validator({"name":"Float", "options":{"min":"5","locale":"en"}})
@@ -57,7 +57,7 @@ class AdvanceForm
     public $amountToAllow;
    
     /**
-     * @Annotion\Type("Zend\Form\Element\Number")
+     * @Annotation\Type("Zend\Form\Element\Number")
      * @Annotation\Required({"required":"true"})
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Month To Allow(in month)"})
