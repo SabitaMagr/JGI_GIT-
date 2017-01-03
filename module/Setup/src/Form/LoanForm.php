@@ -59,7 +59,7 @@ class LoanForm
      * @Annotation\Required({"required":"true"})
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Re-Payment Amount(in %)"})
-     * @Annotation\Attributes({ "id":"form-repaymentAmount", "class":"form-repaymentAmount form-control" })
+     * @Annotation\Attributes({ "id":"form-repaymentAmount", "class":"form-repaymentAmount form-control","step":0.5 })
      */
     public $repaymentAmount;
     
