@@ -1,5 +1,5 @@
 <?php
-$this->headScript()->appendFile($this->basePath('js/setup/training/index.js'));
+$this->headScript()->appendFile($this->basePath('js/setup/training/add.js'));
 
 $form->setAttribute('role', 'form');
 $form->setAttribute('id', 'training-form');
@@ -9,6 +9,12 @@ $trainingName = $form->get('trainingName');
 $remarks = $form->get('remarks');
 $startDate = $form->get('startDate');
 $endDate = $form->get('endDate');
+$duration = $form->get('duration');
+$instructorName = $form->get('instructorName');
+$trainingType = $form->get('trainingType');
+$trainingType->setValueOptions($trainingTypeList);
+$instituteName = $form->get('instituteId');
+$instituteName->setValueOptions($instituteNameList);
 
 $submit = $form->get('submit');
 $submit->setAttribute('value','SUBMIT');
@@ -47,34 +53,62 @@ $form->prepare();
                 <div class="form-group">
                     <?php print $this->formLabel($trainingCode); ?>
                     <?php print $this->formElement($trainingCode); ?>
-                    <?php print $this->formElementErrors()->render($trainingCode, ['class' => 'help-block']); ?>
+                    <?php print $this->formElementErrors()->render($trainingCode, ['class' => 'help-block error']); ?>
                 </div>
                 <div class="form-group">
                     <?php print $this->formLabel($trainingName); ?>
                     <?php print $this->formElement($trainingName); ?>
-                    <?php print $this->formElementErrors()->render($trainingName, ['class' => 'help-block']); ?>
+                    <?php print $this->formElementErrors()->render($trainingName, ['class' => 'help-block error']); ?>
                 </div>
-                <div class="form-group">
-                    <?php print $this->formLabel($startDate); ?>
-                    <div class="input-group date" id="startDate">
-                    <?php print $this->formElement($startDate); ?>
-                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                    </div>
-                    <?php print $this->formElementErrors()->render($startDate, ['class' => 'help-block']); ?>
+                <div class="form-group" >
+                    <?php print $this->formLabel($trainingType); ?>
+                    <?php print $this->formElement($trainingType); ?>
+                    <?php print $this->formElementErrors()->render($trainingType, ['class' => 'help-block error']); ?>
                 </div>
-                <div class="form-group">
-                    <?php print $this->formLabel($endDate); ?>
-                    <div class="input-group date" id="endDate">
-                        <?php print $this->formElement($endDate) ?>
-                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                <div class="row">
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <?php print $this->formLabel($startDate); ?>
+                            <div class="input-group date" id="startDate">
+                            <?php print $this->formElement($startDate); ?>
+                                <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                            </div>
+                            <?php print $this->formElementErrors()->render($startDate, ['class' => 'help-block error']); ?>
+                        </div>
                     </div>
-                    <?php print $this->formElementErrors()->render($endDate, ['class' => 'help-block']); ?>
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <?php print $this->formLabel($endDate); ?>
+                            <div class="input-group date" id="endDate">
+                                <?php print $this->formElement($endDate) ?>
+                                <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                            </div>
+                            <?php print $this->formElementErrors()->render($endDate, ['class' => 'help-block error']); ?>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="form-group" >
+                            <?php print $this->formLabel($duration); ?>
+                            <?php print $this->formElement($duration); ?>
+                            <?php print $this->formElementErrors()->render($duration, ['class' => 'help-block error']); ?>
+                        </div> 
+                    </div>
+                </div>
+                <div class="form-group" >
+                    <?php print $this->formLabel($instituteName); ?>
+                    <?php print $this->formElement($instituteName); ?>
+                    <?php print $this->formElementErrors()->render($instituteName, ['class' => 'help-block error']); ?>
+                </div>
+                <div class="form-group" >
+                    <?php print $this->formLabel($instructorName); ?>
+                    <?php print $this->formElement($instructorName); ?>
+                    <?php print $this->formElementErrors()->render($instructorName, ['class' => 'help-block error']); ?>
                 </div>
 
                 <div class="form-group" >
                     <?php print $this->formLabel($remarks); ?>
                     <?php print $this->formElement($remarks); ?>
-                    <?php print $this->formElementErrors()->render($remarks, ['class' => 'help-block']); ?>
+                    <?php print $this->formElementErrors()->render($remarks, ['class' => 'help-block error']); ?>
                 </div>
                 <?php
                     print $this->formSubmit($submit);
