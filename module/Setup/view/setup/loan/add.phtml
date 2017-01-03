@@ -13,6 +13,11 @@ $repaymentAmount = $form->get('repaymentAmount');
 $repaymentPeriod = $form->get('repaymentPeriod');
 $remarks = $form->get('remarks');
 
+$minAmount->setAttribute('step','any');
+$maxAmount->setAttribute('step','any');
+$interestRate->setAttribute('step','any');
+$repaymentAmount->setAttribute('step','any');
+
 $submit = $form->get('submit');
 $submit->setAttribute('value','SUBMIT');
 

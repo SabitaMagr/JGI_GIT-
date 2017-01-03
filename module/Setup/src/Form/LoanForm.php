@@ -28,40 +28,36 @@ class LoanForm
     public $loanName;
     
     /**
-     * @Annotation\Type("Zend\Form\Element\Text")
+     * @Annotation\Type("Zend\Form\Element\Number")
      * @Annotation\Required({"required":"true"})
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
-     * @Annotation\Validator({"name":"Float", "options":{"min":"5","locale":"en"}})
      * @Annotation\Options({"label":"Min. Amount"})
      * @Annotation\Attributes({ "id":"form-minAmount","class":"form-control"})
      */
     public $minAmount;
     
     /**
-     * @Annotation\Type("Zend\Form\Element\Text")
+     * @Annotation\Type("Zend\Form\Element\Number")
      * @Annotation\Required({"required":"true"})
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
-     * @Annotation\Validator({"name":"Float", "options":{"min":"5","locale":"en"}})
      * @Annotation\Options({"label":"Max. Amount"})
      * @Annotation\Attributes({ "id":"form-maxAmount","class":"form-control"})
      */
     public $maxAmount;
 
      /**
-     * @Annotion\Type("Zend\Form\Element\Text")
+     * @Annotion\Type("Zend\Form\Element\Number")
      * @Annotation\Required({"required":"true"})
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
-     * @Annotation\Validator({"name":"Float", "options":{"min":"5","locale":"en"}})
      * @Annotation\Options({"label":"Interest Rate(in %)"})
      * @Annotation\Attributes({ "id":"form-interestRate", "class":"form-interestRate form-control" })
      */
     public $interestRate;
     
     /**
-     * @Annotion\Type("Zend\Form\Element\Text")
+     * @Annotion\Type("Zend\Form\Element\Number")
      * @Annotation\Required({"required":"true"})
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
-     * @Annotation\Validator({"name":"Float", "options":{"min":"5","locale":"en"}})
      * @Annotation\Options({"label":"Re-Payment Amount(in %)"})
      * @Annotation\Attributes({ "id":"form-repaymentAmount", "class":"form-repaymentAmount form-control" })
      */
