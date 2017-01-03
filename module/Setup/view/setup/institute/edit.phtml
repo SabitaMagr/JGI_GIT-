@@ -14,6 +14,14 @@ $remarks = $form->get('remarks');
 $submit = $form->get('submit');
 $submit->setAttribute('value','SUBMIT');
 
+//custom validatin message
+if (key($telephone->getMessages()) == "regexNotMatch") {
+    $telephone->setMessages(["regexNotMatch" => "Invalid Phone Number"]);
+}
+if (key($email->getMessages()) == "regexNotMatch") {
+    $email->setMessages(["regexNotMatch" => "Invalid Email Address"]);
+}
+
 $form->setAttribute('action', $this->url('institute', ['action' => 'edit','id'=>$id]));
 
 if ($this->messages) {
