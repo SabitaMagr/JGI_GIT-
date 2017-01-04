@@ -18,3 +18,10 @@
 })(window.jQuery,window.app);
 
 
+angular.module('hris',[])
+        .controller('loanRestrictionController',function($scope,$http){
+            $scope.view = function(){
+                $scope.salaryRangeFrom = 8000;
+            }
+        });
+

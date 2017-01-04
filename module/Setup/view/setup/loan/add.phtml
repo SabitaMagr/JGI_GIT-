@@ -101,18 +101,55 @@ $form->prepare();
                         </div>
                     </div>
                 </div>  
-                <div class="row">
-                    <div class="col-sm-3">
-                        <?php print $this->formLabel($serviceType); ?>
-                        <?php print $this->formElement($serviceType); ?>
-                    </div>
-                    
-                </div>
                 <div class="form-group" >
                     <?php print $this->formLabel($remarks); ?>
                     <?php print $this->formElement($remarks); ?>
                     <?php print $this->formElementErrors()->render($remarks, ['class' => 'help-block error']); ?>
                 </div>
+                <fieldset class="margin-bottom-20">
+                    <legend style="margin-bottom: 5px !important;">
+                        <span style="font-size:13px;">Restriction For</span>
+                    </legend>
+                        <div class="row">                   
+                            <div class="col-sm-4">
+                                <?php print $this->formLabel($serviceType); ?>
+                                <?php print $this->formElement($serviceType); ?>
+                            </div>
+                            <div class="col-sm-4">
+                                <?php print $this->formLabel($designation); ?>
+                                <?php print $this->formElement($designation); ?>
+                            </div>
+                            <div class="col-sm-4">
+                                <?php print $this->formLabel($position); ?>
+                                <?php print $this->formElement($position); ?>
+                            </div>                       
+                        </div>
+                        <div class="row margin-top-10">                   
+                            <div class="col-sm-6">
+                                <label for="salaryRange">Salary Range</label>
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <input size="5" type="number" id="salaryRangeFrom" placeholder="From" name="salaryRangeFrom" class="form-control"/>
+                                    </div>
+                                    <div class="col-sm-6" style="padding-left: 0px !important;">
+                                        <input size="5" type="number" id="salaryRangeTo" placeholder="To" name="salaryRangeTo" class="form-control"/>
+                                    </div>                                 
+                                </div>                                
+                            </div>
+                            <div class="col-sm-6">
+                                <label for="workingPeriod">Working Period(in year)</label>
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <input size="5" type="number" id="workingPeriodFrom" placeholder="From" name="workingPeriodFrom" class="form-control"/>
+                                    </div>
+                                    <div class="col-sm-6" style="padding-left: 0px !important;">
+                                        <input size="5" type="number" id="workingPeriodTo" placeholder="To" name="workingPeriodTo" class="form-control"/>
+                                    </div>                                 
+                                </div>
+                            </div>                      
+                        </div>
+                    </fieldset>
+                
                 <?php
                     print $this->formSubmit($submit);
                     print $this->form()->closeTag();
