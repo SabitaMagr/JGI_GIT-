@@ -40,7 +40,6 @@ class PayrollGenerator {
         "NO_OF_DAYS_WORKED",
         "NO_OF_PAID_LEAVES",
         "NO_OF_UNPAID_LEAVES",
-        "TOTAL_DAYS_TO_PAY",
         "GENDER",
         "EMP_TYPE",
         "MARITUAL_STATUS",
@@ -48,15 +47,14 @@ class PayrollGenerator {
         "SERVICE_TYPE",
         "NO_OF_WORKING_DAYS_INC_HOLIDAYS",
         "TOTAL_NO_OF_WORK_DAYS_INC_HOLIDAYS",
-        "SALARY_REVIEW",
+        "SALARY_REVIEW_DAY",
         "SALARY_REVIEW_OLD_SALARY",
     ];
     const SYSTEM_RULE = [
-        "CUR_MTH_VAL",
+        "CUR_MTH_ID",
         "MTH_RESULT",
         "YR_RESULT",
-        "CUR_MTH_START_VAL",
-        "CUR_MTH_END_VAL",
+        "CUR_MTH_LAST_DAY",
     ];
 
     public function __construct($adapter, int $monthId) {

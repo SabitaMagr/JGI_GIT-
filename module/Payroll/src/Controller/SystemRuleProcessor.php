@@ -27,7 +27,7 @@ class SystemRuleProcessor {
     public function processSystemRule($systemRule) {
         $processedValue = "";
         switch ($systemRule) {
-//            "CUR_MTH_VAL"
+//            "CUR_MTH_ID"
             case PayrollGenerator::SYSTEM_RULE[0]:
 //                $currentMonth = date('m');
 //                $processedValue = $currentMonth;
@@ -50,15 +50,8 @@ class SystemRuleProcessor {
                 }
                 $processedValue = $calculatedValue;
                 break;
-//                "CUR_MTH_START_VAL"
+//            "CUR_MTH_LAST_DAY"
             case PayrollGenerator::SYSTEM_RULE[3]:
-                $monthRepo = new MonthRepository($this->adapter);
-                $month = $monthRepo->fetchByMonthId($this->monthId);
-                $dateObj = \DateTime::createFromFormat(Helper::PHP_DATE_FORMAT, $month['FROM_DATE']);
-                $processedValue = $dateObj->format("d");
-                break;
-//            "CUR_MTH_END_VAL"
-            case PayrollGenerator::SYSTEM_RULE[4]:
                 $monthRepo = new MonthRepository($this->adapter);
                 $month = $monthRepo->fetchByMonthId($this->monthId);
                 $dateObjFrom = \DateTime::createFromFormat(Helper::PHP_DATE_FORMAT, $month['FROM_DATE']);
