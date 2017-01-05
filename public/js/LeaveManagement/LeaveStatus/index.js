@@ -165,6 +165,7 @@ angular.module('hris', [])
                     });
                     kendo.saveAs({dataURI: workbook.toDataURL(), fileName: "LeaveRequestList.xlsx"});
                 }
+               
                 window.app.UIConfirmations();
             };
         });

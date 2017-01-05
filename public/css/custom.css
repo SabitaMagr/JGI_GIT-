@@ -1482,6 +1482,6 @@ width:33%!important;
 /*rajan's css new end here*/
 
 
-input#endDate, #startDate,#birthdate,#famSpouseBirthDateId,#famSpouseWedAnniId,#idDrivingLicenseExpiry,#idPassportExpiry,#idCitizenshipIssueDate,#joinDate,#fromDate1,#toDate1,#startDate1,#endDate1 {
+input#endDate, #startDate,#birthdate,#famSpouseBirthDateId,#famSpouseWedAnniId,#idDrivingLicenseExpiry,#idPassportExpiry,#idCitizenshipIssueDate,#joinDate,#fromDate1,#toDate1,#startDate1,#endDate1,#form-loanDate {
   text-transform: uppercase;
 }
