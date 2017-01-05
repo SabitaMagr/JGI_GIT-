@@ -16,7 +16,7 @@ $reason = $form->get('reason');
 $submit = $form->get('submit');
 $submit->setAttribute('value','SUBMIT');
 
-$form->setAttribute('action', $this->url('loanAdvanceRequest', ['action' => 'add']));
+$form->setAttribute('action', $this->url('loanRequest', ['action' => 'add']));
 
 if ($this->messages) {
     print '<ul class="help-block bg-danger" style="background:#f3e250;">';
@@ -33,7 +33,7 @@ $form->prepare();
         document.url = '<?= $this->url("restful", ["action" => "index"]) ?>';
     </script>
 <div class="page-bar">
-    <?= $this->navigation('Zend\Navigation\loanAdvanceRequest')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
+    <?= $this->navigation('Zend\Navigation\loanRequest')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
 <div class="row margin-top-20">
     <div class="col-sm-8 col-sm-offset-2">
