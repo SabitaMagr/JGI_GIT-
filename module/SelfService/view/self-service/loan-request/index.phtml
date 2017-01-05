@@ -20,7 +20,7 @@ echo json_encode($menu); ?>;
     document.deleteURL ='<?= $this->url("restful", ["action" => "index"]) ?>';
 </script>
 <div class="page-bar">
-    <?= $this->navigation('Zend\Navigation\loanAdvanceRequest')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
+    <?= $this->navigation('Zend\Navigation\loanRequest')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
 
 
@@ -29,7 +29,7 @@ echo json_encode($menu); ?>;
         <div class="row">
             <div class="col-md-6">
                 <div class="btn-group">
-                    <a href="<?= $this->url('loanAdvanceRequest', ['action' => 'add']) ?>" id="sample_editable_1_new"
+                    <a href="<?= $this->url('loanRequest', ['action' => 'add']) ?>" id="sample_editable_1_new"
                        class="btn green"> Add New
                         <!--                        <i class="fa fa-plus"></i>-->
                     </a>

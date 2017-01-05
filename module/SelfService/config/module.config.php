@@ -20,6 +20,7 @@ use Zend\Router\Http\Segment;
 use SelfService\Controller\LoanAdvanceRequest;
 use Training\Controller\TrainingAssignController;
 use SelfService\Controller\TrainingList;
+use SelfService\Controller\LoanRequest;
 
 return [
     'router' => [
@@ -137,16 +138,16 @@ return [
                 ],
             ],
             
-            'loanAdvanceRequest' => [
+            'loanRequest' => [
                 'type' => Segment::class,
                 'options' => [
-                    'route' => '/selfservice/loanAdvanceRequest[/:action]',
+                    'route' => '/selfservice/loanRequest[/:action]',
                     'constants' => [
                         'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
                         'id' => '[0-9]+',
                     ],
                     'defaults' => [
-                        'controller' => LoanAdvanceRequest::class,
+                        'controller' => LoanRequest::class,
                         'action' => 'index',
                     ]
                 ],
@@ -385,28 +386,28 @@ return [
                 ],
             ],
         ],
-        'loanAdvanceRequest' => [
+        'loanRequest' => [
             [
-                'label' => 'Loan/Advance Request',
-                'route' => 'loanAdvanceRequest',
+                'label' => 'Loan Request',
+                'route' => 'loanRequest',
             ],
             [
-                'label' => 'Loan/Advance Request',
-                'route' => 'loanAdvanceRequest',
+                'label' => 'Loan Request',
+                'route' => 'loanRequest',
                 'pages' => [
                     [
                         'label' => 'Detail',
-                        'route' => 'loanAdvanceRequest',
+                        'route' => 'loanRequest',
                         'action' => 'index',
                     ],
                     [
                         'label' => 'Add',
-                        'route' => 'loanAdvanceRequest',
+                        'route' => 'loanRequest',
                         'action' => 'add',
                     ],
                     [
                         'label' => 'Edit',
-                        'route' => 'loanAdvanceRequest',
+                        'route' => 'loanRequest',
                         'action' => 'edit',
                     ],
                 ],
@@ -451,7 +452,7 @@ return [
             Profile::class => ControllerFactory::class,
             Service::class => ControllerFactory::class,
             PaySlip::class => ControllerFactory::class,
-            LoanAdvanceRequest::class => ControllerFactory::class,
+            LoanRequest::class => ControllerFactory::class,
             TrainingList::class => ControllerFactory::class
         ],
     ],

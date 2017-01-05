@@ -1178,12 +1178,12 @@ return array (
           ),
         ),
       ),
-      'loanAdvanceRequest' => 
+      'loanRequest' => 
       array (
         'type' => 'Zend\\Router\\Http\\Segment',
         'options' => 
         array (
-          'route' => '/selfservice/loanAdvanceRequest[/:action]',
+          'route' => '/selfservice/loanRequest[/:action]',
           'constants' => 
           array (
             'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
@@ -1191,7 +1191,7 @@ return array (
           ),
           'defaults' => 
           array (
-            'controller' => 'SelfService\\Controller\\LoanAdvanceRequest',
+            'controller' => 'SelfService\\Controller\\LoanRequest',
             'action' => 'index',
           ),
         ),
@@ -2889,35 +2889,35 @@ return array (
         ),
       ),
     ),
-    'loanAdvanceRequest' => 
+    'loanRequest' => 
     array (
       0 => 
       array (
-        'label' => 'Loan/Advance Request',
-        'route' => 'loanAdvanceRequest',
+        'label' => 'Loan Request',
+        'route' => 'loanRequest',
       ),
       1 => 
       array (
-        'label' => 'Loan/Advance Request',
-        'route' => 'loanAdvanceRequest',
+        'label' => 'Loan Request',
+        'route' => 'loanRequest',
         'pages' => 
         array (
           0 => 
           array (
             'label' => 'Detail',
-            'route' => 'loanAdvanceRequest',
+            'route' => 'loanRequest',
             'action' => 'index',
           ),
           1 => 
           array (
             'label' => 'Add',
-            'route' => 'loanAdvanceRequest',
+            'route' => 'loanRequest',
             'action' => 'add',
           ),
           2 => 
           array (
             'label' => 'Edit',
-            'route' => 'loanAdvanceRequest',
+            'route' => 'loanRequest',
             'action' => 'edit',
           ),
         ),
@@ -3598,7 +3598,7 @@ return array (
       'SelfService\\Controller\\Profile' => 'Application\\Controller\\ControllerFactory',
       'SelfService\\Controller\\Service' => 'Application\\Controller\\ControllerFactory',
       'SelfService\\Controller\\PaySlip' => 'Application\\Controller\\ControllerFactory',
-      'SelfService\\Controller\\LoanAdvanceRequest' => 'Application\\Controller\\ControllerFactory',
+      'SelfService\\Controller\\LoanRequest' => 'Application\\Controller\\ControllerFactory',
       'SelfService\\Controller\\TrainingList' => 'Application\\Controller\\ControllerFactory',
       'RestfulService\\Controller\\RestfulService' => 'Application\\Controller\\ControllerFactory',
       'Payroll\\Controller\\MonthlyValue' => 'Application\\Controller\\ControllerFactory',

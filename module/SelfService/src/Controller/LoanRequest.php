@@ -6,10 +6,10 @@ use Zend\Db\Adapter\AdapterInterface;
 use Application\Helper\Helper;
 use Application\Helper\EntityHelper;
 use Zend\Form\Annotation\AnnotationBuilder;
-use SelfService\Form\LoanAdvanceRequestForm;
+use SelfService\Form\LoanRequestForm;
 use Setup\Model\HrEmployees;
 
-class LoanAdvanceRequest extends AbstractActionController{
+class LoanRequest extends AbstractActionController{
     private $form;
     private $adapter;
     
@@ -18,7 +18,7 @@ class LoanAdvanceRequest extends AbstractActionController{
     }
     public function initializeForm(){
         $builder = new AnnotationBuilder();
-        $form = new LoanAdvanceRequestForm();
+        $form = new LoanRequestForm();
         $this->form = $builder->createForm($form);
     }
     public function indexAction() {

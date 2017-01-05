@@ -2,13 +2,12 @@
 namespace SelfService\Form;
 
 use Zend\Form\Annotation;
-
 /**
  * @Annotation\Hydrator("Zend\Hydrator\ObjectProperty")
  * @Annotation\Name("TrainingAssign")
  */
 
-class LoanAdvanceRequestForm{
+class LoanRequestForm{
     /**
      * @Annotation\Type("Zend\Form\Element\Select")
      * @Annotation\Required(false)
