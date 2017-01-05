@@ -909,13 +909,17 @@ form label,.form-box label
 }
 .select2-selection__rendered,.select2-selection.select2-selection--multiple
 {
-    height:23px !important;
-    min-height: 23px !important;
-    border-radius: 0px !important;
+/* height:23px !important;*/
+min-height:23px !important;
+ border-radius: 0px !important;
     padding-bottom: 2px;
-
-    font-size: 11px !important;
+   font-size: 11px !important;
     padding-top: 2px;
+ 
+}
+.select2-container--bootstrap .select2-selection--multiple .select2-selection__choice
+{
+   margin-bottom:5px !important; 
 }
 .select2-selection__choice
 {
