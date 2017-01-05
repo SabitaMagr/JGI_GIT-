@@ -6,7 +6,6 @@
  * Date: 9/29/16
  * Time: 12:46 PM
  */
-
 namespace SelfService\Controller;
 
 use ManagerService\Repository\LeaveApproveRepository;
@@ -145,7 +144,6 @@ class LeaveRequest extends AbstractActionController {
 
     public function deleteAction() {
         $id = (int) $this->params()->fromRoute("id");
-
         if (!$id) {
             return $this->redirect()->toRoute('leaverequest');
         }

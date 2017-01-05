@@ -622,7 +622,7 @@ form.k-filter-menu .k-widget, form.k-filter-menu .k-textbox
 }
 .e-setup input{
 
-    height:22px !important;
+    height:23px !important;
     padding-left:5px !important;
 }
 .select2-container--bootstrap .select2-selection--single{
@@ -907,15 +907,28 @@ form label,.form-box label
 {
     padding-left:5px !important;
 }
-.select2-selection__rendered,.select2-selection.select2-selection--multiple
+.select2-selection__rendered
 {
-    height:23px !important;
-    min-height: 23px !important;
-    border-radius: 0px !important;
-    padding-bottom: 2px;
+/* height:23px !important;*/
 
-    font-size: 11px !important;
+ border-radius: 0px !important;
+    padding-bottom: 2px;
+   font-size: 11px !important;
     padding-top: 2px;
+ 
+}
+.select2-container--bootstrap .select2-selection--multiple .select2-selection__choice
+{
+     border-radius: 0px !important;
+    padding-bottom: 2px;
+   font-size: 11px !important;
+   margin-bottom:5px !important; 
+}
+.select2-container--bootstrap .select2-selection
+{
+  min-height:23px !important;
+  border-radius:0px !important;
+
 }
 .select2-selection__choice
 {
@@ -1234,10 +1247,10 @@ padding:0 3px 4px 5px !important;
  .marginspace,.topgap{
      margin-bottom:8px;
  }
- .k-grid.k-widget
+/* .k-grid.k-widget
  {
      overflow-x: hidden !important;
- }
+ }*/
  .finfo-box
  {
      text-align:right;
@@ -1482,6 +1495,6 @@ width:33%!important;
 /*rajan's css new end here*/
 
 
-input#endDate, #startDate,#birthdate,#famSpouseBirthDateId,#famSpouseWedAnniId,#idDrivingLicenseExpiry,#idPassportExpiry,#idCitizenshipIssueDate,#joinDate,#fromDate1,#toDate1,#startDate1,#endDate1 {
+input#endDate, #startDate,#birthdate,#famSpouseBirthDateId,#famSpouseWedAnniId,#idDrivingLicenseExpiry,#idPassportExpiry,#idCitizenshipIssueDate,#joinDate,#fromDate1,#toDate1,#startDate1,#endDate1,#form-loanDate {
   text-transform: uppercase;
 }
