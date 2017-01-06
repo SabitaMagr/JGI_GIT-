@@ -888,8 +888,8 @@ select{
 
 }
 .form-group input{
-    padding-right:0px !important;
-    padding-left:5px !important;
+/*    padding-right:0px !important;
+    padding-left:5px !important;*/
 
 }
 .portlet > .portlet-title > .caption{
