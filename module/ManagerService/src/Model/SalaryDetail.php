@@ -17,6 +17,7 @@ class SalaryDetail extends Model {
     const MODIFIED_BY = "MODIFIED_BY";
     const MODIFIED_DT = "MODIFIED_DT";
     const STATUS = "STATUS";
+    const SALARY_DETAIL_ID = "SALARY_DETAIL_ID";
 
     public $employeeId;
     public $oldAmount;
@@ -28,6 +29,7 @@ class SalaryDetail extends Model {
     public $modifiedBy;
     public $modifiedDt;
     public $status;
+    public $salaryDetailId;
     public $mappings = [
         'employeeId' => self::EMPLOYEE_ID,
         'oldAmount' => self::OLD_AMOUNT,
@@ -39,6 +41,7 @@ class SalaryDetail extends Model {
         'modifiedBy' => self::MODIFIED_BY,
         'modifiedDt' => self::MODIFIED_DT,
         'status' => self::STATUS,
+        'salaryDetailId' => self::SALARY_DETAIL_ID
     ];
 
 }

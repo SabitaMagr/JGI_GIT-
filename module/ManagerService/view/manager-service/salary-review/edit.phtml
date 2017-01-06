@@ -2,7 +2,11 @@
 <?php
 $this->headScript()
         ->appendFile($this->basePath('jszip/dist/jszip.min.js'))
-        ->appendFile($this->basePath('telerik_kendoui/js/kendo.all.min.js'));
+        ->appendFile($this->basePath('telerik_kendoui/js/kendo.all.min.js'))
+        ->appendFile($this->basePath('assets/global/plugins/nepalidate/nepali.datepicker.v2.1.min.js'))
+        ->appendFile($this->basePath('js/nepali-datepicker-ext.js'))
+        ->appendFile($this->basePath('js/manager-service/salary-review/edit.js'))
+;
 ?>
 <?php if ($this->messages) { ?>
     <script>
@@ -15,6 +19,7 @@ $this->headScript()
 $menu = ["id" => "menuManagerService", "subMenu" => ["id" => "subMenuSalaryReview"]];
 echo json_encode($menu);
 ?>;
+    document.salaryDetail =<?= json_encode($salaryDetail) ?>;
 </script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\salaryReview')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
@@ -32,7 +37,7 @@ echo json_encode($menu);
                 </div>
             </div>
             <div class="portlet-body">
-                <form action="<?= $this->url('salaryReview', ['action' => 'add']) ?>" method="POST">
+                <form action="<?= $this->url('salaryReview', ['action' => 'edit', 'id' => $id]) ?>" method="POST">
                     <div class="form-group">
                         <?php print $this->formLabel($employeeElement); ?>
                         <?php print $this->formElement($employeeElement); ?>
@@ -45,15 +50,23 @@ echo json_encode($menu);
                         <label for="oldAmount">New Amount</label>
                         <input type="number" required id="newAmount" name="newAmount" class="form-control" >
                     </div>
-                    <div class="form-group">
-                        <label for="effectiveDate">Effective Date</label>
-                        <input type="text" required id="effectiveDate" name="effectiveDate" class="form-control" >
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            <label for="effectiveDate">Effective Date</label>
+                            <input type="text" required id="effectiveDate" name="effectiveDate" class="form-control" >
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="effectiveNepaliDate">Effective Nepali Date</label>
+                            <input type="text" required id="effectiveNepaliDate" name="effectiveNepaliDate" class="form-control" >
+                        </div>
                     </div>
+
                     <div class="form-group">
                         <label for="jobHistoryId"> Service Events  </label>
                         <select id="jobHistoryId" name="jobHistoryId" class="form-control" ></select>
                     </div>
-                    <input type="submit" />
+
+                    <input type="submit" class="btn btn-success" />
 
                 </form>
 
