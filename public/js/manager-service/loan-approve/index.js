@@ -1,7 +1,7 @@
 (function ($) {
     'use strict';
     $(document).ready(function () {
-
+        console.log(document.loanApprove);
         $("#loanApproveTable").kendoGrid({
             excel: {
                 fileName: "LoanRequestList.xlsx",
@@ -27,8 +27,8 @@
                 {field: "LOAN_NAME", title: "Loan Name", width: 120},
                 {field: "REQUESTED_DATE", title: "Requested Date", width: 140},
                 {field: "LOAN_DATE", title: "Loan Date", width: 100},
-                {field: "REQUESTED_AMOUNT", title: "Requested Amount", width: 90},
-                {field: "YOUR_ROLE", title: "Your Role", width: 120},
+                {field: "REQUESTED_AMOUNT", title: "Requested Amount", width: 120},
+                {field: "YOUR_ROLE", title: "Your Role", width: 100},
                 {title: "Action", width: 70}
             ]
         });

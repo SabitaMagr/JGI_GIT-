@@ -1,6 +1,6 @@
 <?php
 
-namespace LoanAdvance;
+namespace Loan;
 
 use Application\Helper\SessionHelper;
 use Zend\ModuleManager\Feature\ConfigProviderInterface;

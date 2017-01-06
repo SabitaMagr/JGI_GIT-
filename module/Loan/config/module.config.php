@@ -1,9 +1,9 @@
 <?php
-namespace LoanAdvance;
+namespace Loan;
 
 use Application\Controller\ControllerFactory;
-use LoanAdvance\Controller\LoanAdvanceStatus;
-use LoanAdvance\Controller\LoanAdvanceApply;
+use Loan\Controller\LoanAdvanceStatus;
+use Loan\Controller\LoanAdvanceApply;
 use Zend\Router\Http\Segment;
 
 return [
@@ -12,7 +12,7 @@ return [
             'loanAdvanceStatus' => [
                 'type' => Segment::class,
                 'options' => [
-                    'route' => '/loanAdvance/status[/:action[/:id]]',
+                    'route' => '/loan/status[/:action[/:id]]',
                     'constraints' => [
                         'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
                         'id' => '[0-9]+',
@@ -26,7 +26,7 @@ return [
             'loanAdvanceApply' => [
                 'type' => Segment::class,
                 'options' => [
-                    'route' => '/loanAdvance/apply[/:action[/:id]]',
+                    'route' => '/loan/apply[/:action[/:id]]',
                     'constraints' => [
                         'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
                         'id' => '[0-9]+',

@@ -58,6 +58,8 @@ use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Adapter\Driver\ResultInterface;
 use Zend\Mvc\Controller\AbstractRestfulController;
 use Zend\View\Model\JsonModel;
+use SelfService\Repository\LoanRequestRepository;
+use ManagerService\Repository\LoanApproveRepository;
 
 class RestfulService extends AbstractRestfulController {
 
@@ -233,6 +235,9 @@ class RestfulService extends AbstractRestfulController {
                     break;
                 case 'pullLeaveRequestStatusList':
                     $responseData = $this->pullLeaveRequestStatusList($postedData->data);
+                    break;
+                case "pullLoanRequestStatusList":
+                    $responseData = $this->pullLoanRequestStatusList($postedData->data);
                     break;
                 case 'pullAttendanceRequestStatusList':
                     $responseData = $this->pullAttendanceRequestStatusList($postedData->data);
@@ -1469,6 +1474,73 @@ class RestfulService extends AbstractRestfulController {
             $recomApproveId = null;
         }
         $result = $leaveStatusRepository->getFilteredRecord($data, $recomApproveId);
+
+        $recordList = [];
+        $getRoleDtl = function($recommender, $approver, $recomApproveId) {
+            if ($recomApproveId == $recommender) {
+                return 'RECOMMENDER';
+            } else if ($recomApproveId == $approver) {
+                return 'APPROVER';
+            } else {
+                return null;
+            }
+        };
+        $getRole = function($recommender, $approver, $recomApproveId) {
+            if ($recomApproveId == $recommender) {
+                return 2;
+            } else if ($recomApproveId == $approver) {
+                return 3;
+            } else {
+                return null;
+            }
+        };
+
+        $getValue = function($status) {
+            if ($status == "RQ") {
+                return "Pending";
+            } else if ($status == 'RC') {
+                return "Recommended";
+            } else if ($status == "R") {
+                return "Rejected";
+            } else if ($status == "AP") {
+                return "Approved";
+            } else if ($status == "C") {
+                return "Cancelled";
+            }
+        };
+
+
+        foreach ($result as $row) {
+            $status = $getValue($row['STATUS']);
+            $role = $getRole($row['RECOMMENDER'], $row['APPROVER'], $recomApproveId);
+            if ($role == 3 && $row['STATUS'] == 'RC') {
+                $status = "Pending";
+            }
+            $role = [
+                'YOUR_ROLE' => $getRoleDtl($row['RECOMMENDER'], $row['APPROVER'], $recomApproveId),
+                'ROLE' => $role
+            ];
+            $new_row = array_merge($row, ['STATUS' => $status]);
+            $final_record = array_merge($new_row, $role);
+            array_push($recordList, $final_record);
+        }
+
+        return [
+            "success" => "true",
+            "data" => $recordList,
+            "num" => count($recordList),
+            "recomApproveId" => $recomApproveId
+        ];
+    }
+    
+    public function pullLoanRequestStatusList($data){
+        $loanStatusRepository = new LoanStatusRepository($this->adapter);
+        if (key_exists('recomApproveId', $data)) {
+            $recomApproveId = $data['recomApproveId'];
+        } else {
+            $recomApproveId = null;
+        }
+        $result = $loanStatusRepository->getFilteredRecord($data, $recomApproveId);
 
         $recordList = [];
         $getRoleDtl = function($recommender, $approver, $recomApproveId) {

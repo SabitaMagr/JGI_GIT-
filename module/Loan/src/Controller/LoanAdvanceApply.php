@@ -1,5 +1,5 @@
 <?php
-namespace LoanAdvance\Controller;
+namespace Loan\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\Db\Adapter\AdapterInterface;

@@ -35,12 +35,14 @@ class LeaveStatusRepository implements RepositoryInterface {
 
     public function getAllRequest($status = null, $date = null, $branchId = NULL, $employeeId = NULL) {
 
-        $sql = "SELECT L.LEAVE_ENAME,LA.NO_OF_DAYS,LA.START_DATE
-                ,LA.END_DATE,LA.REQUESTED_DT AS APPLIED_DATE,
+        $sql = "SELECT L.LEAVE_ENAME,LA.NO_OF_DAYS,
+                TO_CHAR(LA.START_DATE, 'DD-MON-YYYY') AS START_DATE,
+                TO_CHAR(LA.END_DATE, 'DD-MON-YYYY') AS END_DATE,
+                TO_CHAR(LA.REQUESTED_DT, 'DD-MON-YYYY') AS APPLIED_DATE,
                 LA.STATUS AS STATUS,
                 LA.ID AS ID,
-                LA.RECOMMENDED_DT AS RECOMMENDED_DT,
-                LA.APPROVED_DT AS APPROVED_DT,
+                TO_CHAR(LA.RECOMMENDED_DT, 'DD-MON-YYYY') AS RECOMMENDED_DT,
+                TO_CHAR(LA.APPROVED_DT, 'DD-MON-YYYY') AS APPROVED_DT,
                 E.FIRST_NAME,E.MIDDLE_NAME,E.LAST_NAME,
                 E1.FIRST_NAME AS FN1,E1.MIDDLE_NAME AS MN1,E1.LAST_NAME AS LN1,
                 E2.FIRST_NAME AS FN2,E2.MIDDLE_NAME AS MN2,E2.LAST_NAME AS LN2,
@@ -88,11 +90,11 @@ class LeaveStatusRepository implements RepositoryInterface {
         $sql = new Sql($this->adapter);
         $select = $sql->select();
         $select->columns([
-            new Expression("LA.START_DATE AS START_DATE"),
+            new Expression("TO_CHAR(LA.START_DATE, 'DD-MON-YYYY') AS START_DATE"),
             new Expression("TO_CHAR(LA.REQUESTED_DT, 'DD-MON-YYYY') AS REQUESTED_DT"),
             new Expression("LA.STATUS AS STATUS"),
             new Expression("LA.ID AS ID"),
-            new Expression("LA.END_DATE AS END_DATE"),
+            new Expression("TO_CHAR(LA.END_DATE, 'DD-MON-YYYY') AS END_DATE"),
             new Expression("LA.NO_OF_DAYS AS NO_OF_DAYS"),
             new Expression("LA.HALF_DAY AS HALF_DAY"),
             new Expression("LA.EMPLOYEE_ID AS EMPLOYEE_ID"),
@@ -140,12 +142,14 @@ class LeaveStatusRepository implements RepositoryInterface {
             $retiredFlag = " AND E.RETIRED_FLAG='N' ";
         }
         
-        $sql = "SELECT L.LEAVE_ENAME,LA.NO_OF_DAYS,LA.START_DATE
-                ,LA.END_DATE,LA.REQUESTED_DT AS APPLIED_DATE,
+        $sql = "SELECT L.LEAVE_ENAME,LA.NO_OF_DAYS,
+                TO_CHAR(LA.START_DATE, 'DD-MON-YYYY') AS START_DATE,
+                TO_CHAR(LA.END_DATE, 'DD-MON-YYYY') AS END_DATE,
+                TO_CHAR(LA.REQUESTED_DT, 'DD-MON-YYYY') AS APPLIED_DATE,
                 LA.STATUS AS STATUS,
                 LA.ID AS ID,
-                LA.RECOMMENDED_DT AS RECOMMENDED_DT,
-                LA.APPROVED_DT AS APPROVED_DT,
+                TO_CHAR(LA.RECOMMENDED_DT, 'DD-MON-YYYY') AS RECOMMENDED_DT,
+                TO_CHAR(LA.APPROVED_DT, 'DD-MON-YYYY') AS APPROVED_DT,
                 E.FIRST_NAME,E.MIDDLE_NAME,E.LAST_NAME,
                 E1.FIRST_NAME AS FN1,E1.MIDDLE_NAME AS MN1,E1.LAST_NAME AS LN1,
                 E2.FIRST_NAME AS FN2,E2.MIDDLE_NAME AS MN2,E2.LAST_NAME AS LN2,
