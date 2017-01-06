@@ -141,7 +141,7 @@ return [
             'loanRequest' => [
                 'type' => Segment::class,
                 'options' => [
-                    'route' => '/selfservice/loanRequest[/:action]',
+                    'route' => '/selfservice/loanRequest[/:action[/:id]]',
                     'constants' => [
                         'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
                         'id' => '[0-9]+',
@@ -409,6 +409,11 @@ return [
                         'label' => 'Edit',
                         'route' => 'loanRequest',
                         'action' => 'edit',
+                    ],
+                    [
+                        'label' => 'Detail',
+                        'route' => 'loanRequest',
+                        'action' => 'view',
                     ],
                 ],
             ],

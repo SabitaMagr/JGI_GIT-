@@ -21,46 +21,27 @@ class LoanRequestForm{
      * @Annotation\Type("Zend\Form\Element\Select")
      * @Annotation\Required(false)
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
-     * @Annotation\Options({"disable_inarray_validator":"true","label":"Loan/Advance Name"})
-     * @Annotation\Attributes({ "id":"form-loanAdvanceId","class":"form-control"})
+     * @Annotation\Options({"disable_inarray_validator":"true","label":"Loan Name"})
+     * @Annotation\Attributes({ "id":"form-loanId","class":"form-control"})
      */
-    public $loanAdvanceId;
+    public $loanId;
      /**
-     * @Annotion\Type("Zend\Form\Element\Text")
+     * @Annotation\Type("Zend\Form\Element\Number")
      * @Annotation\Required({"required":"true"})
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Request Amount"})
-     * @Annotation\Attributes({ "id":"form-requestAmount", "class":"form-requestAmount form-control" })
+     * @Annotation\Attributes({ "id":"form-requestedAmount", "class":"form-requestedAmount form-control" })
      */
-    public $requestAmount;
+    public $requestedAmount;
      /**
-     * @Annotion\Type("Zend\Form\Element\Text")
+     * @Annotation\Type("Zend\Form\Element\Text")
      * @Annotation\Required({"required":"true"})
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
-     * @Annotation\Options({"label":"Repayment Period"})
-     * @Annotation\Attributes({ "id":"form-repaymentPeriod", "class":"form-repaymentPeriod form-control" })
+     * @Annotation\Options({"label":"Loan Date"})
+     * @Annotation\Attributes({ "id":"form-loanDate", "class":"form-loanDate form-control" })
      */
-    public $repaymentPeriod;
-    
-    /**
-     * @Annotion\Type("Zend\Form\Element\Text")
-     * @Annotation\Required({"required":"true"})
-     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
-     * @Annotation\Options({"label":"Advance Amount"})
-     * @Annotation\Attributes({ "id":"form-advanceAmount", "class":"form-advanceAmount form-control" })
-     */
-    public $advanceAmount;
-    
-    /**
-     * @Annotion\Type("Zend\Form\Element\Text")
-     * @Annotation\Required({"required":"true"})
-     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
-     * @Annotation\Options({"label":"Repayment Amount"})
-     * @Annotation\Attributes({ "id":"form-repaymentAmount", "class":"form-repaymentAmount form-control" })
-     */
-    public $repaymentAmount;
-    
-
+    public $loanDate;
+   
     /**
      * @Annotation\Type("Zend\Form\Element\Textarea")
      * @Annotation\Required(false)

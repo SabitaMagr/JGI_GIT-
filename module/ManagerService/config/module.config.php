@@ -119,11 +119,11 @@ return [
         ],
         'loanApprove' => [
                 [
-                'label' => 'Loan/Advance Request',
+                'label' => 'Loan Request',
                 'route' => 'loanApprove',
             ],
                 [
-                'label' => 'Loan/Advance Request',
+                'label' => 'Loan Request',
                 'route' => 'loanApprove',
                 'pages' => [
                         [

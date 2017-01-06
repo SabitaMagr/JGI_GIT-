@@ -27,6 +27,8 @@ echo json_encode($menu);
     document.rulesIndexUrl = '<?= $this->url("rules", ["action" => "index"]) ?>';
     document.fiscalYears =<?= json_encode($fiscalYears) ?>;
     document.pullReferencedRules = '<?= $this->url("rules", ["action" => "pullReferencedRules"]) ?>';
+    document.genders =<?= json_encode($genders) ?>;
+    document.serviceTypes =<?= json_encode($serviceTypes) ?>;
 </script>
 
 <?php if ($this->messages) { ?>
@@ -204,70 +206,95 @@ echo json_encode($menu);
                 </div>
                 <div class="tab-pane" id="tab2">
                     <div class="row">
-                        <div class="col-sm-3">
-                            <h4>Monthly Values</h4>
-                            <div class="scroller" style="height: 145px;">
-                                <ul class="list-group" id="monthlyValueList">
-                                </ul>
-                            </div>
-                        </div>
-                        <div class="col-sm-3">
-                            <h4>Flat Values</h4>
-                            <div class="margin-top-10 scroller" style="height: 145px;">
-                                <ul class="list-group" id="flatValueList">
-                                </ul>
-                            </div>
+                        <div class="col-sm-12 ">
+                            <div class="portlet shadowlight">
+                                <div class="portlet-body">
+                                    <div class="row">
+                                        <div class="col-sm-2">
+                                            <h4>Monthly Values</h4>
+                                            <div class="scroller" style="height: 145px;">
+                                                <ul class="list-group" id="monthlyValueList">
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-2">
+                                            <h4>Flat Values</h4>
+                                            <div class="margin-top-10 scroller" style="height: 145px;">
+                                                <ul class="list-group" id="flatValueList">
+                                                </ul>
+                                            </div>
 
-                        </div>
-                        <div class="col-sm-3">
-                            <h4>Variables</h4>
-                            <div class="scroller" style="height: 144px;">
-                                <ul class="list-group" id="variables">
-                                </ul>
-                            </div>
-                        </div>
-                        <div class="col-sm-3">
-                            <h4>System Rules</h4>
-                            <div class="margin-top-10 scroller" style="height: 150px;">
-                                <ul class="list-group" id="systemRules">
-                                </ul>
+                                        </div>
+                                        <div class="col-sm-2">
+                                            <h4>Variables</h4>
+                                            <div class="scroller" style="height: 144px;">
+                                                <ul class="list-group" id="variables">
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-2">
+                                            <h4>System Rules</h4>
+                                            <div class="margin-top-10 scroller" style="height: 150px;">
+                                                <ul class="list-group" id="systemRules">
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-2">
+                                            <h4>Referencing Rules</h4>
+                                            <div class="margin-top-10 scroller" style="height: 50px">
+                                                <ul class="list-group" id="referencingRules">
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-2">
+                                            <div>
+                                                <select class="form-control" id="years">
+                                                </select>
+                                            </div> 
+                                            <div class="row">
+                                                <div class="col-sm-2">
+                                                    <button id="pickMonth" class="btn btn-success">
+                                                        <span class="fa fa-youtube">
+                                                        </span>
+                                                    </button>
+
+                                                </div>
+                                                <div class="col-sm-8">
+                                                    <select class="form-control" id="months">
+                                                        <option value="">Select Month</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <!--                                            <div id="days">
+                                            
+                                                                                        </div>-->
+                                            <div>
+                                                <select class="form-control" id="gender">
+                                                    <option value="">Select Gender</option>
+                                                </select>
+                                            </div>
+                                            <div>
+                                                <select class="form-control" id="serviceType">
+                                                    <option value="">Select Emp type</option>
+                                                </select>
+                                            </div>
+
+                                        </div>
+                                    </div>
+
+
+                                </div>
                             </div>
                         </div>
                     </div>
+
                     <div class="row">
 
-                        <div class="col-sm-9">
-                            <h4>Rule</h4>
+                        <div class="col-sm-12">
                             <textarea id="rule"></textarea>
                             <!--<button id="check" class="margin-top-10 pull-right btn btn-danger">Check</button>-->
                             <div class="checkbox margin-top-10 pull-right">
                                 <label><input type="checkbox" id="isMonthly" value="">Monthly</label>
-                            </div>
-                        </div>
-                        <div class="col-sm-3">
-                            <div>
-                                <div>
-                                    <select id="years">
-                                    </select>
-                                </div> 
-                                <div>
-                                    <select id="months">
-                                    </select>
-                                    <button id="pickMonth" class="btn btn-success">
-                                        <span class="fa fa-youtube">
-                                        </span>
-                                    </button>
-                                </div>
-                                <div id="days">
-
-                                </div>
-                            </div>
-                            <div>
-                                <h4>Referencing Rules</h4>
-                                <div class="margin-top-10 scroller" style="height: 150px;">
-                                    <ul class="list-group" id="referencingRules">
-                                    </ul>
-                                </div>
                             </div>
                         </div>
 
