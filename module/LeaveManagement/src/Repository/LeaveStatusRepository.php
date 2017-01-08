@@ -95,6 +95,7 @@ class LeaveStatusRepository implements RepositoryInterface {
             new Expression("LA.STATUS AS STATUS"),
             new Expression("LA.ID AS ID"),
             new Expression("TO_CHAR(LA.END_DATE, 'DD-MON-YYYY') AS END_DATE"),
+            new Expression("TO_CHAR(LA.APPROVED_DT, 'DD-MON-YYYY') AS APPROVED_DT"),
             new Expression("LA.NO_OF_DAYS AS NO_OF_DAYS"),
             new Expression("LA.HALF_DAY AS HALF_DAY"),
             new Expression("LA.EMPLOYEE_ID AS EMPLOYEE_ID"),
@@ -183,19 +184,19 @@ class LeaveStatusRepository implements RepositoryInterface {
         }
         if($recomApproveId!=null){
             if($leaveRequestStatusId==-1){
-                $sql .=" AND ((LA.RECOMMENDED_BY=".$recomApproveId." AND  ( LA.STATUS='RQ' OR LA.STATUS='RC' OR (LA.STATUS='R' AND LA.APPROVED_DT IS NULL))) OR (LA.APPROVED_BY=".$recomApproveId." AND ( LA.STATUS='RC' OR LA.STATUS='AP' OR (LA.STATUS='R' AND LA.APPROVED_DT IS NOT NULL))) )";
+                $sql .=" AND ((LA.RECOMMENDED_BY=".$recomApproveId." AND  ( LA.STATUS='RQ' OR LA.STATUS='RC' OR LA.STATUS='AP' OR LA.STATUS='R')) OR (LA.APPROVED_BY=".$recomApproveId." AND ( LA.STATUS='RC' OR LA.STATUS='AP' OR (LA.STATUS='R' AND LA.APPROVED_DT IS NOT NULL))) )";
             }else if($leaveRequestStatusId=='RQ'){
-                $sql .=" AND ((LA.RECOMMENDED_BY=".$recomApproveId." AND LA.STATUS='RQ') OR (LA.APPROVED_BY=".$recomApproveId." AND LA.STATUS='RC') )";
+                $sql .= " AND LA.STATUS='RQ' AND LA.RECOMMENDED_BY=".$recomApproveId;
             }
             else if($leaveRequestStatusId=='RC'){
                 $sql .= " AND LA.STATUS='RC' AND
-                    LA.RECOMMENDED_BY=".$recomApproveId;
+                    (LA.RECOMMENDED_BY=".$recomApproveId." OR LA.APPROVED_BY=".$recomApproveId.")";
             }else if($leaveRequestStatusId=='AP'){
                 $sql .= " AND LA.STATUS='AP' AND
-                    LA.APPROVED_BY=".$recomApproveId;
+                    (LA.RECOMMENDED_BY=".$recomApproveId." OR LA.APPROVED_BY=".$recomApproveId.")";
             }else if($leaveRequestStatusId=='R'){
                 $sql .=" AND LA.STATUS='".$leaveRequestStatusId."' AND
-                    ((LA.RECOMMENDED_BY=".$recomApproveId." AND LA.APPROVED_DT IS NULL) OR (LA.APPROVED_BY=".$recomApproveId." AND LA.APPROVED_DT IS NOT NULL) )";
+                    ((LA.RECOMMENDED_BY=".$recomApproveId.") OR (LA.APPROVED_BY=".$recomApproveId." AND LA.APPROVED_DT IS NOT NULL) )";
             }
         }
         

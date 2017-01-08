@@ -4,6 +4,7 @@
         var $employeeId = $('#employeeId');
         var $oldAmount = $('#oldAmount');
         var $effectiveDate = $('#effectiveDate');
+        var $effectiveNepaliDate = $('#effectiveNepaliDate');
         var $jobHistoryId = $('#jobHistoryId');
 
 
@@ -57,8 +58,20 @@
                 console.log("fetchLastSalaryReviewDate fail", failure);
             });
         };
-        app.addDatePicker($effectiveDate);
+//        app.addDatePicker($effectiveDate);
+        $effectiveDate.datepicker({format: 'dd-M-yyyy', autoclose: true}).on('changeDate', function () {
+            $effectiveNepaliDate.val(nepaliDatePickerExt.fromEnglishToNepali($(this).val()));
+        });
+
+        $effectiveNepaliDate.nepaliDatePicker({
+            onChange: function () {
+                $effectiveDate.val(nepaliDatePickerExt.fromNepaliToEnglish($effectiveNepaliDate.val()));
+
+            }
+        });
         fetchEmployeeSalary($employeeId);
+        fetchServiceEvents($employeeId);
+        fetchLastSalaryReviewDate($employeeId);
         $employeeId.on('change', function () {
             fetchEmployeeSalary($(this));
             fetchServiceEvents($(this));

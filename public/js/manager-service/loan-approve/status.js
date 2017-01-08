@@ -70,12 +70,12 @@ angular.module('hris', [])
                     rowTemplate: kendo.template($("#rowTemplate").html()),
                     columns: [
                         {field: "FIRST_NAME", title: "Employee Name", width: 200},
-                        {field: "LOAN_NAME", title: "Loan Name", width: 150},
+                        {field: "LOAN_NAME", title: "Loan Name", width: 120},
                         {field: "REQUESTED_DATE", title: "Requested Date", width: 150},
-                        {field: "LOAN_DATE", title: "Loan Date", width: 120},
-                        {field: "REQUESTED_AMOUNT", title: "Requested Amount", width: 110},
+                        {field: "LOAN_DATE", title: "Loan Date", width: 100},
+                        {field: "REQUESTED_AMOUNT", title: "Requested Amount", width: 150},
                         {field: "YOUR_ROLE", title: "Your Role", width: 150},
-                        {field: "STATUS", title: "Status", width: 100},
+                        {field: "STATUS", title: "Status", width: 90},
                         {title: "Action", width: 80}
                     ]
                 });

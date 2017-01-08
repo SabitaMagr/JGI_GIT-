@@ -1,28 +1,30 @@
 (function ($) {
     'use strict';
     $(document).ready(function () {
-        
-        $('#FromnepaliDate').nepaliDatePicker({
-            ndpEnglishInput: 'FromenglishDate'            
-        });
-        $('#TonepaliDate').nepaliDatePicker({
-            ndpEnglishInput: 'ToenglishDate'           
+        var $fromNepaliDate = $('#FromnepaliDate');
+        var $fromEnglishDate = $('#FromenglishDate');
+        var $toNepaliDate = $('#TonepaliDate');
+        var $toEnglishDate = $('#ToenglishDate');
+
+        $fromNepaliDate.nepaliDatePicker({
+            onChange: function () {
+                $fromEnglishDate.val(nepaliDatePickerExt.fromNepaliToEnglish($fromNepaliDate.val()));
+            }
         });
 
-        $('#FromenglishDate').datepicker({format: 'dd-M-yyyy',autoclose: true});
-        $('#FromenglishDate').change(function () {
-            $('#FromnepaliDate').val(AD2BS($('#FromenglishDate').val()));
-        });
-        $('#ToenglishDate').datepicker({format: 'dd-M-yyyy',autoclose: true});
-        $('#ToenglishDate').change(function () {
-            $('#TonepaliDate').val(AD2BS($('#ToenglishDate').val()));
+        $fromEnglishDate.datepicker({format: 'dd-M-yyyy', autoclose: true}).on('changeDate', function () {
+            $fromNepaliDate.val(nepaliDatePickerExt.fromEnglishToNepali($(this).val()));
         });
 
-        $('#FromnepaliDate').change(function () {
-            $('#FromenglishDate').val(BS2AD($('#FromnepaliDate').val()));
+        $toNepaliDate.nepaliDatePicker({
+            onChange: function () {
+                $toEnglishDate.val(nepaliDatePickerExt.fromNepaliToEnglish($toNepaliDate.val()));
+
+            }
         });
-        $('#TonepaliDate').change(function () {
-            $('#ToenglishDate').val(BS2AD($('#TonepaliDate').val()));
+
+        $toEnglishDate.datepicker({format: 'dd-M-yyyy', autoclose: true}).on('changeDate', function () {
+            $toNepaliDate.val(nepaliDatePickerExt.fromEnglishToNepali($(this).val()));
         });
 
 

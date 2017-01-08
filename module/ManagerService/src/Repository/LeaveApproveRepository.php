@@ -92,6 +92,7 @@ class LeaveApproveRepository implements RepositoryInterface
         $select->columns([
             new Expression("TO_CHAR(LA.START_DATE, 'DD-MON-YYYY') AS START_DATE"),
             new Expression("TO_CHAR(LA.REQUESTED_DT, 'DD-MON-YYYY') AS REQUESTED_DT"),
+            new Expression("TO_CHAR(LA.APPROVED_DT, 'DD-MON-YYYY') AS APPROVED_DT"),
             new Expression("LA.STATUS AS STATUS"),
             new Expression("LA.ID AS ID"),
             new Expression("TO_CHAR(LA.END_DATE, 'DD-MON-YYYY') AS END_DATE"),

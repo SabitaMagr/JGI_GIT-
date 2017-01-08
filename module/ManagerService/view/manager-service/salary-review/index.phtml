@@ -59,17 +59,22 @@ echo json_encode($menu);
                   </td>
             <td> 
             #: (OLD_AMOUNT == null) ? '-' : OLD_AMOUNT #
-        </            td>
+        </td>
             <td>
             #: (NEW_AMOUNT == null) ? '-' : NEW_AMOUNT #
-        </            td>
+        </td>
             <td>
             #: (EFFECTIVE_DATE == null) ? '-' : EFFECTIVE_DATE #
-        </            td>
+        </td>
             <td>
             #: (JOB_HISTORY_ID == null) ? '-' : JOB_HISTORY_ID #
         </td>
-
+         <td>
+            <a class="btn-edit"
+               href="<?= $this->url("salaryReview", ["action" => "edit"]) ?>/#:SALARY_DETAIL_ID #" style="height:17px;">
+                <i class="fa fa-edit"></i>
+            </a>
+        </td>
     </tr>
     </script>
 </div>

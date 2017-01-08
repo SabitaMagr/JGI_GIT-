@@ -252,6 +252,7 @@
         });
     };
 
+
     var isMonthlyCB = $('#isMonthly');
     isMonthlyCB.on("change", function (e) {
         ruleDetail.updateIsMonthly(e.target.checked)
@@ -426,6 +427,7 @@
         var variables = document.variables;
         var systemRules = document.systemRules;
 
+
         for (var i in monthlyValues) {
             monthlyValues[i] = replaceAll(monthlyValues[i], " ", "_");
             monthlyValues[i] = monthlyValues[i].toUpperCase();
@@ -550,6 +552,7 @@
 
             this.initializeView = function () {
                 this.$year.append($("<option />").val(null).text('Select year'));
+
                 for (var key in this.years) {
                     this.$year.append($("<option />").val(key).text(this.years[key]));
                 }
@@ -558,15 +561,15 @@
                 });
 
                 this.$month.on('change', function () {
-                    var monthId = $(this).val();
-                    if (typeof monthId === 'undefined' || monthId == null || monthId == '') {
-                        console.log("not a monthId", monthId);
-                        return;
-                    }
-                    var month = parent.months.filter(function (item) {
-                        return item.MONTH_ID == monthId;
-                    });
-                    parent.updateDayView(month[0]);
+//                    var monthId = $(this).val();
+//                    if (typeof monthId === 'undefined' || monthId == null || monthId == '') {
+//                        console.log("not a monthId", monthId);
+//                        return;
+//                    }
+//                    var month = parent.months.filter(function (item) {
+//                        return item.MONTH_ID == monthId;
+//                    });
+//                    parent.updateDayView(month[0]);
                 });
                 this.$day.delegate('button', "click", function () {
                     var $this = $(this);
@@ -590,6 +593,33 @@
 
         var calendar = new Calendar('years', 'months', 'days', 'pickMonth', $);
         calendar.initializeView();
+
+//         populating gender
+        var genders = document.genders;
+        var $gender = $('#gender');
+        for (var i in genders) {
+            $gender.append($("<option ></option").val(i).text(genders[i]));
+        }
+        $gender.on('change', function () {
+            var $this = $(this);
+            var cursor = editor.getCursor();
+            editor.replaceRange($this.val(), cursor, null);
+        });
+//        end ofgender
+
+//    populating emp-type
+        var serviceTypes = document.serviceTypes;
+        var $serviceType = $('#serviceType');
+        for (var i in serviceTypes) {
+            $serviceType.append($("<option ></option").val(i).text(serviceTypes[i]));
+        }
+        $serviceType.on('change', function () {
+            var $this = $(this);
+            var cursor = editor.getCursor();
+            editor.replaceRange($this.val(), cursor, null);
+        });
+
+// end of populating emp-type
 
     });
 

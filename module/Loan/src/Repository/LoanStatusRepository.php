@@ -7,9 +7,9 @@ use Zend\Db\Sql\Select;
 use Application\Repository\RepositoryInterface;
 
 class LoanStatusRepository implements RepositoryInterface{
-    
+    private $adapter;
     public function __construct(\Zend\Db\Adapter\AdapterInterface $adapter) {
-        
+        $this->adapter = $adapter;
     }
 
     public function add(\Application\Model\Model $model) {
@@ -61,19 +61,29 @@ class LoanStatusRepository implements RepositoryInterface{
                 E.FIRST_NAME,E.MIDDLE_NAME,E.LAST_NAME,
                 E1.FIRST_NAME AS FN1,E1.MIDDLE_NAME AS MN1,E1.LAST_NAME AS LN1,
                 E2.FIRST_NAME AS FN2,E2.MIDDLE_NAME AS MN2,E2.LAST_NAME AS LN2,
-                LA.RECOMMENDED_BY AS RECOMMENDER,
-                LA.APPROVED_BY AS APPROVER,
-                LA.RECOMMENDED_REMARKS AS RECOMMENDED_REMARKS,
-                LA.APPROVED_REMARKS AS APPROVED_REMARKS
-                FROM HR_EMPLOYEE_LEAVE_REQUEST LA
-                LEFT OUTER JOIN HR_LEAVE_MASTER_SETUP L ON
-                L.LEAVE_ID=LA.LEAVE_ID 
+                RA.RECOMMEND_BY AS RECOMMENDER,
+                RA.APPROVED_BY AS APPROVER,
+                RECM.FIRST_NAME AS RECM_FN,RECM.MIDDLE_NAME AS RECM_MN,RECM.LAST_NAME AS RECM_LN,
+                APRV.FIRST_NAME AS APRV_FN,APRV.MIDDLE_NAME AS APRV_MN,APRV.LAST_NAME AS APRV_LN,
+                LR.RECOMMENDED_BY AS RECOMMENDED_BY,
+                LR.APPROVED_BY AS APPROVED_BY,
+                LR.RECOMMENDED_REMARKS AS RECOMMENDED_REMARKS,
+                LR.APPROVED_REMARKS AS APPROVED_REMARKS
+                FROM HR_EMPLOYEE_LOAN_REQUEST LR
+                LEFT OUTER JOIN HR_LOAN_MASTER_SETUP L ON
+                L.LOAN_ID=LR.LOAN_ID 
                 LEFT OUTER JOIN HR_EMPLOYEES E ON
-                E.EMPLOYEE_ID=LA.EMPLOYEE_ID
+                E.EMPLOYEE_ID=LR.EMPLOYEE_ID
                 LEFT OUTER JOIN HR_EMPLOYEES E1 ON
-                E1.EMPLOYEE_ID=LA.RECOMMENDED_BY
+                E1.EMPLOYEE_ID=LR.RECOMMENDED_BY
                 LEFT OUTER JOIN HR_EMPLOYEES E2 ON
-                E2.EMPLOYEE_ID=LA.APPROVED_BY
+                E2.EMPLOYEE_ID=LR.APPROVED_BY
+                LEFT OUTER JOIN HR_RECOMMENDER_APPROVER RA ON
+                LR.EMPLOYEE_ID = RA.EMPLOYEE_ID
+                LEFT OUTER JOIN HR_EMPLOYEES RECM ON
+                RECM.EMPLOYEE_ID = RA.RECOMMEND_BY
+                LEFT OUTER JOIN HR_EMPLOYEES APRV ON
+                APRV.EMPLOYEE_ID = RA.APPROVED_BY
                 WHERE 
                 L.STATUS='E' AND
                 E.STATUS='E'".$retiredFlag."              
@@ -83,40 +93,49 @@ class LoanStatusRepository implements RepositoryInterface{
                     END OR  E1.STATUS is null) AND
                 (E2.STATUS = CASE WHEN E2.STATUS IS NOT NULL
                          THEN ('E')       
-                    END OR  E2.STATUS is null)";
+                    END OR  E2.STATUS is null) AND
+                (RECM.STATUS = CASE WHEN RECM.STATUS IS NOT NULL
+                         THEN ('E')       
+                    END OR  RECM.STATUS is null) AND
+                (APRV.STATUS = CASE WHEN APRV.STATUS IS NOT NULL
+                         THEN ('E')       
+                    END OR  APRV.STATUS is null)";
         if($recomApproveId==null){
-            if ($leaveRequestStatusId != -1) {
-                $sql .= " AND LA.STATUS ='" . $leaveRequestStatusId . "'";
+            if ($loanRequestStatusId != -1) {
+                $sql .= " AND LR.STATUS ='" . $loanRequestStatusId . "'";
             }
         }
         if($recomApproveId!=null){
-            if($leaveRequestStatusId==-1){
-                $sql .=" AND ((LA.RECOMMENDED_BY=".$recomApproveId." AND  ( LA.STATUS='RQ' OR LA.STATUS='RC' OR (LA.STATUS='R' AND LA.APPROVED_DT IS NULL))) OR (LA.APPROVED_BY=".$recomApproveId." AND ( LA.STATUS='RC' OR LA.STATUS='AP' OR (LA.STATUS='R' AND LA.APPROVED_DT IS NOT NULL))) )";
-            }else if($leaveRequestStatusId=='RQ'){
-                $sql .=" AND ((LA.RECOMMENDED_BY=".$recomApproveId." AND LA.STATUS='RQ') OR (LA.APPROVED_BY=".$recomApproveId." AND LA.STATUS='RC') )";
+            if($loanRequestStatusId==-1){
+                $sql .=" AND ((RA.RECOMMEND_BY=".$recomApproveId." AND  LR.STATUS='RQ') "
+                        . "OR (LR.RECOMMENDED_BY=".$recomApproveId." AND (LR.STATUS='RC' OR LR.STATUS='R' OR LR.STATUS='AP')) "
+                        . "OR (RA.APPROVED_BY=".$recomApproveId." AND  LR.STATUS='RC' ) "
+                        . "OR (LR.APPROVED_BY=".$recomApproveId." AND (LR.STATUS='AP' OR (LR.STATUS='R' AND LR.APPROVED_DATE IS NOT NULL))) )";
+            }else if($loanRequestStatusId=='RQ'){
+                $sql .=" AND (RA.RECOMMEND_BY=".$recomApproveId." AND LR.STATUS='RQ')";
             }
-            else if($leaveRequestStatusId=='RC'){
-                $sql .= " AND LA.STATUS='RC' AND
-                    LA.RECOMMENDED_BY=".$recomApproveId;
-            }else if($leaveRequestStatusId=='AP'){
-                $sql .= " AND LA.STATUS='AP' AND
-                    LA.APPROVED_BY=".$recomApproveId;
-            }else if($leaveRequestStatusId=='R'){
-                $sql .=" AND LA.STATUS='".$leaveRequestStatusId."' AND
-                    ((LA.RECOMMENDED_BY=".$recomApproveId." AND LA.APPROVED_DT IS NULL) OR (LA.APPROVED_BY=".$recomApproveId." AND LA.APPROVED_DT IS NOT NULL) )";
+            else if($loanRequestStatusId=='RC'){
+                $sql .= " AND LR.STATUS='RC' AND
+                    (LR.RECOMMENDED_BY=".$recomApproveId." OR LR.APPROVED_BY=".$recomApproveId.")";
+            }else if($loanRequestStatusId=='AP'){
+                $sql .= " AND LR.STATUS='AP' AND
+                    (LR.RECOMMENDED_BY=".$recomApproveId." OR LR.APPROVED_BY=".$recomApproveId.")";
+            }else if($loanRequestStatusId=='R'){
+                $sql .=" AND LR.STATUS='".$loanRequestStatusId."' AND
+                    ((LR.RECOMMENDED_BY=".$recomApproveId.") OR (LR.APPROVED_BY=".$recomApproveId." AND LR.APPROVED_DATE IS NOT NULL) )";
             }
         }
         
-        if ($leaveId != -1) {
-            $sql .= " AND LA.LEAVE_ID ='" . $leaveId . "'";
+        if ($loanId != -1) {
+            $sql .= " AND LR.LOAN_ID ='" . $loanId . "'";
         }
      
         if($fromDate!=null){
-            $sql .= " AND LA.START_DATE>=TO_DATE('".$fromDate."','DD-MM-YYYY')";
+            $sql .= " AND LR.LOAN_DATE>=TO_DATE('".$fromDate."','DD-MM-YYYY')";
         }
         
         if($toDate!=null){   
-            $sql .= "AND LA.END_DATE<=TO_DATE('".$toDate."','DD-MM-YYYY')";
+            $sql .= "AND LR.LOAN_DATE<=TO_DATE('".$toDate."','DD-MM-YYYY')";
         }
 
         if ($employeeId != -1) {
@@ -142,10 +161,10 @@ class LoanStatusRepository implements RepositoryInterface{
             $sql .= " AND E." . HrEmployees::EMPLOYEE_ID . " IN (SELECT " . HrEmployees::EMPLOYEE_ID . " FROM " . HrEmployees::TABLE_NAME . " WHERE " . HrEmployees::SERVICE_EVENT_TYPE_ID . "= $serviceEventTypeId)";
         }
         
-        $sql .=" ORDER BY LA.REQUESTED_DT DESC";
+        $sql .=" ORDER BY LR.REQUESTED_DATE DESC";
 
         $statement = $this->adapter->query($sql);
-        //print_r($statement->getSql()); 
+       // print_r($statement->getSql());  die();
         $result = $statement->execute();
         return $result;
     }

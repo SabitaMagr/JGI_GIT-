@@ -1475,7 +1475,7 @@ return array (
           ),
         ),
       ),
-      'loanAdvanceStatus' => 
+      'loanStatus' => 
       array (
         'type' => 'Zend\\Router\\Http\\Segment',
         'options' => 
@@ -1488,12 +1488,12 @@ return array (
           ),
           'defaults' => 
           array (
-            'controller' => 'Loan\\Controller\\LoanAdvanceStatus',
+            'controller' => 'Loan\\Controller\\LoanStatus',
             'action' => 'index',
           ),
         ),
       ),
-      'loanAdvanceApply' => 
+      'loanApply' => 
       array (
         'type' => 'Zend\\Router\\Http\\Segment',
         'options' => 
@@ -1506,7 +1506,7 @@ return array (
           ),
           'defaults' => 
           array (
-            'controller' => 'Loan\\Controller\\LoanAdvanceApply',
+            'controller' => 'Loan\\Controller\\LoanApply',
             'action' => 'index',
           ),
         ),
@@ -3489,69 +3489,69 @@ return array (
         ),
       ),
     ),
-    'loanAdvanceStatus' => 
+    'loanStatus' => 
     array (
       0 => 
       array (
-        'label' => 'Loan/Advance Request',
-        'route' => 'loanAdvanceStatus',
+        'label' => 'Loan Request',
+        'route' => 'loanStatus',
       ),
       1 => 
       array (
-        'label' => 'Loan/Advance Request',
-        'route' => 'loanAdvanceStatus',
+        'label' => 'Loan Request',
+        'route' => 'loanStatus',
         'pages' => 
         array (
           0 => 
           array (
             'label' => 'List',
-            'route' => 'loanAdvanceStatus',
+            'route' => 'loanStatus',
             'action' => 'index',
           ),
           1 => 
           array (
             'label' => 'Add',
-            'route' => 'loanAdvanceStatus',
+            'route' => 'loanStatus',
             'action' => 'add',
           ),
           2 => 
           array (
             'label' => 'Edit',
-            'route' => 'loanAdvanceStatus',
+            'route' => 'loanStatus',
             'action' => 'edit',
           ),
         ),
       ),
     ),
-    'loanAdvanceApply' => 
+    'loanApply' => 
     array (
       0 => 
       array (
-        'label' => 'Loan/Advance Apply',
-        'route' => 'loanAdvanceApply',
+        'label' => 'Loan Apply',
+        'route' => 'loanApply',
       ),
       1 => 
       array (
         'label' => 'Loan/Advance Apply',
-        'route' => 'loanAdvanceApply',
+        'route' => 'loanApply',
         'pages' => 
         array (
           0 => 
           array (
             'label' => 'List',
-            'route' => 'loanAdvanceApply',
+            'route' => 'loanApply',
             'action' => 'index',
           ),
           1 => 
           array (
             'label' => 'Add',
-            'route' => 'loanAdvanceApply',
+            'route' => 'loanApply',
             'action' => 'add',
           ),
           2 => 
           array (
             'label' => 'Edit',
-            'route' => 'loanAdvanceApply',
+            'route' => 'loanApply',
             'action' => 'edit',
           ),
         ),
@@ -3623,8 +3623,8 @@ return array (
       'Appraisal\\Controller\\Appraisal' => 'Application\\Controller\\ControllerFactory',
       'Appraisal\\Controller\\EvaluationAndReview' => 'Application\\Controller\\ControllerFactory',
       'Appraisal\\Controller\\PerformanceAppraisal' => 'Application\\Controller\\ControllerFactory',
-      'Loan\\Controller\\LoanAdvanceStatus' => 'Application\\Controller\\ControllerFactory',
-      'Loan\\Controller\\LoanAdvanceApply' => 'Application\\Controller\\ControllerFactory',
+      'Loan\\Controller\\LoanStatus' => 'Application\\Controller\\ControllerFactory',
+      'Loan\\Controller\\LoanApply' => 'Application\\Controller\\ControllerFactory',
     ),
   ),
   'view_manager' => 

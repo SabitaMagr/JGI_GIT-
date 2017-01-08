@@ -16,7 +16,9 @@ use Payroll\Form\Rules as RuleForm;
 use Payroll\Model\FlatValue;
 use Payroll\Model\MonthlyValue;
 use Payroll\Repository\RulesRepository;
+use Setup\Model\Gender;
 use Setup\Model\Position;
+use Setup\Model\ServiceType;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\Mvc\Controller\AbstractActionController;
@@ -56,6 +58,8 @@ class Rules extends AbstractActionController {
         $flatValues = EntityHelper::getTableKVList($this->adapter, FlatValue::TABLE_NAME, FlatValue::FLAT_ID, [FlatValue::FLAT_EDESC]);
         $positions = EntityHelper::getTableKVList($this->adapter, Position::TABLE_NAME, Position::POSITION_ID, [Position::POSITION_NAME], [Position::STATUS => 'E']);
         $fiscalYears = EntityHelper::getTableKVList($this->adapter, FiscalYear::TABLE_NAME, FiscalYear::FISCAL_YEAR_ID, [FiscalYear::START_DATE, FiscalYear::END_DATE], [FiscalYear::STATUS => 'E'], "-");
+        $genders = EntityHelper::getTableKVList($this->adapter, Gender::TABLE_NAME, Gender::GENDER_ID, [Gender::GENDER_NAME], [Gender::STATUS => 'E'], null, false);
+        $serviceTypes = EntityHelper::getTableKVList($this->adapter, ServiceType::TABLE_NAME, ServiceType::SERVICE_TYPE_ID, [ServiceType::SERVICE_TYPE_NAME], [ServiceType::STATUS => 'E'], null, false);
 
         return Helper::addFlashMessagesToArray($this, [
                     'monthlyValues' => $monthlyValues,
@@ -64,7 +68,9 @@ class Rules extends AbstractActionController {
                     "variables" => PayrollGenerator::VARIABLES,
                     "systemRules" => PayrollGenerator::SYSTEM_RULE,
                     'id' => $id,
-                    'fiscalYears' => $fiscalYears]
+                    'fiscalYears' => $fiscalYears,
+                    'genders' => $genders,
+                    'serviceTypes' => $serviceTypes]
         );
     }
 

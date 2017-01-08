@@ -211,6 +211,7 @@ class LeaveStatus extends AbstractActionController {
                     'totalDays' => $result['TOTAL_DAYS'],
                     'recommender' => $recommender,
                     'approver' => $approver,
+                    'approvedDT'=>$detail['APPROVED_DT'],
                     'remarkDtl' => $detail['REMARKS'],
                     'status' => $status,
                     'allowHalfDay' => $leaveDtl['ALLOW_HALFDAY'],

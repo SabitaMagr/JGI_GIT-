@@ -49,6 +49,7 @@ class SalaryReviewController extends AbstractActionController {
             $salaryDetail->createdDt = Helper::getcurrentExpressionDate();
             $salaryDetail->createdBy = $this->employeeId;
             $salaryDetail->status = 'E';
+            $salaryDetail->salaryDetailId = ((int) Helper::getMaxId($this->adapter, SalaryDetail::TABLE_NAME, SalaryDetail::SALARY_DETAIL_ID)) + 1;
             if (isset($postedData['jobHistoryId'])) {
                 $salaryDetail->jobHistoryId = $postedData['jobHistoryId'];
             }
@@ -105,17 +106,22 @@ class SalaryReviewController extends AbstractActionController {
             return $this->redirect()->toRoute("salaryReview");
         }
 
-//        $this->repo->fetchById(SalaryDetail::);
-
+        $salaryDetail = $this->repo->fetchById([SalaryDetail::SALARY_DETAIL_ID => $id]);
+//        print "<pre>";
+//        print_r($salaryDetail);
+//        exit;
         $employeeList = EntityHelper::getTableKVList($this->adapter, HrEmployees::TABLE_NAME, HrEmployees::EMPLOYEE_ID, [HrEmployees::FIRST_NAME, HrEmployees::MIDDLE_NAME, HrEmployees::LAST_NAME], [HrEmployees::STATUS => 'E', HrEmployees::RETIRED_FLAG => 'N'], null, false);
         $employeeSelect = new Select();
         $employeeSelect->setName("employeeId");
+        $employeeSelect->setValue($salaryDetail[SalaryDetail::EMPLOYEE_ID]);
         $employeeSelect->setValueOptions($employeeList);
-        $employeeSelect->setAttributes(["id" => "employeeId", "class" => "form-control"]);
+        $employeeSelect->setAttributes(["id" => "employeeId", "class" => "form-control", "disabled" => "disabled"]);
         $employeeSelect->setLabel("Employee");
 
         return Helper::addFlashMessagesToArray($this, [
-                    'employeeElement' => $employeeSelect
+                    'employeeElement' => $employeeSelect,
+                    'salaryDetail' => $salaryDetail,
+                    'id' => $id
         ]);
     }
 

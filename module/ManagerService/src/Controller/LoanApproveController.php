@@ -144,6 +144,7 @@ class LoanApproveController extends AbstractActionController {
                     'approver'=>$approver,
                     'status' => $detail['STATUS'],
                     'recommendedBy' => $detail['RECOMMENDER'],
+                    'approvedDT'=>$detail['APPROVED_DATE'],
                     'employeeId' => $this->employeeId,
                     'requestedEmployeeId' => $requestedEmployeeID,
                     'loans' => EntityHelper::getTableKVListWithSortOption($this->adapter, Loan::TABLE_NAME, Loan::LOAN_ID, [Loan::LOAN_NAME], [Loan::STATUS => "E"], Loan::LOAN_ID, "ASC")

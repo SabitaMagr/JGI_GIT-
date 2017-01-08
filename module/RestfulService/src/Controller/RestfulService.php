@@ -60,6 +60,7 @@ use Zend\Mvc\Controller\AbstractRestfulController;
 use Zend\View\Model\JsonModel;
 use SelfService\Repository\LoanRequestRepository;
 use ManagerService\Repository\LoanApproveRepository;
+use Loan\Repository\LoanStatusRepository;
 
 class RestfulService extends AbstractRestfulController {
 
@@ -1513,9 +1514,9 @@ class RestfulService extends AbstractRestfulController {
         foreach ($result as $row) {
             $status = $getValue($row['STATUS']);
             $role = $getRole($row['RECOMMENDER'], $row['APPROVER'], $recomApproveId);
-            if ($role == 3 && $row['STATUS'] == 'RC') {
-                $status = "Pending";
-            }
+//            if ($role == 3 && $row['STATUS'] == 'RC') {
+//                $status = "Pending";
+//            }
             $role = [
                 'YOUR_ROLE' => $getRoleDtl($row['RECOMMENDER'], $row['APPROVER'], $recomApproveId),
                 'ROLE' => $role
@@ -1792,16 +1793,8 @@ class RestfulService extends AbstractRestfulController {
             $employeeId = $employeeRow['EMPLOYEE_ID'];
             $recommedApproverList = $recommApproverRepo->getDetailByEmployeeID($employeeId);
             if ($recommedApproverList != null) {
-                if ($recommedApproverList['MIDDLE_NAME_R'] != null) {
-                    $middleNameR = " " . $recommedApproverList['MIDDLE_NAME_R'] . " ";
-                } else {
-                    $middleNameR = " ";
-                }
-                if ($recommedApproverList['MIDDLE_NAME_A'] != null) {
-                    $middleNameA = " " . $recommedApproverList['MIDDLE_NAME_A'] . " ";
-                } else {
-                    $middleNameA = " ";
-                }
+                $middleNameR = ($recommedApproverList['MIDDLE_NAME_R'] != null) ? " ".$recommedApproverList['MIDDLE_NAME_R']." ":" ";
+                $middleNameA = ($recommedApproverList['MIDDLE_NAME_A'] != null) ? " ".$recommedApproverList['MIDDLE_NAME_A']." ":" ";
                 $employeeRow['RECOMMENDER_NAME'] = $recommedApproverList['FIRST_NAME_R'] . $middleNameR . $recommedApproverList['LAST_NAME_R'];
                 $employeeRow['APPROVER_NAME'] = $recommedApproverList['FIRST_NAME_A'] . $middleNameR . $recommedApproverList['LAST_NAME_A'];
             } else {

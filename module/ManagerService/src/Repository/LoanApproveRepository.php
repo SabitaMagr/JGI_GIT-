@@ -118,7 +118,7 @@ class LoanApproveRepository implements RepositoryInterface{
                 RA.APPROVED_BY=".$id;
         }else if($status=='R'){
             $sql .=" AND LR.STATUS='".$status."' AND
-                ((RA.RECOMMEND_BY=".$id." AND LR.APPROVED_DT IS NULL) OR (RA.APPROVED_BY=".$id." AND LA.APPROVED_DT IS NOT NULL) )";
+                ((RA.RECOMMEND_BY=".$id." AND LR.APPROVED_DATE IS NULL) OR (RA.APPROVED_BY=".$id." AND LR.APPROVED_DATE IS NOT NULL) )";
         }
         $sql .= " ORDER BY LR.REQUESTED_DATE DESC";
         $statement = $this->adapter->query($sql);

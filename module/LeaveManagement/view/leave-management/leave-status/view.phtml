@@ -64,7 +64,7 @@ print $this->form()->openTag($form);
                 <div class="portlet-body">
                     <div class="border-bottom margin-bottom-10">
                         <div class="form-group">
-                            <div class="row">
+                            <div class="row div-font-11">
                                 <div class="col-md-6">
                                     <table>
                                         <tr height="30">
@@ -209,12 +209,16 @@ print $this->form()->openTag($form);
                             <?php print $this->formElement($recommendedRemarks); ?>
                         </div>
                     <?php } ?>
-
+                    
+                    <?php 
+                    //print_r($approvedDT); die();
+                    if($status!='R' && $approvedDT!=null){ ?>
                     <div class="form-group padding-0">
                         <?php print $this->formLabel($approvedRemarks); ?>
                         <?php print $this->formElement($approvedRemarks); ?>
                     </div>
-
+                    <?php } ?>
+                    
                     <?php if ($status == 'RQ' || $status == 'RC') { ?>
                         <?php print $this->formSubmit($submit); ?>
                         <input type="submit" name="submit" class="btn btn-success pull-right" value="Reject">
