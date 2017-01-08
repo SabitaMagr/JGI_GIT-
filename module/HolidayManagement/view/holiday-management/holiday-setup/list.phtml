@@ -6,20 +6,25 @@ $this->headScript()
         ->appendFile($this->basePath('jszip/dist/jszip.min.js'))
         ->appendFile($this->basePath('telerik_kendoui/js/kendo.all.min.js'))
         ->appendFile($this->basePath('js/angular.min.js'))
+        ->appendFile($this->basePath('assets/global/plugins/nepalidate/nepali.datepicker.v2.1.min.js'))
+        ->appendFile($this->basePath('js/nepali-datepicker-ext.js'))
         ->appendFile($this->basePath('js/HolidayManagement/HolidaySetup/holidayListController.js'))
-        ->appendFile($this->basePath('assets/global/plugins/bootstrap-confirmation/bootstrap-confirmation.min.js'));
+        ->appendFile($this->basePath('assets/global/plugins/bootstrap-confirmation/bootstrap-confirmation.min.js'))
+;
 ?>
 
-<?php
-if ($this->messages) { ?>
+<?php if ($this->messages) { ?>
     <script>
         document.messages =<?php echo json_encode($this->messages); ?>
     </script>
 <?php } ?>
 
 <script>
-    document.menu =<?php $menu = ["id" => "menuHolidays", "subMenu" => ["id" => "subMenuHolidaySetup"]];echo json_encode($menu);?>;
-    document.url ="<?= $this->url('restful',['action','index']); ?>";
+    document.menu =<?php
+$menu = ["id" => "menuHolidays", "subMenu" => ["id" => "subMenuHolidaySetup"]];
+echo json_encode($menu);
+?>;
+    document.url = "<?= $this->url('restful', ['action', 'index']); ?>";
 </script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\holidaysetup')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
@@ -27,74 +32,107 @@ if ($this->messages) { ?>
 <div ng-app="hris" ng-controller="holidayListController" class="formbg">
     <div class="margin-top-20">
         <div class="row" style="position: relative;">
-            <div class="col-sm-2">
-                <label>From Date</label>
-                <div class="input-group date" id="startDate">
-                    <input type="text" placeholder="From Date" name="startDate" ng-model="startDate" id="startDate1"
-                           class="form-control"/>
-                    <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                </div>
-            </div>
-            <div class="col-sm-2">
-                <label>To Date</label>
-                <div class="input-group date" id="endDate">
-                    <input type="text" placeholder="To Date" name="endDate" ng-model="endDate" id="endDate1"
-                           class="form-control"/>
-                    <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+            <div class="col-sm-3">
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label>From Date</label>
+                            <div class="input-group date" id="startDate">
+                                <input type="text" placeholder="From Date" name="startDate" ng-model="startDate" id="startDate1"
+                                       class="form-control"/>
+                                <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label for="nepaliStartDate">&nbsp;</label>
+                            <div class="input-group">
+                                <input type="text" name="nepaliStartDate" id="nepaliStartDate1"
+                                       class="form-control" value="">
+                                <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="col-sm-3">
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label>To Date</label>
+                            <div class="input-group date" id="endDate">
+                                <input type="text" placeholder="To Date" name="endDate" ng-model="endDate" id="endDate1"
+                                       class="form-control"/>
+                                <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label for="nepaliEndDate">&nbsp;</label>
+                            <div class="input-group">
+                                <input type="text" name="nepaliEndDate" id="nepaliEndDate1"
+                                       class="form-control" value="">
+                                <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-2">
                 <?php print $this->formLabel($branches); ?>
                 <?php print $this->formElement($branches); ?>
             </div>
-            <div class="col-sm-3">
+            <div class="col-sm-2">
                 <?php print $this->formLabel($genders); ?>
                 <?php print $this->formElement($genders); ?>
             </div>
-              <div class="col-sm-2">
-                 
-                  <button ng-click="view()" id="viewHolidays" class="btn btn-default form-control i-search" style="margin-top:22px !important;">
-                            View
-                            <i class="fa fa-search"></i>
-                        </button>
-                    </div>
-        </div>
-            
- 
-           <div class="margin-top-20">
-                <div class="row">
+            <div class="col-sm-2">
 
-                    <div class="col-sm-6">
-                        <div class="btn-group">
-                            <a href="<?= $this->url('holidaysetup', ['action' => 'add']) ?>" id="sample_editable_1_new"
-                               class="btn green"> Add New
-                                <i class="fa fa-plus"></i>
-                            </a>
-                        </div>
-                    </div>
-                    <div class="col-sm-6">
-                        <div class="btn-group pull-right">
-                            <button class="btn green btn-outline dropdown-toggle" data-toggle="dropdown">Tools
-                                <i class="fa fa-angle-down"></i>
-                            </button>
-                            <ul class="dropdown-menu pull-right">
-                                <li>
-                                    <a href="javascript:;" id="export"> Export to Excel </a>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-    
-
+                <button ng-click="view()" id="viewHolidays" class="btn btn-default form-control i-search" style="margin-top:22px !important;">
+                    View
+                    <i class="fa fa-search"></i>
+                </button>
             </div>
         </div>
-   
-    
+
+
+        <div class="margin-top-20">
+            <div class="row">
+
+                <div class="col-sm-6">
+                    <div class="btn-group">
+                        <a href="<?= $this->url('holidaysetup', ['action' => 'add']) ?>" id="sample_editable_1_new"
+                           class="btn green"> Add New
+                            <i class="fa fa-plus"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="btn-group pull-right">
+                        <button class="btn green btn-outline dropdown-toggle" data-toggle="dropdown">Tools
+                            <i class="fa fa-angle-down"></i>
+                        </button>
+                        <ul class="dropdown-menu pull-right">
+                            <li>
+                                <a href="javascript:;" id="export"> Export to Excel </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+
+
     <div class="margin-top-20">
         <div id="holidayTable"></div>
     </div>
-    
+
     <script id="rowTemplate" type="text/x-kendo-tmpl">
         <tr>
         <td>    
@@ -113,20 +151,20 @@ if ($this->messages) { ?>
         #: (GENDER_NAME == null) ? '-' : GENDER_NAME #
         </td>
         <td>
-            <ul id="branchList">  
-                # (BRANCHES.length >3) ? ln=3 : ln=BRANCHES.length #
-                #for(var i=0; i<ln; i++) { #
-                    <li>
-                    - #=BRANCHES[i].BRANCH_NAME #
-                    </li>
-                #}#
-                <li>              
-                # if (BRANCHES.length >3) { #
-                <a href="<?= $this->url("holidaysetup", ["action" => "edit"]) ?>/#:HOLIDAY_ID#" style="margin-left:8px;"> (View More)
-                </a>
-                # } #
-                </li>
-            </ul>
+        <ul id="branchList">  
+        # (BRANCHES.length >3) ? ln=3 : ln=BRANCHES.length #
+        #for(var i=0; i<ln; i++) { #
+        <li>
+        - #=BRANCHES[i].BRANCH_NAME #
+        </li>
+        #}#
+        <li>              
+        # if (BRANCHES.length >3) { #
+        <a href="<?= $this->url("holidaysetup", ["action" => "edit"]) ?>/#:HOLIDAY_ID#" style="margin-left:8px;"> (View More)
+        </a>
+        # } #
+        </li>
+        </ul>
         </td>
         <td>
         #: (HALFDAY == null) ? '-' : HALFDAY #
@@ -135,9 +173,9 @@ if ($this->messages) { ?>
         <a class="btn-edit"
         href="<?= $this->url("holidaysetup", ["action" => "edit"]) ?>/#:HOLIDAY_ID#" style="height:17px;"> 
         <i class="fa fa-edit"></i>
-            </a>
+        </a>
         </tr>
     </script>
-    
-    
+
+
 </div>

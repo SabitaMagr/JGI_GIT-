@@ -42,7 +42,8 @@ window.app = (function ($, toastr) {
         for (var x in arguments) {
             arguments[x].datepicker({
                 format: format,
-                autoclose: true
+                autoclose: true,
+                setDate: new Date()
             });
 
         }
@@ -55,7 +56,7 @@ window.app = (function ($, toastr) {
 
         $("#" + fromDate).datepicker({
             format: format,
-            todayBtn: 1,
+            todayHighlight: true,
             autoclose: true,
         }).on('changeDate', function (selected) {
             var minDate = new Date(selected.date.valueOf());
@@ -64,10 +65,90 @@ window.app = (function ($, toastr) {
 
         $("#" + toDate).datepicker({
             format: format,
+            todayHighlight: true,
             autoclose: true
         }).on('changeDate', function (selected) {
             var maxDate = new Date(selected.date.valueOf());
             $('#' + fromDate).datepicker('setEndDate', maxDate);
+        });
+    };
+
+    var startEndDatePickerWithNepali = function (fromNepali, fromEnglish, toNepali, toEnglish) {
+        var $fromNepaliDate = $('#' + fromNepali);
+        var $fromEnglishDate = $('#' + fromEnglish);
+        var $toNepaliDate = $('#' + toNepali);
+        var $toEnglishDate = $('#' + toEnglish);
+
+        var oldFromNepali = null;
+        var oldtoNepali = null;
+
+        $fromNepaliDate.nepaliDatePicker({
+            onChange: function () {
+                var toVal = $toNepaliDate.val();
+                if (toVal === 'undefined' || toVal == '') {
+                    $fromEnglishDate.val(nepaliDatePickerExt.fromNepaliToEnglish($fromNepaliDate.val()));
+                    $toEnglishDate.datepicker('setStartDate', new Date($fromEnglishDate.val()));
+                    oldFromNepali = $fromNepaliDate.val();
+                } else {
+                    var fromDate = nepaliDatePickerExt.fromNepaliToEnglish($fromNepaliDate.val());
+                    var toDate = nepaliDatePickerExt.fromNepaliToEnglish($toNepaliDate.val());
+                    if (new Date(toDate).getTime() > new Date(fromDate).getTime()) {
+                        $fromEnglishDate.val(nepaliDatePickerExt.fromNepaliToEnglish($fromNepaliDate.val()));
+                        $toEnglishDate.datepicker('setStartDate', new Date($fromEnglishDate.val()));
+                        oldFromNepali = $fromNepaliDate.val();
+                    } else {
+                        errorMessage("Selected Date should not exceed more than " + toVal);
+                        $fromNepaliDate.focus();
+                        $fromNepaliDate.val(oldFromNepali);
+                    }
+                }
+            }
+        });
+
+        $fromEnglishDate.datepicker({
+            format: 'dd-M-yyyy',
+            todayHighlight: true,
+            autoclose: true
+        }).on('changeDate', function () {
+            $fromNepaliDate.val(nepaliDatePickerExt.fromEnglishToNepali($(this).val()));
+            var minDate = new Date($(this).val());
+            $toEnglishDate.datepicker('setStartDate', minDate);
+        });
+
+        $toNepaliDate.nepaliDatePicker({
+            onChange: function () {
+                var fromVal = $fromNepaliDate.val();
+                if (fromVal === 'undefined' || fromVal == '') {
+                    $toEnglishDate.val(nepaliDatePickerExt.fromNepaliToEnglish($toNepaliDate.val()));
+                    $fromEnglishDate.datepicker('setEndDate', new Date($toEnglishDate.val()));
+                    oldtoNepali = $toNepaliDate.val();
+                } else {
+                    var fromDate = nepaliDatePickerExt.fromNepaliToEnglish($fromNepaliDate.val());
+                    var toDate = nepaliDatePickerExt.fromNepaliToEnglish($toNepaliDate.val());
+                    if (new Date(toDate).getTime() > new Date(fromDate).getTime()) {
+                        $toEnglishDate.val(nepaliDatePickerExt.fromNepaliToEnglish($toNepaliDate.val()));
+                        $fromEnglishDate.datepicker('setEndDate', new Date($toEnglishDate.val()));
+                        oldtoNepali = $toNepaliDate.val();
+                    } else {
+                        errorMessage("Selected Date should not preceed more than " + fromVal);
+                        $toNepaliDate.val(oldtoNepali);
+                    }
+                }
+            }
+        });
+
+        $toEnglishDate.datepicker({
+            format: 'dd-M-yyyy',
+            todayHighlight: true,
+            autoclose: true
+        }).on('changeDate', function () {
+            $toNepaliDate.val(nepaliDatePickerExt.fromEnglishToNepali($(this).val()));
+            var maxDate = new Date($(this).val());
+            $fromEnglishDate.datepicker('setEndDate', maxDate);
+        });
+
+        $fromNepaliDate.on('input', function () {
+            console.log('changed', this);
         });
     };
 
@@ -83,6 +164,12 @@ window.app = (function ($, toastr) {
         }
     };
     successMessage(document.messages);
+
+    var errorMessage = function (message, title) {
+        if (message) {
+            window.toastr.error(message, title);
+        }
+    }
 
     var floatingProfile = {
         minStatus: false,
@@ -348,6 +435,28 @@ window.app = (function ($, toastr) {
         });
     };
 
+    var displayErrorMessage = function (formGroup, check, message) {
+        var flag = formGroup.find('span.errorMsg').length > 0;
+        if (flag) {
+            var errorMsgSpan = formGroup.find('span.errorMsg');
+            errorMsgSpan.each(function () {
+                if (check > 0) {
+                    $(this).html(message);
+                } else {
+                    $(this).remove();
+                }
+            });
+        } else {
+            if (check > 0) {
+                var errorMsgSpan = $('<span />', {
+                    "class": 'errorMsg',
+                    text: message
+                });
+                formGroup.append(errorMsgSpan);
+            }
+        }
+    };
+
 
     return {
         format: format,
@@ -357,10 +466,12 @@ window.app = (function ($, toastr) {
         addTimePicker: addTimePicker,
         fetchAndPopulate: fetchAndPopulate,
         successMessage: successMessage,
+        errorMessage: errorMessage,
         floatingProfile: floatingProfile,
         checkUniqueConstraints: checkUniqueConstraints,
         UIConfirmations: UIConfirmations,
-        startEndDatePicker: startEndDatePicker
+        startEndDatePicker: startEndDatePicker,
+        startEndDatePickerWithNepali: startEndDatePickerWithNepali
     };
 })(window.jQuery, window.toastr);
 

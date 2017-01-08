@@ -1,31 +1,33 @@
-(function ($) {
+(function ($, app) {
     'use strict';
     $(document).ready(function () {
-        var $fromNepaliDate = $('#FromnepaliDate');
-        var $fromEnglishDate = $('#FromenglishDate');
-        var $toNepaliDate = $('#TonepaliDate');
-        var $toEnglishDate = $('#ToenglishDate');
+        app.startEndDatePickerWithNepali("FromnepaliDate","FromenglishDate","TonepaliDate","ToenglishDate");
+//        var $fromNepaliDate = $('#FromnepaliDate');
+//        var $fromEnglishDate = $('#FromenglishDate');
+//        var $toNepaliDate = $('#TonepaliDate');
+//        var $toEnglishDate = $('#ToenglishDate');
+//
+//        $fromNepaliDate.nepaliDatePicker({
+//            onChange: function () {
+//                $fromEnglishDate.val(nepaliDatePickerExt.fromNepaliToEnglish($fromNepaliDate.val()));
+//            }
+//        });
+//
+//        $fromEnglishDate.datepicker({format: 'dd-M-yyyy', autoclose: true}).on('changeDate', function () {
+//            $fromNepaliDate.val(nepaliDatePickerExt.fromEnglishToNepali($(this).val()));
+//        });
+//
+//        $toNepaliDate.nepaliDatePicker({
+//            onChange: function () {
+//                $toEnglishDate.val(nepaliDatePickerExt.fromNepaliToEnglish($toNepaliDate.val()));
+//
+//            }
+//        });
+//
+//        $toEnglishDate.datepicker({format: 'dd-M-yyyy', autoclose: true}).on('changeDate', function () {
+//            $toNepaliDate.val(nepaliDatePickerExt.fromEnglishToNepali($(this).val()));
+//        });
 
-        $fromNepaliDate.nepaliDatePicker({
-            onChange: function () {
-                $fromEnglishDate.val(nepaliDatePickerExt.fromNepaliToEnglish($fromNepaliDate.val()));
-            }
-        });
-
-        $fromEnglishDate.datepicker({format: 'dd-M-yyyy', autoclose: true}).on('changeDate', function () {
-            $fromNepaliDate.val(nepaliDatePickerExt.fromEnglishToNepali($(this).val()));
-        });
-
-        $toNepaliDate.nepaliDatePicker({
-            onChange: function () {
-                $toEnglishDate.val(nepaliDatePickerExt.fromNepaliToEnglish($toNepaliDate.val()));
-
-            }
-        });
-
-        $toEnglishDate.datepicker({format: 'dd-M-yyyy', autoclose: true}).on('changeDate', function () {
-            $toNepaliDate.val(nepaliDatePickerExt.fromEnglishToNepali($(this).val()));
-        });
 
 
         $("#positionTable").kendoGrid({

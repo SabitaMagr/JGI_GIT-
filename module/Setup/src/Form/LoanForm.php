@@ -1,4 +1,5 @@
 <?php
+
 namespace Setup\Form;
 
 use Zend\Form\Annotation;
@@ -7,8 +8,7 @@ use Zend\Form\Annotation;
  * @Annotation\Hydrator("Zend\Hydrator\ObjectProperty")
  * @Annotation\Name("Loan")
  */
-class LoanForm
-{
+class LoanForm {
 
     /**
      * @Annotation\Type("Zend\Form\Element\Text")
@@ -18,7 +18,8 @@ class LoanForm
      * @Annotation\Attributes({ "id":"form-loanCode", "class":"form-loanCode form-control" })
      */
     public $loanCode;
-     /**
+
+    /**
      * @Annotion\Type("Zend\Form\Element\Text")
      * @Annotation\Required({"required":"true"})
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
@@ -26,26 +27,26 @@ class LoanForm
      * @Annotation\Attributes({ "id":"form-loanName", "class":"form-loanName form-control" })
      */
     public $loanName;
-    
+
     /**
      * @Annotation\Type("Zend\Form\Element\Number")
      * @Annotation\Required({"required":"true"})
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
      * @Annotation\Options({"label":"Min. Amount"})
-     * @Annotation\Attributes({ "id":"form-minAmount","class":"form-control"})
+     * @Annotation\Attributes({ "id":"form-minAmount","class":"form-control","step":"0.01"})
      */
     public $minAmount;
-    
+
     /**
      * @Annotation\Type("Zend\Form\Element\Number")
      * @Annotation\Required({"required":"true"})
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
      * @Annotation\Options({"label":"Max. Amount"})
-     * @Annotation\Attributes({ "id":"form-maxAmount","class":"form-control"})
+     * @Annotation\Attributes({ "id":"form-maxAmount","class":"form-control","step":"0.01"})
      */
     public $maxAmount;
 
-     /**
+    /**
      * @Annotation\Type("Zend\Form\Element\Number")
      * @Annotation\Required({"required":"true"})
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
@@ -53,7 +54,7 @@ class LoanForm
      * @Annotation\Attributes({ "id":"form-interestRate","class":"form-control"})
      */
     public $interestRate;
-    
+
     /**
      * @Annotation\Type("Zend\Form\Element\Number")
      * @Annotation\Required({"required":"true"})
@@ -62,7 +63,7 @@ class LoanForm
      * @Annotation\Attributes({ "id":"form-repaymentAmount", "class":"form-control" })
      */
     public $repaymentAmount;
-    
+
     /**
      * @Annotation\Type("Zend\Form\Element\Number")
      * @Annotation\Required({"required":"true"})
@@ -87,6 +88,4 @@ class LoanForm
      */
     public $submit;
 
-
 }
-
