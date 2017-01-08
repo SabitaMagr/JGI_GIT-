@@ -1475,12 +1475,12 @@ return array (
           ),
         ),
       ),
-      'loanAdvanceStatus' => 
+      'loanStatus' => 
       array (
         'type' => 'Zend\\Router\\Http\\Segment',
         'options' => 
         array (
-          'route' => '/loanAdvance/status[/:action[/:id]]',
+          'route' => '/loan/status[/:action[/:id]]',
           'constraints' => 
           array (
             'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
@@ -1488,17 +1488,17 @@ return array (
           ),
           'defaults' => 
           array (
-            'controller' => 'LoanAdvance\\Controller\\LoanAdvanceStatus',
+            'controller' => 'Loan\\Controller\\LoanStatus',
             'action' => 'index',
           ),
         ),
       ),
-      'loanAdvanceApply' => 
+      'loanApply' => 
       array (
         'type' => 'Zend\\Router\\Http\\Segment',
         'options' => 
         array (
-          'route' => '/loanAdvance/apply[/:action[/:id]]',
+          'route' => '/loan/apply[/:action[/:id]]',
           'constraints' => 
           array (
             'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
@@ -1506,7 +1506,7 @@ return array (
           ),
           'defaults' => 
           array (
-            'controller' => 'LoanAdvance\\Controller\\LoanAdvanceApply',
+            'controller' => 'Loan\\Controller\\LoanApply',
             'action' => 'index',
           ),
         ),
@@ -3489,69 +3489,69 @@ return array (
         ),
       ),
     ),
-    'loanAdvanceStatus' => 
+    'loanStatus' => 
     array (
       0 => 
       array (
-        'label' => 'Loan/Advance Request',
-        'route' => 'loanAdvanceStatus',
+        'label' => 'Loan Request',
+        'route' => 'loanStatus',
       ),
       1 => 
       array (
-        'label' => 'Loan/Advance Request',
-        'route' => 'loanAdvanceStatus',
+        'label' => 'Loan Request',
+        'route' => 'loanStatus',
         'pages' => 
         array (
           0 => 
           array (
             'label' => 'List',
-            'route' => 'loanAdvanceStatus',
+            'route' => 'loanStatus',
             'action' => 'index',
           ),
           1 => 
           array (
             'label' => 'Add',
-            'route' => 'loanAdvanceStatus',
+            'route' => 'loanStatus',
             'action' => 'add',
           ),
           2 => 
           array (
             'label' => 'Edit',
-            'route' => 'loanAdvanceStatus',
+            'route' => 'loanStatus',
             'action' => 'edit',
           ),
         ),
       ),
     ),
-    'loanAdvanceApply' => 
+    'loanApply' => 
     array (
       0 => 
       array (
-        'label' => 'Loan/Advance Apply',
-        'route' => 'loanAdvanceApply',
+        'label' => 'Loan Apply',
+        'route' => 'loanApply',
       ),
       1 => 
       array (
         'label' => 'Loan/Advance Apply',
-        'route' => 'loanAdvanceApply',
+        'route' => 'loanApply',
         'pages' => 
         array (
           0 => 
           array (
             'label' => 'List',
-            'route' => 'loanAdvanceApply',
+            'route' => 'loanApply',
             'action' => 'index',
           ),
           1 => 
           array (
             'label' => 'Add',
-            'route' => 'loanAdvanceApply',
+            'route' => 'loanApply',
             'action' => 'add',
           ),
           2 => 
           array (
             'label' => 'Edit',
-            'route' => 'loanAdvanceApply',
+            'route' => 'loanApply',
             'action' => 'edit',
           ),
         ),
@@ -3623,8 +3623,8 @@ return array (
       'Appraisal\\Controller\\Appraisal' => 'Application\\Controller\\ControllerFactory',
       'Appraisal\\Controller\\EvaluationAndReview' => 'Application\\Controller\\ControllerFactory',
       'Appraisal\\Controller\\PerformanceAppraisal' => 'Application\\Controller\\ControllerFactory',
-      'LoanAdvance\\Controller\\LoanAdvanceStatus' => 'Application\\Controller\\ControllerFactory',
-      'LoanAdvance\\Controller\\LoanAdvanceApply' => 'Application\\Controller\\ControllerFactory',
+      'Loan\\Controller\\LoanStatus' => 'Application\\Controller\\ControllerFactory',
+      'Loan\\Controller\\LoanApply' => 'Application\\Controller\\ControllerFactory',
     ),
   ),
   'view_manager' => 
@@ -3670,7 +3670,7 @@ return array (
       9 => '/var/www/html/neo/neo-hris-metronic/module/System/config/../view',
       10 => '/var/www/html/neo/neo-hris-metronic/module/Training/config/../view',
       11 => '/var/www/html/neo/neo-hris-metronic/module/Appraisal/config/../view',
-      12 => '/var/www/html/neo/neo-hris-metronic/module/LoanAdvance/config/../view',
+      12 => '/var/www/html/neo/neo-hris-metronic/module/Loan/config/../view',
     ),
   ),
   'dashboard-items' => 

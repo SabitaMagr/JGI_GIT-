@@ -1,5 +1,5 @@
 <?php
-namespace LoanAdvance\Controller;
+namespace Loan\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\Db\Adapter\AdapterInterface;
@@ -9,7 +9,7 @@ use Zend\Form\Annotation\AnnotationBuilder;
 use SelfService\Form\LoanAdvanceRequestForm;
 use Setup\Model\HrEmployees;
 
-class LoanAdvanceApply extends AbstractActionController{
+class LoanApply extends AbstractActionController{
     private $form;
     private $adapter;
     

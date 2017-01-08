@@ -1498,3 +1498,7 @@ width:33%!important;
 input#endDate, #startDate,#birthdate,#famSpouseBirthDateId,#famSpouseWedAnniId,#idDrivingLicenseExpiry,#idPassportExpiry,#idCitizenshipIssueDate,#joinDate,#fromDate1,#toDate1,#startDate1,#endDate1,#form-loanDate {
   text-transform: uppercase;
 }
+
+.div-font-11{
+    font-size:11px !important;
+}

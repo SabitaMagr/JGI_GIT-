@@ -65,7 +65,7 @@ return array(
     'PHPixie\\Tests\\' => array($vendorDir . '/phpixie/image/tests/PHPixie/Tests'),
     'PHPixie\\' => array($vendorDir . '/phpixie/image/src/PHPixie'),
     'ManagerService\\' => array($baseDir . '/module/ManagerService/src'),
-    'LoanAdvance\\' => array($baseDir . '/module/LoanAdvance/src'),
+    'Loan\\' => array($baseDir . '/module/Loan/src'),
     'LeaveManagement\\' => array($baseDir . '/module/LeaveManagement/src'),
     'Intervention\\Image\\' => array($vendorDir . '/intervention/image/src/Intervention/Image'),
     'Interop\\Container\\' => array($vendorDir . '/container-interop/container-interop/src/Interop/Container'),

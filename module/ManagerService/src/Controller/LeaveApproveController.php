@@ -113,6 +113,10 @@ class LeaveApproveController extends AbstractActionController {
 
         $requestedEmployeeID = $detail['EMPLOYEE_ID'];
         $employeeName = $detail['FIRST_NAME'] . " " . $detail['MIDDLE_NAME'] . " " . $detail['LAST_NAME'];
+        $RECM_MN = ($detail['MN1']!=null)? " ".$detail['MN1']." ":" ";
+        $recommender = $detail['FN1'].$RECM_MN.$detail['LN1'];        
+        $APRV_MN = ($detail['MN2']!=null)? " ".$detail['MN2']." ":" ";
+        $approver = $detail['FN2'].$APRV_MN.$detail['LN2'];
 
         //to get the previous balance of selected leave from assigned leave detail
         $result = $this->repository->assignedLeaveDetail($detail['LEAVE_ID'], $detail['EMPLOYEE_ID'])->getArrayCopy();
@@ -171,6 +175,9 @@ class LeaveApproveController extends AbstractActionController {
                     'remarksDtl' => $detail['REMARKS'],
                     'totalDays' => $result['TOTAL_DAYS'],
                     'recommendedBy' => $detail['RECOMMENDED_BY'],
+                    'recommender'=>$recommender,
+                    'approver'=>$approver,
+                    'approvedDT'=>$detail['APPROVED_DT'],
                     'employeeId' => $this->employeeId,
                     'requestedEmployeeId' => $requestedEmployeeID,
                     'allowHalfDay' => $leaveDtl['ALLOW_HALFDAY'],

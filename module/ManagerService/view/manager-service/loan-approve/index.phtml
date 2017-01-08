@@ -18,7 +18,7 @@ $this->headScript()
     document.menu =<?php $menu = ["id" => "menuManagerService", "subMenu" => ["id" => "subMenuLoantoApprove"]];
 echo json_encode($menu); ?>;
     document.deleteURL ='<?= $this->url("restful", ["action" => "index"]) ?>';
-    document.loanApprove=<?php echo json_encode($list);?>
+    document.loanApprove=<?php echo json_encode($loanApprove);?>
 </script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\loanApprove')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
@@ -71,7 +71,7 @@ echo json_encode($menu); ?>;
         </td>
         <td>
         <a class="btn-edit"
-        href="<?= $this->url("loanRequest", ["action" => "view"]); ?>/#:LOAN_REQUESTED_ID #/#:ROLE #" style="height:17px;" title="view">
+        href="<?= $this->url("loanApprove", ["action" => "view"]); ?>/#:LOAN_REQUEST_ID #/#:ROLE #" style="height:17px;" title="view">
         <i class="fa fa-search-plus"></i></a>
         </a>
         </td>

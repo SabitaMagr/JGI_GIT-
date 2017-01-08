@@ -1,38 +1,38 @@
 <?php
-namespace LoanAdvance;
+namespace Loan;
 
 use Application\Controller\ControllerFactory;
-use LoanAdvance\Controller\LoanAdvanceStatus;
-use LoanAdvance\Controller\LoanAdvanceApply;
+use Loan\Controller\LoanStatus;
+use Loan\Controller\LoanApply;
 use Zend\Router\Http\Segment;
 
 return [
     'router' => [
         'routes' => [
-            'loanAdvanceStatus' => [
+            'loanStatus' => [
                 'type' => Segment::class,
                 'options' => [
-                    'route' => '/loanAdvance/status[/:action[/:id]]',
+                    'route' => '/loan/status[/:action[/:id]]',
                     'constraints' => [
                         'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
                         'id' => '[0-9]+',
                     ],
                     'defaults' => [
-                        'controller' => LoanAdvanceStatus::class,
+                        'controller' => LoanStatus::class,
                         'action' => 'index'
                     ],
                 ],
             ],
-            'loanAdvanceApply' => [
+            'loanApply' => [
                 'type' => Segment::class,
                 'options' => [
-                    'route' => '/loanAdvance/apply[/:action[/:id]]',
+                    'route' => '/loan/apply[/:action[/:id]]',
                     'constraints' => [
                         'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
                         'id' => '[0-9]+',
                     ],
                     'defaults' => [
-                        'controller' => LoanAdvanceApply::class,
+                        'controller' => LoanApply::class,
                         'action' => 'index'
                     ],
                 ],
@@ -40,55 +40,55 @@ return [
         ],
     ],
     'navigation' => [
-        'loanAdvanceStatus' => [
+        'loanStatus' => [
                 [
-                'label' => "Loan/Advance Request",
-                'route' => "loanAdvanceStatus"
+                'label' => "Loan Request",
+                'route' => "loanStatus"
             ],
                 [
-                'label' => "Loan/Advance Request",
-                'route' => "loanAdvanceStatus",
+                'label' => "Loan Request",
+                'route' => "loanStatus",
                 'pages' => [
                         [
                         'label' => 'List',
-                        'route' => 'loanAdvanceStatus',
+                        'route' => 'loanStatus',
                         'action' => 'index',
                     ],
                         [
                         'label' => 'Add',
-                        'route' => 'loanAdvanceStatus',
+                        'route' => 'loanStatus',
                         'action' => 'add',
                     ],
                         [
                         'label' => 'Edit',
-                        'route' => 'loanAdvanceStatus',
+                        'route' => 'loanStatus',
                         'action' => 'edit',
                     ],
                 ],
             ],
         ],
-        'loanAdvanceApply' => [
+        'loanApply' => [
                 [
-                'label' => "Loan/Advance Apply",
-                'route' => "loanAdvanceApply"
+                'label' => "Loan Apply",
+                'route' => "loanApply"
             ],
                 [
                 'label' => "Loan/Advance Apply",
-                'route' => "loanAdvanceApply",
+                'route' => "loanApply",
                 'pages' => [
                         [
                         'label' => 'List',
-                        'route' => 'loanAdvanceApply',
+                        'route' => 'loanApply',
                         'action' => 'index',
                     ],
                         [
                         'label' => 'Add',
-                        'route' => 'loanAdvanceApply',
+                        'route' => 'loanApply',
                         'action' => 'add',
                     ],
                         [
                         'label' => 'Edit',
-                        'route' => 'loanAdvanceApply',
+                        'route' => 'loanApply',
                         'action' => 'edit',
                     ],
                 ],
@@ -97,8 +97,8 @@ return [
     ],
     'controllers' => [
         'factories' => [
-            Controller\LoanAdvanceStatus::class => ControllerFactory::class,
-            Controller\LoanAdvanceApply::class => ControllerFactory::class
+            Controller\LoanStatus::class => ControllerFactory::class,
+            Controller\LoanApply::class => ControllerFactory::class
         ],
     ],
     'view_manager' => [
