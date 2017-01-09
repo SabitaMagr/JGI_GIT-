@@ -2,7 +2,8 @@
     'use strict';
     $(document).ready(function () {
         $("select").select2();
-        app.startEndDatePicker('fromDate','toDate');
+//        app.startEndDatePicker('fromDate', 'toDate');
+        app.startEndDatePickerWithNepali('nepaliFromDate', 'fromDate', 'nepaliToDate', 'toDate');
     });
 })(window.jQuery, window.app);
 
@@ -18,8 +19,8 @@ angular.module('hris', [])
                 var serviceTypeId = angular.element(document.getElementById('serviceTypeId')).val();
                 var serviceEventTypeId = angular.element(document.getElementById('serviceEventTypeId')).val();
                 var attendanceRequestStatusId = angular.element(document.getElementById('attendanceRequestStatusId')).val();
-                var fromDate = angular.element(document.getElementById('fromDate1')).val();
-                var toDate = angular.element(document.getElementById('toDate1')).val();
+                var fromDate = angular.element(document.getElementById('fromDate')).val();
+                var toDate = angular.element(document.getElementById('toDate')).val();
 
                 window.app.pullDataById(document.url, {
                     action: 'pullAttendanceRequestStatusList',
@@ -30,7 +31,7 @@ angular.module('hris', [])
                         'designationId': designationId,
                         'positionId': positionId,
                         'serviceTypeId': serviceTypeId,
-                        'serviceEventTypeId':serviceEventTypeId,
+                        'serviceEventTypeId': serviceEventTypeId,
                         'attendanceRequestStatusId': attendanceRequestStatusId,
                         'fromDate': fromDate,
                         'toDate': toDate
@@ -114,11 +115,11 @@ angular.module('hris', [])
 
                     for (var i = 0; i < data.length; i++) {
                         var dataItem = data[i];
-                        var middleName = dataItem.MIDDLE_NAME!=null ? " "+dataItem.MIDDLE_NAME+" " : " ";
-                        var middleName1 = dataItem.MIDDLE_NAME1!=null ? " "+dataItem.MIDDLE_NAME1+" " : " ";
+                        var middleName = dataItem.MIDDLE_NAME != null ? " " + dataItem.MIDDLE_NAME + " " : " ";
+                        var middleName1 = dataItem.MIDDLE_NAME1 != null ? " " + dataItem.MIDDLE_NAME1 + " " : " ";
                         rows.push({
                             cells: [
-                                {value: dataItem.FIRST_NAME+middleName+dataItem.LAST_NAME},
+                                {value: dataItem.FIRST_NAME + middleName + dataItem.LAST_NAME},
                                 {value: dataItem.REQUESTED_DT},
                                 {value: dataItem.ATTENDANCE_DT},
                                 {value: dataItem.IN_TIME},
@@ -126,7 +127,7 @@ angular.module('hris', [])
                                 {value: dataItem.TOTAL_HOUR},
                                 {value: dataItem.IN_REMARKS},
                                 {value: dataItem.OUT_REMARKS},
-                                {value: dataItem.FIRST_NAME1+middleName1+dataItem.LAST_NAME1},
+                                {value: dataItem.FIRST_NAME1 + middleName1 + dataItem.LAST_NAME1},
                                 {value: dataItem.STATUS},
                                 {value: dataItem.APPROVED_DT},
                                 {value: dataItem.APPROVED_REMARKS}

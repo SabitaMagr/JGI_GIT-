@@ -3,22 +3,27 @@
  * Load Javascript files here
  */
 $this->headScript()
-    ->appendFile($this->basePath('jszip/dist/jszip.min.js'))
-    ->appendFile($this->basePath('telerik_kendoui/js/kendo.all.min.js'));
+        ->appendFile($this->basePath('jszip/dist/jszip.min.js'))
+        ->appendFile($this->basePath('telerik_kendoui/js/kendo.all.min.js'));
 $this->headScript()->appendFile($this->basePath('js/angular.min.js'));
-$this->headScript()->appendFile($this->basePath('js/AttendanceManagement/attendance/index.js'))
-      ->appendFile($this->basePath('assets/global/plugins/bootstrap-confirmation/bootstrap-confirmation.min.js'));
+$this->headScript()
+        ->appendFile($this->basePath('assets/global/plugins/nepalidate/nepali.datepicker.v2.1.min.js'))
+        ->appendFile($this->basePath('js/nepali-datepicker-ext.js'))
+        ->appendFile($this->basePath('js/AttendanceManagement/attendance/index.js'))
+        ->appendFile($this->basePath('assets/global/plugins/bootstrap-confirmation/bootstrap-confirmation.min.js'));
 ?>
 
-<?php
-if ($this->messages) { ?>
+<?php if ($this->messages) { ?>
     <script>
         document.messages =<?php echo json_encode($this->messages); ?>
     </script>
 <?php } ?>
 
 <script>
-    document.menu =<?php $menu = ["id" => "menuSelfService", "subMenu" => ["id" => "subMenuMyAttendance"]];echo json_encode($menu);?>;
+    document.menu =<?php
+$menu = ["id" => "menuSelfService", "subMenu" => ["id" => "subMenuMyAttendance"]];
+echo json_encode($menu);
+?>;
     document.url = '<?= $this->url("webService", ["action" => "index"]) ?>';
 </script>
 
@@ -29,29 +34,47 @@ if ($this->messages) { ?>
     <div class="margin-top-20">
         <div class="table-toolbar">
             <div class="row">
-                <div class="col-md-6">
+                <div class="col-md-8">
                     <div class="row">
-                        <div class="col-xs-6 col-sm-4 col-md-4">
-                            <div class="input-group date" id="fromDate">
-                                <input type="text" placeholder="From Date" id="fromDate1" name="fromDate" ng-model="fromDate" class="form-control"/>
-                                <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                        <div class="col-sm-8">
+                            <div class="row">
+                                <div class="col-sm-3">
+                                    <div class="form-group">
+                                        <label for="fromDate">From Date</label>
+                                        <input type="text" id="fromDate" name="fromDate" ng-model="fromDate" class="form-control"/>
+                                    </div>
+
+                                </div>
+                                <div class="col-sm-3">
+                                    <div class="form-group">
+                                        <label for="nepaliFromDate">&nbsp;</label>
+                                        <input type="text" id="nepaliFromDate" name="nepaliFromDate"  class="form-control"/>
+                                    </div>
+
+                                </div>
+                                <div class="col-sm-3">
+                                    <div class="form-group">
+                                        <label for="toDate">To Date</label>
+                                        <input type="text"  id="toDate" name="toDate" ng-model="toDate" class="form-control"/>
+                                    </div>
+                                </div>
+                                <div class="col-sm-3">
+                                    <div class="form-group">
+                                        <label for="nepaliToDate">&nbsp;</label>
+                                        <input type="text"  id="nepaliToDate" name="nepaliToDate" class="form-control"/>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                              <div class="col-xs-6 col-sm-4 col-md-4">
-                            <div class="input-group date" id="toDate">
-                                <input type="text" placeholder="To Date" id="toDate1" name="toDate" ng-model="toDate" class="form-control"/>
-                                <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                            </div>
-                            <input type="hidden" name="employeeId" ng-model="employeeId" id="employeeId" value="<?php echo $employeeId; ?>"/>
-                        </div>
-                             <div class="col-xs-6 col-sm-4 col-md-4">
+                        <input type="hidden" name="employeeId" ng-model="employeeId" id="employeeId" value="<?php echo $employeeId; ?>"/>
+                        <div class=" col-sm-4 ">
                             <button ng-click="view()" id="myAttendance" class="btn btn-default form-control i-search">
                                 VIEW<i class="fa fa-search"></i>
                             </button>
                         </div>
                     </div>
                 </div>
-                <div class="col-md-6">
+                <div class="col-md-4">
                     <div class="btn-group pull-right">
                         <button class="btn green btn-outline dropdown-toggle" data-toggle="dropdown">Tools
                             <i class="fa fa-angle-down"></i>
@@ -69,24 +92,24 @@ if ($this->messages) { ?>
         </div>
         <script id="rowTemplate" type="text/x-kendo-tmpl">
             <tr>
-                <td>
-                #: (ATTENDANCE_DT == null) ? '-' : ATTENDANCE_DT #
-                </td>
-                <td>    
-                #: (IN_TIME == null) ? '-' : IN_TIME #
-                </td>
-                <td>
-                #: (OUT_TIME == null) ? '-' : OUT_TIME #
-                </td>
-                <td>
-                #: (TOTAL_HOUR == null) ? '-' : TOTAL_HOUR #
-                </td>
-                <td>
-                #: (IN_REMARKS == null) ? '-' : IN_REMARKS #
-                </td>
-                <td>
-                #: (OUT_REMARKS == null) ? '-' : OUT_REMARKS #
-                </td>
+            <td>
+            #: (ATTENDANCE_DT == null) ? '-' : ATTENDANCE_DT #
+            </td>
+            <td>    
+            #: (IN_TIME == null) ? '-' : IN_TIME #
+            </td>
+            <td>
+            #: (OUT_TIME == null) ? '-' : OUT_TIME #
+            </td>
+            <td>
+            #: (TOTAL_HOUR == null) ? '-' : TOTAL_HOUR #
+            </td>
+            <td>
+            #: (IN_REMARKS == null) ? '-' : IN_REMARKS #
+            </td>
+            <td>
+            #: (OUT_REMARKS == null) ? '-' : OUT_REMARKS #
+            </td>
             </tr>
         </script>
     </div>

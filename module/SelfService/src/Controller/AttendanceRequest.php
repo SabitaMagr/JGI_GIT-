@@ -9,20 +9,17 @@
 
 namespace SelfService\Controller;
 
-use Zend\Db\Adapter\AdapterInterface;
-use Zend\Authentication\AuthenticationService;
-use Zend\View\Model\ViewModel;
-use Zend\Mvc\Controller\AbstractActionController;
-use SelfService\Form\AttendanceRequestForm;
-use SelfService\Repository\AttendanceRequestRepository;
-use Zend\Form\Annotation\AnnotationBuilder;
 use Application\Helper\Helper;
-use Setup\Helper\EntityHelper;
+use SelfService\Form\AttendanceRequestForm;
 use SelfService\Model\AttendanceRequestModel;
+use SelfService\Repository\AttendanceRequestRepository;
 use Setup\Repository\EmployeeRepository;
 use Setup\Repository\RecommendApproveRepository;
+use Zend\Authentication\AuthenticationService;
+use Zend\Db\Adapter\AdapterInterface;
+use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\Form\Element\Select;
-
+use Zend\Mvc\Controller\AbstractActionController;
 
 class AttendanceRequest extends AbstractActionController {
 
@@ -49,10 +46,10 @@ class AttendanceRequest extends AbstractActionController {
 
     public function indexAction() {
         $attendanceStatus = [
-            '-1'=>'All',
-            'RQ'=>'Pending',
-            'AP'=>'Approved',
-            'R'=>'Rejected'
+            '-1' => 'All',
+            'RQ' => 'Pending',
+            'AP' => 'Approved',
+            'R' => 'Rejected'
         ];
         $attendanceStatusFormElement = new Select();
         $attendanceStatusFormElement->setName("attendanceStatus");
@@ -61,9 +58,9 @@ class AttendanceRequest extends AbstractActionController {
         $attendanceStatusFormElement->setLabel("Attendance Request Status");
 
         return Helper::addFlashMessagesToArray($this, [
-            'attendanceStatus'=>$attendanceStatusFormElement,
-            'employeeId'=>$this->employeeId
-                ]);
+                    'attendanceStatus' => $attendanceStatusFormElement,
+                    'employeeId' => $this->employeeId
+        ]);
     }
 
     public function addAction() {

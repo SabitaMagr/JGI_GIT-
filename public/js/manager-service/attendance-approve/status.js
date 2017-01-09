@@ -2,7 +2,7 @@
     'use strict';
     $(document).ready(function () {
         $("select").select2();
-        app.startEndDatePicker('fromDate', 'toDate');
+        app.startEndDatePickerWithNepali('nepaliFromDate', 'fromDate', 'nepaliToDate', 'toDate');
     });
 })(window.jQuery, window.app);
 
@@ -18,8 +18,8 @@ angular.module('hris', [])
                 var serviceEventTypeId = angular.element(document.getElementById('serviceEventTypeId')).val();
                 var serviceTypeId = angular.element(document.getElementById('serviceTypeId')).val();
                 var attendanceRequestStatusId = angular.element(document.getElementById('attendanceRequestStatusId')).val();
-                var fromDate = angular.element(document.getElementById('fromDate1')).val();
-                var toDate = angular.element(document.getElementById('toDate1')).val();
+                var fromDate = angular.element(document.getElementById('fromDate')).val();
+                var toDate = angular.element(document.getElementById('toDate')).val();
                 var approverId = angular.element(document.getElementById('approverId')).val();
 
                 window.app.pullDataById(document.url, {
