@@ -130,7 +130,7 @@ class VariableProcessor {
             case PayrollGenerator::VARIABLES[7]:
                 $serviceTypes = EntityHelper::getTableKVList($this->adapter, HrEmployees::TABLE_NAME, null, [HrEmployees::SERVICE_TYPE_ID], [HrEmployees::EMPLOYEE_ID => $this->employeeId], null, false);
                 if (sizeof($serviceTypes) > 0) {
-                    $processedValue = $serviceTypes[0];
+                    $processedValue = intval($serviceTypes[0]);
                 } else {
                     $processedValue = -1;
                 }

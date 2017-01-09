@@ -408,7 +408,7 @@ form.k-filter-menu .k-widget, form.k-filter-menu .k-textbox
 #viewEmployees
 {
 
- 	
+
 }
 .row.e-setup
 {
@@ -419,7 +419,7 @@ form.k-filter-menu .k-widget, form.k-filter-menu .k-textbox
     text-align: right !important;
     padding-right: 5 !important;
     width:50% !important;
- 
+
 }
 .rightalign-2
 {
@@ -888,8 +888,8 @@ select{
 
 }
 .form-group input{
-/*    padding-right:0px !important;
-    padding-left:5px !important;*/
+    /*    padding-right:0px !important;
+        padding-left:5px !important;*/
 
 }
 .portlet > .portlet-title > .caption{
@@ -909,25 +909,25 @@ form label,.form-box label
 }
 .select2-selection__rendered
 {
-/* height:23px !important;*/
+    /* height:23px !important;*/
 
- border-radius: 0px !important;
+    border-radius: 0px !important;
     padding-bottom: 2px;
-   font-size: 11px !important;
+    font-size: 11px !important;
     padding-top: 2px;
- 
+
 }
 .select2-container--bootstrap .select2-selection--multiple .select2-selection__choice
 {
-     border-radius: 0px !important;
+    border-radius: 0px !important;
     padding-bottom: 2px;
-   font-size: 11px !important;
-   margin-bottom:5px !important; 
+    font-size: 11px !important;
+    margin-bottom:5px !important; 
 }
 .select2-container--bootstrap .select2-selection
 {
-  min-height:23px !important;
-  border-radius:0px !important;
+    min-height:23px !important;
+    border-radius:0px !important;
 
 }
 .select2-selection__choice
@@ -1029,36 +1029,36 @@ form label,.form-box label
     font-family:fontawesome;
     padding-right:5px;
     color:#fff;
-  }
-  .topgapping
-  {
-      padding-top:5px;
-  }
-  
- .btn.btn-default.dropdown-toggle
- {
-     width:133px !important;
- font-size: 11px !important;  
- padding:3px 0px !important;
- max-height:22px !important;
- }
-  .btn.btn-default.dropdown-toggle span
-  {
-      top:9px !important;
-  }
- .dropdown-menu li a
- {
-        font-size: 11px !important;  
- }
- .select-option {
+}
+.topgapping
+{
+    padding-top:5px;
+}
+
+.btn.btn-default.dropdown-toggle
+{
+    width:133px !important;
+    font-size: 11px !important;  
+    padding:3px 0px !important;
+    max-height:22px !important;
+}
+.btn.btn-default.dropdown-toggle span
+{
+    top:9px !important;
+}
+.dropdown-menu li a
+{
+    font-size: 11px !important;  
+}
+.select-option {
     font-size: 12px !important;
     padding: 0 12px !important;
 }
- 
+
 .shadowlight
 {
- background-color: #F7F7F7;
-     padding: 5px 5px 10px 5px;	
+    background-color: #F7F7F7;
+    padding: 5px 5px 10px 5px;	
     border:solid #ddd  1px;
     box-shadow:3px 3px 11px #ccc;
     moz-box-shadow:3px 3px 11px #ccc;
@@ -1068,7 +1068,7 @@ form label,.form-box label
 .help-block-error,.errorMsg {
     color: red;
     font-size: 11px;
- 
+
     float:left;
 }
 
@@ -1076,7 +1076,7 @@ form label,.form-box label
     color:#559767 !important;
 }
 .form-wizard .steps > li.active > a.step .number{
-      background-color:#5CB85C !important; 
+    background-color:#5CB85C !important; 
 }
 .progress-bar-success {
     background-color: #5cb85c !important;
@@ -1087,12 +1087,12 @@ form label,.form-box label
 }
 .list-group-item {
     font-size: 11px !important;
-  padding:6px !important;
+    padding:6px !important;
 }
 
 #Rules .form-group
 {
- min-height:45px;   
+    min-height:45px;   
 
 }
 .list-group-item:before{
@@ -1100,9 +1100,9 @@ form label,.form-box label
     font-family:fontawesome;
     color:gray;
     padding-right:5px;
-   font-size:11px;
-   padding-right:5px;
-   
+    font-size:11px;
+    padding-right:5px;
+
 }
 .leftvalues
 {
@@ -1114,7 +1114,7 @@ form label,.form-box label
     width: 44%;
 }
 .col-xs-12.col-sm-3.rightvalues{
-      padding-right: 0;
+    padding-right: 0;
     width: 28%;  
 }
 .c-chekkbox label,.md-checkbox label
@@ -1123,8 +1123,8 @@ form label,.form-box label
 }
 .p-heading
 {
-  padding: 9px !important;   
-   border-bottom: 2px solid #ddd;
+    padding: 9px !important;   
+    border-bottom: 2px solid #ddd;
 }
 .p-heading h4{
     margin:0px !important;
@@ -1134,54 +1134,54 @@ form label,.form-box label
 }
 .summitbtn
 {
- padding: 5px !important; 
- background-color:#5c755e !important;
- color:#fff !important;
+    padding: 5px !important; 
+    background-color:#5c755e !important;
+    color:#fff !important;
 }
 .summitbtn:hover{
     background-color:#5CB85C !important;
 }
- 
+
 .page-container-bg-solid .page-bar, .page-content-white .page-bar {
     background-color: #fff;
     margin: -25px 0 0 !important;
     padding: 0 0px !important;
- 
+
 }
 #roleList li
 {
     border-radius:0px !important
-  padding: 4px 0 0 5px !important;  
+        padding: 4px 0 0 5px !important;  
 }
 #Rules .form-group{
     clear:both !important;
-/*  min-height:70px !important;*/
+    /*  min-height:70px !important;*/
 }
 .k-link input
- {
+{
     line-height: normal;
     margin: 4px 4px 0 !important;
 }
 ul#roleList li {
-    
+
     border-radius: 0 !important;
-       height: 22px !important;
+    height: 22px !important;
     margin: 0 0 10px !imporant;
-/*    padding: 0 10px 5px !important;*/
-padding:0 3px 4px 5px !important;
+    /*    padding: 0 10px 5px !important;*/
+    padding:0 3px 4px 5px !important;
     margin-bottom:10px !important;
     margin-top:0px !important;
-  }
+}
 
-  .md-checkbox label > .box {
+.md-checkbox label > .box {
     border: 2px solid #666;
     height: 17px !important;
- left:9px !important;
+    left:9px !important;
     top: 1px;
     transition-delay: 0.2s;
     width: 18px;
     z-index: 5;
-        
+
 }
 .md-checkbox label > .check{
     left:13px !important;
@@ -1199,7 +1199,7 @@ padding:0 3px 4px 5px !important;
 }
 .checkboxspance
 {
- left:0px !important;
+    left:0px !important;
 }
 .md-radio label > .box {
     border: 1px solid #999 !important;
@@ -1208,11 +1208,11 @@ padding:0 3px 4px 5px !important;
     background: gray !important;
 }
 .weekend{
-/*    background-color: #eee;*/
- 
- 
+    /*    background-color: #eee;*/
+
+
     border-bottom:1px dashed #ccc;
- 
+
     margin-left: -5px;
     margin-right: -5px;
 
@@ -1225,60 +1225,60 @@ padding:0 3px 4px 5px !important;
 }
 .shiftdetails,.shiftcode,.time,.remarks
 {
-  margin-left:-5px;
-  margin-right:-5px;
+    margin-left:-5px;
+    margin-right:-5px;
 }
 .submit_button
 {
- margin-left: 10px;
-     }
-    .mgap {
+    margin-left: 10px;
+}
+.mgap {
     padding-bottom: 9px !important;
     padding-top: 9px !important;
 }
-  .cwidth2
-  {
-      width:10% !important;
-  }
- .cwidth4,.cwidth5
- {
-     width:20% !important;
- }
- .marginspace,.topgap{
-     margin-bottom:8px;
- }
+.cwidth2
+{
+    width:10% !important;
+}
+.cwidth4,.cwidth5
+{
+    width:20% !important;
+}
+.marginspace,.topgap{
+    margin-bottom:8px;
+}
 /* .k-grid.k-widget
  {
      overflow-x: hidden !important;
  }*/
- .finfo-box
- {
-     text-align:right;
- }
- .sidebar-search input
- {
-     padding:0 10px !important;
- }
- .id-width
- {
-   width:10% !important;
- }
- .flatwidth
- {
-     width:13% !important; 
- }
- .keyswidth
- {
-/*       width:10% !important;*/
- }
- .scroller1
- {
-     max-height:400px;
-     overflow:auto !important;
- }
- .dropdown-menu input {
+.finfo-box
+{
+    text-align:right;
+}
+.sidebar-search input
+{
+    padding:0 10px !important;
+}
+.id-width
+{
+    width:10% !important;
+}
+.flatwidth
+{
+    width:13% !important; 
+}
+.keyswidth
+{
+    /*       width:10% !important;*/
+}
+.scroller1
+{
+    max-height:400px;
+    overflow:auto !important;
+}
+.dropdown-menu input {
     border: 1px solid #ccc !important;
-    
+
     font-size: 14px !important;
     margin-top: 5px !important;
     width: 100% !important;
@@ -1312,7 +1312,7 @@ padding:0 3px 4px 5px !important;
         margin-top: 8px;
     }
     .profilepic {
-  margin-bottom: 20px;
+        margin-bottom: 20px;
         margin-left: 13px;
         float:none !important;
         max-width: 20%;
@@ -1324,7 +1324,7 @@ padding:0 3px 4px 5px !important;
 /* Portrait tablets and small desktops */
 @media screen (min-width: 768px) and (max-width: 991px) {
     .rightalign {
-  width:40% !important;
+        width:40% !important;
     }
     .cgap {
 
@@ -1345,7 +1345,7 @@ padding:0 3px 4px 5px !important;
         float:none !important;
 
     }
-  
+
 }
 
 /* Landscape phones and portrait tablets */
@@ -1382,32 +1382,32 @@ padding:0 3px 4px 5px !important;
     }
     .profilepic
     {
-       margin-bottom: 20px;
+        margin-bottom: 20px;
         margin-left: 35px;
         margin-right: 90px;
         max-width:16%;
- }
-  .leftvalues,.rules 
-  {
-width:33%!important;
-}
-.rightvalues {
-   width: 34%!important;
-}
-   ul#roleList li {
-    border-radius: 0 !important;
-    height: 22px !important;
-    margin-bottom: 10px !important;
-    margin-top: 10px !important;
-    padding: 0 3px 4px 5px !important;
-}
-.cwidth2,.cwidth4,.cwidth5{
-    width:100% !important;
-}
-.cwidth1,cwidth2,cwidth3,cwidth4,cwidth5
-{
-    margin-bottom:10px;
-}
+    }
+    .leftvalues,.rules 
+    {
+        width:33%!important;
+    }
+    .rightvalues {
+        width: 34%!important;
+    }
+    ul#roleList li {
+        border-radius: 0 !important;
+        height: 22px !important;
+        margin-bottom: 10px !important;
+        margin-top: 10px !important;
+        padding: 0 3px 4px 5px !important;
+    }
+    .cwidth2,.cwidth4,.cwidth5{
+        width:100% !important;
+    }
+    .cwidth1,cwidth2,cwidth3,cwidth4,cwidth5
+    {
+        margin-bottom:10px;
+    }
 }
 
 /* Portrait phones and smaller */
@@ -1471,23 +1471,23 @@ width:33%!important;
         width:100% !important;
     }
     ul#roleList li {
-    border-radius: 0 !important;
-    height: 22px !important;
-    margin-bottom: 10px !important;
-    margin-top: 10px !important;
-    padding: 0 3px 4px 5px !important;
-}
-.md-radio-inline .md-radio
-{
-  margin-right:12px !important;
-}
-.cwidth2,.cwidth4,.cwidth5{
-    width:100% !important;
-}
-.cwidth1,cwidth2,cwidth3,cwidth4,cwidth5
-{
-    margin-bottom:10px;
-}
+        border-radius: 0 !important;
+        height: 22px !important;
+        margin-bottom: 10px !important;
+        margin-top: 10px !important;
+        padding: 0 3px 4px 5px !important;
+    }
+    .md-radio-inline .md-radio
+    {
+        margin-right:12px !important;
+    }
+    .cwidth2,.cwidth4,.cwidth5{
+        width:100% !important;
+    }
+    .cwidth1,cwidth2,cwidth3,cwidth4,cwidth5
+    {
+        margin-bottom:10px;
+    }
 }
 
 
@@ -1495,9 +1495,9 @@ width:33%!important;
 /*rajan's css new end here*/
 
 
-input#endDate, #startDate,#birthdate,#famSpouseBirthDateId,#famSpouseWedAnniId,#idDrivingLicenseExpiry,#idPassportExpiry,#idCitizenshipIssueDate,#joinDate,#fromDate1,#toDate1,#startDate1,#endDate1,#form-loanDate {
-  text-transform: uppercase;
-}
+/*input#endDate, #startDate,#birthdate,#famSpouseBirthDateId,#famSpouseWedAnniId,#idDrivingLicenseExpiry,#idPassportExpiry,#idCitizenshipIssueDate,#joinDate,#fromDate1,#toDate1,#startDate1,#endDate1,#form-loanDate {
+    text-transform: uppercase;
+}*/
 
 .div-font-11{
     font-size:11px !important;

@@ -80,11 +80,15 @@
                     $('#startDate').datepicker({
                         format: 'd-M-yyyy',
                         autoclose: true,
+                    }).on('changeDate', function () {
+                        dateDifference();
                     });
 
                     $('#endDate').datepicker({
                         format: 'd-M-yyyy',
                         autoclose: true
+                    }).on('changeDate', function () {
+                        dateDifference();
                     });
                     break;
             }
@@ -95,6 +99,7 @@
                 var newValue = diffDays + 1;
                 var availableDays = parseInt($("#availableDays").val());
                 dateDiff = newValue;
+                console.log(dateDiff);
                 $("#noOfDays").val(newValue);
 
                 var halfDay1 = $("input[name='halfDay']:checked");
@@ -121,8 +126,6 @@
                 }
             }
         };
-        $("#endDate").on("change", dateDifference);
-        $("#startDate").on("change", dateDifference);
 
         dateDifference();
 

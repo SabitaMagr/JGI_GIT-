@@ -118,7 +118,11 @@ class PayrollGenerator {
             foreach (self::SYSTEM_RULE as $systemRule) {
                 $rule = $this->convertSystemRuleToValue($rule, $systemRule);
             }
-
+//            if ($ruleDetail['PAY_ID'] == 3) {
+//                print "<pre>";
+//                print_r($rule);
+//                exit;
+//            }
             $rule = $this->convertReferencingRuleToValue($rule, $refRules);
 
             $ruleValue = eval("return " . $rule . " ;");
