@@ -1196,6 +1196,24 @@ return array (
           ),
         ),
       ),
+      'advanceRequest' => 
+      array (
+        'type' => 'Zend\\Router\\Http\\Segment',
+        'options' => 
+        array (
+          'route' => '/selfservice/advanceRequest[/:action[/:id]]',
+          'constants' => 
+          array (
+            'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+            'id' => '[0-9]+',
+          ),
+          'defaults' => 
+          array (
+            'controller' => 'SelfService\\Controller\\AdvanceRequest',
+            'action' => 'index',
+          ),
+        ),
+      ),
       'trainingList' => 
       array (
         'type' => 'Zend\\Router\\Http\\Segment',
@@ -2929,6 +2947,46 @@ return array (
         ),
       ),
     ),
+    'advanceRequest' => 
+    array (
+      0 => 
+      array (
+        'label' => 'Advance Request',
+        'route' => 'advanceRequest',
+      ),
+      1 => 
+      array (
+        'label' => 'Advance Request',
+        'route' => 'advanceRequest',
+        'pages' => 
+        array (
+          0 => 
+          array (
+            'label' => 'Detail',
+            'route' => 'advanceRequest',
+            'action' => 'index',
+          ),
+          1 => 
+          array (
+            'label' => 'Add',
+            'route' => 'advanceRequest',
+            'action' => 'add',
+          ),
+          2 => 
+          array (
+            'label' => 'Edit',
+            'route' => 'advanceRequest',
+            'action' => 'edit',
+          ),
+          3 => 
+          array (
+            'label' => 'Detail',
+            'route' => 'advanceRequest',
+            'action' => 'view',
+          ),
+        ),
+      ),
+    ),
     'trainingList' => 
     array (
       0 => 
@@ -3606,6 +3664,7 @@ return array (
       'SelfService\\Controller\\PaySlip' => 'Application\\Controller\\ControllerFactory',
       'SelfService\\Controller\\LoanRequest' => 'Application\\Controller\\ControllerFactory',
       'SelfService\\Controller\\TrainingList' => 'Application\\Controller\\ControllerFactory',
+      'SelfService\\Controller\\AdvanceRequest' => 'Application\\Controller\\ControllerFactory',
       'RestfulService\\Controller\\RestfulService' => 'Application\\Controller\\ControllerFactory',
       'Payroll\\Controller\\MonthlyValue' => 'Application\\Controller\\ControllerFactory',
       'Payroll\\Controller\\FlatValue' => 'Application\\Controller\\ControllerFactory',

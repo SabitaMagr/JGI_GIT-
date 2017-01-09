@@ -46,7 +46,6 @@ class LoanRequestRepository implements RepositoryInterface{
             new Expression("LR.REQUESTED_AMOUNT AS REQUESTED_AMOUNT"),
             new Expression("LR.LOAN_REQUEST_ID AS LOAN_REQUEST_ID"),
             new Expression("LR.REASON AS REASON"),
-            new Expression("LR.APPROVED_AMOUNT AS APPROVED_AMOUNT"),
             new Expression("LR.APPROVED_REMARKS AS APPROVED_REMARKS"),
             new Expression("LR.RECOMMENDED_REMARKS AS RECOMMENDED_REMARKS"),
             new Expression("LR.LOAN_ID AS LOAN_ID") 
@@ -76,7 +75,6 @@ class LoanRequestRepository implements RepositoryInterface{
             new Expression("LR.REQUESTED_AMOUNT AS REQUESTED_AMOUNT"),
             new Expression("LR.LOAN_REQUEST_ID AS LOAN_REQUEST_ID"),
             new Expression("LR.REASON AS REASON"),
-            new Expression("LR.APPROVED_AMOUNT AS APPROVED_AMOUNT"),
             new Expression("LR.LOAN_ID AS LOAN_ID") 
                 ], true);
 
