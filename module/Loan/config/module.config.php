@@ -60,9 +60,9 @@ return [
                         'action' => 'add',
                     ],
                         [
-                        'label' => 'Edit',
+                        'label' => 'Detail',
                         'route' => 'loanStatus',
-                        'action' => 'edit',
+                        'action' => 'view',
                     ],
                 ],
             ],

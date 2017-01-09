@@ -92,6 +92,8 @@ class LoanApproveController extends AbstractActionController {
         $request = $this->getRequest();
 
         $detail = $this->loanApproveRepository->fetchById($id);
+        $status = $detail['STATUS'];
+        $approvedDT = $detail['APPROVED_DATE'];
 
         $requestedEmployeeID = $detail['EMPLOYEE_ID'];
         $employeeName = $detail['FIRST_NAME'] . " " . $detail['MIDDLE_NAME'] . " " . $detail['LAST_NAME'];        
@@ -99,6 +101,12 @@ class LoanApproveController extends AbstractActionController {
         $recommender = $detail['RECM_FN'].$RECM_MN.$detail['RECM_LN'];        
         $APRV_MN = ($detail['APRV_MN']!=null)? " ".$detail['APRV_MN']." ":" ";
         $approver = $detail['APRV_FN'].$APRV_MN.$detail['APRV_LN'];
+        $MN1 = ($detail['MN1']!=null)? " ".$detail['MN1']." ":" ";
+        $recommended_by = $detail['FN1'].$MN1.$detail['LN1'];        
+        $MN2 = ($detail['MN2']!=null)? " ".$detail['MN2']." ":" ";
+        $approved_by = $detail['FN2'].$MN2.$detail['LN2'];
+        $authRecommender = ($status=='RQ')?$recommender:$recommended_by;
+        $authApprover = ($status=='RC' || $status=='RQ' || ($status=='R' && $approvedDT==null))?$approver:$approved_by;
 
         if (!$request->isPost()) {
             $loanRequestModel->exchangeArrayFromDB($detail);
@@ -140,11 +148,11 @@ class LoanApproveController extends AbstractActionController {
                     'employeeName' => $employeeName,
                     'requestedDate' => $detail['REQUESTED_DATE'],
                     'role' => $role,
-                    'recommender'=>$recommender,
-                    'approver'=>$approver,
-                    'status' => $detail['STATUS'],
+                    'recommender'=>$authRecommender,
+                    'approver'=>$authApprover,
+                    'status' => $status,
                     'recommendedBy' => $detail['RECOMMENDER'],
-                    'approvedDT'=>$detail['APPROVED_DATE'],
+                    'approvedDT'=>$approvedDT,
                     'employeeId' => $this->employeeId,
                     'requestedEmployeeId' => $requestedEmployeeID,
                     'loans' => EntityHelper::getTableKVListWithSortOption($this->adapter, Loan::TABLE_NAME, Loan::LOAN_ID, [Loan::LOAN_NAME], [Loan::STATUS => "E"], Loan::LOAN_ID, "ASC")

@@ -1513,13 +1513,13 @@ class RestfulService extends AbstractRestfulController {
 
         foreach ($result as $row) {
             $status = $getValue($row['STATUS']);
-            $role = $getRole($row['RECOMMENDER'], $row['APPROVER'], $recomApproveId);
+            $roleId = $getRole($row['RECOMMENDER'], $row['APPROVER'], $recomApproveId);
 //            if ($role == 3 && $row['STATUS'] == 'RC') {
 //                $status = "Pending";
 //            }
             $role = [
                 'YOUR_ROLE' => $getRoleDtl($row['RECOMMENDER'], $row['APPROVER'], $recomApproveId),
-                'ROLE' => $role
+                'ROLE' => $roleId
             ];
             $new_row = array_merge($row, ['STATUS' => $status]);
             $final_record = array_merge($new_row, $role);
@@ -1562,6 +1562,12 @@ class RestfulService extends AbstractRestfulController {
                 return null;
             }
         };
+        $fullName = function($id){
+          $empRepository = new EmployeeRepository($this->adapter);
+          $empDtl = $empRepository->fetchById($id);
+          $empMiddleName = ($empDtl['MIDDLE_NAME']!=null)? " ".$empDtl['MIDDLE_NAME']." " :" ";
+          return $empDtl['FIRST_NAME'].$empMiddleName.$empDtl['LAST_NAME'];
+        };
 
         $getValue = function($status) {
             if ($status == "RQ") {
@@ -1577,16 +1583,23 @@ class RestfulService extends AbstractRestfulController {
             }
         };
 
-
         foreach ($result as $row) {
             $status = $getValue($row['STATUS']);
-            $role = $getRole($row['RECOMMENDER'], $row['APPROVER'], $recomApproveId);
-            if ($role == 3 && $row['STATUS'] == 'RC') {
-                $status = "Pending";
-            }
+            $statusId = $row['STATUS'];
+            $approvedDT = $row['APPROVED_DATE'];
+            
+            $authRecommender = ($statusId=='RQ' || $statusId=='C')?$row['RECOMMENDER']:$row['RECOMMENDED_BY'];
+            $authApprover = ($statusId=='RC' || $statusId=='RQ' || $statusId=='C' || ($statusId=='R' && $approvedDT==null))?$row['APPROVER']:$row['APPROVED_BY'];
+
+            $roleID = $getRole($authRecommender,$authApprover, $recomApproveId);
+            $recommenderName = $fullName($authRecommender);
+            $approverName = $fullName($authApprover);
+
             $role = [
-                'YOUR_ROLE' => $getRoleDtl($row['RECOMMENDER'], $row['APPROVER'], $recomApproveId),
-                'ROLE' => $role
+                'APPROVER_NAME'=>$approverName,
+                'RECOMMENDER_NAME'=>$recommenderName,
+                'YOUR_ROLE' => $getRoleDtl($authRecommender, $authApprover, $recomApproveId),
+                'ROLE' => $roleID
             ];
             $new_row = array_merge($row, ['STATUS' => $status]);
             $final_record = array_merge($new_row, $role);
@@ -1796,7 +1809,7 @@ class RestfulService extends AbstractRestfulController {
                 $middleNameR = ($recommedApproverList['MIDDLE_NAME_R'] != null) ? " ".$recommedApproverList['MIDDLE_NAME_R']." ":" ";
                 $middleNameA = ($recommedApproverList['MIDDLE_NAME_A'] != null) ? " ".$recommedApproverList['MIDDLE_NAME_A']." ":" ";
                 $employeeRow['RECOMMENDER_NAME'] = $recommedApproverList['FIRST_NAME_R'] . $middleNameR . $recommedApproverList['LAST_NAME_R'];
-                $employeeRow['APPROVER_NAME'] = $recommedApproverList['FIRST_NAME_A'] . $middleNameR . $recommedApproverList['LAST_NAME_A'];
+                $employeeRow['APPROVER_NAME'] = $recommedApproverList['FIRST_NAME_A'] . $middleNameA . $recommedApproverList['LAST_NAME_A'];
             } else {
                 $employeeRow['RECOMMENDER_NAME'] = "";
                 $employeeRow['APPROVER_NAME'] = "";
