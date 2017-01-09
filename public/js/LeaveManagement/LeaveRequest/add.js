@@ -50,8 +50,8 @@
 
             switch (id) {
                 case "startDate":
-                    startDate = ($(this).val() === "") ? "" : new Date($(this).val());
-                    endDate = ($("#endDate").val() === "") ? "" : new Date($("#endDate").val());
+                    startDate = ($(this).val() === "") ? "" : new Date($(this).datepicker("getDate"));
+                    endDate = ($("#endDate").val() === "") ? "" : new Date($("#endDate").datepicker("getDate"));
 
                     $("#startDate").datepicker({
                         format: 'd-M-yyyy',
@@ -64,8 +64,8 @@
                     break;
 
                 case "endDate":
-                    startDate = ($("#startDate").val() === "") ? "" : new Date($("#startDate").val());
-                    endDate = ($(this).val() === "") ? "" : new Date($(this).val());
+                    startDate = ($("#startDate").val() === "") ? "" : new Date($("#startDate").datepicker("getDate"));
+                    endDate = ($(this).val() === "") ? "" : new Date($(this).datepicker("getDate"));
 
                     $("#endDate").datepicker({
                         format: 'd-M-yyyy',
@@ -75,24 +75,9 @@
                         $('#startDate').datepicker('setEndDate', minDate);
                     });
                     break;
-
-                case "selectedDate":
-                    $('#startDate').datepicker({
-                        format: 'd-M-yyyy',
-                        autoclose: true,
-                    }).on('changeDate', function () {
-                        dateDifference();
-                    });
-
-                    $('#endDate').datepicker({
-                        format: 'd-M-yyyy',
-                        autoclose: true
-                    }).on('changeDate', function () {
-                        dateDifference();
-                    });
-                    break;
             }
-
+            console.log("startDate", startDate);
+            console.log("endDate", endDate);
             if ((startDate != "" && endDate != "") && (startDate <= endDate)) {
                 var oneDay = 24 * 60 * 60 * 1000; // hours*minutes*seconds*milliseconds
                 var diffDays = Math.abs((startDate.getTime() - endDate.getTime()) / (oneDay));
@@ -127,7 +112,15 @@
             }
         };
 
-        dateDifference();
+        $('#startDate').datepicker({
+            format: 'd-M-yyyy',
+            autoclose: true,
+        }).on('changeDate', dateDifference);
+
+        $('#endDate').datepicker({
+            format: 'd-M-yyyy',
+            autoclose: true
+        }).on('changeDate', dateDifference);
 
         $("#noOfDays").on("keyup", function () {
             var availableDays = parseInt($("#availableDays").val());
