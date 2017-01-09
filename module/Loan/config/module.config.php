@@ -73,7 +73,7 @@ return [
                 'route' => "loanApply"
             ],
                 [
-                'label' => "Loan/Advance Apply",
+                'label' => "Loan Apply",
                 'route' => "loanApply",
                 'pages' => [
                         [
