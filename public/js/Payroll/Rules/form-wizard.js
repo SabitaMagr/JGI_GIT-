@@ -244,8 +244,11 @@
             console.log("failure", failure);
         });
     };
-    var editor;
+    var editor = null;
     var initializeCodeMirror = function () {
+        if (editor != null) {
+            return;
+        }
         editor = CodeMirror.fromTextArea(document.getElementById('rule'), {
             lineNumbers: true,
             mode: "htmlmixed"

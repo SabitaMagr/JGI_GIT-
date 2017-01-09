@@ -2,16 +2,13 @@
     'use strict';
     $(document).ready(function () {
         $("select").select2();
-        app.addDatePicker(
-                $("#fromDate"),
-                $("#toDate")
-                );
+        app.startEndDatePickerWithNepali('nepaliFromDate', 'fromDate', 'nepaliToDate', 'toDate');
     });
 })(window.jQuery, window.app);
 
 angular.module('hris', [])
         .controller("attendanceListController", function ($scope, $http) {
-            
+
             $scope.view = function () {
                 var employeeId = angular.element(document.getElementById('employeeId')).val();
                 var branchId = angular.element(document.getElementById('branchId')).val();
@@ -19,9 +16,9 @@ angular.module('hris', [])
                 var designationId = angular.element(document.getElementById('designationId')).val();
                 var positionId = angular.element(document.getElementById('positionId')).val();
                 var serviceTypeId = angular.element(document.getElementById('serviceTypeId')).val();
-                var serviceEventTypeId = angular.element(document.getElementById('serviceEventTypeId')).val();               
-                var fromDate = angular.element(document.getElementById('fromDate1')).val();
-                var toDate = angular.element(document.getElementById('toDate1')).val();
+                var serviceEventTypeId = angular.element(document.getElementById('serviceEventTypeId')).val();
+                var fromDate = angular.element(document.getElementById('fromDate')).val();
+                var toDate = angular.element(document.getElementById('toDate')).val();
                 var status = angular.element(document.getElementById('statusId')).val();
 
                 window.app.pullDataById(document.url, {
@@ -33,10 +30,10 @@ angular.module('hris', [])
                         'designationId': designationId,
                         'positionId': positionId,
                         'serviceTypeId': serviceTypeId,
-                        'serviceEventTypeId':serviceEventTypeId,
+                        'serviceEventTypeId': serviceEventTypeId,
                         'fromDate': fromDate,
                         'toDate': toDate,
-                        'status':status                       
+                        'status': status
                     }
                 }).then(function (success) {
                     console.log(success.data);
@@ -68,7 +65,7 @@ angular.module('hris', [])
                     dataBound: gridDataBound,
                     rowTemplate: kendo.template($("#rowTemplate").html()),
                     columns: [
-                        {field: "FIRST_NAME", title: "Employee Name", width:160},
+                        {field: "FIRST_NAME", title: "Employee Name", width: 160},
                         {field: "ATTENDANCE_DT", title: "Attendance Date", width: 120},
                         {field: "IN_TIME", title: "Check In", width: 100},
                         {field: "OUT_TIME", title: "Check Out", width: 120},

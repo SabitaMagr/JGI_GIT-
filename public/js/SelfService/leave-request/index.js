@@ -2,7 +2,7 @@
     'use strict';
     $(document).ready(function () {
         $("select").select2();
-        app.startEndDatePicker('fromDate', 'toDate');
+        app.startEndDatePickerWithNepali('nepaliFromDate', 'fromDate', 'nepaliToDate', 'toDate');
     });
 })(window.jQuery, window.app);
 
@@ -12,8 +12,8 @@ angular.module('hris', [])
                 var employeeId = angular.element(document.getElementById('employeeId')).val();
                 var leaveId = angular.element(document.getElementById('leaveId')).val();
                 var leaveRequestStatusId = angular.element(document.getElementById('leaveRequestStatusId')).val();
-                var fromDate = angular.element(document.getElementById('fromDate1')).val();
-                var toDate = angular.element(document.getElementById('toDate1')).val();
+                var fromDate = angular.element(document.getElementById('fromDate')).val();
+                var toDate = angular.element(document.getElementById('toDate')).val();
 
                 window.app.pullDataById(document.url, {
                     action: 'pullLeaveRequestList',

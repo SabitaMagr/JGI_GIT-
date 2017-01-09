@@ -2,7 +2,8 @@
     'use strict';
     $(document).ready(function () {
         $("select").select2();
-        app.startEndDatePicker('startDate', 'endDate');
+//        app.startEndDatePicker('startDate', 'endDate');
+        app.startEndDatePickerWithNepali('nepaliStartDate1', 'startDate1', 'nepaliEndDate1', 'endDate1');
     });
 })(window.jQuery, window.app);
 

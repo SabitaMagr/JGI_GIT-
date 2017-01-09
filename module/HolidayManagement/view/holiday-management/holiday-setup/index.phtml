@@ -5,24 +5,24 @@
 $this->headScript()->appendFile($this->basePath('js/HolidayManagement/HolidaySetup/add.js'));
 $this->headScript()->appendFile($this->basePath('js/angular.min.js'));
 $this->headScript()->appendFile($this->basePath('js/HolidayManagement/HolidaySetup/holidayController.js'));
-
 ?>
 
-<?php
-if($this->messages) { ?>
+<?php if ($this->messages) { ?>
     <script>
-        document.messages=<?php echo json_encode($this->messages); ?>
+        document.messages =<?php echo json_encode($this->messages); ?>
     </script>
 <?php } ?>
 
 <script>
-    document.menu =<?php $menu = ["id" => "menuHolidays", "subMenu" => ["id" => "subMenuHolidaySetup"]];echo json_encode($menu);?>;
+    document.menu =<?php
+$menu = ["id" => "menuHolidays", "subMenu" => ["id" => "subMenuHolidaySetup"]];
+echo json_encode($menu);
+?>;
     document.urlBranchList = '<?= $this->url("webService", ["action" => "branchList"]) ?>';
     document.url = '<?= $this->url("webService", ["action" => "index"]) ?>';
 </script>
 
 <?php
-
 $holidayFormElement->setAttributes(["ng-model" => "holidayId"]);
 $branchFormElement->setAttribute("ng-model", "branchId");
 $genderFormElement->setAttribute("ng-model", "genderId");
@@ -44,7 +44,6 @@ $genderId->setValueOptions($genders);
 $form->setAttribute('role', 'form');
 $form->setAttribute('action', $this->url('holidaysetup', ['action' => 'edit']));
 $form->prepare();
-
 ?>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\holidaysetup')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
@@ -95,40 +94,40 @@ $form->prepare();
                     </div>
                     <div class="form-group padding-0">
                         <label for="genderId">Gender</label>
-                            <div class="md-radio-inline">
-                                <div class='md-radio'>
-                                    <input type='radio' value='1' name='genderId' id='genderId+Male' class='md-radiobtn' ng-model="holidayDtl.genderId">
-                                    <label for='genderId+Male'>
-                                        <span></span>
-                                        <span class='check'></span>
-                                        <span class='box'></span> Male
-                                    </label>
-                                </div>
-                                <div class='md-radio'>
-                                    <input type='radio' value='2' name='genderId' id='genderId+Female' class='md-radiobtn' ng-model="holidayDtl.genderId">
-                                    <label for='genderId+Female'>
-                                        <span></span>
-                                        <span class='check'></span>
-                                        <span class='box'></span> Female
-                                    </label>
-                                </div>
-                                <div class='md-radio'>
-                                    <input type='radio' value='3' name='genderId' id='genderId+Other' class='md-radiobtn' ng-model="holidayDtl.genderId">
-                                    <label for='genderId+Other'>
-                                        <span></span>
-                                        <span class='check'></span>
-                                        <span class='box'></span> Other
-                                    </label>
-                                </div>
-                                <div class='md-radio'>
-                                    <input type='radio' checked value='-1' name='genderId' id='genderId+All' class='md-radiobtn' ng-model="holidayDtl.genderId">
-                                    <label for='genderId+All'>
-                                        <span></span>
-                                        <span class='check'></span>
-                                        <span class='box'></span> All
-                                    </label>
-                                </div>
+                        <div class="md-radio-inline">
+                            <div class='md-radio'>
+                                <input type='radio' value='1' name='genderId' id='genderId+Male' class='md-radiobtn' ng-model="holidayDtl.genderId">
+                                <label for='genderId+Male'>
+                                    <span></span>
+                                    <span class='check'></span>
+                                    <span class='box'></span> Male
+                                </label>
                             </div>
+                            <div class='md-radio'>
+                                <input type='radio' value='2' name='genderId' id='genderId+Female' class='md-radiobtn' ng-model="holidayDtl.genderId">
+                                <label for='genderId+Female'>
+                                    <span></span>
+                                    <span class='check'></span>
+                                    <span class='box'></span> Female
+                                </label>
+                            </div>
+                            <div class='md-radio'>
+                                <input type='radio' value='3' name='genderId' id='genderId+Other' class='md-radiobtn' ng-model="holidayDtl.genderId">
+                                <label for='genderId+Other'>
+                                    <span></span>
+                                    <span class='check'></span>
+                                    <span class='box'></span> Other
+                                </label>
+                            </div>
+                            <div class='md-radio'>
+                                <input type='radio' checked value='-1' name='genderId' id='genderId+All' class='md-radiobtn' ng-model="holidayDtl.genderId">
+                                <label for='genderId+All'>
+                                    <span></span>
+                                    <span class='check'></span>
+                                    <span class='box'></span> All
+                                </label>
+                            </div>
+                        </div>
                     </div>
                     <div class="form-group">
                         <?php print $this->formLabel($branchFormElement); ?>
@@ -156,7 +155,7 @@ $form->prepare();
                         </div>
                         <?php print $this->formElementErrors()->render($startDate, ['class' => 'help-block error']) ?>
                     </div>
-
+                    
                     <div class="form-group required">
                         <label for="endDate">End Date</label>
                         <div class="input-group">

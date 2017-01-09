@@ -2,7 +2,8 @@
     'use strict';
     $(document).ready(function () {
         $("select").select2();
-        app.startEndDatePicker("fromDate", "toDate");
+//        app.startEndDatePicker("fromDate", "toDate");
+        app.startEndDatePickerWithNepali("nepaliFromDate1", "fromDate1", "nepaliToDate1", "toDate1");
     });
 })(window.jQuery, window.app);
 
@@ -165,7 +166,7 @@ angular.module('hris', [])
                     });
                     kendo.saveAs({dataURI: workbook.toDataURL(), fileName: "LeaveRequestList.xlsx"});
                 }
-               
+
                 window.app.UIConfirmations();
             };
         });

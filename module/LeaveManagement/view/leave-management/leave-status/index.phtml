@@ -3,102 +3,128 @@
  * Load Javascript files here
  */
 $this->headScript()
-     ->appendFile($this->basePath('jszip/dist/jszip.min.js'))
-     ->appendFile($this->basePath('telerik_kendoui/js/kendo.all.min.js'))
-     ->appendFile($this->basePath('js/angular.min.js'))
-     ->appendFile($this->basePath('js/LeaveManagement/LeaveStatus/index.js'))
-        ->appendFile($this->basePath('assets/global/plugins/bootstrap-confirmation/bootstrap-confirmation.min.js'));
+        ->appendFile($this->basePath('jszip/dist/jszip.min.js'))
+        ->appendFile($this->basePath('telerik_kendoui/js/kendo.all.min.js'))
+        ->appendFile($this->basePath('js/angular.min.js'))
+        ->appendFile($this->basePath('js/LeaveManagement/LeaveStatus/index.js'))
+        ->appendFile($this->basePath('assets/global/plugins/bootstrap-confirmation/bootstrap-confirmation.min.js'))
+        ->appendFile($this->basePath('assets/global/plugins/nepalidate/nepali.datepicker.v2.1.min.js'))
+        ->appendFile($this->basePath('js/nepali-datepicker-ext.js'));
 ?>
 
 <script>
-    document.menu =<?php $menu = ["id" => "menuLeave", "subMenu" => ["id" => "subMenuLeaveStatus"]];echo json_encode($menu);?>;
+    document.menu =<?php
+$menu = ["id" => "menuLeave", "subMenu" => ["id" => "subMenuLeaveStatus"]];
+echo json_encode($menu);
+?>;
     document.url = '<?= $this->url("restful", ["action" => "index"]) ?>';
 </script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\leavestatus')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
-<?php
-if ($this->messages) { ?>
+<?php if ($this->messages) { ?>
     <script>
         document.messages =<?php echo json_encode($this->messages); ?>
     </script>
 <?php } ?>
-       <button data-toggle="collapse" data-target="#bottom-showhide" class="showhide">Search form</button>
-        <div id="bottom-showhide" class="collapse in">
+<button data-toggle="collapse" data-target="#bottom-showhide" class="showhide">Search form</button>
+<div id="bottom-showhide" class="collapse in">
     <div ng-app="hris" ng-controller="leaveStatusListController" class="formbg">
-    
-      
-    <div class="margin-top-20">
-        <div class="row  gapbottom">
-            <div class="col-xs-12 col-sm-3 col-md-3">
-                <?php print $this->formLabel($employees); ?>
-                <?php print $this->formElement($employees); ?>
-            </div>
-               <div class="col-xs-12 col-sm-3 col-md-3">
-                <?php print $this->formLabel($branches); ?>
-                <?php print $this->formElement($branches); ?>
-            </div>
-                <div class="col-xs-12 col-sm-3 col-md-3">
-                <?php print $this->formLabel($departments); ?>
-                <?php print $this->formElement($departments); ?>
-            </div>
-                 <div class="col-xs-12 col-sm-3 col-md-3">
-                <?php print $this->formLabel($designations); ?>
-                <?php print $this->formElement($designations); ?>
-            </div>
-                <div class="col-xs-12 col-sm-3 col-md-3">
-                <?php print $this->formLabel($positions); ?>
-                <?php print $this->formElement($positions); ?>
-            </div> 
-               <div class="col-xs-12 col-sm-3 col-md-3">
-                <?php print $this->formLabel($serviceTypes); ?>
-                <?php print $this->formElement($serviceTypes); ?>
-            </div>
-       
-<!--        <div class="row margin-top-10">    -->
-            
-              <div class="col-xs-12 col-sm-3 col-md-3">
-                <?php print $this->formLabel($leaves); ?>
-                <?php print $this->formElement($leaves); ?>
-            </div>
-                  <div class="col-xs-12 col-sm-3 col-md-3">
-                <?php print $this->formLabel($leaveStatus); ?>
-                <?php print $this->formElement($leaveStatus); ?>
-            </div>  
-              <div class="col-xs-12 col-sm-3 col-md-3">
-                <?php print $this->formLabel($serviceEventTypes); ?>
-                <?php print $this->formElement($serviceEventTypes); ?>
-            </div>
-                 <div class="col-xs-12 col-sm-3 col-md-3">
-                <label for="fromDate">From Date</label>
-                <div class="input-group date" id="fromDate">
-                    <input type="text" placeholder="From Date" id="fromDate1" name="fromDate" ng-model="fromDate" class="form-control"/>
-                    <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                </div>
-            </div>
-               <div class="col-xs-12 col-sm-3 col-md-3">
-                <label for="toDate">To Date</label>
-                <div class="input-group date" id="toDate">
-                    <input type="text" placeholder="To Date" id="toDate1" name="toDate" ng-model="toDate" class="form-control"/>
-                    <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                </div>
-            </div>
-                <div class="col-xs-12 col-sm-3 col-md-3">
-                <label height="45"></label>
-                <button ng-click="view()" id="viewLeaveRequestStatus" class="btn btn-default form-control i-search form-control">
-                    Search
-                    <i class="fa fa-search"></i>
-                </button>
-            </div>
-<!--        </div>-->
-    </div>
-    </div>
-    </div> 
-        </div>
+
+
         <div class="margin-top-20">
-           <div class="table-toolbar">
-            <div class="row">
-                <div class="col-md-offset-6 col-md-6">
+            <div class="row  gapbottom">
+                <div class="col-xs-12 col-sm-3 col-md-3">
+                    <?php print $this->formLabel($employees); ?>
+                    <?php print $this->formElement($employees); ?>
+                </div>
+                <div class="col-xs-12 col-sm-3 col-md-3">
+                    <?php print $this->formLabel($branches); ?>
+                    <?php print $this->formElement($branches); ?>
+                </div>
+                <div class="col-xs-12 col-sm-3 col-md-3">
+                    <?php print $this->formLabel($departments); ?>
+                    <?php print $this->formElement($departments); ?>
+                </div>
+                <div class="col-xs-12 col-sm-3 col-md-3">
+                    <?php print $this->formLabel($designations); ?>
+                    <?php print $this->formElement($designations); ?>
+                </div>
+                <div class="col-xs-12 col-sm-3 col-md-3">
+                    <?php print $this->formLabel($positions); ?>
+                    <?php print $this->formElement($positions); ?>
+                </div> 
+                <div class="col-xs-12 col-sm-3 col-md-3">
+                    <?php print $this->formLabel($serviceTypes); ?>
+                    <?php print $this->formElement($serviceTypes); ?>
+                </div>
+
+                <!--        <div class="row margin-top-10">    -->
+
+                <div class="col-xs-12 col-sm-3 col-md-3">
+                    <?php print $this->formLabel($leaves); ?>
+                    <?php print $this->formElement($leaves); ?>
+                </div>
+                <div class="col-xs-12 col-sm-3 col-md-3">
+                    <?php print $this->formLabel($leaveStatus); ?>
+                    <?php print $this->formElement($leaveStatus); ?>
+                </div>  
+                <div class="col-xs-12 col-sm-3 col-md-3">
+                    <?php print $this->formLabel($serviceEventTypes); ?>
+                    <?php print $this->formElement($serviceEventTypes); ?>
+                </div>
+                <div class="col-xs-12 col-sm-3 col-md-3">
+                    <label for="fromDate">From Date</label>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="input-group date" id="fromDate">
+                                <input type="text" placeholder="From Date" id="fromDate1" name="fromDate" ng-model="fromDate" class="form-control"/>
+                                <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="input-group date" id="nepaliFromDate">
+                                <input type="text" placeholder="From Date" id="nepaliFromDate1" name="fromDate" class="form-control"/>
+                                <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+                <div class="col-xs-12 col-sm-3 col-md-3">
+                    <label for="toDate">To Date</label>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="input-group date" id="toDate">
+                                <input type="text" placeholder="To Date" id="toDate1" name="toDate" ng-model="toDate" class="form-control"/>
+                                <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="input-group date" id="nepaliToDate">
+                                <input type="text"  id="nepaliToDate1" name="toDate"  class="form-control"/>
+                                <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-12 col-sm-3 col-md-3">
+                    <label height="45"></label>
+                    <button ng-click="view()" id="viewLeaveRequestStatus" class="btn btn-default form-control i-search form-control">
+                        Search
+                        <i class="fa fa-search"></i>
+                    </button>
+                </div>
+                <!--        </div>-->
+            </div>
+        </div>
+    </div> 
+</div>
+<div class="margin-top-20">
+    <div class="table-toolbar">
+        <div class="row">
+            <div class="col-md-offset-6 col-md-6">
                 <label height="45"></label>
                 <div class="btn-group pull-right">
                     <button class="btn green btn-outline dropdown-toggle" data-toggle="dropdown">Tools
@@ -111,60 +137,60 @@ if ($this->messages) { ?>
                     </ul>
                 </div>
             </div>
-            </div> </div>
-        </div>
-       
-    
-    <div class="margin-top-20">
-        <div id="leaveRequestStatusTable">
-        </div>
+        </div> </div>
+</div>
+
+
+<div class="margin-top-20">
+    <div id="leaveRequestStatusTable">
     </div>
+</div>
 
-    <script id="rowTemplate" type="text/x-kendo-tmpl">
-        <tr>
-        <td> 
-            #: (FIRST_NAME == null) ? ' ' : FIRST_NAME #
-            #: (MIDDLE_NAME == null) ? ' ' : MIDDLE_NAME #
-            #: (LAST_NAME == null) ? ' ' : LAST_NAME #
-        </td>
-        <td>
-            #: (LEAVE_ENAME == null) ? '-' : LEAVE_ENAME #
-        </td>
-        <td>
-            #: (APPLIED_DATE == null) ? '-' : APPLIED_DATE #
-        </td>        
-        <td>
-            #: (START_DATE == null) ? '-' : START_DATE #
-        </td>
-        <td>
-            #: (END_DATE == null) ? '-' : END_DATE #
-        </td>
-        <td>
-            #: (FN1 == null) ? ' ' : FN1 #
-            #: (MN1 == null) ? ' ' : MN1 #
-            #: (LN1 == null) ? ' ' : LN1 #
-        </td>
-        <td>
-            #: (FN2 == null) ? ' ' : FN2 #
-            #: (MN2 == null) ? ' ' : MN2 #
-            #: (LN2 == null) ? ' ' : LN2 #
-        </td>
-        <td>
-            #: (NO_OF_DAYS == null) ? '-' : NO_OF_DAYS #
-        </td>
-        <td>
-             #: (STATUS == null) ? '-' : STATUS #
-        </td>
-        <td>
-            <a class="btn-edit"
-               href="<?= $this->url("leavestatus", ["action" => "view"])?>/#: ID #" style="height:17px;" title="view">
-                <i class="fa fa-search-plus"></i>
-            </a>
-        </td>
-        </tr>
-    </script>
-    
+<script id="rowTemplate" type="text/x-kendo-tmpl">
+    <tr>
+    <td> 
+    #: (FIRST_NAME == null) ? ' ' : FIRST_NAME #
+    #: (MIDDLE_NAME == null) ? ' ' : MIDDLE_NAME #
+    #: (LAST_NAME == null) ? ' ' : LAST_NAME #
+    </td>
+    <td>
+    #: (LEAVE_ENAME == null) ? '-' : LEAVE_ENAME #
+    </td>
+    <td>
+    #: (APPLIED_DATE == null) ? '-' : APPLIED_DATE #
+    </td>        
+    <td>
+    #: (START_DATE == null) ? '-' : START_DATE #
+    </td>
+    <td>
+    #: (END_DATE == null) ? '-' : END_DATE #
+    </td>
+    <td>
+    #: (FN1 == null) ? ' ' : FN1 #
+    #: (MN1 == null) ? ' ' : MN1 #
+    #: (LN1 == null) ? ' ' : LN1 #
+    </td>
+    <td>
+    #: (FN2 == null) ? ' ' : FN2 #
+    #: (MN2 == null) ? ' ' : MN2 #
+    #: (LN2 == null) ? ' ' : LN2 #
+    </td>
+    <td>
+    #: (NO_OF_DAYS == null) ? '-' : NO_OF_DAYS #
+    </td>
+    <td>
+    #: (STATUS == null) ? '-' : STATUS #
+    </td>
+    <td>
+    <a class="btn-edit"
+    href="<?= $this->url("leavestatus", ["action" => "view"]) ?>/#: ID #" style="height:17px;" title="view">
+    <i class="fa fa-search-plus"></i>
+    </a>
+    </td>
+    </tr>
+</script>
+
 </div>    
-    
 
- 
+
+

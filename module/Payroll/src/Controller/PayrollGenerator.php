@@ -121,7 +121,7 @@ class PayrollGenerator {
 
             $rule = $this->convertReferencingRuleToValue($rule, $refRules);
 
-            $ruleValue = eval($rule);
+            $ruleValue = eval("return " . $rule . " ;");
 
             array_push($this->ruleDetailList, ["ruleValue" => $ruleValue, "rule" => $ruleObj, "ruleDetail" => $ruleDetail]);
 
