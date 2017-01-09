@@ -8,15 +8,15 @@ use Zend\Db\Adapter\AdapterInterface;
 use Application\Helper\Helper;
 use Application\Helper\EntityHelper;
 use Zend\Form\Annotation\AnnotationBuilder;
-use SelfService\Form\LoanRequestForm;
+use SelfService\Form\AdvanceRequestForm;
 use Setup\Model\HrEmployees;
-use SelfService\Model\LoanRequest as LoanRequestModel;
-use SelfService\Repository\LoanRequestRepository;
-use Setup\Model\Loan;
+use SelfService\Model\AdvanceRequest as AdvanceRequestModel;
+use SelfService\Repository\AdvanceRequestRepository;
+use Setup\Model\AdvanceRequest;
 use Setup\Repository\EmployeeRepository;
 use Setup\Repository\RecommendApproveRepository;
 
-class LoanRequest extends AbstractActionController {
+class AdvanceRequest extends AbstractActionController {
 
     private $form;
     private $adapter;
@@ -27,14 +27,14 @@ class LoanRequest extends AbstractActionController {
 
     public function __construct(AdapterInterface $adapter) {
         $this->adapter = $adapter;
-        $this->repository = new LoanRequestRepository($adapter);
+        $this->repository = new AdvanceRequestRepository($adapter);
         $auth = new AuthenticationService();
         $this->employeeId = $auth->getStorage()->read()['employee_id'];
     }
 
     public function initializeForm() {
         $builder = new AnnotationBuilder();
-        $form = new LoanRequestForm();
+        $form = new AdvanceRequestForm();
         $this->form = $builder->createForm($form);
     }
 

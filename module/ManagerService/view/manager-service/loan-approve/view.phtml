@@ -50,10 +50,20 @@ print $this->form()->openTag($form);
                 </div>
             </div>
             <div class="portlet-body">
+                <div class="border-bottom">
                 <div class="form-group">
                     <div class="row div-font-11">
                         <div class="col-md-6">
                             <table>
+                                <tr height="30">
+                                    <td>
+                                        Employee Name
+                                    </td>
+                                    <td width="15">:</td>
+                                    <td>
+                                        <?php echo $employeeName; ?>
+                                    </td>
+                                </tr>
                                 <tr height="30">
                                     <td>
                                         Requested Date
@@ -136,6 +146,7 @@ print $this->form()->openTag($form);
                     <?php print $this->formElement($reason); ?>
                     <?php print $this->formElementErrors()->render($reason, ['class' => 'help-block']); ?>
                 </div>
+                </div>     
                 <?php if ($role == 2) { ?>
                     <div
                         class="form-group margin-top-10 required <?= empty($recommendedRemarks->getMessages()) ? "" : "error" ?>">

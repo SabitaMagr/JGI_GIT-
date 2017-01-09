@@ -60,9 +60,9 @@ return [
                         'action' => 'add',
                     ],
                         [
-                        'label' => 'Edit',
+                        'label' => 'Detail',
                         'route' => 'loanStatus',
-                        'action' => 'edit',
+                        'action' => 'view',
                     ],
                 ],
             ],
@@ -73,7 +73,7 @@ return [
                 'route' => "loanApply"
             ],
                 [
-                'label' => "Loan/Advance Apply",
+                'label' => "Loan Apply",
                 'route' => "loanApply",
                 'pages' => [
                         [

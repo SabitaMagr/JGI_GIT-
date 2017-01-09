@@ -4,10 +4,10 @@ namespace SelfService\Form;
 use Zend\Form\Annotation;
 /**
  * @Annotation\Hydrator("Zend\Hydrator\ObjectProperty")
- * @Annotation\Name("LoanRequest")
+ * @Annotation\Name("AdvanceRequest")
  */
 
-class LoanRequestForm{
+class AdvanceRequestForm{
     /**
      * @Annotation\Type("Zend\Form\Element\Select")
      * @Annotation\Required(false)
@@ -21,10 +21,10 @@ class LoanRequestForm{
      * @Annotation\Type("Zend\Form\Element\Select")
      * @Annotation\Required(false)
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
-     * @Annotation\Options({"disable_inarray_validator":"true","label":"Loan Name"})
-     * @Annotation\Attributes({ "id":"form-loanId","class":"form-control"})
+     * @Annotation\Options({"disable_inarray_validator":"true","label":"Advance Name"})
+     * @Annotation\Attributes({ "id":"form-advanceId","class":"form-control"})
      */
-    public $loanId;
+    public $advanceId;
      /**
      * @Annotation\Type("Zend\Form\Element\Number")
      * @Annotation\Required({"required":"true"})
@@ -33,14 +33,23 @@ class LoanRequestForm{
      * @Annotation\Attributes({ "id":"form-requestedAmount", "class":"form-requestedAmount form-control" })
      */
     public $requestedAmount;
+    
+    /**
+     * @Annotation\Type("Zend\Form\Element\Number")
+     * @Annotation\Required({"required":"true"})
+     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
+     * @Annotation\Options({"label":"Terms(in month)"})
+     * @Annotation\Attributes({ "id":"form-terms", "class":"form-terms form-control" })
+     */
+    public $terms;
      /**
      * @Annotation\Type("Zend\Form\Element\Text")
      * @Annotation\Required({"required":"true"})
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
-     * @Annotation\Options({"label":"Loan Date"})
-     * @Annotation\Attributes({ "id":"form-loanDate", "class":"form-loanDate form-control" })
+     * @Annotation\Options({"label":"Advance Date"})
+     * @Annotation\Attributes({ "id":"form-advanceDate", "class":"form-advanceDate form-control" })
      */
-    public $loanDate;
+    public $advanceDate;
    
     /**
      * @Annotation\Type("Zend\Form\Element\Textarea")

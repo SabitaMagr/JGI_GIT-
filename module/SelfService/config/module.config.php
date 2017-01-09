@@ -21,6 +21,7 @@ use SelfService\Controller\LoanAdvanceRequest;
 use Training\Controller\TrainingAssignController;
 use SelfService\Controller\TrainingList;
 use SelfService\Controller\LoanRequest;
+use SelfService\Controller\AdvanceRequest;
 
 return [
     'router' => [
@@ -148,6 +149,20 @@ return [
                     ],
                     'defaults' => [
                         'controller' => LoanRequest::class,
+                        'action' => 'index',
+                    ]
+                ],
+            ],
+            'advanceRequest' => [
+                'type' => Segment::class,
+                'options' => [
+                    'route' => '/selfservice/advanceRequest[/:action[/:id]]',
+                    'constants' => [
+                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'id' => '[0-9]+',
+                    ],
+                    'defaults' => [
+                        'controller' => AdvanceRequest::class,
                         'action' => 'index',
                     ]
                 ],
@@ -418,6 +433,38 @@ return [
                 ],
             ],
         ],
+        'advanceRequest' => [
+            [
+                'label' => 'Advance Request',
+                'route' => 'advanceRequest',
+            ],
+            [
+                'label' => 'Advance Request',
+                'route' => 'advanceRequest',
+                'pages' => [
+                    [
+                        'label' => 'Detail',
+                        'route' => 'advanceRequest',
+                        'action' => 'index',
+                    ],
+                    [
+                        'label' => 'Add',
+                        'route' => 'advanceRequest',
+                        'action' => 'add',
+                    ],
+                    [
+                        'label' => 'Edit',
+                        'route' => 'advanceRequest',
+                        'action' => 'edit',
+                    ],
+                    [
+                        'label' => 'Detail',
+                        'route' => 'advanceRequest',
+                        'action' => 'view',
+                    ],
+                ],
+            ],
+        ],
         'trainingList' => [
             [
                 'label' => 'Training List',
@@ -458,7 +505,8 @@ return [
             Service::class => ControllerFactory::class,
             PaySlip::class => ControllerFactory::class,
             LoanRequest::class => ControllerFactory::class,
-            TrainingList::class => ControllerFactory::class
+            TrainingList::class => ControllerFactory::class,
+            AdvanceRequest::class => ControllerFactory::class
         ],
     ],
     'view_manager' => [
