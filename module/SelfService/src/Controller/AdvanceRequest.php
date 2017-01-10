@@ -12,9 +12,9 @@ use SelfService\Form\AdvanceRequestForm;
 use Setup\Model\HrEmployees;
 use SelfService\Model\AdvanceRequest as AdvanceRequestModel;
 use SelfService\Repository\AdvanceRequestRepository;
-use Setup\Model\AdvanceRequest;
 use Setup\Repository\EmployeeRepository;
 use Setup\Repository\RecommendApproveRepository;
+use Setup\Model\Advance;
 
 class AdvanceRequest extends AbstractActionController {
 
@@ -37,9 +37,44 @@ class AdvanceRequest extends AbstractActionController {
         $form = new AdvanceRequestForm();
         $this->form = $builder->createForm($form);
     }
+    
+    public function getRecommendApprover(){
+        $recommendApproveRepository = new RecommendApproveRepository($this->adapter);
+        $empRecommendApprove = $recommendApproveRepository->fetchById($this->employeeId);
+
+        if ($empRecommendApprove != null) {
+            $this->recommender = $empRecommendApprove['RECOMMEND_BY'];
+            $this->approver = $empRecommendApprove['APPROVED_BY'];
+        } else {
+            $result = $this->recommendApproveList();
+            if(count($result['recommender'])>0){
+                $this->recommender=$result['recommender'][0]['id'];
+            }else{
+                $this->recommender=null;
+            }
+            if(count($result['approver'])>0){
+                $this->approver=$result['approver'][0]['id'];
+            }else{
+                 $this->approver=null;
+            } 
+        }
+        
+        
+    }
 
     public function indexAction() {
+        $this->getRecommendApprover();
         $result = $this->repository->getAllByEmployeeId($this->employeeId);
+        $fullName = function($id){
+          $empRepository = new EmployeeRepository($this->adapter);
+          $empDtl = $empRepository->fetchById($id);
+          $empMiddleName = ($empDtl['MIDDLE_NAME']!=null)? " ".$empDtl['MIDDLE_NAME']." " :" ";
+          return $empDtl['FIRST_NAME'].$empMiddleName.$empDtl['LAST_NAME'];
+        };
+        
+        $recommenderName = $fullName($this->recommender);
+        $approverName = $fullName($this->approver);
+        
         $list = [];
         $getValue = function($status) {
             if ($status == "RQ") {
@@ -64,7 +99,23 @@ class AdvanceRequest extends AbstractActionController {
         foreach ($result as $row) {
             $status = $getValue($row['STATUS']);
             $action = $getAction($row['STATUS']);
-            $new_row = array_merge($row, ['STATUS' => $status, 'ACTION' => key($action), 'ACTION_TEXT' => $action[key($action)]]);
+            $statusID = $row['STATUS'];
+            $approvedDT = $row['APPROVED_DATE'];
+            $MN1 = ($row['MN1']!=null)? " ".$row['MN1']." ":" ";
+            $recommended_by = $row['FN1'].$MN1.$row['LN1'];        
+            $MN2 = ($row['MN2']!=null)? " ".$row['MN2']." ":" ";
+            $approved_by = $row['FN2'].$MN2.$row['LN2'];
+            $authRecommender = ($statusID=='RQ' || $statusID=='C')?$recommenderName:$recommended_by;
+            $authApprover = ($statusID=='RC' || $statusID=='RQ' || $statusID=='C' || ($statusID=='R' && $approvedDT==null))?$approverName:$approved_by;
+
+            $new_row = array_merge($row, 
+                    [
+                        'RECOMMENDER_NAME'=>$authRecommender,
+                        'APPROVER_NAME'=>$authApprover,
+                        'STATUS' => $status, 
+                        'ACTION' => key($action), 
+                        'ACTION_TEXT' => $action[key($action)]
+                    ]);
             array_push($list, $new_row);
         }
         return Helper::addFlashMessagesToArray($this, ['list' => $list]);
@@ -74,66 +125,43 @@ class AdvanceRequest extends AbstractActionController {
         $this->initializeForm();
         $request = $this->getRequest();
 
-        $model = new LoanRequestModel();
+        $model = new AdvanceRequestModel();
         if ($request->isPost()) {
             $this->form->setData($request->getPost());
             if ($this->form->isValid()) {
                 $model->exchangeArrayFromForm($this->form->getData());
-                $model->loanRequestId = ((int) Helper::getMaxId($this->adapter, LoanRequestModel::TABLE_NAME, LoanRequestModel::LOAN_REQUEST_ID)) + 1;
+                $model->advanceRequestId = ((int) Helper::getMaxId($this->adapter, AdvanceRequestModel::TABLE_NAME, AdvanceRequestModel::ADVANCE_REQUEST_ID)) + 1;
                 $model->employeeId = $this->employeeId;
                 $model->requestedDate = Helper::getcurrentExpressionDate();
                 $model->status = 'RQ';
-                $model->deductOnSalary = 'Y';
                 $this->repository->add($model);
-                $this->flashmessenger()->addMessage("Loan Request Successfully added!!!");
-                return $this->redirect()->toRoute("loanRequest");
+                $this->flashmessenger()->addMessage("Advance Request Successfully added!!!");
+                return $this->redirect()->toRoute("advanceRequest");
             }
         }
-
         return Helper::addFlashMessagesToArray($this, [
                     'form' => $this->form,
-                    'loans' => EntityHelper::getTableKVListWithSortOption($this->adapter, Loan::TABLE_NAME, Loan::LOAN_ID, [Loan::LOAN_NAME], [Loan::STATUS => "E"], Loan::LOAN_ID, "ASC")
+                    'advances' => EntityHelper::getTableKVListWithSortOption($this->adapter, Advance::TABLE_NAME, Advance::ADVANCE_ID, [Advance::ADVANCE_NAME], [Advance::STATUS => "E"], Advance::ADVANCE_ID, "ASC")
         ]);
     }
 
     public function deleteAction() {
         $id = (int) $this->params()->fromRoute("id");
         if (!$id) {
-            return $this->redirect()->toRoute('loanRequest');
+            return $this->redirect()->toRoute('advanceRequest');
         }
         $this->repository->delete($id);
-        $this->flashmessenger()->addMessage("Loan Request Successfully Cancelled!!!");
-        return $this->redirect()->toRoute('loanRequest');
+        $this->flashmessenger()->addMessage("Advance Request Successfully Cancelled!!!");
+        return $this->redirect()->toRoute('advanceRequest');
     }
-    public function getRecommendApprover(){
-        $recommendApproveRepository = new RecommendApproveRepository($this->adapter);
-        $empRecommendApprove = $recommendApproveRepository->fetchById($this->employeeId);
-
-        if ($empRecommendApprove != null) {
-            $this->recommender = $empRecommendApprove['RECOMMEND_BY'];
-            $this->approver = $empRecommendApprove['APPROVED_BY'];
-        } else {
-            $result = $this->recommendApproveList();
-            if(count($result['recommender'])>0){
-                $this->recommender=$result['recommender'][0]['id'];
-            }else{
-                $this->recommender=null;
-            }
-            if(count($result['approver'])>0){
-                $this->approver=$result['approver'][0]['id'];
-            }else{
-                 $this->approver=null;
-            } 
-        }
-    }
-
+   
     public function viewAction() {
         $this->initializeForm();
         $this->getRecommendApprover();
         $id = (int) $this->params()->fromRoute('id');
 
         if ($id === 0) {
-            return $this->redirect()->toRoute("loanRequest");
+            return $this->redirect()->toRoute("advanceRequest");
         }
         $fullName = function($id){
           $empRepository = new EmployeeRepository($this->adapter);
@@ -145,7 +173,7 @@ class AdvanceRequest extends AbstractActionController {
         $recommenderName = $fullName($this->recommender);
         $approverName = $fullName($this->approver);
         
-        $model = new LoanRequestModel();
+        $model = new AdvanceRequestModel();
         $detail = $this->repository->fetchById($id);
         $status = $detail['STATUS'];
         $approvedDT = $detail['APPROVED_DATE'];
@@ -169,7 +197,7 @@ class AdvanceRequest extends AbstractActionController {
                     'requestedDate'=>$detail['REQUESTED_DATE'],
                     'recommender'=>$authRecommender,
                     'approver'=>$authApprover,
-                    'loans' => EntityHelper::getTableKVListWithSortOption($this->adapter, Loan::TABLE_NAME, Loan::LOAN_ID, [Loan::LOAN_NAME], [Loan::STATUS => "E"], Loan::LOAN_ID, "ASC")
+                    'advances' => EntityHelper::getTableKVListWithSortOption($this->adapter, Advance::TABLE_NAME, Advance::ADVANCE_ID, [Advance::ADVANCE_NAME], [Advance::STATUS => "E"], Advance::ADVANCE_ID, "ASC")
         ]);       
     }
     public function recommendApproveList() {

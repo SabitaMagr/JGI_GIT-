@@ -27,32 +27,29 @@ class AdvanceForm
     public $advanceName;
     
     /**
-     * @Annotation\Type("Zend\Form\Element\Text")
+     * @Annotation\Type("Zend\Form\Element\Number")
      * @Annotation\Required({"required":"true"})
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
-     * @Annotation\Validator({"name":"Float", "options":{"min":"5","locale":"en"}})
      * @Annotation\Options({"label":"Min. Salary Amount"})
-     * @Annotation\Attributes({ "id":"form-minSalaryAmt","class":"form-control form-minSalaryAmt"})
+     * @Annotation\Attributes({ "id":"form-minSalaryAmt","class":"form-control form-minSalaryAmt","step":"0.01"})
      */
     public $minSalaryAmt;
     
     /**
-     * @Annotation\Type("Zend\Form\Element\Text")
+     * @Annotation\Type("Zend\Form\Element\Number")
      * @Annotation\Required({"required":"true"})
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
-     * @Annotation\Validator({"name":"Float", "options":{"min":"5","locale":"en"}})
      * @Annotation\Options({"label":"Max. Salary Amount"})
-     * @Annotation\Attributes({ "id":"form-maxAmount","class":"form-control"})
+     * @Annotation\Attributes({ "id":"form-maxAmount","class":"form-control","step":"0.01"})
      */
     public $maxSalaryAmt;
 
      /**
-     * @Annotation\Type("Zend\Form\Element\Text")
+     * @Annotation\Type("Zend\Form\Element\Number")
      * @Annotation\Required({"required":"true"})
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
-     * @Annotation\Validator({"name":"Float", "options":{"min":"5","locale":"en"}})
      * @Annotation\Options({"label":"Amount To Allow(in %)"})
-     * @Annotation\Attributes({ "id":"form-amountToAllow", "class":"form-amountToAllow form-control" })
+     * @Annotation\Attributes({ "id":"form-amountToAllow", "class":"form-amountToAllow form-control","step":"0.01" })
      */
     public $amountToAllow;
    

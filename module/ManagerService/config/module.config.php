@@ -45,6 +45,16 @@ return [
                     ]
                 ]
             ],
+            'advanceApprove' => [
+                'type' => Segment::class,
+                'options' => [
+                    'route' => '/managerservice/advanceApprove[/:action[/:id][/:role]]',
+                    'defaults' => [
+                        'controller' => Controller\AdvanceApproveController::class,
+                        'action' => 'index'
+                    ]
+                ]
+            ],
             'salaryReview' => [
                 'type' => Segment::class,
                 'options' => [
@@ -144,6 +154,33 @@ return [
                 ]
             ]
         ],
+        'advanceApprove' => [
+                [
+                'label' => 'Advance Request',
+                'route' => 'advanceApprove',
+            ],
+                [
+                'label' => 'Advance Request',
+                'route' => 'advanceApprove',
+                'pages' => [
+                        [
+                        'label' => 'List',
+                        'route' => 'advanceApprove',
+                        'action' => 'index',
+                    ],
+                        [
+                        'label' => 'List',
+                        'route' => 'advanceApprove',
+                        'action' => 'status',
+                    ],
+                        [
+                        'label' => 'View',
+                        'route' => 'advanceApprove',
+                        'action' => 'view',
+                    ],
+                ]
+            ]
+        ],
         'salaryReview' => [
                 [
                 'label' => 'SalaryReview',
@@ -177,6 +214,7 @@ return [
             Controller\AttendanceApproveController::class => ControllerFactory::class,
             Controller\LoanApproveController::class => ControllerFactory::class,
             Controller\SalaryReviewController::class => ControllerFactory::class,
+            Controller\AdvanceApproveController::class => ControllerFactory::class,
         ],
     ],
     'view_manager' => [

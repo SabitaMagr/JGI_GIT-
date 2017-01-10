@@ -54,7 +54,8 @@
             "System\\": "module/System/src/",
             "Training\\": "module/Training/src/",
             "Appraisal\\": "module/Appraisal/src/",
-            "Loan\\": "module/Loan/src/"
+            "Loan\\": "module/Loan/src/",
+            "Advance\\": "module/Advance/src/"
         }
     },
     "autoload-dev": {

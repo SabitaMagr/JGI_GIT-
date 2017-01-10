@@ -30,7 +30,7 @@ class AdvanceRequestForm{
      * @Annotation\Required({"required":"true"})
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Request Amount"})
-     * @Annotation\Attributes({ "id":"form-requestedAmount", "class":"form-requestedAmount form-control" })
+     * @Annotation\Attributes({ "id":"form-requestedAmount", "class":"form-requestedAmount form-control","step":"0.01" })
      */
     public $requestedAmount;
     

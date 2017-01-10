@@ -39,7 +39,8 @@ return [
     'System',
     'Training',
     'Appraisal',
-    'Loan'
+    'Loan',
+    'Advance'
         // These are various options for the listeners attached to the ModuleManager
         // 'module_listener_options' => [
         //     'module_paths' => [
