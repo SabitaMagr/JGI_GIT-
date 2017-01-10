@@ -37,9 +37,41 @@ class LoanRequest extends AbstractActionController {
         $form = new LoanRequestForm();
         $this->form = $builder->createForm($form);
     }
+    public function getRecommendApprover(){
+        $recommendApproveRepository = new RecommendApproveRepository($this->adapter);
+        $empRecommendApprove = $recommendApproveRepository->fetchById($this->employeeId);
+
+        if ($empRecommendApprove != null) {
+            $this->recommender = $empRecommendApprove['RECOMMEND_BY'];
+            $this->approver = $empRecommendApprove['APPROVED_BY'];
+        } else {
+            $result = $this->recommendApproveList();
+            if(count($result['recommender'])>0){
+                $this->recommender=$result['recommender'][0]['id'];
+            }else{
+                $this->recommender=null;
+            }
+            if(count($result['approver'])>0){
+                $this->approver=$result['approver'][0]['id'];
+            }else{
+                 $this->approver=null;
+            } 
+        }
+    }
 
     public function indexAction() {
+        $this->getRecommendApprover();
         $result = $this->repository->getAllByEmployeeId($this->employeeId);
+        $fullName = function($id){
+          $empRepository = new EmployeeRepository($this->adapter);
+          $empDtl = $empRepository->fetchById($id);
+          $empMiddleName = ($empDtl['MIDDLE_NAME']!=null)? " ".$empDtl['MIDDLE_NAME']." " :" ";
+          return $empDtl['FIRST_NAME'].$empMiddleName.$empDtl['LAST_NAME'];
+        };
+        
+        $recommenderName = $fullName($this->recommender);
+        $approverName = $fullName($this->approver);
+        
         $list = [];
         $getValue = function($status) {
             if ($status == "RQ") {
@@ -64,7 +96,23 @@ class LoanRequest extends AbstractActionController {
         foreach ($result as $row) {
             $status = $getValue($row['STATUS']);
             $action = $getAction($row['STATUS']);
-            $new_row = array_merge($row, ['STATUS' => $status, 'ACTION' => key($action), 'ACTION_TEXT' => $action[key($action)]]);
+            $statusID = $row['STATUS'];
+            $approvedDT = $row['APPROVED_DATE'];
+            $MN1 = ($row['MN1']!=null)? " ".$row['MN1']." ":" ";
+            $recommended_by = $row['FN1'].$MN1.$row['LN1'];        
+            $MN2 = ($row['MN2']!=null)? " ".$row['MN2']." ":" ";
+            $approved_by = $row['FN2'].$MN2.$row['LN2'];
+            $authRecommender = ($statusID=='RQ' || $statusID=='C')?$recommenderName:$recommended_by;
+            $authApprover = ($statusID=='RC' || $statusID=='RQ' || $statusID=='C' || ($statusID=='R' && $approvedDT==null))?$approverName:$approved_by;
+
+            $new_row = array_merge($row, 
+                    [
+                        'RECOMMENDER_NAME'=>$authRecommender,
+                        'APPROVER_NAME'=>$authApprover,
+                        'STATUS' => $status, 
+                        'ACTION' => key($action), 
+                        'ACTION_TEXT' => $action[key($action)]
+                    ]);
             array_push($list, $new_row);
         }
         return Helper::addFlashMessagesToArray($this, ['list' => $list]);
@@ -105,28 +153,7 @@ class LoanRequest extends AbstractActionController {
         $this->flashmessenger()->addMessage("Loan Request Successfully Cancelled!!!");
         return $this->redirect()->toRoute('loanRequest');
     }
-    public function getRecommendApprover(){
-        $recommendApproveRepository = new RecommendApproveRepository($this->adapter);
-        $empRecommendApprove = $recommendApproveRepository->fetchById($this->employeeId);
-
-        if ($empRecommendApprove != null) {
-            $this->recommender = $empRecommendApprove['RECOMMEND_BY'];
-            $this->approver = $empRecommendApprove['APPROVED_BY'];
-        } else {
-            $result = $this->recommendApproveList();
-            if(count($result['recommender'])>0){
-                $this->recommender=$result['recommender'][0]['id'];
-            }else{
-                $this->recommender=null;
-            }
-            if(count($result['approver'])>0){
-                $this->approver=$result['approver'][0]['id'];
-            }else{
-                 $this->approver=null;
-            } 
-        }
-    }
-
+    
     public function viewAction() {
         $this->initializeForm();
         $this->getRecommendApprover();

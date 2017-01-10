@@ -1,1 +1,166 @@
+<?php
+$this->headScript()->appendFile($this->basePath('js/SelfService/advance-request/add.js'));
 
+$form->setAttribute('role', 'form');
+$form->setAttribute('id', 'advance-form');
+
+$advanceId = $form->get('advanceId');
+$advanceId->setValueOptions($advances);
+$advanceId->setAttributes(["disabled"=>"disabled"]);
+$requestedAmount = $form->get('requestedAmount');
+$requestedAmount->setAttributes(["disabled"=>"disabled"]);
+$advanceDate = $form->get('advanceDate');
+$advanceDate->setAttributes(["disabled"=>"disabled"]);
+$reason = $form->get('reason');
+$reason->setAttributes(["disabled"=>"disabled"]);
+$terms = $form->get('terms');
+$terms->setAttributes(["disabled"=>"disabled"]);
+$recommendedRemarks = $form->get('recommendedRemarks');
+$recommendedRemarks->setAttributes(["disabled"=>"disabled"]);
+$approvedRemarks = $form->get('approvedRemarks');
+$approvedRemarks->setAttributes(["disabled"=>"disabled"]);
+
+$submit = $form->get('submit');
+$submit->setAttribute('value','SUBMIT');
+
+$form->setAttribute('action', $this->url('advanceRequest', ['action' => 'add']));
+
+if ($this->messages) {
+    print '<ul class="help-block bg-danger" style="background:#f3e250;">';
+    foreach ($this->messages as $message) {
+        print '<li>' . $message . '</li>';
+    }
+    print '</ul>';
+}
+
+$form->prepare();
+print $this->form()->openTag($form);
+?>
+    <script>
+        document.menu=<?php $menu = ["id" => "menuSelfService","subMenu"=>["id"=>"subMenuAdvanceRequest"]];echo json_encode($menu);?>;
+        document.url = '<?= $this->url("restful", ["action" => "index"]) ?>';
+    </script>
+<div class="page-bar">
+    <?= $this->navigation('Zend\Navigation\advanceRequest')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
+</div>
+<div class="row margin-top-20">
+    <div class="col-sm-8 col-sm-offset-2">
+        <div class="portlet box custom-box">
+            <div class="portlet-title">
+                <div class="caption">
+                    <i class="fa fa-user"></i>Advance Request Detail
+                </div>
+            </div>
+            <div class="portlet-body">
+                <div class="border-bottom">
+                <div class="form-group">
+                    <div class="row div-font-11">
+                        <div class="col-md-6">
+                            <table>
+                                <tr height="30">
+                                    <td>
+                                        Requested Date
+                                    </td>
+                                    <td width="15">:</td>
+                                    <td>
+                                        <?php echo $requestedDate; ?>
+                                    </td>
+                                </tr>
+                                <tr height="30">
+                                    <td>
+                                        Recommender
+                                    </td>
+                                    <td width="15">:</td>
+                                    <td>
+                                        <?php echo $recommender; ?>
+                                    </td>
+                                </tr>
+                                
+                            </table>
+                        </div>
+                        <div class="col-md-6">
+                            <table>  
+                                <tr height="30">
+                                    <td>
+                                        Status
+                                    </td>
+                                    <td width="15">:</td>
+                                    <td>
+                                        <?php
+                                        if ($status == 'RQ') {
+                                            echo "Pending";
+                                        } else if ($status == 'RC') {
+                                            echo "Recommended";
+                                        } else if ($status == 'AP') {
+                                            echo "Approved";
+                                        } else if ($status == "R") {
+                                            echo "Rejected";
+                                        } else if ($status == "C") {
+                                            echo "Cancelled";
+                                        } ?>
+                                    </td>
+                                </tr>
+                                <tr height="30">
+                                    <td>
+                                        Approver
+                                    </td>
+                                    <td width="15">:</td>
+                                    <td>
+                                        <?php echo $approver; ?>
+                                    </td>
+                                </tr>                               
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <?php print $this->formLabel($advanceId); ?>
+                    <?php print $this->formElement($advanceId); ?>
+                    <?php print $this->formElementErrors()->render($advanceId, ['class' => 'help-block']); ?>
+                </div>               
+                <div class="form-group">
+                    <?php print $this->formLabel($requestedAmount); ?>
+                    <?php print $this->formElement($requestedAmount); ?>
+                    <?php print $this->formElementErrors()->render($requestedAmount, ['class' => 'help-block']); ?>
+                </div>
+                <div class="form-group">
+                    <?php print $this->formLabel($terms); ?>
+                    <?php print $this->formElement($terms); ?>
+                    <?php print $this->formElementErrors()->render($terms, ['class' => 'help-block']); ?>
+                </div>
+                <div class="form-group">
+                    <?php print $this->formLabel($advanceDate); ?>
+                    <div class="input-group date" id="startDate">
+                        <?php print $this->formElement($advanceDate); ?>
+                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                    </div>
+                    <?php print $this->formElementErrors()->render($advanceDate, ['class' => 'help-block']); ?>
+                </div>
+                <div class="form-group">
+                    <?php print $this->formLabel($reason); ?>
+                    <?php print $this->formElement($reason); ?>
+                    <?php print $this->formElementErrors()->render($reason, ['class' => 'help-block']); ?>
+                </div>
+                </div>
+                <div
+                    class="form-group margin-top-10 required <?= empty($recommendedRemarks->getMessages()) ? "" : "error" ?>">
+                    <label>Reason for action [From Recommender]</label>
+                    <?php print $this->formElement($recommendedRemarks); ?>
+                </div>
+                <div
+                    class="form-group required <?= empty($approvedRemarks->getMessages()) ? "" : "error" ?>">
+                    <label>Reason for action [From Approver]</label>
+                    <?php print $this->formElement($approvedRemarks); ?>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<?php
+
+print $this->form()->closeTag();
+
+?>

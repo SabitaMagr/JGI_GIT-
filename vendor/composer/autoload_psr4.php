@@ -81,4 +81,5 @@ return array(
     'Application\\' => array($baseDir . '/module/Application/src'),
     'ApplicationTest\\' => array($baseDir . '/module/Application/test'),
     'Album\\' => array($baseDir . '/module/Album/src'),
+    'Advance\\' => array($baseDir . '/module/Advance/src'),
 );

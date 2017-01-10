@@ -1336,6 +1336,19 @@ return array (
           ),
         ),
       ),
+      'advanceApprove' => 
+      array (
+        'type' => 'Zend\\Router\\Http\\Segment',
+        'options' => 
+        array (
+          'route' => '/managerservice/advanceApprove[/:action[/:id][/:role]]',
+          'defaults' => 
+          array (
+            'controller' => 'ManagerService\\Controller\\AdvanceApproveController',
+            'action' => 'index',
+          ),
+        ),
+      ),
       'salaryReview' => 
       array (
         'type' => 'Zend\\Router\\Http\\Segment',
@@ -1525,6 +1538,42 @@ return array (
           'defaults' => 
           array (
             'controller' => 'Loan\\Controller\\LoanApply',
+            'action' => 'index',
+          ),
+        ),
+      ),
+      'advanceStatus' => 
+      array (
+        'type' => 'Zend\\Router\\Http\\Segment',
+        'options' => 
+        array (
+          'route' => '/advance/status[/:action[/:id]]',
+          'constraints' => 
+          array (
+            'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+            'id' => '[0-9]+',
+          ),
+          'defaults' => 
+          array (
+            'controller' => 'Advance\\Controller\\AdvanceStatus',
+            'action' => 'index',
+          ),
+        ),
+      ),
+      'advanceApply' => 
+      array (
+        'type' => 'Zend\\Router\\Http\\Segment',
+        'options' => 
+        array (
+          'route' => '/advance/apply[/:action[/:id]]',
+          'constraints' => 
+          array (
+            'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+            'id' => '[0-9]+',
+          ),
+          'defaults' => 
+          array (
+            'controller' => 'Advance\\Controller\\AdvanceApply',
             'action' => 'index',
           ),
         ),
@@ -3265,6 +3314,40 @@ return array (
         ),
       ),
     ),
+    'advanceApprove' => 
+    array (
+      0 => 
+      array (
+        'label' => 'Advance Request',
+        'route' => 'advanceApprove',
+      ),
+      1 => 
+      array (
+        'label' => 'Advance Request',
+        'route' => 'advanceApprove',
+        'pages' => 
+        array (
+          0 => 
+          array (
+            'label' => 'List',
+            'route' => 'advanceApprove',
+            'action' => 'index',
+          ),
+          1 => 
+          array (
+            'label' => 'List',
+            'route' => 'advanceApprove',
+            'action' => 'status',
+          ),
+          2 => 
+          array (
+            'label' => 'View',
+            'route' => 'advanceApprove',
+            'action' => 'view',
+          ),
+        ),
+      ),
+    ),
     'salaryReview' => 
     array (
       0 => 
@@ -3615,6 +3698,74 @@ return array (
         ),
       ),
     ),
+    'advanceStatus' => 
+    array (
+      0 => 
+      array (
+        'label' => 'Advance Request',
+        'route' => 'advanceStatus',
+      ),
+      1 => 
+      array (
+        'label' => 'Advance Request',
+        'route' => 'advanceStatus',
+        'pages' => 
+        array (
+          0 => 
+          array (
+            'label' => 'List',
+            'route' => 'advanceStatus',
+            'action' => 'index',
+          ),
+          1 => 
+          array (
+            'label' => 'Add',
+            'route' => 'advanceStatus',
+            'action' => 'add',
+          ),
+          2 => 
+          array (
+            'label' => 'Detail',
+            'route' => 'advanceStatus',
+            'action' => 'view',
+          ),
+        ),
+      ),
+    ),
+    'advanceApply' => 
+    array (
+      0 => 
+      array (
+        'label' => 'Advance Apply',
+        'route' => 'advanceApply',
+      ),
+      1 => 
+      array (
+        'label' => 'Advance Apply',
+        'route' => 'advanceApply',
+        'pages' => 
+        array (
+          0 => 
+          array (
+            'label' => 'List',
+            'route' => 'advanceApply',
+            'action' => 'index',
+          ),
+          1 => 
+          array (
+            'label' => 'Add',
+            'route' => 'advanceApply',
+            'action' => 'add',
+          ),
+          2 => 
+          array (
+            'label' => 'Edit',
+            'route' => 'advanceApply',
+            'action' => 'edit',
+          ),
+        ),
+      ),
+    ),
   ),
   'controllers' => 
   array (
@@ -3674,6 +3825,7 @@ return array (
       'ManagerService\\Controller\\AttendanceApproveController' => 'Application\\Controller\\ControllerFactory',
       'ManagerService\\Controller\\LoanApproveController' => 'Application\\Controller\\ControllerFactory',
       'ManagerService\\Controller\\SalaryReviewController' => 'Application\\Controller\\ControllerFactory',
+      'ManagerService\\Controller\\AdvanceApproveController' => 'Application\\Controller\\ControllerFactory',
       'System\\Controller\\RoleSetupController' => 'Application\\Controller\\ControllerFactory',
       'System\\Controller\\UserSetupController' => 'Application\\Controller\\ControllerFactory',
       'System\\Controller\\MenuSetupController' => 'Application\\Controller\\ControllerFactory',
@@ -3684,6 +3836,8 @@ return array (
       'Appraisal\\Controller\\PerformanceAppraisal' => 'Application\\Controller\\ControllerFactory',
       'Loan\\Controller\\LoanStatus' => 'Application\\Controller\\ControllerFactory',
       'Loan\\Controller\\LoanApply' => 'Application\\Controller\\ControllerFactory',
+      'Advance\\Controller\\AdvanceApply' => 'Application\\Controller\\ControllerFactory',
+      'Advance\\Controller\\AdvanceStatus' => 'Application\\Controller\\ControllerFactory',
     ),
   ),
   'view_manager' => 
@@ -3730,6 +3884,7 @@ return array (
       10 => '/var/www/html/neo-hris/module/Training/config/../view',
       11 => '/var/www/html/neo-hris/module/Appraisal/config/../view',
       12 => '/var/www/html/neo-hris/module/Loan/config/../view',
+      13 => '/var/www/html/neo-hris/module/Advance/config/../view',
     ),
   ),
   'dashboard-items' => 

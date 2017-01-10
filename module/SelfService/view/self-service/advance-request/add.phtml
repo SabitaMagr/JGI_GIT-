@@ -1,1 +1,86 @@
+<?php
+$this->headScript()->appendFile($this->basePath('js/SelfService/loan-request/add.js'));
 
+$form->setAttribute('role', 'form');
+$form->setAttribute('id', 'advance-form');
+
+$advanceId = $form->get('advanceId');
+$advanceId->setValueOptions($advances);
+$requestedAmount = $form->get('requestedAmount');
+$advanceDate = $form->get('advanceDate');
+$reason = $form->get('reason');
+$terms = $form->get('terms');
+
+$submit = $form->get('submit');
+$submit->setAttribute('value','SUBMIT');
+
+$form->setAttribute('action', $this->url('advanceRequest', ['action' => 'add']));
+
+if ($this->messages) {
+    print '<ul class="help-block bg-danger" style="background:#f3e250;">';
+    foreach ($this->messages as $message) {
+        print '<li>' . $message . '</li>';
+    }
+    print '</ul>';
+}
+
+$form->prepare();
+?>
+    <script>
+        document.menu=<?php $menu = ["id" => "menuSelfService","subMenu"=>["id"=>"subMenuAdvanceRequest"]];echo json_encode($menu);?>;
+        document.url = '<?= $this->url("restful", ["action" => "index"]) ?>';
+    </script>
+<div class="page-bar">
+    <?= $this->navigation('Zend\Navigation\advanceRequest')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
+</div>
+<div class="row margin-top-20">
+    <div class="col-sm-8 col-sm-offset-2">
+        <div class="portlet box custom-box">
+            <div class="portlet-title">
+                <div class="caption">
+                    <i class="fa fa-user"></i>New Entry
+                </div>
+            </div>
+            <div class="portlet-body">
+                <?php
+                print $this->form()->openTag($form);
+                ?>
+
+                <div class="form-group">
+                    <?php print $this->formLabel($advanceId); ?>
+                    <?php print $this->formElement($advanceId); ?>
+                    <?php print $this->formElementErrors()->render($advanceId, ['class' => 'help-block']); ?>
+                </div>               
+                <div class="form-group">
+                    <?php print $this->formLabel($requestedAmount); ?>
+                    <?php print $this->formElement($requestedAmount); ?>
+                    <?php print $this->formElementErrors()->render($requestedAmount, ['class' => 'help-block']); ?>
+                </div>
+                <div class="form-group">
+                    <?php print $this->formLabel($terms); ?>
+                    <?php print $this->formElement($terms); ?>
+                    <?php print $this->formElementErrors()->render($terms, ['class' => 'help-block']); ?>
+                </div>
+                <div class="form-group">
+                    <?php print $this->formLabel($advanceDate); ?>
+                    <div class="input-group date" id="startDate">
+                        <?php print $this->formElement($advanceDate); ?>
+                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                    </div>
+                    <?php print $this->formElementErrors()->render($advanceDate, ['class' => 'help-block']); ?>
+                </div>
+                <div class="form-group">
+                    <?php print $this->formLabel($reason); ?>
+                    <?php print $this->formElement($reason); ?>
+                    <?php print $this->formElementErrors()->render($reason, ['class' => 'help-block']); ?>
+                </div>
+
+                <?php
+                    print $this->formSubmit($submit);
+                    print $this->form()->closeTag();
+                ?>
+            </div>
+
+        </div>
+    </div>
+</div>

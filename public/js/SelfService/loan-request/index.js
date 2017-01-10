@@ -51,7 +51,13 @@
                         {value: "Loan Date"},
                         {value: "Requested Amount"},
                         {value: "Status"},
-                        {value: "Reason"}
+                        {value: "Reason"},
+                        {value: "Recommender"},
+                        {value: "Approver"},
+                        {value: "Remarks By Recommender"},
+                        {value: "Recommended Date"},
+                        {value: "Remarks By Approver"},
+                        {value: "Approved Date"}
                     ]
                 }];
             var dataSource = $("#loanTable").data("kendoGrid").dataSource;
@@ -73,7 +79,13 @@
                         {value: dataItem.LOAN_DATE},
                         {value: dataItem.REQUESTED_AMOUNT},
                         {value: dataItem.STATUS},
-                        {value: dataItem.REASON}
+                        {value: dataItem.REASON},
+                        {value: dataItem.RECOMMENDER_NAME},
+                        {value: dataItem.APPROVER_NAME},
+                        {value: dataItem.RECOMMENDED_REMARKS},
+                        {value: dataItem.RECOMMENDED_DATE},
+                        {value: dataItem.APPROVED_REMARKS},
+                        {value: dataItem.APPROVED_DATE}
                     ]
                 });
             }
@@ -94,12 +106,12 @@
                             {autoWidth: true},
                             {autoWidth: true}
                         ],
-                        title: "Leave Request",
+                        title: "Loan Request",
                         rows: rows
                     }
                 ]
             });
-            kendo.saveAs({dataURI: workbook.toDataURL(), fileName: "LeaveRequestList.xlsx"});
+            kendo.saveAs({dataURI: workbook.toDataURL(), fileName: "LoanRequestList.xlsx"});
         }
     });
 })(window.jQuery, window.app);

@@ -63,6 +63,7 @@ $form->prepare();
                 <div class="form-group">
                     <?php print $this->formLabel($loanName); ?>
                     <?php print $this->formElement($loanName); ?>
+                    <input type="hidden" id="loanID" value="<?php echo $id; ?>"/>
                     <?php print $this->formElementErrors()->render($loanName, ['class' => 'help-block error']); ?>
                 </div>
                 <div class="row">
