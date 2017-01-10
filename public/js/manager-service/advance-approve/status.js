@@ -69,14 +69,14 @@ angular.module('hris', [])
                     dataBound: gridDataBound,
                     rowTemplate: kendo.template($("#rowTemplate").html()),
                     columns: [
-                        {field: "FIRST_NAME", title: "Employee Name", width: 200},
+                        {field: "FIRST_NAME", title: "Employee Name", width: 150},
                         {field: "ADVANCE_NAME", title: "Advance Name", width: 120},
-                        {field: "REQUESTED_DATE", title: "Requested Date", width: 150},
-                        {field: "ADVANCE_DATE", title: "Advance Date", width: 100},
-                        {field: "REQUESTED_AMOUNT", title: "Requested Amount", width: 150},
-                        {field: "TERMS", title: "Terms", width: 150},
-                        {field: "YOUR_ROLE", title: "Your Role", width: 150},
-                        {field: "STATUS", title: "Status", width: 90},
+                        {field: "REQUESTED_DATE", title: "Requested Date", width: 125},
+                        {field: "ADVANCE_DATE", title: "Advance Date", width: 115},
+                        {field: "REQUESTED_AMOUNT", title: "Requested Amt.", width: 120},
+                        {field: "TERMS", title: "Terms", width: 70},
+                        {field: "YOUR_ROLE", title: "Your Role", width: 100},
+                        {field: "STATUS", title: "Status", width: 80},
                         {title: "Action", width: 80}
                     ]
                 });
@@ -88,8 +88,7 @@ angular.module('hris', [])
                                 .find('tbody')
                                 .append('<tr class="kendo-data-row"><td colspan="' + colCount + '" class="no-data">There is no data to show in the grid.</td></tr>');
                     }
-                }
-                ;
+                };
 
                 $("#export").click(function (e) {
                     var rows = [{

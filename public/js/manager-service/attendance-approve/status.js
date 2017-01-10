@@ -66,15 +66,13 @@ angular.module('hris', [])
                     rowTemplate: kendo.template($("#rowTemplate").html()),
                     columns: [
                         {field: "FIRST_NAME", title: "Employee Name", width: 200},
-                        {field: "REQUESTED_DT", title: "Requested Date", width: 160},
-                        {field: "ATTENDANCE_DT", title: "Attendance Date", width: 160},
+                        {field: "REQUESTED_DT", title: "Requested Date", width: 130},
+                        {field: "ATTENDANCE_DT", title: "Attendance Date", width: 130},
                         {field: "IN_TIME", title: "Check In", width: 120},
                         {field: "OUT_TIME", title: "Check Out", width: 120},
-                        {field: "IN_REMARKS", title: "Late In Reason", width: 200},
-                        {field: "OUT_REMARKS", title: "Early Out Reason", width: 200},
-                        {field: "YOUR_ROLE", title: "Your Role", width: 180},
+                        {field: "YOUR_ROLE", title: "Your Role", width: 90},
                         {field: "STATUS", title: "Status", width: 100},
-                        {title: "Action", width: 100}
+                        {title: "Action", width: 80}
                     ]
                 });
 

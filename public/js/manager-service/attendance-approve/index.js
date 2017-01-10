@@ -28,8 +28,6 @@
                 {field: "ATTENDANCE_DT", title: "Attendance Date", width: 180},
                 {field: "IN_TIME", title: "Check In", width: 120},
                 {field: "OUT_TIME", title: "Check Out", width: 140},
-                {field: "IN_REMARKS", title: "Late In Reason", width: 170},
-                {field: "OUT_REMARKS", title: "Late Out Reason", width: 180},
                 {field: "YOUR_ROLE", title: "Your Role", width: 140},
                 {title: "Action", width: 80}
             ]

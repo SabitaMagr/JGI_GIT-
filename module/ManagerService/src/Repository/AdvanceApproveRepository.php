@@ -89,6 +89,7 @@ class AdvanceApproveRepository implements RepositoryInterface{
                     AR.REASON,
                     AR.ADVANCE_ID,
                     AR.STATUS,
+                    AR.TERMS,
                     TO_CHAR(AR.ADVANCE_DATE, 'DD-MON-YYYY') AS ADVANCE_DATE,
                     TO_CHAR(AR.RECOMMENDED_DATE, 'DD-MON-YYYY') AS RECOMMENDED_DATE,
                     TO_CHAR(AR.APPROVED_DATE, 'DD-MON-YYYY') AS APPROVED_DATE,
@@ -98,16 +99,17 @@ class AdvanceApproveRepository implements RepositoryInterface{
                     E.LAST_NAME,
                     A.ADVANCE_NAME,
                     A.ADVANCE_CODE,
+                    A.ADVANCE_ID,
                     RA.RECOMMEND_BY as RECOMMENDER,
                     RA.APPROVED_BY AS APPROVER
                     FROM HR_EMPLOYEE_ADVANCE_REQUEST AR
                     LEFT JOIN HR_EMPLOYEES E ON 
                     E.EMPLOYEE_ID=AR.EMPLOYEE_ID
-                    LEFT JOIN HR_ADVANCE_MASTER_SETUP L
+                    LEFT JOIN HR_ADVANCE_MASTER_SETUP A
                     ON AR.ADVANCE_ID=A.ADVANCE_ID
                     LEFT JOIN HR_RECOMMENDER_APPROVER RA
                     ON E.EMPLOYEE_ID=RA.EMPLOYEE_ID
-                    WHERE L.STATUS = 'E' AND E.STATUS='E'
+                    WHERE A.STATUS = 'E' AND E.STATUS='E'
                     AND E.RETIRED_FLAG='N'";
         if($status==null){
             $sql .=" AND ((RA.RECOMMEND_BY=".$id." AND AR.STATUS='RQ') OR (RA.APPROVED_BY=".$id." AND AR.STATUS='RC') )";

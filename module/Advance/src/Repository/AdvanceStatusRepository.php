@@ -55,6 +55,7 @@ class AdvanceStatusRepository implements RepositoryInterface{
                 TO_CHAR(AR.ADVANCE_DATE, 'DD-MON-YYYY') AS ADVANCE_DATE,
                 TO_CHAR(AR.REQUESTED_DATE, 'DD-MON-YYYY') AS REQUESTED_DATE,
                 AR.STATUS AS STATUS,
+                AR.TERMS AS TERMS,
                 AR.ADVANCE_REQUEST_ID AS ADVANCE_REQUEST_ID,
                 TO_CHAR(AR.RECOMMENDED_DATE, 'DD-MON-YYYY') AS RECOMMENDED_DATE,
                 TO_CHAR(AR.APPROVED_DATE, 'DD-MON-YYYY') AS APPROVED_DATE,

@@ -469,6 +469,7 @@ window.app = (function ($, toastr) {
         errorMessage: errorMessage,
         floatingProfile: floatingProfile,
         checkUniqueConstraints: checkUniqueConstraints,
+        displayErrorMessage:displayErrorMessage,
         UIConfirmations: UIConfirmations,
         startEndDatePicker: startEndDatePicker,
         startEndDatePickerWithNepali: startEndDatePickerWithNepali

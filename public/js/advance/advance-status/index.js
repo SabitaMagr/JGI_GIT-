@@ -2,13 +2,12 @@
     'use strict';
     $(document).ready(function () {
         $("select").select2();
-//        app.startEndDatePicker('fromDate', 'toDate');
-        app.startEndDatePickerWithNepali('nepaliFromDate', 'fromDate', 'nepaliToDate', 'toDate');
+        app.startEndDatePicker("fromDate", "toDate");
     });
 })(window.jQuery, window.app);
 
 angular.module('hris', [])
-        .controller("attendanceStatusListController", function ($scope, $http) {
+        .controller("advanceStatusListController", function ($scope, $http) {
 
             $scope.view = function () {
                 var employeeId = angular.element(document.getElementById('employeeId')).val();
@@ -16,14 +15,15 @@ angular.module('hris', [])
                 var departmentId = angular.element(document.getElementById('departmentId')).val();
                 var designationId = angular.element(document.getElementById('designationId')).val();
                 var positionId = angular.element(document.getElementById('positionId')).val();
-                var serviceTypeId = angular.element(document.getElementById('serviceTypeId')).val();
                 var serviceEventTypeId = angular.element(document.getElementById('serviceEventTypeId')).val();
-                var attendanceRequestStatusId = angular.element(document.getElementById('attendanceRequestStatusId')).val();
-                var fromDate = angular.element(document.getElementById('fromDate')).val();
-                var toDate = angular.element(document.getElementById('toDate')).val();
+                var serviceTypeId = angular.element(document.getElementById('serviceTypeId')).val();
+                var advanceId = angular.element(document.getElementById('advanceId')).val();
+                var advanceRequestStatusId = angular.element(document.getElementById('advanceRequestStatusId')).val();
+                var fromDate = angular.element(document.getElementById('fromDate1')).val();
+                var toDate = angular.element(document.getElementById('toDate1')).val();
 
                 window.app.pullDataById(document.url, {
-                    action: 'pullAttendanceRequestStatusList',
+                    action: 'pullAdvanceRequestStatusList',
                     data: {
                         'employeeId': employeeId,
                         'branchId': branchId,
@@ -32,25 +32,27 @@ angular.module('hris', [])
                         'positionId': positionId,
                         'serviceTypeId': serviceTypeId,
                         'serviceEventTypeId': serviceEventTypeId,
-                        'attendanceRequestStatusId': attendanceRequestStatusId,
+                        'advanceId': advanceId,
+                        'advanceRequestStatusId': advanceRequestStatusId,
                         'fromDate': fromDate,
                         'toDate': toDate
                     }
                 }).then(function (success) {
+                    console.log(success.data);
                     $scope.initializekendoGrid(success.data);
                 }, function (failure) {
                     console.log(failure);
                 });
             }
-            $scope.initializekendoGrid = function (attendanceRequestStatus) {
-                $("#attendanceRequestStatusTable").kendoGrid({
+            $scope.initializekendoGrid = function (advanceRequestStatus) {
+                $("#advanceRequestStatusTable").kendoGrid({
                     excel: {
-                        fileName: "AttendanceRequestList.xlsx",
+                        fileName: "AdvanceRequestList.xlsx",
                         filterable: true,
                         allPages: true
                     },
                     dataSource: {
-                        data: attendanceRequestStatus,
+                        data: advanceRequestStatus,
                         pageSize: 20
                     },
                     height: 450,
@@ -64,16 +66,17 @@ angular.module('hris', [])
                     dataBound: gridDataBound,
                     rowTemplate: kendo.template($("#rowTemplate").html()),
                     columns: [
-                        {field: "FIRST_NAME", title: "Employee Name", width: 200},
-                        {field: "REQUESTED_DT", title: "Requested Date", width: 200},
-                        {field: "ATTENDANCE_DT", title: "Attendance Date", width: 160},
-                        {field: "IN_TIME", title: "Check In", width: 120},
-                        {field: "OUT_TIME", title: "Check Out", width: 120},
-                        {field: "STATUS", title: "Status", width: 100},
-                        {title: "Action", width: 100}
+                        {field: "FIRST_NAME", title: "Employee Name", width: 150},
+                        {field: "ADVANCE_NAME", title: "Advance Name", width: 120},
+                        {field: "REQUESTED_DATE", title: "Requested Date", width: 130},
+                        {field: "ADVANCE_DATE", title: "Advance Date", width: 120},
+                        {field: "REQUESTED_AMOUNT", title: "Requested Amt.", width: 130},
+                        {field: "RECOMMENDER_NAME", title: "Recommender", width: 120},
+                        {field: "APPROVER_NAME", title: "Approver", width: 120},                        
+                        {field: "STATUS", title: "Status", width: 80},
+                        {title: "Action", width: 70}
                     ]
                 });
-
                 function gridDataBound(e) {
                     var grid = e.sender;
                     if (grid.dataSource.total() == 0) {
@@ -84,24 +87,27 @@ angular.module('hris', [])
                     }
                 }
                 ;
+
                 $("#export").click(function (e) {
                     var rows = [{
                             cells: [
                                 {value: "Employee Name"},
+                                {value: "Advance Name"},
                                 {value: "Requested Date"},
-                                {value: "Attendance Date"},
-                                {value: "Check In Time"},
-                                {value: "Check Out Time"},
-                                {value: "Total Hour"},
-                                {value: "Late In Reason"},
-                                {value: "Early Out Reason"},
-                                {value: "Approver Name"},
+                                {value: "Advance Date"},
+                                {value: "Requested Amount"},
+                                {value: "Terms"},
+                                {value: "Recommender"},
+                                {value: "Approver"},
                                 {value: "Status"},
-                                {value: "Approved Date"},
-                                {value: "Remarks By Approver"}
+                                {value: "Reason"},
+                                {value: "Remarks By Recommender"},
+                                {value: "Recommended Date"},
+                                {value: "Remarks By Approver"},
+                                {value: "Approved Date"}
                             ]
                         }];
-                    var dataSource = $("#attendanceRequestStatusTable").data("kendoGrid").dataSource;
+                    var dataSource = $("#advanceRequestStatusTable").data("kendoGrid").dataSource;
                     var filteredDataSource = new kendo.data.DataSource({
                         data: dataSource.data(),
                         filter: dataSource.filter()
@@ -113,21 +119,24 @@ angular.module('hris', [])
                     for (var i = 0; i < data.length; i++) {
                         var dataItem = data[i];
                         var middleName = dataItem.MIDDLE_NAME != null ? " " + dataItem.MIDDLE_NAME + " " : " ";
-                        var middleName1 = dataItem.MIDDLE_NAME1 != null ? " " + dataItem.MIDDLE_NAME1 + " " : " ";
+                        var mn1 = dataItem.MN1 != null ? " " + dataItem.MN1 + " " : " ";
+                        var mn2 = dataItem.MN2 != null ? " " + dataItem.MN2 + " " : " ";
                         rows.push({
                             cells: [
                                 {value: dataItem.FIRST_NAME + middleName + dataItem.LAST_NAME},
-                                {value: dataItem.REQUESTED_DT},
-                                {value: dataItem.ATTENDANCE_DT},
-                                {value: dataItem.IN_TIME},
-                                {value: dataItem.OUT_TIME},
-                                {value: dataItem.TOTAL_HOUR},
-                                {value: dataItem.IN_REMARKS},
-                                {value: dataItem.OUT_REMARKS},
-                                {value: dataItem.FIRST_NAME1 + middleName1 + dataItem.LAST_NAME1},
+                                {value: dataItem.ADVANCE_NAME},
+                                {value: dataItem.REQUESTED_AMOUNT},
+                                {value: dataItem.ADVANCE_DATE},
+                                {value: dataItem.REQUESTED_AMOUNT},
+                                {value: dataItem.TERMS},
+                                {value: dataItem.RECOMMENDER_NAME},
+                                {value: dataItem.APPROVER_NAME},
                                 {value: dataItem.STATUS},
-                                {value: dataItem.APPROVED_DT},
-                                {value: dataItem.APPROVED_REMARKS}
+                                {value: dataItem.REASON},
+                                {value: dataItem.RECOMMENDED_REMARKS},
+                                {value: dataItem.RECOMMENDED_DATE},
+                                {value: dataItem.APPROVED_REMARKS},
+                                {value: dataItem.APPROVED_DATE}
                             ]
                         });
                     }
@@ -151,15 +160,18 @@ angular.module('hris', [])
                                     {autoWidth: true},
                                     {autoWidth: true},
                                     {autoWidth: true},
+                                    {autoWidth: true},
+                                    {autoWidth: true},
                                     {autoWidth: true}
                                 ],
-                                title: "Attendance Request List",
+                                title: "Advance Request",
                                 rows: rows
                             }
                         ]
                     });
-                    kendo.saveAs({dataURI: workbook.toDataURL(), fileName: "AttendanceRequestList.xlsx"});
+                    kendo.saveAs({dataURI: workbook.toDataURL(), fileName: "AdvanceRequestList.xlsx"});
                 }
+               
                 window.app.UIConfirmations();
             };
         });
