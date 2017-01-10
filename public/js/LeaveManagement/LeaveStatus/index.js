@@ -66,16 +66,16 @@ angular.module('hris', [])
                     dataBound: gridDataBound,
                     rowTemplate: kendo.template($("#rowTemplate").html()),
                     columns: [
-                        {field: "FIRST_NAME", title: "Employee Name", width: 200},
-                        {field: "LEAVE_ENAME", title: "Leave Name", width: 150},
-                        {field: "APPLIED_DATE", title: "Requested Date", width: 150},
-                        {field: "START_DATE", title: "From Date", width: 120},
-                        {field: "END_DATE", title: "To Date", width: 120},
-                        {field: "FN1", title: "Recommender", width: 200},
-                        {field: "FN2", title: "Approver", width: 200},
-                        {field: "NO_OF_DAYS", title: "Duration", width: 120},
-                        {field: "STATUS", title: "Status", width: 100},
-                        {title: "Action", width: 80}
+                        {field: "FIRST_NAME", title: "Employee Name", width: 150},
+                        {field: "LEAVE_ENAME", title: "Leave Name", width: 120},
+                        {field: "APPLIED_DATE", title: "Requested Date", width: 130},
+                        {field: "START_DATE", title: "From Date", width: 100},
+                        {field: "END_DATE", title: "To Date", width: 90},
+                        {field: "RECOMMENDER_NAME", title: "Recommender", width: 120},
+                        {field: "APPRVOER_NAME", title: "Approver", width: 120},
+                        {field: "NO_OF_DAYS", title: "Duration", width: 90},
+                        {field: "STATUS", title: "Status", width: 80},
+                        {title: "Action", width: 70}
                     ]
                 });
                 function gridDataBound(e) {
@@ -103,7 +103,9 @@ angular.module('hris', [])
                                 {value: "Status"},
                                 {value: "Remarks By Employee"},
                                 {value: "Remarks By Recommender"},
-                                {value: "Remarks By Approver"}
+                                {value: "Recommended Date"},
+                                {value: "Remarks By Approver"},
+                                {value: "Approved Date"}
                             ]
                         }];
                     var dataSource = $("#leaveRequestStatusTable").data("kendoGrid").dataSource;
@@ -127,13 +129,15 @@ angular.module('hris', [])
                                 {value: dataItem.APPLIED_DATE},
                                 {value: dataItem.START_DATE},
                                 {value: dataItem.END_DATE},
-                                {value: dataItem.FN1 + mn1 + dataItem.LN1},
-                                {value: dataItem.FN2 + mn2 + dataItem.LN2},
+                                {value: dataItem.RECOMMENDER_NAME},
+                                {value: dataItem.APPROVER_NAME},
                                 {value: dataItem.NO_OF_DAYS},
                                 {value: dataItem.STATUS},
                                 {value: dataItem.REMARKS},
                                 {value: dataItem.RECOMMENDED_REMARKS},
-                                {value: dataItem.APPROVED_REMARKS}
+                                {value: dataItem.RECOMMENDED_DT},
+                                {value: dataItem.APPROVED_REMARKS},
+                                {value: dataItem.APPROVED_DT}
                             ]
                         });
                     }

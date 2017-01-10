@@ -74,8 +74,84 @@ angular.module('hris', [])
                 }
                 ;
                 $("#export").click(function (e) {
-                    var grid = $("#leaveRequestTable").data("kendoGrid");
-                    grid.saveAsExcel();
+                    var rows = [{
+                            cells: [
+                                {value: "Leave Code"},
+                                {value: "Leave Name"},
+                                {value: "Applied Date"},
+                                {value: "Start Date"},
+                                {value: "End Date"},
+                                {value: "Duration"},
+                                {value: "Status"},
+                                {value: "Remarks"},
+                                {value: "Recommender"},
+                                {value: "Approver"},
+                                {value: "Remarks By Recommender"},
+                                {value: "Recommended Date"},
+                                {value: "Remarks By Approver"},
+                                {value: "Approved Date"},
+                            ]
+                        }];
+                    var dataSource = $("#leaveRequestTable").data("kendoGrid").dataSource;
+                    var filteredDataSource = new kendo.data.DataSource({
+                        data: dataSource.data(),
+                        filter: dataSource.filter()
+                    });
+
+                    filteredDataSource.read();
+                    var data = filteredDataSource.view();
+
+                    for (var i = 0; i < data.length; i++) {
+                        var dataItem = data[i];
+                        rows.push({
+                            cells: [
+                                {value: dataItem.LEAVE_CODE},
+                                {value: dataItem.LEAVE_ENAME},
+                                {value: dataItem.REQUESTED_DT},
+                                {value: dataItem.FROM_DATE},
+                                {value: dataItem.TO_DATE},
+                                {value: dataItem.NO_OF_DAYS},
+                                {value: dataItem.STATUS},
+                                {value: dataItem.REMARKS},
+                                {value: dataItem.RECOMMENDER_NAME},
+                                {value: dataItem.APPROVER_NAME},
+                                {value: dataItem.RECOMMENDED_REMARKS},
+                                {value: dataItem.RECOMMENDED_DATE},
+                                {value: dataItem.APPROVED_REMARKS},
+                                {value: dataItem.APPROVED_DATE}
+                            ]
+                        });
+                    }
+                    excelExport(rows);
+                    e.preventDefault();
                 });
+
+                function excelExport(rows) {
+                    var workbook = new kendo.ooxml.Workbook({
+                        sheets: [
+                            {
+                                columns: [
+                                    {autoWidth: true},
+                                    {autoWidth: true},
+                                    {autoWidth: true},
+                                    {autoWidth: true},
+                                    {autoWidth: true},
+                                    {autoWidth: true},
+                                    {autoWidth: true},
+                                    {autoWidth: true},
+                                    {autoWidth: true},
+                                    {autoWidth: true},
+                                    {autoWidth: true},
+                                    {autoWidth: true},
+                                    {autoWidth: true},
+                                    {autoWidth: true}
+                                ],
+                                title: "Leave Request",
+                                rows: rows
+                            }
+                        ]
+                    });
+                    kendo.saveAs({dataURI: workbook.toDataURL(), fileName: "LeaveRequestList.xlsx"});
+                }
             };
         });

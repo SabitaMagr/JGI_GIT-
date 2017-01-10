@@ -56,7 +56,10 @@
                         {value: "Status"},
                         {value: "Remarks By Employee"},
                         {value: "Remarks By Recommender"},
-                        {value: "Remarks By Approver"}
+                        {value: "Recommended Date"},
+                        {value: "Remarks By Approver"},
+                        {value: "Approved Date"},
+                        
                     ]
                 }];
             var dataSource = $("#leaveApproveTable").data("kendoGrid").dataSource;
@@ -81,10 +84,12 @@
                         {value: dataItem.END_DATE},
                         {value: dataItem.YOUR_ROLE},
                         {value: dataItem.NO_OF_DAYS},
-                        {value: "Pending"},
+                        {value:  dataItem.STATUS},
                         {value: dataItem.REMARKS},
                         {value: dataItem.RECOMMENDED_REMARKS},
-                        {value: dataItem.APPROVED_REMARKS}
+                        {value: dataItem.RECOMMENDED_DT},
+                        {value: dataItem.APPROVED_REMARKS},
+                        {value: dataItem.APPROVED_DT}
                     ]
                 });
             }

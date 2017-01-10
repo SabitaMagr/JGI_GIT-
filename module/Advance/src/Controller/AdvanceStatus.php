@@ -166,8 +166,8 @@ class AdvanceStatus extends AbstractActionController
         $recommended_by = $detail['FN1'].$MN1.$detail['LN1'];        
         $MN2 = ($detail['MN2']!=null)? " ".$detail['MN2']." ":" ";
         $approved_by = $detail['FN2'].$MN2.$detail['LN2'];
-        $authRecommender = ($status=='RQ')?$recommender:$recommended_by;
-        $authApprover = ($status=='RC' || $status=='RQ' || ($status=='R' && $approvedDT==null))?$approver:$approved_by;
+        $authRecommender = ($status=='RQ' || $status=='C')?$recommender:$recommended_by;
+        $authApprover = ($status=='RC' || $status=='C' || $status=='RQ' || ($status=='R' && $approvedDT==null))?$approver:$approved_by;
 
 
         if (!$request->isPost()) {

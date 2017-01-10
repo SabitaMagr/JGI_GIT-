@@ -117,7 +117,7 @@ class AdvanceStatusRepository implements RepositoryInterface{
             }
             else if($advanceRequestStatusId=='RC'){
                 $sql .= " AND AR.STATUS='RC' AND
-                    (AR.RECOMMENDED_BY=".$recomApproveId." OR AR.APPROVED_BY=".$recomApproveId.")";
+                    (AR.RECOMMENDED_BY=".$recomApproveId." OR RA.APPROVED_BY=".$recomApproveId.")";
             }else if($advanceRequestStatusId=='AP'){
                 $sql .= " AND AR.STATUS='AP' AND
                     (AR.RECOMMENDED_BY=".$recomApproveId." OR AR.APPROVED_BY=".$recomApproveId.")";

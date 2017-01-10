@@ -44,20 +44,24 @@ class LeaveApproveRepository implements RepositoryInterface
                 LA.STATUS AS STATUS,
                 LA.ID AS ID,
                 E.FIRST_NAME,E.MIDDLE_NAME,E.LAST_NAME,
-                LA.RECOMMENDED_BY AS RECOMMENDER,
-                LA.APPROVED_BY AS APPROVER
-                FROM HR_EMPLOYEE_LEAVE_REQUEST LA, 
-                HR_LEAVE_MASTER_SETUP L,
-                HR_EMPLOYEES E,
-                HR_EMPLOYEES E1,
-                HR_EMPLOYEES E2
-                WHERE 
-                L.LEAVE_ID=LA.LEAVE_ID AND
-                E.EMPLOYEE_ID=LA.EMPLOYEE_ID AND
-                E1.EMPLOYEE_ID=LA.RECOMMENDED_BY AND
-                E2.EMPLOYEE_ID=LA.APPROVED_BY AND";
+                LA.RECOMMENDED_BY,
+                LA.APPROVED_BY,
+                RA.RECOMMEND_BY AS RECOMMENDER,
+                RA.APPROVED_BY AS APPROVER
+                FROM HR_EMPLOYEE_LEAVE_REQUEST LA
+                LEFT JOIN HR_LEAVE_MASTER_SETUP L ON
+                L.LEAVE_ID=LA.LEAVE_ID 
+                LEFT JOIN HR_EMPLOYEES E ON
+                E.EMPLOYEE_ID=LA.EMPLOYEE_ID
+                LEFT JOIN HR_EMPLOYEES E1 ON
+                E1.EMPLOYEE_ID=LA.RECOMMENDED_BY
+                LEFT JOIN HR_EMPLOYEES E2 ON
+                E2.EMPLOYEE_ID=LA.APPROVED_BY 
+                LEFT JOIN HR_RECOMMENDER_APPROVER RA ON
+                E.EMPLOYEE_ID=RA.EMPLOYEE_ID 
+                 WHERE E.STATUS='E' AND E.RETIRED_FLAG='N' AND";
         if($status==null){
-            $sql .=" ((LA.RECOMMENDED_BY=".$id." AND LA.STATUS='RQ') OR (LA.APPROVED_BY=".$id." AND LA.STATUS='RC') )";
+            $sql .=" ((RA.RECOMMEND_BY=".$id." AND LA.STATUS='RQ') OR (RA.APPROVED_BY=".$id." AND LA.STATUS='RC') )";
         }else if($status=='RC'){
             $sql .= " LA.STATUS='RC' AND
                 LA.RECOMMENDED_BY=".$id;
@@ -68,7 +72,7 @@ class LeaveApproveRepository implements RepositoryInterface
             $sql .=" LA.STATUS='".$status."' AND
                 ((LA.RECOMMENDED_BY=".$id." AND LA.APPROVED_DT IS NULL) OR (LA.APPROVED_BY=".$id." AND LA.APPROVED_DT IS NOT NULL) )";
         }
-        $sql .= " AND E.STATUS='E' AND E.RETIRED_FLAG='N' ORDER BY LA.REQUESTED_DT DESC";
+        $sql .= "  ORDER BY LA.REQUESTED_DT DESC";
         $statement = $this->adapter->query($sql);
         $result = $statement->execute();
         return $result;
@@ -95,6 +99,7 @@ class LeaveApproveRepository implements RepositoryInterface
             new Expression("TO_CHAR(LA.APPROVED_DT, 'DD-MON-YYYY') AS APPROVED_DT"),
             new Expression("LA.STATUS AS STATUS"),
             new Expression("LA.ID AS ID"),
+            new Expression("LA.EMPLOYEE_ID AS EMPLOYEE_ID"),
             new Expression("TO_CHAR(LA.END_DATE, 'DD-MON-YYYY') AS END_DATE"),
             new Expression("LA.NO_OF_DAYS AS NO_OF_DAYS"),
             new Expression("LA.HALF_DAY AS HALF_DAY"),
@@ -109,7 +114,10 @@ class LeaveApproveRepository implements RepositoryInterface
         $select->from(['LA' => LeaveApply::TABLE_NAME])
             ->join(['E'=>"HR_EMPLOYEES"],"E.EMPLOYEE_ID=LA.EMPLOYEE_ID",['FIRST_NAME','MIDDLE_NAME','LAST_NAME'],"left")
             ->join(['E1'=>"HR_EMPLOYEES"],"E1.EMPLOYEE_ID=LA.RECOMMENDED_BY",['FN1'=>'FIRST_NAME','MN1'=>'MIDDLE_NAME','LN1'=>'LAST_NAME'],"left")
-            ->join(['E2'=>"HR_EMPLOYEES"],"E2.EMPLOYEE_ID=LA.APPROVED_BY",['FN2'=>'FIRST_NAME','MN2'=>'MIDDLE_NAME','LN2'=>'LAST_NAME'],"left");
+            ->join(['E2'=>"HR_EMPLOYEES"],"E2.EMPLOYEE_ID=LA.APPROVED_BY",['FN2'=>'FIRST_NAME','MN2'=>'MIDDLE_NAME','LN2'=>'LAST_NAME'],"left")
+                ->join(['RA'=>"HR_RECOMMENDER_APPROVER"],"RA.EMPLOYEE_ID=LA.EMPLOYEE_ID",['RECOMMENDER'=>'RECOMMEND_BY','APPROVER'=>'APPROVED_BY'],"left")
+            ->join(['RECM'=>"HR_EMPLOYEES"],"RECM.EMPLOYEE_ID=RA.RECOMMEND_BY",['RECM_FN'=>'FIRST_NAME','RECM_MN'=>'MIDDLE_NAME','RECM_LN'=>'LAST_NAME'],"left")
+            ->join(['APRV'=>"HR_EMPLOYEES"],"APRV.EMPLOYEE_ID=RA.APPROVED_BY",['APRV_FN'=>'FIRST_NAME','APRV_MN'=>'MIDDLE_NAME','APRV_LN'=>'LAST_NAME'],"left");
 
         $select->where([
             "LA.ID=".$id

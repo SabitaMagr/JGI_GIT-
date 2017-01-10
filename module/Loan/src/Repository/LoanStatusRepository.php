@@ -116,7 +116,7 @@ class LoanStatusRepository implements RepositoryInterface{
             }
             else if($loanRequestStatusId=='RC'){
                 $sql .= " AND LR.STATUS='RC' AND
-                    (LR.RECOMMENDED_BY=".$recomApproveId." OR LR.APPROVED_BY=".$recomApproveId.")";
+                    (LR.RECOMMENDED_BY=".$recomApproveId." OR RA.APPROVED_BY=".$recomApproveId.")";
             }else if($loanRequestStatusId=='AP'){
                 $sql .= " AND LR.STATUS='AP' AND
                     (LR.RECOMMENDED_BY=".$recomApproveId." OR LR.APPROVED_BY=".$recomApproveId.")";

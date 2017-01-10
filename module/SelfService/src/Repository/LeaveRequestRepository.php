@@ -144,14 +144,26 @@ class LeaveRequestRepository implements RepositoryInterface {
             new Expression("TO_CHAR(LA.START_DATE, 'DD-MON-YYYY') AS FROM_DATE"),
             new Expression("TO_CHAR(LA.END_DATE, 'DD-MON-YYYY') AS TO_DATE"),
             new Expression("TO_CHAR(LA.REQUESTED_DT, 'DD-MON-YYYY') AS REQUESTED_DT"),
+            new Expression("TO_CHAR(LA.APPROVED_DT, 'DD-MON-YYYY') AS APPROVED_DT"),
+            new Expression("TO_CHAR(LA.RECOMMENDED_DT, 'DD-MON-YYYY') AS RECOMMENDED_DT"),
             new Expression("LA.STATUS AS STATUS"),
+            new Expression("LA.RECOMMENDED_REMARKS AS RECOMMENDED_REMARKS"),
+            new Expression("LA.APPROVED_REMARKS AS APPROVED_REMARKS"),
+            new Expression("LA.REMARKS AS REMARKS"),
             new Expression("LA.NO_OF_DAYS AS NO_OF_DAYS"),
             new Expression("LA.ID AS ID"),
+            new Expression("LA.RECOMMENDED_BY AS RECOMMENDED_BY"),
+            new Expression("LA.APPROVED_BY AS APPROVED_BY")
                 ], true);
 
         $select->from(['LA' => LeaveApply::TABLE_NAME])
                 ->join(['E' => "HR_EMPLOYEES"], "E.EMPLOYEE_ID=LA.EMPLOYEE_ID", ['FIRST_NAME', 'MIDDLE_NAME', 'LAST_NAME'])
-                ->join(['L' => 'HR_LEAVE_MASTER_SETUP'], "L.LEAVE_ID=LA.LEAVE_ID", ['LEAVE_CODE', 'LEAVE_ENAME']);
+                ->join(['L' => 'HR_LEAVE_MASTER_SETUP'], "L.LEAVE_ID=LA.LEAVE_ID", ['LEAVE_CODE', 'LEAVE_ENAME'])
+                ->join(['E1'=>"HR_EMPLOYEES"],"E1.EMPLOYEE_ID=LA.RECOMMENDED_BY",['FN1'=>'FIRST_NAME','MN1'=>'MIDDLE_NAME','LN1'=>'LAST_NAME'],"left")
+                ->join(['E2'=>"HR_EMPLOYEES"],"E2.EMPLOYEE_ID=LA.APPROVED_BY",['FN2'=>'FIRST_NAME','MN2'=>'MIDDLE_NAME','LN2'=>'LAST_NAME'],"left")
+                ->join(['RA'=>"HR_RECOMMENDER_APPROVER"],"RA.EMPLOYEE_ID=LA.EMPLOYEE_ID",['RECOMMENDER'=>'RECOMMEND_BY','APPROVER'=>'APPROVED_BY'],"left")
+                ->join(['RECM'=>"HR_EMPLOYEES"],"RECM.EMPLOYEE_ID=RA.RECOMMEND_BY",['RECM_FN'=>'FIRST_NAME','RECM_MN'=>'MIDDLE_NAME','RECM_LN'=>'LAST_NAME'],"left")
+                ->join(['APRV'=>"HR_EMPLOYEES"],"APRV.EMPLOYEE_ID=RA.APPROVED_BY",['APRV_FN'=>'FIRST_NAME','APRV_MN'=>'MIDDLE_NAME','APRV_LN'=>'LAST_NAME'],"left");
 
         $select->where([
             "L.STATUS='E'",

@@ -80,7 +80,7 @@
                         {value: dataItem.LOAN_DATE},
                         {value: dataItem.REQUESTED_AMOUNT},
                         {value: dataItem.YOUR_ROLE},
-                        {value: "Pending"},
+                        {value: dataItem.STATUS},
                         {value: dataItem.REASON},
                         {value: dataItem.RECOMMENDED_REMARKS},
                         {value: dataItem.RECOMMENDED_DATE},

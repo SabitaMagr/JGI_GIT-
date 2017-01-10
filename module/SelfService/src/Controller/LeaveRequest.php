@@ -33,6 +33,8 @@ class LeaveRequest extends AbstractActionController {
     private $authService;
     private $form;
     private $adapter;
+    private $recommender;
+    private $approver;
 
     public function __construct(AdapterInterface $adapter) {
         $this->leaveRequestRepository = new LeaveRequestRepository($adapter);
@@ -48,6 +50,27 @@ class LeaveRequest extends AbstractActionController {
         $leaveApplyForm = new LeaveApplyForm();
         $builder = new AnnotationBuilder();
         $this->form = $builder->createForm($leaveApplyForm);
+    }
+    public function getRecommendApprover(){
+        $recommendApproveRepository = new RecommendApproveRepository($this->adapter);
+        $empRecommendApprove = $recommendApproveRepository->fetchById($this->employeeId);
+
+        if ($empRecommendApprove != null) {
+            $this->recommender = $empRecommendApprove['RECOMMEND_BY'];
+            $this->approver = $empRecommendApprove['APPROVED_BY'];
+        } else {
+            $result = $this->recommendApproveList();
+            if(count($result['recommender'])>0){
+                $this->recommender=$result['recommender'][0]['id'];
+            }else{
+                $this->recommender=null;
+            }
+            if(count($result['approver'])>0){
+                $this->approver=$result['approver'][0]['id'];
+            }else{
+                 $this->approver=null;
+            } 
+        }               
     }
 
     public function indexAction() {
@@ -84,26 +107,6 @@ class LeaveRequest extends AbstractActionController {
         $this->initializeForm();
         $request = $this->getRequest();
 
-        $recommendApproveRepository = new RecommendApproveRepository($this->adapter);
-        $empRecommendApprove = $recommendApproveRepository->fetchById($this->employeeId);
-
-        if ($empRecommendApprove != null) {
-            $recommendBy = $empRecommendApprove['RECOMMEND_BY'];
-            $approvedBy = $empRecommendApprove['APPROVED_BY'];
-        } else {
-            $result = $this->recommendApproveList();
-            if(count($result['recommender'])>0){
-                $recommendBy=$result['recommender'][0]['id'];
-            }else{
-                $recommendBy=null;
-            }
-            if(count($result['approver'])>0){
-                $approvedBy=$result['approver'][0]['id'];
-            }else{
-                $approvedBy=null;
-            } 
-        }
-
         $leaveFormElement = new Select();
         $leaveFormElement->setName("leave");
         $leaveFormElement->setLabel("Leave");
@@ -112,9 +115,6 @@ class LeaveRequest extends AbstractActionController {
 
         if ($request->isPost()) {
             $this->form->setData($request->getPost());
-
-            //print_R($request->getPost()); die();
-
             if ($this->form->isValid()) {
                 $leaveRequest = new LeaveApply();
                 $leaveRequest->exchangeArrayFromForm($this->form->getData());
@@ -123,8 +123,6 @@ class LeaveRequest extends AbstractActionController {
                 $leaveRequest->employeeId = $this->employeeId;
                 $leaveRequest->startDate = Helper::getExpressionDate($leaveRequest->startDate);
                 $leaveRequest->endDate = Helper::getExpressionDate($leaveRequest->endDate);
-                $leaveRequest->recommendedBy = $recommendBy;
-                $leaveRequest->approvedBy = $approvedBy;
                 $leaveRequest->requestedDt = Helper::getcurrentExpressionDate();
                 $leaveRequest->status = "RQ";
 
@@ -154,12 +152,25 @@ class LeaveRequest extends AbstractActionController {
 
     public function viewAction() {
         $this->initializeForm();
+        $this->getRecommendApprover();
+        
         $id = (int) $this->params()->fromRoute('id');
         $leaveApproveRepository = new LeaveApproveRepository($this->adapter);
 
         if ($id === 0) {
             return $this->redirect()->toRoute("leaveapprove");
         }
+        
+        $fullName = function($id){
+          $empRepository = new EmployeeRepository($this->adapter);
+          $empDtl = $empRepository->fetchById($id);
+          $empMiddleName = ($empDtl['MIDDLE_NAME']!=null)? " ".$empDtl['MIDDLE_NAME']." " :" ";
+          return $empDtl['FIRST_NAME'].$empMiddleName.$empDtl['LAST_NAME'];
+        };
+        
+        $recommenderName = $fullName($this->recommender);
+        $approverName = $fullName($this->approver);
+        
         $leaveApply = new LeaveApply();
         $request = $this->getRequest();
 
@@ -169,10 +180,18 @@ class LeaveRequest extends AbstractActionController {
         $leaveRepository = new LeaveMasterRepository($this->adapter);
         $leaveDtl = $leaveRepository->fetchById($leaveId);
 
-        $employeeName = $detail['FIRST_NAME'] . " " . $detail['MIDDLE_NAME'] . " " . $detail['LAST_NAME'];
-        $recommender = $detail['FN1'] . " " . $detail['MN1'] . " " . $detail['LN1'];
-        $approver = $detail['FN2'] . " " . $detail['MN2'] . " " . $detail['LN2'];
-
+        $status = $detail['STATUS'];
+        $approvedDT = $detail['APPROVED_DT'];
+        $MN1 = ($detail['MN1']!=null)? " ".$detail['MN1']." ":" ";
+        $recommended_by = $detail['FN1'].$MN1.$detail['LN1'];        
+        $MN2 = ($detail['MN2']!=null)? " ".$detail['MN2']." ":" ";
+        $approved_by = $detail['FN2'].$MN2.$detail['LN2'];
+        $authRecommender = ($status=='RQ' || $status=='C')?$recommenderName:$recommended_by;
+        $authApprover = ($status=='RC' || $status=='RQ' || $status=='C' || ($status=='R' && $approvedDT==null))?$approverName:$approved_by;
+       
+        $middleName = ($detail['MIDDLE_NAME']!=null)? " ".$detail['MIDDLE_NAME']." " :" ";
+        $employeeName = $detail['FIRST_NAME'].$middleName.$detail['LAST_NAME'];
+        
         //to get the previous balance of selected leave from assigned leave detail
         $result = $leaveApproveRepository->assignedLeaveDetail($detail['LEAVE_ID'], $detail['EMPLOYEE_ID'])->getArrayCopy();
         $preBalance = $result['BALANCE'];
@@ -188,8 +207,8 @@ class LeaveRequest extends AbstractActionController {
                     'requestedDt' => $detail['REQUESTED_DT'],
                     'availableDays' => $preBalance,
                     'status' => $detail['STATUS'],
-                    'recommender' => $recommender,
-                    'approver' => $approver,
+                    'recommender' => $authRecommender,
+                    'approver' => $authApprover,
                     'remarksDtl' => $detail['REMARKS'],
                     'totalDays' => $result['TOTAL_DAYS'],
                     'recommendedBy' => $detail['RECOMMENDED_BY'],

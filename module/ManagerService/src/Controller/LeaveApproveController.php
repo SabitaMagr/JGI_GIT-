@@ -73,6 +73,19 @@ class LeaveApproveController extends AbstractActionController {
                 return 3;
             }
         };
+        $getStatusValue = function($status) {
+            if ($status == "RQ") {
+                return "Pending";
+            } else if ($status == 'RC') {
+                return "Recommended";
+            } else if ($status == "R") {
+                return "Rejected";
+            } else if ($status == "AP") {
+                return "Approved";
+            } else if ($status == "C") {
+                return "Cancelled";
+            }
+        };
         foreach ($list as $row) {
             array_push($leaveApprove, [
                 'FIRST_NAME' => $row['FIRST_NAME'],
@@ -84,6 +97,7 @@ class LeaveApproveController extends AbstractActionController {
                 'NO_OF_DAYS' => $row['NO_OF_DAYS'],
                 'LEAVE_ENAME' => $row['LEAVE_ENAME'],
                 'ID' => $row['ID'],
+                'STATUS'=>$getStatusValue($row['STATUS']),
                 'YOUR_ROLE' => $getValue($row['RECOMMENDER'], $row['APPROVER']),
                 'ROLE' => $getRole($row['RECOMMENDER'], $row['APPROVER'])
             ]);
@@ -111,13 +125,23 @@ class LeaveApproveController extends AbstractActionController {
         $leaveRepository = new LeaveMasterRepository($this->adapter);
         $leaveDtl = $leaveRepository->fetchById($leaveId);
 
-        $requestedEmployeeID = $detail['EMPLOYEE_ID'];
-        $employeeName = $detail['FIRST_NAME'] . " " . $detail['MIDDLE_NAME'] . " " . $detail['LAST_NAME'];
-        $RECM_MN = ($detail['MN1']!=null)? " ".$detail['MN1']." ":" ";
-        $recommender = $detail['FN1'].$RECM_MN.$detail['LN1'];        
-        $APRV_MN = ($detail['MN2']!=null)? " ".$detail['MN2']." ":" ";
-        $approver = $detail['FN2'].$APRV_MN.$detail['LN2'];
+        $status = $detail['STATUS'];
+        $approvedDT = $detail['APPROVED_DT'];
 
+        $requestedEmployeeID = $detail['EMPLOYEE_ID'];
+        $employeeName = $detail['FIRST_NAME'] . " " . $detail['MIDDLE_NAME'] . " " . $detail['LAST_NAME'];        
+        $RECM_MN = ($detail['RECM_MN']!=null)? " ".$detail['RECM_MN']." ":" ";
+        $recommender = $detail['RECM_FN'].$RECM_MN.$detail['RECM_LN'];        
+        $APRV_MN = ($detail['APRV_MN']!=null)? " ".$detail['APRV_MN']." ":" ";
+        $approver = $detail['APRV_FN'].$APRV_MN.$detail['APRV_LN'];
+        $MN1 = ($detail['MN1']!=null)? " ".$detail['MN1']." ":" ";
+        $recommended_by = $detail['FN1'].$MN1.$detail['LN1'];        
+        $MN2 = ($detail['MN2']!=null)? " ".$detail['MN2']." ":" ";
+        $approved_by = $detail['FN2'].$MN2.$detail['LN2'];
+        $authRecommender = ($status=='RQ')?$recommender:$recommended_by;
+        $authApprover = ($status=='RC' || $status=='RQ' || ($status=='R' && $approvedDT==null))?$approver:$approved_by;
+        
+        $recommenderId = ($status=='RQ')?$detail['RECOMMENDER']:$detail['RECOMMENDED_BY'];
         //to get the previous balance of selected leave from assigned leave detail
         $result = $this->repository->assignedLeaveDetail($detail['LEAVE_ID'], $detail['EMPLOYEE_ID'])->getArrayCopy();
         $preBalance = $result['BALANCE'];
@@ -138,6 +162,7 @@ class LeaveApproveController extends AbstractActionController {
                     $leaveApply->status = "RC";
                     $this->flashmessenger()->addMessage("Leave Request Approved!!!");
                 }
+                $leaveApply->recommendedBy = $this->employeeId;
                 $leaveApply->recommendedRemarks = $getData->recommendedRemarks;
                 $this->repository->edit($leaveApply, $id);
             } else if ($role == 3) {
@@ -159,6 +184,7 @@ class LeaveApproveController extends AbstractActionController {
                     $this->flashmessenger()->addMessage("Leave Request Approved");
                 }
                 unset($leaveApply->halfDay);
+                $leaveApply->approvedBy = $this->employeeId;
                 $leaveApply->approvedRemarks = $getData->approvedRemarks;
                 $this->repository->edit($leaveApply, $id);
             }
@@ -174,9 +200,9 @@ class LeaveApproveController extends AbstractActionController {
                     'status' => $detail['STATUS'],
                     'remarksDtl' => $detail['REMARKS'],
                     'totalDays' => $result['TOTAL_DAYS'],
-                    'recommendedBy' => $detail['RECOMMENDED_BY'],
-                    'recommender'=>$recommender,
-                    'approver'=>$approver,
+                    'recommendedBy' => $recommenderId,
+                    'recommender'=>$authRecommender,
+                    'approver'=>$authApprover,
                     'approvedDT'=>$detail['APPROVED_DT'],
                     'employeeId' => $this->employeeId,
                     'requestedEmployeeId' => $requestedEmployeeID,
