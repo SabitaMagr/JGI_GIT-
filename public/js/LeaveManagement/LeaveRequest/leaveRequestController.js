@@ -30,14 +30,14 @@ angular.module('hris', [])
                         } else {
                             halfDay.slideDown();
                         }
-                        
+
                         var availableDays = parseInt(temp.BALANCE);
                         var newValue = parseInt($("#noOfDays").val());
- 
-                        if ((availableDays!="" && newValue!="" ) && newValue > availableDays) {
+
+                        if ((availableDays != "" && newValue != "") && newValue > availableDays) {
                             $("#errorMsg").html("* Applied days can't be more than available days");
                             $("#request").attr("disabled", "disabled");
-                        } else if((availableDays!="" && newValue!="" ) && (newValue<=availableDays)){
+                        } else if ((availableDays != "" && newValue != "") && (newValue <= availableDays)) {
                             $("#errorMsg").html("");
                             $("#request").removeAttr("disabled");
                         }
@@ -47,12 +47,12 @@ angular.module('hris', [])
                     console.log(failure);
                 });
             }
-            
-            $scope.employeeChange = function(){
+
+            $scope.employeeChange = function () {
                 var employeeId = angular.element(document.getElementById('employeeId')).val();
-                
+
                 window.app.floatingProfile.setDataFromRemote(employeeId);
-                
+
                 window.app.pullDataById(document.url, {
                     action: 'pullLeaveDetailWidEmployeeId',
                     data: {
@@ -73,11 +73,11 @@ angular.module('hris', [])
                         }
                         var availableDays = parseInt(temp.BALANCE);
                         var newValue = parseInt($("#noOfDays").val());
- 
-                        if ((availableDays!="" && newValue!="" ) && newValue > availableDays) {
+
+                        if ((availableDays != "" && newValue != "") && newValue > availableDays) {
                             $("#errorMsg").html("* Applied days can't be more than available days");
                             $("#request").attr("disabled", "disabled");
-                        } else if((availableDays!="" && newValue!="" ) && (newValue<=availableDays)){
+                        } else if ((availableDays != "" && newValue != "") && (newValue <= availableDays)) {
                             $("#errorMsg").html("");
                             $("#request").removeAttr("disabled");
                         }
@@ -85,7 +85,7 @@ angular.module('hris', [])
                 }, function (failure) {
                     console.log(failure);
                 });
-                
+
             }
 
         });
