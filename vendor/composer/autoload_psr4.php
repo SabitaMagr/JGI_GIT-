@@ -27,6 +27,8 @@ return array(
     'Zend\\Mvc\\Console\\' => array($vendorDir . '/zendframework/zend-mvc-console/src'),
     'Zend\\Mvc\\' => array($vendorDir . '/zendframework/zend-mvc/src'),
     'Zend\\ModuleManager\\' => array($vendorDir . '/zendframework/zend-modulemanager/src'),
+    'Zend\\Mime\\' => array($vendorDir . '/zendframework/zend-mime/src'),
+    'Zend\\Mail\\' => array($vendorDir . '/zendframework/zend-mail/src'),
     'Zend\\Log\\' => array($vendorDir . '/zendframework/zend-log/src'),
     'Zend\\Loader\\' => array($vendorDir . '/zendframework/zend-loader/src'),
     'Zend\\Json\\' => array($vendorDir . '/zendframework/zend-json/src'),

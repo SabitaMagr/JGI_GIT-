@@ -16,6 +16,7 @@ use Setup\Model\Branch;
 use Setup\Model\Department;
 use Setup\Model\Designation;
 use Setup\Model\District;
+use Setup\Model\EmployeeFile as EmployeeFileModel;
 use Setup\Model\HrEmployees;
 use Setup\Model\JobHistory;
 use Setup\Model\Position;
@@ -23,15 +24,16 @@ use Setup\Model\ServiceEventType;
 use Setup\Model\ServiceType;
 use Setup\Model\VdcMunicipalities;
 use Setup\Repository\EmployeeFile;
+use Setup\Repository\EmployeeQualificationRepository;
 use Setup\Repository\EmployeeRepository;
 use Setup\Repository\JobHistoryRepository;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\Form\Element\Select;
+use Zend\Mail\Message;
+use Zend\Mail\Transport\Sendmail;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
-use Setup\Repository\EmployeeQualificationRepository;
-use Setup\Model\EmployeeFile as EmployeeFileModel;
 
 class EmployeeController extends AbstractActionController {
 
@@ -42,6 +44,15 @@ class EmployeeController extends AbstractActionController {
     private $jobHistoryRepo;
 
     public function __construct(AdapterInterface $adapter) {
+        $mail = new Message();
+        $mail->setBody('This is the text of the email.');
+        $mail->setFrom('ukesh.gaiju@itnepal.com', "Sender's name");
+        $mail->addTo('somkala.pachhai@itnepal.com', 'Name of recipient');
+        $mail->setSubject('TestSubject');
+
+        $transport = new Sendmail();
+        $transport->send($mail);
+        exit;
         $this->adapter = $adapter;
         $this->repository = new EmployeeRepository($adapter);
         $this->employeeFileRepo = new EmployeeFile($this->adapter);
@@ -417,16 +428,16 @@ class EmployeeController extends AbstractActionController {
                     'address' => $address,
         ]);
     }
-    
-    public function viewAction(){
+
+    public function viewAction() {
         $id = (int) $this->params()->fromRoute('id');
         if (0 === $id) {
             return $this->redirect()->toRoute('employee', ['action' => 'index']);
         }
-        
+
         $this->initializeForm();
         $request = $this->getRequest();
-        $empQualificationRepo =  new EmployeeQualificationRepository($this->adapter);
+        $empQualificationRepo = new EmployeeQualificationRepository($this->adapter);
 
         $formOneModel = new HrEmployeesFormTabOne();
         $formTwoModel = new HrEmployeesFormTabTwo();
@@ -437,17 +448,17 @@ class EmployeeController extends AbstractActionController {
         $employeeData = (array) $this->repository->getById($id);
         $profilePictureId = $employeeData[HrEmployees::PROFILE_PICTURE_ID];
         $filePath = ApplicationHelper::getTableKVList($this->adapter, EmployeeFileModel::TABLE_NAME, EmployeeFileModel::FILE_CODE, [EmployeeFileModel::FILE_PATH], [EmployeeFileModel::FILE_CODE => $profilePictureId], null)[$profilePictureId];
-        
-        $perVdcMunicipalityDtl = $this->repository->getVdcMunicipalityDtl($employeeData[HrEmployees::ADDR_PERM_VDC_MUNICIPALITY_ID]);       
-        $perDistrictDtl = $this->repository->getDistrictDtl($perVdcMunicipalityDtl['DISTRICT_ID']);       
+
+        $perVdcMunicipalityDtl = $this->repository->getVdcMunicipalityDtl($employeeData[HrEmployees::ADDR_PERM_VDC_MUNICIPALITY_ID]);
+        $perDistrictDtl = $this->repository->getDistrictDtl($perVdcMunicipalityDtl['DISTRICT_ID']);
         $perZoneDtl = $this->repository->getZoneDtl($perDistrictDtl['ZONE_ID']);
-        
-        $tempVdcMunicipalityDtl = $this->repository->getVdcMunicipalityDtl($employeeData[HrEmployees::ADDR_TEMP_VDC_MUNICIPALITY_ID]);       
-        $tempDistrictDtl = $this->repository->getDistrictDtl($tempVdcMunicipalityDtl['DISTRICT_ID']);       
+
+        $tempVdcMunicipalityDtl = $this->repository->getVdcMunicipalityDtl($employeeData[HrEmployees::ADDR_TEMP_VDC_MUNICIPALITY_ID]);
+        $tempDistrictDtl = $this->repository->getDistrictDtl($tempVdcMunicipalityDtl['DISTRICT_ID']);
         $tempZoneDtl = $this->repository->getZoneDtl($tempDistrictDtl['ZONE_ID']);
-        
+
         $empQualificationDtl = $empQualificationRepo->getByEmpId($id);
- 
+
         return Helper::addFlashMessagesToArray($this, [
                     'formOne' => $this->formOne,
                     'formTwo' => $this->formTwo,
@@ -456,13 +467,13 @@ class EmployeeController extends AbstractActionController {
                     'formSix' => $this->formSix,
                     "id" => $id,
                     'profilePictureId' => $profilePictureId,
-                    'employeeData'=>$employeeData,
-                    'filePath'=>$filePath,
-                    'perDistrictName'=>$perDistrictDtl['DISTRICT_NAME'],
-                    'perZoneName'=>$perZoneDtl['ZONE_NAME'],
-                    'tempDistrictName'=>$tempDistrictDtl['DISTRICT_NAME'],
-                    'tempZoneName'=>$tempZoneDtl['ZONE_NAME'],
-                    'empQualificationList'=>$empQualificationDtl
+                    'employeeData' => $employeeData,
+                    'filePath' => $filePath,
+                    'perDistrictName' => $perDistrictDtl['DISTRICT_NAME'],
+                    'perZoneName' => $perZoneDtl['ZONE_NAME'],
+                    'tempDistrictName' => $tempDistrictDtl['DISTRICT_NAME'],
+                    'tempZoneName' => $tempZoneDtl['ZONE_NAME'],
+                    'empQualificationList' => $empQualificationDtl
         ]);
     }
 
