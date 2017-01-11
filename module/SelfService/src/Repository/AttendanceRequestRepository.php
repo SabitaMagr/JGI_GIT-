@@ -61,13 +61,17 @@ class AttendanceRequestRepository implements RepositoryInterface {
             new Expression("A.ID AS ID"),
             new Expression("A.IN_REMARKS AS IN_REMARKS"),
             new Expression("A.STATUS AS STATUS"),
+            new Expression("A.APPROVED_BY AS APPROVED_BY"),
             new Expression("A.OUT_REMARKS AS OUT_REMARKS"),
             new Expression("TO_CHAR(A.REQUESTED_DT, 'DD-MON-YYYY') AS REQUESTED_DT"),
+            new Expression("TO_CHAR(A.APPROVED_DT, 'DD-MON-YYYY') AS APPROVED_DT"),
             new Expression("A.APPROVED_REMARKS AS APPROVED_REMARKS"),
             new Expression("A.TOTAL_HOUR AS TOTAL_HOUR")], true);
         $select->from(['A'=>AttendanceRequestModel::TABLE_NAME])
             ->join(['E' => 'HR_EMPLOYEES'], 'A.EMPLOYEE_ID=E.EMPLOYEE_ID', ["FIRST_NAME" => 'FIRST_NAME',"MIDDLE_NAME" => 'MIDDLE_NAME',"LAST_NAME" => 'LAST_NAME'],"left")
-            ->join(['E1'=>"HR_EMPLOYEES"],"E1.EMPLOYEE_ID=A.APPROVED_BY",['FIRST_NAME1'=>"FIRST_NAME",'MIDDLE_NAME1'=>"MIDDLE_NAME",'LAST_NAME1'=>"LAST_NAME"],"left");
+            ->join(['E1'=>"HR_EMPLOYEES"],"E1.EMPLOYEE_ID=A.APPROVED_BY",['FIRST_NAME1'=>"FIRST_NAME",'MIDDLE_NAME1'=>"MIDDLE_NAME",'LAST_NAME1'=>"LAST_NAME"],"left")
+            ->join(['RA'=>"HR_RECOMMENDER_APPROVER"],"RA.EMPLOYEE_ID=A.EMPLOYEE_ID",['APPROVER'=>'RECOMMEND_BY'],"left")
+            ->join(['APRV'=>"HR_EMPLOYEES"],"APRV.EMPLOYEE_ID=RA.RECOMMEND_BY",['APRV_FN'=>'FIRST_NAME','APRV_MN'=>'MIDDLE_NAME','APRV_LN'=>'LAST_NAME'],"left");
 
         $select->where([AttendanceRequestModel::ID=>$id]);
         $statement = $sql->prepareStatementForSqlObject($select);
@@ -100,10 +104,28 @@ class AttendanceRequestRepository implements RepositoryInterface {
         
         $sql = new Sql($this->adapter);
         $select = $sql->select();
-        $select->columns([new Expression("TO_CHAR(A.REQUESTED_DT, 'DD-MON-YYYY') AS REQUESTED_DT"),new Expression("TO_CHAR(A.ATTENDANCE_DT, 'DD-MON-YYYY') AS ATTENDANCE_DT"), new Expression("TO_CHAR(A.IN_TIME, 'HH:MI AM') AS IN_TIME"), new Expression("TO_CHAR(A.OUT_TIME, 'HH:MI AM') AS OUT_TIME"), new Expression("E.EMPLOYEE_ID AS EMPLOYEE_ID"), new Expression("A.ID AS ID"), new Expression("A.IN_REMARKS AS IN_REMARKS"), new Expression("A.OUT_REMARKS AS OUT_REMARKS"), new Expression("A.TOTAL_HOUR AS TOTAL_HOUR"),new Expression("A.STATUS AS STATUS")], true);
+        $select->columns([
+            new Expression("TO_CHAR(A.REQUESTED_DT, 'DD-MON-YYYY') AS REQUESTED_DT"),
+            new Expression("TO_CHAR(A.ATTENDANCE_DT, 'DD-MON-YYYY') AS ATTENDANCE_DT"), 
+            new Expression("TO_CHAR(A.APPROVED_DT, 'DD-MON-YYYY') AS APPROVED_DT"),
+            new Expression("TO_CHAR(A.IN_TIME, 'HH:MI AM') AS IN_TIME"), 
+            new Expression("TO_CHAR(A.OUT_TIME, 'HH:MI AM') AS OUT_TIME"), 
+            new Expression("E.EMPLOYEE_ID AS EMPLOYEE_ID"), 
+            new Expression("A.ID AS ID"), 
+            new Expression("A.IN_REMARKS AS IN_REMARKS"), 
+            new Expression("A.OUT_REMARKS AS OUT_REMARKS"), 
+            new Expression("A.TOTAL_HOUR AS TOTAL_HOUR"),
+            new Expression("A.STATUS AS STATUS"),
+            new Expression("A.APPROVED_REMARKS AS APPROVED_REMARKS"),
+            new Expression("A.APPROVED_BY AS APPROVED_BY")
+            ], true);
         $select->from(['A' => AttendanceRequestModel::TABLE_NAME])
-            ->join(['E' => 'HR_EMPLOYEES'], 'A.EMPLOYEE_ID=E.EMPLOYEE_ID', ["FIRST_NAME" => 'FIRST_NAME'],"left");
-        $select->where(['A.EMPLOYEE_ID'=> $employeeId]);
+                ->join(['E' => 'HR_EMPLOYEES'], 'A.EMPLOYEE_ID=E.EMPLOYEE_ID', ["FIRST_NAME" => 'FIRST_NAME'],"left")
+                ->join(['E2'=>"HR_EMPLOYEES"],"E2.EMPLOYEE_ID=A.APPROVED_BY",['FN2'=>'FIRST_NAME','MN2'=>'MIDDLE_NAME','LN2'=>'LAST_NAME'],"left")
+                ->join(['RA'=>"HR_RECOMMENDER_APPROVER"],"RA.EMPLOYEE_ID=A.EMPLOYEE_ID",['APPROVER'=>'RECOMMEND_BY'],"left")
+                ->join(['APRV'=>"HR_EMPLOYEES"],"APRV.EMPLOYEE_ID=RA.RECOMMEND_BY",['APRV_FN'=>'FIRST_NAME','APRV_MN'=>'MIDDLE_NAME','APRV_LN'=>'LAST_NAME'],"left");
+
+        $select->where(['A.EMPLOYEE_ID='.$employeeId]);
         
          if($attendanceRequestStatusId!=-1){
             $select->where([

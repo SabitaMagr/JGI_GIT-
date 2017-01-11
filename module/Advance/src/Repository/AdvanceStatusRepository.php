@@ -5,6 +5,7 @@ use Zend\Db\TableGateway\TableGateway;
 use Zend\Db\Sql\Sql;
 use Zend\Db\Sql\Select;
 use Application\Repository\RepositoryInterface;
+use Setup\Model\HrEmployees;
 
 class AdvanceStatusRepository implements RepositoryInterface{
     private $adapter;
@@ -165,7 +166,7 @@ class AdvanceStatusRepository implements RepositoryInterface{
         $sql .=" ORDER BY AR.REQUESTED_DATE DESC";
 
         $statement = $this->adapter->query($sql);
-       // print_r($statement->getSql());  die();
+        //print_r($data);  die();
         $result = $statement->execute();
         return $result;
     }

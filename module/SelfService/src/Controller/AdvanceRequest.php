@@ -175,18 +175,15 @@ class AdvanceRequest extends AbstractActionController {
         $detail = $this->repository->fetchById($id);
         $status = $detail['STATUS'];
         $approvedDT = $detail['APPROVED_DATE'];
-        $MN1 = ($detail['MN1']!=null)? " ".$detail['MN1']." ":" ";
-        $recommended_by = $detail['FN1'].$MN1.$detail['LN1'];        
-        $MN2 = ($detail['MN2']!=null)? " ".$detail['MN2']." ":" ";
-        $approved_by = $detail['FN2'].$MN2.$detail['LN2'];
+        $recommended_by = $fullName($detail['RECOMMENDED_BY']);        
+        $approved_by = $fullName($detail['APPROVED_BY']);
         $authRecommender = ($status=='RQ' || $status=='C')?$recommenderName:$recommended_by;
         $authApprover = ($status=='RC' || $status=='RQ' || $status=='C' || ($status=='R' && $approvedDT==null))?$approverName:$approved_by;
        
         $model->exchangeArrayFromDB($detail);
         $this->form->bind($model);
                        
-        $middleName = ($detail['MIDDLE_NAME']!=null)? " ".$detail['MIDDLE_NAME']." " :" ";
-        $employeeName = $detail['FIRST_NAME'].$middleName.$detail['LAST_NAME'];
+        $employeeName = $fullName($detail['EMPLOYEE_ID']);
 
         return Helper::addFlashMessagesToArray($this, [
                     'form' => $this->form,

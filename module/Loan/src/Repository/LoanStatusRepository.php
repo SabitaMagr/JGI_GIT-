@@ -5,6 +5,7 @@ use Zend\Db\TableGateway\TableGateway;
 use Zend\Db\Sql\Sql;
 use Zend\Db\Sql\Select;
 use Application\Repository\RepositoryInterface;
+use Setup\Model\HrEmployees;
 
 class LoanStatusRepository implements RepositoryInterface{
     private $adapter;

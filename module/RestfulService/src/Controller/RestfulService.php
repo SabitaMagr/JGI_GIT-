@@ -1732,9 +1732,25 @@ class RestfulService extends AbstractRestfulController {
                 return "Cancelled";
             }
         };
+        $fullName = function($id){
+          $empRepository = new EmployeeRepository($this->adapter);
+          $empDtl = $empRepository->fetchById($id);
+          $empMiddleName = ($empDtl['MIDDLE_NAME']!=null)? " ".$empDtl['MIDDLE_NAME']." " :" ";
+          return $empDtl['FIRST_NAME'].$empMiddleName.$empDtl['LAST_NAME'];
+        };
         foreach ($result as $row) {
             $status = $getValue($row['STATUS']);
-            $new_row = array_merge($row, ['STATUS' => $status, 'YOUR_ROLE' => 'Approver']);
+            $statusId = $row['STATUS'];
+            $approvedDT = $row['APPROVED_DT'];
+            
+            $authApprover = ( $statusId=='RQ' || $statusId=='C' || ($statusId=='R' && $approvedDT==null))?$row['APPROVER']:$row['APPROVED_BY'];
+            $approverName = $fullName($authApprover);
+            
+            $new_row = array_merge($row, [
+                'STATUS' => $status, 
+                'YOUR_ROLE' => 'Approver',
+                'APPROVER_NAME'=>$approverName
+                ]);
             array_push($recordList, $new_row);
         }
 
@@ -1819,9 +1835,37 @@ class RestfulService extends AbstractRestfulController {
                 return "Cancelled";
             }
         };
+        
+        $getAction = function($status) {
+            if ($status == "RQ") {
+                return ["delete" => 'Cancel Request'];
+            } else {
+                return ["view" => 'View'];
+            }
+        };
+        
+        $fullName = function($id){
+          $empRepository = new EmployeeRepository($this->adapter);
+          $empDtl = $empRepository->fetchById($id);
+          $empMiddleName = ($empDtl['MIDDLE_NAME']!=null)? " ".$empDtl['MIDDLE_NAME']." " :" ";
+          return $empDtl['FIRST_NAME'].$empMiddleName.$empDtl['LAST_NAME'];
+        };
         foreach ($attendanceList as $attendanceRow) {
             $status = $getValue($attendanceRow['STATUS']);
-            $new_row = array_merge($attendanceRow, ['A_STATUS' => $status]);
+            $action = $getAction($attendanceRow['STATUS']);
+            
+            $statusId = $attendanceRow['STATUS'];
+            $approvedDT = $attendanceRow['APPROVED_DT'];
+            
+            $authApprover = ($statusId=='RQ' || $statusId=='C' || ($statusId=='R' && $approvedDT==null))?$attendanceRow['APPROVER']:$attendanceRow['APPROVED_BY'];
+            $approverName = $fullName($authApprover);
+            
+            $new_row = array_merge($attendanceRow, [
+                'A_STATUS' => $status,
+                'ACTION' => key($action), 
+                'ACTION_TEXT' => $action[key($action)],
+                'APPROVER_NAME'=>$approverName
+                    ]);
             array_push($attendanceRequest, $new_row);
         }
         return [

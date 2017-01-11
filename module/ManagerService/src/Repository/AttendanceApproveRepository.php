@@ -41,7 +41,10 @@ class AttendanceApproveRepository implements RepositoryInterface
         $select->columns([
             new Expression("TO_CHAR(AR.REQUESTED_DT, 'DD-MON-YYYY') AS REQUESTED_DT"),
             new Expression("TO_CHAR(AR.ATTENDANCE_DT, 'DD-MON-YYYY') AS ATTENDANCE_DT"),
+            new Expression("TO_CHAR(AR.APPROVED_DT, 'DD-MON-YYYY') AS APPROVED_DT"),
             new Expression("AR.STATUS AS STATUS"),
+            new Expression("AR.APPROVED_BY AS APPROVED_BY"),
+            new Expression("AR.APPROVED_REMARKS AS APPROVED_REMARKS"),
             new Expression("AR.ID AS ID"),
             new Expression("TO_CHAR(AR.IN_TIME, 'HH:MI AM') AS IN_TIME"),
             new Expression("TO_CHAR(AR.OUT_TIME, 'HH:MI AM') AS OUT_TIME"),
@@ -53,13 +56,15 @@ class AttendanceApproveRepository implements RepositoryInterface
 
         $select->from(['AR' => AttendanceRequestModel::TABLE_NAME])
             ->join(['E'=>"HR_EMPLOYEES"],"E.EMPLOYEE_ID=AR.EMPLOYEE_ID",['FIRST_NAME','MIDDLE_NAME','LAST_NAME'],"left")
-            ->join(['E1'=>"HR_EMPLOYEES"],"E1.EMPLOYEE_ID=AR.APPROVED_BY",['FIRST_NAME1'=>"FIRST_NAME",'MIDDLE_NAME1'=>"MIDDLE_NAME",'LAST_NAME1'=>"LAST_NAME"],"left");
+            ->join(['E1'=>"HR_EMPLOYEES"],"E1.EMPLOYEE_ID=AR.APPROVED_BY",['FIRST_NAME1'=>"FIRST_NAME",'MIDDLE_NAME1'=>"MIDDLE_NAME",'LAST_NAME1'=>"LAST_NAME"],"left")
+            ->join(['RA'=>"HR_RECOMMENDER_APPROVER"],"RA.EMPLOYEE_ID=AR.EMPLOYEE_ID",['APPROVER'=>'RECOMMEND_BY'],"left")
+            ->join(['APRV'=>"HR_EMPLOYEES"],"APRV.EMPLOYEE_ID=RA.RECOMMEND_BY",['APRV_FN'=>'FIRST_NAME','APRV_MN'=>'MIDDLE_NAME','APRV_LN'=>'LAST_NAME'],"left");
 
         $select->where([
             "AR.STATUS='".$status."'",
             "E.STATUS='E'",
             "E.RETIRED_FLAG='N'",
-            "AR.APPROVED_BY=".$id
+            "RA.RECOMMEND_BY=".$id
         ]);
         $select->order("E.FIRST_NAME ASC");
         $statement = $sql->prepareStatementForSqlObject($select);

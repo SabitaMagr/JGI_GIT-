@@ -24,17 +24,25 @@ use Setup\Model\Position;
 use Setup\Model\ServiceType;
 use Setup\Model\ServiceEventType;
 use Zend\Form\Element\Select;
+use Zend\Authentication\AuthenticationService;
+use Setup\Repository\EmployeeRepository;
 
 class AttendanceStatus extends AbstractActionController {
 
     private $adapter;
     private $repository;
     private $form;
+    private $userId;
+    private $employeeId;
 
     public function __construct(AdapterInterface $adapter)
     {
         $this->adapter = $adapter;
         $this->repository = new AttendanceStatusRepository($adapter);
+        $authService = new AuthenticationService();
+        $recordDetail = $authService->getIdentity();
+        $this->userId = $recordDetail['user_id'];
+        $this->employeeId = $recordDetail['employee_id'];
     }
 
     public function initializeForm(){
@@ -107,7 +115,8 @@ class AttendanceStatus extends AbstractActionController {
             '-1'=>'All',
             'RQ'=>'Pending',
             'AP'=>'Approved',
-            'R'=>'Rejected'
+            'R'=>'Rejected',
+            'C'=>'Cancelled'
         ];
         $attendanceStatusFormElement = new Select();
         $attendanceStatusFormElement->setName("attendanceStatus");
@@ -134,18 +143,28 @@ class AttendanceStatus extends AbstractActionController {
         if($id===0){
             return $this->redirect()->toRoute("attendancestatus");
         }
+        $attendanceRequestRepository = new AttendanceRequestRepository($this->adapter);
+        $fullName = function($id){
+          $empRepository = new EmployeeRepository($this->adapter);
+          $empDtl = $empRepository->fetchById($id);
+          $empMiddleName = ($empDtl['MIDDLE_NAME']!=null)? " ".$empDtl['MIDDLE_NAME']." " :" ";
+          return $empDtl['FIRST_NAME'].$empMiddleName.$empDtl['LAST_NAME'];
+        };
 
         $request = $this->getRequest();
         $model = new AttendanceRequestModel();
-        $detail = $this->repository->fetchById($id);
+        $detail = $attendanceRequestRepository->fetchById($id);;
         $employeeId = $detail['EMPLOYEE_ID'];
-        $employeeName = $detail['FIRST_NAME']." ".$detail['MIDDLE_NAME']." ".$detail['LAST_NAME'];
-        $approver = $detail['FIRST_NAME1']." ".$detail['MIDDLE_NAME1']." ".$detail['LAST_NAME1'];
+        $employeeName = $fullName($detail['EMPLOYEE_ID']);
+        
         $status = $detail['STATUS'];
+        $approvedDT = $detail['APPROVED_DT'];        
+        $approved_by = $fullName($detail['APPROVED_BY']);
+        $approverName = $fullName($detail['APPROVER']);
+        $authApprover = ( $status=='RQ' || $status=='C' || ($status=='R' && $approvedDT==null))?$approverName:$approved_by;            
 
         $attendanceDetail = new AttendanceDetail();
         $attendanceRepository = new AttendanceDetailRepository($this->adapter);
-        $attendanceRequestRepository = new AttendanceRequestRepository($this->adapter);
 
         if (!$request->isPost()) {
             $model->exchangeArrayFromDB($detail);
@@ -175,6 +194,7 @@ class AttendanceStatus extends AbstractActionController {
                 $model->status="R";
                 $this->flashmessenger()->addMessage("Attendance Request Rejected!!!");
             }
+            $model->approvedBy = $this->employeeId;
             $model->approvedRemarks=$reason;
             $attendanceRequestRepository->edit($model,$id);
             return $this->redirect()->toRoute("attendancestatus");
@@ -183,7 +203,7 @@ class AttendanceStatus extends AbstractActionController {
             'form'=>$this->form,
             'id'=>$id,
             'employeeName'=>$employeeName,
-            'approver'=>$approver,
+            'approver'=>$authApprover,
             'employeeId'=>$employeeId,
             'status'=>$status,
             'requestedDt'=>$detail['REQUESTED_DT'],

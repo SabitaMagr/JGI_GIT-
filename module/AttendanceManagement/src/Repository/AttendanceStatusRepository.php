@@ -135,13 +135,17 @@ class AttendanceStatusRepository implements RepositoryInterface {
             new Expression("AR.IN_REMARKS AS IN_REMARKS"),
             new Expression("AR.OUT_REMARKS AS OUT_REMARKS"),
             new Expression("AR.EMPLOYEE_ID AS EMPLOYEE_ID"),
+            new Expression("AR.APPROVED_BY AS APPROVED_BY"),
             new Expression("AR.TOTAL_HOUR AS TOTAL_HOUR"),
             new Expression("AR.APPROVED_REMARKS AS APPROVED_REMARKS"),
                 ], true);
 
         $select->from(['AR' => AttendanceRequestModel::TABLE_NAME])
                 ->join(['E' => "HR_EMPLOYEES"], "E.EMPLOYEE_ID=AR.EMPLOYEE_ID", ['FIRST_NAME', 'MIDDLE_NAME', 'LAST_NAME'],"left")
-                ->join(['E1' => "HR_EMPLOYEES"], "E1.EMPLOYEE_ID=AR.APPROVED_BY", ['FIRST_NAME1' => "FIRST_NAME", 'MIDDLE_NAME1' => "MIDDLE_NAME", 'LAST_NAME1' => "LAST_NAME"],"left");
+                ->join(['E1' => "HR_EMPLOYEES"], "E1.EMPLOYEE_ID=AR.APPROVED_BY", ['FIRST_NAME1' => "FIRST_NAME", 'MIDDLE_NAME1' => "MIDDLE_NAME", 'LAST_NAME1' => "LAST_NAME"],"left")
+                ->join(['RA'=>"HR_RECOMMENDER_APPROVER"],"RA.EMPLOYEE_ID=AR.EMPLOYEE_ID",['APPROVER'=>'RECOMMEND_BY'],"left")
+                ->join(['APRV'=>"HR_EMPLOYEES"],"APRV.EMPLOYEE_ID=RA.RECOMMEND_BY",['APRV_FN'=>'FIRST_NAME','APRV_MN'=>'MIDDLE_NAME','APRV_LN'=>'LAST_NAME'],"left");
+
         
         $select->where([
             "E.STATUS='E'"
@@ -154,7 +158,7 @@ class AttendanceStatusRepository implements RepositoryInterface {
         
         if($approverId!=null){
             $select->where([
-               "AR.APPROVED_BY=".$approverId 
+               " (AR.APPROVED_BY=".$approverId." OR (RA.RECOMMEND_BY=".$approverId." AND (AR.STATUS='RQ')))"
             ]);
         }
         
@@ -215,6 +219,7 @@ class AttendanceStatusRepository implements RepositoryInterface {
         }
         $select->order("AR.REQUESTED_DT DESC");
         $statement = $sql->prepareStatementForSqlObject($select);
+       // print_r($statement->getSql()); die();
         $result = $statement->execute();
         return $result;
     }

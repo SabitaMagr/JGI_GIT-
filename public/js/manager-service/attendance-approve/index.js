@@ -83,7 +83,7 @@
                         {value: dataItem.IN_REMARKS},
                         {value: dataItem.OUT_REMARKS},
                         {value: "Approver"},
-                        {value: "Pending"},
+                        {value: dataItem.STATUS},
                         {value: dataItem.APPROVED_DT},
                         {value: dataItem.APPROVED_REMARKS}
                     ]

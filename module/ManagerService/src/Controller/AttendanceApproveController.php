@@ -26,6 +26,8 @@ use Setup\Model\Position;
 use Setup\Model\ServiceType;
 use Setup\Model\ServiceEventType;
 use Zend\Form\Element\Select;
+use SelfService\Repository\AttendanceRequestRepository;
+use Setup\Repository\EmployeeRepository;
 
 class AttendanceApproveController extends AbstractActionController {
 
@@ -55,8 +57,22 @@ class AttendanceApproveController extends AbstractActionController {
     public function indexAction() {
         $list = $this->repository->getAllRequest($this->employeeId, 'RQ');
         $attendanceApprove = [];
+        $getStatusValue = function($status) {
+            if ($status == "RQ") {
+                return "Pending";
+            }else if ($status == "R") {
+                return "Rejected";
+            } else if ($status == "AP") {
+                return "Approved";
+            } else if ($status == "C") {
+                return "Cancelled";
+            }
+        };
         foreach($list as $row){
-            $new_row = array_merge($row,['YOUR_ROLE'=>'APPROVER']);
+            $new_row = array_merge($row,[
+                'YOUR_ROLE'=>'APPROVER',
+                'STATUS'=>$getStatusValue($row['STATUS'])
+                ]);
             array_push($attendanceApprove,$new_row);
         }
         return Helper::addFlashMessagesToArray($this, ['attendanceApprove' => $attendanceApprove]);
@@ -69,12 +85,26 @@ class AttendanceApproveController extends AbstractActionController {
         if ($id === 0) {
             return $this->redirect()->toRoute("attedanceapprove");
         }
+        $attendanceRequestRepository = new AttendanceRequestRepository($this->adapter);
 
+        $fullName = function($id){
+          $empRepository = new EmployeeRepository($this->adapter);
+          $empDtl = $empRepository->fetchById($id);
+          $empMiddleName = ($empDtl['MIDDLE_NAME']!=null)? " ".$empDtl['MIDDLE_NAME']." " :" ";
+          return $empDtl['FIRST_NAME'].$empMiddleName.$empDtl['LAST_NAME'];
+        };
+        
         $request = $this->getRequest();
         $model = new AttendanceRequestModel();
-        $detail = $this->repository->fetchById($id);
+        $detail = $attendanceRequestRepository->fetchById($id);
         $employeeId = $detail['EMPLOYEE_ID'];
-        $employeeName = $detail['FIRST_NAME'] . " " . $detail['MIDDLE_NAME'] . " " . $detail['LAST_NAME'];
+        $employeeName = $fullName($employeeId);
+        
+        $status = $detail['STATUS'];
+        $approvedDT = $detail['APPROVED_DT'];        
+        $approved_by = $fullName($detail['APPROVED_BY']);
+        $approverName = $fullName($detail['APPROVER']);
+        $authApprover = ( $status=='RQ' || $status=='C' || ($status=='R' && $approvedDT==null))?$approverName:$approved_by;            
 
         $attendanceDetail = new AttendanceDetail();
         $attendanceRepository = new AttendanceDetailRepository($this->adapter);
@@ -116,6 +146,7 @@ class AttendanceApproveController extends AbstractActionController {
                 $model->status = "R";
                 $this->flashmessenger()->addMessage("Attendance Request Rejected!!!");
             }
+            $model->approvedBy = $this->employeeId;
             $model->approvedRemarks = $reason;
             $this->repository->edit($model, $id);
             return $this->redirect()->toRoute("attedanceapprove");
@@ -126,6 +157,7 @@ class AttendanceApproveController extends AbstractActionController {
                     'status' => $detail['STATUS'],
                     'employeeName' => $employeeName,
                     'employeeId' => $employeeId,
+                    'approver'=>$authApprover,
                     'requestedDt' => $detail['REQUESTED_DT'],
         ]);
     }

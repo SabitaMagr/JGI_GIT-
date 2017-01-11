@@ -125,7 +125,8 @@ class LeaveStatus extends AbstractActionController {
             'RQ' => 'Pending',
             'RC' => 'Recommended',
             'AP' => 'Approved',
-            'R' => 'Rejected'
+            'R' => 'Rejected',
+            'C'=>'Cancelled'
         ];
         $leaveStatusFormElement = new Select();
         $leaveStatusFormElement->setName("leaveStatus");

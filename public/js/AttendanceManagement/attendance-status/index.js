@@ -113,7 +113,6 @@ angular.module('hris', [])
                     for (var i = 0; i < data.length; i++) {
                         var dataItem = data[i];
                         var middleName = dataItem.MIDDLE_NAME != null ? " " + dataItem.MIDDLE_NAME + " " : " ";
-                        var middleName1 = dataItem.MIDDLE_NAME1 != null ? " " + dataItem.MIDDLE_NAME1 + " " : " ";
                         rows.push({
                             cells: [
                                 {value: dataItem.FIRST_NAME + middleName + dataItem.LAST_NAME},
@@ -124,7 +123,7 @@ angular.module('hris', [])
                                 {value: dataItem.TOTAL_HOUR},
                                 {value: dataItem.IN_REMARKS},
                                 {value: dataItem.OUT_REMARKS},
-                                {value: dataItem.FIRST_NAME1 + middleName1 + dataItem.LAST_NAME1},
+                                {value: dataItem.APPROVER_NAME},
                                 {value: dataItem.STATUS},
                                 {value: dataItem.APPROVED_DT},
                                 {value: dataItem.APPROVED_REMARKS}

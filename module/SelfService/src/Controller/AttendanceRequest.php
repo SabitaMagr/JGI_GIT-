@@ -28,6 +28,7 @@ class AttendanceRequest extends AbstractActionController {
     private $form;
     private $employeeId;
     private $authService;
+    private $approver;
 
     public function __construct(AdapterInterface $adapter) {
         $this->adapter = $adapter;
@@ -43,6 +44,24 @@ class AttendanceRequest extends AbstractActionController {
         $attendanceRequest = new AttendanceRequestForm();
         $this->form = $builder->createForm($attendanceRequest);
     }
+    
+    public function getRecommendApprover(){
+        $recommendApproveRepository = new RecommendApproveRepository($this->adapter);
+        $empRecommendApprove = $recommendApproveRepository->fetchById($this->employeeId);
+
+        if ($empRecommendApprove != null) {
+            $this->approver = $empRecommendApprove['RECOMMEND_BY'];
+
+        } else {
+            $result = $this->recommendApproveList();
+            if(count($result['approver'])>0){
+                $this->approver=$result['approver'][0]['id'];
+            }else{
+                 $this->approver=null;
+            } 
+        }               
+    }
+
 
     public function indexAction() {
         $attendanceStatus = [
@@ -67,17 +86,6 @@ class AttendanceRequest extends AbstractActionController {
         $this->initializeForm();
         $request = $this->getRequest();
 
-        $recommendApproveRepository = new RecommendApproveRepository($this->adapter);
-        $empRecommendApprove = $recommendApproveRepository->fetchById($this->employeeId);
-
-        if ($empRecommendApprove != null) {
-            $approvedBy = $empRecommendApprove['RECOMMEND_BY'];
-        } else {
-            $result = $this->approverList();
-            //$recommendBy=$result['recommender'][0]['id'];
-            $approvedBy = $result['approver'][0]['id'];
-        }
-
         if ($request->isPost()) {
             $this->form->setData($request->getPost());
             if ($this->form->isValid()) {
@@ -89,7 +97,6 @@ class AttendanceRequest extends AbstractActionController {
                 $model->inTime = Helper::getExpressionTime($model->inTime);
                 $model->outTime = Helper::getExpressionTime($model->outTime);
                 $model->status = "RQ";
-                $model->approvedBy = $approvedBy;
 
                 $this->repository->add($model);
                 $this->flashmessenger()->addMessage("Attendance Request Submitted Successfully!!");
@@ -146,18 +153,31 @@ class AttendanceRequest extends AbstractActionController {
 
     public function viewAction() {
         $this->initializeForm();
+        $this->getRecommendApprover();
+        
         $id = (int) $this->params()->fromRoute('id');
 
         if ($id === 0) {
             return $this->redirect()->toRoute("attedanceapprove");
         }
+        $fullName = function($id){
+          $empRepository = new EmployeeRepository($this->adapter);
+          $empDtl = $empRepository->fetchById($id);
+          $empMiddleName = ($empDtl['MIDDLE_NAME']!=null)? " ".$empDtl['MIDDLE_NAME']." " :" ";
+          return $empDtl['FIRST_NAME'].$empMiddleName.$empDtl['LAST_NAME'];
+        };
+        $approverName = $fullName($this->approver);
 
         $request = $this->getRequest();
         $model = new AttendanceRequestModel();
         $detail = $this->repository->fetchById($id);
-        $employeeName = $detail['FIRST_NAME'] . " " . $detail['MIDDLE_NAME'] . " " . $detail['LAST_NAME'];
-        $approver = $detail['FIRST_NAME1'] . " " . $detail['MIDDLE_NAME1'] . " " . $detail['LAST_NAME1'];
-
+        $employeeName = $fullName($detail['EMPLOYEE_ID']);
+        
+        $status = $detail['STATUS'];
+        $approvedDT = $detail['APPROVED_DT'];        
+        $approved_by = $fullName($detail['APPROVED_BY']);
+        $authApprover = ( $status=='RQ' || $status=='C' || ($status=='R' && $approvedDT==null))?$approverName:$approved_by;     
+        
         if (!$request->isPost()) {
             $model->exchangeArrayFromDB($detail);
             $this->form->bind($model);
@@ -165,7 +185,7 @@ class AttendanceRequest extends AbstractActionController {
         return Helper::addFlashMessagesToArray($this, [
                     'form' => $this->form,
                     'id' => $id,
-                    'approver' => $approver,
+                    'approver' => $authApprover,
                     'status' => $detail['STATUS'],
                     'employeeName' => $employeeName,
                     'requestedDt' => $detail['REQUESTED_DT'],

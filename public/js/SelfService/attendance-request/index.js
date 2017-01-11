@@ -72,8 +72,75 @@ angular.module('hris', [])
                 }
                 ;
                 $("#export").click(function (e) {
-                    var grid = $("#attendanceRequestTable").data("kendoGrid");
-                    grid.saveAsExcel();
+                    var rows = [{
+                            cells: [
+                                {value: "Applied Date"},
+                                {value: "Attendance Date"},
+                                {value: "Check In"},
+                                {value: "Check Out"},
+                                {value: "Late In Reason"},
+                                {value: "Early Out Reason"},
+                                {value: "Total Hour"},
+                                {value: "Status"},
+                                {value: "Approver"},
+                                {value: "Remarks By Approver"},
+                                {value: "Approved Date"},
+                            ]
+                        }];
+                    var dataSource = $("#attendanceRequestTable").data("kendoGrid").dataSource;
+                    var filteredDataSource = new kendo.data.DataSource({
+                        data: dataSource.data(),
+                        filter: dataSource.filter()
+                    });
+
+                    filteredDataSource.read();
+                    var data = filteredDataSource.view();
+
+                    for (var i = 0; i < data.length; i++) {
+                        var dataItem = data[i];
+                        rows.push({
+                            cells: [
+                                {value: dataItem.REQUESTED_DT},
+                                {value: dataItem.ATTENDANCE_DT},
+                                {value: dataItem.IN_TIME},
+                                {value: dataItem.OUT_TIME},
+                                {value: dataItem.IN_REMARKS},
+                                {value: dataItem.OUT_REMARKS},
+                                {value: dataItem.TOTAL_HOUR},
+                                {value: dataItem.STATUS},
+                                {value: dataItem.APPROVER_NAME},
+                                {value: dataItem.APPROVED_REMARKS},
+                                {value: dataItem.APPROVED_DT}
+                            ]
+                        });
+                    }
+                    excelExport(rows);
+                    e.preventDefault();
                 });
+
+                function excelExport(rows) {
+                    var workbook = new kendo.ooxml.Workbook({
+                        sheets: [
+                            {
+                                columns: [
+                                    {autoWidth: true},
+                                    {autoWidth: true},
+                                    {autoWidth: true},
+                                    {autoWidth: true},
+                                    {autoWidth: true},
+                                    {autoWidth: true},
+                                    {autoWidth: true},
+                                    {autoWidth: true},
+                                    {autoWidth: true},
+                                    {autoWidth: true},
+                                    {autoWidth: true}
+                                ],
+                                title: "Attendance Request",
+                                rows: rows
+                            }
+                        ]
+                    });
+                    kendo.saveAs({dataURI: workbook.toDataURL(), fileName: "AttendanceRequestList.xlsx"});
+                }
             };
         });

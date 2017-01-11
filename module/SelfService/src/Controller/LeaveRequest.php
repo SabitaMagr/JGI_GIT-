@@ -182,15 +182,11 @@ class LeaveRequest extends AbstractActionController {
 
         $status = $detail['STATUS'];
         $approvedDT = $detail['APPROVED_DT'];
-        $MN1 = ($detail['MN1']!=null)? " ".$detail['MN1']." ":" ";
-        $recommended_by = $detail['FN1'].$MN1.$detail['LN1'];        
-        $MN2 = ($detail['MN2']!=null)? " ".$detail['MN2']." ":" ";
-        $approved_by = $detail['FN2'].$MN2.$detail['LN2'];
+        $recommended_by = $fullName($detail['RECOMMENDED_BY']);    
+        $approved_by = $fullName($detail['APPROVED_BY']);
         $authRecommender = ($status=='RQ' || $status=='C')?$recommenderName:$recommended_by;
-        $authApprover = ($status=='RC' || $status=='RQ' || $status=='C' || ($status=='R' && $approvedDT==null))?$approverName:$approved_by;
-       
-        $middleName = ($detail['MIDDLE_NAME']!=null)? " ".$detail['MIDDLE_NAME']." " :" ";
-        $employeeName = $detail['FIRST_NAME'].$middleName.$detail['LAST_NAME'];
+        $authApprover = ($status=='RC' || $status=='RQ' || $status=='C' || ($status=='R' && $approvedDT==null))?$approverName:$approved_by;       
+        $employeeName = $fullName($detail['EMPLOYEE_ID']);
         
         //to get the previous balance of selected leave from assigned leave detail
         $result = $leaveApproveRepository->assignedLeaveDetail($detail['LEAVE_ID'], $detail['EMPLOYEE_ID'])->getArrayCopy();
