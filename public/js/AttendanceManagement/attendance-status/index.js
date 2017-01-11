@@ -69,9 +69,6 @@ angular.module('hris', [])
                         {field: "ATTENDANCE_DT", title: "Attendance Date", width: 160},
                         {field: "IN_TIME", title: "Check In", width: 120},
                         {field: "OUT_TIME", title: "Check Out", width: 120},
-                        {field: "IN_REMARKS", title: "Late In Reason", width: 200},
-                        {field: "OUT_REMARKS", title: "Early Out Reason", width: 200},
-                        {field: "APPROVER", title: "Approver", width: 180},
                         {field: "STATUS", title: "Status", width: 100},
                         {title: "Action", width: 100}
                     ]

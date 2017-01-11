@@ -2,13 +2,12 @@
     'use strict';
     $(document).ready(function () {
         $("select").select2();
-//        app.startEndDatePicker("fromDate", "toDate");
-        app.startEndDatePickerWithNepali("nepaliFromDate1", "fromDate1", "nepaliToDate1", "toDate1");
+        app.startEndDatePicker("fromDate", "toDate");
     });
 })(window.jQuery, window.app);
 
 angular.module('hris', [])
-        .controller("leaveStatusListController", function ($scope, $http) {
+        .controller("advanceStatusListController", function ($scope, $http) {
 
             $scope.view = function () {
                 var employeeId = angular.element(document.getElementById('employeeId')).val();
@@ -18,13 +17,13 @@ angular.module('hris', [])
                 var positionId = angular.element(document.getElementById('positionId')).val();
                 var serviceEventTypeId = angular.element(document.getElementById('serviceEventTypeId')).val();
                 var serviceTypeId = angular.element(document.getElementById('serviceTypeId')).val();
-                var leaveId = angular.element(document.getElementById('leaveId')).val();
-                var leaveRequestStatusId = angular.element(document.getElementById('leaveRequestStatusId')).val();
+                var advanceId = angular.element(document.getElementById('advanceId')).val();
+                var advanceRequestStatusId = angular.element(document.getElementById('advanceRequestStatusId')).val();
                 var fromDate = angular.element(document.getElementById('fromDate1')).val();
                 var toDate = angular.element(document.getElementById('toDate1')).val();
 
                 window.app.pullDataById(document.url, {
-                    action: 'pullLeaveRequestStatusList',
+                    action: 'pullAdvanceRequestStatusList',
                     data: {
                         'employeeId': employeeId,
                         'branchId': branchId,
@@ -33,26 +32,27 @@ angular.module('hris', [])
                         'positionId': positionId,
                         'serviceTypeId': serviceTypeId,
                         'serviceEventTypeId': serviceEventTypeId,
-                        'leaveId': leaveId,
-                        'leaveRequestStatusId': leaveRequestStatusId,
+                        'advanceId': advanceId,
+                        'advanceRequestStatusId': advanceRequestStatusId,
                         'fromDate': fromDate,
                         'toDate': toDate
                     }
                 }).then(function (success) {
+                    console.log(success.data);
                     $scope.initializekendoGrid(success.data);
                 }, function (failure) {
                     console.log(failure);
                 });
             }
-            $scope.initializekendoGrid = function (leaveRequestStatus) {
-                $("#leaveRequestStatusTable").kendoGrid({
+            $scope.initializekendoGrid = function (advanceRequestStatus) {
+                $("#advanceRequestStatusTable").kendoGrid({
                     excel: {
-                        fileName: "LeaveRequestList.xlsx",
+                        fileName: "AdvanceRequestList.xlsx",
                         filterable: true,
                         allPages: true
                     },
                     dataSource: {
-                        data: leaveRequestStatus,
+                        data: advanceRequestStatus,
                         pageSize: 20
                     },
                     height: 450,
@@ -67,13 +67,12 @@ angular.module('hris', [])
                     rowTemplate: kendo.template($("#rowTemplate").html()),
                     columns: [
                         {field: "FIRST_NAME", title: "Employee Name", width: 150},
-                        {field: "LEAVE_ENAME", title: "Leave Name", width: 120},
-                        {field: "APPLIED_DATE", title: "Requested Date", width: 130},
-                        {field: "START_DATE", title: "From Date", width: 100},
-                        {field: "END_DATE", title: "To Date", width: 90},
+                        {field: "ADVANCE_NAME", title: "Advance Name", width: 120},
+                        {field: "REQUESTED_DATE", title: "Requested Date", width: 130},
+                        {field: "ADVANCE_DATE", title: "Advance Date", width: 120},
+                        {field: "REQUESTED_AMOUNT", title: "Requested Amt.", width: 130},
                         {field: "RECOMMENDER_NAME", title: "Recommender", width: 120},
-                        {field: "APPRVOER_NAME", title: "Approver", width: 120},
-                        {field: "NO_OF_DAYS", title: "Duration", width: 90},
+                        {field: "APPROVER_NAME", title: "Approver", width: 120},                        
                         {field: "STATUS", title: "Status", width: 80},
                         {title: "Action", width: 70}
                     ]
@@ -93,22 +92,22 @@ angular.module('hris', [])
                     var rows = [{
                             cells: [
                                 {value: "Employee Name"},
-                                {value: "Leave Name"},
+                                {value: "Advance Name"},
                                 {value: "Requested Date"},
-                                {value: "From Date"},
-                                {value: "To Date"},
+                                {value: "Advance Date"},
+                                {value: "Requested Amount"},
+                                {value: "Terms"},
                                 {value: "Recommender"},
                                 {value: "Approver"},
-                                {value: "Duration"},
                                 {value: "Status"},
-                                {value: "Remarks By Employee"},
+                                {value: "Reason"},
                                 {value: "Remarks By Recommender"},
                                 {value: "Recommended Date"},
                                 {value: "Remarks By Approver"},
                                 {value: "Approved Date"}
                             ]
                         }];
-                    var dataSource = $("#leaveRequestStatusTable").data("kendoGrid").dataSource;
+                    var dataSource = $("#advanceRequestStatusTable").data("kendoGrid").dataSource;
                     var filteredDataSource = new kendo.data.DataSource({
                         data: dataSource.data(),
                         filter: dataSource.filter()
@@ -125,19 +124,19 @@ angular.module('hris', [])
                         rows.push({
                             cells: [
                                 {value: dataItem.FIRST_NAME + middleName + dataItem.LAST_NAME},
-                                {value: dataItem.LEAVE_ENAME},
-                                {value: dataItem.APPLIED_DATE},
-                                {value: dataItem.START_DATE},
-                                {value: dataItem.END_DATE},
+                                {value: dataItem.ADVANCE_NAME},
+                                {value: dataItem.REQUESTED_AMOUNT},
+                                {value: dataItem.ADVANCE_DATE},
+                                {value: dataItem.REQUESTED_AMOUNT},
+                                {value: dataItem.TERMS},
                                 {value: dataItem.RECOMMENDER_NAME},
                                 {value: dataItem.APPROVER_NAME},
-                                {value: dataItem.NO_OF_DAYS},
                                 {value: dataItem.STATUS},
-                                {value: dataItem.REMARKS},
+                                {value: dataItem.REASON},
                                 {value: dataItem.RECOMMENDED_REMARKS},
-                                {value: dataItem.RECOMMENDED_DT},
+                                {value: dataItem.RECOMMENDED_DATE},
                                 {value: dataItem.APPROVED_REMARKS},
-                                {value: dataItem.APPROVED_DT}
+                                {value: dataItem.APPROVED_DATE}
                             ]
                         });
                     }
@@ -161,16 +160,18 @@ angular.module('hris', [])
                                     {autoWidth: true},
                                     {autoWidth: true},
                                     {autoWidth: true},
+                                    {autoWidth: true},
+                                    {autoWidth: true},
                                     {autoWidth: true}
                                 ],
-                                title: "Leave Request",
+                                title: "Advance Request",
                                 rows: rows
                             }
                         ]
                     });
-                    kendo.saveAs({dataURI: workbook.toDataURL(), fileName: "LeaveRequestList.xlsx"});
+                    kendo.saveAs({dataURI: workbook.toDataURL(), fileName: "AdvanceRequestList.xlsx"});
                 }
-
+               
                 window.app.UIConfirmations();
             };
         });

@@ -37,7 +37,8 @@ echo json_encode($menu);
         <div class="col-sm-2">
             <?php print $this->formLabel($leaveStatus); ?>
             <?php print $this->formElement($leaveStatus); ?>
-        </div>    
+        </div>  
+        <input type="hidden" id="employeeId" value="<?php echo $employeeId; ?>"/>
         <div class="col-sm-6">
             <div class="row">
                 <div class="col-sm-3">

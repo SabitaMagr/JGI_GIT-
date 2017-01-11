@@ -52,6 +52,19 @@ class AdvanceApproveController extends AbstractActionController {
                 return 'APPROVER';
             }
         };
+        $getStatusValue = function($status) {
+            if ($status == "RQ") {
+                return "Pending";
+            } else if ($status == 'RC') {
+                return "Recommended";
+            } else if ($status == "R") {
+                return "Rejected";
+            } else if ($status == "AP") {
+                return "Approved";
+            } else if ($status == "C") {
+                return "Cancelled";
+            }
+        };
         $getRole = function($recommender, $approver) {
             if ($this->employeeId == $recommender) {
                 return 2;
@@ -69,6 +82,7 @@ class AdvanceApproveController extends AbstractActionController {
                 'REQUESTED_DATE' => $row['REQUESTED_DATE'],
                 'REASON' => $row['REASON'],
                 'TERMS' => $row['TERMS'],
+                'STATUS'=>$getStatusValue($row['STATUS']),
                 'ADVANCE_NAME' => $row['ADVANCE_NAME'],
                 'ADVANCE_REQUEST_ID' => $row['ADVANCE_REQUEST_ID'],
                 'YOUR_ROLE' => $getValue($row['RECOMMENDER'], $row['APPROVER']),
@@ -108,7 +122,8 @@ class AdvanceApproveController extends AbstractActionController {
         $approved_by = $detail['FN2'].$MN2.$detail['LN2'];
         $authRecommender = ($status=='RQ')?$recommender:$recommended_by;
         $authApprover = ($status=='RC' || $status=='RQ' || ($status=='R' && $approvedDT==null))?$approver:$approved_by;
-
+        
+        $recommenderId = ($status=='RQ')?$detail['RECOMMENDER']:$detail['RECOMMENDED_BY'];
         if (!$request->isPost()) {
             $advanceRequestModel->exchangeArrayFromDB($detail);
             $this->form->bind($advanceRequestModel);
@@ -152,7 +167,7 @@ class AdvanceApproveController extends AbstractActionController {
                     'recommender'=>$authRecommender,
                     'approver'=>$authApprover,
                     'status' => $status,
-                    'recommendedBy' => $detail['RECOMMENDER'],
+                    'recommendedBy' => $recommenderId,
                     'approvedDT'=>$approvedDT,
                     'employeeId' => $this->employeeId,
                     'requestedEmployeeId' => $requestedEmployeeID,

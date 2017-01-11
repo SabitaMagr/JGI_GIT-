@@ -23,7 +23,6 @@ angular.module('hris', [])
                 var fromDate = angular.element(document.getElementById('fromDate')).val();
                 var toDate = angular.element(document.getElementById('toDate')).val();
                 var recomApproveId = angular.element(document.getElementById('recomApproveId')).val();
-
                 window.app.pullDataById(document.url, {
                     action: 'pullLeaveRequestStatusList',
                     data: {
@@ -41,7 +40,6 @@ angular.module('hris', [])
                         'recomApproveId': recomApproveId
                     }
                 }).then(function (success) {
-                    console.log(success.recomApproveId);
                     $scope.initializekendoGrid(success.data);
                 }, function (failure) {
                     console.log(failure);
@@ -105,7 +103,9 @@ angular.module('hris', [])
                                 {value: "Status"},
                                 {value: "Remarks By Employee"},
                                 {value: "Remarks By Recommender"},
-                                {value: "Remarks By Approver"}
+                                {value: "Recommended Date"},
+                                {value: "Remarks By Approver"},
+                                {value: "Approved Date"},
                             ]
                         }];
                     var dataSource = $("#leaveRequestStatusTable").data("kendoGrid").dataSource;
@@ -133,7 +133,9 @@ angular.module('hris', [])
                                 {value: dataItem.STATUS},
                                 {value: dataItem.REMARKS},
                                 {value: dataItem.RECOMMENDED_REMARKS},
-                                {value: dataItem.APPROVED_REMARKS}
+                                {value: dataItem.RECOMMENDED_DT},
+                                {value: dataItem.APPROVED_REMARKS},
+                                {value: dataItem.APPROVED_DT}
                             ]
                         });
                     }

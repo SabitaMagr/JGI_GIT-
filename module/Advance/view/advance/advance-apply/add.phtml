@@ -1,21 +1,22 @@
 <?php
-$this->headScript()->appendFile($this->basePath('js/SelfService/loan-request/add.js'));
+$this->headScript()->appendFile($this->basePath('js/SelfService/advance-request/add.js'));
 
 $form->setAttribute('role', 'form');
-$form->setAttribute('id', 'loanAdvance-form');
+$form->setAttribute('id', 'advanceAdvance-form');
 
 $employeeId = $form->get('employeeId');
 $employeeId->setValueOptions($employees);
-$loanId = $form->get('loanId');
-$loanId->setValueOptions($loans);
+$advanceId = $form->get('advanceId');
+$advanceId->setValueOptions($advances);
 $requestedAmount = $form->get('requestedAmount');
-$loanDate = $form->get('loanDate');
+$advanceDate = $form->get('advanceDate');
 $reason = $form->get('reason');
+$terms = $form->get('terms');
 
 $submit = $form->get('submit');
 $submit->setAttribute('value','SUBMIT');
 
-$form->setAttribute('action', $this->url('loanApply', ['action' => 'add']));
+$form->setAttribute('action', $this->url('advanceApply', ['action' => 'add']));
 
 if ($this->messages) {
     print '<ul class="help-block bg-danger" style="background:#f3e250;">';
@@ -28,11 +29,11 @@ if ($this->messages) {
 $form->prepare();
 ?>
     <script>
-        document.menu=<?php $menu = ["id" => "menuLoan","subMenu"=>["id"=>"subMenuApply"]];echo json_encode($menu);?>;
+        document.menu=<?php $menu = ["id" => "menuAdvance","subMenu"=>["id"=>"subMenuApply"]];echo json_encode($menu);?>;
         document.url = '<?= $this->url("restful", ["action" => "index"]) ?>';
     </script>
 <div class="page-bar">
-    <?= $this->navigation('Zend\Navigation\loanApply')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
+    <?= $this->navigation('Zend\Navigation\advanceApply')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
 <div class="row margin-top-20">
     <div class="col-sm-8 col-sm-offset-2">
@@ -52,22 +53,27 @@ $form->prepare();
                     <?php print $this->formElementErrors()->render($employeeId, ['class' => 'help-block']); ?>
                 </div>  
                 <div class="form-group">
-                    <?php print $this->formLabel($loanId); ?>
-                    <?php print $this->formElement($loanId); ?>
-                    <?php print $this->formElementErrors()->render($loanId, ['class' => 'help-block']); ?>
+                    <?php print $this->formLabel($advanceId); ?>
+                    <?php print $this->formElement($advanceId); ?>
+                    <?php print $this->formElementErrors()->render($advanceId, ['class' => 'help-block']); ?>
                 </div>               
                 <div class="form-group">
                     <?php print $this->formLabel($requestedAmount); ?>
                     <?php print $this->formElement($requestedAmount); ?>
                     <?php print $this->formElementErrors()->render($requestedAmount, ['class' => 'help-block']); ?>
                 </div>
+                 <div class="form-group">
+                    <?php print $this->formLabel($terms); ?>
+                    <?php print $this->formElement($terms); ?>
+                    <?php print $this->formElementErrors()->render($terms, ['class' => 'help-block']); ?>
+                </div>
                 <div class="form-group">
-                    <?php print $this->formLabel($loanDate); ?>
+                    <?php print $this->formLabel($advanceDate); ?>
                     <div class="input-group date" id="startDate">
-                        <?php print $this->formElement($loanDate); ?>
+                        <?php print $this->formElement($advanceDate); ?>
                         <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
                     </div>
-                    <?php print $this->formElementErrors()->render($loanDate, ['class' => 'help-block']); ?>
+                    <?php print $this->formElementErrors()->render($advanceDate, ['class' => 'help-block']); ?>
                 </div>
                 <div class="form-group">
                     <?php print $this->formLabel($reason); ?>

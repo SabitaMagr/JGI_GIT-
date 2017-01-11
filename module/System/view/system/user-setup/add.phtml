@@ -61,6 +61,10 @@ echo json_encode($menu); ?>;
                     <label for="form-password">Password</label>
                     <input name="password" required="required" id="form-password" class="form-password form-control" type="password" value="">
                 </div>
+                <div class="form-group">
+                    <label for="form-password">Re-Enter Password</label>
+                    <input name="repassword" required="required" id="form-repassword" class="form-repassword form-control" type="password" value="">
+                </div>
 
                 <?php print $this->formSubmit($submit); ?>
                 <?php

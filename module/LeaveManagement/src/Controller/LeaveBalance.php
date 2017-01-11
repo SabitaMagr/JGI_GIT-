@@ -141,32 +141,12 @@ class LeaveBalance extends AbstractActionController {
         }
         $this->initializeForm();
 
-        $recommendApproveRepository = new RecommendApproveRepository($this->adapter);
-        $empRecommendApprove = $recommendApproveRepository->fetchById($employeeId);
-
         $leaveBalanceDtl = $this->repository->getByEmpIdLeaveId($employeeId, $leaveId);
         $leaveRepository = new LeaveMasterRepository($this->adapter);
         $leaveDtl = $leaveRepository->fetchById($leaveId);
 
         $employeeRepository = new EmployeeRepository($this->adapter);
         $employeeDtl = $employeeRepository->fetchById($employeeId);
-
-        if ($empRecommendApprove != null) {
-            $recommendBy = $empRecommendApprove['RECOMMEND_BY'];
-            $approvedBy = $empRecommendApprove['APPROVED_BY'];
-        } else {
-            $result = $this->recommendApproveList($employeeId);
-            if (count($result['recommender']) > 0) {
-                $recommendBy = $result['recommender'][0]['id'];
-            } else {
-                $recommendBy = null;
-            }
-            if (count($result['approver']) > 0) {
-                $approvedBy = $result['approver'][0]['id'];
-            } else {
-                $approvedBy = null;
-            }
-        }
 
         if ($request->isPost()) {
             $this->form->setData($request->getPost());
@@ -180,8 +160,6 @@ class LeaveBalance extends AbstractActionController {
                 $leaveRequest->leaveId = $leaveId;
                 $leaveRequest->startDate = Helper::getExpressionDate($leaveRequest->startDate);
                 $leaveRequest->endDate = Helper::getExpressionDate($leaveRequest->endDate);
-                $leaveRequest->recommendedBy = $recommendBy;
-                $leaveRequest->approvedBy = $approvedBy;
                 $leaveRequest->requestedDt = Helper::getcurrentExpressionDate();
                 $leaveRequest->status = "RQ";
 

@@ -57,9 +57,7 @@ class AdvanceRequest extends AbstractActionController {
             }else{
                  $this->approver=null;
             } 
-        }
-        
-        
+        }               
     }
 
     public function indexAction() {

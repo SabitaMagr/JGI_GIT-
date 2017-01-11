@@ -1473,7 +1473,7 @@ class RestfulService extends AbstractRestfulController {
         ];
     }
 
-    public function pullLeaveRequestStatusList($data) {
+    public function pullLeaveRequestStatusList($data) {       
         $leaveStatusRepository = new LeaveStatusRepository($this->adapter);
         if (key_exists('recomApproveId', $data)) {
             $recomApproveId = $data['recomApproveId'];
@@ -1501,6 +1501,12 @@ class RestfulService extends AbstractRestfulController {
                 return null;
             }
         };
+        $fullName = function($id){
+          $empRepository = new EmployeeRepository($this->adapter);
+          $empDtl = $empRepository->fetchById($id);
+          $empMiddleName = ($empDtl['MIDDLE_NAME']!=null)? " ".$empDtl['MIDDLE_NAME']." " :" ";
+          return $empDtl['FIRST_NAME'].$empMiddleName.$empDtl['LAST_NAME'];
+        };
 
         $getValue = function($status) {
             if ($status == "RQ") {
@@ -1516,22 +1522,28 @@ class RestfulService extends AbstractRestfulController {
             }
         };
 
-
         foreach ($result as $row) {
             $status = $getValue($row['STATUS']);
-            $roleId = $getRole($row['RECOMMENDER'], $row['APPROVER'], $recomApproveId);
-//            if ($role == 3 && $row['STATUS'] == 'RC') {
-//                $status = "Pending";
-//            }
+            $statusId = $row['STATUS'];
+            $approvedDT = $row['APPROVED_DT'];
+            
+            $authRecommender = ($statusId=='RQ' || $statusId=='C')?$row['RECOMMENDER']:$row['RECOMMENDED_BY'];
+            $authApprover = ($statusId=='RC' || $statusId=='RQ' || $statusId=='C' || ($statusId=='R' && $approvedDT==null))?$row['APPROVER']:$row['APPROVED_BY'];
+
+            $roleID = $getRole($authRecommender,$authApprover, $recomApproveId);
+            $recommenderName = $fullName($authRecommender);
+            $approverName = $fullName($authApprover);
+
             $role = [
-                'YOUR_ROLE' => $getRoleDtl($row['RECOMMENDER'], $row['APPROVER'], $recomApproveId),
-                'ROLE' => $roleId
+                'APPROVER_NAME'=>$approverName,
+                'RECOMMENDER_NAME'=>$recommenderName,
+                'YOUR_ROLE' => $getRoleDtl($authRecommender, $authApprover, $recomApproveId),
+                'ROLE' => $roleID
             ];
             $new_row = array_merge($row, ['STATUS' => $status]);
             $final_record = array_merge($new_row, $role);
             array_push($recordList, $final_record);
         }
-
         return [
             "success" => "true",
             "data" => $recordList,
@@ -1750,6 +1762,13 @@ class RestfulService extends AbstractRestfulController {
                 return "Cancelled";
             }
         };
+        $fullName = function($id){
+          $empRepository = new EmployeeRepository($this->adapter);
+          $empDtl = $empRepository->fetchById($id);
+          $empMiddleName = ($empDtl['MIDDLE_NAME']!=null)? " ".$empDtl['MIDDLE_NAME']." " :" ";
+          return $empDtl['FIRST_NAME'].$empMiddleName.$empDtl['LAST_NAME'];
+        };
+   
         $getAction = function($status) {
             if ($status == "RQ") {
                 return ["delete" => 'Cancel Request'];
@@ -1760,7 +1779,23 @@ class RestfulService extends AbstractRestfulController {
         foreach ($leaveRequestList as $leaveRequestRow) {
             $status = $getValue($leaveRequestRow['STATUS']);
             $action = $getAction($leaveRequestRow['STATUS']);
-            $new_row = array_merge($leaveRequestRow, ['STATUS' => $status, 'ACTION' => key($action), 'ACTION_TEXT' => $action[key($action)]]);
+            
+            $statusId = $leaveRequestRow['STATUS'];
+            $approvedDT = $leaveRequestRow['APPROVED_DT'];
+            
+            $authRecommender = ($statusId=='RQ' || $statusId=='C')?$leaveRequestRow['RECOMMENDER']:$leaveRequestRow['RECOMMENDED_BY'];
+            $authApprover = ($statusId=='RC' || $statusId=='RQ' || $statusId=='C' || ($statusId=='R' && $approvedDT==null))?$leaveRequestRow['APPROVER']:$leaveRequestRow['APPROVED_BY'];
+        
+            $recommenderName = $fullName($authRecommender);
+            $approverName = $fullName($authApprover);
+            
+            $new_row = array_merge($leaveRequestRow, [
+                'STATUS' => $status, 
+                'ACTION' => key($action), 
+                'ACTION_TEXT' => $action[key($action)],
+                'APPROVER_NAME'=>$approverName,
+                'RECOMMENDER_NAME'=>$recommenderName,
+                    ]);
             array_push($leaveRequest, $new_row);
         }
         return [

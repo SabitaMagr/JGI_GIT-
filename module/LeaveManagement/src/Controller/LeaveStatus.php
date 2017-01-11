@@ -28,16 +28,23 @@ use Setup\Model\ServiceType;
 use Zend\Form\Element\Select;
 use Setup\Model\ServiceEventType;
 use LeaveManagement\Model\LeaveMaster;
+use Zend\Authentication\AuthenticationService;
 
 class LeaveStatus extends AbstractActionController {
 
     private $repository;
     private $adapter;
     private $form;
+    private $userId;
+    private $employeeId;
 
     public function __construct(AdapterInterface $adapter) {
         $this->repository = new LeaveStatusRepository($adapter);
         $this->adapter = $adapter;
+        $this->authService = new AuthenticationService();
+        $recordDetail = $this->authService->getIdentity();
+        $this->userId = $recordDetail['user_id'];
+        $this->employeeId = $recordDetail['employee_id'];
     }
 
     public function initializeForm() {
@@ -152,19 +159,30 @@ class LeaveStatus extends AbstractActionController {
         $leaveApply = new LeaveApply();
         $request = $this->getRequest();
 
-        $detail = $this->repository->fetchById($id);
+        $detail = $leaveApproveRepository->fetchById($id);
         //print_r($detail); die();
 
         $leaveId = $detail['LEAVE_ID'];
         $leaveRepository = new LeaveMasterRepository($this->adapter);
         $leaveDtl = $leaveRepository->fetchById($leaveId);
 
-        $employeeId = $detail['EMPLOYEE_ID'];
-        $employeeName = $detail['FIRST_NAME'] . " " . $detail['MIDDLE_NAME'] . " " . $detail['LAST_NAME'];
-        $recommender = $detail['FN1'] . " " . $detail['MN1'] . " " . $detail['LN1'];
-        $approver = $detail['FN2'] . " " . $detail['MN2'] . " " . $detail['LN2'];
         $status = $detail['STATUS'];
+        $approvedDT = $detail['APPROVED_DT'];
 
+        $requestedEmployeeID = $detail['EMPLOYEE_ID'];
+        $employeeName = $detail['FIRST_NAME'] . " " . $detail['MIDDLE_NAME'] . " " . $detail['LAST_NAME'];        
+        $RECM_MN = ($detail['RECM_MN']!=null)? " ".$detail['RECM_MN']." ":" ";
+        $recommender = $detail['RECM_FN'].$RECM_MN.$detail['RECM_LN'];        
+        $APRV_MN = ($detail['APRV_MN']!=null)? " ".$detail['APRV_MN']." ":" ";
+        $approver = $detail['APRV_FN'].$APRV_MN.$detail['APRV_LN'];
+        $MN1 = ($detail['MN1']!=null)? " ".$detail['MN1']." ":" ";
+        $recommended_by = $detail['FN1'].$MN1.$detail['LN1'];        
+        $MN2 = ($detail['MN2']!=null)? " ".$detail['MN2']." ":" ";
+        $approved_by = $detail['FN2'].$MN2.$detail['LN2'];
+        $authRecommender = ($status=='RQ' || $status=='C')?$recommender:$recommended_by;
+        $authApprover = ($status=='RC' || $status=='C' || $status=='RQ' || ($status=='R' && $approvedDT==null))?$approver:$approved_by;
+        
+        $recommenderId = ($status=='RQ')?$detail['RECOMMENDER']:$detail['RECOMMENDED_BY'];
         //to get the previous balance of selected leave from assigned leave detail
         $result = $leaveApproveRepository->assignedLeaveDetail($detail['LEAVE_ID'], $detail['EMPLOYEE_ID'])->getArrayCopy();
         $preBalance = $result['BALANCE'];
@@ -197,6 +215,7 @@ class LeaveStatus extends AbstractActionController {
             }
             unset($leaveApply->halfDay);
             $leaveApply->approvedRemarks = $reason;
+            $leaveApply->approvedBy=$this->employeeId;
             $leaveApproveRepository->edit($leaveApply, $id);
 
             return $this->redirect()->toRoute("leavestatus");
@@ -204,13 +223,13 @@ class LeaveStatus extends AbstractActionController {
         return Helper::addFlashMessagesToArray($this, [
                     'form' => $this->form,
                     'id' => $id,
-                    'employeeId' => $employeeId,
+                    'employeeId' => $requestedEmployeeID,
                     'employeeName' => $employeeName,
                     'requestedDt' => $detail['REQUESTED_DT'],
                     'availableDays' => $preBalance,
                     'totalDays' => $result['TOTAL_DAYS'],
-                    'recommender' => $recommender,
-                    'approver' => $approver,
+                    'recommender' => $authRecommender,
+                    'approver' => $authApprover,
                     'approvedDT'=>$detail['APPROVED_DT'],
                     'remarkDtl' => $detail['REMARKS'],
                     'status' => $status,

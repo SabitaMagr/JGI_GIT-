@@ -50,10 +50,19 @@ class UserSetupForm{
      * @Annotation\Attributes({ "id":"form-password", "class":"form-password form-control" })
      */
     public $password;
+    
+    /**
+     * @Annotion\Type("Zend\Form\Element\Password")
+     * @Annotation\Required(false)
+     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
+     * @Annotation\Options({"label":"Re-Enter Password"})
+     * @Annotation\Attributes({ "id":"form-repassword", "class":"form-repassword form-control" })
+     */
+    public $repassword;
 
     /**
      * @Annotation\Type("Zend\Form\Element\Submit")
-     * @Annotation\Attributes({"value":"Submit","class":"btn btn-success"})
+     * @Annotation\Attributes({"value":"Submit","class":"btn btn-success","id":"btnSubmit"})
      */
     public $submit;
 }

@@ -39,7 +39,7 @@ class AdvanceRequestForm{
      * @Annotation\Required({"required":"true"})
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Terms(in month)"})
-     * @Annotation\Attributes({ "id":"form-terms", "class":"form-terms form-control" })
+     * @Annotation\Attributes({ "id":"form-terms", "class":"form-terms form-control", "min":"1"})
      */
     public $terms;
      /**

@@ -143,7 +143,7 @@ class LeaveStatusRepository implements RepositoryInterface {
             $retiredFlag = " AND E.RETIRED_FLAG='N' ";
         }
         
-        $sql = "SELECT L.LEAVE_ENAME,LA.NO_OF_DAYS,
+        $sql = "SELECT L.LEAVE_ENAME,L.LEAVE_CODE,LA.NO_OF_DAYS,
                 TO_CHAR(LA.START_DATE, 'DD-MON-YYYY') AS START_DATE,
                 TO_CHAR(LA.END_DATE, 'DD-MON-YYYY') AS END_DATE,
                 TO_CHAR(LA.REQUESTED_DT, 'DD-MON-YYYY') AS APPLIED_DATE,
@@ -154,8 +154,12 @@ class LeaveStatusRepository implements RepositoryInterface {
                 E.FIRST_NAME,E.MIDDLE_NAME,E.LAST_NAME,
                 E1.FIRST_NAME AS FN1,E1.MIDDLE_NAME AS MN1,E1.LAST_NAME AS LN1,
                 E2.FIRST_NAME AS FN2,E2.MIDDLE_NAME AS MN2,E2.LAST_NAME AS LN2,
-                LA.RECOMMENDED_BY AS RECOMMENDER,
-                LA.APPROVED_BY AS APPROVER,
+                RA.RECOMMEND_BY AS RECOMMENDER,
+                RA.APPROVED_BY AS APPROVER,
+                RECM.FIRST_NAME AS RECM_FN,RECM.MIDDLE_NAME AS RECM_MN,RECM.LAST_NAME AS RECM_LN,
+                APRV.FIRST_NAME AS APRV_FN,APRV.MIDDLE_NAME AS APRV_MN,APRV.LAST_NAME AS APRV_LN,
+                LA.RECOMMENDED_BY AS RECOMMENDED_BY,
+                LA.APPROVED_BY AS APPROVED_BY,
                 LA.RECOMMENDED_REMARKS AS RECOMMENDED_REMARKS,
                 LA.APPROVED_REMARKS AS APPROVED_REMARKS
                 FROM HR_EMPLOYEE_LEAVE_REQUEST LA
@@ -167,6 +171,12 @@ class LeaveStatusRepository implements RepositoryInterface {
                 E1.EMPLOYEE_ID=LA.RECOMMENDED_BY
                 LEFT OUTER JOIN HR_EMPLOYEES E2 ON
                 E2.EMPLOYEE_ID=LA.APPROVED_BY
+                LEFT OUTER JOIN HR_RECOMMENDER_APPROVER RA ON
+                LA.EMPLOYEE_ID = RA.EMPLOYEE_ID
+                LEFT OUTER JOIN HR_EMPLOYEES RECM ON
+                RECM.EMPLOYEE_ID = RA.RECOMMEND_BY
+                LEFT OUTER JOIN HR_EMPLOYEES APRV ON
+                APRV.EMPLOYEE_ID = RA.APPROVED_BY
                 WHERE 
                 L.STATUS='E' AND
                 E.STATUS='E'".$retiredFlag."              
@@ -176,7 +186,13 @@ class LeaveStatusRepository implements RepositoryInterface {
                     END OR  E1.STATUS is null) AND
                 (E2.STATUS = CASE WHEN E2.STATUS IS NOT NULL
                          THEN ('E')       
-                    END OR  E2.STATUS is null)";
+                    END OR  E2.STATUS is null) AND
+                (RECM.STATUS = CASE WHEN RECM.STATUS IS NOT NULL
+                         THEN ('E')       
+                    END OR  RECM.STATUS is null) AND
+                (APRV.STATUS = CASE WHEN APRV.STATUS IS NOT NULL
+                         THEN ('E')       
+                    END OR  APRV.STATUS is null)";
         if($recomApproveId==null){
             if ($leaveRequestStatusId != -1) {
                 $sql .= " AND LA.STATUS ='" . $leaveRequestStatusId . "'";
@@ -184,13 +200,16 @@ class LeaveStatusRepository implements RepositoryInterface {
         }
         if($recomApproveId!=null){
             if($leaveRequestStatusId==-1){
-                $sql .=" AND ((LA.RECOMMENDED_BY=".$recomApproveId." AND  ( LA.STATUS='RQ' OR LA.STATUS='RC' OR LA.STATUS='AP' OR LA.STATUS='R')) OR (LA.APPROVED_BY=".$recomApproveId." AND ( LA.STATUS='RC' OR LA.STATUS='AP' OR (LA.STATUS='R' AND LA.APPROVED_DT IS NOT NULL))) )";
+                $sql .=" AND ((RA.RECOMMEND_BY=".$recomApproveId." AND  LA.STATUS='RQ') "
+                        . "OR (LA.RECOMMENDED_BY=".$recomApproveId." AND (LA.STATUS='RC' OR LA.STATUS='R' OR LA.STATUS='AP')) "
+                        . "OR (RA.APPROVED_BY=".$recomApproveId." AND  LA.STATUS='RC' ) "
+                        . "OR (LA.APPROVED_BY=".$recomApproveId." AND (LA.STATUS='AP' OR (LA.STATUS='R' AND LA.APPROVED_DT IS NOT NULL))) )";
             }else if($leaveRequestStatusId=='RQ'){
-                $sql .= " AND LA.STATUS='RQ' AND LA.RECOMMENDED_BY=".$recomApproveId;
+                $sql .=" AND (RA.RECOMMEND_BY=".$recomApproveId." AND LA.STATUS='RQ')";
             }
             else if($leaveRequestStatusId=='RC'){
                 $sql .= " AND LA.STATUS='RC' AND
-                    (LA.RECOMMENDED_BY=".$recomApproveId." OR LA.APPROVED_BY=".$recomApproveId.")";
+                    (LA.RECOMMENDED_BY=".$recomApproveId." OR RA.APPROVED_BY=".$recomApproveId.")";
             }else if($leaveRequestStatusId=='AP'){
                 $sql .= " AND LA.STATUS='AP' AND
                     (LA.RECOMMENDED_BY=".$recomApproveId." OR LA.APPROVED_BY=".$recomApproveId.")";
@@ -238,7 +257,7 @@ class LeaveStatusRepository implements RepositoryInterface {
         $sql .=" ORDER BY LA.REQUESTED_DT DESC";
 
         $statement = $this->adapter->query($sql);
-        //print_r($statement->getSql()); 
+        //print_r($statement->getSql());  die();
         $result = $statement->execute();
         return $result;
     }
