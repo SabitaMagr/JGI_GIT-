@@ -1579,6 +1579,24 @@ return array (
           ),
         ),
       ),
+      'notification' => 
+      array (
+        'type' => 'Zend\\Router\\Http\\Segment',
+        'options' => 
+        array (
+          'route' => '/notification[/:action[/:id]]',
+          'constraints' => 
+          array (
+            'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+            'id' => '[0-9]+',
+          ),
+          'defaults' => 
+          array (
+            'controller' => 'Notification\\Controller\\NotificationController',
+            'action' => 'index',
+          ),
+        ),
+      ),
     ),
   ),
   'console' => 
@@ -3839,6 +3857,7 @@ return array (
       'Loan\\Controller\\LoanApply' => 'Application\\Controller\\ControllerFactory',
       'Advance\\Controller\\AdvanceApply' => 'Application\\Controller\\ControllerFactory',
       'Advance\\Controller\\AdvanceStatus' => 'Application\\Controller\\ControllerFactory',
+      'Notification\\Controller\\NotificationController' => 'Application\\Controller\\ControllerFactory',
     ),
   ),
   'view_manager' => 
@@ -3886,6 +3905,7 @@ return array (
       11 => '/var/www/html/neo/neo-hris-metronic/module/Appraisal/config/../view',
       12 => '/var/www/html/neo/neo-hris-metronic/module/Loan/config/../view',
       13 => '/var/www/html/neo/neo-hris-metronic/module/Advance/config/../view',
+      14 => '/var/www/html/neo/neo-hris-metronic/module/Notification/config/../view',
     ),
   ),
   'dashboard-items' => 
@@ -3903,6 +3923,18 @@ return array (
     'A' => 'Admin',
     'B' => 'Branch Manager',
     'E' => 'Employee',
+  ),
+  'mail' => 
+  array (
+    'host' => 'duster.websitewelcome.com',
+    'port' => 587,
+    'connection_class' => 'login',
+    'connection_config' => 
+    array (
+      'username' => 'ukesh.gaiju@itnepal.com',
+      'password' => 'ukesh@123',
+      'ssl' => 'tls',
+    ),
   ),
   'db' => 
   array (

@@ -66,6 +66,7 @@ return array(
     'Payroll\\' => array($baseDir . '/module/Payroll/src'),
     'PHPixie\\Tests\\' => array($vendorDir . '/phpixie/image/tests/PHPixie/Tests'),
     'PHPixie\\' => array($vendorDir . '/phpixie/image/src/PHPixie'),
+    'Notification\\' => array($baseDir . '/module/Notification/src'),
     'ManagerService\\' => array($baseDir . '/module/ManagerService/src'),
     'Loan\\' => array($baseDir . '/module/Loan/src'),
     'LeaveManagement\\' => array($baseDir . '/module/LeaveManagement/src'),
