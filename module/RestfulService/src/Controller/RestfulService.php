@@ -64,6 +64,7 @@ use Loan\Repository\LoanStatusRepository;
 use SelfService\Repository\AdvanceRequestRepository;
 use ManagerService\Repository\AdvanceApproveRepository;
 use Advance\Repository\AdvanceStatusRepository;
+use Training\Repository\TrainingAssignRepository;
 
 class RestfulService extends AbstractRestfulController {
 
@@ -152,6 +153,9 @@ class RestfulService extends AbstractRestfulController {
                     break;
                 case "pullEmployeeListForReportingRole":
                     $responseData = $this->pullEmployeeListForReportingRole($postedData->data);
+                    break;
+                case "pullEmployeeForTrainingAssign":
+                    $responseData = $this->pullEmployeeForTrainingAssign($postedData->data);
                     break;
                 case "pullMenuDetail":
                     $responseData = $this->pullMenuDetail($postedData->data);
@@ -1346,6 +1350,7 @@ class RestfulService extends AbstractRestfulController {
             'data' => $employeeList
         ];
     }
+   
 
     public function menuDelete($data) {
         $menuId = $data['menuId'];
@@ -1985,6 +1990,40 @@ class RestfulService extends AbstractRestfulController {
             "success" => true,
             "data" => $employeeList
         ];
+    }
+     public function pullEmployeeForTrainingAssign($data){
+        $employeeId = $data['employeeId'];
+        $branchId = $data['branchId'];
+        $departmentId = $data['departmentId'];
+        $designationId = $data['designationId'];
+        $positionId = $data['positionId'];
+        $serviceTypeId = $data['serviceTypeId'];
+        
+        $employeeRepository = new EmployeeRepository($this->adapter);
+        $trainingAssignRepo = new TrainingAssignRepository($this->adapter);
+        
+        $employeeResult = $employeeRepository->filterRecords($emplyoeeId, $branchId, $departmentId, $designationId, $positionId, $serviceTypeId, -1, 1);
+
+        $employeeList = [];
+        foreach ($employeeResult as $employeeRow) {
+            $employeeId = $employeeRow['EMPLOYEE_ID'];
+            $trainingAssignList = $trainingAssignRepo->getDetailByEmployeeID($employeeId);
+            if ($traininigAssignList != null) {
+                $employeeRow['TRAINING_NAME'] = $trainingAssignList['TRAINING_NAME'];
+                $employeeRow['INSTITUTE_NAME'] = $trainingAssignList['INSTITUTE_NAME'];
+                $employeeRow['INSTRUCTOR_NAME'] = $trainingAssignList['INSTRUCTOR_NAME'];
+            } else {
+                $employeeRow['RECOMMENDER_NAME'] = "";
+                $employeeRow['APPROVER_NAME'] = "";
+            }
+            array_push($employeeList, $employeeRow);
+        }
+        ///  print_r($employeeList); die();
+        return [
+            "success" => true,
+            "data" => $employeeList
+        ];
+        
     }
 
     public function assignEmployeeReportingHierarchy($data) {

@@ -24,7 +24,6 @@ angular.module('hris', ['ui.bootstrap'])
                     }
                     $scope.assignShowHide = false;
                 }
-
             };
             $scope.checkReportingHierarchy = function () {
                 if ($scope.recommenderAssign || $scope.approverAssign) {

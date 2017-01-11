@@ -8,8 +8,7 @@ use Zend\Form\Annotation;
  * @Annotation\Name("TrainingAssign")
  */
 class TrainingAssignForm
-{
-    
+{    
     /**
      * @Annotation\Type("Zend\Form\Element\Select")
      * @Annotation\Required(false)
@@ -27,67 +26,6 @@ class TrainingAssignForm
      * @Annotation\Attributes({ "id":"form-trainingId","class":"form-control"})
      */
     public $trainingId;
-     /**
-     * @Annotion\Type("Zend\Form\Element\Text")
-     * @Annotation\Required({"required":"true"})
-     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
-     * @Annotation\Options({"label":"Start Date"})
-     * @Annotation\Attributes({ "id":"form-startDate", "class":"form-startDate form-control" })
-     */
-    public $startDate;
-     /**
-     * @Annotion\Type("Zend\Form\Element\Text")
-     * @Annotation\Required({"required":"true"})
-     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
-     * @Annotation\Options({"label":"End Date"})
-     * @Annotation\Attributes({ "id":"form-endDate", "class":"form-endDate form-control" })
-     */
-    public $endDate;
-    
-    /**
-     * @Annotion\Type("Zend\Form\Element\Text")
-     * @Annotation\Required({"required":"true"})
-     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
-     * @Annotation\Options({"label":"Duration in Hour"})
-     * @Annotation\Attributes({ "id":"form-duration", "class":"form-duration form-control" })
-     */
-    public $duration;
-    
-    /**
-     * @Annotion\Type("Zend\Form\Element\Text")
-     * @Annotation\Required({"required":"true"})
-     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
-     * @Annotation\Options({"label":"Location"})
-     * @Annotation\Attributes({ "id":"form-location", "class":"form-location form-control" })
-     */
-    public $location;
-    
-    /**
-     * @Annotion\Type("Zend\Form\Element\Text")
-     * @Annotation\Required({"required":"true"})
-     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
-     * @Annotation\Options({"label":"Cost"})
-     * @Annotation\Attributes({ "id":"form-cost", "class":"form-cost form-control" })
-     */
-    public $cost;
-    
-    /**
-     * @Annotion\Type("Zend\Form\Element\Text")
-     * @Annotation\Required({"required":"true"})
-     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
-     * @Annotation\Options({"label":"Instructor Name"})
-     * @Annotation\Attributes({ "id":"form-instructorName", "class":"form-instructorName form-control" })
-     */
-    public $instructorName;
-    
-    /**
-     * @Annotion\Type("Zend\Form\Element\Text")
-     * @Annotation\Required({"required":"true"})
-     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
-     * @Annotation\Options({"label":"Training Institute"})
-     * @Annotation\Attributes({ "id":"form-trainingInstitute", "class":"form-trainingInstitute form-control" })
-     */
-    public $trainingInstitute;
 
     /**
      * @Annotation\Type("Zend\Form\Element\Textarea")
@@ -103,7 +41,5 @@ class TrainingAssignForm
      * @Annotation\Attributes({"value":"Submit","class":"btn btn-success"})
      */
     public $submit;
-
-
 }
 
