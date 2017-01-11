@@ -43,41 +43,7 @@
             }
         }
 
-        var dateDifference = function () {
-            var id = (typeof this === "undefined") ? "selectedDate" : $(this).attr('id');
-            var startDate = "";
-            var endDate = "";
-
-            switch (id) {
-                case "startDate":
-                    startDate = ($(this).val() === "") ? "" : new Date($(this).datepicker("getDate"));
-                    endDate = ($("#endDate").val() === "") ? "" : new Date($("#endDate").datepicker("getDate"));
-
-                    $("#startDate").datepicker({
-                        format: 'd-M-yyyy',
-                        todayBtn: 1,
-                        autoclose: true,
-                    }).on('changeDate', function (selected) {
-                        var minDate = new Date(selected.date.valueOf());
-                        $('#endDate').datepicker('setStartDate', minDate);
-                    });
-                    break;
-
-                case "endDate":
-                    startDate = ($("#startDate").val() === "") ? "" : new Date($("#startDate").datepicker("getDate"));
-                    endDate = ($(this).val() === "") ? "" : new Date($(this).datepicker("getDate"));
-
-                    $("#endDate").datepicker({
-                        format: 'd-M-yyyy',
-                        autoclose: true
-                    }).on('changeDate', function (selected) {
-                        var minDate = new Date(selected.date.valueOf());
-                        $('#startDate').datepicker('setEndDate', minDate);
-                    });
-                    break;
-            }
-            console.log("startDate", startDate);
-            console.log("endDate", endDate);
+        app.startEndDatePicker("startDate", "endDate", function (startDate, endDate) {
             if ((startDate != "" && endDate != "") && (startDate <= endDate)) {
                 var oneDay = 24 * 60 * 60 * 1000; // hours*minutes*seconds*milliseconds
                 var diffDays = Math.abs((startDate.getTime() - endDate.getTime()) / (oneDay));
@@ -110,17 +76,8 @@
                     $("#errorMsg").html("")
                 }
             }
-        };
 
-        $('#startDate').datepicker({
-            format: 'd-M-yyyy',
-            autoclose: true,
-        }).on('changeDate', dateDifference);
-
-        $('#endDate').datepicker({
-            format: 'd-M-yyyy',
-            autoclose: true
-        }).on('changeDate', dateDifference);
+        });
 
         $("#noOfDays").on("keyup", function () {
             var availableDays = parseInt($("#availableDays").val());

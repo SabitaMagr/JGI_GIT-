@@ -49,27 +49,34 @@ window.app = (function ($, toastr) {
         }
     };
 
-    var startEndDatePicker = function (fromDate, toDate) {
+    var startEndDatePicker = function (fromDate, toDate, fn) {
         if (typeof fromDate === 'undefined' || fromDate == null || typeof toDate === 'undefined' || toDate == null) {
             return;
         }
-
-        $("#" + fromDate).datepicker({
+        var $fromDate = $("#" + fromDate);
+        var $toDate = $("#" + toDate);
+        $fromDate.datepicker({
             format: format,
             todayHighlight: true,
             autoclose: true,
         }).on('changeDate', function (selected) {
             var minDate = new Date(selected.date.valueOf());
-            $('#' + toDate).datepicker('setStartDate', minDate);
+            $toDate.datepicker('setStartDate', minDate);
+            if (typeof fn !== "undefined" && fn != null) {
+                fn(new Date($fromDate.val()), new Date($toDate.val()));
+            }
         });
 
-        $("#" + toDate).datepicker({
+        $toDate.datepicker({
             format: format,
             todayHighlight: true,
             autoclose: true
         }).on('changeDate', function (selected) {
             var maxDate = new Date(selected.date.valueOf());
-            $('#' + fromDate).datepicker('setEndDate', maxDate);
+            $fromDate.datepicker('setEndDate', maxDate);
+            if (typeof fn !== "undefined" && fn != null) {
+                fn(new Date($fromDate.val()), new Date($toDate.val()));
+            }
         });
     };
 
@@ -86,15 +93,17 @@ window.app = (function ($, toastr) {
             onChange: function () {
                 var toVal = $toNepaliDate.val();
                 if (toVal === 'undefined' || toVal == '') {
-                    $fromEnglishDate.val(nepaliDatePickerExt.fromNepaliToEnglish($fromNepaliDate.val()));
-                    $toEnglishDate.datepicker('setStartDate', new Date($fromEnglishDate.val()));
+                    var temp = nepaliDatePickerExt.fromNepaliToEnglish($fromNepaliDate.val());
+                    $fromEnglishDate.val(temp);
+                    $toEnglishDate.datepicker('setStartDate', nepaliDatePickerExt.getDate(temp));
                     oldFromNepali = $fromNepaliDate.val();
                 } else {
                     var fromDate = nepaliDatePickerExt.fromNepaliToEnglish($fromNepaliDate.val());
                     var toDate = nepaliDatePickerExt.fromNepaliToEnglish($toNepaliDate.val());
-                    if (new Date(toDate).getTime() > new Date(fromDate).getTime()) {
-                        $fromEnglishDate.val(nepaliDatePickerExt.fromNepaliToEnglish($fromNepaliDate.val()));
-                        $toEnglishDate.datepicker('setStartDate', new Date($fromEnglishDate.val()));
+                    if (nepaliDatePickerExt.getDate(toDate).getTime() > nepaliDatePickerExt.getDate(fromDate).getTime()) {
+                        var temp = nepaliDatePickerExt.fromNepaliToEnglish($fromNepaliDate.val());
+                        $fromEnglishDate.val(temp);
+                        $toEnglishDate.datepicker('setStartDate', nepaliDatePickerExt.getDate(temp));
                         oldFromNepali = $fromNepaliDate.val();
                     } else {
                         errorMessage("Selected Date should not exceed more than " + toVal);
@@ -111,7 +120,7 @@ window.app = (function ($, toastr) {
             autoclose: true
         }).on('changeDate', function () {
             $fromNepaliDate.val(nepaliDatePickerExt.fromEnglishToNepali($(this).val()));
-            var minDate = new Date($(this).val());
+            var minDate = nepaliDatePickerExt.getDate($(this).val());
             $toEnglishDate.datepicker('setStartDate', minDate);
         });
 
@@ -119,15 +128,17 @@ window.app = (function ($, toastr) {
             onChange: function () {
                 var fromVal = $fromNepaliDate.val();
                 if (fromVal === 'undefined' || fromVal == '') {
-                    $toEnglishDate.val(nepaliDatePickerExt.fromNepaliToEnglish($toNepaliDate.val()));
-                    $fromEnglishDate.datepicker('setEndDate', new Date($toEnglishDate.val()));
+                    var temp = nepaliDatePickerExt.fromNepaliToEnglish($toNepaliDate.val());
+                    $toEnglishDate.val(temp);
+                    $fromEnglishDate.datepicker('setEndDate', nepaliDatePickerExt.getDate(temp));
                     oldtoNepali = $toNepaliDate.val();
                 } else {
                     var fromDate = nepaliDatePickerExt.fromNepaliToEnglish($fromNepaliDate.val());
                     var toDate = nepaliDatePickerExt.fromNepaliToEnglish($toNepaliDate.val());
-                    if (new Date(toDate).getTime() > new Date(fromDate).getTime()) {
-                        $toEnglishDate.val(nepaliDatePickerExt.fromNepaliToEnglish($toNepaliDate.val()));
-                        $fromEnglishDate.datepicker('setEndDate', new Date($toEnglishDate.val()));
+                    if (nepaliDatePickerExt.getDate(toDate).getTime() > nepaliDatePickerExt.getDate(fromDate).getTime()) {
+                        var temp = nepaliDatePickerExt.fromNepaliToEnglish($toNepaliDate.val());
+                        $toEnglishDate.val(temp);
+                        $fromEnglishDate.datepicker('setEndDate', nepaliDatePickerExt.getDate(temp));
                         oldtoNepali = $toNepaliDate.val();
                     } else {
                         errorMessage("Selected Date should not preceed more than " + fromVal);
@@ -143,8 +154,8 @@ window.app = (function ($, toastr) {
             autoclose: true
         }).on('changeDate', function () {
             $toNepaliDate.val(nepaliDatePickerExt.fromEnglishToNepali($(this).val()));
-            var maxDate = new Date($(this).val());
-            $fromEnglishDate.datepicker('setEndDate', maxDate);
+            var maxDate = nepaliDatePickerExt.getDate($(this).val());
+//            $fromEnglishDate.datepicker('setEndDate', maxDate);
         });
 
         $fromNepaliDate.on('input', function () {

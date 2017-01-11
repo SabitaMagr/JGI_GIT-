@@ -33,7 +33,8 @@
         "zendframework/zend-navigation": "^2.8",
         "phpoffice/phpexcel": "^1.8",
         "intervention/image": "^2.3",
-        "phpixie/image": "^3.2"
+        "phpixie/image": "^3.2",
+        "zendframework/zend-mail": "^2.7"
     },
     "autoload": {
         "psr-0": {
