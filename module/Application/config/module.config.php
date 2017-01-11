@@ -227,5 +227,15 @@ return [
         'A' => 'Admin',
         'B' => 'Branch Manager',
         'E' => 'Employee'
+    ],
+    'mail' => [
+        'host' => 'duster.websitewelcome.com',
+        'port' => 587,
+        'connection_class' => 'login',
+        'connection_config' => [
+            'username' => 'ukesh.gaiju@itnepal.com',
+            'password' => 'ukesh@123',
+            'ssl' => 'tls',
+        ],
     ]
 ];

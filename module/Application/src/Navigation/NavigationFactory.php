@@ -33,7 +33,6 @@ class NavigationFactory implements FactoryInterface
     {
         $navigation =  new MenuNavigation();
         return $navigation->createService($container);
-
     }
 }
 

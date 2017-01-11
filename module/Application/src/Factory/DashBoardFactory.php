@@ -3,7 +3,6 @@
 namespace Application\Factory;
 
 use Interop\Container\ContainerInterface;
-use Zend\Db\Adapter\AdapterInterface;
 use Zend\ServiceManager\Factory\FactoryInterface;
 
 class DashBoardFactory implements FactoryInterface {

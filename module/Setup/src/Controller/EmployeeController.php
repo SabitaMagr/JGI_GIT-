@@ -31,7 +31,8 @@ use Zend\Db\Adapter\AdapterInterface;
 use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\Form\Element\Select;
 use Zend\Mail\Message;
-use Zend\Mail\Transport\Sendmail;
+use Zend\Mail\Transport\Smtp as SmtpTransport;
+use Zend\Mail\Transport\SmtpOptions;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 
@@ -44,15 +45,26 @@ class EmployeeController extends AbstractActionController {
     private $jobHistoryRepo;
 
     public function __construct(AdapterInterface $adapter) {
+        $transport = new SmtpTransport();
+        $options = new SmtpOptions([
+            'host' => 'duster.websitewelcome.com',
+            'port' => 587,
+            'connection_class' => 'login',
+            'connection_config' => [
+                'username' => 'ukesh.gaiju@itnepal.com',
+                'password' => 'ukesh@123',
+                'ssl' => 'tls',
+            ],
+        ]);
+        $transport->setOptions($options);
         $mail = new Message();
         $mail->setBody('This is the text of the email.');
-        $mail->setFrom('ukesh.gaiju@itnepal.com', "Sender's name");
+        $mail->setFrom('ukesh.gaiju@itnepal.com', "Ukesh");
         $mail->addTo('somkala.pachhai@itnepal.com', 'Name of recipient');
         $mail->setSubject('TestSubject');
 
-        $transport = new Sendmail();
         $transport->send($mail);
-        exit;
+
         $this->adapter = $adapter;
         $this->repository = new EmployeeRepository($adapter);
         $this->employeeFileRepo = new EmployeeFile($this->adapter);
