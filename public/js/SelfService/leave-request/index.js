@@ -116,9 +116,9 @@ angular.module('hris', [])
                                 {value: dataItem.RECOMMENDER_NAME},
                                 {value: dataItem.APPROVER_NAME},
                                 {value: dataItem.RECOMMENDED_REMARKS},
-                                {value: dataItem.RECOMMENDED_DATE},
+                                {value: dataItem.RECOMMENDED_DT},
                                 {value: dataItem.APPROVED_REMARKS},
-                                {value: dataItem.APPROVED_DATE}
+                                {value: dataItem.APPROVED_DT}
                             ]
                         });
                     }
