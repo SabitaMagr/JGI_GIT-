@@ -173,6 +173,11 @@ class Helper {
         $currentDate = date(self::PHP_DATE_FORMAT);
         return self::getExpressionDate($currentDate);
     }
+    
+    public static function getCurrentDate(){
+       $currentDate = date(self::PHP_DATE_FORMAT); 
+       return $currentDate;
+    }
 
     public static function getcurrentMonthDayExpression() {
         $currentDate = date('d-M');

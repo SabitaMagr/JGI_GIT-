@@ -22,6 +22,7 @@ use Training\Controller\TrainingAssignController;
 use SelfService\Controller\TrainingList;
 use SelfService\Controller\LoanRequest;
 use SelfService\Controller\AdvanceRequest;
+use SelfService\Controller\TravelRequest;
 
 return [
     'router' => [
@@ -170,13 +171,27 @@ return [
             'trainingList' => [
                 'type' => Segment::class,
                 'options' => [
-                    'route' => '/selfservice/trainingList[/:action]',
+                    'route' => '/selfservice/trainingList[/:action[/:employeeId][/:trainingId]]',
                     'constants' => [
                         'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
                         'id' => '[0-9]+',
                     ],
                     'defaults' => [
                         'controller' => TrainingList::class,
+                        'action' => 'index',
+                    ]
+                ],
+            ],
+            'travelRequest' => [
+                'type' => Segment::class,
+                'options' => [
+                    'route' => '/selfservice/travelRequest[/:action[/:id]]',
+                    'constants' => [
+                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'id' => '[0-9]+',
+                    ],
+                    'defaults' => [
+                        'controller' => TravelRequest::class,
                         'action' => 'index',
                     ]
                 ],
@@ -475,7 +490,7 @@ return [
                 'route' => 'trainingList',
                 'pages' => [
                     [
-                        'label' => 'Detail',
+                        'label' => 'List',
                         'route' => 'trainingList',
                         'action' => 'index',
                     ],
@@ -485,9 +500,41 @@ return [
                         'action' => 'add',
                     ],
                     [
-                        'label' => 'Edit',
+                        'label' => 'Detail',
                         'route' => 'trainingList',
+                        'action' => 'view',
+                    ],
+                ],
+            ],
+        ],
+        'travelRequest' => [
+            [
+                'label' => 'Travel Request',
+                'route' => 'travelRequest',
+            ],
+            [
+                'label' => 'Travel Request',
+                'route' => 'travelRequest',
+                'pages' => [
+                    [
+                        'label' => 'Detail',
+                        'route' => 'travelRequest',
+                        'action' => 'index',
+                    ],
+                    [
+                        'label' => 'Add',
+                        'route' => 'travelRequest',
+                        'action' => 'add',
+                    ],
+                    [
+                        'label' => 'Edit',
+                        'route' => 'travelRequest',
                         'action' => 'edit',
+                    ],
+                    [
+                        'label' => 'Detail',
+                        'route' => 'travelRequest',
+                        'action' => 'view',
                     ],
                 ],
             ],
@@ -506,7 +553,8 @@ return [
             PaySlip::class => ControllerFactory::class,
             LoanRequest::class => ControllerFactory::class,
             TrainingList::class => ControllerFactory::class,
-            AdvanceRequest::class => ControllerFactory::class
+            AdvanceRequest::class => ControllerFactory::class,
+            TravelRequest::class => ControllerFactory::class
         ],
     ],
     'view_manager' => [

@@ -2,9 +2,9 @@
 /**
  * Load Javascript files here
  */
-$this->headScript()
-        ->appendFile($this->basePath('jszip/dist/jszip.min.js'))
+$this->headScript()->appendFile($this->basePath('jszip/dist/jszip.min.js'))
         ->appendFile($this->basePath('telerik_kendoui/js/kendo.all.min.js'))
+        ->appendFile($this->basePath('js/angular.min.js'))
         ->appendFile($this->basePath('js/training/training-assign/index.js'))
         ->appendFile($this->basePath('assets/global/plugins/bootstrap-confirmation/bootstrap-confirmation.min.js'));
 ?>
@@ -13,75 +13,123 @@ $this->headScript()
         document.messages =<?php echo json_encode($this->messages); ?>
     </script>
 <?php } ?>
-
 <script>
-    document.menu =<?php $menu = ["id" => "menuTraining", "subMenu" => ["id" => "subMenuAssign"]];
-echo json_encode($menu); ?>;
-    document.deleteURL ='<?= $this->url("restful", ["action" => "index"]) ?>';
+    document.menu =<?php $menu = ["id" => "menuTraining", "subMenu" => ["id" => "subMenuTrainingAssign"]];echo json_encode($menu);?>;
+    document.url = '<?= $this->url("restful", ["action" => "index"]) ?>';
 </script>
+
 <div class="page-bar">
-    <?= $this->navigation('Zend\Navigation\trainingAssign')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
+<?= $this->navigation('Zend\Navigation\trainingAssign')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
 
-
-<div class="margin-top-20">
-    <div class="table-toolbar">
-        <div class="row">
-            <div class="col-md-6">
-                <div class="btn-group">
-                    <a href="<?= $this->url('trainingAssign', ['action' => 'add']) ?>" id="sample_editable_1_new"
-                       class="btn green"> Add New
-                        <!--                        <i class="fa fa-plus"></i>-->
-                    </a>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="btn-group pull-right">
-                    <button class="btn green btn-outline dropdown-toggle" data-toggle="dropdown">Tools
-                        <i class="fa fa-angle-down"></i>
-                    </button>
-                    <ul class="dropdown-menu pull-right">      
-                        <li>
-                            <a href="javascript:;" id="export"> Export to Excel </a>
-                        </li>
-                    </ul>
-                </div>
-            </div>      
+<div class="" ng-app="hris" ng-controller="trainingAssignController">
+    <div class="margin-top-20  formbg mgap">
+    <div class="row">
+        <div class="col-sm-4 marginspace">
+            <?php print $this->formLabel($employees); ?>
+            <?php print $this->formElement($employees); ?>
         </div>
-    </div>    
-    <div id="loanAdvanceTable">
-        <table id="grid">
-            <thead>
-            <tr>
-                <th>Employee Name</th>
-                <th>Training Name</th>
-                <th>Start Date</th>
-                <th>To Date</th>
-                <th>Location</th>
-                <th>Instructor Name</th>
-                <th>Action</th>
-            </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>Rama Kumari Thapa</td>
-                    <td>Organizational</td>
-                    <td>02-Jan-2016</td>
-                    <td>07-Jan-2016</td>
-                    <td>Jawalakhel</td>
-                    <td>Ramesh Chhetri</td>
-                    <td>
-                        <a class="btn-edit" href="javascript::" style="height:17px;" title="edit">
-                            <i class="fa fa-edit"></i>
-                        </a>
-                        <a class="btn-delete" href="javascript::" style="height:17px;">
-                            <i class="fa fa-trash-o"></i>
-                        </a>
-                    </td>                    
-                </tr>             
-            </tbody>
-        </table>
+        <div class="col-sm-4 marginspace">
+            <?php print $this->formLabel($branches); ?>
+            <?php print $this->formElement($branches); ?>
+        </div>
+        <div class="col-sm-4 marginspace">
+            <?php print $this->formLabel($departments); ?>
+            <?php print $this->formElement($departments); ?>
+        </div>
+        <div class="col-sm-4 marginspace">
+            <?php print $this->formLabel($designations); ?>
+            <?php print $this->formElement($designations); ?>
+        </div>
+        <div class="col-sm-4 marginspace">
+            <?php print $this->formLabel($positions); ?>
+            <?php print $this->formElement($positions); ?>
+        </div>
+        <div class="col-sm-4 marginspace">
+            <?php print $this->formLabel($serviceTypes); ?>
+            <?php print $this->formElement($serviceTypes); ?>
+        </div>
+        <div class="col-sm-4 marginspace">
+            <?php print $this->formLabel($serviceEventTypes); ?>
+            <?php print $this->formElement($serviceEventTypes); ?>
+        </div>
+        <div class="col-sm-4 marginspace">
+            <?php print $this->formLabel($trainings); ?>
+            <?php print $this->formElement($trainings); ?>
+        </div>       
+        <div class="col-sm-2">
+            <button ng-click="viewTrainingAssignList()" id="viewEmployees" class=" btn btn-default  i-search form-control" style="margin-top:21px !important">
+                Search
+                <i class="fa fa-search"></i>
+            </button>
+        </div>
     </div>
- 
-
+    </div> 
+    <div class="margin-top-20">
+        <div class="table-toolbar">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="btn-group">
+                        <a href="<?= $this->url('trainingAssign', ['action' => 'assign']) ?>" id="sample_editable_1_new"
+                           class="btn green"> Assign
+                                                <i class="fa fa-plus"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="btn-group pull-right">
+                        <button class="btn green btn-outline dropdown-toggle" data-toggle="dropdown">Tools
+                            <i class="fa fa-angle-down"></i>
+                        </button>
+                        <ul class="dropdown-menu pull-right">      
+                            <li>
+                                <a href="javascript:;" id="export"> Export to Excel </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>      
+            </div>
+        </div> 
+        <div id="trainingAssignListTable"></div>
+    </div>  
+    
+    <script id="rowTemplate" type="text/x-kendo-tmpl">
+        <tr>
+        <td>
+        #: (FIRST_NAME == null) ? ' ' : FIRST_NAME #
+        #: (MIDDLE_NAME == null) ? ' ' : MIDDLE_NAME #
+        #: (LAST_NAME == null) ? ' ' : LAST_NAME #
+        </td>
+        <td>
+        #: (TRAINING_NAME == null) ? '-' : TRAINING_NAME #
+        </td>
+        <td>
+        #: (START_DATE == null) ? '-' : START_DATE #
+        </td>
+        <td>    
+        #: (END_DATE == null) ? '-' : END_DATE #
+        </td>
+        <td>    
+        #: (DURATION == null) ? '-' : DURATION #
+        </td>
+        <td>
+        #: (INSTITUTE_NAME == null) ? '-' : INSTITUTE_NAME #
+        </td>
+        <td>
+        #: (TRAINING_TYPE == null) ? '-' : TRAINING_TYPE #
+        </td> 
+        <td>
+        #if(ALLOW_TO_EDIT == 1){#       
+        <a class="btn-delete confirmation"
+        href="<?= $this->url("trainingAssign", ["action" => "delete"]) ?>/#: EMPLOYEE_ID #/#: TRAINING_ID #" style="height:17px;" title="cancel">
+        <i class="fa fa-trash-o"></i></a>
+        </a>
+        #}#
+        <a class="btn-delete confirmation"
+        href="<?= $this->url("trainingAssign", ["action" => "view"]) ?>/#: EMPLOYEE_ID #/#: TRAINING_ID #" style="height:17px;" title="view detail">
+        <i class="fa fa-search-plus"></i></a>
+        </a>
+        </td>
+        </tr>
+    </script>
 </div>

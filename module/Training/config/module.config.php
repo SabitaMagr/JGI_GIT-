@@ -11,7 +11,7 @@ return [
             'trainingAssign' => [
                 'type' => Segment::class,
                 'options' => [
-                    'route' => '/training/trainingAssign[/:action[/:id]]',
+                    'route' => '/training/trainingAssign[/:action[/:employeeId][/:trainingId]]',
                     'constraints' => [
                         'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
                         'id' => '[0-9]+',
@@ -45,9 +45,14 @@ return [
                         'action' => 'add',
                     ],
                         [
-                        'label' => 'Edit',
+                        'label' => 'Detail',
                         'route' => 'trainingAssign',
-                        'action' => 'edit',
+                        'action' => 'view',
+                    ],
+                    [
+                        'label' => 'Add',
+                        'route' => 'trainingAssign',
+                        'action' => 'assign',
                     ],
                 ],
             ],
