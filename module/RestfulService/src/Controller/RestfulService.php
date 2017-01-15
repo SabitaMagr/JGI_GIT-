@@ -2024,6 +2024,13 @@ class RestfulService extends AbstractRestfulController {
         };
         foreach($result as $row){
             $row['TRAINING_TYPE']=$getValue($row['TRAINING_TYPE']);
+            $startDate = \DateTime::createFromFormat(Helper::PHP_DATE_FORMAT, $row['START_DATE']);
+            $toDayDate = new \DateTime();
+            if($toDayDate<$startDate){
+                $row['ALLOW_TO_EDIT'] = 1;
+            }else if($toDayDate>=$startDate){
+                $row['ALLOW_TO_EDIT'] = 0;
+            }      
             array_push($list, $row);
         }
         return [

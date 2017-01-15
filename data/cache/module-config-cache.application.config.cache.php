@@ -1233,6 +1233,24 @@ return array (
           ),
         ),
       ),
+      'travelRequest' => 
+      array (
+        'type' => 'Zend\\Router\\Http\\Segment',
+        'options' => 
+        array (
+          'route' => '/selfservice/travelRequest[/:action[/:id]]',
+          'constants' => 
+          array (
+            'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+            'id' => '[0-9]+',
+          ),
+          'defaults' => 
+          array (
+            'controller' => 'SelfService\\Controller\\TravelRequest',
+            'action' => 'index',
+          ),
+        ),
+      ),
       'restful' => 
       array (
         'type' => 'Zend\\Router\\Http\\Literal',
@@ -3089,6 +3107,46 @@ return array (
         ),
       ),
     ),
+    'travelRequest' => 
+    array (
+      0 => 
+      array (
+        'label' => 'Travel Request',
+        'route' => 'travelRequest',
+      ),
+      1 => 
+      array (
+        'label' => 'Travel Request',
+        'route' => 'travelRequest',
+        'pages' => 
+        array (
+          0 => 
+          array (
+            'label' => 'Detail',
+            'route' => 'travelRequest',
+            'action' => 'index',
+          ),
+          1 => 
+          array (
+            'label' => 'Add',
+            'route' => 'travelRequest',
+            'action' => 'add',
+          ),
+          2 => 
+          array (
+            'label' => 'Edit',
+            'route' => 'travelRequest',
+            'action' => 'edit',
+          ),
+          3 => 
+          array (
+            'label' => 'Detail',
+            'route' => 'travelRequest',
+            'action' => 'view',
+          ),
+        ),
+      ),
+    ),
     'monthlyValue' => 
     array (
       0 => 
@@ -3841,6 +3899,7 @@ return array (
       'SelfService\\Controller\\LoanRequest' => 'Application\\Controller\\ControllerFactory',
       'SelfService\\Controller\\TrainingList' => 'Application\\Controller\\ControllerFactory',
       'SelfService\\Controller\\AdvanceRequest' => 'Application\\Controller\\ControllerFactory',
+      'SelfService\\Controller\\TravelRequest' => 'Application\\Controller\\ControllerFactory',
       'RestfulService\\Controller\\RestfulService' => 'Application\\Controller\\ControllerFactory',
       'Payroll\\Controller\\MonthlyValue' => 'Application\\Controller\\ControllerFactory',
       'Payroll\\Controller\\FlatValue' => 'Application\\Controller\\ControllerFactory',

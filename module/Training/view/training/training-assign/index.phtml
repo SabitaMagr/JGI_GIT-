@@ -119,10 +119,12 @@ $this->headScript()->appendFile($this->basePath('jszip/dist/jszip.min.js'))
         #: (TRAINING_TYPE == null) ? '-' : TRAINING_TYPE #
         </td> 
         <td>
+        #if(ALLOW_TO_EDIT == 1){#       
         <a class="btn-delete confirmation"
         href="<?= $this->url("trainingAssign", ["action" => "delete"]) ?>/#: EMPLOYEE_ID #/#: TRAINING_ID #" style="height:17px;" title="cancel">
         <i class="fa fa-trash-o"></i></a>
         </a>
+        #}#
         <a class="btn-delete confirmation"
         href="<?= $this->url("trainingAssign", ["action" => "view"]) ?>/#: EMPLOYEE_ID #/#: TRAINING_ID #" style="height:17px;" title="view detail">
         <i class="fa fa-search-plus"></i></a>
