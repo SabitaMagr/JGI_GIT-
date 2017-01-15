@@ -170,7 +170,7 @@ return [
             'trainingList' => [
                 'type' => Segment::class,
                 'options' => [
-                    'route' => '/selfservice/trainingList[/:action]',
+                    'route' => '/selfservice/trainingList[/:action[/:employeeId][/:trainingId]]',
                     'constants' => [
                         'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
                         'id' => '[0-9]+',
@@ -475,7 +475,7 @@ return [
                 'route' => 'trainingList',
                 'pages' => [
                     [
-                        'label' => 'Detail',
+                        'label' => 'List',
                         'route' => 'trainingList',
                         'action' => 'index',
                     ],
@@ -485,9 +485,9 @@ return [
                         'action' => 'add',
                     ],
                     [
-                        'label' => 'Edit',
+                        'label' => 'Detail',
                         'route' => 'trainingList',
-                        'action' => 'edit',
+                        'action' => 'view',
                     ],
                 ],
             ],

@@ -1502,3 +1502,7 @@ ul#roleList li {
 .div-font-11{
     font-size:11px !important;
 }
+.scrollbar-vertical{
+   max-height: 400px;
+   overflow-y: scroll; 
+}    

@@ -65,6 +65,7 @@ use SelfService\Repository\AdvanceRequestRepository;
 use ManagerService\Repository\AdvanceApproveRepository;
 use Advance\Repository\AdvanceStatusRepository;
 use Training\Repository\TrainingAssignRepository;
+use Training\Model\TrainingAssign;
 
 class RestfulService extends AbstractRestfulController {
 
@@ -112,6 +113,12 @@ class RestfulService extends AbstractRestfulController {
                 case "assignEmployeeReportingHierarchy":
                     $responseData = $this->assignEmployeeReportingHierarchy($postedData->data);
                     break;
+                case "assignEmployeeTraining":
+                    $responseData = $this->assignEmployeeTraining($postedData->data);
+                    break;
+                case "cancelEmployeeTraining":
+                    $responseData = $this->cancelEmployeeTraining($postedData->data);
+                    break;
                 case "assignEmployeeShift":
                     $responseData = $this->assignEmployeeShift($postedData->data);
                     break;
@@ -156,6 +163,9 @@ class RestfulService extends AbstractRestfulController {
                     break;
                 case "pullEmployeeForTrainingAssign":
                     $responseData = $this->pullEmployeeForTrainingAssign($postedData->data);
+                    break;
+                case "pullTrainingAssignList":
+                    $responseData = $this->pullTrainingAssignList($postedData->data);
                     break;
                 case "pullMenuDetail":
                     $responseData = $this->pullMenuDetail($postedData->data);
@@ -311,7 +321,7 @@ class RestfulService extends AbstractRestfulController {
 
             $shiftAssignClone->status = 'D';
             $shiftAssignClone->modifiedDt = Helper::getcurrentExpressionDate();
-            $shiftAssignClone->modifiedDt = $this->loggedIdEmployeeId;
+            $shiftAssignClone->modifiedBy = $this->loggedIdEmployeeId;
             $shiftAssignRepo->edit($shiftAssignClone, [$data['employeeId'], $data['oldShiftId']]);
 
             $shiftAssign->createdDt = Helper::getcurrentExpressionDate();
@@ -330,6 +340,7 @@ class RestfulService extends AbstractRestfulController {
             "data" => $data
         ];
     }
+    
 
     private function pullEmployeeMonthlyValue(array $data) {
         $monValDetRepo = new MonthlyValueDetailRepo($this->adapter);
@@ -1991,6 +2002,35 @@ class RestfulService extends AbstractRestfulController {
             "data" => $employeeList
         ];
     }
+    public function pullTrainingAssignList($data){
+        $employeeId = $data['employeeId'];
+        $branchId = $data['branchId'];
+        $departmentId = $data['departmentId'];
+        $designationId = $data['designationId'];
+        $positionId = $data['positionId'];
+        $serviceTypeId = $data['serviceTypeId'];
+        $trainingId = $data['trainingId'];
+        $serviceEventTypeId = $data['serviceEventTypeId'];
+        
+        $trainingAssignRepo = new TrainingAssignRepository($this->adapter);
+        $result = $trainingAssignRepo->filterRecords($employeeId,$branchId,$departmentId,$designationId,$positionId,$serviceTypeId,$serviceEventTypeId,$trainingId);
+        $list = [];
+        $getValue = function($trainingTypeId){
+            if($trainingTypeId=='CP'){
+                return 'Company Personal';
+            }else if($trainingTypeId=='CC'){
+                return 'Company Contribution';
+            }
+        };
+        foreach($result as $row){
+            $row['TRAINING_TYPE']=$getValue($row['TRAINING_TYPE']);
+            array_push($list, $row);
+        }
+        return [
+            "success" => true,
+            "data" => $list
+        ];
+    }
      public function pullEmployeeForTrainingAssign($data){
         $employeeId = $data['employeeId'];
         $branchId = $data['branchId'];
@@ -1998,23 +2038,31 @@ class RestfulService extends AbstractRestfulController {
         $designationId = $data['designationId'];
         $positionId = $data['positionId'];
         $serviceTypeId = $data['serviceTypeId'];
+        $trainingId = $data['trainingId'];
         
         $employeeRepository = new EmployeeRepository($this->adapter);
         $trainingAssignRepo = new TrainingAssignRepository($this->adapter);
         
-        $employeeResult = $employeeRepository->filterRecords($emplyoeeId, $branchId, $departmentId, $designationId, $positionId, $serviceTypeId, -1, 1);
+        $employeeResult = $employeeRepository->filterRecords($employeeId, $branchId, $departmentId, $designationId, $positionId, $serviceTypeId, -1, 1);
 
         $employeeList = [];
         foreach ($employeeResult as $employeeRow) {
             $employeeId = $employeeRow['EMPLOYEE_ID'];
-            $trainingAssignList = $trainingAssignRepo->getDetailByEmployeeID($employeeId);
-            if ($traininigAssignList != null) {
+            $trainingAssignList = $trainingAssignRepo->getDetailByEmployeeID($employeeId,$trainingId);
+            if ($trainingAssignList != null) {
                 $employeeRow['TRAINING_NAME'] = $trainingAssignList['TRAINING_NAME'];
+                $employeeRow['TRAINING_ID'] = $trainingAssignList['TRAINING_ID'];
+                $employeeRow['START_DATE'] = $trainingAssignList['START_DATE'];
+                $employeeRow['END_DATE'] = $trainingAssignList['END_DATE'];
                 $employeeRow['INSTITUTE_NAME'] = $trainingAssignList['INSTITUTE_NAME'];
-                $employeeRow['INSTRUCTOR_NAME'] = $trainingAssignList['INSTRUCTOR_NAME'];
+                $employeeRow['LOCATION'] = $trainingAssignList['LOCATION'];
             } else {
-                $employeeRow['RECOMMENDER_NAME'] = "";
-                $employeeRow['APPROVER_NAME'] = "";
+                $employeeRow['TRAINING_NAME'] = "";
+                $employeeRow['TRAINING_ID'] = "";
+                $employeeRow['START_DATE'] = "";
+                $employeeRow['END_DATE'] = "";
+                $employeeRow['INSTITUTE_NAME'] = "";
+                $employeeRow['LOCATION'] = "";
             }
             array_push($employeeList, $employeeRow);
         }
@@ -2024,6 +2072,55 @@ class RestfulService extends AbstractRestfulController {
             "data" => $employeeList
         ];
         
+    }
+    
+    public function assignEmployeeTraining($data){
+        $trainingAssignRepo = new TrainingAssignRepository($this->adapter);
+        $trainingAssignModel = new TrainingAssign();
+
+        $trainingAssignModel->employeeId = $data['employeeId'];
+        $trainingAssignModel->trainingId = $data['trainingId'];
+        
+        $getPreviousDtl = $trainingAssignRepo->getAllDetailByEmployeeID($data['employeeId'], $data['trainingId']);
+
+        //print_r(count($getPreviousDtl));die();
+        
+        if (count($getPreviousDtl)>0) {
+            $trainingAssignClone = clone $trainingAssignModel;
+            unset($trainingAssignClone->employeeId);
+            unset($trainingAssignClone->trainingId);
+            unset($trainingAssignClone->createdDt);
+
+            $trainingAssignClone->status = 'E';
+            $trainingAssignClone->modifiedDt = Helper::getcurrentExpressionDate();
+            $trainingAssignClone->modifiedBy = $this->loggedIdEmployeeId;
+            $trainingAssignRepo->edit($trainingAssignClone, [$data['employeeId'], $data['trainingId']]);
+        } else {
+            $trainingAssignModel->createdDt = Helper::getcurrentExpressionDate();
+            $trainingAssignModel->createdBy = $this->loggedIdEmployeeId;
+            $trainingAssignModel->status = 'E';
+            $trainingAssignRepo->add($trainingAssignModel);
+        }
+
+        return [
+            "success" => true,
+            "data" => $data
+        ];
+    }
+    public function cancelEmployeeTraining($data){
+        $trainingAssignRepo = new TrainingAssignRepository($this->adapter);
+        $trainingAssignModel = new TrainingAssign();
+        $trainingAssignModel->employeeId = $data['employeeId'];
+        $trainingAssignModel->trainingId = $data['trainingId'];        
+        $trainingAssignModel->status = 'D';
+        $trainingAssignModel->modifiedDt = Helper::getcurrentExpressionDate();
+        $trainingAssignModel->modifiedBy = $this->loggedIdEmployeeId;
+        $trainingAssignRepo->edit($trainingAssignModel, [$data['employeeId'], $data['trainingId']]);
+
+        return [
+            "success" => true,
+            "data" => $data
+        ]; 
     }
 
     public function assignEmployeeReportingHierarchy($data) {
@@ -2073,6 +2170,7 @@ class RestfulService extends AbstractRestfulController {
             "data" => $data
         ];
     }
+
 
     public function pullAttendanceList($data) {
         $attendanceDetailRepository = new AttendanceDetailRepository($this->adapter);

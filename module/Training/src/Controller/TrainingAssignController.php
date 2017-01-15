@@ -15,12 +15,16 @@ use Setup\Model\Designation;
 use Setup\Model\Position;
 use Setup\Model\ServiceType;
 use Setup\Model\Training;
+use Setup\Model\ServiceEventType;
+use Training\Repository\TrainingAssignRepository;
 
 class TrainingAssignController extends AbstractActionController{
     private $form;
     private $adapter;
+    private $repository;
     public function __construct(AdapterInterface $adapter) {
         $this->adapter = $adapter;
+        $this->repository = new TrainingAssignRepository($this->adapter);
     }
     public function indexAction() {
         $employeeNameFormElement = new Select();
@@ -73,12 +77,20 @@ class TrainingAssignController extends AbstractActionController{
         $serviceTypeFormElement->setAttributes(["id" => "serviceTypeId", "class" => "form-control"]);
         $serviceTypeFormElement->setLabel("Service Type");
         
+        $serviceEventTypeFormElement = new Select();
+        $serviceEventTypeFormElement->setName("serviceEventType");
+        $serviceEventTypes = \Application\Helper\EntityHelper::getTableKVListWithSortOption($this->adapter, ServiceEventType::TABLE_NAME, ServiceEventType::SERVICE_EVENT_TYPE_ID, [ServiceEventType::SERVICE_EVENT_TYPE_NAME], [ServiceEventType::STATUS => 'E'], "SERVICE_EVENT_TYPE_NAME", "ASC");
+        $serviceEventTypes1 = [-1 => "All"] + $serviceEventTypes;
+        $serviceEventTypeFormElement->setValueOptions($serviceEventTypes1);
+        $serviceEventTypeFormElement->setAttributes(["id" => "serviceEventTypeId", "class" => "form-control"]);
+        $serviceEventTypeFormElement->setLabel("Service Event Type");
+        
         $trainingFormElement = new Select();
         $trainingFormElement->setName("training");
         $trainings = \Application\Helper\EntityHelper::getTableKVListWithSortOption($this->adapter, Training::TABLE_NAME, Training::TRAINING_ID, [Training::TRAINING_NAME], [Training::STATUS => 'E'], "TRAINING_NAME", "ASC");
         $trainings1 = [-1 => "All"] + $trainings;
         $trainingFormElement->setValueOptions($trainings1);
-        $trainingFormElement->setAttributes(["id" => "training", "class" => "form-control"]);
+        $trainingFormElement->setAttributes(["id" => "trainingId", "class" => "form-control"]);
         $trainingFormElement->setLabel("Training");
         
         return Helper::addFlashMessagesToArray($this, [
@@ -89,7 +101,8 @@ class TrainingAssignController extends AbstractActionController{
             'positions'=>$positionFormElement,
             'designations'=>$designationFormElement,
             'serviceTypes'=>$serviceTypeFormElement,
-            'trainings'=>$trainingFormElement
+            'trainings'=>$trainingFormElement,
+            'serviceEventTypes'=>$serviceEventTypeFormElement
             
             ]);
     }
@@ -111,5 +124,97 @@ class TrainingAssignController extends AbstractActionController{
            'employees'=>$employee,
            'training'=>$trainingList
            ]); 
+    }
+    public function assignAction(){
+        $employeeNameFormElement = new Select();
+        $employeeNameFormElement->setName("branch");
+        $employeeName = \Application\Helper\EntityHelper::getTableKVListWithSortOption($this->adapter, "HR_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => "E"], "FIRST_NAME", "ASC", " ");
+        $employeeName1 = [-1 => "All"] + $employeeName;
+        $employeeNameFormElement->setValueOptions($employeeName1);
+        $employeeNameFormElement->setAttributes(["id" => "employeeId", "class" => "form-control"]);
+        $employeeNameFormElement->setLabel("Employee");
+        $employeeNameFormElement->setAttribute("ng-click", "view()");
+
+        $branchFormElement = new Select();
+        $branchFormElement->setName("branch");
+        $branches = \Application\Helper\EntityHelper::getTableKVListWithSortOption($this->adapter, Branch::TABLE_NAME, Branch::BRANCH_ID, [Branch::BRANCH_NAME], [Branch::STATUS => 'E'], "BRANCH_NAME", "ASC");
+        $branches1 = [-1 => "All"] + $branches;
+        $branchFormElement->setValueOptions($branches1);
+        $branchFormElement->setAttributes(["id" => "branchId", "class" => "form-control"]);
+        $branchFormElement->setLabel("Branch");
+        $branchFormElement->setAttribute("ng-click", "view()");
+
+        $departmentFormElement = new Select();
+        $departmentFormElement->setName("department");
+        $departments = \Application\Helper\EntityHelper::getTableKVListWithSortOption($this->adapter, Department::TABLE_NAME, Department::DEPARTMENT_ID, [Department::DEPARTMENT_NAME], [Department::STATUS => 'E'], "DEPARTMENT_NAME", "ASC");
+        $departments1 = [-1 => "All"] + $departments;
+        $departmentFormElement->setValueOptions($departments1);
+        $departmentFormElement->setAttributes(["id" => "departmentId", "class" => "form-control"]);
+        $departmentFormElement->setLabel("Department");
+
+        $designationFormElement = new Select();
+        $designationFormElement->setName("designation");
+        $designations = \Application\Helper\EntityHelper::getTableKVListWithSortOption($this->adapter, Designation::TABLE_NAME, Designation::DESIGNATION_ID, [Designation::DESIGNATION_TITLE], [Designation::STATUS => 'E'], "DESIGNATION_TITLE", "ASC");
+        $designations1 = [-1 => "All"] + $designations;
+        $designationFormElement->setValueOptions($designations1);
+        $designationFormElement->setAttributes(["id" => "designationId", "class" => "form-control"]);
+        $designationFormElement->setLabel("Designation");
+
+        $positionFormElement = new Select();
+        $positionFormElement->setName("position");
+        $positions = \Application\Helper\EntityHelper::getTableKVListWithSortOption($this->adapter, Position::TABLE_NAME, Position::POSITION_ID, [Position::POSITION_NAME], [Position::STATUS => 'E'], "POSITION_NAME", "ASC");
+        $positions1 = [-1 => "All"] + $positions;
+        $positionFormElement->setValueOptions($positions1);
+        $positionFormElement->setAttributes(["id" => "positionId", "class" => "form-control"]);
+        $positionFormElement->setLabel("Position");
+
+        $serviceTypeFormElement = new Select();
+        $serviceTypeFormElement->setName("serviceType");
+        $serviceTypes = \Application\Helper\EntityHelper::getTableKVListWithSortOption($this->adapter, ServiceType::TABLE_NAME, ServiceType::SERVICE_TYPE_ID, [ServiceType::SERVICE_TYPE_NAME], [ServiceType::STATUS => 'E'], "SERVICE_TYPE_NAME", "ASC");
+        $serviceTypes1 = [-1 => "All"] + $serviceTypes;
+        $serviceTypeFormElement->setValueOptions($serviceTypes1);
+        $serviceTypeFormElement->setAttributes(["id" => "serviceTypeId", "class" => "form-control"]);
+        $serviceTypeFormElement->setLabel("Service Type");
+
+        $trainingFormElement = new Select();
+        $trainingFormElement->setName("training");
+        $trainings = \Application\Helper\EntityHelper::getTableKVListWithSortOption($this->adapter, Training::TABLE_NAME, Training::TRAINING_ID, [Training::TRAINING_NAME], [Training::STATUS => 'E'], "TRAINING_NAME", "ASC");
+        $trainingFormElement->setValueOptions($trainings);
+        $trainingFormElement->setAttributes(["id" => "trainingId", "class" => "form-control"]);
+        $trainingFormElement->setLabel("Training");
+        
+        return Helper::addFlashMessagesToArray($this, [
+            'list'=>'list',
+            'employees'=>$employeeNameFormElement,
+            'branches'=>$branchFormElement,
+            'departments'=>$departmentFormElement,
+            'positions'=>$positionFormElement,
+            'designations'=>$designationFormElement,
+            'serviceTypes'=>$serviceTypeFormElement,
+            'trainings'=>$trainingFormElement            
+            ]);
+    }
+    public function deleteAction(){
+        $employeeId = (int) $this->params()->fromRoute("employeeId");
+        $trainingId = (int) $this->params()->fromRoute("trainingId");
+        if (!$trainingId && !$employeeId) {
+            return $this->redirect()->toRoute('trainingAssign');
+        }
+        //print_r("hellow"); die();
+        $this->repository->delete([$employeeId, $trainingId]);
+        $this->flashmessenger()->addMessage("Training Assign Successfully Cancelled!!!");
+        return $this->redirect()->toRoute('trainingAssign');
+    }
+    public function viewAction(){
+        $employeeId = (int) $this->params()->fromRoute("employeeId");
+        $trainingId = (int) $this->params()->fromRoute("trainingId");
+        
+        if(!$employeeId && !$trainingId){
+            return $this->redirect()->toRoute('trainingAssign');
+        }
+        
+        $detail= $this->repository->getDetailByEmployeeID($employeeId, $trainingId);
+       
+        return Helper::addFlashMessagesToArray($this,['detail'=>$detail]);
     }
 }        
