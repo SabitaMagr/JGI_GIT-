@@ -6,24 +6,26 @@
  * Date: 9/29/16
  * Time: 12:46 PM
  */
+
 namespace SelfService\Controller;
 
-use ManagerService\Repository\LeaveApproveRepository;
-use Zend\View\Model\ViewModel;
-use Zend\Db\Adapter\AdapterInterface;
-use Zend\Mvc\Controller\AbstractActionController;
-use SelfService\Repository\LeaveRequestRepository;
-use Zend\Authentication\AuthenticationService;
+use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
 use LeaveManagement\Form\LeaveApplyForm;
 use LeaveManagement\Model\LeaveApply;
-use Zend\Form\Annotation\AnnotationBuilder;
-use Application\Helper\EntityHelper;
-use Zend\Form\Element\Select;
-use Setup\Repository\RecommendApproveRepository;
-use Setup\Repository\EmployeeRepository;
-use LeaveManagement\Repository\LeaveMasterRepository;
 use LeaveManagement\Model\LeaveMaster;
+use LeaveManagement\Repository\LeaveMasterRepository;
+use ManagerService\Repository\LeaveApproveRepository;
+use Notification\Controller\HeadNotification;
+use Notification\Model\NotificationEvents;
+use SelfService\Repository\LeaveRequestRepository;
+use Setup\Repository\EmployeeRepository;
+use Setup\Repository\RecommendApproveRepository;
+use Zend\Authentication\AuthenticationService;
+use Zend\Db\Adapter\AdapterInterface;
+use Zend\Form\Annotation\AnnotationBuilder;
+use Zend\Form\Element\Select;
+use Zend\Mvc\Controller\AbstractActionController;
 
 class LeaveRequest extends AbstractActionController {
 
@@ -51,7 +53,8 @@ class LeaveRequest extends AbstractActionController {
         $builder = new AnnotationBuilder();
         $this->form = $builder->createForm($leaveApplyForm);
     }
-    public function getRecommendApprover(){
+
+    public function getRecommendApprover() {
         $recommendApproveRepository = new RecommendApproveRepository($this->adapter);
         $empRecommendApprove = $recommendApproveRepository->fetchById($this->employeeId);
 
@@ -60,35 +63,35 @@ class LeaveRequest extends AbstractActionController {
             $this->approver = $empRecommendApprove['APPROVED_BY'];
         } else {
             $result = $this->recommendApproveList();
-            if(count($result['recommender'])>0){
-                $this->recommender=$result['recommender'][0]['id'];
-            }else{
-                $this->recommender=null;
+            if (count($result['recommender']) > 0) {
+                $this->recommender = $result['recommender'][0]['id'];
+            } else {
+                $this->recommender = null;
             }
-            if(count($result['approver'])>0){
-                $this->approver=$result['approver'][0]['id'];
-            }else{
-                 $this->approver=null;
-            } 
-        }               
+            if (count($result['approver']) > 0) {
+                $this->approver = $result['approver'][0]['id'];
+            } else {
+                $this->approver = null;
+            }
+        }
     }
 
     public function indexAction() {
         $leaveFormElement = new Select();
         $leaveFormElement->setName("leave");
-        $leaves = \Application\Helper\EntityHelper::getTableKVList($this->adapter, LeaveMaster::TABLE_NAME, LeaveMaster::LEAVE_ID, [LeaveMaster::LEAVE_ENAME], [LeaveMaster::STATUS => 'E']);
+        $leaves = EntityHelper::getTableKVList($this->adapter, LeaveMaster::TABLE_NAME, LeaveMaster::LEAVE_ID, [LeaveMaster::LEAVE_ENAME], [LeaveMaster::STATUS => 'E']);
         $leaves[-1] = "All";
         ksort($leaves);
         $leaveFormElement->setValueOptions($leaves);
         $leaveFormElement->setAttributes(["id" => "leaveId", "class" => "form-control"]);
         $leaveFormElement->setLabel("Leave Type");
-        
+
         $leaveStatus = [
-            '-1'=>'All',
-            'RQ'=>'Pending',
-            'RC'=>'Recommended',
-            'AP'=>'Approved',
-            'R'=>'Rejected'
+            '-1' => 'All',
+            'RQ' => 'Pending',
+            'RC' => 'Recommended',
+            'AP' => 'Approved',
+            'R' => 'Rejected'
         ];
         $leaveStatusFormElement = new Select();
         $leaveStatusFormElement->setName("leaveStatus");
@@ -97,10 +100,10 @@ class LeaveRequest extends AbstractActionController {
         $leaveStatusFormElement->setLabel("Leave Request Status");
 
         return Helper::addFlashMessagesToArray($this, [
-            'leaves' => $leaveFormElement,
-            'leaveStatus'=>$leaveStatusFormElement,
-            'employeeId'=>$this->employeeId
-                ]);
+                    'leaves' => $leaveFormElement,
+                    'leaveStatus' => $leaveStatusFormElement,
+                    'employeeId' => $this->employeeId
+        ]);
     }
 
     public function addAction() {
@@ -127,6 +130,7 @@ class LeaveRequest extends AbstractActionController {
                 $leaveRequest->status = "RQ";
 
                 $this->leaveRequestRepository->add($leaveRequest);
+                HeadNotification::pushNotification(NotificationEvents::LEAVE_APPLIED, $leaveRequest, $this->adapter);
                 $this->flashmessenger()->addMessage("Leave Request Successfully added!!!");
                 return $this->redirect()->toRoute("leaverequest");
             }
@@ -153,24 +157,24 @@ class LeaveRequest extends AbstractActionController {
     public function viewAction() {
         $this->initializeForm();
         $this->getRecommendApprover();
-        
+
         $id = (int) $this->params()->fromRoute('id');
         $leaveApproveRepository = new LeaveApproveRepository($this->adapter);
 
         if ($id === 0) {
             return $this->redirect()->toRoute("leaveapprove");
         }
-        
-        $fullName = function($id){
-          $empRepository = new EmployeeRepository($this->adapter);
-          $empDtl = $empRepository->fetchById($id);
-          $empMiddleName = ($empDtl['MIDDLE_NAME']!=null)? " ".$empDtl['MIDDLE_NAME']." " :" ";
-          return $empDtl['FIRST_NAME'].$empMiddleName.$empDtl['LAST_NAME'];
+
+        $fullName = function($id) {
+            $empRepository = new EmployeeRepository($this->adapter);
+            $empDtl = $empRepository->fetchById($id);
+            $empMiddleName = ($empDtl['MIDDLE_NAME'] != null) ? " " . $empDtl['MIDDLE_NAME'] . " " : " ";
+            return $empDtl['FIRST_NAME'] . $empMiddleName . $empDtl['LAST_NAME'];
         };
-        
+
         $recommenderName = $fullName($this->recommender);
         $approverName = $fullName($this->approver);
-        
+
         $leaveApply = new LeaveApply();
         $request = $this->getRequest();
 
@@ -182,12 +186,12 @@ class LeaveRequest extends AbstractActionController {
 
         $status = $detail['STATUS'];
         $approvedDT = $detail['APPROVED_DT'];
-        $recommended_by = $fullName($detail['RECOMMENDED_BY']);    
+        $recommended_by = $fullName($detail['RECOMMENDED_BY']);
         $approved_by = $fullName($detail['APPROVED_BY']);
-        $authRecommender = ($status=='RQ' || $status=='C')?$recommenderName:$recommended_by;
-        $authApprover = ($status=='RC' || $status=='RQ' || $status=='C' || ($status=='R' && $approvedDT==null))?$approverName:$approved_by;       
+        $authRecommender = ($status == 'RQ' || $status == 'C') ? $recommenderName : $recommended_by;
+        $authApprover = ($status == 'RC' || $status == 'RQ' || $status == 'C' || ($status == 'R' && $approvedDT == null)) ? $approverName : $approved_by;
         $employeeName = $fullName($detail['EMPLOYEE_ID']);
-        
+
         //to get the previous balance of selected leave from assigned leave detail
         $result = $leaveApproveRepository->assignedLeaveDetail($detail['LEAVE_ID'], $detail['EMPLOYEE_ID'])->getArrayCopy();
         $preBalance = $result['BALANCE'];

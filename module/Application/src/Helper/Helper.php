@@ -15,7 +15,7 @@ class Helper {
     const MYSQL_DATE_FORMAT = "";
     const PHP_DATE_FORMAT = "d-M-Y";
     const FLOAT_ROUNDING_DIGIT_NO = 2;
-    const UPLOAD_DIR = __DIR__."/../../../../public/uploads";
+    const UPLOAD_DIR = __DIR__ . "/../../../../public/uploads";
 
     public static function addFlashMessagesToArray($context, $return) {
         $flashMessenger = $context->flashMessenger();
@@ -121,6 +121,16 @@ class Helper {
 
     public static function timeExpression($columnName, $shortForm = null) {
         $format = Helper::ORACLE_TIME_FORMAT;
+        $pre = "";
+        if ($shortForm != null && sizeof($shortForm) != 0) {
+            $pre = $shortForm . ".";
+        }
+        $tempStr = "TO_CHAR({$pre}{$columnName}, '{$format}') AS {$columnName}";
+        return new Expression($tempStr);
+    }
+
+    public static function datetimeExpression($columnName, $shortForm = null) {
+        $format = Helper::ORACLE_DATE_FORMAT." ".self::ORACLE_TIME_FORMAT;
         $pre = "";
         if ($shortForm != null && sizeof($shortForm) != 0) {
             $pre = $shortForm . ".";

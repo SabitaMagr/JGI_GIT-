@@ -22,19 +22,20 @@ use Setup\Model\ServiceEventType;
 use Zend\Form\Element\Select;
 
 class AdvanceApproveController extends AbstractActionController {
+
     private $advanceApproveRepository;
     private $employeeId;
     private $adapter;
     private $form;
-        
+
     public function __construct(AdapterInterface $adapter) {
         $this->adapter = $adapter;
         $this->advanceApproveRepository = new AdvanceApproveRepository($adapter);
         $auth = new AuthenticationService();
-        $this->employeeId =  $auth->getStorage()->read()['employee_id'];       
+        $this->employeeId = $auth->getStorage()->read()['employee_id'];
     }
-    
-    public function initializeForm(){
+
+    public function initializeForm() {
         $builder = new AnnotationBuilder();
         $form = new AdvanceRequestForm();
         $this->form = $builder->createForm($form);
@@ -82,7 +83,7 @@ class AdvanceApproveController extends AbstractActionController {
                 'REQUESTED_DATE' => $row['REQUESTED_DATE'],
                 'REASON' => $row['REASON'],
                 'TERMS' => $row['TERMS'],
-                'STATUS'=>$getStatusValue($row['STATUS']),
+                'STATUS' => $getStatusValue($row['STATUS']),
                 'ADVANCE_NAME' => $row['ADVANCE_NAME'],
                 'ADVANCE_REQUEST_ID' => $row['ADVANCE_REQUEST_ID'],
                 'YOUR_ROLE' => $getValue($row['RECOMMENDER'], $row['APPROVER']),
@@ -92,7 +93,7 @@ class AdvanceApproveController extends AbstractActionController {
         //print_r($advanceApprove); die();
         return Helper::addFlashMessagesToArray($this, ['advanceApprove' => $advanceApprove, 'id' => $this->employeeId]);
     }
-    
+
     public function viewAction() {
         $this->initializeForm();
         $advanceRequestRepository = new AdvanceRequestRepository($this->adapter);
@@ -111,19 +112,19 @@ class AdvanceApproveController extends AbstractActionController {
         $approvedDT = $detail['APPROVED_DATE'];
 
         $requestedEmployeeID = $detail['EMPLOYEE_ID'];
-        $employeeName = $detail['FIRST_NAME'] . " " . $detail['MIDDLE_NAME'] . " " . $detail['LAST_NAME'];        
-        $RECM_MN = ($detail['RECM_MN']!=null)? " ".$detail['RECM_MN']." ":" ";
-        $recommender = $detail['RECM_FN'].$RECM_MN.$detail['RECM_LN'];        
-        $APRV_MN = ($detail['APRV_MN']!=null)? " ".$detail['APRV_MN']." ":" ";
-        $approver = $detail['APRV_FN'].$APRV_MN.$detail['APRV_LN'];
-        $MN1 = ($detail['MN1']!=null)? " ".$detail['MN1']." ":" ";
-        $recommended_by = $detail['FN1'].$MN1.$detail['LN1'];        
-        $MN2 = ($detail['MN2']!=null)? " ".$detail['MN2']." ":" ";
-        $approved_by = $detail['FN2'].$MN2.$detail['LN2'];
-        $authRecommender = ($status=='RQ')?$recommender:$recommended_by;
-        $authApprover = ($status=='RC' || $status=='RQ' || ($status=='R' && $approvedDT==null))?$approver:$approved_by;
-        
-        $recommenderId = ($status=='RQ')?$detail['RECOMMENDER']:$detail['RECOMMENDED_BY'];
+        $employeeName = $detail['FIRST_NAME'] . " " . $detail['MIDDLE_NAME'] . " " . $detail['LAST_NAME'];
+        $RECM_MN = ($detail['RECM_MN'] != null) ? " " . $detail['RECM_MN'] . " " : " ";
+        $recommender = $detail['RECM_FN'] . $RECM_MN . $detail['RECM_LN'];
+        $APRV_MN = ($detail['APRV_MN'] != null) ? " " . $detail['APRV_MN'] . " " : " ";
+        $approver = $detail['APRV_FN'] . $APRV_MN . $detail['APRV_LN'];
+        $MN1 = ($detail['MN1'] != null) ? " " . $detail['MN1'] . " " : " ";
+        $recommended_by = $detail['FN1'] . $MN1 . $detail['LN1'];
+        $MN2 = ($detail['MN2'] != null) ? " " . $detail['MN2'] . " " : " ";
+        $approved_by = $detail['FN2'] . $MN2 . $detail['LN2'];
+        $authRecommender = ($status == 'RQ') ? $recommender : $recommended_by;
+        $authApprover = ($status == 'RC' || $status == 'RQ' || ($status == 'R' && $approvedDT == null)) ? $approver : $approved_by;
+
+        $recommenderId = ($status == 'RQ') ? $detail['RECOMMENDER'] : $detail['RECOMMENDED_BY'];
         if (!$request->isPost()) {
             $advanceRequestModel->exchangeArrayFromDB($detail);
             $this->form->bind($advanceRequestModel);
@@ -164,17 +165,17 @@ class AdvanceApproveController extends AbstractActionController {
                     'employeeName' => $employeeName,
                     'requestedDate' => $detail['REQUESTED_DATE'],
                     'role' => $role,
-                    'recommender'=>$authRecommender,
-                    'approver'=>$authApprover,
+                    'recommender' => $authRecommender,
+                    'approver' => $authApprover,
                     'status' => $status,
                     'recommendedBy' => $recommenderId,
-                    'approvedDT'=>$approvedDT,
+                    'approvedDT' => $approvedDT,
                     'employeeId' => $this->employeeId,
                     'requestedEmployeeId' => $requestedEmployeeID,
                     'advances' => EntityHelper::getTableKVListWithSortOption($this->adapter, Advance::TABLE_NAME, Advance::ADVANCE_ID, [Advance::ADVANCE_NAME], [Advance::STATUS => "E"], Advance::ADVANCE_ID, "ASC")
         ]);
     }
-    
+
     public function statusAction() {
         $employeeNameFormElement = new Select();
         $employeeNameFormElement->setName("branch");

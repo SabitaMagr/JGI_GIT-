@@ -3785,6 +3785,34 @@ return array (
         ),
       ),
     ),
+    'notification' => 
+    array (
+      0 => 
+      array (
+        'label' => 'Notification',
+        'route' => 'notification',
+      ),
+      1 => 
+      array (
+        'label' => 'Notification',
+        'route' => 'notification',
+        'pages' => 
+        array (
+          0 => 
+          array (
+            'label' => 'List',
+            'route' => 'notification',
+            'action' => 'index',
+          ),
+          1 => 
+          array (
+            'label' => 'View',
+            'route' => 'notification',
+            'action' => 'view',
+          ),
+        ),
+      ),
+    ),
   ),
   'controllers' => 
   array (

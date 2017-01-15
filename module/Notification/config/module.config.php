@@ -28,6 +28,30 @@ return [
             Controller\NotificationController::class => \Application\Controller\ControllerFactory::class
         ],
     ],
+    'navigation' => [
+        'notification' => [
+                [
+                'label' => 'Notification',
+                'route' => 'notification',
+            ],
+                [
+                'label' => 'Notification',
+                'route' => 'notification',
+                'pages' => [
+                        [
+                        'label' => 'List',
+                        'route' => 'notification',
+                        'action' => 'index',
+                    ],
+                        [
+                        'label' => 'View',
+                        'route' => 'notification',
+                        'action' => 'view',
+                    ],
+                ]
+            ]
+        ],
+    ],
     'view_manager' => [
         'template_path_stack' => [
             __DIR__ . '/../view',
