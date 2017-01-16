@@ -57,7 +57,8 @@
             "Appraisal\\": "module/Appraisal/src/",
             "Loan\\": "module/Loan/src/",
             "Advance\\": "module/Advance/src/",
-            "Notification\\": "module/Notification/src/"
+            "Notification\\": "module/Notification/src/",
+            "Travel\\": "module/Travel/src/"
         }
     },
     "autoload-dev": {
