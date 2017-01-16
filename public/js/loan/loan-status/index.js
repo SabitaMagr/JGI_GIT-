@@ -124,7 +124,7 @@ angular.module('hris', [])
                             cells: [
                                 {value: dataItem.FIRST_NAME + middleName + dataItem.LAST_NAME},
                                 {value: dataItem.LOAN_NAME},
-                                {value: dataItem.REQUESTED_AMOUNT},
+                                {value: dataItem.REQUESTED_DATE},
                                 {value: dataItem.LOAN_DATE},
                                 {value: dataItem.REQUESTED_AMOUNT},
                                 {value: dataItem.RECOMMENDER_NAME},

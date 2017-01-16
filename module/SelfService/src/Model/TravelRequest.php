@@ -58,6 +58,6 @@ class TravelRequest extends Model{
         'recommendedRemarks'=>self::RECOMMENDED_REMARKS,       
         'approvedBy'=>self::APPROVED_BY,
         'approvedDate'=>self::APPROVED_DATE,
-        'approvedRemarks'=>self::APPROVED_DATE
+        'approvedRemarks'=>self::APPROVED_REMARKS
     ];   
 }

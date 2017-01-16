@@ -24,12 +24,11 @@
             rowTemplate: kendo.template($("#rowTemplate").html()),
             columns: [
                 {field: "FIRST_NAME", title: "Employee Name", width: 200},
-                {field: "FROM_DATE", title: "From Date", width: 120},
-                {field: "TO_DATE", title: "To Date", width: 120},
+                {field: "FROM_DATE", title: "From Date", width: 100},
+                {field: "TO_DATE", title: "To Date", width: 100},
                 {field: "REQUESTED_DATE", title: "Requested Date", width: 140},
                 {field: "DESTINATION", title: "Destination", width: 100},
-                {field: "REQUESTED_AMOUNT", title: "Requested Amount", width: 120},
-                {field: "REQUESTED_TYPE", title: "Request For", width: 100},
+                {field: "REQUESTED_AMOUNT", title: "Requested Amt.", width: 120},
                 {field: "YOUR_ROLE", title: "Your Role", width: 100},
                 {title: "Action", width: 70}
             ]

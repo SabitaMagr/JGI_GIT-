@@ -1386,7 +1386,7 @@ return array (
         'type' => 'Zend\\Router\\Http\\Segment',
         'options' => 
         array (
-          'route' => '/managerservice/travelApprove[/:action[/:id]]',
+          'route' => '/managerservice/travelApprove[/:action[/:id][/:role]]',
           'defaults' => 
           array (
             'controller' => 'ManagerService\\Controller\\TravelApproveController',
@@ -1660,6 +1660,24 @@ return array (
           'defaults' => 
           array (
             'controller' => 'Travel\\Controller\\TravelStatus',
+            'action' => 'index',
+          ),
+        ),
+      ),
+      'travelApply' => 
+      array (
+        'type' => 'Zend\\Router\\Http\\Segment',
+        'options' => 
+        array (
+          'route' => '/travel/apply[/:action[/:id]]',
+          'constraints' => 
+          array (
+            'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+            'id' => '[0-9]+',
+          ),
+          'defaults' => 
+          array (
+            'controller' => 'Travel\\Controller\\TravelApply',
             'action' => 'index',
           ),
         ),
@@ -4037,6 +4055,7 @@ return array (
       'Notification\\Controller\\NotificationController' => 'Application\\Controller\\ControllerFactory',
       'Notification\\Controller\\EmailController' => 'Application\\Controller\\ControllerFactory',
       'Travel\\Controller\\TravelStatus' => 'Application\\Controller\\ControllerFactory',
+      'Travel\\Controller\\TravelApply' => 'Application\\Controller\\ControllerFactory',
     ),
   ),
   'view_manager' => 

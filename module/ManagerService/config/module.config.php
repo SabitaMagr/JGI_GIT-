@@ -68,7 +68,7 @@ return [
             'travelApprove' => [
                 'type' => Segment::class,
                 'options' => [
-                    'route' => '/managerservice/travelApprove[/:action[/:id]]',
+                    'route' => '/managerservice/travelApprove[/:action[/:id][/:role]]',
                     'defaults' => [
                         'controller' => Controller\TravelApproveController::class,
                         'action' => 'index'
