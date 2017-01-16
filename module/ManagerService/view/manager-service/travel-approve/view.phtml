@@ -17,6 +17,7 @@ $purpose->setAttributes(["disabled"=>"disabled"]);
 $remarks = $form->get('remarks');
 $remarks->setAttributes(["disabled"=>"disabled"]);
 $requestedType = $form->get('requestedType');
+$requestedType->setValueOptions($requestType);
 $requestedType->setAttributes(["disabled"=>"disabled"]);
 $recommendedRemarks = $form->get('recommendedRemarks');
 $recommendedRemarks->setAttributes(['required'=>'true']);
