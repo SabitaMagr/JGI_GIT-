@@ -87,7 +87,9 @@
         <link href="<?= $this->basePath('dropzone/dropzone.min.css') ?>" rel="stylesheet" type="text/css"/>
         <link href="<?= $this->basePath('assets/global/plugins/bootstrap-multiselect/css/bootstrap-multiselect.css') ?>" rel="stylesheet" type="text/css"/>       
         <link href="<?= $this->basePath('assets/global/plugins/nepalidate/nepali.datepicker.v2.1.min.css'); ?>" rel="stylesheet" type="text/css"/>
-
+        <?php
+        print $this->headLink();
+        ?>
     </head>
 
 
@@ -98,7 +100,7 @@
         </script>
         <div class="page-wrapper">
             <?php
-            print $this->partial('partials/header.phtml');           
+            print $this->partial('partials/header.phtml');
             ?>
             <div class="clearfix"></div>
             <div class="page-container">

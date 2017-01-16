@@ -1,1 +1,52 @@
-Email Notification
+<?php
+$this->headScript()
+        ->appendFile($this->basePath('assets/global/plugins/bootstrap-summernote/summernote.min.js'))
+        ->appendFile($this->basePath('js/Notification/Email/index.js'));
+$this->headLink()
+        ->appendStylesheet($this->basePath('assets/global/plugins/bootstrap-summernote/summernote.css'));
+?>
+
+<div class="portlet box blue">
+    <div class="portlet-title">
+        <div class="caption">
+            <i class="fa fa-mail-reply"></i>Email Templates </div>
+        <div class="tools">
+            <a href="javascript:;" class="collapse"> </a>
+            <a href="#portlet-config" data-toggle="modal" class="config"> </a>
+        </div>
+    </div>
+    <div class="portlet-body">
+        <div class="tabbable-line">
+            <ul class="nav nav-tabs ">
+                <?php foreach ($emailTypes as $key => $emailType): ?>
+                    <li class="<?= ($key == 1) ? 'active' : '' ?>">
+                        <a href="#<?= $emailType ?>" data-toggle="tab"> <?= $emailType ?> </a>
+                    </li>
+                <?php endforeach; ?>
+            </ul>
+            <div class="tab-content">
+                <?php foreach ($emailTypes as $key => $emailType): ?>
+                    <div class="tab-pane <?= ($key == 1) ? 'active' : '' ?>" id="<?= $emailType ?>">
+                        <form method="POST" role="form" action="<?= $this->url('email', ['action' => 'edit']) ?>">
+                            <div class="form-body">
+                                <div class="form-group">
+                                    <label class="control-label">Subject</label>
+                                    <input name="subject" id="subject<?= $key ?>" type="text" class="form-control" placeholder="Enter Subject">
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label">Message</label>
+                                    <input name="message" id="message<?= $key ?>" type="text" class="form-control summernote">
+                                </div>
+                            </div>
+                            <div class="form-action">
+                                <input type="submit" class="btn default"  value="Edit"/>
+                            </div>
+
+
+                        </form>
+                    </div>
+                <?php endforeach; ?>
+            </div>
+        </div>
+    </div>
+</div>
