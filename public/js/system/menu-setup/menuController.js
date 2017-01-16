@@ -97,6 +97,7 @@ angularApp.controller('menuUpdateController', function ($scope, $uibModal, $log,
     });
 
     $scope.submitForm = function () {
+        console.log($scope.userForm);
         if ($scope.userForm.$valid) {
             window.app.pullDataById(document.url, {
                 action: 'menuUpdate',
@@ -122,7 +123,6 @@ angularApp.controller('menuUpdateController', function ($scope, $uibModal, $log,
                 console.log(failure);
             });
         }
-        ;
     }
     $scope.deleteMenu = function () {
         window.app.pullDataById(document.url, {
@@ -137,7 +137,7 @@ angularApp.controller('menuUpdateController', function ($scope, $uibModal, $log,
                 $('#rolePanel').css('display', 'none');
                 $scope.menuDtl.menuName = "";
                 $scope.isDisabled = true;
-                
+
                 $("#tree_3").jstree(true).settings.core.data = newData;
                 $("#tree_3").jstree(true).refresh();
 

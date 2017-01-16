@@ -20,6 +20,42 @@
         <div class="page-top">
             <div class="top-menu">
                 <ul class="nav navbar-nav pull-right">
+                    <!-- NOTIFICATION DROPDOWN -->
+                    <li class="dropdown dropdown-extended dropdown-notification" id="header_notification_bar">
+                        <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
+                            <i class="icon-bell"></i>
+                            <!--<span class="badge badge-default"> 7 </span>-->
+                            <?php if (sizeof($notifications) > 0): ?>
+                                <span class="badge badge-default"> <?php print sizeof($notifications); ?> </span>
+                            <?php endif; ?>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li class="external">
+                                <h3>
+                                    <span class="bold"><?php print sizeof($notifications); ?> pending</span> notifications</h3>
+                                <a href="<?php print $this->url('notification', ['action' => 'index']); ?>">view all</a>
+                            </li>
+                            <li>
+                                <ul class="dropdown-menu-list scroller" style="height: 250px;" data-handle-color="#637283">
+                                    <?php foreach ($notifications as $notification): ?>
+
+                                        <li>
+                                            <a href="<?php print $this->url('notification', ['action' => 'view', 'id' => $notification['MESSAGE_ID']]); ?>">
+                                                <!--<span class="time">just now</span>-->
+                                                <span class="time"><?php echo $dateCompare($notification['MESSAGE_DATETIME']) ?> days</span>
+                                                <span class="details">
+                                                    <span class="label label-sm label-icon label-success">
+                                                        <i class="fa fa-bell-o"></i>
+                                                    </span> <?php print $notification['MESSAGE_DESC']; ?> </span>
+                                            </a>
+                                        </li>
+                                    <?php endforeach; ?>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+                    <!-- END NOTIFICATION DROPDOWN -->
+
                     <li class="dropdown dropdown-user">
                         <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
                             <img alt="" class="img-circle" src="<?= $this->basePath("uploads/" . $profilePictureUrl) ?>" />
@@ -47,7 +83,7 @@
                                     <span class="badge badge-success"> 7 </span>
                                 </a>
                             </li>
-                           <!-- <li class="divider"> </li> -->
+                            <!-- <li class="divider"> </li> -->
                             <li>
                                 <a href="#" onclick="window.app.successMessage('Functionality Not implemented!');">
                                     <i class="icon-lock"></i> Lock Screen </a>

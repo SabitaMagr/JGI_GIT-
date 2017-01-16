@@ -21,11 +21,50 @@ return [
                     ],
                 ],
             ],
+            'email' => [
+                'type' => Segment::class,
+                'options' => [
+                    'route' => '/email[/:action[/:id]]',
+                    'constraints' => [
+                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'id' => '[0-9]+',
+                    ],
+                    'defaults' => [
+                        'controller' => Controller\EmailController::class,
+                        'action' => 'index'
+                    ],
+                ],
+            ],
         ]
     ],
     'controllers' => [
         'factories' => [
-            Controller\NotificationController::class => \Application\Controller\ControllerFactory::class
+            Controller\NotificationController::class => \Application\Controller\ControllerFactory::class,
+            Controller\EmailController::class => \Application\Controller\ControllerFactory::class
+        ],
+    ],
+    'navigation' => [
+        'notification' => [
+                [
+                'label' => 'Notification',
+                'route' => 'notification',
+            ],
+                [
+                'label' => 'Notification',
+                'route' => 'notification',
+                'pages' => [
+                        [
+                        'label' => 'List',
+                        'route' => 'notification',
+                        'action' => 'index',
+                    ],
+                        [
+                        'label' => 'View',
+                        'route' => 'notification',
+                        'action' => 'view',
+                    ],
+                ]
+            ]
         ],
     ],
     'view_manager' => [

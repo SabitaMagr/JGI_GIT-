@@ -9,25 +9,27 @@
 
 namespace ManagerService\Controller;
 
-use Zend\Mvc\Controller\AbstractActionController;
-use Zend\Authentication\AuthenticationService;
-use Zend\Db\Adapter\AdapterInterface;
-use Zend\View\Model\ViewModel;
-use ManagerService\Repository\LeaveApproveRepository;
+use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
 use LeaveManagement\Form\LeaveApplyForm;
-use Zend\Form\Annotation\AnnotationBuilder;
 use LeaveManagement\Model\LeaveApply;
-use SelfService\Repository\LeaveRequestRepository;
+use LeaveManagement\Model\LeaveMaster;
 use LeaveManagement\Repository\LeaveMasterRepository;
+use ManagerService\Repository\LeaveApproveRepository;
+use Notification\Controller\HeadNotification;
+use Notification\Model\NotificationEvents;
+use SelfService\Repository\LeaveRequestRepository;
 use Setup\Model\Branch;
 use Setup\Model\Department;
 use Setup\Model\Designation;
 use Setup\Model\Position;
-use Setup\Model\ServiceType;
 use Setup\Model\ServiceEventType;
+use Setup\Model\ServiceType;
+use Zend\Authentication\AuthenticationService;
+use Zend\Db\Adapter\AdapterInterface;
+use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\Form\Element\Select;
-use LeaveManagement\Model\LeaveMaster;
+use Zend\Mvc\Controller\AbstractActionController;
 
 class LeaveApproveController extends AbstractActionController {
 
@@ -97,7 +99,7 @@ class LeaveApproveController extends AbstractActionController {
                 'NO_OF_DAYS' => $row['NO_OF_DAYS'],
                 'LEAVE_ENAME' => $row['LEAVE_ENAME'],
                 'ID' => $row['ID'],
-                'STATUS'=>$getStatusValue($row['STATUS']),
+                'STATUS' => $getStatusValue($row['STATUS']),
                 'YOUR_ROLE' => $getValue($row['RECOMMENDER'], $row['APPROVER']),
                 'ROLE' => $getRole($row['RECOMMENDER'], $row['APPROVER'])
             ]);
@@ -120,7 +122,6 @@ class LeaveApproveController extends AbstractActionController {
         $request = $this->getRequest();
 
         $detail = $this->repository->fetchById($id);
-
         $leaveId = $detail['LEAVE_ID'];
         $leaveRepository = new LeaveMasterRepository($this->adapter);
         $leaveDtl = $leaveRepository->fetchById($leaveId);
@@ -129,19 +130,19 @@ class LeaveApproveController extends AbstractActionController {
         $approvedDT = $detail['APPROVED_DT'];
 
         $requestedEmployeeID = $detail['EMPLOYEE_ID'];
-        $employeeName = $detail['FIRST_NAME'] . " " . $detail['MIDDLE_NAME'] . " " . $detail['LAST_NAME'];        
-        $RECM_MN = ($detail['RECM_MN']!=null)? " ".$detail['RECM_MN']." ":" ";
-        $recommender = $detail['RECM_FN'].$RECM_MN.$detail['RECM_LN'];        
-        $APRV_MN = ($detail['APRV_MN']!=null)? " ".$detail['APRV_MN']." ":" ";
-        $approver = $detail['APRV_FN'].$APRV_MN.$detail['APRV_LN'];
-        $MN1 = ($detail['MN1']!=null)? " ".$detail['MN1']." ":" ";
-        $recommended_by = $detail['FN1'].$MN1.$detail['LN1'];        
-        $MN2 = ($detail['MN2']!=null)? " ".$detail['MN2']." ":" ";
-        $approved_by = $detail['FN2'].$MN2.$detail['LN2'];
-        $authRecommender = ($status=='RQ')?$recommender:$recommended_by;
-        $authApprover = ($status=='RC' || $status=='RQ' || ($status=='R' && $approvedDT==null))?$approver:$approved_by;
-        
-        $recommenderId = ($status=='RQ')?$detail['RECOMMENDER']:$detail['RECOMMENDED_BY'];
+        $employeeName = $detail['FIRST_NAME'] . " " . $detail['MIDDLE_NAME'] . " " . $detail['LAST_NAME'];
+        $RECM_MN = ($detail['RECM_MN'] != null) ? " " . $detail['RECM_MN'] . " " : " ";
+        $recommender = $detail['RECM_FN'] . $RECM_MN . $detail['RECM_LN'];
+        $APRV_MN = ($detail['APRV_MN'] != null) ? " " . $detail['APRV_MN'] . " " : " ";
+        $approver = $detail['APRV_FN'] . $APRV_MN . $detail['APRV_LN'];
+        $MN1 = ($detail['MN1'] != null) ? " " . $detail['MN1'] . " " : " ";
+        $recommended_by = $detail['FN1'] . $MN1 . $detail['LN1'];
+        $MN2 = ($detail['MN2'] != null) ? " " . $detail['MN2'] . " " : " ";
+        $approved_by = $detail['FN2'] . $MN2 . $detail['LN2'];
+        $authRecommender = ($status == 'RQ') ? $recommender : $recommended_by;
+        $authApprover = ($status == 'RC' || $status == 'RQ' || ($status == 'R' && $approvedDT == null)) ? $approver : $approved_by;
+
+        $recommenderId = ($status == 'RQ') ? $detail['RECOMMENDER'] : $detail['RECOMMENDED_BY'];
         //to get the previous balance of selected leave from assigned leave detail
         $result = $this->repository->assignedLeaveDetail($detail['LEAVE_ID'], $detail['EMPLOYEE_ID'])->getArrayCopy();
         $preBalance = $result['BALANCE'];
@@ -165,6 +166,15 @@ class LeaveApproveController extends AbstractActionController {
                 $leaveApply->recommendedBy = $this->employeeId;
                 $leaveApply->recommendedRemarks = $getData->recommendedRemarks;
                 $this->repository->edit($leaveApply, $id);
+
+                $leaveApply->id = $id;
+                $leaveApply->employeeId = $requestedEmployeeID;
+                $leaveApply->approvedBy=$detail['APPROVER'];
+                if ($leaveApply->status == 'RC') {
+                    HeadNotification::pushNotification(NotificationEvents::LEAVE_RECOMMEND_ACCEPTED, $leaveApply, $this->adapter);
+                } else {
+                    HeadNotification::pushNotification(NotificationEvents::LEAVE_RECOMMEND_REJECTED, $leaveApply, $this->adapter);
+                }
             } else if ($role == 3) {
                 $leaveApply->approvedDt = Helper::getcurrentExpressionDate();
                 if ($action == "Reject") {
@@ -186,6 +196,10 @@ class LeaveApproveController extends AbstractActionController {
                 unset($leaveApply->halfDay);
                 $leaveApply->approvedBy = $this->employeeId;
                 $leaveApply->approvedRemarks = $getData->approvedRemarks;
+
+                $leaveApply->id = $id;
+                $leaveApply->employeeId = $requestedEmployeeID;
+                HeadNotification::pushNotification(($leaveApply->status == 'AP') ? NotificationEvents::LEAVE_APPROVE_ACCEPTED : NotificationEvents::LEAVE_APPROVE_REJECTED, $leaveApply, $this->adapter);
                 $this->repository->edit($leaveApply, $id);
             }
             return $this->redirect()->toRoute("leaveapprove");
@@ -201,9 +215,9 @@ class LeaveApproveController extends AbstractActionController {
                     'remarksDtl' => $detail['REMARKS'],
                     'totalDays' => $result['TOTAL_DAYS'],
                     'recommendedBy' => $recommenderId,
-                    'recommender'=>$authRecommender,
-                    'approver'=>$authApprover,
-                    'approvedDT'=>$detail['APPROVED_DT'],
+                    'recommender' => $authRecommender,
+                    'approver' => $authApprover,
+                    'approvedDT' => $detail['APPROVED_DT'],
                     'employeeId' => $this->employeeId,
                     'requestedEmployeeId' => $requestedEmployeeID,
                     'allowHalfDay' => $leaveDtl['ALLOW_HALFDAY'],
@@ -215,7 +229,7 @@ class LeaveApproveController extends AbstractActionController {
     public function statusAction() {
         $employeeNameFormElement = new Select();
         $employeeNameFormElement->setName("branch");
-        $employeeName = \Application\Helper\EntityHelper::getTableKVListWithSortOption($this->adapter, "HR_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => "E"], "FIRST_NAME", "ASC", " ");
+        $employeeName = EntityHelper::getTableKVListWithSortOption($this->adapter, "HR_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => "E"], "FIRST_NAME", "ASC", " ");
         $employeeName1 = [-1 => "All"] + $employeeName;
         $employeeNameFormElement->setValueOptions($employeeName1);
         $employeeNameFormElement->setAttributes(["id" => "employeeId", "class" => "form-control"]);
@@ -224,7 +238,7 @@ class LeaveApproveController extends AbstractActionController {
 
         $branchFormElement = new Select();
         $branchFormElement->setName("branch");
-        $branches = \Application\Helper\EntityHelper::getTableKVListWithSortOption($this->adapter, Branch::TABLE_NAME, Branch::BRANCH_ID, [Branch::BRANCH_NAME], [Branch::STATUS => 'E'], "BRANCH_NAME", "ASC");
+        $branches = EntityHelper::getTableKVListWithSortOption($this->adapter, Branch::TABLE_NAME, Branch::BRANCH_ID, [Branch::BRANCH_NAME], [Branch::STATUS => 'E'], "BRANCH_NAME", "ASC");
         $branches1 = [-1 => "All"] + $branches;
         $branchFormElement->setValueOptions($branches1);
         $branchFormElement->setAttributes(["id" => "branchId", "class" => "form-control"]);
@@ -233,7 +247,7 @@ class LeaveApproveController extends AbstractActionController {
 
         $departmentFormElement = new Select();
         $departmentFormElement->setName("department");
-        $departments = \Application\Helper\EntityHelper::getTableKVListWithSortOption($this->adapter, Department::TABLE_NAME, Department::DEPARTMENT_ID, [Department::DEPARTMENT_NAME], [Department::STATUS => 'E'], "DEPARTMENT_NAME", "ASC");
+        $departments = EntityHelper::getTableKVListWithSortOption($this->adapter, Department::TABLE_NAME, Department::DEPARTMENT_ID, [Department::DEPARTMENT_NAME], [Department::STATUS => 'E'], "DEPARTMENT_NAME", "ASC");
         $departments1 = [-1 => "All"] + $departments;
         $departmentFormElement->setValueOptions($departments1);
         $departmentFormElement->setAttributes(["id" => "departmentId", "class" => "form-control"]);
@@ -241,7 +255,7 @@ class LeaveApproveController extends AbstractActionController {
 
         $designationFormElement = new Select();
         $designationFormElement->setName("designation");
-        $designations = \Application\Helper\EntityHelper::getTableKVListWithSortOption($this->adapter, Designation::TABLE_NAME, Designation::DESIGNATION_ID, [Designation::DESIGNATION_TITLE], [Designation::STATUS => 'E'], "DESIGNATION_TITLE", "ASC");
+        $designations = EntityHelper::getTableKVListWithSortOption($this->adapter, Designation::TABLE_NAME, Designation::DESIGNATION_ID, [Designation::DESIGNATION_TITLE], [Designation::STATUS => 'E'], "DESIGNATION_TITLE", "ASC");
         $designations1 = [-1 => "All"] + $designations;
         $designationFormElement->setValueOptions($designations1);
         $designationFormElement->setAttributes(["id" => "designationId", "class" => "form-control"]);
@@ -249,7 +263,7 @@ class LeaveApproveController extends AbstractActionController {
 
         $positionFormElement = new Select();
         $positionFormElement->setName("position");
-        $positions = \Application\Helper\EntityHelper::getTableKVListWithSortOption($this->adapter, Position::TABLE_NAME, Position::POSITION_ID, [Position::POSITION_NAME], [Position::STATUS => 'E'], "POSITION_NAME", "ASC");
+        $positions = EntityHelper::getTableKVListWithSortOption($this->adapter, Position::TABLE_NAME, Position::POSITION_ID, [Position::POSITION_NAME], [Position::STATUS => 'E'], "POSITION_NAME", "ASC");
         $positions1 = [-1 => "All"] + $positions;
         $positionFormElement->setValueOptions($positions1);
         $positionFormElement->setAttributes(["id" => "positionId", "class" => "form-control"]);
@@ -257,7 +271,7 @@ class LeaveApproveController extends AbstractActionController {
 
         $serviceTypeFormElement = new Select();
         $serviceTypeFormElement->setName("serviceType");
-        $serviceTypes = \Application\Helper\EntityHelper::getTableKVListWithSortOption($this->adapter, ServiceType::TABLE_NAME, ServiceType::SERVICE_TYPE_ID, [ServiceType::SERVICE_TYPE_NAME], [ServiceType::STATUS => 'E'], "SERVICE_TYPE_NAME", "ASC");
+        $serviceTypes = EntityHelper::getTableKVListWithSortOption($this->adapter, ServiceType::TABLE_NAME, ServiceType::SERVICE_TYPE_ID, [ServiceType::SERVICE_TYPE_NAME], [ServiceType::STATUS => 'E'], "SERVICE_TYPE_NAME", "ASC");
         $serviceTypes1 = [-1 => "All"] + $serviceTypes;
         $serviceTypeFormElement->setValueOptions($serviceTypes1);
         $serviceTypeFormElement->setAttributes(["id" => "serviceTypeId", "class" => "form-control"]);
@@ -265,7 +279,7 @@ class LeaveApproveController extends AbstractActionController {
 
         $serviceEventTypeFormElement = new Select();
         $serviceEventTypeFormElement->setName("serviceEventType");
-        $serviceEventTypes = \Application\Helper\EntityHelper::getTableKVListWithSortOption($this->adapter, ServiceEventType::TABLE_NAME, ServiceEventType::SERVICE_EVENT_TYPE_ID, [ServiceEventType::SERVICE_EVENT_TYPE_NAME], [ServiceEventType::STATUS => 'E'], "SERVICE_EVENT_TYPE_NAME", "ASC");
+        $serviceEventTypes = EntityHelper::getTableKVListWithSortOption($this->adapter, ServiceEventType::TABLE_NAME, ServiceEventType::SERVICE_EVENT_TYPE_ID, [ServiceEventType::SERVICE_EVENT_TYPE_NAME], [ServiceEventType::STATUS => 'E'], "SERVICE_EVENT_TYPE_NAME", "ASC");
         $serviceEventTypes1 = [-1 => "Working"] + $serviceEventTypes;
         $serviceEventTypeFormElement->setValueOptions($serviceEventTypes1);
         $serviceEventTypeFormElement->setAttributes(["id" => "serviceEventTypeId", "class" => "form-control"]);
@@ -273,7 +287,7 @@ class LeaveApproveController extends AbstractActionController {
 
         $leaveFormElement = new Select();
         $leaveFormElement->setName("leave");
-        $leaves = \Application\Helper\EntityHelper::getTableKVList($this->adapter, LeaveMaster::TABLE_NAME, LeaveMaster::LEAVE_ID, [LeaveMaster::LEAVE_ENAME], [LeaveMaster::STATUS => 'E']);
+        $leaves = EntityHelper::getTableKVList($this->adapter, LeaveMaster::TABLE_NAME, LeaveMaster::LEAVE_ID, [LeaveMaster::LEAVE_ENAME], [LeaveMaster::STATUS => 'E']);
         $leaves1 = [-1 => "All"] + $leaves;
         $leaveFormElement->setValueOptions($leaves1);
         $leaveFormElement->setAttributes(["id" => "leaveId", "class" => "form-control"]);
