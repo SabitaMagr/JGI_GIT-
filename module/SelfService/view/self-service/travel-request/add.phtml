@@ -9,6 +9,7 @@ $toDate = $form->get('toDate');
 $destination = $form->get('destination');
 $requestedAmount = $form->get('requestedAmount');
 $requestedType = $form->get('requestedType');
+$requestedType->setValueOptions($requestTypes);
 $purpose = $form->get('purpose');
 $remarks = $form->get('remarks');
 

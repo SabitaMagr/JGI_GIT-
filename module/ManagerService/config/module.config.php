@@ -65,6 +65,16 @@ return [
                     ]
                 ]
             ],
+            'travelApprove' => [
+                'type' => Segment::class,
+                'options' => [
+                    'route' => '/managerservice/travelApprove[/:action[/:id]]',
+                    'defaults' => [
+                        'controller' => Controller\TravelApproveController::class,
+                        'action' => 'index'
+                    ]
+                ]
+            ],
         ]
     ],
     'navigation' => [
@@ -207,6 +217,33 @@ return [
                 ]
             ]
         ],
+        'travelApprove' => [
+                [
+                'label' => 'Travel Request',
+                'route' => 'travelApprove',
+            ],
+                [
+                'label' => 'Travel Request',
+                'route' => 'travelApprove',
+                'pages' => [
+                        [
+                        'label' => 'List',
+                        'route' => 'travelApprove',
+                        'action' => 'index',
+                    ],
+                        [
+                        'label' => 'List',
+                        'route' => 'travelApprove',
+                        'action' => 'status',
+                    ],
+                        [
+                        'label' => 'View',
+                        'route' => 'travelApprove',
+                        'action' => 'view',
+                    ],
+                ]
+            ]
+        ],
     ],
     'controllers' => [
         'factories' => [
@@ -215,6 +252,7 @@ return [
             Controller\LoanApproveController::class => ControllerFactory::class,
             Controller\SalaryReviewController::class => ControllerFactory::class,
             Controller\AdvanceApproveController::class => ControllerFactory::class,
+            Controller\TravelApproveController::class => ControllerFactory::class
         ],
     ],
     'view_manager' => [

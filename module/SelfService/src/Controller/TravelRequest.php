@@ -92,6 +92,13 @@ class TravelRequest extends AbstractActionController {
                 return ["view" => 'View'];
             }
         };
+        $getRequestedType = function($requestedType){
+            if($requestedType=='ad'){
+                return 'Advance';
+            }else if($requestedType=='ep'){
+                return 'Expense';
+            }
+        };
         foreach ($result as $row) {
             $status = $getValue($row['STATUS']);
             $action = $getAction($row['STATUS']);
@@ -109,10 +116,12 @@ class TravelRequest extends AbstractActionController {
                 'APPROVER_NAME' => $authApprover,
                 'STATUS' => $status,
                 'ACTION' => key($action),
+                'REQUESTED_TYPE'=>$getRequestedType($row['REQUESTED_TYPE']),
                 'ACTION_TEXT' => $action[key($action)]
             ]);
             array_push($list, $new_row);
         }
+        //print_r($list); die();
         return Helper::addFlashMessagesToArray($this, ['list' => $list]);
     }
 
@@ -134,9 +143,14 @@ class TravelRequest extends AbstractActionController {
                 return $this->redirect()->toRoute("travelRequest");
             }
         }
+        $requestType = array(
+            'ad' => 'Advance',
+            'ep' => 'Expense'
+        );
 
         return Helper::addFlashMessagesToArray($this, [
-                    'form' => $this->form
+                    'form' => $this->form,
+                    'requestTypes'=>$requestType
         ]);
     }
 
@@ -181,9 +195,15 @@ class TravelRequest extends AbstractActionController {
         $this->form->bind($model);
 
         $employeeName = $fullName($detail['EMPLOYEE_ID']);
+        
+        $requestType = array(
+            'ad' => 'Advance',
+            'ep' => 'Expense'
+        );
 
         return Helper::addFlashMessagesToArray($this, [
                     'form' => $this->form,
+                    'requestTypes'=>$requestType,
                     'employeeName' => $employeeName,
                     'status' => $detail['STATUS'],
                     'requestedDate' => $detail['REQUESTED_DATE'],

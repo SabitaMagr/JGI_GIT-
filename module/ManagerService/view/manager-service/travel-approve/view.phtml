@@ -2,32 +2,31 @@
 $this->headScript()->appendFile($this->basePath('js/SelfService/travel-request/add.js'));
 
 $form->setAttribute('role', 'form');
-$form->setAttribute('id', 'travelRequest-form');
+$form->setAttribute('id', 'travelApprove-form');
 
 $fromDate = $form->get('fromDate');
 $fromDate->setAttributes(["disabled"=>"disabled"]);
 $toDate = $form->get('toDate');
 $toDate->setAttributes(["disabled"=>"disabled"]);
+$requestedAmount = $form->get('requestedAmount');
+$requestedAmount->setAttributes(["disabled"=>"disabled"]);
 $destination = $form->get('destination');
 $destination->setAttributes(["disabled"=>"disabled"]);
 $purpose = $form->get('purpose');
 $purpose->setAttributes(["disabled"=>"disabled"]);
-$requestedType = $form->get('requestedType');
-$requestedType->setValueOptions($requestTypes);
-$requestedType->setAttributes(["disabled"=>"disabled"]);
-$requestedAmount = $form->get('requestedAmount');
-$requestedAmount->setAttributes(["disabled"=>"disabled"]);
 $remarks = $form->get('remarks');
 $remarks->setAttributes(["disabled"=>"disabled"]);
+$requestedType = $form->get('requestedType');
+$requestedType->setAttributes(["disabled"=>"disabled"]);
 $recommendedRemarks = $form->get('recommendedRemarks');
-$recommendedRemarks->setAttributes(["disabled"=>"disabled"]);
+$recommendedRemarks->setAttributes(['required'=>'true']);
 $approvedRemarks = $form->get('approvedRemarks');
-$approvedRemarks->setAttributes(["disabled"=>"disabled"]);
+$approvedRemarks->setAttributes(['required'=>'true']);
 
 $submit = $form->get('submit');
-$submit->setAttribute('value','SUBMIT');
+$submit->setAttribute('value', 'Approve');
 
-$form->setAttribute('action', $this->url('travelRequest', ['action' => 'add']));
+$form->setAttribute('action', $this->url('travelApprove', ['action' => 'view', 'id' => $id, 'role' => $role]));
 
 if ($this->messages) {
     print '<ul class="help-block bg-danger" style="background:#f3e250;">';
@@ -41,11 +40,11 @@ $form->prepare();
 print $this->form()->openTag($form);
 ?>
     <script>
-        document.menu=<?php $menu = ["id" => "menuSelfService","subMenu"=>["id"=>"subMenuTravelRequest"]];echo json_encode($menu);?>;
+        document.menu=<?php $menu = ["id" => "menuManagerService","subMenu"=>["id"=>"subMenuTraveltoApprove"]];echo json_encode($menu);?>;
         document.url = '<?= $this->url("restful", ["action" => "index"]) ?>';
     </script>
 <div class="page-bar">
-    <?= $this->navigation('Zend\Navigation\travelRequest')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
+    <?= $this->navigation('Zend\Navigation\travelApprove')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
 <div class="row margin-top-20">
     <div class="col-sm-8 col-sm-offset-2">
@@ -63,6 +62,15 @@ print $this->form()->openTag($form);
                             <table>
                                 <tr height="30">
                                     <td>
+                                        Employee Name
+                                    </td>
+                                    <td width="15">:</td>
+                                    <td>
+                                        <?php echo $employeeName; ?>
+                                    </td>
+                                </tr>
+                                <tr height="30">
+                                    <td>
                                         Requested Date
                                     </td>
                                     <td width="15">:</td>
@@ -72,14 +80,17 @@ print $this->form()->openTag($form);
                                 </tr>
                                 <tr height="30">
                                     <td>
-                                        Recommender
+                                        Your Role
                                     </td>
                                     <td width="15">:</td>
                                     <td>
-                                        <?php echo $recommender; ?>
+                                        <?php if ($role == 3) {
+                                                echo 'Approver';
+                                            } else if ($role == 2) {
+                                                echo 'Recommender';
+                                            } ?>
                                     </td>
-                                </tr>
-                                
+                                </tr>                               
                             </table>
                         </div>
                         <div class="col-md-6">
@@ -106,11 +117,11 @@ print $this->form()->openTag($form);
                                 </tr>
                                 <tr height="30">
                                     <td>
-                                        Approver
+                                        <?= ($role==3)? "Recommender":"Approver"; ?>
                                     </td>
                                     <td width="15">:</td>
                                     <td>
-                                        <?php echo $approver; ?>
+                                        <?= ($role==3)? $recommender:$approver; ?>
                                     </td>
                                 </tr>                               
                             </table>
@@ -158,18 +169,46 @@ print $this->form()->openTag($form);
                     <?php print $this->formElement($remarks); ?>
                     <?php print $this->formElementErrors()->render($remarks, ['class' => 'help-block']); ?>
                 </div>
-                </div>
-                <div
-                    class="form-group margin-top-10 required <?= empty($recommendedRemarks->getMessages()) ? "" : "error" ?>">
-                    <label>Reason for action [From Recommender]</label>
-                    <?php print $this->formElement($recommendedRemarks); ?>
-                </div>
-                <div
-                    class="form-group required <?= empty($approvedRemarks->getMessages()) ? "" : "error" ?>">
-                    <label>Reason for action [From Approver]</label>
-                    <?php print $this->formElement($approvedRemarks); ?>
-                </div>
+                </div>     
+                <?php if ($role == 2) { ?>
+                    <div
+                        class="form-group margin-top-10 required <?= empty($recommendedRemarks->getMessages()) ? "" : "error" ?>">
+                        <?php print $this->formLabel($recommendedRemarks); ?>
+                        <?php print $this->formElement($recommendedRemarks); ?>
+                    </div>
+                <?php } ?>
+                <?php  if($role==2 && ($status=='AP' || ($status=='R' && $approvedDT!=null))){ ?>
+                    <div
+                        class="form-group required <?= empty($approvedRemarks->getMessages()) ? "" : "error" ?>">
+                        <label>Reason for action [From Approver]</label>
+                        <?php print $this->formElement($approvedRemarks); ?>
+                    </div>
+                <?php }  ?>
+
+                <?php if ($role == 3) {
+                    $recommendedRemarks->setAttributes(['disabled'=>'disabled']);
+                    ?>
+                    <div
+                        class="form-group margin-top-10 required <?= empty($recommendedRemarks->getMessages()) ? "" : "error" ?>">
+                        <label>Reason for action [From Recommender]</label>
+                        <?php print $this->formElement($recommendedRemarks); ?>
+                    </div>
+                    <div
+                        class="form-group required <?= empty($approvedRemarks->getMessages()) ? "" : "error" ?>">
+                        <?php print $this->formLabel($approvedRemarks); ?>
+                        <?php print $this->formElement($approvedRemarks); ?>
+                    </div>
+                <?php } ?>
+
+                <?php
+                if ($status == 'RQ' || ($status == 'RC' && $employeeId != $recommendedBy)) {
+                    print $this->formSubmit($submit);
+                    ?>
+                    <input type="submit" name="submit" class="btn btn-success pull-right" value="Reject">
+                <?php } ?>
+
             </div>
+
         </div>
     </div>
 </div>

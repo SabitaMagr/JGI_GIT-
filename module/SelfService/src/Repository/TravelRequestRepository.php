@@ -42,6 +42,7 @@ class TravelRequestRepository implements RepositoryInterface{
             new Expression("TO_CHAR(TR.FROM_DATE, 'DD-MON-YYYY') AS FROM_DATE"),
             new Expression("TO_CHAR(TR.TO_DATE, 'DD-MON-YYYY') AS TO_DATE"),
             new Expression("TR.STATUS AS STATUS"),
+            new Expression("TR.DESTINATION AS DESTINATION"),
             new Expression("TO_CHAR(TR.REQUESTED_DATE, 'DD-MON-YYYY') AS REQUESTED_DATE"),
             new Expression("TO_CHAR(TR.APPROVED_DATE, 'DD-MON-YYYY') AS APPROVED_DATE"),
             new Expression("TO_CHAR(TR.RECOMMENDED_DATE, 'DD-MON-YYYY') AS RECOMMENDED_DATE"),
@@ -53,7 +54,6 @@ class TravelRequestRepository implements RepositoryInterface{
             new Expression("TR.APPROVED_BY AS APPROVED_BY"),
             new Expression("TR.APPROVED_REMARKS AS APPROVED_REMARKS"),
             new Expression("TR.RECOMMENDED_REMARKS AS RECOMMENDED_REMARKS"),
-            new Expression("TR.APPROVED_REMARKS AS APPROVED_REMARKS"),
             new Expression("TR.REMARKS AS REMARKS"),
             new Expression("TR.REQUESTED_TYPE AS REQUESTED_TYPE") 
                 ], true);
@@ -78,6 +78,7 @@ class TravelRequestRepository implements RepositoryInterface{
             new Expression("TO_CHAR(TR.FROM_DATE, 'DD-MON-YYYY') AS FROM_DATE"),
             new Expression("TO_CHAR(TR.TO_DATE, 'DD-MON-YYYY') AS TO_DATE"),
             new Expression("TR.STATUS AS STATUS"),
+            new Expression("TR.DESTINATION AS DESTINATION"),
             new Expression("TO_CHAR(TR.REQUESTED_DATE, 'DD-MON-YYYY') AS REQUESTED_DATE"),
             new Expression("TO_CHAR(TR.APPROVED_DATE, 'DD-MON-YYYY') AS APPROVED_DATE"),
             new Expression("TO_CHAR(TR.RECOMMENDED_DATE, 'DD-MON-YYYY') AS RECOMMENDED_DATE"),
@@ -89,7 +90,6 @@ class TravelRequestRepository implements RepositoryInterface{
             new Expression("TR.APPROVED_BY AS APPROVED_BY"),
             new Expression("TR.APPROVED_REMARKS AS APPROVED_REMARKS"),
             new Expression("TR.RECOMMENDED_REMARKS AS RECOMMENDED_REMARKS"),
-            new Expression("TR.APPROVED_REMARKS AS APPROVED_REMARKS"),
             new Expression("TR.REMARKS AS REMARKS"),
             new Expression("TR.REQUESTED_TYPE AS REQUESTED_TYPE") 
                 ], true);

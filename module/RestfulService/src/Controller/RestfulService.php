@@ -61,6 +61,8 @@ use Zend\View\Model\JsonModel;
 use SelfService\Repository\LoanRequestRepository;
 use ManagerService\Repository\LoanApproveRepository;
 use Loan\Repository\LoanStatusRepository;
+use SelfService\Repository\TravelRequestRepository;
+use ManagerService\Repository\TravelApproveRepository;
 use SelfService\Repository\AdvanceRequestRepository;
 use ManagerService\Repository\AdvanceApproveRepository;
 use Advance\Repository\AdvanceStatusRepository;
