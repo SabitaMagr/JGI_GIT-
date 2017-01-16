@@ -40,7 +40,22 @@ class NotificationRepo implements RepositoryInterface {
     }
 
     public function fetchAllBy($where) {
-        return $this->tableGateway->select($where);
+        $sql = new Sql($this->adapter);
+        $select = $sql->select();
+        $select->columns([
+            Helper::columnExpression(Notification::MESSAGE_ID, "N"),
+            Helper::columnExpression(Notification::MESSAGE_TITLE, "N"),
+            Helper::columnExpression(Notification::MESSAGE_DESC, "N"),
+            Helper::datetimeExpression(Notification::MESSAGE_DATETIME, "N"),
+            Helper::columnExpression(Notification::MESSAGE_FROM, "N"),
+            Helper::columnExpression(Notification::MESSAGE_TO, "N"),
+            Helper::columnExpression(Notification::STATUS, "N"),
+                ], TRUE);
+        $select->from(['N' => Notification::TABLE_NAME]);
+        $select->where($where);
+        $statement = $sql->prepareStatementForSqlObject($select);
+        $result = $statement->execute();
+        return $result;
     }
 
     public function fetchAllWithEmpDet($where) {

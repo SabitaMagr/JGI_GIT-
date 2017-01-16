@@ -1,3 +1,10 @@
+<?php
+/**
+ * Load Javascript files here
+ */
+$this->headScript()->appendFile($this->basePath('js/Notification/Notification/index.js'));
+?>
+
 <?php if ($this->messages) { ?>
     <script>
         document.messages =<?php echo json_encode($this->messages); ?>
@@ -9,6 +16,7 @@
 $menu = ["id" => "menuNotification"];
 echo json_encode($menu);
 ?>;
+    document.markAsViewed = "<?= $this->url('notification', ["action" => "markAsViewed"]) ?>";
 </script>
 
 <div class="page-bar">
@@ -52,7 +60,7 @@ echo json_encode($menu);
                                                 <span class="mt-comment-status mt-comment-status-pending"><?= $notification['STATUS'] == 'U' ? "Unseen" : "Seen" ?></span>
                                                 <ul class="mt-comment-actions">
                                                     <li>
-                                                        <a href="#">Mark As Seen</a>
+                                                        <a class="markAsViewed" message-id="<?= $notification['MESSAGE_ID'] ?>" href="#">Mark As Viewed</a>
                                                     </li>
                                                     <li>
                                                         <a href="<?= $this->url('notification', ['action' => 'view', 'id' => $notification['MESSAGE_ID']]) ?>">View</a>

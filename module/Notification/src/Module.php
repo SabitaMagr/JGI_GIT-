@@ -39,7 +39,7 @@ class Module implements ConfigProviderInterface {
         $app = $event->getApplication();
         $adapter = $app->getServiceManager()->get(AdapterInterface::class);
         $event->getViewModel()->setVariable('dateCompare', function($date) {
-            $startDate = DateTime::createFromFormat(Helper::PHP_DATE_FORMAT, $date);
+            $startDate = DateTime::createFromFormat(Helper::PHP_DATE_FORMAT . " " . Helper::PHP_TIME_FORMAT, $date);
             $currentDate = new DateTime();
             $interval = $startDate->diff($currentDate);
             return $interval->d;

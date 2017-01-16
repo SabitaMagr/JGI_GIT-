@@ -122,7 +122,6 @@ class LeaveApproveController extends AbstractActionController {
         $request = $this->getRequest();
 
         $detail = $this->repository->fetchById($id);
-
         $leaveId = $detail['LEAVE_ID'];
         $leaveRepository = new LeaveMasterRepository($this->adapter);
         $leaveDtl = $leaveRepository->fetchById($leaveId);
@@ -167,9 +166,15 @@ class LeaveApproveController extends AbstractActionController {
                 $leaveApply->recommendedBy = $this->employeeId;
                 $leaveApply->recommendedRemarks = $getData->recommendedRemarks;
                 $this->repository->edit($leaveApply, $id);
+
                 $leaveApply->id = $id;
                 $leaveApply->employeeId = $requestedEmployeeID;
-                HeadNotification::pushNotification(($leaveApply->status == 'RC') ? NotificationEvents::LEAVE_RECOMMEND_ACCEPTED : NotificationEvents::LEAVE_RECOMMEND_REJECTED, $leaveApply, $this->adapter);
+                $leaveApply->approvedBy=$detail['APPROVER'];
+                if ($leaveApply->status == 'RC') {
+                    HeadNotification::pushNotification(NotificationEvents::LEAVE_RECOMMEND_ACCEPTED, $leaveApply, $this->adapter);
+                } else {
+                    HeadNotification::pushNotification(NotificationEvents::LEAVE_RECOMMEND_REJECTED, $leaveApply, $this->adapter);
+                }
             } else if ($role == 3) {
                 $leaveApply->approvedDt = Helper::getcurrentExpressionDate();
                 if ($action == "Reject") {
@@ -191,10 +196,11 @@ class LeaveApproveController extends AbstractActionController {
                 unset($leaveApply->halfDay);
                 $leaveApply->approvedBy = $this->employeeId;
                 $leaveApply->approvedRemarks = $getData->approvedRemarks;
-                $this->repository->edit($leaveApply, $id);
+
                 $leaveApply->id = $id;
                 $leaveApply->employeeId = $requestedEmployeeID;
                 HeadNotification::pushNotification(($leaveApply->status == 'AP') ? NotificationEvents::LEAVE_APPROVE_ACCEPTED : NotificationEvents::LEAVE_APPROVE_REJECTED, $leaveApply, $this->adapter);
+                $this->repository->edit($leaveApply, $id);
             }
             return $this->redirect()->toRoute("leaveapprove");
         }

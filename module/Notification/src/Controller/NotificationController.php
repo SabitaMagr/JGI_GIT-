@@ -2,6 +2,7 @@
 
 namespace Notification\Controller;
 
+use Application\Custom\CustomViewModel;
 use Application\Helper\Helper;
 use Notification\Model\Notification;
 use Notification\Repository\NotificationRepo;
@@ -36,9 +37,7 @@ class NotificationController extends AbstractActionController {
         }
         $notification = $this->notiRepo->fetchById($id);
         if ($notification['STATUS'] == 'U') {
-            $notiObj = new Notification();
-            $notiObj->status = 'S';
-            $this->notiRepo->edit($notiObj, $id);
+            $this->editNotificationStatus($id);
         }
 
         if ($notification['ROUTE'] != null) {
@@ -49,6 +48,25 @@ class NotificationController extends AbstractActionController {
                 return $this->redirect()->toRoute($routeName, $routeJson);
             }
         }
+    }
+
+    public function markAsViewedAction() {
+        $request = $this->getRequest();
+        $response = [];
+        if ($request->isPost()) {
+            $postedData = $request->getPost();
+            $this->editNotificationStatus($postedData['messageId']);
+            $response = ["success" => true];
+        } else {
+            $response = ["success" => false];
+        }
+        return new CustomViewModel($response);
+    }
+
+    private function editNotificationStatus($id) {
+        $notiObj = new Notification();
+        $notiObj->status = 'S';
+        $this->notiRepo->edit($notiObj, $id);
     }
 
 }

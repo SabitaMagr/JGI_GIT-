@@ -14,9 +14,11 @@ class Helper {
     const ORACLE_TIME_FORMAT = "HH:MI AM";
     const MYSQL_DATE_FORMAT = "";
     const PHP_DATE_FORMAT = "d-M-Y";
+    const PHP_TIME_FORMAT = "h:i A";
     const FLOAT_ROUNDING_DIGIT_NO = 2;
     const UPLOAD_DIR = __DIR__ . "/../../../../public/uploads";
 
+//  method to add flashmessage to view
     public static function addFlashMessagesToArray($context, $return) {
         $flashMessenger = $context->flashMessenger();
         if ($flashMessenger->hasMessages()) {
@@ -25,6 +27,7 @@ class Helper {
         return $return;
     }
 
+//  method to generate maxId
     public static function getMaxId(AdapterInterface $adapter, $tableName, $columnName) {
         $sql = new Sql($adapter);
         $select = $sql->select();
@@ -130,7 +133,7 @@ class Helper {
     }
 
     public static function datetimeExpression($columnName, $shortForm = null) {
-        $format = Helper::ORACLE_DATE_FORMAT." ".self::ORACLE_TIME_FORMAT;
+        $format = Helper::ORACLE_DATE_FORMAT . " " . self::ORACLE_TIME_FORMAT;
         $pre = "";
         if ($shortForm != null && sizeof($shortForm) != 0) {
             $pre = $shortForm . ".";
@@ -169,14 +172,26 @@ class Helper {
         return new Expression("TO_DATE('{$dateStr}', '{$format}')");
     }
 
+    public static function getExpressionDateTime($dateStr, $format = null) {
+        if ($format == null) {
+            $format = Helper::ORACLE_DATE_FORMAT . " " . Helper::ORACLE_TIME_FORMAT;
+        }
+        return new Expression("TO_DATE('{$dateStr}', '{$format}')");
+    }
+
     public static function getcurrentExpressionDate() {
         $currentDate = date(self::PHP_DATE_FORMAT);
         return self::getExpressionDate($currentDate);
     }
-    
-    public static function getCurrentDate(){
-       $currentDate = date(self::PHP_DATE_FORMAT); 
-       return $currentDate;
+
+    public static function getcurrentExpressionDateTime() {
+        $currentDate = date(self::PHP_DATE_FORMAT . " " . self::PHP_TIME_FORMAT);
+        return self::getExpressionDateTime($currentDate);
+    }
+
+    public static function getCurrentDate() {
+        $currentDate = date(self::PHP_DATE_FORMAT);
+        return $currentDate;
     }
 
     public static function getcurrentMonthDayExpression() {

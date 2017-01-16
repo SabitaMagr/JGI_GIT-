@@ -32,10 +32,9 @@ class HeadNotification {
         $notification->messageTo = $to;
         $notification->route = $route;
         $notification->messageId = ((int) Helper::getMaxId($adapter, Notification::TABLE_NAME, Notification::MESSAGE_ID)) + 1;
-        $notification->messageDateTime = Helper::getcurrentExpressionDate();
+        $notification->messageDateTime = Helper::getcurrentExpressionDateTime();
         $notification->expiryTime = Helper::getExpressionDate(date(Helper::PHP_DATE_FORMAT, strtotime("+" . self::EXPIRE_IN . " days")));
         $notification->status = 'U';
-
         return $notificationRepo->add($notification);
     }
 
@@ -49,16 +48,27 @@ class HeadNotification {
                 self::addNotifications("Leave Applied", "Leave Request From " . $recommdAppModel['FIRST_NAME'], $recommdAppModel['EMPLOYEE_ID'], $recommdAppModel['RECOMMEND_BY'], json_encode($route), $adapter);
                 break;
             case NotificationEvents::LEAVE_RECOMMEND_ACCEPTED:
-                $leaveApply = new LeaveApply();
-                $route = ["route" => "leaveapprove", "action" => "view", "id" => $leaveApply->id, "role" => 2];
-                self::addNotifications("Leave Applied", "Leave Request From " . $recommdAppModel['FIRST_NAME'], $recommdAppModel['EMPLOYEE_ID'], $recommdAppModel['RECOMMEND_BY'], json_encode($route), $adapter);
+                $leaveApply = $model;
+                $route = ["route" => "leaverequest", "action" => "view", "id" => $leaveApply->id];
+                self::addNotifications("Leave Applied", "Leave Request Accepted ", $leaveApply->recommendedBy, $leaveApply->employeeId, json_encode($route), $adapter);
 
+                $route = ["route" => "leaveapprove", "action" => "view", "id" => $leaveApply->id, "role" => 3];
+                self::addNotifications("Leave Applied", "Leave Application approve request ", $leaveApply->employeeId, $leaveApply->approvedBy, json_encode($route), $adapter);
                 break;
             case NotificationEvents::LEAVE_RECOMMEND_REJECTED:
+                $leaveApply = $model;
+                $route = ["route" => "leaverequest", "action" => "view", "id" => $leaveApply->id];
+                self::addNotifications("Leave Applied", "Leave Request Rejected ", $leaveApply->recommendedBy, $leaveApply->employeeId, json_encode($route), $adapter);
                 break;
             case NotificationEvents::LEAVE_APPROVE_ACCEPTED:
+                $leaveApply = $model;
+                $route = ["route" => "leaverequest", "action" => "view", "id" => $leaveApply->id];
+                self::addNotifications("Leave Applied", "Leave Request Approved ", $leaveApply->approvedBy, $leaveApply->employeeId, json_encode($route), $adapter);
                 break;
             case NotificationEvents::LEAVE_APPROVE_REJECTED:
+                $leaveApply = $model;
+                $route = ["route" => "leaverequest", "action" => "view", "id" => $leaveApply->id];
+                self::addNotifications("Leave Applied", "Leave Request rejected on approval ", $leaveApply->approvedBy, $leaveApply->employeeId, json_encode($route), $adapter);
                 break;
         }
     }

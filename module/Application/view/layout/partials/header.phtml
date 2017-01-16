@@ -40,13 +40,13 @@
                                     <?php foreach ($notifications as $notification): ?>
 
                                         <li>
-                                            <a href="<?php print $this->url('notification', ['action' => 'index', 'id' => $notification['MESSAGE_ID']]); ?>">
+                                            <a href="<?php print $this->url('notification', ['action' => 'view', 'id' => $notification['MESSAGE_ID']]); ?>">
                                                 <!--<span class="time">just now</span>-->
-                                                <span class="time"><?php echo $dateCompare("01-Jan-2017") ?> days</span>
+                                                <span class="time"><?php echo $dateCompare($notification['MESSAGE_DATETIME']) ?> days</span>
                                                 <span class="details">
                                                     <span class="label label-sm label-icon label-success">
                                                         <i class="fa fa-bell-o"></i>
-                                                    </span> <?php print $notification['MESSAGE_TITLE']; ?> </span>
+                                                    </span> <?php print $notification['MESSAGE_DESC']; ?> </span>
                                             </a>
                                         </li>
                                     <?php endforeach; ?>
