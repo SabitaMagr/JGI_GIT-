@@ -117,7 +117,8 @@ class LeaveRequestRepository implements RepositoryInterface {
     }
 
     public function delete($id) {
-        $this->tableGateway->update([LeaveApply::STATUS => 'C'], [LeaveApply::ID => $id]);
+        $currentDate = \Application\Helper\Helper::getcurrentExpressionDate();
+        $this->tableGateway->update([LeaveApply::STATUS => 'C', LeaveApply::MODIFIED_DT=>$currentDate], [LeaveApply::ID => $id]);
     }
 
     public function checkEmployeeLeave($employeeId, $date) {

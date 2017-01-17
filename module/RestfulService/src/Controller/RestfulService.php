@@ -1914,6 +1914,17 @@ class RestfulService extends AbstractRestfulController {
                 'APPROVER_NAME'=>$approverName,
                 'RECOMMENDER_NAME'=>$recommenderName,
                     ]);
+            $startDate = \DateTime::createFromFormat(Helper::PHP_DATE_FORMAT, $leaveRequestRow['FROM_DATE']);
+            $toDayDate = new \DateTime();
+            if(($toDayDate<$startDate) && ($statusId=='RQ' || $statusId=='RC'|| $statusId=='AP')){
+                $new_row['ALLOW_TO_EDIT'] = 1;
+            }else if(($toDayDate>=$startDate) && $statusId=='RQ'){
+                $new_row['ALLOW_TO_EDIT'] = 1;
+            }else if($toDayDate>=$startDate){
+                $new_row['ALLOW_TO_EDIT'] = 0;
+            }else{
+                $new_row['ALLOW_TO_EDIT'] = 0;
+            }
             array_push($leaveRequest, $new_row);
         }
         return [
@@ -2108,6 +2119,7 @@ class RestfulService extends AbstractRestfulController {
                 return 'Company Contribution';
             }
         };
+        $sn = 1;
         foreach($result as $row){
             $row['TRAINING_TYPE']=$getValue($row['TRAINING_TYPE']);
             $startDate = \DateTime::createFromFormat(Helper::PHP_DATE_FORMAT, $row['START_DATE']);
@@ -2116,8 +2128,10 @@ class RestfulService extends AbstractRestfulController {
                 $row['ALLOW_TO_EDIT'] = 1;
             }else if($toDayDate>=$startDate){
                 $row['ALLOW_TO_EDIT'] = 0;
-            }      
+            }  
+            $row['SN'] = $sn;
             array_push($list, $row);
+            $sn+=1;
         }
         return [
             "success" => true,

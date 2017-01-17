@@ -31,6 +31,7 @@ class LeaveApply extends Model
     const REMARKS="REMARKS";
     const RECOMMENDED_REMARKS="RECOMMENDED_REMARKS";
     const APPROVED_REMARKS="APPROVED_REMARKS";
+    const MODIFIED_DT = "MODIFIED_DT";
 
     public $id;
     public $employeeId;
@@ -48,6 +49,7 @@ class LeaveApply extends Model
     public $remarks;
     public $recommendedRemarks;
     public $approvedRemarks;
+    public $modifiedDt;
 
     public $mappings=[
         'id'=>self::ID,
@@ -65,7 +67,8 @@ class LeaveApply extends Model
         'requestedDt'=>self::REQUESTED_DT,
         'remarks'=>self::REMARKS,
         'recommendedRemarks'=>self::RECOMMENDED_REMARKS,
-        'approvedRemarks'=>self::APPROVED_REMARKS
+        'approvedRemarks'=>self::APPROVED_REMARKS,
+        'modifiedDt'=>self::MODIFIED_DT
     ];
 
 }

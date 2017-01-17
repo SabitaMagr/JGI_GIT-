@@ -27,6 +27,7 @@ angular.module('hris', [])
                 }).then(function (success) {
                     console.log(success.data);
                     $scope.initializekendoGrid(success.data);
+                    window.app.UIConfirmations();
                 }, function (failure) {
                     console.log(failure);
                 });
