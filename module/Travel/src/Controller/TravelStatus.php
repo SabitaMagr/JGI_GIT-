@@ -106,7 +106,8 @@ class TravelStatus extends AbstractActionController
             'RQ' => 'Pending',
             'RC' => 'Recommended',
             'AP' => 'Approved',
-            'R' => 'Rejected'
+            'R' => 'Rejected',
+            'C'=>'Cancelled'
         ];
         $travelStatusFormElement = new Select();
         $travelStatusFormElement->setName("travelStatus");

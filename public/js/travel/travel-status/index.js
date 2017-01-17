@@ -2,7 +2,7 @@
     'use strict';
     $(document).ready(function () {
         $("select").select2();
-        app.startEndDatePicker("fromDate", "toDate");
+        app.startEndDatePickerWithNepali('nepaliFromDate', 'fromDate', 'nepaliToDate', 'toDate');
     });
 })(window.jQuery, window.app);
 
@@ -18,8 +18,8 @@ angular.module('hris', [])
                 var serviceEventTypeId = angular.element(document.getElementById('serviceEventTypeId')).val();
                 var serviceTypeId = angular.element(document.getElementById('serviceTypeId')).val();
                 var travelRequestStatusId = angular.element(document.getElementById('travelRequestStatusId')).val();
-                var fromDate = angular.element(document.getElementById('fromDate1')).val();
-                var toDate = angular.element(document.getElementById('toDate1')).val();
+                var fromDate = angular.element(document.getElementById('fromDate')).val();
+                var toDate = angular.element(document.getElementById('toDate')).val();
 
                 window.app.pullDataById(document.url, {
                     action: 'pullTravelRequestStatusList',
@@ -64,12 +64,12 @@ angular.module('hris', [])
                     dataBound: gridDataBound,
                     rowTemplate: kendo.template($("#rowTemplate").html()),
                     columns: [
-                        {field: "FIRST_NAME", title: "Employee Name", width: 150},
-                        {field: "FROM_DATE", title: "From Date", width: 120},
-                        {field: "TO_DATE", title: "To Date", width: 120},
-                        {field: "REQUESTED_DATE", title: "Requested Date", width: 150},
-                        {field: "DESTINATION", title: "Destination", width: 120},
-                        {field: "REQUESTED_AMOUNT", title: "Requested Amt.", width: 140},
+                        {field: "FIRST_NAME", title: "Employee Name", width: 140},
+                        {field: "FROM_DATE", title: "From Date", width: 100},
+                        {field: "TO_DATE", title: "To Date", width: 100},
+                        {field: "REQUESTED_DATE", title: "Requested Date", width: 130},
+                        {field: "DESTINATION", title: "Destination", width: 100},
+                        {field: "REQUESTED_AMOUNT", title: "Requested Amt.", width: 130},
                         {field: "RECOMMENDER_NAME", title: "Recommender", width: 120},
                         {field: "APPROVER_NAME", title: "Approver", width: 120},                        
                         {field: "STATUS", title: "Status", width: 100},

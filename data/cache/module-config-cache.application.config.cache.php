@@ -3978,6 +3978,74 @@ return array (
         ),
       ),
     ),
+    'travelStatus' => 
+    array (
+      0 => 
+      array (
+        'label' => 'Travel Request',
+        'route' => 'travelStatus',
+      ),
+      1 => 
+      array (
+        'label' => 'Travel Request',
+        'route' => 'travelStatus',
+        'pages' => 
+        array (
+          0 => 
+          array (
+            'label' => 'List',
+            'route' => 'travelStatus',
+            'action' => 'index',
+          ),
+          1 => 
+          array (
+            'label' => 'Add',
+            'route' => 'travelStatus',
+            'action' => 'add',
+          ),
+          2 => 
+          array (
+            'label' => 'Detail',
+            'route' => 'travelStatus',
+            'action' => 'view',
+          ),
+        ),
+      ),
+    ),
+    'travelApply' => 
+    array (
+      0 => 
+      array (
+        'label' => 'Travel Apply',
+        'route' => 'travelApply',
+      ),
+      1 => 
+      array (
+        'label' => 'Travel Apply',
+        'route' => 'travelApply',
+        'pages' => 
+        array (
+          0 => 
+          array (
+            'label' => 'List',
+            'route' => 'travelApply',
+            'action' => 'index',
+          ),
+          1 => 
+          array (
+            'label' => 'Add',
+            'route' => 'travelApply',
+            'action' => 'add',
+          ),
+          2 => 
+          array (
+            'label' => 'Edit',
+            'route' => 'travelApply',
+            'action' => 'edit',
+          ),
+        ),
+      ),
+    ),
   ),
   'controllers' => 
   array (
