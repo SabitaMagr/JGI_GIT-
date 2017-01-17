@@ -30,6 +30,7 @@ use Zend\Db\Adapter\AdapterInterface;
 use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\Form\Element\Select;
 use Zend\Mvc\Controller\AbstractActionController;
+use Setup\Repository\RecommendApproveRepository;
 
 class LeaveApproveController extends AbstractActionController {
 
@@ -130,6 +131,9 @@ class LeaveApproveController extends AbstractActionController {
         $approvedDT = $detail['APPROVED_DT'];
 
         $requestedEmployeeID = $detail['EMPLOYEE_ID'];
+        $recommendApproveRepository = new RecommendApproveRepository($this->adapter);
+        $empRecommendApprove = $recommendApproveRepository->fetchById($requestedEmployeeID);
+        
         $employeeName = $detail['FIRST_NAME'] . " " . $detail['MIDDLE_NAME'] . " " . $detail['LAST_NAME'];
         $RECM_MN = ($detail['RECM_MN'] != null) ? " " . $detail['RECM_MN'] . " " : " ";
         $recommender = $detail['RECM_FN'] . $RECM_MN . $detail['RECM_LN'];
