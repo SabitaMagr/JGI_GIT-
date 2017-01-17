@@ -97,7 +97,7 @@ angularApp.controller('menuUpdateController', function ($scope, $uibModal, $log,
     });
 
     $scope.submitForm = function () {
-        console.log($scope.userForm);
+       // console.log($scope.userForm);
         if ($scope.userForm.$valid) {
             window.app.pullDataById(document.url, {
                 action: 'menuUpdate',
