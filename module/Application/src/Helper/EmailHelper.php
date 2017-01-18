@@ -2,6 +2,7 @@
 
 namespace Application\Helper;
 
+use Zend\Mail\Message;
 use Zend\Mail\Transport\Smtp;
 use Zend\Mail\Transport\SmtpOptions;
 
@@ -22,14 +23,15 @@ class EmailHelper {
         $transport->setOptions($options);
         return $transport;
     }
-    
-//    $transport = EmailHelper::getSmtpTransport();
-//        $mail = new Message();
+
+    public static function sendEmail(Message $mail) {
+        $transport = self::getSmtpTransport();
 //        $mail->setBody('This is the text of the email.');
 //        $mail->setFrom('ukesh.gaiju@itnepal.com', "Ukesh");
 //        $mail->addTo('somkala.pachhai@itnepal.com', 'Name of recipient');
 //        $mail->setSubject('TestSubject');
-//
-//        $transport->send($mail);
+
+        $transport->send($mail);
+    }
 
 }

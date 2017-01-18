@@ -48,7 +48,7 @@ angular.module('hris', [])
             $scope.pullMonthlySheet = function (reqParams) {
                 window.app.pullDataById(document.url, {
                     action: 'generataMonthlySheet',
-                    data: reqParams
+                    data: reqParams                    
                 }).then(function (success) {
                     $scope.$apply(function () {
                         console.log("generateMonthlySheet", success);

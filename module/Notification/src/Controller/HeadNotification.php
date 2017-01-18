@@ -2,14 +2,16 @@
 
 namespace Notification\Controller;
 
+use Application\Helper\EmailHelper;
 use Application\Helper\Helper;
 use Application\Model\Model;
-use LeaveManagement\Model\LeaveApply;
 use Notification\Model\Notification;
 use Notification\Model\NotificationEvents;
 use Notification\Repository\NotificationRepo;
+use Setup\Repository\EmployeeRepository;
 use Setup\Repository\RecommendApproveRepository;
 use Zend\Db\Adapter\AdapterInterface;
+use Zend\Mail\Message;
 
 class HeadNotification {
 
@@ -38,6 +40,35 @@ class HeadNotification {
         return $notificationRepo->add($notification);
     }
 
+    private static function sendEmail(int $from, int $to, int $type, AdapterInterface $adapter) {
+        $emailTemplateRepo = new \Notification\Repository\EmailTemplateRepo($adapter);
+        $template = $emailTemplateRepo->fetchById($type);
+
+        $employeeRepo = new EmployeeRepository($adapter);
+        $fromEmployee = $employeeRepo->fetchById($from);
+        $toEmployee = $employeeRepo->fetchById($to);
+
+        $mail = new Message();
+        $mail->setSubject($template['SUBJECT']);
+        $mail->setBody($template['DESCRIPTION']);
+        $mail->setFrom('ukesh.gaiju@itnepal.com', $fromEmployee['FIRST_NAME'] . " " . $fromEmployee['MIDDLE_NAME'] . " " . $fromEmployee['LAST_NAME']);
+        $mail->addTo('somkala.pachhai@itnepal.com', $toEmployee['FIRST_NAME'] . " " . $toEmployee['MIDDLE_NAME'] . " " . $toEmployee['LAST_NAME']);
+
+        $cc = (array) json_decode($template['CC']);
+        foreach ($cc as $ccObj) {
+            $ccObj = (array) $ccObj;
+            $mail->addCc($ccObj['email'], $ccObj['name']);
+        }
+
+        $bcc = (array) json_decode($template['BCC']);
+        foreach ($bcc as $bccObj) {
+            $bccObj = (array) $bccObj;
+            $mail->addBcc($bccObj['email'], $bccObj['name']);
+        }
+
+        EmailHelper::sendEmail($mail);
+    }
+
     public static function pushNotification(int $eventType, Model $model, AdapterInterface $adapter) {
         switch ($eventType) {
             case NotificationEvents::LEAVE_APPLIED:
@@ -45,6 +76,7 @@ class HeadNotification {
                 $recommdAppRepo = new RecommendApproveRepository($adapter);
                 $recommdAppModel = $recommdAppRepo->getDetailByEmployeeID($leaveApply->employeeId);
                 $route = ["route" => "leaveapprove", "action" => "view", "id" => $leaveApply->id, "role" => 2];
+                self::sendEmail($recommdAppModel['EMPLOYEE_ID'], $recommdAppModel['RECOMMEND_BY'], 1, $adapter);
                 self::addNotifications("Leave Applied", "Leave Request From " . $recommdAppModel['FIRST_NAME'], $recommdAppModel['EMPLOYEE_ID'], $recommdAppModel['RECOMMEND_BY'], json_encode($route), $adapter);
                 break;
             case NotificationEvents::LEAVE_RECOMMEND_ACCEPTED:

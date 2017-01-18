@@ -248,10 +248,17 @@ class Helper {
         return $t + rand(0, 1000);
     }
 
-    public static function extractDbData($rawArray): array {
+    public static function extractDbData($rawArray, bool $inArray = false, string $arrangeWithKey = null): array {
         $extractedArray = [];
         foreach ($rawArray as $item) {
-            array_push($extractedArray, $item);
+            if ($inArray) {
+                $item = $item->getArrayCopy();
+            }
+            if ($arrangeWithKey == null) {
+                array_push($extractedArray, $item);
+            } else {
+                $extractedArray[$item[$arrangeWithKey]] = $item;
+            }
         }
         return $extractedArray;
     }
