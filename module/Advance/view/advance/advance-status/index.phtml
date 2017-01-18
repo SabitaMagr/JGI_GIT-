@@ -7,7 +7,9 @@ $this->headScript()
      ->appendFile($this->basePath('telerik_kendoui/js/kendo.all.min.js'))
      ->appendFile($this->basePath('js/angular.min.js'))
      ->appendFile($this->basePath('js/advance/advance-status/index.js'))
-        ->appendFile($this->basePath('assets/global/plugins/bootstrap-confirmation/bootstrap-confirmation.min.js'));
+     ->appendFile($this->basePath('assets/global/plugins/nepalidate/nepali.datepicker.v2.1.min.js'))
+     ->appendFile($this->basePath('js/nepali-datepicker-ext.js'))
+     ->appendFile($this->basePath('assets/global/plugins/bootstrap-confirmation/bootstrap-confirmation.min.js'));
 ?>
 
 <script>
@@ -69,21 +71,37 @@ if ($this->messages) { ?>
                 <?php print $this->formLabel($serviceEventTypes); ?>
                 <?php print $this->formElement($serviceEventTypes); ?>
             </div>
-                 <div class="col-xs-12 col-sm-3 col-md-3">
-                <label for="fromDate">From Date</label>
-                <div class="input-group date" id="fromDate">
-                    <input type="text" placeholder="From Date" id="fromDate1" name="fromDate" ng-model="fromDate" class="form-control"/>
-                    <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+            <div class="col-sm-6">
+                <div class="row">
+                    <div class="col-sm-3">
+                        <div class="form-group">
+                            <label for="fromDate">From Date</label>
+                            <input type="text" id="fromDate1" name="fromDate" ng-model="fromDate" class="form-control"/>
+                        </div>
+
+                    </div>
+                    <div class="col-sm-3">
+                        <div class="form-group">
+                            <label for="nepaliFromDate">&nbsp;</label>
+                            <input type="text" id="nepaliFromDate" name="nepaliFromDate"  class="form-control"/>
+                        </div>
+
+                    </div>
+                    <div class="col-sm-3">
+                        <div class="form-group">
+                            <label for="toDate">To Date</label>
+                            <input type="text"  id="toDate1" name="toDate" ng-model="toDate" class="form-control"/>
+                        </div>
+                    </div>
+                    <div class="col-sm-3">
+                        <div class="form-group">
+                            <label for="nepaliToDate">&nbsp;</label>
+                            <input type="text"  id="nepaliToDate" name="nepaliToDate" class="form-control"/>
+                        </div>
+                    </div>
                 </div>
             </div>
-               <div class="col-xs-12 col-sm-3 col-md-3">
-                <label for="toDate">To Date</label>
-                <div class="input-group date" id="toDate">
-                    <input type="text" placeholder="To Date" id="toDate1" name="toDate" ng-model="toDate" class="form-control"/>
-                    <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                </div>
-            </div>
-                <div class="col-xs-12 col-sm-3 col-md-3">
+            <div class="col-xs-12 col-sm-3 col-md-3">
                 <label height="45"></label>
                 <button ng-click="view()" id="viewLeaveRequestStatus" class="btn btn-default form-control i-search form-control">
                     Search

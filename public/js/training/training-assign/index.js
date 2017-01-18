@@ -1,3 +1,10 @@
+(function ($, app) {
+    'use strict';
+    $(document).ready(function () {
+        window.app.UIConfirmations();
+    });
+})(window.jQuery, window.app);
+
 angular.module('hris', [])
         .controller('trainingAssignController', function ($scope, $http) {
             $('select').select2();
@@ -144,6 +151,7 @@ angular.module('hris', [])
                     console.log("Training Assign List", success);
                     $scope.$apply(function () {
                         $scope.initializekendoGrid(success.data);
+                        window.app.UIConfirmations();
                     });
                 }, function (failure) {
                     console.log("Employee Get All", failure);
@@ -171,14 +179,14 @@ angular.module('hris', [])
                     dataBound: gridDataBound,
                     rowTemplate: kendo.template($("#rowTemplate").html()),
                     columns: [
-                        {field: "FIRST_NAME", title: "Employee Name", width: 150},
+                        {field: "FIRST_NAME", title: "Employee Name", width: 130},
                         {field: "TRAINING_NAME", title: "Training Name", width: 120},
                         {field: "START_DATE", title: "Start Date", width: 80},
                         {field: "END_DATE", title: "End Date", width: 80},
                         {field: "DURATION", title: "Duration(in hour)", width: 100},
                         {field: "INSTITUTE_NAME", title: "Institute Name", width: 100},
                         {field: "TRAINING_TYPE", title: "Training Type", width: 100},
-                        {title: "Action", width: 80}
+                        {title: "Action", width: 100}
                     ]
                 });
                 function gridDataBound(e) {

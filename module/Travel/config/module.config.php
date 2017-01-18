@@ -39,6 +39,62 @@ return [
             ],
         ],
     ],
+    'navigation' => [
+        'travelStatus' => [
+                [
+                'label' => "Travel Request",
+                'route' => "travelStatus"
+            ],
+                [
+                'label' => "Travel Request",
+                'route' => "travelStatus",
+                'pages' => [
+                        [
+                        'label' => 'List',
+                        'route' => 'travelStatus',
+                        'action' => 'index',
+                    ],
+                        [
+                        'label' => 'Add',
+                        'route' => 'travelStatus',
+                        'action' => 'add',
+                    ],
+                        [
+                        'label' => 'Detail',
+                        'route' => 'travelStatus',
+                        'action' => 'view',
+                    ],
+                ],
+            ],
+        ],
+        'travelApply' => [
+                [
+                'label' => "Travel Apply",
+                'route' => "travelApply"
+            ],
+                [
+                'label' => "Travel Apply",
+                'route' => "travelApply",
+                'pages' => [
+                        [
+                        'label' => 'List',
+                        'route' => 'travelApply',
+                        'action' => 'index',
+                    ],
+                        [
+                        'label' => 'Add',
+                        'route' => 'travelApply',
+                        'action' => 'add',
+                    ],
+                        [
+                        'label' => 'Edit',
+                        'route' => 'travelApply',
+                        'action' => 'edit',
+                    ],
+                ],
+            ],
+        ],
+    ],
     
     'controllers' => [
         'factories' => [

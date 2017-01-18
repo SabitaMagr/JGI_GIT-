@@ -1,5 +1,4 @@
 <?php
-
 namespace LeaveManagement\Repository;
 
 use Application\Model\Model;
