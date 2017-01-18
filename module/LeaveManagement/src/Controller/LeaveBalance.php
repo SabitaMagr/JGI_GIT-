@@ -165,7 +165,7 @@ class LeaveBalance extends AbstractActionController {
                 $leaveRequest->endDate = Helper::getExpressionDate($leaveRequest->endDate);
                 $leaveRequest->requestedDt = Helper::getcurrentExpressionDate();
                 $leaveRequest->status = "RQ";
-                $this->leaveRequestRepository->add($leaveRequest);
+//                $this->leaveRequestRepository->add($leaveRequest);
                 HeadNotification::pushNotification(NotificationEvents::LEAVE_APPLIED, $leaveRequest, $this->adapter);
                 $this->flashmessenger()->addMessage("Leave Request Successfully added!!!");
                 return $this->redirect()->toRoute("leavestatus");
