@@ -89,6 +89,7 @@ class AdvanceApproveRepository implements RepositoryInterface{
                     AR.REASON,
                     AR.ADVANCE_ID,
                     AR.STATUS,
+                    AR.EMPLOYEE_ID,
                     AR.TERMS,
                     TO_CHAR(AR.ADVANCE_DATE, 'DD-MON-YYYY') AS ADVANCE_DATE,
                     TO_CHAR(AR.RECOMMENDED_DATE, 'DD-MON-YYYY') AS RECOMMENDED_DATE,

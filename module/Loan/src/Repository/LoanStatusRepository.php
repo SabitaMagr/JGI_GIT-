@@ -56,6 +56,7 @@ class LoanStatusRepository implements RepositoryInterface{
                 TO_CHAR(LR.LOAN_DATE, 'DD-MON-YYYY') AS LOAN_DATE,
                 TO_CHAR(LR.REQUESTED_DATE, 'DD-MON-YYYY') AS REQUESTED_DATE,
                 LR.STATUS AS STATUS,
+                LR.EMPLOYEE_ID AS EMPLOYEE_ID,
                 LR.LOAN_REQUEST_ID AS LOAN_REQUEST_ID,
                 TO_CHAR(LR.RECOMMENDED_DATE, 'DD-MON-YYYY') AS RECOMMENDED_DATE,
                 TO_CHAR(LR.APPROVED_DATE, 'DD-MON-YYYY') AS APPROVED_DATE,

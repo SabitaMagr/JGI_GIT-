@@ -90,7 +90,11 @@ class LeaveApproveController extends AbstractActionController {
             }
         };
         foreach ($list as $row) {
-            array_push($leaveApprove, [
+            $requestedEmployeeID = $row['EMPLOYEE_ID'];
+            $recommendApproveRepository = new RecommendApproveRepository($this->adapter);
+            $empRecommendApprove = $recommendApproveRepository->fetchById($requestedEmployeeID);
+            
+            $dataArray = [
                 'FIRST_NAME' => $row['FIRST_NAME'],
                 'MIDDLE_NAME' => $row['MIDDLE_NAME'],
                 'LAST_NAME' => $row['LAST_NAME'],
@@ -103,9 +107,13 @@ class LeaveApproveController extends AbstractActionController {
                 'STATUS' => $getStatusValue($row['STATUS']),
                 'YOUR_ROLE' => $getValue($row['RECOMMENDER'], $row['APPROVER']),
                 'ROLE' => $getRole($row['RECOMMENDER'], $row['APPROVER'])
-            ]);
+            ];
+            if($empRecommendApprove['RECOMMEND_BY']==$empRecommendApprove['APPROVED_BY']){
+                $dataArray['YOUR_ROLE'] = 'Recommender\Approver';
+                $dataArray['ROLE'] = 4;
+            }
+            array_push($leaveApprove, $dataArray);            
         }
-        //print_r($leaveApprove); die();
         return Helper::addFlashMessagesToArray($this, ['leaveApprove' => $leaveApprove, 'id' => $this->employeeId]);
     }
 
@@ -129,11 +137,8 @@ class LeaveApproveController extends AbstractActionController {
 
         $status = $detail['STATUS'];
         $approvedDT = $detail['APPROVED_DT'];
-
-        $requestedEmployeeID = $detail['EMPLOYEE_ID'];
-        $recommendApproveRepository = new RecommendApproveRepository($this->adapter);
-        $empRecommendApprove = $recommendApproveRepository->fetchById($requestedEmployeeID);
         
+        $requestedEmployeeID = $detail['EMPLOYEE_ID'];
         $employeeName = $detail['FIRST_NAME'] . " " . $detail['MIDDLE_NAME'] . " " . $detail['LAST_NAME'];
         $RECM_MN = ($detail['RECM_MN'] != null) ? " " . $detail['RECM_MN'] . " " : " ";
         $recommender = $detail['RECM_FN'] . $RECM_MN . $detail['RECM_LN'];
@@ -179,7 +184,7 @@ class LeaveApproveController extends AbstractActionController {
                 } else {
                     HeadNotification::pushNotification(NotificationEvents::LEAVE_RECOMMEND_REJECTED, $leaveApply, $this->adapter);
                 }
-            } else if ($role == 3) {
+            } else if ($role == 3 || $role==4) {
                 $leaveApply->approvedDt = Helper::getcurrentExpressionDate();
                 if ($action == "Reject") {
                     $leaveApply->status = "R";
@@ -200,6 +205,11 @@ class LeaveApproveController extends AbstractActionController {
                 unset($leaveApply->halfDay);
                 $leaveApply->approvedBy = $this->employeeId;
                 $leaveApply->approvedRemarks = $getData->approvedRemarks;
+                
+                if($role==4){
+                    $leaveApply->recommendedBy = $this->employeeId;
+                    $leaveApply->recommendedDt = Helper::getcurrentExpressionDate();
+                }
 
                 $leaveApply->id = $id;
                 $leaveApply->employeeId = $requestedEmployeeID;

@@ -21,6 +21,7 @@ use Zend\Form\Element\Select;
 use Setup\Model\ServiceEventType;
 use Setup\Model\Advance;
 use Zend\Authentication\AuthenticationService;
+use Setup\Repository\RecommendApproveRepository;
 
 class AdvanceStatus extends AbstractActionController
 {
@@ -157,6 +158,13 @@ class AdvanceStatus extends AbstractActionController
         $approvedDT = $detail['APPROVED_DATE'];
 
         $requestedEmployeeID = $detail['EMPLOYEE_ID'];
+        $recommendApproveRepository = new RecommendApproveRepository($this->adapter);
+        $empRecommendApprove = $recommendApproveRepository->fetchById($requestedEmployeeID);
+        $recommApprove = 0;
+        if($empRecommendApprove['RECOMMEND_BY']==$empRecommendApprove['APPROVED_BY']){
+            $recommApprove=1;
+        }
+        
         $employeeName = $detail['FIRST_NAME'] . " " . $detail['MIDDLE_NAME'] . " " . $detail['LAST_NAME'];        
         $RECM_MN = ($detail['RECM_MN']!=null)? " ".$detail['RECM_MN']." ":" ";
         $recommender = $detail['RECM_FN'].$RECM_MN.$detail['RECM_LN'];        
@@ -203,7 +211,8 @@ class AdvanceStatus extends AbstractActionController
                     'approver' => $authApprover,
                     'status' => $status,
                     'advances' => EntityHelper::getTableKVListWithSortOption($this->adapter, Advance::TABLE_NAME, Advance::ADVANCE_ID, [Advance::ADVANCE_NAME], [Advance::STATUS => "E"], Advance::ADVANCE_ID, "ASC"),
-                    'customRenderer' => Helper::renderCustomView()
+                    'customRenderer' => Helper::renderCustomView(),
+                    'recommApprove'=>$recommApprove
         ]);
     }
     

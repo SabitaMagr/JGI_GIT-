@@ -91,6 +91,7 @@ class TravelApproveRepository implements RepositoryInterface{
                     TR.STATUS,
                     TR.REQUESTED_TYPE,
                     TR.REMARKS,
+                    TR.EMPLOYEE_ID,
                     TR.RECOMMENDED_REMARKS,
                     TR.APPROVED_REMARKS,
                     TR.DESTINATION,

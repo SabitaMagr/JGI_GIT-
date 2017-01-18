@@ -20,6 +20,7 @@ use Setup\Model\Position;
 use Setup\Model\ServiceType;
 use Setup\Model\ServiceEventType;
 use Zend\Form\Element\Select;
+use Setup\Repository\RecommendApproveRepository;
 
 class LoanApproveController extends AbstractActionController {
     private $loanApproveRepository;
@@ -73,7 +74,11 @@ class LoanApproveController extends AbstractActionController {
             }
         };
         foreach ($list as $row) {
-            array_push($loanApprove, [
+            $requestedEmployeeID = $row['EMPLOYEE_ID'];
+            $recommendApproveRepository = new RecommendApproveRepository($this->adapter);
+            $empRecommendApprove = $recommendApproveRepository->fetchById($requestedEmployeeID);
+            
+            $dataArray = [
                 'FIRST_NAME' => $row['FIRST_NAME'],
                 'MIDDLE_NAME' => $row['MIDDLE_NAME'],
                 'LAST_NAME' => $row['LAST_NAME'],
@@ -86,7 +91,12 @@ class LoanApproveController extends AbstractActionController {
                 'LOAN_REQUEST_ID' => $row['LOAN_REQUEST_ID'],
                 'YOUR_ROLE' => $getValue($row['RECOMMENDER'], $row['APPROVER']),
                 'ROLE' => $getRole($row['RECOMMENDER'], $row['APPROVER'])
-            ]);
+            ];
+            if($empRecommendApprove['RECOMMEND_BY']==$empRecommendApprove['APPROVED_BY']){
+                $dataArray['YOUR_ROLE'] = 'Recommender\Approver';
+                $dataArray['ROLE'] = 4;
+            }
+            array_push($loanApprove, $dataArray);
         }
         //print_r($loanApprove); die();
         return Helper::addFlashMessagesToArray($this, ['loanApprove' => $loanApprove, 'id' => $this->employeeId]);
@@ -141,7 +151,7 @@ class LoanApproveController extends AbstractActionController {
                 }
                 $loanRequestModel->recommendedRemarks = $getData->recommendedRemarks;
                 $this->loanApproveRepository->edit($loanRequestModel, $id);
-            } else if ($role == 3) {
+            } else if ($role == 3 || $role==4) {
                 $loanRequestModel->approvedDate = Helper::getcurrentExpressionDate();
                 $loanRequestModel->approvedBy = $this->employeeId;
                 if ($action == "Reject") {
@@ -150,6 +160,10 @@ class LoanApproveController extends AbstractActionController {
                 } else if ($action == "Approve") {
                     $loanRequestModel->status = "AP";
                     $this->flashmessenger()->addMessage("Loan Request Approved");
+                }
+                if($role==4){
+                    $loanRequestModel->recommendedBy = $this->employeeId;
+                    $loanRequestModel->recommendedDate = Helper::getcurrentExpressionDate();
                 }
                 $loanRequestModel->approvedRemarks = $getData->approvedRemarks;
                 $this->loanApproveRepository->edit($loanRequestModel, $id);
