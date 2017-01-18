@@ -1071,7 +1071,10 @@ form label,.form-box label
 
     float:left;
 }
-
+.errorMsgNoLeft{
+    color: red;
+    font-size: 11px;
+}
 .f-green{
     color:#559767 !important;
 }

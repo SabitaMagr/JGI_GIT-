@@ -3,6 +3,7 @@
  * Load Javascript files here
  */
 $this->headScript()->appendFile($this->basePath('js/LeaveManagement/LeaveRequest/add.js'));
+$this->headScript()->appendFile($this->basePath('js/manager-service/leave-approve/view.js'));
 $this->headScript()->appendFile($this->basePath('js/angular.min.js'));
 $this->headScript()->appendFile($this->basePath('js/LeaveManagement/LeaveRequest/leaveRequestController.js'));
 ?>
@@ -32,6 +33,7 @@ $approvedRemarks->setAttributes(['required'=>'true']);
 
 $submit = $form->get('submit');
 $submit->setAttribute('value', 'Approve');
+$submit->setAttribute('id', 'approve');
 
 $form->setAttribute('action', $this->url('leaveapprove', ['action' => 'view', 'id' => $id, 'role' => $role]));
 
@@ -126,13 +128,14 @@ print $this->form()->openTag($form);
                                             <?php echo $totalDays; ?>
                                         </td>
                                     </tr>
-                                    <tr height="30">
+                                    <tr height="30" id="availableDaysText">
                                         <td>
                                             Available Days
                                         </td>
                                         <td width="15">:</td>
                                         <td>
                                             <?php echo $availableDays; ?>
+                                            <input type="hidden" id="availableDays" value="<?php echo $availableDays; ?>"/>
                                         </td>
                                     </tr>
                                     <tr height="30">
@@ -243,14 +246,14 @@ print $this->form()->openTag($form);
                             <?php print $this->formElement($approvedRemarks); ?>
                         </div>
                     <?php } ?>
-
+                    <div class="form-group">
                     <?php
                     if ($status == 'RQ' || ($status == 'RC' && $employeeId != $recommendedBy)) {
                         print $this->formSubmit($submit);
                         ?>
                         <input type="submit" name="submit" class="btn btn-success pull-right" value="Reject">
                     <?php } ?>
-
+                    </div>
                 </div>
             </div>
         </div>

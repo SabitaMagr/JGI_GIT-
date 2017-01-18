@@ -151,10 +151,11 @@ class LeaveBalance extends AbstractActionController {
         $employeeRepository = new EmployeeRepository($this->adapter);
         $employeeDtl = $employeeRepository->fetchById($employeeId);
 
-        if ($request->isPost()) {
+        if ($request->isPost()) {           
             $this->form->setData($request->getPost());
 
             if ($this->form->isValid()) {
+               // print_r("hello1"); die();
                 $leaveRequest = new LeaveApply();
                 $leaveRequest->exchangeArrayFromForm($this->form->getData());
 
@@ -165,7 +166,7 @@ class LeaveBalance extends AbstractActionController {
                 $leaveRequest->endDate = Helper::getExpressionDate($leaveRequest->endDate);
                 $leaveRequest->requestedDt = Helper::getcurrentExpressionDate();
                 $leaveRequest->status = "RQ";
-//                $this->leaveRequestRepository->add($leaveRequest);
+                $this->leaveRequestRepository->add($leaveRequest);
                 HeadNotification::pushNotification(NotificationEvents::LEAVE_APPLIED, $leaveRequest, $this->adapter);
                 $this->flashmessenger()->addMessage("Leave Request Successfully added!!!");
                 return $this->redirect()->toRoute("leavestatus");
