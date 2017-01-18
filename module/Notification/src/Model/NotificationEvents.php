@@ -9,5 +9,5 @@ class NotificationEvents {
     const LEAVE_RECOMMEND_REJECTED = 3;
     const LEAVE_APPROVE_ACCEPTED = 4;
     const LEAVE_APPROVE_REJECTED = 5;
-
+    const LEAVE_CANCELLED = 6;
 }
