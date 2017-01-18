@@ -244,6 +244,33 @@ return [
                 ]
             ]
         ],
+        'salaryReview' => [
+                [
+                'label' => 'Salary Review',
+                'route' => 'salaryReview',
+            ],
+                [
+                'label' => 'Salary Review',
+                'route' => 'salaryReview',
+                'pages' => [
+                        [
+                        'label' => 'List',
+                        'route' => 'salaryReview',
+                        'action' => 'index',
+                    ],
+                        [
+                        'label' => 'Add',
+                        'route' => 'salaryReview',
+                        'action' => 'add',
+                    ],
+                        [
+                        'label' => 'Edit',
+                        'route' => 'salaryReview',
+                        'action' => 'edit',
+                    ],
+                ]
+            ]
+        ],
     ],
     'controllers' => [
         'factories' => [

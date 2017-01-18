@@ -3496,12 +3496,12 @@ return array (
     array (
       0 => 
       array (
-        'label' => 'SalaryReview',
+        'label' => 'Salary Review',
         'route' => 'salaryReview',
       ),
       1 => 
       array (
-        'label' => 'SalaryReview',
+        'label' => 'Salary Review',
         'route' => 'salaryReview',
         'pages' => 
         array (
@@ -3520,7 +3520,7 @@ return array (
           2 => 
           array (
             'label' => 'Edit',
-            'route' => 'loanApprove',
+            'route' => 'salaryReview',
             'action' => 'edit',
           ),
         ),

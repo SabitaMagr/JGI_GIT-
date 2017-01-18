@@ -487,4 +487,3 @@ window.app = (function ($, toastr) {
     };
 })(window.jQuery, window.toastr);
 
-//
