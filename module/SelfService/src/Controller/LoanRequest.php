@@ -15,6 +15,8 @@ use SelfService\Repository\LoanRequestRepository;
 use Setup\Model\Loan;
 use Setup\Repository\EmployeeRepository;
 use Setup\Repository\RecommendApproveRepository;
+use Setup\Repository\LoanRepository;
+use Setup\Repository\LoanRestrictionRepository;
 
 class LoanRequest extends AbstractActionController {
 
@@ -30,6 +32,8 @@ class LoanRequest extends AbstractActionController {
         $this->repository = new LoanRequestRepository($adapter);
         $auth = new AuthenticationService();
         $this->employeeId = $auth->getStorage()->read()['employee_id'];
+        
+        $this->getLoanList();
     }
 
     public function initializeForm() {
@@ -143,7 +147,32 @@ class LoanRequest extends AbstractActionController {
                     'loans' => EntityHelper::getTableKVListWithSortOption($this->adapter, Loan::TABLE_NAME, Loan::LOAN_ID, [Loan::LOAN_NAME], [Loan::STATUS => "E"], Loan::LOAN_ID, "ASC")
         ]);
     }
+    public function getLoanList(){
+        $employeeId = $this->employeeId;
+        $loanRepo = new LoanRepository($this->adapter);
+        $loanRestrictionRepo = new LoanRestrictionRepository($this->adapter);
+        $employeeRepo = new EmployeeRepository($this->adapter);
+        
+        $employeeDetail = $employeeRepo->fetchById($employeeId);
+        
+        $position = $employeeDetail['POSITION_ID'];
+        $designation = $employeeDetail['DESIGNATION_ID'];
+        $serviceType = $employeeDetail['SERVICE_TYPE_ID'];
+        $salary = $employeeDetail['SALARY'];
+        $joinDate = $employeeDetail['JOIN_DATE'];
+        $currentDate = "2017-01-18";
+        $loanList = $loanRepo->fetchActiveRecord();
+        foreach($loanList as $loanRow){
+            $loanId = $loanRow['LOAN_ID'];
+            $restrictionDtl = $loanRestrictionRepo->getByLoanId($loanId);
+            
+            print_r($restrictionDtl); die();
+        }
 
+        print "<pre>";
+        print_r($loanList); die();
+    }
+    
     public function deleteAction() {
         $id = (int) $this->params()->fromRoute("id");
         if (!$id) {
