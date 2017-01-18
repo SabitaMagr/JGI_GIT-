@@ -61,6 +61,8 @@ angular.module('hris', [])
                 }).then(function (success) {
                     $scope.$apply(function () {
                         var temp = success.data;
+                        var length = (success.leaveList).length;
+                        console.log((success.leaveList).length)
                         $scope.leaveList = success.leaveList;
                         $scope.leaveId = $scope.leaveList[0];
                         $scope.availableDays = temp.BALANCE;

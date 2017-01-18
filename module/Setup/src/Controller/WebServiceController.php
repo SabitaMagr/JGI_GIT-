@@ -209,10 +209,16 @@ class WebServiceController extends AbstractActionController
                     foreach($leaveList as $key=>$value){
                         array_push($leaveRow,["id"=>$key,"name"=>$value]);
                     }
-                    
-                    $empLeaveId = $leaveRow[0]['id'];
-                    $leaveDetail =$leaveRequestRepository->getLeaveDetail($employeeId,$empLeaveId);
-
+                    if(count($leaveRow)>0){
+                        $empLeaveId = $leaveRow[0]['id'];
+                        $leaveDetail =$leaveRequestRepository->getLeaveDetail($employeeId,$empLeaveId);
+                    }else{
+                        $leaveDetail = [
+                            'BALANCE'=>"",
+                            'ALLOW_HALFDAY'=>'N'                            
+                        ];
+                        
+                    }
                     $responseData = [
                         "success" => true,
                         "data" => $leaveDetail,

@@ -66,6 +66,7 @@ print $this->form()->openTag($form);
                     <div class="form-group">
                         <label for="leaveId">Leave Type</label>
                         <select name="leaveId" required="required" ng-options="leave.name for leave in leaveList track by leave.id" ng-model="leaveId" ng-change="change()" id="leaveId" class="form-control">
+                            <option style="display:none" value="" disabled="">select a type</option>
                         </select>
                     </div>
 
