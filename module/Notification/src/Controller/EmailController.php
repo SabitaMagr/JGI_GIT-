@@ -4,6 +4,7 @@ namespace Notification\Controller;
 
 use Application\Helper\Helper;
 use Notification\Model\EmailTemplate;
+use Notification\Model\LeaveRequestNotificationModel;
 use Notification\Repository\EmailTemplateRepo;
 use Zend\Authentication\AuthenticationService;
 use Zend\Db\Adapter\AdapterInterface;
@@ -16,9 +17,9 @@ class EmailController extends AbstractActionController {
     private $templateRepo;
 
     const EMAIL_TYPES = [
-        1 => "TYPE_ONE",
-        2 => "TYPE_TWO",
-        3 => "TYPE_THREE"];
+        1 => "Leave_Request",
+        2 => "Leave_Recommend",
+        3 => "Leave_Approve"];
 
     public function __construct(AdapterInterface $adapter) {
         $this->adapter = $adapter;
@@ -29,6 +30,11 @@ class EmailController extends AbstractActionController {
     }
 
     public function indexAction() {
+        $test = new LeaveRequestNotificationModel();
+        $test->fromId = 0;
+        $test->processString("[fromId]");
+
+
         $tab = (int) $this->params()->fromRoute('id');
         if ($tab == 0) {
             $tab = array_keys(self::EMAIL_TYPES)[0];
@@ -37,7 +43,14 @@ class EmailController extends AbstractActionController {
         return Helper::addFlashMessagesToArray($this, [
                     'emailTypes' => self::EMAIL_TYPES,
                     'templates' => $templates,
-                    'tab' => $tab]);
+                    'tab' => $tab,
+                    'variables' => $this->getVariables()
+        ]);
+    }
+
+    private function getVariables() {
+        $type1 = new LeaveRequestNotificationModel();
+        return [1 => $type1->getObjectAttrs(), 2 => [], 3 => []];
     }
 
     public function editAction() {
