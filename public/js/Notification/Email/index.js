@@ -7,7 +7,8 @@
         $('.summernote')
                 .each(function () {
                     var $this = $(this);
-                    var temp = $this.parent().find("input[name='description']").val();
+                    var temp = decodeURIComponent($this.parent().find("input[name='description']").val());
+                    console.log(temp);
                     $this.summernote({height: 300,
                         minHeight: null,
                         maxHeight: null,

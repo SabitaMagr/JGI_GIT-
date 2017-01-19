@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Created by PhpStorm.
  * User: ukesh
@@ -8,46 +9,40 @@
 
 namespace LeaveManagement\Repository;
 
-
 use Application\Model\Model;
 use Application\Repository\RepositoryInterface;
 use LeaveManagement\Model\LeaveApply;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\TableGateway\TableGateway;
 
-class LeaveApplyRepository implements RepositoryInterface
-{
+class LeaveApplyRepository implements RepositoryInterface {
+
     private $tableGateway;
     private $adapter;
 
-    public function __construct(AdapterInterface $adapter)
-    {
+    public function __construct(AdapterInterface $adapter) {
         $this->tableGateway = new TableGateway(LeaveApply::TABLE_NAME, $adapter);
         $this->adapter = $adapter;
     }
 
-    public function add(Model $model)
-    {
+    public function add(Model $model) {
         $this->tableGateway->insert($model->getArrayCopyForDB());
     }
 
-    public function edit(Model $model, $id)
-    {
+    public function edit(Model $model, $id) {
         // TODO: Implement edit() method.
     }
 
-    public function fetchAll()
-    {
+    public function fetchAll() {
         // TODO: Implement fetchAll() method.
     }
 
-    public function fetchById($id)
-    {
-        // TODO: Implement fetchById() method.
+    public function fetchById($id) {
+        return $this->tableGateway->select([LeaveApply::ID => $id])->current();
     }
 
-    public function delete($id)
-    {
+    public function delete($id) {
         // TODO: Implement delete() method.
     }
+
 }

@@ -109,14 +109,31 @@ echo json_encode($menu);
                                     <label class="control-label">Message</label>
                                     <div class="summernote">
                                     </div>
-                                    <input name="description" type="hidden" value="<?= isset($templates[$key]) ? $templates[$key]['DESCRIPTION'] : '' ?>" >
+                                    <input name="description" type="hidden" value="<?= isset($templates[$key]) ? rawurlencode($templates[$key]['DESCRIPTION']) : '' ?>" >
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        
+                                        <?php foreach ($variables[$key] as $k => $variable): ?>
+                                            <?php if ($k % 12 == 0): ?>
+                                                <div class="row">
+                                                <?php endif; ?>
+                                                <div class="col-sm-1">
+                                                    <a><?= $variable ?></a>
+                                                </div>
+
+                                                <?php if ($k % 12 == 11 || sizeof($variables[$key]) == $k + 1): ?>
+                                                </div>
+                                            <?php endif; ?>
+                                        <?php endforeach; ?>
+                                    </div>
+
                                 </div>
                             </div>
                             <div class="form-action">
                                 <input type="submit" class="btn default"  value="Edit"/>
                             </div>
-
-
                         </form>
                     </div>
                 <?php endforeach; ?>

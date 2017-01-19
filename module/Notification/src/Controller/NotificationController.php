@@ -48,6 +48,7 @@ class NotificationController extends AbstractActionController {
                 return $this->redirect()->toRoute($routeName, $routeJson);
             }
         }
+        return $this->redirect()->toRoute('notification');
     }
 
     public function markAsViewedAction() {
