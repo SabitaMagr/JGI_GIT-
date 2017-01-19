@@ -44,7 +44,7 @@
         }
 
         app.startEndDatePicker("startDate", "endDate", function (startDate, endDate) {
-            if ((startDate != "" && endDate != "") && (startDate <= endDate)) {
+            if (startDate <= endDate) {
                 var oneDay = 24 * 60 * 60 * 1000; // hours*minutes*seconds*milliseconds
                 var diffDays = Math.abs((startDate.getTime() - endDate.getTime()) / (oneDay));
                 var newValue = diffDays + 1;

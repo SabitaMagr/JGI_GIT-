@@ -180,9 +180,9 @@ class LeaveApproveController extends AbstractActionController {
                 $leaveApply->employeeId = $requestedEmployeeID;
                 $leaveApply->approvedBy=$detail['APPROVER'];
                 if ($leaveApply->status == 'RC') {
-                    HeadNotification::pushNotification(NotificationEvents::LEAVE_RECOMMEND_ACCEPTED, $leaveApply, $this->adapter);
+//                    HeadNotification::pushNotification(NotificationEvents::LEAVE_RECOMMEND_ACCEPTED, $leaveApply, $this->adapter);
                 } else {
-                    HeadNotification::pushNotification(NotificationEvents::LEAVE_RECOMMEND_REJECTED, $leaveApply, $this->adapter);
+//                    HeadNotification::pushNotification(NotificationEvents::LEAVE_RECOMMEND_REJECTED, $leaveApply, $this->adapter);
                 }
             } else if ($role == 3 || $role==4) {
                 $leaveApply->approvedDt = Helper::getcurrentExpressionDate();
@@ -213,7 +213,7 @@ class LeaveApproveController extends AbstractActionController {
 
                 $leaveApply->id = $id;
                 $leaveApply->employeeId = $requestedEmployeeID;
-                HeadNotification::pushNotification(($leaveApply->status == 'AP') ? NotificationEvents::LEAVE_APPROVE_ACCEPTED : NotificationEvents::LEAVE_APPROVE_REJECTED, $leaveApply, $this->adapter);
+//                HeadNotification::pushNotification(($leaveApply->status == 'AP') ? NotificationEvents::LEAVE_APPROVE_ACCEPTED : NotificationEvents::LEAVE_APPROVE_REJECTED, $leaveApply, $this->adapter);
                 $this->repository->edit($leaveApply, $id);
             }
             return $this->redirect()->toRoute("leaveapprove");

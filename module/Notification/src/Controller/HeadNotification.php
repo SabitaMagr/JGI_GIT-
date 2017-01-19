@@ -16,6 +16,7 @@ use Setup\Repository\EmployeeRepository;
 use Setup\Repository\RecommendApproveRepository;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Mail\Message;
+use Zend\Mvc\Controller\Plugin\Url;
 
 class HeadNotification {
 
@@ -44,13 +45,13 @@ class HeadNotification {
         return $notificationRepo->add($notification);
     }
 
-    private static function sendEmail(NotificationModel $model, int $type, AdapterInterface $adapter) {
+    private static function sendEmail(NotificationModel $model, int $type, AdapterInterface $adapter, Url $url) {
         $emailTemplateRepo = new \Notification\Repository\EmailTemplateRepo($adapter);
         $template = $emailTemplateRepo->fetchById($type);
 
         $mail = new Message();
         $mail->setSubject($template['SUBJECT']);
-        $mail->setBody($template['DESCRIPTION']);
+        $mail->setBody($model->processString($template['DESCRIPTION'], $url));
         $mail->setFrom('ukesh.gaiju@itnepal.com', $model->fromName);
         $mail->addTo('somkala.pachhai@itnepal.com', $model->toName);
 
@@ -69,9 +70,13 @@ class HeadNotification {
         EmailHelper::sendEmail($mail);
     }
 
-    public static function pushNotification(int $eventType, Model $model, AdapterInterface $adapter) {
-        ${"fn" . NotificationEvents::LEAVE_APPLIED} = function(LeaveApply $model, AdapterInterface $adapter) {
-            $leaveApply = $model;
+    public static function pushNotification(int $eventType, Model $model, AdapterInterface $adapter, Url $url) {
+        ${"fn" . NotificationEvents::LEAVE_APPLIED} = function(LeaveApply $model, AdapterInterface $adapter, Url $url) {
+            $leaveApplyRepo = new LeaveApplyRepository($adapter);
+            $leaveApplyArray = $leaveApplyRepo->fetchById($model->id)->getArrayCopy();
+            $leaveApply = new LeaveApply();
+            $leaveApply->exchangeArrayFromDB($leaveApplyArray);
+
             $recommdAppRepo = new RecommendApproveRepository($adapter);
             $recommdAppModel = $recommdAppRepo->getDetailByEmployeeID($leaveApply->employeeId);
 
@@ -92,8 +97,8 @@ class HeadNotification {
             $leaveReqNotiMod->toName = $toEmployee['FIRST_NAME'] . " " . $toEmployee['MIDDLE_NAME'] . " " . $toEmployee['LAST_NAME'];
             $leaveReqNotiMod->route = json_encode(["route" => "leaveapprove", "action" => "view", "id" => $leaveApply->id, "role" => 2]);
 
-            $leaveReqNotiMod->fromDate = $leaveApply->startDate->getExpression();
-            $leaveReqNotiMod->toDate = $leaveApply->endDate->getExpression();
+            $leaveReqNotiMod->fromDate = $leaveApply->startDate;
+            $leaveReqNotiMod->toDate = $leaveApply->endDate;
             $leaveReqNotiMod->leaveName = $leaveApply->leaveId;
             $leaveReqNotiMod->leaveType = $leaveApply->halfDay;
             $leaveReqNotiMod->noOfDays = $leaveApply->noOfDays;
@@ -102,7 +107,7 @@ class HeadNotification {
             $notificationDesc = "Leave Request of $leaveReqNotiMod->fromName from $leaveReqNotiMod->fromDate to $leaveReqNotiMod->toDate";
 
             self::addNotifications($leaveReqNotiMod, $notificationTitle, $notificationDesc, $adapter);
-            self::sendEmail($leaveReqNotiMod, 1, $adapter);
+//            self::sendEmail($leaveReqNotiMod, 1, $adapter);
         };
 
         ${"fn" . NotificationEvents::LEAVE_RECOMMEND_ACCEPTED} = function(LeaveApply $model, AdapterInterface $adapter) {
@@ -138,7 +143,7 @@ class HeadNotification {
             $notificationTitle = "Leave Request";
             $notificationDesc = "Recommendation of Leave Request of $leaveReqNotiMod->fromName from $leaveReqNotiMod->fromDate to $leaveReqNotiMod->toDate";
             self::addNotifications($leaveReqNotiMod, $notificationTitle, $notificationDesc, $adapter);
-            self::sendEmail($leaveReqNotiMod, 2, $adapter);
+//            self::sendEmail($leaveReqNotiMod, 2, $adapter);
             $temp = function() use($employeeRepo, $leaveApply, $adapter) {
                 $fromEmployee = $employeeRepo->fetchById($leaveApply->employeeId);
                 $toEmployee = $employeeRepo->fetchById($leaveApply->approvedBy);
@@ -166,7 +171,7 @@ class HeadNotification {
                 $notificationDesc = "Recommendation of Leave Request of $leaveReqNotiMod->fromName from $leaveReqNotiMod->fromDate to $leaveReqNotiMod->toDate";
 
                 self::addNotifications($leaveReqNotiMod, $notificationTitle, $notificationDesc, $adapter);
-                self::sendEmail($leaveReqNotiMod, 2, $adapter);
+//                self::sendEmail($leaveReqNotiMod, 2, $adapter);
             };
             $temp();
         };
@@ -203,7 +208,7 @@ class HeadNotification {
             $notificationTitle = "Leave Request";
             $notificationDesc = "Recommendation of Leave Request of $leaveReqNotiMod->fromName from $leaveReqNotiMod->fromDate to $leaveReqNotiMod->toDate";
             self::addNotifications($leaveReqNotiMod, $notificationTitle, $notificationDesc, $adapter);
-            self::sendEmail($leaveReqNotiMod, 2, $adapter);
+//            self::sendEmail($leaveReqNotiMod, 2, $adapter);
         };
         ${"fn" . NotificationEvents::LEAVE_APPROVE_ACCEPTED} = function(LeaveApply $model, AdapterInterface $adapter) {
             $leaveApplyRepo = new LeaveApplyRepository($adapter);
@@ -238,7 +243,7 @@ class HeadNotification {
             $notificationTitle = "Leave Request";
             $notificationDesc = "Recommendation of Leave Request of $leaveReqNotiMod->fromName from $leaveReqNotiMod->fromDate to $leaveReqNotiMod->toDate";
             self::addNotifications($leaveReqNotiMod, $notificationTitle, $notificationDesc, $adapter);
-            self::sendEmail($leaveReqNotiMod, 2, $adapter);
+//            self::sendEmail($leaveReqNotiMod, 2, $adapter);
         };
         ${"fn" . NotificationEvents::LEAVE_APPROVE_REJECTED} = function(LeaveApply $model, AdapterInterface $adapter) {
             $leaveApplyRepo = new LeaveApplyRepository($adapter);
@@ -273,7 +278,7 @@ class HeadNotification {
             $notificationTitle = "Leave Request";
             $notificationDesc = "Recommendation of Leave Request of $leaveReqNotiMod->fromName from $leaveReqNotiMod->fromDate to $leaveReqNotiMod->toDate";
             self::addNotifications($leaveReqNotiMod, $notificationTitle, $notificationDesc, $adapter);
-            self::sendEmail($leaveReqNotiMod, 2, $adapter);
+//            self::sendEmail($leaveReqNotiMod, 2, $adapter);
         };
 
         switch ($eventType) {

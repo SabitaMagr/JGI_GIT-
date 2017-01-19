@@ -9,10 +9,12 @@
 
 namespace LeaveManagement\Repository;
 
+use Application\Helper\Helper;
 use Application\Model\Model;
 use Application\Repository\RepositoryInterface;
 use LeaveManagement\Model\LeaveApply;
 use Zend\Db\Adapter\AdapterInterface;
+use Zend\Db\Sql\Select;
 use Zend\Db\TableGateway\TableGateway;
 
 class LeaveApplyRepository implements RepositoryInterface {
@@ -38,7 +40,12 @@ class LeaveApplyRepository implements RepositoryInterface {
     }
 
     public function fetchById($id) {
-        return $this->tableGateway->select([LeaveApply::ID => $id])->current();
+        return $this->tableGateway->select(function(Select $select) use($id) {
+                    $select->columns(Helper::convertColumnDateFormat($this->adapter, new LeaveApply(), [
+                                'startDate', 'endDate'
+                            ]), false);
+                    $select->where([LeaveApply::ID => $id]);
+                })->current();
     }
 
     public function delete($id) {

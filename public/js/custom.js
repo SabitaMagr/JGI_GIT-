@@ -62,8 +62,9 @@ window.app = (function ($, toastr) {
         }).on('changeDate', function (selected) {
             var minDate = new Date(selected.date.valueOf());
             $toDate.datepicker('setStartDate', minDate);
-            if (typeof fn !== "undefined" && fn != null) {
-                fn(new Date($fromDate.val()), new Date($toDate.val()));
+            if (typeof fn !== "undefined" && fn != null && typeof $fromDate !== "undefined" &&
+                    $fromDate.val() != "" && typeof $toDate !== "undefined" && $toDate.val() != "") {
+                fn(getDate($fromDate.val()), getDate($toDate.val()));
             }
         });
 
@@ -74,8 +75,9 @@ window.app = (function ($, toastr) {
         }).on('changeDate', function (selected) {
             var maxDate = new Date(selected.date.valueOf());
             $fromDate.datepicker('setEndDate', maxDate);
-            if (typeof fn !== "undefined" && fn != null) {
-                fn(new Date($fromDate.val()), new Date($toDate.val()));
+            if (typeof fn !== "undefined" && fn != null && typeof $fromDate !== "undefined" &&
+                    $fromDate.val() != "" && typeof $toDate !== "undefined" && $toDate.val() != "") {
+                fn(getDate($fromDate.val()), getDate($toDate.val()));
             }
         });
     };
@@ -342,7 +344,7 @@ window.app = (function ($, toastr) {
             var childId = parentId.children(".errorMsg");
             var columnsWidValues = {};
             columnsWidValues[columnName] = nameValue;
-            var displayErrorMessage = function (formGroup, check, message,id=null) {
+            var displayErrorMessage = function (formGroup, check, message, id = null) {
                 var flag = formGroup.find('span.errorMsg').length > 0;
                 console.log(formGroup);
                 if (flag) {
@@ -364,7 +366,7 @@ window.app = (function ($, toastr) {
                         formGroup.append(errorMsgSpan);
                         id.focus();
                     }
-                }
+            }
             };
 
             window.app.pullDataById(document.restfulUrl, {
@@ -377,7 +379,7 @@ window.app = (function ($, toastr) {
                 }
             }).then(function (success) {
                 console.log("checkUniqueConstraint res", success);
-                displayErrorMessage(parentId, success.data, success.msg,id);
+                displayErrorMessage(parentId, success.data, success.msg, id);
             }, function (failure) {
                 console.log("checkUniqueConstraint failure", failure);
             });
@@ -471,6 +473,33 @@ window.app = (function ($, toastr) {
         }
     };
 
+    function getDate(formattedDate) {
+        var monthsInStringFormat = {
+            1: 'Jan',
+            2: 'Feb',
+            3: 'Mar',
+            4: 'Apr',
+            5: 'May',
+            6: 'Jun',
+            7: 'Jul',
+            8: 'Aug',
+            9: 'Sep',
+            10: 'Oct',
+            11: 'Nov',
+            12: 'Dec'
+        };
+        monthsInStringFormat.getKeyByValue = function (value) {
+            for (var prop in this) {
+                if (this.hasOwnProperty(prop)) {
+                    if (this[ prop ] === value)
+                        return prop;
+                }
+            }
+        };
+        var splittedDate = formattedDate.split("-");
+        return new Date(splittedDate[2], monthsInStringFormat.getKeyByValue(splittedDate[1]) - 1, parseInt(splittedDate[0]) + 1);
+    }
+
 
     return {
         format: format,
@@ -483,10 +512,11 @@ window.app = (function ($, toastr) {
         errorMessage: errorMessage,
         floatingProfile: floatingProfile,
         checkUniqueConstraints: checkUniqueConstraints,
-        displayErrorMessage:displayErrorMessage,
+        displayErrorMessage: displayErrorMessage,
         UIConfirmations: UIConfirmations,
         startEndDatePicker: startEndDatePicker,
-        startEndDatePickerWithNepali: startEndDatePickerWithNepali
+        startEndDatePickerWithNepali: startEndDatePickerWithNepali,
+        getSystemDate: getDate
     };
 })(window.jQuery, window.toastr);
 
