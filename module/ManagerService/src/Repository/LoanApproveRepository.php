@@ -87,6 +87,7 @@ class LoanApproveRepository implements RepositoryInterface{
                     LR.RECOMMENDED_BY,
                     LR.REASON,
                     LR.LOAN_ID,
+                    LR.EMPLOYEE_ID,
                     LR.STATUS,
                     TO_CHAR(LR.LOAN_DATE, 'DD-MON-YYYY') AS LOAN_DATE,
                     TO_CHAR(LR.RECOMMENDED_DATE, 'DD-MON-YYYY') AS RECOMMENDED_DATE,

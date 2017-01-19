@@ -42,6 +42,7 @@ class LeaveApproveRepository implements RepositoryInterface
                 TO_CHAR(LA.END_DATE, 'DD-MON-YYYY') AS END_DATE,
                 TO_CHAR(LA.REQUESTED_DT, 'DD-MON-YYYY') AS APPLIED_DATE,
                 LA.STATUS AS STATUS,
+                LA.EMPLOYEE_ID,
                 LA.ID AS ID,
                 E.FIRST_NAME,E.MIDDLE_NAME,E.LAST_NAME,
                 LA.RECOMMENDED_BY,

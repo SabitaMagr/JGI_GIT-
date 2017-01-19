@@ -151,10 +151,11 @@ class LeaveBalance extends AbstractActionController {
         $employeeRepository = new EmployeeRepository($this->adapter);
         $employeeDtl = $employeeRepository->fetchById($employeeId);
 
-        if ($request->isPost()) {
+        if ($request->isPost()) {           
             $this->form->setData($request->getPost());
 
             if ($this->form->isValid()) {
+               // print_r("hello1"); die();
                 $leaveRequest = new LeaveApply();
                 $leaveRequest->exchangeArrayFromForm($this->form->getData());
 

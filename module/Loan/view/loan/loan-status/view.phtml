@@ -153,7 +153,7 @@ print $this->form()->openTag($form);
                         </div>
                     </div>
 
-                    <?php if ($status == 'RC' || $status == 'AP' || $status == 'R') {
+                    <?php if (($status == 'RC' || $status == 'AP' || $status == 'R') && $recommApprove==0) {
                         $recommendedRemarks->setAttributes(['disabled' => 'disabled']);
                         ?>
                         <div class="form-group padding-0">

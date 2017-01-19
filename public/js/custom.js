@@ -342,13 +342,15 @@ window.app = (function ($, toastr) {
             var childId = parentId.children(".errorMsg");
             var columnsWidValues = {};
             columnsWidValues[columnName] = nameValue;
-            var displayErrorMessage = function (formGroup, check, message) {
+            var displayErrorMessage = function (formGroup, check, message,id=null) {
                 var flag = formGroup.find('span.errorMsg').length > 0;
+                console.log(formGroup);
                 if (flag) {
                     var errorMsgSpan = formGroup.find('span.errorMsg');
                     errorMsgSpan.each(function () {
                         if (check > 0) {
                             $(this).html(message);
+                            id.focus();
                         } else {
                             $(this).remove();
                         }
@@ -360,6 +362,7 @@ window.app = (function ($, toastr) {
                             text: message
                         });
                         formGroup.append(errorMsgSpan);
+                        id.focus();
                     }
                 }
             };
@@ -374,7 +377,7 @@ window.app = (function ($, toastr) {
                 }
             }).then(function (success) {
                 console.log("checkUniqueConstraint res", success);
-                displayErrorMessage(parentId, success.data, success.msg);
+                displayErrorMessage(parentId, success.data, success.msg,id);
             }, function (failure) {
                 console.log("checkUniqueConstraint failure", failure);
             });
@@ -487,4 +490,3 @@ window.app = (function ($, toastr) {
     };
 })(window.jQuery, window.toastr);
 
-//

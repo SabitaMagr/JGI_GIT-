@@ -1545,6 +1545,9 @@ class RestfulService extends AbstractRestfulController {
         };
 
         foreach ($result as $row) {
+            $recommendApproveRepository = new RecommendApproveRepository($this->adapter);
+            $empRecommendApprove = $recommendApproveRepository->fetchById($row['EMPLOYEE_ID']);
+            
             $status = $getValue($row['STATUS']);
             $statusId = $row['STATUS'];
             $approvedDT = $row['APPROVED_DT'];
@@ -1562,6 +1565,10 @@ class RestfulService extends AbstractRestfulController {
                 'YOUR_ROLE' => $getRoleDtl($authRecommender, $authApprover, $recomApproveId),
                 'ROLE' => $roleID
             ];
+            if($empRecommendApprove['RECOMMEND_BY']==$empRecommendApprove['APPROVED_BY']){
+                $role['YOUR_ROLE'] = 'Recommender\Approver';
+                $role['ROLE'] = 4;
+            }
             $new_row = array_merge($row, ['STATUS' => $status]);
             $final_record = array_merge($new_row, $role);
             array_push($recordList, $final_record);
@@ -1624,6 +1631,9 @@ class RestfulService extends AbstractRestfulController {
         };
 
         foreach ($result as $row) {
+            $recommendApproveRepository = new RecommendApproveRepository($this->adapter);
+            $empRecommendApprove = $recommendApproveRepository->fetchById($row['EMPLOYEE_ID']);
+            
             $status = $getValue($row['STATUS']);
             $statusId = $row['STATUS'];
             $approvedDT = $row['APPROVED_DATE'];
@@ -1641,6 +1651,10 @@ class RestfulService extends AbstractRestfulController {
                 'YOUR_ROLE' => $getRoleDtl($authRecommender, $authApprover, $recomApproveId),
                 'ROLE' => $roleID
             ];
+            if($empRecommendApprove['RECOMMEND_BY']==$empRecommendApprove['APPROVED_BY']){
+                $role['YOUR_ROLE'] = 'Recommender\Approver';
+                $role['ROLE'] = 4;
+            }
             $new_row = array_merge($row, ['STATUS' => $status]);
             $final_record = array_merge($new_row, $role);
             array_push($recordList, $final_record);
@@ -1704,6 +1718,9 @@ class RestfulService extends AbstractRestfulController {
         };
 
         foreach ($result as $row) {
+            $recommendApproveRepository = new RecommendApproveRepository($this->adapter);
+            $empRecommendApprove = $recommendApproveRepository->fetchById($row['EMPLOYEE_ID']);
+            
             $status = $getValue($row['STATUS']);
             $statusId = $row['STATUS'];
             $approvedDT = $row['APPROVED_DATE'];
@@ -1721,6 +1738,10 @@ class RestfulService extends AbstractRestfulController {
                 'YOUR_ROLE' => $getRoleDtl($authRecommender, $authApprover, $recomApproveId),
                 'ROLE' => $roleID
             ];
+            if($empRecommendApprove['RECOMMEND_BY']==$empRecommendApprove['APPROVED_BY']){
+                $role['YOUR_ROLE'] = 'Recommender\Approver';
+                $role['ROLE'] = 4;
+            }
             $new_row = array_merge($row, ['STATUS' => $status]);
             $final_record = array_merge($new_row, $role);
             array_push($recordList, $final_record);
@@ -1784,6 +1805,9 @@ class RestfulService extends AbstractRestfulController {
         };
 
         foreach ($result as $row) {
+            $recommendApproveRepository = new RecommendApproveRepository($this->adapter);
+            $empRecommendApprove = $recommendApproveRepository->fetchById($row['EMPLOYEE_ID']);
+            
             $status = $getValue($row['STATUS']);
             $statusId = $row['STATUS'];
             $approvedDT = $row['APPROVED_DATE'];
@@ -1801,6 +1825,10 @@ class RestfulService extends AbstractRestfulController {
                 'YOUR_ROLE' => $getRoleDtl($authRecommender, $authApprover, $recomApproveId),
                 'ROLE' => $roleID
             ];
+            if($empRecommendApprove['RECOMMEND_BY']==$empRecommendApprove['APPROVED_BY']){
+                $role['YOUR_ROLE'] = 'Recommender\Approver';
+                $role['ROLE'] = 4;
+            }
             $new_row = array_merge($row, ['STATUS' => $status]);
             $final_record = array_merge($new_row, $role);
             array_push($recordList, $final_record);

@@ -19,6 +19,7 @@ use Setup\Model\ServiceType;
 use Zend\Form\Element\Select;
 use Setup\Model\ServiceEventType;
 use Zend\Authentication\AuthenticationService;
+use Setup\Repository\RecommendApproveRepository;
 
 class TravelStatus extends AbstractActionController
 {
@@ -145,6 +146,13 @@ class TravelStatus extends AbstractActionController
         $approvedDT = $detail['APPROVED_DATE'];
 
         $requestedEmployeeID = $detail['EMPLOYEE_ID'];
+        $recommendApproveRepository = new RecommendApproveRepository($this->adapter);
+        $empRecommendApprove = $recommendApproveRepository->fetchById($requestedEmployeeID);
+        $recommApprove = 0;
+        if($empRecommendApprove['RECOMMEND_BY']==$empRecommendApprove['APPROVED_BY']){
+            $recommApprove=1;
+        }
+        
         $employeeName = $detail['FIRST_NAME'] . " " . $detail['MIDDLE_NAME'] . " " . $detail['LAST_NAME'];        
         $RECM_MN = ($detail['RECM_MN']!=null)? " ".$detail['RECM_MN']." ":" ";
         $recommender = $detail['RECM_FN'].$RECM_MN.$detail['RECM_LN'];        
@@ -194,7 +202,8 @@ class TravelStatus extends AbstractActionController
                     'recommender' => $authRecommender,
                     'approvedDT'=>$detail['APPROVED_DATE'],
                     'approver' => $authApprover,
-                    'status' => $status
+                    'status' => $status,
+                    'recommApprove'=>$recommApprove
         ]);
     }    
 }

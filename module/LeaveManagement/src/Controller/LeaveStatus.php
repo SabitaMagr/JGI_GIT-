@@ -29,6 +29,7 @@ use Zend\Db\Adapter\AdapterInterface;
 use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\Form\Element\Select;
 use Zend\Mvc\Controller\AbstractActionController;
+use Setup\Repository\RecommendApproveRepository;
 
 class LeaveStatus extends AbstractActionController {
 
@@ -171,6 +172,13 @@ class LeaveStatus extends AbstractActionController {
         $approvedDT = $detail['APPROVED_DT'];
 
         $requestedEmployeeID = $detail['EMPLOYEE_ID'];
+        $recommendApproveRepository = new RecommendApproveRepository($this->adapter);
+        $empRecommendApprove = $recommendApproveRepository->fetchById($requestedEmployeeID);
+        $recommApprove = 0;
+        if($empRecommendApprove['RECOMMEND_BY']==$empRecommendApprove['APPROVED_BY']){
+            $recommApprove=1;
+        }
+            
         $employeeName = $detail['FIRST_NAME'] . " " . $detail['MIDDLE_NAME'] . " " . $detail['LAST_NAME'];
         $RECM_MN = ($detail['RECM_MN'] != null) ? " " . $detail['RECM_MN'] . " " : " ";
         $recommender = $detail['RECM_FN'] . $RECM_MN . $detail['RECM_LN'];
@@ -236,7 +244,8 @@ class LeaveStatus extends AbstractActionController {
                     'status' => $status,
                     'allowHalfDay' => $leaveDtl['ALLOW_HALFDAY'],
                     'leave' => $leaveRequestRepository->getLeaveList($detail['EMPLOYEE_ID']),
-                    'customRenderer' => Helper::renderCustomView()
+                    'customRenderer' => Helper::renderCustomView(),
+                    'recommApprove'=> $recommApprove
         ]);
     }
 

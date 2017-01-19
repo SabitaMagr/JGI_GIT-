@@ -3,6 +3,7 @@
  * Load Javascript files here
  */
 $this->headScript()->appendFile($this->basePath('js/LeaveManagement/LeaveRequest/add.js'));
+$this->headScript()->appendFile($this->basePath('js/manager-service/leave-approve/view.js'));
 $this->headScript()->appendFile($this->basePath('js/angular.min.js'));
 $this->headScript()->appendFile($this->basePath('js/LeaveManagement/LeaveRequest/leaveRequestController.js'));
 ?>
@@ -32,6 +33,7 @@ $approvedRemarks->setAttributes(['required'=>'true']);
 
 $submit = $form->get('submit');
 $submit->setAttribute('value', 'Approve');
+$submit->setAttribute('id', 'approve');
 
 $form->setAttribute('action', $this->url('leaveapprove', ['action' => 'view', 'id' => $id, 'role' => $role]));
 
@@ -97,9 +99,12 @@ print $this->form()->openTag($form);
                                                 echo 'Approver';
                                             } else if ($role == 2) {
                                                 echo 'Recommender';
+                                            }else if($role==4){
+                                                echo 'Recommender\Approver';
                                             } ?>
                                         </td>
                                     </tr>
+                                    <?php if($role!=4){ ?>
                                     <tr height="30">
                                         <td>
                                             <?= ($role==3)? "Recommender":"Approver"; ?>
@@ -108,7 +113,8 @@ print $this->form()->openTag($form);
                                         <td>
                                             <?= ($role==3)? $recommender:$approver; ?>
                                         </td>
-                                    </tr> 
+                                    </tr>
+                                    <?php } ?>
                                 </table>
                             </div>
                             <div class="col-md-6">
@@ -122,13 +128,14 @@ print $this->form()->openTag($form);
                                             <?php echo $totalDays; ?>
                                         </td>
                                     </tr>
-                                    <tr height="30">
+                                    <tr height="30" id="availableDaysText">
                                         <td>
                                             Available Days
                                         </td>
                                         <td width="15">:</td>
                                         <td>
                                             <?php echo $availableDays; ?>
+                                            <input type="hidden" id="availableDays" value="<?php echo $availableDays; ?>"/>
                                         </td>
                                     </tr>
                                     <tr height="30">
@@ -223,28 +230,30 @@ print $this->form()->openTag($form);
                         </div>
                     <?php }  ?>
 
-                    <?php if ($role == 3) {
+                    <?php if ($role == 3 || $role==4) {
                         $recommendedRemarks->setAttributes(['disabled'=>'disabled']);
                         ?>
+                    <?php if($role!=4){ ?>
                         <div
                             class="form-group margin-top-10 required <?= empty($recommendedRemarks->getMessages()) ? "" : "error" ?>">
                             <label>Reason for action [From Recommender]</label>
                             <?php print $this->formElement($recommendedRemarks); ?>
                         </div>
+                    <?php } ?>
                         <div
                             class="form-group required <?= empty($approvedRemarks->getMessages()) ? "" : "error" ?>">
                             <?php print $this->formLabel($approvedRemarks); ?>
                             <?php print $this->formElement($approvedRemarks); ?>
                         </div>
                     <?php } ?>
-
+                    <div class="form-group">
                     <?php
                     if ($status == 'RQ' || ($status == 'RC' && $employeeId != $recommendedBy)) {
                         print $this->formSubmit($submit);
                         ?>
                         <input type="submit" name="submit" class="btn btn-success pull-right" value="Reject">
                     <?php } ?>
-
+                    </div>
                 </div>
             </div>
         </div>

@@ -20,6 +20,7 @@ use Setup\Model\Position;
 use Setup\Model\ServiceType;
 use Setup\Model\ServiceEventType;
 use Zend\Form\Element\Select;
+use Setup\Repository\RecommendApproveRepository;
 
 class AdvanceApproveController extends AbstractActionController {
 
@@ -74,7 +75,11 @@ class AdvanceApproveController extends AbstractActionController {
             }
         };
         foreach ($list as $row) {
-            array_push($advanceApprove, [
+            $requestedEmployeeID = $row['EMPLOYEE_ID'];
+            $recommendApproveRepository = new RecommendApproveRepository($this->adapter);
+            $empRecommendApprove = $recommendApproveRepository->fetchById($requestedEmployeeID);
+            
+            $dataArray = [
                 'FIRST_NAME' => $row['FIRST_NAME'],
                 'MIDDLE_NAME' => $row['MIDDLE_NAME'],
                 'LAST_NAME' => $row['LAST_NAME'],
@@ -88,7 +93,13 @@ class AdvanceApproveController extends AbstractActionController {
                 'ADVANCE_REQUEST_ID' => $row['ADVANCE_REQUEST_ID'],
                 'YOUR_ROLE' => $getValue($row['RECOMMENDER'], $row['APPROVER']),
                 'ROLE' => $getRole($row['RECOMMENDER'], $row['APPROVER'])
-            ]);
+            ];
+            if($empRecommendApprove['RECOMMEND_BY']==$empRecommendApprove['APPROVED_BY']){
+                $dataArray['YOUR_ROLE'] = 'Recommender\Approver';
+                $dataArray['ROLE'] = 4;
+            }
+            
+            array_push($advanceApprove, $dataArray);
         }
         //print_r($advanceApprove); die();
         return Helper::addFlashMessagesToArray($this, ['advanceApprove' => $advanceApprove, 'id' => $this->employeeId]);
@@ -144,7 +155,7 @@ class AdvanceApproveController extends AbstractActionController {
                 }
                 $advanceRequestModel->recommendedRemarks = $getData->recommendedRemarks;
                 $this->advanceApproveRepository->edit($advanceRequestModel, $id);
-            } else if ($role == 3) {
+            } else if ($role == 3 || $role==4) {
                 $advanceRequestModel->approvedDate = Helper::getcurrentExpressionDate();
                 $advanceRequestModel->approvedBy = $this->employeeId;
                 if ($action == "Reject") {
@@ -153,6 +164,10 @@ class AdvanceApproveController extends AbstractActionController {
                 } else if ($action == "Approve") {
                     $advanceRequestModel->status = "AP";
                     $this->flashmessenger()->addMessage("Advance Request Approved");
+                }
+                if($role==4){
+                    $advanceRequestModel->recommendedBy = $this->employeeId;
+                    $advanceRequestModel->recommendedDate = Helper::getcurrentExpressionDate();
                 }
                 $advanceRequestModel->approvedRemarks = $getData->approvedRemarks;
                 $this->advanceApproveRepository->edit($advanceRequestModel, $id);

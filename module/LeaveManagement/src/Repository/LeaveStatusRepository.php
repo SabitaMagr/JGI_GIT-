@@ -149,6 +149,7 @@ class LeaveStatusRepository implements RepositoryInterface {
                 TO_CHAR(LA.REQUESTED_DT, 'DD-MON-YYYY') AS APPLIED_DATE,
                 LA.STATUS AS STATUS,
                 LA.ID AS ID,
+                LA.EMPLOYEE_ID AS EMPLOYEE_ID,
                 TO_CHAR(LA.RECOMMENDED_DT, 'DD-MON-YYYY') AS RECOMMENDED_DT,
                 TO_CHAR(LA.APPROVED_DT, 'DD-MON-YYYY') AS APPROVED_DT,
                 E.FIRST_NAME,E.MIDDLE_NAME,E.LAST_NAME,

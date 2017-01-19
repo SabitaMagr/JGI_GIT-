@@ -21,6 +21,7 @@ use Zend\Form\Element\Select;
 use Setup\Model\ServiceEventType;
 use Setup\Model\Loan;
 use Zend\Authentication\AuthenticationService;
+use Setup\Repository\RecommendApproveRepository;
 
 class LoanStatus extends AbstractActionController
 {
@@ -157,6 +158,13 @@ class LoanStatus extends AbstractActionController
         $approvedDT = $detail['APPROVED_DATE'];
 
         $requestedEmployeeID = $detail['EMPLOYEE_ID'];
+        $recommendApproveRepository = new RecommendApproveRepository($this->adapter);
+        $empRecommendApprove = $recommendApproveRepository->fetchById($requestedEmployeeID);
+        $recommApprove = 0;
+        if($empRecommendApprove['RECOMMEND_BY']==$empRecommendApprove['APPROVED_BY']){
+            $recommApprove=1;
+        }
+        
         $employeeName = $detail['FIRST_NAME'] . " " . $detail['MIDDLE_NAME'] . " " . $detail['LAST_NAME'];        
         $RECM_MN = ($detail['RECM_MN']!=null)? " ".$detail['RECM_MN']." ":" ";
         $recommender = $detail['RECM_FN'].$RECM_MN.$detail['RECM_LN'];        
@@ -203,7 +211,8 @@ class LoanStatus extends AbstractActionController
                     'approver' => $authApprover,
                     'status' => $status,
                     'loans' => EntityHelper::getTableKVListWithSortOption($this->adapter, Loan::TABLE_NAME, Loan::LOAN_ID, [Loan::LOAN_NAME], [Loan::STATUS => "E"], Loan::LOAN_ID, "ASC"),
-                    'customRenderer' => Helper::renderCustomView()
+                    'customRenderer' => Helper::renderCustomView(),
+                    'recommApprove'=>$recommApprove
         ]);
     }
     

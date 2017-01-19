@@ -61,6 +61,7 @@ class TravelStatusRepository implements RepositoryInterface{
                 TR.REQUESTED_TYPE AS REQUESTED_TYPE,
                 TR.DESTINATION AS DESTINATION,
                 TR.PURPOSE AS PURPOSE,
+                TR.EMPLOYEE_ID AS EMPLOYEE_ID,
                 TO_CHAR(TR.RECOMMENDED_DATE, 'DD-MON-YYYY') AS RECOMMENDED_DATE,
                 TO_CHAR(TR.APPROVED_DATE, 'DD-MON-YYYY') AS APPROVED_DATE,
                 E.FIRST_NAME,E.MIDDLE_NAME,E.LAST_NAME,
