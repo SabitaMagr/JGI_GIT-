@@ -33,7 +33,7 @@ class LoanRequest extends AbstractActionController {
         $auth = new AuthenticationService();
         $this->employeeId = $auth->getStorage()->read()['employee_id'];
         
-        $this->getLoanList();
+        //$this->getLoanList();
     }
 
     public function initializeForm() {
@@ -156,21 +156,55 @@ class LoanRequest extends AbstractActionController {
         $employeeDetail = $employeeRepo->fetchById($employeeId);
         
         $position = $employeeDetail['POSITION_ID'];
-        $designation = $employeeDetail['DESIGNATION_ID'];
         $serviceType = $employeeDetail['SERVICE_TYPE_ID'];
-        $salary = $employeeDetail['SALARY'];
-        $joinDate = $employeeDetail['JOIN_DATE'];
-        $currentDate = "2017-01-18";
+        $designation = $employeeDetail['DESIGNATION_ID'];
+        
+        $salary = (int)$employeeDetail['SALARY'];
+        $joinDate = \DateTime::createFromFormat(Helper::PHP_DATE_FORMAT, $employeeDetail['JOIN_DATE']);
+        $currentDate = new \DateTime();
+        
+        $different = date_diff($joinDate,$currentDate);
+        $yr = $different->format('%y');
+        $mn = $different->format('%m');
+        $days = $different->format('%d');
+        $mnPercentage = (float)8.3;
+        
+        $mnInPer = round(($mn * $mnPercentage)%100);
+        echo $totalYr =(int) $yr+$mnInPer;
+        echo gettype($totalYr);
         $loanList = $loanRepo->fetchActiveRecord();
+        
+        $loanResultList = [];
         foreach($loanList as $loanRow){
             $loanId = $loanRow['LOAN_ID'];
             $restrictionDtl = $loanRestrictionRepo->getByLoanId($loanId);
             
-            print_r($restrictionDtl); die();
+            $positionList = explode(",",$restrictionDtl['position']);
+            $serviceTypeList =  explode(",",$restrictionDtl['serviceType']);
+            $designationList = explode(",",$restrictionDtl['designation']);
+            $salaryRange =  explode(",",$restrictionDtl['salaryRange']);
+            $salaryFrom = (int)$salaryRange[0];
+            $salaryTo = (int)$salaryRange[1];
+            $workingPeriod =  explode(",",$restrictionDtl['workingPeriod']);
+            $workingPeriodFrom = (int)$workingPeriod[0];
+            $workingPeriodTo = (int)$workingPeriod[1];
+            
+            if(!in_array($position,$positionList) && !in_array($serviceType, $serviceTypeList) && !in_array($designation,$designationList)  && !($salary>=$salaryFrom && $salary<=$salaryTo) && !($totalYr>=$workingPeriodFrom && $totalYr<=$workingPeriodTo)){
+                echo 'hellow';
+                array_push($loanResultList, $loanRow);
+            }
+            
+            
+            print_r($positionList); 
+            print_r($serviceTypeList);
+            print_r($designationList);
+            print_r($salaryRange);
+            print_r($workingPeriod);
+            die();
         }
 
         print "<pre>";
-        print_r($loanList); die();
+        print_r($loanResultList); die();
     }
     
     public function deleteAction() {

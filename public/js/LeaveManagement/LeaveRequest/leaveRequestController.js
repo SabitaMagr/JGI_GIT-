@@ -1,7 +1,6 @@
 /**
  * Created by punam on 9/30/16.
  */
-
 angular.module('hris', [])
         .controller('leaveRequestController', function ($scope, $http) {
 
