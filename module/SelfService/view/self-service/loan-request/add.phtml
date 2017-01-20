@@ -4,8 +4,12 @@ $this->headScript()->appendFile($this->basePath('js/SelfService/loan-request/add
 $form->setAttribute('role', 'form');
 $form->setAttribute('id', 'loan-form');
 
+//print_r($loans); die();
+
 $loanId = $form->get('loanId');
 $loanId->setValueOptions($loans);
+
+
 $requestedAmount = $form->get('requestedAmount');
 $loanDate = $form->get('loanDate');
 $reason = $form->get('reason');

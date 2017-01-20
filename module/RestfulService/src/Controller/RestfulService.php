@@ -69,6 +69,7 @@ use ManagerService\Repository\AdvanceApproveRepository;
 use Advance\Repository\AdvanceStatusRepository;
 use Training\Repository\TrainingAssignRepository;
 use Training\Model\TrainingAssign;
+use Application\Helper\LoanAdvanceHelper;
 
 class RestfulService extends AbstractRestfulController {
 
@@ -295,6 +296,9 @@ class RestfulService extends AbstractRestfulController {
                     break;
                 case "employeeAttendanceApi":
                     $responseData = $this->employeeAttendanceApi($postedData);
+                    break;
+                case "pullLoanList":
+                    $responseData = $this->pullLoanList($postedData->data);
                     break;
 
                 default:
@@ -2372,6 +2376,15 @@ class RestfulService extends AbstractRestfulController {
         } else {
             return ["success" => false, "message" => "please supply required parameters"];
         }
+    }
+    
+    public function pullLoanList($data){
+        $employeeId = $data['employeeId'];
+        $loanList = LoanAdvanceHelper::getLoanList($this->adapter, $employeeId);
+        return [
+            "success"=>true,
+            "data"=>$loanList
+        ];
     }
 
 }
