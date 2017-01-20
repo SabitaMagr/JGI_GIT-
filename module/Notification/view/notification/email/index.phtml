@@ -114,16 +114,20 @@ echo json_encode($menu);
 
                                 <div class="row">
                                     <div class="col-sm-12">
-                                        
+                                        <div class="row">
+                                            <div class="col-sm-6">
+                                                <label class="control-label">Variables</label>
+                                            </div>
+                                        </div>
                                         <?php foreach ($variables[$key] as $k => $variable): ?>
-                                            <?php if ($k % 12 == 0): ?>
+                                            <?php if ($k % 6 == 0): ?>
                                                 <div class="row">
                                                 <?php endif; ?>
-                                                <div class="col-sm-1">
-                                                    <a><?= $variable ?></a>
+                                                <div class="col-sm-2">
+                                                    <a class="btn btn-block variables" index="<?= $key ?>" data="<?= $variable ?>" style="font-size: 0.8rem;"><?= $variable ?></a>
                                                 </div>
 
-                                                <?php if ($k % 12 == 11 || sizeof($variables[$key]) == $k + 1): ?>
+                                                <?php if ($k % 6 == 5 || sizeof($variables[$key]) == $k + 1): ?>
                                                 </div>
                                             <?php endif; ?>
                                         <?php endforeach; ?>

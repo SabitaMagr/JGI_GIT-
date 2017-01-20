@@ -2,6 +2,8 @@
 
 namespace Notification\Model;
 
+use Zend\Mvc\Controller\Plugin\Url;
+
 class NotificationModel {
 
     public $fromId;
@@ -22,7 +24,7 @@ class NotificationModel {
         return array_keys(get_object_vars($this));
     }
 
-    public function processString(string $input) {
+    public function processString(string $input, Url $url) {
         $variables = array_keys(get_object_vars($this));
         $output = $input;
         foreach ($variables as $variable) {
@@ -46,6 +48,10 @@ class NotificationModel {
 
     private function wrapWithLargeBracket($input) {
         return "[" . $input . "]";
+    }
+
+    public function setHonorific() {
+        
     }
 
 }
