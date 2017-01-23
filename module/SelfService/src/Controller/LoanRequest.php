@@ -17,6 +17,7 @@ use Setup\Repository\EmployeeRepository;
 use Setup\Repository\RecommendApproveRepository;
 use Setup\Repository\LoanRepository;
 use Setup\Repository\LoanRestrictionRepository;
+use Application\Helper\LoanAdvanceHelper;
 
 class LoanRequest extends AbstractActionController {
 
@@ -32,9 +33,7 @@ class LoanRequest extends AbstractActionController {
         $this->repository = new LoanRequestRepository($adapter);
         $auth = new AuthenticationService();
         $this->employeeId = $auth->getStorage()->read()['employee_id'];
-        
-        //$this->getLoanList();
-    }
+    } 
 
     public function initializeForm() {
         $builder = new AnnotationBuilder();
@@ -141,70 +140,10 @@ class LoanRequest extends AbstractActionController {
                 return $this->redirect()->toRoute("loanRequest");
             }
         }
-
         return Helper::addFlashMessagesToArray($this, [
                     'form' => $this->form,
-                    'loans' => EntityHelper::getTableKVListWithSortOption($this->adapter, Loan::TABLE_NAME, Loan::LOAN_ID, [Loan::LOAN_NAME], [Loan::STATUS => "E"], Loan::LOAN_ID, "ASC")
+                    'loans' => LoanAdvanceHelper::getLoanList($this->adapter, $this->employeeId)
         ]);
-    }
-    public function getLoanList(){
-        $employeeId = $this->employeeId;
-        $loanRepo = new LoanRepository($this->adapter);
-        $loanRestrictionRepo = new LoanRestrictionRepository($this->adapter);
-        $employeeRepo = new EmployeeRepository($this->adapter);
-        
-        $employeeDetail = $employeeRepo->fetchById($employeeId);
-        
-        $position = $employeeDetail['POSITION_ID'];
-        $serviceType = $employeeDetail['SERVICE_TYPE_ID'];
-        $designation = $employeeDetail['DESIGNATION_ID'];
-        
-        $salary = (int)$employeeDetail['SALARY'];
-        $joinDate = \DateTime::createFromFormat(Helper::PHP_DATE_FORMAT, $employeeDetail['JOIN_DATE']);
-        $currentDate = new \DateTime();
-        
-        $different = date_diff($joinDate,$currentDate);
-        $yr = $different->format('%y');
-        $mn = $different->format('%m');
-        $days = $different->format('%d');
-        $mnPercentage = (float)8.3;
-        
-        $mnInPer = round(($mn * $mnPercentage)%100);
-        echo $totalYr =(int) $yr+$mnInPer;
-        echo gettype($totalYr);
-        $loanList = $loanRepo->fetchActiveRecord();
-        
-        $loanResultList = [];
-        foreach($loanList as $loanRow){
-            $loanId = $loanRow['LOAN_ID'];
-            $restrictionDtl = $loanRestrictionRepo->getByLoanId($loanId);
-            
-            $positionList = explode(",",$restrictionDtl['position']);
-            $serviceTypeList =  explode(",",$restrictionDtl['serviceType']);
-            $designationList = explode(",",$restrictionDtl['designation']);
-            $salaryRange =  explode(",",$restrictionDtl['salaryRange']);
-            $salaryFrom = (int)$salaryRange[0];
-            $salaryTo = (int)$salaryRange[1];
-            $workingPeriod =  explode(",",$restrictionDtl['workingPeriod']);
-            $workingPeriodFrom = (int)$workingPeriod[0];
-            $workingPeriodTo = (int)$workingPeriod[1];
-            
-            if(!in_array($position,$positionList) && !in_array($serviceType, $serviceTypeList) && !in_array($designation,$designationList)  && !($salary>=$salaryFrom && $salary<=$salaryTo) && !($totalYr>=$workingPeriodFrom && $totalYr<=$workingPeriodTo)){
-                echo 'hellow';
-                array_push($loanResultList, $loanRow);
-            }
-            
-            
-            print_r($positionList); 
-            print_r($serviceTypeList);
-            print_r($designationList);
-            print_r($salaryRange);
-            print_r($workingPeriod);
-            die();
-        }
-
-        print "<pre>";
-        print_r($loanResultList); die();
     }
     
     public function deleteAction() {

@@ -4,11 +4,13 @@ namespace SelfService\Controller;
 
 use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
+use Application\Helper\LoanAdvanceHelper;
 use Notification\Controller\HeadNotification;
 use Notification\Model\NotificationEvents;
 use SelfService\Form\AdvanceRequestForm;
 use SelfService\Model\AdvanceRequest as AdvanceRequestModel;
 use SelfService\Repository\AdvanceRequestRepository;
+use Setup\Model\Advance;
 use Setup\Model\Advance;
 use Setup\Repository\EmployeeRepository;
 use Setup\Repository\RecommendApproveRepository;
@@ -141,7 +143,8 @@ class AdvanceRequest extends AbstractActionController {
         }
         return Helper::addFlashMessagesToArray($this, [
                     'form' => $this->form,
-                    'advances' => EntityHelper::getTableKVListWithSortOption($this->adapter, Advance::TABLE_NAME, Advance::ADVANCE_ID, [Advance::ADVANCE_NAME], [Advance::STATUS => "E"], Advance::ADVANCE_ID, "ASC")
+                    'employeeId' => $this->employeeId,
+                    'advances' => LoanAdvanceHelper::getAdvanceList($this->adapter, $this->employeeId)
         ]);
     }
 

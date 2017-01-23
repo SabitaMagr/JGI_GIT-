@@ -3,10 +3,12 @@
 namespace RestfulService\Controller;
 
 use Advance\Repository\AdvanceStatusRepository;
+use Advance\Repository\AdvanceStatusRepository;
 use Application\Helper\ConstraintHelper;
 use Application\Helper\DeleteHelper;
 use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
+use Application\Helper\LoanAdvanceHelper;
 use Application\Model\Months;
 use Application\Repository\MonthRepository;
 use AttendanceManagement\Model\Attendance;
@@ -18,6 +20,7 @@ use AttendanceManagement\Repository\ShiftAssignRepository;
 use HolidayManagement\Repository\HolidayRepository;
 use LeaveManagement\Repository\LeaveBalanceRepository;
 use LeaveManagement\Repository\LeaveStatusRepository;
+use Loan\Repository\LoanStatusRepository;
 use Loan\Repository\LoanStatusRepository;
 use Notification\Controller\HeadNotification;
 use Notification\Model\NotificationEvents;
@@ -45,6 +48,7 @@ use Setup\Repository\AcademicCourseRepository;
 use Setup\Repository\AcademicDegreeRepository;
 use Setup\Repository\AcademicProgramRepository;
 use Setup\Repository\AcademicUniversityRepository;
+use Setup\Repository\AdvanceRepository;
 use Setup\Repository\BranchRepository;
 use Setup\Repository\EmployeeQualificationRepository;
 use Setup\Repository\EmployeeRepository;
@@ -58,7 +62,10 @@ use System\Repository\MenuSetupRepository;
 use System\Repository\RolePermissionRepository;
 use System\Repository\RoleSetupRepository;
 use Training\Model\TrainingAssign;
+use Training\Model\TrainingAssign;
 use Training\Repository\TrainingAssignRepository;
+use Training\Repository\TrainingAssignRepository;
+use Travel\Repository\TravelStatusRepository;
 use Travel\Repository\TravelStatusRepository;
 use Zend\Authentication\AuthenticationService;
 use Zend\Db\Adapter\AdapterInterface;
@@ -291,6 +298,15 @@ class RestfulService extends AbstractRestfulController {
                     break;
                 case "employeeAttendanceApi":
                     $responseData = $this->employeeAttendanceApi($postedData);
+                    break;
+                case "pullLoanList":
+                    $responseData = $this->pullLoanList($postedData->data);
+                    break;
+                case "pullAdvanceList":
+                    $responseData = $this->pullAdvanceList($postedData->data);
+                    break;
+                case "checkAdvanceRestriction":
+                    $responseData = $this->checkAdvanceRestriction($postedData->data);
                     break;
 
                 default:
@@ -2370,6 +2386,71 @@ class RestfulService extends AbstractRestfulController {
         } else {
             return ["success" => false, "message" => "please supply required parameters"];
         }
+    }
+
+    public function pullLoanList($data) {
+        $employeeId = $data['employeeId'];
+        $loanList = LoanAdvanceHelper::getLoanList($this->adapter, $employeeId);
+        return [
+            "success" => true,
+            "data" => $loanList
+        ];
+    }
+
+    public function pullAdvanceList($data) {
+        $employeeId = $data['employeeId'];
+        $advanceList = LoanAdvanceHelper::getAdvanceList($this->adapter, $employeeId);
+        return [
+            'success' => true,
+            'data' => $advanceList
+        ];
+    }
+
+    public function checkAdvanceRestriction($data) {
+        $employeeId = $data['employeeId'];
+        $advanceId = $data['advanceId'];
+        $requestedAmount = $data['requestedAmount'];
+        $terms = $data['terms'];
+
+        $advanceRepo = new AdvanceRepository($this->adapter);
+
+        $advanceDetail = $advanceRepo->fetchById($advanceId);
+        $minSalary = $advanceDetail['MIN_SALARY_AMT'];
+        $maxSalary = $advanceDetail['MAX_SALARY_AMT'];
+        $amtToAllow = $advanceDetail['AMOUNT_TO_ALLOW'];
+        $monthToAllow = $advanceDetail['MONTH_TO_ALLOW'];
+
+        $employeeRepo = new EmployeeRepository($this->adapter);
+        $employeeDetail = $employeeRepo->fetchById($employeeId);
+        $salary = $employeeDetail['SALARY'];
+
+        $allowTerms = 0;
+        $allowAmt = 0;
+        $errorTerms = "";
+        $errorAmt = "";
+        if ($terms > $monthToAllow) {
+            $allowTerms = 1;
+            $errorTerms = "You can request upto " . $monthToAllow . " terms!!!";
+        }
+        if ($terms > 1) {
+            $requestedAmount = $requestedAmount / $terms;
+        }
+        $requestAmtPercentage = (100 / $salary) * $requestedAmount;
+        $permitAmtPercentage = ($salary * $amtToAllow) / 100;
+        if ($requestAmtPercentage > $amtToAllow) {
+            $allowAmt = 1;
+            $errorAmt = "You can request upto " . round($permitAmtPercentage, 2) . " per month.!!!";
+        }
+        $data = [
+            'allowTerms' => $allowTerms,
+            'allowAmt' => $allowAmt,
+            'errorTerms' => $errorTerms,
+            'errorAmt' => $errorAmt
+        ];
+        return [
+            'success' => true,
+            'data' => $data
+        ];
     }
 
 }

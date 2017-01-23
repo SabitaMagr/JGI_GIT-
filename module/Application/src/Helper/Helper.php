@@ -267,5 +267,4 @@ class Helper {
     public static function maintainFloatNumberFormat($floatNumber) {
         return number_format($floatNumber, self::FLOAT_ROUNDING_DIGIT_NO, '.', '');
     }
-
 }

@@ -45,7 +45,7 @@ class AdvanceController extends AbstractActionController{
                $advanceModel->advanceId = ((int) Helper::getMaxId($this->adapter, Advance::TABLE_NAME, Advance::ADVANCE_ID))+1;
                $advanceModel->createdDate = Helper::getcurrentExpressionDate();
                $advanceModel->status = 'E';
-               $advanceModel->createdBy = $this->employeeId;               
+               $advanceModel->createdBy = $this->employeeId;  
                $this->repository->add($advanceModel);
                $this->flashmessenger()->addMessage("Advance Successfully added!!!");
                return $this->redirect()->toRoute('advance');
@@ -70,6 +70,7 @@ class AdvanceController extends AbstractActionController{
         } else {
 
             $this->form->setData($request->getPost());
+            
             if ($this->form->isValid()) {
                 $advanceModel->exchangeArrayFromForm($this->form->getData());
                 $advanceModel->modifiedDate = Helper::getcurrentExpressionDate();
