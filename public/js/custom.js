@@ -399,6 +399,21 @@ window.app = (function ($, toastr) {
             }
         });
     };
+    var checkErrorSpan = function(formId){
+        $('#' + formId).submit(function (e) {
+            var err = [];
+            $(".errorMsg").each(function () {
+                var erroMsg = $.trim($(this).html());
+                if (erroMsg !== "") {
+                    err.push("error");
+                }
+            });
+            if (err.length > 0)
+            {
+                return false;
+            }
+        });
+    }
     var removeByAttr = function (arr, attr, value) {
         var i = arr.length;
         while (i--) {
@@ -509,6 +524,7 @@ window.app = (function ($, toastr) {
         addTimePicker: addTimePicker,
         fetchAndPopulate: fetchAndPopulate,
         successMessage: successMessage,
+        checkErrorSpan : checkErrorSpan,
         errorMessage: errorMessage,
         floatingProfile: floatingProfile,
         checkUniqueConstraints: checkUniqueConstraints,

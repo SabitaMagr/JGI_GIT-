@@ -15,6 +15,7 @@ use SelfService\Repository\AdvanceRequestRepository;
 use Setup\Repository\EmployeeRepository;
 use Setup\Repository\RecommendApproveRepository;
 use Setup\Model\Advance;
+use Application\Helper\LoanAdvanceHelper;
 
 class AdvanceRequest extends AbstractActionController {
 
@@ -139,7 +140,8 @@ class AdvanceRequest extends AbstractActionController {
         }
         return Helper::addFlashMessagesToArray($this, [
                     'form' => $this->form,
-                    'advances' => EntityHelper::getTableKVListWithSortOption($this->adapter, Advance::TABLE_NAME, Advance::ADVANCE_ID, [Advance::ADVANCE_NAME], [Advance::STATUS => "E"], Advance::ADVANCE_ID, "ASC")
+                    'employeeId'=>$this->employeeId,
+                    'advances' => LoanAdvanceHelper::getAdvanceList($this->adapter, $this->employeeId)
         ]);
     }
 

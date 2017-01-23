@@ -70,6 +70,7 @@ use Advance\Repository\AdvanceStatusRepository;
 use Training\Repository\TrainingAssignRepository;
 use Training\Model\TrainingAssign;
 use Application\Helper\LoanAdvanceHelper;
+use Setup\Repository\AdvanceRepository;
 
 class RestfulService extends AbstractRestfulController {
 
@@ -299,6 +300,12 @@ class RestfulService extends AbstractRestfulController {
                     break;
                 case "pullLoanList":
                     $responseData = $this->pullLoanList($postedData->data);
+                    break;
+                case "pullAdvanceList":
+                    $responseData = $this->pullAdvanceList($postedData->data);
+                    break;
+                case "checkAdvanceRestriction":
+                    $responseData = $this->checkAdvanceRestriction($postedData->data);
                     break;
 
                 default:
@@ -2386,5 +2393,60 @@ class RestfulService extends AbstractRestfulController {
             "data"=>$loanList
         ];
     }
-
+    public function pullAdvanceList($data){
+        $employeeId = $data['employeeId'];
+        $advanceList = LoanAdvanceHelper::getAdvanceList($this->adapter, $employeeId);
+        return [
+            'success'=>true,
+            'data'=>$advanceList
+        ];
+    }
+    
+    public function checkAdvanceRestriction($data){
+        $employeeId = $data['employeeId'];
+        $advanceId = $data['advanceId'];
+        $requestedAmount = $data['requestedAmount'];
+        $terms = $data['terms'];
+        
+        $advanceRepo = new AdvanceRepository($this->adapter);
+        
+        $advanceDetail = $advanceRepo->fetchById($advanceId);
+        $minSalary = $advanceDetail['MIN_SALARY_AMT'];
+        $maxSalary = $advanceDetail['MAX_SALARY_AMT'];
+        $amtToAllow = $advanceDetail['AMOUNT_TO_ALLOW'];
+        $monthToAllow = $advanceDetail['MONTH_TO_ALLOW'];
+        
+        $employeeRepo = new EmployeeRepository($this->adapter);       
+        $employeeDetail = $employeeRepo->fetchById($employeeId);
+        $salary = $employeeDetail['SALARY'];
+        
+        $allowTerms = 0;
+        $allowAmt = 0;
+        $errorTerms = "";
+        $errorAmt = "";
+        if($terms>$monthToAllow){
+            $allowTerms=1;
+            $errorTerms = "You can request upto ".$monthToAllow. " terms!!!";
+        }
+        if($terms>1){
+            $requestedAmount = $requestedAmount/$terms;
+        }
+        $requestAmtPercentage = (100 / $salary)*$requestedAmount;
+        $permitAmtPercentage = ($salary * $amtToAllow)/100;
+        if($requestAmtPercentage>$amtToAllow){
+            $allowAmt=1;
+            $errorAmt = "You can request upto ".round($permitAmtPercentage,2)." per month.!!!";
+        }
+        $data = [
+            'allowTerms'=>$allowTerms,
+            'allowAmt'=>$allowAmt,
+            'errorTerms'=>$errorTerms,
+            'errorAmt'=>$errorAmt
+            
+        ];
+        return [
+            'success'=>true,
+            'data'=>$data
+        ];
+    }
 }

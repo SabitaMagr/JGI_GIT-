@@ -6,6 +6,7 @@ use Application\Helper\Helper;
 use Setup\Repository\LoanRepository;
 use Setup\Repository\LoanRestrictionRepository;
 use Setup\Repository\EmployeeRepository;
+use Setup\Repository\AdvanceRepository;
 
 class LoanAdvanceHelper{
     
@@ -72,5 +73,27 @@ class LoanAdvanceHelper{
             }
         }
         return $loanResultList;
+    }
+    
+    public static function getAdvanceList(AdapterInterface $adapter,$employeeId){
+        $employeeId = $employeeId;
+        $employeeRepo = new EmployeeRepository($adapter);
+        
+        $advanceRepo = new AdvanceRepository($adapter);
+        $employeeDetail = $employeeRepo->fetchById($employeeId);
+        $salary = $employeeDetail['SALARY'];
+        
+        $advanceResult = $advanceRepo->fetchActiveRecord();
+        $advanceList = [];
+        
+        foreach($advanceResult as $advanceRow){
+            $minSalaryAmt = $advanceRow['MIN_SALARY_AMT'];
+            $maxSalaryAmt = $advanceRow['MAX_SALARY_AMT'];
+            
+            if($salary>=$minSalaryAmt && $salary<=$maxSalaryAmt){
+                $advanceList[$advanceRow['ADVANCE_ID']] = $advanceRow['ADVANCE_NAME'];
+            }
+        }
+        return $advanceList;
     }
 }

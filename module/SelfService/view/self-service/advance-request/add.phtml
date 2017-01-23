@@ -1,5 +1,5 @@
 <?php
-$this->headScript()->appendFile($this->basePath('js/SelfService/loan-request/add.js'));
+$this->headScript()->appendFile($this->basePath('js/SelfService/advance-request/add.js'));
 
 $form->setAttribute('role', 'form');
 $form->setAttribute('id', 'advance-form');
@@ -13,6 +13,7 @@ $terms = $form->get('terms');
 
 $submit = $form->get('submit');
 $submit->setAttribute('value','SUBMIT');
+$submit->setAttribute('id','advanceSubmit');
 
 $form->setAttribute('action', $this->url('advanceRequest', ['action' => 'add']));
 
@@ -45,6 +46,7 @@ $form->prepare();
                 <?php
                 print $this->form()->openTag($form);
                 ?>
+                <input type="hidden" id="form-employeeId" value="<?php echo $employeeId; ?>"/>
 
                 <div class="form-group">
                     <?php print $this->formLabel($advanceId); ?>
