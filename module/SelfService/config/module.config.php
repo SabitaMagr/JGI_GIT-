@@ -8,21 +8,19 @@
 namespace SelfService;
 
 use Application\Controller\ControllerFactory;
+use SelfService\Controller\AdvanceRequest;
 use SelfService\Controller\AttendanceRequest;
 use SelfService\Controller\Holiday;
 use SelfService\Controller\Leave;
 use SelfService\Controller\LeaveRequest;
+use SelfService\Controller\LoanRequest;
 use SelfService\Controller\MyAttendance;
 use SelfService\Controller\PaySlip;
 use SelfService\Controller\Profile;
 use SelfService\Controller\Service;
-use Zend\Router\Http\Segment;
-use SelfService\Controller\LoanAdvanceRequest;
-use Training\Controller\TrainingAssignController;
 use SelfService\Controller\TrainingList;
-use SelfService\Controller\LoanRequest;
-use SelfService\Controller\AdvanceRequest;
 use SelfService\Controller\TravelRequest;
+use Zend\Router\Http\Segment;
 
 return [
     'router' => [

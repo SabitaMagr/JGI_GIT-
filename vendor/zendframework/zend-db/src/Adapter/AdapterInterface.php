@@ -20,7 +20,7 @@ interface AdapterInterface
      * @return Driver\DriverInterface
      */
     public function getDriver();
-
+    
     /**
      * @return Platform\PlatformInterface
      */

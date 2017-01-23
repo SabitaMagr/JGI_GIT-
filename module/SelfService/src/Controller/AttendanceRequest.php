@@ -10,6 +10,8 @@
 namespace SelfService\Controller;
 
 use Application\Helper\Helper;
+use Notification\Controller\HeadNotification;
+use Notification\Model\NotificationEvents;
 use SelfService\Form\AttendanceRequestForm;
 use SelfService\Model\AttendanceRequestModel;
 use SelfService\Repository\AttendanceRequestRepository;
@@ -44,24 +46,22 @@ class AttendanceRequest extends AbstractActionController {
         $attendanceRequest = new AttendanceRequestForm();
         $this->form = $builder->createForm($attendanceRequest);
     }
-    
-    public function getRecommendApprover(){
+
+    public function getRecommendApprover() {
         $recommendApproveRepository = new RecommendApproveRepository($this->adapter);
         $empRecommendApprove = $recommendApproveRepository->fetchById($this->employeeId);
 
         if ($empRecommendApprove != null) {
             $this->approver = $empRecommendApprove['RECOMMEND_BY'];
-
         } else {
             $result = $this->recommendApproveList();
-            if(count($result['approver'])>0){
-                $this->approver=$result['approver'][0]['id'];
-            }else{
-                 $this->approver=null;
-            } 
-        }               
+            if (count($result['approver']) > 0) {
+                $this->approver = $result['approver'][0]['id'];
+            } else {
+                $this->approver = null;
+            }
+        }
     }
-
 
     public function indexAction() {
         $attendanceStatus = [
@@ -99,6 +99,8 @@ class AttendanceRequest extends AbstractActionController {
                 $model->status = "RQ";
 
                 $this->repository->add($model);
+                HeadNotification::pushNotification(NotificationEvents::ATTENDANCE_APPLIED, $model, $this->adapter, $this->plugin('url'));
+
                 $this->flashmessenger()->addMessage("Attendance Request Submitted Successfully!!");
                 return $this->redirect()->toRoute("attendancerequest");
             }
@@ -154,17 +156,17 @@ class AttendanceRequest extends AbstractActionController {
     public function viewAction() {
         $this->initializeForm();
         $this->getRecommendApprover();
-        
+
         $id = (int) $this->params()->fromRoute('id');
 
         if ($id === 0) {
             return $this->redirect()->toRoute("attedanceapprove");
         }
-        $fullName = function($id){
-          $empRepository = new EmployeeRepository($this->adapter);
-          $empDtl = $empRepository->fetchById($id);
-          $empMiddleName = ($empDtl['MIDDLE_NAME']!=null)? " ".$empDtl['MIDDLE_NAME']." " :" ";
-          return $empDtl['FIRST_NAME'].$empMiddleName.$empDtl['LAST_NAME'];
+        $fullName = function($id) {
+            $empRepository = new EmployeeRepository($this->adapter);
+            $empDtl = $empRepository->fetchById($id);
+            $empMiddleName = ($empDtl['MIDDLE_NAME'] != null) ? " " . $empDtl['MIDDLE_NAME'] . " " : " ";
+            return $empDtl['FIRST_NAME'] . $empMiddleName . $empDtl['LAST_NAME'];
         };
         $approverName = $fullName($this->approver);
 
@@ -172,12 +174,12 @@ class AttendanceRequest extends AbstractActionController {
         $model = new AttendanceRequestModel();
         $detail = $this->repository->fetchById($id);
         $employeeName = $fullName($detail['EMPLOYEE_ID']);
-        
+
         $status = $detail['STATUS'];
-        $approvedDT = $detail['APPROVED_DT'];        
+        $approvedDT = $detail['APPROVED_DT'];
         $approved_by = $fullName($detail['APPROVED_BY']);
-        $authApprover = ( $status=='RQ' || $status=='C' || ($status=='R' && $approvedDT==null))?$approverName:$approved_by;     
-        
+        $authApprover = ( $status == 'RQ' || $status == 'C' || ($status == 'R' && $approvedDT == null)) ? $approverName : $approved_by;
+
         if (!$request->isPost()) {
             $model->exchangeArrayFromDB($detail);
             $this->form->bind($model);

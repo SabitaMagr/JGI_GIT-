@@ -17,6 +17,7 @@ class Helper {
     const PHP_TIME_FORMAT = "h:i A";
     const FLOAT_ROUNDING_DIGIT_NO = 2;
     const UPLOAD_DIR = __DIR__ . "/../../../../public/uploads";
+    const SH_DIR = __DIR__ . "/../../../../public/sh";
 
 //  method to add flashmessage to view
     public static function addFlashMessagesToArray($context, $return) {

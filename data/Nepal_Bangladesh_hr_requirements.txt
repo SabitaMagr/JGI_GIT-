@@ -1,0 +1,10 @@
+1. approved leave partially taken adjustment flow.
+2. Appointment to be confirmed.
+3. Training with travel
+4. On leave alternative arrangement request.
+5. self update needs to be approved.
+6. Resigned, transfer on mid of the month
+7. Training and travel remainder
+
+
+travelId column on Attendance_detail 

@@ -97,6 +97,8 @@
         <script>
             document.restfulUrl = '<?= $this->url("restful", ["action" => "index"]) ?>';
             document.basePath = '<?= $this->basePath() ?>';
+            document.settingUrl = '<?= $this->url("user-setting", ["action" => "index"]) ?>';
+            document.updateSettingUrl = '<?= $this->url("user-setting", ["action" => "update"]) ?>';
         </script>
         <div class="page-wrapper">
             <?php
@@ -182,6 +184,7 @@
 
         <?php
         $this->headScript()
+                ->prependFile($this->basePath('js/user-setting.js'))
                 ->prependFile($this->basePath('js/menu.js'))
                 ->prependFile($this->basePath('js/custom.js'));
         ?>

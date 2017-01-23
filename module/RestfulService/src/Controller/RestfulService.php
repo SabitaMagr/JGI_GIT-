@@ -2,6 +2,7 @@
 
 namespace RestfulService\Controller;
 
+use Advance\Repository\AdvanceStatusRepository;
 use Application\Helper\ConstraintHelper;
 use Application\Helper\DeleteHelper;
 use Application\Helper\EntityHelper;
@@ -17,6 +18,9 @@ use AttendanceManagement\Repository\ShiftAssignRepository;
 use HolidayManagement\Repository\HolidayRepository;
 use LeaveManagement\Repository\LeaveBalanceRepository;
 use LeaveManagement\Repository\LeaveStatusRepository;
+use Loan\Repository\LoanStatusRepository;
+use Notification\Controller\HeadNotification;
+use Notification\Model\NotificationEvents;
 use Payroll\Controller\PayrollGenerator;
 use Payroll\Controller\SalarySheet as SalarySheetController;
 use Payroll\Controller\VariableProcessor;
@@ -53,22 +57,14 @@ use System\Repository\DashboardDetailRepo;
 use System\Repository\MenuSetupRepository;
 use System\Repository\RolePermissionRepository;
 use System\Repository\RoleSetupRepository;
+use Training\Model\TrainingAssign;
+use Training\Repository\TrainingAssignRepository;
+use Travel\Repository\TravelStatusRepository;
 use Zend\Authentication\AuthenticationService;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Adapter\Driver\ResultInterface;
 use Zend\Mvc\Controller\AbstractRestfulController;
 use Zend\View\Model\JsonModel;
-use SelfService\Repository\LoanRequestRepository;
-use ManagerService\Repository\LoanApproveRepository;
-use Loan\Repository\LoanStatusRepository;
-use SelfService\Repository\TravelRequestRepository;
-use ManagerService\Repository\TravelApproveRepository;
-use Travel\Repository\TravelStatusRepository;
-use SelfService\Repository\AdvanceRequestRepository;
-use ManagerService\Repository\AdvanceApproveRepository;
-use Advance\Repository\AdvanceStatusRepository;
-use Training\Repository\TrainingAssignRepository;
-use Training\Model\TrainingAssign;
 
 class RestfulService extends AbstractRestfulController {
 
@@ -346,7 +342,6 @@ class RestfulService extends AbstractRestfulController {
             "data" => $data
         ];
     }
-    
 
     private function pullEmployeeMonthlyValue(array $data) {
         $monValDetRepo = new MonthlyValueDetailRepo($this->adapter);
@@ -1367,7 +1362,6 @@ class RestfulService extends AbstractRestfulController {
             'data' => $employeeList
         ];
     }
-   
 
     public function menuDelete($data) {
         $menuId = $data['menuId'];
@@ -1495,7 +1489,7 @@ class RestfulService extends AbstractRestfulController {
         ];
     }
 
-    public function pullLeaveRequestStatusList($data) {       
+    public function pullLeaveRequestStatusList($data) {
         $leaveStatusRepository = new LeaveStatusRepository($this->adapter);
         if (key_exists('recomApproveId', $data)) {
             $recomApproveId = $data['recomApproveId'];
@@ -1523,11 +1517,11 @@ class RestfulService extends AbstractRestfulController {
                 return null;
             }
         };
-        $fullName = function($id){
-          $empRepository = new EmployeeRepository($this->adapter);
-          $empDtl = $empRepository->fetchById($id);
-          $empMiddleName = ($empDtl['MIDDLE_NAME']!=null)? " ".$empDtl['MIDDLE_NAME']." " :" ";
-          return $empDtl['FIRST_NAME'].$empMiddleName.$empDtl['LAST_NAME'];
+        $fullName = function($id) {
+            $empRepository = new EmployeeRepository($this->adapter);
+            $empDtl = $empRepository->fetchById($id);
+            $empMiddleName = ($empDtl['MIDDLE_NAME'] != null) ? " " . $empDtl['MIDDLE_NAME'] . " " : " ";
+            return $empDtl['FIRST_NAME'] . $empMiddleName . $empDtl['LAST_NAME'];
         };
 
         $getValue = function($status) {
@@ -1547,25 +1541,25 @@ class RestfulService extends AbstractRestfulController {
         foreach ($result as $row) {
             $recommendApproveRepository = new RecommendApproveRepository($this->adapter);
             $empRecommendApprove = $recommendApproveRepository->fetchById($row['EMPLOYEE_ID']);
-            
+
             $status = $getValue($row['STATUS']);
             $statusId = $row['STATUS'];
             $approvedDT = $row['APPROVED_DT'];
-            
-            $authRecommender = ($statusId=='RQ' || $statusId=='C')?$row['RECOMMENDER']:$row['RECOMMENDED_BY'];
-            $authApprover = ($statusId=='RC' || $statusId=='RQ' || $statusId=='C' || ($statusId=='R' && $approvedDT==null))?$row['APPROVER']:$row['APPROVED_BY'];
 
-            $roleID = $getRole($authRecommender,$authApprover, $recomApproveId);
+            $authRecommender = ($statusId == 'RQ' || $statusId == 'C') ? $row['RECOMMENDER'] : $row['RECOMMENDED_BY'];
+            $authApprover = ($statusId == 'RC' || $statusId == 'RQ' || $statusId == 'C' || ($statusId == 'R' && $approvedDT == null)) ? $row['APPROVER'] : $row['APPROVED_BY'];
+
+            $roleID = $getRole($authRecommender, $authApprover, $recomApproveId);
             $recommenderName = $fullName($authRecommender);
             $approverName = $fullName($authApprover);
 
             $role = [
-                'APPROVER_NAME'=>$approverName,
-                'RECOMMENDER_NAME'=>$recommenderName,
+                'APPROVER_NAME' => $approverName,
+                'RECOMMENDER_NAME' => $recommenderName,
                 'YOUR_ROLE' => $getRoleDtl($authRecommender, $authApprover, $recomApproveId),
                 'ROLE' => $roleID
             ];
-            if($empRecommendApprove['RECOMMEND_BY']==$empRecommendApprove['APPROVED_BY']){
+            if ($empRecommendApprove['RECOMMEND_BY'] == $empRecommendApprove['APPROVED_BY']) {
                 $role['YOUR_ROLE'] = 'Recommender\Approver';
                 $role['ROLE'] = 4;
             }
@@ -1580,8 +1574,8 @@ class RestfulService extends AbstractRestfulController {
             "recomApproveId" => $recomApproveId
         ];
     }
-    
-    public function pullLoanRequestStatusList($data){
+
+    public function pullLoanRequestStatusList($data) {
         $loanStatusRepository = new LoanStatusRepository($this->adapter);
         if (key_exists('recomApproveId', $data)) {
             $recomApproveId = $data['recomApproveId'];
@@ -1609,11 +1603,11 @@ class RestfulService extends AbstractRestfulController {
                 return null;
             }
         };
-        $fullName = function($id){
-          $empRepository = new EmployeeRepository($this->adapter);
-          $empDtl = $empRepository->fetchById($id);
-          $empMiddleName = ($empDtl['MIDDLE_NAME']!=null)? " ".$empDtl['MIDDLE_NAME']." " :" ";
-          return $empDtl['FIRST_NAME'].$empMiddleName.$empDtl['LAST_NAME'];
+        $fullName = function($id) {
+            $empRepository = new EmployeeRepository($this->adapter);
+            $empDtl = $empRepository->fetchById($id);
+            $empMiddleName = ($empDtl['MIDDLE_NAME'] != null) ? " " . $empDtl['MIDDLE_NAME'] . " " : " ";
+            return $empDtl['FIRST_NAME'] . $empMiddleName . $empDtl['LAST_NAME'];
         };
 
         $getValue = function($status) {
@@ -1633,25 +1627,25 @@ class RestfulService extends AbstractRestfulController {
         foreach ($result as $row) {
             $recommendApproveRepository = new RecommendApproveRepository($this->adapter);
             $empRecommendApprove = $recommendApproveRepository->fetchById($row['EMPLOYEE_ID']);
-            
+
             $status = $getValue($row['STATUS']);
             $statusId = $row['STATUS'];
             $approvedDT = $row['APPROVED_DATE'];
-            
-            $authRecommender = ($statusId=='RQ' || $statusId=='C')?$row['RECOMMENDER']:$row['RECOMMENDED_BY'];
-            $authApprover = ($statusId=='RC' || $statusId=='RQ' || $statusId=='C' || ($statusId=='R' && $approvedDT==null))?$row['APPROVER']:$row['APPROVED_BY'];
 
-            $roleID = $getRole($authRecommender,$authApprover, $recomApproveId);
+            $authRecommender = ($statusId == 'RQ' || $statusId == 'C') ? $row['RECOMMENDER'] : $row['RECOMMENDED_BY'];
+            $authApprover = ($statusId == 'RC' || $statusId == 'RQ' || $statusId == 'C' || ($statusId == 'R' && $approvedDT == null)) ? $row['APPROVER'] : $row['APPROVED_BY'];
+
+            $roleID = $getRole($authRecommender, $authApprover, $recomApproveId);
             $recommenderName = $fullName($authRecommender);
             $approverName = $fullName($authApprover);
 
             $role = [
-                'APPROVER_NAME'=>$approverName,
-                'RECOMMENDER_NAME'=>$recommenderName,
+                'APPROVER_NAME' => $approverName,
+                'RECOMMENDER_NAME' => $recommenderName,
                 'YOUR_ROLE' => $getRoleDtl($authRecommender, $authApprover, $recomApproveId),
                 'ROLE' => $roleID
             ];
-            if($empRecommendApprove['RECOMMEND_BY']==$empRecommendApprove['APPROVED_BY']){
+            if ($empRecommendApprove['RECOMMEND_BY'] == $empRecommendApprove['APPROVED_BY']) {
                 $role['YOUR_ROLE'] = 'Recommender\Approver';
                 $role['ROLE'] = 4;
             }
@@ -1667,8 +1661,8 @@ class RestfulService extends AbstractRestfulController {
             "recomApproveId" => $recomApproveId
         ];
     }
-    
-    public function pullTravelRequestStatusList($data){
+
+    public function pullTravelRequestStatusList($data) {
         $travelStatusRepository = new TravelStatusRepository($this->adapter);
         if (key_exists('recomApproveId', $data)) {
             $recomApproveId = $data['recomApproveId'];
@@ -1696,11 +1690,11 @@ class RestfulService extends AbstractRestfulController {
                 return null;
             }
         };
-        $fullName = function($id){
-          $empRepository = new EmployeeRepository($this->adapter);
-          $empDtl = $empRepository->fetchById($id);
-          $empMiddleName = ($empDtl['MIDDLE_NAME']!=null)? " ".$empDtl['MIDDLE_NAME']." " :" ";
-          return $empDtl['FIRST_NAME'].$empMiddleName.$empDtl['LAST_NAME'];
+        $fullName = function($id) {
+            $empRepository = new EmployeeRepository($this->adapter);
+            $empDtl = $empRepository->fetchById($id);
+            $empMiddleName = ($empDtl['MIDDLE_NAME'] != null) ? " " . $empDtl['MIDDLE_NAME'] . " " : " ";
+            return $empDtl['FIRST_NAME'] . $empMiddleName . $empDtl['LAST_NAME'];
         };
 
         $getValue = function($status) {
@@ -1720,25 +1714,25 @@ class RestfulService extends AbstractRestfulController {
         foreach ($result as $row) {
             $recommendApproveRepository = new RecommendApproveRepository($this->adapter);
             $empRecommendApprove = $recommendApproveRepository->fetchById($row['EMPLOYEE_ID']);
-            
+
             $status = $getValue($row['STATUS']);
             $statusId = $row['STATUS'];
             $approvedDT = $row['APPROVED_DATE'];
-            
-            $authRecommender = ($statusId=='RQ' || $statusId=='C')?$row['RECOMMENDER']:$row['RECOMMENDED_BY'];
-            $authApprover = ($statusId=='RC' || $statusId=='RQ' || $statusId=='C' || ($statusId=='R' && $approvedDT==null))?$row['APPROVER']:$row['APPROVED_BY'];
 
-            $roleID = $getRole($authRecommender,$authApprover, $recomApproveId);
+            $authRecommender = ($statusId == 'RQ' || $statusId == 'C') ? $row['RECOMMENDER'] : $row['RECOMMENDED_BY'];
+            $authApprover = ($statusId == 'RC' || $statusId == 'RQ' || $statusId == 'C' || ($statusId == 'R' && $approvedDT == null)) ? $row['APPROVER'] : $row['APPROVED_BY'];
+
+            $roleID = $getRole($authRecommender, $authApprover, $recomApproveId);
             $recommenderName = $fullName($authRecommender);
             $approverName = $fullName($authApprover);
 
             $role = [
-                'APPROVER_NAME'=>$approverName,
-                'RECOMMENDER_NAME'=>$recommenderName,
+                'APPROVER_NAME' => $approverName,
+                'RECOMMENDER_NAME' => $recommenderName,
                 'YOUR_ROLE' => $getRoleDtl($authRecommender, $authApprover, $recomApproveId),
                 'ROLE' => $roleID
             ];
-            if($empRecommendApprove['RECOMMEND_BY']==$empRecommendApprove['APPROVED_BY']){
+            if ($empRecommendApprove['RECOMMEND_BY'] == $empRecommendApprove['APPROVED_BY']) {
                 $role['YOUR_ROLE'] = 'Recommender\Approver';
                 $role['ROLE'] = 4;
             }
@@ -1755,7 +1749,7 @@ class RestfulService extends AbstractRestfulController {
         ];
     }
 
-    public function pullAdvanceRequestStatusList($data){
+    public function pullAdvanceRequestStatusList($data) {
         $advanceStatusRepository = new AdvanceStatusRepository($this->adapter);
         if (key_exists('recomApproveId', $data)) {
             $recomApproveId = $data['recomApproveId'];
@@ -1783,11 +1777,11 @@ class RestfulService extends AbstractRestfulController {
                 return null;
             }
         };
-        $fullName = function($id){
-          $empRepository = new EmployeeRepository($this->adapter);
-          $empDtl = $empRepository->fetchById($id);
-          $empMiddleName = ($empDtl['MIDDLE_NAME']!=null)? " ".$empDtl['MIDDLE_NAME']." " :" ";
-          return $empDtl['FIRST_NAME'].$empMiddleName.$empDtl['LAST_NAME'];
+        $fullName = function($id) {
+            $empRepository = new EmployeeRepository($this->adapter);
+            $empDtl = $empRepository->fetchById($id);
+            $empMiddleName = ($empDtl['MIDDLE_NAME'] != null) ? " " . $empDtl['MIDDLE_NAME'] . " " : " ";
+            return $empDtl['FIRST_NAME'] . $empMiddleName . $empDtl['LAST_NAME'];
         };
 
         $getValue = function($status) {
@@ -1807,25 +1801,25 @@ class RestfulService extends AbstractRestfulController {
         foreach ($result as $row) {
             $recommendApproveRepository = new RecommendApproveRepository($this->adapter);
             $empRecommendApprove = $recommendApproveRepository->fetchById($row['EMPLOYEE_ID']);
-            
+
             $status = $getValue($row['STATUS']);
             $statusId = $row['STATUS'];
             $approvedDT = $row['APPROVED_DATE'];
-            
-            $authRecommender = ($statusId=='RQ' || $statusId=='C')?$row['RECOMMENDER']:$row['RECOMMENDED_BY'];
-            $authApprover = ($statusId=='RC' || $statusId=='RQ' || $statusId=='C' || ($statusId=='R' && $approvedDT==null))?$row['APPROVER']:$row['APPROVED_BY'];
 
-            $roleID = $getRole($authRecommender,$authApprover, $recomApproveId);
+            $authRecommender = ($statusId == 'RQ' || $statusId == 'C') ? $row['RECOMMENDER'] : $row['RECOMMENDED_BY'];
+            $authApprover = ($statusId == 'RC' || $statusId == 'RQ' || $statusId == 'C' || ($statusId == 'R' && $approvedDT == null)) ? $row['APPROVER'] : $row['APPROVED_BY'];
+
+            $roleID = $getRole($authRecommender, $authApprover, $recomApproveId);
             $recommenderName = $fullName($authRecommender);
             $approverName = $fullName($authApprover);
 
             $role = [
-                'APPROVER_NAME'=>$approverName,
-                'RECOMMENDER_NAME'=>$recommenderName,
+                'APPROVER_NAME' => $approverName,
+                'RECOMMENDER_NAME' => $recommenderName,
                 'YOUR_ROLE' => $getRoleDtl($authRecommender, $authApprover, $recomApproveId),
                 'ROLE' => $roleID
             ];
-            if($empRecommendApprove['RECOMMEND_BY']==$empRecommendApprove['APPROVED_BY']){
+            if ($empRecommendApprove['RECOMMEND_BY'] == $empRecommendApprove['APPROVED_BY']) {
                 $role['YOUR_ROLE'] = 'Recommender\Approver';
                 $role['ROLE'] = 4;
             }
@@ -1841,6 +1835,7 @@ class RestfulService extends AbstractRestfulController {
             "recomApproveId" => $recomApproveId
         ];
     }
+
     public function pullAttendanceRequestStatusList($data) {
         $attendanceStatusRepository = new AttendanceStatusRepository($this->adapter);
         if (key_exists('approverId', $data)) {
@@ -1862,25 +1857,25 @@ class RestfulService extends AbstractRestfulController {
                 return "Cancelled";
             }
         };
-        $fullName = function($id){
-          $empRepository = new EmployeeRepository($this->adapter);
-          $empDtl = $empRepository->fetchById($id);
-          $empMiddleName = ($empDtl['MIDDLE_NAME']!=null)? " ".$empDtl['MIDDLE_NAME']." " :" ";
-          return $empDtl['FIRST_NAME'].$empMiddleName.$empDtl['LAST_NAME'];
+        $fullName = function($id) {
+            $empRepository = new EmployeeRepository($this->adapter);
+            $empDtl = $empRepository->fetchById($id);
+            $empMiddleName = ($empDtl['MIDDLE_NAME'] != null) ? " " . $empDtl['MIDDLE_NAME'] . " " : " ";
+            return $empDtl['FIRST_NAME'] . $empMiddleName . $empDtl['LAST_NAME'];
         };
         foreach ($result as $row) {
             $status = $getValue($row['STATUS']);
             $statusId = $row['STATUS'];
             $approvedDT = $row['APPROVED_DT'];
-            
-            $authApprover = ( $statusId=='RQ' || $statusId=='C' || ($statusId=='R' && $approvedDT==null))?$row['APPROVER']:$row['APPROVED_BY'];
+
+            $authApprover = ( $statusId == 'RQ' || $statusId == 'C' || ($statusId == 'R' && $approvedDT == null)) ? $row['APPROVER'] : $row['APPROVED_BY'];
             $approverName = $fullName($authApprover);
-            
+
             $new_row = array_merge($row, [
-                'STATUS' => $status, 
+                'STATUS' => $status,
                 'YOUR_ROLE' => 'Approver',
-                'APPROVER_NAME'=>$approverName
-                ]);
+                'APPROVER_NAME' => $approverName
+            ]);
             array_push($recordList, $new_row);
         }
 
@@ -1908,13 +1903,13 @@ class RestfulService extends AbstractRestfulController {
                 return "Cancelled";
             }
         };
-        $fullName = function($id){
-          $empRepository = new EmployeeRepository($this->adapter);
-          $empDtl = $empRepository->fetchById($id);
-          $empMiddleName = ($empDtl['MIDDLE_NAME']!=null)? " ".$empDtl['MIDDLE_NAME']." " :" ";
-          return $empDtl['FIRST_NAME'].$empMiddleName.$empDtl['LAST_NAME'];
+        $fullName = function($id) {
+            $empRepository = new EmployeeRepository($this->adapter);
+            $empDtl = $empRepository->fetchById($id);
+            $empMiddleName = ($empDtl['MIDDLE_NAME'] != null) ? " " . $empDtl['MIDDLE_NAME'] . " " : " ";
+            return $empDtl['FIRST_NAME'] . $empMiddleName . $empDtl['LAST_NAME'];
         };
-   
+
         $getAction = function($status) {
             if ($status == "RQ") {
                 return ["delete" => 'Cancel Request'];
@@ -1925,32 +1920,32 @@ class RestfulService extends AbstractRestfulController {
         foreach ($leaveRequestList as $leaveRequestRow) {
             $status = $getValue($leaveRequestRow['STATUS']);
             $action = $getAction($leaveRequestRow['STATUS']);
-            
+
             $statusId = $leaveRequestRow['STATUS'];
             $approvedDT = $leaveRequestRow['APPROVED_DT'];
-            
-            $authRecommender = ($statusId=='RQ' || $statusId=='C')?$leaveRequestRow['RECOMMENDER']:$leaveRequestRow['RECOMMENDED_BY'];
-            $authApprover = ($statusId=='RC' || $statusId=='RQ' || $statusId=='C' || ($statusId=='R' && $approvedDT==null))?$leaveRequestRow['APPROVER']:$leaveRequestRow['APPROVED_BY'];
-        
+
+            $authRecommender = ($statusId == 'RQ' || $statusId == 'C') ? $leaveRequestRow['RECOMMENDER'] : $leaveRequestRow['RECOMMENDED_BY'];
+            $authApprover = ($statusId == 'RC' || $statusId == 'RQ' || $statusId == 'C' || ($statusId == 'R' && $approvedDT == null)) ? $leaveRequestRow['APPROVER'] : $leaveRequestRow['APPROVED_BY'];
+
             $recommenderName = $fullName($authRecommender);
             $approverName = $fullName($authApprover);
-            
+
             $new_row = array_merge($leaveRequestRow, [
-                'STATUS' => $status, 
-                'ACTION' => key($action), 
+                'STATUS' => $status,
+                'ACTION' => key($action),
                 'ACTION_TEXT' => $action[key($action)],
-                'APPROVER_NAME'=>$approverName,
-                'RECOMMENDER_NAME'=>$recommenderName,
-                    ]);
+                'APPROVER_NAME' => $approverName,
+                'RECOMMENDER_NAME' => $recommenderName,
+            ]);
             $startDate = \DateTime::createFromFormat(Helper::PHP_DATE_FORMAT, $leaveRequestRow['FROM_DATE']);
             $toDayDate = new \DateTime();
-            if(($toDayDate<$startDate) && ($statusId=='RQ' || $statusId=='RC'|| $statusId=='AP')){
+            if (($toDayDate < $startDate) && ($statusId == 'RQ' || $statusId == 'RC' || $statusId == 'AP')) {
                 $new_row['ALLOW_TO_EDIT'] = 1;
-            }else if(($toDayDate>=$startDate) && $statusId=='RQ'){
+            } else if (($toDayDate >= $startDate) && $statusId == 'RQ') {
                 $new_row['ALLOW_TO_EDIT'] = 1;
-            }else if($toDayDate>=$startDate){
+            } else if ($toDayDate >= $startDate) {
                 $new_row['ALLOW_TO_EDIT'] = 0;
-            }else{
+            } else {
                 $new_row['ALLOW_TO_EDIT'] = 0;
             }
             array_push($leaveRequest, $new_row);
@@ -1976,7 +1971,7 @@ class RestfulService extends AbstractRestfulController {
                 return "Cancelled";
             }
         };
-        
+
         $getAction = function($status) {
             if ($status == "RQ") {
                 return ["delete" => 'Cancel Request'];
@@ -1984,29 +1979,29 @@ class RestfulService extends AbstractRestfulController {
                 return ["view" => 'View'];
             }
         };
-        
-        $fullName = function($id){
-          $empRepository = new EmployeeRepository($this->adapter);
-          $empDtl = $empRepository->fetchById($id);
-          $empMiddleName = ($empDtl['MIDDLE_NAME']!=null)? " ".$empDtl['MIDDLE_NAME']." " :" ";
-          return $empDtl['FIRST_NAME'].$empMiddleName.$empDtl['LAST_NAME'];
+
+        $fullName = function($id) {
+            $empRepository = new EmployeeRepository($this->adapter);
+            $empDtl = $empRepository->fetchById($id);
+            $empMiddleName = ($empDtl['MIDDLE_NAME'] != null) ? " " . $empDtl['MIDDLE_NAME'] . " " : " ";
+            return $empDtl['FIRST_NAME'] . $empMiddleName . $empDtl['LAST_NAME'];
         };
         foreach ($attendanceList as $attendanceRow) {
             $status = $getValue($attendanceRow['STATUS']);
             $action = $getAction($attendanceRow['STATUS']);
-            
+
             $statusId = $attendanceRow['STATUS'];
             $approvedDT = $attendanceRow['APPROVED_DT'];
-            
-            $authApprover = ($statusId=='RQ' || $statusId=='C' || ($statusId=='R' && $approvedDT==null))?$attendanceRow['APPROVER']:$attendanceRow['APPROVED_BY'];
+
+            $authApprover = ($statusId == 'RQ' || $statusId == 'C' || ($statusId == 'R' && $approvedDT == null)) ? $attendanceRow['APPROVER'] : $attendanceRow['APPROVED_BY'];
             $approverName = $fullName($authApprover);
-            
+
             $new_row = array_merge($attendanceRow, [
                 'A_STATUS' => $status,
-                'ACTION' => key($action), 
+                'ACTION' => key($action),
                 'ACTION_TEXT' => $action[key($action)],
-                'APPROVER_NAME'=>$approverName
-                    ]);
+                'APPROVER_NAME' => $approverName
+            ]);
             array_push($attendanceRequest, $new_row);
         }
         return [
@@ -2111,8 +2106,8 @@ class RestfulService extends AbstractRestfulController {
             $employeeId = $employeeRow['EMPLOYEE_ID'];
             $recommedApproverList = $recommApproverRepo->getDetailByEmployeeID($employeeId);
             if ($recommedApproverList != null) {
-                $middleNameR = ($recommedApproverList['MIDDLE_NAME_R'] != null) ? " ".$recommedApproverList['MIDDLE_NAME_R']." ":" ";
-                $middleNameA = ($recommedApproverList['MIDDLE_NAME_A'] != null) ? " ".$recommedApproverList['MIDDLE_NAME_A']." ":" ";
+                $middleNameR = ($recommedApproverList['MIDDLE_NAME_R'] != null) ? " " . $recommedApproverList['MIDDLE_NAME_R'] . " " : " ";
+                $middleNameA = ($recommedApproverList['MIDDLE_NAME_A'] != null) ? " " . $recommedApproverList['MIDDLE_NAME_A'] . " " : " ";
                 $employeeRow['RECOMMENDER_NAME'] = $recommedApproverList['FIRST_NAME_R'] . $middleNameR . $recommedApproverList['LAST_NAME_R'];
                 $employeeRow['APPROVER_NAME'] = $recommedApproverList['FIRST_NAME_A'] . $middleNameA . $recommedApproverList['LAST_NAME_A'];
             } else {
@@ -2127,7 +2122,8 @@ class RestfulService extends AbstractRestfulController {
             "data" => $employeeList
         ];
     }
-    public function pullTrainingAssignList($data){
+
+    public function pullTrainingAssignList($data) {
         $employeeId = $data['employeeId'];
         $branchId = $data['branchId'];
         $departmentId = $data['departmentId'];
@@ -2136,37 +2132,38 @@ class RestfulService extends AbstractRestfulController {
         $serviceTypeId = $data['serviceTypeId'];
         $trainingId = $data['trainingId'];
         $serviceEventTypeId = $data['serviceEventTypeId'];
-        
+
         $trainingAssignRepo = new TrainingAssignRepository($this->adapter);
-        $result = $trainingAssignRepo->filterRecords($employeeId,$branchId,$departmentId,$designationId,$positionId,$serviceTypeId,$serviceEventTypeId,$trainingId);
+        $result = $trainingAssignRepo->filterRecords($employeeId, $branchId, $departmentId, $designationId, $positionId, $serviceTypeId, $serviceEventTypeId, $trainingId);
         $list = [];
-        $getValue = function($trainingTypeId){
-            if($trainingTypeId=='CP'){
+        $getValue = function($trainingTypeId) {
+            if ($trainingTypeId == 'CP') {
                 return 'Company Personal';
-            }else if($trainingTypeId=='CC'){
+            } else if ($trainingTypeId == 'CC') {
                 return 'Company Contribution';
             }
         };
         $sn = 1;
-        foreach($result as $row){
-            $row['TRAINING_TYPE']=$getValue($row['TRAINING_TYPE']);
+        foreach ($result as $row) {
+            $row['TRAINING_TYPE'] = $getValue($row['TRAINING_TYPE']);
             $startDate = \DateTime::createFromFormat(Helper::PHP_DATE_FORMAT, $row['START_DATE']);
             $toDayDate = new \DateTime();
-            if($toDayDate<$startDate){
+            if ($toDayDate < $startDate) {
                 $row['ALLOW_TO_EDIT'] = 1;
-            }else if($toDayDate>=$startDate){
+            } else if ($toDayDate >= $startDate) {
                 $row['ALLOW_TO_EDIT'] = 0;
-            }  
+            }
             $row['SN'] = $sn;
             array_push($list, $row);
-            $sn+=1;
+            $sn += 1;
         }
         return [
             "success" => true,
             "data" => $list
         ];
     }
-     public function pullEmployeeForTrainingAssign($data){
+
+    public function pullEmployeeForTrainingAssign($data) {
         $employeeId = $data['employeeId'];
         $branchId = $data['branchId'];
         $departmentId = $data['departmentId'];
@@ -2174,16 +2171,16 @@ class RestfulService extends AbstractRestfulController {
         $positionId = $data['positionId'];
         $serviceTypeId = $data['serviceTypeId'];
         $trainingId = $data['trainingId'];
-        
+
         $employeeRepository = new EmployeeRepository($this->adapter);
         $trainingAssignRepo = new TrainingAssignRepository($this->adapter);
-        
+
         $employeeResult = $employeeRepository->filterRecords($employeeId, $branchId, $departmentId, $designationId, $positionId, $serviceTypeId, -1, 1);
 
         $employeeList = [];
         foreach ($employeeResult as $employeeRow) {
             $employeeId = $employeeRow['EMPLOYEE_ID'];
-            $trainingAssignList = $trainingAssignRepo->getDetailByEmployeeID($employeeId,$trainingId);
+            $trainingAssignList = $trainingAssignRepo->getDetailByEmployeeID($employeeId, $trainingId);
             if ($trainingAssignList != null) {
                 $employeeRow['TRAINING_NAME'] = $trainingAssignList['TRAINING_NAME'];
                 $employeeRow['TRAINING_ID'] = $trainingAssignList['TRAINING_ID'];
@@ -2206,21 +2203,19 @@ class RestfulService extends AbstractRestfulController {
             "success" => true,
             "data" => $employeeList
         ];
-        
     }
-    
-    public function assignEmployeeTraining($data){
+
+    public function assignEmployeeTraining($data) {
         $trainingAssignRepo = new TrainingAssignRepository($this->adapter);
         $trainingAssignModel = new TrainingAssign();
 
         $trainingAssignModel->employeeId = $data['employeeId'];
         $trainingAssignModel->trainingId = $data['trainingId'];
-        
+
         $getPreviousDtl = $trainingAssignRepo->getAllDetailByEmployeeID($data['employeeId'], $data['trainingId']);
 
-        //print_r(count($getPreviousDtl));die();
-        
-        if (count($getPreviousDtl)>0) {
+
+        if (count($getPreviousDtl) > 0) {
             $trainingAssignClone = clone $trainingAssignModel;
             unset($trainingAssignClone->employeeId);
             unset($trainingAssignClone->trainingId);
@@ -2237,25 +2232,29 @@ class RestfulService extends AbstractRestfulController {
             $trainingAssignRepo->add($trainingAssignModel);
         }
 
+        HeadNotification::pushNotification(NotificationEvents::TRAINING_ASSIGNED, $trainingAssignModel, $this->adapter, $this->plugin('url'));
+
         return [
             "success" => true,
             "data" => $data
         ];
     }
-    public function cancelEmployeeTraining($data){
+
+    public function cancelEmployeeTraining($data) {
         $trainingAssignRepo = new TrainingAssignRepository($this->adapter);
         $trainingAssignModel = new TrainingAssign();
         $trainingAssignModel->employeeId = $data['employeeId'];
-        $trainingAssignModel->trainingId = $data['trainingId'];        
+        $trainingAssignModel->trainingId = $data['trainingId'];
         $trainingAssignModel->status = 'D';
         $trainingAssignModel->modifiedDt = Helper::getcurrentExpressionDate();
         $trainingAssignModel->modifiedBy = $this->loggedIdEmployeeId;
         $trainingAssignRepo->edit($trainingAssignModel, [$data['employeeId'], $data['trainingId']]);
 
+//        HeadNotification::pushNotification(NotificationEvents::TRAINING_CANCELLED, $trainingAssignModel, $this->adapter, $this->plugin('url'));
         return [
             "success" => true,
             "data" => $data
-        ]; 
+        ];
     }
 
     public function assignEmployeeReportingHierarchy($data) {
@@ -2305,7 +2304,6 @@ class RestfulService extends AbstractRestfulController {
             "data" => $data
         ];
     }
-
 
     public function pullAttendanceList($data) {
         $attendanceDetailRepository = new AttendanceDetailRepository($this->adapter);

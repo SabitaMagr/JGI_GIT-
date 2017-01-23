@@ -2,20 +2,21 @@
 
 namespace SelfService\Controller;
 
-use Zend\Mvc\Controller\AbstractActionController;
 use Application\Helper\Helper;
+use Notification\Controller\HeadNotification;
+use Notification\Model\NotificationEvents;
 use SelfService\Form\TravelRequestForm;
-use SelfService\Repository\TravelRequestRepository;
 use SelfService\Model\TravelRequest as TravelRequestModel;
-use Zend\Form\Element\Select;
-use Setup\Repository\RecommendApproveRepository;
+use SelfService\Repository\TravelRequestRepository;
 use Setup\Repository\EmployeeRepository;
-use Zend\Db\Adapter\AdapterInterface;
+use Setup\Repository\RecommendApproveRepository;
 use Zend\Authentication\AuthenticationService;
-use Setup\Model\HrEmployees;
+use Zend\Db\Adapter\AdapterInterface;
 use Zend\Form\Annotation\AnnotationBuilder;
+use Zend\Mvc\Controller\AbstractActionController;
 
 class TravelRequest extends AbstractActionController {
+
     private $form;
     private $adapter;
     private $repository;
@@ -92,10 +93,10 @@ class TravelRequest extends AbstractActionController {
                 return ["view" => 'View'];
             }
         };
-        $getRequestedType = function($requestedType){
-            if($requestedType=='ad'){
+        $getRequestedType = function($requestedType) {
+            if ($requestedType == 'ad') {
                 return 'Advance';
-            }else if($requestedType=='ep'){
+            } else if ($requestedType == 'ep') {
                 return 'Expense';
             }
         };
@@ -116,7 +117,7 @@ class TravelRequest extends AbstractActionController {
                 'APPROVER_NAME' => $authApprover,
                 'STATUS' => $status,
                 'ACTION' => key($action),
-                'REQUESTED_TYPE'=>$getRequestedType($row['REQUESTED_TYPE']),
+                'REQUESTED_TYPE' => $getRequestedType($row['REQUESTED_TYPE']),
                 'ACTION_TEXT' => $action[key($action)]
             ]);
             array_push($list, $new_row);
@@ -139,6 +140,7 @@ class TravelRequest extends AbstractActionController {
                 $model->requestedDate = Helper::getcurrentExpressionDate();
                 $model->status = 'RQ';
                 $this->repository->add($model);
+                HeadNotification::pushNotification(NotificationEvents::TRAVEL_APPLIED, $model, $this->adapter, $this->plugin('url'));
                 $this->flashmessenger()->addMessage("Travel Request Successfully added!!!");
                 return $this->redirect()->toRoute("travelRequest");
             }
@@ -150,7 +152,7 @@ class TravelRequest extends AbstractActionController {
 
         return Helper::addFlashMessagesToArray($this, [
                     'form' => $this->form,
-                    'requestTypes'=>$requestType
+                    'requestTypes' => $requestType
         ]);
     }
 
@@ -195,7 +197,7 @@ class TravelRequest extends AbstractActionController {
         $this->form->bind($model);
 
         $employeeName = $fullName($detail['EMPLOYEE_ID']);
-        
+
         $requestType = array(
             'ad' => 'Advance',
             'ep' => 'Expense'
@@ -203,7 +205,7 @@ class TravelRequest extends AbstractActionController {
 
         return Helper::addFlashMessagesToArray($this, [
                     'form' => $this->form,
-                    'requestTypes'=>$requestType,
+                    'requestTypes' => $requestType,
                     'employeeName' => $employeeName,
                     'status' => $detail['STATUS'],
                     'requestedDate' => $detail['REQUESTED_DATE'],

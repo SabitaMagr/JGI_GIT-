@@ -28,14 +28,24 @@ class NotificationModel {
         $variables = array_keys(get_object_vars($this));
         $output = $input;
         foreach ($variables as $variable) {
-            $output = $this->convertVariableToValue($output, $variable);
+            $output = $this->convertVariableToValue($output, $variable, $url);
         }
         return $output;
     }
 
-    private function convertVariableToValue($message, $variable) {
+    private function convertVariableToValue($message, $variable, Url $url) {
         if (strpos($message, $this->wrapWithLargeBracket($variable)) !== false) {
-            $processedVariable = $this->{$variable};
+            $processedVariable = '';
+            if ($variable == 'route') {
+                $routeJson = (array) json_decode($this->{$variable});
+                if (isset($routeJson['route'])) {
+                    $routeName = $routeJson['route'];
+                    unset($routeJson['route']);
+                    $processedVariable = $url->fromRoute($routeName, $routeJson);
+                }
+            } else {
+                $processedVariable = $this->{$variable};
+            }
             if (is_string($processedVariable)) {
                 return str_replace($this->wrapWithLargeBracket($variable), "'" . $processedVariable . "'", $message);
             } else {

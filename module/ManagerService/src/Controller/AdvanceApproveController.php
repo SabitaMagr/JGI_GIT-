@@ -2,25 +2,27 @@
 
 namespace ManagerService\Controller;
 
-use Zend\Mvc\Controller\AbstractActionController;
-use Application\Helper\Helper;
 use Application\Helper\EntityHelper;
-use Zend\Db\Adapter\AdapterInterface;
+use Application\Helper\Helper;
 use ManagerService\Repository\AdvanceApproveRepository;
-use Zend\Authentication\AuthenticationService;
-use SelfService\Repository\AdvanceRequestRepository;
+use Notification\Controller\HeadNotification;
+use Notification\Model\NotificationEvents;
 use SelfService\Form\AdvanceRequestForm;
 use SelfService\Model\AdvanceRequest;
-use Zend\Form\Annotation\AnnotationBuilder;
+use SelfService\Repository\AdvanceRequestRepository;
 use Setup\Model\Advance;
 use Setup\Model\Branch;
 use Setup\Model\Department;
 use Setup\Model\Designation;
 use Setup\Model\Position;
-use Setup\Model\ServiceType;
 use Setup\Model\ServiceEventType;
-use Zend\Form\Element\Select;
+use Setup\Model\ServiceType;
 use Setup\Repository\RecommendApproveRepository;
+use Zend\Authentication\AuthenticationService;
+use Zend\Db\Adapter\AdapterInterface;
+use Zend\Form\Annotation\AnnotationBuilder;
+use Zend\Form\Element\Select;
+use Zend\Mvc\Controller\AbstractActionController;
 
 class AdvanceApproveController extends AbstractActionController {
 
@@ -78,7 +80,7 @@ class AdvanceApproveController extends AbstractActionController {
             $requestedEmployeeID = $row['EMPLOYEE_ID'];
             $recommendApproveRepository = new RecommendApproveRepository($this->adapter);
             $empRecommendApprove = $recommendApproveRepository->fetchById($requestedEmployeeID);
-            
+
             $dataArray = [
                 'FIRST_NAME' => $row['FIRST_NAME'],
                 'MIDDLE_NAME' => $row['MIDDLE_NAME'],
@@ -94,11 +96,11 @@ class AdvanceApproveController extends AbstractActionController {
                 'YOUR_ROLE' => $getValue($row['RECOMMENDER'], $row['APPROVER']),
                 'ROLE' => $getRole($row['RECOMMENDER'], $row['APPROVER'])
             ];
-            if($empRecommendApprove['RECOMMEND_BY']==$empRecommendApprove['APPROVED_BY']){
+            if ($empRecommendApprove['RECOMMEND_BY'] == $empRecommendApprove['APPROVED_BY']) {
                 $dataArray['YOUR_ROLE'] = 'Recommender\Approver';
                 $dataArray['ROLE'] = 4;
             }
-            
+
             array_push($advanceApprove, $dataArray);
         }
         //print_r($advanceApprove); die();
@@ -155,7 +157,11 @@ class AdvanceApproveController extends AbstractActionController {
                 }
                 $advanceRequestModel->recommendedRemarks = $getData->recommendedRemarks;
                 $this->advanceApproveRepository->edit($advanceRequestModel, $id);
-            } else if ($role == 3 || $role==4) {
+
+                $advanceRequestModel->advanceRequestId = $id;
+                HeadNotification::pushNotification(
+                        $advanceRequestModel->status == 'RC' ? NotificationEvents::ADVANCE_RECOMMEND_ACCEPTED : NotificationEvents::ADVANCE_RECOMMEND_REJECTED, $advanceRequestModel, $this->adapter, $this->plugin('url'));
+            } else if ($role == 3 || $role == 4) {
                 $advanceRequestModel->approvedDate = Helper::getcurrentExpressionDate();
                 $advanceRequestModel->approvedBy = $this->employeeId;
                 if ($action == "Reject") {
@@ -165,12 +171,16 @@ class AdvanceApproveController extends AbstractActionController {
                     $advanceRequestModel->status = "AP";
                     $this->flashmessenger()->addMessage("Advance Request Approved");
                 }
-                if($role==4){
+                if ($role == 4) {
                     $advanceRequestModel->recommendedBy = $this->employeeId;
                     $advanceRequestModel->recommendedDate = Helper::getcurrentExpressionDate();
                 }
                 $advanceRequestModel->approvedRemarks = $getData->approvedRemarks;
                 $this->advanceApproveRepository->edit($advanceRequestModel, $id);
+
+                $advanceRequestModel->advanceRequestId = $id;
+                HeadNotification::pushNotification(
+                        $advanceRequestModel->status == 'AP' ? NotificationEvents::ADVANCE_APPROVE_ACCEPTED : NotificationEvents::ADVANCE_APPROVE_REJECTED, $advanceRequestModel, $this->adapter, $this->plugin('url'));
             }
             return $this->redirect()->toRoute("advanceApprove");
         }
@@ -194,7 +204,7 @@ class AdvanceApproveController extends AbstractActionController {
     public function statusAction() {
         $employeeNameFormElement = new Select();
         $employeeNameFormElement->setName("branch");
-        $employeeName = \Application\Helper\EntityHelper::getTableKVListWithSortOption($this->adapter, "HR_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => "E"], "FIRST_NAME", "ASC", " ");
+        $employeeName = EntityHelper::getTableKVListWithSortOption($this->adapter, "HR_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => "E"], "FIRST_NAME", "ASC", " ");
         $employeeName1 = [-1 => "All"] + $employeeName;
         $employeeNameFormElement->setValueOptions($employeeName1);
         $employeeNameFormElement->setAttributes(["id" => "employeeId", "class" => "form-control"]);
@@ -203,7 +213,7 @@ class AdvanceApproveController extends AbstractActionController {
 
         $branchFormElement = new Select();
         $branchFormElement->setName("branch");
-        $branches = \Application\Helper\EntityHelper::getTableKVListWithSortOption($this->adapter, Branch::TABLE_NAME, Branch::BRANCH_ID, [Branch::BRANCH_NAME], [Branch::STATUS => 'E'], "BRANCH_NAME", "ASC");
+        $branches = EntityHelper::getTableKVListWithSortOption($this->adapter, Branch::TABLE_NAME, Branch::BRANCH_ID, [Branch::BRANCH_NAME], [Branch::STATUS => 'E'], "BRANCH_NAME", "ASC");
         $branches1 = [-1 => "All"] + $branches;
         $branchFormElement->setValueOptions($branches1);
         $branchFormElement->setAttributes(["id" => "branchId", "class" => "form-control"]);
@@ -212,7 +222,7 @@ class AdvanceApproveController extends AbstractActionController {
 
         $departmentFormElement = new Select();
         $departmentFormElement->setName("department");
-        $departments = \Application\Helper\EntityHelper::getTableKVListWithSortOption($this->adapter, Department::TABLE_NAME, Department::DEPARTMENT_ID, [Department::DEPARTMENT_NAME], [Department::STATUS => 'E'], "DEPARTMENT_NAME", "ASC");
+        $departments = EntityHelper::getTableKVListWithSortOption($this->adapter, Department::TABLE_NAME, Department::DEPARTMENT_ID, [Department::DEPARTMENT_NAME], [Department::STATUS => 'E'], "DEPARTMENT_NAME", "ASC");
         $departments1 = [-1 => "All"] + $departments;
         $departmentFormElement->setValueOptions($departments1);
         $departmentFormElement->setAttributes(["id" => "departmentId", "class" => "form-control"]);
@@ -220,7 +230,7 @@ class AdvanceApproveController extends AbstractActionController {
 
         $designationFormElement = new Select();
         $designationFormElement->setName("designation");
-        $designations = \Application\Helper\EntityHelper::getTableKVListWithSortOption($this->adapter, Designation::TABLE_NAME, Designation::DESIGNATION_ID, [Designation::DESIGNATION_TITLE], [Designation::STATUS => 'E'], "DESIGNATION_TITLE", "ASC");
+        $designations = EntityHelper::getTableKVListWithSortOption($this->adapter, Designation::TABLE_NAME, Designation::DESIGNATION_ID, [Designation::DESIGNATION_TITLE], [Designation::STATUS => 'E'], "DESIGNATION_TITLE", "ASC");
         $designations1 = [-1 => "All"] + $designations;
         $designationFormElement->setValueOptions($designations1);
         $designationFormElement->setAttributes(["id" => "designationId", "class" => "form-control"]);
@@ -228,7 +238,7 @@ class AdvanceApproveController extends AbstractActionController {
 
         $positionFormElement = new Select();
         $positionFormElement->setName("position");
-        $positions = \Application\Helper\EntityHelper::getTableKVListWithSortOption($this->adapter, Position::TABLE_NAME, Position::POSITION_ID, [Position::POSITION_NAME], [Position::STATUS => 'E'], "POSITION_NAME", "ASC");
+        $positions = EntityHelper::getTableKVListWithSortOption($this->adapter, Position::TABLE_NAME, Position::POSITION_ID, [Position::POSITION_NAME], [Position::STATUS => 'E'], "POSITION_NAME", "ASC");
         $positions1 = [-1 => "All"] + $positions;
         $positionFormElement->setValueOptions($positions1);
         $positionFormElement->setAttributes(["id" => "positionId", "class" => "form-control"]);
@@ -236,7 +246,7 @@ class AdvanceApproveController extends AbstractActionController {
 
         $serviceTypeFormElement = new Select();
         $serviceTypeFormElement->setName("serviceType");
-        $serviceTypes = \Application\Helper\EntityHelper::getTableKVListWithSortOption($this->adapter, ServiceType::TABLE_NAME, ServiceType::SERVICE_TYPE_ID, [ServiceType::SERVICE_TYPE_NAME], [ServiceType::STATUS => 'E'], "SERVICE_TYPE_NAME", "ASC");
+        $serviceTypes = EntityHelper::getTableKVListWithSortOption($this->adapter, ServiceType::TABLE_NAME, ServiceType::SERVICE_TYPE_ID, [ServiceType::SERVICE_TYPE_NAME], [ServiceType::STATUS => 'E'], "SERVICE_TYPE_NAME", "ASC");
         $serviceTypes1 = [-1 => "All"] + $serviceTypes;
         $serviceTypeFormElement->setValueOptions($serviceTypes1);
         $serviceTypeFormElement->setAttributes(["id" => "serviceTypeId", "class" => "form-control"]);
@@ -244,7 +254,7 @@ class AdvanceApproveController extends AbstractActionController {
 
         $serviceEventTypeFormElement = new Select();
         $serviceEventTypeFormElement->setName("serviceEventType");
-        $serviceEventTypes = \Application\Helper\EntityHelper::getTableKVListWithSortOption($this->adapter, ServiceEventType::TABLE_NAME, ServiceEventType::SERVICE_EVENT_TYPE_ID, [ServiceEventType::SERVICE_EVENT_TYPE_NAME], [ServiceEventType::STATUS => 'E'], "SERVICE_EVENT_TYPE_NAME", "ASC");
+        $serviceEventTypes = EntityHelper::getTableKVListWithSortOption($this->adapter, ServiceEventType::TABLE_NAME, ServiceEventType::SERVICE_EVENT_TYPE_ID, [ServiceEventType::SERVICE_EVENT_TYPE_NAME], [ServiceEventType::STATUS => 'E'], "SERVICE_EVENT_TYPE_NAME", "ASC");
         $serviceEventTypes1 = [-1 => "Working"] + $serviceEventTypes;
         $serviceEventTypeFormElement->setValueOptions($serviceEventTypes1);
         $serviceEventTypeFormElement->setAttributes(["id" => "serviceEventTypeId", "class" => "form-control"]);
@@ -252,7 +262,7 @@ class AdvanceApproveController extends AbstractActionController {
 
         $advanceFormElement = new Select();
         $advanceFormElement->setName("advance");
-        $advances = \Application\Helper\EntityHelper::getTableKVList($this->adapter, Advance::TABLE_NAME, Advance::ADVANCE_ID, [Advance::ADVANCE_NAME], [Advance::STATUS => 'E']);
+        $advances = EntityHelper::getTableKVList($this->adapter, Advance::TABLE_NAME, Advance::ADVANCE_ID, [Advance::ADVANCE_NAME], [Advance::STATUS => 'E']);
         $advances1 = [-1 => "All"] + $advances;
         $advanceFormElement->setValueOptions($advances1);
         $advanceFormElement->setAttributes(["id" => "advanceId", "class" => "form-control"]);

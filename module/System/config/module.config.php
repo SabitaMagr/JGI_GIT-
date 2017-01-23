@@ -14,6 +14,7 @@ use Application\Factory\DashBoardFactory;
 use System\Controller\DashboardController;
 use System\Controller\MenuSetupController;
 use System\Controller\RoleSetupController;
+use System\Controller\SettingController;
 use System\Controller\UserSetupController;
 use Zend\Router\Http\Segment;
 
@@ -75,7 +76,21 @@ return [
                         'action' => 'index'
                     ]
                 ]
-            ]
+            ],
+            'user-setting' => [
+                'type' => Segment::class,
+                'options' => [
+                    'route' => '/system/setting[/:action[/:id]]',
+                    'constraint' => [
+                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'id' => '[0-9]+',
+                    ],
+                    'defaults' => [
+                        'controller' => SettingController::class,
+                        'action' => 'index'
+                    ]
+                ]
+            ],
         ],
     ],
     'navigation' => [
@@ -183,7 +198,8 @@ return [
             RoleSetupController::class => ControllerFactory::class,
             UserSetupController::class => ControllerFactory::class,
             MenuSetupController::class => ControllerFactory::class,
-            DashboardController::class => DashBoardFactory::class
+            DashboardController::class => DashBoardFactory::class,
+            SettingController::class => DashBoardFactory::class
         ],
     ],
     'view_manager' => [
