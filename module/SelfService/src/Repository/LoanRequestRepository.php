@@ -43,6 +43,7 @@ class LoanRequestRepository implements RepositoryInterface{
             new Expression("LR.STATUS AS STATUS"),
             new Expression("TO_CHAR(LR.REQUESTED_DATE, 'DD-MON-YYYY') AS REQUESTED_DATE"),
             new Expression("TO_CHAR(LR.APPROVED_DATE, 'DD-MON-YYYY') AS APPROVED_DATE"),
+            new Expression("TO_CHAR(LR.RECOMMENDED_DATE, 'DD-MON-YYYY') AS RECOMMENDED_DATE"),
             new Expression("LR.REQUESTED_AMOUNT AS REQUESTED_AMOUNT"),
             new Expression("LR.LOAN_REQUEST_ID AS LOAN_REQUEST_ID"),
             new Expression("LR.REASON AS REASON"),
@@ -51,7 +52,6 @@ class LoanRequestRepository implements RepositoryInterface{
             new Expression("LR.APPROVED_BY AS APPROVED_BY"),
             new Expression("LR.APPROVED_REMARKS AS APPROVED_REMARKS"),
             new Expression("LR.RECOMMENDED_REMARKS AS RECOMMENDED_REMARKS"),
-            new Expression("LR.APPROVED_REMARKS AS APPROVED_REMARKS"),
             new Expression("LR.LOAN_ID AS LOAN_ID") 
                 ], true);
 
