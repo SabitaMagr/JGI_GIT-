@@ -2,22 +2,21 @@
 
 namespace SelfService\Controller;
 
-use Zend\Mvc\Controller\AbstractActionController;
-use Zend\Authentication\AuthenticationService;
-use Zend\Db\Adapter\AdapterInterface;
-use Application\Helper\Helper;
 use Application\Helper\EntityHelper;
-use Zend\Form\Annotation\AnnotationBuilder;
+use Application\Helper\Helper;
+use Application\Helper\LoanAdvanceHelper;
+use Notification\Controller\HeadNotification;
+use Notification\Model\NotificationEvents;
 use SelfService\Form\LoanRequestForm;
-use Setup\Model\HrEmployees;
 use SelfService\Model\LoanRequest as LoanRequestModel;
 use SelfService\Repository\LoanRequestRepository;
 use Setup\Model\Loan;
 use Setup\Repository\EmployeeRepository;
 use Setup\Repository\RecommendApproveRepository;
-use Setup\Repository\LoanRepository;
-use Setup\Repository\LoanRestrictionRepository;
-use Application\Helper\LoanAdvanceHelper;
+use Zend\Authentication\AuthenticationService;
+use Zend\Db\Adapter\AdapterInterface;
+use Zend\Form\Annotation\AnnotationBuilder;
+use Zend\Mvc\Controller\AbstractActionController;
 
 class LoanRequest extends AbstractActionController {
 
@@ -33,14 +32,15 @@ class LoanRequest extends AbstractActionController {
         $this->repository = new LoanRequestRepository($adapter);
         $auth = new AuthenticationService();
         $this->employeeId = $auth->getStorage()->read()['employee_id'];
-    } 
+    }
 
     public function initializeForm() {
         $builder = new AnnotationBuilder();
         $form = new LoanRequestForm();
         $this->form = $builder->createForm($form);
     }
-    public function getRecommendApprover(){
+
+    public function getRecommendApprover() {
         $recommendApproveRepository = new RecommendApproveRepository($this->adapter);
         $empRecommendApprove = $recommendApproveRepository->fetchById($this->employeeId);
 
@@ -49,32 +49,32 @@ class LoanRequest extends AbstractActionController {
             $this->approver = $empRecommendApprove['APPROVED_BY'];
         } else {
             $result = $this->recommendApproveList();
-            if(count($result['recommender'])>0){
-                $this->recommender=$result['recommender'][0]['id'];
-            }else{
-                $this->recommender=null;
+            if (count($result['recommender']) > 0) {
+                $this->recommender = $result['recommender'][0]['id'];
+            } else {
+                $this->recommender = null;
             }
-            if(count($result['approver'])>0){
-                $this->approver=$result['approver'][0]['id'];
-            }else{
-                 $this->approver=null;
-            } 
+            if (count($result['approver']) > 0) {
+                $this->approver = $result['approver'][0]['id'];
+            } else {
+                $this->approver = null;
+            }
         }
     }
 
     public function indexAction() {
         $this->getRecommendApprover();
         $result = $this->repository->getAllByEmployeeId($this->employeeId);
-        $fullName = function($id){
-          $empRepository = new EmployeeRepository($this->adapter);
-          $empDtl = $empRepository->fetchById($id);
-          $empMiddleName = ($empDtl['MIDDLE_NAME']!=null)? " ".$empDtl['MIDDLE_NAME']." " :" ";
-          return $empDtl['FIRST_NAME'].$empMiddleName.$empDtl['LAST_NAME'];
+        $fullName = function($id) {
+            $empRepository = new EmployeeRepository($this->adapter);
+            $empDtl = $empRepository->fetchById($id);
+            $empMiddleName = ($empDtl['MIDDLE_NAME'] != null) ? " " . $empDtl['MIDDLE_NAME'] . " " : " ";
+            return $empDtl['FIRST_NAME'] . $empMiddleName . $empDtl['LAST_NAME'];
         };
-        
+
         $recommenderName = $fullName($this->recommender);
         $approverName = $fullName($this->approver);
-        
+
         $list = [];
         $getValue = function($status) {
             if ($status == "RQ") {
@@ -101,21 +101,20 @@ class LoanRequest extends AbstractActionController {
             $action = $getAction($row['STATUS']);
             $statusID = $row['STATUS'];
             $approvedDT = $row['APPROVED_DATE'];
-            $MN1 = ($row['MN1']!=null)? " ".$row['MN1']." ":" ";
-            $recommended_by = $row['FN1'].$MN1.$row['LN1'];        
-            $MN2 = ($row['MN2']!=null)? " ".$row['MN2']." ":" ";
-            $approved_by = $row['FN2'].$MN2.$row['LN2'];
-            $authRecommender = ($statusID=='RQ' || $statusID=='C')?$recommenderName:$recommended_by;
-            $authApprover = ($statusID=='RC' || $statusID=='RQ' || $statusID=='C' || ($statusID=='R' && $approvedDT==null))?$approverName:$approved_by;
+            $MN1 = ($row['MN1'] != null) ? " " . $row['MN1'] . " " : " ";
+            $recommended_by = $row['FN1'] . $MN1 . $row['LN1'];
+            $MN2 = ($row['MN2'] != null) ? " " . $row['MN2'] . " " : " ";
+            $approved_by = $row['FN2'] . $MN2 . $row['LN2'];
+            $authRecommender = ($statusID == 'RQ' || $statusID == 'C') ? $recommenderName : $recommended_by;
+            $authApprover = ($statusID == 'RC' || $statusID == 'RQ' || $statusID == 'C' || ($statusID == 'R' && $approvedDT == null)) ? $approverName : $approved_by;
 
-            $new_row = array_merge($row, 
-                    [
-                        'RECOMMENDER_NAME'=>$authRecommender,
-                        'APPROVER_NAME'=>$authApprover,
-                        'STATUS' => $status, 
-                        'ACTION' => key($action), 
-                        'ACTION_TEXT' => $action[key($action)]
-                    ]);
+            $new_row = array_merge($row, [
+                'RECOMMENDER_NAME' => $authRecommender,
+                'APPROVER_NAME' => $authApprover,
+                'STATUS' => $status,
+                'ACTION' => key($action),
+                'ACTION_TEXT' => $action[key($action)]
+            ]);
             array_push($list, $new_row);
         }
         return Helper::addFlashMessagesToArray($this, ['list' => $list]);
@@ -136,6 +135,7 @@ class LoanRequest extends AbstractActionController {
                 $model->status = 'RQ';
                 $model->deductOnSalary = 'Y';
                 $this->repository->add($model);
+                HeadNotification::pushNotification(NotificationEvents::LOAN_APPLIED, $model, $this->adapter, $this->plugin("url"));
                 $this->flashmessenger()->addMessage("Loan Request Successfully added!!!");
                 return $this->redirect()->toRoute("loanRequest");
             }
@@ -145,7 +145,7 @@ class LoanRequest extends AbstractActionController {
                     'loans' => LoanAdvanceHelper::getLoanList($this->adapter, $this->employeeId)
         ]);
     }
-    
+
     public function deleteAction() {
         $id = (int) $this->params()->fromRoute("id");
         if (!$id) {
@@ -155,7 +155,7 @@ class LoanRequest extends AbstractActionController {
         $this->flashmessenger()->addMessage("Loan Request Successfully Cancelled!!!");
         return $this->redirect()->toRoute('loanRequest');
     }
-    
+
     public function viewAction() {
         $this->initializeForm();
         $this->getRecommendApprover();
@@ -164,40 +164,41 @@ class LoanRequest extends AbstractActionController {
         if ($id === 0) {
             return $this->redirect()->toRoute("loanRequest");
         }
-        $fullName = function($id){
-          $empRepository = new EmployeeRepository($this->adapter);
-          $empDtl = $empRepository->fetchById($id);
-          $empMiddleName = ($empDtl['MIDDLE_NAME']!=null)? " ".$empDtl['MIDDLE_NAME']." " :" ";
-          return $empDtl['FIRST_NAME'].$empMiddleName.$empDtl['LAST_NAME'];
+        $fullName = function($id) {
+            $empRepository = new EmployeeRepository($this->adapter);
+            $empDtl = $empRepository->fetchById($id);
+            $empMiddleName = ($empDtl['MIDDLE_NAME'] != null) ? " " . $empDtl['MIDDLE_NAME'] . " " : " ";
+            return $empDtl['FIRST_NAME'] . $empMiddleName . $empDtl['LAST_NAME'];
         };
-        
+
         $recommenderName = $fullName($this->recommender);
         $approverName = $fullName($this->approver);
-        
+
         $model = new LoanRequestModel();
         $detail = $this->repository->fetchById($id);
         $status = $detail['STATUS'];
         $approvedDT = $detail['APPROVED_DATE'];
-        $recommended_by = $fullName($detail['RECOMMENDED_BY']);        
+        $recommended_by = $fullName($detail['RECOMMENDED_BY']);
         $approved_by = $fullName($detail['APPROVED_BY']);
-        $authRecommender = ($status=='RQ' || $status=='C')?$recommenderName:$recommended_by;
-        $authApprover = ($status=='RC' || $status=='RQ' || $status=='C' || ($status=='R' && $approvedDT==null))?$approverName:$approved_by;
-       
+        $authRecommender = ($status == 'RQ' || $status == 'C') ? $recommenderName : $recommended_by;
+        $authApprover = ($status == 'RC' || $status == 'RQ' || $status == 'C' || ($status == 'R' && $approvedDT == null)) ? $approverName : $approved_by;
+
         $model->exchangeArrayFromDB($detail);
         $this->form->bind($model);
-                       
+
         $employeeName = $fullName($detail['EMPLOYEE_ID']);
 
         return Helper::addFlashMessagesToArray($this, [
                     'form' => $this->form,
-                    'employeeName'=>$employeeName,
-                    'status'=>$detail['STATUS'],
-                    'requestedDate'=>$detail['REQUESTED_DATE'],
-                    'recommender'=>$authRecommender,
-                    'approver'=>$authApprover,
+                    'employeeName' => $employeeName,
+                    'status' => $detail['STATUS'],
+                    'requestedDate' => $detail['REQUESTED_DATE'],
+                    'recommender' => $authRecommender,
+                    'approver' => $authApprover,
                     'loans' => EntityHelper::getTableKVListWithSortOption($this->adapter, Loan::TABLE_NAME, Loan::LOAN_ID, [Loan::LOAN_NAME], [Loan::STATUS => "E"], Loan::LOAN_ID, "ASC")
-        ]);       
+        ]);
     }
+
     public function recommendApproveList() {
         $employeeRepository = new EmployeeRepository($this->adapter);
         $recommendApproveRepository = new RecommendApproveRepository($this->adapter);
@@ -239,4 +240,5 @@ class LoanRequest extends AbstractActionController {
         ];
         return $responseData;
     }
+
 }

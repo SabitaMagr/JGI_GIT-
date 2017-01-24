@@ -14,9 +14,11 @@ use Notification\Model\NotificationModel;
 use Notification\Repository\NotificationRepo;
 use SelfService\Model\AdvanceRequest;
 use SelfService\Model\AttendanceRequestModel;
+use SelfService\Model\LoanRequest;
 use SelfService\Model\TravelRequest;
 use SelfService\Repository\AdvanceRequestRepository;
 use SelfService\Repository\AttendanceRequestRepository;
+use SelfService\Repository\LoanRequestRepository;
 use SelfService\Repository\TravelRequestRepository;
 use Setup\Model\RecommendApprove;
 use Setup\Model\Training;
@@ -556,8 +558,79 @@ class HeadNotification {
             self::sendEmail($notification, 12, $adapter, $url);
         };
 
+        ${"fn" . NotificationEvents::LOAN_APPLIED} = function(LoanRequest $request, AdapterInterface $adapter, Url $url, $type) {
+            $loanReqRepo = new LoanRequestRepository($adapter);
+            $request->exchangeArrayFromDB($loanReqRepo->fetchById($request->loanRequestId));
 
+            $recommdAppRepo = new RecommendApproveRepository($adapter);
+            $recommdAppModel = $recommdAppRepo->getDetailByEmployeeID($request->employeeId);
 
+            $notification = new \Notification\Model\LoanRequestNotificationModel();
+            self::setNotificationModel($recommdAppModel[RecommendApprove::EMPLOYEE_ID], $recommdAppModel[($type == self::RECOMMENDER) ? RecommendApprove::RECOMMEND_BY : RecommendApprove::APPROVED_BY], $notification, $adapter);
+
+            $notification->approvedAmount = $request->approvedAmount;
+            $notification->deductOnSalary = $request->deductOnSalary;
+            $notification->loanDate = $request->loanDate;
+            $notification->reason = $request->reason;
+            $notification->requestedAmount = $request->requestedAmount;
+
+            $notification->route = json_encode(["route" => "loanApprove", "action" => "view", "id" => $request->loanRequestId, "role" => ($type == self::RECOMMENDER) ? 2 : 3]);
+            $title = "Loan Request";
+            $desc = "Loan Request";
+
+            self::addNotifications($notification, $title, $desc, $adapter);
+            self::sendEmail($notification, 13, $adapter, $url);
+        };
+        ${"fn" . NotificationEvents::LOAN_RECOMMEND_ACCEPTED} = function(LoanRequest $request, AdapterInterface $adapter, Url $url, string $status) {
+            $loanReqRepo = new LoanRequestRepository($adapter);
+            $request->exchangeArrayFromDB($loanReqRepo->fetchById($request->loanRequestId));
+
+            $recommdAppRepo = new RecommendApproveRepository($adapter);
+            $recommdAppModel = $recommdAppRepo->getDetailByEmployeeID($request->employeeId);
+
+            $notification = new \Notification\Model\LoanRequestNotificationModel();
+            self::setNotificationModel($recommdAppModel[RecommendApprove::RECOMMEND_BY], $recommdAppModel[RecommendApprove::EMPLOYEE_ID], $notification, $adapter);
+
+            $notification->approvedAmount = $request->approvedAmount;
+            $notification->deductOnSalary = $request->deductOnSalary;
+            $notification->loanDate = $request->loanDate;
+            $notification->reason = $request->reason;
+            $notification->requestedAmount = $request->requestedAmount;
+
+            $notification->status = $status;
+
+            $notification->route = json_encode(["route" => "loanRequest", "action" => "view", "id" => $request->loanRequestId]);
+            $title = "Loan Recommend";
+            $desc = "Loan Recommend $status";
+
+            self::addNotifications($notification, $title, $desc, $adapter);
+            self::sendEmail($notification, 14, $adapter, $url);
+        };
+        ${"fn" . NotificationEvents::LOAN_APPROVE_ACCEPTED} = function(LoanRequest $request, AdapterInterface $adapter, Url $url, string $status) {
+            $loanReqRepo = new LoanRequestRepository($adapter);
+            $request->exchangeArrayFromDB($loanReqRepo->fetchById($request->loanRequestId));
+
+            $recommdAppRepo = new RecommendApproveRepository($adapter);
+            $recommdAppModel = $recommdAppRepo->getDetailByEmployeeID($request->employeeId);
+
+            $notification = new \Notification\Model\LoanRequestNotificationModel();
+            self::setNotificationModel($recommdAppModel[RecommendApprove::APPROVED_BY], $recommdAppModel[RecommendApprove::EMPLOYEE_ID], $notification, $adapter);
+
+            $notification->approvedAmount = $request->approvedAmount;
+            $notification->deductOnSalary = $request->deductOnSalary;
+            $notification->loanDate = $request->loanDate;
+            $notification->reason = $request->reason;
+            $notification->requestedAmount = $request->requestedAmount;
+
+            $notification->status = $status;
+
+            $notification->route = json_encode(["route" => "loanRequest", "action" => "view", "id" => $request->loanRequestId]);
+            $title = "Loan Approval";
+            $desc = "Loan Approval $status";
+
+            self::addNotifications($notification, $title, $desc, $adapter);
+            self::sendEmail($notification, 15, $adapter, $url);
+        };
         switch ($eventType) {
             case NotificationEvents::LEAVE_APPLIED:
                 ${"fn" . NotificationEvents::LEAVE_APPLIED}($model, $adapter, $url, self::RECOMMENDER);
@@ -627,6 +700,22 @@ class HeadNotification {
                 break;
             case NotificationEvents::TRAINING_CANCELLED:
                 ${"fn" . NotificationEvents::TRAINING_ASSIGNED}($model, $adapter, $url, self::CANCELLED);
+                break;
+            case NotificationEvents::LOAN_APPLIED:
+                ${"fn" . NotificationEvents::LOAN_APPLIED}($model, $adapter, $url, self::RECOMMENDER);
+                break;
+            case NotificationEvents::LOAN_RECOMMEND_ACCEPTED:
+                ${"fn" . NotificationEvents::LOAN_RECOMMEND_ACCEPTED}($model, $adapter, $url, self::ACCEPTED);
+                ${"fn" . NotificationEvents::LOAN_APPLIED}($model, $adapter, $url, self::APPROVER);
+                break;
+            case NotificationEvents::LOAN_RECOMMEND_REJECTED:
+                ${"fn" . NotificationEvents::LOAN_RECOMMEND_ACCEPTED}($model, $adapter, $url, self::REJECTED);
+                break;
+            case NotificationEvents::LOAN_APPROVE_ACCEPTED:
+                ${"fn" . NotificationEvents::LOAN_APPROVE_ACCEPTED}($model, $adapter, $url, self::ACCEPTED);
+                break;
+            case NotificationEvents::LOAN_APPROVE_REJECTED:
+                ${"fn" . NotificationEvents::LOAN_APPROVE_ACCEPTED}($model, $adapter, $url, self::REJECTED);
                 break;
         }
     }
