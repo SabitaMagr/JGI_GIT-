@@ -23,7 +23,8 @@ class WorkOnDayoffRepository implements RepositoryInterface{
     }
 
     public function delete($id) {
-        $this->tableGateway->update([WorkOnDayoff::STATUS=>'C'],[WorkOnDayoff::ID=>$id]);
+        $currentDate = \Application\Helper\Helper::getcurrentExpressionDate();
+        $this->tableGateway->update([WorkOnDayoff::STATUS => 'C', WorkOnDayoff::MODIFIED_DATE=>$currentDate], [WorkOnDayoff::ID => $id]);
     }
 
     public function edit(Model $model, $id) {

@@ -7,7 +7,7 @@
                 var oneDay = 24 * 60 * 60 * 1000; // hours*minutes*seconds*milliseconds
                 var diffDays = Math.abs((fromDate.getTime() - toDate.getTime()) / (oneDay));
                 var newValue = diffDays + 1;
-                dateDiff = newValue;
+                //dateDiff = newValue;
                 $("#duration").val(newValue);
             }
         });

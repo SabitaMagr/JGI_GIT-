@@ -132,6 +132,7 @@ class WorkOnHoliday extends AbstractActionController {
                 $model->employeeId = $this->employeeId;
                 $model->requestedDate = Helper::getcurrentExpressionDate();
                 $model->status = 'RQ';
+               // print_r($model); die();
                 $this->repository->add($model);
                 $this->flashmessenger()->addMessage("Work on Holiday Request Successfully added!!!");
                 return $this->redirect()->toRoute("workOnHoliday");
@@ -242,7 +243,8 @@ class WorkOnHoliday extends AbstractActionController {
        $holidayResult = $holidayRepo->selectAll($employeeId);
        $holidayList = [];
        foreach($holidayResult as $holidayRow){
-           $holidayList[$holidayRow['HOLIDAY_ID']]=$holidayRow['HOLIDAY_ENAME'];
+           //$todayDate = new \DateTime();
+           $holidayList[$holidayRow['HOLIDAY_ID']]=$holidayRow['HOLIDAY_ENAME']." (".$holidayRow['START_DATE']." to ".$holidayRow['END_DATE'].")";
        }
        return $holidayList;
     }

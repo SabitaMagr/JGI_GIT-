@@ -22,7 +22,7 @@ class WorkOnDayoffForm{
      * @Annotation\Required({"required":"true"})
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"From Date"})
-     * @Annotation\Attributes({ "id":"form-fromDate", "class":"form-toDate form-control" })
+     * @Annotation\Attributes({ "id":"fromDate", "class":"form-toDate form-control" })
      */
     public $fromDate;
     
@@ -31,7 +31,7 @@ class WorkOnDayoffForm{
      * @Annotation\Required({"required":"true"})
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"To Date"})
-     * @Annotation\Attributes({ "id":"form-toDate", "class":"form-toDate form-control" })
+     * @Annotation\Attributes({ "id":"toDate", "class":"form-toDate form-control" })
      */
     public $toDate;   
     
@@ -40,7 +40,7 @@ class WorkOnDayoffForm{
      * @Annotation\Required({"required":"true"})
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Duration"})
-     * @Annotation\Attributes({ "id":"form-duration", "class":"form-duration form-control","step":"0.01" })
+     * @Annotation\Attributes({ "id":"duration", "class":"form-duration form-control","step":"0.01" })
      */
     public $duration;
     

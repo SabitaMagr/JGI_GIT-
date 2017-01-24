@@ -58,7 +58,9 @@
             "Loan\\": "module/Loan/src/",
             "Advance\\": "module/Advance/src/",
             "Notification\\": "module/Notification/src/",
-            "Travel\\": "module/Travel/src/"
+            "Travel\\": "module/Travel/src/",
+            "WorkOnHoliday\\": "module/WorkOnHoliday/src/",
+            "WorkOnDayoff\\": "module/WorkOnDayoff/src/"
         }
     },
     "autoload-dev": {

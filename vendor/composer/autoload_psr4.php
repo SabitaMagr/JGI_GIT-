@@ -53,6 +53,8 @@ return array(
     'Zend\\Authentication\\' => array($vendorDir . '/zendframework/zend-authentication/src'),
     'ZendDeveloperTools\\' => array($vendorDir . '/zendframework/zend-developer-tools/src'),
     'ZF\\DevelopmentMode\\' => array($vendorDir . '/zfcampus/zf-development-mode/src'),
+    'WorkOnHoliday\\' => array($baseDir . '/module/WorkOnHoliday/src'),
+    'WorkOnDayoff\\' => array($baseDir . '/module/WorkOnDayoff/src'),
     'Webmozart\\Assert\\' => array($vendorDir . '/webmozart/assert/src'),
     'Travel\\' => array($baseDir . '/module/Travel/src'),
     'Training\\' => array($baseDir . '/module/Training/src'),
