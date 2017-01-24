@@ -1,12 +1,9 @@
 <?php
-$this->headScript()->appendFile($this->basePath('js/SelfService/work-on-holiday/add.js'));
+$this->headScript()->appendFile($this->basePath('js/SelfService/work-on-dayoff/add.js'));
 
 $form->setAttribute('role', 'form');
-$form->setAttribute('id', 'workOnHoliday-form');
+$form->setAttribute('id', 'workOnDayoff-form');
 
-$holidayId = $form->get('holidayId');
-$holidayId->setValueOptions($holidays);
-$holidayId->setAttributes(["disabled"=>"disabled"]);
 $fromDate = $form->get('fromDate');
 $fromDate->setAttributes(["disabled"=>"disabled"]);
 $toDate = $form->get('toDate');
@@ -23,7 +20,7 @@ $approvedRemarks->setAttributes(["disabled"=>"disabled"]);
 $submit = $form->get('submit');
 $submit->setAttribute('value','SUBMIT');
 
-$form->setAttribute('action', $this->url('workOnHoliday', ['action' => 'add']));
+$form->setAttribute('action', $this->url('workOnDayoff', ['action' => 'add']));
 
 if ($this->messages) {
     print '<ul class="help-block bg-danger" style="background:#f3e250;">';
@@ -37,18 +34,18 @@ $form->prepare();
 print $this->form()->openTag($form);
 ?>
     <script>
-        document.menu=<?php $menu = ["id" => "menuSelfService","subMenu"=>["id"=>"subMenuWorkOnHolidayRequest"]];echo json_encode($menu);?>;
+        document.menu=<?php $menu = ["id" => "menuSelfService","subMenu"=>["id"=>"subMenuWorkOnDayoffRequest"]];echo json_encode($menu);?>;
         document.url = '<?= $this->url("restful", ["action" => "index"]) ?>';
     </script>
 <div class="page-bar">
-    <?= $this->navigation('Zend\Navigation\workOnHoliday')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
+    <?= $this->navigation('Zend\Navigation\workOnDayoff')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
 <div class="row margin-top-20">
     <div class="col-sm-8 col-sm-offset-2">
         <div class="portlet box custom-box">
             <div class="portlet-title">
                 <div class="caption">
-                    <i class="fa fa-user"></i>Work On Holiday Request Detail
+                    <i class="fa fa-user"></i>Work On Day-off Request Detail
                 </div>
             </div>
             <div class="portlet-body">
@@ -113,11 +110,7 @@ print $this->form()->openTag($form);
                         </div>
                     </div>
                 </div>
-               <div class="form-group">
-                    <?php print $this->formLabel($holidayId); ?>
-                    <?php print $this->formElement($holidayId); ?>
-                    <?php print $this->formElementErrors()->render($holidayId, ['class' => 'help-block']); ?>
-                </div>               
+              
                <div
                     class="form-group required  <?= empty($fromDate->getMessages()) ? "" : "error" ?>">
                     <?php print $this->formLabel($fromDate) ?>

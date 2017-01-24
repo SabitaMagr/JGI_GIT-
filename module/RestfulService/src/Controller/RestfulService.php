@@ -2411,7 +2411,7 @@ class RestfulService extends AbstractRestfulController {
         
         $holidayList = [];
         foreach($holidayResult as $holidayRow){
-            $holidayList[$holidayRow['HOLIDAY_ID']]=$holidayRow['HOLIDAY_ENAME'];
+           $holidayList[$holidayRow['HOLIDAY_ID']]=$holidayRow['HOLIDAY_ENAME']." (".$holidayRow['START_DATE']." to ".$holidayRow['END_DATE'].")";
         }
         return [
             'success' => true,

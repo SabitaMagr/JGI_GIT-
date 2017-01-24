@@ -1,0 +1,85 @@
+<?php
+/**
+ * Load Javascript files here
+ */
+$this->headScript()
+        ->appendFile($this->basePath('jszip/dist/jszip.min.js'))
+        ->appendFile($this->basePath('telerik_kendoui/js/kendo.all.min.js'))
+        ->appendFile($this->basePath('js/SelfService/work-on-dayoff/index.js'))
+        ->appendFile($this->basePath('assets/global/plugins/bootstrap-confirmation/bootstrap-confirmation.min.js'));
+?>
+<?php if ($this->messages) { ?>
+    <script>
+        document.messages =<?php echo json_encode($this->messages); ?>
+    </script>
+<?php } ?>
+
+<script>
+    document.menu =<?php $menu = ["id" => "menuSelfService", "subMenu" => ["id" => "subMenuWorkOnDayoffRequest"]];
+echo json_encode($menu); ?>;
+    document.deleteURL ='<?= $this->url("restful", ["action" => "index"]) ?>';
+    document.workOnDayoffRequestList =<?php echo json_encode($list); ?>
+</script>
+<div class="page-bar">
+    <?= $this->navigation('Zend\Navigation\workOnDayoff')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
+</div>
+
+
+<div class="margin-top-20">
+    <div class="table-toolbar">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="btn-group">
+                    <a href="<?= $this->url('workOnDayoff', ['action' => 'add']) ?>" id="sample_editable_1_new"
+                       class="btn green"> Add New
+                        <!--                        <i class="fa fa-plus"></i>-->
+                    </a>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="btn-group pull-right">
+                    <button class="btn green btn-outline dropdown-toggle" data-toggle="dropdown">Tools
+                        <i class="fa fa-angle-down"></i>
+                    </button>
+                    <ul class="dropdown-menu pull-right">      
+                        <li>
+                            <a href="javascript:;" id="export"> Export to Excel </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>      
+        </div>
+    </div>    
+    <div id="workOnDayoffTbl">
+    </div>
+    <script id="rowTemplate" type="text/x-kendo-tmpl">
+        <tr>
+        <td>
+        #: (REQUESTED_DATE == null) ? '-' : REQUESTED_DATE #
+        </td>
+        <td>
+        #: (FROM_DATE == null) ? '-' : FROM_DATE #
+        </td>
+        <td>
+        #: (TO_DATE == null) ? '-' : TO_DATE #
+        </td>
+        <td>
+        #: (DURATION == null) ? '-' : DURATION #
+        </td>
+        <td>
+        #: (STATUS == null) ? '-' : STATUS #
+        </td>
+        <td>
+        <a class="btn-edit"
+        href="<?= $this->url("workOnDayoff"); ?>/#:ACTION #/#:ID #" style="height:17px;" title="#:ACTION_TEXT #">
+        # if (ACTION_TEXT=="Cancel Request") { #
+                <i class="fa fa-trash-o"></i>
+                    # } #
+                    # if (ACTION_TEXT=="View") { #
+                <i class="fa fa-search-plus"></i>
+                    # } #
+        </a>
+        </td>
+        </tr>
+    </script>
+</div>

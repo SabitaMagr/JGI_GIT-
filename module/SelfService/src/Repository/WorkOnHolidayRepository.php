@@ -24,7 +24,8 @@ class WorkOnHolidayRepository implements RepositoryInterface{
     }
 
     public function delete($id) {
-        $this->tableGateway->update([WorkOnHoliday::STATUS=>'C'],[WorkOnHoliday::ID=>$id]);
+        $currentDate = \Application\Helper\Helper::getcurrentExpressionDate();
+        $this->tableGateway->update([WorkOnHoliday::STATUS => 'C', WorkOnHoliday::MODIFIED_DATE=>$currentDate], [WorkOnHoliday::ID => $id]);
     }
 
     public function edit(Model $model, $id) {
