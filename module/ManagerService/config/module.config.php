@@ -75,6 +75,16 @@ return [
                     ]
                 ]
             ],
+            'dayoffWorkApprove' => [
+                'type' => Segment::class,
+                'options' => [
+                    'route' => '/managerservice/dayoffWorkApprove[/:action[/:id][/:role]]',
+                    'defaults' => [
+                        'controller' => Controller\DayoffWorkApproveController::class,
+                        'action' => 'index'
+                    ]
+                ]
+            ],
         ]
     ],
     'navigation' => [
@@ -244,6 +254,33 @@ return [
                 ]
             ]
         ],
+        'dayoffWorkApprove' => [
+                [
+                'label' => 'Work on Day-off Request',
+                'route' => 'dayoffWorkApprove',
+            ],
+                [
+                'label' => 'Work on Day-off Request',
+                'route' => 'dayoffWorkApprove',
+                'pages' => [
+                        [
+                        'label' => 'List',
+                        'route' => 'dayoffWorkApprove',
+                        'action' => 'index',
+                    ],
+                        [
+                        'label' => 'List',
+                        'route' => 'dayoffWorkApprove',
+                        'action' => 'status',
+                    ],
+                        [
+                        'label' => 'View',
+                        'route' => 'dayoffWorkApprove',
+                        'action' => 'view',
+                    ],
+                ]
+            ]
+        ],
         'salaryReview' => [
                 [
                 'label' => 'Salary Review',
@@ -279,7 +316,8 @@ return [
             Controller\LoanApproveController::class => ControllerFactory::class,
             Controller\SalaryReviewController::class => ControllerFactory::class,
             Controller\AdvanceApproveController::class => ControllerFactory::class,
-            Controller\TravelApproveController::class => ControllerFactory::class
+            Controller\TravelApproveController::class => ControllerFactory::class,
+            Controller\DayoffWorkApproveController::class => ControllerFactory::class
         ],
     ],
     'view_manager' => [

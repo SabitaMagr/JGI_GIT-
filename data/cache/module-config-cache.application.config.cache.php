@@ -1430,6 +1430,19 @@ return array (
           ),
         ),
       ),
+      'dayoffWorkApprove' => 
+      array (
+        'type' => 'Zend\\Router\\Http\\Segment',
+        'options' => 
+        array (
+          'route' => '/managerservice/dayoffWorkApprove[/:action[/:id][/:role]]',
+          'defaults' => 
+          array (
+            'controller' => 'ManagerService\\Controller\\DayoffWorkApproveController',
+            'action' => 'index',
+          ),
+        ),
+      ),
       'rolesetup' => 
       array (
         'type' => 'Zend\\Router\\Http\\Segment',
@@ -3718,6 +3731,40 @@ return array (
         ),
       ),
     ),
+    'dayoffWorkApprove' => 
+    array (
+      0 => 
+      array (
+        'label' => 'Work on Day-off Request',
+        'route' => 'dayoffWorkApprove',
+      ),
+      1 => 
+      array (
+        'label' => 'Work on Day-off Request',
+        'route' => 'dayoffWorkApprove',
+        'pages' => 
+        array (
+          0 => 
+          array (
+            'label' => 'List',
+            'route' => 'dayoffWorkApprove',
+            'action' => 'index',
+          ),
+          1 => 
+          array (
+            'label' => 'List',
+            'route' => 'dayoffWorkApprove',
+            'action' => 'status',
+          ),
+          2 => 
+          array (
+            'label' => 'View',
+            'route' => 'dayoffWorkApprove',
+            'action' => 'view',
+          ),
+        ),
+      ),
+    ),
     'rolesetup' => 
     array (
       0 => 
@@ -4398,6 +4445,7 @@ return array (
       'ManagerService\\Controller\\SalaryReviewController' => 'Application\\Controller\\ControllerFactory',
       'ManagerService\\Controller\\AdvanceApproveController' => 'Application\\Controller\\ControllerFactory',
       'ManagerService\\Controller\\TravelApproveController' => 'Application\\Controller\\ControllerFactory',
+      'ManagerService\\Controller\\DayoffWorkApproveController' => 'Application\\Controller\\ControllerFactory',
       'System\\Controller\\RoleSetupController' => 'Application\\Controller\\ControllerFactory',
       'System\\Controller\\UserSetupController' => 'Application\\Controller\\ControllerFactory',
       'System\\Controller\\MenuSetupController' => 'Application\\Controller\\ControllerFactory',
