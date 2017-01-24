@@ -2,10 +2,12 @@
 
 namespace Notification;
 
-use Application\Helper\SessionHelper;
 use Application\Helper\Helper;
+use Application\Helper\SessionHelper;
 use DateTime;
 use Notification\Controller\HeadNotification;
+use System\Model\Setting;
+use System\Repository\SettingRepository;
 use Zend\Authentication\AuthenticationService;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\ModuleManager\Feature\ConfigProviderInterface;
@@ -47,7 +49,13 @@ class Module implements ConfigProviderInterface {
         if ($employeeId == null) {
             $event->getViewModel()->setVariable("notifications", []);
         } else {
-            $event->getViewModel()->setVariable("notifications", HeadNotification::getNotifications($adapter, $employeeId));
+            $settingRepo = new SettingRepository($adapter);
+            $userSetting = $settingRepo->fetchById($auth->getStorage()->read()['user_id']);
+            if ($userSetting == null || ($userSetting[Setting::ENABLE_NOTIFICATION] == 'Y')) {
+                $event->getViewModel()->setVariable("notifications", HeadNotification::getNotifications($adapter, $employeeId));
+            } else {
+                $event->getViewModel()->setVariable("notifications", []);
+            }
         }
     }
 

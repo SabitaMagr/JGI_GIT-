@@ -42,6 +42,7 @@ window.app = (function ($, toastr) {
         for (var x in arguments) {
             arguments[x].datepicker({
                 format: format,
+                todayHighlight: true,
                 autoclose: true,
                 setDate: new Date()
             });
@@ -399,7 +400,7 @@ window.app = (function ($, toastr) {
             }
         });
     };
-    var checkErrorSpan = function(formId){
+    var checkErrorSpan = function (formId) {
         $('#' + formId).submit(function (e) {
             var err = [];
             $(".errorMsg").each(function () {
@@ -524,7 +525,7 @@ window.app = (function ($, toastr) {
         addTimePicker: addTimePicker,
         fetchAndPopulate: fetchAndPopulate,
         successMessage: successMessage,
-        checkErrorSpan : checkErrorSpan,
+        checkErrorSpan: checkErrorSpan,
         errorMessage: errorMessage,
         floatingProfile: floatingProfile,
         checkUniqueConstraints: checkUniqueConstraints,

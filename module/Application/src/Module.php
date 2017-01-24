@@ -49,7 +49,6 @@ class Module implements AutoloaderProviderInterface, ConsoleUsageProviderInterfa
     }
 
     function beforeDispatch(MvcEvent $event) {
-
         $request = $event->getRequest();
 
         if ($request->getContent() != null) {

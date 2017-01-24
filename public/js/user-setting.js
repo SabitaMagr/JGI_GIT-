@@ -8,33 +8,41 @@
     $(document).ready(function () {
         var $enableNotificaion = $('#enableNotification');
         var $enableEmail = $('#enableEmail');
-
-        $enableNotificaion.on('change', function () {
-//            var $this = $(this);
-//            app.pullDataById(document.updateSettingUrl, {
-//               
-//            }).then(function (success) {
-//                console.log('success', success);
-//                $n.prop('checked', success[enableNotification] == constraint[1]);
-//                $e.prop('checked', success[enableEmail] == constraint[1]);
-//            }, function (failure) {
-//                console.log('failure', failure);
-//            });
-        });
-
-        $enableEmail.on('change', function () {
-//            var $this = $(this);
-        });
+        var setting = {};
 
         (function ($n, $e) {
             app.pullDataById(document.settingUrl, {
                 test: 'test'
             }).then(function (success) {
-                console.log('success', success);
-                $n.prop('checked', success[enableNotification] == constraint[1]);
-                $e.prop('checked', success[enableEmail] == constraint[1]);
+                console.log("setting suc", success);
+                setting = success;
+                $enableNotificaion.bootstrapSwitch({
+                    state: setting[enableNotification] === constraint[1],
+                    onSwitchChange: function () {
+                        var $this = $(this);
+                        app.pullDataById(document.updateSettingUrl, {
+                            [enableNotification]: constraint[$this.bootstrapSwitch("state") ? 1 : 0]
+                        }).then(function (success) {
+                            console.log('success', success);
+                        }, function (failure) {
+                            console.log('failure', failure);
+                        });
+
+                    }});
+                $enableEmail.bootstrapSwitch({
+                    state: setting[enableEmail] === constraint[1],
+                    onSwitchChange: function () {
+                        var $this = $(this);
+                        app.pullDataById(document.updateSettingUrl, {
+                            [enableNotification]: constraint[$this.bootstrapSwitch("state") ? 1 : 0]
+                        }).then(function (success) {
+                            console.log('success', success);
+                        }, function (failure) {
+                            console.log('failure', failure);
+                        });
+                    }});
             }, function (failure) {
-                console.log('failure', failure);
+                console.log('setting fail', failure);
             });
         })($enableNotificaion, $enableEmail);
     });
