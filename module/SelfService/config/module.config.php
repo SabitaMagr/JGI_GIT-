@@ -20,6 +20,8 @@ use SelfService\Controller\Profile;
 use SelfService\Controller\Service;
 use SelfService\Controller\TrainingList;
 use SelfService\Controller\TravelRequest;
+use SelfService\Controller\WorkOnHoliday;
+use SelfService\Controller\WorkOnDayoff;
 use Zend\Router\Http\Segment;
 
 return [
@@ -194,7 +196,34 @@ return [
                     ]
                 ],
             ],
-
+            'workOnHoliday' => [
+                'type' => Segment::class,
+                'options' => [
+                    'route' => '/selfservice/workOnHoliday[/:action[/:id]]',
+                    'constants' => [
+                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'id' => '[0-9]+',
+                    ],
+                    'defaults' => [
+                        'controller' => WorkOnHoliday::class,
+                        'action' => 'index',
+                    ]
+                ],
+            ],
+            'workOnDayoff' => [
+                'type' => Segment::class,
+                'options' => [
+                    'route' => '/selfservice/workOnDayoff[/:action[/:id]]',
+                    'constants' => [
+                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'id' => '[0-9]+',
+                    ],
+                    'defaults' => [
+                        'controller' => WorkOnDayoff::class,
+                        'action' => 'index',
+                    ]
+                ],
+            ],
         ],
     ],
     'navigation' => [
@@ -515,7 +544,7 @@ return [
                 'route' => 'travelRequest',
                 'pages' => [
                     [
-                        'label' => 'Detail',
+                        'label' => 'List',
                         'route' => 'travelRequest',
                         'action' => 'index',
                     ],
@@ -537,6 +566,60 @@ return [
                 ],
             ],
         ],
+        'workOnHoliday' => [
+            [
+                'label' => 'Work on Holiday Request',
+                'route' => 'workOnHoliday',
+            ],
+            [
+                'label' => 'Work on Holiday Request',
+                'route' => 'workOnHoliday',
+                'pages' => [
+                    [
+                        'label' => 'List',
+                        'route' => 'workOnHoliday',
+                        'action' => 'index',
+                    ],
+                    [
+                        'label' => 'Add',
+                        'route' => 'workOnHoliday',
+                        'action' => 'add',
+                    ],
+                    [
+                        'label' => 'Detail',
+                        'route' => 'workOnHoliday',
+                        'action' => 'view',
+                    ],
+                ],
+            ],
+        ],
+        'workOnDayoff' => [
+            [
+                'label' => 'Work on Day-off Request',
+                'route' => 'workOnDayoff',
+            ],
+            [
+                'label' => 'Work on Day-off Request',
+                'route' => 'workOnDayoff',
+                'pages' => [
+                    [
+                        'label' => 'List',
+                        'route' => 'workOnDayoff',
+                        'action' => 'index',
+                    ],
+                    [
+                        'label' => 'Add',
+                        'route' => 'workOnDayoff',
+                        'action' => 'add',
+                    ],
+                    [
+                        'label' => 'Detail',
+                        'route' => 'workOnDayoff',
+                        'action' => 'view',
+                    ],
+                ],
+            ],
+        ],
     ],
 
     'controllers' => [
@@ -552,7 +635,9 @@ return [
             LoanRequest::class => ControllerFactory::class,
             TrainingList::class => ControllerFactory::class,
             AdvanceRequest::class => ControllerFactory::class,
-            TravelRequest::class => ControllerFactory::class
+            TravelRequest::class => ControllerFactory::class,
+            WorkOnHoliday::class => ControllerFactory::class,
+            WorkOnDayoff::class => ControllerFactory::class
         ],
     ],
     'view_manager' => [

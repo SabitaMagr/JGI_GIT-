@@ -195,7 +195,7 @@ class LoanRequest extends AbstractActionController {
                     'requestedDate'=>$detail['REQUESTED_DATE'],
                     'recommender'=>$authRecommender,
                     'approver'=>$authApprover,
-                    'loans' => EntityHelper::getTableKVListWithSortOption($this->adapter, Loan::TABLE_NAME, Loan::LOAN_ID, [Loan::LOAN_NAME], [Loan::STATUS => "E"], Loan::LOAN_ID, "ASC")
+                    'loans' => LoanAdvanceHelper::getLoanList($this->adapter, $this->employeeId)
         ]);       
     }
     public function recommendApproveList() {

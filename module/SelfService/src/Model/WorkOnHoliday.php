@@ -3,11 +3,11 @@ namespace SelfService\Model;
 
 use Application\Model\Model;
 
-class WorkOnDayoffRequest extends Model{
-    
-    const TABLE_NAME = "HR_EMPLOYEE_WORK_DAYOFF";
+class WorkOnHoliday extends Model{
+    const TABLE_NAME = "HR_EMPLOYEE_WORK_HOLIDAY";
     const ID = "ID";
     const EMPLOYEE_ID = "EMPLOYEE_ID";
+    const HOLIDAY_ID = "HOLIDAY_ID";
     const FROM_DATE = "FROM_DATE";
     const TO_DATE = "TO_DATE";
     const DURATION = "DURATION";
@@ -21,6 +21,4 @@ class WorkOnDayoffRequest extends Model{
     const APPROVED_DATE = "APPROVED_DATE";
     const APPROVED_REMARKS = "APPROVED_REMARKS";
     const MODIFIED_DATE = "MODIFIED_DATE";
-    
-    
 }

@@ -4,10 +4,10 @@ namespace SelfService\Form;
 use Zend\Form\Annotation;
 /**
  * @Annotation\Hydrator("Zend\Hydrator\ObjectProperty")
- * @Annotation\Name("WorkOnHolidayRequest Form")
+ * @Annotation\Name("WorkOnDayoff Form")
  */
 
-class WorkOnHolidayRequestForm{
+class WorkOnDayoffForm{
     /**
      * @Annotation\Type("Zend\Form\Element\Select")
      * @Annotation\Required(false)
@@ -16,24 +16,6 @@ class WorkOnHolidayRequestForm{
      * @Annotation\Attributes({ "id":"form-employeeId","class":"form-control"})
      */
     public $employeeId;
-    
-    /**
-     * @Annotation\Type("Zend\Form\Element\Select")
-     * @Annotation\Required(false)
-     * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
-     * @Annotation\Options({"disable_inarray_validator":"true","label":"Holiday Name"})
-     * @Annotation\Attributes({ "id":"form-holidayId","class":"form-control"})
-     */
-    public $holidayId;
-    
-     /**
-     * @Annotation\Type("Zend\Form\Element\Number")
-     * @Annotation\Required({"required":"true"})
-     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
-     * @Annotation\Options({"label":"Request Amount"})
-     * @Annotation\Attributes({ "id":"form-requestedAmount", "class":"form-requestedAmount form-control","step":"0.01" })
-     */
-    public $requestedAmount;
     
     /**
      * @Annotation\Type("Zend\Form\Element\Text")
@@ -52,6 +34,16 @@ class WorkOnHolidayRequestForm{
      * @Annotation\Attributes({ "id":"form-toDate", "class":"form-toDate form-control" })
      */
     public $toDate;   
+    
+    /**
+     * @Annotation\Type("Zend\Form\Element\Number")
+     * @Annotation\Required({"required":"true"})
+     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
+     * @Annotation\Options({"label":"Duration"})
+     * @Annotation\Attributes({ "id":"form-duration", "class":"form-duration form-control","step":"0.01" })
+     */
+    public $duration;
+    
     
     /**
      * @Annotation\Type("Zend\Form\Element\Textarea")

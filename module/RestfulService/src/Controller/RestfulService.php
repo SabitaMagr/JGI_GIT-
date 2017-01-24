@@ -3,7 +3,6 @@
 namespace RestfulService\Controller;
 
 use Advance\Repository\AdvanceStatusRepository;
-use Advance\Repository\AdvanceStatusRepository;
 use Application\Helper\ConstraintHelper;
 use Application\Helper\DeleteHelper;
 use Application\Helper\EntityHelper;
@@ -20,7 +19,6 @@ use AttendanceManagement\Repository\ShiftAssignRepository;
 use HolidayManagement\Repository\HolidayRepository;
 use LeaveManagement\Repository\LeaveBalanceRepository;
 use LeaveManagement\Repository\LeaveStatusRepository;
-use Loan\Repository\LoanStatusRepository;
 use Loan\Repository\LoanStatusRepository;
 use Notification\Controller\HeadNotification;
 use Notification\Model\NotificationEvents;
@@ -62,16 +60,14 @@ use System\Repository\MenuSetupRepository;
 use System\Repository\RolePermissionRepository;
 use System\Repository\RoleSetupRepository;
 use Training\Model\TrainingAssign;
-use Training\Model\TrainingAssign;
 use Training\Repository\TrainingAssignRepository;
-use Training\Repository\TrainingAssignRepository;
-use Travel\Repository\TravelStatusRepository;
 use Travel\Repository\TravelStatusRepository;
 use Zend\Authentication\AuthenticationService;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Adapter\Driver\ResultInterface;
 use Zend\Mvc\Controller\AbstractRestfulController;
 use Zend\View\Model\JsonModel;
+use SelfService\Repository\HolidayRepository as SelfHolidayRepository;
 
 class RestfulService extends AbstractRestfulController {
 
@@ -307,6 +303,9 @@ class RestfulService extends AbstractRestfulController {
                     break;
                 case "checkAdvanceRestriction":
                     $responseData = $this->checkAdvanceRestriction($postedData->data);
+                    break;
+                case "pullHolidaysForEmployee":
+                    $responseData = $this->pullHolidaysForEmployee($postedData->data);
                     break;
 
                 default:
@@ -2403,6 +2402,20 @@ class RestfulService extends AbstractRestfulController {
         return [
             'success' => true,
             'data' => $advanceList
+        ];
+    }
+    public function pullHolidaysForEmployee($data){
+        $employeeId = $data['employeeId'];
+        $holidayRepo = new SelfHolidayRepository($this->adapter);
+        $holidayResult = $holidayRepo->selectAll($employeeId);
+        
+        $holidayList = [];
+        foreach($holidayResult as $holidayRow){
+            $holidayList[$holidayRow['HOLIDAY_ID']]=$holidayRow['HOLIDAY_ENAME'];
+        }
+        return [
+            'success' => true,
+            'data' => $holidayList
         ];
     }
 
