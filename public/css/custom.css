@@ -1169,7 +1169,7 @@ ul#roleList li {
 
     border-radius: 0 !important;
     height: 22px !important;
-    margin: 0 0 10px !imporant;
+    margin: 0px 0px 10px !imporant;
     /*    padding: 0 10px 5px !important;*/
     padding:0 3px 4px 5px !important;
     margin-bottom:10px !important;
@@ -1325,7 +1325,7 @@ ul#roleList li {
 }
 
 /* Portrait tablets and small desktops */
-@media screen (min-width: 768px) and (max-width: 991px) {
+@media screen and (min-width: 768px) and (max-width: 991px) {
     .rightalign {
         width:40% !important;
     }
@@ -1506,6 +1506,6 @@ ul#roleList li {
     font-size:11px !important;
 }
 .scrollbar-vertical{
-   max-height: 400px;
-   overflow-y: scroll; 
+    max-height: 400px;
+    overflow-y: scroll; 
 }    
