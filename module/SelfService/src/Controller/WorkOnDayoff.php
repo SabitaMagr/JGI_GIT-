@@ -2,24 +2,20 @@
 
 namespace SelfService\Controller;
 
-use Application\Helper\EntityHelper;
-use Application\Helper\Helper;
-use Application\Helper\LoanAdvanceHelper;
-use Notification\Controller\HeadNotification;
-use Notification\Model\NotificationEvents;
-use SelfService\Form\AdvanceRequestForm;
-use SelfService\Model\AdvanceRequest as AdvanceRequestModel;
-use SelfService\Repository\AdvanceRequestRepository;
-use Setup\Model\Advance;
-use Setup\Model\Advance;
-use Setup\Repository\EmployeeRepository;
-use Setup\Repository\RecommendApproveRepository;
+use Zend\Mvc\Controller\AbstractActionController;
 use Zend\Authentication\AuthenticationService;
 use Zend\Db\Adapter\AdapterInterface;
+use Application\Helper\Helper;
+use Application\Helper\EntityHelper;
 use Zend\Form\Annotation\AnnotationBuilder;
-use Zend\Mvc\Controller\AbstractActionController;
+use SelfService\Form\WorkOnDayoffForm;
+use Setup\Model\HrEmployees;
+use SelfService\Model\WorkOnDayoff as WorkOnDayoffModel;
+use SelfService\Repository\WorkOnDayoffRepository;
+use Setup\Repository\EmployeeRepository;
+use Setup\Repository\RecommendApproveRepository;
 
-class AdvanceRequest extends AbstractActionController {
+class WorkOnDayoff extends AbstractActionController {
 
     private $form;
     private $adapter;
@@ -30,18 +26,17 @@ class AdvanceRequest extends AbstractActionController {
 
     public function __construct(AdapterInterface $adapter) {
         $this->adapter = $adapter;
-        $this->repository = new AdvanceRequestRepository($adapter);
+        $this->repository = new WorkOnDayoffRepository($adapter);
         $auth = new AuthenticationService();
         $this->employeeId = $auth->getStorage()->read()['employee_id'];
-    }
+    } 
 
     public function initializeForm() {
         $builder = new AnnotationBuilder();
-        $form = new AdvanceRequestForm();
+        $form = new WorkOnDayoffForm();
         $this->form = $builder->createForm($form);
     }
-
-    public function getRecommendApprover() {
+    public function getRecommendApprover(){
         $recommendApproveRepository = new RecommendApproveRepository($this->adapter);
         $empRecommendApprove = $recommendApproveRepository->fetchById($this->employeeId);
 
@@ -50,32 +45,32 @@ class AdvanceRequest extends AbstractActionController {
             $this->approver = $empRecommendApprove['APPROVED_BY'];
         } else {
             $result = $this->recommendApproveList();
-            if (count($result['recommender']) > 0) {
-                $this->recommender = $result['recommender'][0]['id'];
-            } else {
-                $this->recommender = null;
+            if(count($result['recommender'])>0){
+                $this->recommender=$result['recommender'][0]['id'];
+            }else{
+                $this->recommender=null;
             }
-            if (count($result['approver']) > 0) {
-                $this->approver = $result['approver'][0]['id'];
-            } else {
-                $this->approver = null;
-            }
+            if(count($result['approver'])>0){
+                $this->approver=$result['approver'][0]['id'];
+            }else{
+                 $this->approver=null;
+            } 
         }
     }
 
     public function indexAction() {
         $this->getRecommendApprover();
         $result = $this->repository->getAllByEmployeeId($this->employeeId);
-        $fullName = function($id) {
-            $empRepository = new EmployeeRepository($this->adapter);
-            $empDtl = $empRepository->fetchById($id);
-            $empMiddleName = ($empDtl['MIDDLE_NAME'] != null) ? " " . $empDtl['MIDDLE_NAME'] . " " : " ";
-            return $empDtl['FIRST_NAME'] . $empMiddleName . $empDtl['LAST_NAME'];
+        $fullName = function($id){
+          $empRepository = new EmployeeRepository($this->adapter);
+          $empDtl = $empRepository->fetchById($id);
+          $empMiddleName = ($empDtl['MIDDLE_NAME']!=null)? " ".$empDtl['MIDDLE_NAME']." " :" ";
+          return $empDtl['FIRST_NAME'].$empMiddleName.$empDtl['LAST_NAME'];
         };
-
+        
         $recommenderName = $fullName($this->recommender);
         $approverName = $fullName($this->approver);
-
+        
         $list = [];
         $getValue = function($status) {
             if ($status == "RQ") {
@@ -102,20 +97,21 @@ class AdvanceRequest extends AbstractActionController {
             $action = $getAction($row['STATUS']);
             $statusID = $row['STATUS'];
             $approvedDT = $row['APPROVED_DATE'];
-            $MN1 = ($row['MN1'] != null) ? " " . $row['MN1'] . " " : " ";
-            $recommended_by = $row['FN1'] . $MN1 . $row['LN1'];
-            $MN2 = ($row['MN2'] != null) ? " " . $row['MN2'] . " " : " ";
-            $approved_by = $row['FN2'] . $MN2 . $row['LN2'];
-            $authRecommender = ($statusID == 'RQ' || $statusID == 'C') ? $recommenderName : $recommended_by;
-            $authApprover = ($statusID == 'RC' || $statusID == 'RQ' || $statusID == 'C' || ($statusID == 'R' && $approvedDT == null)) ? $approverName : $approved_by;
+            $MN1 = ($row['MN1']!=null)? " ".$row['MN1']." ":" ";
+            $recommended_by = $row['FN1'].$MN1.$row['LN1'];        
+            $MN2 = ($row['MN2']!=null)? " ".$row['MN2']." ":" ";
+            $approved_by = $row['FN2'].$MN2.$row['LN2'];
+            $authRecommender = ($statusID=='RQ' || $statusID=='C')?$recommenderName:$recommended_by;
+            $authApprover = ($statusID=='RC' || $statusID=='RQ' || $statusID=='C' || ($statusID=='R' && $approvedDT==null))?$approverName:$approved_by;
 
-            $new_row = array_merge($row, [
-                'RECOMMENDER_NAME' => $authRecommender,
-                'APPROVER_NAME' => $authApprover,
-                'STATUS' => $status,
-                'ACTION' => key($action),
-                'ACTION_TEXT' => $action[key($action)]
-            ]);
+            $new_row = array_merge($row, 
+                    [
+                        'RECOMMENDER_NAME'=>$authRecommender,
+                        'APPROVER_NAME'=>$authApprover,
+                        'STATUS' => $status, 
+                        'ACTION' => key($action), 
+                        'ACTION_TEXT' => $action[key($action)]
+                    ]);
             array_push($list, $new_row);
         }
         return Helper::addFlashMessagesToArray($this, ['list' => $list]);
@@ -125,82 +121,76 @@ class AdvanceRequest extends AbstractActionController {
         $this->initializeForm();
         $request = $this->getRequest();
 
-        $model = new AdvanceRequestModel();
+        $model = new WorkOnDayoffModel();
         if ($request->isPost()) {
             $this->form->setData($request->getPost());
             if ($this->form->isValid()) {
                 $model->exchangeArrayFromForm($this->form->getData());
-                $model->advanceRequestId = ((int) Helper::getMaxId($this->adapter, AdvanceRequestModel::TABLE_NAME, AdvanceRequestModel::ADVANCE_REQUEST_ID)) + 1;
+                $model->id = ((int) Helper::getMaxId($this->adapter, WorkOnDayoffModel::TABLE_NAME, WorkOnDayoffModel::ID)) + 1;
                 $model->employeeId = $this->employeeId;
                 $model->requestedDate = Helper::getcurrentExpressionDate();
                 $model->status = 'RQ';
                 $this->repository->add($model);
-                HeadNotification::pushNotification(NotificationEvents::ADVANCE_APPLIED, $model, $this->adapter, $this->plugin('url'));
-
-                $this->flashmessenger()->addMessage("Advance Request Successfully added!!!");
-                return $this->redirect()->toRoute("advanceRequest");
+                $this->flashmessenger()->addMessage("Work on Day-off Request Successfully added!!!");
+                return $this->redirect()->toRoute("workOnDayoff");
             }
         }
         return Helper::addFlashMessagesToArray($this, [
-                    'form' => $this->form,
-                    'employeeId' => $this->employeeId,
-                    'advances' => LoanAdvanceHelper::getAdvanceList($this->adapter, $this->employeeId)
+                    'form' => $this->form
         ]);
     }
-
+    
     public function deleteAction() {
         $id = (int) $this->params()->fromRoute("id");
         if (!$id) {
-            return $this->redirect()->toRoute('advanceRequest');
+            return $this->redirect()->toRoute('workOnDayoff');
         }
         $this->repository->delete($id);
-        $this->flashmessenger()->addMessage("Advance Request Successfully Cancelled!!!");
-        return $this->redirect()->toRoute('advanceRequest');
+        $this->flashmessenger()->addMessage("Work on Day-off Request Successfully Cancelled!!!");
+        return $this->redirect()->toRoute('workOnDayoff');
     }
-
+    
     public function viewAction() {
         $this->initializeForm();
         $this->getRecommendApprover();
         $id = (int) $this->params()->fromRoute('id');
 
         if ($id === 0) {
-            return $this->redirect()->toRoute("advanceRequest");
+            return $this->redirect()->toRoute("workOnDayoff");
         }
-        $fullName = function($id) {
-            $empRepository = new EmployeeRepository($this->adapter);
-            $empDtl = $empRepository->fetchById($id);
-            $empMiddleName = ($empDtl['MIDDLE_NAME'] != null) ? " " . $empDtl['MIDDLE_NAME'] . " " : " ";
-            return $empDtl['FIRST_NAME'] . $empMiddleName . $empDtl['LAST_NAME'];
+        $fullName = function($id){
+          $empRepository = new EmployeeRepository($this->adapter);
+          $empDtl = $empRepository->fetchById($id);
+          $empMiddleName = ($empDtl['MIDDLE_NAME']!=null)? " ".$empDtl['MIDDLE_NAME']." " :" ";
+          return $empDtl['FIRST_NAME'].$empMiddleName.$empDtl['LAST_NAME'];
         };
-
+        
         $recommenderName = $fullName($this->recommender);
         $approverName = $fullName($this->approver);
-
-        $model = new AdvanceRequestModel();
+        
+        $model = new WorkOnDayoffModel();
         $detail = $this->repository->fetchById($id);
         $status = $detail['STATUS'];
         $approvedDT = $detail['APPROVED_DATE'];
-        $recommended_by = $fullName($detail['RECOMMENDED_BY']);
+        $recommended_by = $fullName($detail['RECOMMENDED_BY']);        
         $approved_by = $fullName($detail['APPROVED_BY']);
-        $authRecommender = ($status == 'RQ' || $status == 'C') ? $recommenderName : $recommended_by;
-        $authApprover = ($status == 'RC' || $status == 'RQ' || $status == 'C' || ($status == 'R' && $approvedDT == null)) ? $approverName : $approved_by;
-
+        $authRecommender = ($status=='RQ' || $status=='C')?$recommenderName:$recommended_by;
+        $authApprover = ($status=='RC' || $status=='RQ' || $status=='C' || ($status=='R' && $approvedDT==null))?$approverName:$approved_by;
+       
         $model->exchangeArrayFromDB($detail);
         $this->form->bind($model);
-
+                       
         $employeeName = $fullName($detail['EMPLOYEE_ID']);
 
         return Helper::addFlashMessagesToArray($this, [
                     'form' => $this->form,
-                    'employeeName' => $employeeName,
-                    'status' => $detail['STATUS'],
-                    'requestedDate' => $detail['REQUESTED_DATE'],
-                    'recommender' => $authRecommender,
-                    'approver' => $authApprover,
-                    'advances' => LoanAdvanceHelper::getAdvanceList($this->adapter, $this->employeeId)
-        ]);
+                    'employeeName'=>$employeeName,
+                    'status'=>$detail['STATUS'],
+                    'requestedDate'=>$detail['REQUESTED_DATE'],
+                    'recommender'=>$authRecommender,
+                    'approver'=>$authApprover
+        ]);       
     }
-
     public function recommendApproveList() {
         $employeeRepository = new EmployeeRepository($this->adapter);
         $recommendApproveRepository = new RecommendApproveRepository($this->adapter);
@@ -242,5 +232,4 @@ class AdvanceRequest extends AbstractActionController {
         ];
         return $responseData;
     }
-
 }

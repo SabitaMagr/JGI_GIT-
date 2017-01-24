@@ -190,13 +190,13 @@ class LoanRequest extends AbstractActionController {
 
         return Helper::addFlashMessagesToArray($this, [
                     'form' => $this->form,
-                    'employeeName' => $employeeName,
-                    'status' => $detail['STATUS'],
-                    'requestedDate' => $detail['REQUESTED_DATE'],
-                    'recommender' => $authRecommender,
-                    'approver' => $authApprover,
-                    'loans' => EntityHelper::getTableKVListWithSortOption($this->adapter, Loan::TABLE_NAME, Loan::LOAN_ID, [Loan::LOAN_NAME], [Loan::STATUS => "E"], Loan::LOAN_ID, "ASC")
-        ]);
+                    'employeeName'=>$employeeName,
+                    'status'=>$detail['STATUS'],
+                    'requestedDate'=>$detail['REQUESTED_DATE'],
+                    'recommender'=>$authRecommender,
+                    'approver'=>$authApprover,
+                    'loans' => LoanAdvanceHelper::getLoanList($this->adapter, $this->employeeId)
+        ]);       
     }
 
     public function recommendApproveList() {
