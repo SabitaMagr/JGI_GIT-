@@ -1736,6 +1736,42 @@ return array (
           ),
         ),
       ),
+      'status' => 
+      array (
+        'type' => 'Zend\\Router\\Http\\Segment',
+        'options' => 
+        array (
+          'route' => '/workOnDayoff/status[/:action[/:id]]',
+          'constraints' => 
+          array (
+            'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+            'id' => '[0-9]+',
+          ),
+          'defaults' => 
+          array (
+            'controller' => 'WorkOnDayoff\\Controller\\Status',
+            'action' => 'index',
+          ),
+        ),
+      ),
+      'apply' => 
+      array (
+        'type' => 'Zend\\Router\\Http\\Segment',
+        'options' => 
+        array (
+          'route' => '/workOnDayoff/apply[/:action[/:id]]',
+          'constraints' => 
+          array (
+            'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+            'id' => '[0-9]+',
+          ),
+          'defaults' => 
+          array (
+            'controller' => 'WorkOnDayoff\\Controller\\Apply',
+            'action' => 'index',
+          ),
+        ),
+      ),
     ),
   ),
   'console' => 
@@ -4168,6 +4204,136 @@ return array (
         ),
       ),
     ),
+    'status' => 
+    array (
+      0 => 
+      array (
+        'label' => 'Work on Holiday Request',
+        'route' => 'status',
+      ),
+      1 => 
+      array (
+        'label' => 'Work on Holiday Request',
+        'route' => 'status',
+        'pages' => 
+        array (
+          0 => 
+          array (
+            'label' => 'List',
+            'route' => 'status',
+            'action' => 'index',
+          ),
+          1 => 
+          array (
+            'label' => 'Add',
+            'route' => 'status',
+            'action' => 'add',
+          ),
+          2 => 
+          array (
+            'label' => 'Detail',
+            'route' => 'status',
+            'action' => 'view',
+          ),
+        ),
+      ),
+      2 => 
+      array (
+        'label' => 'Work On Day-off Request',
+        'route' => 'status',
+      ),
+      3 => 
+      array (
+        'label' => 'Work On Day-off Request',
+        'route' => 'status',
+        'pages' => 
+        array (
+          0 => 
+          array (
+            'label' => 'List',
+            'route' => 'status',
+            'action' => 'index',
+          ),
+          1 => 
+          array (
+            'label' => 'Add',
+            'route' => 'status',
+            'action' => 'add',
+          ),
+          2 => 
+          array (
+            'label' => 'Detail',
+            'route' => 'status',
+            'action' => 'view',
+          ),
+        ),
+      ),
+    ),
+    'apply' => 
+    array (
+      0 => 
+      array (
+        'label' => 'Work on Holiday Request',
+        'route' => 'apply',
+      ),
+      1 => 
+      array (
+        'label' => 'Work on Holiday Request',
+        'route' => 'apply',
+        'pages' => 
+        array (
+          0 => 
+          array (
+            'label' => 'List',
+            'route' => 'apply',
+            'action' => 'index',
+          ),
+          1 => 
+          array (
+            'label' => 'Add',
+            'route' => 'apply',
+            'action' => 'add',
+          ),
+          2 => 
+          array (
+            'label' => 'Edit',
+            'route' => 'apply',
+            'action' => 'edit',
+          ),
+        ),
+      ),
+      2 => 
+      array (
+        'label' => 'Work on Day-off Request',
+        'route' => 'apply',
+      ),
+      3 => 
+      array (
+        'label' => 'Work on Day-off Request',
+        'route' => 'apply',
+        'pages' => 
+        array (
+          0 => 
+          array (
+            'label' => 'List',
+            'route' => 'apply',
+            'action' => 'index',
+          ),
+          1 => 
+          array (
+            'label' => 'Add',
+            'route' => 'apply',
+            'action' => 'add',
+          ),
+          2 => 
+          array (
+            'label' => 'Edit',
+            'route' => 'apply',
+            'action' => 'edit',
+          ),
+        ),
+      ),
+    ),
   ),
   'controllers' => 
   array (
@@ -4249,6 +4415,10 @@ return array (
       'Notification\\Controller\\EmailController' => 'Application\\Controller\\ControllerFactory',
       'Travel\\Controller\\TravelStatus' => 'Application\\Controller\\ControllerFactory',
       'Travel\\Controller\\TravelApply' => 'Application\\Controller\\ControllerFactory',
+      'WorkOnHoliday\\Controller\\Status' => 'Application\\Controller\\ControllerFactory',
+      'WorkOnHoliday\\Controller\\Apply' => 'Application\\Controller\\ControllerFactory',
+      'WorkOnDayoff\\Controller\\Status' => 'Application\\Controller\\ControllerFactory',
+      'WorkOnDayoff\\Controller\\Apply' => 'Application\\Controller\\ControllerFactory',
     ),
   ),
   'view_manager' => 
@@ -4298,6 +4468,8 @@ return array (
       13 => '/var/www/html/neo-hris/module/Advance/config/../view',
       14 => '/var/www/html/neo-hris/module/Notification/config/../view',
       15 => '/var/www/html/neo-hris/module/Travel/config/../view',
+      16 => '/var/www/html/neo-hris/module/WorkOnHoliday/config/../view',
+      17 => '/var/www/html/neo-hris/module/WorkOnDayoff/config/../view',
     ),
   ),
   'dashboard-items' => 
