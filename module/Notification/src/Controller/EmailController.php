@@ -36,7 +36,7 @@ class EmailController extends AbstractActionController {
         12 => "Training",
         13 => "Loan_Request",
         14 => "Loan_Recommend",
-        15 => "Loan_Recommend",
+        15 => "Loan_Approval",
     ];
 
     private function getVariables() {

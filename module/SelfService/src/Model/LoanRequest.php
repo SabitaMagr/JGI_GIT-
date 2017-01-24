@@ -25,19 +25,19 @@ class LoanRequest extends Model{
     public $loanRequestId;
     public $employeeId;
     public $loanId;
-    public $requestedAmount;
     public $requestedDate;
+    public $requestedAmount;
     public $loanDate;
     public $reason;
     public $status;
     public $approvedAmount;
+    public $deductOnSalary;
     public $recommendedBy;
     public $recommendedDate;
     public $recommendedRemarks;
     public $approvedBy;
     public $approvedDate;
     public $approvedRemarks;
-    public $deductOnSalary;
     
     public $mappings = [
         'loanRequestId'=> self::LOAN_REQUEST_ID,
