@@ -1,5 +1,5 @@
 <?php
-namespace Loan\Repository;
+namespace WorkOnHoliday\Repository;
 
 use Zend\Db\TableGateway\TableGateway;
 use Zend\Db\Sql\Sql;
@@ -7,7 +7,7 @@ use Zend\Db\Sql\Select;
 use Application\Repository\RepositoryInterface;
 use Setup\Model\HrEmployees;
 
-class LoanStatusRepository implements RepositoryInterface{
+class WorkOnHolidayStatusRepository implements RepositoryInterface{
     private $adapter;
     public function __construct(\Zend\Db\Adapter\AdapterInterface $adapter) {
         $this->adapter = $adapter;
@@ -43,8 +43,8 @@ class LoanStatusRepository implements RepositoryInterface{
         $positionId = $data['positionId'];
         $serviceTypeId = $data['serviceTypeId'];
         $serviceEventTypeId = $data['serviceEventTypeId'];
-        $loanId = $data['loanId'];
-        $loanRequestStatusId = $data['loanRequestStatusId'];
+        $holidayId = $data['holidayId'];
+        $requestStatusId = $data['requestStatusId'];
         
         if($serviceEventTypeId==5 || $serviceEventTypeId==8 || $serviceEventTypeId==14){
             $retiredFlag = " AND E.RETIRED_FLAG='Y' ";
@@ -52,14 +52,16 @@ class LoanStatusRepository implements RepositoryInterface{
             $retiredFlag = " AND E.RETIRED_FLAG='N' ";
         }
         
-        $sql = "SELECT L.LOAN_NAME,LR.REQUESTED_AMOUNT,
-                TO_CHAR(LR.LOAN_DATE, 'DD-MON-YYYY') AS LOAN_DATE,
-                TO_CHAR(LR.REQUESTED_DATE, 'DD-MON-YYYY') AS REQUESTED_DATE,
-                LR.STATUS AS STATUS,
-                LR.EMPLOYEE_ID AS EMPLOYEE_ID,
-                LR.LOAN_REQUEST_ID AS LOAN_REQUEST_ID,
-                TO_CHAR(LR.RECOMMENDED_DATE, 'DD-MON-YYYY') AS RECOMMENDED_DATE,
-                TO_CHAR(LR.APPROVED_DATE, 'DD-MON-YYYY') AS APPROVED_DATE,
+        $sql = "SELECT H.HOLIDAY_NAME,WH.DURATION,
+                TO_CHAR(WH.FROM_DATE, 'DD-MON-YYYY') AS FROM_DATE,
+                TO_CHAR(WH.TO_DATE, 'DD-MON-YYYY') AS TO_DATE,
+                TO_CHAR(WH.REQUESTED_DATE, 'DD-MON-YYYY') AS REQUESTED_DATE,
+                WH.STATUS AS STATUS,
+                WH.EMPLOYEE_ID AS EMPLOYEE_ID,
+                WH.ID AS ID,
+                WH.REMARKS AS REMARKS,
+                TO_CHAR(WH.RECOMMENDED_DATE, 'DD-MON-YYYY') AS RECOMMENDED_DATE,
+                TO_CHAR(WH.APPROVED_DATE, 'DD-MON-YYYY') AS APPROVED_DATE,
                 E.FIRST_NAME,E.MIDDLE_NAME,E.LAST_NAME,
                 E1.FIRST_NAME AS FN1,E1.MIDDLE_NAME AS MN1,E1.LAST_NAME AS LN1,
                 E2.FIRST_NAME AS FN2,E2.MIDDLE_NAME AS MN2,E2.LAST_NAME AS LN2,
@@ -67,21 +69,21 @@ class LoanStatusRepository implements RepositoryInterface{
                 RA.APPROVED_BY AS APPROVER,
                 RECM.FIRST_NAME AS RECM_FN,RECM.MIDDLE_NAME AS RECM_MN,RECM.LAST_NAME AS RECM_LN,
                 APRV.FIRST_NAME AS APRV_FN,APRV.MIDDLE_NAME AS APRV_MN,APRV.LAST_NAME AS APRV_LN,
-                LR.RECOMMENDED_BY AS RECOMMENDED_BY,
-                LR.APPROVED_BY AS APPROVED_BY,
-                LR.RECOMMENDED_REMARKS AS RECOMMENDED_REMARKS,
-                LR.APPROVED_REMARKS AS APPROVED_REMARKS
-                FROM HR_EMPLOYEE_LOAN_REQUEST LR
-                LEFT OUTER JOIN HR_LOAN_MASTER_SETUP L ON
-                L.LOAN_ID=LR.LOAN_ID 
+                WH.RECOMMENDED_BY AS RECOMMENDED_BY,
+                WH.APPROVED_BY AS APPROVED_BY,
+                WH.RECOMMENDED_REMARKS AS RECOMMENDED_REMARKS,
+                WH.APPROVED_REMARKS AS APPROVED_REMARKS
+                FROM HR_EMPLOYEE_WORK_HOLIDAY WH
+                LEFT OUTER JOIN HR_HOLIDAY_MASTER_SETUP H ON
+                H.HOLIDAY_ID=WH.HOLIDAY_ID 
                 LEFT OUTER JOIN HR_EMPLOYEES E ON
-                E.EMPLOYEE_ID=LR.EMPLOYEE_ID
+                E.EMPLOYEE_ID=WH.EMPLOYEE_ID
                 LEFT OUTER JOIN HR_EMPLOYEES E1 ON
-                E1.EMPLOYEE_ID=LR.RECOMMENDED_BY
+                E1.EMPLOYEE_ID=WH.RECOMMENDED_BY
                 LEFT OUTER JOIN HR_EMPLOYEES E2 ON
-                E2.EMPLOYEE_ID=LR.APPROVED_BY
+                E2.EMPLOYEE_ID=WH.APPROVED_BY
                 LEFT OUTER JOIN HR_RECOMMENDER_APPROVER RA ON
-                LR.EMPLOYEE_ID = RA.EMPLOYEE_ID
+                WH.EMPLOYEE_ID = RA.EMPLOYEE_ID
                 LEFT OUTER JOIN HR_EMPLOYEES RECM ON
                 RECM.EMPLOYEE_ID = RA.RECOMMEND_BY
                 LEFT OUTER JOIN HR_EMPLOYEES APRV ON
@@ -103,41 +105,41 @@ class LoanStatusRepository implements RepositoryInterface{
                          THEN ('E')       
                     END OR  APRV.STATUS is null)";
         if($recomApproveId==null){
-            if ($loanRequestStatusId != -1) {
-                $sql .= " AND LR.STATUS ='" . $loanRequestStatusId . "'";
+            if ($requestStatusId != -1) {
+                $sql .= " AND WH.STATUS ='" . $requestStatusId . "'";
             }
         }
         if($recomApproveId!=null){
-            if($loanRequestStatusId==-1){
-                $sql .=" AND ((RA.RECOMMEND_BY=".$recomApproveId." AND  LR.STATUS='RQ') "
-                        . "OR (LR.RECOMMENDED_BY=".$recomApproveId." AND (LR.STATUS='RC' OR LR.STATUS='R' OR LR.STATUS='AP')) "
-                        . "OR (RA.APPROVED_BY=".$recomApproveId." AND  LR.STATUS='RC' ) "
-                        . "OR (LR.APPROVED_BY=".$recomApproveId." AND (LR.STATUS='AP' OR (LR.STATUS='R' AND LR.APPROVED_DATE IS NOT NULL))) )";
-            }else if($loanRequestStatusId=='RQ'){
-                $sql .=" AND (RA.RECOMMEND_BY=".$recomApproveId." AND LR.STATUS='RQ')";
+            if($requestStatusId==-1){
+                $sql .=" AND ((RA.RECOMMEND_BY=".$recomApproveId." AND  WH.STATUS='RQ') "
+                        . "OR (WH.RECOMMENDED_BY=".$recomApproveId." AND (WH.STATUS='RC' OR WH.STATUS='R' OR WH.STATUS='AP')) "
+                        . "OR (RA.APPROVED_BY=".$recomApproveId." AND  WH.STATUS='RC' ) "
+                        . "OR (WH.APPROVED_BY=".$recomApproveId." AND (WH.STATUS='AP' OR (WH.STATUS='R' AND WH.APPROVED_DATE IS NOT NULL))) )";
+            }else if($requestStatusId=='RQ'){
+                $sql .=" AND (RA.RECOMMEND_BY=".$recomApproveId." AND WH.STATUS='RQ')";
             }
-            else if($loanRequestStatusId=='RC'){
-                $sql .= " AND LR.STATUS='RC' AND
-                    (LR.RECOMMENDED_BY=".$recomApproveId." OR RA.APPROVED_BY=".$recomApproveId.")";
-            }else if($loanRequestStatusId=='AP'){
-                $sql .= " AND LR.STATUS='AP' AND
-                    (LR.RECOMMENDED_BY=".$recomApproveId." OR LR.APPROVED_BY=".$recomApproveId.")";
-            }else if($loanRequestStatusId=='R'){
-                $sql .=" AND LR.STATUS='".$loanRequestStatusId."' AND
-                    ((LR.RECOMMENDED_BY=".$recomApproveId.") OR (LR.APPROVED_BY=".$recomApproveId." AND LR.APPROVED_DATE IS NOT NULL) )";
+            else if($requestStatusId=='RC'){
+                $sql .= " AND WH.STATUS='RC' AND
+                    (WH.RECOMMENDED_BY=".$recomApproveId." OR RA.APPROVED_BY=".$recomApproveId.")";
+            }else if($requestStatusId=='AP'){
+                $sql .= " AND WH.STATUS='AP' AND
+                    (WH.RECOMMENDED_BY=".$recomApproveId." OR WH.APPROVED_BY=".$recomApproveId.")";
+            }else if($requestStatusId=='R'){
+                $sql .=" AND WH.STATUS='".$requestStatusId."' AND
+                    ((WH.RECOMMENDED_BY=".$recomApproveId.") OR (WH.APPROVED_BY=".$recomApproveId." AND WH.APPROVED_DATE IS NOT NULL) )";
             }
         }
         
-        if ($loanId != -1) {
-            $sql .= " AND LR.LOAN_ID ='" . $loanId . "'";
+        if ($holidayId != -1) {
+            $sql .= " AND WH.HOLIDAY_ID ='" . $holidayId . "'";
         }
      
         if($fromDate!=null){
-            $sql .= " AND LR.LOAN_DATE>=TO_DATE('".$fromDate."','DD-MM-YYYY')";
+            $sql .= " AND WH.FROM_DATE>=TO_DATE('".$fromDate."','DD-MM-YYYY')";
         }
         
         if($toDate!=null){   
-            $sql .= "AND LR.LOAN_DATE<=TO_DATE('".$toDate."','DD-MM-YYYY')";
+            $sql .= "AND WH.TO_DATE<=TO_DATE('".$toDate."','DD-MM-YYYY')";
         }
 
         if ($employeeId != -1) {
@@ -163,7 +165,7 @@ class LoanStatusRepository implements RepositoryInterface{
             $sql .= " AND E." . HrEmployees::EMPLOYEE_ID . " IN (SELECT " . HrEmployees::EMPLOYEE_ID . " FROM " . HrEmployees::TABLE_NAME . " WHERE " . HrEmployees::SERVICE_EVENT_TYPE_ID . "= $serviceEventTypeId)";
         }
         
-        $sql .=" ORDER BY LR.REQUESTED_DATE DESC";
+        $sql .=" ORDER BY WH.REQUESTED_DATE DESC";
 
         $statement = $this->adapter->query($sql);
        // print_r($statement->getSql());  die();
