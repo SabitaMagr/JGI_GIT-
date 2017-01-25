@@ -1443,6 +1443,19 @@ return array (
           ),
         ),
       ),
+      'holidayWorkApprove' => 
+      array (
+        'type' => 'Zend\\Router\\Http\\Segment',
+        'options' => 
+        array (
+          'route' => '/managerservice/holidayWorkApprove[/:action[/:id][/:role]]',
+          'defaults' => 
+          array (
+            'controller' => 'ManagerService\\Controller\\HolidayWorkApproveController',
+            'action' => 'index',
+          ),
+        ),
+      ),
       'rolesetup' => 
       array (
         'type' => 'Zend\\Router\\Http\\Segment',
@@ -3765,6 +3778,40 @@ return array (
         ),
       ),
     ),
+    'holidayWorkApprove' => 
+    array (
+      0 => 
+      array (
+        'label' => 'Work on Holiday Request',
+        'route' => 'holidayWorkApprove',
+      ),
+      1 => 
+      array (
+        'label' => 'Work on Holiday Request',
+        'route' => 'holidayWorkApprove',
+        'pages' => 
+        array (
+          0 => 
+          array (
+            'label' => 'List',
+            'route' => 'holidayWorkApprove',
+            'action' => 'index',
+          ),
+          1 => 
+          array (
+            'label' => 'List',
+            'route' => 'holidayWorkApprove',
+            'action' => 'status',
+          ),
+          2 => 
+          array (
+            'label' => 'View',
+            'route' => 'holidayWorkApprove',
+            'action' => 'view',
+          ),
+        ),
+      ),
+    ),
     'rolesetup' => 
     array (
       0 => 
@@ -4446,6 +4493,7 @@ return array (
       'ManagerService\\Controller\\AdvanceApproveController' => 'Application\\Controller\\ControllerFactory',
       'ManagerService\\Controller\\TravelApproveController' => 'Application\\Controller\\ControllerFactory',
       'ManagerService\\Controller\\DayoffWorkApproveController' => 'Application\\Controller\\ControllerFactory',
+      'ManagerService\\Controller\\HolidayWorkApproveController' => 'Application\\Controller\\ControllerFactory',
       'System\\Controller\\RoleSetupController' => 'Application\\Controller\\ControllerFactory',
       'System\\Controller\\UserSetupController' => 'Application\\Controller\\ControllerFactory',
       'System\\Controller\\MenuSetupController' => 'Application\\Controller\\ControllerFactory',

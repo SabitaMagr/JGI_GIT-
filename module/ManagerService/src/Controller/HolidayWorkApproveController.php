@@ -4,14 +4,16 @@ namespace ManagerService\Controller;
 
 use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
-use ManagerService\Repository\DayoffWorkApproveRepository;
+use ManagerService\Repository\HolidayWorkApproveRepository;
 use Notification\Controller\HeadNotification;
 use Notification\Model\NotificationEvents;
-use SelfService\Form\WorkOnDayoffForm;
-use SelfService\Model\WorkOnDayoff;
+use SelfService\Form\WorkOnHolidayForm;
+use SelfService\Model\WorkOnHoliday;
+use SelfService\Repository\WorkOnHolidayRepository;
 use Setup\Model\Branch;
 use Setup\Model\Department;
 use Setup\Model\Designation;
+use HolidayManagement\Model\Holiday;
 use Setup\Model\Position;
 use Setup\Model\ServiceEventType;
 use Setup\Model\ServiceType;
@@ -21,32 +23,33 @@ use Zend\Db\Adapter\AdapterInterface;
 use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\Form\Element\Select;
 use Zend\Mvc\Controller\AbstractActionController;
+use SelfService\Repository\HolidayRepository;
 
-class DayoffWorkApproveController extends AbstractActionController {
+class HolidayWorkApproveController extends AbstractActionController {
 
-    private $dayoffWorkApproveRepository;
+    private $holidayWorkApproveRepository;
     private $employeeId;
     private $adapter;
     private $form;
 
     public function __construct(AdapterInterface $adapter) {
         $this->adapter = $adapter;
-        $this->dayoffWorkApproveRepository = new DayoffWorkApproveRepository($adapter);
+        $this->holidayWorkApproveRepository = new HolidayWorkApproveRepository($adapter);
         $auth = new AuthenticationService();
         $this->employeeId = $auth->getStorage()->read()['employee_id'];
     }
 
     public function initializeForm() {
         $builder = new AnnotationBuilder();
-        $form = new WorkOnDayoffForm();
+        $form = new WorkOnHolidayForm();
         $this->form = $builder->createForm($form);
     }
 
     public function indexAction() {
-//        print_r($this->employeeId); die();
-        $list = $this->dayoffWorkApproveRepository->getAllRequest($this->employeeId);
+        //print_r($this->employeeId); die();
+        $list = $this->holidayWorkApproveRepository->getAllRequest($this->employeeId);
 
-        $dayoffWorkRequest = [];
+        $holidayWorkApprove = [];
         $getValue = function($recommender, $approver) {
             if ($this->employeeId == $recommender) {
                 return 'RECOMMENDER';
@@ -88,6 +91,7 @@ class DayoffWorkApproveController extends AbstractActionController {
                 'DURATION' => $row['DURATION'],
                 'REQUESTED_DATE' => $row['REQUESTED_DATE'],
                 'REMARKS' => $row['REMARKS'],
+                'HOLIDAY_ENAME' => $row['HOLIDAY_ENAME'],
                 'STATUS' => $getStatusValue($row['STATUS']),
                 'ID' => $row['ID'],
                 'YOUR_ROLE' => $getValue($row['RECOMMENDER'], $row['APPROVER']),
@@ -97,9 +101,9 @@ class DayoffWorkApproveController extends AbstractActionController {
                 $dataArray['YOUR_ROLE'] = 'Recommender\Approver';
                 $dataArray['ROLE'] = 4;
             }
-            array_push($dayoffWorkRequest, $dataArray);
+            array_push($holidayWorkApprove, $dataArray);
         }
-        return Helper::addFlashMessagesToArray($this, ['dayoffWorkRequest' => $dayoffWorkRequest, 'id' => $this->employeeId]);
+        return Helper::addFlashMessagesToArray($this, ['holidayWorkApprove' => $holidayWorkApprove, 'id' => $this->employeeId]);
     }
 
     public function viewAction() {
@@ -109,12 +113,12 @@ class DayoffWorkApproveController extends AbstractActionController {
         $role = $this->params()->fromRoute('role');
 
         if ($id === 0) {
-            return $this->redirect()->toRoute("dayoffWorkApprove");
+            return $this->redirect()->toRoute("holidayWorkApprove");
         }
-        $workOnDayoffModel = new WorkOnDayoff();
+        $workOnHolidayModel = new WorkOnHoliday();
         $request = $this->getRequest();
 
-        $detail = $this->dayoffWorkApproveRepository->fetchById($id);
+        $detail = $this->holidayWorkApproveRepository->fetchById($id);
         $status = $detail['STATUS'];
         $approvedDT = $detail['APPROVED_DATE'];
 
@@ -132,46 +136,46 @@ class DayoffWorkApproveController extends AbstractActionController {
         $authApprover = ($status == 'RC' || $status == 'RQ' || ($status == 'R' && $approvedDT == null)) ? $approver : $approved_by;
         $recommenderId = ($status == 'RQ') ? $detail['RECOMMENDER'] : $detail['RECOMMENDED_BY'];
         if (!$request->isPost()) {
-            $workOnDayoffModel->exchangeArrayFromDB($detail);
-            $this->form->bind($workOnDayoffModel);
+            $workOnHolidayModel->exchangeArrayFromDB($detail);
+            $this->form->bind($workOnHolidayModel);
         } else {
             $getData = $request->getPost();
             $action = $getData->submit;
 
             if ($role == 2) {
-                $workOnDayoffModel->recommendedDate = Helper::getcurrentExpressionDate();
-                $workOnDayoffModel->recommendedBy = $this->employeeId;
+                $workOnHolidayModel->recommendedDate = Helper::getcurrentExpressionDate();
+                $workOnHolidayModel->recommendedBy = $this->employeeId;
                 if ($action == "Reject") {
-                    $workOnDayoffModel->status = "R";
-                    $this->flashmessenger()->addMessage("Work on Day-off Request Rejected!!!");
+                    $workOnHolidayModel->status = "R";
+                    $this->flashmessenger()->addMessage("Work on Holiday Request Rejected!!!");
                 } else if ($action == "Approve") {
-                    $workOnDayoffModel->status = "RC";
-                    $this->flashmessenger()->addMessage("Work on Day-off Request Approved!!!");
+                    $workOnHolidayModel->status = "RC";
+                    $this->flashmessenger()->addMessage("Work on Holiday Request Approved!!!");
                 }
-                $workOnDayoffModel->recommendedRemarks = $getData->recommendedRemarks;
-                $this->dayoffWorkApproveRepository->edit($workOnDayoffModel, $id);
-                $workOnDayoffModel->id = $id;
-               // HeadNotification::pushNotification(($workOnDayoffModel->status == 'RC') ? NotificationEvents::LOAN_RECOMMEND_ACCEPTED : NotificationEvents::LOAN_RECOMMEND_REJECTED, $loanRequestModel, $this->adapter, $this->plugin('url'));
+                $workOnHolidayModel->recommendedRemarks = $getData->recommendedRemarks;
+                $this->holidayWorkApproveRepository->edit($workOnHolidayModel, $id);
+                $workOnHolidayModel->id = $id;
+                //HeadNotification::pushNotification(($loanRequestModel->status == 'RC') ? NotificationEvents::LOAN_RECOMMEND_ACCEPTED : NotificationEvents::LOAN_RECOMMEND_REJECTED, $loanRequestModel, $this->adapter, $this->plugin('url'));
             } else if ($role == 3 || $role == 4) {
-                $workOnDayoffModel->approvedDate = Helper::getcurrentExpressionDate();
-                $workOnDayoffModel->approvedBy = $this->employeeId;
+                $workOnHolidayModel->approvedDate = Helper::getcurrentExpressionDate();
+                $workOnHolidayModel->approvedBy = $this->employeeId;
                 if ($action == "Reject") {
-                    $workOnDayoffModel->status = "R";
-                    $this->flashmessenger()->addMessage("Work on Day-off Request Rejected!!!");
+                    $workOnHolidayModel->status = "R";
+                    $this->flashmessenger()->addMessage("Work on Holiday Request Rejected!!!");
                 } else if ($action == "Approve") {
-                    $workOnDayoffModel->status = "AP";
-                    $this->flashmessenger()->addMessage("Work on Day-off Request Approved");
+                    $workOnHolidayModel->status = "AP";
+                    $this->flashmessenger()->addMessage("Work on Holiday Request Approved");
                 }
                 if ($role == 4) {
-                    $workOnDayoffModel->recommendedBy = $this->employeeId;
-                    $workOnDayoffModel->recommendedDate = Helper::getcurrentExpressionDate();
+                    $workOnHolidayModel->recommendedBy = $this->employeeId;
+                    $workOnHolidayModel->recommendedDate = Helper::getcurrentExpressionDate();
                 }
-                $workOnDayoffModel->approvedRemarks = $getData->approvedRemarks;
-                $this->dayoffWorkApproveRepository->edit($workOnDayoffModel, $id);
-                $workOnDayoffModel->id = $id;
+                $workOnHolidayModel->approvedRemarks = $getData->approvedRemarks;
+                $this->holidayWorkApproveRepository->edit($workOnHolidayModel, $id);
+                $workOnHolidayModel->id = $id;
                 //HeadNotification::pushNotification(($loanRequestModel->status == 'AP') ? NotificationEvents::LOAN_APPROVE_ACCEPTED : NotificationEvents::LOAN_APPROVE_REJECTED, $loanRequestModel, $this->adapter, $this->plugin('url'));
             }
-            return $this->redirect()->toRoute("dayoffWorkApprove");
+            return $this->redirect()->toRoute("holidayWorkApprove");
         }
         return Helper::addFlashMessagesToArray($this, [
                     'form' => $this->form,
@@ -186,12 +190,13 @@ class DayoffWorkApproveController extends AbstractActionController {
                     'approvedDT' => $approvedDT,
                     'employeeId' => $this->employeeId,
                     'requestedEmployeeId' => $requestedEmployeeID,
+                    'holidays' => $this->getHolidayList($requestedEmployeeID)
         ]);
     }
 
     public function statusAction() {
         $employeeNameFormElement = new Select();
-        $employeeNameFormElement->setName("employee");
+        $employeeNameFormElement->setName("branch");
         $employeeName = EntityHelper::getTableKVListWithSortOption($this->adapter, "HR_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => "E"], "FIRST_NAME", "ASC", " ");
         $employeeName1 = [-1 => "All"] + $employeeName;
         $employeeNameFormElement->setValueOptions($employeeName1);
@@ -248,7 +253,15 @@ class DayoffWorkApproveController extends AbstractActionController {
         $serviceEventTypeFormElement->setAttributes(["id" => "serviceEventTypeId", "class" => "form-control"]);
         $serviceEventTypeFormElement->setLabel("Service Event Type");
 
-        $status = [
+        $holidayFormElement = new Select();
+        $holidayFormElement->setName("holiday");
+        $holidays = EntityHelper::getTableKVList($this->adapter, Holiday::TABLE_NAME, Holiday::HOLIDAY_ID, [Holiday::HOLIDAY_ENAME], [Holiday::STATUS => 'E']);
+        $holidays1 = [-1 => "All"] + $holidays;
+        $holidayFormElement->setValueOptions($holidays1);
+        $holidayFormElement->setAttributes(["id" => "holidayId", "class" => "form-control"]);
+        $holidayFormElement->setLabel("Holiday Type");
+
+        $holidayStatus = [
             '-1' => 'All',
             'RQ' => 'Pending',
             'RC' => 'Recommended',
@@ -267,11 +280,21 @@ class DayoffWorkApproveController extends AbstractActionController {
                     'designations' => $designationFormElement,
                     'positions' => $positionFormElement,
                     'serviceTypes' => $serviceTypeFormElement,
+                    'holidays' => $holidayFormElement,
                     'employees' => $employeeNameFormElement,
                     'status' => $statusFormElement,
                     'recomApproveId' => $this->employeeId,
                     'serviceEventTypes' => $serviceEventTypeFormElement
         ]);
     }
-
+    public function getHolidayList($employeeId){
+       $holidayRepo = new HolidayRepository($this->adapter);
+       $holidayResult = $holidayRepo->selectAll($employeeId);
+       $holidayList = [];
+       foreach($holidayResult as $holidayRow){
+           //$todayDate = new \DateTime();
+           $holidayList[$holidayRow['HOLIDAY_ID']]=$holidayRow['HOLIDAY_ENAME']." (".$holidayRow['START_DATE']." to ".$holidayRow['END_DATE'].")";
+       }
+       return $holidayList;
+    }
 }

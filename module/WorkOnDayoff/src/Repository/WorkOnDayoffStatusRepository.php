@@ -51,7 +51,7 @@ class WorkOnDayoffStatusRepository implements RepositoryInterface{
             $retiredFlag = " AND E.RETIRED_FLAG='N' ";
         }
         
-        $sql = "SELECT TO_CHAR(WD.FROM_DATE, 'DD-MON-YYYY') AS FROM_DATE,,
+        $sql = "SELECT TO_CHAR(WD.FROM_DATE, 'DD-MON-YYYY') AS FROM_DATE,
                 TO_CHAR(WD.TO_DATE, 'DD-MON-YYYY') AS TO_DATE,
                 TO_CHAR(WD.REQUESTED_DATE, 'DD-MON-YYYY') AS REQUESTED_DATE,
                 WD.STATUS AS STATUS,
