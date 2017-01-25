@@ -41,7 +41,6 @@ class WorkOnDayoffApply extends AbstractActionController{
                 $model->id = ((int) Helper::getMaxId($this->adapter, WorkOnDayoff::TABLE_NAME, WorkOnDayoff::ID)) + 1;
                 $model->requestedDate = Helper::getcurrentExpressionDate();
                 $model->status = 'RQ';
-                $model->deductOnSalary = 'Y';
                 $this->workOnDayoffRepository->add($model);
                 $this->flashmessenger()->addMessage("Work on Day-off Request Successfully added!!!");
                 return $this->redirect()->toRoute("workOnDayoffStatus");
