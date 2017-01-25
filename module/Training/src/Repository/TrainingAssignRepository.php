@@ -196,14 +196,12 @@ class TrainingAssignRepository implements RepositoryInterface {
     public function checkEmployeeTraining(int $employeeId, Expression $date) {
         $sql = new Sql($this->adapter);
         $select = $sql->select();
-        $select->from(['TA' => TrainingAssign::TABLE_NAME], ["TA." . TrainingAssign::TRAINING_ID])
-                ->join(['T' => Training::TABLE_NAME], "TA." . TrainingAssign::TABLE_NAME . " = " . "T." . Training::TABLE_NAME);
+        $select->columns([TrainingAssign::TRAINING_ID]);
+        $select->from(['TA' => TrainingAssign::TABLE_NAME])
+                ->join(['T' => Training::TABLE_NAME], "TA." . TrainingAssign::TRAINING_ID . " = " . "T." . Training::TRAINING_ID, []);
         $select->where(["TA." . TrainingAssign::EMPLOYEE_ID . "=$employeeId"]);
         $select->where([$date->getExpression() . " BETWEEN " . "T." . Training::START_DATE . " AND T." . Training::END_DATE]);
         $statement = $sql->prepareStatementForSqlObject($select);
-        print "<pre>";
-        print_r($statement->getSql());
-        exit;
         $result = $statement->execute();
         return $result->current();
     }

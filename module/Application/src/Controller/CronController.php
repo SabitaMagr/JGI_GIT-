@@ -6,10 +6,13 @@ use Application\Helper\Helper;
 use AttendanceManagement\Model\Attendance;
 use AttendanceManagement\Model\AttendanceDetail;
 use AttendanceManagement\Repository\AttendanceDetailRepository;
+use HolidayManagement\Model\Holiday;
 use HolidayManagement\Repository\HolidayRepository;
+use LeaveManagement\Model\LeaveApply;
 use SelfService\Repository\LeaveRequestRepository;
 use Setup\Model\HrEmployees;
 use Setup\Repository\EmployeeRepository;
+use Training\Model\TrainingAssign;
 use Training\Repository\TrainingAssignRepository;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Sql\Expression;
@@ -40,7 +43,7 @@ class CronController extends AbstractActionController {
             $attendanceDetail->employeeId = $employee->employeeId;
             $attendanceDetail->id = ((int) Helper::getMaxId($this->adapter, AttendanceDetail::TABLE_NAME, AttendanceDetail::ID)) + 1;
 
-            //commented for change of logic
+//commented for change of logic
 //            $checkForHoliday = $this->checkForHoliday($employee, $this->date);
 //            if ($checkForHoliday == null) {
 //                $checkForleave = $this->checkForLeave($employee, $this->date);
@@ -59,6 +62,18 @@ class CronController extends AbstractActionController {
 
             $checkForHoliday = $this->checkForHoliday($employee, $this->date);
             $checkForleave = $this->checkForLeave($employee, $this->date);
+            $checkForTraining = $this->checkForTraining($employee, $this->date);
+            if ($checkForHoliday != null) {
+                $attendanceDetail->holidayId = $checkForHoliday[Holiday::HOLIDAY_ID];
+            }
+            if ($checkForleave != null) {
+                $attendanceDetail->leaveId = $checkForleave[LeaveApply::LEAVE_ID];
+            }
+
+            if ($checkForTraining != null) {
+                $attendanceDetail->trainingId = $checkForTraining[TrainingAssign::TRAINING_ID];
+            }
+            $attendanceRepo->add($attendanceDetail);
         }
 
         return [];
@@ -111,7 +126,11 @@ class CronController extends AbstractActionController {
 
     private function checkForTraining(HrEmployees $employee, Expression $date) {
         $trainingRepo = new TrainingAssignRepository($this->adapter);
-        $trainingRepo->checkEmployeeTraining($employee->employeeId, $date);
+        return $trainingRepo->checkEmployeeTraining($employee->employeeId, $date);
+    }
+
+    private function checkForTravel(HrEmployees $employee, Expression $date) {
+        
     }
 
 }

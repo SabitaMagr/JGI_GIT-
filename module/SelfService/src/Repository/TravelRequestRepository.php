@@ -1,4 +1,5 @@
 <?php
+
 namespace SelfService\Repository;
 
 use Application\Model\Model;
@@ -11,12 +12,14 @@ use Zend\Db\Sql\Expression;
 use SelfService\Model\TravelRequest;
 use Setup\Model\HrEmployees;
 
-class TravelRequestRepository implements RepositoryInterface{
+class TravelRequestRepository implements RepositoryInterface {
+
     private $tableGateway;
     private $adapter;
+
     public function __construct(AdapterInterface $adapter) {
         $this->adapter = $adapter;
-        $this->tableGateway = new TableGateway(TravelRequest::TABLE_NAME,$adapter);
+        $this->tableGateway = new TableGateway(TravelRequest::TABLE_NAME, $adapter);
     }
 
     public function add(Model $model) {
@@ -24,7 +27,7 @@ class TravelRequestRepository implements RepositoryInterface{
     }
 
     public function delete($id) {
-        $this->tableGateway->update([TravelRequest::STATUS=>'C'],[TravelRequest::TRAVEL_ID=>$id]);
+        $this->tableGateway->update([TravelRequest::STATUS => 'C'], [TravelRequest::TRAVEL_ID => $id]);
     }
 
     public function edit(Model $model, $id) {
@@ -55,13 +58,13 @@ class TravelRequestRepository implements RepositoryInterface{
             new Expression("TR.APPROVED_REMARKS AS APPROVED_REMARKS"),
             new Expression("TR.RECOMMENDED_REMARKS AS RECOMMENDED_REMARKS"),
             new Expression("TR.REMARKS AS REMARKS"),
-            new Expression("TR.REQUESTED_TYPE AS REQUESTED_TYPE") 
+            new Expression("TR.REQUESTED_TYPE AS REQUESTED_TYPE")
                 ], true);
 
         $select->from(['TR' => TravelRequest::TABLE_NAME])
-                ->join(['E' => HrEmployees::TABLE_NAME], "E.".HrEmployees::EMPLOYEE_ID."=TR.". TravelRequest::EMPLOYEE_ID, [HrEmployees::FIRST_NAME,HrEmployees::MIDDLE_NAME, HrEmployees::LAST_NAME])
-                ->join(['E1'=>"HR_EMPLOYEES"],"E1.EMPLOYEE_ID=TR.RECOMMENDED_BY",['FN1'=>'FIRST_NAME','MN1'=>'MIDDLE_NAME','LN1'=>'LAST_NAME'],"left")
-                ->join(['E2'=>"HR_EMPLOYEES"],"E2.EMPLOYEE_ID=TR.APPROVED_BY",['FN2'=>'FIRST_NAME','MN2'=>'MIDDLE_NAME','LN2'=>'LAST_NAME'],"left");
+                ->join(['E' => HrEmployees::TABLE_NAME], "E." . HrEmployees::EMPLOYEE_ID . "=TR." . TravelRequest::EMPLOYEE_ID, [HrEmployees::FIRST_NAME, HrEmployees::MIDDLE_NAME, HrEmployees::LAST_NAME])
+                ->join(['E1' => "HR_EMPLOYEES"], "E1.EMPLOYEE_ID=TR.RECOMMENDED_BY", ['FN1' => 'FIRST_NAME', 'MN1' => 'MIDDLE_NAME', 'LN1' => 'LAST_NAME'], "left")
+                ->join(['E2' => "HR_EMPLOYEES"], "E2.EMPLOYEE_ID=TR.APPROVED_BY", ['FN2' => 'FIRST_NAME', 'MN2' => 'MIDDLE_NAME', 'LN2' => 'LAST_NAME'], "left");
 
         $select->where([
             "TR.TRAVEL_ID=" . $id
@@ -71,7 +74,8 @@ class TravelRequestRepository implements RepositoryInterface{
         $result = $statement->execute();
         return $result->current();
     }
-    public function getAllByEmployeeId($employeeId){
+
+    public function getAllByEmployeeId($employeeId) {
         $sql = new Sql($this->adapter);
         $select = $sql->select();
         $select->columns([
@@ -91,13 +95,13 @@ class TravelRequestRepository implements RepositoryInterface{
             new Expression("TR.APPROVED_REMARKS AS APPROVED_REMARKS"),
             new Expression("TR.RECOMMENDED_REMARKS AS RECOMMENDED_REMARKS"),
             new Expression("TR.REMARKS AS REMARKS"),
-            new Expression("TR.REQUESTED_TYPE AS REQUESTED_TYPE") 
+            new Expression("TR.REQUESTED_TYPE AS REQUESTED_TYPE")
                 ], true);
 
         $select->from(['TR' => TravelRequest::TABLE_NAME])
-                ->join(['E' => HrEmployees::TABLE_NAME], "E.".HrEmployees::EMPLOYEE_ID."=TR.". TravelRequest::EMPLOYEE_ID, [HrEmployees::FIRST_NAME,HrEmployees::MIDDLE_NAME, HrEmployees::LAST_NAME])
-                ->join(['E1'=>"HR_EMPLOYEES"],"E1.EMPLOYEE_ID=TR.RECOMMENDED_BY",['FN1'=>'FIRST_NAME','MN1'=>'MIDDLE_NAME','LN1'=>'LAST_NAME'],"left")
-                ->join(['E2'=>"HR_EMPLOYEES"],"E2.EMPLOYEE_ID=TR.APPROVED_BY",['FN2'=>'FIRST_NAME','MN2'=>'MIDDLE_NAME','LN2'=>'LAST_NAME'],"left");
+                ->join(['E' => HrEmployees::TABLE_NAME], "E." . HrEmployees::EMPLOYEE_ID . "=TR." . TravelRequest::EMPLOYEE_ID, [HrEmployees::FIRST_NAME, HrEmployees::MIDDLE_NAME, HrEmployees::LAST_NAME])
+                ->join(['E1' => "HR_EMPLOYEES"], "E1.EMPLOYEE_ID=TR.RECOMMENDED_BY", ['FN1' => 'FIRST_NAME', 'MN1' => 'MIDDLE_NAME', 'LN1' => 'LAST_NAME'], "left")
+                ->join(['E2' => "HR_EMPLOYEES"], "E2.EMPLOYEE_ID=TR.APPROVED_BY", ['FN2' => 'FIRST_NAME', 'MN2' => 'MIDDLE_NAME', 'LN2' => 'LAST_NAME'], "left");
 
         $select->where([
             "E.EMPLOYEE_ID=" . $employeeId
@@ -106,6 +110,22 @@ class TravelRequestRepository implements RepositoryInterface{
         $statement = $sql->prepareStatementForSqlObject($select);
         $result = $statement->execute();
         return $result;
+    }
+
+    public function checkEmployeeTravel(int $employeeId, Expression $date) {
+        $sql = new Sql($this->adapter);
+        $select = $sql->select();
+        $select->columns([TravelRequest::TRAVEL_ID], FALSE);
+        $select->from([TravelRequest::TABLE_NAME]);
+        $select->where([TravelRequest::EMPLOYEE_ID => $employeeId]);
+        $select->where([$date->getExpression() . " BETWEEN " . TravelRequest::FROM_DATE . " AND " . TravelRequest::TO_DATE]);
+        $statement = $sql->prepareStatementForSqlObject($select);
+        print "<pre>";
+        print_r($statement->getSql());
+        exit;
+
+        $result = $statement->execute();
+        return $result->current();
     }
 
 }
