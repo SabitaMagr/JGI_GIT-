@@ -6,13 +6,13 @@ use Application\Helper\Helper;
 use AttendanceManagement\Model\Attendance;
 use AttendanceManagement\Model\AttendanceDetail;
 use AttendanceManagement\Repository\AttendanceDetailRepository;
-use HolidayManagement\Model\Holiday;
 use HolidayManagement\Repository\HolidayRepository;
-use LeaveManagement\Model\LeaveApply;
 use SelfService\Repository\LeaveRequestRepository;
 use Setup\Model\HrEmployees;
 use Setup\Repository\EmployeeRepository;
+use Training\Repository\TrainingAssignRepository;
 use Zend\Db\Adapter\AdapterInterface;
+use Zend\Db\Sql\Expression;
 use Zend\Mvc\Controller\AbstractActionController;
 
 class CronController extends AbstractActionController {
@@ -30,30 +30,35 @@ class CronController extends AbstractActionController {
         $employeeList = $this->pullEmployeeList();
         $attendanceRepo = new AttendanceDetailRepository($this->adapter);
         foreach ($employeeList as $employee) {
-            $attendance = new Attendance();
-            $attendance->employeeId = $employee->employeeId;
-            $attendance->attendanceDt = Helper::getcurrentExpressionDate();
+//            $attendance = new Attendance();
+//            $attendance->employeeId = $employee->employeeId;
+//            $attendance->attendanceDt = Helper::getcurrentExpressionDate();
 //            $attendanceRepo->addAttendance($attendance);
 
             $attendanceDetail = new AttendanceDetail();
-            $attendanceDetail->attendanceDt = $attendance->attendanceDt;
-            $attendanceDetail->employeeId = $attendance->employeeId;
+            $attendanceDetail->attendanceDt = Helper::getcurrentExpressionDate();
+            $attendanceDetail->employeeId = $employee->employeeId;
             $attendanceDetail->id = ((int) Helper::getMaxId($this->adapter, AttendanceDetail::TABLE_NAME, AttendanceDetail::ID)) + 1;
 
+            //commented for change of logic
+//            $checkForHoliday = $this->checkForHoliday($employee, $this->date);
+//            if ($checkForHoliday == null) {
+//                $checkForleave = $this->checkForLeave($employee, $this->date);
+//                if ($checkForleave == null) {
+//                    $attendanceRepo->add($attendanceDetail);
+//                } else {
+//                    $attendanceDetail->leaveId = $checkForleave[LeaveApply::LEAVE_ID];
+//                    $attendanceRepo->add($attendanceDetail);
+//                }
+//            } else {
+//                echo $checkForHoliday[Holiday::HOLIDAY_ID];
+//                $attendanceDetail->holidayId = $checkForHoliday[Holiday::HOLIDAY_ID];
+//                $attendanceRepo->add($attendanceDetail);
+//            }
+
+
             $checkForHoliday = $this->checkForHoliday($employee, $this->date);
-            if ($checkForHoliday == null) {
-                $checkForleave = $this->checkForLeave($employee, $this->date);
-                if ($checkForleave == null) {
-                    $attendanceRepo->add($attendanceDetail);
-                } else {
-                    $attendanceDetail->leaveId = $checkForleave[LeaveApply::LEAVE_ID];
-                    $attendanceRepo->add($attendanceDetail);
-                }
-            } else {
-                echo $checkForHoliday[Holiday::HOLIDAY_ID];
-                $attendanceDetail->holidayId = $checkForHoliday[Holiday::HOLIDAY_ID];
-                $attendanceRepo->add($attendanceDetail);
-            }
+            $checkForleave = $this->checkForLeave($employee, $this->date);
         }
 
         return [];
@@ -94,14 +99,19 @@ class CronController extends AbstractActionController {
         return $employeeRepo->fetchAllForAttendance();
     }
 
-    private function checkForHoliday(HrEmployees $employee, $date) {
+    private function checkForHoliday(HrEmployees $employee, Expression $date) {
         $holidayRepo = new HolidayRepository($this->adapter);
         return $holidayRepo->checkEmployeeOnHoliday($date, $employee->branchId, $employee->genderId);
     }
 
-    private function checkForLeave(HrEmployees $employee, $date) {
+    private function checkForLeave(HrEmployees $employee, Expression $date) {
         $leaveRepo = new LeaveRequestRepository($this->adapter);
         return $leaveRepo->checkEmployeeLeave($employee->employeeId, $date);
+    }
+
+    private function checkForTraining(HrEmployees $employee, Expression $date) {
+        $trainingRepo = new TrainingAssignRepository($this->adapter);
+        $trainingRepo->checkEmployeeTraining($employee->employeeId, $date);
     }
 
 }

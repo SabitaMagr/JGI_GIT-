@@ -10,16 +10,17 @@
 namespace AttendanceManagement\Controller;
 
 use Application\Helper\Helper;
+use AttendanceManagement\Model\Attendance;
+use AttendanceManagement\Model\AttendanceDetail;
+use AttendanceManagement\Repository\AttendanceDetailRepository;
+use HolidayManagement\Model\Holiday;
+use HolidayManagement\Repository\HolidayRepository;
+use LeaveManagement\Model\LeaveApply;
+use SelfService\Repository\LeaveRequestRepository;
 use Setup\Model\HrEmployees;
 use Setup\Repository\EmployeeRepository;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Mvc\Controller\AbstractActionController;
-use HolidayManagement\Repository\HolidayRepository;
-use HolidayManagement\Model\Holiday;
-use SelfService\Repository\LeaveRequestRepository;
-use AttendanceManagement\Repository\AttendanceDetailRepository;
-use AttendanceManagement\Model\Attendance;
-use AttendanceManagement\Model\AttendanceDetail;
 
 class DailyAttendance extends AbstractActionController {
 
@@ -32,7 +33,6 @@ class DailyAttendance extends AbstractActionController {
     }
 
     public function indexAction() {
-
         $employeeList = $this->pullEmployeeList();
         $attendanceRepo = new AttendanceDetailRepository($this->adapter);
         foreach ($employeeList as $employee) {
@@ -52,7 +52,7 @@ class DailyAttendance extends AbstractActionController {
                 if ($checkForleave == null) {
                     $attendanceRepo->add($attendanceDetail);
                 } else {
-                    $attendanceDetail->leaveId = $checkForleave[\LeaveManagement\Model\LeaveApply::LEAVE_ID];
+                    $attendanceDetail->leaveId = $checkForleave[LeaveApply::LEAVE_ID];
                     $attendanceRepo->add($attendanceDetail);
                 }
             } else {
