@@ -134,7 +134,7 @@ class WorkOnDayoffStatus extends AbstractActionController
         $id = (int) $this->params()->fromRoute('id');
 
         if ($id === 0) {
-            return $this->redirect()->toRoute("status");
+            return $this->redirect()->toRoute("workOnDayoffStatus");
         }
         $workOnDayoffModel = new WorkOnDayoff();
         $request = $this->getRequest();
@@ -185,7 +185,7 @@ class WorkOnDayoffStatus extends AbstractActionController
             $workOnDayoffModel->approvedRemarks = $reason;
             $this->dayoffWorkApproveRepository->edit($workOnDayoffModel, $id);
 
-            return $this->redirect()->toRoute("status");
+            return $this->redirect()->toRoute("workOnDayoffStatus");
         }
         return Helper::addFlashMessagesToArray($this, [
                     'form' => $this->form,
