@@ -1,26 +1,32 @@
 <?php
-/**
- * Load Javascript files here
- */
+$this->headLink()
+        ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.common.min.css'))
+        ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.rtl.min.css'))
+        ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.default.min.css'))
+        ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.dataviz.min.css'))
+        ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.dataviz.default.min.css'));
+
+
 $this->headScript()
-    ->appendFile($this->basePath('jszip/dist/jszip.min.js'))
-    ->appendFile($this->basePath('telerik_kendoui/js/kendo.all.min.js'))
-    ->appendFile($this->basePath('js/setup/recommend-approve/index.js'))
-    ->appendFile($this->basePath('assets/global/plugins/bootstrap-confirmation/bootstrap-confirmation.min.js'));
+        ->appendFile($this->basePath('jszip/dist/jszip.min.js'))
+        ->appendFile($this->basePath('telerik_kendoui/js/kendo.all.min.js'))
+        ->appendFile($this->basePath('js/setup/recommend-approve/index.js'))
+        ->appendFile($this->basePath('assets/global/plugins/bootstrap-confirmation/bootstrap-confirmation.min.js'));
 ?>
-<?php
-if($this->messages) { ?>
+<?php if ($this->messages) { ?>
     <script>
-        document.messages=<?php echo json_encode($this->messages); ?>
+        document.messages =<?php echo json_encode($this->messages); ?>
     </script>
 <?php } ?>
 
 <script>
-    document.menu =<?php $menu = ["id" => "menuSetup", "subMenu" => ["id" => "subMenuReportingHierarchy"]];echo json_encode($menu);?>;
-    document.recommendApproves=<?php echo json_encode($recommendApproves); ?>;
+    document.menu =<?php $menu = ["id" => "menuSetup", "subMenu" => ["id" => "subMenuReportingHierarchy"]];
+echo json_encode($menu);
+?>;
+    document.recommendApproves =<?php echo json_encode($recommendApproves); ?>;
 </script>
 <div class="page-bar">
-    <?= $this->navigation('Zend\Navigation\recommendapprove')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
+<?= $this->navigation('Zend\Navigation\recommendapprove')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
 
 
@@ -56,25 +62,25 @@ if($this->messages) { ?>
             </div>
         </div>
     </div>
-    
+
     <div id="recommendApproveTable">
     </div>
     <script id="rowTemplate" type="text/x-kendo-tmpl">
         <tr>
         <td>
-            #: (FIRST_NAME == null) ? ' ' : FIRST_NAME #
-            #: (MIDDLE_NAME == null) ? ' ' : MIDDLE_NAME #
-            #: (LAST_NAME == null) ? ' ' : LAST_NAME #
+        #: (FIRST_NAME == null) ? ' ' : FIRST_NAME #
+        #: (MIDDLE_NAME == null) ? ' ' : MIDDLE_NAME #
+        #: (LAST_NAME == null) ? ' ' : LAST_NAME #
         </td>
         <td>
-            #: (FIRST_NAME_R == null) ? ' ' : FIRST_NAME_R #
-            #: (MIDDLE_NAME_R == null) ? ' ' : MIDDLE_NAME_R #
-            #: (LAST_NAME_R == null) ? ' ' : LAST_NAME_R #
+        #: (FIRST_NAME_R == null) ? ' ' : FIRST_NAME_R #
+        #: (MIDDLE_NAME_R == null) ? ' ' : MIDDLE_NAME_R #
+        #: (LAST_NAME_R == null) ? ' ' : LAST_NAME_R #
         </td>
         <td>
-            #: (FIRST_NAME_A == null) ? ' ' : FIRST_NAME_A #
-            #: (MIDDLE_NAME_A == null) ? ' ' : MIDDLE_NAME_A #
-            #: (LAST_NAME_A == null) ? ' ' : LAST_NAME_A #
+        #: (FIRST_NAME_A == null) ? ' ' : FIRST_NAME_A #
+        #: (MIDDLE_NAME_A == null) ? ' ' : MIDDLE_NAME_A #
+        #: (LAST_NAME_A == null) ? ' ' : LAST_NAME_A #
         </td>
         </tr>
     </script>

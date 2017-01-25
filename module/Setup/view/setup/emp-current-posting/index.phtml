@@ -1,20 +1,25 @@
 <?php
-/**
- * Load Javascript files here
- */
+$this->headLink()
+        ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.common.min.css'))
+        ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.rtl.min.css'))
+        ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.default.min.css'))
+        ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.dataviz.min.css'))
+        ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.dataviz.default.min.css'));
+
+
 $this->headScript()
-    ->appendFile($this->basePath('js/kendoDataTable.js'));
+        ->appendFile($this->basePath('js/kendoDataTable.js'));
 ?>
 
-<?php
-if($this->messages) { ?>
+<?php if ($this->messages) { ?>
     <script>
-        document.messages=<?php echo json_encode($this->messages); ?>
+        document.messages =<?php echo json_encode($this->messages); ?>
     </script>
 <?php } ?>
 
 <script>
-    document.menu =<?php $menu = ["id" => "menuSetup", "subMenu" => ["id" => "subMenuCurrentPosting"]];echo json_encode($menu);?>;
+    document.menu =<?php $menu = ["id" => "menuSetup", "subMenu" => ["id" => "subMenuCurrentPosting"]];
+echo json_encode($menu); ?>;
 </script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\empCurrentPosting')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
@@ -54,65 +59,63 @@ if($this->messages) { ?>
 
     <table class="table" id="dataTable">
         <thead>
-        <tr role="row">
-            <th>
-                Employee Name
-            </th>
-            <th>
-                Service Type
-            </th>
-            <th>
-                Branch Name
-            </th>
-            <th>
-                Department Name
-            </th>
-            <th>
-                Designation Title
-            </th>
-            <th>
-                Position Name
-            </th>
-            <th>
-                Action
-            </th>
-        </tr>
+            <tr role="row">
+                <th>
+                    Employee Name
+                </th>
+                <th>
+                    Service Type
+                </th>
+                <th>
+                    Branch Name
+                </th>
+                <th>
+                    Department Name
+                </th>
+                <th>
+                    Designation Title
+                </th>
+                <th>
+                    Position Name
+                </th>
+                <th>
+                    Action
+                </th>
+            </tr>
         </thead>
         <tbody>
 
-        <?php
+            <?php foreach ($empCurrentPostingList as $empCurrentPosting): ?>
+                <tr role="row">
+                    <td>
+    <?php print $this->escapeHtml($empCurrentPosting['FIRST_NAME'] . ' ' . $empCurrentPosting['MIDDLE_NAME'] . " " . $empCurrentPosting['LAST_NAME']); ?>
+                    </td>
+                    <td>
+    <?php print $this->escapeHtml($empCurrentPosting['SERVICE_TYPE_NAME']); ?>
+                    </td>
+                    <td>
+    <?php print $this->escapeHtml($empCurrentPosting['BRANCH_NAME']); ?>
+                    </td>
+                    <td>
+    <?php print $this->escapeHtml($empCurrentPosting['DEPARTMENT_NAME']); ?>
+                    </td>
+                    <td>
+    <?php print $this->escapeHtml($empCurrentPosting['DESIGNATION_TITLE']); ?>
+                    </td>
+                    <td>
+    <?php print $this->escapeHtml($empCurrentPosting['POSITION_NAME']); ?>
+                    </td>
+                    <td>
+                        <a href="<?= $this->url("empCurrentPosting", ["action" => "edit", "id" => $empCurrentPosting['EMPLOYEE_ID']]) ?>">
+                            Edit
+                        </a>
+                        <a href="<?= $this->url("empCurrentPosting", ["action" => "delete", "id" => $empCurrentPosting['EMPLOYEE_ID']]); ?>">
+                            Delete
+                        </a>
+                    </td>
+                </tr>
 
-        foreach ($empCurrentPostingList as $empCurrentPosting):?>
-            <tr role="row">
-                <td>
-                    <?php print $this->escapeHtml($empCurrentPosting['FIRST_NAME'] . ' ' . $empCurrentPosting['MIDDLE_NAME'] . " " . $empCurrentPosting['LAST_NAME']); ?>
-                </td>
-                <td>
-                    <?php print $this->escapeHtml($empCurrentPosting['SERVICE_TYPE_NAME']); ?>
-                </td>
-                <td>
-                    <?php print $this->escapeHtml($empCurrentPosting['BRANCH_NAME']); ?>
-                </td>
-                <td>
-                    <?php print $this->escapeHtml($empCurrentPosting['DEPARTMENT_NAME']); ?>
-                </td>
-                <td>
-                    <?php print $this->escapeHtml($empCurrentPosting['DESIGNATION_TITLE']); ?>
-                </td>
-                <td>
-                    <?php print $this->escapeHtml($empCurrentPosting['POSITION_NAME']); ?>
-                </td>
-                <td>
-                    <a href="<?= $this->url("empCurrentPosting", ["action" => "edit", "id" => $empCurrentPosting['EMPLOYEE_ID']]) ?>">
-                        Edit
-                    </a>
-                    <a href="<?= $this->url("empCurrentPosting", ["action" => "delete", "id" => $empCurrentPosting['EMPLOYEE_ID']]); ?>">
-                        Delete
-                    </a>
-                </td>
-            </tr>
-
-        <?php endforeach; ?>
+<?php endforeach; ?>
 
         </tbody>
     </table>

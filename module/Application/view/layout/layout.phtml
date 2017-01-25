@@ -16,8 +16,8 @@
               name="description"/>
         <meta content="" name="author"/>
         <!-- BEGIN GLOBAL MANDATORY STYLES -->
-        <!--        <link href="http://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700&amp;subset=all" rel="stylesheet"
-                      type="text/css"/>-->
+
+        <link rel="shortcut icon" href="<?= $this->basePath('favicon.ico') ?>"/>
         <link href="<?= $this->basePath('css/fonts.css') ?>" rel="stylesheet"
               type="text/css"/>
         <link href="<?= $this->basePath('assets/font-awesome/font-awesome.css') ?>" rel="stylesheet"
@@ -26,36 +26,36 @@
               rel="stylesheet" type="text/css"/>
         <link href="<?= $this->basePath('assets/global/plugins/bootstrap/css/bootstrap.min.css') ?>" rel="stylesheet"
               type="text/css"/>
-        <link href="<?= $this->basePath('assets/global/plugins/bootstrap-switch/css/bootstrap-switch.min.css') ?>"
-              rel="stylesheet" type="text/css"/>
-        <link href="<?= $this->basePath('assets/global/plugins/bootstrap-toastr/toastr.min.css') ?>"
-              rel="stylesheet" type="text/css"/>
         <!-- END GLOBAL MANDATORY STYLES -->
-
-        <!-- BEGIN THEME GLOBAL STYLES -->
-        <link href="<?= $this->basePath('assets/global/css/components-md.min.css') ?>" rel="stylesheet" type="text/css"/>
-        <link href="<?= $this->basePath('assets/global/css/plugins-md.min.css') ?>" rel="stylesheet" type="text/css"/>
-        <!-- END THEME GLOBAL STYLES -->
         <!-- BEGIN THEME LAYOUT STYLES -->
         <link href="<?= $this->basePath('assets/layouts/layout/css/layout.min.css') ?>" rel="stylesheet" type="text/css"/>
         <link href="<?= $this->basePath('assets/layouts/layout/css/themes/light2.min.css') ?>" rel="stylesheet"
               type="text/css"/>
         <!-- END THEME LAYOUT STYLES -->
 
-        <!--Select2 -->
+        <!-- BEGIN THEME GLOBAL STYLES -->
+        <link href="<?= $this->basePath('assets/global/css/components-md.min.css') ?>" rel="stylesheet" type="text/css"/>
+        <link href="<?= $this->basePath('assets/global/css/plugins-md.min.css') ?>" rel="stylesheet" type="text/css"/>
+        <!-- END THEME GLOBAL STYLES -->
+
+        <!--mandatory plugins -->
         <link href="<?= $this->basePath('assets/global/plugins/select2/css/select2.min.css') ?>" rel="stylesheet" type="text/css"/>
         <link href="<?= $this->basePath('assets/global/plugins/select2/css/select2-bootstrap.min.css') ?>" rel="stylesheet" type="text/css"/>
-        <!--End Select2-->
-        <link rel="shortcut icon" href="<?= $this->basePath('favicon.ico') ?>"/>
-        <link href="<?= $this->basePath('css/listpage.css') ?>" rel="stylesheet" type="text/css"/>
 
+        <link href="<?= $this->basePath('assets/global/plugins/bootstrap-switch/css/bootstrap-switch.min.css') ?>"
+              rel="stylesheet" type="text/css"/>
+
+        <link href="<?= $this->basePath('assets/global/plugins/bootstrap-toastr/toastr.min.css') ?>"
+              rel="stylesheet" type="text/css"/>
         <link href="<?= $this->basePath('assets/global/plugins/bootstrap-datepicker/css/bootstrap-datepicker3.min.css') ?>" rel="stylesheet" type="text/css"/>
-
-        <link href="<?= $this->basePath('css/custom.css') ?>" rel="stylesheet" type="text/css"/>
-
+        <!--End of mandatory plugins-->
         <?php
         print $this->headLink();
         ?>
+
+        <link href="<?= $this->basePath('css/listpage.css') ?>" rel="stylesheet" type="text/css"/>
+        <link href="<?= $this->basePath('css/custom.css') ?>" rel="stylesheet" type="text/css"/>
+
     </head>
 
 
@@ -182,7 +182,6 @@
                         ->prependFile($this->basePath('assets/global/plugins/jquery-ui/jquery-ui.min.js'))
                         ->prependFile($this->basePath('assets/global/plugins/bootstrap-toastr/toastr.min.js'))
                         ->prependFile($this->basePath('assets/global/plugins/bootstrap-switch/js/bootstrap-switch.min.js'))
-                        ->prependFile($this->basePath('assets/global/plugins/jquery.blockui.min.js'))
                         ->prependFile($this->basePath('assets/global/plugins/jquery-slimscroll/jquery.slimscroll.min.js'))
                         ->prependFile($this->basePath('assets/global/plugins/js.cookie.min.js'))
                         ->prependFile($this->basePath('assets/global/plugins/bootstrap/js/bootstrap.min.js'))

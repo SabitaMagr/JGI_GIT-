@@ -1,13 +1,16 @@
 <?php
-/**
- * Load Javascript files here
- */
+$this->headLink()
+        ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.common.min.css'))
+        ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.rtl.min.css'))
+        ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.default.min.css'))
+        ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.dataviz.min.css'))
+        ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.dataviz.default.min.css'));
+
 $this->headScript()
         ->appendFile($this->basePath('jszip/dist/jszip.min.js'))
         ->appendFile($this->basePath('telerik_kendoui/js/kendo.all.min.js'))
-        ->appendFile($this->basePath('jszip/dist/jszip.min.js'))
-        ->appendFile($this->basePath('js/setup/branch/index.js'))
-        ->appendFile($this->basePath('assets/global/plugins/bootstrap-confirmation/bootstrap-confirmation.min.js'));
+        ->appendFile($this->basePath('assets/global/plugins/bootstrap-confirmation/bootstrap-confirmation.min.js'))
+        ->appendFile($this->basePath('js/setup/branch/index.js'));
 ?>
 
 
@@ -56,34 +59,34 @@ echo json_encode($menu);
     <div id="branchTable">
     </div>
     <script id="rowTemplate" type="text/x-kendo-tmpl">
-    <tr>
+        <tr>
         <td>    
-            #: (BRANCH_CODE == null) ? '-' : BRANCH_CODE #
-            </td>
+        #: (BRANCH_CODE == null) ? '-' : BRANCH_CODE #
+        </td>
         <td> 
-            #: (BRANCH_NAME == null) ? '-' : BRANCH_NAME #
+        #: (BRANCH_NAME == null) ? '-' : BRANCH_NAME #
         </td>
         <td>
-            #: (STREET_ADDRESS == null) ? '-' : STREET_ADDRESS #
+        #: (STREET_ADDRESS == null) ? '-' : STREET_ADDRESS #
         </td>
         <td>
-            #: (TELEPHONE == null) ? '-' : TELEPHONE #
+        #: (TELEPHONE == null) ? '-' : TELEPHONE #
         </td>
         <td>
-            #: (EMAIL == null) ? '-' : EMAIL #
+        #: (EMAIL == null) ? '-' : EMAIL #
         </td>
         <td>
-            <a class="btn-edit"
-               href="<?= $this->url("branch", ["action" => "edit"]) ?>/#:BRANCH_ID #" style="height:17px;">
-                <i class="fa fa-edit"></i>
-            </a>
-            <a class="confirmation btn-delete"
-               href="<?= $this->url("branch", ["action" => "delete"]); ?>/#:BRANCH_ID #" id="bs_#:BRANCH_ID #" style="height:17px;"> 
-                <i class="fa fa-trash-o"></i></a>
-            </a>
+        <a class="btn-edit"
+        href="<?= $this->url("branch", ["action" => "edit"]) ?>/#:BRANCH_ID #" style="height:17px;">
+        <i class="fa fa-edit"></i>
+        </a>
+        <a class="confirmation btn-delete"
+        href="<?= $this->url("branch", ["action" => "delete"]); ?>/#:BRANCH_ID #" id="bs_#:BRANCH_ID #" style="height:17px;"> 
+        <i class="fa fa-trash-o"></i></a>
+        </a>
         </td>
 
-    </tr>
+        </tr>
     </script>
 </div>
 

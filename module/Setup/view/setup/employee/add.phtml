@@ -1,7 +1,8 @@
 <?php
-/**
- * Load Javascript files here
- */
+$this->headLink()
+        ->appendStylesheet($this->basePath('dropzone/dropzone.min.css'));
+
+
 $this->headScript()->appendFile($this->basePath('assets/global/plugins/boostrap-form-wizard/js/jquery.bootstrap.wizard.min.js'));
 $this->headScript()->appendFile($this->basePath('js/form_wizard.js'));
 $this->headScript()->appendFile($this->basePath('js/custom.js'));
