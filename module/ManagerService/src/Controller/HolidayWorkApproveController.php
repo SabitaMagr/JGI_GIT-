@@ -261,7 +261,7 @@ class HolidayWorkApproveController extends AbstractActionController {
         $holidayFormElement->setAttributes(["id" => "holidayId", "class" => "form-control"]);
         $holidayFormElement->setLabel("Holiday Type");
 
-        $holidayStatus = [
+        $status = [
             '-1' => 'All',
             'RQ' => 'Pending',
             'RC' => 'Recommended',

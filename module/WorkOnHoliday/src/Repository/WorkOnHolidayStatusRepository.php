@@ -52,7 +52,7 @@ class WorkOnHolidayStatusRepository implements RepositoryInterface{
             $retiredFlag = " AND E.RETIRED_FLAG='N' ";
         }
         
-        $sql = "SELECT H.HOLIDAY_NAME,WH.DURATION,
+        $sql = "SELECT H.HOLIDAY_ENAME,WH.DURATION,
                 TO_CHAR(WH.FROM_DATE, 'DD-MON-YYYY') AS FROM_DATE,
                 TO_CHAR(WH.TO_DATE, 'DD-MON-YYYY') AS TO_DATE,
                 TO_CHAR(WH.REQUESTED_DATE, 'DD-MON-YYYY') AS REQUESTED_DATE,
@@ -89,7 +89,7 @@ class WorkOnHolidayStatusRepository implements RepositoryInterface{
                 LEFT OUTER JOIN HR_EMPLOYEES APRV ON
                 APRV.EMPLOYEE_ID = RA.APPROVED_BY
                 WHERE 
-                L.STATUS='E' AND
+                H.STATUS='E' AND
                 E.STATUS='E'".$retiredFlag."              
                 AND
                 (E1.STATUS = CASE WHEN E1.STATUS IS NOT NULL
@@ -168,7 +168,7 @@ class WorkOnHolidayStatusRepository implements RepositoryInterface{
         $sql .=" ORDER BY WH.REQUESTED_DATE DESC";
 
         $statement = $this->adapter->query($sql);
-       // print_r($statement->getSql());  die();
+//        print_r($statement->getSql());  die();
         $result = $statement->execute();
         return $result;
     }
