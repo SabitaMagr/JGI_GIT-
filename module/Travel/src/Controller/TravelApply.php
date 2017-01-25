@@ -26,6 +26,9 @@ class TravelApply extends AbstractActionController{
         $form = new TravelRequestForm();
         $this->form = $builder->createForm($form);
     }
+    public function indexAction() {
+       return $this->redirect()->toRoute("travelStatus");
+    }
 
     public function addAction() {
         $this->initializeForm();

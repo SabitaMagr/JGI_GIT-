@@ -26,6 +26,9 @@ class AdvanceApply extends AbstractActionController{
         $form = new AdvanceRequestForm();
         $this->form = $builder->createForm($form);
     }
+    public function indexAction() {
+       return $this->redirect()->toRoute("advanceStatus");
+    }
 
     public function addAction() {
         $this->initializeForm();

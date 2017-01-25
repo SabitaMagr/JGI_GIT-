@@ -26,6 +26,9 @@ class LoanApply extends AbstractActionController{
         $form = new LoanRequestForm();
         $this->form = $builder->createForm($form);
     }
+    public function indexAction() {
+       return $this->redirect()->toRoute("loanStatus");
+    }
 
     public function addAction() {
         $this->initializeForm();

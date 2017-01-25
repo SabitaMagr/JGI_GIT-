@@ -25,6 +25,9 @@ class WorkOnDayoffApply extends AbstractActionController{
         $form = new WorkOnDayoffForm();
         $this->form = $builder->createForm($form);
     }
+    public function indexAction() {
+       return $this->redirect()->toRoute("workOnDayoffStatus");
+    }
 
     public function addAction() {
         $this->initializeForm();
