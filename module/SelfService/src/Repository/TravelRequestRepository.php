@@ -4,13 +4,12 @@ namespace SelfService\Repository;
 
 use Application\Model\Model;
 use Application\Repository\RepositoryInterface;
-use Zend\Db\Adapter\AdapterInterface;
-use Zend\Db\TableGateway\TableGateway;
-use Zend\Db\Sql\Sql;
-use Zend\Db\Sql\Select;
-use Zend\Db\Sql\Expression;
 use SelfService\Model\TravelRequest;
 use Setup\Model\HrEmployees;
+use Zend\Db\Adapter\AdapterInterface;
+use Zend\Db\Sql\Expression;
+use Zend\Db\Sql\Sql;
+use Zend\Db\TableGateway\TableGateway;
 
 class TravelRequestRepository implements RepositoryInterface {
 
@@ -116,14 +115,11 @@ class TravelRequestRepository implements RepositoryInterface {
         $sql = new Sql($this->adapter);
         $select = $sql->select();
         $select->columns([TravelRequest::TRAVEL_ID], FALSE);
-        $select->from([TravelRequest::TABLE_NAME]);
+        $select->from(TravelRequest::TABLE_NAME);
         $select->where([TravelRequest::EMPLOYEE_ID => $employeeId]);
+        $select->where([TravelRequest::STATUS => 'AP']);
         $select->where([$date->getExpression() . " BETWEEN " . TravelRequest::FROM_DATE . " AND " . TravelRequest::TO_DATE]);
         $statement = $sql->prepareStatementForSqlObject($select);
-        print "<pre>";
-        print_r($statement->getSql());
-        exit;
-
         $result = $statement->execute();
         return $result->current();
     }

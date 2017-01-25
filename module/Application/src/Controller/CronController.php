@@ -9,7 +9,9 @@ use AttendanceManagement\Repository\AttendanceDetailRepository;
 use HolidayManagement\Model\Holiday;
 use HolidayManagement\Repository\HolidayRepository;
 use LeaveManagement\Model\LeaveApply;
+use SelfService\Model\TravelRequest;
 use SelfService\Repository\LeaveRequestRepository;
+use SelfService\Repository\TravelRequestRepository;
 use Setup\Model\HrEmployees;
 use Setup\Repository\EmployeeRepository;
 use Training\Model\TrainingAssign;
@@ -63,6 +65,7 @@ class CronController extends AbstractActionController {
             $checkForHoliday = $this->checkForHoliday($employee, $this->date);
             $checkForleave = $this->checkForLeave($employee, $this->date);
             $checkForTraining = $this->checkForTraining($employee, $this->date);
+            $checkForTravel = $this->checkForTravel($employee, $this->date);
             if ($checkForHoliday != null) {
                 $attendanceDetail->holidayId = $checkForHoliday[Holiday::HOLIDAY_ID];
             }
@@ -72,6 +75,9 @@ class CronController extends AbstractActionController {
 
             if ($checkForTraining != null) {
                 $attendanceDetail->trainingId = $checkForTraining[TrainingAssign::TRAINING_ID];
+            }
+            if ($checkForTravel != null) {
+                $attendanceDetail->travelId = $checkForTravel[TravelRequest::TRAVEL_ID];
             }
             $attendanceRepo->add($attendanceDetail);
         }
@@ -130,7 +136,8 @@ class CronController extends AbstractActionController {
     }
 
     private function checkForTravel(HrEmployees $employee, Expression $date) {
-        
+        $travelRepo = new TravelRequestRepository($this->adapter);
+        return $travelRepo->checkEmployeeTravel($employee->employeeId, $date);
     }
 
 }

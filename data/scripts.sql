@@ -735,3 +735,14 @@ MODIFY STATUS VARCHAR2(2 BYTE)
 
 ALTER TABLE HR_EMPLOYEE_WORK_HOLIDAY
 MODIFY STATUS VARCHAR2(2 BYTE)
+
+
+-- alter table hr_attendance_detail
+ALTER TABLE HR_ATTENDANCE_DETAIL 
+ADD TRAVEL_ID NUMBER(6,0) 
+-- end of alter table hr_attendance_detail
+-- alter table hr_employee_training_assign
+ALTER TABLE HR_EMPLOYEE_TRAINING_ASSIGN 
+ADD CONSTRAINT CK_EMP_TRA_ASS_STATUS
+CHECK( STATUS IN ('E','D'));
+-- end of alter table hr_employee_training_assign

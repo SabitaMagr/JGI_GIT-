@@ -3,7 +3,7 @@
 namespace Appraisal\Controller;
 
 use Application\Helper\Helper;
-use SelfService\Repository\TravelRequestRepository;
+use Training\Repository\TrainingAssignRepository;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Mvc\Controller\AbstractActionController;
 
@@ -14,8 +14,8 @@ class Appraisal extends AbstractActionController {
     public function __construct(AdapterInterface $adapter) {
         $this->adapter = $adapter;
 
-        $repo = new TravelRequestRepository($adapter);
-        $repo->checkEmployeeTravel(7, Helper::getcurrentExpressionDate());
+        $repo = new TrainingAssignRepository($adapter);
+        $repo->checkEmployeeTraining(7, Helper::getcurrentExpressionDate());
     }
 
     public function indexAction() {

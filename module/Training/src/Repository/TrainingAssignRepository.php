@@ -200,6 +200,7 @@ class TrainingAssignRepository implements RepositoryInterface {
         $select->from(['TA' => TrainingAssign::TABLE_NAME])
                 ->join(['T' => Training::TABLE_NAME], "TA." . TrainingAssign::TRAINING_ID . " = " . "T." . Training::TRAINING_ID, []);
         $select->where(["TA." . TrainingAssign::EMPLOYEE_ID . "=$employeeId"]);
+        $select->where(["TA." . TrainingAssign::STATUS . "= 'E'"]);
         $select->where([$date->getExpression() . " BETWEEN " . "T." . Training::START_DATE . " AND T." . Training::END_DATE]);
         $statement = $sql->prepareStatementForSqlObject($select);
         $result = $statement->execute();

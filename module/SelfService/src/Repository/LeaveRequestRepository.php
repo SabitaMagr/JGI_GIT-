@@ -118,7 +118,7 @@ class LeaveRequestRepository implements RepositoryInterface {
 
     public function delete($id) {
         $currentDate = \Application\Helper\Helper::getcurrentExpressionDate();
-        $this->tableGateway->update([LeaveApply::STATUS => 'C', LeaveApply::MODIFIED_DT=>$currentDate], [LeaveApply::ID => $id]);
+        $this->tableGateway->update([LeaveApply::STATUS => 'C', LeaveApply::MODIFIED_DT => $currentDate], [LeaveApply::ID => $id]);
     }
 
     public function checkEmployeeLeave($employeeId, $date) {
@@ -127,18 +127,19 @@ class LeaveRequestRepository implements RepositoryInterface {
         $select->from(['L' => LeaveApply::TABLE_NAME]);
         $select->where(["L." . LeaveApply::EMPLOYEE_ID . "=$employeeId"]);
         $select->where([$date->getExpression() . " BETWEEN " . "L." . LeaveApply::START_DATE . " AND L." . LeaveApply::END_DATE]);
+        $select->where(['L.' . LeaveApply::STATUS . " = " . "'AP'"]);
         $statement = $sql->prepareStatementForSqlObject($select);
         $result = $statement->execute();
         return $result->current();
     }
-    
-    public function getfilterRecords($data){
+
+    public function getfilterRecords($data) {
         $employeeId = $data['employeeId'];
         $leaveId = $data['leaveId'];
         $leaveRequestStatusId = $data['leaveRequestStatusId'];
         $fromDate = $data['fromDate'];
         $toDate = $data['toDate'];
-        
+
         $sql = new Sql($this->adapter);
         $select = $sql->select();
         $select->columns([
@@ -160,36 +161,36 @@ class LeaveRequestRepository implements RepositoryInterface {
         $select->from(['LA' => LeaveApply::TABLE_NAME])
                 ->join(['E' => "HR_EMPLOYEES"], "E.EMPLOYEE_ID=LA.EMPLOYEE_ID", ['FIRST_NAME', 'MIDDLE_NAME', 'LAST_NAME'])
                 ->join(['L' => 'HR_LEAVE_MASTER_SETUP'], "L.LEAVE_ID=LA.LEAVE_ID", ['LEAVE_CODE', 'LEAVE_ENAME'])
-                ->join(['E1'=>"HR_EMPLOYEES"],"E1.EMPLOYEE_ID=LA.RECOMMENDED_BY",['FN1'=>'FIRST_NAME','MN1'=>'MIDDLE_NAME','LN1'=>'LAST_NAME'],"left")
-                ->join(['E2'=>"HR_EMPLOYEES"],"E2.EMPLOYEE_ID=LA.APPROVED_BY",['FN2'=>'FIRST_NAME','MN2'=>'MIDDLE_NAME','LN2'=>'LAST_NAME'],"left")
-                ->join(['RA'=>"HR_RECOMMENDER_APPROVER"],"RA.EMPLOYEE_ID=LA.EMPLOYEE_ID",['RECOMMENDER'=>'RECOMMEND_BY','APPROVER'=>'APPROVED_BY'],"left")
-                ->join(['RECM'=>"HR_EMPLOYEES"],"RECM.EMPLOYEE_ID=RA.RECOMMEND_BY",['RECM_FN'=>'FIRST_NAME','RECM_MN'=>'MIDDLE_NAME','RECM_LN'=>'LAST_NAME'],"left")
-                ->join(['APRV'=>"HR_EMPLOYEES"],"APRV.EMPLOYEE_ID=RA.APPROVED_BY",['APRV_FN'=>'FIRST_NAME','APRV_MN'=>'MIDDLE_NAME','APRV_LN'=>'LAST_NAME'],"left");
+                ->join(['E1' => "HR_EMPLOYEES"], "E1.EMPLOYEE_ID=LA.RECOMMENDED_BY", ['FN1' => 'FIRST_NAME', 'MN1' => 'MIDDLE_NAME', 'LN1' => 'LAST_NAME'], "left")
+                ->join(['E2' => "HR_EMPLOYEES"], "E2.EMPLOYEE_ID=LA.APPROVED_BY", ['FN2' => 'FIRST_NAME', 'MN2' => 'MIDDLE_NAME', 'LN2' => 'LAST_NAME'], "left")
+                ->join(['RA' => "HR_RECOMMENDER_APPROVER"], "RA.EMPLOYEE_ID=LA.EMPLOYEE_ID", ['RECOMMENDER' => 'RECOMMEND_BY', 'APPROVER' => 'APPROVED_BY'], "left")
+                ->join(['RECM' => "HR_EMPLOYEES"], "RECM.EMPLOYEE_ID=RA.RECOMMEND_BY", ['RECM_FN' => 'FIRST_NAME', 'RECM_MN' => 'MIDDLE_NAME', 'RECM_LN' => 'LAST_NAME'], "left")
+                ->join(['APRV' => "HR_EMPLOYEES"], "APRV.EMPLOYEE_ID=RA.APPROVED_BY", ['APRV_FN' => 'FIRST_NAME', 'APRV_MN' => 'MIDDLE_NAME', 'APRV_LN' => 'LAST_NAME'], "left");
 
         $select->where([
             "L.STATUS='E'",
             "E.EMPLOYEE_ID=" . $employeeId
         ]);
-        
-        if($leaveId!=-1){
-           $select->where([
+
+        if ($leaveId != -1) {
+            $select->where([
                 "LA.LEAVE_ID=" . $leaveId
-            ]);  
-        }
-        if($leaveRequestStatusId!=-1){
-            $select->where([
-                "LA.STATUS='" . $leaveRequestStatusId."'"
             ]);
         }
-        
-        if($fromDate!=null){
+        if ($leaveRequestStatusId != -1) {
             $select->where([
-                "LA.START_DATE>=TO_DATE('".$fromDate."','DD-MM-YYYY')"
+                "LA.STATUS='" . $leaveRequestStatusId . "'"
             ]);
         }
-        if($toDate!=null){
+
+        if ($fromDate != null) {
             $select->where([
-                "LA.END_DATE<=TO_DATE('".$toDate."','DD-MM-YYYY')"
+                "LA.START_DATE>=TO_DATE('" . $fromDate . "','DD-MM-YYYY')"
+            ]);
+        }
+        if ($toDate != null) {
+            $select->where([
+                "LA.END_DATE<=TO_DATE('" . $toDate . "','DD-MM-YYYY')"
             ]);
         }
         $select->order("LA.REQUESTED_DT DESC");
