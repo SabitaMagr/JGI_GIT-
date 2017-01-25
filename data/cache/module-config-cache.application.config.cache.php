@@ -1762,7 +1762,7 @@ return array (
           ),
         ),
       ),
-      'status' => 
+      'workOnHolidayStatus' => 
       array (
         'type' => 'Zend\\Router\\Http\\Segment',
         'options' => 
@@ -1775,12 +1775,12 @@ return array (
           ),
           'defaults' => 
           array (
-            'controller' => 'WorkOnHoliday\\Controller\\Status',
+            'controller' => 'WorkOnHoliday\\Controller\\WorkOnHolidayStatus',
             'action' => 'index',
           ),
         ),
       ),
-      'apply' => 
+      'workOnHolidayApply' => 
       array (
         'type' => 'Zend\\Router\\Http\\Segment',
         'options' => 
@@ -1793,7 +1793,7 @@ return array (
           ),
           'defaults' => 
           array (
-            'controller' => 'WorkOnHoliday\\Controller\\Apply',
+            'controller' => 'WorkOnHoliday\\Controller\\WorkOnHolidayApply',
             'action' => 'index',
           ),
         ),
@@ -4334,69 +4334,69 @@ return array (
         ),
       ),
     ),
-    'status' => 
+    'workOnHolidayStatus' => 
     array (
       0 => 
       array (
         'label' => 'Work on Holiday Request',
-        'route' => 'status',
+        'route' => 'workOnHolidayStatus',
       ),
       1 => 
       array (
         'label' => 'Work on Holiday Request',
-        'route' => 'status',
+        'route' => 'workOnHolidayStatus',
         'pages' => 
         array (
           0 => 
           array (
             'label' => 'List',
-            'route' => 'status',
+            'route' => 'workOnHolidayStatus',
             'action' => 'index',
           ),
           1 => 
           array (
             'label' => 'Add',
-            'route' => 'status',
+            'route' => 'workOnHolidayStatus',
             'action' => 'add',
           ),
           2 => 
           array (
             'label' => 'Detail',
-            'route' => 'status',
+            'route' => 'workOnHolidayStatus',
             'action' => 'view',
           ),
         ),
       ),
     ),
-    'apply' => 
+    'workOnHolidayApply' => 
     array (
       0 => 
       array (
         'label' => 'Work on Holiday Request',
-        'route' => 'apply',
+        'route' => 'workOnHolidayApply',
       ),
       1 => 
       array (
         'label' => 'Work on Holiday Request',
-        'route' => 'apply',
+        'route' => 'workOnHolidayApply',
         'pages' => 
         array (
           0 => 
           array (
             'label' => 'List',
-            'route' => 'apply',
+            'route' => 'workOnHolidayApply',
             'action' => 'index',
           ),
           1 => 
           array (
             'label' => 'Add',
-            'route' => 'apply',
+            'route' => 'workOnHolidayApply',
             'action' => 'add',
           ),
           2 => 
           array (
             'label' => 'Edit',
-            'route' => 'apply',
+            'route' => 'workOnHolidayApply',
             'action' => 'edit',
           ),
         ),
@@ -4553,8 +4553,8 @@ return array (
       'Notification\\Controller\\EmailController' => 'Application\\Controller\\ControllerFactory',
       'Travel\\Controller\\TravelStatus' => 'Application\\Controller\\ControllerFactory',
       'Travel\\Controller\\TravelApply' => 'Application\\Controller\\ControllerFactory',
-      'WorkOnHoliday\\Controller\\Status' => 'Application\\Controller\\ControllerFactory',
-      'WorkOnHoliday\\Controller\\Apply' => 'Application\\Controller\\ControllerFactory',
+      'WorkOnHoliday\\Controller\\WorkOnHolidayStatus' => 'Application\\Controller\\ControllerFactory',
+      'WorkOnHoliday\\Controller\\WorkOnHolidayApply' => 'Application\\Controller\\ControllerFactory',
       'WorkOnDayoff\\Controller\\WorkOnDayoffStatus' => 'Application\\Controller\\ControllerFactory',
       'WorkOnDayoff\\Controller\\WorkOnDayoffApply' => 'Application\\Controller\\ControllerFactory',
     ),

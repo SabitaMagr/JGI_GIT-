@@ -25,7 +25,7 @@ $approvedRemarks->setAttributes(['required'=>'true']);
 $submit = $form->get('submit');
 $submit->setAttribute('value', 'Approve');
 
-$form->setAttribute('action', $this->url('status', ['action' => 'view', 'id' => $id]));
+$form->setAttribute('action', $this->url('workOnDayoffStatus', ['action' => 'view', 'id' => $id]));
 
 if ($this->messages) {
     print '<ul class="help-block bg-danger" style="background:#f3e250;">';

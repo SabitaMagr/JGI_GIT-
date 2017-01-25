@@ -2,14 +2,14 @@
 namespace WorkOnHoliday;
 
 use Application\Controller\ControllerFactory;
-use WorkOnHoliday\Controller\Status;
-use WorkOnHoliday\Controller\Apply;
+use WorkOnHoliday\Controller\WorkOnHolidayStatus;
+use WorkOnHoliday\Controller\WorkOnHolidayApply;
 use Zend\Router\Http\Segment;
 
 return [
     'router' => [
         'routes' => [
-            'status' => [
+            'workOnHolidayStatus' => [
                 'type' => Segment::class,
                 'options' => [
                     'route' => '/workOnHoliday/status[/:action[/:id]]',
@@ -18,12 +18,12 @@ return [
                         'id' => '[0-9]+',
                     ],
                     'defaults' => [
-                        'controller' => Status::class,
+                        'controller' => WorkOnHolidayStatus::class,
                         'action' => 'index'
                     ],
                 ],
             ],
-            'apply' => [
+            'workOnHolidayApply' => [
                 'type' => Segment::class,
                 'options' => [
                     'route' => '/workOnHoliday/apply[/:action[/:id]]',
@@ -32,7 +32,7 @@ return [
                         'id' => '[0-9]+',
                     ],
                     'defaults' => [
-                        'controller' => Apply::class,
+                        'controller' => WorkOnHolidayApply::class,
                         'action' => 'index'
                     ],
                 ],
@@ -40,55 +40,55 @@ return [
         ],
     ],
     'navigation' => [
-        'status' => [
+        'workOnHolidayStatus' => [
                 [
                 'label' => "Work on Holiday Request",
-                'route' => "status"
+                'route' => "workOnHolidayStatus"
             ],
                 [
                 'label' => "Work on Holiday Request",
-                'route' => "status",
+                'route' => "workOnHolidayStatus",
                 'pages' => [
                         [
                         'label' => 'List',
-                        'route' => 'status',
+                        'route' => 'workOnHolidayStatus',
                         'action' => 'index',
                     ],
                         [
                         'label' => 'Add',
-                        'route' => 'status',
+                        'route' => 'workOnHolidayStatus',
                         'action' => 'add',
                     ],
                         [
                         'label' => 'Detail',
-                        'route' => 'status',
+                        'route' => 'workOnHolidayStatus',
                         'action' => 'view',
                     ],
                 ],
             ],
         ],
-        'apply' => [
+        'workOnHolidayApply' => [
                 [
                 'label' => "Work on Holiday Request",
-                'route' => "apply"
+                'route' => "workOnHolidayApply"
             ],
                 [
                 'label' => "Work on Holiday Request",
-                'route' => "apply",
+                'route' => "workOnHolidayApply",
                 'pages' => [
                         [
                         'label' => 'List',
-                        'route' => 'apply',
+                        'route' => 'workOnHolidayApply',
                         'action' => 'index',
                     ],
                         [
                         'label' => 'Add',
-                        'route' => 'apply',
+                        'route' => 'workOnHolidayApply',
                         'action' => 'add',
                     ],
                         [
                         'label' => 'Edit',
-                        'route' => 'apply',
+                        'route' => 'workOnHolidayApply',
                         'action' => 'edit',
                     ],
                 ],
@@ -97,8 +97,8 @@ return [
     ],
     'controllers' => [
         'factories' => [
-            Controller\Status::class => ControllerFactory::class,
-            Controller\Apply::class => ControllerFactory::class
+            Controller\WorkOnHolidayStatus::class => ControllerFactory::class,
+            Controller\WorkOnHolidayApply::class => ControllerFactory::class
         ],
     ],
     'view_manager' => [
