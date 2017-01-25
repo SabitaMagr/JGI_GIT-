@@ -1,10 +1,16 @@
 <?php
 //Load JS files here
+$this->headLink()
+        ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.common.min.css'))
+        ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.rtl.min.css'))
+        ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.default.min.css'))
+        ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.dataviz.min.css'))
+        ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.dataviz.default.min.css'));
+
 $this->headScript()
         ->appendFile($this->basePath('jszip/dist/jszip.min.js'))
         ->appendFile($this->basePath('telerik_kendoui/js/kendo.all.min.js'))
         ->appendFile($this->basePath('js/angular.min.js'))
-//        ->appendFile($this->basePath('js/kendoDataTable.js'))
         ->appendFile($this->basePath('js/setup/employee/employeeListController.js'))
         ->appendFile($this->basePath('assets/global/plugins/bootstrap-confirmation/bootstrap-confirmation.min.js'));
 ?>
@@ -106,9 +112,9 @@ echo json_encode($menu);
         #: (EMPLOYEE_CODE == null) ? '-' : EMPLOYEE_CODE #
         </td>
         <td>
-            #: (FIRST_NAME == null) ? ' ' : FIRST_NAME #
-            #: (MIDDLE_NAME == null) ? ' ' : MIDDLE_NAME #
-            #: (LAST_NAME == null) ? ' ' : LAST_NAME #
+        #: (FIRST_NAME == null) ? ' ' : FIRST_NAME #
+        #: (MIDDLE_NAME == null) ? ' ' : MIDDLE_NAME #
+        #: (LAST_NAME == null) ? ' ' : LAST_NAME #
         </td>
         <td>
         #: (BIRTH_DATE == null) ? '-' : BIRTH_DATE #
@@ -122,11 +128,11 @@ echo json_encode($menu);
         <td>
         <a class="btn-edit"
         href="<?= $this->url("employee", ["action" => "view"]) ?>/#:EMPLOYEE_ID#/1" style="height:17px;">
-            <i class="fa fa-edit"></i>
+        <i class="fa fa-edit"></i>
         </a> 
         <a class="confirmation btn-delete"
         href="<?= $this->url("employee", ["action" => "delete"]) ?>/#:EMPLOYEE_ID#" id="bs_#:EMPLOYEE_ID #" style="height:17px;">
-            <i class="fa fa-trash-o"></i></a>
+        <i class="fa fa-trash-o"></i></a>
         </td>
 
         </tr>

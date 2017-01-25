@@ -1,7 +1,11 @@
 <?php
-/**
- * Load Javascript files here
- */
+$this->headLink()
+        ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.common.min.css'))
+        ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.rtl.min.css'))
+        ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.default.min.css'))
+        ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.dataviz.min.css'))
+        ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.dataviz.default.min.css'));
+
 $this->headScript()->appendFile($this->basePath('jszip/dist/jszip.min.js'))
         ->appendFile($this->basePath('telerik_kendoui/js/kendo.all.min.js'))
         ->appendFile($this->basePath('js/angular.min.js'))
@@ -14,7 +18,8 @@ $this->headScript()->appendFile($this->basePath('jszip/dist/jszip.min.js'))
     </script>
 <?php } ?>
 <script>
-    document.menu =<?php $menu = ["id" => "menuTraining", "subMenu" => ["id" => "subMenuTrainingAssign"]];echo json_encode($menu);?>;
+    document.menu =<?php $menu = ["id" => "menuTraining", "subMenu" => ["id" => "subMenuTrainingAssign"]];
+echo json_encode($menu); ?>;
     document.url = '<?= $this->url("restful", ["action" => "index"]) ?>';
 </script>
 
@@ -24,46 +29,46 @@ $this->headScript()->appendFile($this->basePath('jszip/dist/jszip.min.js'))
 
 <div class="" ng-app="hris" ng-controller="trainingAssignController">
     <div class="margin-top-20  formbg mgap">
-    <div class="row">
-        <div class="col-sm-4 marginspace">
-            <?php print $this->formLabel($employees); ?>
-            <?php print $this->formElement($employees); ?>
+        <div class="row">
+            <div class="col-sm-4 marginspace">
+                <?php print $this->formLabel($employees); ?>
+<?php print $this->formElement($employees); ?>
+            </div>
+            <div class="col-sm-4 marginspace">
+                <?php print $this->formLabel($branches); ?>
+<?php print $this->formElement($branches); ?>
+            </div>
+            <div class="col-sm-4 marginspace">
+                <?php print $this->formLabel($departments); ?>
+<?php print $this->formElement($departments); ?>
+            </div>
+            <div class="col-sm-4 marginspace">
+                <?php print $this->formLabel($designations); ?>
+<?php print $this->formElement($designations); ?>
+            </div>
+            <div class="col-sm-4 marginspace">
+                <?php print $this->formLabel($positions); ?>
+<?php print $this->formElement($positions); ?>
+            </div>
+            <div class="col-sm-4 marginspace">
+                <?php print $this->formLabel($serviceTypes); ?>
+<?php print $this->formElement($serviceTypes); ?>
+            </div>
+            <div class="col-sm-4 marginspace">
+                <?php print $this->formLabel($serviceEventTypes); ?>
+<?php print $this->formElement($serviceEventTypes); ?>
+            </div>
+            <div class="col-sm-4 marginspace">
+                <?php print $this->formLabel($trainings); ?>
+<?php print $this->formElement($trainings); ?>
+            </div>       
+            <div class="col-sm-2">
+                <button ng-click="viewTrainingAssignList()" id="viewEmployees" class=" btn btn-default  i-search form-control" style="margin-top:21px !important">
+                    Search
+                    <i class="fa fa-search"></i>
+                </button>
+            </div>
         </div>
-        <div class="col-sm-4 marginspace">
-            <?php print $this->formLabel($branches); ?>
-            <?php print $this->formElement($branches); ?>
-        </div>
-        <div class="col-sm-4 marginspace">
-            <?php print $this->formLabel($departments); ?>
-            <?php print $this->formElement($departments); ?>
-        </div>
-        <div class="col-sm-4 marginspace">
-            <?php print $this->formLabel($designations); ?>
-            <?php print $this->formElement($designations); ?>
-        </div>
-        <div class="col-sm-4 marginspace">
-            <?php print $this->formLabel($positions); ?>
-            <?php print $this->formElement($positions); ?>
-        </div>
-        <div class="col-sm-4 marginspace">
-            <?php print $this->formLabel($serviceTypes); ?>
-            <?php print $this->formElement($serviceTypes); ?>
-        </div>
-        <div class="col-sm-4 marginspace">
-            <?php print $this->formLabel($serviceEventTypes); ?>
-            <?php print $this->formElement($serviceEventTypes); ?>
-        </div>
-        <div class="col-sm-4 marginspace">
-            <?php print $this->formLabel($trainings); ?>
-            <?php print $this->formElement($trainings); ?>
-        </div>       
-        <div class="col-sm-2">
-            <button ng-click="viewTrainingAssignList()" id="viewEmployees" class=" btn btn-default  i-search form-control" style="margin-top:21px !important">
-                Search
-                <i class="fa fa-search"></i>
-            </button>
-        </div>
-    </div>
     </div> 
     <div class="margin-top-20">
         <div class="table-toolbar">
@@ -72,7 +77,7 @@ $this->headScript()->appendFile($this->basePath('jszip/dist/jszip.min.js'))
                     <div class="btn-group">
                         <a href="<?= $this->url('trainingAssign', ['action' => 'assign']) ?>" id="sample_editable_1_new"
                            class="btn green"> Assign
-                                                <i class="fa fa-plus"></i>
+                            <i class="fa fa-plus"></i>
                         </a>
                     </div>
                 </div>
@@ -92,7 +97,7 @@ $this->headScript()->appendFile($this->basePath('jszip/dist/jszip.min.js'))
         </div> 
         <div id="trainingAssignListTable"></div>
     </div>  
-    
+
     <script id="rowTemplate" type="text/x-kendo-tmpl">
         <tr>
         <td>
@@ -129,7 +134,7 @@ $this->headScript()->appendFile($this->basePath('jszip/dist/jszip.min.js'))
         <i class="fa fa-trash-o"></i></a>
         </a>
         #}#
-        
+
         </td>
         </tr>
     </script>

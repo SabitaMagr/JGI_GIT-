@@ -1,7 +1,9 @@
 <?php
-/**
- * Load Javascript files here
- */
+$this->headLink()
+        ->appendStylesheet($this->basePath('assets/global/plugins/datatables/datatables.min.css'))
+        ->appendStylesheet($this->basePath('assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap.css'));
+
+
 $this->headScript()->appendFile($this->basePath('plugins/jquery-datatable/media/js/jquery.dataTables.min.js'));
 $this->headScript()->appendFile($this->basePath('plugins/jquery-datatable/extensions/TableTools/js/dataTables.tableTools.min.js'));
 $this->headScript()->appendFile($this->basePath('plugins/jquery-datatable/media/js/dataTables.bootstrap.js'));
@@ -19,10 +21,11 @@ $this->headScript()->appendFile($this->basePath('js/datatables.js'));
 
 <script>
     document.menu =<?php $menu = ["id" => "menuLeaveManagement", "subMenu" => ["id" => "subMenuLeaveApply"]];
-echo json_encode($menu); ?>;
+echo json_encode($menu);
+?>;
 </script>
 <div class="container">
-    <?= $this->navigation('Zend\Navigation\leaveapply')->breadcrumbs()->setMinDepth(0) ?>
+<?= $this->navigation('Zend\Navigation\leaveapply')->breadcrumbs()->setMinDepth(0) ?>
 </div>
 <div class="panel bg-white customShadow">
     <div class="panel-heading">
@@ -65,29 +68,29 @@ echo json_encode($menu); ?>;
                     </tr>
                 </thead>
                 <tbody>
-                    <?php foreach ($employeeList as $employee) : ?>
+<?php foreach ($employeeList as $employee) : ?>
                         <tr role="row">
                             <td class="v-align-middle sorting_1">
                                 <p>
-                                    <?php print $this->escapeHtml($employee->employeeCode) ?>
+    <?php print $this->escapeHtml($employee->employeeCode) ?>
                                 </p>
                             </td>
                             <td class="v-align-middle">
                                 <p>
-                                    <?php print $this->escapeHtml($employee->firstName) ?>
+    <?php print $this->escapeHtml($employee->firstName) ?>
                                 </p>
                             </td>
                             <td class="v-align-middle">
                                 <p>
-                                    <?php print $this->escapeHtml($employee->middleName) ?>
+    <?php print $this->escapeHtml($employee->middleName) ?>
                                 </p>
                             </td>
                             <td class="v-align-middle">
                                 <p>
-                                    <?php print $this->escapeHtml($employee->lastName) ?>
+    <?php print $this->escapeHtml($employee->lastName) ?>
                                 </p>
                             <td>
-                                <?php print $this->escapeHtml($employee->birthDate) ?>
+    <?php print $this->escapeHtml($employee->birthDate) ?>
                             </td>
                             <td class="v-align-middle">
                                 <p>
@@ -95,7 +98,7 @@ echo json_encode($menu); ?>;
                                 </p>
                             </td>
                         </tr>
-                    <?php endforeach; ?>
+<?php endforeach; ?>
                 </tbody>
             </table>
         </div>

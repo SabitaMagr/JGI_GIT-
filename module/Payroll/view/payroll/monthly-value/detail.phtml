@@ -1,7 +1,8 @@
 <?php
-/**
- * Load Javascript files here
- */
+$this->headLink()
+        ->appendStylesheet($this->basePath('assets/global/plugins/bootstrap-multiselect/css/bootstrap-multiselect.css'));
+
+
 $this->headScript()->appendFile($this->basePath('js/angular.min.js'));
 $this->headScript()->appendFile($this->basePath('js/ng-bootstrap-multiselect.js'));
 $this->headScript()->appendFile($this->basePath('js/Payroll/MonthlyValue/detailController.js'));
@@ -28,66 +29,66 @@ echo json_encode($menu);
         <div class="col-sm-12 ">
             <div class="portlet1 formbg">
                 <div class="portlet-body">
-                   <div class="margin-top-20">
-                    <div class="row">
-                       <div class="col-xs-12 col-sm-2">
-                            <label>
-                                Branch
-                            </label>
-                            <select class="form-control" ng-model="branch" ng-options="key as branch for (key,branch) in branches">
-                                <option value="">All</option>
-                            </select>
-                        </div>
-                        <div class="col-xs-12 col-sm-3">
-                            <label>
-                                Department
-                            </label>
-                            <select class="form-control" ng-model="department"
-                                    ng-options="key as department for (key,department) in departments">
-                                <option value="">All</option>
-                            </select>
-                        </div>
-                        <div class="col-xs-12 col-sm-3">
-                            <label>
-                                Designation
-                            </label>
-                            <select class="form-control" ng-model="designation"
-                                    ng-options="key as designation for (key,designation) in designations">
-                                <option value="">All</option>
-                            </select>
-                        </div>
-               <div class="col-xs-12 col-sm-3">
-                            <label>
-                                Flat Values
-                            </label>
-                            <div>
-                                <multiselect
-                                    ng-change="selectedMonthlyValuesChange()()"
-                                    ng-model="selectedMonthlyValues"
-                                    options="monthlyValue.text for monthlyValue in monthlyValues"    
-                                    data-multiple="true"                 
-                                    data-compare-by="id"                 
-                                    scroll-after-rows="5"                
-                                    filter-after-rows="5"      
-                                    max-width="100"                      
-                                    tabindex="-1">                     
-                                </multiselect>
-                                <button ng-click="selectAllFlagFN()" class="select-option" ng-bind="selectAllFlag ? 'Deselect All' : 'Select All'">
+                    <div class="margin-top-20">
+                        <div class="row">
+                            <div class="col-xs-12 col-sm-2">
+                                <label>
+                                    Branch
+                                </label>
+                                <select class="form-control" ng-model="branch" ng-options="key as branch for (key,branch) in branches">
+                                    <option value="">All</option>
+                                </select>
+                            </div>
+                            <div class="col-xs-12 col-sm-3">
+                                <label>
+                                    Department
+                                </label>
+                                <select class="form-control" ng-model="department"
+                                        ng-options="key as department for (key,department) in departments">
+                                    <option value="">All</option>
+                                </select>
+                            </div>
+                            <div class="col-xs-12 col-sm-3">
+                                <label>
+                                    Designation
+                                </label>
+                                <select class="form-control" ng-model="designation"
+                                        ng-options="key as designation for (key,designation) in designations">
+                                    <option value="">All</option>
+                                </select>
+                            </div>
+                            <div class="col-xs-12 col-sm-3">
+                                <label>
+                                    Flat Values
+                                </label>
+                                <div>
+                                    <multiselect
+                                        ng-change="selectedMonthlyValuesChange()()"
+                                        ng-model="selectedMonthlyValues"
+                                        options="monthlyValue.text for monthlyValue in monthlyValues"    
+                                        data-multiple="true"                 
+                                        data-compare-by="id"                 
+                                        scroll-after-rows="5"                
+                                        filter-after-rows="5"      
+                                        max-width="100"                      
+                                        tabindex="-1">                     
+                                    </multiselect>
+                                    <button ng-click="selectAllFlagFN()" class="select-option" ng-bind="selectAllFlag ? 'Deselect All' : 'Select All'">
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="col-sm-1">
+                                <button ng-click="view()" class="btn btn-default form-control i-search pull-right" style="margin-top:22px;">
+                                    View
+                                    <i class="fa fa-search"></i>
                                 </button>
                             </div>
-                        </div>
-
-                        <div class="col-sm-1">
-                            <button ng-click="view()" class="btn btn-default form-control i-search pull-right" style="margin-top:22px;">
-                                View
-                                <i class="fa fa-search"></i>
-                            </button>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
     </div>
     <div class="margin-top-20 scroller1" style="height: 400px;">
 
@@ -137,7 +138,7 @@ echo json_encode($menu);
                 </tr>
             </tfoot>
         </table>
-     
+
     </div>
     <div class="row">
         <div class="col-sm-12">

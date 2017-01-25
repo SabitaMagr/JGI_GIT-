@@ -1,5 +1,7 @@
 <?php
-//load js files here
+$this->headLink()
+        ->appendStylesheet($this->basePath('assets/global/plugins/codemirror-5.19.0/lib/codemirror.css'));
+
 $this->headScript()->appendFile($this->basePath('assets/global/plugins/bootstrap-wizard/jquery.bootstrap.wizard.min.js'));
 $this->headScript()->appendFile($this->basePath('assets/global/plugins/jquery-validation/js/jquery.validate.min.js'));
 $this->headScript()->appendFile($this->basePath('assets/global/plugins/codemirror-5.19.0/lib/codemirror.js'));

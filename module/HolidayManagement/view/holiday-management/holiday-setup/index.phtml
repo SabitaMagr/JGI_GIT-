@@ -1,7 +1,6 @@
 <?php
-/**
- * Load Javascript files here
- */
+
+
 $this->headScript()->appendFile($this->basePath('js/HolidayManagement/HolidaySetup/add.js'));
 $this->headScript()->appendFile($this->basePath('js/angular.min.js'));
 $this->headScript()->appendFile($this->basePath('js/HolidayManagement/HolidaySetup/holidayController.js'));
@@ -155,7 +154,7 @@ $form->prepare();
                         </div>
                         <?php print $this->formElementErrors()->render($startDate, ['class' => 'help-block error']) ?>
                     </div>
-                    
+
                     <div class="form-group required">
                         <label for="endDate">End Date</label>
                         <div class="input-group">

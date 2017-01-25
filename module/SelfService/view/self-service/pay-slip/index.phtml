@@ -1,12 +1,9 @@
 <?php
 $this->headScript()
-        ->appendFile($this->basePath('jszip/dist/jszip.min.js'))
-        ->appendFile($this->basePath('telerik_kendoui/js/kendo.all.min.js'))
         ->appendFile($this->basePath('js/angular.min.js'))
         ->appendFile($this->basePath('js/SelfService/pay-slip/index.js'))
         ->appendFile($this->basePath('js/jspdf.min.js'))
-        ->appendFile($this->basePath('js/html2canvas.js'))
-;
+        ->appendFile($this->basePath('js/html2canvas.js'));
 ?>
 
 <script>
@@ -15,7 +12,7 @@ $menu = ["id" => "menuSelfService", "subMenu" => ["id" => "subMenuPaySlip"]];
 echo json_encode($menu);
 ?>;
     document.rules =<?= json_encode($rules) ?>;
-    document.employeeId=<?= $employeeId?>;
+    document.employeeId =<?= $employeeId ?>;
 </script>
 <?php if ($this->messages) { ?>
     <script>
@@ -71,119 +68,119 @@ echo json_encode($menu);
                         <div class="row">
                             <div class="col-sm-12">
                                 <div class="table-responsive">
-                                <table class="table customTable">
-                                    <caption>
-                                        Employee Detail
-                                    </caption>
-                                    <tbody>
-                                        <tr>
-                                            <td>
-                                                Official Code
-                                            </td>
-                                            <td ng-bind="paySlip.employeeDetail.EMPLOYEE_CODE">
+                                    <table class="table customTable">
+                                        <caption>
+                                            Employee Detail
+                                        </caption>
+                                        <tbody>
+                                            <tr>
+                                                <td>
+                                                    Official Code
+                                                </td>
+                                                <td ng-bind="paySlip.employeeDetail.EMPLOYEE_CODE">
 
-                                            </td>
-                                            <td>
-                                                Name
-                                            </td>
-                                            <td >
-                                                <span ng-bind="paySlip.employeeDetail.FIRST_NAME">
+                                                </td>
+                                                <td>
+                                                    Name
+                                                </td>
+                                                <td >
+                                                    <span ng-bind="paySlip.employeeDetail.FIRST_NAME">
 
-                                                </span>
-                                                <span ng-bind="paySlip.employeeDetail.MIDDLE_NAME">
+                                                    </span>
+                                                    <span ng-bind="paySlip.employeeDetail.MIDDLE_NAME">
 
-                                                </span>
-                                                <span ng-bind="paySlip.employeeDetail.LAST_NAME">
+                                                    </span>
+                                                    <span ng-bind="paySlip.employeeDetail.LAST_NAME">
 
-                                                </span>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                Department
-                                            </td>
-                                            <td ng-bind="paySlip.employeeDetail.DEPARTMENT">
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    Department
+                                                </td>
+                                                <td ng-bind="paySlip.employeeDetail.DEPARTMENT">
 
-                                            </td>
-                                            <td>
-                                                Month
-                                            </td>
-                                            <td >
-                                                <span ng-repeat="month in payRollGeneratedMonths| filter:monthId:month.MONTH_ID">
-                                                    {{month.MONTH_EDESC}}
-                                                </span>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                Maritual Status
-                                            </td>
-                                            <td ng-bind="(paySlip.employeeDetail.MARITUAL_STATUS == 'M') ? 'Married' : 'Unmarried'">
+                                                </td>
+                                                <td>
+                                                    Month
+                                                </td>
+                                                <td >
+                                                    <span ng-repeat="month in payRollGeneratedMonths| filter:monthId:month.MONTH_ID">
+                                                        {{month.MONTH_EDESC}}
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    Maritual Status
+                                                </td>
+                                                <td ng-bind="(paySlip.employeeDetail.MARITUAL_STATUS == 'M') ? 'Married' : 'Unmarried'">
 
-                                            </td>
-                                            <td>
-                                                Absent Days
-                                            </td>
-                                            <td ng-bind="paySlip.absentDays">
+                                                </td>
+                                                <td>
+                                                    Absent Days
+                                                </td>
+                                                <td ng-bind="paySlip.absentDays">
 
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                Present Days
-                                            </td>
-                                            <td ng-bind="paySlip.presentDays">
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    Present Days
+                                                </td>
+                                                <td ng-bind="paySlip.presentDays">
 
-                                            </td>
-                                            <td>
-                                                Net Amount
-                                            </td>
-                                            <td ng-bind="paySlip.calculatedValue">
+                                                </td>
+                                                <td>
+                                                    Net Amount
+                                                </td>
+                                                <td ng-bind="paySlip.calculatedValue">
 
-                                            </td>
-                                        </tr>
-                                    </tbody>
+                                                </td>
+                                            </tr>
+                                        </tbody>
 
-                                </table>
+                                    </table>
                                 </div>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-sm-6">
                                 <div class="table-responsive">
-                                <table class="table customTable">
-                                    <caption>
-                                        Facilities and Renumerations (+)
-                                    </caption>
-                                    <tbody>
-                                        <tr ng-repeat="rule in rules" ng-show="rule.PAY_TYPE_FLAG == 'A'"> 
-                                            <td ng-bind="rule.PAY_EDESC">
-                                            </td>
-                                            <td ng-bind="paySlip.ruleValueKV[rule.PAY_ID]">
+                                    <table class="table customTable">
+                                        <caption>
+                                            Facilities and Renumerations (+)
+                                        </caption>
+                                        <tbody>
+                                            <tr ng-repeat="rule in rules" ng-show="rule.PAY_TYPE_FLAG == 'A'"> 
+                                                <td ng-bind="rule.PAY_EDESC">
+                                                </td>
+                                                <td ng-bind="paySlip.ruleValueKV[rule.PAY_ID]">
 
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
                                 </div>
                             </div>
                             <div class="col-sm-6">
-                                   <div class="table-responsive">
-                                <table class="table customTable">
-                                    <caption>
-                                        Deductions and Savings (-)
-                                    </caption>
-                                    <tbody>
-                                        <tr ng-repeat="rule in rules" ng-show="rule.PAY_TYPE_FLAG == 'D'"> 
-                                            <td ng-bind="rule.PAY_EDESC">
-                                            </td>
-                                            <td ng-bind="paySlip.ruleValueKV[rule.PAY_ID]">
+                                <div class="table-responsive">
+                                    <table class="table customTable">
+                                        <caption>
+                                            Deductions and Savings (-)
+                                        </caption>
+                                        <tbody>
+                                            <tr ng-repeat="rule in rules" ng-show="rule.PAY_TYPE_FLAG == 'D'"> 
+                                                <td ng-bind="rule.PAY_EDESC">
+                                                </td>
+                                                <td ng-bind="paySlip.ruleValueKV[rule.PAY_ID]">
 
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                                   </div>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
                         </div>
 

@@ -1,13 +1,12 @@
 <?php
-/**
- * Load Javascript files here
- */
+$this->headLink()
+        ->appendStylesheet($this->basePath('dropzone/dropzone.min.css'));
+
 $this->headScript()->appendFile($this->basePath('assets/pages/scripts/ui-modals.min.js'));
 $this->headScript()->appendFile($this->basePath('js/angular.min.js'));
 $this->headScript()->appendFile($this->basePath('assets/global/plugins/bootstrap-master/ui-bootstrap-tpls-2.2.0.min.js'));
 $this->headScript()->appendFile($this->basePath('assets/global/plugins/boostrap-form-wizard/js/jquery.bootstrap.wizard.min.js'));
 $this->headScript()->appendFile($this->basePath('js/form_wizard.js'));
-$this->headScript()->appendFile($this->basePath('js/custom.js'));
 $this->headScript()->appendFile($this->basePath('js/setup/employee/add.js'));
 $this->headScript()->appendFile($this->basePath('js/setup/employee/employeeEditController.js'));
 $this->headScript()->appendFile($this->basePath('dropzone/dropzone.min.js'));

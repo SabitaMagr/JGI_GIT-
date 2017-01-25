@@ -1,7 +1,7 @@
 <?php
-/**
- * Load Javascript files here
- */
+$this->headLink()
+        ->appendStylesheet($this->basePath('assets/global/plugins/ladda/ladda-themeless.min.css'));
+
 $this->headScript()->appendFile($this->basePath('assets/global/plugins/ladda/spin.min.js'));
 $this->headScript()->appendFile($this->basePath('assets/global/plugins/ladda/ladda.min.js'));
 $this->headScript()->appendFile($this->basePath('js/angular.min.js'));

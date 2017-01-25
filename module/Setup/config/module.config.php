@@ -25,11 +25,9 @@ return [
                     'defaults' => [
                         'controller' => Controller\DesignationController::class,
                         'action' => 'index'
-
                     ]
                 ]
             ],
-
             'company' => [
                 'type' => Segment::class,
                 'options' => [
@@ -86,7 +84,6 @@ return [
                     ]
                 ],
             ],
-
             'serviceType' => [
                 'type' => segment::class,
                 'options' => [
@@ -101,8 +98,6 @@ return [
                     ]
                 ],
             ],
-
-
             'jobHistory' => [
                 'type' => segment::class,
                 'options' => [
@@ -117,7 +112,6 @@ return [
                     ]
                 ],
             ],
-
             'empCurrentPosting' => [
                 'type' => segment::class,
                 'options' => [
@@ -132,7 +126,6 @@ return [
                     ]
                 ],
             ],
-
             'webService' => [
                 'type' => segment::class,
                 'options' => [
@@ -147,13 +140,13 @@ return [
                     ]
                 ],
             ],
-            'recommendapprove'=>[
-              'type'=>segment::class,
-                'options'=>[
-                    'route'=>'/setup/recommendapprove[/:action[/:id]]',
-                    'constants'=>[
-                      'action'=>'[a-zA-Z][a-zA-Z0-9_-]*',
-                        'id'=>'[0-9]+',
+            'recommendapprove' => [
+                'type' => segment::class,
+                'options' => [
+                    'route' => '/setup/recommendapprove[/:action[/:id]]',
+                    'constants' => [
+                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'id' => '[0-9]+',
                     ],
                     'defaults' => [
                         'controller' => Controller\RecommendApproveController::class,
@@ -161,13 +154,13 @@ return [
                     ]
                 ],
             ],
-            'serviceEventType'=>[
-                'type'=>segment::class,
-                'options'=>[
-                    'route'=>'/setup/serviceEventType[/:action[/:id]]',
-                    'constants'=>[
-                        'action'=>'[a-zA-Z][a-zA-Z0-9_-]*',
-                        'id'=>'[0-9]+',
+            'serviceEventType' => [
+                'type' => segment::class,
+                'options' => [
+                    'route' => '/setup/serviceEventType[/:action[/:id]]',
+                    'constants' => [
+                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'id' => '[0-9]+',
                     ],
                     'defaults' => [
                         'controller' => Controller\ServiceEventTypeController::class,
@@ -175,14 +168,13 @@ return [
                     ]
                 ],
             ],
-
-            'academicDegree'=>[
-                'type'=>segment::class,
-                'options'=>[
-                    'route'=>'/setup/academicDegree[/:action[/:id]]',
-                    'constants'=>[
-                        'action'=>'[a-zA-Z][a-zA-Z0-9_-]*',
-                        'id'=>'[0-9]+',
+            'academicDegree' => [
+                'type' => segment::class,
+                'options' => [
+                    'route' => '/setup/academicDegree[/:action[/:id]]',
+                    'constants' => [
+                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'id' => '[0-9]+',
                     ],
                     'defaults' => [
                         'controller' => Controller\AcademicDegreeController::class,
@@ -190,14 +182,13 @@ return [
                     ]
                 ],
             ],
-
-            'academicUniversity'=>[
-                'type'=>segment::class,
-                'options'=>[
-                    'route'=>'/setup/academicUniversity[/:action[/:id]]',
-                    'constants'=>[
-                        'action'=>'[a-zA-Z][a-zA-Z0-9_-]*',
-                        'id'=>'[0-9]+',
+            'academicUniversity' => [
+                'type' => segment::class,
+                'options' => [
+                    'route' => '/setup/academicUniversity[/:action[/:id]]',
+                    'constants' => [
+                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'id' => '[0-9]+',
                     ],
                     'defaults' => [
                         'controller' => Controller\AcademicUniversityController::class,
@@ -205,14 +196,13 @@ return [
                     ]
                 ],
             ],
-
-            'academicProgram'=>[
-                'type'=>segment::class,
-                'options'=>[
-                    'route'=>'/setup/academicProgram[/:action[/:id]]',
-                    'constants'=>[
-                        'action'=>'[a-zA-Z][a-zA-Z0-9_-]*',
-                        'id'=>'[0-9]+',
+            'academicProgram' => [
+                'type' => segment::class,
+                'options' => [
+                    'route' => '/setup/academicProgram[/:action[/:id]]',
+                    'constants' => [
+                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'id' => '[0-9]+',
                     ],
                     'defaults' => [
                         'controller' => Controller\AcademicProgramController::class,
@@ -220,14 +210,13 @@ return [
                     ]
                 ],
             ],
-
-            'academicCourse'=>[
-                'type'=>segment::class,
-                'options'=>[
-                    'route'=>'/setup/academicCourse[/:action[/:id]]',
-                    'constants'=>[
-                        'action'=>'[a-zA-Z][a-zA-Z0-9_-]*',
-                        'id'=>'[0-9]+',
+            'academicCourse' => [
+                'type' => segment::class,
+                'options' => [
+                    'route' => '/setup/academicCourse[/:action[/:id]]',
+                    'constants' => [
+                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'id' => '[0-9]+',
                     ],
                     'defaults' => [
                         'controller' => Controller\AcademicCourseController::class,
@@ -249,7 +238,6 @@ return [
                     ]
                 ],
             ],
-
             'loan' => [
                 'type' => segment::class,
                 'options' => [
@@ -278,7 +266,6 @@ return [
                     ]
                 ],
             ],
-            
             'institute' => [
                 'type' => segment::class,
                 'options' => [
@@ -293,50 +280,34 @@ return [
                     ]
                 ],
             ],
-
-//            'leave' => [
-//                'type' => segment::class,
-//                'options' => [
-//                    'route' => '/leave[/:action[/:id]]',
-//                    'constants' => [
-//                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
-//                        'id' => '[0-9]+',
-//                    ],
-//                    'defaults' => [
-//                        'controller' => Controller\LeaveMasterController::class,
-//                        'action' => 'index',
-//                    ]
-//                ],
-//            ],
-
         ]
     ],
     'navigation' => [
         'employee' => [
-            [
+                [
                 'label' => 'Employee',
                 'route' => 'employee',
             ],
-            [
+                [
                 'label' => 'Employee',
                 'route' => 'employee',
                 'pages' => [
-                    [
+                        [
                         'label' => 'List',
                         'route' => 'employee',
                         'action' => 'index',
                     ],
-                    [
+                        [
                         'label' => 'Add',
                         'route' => 'employee',
                         'action' => 'add',
                     ],
-                    [
+                        [
                         'label' => 'Edit',
                         'route' => 'employee',
                         'action' => 'edit',
                     ],
-                    [
+                        [
                         'label' => 'Detail',
                         'route' => 'employee',
                         'action' => 'view',
@@ -345,27 +316,25 @@ return [
             ]
         ],
         'designation' => [
-
-            [
+                [
                 'label' => 'Designation',
                 'route' => 'designation',
             ],
-            [
+                [
                 'label' => 'Designation',
                 'route' => 'designation',
                 'pages' => [
-                    [
+                        [
                         'label' => 'List',
                         'route' => 'designation',
                         'action' => 'index',
                     ],
-
-                    [
+                        [
                         'label' => 'Add',
                         'route' => 'designation',
                         'action' => 'add',
                     ],
-                    [
+                        [
                         'label' => 'Edit',
                         'route' => 'designation',
                         'action' => 'edit',
@@ -374,26 +343,25 @@ return [
             ]
         ],
         'company' => [
-
-            [
+                [
                 'label' => 'Company',
                 'route' => 'company',
             ],
-            [
+                [
                 'label' => 'Company',
                 'route' => 'company',
                 'pages' => [
-                    [
+                        [
                         'label' => 'List',
                         'route' => 'company',
                         'action' => 'index',
                     ],
-                    [
+                        [
                         'label' => 'Add',
                         'route' => 'company',
                         'action' => 'add',
                     ],
-                    [
+                        [
                         'label' => 'Edit',
                         'route' => 'company',
                         'action' => 'edit',
@@ -402,26 +370,25 @@ return [
             ]
         ],
         'branch' => [
-
-            [
+                [
                 'label' => 'Branch',
                 'route' => 'branch',
             ],
-            [
+                [
                 'label' => 'Branch',
                 'route' => 'branch',
                 'pages' => [
-                    [
+                        [
                         'label' => 'List',
                         'route' => 'branch',
                         'action' => 'index',
                     ],
-                    [
+                        [
                         'label' => 'Add',
                         'route' => 'branch',
                         'action' => 'add',
                     ],
-                    [
+                        [
                         'label' => 'Edit',
                         'route' => 'branch',
                         'action' => 'edit',
@@ -430,26 +397,25 @@ return [
             ]
         ],
         'department' => [
-
-            [
+                [
                 'label' => 'Department',
                 'route' => 'department',
             ],
-            [
+                [
                 'label' => 'Department',
                 'route' => 'department',
                 'pages' => [
-                    [
+                        [
                         'label' => 'List',
                         'route' => 'department',
                         'action' => 'index',
                     ],
-                    [
+                        [
                         'label' => 'Add',
                         'route' => 'department',
                         'action' => 'add',
                     ],
-                    [
+                        [
                         'label' => 'Edit',
                         'route' => 'department',
                         'action' => 'edit',
@@ -458,26 +424,25 @@ return [
             ]
         ],
         'position' => [
-
-            [
+                [
                 'label' => 'Position',
                 'route' => 'position',
             ],
-            [
+                [
                 'label' => 'Position',
                 'route' => 'position',
                 'pages' => [
-                    [
+                        [
                         'label' => 'List',
                         'route' => 'position',
                         'action' => 'index',
                     ],
-                    [
+                        [
                         'label' => 'Add',
                         'route' => 'position',
                         'action' => 'add',
                     ],
-                    [
+                        [
                         'label' => 'Edit',
                         'route' => 'position',
                         'action' => 'edit',
@@ -486,26 +451,25 @@ return [
             ]
         ],
         'serviceType' => [
-
-            [
+                [
                 'label' => 'Service Type',
                 'route' => 'serviceType',
             ],
-            [
+                [
                 'label' => 'Service Type',
                 'route' => 'serviceType',
                 'pages' => [
-                    [
+                        [
                         'label' => 'List',
                         'route' => 'serviceType',
                         'action' => 'index',
                     ],
-                    [
+                        [
                         'label' => 'Add',
                         'route' => 'serviceType',
                         'action' => 'add',
                     ],
-                    [
+                        [
                         'label' => 'Edit',
                         'route' => 'serviceType',
                         'action' => 'edit',
@@ -514,26 +478,25 @@ return [
             ]
         ],
         'empCurrentPosting' => [
-
-            [
+                [
                 'label' => 'Employee Current Posting',
                 'route' => 'empCurrentPosting',
             ],
-            [
+                [
                 'label' => 'Employee Current Posting',
                 'route' => 'empCurrentPosting',
                 'pages' => [
-                    [
+                        [
                         'label' => 'List',
                         'route' => 'empCurrentPosting',
                         'action' => 'index',
                     ],
-                    [
+                        [
                         'label' => 'Add',
                         'route' => 'empCurrentPosting',
                         'action' => 'add',
                     ],
-                    [
+                        [
                         'label' => 'Edit',
                         'route' => 'empCurrentPosting',
                         'action' => 'edit',
@@ -542,26 +505,25 @@ return [
             ]
         ],
         'jobHistory' => [
-
-            [
+                [
                 'label' => 'Service Status Update',
                 'route' => 'jobHistory',
             ],
-            [
+                [
                 'label' => 'Service Status Update',
                 'route' => 'jobHistory',
                 'pages' => [
-                    [
+                        [
                         'label' => 'List',
                         'route' => 'jobHistory',
                         'action' => 'index',
                     ],
-                    [
+                        [
                         'label' => 'Add',
                         'route' => 'jobHistory',
                         'action' => 'add',
                     ],
-                    [
+                        [
                         'label' => 'Edit',
                         'route' => 'jobHistory',
                         'action' => 'edit',
@@ -570,31 +532,30 @@ return [
             ]
         ],
         'recommendapprove' => [
-
-            [
+                [
                 'label' => 'Reporting Hierarchy',
                 'route' => 'recommendapprove',
             ],
-            [
+                [
                 'label' => 'Reporting Hierarchy',
                 'route' => 'recommendapprove',
                 'pages' => [
-                    [
+                        [
                         'label' => 'List',
                         'route' => 'recommendapprove',
                         'action' => 'index',
                     ],
-                    [
+                        [
                         'label' => 'Add',
                         'route' => 'recommendapprove',
                         'action' => 'add',
                     ],
-                    [
+                        [
                         'label' => 'Edit',
                         'route' => 'recommendapprove',
                         'action' => 'edit',
                     ],
-                    [
+                        [
                         'label' => 'Group Assign',
                         'route' => 'recommendapprove',
                         'action' => 'groupAssign',
@@ -603,26 +564,25 @@ return [
             ]
         ],
         'serviceEventType' => [
-
-            [
+                [
                 'label' => 'Service Event Type',
                 'route' => 'serviceEventType',
             ],
-            [
+                [
                 'label' => 'Service Event Type',
                 'route' => 'serviceEventType',
                 'pages' => [
-                    [
+                        [
                         'label' => 'List',
                         'route' => 'serviceEventType',
                         'action' => 'index',
                     ],
-                    [
+                        [
                         'label' => 'Add',
                         'route' => 'serviceEventType',
                         'action' => 'add',
                     ],
-                    [
+                        [
                         'label' => 'Edit',
                         'route' => 'serviceEventType',
                         'action' => 'edit',
@@ -631,26 +591,25 @@ return [
             ]
         ],
         'academicDegree' => [
-
-            [
+                [
                 'label' => 'Academic Degree',
                 'route' => 'academicDegree',
             ],
-            [
+                [
                 'label' => 'Academic Degree',
                 'route' => 'academicDegree',
                 'pages' => [
-                    [
+                        [
                         'label' => 'List',
                         'route' => 'academicDegree',
                         'action' => 'index',
                     ],
-                    [
+                        [
                         'label' => 'Add',
                         'route' => 'academicDegree',
                         'action' => 'add',
                     ],
-                    [
+                        [
                         'label' => 'Edit',
                         'route' => 'academicDegree',
                         'action' => 'edit',
@@ -659,26 +618,25 @@ return [
             ]
         ],
         'academicUniversity' => [
-
-            [
+                [
                 'label' => 'Academic University',
                 'route' => 'academicUniversity',
             ],
-            [
+                [
                 'label' => 'Academic University',
                 'route' => 'academicUniversity',
                 'pages' => [
-                    [
+                        [
                         'label' => 'List',
                         'route' => 'academicUniversity',
                         'action' => 'index',
                     ],
-                    [
+                        [
                         'label' => 'Add',
                         'route' => 'academicUniversity',
                         'action' => 'add',
                     ],
-                    [
+                        [
                         'label' => 'Edit',
                         'route' => 'academicUniversity',
                         'action' => 'edit',
@@ -687,26 +645,25 @@ return [
             ]
         ],
         'academicProgram' => [
-
-            [
+                [
                 'label' => 'Academic Program',
                 'route' => 'academicProgram',
             ],
-            [
+                [
                 'label' => 'Academic Program',
                 'route' => 'academicProgram',
                 'pages' => [
-                    [
+                        [
                         'label' => 'List',
                         'route' => 'academicProgram',
                         'action' => 'index',
                     ],
-                    [
+                        [
                         'label' => 'Add',
                         'route' => 'academicProgram',
                         'action' => 'add',
                     ],
-                    [
+                        [
                         'label' => 'Edit',
                         'route' => 'academicProgram',
                         'action' => 'edit',
@@ -715,26 +672,25 @@ return [
             ]
         ],
         'academicCourse' => [
-
-            [
+                [
                 'label' => 'Academic Course',
                 'route' => 'academicCourse',
             ],
-            [
+                [
                 'label' => 'Academic Course',
                 'route' => 'academicCourse',
                 'pages' => [
-                    [
+                        [
                         'label' => 'List',
                         'route' => 'academicCourse',
                         'action' => 'index',
                     ],
-                    [
+                        [
                         'label' => 'Add',
                         'route' => 'academicCourse',
                         'action' => 'add',
                     ],
-                    [
+                        [
                         'label' => 'Edit',
                         'route' => 'academicCourse',
                         'action' => 'edit',
@@ -743,26 +699,25 @@ return [
             ]
         ],
         'training' => [
-
-            [
+                [
                 'label' => 'Training',
                 'route' => 'training',
             ],
-            [
+                [
                 'label' => 'Training',
                 'route' => 'training',
                 'pages' => [
-                    [
+                        [
                         'label' => 'List',
                         'route' => 'training',
                         'action' => 'index',
                     ],
-                    [
+                        [
                         'label' => 'Add',
                         'route' => 'training',
                         'action' => 'add',
                     ],
-                    [
+                        [
                         'label' => 'Edit',
                         'route' => 'training',
                         'action' => 'edit',
@@ -771,26 +726,25 @@ return [
             ]
         ],
         'loan' => [
-
-            [
+                [
                 'label' => 'Loan',
                 'route' => 'loan',
             ],
-            [
+                [
                 'label' => 'Loan',
                 'route' => 'loan',
                 'pages' => [
-                    [
+                        [
                         'label' => 'List',
                         'route' => 'loan',
                         'action' => 'index',
                     ],
-                    [
+                        [
                         'label' => 'Add',
                         'route' => 'loan',
                         'action' => 'add',
                     ],
-                    [
+                        [
                         'label' => 'Edit',
                         'route' => 'loan',
                         'action' => 'edit',
@@ -799,25 +753,25 @@ return [
             ]
         ],
         'advance' => [
-            [
+                [
                 'label' => 'Advance',
                 'route' => 'advance',
             ],
-            [
+                [
                 'label' => 'Advance',
                 'route' => 'advance',
                 'pages' => [
-                    [
+                        [
                         'label' => 'List',
                         'route' => 'advance',
                         'action' => 'index',
                     ],
-                    [
+                        [
                         'label' => 'Add',
                         'route' => 'advance',
                         'action' => 'add',
                     ],
-                    [
+                        [
                         'label' => 'Edit',
                         'route' => 'advance',
                         'action' => 'edit',
@@ -826,25 +780,25 @@ return [
             ]
         ],
         'institute' => [
-            [
+                [
                 'label' => 'Institute',
                 'route' => 'institute',
             ],
-            [
+                [
                 'label' => 'Institute',
                 'route' => 'institute',
                 'pages' => [
-                    [
+                        [
                         'label' => 'List',
                         'route' => 'institute',
                         'action' => 'index',
                     ],
-                    [
+                        [
                         'label' => 'Add',
                         'route' => 'institute',
                         'action' => 'add',
                     ],
-                    [
+                        [
                         'label' => 'Edit',
                         'route' => 'institute',
                         'action' => 'edit',
@@ -865,20 +819,18 @@ return [
             Controller\EmpCurrentPostingController::class => ControllerFactory::class,
             Controller\JobHistoryController::class => ControllerFactory::class,
             Controller\WebServiceController::class => ControllerFactory::class,
-            Controller\RecommendApproveController::class=>ControllerFactory::class,
-            Controller\ServiceEventTypeController::class=>ControllerFactory::class,
-            Controller\AcademicDegreeController::class=>ControllerFactory::class,
-            Controller\AcademicUniversityController::class=>ControllerFactory::class,
-            Controller\AcademicProgramController::class=>ControllerFactory::class,
-            Controller\AcademicCourseController::class=>ControllerFactory::class,
-            Controller\TrainingController::class=>ControllerFactory::class,
-            Controller\LoanController::class=>ControllerFactory::class,
-            Controller\AdvanceController::class=> ControllerFactory::class,
-            Controller\InstituteController::class=> ControllerFactory::class
-//            Controller\LeaveMasterController::class => Controller\ControllerFactory::class,
+            Controller\RecommendApproveController::class => ControllerFactory::class,
+            Controller\ServiceEventTypeController::class => ControllerFactory::class,
+            Controller\AcademicDegreeController::class => ControllerFactory::class,
+            Controller\AcademicUniversityController::class => ControllerFactory::class,
+            Controller\AcademicProgramController::class => ControllerFactory::class,
+            Controller\AcademicCourseController::class => ControllerFactory::class,
+            Controller\TrainingController::class => ControllerFactory::class,
+            Controller\LoanController::class => ControllerFactory::class,
+            Controller\AdvanceController::class => ControllerFactory::class,
+            Controller\InstituteController::class => ControllerFactory::class
         ],
     ],
-
     'view_manager' => [
         'template_path_stack' => [
             __DIR__ . '/../view',

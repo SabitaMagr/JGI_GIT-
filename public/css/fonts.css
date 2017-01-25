@@ -1,120 +1,70 @@
-
-
-
-
 @font-face {
     font-family: 'open_sansbold';
     src: url('open-sans.bold-webfont.woff2') format('woff2'),
          url('open-sans.bold-webfont.woff') format('woff');
     font-weight: normal;
     font-style: normal;
-
 }
-
-
-
-
 @font-face {
     font-family: 'open_sansbold_italic';
     src: url('open-sans.bold-italic-webfont.woff2') format('woff2'),
          url('open-sans.bold-italic-webfont.woff') format('woff');
     font-weight: normal;
     font-style: normal;
-
 }
-
-
-
-
 @font-face {
     font-family: 'open_sansextrabold';
     src: url('open-sans.extrabold-webfont.woff2') format('woff2'),
          url('open-sans.extrabold-webfont.woff') format('woff');
     font-weight: normal;
     font-style: normal;
-
 }
-
-
-
-
 @font-face {
     font-family: 'open_sansextrabold_italic';
     src: url('open-sans.extrabold-italic-webfont.woff2') format('woff2'),
          url('open-sans.extrabold-italic-webfont.woff') format('woff');
     font-weight: normal;
     font-style: normal;
-
 }
-
-
-
-
 @font-face {
     font-family: 'open_sansitalic';
     src: url('open-sans.italic-webfont.woff2') format('woff2'),
          url('open-sans.italic-webfont.woff') format('woff');
     font-weight: normal;
     font-style: normal;
-
 }
-
-
-
-
 @font-face {
     font-family: 'open_sanslight';
     src: url('open-sans.light-webfont.woff2') format('woff2'),
          url('open-sans.light-webfont.woff') format('woff');
     font-weight: normal;
     font-style: normal;
-
 }
-
-
-
-
 @font-face {
     font-family: 'open_sanslight_italic';
     src: url('open-sans.light-italic-webfont.woff2') format('woff2'),
          url('open-sans.light-italic-webfont.woff') format('woff');
     font-weight: normal;
     font-style: normal;
-
 }
-
-
-
-
 @font-face {
     font-family: 'open_sansregular';
     src: url('open-sans.regular-webfont.woff2') format('woff2'),
          url('open-sans.regular-webfont.woff') format('woff');
     font-weight: normal;
     font-style: normal;
-
 }
-
-
-
-
 @font-face {
     font-family: 'open_sanssemibold';
     src: url('open-sans.semibold-webfont.woff2') format('woff2'),
          url('open-sans.semibold-webfont.woff') format('woff');
     font-weight: normal;
     font-style: normal;
-
 }
-
-
-
-
 @font-face {
     font-family: 'open_sanssemibold_italic';
     src: url('open-sans.semibold-italic-webfont.woff2') format('woff2'),
          url('open-sans.semibold-italic-webfont.woff') format('woff');
     font-weight: normal;
     font-style: normal;
-
 }

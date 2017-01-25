@@ -1,27 +1,34 @@
 <?php
-/**
- * Load Javascript files here
- */
+$this->headLink()
+        ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.common.min.css'))
+        ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.rtl.min.css'))
+        ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.default.min.css'))
+        ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.dataviz.min.css'))
+        ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.dataviz.default.min.css'));
+
+
 $this->headScript()
-    ->appendFile($this->basePath('jszip/dist/jszip.min.js'))
-    ->appendFile($this->basePath('telerik_kendoui/js/kendo.all.min.js'))
-    ->appendFile($this->basePath('js/setup/academic-program/index.js'))
-    ->appendFile($this->basePath('assets/global/plugins/bootstrap-confirmation/bootstrap-confirmation.min.js'));
+        ->appendFile($this->basePath('jszip/dist/jszip.min.js'))
+        ->appendFile($this->basePath('telerik_kendoui/js/kendo.all.min.js'))
+        ->appendFile($this->basePath('js/setup/academic-program/index.js'))
+        ->appendFile($this->basePath('assets/global/plugins/bootstrap-confirmation/bootstrap-confirmation.min.js'));
 ?>
 
-<?php
-if($this->messages) { ?>
+<?php if ($this->messages) { ?>
     <script>
-        document.messages=<?php echo json_encode($this->messages); ?>
+        document.messages =<?php echo json_encode($this->messages); ?>
     </script>
 <?php } ?>
 
 <script>
-    document.menu =<?php $menu = ["id" => "menuSetup", "subMenu" => ["id" => "subMenuAcademicProgram"]];echo json_encode($menu);?>;
-    document.academicPrograms = <?php echo json_encode($academicPrograms);?>;
+    document.menu =<?php
+$menu = ["id" => "menuSetup", "subMenu" => ["id" => "subMenuAcademicProgram"]];
+echo json_encode($menu);
+?>;
+    document.academicPrograms = <?php echo json_encode($academicPrograms); ?>;
 </script>
 <div class="page-bar">
-    <?= $this->navigation('Zend\Navigation\academicProgram')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
+<?= $this->navigation('Zend\Navigation\academicProgram')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
 
 
@@ -32,7 +39,7 @@ if($this->messages) { ?>
                 <div class="btn-group">
                     <a href="<?= $this->url('academicProgram', ['action' => 'add']) ?>" id="sample_editable_1_new"
                        class="btn green"> Add New
-                                            <i class="fa fa-plus"></i>
+                        <i class="fa fa-plus"></i>
                     </a>
                 </div>
             </div>
@@ -53,7 +60,7 @@ if($this->messages) { ?>
 
     <div id="academicProgramTable">
     </div>
-    
+
     <script id="rowTemplate" type="text/x-kendo-tmpl">
         <tr>
         <td>
