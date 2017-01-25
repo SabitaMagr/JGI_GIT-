@@ -1,7 +1,4 @@
 <?php
-/**
- * Load Javascript files here
- */
 $this->headScript()->appendFile($this->basePath('js/LeaveManagement/LeaveRequest/add.js'));
 $this->headScript()->appendFile($this->basePath('js/manager-service/leave-approve/view.js'));
 $this->headScript()->appendFile($this->basePath('js/angular.min.js'));
@@ -10,7 +7,6 @@ $this->headScript()->appendFile($this->basePath('js/LeaveManagement/LeaveRequest
 
 
 <?php
-
 $form->setAttribute('role', 'form');
 
 $leaveId = $form->get('leaveId');
@@ -27,9 +23,9 @@ $halfDay->setAttributes(['disabled' => "disabled"]);
 $remarks = $form->get('remarks');
 $remarks->setAttributes(['disabled' => 'disabled']);
 $recommendedRemarks = $form->get('recommendedRemarks');
-$recommendedRemarks->setAttributes(['required'=>'true']);
+$recommendedRemarks->setAttributes(['required' => 'true']);
 $approvedRemarks = $form->get('approvedRemarks');
-$approvedRemarks->setAttributes(['required'=>'true']);
+$approvedRemarks->setAttributes(['required' => 'true']);
 
 $submit = $form->get('submit');
 $submit->setAttribute('value', 'Approve');
@@ -48,24 +44,25 @@ if ($this->messages) {
 $form->prepare();
 print $this->form()->openTag($form);
 ?>
-    <script>
-        document.menu =<?php $menu = ["id" => "menuManagerService", "subMenu" => ["id" => "subMenuLeavetoApprove"]];echo json_encode($menu);?>;
-        document.url = '<?= $this->url("webService", ["action" => "index"]) ?>';
-    </script>
+<script>
+    document.menu =<?php $menu = ["id" => "menuManagerService", "subMenu" => ["id" => "subMenuLeavetoApprove"]];
+echo json_encode($menu); ?>;
+    document.url = '<?= $this->url("webService", ["action" => "index"]) ?>';
+</script>
 
-    <div class="page-bar">
-        <?= $this->navigation('Zend\Navigation\leaveapprove')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb'); ?>
-    </div>
-    <div class="row margin-top-20">
-        <div class="col-sm-8 col-sm-offset-2">
-            <div class="portlet box custom-box">
-                <div class="portlet-title">
-                    <div class="caption">
-                        <i class="fa fa-user"></i>leave Request Detail
-                    </div>
+<div class="page-bar">
+<?= $this->navigation('Zend\Navigation\leaveapprove')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb'); ?>
+</div>
+<div class="row margin-top-20">
+    <div class="col-sm-8 col-sm-offset-2">
+        <div class="portlet box custom-box">
+            <div class="portlet-title">
+                <div class="caption">
+                    <i class="fa fa-user"></i>leave Request Detail
                 </div>
-                <div class="portlet-body">
-                    <div class="border-bottom">
+            </div>
+            <div class="portlet-body">
+                <div class="border-bottom">
                     <div class="form-group">
                         <div class="row div-font-11">
                             <div class="col-md-6">
@@ -77,7 +74,7 @@ print $this->form()->openTag($form);
                                         </td>
                                         <td width="15">:</td>
                                         <td>
-                                            <?php echo $employeeName; ?>
+<?php echo $employeeName; ?>
                                         </td>
                                     </tr>
                                     <tr height="30">
@@ -86,7 +83,7 @@ print $this->form()->openTag($form);
                                         </td>
                                         <td width="15">:</td>
                                         <td>
-                                            <?php echo $requestedDt; ?>
+<?php echo $requestedDt; ?>
                                         </td>
                                     </tr>
                                     <tr height="30">
@@ -95,25 +92,27 @@ print $this->form()->openTag($form);
                                         </td>
                                         <td width="15">:</td>
                                         <td>
-                                            <?php if ($role == 3) {
-                                                echo 'Approver';
-                                            } else if ($role == 2) {
-                                                echo 'Recommender';
-                                            }else if($role==4){
-                                                echo 'Recommender\Approver';
-                                            } ?>
+<?php
+if ($role == 3) {
+    echo 'Approver';
+} else if ($role == 2) {
+    echo 'Recommender';
+} else if ($role == 4) {
+    echo 'Recommender\Approver';
+}
+?>
                                         </td>
                                     </tr>
-                                    <?php if($role!=4){ ?>
-                                    <tr height="30">
-                                        <td>
-                                            <?= ($role==3)? "Recommender":"Approver"; ?>
-                                        </td>
-                                        <td width="15">:</td>
-                                        <td>
-                                            <?= ($role==3)? $recommender:$approver; ?>
-                                        </td>
-                                    </tr>
+                                    <?php if ($role != 4) { ?>
+                                        <tr height="30">
+                                            <td>
+                                                <?= ($role == 3) ? "Recommender" : "Approver"; ?>
+                                            </td>
+                                            <td width="15">:</td>
+                                            <td>
+                                                <?= ($role == 3) ? $recommender : $approver; ?>
+                                            </td>
+                                        </tr>
                                     <?php } ?>
                                 </table>
                             </div>
@@ -145,17 +144,18 @@ print $this->form()->openTag($form);
                                         <td width="15">:</td>
                                         <td>
                                             <?php
-                                            if($status=='RQ'){
+                                            if ($status == 'RQ') {
                                                 echo "Pending";
-                                            }else if($status=='RC'){
+                                            } else if ($status == 'RC') {
                                                 echo "Recommended";
-                                            }else if($status=='AP'){
+                                            } else if ($status == 'AP') {
                                                 echo "Approved";
-                                            }else if($status=="R"){
+                                            } else if ($status == "R") {
                                                 echo "Rejected";
-                                            }else if($status=="C"){
+                                            } else if ($status == "C") {
                                                 echo "Cancelled";
-                                            } ?>
+                                            }
+                                            ?>
                                         </td>
                                     </tr>                                    
                                 </table>
@@ -164,13 +164,13 @@ print $this->form()->openTag($form);
                     </div>
                     <div
                         class="form-group required <?= empty($leaveId->getMessages()) ? "" : "error" ?>">
-                        <?php print $this->formLabel($leaveId); ?>
-                        <?php print $this->formElement($leaveId); ?>
+                            <?php print $this->formLabel($leaveId); ?>
+                            <?php print $this->formElement($leaveId); ?>
                     </div>
 
                     <div
                         class="form-group required  <?= empty($startDate->getMessages()) ? "" : "error" ?>">
-                        <?php print $this->formLabel($startDate) ?>
+                            <?php print $this->formLabel($startDate) ?>
                         <div class="input-group">
                             <?php print $this->formElement($startDate) ?>
                             <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
@@ -180,7 +180,7 @@ print $this->form()->openTag($form);
 
                     <div
                         class="form-group required <?= empty($endDate->getMessages()) ? "" : "error" ?>">
-                        <?php print $this->formLabel($endDate) ?>
+                            <?php print $this->formLabel($endDate) ?>
                         <div class="input-group">
                             <?php print $this->formElement($endDate) ?>
                             <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
@@ -190,13 +190,13 @@ print $this->form()->openTag($form);
 
                     <div
                         class="form-group required <?= empty($noOfDays->getMessages()) ? "" : "error" ?>">
-                        <?php print $this->formLabel($noOfDays); ?>
-                        <?php print $this->formElement($noOfDays); ?>
+                            <?php print $this->formLabel($noOfDays); ?>
+                            <?php print $this->formElement($noOfDays); ?>
                         <span id="errorMsg" style="font-size:11px; color:red;"></span>
                     </div>
                     <?php print $this->formElementErrors()->render($noOfDays, ['class' => 'help-block error']); ?>
 
-                    <?php if($allowHalfDay=='Y'){  ?>
+                    <?php if ($allowHalfDay == 'Y') { ?>
                         <div class="form-group padding-0" id="halfDay">
                             <?php print $this->formLabel($halfDay); ?>
                             <div class="md-radio-inline">
@@ -205,61 +205,60 @@ print $this->form()->openTag($form);
                         </div>
                         <?php print $this->formElementErrors()->render($halfDay, ['class' => 'help-block error']); ?>
                     <?php } ?>
-                        
+
                     <?php if ($remarksDtl != null) { ?>
                         <div
                             class="form-group required <?= empty($remarks->getMessages()) ? "" : "error" ?>">
-                            <?php print $this->formLabel($remarks); ?>
-                            <?php print $this->formElement($remarks); ?>
+                                <?php print $this->formLabel($remarks); ?>
+                                <?php print $this->formElement($remarks); ?>
                         </div>
                     <?php } ?>
-                    </div>
+                </div>
 
-                    <?php if ($role == 2) { ?>
-                        <div
-                            class="form-group margin-top-10 required <?= empty($recommendedRemarks->getMessages()) ? "" : "error" ?>">
+                <?php if ($role == 2) { ?>
+                    <div
+                        class="form-group margin-top-10 required <?= empty($recommendedRemarks->getMessages()) ? "" : "error" ?>">
                             <?php print $this->formLabel($recommendedRemarks); ?>
                             <?php print $this->formElement($recommendedRemarks); ?>
-                        </div>
-                    <?php } ?>
-                    <?php  if($role==2 && ($status=='AP' || ($status=='R' && $approvedDT!=null))){ ?>
-                        <div
-                            class="form-group required <?= empty($approvedRemarks->getMessages()) ? "" : "error" ?>">
-                            <label>Reason for action [From Approver]</label>
-                            <?php print $this->formElement($approvedRemarks); ?>
-                        </div>
-                    <?php }  ?>
+                    </div>
+                <?php } ?>
+                <?php if ($role == 2 && ($status == 'AP' || ($status == 'R' && $approvedDT != null))) { ?>
+                    <div
+                        class="form-group required <?= empty($approvedRemarks->getMessages()) ? "" : "error" ?>">
+                        <label>Reason for action [From Approver]</label>
+                        <?php print $this->formElement($approvedRemarks); ?>
+                    </div>
+                <?php } ?>
 
-                    <?php if ($role == 3 || $role==4) {
-                        $recommendedRemarks->setAttributes(['disabled'=>'disabled']);
-                        ?>
-                    <?php if($role!=4){ ?>
+                <?php
+                if ($role == 3 || $role == 4) {
+                    $recommendedRemarks->setAttributes(['disabled' => 'disabled']);
+                    ?>
+    <?php if ($role != 4) { ?>
                         <div
                             class="form-group margin-top-10 required <?= empty($recommendedRemarks->getMessages()) ? "" : "error" ?>">
                             <label>Reason for action [From Recommender]</label>
-                            <?php print $this->formElement($recommendedRemarks); ?>
+                        <?php print $this->formElement($recommendedRemarks); ?>
                         </div>
-                    <?php } ?>
-                        <div
-                            class="form-group required <?= empty($approvedRemarks->getMessages()) ? "" : "error" ?>">
+    <?php } ?>
+                    <div
+                        class="form-group required <?= empty($approvedRemarks->getMessages()) ? "" : "error" ?>">
                             <?php print $this->formLabel($approvedRemarks); ?>
-                            <?php print $this->formElement($approvedRemarks); ?>
-                        </div>
+                    <?php print $this->formElement($approvedRemarks); ?>
+                    </div>
                     <?php } ?>
-                    <div class="form-group">
+                <div class="form-group">
                     <?php
                     if ($status == 'RQ' || ($status == 'RC' && $employeeId != $recommendedBy)) {
                         print $this->formSubmit($submit);
                         ?>
                         <input type="submit" name="submit" class="btn btn-success pull-right" value="Reject">
-                    <?php } ?>
-                    </div>
+<?php } ?>
                 </div>
             </div>
         </div>
     </div>
+</div>
 <?php
-
 print $this->form()->closeTag();
-
 ?>

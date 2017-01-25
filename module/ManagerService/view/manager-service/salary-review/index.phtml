@@ -1,4 +1,11 @@
 <?php
+$this->headLink()
+        ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.common.min.css'))
+        ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.rtl.min.css'))
+        ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.default.min.css'))
+        ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.dataviz.min.css'))
+        ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.dataviz.default.min.css'));
+
 $this->headScript()
         ->appendFile($this->basePath('jszip/dist/jszip.min.js'))
         ->appendFile($this->basePath('telerik_kendoui/js/kendo.all.min.js'))
@@ -17,7 +24,7 @@ $menu = ["id" => "menuManagerService", "subMenu" => ["id" => "subMenuSalaryRevie
 echo json_encode($menu);
 ?>;
     document.salaryDetails =<?= json_encode($salaryDetails) ?>;
-    
+
 </script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\salaryReview')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
@@ -54,27 +61,27 @@ echo json_encode($menu);
     </div>
     <script id="rowTemplate" type="text/x-kendo-tmpl">
         <tr>
-            <td>                 
-                #: (EMPLOYEE_ID == null) ? '-' : EMPLOYEE_ID #
-                  </td>
-            <td> 
-            #: (OLD_AMOUNT == null) ? '-' : OLD_AMOUNT #
+        <td>                 
+        #: (EMPLOYEE_ID == null) ? '-' : EMPLOYEE_ID #
         </td>
-            <td>
-            #: (NEW_AMOUNT == null) ? '-' : NEW_AMOUNT #
+        <td> 
+        #: (OLD_AMOUNT == null) ? '-' : OLD_AMOUNT #
         </td>
-            <td>
-            #: (EFFECTIVE_DATE == null) ? '-' : EFFECTIVE_DATE #
+        <td>
+        #: (NEW_AMOUNT == null) ? '-' : NEW_AMOUNT #
         </td>
-            <td>
-            #: (JOB_HISTORY_ID == null) ? '-' : JOB_HISTORY_ID #
+        <td>
+        #: (EFFECTIVE_DATE == null) ? '-' : EFFECTIVE_DATE #
         </td>
-         <td>
-            <a class="btn-edit"
-               href="<?= $this->url("salaryReview", ["action" => "edit"]) ?>/#:SALARY_DETAIL_ID #" style="height:17px;">
-                <i class="fa fa-edit"></i>
-            </a>
+        <td>
+        #: (JOB_HISTORY_ID == null) ? '-' : JOB_HISTORY_ID #
         </td>
-    </tr>
+        <td>
+        <a class="btn-edit"
+        href="<?= $this->url("salaryReview", ["action" => "edit"]) ?>/#:SALARY_DETAIL_ID #" style="height:17px;">
+        <i class="fa fa-edit"></i>
+        </a>
+        </td>
+        </tr>
     </script>
 </div>

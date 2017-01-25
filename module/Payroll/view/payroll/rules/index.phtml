@@ -1,13 +1,22 @@
 <?php
+$this->headLink()
+        ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.common.min.css'))
+        ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.rtl.min.css'))
+        ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.default.min.css'))
+        ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.dataviz.min.css'))
+        ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.dataviz.default.min.css'));
+
+
 $this->headScript()
-    ->appendFile($this->basePath('jszip/dist/jszip.min.js'))
-    ->appendFile($this->basePath('telerik_kendoui/js/kendo.all.min.js'))
-    ->appendFile($this->basePath('js/Payroll/Rules/index.js'))
-    ->appendFile($this->basePath('assets/global/plugins/bootstrap-confirmation/bootstrap-confirmation.min.js'));
+        ->appendFile($this->basePath('jszip/dist/jszip.min.js'))
+        ->appendFile($this->basePath('telerik_kendoui/js/kendo.all.min.js'))
+        ->appendFile($this->basePath('js/Payroll/Rules/index.js'))
+        ->appendFile($this->basePath('assets/global/plugins/bootstrap-confirmation/bootstrap-confirmation.min.js'));
 ?>
 <script>
-    document.menu =<?php $menu = ["id" => "menuPayroll", "subMenu" => ["id" => "subMenuRules"], "subMenuChild" => ["id" => "subMenuChildRuleSetup"]];echo json_encode($menu);?>;
-    document.rules=<?= json_encode($rules); ?>;
+    document.menu =<?php $menu = ["id" => "menuPayroll", "subMenu" => ["id" => "subMenuRules"], "subMenuChild" => ["id" => "subMenuChildRuleSetup"]];
+echo json_encode($menu); ?>;
+    document.rules =<?= json_encode($rules); ?>;
 </script>
 
 <?php if ($this->messages) { ?>
@@ -18,7 +27,7 @@ $this->headScript()
 
 
 <div class="page-bar">
-    <?= $this->navigation('Zend\Navigation\rules')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
+<?= $this->navigation('Zend\Navigation\rules')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
 
 <div class="margin-top-20">
@@ -32,7 +41,7 @@ $this->headScript()
                     </a>
                 </div>
             </div>
-              <div class="col-xs-6 col-sm-6 col-md-6">
+            <div class="col-xs-6 col-sm-6 col-md-6">
                 <div class="btn-group pull-right">
                     <button class="btn green btn-outline dropdown-toggle" data-toggle="dropdown">Tools
                         <i class="fa fa-angle-down"></i>
@@ -49,7 +58,7 @@ $this->headScript()
 
     <div id="ruleTable">
     </div>
-    
+
     <script id="rowTemplate" type="text/x-kendo-tmpl">
         <tr>
         <td>
@@ -58,7 +67,7 @@ $this->headScript()
         <td>
         #: (PAY_EDESC == null) ? '-' : PAY_EDESC #
         </td>
-         
+
         <td>
         #: (PAY_TYPE_FLAG == null) ? '-' : (PAY_TYPE_FLAG=='A') ? 'Addition' : 'Deduction' #
         </td>

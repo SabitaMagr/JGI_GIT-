@@ -1,7 +1,4 @@
 <?php
-/**
- * Load Javascript files here
- */
 $this->headScript()->appendFile($this->basePath('js/Notification/Notification/index.js'));
 ?>
 
@@ -13,7 +10,7 @@ $this->headScript()->appendFile($this->basePath('js/Notification/Notification/in
 
 <script>
     document.menu =<?php
-$menu = ["id" => "menuNotification","subMenu"=>["id"=>"subMenuSystem"]];
+$menu = ["id" => "menuNotification", "subMenu" => ["id" => "subMenuSystem"]];
 echo json_encode($menu);
 ?>;
     document.markAsViewed = "<?= $this->url('notification', ["action" => "markAsViewed"]) ?>";

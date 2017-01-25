@@ -1,15 +1,16 @@
 <?php
-/**
- * Load Javascript files here
- */
+
+
 $this->headScript()->appendFile($this->basePath('assets/global/plugins/combodate/js/moment.min.js'));
 $this->headScript()->appendFile($this->basePath('assets/global/plugins/combodate/js/combodate.js'));
 $this->headScript()->appendFile($this->basePath('js/AttendanceManagement/ShiftSetup/shiftSetup.js'));
 $this->headScript()->appendFile($this->basePath('js/AttendanceManagement/ShiftSetup/add.js'));
 ?>
 <script>
-    document.menu =<?php $menu = ["id" => "menuAttendance", "subMenu" => ["id" => "subMenuShiftSetup"]];
-echo json_encode($menu); ?>;
+    document.menu =<?php
+$menu = ["id" => "menuAttendance", "subMenu" => ["id" => "subMenuShiftSetup"]];
+echo json_encode($menu);
+?>;
     document.url = '<?= $this->url("restful", ["action" => "index"]) ?>';
 </script>
 
@@ -75,15 +76,15 @@ $form->prepare();
                 </div>
             </div>
             <div class="portlet-body">
-<?php
-print $this->form()->openTag($form);
-?>
+                <?php
+                print $this->form()->openTag($form);
+                ?>
                 <div class="row shiftcode">
                     <div class="col-sm-6">
                         <div
                             class="form-group  <?= empty($shiftCode->getMessages()) ? "" : "error" ?>">
-<?php print $this->formLabel($shiftCode); ?>
-                                <?php print $this->formElement($shiftCode); ?>
+                                <?php print $this->formLabel($shiftCode); ?>
+<?php print $this->formElement($shiftCode); ?>
                             <input type="hidden" id="shiftId" value="<?php echo $id; ?>"/>
                             <span class="errorMsg" style="font-size:11px; color:red;"></span>
                         </div>
@@ -96,8 +97,8 @@ print $this->form()->openTag($form);
                     <div class="col-sm-6">
 
                         <div class="form-group  <?= empty($shiftEname->getMessages()) ? "" : "error" ?>">
-<?php print $this->formLabel($shiftEname); ?>
-                            <?php print $this->formElement($shiftEname); ?>
+                            <?php print $this->formLabel($shiftEname); ?>
+<?php print $this->formElement($shiftEname); ?>
                             <span class="errorMsg" style="font-size:11px; color:red;"></span>
                         </div>
 <?php print $this->formElementErrors()->render($shiftEname, ['class' => 'help-block error']); ?>
@@ -107,8 +108,8 @@ print $this->form()->openTag($form);
                     <div class="col-sm-6">
                         <div
                             class="form-group  <?= empty($shiftLname->getMessages()) ? "" : "error" ?>">
-<?php print $this->formLabel($shiftLname); ?>
-                                <?php print $this->formElement($shiftLname); ?>
+                                <?php print $this->formLabel($shiftLname); ?>
+<?php print $this->formElement($shiftLname); ?>
                             <span class="errorMsg" style="font-size:11px; color:red;"></span>
                         </div>
 <?php print $this->formElementErrors()->render($shiftLname, ['class' => 'help-block error']); ?>
@@ -117,9 +118,9 @@ print $this->form()->openTag($form);
                     <div class="col-sm-6">
                         <div
                             class="form-group  required  <?= empty($startDate->getMessages()) ? "" : "error" ?>">
-<?php print $this->formLabel($startDate) ?>
+                                <?php print $this->formLabel($startDate) ?>
                             <div class="input-group date" id="startDate">
-                                <?php print $this->formElement($startDate) ?>
+<?php print $this->formElement($startDate) ?>
                                 <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
                             </div>
                         </div>
@@ -130,9 +131,9 @@ print $this->form()->openTag($form);
                     <div class="col-sm-6">
                         <div
                             class="form-group required  <?= empty($endDate->getMessages()) ? "" : "error" ?>">
-<?php print $this->formLabel($endDate) ?>
+                                <?php print $this->formLabel($endDate) ?>
                             <div class="input-group date" id="endDate">
-                                <?php print $this->formElement($endDate) ?>
+<?php print $this->formElement($endDate) ?>
                                 <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
                             </div>
                         </div>
@@ -144,9 +145,9 @@ print $this->form()->openTag($form);
                 <div class="row edetails">
                     <div class="col-sm-6">
                         <div class="form-group">
-<?php print $this->formLabel($startTime) ?>
+                                <?php print $this->formLabel($startTime) ?>
                             <div class="input-group dropdown-select">
-                            <?php print $this->formElement($startTime) ?>
+<?php print $this->formElement($startTime) ?>
                             </div>
                         </div>
 <?php print $this->formElementErrors()->render($startTime, ['class' => 'help-block error']) ?>
@@ -154,29 +155,29 @@ print $this->form()->openTag($form);
 
                     <div class="col-sm-6">
                         <div class="form-group required">
-<?php print $this->formLabel($endTime) ?>
+                                <?php print $this->formLabel($endTime) ?>
                             <div class="input-group dropdown-select">
                             <?php print $this->formElement($endTime) ?>
                             </div>
-                                <?php print $this->formElementErrors()->render($endTime, ['class' => 'help-block error']) ?>
+<?php print $this->formElementErrors()->render($endTime, ['class' => 'help-block error']) ?>
                         </div>
 
 
                     </div>
                     <div class="col-sm-6">
                         <div class="form-group required">
-<?php print $this->formLabel($halfDayEndTime) ?>
+                                <?php print $this->formLabel($halfDayEndTime) ?>
                             <div class="input-group dropdown-select">
-                            <?php print $this->formElement($halfDayEndTime) ?>
+<?php print $this->formElement($halfDayEndTime) ?>
                             </div>
                         </div>
 <?php print $this->formElementErrors()->render($halfDayEndTime, ['class' => 'help-block error']) ?>
                     </div>
                     <div class="col-sm-6">
                         <div class="form-group required">
-<?php print $this->formLabel($halfTime) ?>
+                                <?php print $this->formLabel($halfTime) ?>
                             <div class="input-group dropdown-select">
-                            <?php print $this->formElement($halfTime) ?>
+<?php print $this->formElement($halfTime) ?>
                             </div>
                         </div>
 <?php print $this->formElementErrors()->render($halfTime, ['class' => 'help-block error']) ?>
@@ -186,9 +187,9 @@ print $this->form()->openTag($form);
                 <div class="row time">
                     <div class="col-sm-6">
                         <div class="form-group padding-0">
-<?php print $this->formLabel($lateIn); ?>
+                                <?php print $this->formLabel($lateIn); ?>
                             <div class="md-radio-inline">
-                            <?php $customRenderer($lateIn); ?>
+<?php $customRenderer($lateIn); ?>
                             </div>
                         </div>
 <?php print $this->formElementErrors()->render($lateIn, ['class' => 'help-block error']); ?>
@@ -196,9 +197,9 @@ print $this->form()->openTag($form);
                     </div>
                     <div class="col-sm-6">
                         <div class="form-group padding-0">
-<?php print $this->formLabel($earlyOut); ?>
+                                <?php print $this->formLabel($earlyOut); ?>
                             <div class="md-radio-inline">
-                            <?php $customRenderer($earlyOut); ?>
+<?php $customRenderer($earlyOut); ?>
                             </div>
                         </div>
 <?php print $this->formElementErrors()->render($earlyOut, ['class' => 'help-block error']); ?>
@@ -209,45 +210,45 @@ print $this->form()->openTag($form);
                 <div class="row bg-master-lightest weekend">
                     <div class="col-sm-6">
                         <div class="form-group padding-0">
-<?php print $this->formLabel($weekday1); ?>
+                                <?php print $this->formLabel($weekday1); ?>
                             <div class="md-radio-inline">
-                            <?php $customRenderer($weekday1); ?>
+<?php $customRenderer($weekday1); ?>
                             </div>
                         </div>
 <?php print $this->formElementErrors()->render($weekday1, ['class' => 'help-block error']); ?>
                     </div>
                     <div class="col-sm-6">
                         <div class="form-group padding-0">
-<?php print $this->formLabel($weekday2); ?>
+                                <?php print $this->formLabel($weekday2); ?>
                             <div class="md-radio-inline">
-                            <?php $customRenderer($weekday2); ?>
+<?php $customRenderer($weekday2); ?>
                             </div>
                         </div>
 <?php print $this->formElementErrors()->render($weekday2, ['class' => 'help-block error']); ?>
                     </div>
                     <div class="col-sm-6">
                         <div class="form-group  padding-0">
-<?php print $this->formLabel($weekday3); ?>
+                                <?php print $this->formLabel($weekday3); ?>
                             <div class="md-radio-inline">
-                            <?php $customRenderer($weekday3); ?>
+<?php $customRenderer($weekday3); ?>
                             </div>
                         </div>
 <?php print $this->formElementErrors()->render($weekday3, ['class' => 'help-block error']); ?>
                     </div>
                     <div class="col-sm-6">
                         <div class="form-group padding-0">
-<?php print $this->formLabel($weekday4); ?>
+                                <?php print $this->formLabel($weekday4); ?>
                             <div class="md-radio-inline">
-                            <?php $customRenderer($weekday4); ?>
+<?php $customRenderer($weekday4); ?>
                             </div>
                         </div>
 <?php print $this->formElementErrors()->render($weekday4, ['class' => 'help-block error']); ?>
                     </div>
                     <div class="col-sm-6">
                         <div class="form-group padding-0">
-<?php print $this->formLabel($weekday5); ?>
+                                <?php print $this->formLabel($weekday5); ?>
                             <div class="md-radio-inline">
-                            <?php $customRenderer($weekday5); ?>
+<?php $customRenderer($weekday5); ?>
                             </div>
                         </div>
 <?php print $this->formElementErrors()->render($weekday5, ['class' => 'help-block error']); ?>
@@ -256,18 +257,18 @@ print $this->form()->openTag($form);
 
                     <div class="col-sm-6">
                         <div class="form-group padding-0">
-<?php print $this->formLabel($weekday6); ?>
+                                <?php print $this->formLabel($weekday6); ?>
                             <div class="md-radio-inline">
-                            <?php $customRenderer($weekday6); ?>
+<?php $customRenderer($weekday6); ?>
                             </div>
                         </div>
 <?php print $this->formElementErrors()->render($weekday6, ['class' => 'help-block error']); ?>
                     </div>
                     <div class="col-sm-6">
                         <div class="form-group padding-0">
-<?php print $this->formLabel($weekday7); ?>
+                                <?php print $this->formLabel($weekday7); ?>
                             <div class="md-radio-inline">
-                            <?php $customRenderer($weekday7); ?>
+<?php $customRenderer($weekday7); ?>
                             </div>
                         </div>
 <?php print $this->formElementErrors()->render($weekday7, ['class' => 'help-block error']); ?>
@@ -279,27 +280,27 @@ print $this->form()->openTag($form);
 
                     <div class="col-sm-6">
                         <div class="form-group padding-0">
-<?php print $this->formLabel($currentShift); ?>
+                                <?php print $this->formLabel($currentShift); ?>
                             <div class="md-radio-inline">
-                            <?php $customRenderer($currentShift); ?>
+<?php $customRenderer($currentShift); ?>
                             </div>
                         </div>
 <?php print $this->formElementErrors()->render($currentShift, ['class' => 'help-block error']); ?>
                     </div>
                     <div class="col-sm-6">
                         <div class="form-group padding-0">
-<?php print $this->formLabel($defaultShift); ?>
+                                <?php print $this->formLabel($defaultShift); ?>
                             <div class="md-radio-inline">
-                            <?php $customRenderer($defaultShift); ?>
+<?php $customRenderer($defaultShift); ?>
                             </div>
                         </div>
 <?php print $this->formElementErrors()->render($defaultShift, ['class' => 'help-block error']); ?>
                     </div>
                     <div class="col-sm-6">
                         <div class="form-group padding-0 ">
-<?php print $this->formLabel($twoDayShift); ?>
+                                <?php print $this->formLabel($twoDayShift); ?>
                             <div class="md-radio-inline">
-                            <?php $customRenderer($twoDayShift); ?>
+<?php $customRenderer($twoDayShift); ?>
                             </div>
                         </div>
 <?php print $this->formElementErrors()->render($twoDayShift, ['class' => 'help-block error']); ?>
@@ -309,18 +310,18 @@ print $this->form()->openTag($form);
                 <div class="row remarks">
                     <div class="col-sm-6">
                         <div class="form-group">
-<?php print $this->formLabel($remarks); ?>
-                            <?php print $this->formElement($remarks); ?>
+                            <?php print $this->formLabel($remarks); ?>
+                        <?php print $this->formElement($remarks); ?>
                         </div>
-                            <?php print $this->formElementErrors()->render($remarks, ['class' => 'help-block error']); ?>
+<?php print $this->formElementErrors()->render($remarks, ['class' => 'help-block error']); ?>
 
                     </div>
                 </div>
                 <div class="submit_button">
-<?php
-print $this->formSubmit($submit);
-print $this->form()->closeTag();
-?>
+                    <?php
+                    print $this->formSubmit($submit);
+                    print $this->form()->closeTag();
+                    ?>
                 </div>
             </div>
         </div>

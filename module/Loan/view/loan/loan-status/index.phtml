@@ -1,122 +1,119 @@
 <?php
-/**
- * Load Javascript files here
- */
 $this->headScript()
-     ->appendFile($this->basePath('jszip/dist/jszip.min.js'))
-     ->appendFile($this->basePath('telerik_kendoui/js/kendo.all.min.js'))
-     ->appendFile($this->basePath('js/angular.min.js'))
-     ->appendFile($this->basePath('assets/global/plugins/nepalidate/nepali.datepicker.v2.1.min.js'))
-     ->appendFile($this->basePath('js/nepali-datepicker-ext.js'))
-     ->appendFile($this->basePath('js/loan/loan-status/index.js'))
-     ->appendFile($this->basePath('assets/global/plugins/bootstrap-confirmation/bootstrap-confirmation.min.js'));
+        ->appendFile($this->basePath('jszip/dist/jszip.min.js'))
+        ->appendFile($this->basePath('telerik_kendoui/js/kendo.all.min.js'))
+        ->appendFile($this->basePath('js/angular.min.js'))
+        ->appendFile($this->basePath('assets/global/plugins/nepalidate/nepali.datepicker.v2.1.min.js'))
+        ->appendFile($this->basePath('js/nepali-datepicker-ext.js'))
+        ->appendFile($this->basePath('js/loan/loan-status/index.js'))
+        ->appendFile($this->basePath('assets/global/plugins/bootstrap-confirmation/bootstrap-confirmation.min.js'));
 ?>
 
 <script>
-    document.menu =<?php $menu = ["id" => "menuLoan", "subMenu" => ["id" => "subMenuLoanStatus"]];echo json_encode($menu);?>;
+    document.menu =<?php $menu = ["id" => "menuLoan", "subMenu" => ["id" => "subMenuLoanStatus"]];
+echo json_encode($menu); ?>;
     document.url = '<?= $this->url("restful", ["action" => "index"]) ?>';
 </script>
 <div class="page-bar">
-    <?= $this->navigation('Zend\Navigation\loanStatus')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
+<?= $this->navigation('Zend\Navigation\loanStatus')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
-<?php
-if ($this->messages) { ?>
+<?php if ($this->messages) { ?>
     <script>
         document.messages =<?php echo json_encode($this->messages); ?>
     </script>
 <?php } ?>
-       <button data-toggle="collapse" data-target="#bottom-showhide" class="showhide">Search form</button>
-        <div id="bottom-showhide" class="collapse in">
+<button data-toggle="collapse" data-target="#bottom-showhide" class="showhide">Search form</button>
+<div id="bottom-showhide" class="collapse in">
     <div ng-app="hris" ng-controller="loanStatusListController" class="formbg">
-    
-      
-    <div class="margin-top-20">
-        <div class="row  gapbottom">
-            <div class="col-xs-12 col-sm-3 col-md-3">
-                <?php print $this->formLabel($employees); ?>
-                <?php print $this->formElement($employees); ?>
-            </div>
-               <div class="col-xs-12 col-sm-3 col-md-3">
-                <?php print $this->formLabel($branches); ?>
-                <?php print $this->formElement($branches); ?>
-            </div>
-                <div class="col-xs-12 col-sm-3 col-md-3">
-                <?php print $this->formLabel($departments); ?>
-                <?php print $this->formElement($departments); ?>
-            </div>
-                 <div class="col-xs-12 col-sm-3 col-md-3">
-                <?php print $this->formLabel($designations); ?>
-                <?php print $this->formElement($designations); ?>
-            </div>
-                <div class="col-xs-12 col-sm-3 col-md-3">
-                <?php print $this->formLabel($positions); ?>
-                <?php print $this->formElement($positions); ?>
-            </div> 
-               <div class="col-xs-12 col-sm-3 col-md-3">
-                <?php print $this->formLabel($serviceTypes); ?>
-                <?php print $this->formElement($serviceTypes); ?>
-            </div>
-       
-<!--        <div class="row margin-top-10">    -->
-            
-              <div class="col-xs-12 col-sm-3 col-md-3">
-                <?php print $this->formLabel($loans); ?>
-                <?php print $this->formElement($loans); ?>
-            </div>
-                  <div class="col-xs-12 col-sm-3 col-md-3">
-                <?php print $this->formLabel($loanStatus); ?>
-                <?php print $this->formElement($loanStatus); ?>
-            </div>  
-              <div class="col-xs-12 col-sm-3 col-md-3">
-                <?php print $this->formLabel($serviceEventTypes); ?>
-                <?php print $this->formElement($serviceEventTypes); ?>
-            </div>
-            <div class="col-sm-6">
-                <div class="row">
-                    <div class="col-sm-3">
-                        <div class="form-group">
-                            <label for="fromDate">From Date</label>
-                            <input type="text" id="fromDate1" name="fromDate" ng-model="fromDate" class="form-control"/>
-                        </div>
 
-                    </div>
-                    <div class="col-sm-3">
-                        <div class="form-group">
-                            <label for="nepaliFromDate">&nbsp;</label>
-                            <input type="text" id="nepaliFromDate" name="nepaliFromDate"  class="form-control"/>
-                        </div>
 
-                    </div>
-                    <div class="col-sm-3">
-                        <div class="form-group">
-                            <label for="toDate">To Date</label>
-                            <input type="text"  id="toDate1" name="toDate" ng-model="toDate" class="form-control"/>
+        <div class="margin-top-20">
+            <div class="row  gapbottom">
+                <div class="col-xs-12 col-sm-3 col-md-3">
+                    <?php print $this->formLabel($employees); ?>
+                    <?php print $this->formElement($employees); ?>
+                </div>
+                <div class="col-xs-12 col-sm-3 col-md-3">
+                    <?php print $this->formLabel($branches); ?>
+                    <?php print $this->formElement($branches); ?>
+                </div>
+                <div class="col-xs-12 col-sm-3 col-md-3">
+                    <?php print $this->formLabel($departments); ?>
+                    <?php print $this->formElement($departments); ?>
+                </div>
+                <div class="col-xs-12 col-sm-3 col-md-3">
+                    <?php print $this->formLabel($designations); ?>
+                    <?php print $this->formElement($designations); ?>
+                </div>
+                <div class="col-xs-12 col-sm-3 col-md-3">
+                    <?php print $this->formLabel($positions); ?>
+                    <?php print $this->formElement($positions); ?>
+                </div> 
+                <div class="col-xs-12 col-sm-3 col-md-3">
+                    <?php print $this->formLabel($serviceTypes); ?>
+                    <?php print $this->formElement($serviceTypes); ?>
+                </div>
+
+                <!--        <div class="row margin-top-10">    -->
+
+                <div class="col-xs-12 col-sm-3 col-md-3">
+                    <?php print $this->formLabel($loans); ?>
+                    <?php print $this->formElement($loans); ?>
+                </div>
+                <div class="col-xs-12 col-sm-3 col-md-3">
+                    <?php print $this->formLabel($loanStatus); ?>
+                    <?php print $this->formElement($loanStatus); ?>
+                </div>  
+                <div class="col-xs-12 col-sm-3 col-md-3">
+                    <?php print $this->formLabel($serviceEventTypes); ?>
+                    <?php print $this->formElement($serviceEventTypes); ?>
+                </div>
+                <div class="col-sm-6">
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label for="fromDate">From Date</label>
+                                <input type="text" id="fromDate1" name="fromDate" ng-model="fromDate" class="form-control"/>
+                            </div>
+
                         </div>
-                    </div>
-                    <div class="col-sm-3">
-                        <div class="form-group">
-                            <label for="nepaliToDate">&nbsp;</label>
-                            <input type="text"  id="nepaliToDate" name="nepaliToDate" class="form-control"/>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label for="nepaliFromDate">&nbsp;</label>
+                                <input type="text" id="nepaliFromDate" name="nepaliFromDate"  class="form-control"/>
+                            </div>
+
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label for="toDate">To Date</label>
+                                <input type="text"  id="toDate1" name="toDate" ng-model="toDate" class="form-control"/>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label for="nepaliToDate">&nbsp;</label>
+                                <input type="text"  id="nepaliToDate" name="nepaliToDate" class="form-control"/>
+                            </div>
                         </div>
                     </div>
                 </div>
+                <div class="col-xs-12 col-sm-3 col-md-3">
+                    <label height="45"></label>
+                    <button ng-click="view()" id="viewLeaveRequestStatus" class="btn btn-default form-control i-search form-control">
+                        Search
+                        <i class="fa fa-search"></i>
+                    </button>
+                </div>
+                <!--        </div>-->
             </div>
-            <div class="col-xs-12 col-sm-3 col-md-3">
-                <label height="45"></label>
-                <button ng-click="view()" id="viewLeaveRequestStatus" class="btn btn-default form-control i-search form-control">
-                    Search
-                    <i class="fa fa-search"></i>
-                </button>
-            </div>
-<!--        </div>-->
-    </div>
-    </div>
-    </div> 
         </div>
-        <div class="margin-top-20">
-           <div class="table-toolbar">
-            <div class="row">
-                <div class="col-md-offset-6 col-md-6">
+    </div> 
+</div>
+<div class="margin-top-20">
+    <div class="table-toolbar">
+        <div class="row">
+            <div class="col-md-offset-6 col-md-6">
                 <label height="45"></label>
                 <div class="btn-group pull-right">
                     <button class="btn green btn-outline dropdown-toggle" data-toggle="dropdown">Tools
@@ -129,53 +126,53 @@ if ($this->messages) { ?>
                     </ul>
                 </div>
             </div>
-            </div> </div>
-        </div>
-       
-    
-    <div class="margin-top-20">
-        <div id="loanRequestStatusTable">
-        </div>
+        </div> </div>
+</div>
+
+
+<div class="margin-top-20">
+    <div id="loanRequestStatusTable">
     </div>
+</div>
 
-    <script id="rowTemplate" type="text/x-kendo-tmpl">
-        <tr>
-        <td> 
-            #: (FIRST_NAME == null) ? ' ' : FIRST_NAME #
-            #: (MIDDLE_NAME == null) ? ' ' : MIDDLE_NAME #
-            #: (LAST_NAME == null) ? ' ' : LAST_NAME #
-        </td>
-        <td>
-            #: (LOAN_NAME == null) ? '-' : LOAN_NAME #
-        </td>
-        <td>
-            #: (REQUESTED_DATE == null) ? '-' : REQUESTED_DATE #
-        </td>        
-        <td>
-            #: (LOAN_DATE == null) ? '-' : LOAN_DATE #
-        </td>
-        <td>
-            #: (REQUESTED_AMOUNT == null) ? '-' : REQUESTED_AMOUNT #
-        </td>
-        <td>
-            #: (RECOMMENDER_NAME == null) ? '-' : RECOMMENDER_NAME #
-        </td>
-        <td>
-            #: (APPROVER_NAME == null) ? '-' : APPROVER_NAME #
-        </td>
-        <td>
-             #: (STATUS == null) ? '-' : STATUS #
-        </td>
-        <td>
-            <a class="btn-edit"
-               href="<?= $this->url("loanStatus", ["action" => "view"])?>/#: LOAN_REQUEST_ID #" style="height:17px;" title="view">
-                <i class="fa fa-search-plus"></i>
-            </a>
-        </td>
-        </tr>
-    </script>
-    
+<script id="rowTemplate" type="text/x-kendo-tmpl">
+    <tr>
+    <td> 
+    #: (FIRST_NAME == null) ? ' ' : FIRST_NAME #
+    #: (MIDDLE_NAME == null) ? ' ' : MIDDLE_NAME #
+    #: (LAST_NAME == null) ? ' ' : LAST_NAME #
+    </td>
+    <td>
+    #: (LOAN_NAME == null) ? '-' : LOAN_NAME #
+    </td>
+    <td>
+    #: (REQUESTED_DATE == null) ? '-' : REQUESTED_DATE #
+    </td>        
+    <td>
+    #: (LOAN_DATE == null) ? '-' : LOAN_DATE #
+    </td>
+    <td>
+    #: (REQUESTED_AMOUNT == null) ? '-' : REQUESTED_AMOUNT #
+    </td>
+    <td>
+    #: (RECOMMENDER_NAME == null) ? '-' : RECOMMENDER_NAME #
+    </td>
+    <td>
+    #: (APPROVER_NAME == null) ? '-' : APPROVER_NAME #
+    </td>
+    <td>
+    #: (STATUS == null) ? '-' : STATUS #
+    </td>
+    <td>
+    <a class="btn-edit"
+    href="<?= $this->url("loanStatus", ["action" => "view"]) ?>/#: LOAN_REQUEST_ID #" style="height:17px;" title="view">
+    <i class="fa fa-search-plus"></i>
+    </a>
+    </td>
+    </tr>
+</script>
+
 </div>    
-    
 
- 
+
+
