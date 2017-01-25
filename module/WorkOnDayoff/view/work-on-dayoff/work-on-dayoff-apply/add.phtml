@@ -15,7 +15,7 @@ $remarks = $form->get('remarks');
 $submit = $form->get('submit');
 $submit->setAttribute('value','SUBMIT');
 
-$form->setAttribute('action', $this->url('apply', ['action' => 'add']));
+$form->setAttribute('action', $this->url('workOnDayoffApply', ['action' => 'add']));
 
 if ($this->messages) {
     print '<ul class="help-block bg-danger" style="background:#f3e250;">';

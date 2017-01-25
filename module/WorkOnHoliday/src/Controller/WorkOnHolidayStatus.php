@@ -4,7 +4,7 @@ namespace WorkOnHoliday\Controller;
 use Zend\Mvc\Controller\AbstractActionController;
 use Application\Helper\Helper;
 
-class Status extends AbstractActionController{
+class WorkOnHolidayStatus extends AbstractActionController{
     public function __construct() {
         
     }
