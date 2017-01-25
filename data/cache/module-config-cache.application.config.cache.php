@@ -1767,6 +1767,42 @@ return array (
         'type' => 'Zend\\Router\\Http\\Segment',
         'options' => 
         array (
+          'route' => '/workOnHoliday/status[/:action[/:id]]',
+          'constraints' => 
+          array (
+            'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+            'id' => '[0-9]+',
+          ),
+          'defaults' => 
+          array (
+            'controller' => 'WorkOnHoliday\\Controller\\Status',
+            'action' => 'index',
+          ),
+        ),
+      ),
+      'apply' => 
+      array (
+        'type' => 'Zend\\Router\\Http\\Segment',
+        'options' => 
+        array (
+          'route' => '/workOnHoliday/apply[/:action[/:id]]',
+          'constraints' => 
+          array (
+            'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+            'id' => '[0-9]+',
+          ),
+          'defaults' => 
+          array (
+            'controller' => 'WorkOnHoliday\\Controller\\Apply',
+            'action' => 'index',
+          ),
+        ),
+      ),
+      'workOnDayoffStatus' => 
+      array (
+        'type' => 'Zend\\Router\\Http\\Segment',
+        'options' => 
+        array (
           'route' => '/workOnDayoff/status[/:action[/:id]]',
           'constraints' => 
           array (
@@ -1775,12 +1811,12 @@ return array (
           ),
           'defaults' => 
           array (
-            'controller' => 'WorkOnDayoff\\Controller\\Status',
+            'controller' => 'WorkOnDayoff\\Controller\\WorkOnDayoffStatus',
             'action' => 'index',
           ),
         ),
       ),
-      'apply' => 
+      'workOnDayoffApply' => 
       array (
         'type' => 'Zend\\Router\\Http\\Segment',
         'options' => 
@@ -1793,7 +1829,7 @@ return array (
           ),
           'defaults' => 
           array (
-            'controller' => 'WorkOnDayoff\\Controller\\Apply',
+            'controller' => 'WorkOnDayoff\\Controller\\WorkOnDayoffApply',
             'action' => 'index',
           ),
         ),
@@ -4331,37 +4367,6 @@ return array (
           ),
         ),
       ),
-      2 => 
-      array (
-        'label' => 'Work On Day-off Request',
-        'route' => 'status',
-      ),
-      3 => 
-      array (
-        'label' => 'Work On Day-off Request',
-        'route' => 'status',
-        'pages' => 
-        array (
-          0 => 
-          array (
-            'label' => 'List',
-            'route' => 'status',
-            'action' => 'index',
-          ),
-          1 => 
-          array (
-            'label' => 'Add',
-            'route' => 'status',
-            'action' => 'add',
-          ),
-          2 => 
-          array (
-            'label' => 'Detail',
-            'route' => 'status',
-            'action' => 'view',
-          ),
-        ),
-      ),
     ),
     'apply' => 
     array (
@@ -4396,33 +4401,70 @@ return array (
           ),
         ),
       ),
-      2 => 
+    ),
+    'workOnDayoffStatus' => 
+    array (
+      0 => 
       array (
-        'label' => 'Work on Day-off Request',
-        'route' => 'apply',
+        'label' => 'Work On Day-off Request',
+        'route' => 'workOnDayoffStatus',
       ),
-      3 => 
+      1 => 
       array (
-        'label' => 'Work on Day-off Request',
-        'route' => 'apply',
+        'label' => 'Work On Day-off Request',
+        'route' => 'workOnDayoffStatus',
         'pages' => 
         array (
           0 => 
           array (
             'label' => 'List',
-            'route' => 'apply',
+            'route' => 'workOnDayoffStatus',
             'action' => 'index',
           ),
           1 => 
           array (
             'label' => 'Add',
-            'route' => 'apply',
+            'route' => 'workOnDayoffStatus',
+            'action' => 'add',
+          ),
+          2 => 
+          array (
+            'label' => 'Detail',
+            'route' => 'workOnDayoffStatus',
+            'action' => 'view',
+          ),
+        ),
+      ),
+    ),
+    'workOnDayoffApply' => 
+    array (
+      0 => 
+      array (
+        'label' => 'Work on Day-off Request',
+        'route' => 'workOnDayoffApply',
+      ),
+      1 => 
+      array (
+        'label' => 'Work on Day-off Request',
+        'route' => 'workOnDayoffApply',
+        'pages' => 
+        array (
+          0 => 
+          array (
+            'label' => 'List',
+            'route' => 'workOnDayoffApply',
+            'action' => 'index',
+          ),
+          1 => 
+          array (
+            'label' => 'Add',
+            'route' => 'workOnDayoffApply',
             'action' => 'add',
           ),
           2 => 
           array (
             'label' => 'Edit',
-            'route' => 'apply',
+            'route' => 'workOnDayoffApply',
             'action' => 'edit',
           ),
         ),
@@ -4513,8 +4555,8 @@ return array (
       'Travel\\Controller\\TravelApply' => 'Application\\Controller\\ControllerFactory',
       'WorkOnHoliday\\Controller\\Status' => 'Application\\Controller\\ControllerFactory',
       'WorkOnHoliday\\Controller\\Apply' => 'Application\\Controller\\ControllerFactory',
-      'WorkOnDayoff\\Controller\\Status' => 'Application\\Controller\\ControllerFactory',
-      'WorkOnDayoff\\Controller\\Apply' => 'Application\\Controller\\ControllerFactory',
+      'WorkOnDayoff\\Controller\\WorkOnDayoffStatus' => 'Application\\Controller\\ControllerFactory',
+      'WorkOnDayoff\\Controller\\WorkOnDayoffApply' => 'Application\\Controller\\ControllerFactory',
     ),
   ),
   'view_manager' => 
@@ -4526,46 +4568,46 @@ return array (
     'exception_template' => 'error/index',
     'template_map' => 
     array (
-      'layout/layout' => '/var/www/html/neo/neo-hris-metronic/module/Application/config/../view/layout/layout.phtml',
-      'layout/login' => '/var/www/html/neo/neo-hris-metronic/module/Application/config/../view/layout/login.phtml',
-      'layout/json' => '/var/www/html/neo/neo-hris-metronic/module/Application/config/../view/layout/json.phtml',
-      'application/index/index' => '/var/www/html/neo/neo-hris-metronic/module/Application/config/../view/application/index/index.phtml',
-      'error/404' => '/var/www/html/neo/neo-hris-metronic/module/Application/config/../view/error/404.phtml',
-      'error/index' => '/var/www/html/neo/neo-hris-metronic/module/Application/config/../view/error/index.phtml',
-      'error/no_access' => '/var/www/html/neo/neo-hris-metronic/module/Application/config/../view/error/no_access.phtml',
-      'partial/header' => '/var/www/html/neo/neo-hris-metronic/module/Application/config/../view/layout/partials/header.phtml',
-      'partial/footer' => '/var/www/html/neo/neo-hris-metronic/module/Application/config/../view/layout/partials/footer.phtml',
-      'partial/sidebar' => '/var/www/html/neo/neo-hris-metronic/module/Application/config/../view/layout/partials/sidebar.phtml',
-      'partial/breadcrumb' => '/var/www/html/neo/neo-hris-metronic/module/Application/config/../view/layout/partials/breadcrumb.phtml',
-      'partial/profile' => '/var/www/html/neo/neo-hris-metronic/module/Application/config/../view/layout/partials/profile.phtml',
-      'dashboard-item/holiday-list' => '/var/www/html/neo/neo-hris-metronic/module/Application/config/../view/layout/dashboard-items/holiday-list.phtml',
-      'dashboard-item/attendance-request' => '/var/www/html/neo/neo-hris-metronic/module/Application/config/../view/layout/dashboard-items/attendance-request.phtml',
-      'dashboard-item/leave-apply' => '/var/www/html/neo/neo-hris-metronic/module/Application/config/../view/layout/dashboard-items/leave-apply.phtml',
-      'dashboard-item/present-absent' => '/var/www/html/neo/neo-hris-metronic/module/Application/config/../view/layout/dashboard-items/present-absent.phtml',
-      'dashboard-item/employee-count-by-branch' => '/var/www/html/neo/neo-hris-metronic/module/Application/config/../view/layout/dashboard-items/employee-count-by-branch.phtml',
-      'dashboard-item/today-leave' => '/var/www/html/neo/neo-hris-metronic/module/Application/config/../view/layout/dashboard-items/today-leave.phtml',
-      'dashboard-item/birthdays' => '/var/www/html/neo/neo-hris-metronic/module/Application/config/../view/layout/dashboard-items/birthdays.phtml',
+      'layout/layout' => '/var/www/html/neo-hris/module/Application/config/../view/layout/layout.phtml',
+      'layout/login' => '/var/www/html/neo-hris/module/Application/config/../view/layout/login.phtml',
+      'layout/json' => '/var/www/html/neo-hris/module/Application/config/../view/layout/json.phtml',
+      'application/index/index' => '/var/www/html/neo-hris/module/Application/config/../view/application/index/index.phtml',
+      'error/404' => '/var/www/html/neo-hris/module/Application/config/../view/error/404.phtml',
+      'error/index' => '/var/www/html/neo-hris/module/Application/config/../view/error/index.phtml',
+      'error/no_access' => '/var/www/html/neo-hris/module/Application/config/../view/error/no_access.phtml',
+      'partial/header' => '/var/www/html/neo-hris/module/Application/config/../view/layout/partials/header.phtml',
+      'partial/footer' => '/var/www/html/neo-hris/module/Application/config/../view/layout/partials/footer.phtml',
+      'partial/sidebar' => '/var/www/html/neo-hris/module/Application/config/../view/layout/partials/sidebar.phtml',
+      'partial/breadcrumb' => '/var/www/html/neo-hris/module/Application/config/../view/layout/partials/breadcrumb.phtml',
+      'partial/profile' => '/var/www/html/neo-hris/module/Application/config/../view/layout/partials/profile.phtml',
+      'dashboard-item/holiday-list' => '/var/www/html/neo-hris/module/Application/config/../view/layout/dashboard-items/holiday-list.phtml',
+      'dashboard-item/attendance-request' => '/var/www/html/neo-hris/module/Application/config/../view/layout/dashboard-items/attendance-request.phtml',
+      'dashboard-item/leave-apply' => '/var/www/html/neo-hris/module/Application/config/../view/layout/dashboard-items/leave-apply.phtml',
+      'dashboard-item/present-absent' => '/var/www/html/neo-hris/module/Application/config/../view/layout/dashboard-items/present-absent.phtml',
+      'dashboard-item/employee-count-by-branch' => '/var/www/html/neo-hris/module/Application/config/../view/layout/dashboard-items/employee-count-by-branch.phtml',
+      'dashboard-item/today-leave' => '/var/www/html/neo-hris/module/Application/config/../view/layout/dashboard-items/today-leave.phtml',
+      'dashboard-item/birthdays' => '/var/www/html/neo-hris/module/Application/config/../view/layout/dashboard-items/birthdays.phtml',
     ),
     'template_path_stack' => 
     array (
-      0 => '/var/www/html/neo/neo-hris-metronic/module/Application/config/../view',
-      1 => '/var/www/html/neo/neo-hris-metronic/module/Setup/config/../view',
-      2 => '/var/www/html/neo/neo-hris-metronic/module/LeaveManagement/config/../view',
-      3 => '/var/www/html/neo/neo-hris-metronic/module/HolidayManagement/config/../view',
-      4 => '/var/www/html/neo/neo-hris-metronic/module/AttendanceManagement/config/../view',
-      5 => '/var/www/html/neo/neo-hris-metronic/module/SelfService/config/../view',
-      6 => '/var/www/html/neo/neo-hris-metronic/module/RestfulService/config/../view',
-      7 => '/var/www/html/neo/neo-hris-metronic/module/Payroll/config/../view',
-      8 => '/var/www/html/neo/neo-hris-metronic/module/ManagerService/config/../view',
-      9 => '/var/www/html/neo/neo-hris-metronic/module/System/config/../view',
-      10 => '/var/www/html/neo/neo-hris-metronic/module/Training/config/../view',
-      11 => '/var/www/html/neo/neo-hris-metronic/module/Appraisal/config/../view',
-      12 => '/var/www/html/neo/neo-hris-metronic/module/Loan/config/../view',
-      13 => '/var/www/html/neo/neo-hris-metronic/module/Advance/config/../view',
-      14 => '/var/www/html/neo/neo-hris-metronic/module/Notification/config/../view',
-      15 => '/var/www/html/neo/neo-hris-metronic/module/Travel/config/../view',
-      16 => '/var/www/html/neo/neo-hris-metronic/module/WorkOnHoliday/config/../view',
-      17 => '/var/www/html/neo/neo-hris-metronic/module/WorkOnDayoff/config/../view',
+      0 => '/var/www/html/neo-hris/module/Application/config/../view',
+      1 => '/var/www/html/neo-hris/module/Setup/config/../view',
+      2 => '/var/www/html/neo-hris/module/LeaveManagement/config/../view',
+      3 => '/var/www/html/neo-hris/module/HolidayManagement/config/../view',
+      4 => '/var/www/html/neo-hris/module/AttendanceManagement/config/../view',
+      5 => '/var/www/html/neo-hris/module/SelfService/config/../view',
+      6 => '/var/www/html/neo-hris/module/RestfulService/config/../view',
+      7 => '/var/www/html/neo-hris/module/Payroll/config/../view',
+      8 => '/var/www/html/neo-hris/module/ManagerService/config/../view',
+      9 => '/var/www/html/neo-hris/module/System/config/../view',
+      10 => '/var/www/html/neo-hris/module/Training/config/../view',
+      11 => '/var/www/html/neo-hris/module/Appraisal/config/../view',
+      12 => '/var/www/html/neo-hris/module/Loan/config/../view',
+      13 => '/var/www/html/neo-hris/module/Advance/config/../view',
+      14 => '/var/www/html/neo-hris/module/Notification/config/../view',
+      15 => '/var/www/html/neo-hris/module/Travel/config/../view',
+      16 => '/var/www/html/neo-hris/module/WorkOnHoliday/config/../view',
+      17 => '/var/www/html/neo-hris/module/WorkOnDayoff/config/../view',
     ),
   ),
   'dashboard-items' => 

@@ -2,14 +2,14 @@
 namespace WorkOnDayoff;
 
 use Application\Controller\ControllerFactory;
-use WorkOnDayoff\Controller\Status;
-use WorkOnDayoff\Controller\Apply;
+use WorkOnDayoff\Controller\WorkOnDayoffStatus;
+use WorkOnDayoff\Controller\WorkOnDayoffApply;
 use Zend\Router\Http\Segment;
 
 return [
     'router' => [
         'routes' => [
-            'status' => [
+            'workOnDayoffStatus' => [
                 'type' => Segment::class,
                 'options' => [
                     'route' => '/workOnDayoff/status[/:action[/:id]]',
@@ -18,12 +18,12 @@ return [
                         'id' => '[0-9]+',
                     ],
                     'defaults' => [
-                        'controller' => Status::class,
+                        'controller' => WorkOnDayoffStatus::class,
                         'action' => 'index'
                     ],
                 ],
             ],
-            'apply' => [
+            'workOnDayoffApply' => [
                 'type' => Segment::class,
                 'options' => [
                     'route' => '/workOnDayoff/apply[/:action[/:id]]',
@@ -32,7 +32,7 @@ return [
                         'id' => '[0-9]+',
                     ],
                     'defaults' => [
-                        'controller' => Apply::class,
+                        'controller' => WorkOnDayoffApply::class,
                         'action' => 'index'
                     ],
                 ],
@@ -40,55 +40,55 @@ return [
         ],
     ],
     'navigation' => [
-        'status' => [
+        'workOnDayoffStatus' => [
                 [
                 'label' => "Work On Day-off Request",
-                'route' => "status"
+                'route' => "workOnDayoffStatus"
             ],
                 [
                 'label' => "Work On Day-off Request",
-                'route' => "status",
+                'route' => "workOnDayoffStatus",
                 'pages' => [
                         [
                         'label' => 'List',
-                        'route' => 'status',
+                        'route' => 'workOnDayoffStatus',
                         'action' => 'index',
                     ],
                         [
                         'label' => 'Add',
-                        'route' => 'status',
+                        'route' => 'workOnDayoffStatus',
                         'action' => 'add',
                     ],
                         [
                         'label' => 'Detail',
-                        'route' => 'status',
+                        'route' => 'workOnDayoffStatus',
                         'action' => 'view',
                     ],
                 ],
             ],
         ],
-        'apply' => [
+        'workOnDayoffApply' => [
                 [
                 'label' => "Work on Day-off Request",
-                'route' => "apply"
+                'route' => "workOnDayoffApply"
             ],
                 [
                 'label' => "Work on Day-off Request",
-                'route' => "apply",
+                'route' => "workOnDayoffApply",
                 'pages' => [
                         [
                         'label' => 'List',
-                        'route' => 'apply',
+                        'route' => 'workOnDayoffApply',
                         'action' => 'index',
                     ],
                         [
                         'label' => 'Add',
-                        'route' => 'apply',
+                        'route' => 'workOnDayoffApply',
                         'action' => 'add',
                     ],
                         [
                         'label' => 'Edit',
-                        'route' => 'apply',
+                        'route' => 'workOnDayoffApply',
                         'action' => 'edit',
                     ],
                 ],
@@ -97,8 +97,8 @@ return [
     ],
     'controllers' => [
         'factories' => [
-            Controller\Status::class => ControllerFactory::class,
-            Controller\Apply::class => ControllerFactory::class
+            Controller\WorkOnDayoffStatus::class => ControllerFactory::class,
+            Controller\WorkOnDayoffApply::class => ControllerFactory::class
         ],
     ],
     'view_manager' => [
