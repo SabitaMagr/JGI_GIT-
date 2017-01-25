@@ -130,17 +130,16 @@ class WorkOnDayoffStatus extends AbstractActionController
     }
     public function viewAction() {
         $this->initializeForm();
-        $dayoffWorkApproveRepository = new LoanApproveRepository($this->adapter);
 
         $id = (int) $this->params()->fromRoute('id');
 
         if ($id === 0) {
-            return $this->redirect()->toRoute("loanStatus");
+            return $this->redirect()->toRoute("status");
         }
-        $loanRequest = new LoanRequest();
+        $workOnDayoffModel = new WorkOnDayoff();
         $request = $this->getRequest();
 
-        $detail = $this->loanApproveRepository->fetchById($id);
+        $detail = $this->dayoffWorkApproveRepository->fetchById($id);
         $status = $detail['STATUS'];
         $employeeId = $detail['EMPLOYEE_ID'];
         $approvedDT = $detail['APPROVED_DATE'];
@@ -167,26 +166,26 @@ class WorkOnDayoffStatus extends AbstractActionController
 
 
         if (!$request->isPost()) {
-            $loanRequest->exchangeArrayFromDB($detail);
-            $this->form->bind($loanRequest);
+            $workOnDayoffModel->exchangeArrayFromDB($detail);
+            $this->form->bind($workOnDayoffModel);
         } else {
             $getData = $request->getPost();
             $reason = $getData->approvedRemarks;
             $action = $getData->submit;
 
-            $loanRequest->approvedDate = Helper::getcurrentExpressionDate();
+            $workOnDayoffModel->approvedDate = Helper::getcurrentExpressionDate();
             if ($action == "Reject") {
-                $loanRequest->status = "R";
-                $this->flashmessenger()->addMessage("Loan Request Rejected!!!");
+                $workOnDayoffModel->status = "R";
+                $this->flashmessenger()->addMessage("Work on Day-off Request Rejected!!!");
             } else if ($action == "Approve") {
-                $loanRequest->status = "AP";
-                $this->flashmessenger()->addMessage("Loan Request Approved");
+                $workOnDayoffModel->status = "AP";
+                $this->flashmessenger()->addMessage("Work on Day-off Request Approved");
             }
-            $loanRequest->approvedBy = $this->employeeId;
-            $loanRequest->approvedRemarks = $reason;
-            $this->loanApproveRepository->edit($loanRequest, $id);
+            $workOnDayoffModel->approvedBy = $this->employeeId;
+            $workOnDayoffModel->approvedRemarks = $reason;
+            $this->dayoffWorkApproveRepository->edit($workOnDayoffModel, $id);
 
-            return $this->redirect()->toRoute("loanStatus");
+            return $this->redirect()->toRoute("status");
         }
         return Helper::addFlashMessagesToArray($this, [
                     'form' => $this->form,
@@ -198,7 +197,6 @@ class WorkOnDayoffStatus extends AbstractActionController
                     'approvedDT'=>$detail['APPROVED_DATE'],
                     'approver' => $authApprover,
                     'status' => $status,
-                    'loans' => EntityHelper::getTableKVListWithSortOption($this->adapter, Loan::TABLE_NAME, Loan::LOAN_ID, [Loan::LOAN_NAME], [Loan::STATUS => "E"], Loan::LOAN_ID, "ASC"),
                     'customRenderer' => Helper::renderCustomView(),
                     'recommApprove'=>$recommApprove
         ]);

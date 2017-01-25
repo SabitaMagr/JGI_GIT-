@@ -104,7 +104,7 @@ angular.module('hris', [])
                                 {value: "Approved Date"}
                             ]
                         }];
-                    var dataSource = $("#workOnDayoffRequestStatusTable").data("kendoGrid").dataSource;
+                    var dataSource = $("#WorkOnDayoffRequestStatusTable").data("kendoGrid").dataSource;
                     var filteredDataSource = new kendo.data.DataSource({
                         data: dataSource.data(),
                         filter: dataSource.filter()

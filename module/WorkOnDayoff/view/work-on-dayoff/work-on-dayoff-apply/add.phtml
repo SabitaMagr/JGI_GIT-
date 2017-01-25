@@ -1,0 +1,95 @@
+<?php
+$this->headScript()->appendFile($this->basePath('js/SelfService/work-on-dayoff/add.js'));
+$this->headScript()->appendFile($this->basePath('js/angular.min.js'));
+
+$form->setAttribute('role', 'form');
+$form->setAttribute('id', 'workOnDayoff-form');
+
+$employeeId = $form->get('employeeId');
+$employeeId->setValueOptions($employees);
+$fromDate = $form->get('fromDate');
+$toDate = $form->get('toDate');
+$duration = $form->get('duration');
+$remarks = $form->get('remarks');
+
+$submit = $form->get('submit');
+$submit->setAttribute('value','SUBMIT');
+
+$form->setAttribute('action', $this->url('apply', ['action' => 'add']));
+
+if ($this->messages) {
+    print '<ul class="help-block bg-danger" style="background:#f3e250;">';
+    foreach ($this->messages as $message) {
+        print '<li>' . $message . '</li>';
+    }
+    print '</ul>';
+}
+
+$form->prepare();
+?>
+    <script>
+        document.menu=<?php $menu = ["id" => "menuWorkOnDayoff","subMenu"=>["id"=>"subMenuApply"]];echo json_encode($menu);?>;
+        document.url = '<?= $this->url("restful", ["action" => "index"]) ?>';
+    </script>
+<div class="page-bar">
+    <?= $this->navigation('Zend\Navigation\workOnDayoffApply')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
+</div>
+<div class="row margin-top-20">
+    <div class="col-sm-8 col-sm-offset-2">
+        <div class="portlet box custom-box">
+            <div class="portlet-title">
+                <div class="caption">
+                    <i class="fa fa-user"></i>New Entry
+                </div>
+            </div>
+            <div class="portlet-body">
+                <?php
+                print $this->form()->openTag($form);
+                ?>
+                <div class="form-group">
+                    <select name="employeeId" id="employeeId" required="required"  ng-model="employeeId" ng-change="employeeChange()" class="form-control">
+                            <option value="" disabled="" selected="" class="ng-binding">Please select</option>                           
+                            <?php foreach($employees as $key=>$value){ ?>
+                            <option value="<?php echo $key; ?>"><?php echo $value; ?></option> 
+                        <?php } ?>
+                    </select>
+                    <?php print $this->formElementErrors()->render($employeeId, ['class' => 'help-block']); ?>
+                </div>  
+                <div
+                    class="form-group required  <?= empty($fromDate->getMessages()) ? "" : "error" ?>">
+                    <?php print $this->formLabel($fromDate) ?>
+                    <?php print $this->formElement($fromDate) ?>
+                </div>
+                <?php print $this->formElementErrors()->render($fromDate, ['class' => 'help-block error']) ?>
+
+                <div
+                    class="form-group required <?= empty($toDate->getMessages()) ? "" : "error" ?>">
+                    <?php print $this->formLabel($toDate) ?>
+                    <?php print $this->formElement($toDate) ?>
+                    <span id="errorMsgDate" style="font-size:11px; color:red;"></span>
+                </div>
+                <?php print $this->formElementErrors()->render($toDate, ['class' => 'help-block error']) ?>
+                
+                <div
+                    class="form-group required <?= empty($duration->getMessages()) ? "" : "error" ?>">
+                    <?php print $this->formLabel($duration); ?>
+                    <?php print $this->formElement($duration); ?>
+                    <span id="errorMsg" style="font-size:11px; color:red;"></span>
+                </div>
+                <?php print $this->formElementErrors()->render($duration, ['class' => 'help-block error']); ?>
+
+                <div class="form-group">
+                    <?php print $this->formLabel($remarks); ?>
+                    <?php print $this->formElement($remarks); ?>
+                    <?php print $this->formElementErrors()->render($remarks, ['class' => 'help-block']); ?>
+                </div>
+
+                <?php
+                    print $this->formSubmit($submit);
+                    print $this->form()->closeTag();
+                ?>
+            </div>
+
+        </div>
+    </div>
+</div>
