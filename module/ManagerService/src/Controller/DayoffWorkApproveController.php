@@ -31,7 +31,7 @@ class DayoffWorkApproveController extends AbstractActionController {
 
     public function __construct(AdapterInterface $adapter) {
         $this->adapter = $adapter;
-        $this->dayoffApproveRepository = new DayoffWorkApproveRepository($adapter);
+        $this->dayoffWorkApproveRepository = new DayoffWorkApproveRepository($adapter);
         $auth = new AuthenticationService();
         $this->employeeId = $auth->getStorage()->read()['employee_id'];
     }
@@ -43,7 +43,7 @@ class DayoffWorkApproveController extends AbstractActionController {
     }
 
     public function indexAction() {
-        print_r($this->employeeId); die();
+//        print_r($this->employeeId); die();
         $list = $this->dayoffWorkApproveRepository->getAllRequest($this->employeeId);
 
         $dayoffWorkRequest = [];
@@ -191,7 +191,7 @@ class DayoffWorkApproveController extends AbstractActionController {
 
     public function statusAction() {
         $employeeNameFormElement = new Select();
-        $employeeNameFormElement->setName("branch");
+        $employeeNameFormElement->setName("employee");
         $employeeName = EntityHelper::getTableKVListWithSortOption($this->adapter, "HR_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => "E"], "FIRST_NAME", "ASC", " ");
         $employeeName1 = [-1 => "All"] + $employeeName;
         $employeeNameFormElement->setValueOptions($employeeName1);

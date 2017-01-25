@@ -13,10 +13,9 @@ $duration->setAttributes(["disabled"=>"disabled"]);
 $remarks = $form->get('remarks');
 $remarks->setAttributes(["disabled"=>"disabled"]);
 $recommendedRemarks = $form->get('recommendedRemarks');
-$recommendedRemarks->setAttributes(["disabled"=>"disabled"]);
+$recommendedRemarks->setAttributes(['required'=>'true']);
 $approvedRemarks = $form->get('approvedRemarks');
-$approvedRemarks->setAttributes(["disabled"=>"disabled"]);
-
+$approvedRemarks->setAttributes(['required'=>'true']);
 $submit = $form->get('submit');
 $submit->setAttribute('value', 'Approve');
 
