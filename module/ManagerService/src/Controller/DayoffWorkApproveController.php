@@ -21,6 +21,8 @@ use Zend\Db\Adapter\AdapterInterface;
 use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\Form\Element\Select;
 use Zend\Mvc\Controller\AbstractActionController;
+use LeaveManagement\Repository\LeaveMasterRepository;
+use LeaveManagement\Repository\LeaveAssignRepository;
 
 class DayoffWorkApproveController extends AbstractActionController {
 
@@ -159,6 +161,27 @@ class DayoffWorkApproveController extends AbstractActionController {
                     $workOnDayoffModel->status = "R";
                     $this->flashmessenger()->addMessage("Work on Day-off Request Rejected!!!");
                 } else if ($action == "Approve") {
+                    $leaveMasterRepo = new LeaveMasterRepository($this->adapter);
+                    $leaveAssignRepo = new LeaveAssignRepository($this->adapter);
+                    $substituteLeave = $leaveMasterRepo->getSubstituteLeave()->getArrayCopy();
+                    $substituteLeaveId = $substituteLeave['LEAVE_ID'];
+                    $empSubLeaveDtl = $leaveAssignRepo->filterByLeaveEmployeeId($substituteLeaveId, $requestedEmployeeID);
+                    if(count($empSubLeaveDtl)>0){
+                        $preBalance = $empSubLeaveDtl['BALANCE'];
+                        $total = $empSubLeaveDtl['TOTAL_DAYS'] + $detail['DURATION'];
+                        $balance = $preBalance + $detail['DURATION'];
+                        $leaveAssignRepo->updatePreYrBalance($requestedEmployeeID,$substituteLeaveId, 0,$total, $balance);
+                    }else{
+                        $leaveAssign = new \LeaveManagement\Model\LeaveAssign();
+                        $leaveAssign->createdDt = Helper::getcurrentExpressionDate();
+                        $leaveAssign->createdBy = $this->employeeId;
+                        $leaveAssign->employeeId = $requestedEmployeeID;
+                        $leaveAssign->leaveId = $substituteLeaveId;
+                        $leaveAssign->totalDays = $detail['DURATION'];
+                        $leaveAssign->previousYearBalance = 0;
+                        $leaveAssign->balance = $detail['DURATION'];
+                        $leaveAssignRepo->add($leaveAssign);
+                    }
                     $workOnDayoffModel->status = "AP";
                     $this->flashmessenger()->addMessage("Work on Day-off Request Approved");
                 }

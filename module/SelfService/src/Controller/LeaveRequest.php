@@ -130,7 +130,7 @@ class LeaveRequest extends AbstractActionController {
                 $leaveRequest->status = "RQ";
 
                 $this->leaveRequestRepository->add($leaveRequest);
-                HeadNotification::pushNotification(NotificationEvents::LEAVE_APPLIED, $leaveRequest, $this->adapter);
+                HeadNotification::pushNotification(NotificationEvents::LEAVE_APPLIED, $leaveRequest, $this->adapter,$this->plugin("url"));
                 $this->flashmessenger()->addMessage("Leave Request Successfully added!!!");
                 return $this->redirect()->toRoute("leaverequest");
             }
