@@ -11,7 +11,6 @@ use SelfService\Form\AdvanceRequestForm;
 use SelfService\Model\AdvanceRequest as AdvanceRequestModel;
 use SelfService\Repository\AdvanceRequestRepository;
 use Setup\Model\Advance;
-use Setup\Model\Advance;
 use Setup\Repository\EmployeeRepository;
 use Setup\Repository\RecommendApproveRepository;
 use Zend\Authentication\AuthenticationService;
