@@ -113,5 +113,6 @@
             });
             kendo.saveAs({dataURI: workbook.toDataURL(), fileName: "LoanRequestList.xlsx"});
         }
+        window.app.UIConfirmations();
     });
 })(window.jQuery, window.app);
