@@ -1,6 +1,7 @@
 (function ($, app) {
     'use strict';
     $(document).ready(function () {
+        
         console.log(document.workOnDayoffRequestList);
         $("#workOnDayoffTbl").kendoGrid({
             excel: {
@@ -116,5 +117,6 @@
             });
             kendo.saveAs({dataURI: workbook.toDataURL(), fileName: "WorkOnDayoffRequestList.xlsx"});
         }
+        window.app.UIConfirmations();
     });
 })(window.jQuery, window.app);

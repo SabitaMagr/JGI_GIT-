@@ -16,6 +16,8 @@ use HolidayManagement\Model\Holiday;
 use Setup\Repository\EmployeeRepository;
 use Setup\Repository\RecommendApproveRepository;
 use SelfService\Repository\HolidayRepository;
+use LeaveManagement\Repository\LeaveAssignRepository;
+use LeaveManagement\Repository\LeaveMasterRepository;
 
 class WorkOnHoliday extends AbstractActionController {
 
@@ -114,6 +116,17 @@ class WorkOnHoliday extends AbstractActionController {
                         'ACTION' => key($action), 
                         'ACTION_TEXT' => $action[key($action)]
                     ]);
+            $startDate = \DateTime::createFromFormat(Helper::PHP_DATE_FORMAT, $row['FROM_DATE']);
+            $toDayDate = new \DateTime();
+            if (($toDayDate < $startDate) && ($statusID == 'RQ' || $statusID == 'RC' || $statusID == 'AP')) {
+                $new_row['ALLOW_TO_EDIT'] = 1;
+            } else if (($toDayDate >= $startDate) && $statusID == 'RQ') {
+                $new_row['ALLOW_TO_EDIT'] = 1;
+            } else if ($toDayDate >= $startDate) {
+                $new_row['ALLOW_TO_EDIT'] = 0;
+            } else {
+                $new_row['ALLOW_TO_EDIT'] = 0;
+            }
             array_push($list, $new_row);
         }
         return Helper::addFlashMessagesToArray($this, ['list' => $list]);
@@ -148,6 +161,19 @@ class WorkOnHoliday extends AbstractActionController {
         $id = (int) $this->params()->fromRoute("id");
         if (!$id) {
             return $this->redirect()->toRoute('workOnHoliday');
+        }
+        $detail = $this->repository->fetchById($id);
+        if($detail['STATUS']=='AP'){
+            //to get the previous balance of selected leave from assigned leave detail
+            $leaveAssignRepo = new LeaveAssignRepository($this->adapter);
+            $leaveMasterRepo = new LeaveMasterRepository($this->adapter);
+            $substituteLeave = $leaveMasterRepo->getSubstituteLeave()->getArrayCopy();
+            $substituteLeaveId = $substituteLeave['LEAVE_ID'];
+            $empSubLeaveDtl = $leaveAssignRepo->filterByLeaveEmployeeId($substituteLeaveId, $detail['EMPLOYEE_ID']);
+            $preBalance = $empSubLeaveDtl['BALANCE'];
+            $total = $empSubLeaveDtl['TOTAL_DAYS'] - $detail['DURATION'];
+            $balance = $preBalance - $detail['DURATION'];
+            $leaveAssignRepo->updatePreYrBalance($detail['EMPLOYEE_ID'],$substituteLeaveId, 0,$total, $balance);
         }
         $this->repository->delete($id);
         $this->flashmessenger()->addMessage("Work on Holiday Request Successfully Cancelled!!!");

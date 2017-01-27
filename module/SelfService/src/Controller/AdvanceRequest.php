@@ -240,6 +240,4 @@ class AdvanceRequest extends AbstractActionController {
         return $responseData;
     }
 
-   
-
 }

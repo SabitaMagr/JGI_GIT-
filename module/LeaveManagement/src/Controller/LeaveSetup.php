@@ -51,6 +51,7 @@ class LeaveSetup extends AbstractActionController
                         'DEFAULT_DAYS'=>$getValue($leaveRow['DEFAULT_DAYS']),
                         'CARRY_FORWARD'=>$getValue($leaveRow['CARRY_FORWARD']),
                         'CASHABLE'=>$getValue($leaveRow['CASHABLE']),
+                        'IS_SUBSTITUTE'=>$leaveRow['IS_SUBSTITUTE']
                     ]
                     );
         }

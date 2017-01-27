@@ -123,5 +123,6 @@
             });
             kendo.saveAs({dataURI: workbook.toDataURL(), fileName: "WorkOnHolidayRequestList.xlsx"});
         }
+        window.app.UIConfirmations();
     });
 })(window.jQuery, window.app);

@@ -85,10 +85,11 @@ echo json_encode($menu);
         href="<?= $this->url("leavesetup", ["action" => "edit"]); ?>/#:LEAVE_ID #" style="height:17px;">
         <i class="fa fa-edit"></i>
         </a> 
+        # if(IS_SUBSTITUTE=='N') { #
         <a class="btn-delete confirmation"
         href="<?= $this->url("leavesetup", ["action" => "delete"]); ?>/#:LEAVE_ID #"  id="bs_#:LEAVE_ID #" style="height:17px;">
         <i class="fa fa-trash-o"></i></a>
-        </a>
+        # } #
         </td>
         </tr>
     </script>

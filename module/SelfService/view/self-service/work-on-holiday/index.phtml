@@ -82,14 +82,15 @@ echo json_encode($menu);
         </td>
         <td>
         <a class="btn-edit"
-        href="<?= $this->url("workOnHoliday"); ?>/#:ACTION #/#:ID #" style="height:17px;" title="#:ACTION_TEXT #">
-        # if (ACTION_TEXT=="Cancel Request") { #
-        <i class="fa fa-trash-o"></i>
-        # } #
-        # if (ACTION_TEXT=="View") { #
-        <i class="fa fa-search-plus"></i>
-        # } #
+        href="<?= $this->url("workOnHoliday", ["action" => "view"]) ?>/#: ID #" style="height:17px;" title="view detail">
+        <i class="fa fa-search-plus"></i></a>
         </a>
+        #if(ALLOW_TO_EDIT == 1){#       
+        <a class="confirmation btn-delete"
+        href="<?= $this->url("workOnHoliday", ["action" => "delete"]) ?>/#: ID #" id="bs_#:ID #" style="height:17px;">
+        <i class="fa fa-trash-o"></i></a>
+        </a>
+        #}#
         </td>
         </tr>
     </script>
