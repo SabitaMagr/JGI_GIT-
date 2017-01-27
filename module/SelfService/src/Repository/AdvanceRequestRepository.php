@@ -1,4 +1,5 @@
 <?php
+
 namespace SelfService\Repository;
 
 use Application\Model\Model;
@@ -11,13 +12,14 @@ use Zend\Db\Sql\Sql;
 use Setup\Model\HrEmployees;
 use Setup\Model\Advance;
 
-class AdvanceRequestRepository implements RepositoryInterface{
+class AdvanceRequestRepository implements RepositoryInterface {
+
     private $tableGateway;
     private $adapter;
-    
+
     public function __construct(AdapterInterface $adapter) {
         $this->adapter = $adapter;
-        $this->tableGateway = new TableGateway(AdvanceRequest::TABLE_NAME,$adapter);
+        $this->tableGateway = new TableGateway(AdvanceRequest::TABLE_NAME, $adapter);
     }
 
     public function add(Model $model) {
@@ -25,7 +27,7 @@ class AdvanceRequestRepository implements RepositoryInterface{
     }
 
     public function delete($id) {
-        $this->tableGateway->update([AdvanceRequest::STATUS=>'C'],[AdvanceRequest::ADVANCE_REQUEST_ID=>$id]);
+        $this->tableGateway->update([AdvanceRequest::STATUS => 'C'], [AdvanceRequest::ADVANCE_REQUEST_ID => $id]);
     }
 
     public function edit(Model $model, $id) {
@@ -54,14 +56,14 @@ class AdvanceRequestRepository implements RepositoryInterface{
             new Expression("AR.APPROVED_REMARKS AS APPROVED_REMARKS"),
             new Expression("AR.RECOMMENDED_REMARKS AS RECOMMENDED_REMARKS"),
             new Expression("AR.ADVANCE_ID AS ADVANCE_ID"),
-            new Expression("AR.TERMS AS TERMS") 
+            new Expression("AR.TERMS AS TERMS")
                 ], true);
 
         $select->from(['AR' => AdvanceRequest::TABLE_NAME])
-                ->join(['E' => HrEmployees::TABLE_NAME], "E.".HrEmployees::EMPLOYEE_ID."=AR.". AdvanceRequest::EMPLOYEE_ID, [HrEmployees::FIRST_NAME,HrEmployees::MIDDLE_NAME, HrEmployees::LAST_NAME])
-                ->join(['A' => Advance::TABLE_NAME], "A.".Advance::ADVANCE_ID."=AR.". AdvanceRequest::ADVANCE_ID, [Advance::ADVANCE_CODE, Advance::ADVANCE_NAME])
-                ->join(['E1'=>"HR_EMPLOYEES"],"E1.EMPLOYEE_ID=AR.RECOMMENDED_BY",['FN1'=>'FIRST_NAME','MN1'=>'MIDDLE_NAME','LN1'=>'LAST_NAME'],"left")
-                ->join(['E2'=>"HR_EMPLOYEES"],"E2.EMPLOYEE_ID=AR.APPROVED_BY",['FN2'=>'FIRST_NAME','MN2'=>'MIDDLE_NAME','LN2'=>'LAST_NAME'],"left");
+                ->join(['E' => HrEmployees::TABLE_NAME], "E." . HrEmployees::EMPLOYEE_ID . "=AR." . AdvanceRequest::EMPLOYEE_ID, [HrEmployees::FIRST_NAME, HrEmployees::MIDDLE_NAME, HrEmployees::LAST_NAME])
+                ->join(['A' => Advance::TABLE_NAME], "A." . Advance::ADVANCE_ID . "=AR." . AdvanceRequest::ADVANCE_ID, [Advance::ADVANCE_CODE, Advance::ADVANCE_NAME])
+                ->join(['E1' => "HR_EMPLOYEES"], "E1.EMPLOYEE_ID=AR.RECOMMENDED_BY", ['FN1' => 'FIRST_NAME', 'MN1' => 'MIDDLE_NAME', 'LN1' => 'LAST_NAME'], "left")
+                ->join(['E2' => "HR_EMPLOYEES"], "E2.EMPLOYEE_ID=AR.APPROVED_BY", ['FN2' => 'FIRST_NAME', 'MN2' => 'MIDDLE_NAME', 'LN2' => 'LAST_NAME'], "left");
 
         $select->where([
             "AR.ADVANCE_REQUEST_ID=" . $id
@@ -71,7 +73,8 @@ class AdvanceRequestRepository implements RepositoryInterface{
         $result = $statement->execute();
         return $result->current();
     }
-    public function getAllByEmployeeId($employeeId){
+
+    public function getAllByEmployeeId($employeeId) {
         $sql = new Sql($this->adapter);
         $select = $sql->select();
         $select->columns([
@@ -86,14 +89,14 @@ class AdvanceRequestRepository implements RepositoryInterface{
             new Expression("AR.REQUESTED_AMOUNT AS REQUESTED_AMOUNT"),
             new Expression("AR.RECOMMENDED_REMARKS AS RECOMMENDED_REMARKS"),
             new Expression("AR.APPROVED_REMARKS AS APPROVED_REMARKS"),
-            new Expression("AR.TERMS AS TERMS") 
+            new Expression("AR.TERMS AS TERMS")
                 ], true);
 
         $select->from(['AR' => AdvanceRequest::TABLE_NAME])
-                ->join(['E' => HrEmployees::TABLE_NAME], "E.".HrEmployees::EMPLOYEE_ID."=AR.". AdvanceRequest::EMPLOYEE_ID, [HrEmployees::FIRST_NAME,HrEmployees::MIDDLE_NAME, HrEmployees::LAST_NAME])
-                ->join(['A' => Advance::TABLE_NAME], "A.". Advance::ADVANCE_ID."=AR.".AdvanceRequest::ADVANCE_ID, [Advance::ADVANCE_CODE, Advance::ADVANCE_NAME])
-                ->join(['E1'=>"HR_EMPLOYEES"],"E1.EMPLOYEE_ID=AR.RECOMMENDED_BY",['FN1'=>'FIRST_NAME','MN1'=>'MIDDLE_NAME','LN1'=>'LAST_NAME'],"left")
-                ->join(['E2'=>"HR_EMPLOYEES"],"E2.EMPLOYEE_ID=AR.APPROVED_BY",['FN2'=>'FIRST_NAME','MN2'=>'MIDDLE_NAME','LN2'=>'LAST_NAME'],"left");
+                ->join(['E' => HrEmployees::TABLE_NAME], "E." . HrEmployees::EMPLOYEE_ID . "=AR." . AdvanceRequest::EMPLOYEE_ID, [HrEmployees::FIRST_NAME, HrEmployees::MIDDLE_NAME, HrEmployees::LAST_NAME])
+                ->join(['A' => Advance::TABLE_NAME], "A." . Advance::ADVANCE_ID . "=AR." . AdvanceRequest::ADVANCE_ID, [Advance::ADVANCE_CODE, Advance::ADVANCE_NAME])
+                ->join(['E1' => "HR_EMPLOYEES"], "E1.EMPLOYEE_ID=AR.RECOMMENDED_BY", ['FN1' => 'FIRST_NAME', 'MN1' => 'MIDDLE_NAME', 'LN1' => 'LAST_NAME'], "left")
+                ->join(['E2' => "HR_EMPLOYEES"], "E2.EMPLOYEE_ID=AR.APPROVED_BY", ['FN2' => 'FIRST_NAME', 'MN2' => 'MIDDLE_NAME', 'LN2' => 'LAST_NAME'], "left");
 
         $select->where([
             "E.EMPLOYEE_ID=" . $employeeId
@@ -105,6 +108,57 @@ class AdvanceRequestRepository implements RepositoryInterface{
 //        foreach($result  as $row){
 //            array_push($list, $row);
 //        }
+        return $result;
+    }
+
+    public function checkAdvance(int $employeeId, int $monthId) {
+        $sql = "SELECT COUNT(AM.MONTH_ID) AS MTH_CNT
+                FROM
+              (SELECT M.MONTH_ID
+              FROM HR_MONTH_CODE M,
+                (SELECT MC.FROM_DATE,
+                  MC.TO_DATE,
+                  R.TERMS
+                FROM HR_MONTH_CODE MC,
+                  (SELECT REQUESTED_DATE,
+                    TERMS
+                  FROM HR_EMPLOYEE_ADVANCE_REQUEST
+                  WHERE STATUS    ='AP'
+                  AND EMPLOYEE_ID =$employeeId
+                  ) R
+                WHERE R.REQUESTED_DATE BETWEEN MC.FROM_DATE AND MC.TO_DATE
+                ) CM
+              WHERE M.FROM_DATE >= CM.FROM_DATE
+              AND ROWNUM        <=CM.TERMS
+              ) AM
+            WHERE AM.MONTH_ID= $monthId";
+        $statement = $this->adapter->query($sql);
+        $result = $statement->execute()->current();
+        return $result['MTH_CNT'] > 0 ? 1 : 0;
+    }
+
+    public function getAdvance(int $employeeId, int $monthId) {
+        $sql = "SELECT MTHS.*,MTHS.REQUESTED_AMOUNT/MTHS.TERMS AS SAL_CUT FROM (SELECT M.MONTH_ID,
+CM.*
+FROM HR_MONTH_CODE M,
+  (SELECT MC.FROM_DATE,
+    MC.TO_DATE,
+    R.*
+  FROM HR_MONTH_CODE MC,
+    (SELECT ADVANCE_DATE,
+      TERMS,
+      ADVANCE_REQUEST_ID,
+      REQUESTED_AMOUNT
+    FROM HR_EMPLOYEE_ADVANCE_REQUEST
+    WHERE STATUS    ='AP'
+    AND EMPLOYEE_ID =$employeeId
+    ) R
+  WHERE R.ADVANCE_DATE BETWEEN MC.FROM_DATE AND MC.TO_DATE
+  ) CM
+WHERE M.FROM_DATE >= CM.FROM_DATE
+AND ROWNUM        <=CM.TERMS) MTHS WHERE MTHS.MONTH_ID=$monthId;";
+        $statement = $this->adapter->query($sql);
+        $result = $statement->execute()->current();
         return $result;
     }
 

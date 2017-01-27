@@ -34,23 +34,22 @@ echo json_encode($menu);
 <div class="formbg arrowtop" ng-app="hris" ng-controller="employeeListController">
     <div class="margin-top-20">
         <div class="row">
-            <div class="col-sm-3">
+            <div class="col col-sm-6 col-md-3">
                 <?php print $this->formLabel($employees); ?>
                 <?php print $this->formElement($employees); ?>
             </div>
-            <div class="col-sm-3">
+            <div class="col col-sm-6 col-md-3">
                 <?php print $this->formLabel($branches); ?>
                 <?php print $this->formElement($branches); ?>
             </div>
-            <div class="col-sm-3">
+            <div class="col col-sm-6 col-md-3">
                 <?php print $this->formLabel($departments); ?>
                 <?php print $this->formElement($departments); ?>
             </div>
-            <div class="col-sm-3">
+            <div class="col col-sm-6 col-md-3">
                 <?php print $this->formLabel($designations); ?>
                 <?php print $this->formElement($designations); ?>
             </div>
-
         </div>
         <div class="row margin-top-10">
             <div class="col-sm-3">
@@ -108,30 +107,30 @@ echo json_encode($menu);
 
     <script id="rowTemplate" type="text/x-kendo-tmpl">
         <tr>
-        <td>    
-        #: (EMPLOYEE_CODE == null) ? '-' : EMPLOYEE_CODE #
+        <td>                 
+        #: (EMPLOYEE_CODE == null) ? '-' : EMPLOYEE            _CODE #
         </td>
         <td>
         #: (FIRST_NAME == null) ? ' ' : FIRST_NAME #
         #: (MIDDLE_NAME == null) ? ' ' : MIDDLE_NAME #
         #: (LAST_NAME == null) ? ' ' : LAST_NAME #
+        </            td>
+        <td>
+        #: (BIRTH_DATE == null) ? '-' : BIRTH_DAT            E #
+        </            td>
+        <                td>
+        #: (MOBILE_NO == null) ? '-' : MOBI            LE_NO #
         </td>
         <td>
-        #: (BIRTH_DATE == null) ? '-' : BIRTH_DATE #
-        </td>
+        #: (EMAIL_OFFICIAL == null) ? '-' : EMAIL_OFFICIA            L #
+        </            td>
         <td>
-        #: (MOBILE_NO == null) ? '-' : MOBILE_NO #
-        </td>
-        <td>
-        #: (EMAIL_OFFICIAL == null) ? '-' : EMAIL_OFFICIAL #
-        </td>
-        <td>
-        <a class="btn-edit"
-        href="<?= $this->url("employee", ["action" => "view"]) ?>/#:EMPLOYEE_ID#/1" style="height:17px;">
-        <i class="fa fa-edit"></i>
+        <a cl                   ass="btn-edit" title="Edit"
+        href="<?= $this->url("employee", ["action" => "view"]) ?>/#:EMPLOYEE_ID#/1" st                            yle="height:17px;">
+        <i clas                        s="fa fa-edit"                        ></i>
         </a> 
-        <a class="confirmation btn-delete"
-        href="<?= $this->url("employee", ["action" => "delete"]) ?>/#:EMPLOYEE_ID#" id="bs_#:EMPLOYEE_ID #" style="height:17px;">
+        <a class="confirmation btn-delete" title="Delete"
+        href="<?= $this->url("employee", ["action" => "delete"]) ?>/#:EMPLOYEE_ID#" id="bs_#:EMPLOYEE_ID #" style=                            "height:17px;">
         <i class="fa fa-trash-o"></i></a>
         </td>
 

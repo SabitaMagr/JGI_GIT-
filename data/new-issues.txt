@@ -1,6 +1,8 @@
 payroll features
 1. just include in tax.
 2. PF according to salary increment
-3. add columns [trainingId,travel] on attendance-detail
-4. 
+3. notification setting(user wise)
+4. add columns [trainingId,travel] on attendance-detail
+5. check for holidays, leave, travel, training on new request for holiday, leave, travel, training
+6. 
 

@@ -49,6 +49,7 @@ class PayrollGenerator {
         "TOTAL_NO_OF_WORK_DAYS_INC_HOLIDAYS",
         "SALARY_REVIEW_DAY",
         "SALARY_REVIEW_OLD_SALARY",
+        "HAS_ADVANCE"
     ];
     const SYSTEM_RULE = [
         "CUR_MTH_ID",
@@ -118,7 +119,7 @@ class PayrollGenerator {
             foreach (self::SYSTEM_RULE as $systemRule) {
                 $rule = $this->convertSystemRuleToValue($rule, $systemRule);
             }
-//            if ($ruleDetail['PAY_ID'] == 10) {
+//            if ($ruleDetail['PAY_ID'] == 11) {
 //                print "<pre>";
 //                print_r("return " . $rule . " ;");
 //                exit;

@@ -15,8 +15,10 @@ use Application\Model\Months;
 use Application\Repository\MonthRepository;
 use AttendanceManagement\Model\AttendanceDetail;
 use AttendanceManagement\Repository\AttendanceDetailRepository;
+use DateTime;
 use LeaveManagement\Repository\LeaveMasterRepository;
 use ManagerService\Repository\SalaryDetailRepo;
+use SelfService\Repository\AdvanceRequestRepository;
 use Setup\Model\HrEmployees;
 use Setup\Model\ServiceType;
 use Setup\Repository\EmployeeRepository;
@@ -189,8 +191,8 @@ class VariableProcessor {
                 if ($salaryDetail->count() > 0) {
                     $salaryDetail = Helper::extractDbData($salaryDetail);
                     $effectiveDate = $salaryDetail[0]['EFFECTIVE_DATE'];
-                    $dateObjFrom = \DateTime::createFromFormat(Helper::PHP_DATE_FORMAT, $firstLastDate[Months::FROM_DATE]);
-                    $dateObj = \DateTime::createFromFormat(Helper::PHP_DATE_FORMAT, $effectiveDate);
+                    $dateObjFrom = DateTime::createFromFormat(Helper::PHP_DATE_FORMAT, $firstLastDate[Months::FROM_DATE]);
+                    $dateObj = DateTime::createFromFormat(Helper::PHP_DATE_FORMAT, $effectiveDate);
                     $interval = $dateObjFrom->diff($dateObj);
 //                    $processedValue = $dateObj->format('d');
                     $processedValue = $interval->d;
@@ -214,7 +216,11 @@ class VariableProcessor {
                     $processedValue = 0;
                 }
                 break;
-
+//                HAS_ADVANCE
+            case PayrollGenerator::VARIABLES[15]:
+                $advanceRequestRepo = new AdvanceRequestRepository($this->adapter);
+                $processedValue = $advanceRequestRepo->checkAdvance($this->employeeId, $this->monthId);
+                break;
             default:
 
 

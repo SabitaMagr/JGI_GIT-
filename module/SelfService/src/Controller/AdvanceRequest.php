@@ -2,7 +2,6 @@
 
 namespace SelfService\Controller;
 
-use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
 use Application\Helper\LoanAdvanceHelper;
 use Notification\Controller\HeadNotification;
@@ -10,8 +9,6 @@ use Notification\Model\NotificationEvents;
 use SelfService\Form\AdvanceRequestForm;
 use SelfService\Model\AdvanceRequest as AdvanceRequestModel;
 use SelfService\Repository\AdvanceRequestRepository;
-use Setup\Model\Advance;
-use Setup\Model\Advance;
 use Setup\Repository\EmployeeRepository;
 use Setup\Repository\RecommendApproveRepository;
 use Zend\Authentication\AuthenticationService;
@@ -242,5 +239,7 @@ class AdvanceRequest extends AbstractActionController {
         ];
         return $responseData;
     }
+
+   
 
 }
