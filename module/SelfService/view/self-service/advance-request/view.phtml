@@ -1,4 +1,5 @@
 <?php
+$this->headScript()->appendFile($this->basePath('js/angular.min.js'));
 $this->headScript()->appendFile($this->basePath('js/SelfService/advance-request/add.js'));
 
 $form->setAttribute('role', 'form');
@@ -43,7 +44,7 @@ print $this->form()->openTag($form);
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\advanceRequest')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
-<div class="row margin-top-20">
+<div class="row margin-top-20" ng-app="hris" ng-controller="advanceDetailController">
     <div class="col-sm-8 col-sm-offset-2">
         <div class="portlet box custom-box">
             <div class="portlet-title">
@@ -113,10 +114,13 @@ print $this->form()->openTag($form);
                         </div>
                     </div>
                 </div>
+                <input type="hidden" id="form-employeeId" value="<?php echo $employeeId; ?>"/>
                 <div class="form-group">
                     <?php print $this->formLabel($advanceId); ?>
                     <?php print $this->formElement($advanceId); ?>
                     <?php print $this->formElementErrors()->render($advanceId, ['class' => 'help-block']); ?>
+                    <span ng-bind="allowAmt" style="font-size:11px; font-weight: bold;"></span>
+                    <span ng-bind="allowTerms" style="font-size:11px; font-weight: bold;"></span>
                 </div>               
                 <div class="form-group">
                     <?php print $this->formLabel($requestedAmount); ?>

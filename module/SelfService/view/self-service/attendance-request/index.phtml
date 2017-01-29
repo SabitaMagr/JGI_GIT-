@@ -126,24 +126,19 @@ echo json_encode($menu);
             #: (OUT_TIME == null) ? '-' : OUT_TIME #
             </td>
             <td>
-            #: (IN_REMARKS == null) ? '-' : IN_REMARKS #
-            </td>
-            <td>
-            #: (OUT_REMARKS == null) ? '-' : OUT_REMARKS #
-            </td>
-            <td>
             #: (A_STATUS == null) ? '-' : A_STATUS #
             </td>
             <td>
             <a class="btn-edit"
-            href="<?= $this->url("attendancerequest"); ?>/#:ACTION #/#:ID #" style="height:17px;" title="#:ACTION_TEXT #">
-            # if (ACTION_TEXT=="Cancel Request") { #
-            <i class="fa fa-trash-o"></i>
-            # } #
-            # if (ACTION_TEXT=="View") { #
-            <i class="fa fa-search-plus"></i>
-            # } #
+            href="<?= $this->url("attendancerequest", ["action" => "view"]) ?>/#: ID #" style="height:17px;" title="view detail">
+            <i class="fa fa-search-plus"></i></a>
             </a>
+            #if(ALLOW_TO_EDIT == 1){#       
+            <a class="confirmation btn-delete"
+            href="<?= $this->url("attendancerequest", ["action" => "delete"]) ?>/#: ID #" id="bs_#:ID #" style="height:17px;">
+            <i class="fa fa-trash-o"></i></a>
+            </a>
+            #}#
             </td>
             </tr>
         </script>

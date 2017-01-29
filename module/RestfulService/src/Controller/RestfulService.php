@@ -306,6 +306,9 @@ class RestfulService extends AbstractRestfulController {
                 case "checkAdvanceRestriction":
                     $responseData = $this->checkAdvanceRestriction($postedData->data);
                     break;
+                case "pullAdvanceDetailByEmpId":
+                    $responseData = $this->pullAdvanceDetailByEmpId($postedData->data);
+                    break;
                 case "pullHolidaysForEmployee":
                     $responseData = $this->pullHolidaysForEmployee($postedData->data);
                     break;
@@ -2025,6 +2028,11 @@ class RestfulService extends AbstractRestfulController {
                 'ACTION_TEXT' => $action[key($action)],
                 'APPROVER_NAME' => $approverName
             ]);
+            if($statusId=='RQ'){
+                $new_row['ALLOW_TO_EDIT'] = 1;
+            }else{
+                $new_row['ALLOW_TO_EDIT'] = 0;
+            }
             array_push($attendanceRequest, $new_row);
         }
         return [
@@ -2468,6 +2476,37 @@ class RestfulService extends AbstractRestfulController {
             'errorTerms' => $errorTerms,
             'errorAmt' => $errorAmt
         ];
+        return [
+            'success' => true,
+            'data' => $data
+        ];
+    }
+    public function pullAdvanceDetailByEmpId($data){
+        $employeeId = $data['employeeId'];
+        $advanceId = $data['advanceId'];
+        
+        $advanceRepo = new AdvanceRepository($this->adapter);
+
+        $advanceDetail = $advanceRepo->fetchById($advanceId);
+        $minSalary = $advanceDetail['MIN_SALARY_AMT'];
+        $maxSalary = $advanceDetail['MAX_SALARY_AMT'];
+        $amtToAllow = $advanceDetail['AMOUNT_TO_ALLOW'];
+        $monthToAllow = $advanceDetail['MONTH_TO_ALLOW'];
+
+        $employeeRepo = new EmployeeRepository($this->adapter);
+        $employeeDetail = $employeeRepo->fetchById($employeeId);
+        $salary = $employeeDetail['SALARY'];
+        $permitAmtPercentage = ($salary * $amtToAllow) / 100;
+ 
+        if($monthToAllow!=null || $permitAmtPercentage!=0){
+            $data = [
+                'allowTerms' => " and Month to Allow (upto): ".$monthToAllow,
+                'allowAmt' => "Amount to Allow (per month): ".$permitAmtPercentage,
+            ];
+        }else{
+            $data = "";
+        }
+        
         return [
             'success' => true,
             'data' => $data

@@ -113,6 +113,11 @@ class AdvanceRequest extends AbstractActionController {
                 'ACTION' => key($action),
                 'ACTION_TEXT' => $action[key($action)]
             ]);
+            if($statusID=='RQ'){
+                $new_row['ALLOW_TO_EDIT'] = 1;
+            }else{
+                $new_row['ALLOW_TO_EDIT'] = 0;
+            }
             array_push($list, $new_row);
         }
         return Helper::addFlashMessagesToArray($this, ['list' => $list]);
@@ -190,6 +195,7 @@ class AdvanceRequest extends AbstractActionController {
         return Helper::addFlashMessagesToArray($this, [
                     'form' => $this->form,
                     'employeeName' => $employeeName,
+                    'employeeId'=>$detail['EMPLOYEE_ID'],
                     'status' => $detail['STATUS'],
                     'requestedDate' => $detail['REQUESTED_DATE'],
                     'recommender' => $authRecommender,

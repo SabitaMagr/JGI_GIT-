@@ -25,6 +25,7 @@ angular.module('hris', [])
                     }
                 }).then(function (success) {
                     $scope.initializekendoGrid(success.data);
+                    window.app.UIConfirmations();
                 }, function (failure) {
                     console.log(failure);
                 });
@@ -55,9 +56,7 @@ angular.module('hris', [])
                         {field: "ATTENDANCE_DT", title: "Attendance Date", width: 140},
                         {field: "IN_TIME", title: "Check In", width: 100},
                         {field: "OUT_TIME", title: "Check Out", width: 100},
-                        {field: "IN_REMARKS", title: "Late In Reason", width: 200},
-                        {field: "OUT_REMARKS", title: "Early Out Reason", width: 200},
-                        {field: "A_STATUS", title: "Status", width: 80},
+                        {field: "A_STATUS", title: "Status", width: 100},
                         {title: "Action", width: 80}
                     ]
                 });

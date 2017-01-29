@@ -40,14 +40,14 @@ print $this->form()->openTag($form);
 ?>
     <script>
         document.menu =<?php $menu = ["id" => "menuAdvance", "subMenu" => ["id" => "subMenuAdvanceStatus"]];echo json_encode($menu);?>;
-        document.url = '<?= $this->url("webService", ["action" => "index"]) ?>';
+        document.url = '<?= $this->url("restful", ["action" => "index"]) ?>';
         document.employeeId=<?= json_encode($employeeId)?>;
     </script>
 
     <div class="page-bar">
         <?= $this->navigation('Zend\Navigation\advanceStatus')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb'); ?>
     </div>
-    <div class="row margin-top-20">
+    <div class="row margin-top-20" ng-app="hris" ng-controller="advanceDetailController">
         <div class="col-sm-8 col-sm-offset-2">
             <div class="portlet box custom-box">
                 <div class="portlet-title">
@@ -127,10 +127,13 @@ print $this->form()->openTag($form);
                             </div>
                         </div>
 
+                        <input type="hidden" id="form-employeeId" value="<?php echo $employeeId; ?>"/>
                         <div class="form-group">
                             <?php print $this->formLabel($advanceId); ?>
                             <?php print $this->formElement($advanceId); ?>
                             <?php print $this->formElementErrors()->render($advanceId, ['class' => 'help-block']); ?>
+                            <span ng-bind="allowAmt" style="font-size:11px; font-weight: bold;"></span>
+                            <span ng-bind="allowTerms" style="font-size:11px; font-weight: bold;"></span>
                         </div>               
                         <div class="form-group">
                             <?php print $this->formLabel($requestedAmount); ?>
