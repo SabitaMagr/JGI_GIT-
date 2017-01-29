@@ -156,10 +156,11 @@ FROM HR_MONTH_CODE M,
   WHERE R.ADVANCE_DATE BETWEEN MC.FROM_DATE AND MC.TO_DATE
   ) CM
 WHERE M.FROM_DATE >= CM.FROM_DATE
-AND ROWNUM        <=CM.TERMS) MTHS WHERE MTHS.MONTH_ID=$monthId;";
+AND ROWNUM        <=CM.TERMS) MTHS WHERE MTHS.MONTH_ID=$monthId";
         $statement = $this->adapter->query($sql);
-        $result = $statement->execute()->current();
-        return $result;
+        $rawResult = $statement->execute();
+        $result = $rawResult->current();
+        return $result == null ? 0 : $result['SAL_CUT'];
     }
 
 }

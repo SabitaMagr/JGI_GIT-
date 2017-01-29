@@ -9,7 +9,10 @@
 namespace Application;
 
 use Application\Controller\AuthController;
+use Application\Factory\HrLogger;
+use Application\Helper\SessionHelper;
 use Application\Model\HrisAuthStorage;
+use Interop\Container\ContainerInterface;
 use RestfulService\Controller\RestfulService;
 use System\Model\MenuSetup;
 use System\Repository\RolePermissionRepository;
@@ -104,7 +107,7 @@ class Module implements AutoloaderProviderInterface, ConsoleUsageProviderInterfa
                 return $response;
             }
 
-            Helper\SessionHelper::sessionCheck($event);
+            SessionHelper::sessionCheck($event);
         }
 
         $requestedResourse = $controller . "-" . $action;
@@ -152,6 +155,9 @@ class Module implements AutoloaderProviderInterface, ConsoleUsageProviderInterfa
 
                     return $authService;
                 },
+                HrLogger::class => function(ContainerInterface $container) {
+                    return HrLogger::getInstance();
+                }
             ],
         ];
     }
@@ -171,7 +177,7 @@ class Module implements AutoloaderProviderInterface, ConsoleUsageProviderInterfa
     public function getConsoleUsage(AdapterInterface $console) {
         return [
             'attendance daily-attendance' => 'Daily Attendance',
-            'attendance employee-attendance <employeeId> <attendanceDt> <attendanceTime>'=>'Employee Daily Attendance'
+            'attendance employee-attendance <employeeId> <attendanceDt> <attendanceTime>' => 'Employee Daily Attendance'
         ];
     }
 

@@ -3,6 +3,10 @@
 namespace Appraisal;
 
 use Application\Controller\ControllerFactory;
+use Application\Factory\DashBoardFactory;
+use Appraisal\Controller\Appraisal;
+use Appraisal\Controller\EvaluationAndReview;
+use Appraisal\Controller\PerformanceAppraisal;
 use Zend\Router\Http\Segment;
 
 return [
@@ -17,7 +21,7 @@ return [
                         'id' => '[0-9]+',
                     ],
                     'defaults' => [
-                        'controller' => Controller\Appraisal::class,
+                        'controller' => Appraisal::class,
                         'action' => 'index',
                     ]
                 ],
@@ -31,7 +35,7 @@ return [
                         'id' => '[0-9]+',
                     ],
                     'defaults' => [
-                        'controller' => Controller\EvaluationAndReview::class,
+                        'controller' => EvaluationAndReview::class,
                         'action' => 'index',
                     ]
                 ],
@@ -45,7 +49,7 @@ return [
                         'id' => '[0-9]+',
                     ],
                     'defaults' => [
-                        'controller' => Controller\PerformanceAppraisal::class,
+                        'controller' => PerformanceAppraisal::class,
                         'action' => 'index',
                     ]
                 ],
@@ -127,9 +131,9 @@ return [
     ],
     'controllers' => [
         'factories' => [
-            Controller\Appraisal::class => ControllerFactory::class,
-            Controller\EvaluationAndReview::class => ControllerFactory::class,
-            Controller\PerformanceAppraisal::class => ControllerFactory::class,
+            Appraisal::class => ControllerFactory::class,
+            EvaluationAndReview::class => ControllerFactory::class,
+            PerformanceAppraisal::class => ControllerFactory::class,
         ],
     ],
     'view_manager' => [

@@ -221,6 +221,11 @@ class VariableProcessor {
                 $advanceRequestRepo = new AdvanceRequestRepository($this->adapter);
                 $processedValue = $advanceRequestRepo->checkAdvance($this->employeeId, $this->monthId);
                 break;
+//            "ADVANCE_AMT"
+            case PayrollGenerator::VARIABLES[16]:
+                $advanceRequestRepo = new AdvanceRequestRepository($this->adapter);
+                $processedValue = $advanceRequestRepo->getAdvance($this->employeeId, $this->monthId);
+                break;
             default:
 
 

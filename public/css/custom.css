@@ -928,7 +928,12 @@ form label,.form-box label
 {
     min-height:23px !important;
     border-radius:0px !important;
+    width: auto !important;
 
+}
+.select2-container
+{
+    width:100% !important;
 }
 .select2-selection__choice
 {
