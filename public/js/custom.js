@@ -1,6 +1,8 @@
 window.app = (function ($, toastr) {
     "use strict";
     var format = "dd-M-yyyy";
+    window.toastr.options = {"positionClass": "toast-bottom-right"};
+
 
     var pullDataById = function (url, data) {
         return new Promise(function (resolve, reject) {

@@ -1,21 +1,19 @@
 <?php
 
-/**
- * @link      http://github.com/zendframework/ZendSkeletonApplication for the canonical source repository
- * @copyright Copyright (c) 2005-2016 Zend Technologies USA Inc. (http://www.zend.com)
- * @license   http://framework.zend.com/license/new-bsd New BSD License
- */
-
 namespace Application;
 
 use Application\Controller\AuthController;
 use Application\Factory\HrLogger;
 use Application\Helper\SessionHelper;
 use Application\Model\HrisAuthStorage;
+use DateTime;
 use Interop\Container\ContainerInterface;
+use Notification\Controller\HeadNotification;
 use RestfulService\Controller\RestfulService;
 use System\Model\MenuSetup;
+use System\Model\Setting;
 use System\Repository\RolePermissionRepository;
+use System\Repository\SettingRepository;
 use Zend\Authentication\Adapter\DbTable\CredentialTreatmentAdapter as DbTableAuthAdapter;
 use Zend\Authentication\AuthenticationService;
 use Zend\Console\Adapter\AdapterInterface;
@@ -25,6 +23,7 @@ use Zend\ModuleManager\Feature\AutoloaderProviderInterface;
 use Zend\ModuleManager\Feature\ConsoleUsageProviderInterface;
 use Zend\Mvc\ModuleRouteListener;
 use Zend\Mvc\MvcEvent;
+use Zend\View\Model\ViewModel;
 
 class Module implements AutoloaderProviderInterface, ConsoleUsageProviderInterface {
 
@@ -39,8 +38,6 @@ class Module implements AutoloaderProviderInterface, ConsoleUsageProviderInterfa
         $moduleRouteListener = new ModuleRouteListener();
         $moduleRouteListener->attach($eventManager);
 
-        $serviceManager = $e->getApplication()->getServiceManager();
-
         $eventManager->attach(MvcEvent::EVENT_DISPATCH, [
             $this,
             'beforeDispatch'
@@ -52,47 +49,56 @@ class Module implements AutoloaderProviderInterface, ConsoleUsageProviderInterfa
     }
 
     function beforeDispatch(MvcEvent $event) {
-        $request = $event->getRequest();
-
-        if ($request->getContent() != null) {
-            return;
-        }
+//        commented for now 
+//        $request = $event->getRequest();
+//        if ($request->getContent() != null) {
+//            return;
+//        }
         $response = $event->getResponse();
-        $target = $event->getTarget();
 
         /* Offline pages not needed authentication */
         $whiteList = [
             AuthController::class . '-login',
             AuthController::class . '-logout',
             AuthController::class . '-authenticate',
-            RestfulService::class . '-restful'
+            RestfulService::class . '-restful',
+            Controller\CronController::class . '-index',
+            Controller\CronController::class . '-employee-attendance',
         ];
         $app = $event->getApplication();
-        //$routeMatch = $event->getRouteMatch();
         $auth = $app->getServiceManager()->get('AuthService');
 
-        $requestUri = $request->getRequestUri();
         $controller = $event->getRouteMatch()->getParam('controller');
         $action = $event->getRouteMatch()->getParam('action');
+        $requestedResourse = $controller . "-" . $action;
+        if (!$auth->hasIdentity() && !in_array($requestedResourse, $whiteList)) {
+            $response = $event->getResponse();
+            $response->getHeaders()->addHeaderLine(
+                    'Location', $event->getRouter()->assemble(
+                            [], ['name' => 'login']
+                    )
+            );
+            $response->setStatusCode(302);
+            $response->sendHeaders();
+            return $response;
+        }
+
         $route = $event->getRouteMatch()->getMatchedRouteName();
-
-
-        $auth = new AuthenticationService();
-        $roleId = $auth->getStorage()->read()['role_id'];
+        $identity = $auth->getIdentity();
+        $roleId = $identity['role_id'];
         if ($roleId != null) {
             $adapter = $app->getServiceManager()->get(DbAdapterInterface::class);
             $repository = new RolePermissionRepository($adapter);
             $data = $repository->fetchAllMenuByRoleId($roleId);
             $allowFlag = false;
-            if ($route == 'application') {
+            $allowedRoutes = ['application', "home", 'auth', 'login', 'logout', 'restful'];
+            if (in_array($route, $allowedRoutes)) {
                 $allowFlag = true;
             }
             foreach ($data as $d) {
                 if ($d[MenuSetup::ROUTE] == $route) {
                     $allowFlag = true;
                     break;
-                } else if ($route == 'application' || $route == "home" || $route == 'auth' || $route == 'login' || $route == 'logout' || $route == 'restful') {
-                    $allowFlag = true;
                 }
             }
             if (!$allowFlag) {
@@ -106,27 +112,37 @@ class Module implements AutoloaderProviderInterface, ConsoleUsageProviderInterfa
                 $response->sendHeaders();
                 return $response;
             }
-
             SessionHelper::sessionCheck($event);
+            $this->initNotification($adapter, $event->getViewModel(), $identity);
         }
 
-        $requestedResourse = $controller . "-" . $action;
-
-        if (!$auth->hasIdentity() && !in_array($requestedResourse, $whiteList)) {
-            $response = $event->getResponse();
-            $response->getHeaders()->addHeaderLine(
-                    'Location', $event->getRouter()->assemble(
-                            [], ['name' => 'login']
-                    )
-            );
-            $response->setStatusCode(302);
-            $response->sendHeaders();
-            return $response;
-        }
 
 
 
         //print "Called before any controller action called. Do any operation.";
+    }
+
+    private function initNotification(DbAdapterInterface $adapter, ViewModel $viewModel, array $identity = null) {
+
+
+        $employeeId = $identity['employee_id'];
+        $viewModel->setVariable('dateCompare', function($date) {
+            $startDate = DateTime::createFromFormat(Helper::PHP_DATE_FORMAT . " " . Helper::PHP_TIME_FORMAT, $date);
+            $currentDate = new DateTime();
+            $interval = $startDate->diff($currentDate);
+            return $interval->d;
+        });
+        if ($employeeId == null) {
+            $viewModel->setVariable("notifications", []);
+        } else {
+            $settingRepo = new SettingRepository($adapter);
+            $userSetting = $settingRepo->fetchById($identity['user_id']);
+            if ($userSetting == null || ($userSetting[Setting::ENABLE_NOTIFICATION] == 'Y')) {
+                $viewModel->setVariable("notifications", HeadNotification::getNotifications($adapter, $employeeId));
+            } else {
+                $viewModel->setVariable("notifications", []);
+            }
+        }
     }
 
     function afterDispatch(MvcEvent $event) {
@@ -147,8 +163,6 @@ class Module implements AutoloaderProviderInterface, ConsoleUsageProviderInterfa
                     $dbAdapter = $container->get(DbAdapter::class);
                     //$dbTableAuthAdapter = new DbTableAuthAdapter($dbAdapter, 'users', 'username', 'password', 'MD5(?)');
                     $dbTableAuthAdapter = new DbTableAuthAdapter($dbAdapter, 'HR_USERS', 'USER_NAME', 'PASSWORD');
-
-//                    $dbTableAuthAdapter = new DbTableAuthAdapter($dbAdapter, 'HR_EMPLOYEE_JOB_HISTORY', 'DESIGNATION_CODE', 'GRADE_CODE');
                     $authService = new AuthenticationService();
                     $authService->setAdapter($dbTableAuthAdapter);
                     $authService->setStorage($container->get(HrisAuthStorage::class));
@@ -166,9 +180,7 @@ class Module implements AutoloaderProviderInterface, ConsoleUsageProviderInterfa
         return [
             'factories' => [
                 AuthController::class => function ($container) {
-                    return new AuthController(
-                            $container->get('AuthService')
-                    );
+                    return new AuthController($container->get('AuthService'));
                 },
             ],
         ];

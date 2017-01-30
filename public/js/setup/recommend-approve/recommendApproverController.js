@@ -12,7 +12,7 @@ angular.module('hris', [])
                     employeeId: oldEmployeeId
                 }).then(function (success) {
                     $scope.$apply(function () {
-                        if (success.data != null) {
+                        if (success.data !== null) {
                             $scope.detail.recommender = success.data.RECOMMEND_BY;
                             $scope.detail.approver = success.data.APPROVED_BY;
                         }

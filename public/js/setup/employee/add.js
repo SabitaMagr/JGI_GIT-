@@ -6,12 +6,12 @@
         var addrPermDistrictId = $('#addrPermDistrictId');
         var addrPermVdcMunicipalityId = $('#addrPermVdcMunicipalityId');
 
-        if (addrPermZoneId.val() != null) {
+        if (addrPermZoneId.val() !== null) {
             if (typeof document.address !== 'undefined') {
                 addrPermZoneId.val(document.address.addrPermZoneId).trigger('change');
             }
             app.fetchAndPopulate(document.urlDistrict, addrPermZoneId.val(), addrPermDistrictId, function () {
-                if (addrPermDistrictId.val() != null) {
+                if (addrPermDistrictId.val() !== null) {
                     if (typeof document.address !== 'undefined') {
                         addrPermDistrictId.val(document.address.addrPermDistrictId).trigger('change');
                     }
@@ -22,7 +22,7 @@
 
                         addrPermZoneId.on('change', function () {
                             app.fetchAndPopulate(document.urlDistrict, addrPermZoneId.val(), addrPermDistrictId, function () {
-                                if (addrPermDistrictId.val() != null) {
+                                if (addrPermDistrictId.val() !== null) {
                                     app.fetchAndPopulate(document.urlMunicipality, addrPermDistrictId.val(), addrPermVdcMunicipalityId);
                                 }
                             });
@@ -37,18 +37,16 @@
             });
         }
 
-
-
-        var addrTempZoneId = $('#addrTempZoneId')
+        var addrTempZoneId = $('#addrTempZoneId');
         var addrTempDistrictId = $('#addrTempDistrictId');
         var addrTempVdcMunicipality = $('#addrTempVdcMunicipality');
 
-        if (addrTempZoneId.val() != null) {
+        if (addrTempZoneId.val() !== null) {
             if (typeof document.address !== 'undefined') {
                 addrTempZoneId.val(document.address.addrTempZoneId).trigger('change');
             }
             app.fetchAndPopulate(document.urlDistrict, addrTempZoneId.val(), addrTempDistrictId, function () {
-                if (addrTempDistrictId.val() != null) {
+                if (addrTempDistrictId.val() !== null) {
                     if (typeof document.address !== 'undefined') {
                         addrTempDistrictId.val(document.address.addrTempDistrictId).trigger('change');
                     }
@@ -59,7 +57,7 @@
 
                         addrTempZoneId.on('change', function () {
                             app.fetchAndPopulate(document.urlDistrict, addrTempZoneId.val(), addrTempDistrictId, function () {
-                                if (addrTempDistrictId.val() != null) {
+                                if (addrTempDistrictId.val() !== null) {
                                     app.fetchAndPopulate(document.urlMunicipality, addrTempDistrictId.val(), addrTempVdcMunicipality);
                                 }
                             });
@@ -98,7 +96,7 @@
                         previewUpload.removeClass('hidden');
                     }
 
-                }
+                };
                 reader.readAsDataURL(this.files[0]);
             }
         });

@@ -6,7 +6,7 @@
     right:0;
     margin: 10px;
     width: 250px;
-    height: 320px;
+    /*height: 320px;*/
     background-color: whitesmoke;
     z-index: 1000;
 
@@ -471,14 +471,16 @@ form.k-filter-menu .k-widget, form.k-filter-menu .k-textbox
 
     position: relative;
 }
-.rightalign label:after,.rightalign-2 label:after,.rightalign-3 label:after,.rightalign-4 label:after{
+
+/*commented for test*/
+/*.rightalign label:after,.rightalign-2 label:after,.rightalign-3 label:after,.rightalign-4 label:after{
 
     position:absolute;
     content:":";
     right:-7px;
 
 
-}
+}*/
 
 
 .aditional label{
@@ -933,7 +935,8 @@ form label,.form-box label
 }
 .select2-container
 {
-    width:100% !important;
+    width:auto !important;
+ 
 }
 .select2-selection__choice
 {

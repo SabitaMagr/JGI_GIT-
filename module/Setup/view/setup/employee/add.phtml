@@ -4,8 +4,7 @@ $this->headLink()
 
 
 $this->headScript()->appendFile($this->basePath('assets/global/plugins/boostrap-form-wizard/js/jquery.bootstrap.wizard.min.js'));
-$this->headScript()->appendFile($this->basePath('js/form_wizard.js'));
-$this->headScript()->appendFile($this->basePath('js/custom.js'));
+$this->headScript()->appendFile($this->basePath('js/setup/employee/form_wizard.js'));
 $this->headScript()->appendFile($this->basePath('js/setup/employee/add.js'));
 $this->headScript()->appendFile($this->basePath('dropzone/dropzone.min.js'));
 ?>
@@ -245,7 +244,10 @@ echo json_encode($menu);
                     <div class="col-xs-12 col-sm-6 col-md-3 col-box">
                         <div class="row bottomgap">
                             <div class="form-group">
-                                <div class="col-xs-6 col-sm-6 col-md-6 rightalign"> <?php print $this->formLabel($employeeCode); ?></div>
+                                <div class="col-xs-6 col-sm-6 col-md-6 rightalign"> 
+                                    <?php print $this->formLabel($employeeCode); ?>
+                                    <span class="required" aria-required="true">*</span>
+                                </div>
                                 <div class="col-xs-6 col-sm-6 col-md-6 cgap"> <?php print $this->formElement($employeeCode); ?> </div>
                                 <?php print $this->formElementErrors()->render($employeeCode, ['class' => 'error']) ?>
                                 <span class="errorMsg" style="font-size:11px; color:red;"></span>
@@ -256,16 +258,15 @@ echo json_encode($menu);
                     <div class="col-xs-12 col-sm-6 col-md-3 col-box">
                         <div class="row bottomgap">
                             <div class="form-group"> 
-                                <div class="col-xs-6 col-sm-6 col-md-6 rightalign"> <?php print $this->formLabel($firstName) ?> </div>
+                                <div class="col-xs-6 col-sm-6 col-md-6 rightalign"> 
+                                    <?php print $this->formLabel($firstName) ?> 
+                                    <span class="required" aria-required="true">*</span>
+                                </div>
                                 <div class="col-xs-6 col-sm-6 col-md-6 cgap"><?php print $this->formElement($firstName) ?> </div>
                                 <?php print $this->formElementErrors()->render($firstName, ['class' => 'error']) ?>
                             </div>
                         </div>
-
                     </div>
-
-
-
                     <div class="col-xs-12 col-sm-6 col-md-3 col-box">
                         <div class="row bottomgap">
                             <div class="form-group <?= empty($middleName->getMessages()) ? "" : "error" ?>">
@@ -283,7 +284,10 @@ echo json_encode($menu);
                     <div class="col-xs-12 col-sm-6 col-md-3 col-box">
                         <div class="row bottomgap">
                             <div class="form-group"> 
-                                <div class="col-xs-6 col-sm-6  col-md-6 rightalign"> <?php print $this->formLabel($lastName) ?>  </div> 
+                                <div class="col-xs-6 col-sm-6  col-md-6 rightalign"> 
+                                    <?php print $this->formLabel($lastName) ?>
+                                    <span class="required" aria-required="true">*</span>
+                                </div> 
                                 <div class="col-xs-6 col-sm-6 col-md-6 cgap"><?php print $this->formElement($lastName) ?> </div>
                                 <?php print $this->formElementErrors()->render($lastName, ['class' => 'error']) ?>
                             </div>
@@ -293,8 +297,6 @@ echo json_encode($menu);
                     <div class="col-xs-12 col-sm-6 col-md-3 col-box">
                         <div class="row bottomgap">
                             <div class="form-group<?= empty($nameNepali->getMessages()) ? "" : "error" ?>"> 
-
-
                                 <div class="col-xs-6 col-sm-6 col-md-6 rightalign"> 
                                     <?php print $this->formLabel($nameNepali); ?> </div>
                                 <div class="col-xs-6 col-sm-6 col-md-6 cgap">
@@ -311,7 +313,10 @@ echo json_encode($menu);
                     <div class="col-xs-12 col-sm-6 col-md-3 col-box">
                         <div class="row bottomgap">
                             <div class="form-group">
-                                <div class="col-xs-6 col-sm-6 col-md-6 rightalign"><?php print $this->formLabel($genderId); ?> </div>
+                                <div class="col-xs-6 col-sm-6 col-md-6 rightalign">
+                                    <?php print $this->formLabel($genderId); ?>
+                                    <span class="required" aria-required="true">*</span>
+                                </div>
                                 <div class="col-xs-6 col-sm-6 col-md-6 cgap"><?php print $this->formElement($genderId); ?> </div>
                                 <?php print $this->formElementErrors()->render($genderId, ['class' => 'help-block error']); ?>
                             </div>
@@ -322,7 +327,9 @@ echo json_encode($menu);
 
                             <div class="form-group "> 
                                 <div class="col-xs-6 col-sm-6 col-md-6 rightalign">
-                                    <?php print $this->formLabel($birthDate) ?> </div>
+                                    <?php print $this->formLabel($birthDate) ?>
+                                    <span class="required" aria-required="true">*</span>
+                                </div>
                                 <div class="col-xs-6 col-sm-6 col-md-6 cgap">
                                     <div class="input-group date" id="employeeBirthDate">
                                         <?php print $this->formElement($birthDate) ?> 
@@ -334,13 +341,6 @@ echo json_encode($menu);
 
                         </div>
                     </div>
-
-
-
-
-
-
-
                     <div class="col-xs-12 col-sm-6 col-md-3 col-box">
                         <div class="row bottomgap">
                             <div class="form-group  <?= empty($countryId->getMessages()) ? "" : "error" ?>">
@@ -354,7 +354,10 @@ echo json_encode($menu);
                     <div class="col-xs-12 col-sm-6 col-md-3 col-box">
                         <div class="row bottomgap">
                             <div class="form-group ">
-                                <div class="col-xs-6 col-sm-6 col-md-6 rightalign"> <?php print $this->formLabel($religionId) ?>  </div>
+                                <div class="col-xs-6 col-sm-6 col-md-6 rightalign">
+                                    <?php print $this->formLabel($religionId) ?>
+                                    <span class="required" aria-required="true">*</span>
+                                </div>
                                 <div class="col-xs-6 col-sm-6 col-md-6 cgap">   <?php print $this->formElement($religionId) ?> </div>
                                 <?php print $this->formElementErrors()->render($religionId, ['class' => 'help-block error']) ?>
                             </div>
@@ -364,7 +367,9 @@ echo json_encode($menu);
                         <div class="row bottomgap">
                             <div class="form-group">
                                 <div class="col-xs-6 col-sm-6 col-md-6 rightalign">
-                                    <?php print $this->formLabel($companyId); ?>  </div>
+                                    <?php print $this->formLabel($companyId); ?>  
+                                    <span class="required" aria-required="true">*</span>
+                                </div>
                                 <div class="col-xs-6 col-sm-6 col-md-6 cgap">
                                     <?php print $this->formElement($companyId); ?> </div>
                                 <?php print $this->formElementErrors()->render($companyId, ['class' => 'error']) ?>
@@ -376,19 +381,22 @@ echo json_encode($menu);
                     <div class="col-xs-12 col-sm-6 col-md-3 col-box">
                         <div class="row bottomgap">
                             <div class="form-group"> 
-                                <div class="col-xs-6 col-sm-6 col-md-6 rightalign">  <?php print $this->formLabel($bloodGroupId) ?></div>
+                                <div class="col-xs-6 col-sm-6 col-md-6 rightalign">
+                                    <?php print $this->formLabel($bloodGroupId) ?>
+                                    <span class="required" aria-required="true">*</span>
+                                </div>
                                 <div class="col-xs-6 col-sm-6 col-md-6 cgap"><?php print $this->formElement($bloodGroupId) ?> </div>
                                 <?php print $this->formElementErrors()->render($bloodGroupId, ['class' => 'help-block error']) ?>
                             </div>
                         </div>
                     </div>
-
-
-
                     <div class="col-xs-12 col-sm-6 col-md-3 col-box">
                         <div class="row bottomgap">
                             <div class="form-group "> 
-                                <div class="col-xs-6 col-sm-6 col-md-6 rightalign">  <?php print $this->formLabel($mobileNo); ?> </div>
+                                <div class="col-xs-6 col-sm-6 col-md-6 rightalign">  
+                                    <?php print $this->formLabel($mobileNo); ?>
+                                    <span class="required" aria-required="true">*</span>
+                                </div>
                                 <div class="col-xs-6 col-sm-6 col-md-6 cgap">   <?php print $this->formElement($mobileNo); ?> </div>
                                 <?php print $this->formElementErrors()->render($mobileNo, ['class' => 'help-block error']); ?>
                             </div>
@@ -399,7 +407,6 @@ echo json_encode($menu);
 
                     <div class="col-xs-12 col-sm-6 col-md-3 col-box">
                         <div class="row bottomgap">
-
                             <div class="form-group <?= empty($telephoneNo->getMessages()) ? "" : "error" ?>">
                                 <div class="col-xs-6 col-sm-6 col-md-6 rightalign">
                                     <?php print $this->formLabel($telephoneNo); ?> </div>
@@ -431,15 +438,7 @@ echo json_encode($menu);
                                 <?php print $this->formElementErrors()->render($extensionNo, ['class' => 'help-block error']); ?>
                             </div>
                         </div>
-
-
                     </div>
-
-
-
-
-
-
                     <div class="col-xs-12 col-sm-6 col-md-3 col-box">
                         <div class="row bottomgap">
                             <div class="form-group <?= empty($emailOfficial->getMessages()) ? "" : "error" ?>">
@@ -476,32 +475,13 @@ echo json_encode($menu);
                                 <?php print $this->formElementErrors()->render($socialNetwork, ['class' => 'help-block error']); ?>
                             </div>
                         </div>
-
-
                     </div>
-
                 </div>
             </div>
-
-
-
-
-
-
             <div class="permanent-info">
-
                 <p> <i class="fa fa-address-book ticon" aria-hidden="true"></i>
-
-
-
-
                     Permanent Address</p>
                 <div class="row clearfix e-setup">
-
-
-
-
-
                     <div class="col-xs-12 col-sm-6 col-md-3 col-box">
                         <div class="row bottomgap">
 
@@ -724,7 +704,9 @@ echo json_encode($menu);
 
                             <div class="form-group  <?= empty($emergContactNo->getMessages()) ? "" : "error" ?>">
                                 <div class="col-xs-6 col-sm-6 col-md-6 rightalign">
-                                    <?php print $this->formLabel($emergContactNo); ?>  </div>
+                                    <?php print $this->formLabel($emergContactNo); ?>
+                                    <span class="required" aria-required="true">*</span>
+                                </div>
                                 <div class="col-xs-6 col-sm-6 col-md-6 cgap">
                                     <?php print $this->formElement($emergContactNo); ?> 
                                 </div>
@@ -796,7 +778,8 @@ echo json_encode($menu);
                             <div class="row bottomgap">
                                 <div class="form-group"> 
                                     <div class="col-xs-6 col-sm-6 col-md-6 rightalign-2">
-                                        <?php print $this->formLabel($maritualStatus); ?> 
+                                        <?php print $this->formLabel($maritualStatus); ?>
+                                        <span class="required" aria-required="true">*</span>
                                     </div>
                                     <div class="col-xs-6 col-sm-6 col-md-6 cgap-2">
                                         <?php print $this->formElement($maritualStatus); ?> </div>
@@ -1046,7 +1029,10 @@ echo json_encode($menu);
                         <div class="col-xs-12 col-sm-6 col-md-6">
                             <div class="row bottomgap">
                                 <div class="form-group  <?= empty($idCitizenshipNo->getMessages()) ? "" : "error" ?>"> 
-                                    <div class="col-xs-6 col-sm-6 col-md-6 rightalign-3"><?php print $this->formLabel($idCitizenshipNo); ?>  </div>
+                                    <div class="col-xs-6 col-sm-6 col-md-6 rightalign-3">
+                                        <?php print $this->formLabel($idCitizenshipNo); ?> 
+                                        <span class="required" aria-required="true">*</span>
+                                    </div>
                                     <div class="col-xs-6 col-sm-6 col-md-6 cgap-3">  <?php print $this->formElement($idCitizenshipNo); ?> </div>
                                     <?php print $this->formElementErrors()->render($idCitizenshipNo, ['class' => 'help-block error']); ?>
                                 </div>
@@ -1057,7 +1043,10 @@ echo json_encode($menu);
                         <div class="col-xs-12 col-sm-6 col-md-6">
                             <div class="row bottomgap">
                                 <div class="form-group <?= empty($idCitizenshipIssuePlace->getMessages()) ? "" : "error" ?>"> 
-                                    <div class="col-xs-6 col-sm-6 col-md-6 rightalign-3"><?php print $this->formLabel($idCitizenshipIssuePlace); ?> :  </div>
+                                    <div class="col-xs-6 col-sm-6 col-md-6 rightalign-3">
+                                        <?php print $this->formLabel($idCitizenshipIssuePlace); ?> 
+                                        <span class="required" aria-required="true">*</span>
+                                    </div>
                                     <div class="col-xs-6 col-sm-6 col-md-6 cgap-3"> <?php print $this->formElement($idCitizenshipIssuePlace); ?> </div>
                                     <?php print $this->formElementErrors()->render($idCitizenshipIssuePlace, ['class' => 'help-block error']); ?>
                                 </div>
@@ -1181,10 +1170,10 @@ echo json_encode($menu);
                                 <div class="form-group"> 
                                     <div class="col-xs-6 col-sm-6 col-md-6 rightalign-4">
                                         <?php print $this->formLabel($joinDate); ?>
+                                        <span class="required" aria-required="true">*</span>
                                     </div>
                                     <div class="col-xs-6 col-sm-6 cgap-4">
                                         <div class="input-group date" id="joinDate"> 
-
                                             <?php print $this->formElement($joinDate); ?> <span class="input-group-addon"><i class="fa fa-calendar"></i></span> </div>
                                     </div>
                                     <?php print $this->formElementErrors()->render($joinDate, ['class' => 'help-block error']); ?>   

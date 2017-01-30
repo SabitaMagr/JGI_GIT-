@@ -7,7 +7,7 @@ use Zend\Log\Writer\Stream;
 
 class HrLogger {
 
-    const LOG_DIR = __DIR__ . "/../../../../data/logs.txt";
+    const LOG_DIR = __DIR__ . "/../../../../data/logs/logs.txt";
 
     private function __construct() {
         

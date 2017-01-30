@@ -1,17 +1,12 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: ukesh
- * Date: 8/31/16
- * Time: 11:41 AM
- */
+
 namespace Setup\Form;
 
 use Application\Model\Model;
 use Zend\Form\Annotation;
 
-class HrEmployeesFormTabOne extends Model
-{
+class HrEmployeesFormTabOne extends Model {
+
     public $employeeId;
 
     /**
@@ -49,7 +44,6 @@ class HrEmployeesFormTabOne extends Model
      */
     public $middleName;
 
-
     /**
      * @Annotation\Type("Zend\Form\Element\Text")
      * @Annotation\Required(true)
@@ -67,7 +61,6 @@ class HrEmployeesFormTabOne extends Model
      * @Annotation\Attributes({ "id":"nameNepali", "class":"form-control" })
      */
     public $nameNepali;
-
 
     /**
      * @Annotation\Type("Zend\Form\Element\Select")
@@ -142,7 +135,6 @@ class HrEmployeesFormTabOne extends Model
      */
     public $extensionNo;
 
-
     /**
      * @Annotation\Required(false)
      * @Annotation\Type("Zend\Form\Element\Email")
@@ -197,7 +189,6 @@ class HrEmployeesFormTabOne extends Model
      */
     public $emergContactNo;
 
-
     /**
      * @Annotation\Type("Zend\Form\Element\Text")
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
@@ -215,7 +206,6 @@ class HrEmployeesFormTabOne extends Model
      * @Annotation\Attributes({ "id":"emergContactRelationship", "class":"form-control" })
      */
     public $emergContactRelationship;
-
 
     /**
      * @Annotation\Type("Zend\Form\Element\Text")
@@ -246,7 +236,6 @@ class HrEmployeesFormTabOne extends Model
      */
     public $addrPermStreetAddress;
 
-
     /**
      * @Annotation\Type("Zend\Form\Element\Select")
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
@@ -255,7 +244,6 @@ class HrEmployeesFormTabOne extends Model
      * @Annotation\Attributes({ "id":"addrPermVdcMunicipalityId","class":"form-control"})
      */
     public $addrPermVdcMunicipalityId;
-
 
     /**
      * @Annotation\Type("Zend\Form\Element\Select")
@@ -275,7 +263,6 @@ class HrEmployeesFormTabOne extends Model
      * @Annotation\Attributes({ "id":"addrPermZoneId","class":"form-control"})
      */
     public $addrPermZoneId;
-
 
     /**
      * @Annotation\Type("Zend\Form\Element\Text")
@@ -297,7 +284,6 @@ class HrEmployeesFormTabOne extends Model
      */
     public $addrTempWardNo;
 
-
     /**
      * @Annotation\Type("Zend\Form\Element\Text")
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
@@ -307,7 +293,6 @@ class HrEmployeesFormTabOne extends Model
      */
     public $addrTempStreetAddress;
 
-
     /**
      * @Annotation\Type("Zend\Form\Element\Select")
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
@@ -316,7 +301,6 @@ class HrEmployeesFormTabOne extends Model
      * @Annotation\Attributes({ "id":"addrTempVdcMunicipality","class":"form-control"})
      */
     public $addrTempVdcMunicipalityId;
-
 
     /**
      * @Annotation\Type("Zend\Form\Element\Select")
@@ -335,55 +319,46 @@ class HrEmployeesFormTabOne extends Model
      * @Annotation\Attributes({ "id":"addrTempZoneId","class":"form-control"})
      */
     public $addrTempZoneId;
-
     public $addrPermCountryId;
     public $addrTempCountryId;
     public $status;
     public $createdDt;
-
-    public $mappings=[
-        'employeeId'=>'EMPLOYEE_ID',
-        'companyId'=>'COMPANY_ID',
-        'employeeCode'=>'EMPLOYEE_CODE',
-        'firstName'=>'FIRST_NAME',
-        'middleName'=>'MIDDLE_NAME',
-        'lastName'=>'LAST_NAME',
-
-        'nameNepali'=>'NAME_NEPALI',
-        'genderId'=>'GENDER_ID',
-        'birthDate'=>'BIRTH_DATE',
-        'bloodGroupId'=>'BLOOD_GROUP_ID',
-        'religionId'=>'RELIGION_ID',
-
-        'socialActivity'=>'SOCIAL_ACTIVITY',
-        'countryId'=>'COUNTRY_ID',
-        'telephoneNo'=>'TELEPHONE_NO',
-        'mobileNo'=>'MOBILE_NO',
-        'extensionNo'=>'EXTENSION_NO',
-        'emailOfficial'=>'EMAIL_OFFICIAL',
-
-        'emailPersonal'=>'EMAIL_PERSONAL',
-        'socialNetwork'=>'SOCIAL_NETWORK',
-        'emergContactName'=>'EMRG_CONTACT_NAME',
-        'emergContactNo'=>'EMERG_CONTACT_NO',
-        'emergContactAddress'=>'EMERG_CONTACT_ADDRESS',
-
-        'emergContactRelationship'=>'EMERG_CONTACT_RELATIONSHIP',
-        'addrPermHouseNo'=>'ADDR_PERM_HOUSE_NO',
-        'addrPermWardNo'=>'ADDR_PERM_WARD_NO',
-        'addrPermStreetAddress'=>'ADDR_PERM_STREET_ADDRESS',
-        'addrPermVdcMunicipalityId'=>'ADDR_PERM_VDC_MUNICIPALITY_ID',
-
-        'addrTempHouseNo'=>'ADDR_TEMP_HOUSE_NO',
-        'addrTempWardNo'=>'ADDR_TEMP_WARD_NO',
-        'addrTempStreetAddress'=>'ADDR_TEMP_STREET_ADDRESS',
-
-        'addrTempVdcMunicipalityId'=>'ADDR_TEMP_VDC_MUNICIPALITY_ID',
-        'addrPermCountryId'=>'ADDR_PERM_COUNTRY_ID',
-        'addrTempCountryId'=>'ADDR_TEMP_COUNTRY_ID',
-        'status'=>'STATUS',
-
-        'createdDt'=>'CREATED_DT',
+    public $mappings = [
+        'employeeId' => 'EMPLOYEE_ID',
+        'companyId' => 'COMPANY_ID',
+        'employeeCode' => 'EMPLOYEE_CODE',
+        'firstName' => 'FIRST_NAME',
+        'middleName' => 'MIDDLE_NAME',
+        'lastName' => 'LAST_NAME',
+        'nameNepali' => 'NAME_NEPALI',
+        'genderId' => 'GENDER_ID',
+        'birthDate' => 'BIRTH_DATE',
+        'bloodGroupId' => 'BLOOD_GROUP_ID',
+        'religionId' => 'RELIGION_ID',
+        'socialActivity' => 'SOCIAL_ACTIVITY',
+        'countryId' => 'COUNTRY_ID',
+        'telephoneNo' => 'TELEPHONE_NO',
+        'mobileNo' => 'MOBILE_NO',
+        'extensionNo' => 'EXTENSION_NO',
+        'emailOfficial' => 'EMAIL_OFFICIAL',
+        'emailPersonal' => 'EMAIL_PERSONAL',
+        'socialNetwork' => 'SOCIAL_NETWORK',
+        'emergContactName' => 'EMRG_CONTACT_NAME',
+        'emergContactNo' => 'EMERG_CONTACT_NO',
+        'emergContactAddress' => 'EMERG_CONTACT_ADDRESS',
+        'emergContactRelationship' => 'EMERG_CONTACT_RELATIONSHIP',
+        'addrPermHouseNo' => 'ADDR_PERM_HOUSE_NO',
+        'addrPermWardNo' => 'ADDR_PERM_WARD_NO',
+        'addrPermStreetAddress' => 'ADDR_PERM_STREET_ADDRESS',
+        'addrPermVdcMunicipalityId' => 'ADDR_PERM_VDC_MUNICIPALITY_ID',
+        'addrTempHouseNo' => 'ADDR_TEMP_HOUSE_NO',
+        'addrTempWardNo' => 'ADDR_TEMP_WARD_NO',
+        'addrTempStreetAddress' => 'ADDR_TEMP_STREET_ADDRESS',
+        'addrTempVdcMunicipalityId' => 'ADDR_TEMP_VDC_MUNICIPALITY_ID',
+        'addrPermCountryId' => 'ADDR_PERM_COUNTRY_ID',
+        'addrTempCountryId' => 'ADDR_TEMP_COUNTRY_ID',
+        'status' => 'STATUS',
+        'createdDt' => 'CREATED_DT',
     ];
 
 }

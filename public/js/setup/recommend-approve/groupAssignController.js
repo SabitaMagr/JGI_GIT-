@@ -5,7 +5,7 @@ angular.module('hris', ['ui.bootstrap'])
             $scope.all = false;
             $scope.assignShowHide = false;
             $scope.showHideAssignBtn = false;
-            var l;
+            var l = null;
             $scope.checkAll = function (item) {
                 for (var i = 0; i < $scope.employeeList.length; i++) {
                     $scope.employeeList[i].checked = item;
@@ -108,12 +108,12 @@ angular.module('hris', ['ui.bootstrap'])
                     controllerAs: '$ctrl'
                 });
                 modalInstance.result.then(function (selectedItem) {
-                    if (parseInt(type) == 2) {
+                    if (parseInt(type) === 2) {
                         $scope.recommenderOptions = selectedItem;
                         $scope.recommenderSelected = $scope.recommenderOptions[0];
                         $scope.recommenderAssign = true;
                         $scope.showHideAssignBtn = true;
-                    } else if (parseInt(type) == 3) {
+                    } else if (parseInt(type) === 3) {
                         $scope.approverOptions = selectedItem;
                         $scope.approverSelected = $scope.approverOptions[0];
                         $scope.approverAssign = true;
@@ -143,43 +143,33 @@ angular.module('hris', ['ui.bootstrap'])
                 var errorFlagR = false;
                 if ($scope.recommenderAssign) {
                     if (recommenderId == "?") {
-                        var parentId = $("#recommenderId").parent(".parentDiv");
-                        var upParentId = parentId.parent(".row");
-                        var childId = upParentId.children(".msgForError");
-
-                        console.log(childId.length);
-                        if (childId.length == 0) {
-                            $("<span id='errorMsgForRecomm' class='msgForError'>* Recommender is required !!!</span>").insertAfter(".recommenderWrap");
-                        }
                         l.stop();
+                        window.app.errorMessage(
+                                "Recommender is required!!!",
+                                "Application Error"
+                                );
                         errorFlagR = true;
                     } else {
-                        $("span#errorMsgForRecomm").remove();
                         errorFlagR = false;
                     }
                 } else {
                     l.stop();
-                    $("span#errorMsgForRecomm").remove();
                 }
                 var errorFlagA = false;
                 if ($scope.approverAssign) {
                     if (approverId == "?") {
-                        var parentId = $("#approverId").parent(".parentDiv");
-                        var upParentId = parentId.parent(".row");
-                        var childId = upParentId.children(".msgForError");
-
-                        if (childId.length == 0) {
-                            $("<span id='errorMsgForApprove' class='msgForError'>* Approver is required !!!</span>").insertAfter(".approverWrap");
-                        }
                         l.stop();
+                        window.app.errorMessage(
+                                "Approver is required!!!"
+                                ,
+                                "Application Error"
+                                );
                         errorFlagA = true;
                     } else {
-                        $("span#errorMsgForApprove").remove();
                         errorFlagA = false;
                     }
                 } else {
                     l.stop();
-                    $("span#errorMsgForApprove").remove();
                 }
 
                 if (!errorFlagR && !errorFlagA) {
@@ -201,9 +191,7 @@ angular.module('hris', ['ui.bootstrap'])
                 } else {
                     var approverId1 = approverId;
                 }
-                console.log(recommenderId1 + approverId1);
                 for (var index in $scope.employeeList) {
-                    console.log($scope.employeeList[index]);
                     if ($scope.employeeList[index].checked) {
                         promises.push(window.app.pullDataById(document.url, {
                             action: 'assignEmployeeReportingHierarchy',
@@ -216,7 +204,6 @@ angular.module('hris', ['ui.bootstrap'])
                     }
                 }
                 Promise.all(promises).then(function (success) {
-                    console.log(success);
                     l.stop();
                     $scope.$apply(function () {
                         for (var index in $scope.employeeList) {
@@ -229,7 +216,7 @@ angular.module('hris', ['ui.bootstrap'])
                                     }
                                     $scope.employeeList[index].RECOMMENDER_NAME = recommenderNameNew;
                                 }
-                                
+
                                 if ($scope.approverAssign) {
                                     if ($scope.employeeList[index].EMPLOYEE_ID == approverId) {
                                         var approverNameNew = null;
@@ -237,13 +224,13 @@ angular.module('hris', ['ui.bootstrap'])
                                         var approverNameNew = approverName;
                                     }
                                     $scope.employeeList[index].APPROVER_NAME = approverNameNew;
-                                }      
+                                }
                             }
                         }
                     });
                     window.toastr.success("Reporting Hierarchy assigned successfully!", "Notification");
                 });
-            }
+            };
 
 
         });
