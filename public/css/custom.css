@@ -936,7 +936,7 @@ form label,.form-box label
 .select2-container
 {
     width:auto !important;
- 
+
 }
 .select2-selection__choice
 {
@@ -1516,3 +1516,21 @@ ul#roleList li {
     max-height: 400px;
     overflow-y: scroll; 
 }    
+
+/*test*/
+.table-fixed thead {
+  width: 97%;
+}
+.table-fixed tbody {
+  height: 230px;
+  overflow-y: auto;
+  width: 100%;
+}
+.table-fixed thead, .table-fixed tbody, .table-fixed tr, .table-fixed td, .table-fixed th {
+  display: block;
+}
+.table-fixed tbody td, .table-fixed thead > tr> th {
+  float: left;
+  border-bottom-width: 0;
+}
+/*test*/
