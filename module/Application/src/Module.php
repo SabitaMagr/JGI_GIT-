@@ -24,6 +24,7 @@ use Zend\ModuleManager\Feature\ConsoleUsageProviderInterface;
 use Zend\Mvc\ModuleRouteListener;
 use Zend\Mvc\MvcEvent;
 use Zend\View\Model\ViewModel;
+use Application\Helper\Helper;
 
 class Module implements AutoloaderProviderInterface, ConsoleUsageProviderInterface {
 

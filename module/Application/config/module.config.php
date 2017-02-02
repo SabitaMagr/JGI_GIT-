@@ -242,5 +242,6 @@ return [
         1 => 'Male',
         2 => 'Female',
         3 => 'Other'
-    ]
+    ],
+    'default-profile-picture' => "default-profile-picture.jpg",
 ];

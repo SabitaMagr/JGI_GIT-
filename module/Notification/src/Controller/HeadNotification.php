@@ -100,6 +100,9 @@ class HeadNotification {
             $recommdAppRepo = new RecommendApproveRepository($adapter);
             $recommdAppModel = $recommdAppRepo->getDetailByEmployeeID($leaveApply->employeeId);
 
+            if ($recommdAppModel == null) {
+                return;
+            }
             $leaveReqNotiMod = new LeaveRequestNotificationModel();
             self::setNotificationModel($recommdAppModel[RecommendApprove::EMPLOYEE_ID], $recommdAppModel[($type == self::RECOMMENDER) ? RecommendApprove::RECOMMEND_BY : RecommendApprove::APPROVED_BY], $leaveReqNotiMod, $adapter);
 
