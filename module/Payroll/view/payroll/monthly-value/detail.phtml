@@ -18,8 +18,7 @@ echo json_encode($menu);
     document.branches =<?= json_encode($branches) ?>;
     document.departments =<?= json_encode($departments) ?>;
     document.designations =<?= json_encode($designations) ?>;
-    document.monthlyValues =<?= json_encode($monthlyValues) ?>;
-</script>
+    document.monthlyValues =<?= json_encode($monthlyValues) ?>;</script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\monthlyValue')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
@@ -27,122 +26,134 @@ echo json_encode($menu);
 <div ng-app="hris" ng-controller="monthlyValueDetailController">
     <div class="row">
         <div class="col-sm-12 ">
-            <div class="portlet1 formbg">
-                <div class="portlet-body">
-                    <div class="margin-top-20">
-                        <div class="row">
-                            <div class="col-xs-12 col-sm-2">
-                                <label>
-                                    Branch
-                                </label>
-                                <select class="form-control" ng-model="branch" ng-options="key as branch for (key,branch) in branches">
-                                    <option value="">All</option>
-                                </select>
-                            </div>
-                            <div class="col-xs-12 col-sm-3">
-                                <label>
-                                    Department
-                                </label>
-                                <select class="form-control" ng-model="department"
-                                        ng-options="key as department for (key,department) in departments">
-                                    <option value="">All</option>
-                                </select>
-                            </div>
-                            <div class="col-xs-12 col-sm-3">
-                                <label>
-                                    Designation
-                                </label>
-                                <select class="form-control" ng-model="designation"
-                                        ng-options="key as designation for (key,designation) in designations">
-                                    <option value="">All</option>
-                                </select>
-                            </div>
-                            <div class="col-xs-12 col-sm-3">
-                                <label>
+            <div class="portlet light bg-inverse">
+                <div class="portlet-title">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>
                                     Flat Values
-                                </label>
-                                <div>
-                                    <multiselect
-                                        ng-change="selectedMonthlyValuesChange()()"
-                                        ng-model="selectedMonthlyValues"
-                                        options="monthlyValue.text for monthlyValue in monthlyValues"    
-                                        data-multiple="true"                 
-                                        data-compare-by="id"                 
-                                        scroll-after-rows="5"                
-                                        filter-after-rows="5"      
-                                        max-width="100"                      
-                                        tabindex="-1">                     
-                                    </multiselect>
-                                    <button ng-click="selectAllFlagFN()" class="select-option" ng-bind="selectAllFlag ? 'Deselect All' : 'Select All'">
-                                    </button>
-                                </div>
-                            </div>
+                                </th>
+                                <th>
+                                    Branch
+                                </th>
+                                <th>
+                                    Department
+                                </th>
+                                <th>
+                                    Designation
+                                </th>
+                                <th>
+                                    Search
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="col-md-3">
+                                    <div>
+                                        <multiselect
+                                            ng-change="selectedMonthlyValuesChange()()"
+                                            ng-model="selectedMonthlyValues"
+                                            options="monthlyValue.text for monthlyValue in monthlyValues"    
+                                            data-multiple="true"                 
+                                            data-compare-by="id"                 
+                                            scroll-after-rows="5"                
+                                            filter-after-rows="5"      
+                                            max-width="100"                      
+                                            tabindex="-1">                     
+                                        </multiselect>
+                                        <button ng-click="selectAllFlagFN()" class="btn btn-default btn-sm fa fa-address-book" >
+                                        </button>
+                                    </div>
 
-                            <div class="col-sm-1">
-                                <button ng-click="view()" class="btn btn-default form-control i-search pull-right" style="margin-top:22px;">
-                                    View
-                                    <i class="fa fa-search"></i>
-                                </button>
-                            </div>
+                                </td>
+                                <td class="col-md-2">
+                                    <select class="form-control" ng-model="branch" ng-options="key as branch for (key, branch) in branches">
+                                        <option value="">All</option>
+                                    </select>
+
+                                </td>
+                                <td class="col-md-2">
+                                    <select class="form-control" ng-model="department"
+                                            ng-options="key as department for (key, department) in departments">
+                                        <option value="">All</option>
+                                    </select>
+
+                                </td>
+                                <td class="col-md-2">
+                                    <select class="form-control" ng-model="designation"
+                                            ng-options="key as designation for (key, designation) in designations">
+                                        <option value="">All</option>
+                                    </select>
+                                </td>
+                                <td class="col-md-3">
+                                    <button ng-click="view()" class="btn btn-default btn-info btn-sm ">
+                                        View
+                                        <i class="fa fa-search"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="portlet-body">
+                    <div class="scroller" style="height:350px" data-rail-visible="1" data-rail-color="yellow" data-handle-color="#a1b2bd" >
+
+                        <table class="table table-bordered customTable" ng-show="showTable"  >
+                            <thead>
+                                <tr>
+                                    <th class="id-width">
+                                        Employee Id
+                                    </th>
+                                    <th class="flatwidth">
+                                        Employee Name
+                                    </th>
+                                    <th class="keyswidth" ng-repeat="keys in monthlyValuekeys" ng-bind="monthlyValuesI[keys]">
+
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="row in tableDataCopy">
+                                    <td ng-bind="row.EMPLOYEE_ID">
+
+                                    </td>
+                                    <td>
+                                        <span ng-bind="row.FIRST_NAME"></span>
+                                        <span ng-bind="row.MIDDLE_NAME"></span>
+                                        <span ng-bind="row.LAST_NAME"></span>
+                                    </td>
+                                    <td ng-repeat="keys in monthlyValuekeys">
+                                        <input class="form-control" type="number" ng-model="row[keys]">
+                                    </td>
+                                </tr>
+
+
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td>
+
+                                    </td>
+                                    <td>
+
+                                    </td>
+                                    <td ng-repeat="keys in monthlyValuekeys">
+                                        <input class="form-control" type="number" ng-model="colVal"
+                                               ng-change="changeAllColVal(keys, colVal)">
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                    <div class="row margin-top-5">
+                        <div class="col-sm-12">
+                            <button class="btn btn-success pull-right" ng-click="setMonthlyValue()">Assign Monthly Value</button>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
-    <div class="margin-top-20 scroller1" style="height: 400px;">
-
-        <table class="table customTable" >
-            <thead>
-                <tr>
-                    <th class="id-width">
-                        Employee Id
-                    </th>
-                    <th class="flatwidth">
-                        Employee Name
-                    </th>
-                    <th class="keyswidth" ng-repeat="keys in monthlyValuekeys" ng-bind="monthlyValuesI[keys]">
-
-                    </th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr ng-repeat="row in tableDataCopy">
-                    <td ng-bind="row.EMPLOYEE_ID">
-
-                    </td>
-                    <td>
-                        <span ng-bind="row.FIRST_NAME"></span>
-                        <span ng-bind="row.MIDDLE_NAME"></span>
-                        <span ng-bind="row.LAST_NAME"></span>
-                    </td>
-                    <td ng-repeat="keys in monthlyValuekeys">
-                        <input class="form-control" type="number" ng-model="row[keys]">
-                    </td>
-                </tr>
-
-
-            </tbody>
-            <tfoot>
-                <tr>
-                    <td>
-
-                    </td>
-                    <td>
-
-                    </td>
-                    <td ng-repeat="keys in monthlyValuekeys">
-                        <input class="form-control" type="number" ng-model="colVal"
-                               ng-change="changeAllColVal(keys, colVal)">
-                    </td>
-                </tr>
-            </tfoot>
-        </table>
-
-    </div>
-    <div class="row">
-        <div class="col-sm-12">
-            <button class="btn btn-success pull-right" ng-click="setMonthlyValue()">Assign Monthly Value</button>
         </div>
     </div>
 </div>

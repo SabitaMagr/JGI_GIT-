@@ -1,7 +1,7 @@
 (function ($, app) {
     'use strict';
     $(document).ready(function () {
-        $('.mt-multiselect').multiselect()
+        $('.mt-multiselect').multiselect();
         $('#branch').select2();
         $('#department').select2();
         $('#designation').select2();

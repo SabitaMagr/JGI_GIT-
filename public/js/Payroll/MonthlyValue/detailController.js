@@ -1,7 +1,7 @@
 (function ($, app) {
     'use strict';
     $(document).ready(function () {
-        $('.mt-multiselect').multiselect()
+        $('.mt-multiselect').multiselect();
         $("select").select2();
     });
 })(window.jQuery, window.app);
@@ -25,10 +25,11 @@ angular.module('hris', ["ui.multiselect"])
             var tableData;
             $scope.tableDataCopy;
 
-            $scope.view = function () {
+            $scope.showTable = false;
 
-                if ($scope.selectedMonthlyValues.length == 0) {
-                    window.toastr.info("No Monthly Value selected!", "Notification");
+            $scope.view = function () {
+                if ($scope.selectedMonthlyValues.length === 0) {
+                    window.toastr.info("No Monthly Values selected!", "Notification");
                     return;
                 }
 
@@ -50,6 +51,7 @@ angular.module('hris', ["ui.multiselect"])
                     $scope.$apply(function () {
                         tableData = angular.copy(success.data);
                         $scope.tableDataCopy = success.data;
+                        $scope.showTable = true;
                     });
 
                 }, function (failure) {
@@ -84,7 +86,7 @@ angular.module('hris', ["ui.multiselect"])
                                 // tableData = angular.copy(success.data);
                                 // $scope.tableDataCopy = success.data;
                             });
-                            window.toastr.info("Monthly value assigned successfully!", "Notification");
+                            window.toastr.info("Monthly values assigned successfully!", "Notification");
 
                         }, function (failure) {
                             console.log("failure", failure);
