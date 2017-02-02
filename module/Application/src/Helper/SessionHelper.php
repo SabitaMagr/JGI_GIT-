@@ -18,13 +18,13 @@ class SessionHelper {
         if ($employeeId != null) {
             $employeeFileId = EntityHelper::getTableKVList($adapter, HrEmployees::TABLE_NAME, HrEmployees::EMPLOYEE_ID, [HrEmployees::PROFILE_PICTURE_ID], [HrEmployees::EMPLOYEE_ID => $employeeId], null)[$employeeId];
             $employeeName = EntityHelper::getTableKVList($adapter, HrEmployees::TABLE_NAME, HrEmployees::EMPLOYEE_ID, [HrEmployees::FIRST_NAME], [HrEmployees::EMPLOYEE_ID => $employeeId], null)[$employeeId];
+            $event->getViewModel()->setVariable("employeeName", $employeeName);
             if ($employeeFileId != null) {
                 $filePath = EntityHelper::getTableKVList($adapter, EmployeeFile::TABLE_NAME, EmployeeFile::FILE_CODE, [EmployeeFile::FILE_PATH], [EmployeeFile::FILE_CODE => $employeeFileId], null)[$employeeFileId];
                 $event->getViewModel()->setVariable("profilePictureUrl", $filePath);
-                $event->getViewModel()->setVariable("employeeName", $employeeName);
             } else {
-                $event->getViewModel()->setVariable("profilePictureUrl", "1480316755.jpg");
-                $event->getViewModel()->setVariable("employeeName", "Nick");
+                $config = $app->getServiceManager()->get('config');
+                $event->getViewModel()->setVariable("profilePictureUrl", $config['default-profile-picture']);
             }
         }
     }

@@ -13,4 +13,5 @@ payroll features
 12. meaningful notifications (remaining)
 13. maintain order by on all queries. (remaining)
 14. sidemenu is not highlighted on selfservice-leaveapply
-
+15. leave apply not shown in dashboard bcoz of query and joins.
+16. issue regarding recommender,approver being null on notification
