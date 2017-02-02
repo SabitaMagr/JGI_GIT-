@@ -179,7 +179,7 @@ return [
     'controllers' => [
         'factories' => [
             Controller\IndexController::class => InvokableFactory::class,
-            Controller\DashboardController::class => Factory\DashBoardFactory::class,
+            Controller\DashboardController::class => Controller\ControllerFactory::class,
             Controller\CronController::class => Controller\ControllerFactory::class
         ],
     ],
@@ -237,5 +237,10 @@ return [
             'password' => 'ukesh@123',
             'ssl' => 'tls',
         ],
+    ],
+    'genders' => [
+        1 => 'Male',
+        2 => 'Female',
+        3 => 'Other'
     ]
 ];

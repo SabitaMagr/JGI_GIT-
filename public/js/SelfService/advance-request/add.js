@@ -2,10 +2,48 @@
     'use strict';
     $(document).ready(function () {
         $('select').select2();
-        app.addDatePicker(
-                $("#startDate")
-                );
-        
+        var $startDate = $("#startDate");
+        app.addDatePicker($startDate);
+        $startDate.datepicker('setStartDate', new Date());
+    });
+})(window.jQuery, window.app);
+
+angular.module("hris", [])
+        .controller("advanceDetailController", function ($scope, $http) {
+            $scope.allowAmt = null;
+            $scope.allowTerms = null;
+            $scope.requestedAmt = null;
+            $scope.terms = null;
+            $scope.salaryDeduction = null;
+
+            $scope.advanceChange = function () {
+                var advanceId = angular.element(document.getElementById('form-advanceId')).val();
+                var employeeId = angular.element(document.getElementById('form-employeeId')).val();
+
+                window.app.pullDataById(document.url, {
+                    action: 'pullAdvanceDetailByEmpId',
+                    data: {
+                        'employeeId': employeeId,
+                        'advanceId': advanceId
+                    }
+                }).then(function (success) {
+                    $scope.$apply(function () {
+                        $scope.allowAmt = success.data.allowAmt;
+                        $scope.allowTerms = success.data.allowTerms;
+                    });
+                });
+            };
+
+            $scope.requestChange = function () {
+                if ($scope.requestedAmt !== null && $scope.terms !== null) {
+                    $scope.salaryDeduction = parseFloat($scope.requestedAmt) / parseFloat($scope.terms);
+                }
+            };
+            $scope.advanceChange();
+        });
+
+
+
 //        var submitted = false;
 //        $("#advance-form").on("submit", function (e) {
 //            console.log('e',e);
@@ -45,34 +83,3 @@
 //                }
 //            });
 //        });
-    });
-})(window.jQuery, window.app);
-
-angular.module("hris",[])
-        .controller("advanceDetailController",function($scope,$http){
-            
-            var advanceChange = function () {
-                var advanceId = angular.element(document.getElementById('form-advanceId')).val();
-                var employeeId = angular.element(document.getElementById('form-employeeId')).val();
-                
-                console.log(advanceId);
-                console.log(employeeId);
-                window.app.pullDataById(document.url, {
-                action: 'pullAdvanceDetailByEmpId',
-                        data: {
-                        'employeeId': employeeId,
-                        'advanceId': advanceId
-                        }
-                }).then(function (success) {
-                    $scope.$apply(function () {
-                        console.log(success.data);
-                        $scope.allowAmt = success.data.allowAmt;
-                        $scope.allowTerms = success.data.allowTerms;
-                    });
-                });
-            };
-            $scope.advanceChange = advanceChange;
-            advanceChange();
-})
-
-

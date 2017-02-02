@@ -12,9 +12,10 @@ $advanceDate = $form->get('advanceDate');
 $reason = $form->get('reason');
 $terms = $form->get('terms');
 
+$requestedAmount->setAttribute('test', "test");
 $submit = $form->get('submit');
-$submit->setAttribute('value','SUBMIT');
-$submit->setAttribute('id','advanceSubmit');
+$submit->setAttribute('value', 'SUBMIT');
+$submit->setAttribute('id', 'advanceSubmit');
 
 $form->setAttribute('action', $this->url('advanceRequest', ['action' => 'add']));
 
@@ -28,10 +29,13 @@ if ($this->messages) {
 
 $form->prepare();
 ?>
-    <script>
-        document.menu=<?php $menu = ["id" => "menuSelfService","subMenu"=>["id"=>"subMenuAdvanceRequest"]];echo json_encode($menu);?>;
-        document.url = '<?= $this->url("restful", ["action" => "index"]) ?>';
-    </script>
+<script>
+    document.menu =<?php
+$menu = ["id" => "menuSelfService", "subMenu" => ["id" => "subMenuAdvanceRequest"]];
+echo json_encode($menu);
+?>;
+    document.url = '<?= $this->url("restful", ["action" => "index"]) ?>';
+</script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\advanceRequest')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
@@ -52,26 +56,31 @@ $form->prepare();
                 <div class="form-group">
                     <?php print $this->formLabel($advanceId); ?>
                     <select name="advanceId" id="form-advanceId" required="required"  ng-model="advanceId" ng-change="advanceChange()" class="form-control">
-                            <option value="" disabled="" selected="" class="ng-binding">Please select</option>                           
-                            <?php foreach($advances as $key=>$value){ ?>
+                        <option value="" disabled="" selected="" class="ng-binding">Please select</option>                           
+                        <?php foreach ($advances as $key => $value) { ?>
                             <option value="<?php echo $key; ?>"><?php echo $value; ?></option> 
                         <?php } ?>
                     </select>
                     <?php print $this->formElementErrors()->render($advanceId, ['class' => 'help-block']); ?>
-                    <span ng-bind="allowAmt" style="font-size:11px; font-weight: bold;"></span>
-                    <span ng-bind="allowTerms" style="font-size:11px; font-weight: bold;"></span>
+                    <span ng-show="(allowAmt !== null) && (allowTerms !== null)">
+                        Max Amount: <span ng-bind="allowAmt" style="font-size:11px; font-weight: bold;"></span>
+                        Within : <span ng-bind="allowTerms" style="font-size:11px; font-weight: bold;"></span> Months
+                    </span>
                 </div>
-                
+
                 <div class="form-group">
                     <?php print $this->formLabel($requestedAmount); ?>
-                    <?php print $this->formElement($requestedAmount); ?>
+                    <input max="{{allowAmt}}" ng-model="requestedAmt" ng-change="requestChange()" type="number" name="requestedAmount" required="required" id="form-requestedAmount" class="form-requestedAmount form-control" step="0.01" value="<?= $requestedAmount->getValue() ?>">
                     <?php print $this->formElementErrors()->render($requestedAmount, ['class' => 'help-block']); ?>
                 </div>
                 <div class="form-group">
                     <?php print $this->formLabel($terms); ?>
-                    <?php print $this->formElement($terms); ?>
+                    <input max="{{allowTerms}}" ng-model="terms" ng-change="requestChange()" type="number" name="terms" required="required" id="form-terms" class="form-terms form-control" min="1" value="<?= $terms->getValue() ?>">
                     <?php print $this->formElementErrors()->render($terms, ['class' => 'help-block']); ?>
                 </div>
+                <span ng-show="salaryDeduction != null">
+                    Deduction: {{salaryDeduction}} per month
+                </span>
                 <div class="form-group">
                     <?php print $this->formLabel($advanceDate); ?>
                     <div class="input-group date" id="startDate">
@@ -87,8 +96,8 @@ $form->prepare();
                 </div>
 
                 <?php
-                    print $this->formSubmit($submit);
-                    print $this->form()->closeTag();
+                print $this->formSubmit($submit);
+                print $this->form()->closeTag();
                 ?>
             </div>
 

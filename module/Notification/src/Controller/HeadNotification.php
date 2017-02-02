@@ -116,7 +116,7 @@ class HeadNotification {
             self::addNotifications($leaveReqNotiMod, $notificationTitle, $notificationDesc, $adapter);
             self::sendEmail($leaveReqNotiMod, 1, $adapter, $url);
         };
-        ${"fn" . NotificationEvents::LEAVE_RECOMMEND_ACCEPTED} = function(LeaveApply $model, AdapterInterface $adapter, Url $url) {
+        ${"fn" . NotificationEvents::LEAVE_RECOMMEND_ACCEPTED} = function(LeaveApply $model, AdapterInterface $adapter, Url $url, string $status) {
             $leaveApplyRepo = new LeaveApplyRepository($adapter);
             $leaveApplyArray = $leaveApplyRepo->fetchById($model->id)->getArrayCopy();
             $leaveApply = new LeaveApply();
@@ -145,64 +145,7 @@ class HeadNotification {
             $leaveReqNotiMod->leaveName = $leaveApply->leaveId;
             $leaveReqNotiMod->leaveType = $leaveApply->halfDay;
             $leaveReqNotiMod->noOfDays = $leaveApply->noOfDays;
-            $leaveReqNotiMod->leaveRecommendStatus = "Accepted";
-
-            $notificationTitle = "Leave Request";
-            $notificationDesc = "Recommendation of Leave Request of"
-                    . " $leaveReqNotiMod->fromName from $leaveReqNotiMod->fromDate"
-                    . " to $leaveReqNotiMod->toDate is $leaveReqNotiMod->leaveRecommendStatus";
-            self::addNotifications($leaveReqNotiMod, $notificationTitle, $notificationDesc, $adapter);
-            self::sendEmail($leaveReqNotiMod, 2, $adapter, $url);
-//            $temp = function() use($employeeRepo, $leaveApply, $adapter, $url) {
-//                $fromEmployee = $employeeRepo->fetchById($leaveApply->employeeId);
-//                $toEmployee = $employeeRepo->fetchById($leaveApply->approvedBy);
-//
-//                $leaveReqNotiMod = new LeaveRequestNotificationModel();
-//                $leaveReqNotiMod->fromId = $leaveApply->employeeId;
-//                $leaveReqNotiMod->fromName = $fromEmployee['FIRST_NAME'] . " " . $fromEmployee['MIDDLE_NAME'] . " " . $fromEmployee['LAST_NAME'];
-//                $leaveReqNotiMod->fromEmail = $fromEmployee['EMAIL_OFFICIAL'];
-//                $leaveReqNotiMod->fromGender = $fromEmployee['GENDER_ID'];
-//                $leaveReqNotiMod->fromMaritualStatus = $fromEmployee['MARITAL_STATUS'];
-//                $leaveReqNotiMod->toEmail = $toEmployee['EMAIL_OFFICIAL'];
-//                $leaveReqNotiMod->toGender = $toEmployee['GENDER_ID'];
-//                $leaveReqNotiMod->toId = $leaveApply->approvedBy;
-//                $leaveReqNotiMod->toMaritualStatus = $toEmployee['MARITAL_STATUS'];
-//                $leaveReqNotiMod->toName = $toEmployee['FIRST_NAME'] . " " . $toEmployee['MIDDLE_NAME'] . " " . $toEmployee['LAST_NAME'];
-//                $leaveReqNotiMod->route = json_encode(["route" => "leaveapprove", "action" => "view", "id" => $leaveApply->id, "role" => 3]);
-//
-//                $leaveReqNotiMod->fromDate = $leaveApply->startDate;
-//                $leaveReqNotiMod->toDate = $leaveApply->endDate;
-//                $leaveReqNotiMod->leaveName = $leaveApply->leaveId;
-//                $leaveReqNotiMod->leaveType = $leaveApply->halfDay;
-//                $leaveReqNotiMod->noOfDays = $leaveApply->noOfDays;
-//
-//                $notificationTitle = "Leave Approval";
-//                $notificationDesc = "Approval of Leave Request of $leaveReqNotiMod->fromName from $leaveReqNotiMod->fromDate to $leaveReqNotiMod->toDate is requested";
-//
-//                self::addNotifications($leaveReqNotiMod, $notificationTitle, $notificationDesc, $adapter);
-//                self::sendEmail($leaveReqNotiMod, 1, $adapter, $url);
-//            };
-//            $temp();
-        };
-        ${"fn" . NotificationEvents::LEAVE_RECOMMEND_REJECTED} = function(LeaveApply $leaveApply, AdapterInterface $adapter, Url $url) {
-            $leaveApplyRepo = new LeaveApplyRepository($adapter);
-//            $leaveApplyArray = $leaveApplyRepo->fetchById($model->id)->getArrayCopy();
-//            $leaveApply = new LeaveApply();
-//            $leaveApply->exchangeArrayFromDB($leaveApplyArray);
-//            $leaveApply->approvedBy = $model->approvedBy;
-
-            $leaveApply->exchangeArrayFromDB($leaveApplyRepo->fetchById($leaveApply->id)->getArrayCopy());
-
-            $leaveReqNotiMod = new LeaveRequestNotificationModel();
-            self::setNotificationModel($leaveApply->recommendedBy, $leaveApply->employeeId, $leaveReqNotiMod, $adapter);
-
-            $leaveReqNotiMod->route = json_encode(["route" => "leaverequest", "action" => "view", "id" => $leaveApply->id]);
-            $leaveReqNotiMod->fromDate = $leaveApply->startDate;
-            $leaveReqNotiMod->toDate = $leaveApply->endDate;
-            $leaveReqNotiMod->leaveName = $leaveApply->leaveId;
-            $leaveReqNotiMod->leaveType = $leaveApply->halfDay;
-            $leaveReqNotiMod->noOfDays = $leaveApply->noOfDays;
-            $leaveReqNotiMod->leaveRecommendStatus = "Rejected";
+            $leaveReqNotiMod->leaveRecommendStatus = $status;
 
             $notificationTitle = "Leave Request";
             $notificationDesc = "Recommendation of Leave Request of"
@@ -211,7 +154,7 @@ class HeadNotification {
             self::addNotifications($leaveReqNotiMod, $notificationTitle, $notificationDesc, $adapter);
             self::sendEmail($leaveReqNotiMod, 2, $adapter, $url);
         };
-        ${"fn" . NotificationEvents::LEAVE_APPROVE_ACCEPTED} = function(LeaveApply $model, AdapterInterface $adapter, Url $url) {
+        ${"fn" . NotificationEvents::LEAVE_APPROVE_ACCEPTED} = function(LeaveApply $model, AdapterInterface $adapter, Url $url, string $status) {
             $leaveApplyRepo = new LeaveApplyRepository($adapter);
             $leaveApplyArray = $leaveApplyRepo->fetchById($model->id)->getArrayCopy();
             $leaveApply = new LeaveApply();
@@ -228,31 +171,7 @@ class HeadNotification {
             $leaveReqNotiMod->leaveName = $leaveApply->leaveId;
             $leaveReqNotiMod->leaveType = $leaveApply->halfDay;
             $leaveReqNotiMod->noOfDays = $leaveApply->noOfDays;
-            $leaveReqNotiMod->leaveApprovedStatus = "Approved";
-
-            $notificationTitle = "Leave Approval";
-            $notificationDesc = "Approval of Leave Request of $leaveReqNotiMod->fromName from "
-                    . "$leaveReqNotiMod->fromDate to $leaveReqNotiMod->toDate is $leaveReqNotiMod->leaveApprovedStatus";
-            self::addNotifications($leaveReqNotiMod, $notificationTitle, $notificationDesc, $adapter);
-            self::sendEmail($leaveReqNotiMod, 3, $adapter, $url);
-        };
-        ${"fn" . NotificationEvents::LEAVE_APPROVE_REJECTED} = function(LeaveApply $model, AdapterInterface $adapter, Url $url) {
-            $leaveApplyRepo = new LeaveApplyRepository($adapter);
-            $leaveApplyArray = $leaveApplyRepo->fetchById($model->id)->getArrayCopy();
-            $leaveApply = new LeaveApply();
-            $leaveApply->exchangeArrayFromDB($leaveApplyArray);
-            $leaveApply->approvedBy = $model->approvedBy;
-
-            $leaveReqNotiMod = new LeaveRequestNotificationModel();
-            self::setNotificationModel($leaveApply->approvedBy, $leaveApply->employeeId, $leaveReqNotiMod, $adapter);
-
-            $leaveReqNotiMod->route = json_encode(["route" => "leaverequest", "action" => "view", "id" => $leaveApply->id]);
-            $leaveReqNotiMod->fromDate = $leaveApply->startDate;
-            $leaveReqNotiMod->toDate = $leaveApply->endDate;
-            $leaveReqNotiMod->leaveName = $leaveApply->leaveId;
-            $leaveReqNotiMod->leaveType = $leaveApply->halfDay;
-            $leaveReqNotiMod->noOfDays = $leaveApply->noOfDays;
-            $leaveReqNotiMod->leaveApprovedStatus = "Rejected";
+            $leaveReqNotiMod->leaveApprovedStatus = $status;
 
             $notificationTitle = "Leave Approval";
             $notificationDesc = "Approval of Leave Request of $leaveReqNotiMod->fromName from "
@@ -286,7 +205,7 @@ class HeadNotification {
             self::sendEmail($notification, 4, $adapter, $url);
         };
 
-        ${"fn" . NotificationEvents::ATTENDANCE_APPROVE_ACCEPTED} = function(AttendanceRequestModel $request, AdapterInterface $adapter, Url $url) {
+        ${"fn" . NotificationEvents::ATTENDANCE_APPROVE_ACCEPTED} = function(AttendanceRequestModel $request, AdapterInterface $adapter, Url $url, string $status) {
             $attendanceReqRepo = new AttendanceRequestRepository($adapter);
             $request->exchangeArrayFromDB($attendanceReqRepo->fetchById($request->id));
 
@@ -299,29 +218,7 @@ class HeadNotification {
             $notification->inRemarks = $request->inRemarks;
             $notification->outRemarks = $request->outRemarks;
             $notification->totalHours = $request->totalHour;
-            $notification->status = "Accepted";
-
-            $notification->route = json_encode(["route" => "attendancerequest", "action" => "view", "id" => $request->id]);
-            $title = "Attendance Request";
-            $desc = "No description for now";
-
-            self::addNotifications($notification, $title, $desc, $adapter);
-            self::sendEmail($notification, 5, $adapter, $url);
-        };
-        ${"fn" . NotificationEvents::ATTENDANCE_APPROVE_REJECTED} = function(AttendanceRequestModel $request, AdapterInterface $adapter, Url $url) {
-            $attendanceReqRepo = new AttendanceRequestRepository($adapter);
-            $request->exchangeArrayFromDB($attendanceReqRepo->fetchById($request->id));
-
-            $notification = new \Notification\Model\AttendanceRequestNotificationModel();
-            self::setNotificationModel($request->approvedBy, $request->employeeId, $notification, $adapter);
-
-            $notification->attendanceDate = $request->attendanceDt;
-            $notification->inTime = $request->inTime;
-            $notification->outTime = $request->outTime;
-            $notification->inRemarks = $request->inRemarks;
-            $notification->outRemarks = $request->outRemarks;
-            $notification->totalHours = $request->totalHour;
-            $notification->status = "Rejected";
+            $notification->status = $status;
 
             $notification->route = json_encode(["route" => "attendancerequest", "action" => "view", "id" => $request->id]);
             $title = "Attendance Request";
@@ -462,6 +359,12 @@ class HeadNotification {
 
             $notification = new \Notification\Model\TravelReqNotificationModel();
             self::setNotificationModel($recommdAppModel[RecommendApprove::EMPLOYEE_ID], $recommdAppModel[($type == self::RECOMMENDER) ? RecommendApprove::RECOMMEND_BY : RecommendApprove::APPROVED_BY], $notification, $adapter);
+            $notification->destination = $request->destination;
+            $notification->fromDate = $request->fromDate;
+            $notification->toDate = $request->toDate;
+            $notification->purpose = $request->purpose;
+            $notification->requestedAmount = $request->requestedAmount;
+            $notification->requestedType = $request->requestedType;
 
             $notification->route = json_encode(["route" => "travelApprove", "action" => "view", "id" => $request->travelId, "role" => ($type == self::RECOMMENDER) ? 2 : 3]);
             $title = "Travel Request";
@@ -636,26 +539,26 @@ class HeadNotification {
                 ${"fn" . NotificationEvents::LEAVE_APPLIED}($model, $adapter, $url, self::RECOMMENDER);
                 break;
             case NotificationEvents::LEAVE_RECOMMEND_ACCEPTED:
-                ${"fn" . NotificationEvents::LEAVE_RECOMMEND_ACCEPTED}($model, $adapter, $url);
+                ${"fn" . NotificationEvents::LEAVE_RECOMMEND_ACCEPTED}($model, $adapter, $url, self::ACCEPTED);
                 ${"fn" . NotificationEvents::LEAVE_APPLIED}($model, $adapter, $url, self::APPROVER);
                 break;
             case NotificationEvents::LEAVE_RECOMMEND_REJECTED:
-                ${"fn" . NotificationEvents::LEAVE_RECOMMEND_REJECTED}($model, $adapter, $url);
+                ${"fn" . NotificationEvents::LEAVE_RECOMMEND_ACCEPTED}($model, $adapter, $url, self::REJECTED);
                 break;
             case NotificationEvents::LEAVE_APPROVE_ACCEPTED:
-                ${"fn" . NotificationEvents::LEAVE_APPROVE_ACCEPTED}($model, $adapter, $url);
+                ${"fn" . NotificationEvents::LEAVE_APPROVE_ACCEPTED}($model, $adapter, $url, self::ACCEPTED);
                 break;
             case NotificationEvents::LEAVE_APPROVE_REJECTED:
-                ${"fn" . NotificationEvents::LEAVE_APPROVE_REJECTED}($model, $adapter, $url);
+                ${"fn" . NotificationEvents::LEAVE_APPROVE_ACCEPTED}($model, $adapter, $url, self::REJECTED);
                 break;
             case NotificationEvents::ATTENDANCE_APPLIED:
                 ${"fn" . NotificationEvents::ATTENDANCE_APPLIED}($model, $adapter, $url);
                 break;
             case NotificationEvents::ATTENDANCE_APPROVE_ACCEPTED:
-                ${"fn" . NotificationEvents::ATTENDANCE_APPROVE_ACCEPTED}($model, $adapter, $url);
+                ${"fn" . NotificationEvents::ATTENDANCE_APPROVE_ACCEPTED}($model, $adapter, $url, self::ACCEPTED);
                 break;
             case NotificationEvents::ATTENDANCE_APPROVE_REJECTED:
-                ${"fn" . NotificationEvents::ATTENDANCE_APPROVE_REJECTED}($model, $adapter, $url);
+                ${"fn" . NotificationEvents::ATTENDANCE_APPROVE_ACCEPTED}($model, $adapter, $url, self::REJECTED);
                 break;
             case NotificationEvents::ADVANCE_APPLIED:
                 ${"fn" . NotificationEvents::ADVANCE_APPLIED}($model, $adapter, $url, self::RECOMMENDER);
@@ -687,10 +590,10 @@ class HeadNotification {
                 ${"fn" . NotificationEvents::TRAVEL_RECOMMEND_ACCEPTED}($model, $adapter, $url, self::REJECTED);
                 break;
             case NotificationEvents::TRAVEL_APPROVE_ACCEPTED:
-                ${"fn" . NotificationEvents::TRAVEL_APPROVE_ACCEPTED}($model, $adapter, $url);
+                ${"fn" . NotificationEvents::TRAVEL_APPROVE_ACCEPTED}($model, $adapter, $url, self::ACCEPTED);
                 break;
             case NotificationEvents::TRAVEL_APPROVE_REJECTED:
-                ${"fn" . NotificationEvents::TRAVEL_APPROVE_REJECTED}($model, $adapter, $url);
+                ${"fn" . NotificationEvents::TRAVEL_APPROVE_ACCEPTED}($model, $adapter, $url, self::REJECTED);
                 break;
             case NotificationEvents::TRAVEL_CANCELLED:
                 ${"fn" . NotificationEvents::TRAVEL_CANCELLED}($model, $adapter, $url);
@@ -735,6 +638,7 @@ class HeadNotification {
         $notification->toId = $toEmployee['EMPLOYEE_ID'];
         $notification->toMaritualStatus = $toEmployee['MARITAL_STATUS'];
         $notification->toName = $toEmployee['FIRST_NAME'] . " " . $toEmployee['MIDDLE_NAME'] . " " . $toEmployee['LAST_NAME'];
+        $notification->setHonorific();
     }
 
 }

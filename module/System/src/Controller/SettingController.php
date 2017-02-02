@@ -28,8 +28,6 @@ class SettingController extends AbstractActionController {
     }
 
     public function indexAction() {
-        $request = $this->getRequest();
-        $postedData = $request->getPost();
         $setting = $this->repository->fetchById($this->userId);
         return new CustomViewModel($setting->getArrayCopy());
     }

@@ -2028,9 +2028,9 @@ class RestfulService extends AbstractRestfulController {
                 'ACTION_TEXT' => $action[key($action)],
                 'APPROVER_NAME' => $approverName
             ]);
-            if($statusId=='RQ'){
+            if ($statusId == 'RQ') {
                 $new_row['ALLOW_TO_EDIT'] = 1;
-            }else{
+            } else {
                 $new_row['ALLOW_TO_EDIT'] = 0;
             }
             array_push($attendanceRequest, $new_row);
@@ -2420,18 +2420,15 @@ class RestfulService extends AbstractRestfulController {
             'data' => $advanceList
         ];
     }
-    public function pullHolidaysForEmployee($data){
+
+    public function pullHolidaysForEmployee($data) {
         $employeeId = $data['employeeId'];
         $holidayRepo = new SelfHolidayRepository($this->adapter);
         $holidayResult = $holidayRepo->selectAll($employeeId);
-        
-        $holidayList = [];
-        foreach($holidayResult as $holidayRow){
-           $holidayList[$holidayRow['HOLIDAY_ID']]=$holidayRow['HOLIDAY_ENAME']." (".$holidayRow['START_DATE']." to ".$holidayRow['END_DATE'].")";
-        }
+
         return [
             'success' => true,
-            'data' => $holidayList
+            'data' => Helper::extractDbData($holidayResult)
         ];
     }
 
@@ -2481,10 +2478,11 @@ class RestfulService extends AbstractRestfulController {
             'data' => $data
         ];
     }
-    public function pullAdvanceDetailByEmpId($data){
+
+    public function pullAdvanceDetailByEmpId($data) {
         $employeeId = $data['employeeId'];
         $advanceId = $data['advanceId'];
-        
+
         $advanceRepo = new AdvanceRepository($this->adapter);
 
         $advanceDetail = $advanceRepo->fetchById($advanceId);
@@ -2497,21 +2495,22 @@ class RestfulService extends AbstractRestfulController {
         $employeeDetail = $employeeRepo->fetchById($employeeId);
         $salary = $employeeDetail['SALARY'];
         $permitAmtPercentage = ($salary * $amtToAllow) / 100;
- 
-        if($monthToAllow!=null || $permitAmtPercentage!=0){
+
+        if ($monthToAllow != null || $permitAmtPercentage != 0) {
             $data = [
-                'allowTerms' => " and Month to Allow (upto): ".$monthToAllow,
-                'allowAmt' => "Amount to Allow (per month): ".$permitAmtPercentage,
+                'allowTerms' => (int) $monthToAllow,
+                'allowAmt' => $permitAmtPercentage,
             ];
-        }else{
+        } else {
             $data = "";
         }
-        
+
         return [
             'success' => true,
             'data' => $data
         ];
     }
+
     public function pullDayoffWorkRequestStatusList($data) {
         $dayoffWorkStatusRepo = new WorkOnDayoffStatusRepository($this->adapter);
         if (key_exists('recomApproveId', $data)) {
@@ -2598,7 +2597,8 @@ class RestfulService extends AbstractRestfulController {
             "recomApproveId" => $recomApproveId
         ];
     }
-    public function pullHoliayWorkRequestStatusList($data){
+
+    public function pullHoliayWorkRequestStatusList($data) {
         $holidayWorkStatusRepo = new WorkOnHolidayStatusRepository($this->adapter);
         if (key_exists('recomApproveId', $data)) {
             $recomApproveId = $data['recomApproveId'];
@@ -2684,4 +2684,5 @@ class RestfulService extends AbstractRestfulController {
             "recomApproveId" => $recomApproveId
         ];
     }
+
 }

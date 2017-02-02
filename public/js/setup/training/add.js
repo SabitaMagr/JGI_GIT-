@@ -1,16 +1,21 @@
 (function ($, app) {
     'use strict';
     $(document).ready(function () {
-        $('select').select2();        
-        app.startEndDatePicker('startDate','endDate');
-        
+        $('select').select2();
+        app.startEndDatePicker('startDate', 'endDate');
+
+        /* prevent past events */
+        $('#startDate').datepicker("setStartDate", new Date());
+        $('#endDate').datepicker("setStartDate", new Date());
+        /* end of prevent past events */
+
         var inputFieldId = "form-trainingName";
         var formId = "training-form";
         var tableName = "HR_TRAINING_MASTER_SETUP";
         var columnName = "TRAINING_NAME";
         var checkColumnName = "TRAINING_ID";
         var selfId = $("#trainingID").val();
-        if (typeof (selfId) == "undefined") {
+        if (typeof selfId === "undefined") {
             selfId = 0;
         }
         window.app.checkUniqueConstraints(inputFieldId, formId, tableName, columnName, checkColumnName, selfId);

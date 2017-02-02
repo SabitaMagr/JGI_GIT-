@@ -16,6 +16,11 @@
         document.holidays = holidays;
 
         app.startEndDatePicker('startDate', 'endDate');
+        /* prevent past event post */
+        $('#startDate').datepicker("setStartDate", new Date());
+        $('#endDate').datepicker("setStartDate", new Date());
+        /* end of  prevent past event post */
+
 
         var inputFieldId = "holidayEname";
         var formId = "holiday-Form";

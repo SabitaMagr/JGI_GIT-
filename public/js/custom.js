@@ -316,14 +316,16 @@ window.app = (function ($, toastr) {
             this.view.body.hide();
             this.view.minMaxBtn.removeClass("fa-minus");
             this.view.minMaxBtn.addClass("fa-plus");
-            $(this.obj).css("height", 20);
+//            $(this.obj).css("height", 20);
+            this.view.body.hide();
             this.minStatus = true;
         },
         maximize: function () {
             this.view.body.show();
             this.view.minMaxBtn.removeClass("fa-plus");
             this.view.minMaxBtn.addClass("fa-minus");
-            $(this.obj).css("height", 320);
+//            $(this.obj).css("height", 320);
+            this.view.body.show();
             this.minStatus = false;
         },
         initialize: function () {
@@ -509,13 +511,14 @@ window.app = (function ($, toastr) {
         monthsInStringFormat.getKeyByValue = function (value) {
             for (var prop in this) {
                 if (this.hasOwnProperty(prop)) {
-                    if (this[ prop ] === value)
+                    if (this[ prop ].toUpperCase() === value.toUpperCase())
                         return prop;
                 }
             }
         };
         var splittedDate = formattedDate.split("-");
-        return new Date(splittedDate[2], monthsInStringFormat.getKeyByValue(splittedDate[1]) - 1, parseInt(splittedDate[0]) + 1);
+//        return new Date(splittedDate[2], monthsInStringFormat.getKeyByValue(splittedDate[1]) - 1, parseInt(splittedDate[0]) + 1);
+        return new Date(splittedDate[2], monthsInStringFormat.getKeyByValue(splittedDate[1]) - 1, parseInt(splittedDate[0]));
     }
 
 

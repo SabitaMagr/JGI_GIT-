@@ -91,7 +91,7 @@ class Module implements AutoloaderProviderInterface, ConsoleUsageProviderInterfa
             $repository = new RolePermissionRepository($adapter);
             $data = $repository->fetchAllMenuByRoleId($roleId);
             $allowFlag = false;
-            $allowedRoutes = ['application', "home", 'auth', 'login', 'logout', 'restful'];
+            $allowedRoutes = ['application', "home", 'auth', 'login', 'logout', 'restful', 'user-setting', 'webService'];
             if (in_array($route, $allowedRoutes)) {
                 $allowFlag = true;
             }
@@ -102,6 +102,7 @@ class Module implements AutoloaderProviderInterface, ConsoleUsageProviderInterfa
                 }
             }
             if (!$allowFlag) {
+
                 $response = $event->getResponse();
                 $response->getHeaders()->addHeaderLine(
                         'Location', $event->getRouter()->assemble(

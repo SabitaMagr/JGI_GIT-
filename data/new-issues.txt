@@ -1,8 +1,16 @@
 payroll features
-1. just include in tax.
-2. PF according to salary increment
-3. notification setting(user wise)
-4. add columns [trainingId,travel] on attendance-detail
-5. check for holidays, leave, travel, training on new request for holiday, leave, travel, training
-6. 
+1. just include in tax.(remaining)
+2. PF according to salary increment.(done)
+3. notification setting(user wise) (done)
+4. add columns [trainingId,travel] on attendance-detail (done)
+5. check for holidays, leave, travel, training on new request for holiday, leave, travel, training (remaining)
+6. validation remaining in advance request (done)
+7. check for past date in all form. (remaining)
+8. design issues in monthly value detail (remaining)
+9. design issues in flat value detail (remaining)
+10. check for queries that need joining tables (remaining)
+11. loan deduction in payroll (remaining)
+12. meaningful notifications (remaining)
+13. maintain order by on all queries. (remaining)
+14. sidemenu is not highlighted on selfservice-leaveapply
 

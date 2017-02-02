@@ -2,6 +2,7 @@
 
 namespace Appraisal\Controller;
 
+use Application\Factory\ConfigInterface;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Log\Logger;
 use Zend\Mvc\Controller\AbstractActionController;
@@ -11,15 +12,12 @@ class Appraisal extends AbstractActionController {
     private $adapter;
     private $logger;
 
-    public function __construct(AdapterInterface $adapter, Logger $logger) {
+    /**
+     * InitCap
+     */
+    public function __construct(AdapterInterface $adapter, Logger $logger, ConfigInterface $config) {
         $this->adapter = $adapter;
         $this->logger = $logger;
-//        $repo = new TrainingAssignRepository($adapter);
-//        $repo->checkEmployeeTraining(7, Helper::getcurrentExpressionDate());
-//        $repo = new AdvanceRequestRepository($adapter);
-//        print $repo->getAdvance(19, 9);
-//                ? "yes" : "no";
-//        exit;
     }
 
     public function indexAction() {

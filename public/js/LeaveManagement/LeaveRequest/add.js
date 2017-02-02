@@ -1,6 +1,3 @@
-/**
- * Created by punam on 9/30/16.
- */
 (function ($, app) {
     'use strict';
     $(document).ready(function () {
@@ -19,23 +16,23 @@
             var startDate = $("#startDate").val();
             var endDate = $("#endDate").val();
             var noOfDays1 = parseInt($("#noOfDays").val());
-            if (halfDay == 'F' || halfDay == "S") {
+            if (halfDay === 'F' || halfDay === "S") {
                 $('#noOfDays').attr('readonly', true);
-                if (startDate != endDate) {
+                if (startDate !== endDate) {
                     $("#errorMsgDate").html("* Start date and end date must be same in the case of half day leave");
                     $("#request").attr("disabled", "disabled");
-                } else if (startDate == endDate) {
+                } else if (startDate === endDate) {
                     $("#errorMsgDate").html("");
                     $("#errorMsg").html("");
                     $("#request").removeAttr("disabled");
                 }
-            } else if (halfDay == 'N') {
+            } else if (halfDay === 'N') {
                 $("#errorMsgDate").html("");
                 if (noOfDays1 <= availableDays1) {
                     $("#errorMsg").html("");
                     $("#request").removeAttr("disabled");
                 }
-                if (startDate == endDate) {
+                if (startDate === endDate) {
                     $('#noOfDays').attr('readonly', true);
                 } else {
                     $('#noOfDays').attr('readonly', false);
@@ -55,7 +52,7 @@
 
                 var halfDay1 = $("input[name='halfDay']:checked");
                 var halfDay2 = ""
-                if (typeof (halfDay1.val()) == "undefined") {
+                if (typeof (halfDay1.val()) === "undefined") {
                     halfDay2 = "N";
                 } else {
                     halfDay2 = halfDay1.val();
@@ -79,6 +76,10 @@
 
         });
 
+        /* prevent past event post */
+        $('#startDate').datepicker("setStartDate", new Date());
+        $('#endDate').datepicker("setStartDate", new Date());
+        /* end of  prevent past event post */
         $("#noOfDays").on("keyup", function () {
             var availableDays = parseInt($("#availableDays").val());
             var noOfDays = parseInt($(this).val());

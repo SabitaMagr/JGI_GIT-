@@ -57,14 +57,14 @@ $form->prepare();
 
                     <div class="form-group">
                         <?php print $this->formLabel($recommendBy); ?>
-                        <select required name="recommendBy" required="required" id="recommendBy" class="form-control" ng-options="recomm.name for recomm in recommenderOptions track by recomm.id" ng-model="recommenderSelected">
+                        <select  name="recommendBy" required="required" id="recommendBy" class="form-control" ng-options="recomm.name for recomm in recommenderOptions track by recomm.id" ng-model="recommenderSelected">
                         </select>
                         <?php print $this->formElementErrors()->render($recommendBy, ['class' => 'help-block']); ?>
                     </div>
 
                     <div class="form-group">
                         <?php print $this->formLabel($approvedBy); ?>
-                        <select required name="approvedBy" id="approvedBy" class="form-control" ng-options="approve.name for approve in approverOptions track by approve.id" ng-model="approverSelected">
+                        <select  name="approvedBy" id="approvedBy" class="form-control" ng-options="approve.name for approve in approverOptions track by approve.id" ng-model="approverSelected">
                         </select>
                         <?php print $this->formElementErrors()->render($approvedBy, ['class' => 'help-block']); ?>
                     </div>
