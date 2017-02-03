@@ -1,6 +1,6 @@
 (function ($) {
     'use strict';
-    $(document).ready(function () {    
+    $(document).ready(function () {
         $("#ruleTable").kendoGrid({
             excel: {
                 fileName: "RuleList.xlsx",
@@ -19,16 +19,16 @@
                 input: true,
                 numeric: false
             },
-            dataBound:gridDataBound,
+            dataBound: gridDataBound,
             rowTemplate: kendo.template($("#rowTemplate").html()),
             columns: [
                 {field: "PAY_CODE", title: "Pay Code"},
                 {field: "PAY_EDESC", title: "EDesc"},
                 {field: "PAY_TYPE_FLAG", title: "Type"},
-                {field: "PRIORITY_INDEX", title: "Priority Index"},
+                {field: "PRIORITY_INDEX", title: "Priority Index", type: "numbers"},
                 {title: "Action"}
             ]
-        });  
+        });
         function gridDataBound(e) {
             var grid = e.sender;
             if (grid.dataSource.total() == 0) {
@@ -37,11 +37,12 @@
                         .find('tbody')
                         .append('<tr class="kendo-data-row"><td colspan="' + colCount + '" class="no-data">There is no data to show in the grid.</td></tr>');
             }
-        };
+        }
+        ;
         $("#export").click(function (e) {
             var grid = $("#ruleTable").data("kendoGrid");
             grid.saveAsExcel();
         });
         window.app.UIConfirmations();
-    });   
+    });
 })(window.jQuery, window.app);
