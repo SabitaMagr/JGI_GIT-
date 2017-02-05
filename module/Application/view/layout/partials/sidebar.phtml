@@ -29,12 +29,14 @@
             <?php
 
             function generateMenus($page) {
-                $active = $page->isActive() ? 'active' : ( $page->isActive(true) ? 'active open' : '');
+                $isActive = $page->isActive();
+                $isChildActive = $page->isActive(true);
+                $active = $isActive ? 'active' : ( $isChildActive ? 'active open' : '');
                 $subMenus = generateSubMenus($page);
 
                 $showSubMenus = $page->hasPages() ? "class='nav-link nav-toggle'" : "";
-                $selected = $page->isActive() ? "<span class='selected'></span>" : "";
-                $isOpen = $page->isActive(true) ? 'open' : '';
+                $selected = $isActive || $isChildActive ? "<span class='selected'></span>" : "";
+                $isOpen = $isChildActive ? 'open' : '';
                 $showArrow = $page->hasPages() ? "<span class='arrow " . $isOpen . "'></span>" : "";
 
                 return "<li class='nav-item " . $active . "'>"

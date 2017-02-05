@@ -15,6 +15,6 @@ payroll features
 14. loan deduction in payroll (remaining)
 15. meaningful notifications (remaining)
 16. maintain order by on all queries. (remaining)
-17. on login, zend default page is shown
+17. on login, zend default page is shown (done)
 18. date format conflict between oracle and date picker.
 19. on sidemenu, two level menu is not open (done)
