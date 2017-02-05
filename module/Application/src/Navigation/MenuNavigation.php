@@ -17,9 +17,6 @@ class MenuNavigation extends DefaultNavigationFactory {
     private $roleId;
 
     protected function getPages(ContainerInterface $container) {
-        print "<pre>";
-        print_r($this->getName());
-        exit;
         if (null === $this->pages) {
             $adapter = $container->get(AdapterInterface::class);
             $this->adapter = $adapter;
