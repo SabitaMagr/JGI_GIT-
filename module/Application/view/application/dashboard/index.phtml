@@ -1,9 +1,3 @@
-<script>
-    document.menu =<?php
-$menu = ["id" => "menuDashBoard", "subMenu" => ["id" => "subMenuDashBoard"]];
-echo json_encode($menu);
-?>;
-</script>
 <?php if ($this->messages) { ?>
     <script>
         document.messages =<?php echo json_encode($this->messages); ?>

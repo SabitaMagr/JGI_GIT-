@@ -7,13 +7,8 @@ $this->headScript()
         ->appendFile($this->basePath('js/kendoDataTable.js'));
 ?>
 
-<script>
-    document.menu =<?php $menu = ["id" => "menuManagerService", "subMenu" => ["id" => "subMenuAppraisalReview"]];
-echo json_encode($menu);
-?>;
-</script>
 <div class="page-bar">
-<?= $this->navigation('Zend\Navigation\appraisal-evaluation-review')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
+    <?= $this->navigation('Zend\Navigation\appraisal-evaluation-review')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
 
 

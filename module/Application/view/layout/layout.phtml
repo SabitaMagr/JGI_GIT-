@@ -77,7 +77,8 @@
                 <?php
                 $this->navigation('navigation-menu')->menu()->setPartial('partials/sidebar');
                 echo $this->navigation('navigation-menu')->menu()->render();
-                //echo $this->navigation('navigation-menu')->menu()->setUlClass('nav');
+
+//                echo $this->navigation('navigation-menu')->menu()->setUlClass('nav');
                 ?>
                 <div class="page-content-wrapper">
                     <div class="page-content">
@@ -113,8 +114,8 @@
         <?php
         $this->headScript()
                 ->prependFile($this->basePath('js/user-setting.js'));
-        $this->headScript()
-                ->prependFile($this->basePath('js/menu.js'));
+//        $this->headScript()
+//                ->prependFile($this->basePath('js/menu.js'));
         $this->headScript()
                 ->prependFile($this->basePath('js/custom.js'));
         ?>

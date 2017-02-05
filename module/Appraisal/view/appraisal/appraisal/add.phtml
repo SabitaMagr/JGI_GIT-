@@ -6,12 +6,8 @@ $this->headScript()
         ->appendFile($this->basePath('telerik_kendoui/js/kendo.all.min.js'));
 ?>
 
-<script>
-    document.menu =<?php $menu = ["id" => "menuAppraisal", "subMenu" => ["id" => "subMenuSetup"]];
-echo json_encode($menu); ?>;
-</script>
 <div class="page-bar">
-<?= $this->navigation('Zend\Navigation\appraisal-setup')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
+    <?= $this->navigation('Zend\Navigation\appraisal-setup')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
 
 <div class="row">
@@ -46,7 +42,7 @@ echo json_encode($menu); ?>;
                                     </tr>
 
                                     <tr>
-                                       <td width="20%;"><label>Appraisal Status</label></td><td>:</td>
+                                        <td width="20%;"><label>Appraisal Status</label></td><td>:</td>
                                         <td colspan="12">
                                             <select name="appraisal_status" class="form-control" required=""> 
                                                 <option value="1">Begining Mode</option>
@@ -58,11 +54,11 @@ echo json_encode($menu); ?>;
                                     </tr>
 
                                     <tr>
-                                           <td width="20%;"><label>From Date</label></td><td>:</td>
+                                        <td width="20%;"><label>From Date</label></td><td>:</td>
                                         <td colspan="12"><input type="text" required="" name="start_date" id="from_date" class="form-control hasDatepicker"></td>
                                     </tr>
                                     <tr>
-                                         <td width="20%;"><label>To Date</label></td><td>:</td>
+                                        <td width="20%;"><label>To Date</label></td><td>:</td>
                                         <td colspan="12"><input type="text" required="" name="end_date" id="to_date" class="form-control hasDatepicker"></td>
                                     </tr>
 
@@ -73,13 +69,13 @@ echo json_encode($menu); ?>;
                                     </tr>
                                     <tr>
                                         <td>&nbsp;</td>   
-                                            <td>&nbsp;</td> 
+                                        <td>&nbsp;</td> 
                                         <td>  <button type="submit" value="submit " class="btn summitbtn"><i class="fa fa-paper-plane-o" aria-hidden="true"></i>
-&nbsp;SUBMIT</button></td>
+                                                &nbsp;SUBMIT</button></td>
                                     </tr>
 
                                 </tbody></table>	
-                          
+
 
                         </div></form>
                 </div>

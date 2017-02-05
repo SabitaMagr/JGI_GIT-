@@ -8,10 +8,6 @@ $this->headScript()->appendFile($this->basePath('js/AttendanceManagement/ShiftSe
 </script>
 
 <script>
-    document.menu =<?php
-$menu = ["id" => "menuAttendance", "subMenu" => ["id" => "subMenuShiftSetup"]];
-echo json_encode($menu);
-?>;
     document.url = '<?= $this->url("restful", ["action" => "index"]) ?>';
 </script>
 

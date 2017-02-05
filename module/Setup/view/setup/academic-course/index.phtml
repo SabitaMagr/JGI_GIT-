@@ -21,10 +21,6 @@ $this->headScript()
 <?php } ?>
 
 <script>
-    document.menu =<?php
-$menu = ["id" => "menuSetup", "subMenu" => ["id" => "subMenuAcademicCourse"]];
-echo json_encode($menu);
-?>;
     document.academicCourses = <?php echo json_encode($academicCourses); ?>;
 </script>
 <div class="page-bar">

@@ -125,7 +125,7 @@ class MenuSetupRepository implements RepositoryInterface {
 			             FROM HR_MENUS HM, HR_ROLE_PERMISSIONS HR
 			            WHERE HM.STATUS = 'E'
 			            AND HR.STATUS = 'E'
-    AND HM.MENU_ID = HR.MENU_ID
+                     AND HM.MENU_ID = HR.MENU_ID
 			            " . $where . "
 			ORDER BY HM.MENU_INDEX ASC";
 

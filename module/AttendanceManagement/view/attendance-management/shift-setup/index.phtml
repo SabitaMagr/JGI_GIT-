@@ -15,12 +15,10 @@ $this->headScript()
 ?>
 ?>
 <script>
-    document.menu =<?php $menu = ["id" => "menuAttendance", "subMenu" => ["id" => "subMenuShiftSetup"]];
-echo json_encode($menu); ?>;
     document.shifts =<?php echo json_encode($shifts); ?>;
 </script>
 <div class="page-bar">
-<?= $this->navigation('Zend\Navigation\shiftsetup')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb'); ?>
+    <?= $this->navigation('Zend\Navigation\shiftsetup')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb'); ?>
 </div>
 
 <?php if ($this->messages) { ?>

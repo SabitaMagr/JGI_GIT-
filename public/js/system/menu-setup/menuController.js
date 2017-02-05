@@ -97,7 +97,7 @@ angularApp.controller('menuUpdateController', function ($scope, $uibModal, $log,
     });
 
     $scope.submitForm = function () {
-       // console.log($scope.userForm);
+        // console.log($scope.userForm);
         if ($scope.userForm.$valid) {
             window.app.pullDataById(document.url, {
                 action: 'menuUpdate',
@@ -105,6 +105,7 @@ angularApp.controller('menuUpdateController', function ($scope, $uibModal, $log,
                     dataArray: $scope.menuDtl
                 },
             }).then(function (success) {
+                console.log(success);
                 $scope.$apply(function () {
                     var newData = success.menuData;
                     $("#tree_3").jstree(true).settings.core.data = newData;
@@ -180,6 +181,7 @@ angularApp.controller('menuUpdateController', function ($scope, $uibModal, $log,
                                 parentMenu: menuId
                             },
                         }).then(function (success) {
+                            console.log(success);
                             $scope.$apply(function () {
                                 var newData = success.menuData;
                                 $("#tree_3").jstree(true).settings.core.data = newData;
@@ -190,11 +192,12 @@ angularApp.controller('menuUpdateController', function ($scope, $uibModal, $log,
                                     window.toastr.success(success.data, "Notifications");
                                     $uibModalInstance.close('cancel');
                                 }
-                                if (success.menuIndexErr != "") {
-                                    $scope.menuIndexErr = success.menuIndexErr;
-                                } else {
-                                    $scope.menuIndexErr = null;
-                                }
+//                                if (success.menuIndexErr != "") {
+//                                    $scope.menuIndexErr = success.menuIndexErr;
+//                                } else {
+//                                $scope.menuIndexErr = null;
+//                                }
+
                             });
                         }, function (failure) {
                             console.log(failure);
