@@ -47,21 +47,22 @@ return [
                 'options' => [
                     'route' => '/',
                     'defaults' => [
-                        'controller' => Controller\IndexController::class,
+//                        'controller' => Controller\IndexController::class,
+                        'controller' => Controller\DashboardController::class,
                         'action' => 'index',
                     ],
                 ],
             ],
-            'application' => [
-                'type' => Segment::class,
-                'options' => [
-                    'route' => '/application[/:action]',
-                    'defaults' => [
-                        'controller' => Controller\IndexController::class,
-                        'action' => 'index',
-                    ],
-                ],
-            ],
+//            'application' => [
+//                'type' => Segment::class,
+//                'options' => [
+//                    'route' => '/application[/:action]',
+//                    'defaults' => [
+//                        'controller' => Controller\IndexController::class,
+//                        'action' => 'index',
+//                    ],
+//                ],
+//            ],
             'auth' => [
                 'type' => Literal::class,
                 'options' => [

@@ -15,12 +15,10 @@ $this->headScript()
 <link href="<?= $this->basePath('assets/global/plugins/jquery-nestable/jquery.nestable.css') ?>"
       rel="stylesheet" type="text/css"/>
 <script>
-    document.menu =<?php $menu = ["id" => "menuSystem", "subMenu" => ["id" => "subMenuMenuSetup"]];
-echo json_encode($menu); ?>;
     document.url = '<?= $this->url("restful", ["action" => "index"]) ?>';
 </script>
 <div class="page-bar">
-<?= $this->navigation('Zend\Navigation\menusetup')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
+    <?= $this->navigation('Zend\Navigation\menusetup')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
 <div ng-app="hris">
     <div class="row margin-top-20">
@@ -59,7 +57,7 @@ echo json_encode($menu); ?>;
                         </div>
                         <div class="btn-group pull-right open" style="margin-top:1%">
                             <a class="btn btn-success btn-sm" ng-click="!isDisabled && open(true)"  id="addChild">
-                                <i class="fa fa-plus"></i>Add Child1
+                                <i class="fa fa-plus"></i>Add Child
                             </a>
                         </div>
                     </div>

@@ -27,10 +27,6 @@ $this->headScript()
 <?php } ?>
 
 <script>
-    document.menu =<?php
-$menu = ["id" => "menuHolidays", "subMenu" => ["id" => "subMenuHolidaySetup"]];
-echo json_encode($menu);
-?>;
     document.url = "<?= $this->url('restful', ['action', 'index']); ?>";
 </script>
 <div class="page-bar">

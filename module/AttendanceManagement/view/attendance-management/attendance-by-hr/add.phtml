@@ -35,9 +35,6 @@ if ($this->messages) {
 
 $form->prepare();
 ?>
-<script>
-    document.menu =<?php $menu = ["id" => "menuAttendance", "subMenu" => ["id" => "subMenuAttendanceByHr"]];echo json_encode($menu);?>;
-</script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\attendancebyhr')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
@@ -55,8 +52,8 @@ $form->prepare();
                 ?>
                 <div
                     class="form-group <?= empty($employeeId->getMessages()) ? "" : "error" ?> ">
-                    <?php print $this->formLabel($employeeId); ?>
-                    <?php print $this->formElement($employeeId); ?>
+                        <?php print $this->formLabel($employeeId); ?>
+                        <?php print $this->formElement($employeeId); ?>
                 </div>
                 <?php print $this->formElementErrors()->render($employeeId, ['class' => 'help-block error']); ?>
 

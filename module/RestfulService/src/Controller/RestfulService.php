@@ -636,15 +636,15 @@ class RestfulService extends AbstractRestfulController {
         $model->createdDt = Helper::getcurrentExpressionDate();
         $model->createdBy = $this->loggedIdEmployeeId;
 
-        $menuIndex = $repository->checkMenuIndex($record['menuIndex']);
-        if ($menuIndex) {
-            $menuIndexErr = "Menu Index Already Exist!!!";
-            $data = "";
-        } else {
-            $menuIndexErr = "";
-            $repository->add($model);
-            $data = "Menu Successfully Added!!";
-        }
+//        $menuIndex = $repository->checkMenuIndex($record['menuIndex']);
+//        if ($menuIndex) {
+//            $menuIndexErr = "Menu Index Already Exist!!!";
+//            $data = "";
+//        } else {
+        $menuIndexErr = "";
+        $repository->add($model);
+        $data = "Menu Successfully Added!!";
+//        }
         $menuData = $this->menu();
         return $responseData = [
             "success" => true,
@@ -685,15 +685,15 @@ class RestfulService extends AbstractRestfulController {
         unset($model->menuId);
         unset($model->createdDt);
 
-        $menuIndex = $repository->checkMenuIndex($record['menuIndex'], $menuId);
-        if ($menuIndex) {
-            $menuIndexErr = "Menu Index Already Exist!!!";
-            $data = "";
-        } else {
+//        $menuIndex = $repository->checkMenuIndex($record['menuIndex'], $menuId);
+//        if ($menuIndex) {
+//            $menuIndexErr = "Menu Index Already Exist!!!";
+//            $data = "";
+//        } else {
             $menuIndexErr = "";
             $repository->edit($model, $menuId);
             $data = "Menu Successfully Updated!!";
-        }
+//        }
         $menuData = $this->menu();
         return $responseData = [
             "success" => true,

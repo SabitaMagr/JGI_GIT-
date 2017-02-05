@@ -6,10 +6,8 @@ $this->headScript()->appendFile($this->basePath('js/HolidayManagement/HolidaySet
     /*
      * load js vars here
      * */
-    document.menu =<?php $menu = ["id" => "menuHolidays", "subMenu" => ["id" => "subMenuHolidaySetup"]];
-echo json_encode($menu);
-?>;
-    document.url = '<?= $this->url("restful", ["action" => "index"]) ?>';
+    ? > ;
+            document.url = '<?= $this->url("restful", ["action" => "index"]) ?>';
 </script>
 
 
@@ -44,7 +42,7 @@ $form->setAttribute('action', $this->url('holidaysetup', ['action' => 'add']));
 $form->prepare();
 ?>
 <div class="page-bar">
-<?= $this->navigation('Zend\Navigation\holidaysetup')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
+    <?= $this->navigation('Zend\Navigation\holidaysetup')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
 
 <div class="row margin-top-20">
@@ -61,40 +59,40 @@ $form->prepare();
                 ?>
                 <div class="form-group <?= empty($holidayCode->getMessages()) ? "" : "error" ?>">
                     <?php print $this->formLabel($holidayCode); ?>
-<?php print $this->formElement($holidayCode); ?>
+                    <?php print $this->formElement($holidayCode); ?>
                     <span class="errorMsg" style="font-size:11px; color:red;"></span>
                 </div>
-<?php print $this->formElementErrors()->render($holidayCode, ['class' => 'help-block error']); ?>
+                <?php print $this->formElementErrors()->render($holidayCode, ['class' => 'help-block error']); ?>
 
 
                 <div class="form-group padding-0">
-                        <?php print $this->formLabel($genderId); ?>
+                    <?php print $this->formLabel($genderId); ?>
                     <div class="md-radio-inline">
-<?php $customRenderer($genderId); ?>
+                        <?php $customRenderer($genderId); ?>
                     </div>
                 </div>
-<?php print $this->formElementErrors()->render($genderId, ['class' => 'help-block error']); ?>
+                <?php print $this->formElementErrors()->render($genderId, ['class' => 'help-block error']); ?>
 
                 <div class="form-group form-group-default-select2">
                     <?php print $this->formLabel($branchId); ?>
-                <?php print $this->formElement($branchId); ?>
+                    <?php print $this->formElement($branchId); ?>
                 </div>
-<?php print $this->formElementErrors()->render($branchId, ['class' => 'help-block error']) ?>
+                <?php print $this->formElementErrors()->render($branchId, ['class' => 'help-block error']) ?>
 
 
                 <div class="form-group <?= empty($holidayEname->getMessages()) ? "" : "error" ?>">
                     <?php print $this->formLabel($holidayEname); ?>
-<?php print $this->formElement($holidayEname); ?>
+                    <?php print $this->formElement($holidayEname); ?>
                     <span class="errorMsg" style="font-size:11px; color:red;"></span>
                 </div>
-<?php print $this->formElementErrors()->render($holidayEname, ['class' => 'help-block error']); ?>
+                <?php print $this->formElementErrors()->render($holidayEname, ['class' => 'help-block error']); ?>
 
                 <div class="form-group <?= empty($holidayLname->getMessages()) ? "" : "error" ?>">
                     <?php print $this->formLabel($holidayLname); ?>
-<?php print $this->formElement($holidayLname); ?>
+                    <?php print $this->formElement($holidayLname); ?>
                     <span class="errorMsg" style="font-size:11px; color:red;"></span>
                 </div>
-<?php print $this->formElementErrors()->render($holidayLname, ['class' => 'help-block error']); ?>
+                <?php print $this->formElementErrors()->render($holidayLname, ['class' => 'help-block error']); ?>
 
                 <div class="form-group required ">
                     <label for="startDate">Start Date</label>
@@ -103,7 +101,7 @@ $form->prepare();
                                class="form-control" value="" ng-model="holidayDtl.startDate">
                         <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
                     </div>
-<?php print $this->formElementErrors()->render($startDate, ['class' => 'help-block error']) ?>
+                    <?php print $this->formElementErrors()->render($startDate, ['class' => 'help-block error']) ?>
                 </div>
 
                 <div class="form-group required">
@@ -113,22 +111,22 @@ $form->prepare();
                                value="" ng-model="holidayDtl.endDate">
                         <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
                     </div>
-<?php print $this->formElementErrors()->render($startDate, ['class' => 'help-block error']) ?>
+                    <?php print $this->formElementErrors()->render($startDate, ['class' => 'help-block error']) ?>
                 </div>
 
                 <div class="form-group">
-                        <?php print $this->formLabel($halfday); ?>
+                    <?php print $this->formLabel($halfday); ?>
                     <div class="md-radio-inline">
-<?php $customRenderer($halfday); ?>
+                        <?php $customRenderer($halfday); ?>
                     </div>
                 </div>
-<?php print $this->formElementErrors()->render($halfday, ['class' => 'help-block error']); ?>
+                <?php print $this->formElementErrors()->render($halfday, ['class' => 'help-block error']); ?>
 
                 <div class="form-group">
                     <?php print $this->formLabel($remarks); ?>
-                <?php print $this->formElement($remarks); ?>
+                    <?php print $this->formElement($remarks); ?>
                 </div>
-<?php print $this->formElementErrors()->render($remarks, ['class' => 'help-block error']); ?>
+                <?php print $this->formElementErrors()->render($remarks, ['class' => 'help-block error']); ?>
 
 
                 <?php

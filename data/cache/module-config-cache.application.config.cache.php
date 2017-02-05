@@ -407,20 +407,7 @@ return array (
           'route' => '/',
           'defaults' => 
           array (
-            'controller' => 'Application\\Controller\\IndexController',
-            'action' => 'index',
-          ),
-        ),
-      ),
-      'application' => 
-      array (
-        'type' => 'Zend\\Router\\Http\\Segment',
-        'options' => 
-        array (
-          'route' => '/application[/:action]',
-          'defaults' => 
-          array (
-            'controller' => 'Application\\Controller\\IndexController',
+            'controller' => 'Application\\Controller\\DashboardController',
             'action' => 'index',
           ),
         ),

@@ -9,18 +9,18 @@ $form->setAttribute('class', 'attendanceByHr-form');
 $employeeId = $form->get('employeeId');
 $attendanceDt = $form->get('attendanceDt');
 $inTime = $form->get('inTime');
-if($inTime->getValue()==null || $inTime->getValue()==""){
+if ($inTime->getValue() == null || $inTime->getValue() == "") {
     $inTime->setValue("10:00 AM");
 }
 $outTime = $form->get('outTime');
-if($outTime->getValue()==null || $outTime->getValue()==""){
+if ($outTime->getValue() == null || $outTime->getValue() == "") {
     $outTime->setValue("5:00 PM");
 }
 $inRemarks = $form->get('inRemarks');
 $outRemarks = $form->get('outRemarks');
 $totalHour = $form->get('totalHour');
 $totalHour->setAttributes(['readonly' => "readonly"]);
-if($totalHour->getValue()==null || $totalHour->getValue()==""){
+if ($totalHour->getValue() == null || $totalHour->getValue() == "") {
     $totalHour->setValue("7.0");
 }
 $employeeId->setValueOptions($employees);
@@ -39,11 +39,7 @@ if ($this->messages) {
 }
 
 $form->prepare();
-
 ?>
-<script>
-    document.menu =<?php $menu = ["id" => "menuAttendance", "subMenu" => ["id" => "subMenuAttendanceByHr"]];echo json_encode($menu);?>;
-</script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\attendancebyhr')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
@@ -61,8 +57,8 @@ $form->prepare();
                 ?>
                 <div
                     class="form-group <?= empty($employeeId->getMessages()) ? "" : "error" ?> ">
-                    <?php print $this->formLabel($employeeId); ?>
-                    <?php print $this->formElement($employeeId); ?>
+                        <?php print $this->formLabel($employeeId); ?>
+                        <?php print $this->formElement($employeeId); ?>
                 </div>
                 <?php print $this->formElementErrors()->render($employeeId, ['class' => 'help-block error']); ?>
 

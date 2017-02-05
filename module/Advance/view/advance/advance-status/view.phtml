@@ -1,5 +1,4 @@
 <?php
-
 $this->headScript()->appendFile($this->basePath('js/angular.min.js'));
 $this->headScript()->appendFile($this->basePath('js/SelfService/advance-request/add.js'));
 
@@ -8,19 +7,19 @@ $form->setAttribute('role', 'form');
 
 $advanceId = $form->get('advanceId');
 $advanceId->setValueOptions($advances);
-$advanceId->setAttributes(["disabled"=>"disabled"]);
+$advanceId->setAttributes(["disabled" => "disabled"]);
 $requestedAmount = $form->get('requestedAmount');
-$requestedAmount->setAttributes(["disabled"=>"disabled"]);
+$requestedAmount->setAttributes(["disabled" => "disabled"]);
 $advanceDate = $form->get('advanceDate');
-$advanceDate->setAttributes(["disabled"=>"disabled"]);
+$advanceDate->setAttributes(["disabled" => "disabled"]);
 $reason = $form->get('reason');
-$reason->setAttributes(["disabled"=>"disabled"]);
+$reason->setAttributes(["disabled" => "disabled"]);
 $terms = $form->get('terms');
-$terms->setAttributes(["disabled"=>"disabled"]);
+$terms->setAttributes(["disabled" => "disabled"]);
 $recommendedRemarks = $form->get('recommendedRemarks');
-$recommendedRemarks->setAttributes(['required'=>'true']);
+$recommendedRemarks->setAttributes(['required' => 'true']);
 $approvedRemarks = $form->get('approvedRemarks');
-$approvedRemarks->setAttributes(['required'=>'true']);
+$approvedRemarks->setAttributes(['required' => 'true']);
 
 $submit = $form->get('submit');
 $submit->setAttribute('value', 'Approve');
@@ -38,153 +37,153 @@ if ($this->messages) {
 $form->prepare();
 print $this->form()->openTag($form);
 ?>
-    <script>
-        document.menu =<?php $menu = ["id" => "menuAdvance", "subMenu" => ["id" => "subMenuAdvanceStatus"]];echo json_encode($menu);?>;
-        document.url = '<?= $this->url("restful", ["action" => "index"]) ?>';
-        document.employeeId=<?= json_encode($employeeId)?>;
-    </script>
+<script>
+    document.url = '<?= $this->url("restful", ["action" => "index"]) ?>';
+    document.employeeId =<?= json_encode($employeeId) ?>;
+</script>
 
-    <div class="page-bar">
-        <?= $this->navigation('Zend\Navigation\advanceStatus')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb'); ?>
-    </div>
-    <div class="row margin-top-20" ng-app="hris" ng-controller="advanceDetailController">
-        <div class="col-sm-8 col-sm-offset-2">
-            <div class="portlet box custom-box">
-                <div class="portlet-title">
-                    <div class="caption">
-                        <i class="fa fa-user"></i>Advance Request Detail
+<div class="page-bar">
+    <?= $this->navigation('Zend\Navigation\advanceStatus')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb'); ?>
+</div>
+<div class="row margin-top-20" ng-app="hris" ng-controller="advanceDetailController">
+    <div class="col-sm-8 col-sm-offset-2">
+        <div class="portlet box custom-box">
+            <div class="portlet-title">
+                <div class="caption">
+                    <i class="fa fa-user"></i>Advance Request Detail
+                </div>
+            </div>
+            <div class="portlet-body">
+                <div class="border-bottom margin-bottom-10">
+                    <div class="form-group">
+                        <div class="row div-font-11">
+                            <div class="col-md-6">
+                                <table>
+                                    <tr height="30">
+                                        <td>
+                                            Employee Name
+                                        </td>
+                                        <td width="15">:</td>
+                                        <td>
+                                            <?php echo $employeeName; ?>
+                                        </td>
+                                    </tr>
+                                    <tr height="30">
+                                        <td>
+                                            Requested Date
+                                        </td>
+                                        <td width="15">:</td>
+                                        <td>
+                                            <?php echo $requestedDt; ?>
+                                        </td>
+                                    </tr>
+                                    <tr height="30">
+                                        <td>
+                                            Recommender
+                                        </td>
+                                        <td width="15">:</td>
+                                        <td>
+                                            <?php echo $recommender; ?>
+                                        </td>
+                                    </tr>
+
+                                </table>
+                            </div>
+                            <div class="col-md-6">
+                                <table>
+                                    <tr height="30">
+                                        <td>
+                                            Status
+                                        </td>
+                                        <td width="15">:</td>
+                                        <td>
+                                            <?php
+                                            if ($status == 'RQ') {
+                                                echo "Pending";
+                                            } else if ($status == 'RC') {
+                                                echo "Recommended";
+                                            } else if ($status == 'AP') {
+                                                echo "Approved";
+                                            } else if ($status == "R") {
+                                                echo "Rejected";
+                                            } else if ($status == "C") {
+                                                echo "Cancelled";
+                                            }
+                                            ?>
+                                        </td>
+                                    </tr>
+                                    <tr height="30">
+                                        <td>
+                                            Approver
+                                        </td>
+                                        <td width="15">:</td>
+                                        <td>
+                                            <?php echo $approver; ?>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <input type="hidden" id="form-employeeId" value="<?php echo $employeeId; ?>"/>
+                    <div class="form-group">
+                        <?php print $this->formLabel($advanceId); ?>
+                        <?php print $this->formElement($advanceId); ?>
+                        <?php print $this->formElementErrors()->render($advanceId, ['class' => 'help-block']); ?>
+                        <span ng-bind="allowAmt" style="font-size:11px; font-weight: bold;"></span>
+                        <span ng-bind="allowTerms" style="font-size:11px; font-weight: bold;"></span>
+                    </div>               
+                    <div class="form-group">
+                        <?php print $this->formLabel($requestedAmount); ?>
+                        <?php print $this->formElement($requestedAmount); ?>
+                        <?php print $this->formElementErrors()->render($requestedAmount, ['class' => 'help-block']); ?>
+                    </div>
+                    <div class="form-group">
+                        <?php print $this->formLabel($terms); ?>
+                        <?php print $this->formElement($terms); ?>
+                        <?php print $this->formElementErrors()->render($terms, ['class' => 'help-block']); ?>
+                    </div>
+                    <div class="form-group">
+                        <?php print $this->formLabel($advanceDate); ?>
+                        <div class="input-group date" id="startDate">
+                            <?php print $this->formElement($advanceDate); ?>
+                            <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                        </div>
+                        <?php print $this->formElementErrors()->render($advanceDate, ['class' => 'help-block']); ?>
+                    </div>
+                    <div class="form-group">
+                        <?php print $this->formLabel($reason); ?>
+                        <?php print $this->formElement($reason); ?>
+                        <?php print $this->formElementErrors()->render($reason, ['class' => 'help-block']); ?>
                     </div>
                 </div>
-                <div class="portlet-body">
-                    <div class="border-bottom margin-bottom-10">
-                        <div class="form-group">
-                            <div class="row div-font-11">
-                                <div class="col-md-6">
-                                    <table>
-                                        <tr height="30">
-                                            <td>
-                                                Employee Name
-                                            </td>
-                                            <td width="15">:</td>
-                                            <td>
-                                                <?php echo $employeeName; ?>
-                                            </td>
-                                        </tr>
-                                        <tr height="30">
-                                            <td>
-                                                Requested Date
-                                            </td>
-                                            <td width="15">:</td>
-                                            <td>
-                                                <?php echo $requestedDt; ?>
-                                            </td>
-                                        </tr>
-                                        <tr height="30">
-                                            <td>
-                                                Recommender
-                                            </td>
-                                            <td width="15">:</td>
-                                            <td>
-                                                <?php echo $recommender; ?>
-                                            </td>
-                                        </tr>
-                                        
-                                    </table>
-                                </div>
-                                <div class="col-md-6">
-                                    <table>
-                                        <tr height="30">
-                                            <td>
-                                                Status
-                                            </td>
-                                            <td width="15">:</td>
-                                            <td>
-                                                <?php
-                                                if ($status == 'RQ') {
-                                                    echo "Pending";
-                                                } else if ($status == 'RC') {
-                                                    echo "Recommended";
-                                                } else if ($status == 'AP') {
-                                                    echo "Approved";
-                                                } else if ($status == "R") {
-                                                    echo "Rejected";
-                                                } else if ($status == "C") {
-                                                    echo "Cancelled";
-                                                } ?>
-                                            </td>
-                                        </tr>
-                                        <tr height="30">
-                                            <td>
-                                                Approver
-                                            </td>
-                                            <td width="15">:</td>
-                                            <td>
-                                                <?php echo $approver; ?>
-                                            </td>
-                                        </tr>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
 
-                        <input type="hidden" id="form-employeeId" value="<?php echo $employeeId; ?>"/>
-                        <div class="form-group">
-                            <?php print $this->formLabel($advanceId); ?>
-                            <?php print $this->formElement($advanceId); ?>
-                            <?php print $this->formElementErrors()->render($advanceId, ['class' => 'help-block']); ?>
-                            <span ng-bind="allowAmt" style="font-size:11px; font-weight: bold;"></span>
-                            <span ng-bind="allowTerms" style="font-size:11px; font-weight: bold;"></span>
-                        </div>               
-                        <div class="form-group">
-                            <?php print $this->formLabel($requestedAmount); ?>
-                            <?php print $this->formElement($requestedAmount); ?>
-                            <?php print $this->formElementErrors()->render($requestedAmount, ['class' => 'help-block']); ?>
-                        </div>
-                        <div class="form-group">
-                            <?php print $this->formLabel($terms); ?>
-                            <?php print $this->formElement($terms); ?>
-                            <?php print $this->formElementErrors()->render($terms, ['class' => 'help-block']); ?>
-                        </div>
-                        <div class="form-group">
-                            <?php print $this->formLabel($advanceDate); ?>
-                            <div class="input-group date" id="startDate">
-                                <?php print $this->formElement($advanceDate); ?>
-                                <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                            </div>
-                            <?php print $this->formElementErrors()->render($advanceDate, ['class' => 'help-block']); ?>
-                        </div>
-                        <div class="form-group">
-                            <?php print $this->formLabel($reason); ?>
-                            <?php print $this->formElement($reason); ?>
-                            <?php print $this->formElementErrors()->render($reason, ['class' => 'help-block']); ?>
-                        </div>
-                    </div>
-
-                    <?php if (($status == 'RC' || $status == 'AP' || $status == 'R') && $recommApprove==0){
-                        $recommendedRemarks->setAttributes(['disabled' => 'disabled']);
-                        ?>
-                        <div class="form-group padding-0">
-                            <label>Reason for action [From Recommender]</label>
-                            <?php print $this->formElement($recommendedRemarks); ?>
-                        </div>
-                    <?php } 
-                    if($status=='RC' || $status=='RQ' || $status=='AP' || ($status=='R' && $approvedDT!=null)){ ?>
+                <?php
+                if (($status == 'RC' || $status == 'AP' || $status == 'R') && $recommApprove == 0) {
+                    $recommendedRemarks->setAttributes(['disabled' => 'disabled']);
+                    ?>
                     <div class="form-group padding-0">
-                        <?php print $this->formLabel($approvedRemarks); ?>
-                        <?php print $this->formElement($approvedRemarks); ?>
+                        <label>Reason for action [From Recommender]</label>
+                    <?php print $this->formElement($recommendedRemarks); ?>
                     </div>
-                    <?php } ?>
-                    
-                    <?php if ($status == 'RQ' || $status == 'RC') { ?>
-                        <?php print $this->formSubmit($submit); ?>
-                        <input type="submit" name="submit" class="btn btn-success pull-right" value="Reject">
-                    <?php } ?>
-                </div>
+                <?php }
+                if ($status == 'RC' || $status == 'RQ' || $status == 'AP' || ($status == 'R' && $approvedDT != null)) {
+                    ?>
+                    <div class="form-group padding-0">
+                    <?php print $this->formLabel($approvedRemarks); ?>
+                    <?php print $this->formElement($approvedRemarks); ?>
+                    </div>
+                <?php } ?>
+
+                <?php if ($status == 'RQ' || $status == 'RC') { ?>
+                    <?php print $this->formSubmit($submit); ?>
+                    <input type="submit" name="submit" class="btn btn-success pull-right" value="Reject">
+<?php } ?>
             </div>
         </div>
     </div>
+</div>
 <?php
-
 print $this->form()->closeTag();
-
 ?>

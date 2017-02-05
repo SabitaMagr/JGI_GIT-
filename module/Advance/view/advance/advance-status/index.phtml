@@ -20,13 +20,10 @@ $this->headScript()
 ?>
 
 <script>
-    document.menu =<?php $menu = ["id" => "menuAdvance", "subMenu" => ["id" => "subMenuAdvanceStatus"]];
-echo json_encode($menu);
-?>;
     document.url = '<?= $this->url("restful", ["action" => "index"]) ?>';
 </script>
 <div class="page-bar">
-<?= $this->navigation('Zend\Navigation\advanceStatus')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
+    <?= $this->navigation('Zend\Navigation\advanceStatus')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
 <?php if ($this->messages) { ?>
     <script>
@@ -42,42 +39,42 @@ echo json_encode($menu);
             <div class="row  gapbottom">
                 <div class="col-xs-12 col-sm-3 col-md-3">
                     <?php print $this->formLabel($employees); ?>
-<?php print $this->formElement($employees); ?>
+                    <?php print $this->formElement($employees); ?>
                 </div>
                 <div class="col-xs-12 col-sm-3 col-md-3">
                     <?php print $this->formLabel($branches); ?>
-<?php print $this->formElement($branches); ?>
+                    <?php print $this->formElement($branches); ?>
                 </div>
                 <div class="col-xs-12 col-sm-3 col-md-3">
                     <?php print $this->formLabel($departments); ?>
-<?php print $this->formElement($departments); ?>
+                    <?php print $this->formElement($departments); ?>
                 </div>
                 <div class="col-xs-12 col-sm-3 col-md-3">
                     <?php print $this->formLabel($designations); ?>
-<?php print $this->formElement($designations); ?>
+                    <?php print $this->formElement($designations); ?>
                 </div>
                 <div class="col-xs-12 col-sm-3 col-md-3">
                     <?php print $this->formLabel($positions); ?>
-<?php print $this->formElement($positions); ?>
+                    <?php print $this->formElement($positions); ?>
                 </div> 
                 <div class="col-xs-12 col-sm-3 col-md-3">
                     <?php print $this->formLabel($serviceTypes); ?>
-<?php print $this->formElement($serviceTypes); ?>
+                    <?php print $this->formElement($serviceTypes); ?>
                 </div>
 
                 <!--        <div class="row margin-top-10">    -->
 
                 <div class="col-xs-12 col-sm-3 col-md-3">
                     <?php print $this->formLabel($advances); ?>
-<?php print $this->formElement($advances); ?>
+                    <?php print $this->formElement($advances); ?>
                 </div>
                 <div class="col-xs-12 col-sm-3 col-md-3">
                     <?php print $this->formLabel($advanceStatus); ?>
-<?php print $this->formElement($advanceStatus); ?>
+                    <?php print $this->formElement($advanceStatus); ?>
                 </div>  
                 <div class="col-xs-12 col-sm-3 col-md-3">
                     <?php print $this->formLabel($serviceEventTypes); ?>
-<?php print $this->formElement($serviceEventTypes); ?>
+                    <?php print $this->formElement($serviceEventTypes); ?>
                 </div>
                 <div class="col-sm-6">
                     <div class="row">

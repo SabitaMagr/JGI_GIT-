@@ -1,6 +1,4 @@
 <?php
-
-
 $this->headScript()->appendFile($this->basePath('js/HolidayManagement/HolidaySetup/add.js'));
 $this->headScript()->appendFile($this->basePath('js/angular.min.js'));
 $this->headScript()->appendFile($this->basePath('js/HolidayManagement/HolidaySetup/holidayController.js'));
@@ -13,8 +11,6 @@ $this->headScript()->appendFile($this->basePath('js/HolidayManagement/HolidaySet
 <?php } ?>
 
 <script>
-    document.menu =<?php $menu = ["id" => "menuHolidays", "subMenu" => ["id" => "subMenuHolidaySetup"]];
-echo json_encode($menu); ?>;
     document.urlBranchList = '<?= $this->url("webService", ["action" => "branchList"]) ?>';
     document.url = '<?= $this->url("webService", ["action" => "index"]) ?>';
 </script>
@@ -61,10 +57,12 @@ $form->prepare();
                                 <div class="form-group">
                                     <select name="holiday" id="holidayId" class="form-control">
 <?php foreach ($holidayList as $key => $holidays) { ?>
-                                            <option value="<?php echo $key ?>" <?php if ($selectedHoliday == $key) {
-        echo "selected";
-    } ?>><?php echo $holidays; ?></option>
-                                        <?php } ?>
+                                            <option value="<?php echo $key ?>" <?php
+                                            if ($selectedHoliday == $key) {
+                                                echo "selected";
+                                            }
+                                            ?>><?php echo $holidays; ?></option>
+                                                <?php } ?>
                                     </select>
                                 </div>
                             </div>
