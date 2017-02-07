@@ -29,14 +29,14 @@ return [
     'db' => [
         'driver'    => 'oci8',
         'connection_string'       => '(DESCRIPTION =
-        (ADDRESS = (PROTOCOL = TCP)(HOST = localhost)(PORT = 1521))
+        (ADDRESS = (PROTOCOL = TCP)(HOST = 192.168.4.2)(PORT = 1521))
         (CONNECT_DATA =
         (SERVER = DEDICATED)
-        (SERVICE_NAME = ORCLS)
+        (SERVICE_NAME = ITN)
         )
         )',
-        'username'      => 'HRIS_NEO_FINAL',
-        'password'      => 'HRIS_NEO_FINAL',
+        'username'      => 'HRIS',
+        'password'      => 'NEO_HRIS',
         'platform_options' => ['quote_identifiers' => false]
     ],
     
