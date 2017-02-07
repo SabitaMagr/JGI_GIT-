@@ -26,14 +26,24 @@
         <link href="<?= $this->basePath('assets/global/plugins/bootstrap-toastr/toastr.min.css') ?>"
               rel="stylesheet" type="text/css"/>
         <!-- END GLOBAL MANDATORY STYLES -->
+        <!-- BEGIN THEME GLOBAL STYLES -->
+        <link href="<?= $this->basePath('assets/global/css/components-md.min.css') ?>"
+              rel="stylesheet" type="text/css"/>
+        <link href="<?= $this->basePath('assets/global/css/plugins-md.min.css') ?>"
+              rel="stylesheet" type="text/css"/>
+        <!-- END THEME GLOBAL STYLES -->
+        <!-- BEGIN PAGE LEVEL STYLES -->
+        <link href="<?= $this->basePath('css/error.min.css') ?>"
+              rel="stylesheet" type="text/css"/>
+        <!-- END PAGE LEVEL STYLES -->
         <!--[if lte IE 9]>distribution
         <link href="<?php print $this->basePath('pages/css/ie9.css'); ?>" rel="stylesheet" type="text/css" />
         <![endif]-->
 
     </head>
-   <body class=" page-404-3">
+    <body class=" page-404-3">
         <div class="page-inner">
-            <img src="../assets/pages/media/pages/earth.jpg" class="img-responsive" alt=""> </div>
+            <img src="<?php print $this->basePath('img/earth.jpg'); ?>" class="img-responsive" alt=""> </div>
         <div class="container error-404">
             <h1>404</h1>
             <h2>Houston, we have a problem.</h2>
@@ -175,5 +185,9 @@
     <?php endif ?>
 
     <?php
+
+
+
+
 
  endif ?>
