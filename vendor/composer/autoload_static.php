@@ -8,6 +8,7 @@ class ComposerStaticInit3beba3f34d79073b782a60e952d3c132
 {
     public static $files = array (
         '34901568a1e26d13dd475cb2c85e0284' => __DIR__ . '/..' . '/zendframework/zend-form/autoload/formElementManagerPolyfill.php',
+        'a0edc8309cc5e1d60e3047b5df6b7052' => __DIR__ . '/..' . '/guzzlehttp/psr7/src/functions_include.php',
     );
 
     public static $prefixLengthsPsr4 = array (
@@ -28,6 +29,7 @@ class ComposerStaticInit3beba3f34d79073b782a60e952d3c132
             'Zend\\ServiceManager\\' => 20,
             'Zend\\Router\\' => 12,
             'Zend\\Psr7Bridge\\' => 16,
+            'Zend\\Navigation\\' => 16,
             'Zend\\Mvc\\Plugin\\Prg\\' => 20,
             'Zend\\Mvc\\Plugin\\Identity\\' => 25,
             'Zend\\Mvc\\Plugin\\FlashMessenger\\' => 31,
@@ -36,6 +38,8 @@ class ComposerStaticInit3beba3f34d79073b782a60e952d3c132
             'Zend\\Mvc\\Console\\' => 17,
             'Zend\\Mvc\\' => 9,
             'Zend\\ModuleManager\\' => 19,
+            'Zend\\Mime\\' => 10,
+            'Zend\\Mail\\' => 10,
             'Zend\\Log\\' => 9,
             'Zend\\Loader\\' => 12,
             'Zend\\Json\\' => 10,
@@ -63,35 +67,77 @@ class ComposerStaticInit3beba3f34d79073b782a60e952d3c132
         ),
         'W' => 
         array (
+            'WorkOnHoliday\\' => 14,
+            'WorkOnDayoff\\' => 13,
             'Webmozart\\Assert\\' => 17,
         ),
         'T' => 
         array (
+            'Travel\\' => 7,
+            'Training\\' => 9,
             'Test\\' => 5,
         ),
         'S' => 
         array (
+            'System\\' => 7,
             'Symfony\\Component\\Yaml\\' => 23,
             'Setup\\' => 6,
+            'SelfService\\' => 12,
+        ),
+        'R' => 
+        array (
+            'RestfulService\\' => 15,
         ),
         'P' => 
         array (
+            'Psr\\Log\\' => 8,
             'Psr\\Http\\Message\\' => 17,
+            'Payroll\\' => 8,
+            'PHPixie\\Tests\\' => 14,
+            'PHPixie\\' => 8,
+        ),
+        'N' => 
+        array (
+            'Notification\\' => 13,
+        ),
+        'M' => 
+        array (
+            'ManagerService\\' => 15,
+        ),
+        'L' => 
+        array (
+            'Loan\\' => 5,
+            'LeaveManagement\\' => 16,
         ),
         'I' => 
         array (
+            'Intervention\\Image\\' => 19,
             'Interop\\Container\\' => 18,
+        ),
+        'H' => 
+        array (
+            'HolidayManagement\\' => 18,
+        ),
+        'G' => 
+        array (
+            'GuzzleHttp\\Psr7\\' => 16,
         ),
         'D' => 
         array (
             'Doctrine\\Instantiator\\' => 22,
+            'Doctrine\\Common\\Cache\\' => 22,
+            'Doctrine\\Common\\Annotations\\' => 28,
+            'Doctrine\\Common\\' => 16,
             'DeepCopy\\' => 9,
         ),
         'A' => 
         array (
+            'AttendanceManagement\\' => 21,
+            'Appraisal\\' => 10,
             'Application\\' => 12,
             'ApplicationTest\\' => 16,
             'Album\\' => 6,
+            'Advance\\' => 8,
         ),
     );
 
@@ -146,6 +192,10 @@ class ComposerStaticInit3beba3f34d79073b782a60e952d3c132
         array (
             0 => __DIR__ . '/..' . '/zendframework/zend-psr7bridge/src',
         ),
+        'Zend\\Navigation\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/zendframework/zend-navigation/src',
+        ),
         'Zend\\Mvc\\Plugin\\Prg\\' => 
         array (
             0 => __DIR__ . '/..' . '/zendframework/zend-mvc-plugin-prg/src',
@@ -177,6 +227,14 @@ class ComposerStaticInit3beba3f34d79073b782a60e952d3c132
         'Zend\\ModuleManager\\' => 
         array (
             0 => __DIR__ . '/..' . '/zendframework/zend-modulemanager/src',
+        ),
+        'Zend\\Mime\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/zendframework/zend-mime/src',
+        ),
+        'Zend\\Mail\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/zendframework/zend-mail/src',
         ),
         'Zend\\Log\\' => 
         array (
@@ -274,13 +332,33 @@ class ComposerStaticInit3beba3f34d79073b782a60e952d3c132
         array (
             0 => __DIR__ . '/..' . '/zfcampus/zf-development-mode/src',
         ),
+        'WorkOnHoliday\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/module/WorkOnHoliday/src',
+        ),
+        'WorkOnDayoff\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/module/WorkOnDayoff/src',
+        ),
         'Webmozart\\Assert\\' => 
         array (
             0 => __DIR__ . '/..' . '/webmozart/assert/src',
         ),
+        'Travel\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/module/Travel/src',
+        ),
+        'Training\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/module/Training/src',
+        ),
         'Test\\' => 
         array (
             0 => __DIR__ . '/../..' . '/module/Test/src',
+        ),
+        'System\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/module/System/src',
         ),
         'Symfony\\Component\\Yaml\\' => 
         array (
@@ -290,21 +368,93 @@ class ComposerStaticInit3beba3f34d79073b782a60e952d3c132
         array (
             0 => __DIR__ . '/../..' . '/module/Setup/src',
         ),
+        'SelfService\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/module/SelfService/src',
+        ),
+        'RestfulService\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/module/RestfulService/src',
+        ),
+        'Psr\\Log\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/psr/log/Psr/Log',
+        ),
         'Psr\\Http\\Message\\' => 
         array (
             0 => __DIR__ . '/..' . '/psr/http-message/src',
+        ),
+        'Payroll\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/module/Payroll/src',
+        ),
+        'PHPixie\\Tests\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/phpixie/image/tests/PHPixie/Tests',
+        ),
+        'PHPixie\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/phpixie/image/src/PHPixie',
+        ),
+        'Notification\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/module/Notification/src',
+        ),
+        'ManagerService\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/module/ManagerService/src',
+        ),
+        'Loan\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/module/Loan/src',
+        ),
+        'LeaveManagement\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/module/LeaveManagement/src',
+        ),
+        'Intervention\\Image\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/intervention/image/src/Intervention/Image',
         ),
         'Interop\\Container\\' => 
         array (
             0 => __DIR__ . '/..' . '/container-interop/container-interop/src/Interop/Container',
         ),
+        'HolidayManagement\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/module/HolidayManagement/src',
+        ),
+        'GuzzleHttp\\Psr7\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/guzzlehttp/psr7/src',
+        ),
         'Doctrine\\Instantiator\\' => 
         array (
             0 => __DIR__ . '/..' . '/doctrine/instantiator/src/Doctrine/Instantiator',
         ),
+        'Doctrine\\Common\\Cache\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/doctrine/cache/lib/Doctrine/Common/Cache',
+        ),
+        'Doctrine\\Common\\Annotations\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/doctrine/annotations/lib/Doctrine/Common/Annotations',
+        ),
+        'Doctrine\\Common\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/doctrine/common/lib/Doctrine/Common',
+        ),
         'DeepCopy\\' => 
         array (
             0 => __DIR__ . '/..' . '/myclabs/deep-copy/src/DeepCopy',
+        ),
+        'AttendanceManagement\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/module/AttendanceManagement/src',
+        ),
+        'Appraisal\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/module/Appraisal/src',
         ),
         'Application\\' => 
         array (
@@ -317,6 +467,10 @@ class ComposerStaticInit3beba3f34d79073b782a60e952d3c132
         'Album\\' => 
         array (
             0 => __DIR__ . '/../..' . '/module/Album/src',
+        ),
+        'Advance\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/module/Advance/src',
         ),
     );
 
@@ -337,13 +491,28 @@ class ComposerStaticInit3beba3f34d79073b782a60e952d3c132
         ),
         'P' => 
         array (
-            'Psr\\Log\\' => 
-            array (
-                0 => __DIR__ . '/..' . '/psr/log',
-            ),
             'Prophecy\\' => 
             array (
                 0 => __DIR__ . '/..' . '/phpspec/prophecy/src',
+            ),
+            'PHPExcel' => 
+            array (
+                0 => __DIR__ . '/..' . '/phpoffice/phpexcel/Classes',
+            ),
+        ),
+        'D' => 
+        array (
+            'Doctrine\\Common\\Lexer\\' => 
+            array (
+                0 => __DIR__ . '/..' . '/doctrine/lexer/lib',
+            ),
+            'Doctrine\\Common\\Inflector\\' => 
+            array (
+                0 => __DIR__ . '/..' . '/doctrine/inflector/lib',
+            ),
+            'Doctrine\\Common\\Collections\\' => 
+            array (
+                0 => __DIR__ . '/..' . '/doctrine/collections/lib',
             ),
         ),
         'B' => 
@@ -359,7 +528,10 @@ class ComposerStaticInit3beba3f34d79073b782a60e952d3c132
         'File_Iterator' => __DIR__ . '/..' . '/phpunit/php-file-iterator/src/Iterator.php',
         'File_Iterator_Facade' => __DIR__ . '/..' . '/phpunit/php-file-iterator/src/Facade.php',
         'File_Iterator_Factory' => __DIR__ . '/..' . '/phpunit/php-file-iterator/src/Factory.php',
+        'PHPUnit\\Framework\\Assert' => __DIR__ . '/..' . '/phpunit/phpunit/src/ForwardCompatibility/Assert.php',
+        'PHPUnit\\Framework\\BaseTestListener' => __DIR__ . '/..' . '/phpunit/phpunit/src/ForwardCompatibility/BaseTestListener.php',
         'PHPUnit\\Framework\\TestCase' => __DIR__ . '/..' . '/phpunit/phpunit/src/ForwardCompatibility/TestCase.php',
+        'PHPUnit\\Framework\\TestListener' => __DIR__ . '/..' . '/phpunit/phpunit/src/ForwardCompatibility/TestListener.php',
         'PHPUnit_Exception' => __DIR__ . '/..' . '/phpunit/phpunit/src/Exception.php',
         'PHPUnit_Extensions_GroupTestSuite' => __DIR__ . '/..' . '/phpunit/phpunit/src/Extensions/GroupTestSuite.php',
         'PHPUnit_Extensions_PhptTestCase' => __DIR__ . '/..' . '/phpunit/phpunit/src/Extensions/PhptTestCase.php',
@@ -381,6 +553,7 @@ class ComposerStaticInit3beba3f34d79073b782a60e952d3c132
         'PHPUnit_Framework_Constraint_ClassHasStaticAttribute' => __DIR__ . '/..' . '/phpunit/phpunit/src/Framework/Constraint/ClassHasStaticAttribute.php',
         'PHPUnit_Framework_Constraint_Composite' => __DIR__ . '/..' . '/phpunit/phpunit/src/Framework/Constraint/Composite.php',
         'PHPUnit_Framework_Constraint_Count' => __DIR__ . '/..' . '/phpunit/phpunit/src/Framework/Constraint/Count.php',
+        'PHPUnit_Framework_Constraint_DirectoryExists' => __DIR__ . '/..' . '/phpunit/phpunit/src/Framework/Constraint/DirectoryExists.php',
         'PHPUnit_Framework_Constraint_Exception' => __DIR__ . '/..' . '/phpunit/phpunit/src/Framework/Constraint/Exception.php',
         'PHPUnit_Framework_Constraint_ExceptionCode' => __DIR__ . '/..' . '/phpunit/phpunit/src/Framework/Constraint/ExceptionCode.php',
         'PHPUnit_Framework_Constraint_ExceptionMessage' => __DIR__ . '/..' . '/phpunit/phpunit/src/Framework/Constraint/ExceptionMessage.php',
@@ -398,8 +571,10 @@ class ComposerStaticInit3beba3f34d79073b782a60e952d3c132
         'PHPUnit_Framework_Constraint_IsJson' => __DIR__ . '/..' . '/phpunit/phpunit/src/Framework/Constraint/IsJson.php',
         'PHPUnit_Framework_Constraint_IsNan' => __DIR__ . '/..' . '/phpunit/phpunit/src/Framework/Constraint/IsNan.php',
         'PHPUnit_Framework_Constraint_IsNull' => __DIR__ . '/..' . '/phpunit/phpunit/src/Framework/Constraint/IsNull.php',
+        'PHPUnit_Framework_Constraint_IsReadable' => __DIR__ . '/..' . '/phpunit/phpunit/src/Framework/Constraint/IsReadable.php',
         'PHPUnit_Framework_Constraint_IsTrue' => __DIR__ . '/..' . '/phpunit/phpunit/src/Framework/Constraint/IsTrue.php',
         'PHPUnit_Framework_Constraint_IsType' => __DIR__ . '/..' . '/phpunit/phpunit/src/Framework/Constraint/IsType.php',
+        'PHPUnit_Framework_Constraint_IsWritable' => __DIR__ . '/..' . '/phpunit/phpunit/src/Framework/Constraint/IsWritable.php',
         'PHPUnit_Framework_Constraint_JsonMatches' => __DIR__ . '/..' . '/phpunit/phpunit/src/Framework/Constraint/JsonMatches.php',
         'PHPUnit_Framework_Constraint_JsonMatches_ErrorMessageProvider' => __DIR__ . '/..' . '/phpunit/phpunit/src/Framework/Constraint/JsonMatches/ErrorMessageProvider.php',
         'PHPUnit_Framework_Constraint_LessThan' => __DIR__ . '/..' . '/phpunit/phpunit/src/Framework/Constraint/LessThan.php',
@@ -415,7 +590,7 @@ class ComposerStaticInit3beba3f34d79073b782a60e952d3c132
         'PHPUnit_Framework_Constraint_TraversableContains' => __DIR__ . '/..' . '/phpunit/phpunit/src/Framework/Constraint/TraversableContains.php',
         'PHPUnit_Framework_Constraint_TraversableContainsOnly' => __DIR__ . '/..' . '/phpunit/phpunit/src/Framework/Constraint/TraversableContainsOnly.php',
         'PHPUnit_Framework_Constraint_Xor' => __DIR__ . '/..' . '/phpunit/phpunit/src/Framework/Constraint/Xor.php',
-        'PHPUnit_Framework_CoveredCodeNotExecutedException' => __DIR__ . '/..' . '/phpunit/phpunit/src/Framework/PHPUnit_Framework_CoveredCodeNotExecutedException.php',
+        'PHPUnit_Framework_CoveredCodeNotExecutedException' => __DIR__ . '/..' . '/phpunit/phpunit/src/Framework/CoveredCodeNotExecutedException.php',
         'PHPUnit_Framework_Error' => __DIR__ . '/..' . '/phpunit/phpunit/src/Framework/Error.php',
         'PHPUnit_Framework_Error_Deprecated' => __DIR__ . '/..' . '/phpunit/phpunit/src/Framework/Error/Deprecated.php',
         'PHPUnit_Framework_Error_Notice' => __DIR__ . '/..' . '/phpunit/phpunit/src/Framework/Error/Notice.php',
@@ -427,7 +602,7 @@ class ComposerStaticInit3beba3f34d79073b782a60e952d3c132
         'PHPUnit_Framework_IncompleteTestCase' => __DIR__ . '/..' . '/phpunit/phpunit/src/Framework/IncompleteTestCase.php',
         'PHPUnit_Framework_IncompleteTestError' => __DIR__ . '/..' . '/phpunit/phpunit/src/Framework/IncompleteTestError.php',
         'PHPUnit_Framework_InvalidCoversTargetException' => __DIR__ . '/..' . '/phpunit/phpunit/src/Framework/InvalidCoversTargetException.php',
-        'PHPUnit_Framework_MissingCoversAnnotationException' => __DIR__ . '/..' . '/phpunit/phpunit/src/Framework/PHPUnit_Framework_MissingCoversAnnotationException.php',
+        'PHPUnit_Framework_MissingCoversAnnotationException' => __DIR__ . '/..' . '/phpunit/phpunit/src/Framework/MissingCoversAnnotationException.php',
         'PHPUnit_Framework_MockObject_BadMethodCallException' => __DIR__ . '/..' . '/phpunit/phpunit-mock-objects/src/Framework/MockObject/Exception/BadMethodCallException.php',
         'PHPUnit_Framework_MockObject_Builder_Identity' => __DIR__ . '/..' . '/phpunit/phpunit-mock-objects/src/Framework/MockObject/Builder/Identity.php',
         'PHPUnit_Framework_MockObject_Builder_InvocationMocker' => __DIR__ . '/..' . '/phpunit/phpunit-mock-objects/src/Framework/MockObject/Builder/InvocationMocker.php',
@@ -698,6 +873,7 @@ class ComposerStaticInit3beba3f34d79073b782a60e952d3c132
         'PHP_Token_STRING' => __DIR__ . '/..' . '/phpunit/php-token-stream/src/Token.php',
         'PHP_Token_STRING_CAST' => __DIR__ . '/..' . '/phpunit/php-token-stream/src/Token.php',
         'PHP_Token_STRING_VARNAME' => __DIR__ . '/..' . '/phpunit/php-token-stream/src/Token.php',
+        'PHP_Token_SUPER' => __DIR__ . '/..' . '/phpunit/php-token-stream/src/Token.php',
         'PHP_Token_SWITCH' => __DIR__ . '/..' . '/phpunit/php-token-stream/src/Token.php',
         'PHP_Token_Stream' => __DIR__ . '/..' . '/phpunit/php-token-stream/src/Token/Stream.php',
         'PHP_Token_Stream_CachingFactory' => __DIR__ . '/..' . '/phpunit/php-token-stream/src/Token/Stream/CachingFactory.php',
@@ -712,6 +888,7 @@ class ComposerStaticInit3beba3f34d79073b782a60e952d3c132
         'PHP_Token_UNSET' => __DIR__ . '/..' . '/phpunit/php-token-stream/src/Token.php',
         'PHP_Token_UNSET_CAST' => __DIR__ . '/..' . '/phpunit/php-token-stream/src/Token.php',
         'PHP_Token_USE' => __DIR__ . '/..' . '/phpunit/php-token-stream/src/Token.php',
+        'PHP_Token_USE_FUNCTION' => __DIR__ . '/..' . '/phpunit/php-token-stream/src/Token.php',
         'PHP_Token_VAR' => __DIR__ . '/..' . '/phpunit/php-token-stream/src/Token.php',
         'PHP_Token_VARIABLE' => __DIR__ . '/..' . '/phpunit/php-token-stream/src/Token.php',
         'PHP_Token_WHERE' => __DIR__ . '/..' . '/phpunit/php-token-stream/src/Token.php',
