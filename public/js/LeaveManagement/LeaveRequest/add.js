@@ -77,9 +77,11 @@
         });
 
         /* prevent past event post */
-        $('#startDate').datepicker("setStartDate", new Date());
-        $('#endDate').datepicker("setStartDate", new Date());
+//        $('#startDate').datepicker("setStartDate", new Date());
+//        $('#endDate').datepicker("setStartDate", new Date());
         /* end of  prevent past event post */
+        
+        
         $("#noOfDays").on("keyup", function () {
             var availableDays = parseInt($("#availableDays").val());
             var noOfDays = parseInt($(this).val());
