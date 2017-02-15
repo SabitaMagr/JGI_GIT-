@@ -109,13 +109,14 @@ class EmployeeRepository implements RepositoryInterface {
                     'joinDate'
                         ], NULL, 'E'), false);
 
-        $select->join(['B' => Branch::TABLE_NAME], "E." . HrEmployees::BRANCH_ID . "=B." . Branch::BRANCH_ID, ['BRANCH_NAME'], 'left')
+        $select
+                ->join(['B' => Branch::TABLE_NAME], "E." . HrEmployees::BRANCH_ID . "=B." . Branch::BRANCH_ID, ['BRANCH_NAME'], 'left')
                 ->join(['C' => Company::TABLE_NAME], "E." . HrEmployees::COMPANY_ID . "=C." . Company::COMPANY_ID, ['COMPANY_NAME'], 'left')
                 ->join(['G' => Gender::TABLE_NAME], "E." . HrEmployees::GENDER_ID . "=G." . Gender::GENDER_ID, ['GENDER_NAME'], 'left')
                 ->join(['BG' => "HR_BLOOD_GROUPS"], "E." . HrEmployees::BLOOD_GROUP_ID . "=BG.BLOOD_GROUP_ID", ['BLOOD_GROUP_CODE'], 'left')
                 ->join(['RG' => "HR_RELIGIONS"], "E." . HrEmployees::RELIGION_ID . "=RG.RELIGION_ID", ['RELIGION_NAME'], 'left')
                 ->join(['CN' => "HR_COUNTRIES"], "E." . HrEmployees::COUNTRY_ID . "=CN.COUNTRY_ID", ['COUNTRY_NAME'], 'left')
-                ->join(['DT' => "HR_DISTRICTS"], "E." . HrEmployees::ID_CITIZENSHIP_ISSUE_PLACE . "=DT.DISTRICT_ID", ['ID_CIT_ISSUE_PLACE_NAME' => 'DISTRICT_NAME'], 'left')
+//                ->join(['DT' => "HR_DISTRICTS"], "E." . HrEmployees::ID_CITIZENSHIP_ISSUE_PLACE . "=DT.DISTRICT_ID", ['ID_CIT_ISSUE_PLACE_NAME' => 'DISTRICT_NAME'], 'left')
 //                ->join(['Z' => "HR_ZONES"], "E." . HrEmployees::ZON . "=Z.ZONE_ID", ['ZONE_NAME'], 'left')
 //                ->join(['D' => "HR_DISTRICTS"], "E." . HrEmployees::DISTRICT_ID . "=D.DISTRICT_ID", ['DISTRICT_NAME'], 'left')
                 ->join(['VM' => "HR_VDC_MUNICIPALITIES"], "E." . HrEmployees::ADDR_PERM_VDC_MUNICIPALITY_ID . "=VM.VDC_MUNICIPALITY_ID", ['VDC_MUNICIPALITY_NAME'], 'left')
@@ -227,13 +228,14 @@ class EmployeeRepository implements RepositoryInterface {
                     'joinDate'
                         ], NULL, 'E'), false);
 
-        $select->join(['B' => Branch::TABLE_NAME], "E." . HrEmployees::BRANCH_ID . "=B." . Branch::BRANCH_ID, ['BRANCH_NAME'], 'left')
+        $select
+                ->join(['B' => Branch::TABLE_NAME], "E." . HrEmployees::BRANCH_ID . "=B." . Branch::BRANCH_ID, ['BRANCH_NAME'], 'left')
                 ->join(['C' => Company::TABLE_NAME], "E." . HrEmployees::COMPANY_ID . "=C." . Company::COMPANY_ID, ['COMPANY_NAME'], 'left')
                 ->join(['G' => Gender::TABLE_NAME], "E." . HrEmployees::GENDER_ID . "=G." . Gender::GENDER_ID, ['GENDER_NAME'], 'left')
                 ->join(['BG' => "HR_BLOOD_GROUPS"], "E." . HrEmployees::BLOOD_GROUP_ID . "=BG.BLOOD_GROUP_ID", ['BLOOD_GROUP_CODE'], 'left')
                 ->join(['RG' => "HR_RELIGIONS"], "E." . HrEmployees::RELIGION_ID . "=RG.RELIGION_ID", ['RELIGION_NAME'], 'left')
                 ->join(['CN' => "HR_COUNTRIES"], "E." . HrEmployees::COUNTRY_ID . "=CN.COUNTRY_ID", ['COUNTRY_NAME'], 'left')
-                ->join(['DT' => "HR_DISTRICTS"], "E." . HrEmployees::ID_CITIZENSHIP_ISSUE_PLACE . "=DT.DISTRICT_ID", ['ID_CIT_ISSUE_PLACE_NAME' => 'DISTRICT_NAME'], 'left')
+//                ->join(['DT' => "HR_DISTRICTS"], "E." . HrEmployees::ID_CITIZENSHIP_ISSUE_PLACE . "=DT.DISTRICT_ID", ['ID_CIT_ISSUE_PLACE_NAME' => 'DISTRICT_NAME'], 'left')
 //                ->join(['Z' => "HR_ZONES"], "E." . HrEmployees::ZON . "=Z.ZONE_ID", ['ZONE_NAME'], 'left')
 //                ->join(['D' => "HR_DISTRICTS"], "E." . HrEmployees::DISTRICT_ID . "=D.DISTRICT_ID", ['DISTRICT_NAME'], 'left')
                 ->join(['VM' => "HR_VDC_MUNICIPALITIES"], "E." . HrEmployees::ADDR_PERM_VDC_MUNICIPALITY_ID . "=VM.VDC_MUNICIPALITY_ID", ['VDC_MUNICIPALITY_NAME'], 'left')
@@ -242,7 +244,8 @@ class EmployeeRepository implements RepositoryInterface {
                 ->join(['DES1' => Designation::TABLE_NAME], "E." . HrEmployees::APP_DESIGNATION_ID . "=DES1." . Designation::DESIGNATION_ID, ['DESIGNATION_TITLE'], 'left')
                 ->join(['P1' => Position::TABLE_NAME], "E." . HrEmployees::APP_POSITION_ID . "=P1." . Position::POSITION_ID, ['POSITION_NAME'], 'left')
                 ->join(['S1' => ServiceType::TABLE_NAME], "E." . HrEmployees::APP_SERVICE_TYPE_ID . "=S1." . ServiceType::SERVICE_TYPE_ID, ['SERVICE_TYPE_NAME'], 'left')
-                ->join(['SE1' => ServiceEventType::TABLE_NAME], "E." . HrEmployees::APP_SERVICE_EVENT_TYPE_ID . "=SE1." . ServiceEventType::SERVICE_EVENT_TYPE_ID, ['SERVICE_EVENT_TYPE_NAME'], 'left');
+                ->join(['SE1' => ServiceEventType::TABLE_NAME], "E." . HrEmployees::APP_SERVICE_EVENT_TYPE_ID . "=SE1." . ServiceEventType::SERVICE_EVENT_TYPE_ID, ['SERVICE_EVENT_TYPE_NAME'], 'left')
+                ;
 
         $select->where(["E.STATUS='E'"]);
 
