@@ -2,9 +2,12 @@
 
 namespace Notification\Controller;
 
+use Application\Factory\HrLogger;
 use Application\Helper\EmailHelper;
 use Application\Helper\Helper;
 use Application\Model\Model;
+use Exception;
+use Html2Text\Html2Text;
 use LeaveManagement\Model\LeaveApply;
 use LeaveManagement\Repository\LeaveApplyRepository;
 use Notification\Model\LeaveRequestNotificationModel;
@@ -66,32 +69,40 @@ class HeadNotification {
     }
 
     private static function sendEmail(NotificationModel $model, int $type, AdapterInterface $adapter, Url $url) {
+
         $emailTemplateRepo = new \Notification\Repository\EmailTemplateRepo($adapter);
         $template = $emailTemplateRepo->fetchById($type);
 
-        $mail = new Message();
-        $mail->setSubject($template['SUBJECT']);
-        $mail->setBody($model->processString($template['DESCRIPTION'], $url));
-        $mail->setFrom('ukesh.gaiju@itnepal.com', $model->fromName);
-        $mail->addTo('somkala.pachhai@itnepal.com', $model->toName);
+        if (null != $template) {
+            $mail = new Message();
+            $mail->setSubject($template['SUBJECT']);
+            $htmlDescription = $model->processString($template['DESCRIPTION'], $url);
+            $html2txt = new Html2Text($htmlDescription);
+            $mail->setBody($html2txt->getText());
 
-        $cc = (array) json_decode($template['CC']);
-        foreach ($cc as $ccObj) {
-            $ccObj = (array) $ccObj;
-            $mail->addCc($ccObj['email'], $ccObj['name']);
+            $mail->setFrom('ukesh.gaiju@itnepal.com', $model->fromName);
+            $mail->addTo('somkala.pachhai@itnepal.com', $model->toName);
+
+            $cc = (array) json_decode($template['CC']);
+            foreach ($cc as $ccObj) {
+                $ccObj = (array) $ccObj;
+                $mail->addCc($ccObj['email'], $ccObj['name']);
+            }
+
+            $bcc = (array) json_decode($template['BCC']);
+            foreach ($bcc as $bccObj) {
+                $bccObj = (array) $bccObj;
+                $mail->addBcc($bccObj['email'], $bccObj['name']);
+            }
+            EmailHelper::sendEmail($mail);
+            HrLogger::getInstance()->info("Email Sent =>" . "From " . $model->fromEmail . " To " . $model->toEmail);
+        } else {
+            throw new Exception('email template not set.');
         }
-
-        $bcc = (array) json_decode($template['BCC']);
-        foreach ($bcc as $bccObj) {
-            $bccObj = (array) $bccObj;
-            $mail->addBcc($bccObj['email'], $bccObj['name']);
-        }
-
-        EmailHelper::sendEmail($mail);
     }
 
     public static function pushNotification(int $eventType, Model $model, AdapterInterface $adapter, Url $url) {
-        ${"fn" . NotificationEvents::LEAVE_APPLIED} = function(LeaveApply $model, AdapterInterface $adapter, Url $url, $type) {
+        ${"fn" . NotificationEvents::LEAVE_APPLIED} = function (LeaveApply $model, AdapterInterface $adapter, Url $url, $type) {
             $leaveApplyRepo = new LeaveApplyRepository($adapter);
             $leaveApplyArray = $leaveApplyRepo->fetchById($model->id)->getArrayCopy();
             $leaveApply = new LeaveApply();
@@ -101,7 +112,7 @@ class HeadNotification {
             $recommdAppModel = $recommdAppRepo->getDetailByEmployeeID($leaveApply->employeeId);
 
             if ($recommdAppModel == null) {
-                return;
+                throw new Exception("recommender and approver not set for employee with id =>" . $leaveApply->employeeId);
             }
             $leaveReqNotiMod = new LeaveRequestNotificationModel();
             self::setNotificationModel($recommdAppModel[RecommendApprove::EMPLOYEE_ID], $recommdAppModel[($type == self::RECOMMENDER) ? RecommendApprove::RECOMMEND_BY : RecommendApprove::APPROVED_BY], $leaveReqNotiMod, $adapter);
@@ -119,7 +130,7 @@ class HeadNotification {
             self::addNotifications($leaveReqNotiMod, $notificationTitle, $notificationDesc, $adapter);
             self::sendEmail($leaveReqNotiMod, 1, $adapter, $url);
         };
-        ${"fn" . NotificationEvents::LEAVE_RECOMMEND_ACCEPTED} = function(LeaveApply $model, AdapterInterface $adapter, Url $url, string $status) {
+        ${"fn" . NotificationEvents::LEAVE_RECOMMEND_ACCEPTED} = function (LeaveApply $model, AdapterInterface $adapter, Url $url, string $status) {
             $leaveApplyRepo = new LeaveApplyRepository($adapter);
             $leaveApplyArray = $leaveApplyRepo->fetchById($model->id)->getArrayCopy();
             $leaveApply = new LeaveApply();
@@ -157,7 +168,7 @@ class HeadNotification {
             self::addNotifications($leaveReqNotiMod, $notificationTitle, $notificationDesc, $adapter);
             self::sendEmail($leaveReqNotiMod, 2, $adapter, $url);
         };
-        ${"fn" . NotificationEvents::LEAVE_APPROVE_ACCEPTED} = function(LeaveApply $model, AdapterInterface $adapter, Url $url, string $status) {
+        ${"fn" . NotificationEvents::LEAVE_APPROVE_ACCEPTED} = function (LeaveApply $model, AdapterInterface $adapter, Url $url, string $status) {
             $leaveApplyRepo = new LeaveApplyRepository($adapter);
             $leaveApplyArray = $leaveApplyRepo->fetchById($model->id)->getArrayCopy();
             $leaveApply = new LeaveApply();
@@ -183,7 +194,7 @@ class HeadNotification {
             self::sendEmail($leaveReqNotiMod, 3, $adapter, $url);
         };
 
-        ${"fn" . NotificationEvents::ATTENDANCE_APPLIED} = function(AttendanceRequestModel $request, AdapterInterface $adapter, Url $url) {
+        ${"fn" . NotificationEvents::ATTENDANCE_APPLIED} = function (AttendanceRequestModel $request, AdapterInterface $adapter, Url $url) {
             $attendReqRepo = new AttendanceRequestRepository($adapter);
             $request->exchangeArrayFromDB($attendReqRepo->fetchById($request->id));
 
@@ -208,7 +219,7 @@ class HeadNotification {
             self::sendEmail($notification, 4, $adapter, $url);
         };
 
-        ${"fn" . NotificationEvents::ATTENDANCE_APPROVE_ACCEPTED} = function(AttendanceRequestModel $request, AdapterInterface $adapter, Url $url, string $status) {
+        ${"fn" . NotificationEvents::ATTENDANCE_APPROVE_ACCEPTED} = function (AttendanceRequestModel $request, AdapterInterface $adapter, Url $url, string $status) {
             $attendanceReqRepo = new AttendanceRequestRepository($adapter);
             $request->exchangeArrayFromDB($attendanceReqRepo->fetchById($request->id));
 
@@ -230,7 +241,7 @@ class HeadNotification {
             self::addNotifications($notification, $title, $desc, $adapter);
             self::sendEmail($notification, 5, $adapter, $url);
         };
-        ${"fn" . NotificationEvents::ADVANCE_APPLIED} = function(AdvanceRequest $request, AdapterInterface $adapter, Url $url, $type) {
+        ${"fn" . NotificationEvents::ADVANCE_APPLIED} = function (AdvanceRequest $request, AdapterInterface $adapter, Url $url, $type) {
 
             $advanceRequestRepo = new AdvanceRequestRepository($adapter);
             $request->exchangeArrayFromDB($advanceRequestRepo->fetchById($request->advanceRequestId));
@@ -253,7 +264,7 @@ class HeadNotification {
             self::addNotifications($notification, $title, $desc, $adapter);
             self::sendEmail($notification, 6, $adapter, $url);
         };
-        ${"fn" . NotificationEvents::ADVANCE_RECOMMEND_ACCEPTED} = function(AdvanceRequest $request, AdapterInterface $adapter, Url $url) {
+        ${"fn" . NotificationEvents::ADVANCE_RECOMMEND_ACCEPTED} = function (AdvanceRequest $request, AdapterInterface $adapter, Url $url) {
             $advanceRequestRepo = new AdvanceRequestRepository($adapter);
             $request->exchangeArrayFromDB($advanceRequestRepo->fetchById($request->advanceRequestId));
 
@@ -276,7 +287,7 @@ class HeadNotification {
             self::addNotifications($notification, $title, $desc, $adapter);
             self::sendEmail($notification, 7, $adapter, $url);
         };
-        ${"fn" . NotificationEvents::ADVANCE_RECOMMEND_REJECTED} = function(AdvanceRequest $request, AdapterInterface $adapter, Url $url) {
+        ${"fn" . NotificationEvents::ADVANCE_RECOMMEND_REJECTED} = function (AdvanceRequest $request, AdapterInterface $adapter, Url $url) {
             $advanceRequestRepo = new AdvanceRequestRepository($adapter);
             $request->exchangeArrayFromDB($advanceRequestRepo->fetchById($request->advanceRequestId));
 
@@ -302,7 +313,7 @@ class HeadNotification {
             self::addNotifications($notification, $title, $desc, $adapter);
             self::sendEmail($notification, 7, $adapter, $url);
         };
-        ${"fn" . NotificationEvents::ADVANCE_APPROVE_ACCEPTED} = function(AdvanceRequest $request, AdapterInterface $adapter, Url $url) {
+        ${"fn" . NotificationEvents::ADVANCE_APPROVE_ACCEPTED} = function (AdvanceRequest $request, AdapterInterface $adapter, Url $url) {
             $advanceRequestRepo = new AdvanceRequestRepository($adapter);
             $request->exchangeArrayFromDB($advanceRequestRepo->fetchById($request->advanceRequestId));
 
@@ -326,7 +337,7 @@ class HeadNotification {
             self::addNotifications($notification, $title, $desc, $adapter);
             self::sendEmail($notification, 8, $adapter, $url);
         };
-        ${"fn" . NotificationEvents::ADVANCE_APPROVE_REJECTED} = function(AdvanceRequest $request, AdapterInterface $adapter, Url $url) {
+        ${"fn" . NotificationEvents::ADVANCE_APPROVE_REJECTED} = function (AdvanceRequest $request, AdapterInterface $adapter, Url $url) {
             $advanceRequestRepo = new AdvanceRequestRepository($adapter);
             $request->exchangeArrayFromDB($advanceRequestRepo->fetchById($request->advanceRequestId));
 
@@ -350,10 +361,10 @@ class HeadNotification {
             self::addNotifications($notification, $title, $desc, $adapter);
             self::sendEmail($notification, 8, $adapter, $url);
         };
-        ${"fn" . NotificationEvents::ADVANCE_CANCELLED} = function(AdvanceRequest $request, AdapterInterface $adapter, Url $url) {
+        ${"fn" . NotificationEvents::ADVANCE_CANCELLED} = function (AdvanceRequest $request, AdapterInterface $adapter, Url $url) {
             
         };
-        ${"fn" . NotificationEvents::TRAVEL_APPLIED} = function(TravelRequest $request, AdapterInterface $adapter, Url $url, $type) {
+        ${"fn" . NotificationEvents::TRAVEL_APPLIED} = function (TravelRequest $request, AdapterInterface $adapter, Url $url, $type) {
             $travelReqRepo = new TravelRequestRepository($adapter);
             $request->exchangeArrayFromDB($travelReqRepo->fetchById($request->travelId));
 
@@ -377,7 +388,7 @@ class HeadNotification {
             self::addNotifications($notification, $title, $desc, $adapter);
             self::sendEmail($notification, 9, $adapter, $url);
         };
-        ${"fn" . NotificationEvents::TRAVEL_RECOMMEND_ACCEPTED} = function(TravelRequest $request, AdapterInterface $adapter, Url $url, string $status) {
+        ${"fn" . NotificationEvents::TRAVEL_RECOMMEND_ACCEPTED} = function (TravelRequest $request, AdapterInterface $adapter, Url $url, string $status) {
             $travelReqRepo = new TravelRequestRepository($adapter);
             $request->exchangeArrayFromDB($travelReqRepo->fetchById($request->travelId));
 
@@ -404,7 +415,7 @@ class HeadNotification {
             self::addNotifications($notification, $title, $desc, $adapter);
             self::sendEmail($notification, 10, $adapter, $url);
         };
-        ${"fn" . NotificationEvents::TRAVEL_APPROVE_ACCEPTED} = function(TravelRequest $request, AdapterInterface $adapter, Url $url, string $status) {
+        ${"fn" . NotificationEvents::TRAVEL_APPROVE_ACCEPTED} = function (TravelRequest $request, AdapterInterface $adapter, Url $url, string $status) {
             $travelReqRepo = new TravelRequestRepository($adapter);
             $request->exchangeArrayFromDB($travelReqRepo->fetchById($request->travelId));
 
@@ -431,10 +442,10 @@ class HeadNotification {
             self::addNotifications($notification, $title, $desc, $adapter);
             self::sendEmail($notification, 11, $adapter, $url);
         };
-        ${"fn" . NotificationEvents::TRAVEL_CANCELLED} = function(TravelRequest $request, AdapterInterface $adapter, Url $url) {
+        ${"fn" . NotificationEvents::TRAVEL_CANCELLED} = function (TravelRequest $request, AdapterInterface $adapter, Url $url) {
             
         };
-        ${"fn" . NotificationEvents::TRAINING_ASSIGNED} = function(TrainingAssign $request, AdapterInterface $adapter, Url $url, $type) {
+        ${"fn" . NotificationEvents::TRAINING_ASSIGNED} = function (TrainingAssign $request, AdapterInterface $adapter, Url $url, $type) {
 
             $auth = new AuthenticationService();
             $assignerId = $auth->getStorage()->read()['employee_id'];
@@ -464,7 +475,7 @@ class HeadNotification {
             self::sendEmail($notification, 12, $adapter, $url);
         };
 
-        ${"fn" . NotificationEvents::LOAN_APPLIED} = function(LoanRequest $request, AdapterInterface $adapter, Url $url, $type) {
+        ${"fn" . NotificationEvents::LOAN_APPLIED} = function (LoanRequest $request, AdapterInterface $adapter, Url $url, $type) {
             $loanReqRepo = new LoanRequestRepository($adapter);
             $request->exchangeArrayFromDB($loanReqRepo->fetchById($request->loanRequestId));
 
@@ -487,7 +498,7 @@ class HeadNotification {
             self::addNotifications($notification, $title, $desc, $adapter);
             self::sendEmail($notification, 13, $adapter, $url);
         };
-        ${"fn" . NotificationEvents::LOAN_RECOMMEND_ACCEPTED} = function(LoanRequest $request, AdapterInterface $adapter, Url $url, string $status) {
+        ${"fn" . NotificationEvents::LOAN_RECOMMEND_ACCEPTED} = function (LoanRequest $request, AdapterInterface $adapter, Url $url, string $status) {
             $loanReqRepo = new LoanRequestRepository($adapter);
             $request->exchangeArrayFromDB($loanReqRepo->fetchById($request->loanRequestId));
 
@@ -512,7 +523,7 @@ class HeadNotification {
             self::addNotifications($notification, $title, $desc, $adapter);
             self::sendEmail($notification, 14, $adapter, $url);
         };
-        ${"fn" . NotificationEvents::LOAN_APPROVE_ACCEPTED} = function(LoanRequest $request, AdapterInterface $adapter, Url $url, string $status) {
+        ${"fn" . NotificationEvents::LOAN_APPROVE_ACCEPTED} = function (LoanRequest $request, AdapterInterface $adapter, Url $url, string $status) {
             $loanReqRepo = new LoanRequestRepository($adapter);
             $request->exchangeArrayFromDB($loanReqRepo->fetchById($request->loanRequestId));
 

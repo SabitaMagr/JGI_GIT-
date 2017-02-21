@@ -25,3 +25,5 @@ payroll features
 23. email notification null check.
 24. email setup on live.
 25. holiday setup branch update.
+26. employee leave apply issue, not enough days message is showing even when the assigned leave days are enough (done)
+27. need code review on leave approve or view on manager service.

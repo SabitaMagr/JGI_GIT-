@@ -17,6 +17,8 @@ use LeaveManagement\Repository\LeaveBalanceRepository;
 use LeaveManagement\Repository\LeaveMasterRepository;
 use Notification\Controller\HeadNotification;
 use Notification\Model\NotificationEvents;
+use PHPExcel;
+use PHPExcel_IOFactory;
 use SelfService\Repository\LeaveRequestRepository;
 use Setup\Model\Branch;
 use Setup\Model\Department;
@@ -30,7 +32,6 @@ use Zend\Db\Adapter\AdapterInterface;
 use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\Form\Element\Select;
 use Zend\Mvc\Controller\AbstractActionController;
-use Zend\View\Model\ViewModel;
 
 class LeaveBalance extends AbstractActionController {
 
@@ -235,7 +236,7 @@ class LeaveBalance extends AbstractActionController {
             return $this->redirect()->toRoute("leavebalance");
         } else {
 
-            $objPHPExcel = new \PHPExcel();
+            $objPHPExcel = new PHPExcel();
             $objPHPExcel->setActiveSheetIndex(0);
 
             $rowCount = 1;
@@ -255,7 +256,7 @@ class LeaveBalance extends AbstractActionController {
                 $rowCount++;
             }
 
-            $objWriter = \PHPExcel_IOFactory::createWriter($objPHPExcel, "Excel2007");
+            $objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, "Excel2007");
             header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
             header('Content-Disposition: attachment;filename="LeaveBalance.xlsx"');
             header('Cache-Control: max-age=0');

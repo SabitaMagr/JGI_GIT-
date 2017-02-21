@@ -1,4 +1,5 @@
 <?php
+
 namespace LeaveManagement\Controller;
 
 use Application\Helper\EntityHelper;
@@ -6,67 +7,61 @@ use Application\Helper\Helper;
 use LeaveManagement\Form\LeaveMasterForm;
 use LeaveManagement\Model\LeaveMaster;
 use LeaveManagement\Repository\LeaveMasterRepository;
+use Zend\Authentication\AuthenticationService;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
-use Zend\Authentication\AuthenticationService;
 
-class LeaveSetup extends AbstractActionController
-{
+class LeaveSetup extends AbstractActionController {
 
     private $repository;
     private $form;
     private $adapter;
     private $employeeId;
 
-    public function __construct(AdapterInterface $adapter)
-    {
+    public function __construct(AdapterInterface $adapter) {
         $this->repository = new LeaveMasterRepository($adapter);
         $this->adapter = $adapter;
         $auth = new AuthenticationService();
         $this->employeeId = $auth->getStorage()->read()['employee_id'];
     }
 
-    public function indexAction()
-    {
+    public function indexAction() {
         $leaveList = $this->repository->fetchAll();
         $leaves = [];
-        
-        $getValue=function($kv){
-          if($kv=='Y'){
-              return 'Yes';
-          }else if($kv=='N'){
-              return 'No';
-          }
+
+        $getValue = function($kv) {
+            if ($kv == 'Y') {
+                return 'Yes';
+            } else if ($kv == 'N') {
+                return 'No';
+            }
         };
-        
-        foreach($leaveList as $leaveRow){
-            array_push($leaves,
-                    [
-                        'LEAVE_ID'=>$leaveRow['LEAVE_ID'],
-                        'LEAVE_CODE'=>$leaveRow['LEAVE_CODE'],
-                        'LEAVE_ENAME'=>$leaveRow['LEAVE_ENAME'],
-                        'ALLOW_HALFDAY'=>$getValue($leaveRow['ALLOW_HALFDAY']),
-                        'DEFAULT_DAYS'=>$getValue($leaveRow['DEFAULT_DAYS']),
-                        'CARRY_FORWARD'=>$getValue($leaveRow['CARRY_FORWARD']),
-                        'CASHABLE'=>$getValue($leaveRow['CASHABLE']),
-                        'IS_SUBSTITUTE'=>$leaveRow['IS_SUBSTITUTE']
+
+        foreach ($leaveList as $leaveRow) {
+            array_push($leaves, [
+                'LEAVE_ID' => $leaveRow['LEAVE_ID'],
+                'LEAVE_CODE' => $leaveRow['LEAVE_CODE'],
+                'LEAVE_ENAME' => $leaveRow['LEAVE_ENAME'],
+                'ALLOW_HALFDAY' => $getValue($leaveRow['ALLOW_HALFDAY']),
+                'DEFAULT_DAYS' => $getValue($leaveRow['DEFAULT_DAYS']),
+                'CARRY_FORWARD' => $getValue($leaveRow['CARRY_FORWARD']),
+                'CASHABLE' => $getValue($leaveRow['CASHABLE']),
+                'IS_SUBSTITUTE' => $leaveRow['IS_SUBSTITUTE']
                     ]
-                    );
+            );
         }
         return Helper::addFlashMessagesToArray($this, ['leaves' => $leaves]);
     }
 
-    public function initializeForm()
-    {
+    public function initializeForm() {
         $leaveMasterForm = new LeaveMasterForm();
         $builder = new AnnotationBuilder();
         $this->form = $builder->createForm($leaveMasterForm);
     }
 
-    public function addAction()
-    {
+    public function addAction() {
         $this->initializeForm();
         $request = $this->getRequest();
         if ($request->isPost()) {
@@ -74,7 +69,7 @@ class LeaveSetup extends AbstractActionController
             if ($this->form->isValid()) {
                 $leaveMaster = new LeaveMaster();
                 $leaveMaster->exchangeArrayFromForm($this->form->getData());
-                $leaveMaster->leaveId = ((int)Helper::getMaxId($this->adapter, LeaveMaster::TABLE_NAME, LeaveMaster::LEAVE_ID)) + 1;
+                $leaveMaster->leaveId = ((int) Helper::getMaxId($this->adapter, LeaveMaster::TABLE_NAME, LeaveMaster::LEAVE_ID)) + 1;
                 $leaveMaster->createdDt = Helper::getcurrentExpressionDate();
                 $leaveMaster->createdBy = $this->employeeId;
 
@@ -85,20 +80,18 @@ class LeaveSetup extends AbstractActionController
             }
         }
         return new ViewModel(Helper::addFlashMessagesToArray(
-            $this,
-            [
-                'form' => $this->form,
-                'customRenderer' => Helper::renderCustomView(),
-                'fiscalYears'=>EntityHelper::getTableKVList($this->adapter,"HR_FISCAL_YEARS","FISCAL_YEAR_ID",["START_DATE","END_DATE"],null,"|")
-            ]
-        )
+                        $this, [
+                    'form' => $this->form,
+                    'customRenderer' => Helper::renderCustomView(),
+                    'fiscalYears' => EntityHelper::getTableKVList($this->adapter, "HR_FISCAL_YEARS", "FISCAL_YEAR_ID", ["START_DATE", "END_DATE"], null, "|")
+                        ]
+                )
         );
     }
 
-    public function editAction()
-    {
+    public function editAction() {
         $this->initializeForm();
-        $id = (int)$this->params()->fromRoute("id");
+        $id = (int) $this->params()->fromRoute("id");
 
         if ($id === 0) {
             return $this->redirect()->toRoute("shift");
@@ -123,20 +116,18 @@ class LeaveSetup extends AbstractActionController
             }
         }
         return new ViewModel(Helper::addFlashMessagesToArray(
-            $this,
-            [
-                'form' => $this->form,
-                'id' => $id,
-                'customRenderer' => Helper::renderCustomView(),
-                'fiscalYears'=>EntityHelper::getTableKVList($this->adapter,"HR_FISCAL_YEARS","FISCAL_YEAR_ID",["START_DATE","END_DATE"],null,"|")
-            ]
-        )
+                        $this, [
+                    'form' => $this->form,
+                    'id' => $id,
+                    'customRenderer' => Helper::renderCustomView(),
+                    'fiscalYears' => EntityHelper::getTableKVList($this->adapter, "HR_FISCAL_YEARS", "FISCAL_YEAR_ID", ["START_DATE", "END_DATE"], null, "|")
+                        ]
+                )
         );
     }
 
-    public function deleteAction()
-    {
-        $id = (int)$this->params()->fromRoute("id");
+    public function deleteAction() {
+        $id = (int) $this->params()->fromRoute("id");
         if (!$id) {
             return $this->redirect()->toRoute('leavesetup');
         }
@@ -144,4 +135,5 @@ class LeaveSetup extends AbstractActionController
         $this->flashmessenger()->addMessage("Leave Successfully Deleted!!!");
         return $this->redirect()->toRoute('leavesetup');
     }
+
 }

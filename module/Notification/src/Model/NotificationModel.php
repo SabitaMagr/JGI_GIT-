@@ -76,11 +76,11 @@ class NotificationModel {
                     break;
             }
 
-            if (is_string($processedVariable)) {
-                return str_replace($this->wrapWithLargeBracket($variable), "'" . $processedVariable . "'", $message);
-            } else {
+//            if (is_string($processedVariable)) {
+//                return str_replace($this->wrapWithLargeBracket($variable), "'" . $processedVariable . "'", $message);
+//            } else {
                 return str_replace($this->wrapWithLargeBracket($variable), $processedVariable, $message);
-            }
+//            }
         } else {
             return $message;
         }

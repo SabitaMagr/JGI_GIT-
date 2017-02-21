@@ -34,7 +34,8 @@
         "phpoffice/phpexcel": "^1.8",
         "intervention/image": "^2.3",
         "phpixie/image": "^3.2",
-        "zendframework/zend-mail": "^2.7"
+        "zendframework/zend-mail": "^2.7",
+        "html2text/html2text": "^4.0"
     },
     "autoload": {
         "psr-0": {
