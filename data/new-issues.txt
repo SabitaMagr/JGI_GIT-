@@ -18,12 +18,12 @@ payroll features
 15. meaningful notifications (remaining)
 16. maintain order by on all queries. (remaining and need testing)
 18. date format conflict between oracle and date picker.
-19. employee list issue on, not showing all employees
+19. employee list issue on, not showing all employees (done)
 20. menu assign issue, notification should be provided to all.
 21. employee list issue due to fk conflict (done)
 22. employee should be able to request past leave.(done)
-23. email notification null check.
-24. email setup on live.
-25. holiday setup branch update.
+23. email notification null check. (done)
+24. email setup on live. (done)
+25. holiday setup branch update. (done)
 26. employee leave apply issue, not enough days message is showing even when the assigned leave days are enough (done)
 27. need code review on leave approve or view on manager service.
