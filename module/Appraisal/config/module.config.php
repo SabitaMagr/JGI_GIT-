@@ -4,6 +4,7 @@ namespace Appraisal;
 
 use Application\Controller\ControllerFactory;
 use Application\Factory\DashBoardFactory;
+use Appraisal\Controller\AppraisalBackup;
 use Appraisal\Controller\Appraisal;
 use Appraisal\Controller\EvaluationAndReview;
 use Appraisal\Controller\PerformanceAppraisal;
@@ -21,7 +22,7 @@ return [
                         'id' => '[0-9]+',
                     ],
                     'defaults' => [
-                        'controller' => Appraisal::class,
+                        'controller' => AppraisalBackup::class,
                         'action' => 'index',
                     ]
                 ],
@@ -131,7 +132,7 @@ return [
     ],
     'controllers' => [
         'factories' => [
-            Appraisal::class => ControllerFactory::class,
+            AppraisalBackup::class => ControllerFactory::class,
             EvaluationAndReview::class => ControllerFactory::class,
             PerformanceAppraisal::class => ControllerFactory::class,
         ],
