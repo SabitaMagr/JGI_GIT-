@@ -47,7 +47,7 @@ class StageRepository implements RepositoryInterface{
             new Expression("STAGE_NDESC AS STAGE_NDESC"),
             new Expression("ORDER_NO AS ORDER_NO")
             ], true);
-        $select->from(["HR_APPRAISAL_STAGE"]);
+        $select->from("HR_APPRAISAL_STAGE");
         
         $select->where(["STATUS='E'"]);
         $select->order("STAGE_EDESC");
