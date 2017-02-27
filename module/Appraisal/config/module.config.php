@@ -10,6 +10,7 @@ use Appraisal\Controller\EvaluationAndReview;
 use Appraisal\Controller\PerformanceAppraisal;
 use Appraisal\Controller\TypeController;
 use Zend\Router\Http\Segment;
+use Appraisal\Controller\StageController;
 
 return [
     'router' => [
@@ -66,6 +67,20 @@ return [
                     ],
                     'defaults'=>[
                         'controller'=>TypeController::class,
+                        'action'=>'index'
+                    ]
+                ],
+            ],
+            'stage'=>[
+                'type'=>Segment::class,
+                'options'=>[
+                    'route'=> '/appraisal/stage[/:action[/:id]]',
+                    'constants'=>[
+                        'action'=>'[a-zA-Z][a-zA-Z0-9_-]*',
+                        'id'=>'[0-9]+',
+                    ],
+                    'defaults'=>[
+                        'controller'=> StageController::class,
                         'action'=>'index'
                     ]
                 ],
@@ -169,15 +184,41 @@ return [
                     ],
                 ],
             ],
-            
-        ]
+        ],
+        'Stage'=>[
+            [
+                'label'=>'Appraisal Stage',
+                'route'=>'stage',
+            ],[
+                'label' => 'Appraisal Stage',
+                'route' => 'stage',
+                'pages' => [
+                        [
+                        'label' => 'List',
+                        'route' => 'stage',
+                        'action' => 'index',
+                    ],
+                        [
+                        'label' => 'Add',
+                        'route' => 'stage',
+                        'action' => 'add',
+                    ],
+                        [
+                        'label' => 'Edit',
+                        'route' => 'stage',
+                        'action' => 'edit',
+                    ],
+                ],
+            ],
+        ],
     ],
     'controllers' => [
         'factories' => [
             AppraisalBackup::class => ControllerFactory::class,
             EvaluationAndReview::class => ControllerFactory::class,
             PerformanceAppraisal::class => ControllerFactory::class,
-            TypeController::class => ControllerFactory::class
+            TypeController::class => ControllerFactory::class,
+            StageController::class => ControllerFactory::class
         ],
     ],
     'view_manager' => [
