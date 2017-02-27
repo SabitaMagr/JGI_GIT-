@@ -1564,7 +1564,7 @@ return array (
           ),
           'defaults' => 
           array (
-            'controller' => 'Appraisal\\Controller\\Appraisal',
+            'controller' => 'Appraisal\\Controller\\AppraisalBackup',
             'action' => 'index',
           ),
         ),
@@ -1601,6 +1601,24 @@ return array (
           'defaults' => 
           array (
             'controller' => 'Appraisal\\Controller\\PerformanceAppraisal',
+            'action' => 'index',
+          ),
+        ),
+      ),
+      'type' => 
+      array (
+        'type' => 'Zend\\Router\\Http\\Segment',
+        'options' => 
+        array (
+          'route' => '/appraisal/type[/:action[/:id]]',
+          'constants' => 
+          array (
+            'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+            'id' => '[0-9]+',
+          ),
+          'defaults' => 
+          array (
+            'controller' => 'Appraisal\\Controller\\TypeController',
             'action' => 'index',
           ),
         ),
@@ -4089,6 +4107,40 @@ return array (
         ),
       ),
     ),
+    'Type' => 
+    array (
+      0 => 
+      array (
+        'label' => 'Appraisal Type',
+        'route' => 'type',
+      ),
+      1 => 
+      array (
+        'label' => 'Appraisal Type',
+        'route' => 'type',
+        'pages' => 
+        array (
+          0 => 
+          array (
+            'label' => 'List',
+            'route' => 'type',
+            'action' => 'index',
+          ),
+          1 => 
+          array (
+            'label' => 'Add',
+            'route' => 'type',
+            'action' => 'add',
+          ),
+          2 => 
+          array (
+            'label' => 'Edit',
+            'route' => 'type',
+            'action' => 'edit',
+          ),
+        ),
+      ),
+    ),
     'loanStatus' => 
     array (
       0 => 
@@ -4529,9 +4581,10 @@ return array (
       'System\\Controller\\DashboardController' => 'Application\\Controller\\ControllerFactory',
       'System\\Controller\\SettingController' => 'Application\\Controller\\ControllerFactory',
       'Training\\Controller\\TrainingAssignController' => 'Application\\Controller\\ControllerFactory',
-      'Appraisal\\Controller\\Appraisal' => 'Application\\Controller\\ControllerFactory',
+      'Appraisal\\Controller\\AppraisalBackup' => 'Application\\Controller\\ControllerFactory',
       'Appraisal\\Controller\\EvaluationAndReview' => 'Application\\Controller\\ControllerFactory',
       'Appraisal\\Controller\\PerformanceAppraisal' => 'Application\\Controller\\ControllerFactory',
+      'Appraisal\\Controller\\TypeController' => 'Application\\Controller\\ControllerFactory',
       'Loan\\Controller\\LoanStatus' => 'Application\\Controller\\ControllerFactory',
       'Loan\\Controller\\LoanApply' => 'Application\\Controller\\ControllerFactory',
       'Advance\\Controller\\AdvanceApply' => 'Application\\Controller\\ControllerFactory',
