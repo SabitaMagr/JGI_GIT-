@@ -57,7 +57,24 @@ class StageRepository implements RepositoryInterface{
     }
 
     public function fetchById($id) {
-        $result = $this->tableGateway->select([Stage::STAGE_ID=>$id]);
+        $sql = new Sql($this->adapter);
+        $select = $sql->select();
+        $select->columns([
+            new Expression("TO_CHAR(START_DATE,'DD-MON-YYYY') AS START_DATE"), 
+            new Expression("TO_CHAR(END_DATE,'DD-MON-YYYY') AS END_DATE"),
+            new Expression("STAGE_ID AS STAGE_ID"),
+            new Expression("STAGE_CODE AS STAGE_CODE"),
+            new Expression("STAGE_EDESC AS STAGE_EDESC"),
+            new Expression("STAGE_NDESC AS STAGE_NDESC"),
+            new Expression("ORDER_NO AS ORDER_NO"),
+            new Expression("REMARKS AS REMARKS")
+            ], true);
+        $select->from("HR_APPRAISAL_STAGE");
+        
+        $select->where(["STAGE_ID=".$id]);
+        $select->order("STAGE_EDESC");
+        $statement = $sql->prepareStatementForSqlObject($select);
+        $result = $statement->execute();
         return $result->current();
     }
 
