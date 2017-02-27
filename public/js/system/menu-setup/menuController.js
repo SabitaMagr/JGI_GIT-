@@ -221,7 +221,6 @@ angularApp.controller('menuUpdateController', function ($scope, $uibModal, $log,
     };
 
 //   END OF MODEL CODE
-
 });
 
 
