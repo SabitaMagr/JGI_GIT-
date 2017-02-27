@@ -18,10 +18,11 @@ $this->headScript()
     <script>
         document.messages =<?php echo json_encode($this->messages); ?>
     </script>
-<?php } ?>
+<?php } 
+?>
 
 <script>
-    document.stages =<?= json_encode($list) ?>;
+    document.stages =<?= json_encode($stages) ?>;
 </script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\Stage')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
