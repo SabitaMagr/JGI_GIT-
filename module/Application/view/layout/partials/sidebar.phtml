@@ -33,6 +33,8 @@
                 $isChildActive = $page->isActive(true);
                 $active = $isActive ? 'active' : ( $isChildActive ? 'active open' : '');
                 $subMenus = generateSubMenus($page);
+                
+               
 
                 $showSubMenus = $page->hasPages() ? "class='nav-link nav-toggle'" : "";
                 $selected = $isActive || $isChildActive ? "<span class='selected'></span>" : "";
@@ -72,7 +74,8 @@
             ?>
 
             <?php foreach ($this->container as $page): ?>
-                <?php echo generateMenus($page); ?>
+                <?php 
+                echo generateMenus($page); ?>
 
             <?php endforeach; ?>
 

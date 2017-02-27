@@ -9,8 +9,8 @@ $departmentName = $form->get('departmentName');
 
 $remarks = $form->get('remarks');
 $parentDepartment = $form->get('parentDepartment');
-
-$parentDepartment->setValueOptions(array_merge(["0" => "none"], $departments));
+$departments1 = ["0" => "none"]+$departments;
+$parentDepartment->setValueOptions($departments1);
 
 $countryId = $form->get('countryId');
 $countryId->setValueOptions($countries);

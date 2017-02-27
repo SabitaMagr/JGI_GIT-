@@ -10,7 +10,7 @@ use Zend\Form\Annotation;
 class LeaveMasterForm
 {
     /**
-     * @Annotion\Type("Zend\Form\Element\Text")
+     * @Annotation\Type("Zend\Form\Element\Text")
      * @Annotation\Required(true)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Leave Code"})
@@ -20,7 +20,7 @@ class LeaveMasterForm
     public $leaveCode;
 
     /**
-     * @Annotion\Type("Zend\Form\Element\Text")
+     * @Annotation\Type("Zend\Form\Element\Text")
      * @Annotation\Required(true)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"leave Ename"})
@@ -30,7 +30,7 @@ class LeaveMasterForm
     public $leaveEname;
 
     /**
-     * @Annotion\Type("Zend\Form\Element\Text")
+     * @Annotation\Type("Zend\Form\Element\Text")
      * @Annotation\Required(false)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Leave Lname"})
@@ -84,7 +84,7 @@ class LeaveMasterForm
     public $cashable;
 
     /**
-     * @Annotion\Type("Zend\Form\Element\Textarea")
+     * @Annotation\Type("Zend\Form\Element\Textarea")
      * @Annotation\Required(false)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Remarks"})
