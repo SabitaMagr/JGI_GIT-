@@ -62,7 +62,7 @@ class StageForm{
      * @Annotation\Required(true)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Order No."})
-     * @Annotation\Attributes({"id":"orderNo","class":"form-control","step":"0.01"})
+     * @Annotation\Attributes({"id":"orderNo","class":"form-control"})
      */
     public $orderNo;
     

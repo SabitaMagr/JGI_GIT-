@@ -12,6 +12,7 @@ use Appraisal\Controller\TypeController;
 use Zend\Router\Http\Segment;
 use Appraisal\Controller\StageController;
 use Appraisal\Controller\HeadingController;
+use Appraisal\Controller\QuestionController;
 
 return [
     'router' => [
@@ -96,6 +97,20 @@ return [
                     ],
                     'defaults'=>[
                         'controller'=> HeadingController::class,
+                        'action'=>'index'
+                    ]
+                ],
+            ],
+            'question'=>[
+                'type'=>Segment::class,
+                'options'=>[
+                    'route'=> '/appraisal/question[/:action[/:id]]',
+                    'constants'=>[
+                        'action'=>'[a-zA-Z][a-zA-Z0-9_-]*',
+                        'id'=>'[0-9]+',
+                    ],
+                    'defaults'=>[
+                        'controller'=> QuestionController::class,
                         'action'=>'index'
                     ]
                 ],
@@ -252,6 +267,32 @@ return [
                 ],
             ],
         ],
+        'Question'=>[
+            [
+                'label'=>'Appraisal Question',
+                'route'=>'question',
+            ],[
+                'label' => 'Appraisal Question',
+                'route' => 'question',
+                'pages' => [
+                        [
+                        'label' => 'List',
+                        'route' => 'question',
+                        'action' => 'index',
+                    ],
+                        [
+                        'label' => 'Add',
+                        'route' => 'question',
+                        'action' => 'add',
+                    ],
+                        [
+                        'label' => 'Edit',
+                        'route' => 'question',
+                        'action' => 'edit',
+                    ],
+                ],
+            ],
+        ],
     ],
     'controllers' => [
         'factories' => [
@@ -260,7 +301,8 @@ return [
             PerformanceAppraisal::class => ControllerFactory::class,
             TypeController::class => ControllerFactory::class,
             StageController::class => ControllerFactory::class,
-            HeadingController::class=> ControllerFactory::class
+            HeadingController::class=> ControllerFactory::class,
+            QuestionController::class=> ControllerFactory::class
         ],
     ],
     'view_manager' => [

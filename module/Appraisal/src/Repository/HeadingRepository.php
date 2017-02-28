@@ -29,9 +29,9 @@ class HeadingRepository implements RepositoryInterface{
 
     public function edit(\Application\Model\Model $model, $id) {
         $data = $model->getArrayCopyForDB();
-        unset($array[Heading::HEADING_ID]);
-        unset($array[Heading::CREATED_DATE]);
-        unset($array[Heading::STATUS]);
+        unset($data[Heading::HEADING_ID]);
+        unset($data[Heading::CREATED_DATE]);
+        unset($data[Heading::STATUS]);
         $this->tableGateway->update($data,[Heading::HEADING_ID=>$id]);
     }
 

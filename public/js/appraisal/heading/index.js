@@ -19,11 +19,11 @@
             pageable: true,
             rowTemplate: kendo.template($("#rowTemplate").html()),
             columns: [
-                {field: "HEADING_CODE", title: "Heading Code",width:150},
-                {field: "HEADING_EDESC", title: "Heading Ename",width:180},
-                {field: "HEADING_NDESC", title: "Heading Nname",width:180},
-                {field: "PERCENTAGE", title: "Percentage",width:80},
-                {field: "APPRAISAL_TYPE_EDESC", title: "Appraisal Type Name",width:180},
+                {field: "HEADING_CODE", title: "Heading Code",width:80},
+                {field: "HEADING_EDESC", title: "Heading Ename",width:120},
+                {field: "HEADING_NDESC", title: "Heading Nname",width:120},
+                {field: "PERCENTAGE", title: "Percentage",width:100},
+                {field: "APPRAISAL_TYPE_EDESC", title: "Appraisal Type Name",width:100},
                 {title: "Action",width:100}
             ],
         });
