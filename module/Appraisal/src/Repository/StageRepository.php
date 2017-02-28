@@ -14,7 +14,7 @@ class StageRepository implements RepositoryInterface{
     private $tableGateway;
     private $adapter;
     
-    public function __construct(\Zend\Db\Adapter\AdapterInterface $adapter) {
+    public function __construct(AdapterInterface $adapter) {
        $this->adapter = $adapter; 
        $this->tableGateway = new TableGateway(Stage::TABLE_NAME,$adapter);
     }

@@ -31,7 +31,7 @@ class StageForm{
     
     /**
      * @Annotation\Type("Zend\Form\Element\Text")
-     * @Annotation\Required(true)
+     * @Annotation\Required(false)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Stage Ndesc"})
      * @Annotation\Attributes({"id":"stageNdesc","class":"form-control"})
@@ -59,7 +59,7 @@ class StageForm{
     
     /**
      * @Annotation\Type("Zend\Form\Element\Number")
-     * @Annotation\Required(false)
+     * @Annotation\Required(true)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Order No."})
      * @Annotation\Attributes({"id":"orderNo","class":"form-control","step":"0.01"})

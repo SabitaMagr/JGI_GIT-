@@ -11,6 +11,7 @@ use Appraisal\Controller\PerformanceAppraisal;
 use Appraisal\Controller\TypeController;
 use Zend\Router\Http\Segment;
 use Appraisal\Controller\StageController;
+use Appraisal\Controller\HeadingController;
 
 return [
     'router' => [
@@ -81,6 +82,20 @@ return [
                     ],
                     'defaults'=>[
                         'controller'=> StageController::class,
+                        'action'=>'index'
+                    ]
+                ],
+            ],
+            'heading'=>[
+                'type'=>Segment::class,
+                'options'=>[
+                    'route'=> '/appraisal/heading[/:action[/:id]]',
+                    'constants'=>[
+                        'action'=>'[a-zA-Z][a-zA-Z0-9_-]*',
+                        'id'=>'[0-9]+',
+                    ],
+                    'defaults'=>[
+                        'controller'=> HeadingController::class,
                         'action'=>'index'
                     ]
                 ],
@@ -211,6 +226,32 @@ return [
                 ],
             ],
         ],
+        'Heading'=>[
+            [
+                'label'=>'Appraisal Heading',
+                'route'=>'heading',
+            ],[
+                'label' => 'Appraisal Heading',
+                'route' => 'heading',
+                'pages' => [
+                        [
+                        'label' => 'List',
+                        'route' => 'heading',
+                        'action' => 'index',
+                    ],
+                        [
+                        'label' => 'Add',
+                        'route' => 'heading',
+                        'action' => 'add',
+                    ],
+                        [
+                        'label' => 'Edit',
+                        'route' => 'heading',
+                        'action' => 'edit',
+                    ],
+                ],
+            ],
+        ],
     ],
     'controllers' => [
         'factories' => [
@@ -218,7 +259,8 @@ return [
             EvaluationAndReview::class => ControllerFactory::class,
             PerformanceAppraisal::class => ControllerFactory::class,
             TypeController::class => ControllerFactory::class,
-            StageController::class => ControllerFactory::class
+            StageController::class => ControllerFactory::class,
+            HeadingController::class=> ControllerFactory::class
         ],
     ],
     'view_manager' => [
