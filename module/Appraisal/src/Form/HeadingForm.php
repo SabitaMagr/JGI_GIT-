@@ -5,48 +5,57 @@ use Zend\Form\Annotation;
 
 /**
  * @Annotation\Hydrator("Zend\Hydrator\ObjectProperty")
- * @Annotation\Name("AppraisalType")
+ * @Annotation\Name("AppraisalHeading")
  */
 
-class TypeForm{
+class HeadingForm{
     /**
      * @Annotation\Type("Zend\Form\Element\Text")
      * @Annotation\Required(true)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
-     * @Annotation\Options({"label":"Appraisal Type Code"})
-     * @Annotation\Attributes({"id":"appraisalTypeCode","class":"form-control"})
+     * @Annotation\Options({"label":"Heading Code"})
+     * @Annotation\Attributes({"id":"headingCode","class":"form-control"})
      * @Annotation\Validator({"name":"StringLength", "options":{"max":"15"}})
      */
-    public $appraisalTypeCode;
+    public $headingCode;
     
     /**
      * @Annotation\Type("Zend\Form\Element\Text")
      * @Annotation\Required(true)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
-     * @Annotation\Options({"label":"Appraisal Type Edesc"})
-     * @Annotation\Attributes({"id":"appraisalTypeEdesc","class":"form-control"})
+     * @Annotation\Options({"label":"Heading Edesc"})
+     * @Annotation\Attributes({"id":"headingEdesc","class":"form-control"})
      * @Annotation\Validator({"name":"StringLength", "options":{"max":"100"}})
      */
-    public $appraisalTypeEdesc;
+    public $headingEdesc;
     
     /**
      * @Annotation\Type("Zend\Form\Element\Text")
      * @Annotation\Required(false)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
-     * @Annotation\Options({"label":"Appraisal Type Ndesc"})
-     * @Annotation\Attributes({"id":"appraisalTypeNdesc","class":"form-control"})
+     * @Annotation\Options({"label":"Heading Ndesc"})
+     * @Annotation\Attributes({"id":"headingNdesc","class":"form-control"})
      * @Annotation\Validator({"name":"StringLength", "options":{"max":"400"}})
      */
-    public $appraisalTypeNdesc;
+    public $headingNdesc;
+    
+    /**
+     * @Annotation\Type("Zend\Form\Element\Number")
+     * @Annotation\Required(false)
+     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
+     * @Annotation\Options({"label":"Percentage"})
+     * @Annotation\Attributes({"id":"percentage","class":"form-control","step":"0.01"})
+     */
+    public $percentage;
     
     /**
      * @Annotation\Type("Zend\Form\Element\Select")
-     * @Annotation\Required(false)
+     * @Annotation\Required(true)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
-     * @Annotation\Options({"disable_inarray_validator":"true","label":"Service Type"})
-     * @Annotation\Attributes({"id":"serviceTypeId","class":"form-control"})
+     * @Annotation\Options({"disable_inarray_validator":"true","label":"Appraisal Type"})
+     * @Annotation\Attributes({"id":"appraisalTypeId","class":"form-control"})
      */
-    public $serviceTypeId;
+    public $appraisalTypeId;
     
     /**
      * @Annotation\Type("Zend\Form\Element\Textarea")

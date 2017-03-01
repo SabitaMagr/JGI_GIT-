@@ -14,7 +14,7 @@ class StageRepository implements RepositoryInterface{
     private $tableGateway;
     private $adapter;
     
-    public function __construct(\Zend\Db\Adapter\AdapterInterface $adapter) {
+    public function __construct(AdapterInterface $adapter) {
        $this->adapter = $adapter; 
        $this->tableGateway = new TableGateway(Stage::TABLE_NAME,$adapter);
     }
@@ -29,9 +29,9 @@ class StageRepository implements RepositoryInterface{
 
     public function edit(\Application\Model\Model $model, $id) {
         $data = $model->getArrayCopyForDB();
-        unset($array[Stage::STAGE_ID]);
-        unset($array[Stage::CREATED_DATE]);
-        unset($array[Stage::STATUS]);
+        unset($data[Stage::STAGE_ID]);
+        unset($data[Stage::CREATED_DATE]);
+        unset($data[Stage::STATUS]);
         $this->tableGateway->update($data,[Stage::STAGE_ID=>$id]);
     }
 

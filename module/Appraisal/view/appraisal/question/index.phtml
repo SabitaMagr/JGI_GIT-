@@ -10,7 +10,7 @@ $this->headLink()
 $this->headScript()
         ->appendFile($this->basePath('jszip/dist/jszip.min.js'))
         ->appendFile($this->basePath('telerik_kendoui/js/kendo.all.min.js'))
-        ->appendFile($this->basePath('js/appraisal/type/index.js'))
+        ->appendFile($this->basePath('js/appraisal/question/index.js'))
         ->appendFile($this->basePath('assets/global/plugins/bootstrap-confirmation/bootstrap-confirmation.min.js'));
 ?>
 
@@ -18,13 +18,14 @@ $this->headScript()
     <script>
         document.messages =<?php echo json_encode($this->messages); ?>
     </script>
-<?php } ?>
+<?php } 
+?>
 
 <script>
-    document.types =<?= json_encode($list) ?>;
+    document.questions =<?= json_encode($questions) ?>;
 </script>
 <div class="page-bar">
-    <?= $this->navigation('Zend\Navigation\Type')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
+    <?= $this->navigation('Zend\Navigation\Question')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
 
 <div class="margin-top-20">
@@ -32,7 +33,7 @@ $this->headScript()
         <div class="row">
             <div class="col-md-6">
                 <div class="btn-group">
-                    <a href="<?= $this->url('type', ['action' => 'add']) ?>" id="sample_editable_1_new"
+                    <a href="<?= $this->url('question', ['action' => 'add']) ?>" id="sample_editable_1_new"
                        class="btn green"> Add New <i class="fa fa-plus"></i>
 <!--                        <i class="fa fa-plus"></i>-->
                     </a>
@@ -52,30 +53,36 @@ $this->headScript()
             </div>
         </div>
     </div>
-    <div id="appraisalTypeTable">
+    <div id="appraisalQuestionTable">
 
     </div>
     <script id="rowTemplate" type="text/x-kendo-tmpl">
         <tr>
         <td>    
-        #: (APPRAISAL_TYPE_CODE == null) ? '-' : APPRAISAL_TYPE_CODE #
+        #: (QUESTION_CODE == null) ? '-' : QUESTION_CODE #
         </td>
         <td>    
-        #: (APPRAISAL_TYPE_EDESC == null) ? '-' : APPRAISAL_TYPE_EDESC #
+        #: (QUESTION_EDESC == null) ? '-' : QUESTION_EDESC #
         </td>
         <td>    
-        #: (APPRAISAL_TYPE_NDESC == null) ? '-' : APPRAISAL_TYPE_NDESC #
+        #: (QUESTION_NDESC == null) ? '-' : QUESTION_NDESC #
         </td>
         <td>    
-        #: (SERVICE_TYPE_NAME == null) ? '-' : SERVICE_TYPE_NAME #
+        #: (ANSWER_TYPE == null) ? '-' : ANSWER_TYPE #
+        </td>
+        <td>    
+        #: (ORDER_NO == null) ? '-' : ORDER_NO #
+        </td>
+        <td>    
+        #: (HEADING_EDESC == null) ? '-' : HEADING_EDESC #
         </td>
         <td>
         <a class="btn-edit"
-        href="<?= $this->url("type", ["action" => "edit"]); ?>/#:APPRAISAL_TYPE_ID#" style="height:17px;">
+        href="<?= $this->url("question", ["action" => "edit"]); ?>/#:QUESTION_ID#" style="height:17px;">
         <i class="fa fa-edit"></i>
         </a>
         <a class="btn-delete confirmation"
-        href="<?= $this->url("type", ["action" => "delete"]); ?>/#:APPRAISAL_TYPE_ID#" id="bs_#:APPRAISAL_TYPE_ID #" style="height:17px;"> 
+        href="<?= $this->url("question", ["action" => "delete"]); ?>/#:QUESTION_ID#" id="bs_#:QUESTION_ID #" style="height:17px;"> 
         <i class="fa fa-trash-o"></i></a>
         </a>
         </td>
