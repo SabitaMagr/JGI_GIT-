@@ -143,18 +143,18 @@ class WebServiceController extends AbstractActionController
                     $filtersId = $postedData->data;
                     $branchIds = $filtersId['branchIds'];
                     $data = $filtersId['dataArray'];
-                    $holidayModel->holidayCode=$data['holidayCode'];
+                    $holidayModel->holidayCode=(isset($data['holidayCode'])? $data['holidayCode'] : "" );
                     if($data['genderId']=='-1'){
                         $holidayModel->genderId = "";
                     }else {
                         $holidayModel->genderId = $data['genderId'];
                     }
-                    $holidayModel->holidayEname=$data['holidayEname'];
-                    $holidayModel->holidayLname=$data['holidayLname'];
-                    $holidayModel->startDate=$data['startDate'];
-                    $holidayModel->endDate=$data['endDate'];
+                    $holidayModel->holidayEname=(isset($data['holidayEname'])? $data['holidayEname'] : "" );
+                    $holidayModel->holidayLname=(isset($data['holidayLname'])? $data['holidayLname'] : "" );
+                    $holidayModel->startDate=(isset($data['startDate'])? $data['startDate'] : "" );
+                    $holidayModel->endDate=(isset($data['endDate'])? $data['endDate'] : "" );
                     $holidayModel->halfday=$data['halfday'];
-                    $holidayModel->remarks=$data['remarks'];
+                    $holidayModel->remarks=(isset($data['remarks'])? $data['remarks'] : "" );
                     $holidayModel->modifiedDt = Helper::getcurrentExpressionDate();
                     $holidayModel->modifiedBy = $this->loggedInEmployeeId;
                     $resultSet = $holidayRepository->edit($holidayModel,$filtersId['holidayId']);
