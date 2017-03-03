@@ -1,5 +1,5 @@
 angular.module('hris', [])
-        .controller('questionOptionController', function ($scope, $http) {
+        .controller('questionOptionController', function ($scope, $http,$window) {
             $scope.headings = document.headings;
             $scope.answerTypeList = document.answerTypes;
             $scope.questionOptionList = [];
@@ -98,6 +98,19 @@ angular.module('hris', [])
             $scope.submitForm = function () {
                 
                 if ($scope.appraisalQuestionForm.$valid) {
+                    console.log("hellow");
+                    var err = [];
+                    $(".errorMsg").each(function () {
+                        var erroMsg = $.trim($(this).html());
+                        if (erroMsg !== "") {
+                            err.push("error");
+                        }
+                    });
+                    if (err.length > 0)
+                    {
+                        return;
+                    }
+                    
                     $scope.optionListEmpty = 1;
                     if ($scope.questionOptionList.length == 1 && angular.equals($scope.questionOptionTemplate, $scope.questionOptionList[0])) {
                         console.log("app log", "The form is not filled");
@@ -113,7 +126,10 @@ angular.module('hris', [])
                     }).then(function (success) {
                         $scope.$apply(function () {
                             console.log(success.data);
-                            window.toastr.success(success.data, "Notifications");
+                            $window.location.href =  document.urlIndex;
+                            setTimeout(function() {
+                               window.toastr.success(params, "Notifications");
+                            }, 3000);
                         });
                     }, function (failure) {
                         console.log(failure);

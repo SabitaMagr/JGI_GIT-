@@ -44,6 +44,7 @@ $form->prepare();
     document.urlDeleteQuestionOption = '<?= $this->url("question",["action"=> "deleteQuestionOption"]) ?>';
     document.headings = <?= json_encode($headings);?>;
     document.answerTypes = <?= json_encode($answerTypeList); ?>;
+    document.urlIndex='<?= $this->url("question",["action"=>"index"]) ?>';
 </script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\Question')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
