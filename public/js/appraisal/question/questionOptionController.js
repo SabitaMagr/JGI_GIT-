@@ -113,20 +113,22 @@ angular.module('hris', [])
                         console.log("app log", "The form is not filled");
                         $scope.optionListEmpty = 0;
                     }
+                    console.log(questionId);
                     window.app.pullDataById(document.urlSubmit, {
                         data: {
                             questionOptionList: $scope.questionOptionList,
                             questionDetail: $scope.question,
-                            questionId:questionId,
+                            questionId:parseInt(questionId),
                             optionListEmpty:parseInt($scope.optionListEmpty)
                         },
                     }).then(function (success) {
                         $scope.$apply(function () {
                             console.log(success.data);
                             $window.location.href =  document.urlIndex;
-                            setTimeout(function() {
-                               window.toastr.success(params, "Notifications");
-                            }, 3000);
+                            $window.localStorage.setItem("msg",success.data);
+//                            setTimeout(function() {
+//                               window.toastr.success(params, "Notifications");
+//                            }, 3000);
                         });
                     }, function (failure) {
                         console.log(failure);

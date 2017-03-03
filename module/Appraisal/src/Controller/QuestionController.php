@@ -168,7 +168,7 @@ class QuestionController extends AbstractActionController{
             $questionOptionList = $postRecord['data']['questionOptionList'];
             $questionDetail = $postRecord['data']['questionDetail'];
             $optionListEmpty = $postRecord['data']['optionListEmpty'];
-            $questionId = $postRecord['data']['questionId'];
+            $questionId = (int)$postRecord['data']['questionId'];
             
             $question->status = 'E';
             $question->questionCode = $questionDetail['questionCode'];
@@ -182,7 +182,7 @@ class QuestionController extends AbstractActionController{
             $question->appraiseeRating = $questionDetail['appraiseeRating'];
             $question->appraiserRating = $questionDetail['appraiserRating'];
             $question->reviewerRating = $questionDetail['reviewerRating'];
-            $question->orderNo = $questionDetail['orderNo'];
+            $question->orderNo = (int)$questionDetail['orderNo'];
             $question->remarks = $questionDetail['remarks'];
             $question->minValue = $questionDetail['minValue'];
             $question->maxValue = $questionDetail['maxValue'];

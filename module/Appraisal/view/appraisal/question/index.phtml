@@ -10,6 +10,7 @@ $this->headLink()
 $this->headScript()
         ->appendFile($this->basePath('jszip/dist/jszip.min.js'))
         ->appendFile($this->basePath('telerik_kendoui/js/kendo.all.min.js'))
+        ->appendFile($this->basePath('js/angular.min.js'))
         ->appendFile($this->basePath('js/appraisal/question/index.js'))
         ->appendFile($this->basePath('assets/global/plugins/bootstrap-confirmation/bootstrap-confirmation.min.js'));
 ?>
@@ -28,7 +29,7 @@ $this->headScript()
     <?= $this->navigation('Zend\Navigation\Question')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
 
-<div class="margin-top-20">
+<div class="margin-top-20" ng-app="hris" ng-controller="questionList">
     <div class="table-toolbar">
         <div class="row">
             <div class="col-md-6">
