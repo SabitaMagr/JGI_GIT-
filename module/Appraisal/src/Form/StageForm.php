@@ -23,7 +23,7 @@ class StageForm{
      * @Annotation\Type("Zend\Form\Element\Text")
      * @Annotation\Required(true)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
-     * @Annotation\Options({"label":"Stage Edesc"})
+     * @Annotation\Options({"label":"Stage Name (in Eng.)"})
      * @Annotation\Attributes({"id":"stageEdesc","class":"form-control"})
      * @Annotation\Validator({"name":"StringLength", "options":{"max":"100"}})
      */
@@ -33,7 +33,7 @@ class StageForm{
      * @Annotation\Type("Zend\Form\Element\Text")
      * @Annotation\Required(false)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
-     * @Annotation\Options({"label":"Stage Ndesc"})
+     * @Annotation\Options({"label":"Stage Name (in Nep.)"})
      * @Annotation\Attributes({"id":"stageNdesc","class":"form-control"})
      * @Annotation\Validator({"name":"StringLength", "options":{"max":"100"}})
      */

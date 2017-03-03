@@ -113,15 +113,7 @@ $form->prepare();
                                         </label>
                                     </div>
                                 </td>
-                                <td width="30%">
-                                    <input type="text" size="2" placeholder="option code" class="form-control" name="optionCode_{{questionOption.checkbox}}"  ng-model="questionOption.optionCode" value="" required="required"/>
-                                    <div ng-show="appraisalQuestionForm.$submitted || appraisalQuestionForm.optionCode_{{questionOption.checkbox}}.$touched">
-                                        <ul ng-show="appraisalQuestionForm.optionCode_{{questionOption.checkbox}}.$error.required" class="help-block error">
-                                            <li>Option Code is required.</li>
-                                        </ul>
-                                    </div>
-                                </td>
-                                <td width="30%">
+                                <td width="45%" style="padding:5px;">
                                     <input type="text" size="3" placeholder="option edesc" class="form-control" name="optionEdesc_{{questionOption.checkbox}}" ng-model="questionOption.optionEdesc" value="" required="required"/>
                                     <div ng-show="appraisalQuestionForm.$submitted || appraisalQuestionForm.optionEdesc_{{questionOption.checkbox}}.$touched">
                                         <ul ng-show="appraisalQuestionForm.optionEdesc_{{questionOption.checkbox}}.$error.required" class="help-block error">
@@ -129,13 +121,8 @@ $form->prepare();
                                         </ul>
                                     </div>
                                 </td>
-                                <td width="30%">
-                                    <input type="text" size="3" placeholder="option ndesc" class="form-control" name="optionNdesc_{{questionOption.checkbox}}" ng-model="questionOption.optionNdesc" value="" required="required"/>
-                                    <div ng-show="appraisalQuestionForm.$submitted || appraisalQuestionForm.optionNdesc_{{questionOption.checkbox}}.$touched">
-                                        <ul ng-show="appraisalQuestionForm.optionNdesc_{{questionOption.checkbox}}.$error.required" class="help-block error">
-                                            <li>Option Ndesc is required.</li>
-                                        </ul>
-                                    </div>
+                                <td width="45%" style="padding:5px;">
+                                    <input type="text" size="3" placeholder="option ndesc" class="form-control" name="optionNdesc_{{questionOption.checkbox}}" ng-model="questionOption.optionNdesc" value=""/>
                                 </td>
                             </tr>
                             <tr height="30">

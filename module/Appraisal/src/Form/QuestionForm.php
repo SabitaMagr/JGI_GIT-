@@ -24,7 +24,7 @@ class QuestionForm{
      * @Annotation\Type("Zend\Form\Element\Text")
      * @Annotation\Required(true)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
-     * @Annotation\Options({"label":"Question Edesc"})
+     * @Annotation\Options({"label":"Question Name (in Eng.)"})
      * @Annotation\Attributes({"id":"questionEdesc","class":"form-control"})
      * @Annotation\Validator({"name":"StringLength", "options":{"max":"100"}})
      */
@@ -34,7 +34,7 @@ class QuestionForm{
      * @Annotation\Type("Zend\Form\Element\Text")
      * @Annotation\Required(false)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
-     * @Annotation\Options({"label":"Question Ndesc"})
+     * @Annotation\Options({"label":"Question Name (in Nep.)"})
      * @Annotation\Attributes({"id":"questionNdesc","class":"form-control"})
      * @Annotation\Validator({"name":"StringLength", "options":{"max":"400"}})
      */

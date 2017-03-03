@@ -6,6 +6,7 @@ use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Sql\Sql;
 use Zend\Db\Sql\Expression;
 use Appraisal\Model\QuestionOption;
+use Zend\Db\Sql\Select;
 use Appraisal\Model\Question;
 use Application\Repository\RepositoryInterface;
 
@@ -44,6 +45,10 @@ class QuestionOptionRepository implements RepositoryInterface{
         
     }
     public function fetchByQuestionId($questionId){
-        return $this->tableGateway->select([QuestionOption::QUESTION_ID=>$questionId, QuestionOption::STATUS=>'E']);
+        //return $this->tableGateway->select([QuestionOption::QUESTION_ID=>$questionId, QuestionOption::STATUS=>'E']);
+        return $rowset= $this->tableGateway->select(function(Select $select) use($questionId) {
+            $select->where([QuestionOption::STATUS=>'E',QuestionOption::QUESTION_ID=>$questionId]);
+            $select->order(QuestionOption::OPTION_ID." ASC");
+        });
     }
 }

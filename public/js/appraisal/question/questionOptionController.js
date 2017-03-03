@@ -5,7 +5,6 @@ angular.module('hris', [])
             $scope.questionOptionList = [];
             $scope.questionOptionTemplate = {
                 optionId : 0,
-                optionCode: "",
                 optionEdesc: "",
                 optionNdesc: "",
                 checkbox: "checkboxq0",
@@ -61,7 +60,6 @@ angular.module('hris', [])
                                 for (var j = 0; j < num; j++) {
                                     $scope.questionOptionList.push(angular.copy({
                                         optionId: tempData.questionOptionList[j].OPTION_ID,
-                                        optionCode: tempData.questionOptionList[j].OPTION_CODE,
                                         optionEdesc: tempData.questionOptionList[j].OPTION_EDESC,
                                         optionNdesc: tempData.questionOptionList[j].OPTION_NDESC,
                                         checkbox: "checkboxq" + j,
@@ -86,7 +84,6 @@ angular.module('hris', [])
             $scope.addQuestionOption = function () {
                 $scope.questionOptionList.push(angular.copy({
                     optionId:0,
-                    optionCode: "",
                     optionEdesc: "",
                     optionNdesc: "",
                     checkbox: "checkboxq"+$scope.counter,

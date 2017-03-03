@@ -209,7 +209,6 @@ class QuestionController extends AbstractActionController{
                     $questionIdNew = $question->questionId;
                     $questionOptionModel->questionId = ($questionId!=0) ? $questionId : $questionIdNew;
                     $questionOptionModel->status = 'E';
-                    $questionOptionModel->optionCode = $questionOption['optionCode'];
                     $questionOptionModel->optionEdesc = $questionOption['optionEdesc'];
                     $questionOptionModel->optionNdesc = $questionOption['optionNdesc'];
                     
@@ -217,6 +216,7 @@ class QuestionController extends AbstractActionController{
                     if($questionOptionId==0){
                         $questionOptionModel->optionId = ((int)Helper::getMaxId($this->adapter, $questionOptionModel::TABLE_NAME, $questionOptionModel::OPTION_ID))+1;
                         $questionOptionModel->createdBy = $this->employeeId;
+                        $questionOptionModel->optionCode = $questionOptionModel->optionId;
                         $questionOptionModel->createdDate = Helper::getcurrentExpressionDate();
                         $questionOptionModel->approvedDate = Helper::getcurrentExpressionDate();
                         $questionOptionModel->companyId = $employeeDetail['COMPANY_ID'];
