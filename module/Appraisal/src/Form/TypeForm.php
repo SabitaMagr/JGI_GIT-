@@ -23,7 +23,7 @@ class TypeForm{
      * @Annotation\Type("Zend\Form\Element\Text")
      * @Annotation\Required(true)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
-     * @Annotation\Options({"label":"Appraisal Type Edesc"})
+     * @Annotation\Options({"label":"Appraisal Type (in Eng.)"})
      * @Annotation\Attributes({"id":"appraisalTypeEdesc","class":"form-control"})
      * @Annotation\Validator({"name":"StringLength", "options":{"max":"100"}})
      */
@@ -33,7 +33,7 @@ class TypeForm{
      * @Annotation\Type("Zend\Form\Element\Text")
      * @Annotation\Required(false)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
-     * @Annotation\Options({"label":"Appraisal Type Ndesc"})
+     * @Annotation\Options({"label":"Appraisal Type (in Nep.)"})
      * @Annotation\Attributes({"id":"appraisalTypeNdesc","class":"form-control"})
      * @Annotation\Validator({"name":"StringLength", "options":{"max":"400"}})
      */

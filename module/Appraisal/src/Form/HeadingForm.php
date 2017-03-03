@@ -23,7 +23,7 @@ class HeadingForm{
      * @Annotation\Type("Zend\Form\Element\Text")
      * @Annotation\Required(true)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
-     * @Annotation\Options({"label":"Heading Edesc"})
+     * @Annotation\Options({"label":"Heading Name (in Eng.)"})
      * @Annotation\Attributes({"id":"headingEdesc","class":"form-control"})
      * @Annotation\Validator({"name":"StringLength", "options":{"max":"100"}})
      */
@@ -33,7 +33,7 @@ class HeadingForm{
      * @Annotation\Type("Zend\Form\Element\Text")
      * @Annotation\Required(false)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
-     * @Annotation\Options({"label":"Heading Ndesc"})
+     * @Annotation\Options({"label":"Heading Name (in Nep.)"})
      * @Annotation\Attributes({"id":"headingNdesc","class":"form-control"})
      * @Annotation\Validator({"name":"StringLength", "options":{"max":"400"}})
      */

@@ -12,6 +12,9 @@ use Application\Helper\Helper;
 use Application\Helper\EntityHelper;
 use Appraisal\Model\Heading;
 use Setup\Repository\EmployeeRepository;
+use Application\Custom\CustomViewModel;
+use Appraisal\Model\QuestionOption;
+use Appraisal\Repository\QuestionOptionRepository;
 
 class QuestionController extends AbstractActionController{
     private $adapter;
@@ -123,11 +126,126 @@ class QuestionController extends AbstractActionController{
     }
     public function deleteAction(){
         $id = $this->params()->fromRoute('id');
+        $questionOptionRepo = new QuestionOptionRepository($this->adapter);
         if($id===0){
             $this->redirect()->toRoute('question');
         }
         $this->repository->delete($id);
+        $questionOptionRepo->deleteByQuestionId($id);
         $this->flashmessenger()->addMessage("Appraisal Question Successfully Deleted!!!");
         return $this->redirect()->toRoute("question");
+    }
+    public function pullQuestionDetailAction(){
+        $request = $this->getRequest();
+        if($request->isPost()){
+            $questionOptionRepo = new QuestionOptionRepository($this->adapter);
+            
+            $postRecord = $request->getPost()->getArrayCopy();
+            $questionId = $postRecord['data']['questionId'];
+            $questionDetail = $this->repository->fetchById($questionId)->getArrayCopy();
+            $questionOptionResult = $questionOptionRepo->fetchByQuestionId($questionId);
+            $questionOptionList = [];
+            foreach($questionOptionResult as $questionOptionRow){
+                array_push($questionOptionList, $questionOptionRow);
+            }
+            $response = [
+                "success"=>true,"data"=>[
+                "questionDetail"=>$questionDetail,
+                "questionOptionList"=>$questionOptionList
+            ]];
+            return new CustomViewModel($response);
+        }
+    }
+    
+    public function submitAction(){
+        $request = $this->getRequest();
+        if($request->isPost()){
+            $question = new Question();
+            $employeeRepo = new EmployeeRepository($this->adapter);
+            $questionOptionRepo = new QuestionOptionRepository($this->adapter);
+            $employeeDetail = $employeeRepo->fetchById($this->employeeId);
+            $postRecord = $request->getPost()->getArrayCopy();
+            $questionOptionList = $postRecord['data']['questionOptionList'];
+            $questionDetail = $postRecord['data']['questionDetail'];
+            $optionListEmpty = $postRecord['data']['optionListEmpty'];
+            $questionId = $postRecord['data']['questionId'];
+            
+            $question->status = 'E';
+            $question->questionCode = $questionDetail['questionCode'];
+            $question->questionEdesc = $questionDetail['questionEdesc'];
+            $question->questionNdesc = $questionDetail['questionNdesc'];
+            $question->answerType = $questionDetail['answerType'];
+            $question->headingId = $questionDetail['headingId'];
+            $question->appraiseeFlag = $questionDetail['appraiseeFlag'];
+            $question->appraiserFlag = $questionDetail['appraiserFlag'];
+            $question->reviewerFlag = $questionDetail['reviewerFlag'];
+            $question->appraiseeRating = $questionDetail['appraiseeRating'];
+            $question->appraiserRating = $questionDetail['appraiserRating'];
+            $question->reviewerRating = $questionDetail['reviewerRating'];
+            $question->orderNo = $questionDetail['orderNo'];
+            $question->remarks = $questionDetail['remarks'];
+            $question->minValue = $questionDetail['minValue'];
+            $question->maxValue = $questionDetail['maxValue'];
+            
+            if($questionId==0){
+                $question->questionId = ((int)Helper::getMaxId($this->adapter, Question::TABLE_NAME, Question::QUESTION_ID))+1;
+                $question->createdBy = $this->employeeId;
+                $question->createdDate = Helper::getcurrentExpressionDate();
+                $question->approvedDate = Helper::getcurrentExpressionDate();
+                $question->companyId = $employeeDetail['COMPANY_ID'];
+                $question->branchId = $employeeDetail['BRANCH_ID'];
+                $this->repository->add($question);
+                $msg = "Appraisal Quesstion Successfully Added!!!";
+            }else{
+                $question->modifiedBy = $this->employeeId;
+                $question->modifiedDate = Helper::getcurrentExpressionDate();
+                $this->repository->edit($question, $questionId);
+                $msg = "Appraisal Question Successfully Updated!!";
+            }
+            
+            if($optionListEmpty==1){
+                foreach($questionOptionList as $questionOption){
+                    $questionOptionModel = new QuestionOption();
+                    $questionIdNew = $question->questionId;
+                    $questionOptionModel->questionId = ($questionId!=0) ? $questionId : $questionIdNew;
+                    $questionOptionModel->status = 'E';
+                    $questionOptionModel->optionEdesc = $questionOption['optionEdesc'];
+                    $questionOptionModel->optionNdesc = $questionOption['optionNdesc'];
+                    
+                    $questionOptionId = $questionOption['optionId'];
+                    if($questionOptionId==0){
+                        $questionOptionModel->optionId = ((int)Helper::getMaxId($this->adapter, $questionOptionModel::TABLE_NAME, $questionOptionModel::OPTION_ID))+1;
+                        $questionOptionModel->createdBy = $this->employeeId;
+                        $questionOptionModel->optionCode = $questionOptionModel->optionId;
+                        $questionOptionModel->createdDate = Helper::getcurrentExpressionDate();
+                        $questionOptionModel->approvedDate = Helper::getcurrentExpressionDate();
+                        $questionOptionModel->companyId = $employeeDetail['COMPANY_ID'];
+                        $questionOptionModel->branchId = $employeeDetail['BRANCH_ID'];
+                        $questionOptionRepo->add($questionOptionModel);
+                    }else{
+                        $questionOptionModel->modifiedBy = $this->employeeId;
+                        $questionOptionModel->modifiedDate = Helper::getcurrentExpressionDate();
+                        $questionOptionRepo->edit($questionOptionModel,$questionOptionId);
+                    }
+                }
+            }
+            $response = ["success"=>true,"data"=> $msg];
+            
+        }else{
+            $response = ["success"=>false];
+        }
+        return new CustomViewModel($response);
+    }
+    public function deleteQuestionOptionAction(){
+        $request = $this->getRequest();
+        if($request->isPost()){
+            $postRecord = $request->getPost()->getArrayCopy();
+            $optionId = $postRecord['data']['optionId'];
+            
+            $questionOptionRepo = new QuestionOptionRepository($this->adapter);
+            $result = $questionOptionRepo->delete($optionId);
+            $response = ["success"=>true,"data"=>["msg"=>"Question Option Successfully Deleted!!!"]];
+        }
+        return new CustomViewModel($response);
     }
 }

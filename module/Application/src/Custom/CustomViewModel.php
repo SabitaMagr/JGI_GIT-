@@ -11,5 +11,4 @@ class CustomViewModel extends ViewModel {
         $this->setTerminal(true);
         $this->setTemplate('layout/json');
     }
-
 }

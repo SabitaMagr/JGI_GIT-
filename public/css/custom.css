@@ -1533,4 +1533,22 @@ ul#roleList li {
   float: left;
   border-bottom-width: 0;
 }
+#questionOptionWrap{
+    margin-top:1%; 
+    border:1px solid #e5e5e5; 
+    padding: 7px;
+}
+
+#plushIcon{
+    height: 26px !important;
+    padding: 5px !important;
+    margin-bottom: 4px !important;
+}
+ul#optionList{
+   list-style-position: inside;
+}
+ul#optionList li{
+  list-style: none;  
+  
+}
 /*test*/

@@ -20,9 +20,9 @@
             rowTemplate: kendo.template($("#rowTemplate").html()),
             columns: [
                 {field: "QUESTION_CODE", title: "Question Code", width: 100},
-                {field: "QUESTION_EDESC", title: "Question Edesc", width: 120},
-                {field: "QUESTION_NDESC", title: "Question Ndesc", width: 120},
-                {field: "ANSWER_TYPE", title: "Answer Type", width: 100},
+                {field: "QUESTION_EDESC", title: "Question Name (in Eng.)", width: 120},
+                {field: "QUESTION_NDESC", title: "Question Name (in Nep.)", width: 120},
+                {field: "ANSWER_TYPE", title: "Answer Type", width: 80},
                 {field: "ORDER_NO", title: "Order No.", width: 80},
                 {field: "HEADING_EDESC", title: "Heading Name", width: 100},
                 {title: "Action", width: 100}

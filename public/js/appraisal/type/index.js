@@ -19,8 +19,8 @@
             rowTemplate: kendo.template($("#rowTemplate").html()),
             columns: [
                 {field: "APPRAISAL_TYPE_CODE", title: "Appraisal Type Code",width:150},
-                {field: "APPRAISAL_TYPE_EDESC", title: "Appraisal Type Ename",width:180},
-                {field: "APPRAISAL_TYPE_NDESC", title: "Appraisal Type Nname",width:180},
+                {field: "APPRAISAL_TYPE_EDESC", title: "Appraisal Type (in Eng.)",width:180},
+                {field: "APPRAISAL_TYPE_NDESC", title: "Appraisal Type (in Nep.)",width:180},
                 {field: "SERVICE_TYPE_NAME", title: "Service Type Name",width:180},
                 {title: "Action",width:100}
             ],
