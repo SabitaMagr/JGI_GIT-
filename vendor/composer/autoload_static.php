@@ -92,6 +92,7 @@ class ComposerStaticInit3beba3f34d79073b782a60e952d3c132
         array (
             'Psr\\Log\\' => 8,
             'Psr\\Http\\Message\\' => 17,
+            'Psr\\Container\\' => 14,
             'Payroll\\' => 8,
             'PHPixie\\Tests\\' => 14,
             'PHPixie\\' => 8,
@@ -116,6 +117,7 @@ class ComposerStaticInit3beba3f34d79073b782a60e952d3c132
         ),
         'H' => 
         array (
+            'Html2Text\\' => 10,
             'HolidayManagement\\' => 18,
         ),
         'G' => 
@@ -133,6 +135,7 @@ class ComposerStaticInit3beba3f34d79073b782a60e952d3c132
         'A' => 
         array (
             'AttendanceManagement\\' => 21,
+            'Asset\\' => 6,
             'Appraisal\\' => 10,
             'Application\\' => 12,
             'ApplicationTest\\' => 16,
@@ -384,6 +387,10 @@ class ComposerStaticInit3beba3f34d79073b782a60e952d3c132
         array (
             0 => __DIR__ . '/..' . '/psr/http-message/src',
         ),
+        'Psr\\Container\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/psr/container/src',
+        ),
         'Payroll\\' => 
         array (
             0 => __DIR__ . '/../..' . '/module/Payroll/src',
@@ -420,6 +427,11 @@ class ComposerStaticInit3beba3f34d79073b782a60e952d3c132
         array (
             0 => __DIR__ . '/..' . '/container-interop/container-interop/src/Interop/Container',
         ),
+        'Html2Text\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/html2text/html2text/src',
+            1 => __DIR__ . '/..' . '/html2text/html2text/test',
+        ),
         'HolidayManagement\\' => 
         array (
             0 => __DIR__ . '/../..' . '/module/HolidayManagement/src',
@@ -451,6 +463,10 @@ class ComposerStaticInit3beba3f34d79073b782a60e952d3c132
         'AttendanceManagement\\' => 
         array (
             0 => __DIR__ . '/../..' . '/module/AttendanceManagement/src',
+        ),
+        'Asset\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/module/Asset/src',
         ),
         'Appraisal\\' => 
         array (
@@ -836,6 +852,7 @@ class ComposerStaticInit3beba3f34d79073b782a60e952d3c132
         'PHP_Token_NEW' => __DIR__ . '/..' . '/phpunit/php-token-stream/src/Token.php',
         'PHP_Token_NS_C' => __DIR__ . '/..' . '/phpunit/php-token-stream/src/Token.php',
         'PHP_Token_NS_SEPARATOR' => __DIR__ . '/..' . '/phpunit/php-token-stream/src/Token.php',
+        'PHP_Token_NULLSAFE_OBJECT_OPERATOR' => __DIR__ . '/..' . '/phpunit/php-token-stream/src/Token.php',
         'PHP_Token_NUM_STRING' => __DIR__ . '/..' . '/phpunit/php-token-stream/src/Token.php',
         'PHP_Token_OBJECT_CAST' => __DIR__ . '/..' . '/phpunit/php-token-stream/src/Token.php',
         'PHP_Token_OBJECT_OPERATOR' => __DIR__ . '/..' . '/phpunit/php-token-stream/src/Token.php',

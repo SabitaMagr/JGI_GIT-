@@ -1893,6 +1893,24 @@ return array (
           ),
         ),
       ),
+      'group' => 
+      array (
+        'type' => 'Zend\\Router\\Http\\Segment',
+        'options' => 
+        array (
+          'route' => '/asset/group[/:action[/:id]]',
+          'constants' => 
+          array (
+            'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+            'id' => '[0-9]+',
+          ),
+          'defaults' => 
+          array (
+            'controller' => 'Asset\\Controller\\GroupController',
+            'action' => 'index',
+          ),
+        ),
+      ),
     ),
   ),
   'console' => 
@@ -4756,6 +4774,7 @@ return array (
       'WorkOnHoliday\\Controller\\WorkOnHolidayApply' => 'Application\\Controller\\ControllerFactory',
       'WorkOnDayoff\\Controller\\WorkOnDayoffStatus' => 'Application\\Controller\\ControllerFactory',
       'WorkOnDayoff\\Controller\\WorkOnDayoffApply' => 'Application\\Controller\\ControllerFactory',
+      'Asset\\Controller\\GroupController' => 'Application\\Controller\\ControllerFactory',
     ),
   ),
   'view_manager' => 
@@ -4807,6 +4826,7 @@ return array (
       15 => '/var/www/html/neo-hris/module/Travel/config/../view',
       16 => '/var/www/html/neo-hris/module/WorkOnHoliday/config/../view',
       17 => '/var/www/html/neo-hris/module/WorkOnDayoff/config/../view',
+      18 => '/var/www/html/neo-hris/module/Asset/config/../view',
     ),
   ),
   'dashboard-items' => 

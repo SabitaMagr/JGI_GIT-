@@ -35,7 +35,8 @@ return [
     'Notification',
     'Travel',
     'WorkOnHoliday',
-    'WorkOnDayoff'
+    'WorkOnDayoff',
+    'Asset'
 ];
 
 
