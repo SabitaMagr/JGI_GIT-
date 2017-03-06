@@ -57,10 +57,18 @@ print $this->form()->openTag($form);
     <?php print $this->formElement($password); ?>
     <?php print $this->formElementErrors()->render($password, ['class' => 'help-block']) ?>
 </div>
-<div class="form-actions signin-btn">
-    <?php
-    print $this->formSubmit($submit);
-    ?>
+<div class="form-actions">
+    <div class="pull-left">
+        <?php
+        print $this->formSubmit($submit);
+        ?>
+    </div>
+    <div class="pull-right">
+        <label class="checkIn check">
+            <input type="hidden" name="checkIn" value="0">
+            <input type="checkbox" name="checkIn" class="" value="1">            
+            Register Attendance</label>
+    </div>
 </div>
 <div class="form-actions ">
     <div class="pull-left">

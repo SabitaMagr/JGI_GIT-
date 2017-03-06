@@ -184,6 +184,10 @@ class Helper {
         $currentDate = date(self::PHP_DATE_FORMAT);
         return self::getExpressionDate($currentDate);
     }
+    public static function getcurrentExpressionTime(){
+        $currentTime = date(self::PHP_TIME_FORMAT);
+        return self::getExpressionTime($currentTime);
+    }
 
     public static function getcurrentExpressionDateTime() {
         $currentDate = date(self::PHP_DATE_FORMAT . " " . self::PHP_TIME_FORMAT);
