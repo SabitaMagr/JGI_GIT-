@@ -4683,6 +4683,40 @@ return array (
         ),
       ),
     ),
+    'group' => 
+    array (
+      0 => 
+      array (
+        'label' => 'Asset Type',
+        'route' => 'group',
+      ),
+      1 => 
+      array (
+        'label' => 'Asset Type',
+        'route' => 'group',
+        'pages' => 
+        array (
+          0 => 
+          array (
+            'label' => 'Asset Type List',
+            'route' => 'group',
+            'action' => 'index',
+          ),
+          1 => 
+          array (
+            'label' => 'Add',
+            'route' => 'group',
+            'action' => 'add',
+          ),
+          2 => 
+          array (
+            'label' => 'Edit',
+            'route' => 'group',
+            'action' => 'edit',
+          ),
+        ),
+      ),
+    ),
   ),
   'controllers' => 
   array (

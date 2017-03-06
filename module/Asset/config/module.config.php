@@ -25,6 +25,36 @@ return[
             ],
         ],
     ],
+    
+    'navigation' => [
+        'group'=>[
+            [
+                'label'=>'Asset Type',
+                'route'=>'group',
+            ],[
+                'label' => 'Asset Type',
+                'route' => 'group',
+                'pages' => [
+                        [
+                        'label' => 'Asset Type List',
+                        'route' => 'group',
+                        'action' => 'index',
+                    ],
+                        [
+                        'label' => 'Add',
+                        'route' => 'group',
+                        'action' => 'add',
+                    ],
+                        [
+                        'label' => 'Edit',
+                        'route' => 'group',
+                        'action' => 'edit',
+                    ],
+                ],
+            ],
+        ],
+    ],
+    
     'controllers' => [
         'factories' => [
             GroupController::class => ControllerFactory::class,

@@ -5,17 +5,22 @@ namespace Asset\Controller;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Mvc\Controller\AbstractActionController;
 
-class GroupController extends AbstractActionController{
-    
+class GroupController extends AbstractActionController {
+
     public function __construct(AdapterInterface $adapter) {
         
     }
 
-        public function indexAction(){
-        echo 'prabin';
-        die();
+    public function indexAction() {
+        return [
+            'a' => 'sdf'
+        ];
     }
     
-    
-    
+    public function addAction(){
+        return [
+            'a' => 'adding'
+        ];
+    }
+
 }
