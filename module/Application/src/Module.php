@@ -182,7 +182,7 @@ class Module implements AutoloaderProviderInterface, ConsoleUsageProviderInterfa
         return [
             'factories' => [
                 AuthController::class => function ($container) {
-                    return new AuthController($container->get('AuthService'));
+                    return new AuthController($container->get('AuthService'),$container->get(DbAdapterInterface::class));
                 },
             ],
         ];

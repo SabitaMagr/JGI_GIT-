@@ -9,16 +9,24 @@ use Zend\EventManager\EventManagerInterface;
 use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
+use Zend\Db\Adapter\AdapterInterface;
+use AttendanceManagement\Repository\AttendanceDetailRepository;
+use AttendanceManagement\Model\AttendanceDetail;
+use Application\Helper\Helper;
+use AttendanceManagement\Model\Attendance;
+use AttendanceManagement\Repository\AttendanceRepository;
 
 class AuthController extends AbstractActionController {
 
     protected $form;
     protected $storage;
     protected $authservice;
+    protected $adapter;
 
-    public function __construct(AuthenticationService $authService) {
+    public function __construct(AuthenticationService $authService, AdapterInterface $adapter) {
         $this->authservice = $authService;
         $this->storage = $authService->getStorage();
+        $this->adapter = $adapter;
     }
 
     public function setEventManager(EventManagerInterface $events) {
@@ -96,6 +104,19 @@ class AuthController extends AbstractActionController {
                                 ->setRememberMe(1);
                         //set storage again
                         $this->getAuthService()->setStorage($this->getSessionStorage());
+                    }
+                    if(1== $request->getPost('checkIn')){
+                        $attendanceRepo = new AttendanceRepository($this->adapter);
+                        $attendanceModel = new Attendance();
+                        
+                        $todayDate = Helper::getcurrentExpressionDate();
+                        $todayTime = Helper::getcurrentExpressionTime();
+                        $employeeId = $resultRow->EMPLOYEE_ID;
+                        
+                        $attendanceModel->employeeId = $employeeId;
+                        $attendanceModel->attendanceDt = $todayDate;
+                        $attendanceModel->attendanceTime = $todayTime;
+                        $attendanceRepo->add($attendanceModel);
                     }
                     $this->getAuthService()->getStorage()->write(["user_name" => $request->getPost('username'), "user_id" => $resultRow->USER_ID, "employee_id" => $resultRow->EMPLOYEE_ID, "role_id" => $resultRow->ROLE_ID]);
                 }
