@@ -107,6 +107,16 @@ return [
                     ],
                 ],
             ],
+            'checkout' => [
+                'type' => Literal::class,
+                'options' => [
+                    'route' => '/checkout',
+                    'defaults' => [
+                        'controller' => Controller\AuthController::class,
+                        'action' => 'checkout',
+                    ],
+                ],
+            ],
             'dashboard' => [
                 'type' => Literal::class,
                 'options' => [
