@@ -1,6 +1,6 @@
 <?php
 
-namespace Asset;
+namespace Asset\Form;
 
 use Zend\Form\Annotation;
 
