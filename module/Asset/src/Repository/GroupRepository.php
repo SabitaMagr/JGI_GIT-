@@ -28,7 +28,11 @@ class GroupRepository implements RepositoryInterface {
     }
 
     public function edit(Model $model, $id) {
-        
+        $data = $model->getArrayCopyForDB();
+        unset($data[Group::ASSET_GROUP_ID]);
+        unset($data[Group::CREATED_DATE]);
+        unset($data[Group::STATUS]);
+        $this->tableGateway->update($data,[Group::ASSET_GROUP_ID=>$id]);
     }
 
 //    public function fetchAll() {

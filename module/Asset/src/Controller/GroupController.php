@@ -101,15 +101,14 @@ class GroupController extends AbstractActionController{
         }else{
             $this->form->setData($request->getPost());
             if($this->form->isValid()){
-                $heading->exchangeArrayFromForm($this->form->getData());
-                if ($heading->appraisalTypeId == 0) {
-                    unset($heading->appraisalTypeId);
-                }
-                $heading->modifiedDate = Helper::getcurrentExpressionDate();
-                $heading->modifiedBy = $this->employeeId;
-                $this->repository->edit($heading, $id);
-                $this->flashmessenger()->addMessage("Appraisal Heading Successfully Updated!!!");
-                return $this->redirect()->toRoute("heading");
+                $group->exchangeArrayFromForm($this->form->getData());
+                
+                $group->modifiedDate = Helper::getcurrentExpressionDate();
+                $group->modifiedBy = $this->employeeId;
+                
+                $this->repository->edit($group, $id);
+                $this->flashmessenger()->addMessage("Asset Group Successfully Updated!!!");
+                return $this->redirect()->toRoute("assetGroup");
             }
         }
         return Helper::addFlashMessagesToArray($this, [
