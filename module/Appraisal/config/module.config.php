@@ -13,6 +13,7 @@ use Zend\Router\Http\Segment;
 use Appraisal\Controller\StageController;
 use Appraisal\Controller\HeadingController;
 use Appraisal\Controller\QuestionController;
+use Appraisal\Controller\StageQuestionController;
 
 return [
     'router' => [
@@ -111,6 +112,20 @@ return [
                     ],
                     'defaults'=>[
                         'controller'=> QuestionController::class,
+                        'action'=>'index'
+                    ]
+                ],
+            ],
+            'stageQuestion'=>[
+                'type'=>Segment::class,
+                'options'=>[
+                    'route'=> '/appraisal/stageQuestion[/:action[/:id]]',
+                    'constants'=>[
+                        'action'=>'[a-zA-Z][a-zA-Z0-9_-]*',
+                        'id'=>'[0-9]+',
+                    ],
+                    'defaults'=>[
+                        'controller'=> StageQuestionController::class,
                         'action'=>'index'
                     ]
                 ],
@@ -293,6 +308,32 @@ return [
                 ],
             ],
         ],
+        'StageQuestion'=>[
+            [
+                'label'=>'Appraisal Question',
+                'route'=>'stageQuestion',
+            ],[
+                'label' => 'Appraisal Question',
+                'route' => 'stageQuestion',
+                'pages' => [
+                        [
+                        'label' => 'List',
+                        'route' => 'stageQuestion',
+                        'action' => 'index',
+                    ],
+                        [
+                        'label' => 'Add',
+                        'route' => 'stageQuestion',
+                        'action' => 'add',
+                    ],
+                        [
+                        'label' => 'Edit',
+                        'route' => 'stageQuestion',
+                        'action' => 'edit',
+                    ],
+                ],
+            ],
+        ],
     ],
     'controllers' => [
         'factories' => [
@@ -302,7 +343,8 @@ return [
             TypeController::class => ControllerFactory::class,
             StageController::class => ControllerFactory::class,
             HeadingController::class=> ControllerFactory::class,
-            QuestionController::class=> ControllerFactory::class
+            QuestionController::class=> ControllerFactory::class,
+            StageQuestionController::class=> ControllerFactory::class
         ],
     ],
     'view_manager' => [
