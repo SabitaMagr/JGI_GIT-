@@ -1,19 +1,17 @@
 <?php
-
 namespace Asset\Controller;
 
-use Application\Helper\Helper;
+use Zend\Mvc\Controller\AbstractActionController;
+use Zend\Db\Adapter\AdapterInterface;
 use Asset\Form\GroupForm;
 use Asset\Model\Group;
-use Asset\Repository\GroupRepository;
-use Setup\Repository\EmployeeRepository;
-use Zend\Authentication\AuthenticationService;
-use Zend\Db\Adapter\AdapterInterface;
+use Asset\Repository\GroupRepository;;
 use Zend\Form\Annotation\AnnotationBuilder;
-use Zend\Mvc\Controller\AbstractActionController;
+use Zend\Authentication\AuthenticationService;
+use Application\Helper\Helper;
+use Setup\Repository\EmployeeRepository;
 
-class GroupController extends AbstractActionController {
-
+class GroupController extends AbstractActionController{
     private $adapter;
     private $repository;
     private $form;
@@ -45,12 +43,12 @@ class GroupController extends AbstractActionController {
                     'group' => $list
         ]);
     }
-
-    public function addAction() {
+    
+    public function addAction(){
         $this->initializeForm();
+        $request = $this->getRequest();
         $employeeRepo = new EmployeeRepository($this->adapter);
         $employeeDetail = $employeeRepo->fetchById($this->employeeId);
-
 
         $request = $this->getRequest();
         if ($request->isPost()) {
@@ -65,20 +63,18 @@ class GroupController extends AbstractActionController {
                 $group->companyId = $employeeDetail['COMPANY_ID'];
                 $group->branchId = $employeeDetail['BRANCH_ID'];
                 $group->assetGroupId = ((int) Helper::getMaxId($this->adapter, $group::TABLE_NAME, $group::ASSET_GROUP_ID)) + 1;
-
                 $group->status = 'E';
                 $this->repository->add($group);
                 $this->flashmessenger()->addMessage("Asset Group Successfully added!!!");
                 return $this->redirect()->toRoute("assetGroup");
             }
-//              echo '  not valid';
-//              die();
-        }
 
-        return[
-            'form' => $this->form,
-        ];
+        }
+        return Helper::addFlashMessagesToArray($this, [
+            'form'=>$this->form
+        ]);
     }
+
 
     public function deleteAction() {
         $id = $this->params()->fromRoute('id');
@@ -123,3 +119,6 @@ class GroupController extends AbstractActionController {
     }
 
 }
+
+
+

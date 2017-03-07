@@ -1,12 +1,4 @@
 <?php
-$this->headLink()
-        ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.common.min.css'))
-        ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.rtl.min.css'))
-        ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.default.min.css'))
-        ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.dataviz.min.css'))
-        ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.dataviz.default.min.css'));
-
-
 $this->headScript()
         ->appendFile($this->basePath('jszip/dist/jszip.min.js'))
         ->appendFile($this->basePath('telerik_kendoui/js/kendo.all.min.js'))
@@ -14,17 +6,21 @@ $this->headScript()
         ->appendFile($this->basePath('assets/global/plugins/bootstrap-confirmation/bootstrap-confirmation.min.js'));
 ?>
 
-<?php if ($this->messages) { ?>
+
+
+<?php
+if ($this->messages) { ?>
     <script>
         document.messages =<?php echo json_encode($this->messages); ?>
     </script>
 <?php } 
-
 ?>
+
 
 <script>
     document.group =<?= json_encode($group) ?>;
 </script>
+
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\assetGroup')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
@@ -54,6 +50,7 @@ $this->headScript()
             </div>
         </div>
     </div>
+
     <div id="assetGroupTable">
 
     </div>
@@ -81,3 +78,4 @@ $this->headScript()
         </tr>
     </script>
 </div>
+
