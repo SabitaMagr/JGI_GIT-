@@ -10,15 +10,11 @@ $this->headLink()
 $this->headScript()
         ->appendFile($this->basePath('jszip/dist/jszip.min.js'))
         ->appendFile($this->basePath('telerik_kendoui/js/kendo.all.min.js'))
-        ->appendFile($this->basePath('js/appraisal/heading/index.js'))
+        ->appendFile($this->basePath('js/asset/group/index.js'))
         ->appendFile($this->basePath('assets/global/plugins/bootstrap-confirmation/bootstrap-confirmation.min.js'));
 ?>
 
-<?php 
-
-print_r($this->messages);
-die();
-if ($this->messages) { ?>
+<?php if ($this->messages) { ?>
     <script>
         document.messages =<?php echo json_encode($this->messages); ?>
     </script>
@@ -27,23 +23,18 @@ if ($this->messages) { ?>
 ?>
 
 <script>
-    document.headings =<?= json_encode($headings) ?>;
+    document.group =<?= json_encode($group) ?>;
 </script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\assetGroup')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
-<?php
-
-//print_r($this->messages);
-//die();
-?>
 
 <div class="margin-top-20">
     <div class="table-toolbar">
         <div class="row">
             <div class="col-md-6">
                 <div class="btn-group">
-                    <a href="<?= $this->url('assetGroup', ['action' => 'add']) ?>" 
+                    <a href="<?= $this->url('assetGroup', ['action' => 'add']) ?>" id="sample_editable_1_new"
                        class="btn green"> Add New <i class="fa fa-plus"></i>
 <!--                        <i class="fa fa-plus"></i>-->
                     </a>
@@ -63,6 +54,30 @@ if ($this->messages) { ?>
             </div>
         </div>
     </div>
-   
-   
+    <div id="assetGroupTable">
+
+    </div>
+    <script id="rowTemplate" type="text/x-kendo-tmpl">
+        <tr>
+        <td>    
+        #: (ASSET_GROUP_CODE == null) ? '-' : ASSET_GROUP_CODE #
+        </td>
+        <td>    
+        #: (ASSET_GROUP_EDESC == null) ? '-' : ASSET_GROUP_EDESC #
+        </td>
+        <td>    
+        #: (ASSET_GROUP_NDESC == null) ? '-' : ASSET_GROUP_NDESC #
+        </td>
+        <td>
+        <a class="btn-edit"
+        href="<?= $this->url("assetGroup", ["action" => "edit"]); ?>/#:ASSET_GROUP_ID#" style="height:17px;">
+        <i class="fa fa-edit"></i>
+        </a>
+        <a class="btn-delete confirmation"
+        href="<?= $this->url("assetGroup", ["action" => "delete"]); ?>/#:ASSET_GROUP_ID#" id="bs_#:ASSET_GROUP_ID #" style="height:17px;"> 
+        <i class="fa fa-trash-o"></i></a>
+        </a>
+        </td>
+        </tr>
+    </script>
 </div>
