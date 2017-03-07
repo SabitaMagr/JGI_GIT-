@@ -14,7 +14,11 @@ $this->headScript()
         ->appendFile($this->basePath('assets/global/plugins/bootstrap-confirmation/bootstrap-confirmation.min.js'));
 ?>
 
-<?php if ($this->messages) { ?>
+<?php 
+
+print_r($this->messages);
+die();
+if ($this->messages) { ?>
     <script>
         document.messages =<?php echo json_encode($this->messages); ?>
     </script>
@@ -28,6 +32,11 @@ $this->headScript()
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\assetGroup')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
+<?php
+
+//print_r($this->messages);
+//die();
+?>
 
 <div class="margin-top-20">
     <div class="table-toolbar">

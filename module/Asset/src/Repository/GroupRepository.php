@@ -4,8 +4,9 @@ namespace Asset\Repository;
 
 use Application\Model\Model;
 use Application\Repository\RepositoryInterface;
-use Zend\Db\Adapter\AdapterInterface;
 use Asset\Model\Group;
+use Zend\Db\Adapter\AdapterInterface;
+use Zend\Db\TableGateway\TableGateway;
 
 class GroupRepository implements RepositoryInterface {
 
@@ -18,7 +19,7 @@ class GroupRepository implements RepositoryInterface {
     }
 
     public function add(Model $model) {
-        
+         $this->tableGateway->insert($model->getArrayCopyForDB());
     }
 
     public function delete($id) {
