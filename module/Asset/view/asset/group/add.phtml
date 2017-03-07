@@ -1,8 +1,66 @@
 <?php
+//print_r($this->url('heading'));
+//echo '</br>';
+//print_r($this->url('assetGroup', ['action' => 'add']));
+//die();
 
-echo 'add';
+$form->setAttribute('role', 'form');
+$form->setAttribute('id', 'assetGroup-form');
+$form->setAttribute('action', $this->url('assetGroup', ['action' => 'add']));
+
+$groupCode = $form->get('assetGroupCode');
+$groupEdesc = $form->get('assestGroupEdesc');
+$groupNdesc = $form->get('assetGroupNdesc');
+$remarks = $form->get('remarks');
+
+$submit = $form->get('submit');
+$submit->setAttribute('value', 'SUBMIT');
+
+$form->prepare();
 
 ?>
+
+
 <div class="page-bar">
-    <?= $this->navigation('Zend\Navigation\group')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
+    <?= $this->navigation('Zend\Navigation\assetGroup')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
+</div>
+
+<div class="row margin-top-20">
+    <div class="col-sm-8 col-sm-offset-2">
+        <div class="portlet box custom-box">
+            <div class="portlet-title">
+                <div class="caption">
+                    <i class="fa fa-user"></i>New Entry
+                </div>
+            </div>
+            <div class="portlet-body">
+                <?php print $this->form()->openTag($form); ?>
+                <div class="form-group">
+                    <?php print $this->formLabel($groupCode); ?>
+                    <?php print $this->formElement($groupCode); ?>
+                    <?php print $this->formElementErrors()->render($groupCode, ['class' => 'help-block']); ?>
+                </div>
+                <div class="form-group">
+                    <?php print $this->formLabel($groupEdesc); ?>
+                    <?php print $this->formElement($groupEdesc); ?>
+                    <?php print $this->formElementErrors()->render($groupEdesc, ['class' => 'help-block']); ?>
+                </div>
+                <div class="form-group">
+                    <?php print $this->formLabel($groupNdesc); ?>
+                    <?php print $this->formElement($groupNdesc); ?>
+                    <?php print $this->formElementErrors()->render($groupNdesc, ['class' => 'help-block']); ?>
+                </div>
+               
+                <div class="form-group">
+                    <?php print $this->formLabel($remarks); ?>
+                    <?php print $this->formElement($remarks); ?>
+                    <?php print $this->formElementErrors()->render($remarks, ['class' => 'help-block']); ?>
+                </div>
+                <?php
+                print $this->formSubmit($submit);
+                print $this->form()->closeTag();
+                ?>
+            </div>
+        </div>
+    </div>
 </div>
