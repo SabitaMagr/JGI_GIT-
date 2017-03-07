@@ -175,17 +175,17 @@ class QuestionController extends AbstractActionController{
             $question->questionEdesc = $questionDetail['questionEdesc'];
             $question->questionNdesc = $questionDetail['questionNdesc'];
             $question->answerType = $questionDetail['answerType'];
-            $question->headingId = $questionDetail['headingId'];
+            $question->headingId = (int)$questionDetail['headingId'];
             $question->appraiseeFlag = $questionDetail['appraiseeFlag'];
             $question->appraiserFlag = $questionDetail['appraiserFlag'];
             $question->reviewerFlag = $questionDetail['reviewerFlag'];
             $question->appraiseeRating = $questionDetail['appraiseeRating'];
             $question->appraiserRating = $questionDetail['appraiserRating'];
             $question->reviewerRating = $questionDetail['reviewerRating'];
-            $question->orderNo = (int)$questionDetail['orderNo'];
+            $question->orderNo = ($questionDetail['orderNo']!=null) ? (int)$questionDetail['orderNo'] :null;
             $question->remarks = $questionDetail['remarks'];
-            $question->minValue = $questionDetail['minValue'];
-            $question->maxValue = $questionDetail['maxValue'];
+            $question->minValue = ($questionDetail['minValue']!=null) ? (int)$questionDetail['minValue'] :null;
+            $question->maxValue = ($questionDetail['maxValue']!=null) ? (int)$questionDetail['maxValue'] :null;
             
             if($questionId==0){
                 $question->questionId = ((int)Helper::getMaxId($this->adapter, Question::TABLE_NAME, Question::QUESTION_ID))+1;
