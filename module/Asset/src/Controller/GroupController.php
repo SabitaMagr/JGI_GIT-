@@ -2,13 +2,14 @@
 
 namespace Asset\Controller;
 
+use Application\Helper\Helper;
 use Asset\Form\GroupForm;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\Mvc\Controller\AbstractActionController;
 
 class GroupController extends AbstractActionController {
-    
+
 //    private $adapter;
 //    private $repository;
 //    private $form;
@@ -18,8 +19,8 @@ class GroupController extends AbstractActionController {
 //        $this->adapter = $adapter;
 //        $this->repository = new HeadingRepository($adapter);
     }
-    
-    public function initializeForm(){
+
+    public function initializeForm() {
         $form = new GroupForm();
         $builder = new AnnotationBuilder();
         $this->form = $builder->createForm($form);
@@ -30,14 +31,13 @@ class GroupController extends AbstractActionController {
             'a' => 'sdf'
         ];
     }
-    
-    public function addAction(){
+
+    public function addAction() {
         $this->initializeForm();
-        
-        return Helper::addFlashMessagesToArray($this, 
-                [
-                    'form'=>$this->form,
-                ]);
+
+        return[
+            'form' => $this->form,
+        ];
     }
 
 }

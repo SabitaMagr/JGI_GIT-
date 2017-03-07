@@ -9,7 +9,7 @@ use Zend\Router\Http\Segment;
 return[
     'router' => [
         'routes' => [
-            'group' => [
+            'assetGroup' => [
                 'type' => Segment::class,
                 'options' => [
                     'route' => '/asset/group[/:action[/:id]]',
@@ -27,27 +27,27 @@ return[
     ],
     
     'navigation' => [
-        'group'=>[
+        'assetGroup'=>[
             [
                 'label'=>'Asset Type',
-                'route'=>'group',
+                'route'=>'assetGroup',
             ],[
                 'label' => 'Asset Type',
-                'route' => 'group',
+                'route' => 'assetGroup',
                 'pages' => [
                         [
                         'label' => 'Asset Type List',
-                        'route' => 'group',
+                        'route' => 'assetGroup',
                         'action' => 'index',
                     ],
                         [
                         'label' => 'Add',
-                        'route' => 'group',
+                        'route' => 'assetGroup',
                         'action' => 'add',
                     ],
                         [
                         'label' => 'Edit',
-                        'route' => 'group',
+                        'route' => 'assetGroup',
                         'action' => 'edit',
                     ],
                 ],

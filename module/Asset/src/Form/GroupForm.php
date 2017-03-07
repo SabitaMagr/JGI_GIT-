@@ -6,7 +6,7 @@ use Zend\Form\Annotation;
 
 /**
  * @Annotation\Hydrator("Zend\Hydrator\ObjectProperty")
- * @Annotation\Name("AppraisalHeading")
+ * @Annotation\Name("AssetGroup")
  */
 
 class GroupForm {
@@ -49,5 +49,11 @@ class GroupForm {
      * @Annotation\Attributes({ "id":"remarks", "class":"form-control" })
      */
     public $remarks;
+    
+    /**
+     * @Annotation\Type("Zend\Form\Element\Submit")
+     * @Annotation\Attributes({"value":"Submit","class":"btn btn-success"})
+     */
+    public $submit;            
 
 }
