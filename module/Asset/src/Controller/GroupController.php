@@ -5,7 +5,7 @@ use Zend\Mvc\Controller\AbstractActionController;
 use Zend\Db\Adapter\AdapterInterface;
 use Asset\Form\GroupForm;
 use Asset\Model\Group;
-use Asset\Repository\GroupRepository;;
+use Asset\Repository\GroupRepository;
 use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\Authentication\AuthenticationService;
 use Application\Helper\Helper;
@@ -46,7 +46,6 @@ class GroupController extends AbstractActionController{
     
     public function addAction(){
         $this->initializeForm();
-        $request = $this->getRequest();
         $employeeRepo = new EmployeeRepository($this->adapter);
         $employeeDetail = $employeeRepo->fetchById($this->employeeId);
 

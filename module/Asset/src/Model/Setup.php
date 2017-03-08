@@ -7,7 +7,8 @@ use Application\Model\Model;
 class Setup extends Model {
     const TABLE_NAME = 'HR_ASSET_SETUP';
     
-    const ASSET_ID = 'ASSET_CODE';
+    const ASSET_ID = 'ASSET_ID';
+    const ASSET_CODE = 'ASSET_CODE';
     const ASSET_EDESC = 'ASSET_EDESC';
     const ASSET_NDESC = 'ASSET_NDESC';
     const ASSET_GROUP_ID = 'ASSET_GROUP_ID';
@@ -34,6 +35,7 @@ class Setup extends Model {
     const STATUS = 'STATUS';
 
     public $assetId;
+    public $assetCode;
     public $assetEdesc;
     public $assetNdesc;
     public $assetGroupId;
@@ -62,6 +64,7 @@ class Setup extends Model {
 
     public $mappings = [
     'assetId'=>self::ASSET_ID,
+    'assetCode'=>self::ASSET_CODE,
     'assetEdesc'=>self::ASSET_EDESC,
     'assetNdesc'=>self::ASSET_NDESC,
     'assetGroupId'=>self::ASSET_GROUP_ID,

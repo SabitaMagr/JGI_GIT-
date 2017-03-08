@@ -71,6 +71,36 @@ return[
                 ],
             ],
         ],
+        
+        'assetSetup' => [
+            [
+                'label'=>'Asset Setup',
+                'route'=>'assetSetup',
+                ],
+            [
+                'label' => 'Asset Setup',
+                'route' => 'assetSetup',
+                'pages' => [
+                        [
+                        'label' => 'Asset Setup List',
+                        'route' => 'assetGroup',
+                        'action' => 'index',
+                    ],
+                        [
+                        'label' => 'Add',
+                        'route' => 'assetSetup',
+                        'action' => 'add',
+                    ],
+                        [
+                        'label' => 'Edit',
+                        'route' => 'assetSetup',
+                        'action' => 'edit',
+                    ],
+                ],
+            ],
+            ],
+        
+        
     ],
     
     'controllers' => [
