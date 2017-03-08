@@ -8,6 +8,8 @@ use Appraisal\Repository\StageQuestionRepository;
 use Appraisal\Repository\StageRepository;
 use Appraisal\Repository\QuestionRepository;
 use Appraisal\Repository\HeadingRepository;
+use Application\Custom\CustomViewModel;
+use Appraisal\Repository\TypeRepository;
 
 class StageQuestionController extends AbstractActionController{
     private $repository;
@@ -22,6 +24,7 @@ class StageQuestionController extends AbstractActionController{
        $stageRepo = new StageRepository($this->adapter);
        $questionRepo = new QuestionRepository($this->adapter);
        $headingRepo = new HeadingRepository($this->adapter);
+       $typeRepo = new TypeRepository($this->adapter);
        $headingResult = $headingRepo->fetchAll();
        $headingList = [];
        foreach($headingResult as $headingRow){
@@ -37,24 +40,56 @@ class StageQuestionController extends AbstractActionController{
        foreach($stageResult as $stageRow){
            array_push($stageList,$stageRow);
        }
+       $typeResult = $typeRepo->fetchAll();
        
        return Helper::addFlashMessagesToArray($this, [
            'list'=>"list",
            'stageList'=>$stageList,
-           'headingList'=>$headingList
+           'headingList'=>$headingList,
+           'typeResult'=>$typeResult
        ]);
     }
     
     public function generateQuestion($headingId){
         $questionRepo = new QuestionRepository($this->adapter);
         $result = $questionRepo->fetchByHeadingId($headingId);
-        $questionList = [];
+        $questionList = array();
         foreach($result as $row){
-            array_push($questionList,[
-                'QUESTION_ID'=>$row['QUESTION_ID'],
-                'QUESTION_EDESC'=>$row['QUESTION_EDESC']
-                ]);
+            $questionList[] = array(
+                    "text" => $row['QUESTION_EDESC'],
+                    "id" => $row['QUESTION_ID'],
+                    "icon" => "fa fa-folder icon-state-success"
+                );
         }
         return $questionList;
+    }
+    
+    public function headingsAction(){
+        $headingRepo = new HeadingRepository($this->adapter);
+        $result = $headingRepo->fetchAll();
+        $num = count($result);
+        if ($num > 0) {
+            $temArray = array();
+            foreach ($result as $row) {
+                $question = $this->generateQuestion($row['HEADING_ID']);
+                if ($question) {
+                    $temArray[] = array(
+                        "text" => $row['HEADING_EDESC'],
+                        "id" => $row['HEADING_ID'],
+                        "icon" => "fa fa-folder icon-state-success",
+                        "children" => $question
+                    );
+                } else {
+                    $temArray[] = array(
+                        "text" => $row['HEADING_EDESC'],
+                        "id" => $row['HEADING_ID'],
+                        "icon" => "fa fa-folder icon-state-success"
+                    );
+                }
+            }
+            return new CustomViewModel(["success"=>true,"data"=>$temArray]);
+        } else {
+            return new CustomViewModel(["success"=>false]);
+        }
     }
 }
