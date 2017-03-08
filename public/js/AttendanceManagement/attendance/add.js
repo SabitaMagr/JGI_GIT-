@@ -16,6 +16,7 @@
         app.addDatePicker(
                 $("#attendanceDt")
                 );
+       
         var totalHour = function () {
             var inTime = $('#inTime').val();
 

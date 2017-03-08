@@ -310,14 +310,14 @@ return [
         ],
         'StageQuestion'=>[
             [
-                'label'=>'Appraisal Question',
+                'label'=>'Stage wise Question',
                 'route'=>'stageQuestion',
             ],[
-                'label' => 'Appraisal Question',
+                'label' => 'Stage wise Question',
                 'route' => 'stageQuestion',
                 'pages' => [
                         [
-                        'label' => 'List',
+                        'label' => 'Assign',
                         'route' => 'stageQuestion',
                         'action' => 'index',
                     ],

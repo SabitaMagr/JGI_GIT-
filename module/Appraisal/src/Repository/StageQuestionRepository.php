@@ -32,4 +32,13 @@ class StageQuestionRepository implements RepositoryInterface{
                 StageQuestion::QUESTION_ID=>$combo['QUESTION_ID']
                 ]);
     }
+
+    public function fetchAll() {
+        
+    }
+
+    public function fetchById($id) {
+        
+    }
+
 }

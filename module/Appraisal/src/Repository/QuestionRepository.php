@@ -67,4 +67,8 @@ class QuestionRepository implements RepositoryInterface{
         $rowset = $this->tableGateway->select([Question::QUESTION_ID => $id, Question::STATUS => 'E']);
         return $result = $rowset->current();
     }
+    public function fetchByHeadingId($headingId){
+        $result = $this->tableGateway->select([Question::HEADING_ID=>$headingId,Question::STATUS=>'E']);
+        return $result;
+    }
 }
