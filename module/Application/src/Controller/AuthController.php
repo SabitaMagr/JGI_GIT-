@@ -133,21 +133,19 @@ class AuthController extends AbstractActionController {
         return $this->redirect()->toRoute('login');
     }
     public function checkoutAction() {
-        $this->getSessionStorage()->forgetMe();
-        $this->getAuthService()->clearIdentity();
-        $resultRow = $this->getAuthService()->getAdapter()->getResultRowObject();
         $attendanceRepo = new AttendanceRepository($this->adapter);
         $attendanceModel = new Attendance();
-
+        
         $todayDate = Helper::getcurrentExpressionDate();
         $todayTime = Helper::getcurrentExpressionTime();
-        $employeeId = $resultRow->EMPLOYEE_ID;
 
-        $attendanceModel->employeeId = $employeeId;
+        $attendanceModel->employeeId = $this->getAuthService()->getStorage()->read()['employee_id'];
         $attendanceModel->attendanceDt = $todayDate;
         $attendanceModel->attendanceTime = $todayTime;
         $attendanceRepo->add($attendanceModel);
         
+        $this->getSessionStorage()->forgetMe();
+        $this->getAuthService()->clearIdentity();
         $this->flashmessenger()->addMessage("You've been logged out");
         return $this->redirect()->toRoute('login');
     }

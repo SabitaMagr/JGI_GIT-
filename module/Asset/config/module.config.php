@@ -4,6 +4,7 @@ namespace Asset;
 
 use Application\Controller\ControllerFactory;
 use Asset\Controller\GroupController;
+use Asset\Controller\SetupController;
 use Zend\Router\Http\Segment;
 
 return[
@@ -23,6 +24,23 @@ return[
                     ]
                 ],
             ],
+            
+            'assetSetup' => [
+                'type' => Segment::class,
+                'options' => [
+                    'route' => '/asset/setup[/:action[/:id]]',
+                    'constants' => [
+                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'id' => '[0-9]+',
+                    ],
+                    'defaults' => [
+                        'controller' => SetupController::class,
+                        'action' => 'index',
+                    ]
+                ],
+            ],
+            
+            
         ],
     ],
     
@@ -58,7 +76,7 @@ return[
     'controllers' => [
         'factories' => [
             GroupController::class => ControllerFactory::class,
-//            Controller\LoanApply::class => ControllerFactory::class
+            SetupController::class => ControllerFactory::class,
         ],
     ],
     'view_manager' => [
