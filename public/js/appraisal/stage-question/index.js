@@ -25,11 +25,23 @@ var UITree = function () {
 
     return {
         init: function () {
-            window.app.pullDataById(document.urlHeadingList).then(function (success) {
-                console.log("success", success.data);
-                n(success.data);
-            }, function (failure) {
-                console.log("failure", failure);
+            $("#appraisalTypeId").on("change",function(){
+                $('#stageAssign').css('display', 'none');
+                var appraisalTypeId = $(this).val();
+                console.log(appraisalTypeId);
+                window.app.pullDataById(document.url,
+                {
+                    action:"getHeadingList",
+                    data:{appraisalTypeId:appraisalTypeId}
+                }
+                ).then(function (success) {
+                    console.log("success", success.data);
+                    n(success.data);
+                    $("#tree_3").jstree(true).settings.core.data = success.data;
+                    $("#tree_3").jstree(true).refresh();
+                }, function (failure) {
+                    console.log("failure", failure);
+                }); 
             });
         },
         populateTree: n
