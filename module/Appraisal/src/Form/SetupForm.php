@@ -5,7 +5,7 @@ use Zend\Form\Annotation;
 
 /**
  * @Annotation\Hydrator("Zend\Hydrator\ObjectProperty")
- * @Annotation\Name("AppraisalHeading")
+ * @Annotation\Name("AppraisalSetup")
  */
 
 class SetupForm{

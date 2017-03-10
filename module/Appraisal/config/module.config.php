@@ -349,27 +349,27 @@ return [
                 ],
             ],
         ],
-        'SetupDetail'=>[
+        'DetailSetup'=>[
             [
                 'label'=>'Appraisal Detail Setup',
-                'route'=>'setupDetail',
+                'route'=>'detailSetup',
             ],[
                 'label' => 'Appraisal Detail Setup',
-                'route' => 'setupDetail',
+                'route' => 'detailSetup',
                 'pages' => [
                         [
-                        'label' => 'Assign',
-                        'route' => 'setupDetail',
+                        'label' => 'List',
+                        'route' => 'detailSetup',
                         'action' => 'index',
                     ],
                         [
                         'label' => 'Add',
-                        'route' => 'setupDetail',
+                        'route' => 'detailSetup',
                         'action' => 'add',
                     ],
                         [
                         'label' => 'Edit',
-                        'route' => 'setupDetail',
+                        'route' => 'detailSetup',
                         'action' => 'edit',
                     ],
                 ],
