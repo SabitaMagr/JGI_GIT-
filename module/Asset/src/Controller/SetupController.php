@@ -108,5 +108,16 @@ class SetupController extends AbstractActionController {
         ]);
         
     }
+    
+    
+    public function deleteAction() {
+        $id = $this->params()->fromRoute('id');
+        if ($id == 0) {
+            $this->redirect()->toRoute('assetSetup');
+        }
+        $this->repository->delete($id);
+        $this->flashmessenger()->addMessage("Asset Setup Successfully Deleted!!!");
+        return $this->redirect()->toRoute("assetSetup");
+    }
 
 }

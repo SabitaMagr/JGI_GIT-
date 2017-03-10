@@ -1,11 +1,12 @@
 (function ($, app) {
     'use strict';
     
-    app.addDatePicker($('#purchaseDate'));
-    app.addDatePicker($('#expiaryDate'));
-    //    $('select').select2();
     
      $(document).ready(function () {
+         
+    app.addDatePicker($('#purchaseDate'));
+    app.addDatePicker($('#expiaryDate'));
+        $('select').select2();
         
         var inputFieldId = "assetCode";
         var formId = "assetSetup-form";

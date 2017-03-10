@@ -31,7 +31,7 @@ class SetupRepository implements RepositoryInterface {
     }
 
     public function delete($id) {
-        
+         $this->tableGateway->update([Setup::STATUS=>'D'],[Setup::ASSET_ID=>$id]);
     }
 
     public function edit(Model $model, $id) {
