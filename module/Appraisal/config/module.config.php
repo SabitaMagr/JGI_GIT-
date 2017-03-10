@@ -15,6 +15,7 @@ use Appraisal\Controller\HeadingController;
 use Appraisal\Controller\QuestionController;
 use Appraisal\Controller\StageQuestionController;
 use Appraisal\Controller\SetupController;
+use Appraisal\Controller\AppraisalAssignController;
 
 return [
     'router' => [
@@ -141,6 +142,20 @@ return [
                     ],
                     'defaults'=>[
                         'controller'=> SetupController::class,
+                        'action'=>'index'
+                    ]
+                ],
+            ],
+            'appraisalAssign'=>[
+                'type'=>Segment::class,
+                'options'=>[
+                    'route'=> '/appraisal/assign[/:action[/:id]]',
+                    'constants'=>[
+                        'action'=>'[a-zA-Z][a-zA-Z0-9_-]*',
+                        'id'=>'[0-9]+',
+                    ],
+                    'defaults'=>[
+                        'controller'=> AppraisalAssignController::class,
                         'action'=>'index'
                     ]
                 ],
@@ -375,6 +390,32 @@ return [
                 ],
             ],
         ],
+        'AppraisalAssign'=>[
+            [
+                'label'=>'Appraisal',
+                'route'=>'appraisalAssign',
+            ],[
+                'label' => 'Appraisal',
+                'route' => 'appraisalAssign',
+                'pages' => [
+                        [
+                        'label' => 'Assign',
+                        'route' => 'appraisalAssign',
+                        'action' => 'index',
+                    ],
+                        [
+                        'label' => 'Add',
+                        'route' => 'appraisalAssign',
+                        'action' => 'add',
+                    ],
+                        [
+                        'label' => 'Edit',
+                        'route' => 'appraisalAssign',
+                        'action' => 'edit',
+                    ],
+                ],
+            ],
+        ],
     ],
     'controllers' => [
         'factories' => [
@@ -386,7 +427,8 @@ return [
             HeadingController::class=> ControllerFactory::class,
             QuestionController::class=> ControllerFactory::class,
             StageQuestionController::class=> ControllerFactory::class,
-            SetupController::class=> ControllerFactory::class
+            SetupController::class=> ControllerFactory::class,
+            AppraisalAssignController::class=> ControllerFactory::class
         ],
     ],
     'view_manager' => [
