@@ -14,6 +14,7 @@ use Appraisal\Controller\StageController;
 use Appraisal\Controller\HeadingController;
 use Appraisal\Controller\QuestionController;
 use Appraisal\Controller\StageQuestionController;
+use Appraisal\Controller\SetupController;
 
 return [
     'router' => [
@@ -126,6 +127,20 @@ return [
                     ],
                     'defaults'=>[
                         'controller'=> StageQuestionController::class,
+                        'action'=>'index'
+                    ]
+                ],
+            ],
+            'detailSetup'=>[
+                'type'=>Segment::class,
+                'options'=>[
+                    'route'=> '/appraisal/detailSetup[/:action[/:id]]',
+                    'constants'=>[
+                        'action'=>'[a-zA-Z][a-zA-Z0-9_-]*',
+                        'id'=>'[0-9]+',
+                    ],
+                    'defaults'=>[
+                        'controller'=> SetupController::class,
                         'action'=>'index'
                     ]
                 ],
@@ -334,6 +349,32 @@ return [
                 ],
             ],
         ],
+        'SetupDetail'=>[
+            [
+                'label'=>'Appraisal Detail Setup',
+                'route'=>'setupDetail',
+            ],[
+                'label' => 'Appraisal Detail Setup',
+                'route' => 'setupDetail',
+                'pages' => [
+                        [
+                        'label' => 'Assign',
+                        'route' => 'setupDetail',
+                        'action' => 'index',
+                    ],
+                        [
+                        'label' => 'Add',
+                        'route' => 'setupDetail',
+                        'action' => 'add',
+                    ],
+                        [
+                        'label' => 'Edit',
+                        'route' => 'setupDetail',
+                        'action' => 'edit',
+                    ],
+                ],
+            ],
+        ],
     ],
     'controllers' => [
         'factories' => [
@@ -344,7 +385,8 @@ return [
             StageController::class => ControllerFactory::class,
             HeadingController::class=> ControllerFactory::class,
             QuestionController::class=> ControllerFactory::class,
-            StageQuestionController::class=> ControllerFactory::class
+            StageQuestionController::class=> ControllerFactory::class,
+            SetupController::class=> ControllerFactory::class
         ],
     ],
     'view_manager' => [

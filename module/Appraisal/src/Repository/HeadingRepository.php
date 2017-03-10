@@ -55,17 +55,6 @@ class HeadingRepository implements RepositoryInterface{
         $result = $statement->execute();
         return $result;
     }
-    public function getActiveRecord(){
-        $sql = "SELECT QUESTION_ID, QUESTION_EDESC, 
-   TO_CHAR(NULL) HEADING_EDESC, HEADING_ID  FROM HR_APPRAISAL_QUESTION
-   UNION
-   SELECT (NULL) QUESTION_ID, TO_CHAR(NULL) QUESTION_EDESC , HEADING_EDESC ,HEADING_ID
-   FROM HR_APPRAISAL_HEADING WHERE APPRAISAL_TYPE_ID=6";
-        $statement = $this->adapter->query($sql);
-        $result = $statement->execute();
-        return $result;
-        
-    }
 
     public function fetchById($id) {
         $rowset = $this->tableGateway->select([Heading::HEADING_ID => $id, Heading::STATUS => 'E']);
@@ -91,6 +80,18 @@ class HeadingRepository implements RepositoryInterface{
         $statement = $sql->prepareStatementForSqlObject($select);
         $result = $statement->execute();
         return $result;
+    }
+    
+    public function getActiveRecord(){
+        $sql = "SELECT QUESTION_ID, QUESTION_EDESC, 
+   TO_CHAR(NULL) HEADING_EDESC, HEADING_ID  FROM HR_APPRAISAL_QUESTION
+   UNION
+   SELECT (NULL) QUESTION_ID, TO_CHAR(NULL) QUESTION_EDESC , HEADING_EDESC ,HEADING_ID
+   FROM HR_APPRAISAL_HEADING WHERE APPRAISAL_TYPE_ID=6";
+        $statement = $this->adapter->query($sql);
+        $result = $statement->execute();
+        return $result;
+        
     }
 
 }
