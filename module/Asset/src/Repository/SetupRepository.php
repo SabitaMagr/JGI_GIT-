@@ -6,6 +6,7 @@ use Application\Repository\RepositoryInterface;
 use Asset\Model\Setup;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\TableGateway\TableGateway;
+use Zend\Db\Sql\Select;
 
 
 class SetupRepository implements RepositoryInterface
@@ -35,11 +36,15 @@ class SetupRepository implements RepositoryInterface
     }
 
     public function fetchAll() {
-        
+        return $this->tableGateway->select(function(Select $select){
+            $select->where([Setup::STATUS=>'E']);
+            $select->order(Setup::ASSET_EDESC." ASC");
+        });
     }
 
     public function fetchById($id) {
-        
+        $rowset = $this->tableGateway->select([Setup::ASSET_ID => $id, Setup::STATUS => 'E']);
+        return $result = $rowset->current();
     }
 
 }
