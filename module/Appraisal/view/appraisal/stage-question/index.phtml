@@ -8,10 +8,10 @@ $this->headLink()
         ->appendStylesheet($this->basePath('assets/global/plugins/jstree/dist/themes/default/style.min.css'));
 
 $this->headScript()
-        ->appendFile($this->basePath('jszip/dist/jszip.min.js'))
         ->appendFile($this->basePath('assets/global/plugins/jstree/dist/jstree.min.js'))
-        ->appendFile($this->basePath('telerik_kendoui/js/kendo.all.min.js'))
         ->appendFile($this->basePath('js/appraisal/stage-question/index.js'))
+        ->appendFile($this->basePath('js/angular.min.js'))
+        ->appendFile($this->basePath('js/appraisal/stage-question/stageQuestionController.js'))
         ->appendFile($this->basePath('assets/global/plugins/bootstrap-confirmation/bootstrap-confirmation.min.js'));
 ?>
 
@@ -21,47 +21,45 @@ $this->headScript()
     </script>
 <?php } ?>
     <script>
-         document.urlHeadingList ='<?= $this->url("stageQuestion",['action'=>'headings']); ?>'; 
+         document.url='<?= $this->url("stageQuestion",['action'=>'index']); ?>';
     </script>
 
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\StageQuestion')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
 
-<div ng-app="hris" class="margin-top-20 formbg">
+<div ng-app="hris" ng-controller="stageQuestionController" class="margin-top-20 formbg">
     <div style="margin-top:15px;margin-bottom:10px;">
         <div class="row">
             <div class="col-md-6">
-            <select>
-                <?php foreach($typeResult as $typeRow){ ?>
-                <option><?php echo $typeRow['APPRAISAL_TYPE_EDESC']; ?></option>
-                <?php } ?>
-            </select>
-            
-            <div id="tree_3" class="tree-demo"></div>
+                <select id="appraisalTypeId">
+                    <option value="0" selected="selected">Please Select Appraisal Type</option>
+                    <?php foreach($typeResult as $typeRow){ ?>
+                    <option value="<?php echo $typeRow['APPRAISAL_TYPE_ID']; ?>"><?php echo $typeRow['APPRAISAL_TYPE_EDESC']; ?></option>
+                    <?php } ?>
+                </select>
+                
+                <span ng-bind="heading"></span>
+                
+                <div id="tree_3" class="tree-demo" style="margin-top:2%;"></div>
             </div>
             <div class="col-md-6">
-                <b>Stage Assign</b>
-                <ul id="roleList">
-                <?php
-                foreach($stageList as $stageRow){ ?>
-                <li><?php echo $stageRow['STAGE_EDESC']; ?></li>
-                <?php } ?>
-                </ul>
+                <div id="stageAssign" style="display: none;">
+                    <b style="color:#666;">Stage Assign</b>
+                    <ul id="roleList" style="margin-top:2%;">
+                        <li ng-repeat="stage in stageList">
+                            {{stage.STAGE_EDESC}}
+                            <div class="md-checkbox pull-right">
+                                <input type="checkbox" id="{{stage.STAGE_EDESC}}" class="md-check" ng-click="assignStage(stage)" ng-model="stage.checked">
+                                <label for="{{stage.STAGE_EDESC}}">
+                                    <span class="inc"></span>
+                                    <span class="check"></span>
+                                    <span class="box"></span></label>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
             </div>
         </div>  
-<!--            <ul id="roleList">
-                <?php // foreach($headingList as $headingRow){ ?>
-                <li><a><?php // echo $headingRow['HEADING_EDESC']; ?></a>
-                <?php // if(count($headingRow['QUESTIONS'])>0){ ?>
-                    <ul>
-                        <?php // foreach($headingRow['QUESTIONS'] as $questionRow){ ?>
-                        <li><a href=""><?php // echo $questionRow['QUESTION_EDESC']; ?></a></li>
-                        <?php // } ?>
-                    </ul>
-                <?php // } ?>
-                </li>
-                <?php // } ?>
-            </ul>-->
     </div>
 </div>
