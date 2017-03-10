@@ -1,0 +1,161 @@
+<?php
+//echo '<pre>';
+//print_r($group);
+//echo '</pre>';
+//die();
+
+$this->headScript()->appendFile($this->basePath('js/asset/setup/add.js'));
+
+$form->setAttribute('role', 'form');
+$form->setAttribute('id', 'assetSetup-form');
+$form->setAttribute('action', $this->url('assetSetup', ['action' => 'add']));
+
+$assetCode=$form->get('assetCode');
+
+$assetEdesc=$form->get('assetEdesc');
+
+$assetNdesc=$form->get('assetNdesc');
+
+$brandName=$form->get('brandName');
+
+$modelNo=$form->get('modelNo');
+
+$series=$form->get('series');
+
+$vendorName=$form->get('vendorName');
+
+$quantity=$form->get('quantity');
+
+$warranty=$form->get('warranty');
+
+$purchaseDate=$form->get('purchaseDate');
+
+$expiaryDate=$form->get('expiaryDate');
+
+$purchaseThrough=$form->get('purchaseThrough');
+
+$assetImage=$form->get('assetImage');
+
+$remarks=$form->get('remarks');
+
+$assetGroupId = $form->get('assetGroupId');
+$assetGroupId->setValueOptions($group);
+
+$submit = $form->get('submit');
+$submit->setAttribute('value', 'SUBMIT');
+
+$form->prepare();
+
+?>
+
+<div class="page-bar">
+<?= $this->navigation('Zend\Navigation\assetSetup')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
+</div>
+
+<div class="row margin-top-20">
+    <div class="col-sm-8 col-sm-offset-2">
+        <div class="portlet box custom-box">
+            <div class="portlet-title">
+                <div class="caption">
+                    <i class="fa fa-user"></i>New Entry
+                </div>
+            </div>
+            <div class="portlet-body">
+                <?php print $this->form()->openTag($form); ?>
+                <div class="form-group">
+                    <?php print $this->formLabel($assetCode); ?>
+                    <?php print $this->formElement($assetCode); ?>
+                    <?php print $this->formElementErrors()->render($assetCode, ['class' => 'help-block']); ?>
+                </div>
+                
+                <div class="form-group">
+                    <?php print $this->formLabel($assetEdesc); ?>
+                    <?php print $this->formElement($assetEdesc); ?>
+                    <?php print $this->formElementErrors()->render($assetEdesc, ['class' => 'help-block']); ?>
+                </div>
+                <div class="form-group">
+                    <?php print $this->formLabel($assetNdesc); ?>
+                    <?php print $this->formElement($assetNdesc); ?>
+                    <?php print $this->formElementErrors()->render($assetNdesc, ['class' => 'help-block']); ?>
+                </div>
+                <div class="form-group">
+                    <?php print $this->formLabel($assetGroupId); ?>
+                    <?php print $this->formElement($assetGroupId); ?>
+                    <?php print $this->formElementErrors()->render($assetGroupId, ['class' => 'help-block']); ?>
+                </div>
+                <div class="form-group">
+                    <?php print $this->formLabel($brandName); ?>
+                    <?php print $this->formElement($brandName); ?>
+                    <?php print $this->formElementErrors()->render($brandName, ['class' => 'help-block']); ?>
+                </div>
+                
+                <div class="form-group">
+                    <?php print $this->formLabel($modelNo); ?>
+                    <?php print $this->formElement($modelNo); ?>
+                    <?php print $this->formElementErrors()->render($modelNo, ['class' => 'help-block']); ?>
+                </div>
+               
+                <div class="form-group">
+                    <?php print $this->formLabel($series); ?>
+                    <?php print $this->formElement($series); ?>
+                    <?php print $this->formElementErrors()->render($series, ['class' => 'help-block']); ?>
+                </div>
+                
+               
+                <div class="form-group">
+                    <?php print $this->formLabel($vendorName); ?>
+                    <?php print $this->formElement($vendorName); ?>
+                    <?php print $this->formElementErrors()->render($vendorName, ['class' => 'help-block']); ?>
+                </div>
+               
+                <div class="form-group">
+                    <?php print $this->formLabel($quantity); ?>
+                    <?php print $this->formElement($quantity); ?>
+                    <?php print $this->formElementErrors()->render($quantity, ['class' => 'help-block']); ?>
+                </div>
+               
+                <div class="form-group">
+                    <?php print $this->formLabel($warranty); ?>
+                    <?php print $this->formElement($warranty); ?>
+                    <?php print $this->formElementErrors()->render($warranty, ['class' => 'help-block']); ?>
+                </div>
+               
+                <div class="form-group">
+                    <?php print $this->formLabel($purchaseDate); ?>
+                    <?php print $this->formElement($purchaseDate); ?>
+                    <?php print $this->formElementErrors()->render($purchaseDate, ['class' => 'help-block']); ?>
+                </div>
+               
+                <div class="form-group">
+                    <?php print $this->formLabel($expiaryDate); ?>
+                    <?php print $this->formElement($expiaryDate); ?>
+                    <?php print $this->formElementErrors()->render($expiaryDate, ['class' => 'help-block']); ?>
+                </div>
+               
+                <div class="form-group">
+                    <?php print $this->formLabel($purchaseThrough); ?>
+                    <?php print $this->formElement($purchaseThrough); ?>
+                    <?php print $this->formElementErrors()->render($purchaseThrough, ['class' => 'help-block']); ?>
+                </div>
+               
+                <div class="form-group">
+                    <?php print $this->formLabel($assetImage); ?>
+                    <?php print $this->formElement($assetImage); ?>
+                    <?php print $this->formElementErrors()->render($assetImage, ['class' => 'help-block']); ?>
+                </div>
+               
+                <div class="form-group">
+                    <?php print $this->formLabel($remarks); ?>
+                    <?php print $this->formElement($remarks); ?>
+                    <?php print $this->formElementErrors()->render($remarks, ['class' => 'help-block']); ?>
+                </div>
+                <?php
+                print $this->formSubmit($submit);
+                print $this->form()->closeTag();
+                ?>
+            </div>
+        </div>
+    </div>
+</div>
+
+
