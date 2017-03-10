@@ -1,10 +1,22 @@
 <?php
 
+$this->headLink()
+        ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.common.min.css'))
+        ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.rtl.min.css'))
+        ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.default.min.css'))
+        ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.dataviz.min.css'))
+        ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.dataviz.default.min.css'));
 
-
-echo 'asset group index';
-
+$this->headScript()
+        ->appendFile($this->basePath('jszip/dist/jszip.min.js'))
+        ->appendFile($this->basePath('telerik_kendoui/js/kendo.all.min.js'))
+        ->appendFile($this->basePath('js/asset/setup/index.js'))
+        ->appendFile($this->basePath('assets/global/plugins/bootstrap-confirmation/bootstrap-confirmation.min.js'));
 ?>
+
+<script>
+    document.setup =<?= json_encode($setup) ?>;
+</script>
 
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\assetSetup')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
@@ -35,5 +47,42 @@ echo 'asset group index';
             </div>
         </div>
     </div>
+    
+    <div id="assetSetupTable">
+
+    </div>
+     <script id="rowTemplate" type="text/x-kendo-tmpl">
+       <tr>
+        <td>    
+        #: (ASSET_CODE == null) ? '-' : ASSET_CODE #
+        </td>
+        <td>    
+        #: (ASSET_EDESC == null) ? '-' : ASSET_EDESC #
+        </td>
+        <td>    
+        #: (ASSET_GROUP_EDESC == null) ? '-' : ASSET_GROUP_EDESC #
+        </td>
+        <td>    
+        #: (BRAND_NAME == null) ? '-' : BRAND_NAME #
+        </td>
+        <td>    
+        #: (MODEL_NO == null) ? '-' : MODEL_NO #
+        </td>
+        <td>    
+        #: (QUANTITY == null) ? '-' : QUANTITY #
+        </td>
+        <td>
+        <a class="btn-edit"
+        href="<?= $this->url("assetSetup", ["action" => "edit"]); ?>/#:ASSET_ID#" style="height:17px;">
+        <i class="fa fa-edit"></i>
+        </a>
+        <a class="btn-delete confirmation"
+        href="<?= $this->url("assetSetup", ["action" => "delete"]); ?>/#:ASSET_ID#" id="bs_#:ASSET_ID #" style="height:17px;"> 
+        <i class="fa fa-trash-o"></i></a>
+        </a>
+        </td>
+        </tr>
+    </script>
+    
     </div>
 

@@ -1,6 +1,6 @@
 <?php
-//$this->headScript()->appendFile($this->basePath('js/appraisal/heading/add.js'));
-//print_r($appraisalTypes); die();
+$this->headScript()->appendFile($this->basePath('js/asset/group/add.js'));
+
 $form->setAttribute('role', 'form');
 $form->setAttribute('id', 'assetGroup-form');
 $form->setAttribute('action', $this->url('assetGroup', ['action' => 'edit','id'=>$id]));
@@ -41,7 +41,7 @@ $form->prepare();
                     <?php print $this->formLabel($groupCode); ?>
                     <?php print $this->formElement($groupCode); ?>
                     <?php print $this->formElementErrors()->render($groupCode, ['class' => 'help-block']); ?>
-                    <input type="hidden" value="<?php echo $id; ?>" id="headingId"/>
+                    <input type="hidden" value="<?php echo $id; ?>" id="assetGroupId"/>
                 </div>
                 <div class="form-group">
                     <?php print $this->formLabel($groupEdesc); ?>
