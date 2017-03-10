@@ -22,6 +22,7 @@
             columns: [
                 {field: "ASSET_CODE", title: "Asset Code", width: 50},
                 {field: "ASSET_EDESC", title: "Asset Name (in Eng.)", width: 100},
+                {field: "ASSET_GROUP_EDESC", title: "Asset Group", width: 80},
                 {field: "BRAND_NAME", title: "Brand Name ", width: 80},
                 {field: "MODEL_NO", title: "Model No ", width: 80},
                 {field: "QUANTITY", title: "Quantity ", width: 80},

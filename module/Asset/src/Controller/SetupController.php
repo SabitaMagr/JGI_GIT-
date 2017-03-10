@@ -86,23 +86,24 @@ class SetupController extends AbstractActionController {
         $request = $this->getRequest();
         $setup= new Setup();
         if(!$request->isPost()){
-            $setup->exchangeArrayFromDB($this->repository->fetchById($id)->getArrayCopy());
+            $setup->exchangeArrayFromDB($this->repository->fetchById($id));
             $this->form->bind($setup);
         }else{
-//            $this->form->setData($request->getPost());
-//            if($this->form->isValid()){
-//                $setup->exchangeArrayFromForm($this->form->getData());
-//                
-//                $setup->modifiedDate = Helper::getcurrentExpressionDate();
-//                $setup->modifiedBy = $this->employeeId;
-//                
-//                $this->repository->edit($group, $id);
-//                $this->flashmessenger()->addMessage("Asset Group Successfully Updated!!!");
-//                return $this->redirect()->toRoute("assetGroup");
-//            }
+            $this->form->setData($request->getPost());
+            if($this->form->isValid()){
+                $setup->exchangeArrayFromForm($this->form->getData());
+                
+                $setup->modifiedDate = Helper::getcurrentExpressionDate();
+                $setup->modifiedBy = $this->employeeId;
+                
+                $this->repository->edit($setup, $id);
+                $this->flashmessenger()->addMessage("Asset Setup Successfully Updated!!!");
+                return $this->redirect()->toRoute("assetSetup");
+            }
         }
         return Helper::addFlashMessagesToArray($this, [
             'form'=>$this->form,
+            'group' => ApplicationEntityHelper::getTableKVListWithSortOption($this->adapter, Group::TABLE_NAME, Group::ASSET_GROUP_ID, [Group::ASSET_GROUP_EDESC], ["STATUS" => "E"], Group::ASSET_GROUP_EDESC, "ASC"),
             'id'=>$id
         ]);
         
