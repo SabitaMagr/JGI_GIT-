@@ -49,7 +49,7 @@ class Setup extends Model{
     public $status;
     
     public $mappings = [
-        "appraialId"=>self::APPRAISAL_ID,
+        "appraisalId"=>self::APPRAISAL_ID,
         'appraisalCode'=>self::APPRAISAL_CODE,
         'appraisalEdesc'=>self::APPRAISAL_EDESC,
         'appraisalNdesc'=>self::APPRAISAL_NDESC,
