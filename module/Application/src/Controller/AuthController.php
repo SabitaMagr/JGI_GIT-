@@ -114,13 +114,13 @@ class AuthController extends AbstractActionController {
                         $todayTime = Helper::getcurrentExpressionTime();
                         $employeeId = $resultRow->EMPLOYEE_ID;
                         
-                        $result = $attendanceDetailRepo->fetchByEmpIdAttendanceDT($employeeId, $todayDate);
-                        print_r($result['IN_TIME']); die();
-                        
-                        $attendanceModel->employeeId = $employeeId;
-                        $attendanceModel->attendanceDt = $todayDate;
-                        $attendanceModel->attendanceTime = $todayTime;
-                        $attendanceRepo->add($attendanceModel);
+                        $result = $attendanceDetailRepo->getDtlWidEmpIdDate($employeeId, date(Helper::PHP_DATE_FORMAT));
+                        if($result['IN_TIME']==null || $result['IN_TIME']==''){
+                            $attendanceModel->employeeId = $employeeId;
+                            $attendanceModel->attendanceDt = $todayDate;
+                            $attendanceModel->attendanceTime = $todayTime;
+                            $attendanceRepo->add($attendanceModel);
+                        }
                     }
                     $this->getAuthService()->getStorage()->write(["user_name" => $request->getPost('username'), "user_id" => $resultRow->USER_ID, "employee_id" => $resultRow->EMPLOYEE_ID, "role_id" => $resultRow->ROLE_ID]);
                 }

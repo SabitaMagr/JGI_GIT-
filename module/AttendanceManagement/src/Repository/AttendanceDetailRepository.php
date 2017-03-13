@@ -308,6 +308,7 @@ class AttendanceDetailRepository implements RepositoryInterface {
             "A.ATTENDANCE_DT=".$attendanceDt
         ]);
         $statement = $sql->prepareStatementForSqlObject($select);
+        print_r($statement->getSql()); die();
         $result = $statement->execute();
         return $result->current();
     }
