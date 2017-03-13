@@ -17,7 +17,8 @@ class AppraisalAssignRepository implements RepositoryInterface{
     private $adapter;
     
     public function __construct(AdapterInterface $adapter) {
-        
+        $this->tableGateway = new TableGateway(AppraisalAssign::TABLE_NAME,$adapter);
+        $this->adapter = $adapter;
     }
 
     public function add(Model $model) {
