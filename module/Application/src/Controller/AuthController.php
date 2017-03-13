@@ -108,10 +108,14 @@ class AuthController extends AbstractActionController {
                     if(1== $request->getPost('checkIn')){
                         $attendanceRepo = new AttendanceRepository($this->adapter);
                         $attendanceModel = new Attendance();
+                        $attendanceDetailRepo = new AttendanceDetailRepository($this->adapter);
                         
                         $todayDate = Helper::getcurrentExpressionDate();
                         $todayTime = Helper::getcurrentExpressionTime();
                         $employeeId = $resultRow->EMPLOYEE_ID;
+                        
+                        $result = $attendanceDetailRepo->fetchByEmpIdAttendanceDT($employeeId, $todayDate);
+                        print_r($result['IN_TIME']); die();
                         
                         $attendanceModel->employeeId = $employeeId;
                         $attendanceModel->attendanceDt = $todayDate;

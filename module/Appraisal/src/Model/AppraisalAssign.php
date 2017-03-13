@@ -3,17 +3,13 @@ namespace Appraisal\Model;
 
 use Application\Model\Model;
 
-class Setup extends Model{
-    const TABLE_NAME = "HR_APPRAISAL_SETUP";
+class AppraisalAssign extends Model{
+    const TABLE_NAME = "HR_APPRAISAL_ASSIGN";
     
     const APPRAISAL_ID = "APPRAISAL_ID";
-    const APPRAISAL_CODE = "APPRAISAL_CODE";
-    const APPRAISAL_EDESC = "APPRAISAL_EDESC";
-    const APPRAISAL_NDESC = "APPRAISAL_NDESC";
-    const APPRAISAL_TYPE_ID = "APPRAISAL_TYPE_ID";
-    const START_DATE = "START_DATE";
-    const END_DATE = "END_DATE";
-    const CURRENT_STAGE_ID = "CURRENT_STAGE_ID";
+    const EMPLOYEE_ID = "EMPLOYEE_ID";
+    const APPRAISER_ID = "APPRAISER_ID";
+    const REVIEWER_ID = "REVIEWER_ID";
     const REMARKS = "REMARKS";
     const COMPANY_ID = "COMPANY_ID";
     const BRANCH_ID = "BRANCH_ID";
@@ -26,15 +22,11 @@ class Setup extends Model{
     const APPROVED_DATE = "APPROVED_DATE";
     const APPROVED = "APPROVED";
     const STATUS = "STATUS";
-    
+
     public $appraisalId;
-    public $appraisalCode;
-    public $appraisalEdesc;
-    public $appraisalNdesc;
-    public $appraisalTypeId;
-    public $startDate;
-    public $endDate;
-    public $currentStageId;
+    public $employeeId;
+    public $appraiserId;
+    public $reviewerId;
     public $remarks;
     public $companyId;
     public $branchId;
@@ -49,14 +41,10 @@ class Setup extends Model{
     public $status;
     
     public $mappings = [
-        "appraisalId"=>self::APPRAISAL_ID,
-        'appraisalCode'=>self::APPRAISAL_CODE,
-        'appraisalEdesc'=>self::APPRAISAL_EDESC,
-        'appraisalNdesc'=>self::APPRAISAL_NDESC,
-        'appraisalTypeId'=>self::APPRAISAL_TYPE_ID,
-        'startDate'=>self::START_DATE,
-        'endDate'=>self::END_DATE,
-        'currentStageId'=>self::CURRENT_STAGE_ID,
+        'appraisalId'=>self::APPRAISAL_ID,
+        'employeeId'=>self::EMPLOYEE_ID,
+        'appraiserId'=>self::APPRAISER_ID,
+        'reviewerId'=>self::REVIEWER_ID,
         'remarks'=>self::REMARKS,
         'companyId'=>self::COMPANY_ID,
         'branchId'=>self::BRANCH_ID,
@@ -69,5 +57,5 @@ class Setup extends Model{
         'approvedDate'=>self::APPROVED_DATE,
         'approved'=>self::APPROVED,
         'status'=>self::STATUS
-    ]; 
+    ];
 }
