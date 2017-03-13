@@ -3,6 +3,7 @@
 namespace Asset\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
+use Zend\Db\Adapter\AdapterInterface;
 
 
 class IssueController extends AbstractActionController
@@ -14,8 +15,8 @@ class IssueController extends AbstractActionController
     }
     
     public function indexAction() {
-        echo 'prabin';
-        die();
+//        echo 'prabin';
+//        die();
     }
 }
 
