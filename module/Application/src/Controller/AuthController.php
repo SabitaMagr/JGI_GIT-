@@ -108,15 +108,19 @@ class AuthController extends AbstractActionController {
                     if(1== $request->getPost('checkIn')){
                         $attendanceRepo = new AttendanceRepository($this->adapter);
                         $attendanceModel = new Attendance();
+                        $attendanceDetailRepo = new AttendanceDetailRepository($this->adapter);
                         
                         $todayDate = Helper::getcurrentExpressionDate();
                         $todayTime = Helper::getcurrentExpressionTime();
                         $employeeId = $resultRow->EMPLOYEE_ID;
                         
-                        $attendanceModel->employeeId = $employeeId;
-                        $attendanceModel->attendanceDt = $todayDate;
-                        $attendanceModel->attendanceTime = $todayTime;
-                        $attendanceRepo->add($attendanceModel);
+                        $result = $attendanceDetailRepo->getDtlWidEmpIdDate($employeeId, date(Helper::PHP_DATE_FORMAT));
+                        if($result['IN_TIME']==null || $result['IN_TIME']==''){
+                            $attendanceModel->employeeId = $employeeId;
+                            $attendanceModel->attendanceDt = $todayDate;
+                            $attendanceModel->attendanceTime = $todayTime;
+                            $attendanceRepo->add($attendanceModel);
+                        }
                     }
                     $this->getAuthService()->getStorage()->write(["user_name" => $request->getPost('username'), "user_id" => $resultRow->USER_ID, "employee_id" => $resultRow->EMPLOYEE_ID, "role_id" => $resultRow->ROLE_ID]);
                 }
@@ -133,21 +137,19 @@ class AuthController extends AbstractActionController {
         return $this->redirect()->toRoute('login');
     }
     public function checkoutAction() {
-        $this->getSessionStorage()->forgetMe();
-        $this->getAuthService()->clearIdentity();
-        $resultRow = $this->getAuthService()->getAdapter()->getResultRowObject();
         $attendanceRepo = new AttendanceRepository($this->adapter);
         $attendanceModel = new Attendance();
-
+        
         $todayDate = Helper::getcurrentExpressionDate();
         $todayTime = Helper::getcurrentExpressionTime();
-        $employeeId = $resultRow->EMPLOYEE_ID;
 
-        $attendanceModel->employeeId = $employeeId;
+        $attendanceModel->employeeId = $this->getAuthService()->getStorage()->read()['employee_id'];
         $attendanceModel->attendanceDt = $todayDate;
         $attendanceModel->attendanceTime = $todayTime;
         $attendanceRepo->add($attendanceModel);
         
+        $this->getSessionStorage()->forgetMe();
+        $this->getAuthService()->clearIdentity();
         $this->flashmessenger()->addMessage("You've been logged out");
         return $this->redirect()->toRoute('login');
     }

@@ -1,0 +1,92 @@
+<?php
+$this->headScript()->appendFile($this->basePath('js/appraisal/setup/add.js'));
+//print_r($form); die();
+$form->setAttribute('role', 'form');
+$form->setAttribute('id', 'appraisalSetup-form');
+
+$appraisalCode = $form->get('appraisalCode');
+$appraisalEdesc = $form->get('appraisalEdesc');
+$appraisalNdesc = $form->get('appraisalNdesc');
+$remarks = $form->get('remarks');
+$startDate = $form->get('startDate');
+$endDate = $form->get('endDate');
+$appraisalTypeId = $form->get('appraisalTypeId');
+$appraisalTypeId->setValueOptions($appraisalTypes);
+$currentStageId = $form->get('currentStageId');
+$currentStageId->setValueOptions($appraisalStages);
+
+$submit = $form->get('submit');
+$submit->setAttribute('value', 'SUBMIT');
+
+$form->setAttribute('action', $this->url('detailSetup', ['action' => 'add']));
+
+if ($this->messages) {
+    print '<ul class="help-block bg-danger" style="background:#f3e250;">';
+    foreach ($this->messages as $message) {
+        print '<li>' . $message . '</li>';
+    }
+    print '</ul>';
+}
+$form->prepare();
+?>
+<div class="page-bar">
+    <?= $this->navigation('Zend\Navigation\DetailSetup')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
+</div>
+<div class="row margin-top-20">
+    <div class="col-sm-8 col-sm-offset-2">
+        <div class="portlet box custom-box">
+            <div class="portlet-title">
+                <div class="caption">
+                    <i class="fa fa-user"></i>New Entry
+                </div>
+            </div>
+            <div class="portlet-body">
+                <?php print $this->form()->openTag($form); ?>
+                <div class="form-group">
+                    <?php print $this->formLabel($appraisalCode); ?>
+                    <?php print $this->formElement($appraisalCode); ?>
+                    <?php print $this->formElementErrors()->render($appraisalCode, ['class' => 'help-block']); ?>
+                </div>
+                <div class="form-group">
+                    <?php print $this->formLabel($appraisalEdesc); ?>
+                    <?php print $this->formElement($appraisalEdesc); ?>
+                    <?php print $this->formElementErrors()->render($appraisalEdesc, ['class' => 'help-block']); ?>
+                </div>
+                <div class="form-group">
+                    <?php print $this->formLabel($appraisalNdesc); ?>
+                    <?php print $this->formElement($appraisalNdesc); ?>
+                    <?php print $this->formElementErrors()->render($appraisalNdesc, ['class' => 'help-block']); ?>
+                </div>
+                <div class="form-group">
+                    <?php print $this->formLabel($appraisalTypeId); ?>
+                    <?php print $this->formElement($appraisalTypeId); ?>
+                    <?php print $this->formElementErrors()->render($appraisalTypeId, ['class' => 'help-block']); ?>
+                </div>
+                <div class="form-group">
+                    <?php print $this->formLabel($startDate); ?>
+                    <?php print $this->formElement($startDate); ?>
+                    <?php print $this->formElementErrors()->render($startDate, ['class' => 'help-block']); ?>
+                </div>
+                <div class="form-group">
+                    <?php print $this->formLabel($endDate); ?>
+                    <?php print $this->formElement($endDate); ?>
+                    <?php print $this->formElementErrors()->render($endDate, ['class' => 'help-block']); ?>
+                </div>
+                <div class="form-group">
+                    <?php print $this->formLabel($currentStageId); ?>
+                    <?php print $this->formElement($currentStageId); ?>
+                    <?php print $this->formElementErrors()->render($currentStageId, ['class' => 'help-block']); ?>
+                </div>
+                <div class="form-group">
+                    <?php print $this->formLabel($remarks); ?>
+                    <?php print $this->formElement($remarks); ?>
+                    <?php print $this->formElementErrors()->render($remarks, ['class' => 'help-block']); ?>
+                </div>
+                <?php
+                print $this->formSubmit($submit);
+                print $this->form()->closeTag();
+                ?>
+            </div>
+        </div>
+    </div>
+</div>

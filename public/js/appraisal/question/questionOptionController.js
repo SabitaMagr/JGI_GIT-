@@ -51,8 +51,8 @@ angular.module('hris', [])
                            $scope.question.appraiseeRating = questionDetail.APPRAISEE_RATING;
                            $scope.question.reviewerRating = questionDetail.REVIEWER_RATING;
                            $scope.question.appraiserRating = questionDetail.APPRAISER_RATING;
-                           $scope.question.minValue = parseInt(questionDetail.MIN_VALUE);
-                           $scope.question.maxValue = parseInt(questionDetail.MAX_VALUE);
+                           $scope.question.minValue = questionDetail.MIN_VALUE;
+                           $scope.question.maxValue = questionDetail.MAX_VALUE;
                            $scope.question.remarks = questionDetail.REMARKS;
                            
                            if(num>0){
@@ -113,7 +113,7 @@ angular.module('hris', [])
                         console.log("app log", "The form is not filled");
                         $scope.optionListEmpty = 0;
                     }
-                    console.log(questionId);
+                    console.log(typeof questionId);
                     window.app.pullDataById(document.urlSubmit, {
                         data: {
                             questionOptionList: $scope.questionOptionList,

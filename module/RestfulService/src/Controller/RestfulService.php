@@ -70,6 +70,8 @@ use Zend\View\Model\JsonModel;
 use SelfService\Repository\HolidayRepository as SelfHolidayRepository;
 use WorkOnDayoff\Repository\WorkOnDayoffStatusRepository;
 use WorkOnHoliday\Repository\WorkOnHolidayStatusRepository;
+use Appraisal\Repository\QuestionRepository;
+use Appraisal\Repository\HeadingRepository;
 
 class RestfulService extends AbstractRestfulController {
 
@@ -157,6 +159,9 @@ class RestfulService extends AbstractRestfulController {
                     break;
                 case "menuInsertion":
                     $responseData = $this->menuInsertion($postedData->data);
+                    break;
+                case "headingList":
+                    $responseData = $this->headingList();
                     break;
 
                 case "menuUpdate":
@@ -607,6 +612,50 @@ class RestfulService extends AbstractRestfulController {
                     $temArray[] = array(
                         "text" => $row['MENU_NAME'],
                         "id" => $row['MENU_ID'],
+                        "icon" => "fa fa-folder icon-state-success"
+                    );
+                }
+            }
+            return $temArray;
+        } else {
+            return false;
+        }
+    }
+    
+    
+    public function generateQuestion($headingId){
+        $questionRepo = new QuestionRepository($this->adapter);
+        $result = $questionRepo->fetchByHeadingId($headingId);
+        $questionList = array();
+        foreach($result as $row){
+            $questionList[] = array(
+                    "text" => $row['QUESTION_EDESC'],
+                    "id" => $row['QUESTION_ID'],
+                    "icon" => "fa fa-folder icon-state-success"
+                );
+        }
+        return $questionList;
+    }
+    
+    public function headingsList(){
+        $headingRepo = new HeadingRepository($this->adapter);
+        $result = $headingRepo->fetchAll();
+        $num = count($result);
+        if ($num > 0) {
+            $temArray = array();
+            foreach ($result as $row) {
+                $question = $this->generateQuestion($row['HEADING_ID']);
+                if ($question) {
+                    $temArray[] = array(
+                        "text" => $row['HEADING_EDESC'],
+                        "id" => $row['HEADING_ID'],
+                        "icon" => "fa fa-folder icon-state-success",
+                        "children" => $question
+                    );
+                } else {
+                    $temArray[] = array(
+                        "text" => $row['HEADING_EDESC'],
+                        "id" => $row['HEADING_ID'],
                         "icon" => "fa fa-folder icon-state-success"
                     );
                 }

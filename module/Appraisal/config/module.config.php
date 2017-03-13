@@ -13,6 +13,9 @@ use Zend\Router\Http\Segment;
 use Appraisal\Controller\StageController;
 use Appraisal\Controller\HeadingController;
 use Appraisal\Controller\QuestionController;
+use Appraisal\Controller\StageQuestionController;
+use Appraisal\Controller\SetupController;
+use Appraisal\Controller\AppraisalAssignController;
 
 return [
     'router' => [
@@ -111,6 +114,48 @@ return [
                     ],
                     'defaults'=>[
                         'controller'=> QuestionController::class,
+                        'action'=>'index'
+                    ]
+                ],
+            ],
+            'stageQuestion'=>[
+                'type'=>Segment::class,
+                'options'=>[
+                    'route'=> '/appraisal/stageQuestion[/:action[/:id]]',
+                    'constants'=>[
+                        'action'=>'[a-zA-Z][a-zA-Z0-9_-]*',
+                        'id'=>'[0-9]+',
+                    ],
+                    'defaults'=>[
+                        'controller'=> StageQuestionController::class,
+                        'action'=>'index'
+                    ]
+                ],
+            ],
+            'detailSetup'=>[
+                'type'=>Segment::class,
+                'options'=>[
+                    'route'=> '/appraisal/detailSetup[/:action[/:id]]',
+                    'constants'=>[
+                        'action'=>'[a-zA-Z][a-zA-Z0-9_-]*',
+                        'id'=>'[0-9]+',
+                    ],
+                    'defaults'=>[
+                        'controller'=> SetupController::class,
+                        'action'=>'index'
+                    ]
+                ],
+            ],
+            'appraisalAssign'=>[
+                'type'=>Segment::class,
+                'options'=>[
+                    'route'=> '/appraisal/assign[/:action[/:id]]',
+                    'constants'=>[
+                        'action'=>'[a-zA-Z][a-zA-Z0-9_-]*',
+                        'id'=>'[0-9]+',
+                    ],
+                    'defaults'=>[
+                        'controller'=> AppraisalAssignController::class,
                         'action'=>'index'
                     ]
                 ],
@@ -293,6 +338,84 @@ return [
                 ],
             ],
         ],
+        'StageQuestion'=>[
+            [
+                'label'=>'Stage wise Question',
+                'route'=>'stageQuestion',
+            ],[
+                'label' => 'Stage wise Question',
+                'route' => 'stageQuestion',
+                'pages' => [
+                        [
+                        'label' => 'Assign',
+                        'route' => 'stageQuestion',
+                        'action' => 'index',
+                    ],
+                        [
+                        'label' => 'Add',
+                        'route' => 'stageQuestion',
+                        'action' => 'add',
+                    ],
+                        [
+                        'label' => 'Edit',
+                        'route' => 'stageQuestion',
+                        'action' => 'edit',
+                    ],
+                ],
+            ],
+        ],
+        'DetailSetup'=>[
+            [
+                'label'=>'Appraisal Detail Setup',
+                'route'=>'detailSetup',
+            ],[
+                'label' => 'Appraisal Detail Setup',
+                'route' => 'detailSetup',
+                'pages' => [
+                        [
+                        'label' => 'List',
+                        'route' => 'detailSetup',
+                        'action' => 'index',
+                    ],
+                        [
+                        'label' => 'Add',
+                        'route' => 'detailSetup',
+                        'action' => 'add',
+                    ],
+                        [
+                        'label' => 'Edit',
+                        'route' => 'detailSetup',
+                        'action' => 'edit',
+                    ],
+                ],
+            ],
+        ],
+        'AppraisalAssign'=>[
+            [
+                'label'=>'Appraisal',
+                'route'=>'appraisalAssign',
+            ],[
+                'label' => 'Appraisal',
+                'route' => 'appraisalAssign',
+                'pages' => [
+                        [
+                        'label' => 'Assign',
+                        'route' => 'appraisalAssign',
+                        'action' => 'index',
+                    ],
+                        [
+                        'label' => 'Add',
+                        'route' => 'appraisalAssign',
+                        'action' => 'add',
+                    ],
+                        [
+                        'label' => 'Edit',
+                        'route' => 'appraisalAssign',
+                        'action' => 'edit',
+                    ],
+                ],
+            ],
+        ],
     ],
     'controllers' => [
         'factories' => [
@@ -302,7 +425,10 @@ return [
             TypeController::class => ControllerFactory::class,
             StageController::class => ControllerFactory::class,
             HeadingController::class=> ControllerFactory::class,
-            QuestionController::class=> ControllerFactory::class
+            QuestionController::class=> ControllerFactory::class,
+            StageQuestionController::class=> ControllerFactory::class,
+            SetupController::class=> ControllerFactory::class,
+            AppraisalAssignController::class=> ControllerFactory::class
         ],
     ],
     'view_manager' => [

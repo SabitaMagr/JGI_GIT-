@@ -1,6 +1,10 @@
 <?php
 
 return [
+    'Zend\I18n',
+    'Zend\InputFilter',
+    'Zend\Filter',
+    'Zend\Hydrator',
     'Zend\Mail',
     'Zend\Navigation',
     'Zend\Db',

@@ -5,8 +5,9 @@ use Zend\Db\TableGateway\TableGateway;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Sql\Sql;
 use Zend\Db\Sql\Expression;
-use Application\Repository\RepositoryInterface;
 use Appraisal\Model\Question;
+use Zend\Db\Sql\Select;
+use Application\Repository\RepositoryInterface;
 
 class QuestionRepository implements RepositoryInterface{
     private $tableGateway;
@@ -66,5 +67,16 @@ class QuestionRepository implements RepositoryInterface{
     public function fetchById($id) {
         $rowset = $this->tableGateway->select([Question::QUESTION_ID => $id, Question::STATUS => 'E']);
         return $result = $rowset->current();
+    }
+    public function fetchByHeadingId($headingId){
+        $rowset= $this->tableGateway->select(function(Select $select) use($headingId) {
+            $select->where([Question::STATUS=>'E',Question::HEADING_ID=>$headingId]);
+            $select->order(Question::QUESTION_ID." ASC");
+        });
+        $result = [];
+        foreach($rowset as $row){
+            array_push($result,$row);
+        }
+        return $result;
     }
 }

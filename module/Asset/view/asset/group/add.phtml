@@ -1,8 +1,5 @@
 <?php
-//print_r($this->url('heading'));
-//echo '</br>';
-//print_r($this->url('assetGroup', ['action' => 'add']));
-//die();
+$this->headScript()->appendFile($this->basePath('js/asset/group/add.js'));
 
 $form->setAttribute('role', 'form');
 $form->setAttribute('id', 'assetGroup-form');
