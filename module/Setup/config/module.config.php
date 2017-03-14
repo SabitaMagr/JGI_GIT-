@@ -280,6 +280,20 @@ return [
                     ]
                 ],
             ],
+            'experience' => [
+                'type' => segment::class,
+                'options' => [
+                    'route' => '/setup/experience[/:action[/:id]]',
+                    'constants' => [
+                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'id' => '[0-9]+',
+                    ],
+                    'defaults' => [
+                        'controller' => Controller\ExperienceController::class,
+                        'action' => 'index',
+                    ]
+                ],
+            ],
         ]
     ],
     'navigation' => [
@@ -806,6 +820,33 @@ return [
                 ]
             ]
         ],
+        'experience' => [
+                [
+                'label' => 'Experience',
+                'route' => 'experience',
+            ],
+                [
+                'label' => 'Experience',
+                'route' => 'experience',
+                'pages' => [
+                        [
+                        'label' => 'List',
+                        'route' => 'experience',
+                        'action' => 'index',
+                    ],
+                        [
+                        'label' => 'Add',
+                        'route' => 'experience',
+                        'action' => 'add',
+                    ],
+                        [
+                        'label' => 'Edit',
+                        'route' => 'experience',
+                        'action' => 'edit',
+                    ],
+                ]
+            ]
+        ]
     ],
     'controllers' => [
         'factories' => [
@@ -828,7 +869,8 @@ return [
             Controller\TrainingController::class => ControllerFactory::class,
             Controller\LoanController::class => ControllerFactory::class,
             Controller\AdvanceController::class => ControllerFactory::class,
-            Controller\InstituteController::class => ControllerFactory::class
+            Controller\InstituteController::class => ControllerFactory::class,
+            Controller\ExperienceController::class=> ControllerFactory::class
         ],
     ],
     'view_manager' => [

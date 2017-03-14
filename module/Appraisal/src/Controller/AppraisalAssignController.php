@@ -66,8 +66,7 @@ class AppraisalAssignController extends AbstractActionController{
         $appraisalFormElement = new Select();
         $appraisalFormElement->setName("appraisal");
         $appraisals = EntityHelper::getTableKVListWithSortOption($this->adapter, Setup::TABLE_NAME, Setup::APPRAISAL_ID, [Setup::APPRAISAL_EDESC], [Setup::STATUS => 'E'], Setup::APPRAISAL_EDESC, "ASC");
-        $appraisals1 = [-1 => "All"] + $appraisals;
-        $appraisalFormElement->setValueOptions($appraisals1);
+        $appraisalFormElement->setValueOptions($appraisals);
         $appraisalFormElement->setAttributes(["id" => "appraisalId", "class" => "form-control"]);
         $appraisalFormElement->setLabel("Appraisal");
         
@@ -77,6 +76,9 @@ class AppraisalAssignController extends AbstractActionController{
             switch ($postData->action){
                 case "pullEmployeeWidAssignDetail":
                     $responseData = $this->pullEmployeeWidAssignDetail($postData->data);
+                    break;
+                case "pullEmployeeListForReportingRole":
+                    $responseData = $this->pullEmployeeListForReportingRole($postData->data);
                     break;
                 default:
                     $responseData = [
@@ -125,6 +127,32 @@ class AppraisalAssignController extends AbstractActionController{
         return [
             "success" => true,
             "data" => $employeeList
+        ];
+    }
+    
+    public function pullEmployeeListForReportingRole($data){
+        $branchId = $data['branchId'];
+        $departmentId = $data['departmentId'];
+        $designationId = $data['designationId'];
+
+        $repository = new EmployeeRepository($this->adapter);
+        $employeeResult = $repository->filterRecords(-1, $branchId, $departmentId, $designationId, -1, -1, -1, 1);
+
+        $employeeList = [];
+        $i = 0;
+        foreach ($employeeResult as $employeeRow) {
+            if ($employeeRow['MIDDLE_NAME'] != null) {
+                $middleName = " " . $employeeRow['MIDDLE_NAME'] . " ";
+            } else {
+                $middleName = " ";
+            }
+            $employeeList [$i]["id"] = $employeeRow['EMPLOYEE_ID'];
+            $employeeList [$i]["name"] = $employeeRow['FIRST_NAME'] . $middleName . $employeeRow['LAST_NAME'];
+            $i++;
+        }
+        return [
+            'success' => true,
+            'data' => $employeeList
         ];
     }
     
