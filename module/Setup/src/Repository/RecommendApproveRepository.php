@@ -75,17 +75,40 @@ class RecommendApproveRepository implements RepositoryInterface
         ], true);
         $select->from(['RA' => RecommendApprove::TABLE_NAME])
             ->join(['E'=>"HR_EMPLOYEES"],"E.EMPLOYEE_ID=RA.EMPLOYEE_ID",['FIRST_NAME','MIDDLE_NAME','LAST_NAME'],"left")
-            ->join(['E1'=>"HR_EMPLOYEES"],"E1.EMPLOYEE_ID=RA.RECOMMEND_BY",['FIRST_NAME_R'=>"FIRST_NAME","MIDDLE_NAME_R"=>'MIDDLE_NAME',"LAST_NAME_R"=>'LAST_NAME'],"left")
-            ->join(['E2'=>"HR_EMPLOYEES"],"E2.EMPLOYEE_ID=RA.APPROVED_BY",['FIRST_NAME_A'=>"FIRST_NAME","MIDDLE_NAME_A"=>'MIDDLE_NAME',"LAST_NAME_A"=>'LAST_NAME'],"left");
+            ->join(['E1'=>"HR_EMPLOYEES"],"E1.EMPLOYEE_ID=RA.RECOMMEND_BY",['FIRST_NAME_R'=>"FIRST_NAME","MIDDLE_NAME_R"=>'MIDDLE_NAME',"LAST_NAME_R"=>'LAST_NAME',"RETIRED_R"=>"RETIRED_FLAG","STATUS_R"=>"STATUS"],"left")
+            ->join(['E2'=>"HR_EMPLOYEES"],"E2.EMPLOYEE_ID=RA.APPROVED_BY",['FIRST_NAME_A'=>"FIRST_NAME","MIDDLE_NAME_A"=>'MIDDLE_NAME',"LAST_NAME_A"=>'LAST_NAME',"RETIRED_A"=>"RETIRED_FLAG","STATUS_A"=>"STATUS"],"left");
 
         $select->where([
             "RA.STATUS='E'",
             "E.STATUS='E'",
-            "E.RETIRED_FLAG='N'",
-            "E1.STATUS='E'",
-            "E1.RETIRED_FLAG='N'",
-            "E2.STATUS='E'",
-            "E2.RETIRED_FLAG='N'"
+            "E.RETIRED_FLAG='N' AND
+  (((E1.STATUS =
+    CASE
+      WHEN E1.STATUS IS NOT NULL
+      THEN ('E')
+    END
+  OR E1.STATUS IS NULL)
+  AND
+  (E1.RETIRED_FLAG =
+    CASE
+      WHEN E1.RETIRED_FLAG IS NOT NULL
+      THEN ('N')
+    END
+  OR E1.RETIRED_FLAG IS NULL))
+OR
+  ((E2.STATUS =
+    CASE
+      WHEN E2.STATUS IS NOT NULL
+      THEN ('E')
+    END
+  OR E2.STATUS IS NULL)
+AND
+  (E2.RETIRED_FLAG =
+    CASE
+      WHEN E2.RETIRED_FLAG IS NOT NULL
+      THEN ('N')
+    END
+  OR E2.RETIRED_FLAG IS NULL)))"              
         ]);
         $select->order("E.FIRST_NAME ASC");
         $statement = $sql->prepareStatementForSqlObject($select);
@@ -137,20 +160,46 @@ class RecommendApproveRepository implements RepositoryInterface
         ], true);
         $select->from(['RA' => RecommendApprove::TABLE_NAME])
             ->join(['E'=>"HR_EMPLOYEES"],"E.EMPLOYEE_ID=RA.EMPLOYEE_ID",['FIRST_NAME','MIDDLE_NAME','LAST_NAME'],"left")
-            ->join(['E1'=>"HR_EMPLOYEES"],"E1.EMPLOYEE_ID=RA.RECOMMEND_BY",['FIRST_NAME_R'=>"FIRST_NAME","MIDDLE_NAME_R"=>'MIDDLE_NAME',"LAST_NAME_R"=>'LAST_NAME'],"left")
-            ->join(['E2'=>"HR_EMPLOYEES"],"E2.EMPLOYEE_ID=RA.APPROVED_BY",['FIRST_NAME_A'=>"FIRST_NAME","MIDDLE_NAME_A"=>'MIDDLE_NAME',"LAST_NAME_A"=>'LAST_NAME'],"left");
+            ->join(['E1'=>"HR_EMPLOYEES"],"E1.EMPLOYEE_ID=RA.RECOMMEND_BY",['FIRST_NAME_R'=>"FIRST_NAME","MIDDLE_NAME_R"=>'MIDDLE_NAME',"LAST_NAME_R"=>'LAST_NAME',"RETIRED_R"=>"RETIRED_FLAG","STATUS_R"=>"STATUS"],"left")
+            ->join(['E2'=>"HR_EMPLOYEES"],"E2.EMPLOYEE_ID=RA.APPROVED_BY",['FIRST_NAME_A'=>"FIRST_NAME","MIDDLE_NAME_A"=>'MIDDLE_NAME',"LAST_NAME_A"=>'LAST_NAME',"RETIRED_A"=>"RETIRED_FLAG","STATUS_A"=>"STATUS"],"left");
 
         $select->where([
             "RA.STATUS='E'",
             "E.STATUS='E'",
-            "E1.STATUS='E'",
-            "E2.STATUS='E'",
-            "E1.RETIRED_FLAG='N'",
-            "E2.RETIRED_FLAG='N'",
-            "RA.EMPLOYEE_ID=".$employeeId,           
+            "E.RETIRED_FLAG='N'",
+            "RA.EMPLOYEE_ID=".$employeeId." AND
+  (((E1.STATUS =
+    CASE
+      WHEN E1.STATUS IS NOT NULL
+      THEN ('E')
+    END
+  OR E1.STATUS IS NULL)
+  AND
+  (E1.RETIRED_FLAG =
+    CASE
+      WHEN E1.RETIRED_FLAG IS NOT NULL
+      THEN ('N')
+    END
+  OR E1.RETIRED_FLAG IS NULL))
+OR
+  ((E2.STATUS =
+    CASE
+      WHEN E2.STATUS IS NOT NULL
+      THEN ('E')
+    END
+  OR E2.STATUS IS NULL)
+AND
+  (E2.RETIRED_FLAG =
+    CASE
+      WHEN E2.RETIRED_FLAG IS NOT NULL
+      THEN ('N')
+    END
+  OR E2.RETIRED_FLAG IS NULL)))"         
         ]);
+        
         $select->order("E.FIRST_NAME ASC");
         $statement = $sql->prepareStatementForSqlObject($select);
+//        print_r($statement->getSql()); die();
         $result = $statement->execute();
         return $result->current();
     }
