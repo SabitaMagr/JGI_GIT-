@@ -20,13 +20,16 @@ angular.module('hris', ['ui.bootstrap'])
                 var departmentId = angular.element(document.getElementById('departmentId')).val();
                 var designationId = angular.element(document.getElementById('designationId')).val();
                 var employeeId = angular.element(document.getElementById('employeeId')).val();
+                var appraisalId = angular.element(document.getElementById('appraisalId')).val();
+                console.log(appraisalId);
                 window.app.pullDataById(document.url, {
                     action: 'pullEmployeeWidAssignDetail',
                     data: {
                         branchId: branchId,
                         departmentId: departmentId,
                         designationId: designationId,
-                        employeeId: employeeId
+                        employeeId: employeeId,
+                        appraisalId:appraisalId
                     }
                 }).then(function (success) {
                     console.log("Employee list for assign", success);
@@ -131,4 +134,113 @@ angular.module('hris', ['ui.bootstrap'])
                     $scope.showHideAssignBtn = false;
                 }
             }
+            $scope.assign = function () {
+                l.start();
+                l.setProgress(0.5);
+                var reviewerElement = angular.element(document.getElementById('reviewerId'));
+                var reviewerId = reviewerElement.val();
+                var reviewerName = document.getElementById('reviewerId').options[document.getElementById('reviewerId').selectedIndex].text;
+                
+                var appraiserElement = angular.element(document.getElementById('appraiserId'));
+                var appraiserId = appraiserElement.val();
+                var appraiserName = document.getElementById('appraiserId').options[document.getElementById('appraiserId').selectedIndex].text;
+               
+                var appraisalElement = angular.element(document.getElementById('appraisalId'));
+                var appraisalId = appraisalElement.val();
+                var appraisalName = document.getElementById('appraisalId').options[document.getElementById('appraisalId').selectedIndex].text;
+                
+                var errorFlagR = false;
+                if ($scope.reviewerAssign) {
+                    if (reviewerId == "?") {
+                        l.stop();
+                        window.app.errorMessage(
+                                "Reviewer is required!!!",
+                                "Application Error"
+                                );
+                        errorFlagR = true;
+                    } else {
+                        errorFlagR = false;
+                    }
+                } else {
+                    l.stop();
+                }
+                var errorFlagA = false;
+                if ($scope.appraiserAssign) {
+                    if (appraiserId == "?") {
+                        l.stop();
+                        window.app.errorMessage(
+                                "Appraiser is required!!!"
+                                ,
+                                "Application Error"
+                                );
+                        errorFlagA = true;
+                    } else {
+                        errorFlagA = false;
+                    }
+                } else {
+                    l.stop();
+                }
+
+                if (!errorFlagR && !errorFlagA) {
+                    submitRecord(reviewerId, reviewerName, appraiserId, appraiserName,appraisalId,appraisalName);
+                }
+            };
+            var submitRecord = function (reviewerId, reviewerName, appraiserId, appraiserName,appraisalId,appraisalName) {
+                var promises = [];
+
+                if (!$scope.reviewerAssign) {
+                    var reviewerId1 = null;
+                } else {
+                    var reviewerId1 = reviewerId;
+                }
+
+                if (!$scope.appraiserAssign) {
+                    var appraiserId1 = null;
+                } else {
+                    var appraiserId1 = appraiserId;
+                }
+                for (var index in $scope.employeeList) {
+                    if ($scope.employeeList[index].checked) {
+                        promises.push(window.app.pullDataById(document.url, {
+                            action: 'assignAppraisal',
+                            data: {
+                                employeeId: $scope.employeeList[index].EMPLOYEE_ID,
+                                reviewerId: reviewerId1,
+                                appraiserId: appraiserId1,
+                                appraisalId: appraisalId
+                            }
+                        }));
+                    }
+                }
+                Promise.all(promises).then(function (success) {
+                    l.stop();
+                    $scope.$apply(function () {
+                        for (var index in $scope.employeeList) {
+                            if ($scope.employeeList[index].checked) {
+                                if ($scope.reviewerAssign) {
+                                    if ($scope.employeeList[index].EMPLOYEE_ID == reviewerId) {
+                                        var reviewerNameNew = null;
+                                    } else {
+                                        var reviewerNameNew = reviewerName;
+                                    }
+                                    $scope.employeeList[index].REVIEWER_NAME = reviewerNameNew;
+                                    $scope.employeeList[index].APPRAISAL_EDESC = appraisalName;
+                                }
+
+                                if ($scope.appraiserAssign) {
+                                    if ($scope.employeeList[index].EMPLOYEE_ID == appraiserId) {
+                                        var appraiserNameNew = null;
+                                    } else {
+                                        var appraiserNameNew = appraiserName;
+                                    }
+                                    $scope.employeeList[index].APPRAISER_NAME = appraiserNameNew;
+                                    $scope.employeeList[index].APPRAISAL_EDESC = appraisalName;
+                                }
+                                console.log(appraiserName);
+                            }
+                        }
+                    });
+                    window.toastr.success("Reporting Hierarchy for Appraisal Assigned Successfully!", "Notification");
+                });
+            };
         });

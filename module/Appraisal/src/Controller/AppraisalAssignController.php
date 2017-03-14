@@ -15,6 +15,7 @@ use Appraisal\Model\Setup;
 use Zend\Form\Element\Select;
 use Application\Custom\CustomViewModel;
 use Setup\Repository\EmployeeRepository;
+use Appraisal\Model\AppraisalAssign;
 
 class AppraisalAssignController extends AbstractActionController{
     private $adapter;
@@ -80,6 +81,9 @@ class AppraisalAssignController extends AbstractActionController{
                 case "pullEmployeeListForReportingRole":
                     $responseData = $this->pullEmployeeListForReportingRole($postData->data);
                     break;
+                case "assignAppraisal":
+                    $responseData = $this->assignAppraisal($postData->data);
+                    break;
                 default:
                     $responseData = [
                         "success" => false
@@ -103,27 +107,42 @@ class AppraisalAssignController extends AbstractActionController{
         $departmentId = $data['departmentId'];
         $designationId = $data['designationId'];
         $employeeId = $data['employeeId'];
+        $appraisalId = $data['appraisalId'];
 
-        //$recommApproverRepo = new RecommendApproveRepository($this->adapter);
-
+        
         $employeeRepo = new EmployeeRepository($this->adapter);
         $employeeResult = $employeeRepo->filterRecords($employeeId, $branchId, $departmentId, $designationId, -1, -1, -1, 1);
 
         $employeeList = [];
         foreach ($employeeResult as $employeeRow) {
             $employeeId = $employeeRow['EMPLOYEE_ID'];
-//            $recommedApproverList = $recommApproverRepo->getDetailByEmployeeID($employeeId);
-//            if ($recommedApproverList != null) {
-//                $middleNameR = ($recommedApproverList['MIDDLE_NAME_R'] != null) ? " " . $recommedApproverList['MIDDLE_NAME_R'] . " " : " ";
-//                $middleNameA = ($recommedApproverList['MIDDLE_NAME_A'] != null) ? " " . $recommedApproverList['MIDDLE_NAME_A'] . " " : " ";
-//                $employeeRow['RECOMMENDER_NAME'] = $recommedApproverList['FIRST_NAME_R'] . $middleNameR . $recommedApproverList['LAST_NAME_R'];
-//                $employeeRow['APPROVER_NAME'] = $recommedApproverList['FIRST_NAME_A'] . $middleNameA . $recommedApproverList['LAST_NAME_A'];
-//            } else {
-//                $employeeRow['RECOMMENDER_NAME'] = "";
-//                $employeeRow['APPROVER_NAME'] = "";
-//            }
+            $assignList = $this->repository->getDetailByEmpAppraisalId($employeeId,$appraisalId);
+            
+            if ($assignList != null) {
+                $middleNameR = ($assignList['MIDDLE_NAME_R'] != null) ? " " . $assignList['MIDDLE_NAME_R'] . " " : " ";
+                $middleNameA = ($assignList['MIDDLE_NAME_A'] != null) ? " " . $assignList['MIDDLE_NAME_A'] . " " : " ";
+                
+                if($assignList['RETIRED_R']!='Y' && $assignList['STATUS_R']!='D'){
+                    $employeeRow['REVIEWER_NAME'] = $assignList['FIRST_NAME_R'] . $middleNameR . $assignList['LAST_NAME_R'];
+                }else{
+                    $employeeRow['REVIEWER_NAME'] = "";
+                }
+                if($assignList['RETIRED_A']!='Y' && $assignList['STATUS_A']!='D'){
+                    $employeeRow['APPRAISER_NAME'] = $assignList['FIRST_NAME_A'] . $middleNameA . $assignList['LAST_NAME_A'];
+                }else{
+                    $employeeRow['APPRAISER_NAME'] = "";
+                }
+                $employeeRow['APPRAISAL_EDESC'] = $assignList['APPRAISAL_EDESC'];
+            } else {
+                $employeeRow['REVIEWER_NAME'] = "";
+                $employeeRow['APPRAISER_NAME'] = "";
+                $employeeRow['APPRAISAL_EDESC'] = "";
+            }
+            
             array_push($employeeList, $employeeRow);
         }
+//        print "<pre>";
+//        print_r($employeeList); die();
         return [
             "success" => true,
             "data" => $employeeList
@@ -153,6 +172,62 @@ class AppraisalAssignController extends AbstractActionController{
         return [
             'success' => true,
             'data' => $employeeList
+        ];
+    }
+    public function assignAppraisal($data){
+        $employeeId = (int)$data['employeeId'];
+        $reviewerId = (int)$data['reviewerId'];
+        $appraiserId = (int)$data['appraiserId'];
+        $appraisalId = (int)$data['appraisalId'];
+//        print_r($appraisalId); die();
+        
+        $employeeRepo = new EmployeeRepository($this->adapter);
+        $employeeDetail = $employeeRepo->fetchById($this->employeeId);
+        
+        
+        if ($reviewerId == "" || $reviewerId == null) {
+            $reviewerIdNew = null;
+        } else if ($employeeId == $reviewerId) {
+            $reviewerIdNew = "";
+        } else {
+            $reviewerIdNew = $reviewerId;
+        }
+
+        if ($appraiserId == "" || $appraiserId == null) {
+            $appraiserIdNew = null;
+        } else if ($employeeId == $appraiserId) {
+            $appraiserIdNew = "";
+        } else {
+            $appraiserIdNew = $appraiserId;
+        }
+
+        $appraisalAssign = new AppraisalAssign();
+        $employeePreDtl = $this->repository->getDetailByEmpAppraisalId($employeeId,$appraisalId);
+        if ($employeePreDtl == null) {
+            $appraisalAssign->employeeId = $employeeId;
+            $appraisalAssign->appraisalId = $appraisalId;
+            $appraisalAssign->reviewerId = $reviewerIdNew;
+            $appraisalAssign->appraiserId = $appraiserIdNew;
+            $appraisalAssign->createdDate = Helper::getcurrentExpressionDate();
+            $appraisalAssign->approvedDate = Helper::getcurrentExpressionDate();
+            $appraisalAssign->createdBy = $this->employeeId;
+            $appraisalAssign->companyId = $employeeDetail['COMPANY_ID'];
+            $appraisalAssign->branchId = $employeeDetail['BRANCH_ID'];
+            $appraisalAssign->status = 'E';
+            $this->repository->add($appraisalAssign);
+        } else if ($employeePreDtl != null) {
+            $id = $employeePreDtl['EMPLOYEE_ID'];
+            $appraisalAssign->employeeId = $employeeId;
+            $appraisalAssign->reviewerId = $reviewerIdNew;
+            $appraisalAssign->appraiserId = $appraiserIdNew;
+            $appraisalAssign->modifiedDate = Helper::getcurrentExpressionDate();
+            $appraisalAssign->modifiedBy = $this->employeeId;
+            $appraisalAssign->status = 'E';
+            $this->repository->edit($appraisalAssign, [$employeeId,$appraisalId]);
+        }
+        return [
+            "success" => true,
+            "data" => $data
         ];
     }
     
