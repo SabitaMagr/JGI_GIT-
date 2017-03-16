@@ -169,17 +169,17 @@ $form->prepare();
                             <?php print $this->formLabel($appraiseeFlag); ?>
                             <div class="md-radio-inline">
                                 <div class="md-radio">
-                                    <input checked="checked" ng-model="question.appraiseeRating" type="radio" value="Y" name="appraiseeRating" id="appraiseeRating+Yes" class="md-radiobtn radioButton">
-                                    <label for="appraiseeRating+Yes">
+                                    <input ng-model="question.appraiseeFlag" checked="checked" type="radio" value="Y" name="appraiseeFlag" id="appraiseeFlag+Yes" class="md-radiobtn radioButton">
+                                    <label for="appraiseeFlag+Yes">
                                         <span></span>
                                         <span class="check"></span>
                                         <span class="box"></span> Yes
                                     </label>
                                 </div>
                                 <div class="md-radio">
-                                    <input type="radio" value="N" ng-model="question.appraiseeRating" name="appraiseeRating" id="appraiseeRating+No" class="md-radiobtn radioButton">
-                                    <label for="appraiseeRating+No">
-                                        <span class="inc"></span>
+                                    <input type="radio" ng-model="question.appraiseeFlag" value="N" name="appraiseeFlag" id="appraiseeFlag+No" class="md-radiobtn radioButton">
+                                    <label for="appraiseeFlag+No">
+                                        <span></span>
                                         <span class="check"></span>
                                         <span class="box"></span> No
                                     </label>
