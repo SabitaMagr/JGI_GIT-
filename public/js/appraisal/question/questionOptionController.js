@@ -39,6 +39,7 @@ angular.module('hris', [])
                            var questionDetail = tempData.questionDetail
                            var questionOptionList = tempData.questionOptionList;
                            var num = questionOptionList.length;
+                           console.log(questionDetail);
                            $scope.question.questionCode = questionDetail.QUESTION_CODE;
                            $scope.question.questionEdesc = questionDetail.QUESTION_EDESC;
                            $scope.question.questionNdesc = questionDetail.QUESTION_NDESC;
@@ -51,8 +52,8 @@ angular.module('hris', [])
                            $scope.question.appraiseeRating = questionDetail.APPRAISEE_RATING;
                            $scope.question.reviewerRating = questionDetail.REVIEWER_RATING;
                            $scope.question.appraiserRating = questionDetail.APPRAISER_RATING;
-                           $scope.question.minValue = questionDetail.MIN_VALUE;
-                           $scope.question.maxValue = questionDetail.MAX_VALUE;
+                           $scope.question.minValue = parseInt(questionDetail.MIN_VALUE);
+                           $scope.question.maxValue = parseInt(questionDetail.MAX_VALUE);
                            $scope.question.remarks = questionDetail.REMARKS;
                            
                            if(num>0){
