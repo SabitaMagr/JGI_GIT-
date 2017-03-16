@@ -260,7 +260,6 @@ class LeaveBalance extends AbstractActionController {
             header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
             header('Content-Disposition: attachment;filename="LeaveBalance.xlsx"');
             header('Cache-Control: max-age=0');
-
             ob_end_clean();
             $objWriter->save('php://output');
             exit;

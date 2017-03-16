@@ -22,7 +22,7 @@
                 {field: "HEADING_CODE", title: "Heading Code",width:80},
                 {field: "HEADING_EDESC", title: "Heading Name (in Eng.)",width:120},
                 {field: "HEADING_NDESC", title: "Heading Name (in Nep.)",width:120},
-                {field: "PERCENTAGE", title: "Percentage",width:100},
+                {field: "PERCENTAGE", title: "Percentage (%)",width:100},
                 {field: "APPRAISAL_TYPE_EDESC", title: "Appraisal Type Name",width:100},
                 {title: "Action",width:100}
             ],
