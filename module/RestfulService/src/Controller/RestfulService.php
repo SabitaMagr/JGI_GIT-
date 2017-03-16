@@ -2188,12 +2188,23 @@ class RestfulService extends AbstractRestfulController {
             if ($recommedApproverList != null) {
                 $middleNameR = ($recommedApproverList['MIDDLE_NAME_R'] != null) ? " " . $recommedApproverList['MIDDLE_NAME_R'] . " " : " ";
                 $middleNameA = ($recommedApproverList['MIDDLE_NAME_A'] != null) ? " " . $recommedApproverList['MIDDLE_NAME_A'] . " " : " ";
-                $employeeRow['RECOMMENDER_NAME'] = $recommedApproverList['FIRST_NAME_R'] . $middleNameR . $recommedApproverList['LAST_NAME_R'];
-                $employeeRow['APPROVER_NAME'] = $recommedApproverList['FIRST_NAME_A'] . $middleNameA . $recommedApproverList['LAST_NAME_A'];
+                
+                if($recommedApproverList['RETIRED_R']!='Y' && $recommedApproverList['STATUS_R']!='D'){
+                    $employeeRow['RECOMMENDER_NAME'] = $recommedApproverList['FIRST_NAME_R'] . $middleNameR . $recommedApproverList['LAST_NAME_R'];
+                }else{
+                    $employeeRow['RECOMMENDER_NAME'] = "";
+                }
+                if($recommedApproverList['RETIRED_A']!='Y' && $recommedApproverList['STATUS_A']!='D'){
+                    $employeeRow['APPROVER_NAME'] = $recommedApproverList['FIRST_NAME_A'] . $middleNameA . $recommedApproverList['LAST_NAME_A'];
+                }else{
+                    $employeeRow['APPROVER_NAME'] = "";
+                }
+                
             } else {
                 $employeeRow['RECOMMENDER_NAME'] = "";
                 $employeeRow['APPROVER_NAME'] = "";
             }
+            
             array_push($employeeList, $employeeRow);
         }
         ///  print_r($employeeList); die();
