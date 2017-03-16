@@ -23,6 +23,7 @@ use SelfService\Controller\TravelRequest;
 use SelfService\Controller\WorkOnHoliday;
 use SelfService\Controller\WorkOnDayoff;
 use Zend\Router\Http\Segment;
+use SelfService\Controller\PerformanceAppraisal;
 
 return [
     'router' => [
@@ -220,6 +221,20 @@ return [
                     ],
                     'defaults' => [
                         'controller' => WorkOnDayoff::class,
+                        'action' => 'index',
+                    ]
+                ],
+            ],
+            'performanceAppraisal' => [
+                'type' => Segment::class,
+                'options' => [
+                    'route' => '/selfservice/performanceAppraisal[/:action[/:id]]',
+                    'constants' => [
+                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'id' => '[0-9]+',
+                    ],
+                    'defaults' => [
+                        'controller' => PerformanceAppraisal::class,
                         'action' => 'index',
                     ]
                 ],
@@ -620,6 +635,33 @@ return [
                 ],
             ],
         ],
+        'performanceAppraisal' => [
+            [
+                'label' => 'Performance Appraisal',
+                'route' => 'performanceAppraisal',
+            ],
+            [
+                'label' => 'Performance Appraisal',
+                'route' => 'performanceAppraisal',
+                'pages' => [
+                    [
+                        'label' => 'List',
+                        'route' => 'performanceAppraisal',
+                        'action' => 'index',
+                    ],
+                    [
+                        'label' => 'Add',
+                        'route' => 'performanceAppraisal',
+                        'action' => 'add',
+                    ],
+                    [
+                        'label' => 'Detail',
+                        'route' => 'performanceAppraisal',
+                        'action' => 'view',
+                    ],
+                ],
+            ],
+        ],
     ],
 
     'controllers' => [
@@ -637,7 +679,8 @@ return [
             AdvanceRequest::class => ControllerFactory::class,
             TravelRequest::class => ControllerFactory::class,
             WorkOnHoliday::class => ControllerFactory::class,
-            WorkOnDayoff::class => ControllerFactory::class
+            WorkOnDayoff::class => ControllerFactory::class,
+            PerformanceAppraisal::class=> ControllerFactory::class
         ],
     ],
     'view_manager' => [
