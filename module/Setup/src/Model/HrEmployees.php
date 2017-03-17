@@ -88,7 +88,7 @@ class HrEmployees extends Model {
     public $profilePictureId;
     public $retiredFlag;
 
-    const TABLE_NAME = "HR_EMPLOYEES";
+    const TABLE_NAME = "HRIS_EMPLOYEES";
     const EMPLOYEE_ID = "EMPLOYEE_ID";
     const COMPANY_ID = "COMPANY_ID";
     const EMPLOYEE_CODE = "EMPLOYEE_CODE";

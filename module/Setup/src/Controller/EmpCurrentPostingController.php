@@ -72,12 +72,12 @@ class EmpCurrentPostingController extends AbstractActionController
             [
                 'form' => $this->form,
                 'messages' => $this->flashmessenger()->getMessages(),
-                'departments' => EntityHelper::getTableKVList($this->adapter, EntityHelper::HR_DEPARTMENTS),
-                'designations' => EntityHelper::getTableKVList($this->adapter, EntityHelper::HR_DESIGNATIONS),
-                'branches' => EntityHelper::getTableKVList($this->adapter, EntityHelper::HR_BRANCHES),
-                'positions' => EntityHelper::getTableKVList($this->adapter, EntityHelper::HR_POSITIONS),
-                'serviceTypes' => EntityHelper::getTableKVList($this->adapter, EntityHelper::HR_SERVICE_TYPES),
-                'employees' => EntityHelper::getTableKVList($this->adapter, EntityHelper::HR_EMPLOYEES)
+                'departments' => EntityHelper::getTableKVList($this->adapter, EntityHelper::HRIS_DEPARTMENTS),
+                'designations' => EntityHelper::getTableKVList($this->adapter, EntityHelper::HRIS_DESIGNATIONS),
+                'branches' => EntityHelper::getTableKVList($this->adapter, EntityHelper::HRIS_BRANCHES),
+                'positions' => EntityHelper::getTableKVList($this->adapter, EntityHelper::HRIS_POSITIONS),
+                'serviceTypes' => EntityHelper::getTableKVList($this->adapter, EntityHelper::HRIS_SERVICE_TYPES),
+                'employees' => EntityHelper::getTableKVList($this->adapter, EntityHelper::HRIS_EMPLOYEES)
             ]);
     }
 
@@ -111,12 +111,12 @@ class EmpCurrentPostingController extends AbstractActionController
                 'id' => $id,
                 'form' => $this->form,
                 'messages' => $this->flashmessenger()->getMessages(),
-                'departments' => EntityHelper::getTableKVList($this->adapter, EntityHelper::HR_DEPARTMENTS),
-                'designations' => EntityHelper::getTableKVList($this->adapter, EntityHelper::HR_DESIGNATIONS),
-                'branches' => EntityHelper::getTableKVList($this->adapter, EntityHelper::HR_BRANCHES),
-                'positions' => EntityHelper::getTableKVList($this->adapter, EntityHelper::HR_POSITIONS),
-                'serviceTypes' => EntityHelper::getTableKVList($this->adapter, EntityHelper::HR_SERVICE_TYPES),
-                'employees' => EntityHelper::getTableKVList($this->adapter, EntityHelper::HR_EMPLOYEES)
+                'departments' => EntityHelper::getTableKVList($this->adapter, EntityHelper::HRIS_DEPARTMENTS),
+                'designations' => EntityHelper::getTableKVList($this->adapter, EntityHelper::HRIS_DESIGNATIONS),
+                'branches' => EntityHelper::getTableKVList($this->adapter, EntityHelper::HRIS_BRANCHES),
+                'positions' => EntityHelper::getTableKVList($this->adapter, EntityHelper::HRIS_POSITIONS),
+                'serviceTypes' => EntityHelper::getTableKVList($this->adapter, EntityHelper::HRIS_SERVICE_TYPES),
+                'employees' => EntityHelper::getTableKVList($this->adapter, EntityHelper::HRIS_EMPLOYEES)
             ]
         );
     }

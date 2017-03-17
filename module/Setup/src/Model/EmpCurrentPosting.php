@@ -8,7 +8,7 @@ use Application\Model\Model;
 
 class EmpCurrentPosting extends Model
 {
-    const TABLE_NAME="HR_EMPLOYEE_CURRENT_POSTING";
+    const TABLE_NAME="HRIS_EMPLOYEE_CURRENT_POSTING";
 
     const EMPLOYEE_ID="EMPLOYEE_ID";
     const SERVICE_TYPE_ID="SERVICE_TYPE_ID";

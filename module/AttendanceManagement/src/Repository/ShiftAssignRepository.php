@@ -60,10 +60,10 @@ class ShiftAssignRepository implements RepositoryInterface
         $select = $sql->select();
 
         $select->columns(["EMPLOYEE_ID", "FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], true);
-        $select->from(['E' => "HR_EMPLOYEES"])
-            ->join(['B' => 'HR_BRANCHES'], 'B.BRANCH_ID=E.BRANCH_ID', ["BRANCH_ID", "BRANCH_NAME"],"left")
+        $select->from(['E' => "HRIS_EMPLOYEES"])
+            ->join(['B' => 'HRIS_BRANCHES'], 'B.BRANCH_ID=E.BRANCH_ID', ["BRANCH_ID", "BRANCH_NAME"],"left")
             ->join(['DEP' => Department::TABLE_NAME], 'DEP.' . Department::DEPARTMENT_ID . '=E.' . Department::DEPARTMENT_ID . '', [Department::DEPARTMENT_ID, Department::DEPARTMENT_NAME],"left")
-            ->join(['DE' => 'HR_DESIGNATIONS'], 'DE.DESIGNATION_ID=E.DESIGNATION_ID', ["DESIGNATION_ID", "DESIGNATION_TITLE"],"left")
+            ->join(['DE' => 'HRIS_DESIGNATIONS'], 'DE.DESIGNATION_ID=E.DESIGNATION_ID', ["DESIGNATION_ID", "DESIGNATION_TITLE"],"left")
             ->join(['P' => Position::TABLE_NAME], 'P.' . Position::POSITION_ID . '=E.' . Position::POSITION_ID . '', [Position::POSITION_ID, Position::POSITION_NAME],"left")
             ->join(['ST' => ServiceType::TABLE_NAME], 'ST.' . ServiceType::SERVICE_TYPE_ID . '=E.' . ServiceType::SERVICE_TYPE_ID . '', [ServiceType::SERVICE_TYPE_ID, ServiceType::SERVICE_TYPE_NAME],"left");
        $select->where(["E.STATUS='E'"]);

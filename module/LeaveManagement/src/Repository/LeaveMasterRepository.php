@@ -38,7 +38,7 @@ class LeaveMasterRepository implements RepositoryInterface {
         });
 //        $sql = new Sql($this->adapter);
 //        $select = $sql->select();
-//        $select->from("HR_LEAVE_MASTER_SETUP");
+//        $select->from("HRIS_LEAVE_MASTER_SETUP");
 ////        $select->columns(Helper::convertColumnDateFormat($this->adapter, new Shift(), ['startTime','endTime']), false);
 //        $select->where(['STATUS'=>'E']);
 //        $statement = $sql->prepareStatementForSqlObject($select);

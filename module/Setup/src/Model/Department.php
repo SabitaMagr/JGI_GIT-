@@ -6,7 +6,7 @@ use Application\Model\Model;
 
 class Department extends Model {
 
-    const TABLE_NAME = "HR_DEPARTMENTS";
+    const TABLE_NAME = "HRIS_DEPARTMENTS";
     const DEPARTMENT_ID = "DEPARTMENT_ID";
     const DEPARTMENT_CODE = "DEPARTMENT_CODE";
     const DEPARTMENT_NAME = "DEPARTMENT_NAME";

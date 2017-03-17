@@ -50,8 +50,8 @@ class UserSetupRepository implements RepositoryInterface {
         ], true);
 
         $select->from(['US' => UserSetup::TABLE_NAME])
-            ->join(['E'=>"HR_EMPLOYEES"],"E.EMPLOYEE_ID=US.EMPLOYEE_ID",['FIRST_NAME','MIDDLE_NAME','LAST_NAME'])
-            ->join(['R'=>'HR_ROLES'],"R.ROLE_ID=US.ROLE_ID",['ROLE_NAME']);
+            ->join(['E'=>"HRIS_EMPLOYEES"],"E.EMPLOYEE_ID=US.EMPLOYEE_ID",['FIRST_NAME','MIDDLE_NAME','LAST_NAME'])
+            ->join(['R'=>'HRIS_ROLES'],"R.ROLE_ID=US.ROLE_ID",['ROLE_NAME']);
 
         $select->where([
             "US.STATUS='E'"
@@ -66,11 +66,11 @@ class UserSetupRepository implements RepositoryInterface {
     //to get the employee list for select option
     public function getEmployeeList($employeeId=null){
 
-        $sql = "SELECT * FROM HR_EMPLOYEES WHERE STATUS='E' AND RETIRED_FLAG='N' AND EMPLOYEE_ID NOT IN (SELECT EMPLOYEE_ID FROM HR_USERS WHERE STATUS='E'AND EMPLOYEE_ID IS NOT NULL)";
+        $sql = "SELECT * FROM HRIS_EMPLOYEES WHERE STATUS='E' AND RETIRED_FLAG='N' AND EMPLOYEE_ID NOT IN (SELECT EMPLOYEE_ID FROM HRIS_USERS WHERE STATUS='E'AND EMPLOYEE_ID IS NOT NULL)";
 
         if($employeeId!=null){
             $sql .= " UNION 
-SELECT * FROM HR_EMPLOYEES WHERE STATUS='E' AND EMPLOYEE_ID IN (".$employeeId.")";
+SELECT * FROM HRIS_EMPLOYEES WHERE STATUS='E' AND EMPLOYEE_ID IN (".$employeeId.")";
         }
 
         $statement = $this->adapter->query($sql);

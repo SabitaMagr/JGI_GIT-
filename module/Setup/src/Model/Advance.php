@@ -4,7 +4,7 @@ namespace Setup\Model;
 use Application\Model\Model;
 
 class Advance extends Model{
-    const TABLE_NAME = "HR_ADVANCE_MASTER_SETUP";
+    const TABLE_NAME = "HRIS_ADVANCE_MASTER_SETUP";
     const ADVANCE_ID = "ADVANCE_ID";
     const ADVANCE_CODE = "ADVANCE_CODE";
     const ADVANCE_NAME = "ADVANCE_NAME";

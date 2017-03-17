@@ -13,7 +13,7 @@ use Application\Model\Model;
 
 class FlatValueDetail extends Model
 {
-    const TABLE_NAME = "HR_FLAT_VALUE_DETAIL";
+    const TABLE_NAME = "HRIS_FLAT_VALUE_DETAIL";
 
 
     const FLAT_ID = "FLAT_ID";

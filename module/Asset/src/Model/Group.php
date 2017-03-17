@@ -5,7 +5,7 @@ namespace Asset\Model;
 use Application\Model\Model;
 
 class Group extends Model {
-    const TABLE_NAME = 'HR_ASSET_GROUP';
+    const TABLE_NAME = 'HRIS_ASSET_GROUP';
 
     const ASSET_GROUP_ID = 'ASSET_GROUP_ID';
     const ASSET_GROUP_CODE = 'ASSET_GROUP_CODE';

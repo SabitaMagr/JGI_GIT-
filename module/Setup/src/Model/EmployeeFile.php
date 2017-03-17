@@ -6,7 +6,7 @@ use Application\Model\Model;
 
 class EmployeeFile extends Model {
 
-    const TABLE_NAME = "HR_EMPLOYEE_FILE";
+    const TABLE_NAME = "HRIS_EMPLOYEE_FILE";
     const FILE_CODE = "FILE_CODE";
     const EMPLOYEE_ID = "EMPLOYEE_ID";
     const FILETYPE_CODE = "FILETYPE_CODE";

@@ -4,7 +4,7 @@ namespace Setup\Model;
 use Application\Model\Model;
 
 class Loan extends Model{
-    const TABLE_NAME = "HR_LOAN_MASTER_SETUP";
+    const TABLE_NAME = "HRIS_LOAN_MASTER_SETUP";
     const LOAN_ID = "LOAN_ID";
     const LOAN_CODE = "LOAN_CODE";
     const LOAN_NAME = "LOAN_NAME";

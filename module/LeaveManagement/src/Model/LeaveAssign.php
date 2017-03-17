@@ -12,7 +12,7 @@ use Application\Model\Model;
 
 class LeaveAssign extends Model
 {
-    const TABLE_NAME="HR_EMPLOYEE_LEAVE_ASSIGN";
+    const TABLE_NAME="HRIS_EMPLOYEE_LEAVE_ASSIGN";
 
     const EMPLOYEE_LEAVE_ASSIGN_ID="EMPLOYEE_LEAVE_ASSIGN_ID";
     const EMPLOYEE_ID="EMPLOYEE_ID";

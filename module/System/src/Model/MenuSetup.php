@@ -10,7 +10,7 @@ namespace System\Model;
 use Application\Model\Model;
 
 class MenuSetup extends Model {
-    const TABLE_NAME = "HR_MENUS";
+    const TABLE_NAME = "HRIS_MENUS";
     const MENU_ID = 'MENU_ID';
     const MENU_CODE = 'MENU_CODE';
     const MENU_NAME = 'MENU_NAME';

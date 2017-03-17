@@ -10,7 +10,7 @@ namespace Setup\Model;
 use Application\Model\Model;
 
 class EmployeeQualification extends Model {
-    const TABLE_NAME = "HR_EMPLOYEE_QUALIFICATIONS";
+    const TABLE_NAME = "HRIS_EMPLOYEE_QUALIFICATIONS";
     const ID = "ID";
     const EMPLOYEE_ID = "EMPLOYEE_ID";
     const ACADEMIC_DEGREE_ID = "ACADEMIC_DEGREE_ID";

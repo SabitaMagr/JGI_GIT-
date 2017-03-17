@@ -48,11 +48,11 @@ class LeaveStatusRepository implements RepositoryInterface {
 //                E2.FIRST_NAME AS FN2,E2.MIDDLE_NAME AS MN2,E2.LAST_NAME AS LN2,
 //                LA.RECOMMENDED_BY AS RECOMMENDER,
 //                LA.APPROVED_BY AS APPROVER
-//                FROM HR_EMPLOYEE_LEAVE_REQUEST LA, 
-//                HR_LEAVE_MASTER_SETUP L,
-//                HR_EMPLOYEES E,
-//                HR_EMPLOYEES E1,
-//                HR_EMPLOYEES E2
+//                FROM HRIS_EMPLOYEE_LEAVE_REQUEST LA, 
+//                HRIS_LEAVE_MASTER_SETUP L,
+//                HRIS_EMPLOYEES E,
+//                HRIS_EMPLOYEES E1,
+//                HRIS_EMPLOYEES E2
 //                WHERE 
 //                L.STATUS='E' AND
 //                E.STATUS='E' AND
@@ -95,9 +95,9 @@ class LeaveStatusRepository implements RepositoryInterface {
                 E.FIRST_NAME,
                 E.MIDDLE_NAME,
                 E.LAST_NAME
-                FROM HR_EMPLOYEE_LEAVE_REQUEST LA,
-                  HR_LEAVE_MASTER_SETUP L,
-                  HR_EMPLOYEES E
+                FROM HRIS_EMPLOYEE_LEAVE_REQUEST LA,
+                  HRIS_LEAVE_MASTER_SETUP L,
+                  HRIS_EMPLOYEES E
                 WHERE L.STATUS   ='E'
                 AND E.STATUS     ='E'
                 AND L.LEAVE_ID   =LA.LEAVE_ID
@@ -146,9 +146,9 @@ class LeaveStatusRepository implements RepositoryInterface {
                 ], true);
 
         $select->from(['LA' => LeaveApply::TABLE_NAME])
-                ->join(['E' => "HR_EMPLOYEES"], "E.EMPLOYEE_ID=LA.EMPLOYEE_ID", ['FIRST_NAME', 'MIDDLE_NAME', 'LAST_NAME'], "left")
-                ->join(['E1' => "HR_EMPLOYEES"], "E1.EMPLOYEE_ID=LA.RECOMMENDED_BY", ['FN1' => 'FIRST_NAME', 'MN1' => 'MIDDLE_NAME', 'LN1' => 'LAST_NAME'], "left")
-                ->join(['E2' => "HR_EMPLOYEES"], "E2.EMPLOYEE_ID=LA.APPROVED_BY", ['FN2' => 'FIRST_NAME', 'MN2' => 'MIDDLE_NAME', 'LN2' => 'LAST_NAME'], "left");
+                ->join(['E' => "HRIS_EMPLOYEES"], "E.EMPLOYEE_ID=LA.EMPLOYEE_ID", ['FIRST_NAME', 'MIDDLE_NAME', 'LAST_NAME'], "left")
+                ->join(['E1' => "HRIS_EMPLOYEES"], "E1.EMPLOYEE_ID=LA.RECOMMENDED_BY", ['FN1' => 'FIRST_NAME', 'MN1' => 'MIDDLE_NAME', 'LN1' => 'LAST_NAME'], "left")
+                ->join(['E2' => "HRIS_EMPLOYEES"], "E2.EMPLOYEE_ID=LA.APPROVED_BY", ['FN2' => 'FIRST_NAME', 'MN2' => 'MIDDLE_NAME', 'LN2' => 'LAST_NAME'], "left");
 
         $select->where([
             "LA.ID=" . $id
@@ -203,20 +203,20 @@ class LeaveStatusRepository implements RepositoryInterface {
                 LA.APPROVED_BY AS APPROVED_BY,
                 LA.RECOMMENDED_REMARKS AS RECOMMENDED_REMARKS,
                 LA.APPROVED_REMARKS AS APPROVED_REMARKS
-                FROM HR_EMPLOYEE_LEAVE_REQUEST LA
-                LEFT OUTER JOIN HR_LEAVE_MASTER_SETUP L ON
+                FROM HRIS_EMPLOYEE_LEAVE_REQUEST LA
+                LEFT OUTER JOIN HRIS_LEAVE_MASTER_SETUP L ON
                 L.LEAVE_ID=LA.LEAVE_ID 
-                LEFT OUTER JOIN HR_EMPLOYEES E ON
+                LEFT OUTER JOIN HRIS_EMPLOYEES E ON
                 E.EMPLOYEE_ID=LA.EMPLOYEE_ID
-                LEFT OUTER JOIN HR_EMPLOYEES E1 ON
+                LEFT OUTER JOIN HRIS_EMPLOYEES E1 ON
                 E1.EMPLOYEE_ID=LA.RECOMMENDED_BY
-                LEFT OUTER JOIN HR_EMPLOYEES E2 ON
+                LEFT OUTER JOIN HRIS_EMPLOYEES E2 ON
                 E2.EMPLOYEE_ID=LA.APPROVED_BY
-                LEFT OUTER JOIN HR_RECOMMENDER_APPROVER RA ON
+                LEFT OUTER JOIN HRIS_RECOMMENDER_APPROVER RA ON
                 LA.EMPLOYEE_ID = RA.EMPLOYEE_ID
-                LEFT OUTER JOIN HR_EMPLOYEES RECM ON
+                LEFT OUTER JOIN HRIS_EMPLOYEES RECM ON
                 RECM.EMPLOYEE_ID = RA.RECOMMEND_BY
-                LEFT OUTER JOIN HR_EMPLOYEES APRV ON
+                LEFT OUTER JOIN HRIS_EMPLOYEES APRV ON
                 APRV.EMPLOYEE_ID = RA.APPROVED_BY
                 WHERE 
                 L.STATUS='E' AND

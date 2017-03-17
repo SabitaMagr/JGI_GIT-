@@ -58,8 +58,8 @@ class WorkOnDayoffRepository implements RepositoryInterface{
 
         $select->from(['WD' => WorkOnDayoff::TABLE_NAME])
                 ->join(['E' => HrEmployees::TABLE_NAME], "E.".HrEmployees::EMPLOYEE_ID."=WD.". WorkOnDayoff::EMPLOYEE_ID, [HrEmployees::FIRST_NAME,HrEmployees::MIDDLE_NAME, HrEmployees::LAST_NAME])
-                ->join(['E1'=>"HR_EMPLOYEES"],"E1.EMPLOYEE_ID=WD.RECOMMENDED_BY",['FN1'=>'FIRST_NAME','MN1'=>'MIDDLE_NAME','LN1'=>'LAST_NAME'],"left")
-                ->join(['E2'=>"HR_EMPLOYEES"],"E2.EMPLOYEE_ID=WD.APPROVED_BY",['FN2'=>'FIRST_NAME','MN2'=>'MIDDLE_NAME','LN2'=>'LAST_NAME'],"left");
+                ->join(['E1'=>"HRIS_EMPLOYEES"],"E1.EMPLOYEE_ID=WD.RECOMMENDED_BY",['FN1'=>'FIRST_NAME','MN1'=>'MIDDLE_NAME','LN1'=>'LAST_NAME'],"left")
+                ->join(['E2'=>"HRIS_EMPLOYEES"],"E2.EMPLOYEE_ID=WD.APPROVED_BY",['FN2'=>'FIRST_NAME','MN2'=>'MIDDLE_NAME','LN2'=>'LAST_NAME'],"left");
 
         $select->where([
             "WD.ID=" . $id
@@ -92,8 +92,8 @@ class WorkOnDayoffRepository implements RepositoryInterface{
 
         $select->from(['WD' => WorkOnDayoff::TABLE_NAME])
                 ->join(['E' => HrEmployees::TABLE_NAME], "E.".HrEmployees::EMPLOYEE_ID."=WD.". WorkOnDayoff::EMPLOYEE_ID, [HrEmployees::FIRST_NAME,HrEmployees::MIDDLE_NAME, HrEmployees::LAST_NAME])
-                ->join(['E1'=>"HR_EMPLOYEES"],"E1.EMPLOYEE_ID=WD.RECOMMENDED_BY",['FN1'=>'FIRST_NAME','MN1'=>'MIDDLE_NAME','LN1'=>'LAST_NAME'],"left")
-                ->join(['E2'=>"HR_EMPLOYEES"],"E2.EMPLOYEE_ID=WD.APPROVED_BY",['FN2'=>'FIRST_NAME','MN2'=>'MIDDLE_NAME','LN2'=>'LAST_NAME'],"left");
+                ->join(['E1'=>"HRIS_EMPLOYEES"],"E1.EMPLOYEE_ID=WD.RECOMMENDED_BY",['FN1'=>'FIRST_NAME','MN1'=>'MIDDLE_NAME','LN1'=>'LAST_NAME'],"left")
+                ->join(['E2'=>"HRIS_EMPLOYEES"],"E2.EMPLOYEE_ID=WD.APPROVED_BY",['FN2'=>'FIRST_NAME','MN2'=>'MIDDLE_NAME','LN2'=>'LAST_NAME'],"left");
 
         $select->where([
             "E.EMPLOYEE_ID=" . $employeeId

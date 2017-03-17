@@ -61,12 +61,12 @@ class DayoffWorkApproveRepository implements RepositoryInterface{
         ], true);
 
         $select->from(['WD' => WorkOnDayoff::TABLE_NAME])
-            ->join(['E'=>"HR_EMPLOYEES"],"E.EMPLOYEE_ID=WD.EMPLOYEE_ID",['FIRST_NAME','MIDDLE_NAME','LAST_NAME'],"left")
-            ->join(['E1'=>"HR_EMPLOYEES"],"E1.EMPLOYEE_ID=WD.RECOMMENDED_BY",['FN1'=>'FIRST_NAME','MN1'=>'MIDDLE_NAME','LN1'=>'LAST_NAME'],"left")
-            ->join(['E2'=>"HR_EMPLOYEES"],"E2.EMPLOYEE_ID=WD.APPROVED_BY",['FN2'=>'FIRST_NAME','MN2'=>'MIDDLE_NAME','LN2'=>'LAST_NAME'],"left")
-            ->join(['RA'=>"HR_RECOMMENDER_APPROVER"],"RA.EMPLOYEE_ID=WD.EMPLOYEE_ID",['RECOMMENDER'=>'RECOMMEND_BY','APPROVER'=>'APPROVED_BY'],"left")
-            ->join(['RECM'=>"HR_EMPLOYEES"],"RECM.EMPLOYEE_ID=RA.RECOMMEND_BY",['RECM_FN'=>'FIRST_NAME','RECM_MN'=>'MIDDLE_NAME','RECM_LN'=>'LAST_NAME'],"left")
-            ->join(['APRV'=>"HR_EMPLOYEES"],"APRV.EMPLOYEE_ID=RA.APPROVED_BY",['APRV_FN'=>'FIRST_NAME','APRV_MN'=>'MIDDLE_NAME','APRV_LN'=>'LAST_NAME'],"left");
+            ->join(['E'=>"HRIS_EMPLOYEES"],"E.EMPLOYEE_ID=WD.EMPLOYEE_ID",['FIRST_NAME','MIDDLE_NAME','LAST_NAME'],"left")
+            ->join(['E1'=>"HRIS_EMPLOYEES"],"E1.EMPLOYEE_ID=WD.RECOMMENDED_BY",['FN1'=>'FIRST_NAME','MN1'=>'MIDDLE_NAME','LN1'=>'LAST_NAME'],"left")
+            ->join(['E2'=>"HRIS_EMPLOYEES"],"E2.EMPLOYEE_ID=WD.APPROVED_BY",['FN2'=>'FIRST_NAME','MN2'=>'MIDDLE_NAME','LN2'=>'LAST_NAME'],"left")
+            ->join(['RA'=>"HRIS_RECOMMENDER_APPROVER"],"RA.EMPLOYEE_ID=WD.EMPLOYEE_ID",['RECOMMENDER'=>'RECOMMEND_BY','APPROVER'=>'APPROVED_BY'],"left")
+            ->join(['RECM'=>"HRIS_EMPLOYEES"],"RECM.EMPLOYEE_ID=RA.RECOMMEND_BY",['RECM_FN'=>'FIRST_NAME','RECM_MN'=>'MIDDLE_NAME','RECM_LN'=>'LAST_NAME'],"left")
+            ->join(['APRV'=>"HRIS_EMPLOYEES"],"APRV.EMPLOYEE_ID=RA.APPROVED_BY",['APRV_FN'=>'FIRST_NAME','APRV_MN'=>'MIDDLE_NAME','APRV_LN'=>'LAST_NAME'],"left");
 
         $select->where([
             "WD.ID=".$id
@@ -99,10 +99,10 @@ class DayoffWorkApproveRepository implements RepositoryInterface{
                     E.LAST_NAME,
                     RA.RECOMMEND_BY as RECOMMENDER,
                     RA.APPROVED_BY AS APPROVER
-                    FROM HR_EMPLOYEE_WORK_DAYOFF WD
-                    LEFT JOIN HR_EMPLOYEES E ON 
+                    FROM HRIS_EMPLOYEE_WORK_DAYOFF WD
+                    LEFT JOIN HRIS_EMPLOYEES E ON 
                     E.EMPLOYEE_ID=WD.EMPLOYEE_ID
-                    LEFT JOIN HR_RECOMMENDER_APPROVER RA
+                    LEFT JOIN HRIS_RECOMMENDER_APPROVER RA
                     ON E.EMPLOYEE_ID=RA.EMPLOYEE_ID
                     WHERE  E.STATUS='E'
                     AND E.RETIRED_FLAG='N'";

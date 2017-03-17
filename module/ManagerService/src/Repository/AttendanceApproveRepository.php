@@ -55,10 +55,10 @@ class AttendanceApproveRepository implements RepositoryInterface
         ], true);
 
         $select->from(['AR' => AttendanceRequestModel::TABLE_NAME])
-            ->join(['E'=>"HR_EMPLOYEES"],"E.EMPLOYEE_ID=AR.EMPLOYEE_ID",['FIRST_NAME','MIDDLE_NAME','LAST_NAME'],"left")
-            ->join(['E1'=>"HR_EMPLOYEES"],"E1.EMPLOYEE_ID=AR.APPROVED_BY",['FIRST_NAME1'=>"FIRST_NAME",'MIDDLE_NAME1'=>"MIDDLE_NAME",'LAST_NAME1'=>"LAST_NAME"],"left")
-            ->join(['RA'=>"HR_RECOMMENDER_APPROVER"],"RA.EMPLOYEE_ID=AR.EMPLOYEE_ID",['APPROVER'=>'RECOMMEND_BY'],"left")
-            ->join(['APRV'=>"HR_EMPLOYEES"],"APRV.EMPLOYEE_ID=RA.RECOMMEND_BY",['APRV_FN'=>'FIRST_NAME','APRV_MN'=>'MIDDLE_NAME','APRV_LN'=>'LAST_NAME'],"left");
+            ->join(['E'=>"HRIS_EMPLOYEES"],"E.EMPLOYEE_ID=AR.EMPLOYEE_ID",['FIRST_NAME','MIDDLE_NAME','LAST_NAME'],"left")
+            ->join(['E1'=>"HRIS_EMPLOYEES"],"E1.EMPLOYEE_ID=AR.APPROVED_BY",['FIRST_NAME1'=>"FIRST_NAME",'MIDDLE_NAME1'=>"MIDDLE_NAME",'LAST_NAME1'=>"LAST_NAME"],"left")
+            ->join(['RA'=>"HRIS_RECOMMENDER_APPROVER"],"RA.EMPLOYEE_ID=AR.EMPLOYEE_ID",['APPROVER'=>'RECOMMEND_BY'],"left")
+            ->join(['APRV'=>"HRIS_EMPLOYEES"],"APRV.EMPLOYEE_ID=RA.RECOMMEND_BY",['APRV_FN'=>'FIRST_NAME','APRV_MN'=>'MIDDLE_NAME','APRV_LN'=>'LAST_NAME'],"left");
 
         $select->where([
             "AR.STATUS='".$status."'",
@@ -89,7 +89,7 @@ class AttendanceApproveRepository implements RepositoryInterface
         $select = $sql->select();
         $select->columns([new Expression("TO_CHAR(A.ATTENDANCE_DT, 'DD-MON-YYYY') AS ATTENDANCE_DT"),new Expression("TO_CHAR(A.IN_TIME, 'HH:MI AM') AS IN_TIME"),new Expression("TO_CHAR(A.OUT_TIME, 'HH:MI AM') AS OUT_TIME"), new Expression("E.EMPLOYEE_ID AS EMPLOYEE_ID"), new Expression("A.ID AS ID"),new Expression("A.STATUS AS STATUS"),new Expression("A.IN_REMARKS AS IN_REMARKS"),new Expression("A.OUT_REMARKS AS OUT_REMARKS"),new Expression("A.TOTAL_HOUR AS TOTAL_HOUR"),new Expression("A.REQUESTED_DT AS REQUESTED_DT"),new Expression("A.APPROVED_REMARKS AS APPROVED_REMARKS")], true);
         $select->from(['A'=>AttendanceRequestModel::TABLE_NAME])
-            ->join(['E' => 'HR_EMPLOYEES'], 'A.EMPLOYEE_ID=E.EMPLOYEE_ID', ['FIRST_NAME','MIDDLE_NAME','LAST_NAME'],"left");
+            ->join(['E' => 'HRIS_EMPLOYEES'], 'A.EMPLOYEE_ID=E.EMPLOYEE_ID', ['FIRST_NAME','MIDDLE_NAME','LAST_NAME'],"left");
         $select->where([AttendanceRequestModel::ID=>$id]);
         $statement = $sql->prepareStatementForSqlObject($select);
         $result = $statement->execute();

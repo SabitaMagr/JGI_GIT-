@@ -14,8 +14,8 @@ class EmployeeFile implements RepositoryInterface {
     private $fileTypeTableGateway;
 
     public function __construct(AdapterInterface $adapter) {
-        $this->tableGateway = new TableGateway('HR_EMPLOYEE_FILE', $adapter);
-        $this->fileTypeTableGateway = new TableGateway('HR_FILE_TYPE', $adapter);
+        $this->tableGateway = new TableGateway('HRIS_EMPLOYEE_FILE', $adapter);
+        $this->fileTypeTableGateway = new TableGateway('HRIS_FILE_TYPE', $adapter);
     }
 
     public function add(Model $model) {

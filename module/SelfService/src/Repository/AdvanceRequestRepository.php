@@ -62,8 +62,8 @@ class AdvanceRequestRepository implements RepositoryInterface {
         $select->from(['AR' => AdvanceRequest::TABLE_NAME])
                 ->join(['E' => HrEmployees::TABLE_NAME], "E." . HrEmployees::EMPLOYEE_ID . "=AR." . AdvanceRequest::EMPLOYEE_ID, [HrEmployees::FIRST_NAME, HrEmployees::MIDDLE_NAME, HrEmployees::LAST_NAME])
                 ->join(['A' => Advance::TABLE_NAME], "A." . Advance::ADVANCE_ID . "=AR." . AdvanceRequest::ADVANCE_ID, [Advance::ADVANCE_CODE, Advance::ADVANCE_NAME])
-                ->join(['E1' => "HR_EMPLOYEES"], "E1.EMPLOYEE_ID=AR.RECOMMENDED_BY", ['FN1' => 'FIRST_NAME', 'MN1' => 'MIDDLE_NAME', 'LN1' => 'LAST_NAME'], "left")
-                ->join(['E2' => "HR_EMPLOYEES"], "E2.EMPLOYEE_ID=AR.APPROVED_BY", ['FN2' => 'FIRST_NAME', 'MN2' => 'MIDDLE_NAME', 'LN2' => 'LAST_NAME'], "left");
+                ->join(['E1' => "HRIS_EMPLOYEES"], "E1.EMPLOYEE_ID=AR.RECOMMENDED_BY", ['FN1' => 'FIRST_NAME', 'MN1' => 'MIDDLE_NAME', 'LN1' => 'LAST_NAME'], "left")
+                ->join(['E2' => "HRIS_EMPLOYEES"], "E2.EMPLOYEE_ID=AR.APPROVED_BY", ['FN2' => 'FIRST_NAME', 'MN2' => 'MIDDLE_NAME', 'LN2' => 'LAST_NAME'], "left");
 
         $select->where([
             "AR.ADVANCE_REQUEST_ID=" . $id
@@ -95,8 +95,8 @@ class AdvanceRequestRepository implements RepositoryInterface {
         $select->from(['AR' => AdvanceRequest::TABLE_NAME])
                 ->join(['E' => HrEmployees::TABLE_NAME], "E." . HrEmployees::EMPLOYEE_ID . "=AR." . AdvanceRequest::EMPLOYEE_ID, [HrEmployees::FIRST_NAME, HrEmployees::MIDDLE_NAME, HrEmployees::LAST_NAME])
                 ->join(['A' => Advance::TABLE_NAME], "A." . Advance::ADVANCE_ID . "=AR." . AdvanceRequest::ADVANCE_ID, [Advance::ADVANCE_CODE, Advance::ADVANCE_NAME])
-                ->join(['E1' => "HR_EMPLOYEES"], "E1.EMPLOYEE_ID=AR.RECOMMENDED_BY", ['FN1' => 'FIRST_NAME', 'MN1' => 'MIDDLE_NAME', 'LN1' => 'LAST_NAME'], "left")
-                ->join(['E2' => "HR_EMPLOYEES"], "E2.EMPLOYEE_ID=AR.APPROVED_BY", ['FN2' => 'FIRST_NAME', 'MN2' => 'MIDDLE_NAME', 'LN2' => 'LAST_NAME'], "left");
+                ->join(['E1' => "HRIS_EMPLOYEES"], "E1.EMPLOYEE_ID=AR.RECOMMENDED_BY", ['FN1' => 'FIRST_NAME', 'MN1' => 'MIDDLE_NAME', 'LN1' => 'LAST_NAME'], "left")
+                ->join(['E2' => "HRIS_EMPLOYEES"], "E2.EMPLOYEE_ID=AR.APPROVED_BY", ['FN2' => 'FIRST_NAME', 'MN2' => 'MIDDLE_NAME', 'LN2' => 'LAST_NAME'], "left");
 
         $select->where([
             "E.EMPLOYEE_ID=" . $employeeId
@@ -115,14 +115,14 @@ class AdvanceRequestRepository implements RepositoryInterface {
         $sql = "SELECT COUNT(AM.MONTH_ID) AS MTH_CNT
                 FROM
               (SELECT M.MONTH_ID
-              FROM HR_MONTH_CODE M,
+              FROM HRIS_MONTH_CODE M,
                 (SELECT MC.FROM_DATE,
                   MC.TO_DATE,
                   R.TERMS
-                FROM HR_MONTH_CODE MC,
+                FROM HRIS_MONTH_CODE MC,
                   (SELECT REQUESTED_DATE,
                     TERMS
-                  FROM HR_EMPLOYEE_ADVANCE_REQUEST
+                  FROM HRIS_EMPLOYEE_ADVANCE_REQUEST
                   WHERE STATUS    ='AP'
                   AND EMPLOYEE_ID =$employeeId
                   ) R
@@ -140,16 +140,16 @@ class AdvanceRequestRepository implements RepositoryInterface {
     public function getAdvance(int $employeeId, int $monthId) {
         $sql = "SELECT MTHS.*,MTHS.REQUESTED_AMOUNT/MTHS.TERMS AS SAL_CUT FROM (SELECT M.MONTH_ID,
 CM.*
-FROM HR_MONTH_CODE M,
+FROM HRIS_MONTH_CODE M,
   (SELECT MC.FROM_DATE,
     MC.TO_DATE,
     R.*
-  FROM HR_MONTH_CODE MC,
+  FROM HRIS_MONTH_CODE MC,
     (SELECT ADVANCE_DATE,
       TERMS,
       ADVANCE_REQUEST_ID,
       REQUESTED_AMOUNT
-    FROM HR_EMPLOYEE_ADVANCE_REQUEST
+    FROM HRIS_EMPLOYEE_ADVANCE_REQUEST
     WHERE STATUS    ='AP'
     AND EMPLOYEE_ID =$employeeId
     ) R

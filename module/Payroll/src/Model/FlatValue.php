@@ -13,7 +13,7 @@ use Application\Model\Model;
 
 class FlatValue extends Model
 {
-    CONST TABLE_NAME = "HR_FLAT_VALUE_SETUP";
+    CONST TABLE_NAME = "HRIS_FLAT_VALUE_SETUP";
     CONST FLAT_ID = "FLAT_ID";
     CONST FLAT_CODE = "FLAT_CODE";
     CONST FLAT_EDESC = "FLAT_EDESC";

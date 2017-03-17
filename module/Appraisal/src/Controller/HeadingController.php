@@ -62,7 +62,7 @@ class HeadingController extends AbstractActionController{
                 $heading->createdBy = $this->employeeId;
                 $heading->companyId = $employeeDetail['COMPANY_ID'];
                 $heading->branchId = $employeeDetail['BRANCH_ID'];
-                $heading->headingId = ((int) Helper::getMaxId($this->adapter, "HR_APPRAISAL_HEADING", "HEADING_ID")) + 1;
+                $heading->headingId = ((int) Helper::getMaxId($this->adapter, "HRIS_APPRAISAL_HEADING", "HEADING_ID")) + 1;
                 $heading->status = 'E';
                 $this->repository->add($heading);
                 $this->flashmessenger()->addMessage("Appraisal Heading Successfully added!!!");

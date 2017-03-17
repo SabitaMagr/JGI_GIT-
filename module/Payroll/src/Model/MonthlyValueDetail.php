@@ -13,7 +13,7 @@ use Application\Model\Model;
 
 class MonthlyValueDetail extends Model
 {
-    CONST TABLE_NAME="HR_MONTHLY_VALUE_DETAIL";
+    CONST TABLE_NAME="HRIS_MONTHLY_VALUE_DETAIL";
     CONST MTH_ID="MTH_ID";
     CONST EMPLOYEE_ID="EMPLOYEE_ID";
     CONST MTH_VALUE="MTH_VALUE";

@@ -54,8 +54,8 @@ class QuestionRepository implements RepositoryInterface{
             new Expression("AQ.REMARKS AS REMARKS"),
             new Expression("AQ.ORDER_NO AS ORDER_NO")
             ], true);
-        $select->from(['AQ' => "HR_APPRAISAL_QUESTION"])
-                ->join(['AH' => 'HR_APPRAISAL_HEADING'], 'AH.HEADING_ID=AQ.HEADING_ID', ["HEADING_EDESC"], "left");
+        $select->from(['AQ' => "HRIS_APPRAISAL_QUESTION"])
+                ->join(['AH' => 'HRIS_APPRAISAL_HEADING'], 'AH.HEADING_ID=AQ.HEADING_ID', ["HEADING_EDESC"], "left");
         
         $select->where(["AQ.STATUS='E'"]);
         $select->order("AQ.QUESTION_EDESC");

@@ -6,7 +6,7 @@ use Application\Model\Model;
 
 class Position extends Model {
 
-    const TABLE_NAME = "HR_POSITIONS";
+    const TABLE_NAME = "HRIS_POSITIONS";
     const POSITION_ID = "POSITION_ID";
     const POSITION_NAME = "POSITION_NAME";
     const REMARKS = "REMARKS";

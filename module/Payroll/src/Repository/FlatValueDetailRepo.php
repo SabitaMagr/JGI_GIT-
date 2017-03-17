@@ -48,7 +48,7 @@ class FlatValueDetailRepo implements RepositoryInterface
         $select = $sql->select();
 
         $select->columns(["EMPLOYEE_ID", "FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], true);
-        $select->from(['E' => "HR_EMPLOYEES"])
+        $select->from(['E' => "HRIS_EMPLOYEES"])
             ->join(['M' => FlatValueDetail::TABLE_NAME], 'M.' . FlatValueDetail::EMPLOYEE_ID . '=E.EMPLOYEE_ID', [FlatValueDetail::FLAT_ID, FlatValueDetail::FLAT_VALUE], Select::JOIN_LEFT);
         if ($branchId != -1) {
             $select->where(["E." . Branch::BRANCH_ID . "=$branchId"]);
@@ -74,7 +74,7 @@ class FlatValueDetailRepo implements RepositoryInterface
         $select = $sql->select();
 
         $select->columns(["EMPLOYEE_ID", "FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], true);
-        $select->from(['E' => "HR_EMPLOYEES"]);
+        $select->from(['E' => "HRIS_EMPLOYEES"]);
         if ($branchId != -1) {
             $select->where(["E." . Branch::BRANCH_ID . "=$branchId"]);
         }

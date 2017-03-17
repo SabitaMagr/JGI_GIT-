@@ -63,7 +63,7 @@ class BranchController extends AbstractActionController {
             if ($this->form->isValid()) {
                 $branch = new Branch();
                 $branch->exchangeArrayFromForm($this->form->getData());
-                $branch->branchId = ((int) Helper::getMaxId($this->adapter, "HR_BRANCHES", "BRANCH_ID")) + 1;
+                $branch->branchId = ((int) Helper::getMaxId($this->adapter, "HRIS_BRANCHES", "BRANCH_ID")) + 1;
                 $branch->createdDt = Helper::getcurrentExpressionDate();
                 $branch->createdBy = $this->employeeId;
                 $branch->status = 'E';
@@ -76,7 +76,7 @@ class BranchController extends AbstractActionController {
         }
         return Helper::addFlashMessagesToArray($this, [
                     'form' => $this->form,
-                    'countries' => EntityHelper::getTableKVList($this->adapter, EntityHelper::HR_COUNTRIES),
+                    'countries' => EntityHelper::getTableKVList($this->adapter, EntityHelper::HRIS_COUNTRIES),
                     'customRenderer' => Helper::renderCustomView()
                         ]
         );
@@ -106,7 +106,7 @@ class BranchController extends AbstractActionController {
         return Helper::addFlashMessagesToArray($this, [
                     'form' => $this->form,
                     'id' => $id,
-                    'countries' => EntityHelper::getTableKVList($this->adapter, EntityHelper::HR_COUNTRIES),
+                    'countries' => EntityHelper::getTableKVList($this->adapter, EntityHelper::HRIS_COUNTRIES),
                     'customRenderer' => Helper::renderCustomView()
         ]);
     }

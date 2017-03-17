@@ -4,7 +4,7 @@ namespace Appraisal\Model;
 use Application\Model\Model;
 
 class Heading extends Model{
-    const TABLE_NAME = "HR_APPRAISAL_HEADING";
+    const TABLE_NAME = "HRIS_APPRAISAL_HEADING";
     
     const HEADING_ID = "HEADING_ID";
     const HEADING_CODE = "HEADING_CODE";

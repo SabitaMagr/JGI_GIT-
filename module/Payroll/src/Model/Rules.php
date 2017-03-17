@@ -13,7 +13,7 @@ use Application\Model\Model;
 
 class Rules extends Model
 {
-    const TABLE_NAME="HR_PAY_SETUP";
+    const TABLE_NAME="HRIS_PAY_SETUP";
     const PAY_ID="PAY_ID";
     const PAY_CODE="PAY_CODE";
     const PAY_EDESC="PAY_EDESC";

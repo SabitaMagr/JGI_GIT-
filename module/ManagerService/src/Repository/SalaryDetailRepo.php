@@ -42,7 +42,7 @@ class SalaryDetailRepo implements RepositoryInterface {
     public function fetchIfAvailable(Expression $fromDate, Expression $toDate, int $employeeId) {
         $sql = "SELECT TO_CHAR(SD.EFFECTIVE_DATE,'DD-MON-YYYY') AS EFFECTIVE_DATE,SD.OLD_AMOUNT
             
-                FROM HR_SALARY_DETAIL SD
+                FROM HRIS_SALARY_DETAIL SD
                 WHERE (SD.EFFECTIVE_DATE BETWEEN " . $fromDate->getExpression() . " AND " . $toDate->getExpression() . " )
                 AND SD.EMPLOYEE_ID=$employeeId
                 AND SD.STATUS='E' ORDER BY SD.EFFECTIVE_DATE DESC";

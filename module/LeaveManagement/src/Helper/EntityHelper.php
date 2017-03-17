@@ -14,10 +14,10 @@ use Zend\Db\TableGateway\TableGateway;
 
 class EntityHelper
 {
-    const HR_LEAVE_MASTER_SETUP="HR_LEAVE_MASTER_SETUP";
+    const HRIS_LEAVE_MASTER_SETUP="HRIS_LEAVE_MASTER_SETUP";
 
     public static $tablesAttributes=[
-        self::HR_LEAVE_MASTER_SETUP=>[
+        self::HRIS_LEAVE_MASTER_SETUP=>[
             "LEAVE_ID"=>"LEAVE_ENAME"
         ],
     ];

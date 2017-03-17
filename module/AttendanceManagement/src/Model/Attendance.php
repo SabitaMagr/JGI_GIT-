@@ -6,7 +6,7 @@ use Application\Model\Model;
 
 class Attendance extends Model {
 
-    const TABLE_NAME = "HR_ATTENDANCE";
+    const TABLE_NAME = "HRIS_ATTENDANCE";
     const EMPLOYEE_ID = "EMPLOYEE_ID";
     const ATTENDANCE_DT = "ATTENDANCE_DT";
     const IP_ADDRESS = "IP_ADDRESS";

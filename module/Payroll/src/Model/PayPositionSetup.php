@@ -13,7 +13,7 @@ use Application\Model\Model;
 
 class PayPositionSetup extends Model
 {
-    const TABLE_NAME="HR_PAY_POSITION_SETUP";
+    const TABLE_NAME="HRIS_PAY_POSITION_SETUP";
     const PAY_ID="PAY_ID";
     const POSITION_ID="POSITION_ID";
 

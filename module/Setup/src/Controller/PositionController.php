@@ -40,7 +40,7 @@ class PositionController extends AbstractActionController {
     }
 
     public function addAction() {
-//        $tableName = "HR_POSITIONS";
+//        $tableName = "HRIS_POSITIONS";
 //        $columnsWidValues = ["POSITION_NAME"=>"Junior Officer"];
 //
 //        $result = ConstraintHelper::checkUniqueConstraint($this->adapter, $tableName, $columnsWidValues);

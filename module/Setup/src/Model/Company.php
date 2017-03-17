@@ -6,7 +6,7 @@ use Application\Model\Model;
 
 class Company extends Model {
 
-    const TABLE_NAME = "HR_COMPANY";
+    const TABLE_NAME = "HRIS_COMPANY";
     const COMPANY_ID = "COMPANY_ID";
     const COMPANY_CODE = "COMPANY_CODE";
     const COMPANY_NAME = "COMPANY_NAME";

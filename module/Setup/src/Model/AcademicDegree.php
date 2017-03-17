@@ -10,7 +10,7 @@ namespace Setup\Model;
 use Application\Model\Model;
 
 class AcademicDegree extends Model{
-    const TABLE_NAME = "HR_ACADEMIC_DEGREES";
+    const TABLE_NAME = "HRIS_ACADEMIC_DEGREES";
     const ACADEMIC_DEGREE_ID = "ACADEMIC_DEGREE_ID";
     const ACADEMIC_DEGREE_CODE = "ACADEMIC_DEGREE_CODE";
     const ACADEMIC_DEGREE_NAME = "ACADEMIC_DEGREE_NAME";

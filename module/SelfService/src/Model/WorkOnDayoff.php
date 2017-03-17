@@ -4,7 +4,7 @@ namespace SelfService\Model;
 use Application\Model\Model;
 
 class WorkOnDayoff extends Model{
-    const TABLE_NAME = "HR_EMPLOYEE_WORK_DAYOFF";
+    const TABLE_NAME = "HRIS_EMPLOYEE_WORK_DAYOFF";
     const ID = "ID";
     const EMPLOYEE_ID = "EMPLOYEE_ID";
     const FROM_DATE = "FROM_DATE";

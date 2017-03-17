@@ -11,7 +11,7 @@ use Application\Model\Model;
 
 class UserSetup extends Model {
 
-    const TABLE_NAME="HR_USERS";
+    const TABLE_NAME="HRIS_USERS";
     const USER_ID="USER_ID";
     const USER_NAME="USER_NAME";
     const PASSWORD="PASSWORD";

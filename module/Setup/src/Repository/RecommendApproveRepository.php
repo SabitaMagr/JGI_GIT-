@@ -24,15 +24,15 @@ class RecommendApproveRepository implements RepositoryInterface
     public function __construct(AdapterInterface $adapter)
     {
         $this->tableGateway = new TableGateway(RecommendApprove::TABLE_NAME, $adapter);
-        $this->employeeTableGateway = new TableGateway("HR_EMPLOYEES", $adapter);
+        $this->employeeTableGateway = new TableGateway("HRIS_EMPLOYEES", $adapter);
         $this->adapter = $adapter;
     }
 
     public function getDesignationList($employeeId)
     {
         $sql = "SELECT  DESIGNATION_ID, DESIGNATION_TITLE, PARENT_DESIGNATION, WITHIN_BRANCH, WITHIN_DEPARTMENT, LEVEL 
-                FROM HR_DESIGNATIONS WHERE (LEVEL=2 OR LEVEL=3)
-                START WITH DESIGNATION_ID = (SELECT E.DESIGNATION_ID FROM HR_EMPLOYEES E WHERE E.EMPLOYEE_ID=".$employeeId.")
+                FROM HRIS_DESIGNATIONS WHERE (LEVEL=2 OR LEVEL=3)
+                START WITH DESIGNATION_ID = (SELECT E.DESIGNATION_ID FROM HRIS_EMPLOYEES E WHERE E.EMPLOYEE_ID=".$employeeId.")
                 CONNECT BY PRIOR  PARENT_DESIGNATION=DESIGNATION_ID";
 
         $statement = $this->adapter->query($sql);
@@ -42,7 +42,7 @@ class RecommendApproveRepository implements RepositoryInterface
 
     //to get recommender and approver based on designation and branch id
     public function getEmployeeList($withinBranch,$withinDepartment,$designationId,$branchId,$departmentId){
-        $sql = "SELECT EMPLOYEE_ID,FIRST_NAME,MIDDLE_NAME,LAST_NAME FROM HR_EMPLOYEES WHERE STATUS='E' AND RETIRED_FLAG='N' AND DESIGNATION_ID=".$designationId;
+        $sql = "SELECT EMPLOYEE_ID,FIRST_NAME,MIDDLE_NAME,LAST_NAME FROM HRIS_EMPLOYEES WHERE STATUS='E' AND RETIRED_FLAG='N' AND DESIGNATION_ID=".$designationId;
 
         if($withinBranch!=null && $withinBranch!="N"){
             $sql.=" AND BRANCH_ID=".$branchId;
@@ -74,9 +74,9 @@ class RecommendApproveRepository implements RepositoryInterface
             new Expression("RA.APPROVED_BY AS APPROVED_BY"),
         ], true);
         $select->from(['RA' => RecommendApprove::TABLE_NAME])
-            ->join(['E'=>"HR_EMPLOYEES"],"E.EMPLOYEE_ID=RA.EMPLOYEE_ID",['FIRST_NAME','MIDDLE_NAME','LAST_NAME'],"left")
-            ->join(['E1'=>"HR_EMPLOYEES"],"E1.EMPLOYEE_ID=RA.RECOMMEND_BY",['FIRST_NAME_R'=>"FIRST_NAME","MIDDLE_NAME_R"=>'MIDDLE_NAME',"LAST_NAME_R"=>'LAST_NAME',"RETIRED_R"=>"RETIRED_FLAG","STATUS_R"=>"STATUS"],"left")
-            ->join(['E2'=>"HR_EMPLOYEES"],"E2.EMPLOYEE_ID=RA.APPROVED_BY",['FIRST_NAME_A'=>"FIRST_NAME","MIDDLE_NAME_A"=>'MIDDLE_NAME',"LAST_NAME_A"=>'LAST_NAME',"RETIRED_A"=>"RETIRED_FLAG","STATUS_A"=>"STATUS"],"left");
+            ->join(['E'=>"HRIS_EMPLOYEES"],"E.EMPLOYEE_ID=RA.EMPLOYEE_ID",['FIRST_NAME','MIDDLE_NAME','LAST_NAME'],"left")
+            ->join(['E1'=>"HRIS_EMPLOYEES"],"E1.EMPLOYEE_ID=RA.RECOMMEND_BY",['FIRST_NAME_R'=>"FIRST_NAME","MIDDLE_NAME_R"=>'MIDDLE_NAME',"LAST_NAME_R"=>'LAST_NAME',"RETIRED_R"=>"RETIRED_FLAG","STATUS_R"=>"STATUS"],"left")
+            ->join(['E2'=>"HRIS_EMPLOYEES"],"E2.EMPLOYEE_ID=RA.APPROVED_BY",['FIRST_NAME_A'=>"FIRST_NAME","MIDDLE_NAME_A"=>'MIDDLE_NAME',"LAST_NAME_A"=>'LAST_NAME',"RETIRED_A"=>"RETIRED_FLAG","STATUS_A"=>"STATUS"],"left");
 
         $select->where([
             "RA.STATUS='E'",
@@ -124,9 +124,9 @@ AND
             $entitiesArray[$empresult['EMPLOYEE_ID']] = $empresult['FIRST_NAME'] . " " . $empresult['MIDDLE_NAME'] . " " . $empresult['LAST_NAME'];
         }
         $sql = "SELECT EMPLOYEE_ID,FIRST_NAME,MIDDLE_NAME,LAST_NAME FROM 
-                HR_EMPLOYEES WHERE STATUS='E' AND RETIRED_FLAG='N'
+                HRIS_EMPLOYEES WHERE STATUS='E' AND RETIRED_FLAG='N'
                 AND EMPLOYEE_ID NOT IN 
-                (SELECT EMPLOYEE_ID FROM HR_RECOMMENDER_APPROVER WHERE STATUS='E')";
+                (SELECT EMPLOYEE_ID FROM HRIS_RECOMMENDER_APPROVER WHERE STATUS='E')";
 
         $statement = $this->adapter->query($sql);
         $resultset = $statement->execute();
@@ -159,9 +159,9 @@ AND
             new Expression("RA.APPROVED_BY AS APPROVED_BY"),
         ], true);
         $select->from(['RA' => RecommendApprove::TABLE_NAME])
-            ->join(['E'=>"HR_EMPLOYEES"],"E.EMPLOYEE_ID=RA.EMPLOYEE_ID",['FIRST_NAME','MIDDLE_NAME','LAST_NAME'],"left")
-            ->join(['E1'=>"HR_EMPLOYEES"],"E1.EMPLOYEE_ID=RA.RECOMMEND_BY",['FIRST_NAME_R'=>"FIRST_NAME","MIDDLE_NAME_R"=>'MIDDLE_NAME',"LAST_NAME_R"=>'LAST_NAME',"RETIRED_R"=>"RETIRED_FLAG","STATUS_R"=>"STATUS"],"left")
-            ->join(['E2'=>"HR_EMPLOYEES"],"E2.EMPLOYEE_ID=RA.APPROVED_BY",['FIRST_NAME_A'=>"FIRST_NAME","MIDDLE_NAME_A"=>'MIDDLE_NAME',"LAST_NAME_A"=>'LAST_NAME',"RETIRED_A"=>"RETIRED_FLAG","STATUS_A"=>"STATUS"],"left");
+            ->join(['E'=>"HRIS_EMPLOYEES"],"E.EMPLOYEE_ID=RA.EMPLOYEE_ID",['FIRST_NAME','MIDDLE_NAME','LAST_NAME'],"left")
+            ->join(['E1'=>"HRIS_EMPLOYEES"],"E1.EMPLOYEE_ID=RA.RECOMMEND_BY",['FIRST_NAME_R'=>"FIRST_NAME","MIDDLE_NAME_R"=>'MIDDLE_NAME',"LAST_NAME_R"=>'LAST_NAME',"RETIRED_R"=>"RETIRED_FLAG","STATUS_R"=>"STATUS"],"left")
+            ->join(['E2'=>"HRIS_EMPLOYEES"],"E2.EMPLOYEE_ID=RA.APPROVED_BY",['FIRST_NAME_A'=>"FIRST_NAME","MIDDLE_NAME_A"=>'MIDDLE_NAME',"LAST_NAME_A"=>'LAST_NAME',"RETIRED_A"=>"RETIRED_FLAG","STATUS_A"=>"STATUS"],"left");
 
         $select->where([
             "RA.STATUS='E'",

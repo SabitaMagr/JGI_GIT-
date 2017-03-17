@@ -13,7 +13,7 @@ use Application\Model\Model;
 
 class LeaveMaster extends Model
 {
-    const TABLE_NAME="HR_LEAVE_MASTER_SETUP";
+    const TABLE_NAME="HRIS_LEAVE_MASTER_SETUP";
 
     const LEAVE_ID="LEAVE_ID";
     const LEAVE_CODE="LEAVE_CODE";

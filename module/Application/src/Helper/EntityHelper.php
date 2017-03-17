@@ -83,8 +83,8 @@ class EntityHelper {
 
         $sql = new Sql($adapter);
         $select = $sql->select();
-        $select->from(['HB' => 'HR_HOLIDAY_BRANCH'])
-                ->join(['B' => "HR_BRANCHES"], 'HB.BRANCH_ID=B.BRANCH_ID', ['BRANCH_NAME']);
+        $select->from(['HB' => 'HRIS_HOLIDAY_BRANCH'])
+                ->join(['B' => "HRIS_BRANCHES"], 'HB.BRANCH_ID=B.BRANCH_ID', ['BRANCH_NAME']);
 
         $select->where(["HB.HOLIDAY_ID" => $holidayId]);
         $statement = $sql->prepareStatementForSqlObject($select);

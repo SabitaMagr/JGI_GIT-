@@ -6,7 +6,7 @@ use Application\Model\Model;
 
 class DashboardDetail extends Model {
 
-    const TABLE_NAME = "HR_DASHBOARD_DETAIL";
+    const TABLE_NAME = "HRIS_DASHBOARD_DETAIL";
     const ROLE_ID = "ROLE_ID";
     const DASHBOARD = "DASHBOARD";
     const ROLE_TYPE = "ROLE_TYPE";

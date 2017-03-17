@@ -6,7 +6,7 @@ use Application\Model\Model;
 
 class District extends Model {
 
-    const TABLE_NAME = "HR_DISTRICTS";
+    const TABLE_NAME = "HRIS_DISTRICTS";
     const DISTRICT_ID = "DISTRICT_ID";
     const DISTRICT_NAME = "DISTRICT_NAME";
     const ZONE_ID = "ZONE_ID";

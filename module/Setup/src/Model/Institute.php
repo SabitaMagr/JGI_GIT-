@@ -4,7 +4,7 @@ namespace Setup\Model;
 use Application\Model\Model;
 
 class Institute extends Model{
-    const TABLE_NAME = "HR_INSTITUTE_MASTER_SETUP";
+    const TABLE_NAME = "HRIS_INSTITUTE_MASTER_SETUP";
     const INSTITUTE_ID = "INSTITUTE_ID";
     const INSTITUTE_CODE = "INSTITUTE_CODE";
     const INSTITUTE_NAME = "INSTITUTE_NAME";

@@ -4,7 +4,7 @@ namespace Setup\Model;
 use Application\Model\Model;
 
 class Training extends Model{
-    const TABLE_NAME = "HR_TRAINING_MASTER_SETUP";
+    const TABLE_NAME = "HRIS_TRAINING_MASTER_SETUP";
     const TRAINING_ID = "TRAINING_ID";
     const TRAINING_CODE = "TRAINING_CODE";
     const TRAINING_NAME = "TRAINING_NAME";

@@ -6,7 +6,7 @@ use Application\Model\Model;
 
 class VdcMunicipalities extends Model {
 
-    const TABLE_NAME = "HR_VDC_MUNICIPALITIES";
+    const TABLE_NAME = "HRIS_VDC_MUNICIPALITIES";
     const VDC_MUNICIPALITY_ID = "VDC_MUNICIPALITY_ID";
     const VDC_MUNICIPALITY_NAME = "VDC_MUNICIPALITY_NAME";
     const DISTRICT_ID = "DISTRICT_ID";

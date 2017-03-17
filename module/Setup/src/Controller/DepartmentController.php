@@ -57,7 +57,7 @@ class DepartmentController extends AbstractActionController {
                 }
                 $department->createdDt = Helper::getcurrentExpressionDate();
                 $department->createdBy = $this->employeeId;
-                $department->departmentId = ((int) Helper::getMaxId($this->adapter, "HR_DEPARTMENTS", "DEPARTMENT_ID")) + 1;
+                $department->departmentId = ((int) Helper::getMaxId($this->adapter, "HRIS_DEPARTMENTS", "DEPARTMENT_ID")) + 1;
                 $department->status = 'E';
 
                 $this->repository->add($department);
@@ -69,7 +69,7 @@ class DepartmentController extends AbstractActionController {
                         $this, [
                     'form' => $this->form,
                     'departments' => ApplicationEntityHelper::getTableKVListWithSortOption($this->adapter, Department::TABLE_NAME, Department::DEPARTMENT_ID, [Department::DEPARTMENT_NAME], ["STATUS" => "E"], "DEPARTMENT_NAME", "ASC"),
-                    'countries' => EntityHelper::getTableKVList($this->adapter, EntityHelper::HR_COUNTRIES)
+                    'countries' => EntityHelper::getTableKVList($this->adapter, EntityHelper::HRIS_COUNTRIES)
                         ]
                 )
         );
@@ -106,7 +106,7 @@ class DepartmentController extends AbstractActionController {
                         $this, [
                     'form' => $this->form, 'id' => $id,
                     'departments' => ApplicationEntityHelper::getTableKVListWithSortOption($this->adapter, Department::TABLE_NAME, Department::DEPARTMENT_ID, [Department::DEPARTMENT_NAME], ["STATUS" => "E"], "DEPARTMENT_NAME", "ASC"),
-                    'countries' => EntityHelper::getTableKVList($this->adapter, EntityHelper::HR_COUNTRIES)
+                    'countries' => EntityHelper::getTableKVList($this->adapter, EntityHelper::HRIS_COUNTRIES)
                         ]
         );
     }

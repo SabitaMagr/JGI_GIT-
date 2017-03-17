@@ -13,7 +13,7 @@ use Application\Model\Model;
 
 class Holiday extends Model
 {
-    const TABLE_NAME="HR_HOLIDAY_MASTER_SETUP";
+    const TABLE_NAME="HRIS_HOLIDAY_MASTER_SETUP";
 
     const HOLIDAY_ID="HOLIDAY_ID";
     const HOLIDAY_CODE="HOLIDAY_CODE";

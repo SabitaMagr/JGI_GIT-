@@ -6,7 +6,7 @@ use Application\Model\Model;
 
 class Setting extends Model {
 
-    const TABLE_NAME = "HR_USER_SETTING";
+    const TABLE_NAME = "HRIS_USER_SETTING";
     const USER_ID = "USER_ID";
     const ENABLE_NOTIFICATION = "ENABLE_NOTIFICATION";
     const ENABLE_EMAIL = "ENABLE_EMAIL";

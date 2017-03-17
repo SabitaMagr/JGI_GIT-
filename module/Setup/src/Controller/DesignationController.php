@@ -59,7 +59,7 @@ class DesignationController extends AbstractActionController {
                 $designation->exchangeArrayFromForm($this->form->getData());
                 $designation->createdDt = Helper::getcurrentExpressionDate();
                 $designation->createdBy = $this->employeeId;
-                $designation->designationId = ((int) Helper::getMaxId($this->adapter, "HR_DESIGNATIONS", "DESIGNATION_ID")) + 1;
+                $designation->designationId = ((int) Helper::getMaxId($this->adapter, "HRIS_DESIGNATIONS", "DESIGNATION_ID")) + 1;
                 $designation->status = 'E';
                 $this->repository->add($designation);
 

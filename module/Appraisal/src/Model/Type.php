@@ -4,7 +4,7 @@ namespace Appraisal\Model;
 use Application\Model\Model;
 
 class Type extends Model{
-    const TABLE_NAME = "HR_APPRAISAL_TYPE";
+    const TABLE_NAME = "HRIS_APPRAISAL_TYPE";
     
     const APPRAISAL_TYPE_ID = "APPRAISAL_TYPE_ID";
     const APPRAISAL_TYPE_CODE = "APPRAISAL_TYPE_CODE";

@@ -39,8 +39,8 @@ class HolidayRepository implements RepositoryInterface {
     public function fetchAll($today = null) {
 
         $sql = "SELECT  TO_CHAR(A.START_DATE, 'DD-MON-YYYY') AS START_DATE,TO_CHAR(A.END_DATE, 'DD-MON-YYYY') AS END_DATE,A.HOLIDAY_ID,A.HOLIDAY_CODE,A.HOLIDAY_ENAME,A.HOLIDAY_LNAME,B.GENDER_NAME,A.HALFDAY
-                FROM HR_HOLIDAY_MASTER_SETUP A 
-                LEFT OUTER JOIN HR_GENDERS B 
+                FROM HRIS_HOLIDAY_MASTER_SETUP A 
+                LEFT OUTER JOIN HRIS_GENDERS B 
                 ON A.GENDER_ID=B.GENDER_ID
                 WHERE A.STATUS='E'";
         if ($today != null) {
@@ -94,7 +94,7 @@ class HolidayRepository implements RepositoryInterface {
         $sql = new Sql($this->adapter);
         $select = $sql->select();
         $select->from(['HB' => HolidayBranch::TABLE_NAME])
-                ->join(['B' => "HR_BRANCHES"], 'HB.BRANCH_ID=B.BRANCH_ID', ['BRANCH_NAME']);
+                ->join(['B' => "HRIS_BRANCHES"], 'HB.BRANCH_ID=B.BRANCH_ID', ['BRANCH_NAME']);
 
         $select->where(["HB.HOLIDAY_ID" => $holidayId]);
         $select->where(["B.STATUS" => 'E']);
@@ -107,7 +107,7 @@ class HolidayRepository implements RepositoryInterface {
         $sql = new Sql($this->adapter);
         $select = $sql->select();
         $select->from(['HB' => HolidayBranch::TABLE_NAME])
-                ->join(['B' => "HR_BRANCHES"], 'HB.BRANCH_ID=B.BRANCH_ID', ['BRANCH_NAME']);
+                ->join(['B' => "HRIS_BRANCHES"], 'HB.BRANCH_ID=B.BRANCH_ID', ['BRANCH_NAME']);
 
         $select->where(["HB.HOLIDAY_ID" => $holidayId]);
         $select->where(["HB.BRANCH_ID" => $branchId]);
@@ -121,15 +121,15 @@ class HolidayRepository implements RepositoryInterface {
         $joinQuery = "";
         if ($branchId != -1) {
             $branchName = ",D.BRANCH_NAME";
-            $joinQuery = "INNER JOIN HR_HOLIDAY_BRANCH C
+            $joinQuery = "INNER JOIN HRIS_HOLIDAY_BRANCH C
 ON A.HOLIDAY_ID=C.HOLIDAY_ID 
-INNER JOIN HR_BRANCHES D
+INNER JOIN HRIS_BRANCHES D
 ON C.BRANCH_ID=D.BRANCH_ID";
         }
 
         $sql = "SELECT TO_CHAR(A.START_DATE, 'DD-MON-YYYY') AS START_DATE,TO_CHAR(A.END_DATE, 'DD-MON-YYYY') AS END_DATE, A.HOLIDAY_ID,A.HOLIDAY_CODE,A.HOLIDAY_ENAME,A.HOLIDAY_LNAME,B.GENDER_NAME,A.HALFDAY
-" . $branchName . " FROM HR_HOLIDAY_MASTER_SETUP A 
-LEFT OUTER JOIN HR_GENDERS B 
+" . $branchName . " FROM HRIS_HOLIDAY_MASTER_SETUP A 
+LEFT OUTER JOIN HRIS_GENDERS B 
 ON A.GENDER_ID=B.GENDER_ID " . $joinQuery . " WHERE A.STATUS ='E'";
 
         if ($fromDate != null) {

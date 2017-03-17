@@ -30,16 +30,16 @@ class EmployeeRepository implements RepositoryInterface {
 
     public function __construct(AdapterInterface $adapter) {
         $this->adapter = $adapter;
-        $this->gateway = new TableGateway('HR_EMPLOYEES', $adapter);
-        $this->vdcGateway = new TableGateway('HR_VDC_MUNICIPALITIES', $adapter);
-        $this->districtGateway = new TableGateway('HR_DISTRICTS', $adapter);
-        $this->zoneGateway = new TableGateway('HR_ZONES', $adapter);
+        $this->gateway = new TableGateway('HRIS_EMPLOYEES', $adapter);
+        $this->vdcGateway = new TableGateway('HRIS_VDC_MUNICIPALITIES', $adapter);
+        $this->districtGateway = new TableGateway('HRIS_DISTRICTS', $adapter);
+        $this->zoneGateway = new TableGateway('HRIS_ZONES', $adapter);
     }
 
     public function fetchAll() {
         $sql = new Sql($this->adapter);
         $select = $sql->select();
-        $select->from("HR_EMPLOYEES");
+        $select->from("HRIS_EMPLOYEES");
         $select->columns(Helper::convertColumnDateFormat($this->adapter, new HrEmployees(), ['birthDate']), false);
         $select->where(['STATUS' => 'E', 'RETIRED_FLAG' => 'N', "JOIN_DATE <= SYSDATE"]);
 
@@ -55,8 +55,8 @@ class EmployeeRepository implements RepositoryInterface {
     }
 
     public function fetchAllForAttendance() {
-        $sql = "SELECT E.* FROM HR_EMPLOYEES E
-        JOIN HR_EMPLOYEE_SHIFT_ASSIGN ESA ON (E.EMPLOYEE_ID=ESA.EMPLOYEE_ID) JOIN HR_SHIFTS S ON (ESA.SHIFT_ID=S.SHIFT_ID) 
+        $sql = "SELECT E.* FROM HRIS_EMPLOYEES E
+        JOIN HRIS_EMPLOYEE_SHIFT_ASSIGN ESA ON (E.EMPLOYEE_ID=ESA.EMPLOYEE_ID) JOIN HRIS_SHIFTS S ON (ESA.SHIFT_ID=S.SHIFT_ID) 
         WHERE  
         (CASE
         WHEN  trim(TO_CHAR(SYSDATE, 'DY')) = 'SUN' THEN ( CASE WHEN (S.WEEKDAY1 = 'DAY_OFF') THEN 0 ELSE 1 END )
@@ -113,14 +113,14 @@ class EmployeeRepository implements RepositoryInterface {
                 ->join(['B' => Branch::TABLE_NAME], "E." . HrEmployees::BRANCH_ID . "=B." . Branch::BRANCH_ID, ['BRANCH_NAME'], 'left')
                 ->join(['C' => Company::TABLE_NAME], "E." . HrEmployees::COMPANY_ID . "=C." . Company::COMPANY_ID, ['COMPANY_NAME'], 'left')
                 ->join(['G' => Gender::TABLE_NAME], "E." . HrEmployees::GENDER_ID . "=G." . Gender::GENDER_ID, ['GENDER_NAME'], 'left')
-                ->join(['BG' => "HR_BLOOD_GROUPS"], "E." . HrEmployees::BLOOD_GROUP_ID . "=BG.BLOOD_GROUP_ID", ['BLOOD_GROUP_CODE'], 'left')
-                ->join(['RG' => "HR_RELIGIONS"], "E." . HrEmployees::RELIGION_ID . "=RG.RELIGION_ID", ['RELIGION_NAME'], 'left')
-                ->join(['CN' => "HR_COUNTRIES"], "E." . HrEmployees::COUNTRY_ID . "=CN.COUNTRY_ID", ['COUNTRY_NAME'], 'left')
-//                ->join(['DT' => "HR_DISTRICTS"], "E." . HrEmployees::ID_CITIZENSHIP_ISSUE_PLACE . "=DT.DISTRICT_ID", ['ID_CIT_ISSUE_PLACE_NAME' => 'DISTRICT_NAME'], 'left')
-//                ->join(['Z' => "HR_ZONES"], "E." . HrEmployees::ZON . "=Z.ZONE_ID", ['ZONE_NAME'], 'left')
-//                ->join(['D' => "HR_DISTRICTS"], "E." . HrEmployees::DISTRICT_ID . "=D.DISTRICT_ID", ['DISTRICT_NAME'], 'left')
-                ->join(['VM' => "HR_VDC_MUNICIPALITIES"], "E." . HrEmployees::ADDR_PERM_VDC_MUNICIPALITY_ID . "=VM.VDC_MUNICIPALITY_ID", ['VDC_MUNICIPALITY_NAME'], 'left')
-                ->join(['VM1' => "HR_VDC_MUNICIPALITIES"], "E." . HrEmployees::ADDR_TEMP_VDC_MUNICIPALITY_ID . "=VM1.VDC_MUNICIPALITY_ID", ['VDC_MUNICIPALITY_NAME_TEMP' => 'VDC_MUNICIPALITY_NAME'], 'left')
+                ->join(['BG' => "HRIS_BLOOD_GROUPS"], "E." . HrEmployees::BLOOD_GROUP_ID . "=BG.BLOOD_GROUP_ID", ['BLOOD_GROUP_CODE'], 'left')
+                ->join(['RG' => "HRIS_RELIGIONS"], "E." . HrEmployees::RELIGION_ID . "=RG.RELIGION_ID", ['RELIGION_NAME'], 'left')
+                ->join(['CN' => "HRIS_COUNTRIES"], "E." . HrEmployees::COUNTRY_ID . "=CN.COUNTRY_ID", ['COUNTRY_NAME'], 'left')
+//                ->join(['DT' => "HRIS_DISTRICTS"], "E." . HrEmployees::ID_CITIZENSHIP_ISSUE_PLACE . "=DT.DISTRICT_ID", ['ID_CIT_ISSUE_PLACE_NAME' => 'DISTRICT_NAME'], 'left')
+//                ->join(['Z' => "HRIS_ZONES"], "E." . HrEmployees::ZON . "=Z.ZONE_ID", ['ZONE_NAME'], 'left')
+//                ->join(['D' => "HRIS_DISTRICTS"], "E." . HrEmployees::DISTRICT_ID . "=D.DISTRICT_ID", ['DISTRICT_NAME'], 'left')
+                ->join(['VM' => "HRIS_VDC_MUNICIPALITIES"], "E." . HrEmployees::ADDR_PERM_VDC_MUNICIPALITY_ID . "=VM.VDC_MUNICIPALITY_ID", ['VDC_MUNICIPALITY_NAME'], 'left')
+                ->join(['VM1' => "HRIS_VDC_MUNICIPALITIES"], "E." . HrEmployees::ADDR_TEMP_VDC_MUNICIPALITY_ID . "=VM1.VDC_MUNICIPALITY_ID", ['VDC_MUNICIPALITY_NAME_TEMP' => 'VDC_MUNICIPALITY_NAME'], 'left')
                 ->join(['D1' => Department::TABLE_NAME], "E." . HrEmployees::APP_DEPARTMENT_ID . "=D1." . Department::DEPARTMENT_ID, ['DEPARTMENT_NAME'], 'left')
                 ->join(['DES1' => Designation::TABLE_NAME], "E." . HrEmployees::APP_DESIGNATION_ID . "=DES1." . Designation::DESIGNATION_ID, ['DESIGNATION_TITLE'], 'left')
                 ->join(['P1' => Position::TABLE_NAME], "E." . HrEmployees::APP_POSITION_ID . "=P1." . Position::POSITION_ID, ['POSITION_NAME'], 'left')
@@ -217,7 +217,7 @@ class EmployeeRepository implements RepositoryInterface {
     public function filterRecords($emplyoeeId, $branchId, $departmentId, $designationId, $positionId, $serviceTypeId, $serviceEventTypeId, $getResult = null) {
         $sql = new Sql($this->adapter);
         $select = $sql->select();
-        $select->from(["E" => "HR_EMPLOYEES"]);
+        $select->from(["E" => "HRIS_EMPLOYEES"]);
         $select->columns(Helper::convertColumnDateFormat($this->adapter, new HrEmployees(), [
                     'birthDate',
                     'famSpouseBirthDate',
@@ -232,14 +232,14 @@ class EmployeeRepository implements RepositoryInterface {
                 ->join(['B' => Branch::TABLE_NAME], "E." . HrEmployees::BRANCH_ID . "=B." . Branch::BRANCH_ID, ['BRANCH_NAME'], 'left')
                 ->join(['C' => Company::TABLE_NAME], "E." . HrEmployees::COMPANY_ID . "=C." . Company::COMPANY_ID, ['COMPANY_NAME'], 'left')
                 ->join(['G' => Gender::TABLE_NAME], "E." . HrEmployees::GENDER_ID . "=G." . Gender::GENDER_ID, ['GENDER_NAME'], 'left')
-                ->join(['BG' => "HR_BLOOD_GROUPS"], "E." . HrEmployees::BLOOD_GROUP_ID . "=BG.BLOOD_GROUP_ID", ['BLOOD_GROUP_CODE'], 'left')
-                ->join(['RG' => "HR_RELIGIONS"], "E." . HrEmployees::RELIGION_ID . "=RG.RELIGION_ID", ['RELIGION_NAME'], 'left')
-                ->join(['CN' => "HR_COUNTRIES"], "E." . HrEmployees::COUNTRY_ID . "=CN.COUNTRY_ID", ['COUNTRY_NAME'], 'left')
-//                ->join(['DT' => "HR_DISTRICTS"], "E." . HrEmployees::ID_CITIZENSHIP_ISSUE_PLACE . "=DT.DISTRICT_ID", ['ID_CIT_ISSUE_PLACE_NAME' => 'DISTRICT_NAME'], 'left')
-//                ->join(['Z' => "HR_ZONES"], "E." . HrEmployees::ZON . "=Z.ZONE_ID", ['ZONE_NAME'], 'left')
-//                ->join(['D' => "HR_DISTRICTS"], "E." . HrEmployees::DISTRICT_ID . "=D.DISTRICT_ID", ['DISTRICT_NAME'], 'left')
-                ->join(['VM' => "HR_VDC_MUNICIPALITIES"], "E." . HrEmployees::ADDR_PERM_VDC_MUNICIPALITY_ID . "=VM.VDC_MUNICIPALITY_ID", ['VDC_MUNICIPALITY_NAME'], 'left')
-                ->join(['VM1' => "HR_VDC_MUNICIPALITIES"], "E." . HrEmployees::ADDR_TEMP_VDC_MUNICIPALITY_ID . "=VM1.VDC_MUNICIPALITY_ID", ['VDC_MUNICIPALITY_NAME_TEMP' => 'VDC_MUNICIPALITY_NAME'], 'left')
+                ->join(['BG' => "HRIS_BLOOD_GROUPS"], "E." . HrEmployees::BLOOD_GROUP_ID . "=BG.BLOOD_GROUP_ID", ['BLOOD_GROUP_CODE'], 'left')
+                ->join(['RG' => "HRIS_RELIGIONS"], "E." . HrEmployees::RELIGION_ID . "=RG.RELIGION_ID", ['RELIGION_NAME'], 'left')
+                ->join(['CN' => "HRIS_COUNTRIES"], "E." . HrEmployees::COUNTRY_ID . "=CN.COUNTRY_ID", ['COUNTRY_NAME'], 'left')
+//                ->join(['DT' => "HRIS_DISTRICTS"], "E." . HrEmployees::ID_CITIZENSHIP_ISSUE_PLACE . "=DT.DISTRICT_ID", ['ID_CIT_ISSUE_PLACE_NAME' => 'DISTRICT_NAME'], 'left')
+//                ->join(['Z' => "HRIS_ZONES"], "E." . HrEmployees::ZON . "=Z.ZONE_ID", ['ZONE_NAME'], 'left')
+//                ->join(['D' => "HRIS_DISTRICTS"], "E." . HrEmployees::DISTRICT_ID . "=D.DISTRICT_ID", ['DISTRICT_NAME'], 'left')
+                ->join(['VM' => "HRIS_VDC_MUNICIPALITIES"], "E." . HrEmployees::ADDR_PERM_VDC_MUNICIPALITY_ID . "=VM.VDC_MUNICIPALITY_ID", ['VDC_MUNICIPALITY_NAME'], 'left')
+                ->join(['VM1' => "HRIS_VDC_MUNICIPALITIES"], "E." . HrEmployees::ADDR_TEMP_VDC_MUNICIPALITY_ID . "=VM1.VDC_MUNICIPALITY_ID", ['VDC_MUNICIPALITY_NAME_TEMP' => 'VDC_MUNICIPALITY_NAME'], 'left')
                 ->join(['D1' => Department::TABLE_NAME], "E." . HrEmployees::APP_DEPARTMENT_ID . "=D1." . Department::DEPARTMENT_ID, ['DEPARTMENT_NAME'], 'left')
                 ->join(['DES1' => Designation::TABLE_NAME], "E." . HrEmployees::APP_DESIGNATION_ID . "=DES1." . Designation::DESIGNATION_ID, ['DESIGNATION_TITLE'], 'left')
                 ->join(['P1' => Position::TABLE_NAME], "E." . HrEmployees::APP_POSITION_ID . "=P1." . Position::POSITION_ID, ['POSITION_NAME'], 'left')
@@ -310,7 +310,7 @@ class EmployeeRepository implements RepositoryInterface {
     public function getEmployeeListOfBirthday() {
         $sql = new Sql($this->adapter);
         $select = $sql->select();
-        $select->from("HR_EMPLOYEES");
+        $select->from("HRIS_EMPLOYEES");
         $select->columns(Helper::convertColumnDateFormat($this->adapter, new HrEmployees(), ['birthDate']), false);
         $select->where(["STATUS='E' AND RETIRED_FLAG='N'"]);
         $statement = $sql->prepareStatementForSqlObject($select);

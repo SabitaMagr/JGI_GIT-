@@ -6,7 +6,7 @@ use Application\Model\Model;
 
 class ServiceType extends Model {
 
-    const TABLE_NAME = "HR_SERVICE_TYPES";
+    const TABLE_NAME = "HRIS_SERVICE_TYPES";
     const SERVICE_TYPE_ID = "SERVICE_TYPE_ID";
     const SERVICE_TYPE_CODE = "SERVICE_TYPE_CODE";
     const SERVICE_TYPE_NAME = "SERVICE_TYPE_NAME";

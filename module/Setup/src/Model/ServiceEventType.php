@@ -5,7 +5,7 @@ use Application\Model\Model;
 
 class ServiceEventType extends Model{
 
-    const TABLE_NAME="HR_SERVICE_EVENT_TYPES";
+    const TABLE_NAME="HRIS_SERVICE_EVENT_TYPES";
 
     const SERVICE_EVENT_TYPE_ID="SERVICE_EVENT_TYPE_ID";
     const SERVICE_EVENT_TYPE_CODE="SERVICE_EVENT_TYPE_CODE";

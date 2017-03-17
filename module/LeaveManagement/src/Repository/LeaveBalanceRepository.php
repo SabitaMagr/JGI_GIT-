@@ -29,7 +29,7 @@ class LeaveBalanceRepository implements RepositoryInterface {
         $this->adapter = $adapter;
         $this->tableGateway = new TableGateway(LeaveAssign::TABLE_NAME,$adapter);
         $this->leaveTableGateway = new TableGateway(LeaveMaster::TABLE_NAME,$adapter);
-        $this->employeeTableGateway = new TableGateway("HR_EMPLOYEES",$adapter);
+        $this->employeeTableGateway = new TableGateway("HRIS_EMPLOYEES",$adapter);
     }
 
     public function add(Model $model)
@@ -37,7 +37,7 @@ class LeaveBalanceRepository implements RepositoryInterface {
         // TODO: Implement add() method.
     }
     public function getAllLeave(){
-        $sql = "SELECT * FROM HR_LEAVE_MASTER_SETUP WHERE STATUS='E' ORDER BY LEAVE_ID";
+        $sql = "SELECT * FROM HRIS_LEAVE_MASTER_SETUP WHERE STATUS='E' ORDER BY LEAVE_ID";
         $statement = $this->adapter->query($sql);
         $result = $statement->execute();
         return $result;
@@ -52,7 +52,7 @@ class LeaveBalanceRepository implements RepositoryInterface {
             new Expression("E.EMPLOYEE_ID AS EMPLOYEE_ID")
         ], true);
 
-        $select->from(['E' => "HR_EMPLOYEES"]);
+        $select->from(['E' => "HRIS_EMPLOYEES"]);
 
         $select->where([
             "E.STATUS='E'"
@@ -115,8 +115,8 @@ class LeaveBalanceRepository implements RepositoryInterface {
         ], true);
 
         $select->from(['LA' => LeaveAssign::TABLE_NAME])
-            ->join(['E'=>"HR_EMPLOYEES"],"E.EMPLOYEE_ID=LA.EMPLOYEE_ID",['FIRST_NAME','MIDDLE_NAME','LAST_NAME','SERVICE_EVENT_TYPE_ID'],"left")
-            ->join(['L'=>'HR_LEAVE_MASTER_SETUP'],"L.LEAVE_ID=LA.LEAVE_ID",['LEAVE_CODE','LEAVE_ENAME'],"left");
+            ->join(['E'=>"HRIS_EMPLOYEES"],"E.EMPLOYEE_ID=LA.EMPLOYEE_ID",['FIRST_NAME','MIDDLE_NAME','LAST_NAME','SERVICE_EVENT_TYPE_ID'],"left")
+            ->join(['L'=>'HRIS_LEAVE_MASTER_SETUP'],"L.LEAVE_ID=LA.LEAVE_ID",['LEAVE_CODE','LEAVE_ENAME'],"left");
 
         $select->where([
             "L.STATUS='E'",
@@ -163,8 +163,8 @@ class LeaveBalanceRepository implements RepositoryInterface {
         ], true);
 
         $select->from(['LA' => LeaveAssign::TABLE_NAME])
-            ->join(['E'=>"HR_EMPLOYEES"],"E.EMPLOYEE_ID=LA.EMPLOYEE_ID",['FIRST_NAME','MIDDLE_NAME','LAST_NAME'],"left")
-            ->join(['L'=>'HR_LEAVE_MASTER_SETUP'],"L.LEAVE_ID=LA.LEAVE_ID",['LEAVE_CODE','LEAVE_ENAME'],"left");
+            ->join(['E'=>"HRIS_EMPLOYEES"],"E.EMPLOYEE_ID=LA.EMPLOYEE_ID",['FIRST_NAME','MIDDLE_NAME','LAST_NAME'],"left")
+            ->join(['L'=>'HRIS_LEAVE_MASTER_SETUP'],"L.LEAVE_ID=LA.LEAVE_ID",['LEAVE_CODE','LEAVE_ENAME'],"left");
 
         $select->where([
             "L.STATUS='E'",

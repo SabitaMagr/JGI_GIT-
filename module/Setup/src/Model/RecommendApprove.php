@@ -10,7 +10,7 @@ use Application\Model\Model;
 
 class RecommendApprove extends  Model{
 
-    const TABLE_NAME="HR_RECOMMENDER_APPROVER";
+    const TABLE_NAME="HRIS_RECOMMENDER_APPROVER";
 
     const EMPLOYEE_ID="EMPLOYEE_ID";
     const RECOMMEND_BY="RECOMMEND_BY";

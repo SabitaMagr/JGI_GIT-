@@ -6,7 +6,7 @@ use Application\Model\Model;
 
 class ShiftSetup extends Model
 {
-    const TABLE_NAME="HR_SHIFTS";
+    const TABLE_NAME="HRIS_SHIFTS";
 
     const SHIFT_ID="SHIFT_ID";
     const SHIFT_CODE="SHIFT_CODE";

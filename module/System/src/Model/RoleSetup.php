@@ -11,7 +11,7 @@ use Application\Model\Model;
 
 class RoleSetup extends Model {
 
-    const TABLE_NAME="HR_ROLES";
+    const TABLE_NAME="HRIS_ROLES";
     const ROLE_ID="ROLE_ID";
     const ROLE_NAME="ROLE_NAME";
     const STATUS="STATUS";

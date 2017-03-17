@@ -4,7 +4,7 @@ namespace SelfService\Model;
 use Application\Model\Model;
 
 class LoanRequest extends Model{
-    const TABLE_NAME = "HR_EMPLOYEE_LOAN_REQUEST";
+    const TABLE_NAME = "HRIS_EMPLOYEE_LOAN_REQUEST";
     const LOAN_REQUEST_ID = "LOAN_REQUEST_ID";
     const EMPLOYEE_ID = "EMPLOYEE_ID";
     const LOAN_ID = "LOAN_ID";

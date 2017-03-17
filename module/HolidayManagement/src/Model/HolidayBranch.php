@@ -12,7 +12,7 @@ use Application\Model\Model;
 
 class HolidayBranch extends Model {
 
-    const TABLE_NAME="HR_HOLIDAY_BRANCH";
+    const TABLE_NAME="HRIS_HOLIDAY_BRANCH";
     const HOLIDAY_ID="HOLIDAY_ID";
     const BRANCH_ID="BRANCH_ID";
 

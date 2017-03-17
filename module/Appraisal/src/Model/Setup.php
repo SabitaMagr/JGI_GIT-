@@ -4,7 +4,7 @@ namespace Appraisal\Model;
 use Application\Model\Model;
 
 class Setup extends Model{
-    const TABLE_NAME = "HR_APPRAISAL_SETUP";
+    const TABLE_NAME = "HRIS_APPRAISAL_SETUP";
     
     const APPRAISAL_ID = "APPRAISAL_ID";
     const APPRAISAL_CODE = "APPRAISAL_CODE";

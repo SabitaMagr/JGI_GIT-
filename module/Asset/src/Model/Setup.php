@@ -5,7 +5,7 @@ namespace Asset\Model;
 use Application\Model\Model;
 
 class Setup extends Model {
-    const TABLE_NAME = 'HR_ASSET_SETUP';
+    const TABLE_NAME = 'HRIS_ASSET_SETUP';
     
     const ASSET_ID = 'ASSET_ID';
     const ASSET_CODE = 'ASSET_CODE';

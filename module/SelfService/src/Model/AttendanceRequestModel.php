@@ -10,7 +10,7 @@ namespace SelfService\Model;
 use Application\Model\Model;
 
 class AttendanceRequestModel extends Model  {
-    const TABLE_NAME="HR_ATTENDANCE_REQUEST";
+    const TABLE_NAME="HRIS_ATTENDANCE_REQUEST";
 
     const ID="ID";
     const EMPLOYEE_ID="EMPLOYEE_ID";

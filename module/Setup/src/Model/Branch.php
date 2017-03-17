@@ -6,7 +6,7 @@ use Application\Model\Model;
 
 class Branch extends Model {
 
-    const TABLE_NAME = "HR_BRANCHES";
+    const TABLE_NAME = "HRIS_BRANCHES";
     const BRANCH_ID = "BRANCH_ID";
     const BRANCH_CODE = "BRANCH_CODE";
     const BRANCH_NAME = "BRANCH_NAME";

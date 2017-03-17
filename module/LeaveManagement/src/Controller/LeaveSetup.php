@@ -83,7 +83,7 @@ class LeaveSetup extends AbstractActionController {
                         $this, [
                     'form' => $this->form,
                     'customRenderer' => Helper::renderCustomView(),
-                    'fiscalYears' => EntityHelper::getTableKVList($this->adapter, "HR_FISCAL_YEARS", "FISCAL_YEAR_ID", ["START_DATE", "END_DATE"], null, "|")
+                    'fiscalYears' => EntityHelper::getTableKVList($this->adapter, "HRIS_FISCAL_YEARS", "FISCAL_YEAR_ID", ["START_DATE", "END_DATE"], null, "|")
                         ]
                 )
         );
@@ -120,7 +120,7 @@ class LeaveSetup extends AbstractActionController {
                     'form' => $this->form,
                     'id' => $id,
                     'customRenderer' => Helper::renderCustomView(),
-                    'fiscalYears' => EntityHelper::getTableKVList($this->adapter, "HR_FISCAL_YEARS", "FISCAL_YEAR_ID", ["START_DATE", "END_DATE"], null, "|")
+                    'fiscalYears' => EntityHelper::getTableKVList($this->adapter, "HRIS_FISCAL_YEARS", "FISCAL_YEAR_ID", ["START_DATE", "END_DATE"], null, "|")
                         ]
                 )
         );

@@ -11,7 +11,7 @@ use Application\Model\Model;
 
 class RolePermission extends Model {
 
-    const TABLE_NAME="HR_ROLE_PERMISSIONS";
+    const TABLE_NAME="HRIS_ROLE_PERMISSIONS";
     const ROLE_ID="ROLE_ID";
     const MENU_ID="MENU_ID";
     const STATUS="STATUS";

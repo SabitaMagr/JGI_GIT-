@@ -60,7 +60,7 @@ class StageController extends AbstractActionController{
                 $stage->createdBy = $this->employeeId;
                 $stage->companyId = $employeeDetail['COMPANY_ID'];
                 $stage->branchId = $employeeDetail['BRANCH_ID'];
-                $stage->stageId = ((int) Helper::getMaxId($this->adapter, "HR_APPRAISAL_STAGE", "STAGE_ID")) + 1;
+                $stage->stageId = ((int) Helper::getMaxId($this->adapter, "HRIS_APPRAISAL_STAGE", "STAGE_ID")) + 1;
                 $stage->status = 'E';
                 $this->repository->add($stage);
                 $this->flashmessenger()->addMessage("Appraisal Stage Successfully added!!!");

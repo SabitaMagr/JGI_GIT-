@@ -4,7 +4,7 @@ namespace Application\Model;
 
 class Months extends Model {
 
-    const TABLE_NAME = "HR_MONTH_CODE";
+    const TABLE_NAME = "HRIS_MONTH_CODE";
     const FISCAL_YEAR_ID = "FISCAL_YEAR_ID";
     const MONTH_ID = "MONTH_ID";
     const MONTH_EDESC = "MONTH_EDESC";

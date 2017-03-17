@@ -44,7 +44,7 @@ class AttendanceDetailRepository implements RepositoryInterface {
         $select = $sql->select();
         $select->columns([new Expression("TO_CHAR(A.ATTENDANCE_DT, 'DD-MON-YYYY') AS ATTENDANCE_DT"), new Expression("TO_CHAR(A.IN_TIME, 'HH:MI AM') AS IN_TIME"), new Expression("TO_CHAR(A.OUT_TIME, 'HH:MI AM') AS OUT_TIME"), new Expression("E.EMPLOYEE_ID AS EMPLOYEE_ID"), new Expression("A.ID AS ID"), new Expression("A.IN_REMARKS AS IN_REMARKS"), new Expression("A.OUT_REMARKS AS OUT_REMARKS")], true);
         $select->from(['A' => AttendanceDetail::TABLE_NAME])
-                ->join(['E' => 'HR_EMPLOYEES'], 'A.EMPLOYEE_ID=E.EMPLOYEE_ID', ["FIRST_NAME" => 'FIRST_NAME', "MIDDLE_NAME" => 'MIDDLE_NAME', "LAST_NAME" => 'LAST_NAME'], "left");
+                ->join(['E' => 'HRIS_EMPLOYEES'], 'A.EMPLOYEE_ID=E.EMPLOYEE_ID', ["FIRST_NAME" => 'FIRST_NAME', "MIDDLE_NAME" => 'MIDDLE_NAME', "LAST_NAME" => 'LAST_NAME'], "left");
         $select->where(["E.STATUS='E'"]);
         $select->where(["E.RETIRED_FLAG='N'"]);
         $select->order("E.FIRST_NAME,A.ATTENDANCE_DT DESC");
@@ -58,9 +58,9 @@ class AttendanceDetailRepository implements RepositoryInterface {
         $select = $sql->select();
         $select->columns([new Expression("TO_CHAR(A.ATTENDANCE_DT, 'DD-MON-YYYY') AS ATTENDANCE_DT"), new Expression("TO_CHAR(A.IN_TIME, 'HH:MI AM') AS IN_TIME"), new Expression("TO_CHAR(A.OUT_TIME, 'HH:MI AM') AS OUT_TIME"), new Expression("E.EMPLOYEE_ID AS EMPLOYEE_ID"), new Expression("A.ID AS ID"), new Expression("A.IN_REMARKS AS IN_REMARKS"), new Expression("A.TOTAL_HOUR AS TOTAL_HOUR"), new Expression("A.OUT_REMARKS AS OUT_REMARKS")], true);
         $select->from(['A' => AttendanceDetail::TABLE_NAME])
-                ->join(['E' => 'HR_EMPLOYEES'], 'A.EMPLOYEE_ID=E.EMPLOYEE_ID', ["FIRST_NAME" => 'FIRST_NAME', "MIDDLE_NAME" => 'MIDDLE_NAME', "LAST_NAME" => 'LAST_NAME'], "left")
-                ->join(['H' => 'HR_HOLIDAY_MASTER_SETUP'], 'A.HOLIDAY_ID=H.HOLIDAY_ID', ["HOLIDAY_ENAME" => 'HOLIDAY_ENAME'], "left")
-                ->join(['L' => 'HR_LEAVE_MASTER_SETUP'], 'A.LEAVE_ID=L.LEAVE_ID', ["LEAVE_ENAME" => 'LEAVE_ENAME'], "left");
+                ->join(['E' => 'HRIS_EMPLOYEES'], 'A.EMPLOYEE_ID=E.EMPLOYEE_ID', ["FIRST_NAME" => 'FIRST_NAME', "MIDDLE_NAME" => 'MIDDLE_NAME', "LAST_NAME" => 'LAST_NAME'], "left")
+                ->join(['H' => 'HRIS_HOLIDAY_MASTER_SETUP'], 'A.HOLIDAY_ID=H.HOLIDAY_ID', ["HOLIDAY_ENAME" => 'HOLIDAY_ENAME'], "left")
+                ->join(['L' => 'HRIS_LEAVE_MASTER_SETUP'], 'A.LEAVE_ID=L.LEAVE_ID', ["LEAVE_ENAME" => 'LEAVE_ENAME'], "left");
 
         if ($fromDate != null) {
             $startDate = " AND A.ATTENDANCE_DT>=TO_DATE('" . $fromDate . "','DD-MM-YYYY')";
@@ -137,7 +137,7 @@ class AttendanceDetailRepository implements RepositoryInterface {
         $select = $sql->select();
         $select->columns([new Expression("TO_CHAR(A.ATTENDANCE_DT, 'DD-MON-YYYY') AS ATTENDANCE_DT"), new Expression("TO_CHAR(A.IN_TIME, 'HH:MI AM') AS IN_TIME"), new Expression("TO_CHAR(A.OUT_TIME, 'HH:MI AM') AS OUT_TIME"), new Expression("E.EMPLOYEE_ID AS EMPLOYEE_ID"), new Expression("A.ID AS ID"), new Expression("A.IN_REMARKS AS IN_REMARKS"), new Expression("A.OUT_REMARKS AS OUT_REMARKS"), new Expression("A.TOTAL_HOUR AS TOTAL_HOUR")], true);
         $select->from(['A' => AttendanceDetail::TABLE_NAME])
-                ->join(['E' => 'HR_EMPLOYEES'], 'A.EMPLOYEE_ID=E.EMPLOYEE_ID', ["FIRST_NAME" => 'FIRST_NAME'], "left");
+                ->join(['E' => 'HRIS_EMPLOYEES'], 'A.EMPLOYEE_ID=E.EMPLOYEE_ID', ["FIRST_NAME" => 'FIRST_NAME'], "left");
         $select->where([AttendanceDetail::ID => $id]);
         $statement = $sql->prepareStatementForSqlObject($select);
         $result = $statement->execute();
@@ -153,7 +153,7 @@ class AttendanceDetailRepository implements RepositoryInterface {
         $select = $sql->select();
         $select->columns([new Expression("TO_CHAR(A.ATTENDANCE_DT, 'DD-MON-YYYY') AS ATTENDANCE_DT"), new Expression("TO_CHAR(A.IN_TIME, 'HH:MI AM') AS IN_TIME"), new Expression("TO_CHAR(A.OUT_TIME, 'HH:MI AM') AS OUT_TIME"), new Expression("E.EMPLOYEE_ID AS EMPLOYEE_ID"), new Expression("A.ID AS ID"), new Expression("A.IN_REMARKS AS IN_REMARKS"), new Expression("A.OUT_REMARKS AS OUT_REMARKS")], true);
         $select->from(['A' => AttendanceDetail::TABLE_NAME])
-                ->join(['E' => 'HR_EMPLOYEES'], 'A.EMPLOYEE_ID=E.EMPLOYEE_ID', ["FIRST_NAME" => 'FIRST_NAME', "MIDDLE_NAME" => 'MIDDLE_NAME', "LAST_NAME" => 'LAST_NAME'], "left");
+                ->join(['E' => 'HRIS_EMPLOYEES'], 'A.EMPLOYEE_ID=E.EMPLOYEE_ID', ["FIRST_NAME" => 'FIRST_NAME', "MIDDLE_NAME" => 'MIDDLE_NAME', "LAST_NAME" => 'LAST_NAME'], "left");
         $select->where([
             'A.EMPLOYEE_ID=' . $employeeId,
             "A.ATTENDANCE_DT=TO_DATE('" . $attendanceDt . "','DD-MM-YYYY')"
@@ -202,8 +202,8 @@ class AttendanceDetailRepository implements RepositoryInterface {
         $startDt=$startDate->getExpression();
         $endDt=$endDate->getExpression();
         $sql = "SELECT SUM(LEAVE.LEAVE_COUNT) LEAVE_COUNT FROM (
-                (SELECT COUNT(LR.EMPLOYEE_ID) AS LEAVE_COUNT FROM HR_EMPLOYEE_LEAVE_REQUEST LR,
-                (SELECT  HAD.EMPLOYEE_ID, HAD.LEAVE_ID,HAD.ATTENDANCE_DT FROM HR_ATTENDANCE_DETAIL HAD
+                (SELECT COUNT(LR.EMPLOYEE_ID) AS LEAVE_COUNT FROM HRIS_EMPLOYEE_LEAVE_REQUEST LR,
+                (SELECT  HAD.EMPLOYEE_ID, HAD.LEAVE_ID,HAD.ATTENDANCE_DT FROM HRIS_ATTENDANCE_DETAIL HAD
                 WHERE HAD.EMPLOYEE_ID=$employeeId 
                 AND (HAD.ATTENDANCE_DT BETWEEN 
                 $startDt AND $endDt)
@@ -212,8 +212,8 @@ class AttendanceDetailRepository implements RepositoryInterface {
                 WHERE
                 LR.EMPLOYEE_ID = AD.EMPLOYEE_ID AND 
                 LR.LEAVE_ID= AD.LEAVE_ID AND 
-                LR.HALF_DAY = 'N') UNION (SELECT COUNT(LR.EMPLOYEE_ID)/2 AS LEAVE_COUNT FROM HR_EMPLOYEE_LEAVE_REQUEST LR,
-                (SELECT  HAD.EMPLOYEE_ID, HAD.LEAVE_ID,HAD.ATTENDANCE_DT FROM HR_ATTENDANCE_DETAIL HAD
+                LR.HALF_DAY = 'N') UNION (SELECT COUNT(LR.EMPLOYEE_ID)/2 AS LEAVE_COUNT FROM HRIS_EMPLOYEE_LEAVE_REQUEST LR,
+                (SELECT  HAD.EMPLOYEE_ID, HAD.LEAVE_ID,HAD.ATTENDANCE_DT FROM HRIS_ATTENDANCE_DETAIL HAD
                 WHERE HAD.EMPLOYEE_ID=7 
                 AND (HAD.ATTENDANCE_DT BETWEEN 
                 $startDt AND $endDt)
@@ -302,7 +302,7 @@ class AttendanceDetailRepository implements RepositoryInterface {
         $select = $sql->select();
         $select->columns([new Expression("TO_CHAR(A.ATTENDANCE_DT, 'DD-MON-YYYY') AS ATTENDANCE_DT"), new Expression("TO_CHAR(A.IN_TIME, 'HH:MI AM') AS IN_TIME"), new Expression("TO_CHAR(A.OUT_TIME, 'HH:MI AM') AS OUT_TIME"), new Expression("E.EMPLOYEE_ID AS EMPLOYEE_ID"), new Expression("A.ID AS ID"), new Expression("A.IN_REMARKS AS IN_REMARKS"), new Expression("A.OUT_REMARKS AS OUT_REMARKS")], true);
         $select->from(['A' => AttendanceDetail::TABLE_NAME])
-                ->join(['E' => 'HR_EMPLOYEES'], 'A.EMPLOYEE_ID=E.EMPLOYEE_ID', ["FIRST_NAME" => 'FIRST_NAME', "MIDDLE_NAME" => 'MIDDLE_NAME', "LAST_NAME" => 'LAST_NAME'], "left");
+                ->join(['E' => 'HRIS_EMPLOYEES'], 'A.EMPLOYEE_ID=E.EMPLOYEE_ID', ["FIRST_NAME" => 'FIRST_NAME', "MIDDLE_NAME" => 'MIDDLE_NAME', "LAST_NAME" => 'LAST_NAME'], "left");
         $select->where([
             'A.EMPLOYEE_ID=' . $employeeId,
             "A.ATTENDANCE_DT=".$attendanceDt

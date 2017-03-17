@@ -4,7 +4,7 @@ namespace Appraisal\Model;
 use Application\Model\Model;
 
 class StageQuestion extends Model{
-    const TABLE_NAME = "HR_APPRAISAL_STAGE_QUESTIONS";
+    const TABLE_NAME = "HRIS_APPRAISAL_STAGE_QUESTIONS";
     const QUESTION_ID = "QUESTION_ID";
     const STAGE_ID = "STAGE_ID";
     const STATUS = "STATUS";

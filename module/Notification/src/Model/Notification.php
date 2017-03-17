@@ -6,7 +6,7 @@ use Application\Model\Model;
 
 class Notification extends Model {
 
-    const TABLE_NAME = "HR_NOTIFICATION";
+    const TABLE_NAME = "HRIS_NOTIFICATION";
     const MESSAGE_ID = "MESSAGE_ID";
     const MESSAGE_DATETIME = "MESSAGE_DATETIME";
     const MESSAGE_TITLE = "MESSAGE_TITLE";

@@ -43,8 +43,8 @@ class TypeRepository implements RepositoryInterface{
             new Expression("AT.APPRAISAL_TYPE_EDESC AS APPRAISAL_TYPE_EDESC"), 
             new Expression("AT.APPRAISAL_TYPE_NDESC AS APPRAISAL_TYPE_NDESC")
             ], true);
-        $select->from(['AT' => "HR_APPRAISAL_TYPE"])
-                ->join(['ST' => 'HR_SERVICE_TYPES'], 'AT.SERVICE_TYPE_ID=ST.SERVICE_TYPE_ID', ["SERVICE_TYPE_NAME"], "left");
+        $select->from(['AT' => "HRIS_APPRAISAL_TYPE"])
+                ->join(['ST' => 'HRIS_SERVICE_TYPES'], 'AT.SERVICE_TYPE_ID=ST.SERVICE_TYPE_ID', ["SERVICE_TYPE_NAME"], "left");
         
         $select->where(["AT.STATUS='E'"]);
         $select->order("AT.APPRAISAL_TYPE_EDESC");

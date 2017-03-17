@@ -14,7 +14,7 @@ use Application\Model\Model;
 
 class AttendanceDetail extends Model {
 
-    const TABLE_NAME = "HR_ATTENDANCE_DETAIL";
+    const TABLE_NAME = "HRIS_ATTENDANCE_DETAIL";
     const ID = "ID";
     const EMPLOYEE_ID = "EMPLOYEE_ID";
     const ATTENDANCE_DT = "ATTENDANCE_DT";

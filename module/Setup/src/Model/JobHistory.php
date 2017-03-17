@@ -12,7 +12,7 @@ use Application\Model\Model;
 
 class JobHistory extends Model
 {
-    const TABLE_NAME="HR_JOB_HISTORY";
+    const TABLE_NAME="HRIS_JOB_HISTORY";
 
     const JOB_HISTORY_ID="JOB_HISTORY_ID";
     const EMPLOYEE_ID="EMPLOYEE_ID";

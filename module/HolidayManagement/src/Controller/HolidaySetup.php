@@ -57,7 +57,7 @@ class HolidaySetup extends AbstractActionController
 
         $genderFormElement = new Select();
         $genderFormElement->setName("gender");
-        $genders=\Application\Helper\EntityHelper::getTableKVList($this->adapter,"HR_GENDERS","GENDER_ID" , ["GENDER_NAME"]);
+        $genders=\Application\Helper\EntityHelper::getTableKVList($this->adapter,"HRIS_GENDERS","GENDER_ID" , ["GENDER_NAME"]);
         $genders[-1]="All";
         ksort($genders);
 
@@ -69,7 +69,7 @@ class HolidaySetup extends AbstractActionController
             'genderFormElement'=>$genderFormElement,
             'form'=>$this->form,
             'customRenderer' => Helper::renderCustomView(),
-            "genders" => EntityHelper::getTableKVList($this->adapter, EntityHelper::HR_GENDERS),
+            "genders" => EntityHelper::getTableKVList($this->adapter, EntityHelper::HRIS_GENDERS),
         ]));
         return $viewModel;
     }
@@ -90,12 +90,12 @@ class HolidaySetup extends AbstractActionController
                 $holiday->createdDt = Helper::getcurrentExpressionDate();
                 $holiday->createdBy = $this->employeeId;
                 $holiday->status = 'E';
-                $holiday->fiscalYear=(int) Helper::getMaxId($this->adapter,"HR_FISCAL_YEARS","FISCAL_YEAR_ID");
+                $holiday->fiscalYear=(int) Helper::getMaxId($this->adapter,"HRIS_FISCAL_YEARS","FISCAL_YEAR_ID");
 
                 $branches = $holiday->branchId;
                 unset($holiday->branchId);
 
-                $holiday->holidayId = ((int)Helper::getMaxId($this->adapter,'HR_HOLIDAY_MASTER_SETUP', 'HOLIDAY_ID')) + 1;
+                $holiday->holidayId = ((int)Helper::getMaxId($this->adapter,'HRIS_HOLIDAY_MASTER_SETUP', 'HOLIDAY_ID')) + 1;
                 $this->repository->add($holiday);
 
                 foreach($branches as $branchId){
@@ -112,7 +112,7 @@ class HolidaySetup extends AbstractActionController
             [
                 'form' => $this->form,
                 'customRenderer' => Helper::renderCustomView(),
-                "genders" => EntityHelper::getTableKVList($this->adapter, EntityHelper::HR_GENDERS),
+                "genders" => EntityHelper::getTableKVList($this->adapter, EntityHelper::HRIS_GENDERS),
                 'branches' => \Application\Helper\EntityHelper::getTableKVList($this->adapter, Branch::TABLE_NAME, Branch::BRANCH_ID, [Branch::BRANCH_NAME],["STATUS"=>"E"]),
             ]
         )
@@ -150,7 +150,7 @@ class HolidaySetup extends AbstractActionController
 
         $genderFormElement = new Select();
         $genderFormElement->setName("gender");
-        $genders=\Application\Helper\EntityHelper::getTableKVList($this->adapter,"HR_GENDERS","GENDER_ID" , ["GENDER_NAME"]);
+        $genders=\Application\Helper\EntityHelper::getTableKVList($this->adapter,"HRIS_GENDERS","GENDER_ID" , ["GENDER_NAME"]);
         $genders[-1]="All";
         ksort($genders);
 
@@ -163,7 +163,7 @@ class HolidaySetup extends AbstractActionController
             'genderFormElement'=>$genderFormElement,
             'form'=>$this->form,
             'customRenderer' => Helper::renderCustomView(),
-            "genders" => EntityHelper::getTableKVList($this->adapter, EntityHelper::HR_GENDERS),
+            "genders" => EntityHelper::getTableKVList($this->adapter, EntityHelper::HRIS_GENDERS),
         ]));
         return $viewModel;
 
@@ -193,7 +193,7 @@ class HolidaySetup extends AbstractActionController
         $branchFormElement->setAttributes(["id" => "branchId", "class" => "form-control"]);
         $branchFormElement->setLabel("Branch");
 
-        $genders=\Application\Helper\EntityHelper::getTableKVList($this->adapter,"HR_GENDERS","GENDER_ID" , ["GENDER_NAME"]);
+        $genders=\Application\Helper\EntityHelper::getTableKVList($this->adapter,"HRIS_GENDERS","GENDER_ID" , ["GENDER_NAME"]);
         $genders[-1]="All";
         ksort($genders);
 

@@ -54,7 +54,7 @@ class LeaveAssignRepository implements RepositoryInterface
         $sql = new Sql($this->adapter);
         $select = $sql->select();
         $select->from(['A' => LeaveAssign::TABLE_NAME])
-            ->join(['S' => 'HR_LEAVE_MASTER_SETUP'], 'A.LEAVE_ID=S.LEAVE_ID');
+            ->join(['S' => 'HRIS_LEAVE_MASTER_SETUP'], 'A.LEAVE_ID=S.LEAVE_ID');
         $statement = $sql->prepareStatementForSqlObject($select);
         $result = $statement->execute();
         return $result;
@@ -67,9 +67,9 @@ class LeaveAssignRepository implements RepositoryInterface
         $select = $sql->select();
 
         $select->columns(["EMPLOYEE_ID", "FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], true);
-        $select->from(['E' => "HR_EMPLOYEES"])
-            ->join(['DE'=>'HR_DESIGNATIONS'],'DE.DESIGNATION_ID=E.DESIGNATION_ID',["DESIGNATION_ID","DESIGNATION_TITLE"],"left")
-            ->join(['B'=>'HR_BRANCHES'],'B.BRANCH_ID=E.BRANCH_ID',["BRANCH_ID","BRANCH_NAME"],"left");
+        $select->from(['E' => "HRIS_EMPLOYEES"])
+            ->join(['DE'=>'HRIS_DESIGNATIONS'],'DE.DESIGNATION_ID=E.DESIGNATION_ID',["DESIGNATION_ID","DESIGNATION_TITLE"],"left")
+            ->join(['B'=>'HRIS_BRANCHES'],'B.BRANCH_ID=E.BRANCH_ID',["BRANCH_ID","BRANCH_NAME"],"left");
         $select->where(["E.STATUS='E'"]);
         $select->where(["E.RETIRED_FLAG='N'"]);
 //            ->join(['L' => LeaveAssign::TABLE_NAME], 'E.EMPLOYEE_ID=L.EMPLOYEE_ID', [LeaveAssign::LEAVE_ID, LeaveAssign::BALANCE], \Zend\Db\Sql\Select::JOIN_LEFT)

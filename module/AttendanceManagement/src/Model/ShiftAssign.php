@@ -11,7 +11,7 @@ namespace AttendanceManagement\Model;
 use Application\Model\Model;
 
 class ShiftAssign extends  Model {
-    const TABLE_NAME="HR_EMPLOYEE_SHIFT_ASSIGN";
+    const TABLE_NAME="HRIS_EMPLOYEE_SHIFT_ASSIGN";
 
     const EMPLOYEE_ID="EMPLOYEE_ID";
     const SHIFT_ID="SHIFT_ID";

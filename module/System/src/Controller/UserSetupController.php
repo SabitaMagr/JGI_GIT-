@@ -71,7 +71,7 @@ class UserSetupController extends AbstractActionController {
         return Helper::addFlashMessagesToArray($this,[
             'form'=>$this->form,
             'employeeList'=>$this->repository->getEmployeeList(),
-            'roleList'=>EntityHelper::getTableKVList($this->adapter,"HR_ROLES","ROLE_ID",["ROLE_NAME"],["STATUS"=>"E"])
+            'roleList'=>EntityHelper::getTableKVList($this->adapter,"HRIS_ROLES","ROLE_ID",["ROLE_NAME"],["STATUS"=>"E"])
         ]);
     }
 
@@ -106,7 +106,7 @@ class UserSetupController extends AbstractActionController {
             'id'=>$id,
             'passwordDtl'=>$detail['PASSWORD'],
             'employeeList'=>$this->repository->getEmployeeList($detail['EMPLOYEE_ID']),
-            'roleList'=>EntityHelper::getTableKVList($this->adapter,"HR_ROLES","ROLE_ID",["ROLE_NAME"],["STATUS"=>"E"])
+            'roleList'=>EntityHelper::getTableKVList($this->adapter,"HRIS_ROLES","ROLE_ID",["ROLE_NAME"],["STATUS"=>"E"])
         ]);
     }
 

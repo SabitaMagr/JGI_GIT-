@@ -4,7 +4,7 @@ namespace Appraisal\Model;
 use Application\Model\Model;
 
 class QuestionOption extends Model{
-    const TABLE_NAME = "HR_APPRAISAL_QUESTION_OPTIONS";
+    const TABLE_NAME = "HRIS_APPRAISAL_QUESTIONS_OPTS";
     
     const OPTION_ID = "OPTION_ID";
     const OPTION_CODE = "OPTION_CODE";

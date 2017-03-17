@@ -6,7 +6,7 @@ use Application\Model\Model;
 
 class EmailTemplate extends Model {
 
-    const TABLE_NAME = "HR_EMAIL_TEMPLATE";
+    const TABLE_NAME = "HRIS_EMAIL_TEMPLATE";
     const ID = "ID";
     const SUBJECT = "SUBJECT";
     const DESCRIPTION = "DESCRIPTION";

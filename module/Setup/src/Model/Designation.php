@@ -6,7 +6,7 @@ use Application\Model\Model;
 
 class Designation extends Model {
 
-    const TABLE_NAME = "HR_DESIGNATIONS";
+    const TABLE_NAME = "HRIS_DESIGNATIONS";
     const DESIGNATION_ID = "DESIGNATION_ID";
     const DESIGNATION_CODE = "DESIGNATION_CODE";
     const DESIGNATION_TITLE = "DESIGNATION_TITLE";

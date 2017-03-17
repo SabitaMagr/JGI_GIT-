@@ -61,7 +61,7 @@ class RolePermissionRepository implements RepositoryInterface {
                 ], true);
 
         $select->from(['RP' => RolePermission::TABLE_NAME])
-                ->join(['R' => 'HR_ROLES'], "R.ROLE_ID=RP.ROLE_ID", ['ROLE_NAME']);
+                ->join(['R' => 'HRIS_ROLES'], "R.ROLE_ID=RP.ROLE_ID", ['ROLE_NAME']);
 
         $select->where([
             "RP.STATUS='E'",

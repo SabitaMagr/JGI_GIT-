@@ -10,68 +10,68 @@ use Zend\Db\TableGateway\TableGateway;
 class EntityHelper
 {
     public static $tablesAttributes = [
-        self::HR_BLOOD_GROUPS => [
+        self::HRIS_BLOOD_GROUPS => [
             "BLOOD_GROUP_ID" => "BLOOD_GROUP_CODE"
         ],
-        self::HR_DEPARTMENTS => [
+        self::HRIS_DEPARTMENTS => [
             "DEPARTMENT_ID" => "DEPARTMENT_NAME"
         ],
-        self::HR_DESIGNATIONS => [
+        self::HRIS_DESIGNATIONS => [
             "DESIGNATION_ID" => "DESIGNATION_TITLE"
         ],
-        self::HR_DISTRICTS => [
+        self::HRIS_DISTRICTS => [
             "DISTRICT_ID" => "DISTRICT_NAME"
         ],
-        self::HR_POSITIONS => [
+        self::HRIS_POSITIONS => [
             "POSITION_ID" => "POSITION_NAME"
         ],
-        self::HR_GENDERS => [
+        self::HRIS_GENDERS => [
             "GENDER_ID" => "GENDER_NAME"
         ],
-        self::HR_BRANCHES => [
+        self::HRIS_BRANCHES => [
             "BRANCH_ID" => "BRANCH_NAME"
         ],
-        self::HR_VDC_MUNICIPALITY => [
+        self::HRIS_VDC_MUNICIPALITY => [
             "VDC_MUNICIPALITY_ID" => "VDC_MUNICIPALITY_NAME"
         ],
-        self::HR_SERVICE_TYPES => [
+        self::HRIS_SERVICE_TYPES => [
             "SERVICE_TYPE_ID" => "SERVICE_TYPE_NAME"
         ],
-        self::HR_ZONES => [
+        self::HRIS_ZONES => [
             "ZONE_ID" => "ZONE_NAME"
-        ], self::HR_RELIGIONS => [
+        ], self::HRIS_RELIGIONS => [
             "RELIGION_ID" => "RELIGION_NAME"
         ],
-        self::HR_COMPANY => [
+        self::HRIS_COMPANY => [
             "COMPANY_ID" => "COMPANY_NAME"
         ],
-        self::HR_EMPLOYEES => [
+        self::HRIS_EMPLOYEES => [
             'EMPLOYEE_ID' => 'FIRST_NAME'
         ],
-        self::HR_COUNTRIES => [
+        self::HRIS_COUNTRIES => [
             'COUNTRY_ID' => 'COUNTRY_NAME'
         ],
-        self::HR_FILE_TYPE => [
+        self::HRIS_FILE_TYPE => [
             'FILETYPE_CODE' => 'NAME'
         ]
     ];
 
-    const HR_BLOOD_GROUPS = 'HR_BLOOD_GROUPS';
-    const HR_DEPARTMENTS = "HR_DEPARTMENTS";
-    const HR_DESIGNATIONS = "HR_DESIGNATIONS";
-    const HR_DISTRICTS = "HR_DISTRICTS";
-    const HR_POSITIONS = "HR_POSITIONS";
-    const HR_GENDERS = "HR_GENDERS";
-    const HR_BRANCHES = "HR_BRANCHES";
-    const HR_VDC_MUNICIPALITY = "HR_VDC_MUNICIPALITIES";
-    const HR_SERVICE_TYPES = "HR_SERVICE_TYPES";
-    const HR_ZONES = "HR_ZONES";
-    const HR_RELIGIONS = "HR_RELIGIONS";
-    const HR_COMPANY = "HR_COMPANY";
-    const HR_EMPLOYEES = 'HR_EMPLOYEES';
-    const HR_COUNTRIES = 'HR_COUNTRIES';
-    const HR_FILE_TYPE = 'HR_FILE_TYPE';
-    const HR_FISCAL_YEARS="HR_FISCAL_YEARS";
+    const HRIS_BLOOD_GROUPS = 'HRIS_BLOOD_GROUPS';
+    const HRIS_DEPARTMENTS = "HRIS_DEPARTMENTS";
+    const HRIS_DESIGNATIONS = "HRIS_DESIGNATIONS";
+    const HRIS_DISTRICTS = "HRIS_DISTRICTS";
+    const HRIS_POSITIONS = "HRIS_POSITIONS";
+    const HRIS_GENDERS = "HRIS_GENDERS";
+    const HRIS_BRANCHES = "HRIS_BRANCHES";
+    const HRIS_VDC_MUNICIPALITY = "HRIS_VDC_MUNICIPALITIES";
+    const HRIS_SERVICE_TYPES = "HRIS_SERVICE_TYPES";
+    const HRIS_ZONES = "HRIS_ZONES";
+    const HRIS_RELIGIONS = "HRIS_RELIGIONS";
+    const HRIS_COMPANY = "HRIS_COMPANY";
+    const HRIS_EMPLOYEES = 'HRIS_EMPLOYEES';
+    const HRIS_COUNTRIES = 'HRIS_COUNTRIES';
+    const HRIS_FILE_TYPE = 'HRIS_FILE_TYPE';
+    const HRIS_FISCAL_YEARS="HRIS_FISCAL_YEARS";
 
 
     public static function getTableKVList(AdapterInterface $adapter, $tableName, $id = null)
@@ -90,7 +90,7 @@ class EntityHelper
         foreach ($resultset as $result) {
             $entitiesArray[$result[$key]] = $result[$value];
         }
-        if($tableName==self::HR_GENDERS){
+        if($tableName==self::HRIS_GENDERS){
             $entitiesArray[-1]='All';
         }
         return $entitiesArray;

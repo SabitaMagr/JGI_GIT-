@@ -69,7 +69,7 @@ class leaveAssign extends AbstractActionController {
 
 //        $empFormElement = new Select();
 //        $empFormElement->setName("employee");
-//        $empFormElement->setValueOptions(\Application\Helper\EntityHelper::getTableKVList($this->adapter, "HR_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"]));
+//        $empFormElement->setValueOptions(\Application\Helper\EntityHelper::getTableKVList($this->adapter, "HRIS_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"]));
 //        $empFormElement->setAttributes(["id" => "employeeId", "class" => "form-control", "data-init-plugin" => "select2"]);
 
         $leaveFormElement = new Select();
@@ -97,7 +97,7 @@ class leaveAssign extends AbstractActionController {
 
         $genderFormElement = new Select();
         $genderFormElement->setName("gender");
-        $genders = \Application\Helper\EntityHelper::getTableKVList($this->adapter, "HR_GENDERS", "GENDER_ID", ["GENDER_NAME"]);
+        $genders = \Application\Helper\EntityHelper::getTableKVList($this->adapter, "HRIS_GENDERS", "GENDER_ID", ["GENDER_NAME"]);
         $genders[-1] = "All";
         ksort($genders);
         $genderFormElement->setValueOptions($genders);
@@ -173,7 +173,7 @@ class leaveAssign extends AbstractActionController {
                     'form' => $this->form,
                     'eid' => $id,
                     'employee' => $employee,
-                    'leavelist' => EntityHelper::getTableKVList($this->adapter, EntityHelper::HR_LEAVE_MASTER_SETUP)
+                    'leavelist' => EntityHelper::getTableKVList($this->adapter, EntityHelper::HRIS_LEAVE_MASTER_SETUP)
                         ]
         );
     }
@@ -214,7 +214,7 @@ class leaveAssign extends AbstractActionController {
                     'id' => $id,
                     'eid' => $eid,
                     'employee' => $employee,
-                    'leavelist' => EntityHelper::getTableKVList($this->adapter, EntityHelper::HR_LEAVE_MASTER_SETUP)
+                    'leavelist' => EntityHelper::getTableKVList($this->adapter, EntityHelper::HRIS_LEAVE_MASTER_SETUP)
                         ]
         );
     }

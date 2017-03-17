@@ -329,7 +329,7 @@ class WebServiceController extends AbstractActionController
         if ($request->isPost()) {
             $id = $request->getPost()->id;
             $jsonModel = new JsonModel([
-                'data' => EntityHelper::getTableKVList($this->adapter, EntityHelper::HR_DISTRICTS, ["ZONE_ID" => $id])
+                'data' => EntityHelper::getTableKVList($this->adapter, EntityHelper::HRIS_DISTRICTS, ["ZONE_ID" => $id])
             ]);
             return $jsonModel;
         } else {
@@ -343,7 +343,7 @@ class WebServiceController extends AbstractActionController
         if ($request->isPost()) {
             $id = $request->getPost()->id;
             return new JsonModel([
-                'data' => EntityHelper::getTableKVList($this->adapter, EntityHelper::HR_VDC_MUNICIPALITY, ["DISTRICT_ID" => $id])
+                'data' => EntityHelper::getTableKVList($this->adapter, EntityHelper::HRIS_VDC_MUNICIPALITY, ["DISTRICT_ID" => $id])
             ]);
         } else {
 

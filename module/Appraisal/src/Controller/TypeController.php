@@ -66,7 +66,7 @@ class TypeController extends AbstractActionController{
                 $type->createdBy = $this->employeeId;
                 $type->companyId = $employeeDetail['COMPANY_ID'];
                 $type->branchId = $employeeDetail['BRANCH_ID'];
-                $type->appraisalTypeId = ((int) Helper::getMaxId($this->adapter, "HR_APPRAISAL_TYPE", "APPRAISAL_TYPE_ID")) + 1;
+                $type->appraisalTypeId = ((int) Helper::getMaxId($this->adapter, "HRIS_APPRAISAL_TYPE", "APPRAISAL_TYPE_ID")) + 1;
                 $type->status = 'E';
                 $this->repository->add($type);
                 $this->flashmessenger()->addMessage("Appraisal Type Successfully added!!!");

@@ -62,12 +62,12 @@ class HolidayWorkApproveRepository implements RepositoryInterface{
         ], true);
 
         $select->from(['WH' => WorkOnHoliday::TABLE_NAME])
-            ->join(['E'=>"HR_EMPLOYEES"],"E.EMPLOYEE_ID=WH.EMPLOYEE_ID",['FIRST_NAME','MIDDLE_NAME','LAST_NAME'],"left")
-            ->join(['E1'=>"HR_EMPLOYEES"],"E1.EMPLOYEE_ID=WH.RECOMMENDED_BY",['FN1'=>'FIRST_NAME','MN1'=>'MIDDLE_NAME','LN1'=>'LAST_NAME'],"left")
-            ->join(['E2'=>"HR_EMPLOYEES"],"E2.EMPLOYEE_ID=WH.APPROVED_BY",['FN2'=>'FIRST_NAME','MN2'=>'MIDDLE_NAME','LN2'=>'LAST_NAME'],"left")
-            ->join(['RA'=>"HR_RECOMMENDER_APPROVER"],"RA.EMPLOYEE_ID=WH.EMPLOYEE_ID",['RECOMMENDER'=>'RECOMMEND_BY','APPROVER'=>'APPROVED_BY'],"left")
-            ->join(['RECM'=>"HR_EMPLOYEES"],"RECM.EMPLOYEE_ID=RA.RECOMMEND_BY",['RECM_FN'=>'FIRST_NAME','RECM_MN'=>'MIDDLE_NAME','RECM_LN'=>'LAST_NAME'],"left")
-            ->join(['APRV'=>"HR_EMPLOYEES"],"APRV.EMPLOYEE_ID=RA.APPROVED_BY",['APRV_FN'=>'FIRST_NAME','APRV_MN'=>'MIDDLE_NAME','APRV_LN'=>'LAST_NAME'],"left");
+            ->join(['E'=>"HRIS_EMPLOYEES"],"E.EMPLOYEE_ID=WH.EMPLOYEE_ID",['FIRST_NAME','MIDDLE_NAME','LAST_NAME'],"left")
+            ->join(['E1'=>"HRIS_EMPLOYEES"],"E1.EMPLOYEE_ID=WH.RECOMMENDED_BY",['FN1'=>'FIRST_NAME','MN1'=>'MIDDLE_NAME','LN1'=>'LAST_NAME'],"left")
+            ->join(['E2'=>"HRIS_EMPLOYEES"],"E2.EMPLOYEE_ID=WH.APPROVED_BY",['FN2'=>'FIRST_NAME','MN2'=>'MIDDLE_NAME','LN2'=>'LAST_NAME'],"left")
+            ->join(['RA'=>"HRIS_RECOMMENDER_APPROVER"],"RA.EMPLOYEE_ID=WH.EMPLOYEE_ID",['RECOMMENDER'=>'RECOMMEND_BY','APPROVER'=>'APPROVED_BY'],"left")
+            ->join(['RECM'=>"HRIS_EMPLOYEES"],"RECM.EMPLOYEE_ID=RA.RECOMMEND_BY",['RECM_FN'=>'FIRST_NAME','RECM_MN'=>'MIDDLE_NAME','RECM_LN'=>'LAST_NAME'],"left")
+            ->join(['APRV'=>"HRIS_EMPLOYEES"],"APRV.EMPLOYEE_ID=RA.APPROVED_BY",['APRV_FN'=>'FIRST_NAME','APRV_MN'=>'MIDDLE_NAME','APRV_LN'=>'LAST_NAME'],"left");
 
         $select->where([
             "WH.ID=".$id
@@ -104,12 +104,12 @@ class HolidayWorkApproveRepository implements RepositoryInterface{
                     H.HOLIDAY_CODE,
                     RA.RECOMMEND_BY as RECOMMENDER,
                     RA.APPROVED_BY AS APPROVER
-                    FROM HR_EMPLOYEE_WORK_HOLIDAY WH
-                    LEFT JOIN HR_HOLIDAY_MASTER_SETUP H ON 
+                    FROM HRIS_EMPLOYEE_WORK_HOLIDAY WH
+                    LEFT JOIN HRIS_HOLIDAY_MASTER_SETUP H ON 
                     H.HOLIDAY_ID=WH.HOLIDAY_ID
-                    LEFT JOIN HR_EMPLOYEES E ON 
+                    LEFT JOIN HRIS_EMPLOYEES E ON 
                     E.EMPLOYEE_ID=WH.EMPLOYEE_ID
-                    LEFT JOIN HR_RECOMMENDER_APPROVER RA
+                    LEFT JOIN HRIS_RECOMMENDER_APPROVER RA
                     ON E.EMPLOYEE_ID=RA.EMPLOYEE_ID
                     WHERE  H.STATUS = 'E' AND  E.STATUS='E'
                     AND E.RETIRED_FLAG='N'";

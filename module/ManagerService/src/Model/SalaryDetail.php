@@ -6,7 +6,7 @@ use Application\Model\Model;
 
 class SalaryDetail extends Model {
 
-    const TABLE_NAME = "HR_SALARY_DETAIL";
+    const TABLE_NAME = "HRIS_SALARY_DETAIL";
     const EMPLOYEE_ID = "EMPLOYEE_ID";
     const OLD_AMOUNT = "OLD_AMOUNT";
     const NEW_AMOUNT = "NEW_AMOUNT";

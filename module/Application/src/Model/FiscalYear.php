@@ -4,7 +4,7 @@ namespace Application\Model;
 
 class FiscalYear extends Model {
 
-    const TABLE_NAME = "HR_FISCAL_YEARS";
+    const TABLE_NAME = "HRIS_FISCAL_YEARS";
     const FISCAL_YEAR_ID = "FISCAL_YEAR_ID";
     const START_DATE = "START_DATE";
     const END_DATE = "END_DATE";

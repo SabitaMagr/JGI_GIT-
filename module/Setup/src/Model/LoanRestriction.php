@@ -4,7 +4,7 @@ namespace Setup\Model;
 use Application\Model\Model;
 
 class LoanRestriction extends Model{
-    const TABLE_NAME = "HR_LOAN_RESTRICTIONS";
+    const TABLE_NAME = "HRIS_LOAN_RESTRICTIONS";
     const RESTRICTION_ID = "RESTRICTION_ID";
     const LOAN_ID = "LOAN_ID";
     const RESTRICTION_TYPE = "RESTRICTION_TYPE";

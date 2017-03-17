@@ -13,7 +13,7 @@ use Application\Model\Model;
 
 class MonthlyValue extends Model
 {
-    const TABLE_NAME="HR_MONTHLY_VALUE_SETUP";
+    const TABLE_NAME="HRIS_MONTHLY_VALUE_SETUP";
 
     const MTH_ID = "MTH_ID";
     const MTH_CODE = "MTH_CODE";

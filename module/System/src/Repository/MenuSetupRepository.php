@@ -54,7 +54,7 @@ class MenuSetupRepository implements RepositoryInterface {
     }
 
     public function getMenuList($id) {
-        $sql = "SELECT * FROM HR_MENUS WHERE STATUS='E'";
+        $sql = "SELECT * FROM HRIS_MENUS WHERE STATUS='E'";
 
         $statement = $this->adapter->query($sql);
         $resultset = $statement->execute();
@@ -77,7 +77,7 @@ class MenuSetupRepository implements RepositoryInterface {
             $where .= " AND PARENT_MENU=" . $parent_menu;
         }
 
-        $sql = "SELECT MENU_NAME,MENU_ID ,PARENT_MENU,ROUTE,ACTION,ICON_CLASS, LEVEL,CONNECT_BY_ISLEAF is_leaf FROM HR_MENUS WHERE STATUS = 'E'" . $where . " CONNECT BY PRIOR MENU_ID = PARENT_MENU START WITH PARENT_MENU IS NULL ORDER BY MENU_ID ASC";
+        $sql = "SELECT MENU_NAME,MENU_ID ,PARENT_MENU,ROUTE,ACTION,ICON_CLASS, LEVEL,CONNECT_BY_ISLEAF is_leaf FROM HRIS_MENUS WHERE STATUS = 'E'" . $where . " CONNECT BY PRIOR MENU_ID = PARENT_MENU START WITH PARENT_MENU IS NULL ORDER BY MENU_ID ASC";
 
         $statement = $this->adapter->query($sql);
         $resultset = $statement->execute();
@@ -86,7 +86,7 @@ class MenuSetupRepository implements RepositoryInterface {
 
     public function getAllCHildMenu($menuId) {
         $sql = "SELECT MENU_ID,MENU_NAME,PARENT_MENU,STATUS, LEVEL
-      FROM HR_MENUS WHERE STATUS='E'
+      FROM HRIS_MENUS WHERE STATUS='E'
       START WITH MENU_ID =" . $menuId . "
       CONNECT BY PRIOR MENU_ID = PARENT_MENU
       ORDER SIBLINGS BY MENU_ID";
@@ -98,7 +98,7 @@ class MenuSetupRepository implements RepositoryInterface {
 
     public function getAllParentMenu($menuId) {
         $sql = "SELECT MENU_ID,MENU_NAME,PARENT_MENU,STATUS, LEVEL
-      FROM HR_MENUS WHERE STATUS='E'
+      FROM HRIS_MENUS WHERE STATUS='E'
       START WITH MENU_ID =" . $menuId . "
       CONNECT BY PRIOR PARENT_MENU = MENU_ID
       ORDER SIBLINGS BY MENU_ID";
@@ -122,7 +122,7 @@ class MenuSetupRepository implements RepositoryInterface {
         $where .= " AND HR.ROLE_ID=" . $this->roleId;
 
         $sql = "SELECT MENU_NAME,HM.MENU_ID,PARENT_MENU,ROUTE,ACTION,ICON_CLASS
-			             FROM HR_MENUS HM, HR_ROLE_PERMISSIONS HR
+			             FROM HRIS_MENUS HM, HRIS_ROLE_PERMISSIONS HR
 			            WHERE HM.STATUS = 'E'
 			            AND HR.STATUS = 'E'
                      AND HM.MENU_ID = HR.MENU_ID

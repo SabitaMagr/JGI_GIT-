@@ -46,8 +46,8 @@ class HeadingRepository implements RepositoryInterface{
             new Expression("AH.PERCENTAGE AS PERCENTAGE"),
             new Expression("AH.REMARKS AS REMARKS")
             ], true);
-        $select->from(['AH' => "HR_APPRAISAL_HEADING"])
-                ->join(['AT' => 'HR_APPRAISAL_TYPE'], 'AT.APPRAISAL_TYPE_ID=AH.APPRAISAL_TYPE_ID', ["APPRAISAL_TYPE_EDESC"], "left");
+        $select->from(['AH' => "HRIS_APPRAISAL_HEADING"])
+                ->join(['AT' => 'HRIS_APPRAISAL_TYPE'], 'AT.APPRAISAL_TYPE_ID=AH.APPRAISAL_TYPE_ID', ["APPRAISAL_TYPE_EDESC"], "left");
         
         $select->where(["AH.STATUS='E'"]);
         $select->order("AH.HEADING_EDESC");
@@ -72,8 +72,8 @@ class HeadingRepository implements RepositoryInterface{
             new Expression("AH.PERCENTAGE AS PERCENTAGE"),
             new Expression("AH.REMARKS AS REMARKS")
             ], true);
-        $select->from(['AH' => "HR_APPRAISAL_HEADING"])
-                ->join(['AT' => 'HR_APPRAISAL_TYPE'], 'AT.APPRAISAL_TYPE_ID=AH.APPRAISAL_TYPE_ID', ["APPRAISAL_TYPE_EDESC"], "left");
+        $select->from(['AH' => "HRIS_APPRAISAL_HEADING"])
+                ->join(['AT' => 'HRIS_APPRAISAL_TYPE'], 'AT.APPRAISAL_TYPE_ID=AH.APPRAISAL_TYPE_ID', ["APPRAISAL_TYPE_EDESC"], "left");
         
         $select->where(["AH.STATUS='E' AND AH.APPRAISAL_TYPE_ID=".$appraisalTypeId]);
         $select->order("AH.HEADING_ID");
@@ -84,10 +84,10 @@ class HeadingRepository implements RepositoryInterface{
     
     public function getActiveRecord(){
         $sql = "SELECT QUESTION_ID, QUESTION_EDESC, 
-   TO_CHAR(NULL) HEADING_EDESC, HEADING_ID  FROM HR_APPRAISAL_QUESTION
+   TO_CHAR(NULL) HEADING_EDESC, HEADING_ID  FROM HRIS_APPRAISAL_QUESTION
    UNION
    SELECT (NULL) QUESTION_ID, TO_CHAR(NULL) QUESTION_EDESC , HEADING_EDESC ,HEADING_ID
-   FROM HR_APPRAISAL_HEADING WHERE APPRAISAL_TYPE_ID=6";
+   FROM HRIS_APPRAISAL_HEADING WHERE APPRAISAL_TYPE_ID=6";
         $statement = $this->adapter->query($sql);
         $result = $statement->execute();
         return $result;

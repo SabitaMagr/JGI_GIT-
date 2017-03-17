@@ -6,7 +6,7 @@ use Application\Model\Model;
 
 class SalarySheet extends Model {
 
-    const TABLE_NAME = "HR_SALARY_SHEET";
+    const TABLE_NAME = "HRIS_SALARY_SHEET";
     const SHEET_NO = "SHEET_NO";
     const MONTH_ID = "MONTH_ID";
     const STATUS = "STATUS";

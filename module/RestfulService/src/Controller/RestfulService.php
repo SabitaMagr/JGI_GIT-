@@ -1045,15 +1045,15 @@ class RestfulService extends AbstractRestfulController {
             $employeeList = null;
             if ($branchId == -1) {
                 if ($employeeId == -1) {
-                    $employeeList = EntityHelper::getTableKVList($this->adapter, "HR_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => 'E', \Setup\Model\HrEmployees::JOIN_DATE . " <= " . Helper::getExpressionDate($monthDetail[Months::TO_DATE])->getExpression()], ' ');
+                    $employeeList = EntityHelper::getTableKVList($this->adapter, "HRIS_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => 'E', \Setup\Model\HrEmployees::JOIN_DATE . " <= " . Helper::getExpressionDate($monthDetail[Months::TO_DATE])->getExpression()], ' ');
                 } else {
-                    $employeeList = EntityHelper::getTableKVList($this->adapter, "HR_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => 'E', \Setup\Model\HrEmployees::JOIN_DATE . " <= " . Helper::getExpressionDate($monthDetail[Months::TO_DATE])->getExpression(), \Setup\Model\HrEmployees::EMPLOYEE_ID => $employeeId], ' ');
+                    $employeeList = EntityHelper::getTableKVList($this->adapter, "HRIS_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => 'E', \Setup\Model\HrEmployees::JOIN_DATE . " <= " . Helper::getExpressionDate($monthDetail[Months::TO_DATE])->getExpression(), \Setup\Model\HrEmployees::EMPLOYEE_ID => $employeeId], ' ');
                 }
             } else {
                 if ($employeeId == -1) {
-                    $employeeList = EntityHelper::getTableKVList($this->adapter, "HR_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => 'E', \Setup\Model\HrEmployees::BRANCH_ID => $branchId, \Setup\Model\HrEmployees::JOIN_DATE . " <= " . Helper::getExpressionDate($monthDetail[Months::TO_DATE])->getExpression()], ' ');
+                    $employeeList = EntityHelper::getTableKVList($this->adapter, "HRIS_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => 'E', \Setup\Model\HrEmployees::BRANCH_ID => $branchId, \Setup\Model\HrEmployees::JOIN_DATE . " <= " . Helper::getExpressionDate($monthDetail[Months::TO_DATE])->getExpression()], ' ');
                 } else {
-                    $employeeList = EntityHelper::getTableKVList($this->adapter, "HR_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => 'E', \Setup\Model\HrEmployees::BRANCH_ID => $branchId, \Setup\Model\HrEmployees::JOIN_DATE . " <= " . Helper::getExpressionDate($monthDetail[Months::TO_DATE])->getExpression(), \Setup\Model\HrEmployees::EMPLOYEE_ID => $employeeId], ' ');
+                    $employeeList = EntityHelper::getTableKVList($this->adapter, "HRIS_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => 'E', \Setup\Model\HrEmployees::BRANCH_ID => $branchId, \Setup\Model\HrEmployees::JOIN_DATE . " <= " . Helper::getExpressionDate($monthDetail[Months::TO_DATE])->getExpression(), \Setup\Model\HrEmployees::EMPLOYEE_ID => $employeeId], ' ');
                 }
             }
             $results = $salarySheetController->viewSalarySheet($monthId, $employeeList);
@@ -1062,7 +1062,7 @@ class RestfulService extends AbstractRestfulController {
                 $salarySheetController->deleteSalarySheetDetail($monthId);
                 $salarySheetController->deleteSalarySheet($monthId);
             }
-            $employeeList = EntityHelper::getTableKVList($this->adapter, "HR_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => 'E', \Setup\Model\HrEmployees::JOIN_DATE . " <= " . Helper::getExpressionDate($monthDetail[Months::TO_DATE])->getExpression()], ' ');
+            $employeeList = EntityHelper::getTableKVList($this->adapter, "HRIS_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => 'E', \Setup\Model\HrEmployees::JOIN_DATE . " <= " . Helper::getExpressionDate($monthDetail[Months::TO_DATE])->getExpression()], ' ');
 //            print "<pre>";
             foreach ($employeeList as $key => $employee) {
 //                print $key;
@@ -1078,15 +1078,15 @@ class RestfulService extends AbstractRestfulController {
                 $employeeList = null;
                 if ($branchId == -1) {
                     if ($employeeId == -1) {
-                        $employeeList = EntityHelper::getTableKVList($this->adapter, "HR_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => 'E', \Setup\Model\HrEmployees::JOIN_DATE . " <= " . Helper::getExpressionDate($monthDetail[Months::TO_DATE])->getExpression()], ' ');
+                        $employeeList = EntityHelper::getTableKVList($this->adapter, "HRIS_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => 'E', \Setup\Model\HrEmployees::JOIN_DATE . " <= " . Helper::getExpressionDate($monthDetail[Months::TO_DATE])->getExpression()], ' ');
                     } else {
-                        $employeeList = EntityHelper::getTableKVList($this->adapter, "HR_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => 'E', \Setup\Model\HrEmployees::JOIN_DATE . " <= " . Helper::getExpressionDate($monthDetail[Months::TO_DATE])->getExpression(), \Setup\Model\HrEmployees::EMPLOYEE_ID => $employeeId], ' ');
+                        $employeeList = EntityHelper::getTableKVList($this->adapter, "HRIS_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => 'E', \Setup\Model\HrEmployees::JOIN_DATE . " <= " . Helper::getExpressionDate($monthDetail[Months::TO_DATE])->getExpression(), \Setup\Model\HrEmployees::EMPLOYEE_ID => $employeeId], ' ');
                     }
                 } else {
                     if ($employeeId == -1) {
-                        $employeeList = EntityHelper::getTableKVList($this->adapter, "HR_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => 'E', \Setup\Model\HrEmployees::BRANCH_ID => $branchId, \Setup\Model\HrEmployees::JOIN_DATE . " >= " . Helper::getExpressionDate($monthDetail[Months::TO_DATE])->getExpression()], ' ');
+                        $employeeList = EntityHelper::getTableKVList($this->adapter, "HRIS_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => 'E', \Setup\Model\HrEmployees::BRANCH_ID => $branchId, \Setup\Model\HrEmployees::JOIN_DATE . " >= " . Helper::getExpressionDate($monthDetail[Months::TO_DATE])->getExpression()], ' ');
                     } else {
-                        $employeeList = EntityHelper::getTableKVList($this->adapter, "HR_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => 'E', \Setup\Model\HrEmployees::BRANCH_ID => $branchId, \Setup\Model\HrEmployees::JOIN_DATE . " >= " . Helper::getExpressionDate($monthDetail[Months::TO_DATE])->getExpression(), \Setup\Model\HrEmployees::EMPLOYEE_ID => $employeeId], ' ');
+                        $employeeList = EntityHelper::getTableKVList($this->adapter, "HRIS_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => 'E', \Setup\Model\HrEmployees::BRANCH_ID => $branchId, \Setup\Model\HrEmployees::JOIN_DATE . " >= " . Helper::getExpressionDate($monthDetail[Months::TO_DATE])->getExpression(), \Setup\Model\HrEmployees::EMPLOYEE_ID => $employeeId], ' ');
                     }
                 }
                 $results = $salarySheetController->viewSalarySheet($monthId, $employeeList);
@@ -1099,7 +1099,7 @@ class RestfulService extends AbstractRestfulController {
 
 //        if ($branchId == -1) {
 //            if ($employeeId == -1) {
-//                $employeeList = EntityHelper::getTableKVList($this->adapter, "HR_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => 'E'], ' ');
+//                $employeeList = EntityHelper::getTableKVList($this->adapter, "HRIS_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => 'E'], ' ');
 //                foreach ($employeeList as $key => $employee) {
 //                    $generateMonthlySheet = new PayrollGenerator($this->adapter);
 //                    $result = $generateMonthlySheet->generate($key);
@@ -1112,7 +1112,7 @@ class RestfulService extends AbstractRestfulController {
 //            }
 //        } else {
 //            if ($employeeId == -1) {
-//                $employeeList = EntityHelper::getTableKVList($this->adapter, "HR_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => 'E', HrEmployees::BRANCH_ID => $branchId], ' ');
+//                $employeeList = EntityHelper::getTableKVList($this->adapter, "HRIS_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => 'E', HrEmployees::BRANCH_ID => $branchId], ' ');
 //                foreach ($employeeList as $key => $employee) {
 //                    $generateMonthlySheet = new PayrollGenerator($this->adapter);
 //                    $result = $generateMonthlySheet->generate($key);
@@ -1496,7 +1496,7 @@ class RestfulService extends AbstractRestfulController {
         $employeefile = new \Setup\Model\EmployeeFile();
 
         if ($data['fileCode'] == null) {
-            $employeefile->fileCode = ((int) Helper::getMaxId($this->adapter, 'HR_EMPLOYEE_FILE', 'FILE_CODE')) + 1;
+            $employeefile->fileCode = ((int) Helper::getMaxId($this->adapter, 'HRIS_EMPLOYEE_FILE', 'FILE_CODE')) + 1;
 //            $employeefile->employeeId = $data['employeeId'];
             $employeefile->filetypeCode = $data['fileTypeCode'];
             $employeefile->filePath = $data['filePath'];
@@ -1530,7 +1530,7 @@ class RestfulService extends AbstractRestfulController {
 
     public function pushEmployeeDocument($data) {
         $employeefile = new \Setup\Model\EmployeeFile();
-        $employeefile->fileCode = ((int) Helper::getMaxId($this->adapter, 'HR_EMPLOYEE_FILE', 'FILE_CODE')) + 1;
+        $employeefile->fileCode = ((int) Helper::getMaxId($this->adapter, 'HRIS_EMPLOYEE_FILE', 'FILE_CODE')) + 1;
         $employeefile->employeeId = $data['employeeId'];
         $employeefile->filetypeCode = $data['fileTypeCode'];
         $employeefile->filePath = $data['filePath'];

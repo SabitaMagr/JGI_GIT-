@@ -6,7 +6,7 @@ use Application\Model\Model;
 
 class Zones extends Model {
 
-    const TABLE_NAME = "HR_ZONES";
+    const TABLE_NAME = "HRIS_ZONES";
     const ZONE_ID = "ZONE_ID";
     const ZONE_CODE = "ZONE_CODE";
     const ZONE_NAME = "ZONE_NAME";

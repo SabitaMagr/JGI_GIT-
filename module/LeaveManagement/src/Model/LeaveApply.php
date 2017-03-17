@@ -13,7 +13,7 @@ use Application\Model\Model;
 
 class LeaveApply extends Model
 {
-    const TABLE_NAME="HR_EMPLOYEE_LEAVE_REQUEST";
+    const TABLE_NAME="HRIS_EMPLOYEE_LEAVE_REQUEST";
 
     const EMPLOYEE_ID="EMPLOYEE_ID";
     const LEAVE_ID="LEAVE_ID";

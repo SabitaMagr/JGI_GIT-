@@ -54,8 +54,8 @@ class RulesRepository implements RepositoryInterface {
         $sql = "SELECT P.PAY_ID,
   P.PAY_EDESC,
   P.PAY_LDESC
-FROM HR_PAY_SETUP P,
-  (SELECT PRIORITY_INDEX FROM HR_PAY_SETUP WHERE PAY_ID=$payId
+FROM HRIS_PAY_SETUP P,
+  (SELECT PRIORITY_INDEX FROM HRIS_PAY_SETUP WHERE PAY_ID=$payId
   ) PS
 WHERE P.PRIORITY_INDEX < PS.PRIORITY_INDEX";
         $statement = $this->adapter->query($sql);
