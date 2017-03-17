@@ -11,6 +11,8 @@ use Zend\Db\Sql\Select;
 use Zend\Db\Sql\Expression;
 use Application\Model\Model;
 use Application\Repository\RepositoryInterface;
+use Appraisal\Model\Type;
+use Appraisal\Model\Stage;
 
 class AppraisalAssignRepository implements RepositoryInterface{
     private $tableGateway;
@@ -96,6 +98,35 @@ AND
         $statement = $sql->prepareStatementForSqlObject($select);
         $result = $statement->execute();
         return $result->current();
+    }
+    public function fetchByEmployeeId($employeeId){
+        $sql = new Sql($this->adapter);
+        $select = $sql->select();
+        $select->columns([
+            new Expression("A.APPRAISAL_ID AS APPRAISAL_ID"),
+            new Expression("A.APPRAISAL_TYPE_ID AS APPRAISAL_TYPE_ID"),
+            new Expression("A.STATUS AS STATUS"),
+            new Expression("A.CURRENT_STAGE_ID AS CURRENT_STAGE_ID"),
+            new Expression("A.APPRAISAL_CODE AS APPRAISAL_CODE"),
+            new Expression("A.APPRAISAL_EDESC AS APPRAISAL_EDESC"),
+            new Expression("A.REMARKS AS REMARKS"),
+            new Expression("TO_CHAR(A.START_DATE,'DD-MON-YYYY') AS START_DATE"), 
+            new Expression("TO_CHAR(A.END_DATE,'DD-MON-YYYY') AS END_DATE"),
+        ]);
+        $select->from(["A"=>Setup::TABLE_NAME])
+                ->join(["AA"=> AppraisalAssign::TABLE_NAME],"A.".Setup::APPRAISAL_ID."=AA.".AppraisalAssign::APPRAISAL_ID,[AppraisalAssign::APPRAISAL_ID])
+                ->join(['E'=> HrEmployees::TABLE_NAME],"E.".HrEmployees::EMPLOYEE_ID."=AA.". AppraisalAssign::EMPLOYEE_ID,[HrEmployees::FIRST_NAME, HrEmployees::MIDDLE_NAME, HrEmployees::LAST_NAME])
+                ->join(['T'=> Type::TABLE_NAME],"T.".Type::APPRAISAL_TYPE_ID."=A.". Setup::APPRAISAL_TYPE_ID,[Type::APPRAISAL_TYPE_EDESC])
+                ->join(['S'=> Stage::TABLE_NAME],"S.". Stage::STAGE_ID."=A.". Setup::CURRENT_STAGE_ID,[Stage::STAGE_EDESC]);
+        
+        $select->where([
+            "AA.".AppraisalAssign::EMPLOYEE_ID."=".$employeeId,
+            "AA.".AppraisalAssign::STATUS."='E'"]);
+        $select->order("A.".Setup::APPRAISAL_EDESC);
+        $statement = $sql->prepareStatementForSqlObject($select);
+        //print_r($statement->getSql()); die();
+        $result = $statement->execute();
+        return $result;
     }
 
 }
