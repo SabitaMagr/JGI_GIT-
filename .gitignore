@@ -8,6 +8,7 @@ nbproject
 .project
 .settings
 vendor/
+data/cache/
 #config/autoload/global.php
 #config/autoload/doctrine.global.php
 #composer.phar
