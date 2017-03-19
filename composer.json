@@ -62,7 +62,8 @@
             "Travel\\": "module/Travel/src/",
             "WorkOnHoliday\\": "module/WorkOnHoliday/src/",
             "WorkOnDayoff\\": "module/WorkOnDayoff/src/",
-            "Asset\\": "module/Asset/src/"
+            "Asset\\": "module/Asset/src/",
+            "Other\\": "module/Other/src/"
         }
     },
     "autoload-dev": {

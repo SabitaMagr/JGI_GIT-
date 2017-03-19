@@ -92,7 +92,7 @@ class Module implements AutoloaderProviderInterface, ConsoleUsageProviderInterfa
             $repository = new RolePermissionRepository($adapter);
             $data = $repository->fetchAllMenuByRoleId($roleId);
             $allowFlag = false;
-            $allowedRoutes = ['application', "home", 'auth', 'login', 'logout','checkout', 'restful', 'user-setting', 'webService'];
+            $allowedRoutes = ['application', "home", 'auth', 'login', 'logout', 'checkout', 'restful', 'user-setting', 'webService'];
             if (in_array($route, $allowedRoutes)) {
                 $allowFlag = true;
             }
@@ -182,7 +182,7 @@ class Module implements AutoloaderProviderInterface, ConsoleUsageProviderInterfa
         return [
             'factories' => [
                 AuthController::class => function ($container) {
-                    return new AuthController($container->get('AuthService'),$container->get(DbAdapterInterface::class));
+                    return new AuthController($container->get('AuthService'), $container->get(DbAdapterInterface::class));
                 },
             ],
         ];

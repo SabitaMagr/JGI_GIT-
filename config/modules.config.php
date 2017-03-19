@@ -40,7 +40,8 @@ return [
     'Travel',
     'WorkOnHoliday',
     'WorkOnDayoff',
-    'Asset'
+    'Asset',
+    'Other'
 ];
 
 
