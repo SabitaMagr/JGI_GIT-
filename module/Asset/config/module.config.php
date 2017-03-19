@@ -99,7 +99,7 @@ return[
                 'pages' => [
                         [
                         'label' => 'Asset Setup List',
-                        'route' => 'assetGroup',
+                        'route' => 'assetSetup',
                         'action' => 'index',
                     ],
                         [
