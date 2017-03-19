@@ -1,0 +1,149 @@
+<?php
+$this->headScript()->appendFile($this->basePath('js/asset/issue/add.js'));
+$this->headScript()->appendFile($this->basePath('js/angular.min.js'));
+$this->headScript()->appendFile($this->basePath('js/asset/issue/assetIssueController'));
+//print_r($asset);
+//print_r($employee);
+//die();
+
+$form->setAttribute('role', 'form');
+$form->setAttribute('id', 'assetIssue-form');
+$form->setAttribute('action', $this->url('assetIssue', ['action' => 'add']));
+
+
+$issueDate = $form->get('issueDate');
+
+$assetId = $form->get('assetId');
+$assetId->setValueOptions($asset);
+
+//    echo '<pre>';
+//    print_r($assetId);
+//    die();
+
+$employeeId = $form->get('employeeId');
+$employeeId->setValueOptions($employee);
+
+$requestDate = $form->get('requestDate');
+
+$returnable = $form->get('returnable');
+
+$returnDate = $form->get('returnDate');
+
+$purpose = $form->get('purpose');
+
+$remarks = $form->get('remarks');
+
+
+$submit = $form->get('submit');
+$submit->setAttribute('value', 'SUBMIT');
+$form->prepare();
+
+//    echo '<pre>';
+//    print_r($issueDate);
+//    echo '</pre>';
+//    die();
+?>
+
+<div class="page-bar">
+    <?= $this->navigation('Zend\Navigation\assetIssue')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
+</div>
+
+<div ng-app="hris" ng-controller="assetIssuecontroller">
+    <div class="row margin-top-20">
+        <div class="col-sm-8 col-sm-offset-2">
+            <div class="portlet box custom-box">
+                <div class="portlet-title">
+                    <div class="caption">
+                        <i class="fa fa-user"></i>New Entry
+                    </div>
+                </div>
+                <div class="portlet-body">
+                    <?php print $this->form()->openTag($form); ?>
+                    <div class="form-group">
+                        <?php print $this->formLabel($issueDate); ?>
+                        <?php print $this->formElement($issueDate); ?>
+                        <?php print $this->formElementErrors()->render($issueDate, ['class' => 'help-block']); ?>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="assetId">Asset Name</label>
+                        <select ng-model="employee" ng-change="astChange()" name="assetId" required="required" id="assetId" class="form-control">
+                            <option value="" disabled="" selected="" class="ng-binding">Please select</option>   
+                            <?php foreach ($asset as $key => $value) { ?>
+                                <option value="<?php echo $key; ?>"><?php echo $value; ?></option> 
+                            <?php } ?>
+                        </select>
+
+                    </div>
+
+                    <div class="form-group">
+                        <label for="employeeId">Employee</label>                    
+                        <select name="employeeId" required="required" id="employeeId" class="form-control">
+                            <option value="" disabled="" selected="" class="ng-binding">Please select</option>   
+                            <?php foreach ($employee as $key => $value) { ?>
+                                <option value="<?php echo $key; ?>"><?php echo $value; ?></option> 
+                            <?php } ?>
+                        </select>                                    
+                    </div>
+
+                    <div class="form-group">
+                        <?php print $this->formLabel($requestDate); ?>
+                        <?php print $this->formElement($requestDate); ?>
+                        <?php print $this->formElementErrors()->render($requestDate, ['class' => 'help-block']); ?>
+                    </div>
+
+
+
+
+                    <div class=" row">
+                        <div class="col-sm-1">
+                            <div class="form-group">
+
+                                <label for="returnable">Returnable</label>                    
+                                <input type="hidden" name="returnable" value="0">
+                                <input ng-disabled="rdDis" ng-model="rdChk" ng-click="rdClick()" type="checkbox" name="returnable"  id="returnable" class="form-control" value="1">
+
+                            </div>
+                           
+                        </div>
+
+                        <div class=" col-sm-offset-1  col-sm-10">
+                            <div class="form-group">
+                                <?php print $this->formLabel($returnDate); ?>
+                                <?php print $this->formElement($returnDate); ?>
+                                <?php print $this->formElementErrors()->render($returnDate, ['class' => 'help-block']); ?>
+                            </div>
+                        </div>
+
+
+
+                    </div>
+
+
+                    <div class="form-group">
+                        <?php print $this->formLabel($purpose); ?>
+                        <?php print $this->formElement($purpose); ?>
+                        <?php print $this->formElementErrors()->render($purpose, ['class' => 'help-block']); ?>
+                    </div>
+
+                    <div class="form-group">
+                        <?php print $this->formLabel($remarks); ?>
+                        <?php print $this->formElement($remarks); ?>
+                        <?php print $this->formElementErrors()->render($remarks, ['class' => 'help-block']); ?>
+                    </div>
+
+
+
+
+                    <?php
+                    print $this->formSubmit($submit);
+                    print $this->form()->closeTag();
+                    ?>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+

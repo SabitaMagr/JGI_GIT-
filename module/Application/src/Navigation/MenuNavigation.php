@@ -2,11 +2,11 @@
 
 namespace Application\Navigation;
 
-use Zend\Navigation\Service\DefaultNavigationFactory;
-use Zend\ServiceManager\ServiceLocatorInterface;
+use Interop\Container\ContainerInterface;
 use System\Repository\MenuSetupRepository;
 use Zend\Db\Adapter\AdapterInterface;
-use Interop\Container\ContainerInterface;
+use Zend\Navigation\Service\DefaultNavigationFactory;
+use Zend\View\Exception\InvalidArgumentException;
 
 class MenuNavigation extends DefaultNavigationFactory {
 
@@ -42,10 +42,10 @@ class MenuNavigation extends DefaultNavigationFactory {
             }
 
             if (!isset($configuration['navigation'])) {
-                throw new Exception\InvalidArgumentException('Could not find navigation configuration key');
+                throw new InvalidArgumentException('Could not find navigation configuration key');
             }
             if (!isset($configuration['navigation'][$this->getName()])) {
-                throw new Exception\InvalidArgumentException(sprintf(
+                throw new InvalidArgumentException(sprintf(
                         'Failed to find a navigation container by the name "%s"', $this->getName()
                 ));
             }

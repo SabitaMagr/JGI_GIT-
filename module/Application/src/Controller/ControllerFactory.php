@@ -34,15 +34,14 @@ class ControllerFactory implements FactoryInterface {
         };
         $refl = new ReflectionClass($requestedName);
         $params = $refl->getConstructor()->getParameters();
+        if (sizeof($params) == 0) {
+            return $refl->newInstanceArgs();
+        }
         $initParams = [];
         foreach ($params as $key => $param) {
             $initParams[$key] = $getDependency($param->getClass()->name, $container);
         }
         return $refl->newInstanceArgs($initParams);
-//        $adapter = $container->get(AdapterInterface::class);
-//        $logger = $container->get(HrLogger::class);
-//        $controller = new $requestedName($adapter, $logger);
-//        return $controller;
     }
 
 }
