@@ -1,5 +1,6 @@
 angular.module('hris', [])
         .controller('assetIssuecontroller', function ($scope, $http) {
+            
             $scope.rdChk = false;
             $scope.astChange = function () {
                 window.app.pullDataById(document.restfulUrl, {
@@ -12,7 +13,10 @@ angular.module('hris', [])
                     console.log("error", error);
                 })
             };
-
+            
+            if($scope.rdChk=true){
+                console.log($scope.rdTxt);
+            }
 
 
         });
