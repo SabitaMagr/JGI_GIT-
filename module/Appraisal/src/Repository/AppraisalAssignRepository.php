@@ -115,7 +115,7 @@ AND
         ]);
         $select->from(["A"=>Setup::TABLE_NAME])
                 ->join(["AA"=> AppraisalAssign::TABLE_NAME],"A.".Setup::APPRAISAL_ID."=AA.".AppraisalAssign::APPRAISAL_ID,[AppraisalAssign::APPRAISAL_ID])
-                ->join(['E'=> HrEmployees::TABLE_NAME],"E.".HrEmployees::EMPLOYEE_ID."=AA.". AppraisalAssign::EMPLOYEE_ID,[HrEmployees::FIRST_NAME, HrEmployees::MIDDLE_NAME, HrEmployees::LAST_NAME])
+                ->join(['E'=> HrEmployees::TABLE_NAME],"E.".HrEmployees::EMPLOYEE_ID."=AA.". AppraisalAssign::EMPLOYEE_ID,[HrEmployees::FIRST_NAME, HrEmployees::MIDDLE_NAME, HrEmployees::LAST_NAME, HrEmployees::EMPLOYEE_ID])
                 ->join(['T'=> Type::TABLE_NAME],"T.".Type::APPRAISAL_TYPE_ID."=A.". Setup::APPRAISAL_TYPE_ID,[Type::APPRAISAL_TYPE_EDESC])
                 ->join(['S'=> Stage::TABLE_NAME],"S.". Stage::STAGE_ID."=A.". Setup::CURRENT_STAGE_ID,[Stage::STAGE_EDESC]);
         
@@ -124,11 +124,38 @@ AND
             "AA.".AppraisalAssign::STATUS."='E'"]);
         $select->order("A.".Setup::APPRAISAL_EDESC);
         $statement = $sql->prepareStatementForSqlObject($select);
-        //print_r($statement->getSql()); die();
         $result = $statement->execute();
         return $result;
     }
-
+    public function getEmployeeAppraisalDetail($employeeId,$appraisalId){
+        $sql = new Sql($this->adapter);
+        $select = $sql->select();
+        $select->columns([
+            new Expression("A.APPRAISAL_ID AS APPRAISAL_ID"),
+            new Expression("A.APPRAISAL_TYPE_ID AS APPRAISAL_TYPE_ID"),
+            new Expression("A.STATUS AS STATUS"),
+            new Expression("A.CURRENT_STAGE_ID AS CURRENT_STAGE_ID"),
+            new Expression("A.APPRAISAL_CODE AS APPRAISAL_CODE"),
+            new Expression("A.APPRAISAL_EDESC AS APPRAISAL_EDESC"),
+            new Expression("A.REMARKS AS REMARKS"),
+            new Expression("TO_CHAR(A.START_DATE,'DD-MON-YYYY') AS START_DATE"), 
+            new Expression("TO_CHAR(A.END_DATE,'DD-MON-YYYY') AS END_DATE"),
+        ]);
+        $select->from(["A"=>Setup::TABLE_NAME])
+                ->join(["AA"=> AppraisalAssign::TABLE_NAME],"A.".Setup::APPRAISAL_ID."=AA.".AppraisalAssign::APPRAISAL_ID,[AppraisalAssign::APPRAISAL_ID])
+                ->join(['E'=> HrEmployees::TABLE_NAME],"E.".HrEmployees::EMPLOYEE_ID."=AA.". AppraisalAssign::EMPLOYEE_ID,[HrEmployees::FIRST_NAME, HrEmployees::MIDDLE_NAME, HrEmployees::LAST_NAME, HrEmployees::EMPLOYEE_ID])
+                ->join(['T'=> Type::TABLE_NAME],"T.".Type::APPRAISAL_TYPE_ID."=A.". Setup::APPRAISAL_TYPE_ID,[Type::APPRAISAL_TYPE_EDESC])
+                ->join(['S'=> Stage::TABLE_NAME],"S.". Stage::STAGE_ID."=A.". Setup::CURRENT_STAGE_ID,[Stage::STAGE_EDESC])
+                ->join(['E1'=> HrEmployees::TABLE_NAME],"E1.".HrEmployees::EMPLOYEE_ID."=AA.". AppraisalAssign::APPRAISER_ID,["FIRST_NAME_A"=>HrEmployees::FIRST_NAME,"MIDDLE_NAME_A"=> HrEmployees::MIDDLE_NAME, "LAST_NAME_A"=>HrEmployees::LAST_NAME, "EMPLOYEE_ID_A"=>HrEmployees::EMPLOYEE_ID],"left")
+                ->join(['E2'=> HrEmployees::TABLE_NAME],"E2.".HrEmployees::EMPLOYEE_ID."=AA.". AppraisalAssign::REVIEWER_ID,["FIRST_NAME_R"=>HrEmployees::FIRST_NAME,"MIDDLE_NAME_R"=> HrEmployees::MIDDLE_NAME, "LAST_NAME_R"=>HrEmployees::LAST_NAME, "EMPLOYEE_ID_R"=>HrEmployees::EMPLOYEE_ID],"left");
+        
+        $select->where([
+            "AA.".AppraisalAssign::EMPLOYEE_ID."=".$employeeId,
+            "AA.".AppraisalAssign::APPRAISAL_ID."=".$appraisalId]);
+        $statement = $sql->prepareStatementForSqlObject($select);
+        $result = $statement->execute();
+        return $result->current();
+    }
 }
 
 
