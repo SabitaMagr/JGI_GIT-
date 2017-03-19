@@ -101,17 +101,15 @@ $form->prepare();
 
                                 <label for="returnable">Returnable</label>                    
                                 <input type="hidden" name="returnable" value="0">
-                                <input ng-disabled="rdDis" ng-model="rdChk" ng-click="rdClick()" type="checkbox" name="returnable"  id="returnable" class="form-control" value="1">
-
+                                <input ng-model="rdChk" type="checkbox" name="returnable"  id="returnable" class="form-control" value="1">
                             </div>
-                           
+
                         </div>
 
                         <div class=" col-sm-offset-1  col-sm-10">
                             <div class="form-group">
-                                <?php print $this->formLabel($returnDate); ?>
-                                <?php print $this->formElement($returnDate); ?>
-                                <?php print $this->formElementErrors()->render($returnDate, ['class' => 'help-block']); ?>
+                                <label for="returnDate">Return Date</label>
+                                <input ng-disabled="!rdChk" type="text" name="returnDate" id="returnDate" class="form-control" disabled="disabled" value="">
                             </div>
                         </div>
 
