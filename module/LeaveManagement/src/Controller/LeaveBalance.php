@@ -256,11 +256,17 @@ class LeaveBalance extends AbstractActionController {
                 $rowCount++;
             }
 
-            $objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, "Excel2007");
-            header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-            header('Content-Disposition: attachment;filename="LeaveBalance.xlsx"');
-            header('Cache-Control: max-age=0');
-            ob_end_clean();
+//            $objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, "Excel2007");
+            
+//            header('Content-Disposition: attachment;filename="LeaveBalance.xlsx"');
+//            header('Cache-Control: max-age=0');
+//            ob_end_clean();
+//            $objWriter->save('php://output');
+            
+            header('Content-Type: application/vnd.ms-excel'); 
+            header('Content-Disposition: attachment;filename="LeaveBalance.xls"'); 
+            header('Cache-Control: max-age=0'); 
+            $objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel5'); 
             $objWriter->save('php://output');
             exit;
         }
