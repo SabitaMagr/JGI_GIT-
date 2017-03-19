@@ -1551,4 +1551,9 @@ ul#optionList li{
   list-style: none;  
   
 }
+#headingForPanel{
+    border-bottom: 1px solid #b6b6b6;
+    padding-bottom: 5px;
+    margin-bottom: 0px !important;
+}
 /*test*/

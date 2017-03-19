@@ -228,7 +228,7 @@ return [
             'performanceAppraisal' => [
                 'type' => Segment::class,
                 'options' => [
-                    'route' => '/selfservice/performanceAppraisal[/:action[/:id]]',
+                    'route' => '/selfservice/performanceAppraisal[/:action[/:appraisalId]]',
                     'constants' => [
                         'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
                         'id' => '[0-9]+',
