@@ -23,6 +23,8 @@ $assetId->setValueOptions($asset);
 $employeeId = $form->get('employeeId');
 $employeeId->setValueOptions($employee);
 
+$quantity = $form->get('quantity');
+
 $requestDate = $form->get('requestDate');
 
 $returnable = $form->get('returnable');
@@ -73,6 +75,8 @@ $form->prepare();
                                 <option value="<?php echo $key; ?>"><?php echo $value; ?></option> 
                             <?php } ?>
                         </select>
+                        
+                        <span ng-model="rQ" ng-bind="rQ"></span>
 
                     </div>
 
@@ -84,6 +88,12 @@ $form->prepare();
                                 <option value="<?php echo $key; ?>"><?php echo $value; ?></option> 
                             <?php } ?>
                         </select>                                    
+                    </div>
+                    
+                    <div class="form-group">
+                        <?php print $this->formLabel($quantity); ?>
+                        <?php print $this->formElement($quantity); ?>
+                        <?php print $this->formElementErrors()->render($quantity, ['class' => 'help-block']); ?>
                     </div>
 
                     <div class="form-group">
@@ -98,23 +108,17 @@ $form->prepare();
                     <div class=" row">
                         <div class="col-sm-1">
                             <div class="form-group">
-
                                 <label for="returnable">Returnable</label>                    
-                                <input type="hidden" name="returnable" value="0">
-                                <input ng-model="rdChk" type="checkbox" name="returnable"  id="returnable" class="form-control" value="1">
+                                <input type="hidden" name="returnable" value="N">
+                                <input ng-model="rdChk" ng-click="rdClk()" type="checkbox" name="returnable"  id="returnable" class="form-control" value="Y">
                             </div>
-
                         </div>
-
                         <div class=" col-sm-offset-1  col-sm-10">
                             <div class="form-group">
                                 <label for="returnDate">Return Date</label>
                                 <input ng-model="rdTxt" ng-disabled="!rdChk" type="text" name="returnDate" id="returnDate" class="form-control" disabled="disabled" value="">
                             </div>
                         </div>
-
-
-
                     </div>
 
 

@@ -154,12 +154,11 @@ class SetupForm {
     public $assetImage;
     
      /**
-     * @Annotation\Type("Zend\Form\Element\Text")
-     * @Annotation\Required(true)
+     * @Annotation\Type("Zend\Form\Element\Textarea")
+     * @Annotation\Required(false)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
-     * @Annotation\Options({"label":"Remark"})
-     * @Annotation\Attributes({"id":"remarks","class":"form-control"})
-     * @Annotation\Validator({"name":"StringLength", "options":{"max":"15"}})
+     * @Annotation\Options({"label":"Remarks"})
+     * @Annotation\Attributes({ "id":"remarks", "class":"form-control" })
      */
     public $remarks;
     
