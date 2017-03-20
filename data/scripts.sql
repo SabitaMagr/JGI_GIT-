@@ -1202,3 +1202,10 @@ CREATE TABLE HR_ASSET_ISSUE
 
 
 -- create Query for assets end
+
+
+
+--query after data migration for jawalakhel hris
+-- query to add column on leave master setup for paid and unpaid leave
+ALTER TABLE HRIS_LEAVE_MASTER_SETUP
+ADD PAID CHAR(1 BYTE) NOT NULL;

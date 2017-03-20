@@ -46,6 +46,15 @@ class LeaveMasterForm
      * @Annotation\Attributes({ "id":"allowHalfday"})
      */
     public $allowHalfday;
+    
+    /**
+     * @Annotation\Type("Zend\Form\Element\Radio")
+     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
+     * @Annotation\Options({"value_options":{"Y":"Yes","N":"No"},"label":"Paid"})
+     * @Annotation\Required(false)
+     * @Annotation\Attributes({ "id":"paid"})
+     */
+    public $paid;
 
     /**
      * @Annotation\Type("Zend\Form\Element\Radio")

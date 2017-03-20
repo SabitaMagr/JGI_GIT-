@@ -29,29 +29,35 @@ $designationFormElement->setAttribute("ng-model", "designationId");
 ?>
 <div ng-app="hris" ng-controller="assignController">
     <div class="margin-top-20  formbg mgap">
-        <div class="row">
-            <div class="col-xs-12 col-sm-2 cwidth1">
+        <div class="row" style="margin-bottom:1%;">
+            <div class="col-xs-12 col-sm-3">
                 <?php print $this->formLabel($leaveFormElement); ?>
                 <?php print $this->formElement($leaveFormElement); ?>
             </div>
-            <div class="col-xs-12 col-sm-2 cwidth2">
+            <div class="col-xs-12 col-sm-3">
                 <?php print $this->formLabel($genderFormElement); ?>
                 <?php print $this->formElement($genderFormElement); ?>
             </div>
-            <div class="col-xs-12 col-sm-2 cwidth3">
+            <div class="col-xs-12 col-sm-3">
                 <?php print $this->formLabel($branchFormElement); ?>
                 <?php print $this->formElement($branchFormElement); ?>
             </div>
-            <div class="col-xs-12 col-sm-3 cwidth4">
+            <div class="col-xs-12 col-sm-3">
                 <?php print $this->formLabel($designationFormElement); ?>
                 <?php print $this->formElement($designationFormElement); ?>
             </div>
-            <div class="col-xs-12 col-sm-3 cwidth5">
+        </div>
+        <div class="row">
+            <div class="col-xs-12 col-sm-3">
                 <?php print $this->formLabel($departmentFormElement); ?>
                 <?php print $this->formElement($departmentFormElement); ?>
             </div>
-            <div class="col-xs-12 col-sm-2 pull-right">
-                <button ng-click="view()" id="viewEmployees" class="btn btn-default form-control i-search " style="margin-top:21px !important;">
+            <div class="col-xs-12 col-sm-3">
+                <?php print $this->formLabel($serviceTypeFormElement); ?>
+                <?php print $this->formElement($serviceTypeFormElement); ?>
+            </div>
+            <div class="col-xs-12 col-sm-2">
+                <button ng-click="view()" id="viewEmployees" class="btn btn-default form-control i-search " style="margin-top:20px !important;">
                     View
                     <i class="fa fa-search"></i>
                 </button>
