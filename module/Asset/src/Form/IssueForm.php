@@ -25,6 +25,15 @@ class IssueForm {
     public $assetId;
     
     /**
+     * @Annotation\Type("Zend\Form\Element\Number")
+     * @Annotation\Required(true)
+     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
+     * @Annotation\Options({"label":"Quantity"})
+     * @Annotation\Attributes({"id":"quantity","class":"form-control"})
+     */
+    public $quantity;
+    
+    /**
      * @Annotation\Type("Zend\Form\Element\Select")
      * @Annotation\Required({"required":"true"})
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
@@ -73,13 +82,13 @@ class IssueForm {
      */
     public $purpose;
     
+    
     /**
-     * @Annotation\Type("Zend\Form\Element\Text")
-     * @Annotation\Required(true)
+     * @Annotation\Type("Zend\Form\Element\Textarea")
+     * @Annotation\Required(false)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
-     * @Annotation\Options({"label":"Remark"})
-     * @Annotation\Attributes({"id":"remarks","class":"form-control"})
-     * @Annotation\Validator({"name":"StringLength", "options":{"max":"15"}})
+     * @Annotation\Options({"label":"Remarks"})
+     * @Annotation\Attributes({ "id":"remarks", "class":"form-control" })
      */
     public $remarks;
     

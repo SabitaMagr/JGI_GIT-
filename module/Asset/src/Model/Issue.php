@@ -11,6 +11,7 @@ class Issue extends Model {
     const ASSET_ID = 'ISSUE_DATE';
     const SNO = 'SNO';
     const EMPLOYEE_ID = 'EMPLOYEE_ID';
+    const QUANTITY = 'QUANTITY';
     const REQUEST_DATE = 'REQUEST_DATE';
     const RETURN_DATE = 'RETURN_DATE';
     const PURPOSE = 'PURPOSE';
@@ -35,6 +36,7 @@ class Issue extends Model {
     public $assetId;
     public $sno;
     public $employeeId;
+    public $quantity;
     public $requestDate;
     public $returnDate;
     public $purpose;
@@ -61,6 +63,7 @@ class Issue extends Model {
     'assetId'=>self::ASSET_ID,
     'sno'=>self::SNO,
     'employeeId'=>self::EMPLOYEE_ID,
+    'quantity'=>self::QUANTITY,
     'requestDate'=>self::REQUEST_DATE,
     'returnDate'=>self::RETURNED_DATE,
     'purpose'=>self::PURPOSE,

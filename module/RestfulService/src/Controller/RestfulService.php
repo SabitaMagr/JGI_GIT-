@@ -72,6 +72,7 @@ use WorkOnDayoff\Repository\WorkOnDayoffStatusRepository;
 use WorkOnHoliday\Repository\WorkOnHolidayStatusRepository;
 use Appraisal\Repository\QuestionRepository;
 use Appraisal\Repository\HeadingRepository;
+use Asset\Repository\IssueRepository;
 
 class RestfulService extends AbstractRestfulController {
 
@@ -322,6 +323,9 @@ class RestfulService extends AbstractRestfulController {
                     break;
                 case "pullHoliayWorkRequestStatusList":
                     $responseData = $this->pullHoliayWorkRequestStatusList($postedData->data);
+                    break;
+                case "pullAssetBalance":
+                    $responseData = $this->pullAssetBalance($postedData->id);
                     break;
 
                 default:
@@ -2758,6 +2762,23 @@ class RestfulService extends AbstractRestfulController {
             "data" => $recordList,
             "num" => count($recordList),
             "recomApproveId" => $recomApproveId
+        ];
+    }
+    
+    
+    
+    public function pullAssetBalance($id){
+        
+        $assetIssueRepo = new IssueRepository($this->adapter);
+        $assetBalQuantity =$assetIssueRepo->fetchAssetRemBalance($id);
+        
+        
+        return [
+            "success" => "true",
+            "data" => $assetBalQuantity,
+//            "id" => $id,
+//            "num" => 'count($recordList)',
+            "num" => 'test count'
         ];
     }
 
