@@ -49,8 +49,7 @@ class TravelApply extends AbstractActionController{
             }
         }
         $requestType = array(
-            'ad'=>'Advance',
-            'ep'=>'Expense'
+            'ad'=>'Advance'            
         );
 
         return Helper::addFlashMessagesToArray($this, [

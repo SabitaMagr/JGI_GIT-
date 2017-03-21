@@ -8,7 +8,7 @@
         
         var inputFieldId = "form-departmentName";
         var formId = "department-form";
-        var tableName =  "HR_DEPARTMENTS";
+        var tableName =  "HRIS_DEPARTMENTS";
         var columnName = "DEPARTMENT_NAME";
         var checkColumnName = "DEPARTMENT_ID";
         var selfId = $("#departmentId").val();

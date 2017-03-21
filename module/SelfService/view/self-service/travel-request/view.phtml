@@ -8,6 +8,8 @@ $fromDate = $form->get('fromDate');
 $fromDate->setAttributes(["disabled"=>"disabled"]);
 $toDate = $form->get('toDate');
 $toDate->setAttributes(["disabled"=>"disabled"]);
+$travelCode = $form->get('travelCode');
+$travelCode->setAttributes(["disabled"=>"disabled"]);
 $destination = $form->get('destination');
 $destination->setAttributes(["disabled"=>"disabled"]);
 $purpose = $form->get('purpose');
@@ -79,6 +81,17 @@ print $this->form()->openTag($form);
                                         <?php echo $recommender; ?>
                                     </td>
                                 </tr>
+                                <?php if($advanceAmt>0){ ?>
+                                    <tr height="30">
+                                        <td>
+                                            Advance Amount
+                                        </td>
+                                        <td width="15">:</td>
+                                        <td>
+                                            Rs.<?php echo $advanceAmt; ?>
+                                        </td>
+                                    </tr>
+                                <?php } ?>
                                 
                             </table>
                         </div>
@@ -116,6 +129,11 @@ print $this->form()->openTag($form);
                             </table>
                         </div>
                     </div>
+                </div>
+                <div class="form-group">
+                    <?php print $this->formLabel($travelCode); ?>
+                    <?php print $this->formElement($travelCode); ?>
+                    <?php print $this->formElementErrors()->render($travelCode, ['class' => 'help-block']); ?>
                 </div>
                 <div class="form-group">
                     <?php print $this->formLabel($fromDate); ?>

@@ -384,7 +384,7 @@ window.app = (function ($, toastr) {
                 }
             }).then(function (success) {
                 console.log("checkUniqueConstraint res", success);
-                displayErrorMessage(parentId, success.data, success.msg, id);
+                displayErrorMessage(parentId, parseInt(success.data), success.msg, id);
             }, function (failure) {
                 console.log("checkUniqueConstraint failure", failure);
             });

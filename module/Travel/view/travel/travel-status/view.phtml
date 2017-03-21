@@ -9,6 +9,8 @@ $this->headScript()->appendFile($this->basePath('js/SelfService/travel-request/a
 
 $form->setAttribute('role', 'form');
 
+$travelCode = $form->get('travelCode');
+$travelCode->setAttributes(["disabled"=>"disabled"]);
 $fromDate = $form->get('fromDate');
 $fromDate->setAttributes(["disabled"=>"disabled"]);
 $toDate = $form->get('toDate');
@@ -129,11 +131,26 @@ print $this->form()->openTag($form);
                                                 <?php echo $approver; ?>
                                             </td>
                                         </tr>
+                                        <?php if($advanceAmt>0){ ?>
+                                        <tr height="30">
+                                            <td>
+                                                Advance Amount
+                                            </td>
+                                            <td width="15">:</td>
+                                            <td>
+                                                Rs.<?php echo $advanceAmt; ?>
+                                            </td>
+                                        </tr>
+                                        <?php } ?>
                                     </table>
                                 </div>
                             </div>
                         </div>
-
+                        <div class="form-group">
+                            <?php print $this->formLabel($travelCode); ?>
+                            <?php print $this->formElement($travelCode); ?>
+                            <?php print $this->formElementErrors()->render($travelCode, ['class' => 'help-block']); ?>
+                        </div>  
                         <div class="form-group">
                             <?php print $this->formLabel($fromDate); ?>
                             <div class="input-group date" id="fromDate">

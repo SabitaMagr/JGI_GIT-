@@ -60,6 +60,9 @@ echo json_encode($menu);
         #: (LAST_NAME == null) ? ' ' : LAST_NAME #
         </td>
         <td>
+        #: (TRAVEL_CODE == null) ? '-' : TRAVEL_CODE #
+        </td>
+        <td>
         #: (FROM_DATE == null) ? '-' : FROM_DATE #
         </td>
         <td>
@@ -75,7 +78,7 @@ echo json_encode($menu);
         #: (REQUESTED_AMOUNT == null) ? '-' : REQUESTED_AMOUNT #
         </td>
         <td>
-        #: (YOUR_ROLE == null) ? '-' : YOUR_ROLE #
+        #: (REQUESTED_TYPE == null) ? '-' : REQUESTED_TYPE #
         </td>
         <td>
         <a class="btn-edit"

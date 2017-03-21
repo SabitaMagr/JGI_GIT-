@@ -192,6 +192,12 @@ class TravelStatus extends AbstractActionController
             'ad'=>'Advance',
             'ep'=>'Expense'
         );
+        if($detail['REFERENCE_TRAVEL_ID']!=null){
+            $referenceTravelDtl = $this->travelApproveRepository->fetchById($detail['REFERENCE_TRAVEL_ID']);
+            $advanceAmt = $referenceTravelDtl['REQUESTED_AMOUNT'];
+        }else{
+            $advanceAmt = 0 ;
+        }
         return Helper::addFlashMessagesToArray($this, [
                     'form' => $this->form,
                     'id' => $id,
@@ -203,6 +209,7 @@ class TravelStatus extends AbstractActionController
                     'approvedDT'=>$detail['APPROVED_DATE'],
                     'approver' => $authApprover,
                     'status' => $status,
+                    'advanceAmt'=> $advanceAmt,
                     'recommApprove'=>$recommApprove
         ]);
     }    

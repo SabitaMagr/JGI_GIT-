@@ -99,6 +99,7 @@ class TravelApproveController extends AbstractActionController {
                 'REMARKS' => $row['REMARKS'],
                 'STATUS' => $getStatusValue($row['STATUS']),
                 'TRAVEL_ID' => $row['TRAVEL_ID'],
+                'TRAVEL_CODE' => $row['TRAVEL_CODE'],
                 'YOUR_ROLE' => $getValue($row['RECOMMENDER'], $row['APPROVER']),
                 'ROLE' => $getRole($row['RECOMMENDER'], $row['APPROVER'])
             ];
@@ -184,6 +185,12 @@ class TravelApproveController extends AbstractActionController {
             'ad' => 'Advance',
             'ep' => 'Expense'
         );
+        if($detail['REFERENCE_TRAVEL_ID']!=null){
+            $referenceTravelDtl = $this->travelApproveRepository->fetchById($detail['REFERENCE_TRAVEL_ID']);
+            $advanceAmt = $referenceTravelDtl['REQUESTED_AMOUNT'];
+        }else{
+            $advanceAmt = 0 ;
+        }
         return Helper::addFlashMessagesToArray($this, [
                     'form' => $this->form,
                     'id' => $id,
@@ -197,6 +204,7 @@ class TravelApproveController extends AbstractActionController {
                     'recommendedBy' => $recommenderId,
                     'approvedDT' => $approvedDT,
                     'employeeId' => $this->employeeId,
+                    'advanceAmt'=>$advanceAmt,
                     'requestedEmployeeId' => $requestedEmployeeID,]);
     }
 

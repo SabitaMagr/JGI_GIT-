@@ -58,7 +58,7 @@ class ConstraintHelper
         return null;
     }
     
-    public static function checkUniqueConstraint(AdapterInterface $adapter,$tableName,array $columnsWidValues,$checkColumnName,$selfId){
+    public static function checkUniqueConstraint(AdapterInterface $adapter,$tableName,array $columnsWidValues,$checkColumnName,$selfId,$requestTbl){
         $tableGateway = new TableGateway($tableName,$adapter);
         
         $uniqueConstraintsError = array();
@@ -69,8 +69,14 @@ class ConstraintHelper
         }else{
             $sql="";
         }
+        
+        if($requestTbl==1){
+            $status = "";
+        }else{
+            $status = " AND STATUS='E'";
+        }
 
-        $result =Helper::extractDbData($tableGateway->select([$column."=".$value,"STATUS='E'".$sql]));
+        $result =Helper::extractDbData($tableGateway->select([$column."=".$value.$status.$sql]));
         $num = count($result);       
         return $num;
     }
