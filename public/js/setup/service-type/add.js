@@ -8,7 +8,7 @@
         
         var inputFieldId = "form-serviceTypeName";
         var formId = "serviceType-form";
-        var tableName =  "HR_SERVICE_TYPES";
+        var tableName =  "HRIS_SERVICE_TYPES";
         var columnName = "SERVICE_TYPE_NAME";
         var checkColumnName = "SERVICE_TYPE_ID";
         var selfId = $("#serviceTypeId").val();

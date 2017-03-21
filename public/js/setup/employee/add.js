@@ -106,7 +106,7 @@
 
 //        var inputFieldId = "employeeCode";
 //        var formId = "form1";
-//        var tableName =  "HR_EMPLOYEES";
+//        var tableName =  "HRIS_EMPLOYEES";
 //        var columnName = "EMPLOYEE_CODE";
 //        var checkColumnName = "EMPLOYEE_ID";
 //        var selfId = $("#employeeId").val();

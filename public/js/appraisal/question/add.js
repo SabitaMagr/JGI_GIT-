@@ -5,7 +5,7 @@
         
         var inputFieldId = "questionEdesc";
         var formId = "appraisalQuestion-form";
-        var tableName =  "HR_APPRAISAL_QUESTION";
+        var tableName =  "HRIS_APPRAISAL_QUESTION";
         var columnName = "QUESTION_EDESC";
         var checkColumnName = "QUESTION_ID";
         var selfId = $("#questionId").val();

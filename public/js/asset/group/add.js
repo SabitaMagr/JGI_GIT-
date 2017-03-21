@@ -4,7 +4,7 @@
         
         var inputFieldId = "assetGroupCode";
         var formId = "assetGroup-form";
-        var tableName =  "HR_ASSET_GROUP";
+        var tableName =  "HRIS_ASSET_GROUP";
         var columnName = "ASSET_GROUP_CODE";
         var checkColumnName = "ASSET_GROUP_ID";
         var selfId = $("#assetGroupId").val();

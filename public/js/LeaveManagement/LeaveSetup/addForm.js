@@ -7,7 +7,7 @@
         
         var inputFieldId = "leaveEname";
         var formId = "leaveSetup-form";
-        var tableName =  "HR_LEAVE_MASTER_SETUP";
+        var tableName =  "HRIS_LEAVE_MASTER_SETUP";
         var columnName = "LEAVE_ENAME";
         var checkColumnName = "LEAVE_ID";
         var selfId = $("#leaveId").val();

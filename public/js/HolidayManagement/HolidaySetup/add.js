@@ -24,7 +24,7 @@
 
         var inputFieldId = "holidayEname";
         var formId = "holiday-Form";
-        var tableName = "HR_HOLIDAY_MASTER_SETUP";
+        var tableName = "HRIS_HOLIDAY_MASTER_SETUP";
         var columnName = "HOLIDAY_ENAME";
         var checkColumnName = "HOLIDAY_ID";
         var selfId = $("#holidayId").val();

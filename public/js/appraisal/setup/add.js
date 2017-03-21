@@ -5,7 +5,7 @@
         app.startEndDatePicker('startDate', 'endDate');
         var inputFieldId = "appraisalEdesc";
         var formId = "appraisalSetup-form";
-        var tableName =  "HR_APPRAISAL_SETUP";
+        var tableName =  "HRIS_APPRAISAL_SETUP";
         var columnName = "APPRAISAL_EDESC";
         var checkColumnName = "APPRAISAL_ID";
         var selfId = $("#appraisalId").val();

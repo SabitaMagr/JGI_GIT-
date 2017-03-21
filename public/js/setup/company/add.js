@@ -5,7 +5,7 @@
         
         var formId = "company-form";
         var inputFieldId = "form-companyName";    
-        var tableName =  "HR_COMPANY";
+        var tableName =  "HRIS_COMPANY";
         var columnName = "COMPANY_NAME";
         var checkColumnName = "COMPANY_ID";
         var selfId = $("#companyId").val();
