@@ -50,11 +50,6 @@ class Module implements AutoloaderProviderInterface, ConsoleUsageProviderInterfa
     }
 
     function beforeDispatch(MvcEvent $event) {
-//        commented for now 
-//        $request = $event->getRequest();
-//        if ($request->getContent() != null) {
-//            return;
-//        }
         $response = $event->getResponse();
 
         /* Offline pages not needed authentication */
@@ -103,7 +98,6 @@ class Module implements AutoloaderProviderInterface, ConsoleUsageProviderInterfa
                 }
             }
             if (!$allowFlag) {
-
                 $response = $event->getResponse();
                 $response->getHeaders()->addHeaderLine(
                         'Location', $event->getRouter()->assemble(

@@ -35,8 +35,8 @@ return [
         (SERVICE_NAME = ITN)
         )
         )',
-        'username'      => 'HRIS',
-        'password'      => 'NEO_HRIS',
+        'username'      => 'HRIS_JWL',
+        'password'      => 'HRIS_JWL',
         'platform_options' => ['quote_identifiers' => false]
     ],
     
