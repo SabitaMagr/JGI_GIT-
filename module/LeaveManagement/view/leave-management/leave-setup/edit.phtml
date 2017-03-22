@@ -11,6 +11,7 @@ $allowHalfday = $form->get('allowHalfday');
 $defaultDays = $form->get('defaultDays');
 $fiscalYear = $form->get('fiscalYear');
 $carryForward = $form->get('carryForward');
+$paid = $form->get('paid');
 $cashable = $form->get('cashable');
 
 $remarks = $form->get('remarks');
@@ -81,7 +82,7 @@ print $this->form()->openTag($form);
 
                 <div class="padding-5">
                     <div class="row  bg-master-lightest">
-                        <div class=" col-sm-6 ">
+                        <div class=" col-sm-4 ">
                             <div class="form-group padding-0">
                                 <?php print $this->formLabel($allowHalfday); ?>
                                 <div class="md-radio-inline">
@@ -89,6 +90,8 @@ print $this->form()->openTag($form);
                                 </div>
                             </div>
                             <?php print $this->formElementErrors()->render($allowHalfday, ['class' => 'help-block error']); ?>
+                        </div>
+                        <div class="col-sm-4">
                             <div class="form-group padding-0">
                                 <?php print $this->formLabel($defaultDays); ?>
                                 <div class="md-radio-inline">
@@ -97,8 +100,18 @@ print $this->form()->openTag($form);
                             </div>
                             <?php print $this->formElementErrors()->render($defaultDays, ['class' => 'help-block error']); ?>
                         </div>
-                        <div class="col-sm-6">
-
+                        <div class="col-sm-4">
+                            <div class="form-group padding-0">
+                                <?php print $this->formLabel($paid); ?>
+                                <div class="md-radio-inline">
+                                    <?php $customRenderer($paid); ?>
+                                </div>
+                            </div>
+                            <?php print $this->formElementErrors()->render($paid, ['class' => 'help-block error']); ?>
+                        </div>
+                    </div>
+                    <div class="row bg-master-lightest">
+                        <div class="col-sm-4">
                             <div class="form-group padding-0">
                                 <?php print $this->formLabel($cashable); ?>
                                 <div class="md-radio-inline">
@@ -106,12 +119,12 @@ print $this->form()->openTag($form);
                                 </div>
                             </div>
                             <?php print $this->formElementErrors()->render($cashable, ['class' => 'help-block error']); ?>
-
-
+                        </div>
+                        <div class="col-sm-4">
                             <div class="form-group padding-0">
                                 <?php print $this->formLabel($carryForward); ?>
                                 <div class="md-radio-inline">
-                                    <?php $customRenderer($carryForward); ?>
+                                     <?php $customRenderer($carryForward); ?>
                                 </div>
                             </div>
                             <?php print $this->formElementErrors()->render($carryForward, ['class' => 'help-block error']); ?>

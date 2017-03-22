@@ -5,7 +5,7 @@
         
         var inputFieldId = "form-instituteName";
         var formId = "institute-form";
-        var tableName =  "HR_INSTITUTE_MASTER_SETUP";
+        var tableName =  "HRIS_INSTITUTE_MASTER_SETUP";
         var columnName = "INSTITUTE_NAME";
         var checkColumnName = "INSTITUTE_ID";
         var selfId = $("#instituteID").val();

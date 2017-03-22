@@ -72,6 +72,7 @@ use WorkOnDayoff\Repository\WorkOnDayoffStatusRepository;
 use WorkOnHoliday\Repository\WorkOnHolidayStatusRepository;
 use Appraisal\Repository\QuestionRepository;
 use Appraisal\Repository\HeadingRepository;
+use Asset\Repository\IssueRepository;
 
 class RestfulService extends AbstractRestfulController {
 
@@ -322,6 +323,9 @@ class RestfulService extends AbstractRestfulController {
                     break;
                 case "pullHoliayWorkRequestStatusList":
                     $responseData = $this->pullHoliayWorkRequestStatusList($postedData->data);
+                    break;
+                case "pullAssetBalance":
+                    $responseData = $this->pullAssetBalance($postedData->id);
                     break;
 
                 default:
@@ -1785,6 +1789,15 @@ class RestfulService extends AbstractRestfulController {
                 return "Cancelled";
             }
         };
+        $getRequestType = function($requestType){
+            if($requestType=='ad'){
+                return "Advance";
+            }else if($requestType=='ep'){
+                return "Expense";
+            }else{
+                return "";
+            }
+        };
 
         foreach ($result as $row) {
             $recommendApproveRepository = new RecommendApproveRepository($this->adapter);
@@ -1811,7 +1824,7 @@ class RestfulService extends AbstractRestfulController {
                 $role['YOUR_ROLE'] = 'Recommender\Approver';
                 $role['ROLE'] = 4;
             }
-            $new_row = array_merge($row, ['STATUS' => $status]);
+            $new_row = array_merge($row, ['STATUS' => $status,'REQUESTED_TYPE'=>$getRequestType($row['REQUESTED_TYPE'])]);
             $final_record = array_merge($new_row, $role);
             array_push($recordList, $final_record);
         }
@@ -2094,11 +2107,18 @@ class RestfulService extends AbstractRestfulController {
         $tableName = $data['tableName'];
         $columnsWidValues = $data['columnsWidValues'];
         $selfId = $data['selfId'];
+        if($selfId!='R'){
+            $selfId1 = $selfId;
+            $requestTbl=0;
+        }else if($selfId=='R'){
+            $requestTbl=1;
+            $selfId1=0;
+        }
         $checkColumnName = $data['checkColumnName'];
-        $result = ConstraintHelper::checkUniqueConstraint($this->adapter, $tableName, $columnsWidValues, $checkColumnName, $selfId);
+        $result = ConstraintHelper::checkUniqueConstraint($this->adapter, $tableName, $columnsWidValues, $checkColumnName, $selfId1,$requestTbl);
         return [
             "success" => "true",
-            "data" => $result,
+            "data" => (int)$result,
             "msg" => "* Already Exist!!!"
         ];
     }
@@ -2742,6 +2762,23 @@ class RestfulService extends AbstractRestfulController {
             "data" => $recordList,
             "num" => count($recordList),
             "recomApproveId" => $recomApproveId
+        ];
+    }
+    
+    
+    
+    public function pullAssetBalance($id){
+        
+        $assetIssueRepo = new IssueRepository($this->adapter);
+        $assetBalQuantity =$assetIssueRepo->fetchAssetRemBalance($id);
+        
+        
+        return [
+            "success" => "true",
+            "data" => $assetBalQuantity,
+//            "id" => $id,
+//            "num" => 'count($recordList)',
+            "num" => 'test count'
         ];
     }
 

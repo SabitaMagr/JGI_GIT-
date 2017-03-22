@@ -348,6 +348,12 @@
                 }, function (failure) {
                     console.log("pullEmployeeFileByEmpId failure", failure);
                 });
+                
+                
+                 $scope.expAdd = function() {
+                    console.log('sdfdsf');
+                        }
+                
             });
 })
         ();

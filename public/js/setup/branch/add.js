@@ -8,7 +8,7 @@
         
         var inputFieldId = "form-branchName";
         var formId = "form-branch";
-        var tableName =  "HR_BRANCHES";
+        var tableName =  "HRIS_BRANCHES";
         var columnName = "BRANCH_NAME";
         var checkColumnName = "BRANCH_ID";
         var selfId = $("#branchId").val();

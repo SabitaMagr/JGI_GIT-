@@ -52,6 +52,8 @@ class TravelApproveRepository implements RepositoryInterface{
             new Expression("TO_CHAR(TR.RECOMMENDED_DATE, 'DD-MON-YYYY') AS RECOMMENDED_DATE"),
             new Expression("TR.REQUESTED_AMOUNT AS REQUESTED_AMOUNT"),
             new Expression("TR.TRAVEL_ID AS TRAVEL_ID"),
+            new Expression("TR.TRAVEL_CODE AS TRAVEL_CODE"),
+            new Expression("TR.REFERENCE_TRAVEL_ID AS REFERENCE_TRAVEL_ID"),
             new Expression("TR.PURPOSE AS PURPOSE"),
             new Expression("TR.EMPLOYEE_ID AS EMPLOYEE_ID"),
             new Expression("TR.RECOMMENDED_BY AS RECOMMENDED_BY"),
@@ -82,6 +84,7 @@ class TravelApproveRepository implements RepositoryInterface{
     {
         $sql = "SELECT 
                     TR.TRAVEL_ID,
+                    TR.TRAVEL_CODE,
                     TR.EMPLOYEE_ID,
                     TR.REQUESTED_AMOUNT,
                     TO_CHAR(TR.REQUESTED_DATE, 'DD-MON-YYYY') AS REQUESTED_DATE,

@@ -5,8 +5,10 @@ namespace Asset\Controller;
 use Application\Helper\EntityHelper as ApplicationEntityHelper;
 use Application\Helper\Helper;
 use Asset\Form\IssueForm;
+use Asset\Model\Issue;
 use Asset\Model\Setup;
 use Setup\Model\HrEmployees;
+use Setup\Repository\EmployeeRepository;
 use Zend\Authentication\AuthenticationService;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Form\Annotation\AnnotationBuilder;
@@ -40,6 +42,29 @@ class IssueController extends AbstractActionController
     
     public function addAction(){
         $this->initializeForm();
+          $employeeRepo = new EmployeeRepository($this->adapter);
+        $employeeDetail = $employeeRepo->fetchById($this->employeeId);
+        
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            $this->form->setData($request->getPost());
+            
+//              echo '<pre>';
+//            print_r($this->form);
+//            echo '</pre>';
+//            die();
+            
+            if ($this->form->isValid()) {
+                $issue = new Issue();
+                $issue->exchangeArrayFromForm($this->form->getData());
+                
+                echo '<pre>';
+            print_r($issue);
+            echo '</pre>';
+            die();
+                
+            }
+        }
         
         return Helper::addFlashMessagesToArray($this, [
                     'form' => $this->form,

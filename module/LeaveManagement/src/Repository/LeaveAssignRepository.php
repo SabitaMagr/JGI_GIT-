@@ -61,7 +61,7 @@ class LeaveAssignRepository implements RepositoryInterface
 
     }
 
-    public function filter( $branchId, $departmentId, $genderId, $designationId)
+    public function filter( $branchId, $departmentId, $genderId, $designationId,$serviceTypeId)
     {
         $sql = new Sql($this->adapter);
         $select = $sql->select();
@@ -85,6 +85,9 @@ class LeaveAssignRepository implements RepositoryInterface
         }
         if ($designationId != -1) {
             $select->where(["E.DESIGNATION_ID=$designationId"]);
+        }
+        if ($serviceTypeId != -1) {
+            $select->where(["E.SERVICE_TYPE_ID=$serviceTypeId"]);
         }
 //        $select->where(["(L.LEAVE_ID=$leaveId )"]);
 //        $select->where(["(L.LEAVE_ID IS NULL )"]);

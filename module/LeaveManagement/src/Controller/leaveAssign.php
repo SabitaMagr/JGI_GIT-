@@ -22,6 +22,7 @@ use Setup\Model\Branch;
 use Setup\Model\Department;
 use Setup\Model\Designation;
 use Setup\Model\HrEmployees;
+use Setup\Model\ServiceType;
 use Setup\Repository\EmployeeRepository;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Form\Annotation\AnnotationBuilder;
@@ -94,6 +95,14 @@ class leaveAssign extends AbstractActionController {
         $departmentFormElement->setValueOptions($departments1);
         $departmentFormElement->setAttributes(["id" => "departmentId", "class" => "form-control"]);
         $departmentFormElement->setLabel("Department");
+        
+        $serviceTypeFormElement = new Select();
+        $serviceTypeFormElement->setName("serviceType");
+        $serviceTypes = \Application\Helper\EntityHelper::getTableKVListWithSortOption($this->adapter, ServiceType::TABLE_NAME, ServiceType::SERVICE_TYPE_ID, [ServiceType::SERVICE_TYPE_NAME], [ServiceType::STATUS => 'E'], ServiceType::SERVICE_TYPE_NAME, "ASC");
+        $serviceTypes1 = [-1 => "All"] + $serviceTypes;
+        $serviceTypeFormElement->setValueOptions($serviceTypes1);
+        $serviceTypeFormElement->setAttributes(["id" => "serviceTypeId", "class" => "form-control"]);
+        $serviceTypeFormElement->setLabel("Service Type");
 
         $genderFormElement = new Select();
         $genderFormElement->setName("gender");
@@ -118,6 +127,7 @@ class leaveAssign extends AbstractActionController {
                     'departmentFormElement' => $departmentFormElement,
                     'genderFormElement' => $genderFormElement,
                     'designationFormElement' => $designationFormElement,
+                    'serviceTypeFormElement'=>$serviceTypeFormElement,
                     'form' => $this->excelImportForm
         ]);
     }

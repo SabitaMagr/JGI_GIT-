@@ -11,7 +11,7 @@
         
 //        var inputFieldId = "assetCode";
 //        var formId = "assetSetup-form";
-//        var tableName =  "HR_ASSET_SETUP";
+//        var tableName =  "HRIS_ASSET_SETUP";
 //        var columnName = "ASSET_CODE";
 //        var checkColumnName = "ASSET_ID";
 //        var selfId = $("#assetSetupId").val();

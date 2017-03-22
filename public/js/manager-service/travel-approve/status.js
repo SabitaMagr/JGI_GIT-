@@ -67,15 +67,16 @@ angular.module('hris', [])
                     dataBound: gridDataBound,
                     rowTemplate: kendo.template($("#rowTemplate").html()),
                     columns: [
-                        {field: "FIRST_NAME", title: "Employee Name", width: 150},
-                        {field: "FROM_DATE", title: "From Date", width: 100},
+                        {field: "FIRST_NAME", title: "Employee Name", width: 140},
+                        {field: "TRAVEL_CODE", title: "Travel Code", width: 120},
+                        {field: "FROM_DATE", title: "From Date", width: 120},
                         {field: "TO_DATE", title: "To Date", width: 100},
                         {field: "REQUESTED_DATE", title: "Requested Date", width: 140},
-                        {field: "DESTINATION", title: "Destination", width: 100},
-                        {field: "REQUESTED_AMOUNT", title: "Requested Amt.", width: 120},
-                        {field: "YOUR_ROLE", title: "Your Role", width: 100},
+                        {field: "DESTINATION", title: "Destination", width: 110},
+                        {field: "REQUESTED_AMOUNT", title: "Requested Amt.", width: 140},
+                        {field: "REQUESTED_TYPE", title: "Request For", width: 120},
                         {field: "STATUS", title: "Status", width: 100},
-                        {title: "Action", width: 70}
+                        {title: "Action", width: 80}
                     ]
                 });
                 function gridDataBound(e) {
@@ -93,6 +94,7 @@ angular.module('hris', [])
                     var rows = [{
                             cells: [
                                 {value: "Employee Name"},
+                                {value: "Travel Code"},
                                 {value: "From Date"},
                                 {value: "To Date"},
                                 {value: "Requested Date"},
@@ -125,6 +127,7 @@ angular.module('hris', [])
                         rows.push({
                             cells: [
                                 {value: dataItem.FIRST_NAME + middleName + dataItem.LAST_NAME},
+                                {value: dataItem.TRAVEL_CODE},
                                 {value: dataItem.FROM_DATE},
                                 {value: dataItem.TO_DATE},
                                 {value: dataItem.REQUESTED_DATE},
@@ -151,6 +154,7 @@ angular.module('hris', [])
                         sheets: [
                             {
                                 columns: [
+                                    {autoWidth: true},
                                     {autoWidth: true},
                                     {autoWidth: true},
                                     {autoWidth: true},

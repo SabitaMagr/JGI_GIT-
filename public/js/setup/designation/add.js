@@ -22,7 +22,7 @@
         
         var inputFieldId = "form-designationTitle";
         var formId = "designation-form";
-        var tableName =  "HR_DESIGNATIONS";
+        var tableName =  "HRIS_DESIGNATIONS";
         var columnName = "DESIGNATION_TITLE";
         var checkColumnName = "DESIGNATION_ID";
         var selfId = $("#designationId").val();

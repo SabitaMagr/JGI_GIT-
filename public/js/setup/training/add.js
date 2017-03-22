@@ -11,7 +11,7 @@
 
         var inputFieldId = "form-trainingName";
         var formId = "training-form";
-        var tableName = "HR_TRAINING_MASTER_SETUP";
+        var tableName = "HRIS_TRAINING_MASTER_SETUP";
         var columnName = "TRAINING_NAME";
         var checkColumnName = "TRAINING_ID";
         var selfId = $("#trainingID").val();

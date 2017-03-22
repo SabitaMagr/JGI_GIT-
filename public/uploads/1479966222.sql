@@ -107,10 +107,10 @@ INSERT INTO `department` (`departmentCode`, `departmentName`, `hodCode`, `parent
 -- --------------------------------------------------------
 
 --
--- Table structure for table `hr_positions`
+-- Table structure for table `HRIS_positions`
 --
 
-CREATE TABLE `hr_positions` (
+CREATE TABLE `HRIS_positions` (
   `POSITION_ID` int(11) NOT NULL,
   `POSITION_CODE` varchar(20) NOT NULL,
   `POSITION_NAME` varchar(50) NOT NULL,
@@ -121,10 +121,10 @@ CREATE TABLE `hr_positions` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
--- Dumping data for table `hr_positions`
+-- Dumping data for table `HRIS_positions`
 --
 
-INSERT INTO `hr_positions` (`POSITION_ID`, `POSITION_CODE`, `POSITION_NAME`, `REMARKS`, `STATUS`, `CREATED_DT`, `MODIFIED_DT`) VALUES
+INSERT INTO `HRIS_positions` (`POSITION_ID`, `POSITION_CODE`, `POSITION_NAME`, `REMARKS`, `STATUS`, `CREATED_DT`, `MODIFIED_DT`) VALUES
 (1, '015', 'hellow', 'hi', 'e', '2016-08-09 06:23:10', NULL),
 (2, '015', 'hellow', 'hi', 'e', '2016-08-09 06:29:29', NULL),
 (3, '456ghgfh', 'trybnv', 'try', 'D', '2016-08-09 06:36:11', NULL),
@@ -134,10 +134,10 @@ INSERT INTO `hr_positions` (`POSITION_ID`, `POSITION_CODE`, `POSITION_NAME`, `RE
 -- --------------------------------------------------------
 
 --
--- Table structure for table `hr_service_types`
+-- Table structure for table `HRIS_service_types`
 --
 
-CREATE TABLE `hr_service_types` (
+CREATE TABLE `HRIS_service_types` (
   `SERVICE_TYPE_ID` int(11) NOT NULL,
   `SERVICE_TYPE_CODE` varchar(50) NOT NULL,
   `SERVICE_TYPE_NAME` varchar(50) NOT NULL,
@@ -148,10 +148,10 @@ CREATE TABLE `hr_service_types` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
--- Dumping data for table `hr_service_types`
+-- Dumping data for table `HRIS_service_types`
 --
 
-INSERT INTO `hr_service_types` (`SERVICE_TYPE_ID`, `SERVICE_TYPE_CODE`, `SERVICE_TYPE_NAME`, `REMARKS`, `STATUS`, `CREATED_DT`, `MODIFIED_DT`) VALUES
+INSERT INTO `HRIS_service_types` (`SERVICE_TYPE_ID`, `SERVICE_TYPE_CODE`, `SERVICE_TYPE_NAME`, `REMARKS`, `STATUS`, `CREATED_DT`, `MODIFIED_DT`) VALUES
 (1, 'erter23', 'fgytutyu45', 'TYR', 'D', '2016-08-05 09:50:42', '0000-00-00'),
 (47, 'RETRE45', 'RTERFB', 'ERTREGFB', 'E', '2016-08-05 10:15:55', '2016-08-05'),
 (48, 'STC002', 'service type name 2', 'remarks 3', 'D', '2016-08-05 10:27:45', '2016-08-05');
@@ -159,10 +159,10 @@ INSERT INTO `hr_service_types` (`SERVICE_TYPE_ID`, `SERVICE_TYPE_CODE`, `SERVICE
 -- --------------------------------------------------------
 
 --
--- Table structure for table `hr_shifts`
+-- Table structure for table `HRIS_shifts`
 --
 
-CREATE TABLE `hr_shifts` (
+CREATE TABLE `HRIS_shifts` (
   `SHIFT_ID` int(11) NOT NULL,
   `SHIFT_CODE` varchar(20) NOT NULL,
   `SHIFT_NAME` varchar(50) NOT NULL,
@@ -175,28 +175,28 @@ CREATE TABLE `hr_shifts` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
--- Dumping data for table `hr_shifts`
+-- Dumping data for table `HRIS_shifts`
 --
 
-INSERT INTO `hr_shifts` (`SHIFT_ID`, `SHIFT_CODE`, `SHIFT_NAME`, `START_TIME`, `END_TIME`, `REMARKS`, `STATUS`, `CREATED_DT`, `MODIFIED_DT`) VALUES
+INSERT INTO `HRIS_shifts` (`SHIFT_ID`, `SHIFT_CODE`, `SHIFT_NAME`, `START_TIME`, `END_TIME`, `REMARKS`, `STATUS`, `CREATED_DT`, `MODIFIED_DT`) VALUES
 (1, 'SHT001', 'morning', '10', '5', 'updated', 'E', '2016-08-05 11:43:48', '2016-08-05');
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `HR_USERS`
+-- Table structure for table `HRIS_USERS`
 --
 
-CREATE TABLE `HR_USERS` (
+CREATE TABLE `HRIS_USERS` (
   `USER_NAME` varchar(20) NOT NULL,
   `PASSWORD` varchar(20) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
--- Dumping data for table `HR_USERS`
+-- Dumping data for table `HRIS_USERS`
 --
 
-INSERT INTO `HR_USERS` (`USER_NAME`, `PASSWORD`) VALUES
+INSERT INTO `HRIS_USERS` (`USER_NAME`, `PASSWORD`) VALUES
 ('admin', 'admin');
 
 -- --------------------------------------------------------
@@ -243,27 +243,27 @@ ALTER TABLE `department`
   ADD PRIMARY KEY (`departmentCode`);
 
 --
--- Indexes for table `hr_positions`
+-- Indexes for table `HRIS_positions`
 --
-ALTER TABLE `hr_positions`
+ALTER TABLE `HRIS_positions`
   ADD PRIMARY KEY (`POSITION_ID`);
 
 --
--- Indexes for table `hr_service_types`
+-- Indexes for table `HRIS_service_types`
 --
-ALTER TABLE `hr_service_types`
+ALTER TABLE `HRIS_service_types`
   ADD PRIMARY KEY (`SERVICE_TYPE_ID`);
 
 --
--- Indexes for table `hr_shifts`
+-- Indexes for table `HRIS_shifts`
 --
-ALTER TABLE `hr_shifts`
+ALTER TABLE `HRIS_shifts`
   ADD PRIMARY KEY (`SHIFT_ID`);
 
 --
--- Indexes for table `HR_USERS`
+-- Indexes for table `HRIS_USERS`
 --
-ALTER TABLE `HR_USERS`
+ALTER TABLE `HRIS_USERS`
   ADD PRIMARY KEY (`USER_NAME`);
 
 --
@@ -287,19 +287,19 @@ ALTER TABLE `album`
 ALTER TABLE `department`
   MODIFY `departmentCode` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=66;
 --
--- AUTO_INCREMENT for table `hr_positions`
+-- AUTO_INCREMENT for table `HRIS_positions`
 --
-ALTER TABLE `hr_positions`
+ALTER TABLE `HRIS_positions`
   MODIFY `POSITION_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 --
--- AUTO_INCREMENT for table `hr_service_types`
+-- AUTO_INCREMENT for table `HRIS_service_types`
 --
-ALTER TABLE `hr_service_types`
+ALTER TABLE `HRIS_service_types`
   MODIFY `SERVICE_TYPE_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=49;
 --
--- AUTO_INCREMENT for table `hr_shifts`
+-- AUTO_INCREMENT for table `HRIS_shifts`
 --
-ALTER TABLE `hr_shifts`
+ALTER TABLE `HRIS_shifts`
   MODIFY `SHIFT_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;

@@ -5,7 +5,7 @@
         
         var inputFieldId = "form-loanName";
         var formId = "loan-form";
-        var tableName =  "HR_LOAN_MASTER_SETUP";
+        var tableName =  "HRIS_LOAN_MASTER_SETUP";
         var columnName = "LOAN_NAME";
         var checkColumnName = "LOAN_ID";
         var selfId = $("#loanID").val();

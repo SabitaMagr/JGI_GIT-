@@ -29,6 +29,7 @@
                 {field: "DEFAULT_DAYS", title: "Default Days"},
                 {field: "CARRY_FORWARD", title: "Carry Forward"},
                 {field: "CASHABLE", title: "Cashable"},
+                {field: "PAID", title: "Paid"},
                 {title: "Action"}
             ]
         }); 

@@ -81,6 +81,9 @@ echo json_encode($menu);
         #: (CASHABLE == null) ? '-' : CASHABLE #
         </td>
         <td>
+        #: (PAID == null) ? '-' : PAID #
+        </td>
+        <td>
         <a class="btn-edit"
         href="<?= $this->url("leavesetup", ["action" => "edit"]); ?>/#:LEAVE_ID #" style="height:17px;">
         <i class="fa fa-edit"></i>

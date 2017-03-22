@@ -4,7 +4,7 @@
 
         var inputFieldId = "form-academicUniversityName";
         var formId = "academicUniversity-form";
-        var tableName =  "HR_ACADEMIC_UNIVERSITY";
+        var tableName =  "HRIS_ACADEMIC_UNIVERSITY";
         var columnName = "ACADEMIC_UNIVERSITY_NAME";
         var checkColumnName = "ACADEMIC_UNIVERSITY_ID";
         var selfId = $("#academicUniversityId").val();

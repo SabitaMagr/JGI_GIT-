@@ -5,7 +5,7 @@
         
         var inputFieldId = "appraisalTypeEdesc";
         var formId = "appraisalType-form";
-        var tableName =  "HR_APPRAISAL_TYPE";
+        var tableName =  "HRIS_APPRAISAL_TYPE";
         var columnName = "APPRAISAL_TYPE_EDESC";
         var checkColumnName = "APPRAISAL_TYPE_ID";
         var selfId = $("#appraisalTypeId").val();

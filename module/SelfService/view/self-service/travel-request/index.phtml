@@ -59,6 +59,9 @@ echo json_encode($menu); ?>;
     <script id="rowTemplate" type="text/x-kendo-tmpl">
         <tr>
         <td>
+        #: (TRAVEL_CODE == null) ? '-' : TRAVEL_CODE #
+        </td>
+        <td>
         #: (FROM_DATE == null) ? '-' : FROM_DATE #
         </td>
         <td>
@@ -82,12 +85,18 @@ echo json_encode($menu); ?>;
         <td>
         <a class="btn-edit"
         href="<?= $this->url("travelRequest", ["action" => "view"]) ?>/#: TRAVEL_ID #" style="height:17px;" title="view detail">
-        <i class="fa fa-search-plus"></i></a>
+        <i class="fa fa-search-plus"></i>
         </a>
         #if(ALLOW_TO_EDIT == 1){#       
         <a class="confirmation btn-delete"
         href="<?= $this->url("travelRequest", ["action" => "delete"]) ?>/#: TRAVEL_ID #" id="bs_#:TRAVEL_ID #" style="height:17px;">
-        <i class="fa fa-trash-o"></i></a>
+        <i class="fa fa-trash-o"></i>
+        </a>
+        #}#
+        # if(ALLOW_TO_REQUEST_EX==1){#
+        <a class="btn-edit"
+        href="<?= $this->url("travelRequest", ["action" => "expenseRequest"]) ?>/#: TRAVEL_ID #" style="height:17px; margin-left: 6px;" title="Expense Request">
+        <i class="fa fa-send-o"></i>
         </a>
         #}#
         </td>

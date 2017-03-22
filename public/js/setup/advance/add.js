@@ -5,7 +5,7 @@
         
         var inputFieldId = "form-advanceName";
         var formId = "advance-form";
-        var tableName =  "HR_ADVANCE_MASTER_SETUP";
+        var tableName =  "HRIS_ADVANCE_MASTER_SETUP";
         var columnName = "ADVANCE_NAME";
         var checkColumnName = "ADVANCE_ID";
         var selfId = $("#advanceID").val();

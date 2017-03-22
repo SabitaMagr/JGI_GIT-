@@ -8,7 +8,7 @@
         
         var inputFieldId = "form-positionName";
         var formId = "position-form";
-        var tableName =  "HR_POSITIONS";
+        var tableName =  "HRIS_POSITIONS";
         var columnName = "POSITION_NAME";
         var checkColumnName = "POSITION_ID";
         var selfId = $("#positionId").val();

@@ -78,6 +78,7 @@ class SetupRepository implements RepositoryInterface {
         $sql = new Sql($this->adapter);
         $select = $sql->select();
         $select->from(['E' => Setup::TABLE_NAME]);
+        $select->where(["E." . Setup::ASSET_ID . "='".$id."'"]);
         $select->columns(Helper::convertColumnDateFormat($this->adapter, new Setup(), [
                     'purchaseDate',
                     'expiaryDate'

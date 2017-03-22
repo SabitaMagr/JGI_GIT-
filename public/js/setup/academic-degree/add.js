@@ -4,7 +4,7 @@
         
         var inputFieldId = "form-academicDegreeName";
         var formId = "academicDegree-form";
-        var tableName =  "HR_ACADEMIC_DEGREES";
+        var tableName =  "HRIS_ACADEMIC_DEGREES";
         var columnName = "ACADEMIC_DEGREE_NAME";
         var checkColumnName = "ACADEMIC_DEGREE_ID";
         var selfId = $("#academicDegreeId").val();

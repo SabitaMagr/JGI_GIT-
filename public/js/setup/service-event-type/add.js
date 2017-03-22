@@ -5,7 +5,7 @@
         
         var inputFieldId = "form-serviceEventTypeName";
         var formId = "serviceEventType-form";
-        var tableName =  "HR_SERVICE_EVENT_TYPES";
+        var tableName =  "HRIS_SERVICE_EVENT_TYPES";
         var columnName = "SERVICE_EVENT_TYPE_NAME";
         var checkColumnName = "SERVICE_EVENT_TYPE_ID";
         var selfId = $("#serviceEventTypeId").val();

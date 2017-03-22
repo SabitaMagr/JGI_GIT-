@@ -65,7 +65,8 @@ angular.module('hris', ['ui.bootstrap'])
                 var departmentId = angular.element(document.getElementById('departmentId')).val();
                 var genderId = angular.element(document.getElementById('genderId')).val();
                 var designationId = angular.element(document.getElementById('designationId')).val();
-                console.log(leaveId);
+                var serviceTypeId = angular.element(document.getElementById('serviceTypeId')).val();
+                console.log(serviceTypeId);
 
                 window.app.pullDataById(document.url, {
                     action: 'pullEmployeeLeave',
@@ -74,7 +75,8 @@ angular.module('hris', ['ui.bootstrap'])
                         branchId: branchId,
                         departmentId: departmentId,
                         genderId: genderId,
-                        designationId: designationId
+                        designationId: designationId,
+                        serviceTypeId: serviceTypeId
                     }
                 }).then(function (success) {
                     $scope.$apply(function () {

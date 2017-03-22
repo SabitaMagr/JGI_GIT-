@@ -6,7 +6,7 @@
         
         var inputFieldId = "stageEdesc";
         var formId = "appraisalStage-form";
-        var tableName =  "HR_APPRAISAL_STAGE";
+        var tableName =  "HRIS_APPRAISAL_STAGE";
         var columnName = "STAGE_EDESC";
         var checkColumnName = "STAGE_ID";
         var selfId = $("#stageId").val();
