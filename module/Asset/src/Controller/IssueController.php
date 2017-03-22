@@ -49,10 +49,10 @@ class IssueController extends AbstractActionController
         if ($request->isPost()) {
             $this->form->setData($request->getPost());
             
-              echo '<pre>';
-            print_r($this->form);
-            echo '</pre>';
-            die();
+//              echo '<pre>';
+//            print_r($this->form);
+//            echo '</pre>';
+//            die();
             
             if ($this->form->isValid()) {
                 $issue = new Issue();

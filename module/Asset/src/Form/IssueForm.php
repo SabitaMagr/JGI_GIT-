@@ -56,7 +56,7 @@ class IssueForm {
      * @Annotation\Type("Zend\Form\Element\Checkbox")
      * @Annotation\Required(false)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
-     * @Annotation\Options({"label":"Returnable"})
+     * @Annotation\Options({"label":"Returnable","checked_value":"Y","unchecked_value":"N"})
      * @Annotation\Attributes({"id":"returnable","class":"form-control"})
      * @Annotation\Validator({"name":"StringLength", "options":{"max":"15"}})
      */

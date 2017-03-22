@@ -2,13 +2,14 @@
 
 namespace Setup\Controller;
 
-use Application\Helper\EmailHelper;
 use Application\Helper\EntityHelper as ApplicationHelper;
 use Application\Helper\EntityHelper as EntityHelper2;
 use Application\Helper\Helper;
+use Setup\Form\HrEmployeesFormTabEight;
 use Setup\Form\HrEmployeesFormTabFive;
 use Setup\Form\HrEmployeesFormTabFour;
 use Setup\Form\HrEmployeesFormTabOne;
+use Setup\Form\HrEmployeesFormTabSeven;
 use Setup\Form\HrEmployeesFormTabSix;
 use Setup\Form\HrEmployeesFormTabThree;
 use Setup\Form\HrEmployeesFormTabTwo;
@@ -31,7 +32,6 @@ use Setup\Repository\JobHistoryRepository;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\Form\Element\Select;
-use Zend\Mail\Message;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 
@@ -129,6 +129,8 @@ class EmployeeController extends AbstractActionController {
     private $formThree;
     private $formFour;
     private $formSix;
+    private $formSeven;
+    private $formEight;
 
     public function initializeForm() {
         $builder = new AnnotationBuilder();
@@ -138,6 +140,8 @@ class EmployeeController extends AbstractActionController {
         $formTabFour = new HrEmployeesFormTabFour();
         $formTabFive = new HrEmployeesFormTabFive();
         $formTabSix = new HrEmployeesFormTabSix();
+        $formTabSeven = new HrEmployeesFormTabSeven();
+        $formTabEight = new HrEmployeesFormTabEight();
 
         if (!$this->formOne) {
             $this->formOne = $builder->createForm($formTabOne);
@@ -153,6 +157,12 @@ class EmployeeController extends AbstractActionController {
         }
         if (!$this->formSix) {
             $this->formSix = $builder->createForm($formTabSix);
+        }
+        if (!$this->formSeven) {
+            $this->formSeven = $builder->createForm($formTabSeven);
+        }
+        if (!$this->formEight) {
+            $this->formEight = $builder->createForm($formTabEight);
         }
     }
 
@@ -186,6 +196,7 @@ class EmployeeController extends AbstractActionController {
             'formThree' => $this->formThree,
             'formFour' => $this->formFour,
             'formSix' => $this->formSix,
+            'formSeven' => $this->formSeven,
             "bloodGroups" => EntityHelper::getTableKVList($this->adapter, EntityHelper::HRIS_BLOOD_GROUPS),
             "districts" => EntityHelper::getTableKVList($this->adapter, EntityHelper::HRIS_DISTRICTS),
             "genders" => EntityHelper::getTableKVList($this->adapter, EntityHelper::HRIS_GENDERS),
@@ -229,6 +240,8 @@ class EmployeeController extends AbstractActionController {
         $formThreeModel = new HrEmployeesFormTabThree();
         $formFourModel = new HrEmployeesFormTabFour();
         $formSixModel = new HrEmployeesFormTabSix();
+        $formSevenModel = new HrEmployeesFormTabSeven();
+        $formEightModel = new HrEmployeesFormTabEight();
 
         $employeeData = (array) $this->repository->fetchById($id);
         $profilePictureId = $employeeData[HrEmployees::PROFILE_PICTURE_ID];
@@ -394,6 +407,8 @@ class EmployeeController extends AbstractActionController {
                     'formThree' => $this->formThree,
                     'formFour' => $this->formFour,
                     'formSix' => $this->formSix,
+                    'formSeven' => $this->formSeven,
+                    'formEight' => $this->formEight,
                     'tab' => $tab,
                     "id" => $id,
                     "jobHistoryListNum" => $jobHistoryListNum,
