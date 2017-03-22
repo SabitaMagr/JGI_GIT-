@@ -4,7 +4,7 @@
 
         var inputFieldId = "form-academicProgramName";
         var formId = "academicProgram-form";
-        var tableName =  "HR_ACADEMIC_PROGRAMS";
+        var tableName =  "HRIS_ACADEMIC_PROGRAMS";
         var columnName = "ACADEMIC_PROGRAM_NAME";
         var checkColumnName = "ACADEMIC_PROGRAM_ID";
         var selfId = $("#academicProgramId").val();

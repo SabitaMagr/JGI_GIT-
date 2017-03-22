@@ -8,7 +8,7 @@
         
         var inputFieldId = "form-academicCourseName";
         var formId = "academicCourse-form";
-        var tableName =  "HR_ACADEMIC_COURSES";
+        var tableName =  "HRIS_ACADEMIC_COURSES";
         var columnName = "ACADEMIC_COURSE_NAME";
         var checkColumnName = "ACADEMIC_COURSE_ID";
         var selfId = $("#academicCourseId").val();

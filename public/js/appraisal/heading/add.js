@@ -5,7 +5,7 @@
         
         var inputFieldId = "headingEdesc";
         var formId = "appraisalHeading-form";
-        var tableName =  "HR_APPRAISAL_HEADING";
+        var tableName =  "HRIS_APPRAISAL_HEADING";
         var columnName = "HEADING_EDESC";
         var checkColumnName = "HEADING_ID";
         var selfId = $("#headingId").val();

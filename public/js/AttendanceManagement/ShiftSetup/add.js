@@ -21,7 +21,7 @@
 
         var inputFieldId = "shiftEname";
         var formId = "shiftSetup-form";
-        var tableName = "HR_SHIFTS";
+        var tableName = "HRIS_SHIFTS";
         var columnName = "SHIFT_ENAME";
         var checkColumnName = "SHIFT_ID";
         var selfId = $("#shiftId").val();

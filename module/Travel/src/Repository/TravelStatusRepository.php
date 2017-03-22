@@ -57,6 +57,7 @@ class TravelStatusRepository implements RepositoryInterface{
                 TO_CHAR(TR.REQUESTED_DATE, 'DD-MON-YYYY') AS REQUESTED_DATE,
                 TR.STATUS AS STATUS,
                 TR.TRAVEL_ID AS TRAVEL_ID,
+                TR.TRAVEL_CODE AS TRAVEL_CODE,
                 TR.REMARKS AS REMARKS,
                 TR.REQUESTED_TYPE AS REQUESTED_TYPE,
                 TR.DESTINATION AS DESTINATION,

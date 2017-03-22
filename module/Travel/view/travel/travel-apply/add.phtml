@@ -6,6 +6,7 @@ $form->setAttribute('id', 'travelAdvance-form');
 
 $employeeId = $form->get('employeeId');
 $employeeId->setValueOptions($employees);
+$travelCode = $form->get('travelCode');
 $fromDate = $form->get('fromDate');
 $toDate = $form->get('toDate');
 $destination = $form->get('destination');
@@ -54,6 +55,11 @@ $form->prepare();
                     <?php print $this->formElement($employeeId); ?>
                     <?php print $this->formElementErrors()->render($employeeId, ['class' => 'help-block']); ?>
                 </div>  
+                <div class="form-group">
+                    <?php print $this->formLabel($travelCode); ?>
+                    <?php print $this->formElement($travelCode); ?>
+                    <?php print $this->formElementErrors()->render($travelCode, ['class' => 'help-block']); ?>
+                </div>
                 <div class="form-group">
                     <?php print $this->formLabel($fromDate); ?>
                     <div class="input-group date" id="fromDate">

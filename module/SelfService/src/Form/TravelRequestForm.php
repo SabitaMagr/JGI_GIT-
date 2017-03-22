@@ -9,6 +9,15 @@ use Zend\Form\Annotation;
 
 class TravelRequestForm{
     /**
+     * @Annotation\Type("Zend\Form\Element\Text")
+     * @Annotation\Required({"required":"true"})
+     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
+     * @Annotation\Options({"label":"Travel Code"})
+     * @Annotation\Attributes({ "id":"form-travelCode", "class":"form-travelCode form-control" })
+     */
+    public $travelCode;
+    
+    /**
      * @Annotation\Type("Zend\Form\Element\Select")
      * @Annotation\Required(false)
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
@@ -19,7 +28,7 @@ class TravelRequestForm{
     
      /**
      * @Annotation\Type("Zend\Form\Element\Number")
-     * @Annotation\Required({"required":"true"})
+     * @Annotation\Required(false)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Request Amount"})
      * @Annotation\Attributes({ "id":"form-requestedAmount", "class":"form-requestedAmount form-control","step":"0.01" })

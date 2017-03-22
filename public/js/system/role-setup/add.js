@@ -7,7 +7,7 @@
         
         var inputFieldId = "form-roleName";
         var formId = "rolesetup-form";
-        var tableName =  "HR_ROLES";
+        var tableName =  "HRIS_ROLES";
         var columnName = "ROLE_NAME";
         var checkColumnName = "ROLE_ID";
         var selfId = $("#roleId").val();
