@@ -45,7 +45,7 @@
                         $scope.programList = data.programList;
                         $scope.courseList = data.courseList;
                         $scope.employeeQualificationList = data.employeeQualificationList;
-                        var num = data.employeeQualificationList.length;
+                        var num = data.num;
                         if (num == 0) {
                             $scope.counter = 1;
                             $scope.qualificationFormList.push({
@@ -388,11 +388,11 @@
                     }).then(function (success) {
                         $scope.$apply(function () {
                             var experienceList = success.data;
-                            var num = experienceList.length;
+                            var experienceNum = success.num;
                             console.log(experienceList);
-                            if (num > 0) {
-                                $scope.counterExperience = num;
-                                for (var j = 0; j < num; j++) {
+                            if (experienceNum > 0) {
+                                $scope.counterExperience = experienceNum;
+                                for (var j = 0; j < experienceNum; j++) {
                                     if (experienceList[j].ORGANIZATION_TYPE == 'Financial') {
                                         var organizationType = $scope.organizationType[0];
                                     } else if (experienceList[j].ORGANIZATION_TYPE == 'Non-Financial') {
@@ -523,11 +523,11 @@
                     }).then(function (success) {
                         $scope.$apply(function () {
                             var trainingList = success.data;
-                            var num = trainingList.length;
+                            var trainingNum = success.num;
                             console.log(trainingList);
-                            if (num > 0) {
-                                $scope.counterTraining = num;
-                                for (var j = 0; j < num; j++) {
+                            if (trainingNum > 0) {
+                                $scope.counterTraining = trainingNum;
+                                for (var j = 0; j < trainingNum; j++) {
                                     $scope.trainingFormList.push(angular.copy({
                                         id: trainingList[j].ID,
                                         trainingName: trainingList[j].TRAINING_NAME,

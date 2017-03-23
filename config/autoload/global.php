@@ -50,8 +50,8 @@ return [
         (SERVICE_NAME = ITN)
         )
         )',
-        'username' => 'HRIS_MODERN',
-        'password' => 'HRIS_MODERN',
+        'username' => 'HRIS',
+        'password' => 'NEO_HRIS',
         'platform_options' => ['quote_identifiers' => false]
     ],
     'service_manager' => [
