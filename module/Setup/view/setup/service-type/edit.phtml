@@ -31,7 +31,7 @@ $form->prepare();
     <?= $this->navigation('Zend\Navigation\serviceType')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
 <div class="row margin-top-20">
-    <div class="col-sm-8 col-sm-offset-2">
+    <div class="col-sm-12">
         <div class="portlet box custom-box">
             <div class="portlet-title">
                 <div class="caption">
@@ -42,6 +42,9 @@ $form->prepare();
                 <?php
                 print $this->form()->openTag($form);
                 ?>
+                
+                <div class=" row">
+                    <div class="col-sm-4">
                 <div class="form-group">
                     <?php print $this->formLabel($serviceTypeCode); ?>
                     <?php print $this->formElement($serviceTypeCode); ?>
@@ -49,18 +52,27 @@ $form->prepare();
                     <input type="hidden" value="<?php echo $id; ?>" id="serviceTypeId"/>
                     <span class="errorMsg" style="font-size:11px; color:red;"></span>
                 </div>
+                    </div>
+
+                    <div class="col-sm-4">
                 <div class="form-group">
                     <?php print $this->formLabel($serviceTypeName); ?>
                     <?php print $this->formElement($serviceTypeName); ?>
                     <?php print $this->formElementErrors()->render($serviceTypeName, ['class' => 'help-block']); ?>
                     <span class="errorMsg" style="font-size:11px; color:red;"></span>
                 </div>
+                    </div>
 
+                    <div class="col-sm-4">
                 <div class="form-group">
                     <?php print $this->formLabel($remarks); ?>
                     <?php print $this->formElement($remarks); ?>
                     <?php print $this->formElementErrors()->render($remarks, ['class' => 'help-block']); ?>
                 </div>
+                    </div>
+                </div>
+                
+
 
                 <?php
                 print $this->formSubmit($submit);

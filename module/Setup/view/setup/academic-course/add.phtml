@@ -33,7 +33,7 @@ $form->prepare();
     <?= $this->navigation('Zend\Navigation\academicCourse')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
 <div class="row margin-top-20">
-    <div class="col-sm-8 col-sm-offset-2">
+    <div class="col-sm-12">
         <div class="portlet box custom-box">
             <div class="portlet-title">
                 <div class="caption">
@@ -42,28 +42,46 @@ $form->prepare();
             </div>
             <div class="portlet-body">
                 <?php print $this->form()->openTag($form); ?>
+                
+                <div class=" row">
+                    <div class="col-sm-4">
                 <div class="form-group">
                     <?php print $this->formLabel($academicCourseCode); ?>
                     <?php print $this->formElement($academicCourseCode); ?>
                     <?php print $this->formElementErrors()->render($academicCourseCode, ['class' => 'help-block']); ?>
                     <span class="errorMsg" style="font-size:11px; color:red;"></span>
                 </div>
+                    </div>
+
+                    <div class="col-sm-4">
                 <div class="form-group">
                     <?php print $this->formLabel($academicCourseName); ?>
                     <?php print $this->formElement($academicCourseName); ?>
                     <?php print $this->formElementErrors()->render($academicCourseName, ['class' => 'help-block']); ?>
                     <span class="errorMsg" style="font-size:11px; color:red;"></span>
                 </div>
+                    </div>
+
+                    <div class="col-sm-4">
                 <div class="form-group">
                     <?php print $this->formLabel($academicProgramName); ?>
                     <?php print $this->formElement($academicProgramName); ?>
                     <?php print $this->formElementErrors()->render($academicProgramName, ['class' => 'help-block']); ?>
                 </div>
+                    </div>
+                </div>
+                
+                <div class=" row">
+                    <div class="col-sm-4">
                 <div class="form-group">
                     <?php print $this->formLabel($remarks); ?>
                     <?php print $this->formElement($remarks); ?>
                     <?php print $this->formElementErrors()->render($remarks, ['class' => 'help-block']); ?>
                 </div>
+                    </div>
+
+                </div>
+                
                 <?php
                 print $this->formSubmit($submit);
                 print $this->form()->closeTag();
