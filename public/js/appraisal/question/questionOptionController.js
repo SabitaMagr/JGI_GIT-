@@ -38,7 +38,7 @@ angular.module('hris', [])
                            var tempData = success.data;
                            var questionDetail = tempData.questionDetail
                            var questionOptionList = tempData.questionOptionList;
-                           var num = questionOptionList.length;
+                           var num = tempData.num;
                            console.log(questionDetail);
                            $scope.question.questionCode = questionDetail.QUESTION_CODE;
                            $scope.question.questionEdesc = questionDetail.QUESTION_EDESC;

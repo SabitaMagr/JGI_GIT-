@@ -1254,6 +1254,7 @@ class RestfulService extends AbstractRestfulController {
             'universityList' => $universityList,
             'programList' => $programList,
             'courseList' => $courseList,
+            'num'=>count($employeeQualificationList),
             'employeeQualificationList' => $employeeQualificationList
         ];
 
@@ -1271,9 +1272,11 @@ class RestfulService extends AbstractRestfulController {
         foreach ($result as $row) {
             array_push($experienceList, $row);
         }
+        $num = count($experienceList);
         return [
             "success" => true,
-            "data" => $experienceList
+            "data" => $experienceList,
+            "num"=>$num
         ];
     }
 
@@ -1285,9 +1288,11 @@ class RestfulService extends AbstractRestfulController {
         foreach ($result as $row) {
             array_push($trainingList, $row);
         }
+        $num = count($trainingList);
         return [
             'success' => true,
-            'data' => $trainingList
+            'data' => $trainingList,
+            'num'=>$num
         ];
     }
 

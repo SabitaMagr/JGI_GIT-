@@ -5,6 +5,15 @@
 //    });
 
     //$(selector).live( eventName, function(){} );
+    $(document).ready(function () {
+        var datepickerselect = function () {
+            $(".exList").each(function () {
+                var id = $(this).attr("id");
+                console.log(id);
+                window.app.startEndDatePicker('expfromDate_' + id, 'exptoDate_' + id);
+            });
+        }
+    });
 
     angular.module("hris", ['ui.bootstrap'])
             .controller('qualificationController', function ($scope, $uibModal, $log, $document,$window) {
@@ -36,7 +45,7 @@
                         $scope.programList = data.programList;
                         $scope.courseList = data.courseList;
                         $scope.employeeQualificationList = data.employeeQualificationList;
-                        var num = data.employeeQualificationList.length;
+                        var num = data.num;
                         if (num == 0) {
                             $scope.counter = 1;
                             $scope.qualificationFormList.push({
@@ -367,6 +376,9 @@
                     checkbox: "checkboxe0",
                     checked: false
                 };
+                $scope.addDatePicker = function (fromId,toId) {
+                    app.startEndDatePicker(fromId, toId);
+                }
                 if (employeeId !== 0) {
                     window.app.pullDataById(document.urlQualificationDtl, {
                         action: 'pullExperienceDetail',
@@ -376,11 +388,11 @@
                     }).then(function (success) {
                         $scope.$apply(function () {
                             var experienceList = success.data;
-                            var num = experienceList.length;
+                            var experienceNum = success.num;
                             console.log(experienceList);
-                            if (num > 0) {
-                                $scope.counterExperience = num;
-                                for (var j = 0; j < num; j++) {
+                            if (experienceNum > 0) {
+                                $scope.counterExperience = experienceNum;
+                                for (var j = 0; j < experienceNum; j++) {
                                     if (experienceList[j].ORGANIZATION_TYPE == 'Financial') {
                                         var organizationType = $scope.organizationType[0];
                                     } else if (experienceList[j].ORGANIZATION_TYPE == 'Non-Financial') {
@@ -397,12 +409,14 @@
                                         checkbox: "checkboxe" + j,
                                         checked: false
                                     }));
-                                    app.startEndDatePicker('expfromDate_checkboxe' + j, 'exptoDate_checkboxe'+ j);
+                                   // $scope.addDatePicker('expfromDate_checkboxe'+j, 'exptoDate_checkboxe'+j);
                                 }
                             } else {
                                 $scope.counterExperience = 1;
                                 $scope.experienceFormList.push(angular.copy($scope.experienceFormTemplate));
-                                app.startEndDatePicker('expfromDate_checkboxe0', 'exptoDate_checkboxe0');
+                                //$scope.$apply(function () {
+//                                    $scope.addDatePicker('expfromDate_checkboxe0', 'exptoDate_checkboxe0');
+                               // });
                             }
                         });
                     }, function (failure) {
@@ -411,6 +425,9 @@
                 } else {
                     $scope.counterExperience =1;
                     $scope.experienceFormList.push(angular.copy($scope.experienceFormTemplate));
+//                    $scope.$apply(function () {
+//                        app.startEndDatePicker('expfromDate_checkboxe0', 'exptoDate_checkboxe0');
+//                    });
                 }
 
                 $scope.addExperience = function () {
@@ -425,7 +442,10 @@
                         checked: false
                     }));
                     $scope.counterExperience++;
-                    $("select").select2();
+//                    $scope.$apply(function () {
+//                        $("select").select2();
+//                        app.startEndDatePicker('expfromDate_checkboxe'+$scope.counterExperience, 'exptoDate_checkboxe'+$scope.counterExperience);
+//                    });
                 };
                 $scope.deleteExperience = function () {
                     var tempE = 0;
@@ -503,11 +523,11 @@
                     }).then(function (success) {
                         $scope.$apply(function () {
                             var trainingList = success.data;
-                            var num = trainingList.length;
+                            var trainingNum = success.num;
                             console.log(trainingList);
-                            if (num > 0) {
-                                $scope.counterTraining = num;
-                                for (var j = 0; j < num; j++) {
+                            if (trainingNum > 0) {
+                                $scope.counterTraining = trainingNum;
+                                for (var j = 0; j < trainingNum; j++) {
                                     $scope.trainingFormList.push(angular.copy({
                                         id: trainingList[j].ID,
                                         trainingName: trainingList[j].TRAINING_NAME,

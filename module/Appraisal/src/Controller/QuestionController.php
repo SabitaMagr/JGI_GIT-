@@ -149,9 +149,11 @@ class QuestionController extends AbstractActionController{
                 array_push($questionOptionList, $questionOptionRow);
             }
             $response = [
-                "success"=>true,"data"=>[
+                "success"=>true,
+                "data"=>[
                 "questionDetail"=>$questionDetail,
-                "questionOptionList"=>$questionOptionList
+                "questionOptionList"=>$questionOptionList,
+                "num"=>count($questionOptionList)
             ]];
             return new CustomViewModel($response);
         }
