@@ -12,8 +12,11 @@ $parentDepartment = $form->get('parentDepartment');
 $departments1 = ["0" => "none"] + $departments;
 $parentDepartment->setValueOptions($departments1);
 
+$companyId = $form->get('companyId');
+$companyId->setValueOptions($company);
+
 $branchId = $form->get('branchId');
-$branchId->setValueOptions($branch);
+//$branchId->setValueOptions($branch);
 
 $countryId = $form->get('countryId');
 $countryId->setValueOptions($countries);
@@ -78,6 +81,15 @@ echo json_encode($menu);
                         </div>
                     </div>
                 </div>
+                
+                
+                        <div class="form-group">
+                            <?php print $this->formLabel($companyId); ?>
+                            <?php print $this->formElement($companyId); ?>
+                            <?php print $this->formElementErrors()->render($companyId, ['class' => 'help-block']); ?>
+                        </div>
+                
+                
 
                 <div class=" row">
 

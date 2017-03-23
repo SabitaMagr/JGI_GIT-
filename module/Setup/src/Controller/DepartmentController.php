@@ -7,6 +7,7 @@ use Application\Helper\Helper;
 use Setup\Form\DepartmentForm;
 use Setup\Helper\EntityHelper;
 use Setup\Model\Branch;
+use Setup\Model\Company;
 use Setup\Model\Department;
 use Setup\Repository\DepartmentRepository;
 use Zend\Authentication\AuthenticationService;
@@ -70,6 +71,7 @@ class DepartmentController extends AbstractActionController {
                         $this, [
                     'form' => $this->form,
                     'departments' => ApplicationEntityHelper::getTableKVListWithSortOption($this->adapter, Department::TABLE_NAME, Department::DEPARTMENT_ID, [Department::DEPARTMENT_NAME], ["STATUS" => "E"], "DEPARTMENT_NAME", "ASC"),
+                    'company' => ApplicationEntityHelper::getTableKVListWithSortOption($this->adapter, Company::TABLE_NAME, Company::COMPANY_ID, [Company::COMPANY_NAME], ["STATUS" => "E"], "COMPANY_NAME", "ASC"),
                     'branch' => ApplicationEntityHelper::getTableKVListWithSortOption($this->adapter, Branch::TABLE_NAME, Branch::BRANCH_ID, [Branch::BRANCH_NAME], ["STATUS" => "E"], "BRANCH_NAME", "ASC"),
                     'countries' => EntityHelper::getTableKVList($this->adapter, EntityHelper::HRIS_COUNTRIES)
                         ]
