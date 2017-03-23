@@ -6,10 +6,10 @@ use Application\Helper\EntityHelper as ApplicationHelper;
 use Application\Helper\EntityHelper as EntityHelper2;
 use Application\Helper\Helper;
 use Setup\Form\HrEmployeesFormTabEight;
+use Setup\Form\HrEmployeesFormTabSeven;
 use Setup\Form\HrEmployeesFormTabFive;
 use Setup\Form\HrEmployeesFormTabFour;
 use Setup\Form\HrEmployeesFormTabOne;
-use Setup\Form\HrEmployeesFormTabSeven;
 use Setup\Form\HrEmployeesFormTabSix;
 use Setup\Form\HrEmployeesFormTabThree;
 use Setup\Form\HrEmployeesFormTabTwo;
@@ -27,6 +27,8 @@ use Setup\Model\ServiceType;
 use Setup\Model\VdcMunicipalities;
 use Setup\Repository\EmployeeFile;
 use Setup\Repository\EmployeeQualificationRepository;
+use Setup\Repository\EmployeeExperienceRepository;
+use Setup\Repository\EmployeeTrainingRepository;
 use Setup\Repository\EmployeeRepository;
 use Setup\Repository\JobHistoryRepository;
 use Zend\Db\Adapter\AdapterInterface;
@@ -197,6 +199,7 @@ class EmployeeController extends AbstractActionController {
             'formFour' => $this->formFour,
             'formSix' => $this->formSix,
             'formSeven' => $this->formSeven,
+            'formEight'=>$this->formEight,
             "bloodGroups" => EntityHelper::getTableKVList($this->adapter, EntityHelper::HRIS_BLOOD_GROUPS),
             "districts" => EntityHelper::getTableKVList($this->adapter, EntityHelper::HRIS_DISTRICTS),
             "genders" => EntityHelper::getTableKVList($this->adapter, EntityHelper::HRIS_GENDERS),
@@ -328,13 +331,11 @@ class EmployeeController extends AbstractActionController {
                     break;
                 case 5:
                     break;
-
                 case 6:
-                    $this->formSix->setData($postData);
-
-                    if ($this->formSix->isValid()) {
-                        
-                    }
+                    break;
+                case 7:
+                    break;
+                case 8:
                     break;
             }
         }
@@ -395,6 +396,14 @@ class EmployeeController extends AbstractActionController {
             $formSixModel->exchangeArrayFromDB($employeeData);
             $this->formSix->bind($formSixModel);
         }
+        
+        if ($tab != 7 || !$request->isPost()) {
+            
+        }
+        
+        if ($tab != 8 || !$request->isPost()) {
+            
+        }
 
         $rankTypes = array(
             'GPA' => "GPA",
@@ -446,6 +455,8 @@ class EmployeeController extends AbstractActionController {
         $this->initializeForm();
         $request = $this->getRequest();
         $empQualificationRepo = new EmployeeQualificationRepository($this->adapter);
+        $empExperienceRepo = new EmployeeExperienceRepository($this->adapter);
+        $empTrainingRepo = new EmployeeTrainingRepository($this->adapter);
 
         $formOneModel = new HrEmployeesFormTabOne();
         $formTwoModel = new HrEmployeesFormTabTwo();
@@ -467,6 +478,8 @@ class EmployeeController extends AbstractActionController {
         $tempZoneDtl = $this->repository->getZoneDtl($tempDistrictDtl['ZONE_ID']);
 
         $empQualificationDtl = $empQualificationRepo->getByEmpId($id);
+        $empExperienceList = $empExperienceRepo->getByEmpId($id);
+        $empTrainingList = $empTrainingRepo->getByEmpId($id);
 
         return Helper::addFlashMessagesToArray($this, [
                     'formOne' => $this->formOne,
@@ -474,6 +487,8 @@ class EmployeeController extends AbstractActionController {
                     'formThree' => $this->formThree,
                     'formFour' => $this->formFour,
                     'formSix' => $this->formSix,
+                    "formSeven"=>$this->formSeven,
+                    'formEight'=>$this->formEight,
                     "id" => $id,
                     'profilePictureId' => $profilePictureId,
                     'employeeData' => $employeeData,
@@ -482,7 +497,9 @@ class EmployeeController extends AbstractActionController {
                     'perZoneName' => $perZoneDtl['ZONE_NAME'],
                     'tempDistrictName' => $tempDistrictDtl['DISTRICT_NAME'],
                     'tempZoneName' => $tempZoneDtl['ZONE_NAME'],
-                    'empQualificationList' => $empQualificationDtl
+                    'empQualificationList' => $empQualificationDtl,
+                    'empExperienceList'=>$empExperienceList,
+                    'empTrainingList'=>$empTrainingList
         ]);
     }
 

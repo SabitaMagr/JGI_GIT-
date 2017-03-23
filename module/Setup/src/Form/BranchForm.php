@@ -57,6 +57,15 @@ class BranchForm {
      * @Annotation\Attributes({ "id":"countryId","class":"form-control"})
      */
     public $countryId;
+    
+        /**
+     * @Annotation\Type("Zend\Form\Element\Select")
+     * @Annotation\Required(true)
+     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
+     * @Annotation\Options({"disable_inarray_validator":"true","label":"Company"})
+     * @Annotation\Attributes({ "id":"companyId","class":"form-control"})
+     */
+    public $companyId;
 
     /**
      * @Annotation\Type("Application\Custom\FormElement\Telephone")

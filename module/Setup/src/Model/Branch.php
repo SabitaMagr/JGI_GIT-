@@ -12,6 +12,7 @@ class Branch extends Model {
     const BRANCH_NAME = "BRANCH_NAME";
     const STREET_ADDRESS = "STREET_ADDRESS";
     const COUNTRY_ID = "COUNTRY_ID";
+    const COMPANY_ID = "COMPANY_ID";
     const TELEPHONE = "TELEPHONE";
     const FAX = "FAX";
     const EMAIL = "EMAIL";
@@ -27,6 +28,7 @@ class Branch extends Model {
     public $branchName;
     public $streetAddress;
     public $countryId;
+    public $companyId;
     public $telephone;
     public $fax;
     public $email;
@@ -42,6 +44,7 @@ class Branch extends Model {
         'branchName' => self::BRANCH_NAME,
         'streetAddress' => self::STREET_ADDRESS,
         'countryId' => self::COUNTRY_ID,
+        'companyId' => self::COMPANY_ID,
         'telephone' => self::TELEPHONE,
         'fax' => self::FAX,
         'email' => self::EMAIL,

@@ -70,7 +70,7 @@
             }, onNext: function (tab, navigation, index) {
                 console.log("Showing next tab");
                 if (typeof document.currentTab !== 'undefined') {
-                    if (index <= 4) {
+                    if (index <= 4 || index==7 || index==8) {
                         $('#btnform' + index).click();
                     } else if (index == 5) {
                         angular.element('#quaConId').scope().addQualification();
