@@ -15,6 +15,7 @@ use Application\Helper\Helper;
 use Setup\Form\BranchForm;
 use Setup\Helper\EntityHelper;
 use Setup\Model\Branch;
+use Setup\Model\Company;
 use Setup\Repository\BranchRepository;
 use Zend\Authentication\AuthenticationService;
 use Zend\Db\Adapter\AdapterInterface;
@@ -77,6 +78,7 @@ class BranchController extends AbstractActionController {
         return Helper::addFlashMessagesToArray($this, [
                     'form' => $this->form,
                     'countries' => EntityHelper::getTableKVList($this->adapter, EntityHelper::HRIS_COUNTRIES),
+                    'companies' => EntityHelper::getTableKVList($this->adapter, Company::TABLE_NAME),
                     'customRenderer' => Helper::renderCustomView()
                         ]
         );
@@ -107,6 +109,7 @@ class BranchController extends AbstractActionController {
                     'form' => $this->form,
                     'id' => $id,
                     'countries' => EntityHelper::getTableKVList($this->adapter, EntityHelper::HRIS_COUNTRIES),
+                    'companies' => EntityHelper::getTableKVList($this->adapter, Company::TABLE_NAME),
                     'customRenderer' => Helper::renderCustomView()
         ]);
     }

@@ -10,12 +10,16 @@ use Application\Helper\Helper;
 use Application\Helper\LoanAdvanceHelper;
 use Application\Model\Months;
 use Application\Repository\MonthRepository;
+use Appraisal\Repository\HeadingRepository;
+use Appraisal\Repository\QuestionRepository;
+use Asset\Repository\IssueRepository;
 use AttendanceManagement\Model\Attendance;
 use AttendanceManagement\Model\ShiftAssign;
 use AttendanceManagement\Model\ShiftSetup;
 use AttendanceManagement\Repository\AttendanceDetailRepository;
 use AttendanceManagement\Repository\AttendanceStatusRepository;
 use AttendanceManagement\Repository\ShiftAssignRepository;
+use Exception;
 use HolidayManagement\Repository\HolidayRepository;
 use LeaveManagement\Repository\LeaveBalanceRepository;
 use LeaveManagement\Repository\LeaveStatusRepository;
@@ -38,6 +42,7 @@ use Payroll\Repository\RulesDetailRepo;
 use Payroll\Repository\RulesRepository;
 use Payroll\Repository\SalarySheetRepo;
 use SelfService\Repository\AttendanceRequestRepository;
+use SelfService\Repository\HolidayRepository as SelfHolidayRepository;
 use SelfService\Repository\LeaveRequestRepository;
 use SelfService\Repository\ServiceRepository;
 use Setup\Model\EmployeeQualification;
@@ -62,21 +67,13 @@ use System\Repository\RoleSetupRepository;
 use Training\Model\TrainingAssign;
 use Training\Repository\TrainingAssignRepository;
 use Travel\Repository\TravelStatusRepository;
+use WorkOnDayoff\Repository\WorkOnDayoffStatusRepository;
+use WorkOnHoliday\Repository\WorkOnHolidayStatusRepository;
 use Zend\Authentication\AuthenticationService;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Adapter\Driver\ResultInterface;
 use Zend\Mvc\Controller\AbstractRestfulController;
 use Zend\View\Model\JsonModel;
-use SelfService\Repository\HolidayRepository as SelfHolidayRepository;
-use WorkOnDayoff\Repository\WorkOnDayoffStatusRepository;
-use WorkOnHoliday\Repository\WorkOnHolidayStatusRepository;
-use Appraisal\Repository\QuestionRepository;
-use Appraisal\Repository\HeadingRepository;
-use Asset\Repository\IssueRepository;
-use Setup\Repository\EmployeeExperienceRepository;
-use Setup\Model\EmployeeExperience;
-use Setup\Repository\EmployeeTrainingRepository;
-use Setup\Model\EmployeeTraining;
 
 class RestfulService extends AbstractRestfulController {
 
@@ -102,263 +99,260 @@ class RestfulService extends AbstractRestfulController {
 
         $responseData = [];
         $files = $request->getFiles()->toArray();
-        if (sizeof($files) > 0) {
-            $ext = pathinfo($files['file']['name'], PATHINFO_EXTENSION);
-            $fileName = pathinfo($files['file']['name'], PATHINFO_FILENAME);
-            $unique = Helper::generateUniqueName();
-            $newFileName = $unique . "." . $ext;
-            $success = move_uploaded_file($files['file']['tmp_name'], Helper::UPLOAD_DIR . "/" . $newFileName);
-            if ($success) {
-                $responseData = ["success" => true, "data" => ["fileName" => $newFileName, "oldFileName" => $fileName . "." . $ext]];
+        try {
+            if (sizeof($files) > 0) {
+                $ext = pathinfo($files['file']['name'], PATHINFO_EXTENSION);
+                $fileName = pathinfo($files['file']['name'], PATHINFO_FILENAME);
+                $unique = Helper::generateUniqueName();
+                $newFileName = $unique . "." . $ext;
+                $success = move_uploaded_file($files['file']['tmp_name'], Helper::UPLOAD_DIR . "/" . $newFileName);
+                if ($success) {
+                    $responseData = ["success" => true, "data" => ["fileName" => $newFileName, "oldFileName" => $fileName . "." . $ext]];
+                }
+            } else if ($request->isPost()) {
+                $postedData = $request->getPost();
+                if ($postedData == null) {
+                    throw new Exception("request is not defined");
+                }
+
+                if (!isset($postedData->action) || $postedData->action == null || empty($postedData->action)) {
+                    throw new Exception("action not defined");
+                }
+
+                switch ($postedData->action) {
+                    case "pullEmployeeForShiftAssign":
+                        $responseData = $this->pullEmployeeForShiftAssign($postedData->id);
+                        break;
+
+                    case "pullEmployeeForRecomApproverAssign":
+                        $responseData = $this->pullEmployeeForRecomApproverAssign($postedData->data);
+                        break;
+                    case "assignEmployeeReportingHierarchy":
+                        $responseData = $this->assignEmployeeReportingHierarchy($postedData->data);
+                        break;
+                    case "assignEmployeeTraining":
+                        $responseData = $this->assignEmployeeTraining($postedData->data);
+                        break;
+                    case "cancelEmployeeTraining":
+                        $responseData = $this->cancelEmployeeTraining($postedData->data);
+                        break;
+                    case "assignEmployeeShift":
+                        $responseData = $this->assignEmployeeShift($postedData->data);
+                        break;
+
+                    case "pullEmployeeMonthlyValue":
+                        $responseData = $this->pullEmployeeMonthlyValue($postedData->id);
+                        break;
+                    case "pushEmployeeMonthlyValue":
+                        $responseData = $this->pushEmployeeMonthlyValue($postedData->id);
+                        break;
+
+                    case "pullEmployeeFlatValue":
+                        $responseData = $this->pullEmployeeFlatValue($postedData->id);
+                        break;
+                    case "pushEmployeeFlatValue":
+                        $responseData = $this->pushEmployeeFlatValue($postedData->id);
+                        break;
+                    case "pushRule":
+                        $responseData = $this->pushRule($postedData->data);
+                        break;
+                    case "pullRule":
+                        $responseData = $this->pullRule($postedData->data);
+                        break;
+                    case "pushRuleDetail":
+                        $responseData = $this->pushRuleDetail($postedData->data);
+                        break;
+                    case "pullRuleDetailByPayId":
+                        $responseData = $this->pullRuleDetailByPayId($postedData->data);
+                        break;
+                    case "menu":
+                        $responseData = $this->menu();
+                        break;
+                    case "menuInsertion":
+                        $responseData = $this->menuInsertion($postedData->data);
+                        break;
+                    case "headingList":
+                        $responseData = $this->headingList();
+                        break;
+
+                    case "menuUpdate":
+                        $responseData = $this->menuUpdate($postedData->data);
+                        break;
+                    case "pullEmployeeListForReportingRole":
+                        $responseData = $this->pullEmployeeListForReportingRole($postedData->data);
+                        break;
+                    case "pullEmployeeForTrainingAssign":
+                        $responseData = $this->pullEmployeeForTrainingAssign($postedData->data);
+                        break;
+                    case "pullTrainingAssignList":
+                        $responseData = $this->pullTrainingAssignList($postedData->data);
+                        break;
+                    case "pullMenuDetail":
+                        $responseData = $this->pullMenuDetail($postedData->data);
+                        break;
+                    case "permissionAssign":
+                        $responseData = $this->permissionAssign($postedData->data);
+                        break;
+                    case "pullRolePermissionList":
+                        $responseData = $this->pullRolePermissionList($postedData->data);
+                        break;
+                    case "pullServiceHistory":
+                        $responseData = $this->pullServiceHistory($postedData->data);
+                        break;
+                    case "pullLeaveBalanceDetail":
+                        $responseData = $this->pullLeaveBalanceDetail($postedData->data);
+                        break;
+                    case "pullHolidayList":
+                        $responseData = $this->pullHolidayList($postedData->data);
+                        break;
+                    case "pullPositionsAssignedByPayId":
+                        $responseData = $this->pullPositionsAssignedByPayId($postedData->data);
+                        break;
+                    case "addPositionAssigned":
+                        $responseData = $this->addPositionAssigned($postedData->data);
+                        break;
+                    case "deletePositionAssigned":
+                        $responseData = $this->deletePositionAssigned($postedData->data);
+                        break;
+                    case "generataMonthlySheet":
+                        $responseData = $this->generataMonthlySheet($postedData->data);
+                        break;
+                    case "pullAcademicDetail":
+                        $responseData = $this->pullAcademicDetail($postedData->data);
+                        break;
+                    case "submitQualificationDtl":
+                        $responseData = $this->submitQualificationDtl($postedData->data);
+                        break;
+                    case "deleteQualificationDtl":
+                        $responseData = $this->deleteQualificationDtl($postedData->data);
+                        break;
+                    case "pullEmployeeDetailById":
+                        $responseData = $this->pullEmployeeDetailById($postedData->data);
+                        break;
+                    case "pullEmployeeById":
+                        $responseData = $this->pullEmployeeById($postedData->data);
+                        break;
+                    case "pullFileTypeList":
+                        $responseData = $this->pullFileTypeList();
+                        break;
+                    case "fetchRoleDashboards":
+                        $responseData = $this->fetchRoleDashboards($postedData->data);
+                        break;
+                    case "assignDashboard":
+                        $responseData = $this->assignDashboard($postedData->data);
+                        break;
+                    case "pullEmployeeList":
+                        $responseData = $this->pullEmployeeList($postedData->data);
+                        break;
+                    case "updateDashboardAssign":
+                        $responseData = $this->updateDashboardAssign($postedData->data);
+                        break;
+                    case "menuDelete":
+                        $responseData = $this->menuDelete($postedData->data);
+                        break;
+                    case "pullEmployeeFile":
+                        $responseData = $this->pullEmployeeFile($postedData->data);
+                        break;
+                    case "pushEmployeeProfile":
+                        $responseData = $this->pushEmployeeProfile($postedData->data);
+                        break;
+                    case "pushEmployeeDocument":
+                        $responseData = $this->pushEmployeeDocument($postedData->data);
+                        break;
+                    case "pullEmployeeFileByEmpId":
+                        $responseData = $this->pullEmployeeFileByEmpId($postedData->data);
+                        break;
+                    case "dropEmployeeFile":
+                        $responseData = $this->dropEmployeeFile($postedData->data);
+                        break;
+                    case "pullEmployeeListForEmployeeTable":
+                        $responseData = $this->pullEmployeeListForEmployeeTable($postedData->data);
+                        break;
+                    case "pullJobHistoryList":
+                        $responseData = $this->pullJobHistoryList($postedData->data);
+                        break;
+                    case 'pullLeaveRequestStatusList':
+                        $responseData = $this->pullLeaveRequestStatusList($postedData->data);
+                        break;
+                    case "pullLoanRequestStatusList":
+                        $responseData = $this->pullLoanRequestStatusList($postedData->data);
+                        break;
+                    case "pullTravelRequestStatusList":
+                        $responseData = $this->pullTravelRequestStatusList($postedData->data);
+                        break;
+                    case "pullAdvanceRequestStatusList":
+                        $responseData = $this->pullAdvanceRequestStatusList($postedData->data);
+                        break;
+                    case 'pullAttendanceRequestStatusList':
+                        $responseData = $this->pullAttendanceRequestStatusList($postedData->data);
+                        break;
+                    case 'pullLeaveRequestList':
+                        $responseData = $this->pullLeaveRequestList($postedData->data);
+                        break;
+                    case 'pullAttendanceRequestList':
+                        $responseData = $this->pullAttendanceRequestList($postedData->data);
+                        break;
+                    case "checkUniqueConstraint":
+                        $responseData = $this->checkUniqueConstraint($postedData->data);
+                        break;
+                    case "pullMonthsByFiscalYear":
+                        $responseData = $this->pullMonthsByFiscalYear($postedData->data);
+                        break;
+                    case "deleteContent":
+                        $responseData = $this->deleteContent($postedData->data);
+                        break;
+                    case "pullPayRollGeneratedMonths":
+                        $responseData = $this->pullPayRollGeneratedMonths($postedData->data);
+                        break;
+                    case "fetchEmployeePaySlip":
+                        $responseData = $this->fetchEmployeePaySlip($postedData->data);
+                        break;
+                    case "pullAttendanceList":
+                        $responseData = $this->pullAttendanceList($postedData->data);
+                        break;
+                    case "employeeAttendanceApi":
+                        $responseData = $this->employeeAttendanceApi($postedData);
+                        break;
+                    case "pullLoanList":
+                        $responseData = $this->pullLoanList($postedData->data);
+                        break;
+                    case "pullAdvanceList":
+                        $responseData = $this->pullAdvanceList($postedData->data);
+                        break;
+                    case "checkAdvanceRestriction":
+                        $responseData = $this->checkAdvanceRestriction($postedData->data);
+                        break;
+                    case "pullAdvanceDetailByEmpId":
+                        $responseData = $this->pullAdvanceDetailByEmpId($postedData->data);
+                        break;
+                    case "pullHolidaysForEmployee":
+                        $responseData = $this->pullHolidaysForEmployee($postedData->data);
+                        break;
+                    case "pullDayoffWorkRequestStatusList":
+                        $responseData = $this->pullDayoffWorkRequestStatusList($postedData->data);
+                        break;
+                    case "pullHoliayWorkRequestStatusList":
+                        $responseData = $this->pullHoliayWorkRequestStatusList($postedData->data);
+                        break;
+                    case "pullAssetBalance":
+                        $responseData = $this->pullAssetBalance($postedData->id);
+                        break;
+
+                    default:
+                        throw new Exception("action not found");
+                        break;
+                }
+            } else {
+                $responseData = [
+                    "success" => false
+                ];
             }
-        } else if ($request->isPost()) {
-            $postedData = $request->getPost();
-            switch ($postedData->action) {
-                case "pullEmployeeForShiftAssign":
-                    $responseData = $this->pullEmployeeForShiftAssign($postedData->id);
-                    break;
-
-                case "pullEmployeeForRecomApproverAssign":
-                    $responseData = $this->pullEmployeeForRecomApproverAssign($postedData->data);
-                    break;
-                case "assignEmployeeReportingHierarchy":
-                    $responseData = $this->assignEmployeeReportingHierarchy($postedData->data);
-                    break;
-                case "assignEmployeeTraining":
-                    $responseData = $this->assignEmployeeTraining($postedData->data);
-                    break;
-                case "cancelEmployeeTraining":
-                    $responseData = $this->cancelEmployeeTraining($postedData->data);
-                    break;
-                case "assignEmployeeShift":
-                    $responseData = $this->assignEmployeeShift($postedData->data);
-                    break;
-
-                case "pullEmployeeMonthlyValue":
-                    $responseData = $this->pullEmployeeMonthlyValue($postedData->id);
-                    break;
-                case "pushEmployeeMonthlyValue":
-                    $responseData = $this->pushEmployeeMonthlyValue($postedData->id);
-                    break;
-
-                case "pullEmployeeFlatValue":
-                    $responseData = $this->pullEmployeeFlatValue($postedData->id);
-                    break;
-                case "pushEmployeeFlatValue":
-                    $responseData = $this->pushEmployeeFlatValue($postedData->id);
-                    break;
-                case "pushRule":
-                    $responseData = $this->pushRule($postedData->data);
-                    break;
-                case "pullRule":
-                    $responseData = $this->pullRule($postedData->data);
-                    break;
-                case "pushRuleDetail":
-                    $responseData = $this->pushRuleDetail($postedData->data);
-                    break;
-                case "pullRuleDetailByPayId":
-                    $responseData = $this->pullRuleDetailByPayId($postedData->data);
-                    break;
-                case "menu":
-                    $responseData = $this->menu();
-                    break;
-                case "menuInsertion":
-                    $responseData = $this->menuInsertion($postedData->data);
-                    break;
-                case "headingList":
-                    $responseData = $this->headingList();
-                    break;
-
-                case "menuUpdate":
-                    $responseData = $this->menuUpdate($postedData->data);
-                    break;
-                case "pullEmployeeListForReportingRole":
-                    $responseData = $this->pullEmployeeListForReportingRole($postedData->data);
-                    break;
-                case "pullEmployeeForTrainingAssign":
-                    $responseData = $this->pullEmployeeForTrainingAssign($postedData->data);
-                    break;
-                case "pullTrainingAssignList":
-                    $responseData = $this->pullTrainingAssignList($postedData->data);
-                    break;
-                case "pullMenuDetail":
-                    $responseData = $this->pullMenuDetail($postedData->data);
-                    break;
-                case "permissionAssign":
-                    $responseData = $this->permissionAssign($postedData->data);
-                    break;
-                case "pullRolePermissionList":
-                    $responseData = $this->pullRolePermissionList($postedData->data);
-                    break;
-                case "pullServiceHistory":
-                    $responseData = $this->pullServiceHistory($postedData->data);
-                    break;
-                case "pullLeaveBalanceDetail":
-                    $responseData = $this->pullLeaveBalanceDetail($postedData->data);
-                    break;
-                case "pullHolidayList":
-                    $responseData = $this->pullHolidayList($postedData->data);
-                    break;
-                case "pullPositionsAssignedByPayId":
-                    $responseData = $this->pullPositionsAssignedByPayId($postedData->data);
-                    break;
-                case "addPositionAssigned":
-                    $responseData = $this->addPositionAssigned($postedData->data);
-                    break;
-                case "deletePositionAssigned":
-                    $responseData = $this->deletePositionAssigned($postedData->data);
-                    break;
-                case "generataMonthlySheet":
-                    $responseData = $this->generataMonthlySheet($postedData->data);
-                    break;
-                case "pullAcademicDetail":
-                    $responseData = $this->pullAcademicDetail($postedData->data);
-                    break;
-                case "pullExperienceDetail":
-                    $responseData = $this->pullExperienceDetail($postedData->data);
-                    break;
-                case "pullTrainingDetail":
-                    $responseData = $this->pullTrainingDetail($postedData->data);
-                    break;
-                case "submitQualificationDtl":
-                    $responseData = $this->submitQualificationDtl($postedData->data);
-                    break;
-                case "submitExperienceDtl":
-                    $responseData = $this->submitExperienceDtl($postedData->data);
-                    break;
-                case "submitTrainingDtl":
-                    $responseData = $this->submitTrainingDtl($postedData->data);
-                    break;
-                case "deleteQualificationDtl":
-                    $responseData = $this->deleteQualificationDtl($postedData->data);
-                    break;
-                case "deleteExperienceDtl":
-                    $responseData = $this->deleteExperienceDtl($postedData->data);
-                    break;
-                case "deleteTrainingDtl":
-                    $responseData = $this->deleteTrainingDtl($postedData->data);
-                    break;
-                case "pullEmployeeDetailById":
-                    $responseData = $this->pullEmployeeDetailById($postedData->data);
-                    break;
-                case "pullEmployeeById":
-                    $responseData = $this->pullEmployeeById($postedData->data);
-                    break;
-                case "pullFileTypeList":
-                    $responseData = $this->pullFileTypeList();
-                    break;
-                case "fetchRoleDashboards":
-                    $responseData = $this->fetchRoleDashboards($postedData->data);
-                    break;
-                case "assignDashboard":
-                    $responseData = $this->assignDashboard($postedData->data);
-                    break;
-                case "pullEmployeeList":
-                    $responseData = $this->pullEmployeeList($postedData->data);
-                    break;
-                case "updateDashboardAssign":
-                    $responseData = $this->updateDashboardAssign($postedData->data);
-                    break;
-                case "menuDelete":
-                    $responseData = $this->menuDelete($postedData->data);
-                    break;
-                case "pullEmployeeFile":
-                    $responseData = $this->pullEmployeeFile($postedData->data);
-                    break;
-                case "pushEmployeeProfile":
-                    $responseData = $this->pushEmployeeProfile($postedData->data);
-                    break;
-                case "pushEmployeeDocument":
-                    $responseData = $this->pushEmployeeDocument($postedData->data);
-                    break;
-                case "pullEmployeeFileByEmpId":
-                    $responseData = $this->pullEmployeeFileByEmpId($postedData->data);
-                    break;
-                case "dropEmployeeFile":
-                    $responseData = $this->dropEmployeeFile($postedData->data);
-                    break;
-                case "pullEmployeeListForEmployeeTable":
-                    $responseData = $this->pullEmployeeListForEmployeeTable($postedData->data);
-                    break;
-                case "pullJobHistoryList":
-                    $responseData = $this->pullJobHistoryList($postedData->data);
-                    break;
-                case 'pullLeaveRequestStatusList':
-                    $responseData = $this->pullLeaveRequestStatusList($postedData->data);
-                    break;
-                case "pullLoanRequestStatusList":
-                    $responseData = $this->pullLoanRequestStatusList($postedData->data);
-                    break;
-                case "pullTravelRequestStatusList":
-                    $responseData = $this->pullTravelRequestStatusList($postedData->data);
-                    break;
-                case "pullAdvanceRequestStatusList":
-                    $responseData = $this->pullAdvanceRequestStatusList($postedData->data);
-                    break;
-                case 'pullAttendanceRequestStatusList':
-                    $responseData = $this->pullAttendanceRequestStatusList($postedData->data);
-                    break;
-                case 'pullLeaveRequestList':
-                    $responseData = $this->pullLeaveRequestList($postedData->data);
-                    break;
-                case 'pullAttendanceRequestList':
-                    $responseData = $this->pullAttendanceRequestList($postedData->data);
-                    break;
-                case "checkUniqueConstraint":
-                    $responseData = $this->checkUniqueConstraint($postedData->data);
-                    break;
-                case "pullMonthsByFiscalYear":
-                    $responseData = $this->pullMonthsByFiscalYear($postedData->data);
-                    break;
-                case "deleteContent":
-                    $responseData = $this->deleteContent($postedData->data);
-                    break;
-                case "pullPayRollGeneratedMonths":
-                    $responseData = $this->pullPayRollGeneratedMonths($postedData->data);
-                    break;
-                case "fetchEmployeePaySlip":
-                    $responseData = $this->fetchEmployeePaySlip($postedData->data);
-                    break;
-                case "pullAttendanceList":
-                    $responseData = $this->pullAttendanceList($postedData->data);
-                    break;
-                case "employeeAttendanceApi":
-                    $responseData = $this->employeeAttendanceApi($postedData);
-                    break;
-                case "pullLoanList":
-                    $responseData = $this->pullLoanList($postedData->data);
-                    break;
-                case "pullAdvanceList":
-                    $responseData = $this->pullAdvanceList($postedData->data);
-                    break;
-                case "checkAdvanceRestriction":
-                    $responseData = $this->checkAdvanceRestriction($postedData->data);
-                    break;
-                case "pullAdvanceDetailByEmpId":
-                    $responseData = $this->pullAdvanceDetailByEmpId($postedData->data);
-                    break;
-                case "pullHolidaysForEmployee":
-                    $responseData = $this->pullHolidaysForEmployee($postedData->data);
-                    break;
-                case "pullDayoffWorkRequestStatusList":
-                    $responseData = $this->pullDayoffWorkRequestStatusList($postedData->data);
-                    break;
-                case "pullHoliayWorkRequestStatusList":
-                    $responseData = $this->pullHoliayWorkRequestStatusList($postedData->data);
-                    break;
-                case "pullAssetBalance":
-                    $responseData = $this->pullAssetBalance($postedData->id);
-                    break;
-
-                default:
-                    $responseData = [
-                        "success" => false
-                    ];
-                    break;
-            }
-        } else {
+        } catch (Exception $e) {
             $responseData = [
-                "success" => false
+                "success" => false,
+                "message" => $e->getMessage(),
+                "traceAsString" => $e->getTraceAsString(),
+                "line" => $e->getLine()
             ];
         }
         return new JsonModel(['data' => $responseData]);
@@ -647,23 +641,22 @@ class RestfulService extends AbstractRestfulController {
             return false;
         }
     }
-    
-    
-    public function generateQuestion($headingId){
+
+    public function generateQuestion($headingId) {
         $questionRepo = new QuestionRepository($this->adapter);
         $result = $questionRepo->fetchByHeadingId($headingId);
         $questionList = array();
-        foreach($result as $row){
+        foreach ($result as $row) {
             $questionList[] = array(
-                    "text" => $row['QUESTION_EDESC'],
-                    "id" => $row['QUESTION_ID'],
-                    "icon" => "fa fa-folder icon-state-success"
-                );
+                "text" => $row['QUESTION_EDESC'],
+                "id" => $row['QUESTION_ID'],
+                "icon" => "fa fa-folder icon-state-success"
+            );
         }
         return $questionList;
     }
-    
-    public function headingsList(){
+
+    public function headingsList() {
         $headingRepo = new HeadingRepository($this->adapter);
         $result = $headingRepo->fetchAll();
         $num = count($result);
@@ -765,9 +758,9 @@ class RestfulService extends AbstractRestfulController {
 //            $menuIndexErr = "Menu Index Already Exist!!!";
 //            $data = "";
 //        } else {
-            $menuIndexErr = "";
-            $repository->edit($model, $menuId);
-            $data = "Menu Successfully Updated!!";
+        $menuIndexErr = "";
+        $repository->edit($model, $menuId);
+        $data = "Menu Successfully Updated!!";
 //        }
         $menuData = $this->menu();
         return $responseData = [
@@ -1269,13 +1262,13 @@ class RestfulService extends AbstractRestfulController {
             'data' => $data
         ];
     }
-    
-    public function pullExperienceDetail($data){
+
+    public function pullExperienceDetail($data) {
         $repository = new EmployeeExperienceRepository($this->adapter);
         $experienceList = [];
-        $employeeId = (int)$data['employeeId'];
+        $employeeId = (int) $data['employeeId'];
         $result = $repository->getByEmpId($employeeId);
-        foreach($result as $row){
+        foreach ($result as $row) {
             array_push($experienceList, $row);
         }
         return [
@@ -1283,17 +1276,18 @@ class RestfulService extends AbstractRestfulController {
             "data" => $experienceList
         ];
     }
-    public function pullTrainingDetail($data){
+
+    public function pullTrainingDetail($data) {
         $repository = new EmployeeTrainingRepository($this->adapter);
         $trainingList = [];
-        $employeeId = (int)$data['employeeId'];
+        $employeeId = (int) $data['employeeId'];
         $result = $repository->getByEmpId($employeeId);
-        foreach($result as $row){
-            array_push($trainingList,$row);
+        foreach ($result as $row) {
+            array_push($trainingList, $row);
         }
         return [
-            'success'=>true,
-            'data'=>$trainingList
+            'success' => true,
+            'data' => $trainingList
         ];
     }
 
@@ -1337,20 +1331,20 @@ class RestfulService extends AbstractRestfulController {
             "data" => "Qualification Detail Successfully Added"
         ];
     }
-    
-    public function submitExperienceDtl($data){
-        $experienceListEmpty = (int)$data['experienceListEmpty'];
-        $employeeId =(int)$data['employeeId'];
+
+    public function submitExperienceDtl($data) {
+        $experienceListEmpty = (int) $data['experienceListEmpty'];
+        $employeeId = (int) $data['employeeId'];
         $experienceList = $data['experienceList'];
-        
+
         $employeeRepo = new EmployeeRepository($this->adapter);
         $employeeExperienceRepo = new EmployeeExperienceRepository($this->adapter);
-        $employeeDetail = $employeeRepo->fetchById((int)$this->loggedIdEmployeeId);
-        
-        if($experienceListEmpty==1){
-            foreach($experienceList as $experience){
+        $employeeDetail = $employeeRepo->fetchById((int) $this->loggedIdEmployeeId);
+
+        if ($experienceListEmpty == 1) {
+            foreach ($experienceList as $experience) {
                 $employeeExperienceModel = new EmployeeExperience();
-                $employeeExperienceModel->employeeId = (int)$employeeId;
+                $employeeExperienceModel->employeeId = (int) $employeeId;
                 $employeeExperienceModel->status = 'E';
                 $employeeExperienceModel->organizationType = $experience['organizationTypeId']['id'];
                 $employeeExperienceModel->organizationName = $experience['organizationName'];
@@ -1358,19 +1352,19 @@ class RestfulService extends AbstractRestfulController {
                 $employeeExperienceModel->toDate = $experience['toDate'];
                 $employeeExperienceModel->position = $experience['position'];
 
-                $id = (int)$experience['id'];
-                if($id==0){
-                    $employeeExperienceModel->id = (int)(Helper::getMaxId($this->adapter, EmployeeExperience::TABLE_NAME, EmployeeExperience::ID))+1;
-                    $employeeExperienceModel->createdBy = (int)$this->loggedIdEmployeeId;
+                $id = (int) $experience['id'];
+                if ($id == 0) {
+                    $employeeExperienceModel->id = (int) (Helper::getMaxId($this->adapter, EmployeeExperience::TABLE_NAME, EmployeeExperience::ID)) + 1;
+                    $employeeExperienceModel->createdBy = (int) $this->loggedIdEmployeeId;
                     $employeeExperienceModel->createdDate = Helper::getcurrentExpressionDate();
                     $employeeExperienceModel->approvedDate = Helper::getcurrentExpressionDate();
-                    $employeeExperienceModel->companyId = (int)$employeeDetail['COMPANY_ID'];
-                    $employeeExperienceModel->branchId = (int)$employeeDetail['BRANCH_ID'];
+                    $employeeExperienceModel->companyId = (int) $employeeDetail['COMPANY_ID'];
+                    $employeeExperienceModel->branchId = (int) $employeeDetail['BRANCH_ID'];
                     $employeeExperienceRepo->add($employeeExperienceModel);
-                }else{
-                    $employeeExperienceModel->modifiedBy = (int)$this->loggedIdEmployeeId;
+                } else {
+                    $employeeExperienceModel->modifiedBy = (int) $this->loggedIdEmployeeId;
                     $employeeExperienceModel->modifiedDate = Helper::getcurrentExpressionDate();
-                    $employeeExperienceRepo->edit($employeeExperienceModel,$id);
+                    $employeeExperienceRepo->edit($employeeExperienceModel, $id);
                 }
             }
         }
@@ -1379,18 +1373,18 @@ class RestfulService extends AbstractRestfulController {
             "data" => "Employee Experience Detail Successfully Added"
         ];
     }
-    
-    public function submitTrainingDtl($data){
+
+    public function submitTrainingDtl($data) {
         $trainingListEmpty = $data['trainingListEmpty'];
-        $employeeId =(int)$data['employeeId'];
+        $employeeId = (int) $data['employeeId'];
         $trainingList = $data['trainingList'];
-        
+
         $employeeRepo = new EmployeeRepository($this->adapter);
         $employeeTrainingRepo = new EmployeeTrainingRepository($this->adapter);
         $employeeDetail = $employeeRepo->fetchById($this->loggedIdEmployeeId);
-        
-        if($trainingListEmpty==1){
-            foreach($trainingList as $training){
+
+        if ($trainingListEmpty == 1) {
+            foreach ($trainingList as $training) {
                 $employeeTrainingModel = new EmployeeTraining();
                 $employeeTrainingModel->employeeId = $employeeId;
                 $employeeTrainingModel->status = 'E';
@@ -1399,19 +1393,19 @@ class RestfulService extends AbstractRestfulController {
                 $employeeTrainingModel->fromDate = $training['fromDate'];
                 $employeeTrainingModel->toDate = $training['toDate'];
 
-                $id = (int)$training['id'];
-                if($id==0){
-                    $employeeTrainingModel->id = ((int)Helper::getMaxId($this->adapter, EmployeeTraining::TABLE_NAME, EmployeeTraining::ID))+1;
-                    $employeeTrainingModel->createdBy = (int)$this->loggedIdEmployeeId;
+                $id = (int) $training['id'];
+                if ($id == 0) {
+                    $employeeTrainingModel->id = ((int) Helper::getMaxId($this->adapter, EmployeeTraining::TABLE_NAME, EmployeeTraining::ID)) + 1;
+                    $employeeTrainingModel->createdBy = (int) $this->loggedIdEmployeeId;
                     $employeeTrainingModel->createdDate = Helper::getcurrentExpressionDate();
                     $employeeTrainingModel->approvedDate = Helper::getcurrentExpressionDate();
-                    $employeeTrainingModel->companyId = (int)$employeeDetail['COMPANY_ID'];
-                    $employeeTrainingModel->branchId = (int)$employeeDetail['BRANCH_ID'];
+                    $employeeTrainingModel->companyId = (int) $employeeDetail['COMPANY_ID'];
+                    $employeeTrainingModel->branchId = (int) $employeeDetail['BRANCH_ID'];
                     $employeeTrainingRepo->add($employeeTrainingModel);
-                }else{
-                    $employeeTrainingModel->modifiedBy = (int)$this->loggedIdEmployeeId;
+                } else {
+                    $employeeTrainingModel->modifiedBy = (int) $this->loggedIdEmployeeId;
                     $employeeTrainingModel->modifiedDate = Helper::getcurrentExpressionDate();
-                    $employeeTrainingRepo->edit($employeeTrainingModel,$id);
+                    $employeeTrainingRepo->edit($employeeTrainingModel, $id);
                 }
             }
         }
@@ -1430,7 +1424,8 @@ class RestfulService extends AbstractRestfulController {
             "data" => "Qualification Detail Successfully Removed"
         ];
     }
-    public function deleteExperienceDtl($data){
+
+    public function deleteExperienceDtl($data) {
         $id = $data['id'];
         $repository = new EmployeeExperienceRepository($this->adapter);
         $repository->delete($id);
@@ -1439,9 +1434,9 @@ class RestfulService extends AbstractRestfulController {
             "data" => "Experience Detail Successfully Removed"
         ];
     }
-    
-    public function deleteTrainingDtl($data){
-        $id = (int)$data['id'];
+
+    public function deleteTrainingDtl($data) {
+        $id = (int) $data['id'];
         $repository = new EmployeeTrainingRepository($this->adapter);
         $repository->delete($id);
         return[
@@ -1935,12 +1930,12 @@ class RestfulService extends AbstractRestfulController {
                 return "Cancelled";
             }
         };
-        $getRequestType = function($requestType){
-            if($requestType=='ad'){
+        $getRequestType = function($requestType) {
+            if ($requestType == 'ad') {
                 return "Advance";
-            }else if($requestType=='ep'){
+            } else if ($requestType == 'ep') {
                 return "Expense";
-            }else{
+            } else {
                 return "";
             }
         };
@@ -1970,7 +1965,7 @@ class RestfulService extends AbstractRestfulController {
                 $role['YOUR_ROLE'] = 'Recommender\Approver';
                 $role['ROLE'] = 4;
             }
-            $new_row = array_merge($row, ['STATUS' => $status,'REQUESTED_TYPE'=>$getRequestType($row['REQUESTED_TYPE'])]);
+            $new_row = array_merge($row, ['STATUS' => $status, 'REQUESTED_TYPE' => $getRequestType($row['REQUESTED_TYPE'])]);
             $final_record = array_merge($new_row, $role);
             array_push($recordList, $final_record);
         }
@@ -2253,18 +2248,18 @@ class RestfulService extends AbstractRestfulController {
         $tableName = $data['tableName'];
         $columnsWidValues = $data['columnsWidValues'];
         $selfId = $data['selfId'];
-        if($selfId!='R'){
+        if ($selfId != 'R') {
             $selfId1 = $selfId;
-            $requestTbl=0;
-        }else if($selfId=='R'){
-            $requestTbl=1;
-            $selfId1=0;
+            $requestTbl = 0;
+        } else if ($selfId == 'R') {
+            $requestTbl = 1;
+            $selfId1 = 0;
         }
         $checkColumnName = $data['checkColumnName'];
-        $result = ConstraintHelper::checkUniqueConstraint($this->adapter, $tableName, $columnsWidValues, $checkColumnName, $selfId1,$requestTbl);
+        $result = ConstraintHelper::checkUniqueConstraint($this->adapter, $tableName, $columnsWidValues, $checkColumnName, $selfId1, $requestTbl);
         return [
             "success" => "true",
-            "data" => (int)$result,
+            "data" => (int) $result,
             "msg" => "* Already Exist!!!"
         ];
     }
@@ -2354,23 +2349,22 @@ class RestfulService extends AbstractRestfulController {
             if ($recommedApproverList != null) {
                 $middleNameR = ($recommedApproverList['MIDDLE_NAME_R'] != null) ? " " . $recommedApproverList['MIDDLE_NAME_R'] . " " : " ";
                 $middleNameA = ($recommedApproverList['MIDDLE_NAME_A'] != null) ? " " . $recommedApproverList['MIDDLE_NAME_A'] . " " : " ";
-                
-                if($recommedApproverList['RETIRED_R']!='Y' && $recommedApproverList['STATUS_R']!='D'){
+
+                if ($recommedApproverList['RETIRED_R'] != 'Y' && $recommedApproverList['STATUS_R'] != 'D') {
                     $employeeRow['RECOMMENDER_NAME'] = $recommedApproverList['FIRST_NAME_R'] . $middleNameR . $recommedApproverList['LAST_NAME_R'];
-                }else{
+                } else {
                     $employeeRow['RECOMMENDER_NAME'] = "";
                 }
-                if($recommedApproverList['RETIRED_A']!='Y' && $recommedApproverList['STATUS_A']!='D'){
+                if ($recommedApproverList['RETIRED_A'] != 'Y' && $recommedApproverList['STATUS_A'] != 'D') {
                     $employeeRow['APPROVER_NAME'] = $recommedApproverList['FIRST_NAME_A'] . $middleNameA . $recommedApproverList['LAST_NAME_A'];
-                }else{
+                } else {
                     $employeeRow['APPROVER_NAME'] = "";
                 }
-                
             } else {
                 $employeeRow['RECOMMENDER_NAME'] = "";
                 $employeeRow['APPROVER_NAME'] = "";
             }
-            
+
             array_push($employeeList, $employeeRow);
         }
         ///  print_r($employeeList); die();
@@ -2910,15 +2904,13 @@ class RestfulService extends AbstractRestfulController {
             "recomApproveId" => $recomApproveId
         ];
     }
-    
-    
-    
-    public function pullAssetBalance($id){
-        
+
+    public function pullAssetBalance($id) {
+
         $assetIssueRepo = new IssueRepository($this->adapter);
-        $assetBalQuantity =$assetIssueRepo->fetchAssetRemBalance($id);
-        
-        
+        $assetBalQuantity = $assetIssueRepo->fetchAssetRemBalance($id);
+
+
         return [
             "success" => "true",
             "data" => $assetBalQuantity,
