@@ -41,7 +41,8 @@ return [
     'WorkOnHoliday',
     'WorkOnDayoff',
     'Asset',
-    'Other'
+    'Other',
+    'Report'
 ];
 
 
