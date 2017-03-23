@@ -1,4 +1,4 @@
-(function () {
+(function ($,app) {
     'use strict';
 //    $('#qualificationTbl').delegate("select", "DOMNodeInserted", function () {
 //        $(this).select2();
@@ -7,7 +7,7 @@
     //$(selector).live( eventName, function(){} );
 
     angular.module("hris", ['ui.bootstrap'])
-            .controller('qualificationController', function ($scope, $uibModal, $log, $document) {
+            .controller('qualificationController', function ($scope, $uibModal, $log, $document,$window) {
 
                 //for qualification detail [add and delete]
                 $scope.degreeList = [];
@@ -19,7 +19,7 @@
                     {"id": "GPA", "name": "GPA"},
                     {"id": "PER", "name": "Percentage"},
                 ];
-                var employeeId = angular.element(document.getElementById('employeeId')).val();
+                var employeeId = parseInt(angular.element(document.getElementById('employeeId')).val());
                 $scope.qualificationFormList = [];
                 window.app.pullDataById(document.urlQualificationDtl, {
                     action: 'pullAcademicDetail',
@@ -75,7 +75,6 @@
                             }
                         }
                         $scope.view = function () {
-
                             $scope.qualificationFormList.push({
                                 id: 0,
                                 academicDegreeId: $scope.degreeList[0],
@@ -348,13 +347,256 @@
                 }, function (failure) {
                     console.log("pullEmployeeFileByEmpId failure", failure);
                 });
-                
-                
-                 $scope.expAdd = function() {
-                    console.log('sdfdsf');
+
+
+
+                // for employee experience [add and delete function]
+                $scope.organizationType = [
+                    {"id": "Financial", "name": "Financial"},
+                    {"id": "Non-Financial", "name": "Non-Financial"},
+                ];
+                $scope.experienceFormList = [];
+                $scope.counterExperience = '';
+                $scope.experienceFormTemplate = {
+                    id: 0,
+                    organizationTypeId: $scope.organizationType[0],
+                    organizationName: "",
+                    position: "",
+                    fromDate: "",
+                    toDate: "",
+                    checkbox: "checkboxe0",
+                    checked: false
+                };
+                if (employeeId !== 0) {
+                    window.app.pullDataById(document.urlQualificationDtl, {
+                        action: 'pullExperienceDetail',
+                        data: {
+                            'employeeId': employeeId
                         }
+                    }).then(function (success) {
+                        $scope.$apply(function () {
+                            var experienceList = success.data;
+                            var num = experienceList.length;
+                            console.log(experienceList);
+                            if (num > 0) {
+                                $scope.counterExperience = num;
+                                for (var j = 0; j < num; j++) {
+                                    if (experienceList[j].ORGANIZATION_TYPE == 'Financial') {
+                                        var organizationType = $scope.organizationType[0];
+                                    } else if (experienceList[j].ORGANIZATION_TYPE == 'Non-Financial') {
+                                        var organizationType = $scope.organizationType[1];
+                                    }
+                                
+                                    $scope.experienceFormList.push(angular.copy({
+                                        id: experienceList[j].ID,
+                                        organizationTypeId: organizationType,
+                                        organizationName: experienceList[j].ORGANIZATION_NAME,
+                                        position:experienceList[j].POSITION,
+                                        fromDate:experienceList[j].FROM_DATE,
+                                        toDate:experienceList[j].TO_DATE,
+                                        checkbox: "checkboxe" + j,
+                                        checked: false
+                                    }));
+                                    app.startEndDatePicker('expfromDate_checkboxe' + j, 'exptoDate_checkboxe'+ j);
+                                }
+                            } else {
+                                $scope.counterExperience = 1;
+                                $scope.experienceFormList.push(angular.copy($scope.experienceFormTemplate));
+                                app.startEndDatePicker('expfromDate_checkboxe0', 'exptoDate_checkboxe0');
+                            }
+                        });
+                    }, function (failure) {
+                        console.log(failure);
+                    });
+                } else {
+                    $scope.counterExperience =1;
+                    $scope.experienceFormList.push(angular.copy($scope.experienceFormTemplate));
+                }
+
+                $scope.addExperience = function () {
+                    $scope.experienceFormList.push(angular.copy({
+                        id: 0,
+                        organizationTypeId: $scope.organizationType[0],
+                        organizationName: "",
+                        position: "",
+                        fromDate: "",
+                        toDate: "",
+                        checkbox: "checkboxe" + $scope.counterExperience,
+                        checked: false
+                    }));
+                    $scope.counterExperience++;
+                    $("select").select2();
+                };
+                $scope.deleteExperience = function () {
+                    var tempE = 0;
+                    var lengthE = $scope.experienceFormList.length;
+                    for (var i = 0; i < lengthE; i++) {
+                        if ($scope.experienceFormList[i - tempE].checked) {
+                            var id = $scope.experienceFormList[i - tempE].id;
+                            if (id != 0) {
+                                window.app.pullDataById(document.urlQualificationDtl, {
+                                    action: 'deleteExperienceDtl',
+                                    data: {
+                                        "id": id
+                                    }
+                                }).then(function (success) {
+                                    $scope.$apply(function () {
+                                        console.log(success.data);
+                                    });
+                                }, function (failure) {
+                                    console.log(failure);
+                                });
+                            }
+                            $scope.experienceFormList.splice(i - tempE, 1);
+                            tempE++;
+                        }
+                    }
+                }
+                $scope.submitExperience = function () {
+                    if ($scope.employeeExperienceForm.$valid && $scope.experienceFormList.length>0) {
+                        console.log("hellow");
+                        $scope.experienceListEmpty = 1;
+                        if ($scope.experienceFormList.length == 1 && angular.equals($scope.experienceFormTemplate, $scope.experienceFormList[0])) {
+                            console.log("app log", "The form is not filled");
+                            $scope.experienceListEmpty = 0;
+                        }
+                        console.log($scope.experienceFormList);
+                        window.app.pullDataById(document.urlQualificationDtl, {
+                            action: 'submitExperienceDtl',
+                            data: {
+                                experienceList: $scope.experienceFormList,
+                                employeeId: parseInt(employeeId),
+                                experienceListEmpty: parseInt($scope.experienceListEmpty)
+                            },
+                        }).then(function (success) {
+                            $scope.$apply(function () {
+                                console.log(success.data);
+                                $window.location.href =  document.urlSubmitExperience;
+                            });
+                        }, function (failure) {
+                            console.log(failure);
+                        });
+                    }else if($scope.experienceFormList.length==0){
+                        $window.location.href =  document.urlSubmitExperience;
+                    }
+                }
                 
+                
+                // for employee training [add and delete function]
+                $scope.trainingFormList = [];
+                $scope.counterTraining = '';
+                $scope.trainingFormTemplate = {
+                    id: 0,
+                    trainingName: "",
+                    description: "",
+                    fromDate: "",
+                    toDate: "",
+                    checkbox: "checkboxt0",
+                    checked: false
+                };
+                if (employeeId !== 0) {
+                    window.app.pullDataById(document.urlQualificationDtl, {
+                        action: 'pullTrainingDetail',
+                        data: {
+                            'employeeId': employeeId
+                        }
+                    }).then(function (success) {
+                        $scope.$apply(function () {
+                            var trainingList = success.data;
+                            var num = trainingList.length;
+                            console.log(trainingList);
+                            if (num > 0) {
+                                $scope.counterTraining = num;
+                                for (var j = 0; j < num; j++) {
+                                    $scope.trainingFormList.push(angular.copy({
+                                        id: trainingList[j].ID,
+                                        trainingName: trainingList[j].TRAINING_NAME,
+                                        description:trainingList[j].DESCRIPTION,
+                                        fromDate:trainingList[j].FROM_DATE,
+                                        toDate:trainingList[j].TO_DATE,
+                                        checkbox: "checkboxt" + j,
+                                        checked: false
+                                    }));
+                                }
+                            } else {
+                                $scope.counterTraining = 1;
+                                $scope.trainingFormList.push(angular.copy($scope.trainingFormTemplate));
+                            }
+                        });
+                    }, function (failure) {
+                        console.log(failure);
+                    });
+                } else {
+                    $scope.counterTraining =1;
+                    $scope.trainingFormList.push(angular.copy($scope.trainingFormTemplate));
+                }
+
+                $scope.addTraining = function () {
+                    $scope.trainingFormList.push(angular.copy({
+                        id: 0,
+                        trainingName: "",
+                        description: "",
+                        fromDate: "",
+                        toDate: "",
+                        checkbox: "checkboxt" + $scope.counterTraining,
+                        checked: false
+                    }));
+                    $scope.counterTraining++;
+                    $("select").select2();
+                };
+                $scope.deleteTraining = function () {
+                    var tempT = 0;
+                    var lengthT = $scope.trainingFormList.length;
+                    for (var i = 0; i < lengthT; i++) {
+                        if ($scope.trainingFormList[i - tempT].checked) {
+                            var id = $scope.trainingFormList[i - tempT].id;
+                            if (id != 0) {
+                                window.app.pullDataById(document.urlQualificationDtl, {
+                                    action: 'deleteTrainingDtl',
+                                    data: {
+                                        "id": parseInt(id)
+                                    }
+                                }).then(function (success) {
+                                    $scope.$apply(function () {
+                                        console.log(success.data);
+                                    });
+                                }, function (failure) {
+                                    console.log(failure);
+                                });
+                            }
+                            $scope.trainingFormList.splice(i - tempT, 1);
+                            tempT++;
+                        }
+                    }
+                }
+                $scope.submitTraining = function () {
+                    if ($scope.employeeTrainingForm.$valid && $scope.trainingFormList.length>0) {
+                        $scope.trainingListEmpty = 1;
+                        if ($scope.trainingFormList.length == 1 && angular.equals($scope.trainingFormTemplate, $scope.trainingFormList[0])) {
+                            console.log("app log", "The form is not filled");
+                            $scope.trainingListEmpty = 0;
+                        }
+                        console.log($scope.trainingFormList);
+                        window.app.pullDataById(document.urlQualificationDtl, {
+                            action: 'submitTrainingDtl',
+                            data: {
+                                trainingList: $scope.trainingFormList,
+                                employeeId: parseInt(employeeId),
+                                trainingListEmpty: parseInt($scope.trainingListEmpty)
+                            },
+                        }).then(function (success) {
+                            $scope.$apply(function () {
+                                console.log(success.data);
+                                $window.location.href =  document.urlSubmitTraining;
+                            });
+                        }, function (failure) {
+                            console.log(failure);
+                        });
+                    }else if($scope.trainingFormList.length==0){
+                            $window.location.href =  document.urlSubmitTraining;
+                    }
+                }
+
             });
-})
-        ();
+})(window.jQuery, window.app);
 

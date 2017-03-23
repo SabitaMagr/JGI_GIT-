@@ -303,7 +303,6 @@ abstract class AbstractTableGateway implements TableGatewayInterface
             $unaliasedTable = array_shift($tableData);
             $insert->into($unaliasedTable);
         }
-
         $statement = $this->sql->prepareStatementForSqlObject($insert);
         $result = $statement->execute();
         $this->lastInsertValue = $this->adapter->getDriver()->getConnection()->getLastGeneratedValue();

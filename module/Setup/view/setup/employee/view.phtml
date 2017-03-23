@@ -107,6 +107,29 @@ $rankType = $formSix->get('rankType');
 $rankValue = $formSix->get('rankValue');
 $passedYr = $formSix->get('passedYr');
 
+$formSeven->setAttribute('id', 'form7');
+
+$expOrgName = $formSeven->get('organizationName');
+$orgType=[
+    'Financial'=>'Financial',
+    'Non-Financial' => 'Non-Financial'
+];
+$expOrgType = $formSeven->get('organizationType');
+//print_r($expOrgType); die();
+
+$expOrgType->setValueOptions($orgType);
+$expPosition = $formSeven->get('position');
+$expFromDate = $formSeven->get('fromDate');
+$expToDate = $formSeven->get('toDate');
+       
+
+$formEight->setAttribute('id', 'form8');
+
+$traName= $formEight->get('trainingName');
+$traDescription=$formEight->get('description');
+$traFromDate = $formEight->get('fromDate');
+$traToDate = $formEight->get('toDate');
+
 $empId = isset($id) ? $id : -1;
 ?>
 
@@ -1023,17 +1046,14 @@ echo json_encode($menu);
 
         </div>
 
-
-
-
-
-        <div class="row esetup" style="margin-top:10px;">
-
+        <div class="status-info"> 
+            <p><i class="fa fa-info-circle ticon ticon"></i>Qualification Details</p>
+            <div class="row clearfix e-setup">
             <input type="hidden" name="employeeId" id="employeeId" value="<?php echo $id; ?>">
             <div class="col-sm-12">
                 <div class="table-responsive">
                     <table class="table table-striped table-bordered table-hover no-footer customtbl profile-table-header" id="qualificationTbl">
-                        <tr class="first">
+                        <tr>
                             <td><?php print $this->formLabel($academicDegreeId); ?></td>
                             <td><?php print $this->formLabel($academicUniversityId); ?></td>
                             <td><?php print $this->formLabel($academicProgramId); ?></td>
@@ -1084,6 +1104,88 @@ echo json_encode($menu);
                 </div>
             </div>
             <!--<button id="qualificationSubmitBtn" ng-click="addQualification()">Submit</button>-->
+        </div>
+        </div>
+        
+        <div class="status-info"> 
+            <p><i class="fa fa-info-circle ticon ticon"></i>Experience Details</p>
+            <div class="row clearfix e-setup">
+            <input type="hidden" name="employeeId" id="employeeId" value="<?php echo $id; ?>">
+            <div class="col-sm-12">
+                <div class="table-responsive">
+                    <table class="table table-striped table-bordered table-hover no-footer customtbl profile-table-header" id="qualificationTbl">
+                        <tr>
+                            <td><?php print $this->formLabel($expOrgType); ?></td>
+                            <td><?php print $this->formLabel($expOrgName); ?></td>
+                            <td><?php print $this->formLabel($expPosition); ?></td>
+                            <td><?php print $this->formLabel($expFromDate); ?></td>
+                            <td><?php print $this->formLabel($expToDate); ?></td>
+                        </tr>
+                        <?php
+                        foreach ($empExperienceList as $experience) {
+                            ?>
+                            <tr>
+                                <td>
+                                    <?php print $experience['ORGANIZATION_TYPE']; ?>
+                                </td>
+                                <td>
+                                    <?php print $experience['ORGANIZATION_NAME']; ?>
+                                </td>
+                                <td>
+                                    <?php print $experience['POSITION']; ?>
+                                </td>
+                                <td>
+                                    <?php print $experience['FROM_DATE']; ?>
+                                </td>
+
+                                <td>
+                                    <?php print $experience['TO_DATE']; ?>
+                                </td>
+                            </tr>
+                        <?php } ?>
+                    </table>
+                </div>
+            </div>
+            <!--<button id="qualificationSubmitBtn" ng-click="addQualification()">Submit</button>-->
+        </div>
+        </div>
+        <div class="status-info"> 
+            <p><i class="fa fa-info-circle ticon ticon"></i>Training Details</p>
+            <div class="row clearfix e-setup">
+            <input type="hidden" name="employeeId" id="employeeId" value="<?php echo $id; ?>">
+            <div class="col-sm-12">
+                <div class="table-responsive">
+                    <table class="table table-striped table-bordered table-hover no-footer customtbl profile-table-header" id="qualificationTbl">
+                        <tr>
+                            <td><?php print $this->formLabel($traName); ?></td>
+                            <td><?php print $this->formLabel($traDescription); ?></td>
+                            <td><?php print $this->formLabel($traFromDate); ?></td>
+                            <td><?php print $this->formLabel($traToDate); ?></td>
+                        </tr>
+                        <?php
+                        foreach ($empTrainingList as $training) {
+                            ?>
+                            <tr>
+                                <td>
+                                    <?php print $training['TRAINING_NAME']; ?>
+                                </td>
+                                <td>
+                                    <?php print $training['DESCRIPTION']; ?>
+                                </td>
+                                <td>
+                                    <?php print $training['FROM_DATE']; ?>
+                                </td>
+
+                                <td>
+                                    <?php print $experience['TO_DATE']; ?>
+                                </td>
+                            </tr>
+                        <?php } ?>
+                    </table>
+                </div>
+            </div>
+            <!--<button id="qualificationSubmitBtn" ng-click="addQualification()">Submit</button>-->
+        </div>
         </div>
     </div>
 </div>

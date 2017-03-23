@@ -73,6 +73,10 @@ use WorkOnHoliday\Repository\WorkOnHolidayStatusRepository;
 use Appraisal\Repository\QuestionRepository;
 use Appraisal\Repository\HeadingRepository;
 use Asset\Repository\IssueRepository;
+use Setup\Repository\EmployeeExperienceRepository;
+use Setup\Model\EmployeeExperience;
+use Setup\Repository\EmployeeTrainingRepository;
+use Setup\Model\EmployeeTraining;
 
 class RestfulService extends AbstractRestfulController {
 
@@ -210,11 +214,29 @@ class RestfulService extends AbstractRestfulController {
                 case "pullAcademicDetail":
                     $responseData = $this->pullAcademicDetail($postedData->data);
                     break;
+                case "pullExperienceDetail":
+                    $responseData = $this->pullExperienceDetail($postedData->data);
+                    break;
+                case "pullTrainingDetail":
+                    $responseData = $this->pullTrainingDetail($postedData->data);
+                    break;
                 case "submitQualificationDtl":
                     $responseData = $this->submitQualificationDtl($postedData->data);
                     break;
+                case "submitExperienceDtl":
+                    $responseData = $this->submitExperienceDtl($postedData->data);
+                    break;
+                case "submitTrainingDtl":
+                    $responseData = $this->submitTrainingDtl($postedData->data);
+                    break;
                 case "deleteQualificationDtl":
                     $responseData = $this->deleteQualificationDtl($postedData->data);
+                    break;
+                case "deleteExperienceDtl":
+                    $responseData = $this->deleteExperienceDtl($postedData->data);
+                    break;
+                case "deleteTrainingDtl":
+                    $responseData = $this->deleteTrainingDtl($postedData->data);
                     break;
                 case "pullEmployeeDetailById":
                     $responseData = $this->pullEmployeeDetailById($postedData->data);
@@ -1247,6 +1269,33 @@ class RestfulService extends AbstractRestfulController {
             'data' => $data
         ];
     }
+    
+    public function pullExperienceDetail($data){
+        $repository = new EmployeeExperienceRepository($this->adapter);
+        $experienceList = [];
+        $employeeId = (int)$data['employeeId'];
+        $result = $repository->getByEmpId($employeeId);
+        foreach($result as $row){
+            array_push($experienceList, $row);
+        }
+        return [
+            "success" => true,
+            "data" => $experienceList
+        ];
+    }
+    public function pullTrainingDetail($data){
+        $repository = new EmployeeTrainingRepository($this->adapter);
+        $trainingList = [];
+        $employeeId = (int)$data['employeeId'];
+        $result = $repository->getByEmpId($employeeId);
+        foreach($result as $row){
+            array_push($trainingList,$row);
+        }
+        return [
+            'success'=>true,
+            'data'=>$trainingList
+        ];
+    }
 
     public function submitQualificationDtl($data) {
 //$qualificationDtl = $data;
@@ -1283,14 +1332,92 @@ class RestfulService extends AbstractRestfulController {
                 $repository->add($empQualificationModel);
             }
         }
-//        $empDtlId = [
-//          'employeeId'=>$data['employeeId']
-//        ];
-//        return $data = $this->pullAcademicDetail($empDtlId);
-
         return [
             "success" => true,
             "data" => "Qualification Detail Successfully Added"
+        ];
+    }
+    
+    public function submitExperienceDtl($data){
+        $experienceListEmpty = (int)$data['experienceListEmpty'];
+        $employeeId =(int)$data['employeeId'];
+        $experienceList = $data['experienceList'];
+        
+        $employeeRepo = new EmployeeRepository($this->adapter);
+        $employeeExperienceRepo = new EmployeeExperienceRepository($this->adapter);
+        $employeeDetail = $employeeRepo->fetchById((int)$this->loggedIdEmployeeId);
+        
+        if($experienceListEmpty==1){
+            foreach($experienceList as $experience){
+                $employeeExperienceModel = new EmployeeExperience();
+                $employeeExperienceModel->employeeId = (int)$employeeId;
+                $employeeExperienceModel->status = 'E';
+                $employeeExperienceModel->organizationType = $experience['organizationTypeId']['id'];
+                $employeeExperienceModel->organizationName = $experience['organizationName'];
+                $employeeExperienceModel->fromDate = $experience['fromDate'];
+                $employeeExperienceModel->toDate = $experience['toDate'];
+                $employeeExperienceModel->position = $experience['position'];
+
+                $id = (int)$experience['id'];
+                if($id==0){
+                    $employeeExperienceModel->id = (int)(Helper::getMaxId($this->adapter, EmployeeExperience::TABLE_NAME, EmployeeExperience::ID))+1;
+                    $employeeExperienceModel->createdBy = (int)$this->loggedIdEmployeeId;
+                    $employeeExperienceModel->createdDate = Helper::getcurrentExpressionDate();
+                    $employeeExperienceModel->approvedDate = Helper::getcurrentExpressionDate();
+                    $employeeExperienceModel->companyId = (int)$employeeDetail['COMPANY_ID'];
+                    $employeeExperienceModel->branchId = (int)$employeeDetail['BRANCH_ID'];
+                    $employeeExperienceRepo->add($employeeExperienceModel);
+                }else{
+                    $employeeExperienceModel->modifiedBy = (int)$this->loggedIdEmployeeId;
+                    $employeeExperienceModel->modifiedDate = Helper::getcurrentExpressionDate();
+                    $employeeExperienceRepo->edit($employeeExperienceModel,$id);
+                }
+            }
+        }
+        return [
+            "success" => true,
+            "data" => "Employee Experience Detail Successfully Added"
+        ];
+    }
+    
+    public function submitTrainingDtl($data){
+        $trainingListEmpty = $data['trainingListEmpty'];
+        $employeeId =(int)$data['employeeId'];
+        $trainingList = $data['trainingList'];
+        
+        $employeeRepo = new EmployeeRepository($this->adapter);
+        $employeeTrainingRepo = new EmployeeTrainingRepository($this->adapter);
+        $employeeDetail = $employeeRepo->fetchById($this->loggedIdEmployeeId);
+        
+        if($trainingListEmpty==1){
+            foreach($trainingList as $training){
+                $employeeTrainingModel = new EmployeeTraining();
+                $employeeTrainingModel->employeeId = $employeeId;
+                $employeeTrainingModel->status = 'E';
+                $employeeTrainingModel->trainingName = $training['trainingName'];
+                $employeeTrainingModel->description = $training['description'];
+                $employeeTrainingModel->fromDate = $training['fromDate'];
+                $employeeTrainingModel->toDate = $training['toDate'];
+
+                $id = (int)$training['id'];
+                if($id==0){
+                    $employeeTrainingModel->id = ((int)Helper::getMaxId($this->adapter, EmployeeTraining::TABLE_NAME, EmployeeTraining::ID))+1;
+                    $employeeTrainingModel->createdBy = (int)$this->loggedIdEmployeeId;
+                    $employeeTrainingModel->createdDate = Helper::getcurrentExpressionDate();
+                    $employeeTrainingModel->approvedDate = Helper::getcurrentExpressionDate();
+                    $employeeTrainingModel->companyId = (int)$employeeDetail['COMPANY_ID'];
+                    $employeeTrainingModel->branchId = (int)$employeeDetail['BRANCH_ID'];
+                    $employeeTrainingRepo->add($employeeTrainingModel);
+                }else{
+                    $employeeTrainingModel->modifiedBy = (int)$this->loggedIdEmployeeId;
+                    $employeeTrainingModel->modifiedDate = Helper::getcurrentExpressionDate();
+                    $employeeTrainingRepo->edit($employeeTrainingModel,$id);
+                }
+            }
+        }
+        return [
+            "success" => true,
+            "data" => "Employee Training Detail Successfully Added"
         ];
     }
 
@@ -1301,6 +1428,25 @@ class RestfulService extends AbstractRestfulController {
         return[
             "success" => true,
             "data" => "Qualification Detail Successfully Removed"
+        ];
+    }
+    public function deleteExperienceDtl($data){
+        $id = $data['id'];
+        $repository = new EmployeeExperienceRepository($this->adapter);
+        $repository->delete($id);
+        return[
+            "success" => true,
+            "data" => "Experience Detail Successfully Removed"
+        ];
+    }
+    
+    public function deleteTrainingDtl($data){
+        $id = (int)$data['id'];
+        $repository = new EmployeeTrainingRepository($this->adapter);
+        $repository->delete($id);
+        return[
+            "success" => true,
+            "data" => "Training Detail Successfully Removed"
         ];
     }
 
