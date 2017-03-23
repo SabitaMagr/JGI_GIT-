@@ -74,6 +74,10 @@ use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Adapter\Driver\ResultInterface;
 use Zend\Mvc\Controller\AbstractRestfulController;
 use Zend\View\Model\JsonModel;
+use Setup\Repository\EmployeeExperienceRepository;
+use Setup\Repository\EmployeeTrainingRepository;
+use Setup\Model\EmployeeExperience;
+use Setup\Model\EmployeeTraining;
 
 class RestfulService extends AbstractRestfulController {
 
@@ -220,11 +224,29 @@ class RestfulService extends AbstractRestfulController {
                     case "pullAcademicDetail":
                         $responseData = $this->pullAcademicDetail($postedData->data);
                         break;
+                    case "pullExperienceDetail":
+                        $responseData = $this->pullExperienceDetail($postedData->data);
+                        break;
+                    case "pullTrainingDetail":
+                        $responseData = $this->pullTrainingDetail($postedData->data);
+                        break;
                     case "submitQualificationDtl":
                         $responseData = $this->submitQualificationDtl($postedData->data);
                         break;
+                    case "submitExperienceDtl":
+                        $responseData = $this->submitExperienceDtl($postedData->data);
+                        break;
+                    case "submitTrainingDtl":
+                        $responseData = $this->submitTrainingDtl($postedData->data);
+                        break;
                     case "deleteQualificationDtl":
                         $responseData = $this->deleteQualificationDtl($postedData->data);
+                        break;
+                    case "deleteExperienceDtl":
+                        $responseData = $this->deleteExperienceDtl($postedData->data);
+                        break;
+                    case "deleteTrainingDtl":
+                        $responseData = $this->deleteTrainingDtl($postedData->data);
                         break;
                     case "pullEmployeeDetailById":
                         $responseData = $this->pullEmployeeDetailById($postedData->data);
