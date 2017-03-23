@@ -29,6 +29,14 @@
                     case 4:
                         window.app.addDatePicker($("#joinDate"));
                         break;
+                    case 7:
+                        //window.app.startEndDatePicker('expfromDate_checkboxe0', 'exptoDate_checkboxe0');
+                        $(".exList").each(function(){
+                            var id = $(this).attr("id");
+                            console.log(id);
+                            window.app.startEndDatePicker('expfromDate_' + id, 'exptoDate_'+ id);
+                        });
+                        break;
 
                 }
 
