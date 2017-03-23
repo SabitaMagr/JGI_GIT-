@@ -15,6 +15,9 @@ $remarks = $form->get('remarks');
 $countryId = $form->get('countryId');
 $countryId->setValueOptions($countries);
 
+$companyId = $form->get('companyId');
+$companyId->setValueOptions($companies);
+
 //custom validatin message
 if (key($telephone->getMessages()) == "regexNotMatch") {
     $telephone->setMessages(["regexNotMatch" => "Invalid Phone Number"]);
@@ -82,6 +85,12 @@ echo json_encode($menu);
                     <?php print $this->formLabel($countryId); ?>
                     <?php print $this->formElement($countryId); ?>
                     <?php print $this->formElementErrors()->render($countryId, ['class' => 'help-block error']); ?>
+                </div>
+
+                <div class="form-group">
+                    <?php print $this->formLabel($companyId); ?>
+                    <?php print $this->formElement($companyId); ?>
+                    <?php print $this->formElementErrors()->render($companyId, ['class' => 'help-block error']); ?>
                 </div>
 
                 <div class="form-group <?= empty($telephone->getMessages()) ? "" : "has-error" ?>">
