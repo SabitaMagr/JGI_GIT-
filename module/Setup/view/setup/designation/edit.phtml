@@ -37,7 +37,7 @@ $form->prepare();
     <?= $this->navigation('Zend\Navigation\Designation')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
 <div class="row margin-top-20">
-    <div class="col-sm-8 col-sm-offset-2">
+    <div class="col-sm-12">
         <div class="portlet box custom-box">
             <div class="portlet-title">
                 <div class="caption">
@@ -46,6 +46,9 @@ $form->prepare();
             </div>
             <div class="portlet-body">
                 <?php print $this->form()->openTag($form); ?>
+                
+                <div class=" row">
+                    <div class="col-sm-4">
                 <div class="form-group">
                     <?= $this->formLabel($designationCode) ?>
                     <?= $this->formElement($designationCode); ?>
@@ -53,22 +56,37 @@ $form->prepare();
                     <input type="hidden" id="designationId" value="<?php echo $id; ?>"/>
                     <span class="errorMsg" style="font-size:11px; color:red;"></span>
                 </div>
+                    </div>
+
+                    <div class="col-sm-4">
                 <div class="form-group">
                     <?= $this->formLabel($designationTitle) ?>
                     <?= $this->formElement($designationTitle); ?>
                     <?= $this->formElementErrors()->render($designationTitle, ['class' => 'help-block']) ?>
                     <span class="errorMsg" style="font-size:11px; color:red;"></span>
                 </div>
+                    </div>
+
+                    <div class="col-sm-4">
                 <div class="form-group">
                     <?= $this->formLabel($basicSalary) ?>
                     <?= $this->formElement($basicSalary); ?>
                     <?= $this->formElementErrors()->render($basicSalary, ['class' => 'help-block']) ?>
                 </div>
+                    </div>
+                </div>
+                
+                
+                <div class=" row">
+                    <div class="col-sm-4">
                 <div class="form-group">
                     <?= $this->formLabel($parentDesignation) ?>
                     <?= $this->formElement($parentDesignation); ?>
                     <?= $this->formElementErrors()->render($parentDesignation, ['class' => 'help-block']) ?>
                 </div>
+                    </div>
+
+                    <div class="col-sm-8">
                 <div class="row" id="scopeArea">
                     <div class="col-md-6">
                         <div class="form-group">
@@ -93,6 +111,12 @@ $form->prepare();
                         </div>
                     </div>
                 </div>
+                    </div>
+
+                </div>
+                
+                
+                
                 <?php
                     print $this->formSubmit($submit);
                     print $this->form()->closeTag();

@@ -12,7 +12,7 @@ $weight = $form->get('weight');
 $submit = $form->get('submit');
 $submit->setAttribute('value', 'SUBMIT');
 
-$form->setAttribute('action', $this->url('academicDegree', ['action' => 'edit','id'=>$id]));
+$form->setAttribute('action', $this->url('academicDegree', ['action' => 'edit', 'id' => $id]));
 
 if ($this->messages) {
     print '<ul class="help-block bg-danger" style="background:#f3e250;">';
@@ -25,14 +25,17 @@ if ($this->messages) {
 $form->prepare();
 ?>
 <script>
-    document.menu =<?php $menu = ["id" => "menuSetup", "subMenu" => ["id" => "subMenuAcademicDegree"]];echo json_encode($menu);?>;
+    document.menu =<?php
+$menu = ["id" => "menuSetup", "subMenu" => ["id" => "subMenuAcademicDegree"]];
+echo json_encode($menu);
+?>;
     document.url = '<?= $this->url("restful", ["action" => "index"]) ?>';
 </script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\academicDegree')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
 <div class="row margin-top-20">
-    <div class="col-sm-8 col-sm-offset-2">
+    <div class="col-sm-12">
         <div class="portlet box custom-box">
             <div class="portlet-title">
                 <div class="caption">
@@ -43,32 +46,49 @@ $form->prepare();
                 <?php
                 print $this->form()->openTag($form);
                 ?>
-                <div class="form-group">
-                    <?php print $this->formLabel($academicDegreeCode); ?>
-                    <?php print $this->formElement($academicDegreeCode); ?>
-                    <?php print $this->formElementErrors()->render($academicDegreeCode, ['class' => 'help-block']); ?>
-                    <input type="hidden" id="academicDegreeId" value="<?php echo $id ?>" />
-                    <span class="errorMsg" style="font-size:11px; color:red;"></span>
-                </div>
-                <div class="form-group">
-                    <?php print $this->formLabel($academicDegreeName); ?>
-                    <?php print $this->formElement($academicDegreeName); ?>
-                    <?php print $this->formElementErrors()->render($academicDegreeName, ['class' => 'help-block']); ?>
-                    <span class="errorMsg" style="font-size:11px; color:red;"></span>
+
+                <div class=" row">
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <?php print $this->formLabel($academicDegreeCode); ?>
+                            <?php print $this->formElement($academicDegreeCode); ?>
+                            <?php print $this->formElementErrors()->render($academicDegreeCode, ['class' => 'help-block']); ?>
+                            <input type="hidden" id="academicDegreeId" value="<?php echo $id ?>" />
+                            <span class="errorMsg" style="font-size:11px; color:red;"></span>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <?php print $this->formLabel($academicDegreeName); ?>
+                            <?php print $this->formElement($academicDegreeName); ?>
+                            <?php print $this->formElementErrors()->render($academicDegreeName, ['class' => 'help-block']); ?>
+                            <span class="errorMsg" style="font-size:11px; color:red;"></span>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <?php print $this->formLabel($weight); ?>
+                            <?php print $this->formElement($weight); ?>
+                            <?php print $this->formElementErrors()->render($weight, ['class' => 'help-block']); ?>
+                            <span class="errorMsg" style="font-size:11px; color:red;"></span>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="form-group">
-                    <?php print $this->formLabel($weight); ?>
-                    <?php print $this->formElement($weight); ?>
-                    <?php print $this->formElementErrors()->render($weight, ['class' => 'help-block']); ?>
-                    <span class="errorMsg" style="font-size:11px; color:red;"></span>
+                <div class=" row">
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <?php print $this->formLabel($remarks); ?>
+                            <?php print $this->formElement($remarks); ?>
+                            <?php print $this->formElementErrors()->render($remarks, ['class' => 'help-block']); ?>
+                        </div>
+                    </div>
+
                 </div>
 
-                <div class="form-group">
-                    <?php print $this->formLabel($remarks); ?>
-                    <?php print $this->formElement($remarks); ?>
-                    <?php print $this->formElementErrors()->render($remarks, ['class' => 'help-block']); ?>
-                </div>
+
 
                 <?php
                 print $this->formSubmit($submit);

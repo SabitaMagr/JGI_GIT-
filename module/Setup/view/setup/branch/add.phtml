@@ -52,7 +52,7 @@ echo json_encode($menu);
     <?= $this->navigation('Zend\Navigation\Branch')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
 <div class="row margin-top-20">
-    <div class="col-sm-8 col-sm-offset-2">
+    <div class="col-sm-12">
         <div class="portlet box custom-box">
             <div class="portlet-title">
                 <div class="caption">
@@ -61,58 +61,96 @@ echo json_encode($menu);
             </div>
             <div class="portlet-body">
                 <?php print $this->form()->openTag($form); ?>
-                <div class="form-group <?= empty($branchCode->getMessages()) ? "" : "has-error" ?>">
-                    <?php print $this->formLabel($branchCode); ?>
-                    <?php print $this->formElement($branchCode); ?>
-                    <?php print $this->formElementErrors()->render($branchCode, ['class' => 'help-block error']); ?>
+
+                <div class=" row">
+                    <div class="col-sm-4">
+                        <div class="form-group <?= empty($branchCode->getMessages()) ? "" : "has-error" ?>">
+                            <?php print $this->formLabel($branchCode); ?>
+                            <?php print $this->formElement($branchCode); ?>
+                            <?php print $this->formElementErrors()->render($branchCode, ['class' => 'help-block error']); ?>
+                        </div>
+                    </div>
+
+
+                    <div class="col-sm-4">
+                        <div class="form-group <?= empty($branchName->getMessages()) ? "" : "has-error" ?>">
+                            <?php print $this->formLabel($branchName); ?>
+                            <?php print $this->formElement($branchName); ?>
+                            <?php print $this->formElementErrors()->render($branchName, ['class' => 'help-block error']); ?>
+                        </div>
+                    </div>
+
+
+                    <div class="col-sm-4">
+                        <div class="form-group <?= empty($streetAddress->getMessages()) ? "" : "has-error" ?>">
+                            <?php print $this->formLabel($streetAddress); ?>
+                            <?php print $this->formElement($streetAddress); ?>
+                            <?php print $this->formElementErrors()->render($streetAddress, ['class' => 'help-block error']); ?>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="form-group <?= empty($branchName->getMessages()) ? "" : "has-error" ?>">
-                    <?php print $this->formLabel($branchName); ?>
-                    <?php print $this->formElement($branchName); ?>
-                    <?php print $this->formElementErrors()->render($branchName, ['class' => 'help-block error']); ?>
-                </div>
 
-                <div class="form-group <?= empty($streetAddress->getMessages()) ? "" : "has-error" ?>">
-                    <?php print $this->formLabel($streetAddress); ?>
-                    <?php print $this->formElement($streetAddress); ?>
-                    <?php print $this->formElementErrors()->render($streetAddress, ['class' => 'help-block error']); ?>
-                </div>
 
-                <div class="form-group">
-                    <?php print $this->formLabel($countryId); ?>
-                    <?php print $this->formElement($countryId); ?>
-                    <?php print $this->formElementErrors()->render($countryId, ['class' => 'help-block error']); ?>
-                </div>
-                <div class="form-group">
-                    <?php print $this->formLabel($companyId); ?>
-                    <?php print $this->formElement($companyId); ?>
-                    <?php print $this->formElementErrors()->render($companyId, ['class' => 'help-block error']); ?>
-                </div>
 
-                <div class="form-group <?= empty($telephone->getMessages()) ? "" : "has-error" ?>">
-                    <?php print $this->formLabel($telephone); ?>
-                    <?php print $this->formElement($telephone); ?>
-                    <?php print $this->formElementErrors()->render($telephone, ['class' => 'help-block error']); ?>
-                </div>
+                <div class=" row">
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <?php print $this->formLabel($countryId); ?>
+                            <?php print $this->formElement($countryId); ?>
+                            <?php print $this->formElementErrors()->render($countryId, ['class' => 'help-block error']); ?>
+                        </div>  
+                    </div>
 
-                <div class="form-group <?= empty($fax->getMessages()) ? "" : "has-error" ?>">
-                    <?php print $this->formLabel($fax); ?>
-                    <?php print $this->formElement($fax); ?>
-                    <?php print $this->formElementErrors()->render($fax, ['class' => 'help-block error']); ?>
-                </div>
 
+                    <div class="col-sm-4">
+                        <div class="form-group <?= empty($telephone->getMessages()) ? "" : "has-error" ?>">
+                            <?php print $this->formLabel($telephone); ?>
+                            <?php print $this->formElement($telephone); ?>
+                            <?php print $this->formElementErrors()->render($telephone, ['class' => 'help-block error']); ?>
+                        </div>       
+                    </div>
+
+
+                    <div class="col-sm-4">
+                        <div class="form-group <?= empty($fax->getMessages()) ? "" : "has-error" ?>">
+                            <?php print $this->formLabel($fax); ?>
+                            <?php print $this->formElement($fax); ?>
+                            <?php print $this->formElementErrors()->render($fax, ['class' => 'help-block error']); ?>
+                        </div>  
+                    </div>
+                </div>
+                
+                
+                <div class=" row">
+                    <div class="col-sm-4">
                 <div class="form-group <?= empty($email->getMessages()) ? "" : "has-error" ?>">
                     <?php print $this->formLabel($email); ?>
                     <?php print $this->formElement($email); ?>
                     <?php print $this->formElementErrors()->render($email, ['class' => 'help-block error']); ?>
                 </div>
+                    </div>
+                    
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <?php print $this->formLabel($companyId); ?>
+                            <?php print $this->formElement($companyId); ?>
+                            <?php print $this->formElementErrors()->render($companyId, ['class' => 'help-block error']); ?>
+                        </div>
 
+                    </div>
+
+
+                    <div class="col-sm-4">
                 <div class="form-group <?= empty($remarks->getMessages()) ? "" : "has-error" ?>">
                     <?php print $this->formLabel($remarks); ?>
                     <?php print $this->formElement($remarks); ?>
                     <?php print $this->formElementErrors()->render($remarks, ['class' => 'help-block error']); ?>
                 </div>
+                    </div>
+
+                </div>
+
 
                 <?php print $this->formSubmit($submit); ?>
                 <?php
