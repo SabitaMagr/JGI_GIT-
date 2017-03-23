@@ -27,6 +27,10 @@ use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\Mvc\Controller\AbstractActionController;
 use Setup\Model\EmployeeFile as EmployeeFileModel;
 use Setup\Repository\EmployeeQualificationRepository;
+use Setup\Repository\EmployeeExperienceRepository;
+use Setup\Repository\EmployeeTrainingRepository;
+use Setup\Form\HrEmployeesFormTabEight;
+use Setup\Form\HrEmployeesFormTabSeven;
 
 class Profile extends AbstractActionController {
 
@@ -39,6 +43,8 @@ class Profile extends AbstractActionController {
     private $formThree;
     private $formFour;
     private $formSix;
+    private $formSeven;
+    private $formEight;
 
     public function __construct(AdapterInterface $adapter) {
         $this->adapter = $adapter;
@@ -58,6 +64,8 @@ class Profile extends AbstractActionController {
         $formTabFour = new HrEmployeesFormTabFour();
         $formTabFive = new HrEmployeesFormTabFive();
         $formTabSix = new HrEmployeesFormTabSix();
+        $formTabSeven = new HrEmployeesFormTabSeven();
+        $formTabEight = new HrEmployeesFormTabEight();
 
         if (!$this->formOne) {
             $this->formOne = $builder->createForm($formTabOne);
@@ -74,6 +82,12 @@ class Profile extends AbstractActionController {
         if (!$this->formSix) {
             $this->formSix = $builder->createForm($formTabSix);
         }
+        if (!$this->formSeven) {
+            $this->formSeven = $builder->createForm($formTabSeven);
+        }
+        if (!$this->formEight) {
+            $this->formEight = $builder->createForm($formTabEight);
+        }
     }
     public function indexAction() {
        $id = $this->employeeId;
@@ -84,6 +98,8 @@ class Profile extends AbstractActionController {
         $this->initializeForm();
         $request = $this->getRequest();
         $empQualificationRepo =  new EmployeeQualificationRepository($this->adapter);
+        $empExperienceRepo = new EmployeeExperienceRepository($this->adapter);
+        $empTrainingRepo = new EmployeeTrainingRepository($this->adapter);
 
         $formOneModel = new HrEmployeesFormTabOne();
         $formTwoModel = new HrEmployeesFormTabTwo();
@@ -104,6 +120,8 @@ class Profile extends AbstractActionController {
         $tempZoneDtl = $this->repository->getZoneDtl($tempDistrictDtl['ZONE_ID']);
         
         $empQualificationDtl = $empQualificationRepo->getByEmpId($id);
+        $empExperienceList = $empExperienceRepo->getByEmpId($id);
+        $empTrainingList = $empTrainingRepo->getByEmpId($id);
  
         return Helper::addFlashMessagesToArray($this, [
                     'formOne' => $this->formOne,
@@ -111,6 +129,8 @@ class Profile extends AbstractActionController {
                     'formThree' => $this->formThree,
                     'formFour' => $this->formFour,
                     'formSix' => $this->formSix,
+                    'formSeven'=>$this->formSeven,
+                    'formEight'=>$this->formEight,
                     "id" => $id,
                     'profilePictureId' => $profilePictureId,
                     'employeeData'=>$employeeData,
@@ -119,7 +139,9 @@ class Profile extends AbstractActionController {
                     'perZoneName'=>$perZoneDtl['ZONE_NAME'],
                     'tempDistrictName'=>$tempDistrictDtl['DISTRICT_NAME'],
                     'tempZoneName'=>$tempZoneDtl['ZONE_NAME'],
-                    'empQualificationList'=>$empQualificationDtl
+                    'empQualificationList'=>$empQualificationDtl,
+                    'empExperienceList'=>$empExperienceList,
+                    'empTrainingList'=>$empTrainingList
         ]);
     }
 
