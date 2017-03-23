@@ -35,7 +35,7 @@ $form->prepare();
     <?= $this->navigation('Zend\Navigation\advance')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
 <div class="row margin-top-20">
-    <div class="col-sm-8 col-sm-offset-2">
+    <div class="col-sm-12">
         <div class="portlet box custom-box">
             <div class="portlet-title">
                 <div class="caption">
@@ -46,53 +46,66 @@ $form->prepare();
                 <?php
                 print $this->form()->openTag($form);
                 ?>
+                
+                <div class=" row">
+                    <div class="col-sm-4">
                 <div class="form-group">
                     <?php print $this->formLabel($advanceCode); ?>
                     <?php print $this->formElement($advanceCode); ?>
                     <?php print $this->formElementErrors()->render($advanceCode, ['class' => 'help-block error']); ?>
                 </div>
+                    </div>
+
+                    <div class="col-sm-4">
                 <div class="form-group">
                     <?php print $this->formLabel($advanceName); ?>
                     <?php print $this->formElement($advanceName); ?>
                     <?php print $this->formElementErrors()->render($advanceName, ['class' => 'help-block error']); ?>
                 </div>
-                <div class="row">
-                    <div class="col-sm-6">
-                        <div class="form-group">
-                            <?php print $this->formLabel($minSalaryAmt); ?>
-                            <?php print $this->formElement($minSalaryAmt); ?>
-                            <?php print $this->formElementErrors()->render($minSalaryAmt, ['class' => 'help-block error']); ?>
-                        </div>
                     </div>
-                    <div class="col-sm-6">
-                        <div class="form-group">
-                            <?php print $this->formLabel($maxSalaryAmt); ?>
-                            <?php print $this->formElement($maxSalaryAmt); ?>
-                            <?php print $this->formElementErrors()->render($maxSalaryAmt, ['class' => 'help-block error']); ?>
-                        </div>
-                    </div>
-                </div>                                              
-                <div class="row">
-                    <div class="col-sm-6">
-                        <div class="form-group">
-                            <?php print $this->formLabel($amountToAllow); ?>
-                            <?php print $this->formElement($amountToAllow); ?>
-                            <?php print $this->formElementErrors()->render($amountToAllow, ['class' => 'help-block error']); ?>
-                        </div>
-                    </div>
-                    <div class="col-sm-6">
+
+                    <div class="col-sm-4">
                         <div class="form-group">
                             <?php print $this->formLabel($monthToAllow); ?>
                             <?php print $this->formElement($monthToAllow); ?>
                             <?php print $this->formElementErrors()->render($monthToAllow, ['class' => 'help-block error']); ?>
                         </div>
                     </div>
-                </div>                                
-                <div class="form-group" >
+                </div>
+                
+                
+                <div class="row">
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <?php print $this->formLabel($amountToAllow); ?>
+                            <?php print $this->formElement($amountToAllow); ?>
+                            <?php print $this->formElementErrors()->render($amountToAllow, ['class' => 'help-block error']); ?>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <?php print $this->formLabel($minSalaryAmt); ?>
+                            <?php print $this->formElement($minSalaryAmt); ?>
+                            <?php print $this->formElementErrors()->render($minSalaryAmt, ['class' => 'help-block error']); ?>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <?php print $this->formLabel($maxSalaryAmt); ?>
+                            <?php print $this->formElement($maxSalaryAmt); ?>
+                            <?php print $this->formElementErrors()->render($maxSalaryAmt, ['class' => 'help-block error']); ?>
+                        </div>
+                    </div>
+                </div>     
+                        
+                <div class="row">
+                <div class=" col-sm-6 form-group" >
                     <?php print $this->formLabel($remarks); ?>
                     <?php print $this->formElement($remarks); ?>
                     <?php print $this->formElementErrors()->render($remarks, ['class' => 'help-block error']); ?>
                 </div>
+                </div>
+                
                 <?php
                     print $this->formSubmit($submit);
                     print $this->form()->closeTag();

@@ -74,6 +74,15 @@ class DepartmentForm
      * @Annotation\Attributes({"value":"Submit","class":"btn btn-success"})
      */
     public $submit;
+    
+    /**
+     * @Annotation\Type("Zend\Form\Element\Select")
+     * @Annotation\Required(false)
+     * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
+     * @Annotation\Options({"disable_inarray_validator":"true","label":"Branch"})
+     * @Annotation\Attributes({ "id":"form-branchId","class":"form-control"})
+     */
+    public $branchId;
 
 
 }

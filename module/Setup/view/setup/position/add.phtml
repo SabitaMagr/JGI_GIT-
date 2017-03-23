@@ -33,7 +33,7 @@ echo json_encode($menu);
 <?= $this->navigation('Zend\Navigation\Position')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
 <div class="row margin-top-20">
-    <div class="col-sm-8 col-sm-offset-2">
+    <div class="col-sm-12">
         <div class="portlet box custom-box">
             <div class="portlet-title">
                 <div class="caption">
@@ -44,17 +44,26 @@ echo json_encode($menu);
                 <?php
                 print $this->form()->openTag($form);
                 ?>
+                
+                <div class=" row">
+                    <div class="col-sm-4">
                 <div class="form-group <?= empty($positionName->getMessages()) ? "" : "has-error" ?>">
                     <?php print $this->formLabel($positionName); ?>
                     <?php print $this->formElement($positionName); ?>
                     <?php print $this->formElementErrors()->render($positionName, ['class' => 'help-block']); ?>
                 </div>
+                    </div>
 
+                    <div class="col-sm-4">
                 <div class="form-group <?= empty($remarks->getMessages()) ? "" : "has-error" ?>" >
                     <?php print $this->formLabel($remarks); ?>
                     <?php print $this->formElement($remarks); ?>
                     <?php print $this->formElementErrors()->render($remarks, ['class' => 'help-block']); ?>
                 </div>
+                    </div>
+                </div>
+                
+
                 <?php
                 print $this->formSubmit($submit);
                 print $this->form()->closeTag();

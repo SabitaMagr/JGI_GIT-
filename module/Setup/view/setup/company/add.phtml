@@ -42,7 +42,7 @@ echo json_encode($menu); ?>;
 <?= $this->navigation('Zend\Navigation\Company')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
 <div class="row margin-top-20">
-    <div class="col-sm-8 col-sm-offset-2">
+    <div class="col-sm-12">
         <div class="portlet box custom-box">
             <div class="portlet-title">
                 <div class="caption">
@@ -53,39 +53,66 @@ echo json_encode($menu); ?>;
                 <?php
                 print $this->form()->openTag($form);
                 ?>
+                
+                <div class=" row">
+                    <div class="col-sm-4">
                 <div class="form-group required ">
                     <?php print $this->formLabel($companyCode); ?>
                     <?php print $this->formElement($companyCode); ?>
-<?php print $this->formElementErrors()->render($companyCode, ['class' => 'help-block']); ?>
+                    <?php print $this->formElementErrors()->render($companyCode, ['class' => 'help-block']); ?>
                     <span class="errorMsg" style="font-size:11px; color:red;"></span>
                 </div>
+                    </div>
+
+
+                    <div class="col-sm-4">
                 <div class="form-group required ">
                     <?php print $this->formLabel($companyName); ?>
                     <?php print $this->formElement($companyName); ?>
-<?php print $this->formElementErrors()->render($companyName, ['class' => 'help-block']); ?>
+                    <?php print $this->formElementErrors()->render($companyName, ['class' => 'help-block']); ?>
                     <span class="errorMsg" style="font-size:11px; color:red;"></span>
                 </div>
+                    </div>
+
+
+                    <div class="col-sm-4">
                 <div class="form-group required ">
                     <?php print $this->formLabel($address); ?>
                     <?php print $this->formElement($address); ?>
-<?php print $this->formElementErrors()->render($address, ['class' => 'help-block']); ?>
+                    <?php print $this->formElementErrors()->render($address, ['class' => 'help-block']); ?>
                 </div>
+                    </div>
+                </div>
+                
+                
+                <div class=" row">
+                    <div class="col-sm-4">
                 <div class="form-group">
                     <?php print $this->formLabel($telephone); ?>
                     <?php print $this->formElement($telephone); ?>
-<?php print $this->formElementErrors()->render($telephone, ['class' => 'help-block']); ?>
+                    <?php print $this->formElementErrors()->render($telephone, ['class' => 'help-block']); ?>
                 </div>
+                    </div>
 
+
+                    <div class="col-sm-4">
                 <div class="form-group">
                     <?php print $this->formLabel($fax); ?>
                     <?php print $this->formElement($fax); ?>
-<?php print $this->formElementErrors()->render($fax, ['class' => 'help-block']); ?>
+                    <?php print $this->formElementErrors()->render($fax, ['class' => 'help-block']); ?>
                 </div>
+                    </div>
+
+
+                    <div class="col-sm-4">
                 <div class="form-group">
                     <?php print $this->formLabel($swift); ?>
                     <?php print $this->formElement($swift); ?>
-                <?php print $this->formElementErrors()->render($swift, ['class' => 'help-block']); ?>
+                    <?php print $this->formElementErrors()->render($swift, ['class' => 'help-block']); ?>
                 </div>
+                    </div>
+                </div>
+                
                 <?php print $this->formSubmit($submit); ?>
                 <?php
                 print $this->form()->closeTag($form);
