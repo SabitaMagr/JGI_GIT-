@@ -67,6 +67,13 @@ class DepartmentController extends AbstractActionController {
                 return $this->redirect()->toRoute("department");
             }
         }
+        
+        $te = $this->repository->fetchAllBranchAndCompany();
+        
+        
+//        echo '<pre>';
+//        print_r($te);
+//        die();
         return new ViewModel(Helper::addFlashMessagesToArray(
                         $this, [
                     'form' => $this->form,
@@ -81,9 +88,9 @@ class DepartmentController extends AbstractActionController {
 
     public function editAction() {
 
-        $id = (int) $this->params()->fromRoute("id");
-        if ($id === 0) {
-            return $this->redirect()->toRoute('department');
+        $id = (int) $this->params()->fromRoute("id");        if ($id === 0) {
+            return $this->redirect()->
+toRoute('department');
         }
         $this->initializeForm();
         $request = $this->getRequest();
