@@ -3,12 +3,12 @@
 namespace System;
 
 use Application\Controller\ControllerFactory;
+use System\Controller\AttendanceDeviceController;
 use System\Controller\DashboardController;
 use System\Controller\MenuSetupController;
 use System\Controller\RoleSetupController;
 use System\Controller\SettingController;
 use System\Controller\UserSetupController;
-use System\Controller\AttendanceDeviceController;
 use Zend\Router\Http\Segment;
 
 return [
@@ -198,6 +198,33 @@ return [
                     ],
                 ],
             ],
+        ],
+        'AttendanceDevice' => [
+                [
+                'label' => "Attedance Device Setup",
+                'route' => "AttendanceDevice"
+            ],
+                [
+                'label' => "Attedance Device Setup",
+                'route' => "AttendanceDevice",
+                'pages' => [
+                        [
+                        'label' => 'List',
+                        'route' => 'AttendanceDevice',
+                        'action' => 'index',
+                    ],
+                        [
+                        'label' => 'Add',
+                        'route' => 'AttendanceDevice',
+                        'action' => 'add',
+                    ],
+                        [
+                        'label' => 'Edit',
+                        'route' => 'AttendanceDevice',
+                        'action' => 'edit',
+                    ],
+                ],
+            ],
         ]
     ],
     'controllers' => [
@@ -206,7 +233,8 @@ return [
             UserSetupController::class => ControllerFactory::class,
             MenuSetupController::class => ControllerFactory::class,
             DashboardController::class => ControllerFactory::class,
-            SettingController::class => ControllerFactory::class
+            SettingController::class => ControllerFactory::class,
+            AttendanceDeviceController::class => ControllerFactory::class
         ],
     ],
     'view_manager' => [
