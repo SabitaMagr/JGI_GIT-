@@ -58,7 +58,7 @@ class BranchForm {
      */
     public $countryId;
     
-        /**
+    /**
      * @Annotation\Type("Zend\Form\Element\Select")
      * @Annotation\Required(true)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})

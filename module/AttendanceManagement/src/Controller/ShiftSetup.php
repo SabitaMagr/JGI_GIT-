@@ -2,62 +2,48 @@
 
 namespace AttendanceManagement\Controller;
 
-/**
- * Master Setup for Shift
- * Shift controller.
- * Created By: Somkala Pachhai
- * Edited By: Somkala Pachhai
- * Date: August 5, 2016, Friday
- * Last Modified By: Somkala Pachhai
- * Last Modified Date: August 10,2016, Wednesday
- */
-
 use Application\Helper\Helper;
 use AttendanceManagement\Form\ShiftForm;
 use AttendanceManagement\Model\ShiftSetup as Shift;
 use AttendanceManagement\Repository\ShiftRepository;
+use Setup\Helper\EntityHelper;
+use Setup\Model\Company;
+use Zend\Authentication\AuthenticationService;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Form\Annotation\AnnotationBuilder;
-use Zend\Authentication\AuthenticationService;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
-use ZF\DevelopmentMode\Help;
 
-class ShiftSetup extends AbstractActionController
-{
+class ShiftSetup extends AbstractActionController {
 
     private $repository;
     private $form;
     private $adapter;
     private $employeeId;
 
-    public function __construct(AdapterInterface $adapter)
-    {
+    public function __construct(AdapterInterface $adapter) {
         $this->repository = new ShiftRepository($adapter);
-        $this->adapter=$adapter;
+        $this->adapter = $adapter;
         $auth = new AuthenticationService();
         $this->employeeId = $auth->getStorage()->read()['employee_id'];
     }
 
-    public function indexAction()
-    {
+    public function indexAction() {
         $shiftList = $this->repository->fetchAll();
         $shifts = [];
-        foreach($shiftList as $shiftRow){
+        foreach ($shiftList as $shiftRow) {
             array_push($shifts, $shiftRow);
         }
         return Helper::addFlashMessagesToArray($this, ['shifts' => $shifts]);
     }
 
-    public function initializeForm()
-    {
+    public function initializeForm() {
         $shiftFrom = new ShiftForm();
         $builder = new AnnotationBuilder();
         $this->form = $builder->createForm($shiftFrom);
     }
 
-    public function addAction()
-    {
+    public function addAction() {
         $this->initializeForm();
         $request = $this->getRequest();
         if ($request->isPost()) {
@@ -65,41 +51,46 @@ class ShiftSetup extends AbstractActionController
             if ($this->form->isValid()) {
                 $shift = new Shift();
                 $shift->exchangeArrayFromForm($this->form->getData());
-                $shift->shiftId=((int) Helper::getMaxId($this->adapter,Shift::TABLE_NAME,Shift::SHIFT_ID))+1;
-                $shift->startDate=Helper::getExpressionDate($shift->startDate);
-                $shift->endDate=Helper::getExpressionDate($shift->endDate);
-                $shift->startTime=Helper::getExpressionTime($shift->startTime);
-                $shift->endTime=Helper::getExpressionTime($shift->endTime);
-                $shift->halfDayEndTime=Helper::getExpressionTime($shift->halfDayEndTime);
-                $shift->halfTime=Helper::getExpressionTime($shift->halfTime);
+                $shift->shiftId = ((int) Helper::getMaxId($this->adapter, Shift::TABLE_NAME, Shift::SHIFT_ID)) + 1;
+                $shift->startDate = Helper::getExpressionDate($shift->startDate);
+                $shift->endDate = Helper::getExpressionDate($shift->endDate);
+                $shift->startTime = Helper::getExpressionTime($shift->startTime);
+                $shift->endTime = Helper::getExpressionTime($shift->endTime);
+                $shift->halfDayEndTime = Helper::getExpressionTime($shift->halfDayEndTime);
+                $shift->halfTime = Helper::getExpressionTime($shift->halfTime);
                 $shift->createdDt = Helper::getcurrentExpressionDate();
                 $shift->createdBy = $this->employeeId;
+                $shift->status = 'E';
+
+                $shift->actualWorkingHr = Helper::getExpressionTime($shift->actualWorkingHr, Helper::ORACLE_TIMESTAMP_FORMAT);
+                $shift->totalWorkingHr = Helper::getExpressionTime($shift->totalWorkingHr, Helper::ORACLE_TIMESTAMP_FORMAT);
+                $shift->lateIn = Helper::getExpressionTime($shift->lateIn, Helper::ORACLE_TIMESTAMP_FORMAT);
+                $shift->earlyOut = Helper::getExpressionTime($shift->earlyOut, Helper::ORACLE_TIMESTAMP_FORMAT);
+
 
 //                $shift->shiftLname=mb_convert_encoding($shift->shiftLname, 'UTF-16LE');
 //                print "<pre>";
 //                print_r($shift->shiftLname);
 //                exit;
 
-                $shift->status='E';
                 $this->repository->add($shift);
                 $this->flashmessenger()->addMessage("Shift Successfully added!!!");
                 return $this->redirect()->toRoute("shiftsetup");
             }
         }
         return new ViewModel(Helper::addFlashMessagesToArray(
-            $this,
-            [
-                'form' => $this->form,
-                'customRenderer'=>Helper::renderCustomView()
-            ]
-        )
+                        $this, [
+                    'form' => $this->form,
+                    'customRenderer' => Helper::renderCustomView(),
+                    'companies' => EntityHelper::getTableKVList($this->adapter, Company::TABLE_NAME)
+                        ]
+                )
         );
     }
 
-    public function editAction()
-    {
+    public function editAction() {
         $this->initializeForm();
-        $id = (int)$this->params()->fromRoute("id");
+        $id = (int) $this->params()->fromRoute("id");
 
         if ($id === 0) {
             return $this->redirect()->toRoute("shiftsetup");
@@ -116,15 +107,22 @@ class ShiftSetup extends AbstractActionController
             $this->form->setData($request->getPost());
             if ($this->form->isValid()) {
                 $shift->exchangeArrayFromForm($this->form->getData());
-                $shift->shiftId=((int) Helper::getMaxId($this->adapter,Shift::TABLE_NAME,Shift::SHIFT_ID))+1;
-                $shift->startDate=Helper::getExpressionDate($shift->startDate);
-                $shift->endDate=Helper::getExpressionDate($shift->endDate);
-                $shift->startTime=Helper::getExpressionTime($shift->startTime);
-                $shift->endTime=Helper::getExpressionTime($shift->endTime);
-                $shift->halfDayEndTime=Helper::getExpressionTime($shift->halfDayEndTime);
-                $shift->halfTime=Helper::getExpressionTime($shift->halfTime);
+                $shift->shiftId = ((int) Helper::getMaxId($this->adapter, Shift::TABLE_NAME, Shift::SHIFT_ID)) + 1;
+                $shift->startDate = Helper::getExpressionDate($shift->startDate);
+                $shift->endDate = Helper::getExpressionDate($shift->endDate);
+                $shift->startTime = Helper::getExpressionTime($shift->startTime);
+                $shift->endTime = Helper::getExpressionTime($shift->endTime);
+                $shift->halfDayEndTime = Helper::getExpressionTime($shift->halfDayEndTime);
+                $shift->halfTime = Helper::getExpressionTime($shift->halfTime);
                 $shift->modifiedDt = Helper::getcurrentExpressionDate();
                 $shift->modifiedBy = $this->employeeId;
+
+                $shift->actualWorkingHr = Helper::getExpressionTime($shift->actualWorkingHr, Helper::ORACLE_TIMESTAMP_FORMAT);
+                $shift->totalWorkingHr = Helper::getExpressionTime($shift->totalWorkingHr, Helper::ORACLE_TIMESTAMP_FORMAT);
+                $shift->lateIn = Helper::getExpressionTime($shift->lateIn, Helper::ORACLE_TIMESTAMP_FORMAT);
+                $shift->earlyOut = Helper::getExpressionTime($shift->earlyOut, Helper::ORACLE_TIMESTAMP_FORMAT);
+
+
 
                 $this->repository->edit($shift, $id);
                 $this->flashmessenger()->addMessage("Shift Successfuly Updated!!!");
@@ -132,19 +130,18 @@ class ShiftSetup extends AbstractActionController
             }
         }
         return new ViewModel(Helper::addFlashMessagesToArray(
-            $this,
-            [
-                'form' => $this->form,
-                'id' => $id,
-                'customRenderer'=>Helper::renderCustomView()
-            ]
-        )
+                        $this, [
+                    'form' => $this->form,
+                    'id' => $id,
+                    'customRenderer' => Helper::renderCustomView(),
+                    'companies' => EntityHelper::getTableKVList($this->adapter, Company::TABLE_NAME)
+                        ]
+                )
         );
     }
 
-    public function deleteAction()
-    {
-        $id = (int)$this->params()->fromRoute("id");
+    public function deleteAction() {
+        $id = (int) $this->params()->fromRoute("id");
         if (!$id) {
             return $this->redirect()->toRoute('shiftsetup');
         }
@@ -152,8 +149,8 @@ class ShiftSetup extends AbstractActionController
         $this->flashmessenger()->addMessage("Shift Successfully Deleted!!!");
         return $this->redirect()->toRoute('shiftsetup');
     }
-}
 
+}
 
 /* End of file ShiftController.php */
 /* Location: ./Setup/src/Controller/ShiftController.php */
