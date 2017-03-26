@@ -8,6 +8,7 @@ $form->setAttribute('class', 'attendanceDeviceForm');
 $deviceName=$form->get('deviceName');
 $deviceIp=$form->get('deviceIp');
 $deviceLocation=$form->get('deviceLocation');
+$isActive=$form->get('isActive');
 $companyId=$form->get('companyId');
 $companyId->setValueOptions($company);
 $branchId=$form->get('branchId');
@@ -83,7 +84,14 @@ $form->prepare();
 
                     <div class=" row">
 
-                        <div class="col-sm-4">
+                        <div class="col-sm-1 ">
+                            <div class="form-group">
+                                <?php print $this->formLabel($isActive); ?>
+                                <?php print $this->formElement($isActive); ?>
+                                <?php print $this->formElementErrors()->render($isActive, ['class' => 'help-block']); ?>
+                            </div>
+                        </div>
+                        <div class="col-sm-4 col-sm-offset-3">
                             <div class="form-group">
                                 <?php print $this->formLabel($companyId); ?>
                                 <?php print $this->formElement($companyId); ?>
@@ -96,9 +104,6 @@ $form->prepare();
                                 <?php print $this->formElement($branchId); ?>
                                 <?php print $this->formElementErrors()->render($branchId, ['class' => 'help-block']); ?>
                             </div>
-                        </div>
-                        <div class="col-sm-4">
-                            
                         </div>
                     </div>
 

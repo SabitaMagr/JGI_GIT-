@@ -57,8 +57,6 @@ class AttendanceDeviceController extends AbstractActionController
                 $attendanceDevice = new AttendanceDevice();
                 $attendanceDevice->exchangeArrayFromForm($this->form->getData());
                 $attendanceDevice->deviceId = ((int)Helper::getMaxId($this->adapter, AttendanceDevice::TABLE_NAME, AttendanceDevice::DEVICE_ID)) + 1;
-                $attendanceDevice->isActive='Y';
-
                 $this->repository->add($attendanceDevice);
 
                 $this->flashmessenger()->addMessage("Attendance Device Successfully Added!!!");

@@ -29,7 +29,7 @@ class AttendanceDevice extends Model {
         'deviceName' => self::DEVICE_NAME,
         'deviceIp' => self::DEVICE_IP,
         'deviceLocation' => self::DEVICE_LOCATION,
-        'isactive' => self::ISACTIVE,
+        'isActive' => self::ISACTIVE,
         'companyId' => self::COMPANY_ID,
         'branchId' => self::BRANCH_ID,
     ];

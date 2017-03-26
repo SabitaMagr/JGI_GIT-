@@ -40,6 +40,15 @@ class AttendanceDeviceForm {
     
     public $deviceLocation;
     
+      /**
+     * @Annotation\Type("Zend\Form\Element\Checkbox")
+     * @Annotation\Required(false)
+     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
+     * @Annotation\Options({"label":"Active","checked_value":"Y","unchecked_value":"N"})
+     * @Annotation\Attributes({"id":"isActive","class":"form-control"})
+     * @Annotation\Validator({"name":"StringLength", "options":{"max":"15"}})
+     */
+    public $isActive;
     
     /**
      * @Annotation\Type("Zend\Form\Element\Select")
