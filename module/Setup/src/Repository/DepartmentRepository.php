@@ -55,29 +55,30 @@ class DepartmentRepository implements RepositoryInterface {
     public function fetchAllBranchAndCompany() {
         $sql = new Sql($this->adapter);
         $select = $sql->select();
+        $select->columns(['BRANCH_ID', 'BRANCH_NAME']);
         $select->from(['B' => Branch::TABLE_NAME]);
-        $select->join(['C' => Company::TABLE_NAME], "C." . Company::COMPANY_ID . "=B.".Branch::COMPANY_ID,array(), 'right');
+        $select->join(['C' => Company::TABLE_NAME], "C." . Company::COMPANY_ID . "=B." . Branch::COMPANY_ID, array('COMPANY_ID', 'COMPANY_NAME'), 'inner');
+        $select->where(["C.STATUS='E'"]);
         $select->where(["B.STATUS='E'"]);
         $select->order("B." . Branch::BRANCH_NAME . " ASC");
-        
-//        $selectString = $select->getSqlString();
-//        print_r($selectString);
-//        die();
-////        return $results;
-
         $statement = $sql->prepareStatementForSqlObject($select);
+
         $result = $statement->execute();
-        
+
         $list = [];
-        foreach($result as $row){
+        foreach ($result as $row) {
             array_push($list, $row);
         }
-//        print "<pre>";
-//        print_r($list);
-//       
-//        
-//        
-        return $result;
+
+        $companyList = [];
+        foreach ($list as $val) {
+            $newKey = $val['COMPANY_ID'];
+            $companyList[$newKey][] = $val;
+        }
+//        echo '<pre>';
+//        print_r($companyList);
+//        die();
+        return $companyList;
     }
 
 }

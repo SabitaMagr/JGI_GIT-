@@ -1,5 +1,7 @@
 <?php
 $this->headScript()->appendFile($this->basePath('js/setup/department/add.js'));
+$this->headScript()->appendFile($this->basePath('js/angular.min.js'));
+$this->headScript()->appendFile($this->basePath('js/setup/department/departmentController.js'));
 
 $form->setAttribute('role', 'form');
 $form->setAttribute('id', 'department-form');
@@ -11,6 +13,12 @@ $remarks = $form->get('remarks');
 $parentDepartment = $form->get('parentDepartment');
 $departments1 = ["0" => "none"] + $departments;
 $parentDepartment->setValueOptions($departments1);
+
+//$companyId = $form->get('companyId');
+//echo '<pre>';
+//print_r($details['COMPANY_ID']);
+//die();
+//$companyId->setValueOptions($company);
 
 $branchId = $form->get('branchId');
 $branchId->setValueOptions($branch);
@@ -32,6 +40,7 @@ if ($this->messages) {
 $form->prepare();
 ?>
 <script>
+           document.branches=<?php echo json_encode($branch);  ?>;
     document.menu =<?php
 $menu = ["id" => "menuSetup", "subMenu" => ["id" => "subMenuDepartment"]];
 echo json_encode($menu);
@@ -41,6 +50,7 @@ echo json_encode($menu);
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\Department')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
+<div ng-app="hris" ng-controller="departmenetController">
 <div class="row margin-top-20">
     <div class="col-sm-12">
         <div class="portlet box custom-box">
@@ -82,6 +92,24 @@ echo json_encode($menu);
                         </div>
                     </div>
                 </div>
+                
+                
+                <div class="form-group">
+                    <label for="form-companyId">Company</label>
+                    <select name="companyId" ng-model="company"  ng-change="companyChange()" required="required" id="form-companyId" class="form-control">
+                        <option value="" disabled="" selected="" class="ng-binding">Please select</option>   
+                        <?php foreach ($company as $key => $value) { 
+                            if($key==$details['COMPANY_ID']){?>
+                        <option selected="selected" value="<?php echo $key; ?>"><?php echo $value; ?></option> 
+                            <?php }else{
+//                            ?>
+                                <option value="<?php echo $key; ?>"><?php echo $value; ?></option> 
+                            <?php } 
+                            
+                        } 
+                        ?>
+                    </select>
+                </div>
 
                 <div class=" row">
                     <div class="col-sm-4">
@@ -94,9 +122,10 @@ echo json_encode($menu);
 
                     <div class="col-sm-4">
                         <div class="form-group">
-                            <?php print $this->formLabel($branchId); ?>
-                            <?php print $this->formElement($branchId); ?>
-                            <?php print $this->formElementErrors()->render($branchId, ['class' => 'help-block']); ?>
+                            <label for="form-branchId">Branch</label> 
+                            <select name="branchId" ng-model="branch" ng-options="obj.BRANCH_NAME for obj in branchValue track by obj.BRANCH_ID"  required="required" id="form-branchId" class="form-control" >
+                            <option value="" disabled="" selected="" class="ng-binding">Please select</option> 
+                            </select>
                         </div>
                     </div>
 
@@ -119,4 +148,5 @@ echo json_encode($menu);
             </div>
         </div>
     </div>
+</div>
 </div>

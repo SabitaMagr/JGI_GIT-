@@ -8,6 +8,7 @@ use System\Controller\MenuSetupController;
 use System\Controller\RoleSetupController;
 use System\Controller\SettingController;
 use System\Controller\UserSetupController;
+use System\Controller\AttendanceDeviceController;
 use Zend\Router\Http\Segment;
 
 return [
@@ -79,6 +80,20 @@ return [
                     ],
                     'defaults' => [
                         'controller' => SettingController::class,
+                        'action' => 'index'
+                    ]
+                ]
+            ],
+            'AttendanceDevice' => [
+                'type' => Segment::class,
+                'options' => [
+                    'route' => '/system/AttendanceDevice[/:action[/:id]]',
+                    'constraint' => [
+                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'id' => '[0-9]+',
+                    ],
+                    'defaults' => [
+                        'controller' => AttendanceDeviceController::class,
                         'action' => 'index'
                     ]
                 ]
