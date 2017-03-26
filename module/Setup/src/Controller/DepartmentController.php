@@ -75,21 +75,21 @@ class DepartmentController extends AbstractActionController {
                     'branch' => $this->repository->fetchAllBranchAndCompany(),
                     'countries' => EntityHelper::getTableKVList($this->adapter, EntityHelper::HRIS_COUNTRIES)
                         ]
-                )
-        );
+        ));
     }
 
     public function editAction() {
 
-        $id = (int) $this->params()->fromRoute("id");        if ($id === 0) {
+        $id = (int) $this->params()->fromRoute("id");
+        if ($id === 0) {
             return $this->redirect()->
-toRoute('department');
+                            toRoute('department');
         }
         $this->initializeForm();
         $request = $this->getRequest();
 
         $department = new Department();
-            $detail=$this->repository->fetchById($id)->getArrayCopy();
+        $detail = $this->repository->fetchById($id)->getArrayCopy();
         if (!$request->isPost()) {
             $department->exchangeArrayFromDb($detail);
             $this->form->bind($department);
@@ -113,9 +113,7 @@ toRoute('department');
                     'departments' => ApplicationEntityHelper::getTableKVListWithSortOption($this->adapter, Department::TABLE_NAME, Department::DEPARTMENT_ID, [Department::DEPARTMENT_NAME], ["STATUS" => "E"], "DEPARTMENT_NAME", "ASC"),
                     'company' => ApplicationEntityHelper::getTableKVListWithSortOption($this->adapter, Company::TABLE_NAME, Company::COMPANY_ID, [Company::COMPANY_NAME], ["STATUS" => "E"], "COMPANY_NAME", "ASC"),
                     'branch' => $this->repository->fetchAllBranchAndCompany(),
-//                            'branch' => ApplicationEntityHelper::getTableKVListWithSortOption($this->adapter, Branch::TABLE_NAME, Branch::BRANCH_ID, [Branch::BRANCH_NAME], ["STATUS" => "E"], "BRANCH_NAME", "ASC"),
                     'countries' => EntityHelper::getTableKVList($this->adapter, EntityHelper::HRIS_COUNTRIES),
-                      'details'=> $detail
                         ]
         );
     }
