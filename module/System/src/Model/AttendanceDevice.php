@@ -6,6 +6,7 @@ use Application\Model\Model;
 
 class AttendanceDevice extends Model {
 
+
     const TABLE_NAME = "HRIS_ATTENDANCE_DEVICE";
     const DEVICE_ID = "DEVICE_ID";
     const DEVICE_NAME = "DEVICE_NAME";
@@ -22,16 +23,15 @@ class AttendanceDevice extends Model {
     public $isActive;
     public $companyId;
     public $branchId;
-    
-    
+
     public $mappings = [
-        'deviceId' => Self::DEVICE_ID,
-        'deviceName' => Self::DEVICE_NAME,
-        'deviceIp' => Self::DEVICE_IP,
-        'deviceLocation' => Self::DEVICE_LOCATION,
-        'isActive' => Self::ISACTIVE,
-        'companyId' => Self::COMPANY_ID,
-        'branchId' => Self::BRANCH_ID
+        'deviceId' => self::DEVICE_ID,
+        'deviceName' => self::DEVICE_NAME,
+        'deviceIp' => self::DEVICE_IP,
+        'deviceLocation' => self::DEVICE_LOCATION,
+        'isactive' => self::ISACTIVE,
+        'companyId' => self::COMPANY_ID,
+        'branchId' => self::BRANCH_ID,
     ];
 
 }

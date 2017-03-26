@@ -36,10 +36,11 @@ class TravelRequestRepository implements RepositoryInterface {
     public function fetchAll() {
         
     }
-    public function fetchByReferenceId($id){
-        $result =$this->tableGateway->select([
-            TravelRequest::REFERENCE_TRAVEL_ID."=".$id." AND (STATUS!='C' AND STATUS!='R')"
-                ]);
+
+    public function fetchByReferenceId($id) {
+        $result = $this->tableGateway->select([
+            TravelRequest::REFERENCE_TRAVEL_ID . "=" . $id . " AND (STATUS!='C' AND STATUS!='R')"
+        ]);
         return $result->current();
     }
 
