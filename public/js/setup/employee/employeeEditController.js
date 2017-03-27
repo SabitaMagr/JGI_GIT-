@@ -608,9 +608,8 @@
                     restrict: "A",
                     require: "ngModel",
                     link: function (scope, elem, attrs, ngModelCtrl) {
-                        scope.$apply(function () {
-                            app.addDatePicker($(elem));
-                        });
+                        $(elem).val(attrs.dvalue);
+                        app.addDatePicker($(elem));
                     }
                 }
             }).directive("select2", function () {

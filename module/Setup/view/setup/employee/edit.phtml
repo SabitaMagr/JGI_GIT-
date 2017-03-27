@@ -1580,7 +1580,7 @@ json_encode($address);
                                         </div>
                                     </td>
                                     <td>
-                                        <input datepicker type="text" ng-model="experience.fromDate" name="fromDate_{{experience.checkbox}}" required="required" class="form-control" id="expfromDate_{{experience.checkbox}}" value="">
+                                        <input dvalue="{{experience.fromDate}}" datepicker type="text" ng-model="experience.fromDate" name="fromDate_{{experience.checkbox}}" required="required" class="form-control" id="expfromDate_{{experience.checkbox}}" value="">
                                         <div ng-show="employeeExperienceForm.$submitted || employeeExperienceForm.fromDate_{{experience.checkbox}}.$touched">
                                             <ul ng-show="employeeExperienceForm.fromDate_{{experience.checkbox}}.$error.required" class="help-block error">
                                                 <li>From Date is required.</li>
@@ -1588,7 +1588,7 @@ json_encode($address);
                                         </div>
                                     </td>
                                     <td>
-                                        <input datepicker type="text" ng-model="experience.toDate" name="toDate_{{experience.checkbox}}" required="required" class="form-control" id="exptoDate_{{experience.checkbox}}" value="">
+                                        <input dvalue="{{experience.toDate}}" datepicker type="text" ng-model="experience.toDate" name="toDate_{{experience.checkbox}}" required="required" class="form-control" id="exptoDate_{{experience.checkbox}}" value="">
                                         <div ng-show="employeeExperienceForm.$submitted || employeeExperienceForm.toDate_{{experience.checkbox}}.$touched">
                                             <ul ng-show="employeeExperienceForm.toDate_{{experience.checkbox}}.$error.required" class="help-block error">
                                                 <li>To Date is required.</li>
