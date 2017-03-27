@@ -57,6 +57,8 @@ class AttendanceDetailRepository implements RepositoryInterface {
         $select->where(["E.RETIRED_FLAG='N'"]);
         $select->order("E.FIRST_NAME,A.ATTENDANCE_DT DESC");
         $statement = $sql->prepareStatementForSqlObject($select);
+        print($statement->getSql());
+        exit;
         $result = $statement->execute();
         return $result;
     }
@@ -261,8 +263,8 @@ class AttendanceDetailRepository implements RepositoryInterface {
         return $this->getNoOfDaysInDayInterval($employeeId, $startDate, $endDate) - $this->getNoOfDaysAbsent($employeeId, $startDate, $endDate);
     }
 
-    // problem with changes    
-    public function getEmployeesAttendanceByDate($date, bool $flag, $branchId = null) {
+    // problem with changes | MODIFIED   
+    public function getEmployeesAttendanceByDate($date, bool $presentFlag, $branchId = null) {
         $sql = new Sql($this->adapter);
         $select = $sql->select();
         $select->columns([Helper::timeExpression(AttendanceDetail::IN_TIME, 'A'), new Expression("A.ID AS ID")], true);
@@ -272,7 +274,8 @@ class AttendanceDetailRepository implements RepositoryInterface {
 
         $select->where(['A.' . AttendanceDetail::ATTENDANCE_DT . " = " . $date->getExpression()]);
 
-        if ($flag) {
+        $select->where(['A.' . AttendanceDetail::DAYOFF_FLAG . " = 'N'"]);
+        if ($presentFlag) {
             $select->where(['A.' . AttendanceDetail::IN_TIME . " IS NOT NULL"]);
         } else {
             $select->where(['A.' . AttendanceDetail::IN_TIME . " IS NULL"]);
@@ -283,7 +286,6 @@ class AttendanceDetailRepository implements RepositoryInterface {
         }
 
         $statement = $sql->prepareStatementForSqlObject($select);
-//        print $statement->getSql();
         return $statement->execute();
     }
 

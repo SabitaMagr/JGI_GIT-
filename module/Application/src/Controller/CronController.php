@@ -20,6 +20,9 @@ use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Sql\Expression;
 use Zend\Mvc\Controller\AbstractActionController;
 
+/*
+ * This Controller needs reworking as shiftId and DAYOFF_FLAG IS ADDED in the Hr_attendance_detail table. 
+ */
 class CronController extends AbstractActionController {
 
     private $adapter;

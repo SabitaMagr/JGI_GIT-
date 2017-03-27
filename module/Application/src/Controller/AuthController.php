@@ -104,39 +104,41 @@ class AuthController extends AbstractActionController {
                         //set storage again
                         $this->getAuthService()->setStorage($this->getSessionStorage());
                     }
-                    if(1== $request->getPost('checkIn')){
+                    if (1 == $request->getPost('checkIn')) {
                         $attendanceRepo = new AttendanceRepository($this->adapter);
-                        $attendanceModel = new Attendance();
                         $attendanceDetailRepo = new AttendanceDetailRepository($this->adapter);
-                        
+
                         $todayDate = Helper::getcurrentExpressionDate();
                         $todayTime = Helper::getcurrentExpressionTime();
                         $employeeId = $resultRow->EMPLOYEE_ID;
-                        
+
                         $result = $attendanceDetailRepo->getDtlWidEmpIdDate($employeeId, date(Helper::PHP_DATE_FORMAT));
-                        if($result['IN_TIME']==null || $result['IN_TIME']==''){
+                        if (!isset($result)) {
+                            throw new Exception("Today's Attendance of employee with employeeId :$employeeId is not found.");
+                        }
+                        if ($result['IN_TIME'] == null || isEmpty($result['IN_TIME'])) {
+                            $attendanceModel = new Attendance();
                             $attendanceModel->employeeId = $employeeId;
                             $attendanceModel->attendanceDt = $todayDate;
                             $attendanceModel->attendanceTime = $todayTime;
                             $attendanceRepo->add($attendanceModel);
+                        } else {
+                            // user's attendance is already done.
                         }
                     }
                     $this->getAuthService()->getStorage()->write(["user_name" => $request->getPost('username'), "user_id" => $resultRow->USER_ID, "employee_id" => $resultRow->EMPLOYEE_ID, "role_id" => $resultRow->ROLE_ID]);
-                    
-//                    user log table here $_SERVER['HTTP_CLIENT_IP'],$resultRow->USER_ID,SYSDATE
-/*
- * <?php 
-    // Getting the entire params object
-    $servParam = $request->getServer();
-    $remoteAddr = $servParam->get('REMOTE_ADDR');
 
-    // Getting specific variable
-    $remoteAddr = $request->getServer('REMOTE_ADDR');
-?>
- */                    
-                    
-                    
-                    
+//                    user log table here $_SERVER['HTTP_CLIENT_IP'],$resultRow->USER_ID,SYSDATE
+                    /*
+                     * <?php 
+                      // Getting the entire params object
+                      $servParam = $request->getServer();
+                      $remoteAddr = $servParam->get('REMOTE_ADDR');
+
+                      // Getting specific variable
+                      $remoteAddr = $request->getServer('REMOTE_ADDR');
+                      ?>
+                     */
                 }
             }
         }
@@ -150,10 +152,11 @@ class AuthController extends AbstractActionController {
         $this->flashmessenger()->addMessage("You've been logged out");
         return $this->redirect()->toRoute('login');
     }
+
     public function checkoutAction() {
         $attendanceRepo = new AttendanceRepository($this->adapter);
         $attendanceModel = new Attendance();
-        
+
         $todayDate = Helper::getcurrentExpressionDate();
         $todayTime = Helper::getcurrentExpressionTime();
 
@@ -161,10 +164,11 @@ class AuthController extends AbstractActionController {
         $attendanceModel->attendanceDt = $todayDate;
         $attendanceModel->attendanceTime = $todayTime;
         $attendanceRepo->add($attendanceModel);
-        
+
         $this->getSessionStorage()->forgetMe();
         $this->getAuthService()->clearIdentity();
         $this->flashmessenger()->addMessage("You've been logged out");
         return $this->redirect()->toRoute('login');
     }
+
 }
