@@ -25,7 +25,7 @@ class TravelExpenseDtlRepository implements RepositoryInterface{
     }
 
     public function add(Model $model) {
-        
+        $this->tableGateway->insert($model->getArrayCopyForDB());
     }
 
     public function delete($id) {
