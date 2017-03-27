@@ -4,33 +4,6 @@ $this->headScript()
         ->appendFile($this->basePath('js/angular.min.js'))
         ->appendFile($this->basePath('js/SelfService/travel-request/expenseDtlController.js'));
 
-$form->setAttribute('role', 'form');
-$form->setAttribute('id', 'travelRequest-form');
-
-$fromDate = $form->get('fromDate');
-$fromDate->setAttributes(["disabled"=>"disabled"]);
-$toDate = $form->get('toDate');
-$toDate->setAttributes(["disabled"=>"disabled"]);
-$travelCode = $form->get('travelCode');
-$travelCode->setAttributes(["disabled"=>"disabled"]);
-$destination = $form->get('destination');
-$destination->setAttributes(["disabled"=>"disabled"]);
-$purpose = $form->get('purpose');
-$purpose->setAttributes(["disabled"=>"disabled"]);
-$requestedType = $form->get('requestedType');
-$requestedType->setValueOptions($requestTypes);
-$requestedType->setValueOptions(["ep"=>"Expense"]);
-$requestedType->setAttributes(["disabled"=>"disabled"]);
-$requestedAmount = $form->get('requestedAmount');
-$requestedAmount->setValue("");
-$requestedAmount->setAttributes(["required"=>"required"]);
-$remarks = $form->get('remarks');
-$remarks->setValue("");
-$submit = $form->get('submit');
-$submit->setAttribute('value','SUBMIT');
-
-$form->setAttribute('action', $this->url('travelRequest', ['action' => 'expenseRequest','id'=>$id]));
-
 if ($this->messages) {
     print '<ul class="help-block bg-danger" style="background:#f3e250;">';
     foreach ($this->messages as $message) {
@@ -43,6 +16,8 @@ if ($this->messages) {
     <script>
         document.menu=<?php $menu = ["id" => "menuSelfService","subMenu"=>["id"=>"subMenuTravelRequest"]];echo json_encode($menu);?>;
         document.url = '<?= $this->url("restful", ["action" => "index"]) ?>';
+        document.urlExpenseRequest='<?= $this->url("travelRequest", ["action" => "expenseRequest"]) ?>';
+        document.urlTravelRequest='<?= $this->url("travelRequest", ["action" => "index"]) ?>';
     </script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\travelRequest')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
@@ -113,7 +88,7 @@ if ($this->messages) {
                                     <label for="departureDate">Departure Date :</label>
                                 </td>
                                 <td>
-                                    <input type="text" required="required" name="departureDate" required="required" id="departureDate" class="form-control">
+                                    <input type="text" required="required" ng-model="departureDateMain" name="departureDate" required="required" id="departureDate" class="form-control">
                                     <div ng-show="travelExpenseForm.$submitted || travelExpenseForm.departureDate.$touched">
                                         <ul ng-show="travelExpenseForm.departureDate.$error.required" class="help-block error">
                                             <li>Departure Date is required.</li>
@@ -131,7 +106,7 @@ if ($this->messages) {
                                    <label for="employeeCode">Returned Date :</label> 
                                 </td>
                                 <td>
-                                   <input type="text" required="required" name="returnedDate" required="required" id="returnedDate" class="form-control"> 
+                                    <input type="text" ng-model="returnedDate" required="required" name="returnedDate" required="required" id="returnedDate" class="form-control"> 
                                     <div ng-show="travelExpenseForm.$submitted || travelExpenseForm.returnedDate.$touched">
                                         <ul ng-show="travelExpenseForm.returnedDate.$error.required" class="help-block error">
                                             <li>Returned Date is required.</li>
