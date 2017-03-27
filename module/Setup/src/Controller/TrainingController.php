@@ -11,6 +11,7 @@ use Zend\Authentication\AuthenticationService;
 use Setup\Repository\TrainingRepository;
 use Setup\Model\Institute;
 use Zend\Db\Adapter\AdapterInterface;
+use Setup\Model\Company;
 
 class TrainingController extends AbstractActionController{
     private $form;
@@ -63,6 +64,7 @@ class TrainingController extends AbstractActionController{
         return Helper::addFlashMessagesToArray($this, [
                 'form'=>$this->form,
                 'instituteNameList'=> EntityHelper::getTableKVListWithSortOption($this->adapter, Institute::TABLE_NAME, Institute::INSTITUTE_ID, [Institute::INSTITUTE_NAME], [Institute::STATUS => 'E'],Institute::INSTITUTE_NAME,"ASC",null,true),
+                'companies' => EntityHelper::getTableKVListWithSortOption($this->adapter, Company::TABLE_NAME, Company::COMPANY_ID, [Company::COMPANY_NAME], ["STATUS" => "E"], Company::COMPANY_NAME, "ASC"),
                 'trainingTypeList'=>$trainingTypes  
                 ]);               
     }
@@ -100,6 +102,7 @@ class TrainingController extends AbstractActionController{
                             'form' => $this->form, 
                             'id' => $id,
                             'instituteNameList'=> EntityHelper::getTableKVListWithSortOption($this->adapter, Institute::TABLE_NAME, Institute::INSTITUTE_ID, [Institute::INSTITUTE_NAME], [Institute::STATUS => 'E'],Institute::INSTITUTE_NAME,"ASC",null,true),
+                            'companies' => EntityHelper::getTableKVListWithSortOption($this->adapter, Company::TABLE_NAME, Company::COMPANY_ID, [Company::COMPANY_NAME], ["STATUS" => "E"], Company::COMPANY_NAME, "ASC"),
                             'trainingTypeList'=>$trainingTypes 
                 ]
         );

@@ -16,6 +16,9 @@ $trainingType->setValueOptions($trainingTypeList);
 $instituteName = $form->get('instituteId');
 $instituteName->setValueOptions($instituteNameList);
 
+$companyId = $form->get('companyId');
+$companyId->setValueOptions($companies);
+
 $submit = $form->get('submit');
 $submit->setAttribute('value', 'SUBMIT');
 
@@ -133,6 +136,16 @@ echo json_encode($menu);
                             <?php print $this->formLabel($remarks); ?>
                             <?php print $this->formElement($remarks); ?>
                             <?php print $this->formElementErrors()->render($remarks, ['class' => 'help-block error']); ?>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <?php print $this->formLabel($companyId); ?>
+                            <?php print $this->formElement($companyId); ?>
+                            <?php print $this->formElementErrors()->render($companyId, ['class' => 'help-block error']); ?>
                         </div>
                     </div>
                 </div>

@@ -9,13 +9,11 @@
 
 namespace AttendanceManagement\Model;
 
-use Zend\View\Model\ModelInterface;
 use Application\Model\Model;
 
 class AttendanceDetail extends Model {
 
     const TABLE_NAME = "HRIS_ATTENDANCE_DETAIL";
-    const ID = "ID";
     const EMPLOYEE_ID = "EMPLOYEE_ID";
     const ATTENDANCE_DT = "ATTENDANCE_DT";
     const IN_TIME = "IN_TIME";
@@ -26,7 +24,10 @@ class AttendanceDetail extends Model {
     const LEAVE_ID = "LEAVE_ID";
     const HOLIDAY_ID = "HOLIDAY_ID";
     const TRAINING_ID = "TRAINING_ID";
+    const ID = "ID";
     const TRAVEL_ID = "TRAVEL_ID";
+    const SHIFT_ID = "SHIFT_ID";
+    const DAYOFF_FLAG = "DAYOFF_FLAG";
 
     public $id;
     public $employeeId;
@@ -40,6 +41,8 @@ class AttendanceDetail extends Model {
     public $holidayId;
     public $trainingId;
     public $travelId;
+    public $shiftId;
+    public $dayoffFlag;
     public $mappings = [
         'id' => self::ID,
         'employeeId' => self::EMPLOYEE_ID,
@@ -52,7 +55,9 @@ class AttendanceDetail extends Model {
         'leaveId' => self::LEAVE_ID,
         'holidayId' => self::HOLIDAY_ID,
         'trainingId' => self::TRAINING_ID,
-        'travelId' => self::TRAVEL_ID
+        'travelId' => self::TRAVEL_ID,
+        'shiftId' => self::SHIFT_ID,
+        'dayoffFlag' => self::DAYOFF_FLAG
     ];
 
 }

@@ -20,6 +20,7 @@ class Training extends Model{
     const CREATED_BY = "CREATED_BY";
     const MODIFIED_DATE = "MODIFIED_DATE";
     const MODIFIED_BY = "MODIFIED_BY";
+    const COMPANY_ID = "COMPANY_ID";
     
     public $trainingId;
     public $trainingCode;
@@ -36,6 +37,7 @@ class Training extends Model{
     public $modifiedDate;
     public $modifiedBy;
     public $instuctorName;
+    public $companyId;
     
     public $mappings = [
         'trainingId'=>self::TRAINING_ID,
@@ -52,6 +54,7 @@ class Training extends Model{
         'modifiedBy'=>self::MODIFIED_BY,
         'instructorName'=>self::INSTRUCTOR_NAME,
         'remarks'=>self::REMARKS,
-        'status'=>self::STATUS
+        'status'=>self::STATUS,
+        'companyId' => self::COMPANY_ID
     ];   
 }
