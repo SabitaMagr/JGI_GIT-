@@ -12,11 +12,14 @@ $parentDepartment = $form->get('parentDepartment');
 $departments1 = ["0" => "none"] + $departments;
 $parentDepartment->setValueOptions($departments1);
 
+$companyId = $form->get('companyId');
+$companyId->setValueOptions($company);
+
 $branchId = $form->get('branchId');
-$branchId->setValueOptions($branch);
 
 $countryId = $form->get('countryId');
 $countryId->setValueOptions($countries);
+
 $submit = $form->get('submit');
 $submit->setAttribute('value', 'SUBMIT');
 
@@ -32,6 +35,8 @@ if ($this->messages) {
 $form->prepare();
 ?>
 <script>
+    document.branches =<?php echo json_encode($branch); ?>;
+    document.selectedBranchId =<?php echo $branchId->getValue(); ?>;
     document.menu =<?php
 $menu = ["id" => "menuSetup", "subMenu" => ["id" => "subMenuDepartment"]];
 echo json_encode($menu);
@@ -41,82 +46,92 @@ echo json_encode($menu);
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\Department')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
-<div class="row margin-top-20">
-    <div class="col-sm-12">
-        <div class="portlet box custom-box">
-            <div class="portlet-title">
-                <div class="caption">
-                    <i class="fa fa-user"></i>Update
-                </div>
-            </div>
-            <div class="portlet-body">
-                <?php
-                print $this->form()->openTag($form);
-                ?>
 
-                <div class=" row">
-                    <div class="col-sm-4">
-                        <div class="form-group">
-                            <?php print $this->formLabel($departmentCode); ?>
-                            <?php print $this->formElement($departmentCode); ?>
-                            <?php print $this->formElementErrors()->render($departmentCode, ['class' => 'help-block']); ?>
-                            <span class="errorMsg" style="font-size:11px; color:red;"></span>
-                        </div>
-                    </div>
-
-                    <div class="col-sm-4">
-                        <div class="form-group">
-                            <?php print $this->formLabel($departmentName); ?>
-                            <?php print $this->formElement($departmentName); ?>
-                            <?php print $this->formElementErrors()->render($departmentName, ['class' => 'help-block']); ?>
-                            <input type="hidden" id="departmentId" value="<?php echo $id; ?>"/>
-                            <span class="errorMsg" style="font-size:11px; color:red;"></span>
-                        </div>
-                    </div>
-
-                    <div class="col-sm-4">
-                        <div class="form-group">
-                            <?php print $this->formLabel($countryId); ?>
-                            <?php print $this->formElement($countryId); ?>
-                            <?php print $this->formElementErrors()->render($countryId, ['class' => 'help-block']); ?>
-                        </div>
+    <div class="row margin-top-20">
+        <div class="col-sm-12">
+            <div class="portlet box custom-box">
+                <div class="portlet-title">
+                    <div class="caption">
+                        <i class="fa fa-user"></i>Update
                     </div>
                 </div>
+                <div class="portlet-body">
+                    <?php
+                    print $this->form()->openTag($form);
+                    ?>
 
-                <div class=" row">
-                    <div class="col-sm-4">
-                        <div class="form-group">
-                            <?php print $this->formLabel($parentDepartment); ?>
-                            <?php print $this->formElement($parentDepartment); ?>
-                            <?php print $this->formElementErrors()->render($parentDepartment, ['class' => 'help-block']); ?>
+                    <div class=" row">
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <?php print $this->formLabel($departmentCode); ?>
+                                <?php print $this->formElement($departmentCode); ?>
+                                <?php print $this->formElementErrors()->render($departmentCode, ['class' => 'help-block']); ?>
+                                <span class="errorMsg" style="font-size:11px; color:red;"></span>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <?php print $this->formLabel($departmentName); ?>
+                                <?php print $this->formElement($departmentName); ?>
+                                <?php print $this->formElementErrors()->render($departmentName, ['class' => 'help-block']); ?>
+                                <input type="hidden" id="departmentId" value="<?php echo $id; ?>"/>
+                                <span class="errorMsg" style="font-size:11px; color:red;"></span>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <?php print $this->formLabel($countryId); ?>
+                                <?php print $this->formElement($countryId); ?>
+                                <?php print $this->formElementErrors()->render($countryId, ['class' => 'help-block']); ?>
+                            </div>
                         </div>
                     </div>
 
-                    <div class="col-sm-4">
+
+                    <div class="form-group">
                         <div class="form-group">
-                            <?php print $this->formLabel($branchId); ?>
-                            <?php print $this->formElement($branchId); ?>
-                            <?php print $this->formElementErrors()->render($branchId, ['class' => 'help-block']); ?>
+                            <?php print $this->formLabel($companyId); ?>
+                            <?php print $this->formElement($companyId); ?>
+                            <?php print $this->formElementErrors()->render($companyId, ['class' => 'help-block']); ?>
                         </div>
                     </div>
 
-                    <div class="col-sm-4">
-                        <div class="form-group">
-                            <?php print $this->formLabel($remarks); ?>
-                            <?php print $this->formElement($remarks); ?>
-                            <?php print $this->formElementErrors()->render($remarks, ['class' => 'help-block']); ?>
+                    <div class=" row">
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <?php print $this->formLabel($parentDepartment); ?>
+                                <?php print $this->formElement($parentDepartment); ?>
+                                <?php print $this->formElementErrors()->render($parentDepartment, ['class' => 'help-block']); ?>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <?php print $this->formLabel($branchId); ?>
+                                <?php print $this->formElement($branchId); ?>
+                                <?php print $this->formElementErrors()->render($branchId, ['class' => 'help-block']); ?>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <?php print $this->formLabel($remarks); ?>
+                                <?php print $this->formElement($remarks); ?>
+                                <?php print $this->formElementErrors()->render($remarks, ['class' => 'help-block']); ?>
+                            </div>
                         </div>
                     </div>
+
+
+
+
+                    <?php
+                    print $this->formSubmit($submit);
+                    print $this->form()->closeTag();
+                    ?>
                 </div>
-
-
-
-
-                <?php
-                print $this->formSubmit($submit);
-                print $this->form()->closeTag();
-                ?>
             </div>
         </div>
     </div>
-</div>

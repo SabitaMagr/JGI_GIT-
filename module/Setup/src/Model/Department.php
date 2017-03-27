@@ -19,6 +19,7 @@ class Department extends Model {
     const CREATED_BY = "CREATED_BY";
     const MODIFIED_BY = "MODIFIED_BY";
     const BRANCH_ID = "BRANCH_ID";
+    const COMPANY_ID = "COMPANY_ID";
 
     public $departmentId;
     public $departmentCode;
@@ -32,6 +33,7 @@ class Department extends Model {
     public $createdBy;
     public $modifiedBy;
     public $branchId;
+    public $companyId;
     public $mappings = [
         'departmentId' => self::DEPARTMENT_ID,
         'departmentCode' => self::DEPARTMENT_CODE,
@@ -45,6 +47,7 @@ class Department extends Model {
         'createdBy' => self::CREATED_BY,
         'modifiedBy' => self::MODIFIED_BY,
         'branchId' => self::BRANCH_ID,
+        'companyId'=> self::COMPANY_ID,
     ];
 
 }

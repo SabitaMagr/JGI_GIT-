@@ -61,7 +61,6 @@ class CronController extends AbstractActionController {
 //                $attendanceRepo->add($attendanceDetail);
 //            }
 
-
             $checkForHoliday = $this->checkForHoliday($employee, $this->date);
             $checkForleave = $this->checkForLeave($employee, $this->date);
             $checkForTraining = $this->checkForTraining($employee, $this->date);

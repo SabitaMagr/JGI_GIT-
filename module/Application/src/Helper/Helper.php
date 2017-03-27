@@ -12,6 +12,7 @@ class Helper {
 
     const ORACLE_DATE_FORMAT = "DD-MON-YYYY";
     const ORACLE_TIME_FORMAT = "HH:MI AM";
+    const ORACLE_TIMESTAMP_FORMAT = "HH24:MI";
     const MYSQL_DATE_FORMAT = "";
     const PHP_DATE_FORMAT = "d-M-Y";
     const PHP_TIME_FORMAT = "h:i A";
@@ -42,7 +43,7 @@ class Helper {
         return $row["MAX_{$columnName}"];
     }
 
-    public static function convertColumnDateFormat(AdapterInterface $adapter, Model $table, $attrs = null, $timeAttrs = null, $shortForm = null) {
+    public static function convertColumnDateFormat(AdapterInterface $adapter, Model $table, $attrs = null, $timeAttrs = null, $shortForm = null, $timeIntervalAttrs = null) {
         $format = 'DD-MON-YYYY HH24:MI:SS';
 
         $temp = get_object_vars($table);
@@ -65,6 +66,11 @@ class Helper {
                 unset($temp[$attr]);
             }
         }
+        if ($timeIntervalAttrs != null) {
+            foreach ($timeIntervalAttrs as $attr) {
+                unset($temp[$attr]);
+            }
+        }
 
         $attributes = array_keys($temp);
 
@@ -83,9 +89,9 @@ class Helper {
             }
         }
 
-        if ($timeAttrs != null) {
-            foreach ($timeAttrs as $attr) {
-                array_push($tempCols, Helper::appendDateFormat($adapter, $table->mappings[$attr], self::ORACLE_TIME_FORMAT, $shortForm));
+        if ($timeIntervalAttrs != null) {
+            foreach ($timeIntervalAttrs as $attr) {
+                array_push($tempCols, Helper::appendDateFormat($adapter, $table->mappings[$attr], self::ORACLE_TIMESTAMP_FORMAT, $shortForm));
             }
         }
 
@@ -184,7 +190,8 @@ class Helper {
         $currentDate = date(self::PHP_DATE_FORMAT);
         return self::getExpressionDate($currentDate);
     }
-    public static function getcurrentExpressionTime(){
+
+    public static function getcurrentExpressionTime() {
         $currentTime = date(self::PHP_TIME_FORMAT);
         return self::getExpressionTime($currentTime);
     }
@@ -271,4 +278,5 @@ class Helper {
     public static function maintainFloatNumberFormat($floatNumber) {
         return number_format($floatNumber, self::FLOAT_ROUNDING_DIGIT_NO, '.', '');
     }
+
 }

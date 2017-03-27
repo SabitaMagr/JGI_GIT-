@@ -349,7 +349,7 @@ window.app = (function ($, toastr) {
             var childId = parentId.children(".errorMsg");
             var columnsWidValues = {};
             columnsWidValues[columnName] = nameValue;
-            var displayErrorMessage = function (formGroup, check, message, id = null) {
+            var displayErrorMessage = function (formGroup, check, message, id) {
                 var flag = formGroup.find('span.errorMsg').length > 0;
                 console.log(formGroup);
                 if (flag) {

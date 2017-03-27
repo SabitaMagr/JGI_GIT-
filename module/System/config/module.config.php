@@ -3,6 +3,7 @@
 namespace System;
 
 use Application\Controller\ControllerFactory;
+use System\Controller\AttendanceDeviceController;
 use System\Controller\DashboardController;
 use System\Controller\MenuSetupController;
 use System\Controller\RoleSetupController;
@@ -79,6 +80,20 @@ return [
                     ],
                     'defaults' => [
                         'controller' => SettingController::class,
+                        'action' => 'index'
+                    ]
+                ]
+            ],
+            'AttendanceDevice' => [
+                'type' => Segment::class,
+                'options' => [
+                    'route' => '/system/AttendanceDevice[/:action[/:id]]',
+                    'constraint' => [
+                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'id' => '[0-9]+',
+                    ],
+                    'defaults' => [
+                        'controller' => AttendanceDeviceController::class,
                         'action' => 'index'
                     ]
                 ]
@@ -183,6 +198,33 @@ return [
                     ],
                 ],
             ],
+        ],
+        'AttendanceDevice' => [
+                [
+                'label' => "Attedance Device Setup",
+                'route' => "AttendanceDevice"
+            ],
+                [
+                'label' => "Attedance Device Setup",
+                'route' => "AttendanceDevice",
+                'pages' => [
+                        [
+                        'label' => 'List',
+                        'route' => 'AttendanceDevice',
+                        'action' => 'index',
+                    ],
+                        [
+                        'label' => 'Add',
+                        'route' => 'AttendanceDevice',
+                        'action' => 'add',
+                    ],
+                        [
+                        'label' => 'Edit',
+                        'route' => 'AttendanceDevice',
+                        'action' => 'edit',
+                    ],
+                ],
+            ],
         ]
     ],
     'controllers' => [
@@ -191,7 +233,8 @@ return [
             UserSetupController::class => ControllerFactory::class,
             MenuSetupController::class => ControllerFactory::class,
             DashboardController::class => ControllerFactory::class,
-            SettingController::class => ControllerFactory::class
+            SettingController::class => ControllerFactory::class,
+            AttendanceDeviceController::class => ControllerFactory::class
         ],
     ],
     'view_manager' => [
