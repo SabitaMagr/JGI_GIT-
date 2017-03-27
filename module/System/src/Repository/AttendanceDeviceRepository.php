@@ -25,22 +25,23 @@ class AttendanceDeviceRepository implements RepositoryInterface {
     }
 
     public function delete($id) {
-        
+         $this->tableGateway->update([AttendanceDevice::STATUS=>"D"],[AttendanceDevice::DEVICE_ID=>$id]);
     }
 
     public function edit(Model $model, $id) {
-        
+         $this->tableGateway->update($model->getArrayCopyForDB(),[AttendanceDevice::DEVICE_ID=>$id]);
     }
 
     public function fetchAll() {
          return $this->tableGateway->select(function(Select $select){
-//            $select->where([AttendanceDevice::ISACTIVE=>'Y']);
+            $select->where([AttendanceDevice::STATUS=>'E']);
             $select->order(AttendanceDevice::DEVICE_NAME." ASC");
         });
     }
 
     public function fetchById($id) {
-        
+         $result = $this->tableGateway->select([AttendanceDevice::DEVICE_ID=>$id]);
+        return $result->current();
     }
 
 }

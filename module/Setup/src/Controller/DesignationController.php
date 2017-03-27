@@ -5,6 +5,7 @@ namespace Setup\Controller;
 use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
 use Setup\Form\DesignationForm;
+use Setup\Model\Company;
 use Setup\Model\Designation;
 use Setup\Repository\DesignationRepository;
 use Zend\Authentication\AuthenticationService;
@@ -74,6 +75,7 @@ class DesignationController extends AbstractActionController {
                     'form' => $this->form,
                     'customRender' => Helper::renderCustomView(),
                     'designationList' => $designationList1,
+                    'companies' => EntityHelper::getTableKVListWithSortOption($this->adapter, Company::TABLE_NAME, Company::COMPANY_ID, [Company::COMPANY_NAME], ["STATUS" => "E"], Company::COMPANY_NAME, "ASC"),
                     'messages' => $this->flashmessenger()->getMessages()
                         ]
                 )
@@ -113,6 +115,7 @@ class DesignationController extends AbstractActionController {
                     'form' => $this->form,
                     'customRender' => Helper::renderCustomView(),
                     'designationList' => $designationList1,
+                    'companies' => EntityHelper::getTableKVListWithSortOption($this->adapter, Company::TABLE_NAME, Company::COMPANY_ID, [Company::COMPANY_NAME], ["STATUS" => "E"], Company::COMPANY_NAME, "ASC"),
                     'messages' => $this->flashmessenger()->getMessages(),
                     'id' => $id
                 ])

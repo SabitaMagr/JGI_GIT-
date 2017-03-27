@@ -1,22 +1,7 @@
-(function ($,app) {
+(function ($, app) {
     'use strict';
-//    $('#qualificationTbl').delegate("select", "DOMNodeInserted", function () {
-//        $(this).select2();
-//    });
-
-    //$(selector).live( eventName, function(){} );
-    $(document).ready(function () {
-        var datepickerselect = function () {
-            $(".exList").each(function () {
-                var id = $(this).attr("id");
-                console.log(id);
-                window.app.startEndDatePicker('expfromDate_' + id, 'exptoDate_' + id);
-            });
-        }
-    });
-
     angular.module("hris", ['ui.bootstrap'])
-            .controller('qualificationController', function ($scope, $uibModal, $log, $document,$window) {
+            .controller('qualificationController', function ($scope, $uibModal, $log, $document, $window) {
 
                 //for qualification detail [add and delete]
                 $scope.degreeList = [];
@@ -376,7 +361,7 @@
                     checkbox: "checkboxe0",
                     checked: false
                 };
-                $scope.addDatePicker = function (fromId,toId) {
+                $scope.addDatePicker = function (fromId, toId) {
                     app.startEndDatePicker(fromId, toId);
                 }
                 if (employeeId !== 0) {
@@ -398,32 +383,32 @@
                                     } else if (experienceList[j].ORGANIZATION_TYPE == 'Non-Financial') {
                                         var organizationType = $scope.organizationType[1];
                                     }
-                                
+
                                     $scope.experienceFormList.push(angular.copy({
                                         id: experienceList[j].ID,
                                         organizationTypeId: organizationType,
                                         organizationName: experienceList[j].ORGANIZATION_NAME,
-                                        position:experienceList[j].POSITION,
-                                        fromDate:experienceList[j].FROM_DATE,
-                                        toDate:experienceList[j].TO_DATE,
+                                        position: experienceList[j].POSITION,
+                                        fromDate: experienceList[j].FROM_DATE,
+                                        toDate: experienceList[j].TO_DATE,
                                         checkbox: "checkboxe" + j,
                                         checked: false
                                     }));
-                                   // $scope.addDatePicker('expfromDate_checkboxe'+j, 'exptoDate_checkboxe'+j);
+                                    // $scope.addDatePicker('expfromDate_checkboxe'+j, 'exptoDate_checkboxe'+j);
                                 }
                             } else {
                                 $scope.counterExperience = 1;
                                 $scope.experienceFormList.push(angular.copy($scope.experienceFormTemplate));
                                 //$scope.$apply(function () {
 //                                    $scope.addDatePicker('expfromDate_checkboxe0', 'exptoDate_checkboxe0');
-                               // });
+                                // });
                             }
                         });
                     }, function (failure) {
                         console.log(failure);
                     });
                 } else {
-                    $scope.counterExperience =1;
+                    $scope.counterExperience = 1;
                     $scope.experienceFormList.push(angular.copy($scope.experienceFormTemplate));
 //                    $scope.$apply(function () {
 //                        app.startEndDatePicker('expfromDate_checkboxe0', 'exptoDate_checkboxe0');
@@ -473,7 +458,7 @@
                     }
                 }
                 $scope.submitExperience = function () {
-                    if ($scope.employeeExperienceForm.$valid && $scope.experienceFormList.length>0) {
+                    if ($scope.employeeExperienceForm.$valid && $scope.experienceFormList.length > 0) {
                         console.log("hellow");
                         $scope.experienceListEmpty = 1;
                         if ($scope.experienceFormList.length == 1 && angular.equals($scope.experienceFormTemplate, $scope.experienceFormList[0])) {
@@ -491,17 +476,17 @@
                         }).then(function (success) {
                             $scope.$apply(function () {
                                 console.log(success.data);
-                                $window.location.href =  document.urlSubmitExperience;
+                                $window.location.href = document.urlSubmitExperience;
                             });
                         }, function (failure) {
                             console.log(failure);
                         });
-                    }else if($scope.experienceFormList.length==0){
-                        $window.location.href =  document.urlSubmitExperience;
+                    } else if ($scope.experienceFormList.length == 0) {
+                        $window.location.href = document.urlSubmitExperience;
                     }
                 }
-                
-                
+
+
                 // for employee training [add and delete function]
                 $scope.trainingFormList = [];
                 $scope.counterTraining = '';
@@ -531,9 +516,9 @@
                                     $scope.trainingFormList.push(angular.copy({
                                         id: trainingList[j].ID,
                                         trainingName: trainingList[j].TRAINING_NAME,
-                                        description:trainingList[j].DESCRIPTION,
-                                        fromDate:trainingList[j].FROM_DATE,
-                                        toDate:trainingList[j].TO_DATE,
+                                        description: trainingList[j].DESCRIPTION,
+                                        fromDate: trainingList[j].FROM_DATE,
+                                        toDate: trainingList[j].TO_DATE,
                                         checkbox: "checkboxt" + j,
                                         checked: false
                                     }));
@@ -547,7 +532,7 @@
                         console.log(failure);
                     });
                 } else {
-                    $scope.counterTraining =1;
+                    $scope.counterTraining = 1;
                     $scope.trainingFormList.push(angular.copy($scope.trainingFormTemplate));
                 }
 
@@ -590,7 +575,7 @@
                     }
                 }
                 $scope.submitTraining = function () {
-                    if ($scope.employeeTrainingForm.$valid && $scope.trainingFormList.length>0) {
+                    if ($scope.employeeTrainingForm.$valid && $scope.trainingFormList.length > 0) {
                         $scope.trainingListEmpty = 1;
                         if ($scope.trainingFormList.length == 1 && angular.equals($scope.trainingFormTemplate, $scope.trainingFormList[0])) {
                             console.log("app log", "The form is not filled");
@@ -607,16 +592,39 @@
                         }).then(function (success) {
                             $scope.$apply(function () {
                                 console.log(success.data);
-                                $window.location.href =  document.urlSubmitTraining;
+                                $window.location.href = document.urlSubmitTraining;
                             });
                         }, function (failure) {
                             console.log(failure);
                         });
-                    }else if($scope.trainingFormList.length==0){
-                            $window.location.href =  document.urlSubmitTraining;
+                    } else if ($scope.trainingFormList.length == 0) {
+                        $window.location.href = document.urlSubmitTraining;
                     }
                 }
 
-            });
+            })
+            .directive("datepicker", function () {
+                return {
+                    restrict: "A",
+                    require: "ngModel",
+                    link: function (scope, elem, attrs, ngModelCtrl) {
+                        var updateModel = function (dateText) {
+                            scope.$apply(function () {
+                                ngModelCtrl.$setViewValue(dateText);
+                            });
+                        };
+
+                        app.addDatePicker($(elem));
+                    }
+                }
+            }).directive("select2", function () {
+        return {
+            restrict: "A",
+            require: "ngModel",
+            link: function (scope, elem, attrs, ngModelCtrl) {
+                $(elem).select2();
+            }
+        }
+    });
 })(window.jQuery, window.app);
 

@@ -30,14 +30,7 @@
                         window.app.addDatePicker($("#joinDate"));
                         break;
                     case 7:
-                        //window.app.startEndDatePicker('expfromDate_checkboxe0', 'exptoDate_checkboxe0');
-                        $(".exList").each(function(){
-                            var id = $(this).attr("id");
-                            console.log(id);
-                            window.app.startEndDatePicker('expfromDate_' + id, 'exptoDate_'+ id);
-                        });
                         break;
-
                 }
 
                 var $total = navigation.find('li').length;
@@ -78,7 +71,7 @@
             }, onNext: function (tab, navigation, index) {
                 console.log("Showing next tab");
                 if (typeof document.currentTab !== 'undefined') {
-                    if (index <= 4 || index==7 || index==8) {
+                    if (index <= 4 || index == 7 || index == 8) {
                         $('#btnform' + index).click();
                     } else if (index == 5) {
                         angular.element('#quaConId').scope().addQualification();
