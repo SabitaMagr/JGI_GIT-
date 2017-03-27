@@ -19,6 +19,7 @@ class Loan extends Model{
     const MODIFIED_DATE = "MODIFIED_DATE";
     const MODIFIED_BY = "MODIFIED_BY";
     const STATUS = "STATUS";
+    const COMPANY_ID = "COMPANY_ID";
     
     public $loanId;
     public $loanCode;
@@ -34,6 +35,7 @@ class Loan extends Model{
     public $modifiedDate;
     public $modifiedBy;
     public $status;
+    public $companyId;
     
     public $mappings =[
         'loanId'=>self::LOAN_ID,
@@ -49,6 +51,7 @@ class Loan extends Model{
         'createdDate'=>self::CREATED_DATE,
         'createdBy'=>self::CREATED_BY,
         'modifiedDate'=>self::MODIFIED_DATE,
-        'modifiedBy'=>self::MODIFIED_BY
+        'modifiedBy'=>self::MODIFIED_BY,
+        'companyId' => self::COMPANY_ID
     ];
 }

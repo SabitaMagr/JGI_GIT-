@@ -77,6 +77,7 @@ class TrainingRepository implements RepositoryInterface
             new Expression("T.TRAINING_CODE AS TRAINING_CODE"), 
             new Expression("T.TRAINING_NAME AS TRAINING_NAME"),
             new Expression("T.TRAINING_TYPE AS TRAINING_TYPE"),
+            new Expression("T.COMPANY_ID AS COMPANY_ID"),
             new Expression("T.DURATION AS DURATION"),
             new Expression("T.TRAINING_ID AS TRAINING_ID"),
             new Expression("T.INSTRUCTOR_NAME AS INSTRUCTOR_NAME"),

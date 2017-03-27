@@ -2,8 +2,10 @@
 
 namespace Setup\Controller;
 
+use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
 use Setup\Form\PositionForm;
+use Setup\Model\Company;
 use Setup\Model\Position;
 use Setup\Repository\PositionRepository;
 use Zend\Authentication\AuthenticationService;
@@ -69,6 +71,7 @@ class PositionController extends AbstractActionController {
         return new ViewModel(Helper::addFlashMessagesToArray(
                         $this, [
                     'form' => $this->form,
+                    'companies' => EntityHelper::getTableKVListWithSortOption($this->adapter, Company::TABLE_NAME, Company::COMPANY_ID, [Company::COMPANY_NAME], ["STATUS" => "E"], Company::COMPANY_NAME, "ASC"),
                     'messages' => $this->flashmessenger()->getMessages()
                         ]
                 )
@@ -101,7 +104,11 @@ class PositionController extends AbstractActionController {
             }
         }
         return Helper::addFlashMessagesToArray(
-                        $this, ['form' => $this->form, 'id' => $id]
+                        $this, [
+                            'form' => $this->form,
+                            'companies' => EntityHelper::getTableKVListWithSortOption($this->adapter, Company::TABLE_NAME, Company::COMPANY_ID, [Company::COMPANY_NAME], ["STATUS" => "E"], Company::COMPANY_NAME, "ASC"),
+                            'id' => $id
+                ]
         );
     }
 

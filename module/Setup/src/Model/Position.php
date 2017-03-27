@@ -15,6 +15,7 @@ class Position extends Model {
     const MODIFIED_DT = "MODIFIED_DT";
     const CREATED_BY = "CREATED_BY";
     const MODIFIED_BY = "MODIFIED_BY";
+    const COMPANY_ID = "COMPANY_ID";
 
     public $positionId;
     public $positionName;
@@ -24,6 +25,7 @@ class Position extends Model {
     public $modifiedDt;
     public $createdBy;
     public $modifiedBy;
+    public $companyId;
     public $mappings = [
         'positionId' => self::POSITION_ID,
         'positionName' => self::POSITION_NAME,
@@ -33,6 +35,7 @@ class Position extends Model {
         'modifiedDt' => self::MODIFIED_DT,
         'createdBy' => self::CREATED_BY,
         'modifiedBy' => self::MODIFIED_BY,
+        'companyId' => self::COMPANY_ID
     ];
 
 }

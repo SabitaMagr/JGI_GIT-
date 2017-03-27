@@ -1,21 +1,22 @@
 <?php
 namespace Setup\Controller;
 
+use Application\Helper\EntityHelper as EntityHelper2;
 use Application\Helper\Helper;
 use Setup\Form\LoanForm;
+use Setup\Model\Company;
+use Setup\Model\Designation;
 use Setup\Model\Loan;
+use Setup\Model\LoanRestriction;
+use Setup\Model\Position;
+use Setup\Model\ServiceType;
 use Setup\Repository\LoanRepository;
+use Setup\Repository\LoanRestrictionRepository;
 use Zend\Authentication\AuthenticationService;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Form\Annotation\AnnotationBuilder;
-use Zend\Mvc\Controller\AbstractActionController;
 use Zend\Form\Element\Select;
-use Application\Helper\EntityHelper as EntityHelper2;
-use Setup\Model\Designation;
-use Setup\Model\Position;
-use Setup\Model\ServiceType;
-use Setup\Model\LoanRestriction;
-use Setup\Repository\LoanRestrictionRepository;
+use Zend\Mvc\Controller\AbstractActionController;
 
 class LoanController extends AbstractActionController{
     private $form;
@@ -139,7 +140,8 @@ class LoanController extends AbstractActionController{
             'form'=>$this->form,
             'designation'=>$designationFormElement,
             'position'=>$positionFormElement,
-            'serviceType'=>$serviceTypeFormElement
+            'serviceType'=>$serviceTypeFormElement,
+            'companies' => EntityHelper2::getTableKVListWithSortOption($this->adapter, Company::TABLE_NAME, Company::COMPANY_ID, [Company::COMPANY_NAME], ["STATUS" => "E"], Company::COMPANY_NAME, "ASC")
                 ]);              
     }
     
@@ -258,7 +260,8 @@ class LoanController extends AbstractActionController{
                             'workingPeriod'=>$workingPeriod,
                             'serviceTypeRestriction'=>$serviceTypeRestriction,
                             'designationRestriction'=>$designationRestriction,
-                            'positionRestriction'=>$positionRestriction
+                            'positionRestriction'=>$positionRestriction,
+                            'companies' => EntityHelper2::getTableKVListWithSortOption($this->adapter, Company::TABLE_NAME, Company::COMPANY_ID, [Company::COMPANY_NAME], ["STATUS" => "E"], Company::COMPANY_NAME, "ASC")
                 ]
         );
     }
