@@ -24,7 +24,7 @@
                 {field: "DEVICE_NAME", title: "Device Name",width:200},
                 {field: "DEVICE_IP", title: "Device IP",width:200},
                 {field: "DEVICE_LOCATION", title: "Device Location",width:200},
-                {field: "ISACTIVE", title: "Status",width:200},
+                {field: "ISACTIVE", title: "Active",width:200},
                     {title: "Action",width:100}
             ]
         }); 
