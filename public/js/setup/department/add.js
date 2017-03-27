@@ -4,7 +4,7 @@
 (function ($, app) {
     'use strict';
     $(document).ready(function () {
-//        $('select').select2();
+        $('select').select2();
         var inputFieldId = "form-departmentName";
         var formId = "department-form";
         var tableName = "HRIS_DEPARTMENTS";
