@@ -174,6 +174,15 @@ window.app = (function ($, toastr) {
         }
     }
 
+    var angularDatePicker = function () {
+        $(this).datepicker({
+            format: format,
+            todayHighlight: true,
+            autoclose: true,
+            setDate: new Date()
+        });
+    };
+
     var successMessage = function (message) {
         if (message) {
             window.toastr.success(message, "Notifications");
@@ -371,7 +380,7 @@ window.app = (function ($, toastr) {
                         formGroup.append(errorMsgSpan);
                         id.focus();
                     }
-            }
+                }
             };
 
             window.app.pullDataById(document.restfulUrl, {

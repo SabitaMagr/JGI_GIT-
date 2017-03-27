@@ -223,6 +223,7 @@ class TravelRequest extends AbstractActionController {
                     'status' => $detail['STATUS'],
                     'advanceAmt'=>$detail['REQUESTED_AMOUNT'],
                     'requestedDate' => $detail['REQUESTED_DATE'],
+                    'detail'=>$detail,
                     'id'=>$id
         ]);
         //return Helper::addFlashMessagesToArray($this, ['list'=>'hellow']);
