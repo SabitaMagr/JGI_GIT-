@@ -1,4 +1,5 @@
 <?php
+
 namespace AttendanceManagement\Form;
 
 use Zend\Form\Annotation;
@@ -7,8 +8,8 @@ use Zend\Form\Annotation;
  * @Annotation\Hydrator("Zend\Hydrator\ObjectProperty")
  * @Annotation\Name("Shift")
  */
-class ShiftForm
-{
+class ShiftForm {
+
     /**
      * @Annotion\Type("Zend\Form\Element\Text")
      * @Annotation\Required(true)
@@ -37,7 +38,6 @@ class ShiftForm
      */
     public $shiftLname;
 
-
     /**
      * @Annotation\Type("Zend\Form\Element\Text")
      * @Annotation\Required(true)
@@ -65,7 +65,6 @@ class ShiftForm
      */
     public $halfDayEndTime;
 
-
     /**
      * @Annotation\Type("Zend\Form\Element\Text")
      * @Annotation\Required(true)
@@ -76,23 +75,22 @@ class ShiftForm
     public $halfTime;
 
     /**
-     * @Annotation\Type("Zend\Form\Element\Radio")
-     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
-     * @Annotation\Options({"value_options":{"E":"Enabled","D":"Disabled"},"label":"Late In"})
+     * @Annotation\Type("Zend\Form\Element\Text")
      * @Annotation\Required(false)
-     * @Annotation\Attributes({ "id":"lateIn"})
+     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
+     * @Annotation\Options({"label":"Late In"})
+     * @Annotation\Attributes({ "id":"lateIn","data-format":"h:mm", "data-template":"hh : mm", "class":"form-control"})
      */
     public $lateIn;
 
     /**
-     * @Annotation\Type("Zend\Form\Element\Radio")
+     * @Annotation\Type("Zend\Form\Element\Text")
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
-     * @Annotation\Options({"value_options":{"E":"Enabled","D":"Disabled"},"label":"Early Out"})
+     * @Annotation\Options({"label":"Early Out"})
      * @Annotation\Required(false)
-     * @Annotation\Attributes({ "id":"earlyOut"})
+     * @Annotation\Attributes({ "id":"earlyOut","data-format":"h:mm", "data-template":"hh : mm", "class":"form-control"})
      */
     public $earlyOut;
-
 
     /**
      * @Annotation\Type("Zend\Form\Element\Text")
@@ -128,7 +126,6 @@ class ShiftForm
      * @Annotation\Attributes({ "id":"weekDay2", "class":"form-control"})
      */
     public $weekday2;
-
 
     /**
      * @Annotation\Type("Zend\Form\Element\Radio")
@@ -216,5 +213,32 @@ class ShiftForm
      * @Annotation\Attributes({"value":"Submit","class":"btn btn-success"})
      */
     public $submit;
+
+    /**
+     * @Annotation\Type("Zend\Form\Element\Select")
+     * @Annotation\Required(true)
+     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
+     * @Annotation\Options({"disable_inarray_validator":"true","label":"Company"})
+     * @Annotation\Attributes({ "id":"companyId","class":"form-control"})
+     */
+    public $companyId;
+
+    /**
+     * @Annotation\Type("Zend\Form\Element\Text")
+     * @Annotation\Required(true)
+     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
+     * @Annotation\Options({"label":"Actual Working Hour"})
+     * @Annotation\Attributes({ "id":"actualWorkingHr", "data-format":"h:mm", "data-template":"hh : mm", "class":"form-control" })
+     */
+    public $actualWorkingHr;
+
+    /**
+     * @Annotation\Type("Zend\Form\Element\Text")
+     * @Annotation\Required(true)
+     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
+     * @Annotation\Options({"label":"Total Working Hour"})
+     * @Annotation\Attributes({ "id":"totalWorkingHr", "data-format":"h:mm", "data-template":"hh : mm", "class":"form-control" })
+     */
+    public $totalWorkingHr;
 
 }

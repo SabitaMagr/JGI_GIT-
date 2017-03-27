@@ -1,41 +1,43 @@
 <?php
-namespace AttendanceManagement\Model;
 
+namespace AttendanceManagement\Model;
 
 use Application\Model\Model;
 
-class ShiftSetup extends Model
-{
-    const TABLE_NAME="HRIS_SHIFTS";
+class ShiftSetup extends Model {
 
-    const SHIFT_ID="SHIFT_ID";
-    const SHIFT_CODE="SHIFT_CODE";
-    const SHIFT_ENAME="SHIFT_ENAME";
-    const SHIFT_LNAME="SHIFT_LNAME";
-    const START_TIME="START_TIME";
-    const END_TIME="END_TIME";
-    const HALF_DAY_END_TIME="HALF_DAY_END_TIME";
-    const HALF_TIME="HALF_TIME";
-    const LATE_IN="LATE_IN";
-    const EARLY_OUT="EARLY_OUT";
-    const START_DATE="START_DATE";
-    const END_DATE="END_DATE";
-    const WEEKDAY1="WEEKDAY1";
-    const WEEKDAY2="WEEKDAY2";
-    const WEEKDAY3="WEEKDAY3";
-    const WEEKDAY4="WEEKDAY4";
-    const WEEKDAY5="WEEKDAY5";
-    const WEEKDAY6="WEEKDAY6";
-    const WEEKDAY7="WEEKDAY7";
-    const CURRENT_SHIFT="CURRENT_SHIFT";
-    const TWO_DAY_SHIFT="TWO_DAY_SHIFT";
-    const DEFAULT_SHIFT="DEFAULT_SHIFT";
-    const CREATED_DT="CREATED_DT";
-    const MODIFIED_DT="MODIFIED_DT";
-    const REMARKS="REMARKS";
-    const STATUS="STATUS";
+    const TABLE_NAME = "HRIS_SHIFTS";
+    const SHIFT_ID = "SHIFT_ID";
+    const SHIFT_CODE = "SHIFT_CODE";
+    const SHIFT_ENAME = "SHIFT_ENAME";
+    const SHIFT_LNAME = "SHIFT_LNAME";
+    const START_TIME = "START_TIME";
+    const END_TIME = "END_TIME";
+    const HALF_DAY_END_TIME = "HALF_DAY_END_TIME";
+    const HALF_TIME = "HALF_TIME";
+    const LATE_IN = "LATE_IN";
+    const EARLY_OUT = "EARLY_OUT";
+    const START_DATE = "START_DATE";
+    const END_DATE = "END_DATE";
+    const WEEKDAY1 = "WEEKDAY1";
+    const WEEKDAY2 = "WEEKDAY2";
+    const WEEKDAY3 = "WEEKDAY3";
+    const WEEKDAY4 = "WEEKDAY4";
+    const WEEKDAY5 = "WEEKDAY5";
+    const WEEKDAY6 = "WEEKDAY6";
+    const WEEKDAY7 = "WEEKDAY7";
+    const CURRENT_SHIFT = "CURRENT_SHIFT";
+    const TWO_DAY_SHIFT = "TWO_DAY_SHIFT";
+    const DEFAULT_SHIFT = "DEFAULT_SHIFT";
+    const CREATED_DT = "CREATED_DT";
+    const MODIFIED_DT = "MODIFIED_DT";
+    const REMARKS = "REMARKS";
+    const STATUS = "STATUS";
     const CREATED_BY = "CREATED_BY";
     const MODIFIED_BY = "MODIFIED_BY";
+    const TOTAL_WORKING_HR = "TOTAL_WORKING_HR";
+    const ACTUAL_WORKING_HR = "ACTUAL_WORKING_HR";
+    const COMPANY_ID = "COMPANY_ID";
 
     public $shiftId;
     public $shiftCode;
@@ -65,37 +67,41 @@ class ShiftSetup extends Model
     public $status;
     public $createdBy;
     public $modifiedBy;
-
+    public $totalWorkingHr;
+    public $actualWorkingHr;
+    public $companyId;
     public $mappings = [
-        'shiftId'=>self::SHIFT_ID,
-        'shiftCode'=>self::SHIFT_CODE,
-        'shiftEname'=>self::SHIFT_ENAME,
-        'shiftLname'=>self::SHIFT_LNAME,
-        'startTime'=>self::START_TIME,
-        'endTime'=>self::END_TIME,
-        'halfDayEndTime'=>self::HALF_DAY_END_TIME,
-        'halfTime'=>self::HALF_TIME,
-        'lateIn'=>self::LATE_IN,
-        'earlyOut'=>self::EARLY_OUT,
-        'startDate'=>self::START_DATE,
-        'endDate'=>self::END_DATE,
-        'weekday1'=>self::WEEKDAY1,
-        'weekday2'=>self::WEEKDAY2,
-        'weekday3'=>self::WEEKDAY3,
-        'weekday4'=>self::WEEKDAY4,
-        'weekday5'=>self::WEEKDAY5,
-        'weekday6'=>self::WEEKDAY6,
-        'weekday7'=>self::WEEKDAY7,
-        'currentShift'=>self::CURRENT_SHIFT,
-        'twoDayShift'=>self::TWO_DAY_SHIFT,
-        'defaultShift'=>self::DEFAULT_SHIFT,
-        'createdDt'=>self::CREATED_DT,
-        'modifiedDt'=>self::MODIFIED_DT,
-        'remarks'=>self::REMARKS,
-        'status'=>self::STATUS,
+        'shiftId' => self::SHIFT_ID,
+        'shiftCode' => self::SHIFT_CODE,
+        'shiftEname' => self::SHIFT_ENAME,
+        'shiftLname' => self::SHIFT_LNAME,
+        'startTime' => self::START_TIME,
+        'endTime' => self::END_TIME,
+        'halfDayEndTime' => self::HALF_DAY_END_TIME,
+        'halfTime' => self::HALF_TIME,
+        'lateIn' => self::LATE_IN,
+        'earlyOut' => self::EARLY_OUT,
+        'startDate' => self::START_DATE,
+        'endDate' => self::END_DATE,
+        'weekday1' => self::WEEKDAY1,
+        'weekday2' => self::WEEKDAY2,
+        'weekday3' => self::WEEKDAY3,
+        'weekday4' => self::WEEKDAY4,
+        'weekday5' => self::WEEKDAY5,
+        'weekday6' => self::WEEKDAY6,
+        'weekday7' => self::WEEKDAY7,
+        'currentShift' => self::CURRENT_SHIFT,
+        'twoDayShift' => self::TWO_DAY_SHIFT,
+        'defaultShift' => self::DEFAULT_SHIFT,
+        'createdDt' => self::CREATED_DT,
+        'modifiedDt' => self::MODIFIED_DT,
+        'remarks' => self::REMARKS,
+        'status' => self::STATUS,
         'createdBy' => self::CREATED_BY,
-        'modifiedBy' => self::MODIFIED_BY
-        ];
+        'modifiedBy' => self::MODIFIED_BY,
+        'totalWorkingHr' => self::TOTAL_WORKING_HR,
+        'actualWorkingHr' => self::ACTUAL_WORKING_HR,
+        'companyId' => self::COMPANY_ID
+    ];
 
 }
-

@@ -44,6 +44,12 @@ $twoDayShift = $form->get('twoDayShift');
 $defaultShift = $form->get('defaultShift');
 $remarks = $form->get('remarks');
 
+$companyId = $form->get('companyId');
+$companyId->setValueOptions($companies);
+
+$actualWorkingHr = $form->get('actualWorkingHr');
+$totalWorkingHr = $form->get('totalWorkingHr');
+
 $submit = $form->get('submit');
 $submit->setAttribute('value', 'SUBMIT');
 ?>
@@ -78,10 +84,16 @@ $form->prepare();
                 ?>
                 <div class="row shiftcode">
                     <div class="col-sm-6">
-                        <div
-                            class="form-group  <?= empty($shiftCode->getMessages()) ? "" : "error" ?>">
-                                <?php print $this->formLabel($shiftCode); ?>
-                                <?php print $this->formElement($shiftCode); ?>
+                        <div class="form-group">
+                            <?php print $this->formLabel($companyId); ?>
+                            <?php print $this->formElement($companyId); ?>
+                            <?php print $this->formElementErrors()->render($companyId, ['class' => 'help-block error']); ?>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group  <?= empty($shiftCode->getMessages()) ? "" : "error" ?>">
+                            <?php print $this->formLabel($shiftCode); ?>
+                            <?php print $this->formElement($shiftCode); ?>
                             <span class="errorMsg" style="font-size:11px; color:red;"></span>
                         </div>
                         <?php print $this->formElementErrors()->render($shiftCode, ['class' => 'help-block error']); ?>
@@ -174,24 +186,45 @@ $form->prepare();
                         </div>
                         <?php print $this->formElementErrors()->render($halfTime, ['class' => 'help-block error']) ?>
                     </div>
+
+                    <div class="col-sm-6">
+                        <div class="form-group required">
+                            <?php print $this->formLabel($totalWorkingHr) ?>
+                            <div class="input-group dropdown-select">
+                                <?php print $this->formElement($totalWorkingHr) ?>
+                            </div>
+                        </div>
+                        <?php print $this->formElementErrors()->render($totalWorkingHr, ['class' => 'help-block error']) ?>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group required">
+                            <?php print $this->formLabel($actualWorkingHr) ?>
+                            <div class="input-group dropdown-select">
+                                <?php print $this->formElement($actualWorkingHr) ?>
+                            </div>
+                        </div>
+                        <?php print $this->formElementErrors()->render($actualWorkingHr, ['class' => 'help-block error']) ?>
+                    </div>
+
+
                 </div>
 
                 <div class="row time">
                     <div class="col-sm-6">
-                        <div class="form-group padding-0">
+                        <div class="form-group">
                             <?php print $this->formLabel($lateIn); ?>
-                            <div class="md-radio-inline">
-                                <?php $customRenderer($lateIn); ?>
+                            <div class="input-group dropdown-select">
+                                <?php print $this->formElement($lateIn); ?>
                             </div>
                         </div>
                         <?php print $this->formElementErrors()->render($lateIn, ['class' => 'help-block error']); ?>
 
                     </div>
                     <div class="col-sm-6">
-                        <div class="form-group padding-0">
+                        <div class="form-group ">
                             <?php print $this->formLabel($earlyOut); ?>
-                            <div class="md-radio-inline">
-                                <?php $customRenderer($earlyOut); ?>
+                            <div class="input-group dropdown-select">
+                                <?php print $this->formElement($earlyOut); ?>
                             </div>
                         </div>
                         <?php print $this->formElementErrors()->render($earlyOut, ['class' => 'help-block error']); ?>
