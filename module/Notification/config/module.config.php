@@ -35,12 +35,27 @@ return [
                     ],
                 ],
             ],
+            'news' => [
+                'type' => Segment::class,
+                'options' => [
+                    'route' => '/news[/:action[/:id]]',
+                    'constraints' => [
+                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'id' => '[0-9]+',
+                    ],
+                    'defaults' => [
+                        'controller' => Controller\NewsController::class,
+                        'action' => 'index'
+                    ],
+                ],
+            ],
         ]
     ],
     'controllers' => [
         'factories' => [
             Controller\NotificationController::class => \Application\Controller\ControllerFactory::class,
-            Controller\EmailController::class => \Application\Controller\ControllerFactory::class
+            Controller\EmailController::class => \Application\Controller\ControllerFactory::class,
+            Controller\NewsController::class => \Application\Controller\ControllerFactory::class
         ],
     ],
     'navigation' => [
