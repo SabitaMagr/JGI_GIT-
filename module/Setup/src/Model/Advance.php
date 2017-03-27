@@ -18,6 +18,7 @@ class Advance extends Model{
     const CREATED_BY = "CREATED_BY";
     const MODIFIED_DATE = "MODIFIED_DATE";
     const MODIFIED_BY = "MODIFIED_BY";
+    const COMPANY_ID = "COMPANY_ID";
     
     public $advanceId;
     public $advanceCode;
@@ -32,6 +33,7 @@ class Advance extends Model{
     public $createdBy;
     public $modifiedDate;
     public $modifiedBy;
+    public $companyId;
     
     public $mappings = [
         'advanceId'=>self::ADVANCE_ID,
@@ -46,6 +48,7 @@ class Advance extends Model{
         'createdDate'=>self::CREATED_DATE,
         'createdBy'=>self::CREATED_BY,
         'modifiedDate'=>self::MODIFIED_DATE,
-        'modifiedBy'=>self::MODIFIED_BY
+        'modifiedBy'=>self::MODIFIED_BY,
+        'companyId' => self::COMPANY_ID
     ];
 }
