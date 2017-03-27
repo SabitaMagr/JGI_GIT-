@@ -42,7 +42,15 @@ class AttendanceDetailRepository implements RepositoryInterface {
     public function fetchAll() {
         $sql = new Sql($this->adapter);
         $select = $sql->select();
-        $select->columns([new Expression("TO_CHAR(A.ATTENDANCE_DT, 'DD-MON-YYYY') AS ATTENDANCE_DT"), new Expression("TO_CHAR(A.IN_TIME, 'HH:MI AM') AS IN_TIME"), new Expression("TO_CHAR(A.OUT_TIME, 'HH:MI AM') AS OUT_TIME"), new Expression("E.EMPLOYEE_ID AS EMPLOYEE_ID"), new Expression("A.ID AS ID"), new Expression("A.IN_REMARKS AS IN_REMARKS"), new Expression("A.OUT_REMARKS AS OUT_REMARKS")], true);
+        $select->columns([
+            new Expression("TO_CHAR(A.ATTENDANCE_DT, 'DD-MON-YYYY') AS ATTENDANCE_DT"),
+            new Expression("TO_CHAR(A.IN_TIME, 'HH:MI AM') AS IN_TIME"),
+            new Expression("TO_CHAR(A.OUT_TIME, 'HH:MI AM') AS OUT_TIME"),
+            new Expression("E.EMPLOYEE_ID AS EMPLOYEE_ID"),
+            new Expression("A.ID AS ID"),
+            new Expression("A.IN_REMARKS AS IN_REMARKS"),
+            new Expression("A.OUT_REMARKS AS OUT_REMARKS")
+                ], true);
         $select->from(['A' => AttendanceDetail::TABLE_NAME])
                 ->join(['E' => 'HRIS_EMPLOYEES'], 'A.EMPLOYEE_ID=E.EMPLOYEE_ID', ["FIRST_NAME" => 'FIRST_NAME', "MIDDLE_NAME" => 'MIDDLE_NAME', "LAST_NAME" => 'LAST_NAME'], "left");
         $select->where(["E.STATUS='E'"]);
@@ -53,6 +61,7 @@ class AttendanceDetailRepository implements RepositoryInterface {
         return $result;
     }
 
+    //this function need changes
     public function filterRecord($employeeId, $branchId, $departmentId, $positionId, $designationId, $serviceTypeId, $serviceEventTypeId, $fromDate, $toDate, $status) {
         $sql = new Sql($this->adapter);
         $select = $sql->select();
@@ -91,7 +100,7 @@ class AttendanceDetailRepository implements RepositoryInterface {
             if ($status == "L") {
                 $select->where(["A.IN_TIME IS NULL AND A.OUT_TIME IS NULL AND A.TRAINING_ID IS NULL AND A.HOLIDAY_ID IS NULL AND A.LEAVE_ID IS NOT NULL"]);
             }
-            
+
             if ($status == "P") {
                 $select->where(["A.IN_TIME IS NOT NULL"]);
             }
@@ -132,6 +141,7 @@ class AttendanceDetailRepository implements RepositoryInterface {
         return $result;
     }
 
+    //may need changes
     public function fetchById($id) {
         $sql = new Sql($this->adapter);
         $select = $sql->select();
@@ -148,10 +158,18 @@ class AttendanceDetailRepository implements RepositoryInterface {
         
     }
 
+    //no problem with changes
     public function getDtlWidEmpIdDate($employeeId, $attendanceDt) {
         $sql = new Sql($this->adapter);
         $select = $sql->select();
-        $select->columns([new Expression("TO_CHAR(A.ATTENDANCE_DT, 'DD-MON-YYYY') AS ATTENDANCE_DT"), new Expression("TO_CHAR(A.IN_TIME, 'HH:MI AM') AS IN_TIME"), new Expression("TO_CHAR(A.OUT_TIME, 'HH:MI AM') AS OUT_TIME"), new Expression("E.EMPLOYEE_ID AS EMPLOYEE_ID"), new Expression("A.ID AS ID"), new Expression("A.IN_REMARKS AS IN_REMARKS"), new Expression("A.OUT_REMARKS AS OUT_REMARKS")], true);
+        $select->columns([
+            new Expression("TO_CHAR(A.ATTENDANCE_DT, 'DD-MON-YYYY') AS ATTENDANCE_DT"),
+            new Expression("TO_CHAR(A.IN_TIME, 'HH:MI AM') AS IN_TIME"),
+            new Expression("TO_CHAR(A.OUT_TIME, 'HH:MI AM') AS OUT_TIME"),
+            new Expression("E.EMPLOYEE_ID AS EMPLOYEE_ID"),
+            new Expression("A.ID AS ID"),
+            new Expression("A.IN_REMARKS AS IN_REMARKS"),
+            new Expression("A.OUT_REMARKS AS OUT_REMARKS")], true);
         $select->from(['A' => AttendanceDetail::TABLE_NAME])
                 ->join(['E' => 'HRIS_EMPLOYEES'], 'A.EMPLOYEE_ID=E.EMPLOYEE_ID', ["FIRST_NAME" => 'FIRST_NAME', "MIDDLE_NAME" => 'MIDDLE_NAME', "LAST_NAME" => 'LAST_NAME'], "left");
         $select->where([
@@ -163,11 +181,13 @@ class AttendanceDetailRepository implements RepositoryInterface {
         return $result->current();
     }
 
+    //need trigger
     public function addAttendance($model) {
         $attendanceTableGateway = new TableGateway(Attendance::TABLE_NAME, $this->adapter);
         return $attendanceTableGateway->insert($model->getArrayCopyForDB());
     }
 
+    // no problem with changes    
     public function getNoOfDaysInDayInterval(int $employeeId, $startDate, $endDate, $includeHoliday = true) {
         $sql = new Sql($this->adapter);
         $select = $sql->select();
@@ -198,9 +218,10 @@ class AttendanceDetailRepository implements RepositoryInterface {
 //
 //        return $result->count();
 //    }
+    // need change with changes    
     public function getNoOfDaysAbsent(int $employeeId, Expression $startDate, Expression $endDate) {
-        $startDt=$startDate->getExpression();
-        $endDt=$endDate->getExpression();
+        $startDt = $startDate->getExpression();
+        $endDt = $endDate->getExpression();
         $sql = "SELECT SUM(LEAVE.LEAVE_COUNT) LEAVE_COUNT FROM (
                 (SELECT COUNT(LR.EMPLOYEE_ID) AS LEAVE_COUNT FROM HRIS_EMPLOYEE_LEAVE_REQUEST LR,
                 (SELECT  HAD.EMPLOYEE_ID, HAD.LEAVE_ID,HAD.ATTENDANCE_DT FROM HRIS_ATTENDANCE_DETAIL HAD
@@ -235,10 +256,12 @@ class AttendanceDetailRepository implements RepositoryInterface {
         }
     }
 
+    // problem with changes    
     public function getNoOfDaysPresent(int $employeeId, Expression $startDate, Expression $endDate) {
         return $this->getNoOfDaysInDayInterval($employeeId, $startDate, $endDate) - $this->getNoOfDaysAbsent($employeeId, $startDate, $endDate);
     }
 
+    // problem with changes    
     public function getEmployeesAttendanceByDate($date, bool $flag, $branchId = null) {
         $sql = new Sql($this->adapter);
         $select = $sql->select();
@@ -264,6 +287,7 @@ class AttendanceDetailRepository implements RepositoryInterface {
         return $statement->execute();
     }
 
+    //may need change
     public function getleaveIdCount(int $employeeId, Expression $startDate, Expression $endDate) {
         $sql = new Sql($this->adapter);
         $select = $sql->select();
@@ -278,6 +302,7 @@ class AttendanceDetailRepository implements RepositoryInterface {
         return $result;
     }
 
+    //need change
     public function getTotalNoOfWorkingDays(Expression $startDate, Expression $endDate) {
         $sql = new Sql($this->adapter);
         $select = $sql->select();
@@ -296,7 +321,8 @@ class AttendanceDetailRepository implements RepositoryInterface {
     public function checkAndUpdateLeaves(Expression $date) {
         
     }
-    
+
+    //may need changes
     public function fetchByEmpIdAttendanceDT($employeeId, $attendanceDt) {
         $sql = new Sql($this->adapter);
         $select = $sql->select();
@@ -305,7 +331,7 @@ class AttendanceDetailRepository implements RepositoryInterface {
                 ->join(['E' => 'HRIS_EMPLOYEES'], 'A.EMPLOYEE_ID=E.EMPLOYEE_ID', ["FIRST_NAME" => 'FIRST_NAME', "MIDDLE_NAME" => 'MIDDLE_NAME', "LAST_NAME" => 'LAST_NAME'], "left");
         $select->where([
             'A.EMPLOYEE_ID=' . $employeeId,
-            "A.ATTENDANCE_DT=".$attendanceDt
+            "A.ATTENDANCE_DT=" . $attendanceDt
         ]);
         $statement = $sql->prepareStatementForSqlObject($select);
 //        print_r($statement->getSql()); die();

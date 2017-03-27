@@ -2,19 +2,18 @@
 
 namespace Application\Controller;
 
+use Application\Helper\Helper;
 use Application\Model\HrisAuthStorage;
 use Application\Model\User;
+use AttendanceManagement\Model\Attendance;
+use AttendanceManagement\Repository\AttendanceDetailRepository;
+use AttendanceManagement\Repository\AttendanceRepository;
 use Zend\Authentication\AuthenticationService;
+use Zend\Db\Adapter\AdapterInterface;
 use Zend\EventManager\EventManagerInterface;
 use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
-use Zend\Db\Adapter\AdapterInterface;
-use AttendanceManagement\Repository\AttendanceDetailRepository;
-use AttendanceManagement\Model\AttendanceDetail;
-use Application\Helper\Helper;
-use AttendanceManagement\Model\Attendance;
-use AttendanceManagement\Repository\AttendanceRepository;
 
 class AuthController extends AbstractActionController {
 
@@ -123,6 +122,21 @@ class AuthController extends AbstractActionController {
                         }
                     }
                     $this->getAuthService()->getStorage()->write(["user_name" => $request->getPost('username'), "user_id" => $resultRow->USER_ID, "employee_id" => $resultRow->EMPLOYEE_ID, "role_id" => $resultRow->ROLE_ID]);
+                    
+//                    user log table here $_SERVER['HTTP_CLIENT_IP'],$resultRow->USER_ID,SYSDATE
+/*
+ * <?php 
+    // Getting the entire params object
+    $servParam = $request->getServer();
+    $remoteAddr = $servParam->get('REMOTE_ADDR');
+
+    // Getting specific variable
+    $remoteAddr = $request->getServer('REMOTE_ADDR');
+?>
+ */                    
+                    
+                    
+                    
                 }
             }
         }
