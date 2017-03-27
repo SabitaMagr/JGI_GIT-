@@ -1,4 +1,14 @@
 <?php
+
+//echo 'edit view';
+//echo '<pre>';
+//print_r($company);
+//print_r($id);
+//die();
+
+?>
+
+<?php
 $this->headScript()->appendFile($this->basePath('js/system/attendance-device/add.js'));
 
 $form->setAttribute('role', 'form');
@@ -21,7 +31,7 @@ $branchId=$form->get('branchId');
 $submit = $form->get('submit');
 $submit->setAttribute('value', 'SUBMIT');
 
-$form->setAttribute('action', $this->url('AttendanceDevice', ['action' => 'add']));
+$form->setAttribute('action', $this->url('AttendanceDevice', ['action' => 'edit', 'id' => $id]));
 
 if ($this->messages) {
     print '<ul class="help-block bg-danger" style="background:#f3e250;">';
@@ -34,6 +44,7 @@ $form->prepare();
 ?>
 <script>
         document.branches =<?php echo json_encode($branch); ?>;
+        document.selectedBranchId =<?php echo $branchId->getValue(); ?>;
     </script>
 
 
@@ -47,7 +58,7 @@ $form->prepare();
             <div class="portlet box custom-box">
                 <div class="portlet-title">
                     <div class="caption">
-                        <i class="fa fa-user"></i>New Entry
+                        <i class="fa fa-user"></i>Edit 
                     </div>
                 </div>
                 <div class="portlet-body">

@@ -1,6 +1,8 @@
 <?php
 $this->headScript()->appendFile($this->basePath('js/SelfService/travel-request/add.js'))
-        ->appendFile($this->basePath('js/SelfService/travel-request/expense-request.js'));;
+        ->appendFile($this->basePath('js/SelfService/travel-request/expense-request.js'))
+        ->appendFile($this->basePath('js/angular.min.js'))
+        ->appendFile($this->basePath('js/SelfService/travel-request/expenseDtlController.js'));
 
 $form->setAttribute('role', 'form');
 $form->setAttribute('id', 'travelRequest-form');
@@ -47,84 +49,169 @@ print $this->form()->openTag($form);
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\travelRequest')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
-<div class="row margin-top-20">
-    <div class="col-sm-8 col-sm-offset-2">
+    <div class="row margin-top-20" ng-app="hris" ng-controller="expenseDtlController">
+    <div class="col-sm-12">
         <div class="portlet box custom-box">
             <div class="portlet-title">
                 <div class="caption">
                     <i class="fa fa-user"></i>Travel Request Detail
                 </div>
             </div>
-            <div class="portlet-body">
-                <div class="form-group" style="margin-bottom: 0.5%">
-                    <div class="row div-font-11">
-                        <div class="col-md-6">
-                            <table>
-                                <tr height="30">
-                                    <td>
-                                        Advance Amount
-                                    </td>
-                                    <td width="15">:</td>
-                                    <td>
-                                        Rs.<?php echo $advanceAmt; ?>
-                                    </td>
-                                </tr>
-                                
-                                
-                            </table>
-                        </div>
+            <div class="portlet-body div-font-11">
+                <div class="row">
+                    <div class="col-xs-12 col-sm-4 col-md-4 col-box bottomgap">
+                        <table>
+                            <tr>
+                                <td width="40%"><label for="travelCode">Travel Code :</label></td>
+                                <td><input type="text" name="travelCode" required="required" id="travelCode" class="form-control"></td>
+                            </tr>
+                        </table>
+                    </div>
+                    
+                    <div class="col-xs-12 col-sm-4 col-md-4 col-box bottomgap">
+                        <table>
+                            <tr>
+                                <td width="40%">
+                                   <label for="advanceAmount">Advance Amount :</label> 
+                                </td>
+                                <td>
+                                    <input type="text" name="advanceAmount" required="required" id="advanceAmount" class="form-control">
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="col-xs-12 col-sm-4 col-md-4 col-box bottomgap">
+                        <table>
+                            <tr>
+                                <td width="40%">
+                                   <label for="destination">Destination :</label> 
+                                </td>
+                                <td>
+                                    <input type="text" name="destination" required="required" id="destination" class="form-control">
+                                </td>
+                            </tr>
+                        </table>
                     </div>
                 </div>
-                <div class="form-group">
-                    <?php print $this->formLabel($travelCode); ?>
-                    <?php print $this->formElement($travelCode); ?>
-                    <?php print $this->formElementErrors()->render($travelCode, ['class' => 'help-block']); ?>
-                </div>
-                <div class="form-group">
-                    <?php print $this->formLabel($fromDate); ?>
-                    <div class="input-group date" id="fromDate">
-                        <?php print $this->formElement($fromDate); ?>
-                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                <div class="row">
+                    <div class="col-xs-12 col-sm-4 col-md-4 col-box bottomgap">
+                        <table>
+                            <tr>
+                                <td width="40%">
+                                   <label for="purpose">Purpose :</label> 
+                                </td>
+                                <td>
+                                   <input type="text" name="purpose" required="required" id="purpose" class="form-control">
+                                </td>
+                            </tr>
+                        </table>
                     </div>
-                    <?php print $this->formElementErrors()->render($fromDate, ['class' => 'help-block']); ?>
-                </div>
-                <div class="form-group">
-                    <?php print $this->formLabel($toDate); ?>
-                    <div class="input-group date" id="toDate">
-                        <?php print $this->formElement($toDate); ?>
-                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                    <div class="col-xs-12 col-sm-4 col-md-4 col-box bottomgap">
+                        <table>
+                            <tr>
+                                <td width="40%">
+                                    <label for="departureDate">Departure Date :</label>
+                                </td>
+                                <td>
+                                    <input type="text" name="departureDate" required="required" id="departureDate" class="form-control">
+                                </td>
+                            </tr>
+                        </table>
                     </div>
-                    <?php print $this->formElementErrors()->render($toDate, ['class' => 'help-block']); ?>
+                    
+                    <div class="col-xs-12 col-sm-4 col-md-4 col-box bottomgap">
+                        <table>
+                            <tr>
+                                <td width="40%">
+                                   <label for="employeeCode">Returned Date :</label> 
+                                </td>
+                                <td>
+                                   <input type="text" name="returnedDate" required="required" id="returnedDate" class="form-control"> 
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <?php print $this->formLabel($destination); ?>
-                    <?php print $this->formElement($destination); ?>
-                    <?php print $this->formElementErrors()->render($destination, ['class' => 'help-block']); ?>
-                </div>               
-                <div class="form-group">
-                    <?php print $this->formLabel($purpose); ?>
-                    <?php print $this->formElement($purpose); ?>
-                    <?php print $this->formElementErrors()->render($purpose, ['class' => 'help-block']); ?>
+                <div class="margin-top-10 scrollbar-horizantal">
+                <table width="100%" align="center" class="table table-striped table-bordered table-hover no-footer customTable div-font-11">
+                    <thead style="font-size:11px !important;">
+                        <tr>
+                            <th colspan="6" align="center">Description of Travel and Place</th>
+                            <th rowspan="3">Mode of Travel</th>
+                            <th rowspan="3">Fare</th>
+                            <th rowspan="3">Daily Allowance</th>
+                            <th rowspan="3">Local Conveyence</th>
+                            <th rowspan="3">Misc. Expenses</th>
+                            <th rowspan="3">Remarks</th>
+                            <th rowspan="3"></th>
+                        </tr>
+                        <tr>
+                            <th colspan="3">Departure</th>
+                            <th colspan="3">Destination</th>
+                        </tr>
+                        <tr>
+                            <th>Date</th>
+                            <th>Time</th>
+                            <th>Place</th>
+                            <th>Date</th>
+                            <th>Time</th>
+                            <th>Place</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="expenseDtlForm in expenseDtlFormList">
+                            <td><input type="text" ng-model="expenseDtlForm.departureDate" size="11"/></td>
+                            <td><input type="text" ng-model="expenseDtlForm.departureTime" size="11"/></td>
+                            <td><input type="text" ng-model="expenseDtlForm.departurePlace" size="11"/></td>
+                            <td><input type="text" ng-model="expenseDtlForm.destinationDate" size="11"/></td>
+                            <td><input type="text" ng-model="expenseDtlForm.destinationTime" size="11"/></td>
+                            <td><input type="text" ng-model="expenseDtlForm.destinationPlace" size="11"/></td>
+                            <td><input type="text" ng-model="expenseDtlForm.transportType" size="11"/></td>
+                            <td><input type="text" ng-model="expenseDtlForm.fare" size="11"/></td>
+                            <td><input type="text" ng-model="expenseDtlForm.allowance" size="11"/></td>
+                            <td><input type="text" ng-model="expenseDtlForm.localConveyence" size="11"/></td>
+                            <td><input type="text" ng-model="expenseDtlForm.miscExpense" size="11"/></td>
+                            <td><input type="text" ng-model="expenseDtlForm.remarks" size="11"/></td>
+                            <td width="1%" style="padding:15px;" class="checkboxgap">
+                                <div class="md-checkbox">
+                                    <input type="checkbox" id="{{expenseDtlForm.checkbox}}" class="md-check"
+                                           ng-model="expenseDtlForm.checked">
+                                    <label for="{{expenseDtlForm.checkbox}}">
+                                        <span class="inc"></span>
+                                        <span class="check"></span>
+                                        <span class="box"></span>
+                                    </label>
+                                </div>
+
+                            </td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td>
+                                <a href="javascript:;" class="btn btn-icon-only default pull-right"
+                                   ng-click="addExpenseDtl()">
+                                    <i class="fa fa-plus"></i>
+                                </a>
+                            </td>
+                            <td>
+                                <a href="javascript:;" class="btn btn-icon-only default" ng-click="deleteExpenseDtl()">
+                                    <i class="fa fa-trash-o"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
                 </div>
-                <div class="form-group">
-                    <?php print $this->formLabel($requestedType); ?>
-                    <?php print $this->formElement($requestedType); ?>
-                    <?php print $this->formElementErrors()->render($requestedType, ['class' => 'help-block']); ?>
-                </div>               
-                <div class="form-group">
-                    <?php print $this->formLabel($requestedAmount); ?>
-                    <?php print $this->formElement($requestedAmount); ?>
-                    <?php print $this->formElementErrors()->render($requestedAmount, ['class' => 'help-block']); ?>
-                </div>
-                <div class="form-group">
-                    <?php print $this->formLabel($remarks); ?>
-                    <?php print $this->formElement($remarks); ?>
-                    <?php print $this->formElementErrors()->render($remarks, ['class' => 'help-block']); ?>
-                </div>
-                <?php
-                    print $this->formSubmit($submit);
-                    print $this->form()->closeTag();
-                ?>
             </div>
         </div>
     </div>
