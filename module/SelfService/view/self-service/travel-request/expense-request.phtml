@@ -1,4 +1,8 @@
 <?php
+$this->headLink()
+        ->appendStylesheet($this->basePath('assets/global/plugins/ladda/ladda-themeless.min.css'));
+$this->headScript()->appendFile($this->basePath('assets/global/plugins/ladda/spin.min.js'));
+$this->headScript()->appendFile($this->basePath('assets/global/plugins/ladda/ladda.min.js'));
 $this->headScript()
         ->appendFile($this->basePath('js/SelfService/travel-request/expense-request.js'))
         ->appendFile($this->basePath('js/angular.min.js'))
@@ -18,6 +22,7 @@ if ($this->messages) {
         document.url = '<?= $this->url("restful", ["action" => "index"]) ?>';
         document.urlExpenseRequest='<?= $this->url("travelRequest", ["action" => "expenseRequest"]) ?>';
         document.urlTravelRequest='<?= $this->url("travelRequest", ["action" => "index"]) ?>';
+        document.urlExpenseDetailList='<?= $this->url("travelRequest", ["action" => "expenseDetailList"]) ?>';
     </script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\travelRequest')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
@@ -32,7 +37,8 @@ if ($this->messages) {
             </div>
             <div class="portlet-body div-font-11">
                 <form name="travelExpenseForm" id="travelRequest-form" ng-submit="submitExpenseDtl()" novalidate>
-                    <input type="text" id="travelId" value="<?php echo $id; ?>" />
+                    <input type="hidden" id="travelId" value="<?php echo $id; ?>" />
+                    <input type="text" id="requestedType" value="<?php echo $requestedType?>"/>
                 <div class="row">
                     <div class="col-xs-12 col-sm-4 col-md-4 col-box bottomgap">
                         <table>
@@ -216,7 +222,12 @@ if ($this->messages) {
                                 <input type="number" ng-model="expenseDtlForm.miscExpense" style="width: 60px;" step="0.01" min="0"/>
                             </td>
                             <td>
-                                <input type="number" ng-model="expenseDtlForm.total" style="width: 60px;" step="0.01" min="0"/>
+                                <input type="number" ng-model="expenseDtlForm.total" name="total_{{expenseDtlForm.checkbox}}" style="width: 60px;" step="0.01" min="0"/>
+                                <div ng-show="travelExpenseForm.$submitted || travelExpenseForm.total_{{expenseDtlForm.checkbox}}.$touched">
+                                    <ul ng-show="travelExpenseForm.total_{{expenseDtlForm.checkbox}}.$error.required" class="help-block error">
+                                        <li>Total is required.</li>
+                                    </ul>
+                                </div>
                             </td>
                             <td>
                                 <input type="text" ng-model="expenseDtlForm.remarks" size="11"/>
@@ -262,7 +273,10 @@ if ($this->messages) {
                 </table>
                 </div>
                 <div class="submit_button" style="margin-top:2%;">
-                    <input type="submit" name="submit" class="btn btn-success" value="SUBMIT">               
+                    <button class="btn btn-sm green mt-ladda-btn ladda-button mt-progress-demo" id="submitBtn" name="submit" type="submit">
+                        SUBMIT
+                        <i class="fa fa-edit"></i>
+                    </button>    
                 </div>
                </form>
             </div>

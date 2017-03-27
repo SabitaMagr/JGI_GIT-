@@ -16,6 +16,7 @@ use Zend\Form\Annotation\AnnotationBuilder;
 use SelfService\Repository\TravelExpenseDtlRepository;
 use SelfService\Model\TravelExpenseDetail;
 use Zend\Mvc\Controller\AbstractActionController;
+use Application\Custom\CustomViewModel;
 
 class TravelRequest extends AbstractActionController {
 
@@ -197,7 +198,7 @@ class TravelRequest extends AbstractActionController {
             
             foreach($expenseDtlList as $expenseDtl){
                 $transportType = $expenseDtl['transportType'];
-                //print_r($transportType['id']); die();
+//                print_r($expenseDtl); die();
                 $expenseDtlModel->id = ((int) Helper::getMaxId($this->adapter, TravelExpenseDetail::TABLE_NAME, TravelExpenseDetail::ID)) + 1;
                 $expenseDtlModel->travelId = $model->travelId;
                 $expenseDtlModel->departureDate = Helper::getExpressionDate($expenseDtl['departureDate']);
@@ -205,14 +206,14 @@ class TravelRequest extends AbstractActionController {
                 $expenseDtlModel->departureTime = Helper::getExpressionTime($expenseDtl['departureTime']);
                 $expenseDtlModel->destinationDate = Helper::getExpressionDate($expenseDtl['destinationDate']);
                 $expenseDtlModel->destinationPlace = $expenseDtl['destinationPlace'];
-                $expenseDtlModel->destinationTime = Helper::getExpressionTime($expenseDtl['destinationTime']);                $
+                $expenseDtlModel->destinationTime = Helper::getExpressionTime($expenseDtl['destinationTime']);                
                 $expenseDtlModel->transportType = $transportType['id'];
                 $expenseDtlModel->fare = $expenseDtl['fare'];
-                $expenseDtlModel->allowance = $expenseDtl['allowance'];
-                $expenseDtlModel->localConveyence = $expenseDtl['localConveyence'];
-                $expenseDtlModel->miscExpenses = $expenseDtl['miscExpense'];
-                $expenseDtlModel->totalAmount = $expenseDtl['totalAmount'];
-                $expenseDtlModel->remarks = $expenseDtl['remarks'];
+                $expenseDtlModel->allowance = ($expenseDtl['allowance']!=null) ? $expenseDtl['allowance'] :null;
+                $expenseDtlModel->localConveyence = ($expenseDtl['localConveyence']!=null) ? $expenseDtl['localConveyence'] :null;
+                $expenseDtlModel->miscExpenses =($expenseDtl['miscExpense']!=null) ? $expenseDtl['miscExpense'] :null;
+                $expenseDtlModel->totalAmount = $expenseDtl['total'];
+                $expenseDtlModel->remarks =($expenseDtl['remarks']!=null) ? $expenseDtl['remarks'] :null;
                 $expenseDtlModel->createdBy = $this->employeeId;
                 $expenseDtlModel->createdDate = Helper::getcurrentExpressionDate();
                 $expenseDtlModel->status = 'E';
@@ -220,23 +221,30 @@ class TravelRequest extends AbstractActionController {
             }
             
             HeadNotification::pushNotification(NotificationEvents::TRAVEL_APPLIED, $model, $this->adapter, $this->plugin('url'));
-            $this->flashmessenger()->addMessage("Travel Request Successfully added!!!");
-           
-            return $this->redirect()->toRoute("travelRequest");
+            return new CustomViewModel(['success'=>true,'data'=>['msg'=>'Travel Request Successfully added!!!']]);
         }else{
             $id = (int) $this->params()->fromRoute('id');
             if ($id === 0) {
                 return $this->redirect()->toRoute("travelRequest");
             }
             $detail = $this->repository->fetchById($id);
+            $travelId = ($detail['REQUESTED_TYPE']=='ep') ? $detail['REFERENCE_TRAVEL_ID'] : $id;
+            $referenceDetail = $this->repository->fetchById($travelId);
             return Helper::addFlashMessagesToArray($this, [
                     'form' => $this->form,
-                    'status' => $detail['STATUS'],
-                    'advanceAmt'=>$detail['REQUESTED_AMOUNT'],
-                    'requestedDate' => $detail['REQUESTED_DATE'],
-                    'detail'=>$detail,
-                    'id'=>$id
+                    'advanceAmt'=> $referenceDetail['REQUESTED_AMOUNT'],
+                    'detail'=>$referenceDetail,
+                    'id'=>$travelId,
+                    'requestedType'=>$detail['REQUESTED_TYPE']
             ]);
+        }
+    }
+    
+    public function ExpenseDetailListAction(){
+        $request = $this->getRequest();
+        if($request->isPost()){
+            $postData = $request->getPost()->getArrayCopy()['data'];
+            print_r($postData); die();
         }
     }
 

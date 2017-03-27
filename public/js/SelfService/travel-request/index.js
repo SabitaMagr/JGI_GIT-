@@ -134,3 +134,13 @@
         window.app.UIConfirmations();
     });
 })(window.jQuery, window.app);
+
+
+angular.module("hris",[])
+        .controller("travelRequestList",function($scope,$http,$window){
+            $scope.msg =  $window.localStorage.getItem("msg");
+            if($window.localStorage.getItem("msg")){
+                window.toastr.success($scope.msg, "Notifications");
+            }
+            $window.localStorage.removeItem("msg");
+});

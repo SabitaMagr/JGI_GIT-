@@ -9,6 +9,7 @@ $this->headLink()
 $this->headScript()
         ->appendFile($this->basePath('jszip/dist/jszip.min.js'))
         ->appendFile($this->basePath('telerik_kendoui/js/kendo.all.min.js'))
+        ->appendFile($this->basePath('js/angular.min.js'))
         ->appendFile($this->basePath('js/SelfService/travel-request/index.js'))
         ->appendFile($this->basePath('assets/global/plugins/bootstrap-confirmation/bootstrap-confirmation.min.js'));
 ?>
@@ -29,7 +30,7 @@ echo json_encode($menu); ?>;
 </div>
 
 
-<div class="margin-top-20">
+<div class="margin-top-20" ng-app="hris" ng-controller="travelRequestList">
     <div class="table-toolbar">
         <div class="row">
             <div class="col-md-6">
@@ -87,6 +88,12 @@ echo json_encode($menu); ?>;
         href="<?= $this->url("travelRequest", ["action" => "view"]) ?>/#: TRAVEL_ID #" style="height:17px;" title="view detail">
         <i class="fa fa-search-plus"></i>
         </a>
+        #if(ALLOW_TO_EDIT == 1 && REQUESTED_TYPE=='Expense'){#       
+        <a class="btn-edit"
+        href="<?= $this->url("travelRequest", ["action" => "expenseRequest"]) ?>/#: TRAVEL_ID #" style="height:17px; margin-left: 6px;" title="update">
+        <i class="fa fa-pencil-square-o"></i>
+        </a>
+        #}#
         #if(ALLOW_TO_EDIT == 1){#       
         <a class="confirmation btn-delete"
         href="<?= $this->url("travelRequest", ["action" => "delete"]) ?>/#: TRAVEL_ID #" id="bs_#:TRAVEL_ID #" style="height:17px;">
