@@ -72,8 +72,8 @@ class EmployeeExperienceRepository implements RepositoryInterface {
         $sql = new Sql($this->adapter);
         $select = $sql->select();
         $select->columns([
-            new Expression("TO_CHAR(EE.FROM_DATE, 'DD-MON-YYYY') AS FROM_DATE"),
-            new Expression("TO_CHAR(EE.TO_DATE, 'DD-MON-YYYY') AS TO_DATE"), 
+            new Expression("INITCAP(TO_CHAR(EE.FROM_DATE, 'DD-MON-YYYY')) AS FROM_DATE"),
+            new Expression("INITCAP(TO_CHAR(EE.TO_DATE, 'DD-MON-YYYY')) AS TO_DATE"), 
             new Expression("EE.ID AS ID"), 
             new Expression("EE.ORGANIZATION_TYPE AS ORGANIZATION_TYPE"),
             new Expression("EE.ORGANIZATION_NAME AS ORGANIZATION_NAME"),

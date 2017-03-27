@@ -109,7 +109,7 @@ class Helper {
         $tempStr = "";
         switch (strtolower($adapter->getPlatform()->getName())) {
             case strtolower("Oracle"):
-                $tempStr = "TO_CHAR({$pre}{$columnName}, '{$format}') AS {$columnName}";
+                $tempStr = "INITCAP(TO_CHAR({$pre}{$columnName}, '{$format}')) AS {$columnName}";
                 break;
 
             case strtolower("Mysql"):
@@ -125,7 +125,7 @@ class Helper {
         if ($shortForm != null && sizeof($shortForm) != 0) {
             $pre = $shortForm . ".";
         }
-        $tempStr = "TO_CHAR({$pre}{$columnName}, '{$format}') AS {$columnName}";
+        $tempStr = "INITCAP(TO_CHAR({$pre}{$columnName}, '{$format}')) AS {$columnName}";
         return new Expression($tempStr);
     }
 
@@ -135,7 +135,7 @@ class Helper {
         if ($shortForm != null && sizeof($shortForm) != 0) {
             $pre = $shortForm . ".";
         }
-        $tempStr = "TO_CHAR({$pre}{$columnName}, '{$format}') AS {$columnName}";
+        $tempStr = "INITCAP(TO_CHAR({$pre}{$columnName}, '{$format}')) AS {$columnName}";
         return new Expression($tempStr);
     }
 
@@ -145,7 +145,7 @@ class Helper {
         if ($shortForm != null && sizeof($shortForm) != 0) {
             $pre = $shortForm . ".";
         }
-        $tempStr = "TO_CHAR({$pre}{$columnName}, '{$format}') AS {$columnName}";
+        $tempStr = "INITCAP(TO_CHAR({$pre}{$columnName}, '{$format}')) AS {$columnName}";
         return new Expression($tempStr);
     }
 

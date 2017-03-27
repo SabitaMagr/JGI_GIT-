@@ -24,6 +24,9 @@ class TravelRequest extends Model{
     const APPROVED_REMARKS = "APPROVED_REMARKS";
     const TRAVEL_CODE = "TRAVEL_CODE";
     const REFERENCE_TRAVEL_ID = "REFERENCE_TRAVEL_ID";
+    const DEPARTURE_DATE = "DEPARTURE_DATE";
+    const RETURNED_DATE = "RETURNED_DATE";
+    const TRANSPORT_TYPE = "TRANSPORT_TYPE";
     
     public $travelId;
     public $employeeId;
@@ -44,6 +47,9 @@ class TravelRequest extends Model{
     public $approvedRemarks;
     public $travelCode;
     public $referenceTravelId;
+    public $departureDate;
+    public $returnedDate;
+    public $transportType;
     
     public $mappings= [
         'travelId'=>self::TRAVEL_ID,
@@ -64,6 +70,9 @@ class TravelRequest extends Model{
         'approvedDate'=>self::APPROVED_DATE,
         'approvedRemarks'=>self::APPROVED_REMARKS,
         'travelCode'=>self::TRAVEL_CODE,
-        'referenceTravelId'=>self::REFERENCE_TRAVEL_ID
+        'referenceTravelId'=>self::REFERENCE_TRAVEL_ID,
+        'departureDate'=>self::DEPARTURE_DATE,
+        'returnedDate'=>self::RETURNED_DATE,
+        'transportType'=>self::TRANSPORT_TYPE
     ];   
 }

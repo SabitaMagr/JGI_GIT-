@@ -13,6 +13,8 @@ use Setup\Repository\RecommendApproveRepository;
 use Zend\Authentication\AuthenticationService;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Form\Annotation\AnnotationBuilder;
+use SelfService\Repository\TravelExpenseDtlRepository;
+use SelfService\Model\TravelExpenseDetail;
 use Zend\Mvc\Controller\AbstractActionController;
 
 class TravelRequest extends AbstractActionController {
@@ -165,68 +167,77 @@ class TravelRequest extends AbstractActionController {
     }
     
     public function expenseRequestAction(){
-        $this->initializeForm();
-        $this->getRecommendApprover();
-        $id = (int) $this->params()->fromRoute('id');
-
-        if ($id === 0) {
-            return $this->redirect()->toRoute("travelRequest");
-        }
-        $fullName = function($id) {
-            $empRepository = new EmployeeRepository($this->adapter);
-            $empDtl = $empRepository->fetchById($id);
-            $empMiddleName = ($empDtl['MIDDLE_NAME'] != null) ? " " . $empDtl['MIDDLE_NAME'] . " " : " ";
-            return $empDtl['FIRST_NAME'] . $empMiddleName . $empDtl['LAST_NAME'];
-        };
-
-        $recommenderName = $fullName($this->recommender);
-        $approverName = $fullName($this->approver);
-
-        $model = new TravelRequestModel();
         $request = $this->getRequest();
-        $detail = $this->repository->fetchById($id);
-        if(!$request->isPost()){
-            $status = $detail['STATUS'];
-            $approvedDT = $detail['APPROVED_DATE'];
-            $recommended_by = $fullName($detail['RECOMMENDED_BY']);
-            $approved_by = $fullName($detail['APPROVED_BY']);
-            $authRecommender = ($status == 'RQ' || $status == 'C') ? $recommenderName : $recommended_by;
-            $authApprover = ($status == 'RC' || $status == 'RQ' || $status == 'C' || ($status == 'R' && $approvedDT == null)) ? $approverName : $approved_by;
-
-            $model->exchangeArrayFromDB($detail);
-            $this->form->bind($model);
+        $model = new TravelRequestModel();
+        if($request->isPost()){
+            $postData = $request->getPost()->getArrayCopy();
+            $expenseDtlList = $postData['data']['expenseDtlList'];
+            $departureDate = $postData['data']['departureDate'];
+            $returnedDate = $postData['data']['returnedDate'];
+            $travelId = (int)$postData['data']['travelId'];
+            $detail = $this->repository->fetchById($travelId);
+            $expenseDtlRepo = new TravelExpenseDtlRepository($this->adapter);
+            $expenseDtlModel = new TravelExpenseDetail();
+            
+            $model->travelId = ((int) Helper::getMaxId($this->adapter, TravelRequestModel::TABLE_NAME, TravelRequestModel::TRAVEL_ID)) + 1;
+            $model->employeeId = $this->employeeId;
+            $model->requestedDate = Helper::getcurrentExpressionDate();
+            $model->status = 'RQ';
+            $model->fromDate = $detail['FROM_DATE'];
+            $model->toDate = $detail['TO_DATE'];
+            $model->destination = $detail['DESTINATION'];
+            $model->purpose = $detail['PURPOSE'];
+            $model->travelCode = $detail['TRAVEL_CODE'];
+            $model->requestedType = 'ep';
+            $model->requestedAmount = 10000;
+            $model->referenceTravelId = $travelId;
+            $model->departureDate =  Helper::getExpressionDate($departureDate);
+            $model->returnedDate = Helper::getExpressionDate($returnedDate);
+            $this->repository->add($model);
+            
+            foreach($expenseDtlList as $expenseDtl){
+                $transportType = $expenseDtl['transportType'];
+                //print_r($transportType['id']); die();
+                $expenseDtlModel->id = ((int) Helper::getMaxId($this->adapter, TravelExpenseDetail::TABLE_NAME, TravelExpenseDetail::ID)) + 1;
+                $expenseDtlModel->travelId = $model->travelId;
+                $expenseDtlModel->departureDate = Helper::getExpressionDate($expenseDtl['departureDate']);
+                $expenseDtlModel->departurePlace = $expenseDtl['departurePlace'];
+                $expenseDtlModel->departureTime = Helper::getExpressionTime($expenseDtl['departureTime']);
+                $expenseDtlModel->destinationDate = Helper::getExpressionDate($expenseDtl['destinationDate']);
+                $expenseDtlModel->destinationPlace = $expenseDtl['destinationPlace'];
+                $expenseDtlModel->destinationTime = Helper::getExpressionTime($expenseDtl['destinationTime']);                $
+                $expenseDtlModel->transportType = $transportType['id'];
+                $expenseDtlModel->fare = $expenseDtl['fare'];
+                $expenseDtlModel->allowance = $expenseDtl['allowance'];
+                $expenseDtlModel->localConveyence = $expenseDtl['localConveyence'];
+                $expenseDtlModel->miscExpenses = $expenseDtl['miscExpense'];
+                $expenseDtlModel->totalAmount = $expenseDtl['totalAmount'];
+                $expenseDtlModel->remarks = $expenseDtl['remarks'];
+                $expenseDtlModel->createdBy = $this->employeeId;
+                $expenseDtlModel->createdDate = Helper::getcurrentExpressionDate();
+                $expenseDtlModel->status = 'E';
+                $expenseDtlRepo->add($expenseDtlModel);
+            }
+            
+            HeadNotification::pushNotification(NotificationEvents::TRAVEL_APPLIED, $model, $this->adapter, $this->plugin('url'));
+            $this->flashmessenger()->addMessage("Travel Request Successfully added!!!");
+           
+            return $this->redirect()->toRoute("travelRequest");
         }else{
-            //print_r("hellow"); die();
-            $this->form->setData($request->getPost());
-            if ($this->form->isValid()) {
-                $model->exchangeArrayFromForm($this->form->getData());
-                $model->travelId = ((int) Helper::getMaxId($this->adapter, TravelRequestModel::TABLE_NAME, TravelRequestModel::TRAVEL_ID)) + 1;
-                $model->employeeId = $this->employeeId;
-                $model->requestedDate = Helper::getcurrentExpressionDate();
-                $model->status = 'RQ';
-                $model->referenceTravelId = $id;
-                $this->repository->add($model);
-                HeadNotification::pushNotification(NotificationEvents::TRAVEL_APPLIED, $model, $this->adapter, $this->plugin('url'));
-                $this->flashmessenger()->addMessage("Travel Request Successfully added!!!");
+            $id = (int) $this->params()->fromRoute('id');
+            if ($id === 0) {
                 return $this->redirect()->toRoute("travelRequest");
             }
-        }
-
-        $requestType = array(
-            'ad' => 'Advance',
-            'ep' => 'Expense'
-        );
-
-        return Helper::addFlashMessagesToArray($this, [
+            $detail = $this->repository->fetchById($id);
+            return Helper::addFlashMessagesToArray($this, [
                     'form' => $this->form,
-                    'requestTypes' => $requestType,
                     'status' => $detail['STATUS'],
                     'advanceAmt'=>$detail['REQUESTED_AMOUNT'],
                     'requestedDate' => $detail['REQUESTED_DATE'],
                     'detail'=>$detail,
                     'id'=>$id
-        ]);
-        //return Helper::addFlashMessagesToArray($this, ['list'=>'hellow']);
+            ]);
+        }
     }
 
     public function deleteAction() {
