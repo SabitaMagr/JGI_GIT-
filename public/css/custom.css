@@ -1556,4 +1556,8 @@ ul#optionList li{
     padding-bottom: 5px;
     margin-bottom: 0px !important;
 }
+.scrollbar-horizantal{
+    width: 100%;
+    overflow-x: scroll;
+}
 /*test*/
