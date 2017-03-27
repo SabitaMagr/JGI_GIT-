@@ -8,6 +8,9 @@ $positionName = $form->get('positionName');
 $remarks = $form->get('remarks');
 $status = $form->get('status');
 
+$companyId = $form->get('companyId');
+$companyId->setValueOptions($companies);
+
 $submit = $form->get('submit');
 $submit->setAttribute('value', 'SUBMIT');
 
@@ -53,6 +56,14 @@ echo json_encode($menu);
                             <?php print $this->formElement($positionName); ?>
                             <?php print $this->formElementErrors()->render($positionName, ['class' => 'help-block']); ?>
                             <input type="hidden" id="positionId" value="<?php echo $id; ?>"/>
+                        </div>
+                    </div>
+                    
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <?php print $this->formLabel($companyId); ?>
+                            <?php print $this->formElement($companyId); ?>
+                            <?php print $this->formElementErrors()->render($companyId, ['class' => 'help-block error']); ?>
                         </div>
                     </div>
 

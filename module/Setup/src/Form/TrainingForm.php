@@ -91,6 +91,15 @@ class TrainingForm
      * @Annotation\Attributes({"value":"Submit","class":"btn btn-success"})
      */
     public $submit;
+    
+    /**
+     * @Annotation\Type("Zend\Form\Element\Select")
+     * @Annotation\Required(true)
+     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
+     * @Annotation\Options({"disable_inarray_validator":"true","label":"Company"})
+     * @Annotation\Attributes({ "id":"companyId","class":"form-control"})
+     */
+    public $companyId;
 
 
 }

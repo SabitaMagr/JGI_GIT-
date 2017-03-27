@@ -2,6 +2,12 @@ angular.module('hris', [])
         .controller('expenseDtlController', function ($scope, $http) {
             $scope.expenseDtlFormList = [];
             $scope.counter = '';
+            $scope.transportTypeList = [
+                    {"id": "AP", "name": "Aero Plane"},
+                    {"id": "OV", "name": "Office Vehicles"},
+                    {"id": "TI", "name": "Taxi"},
+                    {"id": "BS", "name": "Bus"},
+                ];
             $scope.expenseDtlFormTemplate = {
                 id: 0,
                 departureDate: "",
@@ -10,11 +16,12 @@ angular.module('hris', [])
                 destinationDate: "",
                 destinationTime: "",
                 destinationPlace: "",
-                transportType: "",
+                transportType: $scope.transportTypeList[0],
                 fare: "",
                 allowance: "",
                 localConveyence: "",
                 miscExpenses: "",
+                total:"",
                 remarks: "",
                 checkbox: "checkboxt0",
                 checked: false
@@ -31,11 +38,12 @@ angular.module('hris', [])
                     destinationDate: "",
                     destinationTime: "",
                     destinationPlace: "",
-                    transportType: "",
+                    transportType:  $scope.transportTypeList[0],
                     fare: "",
                     allowance: "",
                     localConveyence: "",
                     miscExpenses: "",
+                    total:"",
                     remarks: "",
                     checkbox: "checkboxt" + $scope.counter,
                     checked: false
@@ -52,6 +60,9 @@ angular.module('hris', [])
                         tempT++;
                     }
                 }
+            }
+            $scope.submitExpenseDtl = function(){
+                
             }
         });
 

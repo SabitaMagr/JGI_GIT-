@@ -31,6 +31,7 @@ class LeaveMaster extends Model
     const CREATED_BY = "CREATED_BY";
     const MODIFIED_BY = "MODIFIED_BY";
     const PAID="PAID";
+    const COMPANY_ID = "COMPANY_ID";
 
     public $leaveId;
     public $leaveCode;
@@ -48,6 +49,7 @@ class LeaveMaster extends Model
     public $createdBy;
     public $modifiedBy;
     public $paid;
+    public $companyId;
 
     public $mappings=[
         'leaveId'=>self::LEAVE_ID,
@@ -65,7 +67,8 @@ class LeaveMaster extends Model
         'remarks'=>self::REMARKS,
         'createdBy' => self::CREATED_BY,
         'modifiedBy' => self::MODIFIED_BY,
-        'paid'=>self::PAID
+        'paid'=>self::PAID,
+        'companyId' => self::COMPANY_ID
     ];
 
 
