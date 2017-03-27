@@ -19,6 +19,7 @@ class Designation extends Model {
     const WITHIN_DEPARTMENT = "WITHIN_DEPARTMENT";
     const CREATED_BY = "CREATED_BY";
     const MODIFIED_BY = "MODIFIED_BY";
+    const COMPANY_ID = "COMPANY_ID";
 
     public $designationId;
     public $designationCode;
@@ -32,6 +33,7 @@ class Designation extends Model {
     public $withinDepartment;
     public $createdBy;
     public $modifiedBy;
+    public $companyId;
     public $mappings = [
         'designationId' => self::DESIGNATION_ID,
         'designationCode' => self::DESIGNATION_CODE,
@@ -45,6 +47,7 @@ class Designation extends Model {
         'status' => self::STATUS,
         'createdBy' => self::CREATED_BY,
         'modifiedBy' => self::MODIFIED_BY,
+        'companyId' => self::COMPANY_ID,
     ];
 
 }
