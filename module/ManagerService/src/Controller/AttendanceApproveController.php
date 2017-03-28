@@ -139,7 +139,8 @@ class AttendanceApproveController extends AbstractActionController {
                 $previousDtl = $attendanceRepository->getDtlWidEmpIdDate($employeeId, $attendanceDt);
 
                 if ($previousDtl == null) {
-                    $attendanceRepository->add($attendanceDetail);
+//                    $attendanceRepository->add($attendanceDetail);
+                    throw new Exception("Attendance of employee with employeeId :$employeeId on $attendanceDt is not found.");
                 } else {
                     $attendanceRepository->edit($attendanceDetail, $previousDtl['ID']);
                 }

@@ -39,6 +39,11 @@ class AttendanceDetailRepository implements RepositoryInterface {
         $this->tableGateway->update($array, [AttendanceDetail::ID => $id]);
     }
 
+    public function editWith(Model $model, $where) {
+        $array = $model->getArrayCopyForDB();
+        $this->tableGateway->update($array, $where);
+    }
+
     public function fetchAll() {
         $sql = new Sql($this->adapter);
         $select = $sql->select();
@@ -183,7 +188,7 @@ class AttendanceDetailRepository implements RepositoryInterface {
         return $result->current();
     }
 
-    //need trigger
+    //ok
     public function addAttendance($model) {
         $attendanceTableGateway = new TableGateway(Attendance::TABLE_NAME, $this->adapter);
         return $attendanceTableGateway->insert($model->getArrayCopyForDB());
