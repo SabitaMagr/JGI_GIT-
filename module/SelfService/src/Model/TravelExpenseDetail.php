@@ -21,16 +21,10 @@ class TravelExpenseDetail extends Model{
     const MISC_EXPENSES = "MISC_EXPENSES";
     const TOTAL_AMOUNT = "TOTAL_AMOUNT";
     const REMARKS = "REMARKS";
-    const COMPANY_ID = "COMPANY_ID";
-    const BRANCH_ID = "BRANCH_ID";
     const CREATED_BY = "CREATED_BY";
     const CREATED_DATE = "CREATED_DATE";
     const MODIFIED_BY = "MODIFIED_BY";
     const MODIFIED_DATE = "MODIFIED_DATE";
-    const CHECKED = "CHECKED";
-    const APPROVED_BY = "APPROVED_BY";
-    const APPROVED_DATE = "APPROVED_DATE";
-    const APPROVED = "APPROVED";
     const STATUS = "STATUS";
     
     public $id;
@@ -48,16 +42,10 @@ class TravelExpenseDetail extends Model{
     public $miscExpenses;
     public $totalAmount;
     public $remarks;
-    public $companyId;
-    public $branchId;
     public $createdBy;
     public $createdDate;
     public $modifiedBy;
     public $modifiedDate;
-    public $checked;
-    public $approvedBy;
-    public $approvedDate;
-    public $approved;
     public $status;
     
     public $mappings = [
@@ -76,16 +64,10 @@ class TravelExpenseDetail extends Model{
         'miscExpenses'=>self::MISC_EXPENSES,
         'totalAmount'=>self::TOTAL_AMOUNT,
         'remarks'=>self::REMARKS,
-        'companyId'=>self::COMPANY_ID,
-        'branchId'=>self::BRANCH_ID,
         'createdBy'=>self::CREATED_BY,
         'createdDate'=>self::CREATED_DATE,
         'modifiedBy'=>self::MODIFIED_BY,
         'modifiedDate'=>self::MODIFIED_DATE,
-        'approvedBy'=>self::APPROVED_BY,
-        'approvedDate'=>self::APPROVED_DATE,
-        'checked'=>self::CHECKED,
-        'approved'=>self::APPROVED,
         'status'=>self::STATUS
     ];
 }
