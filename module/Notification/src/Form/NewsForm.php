@@ -37,7 +37,7 @@ class NewsForm {
     
     /**
      * @Annotation\Type("Zend\Form\Element\Textarea")
-     * @Annotation\Required(false)
+     * @Annotation\Required(true)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"News In English"})
      * @Annotation\Attributes({ "id":"newsEdesc", "class":"form-control" })
@@ -73,7 +73,7 @@ class NewsForm {
     
     /**
      * @Annotation\Type("Zend\Form\Element\Select")
-     * @Annotation\Required({"required":"true"})
+     * @Annotation\Required(false)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"disable_inarray_validator":"true","label":"Branch"})
      * @Annotation\Attributes({ "id":"branchId","class":"form-control"})
@@ -82,7 +82,7 @@ class NewsForm {
     
     /**
      * @Annotation\Type("Zend\Form\Element\Select")
-     * @Annotation\Required({"required":"true"})
+     * @Annotation\Required(false)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"disable_inarray_validator":"true","label":"Designation"})
      * @Annotation\Attributes({ "id":"designationId","class":"form-control"})
@@ -91,7 +91,7 @@ class NewsForm {
     
     /**
      * @Annotation\Type("Zend\Form\Element\Select")
-     * @Annotation\Required({"required":"true"})
+     * @Annotation\Required(false)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"disable_inarray_validator":"true","label":"Department"})
      * @Annotation\Attributes({ "id":"departmentId","class":"form-control"})

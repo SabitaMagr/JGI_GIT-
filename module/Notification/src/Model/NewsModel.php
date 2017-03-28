@@ -7,6 +7,7 @@ use Application\Model\Model;
 class NewsModel extends Model {
     const TABLE_NAME = 'HRIS_NEWS';
 
+    const NEWS_ID = 'NEWS_ID';
     const NEWS_DATE = 'NEWS_DATE';
     const NEWS_TYPE = 'NEWS_TYPE';
     const NEWS_TITLE = 'NEWS_TITLE';
@@ -25,6 +26,7 @@ class NewsModel extends Model {
     const APPROVED_DT = 'APPROVED_DT';
     const STATUS = 'STATUS';
 
+    public $newsId;
     public $newsDate;
     public $newsType;
     public $newsTitle;
@@ -44,6 +46,7 @@ class NewsModel extends Model {
     public $status;
 
     public $mappings = [
+    'newsId' => self::NEWS_ID,
     'newsDate' => self::NEWS_DATE,
     'newsType' => self::NEWS_TYPE,
     'newsTitle' => self::NEWS_TITLE,
@@ -56,7 +59,7 @@ class NewsModel extends Model {
     'departmentId' => self::DEPARTMENT_ID,
     'createdBy' => self::CREATED_BY,
     'createdDt' => self::CREATED_DT,
-    'modifiedBy' => self::MODIFIED_DT,
+    'modifiedBy' => self::MODIFIED_BY,
     'modifiedDt' => self::MODIFIED_DT,
     'approvedBy' => self::APPROVED_BY,
     'approvedDt' => self::APPROVED_DT,
