@@ -13,10 +13,16 @@
             minuteStep: 1
         });
 
-        app.addDatePicker(
-                $("#attendanceDt")
-                );
-       
+        var $attendanceDt = $("#attendanceDt");
+        if (!($attendanceDt.is('[readonly]'))) {
+            app.addDatePicker($attendanceDt);
+            app.getServerDate().then(function (response) {
+                $attendanceDt.datepicker('setEndDate', app.getSystemDate(response.data.serverDate));
+            }, function (error) {
+                console.log("error=>getServerDate", error);
+            });
+        }
+
         var totalHour = function () {
             var inTime = $('#inTime').val();
 

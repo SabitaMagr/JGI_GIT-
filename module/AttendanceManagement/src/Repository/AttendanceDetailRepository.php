@@ -57,8 +57,8 @@ class AttendanceDetailRepository implements RepositoryInterface {
         $select->where(["E.RETIRED_FLAG='N'"]);
         $select->order("E.FIRST_NAME,A.ATTENDANCE_DT DESC");
         $statement = $sql->prepareStatementForSqlObject($select);
-        print($statement->getSql());
-        exit;
+//        print($statement->getSql());
+//        exit;
         $result = $statement->execute();
         return $result;
     }

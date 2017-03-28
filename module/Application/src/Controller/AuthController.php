@@ -5,6 +5,8 @@ namespace Application\Controller;
 use Application\Helper\Helper;
 use Application\Model\HrisAuthStorage;
 use Application\Model\User;
+use Application\Model\UserLog;
+use Application\Repository\UserLogRepository;
 use AttendanceManagement\Model\Attendance;
 use AttendanceManagement\Repository\AttendanceDetailRepository;
 use AttendanceManagement\Repository\AttendanceRepository;
@@ -128,17 +130,13 @@ class AuthController extends AbstractActionController {
                     }
                     $this->getAuthService()->getStorage()->write(["user_name" => $request->getPost('username'), "user_id" => $resultRow->USER_ID, "employee_id" => $resultRow->EMPLOYEE_ID, "role_id" => $resultRow->ROLE_ID]);
 
-//                    user log table here $_SERVER['HTTP_CLIENT_IP'],$resultRow->USER_ID,SYSDATE
-                    /*
-                     * <?php 
-                      // Getting the entire params object
-                      $servParam = $request->getServer();
-                      $remoteAddr = $servParam->get('REMOTE_ADDR');
-
-                      // Getting specific variable
-                      $remoteAddr = $request->getServer('REMOTE_ADDR');
-                      ?>
-                     */
+                    // to add user log details in HRIS_USER_LOG
+                    $clientIp = $request->getServer('REMOTE_ADDR');
+                    $userLog = new UserLog();
+                    $userLogRepo = new UserLogRepository($this->adapter);
+                    $userLog->loginIp = $clientIp;
+                    $userLog->userId = $resultRow->USER_ID;
+                    $userLogRepo->add($userLog);
                 }
             }
         }

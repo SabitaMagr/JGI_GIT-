@@ -537,6 +537,18 @@ window.app = (function ($, toastr) {
     });
     /* end of functionality not implemented */
 
+    var getServerDate = function () {
+        if (typeof document.restfulUrl === 'undefined') {
+            console.log("Need to define restfulUrl first");
+            return null;
+        } else {
+            var action = "getServerDate";
+            return pullDataById(document.restfulUrl, {
+                action: action
+            });
+        }
+    };
+
     return {
         format: format,
         pullDataById: pullDataById,
@@ -553,7 +565,8 @@ window.app = (function ($, toastr) {
         UIConfirmations: UIConfirmations,
         startEndDatePicker: startEndDatePicker,
         startEndDatePickerWithNepali: startEndDatePickerWithNepali,
-        getSystemDate: getDate
+        getSystemDate: getDate,
+        getServerDate: getServerDate
     };
 })(window.jQuery, window.toastr);
 
