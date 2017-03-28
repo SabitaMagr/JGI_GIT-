@@ -81,4 +81,30 @@ class DepartmentRepository implements RepositoryInterface {
         return $companyList;
     }
 
+    public function fetchAllBranchAndDepartment() {
+        $sql = new Sql($this->adapter);
+        $select = $sql->select();
+        $select->columns(['DEPARTMENT_ID', 'DEPARTMENT_NAME']);
+        $select->from(['D' => Department::TABLE_NAME]);
+        $select->join(['B' => Branch::TABLE_NAME], "B." . Branch::BRANCH_ID . "=D." . Department::BRANCH_ID, array('BRANCH_ID', 'BRANCH_NAME'), 'inner');
+        $select->where(["B.STATUS='E'"]);
+        $select->where(["D.STATUS='E'"]);
+        $select->order("D." . Department::DEPARTMENT_NAME . " ASC");
+        $statement = $sql->prepareStatementForSqlObject($select);
+        $result = $statement->execute();
+        $list = [];
+        foreach ($result as $row) {
+            array_push($list, $row);
+        }
+        $departmentList = [];
+        foreach ($list as $val) {
+            $newKey = $val['BRANCH_ID'];
+            $departmentList[$newKey][] = $val;
+        }
+//        echo '<pre>';
+//        print_r($departmentList);
+//        die();
+        return $departmentList;
+    }
+
 }

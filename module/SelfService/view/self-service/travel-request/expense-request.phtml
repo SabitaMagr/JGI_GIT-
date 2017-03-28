@@ -47,7 +47,8 @@ if ($this->messages) {
                     <div class="col-xs-12 col-sm-4 col-md-4 col-box bottomgap">
                         <table>
                             <tr>
-                                <td width="40%"><label for="travelCode">Travel Code :</label></td>
+                                <td width="40%">
+                                    <label for="travelCode">Travel Code :</label></td>
                                 <td><input type="text" disabled="disabled" value="<?php echo $detail['TRAVEL_CODE']; ?>" name="travelCode" required="required" id="travelCode" class="form-control"></td>
                             </tr>
                         </table>
@@ -164,8 +165,8 @@ if ($this->messages) {
                                     </ul>
                                 </div>
                             </td>
-                            <td width="60%">
-                                <input type="text" dvalue="{{expenseDtlForm.departureTime}}" timepicker data-format="h:mm a" data-template="hh : mm A" required="required" name="departureTime_{{expenseDtlForm.checkbox}}" ng-model="expenseDtlForm.departureTime"/>
+                            <td>
+                                <input type="text" dvalue="{{expenseDtlForm.departureTime}}" timepicker required="required" name="departureTime_{{expenseDtlForm.checkbox}}"  size="7" ng-model="expenseDtlForm.departureTime"/>
                                 <div ng-show="travelExpenseForm.$submitted || travelExpenseForm.departureTime_{{expenseDtlForm.checkbox}}.$touched">
                                     <ul ng-show="travelExpenseForm.departureTime_{{expenseDtlForm.checkbox}}.$error.required" class="help-block error">
                                         <li>Departure Time is required.</li>
@@ -189,7 +190,7 @@ if ($this->messages) {
                                 </div>
                             </td>
                             <td>
-                                <input type="text" dvalue="{{expenseDtlForm.destinationTime}}" timepicker data-format="h:mm a" data-template="hh : mm A" required="required" name="destinationTime_{{expenseDtlForm.checkbox}}" ng-model="expenseDtlForm.destinationTime" size="11" class="form-control"/>
+                                <input type="text" dvalue="{{expenseDtlForm.destinationTime}}" timepicker required="required" name="destinationTime_{{expenseDtlForm.checkbox}}" ng-model="expenseDtlForm.destinationTime" size="7"/>
                                 <div ng-show="travelExpenseForm.$submitted || travelExpenseForm.destinationTime_{{expenseDtlForm.checkbox}}.$touched">
                                     <ul ng-show="travelExpenseForm.destinationTime_{{expenseDtlForm.checkbox}}.$error.required" class="help-block error">
                                         <li>Destination Time is required.</li>
@@ -226,7 +227,7 @@ if ($this->messages) {
                                 <input type="number" ng-model="expenseDtlForm.miscExpense" style="width: 60px;" step="0.01" min="0"/>
                             </td>
                             <td>
-                                <input type="number" ng-model="expenseDtlForm.total" name="total_{{expenseDtlForm.checkbox}}" style="width: 60px;" step="0.01" min="0"/>
+                                <input type="number" id="total_{{expenseDtlForm.checkbox}}" readonly="readonly" value="{{total(expenseDtlForm.fare,expenseDtlForm.allowance,expenseDtlForm.localConveyence,expenseDtlForm.miscExpense)}}"  name="total_{{expenseDtlForm.checkbox}}" style="width: 72px;" step="0.01" min="0"/>
                                 <div ng-show="travelExpenseForm.$submitted || travelExpenseForm.total_{{expenseDtlForm.checkbox}}.$touched">
                                     <ul ng-show="travelExpenseForm.total_{{expenseDtlForm.checkbox}}.$error.required" class="help-block error">
                                         <li>Total is required.</li>
@@ -259,8 +260,10 @@ if ($this->messages) {
                             <td></td>
                             <td></td>
                             <td></td>
-                            <td></td>
-                            <td></td>
+                            <td><b>Total:</b></td>
+                            <td>
+                                 <input type="number" id="sumAllTotal" step="0.01" min="0" readonly="readonly" style="width: 72px;" value="{{sumAllTotal(expenseDtlFormList)}}" />
+                            </td>
                             <td>
                                 <a href="javascript:;" class="btn btn-icon-only default pull-right"
                                    ng-click="addExpenseDtl()">

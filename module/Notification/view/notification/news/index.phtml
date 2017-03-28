@@ -1,5 +1,4 @@
 <?php
-
 $this->headLink()
         ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.common.min.css'))
         ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.rtl.min.css'))
@@ -10,24 +9,27 @@ $this->headLink()
 $this->headScript()
         ->appendFile($this->basePath('jszip/dist/jszip.min.js'))
         ->appendFile($this->basePath('telerik_kendoui/js/kendo.all.min.js'))
-        ->appendFile($this->basePath('js/asset/group/index.js'))
+        ->appendFile($this->basePath('js/Notification/news/index.js'))
         ->appendFile($this->basePath('assets/global/plugins/bootstrap-confirmation/bootstrap-confirmation.min.js'));
 ?>
 
-<?php
-if ($this->messages) { ?>
+<?php if ($this->messages) { ?>
     <script>
         document.messages =<?php echo json_encode($this->messages); ?>
     </script>
-<?php } 
+<?php }
 ?>
+
+<script>
+    document.news =<?= json_encode($news) ?>;
+</script>
 
 
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\news')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
-    
-    <div class="margin-top-20">
+
+<div class="margin-top-20">
     <div class="table-toolbar">
         <div class="row">
             <div class="col-md-6">
@@ -52,10 +54,44 @@ if ($this->messages) { ?>
             </div>
         </div>
     </div>
-        
-        
-        
-        
-        
-        
+
+    <?php
+//                echo'<pre>';
+//        print_r($news);
+    ?>
+
+    <div id="newsTable">
+
     </div>
+    <script id="rowTemplate" type="text/x-kendo-tmpl">
+        <tr>
+        <td>                              
+        #: (NEWS_DATE == null) ? '-' : NEWS_DATE #
+        </td>
+        <td>    
+        #: (NEWS_TYPE == null) ? '-' : NEWS_TYPE #
+        </td>
+        <td>                 
+        #: (NEWS_TITLE == null) ? '-' : NEWS_TITLE #
+        </td>
+        <td>                 
+        #: (NEWS_EDESC == null) ? '-' : NEWS_EDESC #
+        </td>
+        <td>
+        <a class="btn-edit" href="<?= $this->url("news", ["action" => "edit"]); ?>/#:NEWS_ID#" style="height:17px;">
+        <i class="fa fa-edit"></i>
+        </a>
+        <a class="btn-delete confirmation"
+        href="<?= $this->url("news", ["action" => "delete"]); ?>/#:NEWS_ID#" id="bs_#:NEWS_ID #" style="height:17px;"> 
+        <i class="fa fa-trash-o"></i></a>
+        </a>
+        </td>
+        </tr>
+    </script>
+
+
+
+
+
+
+</div>
