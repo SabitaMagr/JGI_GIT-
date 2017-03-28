@@ -81,6 +81,28 @@ return [
                 ]
             ]
         ],
+        'news' => [
+                [
+                'label' => 'news',
+                'route' => 'news',
+            ],
+                [
+                'label' => 'news',
+                'route' => 'news',
+                'pages' => [
+                        [
+                        'label' => 'List',
+                        'route' => 'news',
+                        'action' => 'index',
+                    ],
+                        [
+                        'label' => 'Add',
+                        'route' => 'news',
+                        'action' => 'add',
+                    ],
+                ]
+            ]
+        ],
     ],
     'view_manager' => [
         'template_path_stack' => [
