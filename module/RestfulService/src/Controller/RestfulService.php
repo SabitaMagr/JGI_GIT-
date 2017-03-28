@@ -359,6 +359,9 @@ class RestfulService extends AbstractRestfulController {
                     case "pullAssetBalance":
                         $responseData = $this->pullAssetBalance($postedData->id);
                         break;
+                    case "getServerDate":
+                        $responseData = $this->getServerDate($postedData->data);
+                        break;
 
                     default:
                         throw new Exception("action not found");
@@ -1276,7 +1279,7 @@ class RestfulService extends AbstractRestfulController {
             'universityList' => $universityList,
             'programList' => $programList,
             'courseList' => $courseList,
-            'num'=>count($employeeQualificationList),
+            'num' => count($employeeQualificationList),
             'employeeQualificationList' => $employeeQualificationList
         ];
 
@@ -1298,7 +1301,7 @@ class RestfulService extends AbstractRestfulController {
         return [
             "success" => true,
             "data" => $experienceList,
-            "num"=>$num
+            "num" => $num
         ];
     }
 
@@ -1314,7 +1317,7 @@ class RestfulService extends AbstractRestfulController {
         return [
             'success' => true,
             'data' => $trainingList,
-            'num'=>$num
+            'num' => $num
         ];
     }
 
@@ -2945,6 +2948,10 @@ class RestfulService extends AbstractRestfulController {
 //            "num" => 'count($recordList)',
             "num" => 'test count'
         ];
+    }
+
+    public function getServerDate($data) {
+        return ["success" => true, "data" => ["serverDate" => date(Helper::PHP_DATE_FORMAT)]];
     }
 
 }

@@ -7,6 +7,7 @@ use Application\Helper\Helper;
 use AttendanceManagement\Form\AttendanceByHrForm;
 use AttendanceManagement\Model\AttendanceDetail as AttendanceByHrModel;
 use AttendanceManagement\Repository\AttendanceDetailRepository;
+use Exception;
 use Setup\Model\Branch;
 use Setup\Model\Department;
 use Setup\Model\Designation;
@@ -145,7 +146,8 @@ class AttendanceByHr extends AbstractActionController {
                 $previousDtl = $this->repository->getDtlWidEmpIdDate($employeeId, $attendanceDt);
 
                 if ($previousDtl == null) {
-                    $this->repository->add($attendanceByHrModel);
+//                    $this->repository->add($attendanceByHrModel);
+                    throw new Exception("Attendance of employee with employeeId :$employeeId on $attendanceDt is not found.");
                 } else {
                     $this->repository->edit($attendanceByHrModel, $previousDtl['ID']);
                 }
@@ -177,7 +179,6 @@ class AttendanceByHr extends AbstractActionController {
             $this->form->setData($request->getPost());
             if ($this->form->isValid()) {
                 $attendanceByHrModel->exchangeArrayFromForm($this->form->getData());
-                $attendanceByHrModel->attendanceDt = Helper::getExpressionDate($attendanceByHrModel->attendanceDt);
                 $attendanceByHrModel->inTime = Helper::getExpressionTime($attendanceByHrModel->inTime);
                 $attendanceByHrModel->outTime = Helper::getExpressionTime($attendanceByHrModel->outTime);
                 $this->repository->edit($attendanceByHrModel, $id);

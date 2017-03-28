@@ -9,6 +9,7 @@ use Setup\Model\HrEmployees;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Sql\Expression;
 use Zend\Db\Sql\Sql;
+use Application\Helper\Helper;
 use Zend\Db\TableGateway\TableGateway;
 
 class TravelRequestRepository implements RepositoryInterface {
@@ -27,6 +28,14 @@ class TravelRequestRepository implements RepositoryInterface {
 
     public function delete($id) {
         $this->tableGateway->update([TravelRequest::STATUS => 'C'], [TravelRequest::TRAVEL_ID => $id]);
+    }
+    
+    public function updateDates($departureDate,$returnedDate,$requestedAmt,$travelId){
+        $this->tableGateway->update([
+            TravelRequest::DEPARTURE_DATE=>Helper::getExpressionDate($departureDate),
+            TravelRequest::RETURNED_DATE=>Helper::getExpressionDate($returnedDate),
+            TravelRequest::REQUESTED_AMOUNT=>$requestedAmt
+                ],[TravelRequest::TRAVEL_ID => $travelId]);
     }
 
     public function edit(Model $model, $id) {
@@ -48,13 +57,13 @@ class TravelRequestRepository implements RepositoryInterface {
         $sql = new Sql($this->adapter);
         $select = $sql->select();
         $select->columns([
-            new Expression("TO_CHAR(TR.FROM_DATE, 'DD-MON-YYYY') AS FROM_DATE"),
-            new Expression("TO_CHAR(TR.TO_DATE, 'DD-MON-YYYY') AS TO_DATE"),
+            new Expression("INITCAP(TO_CHAR(TR.FROM_DATE, 'DD-MON-YYYY')) AS FROM_DATE"),
+            new Expression("INITCAP(TO_CHAR(TR.TO_DATE, 'DD-MON-YYYY')) AS TO_DATE"),
             new Expression("TR.STATUS AS STATUS"),
             new Expression("TR.DESTINATION AS DESTINATION"),
-            new Expression("TO_CHAR(TR.REQUESTED_DATE, 'DD-MON-YYYY') AS REQUESTED_DATE"),
-            new Expression("TO_CHAR(TR.APPROVED_DATE, 'DD-MON-YYYY') AS APPROVED_DATE"),
-            new Expression("TO_CHAR(TR.RECOMMENDED_DATE, 'DD-MON-YYYY') AS RECOMMENDED_DATE"),
+            new Expression("INITCAP(TO_CHAR(TR.REQUESTED_DATE, 'DD-MON-YYYY')) AS REQUESTED_DATE"),
+            new Expression("INITCAP(TO_CHAR(TR.APPROVED_DATE, 'DD-MON-YYYY')) AS APPROVED_DATE"),
+            new Expression("INITCAP(TO_CHAR(TR.RECOMMENDED_DATE, 'DD-MON-YYYY')) AS RECOMMENDED_DATE"),
             new Expression("TR.REQUESTED_AMOUNT AS REQUESTED_AMOUNT"),
             new Expression("TR.TRAVEL_ID AS TRAVEL_ID"),
             new Expression("TR.TRAVEL_CODE AS TRAVEL_CODE"),
@@ -66,7 +75,9 @@ class TravelRequestRepository implements RepositoryInterface {
             new Expression("TR.APPROVED_REMARKS AS APPROVED_REMARKS"),
             new Expression("TR.RECOMMENDED_REMARKS AS RECOMMENDED_REMARKS"),
             new Expression("TR.REMARKS AS REMARKS"),
-            new Expression("TR.REQUESTED_TYPE AS REQUESTED_TYPE")
+            new Expression("TR.REQUESTED_TYPE AS REQUESTED_TYPE"),
+            new Expression("INITCAP(TO_CHAR(TR.DEPARTURE_DATE, 'DD-MON-YYYY')) AS DEPARTURE_DATE"),
+            new Expression("INITCAP(TO_CHAR(TR.RETURNED_DATE, 'DD-MON-YYYY')) AS RETURNED_DATE")
                 ], true);
 
         $select->from(['TR' => TravelRequest::TABLE_NAME])

@@ -7,7 +7,13 @@ $form->setAttribute('role', 'form');
 $form->setAttribute('class', 'attendanceByHr-form');
 
 $employeeId = $form->get('employeeId');
+$employeeId->setAttributes(['disabled' => 'disabled']);
+
 $attendanceDt = $form->get('attendanceDt');
+$attendanceDt->removeAttribute('required');
+$attendanceDt->setAttributes(['readonly' => 'readonly']);
+
+
 $inTime = $form->get('inTime');
 if ($inTime->getValue() == null || $inTime->getValue() == "") {
     $inTime->setValue("10:00 AM");
@@ -24,6 +30,7 @@ if ($totalHour->getValue() == null || $totalHour->getValue() == "") {
     $totalHour->setValue("7.0");
 }
 $employeeId->setValueOptions($employees);
+$employeeId->setAttributes(['disabled' => "disabled"]);
 
 $submit = $form->get('submit');
 $submit->setAttribute('value', 'SUBMIT');

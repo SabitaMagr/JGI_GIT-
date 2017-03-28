@@ -51,6 +51,13 @@ window.app = (function ($, toastr) {
 
         }
     };
+    var addComboTimePicker = function(){
+        for (var x in arguments) {
+            arguments[x].combodate({
+                minuteStep: 1
+            });
+        }
+    }
 
     var startEndDatePicker = function (fromDate, toDate, fn) {
         if (typeof fromDate === 'undefined' || fromDate == null || typeof toDate === 'undefined' || toDate == null) {
@@ -537,6 +544,18 @@ window.app = (function ($, toastr) {
     });
     /* end of functionality not implemented */
 
+    var getServerDate = function () {
+        if (typeof document.restfulUrl === 'undefined') {
+            console.log("Need to define restfulUrl first");
+            return null;
+        } else {
+            var action = "getServerDate";
+            return pullDataById(document.restfulUrl, {
+                action: action
+            });
+        }
+    };
+
     return {
         format: format,
         pullDataById: pullDataById,
@@ -553,7 +572,9 @@ window.app = (function ($, toastr) {
         UIConfirmations: UIConfirmations,
         startEndDatePicker: startEndDatePicker,
         startEndDatePickerWithNepali: startEndDatePickerWithNepali,
-        getSystemDate: getDate
+        getSystemDate: getDate,
+        addComboTimePicker:addComboTimePicker,
+        getServerDate: getServerDate
     };
 })(window.jQuery, window.toastr);
 

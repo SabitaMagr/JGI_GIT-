@@ -50,10 +50,9 @@ $form->prepare();
                 <?php
                 print $this->form()->openTag($form);
                 ?>
-                <div
-                    class="form-group <?= empty($employeeId->getMessages()) ? "" : "error" ?> ">
-                        <?php print $this->formLabel($employeeId); ?>
-                        <?php print $this->formElement($employeeId); ?>
+                <div class="form-group <?= empty($employeeId->getMessages()) ? "" : "error" ?> ">
+                    <?php print $this->formLabel($employeeId); ?>
+                    <?php print $this->formElement($employeeId); ?>
                 </div>
                 <?php print $this->formElementErrors()->render($employeeId, ['class' => 'help-block error']); ?>
 

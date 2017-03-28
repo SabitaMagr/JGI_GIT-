@@ -1,9 +1,7 @@
 <?php
 namespace AttendanceManagement\Controller;
 
-
 use Application\Helper\EntityHelper;
-use Application\Helper\Helper;
 use AttendanceManagement\Model\ShiftSetup;
 use AttendanceManagement\Repository\ShiftAssignRepository;
 use Setup\Model\Branch;
@@ -11,8 +9,8 @@ use Setup\Model\Department;
 use Setup\Model\Designation;
 use Setup\Model\Position;
 use Setup\Model\ServiceType;
-use Zend\Db\Adapter\AdapterInterface;
 use Zend\Authentication\AuthenticationService;
+use Zend\Db\Adapter\AdapterInterface;
 use Zend\Form\Element\Select;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
@@ -35,7 +33,7 @@ class ShiftAssign extends AbstractActionController
     {
          $employeeNameFormElement = new Select();
         $employeeNameFormElement->setName("branch");
-        $employeeName = \Application\Helper\EntityHelper::getTableKVListWithSortOption($this->adapter, "HRIS_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => "E"], "FIRST_NAME", "ASC", " ");
+        $employeeName = EntityHelper::getTableKVListWithSortOption($this->adapter, "HRIS_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => "E"], "FIRST_NAME", "ASC", " ");
         $employeeName1 = [-1 => "All"] + $employeeName;
         $employeeNameFormElement->setValueOptions($employeeName1);
         $employeeNameFormElement->setAttributes(["id" => "employeeId", "class" => "form-control"]);
@@ -44,7 +42,7 @@ class ShiftAssign extends AbstractActionController
 
         $branchFormElement = new Select();
         $branchFormElement->setName("branch");
-        $branches = \Application\Helper\EntityHelper::getTableKVListWithSortOption($this->adapter, Branch::TABLE_NAME, Branch::BRANCH_ID, [Branch::BRANCH_NAME], [Branch::STATUS => 'E'], "BRANCH_NAME", "ASC");
+        $branches = EntityHelper::getTableKVListWithSortOption($this->adapter, Branch::TABLE_NAME, Branch::BRANCH_ID, [Branch::BRANCH_NAME], [Branch::STATUS => 'E'], "BRANCH_NAME", "ASC");
         $branches1 = [-1 => "All"] + $branches;
         $branchFormElement->setValueOptions($branches1);
         $branchFormElement->setAttributes(["id" => "branchId", "class" => "form-control"]);
@@ -53,7 +51,7 @@ class ShiftAssign extends AbstractActionController
 
         $departmentFormElement = new Select();
         $departmentFormElement->setName("department");
-        $departments = \Application\Helper\EntityHelper::getTableKVListWithSortOption($this->adapter, Department::TABLE_NAME, Department::DEPARTMENT_ID, [Department::DEPARTMENT_NAME], [Department::STATUS => 'E'], "DEPARTMENT_NAME", "ASC");
+        $departments = EntityHelper::getTableKVListWithSortOption($this->adapter, Department::TABLE_NAME, Department::DEPARTMENT_ID, [Department::DEPARTMENT_NAME], [Department::STATUS => 'E'], "DEPARTMENT_NAME", "ASC");
         $departments1 = [-1 => "All"] + $departments;
         $departmentFormElement->setValueOptions($departments1);
         $departmentFormElement->setAttributes(["id" => "departmentId", "class" => "form-control"]);
@@ -61,7 +59,7 @@ class ShiftAssign extends AbstractActionController
 
         $designationFormElement = new Select();
         $designationFormElement->setName("designation");
-        $designations = \Application\Helper\EntityHelper::getTableKVListWithSortOption($this->adapter, Designation::TABLE_NAME, Designation::DESIGNATION_ID, [Designation::DESIGNATION_TITLE], [Designation::STATUS => 'E'], "DESIGNATION_TITLE", "ASC");
+        $designations = EntityHelper::getTableKVListWithSortOption($this->adapter, Designation::TABLE_NAME, Designation::DESIGNATION_ID, [Designation::DESIGNATION_TITLE], [Designation::STATUS => 'E'], "DESIGNATION_TITLE", "ASC");
         $designations1 = [-1 => "All"] + $designations;
         $designationFormElement->setValueOptions($designations1);
         $designationFormElement->setAttributes(["id" => "designationId", "class" => "form-control"]);
@@ -69,7 +67,7 @@ class ShiftAssign extends AbstractActionController
 
         $positionFormElement = new Select();
         $positionFormElement->setName("position");
-        $positions = \Application\Helper\EntityHelper::getTableKVListWithSortOption($this->adapter, Position::TABLE_NAME, Position::POSITION_ID, [Position::POSITION_NAME], [Position::STATUS => 'E'], "POSITION_NAME", "ASC");
+        $positions = EntityHelper::getTableKVListWithSortOption($this->adapter, Position::TABLE_NAME, Position::POSITION_ID, [Position::POSITION_NAME], [Position::STATUS => 'E'], "POSITION_NAME", "ASC");
         $positions1 = [-1 => "All"] + $positions;
         $positionFormElement->setValueOptions($positions1);
         $positionFormElement->setAttributes(["id" => "positionId", "class" => "form-control"]);
@@ -77,7 +75,7 @@ class ShiftAssign extends AbstractActionController
 
         $serviceTypeFormElement = new Select();
         $serviceTypeFormElement->setName("serviceType");
-        $serviceTypes = \Application\Helper\EntityHelper::getTableKVListWithSortOption($this->adapter, ServiceType::TABLE_NAME, ServiceType::SERVICE_TYPE_ID, [ServiceType::SERVICE_TYPE_NAME], [ServiceType::STATUS => 'E'], "SERVICE_TYPE_NAME", "ASC");
+        $serviceTypes = EntityHelper::getTableKVListWithSortOption($this->adapter, ServiceType::TABLE_NAME, ServiceType::SERVICE_TYPE_ID, [ServiceType::SERVICE_TYPE_NAME], [ServiceType::STATUS => 'E'], "SERVICE_TYPE_NAME", "ASC");
         $serviceTypes1 = [-1 => "All"] + $serviceTypes;
         $serviceTypeFormElement->setValueOptions($serviceTypes1);
         $serviceTypeFormElement->setAttributes(["id" => "serviceTypeId", "class" => "form-control"]);
