@@ -7,6 +7,7 @@ use Application\Helper\Helper;
 use AttendanceManagement\Form\AttendanceByHrForm;
 use AttendanceManagement\Model\AttendanceDetail as AttendanceByHrModel;
 use AttendanceManagement\Repository\AttendanceDetailRepository;
+use Exception;
 use Setup\Model\Branch;
 use Setup\Model\Department;
 use Setup\Model\Designation;

@@ -1,21 +1,14 @@
 <?php
 
-/**
- * Created by PhpStorm.
- * User: root
- * Date: 11/9/16
- * Time: 12:23 PM
- */
-
 namespace AttendanceManagement\Controller;
 
 use Application\Helper\Helper;
 use AttendanceManagement\Model\Attendance;
 use AttendanceManagement\Model\AttendanceDetail;
 use AttendanceManagement\Repository\AttendanceDetailRepository;
-use HolidayManagement\Model\Holiday;
-use HolidayManagement\Repository\HolidayRepository;
 use LeaveManagement\Model\LeaveApply;
+use SelfService\Controller\Holiday;
+use SelfService\Repository\HolidayRepository;
 use SelfService\Repository\LeaveRequestRepository;
 use Setup\Model\HrEmployees;
 use Setup\Repository\EmployeeRepository;
