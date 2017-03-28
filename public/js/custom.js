@@ -51,6 +51,13 @@ window.app = (function ($, toastr) {
 
         }
     };
+    var addComboTimePicker = function(){
+        for (var x in arguments) {
+            arguments[x].combodate({
+                minuteStep: 1
+            });
+        }
+    }
 
     var startEndDatePicker = function (fromDate, toDate, fn) {
         if (typeof fromDate === 'undefined' || fromDate == null || typeof toDate === 'undefined' || toDate == null) {
@@ -553,7 +560,8 @@ window.app = (function ($, toastr) {
         UIConfirmations: UIConfirmations,
         startEndDatePicker: startEndDatePicker,
         startEndDatePickerWithNepali: startEndDatePickerWithNepali,
-        getSystemDate: getDate
+        getSystemDate: getDate,
+        addComboTimePicker:addComboTimePicker
     };
 })(window.jQuery, window.toastr);
 
