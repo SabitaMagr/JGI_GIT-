@@ -1561,3 +1561,8 @@ ul#optionList li{
     overflow-x: scroll;
 }
 /*test*/
+.bootstrap-timepicker-widget.dropdown-menu.timepicker-orient-left.timepicker-orient-top.open,.bootstrap-timepicker-widget
+{
+    width:145px !important;
+        min-width: 144px !important;
+}

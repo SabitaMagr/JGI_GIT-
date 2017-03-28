@@ -177,10 +177,12 @@ window.app = (function ($, toastr) {
 
     var addTimePicker = function () {
         for (var x in arguments) {
-            arguments[x].timepicker();
+            arguments[x].timepicker({
+                minuteStep: 1
+            });
         }
     }
-
+    
     var angularDatePicker = function () {
         $(this).datepicker({
             format: format,
