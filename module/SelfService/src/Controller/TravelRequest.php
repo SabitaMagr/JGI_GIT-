@@ -177,11 +177,12 @@ class TravelRequest extends AbstractActionController {
             $returnedDate = $postData['data']['returnedDate'];
             $requestedType = $postData['data']['requestedType'];
             $travelId = (int)$postData['data']['travelId'];
+            $sumAllTotal = (float)$postData['data']['sumAllTotal'];
             $detail = $this->repository->fetchById($travelId);
             $expenseDtlRepo = new TravelExpenseDtlRepository($this->adapter);
             $expenseDtlModel = new TravelExpenseDetail();
             
-            $requestedAmt = 10000;
+            $requestedAmt = $sumAllTotal;
             if($requestedType=='ad'){
                 $model->travelId = ((int) Helper::getMaxId($this->adapter, TravelRequestModel::TABLE_NAME, TravelRequestModel::TRAVEL_ID)) + 1;
                 $model->employeeId = $this->employeeId;

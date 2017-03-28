@@ -1,10 +1,5 @@
 (function ($, app) {
     'use strict';
-//    $(document).ready(function(){
-//        app.addDatePicker($("#returnedDate"));
-//        app.addDatePicker($("#departureDate"));
-//    })
-    
     angular.module('hris', [])
             .controller('expenseDtlController', function ($scope, $http, $window) {
                 $scope.expenseDtlFormList = [];
@@ -29,11 +24,11 @@
                     destinationTime: "",
                     destinationPlace: "",
                     transportType: $scope.transportTypeList[0],
-                    fare: "",
-                    allowance: "",
-                    localConveyence: "",
-                    miscExpense: "",
-                    total: "",
+                    fare: 0,
+                    allowance: 0,
+                    localConveyence:0,
+                    miscExpense: 0,
+                    total: 0,
                     remarks: "",
                     checkbox: "checkboxt0",
                     checked: false
@@ -80,8 +75,7 @@
                                         fare: parseFloat(expenseDtlList[j].FARE),
                                         allowance: parseFloat(expenseDtlList[j].ALLOWANCE),
                                         localConveyence: parseFloat(expenseDtlList[j].LOCAL_CONVEYENCE),
-                                        miscExpense: parseFloat(expenseDtlList[j].MISC_EXPENSE),
-                                        total: parseFloat(expenseDtlList[j].TOTAL_AMOUNT),
+                                        miscExpense: parseFloat(expenseDtlList[j].MISC_EXPENSES),
                                         remarks: expenseDtlList[j].REMARKS,
                                         checkbox: "checkboxt" + j,
                                         checked: false
@@ -110,15 +104,16 @@
                         destinationTime: "",
                         destinationPlace: "",
                         transportType: $scope.transportTypeList[0],
-                        fare: "",
-                        allowance: "",
-                        localConveyence: "",
-                        miscExpense: "",
-                        total: "",
+                        fare: 0,
+                        allowance: 0,
+                        localConveyence:0,
+                        miscExpense: 0,
+                        total:0,
                         remarks: "",
                         checkbox: "checkboxt" + $scope.counter,
                         checked: false
                     }));
+//                    $scope.expenseDtlFormList.total = $scope.total($scope.expenseDtlFormList.fare,$scope.expenseDtlFormList.allowance,$scope.expenseDtlFormList.localConveyence,$scope.expenseDtlFormList.miscExpense);
                     $scope.counter++;
 
                     l = Ladda.create(document.querySelector('#submitBtn'));
@@ -148,7 +143,26 @@
                         }
                     }
                 }
+                $scope.total = function(fare,allowance,localConveyence,miscExpense){
+                    var fare1 = ( typeof fare=== 'undefined' || fare===null || isNaN(fare))?parseFloat(0) : parseFloat(fare);
+                    var allowance1 = ( typeof allowance=== 'undefined' || allowance===null || isNaN(allowance)) ? parseFloat(0) : parseFloat(allowance);
+                    var localConveyence1 = ( typeof localConveyence=== 'undefined' || localConveyence===null || isNaN(localConveyence))? parseFloat(0) : parseFloat(localConveyence);
+                    var miscExpense1 =( typeof miscExpense=== 'undefined' || miscExpense===null || isNaN(miscExpense))? parseFloat(0) : parseFloat(miscExpense);
+                    var total = fare1+allowance1+localConveyence1+miscExpense1;
+                    return total || 0;
+                }
+                
+                $scope.sumAllTotal = function(list) {
+                    var total=0;
+                    angular.forEach(list , function(item){
+                      var total1 = $scope.total(item.fare,item.allowance,item.localConveyence,item.miscExpense);
+                      total+= parseFloat(total1);
+                    });
+                    return total;
+                }
+                
                 $scope.submitExpenseDtl = function () {
+                    var sumAllTotal = parseFloat(angular.element(document.getElementById('sumAllTotal')).val());
                     if ($scope.travelExpenseForm.$valid && $scope.expenseDtlFormList.length > 0) {
                         l.start();
                         l.setProgress(0.5);
@@ -157,6 +171,12 @@
                             console.log("app log", "The form is not filled");
                             $scope.expenseDtlEmpty = 0;
                         }
+                        angular.forEach($scope.expenseDtlFormList , function(item){
+                            var id = item.checkbox;
+                            var totalId = "total_"+id;
+                            var totalValue = parseFloat(angular.element(document.getElementById(totalId)).val());
+                            item.total=totalValue;
+                        });
                         console.log($scope.expenseDtlFormList);
                         window.app.pullDataById(document.urlExpenseRequest, {
                             data: {
@@ -165,6 +185,7 @@
                                 departureDate: $scope.travelDetail.departureDateMain,
                                 returnedDate: $scope.travelDetail.returnedDate,
                                 requestedType: requestedType,
+                                sumAllTotal:sumAllTotal,
                                 expenseDtlEmpty: parseInt($scope.expenseDtlEmpty)
                             },
                         }).then(function (success) {
