@@ -106,35 +106,37 @@ class AuthController extends AbstractActionController {
                         //set storage again
                         $this->getAuthService()->setStorage($this->getSessionStorage());
                     }
-                    if(1== $request->getPost('checkIn')){
+                    if (1 == $request->getPost('checkIn')) {
                         $attendanceRepo = new AttendanceRepository($this->adapter);
-                        $attendanceModel = new Attendance();
                         $attendanceDetailRepo = new AttendanceDetailRepository($this->adapter);
-                        
+
                         $todayDate = Helper::getcurrentExpressionDate();
                         $todayTime = Helper::getcurrentExpressionTime();
                         $employeeId = $resultRow->EMPLOYEE_ID;
-                        
+
                         $result = $attendanceDetailRepo->getDtlWidEmpIdDate($employeeId, date(Helper::PHP_DATE_FORMAT));
-                        if($result['IN_TIME']==null || $result['IN_TIME']==''){
+                        if (!isset($result)) {
+                            throw new Exception("Today's Attendance of employee with employeeId :$employeeId is not found.");
+                        }
+                        if ($result['IN_TIME'] == null || isEmpty($result['IN_TIME'])) {
+                            $attendanceModel = new Attendance();
                             $attendanceModel->employeeId = $employeeId;
                             $attendanceModel->attendanceDt = $todayDate;
                             $attendanceModel->attendanceTime = $todayTime;
                             $attendanceRepo->add($attendanceModel);
+                        } else {
+                            // user's attendance is already done.
                         }
                     }
                     $this->getAuthService()->getStorage()->write(["user_name" => $request->getPost('username'), "user_id" => $resultRow->USER_ID, "employee_id" => $resultRow->EMPLOYEE_ID, "role_id" => $resultRow->ROLE_ID]);
-                    
+
                     // to add user log details in HRIS_USER_LOG
                     $clientIp = $request->getServer('REMOTE_ADDR');
-                    $userLog= new UserLog();
-                    $userLogRepo=new UserLogRepository($this->adapter);
+                    $userLog = new UserLog();
+                    $userLogRepo = new UserLogRepository($this->adapter);
                     $userLog->loginIp = $clientIp;
                     $userLog->userId = $resultRow->USER_ID;
-                    $userLogRepo->add($userLog);                 
-                    
-                    
-                    
+                    $userLogRepo->add($userLog);
                 }
             }
         }
@@ -148,10 +150,11 @@ class AuthController extends AbstractActionController {
         $this->flashmessenger()->addMessage("You've been logged out");
         return $this->redirect()->toRoute('login');
     }
+
     public function checkoutAction() {
         $attendanceRepo = new AttendanceRepository($this->adapter);
         $attendanceModel = new Attendance();
-        
+
         $todayDate = Helper::getcurrentExpressionDate();
         $todayTime = Helper::getcurrentExpressionTime();
 
@@ -159,10 +162,11 @@ class AuthController extends AbstractActionController {
         $attendanceModel->attendanceDt = $todayDate;
         $attendanceModel->attendanceTime = $todayTime;
         $attendanceRepo->add($attendanceModel);
-        
+
         $this->getSessionStorage()->forgetMe();
         $this->getAuthService()->clearIdentity();
         $this->flashmessenger()->addMessage("You've been logged out");
         return $this->redirect()->toRoute('login');
     }
+
 }

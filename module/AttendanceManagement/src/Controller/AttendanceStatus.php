@@ -1,10 +1,12 @@
 <?php
+
 /**
  * Created by PhpStorm.
  * User: root
  * Date: 10/25/16
  * Time: 11:57 AM
  */
+
 namespace AttendanceManagement\Controller;
 
 use Application\Helper\Helper;
@@ -35,8 +37,7 @@ class AttendanceStatus extends AbstractActionController {
     private $userId;
     private $employeeId;
 
-    public function __construct(AdapterInterface $adapter)
-    {
+    public function __construct(AdapterInterface $adapter) {
         $this->adapter = $adapter;
         $this->repository = new AttendanceStatusRepository($adapter);
         $authService = new AuthenticationService();
@@ -45,14 +46,13 @@ class AttendanceStatus extends AbstractActionController {
         $this->employeeId = $recordDetail['employee_id'];
     }
 
-    public function initializeForm(){
+    public function initializeForm() {
         $attendanceRequestForm = new AttendanceRequestForm();
         $builder = new AnnotationBuilder();
         $this->form = $builder->createForm($attendanceRequestForm);
     }
 
-    public function indexAction()
-    {
+    public function indexAction() {
         $employeeNameFormElement = new Select();
         $employeeNameFormElement->setName("branch");
         $employeeName = \Application\Helper\EntityHelper::getTableKVListWithSortOption($this->adapter, "HRIS_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => "E"], "FIRST_NAME", "ASC", " ");
@@ -110,58 +110,58 @@ class AttendanceStatus extends AbstractActionController {
         $serviceEventTypeFormElement->setValueOptions($serviceEventTypes1);
         $serviceEventTypeFormElement->setAttributes(["id" => "serviceEventTypeId", "class" => "form-control"]);
         $serviceEventTypeFormElement->setLabel("Service Event Type");
-        
+
         $attendanceStatus = [
-            '-1'=>'All',
-            'RQ'=>'Pending',
-            'AP'=>'Approved',
-            'R'=>'Rejected',
-            'C'=>'Cancelled'
+            '-1' => 'All',
+            'RQ' => 'Pending',
+            'AP' => 'Approved',
+            'R' => 'Rejected',
+            'C' => 'Cancelled'
         ];
         $attendanceStatusFormElement = new Select();
         $attendanceStatusFormElement->setName("attendanceStatus");
         $attendanceStatusFormElement->setValueOptions($attendanceStatus);
         $attendanceStatusFormElement->setAttributes(["id" => "attendanceRequestStatusId", "class" => "form-control"]);
         $attendanceStatusFormElement->setLabel("Status");
-        
-        return Helper::addFlashMessagesToArray($this,[
-            "branches" => $branchFormElement,
-            "departments" => $departmentFormElement,
-            'designations' => $designationFormElement,
-            'positions' => $positionFormElement,
-            'serviceTypes' => $serviceTypeFormElement,
-            'employees' => $employeeNameFormElement,
-            'attendanceStatus'=>$attendanceStatusFormElement,
-            'serviceEventTypes'=>$serviceEventTypeFormElement
+
+        return Helper::addFlashMessagesToArray($this, [
+                    "branches" => $branchFormElement,
+                    "departments" => $departmentFormElement,
+                    'designations' => $designationFormElement,
+                    'positions' => $positionFormElement,
+                    'serviceTypes' => $serviceTypeFormElement,
+                    'employees' => $employeeNameFormElement,
+                    'attendanceStatus' => $attendanceStatusFormElement,
+                    'serviceEventTypes' => $serviceEventTypeFormElement
         ]);
     }
 
-    public function viewAction(){
+    public function viewAction() {
         $this->initializeForm();
-        $id = (int)$this->params()->fromRoute('id');
+        $id = (int) $this->params()->fromRoute('id');
 
-        if($id===0){
+        if ($id === 0) {
             return $this->redirect()->toRoute("attendancestatus");
         }
         $attendanceRequestRepository = new AttendanceRequestRepository($this->adapter);
-        $fullName = function($id){
-          $empRepository = new EmployeeRepository($this->adapter);
-          $empDtl = $empRepository->fetchById($id);
-          $empMiddleName = ($empDtl['MIDDLE_NAME']!=null)? " ".$empDtl['MIDDLE_NAME']." " :" ";
-          return $empDtl['FIRST_NAME'].$empMiddleName.$empDtl['LAST_NAME'];
+        $fullName = function($id) {
+            $empRepository = new EmployeeRepository($this->adapter);
+            $empDtl = $empRepository->fetchById($id);
+            $empMiddleName = ($empDtl['MIDDLE_NAME'] != null) ? " " . $empDtl['MIDDLE_NAME'] . " " : " ";
+            return $empDtl['FIRST_NAME'] . $empMiddleName . $empDtl['LAST_NAME'];
         };
 
         $request = $this->getRequest();
         $model = new AttendanceRequestModel();
-        $detail = $attendanceRequestRepository->fetchById($id);;
+        $detail = $attendanceRequestRepository->fetchById($id);
         $employeeId = $detail['EMPLOYEE_ID'];
         $employeeName = $fullName($detail['EMPLOYEE_ID']);
-        
+
         $status = $detail['STATUS'];
-        $approvedDT = $detail['APPROVED_DT'];        
+        $approvedDT = $detail['APPROVED_DT'];
         $approved_by = $fullName($detail['APPROVED_BY']);
         $approverName = $fullName($detail['APPROVER']);
-        $authApprover = ( $status=='RQ' || $status=='C' || ($status=='R' && $approvedDT==null))?$approverName:$approved_by;            
+        $authApprover = ( $status == 'RQ' || $status == 'C' || ($status == 'R' && $approvedDT == null)) ? $approverName : $approved_by;
 
         $attendanceDetail = new AttendanceDetail();
         $attendanceRepository = new AttendanceDetailRepository($this->adapter);
@@ -174,39 +174,48 @@ class AttendanceStatus extends AbstractActionController {
             $reason = $getData->approvedRemarks;
             $action = $getData->submit;
 
-            $model->approvedDt=Helper::getcurrentExpressionDate();
+            $model->approvedDt = Helper::getcurrentExpressionDate();
 
-            if($action=="Approve"){
-                $model->status="AP";
-                $attendanceDetail->attendanceDt=Helper::getcurrentExpressionDate($detail['ATTENDANCE_DT']);
+            if ($action == "Approve") {
+                $model->status = "AP";
+                $empAttDtl = $attendanceRepository->getDtlWidEmpIdDate($employeeId, $detail['ATTENDANCE_DT']);
+                if ($empAttDtl == null) {
+                    throw new Exception("Attendance of employee with employeeId :$employeeId on $attendanceDt is not found.");
+                }
+
                 $attendanceDetail->inTime = Helper::getExpressionTime($detail['IN_TIME']);
                 $attendanceDetail->inRemarks = $detail['IN_REMARKS'];
-                $attendanceDetail->outTime =  Helper::getExpressionTime($detail['OUT_TIME']);
+                $attendanceDetail->outTime = Helper::getExpressionTime($detail['OUT_TIME']);
                 $attendanceDetail->outRemarks = $detail['OUT_REMARKS'];
                 $attendanceDetail->totalHour = $detail['TOTAL_HOUR'];
-                $attendanceDetail->employeeId = $detail['EMPLOYEE_ID'];
-                $attendanceDetail->id = (int)Helper::getMaxId($this->adapter,AttendanceDetail::TABLE_NAME,AttendanceDetail::ID)+1;
-                $attendanceRepository->add($attendanceDetail);
+
+//                $attendanceDetail->id = (int) Helper::getMaxId($this->adapter, AttendanceDetail::TABLE_NAME, AttendanceDetail::ID) + 1;
+//                $attendanceRepository->add($attendanceDetail);
+
+                $attendanceRepository->editWith($attendanceDetail, [
+                    AttendanceDetail::EMPLOYEE_ID => $employeeId,
+                    AttendanceDetail::ATTENDANCE_DT => Helper::getExpressionDate($detail['ATTENDANCE_DT'])
+                ]);
 
                 $this->flashmessenger()->addMessage("Attendance Request Approved!!!");
-
-            }else if($action=="Reject"){
-                $model->status="R";
+            } else if ($action == "Reject") {
+                $model->status = "R";
                 $this->flashmessenger()->addMessage("Attendance Request Rejected!!!");
             }
             $model->approvedBy = $this->employeeId;
-            $model->approvedRemarks=$reason;
-            $attendanceRequestRepository->edit($model,$id);
+            $model->approvedRemarks = $reason;
+            $attendanceRequestRepository->edit($model, $id);
             return $this->redirect()->toRoute("attendancestatus");
         }
-        return Helper::addFlashMessagesToArray($this,[
-            'form'=>$this->form,
-            'id'=>$id,
-            'employeeName'=>$employeeName,
-            'approver'=>$authApprover,
-            'employeeId'=>$employeeId,
-            'status'=>$status,
-            'requestedDt'=>$detail['REQUESTED_DT'],
+        return Helper::addFlashMessagesToArray($this, [
+                    'form' => $this->form,
+                    'id' => $id,
+                    'employeeName' => $employeeName,
+                    'approver' => $authApprover,
+                    'employeeId' => $employeeId,
+                    'status' => $status,
+                    'requestedDt' => $detail['REQUESTED_DT'],
         ]);
     }
+
 }
