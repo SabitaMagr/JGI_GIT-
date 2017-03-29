@@ -171,10 +171,17 @@ if ($this->messages) { ?>
              #: (STATUS == null) ? '-' : STATUS #
         </td>
         <td>
-            <a class="btn-edit"
-               href="<?= $this->url("travelStatus", ["action" => "view"])?>/#: TRAVEL_ID #" style="height:17px;" title="view">
-                <i class="fa fa-search-plus"></i>
-            </a>
+        # if(REQUESTED_TYPE=='Expense'){#
+        <a class="btn-edit"
+        href="<?= $this->url("travelStatus", ["action" => "expenseDetail"]); ?>/#:TRAVEL_ID #" style="height:17px;" title="view">
+        <i class="fa fa-search-plus"></i>
+        </a>
+        # } else { #
+        <a class="btn-edit"
+        href="<?= $this->url("travelStatus", ["action" => "view"]); ?>/#:TRAVEL_ID #" style="height:17px;" title="view">
+        <i class="fa fa-search-plus"></i>
+        </a>
+        # } #
         </td>
         </tr>
     </script>

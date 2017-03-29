@@ -84,10 +84,17 @@ echo json_encode($menu); ?>;
         #: (STATUS == null) ? '-' : STATUS #
         </td>
         <td>
+        #if(REQUESTED_TYPE=='Expense'){ #
+        <a class="btn-edit"
+        href="<?= $this->url("travelRequest", ["action" => "viewExpense"]) ?>/#: TRAVEL_ID #" style="height:17px;" title="view detail">
+        <i class="fa fa-search-plus"></i>
+        </a>
+        #} else{ #
         <a class="btn-edit"
         href="<?= $this->url("travelRequest", ["action" => "view"]) ?>/#: TRAVEL_ID #" style="height:17px;" title="view detail">
         <i class="fa fa-search-plus"></i>
         </a>
+        # }#
         #if(ALLOW_TO_EDIT == 1 && REQUESTED_TYPE=='Expense'){#       
         <a class="btn-edit"
         href="<?= $this->url("travelRequest", ["action" => "expenseRequest"]) ?>/#: TRAVEL_ID #" style="height:17px; margin-left: 6px;" title="update">

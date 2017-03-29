@@ -1,20 +1,18 @@
 <?php
+$this->headScript()->appendFile($this->basePath('js/SelfService/travel-request/add.js'));
 
 $form->setAttribute('role', 'form');
-$form->setAttribute('id', 'travelApprove-form');
-
+$form->setAttribute('id', 'travelRequest-form');
 
 $recommendedRemarks = $form->get('recommendedRemarks');
-$recommendedRemarks->setValue($detail['RECOMMENDED_REMARKS']);
-$recommendedRemarks->setAttributes(['required'=>'true']);
+$recommendedRemarks->setAttributes(["disabled"=>"disabled"]);
 $approvedRemarks = $form->get('approvedRemarks');
-$approvedRemarks->setValue($detail['APPROVED_REMARKS']);
-$approvedRemarks->setAttributes(['required'=>'true']);
+$approvedRemarks->setAttributes(["disabled"=>"disabled"]);
 
 $submit = $form->get('submit');
-$submit->setAttribute('value', 'Approve');
+$submit->setAttribute('value','SUBMIT');
 
-$form->setAttribute('action', $this->url('travelApprove', ['action' => 'view', 'id' => $id, 'role' => $role]));
+$form->setAttribute('action', $this->url('travelRequest', ['action' => 'add']));
 
 if ($this->messages) {
     print '<ul class="help-block bg-danger" style="background:#f3e250;">';
@@ -28,14 +26,13 @@ $form->prepare();
 print $this->form()->openTag($form);
 ?>
     <script>
-        document.menu=<?php $menu = ["id" => "menuManagerService","subMenu"=>["id"=>"subMenuTraveltoApprove"]];echo json_encode($menu);?>;
+        document.menu=<?php $menu = ["id" => "menuSelfService","subMenu"=>["id"=>"subMenuTravelRequest"]];echo json_encode($menu);?>;
         document.url = '<?= $this->url("restful", ["action" => "index"]) ?>';
-         document.urlExpenseDetailList='<?= $this->url("travelRequest", ["action" => "expenseDetailList"]) ?>';
     </script>
 <div class="page-bar">
-    <?= $this->navigation('Zend\Navigation\travelApprove')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
-</div>
-<div class="row margin-top-20">  
+    <?= $this->navigation('Zend\Navigation\travelRequest')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
+</div>   
+    <div class="row margin-top-20">  
     <div class="col-sm-12">    
         <div class="portlet box custom-box">
             <div class="portlet-title">
@@ -59,32 +56,25 @@ print $this->form()->openTag($form);
                         <div class="col-xs-12 col-sm-4 col-md-4 col-box bottomgap">
                             <table>
                                 <tr>
-                                    <td width="40%">
-                                        <label for="travelCode">Your Role : </label>
+                                    <td>
+                                        Recommender :  
                                     </td>
-                                    <td> <?php if ($role == 3) {
-                                                echo 'Approver';
-                                            } else if ($role == 2) {
-                                                echo 'Recommender';
-                                            }else if($role==4){
-                                                echo 'Recommender\Approver';
-                                            } ?> 
+                                    <td>
+                                        <?php echo $recommender; ?>
                                     </td>
                                 </tr>
                             </table>
                         </div>
                         <div class="col-xs-12 col-sm-4 col-md-4 col-box bottomgap">
                             <table>
-                                <?php if($role!=4){ ?>
                                 <tr>
                                     <td>
-                                        <?= ($role==3)? "Recommender":"Approver"; ?> : 
+                                        Approver :  
                                     </td>
                                     <td>
-                                        <?= ($role==3)? $recommender:$approver; ?>
+                                        <?php echo $approver; ?>
                                     </td>
                                 </tr>     
-                                <?php } ?>
                             </table>
                         </div>
                     </div>
@@ -298,51 +288,21 @@ print $this->form()->openTag($form);
                 </table>
                 </div>
                 <div class="submit_button" style="margin-top:2%;">
-                    <?php if ($role == 2) { ?>
-                        <div
-                            class="form-group margin-top-10 required <?= empty($recommendedRemarks->getMessages()) ? "" : "error" ?>">
-                            <?php print $this->formLabel($recommendedRemarks); ?>
-                            <?php print $this->formElement($recommendedRemarks); ?>
-                        </div>
-                    <?php } ?>
-                    <?php  if($role==2 && ($status=='AP' || ($status=='R' && $approvedDT!=null))){ ?>
-                        <div
-                            class="form-group required <?= empty($approvedRemarks->getMessages()) ? "" : "error" ?>">
-                            <label>Reason for action [From Approver]</label>
-                            <?php print $this->formElement($approvedRemarks); ?>
-                        </div>
-                    <?php }  ?>
-
-                    <?php if ($role == 3 || $role==4) {
-                            $recommendedRemarks->setAttributes(['disabled'=>'disabled']);
-                            ?>
-                        <?php if($role!=4){ ?>
-                            <div
-                                class="form-group margin-top-10 required <?= empty($recommendedRemarks->getMessages()) ? "" : "error" ?>">
-                                <label>Reason for action [From Recommender]</label>
-                                <?php print $this->formElement($recommendedRemarks); ?>
-                            </div>
-                        <?php } ?>
-                        <div
-                            class="form-group required <?= empty($approvedRemarks->getMessages()) ? "" : "error" ?>">
-                            <?php print $this->formLabel($approvedRemarks); ?>
-                            <?php print $this->formElement($approvedRemarks); ?>
-                        </div>
-                    <?php } ?>
-
-                    <?php
-                    if ($status == 'RQ' || ($status == 'RC' && $employeeId != $recommendedBy)) {
-                        print $this->formSubmit($submit);
-                        ?>
-                        <input type="submit" name="submit" class="btn btn-success pull-right" value="Reject">
-                    <?php } ?>    
+                    <div
+                        class="form-group margin-top-10 required <?= empty($recommendedRemarks->getMessages()) ? "" : "error" ?>">
+                        <label>Reason for action [From Recommender]</label>
+                        <?php print $this->formElement($recommendedRemarks); ?>
+                    </div>
+                    <div
+                        class="form-group required <?= empty($approvedRemarks->getMessages()) ? "" : "error" ?>">
+                        <label>Reason for action [From Approver]</label>
+                        <?php print $this->formElement($approvedRemarks); ?>
+                    </div> 
                 </div>
-               
             </div>
         </div>
     </div>
 </div>
- 
 <?php
 
 print $this->form()->closeTag();
