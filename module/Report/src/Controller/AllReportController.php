@@ -19,7 +19,7 @@ class AllReportController extends AbstractActionController{
         die();
     }
     
-    public function reportoneAction() {
+    public function reportOneAction() {
         echo 'this is report one action';
         die();  
     }

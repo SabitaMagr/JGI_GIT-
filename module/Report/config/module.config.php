@@ -13,7 +13,7 @@ return[
             'allreport' => [
                 'type' => Segment::class,
                 'options' => [
-                    'route' => 'report/allreport[/:action[/:id]]',
+                    'route' => '/report/allreport[/:action[/:id]]',
                     'constants' => [
                         'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
                         'id' => '[0-9]+',
