@@ -261,6 +261,11 @@ return [
                         'route' => 'travelApprove',
                         'action' => 'view',
                     ],
+                    [
+                        'label' => 'View',
+                        'route' => 'travelApprove',
+                        'action' => 'expenseDetail',
+                    ],
                 ]
             ]
         ],

@@ -234,7 +234,7 @@ class TravelRequest extends AbstractActionController {
                     $expenseDtlRepo->edit($expenseDtlModel, $id);
                 }
             }
-            //HeadNotification::pushNotification(NotificationEvents::TRAVEL_APPLIED, $model, $this->adapter, $this->plugin('url'));
+            HeadNotification::pushNotification(NotificationEvents::TRAVEL_APPLIED, $model, $this->adapter, $this->plugin('url'));
             return new CustomViewModel(['success'=>true,'data'=>['msg'=>'Travel Request Successfully added!!!']]);
         }else{
             $id = (int) $this->params()->fromRoute('id');
