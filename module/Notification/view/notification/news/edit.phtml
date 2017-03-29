@@ -4,7 +4,7 @@ $this->headScript()->appendFile($this->basePath('js/Notification/news/add.js'));
 
 $form->setAttribute('role', 'form');
 $form->setAttribute('id', 'newsForm');
-$form->setAttribute('action', $this->url('news', ['action' => 'add']));
+$form->setAttribute('action', $this->url('news', ['action' => 'edit','id'=>$id]));
 
 
 
@@ -40,6 +40,10 @@ $form->prepare();
     document.branches =<?php echo json_encode($branch); ?>;
     document.designation =<?php echo json_encode($designation); ?>;
     document.department =<?php echo json_encode($department); ?>;
+    
+    document.selectedBranchId ='<?php echo $branchId->getValue(); ?>';
+    document.selectedDepartmentId ='<?php echo $departmentId->getValue(); ?>';
+    document.selectedDesignationId ='<?php echo $designationId->getValue(); ?>';
 </script>
 
 <div class="page-bar">
@@ -51,7 +55,7 @@ $form->prepare();
         <div class="portlet box custom-box">
             <div class="portlet-title">
                 <div class="caption">
-                    <i class="fa fa-user"></i>New Entry
+                    <i class="fa fa-user"></i>Edit
                 </div>
             </div>
             <div class="portlet-body">

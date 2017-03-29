@@ -100,6 +100,11 @@ return [
                         'route' => 'news',
                         'action' => 'add',
                     ],
+                    [
+                        'label' => 'Edit',
+                        'route' => 'news',
+                        'action' => 'edit',
+                    ]
                 ]
             ]
         ],
