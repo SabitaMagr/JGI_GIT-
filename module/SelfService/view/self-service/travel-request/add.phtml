@@ -10,6 +10,9 @@ $destination = $form->get('destination');
 $requestedAmount = $form->get('requestedAmount');
 $requestedType = $form->get('requestedType');
 $requestedType->setValueOptions($requestTypes);
+//print_r($transportType); die();
+$transportType = $form->get('transportType');
+$transportType->setValueOptions($transportTypes);
 $purpose = $form->get('purpose');
 $travelCode = $form->get('travelCode');
 $remarks = $form->get('remarks');
@@ -83,7 +86,12 @@ $form->prepare();
                     <?php print $this->formLabel($requestedType); ?>
                     <?php print $this->formElement($requestedType); ?>
                     <?php print $this->formElementErrors()->render($requestedType, ['class' => 'help-block']); ?>
-                </div>               
+                </div>    
+                <div class="form-group">
+                    <?php print $this->formLabel($transportType); ?>
+                    <?php print $this->formElement($transportType); ?>
+                    <?php print $this->formElementErrors()->render($transportType, ['class' => 'help-block']); ?>
+                </div> 
                 <div class="form-group">
                     <?php print $this->formLabel($requestedAmount); ?>
                     <?php print $this->formElement($requestedAmount); ?>

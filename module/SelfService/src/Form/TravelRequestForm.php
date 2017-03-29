@@ -72,6 +72,15 @@ class TravelRequestForm{
     public $requestedType;
     
     /**
+     * @Annotation\Type("Zend\Form\Element\Select")
+     * @Annotation\Required(false)
+     * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
+     * @Annotation\Options({"disable_inarray_validator":"true","label":"Transport Type"})
+     * @Annotation\Attributes({ "id":"form-transportType","class":"form-control"})
+     */
+    public $transportType;
+    
+    /**
      * @Annotation\Type("Zend\Form\Element\Textarea")
      * @Annotation\Required(false)
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})

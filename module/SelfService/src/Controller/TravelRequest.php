@@ -160,10 +160,16 @@ class TravelRequest extends AbstractActionController {
         $requestType = array(
             'ad' => 'Advance'
         );
-
+        $transportTypes = array(
+            'AP'=>'Aero Plane',
+            'OV'=>'Office Vehicles',
+            'TI'=>'Taxi',
+            'BS'=>'Bus'
+        );
         return Helper::addFlashMessagesToArray($this, [
                     'form' => $this->form,
-                    'requestTypes' => $requestType
+                    'requestTypes' => $requestType,
+                    'transportTypes'=>$transportTypes
         ]);
     }
     
@@ -420,7 +426,12 @@ class TravelRequest extends AbstractActionController {
         }else{
             $advanceAmt = 0 ;
         }
-
+        $transportTypes = array(
+            'AP'=>'Aero Plane',
+            'OV'=>'Office Vehicles',
+            'TI'=>'Taxi',
+            'BS'=>'Bus'
+        );
         return Helper::addFlashMessagesToArray($this, [
                     'form' => $this->form,
                     'requestTypes' => $requestType,
@@ -429,7 +440,8 @@ class TravelRequest extends AbstractActionController {
                     'requestedDate' => $detail['REQUESTED_DATE'],
                     'recommender' => $authRecommender,
                     'approver' => $authApprover,
-                    'advanceAmt'=>$advanceAmt
+                    'advanceAmt'=>$advanceAmt,
+                    'transportTypes'=>$transportTypes
         ]);
     }
 

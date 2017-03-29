@@ -199,6 +199,12 @@ class TravelStatus extends AbstractActionController
         }else{
             $advanceAmt = 0 ;
         }
+        $transportTypes = array(
+            'AP'=>'Aero Plane',
+            'OV'=>'Office Vehicles',
+            'TI'=>'Taxi',
+            'BS'=>'Bus'
+        );
         return Helper::addFlashMessagesToArray($this, [
                     'form' => $this->form,
                     'id' => $id,
@@ -210,7 +216,8 @@ class TravelStatus extends AbstractActionController
                     'approvedDT'=>$detail['APPROVED_DATE'],
                     'approver' => $authApprover,
                     'status' => $status,
-                    'advanceAmt'=> $advanceAmt,
+                    'advanceAmt'=> $advanceAmt, 
+                    'transportTypes'=>$transportTypes,
                     'recommApprove'=>$recommApprove
         ]);
     }   
