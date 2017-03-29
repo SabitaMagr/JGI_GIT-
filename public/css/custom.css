@@ -1566,3 +1566,7 @@ ul#optionList li{
     width:145px !important;
         min-width: 144px !important;
 }
+
+ul#headingList li{
+    list-style: none;
+}
