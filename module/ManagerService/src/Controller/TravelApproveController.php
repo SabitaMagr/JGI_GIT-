@@ -192,6 +192,12 @@ class TravelApproveController extends AbstractActionController {
         }else{
             $advanceAmt = 0 ;
         }
+        $transportTypes = array(
+            'AP'=>'Aero Plane',
+            'OV'=>'Office Vehicles',
+            'TI'=>'Taxi',
+            'BS'=>'Bus'
+        );
         return Helper::addFlashMessagesToArray($this, [
                     'form' => $this->form,
                     'id' => $id,
@@ -206,6 +212,7 @@ class TravelApproveController extends AbstractActionController {
                     'approvedDT' => $approvedDT,
                     'employeeId' => $this->employeeId,
                     'advanceAmt'=>$advanceAmt,
+                    'transportTypes'=>$transportTypes,
                     'requestedEmployeeId' => $requestedEmployeeID,]);
     }
     
