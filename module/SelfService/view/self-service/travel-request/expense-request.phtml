@@ -158,6 +158,7 @@ if ($this->messages) {
                     <tbody>
                         <tr ng-repeat="expenseDtlForm in expenseDtlFormList">
                             <td>
+                                {{expenseDtlForm.total = expenseDtlForm.fare + expenseDtlForm.allowance+expenseDtlForm.localConveyence+expenseDtlForm.miscExpense;""}}
                                 <input dvalue="{{expenseDtlForm.departureDate}}" datepicker type="text" required="required" name="departureDate_{{expenseDtlForm.checkbox}}" ng-model="expenseDtlForm.departureDate" size="11"/>
                                 <div ng-show="travelExpenseForm.$submitted || travelExpenseForm.departureDate_{{expenseDtlForm.checkbox}}.$touched">
                                     <ul ng-show="travelExpenseForm.departureDate_{{expenseDtlForm.checkbox}}.$error.required" class="help-block error">
@@ -227,7 +228,7 @@ if ($this->messages) {
                                 <input type="number" ng-model="expenseDtlForm.miscExpense" style="width: 60px;" step="0.01" min="0"/>
                             </td>
                             <td>
-                                <input type="number" id="total_{{expenseDtlForm.checkbox}}" readonly="readonly" value="{{total(expenseDtlForm.fare,expenseDtlForm.allowance,expenseDtlForm.localConveyence,expenseDtlForm.miscExpense)}}"  name="total_{{expenseDtlForm.checkbox}}" style="width: 72px;" step="0.01" min="0"/>
+                                <input type="number" id="total_{{expenseDtlForm.checkbox}}" readonly="readonly" ng-model="expenseDtlForm.total"  name="total_{{expenseDtlForm.checkbox}}" style="width: 72px;" step="0.01" min="0"/>
                                 <div ng-show="travelExpenseForm.$submitted || travelExpenseForm.total_{{expenseDtlForm.checkbox}}.$touched">
                                     <ul ng-show="travelExpenseForm.total_{{expenseDtlForm.checkbox}}.$error.required" class="help-block error">
                                         <li>Total is required.</li>
