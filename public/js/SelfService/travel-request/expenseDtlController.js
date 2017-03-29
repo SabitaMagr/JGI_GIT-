@@ -171,12 +171,12 @@
                             console.log("app log", "The form is not filled");
                             $scope.expenseDtlEmpty = 0;
                         }
-                        angular.forEach($scope.expenseDtlFormList , function(item){
-                            var id = item.checkbox;
-                            var totalId = "total_"+id;
-                            var totalValue = parseFloat(angular.element(document.getElementById(totalId)).val());
-                            item.total=totalValue;
-                        });
+//                        angular.forEach($scope.expenseDtlFormList , function(item){
+//                            var id = item.checkbox;
+//                            var totalId = "total_"+id;
+//                            var totalValue = parseFloat(angular.element(document.getElementById(totalId)).val());
+//                            item.total=totalValue;
+//                        });
                         console.log($scope.expenseDtlFormList);
                         window.app.pullDataById(document.urlExpenseRequest, {
                             data: {
@@ -193,8 +193,8 @@
                                 l.stop();
                                 console.log(success.data);
                                 var tempData = success.data;
-                                $window.location.href = document.urlTravelRequest;
-                                $window.localStorage.setItem("msg", tempData.msg);
+//                                $window.location.href = document.urlTravelRequest;
+//                                $window.localStorage.setItem("msg", tempData.msg);
                             });
                         }, function (failure) {
                             console.log(failure);
