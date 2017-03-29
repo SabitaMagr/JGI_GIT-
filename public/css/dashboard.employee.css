@@ -1,6 +1,6 @@
 body, h1, h2, h3, h4, h5, h6 {
     font-family: "Open Sans", sans-serif;
-    font-size: 13px;
+    font-size: 12px;
 }
 
 ul {
@@ -144,7 +144,7 @@ ul {
 }
 
 .col1bg {
-    background-color: #fffdcd !important;
+    background-color: #fffa82 !important;
 }
 
 .col2bg {
@@ -280,7 +280,11 @@ li.line:after {
 }
 
 .wigetbox, .wigetbox .widget-thumb-wrap {
-    min-height: 111px;
+    min-height: 122px;
+}
+
+.wigetbox .widget-thumb-heading {
+    margin-bottom: 0px !important;
 }
 
 .wigetbox .widget-thumb-body ul {
@@ -308,8 +312,9 @@ li.line:after {
 
 .wigetbox .widget-thumb-body ul {
     line-style: none;
-    float: left;
+    /*float: left;*/
     font-size: 9px;
+    margin-top: 5px;
 }
 
 .wigetbox .widget-thumb-wrap {
@@ -321,7 +326,7 @@ li.line:after {
     text-align: center;
     padding-left: 5px;
     padding-right: 5px;
-    padding-top: 21px;
+    padding-top: 35px;
 }
 
 .widget-thumb-wrap-bgone {
@@ -342,8 +347,9 @@ li.line:after {
 }
 
 .icons .widget-thumb-icon {
-    margin-right: 30px;
-    margin-top: 35px;
+    margin-right: 54px;
+    margin-top: 53px;
+
 }
 
 .line::after {
@@ -386,14 +392,30 @@ li.line:after {
     margin-top: 0px !important;
 }
 
+.notice-details p {
+    margin-top: 0px !important;
+    padding-bottom: 0px !important;
+}
+
 .person-pic img {
     border-radius: 50% !important;
     height: 80px;
     width: 80px;
 }
 
+.person-details h4 {
+    font-size: medium !important;
+}
 .person-details span {
     display: block;
+}
+
+.person-details .head-title {
+
+    padding-bottom: 5px;
+    padding-top: 10px;
+    font-weight: bold;
+    font-size: 14px !important;
 }
 
 .tabline .active {
