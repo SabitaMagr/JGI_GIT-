@@ -7,7 +7,6 @@ use Report\Controller\AllReportController;
 use Zend\Router\Http\Segment;
 
 return[
-    
     'router' => [
         'routes' => [
             'allreport' => [
@@ -20,22 +19,55 @@ return[
                     ],
                     'defaults' => [
                         'controller' => AllReportController::class,
-                        'action' => 'index',
+                        'action' => 'reportone',
                     ]
                 ],
             ],
-            
         ],
     ],
-    
-    
-    
+    'navigation' => [
+        'allreport' => [
+            [
+                'label' => 'Asset Type',
+                'route' => 'allreport',
+            ], [
+                'label' => 'Report',
+                'route' => 'allreport',
+                'pages' => [
+                    [
+                        'label' => 'index',
+                        'route' => 'allreport',
+                        'action' => 'index',
+                    ],
+                    [
+                        'label' => 'Report One',
+                        'route' => 'allreport',
+                        'action' => 'reportone',
+                    ],
+                    [
+                        'label' => 'report Two',
+                        'route' => 'allreport',
+                        'action' => 'reporttwo',
+                    ],
+                    [
+                        'label' => 'Report Three',
+                        'route' => 'allreport',
+                        'action' => 'reportthree',
+                    ],
+                    [
+                        'label' => 'Report Four',
+                        'route' => 'allreport',
+                        'action' => 'reportfour',
+                    ],
+                ],
+            ],
+        ],
+    ],
     'controllers' => [
         'factories' => [
             AllReportController::class => ControllerFactory::class,
         ],
     ],
-    
     'view_manager' => [
         'template_path_stack' => [
             __DIR__ . '/../view',
