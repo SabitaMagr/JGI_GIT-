@@ -1,13 +1,22 @@
 <?php
 $this->headLink()
+    ->appendStylesheet($this->basePath('assets/global/plugins/fullcalendar/fullcalendar.min.css'))
     ->appendStylesheet($this->basePath('css/dashboard.employee.css'));
+
+$this->headScript()
+    ->appendFile($this->basePath('assets/global/plugins/bootstrap-daterangepicker/moment.min.js'))
+    ->appendFile($this->basePath('assets/global/plugins/bootstrap-daterangepicker/daterangepicker.min.js'))
+    ->appendFile($this->basePath('assets/global/plugins/fullcalendar/fullcalendar.min.js'))
+    ->appendFile($this->basePath('assets/global/scripts/metronic.js'))
+    ->appendFile($this->basePath('assets/admin/pages/scripts/index.js'))
+    ->appendFile($this->basePath('js/dashboard/employee-dashboard.js'));
 ?>
 
 <div class="employeedashboard">
     <div class="emplyoee-dashboard clearfix">
         <div class="employe-descbox">
             <div class="col-sm-2 col-md-2 profile_pic">
-                <img src="images/profilepic.jpg">
+                <img src="<?php print $this->basePath('img/nobody_m.original.jpg'); ?>">
             </div>
             <div class="col-sm-3 col-md-3 employee-details">
                 <h4 class="font-weight-bold">Rajan Shrestha</h4>
@@ -411,7 +420,20 @@ $this->headLink()
                                     </div>
                                     <div class="col-xs-9 col-md-9 col-sm-9">
                                         <div class="person-details">
-                                            <div>Rajan shrestha</div>
+                                            <h4>Rajan Shrestha</h4>
+                                            <span>Web Designer</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="person-list clearfix">
+                                    <div class="col-xs-3 col-md-3 col-sm-3">
+                                        <div class="person-pic">
+                                            <img src="<?php print $this->basePath('img/nobody_m.original.jpg'); ?>" alt="person picture">
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-9 col-md-9 col-sm-9">
+                                        <div class="person-details">
+                                            <h4>Rajan Shrestha</h4>
                                             <span>Web Designer</span>
                                         </div>
                                     </div>
@@ -424,20 +446,7 @@ $this->headLink()
                                     </div>
                                     <div class="col-xs-9 col-md-9 col-sm-9">
                                         <div class="person-details">
-                                            <h4>Rajan shrestha</h4>
-                                            <span>Web Designer</span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="person-list clearfix">
-                                    <div class="col-xs-3 col-md-3 col-sm-3">
-                                        <div class="person-pic">
-                                            <img src="images/profilepic.jpg" alt="person picture">
-                                        </div>
-                                    </div>
-                                    <div class="col-xs-9 col-md-9 col-sm-9">
-                                        <div class="person-details">
-                                            <h4>Rajan shrestha</h4>
+                                            <h4>Rajan Shrestha</h4>
                                             <span>Web Designer</span>
                                         </div>
                                     </div>
@@ -453,7 +462,7 @@ $this->headLink()
                                     </div>
                                     <div class="col-xs-9 col-md-9 col-sm-9">
                                         <div class="person-details">
-                                            <h4>Ukesh Gaiju</h4>
+                                            <h4>Rajan Shrestha</h4>
                                             <span>Developer</span>
                                         </div>
                                     </div>
