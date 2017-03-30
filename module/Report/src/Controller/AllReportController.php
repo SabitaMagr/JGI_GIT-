@@ -22,9 +22,14 @@ class AllReportController extends AbstractActionController {
     }
 
     public function reportOneAction() {
-        $reportRepo = new ReportRepository($this->adapter);
-        $reportRepo->departmentWiseEmployeeMonthReport(1);
-        $reportRepo->departmentMonthReport();
+//        $reportRepo = new ReportRepository($this->adapter);
+//        $reportRepo->departmentWiseEmployeeMonthReport(1);
+//        $reportRepo->departmentMonthReport();
+//        print "<pre>";
+//        print_r(
+//                $reportRepo->departmentWiseDailyReport(21, 1)
+//        );
+//        exit;
     }
 
     public function reportTwoAction() {
@@ -37,6 +42,32 @@ class AllReportController extends AbstractActionController {
 
     public function reportFourAction() {
         
+    }
+
+    public function departmentWiseDailyReportAction() {
+        try {
+            $request = $this->getRequest();
+            if ($request->isPost()) {
+                $postedData = $request->getPost();
+
+                $departmentId = $postedData['departmentId'];
+                if (!isset($departmentId)) {
+                    throw new Exception("parameter departmentId is required");
+                }
+                $monthId = $postedData['monthId'];
+                if (!isset($monthId)) {
+                    throw new Exception("parameter monthId is required");
+                }
+
+                $reportRepo = new ReportRepository($this->adapter);
+                $reportData = $reportRepo->departmentWiseDailyReport(21, 1);
+                return new CustomViewModel(['success' => true, 'data' => $reportData, 'error' => '']);
+            } else {
+                throw new Exception("The request should be of type post");
+            }
+        } catch (Exception $e) {
+            return new CustomViewModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
+        }
     }
 
     public function departmentWiseMonthReportAction() {

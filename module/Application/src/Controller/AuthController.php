@@ -128,7 +128,20 @@ class AuthController extends AbstractActionController {
                             // user's attendance is already done.
                         }
                     }
-                    $this->getAuthService()->getStorage()->write(["user_name" => $request->getPost('username'), "user_id" => $resultRow->USER_ID, "employee_id" => $resultRow->EMPLOYEE_ID, "role_id" => $resultRow->ROLE_ID]);
+                    $employeeRepo = new \Setup\Repository\EmployeeRepository($this->adapter);
+                    $employeeDetail = $employeeRepo->fetchById($resultRow->EMPLOYEE_ID);
+
+                    $monthRepo = new \Application\Repository\MonthRepository($this->adapter);
+                    $fiscalYear = $monthRepo->getCurrentFiscalYear();
+
+                    $this->getAuthService()->getStorage()->write([
+                        "user_name" => $request->getPost('username'),
+                        "user_id" => $resultRow->USER_ID,
+                        "employee_id" => $resultRow->EMPLOYEE_ID,
+                        "role_id" => $resultRow->ROLE_ID,
+                        "employee_detail" => $employeeDetail,
+                        "fiscal_year" => $fiscalYear
+                    ]);
 
                     // to add user log details in HRIS_USER_LOG
                     $clientIp = $request->getServer('REMOTE_ADDR');
