@@ -88,4 +88,8 @@
             }]
         });
     });
+
+    /*************** BIRTHDAY TAB CLICK EVENT ***************/
+
+
 })(window.jQuery, window.app);

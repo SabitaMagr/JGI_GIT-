@@ -46,7 +46,7 @@ ul
 .font-weight-bold
 {
   font-weight: bold;
-  font-size: 13px;
+  font-size: 12px;
   margin-bottom: 0px;
 }
 
@@ -65,6 +65,8 @@ ul
 .employee-status-details li {
     display: inline-block;
     list-style: outside none none;
+    font-size: 11px;
+    padding: 9px 6px
 }
 .employee-status-details
 {
@@ -661,6 +663,9 @@ font-size: 14px;
  padding-bottom: 35px;
     padding-top: 35px;
      background-color: #eee;
+     margin-bottom:10px;
+     padding-right:10px;
+     box-shadow:5px 5px 5px -3px #ccc;
  }
  .hrm-attendence .portlet
  {
@@ -671,3 +676,164 @@ font-size: 14px;
      height:25px !important;
  }
  
+ .calendar-colorbox
+ {
+     margin-top:10px;
+ }
+ .color-box {
+    
+   
+    float: left;
+height: 15px;
+    width: 15px;
+}
+
+.calendar-colorbox li{
+    display:inline-block;
+}
+.colorbox-color1
+{
+ background-color: #1BBC9B;   
+}
+.colorbox-color1
+{
+ background-color: #1BBC9B;   
+}
+.colorbox-color2
+{
+ background-color: #89C4F4;   
+}
+.colorbox-color3
+{
+ background-color:#F8CB00;   
+}
+.colorbox-color4
+{
+ background-color:#9B59B6;   
+}
+.calendar-colorbox span {
+    display: inline-block;
+    padding-left: 4px;
+    padding-right: 14px;
+}
+
+
+ 
+.border-gray
+{
+    border:solid #ddd 1px !important;
+ 
+}
+.captionbg
+{
+    background-color:#45b6af;
+    padding-left:5px;
+    padding-right:5px;
+    margin-left:5px !important;
+    color:#fff;
+    
+}
+
+.col-summary .block,.hrm-attendence .caption-subject
+{
+    font-weight:600;
+    font-size:14px !important;
+}
+ .attendence-search-table th, .attendence-search-table #sample_1_length > label,.attendence-search-table #sample_1_filter > label,
+ .employee-search-table th, .employee-search-table #sample_1_length > label,.employee-search-table #sample_1_filter > label{
+     font-size:12px !important;
+     
+ }
+  .attendence-search-table td,.employee-search-table td
+  {
+      font-size:11px !important;
+      
+  }
+   .attendence-search-table  .input-small, .attendence-search-table .form-control.input-xsmall.input-inline,.employee-search-table .input-small,.employee-search-table .form-control .select2-choice 
+   {
+    background-color: #ffffff;
+    background-image: none;
+    border: 1px solid #e5e5e5;
+    filter: none;
+    font-size: 12px !important;
+    height: 25px !important;
+    padding: 0 0 0 12px !important;
+}
+   
+ .breakhr
+ {
+     background-color:#f0ad4f;
+ }
+   .breakhr-nil-bg
+   {
+       background-color:#878280;
+       
+   }
+   .workhr-bg
+{
+   background-color:#62b362;  
+}
+.penalty-bg
+{
+    background-color:#f3565d;
+}
+.attendence-search-table td span
+{
+padding:2px 11px;
+color:#fff;  
+border-radius:2px !important;
+}
+.icon_edit
+{
+color:#000;    
+float:right
+}
+a .icon_edit,a .icon_edit:hover
+{
+    text-decoration:none;
+}
+
+
+
+
+
+/* Large desktops and laptops */
+@media (min-width: 1200px) {
+
+}
+
+/* Landscape tablets and medium desktops */
+@media (min-width: 992px) and (max-width: 1199px) {
+.wigetbox .widget-thumb-wrap
+{
+    width:100%;
+}
+}
+
+/* Portrait tablets and small desktops */
+@media (min-width: 768px) and (max-width: 991px) {
+    .wigetbox .widget-thumb-body ul{
+        float:none;
+    }
+}
+
+/* Landscape phones and portrait tablets */
+@media (max-width: 767px) {
+  .employeestatusbox .font-weight-bold
+    {
+        padding-bottom:8px;
+    }
+    .wigetbox .widget-thumb-body ul{
+        float:none;
+    }
+}
+ 
+
+/* Portrait phones and smaller */
+@media (max-width: 480px) {
+
+    .employeestatusbox .font-weight-bold
+    {
+        padding-bottom:8px;
+    }
+}

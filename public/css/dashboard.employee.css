@@ -69,7 +69,7 @@ ul {
 }
 
 .employee-status-details {
-    background-color: #ddd;
+    background-color: #eee;
 }
 
 .employee-status-details > ul {
@@ -261,30 +261,24 @@ ul {
 .wigetbox .widget-thumb-heading {
     color: #fff !important;
     font-size: 14px;
-
-}
-
-.wigetbox .widget-thumb-heading {
+    margin-bottom: 10px !important;
     text-transform: capitalize;
+    font-weight: 400;
 }
 
 .wigetbox .widget-thumb-body-stat {
     font-weight: 600;
     color: #fff !important;
-    font-size: 16px;
+    font-size: 16px !important;
 }
 
 li.line:after {
     position: absolute;
-    left: 55px;
+    left: 57.5px;
 }
 
 .wigetbox, .wigetbox .widget-thumb-wrap {
-    min-height: 122px;
-}
-
-.wigetbox .widget-thumb-heading {
-    margin-bottom: 0px !important;
+    min-height: 111px;
 }
 
 .wigetbox .widget-thumb-body ul {
@@ -355,9 +349,9 @@ li.line:after {
 .line::after {
     background-color: #fff;
     content: "";
-    height: 33px;
+    height: 15px;
     position: absolute;
-    top: 0;
+    top: 4px;
     width: 1px;
 }
 
@@ -676,4 +670,12 @@ li.line:after {
 
 .employee-search-table lable .form-control {
     height: 25px !important;
+}
+
+.btn:not(.md-skip):not(.bs-select-all):not(.bs-deselect-all).btn-sm {
+    padding: 6px 6px;
+}
+
+.thin {
+    font-weight: 400 !important;
 }
