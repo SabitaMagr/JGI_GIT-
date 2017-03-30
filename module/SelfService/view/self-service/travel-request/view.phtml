@@ -1,5 +1,7 @@
 <?php
-$this->headScript()->appendFile($this->basePath('js/SelfService/travel-request/add.js'));
+$this->headScript()->appendFile($this->basePath('js/SelfService/travel-request/add.js'))
+        ->appendFile($this->basePath('js/angular.min.js'))
+        ->appendFile($this->basePath('js/SelfService/travel-request/print.js'));
 
 $form->setAttribute('role', 'form');
 $form->setAttribute('id', 'travelRequest-form');
@@ -48,6 +50,7 @@ print $this->form()->openTag($form);
     <script>
         document.menu=<?php $menu = ["id" => "menuSelfService","subMenu"=>["id"=>"subMenuTravelRequest"]];echo json_encode($menu);?>;
         document.url = '<?= $this->url("restful", ["action" => "index"]) ?>';
+        document.urlCss='<?= $this->basePath('css/custom.css') ?>';
     </script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\travelRequest')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
@@ -205,12 +208,96 @@ print $this->form()->openTag($form);
 print $this->form()->closeTag();
 
 ?>
-
-    <div class="row">
-        <div class="col-md-8 col-sm-offset-2">
-            <ul id="headingList">
-                <li><h2>Jawalakhel Group of Industries Pvt.Ltd</h2></li>
-                <li><h3>TRAVEL AUTHORIZATION FORM</h3></li>
-            </ul>
+    <div class="row" ng-app="hris" ng-controller="printController">
+        <div style="display:none" id="printableArea" class="col-md-8">
+            <div class="row">
+                <div class="col-md-8 col-sm-offset-2">
+                    <ul id="headingList">
+                        <li><h2>Jawalakhel Group of Industries Pvt.Ltd</h2></li>
+                        <li id="underline"><h3>Travel Authorization Form</h3></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="row font-common" style="min-height: 70px;">
+                <div class="dtlTravel">
+                    <ul id="personalInfo">
+                        <li>Name: Somkala Pachhai</li>
+                        <li>Place of Visit: Kathmandu</li>
+                        <li>Purpose of Visit: Installation</li>
+                    </ul>
+                </div>
+                <div class="dtlDate">
+                    <ul id="personalInfo">
+                        <li>Date: 2017-03-17</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="row font-common detailOfRequest">
+                <ul id="personalInfo">
+                    <li>
+                        Visit Form : 2017-04-27 To 2017-04-28 Total 15 Days
+                    </li>
+                    <li>
+                        Advance For Tour : Rs. 2000 (two thousand only)
+                    </li>
+                    <li>Mode of Transport: Aero Plane</li>
+                </ul>
+            </div>
+            
+            <div class="row font-common detailOfRequest1">
+                <div class="signEmployee">
+                    <div class="border-dotted">
+                    Signature of Employee
+                    </div>
+                </div>
+                <div class="signRecommender">
+                    <div class="border-dotted" style="margin-left: 55px;">
+                    Recommended By 
+                    </div>
+                </div>
+                <div class="signApprover">
+                    <div class="border-dotted" style="float:right;">
+                    Approving Authority
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row detailOfRequest" style="margin-top: 4%;">
+                <h4 style="margin-bottom:3px;">To Account Section:</h4>
+                <div class="font-common">
+                    <p style="margin-top:0px;">
+                        Please provide to give him/her tour advance Rs. 2000 which will be adjusted after presenting travel expenses & tour report within 15 days.
+                    </p>
+                </div>
+            </div>
+            
+            <div class="row font-common detailOfRequest1">
+                <div class="signEmployee">
+                    <div class="border-dotted1">
+                    Administration Department
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row detailOfRequest" style="margin-top: 4%;">
+                <div class="font-common">
+                    <p style="margin-top:0px; font-size:11px;">
+                        I am responsible to do his/her official works in his/her absence from office due to travelling/leave training.
+                    </p>
+                    
+                    <div class="dtlTravel">
+                        <ul id="personalInfo">
+                            <li>Name: Somkala Pachhai</li>
+                            <li>Design: Developer</li>
+                            <li>Date: 2017-03-15</li>
+                            <li>Signature: </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
         </div>
+    
+    <button ng-click="printDiv('printableArea');">Print Div</button>
     </div>
