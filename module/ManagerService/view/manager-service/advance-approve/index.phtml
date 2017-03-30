@@ -28,7 +28,7 @@ echo json_encode($menu);
     document.advanceApprove =<?php echo json_encode($advanceApprove); ?>
 </script>
 <div class="page-bar">
-<?= $this->navigation('Zend\Navigation\advanceApprove')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
+    <?= $this->navigation('Zend\Navigation\advanceApprove')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
 
 <div class="margin-top-20">
@@ -51,7 +51,7 @@ echo json_encode($menu);
         </div>
     </div>
 
-    <div id="advanceApproveTable">
+    <div id="advanceApproveTable" >
     </div>
 
     <script id="rowTemplate" type="text/x-kendo-tmpl">
