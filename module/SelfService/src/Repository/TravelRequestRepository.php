@@ -75,6 +75,7 @@ class TravelRequestRepository implements RepositoryInterface {
             new Expression("TR.APPROVED_REMARKS AS APPROVED_REMARKS"),
             new Expression("TR.RECOMMENDED_REMARKS AS RECOMMENDED_REMARKS"),
             new Expression("TR.REMARKS AS REMARKS"),
+            new Expression("TR.TRANSPORT_TYPE AS TRANSPORT_TYPE"),
             new Expression("TR.REQUESTED_TYPE AS REQUESTED_TYPE"),
             new Expression("INITCAP(TO_CHAR(TR.DEPARTURE_DATE, 'DD-MON-YYYY')) AS DEPARTURE_DATE"),
             new Expression("INITCAP(TO_CHAR(TR.RETURNED_DATE, 'DD-MON-YYYY')) AS RETURNED_DATE")

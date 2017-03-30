@@ -21,6 +21,7 @@ use Zend\Db\Adapter\AdapterInterface;
 use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\Form\Element\Select;
 use Zend\Mvc\Controller\AbstractActionController;
+use SelfService\Repository\TravelExpenseDtlRepository;
 
 class TravelApproveController extends AbstractActionController {
 
@@ -191,6 +192,12 @@ class TravelApproveController extends AbstractActionController {
         }else{
             $advanceAmt = 0 ;
         }
+        $transportTypes = array(
+            'AP'=>'Aero Plane',
+            'OV'=>'Office Vehicles',
+            'TI'=>'Taxi',
+            'BS'=>'Bus'
+        );
         return Helper::addFlashMessagesToArray($this, [
                     'form' => $this->form,
                     'id' => $id,
@@ -205,6 +212,75 @@ class TravelApproveController extends AbstractActionController {
                     'approvedDT' => $approvedDT,
                     'employeeId' => $this->employeeId,
                     'advanceAmt'=>$advanceAmt,
+                    'transportTypes'=>$transportTypes,
+                    'requestedEmployeeId' => $requestedEmployeeID,]);
+    }
+    
+    public function expenseDetailAction(){
+        $this->initializeForm();
+
+        $id = (int) $this->params()->fromRoute('id');
+        $role = $this->params()->fromRoute('role');
+
+        if ($id === 0) {
+            return $this->redirect()->toRoute("travelApprove");
+        }
+        $travelRequestModel = new TravelRequest();
+        $request = $this->getRequest();
+
+        $detail = $this->travelApproveRepository->fetchById($id);
+        $status = $detail['STATUS'];
+        $approvedDT = $detail['APPROVED_DATE'];
+
+        $requestedEmployeeID = $detail['EMPLOYEE_ID'];
+        $employeeName = $detail['FIRST_NAME'] . " " . $detail['MIDDLE_NAME'] . " " . $detail['LAST_NAME'];
+        $RECM_MN = ($detail['RECM_MN'] != null) ? " " . $detail['RECM_MN'] . " " : " ";
+        $recommender = $detail['RECM_FN'] . $RECM_MN . $detail['RECM_LN'];
+        $APRV_MN = ($detail['APRV_MN'] != null) ? " " . $detail['APRV_MN'] . " " : " ";
+        $approver = $detail['APRV_FN'] . $APRV_MN . $detail['APRV_LN'];
+        $MN1 = ($detail['MN1'] != null) ? " " . $detail['MN1'] . " " : " ";
+        $recommended_by = $detail['FN1'] . $MN1 . $detail['LN1'];
+        $MN2 = ($detail['MN2'] != null) ? " " . $detail['MN2'] . " " : " ";
+        $approved_by = $detail['FN2'] . $MN2 . $detail['LN2'];
+        $authRecommender = ($status == 'RQ') ? $recommender : $recommended_by;
+        $authApprover = ($status == 'RC' || $status == 'RQ' || ($status == 'R' && $approvedDT == null)) ? $approver : $approved_by;
+        $recommenderId = ($status == 'RQ') ? $detail['RECOMMENDER'] : $detail['RECOMMENDED_BY'];
+        
+        if($detail['REFERENCE_TRAVEL_ID']!=null){
+            $referenceTravelDtl = $this->travelApproveRepository->fetchById($detail['REFERENCE_TRAVEL_ID']);
+            $advanceAmt = $referenceTravelDtl['REQUESTED_AMOUNT'];
+        }else{
+            $advanceAmt = 0 ;
+        }
+        
+        $expenseDtlRepo = new TravelExpenseDtlRepository($this->adapter);
+        $expenseDtlList = [];
+        $result = $expenseDtlRepo->fetchByTravelId($id);
+        foreach($result as $row){
+            array_push($expenseDtlList, $row);
+        }
+        $transportType = [
+            "AP"=>"Aero Plane",
+            "OV"=>"Office Vehicles",
+            "TI"=>"Taxi",
+            "BS"=>"Bus"
+        ];
+        return Helper::addFlashMessagesToArray($this, [
+                    'form' => $this->form,
+                    'id' => $id,
+                    'employeeName' => $employeeName,
+                    'requestedDate' => $detail['REQUESTED_DATE'],
+                    'role' => $role,
+                    'recommender' => $authRecommender,
+                    'approver' => $authApprover,
+                    'status' => $status,
+                    'recommendedBy' => $recommenderId,
+                    'approvedDT' => $approvedDT,
+                    'employeeId' => $this->employeeId,
+                    'advanceAmt'=>$advanceAmt,
+                    'detail'=>$detail,
+                    'expenseDtlList'=>$expenseDtlList,
+                    'transportType'=>$transportType,
                     'requestedEmployeeId' => $requestedEmployeeID,]);
     }
 
