@@ -13,6 +13,60 @@ class ReportRepository {
         $this->adapter = $adapter;
     }
 
+    public function employeeWiseDailyReport($employeeId) {
+        $sql = <<<EOT
+SELECT R.*,
+  M.MONTH_EDESC
+FROM
+  (SELECT AD.ATTENDANCE_DT                AS ATTENDANCE_DT,
+    TO_CHAR(AD.ATTENDANCE_DT,'MONDDYYYY') AS FORMATTED_ATTENDANCE_DT,
+    (SELECT M.MONTH_ID
+    FROM HRIS_MONTH_CODE M
+    WHERE AD.ATTENDANCE_DT BETWEEN M.FROM_DATE AND M.TO_DATE
+    ) AS MONTH_ID,
+    (
+    CASE AD.LEAVE_ID
+      WHEN NULL
+      THEN 1
+      ELSE 0
+    END) AS ON_LEAVE,
+    (
+    CASE
+      WHEN AD.LEAVE_ID   IS NULL
+      AND AD.HOLIDAY_ID  IS NULL
+      AND AD.TRAINING_ID IS NULL
+      AND AD.TRAVEL_ID   IS NULL
+      AND AD.IN_TIME     IS NOT NULL
+      THEN 1
+      ELSE 0
+    END) AS IS_PRESENT,
+    (
+    CASE
+      WHEN AD.LEAVE_ID   IS NULL
+      AND AD.HOLIDAY_ID  IS NULL
+      AND AD.TRAINING_ID IS NULL
+      AND AD.TRAVEL_ID   IS NULL
+      AND AD.IN_TIME     IS NULL
+      THEN 1
+      ELSE 0
+    END) AS IS_ABSENT,
+    (
+    CASE
+      WHEN AD.DAYOFF_FLAG='Y'
+      THEN 1
+      ELSE 0
+    END) AS IS_DAYOFF
+  FROM HRIS_ATTENDANCE_DETAIL AD
+  WHERE AD.EMPLOYEE_ID = $employeeId
+  ) R
+JOIN HRIS_MONTH_CODE M
+ON (M.MONTH_ID = R.MONTH_ID)
+EOT;
+        $statement = $this->adapter->query($sql);
+        $result = $statement->execute();
+        return Helper::extractDbData($result);
+    }
+
     public function departmentWiseDailyReport(int $monthId, int $departmentId = null, int $branchId = null) {
         $sql = <<<EOT
 SELECT E.EMPLOYEE_ID                                                             AS EMPLOYEE_ID ,

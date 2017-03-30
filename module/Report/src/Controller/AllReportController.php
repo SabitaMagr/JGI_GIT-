@@ -44,6 +44,28 @@ class AllReportController extends AbstractActionController {
         
     }
 
+    public function employeeWiseDailyReportAction() {
+        try {
+            $request = $this->getRequest();
+            if ($request->isPost()) {
+                $postedData = $request->getPost();
+
+                $employeeId = $postedData['employeeId'];
+                if (!isset($employeeId)) {
+                    throw new Exception("parameter employeeId is required");
+                }
+
+                $reportRepo = new ReportRepository($this->adapter);
+                $reportData = $reportRepo->employeeWiseDailyReport(6);
+                return new CustomViewModel(['success' => true, 'data' => $reportData, 'error' => '']);
+            } else {
+                throw new Exception("The request should be of type post");
+            }
+        } catch (Exception $e) {
+            return new CustomViewModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
+        }
+    }
+
     public function departmentWiseDailyReportAction() {
         try {
             $request = $this->getRequest();
