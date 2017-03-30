@@ -16,13 +16,17 @@ $this->headScript()
     <div class="emplyoee-dashboard clearfix">
         <div class="employe-descbox">
             <div class="col-sm-2 col-md-2 profile_pic">
-                <img src="<?php print $this->basePath('img/nobody_m.original.jpg'); ?>">
+                <img src="<?php print $this->basePath("img/nobody_m.original.jpg"); ?>">
             </div>
             <div class="col-sm-3 col-md-3 employee-details">
-                <h4 class="font-weight-bold">Rajan Shrestha</h4>
+                <?php
+                $employeeName = implode(" ", [trim($employeeDetail['FIRST_NAME']), trim($employeeDetail['MIDDLE_NAME']), trim($employeeDetail['LAST_NAME'])]);
+                $email = trim($employeeDetail['EMAIL_OFFICIAL']) ? trim($employeeDetail['EMAIL_OFFICIAL']) : $employeeDetail['EMAIL_PERSONAL'];
+                ?>
+                <h4 class="font-weight-bold"><?php print $employeeName; ?></h4>
                 <span>rajan.thapa@itnepal.com</span><br>
                 <span>AVP-Operation</span><br>
-                <span>At wrok for :11 month 2 days</span><br>
+                <span>At work for : 11 month 2 days</span><br>
             </div>
 
             <div class="col-xs-12 col-sm-7 col-md-7">
@@ -38,7 +42,7 @@ $this->headScript()
                         </li>
                         <li>
                             <div class="hris efficiency efficiency-bg3">6.21</div>
-                            <div>MisMatched Attendence</div>
+                            <div>Missed Punch</div>
                         </li>
                     </ul>
                 </div>
@@ -46,75 +50,67 @@ $this->headScript()
         </div>
     </div>
 
-    <div class="employeestatusbox clearfix">
-        <div class="col-md-2">
-            <h4 class="font-weight-bold">Employee Status</h4>
-        </div>
-
-        <div class="col-md-4">
-            <div class="employee-status-details">
-                <ul>
-                    <li>
-                        <span>0.5/26</span>Attendence
-                    </li>
-                    <li>
-                        <span>0.5/26</span>Attendence
-                    </li>
-                    <li>
-                        <span>0.5/26</span>Attendence
-                    </li>
-                </ul>
-            </div>
-        </div>
-        <div class="col-md-offset-3 col-md-3 pull-right">
-            <div id="dashboard-report-range" class="pull-right tooltips btn btn-sm btn-custom-color active"
-                 data-container="body" data-placement="bottom" data-original-title="Change dashboard date range">
-                <i class="fa fa-calendar"></i>&nbsp; <span class="thin uppercase visible-lg-inline-block">February 26, 2017 - March 27, 2017</span>&nbsp;
-                <i class="fa fa-angle-down"></i>
-            </div>
-        </div>
-    </div>
     <div class="row">
         <div class="col-md-6">
-            <div class="detailsbox">
-                <ul>
-                    <li>
-                        <div class="present hexagon">
-                            <span>150</span>
+            <div class="employeestatusbox clearfix">
+                <div class="row">
+                    <div class="col-sm-3 col-md-3">
+                        <h4 class="font-weight-bold">Employee Status</h4>
+                    </div>
+                    <div class="col-sm-6 col-md-6">
+                        <div class="employee-status-details">
+                            <ul>
+                                <li>
+                                    <span>0.5/26</span>
+                                    Attendence
+                                </li>
+                                <li>
+                                    <span>0.5/26</span>
+                                    Attendence
+                                </li>
+                                <li>
+                                    <span>0.5/26</span>
+                                    Attendence
+                                </li>
+                            </ul>
                         </div>
-                        <h5>Present</h5>
-                    </li>
-                    <li>
-                        <div class="leave hexagon">
-                            <span>24</span>
+                    </div>
+                    <div class="col-sm-3 col-md-3">
+                        <div id="dashboard-report-range1" class="pull-right tooltips btn btn-sm btn-custom-color active" data-container="body" data-placement="bottom" data-original-title="Change dashboard date range">
+                            <i class="fa fa-calendar"></i>&nbsp; <span class="thin uppercase visible-lg-inline-block"><?php print date('d M Y') ?></span>&nbsp; <i class="fa fa-angle-down"></i>
                         </div>
-                        <h5>on leave</h5>
-                    </li>
-                    <li>
-                        <div class="present hexagon">
-                            <span>2</span>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="detailsbox">
+                            <ul>
+                                <li>
+                                    <div class="present hexagon">
+                                        <span>150</span>
+                                    </div>
+                                    <h5>Present</h5>
+                                </li>
+                                <li>
+                                    <div class="leave hexagon">
+                                        <span>24</span>
+                                    </div>
+                                    <h5>on leave</h5>
+                                </li>
+                                <li>
+                                    <div class="wfh hexagon">
+                                        <span>0</span>
+                                    </div>
+                                    <h5>woh</h5>
+                                </li>
+                                <li>
+                                    <div class="tour hexagon">
+                                        <span>5</span>
+                                    </div>
+                                    <h5>on Tour</h5>
+                                </li>
+                            </ul>
                         </div>
-                        <h5>wfh</h5>
-                    </li>
-                    <li>
-                        <div class="wfh hexagon">
-                            <span>0</span>
-                        </div>
-                        <h5>woh</h5>
-                    </li>
-                    <li>
-                        <div class="tour hexagon">
-                            <span>5</span>
-                        </div>
-                        <h5>on Tour</h5>
-                    </li>
-                    <li>
-                        <div class="late hexagon">
-                            <span>15</span>
-                        </div>
-                        <h5>late commers</h5>
-                    </li>
-                </ul>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -412,21 +408,9 @@ $this->headScript()
                     <div class="row">
                         <div class="tab-content birday-person-list">
                             <div class="tab-pane active" id="today-birthday">
+                                <?php for($i=0; $i<5; $i++) : ?>
                                 <div class="person-list clearfix">
                                     <div class="col-md-3 col-sm-3">
-                                        <div class="person-pic">
-                                            <img src="images/profilepic.jpg" alt="person picture">
-                                        </div>
-                                    </div>
-                                    <div class="col-xs-9 col-md-9 col-sm-9">
-                                        <div class="person-details">
-                                            <h4>Rajan Shrestha</h4>
-                                            <span>Web Designer</span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="person-list clearfix">
-                                    <div class="col-xs-3 col-md-3 col-sm-3">
                                         <div class="person-pic">
                                             <img src="<?php print $this->basePath('img/nobody_m.original.jpg'); ?>" alt="person picture">
                                         </div>
@@ -438,74 +422,25 @@ $this->headScript()
                                         </div>
                                     </div>
                                 </div>
-                                <div class="person-list clearfix">
-                                    <div class="col-xs-3 col-md-3 col-sm-3">
-                                        <div class="person-pic">
-                                            <img src="images/profilepic.jpg" alt="person picture">
-                                        </div>
-                                    </div>
-                                    <div class="col-xs-9 col-md-9 col-sm-9">
-                                        <div class="person-details">
-                                            <h4>Rajan Shrestha</h4>
-                                            <span>Web Designer</span>
-                                        </div>
-                                    </div>
-                                </div>
+                                <?php endfor; ?>
                             </div>
 
-                            <div class="tab-pane active" id="upcoming-birthday">
-                                <div class="person-list clearfix">
-                                    <div class="col-xs-3 col-md-3 col-sm-3">
-                                        <div class="person-pic">
-                                            <img src="images/profilepic.jpg" alt="person picture">
+                            <div class="tab-pane active" id="upcoming-birthday" style="display:none;">
+                                <?php for($i=0; $i<3; $i++) : ?>
+                                    <div class="person-list clearfix">
+                                        <div class="col-md-3 col-sm-3">
+                                            <div class="person-pic">
+                                                <img src="<?php print $this->basePath('img/nobody_m.original.jpg'); ?>" alt="person picture">
+                                            </div>
+                                        </div>
+                                        <div class="col-xs-9 col-md-9 col-sm-9">
+                                            <div class="person-details">
+                                                <h4>Rajan Shrestha</h4>
+                                                <span>Web Designer</span>
+                                            </div>
                                         </div>
                                     </div>
-                                    <div class="col-xs-9 col-md-9 col-sm-9">
-                                        <div class="person-details">
-                                            <h4>Rajan Shrestha</h4>
-                                            <span>Developer</span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="person-list clearfix">
-                                    <div class="col-xs-3 col-md-3 col-sm-3">
-                                        <div class="person-pic">
-                                            <img src="images/profilepic.jpg" alt="person picture">
-                                        </div>
-                                    </div>
-                                    <div class="col-xs-9 col-md-9 col-sm-9">
-                                        <div class="person-details">
-                                            <h4>Ukesh Gaiju</h4>
-                                            <span>Developer</span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="person-list clearfix">
-                                    <div class="col-xs-3 col-md-3 col-sm-3">
-                                        <div class="person-pic">
-                                            <img src="images/profilepic.jpg" alt="person picture">
-                                        </div>
-                                    </div>
-                                    <div class="col-xs-9 col-md-9 col-sm-9">
-                                        <div class="person-details">
-                                            <h4>Ukesh Gaiju</h4>
-                                            <span>Developer</span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="person-list clearfix">
-                                    <div class="col-xs-3 col-md-3 col-sm-3">
-                                        <div class="person-pic">
-                                            <img src="images/profilepic.jpg" alt="person picture">
-                                        </div>
-                                    </div>
-                                    <div class="col-xs-9 col-md-9 col-sm-9">
-                                        <div class="person-details">
-                                            <h4>Ukesh Gaiju</h4>
-                                            <span>Developer</span>
-                                        </div>
-                                    </div>
-                                </div>
+                                <?php endfor; ?>
                             </div>
                         </div>
                     </div>

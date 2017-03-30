@@ -25,6 +25,7 @@ class DashboardController extends AbstractActionController {
     private $adapter;
     private $roleId;
     private $userId;
+    private $employeeId;
 
     public function __construct(ContainerInterface $container) {
         $this->container = $container;
@@ -35,10 +36,10 @@ class DashboardController extends AbstractActionController {
 //    public function indexAction() {
 //        $auth = new AuthenticationService();
 //        $roleId = $auth->getStorage()->read()['role_id'];
-//        $userId = $auth->getStorage()->read()['employee_id'];
+//        $employeeId = $auth->getStorage()->read()['employee_id'];
 //
 //        $this->roleId = $roleId;
-//        $this->userId = $userId;
+//        $this->employeeId = $employeeId;
 //
 //        $dashboardDetailRepo = new DashboardDetailRepo($this->adapter);
 //        $result = $dashboardDetailRepo->fetchById($roleId);
@@ -63,10 +64,16 @@ class DashboardController extends AbstractActionController {
 //    }
 
     public function indexAction() {
+        $auth = new AuthenticationService();
+        $employeeId = $auth->getStorage()->read()['employee_id'];
+
+        $employeeRepository = new EmployeeRepository($this->adapter);
+        $employeeDetail = $employeeRepository->fetchById($employeeId);
+
         $view = new ViewModel(array(
-            'message' => 'Hello world',
+            "employeeDetail" => $employeeDetail,
         ));
-        $view->setTemplate('dashboard/employee');
+        $view->setTemplate("dashboard/employee");
         return $view;
     }
 
@@ -81,12 +88,12 @@ class DashboardController extends AbstractActionController {
                         $holidayRawList = $holidayRepo->fetchAll($today);
                         break;
                     case 'B':
-                        $branchId = EntityHelper::getTableKVList($this->adapter, HrEmployees::TABLE_NAME, HrEmployees::EMPLOYEE_ID, [HrEmployees::BRANCH_ID], HrEmployees::EMPLOYEE_ID . " = " . $this->userId, null)[$this->userId];
+                        $branchId = EntityHelper::getTableKVList($this->adapter, HrEmployees::TABLE_NAME, HrEmployees::EMPLOYEE_ID, [HrEmployees::BRANCH_ID], HrEmployees::EMPLOYEE_ID . " = " . $this->employeeId, null)[$this->employeeId];
                         $holidayRawList = $holidayRepo->filter($branchId, null, Helper::getcurrentExpressionDate());
                         break;
                     case 'E':
-                        $branchId = EntityHelper::getTableKVList($this->adapter, HrEmployees::TABLE_NAME, HrEmployees::EMPLOYEE_ID, [HrEmployees::BRANCH_ID], HrEmployees::EMPLOYEE_ID . " = " . $this->userId, null)[$this->userId];
-                        $genderId = EntityHelper::getTableKVList($this->adapter, HrEmployees::TABLE_NAME, HrEmployees::EMPLOYEE_ID, [HrEmployees::GENDER_ID], HrEmployees::EMPLOYEE_ID . " = " . $this->userId, null)[$this->userId];
+                        $branchId = EntityHelper::getTableKVList($this->adapter, HrEmployees::TABLE_NAME, HrEmployees::EMPLOYEE_ID, [HrEmployees::BRANCH_ID], HrEmployees::EMPLOYEE_ID . " = " . $this->employeeId, null)[$this->employeeId];
+                        $genderId = EntityHelper::getTableKVList($this->adapter, HrEmployees::TABLE_NAME, HrEmployees::EMPLOYEE_ID, [HrEmployees::GENDER_ID], HrEmployees::EMPLOYEE_ID . " = " . $this->employeeId, null)[$this->employeeId];
                         $holidayRawList = $holidayRepo->filter($branchId, $genderId, Helper::getcurrentExpressionDate());
                         break;
                 }
@@ -103,13 +110,13 @@ class DashboardController extends AbstractActionController {
                         $attendanceReqRawList = $attendanceStatusRepo->getAllRequest('RQ');
                         break;
                     case 'B':
-                        $branchId = EntityHelper::getTableKVList($this->adapter, HrEmployees::TABLE_NAME, HrEmployees::EMPLOYEE_ID, [HrEmployees::BRANCH_ID], HrEmployees::EMPLOYEE_ID . " = " . $this->userId, null)[$this->userId];
+                        $branchId = EntityHelper::getTableKVList($this->adapter, HrEmployees::TABLE_NAME, HrEmployees::EMPLOYEE_ID, [HrEmployees::BRANCH_ID], HrEmployees::EMPLOYEE_ID . " = " . $this->employeeId, null)[$this->employeeId];
                         $attendanceStatusRepo = new AttendanceStatusRepository($this->adapter);
                         $attendanceReqRawList = $attendanceStatusRepo->getAllRequest('RQ', $branchId);
                         break;
                     case 'E':
                         $attendanceStatusRepo = new AttendanceStatusRepository($this->adapter);
-                        $attendanceReqRawList = $attendanceStatusRepo->getAllRequest('RQ', null, $this->userId);
+                        $attendanceReqRawList = $attendanceStatusRepo->getAllRequest('RQ', null, $this->employeeId);
                         break;
                 }
                 $attendanceReqList = [];
@@ -125,13 +132,13 @@ class DashboardController extends AbstractActionController {
                         $leaveApplyRawList = $attendanceStatusRepo->getAllRequest('RQ');
                         break;
                     case 'B':
-                        $branchId = EntityHelper::getTableKVList($this->adapter, HrEmployees::TABLE_NAME, HrEmployees::EMPLOYEE_ID, [HrEmployees::BRANCH_ID], HrEmployees::EMPLOYEE_ID . " = " . $this->userId, null)[$this->userId];
+                        $branchId = EntityHelper::getTableKVList($this->adapter, HrEmployees::TABLE_NAME, HrEmployees::EMPLOYEE_ID, [HrEmployees::BRANCH_ID], HrEmployees::EMPLOYEE_ID . " = " . $this->employeeId, null)[$this->employeeId];
                         $attendanceStatusRepo = new LeaveStatusRepository($this->adapter);
                         $leaveApplyRawList = $attendanceStatusRepo->getAllRequest('RQ', null, $branchId);
                         break;
                     case 'E':
                         $attendanceStatusRepo = new LeaveStatusRepository($this->adapter);
-                        $leaveApplyRawList = $attendanceStatusRepo->getAllRequest('RQ', null, null, $this->userId);
+                        $leaveApplyRawList = $attendanceStatusRepo->getAllRequest('RQ', null, null, $this->employeeId);
                         break;
                 }
                 $leaveApplyList = [];
@@ -148,7 +155,7 @@ class DashboardController extends AbstractActionController {
                         $presentEmpRawList = $attendanceDetailRepo->getEmployeesAttendanceByDate(Helper::getcurrentExpressionDate(), TRUE);
                         break;
                     case 'B':
-                        $branchId = EntityHelper::getTableKVList($this->adapter, HrEmployees::TABLE_NAME, HrEmployees::EMPLOYEE_ID, [HrEmployees::BRANCH_ID], HrEmployees::EMPLOYEE_ID . " = " . $this->userId, null)[$this->userId];
+                        $branchId = EntityHelper::getTableKVList($this->adapter, HrEmployees::TABLE_NAME, HrEmployees::EMPLOYEE_ID, [HrEmployees::BRANCH_ID], HrEmployees::EMPLOYEE_ID . " = " . $this->employeeId, null)[$this->employeeId];
                         $attendanceDetailRepo = new AttendanceDetailRepository($this->adapter);
                         $presentEmpRawList = $attendanceDetailRepo->getEmployeesAttendanceByDate(Helper::getcurrentExpressionDate(), TRUE, $branchId);
                         break;
