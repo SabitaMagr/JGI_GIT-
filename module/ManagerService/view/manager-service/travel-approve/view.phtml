@@ -21,6 +21,9 @@ $remarks->setAttributes(["disabled"=>"disabled"]);
 $requestedType = $form->get('requestedType');
 $requestedType->setValueOptions($requestType);
 $requestedType->setAttributes(["disabled"=>"disabled"]);
+$transportType = $form->get('transportType');
+$transportType->setValueOptions($transportTypes);
+$transportType->setAttributes(['disabled'=>"disabled"]);
 $recommendedRemarks = $form->get('recommendedRemarks');
 $recommendedRemarks->setAttributes(['required'=>'true']);
 $approvedRemarks = $form->get('approvedRemarks');
@@ -182,7 +185,12 @@ print $this->form()->openTag($form);
                     <?php print $this->formLabel($requestedType); ?>
                     <?php print $this->formElement($requestedType); ?>
                     <?php print $this->formElementErrors()->render($requestedType, ['class' => 'help-block']); ?>
-                </div>               
+                </div> 
+                <div class="form-group">
+                    <?php print $this->formLabel($transportType); ?>
+                    <?php print $this->formElement($transportType); ?>
+                    <?php print $this->formElementErrors()->render($transportType, ['class' => 'help-block']); ?>
+                </div> 
                 <div class="form-group">
                     <?php print $this->formLabel($requestedAmount); ?>
                     <?php print $this->formElement($requestedAmount); ?>

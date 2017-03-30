@@ -218,7 +218,8 @@ return [
             'dashboard-item/present-absent' => __DIR__ . '/../view/layout/dashboard-items/present-absent.phtml',
             'dashboard-item/employee-count-by-branch' => __DIR__ . '/../view/layout/dashboard-items/employee-count-by-branch.phtml',
             'dashboard-item/today-leave' => __DIR__ . '/../view/layout/dashboard-items/today-leave.phtml',
-            'dashboard-item/birthdays' => __DIR__ . '/../view/layout/dashboard-items/birthdays.phtml'
+            'dashboard-item/birthdays' => __DIR__ . '/../view/layout/dashboard-items/birthdays.phtml',
+            'dashboard/employee' => __DIR__ . '/../view/application/dashboard/employee-dashboard.phtml',
         ],
         'template_path_stack' => [
             __DIR__ . '/../view',

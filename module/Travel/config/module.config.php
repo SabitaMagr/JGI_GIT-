@@ -64,6 +64,11 @@ return [
                         'route' => 'travelStatus',
                         'action' => 'view',
                     ],
+                    [
+                        'label' => 'Detail',
+                        'route' => 'travelStatus',
+                        'action' => 'expenseDetail',
+                    ],
                 ],
             ],
         ],

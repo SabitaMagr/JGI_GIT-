@@ -35,7 +35,7 @@ print $this->form()->openTag($form);
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\travelApprove')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
-<div class="row margin-top-20" ng-app="hris" ng-controller="expenseDtlController">  
+<div class="row margin-top-20">  
     <div class="col-sm-12">    
         <div class="portlet box custom-box">
             <div class="portlet-title">
@@ -76,7 +76,7 @@ print $this->form()->openTag($form);
                         <div class="col-xs-12 col-sm-4 col-md-4 col-box bottomgap">
                             <table>
                                 <?php if($role!=4){ ?>
-                                <tr height="30">
+                                <tr>
                                     <td>
                                         <?= ($role==3)? "Recommender":"Approver"; ?> : 
                                     </td>

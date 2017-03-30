@@ -1,0 +1,548 @@
+<?php
+$this->headLink()
+    ->appendStylesheet($this->basePath('assets/global/plugins/fullcalendar/fullcalendar.min.css'))
+    ->appendStylesheet($this->basePath('css/dashboard.employee.css'));
+
+$this->headScript()
+    ->appendFile($this->basePath('assets/global/plugins/bootstrap-daterangepicker/moment.min.js'))
+    ->appendFile($this->basePath('assets/global/plugins/bootstrap-daterangepicker/daterangepicker.min.js'))
+    ->appendFile($this->basePath('assets/global/plugins/fullcalendar/fullcalendar.min.js'))
+    ->appendFile($this->basePath('assets/global/scripts/metronic.js'))
+    ->appendFile($this->basePath('assets/admin/pages/scripts/index.js'))
+    ->appendFile($this->basePath('js/dashboard/employee-dashboard.js'));
+?>
+
+<div class="employeedashboard">
+    <div class="emplyoee-dashboard clearfix">
+        <div class="employe-descbox">
+            <div class="col-sm-2 col-md-2 profile_pic">
+                <img src="<?php print $this->basePath('img/nobody_m.original.jpg'); ?>">
+            </div>
+            <div class="col-sm-3 col-md-3 employee-details">
+                <h4 class="font-weight-bold">Rajan Shrestha</h4>
+                <span>rajan.thapa@itnepal.com</span><br>
+                <span>AVP-Operation</span><br>
+                <span>At wrok for :11 month 2 days</span><br>
+            </div>
+
+            <div class="col-xs-12 col-sm-7 col-md-7">
+                <div class="col-hris pull-right">
+                    <ul>
+                        <li>
+                            <div class="hris efficiency efficiency-bg1">10.30</div>
+                            <div>Late In</div>
+                        </li>
+                        <li>
+                            <div class="hris efficiency efficiency-bg2">10.11</div>
+                            <div>Early out</div>
+                        </li>
+                        <li>
+                            <div class="hris efficiency efficiency-bg3">6.21</div>
+                            <div>MisMatched Attendence</div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="employeestatusbox clearfix">
+        <div class="col-md-2">
+            <h4 class="font-weight-bold">Employee Status</h4>
+        </div>
+
+        <div class="col-md-4">
+            <div class="employee-status-details">
+                <ul>
+                    <li>
+                        <span>0.5/26</span>Attendence
+                    </li>
+                    <li>
+                        <span>0.5/26</span>Attendence
+                    </li>
+                    <li>
+                        <span>0.5/26</span>Attendence
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="col-md-offset-3 col-md-3 pull-right">
+            <div id="dashboard-report-range" class="pull-right tooltips btn btn-sm btn-custom-color active"
+                 data-container="body" data-placement="bottom" data-original-title="Change dashboard date range">
+                <i class="fa fa-calendar"></i>&nbsp; <span class="thin uppercase visible-lg-inline-block">February 26, 2017 - March 27, 2017</span>&nbsp;
+                <i class="fa fa-angle-down"></i>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="detailsbox">
+                <ul>
+                    <li>
+                        <div class="present hexagon">
+                            <span>150</span>
+                        </div>
+                        <h5>Present</h5>
+                    </li>
+                    <li>
+                        <div class="leave hexagon">
+                            <span>24</span>
+                        </div>
+                        <h5>on leave</h5>
+                    </li>
+                    <li>
+                        <div class="present hexagon">
+                            <span>2</span>
+                        </div>
+                        <h5>wfh</h5>
+                    </li>
+                    <li>
+                        <div class="wfh hexagon">
+                            <span>0</span>
+                        </div>
+                        <h5>woh</h5>
+                    </li>
+                    <li>
+                        <div class="tour hexagon">
+                            <span>5</span>
+                        </div>
+                        <h5>on Tour</h5>
+                    </li>
+                    <li>
+                        <div class="late hexagon">
+                            <span>15</span>
+                        </div>
+                        <h5>late commers</h5>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="row widget-row">
+                <div class="col-sm-6 col-md-6">
+                    <!-- BEGIN WIDGET THUMB -->
+                    <div class="wigetbox wigetbox-colorone clearfix widget-thumb  widget-bg-color-lightgreen text-uppercase margin-bottom-20 bordered green-haze">
+                        <div class="widget-thumb-wrap widget-thumb-wrap-bgone">
+                            <h4 class="widget-thumb-heading">Average Office HR</h4>
+                            <div class="widget-thumb-body">
+                                <span class="widget-thumb-body-stat" data-counter="counterup" data-value="7,644">7,644</span>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="icons">
+                                <i class="widget-thumb-icon  fa fa-user colorone"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- BEGIN WIDGET THUMB -->
+                <div class="col-sm-6 col-md-6">
+                    <div class="wigetbox wigetbox-colortwo clearfix widget-thumb  widget-bg-color-lightgreen text-uppercase margin-bottom-20 bordered green-haze">
+                        <div class="widget-thumb-wrap widget-thumb-wrap-bgtwo">
+                            <h4 class="widget-thumb-heading">Average Timesheet HR
+                            </h4>
+                            <div class="widget-thumb-body">
+                                <span class="widget-thumb-body-stat" data-counter="counterup" data-value="7,644">7,644</span>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="icons">
+                                <i class="widget-thumb-icon fa fa-user-plus colortwo"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-sm-6 col-md-6">
+                    <!-- BEGIN WIDGET THUMB -->
+                    <div class="wigetbox wigetbox-colorthree clearfix widget-thumb  widget-bg-color-lightgreen text-uppercase margin-bottom-20 bordered green-haze">
+                        <div class="widget-thumb-wrap widget-thumb-wrap-bgthree">
+                            <h4 class="widget-thumb-heading">Total OT HR</h4>
+                            <div class="widget-thumb-body">
+                                <span class="widget-thumb-body-stat" data-counter="counterup" data-value="7,644">7,644</span>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="icons">
+                                <i class="widget-thumb-icon fa fa fa-user-times colorthree"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6 col-md-6">
+                    <!-- BEGIN WIDGET THUMB -->
+                    <div class="wigetbox wigetbox-colorfour clearfix widget-thumb text-uppercase margin-bottom-20 bordered  green-haze">
+                        <div class="widget-thumb-wrap widget-thumb-wrap-bgfour">
+                            <h4 class="widget-thumb-heading">Work on Holiday
+                            </h4>
+                            <div class="widget-thumb-body">
+                                <ul>
+                                    <li class="line">
+                                        <span class="widget-thumb-body-stat" data-counter="counterup" data-value="7,644">30</span>
+                                        This Month
+                                    </li>
+                                    <li>
+                                        <span class="widget-thumb-body-stat" data-counter="counterup" data-value="7,644">20</span>
+                                        Last Month
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="icons">
+                                <i class="widget-thumb-icon  fa fa-users colorfour"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-12">
+            <div class="profile-content">
+                <div class="row">
+                    <div class="col-md-6 holidays">
+                        <!-- BEGIN PORTLET -->
+                        <div class="portlet light">
+                            <div class="portlet-title tabbable-line">
+                                <div class="caption caption-md">
+                                    <i class="icon-globe theme-font hide"></i>
+                                    <span class="caption-subject  bold uppercase">Upcoming Holidays</span>
+                                </div>
+                            </div>
+
+                            <div class="portlet-body">
+                                <!--BEGIN TABS-->
+                                <div class="upcomingholidays">
+                                    <ul class="feeds">
+                                        <li class="col1bg">
+                                            <div class="col1">
+                                                <div class="cont">
+                                                    <div class="cont-col2">
+                                                        <div class="desc">
+                                                            <span class="label label-sm ">Sunday</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col2">
+                                                <div class="date">Just now</div>
+                                            </div>
+                                        </li>
+                                        <li class="col2bg">
+                                            <a href="javascript:;">
+                                                <div class="col1 col2bg">
+                                                    <div class="cont">
+                                                        <div class="cont-col2">
+                                                            <div class="desc">
+                                                                <span class="label label-sm ">Monday</span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col2">
+                                                    <div class="date">20 mins</div>
+                                                </div>
+                                            </a>
+                                        </li>
+                                        <li class="col3bg">
+                                            <div class="col1">
+                                                <div class="cont">
+                                                    <div class="cont-col2">
+                                                        <div class="desc">
+                                                            <span class="label label-sm">Tuesday</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col2">
+                                                <div class="date">24 mins</div>
+                                            </div>
+                                        </li>
+                                        <li class="col4bg">
+                                            <div class="col1">
+                                                <div class="cont">
+                                                    <div class="cont-col2">
+                                                        <div class="desc">
+                                                            <span class="label label-sm">Wednesday</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col2">
+                                                <div class="date">30 mins</div>
+                                            </div>
+                                        </li>
+                                        <li class="col5bg">
+                                            <div class="col1">
+                                                <div class="cont">
+                                                    <div class="cont-col2">
+                                                        <div class="desc">
+                                                            <span class="label label-sm ">Thursday</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col2">
+                                                <div class="date">40 mins</div>
+                                            </div>
+                                        </li>
+                                        <li class="col6bg">
+                                            <div class="col1">
+                                                <div class="cont">
+                                                    <div class="cont-col2">
+                                                        <div class="desc">
+                                                            <span class="label label-sm">Friday</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col2">
+                                                <div class="date">1.5 hours</div>
+                                            </div>
+                                        </li>
+                                        <li class="col7bg">
+                                            <div class="col1">
+                                                <div class="cont">
+                                                    <div class="cont-col2">
+                                                        <div class="desc">
+                                                            <span class="label label-sm">Saturday</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col2">
+                                                <div class="date">1.5 hours</div>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 noticeboard">
+                        <div class="portlet-body">
+                            <div class="portlet light">
+                                <div class="portlet-title tabbable-line">
+                                    <div class="caption caption-md">
+                                        <i class="icon-globe theme-font hide"></i>
+                                        <span class="caption-subject  bold uppercase">Notice Board</span>
+                                    </div>
+                                </div>
+                                <div class="noticeboard-list row">
+                                    <ul>
+                                        <li>
+                                            <div class="calendardate-box col-sm-2 col-md-2">
+                                                <span> 17 </span><br>
+                                                Dec 2017
+                                            </div>
+                                            <div class="notice-details col-sm-10 col-md-10">
+                                                <h5 class="title-color caption-subject  bold"> holdiday on dec 2015 </h5>
+                                                <p>a distinct section of a piece of writing, usually dealing
+                                                    with a single theme and indicated by a new line,
+                                                    indentation, or numbering.
+                                                </p>
+                                            </div>
+                                        </li>
+                                        <li>
+                                            <div class="calendardate-box col-sm-2 col-md-2">
+                                                <span> 17 </span><br>
+                                                Dec 2017
+                                            </div>
+                                            <div class="notice-details col-sm-10 col-md-10">
+                                                <h5 class="title-color caption-subject  bold"> holdiday on dec 2015 </h5>
+                                                <p>a distinct section of a piece of writing, usually dealing
+                                                    with a single theme and indicated by a new line,
+                                                    indentation, or numbering.
+                                                </p>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <!--END TABS-->
+                            </div>
+                        </div>
+                    </div>
+                    <!-- END PORTLET -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="clearfix"></div>
+    <div class="row">
+        <div class="col-md-6 col-sm-6">
+            <!-- BEGIN PORTLET-->
+            <div class="portlet light calendar ">
+                <div class="portlet-title ">
+                    <div class="caption">
+                        <i class="fa fa-calendar font-green-sharp"></i>
+                        <span class="caption-subject font-green-sharp bold uppercase">Calendar</span>
+                    </div>
+                </div>
+                <div class="portlet-body">
+                    <div id="calendar">
+                    </div>
+                </div>
+            </div>
+            <!-- END PORTLET-->
+        </div>
+
+        <div class="birthday-wishes">
+            <div class="col-md-6 col-sm-6">
+                <!-- BEGIN PORTLET-->
+                <div class="portlet light ">
+                    <div class="portlet-title tabbable-line tabline">
+                        <div class="caption">
+                            <i class="fa fa-birthday-cake font-green-sharp"></i>
+                            <span class="caption-subject font-green-sharp ">Birthday Wishes</span>
+                        </div>
+                        <ul class="nav nav-tabs">
+                            <li class="active">
+                                <a href="#today-birthday" data-toggle="tab" aria-expanded="true">Today</a>
+                            </li>
+                            <li class="">
+                                <a href="#upcoming-birthday" data-toggle="tab" aria-expanded="false">Upcoming </a>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="row">
+                        <div class="tab-content birday-person-list">
+                            <div class="tab-pane active" id="today-birthday">
+                                <div class="person-list clearfix">
+                                    <div class="col-md-3 col-sm-3">
+                                        <div class="person-pic">
+                                            <img src="images/profilepic.jpg" alt="person picture">
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-9 col-md-9 col-sm-9">
+                                        <div class="person-details">
+                                            <h4>Rajan Shrestha</h4>
+                                            <span>Web Designer</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="person-list clearfix">
+                                    <div class="col-xs-3 col-md-3 col-sm-3">
+                                        <div class="person-pic">
+                                            <img src="<?php print $this->basePath('img/nobody_m.original.jpg'); ?>" alt="person picture">
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-9 col-md-9 col-sm-9">
+                                        <div class="person-details">
+                                            <h4>Rajan Shrestha</h4>
+                                            <span>Web Designer</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="person-list clearfix">
+                                    <div class="col-xs-3 col-md-3 col-sm-3">
+                                        <div class="person-pic">
+                                            <img src="images/profilepic.jpg" alt="person picture">
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-9 col-md-9 col-sm-9">
+                                        <div class="person-details">
+                                            <h4>Rajan Shrestha</h4>
+                                            <span>Web Designer</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="tab-pane active" id="upcoming-birthday">
+                                <div class="person-list clearfix">
+                                    <div class="col-xs-3 col-md-3 col-sm-3">
+                                        <div class="person-pic">
+                                            <img src="images/profilepic.jpg" alt="person picture">
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-9 col-md-9 col-sm-9">
+                                        <div class="person-details">
+                                            <h4>Rajan Shrestha</h4>
+                                            <span>Developer</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="person-list clearfix">
+                                    <div class="col-xs-3 col-md-3 col-sm-3">
+                                        <div class="person-pic">
+                                            <img src="images/profilepic.jpg" alt="person picture">
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-9 col-md-9 col-sm-9">
+                                        <div class="person-details">
+                                            <h4>Ukesh Gaiju</h4>
+                                            <span>Developer</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="person-list clearfix">
+                                    <div class="col-xs-3 col-md-3 col-sm-3">
+                                        <div class="person-pic">
+                                            <img src="images/profilepic.jpg" alt="person picture">
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-9 col-md-9 col-sm-9">
+                                        <div class="person-details">
+                                            <h4>Ukesh Gaiju</h4>
+                                            <span>Developer</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="person-list clearfix">
+                                    <div class="col-xs-3 col-md-3 col-sm-3">
+                                        <div class="person-pic">
+                                            <img src="images/profilepic.jpg" alt="person picture">
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-9 col-md-9 col-sm-9">
+                                        <div class="person-details">
+                                            <h4>Ukesh Gaiju</h4>
+                                            <span>Developer</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="datepickeform">
+                            <div class="form-body">
+                                <h3 class="form-section">TO do</h3>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label class="control-label">Due for today 28 march 2017 </label>
+                                            <input id="firstName" class="form-control" placeholder="Chee Kin" type="text" />
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label class="control-label">Evalution</label>
+                                            <input id="datepicker" class="form-control" placeholder="Chee Kin" type="text" />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <input id="firstName" class="form-control" placeholder="Chee Kin" type="text" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- END CONTENT -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>

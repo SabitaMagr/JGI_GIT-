@@ -32,34 +32,42 @@ class DashboardController extends AbstractActionController {
         $this->adapter = $container->get(AdapterInterface::class);
     }
 
+//    public function indexAction() {
+//        $auth = new AuthenticationService();
+//        $roleId = $auth->getStorage()->read()['role_id'];
+//        $userId = $auth->getStorage()->read()['employee_id'];
+//
+//        $this->roleId = $roleId;
+//        $this->userId = $userId;
+//
+//        $dashboardDetailRepo = new DashboardDetailRepo($this->adapter);
+//        $result = $dashboardDetailRepo->fetchById($roleId);
+//        $dashboards = [];
+//        foreach ($result as $dashboard) {
+//            array_push($dashboards, $dashboard);
+//        }
+//
+//        $itemDetail = [];
+//
+//        foreach ($dashboards as $value) {
+//            $itemDetail[$value['DASHBOARD']] = [
+//                "path" => $this->dashboardItems[strtolower($value['DASHBOARD'])],
+//                "data" => $this->getDashBoardData($value['DASHBOARD'], $value['ROLE_TYPE'])
+//            ];
+//        }
+//
+//        return new ViewModel(
+//                Helper::addFlashMessagesToArray($this, [
+//                    'dashboardItems' => $itemDetail
+//        ]));
+//    }
+
     public function indexAction() {
-        $auth = new AuthenticationService();
-        $roleId = $auth->getStorage()->read()['role_id'];
-        $userId = $auth->getStorage()->read()['employee_id'];
-
-        $this->roleId = $roleId;
-        $this->userId = $userId;
-
-        $dashboardDetailRepo = new DashboardDetailRepo($this->adapter);
-        $result = $dashboardDetailRepo->fetchById($roleId);
-        $dashboards = [];
-        foreach ($result as $dashboard) {
-            array_push($dashboards, $dashboard);
-        }
-
-        $itemDetail = [];
-
-        foreach ($dashboards as $value) {
-            $itemDetail[$value['DASHBOARD']] = [
-                "path" => $this->dashboardItems[strtolower($value['DASHBOARD'])],
-                "data" => $this->getDashBoardData($value['DASHBOARD'], $value['ROLE_TYPE'])
-            ];
-        }
-
-        return new ViewModel(
-                Helper::addFlashMessagesToArray($this, [
-                    'dashboardItems' => $itemDetail
-        ]));
+        $view = new ViewModel(array(
+            'message' => 'Hello world',
+        ));
+        $view->setTemplate('dashboard/employee');
+        return $view;
     }
 
     public function getDashBoardData($item, $roleType) {

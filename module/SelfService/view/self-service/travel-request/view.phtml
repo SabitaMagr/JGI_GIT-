@@ -17,6 +17,9 @@ $purpose->setAttributes(["disabled"=>"disabled"]);
 $requestedType = $form->get('requestedType');
 $requestedType->setValueOptions($requestTypes);
 $requestedType->setAttributes(["disabled"=>"disabled"]);
+$transportType = $form->get('transportType');
+$transportType->setValueOptions($transportTypes);
+$transportType->setAttributes(['disabled'=>"disabled"]);
 $requestedAmount = $form->get('requestedAmount');
 $requestedAmount->setAttributes(["disabled"=>"disabled"]);
 $remarks = $form->get('remarks');
@@ -165,7 +168,12 @@ print $this->form()->openTag($form);
                     <?php print $this->formLabel($requestedType); ?>
                     <?php print $this->formElement($requestedType); ?>
                     <?php print $this->formElementErrors()->render($requestedType, ['class' => 'help-block']); ?>
-                </div>               
+                </div>   
+                <div class="form-group">
+                    <?php print $this->formLabel($transportType); ?>
+                    <?php print $this->formElement($transportType); ?>
+                    <?php print $this->formElementErrors()->render($transportType, ['class' => 'help-block']); ?>
+                </div> 
                 <div class="form-group">
                     <?php print $this->formLabel($requestedAmount); ?>
                     <?php print $this->formElement($requestedAmount); ?>

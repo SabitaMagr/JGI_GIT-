@@ -579,6 +579,11 @@ return [
                         'action' => 'view',
                     ],
                     [
+                        'label' => 'Detail',
+                        'route' => 'travelRequest',
+                        'action' => 'viewExpense',
+                    ],
+                    [
                         'label' => 'For Expense',
                         'route' => 'travelRequest',
                         'action' => 'expenseRequest',

@@ -130,7 +130,7 @@ class TravelRequest extends AbstractActionController {
             }
             $checkForExpense = $this->repository->fetchByReferenceId($row['TRAVEL_ID']);
             //print_r($checkForExpense); die();
-            $new_row['ALLOW_TO_REQUEST_EX'] =($statusID=='AP' && count($checkForExpense)==0) ? 1 : 0;
+            $new_row['ALLOW_TO_REQUEST_EX'] =($statusID=='AP' && $new_row['REQUESTED_TYPE']=='Advance' && count($checkForExpense)==0) ? 1 : 0;
             array_push($list, $new_row);
         }
         //print_r($list); die();
@@ -160,10 +160,16 @@ class TravelRequest extends AbstractActionController {
         $requestType = array(
             'ad' => 'Advance'
         );
-
+        $transportTypes = array(
+            'AP'=>'Aero Plane',
+            'OV'=>'Office Vehicles',
+            'TI'=>'Taxi',
+            'BS'=>'Bus'
+        );
         return Helper::addFlashMessagesToArray($this, [
                     'form' => $this->form,
-                    'requestTypes' => $requestType
+                    'requestTypes' => $requestType,
+                    'transportTypes'=>$transportTypes
         ]);
     }
     
@@ -296,6 +302,77 @@ class TravelRequest extends AbstractActionController {
             return new CustomViewModel(['success'=>false]);
         }
     }
+    
+    public function viewExpenseAction(){
+        $this->initializeForm();
+        $this->getRecommendApprover();
+        $id = (int) $this->params()->fromRoute('id');
+
+        if ($id === 0) {
+            return $this->redirect()->toRoute("travelRequest");
+        }
+        $fullName = function($id) {
+            $empRepository = new EmployeeRepository($this->adapter);
+            $empDtl = $empRepository->fetchById($id);
+            $empMiddleName = ($empDtl['MIDDLE_NAME'] != null) ? " " . $empDtl['MIDDLE_NAME'] . " " : " ";
+            return $empDtl['FIRST_NAME'] . $empMiddleName . $empDtl['LAST_NAME'];
+        };
+
+        $recommenderName = $fullName($this->recommender);
+        $approverName = $fullName($this->approver);
+
+        $model = new TravelRequestModel();
+        $detail = $this->repository->fetchById($id);
+        $status = $detail['STATUS'];
+        $approvedDT = $detail['APPROVED_DATE'];
+        $recommended_by = $fullName($detail['RECOMMENDED_BY']);
+        $approved_by = $fullName($detail['APPROVED_BY']);
+        $authRecommender = ($status == 'RQ' || $status == 'C') ? $recommenderName : $recommended_by;
+        $authApprover = ($status == 'RC' || $status == 'RQ' || $status == 'C' || ($status == 'R' && $approvedDT == null)) ? $approverName : $approved_by;
+
+        $model->exchangeArrayFromDB($detail);
+        $this->form->bind($model);
+
+        $employeeName = $fullName($detail['EMPLOYEE_ID']);
+
+        $requestType = array(
+            'ad' => 'Advance',
+            'ep' => 'Expense'
+        );
+        if($detail['REFERENCE_TRAVEL_ID']!=null){
+            $referenceTravelDtl = $this->repository->fetchById($detail['REFERENCE_TRAVEL_ID']);
+            $advanceAmt = $referenceTravelDtl['REQUESTED_AMOUNT'];
+        }else{
+            $advanceAmt = 0 ;
+        }
+
+        $expenseDtlRepo = new TravelExpenseDtlRepository($this->adapter);
+        $expenseDtlList = [];
+        $result = $expenseDtlRepo->fetchByTravelId($id);
+        foreach($result as $row){
+            array_push($expenseDtlList, $row);
+        }
+        $transportType = [
+            "AP"=>"Aero Plane",
+            "OV"=>"Office Vehicles",
+            "TI"=>"Taxi",
+            "BS"=>"Bus"
+        ];
+        
+        return Helper::addFlashMessagesToArray($this, [
+                    'form' => $this->form,
+                    'requestTypes' => $requestType,
+                    'employeeName' => $employeeName,
+                    'status' => $detail['STATUS'],
+                    'requestedDate' => $detail['REQUESTED_DATE'],
+                    'recommender' => $authRecommender,
+                    'approver' => $authApprover,
+                    'advanceAmt'=>$advanceAmt,
+                    'expenseDtlList'=>$expenseDtlList,
+                    'transportType'=>$transportType,
+                    'detail'=>$detail
+        ]);
+    }
 
     public function deleteAction() {
         $id = (int) $this->params()->fromRoute("id");
@@ -349,7 +426,12 @@ class TravelRequest extends AbstractActionController {
         }else{
             $advanceAmt = 0 ;
         }
-
+        $transportTypes = array(
+            'AP'=>'Aero Plane',
+            'OV'=>'Office Vehicles',
+            'TI'=>'Taxi',
+            'BS'=>'Bus'
+        );
         return Helper::addFlashMessagesToArray($this, [
                     'form' => $this->form,
                     'requestTypes' => $requestType,
@@ -358,7 +440,8 @@ class TravelRequest extends AbstractActionController {
                     'requestedDate' => $detail['REQUESTED_DATE'],
                     'recommender' => $authRecommender,
                     'approver' => $authApprover,
-                    'advanceAmt'=>$advanceAmt
+                    'advanceAmt'=>$advanceAmt,
+                    'transportTypes'=>$transportTypes
         ]);
     }
 
