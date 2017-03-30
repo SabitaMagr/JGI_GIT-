@@ -35,6 +35,7 @@ print $this->form()->openTag($form);
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\travelRequest')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>   
+    <div ng-app="hris" ng-controller="printController">
     <div class="row margin-top-20">  
     <div class="col-sm-12">    
         <div class="portlet box custom-box">
@@ -47,7 +48,7 @@ print $this->form()->openTag($form);
                     <input type="hidden" id="travelId" value="<?php echo $id; ?>" />
                     <div class="row">
                         <div class="col-xs-12 col-sm-4 col-md-4 col-box bottomgap">
-                            <table>
+                            <table width="80%">
                                 <tr>
                                     <td width="40%">
                                         <label for="travelCode">Employee Name : </label>
@@ -57,25 +58,25 @@ print $this->form()->openTag($form);
                             </table>
                         </div>
                         <div class="col-xs-12 col-sm-4 col-md-4 col-box bottomgap">
-                            <table>
+                            <table width="100%">
                                 <tr>
-                                    <td>
+                                    <td width="35%">
                                         Recommender :  
                                     </td>
                                     <td>
-                                        <?php echo $recommender; ?>
+                                        <?php echo $recommender; ?><input type="checkbox" ng-model="recommender" ng-click="recommenderView(recommender)" name="recommender" style="margin-top:-1%; margin-left:2%;"/>
                                     </td>
                                 </tr>
                             </table>
                         </div>
                         <div class="col-xs-12 col-sm-4 col-md-4 col-box bottomgap">
-                            <table>
+                            <table width="100%">
                                 <tr>
                                     <td>
                                         Approver :  
                                     </td>
                                     <td>
-                                        <?php echo $approver; ?>
+                                        <?php echo $approver; ?><input type="checkbox"  ng-model="aprover" ng-click="approverView(aprover)" name="approver" style="margin-top:-1%; margin-left:2%;" />
                                     </td>
                                 </tr>     
                             </table>
@@ -314,7 +315,7 @@ print $this->form()->closeTag();
 
     
     
-    <div class="row" ng-app="hris" ng-controller="printController">
+    <div class="row">
         <div id="printableArea" class="col-md-8"  style="border:1px solid; display: none;">
             <div class="wrapper">
                 <div class="col-sm-8 col-sm-offset-2">
@@ -327,7 +328,7 @@ print $this->form()->closeTag();
             <div class="wrapper font-common">
                 <div class="formNo">
                     <ul>
-                        <li>Form No: HRM-10; ?></li>
+                        <li>Form No: HRM-10</li>
                     </ul>
                 </div>
                 <div class="dateDtl">
@@ -488,13 +489,13 @@ print $this->form()->closeTag();
                     </div>
                 </div>
                 <div class="signRecommender1">
-                    <p><?= $recommender; ?></p>
+                    <p><label ng-if="signRecommender"><?= $recommender; ?></label></p>
                     <div class="border-dotted" style="margin-left: 55px;">
                         Recommended By 
                     </div>
                 </div>
                 <div class="signApprover1">
-                    <p><?= $approver; ?></p>
+                    <p><label ng-if="signApprover"><?= $approver; ?></label></p>
                     <div class="border-dotted" style="float:right;">
                         Approved by
                     </div>
@@ -509,4 +510,4 @@ print $this->form()->closeTag();
         </div>
     </div>
     
-    
+    </div>

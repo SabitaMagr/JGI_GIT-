@@ -7,4 +7,19 @@ angular.module("hris",[])
                 popupWin.document.write('<html><head><link rel="stylesheet" type="text/css" href="'+document.urlCss+'" /></head><body onload="window.print()">' + printContents + '</body></html>');
                 popupWin.document.close();
               }
+              
+            $scope.recommenderView = function(event){
+                if(event){
+                    $scope.signRecommender=true;
+                }else{
+                    $scope.signRecommender=false;
+                }
+            }
+            $scope.approverView = function(event){
+                if(event){
+                    $scope.signApprover=true;
+                }else{
+                    $scope.signApprover=false;
+                }
+            }
 });

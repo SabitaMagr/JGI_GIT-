@@ -138,14 +138,6 @@
 
 angular.module("hris",[])
         .controller("travelRequestList",function($scope,$http,$window){
-            $scope.printDiv = function(divName) {
-                var printContents = document.getElementById(divName).innerHTML;
-                var popupWin = window.open('', '_blank', 'width=1000,height=500');
-                popupWin.document.open();
-                popupWin.document.write('<html><head><link rel="stylesheet" type="text/css" href="'+document.urlCss+'" /></head><body onload="window.print()">' + printContents + '</body></html>');
-                popupWin.document.close();
-              }
-            
             $scope.msg =  $window.localStorage.getItem("msg");
             if($window.localStorage.getItem("msg")){
                 window.toastr.success($scope.msg, "Notifications");
