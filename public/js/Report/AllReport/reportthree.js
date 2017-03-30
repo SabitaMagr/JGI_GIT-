@@ -34,8 +34,7 @@
                     column[rawData[i].MONTH_ID] = {
                         field: temp,
                         title: rawData[i].FORMATTED_ATTENDANCE_DT,
-                        template:
-                                '<a data="#: ' + temp + ' #" class="btn widget-btn custom-btn-present"></a>'
+                        template: '<a data="#: ' + temp + ' #" class="btn widget-btn custom-btn-present"></a>'
                     }
 
                 }
@@ -58,14 +57,8 @@
             $(selector).each(function (k, group) {
                 var $group = $(group);
                 var data = JSON.parse($group.attr('data'));
-                var $childrens = $group.children();
-                var $present = $($childrens[0]);
-                var $absent = $($childrens[1]);
-                var $leave = $($childrens[2]);
 
-                $present.html(data['IS_PRESENT']);
-                $absent.html(data['IS_ABSENT']);
-                $leave.html(data['ON_LEAVE']);
+                $group.html(data['IS_PRESENT']);
             });
 
         };
