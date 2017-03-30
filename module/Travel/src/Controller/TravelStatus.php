@@ -21,6 +21,7 @@ use Setup\Model\ServiceEventType;
 use Zend\Authentication\AuthenticationService;
 use Setup\Repository\RecommendApproveRepository;
 use SelfService\Repository\TravelExpenseDtlRepository;
+use Setup\Repository\EmployeeRepository;
 
 class TravelStatus extends AbstractActionController
 {
@@ -277,7 +278,8 @@ class TravelStatus extends AbstractActionController
             "TI"=>"Taxi",
             "BS"=>"Bus"
         ];
-        
+        $empRepository = new EmployeeRepository($this->adapter);
+        $empDtl = $empRepository->fetchForProfileById($detail['EMPLOYEE_ID']);
         return Helper::addFlashMessagesToArray($this, [
                     'form' => $this->form,
                     'id' => $id,
@@ -292,7 +294,9 @@ class TravelStatus extends AbstractActionController
                     'recommApprove'=>$recommApprove,
                     'expenseDtlList'=>$expenseDtlList,
                     'transportType'=>$transportType,
-                    'detail'=>$detail
+                    'todayDate'=>date('d-M-Y'),
+                    'detail'=>$detail,
+                    'empDtl'=>$empDtl
         ]);
     }
 }

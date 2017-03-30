@@ -311,6 +311,7 @@ class TravelRequest extends AbstractActionController {
         if ($id === 0) {
             return $this->redirect()->toRoute("travelRequest");
         }
+        $empRepository = new EmployeeRepository($this->adapter);
         $fullName = function($id) {
             $empRepository = new EmployeeRepository($this->adapter);
             $empDtl = $empRepository->fetchById($id);
@@ -358,7 +359,7 @@ class TravelRequest extends AbstractActionController {
             "TI"=>"Taxi",
             "BS"=>"Bus"
         ];
-        
+        $empDtl = $empRepository->fetchForProfileById($detail['EMPLOYEE_ID']);
         return Helper::addFlashMessagesToArray($this, [
                     'form' => $this->form,
                     'requestTypes' => $requestType,
@@ -370,7 +371,9 @@ class TravelRequest extends AbstractActionController {
                     'advanceAmt'=>$advanceAmt,
                     'expenseDtlList'=>$expenseDtlList,
                     'transportType'=>$transportType,
-                    'detail'=>$detail
+                    'todayDate'=>date('d-M-Y'),
+                    'detail'=>$detail,
+                    'empDtl'=>$empDtl
         ]);
     }
 

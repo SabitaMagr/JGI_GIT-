@@ -1659,3 +1659,152 @@ ul#personalInfo li{
     border-top: 1px solid #000;
     width: 150px;
 }
+
+.formNo{
+    float: left;
+    width: 50%;
+    text-align: left;
+}
+
+.dateDtl{
+    float: left;
+    width: 50%;
+
+}
+
+.formNo ul{
+    list-style-type:none;
+    padding: 0px !important;
+    font-weight:bold;
+}
+
+.formNo ul li{
+    margin-bottom:1%;
+}
+.dateDtl ul{
+    list-style-type:none;
+    float: right;
+    font-weight:bold;
+}
+
+
+
+#employeeTrvlDtl{
+    float: left;
+    width: 50%;
+}
+
+#employeeDtl{
+    float: left;
+    width: 50%;
+    text-align: left;
+}
+
+#employeeDtl ul{
+    list-style-type: none;
+    padding: 0px !important;
+}
+
+#employeeDtl ul li{
+    margin-bottom:1%;
+}
+
+#employeeTrvlDtl ul{
+    list-style-type:none;
+    float:right;
+}
+
+#employeeTrvlDtl ul li{
+    margin-bottom:2%;
+}
+
+#expenseDtlTbl th{
+   font-weight: 400; 
+   border-bottom: 1px solid #e7ecf1;
+   border-right: 1px solid #e7ecf1;
+    padding: 8px;
+    line-height: 1.42857;
+    vertical-align: top;
+}
+
+#expenseDtlTbl{
+    margin-top:0%;
+    border: 1px solid #e7ecf1;
+}
+#expenseDtlTbl td{
+        border-bottom: 1px solid #e7ecf1;
+        border-right: 1px solid #e7ecf1;
+        padding: 8px;
+        line-height: 1.42857;
+        vertical-align: top;
+}
+.wrapper{
+    width:100%;
+    float:left;
+}
+
+#expenseDtlTbl tbody > tr:last-child > td {
+  border-bottom: 0px !important;
+}
+
+#expenseDtlTbl .lastColumn{
+    border-right: 0px !important;
+}
+
+
+
+#employeeDtl1{
+    float: left;
+    width: 100%;
+    margin-top:1%;
+    text-align: left;
+}
+
+#employeeDtl1 ul{
+    list-style-type: none;
+    padding: 0px !important;
+}
+
+#employeeDtl1 ul li{
+    margin-bottom:1%;
+}
+
+.signature{
+    
+}
+
+.signChecked{
+    width: 25%;
+    text-align: center;
+    float:left;
+    margin-top:10%;
+}
+
+.signEmployee1{
+    width: 25%;
+    text-align: center;
+    float:left;
+    margin-top:10%;
+}
+
+.signRecommender1{
+    width: 25%;
+    text-align: center;
+    float:left;
+    margin-top:7%;
+}
+.signRecommender1 p{
+    margin-bottom: 5px;
+}
+
+.signApprover1{
+    width: 25%;
+    text-align: center;
+    float:left;
+    margin-top:7%;
+}
+
+.signApprover1 p{
+    margin-bottom: 5px;
+    text-align: right;
+}

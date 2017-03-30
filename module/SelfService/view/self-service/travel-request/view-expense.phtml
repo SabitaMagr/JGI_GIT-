@@ -315,17 +315,198 @@ print $this->form()->closeTag();
     
     
     <div class="row" ng-app="hris" ng-controller="printController">
-        <div style="" id="printableArea" class="col-md-8">
-            <div class="row">
+        <div id="printableArea" class="col-md-8"  style="border:1px solid; display: none;">
+            <div class="wrapper">
                 <div class="col-sm-8 col-sm-offset-2">
                     <ul id="headingList">
-                        <li><h2>HIMALAYAN DISTILLERY LIMITED</h2></li>
+                        <li><h2><?= strtoupper($empDtl['COMPANY_NAME']); ?></h2></li>
                         <li><h3>TRAVEL EXPENSE CLAIM FORM</h3></li>
                     </ul>
                 </div>
             </div>
+            <div class="wrapper font-common">
+                <div class="formNo">
+                    <ul>
+                        <li>Form No: HRM-10; ?></li>
+                    </ul>
+                </div>
+                <div class="dateDtl">
+                    <ul>
+                        <li>TECF No:<?= $detail['TRAVEL_CODE']; ?></li>
+                        <li>Date: <?php print_r($todayDate); ?></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="wrapper font-common">
+                <div id="employeeDtl">
+                    <ul>
+                        <li>
+                            Name of Staff: <?= $employeeName; ?>
+                        </li>
+                        <li>
+                            Purpose of Visit: <?= $detail['PURPOSE']; ?>
+                        </li>
+                        <li>Date of Travel Order: <?=$detail['REQUESTED_DATE']; ?></li>
+                    </ul>
+                </div>
+                <div  id="employeeTrvlDtl">
+                    <ul>
+                        <li>
+                           Designation: <?= $empDtl['DESIGNATION']; ?>
+                        </li>
+                        <li>
+                            Departure Date:<?= $detail['DEPARTURE_DATE']; ?>
+                        </li>
+                        <li>Returned Date: <?= $detail['RETURNED_DATE']; ?></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="wrapper font-common">
+                <table id="expenseDtlTbl" width="100%" align="center" class="customTable div-font-11">
+                    <thead style="font-size:11px !important;">
+                        <tr>
+                            <th colspan="6" align="center">Description of Travel and Place</th>
+                            <th rowspan="3">Mode of Travel</th>
+                            <th rowspan="3">Fare</th>
+                            <th rowspan="3">Daily Allowance</th>
+                            <th rowspan="3">Local Conveyence</th>
+                            <th rowspan="3">Misc. Expenses</th>
+                            <th rowspan="3">Total</th>
+                            <th rowspan="3" class="lastColumn">Remarks</th>
+                        </tr>
+                        <tr>
+                            <th colspan="3">Departure</th>
+                            <th colspan="3">Destination</th>
+                        </tr>
+                        <tr>
+                            <th>Date</th>
+                            <th>Time</th>
+                            <th>Place</th>
+                            <th>Date</th>
+                            <th>Time</th>
+                            <th>Place</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php 
+                        $fare = 0;
+                        $allowance = 0;
+                        $localConveyence = 0;
+                        $miscExpense= 0;
+                        $totalAmount=0;
+                        foreach($expenseDtlList as $expenseDtlRow){ 
+                            $fare+=$expenseDtlRow['FARE'];
+                            $allowance += $expenseDtlRow['ALLOWANCE'];
+                            $localConveyence+=$expenseDtlRow['LOCAL_CONVEYENCE'];
+                            $miscExpense+=$expenseDtlRow['MISC_EXPENSES'];
+                            $totalAmount+=$expenseDtlRow['TOTAL_AMOUNT'];
+                            ?>
+                        <tr>
+                            <td>
+                                <?= $expenseDtlRow['DEPARTURE_DATE']; ?>
+                            </td>
+                            <td>
+                                <?= $expenseDtlRow['DEPARTURE_TIME']; ?>
+                            </td>
+                            <td>
+                                <?= $expenseDtlRow['DEPARTURE_PLACE']; ?>
+                            </td>
+                            <td>
+                                <?= $expenseDtlRow['DESTINATION_DATE']; ?>
+                            </td>
+                            <td>
+                                <?= $expenseDtlRow['DESTINATION_TIME']; ?>
+                            </td>
+                            <td>
+                                <?= $expenseDtlRow['DESTINATION_PLACE']; ?>
+                            </td>
+                            <td>
+                                    <?php foreach($transportType as $key=>$value){ 
+                                            if($key==$expenseDtlRow['TRANSPORT_TYPE']){
+                                            echo $value; }
+                                     } ?>
+                            </td>
+                            <td>
+                                <?= $expenseDtlRow['FARE']; ?>
+                            </td>
+                            <td>
+                                <?= $expenseDtlRow['ALLOWANCE']; ?>
+                            </td>
+                            <td>
+                                <?= $expenseDtlRow['LOCAL_CONVEYENCE']; ?>
+                            </td>
+                            <td>
+                                <?= $expenseDtlRow['MISC_EXPENSES']; ?>
+                            </td>
+                            <td>
+                                <?= $expenseDtlRow['TOTAL_AMOUNT']; ?>
+                            </td>
+                            <td class="lastColumn"> 
+                                <?= $expenseDtlRow['REMARKS']; ?>
+                            </td>
+                        </tr>
+                        <?php } ?>
+                        <tr>
+                            <td>Total</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td><?= $fare;?></td>
+                            <td><?= $allowance;?></td>
+                            <td><?= $localConveyence;?></td>
+                            <td><?= $miscExpense;?></td>
+                            <td><?= $totalAmount;?></td>
+                            <td class="lastColumn"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="wrapper font-common">
+                <div id="employeeDtl1">
+                    <ul>
+                        <li>Advance taken for travel in Rs. <?= $advanceAmt ?> expenses incured during travel in Rs. <?= $totalAmount; ?>
+                             Balance amount after expenses Rs. <?php $balance = $advanceAmt-$totalAmount; echo $balance;?></li>
+                        <li>Total Expenses(in words): <?= $totalAmount;?> </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="wrapper font-common signature">
+                <div class="signChecked">
+                    <div class="border-dotted">
+                        Checked and Found Correct
+                    </div>
+                </div>
+                <div class="signEmployee1">
+                    <div class="border-dotted">
+                        Signature of Staff
+                    </div>
+                </div>
+                <div class="signRecommender1">
+                    <p><?= $recommender; ?></p>
+                    <div class="border-dotted" style="margin-left: 55px;">
+                        Recommended By 
+                    </div>
+                </div>
+                <div class="signApprover1">
+                    <p><?= $approver; ?></p>
+                    <div class="border-dotted" style="float:right;">
+                        Approved by
+                    </div>
+                </div>
+            </div>
+            
         </div>
-        <button ng-click="printDiv('printableArea');">Print Div</button>
+        <div class="row esetup" style="">
+            <div class="col-md-12" style="text-align:center;">
+                <a class="btn btn-success" ng-click="printDiv('printableArea');"> Print</a>
+            </div>
+        </div>
     </div>
     
     
