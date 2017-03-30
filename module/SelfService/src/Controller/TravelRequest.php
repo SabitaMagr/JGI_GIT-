@@ -17,6 +17,7 @@ use SelfService\Repository\TravelExpenseDtlRepository;
 use SelfService\Model\TravelExpenseDetail;
 use Zend\Mvc\Controller\AbstractActionController;
 use Application\Custom\CustomViewModel;
+use Application\Helper\NumberHelper;
 
 class TravelRequest extends AbstractActionController {
 
@@ -350,7 +351,9 @@ class TravelRequest extends AbstractActionController {
         $expenseDtlRepo = new TravelExpenseDtlRepository($this->adapter);
         $expenseDtlList = [];
         $result = $expenseDtlRepo->fetchByTravelId($id);
+        $totalAmount=0;
         foreach($result as $row){
+            $totalAmount+=$row['TOTAL_AMOUNT'];
             array_push($expenseDtlList, $row);
         }
         $transportType = [
@@ -359,6 +362,10 @@ class TravelRequest extends AbstractActionController {
             "TI"=>"Taxi",
             "BS"=>"Bus"
         ];
+        
+        $numberInWord = new NumberHelper();
+        $totalExpense = $numberInWord->toText($totalAmount);
+        
         $empDtl = $empRepository->fetchForProfileById($detail['EMPLOYEE_ID']);
         return Helper::addFlashMessagesToArray($this, [
                     'form' => $this->form,
@@ -373,7 +380,8 @@ class TravelRequest extends AbstractActionController {
                     'transportType'=>$transportType,
                     'todayDate'=>date('d-M-Y'),
                     'detail'=>$detail,
-                    'empDtl'=>$empDtl
+                    'empDtl'=>$empDtl,
+                    'totalExpense'=>$totalExpense
         ]);
     }
 
@@ -489,5 +497,4 @@ class TravelRequest extends AbstractActionController {
         ];
         return $responseData;
     }
-
 }

@@ -22,6 +22,8 @@ use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\Form\Element\Select;
 use Zend\Mvc\Controller\AbstractActionController;
 use SelfService\Repository\TravelExpenseDtlRepository;
+use Application\Helper\NumberHelper;
+use Setup\Repository\EmployeeRepository;
 
 class TravelApproveController extends AbstractActionController {
 
@@ -256,7 +258,9 @@ class TravelApproveController extends AbstractActionController {
         $expenseDtlRepo = new TravelExpenseDtlRepository($this->adapter);
         $expenseDtlList = [];
         $result = $expenseDtlRepo->fetchByTravelId($id);
+        $totalAmount=0;
         foreach($result as $row){
+            $totalAmount+=$row['TOTAL_AMOUNT'];
             array_push($expenseDtlList, $row);
         }
         $transportType = [
@@ -265,6 +269,10 @@ class TravelApproveController extends AbstractActionController {
             "TI"=>"Taxi",
             "BS"=>"Bus"
         ];
+        $numberInWord = new NumberHelper();
+        $totalExpense = $numberInWord->toText($totalAmount);
+        $empRepository = new EmployeeRepository($this->adapter);
+        $empDtl = $empRepository->fetchForProfileById($detail['EMPLOYEE_ID']);
         return Helper::addFlashMessagesToArray($this, [
                     'form' => $this->form,
                     'id' => $id,
@@ -278,10 +286,15 @@ class TravelApproveController extends AbstractActionController {
                     'approvedDT' => $approvedDT,
                     'employeeId' => $this->employeeId,
                     'advanceAmt'=>$advanceAmt,
-                    'detail'=>$detail,
                     'expenseDtlList'=>$expenseDtlList,
                     'transportType'=>$transportType,
-                    'requestedEmployeeId' => $requestedEmployeeID,]);
+                    'requestedEmployeeId' => $requestedEmployeeID,
+                    'todayDate'=>date('d-M-Y'),
+                    'detail'=>$detail,
+                    'empDtl'=>$empDtl,
+                    'totalExpense'=>$totalExpense
+            ]
+                );
     }
 
     public function statusAction() {

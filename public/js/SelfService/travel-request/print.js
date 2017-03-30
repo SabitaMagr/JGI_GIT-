@@ -7,6 +7,8 @@ angular.module("hris",[])
                 popupWin.document.write('<html><head><link rel="stylesheet" type="text/css" href="'+document.urlCss+'" /></head><body onload="window.print()">' + printContents + '</body></html>');
                 popupWin.document.close();
               }
+              $scope.hgtRecommender = 14;
+              $scope.hgtApprover = 14;
               
             $scope.recommenderView = function(event){
                 if(event){

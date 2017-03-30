@@ -22,6 +22,7 @@ use Zend\Authentication\AuthenticationService;
 use Setup\Repository\RecommendApproveRepository;
 use SelfService\Repository\TravelExpenseDtlRepository;
 use Setup\Repository\EmployeeRepository;
+use Application\Helper\NumberHelper;
 
 class TravelStatus extends AbstractActionController
 {
@@ -269,7 +270,9 @@ class TravelStatus extends AbstractActionController
         $expenseDtlRepo = new TravelExpenseDtlRepository($this->adapter);
         $expenseDtlList = [];
         $result = $expenseDtlRepo->fetchByTravelId($id);
+        $totalAmount=0;
         foreach($result as $row){
+            $totalAmount+=$row['TOTAL_AMOUNT'];
             array_push($expenseDtlList, $row);
         }
         $transportType = [
@@ -278,6 +281,9 @@ class TravelStatus extends AbstractActionController
             "TI"=>"Taxi",
             "BS"=>"Bus"
         ];
+        $numberInWord = new NumberHelper();
+        $totalExpense = $numberInWord->toText($totalAmount);
+        
         $empRepository = new EmployeeRepository($this->adapter);
         $empDtl = $empRepository->fetchForProfileById($detail['EMPLOYEE_ID']);
         return Helper::addFlashMessagesToArray($this, [
@@ -296,7 +302,8 @@ class TravelStatus extends AbstractActionController
                     'transportType'=>$transportType,
                     'todayDate'=>date('d-M-Y'),
                     'detail'=>$detail,
-                    'empDtl'=>$empDtl
+                    'empDtl'=>$empDtl,
+                    'totalExpense'=>$totalExpense
         ]);
     }
 }

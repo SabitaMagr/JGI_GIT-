@@ -64,7 +64,7 @@ print $this->form()->openTag($form);
                                         Recommender :  
                                     </td>
                                     <td>
-                                        <?php echo $recommender; ?><input type="checkbox" ng-model="recommender" ng-click="recommenderView(recommender)" name="recommender" style="margin-top:-1%; margin-left:2%;"/>
+                                        <?php echo ucwords(strtolower($recommender)); ?><input type="checkbox" ng-model="recommender" ng-click="recommenderView(recommender)" name="recommender" style="margin-top:-1%; margin-left:2%;"/>
                                     </td>
                                 </tr>
                             </table>
@@ -76,7 +76,7 @@ print $this->form()->openTag($form);
                                         Approver :  
                                     </td>
                                     <td>
-                                        <?php echo $approver; ?><input type="checkbox"  ng-model="aprover" ng-click="approverView(aprover)" name="approver" style="margin-top:-1%; margin-left:2%;" />
+                                        <?php echo ucwords(strtolower($approver)); ?><input type="checkbox"  ng-model="aprover" ng-click="approverView(aprover)" name="approver" style="margin-top:-1%; margin-left:2%;" />
                                     </td>
                                 </tr>     
                             </table>
@@ -472,7 +472,7 @@ print $this->form()->closeTag();
                     <ul>
                         <li>Advance taken for travel in Rs. <?= $advanceAmt ?> expenses incured during travel in Rs. <?= $totalAmount; ?>
                              Balance amount after expenses Rs. <?php $balance = $advanceAmt-$totalAmount; echo $balance;?></li>
-                        <li>Total Expenses(in words): <?= $totalAmount;?> </li>
+                        <li>Total Expenses(in words): <?= $totalExpense;?> </li>
                     </ul>
                 </div>
             </div>
@@ -489,13 +489,13 @@ print $this->form()->closeTag();
                     </div>
                 </div>
                 <div class="signRecommender1">
-                    <p><label ng-if="signRecommender"><?= $recommender; ?></label></p>
+                    <p style="height: {{ hgtRecommender }}px"><label ng-if="signRecommender"><?= ucwords(strtolower($recommender)); ?></label></p>
                     <div class="border-dotted" style="margin-left: 55px;">
                         Recommended By 
                     </div>
                 </div>
                 <div class="signApprover1">
-                    <p><label ng-if="signApprover"><?= $approver; ?></label></p>
+                    <p style="height: {{ hgtApprover }}px"><label ng-if="signApprover"><?= ucwords(strtolower($approver)); ?></label></p>
                     <div class="border-dotted" style="float:right;">
                         Approved by
                     </div>

@@ -43,6 +43,7 @@ print $this->form()->openTag($form);
     <div class="page-bar">
         <?= $this->navigation('Zend\Navigation\travelStatus')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb'); ?>
     </div>
+    <div ng-app="hris" ng-controller="printController">
     
     <div class="row margin-top-20">  
     <div class="col-sm-12">    
@@ -56,7 +57,7 @@ print $this->form()->openTag($form);
                     <input type="hidden" id="travelId" value="<?php echo $id; ?>" />
                     <div class="row">
                         <div class="col-xs-12 col-sm-4 col-md-4 col-box bottomgap">
-                            <table>
+                            <table width="80%">
                                 <tr>
                                     <td width="40%">
                                         <label for="travelCode">Employee Name : </label>
@@ -66,25 +67,25 @@ print $this->form()->openTag($form);
                             </table>
                         </div>
                         <div class="col-xs-12 col-sm-4 col-md-4 col-box bottomgap">
-                            <table>
+                            <table width="100%">
                                 <tr>
-                                    <td>
+                                    <td width="35%">
                                         Recommender :  
                                     </td>
                                     <td>
-                                        <?php echo $recommender; ?>
+                                        <?php echo ucwords(strtolower($recommender)); ?><input type="checkbox" ng-model="recommender" ng-click="recommenderView(recommender)" name="recommender" style="margin-top:-1%; margin-left:2%;"/>
                                     </td>
                                 </tr>
                             </table>
                         </div>
                         <div class="col-xs-12 col-sm-4 col-md-4 col-box bottomgap">
-                            <table>
+                            <table width="100%">
                                 <tr>
                                     <td>
                                         Approver :  
                                     </td>
                                     <td>
-                                        <?php echo $approver; ?>
+                                        <?php echo ucwords(strtolower($approver)); ?><input type="checkbox"  ng-model="aprover" ng-click="approverView(aprover)" name="approver" style="margin-top:-1%; margin-left:2%;" />
                                     </td>
                                 </tr>     
                             </table>
@@ -331,8 +332,8 @@ print $this->form()->closeTag();
 ?>
 
     
-    <div class="row" ng-app="hris" ng-controller="printController">
-        <div id="printableArea" class="col-md-8"  style="border:1px solid; display:none;">
+     <div class="row">
+        <div id="printableArea" class="col-md-8"  style="border:1px solid; display: none;">
             <div class="wrapper">
                 <div class="col-sm-8 col-sm-offset-2">
                     <ul id="headingList">
@@ -344,13 +345,13 @@ print $this->form()->closeTag();
             <div class="wrapper font-common">
                 <div class="formNo">
                     <ul>
-                        <li>Form No: HRM-10;</li>
+                        <li>Form No: HRM-10</li>
                     </ul>
                 </div>
                 <div class="dateDtl">
                     <ul>
                         <li>TECF No:<?= $detail['TRAVEL_CODE']; ?></li>
-                        <li>Date: <?php print_r($detail['REQUESTED_DATE']); ?></li>
+                        <li>Date: <?php print_r($todayDate); ?></li>
                     </ul>
                 </div>
             </div>
@@ -364,7 +365,7 @@ print $this->form()->closeTag();
                         <li>
                             Purpose of Visit: <?= $detail['PURPOSE']; ?>
                         </li>
-                        <li>Date of Travel Order: <? ?></li>
+                        <li>Date of Travel Order: <?=$detail['REQUESTED_DATE']; ?></li>
                     </ul>
                 </div>
                 <div  id="employeeTrvlDtl">
@@ -488,7 +489,7 @@ print $this->form()->closeTag();
                     <ul>
                         <li>Advance taken for travel in Rs. <?= $advanceAmt ?> expenses incured during travel in Rs. <?= $totalAmount; ?>
                              Balance amount after expenses Rs. <?php $balance = $advanceAmt-$totalAmount; echo $balance;?></li>
-                        <li>Total Expenses(in words): <?= $totalAmount;?> </li>
+                        <li>Total Expenses(in words): <?= $totalExpense;?> </li>
                     </ul>
                 </div>
             </div>
@@ -505,13 +506,13 @@ print $this->form()->closeTag();
                     </div>
                 </div>
                 <div class="signRecommender1">
-                    <p><?= $recommender; ?></p>
+                    <p style="height: {{ hgtRecommender }}px"><label ng-if="signRecommender"><?= ucwords(strtolower($recommender)); ?></label></p>
                     <div class="border-dotted" style="margin-left: 55px;">
                         Recommended By 
                     </div>
                 </div>
                 <div class="signApprover1">
-                    <p><?= $approver; ?></p>
+                    <p style="height: {{ hgtApprover }}px"><label ng-if="signApprover"><?= ucwords(strtolower($approver)); ?></label></p>
                     <div class="border-dotted" style="float:right;">
                         Approved by
                     </div>
@@ -519,11 +520,11 @@ print $this->form()->closeTag();
             </div>
             
         </div>
-        <?php if($status=='AP'){ ?>
         <div class="row esetup" style="">
             <div class="col-md-12" style="text-align:center;">
                 <a class="btn btn-success" ng-click="printDiv('printableArea');"> Print</a>
             </div>
         </div>
-        <?php } ?>
+    </div>
+    
     </div>
