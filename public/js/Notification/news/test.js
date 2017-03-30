@@ -408,11 +408,11 @@ $(document).ready(function () {
                 operator: "eq",
                 value: val
             },
-//            {
-//                field: "UnitsInStock",
-//                operator: "Discontinued",
-//                value: val
-//            },
+            {
+                field: "Discontinued",
+                operator: "contains",
+                value: val
+            },
       
         ]
     });
