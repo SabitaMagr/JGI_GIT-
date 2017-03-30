@@ -139,41 +139,55 @@ return [
                         ],
                     ],
                 ],
-            ]
+            ],
+            'task' => [
+                'type' => Segment::class,
+                'options' => [
+                    'route' => '/task[/:action[/:id]]',
+                    'constraints' => [
+                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'id' => '[0-9]+',
+                    ],
+                    'defaults' => [
+                        'controller' => Controller\TaskController::class,
+                        'action' => 'index'
+                    ],
+                ],
+            ],
         ],
     ],
     'navigation' => [
         'navigation-example' => [
-                [
+            [
                 'label' => 'Google',
                 'uri' => 'https://www.google.com',
                 'target' => '_blank'
             ],
-                [
+            [
                 'label' => 'Home',
                 'route' => 'leavesetup'
             ],
-                [
+            [
                 'label' => 'Modules',
                 'uri' => '#',
                 'pages' => [
-                        [
+                    [
                         'label' => 'LearnZF2Ajax',
                         'route' => 'leavesetup'
                     ],
-                        [
+                    [
                         'label' => 'LearnZF2FormUsage',
                         'route' => 'leavesetup'
                     ],
-                        [
+                    [
                         'label' => 'LearnZF2Barcode',
                         'route' => 'leavesetup'
                     ],
-                        [
+                    [
                         'label' => 'LearnZF2Pagination',
                         'route' => 'leavesetup'
                     ],
-                        [
+                    [
                         'label' => 'LearnZF2Log',
                         'route' => 'leavesetup'
                     ],
@@ -190,7 +204,8 @@ return [
         'factories' => [
             Controller\IndexController::class => InvokableFactory::class,
             Controller\DashboardController::class => Controller\ControllerFactory::class,
-            Controller\CronController::class => Controller\ControllerFactory::class
+            Controller\CronController::class => Controller\ControllerFactory::class,
+            Controller\TaskController::class => Controller\ControllerFactory::class
         ],
     ],
     'view_manager' => [
