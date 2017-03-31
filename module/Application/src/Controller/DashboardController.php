@@ -4,6 +4,7 @@ namespace Application\Controller;
 
 use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
+use Application\Repository\DashboardRepository;
 use AttendanceManagement\Repository\AttendanceDetailRepository;
 use AttendanceManagement\Repository\AttendanceStatusRepository;
 use HolidayManagement\Repository\HolidayRepository;
@@ -66,12 +67,11 @@ class DashboardController extends AbstractActionController {
     public function indexAction() {
         $auth = new AuthenticationService();
         $employeeId = $auth->getStorage()->read()['employee_id'];
-
-        $employeeRepository = new EmployeeRepository($this->adapter);
-        $employeeDetail = $employeeRepository->fetchById($employeeId);
-
+        $fiscalYear = $auth->getStorage()->read()['fiscal_year'];
+        $dahsboardRepo = new DashboardRepository($this->adapter);
+        $dashboardData = $dahsboardRepo->fetchEmployeeDashboardData($employeeId, $fiscalYear['START_DATE'], $fiscalYear['END_DATE']);
         $view = new ViewModel(array(
-            "employeeDetail" => $employeeDetail,
+            "dashboardData" => $dashboardData
         ));
         $view->setTemplate("dashboard/employee");
         return $view;
