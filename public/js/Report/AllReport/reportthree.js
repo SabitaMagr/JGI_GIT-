@@ -1,7 +1,7 @@
 (function ($, app) {
     'use strict';
     $(document).ready(function () {
-        var $tableContainer = $("#departmentMonthReport");
+        var $tableContainer = $("#reportTable");
         var extractDetailData = function (rawData, departmentId) {
             var data = {};
             var column = {};
@@ -9,7 +9,7 @@
             for (var i in rawData) {
                 console.log('data', rawData[i]);
                 if (typeof data[rawData[i].EMPLOYEE_ID] !== 'undefined') {
-                    data[rawData[i].EMPLOYEE_ID].MONTHS[rawData[i].MONTH_EDESC] =
+                    data[rawData[i].EMPLOYEE_ID].MONTHS[rawData[i].FORMATTED_ATTENDANCE_DT] =
                             JSON.stringify({
                                 IS_ABSENT: rawData[i].IS_ABSENT,
                                 IS_PRESENT: rawData[i].IS_PRESENT,
@@ -21,7 +21,7 @@
                         FULL_NAME: rawData[i].FULL_NAME,
                         MONTHS: {}
                     };
-                    data[rawData[i].EMPLOYEE_ID].MONTHS[rawData[i].MONTH_EDESC] =
+                    data[rawData[i].EMPLOYEE_ID].MONTHS[rawData[i].FORMATTED_ATTENDANCE_DT] =
                             JSON.stringify({
                                 IS_ABSENT: rawData[i].IS_ABSENT,
                                 IS_PRESENT: rawData[i].IS_PRESENT,
@@ -30,15 +30,11 @@
 
                 }
                 if (typeof column[rawData[i].MONTH_ID] === 'undefined') {
-                    var temp = rawData[i].MONTH_EDESC;
+                    var temp = rawData[i].FORMATTED_ATTENDANCE_DT;
                     column[rawData[i].MONTH_ID] = {
                         field: temp,
-                        title: rawData[i].MONTH_EDESC,
-                        template: '<div data="#: ' + temp + ' #" class="btn-group widget-btn-list custom-btn-group ' + departmentId + '">' +
-                                '<a class="btn btn-default widget-btn custom-btn-present"></a>' +
-                                '<a class="btn btn-danger widget-btn custom-btn-absent"></a>' +
-                                '<a class="btn btn-info widget-btn custom-btn-leave"></a>' +
-                                '</div>'
+                        title: rawData[i].ATTENDANCE_DT,
+                        template: '<a data="#: ' + temp + ' #" class="btn widget-btn custom-btn-group"></a>'
                     }
 
                 }
@@ -61,21 +57,14 @@
             $(selector).each(function (k, group) {
                 var $group = $(group);
                 var data = JSON.parse($group.attr('data'));
-                var $childrens = $group.children();
-                var $present = $($childrens[0]);
-                var $absent = $($childrens[1]);
-                var $leave = $($childrens[2]);
-
-                $present.html(data['IS_PRESENT']);
-                $absent.html(data['IS_ABSENT']);
-                $leave.html(data['ON_LEAVE']);
+                $group.html((data.IS_PRESENT == 1) ? 'P' : ((data.IS_ABSENT == 1) ? 'A' : (data.ON_LEAVE == 1) ? 'L' : 'H'));
             });
 
         };
 
-        var initializeReport = function (departmentId) {
+        var initializeReport = function (monthId, departmentId) {
             $tableContainer.block();
-            app.pullDataById(document.wsDepartmentWise, {departmentId: departmentId}).then(function (response) {
+            app.pullDataById(document.wsDepartmentWiseDailyReport, {departmentId: departmentId, monthId: monthId}).then(function (response) {
                 $tableContainer.unblock();
                 console.log('departmentWiseEmployeeMonthlyR', response);
                 var extractedDetailData = extractDetailData(response.data, departmentId);
@@ -90,7 +79,7 @@
                     pageable: true,
                     columns: extractedDetailData.cols
                 });
-                displayDataInBtnGroup('.custom-btn-group.' + departmentId);
+                displayDataInBtnGroup('.custom-btn-group');
 
 
             }, function (error) {
@@ -98,7 +87,7 @@
                 console.log('departmentWiseEmployeeMonthlyE', error);
             });
         };
-        initializeReport(1);
+        initializeReport(21, 1);
 
 
     });

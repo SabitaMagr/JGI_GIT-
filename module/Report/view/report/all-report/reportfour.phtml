@@ -6,34 +6,27 @@ $this->headLink()
         ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.dataviz.min.css'))
         ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.dataviz.default.min.css'));
 
+
 $this->headScript()
         ->appendFile($this->basePath('jszip/dist/jszip.min.js'))
-        ->appendFile($this->basePath('telerik_kendoui/js/kendo.all.min.js'))
-        ->appendFile($this->basePath('assets/global/plugins/bootstrap-confirmation/bootstrap-confirmation.min.js'));
-
-
-$this->headScript()->appendFile($this->basePath('js/Notification/news/test.js'));
+        ->appendFile($this->basePath('telerik_kendoui/js/kendo.all.min.js'));
+$this->headScript()->appendFile($this->basePath('js/Report/AllReport/reportfour.js'));
+$this->headScript()->appendFile($this->basePath('assets/global/plugins/jquery.blockui.min.js'));
 ?>
-<script>
+<?php if ($this->messages) { ?>
+    <script>
+        document.messages =<?php echo json_encode($this->messages); ?>
+    </script>
+<?php } ?>
 
+<script>
+    document.wsEmployeeWiseDailyReport = '<?php echo $this->url('allreport', ['action' => 'employeeWiseDailyReport']); ?>';
 </script>
+
 
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\allreport')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
 
-<div id="example">
-    
-     <input type="text" id="search" placeholder="enter search text..." />
-     <!--<input class=k-textbox type=text id="txtSearchString" placeholder="enter search text..." />-->
-    <!--<button id="btnSearch">Search</button>-->
-
-
-
-
-    
-    <div id="grid">
-
-    </div>
+<div id="reportTable">
 </div>
-

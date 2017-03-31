@@ -96,4 +96,14 @@ class MonthRepository implements RepositoryInterface {
                 })->current();
     }
 
+    public function getCurrentFiscalYear() {
+        $dateFormat = Helper::ORACLE_DATE_FORMAT;
+        $sql = <<<EOT
+SELECT TO_CHAR(START_DATE,'$dateFormat')AS START_DATE,TO_CHAR(END_DATE,'$dateFormat') AS END_DATE,FISCAL_YEAR_ID FROM HRIS_FISCAL_YEARS  WHERE TRUNC(SYSDATE) BETWEEN START_DATE AND END_DATE               
+EOT;
+        $statement = $this->adapter->query($sql);
+        $result = $statement->execute();
+        return $result->current();
+    }
+
 }

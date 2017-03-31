@@ -6,10 +6,13 @@ use Application\Helper\Helper;
 use Application\Model\HrisAuthStorage;
 use Application\Model\User;
 use Application\Model\UserLog;
+use Application\Repository\MonthRepository;
 use Application\Repository\UserLogRepository;
 use AttendanceManagement\Model\Attendance;
 use AttendanceManagement\Repository\AttendanceDetailRepository;
 use AttendanceManagement\Repository\AttendanceRepository;
+use Exception;
+use Setup\Repository\EmployeeRepository;
 use Zend\Authentication\AuthenticationService;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\EventManager\EventManagerInterface;
@@ -128,8 +131,19 @@ class AuthController extends AbstractActionController {
                             // user's attendance is already done.
                         }
                     }
-                    $this->getAuthService()->getStorage()->write(["user_name" => $request->getPost('username'), "user_id" => $resultRow->USER_ID, "employee_id" => $resultRow->EMPLOYEE_ID, "role_id" => $resultRow->ROLE_ID]);
+                    $employeeRepo = new EmployeeRepository($this->adapter);
+                    $employeeDetail = $employeeRepo->getById($resultRow->EMPLOYEE_ID);
+                    $monthRepo = new MonthRepository($this->adapter);
+                    $fiscalYear = $monthRepo->getCurrentFiscalYear();
 
+                    $this->getAuthService()->getStorage()->write([
+                        "user_name" => $request->getPost('username'),
+                        "user_id" => $resultRow->USER_ID,
+                        "employee_id" => $resultRow->EMPLOYEE_ID,
+                        "role_id" => $resultRow->ROLE_ID,
+                        "employee_detail" => $employeeDetail,
+                        "fiscal_year" => $fiscalYear
+                    ]);
                     // to add user log details in HRIS_USER_LOG
                     $clientIp = $request->getServer('REMOTE_ADDR');
                     $userLog = new UserLog();
