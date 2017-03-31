@@ -56,7 +56,9 @@ class DashboardRepository implements RepositoryInterface {
                        NVL(LEAVE_TBL.LEAVE, 0) LEAVE,
                        NVL(WOH_TBL.WOH, 0) WOH,
                        NVL(TOUR_TBL.TOUR, 0) TOUR,
-                       NVL(TRAINING_TBL.TRAINING, 0) TRAINING
+                       NVL(TRAINING_TBL.TRAINING, 0) TRAINING,
+                       NVL(AVERAGE_OFFICE_HRS_TBL.AVG_HOURS, 0) AVG_HOURS,
+                       NVL(AVERAGE_OFFICE_HRS_TBL.AVG_MINUTES, 0) AVG_MINUTES
                 FROM
                   ( SELECT EMP.EMPLOYEE_ID,
                            ( CASE
@@ -187,7 +189,20 @@ class DashboardRepository implements RepositoryInterface {
                      AND TRAINING_ID IS NOT NULL
                      AND EMPLOYEE_ID = {$employeeId}
                      AND ATTENDANCE_DT BETWEEN TO_DATE('{$startDate}', 'DD-MON-YYYY') AND TO_DATE('{$endDate}', 'DD-MON-YYYY')
-                   GROUP BY EMPLOYEE_ID ) TRAINING_TBL ON TRAINING_TBL.EMPLOYEE_ID = EMPLOYEE_TBL.EMPLOYEE_ID";
+                   GROUP BY EMPLOYEE_ID ) TRAINING_TBL ON TRAINING_TBL.EMPLOYEE_ID = EMPLOYEE_TBL.EMPLOYEE_ID
+                -- AVERAGE OFFICE HOURS
+                LEFT JOIN
+                  (SELECT EMPLOYEE_ID,
+                          FLOOR(AVERAGE_TOTAL_OFFICE_HRS/3600) AVG_HOURS,
+                          (MOD(AVERAGE_TOTAL_OFFICE_HRS,3600)/60) AVG_MINUTES,
+                          AVERAGE_TOTAL_OFFICE_HRS
+                   FROM
+                     (SELECT EMPLOYEE_ID,
+                             AVG(SYSDATE + (OUT_TIME - IN_TIME)*24*60*60 - SYSDATE) AVERAGE_TOTAL_OFFICE_HRS
+                      FROM HRIS_ATTENDANCE_DETAIL
+                      WHERE EMPLOYEE_ID = {$employeeId}
+                        AND ATTENDANCE_DT BETWEEN TO_DATE('{$startDate}', 'DD-MON-YYYY') AND TO_DATE('{$endDate}', 'DD-MON-YYYY')
+                      GROUP BY EMPLOYEE_ID)) AVERAGE_OFFICE_HRS_TBL ON AVERAGE_OFFICE_HRS_TBL.EMPLOYEE_ID = EMPLOYEE_TBL.EMPLOYEE_ID";
 
         $statement = $this->adapter->query($sql);
         $result = $statement->execute()->current();
