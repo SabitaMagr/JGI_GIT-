@@ -1566,3 +1566,245 @@ ul#optionList li{
     width:145px !important;
         min-width: 144px !important;
 }
+
+ul#headingList{
+    list-style-type: none;
+}
+
+ul#headingList li{
+    text-align: center; 
+    line-height: 32px;
+}
+
+ul#headingList li h2{
+    font-family: Georgia, serif !important;
+    font-weight: 600;
+    margin-bottom: 0% !important;
+}
+
+ul#headingList li h3{
+    font-family:Arial, Helvetica, sans-serif !important;
+    font-weight: 600;
+    margin-top: 0% !important;
+    margin-bottom: 0px !important;
+}
+
+#underline{
+    text-decoration:underline;
+}
+
+ul#personalInfo{
+    list-style-type: none;
+}
+
+ul#personalInfo li{
+    margin-bottom: 1%;
+}
+.dtlDate{
+    float: left;
+    width: 50%;
+    text-align: right;
+
+}
+
+.dtlTravel{
+    float: left;
+    width: 50%;
+    text-align: left;
+}
+
+.dtlTravel ul{
+    padding: 0px !important;
+}
+.font-common{
+    font-family: Impact, Charcoal, sans-serif;
+    font-size:12px;
+}
+
+.detailOfRequest ul{
+    padding: 0px !important;
+}
+.detailOfRequest{
+        margin-top: 2%;
+}
+
+.signEmployee{
+    width: 33.33%;
+    text-align: left;
+    float:left;
+}
+
+.signRecommender{
+    width: 33.33%;
+    text-align: center;
+    float:left;
+}
+
+.signApprover{
+    width: 33.33%;
+    text-align: center;
+    float:left;
+}
+
+.detailOfRequest1{
+    margin-top:10%;
+        min-height: 7px;
+}
+.border-dotted{
+    border-top: 1px solid #000;
+    width: 124px;
+}
+
+.border-dotted1{
+    border-top: 1px solid #000;
+    width: 150px;
+}
+
+.formNo{
+    float: left;
+    width: 50%;
+    text-align: left;
+}
+
+.dateDtl{
+    float: left;
+    width: 50%;
+
+}
+
+.formNo ul{
+    list-style-type:none;
+    padding: 0px !important;
+    font-weight:bold;
+}
+
+.formNo ul li{
+    margin-bottom:1%;
+}
+.dateDtl ul{
+    list-style-type:none;
+    float: right;
+    font-weight:bold;
+}
+
+
+
+#employeeTrvlDtl{
+    float: left;
+    width: 50%;
+}
+
+#employeeDtl{
+    float: left;
+    width: 50%;
+    text-align: left;
+}
+
+#employeeDtl ul{
+    list-style-type: none;
+    padding: 0px !important;
+}
+
+#employeeDtl ul li{
+    margin-bottom:1%;
+}
+
+#employeeTrvlDtl ul{
+    list-style-type:none;
+    float:right;
+}
+
+#employeeTrvlDtl ul li{
+    margin-bottom:2%;
+}
+
+#expenseDtlTbl th{
+   font-weight: 400; 
+   border-bottom: 1px solid #e7ecf1;
+   border-right: 1px solid #e7ecf1;
+    padding: 8px;
+    line-height: 1.42857;
+    vertical-align: top;
+}
+
+#expenseDtlTbl{
+    margin-top:0%;
+    border: 1px solid #e7ecf1;
+}
+#expenseDtlTbl td{
+        border-bottom: 1px solid #e7ecf1;
+        border-right: 1px solid #e7ecf1;
+        padding: 8px;
+        line-height: 1.42857;
+        vertical-align: top;
+}
+.wrapper{
+    width:100%;
+    float:left;
+}
+
+#expenseDtlTbl tbody > tr:last-child > td {
+  border-bottom: 0px !important;
+}
+
+#expenseDtlTbl .lastColumn{
+    border-right: 0px !important;
+}
+
+
+
+#employeeDtl1{
+    float: left;
+    width: 100%;
+    margin-top:1%;
+    text-align: left;
+}
+
+#employeeDtl1 ul{
+    list-style-type: none;
+    padding: 0px !important;
+}
+
+#employeeDtl1 ul li{
+    margin-bottom:1%;
+}
+
+.signature{
+    
+}
+
+.signChecked{
+    width: 25%;
+    text-align: center;
+    float:left;
+    margin-top:10%;
+}
+
+.signEmployee1{
+    width: 25%;
+    text-align: center;
+    float:left;
+    margin-top:10%;
+}
+
+.signRecommender1{
+    width: 25%;
+    text-align: center;
+    float:left;
+    margin-top:7%;
+}
+.signRecommender1 p{
+    margin-bottom: 5px;
+}
+
+.signApprover1{
+    width: 25%;
+    text-align: center;
+    float:left;
+    margin-top:7%;
+}
+
+.signApprover1 p{
+    margin-bottom: 5px;
+    text-align: right;
+}

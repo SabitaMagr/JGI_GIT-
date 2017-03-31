@@ -154,6 +154,7 @@ class EmployeeRepository implements RepositoryInterface {
             Helper::dateExpression(HrEmployees::JOIN_DATE, "E"),
                 ], true);
         $select->join(['B1' => Branch::TABLE_NAME], "E." . HrEmployees::BRANCH_ID . "=B1." . Branch::BRANCH_ID, ['BRANCH' => 'BRANCH_NAME'], 'left')
+                ->join(['C' => Company::TABLE_NAME], "E." . HrEmployees::COMPANY_ID . "=C." . Company::COMPANY_ID, ['COMPANY_NAME'], 'left')
                 ->join(['B2' => Branch::TABLE_NAME], "E." . HrEmployees::APP_BRANCH_ID . "=B2." . Branch::BRANCH_ID, ['APP_BRANCH' => 'BRANCH_NAME'], 'left')
                 ->join(['D1' => Department::TABLE_NAME], "E." . HrEmployees::DEPARTMENT_ID . "=D1." . Department::DEPARTMENT_ID, ['DEPARTMENT' => 'DEPARTMENT_NAME'], 'left')
                 ->join(['D2' => Department::TABLE_NAME], "E." . HrEmployees::APP_DEPARTMENT_ID . "=D2." . Department::DEPARTMENT_ID, ['APP_DEPARTMENT' => 'DEPARTMENT_NAME'], 'left')

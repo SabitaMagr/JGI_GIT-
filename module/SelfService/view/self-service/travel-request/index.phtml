@@ -22,6 +22,7 @@ $this->headScript()
 <script>
     document.menu =<?php $menu = ["id" => "menuSelfService", "subMenu" => ["id" => "subMenuTravelRequest"]];
 echo json_encode($menu); ?>;
+    document.urlCss='<?= $this->basePath('css/custom.css') ?>';
     document.deleteURL ='<?= $this->url("restful", ["action" => "index"]) ?>';
     document.travelRequestList =<?php echo json_encode($list); ?>
 </script>
@@ -31,6 +32,7 @@ echo json_encode($menu); ?>;
 
 
 <div class="margin-top-20" ng-app="hris" ng-controller="travelRequestList">
+    
     <div class="table-toolbar">
         <div class="row">
             <div class="col-md-6">
