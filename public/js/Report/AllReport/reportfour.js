@@ -2,26 +2,26 @@
     'use strict';
     $(document).ready(function () {
         var $tableContainer = $("#reportTable");
-        var extractDetailData = function (rawData, departmentId) {
+        var extractDetailData = function (rawData, employeeId) {
             var data = {};
             var column = {};
 
             for (var i in rawData) {
                 console.log('data', rawData[i]);
-                if (typeof data[rawData[i].EMPLOYEE_ID] !== 'undefined') {
-                    data[rawData[i].EMPLOYEE_ID].MONTHS[rawData[i].FORMATTED_ATTENDANCE_DT] =
+                if (typeof data[rawData[i].MONTH_ID] !== 'undefined') {
+                    data[rawData[i].MONTH_ID].MONTHS[rawData[i].FORMATTED_ATTENDANCE_DT] =
                             JSON.stringify({
                                 IS_ABSENT: rawData[i].IS_ABSENT,
                                 IS_PRESENT: rawData[i].IS_PRESENT,
                                 ON_LEAVE: rawData[i].ON_LEAVE
                             });
                 } else {
-                    data[rawData[i].EMPLOYEE_ID] = {
-                        EMPLOYEE_ID: rawData[i].EMPLOYEE_ID,
-                        FULL_NAME: rawData[i].FULL_NAME,
+                    data[rawData[i].MONTH_ID] = {
+                        MONTH_ID: rawData[i].MONTH_ID,
+                        MONTH_EDESC: rawData[i].MONTH_EDESC,
                         MONTHS: {}
                     };
-                    data[rawData[i].EMPLOYEE_ID].MONTHS[rawData[i].FORMATTED_ATTENDANCE_DT] =
+                    data[rawData[i].MONTH_ID].MONTHS[rawData[i].FORMATTED_ATTENDANCE_DT] =
                             JSON.stringify({
                                 IS_ABSENT: rawData[i].IS_ABSENT,
                                 IS_PRESENT: rawData[i].IS_PRESENT,
@@ -48,7 +48,7 @@
 
             for (var k in data) {
                 var row = data[k].MONTHS;
-                row['employee'] = data[k].FULL_NAME;
+                row['employee'] = data[k].MONTH_EDESC;
                 returnData.rows.push(row);
             }
             return returnData;
@@ -62,12 +62,12 @@
 
         };
 
-        var initializeReport = function (monthId, departmentId) {
+        var initializeReport = function (employeeId) {
             $tableContainer.block();
-            app.pullDataById(document.wsDepartmentWiseDailyReport, {departmentId: departmentId, monthId: monthId}).then(function (response) {
+            app.pullDataById(document.wsEmployeeWiseDailyReport, {employeeId: employeeId}).then(function (response) {
                 $tableContainer.unblock();
                 console.log('departmentWiseEmployeeMonthlyR', response);
-                var extractedDetailData = extractDetailData(response.data, departmentId);
+                var extractedDetailData = extractDetailData(response.data, employeeId);
                 console.log('extractedDetailData', extractedDetailData);
                 $tableContainer.kendoGrid({
                     dataSource: {
