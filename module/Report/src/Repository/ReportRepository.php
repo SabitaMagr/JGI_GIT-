@@ -16,7 +16,8 @@ class ReportRepository {
     public function employeeWiseDailyReport($employeeId) {
         $sql = <<<EOT
 SELECT R.*,
-  M.MONTH_EDESC
+  M.MONTH_EDESC,
+  TRUNC(R.ATTENDANCE_DT)-TRUNC(M.FROM_DATE)+1 AS DAY_COUNT
 FROM
   (SELECT AD.ATTENDANCE_DT                AS ATTENDANCE_DT,
     TO_CHAR(AD.ATTENDANCE_DT,'MONDDYYYY') AS FORMATTED_ATTENDANCE_DT,
@@ -245,6 +246,57 @@ JOIN HRIS_MONTH_CODE JM
 ON (J.MONTH_ID = JM.MONTH_ID)                
 EOT;
 
+        $statement = $this->adapter->query($sql);
+        $result = $statement->execute();
+        return Helper::extractDbData($result);
+    }
+
+    public function getCompanyBranchDepartment() {
+        $sql = <<<EOT
+SELECT C.COMPANY_ID,
+  C.COMPANY_NAME,
+  B.BRANCH_ID,
+  B.BRANCH_NAME,
+  D.DEPARTMENT_ID,
+  D.DEPARTMENT_NAME
+FROM HRIS_COMPANY C
+JOIN HRIS_BRANCHES B
+ON (C.COMPANY_ID =B.COMPANY_ID)
+JOIN HRIS_DEPARTMENTS D
+ON (D.BRANCH_ID=B.BRANCH_ID)
+EOT;
+        $statement = $this->adapter->query($sql);
+        $result = $statement->execute();
+        return Helper::extractDbData($result);
+    }
+
+    public function getMonthList() {
+        $sql = <<<EOT
+                SELECT AM.MONTH_ID,M.MONTH_EDESC FROM
+(SELECT  UNIQUE (SELECT M.MONTH_ID
+    FROM HRIS_MONTH_CODE M
+    WHERE AD.ATTENDANCE_DT BETWEEN M.FROM_DATE AND M.TO_DATE
+    ) AS MONTH_ID
+FROM HRIS_ATTENDANCE_DETAIL AD) AM JOIN HRIS_MONTH_CODE M ON (M.MONTH_ID=AM.MONTH_ID) 
+
+EOT;
+        $statement = $this->adapter->query($sql);
+        $result = $statement->execute();
+        return Helper::extractDbData($result);
+    }
+
+    public function getEmployeeList() {
+        $sql = <<<EOT
+SELECT E.EMPLOYEE_ID                                                             AS EMPLOYEE_ID,
+  E.FIRST_NAME                                                                   AS FIRST_NAME,
+  E.MIDDLE_NAME                                                                  AS MIDDLE_NAME,
+  E.LAST_NAME                                                                    AS LAST_NAME,
+  CONCAT(CONCAT(CONCAT(E.FIRST_NAME,' '),CONCAT(E.MIDDLE_NAME, '')),E.LAST_NAME) AS FULL_NAME,
+  E.COMPANY_ID                                                                   AS COMPANY_ID,
+  E.BRANCH_ID                                                                    AS BRANCH_ID,
+  E.DEPARTMENT_ID                                                                AS DEPARTMENT_ID
+FROM HRIS_EMPLOYEES E
+EOT;
         $statement = $this->adapter->query($sql);
         $result = $statement->execute();
         return Helper::extractDbData($result);

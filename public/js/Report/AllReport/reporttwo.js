@@ -98,8 +98,47 @@
                 console.log('departmentWiseEmployeeMonthlyE', error);
             });
         };
-        initializeReport(1);
 
+        $('select').select2();
+        var $countryList = $('#countryList');
+        var $branchList = $('#branchList');
+        var $departmentList = $('#departmentList');
+        var $generateReport = $('#generateReport');
 
+        var populateList = function ($element, list, id, value, defaultMessage) {
+            $element.html('');
+            $element.append($("<option></option>").val(-1).text(defaultMessage));
+            for (var i in list) {
+                $element.append($("<option></option>").val(list[i][id]).text(list[i][value]));
+            }
+        }
+
+        var comBraDepList = document.comBraDepList;
+        populateList($countryList, comBraDepList, 'COMPANY_ID', 'COMPANY_NAME', "SELECT COUNTRY");
+        populateList($branchList, [], 'BRANCH_ID', 'BRANCH_NAME', "SELECT BRANCH");
+        populateList($departmentList, [], 'DEPARTMENT_ID', 'DEPARTMENT_NAME', "SELECT DEPARTMENT");
+
+        $countryList.on('change', function () {
+            var $this = $(this);
+            if ($this.val() != -1) {
+                populateList($branchList, comBraDepList[$this.val()]['BRANCH_LIST'], 'BRANCH_ID', 'BRANCH_NAME', "SELECT BRANCH");
+                populateList($departmentList, [], 'DEPARTMENT_ID', 'DEPARTMENT_NAME', "SELECT DEPARTMENT");
+            }
+        });
+        $branchList.on('change', function () {
+            var $this = $(this);
+            if ($this.val() != -1) {
+                populateList($departmentList, comBraDepList[$countryList.val()]['BRANCH_LIST'][$this.val()]['DEPARTMENT_LIST'], 'DEPARTMENT_ID', 'DEPARTMENT_NAME', "SELECT DEPARTMENT");
+            }
+        });
+
+        $generateReport.on('click', function () {
+            var departmentId = $departmentList.val();
+            if (departmentId == -1) {
+                app.errorMessage("No Department Selected", "Notification");
+            } else {
+                initializeReport(departmentId);
+            }
+        });
     });
 })(window.jQuery, window.app);
