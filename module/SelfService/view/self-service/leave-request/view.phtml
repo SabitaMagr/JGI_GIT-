@@ -194,6 +194,25 @@ print $this->form()->openTag($form);
                                 <?php print $this->formLabel($remarks); ?>
                                 <?php print $this->formElement($remarks); ?>
                             </div>
+                        <?php } 
+                        
+                        if($substituteEmployee==1){
+                        ?>
+                        <div class="form-group padding-0">
+                            <label for="noOfDays">
+                                    Substitute Employee 
+
+                            </label>
+                            <div>
+                                <select disabled="disabled" class="form-control" name="leaveSubstitute">
+                                <?php foreach($employeeList as $key=>$value){ 
+                                    $selected = ($value==$leaveSubstitute) ? "selected" : "";
+                                    ?>
+                                    <option style="cursor: pointer;" value="<?php echo $key; ?>" <?php echo $selected; ?>><?php echo $value; ?></option>
+                                <?php } ?>
+                                </select>
+                            </div>
+                        </div>
                         <?php } ?>
                     </div>
                     <div

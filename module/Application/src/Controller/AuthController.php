@@ -131,8 +131,8 @@ class AuthController extends AbstractActionController {
                             // user's attendance is already done.
                         }
                     }
-                    $employeeRepo = new EmployeeRepository($this->adapter);
-                    $employeeDetail = $employeeRepo->getById($resultRow->EMPLOYEE_ID);
+//                    $employeeRepo = new EmployeeRepository($this->adapter);
+//                    $employeeDetail = $employeeRepo->getById($resultRow->EMPLOYEE_ID);
                     $monthRepo = new MonthRepository($this->adapter);
                     $fiscalYear = $monthRepo->getCurrentFiscalYear();
 
@@ -141,7 +141,7 @@ class AuthController extends AbstractActionController {
                         "user_id" => $resultRow->USER_ID,
                         "employee_id" => $resultRow->EMPLOYEE_ID,
                         "role_id" => $resultRow->ROLE_ID,
-                        "employee_detail" => $employeeDetail,
+//                        "employee_detail" => $employeeDetail,
                         "fiscal_year" => $fiscalYear
                     ]);
                     // to add user log details in HRIS_USER_LOG

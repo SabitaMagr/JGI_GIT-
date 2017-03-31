@@ -20,29 +20,40 @@ $this->headScript()
             </div>
             <div class="col-sm-3 col-md-3 employee-details">
                 <?php
-                $employeeName = implode(" ", [trim($employeeDetail['FIRST_NAME']), trim($employeeDetail['MIDDLE_NAME']), trim($employeeDetail['LAST_NAME'])]);
-                $email = trim($employeeDetail['EMAIL_OFFICIAL']) ? trim($employeeDetail['EMAIL_OFFICIAL']) : $employeeDetail['EMAIL_PERSONAL'];
+                $email = trim($dashboardData['EMAIL_OFFICIAL']) ? trim($dashboardData['EMAIL_OFFICIAL']) : trim($dashboardData['EMAIL_PERSONAL']);
+                $service[0] = $dashboardData['SERVICE_YEARS'] ? ((1 == $dashboardData['SERVICE_YEARS']) ? "1 Year" : $dashboardData['SERVICE_YEARS'] . " Years") : "";
+                $service[1] = $dashboardData['SERVICE_MONTHS'] ? ((1 == $dashboardData['SERVICE_MONTHS']) ? "1 Month" : $dashboardData['SERVICE_MONTHS'] . " Months") : "";
+                $service[2] = $dashboardData['SERVICE_DAYS'] ? ((1 == $dashboardData['SERVICE_DAYS']) ? "1 Day" : $dashboardData['SERVICE_DAYS'] . " Days") : "";
+                $serviceDays = trim(implode(" ", $service));
                 ?>
-                <h4 class="font-weight-bold"><?php print $employeeName; ?></h4>
-                <span>rajan.thapa@itnepal.com</span><br>
-                <span>AVP-Operation</span><br>
-                <span>At work for : 11 month 2 days</span><br>
+                <h4 class="font-weight-bold"><?php print $dashboardData['FULL_NAME']; ?></h4>
+                <?php if($email) : ?>
+                <span><?php print $email; ?></span><br>
+                <?php endif; ?>
+                <span><?php print trim($dashboardData['DESIGNATION_TITLE']); ?></span><br>
+                <span>At work for : <?php print $serviceDays ? $serviceDays : 0; ?></span><br>
             </div>
 
             <div class="col-xs-12 col-sm-7 col-md-7">
                 <div class="col-hris pull-right">
                     <ul>
-                        <li>
-                            <div class="hris efficiency efficiency-bg1">10.30</div>
-                            <div>Late In</div>
+                        <li class="col-md-4">
+                            <div class="hris efficiency efficiency-bg1">
+                                <span><?php print $dashboardData['LATE_IN']; ?></span>
+                                <div>Late In</div>
+                            </div>
                         </li>
-                        <li>
-                            <div class="hris efficiency efficiency-bg2">10.11</div>
-                            <div>Early out</div>
+                        <li class="col-md-4">
+                            <div class="hris efficiency efficiency-bg2">
+                                <span><?php print $dashboardData['EARLY_OUT']; ?></span>
+                                <div>Early Out</div>
+                            </div>
                         </li>
-                        <li>
-                            <div class="hris efficiency efficiency-bg3">6.21</div>
-                            <div>Missed Punch</div>
+                        <li class="col-md-4">
+                            <div class="hris efficiency efficiency-bg3">
+                                <span><?php print $dashboardData['MISSED_PUNCH']; ?></span>
+                                <div>Missed Punch</div>
+                            </div>
                         </li>
                     </ul>
                 </div>
@@ -65,12 +76,12 @@ $this->headScript()
                                     Attendence
                                 </li>
                                 <li>
-                                    <span>0.5/26</span>
-                                    Attendence
+                                    <span>1/10</span>
+                                    Leave
                                 </li>
                                 <li>
-                                    <span>0.5/26</span>
-                                    Attendence
+                                    <span>0</span>
+                                    Awards
                                 </li>
                             </ul>
                         </div>
@@ -81,33 +92,47 @@ $this->headScript()
                         </div>
                     </div>
                     <div class="col-md-12">
-                        <div class="detailsbox">
-                            <ul>
-                                <li>
-                                    <div class="present hexagon">
-                                        <span>150</span>
-                                    </div>
-                                    <h5>Present</h5>
-                                </li>
-                                <li>
-                                    <div class="leave hexagon">
-                                        <span>24</span>
-                                    </div>
-                                    <h5>on leave</h5>
-                                </li>
-                                <li>
-                                    <div class="wfh hexagon">
-                                        <span>0</span>
-                                    </div>
-                                    <h5>woh</h5>
-                                </li>
-                                <li>
-                                    <div class="tour hexagon">
-                                        <span>5</span>
-                                    </div>
-                                    <h5>on Tour</h5>
-                                </li>
-                            </ul>
+                        <div class="row detailsbox">
+                            <div class="col-xs-6 col-sm-3 col-md-2 hexcustom">
+                                <div class="employee_details-box hexagon-bg1">
+                                    <span><?php print $dashboardData['PRESENT_DAY']; ?></span>
+                                    <div class="face1"></div>
+                                    <div class="face2"></div>
+                                    <div class="headtitle">Present</div>
+                                </div>
+                            </div>
+                            <div class="col-xs-6 col-sm-3 col-md-2 hexcustom">
+                                <div class="employee_details-box hexagon-bg2">
+                                    <span><?php print $dashboardData['LEAVE']; ?></span>
+                                    <div class="face1"></div>
+                                    <div class="face2"></div>
+                                    <div class="headtitle">On Leave</div>
+                                </div>
+                            </div>
+                            <div class="col-xs-6 col-sm-3 col-md-2 hexcustom">
+                                <div class="employee_details-box hexagon-bg3">
+                                    <span><?php print $dashboardData['TRAINING']; ?></span>
+                                    <div class="face1"></div>
+                                    <div class="face2"></div>
+                                    <div class="headtitle">Training</div>
+                                </div>
+                            </div>
+                            <div class="col-xs-6 col-sm-3 col-md-2 hexcustom">
+                                <div class="employee_details-box hexagon-bg4">
+                                    <span><?php print $dashboardData['TOUR']; ?></span>
+                                    <div class="face1"></div>
+                                    <div class="face2"></div>
+                                    <div class="headtitle">On Tour</div>
+                                </div>
+                            </div>
+                            <div class="col-xs-6 col-sm-3 col-md-2 hexcustom">
+                                <div class="employee_details-box hexagon-bg5">
+                                    <span><?php print $dashboardData['WOH']; ?></span>
+                                    <div class="face1"></div>
+                                    <div class="face2"></div>
+                                    <div class="headtitle">WOH</div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -120,7 +145,7 @@ $this->headScript()
                     <!-- BEGIN WIDGET THUMB -->
                     <div class="wigetbox wigetbox-colorone clearfix widget-thumb widget-bg-color-lightgreen text-uppercase margin-bottom-20 bordered green-haze">
                         <div class="widget-thumb-wrap widget-thumb-wrap-bgone">
-                            <h4 class="widget-thumb-heading">Average Office HR</h4>
+                            <h4 class="widget-thumb-heading">Average Office Hrs</h4>
                             <div class="widget-thumb-body">
                                 <span class="widget-thumb-body-stat" data-counter="counterup" data-value="7,644">7,644</span>
                             </div>
@@ -136,7 +161,7 @@ $this->headScript()
                 <div class="col-sm-6 col-md-6">
                     <div class="wigetbox wigetbox-colortwo clearfix widget-thumb widget-bg-color-lightgreen text-uppercase margin-bottom-20 bordered green-haze">
                         <div class="widget-thumb-wrap widget-thumb-wrap-bgtwo">
-                            <h4 class="widget-thumb-heading">Average Timesheet HR</h4>
+                            <h4 class="widget-thumb-heading">Average Timesheet Hrs</h4>
                             <div class="widget-thumb-body">
                                 <span class="widget-thumb-body-stat" data-counter="counterup" data-value="7,644">7,644</span>
                             </div>
@@ -153,7 +178,7 @@ $this->headScript()
                     <!-- BEGIN WIDGET THUMB -->
                     <div class="wigetbox wigetbox-colorthree clearfix widget-thumb widget-bg-color-lightgreen text-uppercase margin-bottom-20 bordered green-haze">
                         <div class="widget-thumb-wrap widget-thumb-wrap-bgthree">
-                            <h4 class="widget-thumb-heading">Total OT HR</h4>
+                            <h4 class="widget-thumb-heading">Total OT </h4>
                             <div class="widget-thumb-body">
                                 <span class="widget-thumb-body-stat" data-counter="counterup" data-value="7,644">7,644</span>
                             </div>
@@ -203,14 +228,15 @@ $this->headScript()
                             <div class="portlet-title tabbable-line">
                                 <div class="caption caption-md">
                                     <i class="icon-globe theme-font hide"></i>
-                                    <span class="caption-subject  bold uppercase">Upcoming Holidays</span>
+                                    <span class="caption-subject bold uppercase">Upcoming Holidays</span>
                                 </div>
                             </div>
 
                             <div class="portlet-body">
                                 <!--BEGIN TABS-->
                                 <div class="upcomingholidays">
-                                    <ul class="feeds">
+                                    <div class="upcomingholidays-loading" style="height:100%;width:100%;position:absolute;top:0;left:0;"></div>
+                                    <ul class="feeds" style="visibility:hidden;">
                                         <li class="col1bg">
                                             <div class="col1">
                                                 <div class="cont">
@@ -378,7 +404,30 @@ $this->headScript()
                     </div>
                 </div>
                 <div class="portlet-body">
-                    <div id="calendar">
+                    <div id="calendar"></div>
+                    <div class="calendar-colorbox">
+                        <ul>
+                            <li>
+                                <div class="color-box colorbox-color1">
+                                </div>
+                                <span>Holiday</span>
+                            </li>
+                            <li>
+                                <div class="color-box colorbox-color2">
+                                </div>
+                                <span>Important notice</span>
+                            </li>
+                            <li>
+                                <div class="color-box colorbox-color3">
+                                </div>
+                                <span>Meeting</span>
+                            </li>
+                            <li>
+                                <div class="color-box colorbox-color4">
+                                </div>
+                                <span>Message</span>
+                            </li>
+                        </ul>
                     </div>
                 </div>
             </div>
@@ -395,18 +444,18 @@ $this->headScript()
                             <span class="caption-subject font-green-sharp ">Birthday Wishes</span>
                         </div>
                         <ul class="nav nav-tabs">
-                            <li class="active">
-                                <a href="#today-birthday" data-toggle="tab" aria-expanded="true">Today</a>
+                            <li class="ln-birthday active">
+                                <a id="ln-birthday-today" class="ln-nav-tab-birthday" href="javascript:void(0);" data-toggle="tab" aria-expanded="true">Today</a>
                             </li>
-                            <li class="">
-                                <a href="#upcoming-birthday" data-toggle="tab" aria-expanded="false">Upcoming </a>
+                            <li class="ln-birthday">
+                                <a id="ln-birthday-upcoming" class="ln-nav-tab-birthday" href="javascript:void(0);" data-toggle="tab" aria-expanded="false">Upcoming</a>
                             </li>
                         </ul>
                     </div>
 
                     <div class="row">
                         <div class="tab-content birday-person-list">
-                            <div class="tab-pane active" id="today-birthday">
+                            <div class="tab-pane active" id="tab-birthday-today">
                                 <?php for($i=0; $i<5; $i++) : ?>
                                 <div class="person-list clearfix">
                                     <div class="col-md-3 col-sm-3">
@@ -423,8 +472,7 @@ $this->headScript()
                                 </div>
                                 <?php endfor; ?>
                             </div>
-
-                            <div class="tab-pane active" id="upcoming-birthday" style="display:none;">
+                            <div class="tab-pane" id="tab-birthday-upcoming" style="display:none;">
                                 <?php for($i=0; $i<3; $i++) : ?>
                                     <div class="person-list clearfix">
                                         <div class="col-md-3 col-sm-3">
