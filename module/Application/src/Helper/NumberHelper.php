@@ -1,6 +1,8 @@
 <?php
 namespace Application\Helper;
 
+use Zend\Mvc\Exception;
+
 class NumberHelper {
 
     public function toText($amt) {
