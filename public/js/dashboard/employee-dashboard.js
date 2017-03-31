@@ -90,6 +90,24 @@
     });
 
     /*************** BIRTHDAY TAB CLICK EVENT ***************/
-
+    $('.ln-nav-tab-birthday').on('click', function(e) {
+        e.preventDefault();
+        $('.ln-birthday').removeClass('active');
+        $('.ln-birthday a').attr('aria-expanded', 'false');
+        $(this).attr('aria-expanded', 'true');
+        $(this).parent('li').addClass('active');
+        if ($(this).is('#ln-birthday-today')) {
+            $('#tab-birthday-upcoming').hide().removeClass('active');
+            $('#tab-birthday-today').show().addClass('active');
+        }
+        else {
+            $('#tab-birthday-today').hide().removeClass('active');
+            $('#tab-birthday-upcoming').show().addClass('active');
+        }
+    });
+    setTimeout(function() {
+        $('.upcomingholidays-loading').remove();
+        $('.upcomingholidays .feeds').css('visibility', 'visible');
+    }, 3000);
 
 })(window.jQuery, window.app);

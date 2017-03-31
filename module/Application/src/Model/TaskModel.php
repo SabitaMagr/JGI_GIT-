@@ -25,6 +25,7 @@ class TaskModel extends Model {
     const APPROVED_BY = "APPROVED_BY";
     const APPROVED_DATE = "APPROVED_DATE";
     const DELETED_FLAG = "DELETED_FLAG";
+    const TASK_TITLE = "TASK_TITLE";
 
     
     public $taskId;
@@ -47,6 +48,7 @@ class TaskModel extends Model {
     public $approvedBy;
     public $approvedDate;
     public $deletedFlag;
+    public $taskTitle;
     
     
     public $mappings = [
@@ -69,7 +71,8 @@ class TaskModel extends Model {
     'approvedFlag' => self::APPROVED_FLAG,
     'approvedBy' => self::APPROVED_BY,
     'approvedDate' => self::APPROVED_DATE,
-    'deletedFlag' => self::DELETED_FLAG
+    'deletedFlag' => self::DELETED_FLAG,
+    'taskTitle' => self::TASK_TITLE,
     ];
     
 }

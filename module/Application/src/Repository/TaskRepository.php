@@ -5,28 +5,33 @@ namespace Application\Repository;
 use Application\Model\Model;
 use Application\Model\TaskModel;
 use Zend\Db\Adapter\AdapterInterface;
+use Zend\Db\Sql\Sql;
 use Zend\Db\TableGateway\TableGateway;
 
 class TaskRepository implements RepositoryInterface {
 
-    private $gateway;
+    private $tableGateway;
     private $adapter;
 
     public function __construct(AdapterInterface $adapter) {
         $this->adapter = $adapter;
-        $this->gateway = new TableGateway(TaskModel::TABLE_NAME, $adapter);
+        $this->tableGateway = new TableGateway(TaskModel::TABLE_NAME, $adapter);
     }
 
     public function add(Model $model) {
-         $this->tableGateway->insert($model->getArrayCopyForDB());
+        $this->tableGateway->insert($model->getArrayCopyForDB());
     }
 
     public function delete($id) {
-        
+        $this->tableGateway->update([TaskModel::DELETED_FLAG=>'Y'],[TaskModel::TASK_ID=>$id]);
     }
 
     public function edit(Model $model, $id) {
-        
+         $data = $model->getArrayCopyForDB();
+        unset($data[TaskModel::CREATED_BY]);
+        unset($data[TaskModel::CREATED_DT]);
+        unset($data[TaskModel::STATUS]);
+        $this->tableGateway->update($data,[TaskModel::TASK_ID=>$id]);
     }
 
     public function fetchAll() {
@@ -34,7 +39,27 @@ class TaskRepository implements RepositoryInterface {
     }
 
     public function fetchById($id) {
-        
+        $sql = new Sql($this->adapter);
+        $select = $sql->select();
+        $select->from(['T' => TaskModel::TABLE_NAME]);
+        $select->where(["T." . TaskModel::TASK_ID . "='" . $id . "'"]);
+//        $select->columns(Helper::convertColumnDateFormat($this->adapter, new NewsModel(), [
+//                    'newsDate',
+//                        ], NULL, 'N'), false);
+        $statement = $sql->prepareStatementForSqlObject($select);
+        $result = $statement->execute();
+        return $result->current();
+    }
+
+    public function fetchEmployeeTask($id) {
+        $sql = new Sql($this->adapter);
+        $select = $sql->select();
+        $select->from(['T' => TaskModel::TABLE_NAME]);
+        $select->where(["T." . TaskModel::EMPLOYEE_ID . "='" . $id . "'"]);
+        $select->where(["T." . TaskModel::DELETED_FLAG . "='N'"]);
+        $statement = $sql->prepareStatementForSqlObject($select);
+        $result = $statement->execute();
+        return $result;
     }
 
 }
