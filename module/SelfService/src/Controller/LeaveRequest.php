@@ -26,6 +26,9 @@ use Zend\Db\Adapter\AdapterInterface;
 use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\Form\Element\Select;
 use Zend\Mvc\Controller\AbstractActionController;
+use Setup\Model\HrEmployees;
+use SelfService\Model\LeaveSubstitute;
+use SelfService\Repository\LeaveSubstituteRepository;
 
 class LeaveRequest extends AbstractActionController {
 
@@ -117,7 +120,10 @@ class LeaveRequest extends AbstractActionController {
         $leaveFormElement->setAttributes(["id" => "leaveId", "ng-model" => "leaveId", "ng-change" => "change()", "class" => "form-control"]);
 
         if ($request->isPost()) {
-            $this->form->setData($request->getPost());
+            $postData = $request->getPost();
+            $this->form->setData($postData);
+            $substituteEmployee = $postData->substituteEmployee;
+            
             if ($this->form->isValid()) {
                 $leaveRequest = new LeaveApply();
                 $leaveRequest->exchangeArrayFromForm($this->form->getData());
@@ -130,17 +136,35 @@ class LeaveRequest extends AbstractActionController {
                 $leaveRequest->status = "RQ";
 
                 $this->leaveRequestRepository->add($leaveRequest);
+                
+                if($substituteEmployee==1){
+                    $leaveSubstituteModel = new LeaveSubstitute();
+                    $leaveSubstituteRepo = new LeaveSubstituteRepository($this->adapter);
+                    
+                    $leaveSubstitute = $postData->leaveSubstitute;
+                    
+                    $leaveSubstituteModel->leaveRequestId = $leaveRequest->id;
+                    $leaveSubstituteModel->employeeId = $substituteEmployee;
+                    $leaveSubstituteModel->createdBy = $this->employeeId;
+                    $leaveSubstituteModel->createdDate = Helper::getcurrentExpressionDate();
+                    $leaveSubstituteModel->status = 'E';
+                    
+                    $leaveSubstituteRepo->add($leaveSubstituteModel);
+                }
+                
                 HeadNotification::pushNotification(NotificationEvents::LEAVE_APPLIED, $leaveRequest, $this->adapter,$this->plugin("url"));
                 $this->flashmessenger()->addMessage("Leave Request Successfully added!!!");
                 return $this->redirect()->toRoute("leaverequest");
             }
         }
+        $employeeRepo = new EmployeeRepository($this->adapter);
 
         return Helper::addFlashMessagesToArray($this, [
                     'form' => $this->form,
                     'employeeId' => $this->employeeId,
                     'leave' => $this->leaveRequestRepository->getLeaveList($this->employeeId),
                     'customRenderer' => Helper::renderCustomView(),
+                    'employeeList'=> EntityHelper::getTableKVListWithSortOption($this->adapter, HrEmployees::TABLE_NAME, HrEmployees::EMPLOYEE_ID, [HrEmployees::FIRST_NAME, HrEmployees::MIDDLE_NAME, HrEmployees::LAST_NAME],[HrEmployees::STATUS => "E",HrEmployees::RETIRED_FLAG => "N"], HrEmployees::FIRST_NAME, "ASC", " ")
         ]);
     }
 
@@ -216,6 +240,16 @@ class LeaveRequest extends AbstractActionController {
             $leaveApply->exchangeArrayFromDB($detail);
             $this->form->bind($leaveApply);
         }
+        
+        $leaveSubstituteRepo = new LeaveSubstituteRepository($this->adapter);
+        $leaveSubstituteDetail = $leaveSubstituteRepo->fetchById($detail['ID']);
+        if($leaveSubstituteDetail!=null){
+            $substituteEmployee = 1;
+            $leaveSubstitute = $leaveSubstituteDetail->EMPLOYEE_ID;
+        }else{
+            $substituteEmployee = 0;
+            $leaveSubstitute = 0;
+        }
         return Helper::addFlashMessagesToArray($this, [
                     'form' => $this->form,
                     'id' => $id,
@@ -231,7 +265,10 @@ class LeaveRequest extends AbstractActionController {
                     'employeeId' => $this->employeeId,
                     'allowHalfDay' => $leaveDtl['ALLOW_HALFDAY'],
                     'leave' => $this->leaveRequestRepository->getLeaveList($detail['EMPLOYEE_ID']),
-                    'customRenderer' => Helper::renderCustomView()
+                    'customRenderer' => Helper::renderCustomView(),
+                    'leaveSubstitue'=> $leaveSubstitute,
+                    'substituteEmployee'=> $substituteEmployee,
+                    'employeeList'=>  EntityHelper::getTableKVListWithSortOption($this->adapter, HrEmployees::TABLE_NAME, HrEmployees::EMPLOYEE_ID, [HrEmployees::FIRST_NAME, HrEmployees::MIDDLE_NAME, HrEmployees::LAST_NAME],[HrEmployees::STATUS => "E",HrEmployees::RETIRED_FLAG => "N"], HrEmployees::FIRST_NAME, "ASC", " ")
         ]);
     }
 
