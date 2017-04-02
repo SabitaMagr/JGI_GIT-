@@ -51,19 +51,20 @@ class TaskController extends AbstractActionController {
                 $taskModel = new TaskModel();
                 $data = $this->getRequest()->getPost();
                 $taskModel->taskId = ((int) Helper::getMaxId($this->adapter, $taskModel::TABLE_NAME, $taskModel::TASK_ID)) + 1;
-                ;
                 $taskModel->employeeId = $this->employeeId;
-                $taskModel->taskTitle = $data->taskTitle;
-                $taskModel->taskEdesc = $data->taskEdesc;
-                $taskModel->endDate =  Helper::getExpressionDate($data->endDate);
+                $taskModel->taskTitle = $data->title;
+//                $taskModel->taskTitle = $data->taskTitle;
+                $taskModel->taskEdesc = $data->description;
+//                $taskModel->taskEdesc = $data->taskEdesc;
+                $taskModel->endDate =  Helper::getExpressionDate($data->dueDate);
+//                $taskModel->endDate =  Helper::getExpressionDate($data->endDate);
                 $taskModel->createdBy = $this->employeeId;
                 $taskModel->approvedBy = $this->employeeId;
                 $taskModel->approvedDate = Helper::getcurrentExpressionDate();
-
-//                print_r($taskModel);
-//                die();
+                
                 $taskRepo->add($taskModel);
-                return new CustomViewModel(['success' => true, 'msg' => 'sucessfully added', 'data' => [$taskModel], 'error' => '']);
+                $responseid=$taskModel->taskId;
+                return new CustomViewModel(['success' => true, 'msg' => 'sucessfully added', 'data' => [$taskModel],'id'=>$responseid, 'error' => '']);
             } else {
                 throw new Exception("The request should be of type post");
             }
@@ -121,13 +122,16 @@ class TaskController extends AbstractActionController {
                 $taskRepo = new TaskRepository($this->adapter);
                 $taskModel = new TaskModel();
                 $data = $this->getRequest()->getPost();
-                $id = $data->taskId;
-                $taskModel->taskTitle = $data->taskTitle;
-                $taskModel->taskEdesc = $data->taskEdesc;
-                $taskModel->endDate =  Helper::getExpressionDate($data->endDate);
+//                $id = $data->taskId;
+                $id = $data->id;
+                $taskModel->taskTitle = $data->title;
+//                $taskModel->taskTitle = $data->taskTitle;
+                $taskModel->taskEdesc = $data->description;
+//                $taskModel->taskEdesc = $data->taskEdesc;
+                $taskModel->endDate =  Helper::getExpressionDate($data->dueDate);
+//                $taskModel->endDate =  Helper::getExpressionDate($data->endDate);
                 $taskModel->modifiedBy = $this->employeeId;
                 $taskModel->modifiedDt = Helper::getcurrentExpressionDate();
-
                 $taskRepo->edit($taskModel, $id);
                 return new CustomViewModel(['success' => true, 'msg' => 'sucessfully edited', 'data' => [$taskModel], 'error' => '']);
             } else {
@@ -146,10 +150,13 @@ class TaskController extends AbstractActionController {
                 $taskRepo = new TaskRepository($this->adapter);
                 $taskModel = new TaskModel();
                 $data = $this->getRequest()->getPost();
-                $id = $data->taskId;
-
+//                                print_r($data);
+//                return new CustomViewModel(['data'=>$data]);
+//                die();
+//                $id = $data->taskId;
+                $id = $data->id;
                 $taskRepo->delete($id);
-                return new CustomViewModel(['success' => true, 'msg' => 'sucessfully edited', 'data' => [], 'error' => '']);
+                return new CustomViewModel(['success' => true, 'msg' => 'sucessfully delted', 'data' => [], 'error' => '']);
             } else {
                 throw new Exception("The request should be of type post");
             }
