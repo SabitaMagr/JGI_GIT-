@@ -7,6 +7,7 @@ use Application\Model\TaskModel;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Sql\Sql;
 use Zend\Db\TableGateway\TableGateway;
+use Application\Helper\Helper;
 
 class TaskRepository implements RepositoryInterface {
 
@@ -56,9 +57,13 @@ class TaskRepository implements RepositoryInterface {
         $select = $sql->select();
         $select->from(['T' => TaskModel::TABLE_NAME]);
         $select->where(["T." . TaskModel::EMPLOYEE_ID . "='" . $id . "'"]);
+         $select->columns(Helper::convertColumnDateFormat($this->adapter, new TaskModel(), [
+                    'endDate',
+                        ], NULL, 'T'), false);
         $select->where(["T." . TaskModel::DELETED_FLAG . "='N'"]);
         $statement = $sql->prepareStatementForSqlObject($select);
         $result = $statement->execute();
+
         return $result;
     }
 

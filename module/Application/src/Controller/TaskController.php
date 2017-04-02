@@ -30,11 +30,14 @@ class TaskController extends AbstractActionController {
                     $nrow['id']=$row['TASK_ID'];
                     $nrow['title']=$row['TASK_TITLE'];
                     $nrow['description']=$row['TASK_EDESC'];
-//                    $nrow['dueDate']=$row['END_DATE'];
-                    $nrow['dueDate']='2016-4-31';
+                    $nrow['dueDate']=$row['END_DATE'];
                     $nrow['done']=false;
                     array_push($list, $nrow);
+//                    array_push($list, $row);
                 }
+//                echo '<pre>';
+//                print_r($list);
+//                die();
         return [
         'list'=> $list
         ];
@@ -52,6 +55,7 @@ class TaskController extends AbstractActionController {
                 $taskModel->employeeId = $this->employeeId;
                 $taskModel->taskTitle = $data->taskTitle;
                 $taskModel->taskEdesc = $data->taskEdesc;
+                $taskModel->endDate =  Helper::getExpressionDate($data->endDate);
                 $taskModel->createdBy = $this->employeeId;
                 $taskModel->approvedBy = $this->employeeId;
                 $taskModel->approvedDate = Helper::getcurrentExpressionDate();
@@ -120,6 +124,7 @@ class TaskController extends AbstractActionController {
                 $id = $data->taskId;
                 $taskModel->taskTitle = $data->taskTitle;
                 $taskModel->taskEdesc = $data->taskEdesc;
+                $taskModel->endDate =  Helper::getExpressionDate($data->endDate);
                 $taskModel->modifiedBy = $this->employeeId;
                 $taskModel->modifiedDt = Helper::getcurrentExpressionDate();
 
