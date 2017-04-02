@@ -11,23 +11,23 @@ $(document).ready(function () {
             console.log('initialization');
         },
         beforeItemAdd: function (e, i) {
-//            i.id = 7;
+//            i.id = "7";
 //            console.log('add', i);
 //            return false;
         },
         afterItemAdd: function (e, i) {
 //            console.log('add', i);
 
-//            addTask(i.title, i.description);
+            addTask(i.title, i.description,i.dueDate);
         },
         afterItemUpdate: function (e, i) {
             console.log('update', i);
-//            updateTask(i.id, i.title, i.description);
+            updateTask(i.id, i.title, i.description,i.dueDate);
         },
 
         afterItemDelete: function (e, i) {
-            console.log('delete', i);
-//            deleteTask(i.id);
+//            console.log('delete', i);
+            deleteTask(i.id);
         },
         afterMarkAsDone: function (e, i) {
 //          console.log(e);  
@@ -37,12 +37,17 @@ $(document).ready(function () {
 //          console.log(e);  
 //          console.log(i);  
         },
+        afterListAdd:function(lobilist, list){
+            console.log(list);
+//            var $dueDateInput = list.$el.find('form [name=dueDate]');
+//            $dueDateInput.datepicker();
+        },
         lists: [
             {
                 id: 'todolist',
                 title: 'TODO',
                 defaultStyle: 'lobilist-success',
-                controls: [],
+//                controls: [],
                 useCheckboxes: true,
                 items: itemVal
             }
@@ -51,14 +56,11 @@ $(document).ready(function () {
 
 
     var $list = $('#todolist').data('lobiList');
-    console.log($list);
-
-//    console.log($list);
-//    $list.addItem({
-//        title: 'sd',
-//        description: 'sd'
-//    });
-
+     var $dueDateInput = $list.$el.find('form [name=dueDate]');
+//            $dueDateInput.datepicker({
+//                format: 'dd-mm-yy'
+//            });
+            window.app.addDatePicker($dueDateInput);
 
 
 
@@ -78,11 +80,12 @@ $(document).ready(function () {
 
 //to add to do list;
     var addTask =
-            function (taskTitle, taskEdesc) {
-                myKeyVals = {'taskTitle': taskTitle, 'taskEdesc': taskEdesc};
+            function (taskTitle, taskEdesc,endDate) {
+                myKeyVals = {'taskTitle': taskTitle, 'taskEdesc': taskEdesc,'endDate':endDate};
                 $.ajax({
                     type: 'POST',
-                    url: "/neo-hris/public/task/add",
+                    url: document.addUrl,
+//                    url: "/neo-hris/public/task/add",
                     data: myKeyVals,
                     dataType: "text"
                 }).done(function (res) {
@@ -111,11 +114,12 @@ $(document).ready(function () {
 
 
     //to update  the to do list
-    var updateTask = function (id, taskTitle, taskEdesc) {
-        var updateVal = {'taskId': id, 'taskTitle': taskTitle, 'taskEdesc': taskEdesc};
+    var updateTask = function (id, taskTitle, taskEdesc,endDate) {
+        var updateVal = {'taskId': id, 'taskTitle': taskTitle, 'taskEdesc': taskEdesc,'endDate':endDate};
         $.ajax({
             type: 'POST',
-            url: "/neo-hris/public/task/update",
+            url: document.updateUrl,
+//            url: "/neo-hris/public/task/update",
             data: updateVal,
             dataType: "text"
         }).done(function (res) {
@@ -127,7 +131,8 @@ $(document).ready(function () {
         var delVal = {'taskId': id};
         $.ajax({
             type: 'POST',
-            url: "/neo-hris/public/task/delete",
+            url: document.delteUrl,
+//            url: "/neo-hris/public/task/delete",
             data: delVal,
             dataType: "text"
         }).done(function (res) {
