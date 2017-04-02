@@ -88,6 +88,15 @@ angular.module('hris', [])
                 });
 
             }
+            $scope.leaveSubstitute =false;
+            $scope.viewSubstituteEmployee = function(substituteEmployee){
+                console.log(substituteEmployee);
+                if(substituteEmployee==1){
+                    $scope.leaveSubstitute = true;
+                }else{
+                    $scope.leaveSubstitute =false;
+                }
+            }
 
         });
 

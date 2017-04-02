@@ -5,7 +5,7 @@
         var employeeId = $('#employeeId').val();
         window.app.floatingProfile.setDataFromRemote(employeeId);
 
-        $('select').select2();
+        $('select#leaveId').select2();
 
         var dateDiff = "";
         $("#remarks").hide();
