@@ -239,7 +239,9 @@ print $this->form()->openTag($form);
                         <label>Reason for action [From Approver]</label>
                         <?php print $this->formElement($approvedRemarks); ?>
                     </div>
-                    <?php }else if($subApprovedFlag=='N'){echo "You have to re-send leave detail !!! ";} ?>
+                    <?php }else if($subApprovedFlag=='N'){?>
+                    <div class="form-group" style="font-size:11px;">[note:You have to re-send leave detail!!!!]</div>
+                   <?php } ?>
                 </div>
             </div>
         </div>
