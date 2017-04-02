@@ -20,24 +20,24 @@ $this->headScript()
             </div>
             <div class="col-sm-3 col-md-3 employee-details">
                 <?php
-                $email = trim($dashboardData['EMAIL_OFFICIAL']) ? trim($dashboardData['EMAIL_OFFICIAL']) : trim($dashboardData['EMAIL_PERSONAL']);
-                $service[0] = $dashboardData['SERVICE_YEARS'] ? ((1 == $dashboardData['SERVICE_YEARS']) ? "1 Year" : $dashboardData['SERVICE_YEARS'] . " Years") : "";
-                $service[1] = $dashboardData['SERVICE_MONTHS'] ? ((1 == $dashboardData['SERVICE_MONTHS']) ? "1 Month" : $dashboardData['SERVICE_MONTHS'] . " Months") : "";
-                $service[2] = $dashboardData['SERVICE_DAYS'] ? ((1 == $dashboardData['SERVICE_DAYS']) ? "1 Day" : $dashboardData['SERVICE_DAYS'] . " Days") : "";
+                $email = trim($employeeDetail['EMAIL_OFFICIAL']) ? trim($employeeDetail['EMAIL_OFFICIAL']) : trim($employeeDetail['EMAIL_PERSONAL']);
+                $service[0] = $employeeDetail['SERVICE_YEARS'] ? ((1 == $employeeDetail['SERVICE_YEARS']) ? "1 Year" : $employeeDetail['SERVICE_YEARS'] . " Years") : "";
+                $service[1] = $employeeDetail['SERVICE_MONTHS'] ? ((1 == $employeeDetail['SERVICE_MONTHS']) ? "1 Month" : $employeeDetail['SERVICE_MONTHS'] . " Months") : "";
+                $service[2] = $employeeDetail['SERVICE_DAYS'] ? ((1 == $employeeDetail['SERVICE_DAYS']) ? "1 Day" : $employeeDetail['SERVICE_DAYS'] . " Days") : "";
                 $serviceDays = trim(implode(" ", $service));
                 ?>
-                <h4 class="font-weight-bold"><?php print $dashboardData['FULL_NAME']; ?></h4>
+                <h4 class="font-weight-bold"><?php print $employeeDetail['FULL_NAME']; ?></h4>
                 <?php if($email) : ?>
                 <span><?php print $email; ?></span><br>
                 <?php endif; ?>
-                <span><?php print trim($dashboardData['DESIGNATION_TITLE']); ?></span><br>
+                <span><?php print trim($employeeDetail['DESIGNATION_TITLE']); ?></span><br>
                 <span>At work for : <?php print $serviceDays ? $serviceDays : 0; ?></span><br>
             </div>
             <div class="col-md-5">
                 <div class="row detailsbox">
                     <div class="col-xs-6 col-sm-3 col-md-2 hexcustom">
                         <div class="employee_details-box hexagon-bg1">
-                            <span><?php print $dashboardData['PRESENT_DAY']; ?></span>
+                            <span><?php print $employeeDetail['PRESENT_DAY']; ?></span>
                             <div class="face1"></div>
                             <div class="face2"></div>
                             <div class="headtitle">Present</div>
@@ -45,7 +45,7 @@ $this->headScript()
                     </div>
                     <div class="col-xs-6 col-sm-3 col-md-2 hexcustom">
                         <div class="employee_details-box hexagon-bg2">
-                            <span><?php print $dashboardData['LEAVE']; ?></span>
+                            <span><?php print $employeeDetail['LEAVE']; ?></span>
                             <div class="face1"></div>
                             <div class="face2"></div>
                             <div class="headtitle">On Leave</div>
@@ -53,7 +53,7 @@ $this->headScript()
                     </div>
                     <div class="col-xs-6 col-sm-3 col-md-2 hexcustom">
                         <div class="employee_details-box hexagon-bg3">
-                            <span><?php print $dashboardData['TRAINING']; ?></span>
+                            <span><?php print $employeeDetail['TRAINING']; ?></span>
                             <div class="face1"></div>
                             <div class="face2"></div>
                             <div class="headtitle">Training</div>
@@ -61,7 +61,7 @@ $this->headScript()
                     </div>
                     <div class="col-xs-6 col-sm-3 col-md-2 hexcustom">
                         <div class="employee_details-box hexagon-bg4">
-                            <span><?php print $dashboardData['TOUR']; ?></span>
+                            <span><?php print $employeeDetail['TOUR']; ?></span>
                             <div class="face1"></div>
                             <div class="face2"></div>
                             <div class="headtitle">On Tour</div>
@@ -69,7 +69,7 @@ $this->headScript()
                     </div>
                     <div class="col-xs-6 col-sm-3 col-md-2 hexcustom">
                         <div class="employee_details-box hexagon-bg5">
-                            <span><?php print $dashboardData['WOH']; ?></span>
+                            <span><?php print $employeeDetail['WOH']; ?></span>
                             <div class="face1"></div>
                             <div class="face2"></div>
                             <div class="headtitle">WOH</div>
@@ -82,19 +82,19 @@ $this->headScript()
                     <ul>
                         <li class="col-md-4">
                             <div class="hris efficiency efficiency-bg1">
-                                <span><?php print $dashboardData['LATE_IN']; ?></span>
+                                <span><?php print $employeeDetail['LATE_IN']; ?></span>
                                 <div>Late In</div>
                             </div>
                         </li>
                         <li class="col-md-4">
                             <div class="hris efficiency efficiency-bg2">
-                                <span><?php print $dashboardData['EARLY_OUT']; ?></span>
+                                <span><?php print $employeeDetail['EARLY_OUT']; ?></span>
                                 <div>Early Out</div>
                             </div>
                         </li>
                         <li class="col-md-4">
                             <div class="hris efficiency efficiency-bg3">
-                                <span><?php print $dashboardData['MISSED_PUNCH']; ?></span>
+                                <span><?php print $employeeDetail['MISSED_PUNCH']; ?></span>
                                 <div>Missed Punch</div>
                             </div>
                         </li>
@@ -139,7 +139,7 @@ $this->headScript()
                         <div class="row detailsbox">
                             <div class="col-xs-6 col-sm-3 col-md-2 hexcustom">
                                 <div class="employee_details-box hexagon-bg1">
-                                    <span><?php print $dashboardData['PRESENT_DAY']; ?></span>
+                                    <span><?php print $employeeDetail['PRESENT_DAY']; ?></span>
                                     <div class="face1"></div>
                                     <div class="face2"></div>
                                     <div class="headtitle">Present</div>
@@ -147,7 +147,7 @@ $this->headScript()
                             </div>
                             <div class="col-xs-6 col-sm-3 col-md-2 hexcustom">
                                 <div class="employee_details-box hexagon-bg2">
-                                    <span><?php print $dashboardData['LEAVE']; ?></span>
+                                    <span><?php print $employeeDetail['LEAVE']; ?></span>
                                     <div class="face1"></div>
                                     <div class="face2"></div>
                                     <div class="headtitle">On Leave</div>
@@ -155,7 +155,7 @@ $this->headScript()
                             </div>
                             <div class="col-xs-6 col-sm-3 col-md-2 hexcustom">
                                 <div class="employee_details-box hexagon-bg3">
-                                    <span><?php print $dashboardData['TRAINING']; ?></span>
+                                    <span><?php print $employeeDetail['TRAINING']; ?></span>
                                     <div class="face1"></div>
                                     <div class="face2"></div>
                                     <div class="headtitle">Training</div>
@@ -163,7 +163,7 @@ $this->headScript()
                             </div>
                             <div class="col-xs-6 col-sm-3 col-md-2 hexcustom">
                                 <div class="employee_details-box hexagon-bg4">
-                                    <span><?php print $dashboardData['TOUR']; ?></span>
+                                    <span><?php print $employeeDetail['TOUR']; ?></span>
                                     <div class="face1"></div>
                                     <div class="face2"></div>
                                     <div class="headtitle">On Tour</div>
@@ -171,7 +171,7 @@ $this->headScript()
                             </div>
                             <div class="col-xs-6 col-sm-3 col-md-2 hexcustom">
                                 <div class="employee_details-box hexagon-bg5">
-                                    <span><?php print $dashboardData['WOH']; ?></span>
+                                    <span><?php print $employeeDetail['WOH']; ?></span>
                                     <div class="face1"></div>
                                     <div class="face2"></div>
                                     <div class="headtitle">WOH</div>
@@ -236,32 +236,18 @@ $this->headScript()
                                         </div>
                                         <div class="noticeboard-list row">
                                             <ul>
-                                                <li>
-                                                    <div class="calendardate-box col-sm-2 col-md-2">
-                                                        <span> 17 </span><br>
-                                                        Dec 2017
-                                                    </div>
-                                                    <div class="notice-details col-sm-10 col-md-10">
-                                                        <h5 class="title-color caption-subject  bold"> holdiday on dec 2015 </h5>
-                                                        <p>a distinct section of a piece of writing, usually dealing
-                                                            with a single theme and indicated by a new line,
-                                                            indentation, or numbering.
-                                                        </p>
-                                                    </div>
-                                                </li>
-                                                <li>
-                                                    <div class="calendardate-box col-sm-2 col-md-2">
-                                                        <span> 17 </span><br>
-                                                        Dec 2017
-                                                    </div>
-                                                    <div class="notice-details col-sm-10 col-md-10">
-                                                        <h5 class="title-color caption-subject  bold"> holdiday on dec 2015 </h5>
-                                                        <p>a distinct section of a piece of writing, usually dealing
-                                                            with a single theme and indicated by a new line,
-                                                            indentation, or numbering.
-                                                        </p>
-                                                    </div>
-                                                </li>
+                                                <?php foreach($employeeNotice as $notice) : ?>
+                                                    <li style="width:100%;">
+                                                        <div class="calendardate-box col-sm-2 col-md-2">
+                                                            <span><?php print $notice['NEWS_DAY']; ?></span><br>
+                                                            <?php print $notice['NEWS_MONTH_YEAR']; ?>
+                                                        </div>
+                                                        <div class="notice-details col-sm-10 col-md-10">
+                                                            <h5 class="title-color caption-subject  bold"><?php print $notice['NEWS_TITLE']; ?></h5>
+                                                            <p><?php print $notice['NEWS_EDESC']; ?></p>
+                                                        </div>
+                                                    </li>
+                                                <?php endforeach; ?>
                                             </ul>
                                         </div>
                                         <!--END TABS-->
@@ -284,11 +270,11 @@ $this->headScript()
                             <h4 class="widget-thumb-heading">Average Office Hrs</h4>
                             <div class="widget-thumb-body">
                                 <?php
-                                $avgOfficeHourParts[0] = $dashboardData['AVG_HOURS'] ? ((1 == $dashboardData['AVG_HOURS']) ? "1 hr" : $dashboardData['AVG_HOURS'] . " hrs") : "";
-                                $avgOfficeHourParts[1] = $dashboardData['AVG_MINUTES'] ? ((1 == $dashboardData['AVG_MINUTES']) ? "1 min" : $dashboardData['AVG_MINUTES'] . " mins") : "";
+                                $avgOfficeHourParts[0] = $employeeDetail['AVG_HOURS'] ? ((1 == $employeeDetail['AVG_HOURS']) ? "1 hr" : $employeeDetail['AVG_HOURS'] . " hrs") : "";
+                                $avgOfficeHourParts[1] = $employeeDetail['AVG_MINUTES'] ? ((1 == $employeeDetail['AVG_MINUTES']) ? "1 min" : $employeeDetail['AVG_MINUTES'] . " mins") : "";
                                 $avgOfficeHours = trim(implode(" ", $avgOfficeHourParts));
                                 ?>
-                                <span class="widget-thumb-body-stat" data-counter="counterup" data-value="7,644"><?php print $avgOfficeHours ? $avgOfficeHours : 0; ?></span>
+                                <span class="widget-thumb-body-stat" data-counter="counterup"><?php print $avgOfficeHours ? $avgOfficeHours : 0; ?></span>
                             </div>
                         </div>
                         <div>
@@ -304,7 +290,7 @@ $this->headScript()
                         <div class="widget-thumb-wrap widget-thumb-wrap-bgtwo">
                             <h4 class="widget-thumb-heading">Average Timesheet Hrs</h4>
                             <div class="widget-thumb-body">
-                                <span class="widget-thumb-body-stat" data-counter="counterup" data-value="7,644">7,644</span>
+                                <span class="widget-thumb-body-stat" data-counter="counterup">7,644</span>
                             </div>
                         </div>
                         <div>
@@ -321,7 +307,7 @@ $this->headScript()
                         <div class="widget-thumb-wrap widget-thumb-wrap-bgthree">
                             <h4 class="widget-thumb-heading">Total OT Hrs</h4>
                             <div class="widget-thumb-body">
-                                <span class="widget-thumb-body-stat" data-counter="counterup" data-value="7,644">7,644</span>
+                                <span class="widget-thumb-body-stat" data-counter="counterup">7,644</span>
                             </div>
                         </div>
                         <div>
@@ -335,16 +321,15 @@ $this->headScript()
                     <!-- BEGIN WIDGET THUMB -->
                     <div class="wigetbox wigetbox-colorfour clearfix widget-thumb margin-bottom-20 bordered green-haze">
                         <div class="widget-thumb-wrap widget-thumb-wrap-bgfour">
-                            <h4 class="widget-thumb-heading">Work on Holiday
-                            </h4>
+                            <h4 class="widget-thumb-heading">Work on Holiday</h4>
                             <div class="widget-thumb-body">
                                 <ul>
                                     <li class="line">
-                                        <span class="widget-thumb-body-stat" data-counter="counterup" data-value="7,644">30</span>
+                                        <span class="widget-thumb-body-stat" data-counter="counterup"><?php print $employeeDetail['CUR_MONTH_WOH']; ?></span>
                                         This Month
                                     </li>
                                     <li>
-                                        <span class="widget-thumb-body-stat" data-counter="counterup" data-value="7,644">20</span>
+                                        <span class="widget-thumb-body-stat" data-counter="counterup"><?php print $employeeDetail['PREV_MONTH_WOH']; ?></span>
                                         Last Month
                                     </li>
                                 </ul>
@@ -402,108 +387,25 @@ $this->headScript()
                         <div class="portlet-body">
                             <div class="row">
                                 <div class="upcomingholidays">
-                                    <div class="upcomingholidays-loading" style="height:100%;width:100%;position:absolute;top:0;left:0;"></div>
-                                    <ul class="feeds" style="visibility:hidden;">
+                                    <div class="upcomingholidays-loading" style="display:none;height:100%;width:100%;position:absolute;top:0;left:0;"></div>
+                                    <ul class="feeds" style="visibility:visible;">
+                                        <?php foreach($upcomingHolidays as $holiday) : ?>
                                         <li class="col1bg">
                                             <div class="col1">
                                                 <div class="cont">
                                                     <div class="cont-col2">
                                                         <div class="desc">
-                                                            <span class="label label-sm ">Sunday</span>
+                                                            <span class="label label-sm "><?php print $holiday['HOLIDAY_ENAME']; ?></span>
+                                                            <span class="label label-sm "><?php print $holiday['DAYS_REMAINING'] . "Day(s) Remaining"; ?></span>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="col2">
-                                                <div class="date">Just now</div>
+                                                <div class="date"><?php printf("%s %s", $holiday['WEEK_DAY'], $holiday['START_DATE']); ?></div>
                                             </div>
                                         </li>
-                                        <li class="col2bg">
-                                            <a href="javascript:;">
-                                                <div class="col1 col2bg">
-                                                    <div class="cont">
-                                                        <div class="cont-col2">
-                                                            <div class="desc">
-                                                                <span class="label label-sm ">Monday</span>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="col2">
-                                                    <div class="date">20 mins</div>
-                                                </div>
-                                            </a>
-                                        </li>
-                                        <li class="col3bg">
-                                            <div class="col1">
-                                                <div class="cont">
-                                                    <div class="cont-col2">
-                                                        <div class="desc">
-                                                            <span class="label label-sm">Tuesday</span>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col2">
-                                                <div class="date">24 mins</div>
-                                            </div>
-                                        </li>
-                                        <li class="col4bg">
-                                            <div class="col1">
-                                                <div class="cont">
-                                                    <div class="cont-col2">
-                                                        <div class="desc">
-                                                            <span class="label label-sm">Wednesday</span>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col2">
-                                                <div class="date">30 mins</div>
-                                            </div>
-                                        </li>
-                                        <li class="col5bg">
-                                            <div class="col1">
-                                                <div class="cont">
-                                                    <div class="cont-col2">
-                                                        <div class="desc">
-                                                            <span class="label label-sm ">Thursday</span>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col2">
-                                                <div class="date">40 mins</div>
-                                            </div>
-                                        </li>
-                                        <li class="col6bg">
-                                            <div class="col1">
-                                                <div class="cont">
-                                                    <div class="cont-col2">
-                                                        <div class="desc">
-                                                            <span class="label label-sm">Friday</span>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col2">
-                                                <div class="date">1.5 hours</div>
-                                            </div>
-                                        </li>
-                                        <li class="col7bg">
-                                            <div class="col1">
-                                                <div class="cont">
-                                                    <div class="cont-col2">
-                                                        <div class="desc">
-                                                            <span class="label label-sm">Saturday</span>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col2">
-                                                <div class="date">1.5 hours</div>
-                                            </div>
-                                        </li>
+                                        <?php endforeach; ?>
                                     </ul>
                                 </div>
                             </div>

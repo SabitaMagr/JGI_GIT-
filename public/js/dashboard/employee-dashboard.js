@@ -105,9 +105,9 @@
             $('#tab-birthday-upcoming').show().addClass('active');
         }
     });
-    setTimeout(function() {
-        $('.upcomingholidays-loading').remove();
-        $('.upcomingholidays .feeds').css('visibility', 'visible');
-    }, 3000);
+    // setTimeout(function() {
+    //     $('.upcomingholidays-loading').remove();
+    //     $('.upcomingholidays .feeds').css('visibility', 'visible');
+    // }, 3000);
 
 })(window.jQuery, window.app);
