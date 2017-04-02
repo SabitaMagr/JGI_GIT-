@@ -870,7 +870,7 @@ return [
             Controller\LoanController::class => ControllerFactory::class,
             Controller\AdvanceController::class => ControllerFactory::class,
             Controller\InstituteController::class => ControllerFactory::class,
-            Controller\ExperienceController::class=> ControllerFactory::class
+            Controller\ExperienceController::class => ControllerFactory::class
         ],
     ],
     'view_manager' => [

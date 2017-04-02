@@ -10,19 +10,20 @@ $this->headLink()
 $this->headScript()
         ->appendFile($this->basePath('jszip/dist/jszip.min.js'))
         ->appendFile($this->basePath('telerik_kendoui/js/kendo.all.min.js'));
-$this->headScript()->appendFile($this->basePath('js/Report/AllReport/reportthree.js'));
+$this->headScript()->appendFile($this->basePath('js/Report/AllReport/reporttwo.js'));
 $this->headScript()->appendFile($this->basePath('assets/global/plugins/jquery.blockui.min.js'));
 ?>
 <?php if ($this->messages) { ?>
     <script>
-        document.messages =<?php echo json_encode($this->messages); ?>
+        document.messages =<?php echo json_encode($this->messages); ?>;
     </script>
 <?php } ?>
 
 <script>
-    document.wsDepartmentWiseDailyReport = '<?php echo $this->url('allreport', ['action' => 'departmentWiseDailyReport']); ?>';
+    document.wsDepartmentWise = '<?php echo $this->url('allreport', ['action' => 'departmentWiseMonthReport']); ?>';
     document.comBraDepList =<?php echo json_encode($comBraDepList); ?>;
-    document.monthList =<?php echo json_encode($monthList); ?>;
+    document.departmentId =<?php echo $departmentId; ?>;
+    document.linkToReportFour = '<?php echo $this->url('allreport', ['action' => 'reportFour']); ?>';
 </script>
 
 
@@ -41,22 +42,17 @@ $this->headScript()->appendFile($this->basePath('assets/global/plugins/jquery.bl
         <div class="portlet-body">
             <div class="row">
                 <div class="col-sm-3">
-                    <select id="monthList" class="">
+                    <select id="companyList">
 
                     </select> 
                 </div>
-                <div class="col-sm-2">
-                    <select id="countryList">
-
-                    </select> 
-                </div>
-                <div class="col-sm-2">
+                <div class="col-sm-3">
                     <select id="branchList">
 
                     </select> 
 
                 </div>
-                <div class="col-sm-2">
+                <div class="col-sm-3">
                     <select id="departmentList">
 
                     </select> 
@@ -73,5 +69,5 @@ $this->headScript()->appendFile($this->basePath('assets/global/plugins/jquery.bl
         </div>
     </div>
 </div>
-<div id="reportTable">
+<div id="departmentMonthReport">
 </div>

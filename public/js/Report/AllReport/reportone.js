@@ -63,6 +63,15 @@
                 $present.html(Number((presentDays * 100 / total).toFixed(1)));
                 $absent.html(Number((absentDays * 100 / total).toFixed(1)));
                 $leave.html(Number((leaveDays * 100 / total).toFixed(1)));
+
+                $present.attr('title', data['IS_PRESENT']);
+                $absent.attr('title', data['IS_ABSENT']);
+                $leave.attr('title', data['ON_LEAVE']);
+                if (typeof data['MONTH_ID'] !== 'undefined' && typeof data['DEPARTMENT_ID'] !== 'undefined') {
+                    $present.attr('href', document.linkToReportThree + '/' + data['MONTH_ID'] + '/' + data['DEPARTMENT_ID']);
+                    $absent.attr('href', document.linkToReportThree + '/' + data['MONTH_ID'] + '/' + data['DEPARTMENT_ID']);
+                    $leave.attr('href', document.linkToReportThree + '/' + data['MONTH_ID'] + '/' + data['DEPARTMENT_ID']);
+                }
             });
 
         };
@@ -79,7 +88,9 @@
                             JSON.stringify({
                                 IS_ABSENT: rawData[i].IS_ABSENT,
                                 IS_PRESENT: rawData[i].IS_PRESENT,
-                                ON_LEAVE: rawData[i].ON_LEAVE
+                                ON_LEAVE: rawData[i].ON_LEAVE,
+                                DEPARTMENT_ID: rawData[i].DEPARTMENT_ID,
+                                MONTH_ID: rawData[i].MONTH_ID
                             });
                 } else {
                     data[rawData[i].DEPARTMENT_ID] = {
@@ -91,7 +102,9 @@
                             JSON.stringify({
                                 IS_ABSENT: rawData[i].IS_ABSENT,
                                 IS_PRESENT: rawData[i].IS_PRESENT,
-                                ON_LEAVE: rawData[i].ON_LEAVE
+                                ON_LEAVE: rawData[i].ON_LEAVE,
+                                DEPARTMENT_ID: rawData[i].DEPARTMENT_ID,
+                                MONTH_ID: rawData[i].MONTH_ID
                             });
 
                 }
@@ -112,7 +125,10 @@
             var returnData = {rows: [], cols: []};
 
             returnData.cols.push({field: 'id', title: 'Id', width: 30});
-            returnData.cols.push({field: 'department', title: 'Departments'});
+            returnData.cols.push({
+                field: 'department',
+                title: 'Departments',
+                template: '<a href="' + document.linkToReportTwo + '/#: id #">#: department #</a>'});
             for (var k in column) {
                 returnData.cols.push(column[k]);
             }
@@ -180,7 +196,16 @@
             }
             var returnData = {rows: [], cols: []};
 
-            returnData.cols.push({field: 'employee', title: 'employees'});
+            returnData.cols.push({
+                field: 'employeeId',
+                title: 'Id',
+                width: 30
+            });
+            returnData.cols.push({
+                field: 'employee',
+                title: 'employees',
+                template: '<a href="' + document.linkToReportFour + '/#:employeeId#">#: employee# </a>'
+            });
             for (var k in column) {
                 returnData.cols.push(column[k]);
             }
@@ -188,6 +213,7 @@
             for (var k in data) {
                 var row = data[k].MONTHS;
                 row['employee'] = data[k].FULL_NAME;
+                row['employeeId'] = data[k].EMPLOYEE_ID;
                 returnData.rows.push(row);
             }
             return returnData;

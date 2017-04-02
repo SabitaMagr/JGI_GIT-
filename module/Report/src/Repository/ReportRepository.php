@@ -206,30 +206,20 @@ FROM
       WHERE AD.ATTENDANCE_DT BETWEEN M.FROM_DATE AND M.TO_DATE
       ) AS MONTH_ID,
       (
-      CASE AD.LEAVE_ID
-        WHEN NULL
+      CASE
+        WHEN AD.LEAVE_ID IS NOT NULL
         THEN 1
         ELSE 0
       END) AS ON_LEAVE,
       (
       CASE
-        WHEN AD.LEAVE_ID   IS NULL
-        AND AD.HOLIDAY_ID  IS NULL
-        AND AD.TRAINING_ID IS NULL
-        AND AD.TRAVEL_ID   IS NULL
-        AND AD.DAYOFF_FLAG ='N'
-        AND AD.IN_TIME     IS NOT NULL
+        WHEN AD.IN_TIME IS NOT NULL
         THEN 1
         ELSE 0
       END) AS IS_PRESENT,
       (
       CASE
-        WHEN AD.LEAVE_ID   IS NULL
-        AND AD.HOLIDAY_ID  IS NULL
-        AND AD.TRAINING_ID IS NULL
-        AND AD.TRAVEL_ID   IS NULL
-        AND AD.DAYOFF_FLAG = 'N'
-        AND AD.IN_TIME     IS NULL
+        WHEN AD.IN_TIME IS NULL
         THEN 1
         ELSE 0
       END) AS IS_ABSENT
@@ -245,7 +235,7 @@ FROM
 JOIN HRIS_DEPARTMENTS JD
 ON (J.DEPARTMENT_ID = JD.DEPARTMENT_ID)
 JOIN HRIS_MONTH_CODE JM
-ON (J.MONTH_ID = JM.MONTH_ID)                
+ON (J.MONTH_ID = JM.MONTH_ID)            
 EOT;
 
         $statement = $this->adapter->query($sql);
