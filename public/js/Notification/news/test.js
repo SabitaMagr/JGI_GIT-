@@ -6,10 +6,18 @@ $(document).ready(function () {
     var itemVal = document.taskList;
 
     $('#lobilist').lobiList({
+        afterListAdd: function(){
+          console.log('list add');  
+        },
         init: function () {
-            console.log('initialization');
+            alert('initmsg');
+
         },
         beforeItemAdd: function (e, i) {
+            i.id="77"
+//            console.log(arguments);
+            console.log(e);
+            console.log(i);
 //            i.id = "7";
 //            console.log('add', i);
 //            return false;
@@ -17,13 +25,12 @@ $(document).ready(function () {
         afterItemAdd: function (e, i) {
 //            console.log('add', i);
 
-            addTask(i.title, i.description,i.dueDate);
+//            addTask(i.title, i.description,i.dueDate);
         },
         afterItemUpdate: function (e, i) {
             console.log('update', i);
-            updateTask(i.id, i.title, i.description,i.dueDate);
+//            updateTask(i.id, i.title, i.description,i.dueDate);
         },
-
         afterItemDelete: function (e, i) {
 //            console.log('delete', i);
             deleteTask(i.id);
@@ -36,17 +43,12 @@ $(document).ready(function () {
 //          console.log(e);  
 //          console.log(i);  
         },
-        afterListAdd:function(lobilist, list){
-            console.log(list);
-//            var $dueDateInput = list.$el.find('form [name=dueDate]');
-//            $dueDateInput.datepicker();
-        },
         lists: [
             {
                 id: 'todolist',
                 title: 'TODO',
                 defaultStyle: 'lobilist-success',
-//                controls: [],
+                controls: [],
                 useCheckboxes: true,
                 items: itemVal
             }
@@ -55,11 +57,12 @@ $(document).ready(function () {
 
 
     var $list = $('#todolist').data('lobiList');
-     var $dueDateInput = $list.$el.find('form [name=dueDate]');
+    var $dueDateInput = $list.$el.find('form [name=dueDate]');
 //            $dueDateInput.datepicker({
 //                format: 'dd-mm-yy'
 //            });
-            window.app.addDatePicker($dueDateInput);
+    $list
+    window.app.addDatePicker($dueDateInput);
 
 
 
@@ -79,8 +82,8 @@ $(document).ready(function () {
 
 //to add to do list;
     var addTask =
-            function (taskTitle, taskEdesc,endDate) {
-                myKeyVals = {'taskTitle': taskTitle, 'taskEdesc': taskEdesc,'endDate':endDate};
+            function (taskTitle, taskEdesc, endDate) {
+                myKeyVals = {'taskTitle': taskTitle, 'taskEdesc': taskEdesc, 'endDate': endDate};
                 $.ajax({
                     type: 'POST',
                     url: document.addUrl,
@@ -113,8 +116,8 @@ $(document).ready(function () {
 
 
     //to update  the to do list
-    var updateTask = function (id, taskTitle, taskEdesc,endDate) {
-        var updateVal = {'taskId': id, 'taskTitle': taskTitle, 'taskEdesc': taskEdesc,'endDate':endDate};
+    var updateTask = function (id, taskTitle, taskEdesc, endDate) {
+        var updateVal = {'taskId': id, 'taskTitle': taskTitle, 'taskEdesc': taskEdesc, 'endDate': endDate};
         $.ajax({
             type: 'POST',
             url: document.updateUrl,

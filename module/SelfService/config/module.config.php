@@ -24,6 +24,8 @@ use SelfService\Controller\WorkOnHoliday;
 use SelfService\Controller\WorkOnDayoff;
 use Zend\Router\Http\Segment;
 use SelfService\Controller\PerformanceAppraisal;
+use SelfService\Controller\LeaveNotification;
+use SelfService\Controller\TravelNotification;
 
 return [
     'router' => [
@@ -235,6 +237,34 @@ return [
                     ],
                     'defaults' => [
                         'controller' => PerformanceAppraisal::class,
+                        'action' => 'index',
+                    ]
+                ],
+            ],
+            'leaveNotification' => [
+                'type' => Segment::class,
+                'options' => [
+                    'route' => '/selfservice/leaveNotification[/:action[/:id]]',
+                    'constants' => [
+                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'id' => '[0-9]+',
+                    ],
+                    'defaults' => [
+                        'controller' => LeaveNotification::class,
+                        'action' => 'index',
+                    ]
+                ],
+            ],
+            'travelNotification' => [
+                'type' => Segment::class,
+                'options' => [
+                    'route' => '/selfservice/travelNotification[/:action[/:id]]',
+                    'constants' => [
+                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'id' => '[0-9]+',
+                    ],
+                    'defaults' => [
+                        'controller' => TravelNotification::class,
                         'action' => 'index',
                     ]
                 ],
@@ -672,6 +702,60 @@ return [
                 ],
             ],
         ],
+        'leaveNotification' => [
+            [
+                'label' => 'Leave Notification',
+                'route' => 'leaveNotification',
+            ],
+            [
+                'label' => 'Leave Notification',
+                'route' => 'leaveNotification',
+                'pages' => [
+                    [
+                        'label' => 'List',
+                        'route' => 'leaveNotification',
+                        'action' => 'index',
+                    ],
+                    [
+                        'label' => 'Add',
+                        'route' => 'leaveNotification',
+                        'action' => 'add',
+                    ],
+                    [
+                        'label' => 'Detail',
+                        'route' => 'leaveNotification',
+                        'action' => 'view',
+                    ],
+                ],
+            ],
+        ],
+        'travelNotification' => [
+            [
+                'label' => 'Travel Notification',
+                'route' => 'travelNotification',
+            ],
+            [
+                'label' => 'Travel Notification',
+                'route' => 'travelNotification',
+                'pages' => [
+                    [
+                        'label' => 'List',
+                        'route' => 'travelNotification',
+                        'action' => 'index',
+                    ],
+                    [
+                        'label' => 'Add',
+                        'route' => 'travelNotification',
+                        'action' => 'add',
+                    ],
+                    [
+                        'label' => 'Detail',
+                        'route' => 'travelNotification',
+                        'action' => 'view',
+                    ],
+                ],
+            ],
+        ],
     ],
 
     'controllers' => [
@@ -690,7 +774,9 @@ return [
             TravelRequest::class => ControllerFactory::class,
             WorkOnHoliday::class => ControllerFactory::class,
             WorkOnDayoff::class => ControllerFactory::class,
-            PerformanceAppraisal::class=> ControllerFactory::class
+            PerformanceAppraisal::class=> ControllerFactory::class,
+            LeaveNotification::class=> ControllerFactory::class,
+            TravelNotification::class=> ControllerFactory::class
         ],
     ],
     'view_manager' => [
