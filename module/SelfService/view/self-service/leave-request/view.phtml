@@ -196,7 +196,15 @@ print $this->form()->openTag($form);
                             </div>
                         <?php } 
                         
-                        if($substituteEmployee==1){
+                        if($subEmployeeId!=null){
+                            $disabled = ($subApprovedFlag!=null) ? "disabled" : "";
+                            if($subApprovedFlag=='Y'){
+                                $note = "[Approved]";
+                            }else if($subApprovedFlag=='N'){
+                                $note = "[Rejected]";
+                            }else{
+                                $note = "[Pending]";
+                            }
                         ?>
                         <div class="form-group padding-0">
                             <label for="noOfDays">
@@ -206,15 +214,21 @@ print $this->form()->openTag($form);
                             <div>
                                 <select disabled="disabled" class="form-control" name="leaveSubstitute">
                                 <?php foreach($employeeList as $key=>$value){ 
-                                    $selected = ($value==$leaveSubstitute) ? "selected" : "";
+                                    $selected = ($key==$subEmployeeId) ? "selected" : "";
                                     ?>
                                     <option style="cursor: pointer;" value="<?php echo $key; ?>" <?php echo $selected; ?>><?php echo $value; ?></option>
                                 <?php } ?>
                                 </select>
                             </div>
                         </div>
+                        <div
+                            class="form-group margin-top-10 required">
+                            <label>Reason for action [From Sub. Employee] <?php echo $note; ?></label>
+                            <textarea disabled="disabled" <?php echo $disabled; ?> name="subRemarks" id="form-subRemarks" required="required" class="form-subRemarks form-control" style="height: 50px; font-size:12px"><?php echo $subRemarks;  ?></textarea>
+                        </div>
                         <?php } ?>
                     </div>
+                    <?php if($subApprovedFlag!='N'){ ?>
                     <div
                         class="form-group margin-top-10 required <?= empty($recommendedRemarks->getMessages()) ? "" : "error" ?>">
                         <label>Reason for action [From Recommender]</label>
@@ -225,6 +239,9 @@ print $this->form()->openTag($form);
                         <label>Reason for action [From Approver]</label>
                         <?php print $this->formElement($approvedRemarks); ?>
                     </div>
+                    <?php }else if($subApprovedFlag=='N'){?>
+                    <div class="form-group" style="font-size:11px;">[note:You have to re-send leave detail!!!!]</div>
+                   <?php } ?>
                 </div>
             </div>
         </div>
