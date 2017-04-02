@@ -202,7 +202,10 @@ class LeaveStatusRepository implements RepositoryInterface {
                 LA.RECOMMENDED_BY AS RECOMMENDED_BY,
                 LA.APPROVED_BY AS APPROVED_BY,
                 LA.RECOMMENDED_REMARKS AS RECOMMENDED_REMARKS,
-                LA.APPROVED_REMARKS AS APPROVED_REMARKS
+                LA.APPROVED_REMARKS AS APPROVED_REMARKS,
+                LS.APPROVED_FLAG AS APPROVED_FLAG,
+                TO_CHAR(LS.APPROVED_DATE, 'DD-MON-YYYY') AS SUB_APPROVED_DATE,
+                LS.EMPLOYEE_ID AS SUB_EMPLOYEE_ID
                 FROM HRIS_EMPLOYEE_LEAVE_REQUEST LA
                 LEFT OUTER JOIN HRIS_LEAVE_MASTER_SETUP L ON
                 L.LEAVE_ID=LA.LEAVE_ID 
@@ -218,6 +221,8 @@ class LeaveStatusRepository implements RepositoryInterface {
                 RECM.EMPLOYEE_ID = RA.RECOMMEND_BY
                 LEFT OUTER JOIN HRIS_EMPLOYEES APRV ON
                 APRV.EMPLOYEE_ID = RA.APPROVED_BY
+                LEFT OUTER JOIN HRIS_LEAVE_SUBSTITUTE LS
+                ON LA.ID = LS.LEAVE_REQUEST_ID
                 WHERE 
                 L.STATUS='E' AND
                 E.STATUS='E'" . $retiredFlag . "              
@@ -233,7 +238,9 @@ class LeaveStatusRepository implements RepositoryInterface {
                     END OR  RECM.STATUS is null) AND
                 (APRV.STATUS = CASE WHEN APRV.STATUS IS NOT NULL
                          THEN ('E')       
-                    END OR  APRV.STATUS is null)";
+                    END OR  APRV.STATUS is null) AND (LS.APPROVED_FLAG = CASE WHEN LS.EMPLOYEE_ID IS NOT NULL
+                         THEN ('Y')     
+                    END OR  LS.EMPLOYEE_ID is null)";
         if ($recomApproveId == null) {
             if ($leaveRequestStatusId != -1) {
                 $sql .= " AND LA.STATUS ='" . $leaveRequestStatusId . "'";
@@ -241,7 +248,7 @@ class LeaveStatusRepository implements RepositoryInterface {
         }
         if ($recomApproveId != null) {
             if ($leaveRequestStatusId == -1) {
-                $sql .= " AND ((RA.RECOMMEND_BY=" . $recomApproveId . " AND  LA.STATUS='RQ') "
+                $sql .= " AND ((RA.RECOMMEND_BY=" . $recomApproveId . " AND  LA.STATUS='RQ')"
                         . "OR (LA.RECOMMENDED_BY=" . $recomApproveId . " AND (LA.STATUS='RC' OR LA.STATUS='R' OR LA.STATUS='AP')) "
                         . "OR (RA.APPROVED_BY=" . $recomApproveId . " AND  LA.STATUS='RC' ) "
                         . "OR (LA.APPROVED_BY=" . $recomApproveId . " AND (LA.STATUS='AP' OR (LA.STATUS='R' AND LA.APPROVED_DT IS NOT NULL))) )";

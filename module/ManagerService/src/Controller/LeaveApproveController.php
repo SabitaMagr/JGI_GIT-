@@ -31,6 +31,7 @@ use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\Form\Element\Select;
 use Zend\Mvc\Controller\AbstractActionController;
 use Setup\Repository\RecommendApproveRepository;
+use Setup\Model\HrEmployees;
 
 class LeaveApproveController extends AbstractActionController {
 
@@ -235,7 +236,11 @@ class LeaveApproveController extends AbstractActionController {
                     'requestedEmployeeId' => $requestedEmployeeID,
                     'allowHalfDay' => $leaveDtl['ALLOW_HALFDAY'],
                     'leave' => $leaveRequestRepository->getLeaveList($detail['EMPLOYEE_ID']),
-                    'customRenderer' => Helper::renderCustomView()
+                    'customRenderer' => Helper::renderCustomView(),
+                    'subEmployeeId'=> $detail['SUB_EMPLOYEE_ID'],
+                    'subRemarks'=>$detail['SUB_REMARKS'],
+                    'subApprovedFlag'=>$detail['SUB_APPROVED_FLAG'],
+                    'employeeList'=>  EntityHelper::getTableKVListWithSortOption($this->adapter, HrEmployees::TABLE_NAME, HrEmployees::EMPLOYEE_ID, [HrEmployees::FIRST_NAME, HrEmployees::MIDDLE_NAME, HrEmployees::LAST_NAME],[HrEmployees::STATUS => "E",HrEmployees::RETIRED_FLAG => "N"], HrEmployees::FIRST_NAME, "ASC", " ")
         ]);
     }
 

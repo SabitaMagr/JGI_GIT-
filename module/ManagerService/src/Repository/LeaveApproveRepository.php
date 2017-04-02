@@ -48,7 +48,10 @@ class LeaveApproveRepository implements RepositoryInterface
                 LA.RECOMMENDED_BY,
                 LA.APPROVED_BY,
                 RA.RECOMMEND_BY AS RECOMMENDER,
-                RA.APPROVED_BY AS APPROVER
+                RA.APPROVED_BY AS APPROVER,
+                LS.APPROVED_FLAG AS APPROVED_FLAG,
+                TO_CHAR(LS.APPROVED_DATE, 'DD-MON-YYYY') AS SUB_APPROVED_DATE,
+                LS.EMPLOYEE_ID AS SUB_EMPLOYEE_ID
                 FROM HRIS_EMPLOYEE_LEAVE_REQUEST LA
                 LEFT JOIN HRIS_LEAVE_MASTER_SETUP L ON
                 L.LEAVE_ID=LA.LEAVE_ID 
@@ -60,9 +63,14 @@ class LeaveApproveRepository implements RepositoryInterface
                 E2.EMPLOYEE_ID=LA.APPROVED_BY 
                 LEFT JOIN HRIS_RECOMMENDER_APPROVER RA ON
                 E.EMPLOYEE_ID=RA.EMPLOYEE_ID 
+                LEFT JOIN HRIS_LEAVE_SUBSTITUTE LS
+                ON LA.ID = LS.LEAVE_REQUEST_ID
                  WHERE E.STATUS='E' AND E.RETIRED_FLAG='N' AND";
         if($status==null){
-            $sql .=" ((RA.RECOMMEND_BY=".$id." AND LA.STATUS='RQ') OR (RA.APPROVED_BY=".$id." AND LA.STATUS='RC') )";
+            $sql .=" ((RA.RECOMMEND_BY=".$id." AND LA.STATUS='RQ' AND
+                    (LS.APPROVED_FLAG = CASE WHEN LS.EMPLOYEE_ID IS NOT NULL
+                         THEN ('Y')     
+                    END OR  LS.EMPLOYEE_ID is null)) OR (RA.APPROVED_BY=".$id." AND LA.STATUS='RC') )";
         }else if($status=='RC'){
             $sql .= " LA.STATUS='RC' AND
                 LA.RECOMMENDED_BY=".$id;
@@ -75,6 +83,7 @@ class LeaveApproveRepository implements RepositoryInterface
         }
         $sql .= "  ORDER BY LA.REQUESTED_DT DESC";
         $statement = $this->adapter->query($sql);
+//        print_r($statement->getSql()); die();
         $result = $statement->execute();
         return $result;
     }
@@ -95,13 +104,13 @@ class LeaveApproveRepository implements RepositoryInterface
         $sql = new Sql($this->adapter);
         $select = $sql->select();
         $select->columns([
-            new Expression("TO_CHAR(LA.START_DATE, 'DD-MON-YYYY') AS START_DATE"),
-            new Expression("TO_CHAR(LA.REQUESTED_DT, 'DD-MON-YYYY') AS REQUESTED_DT"),
-            new Expression("TO_CHAR(LA.APPROVED_DT, 'DD-MON-YYYY') AS APPROVED_DT"),
+            new Expression("INITCAP(TO_CHAR(LA.START_DATE, 'DD-MON-YYYY')) AS START_DATE"),
+            new Expression("INITCAP(TO_CHAR(LA.REQUESTED_DT, 'DD-MON-YYYY')) AS REQUESTED_DT"),
+            new Expression("INITCAP(TO_CHAR(LA.APPROVED_DT, 'DD-MON-YYYY')) AS APPROVED_DT"),
             new Expression("LA.STATUS AS STATUS"),
             new Expression("LA.ID AS ID"),
             new Expression("LA.EMPLOYEE_ID AS EMPLOYEE_ID"),
-            new Expression("TO_CHAR(LA.END_DATE, 'DD-MON-YYYY') AS END_DATE"),
+            new Expression("INITCAP(TO_CHAR(LA.END_DATE, 'DD-MON-YYYY')) AS END_DATE"),
             new Expression("LA.NO_OF_DAYS AS NO_OF_DAYS"),
             new Expression("LA.HALF_DAY AS HALF_DAY"),
             new Expression("LA.EMPLOYEE_ID AS EMPLOYEE_ID"),
@@ -119,7 +128,8 @@ class LeaveApproveRepository implements RepositoryInterface
             ->join(['E2'=>"HRIS_EMPLOYEES"],"E2.EMPLOYEE_ID=LA.APPROVED_BY",['FN2'=>'FIRST_NAME','MN2'=>'MIDDLE_NAME','LN2'=>'LAST_NAME'],"left")
             ->join(['RA'=>"HRIS_RECOMMENDER_APPROVER"],"RA.EMPLOYEE_ID=LA.EMPLOYEE_ID",['RECOMMENDER'=>'RECOMMEND_BY','APPROVER'=>'APPROVED_BY'],"left")
             ->join(['RECM'=>"HRIS_EMPLOYEES"],"RECM.EMPLOYEE_ID=RA.RECOMMEND_BY",['RECM_FN'=>'FIRST_NAME','RECM_MN'=>'MIDDLE_NAME','RECM_LN'=>'LAST_NAME'],"left")
-            ->join(['APRV'=>"HRIS_EMPLOYEES"],"APRV.EMPLOYEE_ID=RA.APPROVED_BY",['APRV_FN'=>'FIRST_NAME','APRV_MN'=>'MIDDLE_NAME','APRV_LN'=>'LAST_NAME'],"left");
+            ->join(['APRV'=>"HRIS_EMPLOYEES"],"APRV.EMPLOYEE_ID=RA.APPROVED_BY",['APRV_FN'=>'FIRST_NAME','APRV_MN'=>'MIDDLE_NAME','APRV_LN'=>'LAST_NAME'],"left")
+            ->join(['LS'=>"HRIS_LEAVE_SUBSTITUTE"],"LS.LEAVE_REQUEST_ID=LA.ID",['SUB_EMPLOYEE_ID'=>'EMPLOYEE_ID','SUB_APPROVED_DATE'=>'APPROVED_DATE','SUB_REMARKS'=>"REMARKS",'SUB_APPROVED_FLAG'=>"APPROVED_FLAG"],"left");
 
         $select->where([
             "LA.ID=".$id
