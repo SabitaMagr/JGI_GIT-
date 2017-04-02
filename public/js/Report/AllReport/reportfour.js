@@ -149,9 +149,11 @@
                 if (companyId != -1) {
                     if (branchId != -1) {
                         if (departmentId != -1) {
-                            return item['COMPANY_ID'] == companyId && item['BRANCH_ID'] == branchId && item['DEPARTMENT_ID'] == departmentId;
+//                            return item['COMPANY_ID'] == companyId && item['BRANCH_ID'] == branchId && item['DEPARTMENT_ID'] == departmentId;
+                            return item['DEPARTMENT_ID'] == departmentId;
                         } else {
-                            return item['COMPANY_ID'] == companyId && item['BRANCH_ID'] == branchId;
+//                            return item['COMPANY_ID'] == companyId && item['BRANCH_ID'] == branchId;
+                            return item['BRANCH_ID'] == branchId;
                         }
                     } else {
 

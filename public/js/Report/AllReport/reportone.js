@@ -10,8 +10,8 @@
                     pageSize: 20
                 },
                 height: 600,
-                sortable: true,
-                pageable: true,
+                sortable: false,
+                pageable: false,
                 columns: cols,
                 detailInit: function (e) {
                     $tableContainer.block();
@@ -20,7 +20,6 @@
                     app.pullDataById(document.wsDepartmentWise, {departmentId: departmentId}).then(function (response) {
                         $tableContainer.unblock();
                         console.log('departmentWiseEmployeeMonthlyR', response);
-//                        console.log('departmentWiseEmployeeMonthlyRString', JSON.stringify(response));
 
                         var extractedDetailData = extractDetailData(response.data, departmentId);
                         console.log('extractedDetailData', extractedDetailData);
@@ -30,8 +29,8 @@
                                 pageSize: 20
                             },
                             scrollable: false,
-                            sortable: true,
-                            pageable: true,
+                            sortable: false,
+                            pageable: false,
                             columns: extractedDetailData.cols
                         });
                         displayDataInBtnGroup('.custom-btn-group.' + departmentId);
@@ -55,9 +54,15 @@
                 var $absent = $($childrens[1]);
                 var $leave = $($childrens[2]);
 
-                $present.html(data['IS_PRESENT']);
-                $absent.html(data['IS_ABSENT']);
-                $leave.html(data['ON_LEAVE']);
+                var presentDays = parseFloat(data['IS_PRESENT']);
+                var absentDays = parseFloat(data['IS_ABSENT']);
+                var leaveDays = parseFloat(data['ON_LEAVE']);
+
+                var total = presentDays + absentDays + leaveDays;
+
+                $present.html(Number((presentDays * 100 / total).toFixed(1)));
+                $absent.html(Number((absentDays * 100 / total).toFixed(1)));
+                $leave.html(Number((leaveDays * 100 / total).toFixed(1)));
             });
 
         };

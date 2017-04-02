@@ -217,6 +217,7 @@ FROM
         AND AD.HOLIDAY_ID  IS NULL
         AND AD.TRAINING_ID IS NULL
         AND AD.TRAVEL_ID   IS NULL
+        AND AD.DAYOFF_FLAG ='N'
         AND AD.IN_TIME     IS NOT NULL
         THEN 1
         ELSE 0
@@ -227,6 +228,7 @@ FROM
         AND AD.HOLIDAY_ID  IS NULL
         AND AD.TRAINING_ID IS NULL
         AND AD.TRAVEL_ID   IS NULL
+        AND AD.DAYOFF_FLAG = 'N'
         AND AD.IN_TIME     IS NULL
         THEN 1
         ELSE 0
