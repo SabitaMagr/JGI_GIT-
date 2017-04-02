@@ -39,6 +39,7 @@ $(function () {
         $form: null,
         $footer: null,
         $body: null,
+        $hasGeneratedId: false,
 
         eventsSuppressed: false,
 
@@ -51,10 +52,13 @@ $(function () {
             me.suppressEvents();
             if (!me.$options.id) {
                 me.$options.id = 'lobilist-list-' + (LIST_COUNTER++);
+                me.$hasGeneratedId = true;
             }
             var $wrapper = $('<div class="lobilist-wrapper"></div>');
             var $div = $('<div id="'+me.$options.id+'" class="lobilist"></div>').appendTo($wrapper);
-
+            if (!me.$hasGeneratedId){
+                $div.attr('data-db-id', me.$options.id);
+            }
             if (me.$options.defaultStyle) {
                 $div.addClass(me.$options.defaultStyle);
             }
@@ -246,7 +250,7 @@ $(function () {
             me.$title.html($input.val()).removeClass('hide').removeAttr('data-old-title');
             $input.remove();
             me.$header.removeClass('title-editing');
-            console.log(oldTitle, $input.val());
+            // console.log(oldTitle, $input.val());
             me._triggerEvent('titleChange', [me, oldTitle, $input.val()]);
             return me;
         },
@@ -306,6 +310,41 @@ $(function () {
         },
 
         /**
+         * Get position among siblings
+         *
+         * @returns {int}
+         */
+        getPosition: function(){
+            var me = this;
+            return me.$elWrapper.index();
+        },
+
+        /**
+         * Get id for list
+         *
+         * @returns {int}
+         */
+        getId: function(){
+            var me = this;
+
+            return me.$options.id;
+        },
+
+        /**
+         * Set the id of the list
+         *
+         * @param id
+         * @returns {List}
+         */
+        setId: function(id){
+            var me = this;
+            me.$el.attr('id', id);
+            me.$options.id = id;
+            me.$el.attr('data-db-id', me.$options.id);
+            return me;
+        },
+
+        /**
          * Suppress events. None of the events will be triggered until you call <code>resumeEvents</code>
          * @returns {List}
          */
@@ -325,6 +364,7 @@ $(function () {
 
         _processItemData: function (item) {
 			var me = this;
+            item.listId = me.$options.id;
             return $.extend({}, me.$globalOptions.itemOptions, item);
         },
 
@@ -521,11 +561,14 @@ $(function () {
 
         _onCheckboxChange: function (checkbox) {
 			var me = this;
-            var $this = $(checkbox);
-            if ($this.prop('checked')) {
-                me._triggerEvent('afterMarkAsDone', [me, $this])
+            var $this = $(checkbox),
+                $todo = $this.closest('.lobilist-item'),
+                item = $todo.data('lobiListItem');
+            item.done = $this.prop('checked');
+            if (item.done) {
+                me._triggerEvent('afterMarkAsDone', [me, item])
             } else {
-                me._triggerEvent('afterMarkAsUndone', [me, $this])
+                me._triggerEvent('afterMarkAsUndone', [me, item])
             }
 
             $this.closest('.lobilist-item').toggleClass('item-done');
@@ -604,7 +647,9 @@ $(function () {
                 'class': 'btn btn-default btn-xs',
                 html: '<i class="glyphicon glyphicon-remove"></i>'
             });
-            $btn.click(me._onRemoveListClick);
+            $btn.click(function(){
+                me._onRemoveListClick();
+            });
             return $btn;
         },
 
@@ -678,8 +723,28 @@ $(function () {
                 forcePlaceholderSize: true,
                 opacity: 0.9,
                 revert: 70,
+                start: function(event, ui){
+                    var $todo = ui.item,
+                        $list = $todo.closest('.lobilist');
+                    $todo.data('oldIndex', $todo.index());
+                    $todo.data('oldList', $list.data('lobiList'));
+                },
                 update: function (event, ui) {
-                    me._triggerEvent('afterItemReorder', [me, ui.item]);
+                    var $todo = ui.item,
+                        item = $todo.data('lobiListItem'),
+                        oldList = $todo.data('oldList'),
+                        oldIndex = $todo.data('oldIndex'),
+                        currentIndex = $todo.index(),
+                        $itemWrapper = me.$el.find('.lobilist-items');
+
+                    var $children = $itemWrapper.children().filter(function() { return this == $todo[0]; });
+                    if ($children.length > 0) {
+                        if (me != oldList){
+                            delete oldList.$items[item.id];
+                            me.$items[item.id] = item;
+                        }
+                        me._triggerEvent('afterItemReorder', [me, oldList, currentIndex, oldIndex, item, $todo]);
+                    }
                 }
             });
         },
@@ -782,8 +847,6 @@ $(function () {
             }
             if (me.$options[type] && typeof me.$options[type] === 'function') {
                 return me.$options[type].apply(me, data);
-            } else {
-                return me.$el.trigger(type, data);
             }
         },
 
@@ -852,7 +915,8 @@ $(function () {
             options = $.extend({}, $.fn.lobiList.DEFAULT_OPTIONS, options);
             if (options.actions.load) {
                 $.ajax(options.actions.load, {
-                    async: false
+                    async: false,
+                    data: {name: options.name}
                 }).done(function (res) {
                     options.lists = res.lists;
                 });
@@ -886,8 +950,16 @@ $(function () {
                     forcePlaceholderSize: true,
                     opacity: 0.9,
                     revert: 70,
+                    start: function(event, ui){
+                        var $wrapper = ui.item;
+                        $wrapper.attr('data-previndex', $wrapper.index());
+                    },
                     update: function (event, ui) {
-                        me._triggerEvent('afterListReorder', [me, ui.item.find('.lobilist').data('lobiList')]);
+                        var $wrapper = ui.item,
+                            $list = $wrapper.find('.lobilist'),
+                            currentIndex = $wrapper.index(),
+                            oldIndex = parseInt($wrapper.attr('data-previndex'));
+                        me._triggerEvent('afterListReorder', [me, $list.data('lobiList'), currentIndex, oldIndex]);
                     }
                 });
             } else {
@@ -1021,6 +1093,8 @@ $(function () {
         });
     };
     $.fn.lobiList.DEFAULT_OPTIONS = {
+        // the name to identify board from others
+        name: null,
         // Available style for lists
         'listStyles': ['lobilist-default', 'lobilist-danger', 'lobilist-success', 'lobilist-warning', 'lobilist-info', 'lobilist-primary'],
         // Default options for all lists
