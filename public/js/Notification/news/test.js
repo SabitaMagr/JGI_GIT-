@@ -19,12 +19,31 @@ $(document).ready(function () {
             'insert': document.addUrl,
             'delete': document.delteUrl
         },
+        afterMarkAsDone: function ($list,$object) {
+            updateStatus($object);
+        },
+        afterMarkAsUndone: function ($list,$object) {
+            updateStatus($object);
+        },
+        
 
     });
 
     var $list = $('#lob').data('lobiList');
     var $dueDateInput = $list.$el.find('form [name=dueDate]');
     window.app.addDatePicker($dueDateInput);
+    
+    
+   updateStatus = function ($data) {
+        $.ajax({
+            type: 'POST',
+            url: document.taskUpdateStatus ,
+            data: {'item': $data },
+        }).done(function (res) {
+//            console.log(res);
+        });
+    };
+    
 
 
 
