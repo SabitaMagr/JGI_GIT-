@@ -16,7 +16,8 @@ class SessionHelper {
         $auth = new AuthenticationService();
         $employeeId = $auth->getStorage()->read()['employee_id'];
         if ($employeeId != null) {
-            $employeeFileId = EntityHelper::getTableKVList($adapter, HrEmployees::TABLE_NAME, HrEmployees::EMPLOYEE_ID, [HrEmployees::PROFILE_PICTURE_ID], [HrEmployees::EMPLOYEE_ID => $employeeId], null)[$employeeId];
+            $tempEmployeeFileData = EntityHelper::getTableKVList($adapter, HrEmployees::TABLE_NAME, HrEmployees::EMPLOYEE_ID, [HrEmployees::PROFILE_PICTURE_ID], [HrEmployees::EMPLOYEE_ID => $employeeId], null);
+            $employeeFileId = (sizeof($tempEmployeeFileData) == 0) ? null : $tempEmployeeFileData[$employeeId];
             $employeeName = EntityHelper::getTableKVList($adapter, HrEmployees::TABLE_NAME, HrEmployees::EMPLOYEE_ID, [HrEmployees::FIRST_NAME], [HrEmployees::EMPLOYEE_ID => $employeeId], null)[$employeeId];
             $event->getViewModel()->setVariable("employeeName", $employeeName);
             if ($employeeFileId != null) {

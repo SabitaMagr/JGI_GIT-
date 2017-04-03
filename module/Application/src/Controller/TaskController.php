@@ -31,7 +31,13 @@ class TaskController extends AbstractActionController {
                     $nrow['title']=$row['TASK_TITLE'];
                     $nrow['description']=$row['TASK_EDESC'];
                     $nrow['dueDate']=$row['END_DATE'];
-                    $nrow['done']=false;
+                    if($row['STATUS']=='C'){
+                        $done=true;
+                    }
+                    else{
+                        $done=false;
+                    }
+                    $nrow['done']=$done;
                     array_push($list, $nrow);
 //                    array_push($list, $row);
                 }
@@ -164,5 +170,33 @@ class TaskController extends AbstractActionController {
             return new CustomViewModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
         }
     }
-
+    
+    
+        public function updateStatusAction() {
+        try {
+            $request = $this->getRequest();
+            if ($request->isPost()) {
+                $taskRepo = new TaskRepository($this->adapter);
+                $taskModel = new TaskModel();
+                $data = $this->getRequest()->getPost();
+                
+                $done = 'O';
+                if($data['item']['done']=='true'){
+                    $done= 'C';
+                }
+                
+                $id = $data['item']['id'];
+                $taskModel->status=$done;
+                
+                $taskRepo->edit($taskModel, $id);
+                return new CustomViewModel(['success' => true, 'msg' => 'sucessfully changed', 'data' =>[], 'error' => '']);
+            } else {
+                throw new Exception("The request should be of type post");
+            }
+        } catch (Exception $e) {
+            return new CustomViewModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
+        }
+    }
+    
+    
 }
