@@ -229,7 +229,7 @@ ul {
 }
 li.line:after {
     position: absolute;
-    left: 50.5px;
+    left: 57.5px;
 }
 .wigetbox,
 .wigetbox .widget-thumb-wrap {
@@ -676,6 +676,9 @@ a .icon_edit:hover {
 .hexagon-bg5 {
     background-color: #87D1DD;
 }
+.hexagon-bg6 {
+    background-color: #e087d8;
+}
 .hexagon1 span {
     font-weight: bold;
 }
@@ -731,8 +734,21 @@ a .icon_edit:hover {
     transform: rotate(60deg) translate(110px, 0);
 }
 .hexcustom {
-    width: 18%;
+    width: 15%;
 }
+.hrm-dashboard-employee-list.portlet-body {
+    padding: 0 !important;
+}
+.hrm-dashboard-employee-list.portlet-body .portlet-body {
+    padding: 3px !important;
+}
+.hrm-dashboard-employee-list .tab-content {
+    padding: 5px !important;
+}
+.hrm-dashboard-employee-list.portlet-body .select2-container {
+    width: inherit !important;
+}
+
 /* Large desktops and laptops */
 
 @media (min-width: 1200px) {}

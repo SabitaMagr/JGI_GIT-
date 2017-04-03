@@ -235,6 +235,7 @@ return [
             'dashboard-item/today-leave' => __DIR__ . '/../view/layout/dashboard-items/today-leave.phtml',
             'dashboard-item/birthdays' => __DIR__ . '/../view/layout/dashboard-items/birthdays.phtml',
             'dashboard/employee' => __DIR__ . '/../view/application/dashboard/employee-dashboard.phtml',
+            'dashboard/hrm' => __DIR__ . '/../view/application/dashboard/hrm-dashboard.phtml',
         ],
         'template_path_stack' => [
             __DIR__ . '/../view',
