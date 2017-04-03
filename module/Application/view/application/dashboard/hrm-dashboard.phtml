@@ -1,0 +1,610 @@
+<?php
+$this->headLink()
+    ->appendStylesheet($this->basePath('assets/global/plugins/fullcalendar/fullcalendar.min.css'))
+    ->appendStylesheet($this->basePath('assets/global/plugins/datatables/extensions/Scroller/css/dataTables.scroller.min.css'))
+    ->appendStylesheet($this->basePath('assets/global/plugins/datatables/extensions/ColReorder/css/dataTables.colReorder.min.css'))
+    ->appendStylesheet($this->basePath('assets/global/plugins/datatables/plugins/bootstrap/dataTables.bootstrap.csss'))
+    ->appendStylesheet($this->basePath('css/dashboard.hrm.css'));
+
+$this->headScript()
+    ->appendFile($this->basePath('assets/global/plugins/bootstrap-daterangepicker/moment.min.js'))
+    ->appendFile($this->basePath('assets/global/plugins/bootstrap-daterangepicker/daterangepicker.min.js'))
+    ->appendFile($this->basePath('assets/global/plugins/fullcalendar/fullcalendar.min.js'))
+    ->appendFile($this->basePath('assets/global/plugins/datatables/datatables.min.js'))
+    ->appendFile($this->basePath('assets/global/plugins/datatables/extensions/TableTools/js/dataTables.tableTools.min.js'))
+    ->appendFile($this->basePath('assets/global/plugins/datatables/extensions/ColReorder/js/dataTables.colReorder.min.js'))
+    ->appendFile($this->basePath('assets/global/plugins/datatables/extensions/Scroller/js/dataTables.scroller.min.js'))
+    ->appendFile($this->basePath('assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap.js'))
+    ->appendFile($this->basePath('assets/global/scripts/metronic.js'))
+    ->appendFile($this->basePath('js/dashboard/hrm-dashboard.js'));
+?>
+
+<div class="employeedashboard">
+    <div class="emplyoee-dashboard clearfix">
+        <div class="employe-descbox">
+            <div class="col-sm-1 col-md-1 profile_pic">
+                <img src="<?php print $this->basePath("img/nobody_m.original.jpg"); ?>">
+            </div>
+            <div class="col-sm-3 col-md-3 employee-details">
+                <?php
+                $email = trim($dashboardData['EMAIL_OFFICIAL']) ? trim($dashboardData['EMAIL_OFFICIAL']) : trim($dashboardData['EMAIL_PERSONAL']);
+                $service[0] = $dashboardData['SERVICE_YEARS'] ? ((1 == $dashboardData['SERVICE_YEARS']) ? "1 Year" : $dashboardData['SERVICE_YEARS'] . " Years") : "";
+                $service[1] = $dashboardData['SERVICE_MONTHS'] ? ((1 == $dashboardData['SERVICE_MONTHS']) ? "1 Month" : $dashboardData['SERVICE_MONTHS'] . " Months") : "";
+                $service[2] = $dashboardData['SERVICE_DAYS'] ? ((1 == $dashboardData['SERVICE_DAYS']) ? "1 Day" : $dashboardData['SERVICE_DAYS'] . " Days") : "";
+                $serviceDays = trim(implode(" ", $service));
+                ?>
+                <h4 class="font-weight-bold"><?php print $dashboardData['FULL_NAME']; ?></h4>
+                <?php if($email) : ?>
+                <span><?php print $email; ?></span><br>
+                <?php endif; ?>
+                <span><?php print trim($dashboardData['DESIGNATION_TITLE']); ?></span><br>
+                <span>At work for : <?php print $serviceDays ? $serviceDays : 0; ?></span><br>
+            </div>
+            <div class="col-md-8">
+                <div class="row detailsbox">
+                    <div class="col-xs-6 col-sm-3 col-md-2 hexcustom">
+                        <div class="employee_details-box hexagon-bg1">
+                            <span><?php print $dashboardData['PRESENT_DAY']; ?></span>
+                            <div class="face1"></div>
+                            <div class="face2"></div>
+                            <div class="headtitle">Present</div>
+                        </div>
+                    </div>
+                    <div class="col-xs-6 col-sm-3 col-md-2 hexcustom">
+                        <div class="employee_details-box hexagon-bg2">
+                            <span><?php print $dashboardData['LEAVE']; ?></span>
+                            <div class="face1"></div>
+                            <div class="face2"></div>
+                            <div class="headtitle">On Leave</div>
+                        </div>
+                    </div>
+                    <div class="col-xs-6 col-sm-3 col-md-2 hexcustom">
+                        <div class="employee_details-box hexagon-bg3">
+                            <span><?php print $dashboardData['TRAINING']; ?></span>
+                            <div class="face1"></div>
+                            <div class="face2"></div>
+                            <div class="headtitle">Training</div>
+                        </div>
+                    </div>
+                    <div class="col-xs-6 col-sm-3 col-md-2 hexcustom">
+                        <div class="employee_details-box hexagon-bg4">
+                            <span><?php print $dashboardData['TOUR']; ?></span>
+                            <div class="face1"></div>
+                            <div class="face2"></div>
+                            <div class="headtitle">On Tour</div>
+                        </div>
+                    </div>
+                    <div class="col-xs-6 col-sm-3 col-md-2 hexcustom">
+                        <div class="employee_details-box hexagon-bg5">
+                            <span><?php print $dashboardData['WOH']; ?></span>
+                            <div class="face1"></div>
+                            <div class="face2"></div>
+                            <div class="headtitle">WOH</div>
+                        </div>
+                    </div>
+                    <div class="col-xs-6 col-sm-3 col-md-2 hexcustom">
+                        <div class="employee_details-box hexagon-bg6">
+                            <span>1</span>
+                            <div class="face1"></div>
+                            <div class="face2"></div>
+                            <div class="headtitle">Late Comers</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <?php /*
+            <div class="employeestatusbox clearfix">
+                <div class="row">
+                    <div class="col-sm-3 col-md-3">
+                        <h4 class="font-weight-bold">Employee Status</h4>
+                    </div>
+                    <div class="col-sm-6 col-md-6">
+                        <div class="employee-status-details">
+                            <ul>
+                                <li>
+                                    <span>0.5/26</span>
+                                    Attendence
+                                </li>
+                                <li>
+                                    <span>1/10</span>
+                                    Leave
+                                </li>
+                                <li>
+                                    <span>0</span>
+                                    Awards
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-sm-3 col-md-3">
+                        <div id="dashboard-report-range1" class="pull-right tooltips btn btn-sm btn-custom-color active" data-container="body" data-placement="bottom" data-original-title="Change dashboard date range">
+                            <i class="fa fa-calendar"></i>&nbsp;<span class="thin uppercase visible-lg-inline-block"><?php print date('d M Y') ?></span>&nbsp; <i class="fa fa-angle-down"></i>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="row detailsbox">
+                            <div class="col-xs-6 col-sm-3 col-md-2 hexcustom">
+                                <div class="employee_details-box hexagon-bg1">
+                                    <span><?php print $dashboardData['PRESENT_DAY']; ?></span>
+                                    <div class="face1"></div>
+                                    <div class="face2"></div>
+                                    <div class="headtitle">Present</div>
+                                </div>
+                            </div>
+                            <div class="col-xs-6 col-sm-3 col-md-2 hexcustom">
+                                <div class="employee_details-box hexagon-bg2">
+                                    <span><?php print $dashboardData['LEAVE']; ?></span>
+                                    <div class="face1"></div>
+                                    <div class="face2"></div>
+                                    <div class="headtitle">On Leave</div>
+                                </div>
+                            </div>
+                            <div class="col-xs-6 col-sm-3 col-md-2 hexcustom">
+                                <div class="employee_details-box hexagon-bg3">
+                                    <span><?php print $dashboardData['TRAINING']; ?></span>
+                                    <div class="face1"></div>
+                                    <div class="face2"></div>
+                                    <div class="headtitle">Training</div>
+                                </div>
+                            </div>
+                            <div class="col-xs-6 col-sm-3 col-md-2 hexcustom">
+                                <div class="employee_details-box hexagon-bg4">
+                                    <span><?php print $dashboardData['TOUR']; ?></span>
+                                    <div class="face1"></div>
+                                    <div class="face2"></div>
+                                    <div class="headtitle">On Tour</div>
+                                </div>
+                            </div>
+                            <div class="col-xs-6 col-sm-3 col-md-2 hexcustom">
+                                <div class="employee_details-box hexagon-bg5">
+                                    <span><?php print $dashboardData['WOH']; ?></span>
+                                    <div class="face1"></div>
+                                    <div class="face2"></div>
+                                    <div class="headtitle">WOH</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            */ ?>
+
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="portlet light calendar ">
+                        <div class="portlet-title ">
+                            <div class="caption">
+                                <i class="fa fa-calendar font-green-sharp"></i>
+                                <span class="caption-subject font-green-sharp bold uppercase">Calendar</span>
+                            </div>
+                        </div>
+                        <div class="portlet-body">
+                            <div id="calendar"></div>
+                            <div class="calendar-colorbox">
+                                <ul>
+                                    <li>
+                                        <div class="color-box colorbox-color1">
+                                        </div>
+                                        <span>Holiday</span>
+                                    </li>
+                                    <li>
+                                        <div class="color-box colorbox-color2">
+                                        </div>
+                                        <span>Important notice</span>
+                                    </li>
+                                    <li>
+                                        <div class="color-box colorbox-color3">
+                                        </div>
+                                        <span>Meeting</span>
+                                    </li>
+                                    <li>
+                                        <div class="color-box colorbox-color4">
+                                        </div>
+                                        <span>Message</span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-12">
+                    <div class="portlet box green">
+                        <div class="portlet-title">
+                            <div class="caption employee_search">
+                                <i class="fa fa-user"></i>Search Employee
+                            </div>
+                            <div class="tools">
+                                <a href="javascript:;" class="collapse">
+                                </a>
+                            </div>
+                        </div>
+                        <div class="portlet-body hrm-dashboard-employee-list">
+                            <div class="tabbable-custom nav-justified">
+                                <div class="tab-content tab-content-box">
+                                    <div class="tab-pane active" id="tab_1_1_1">
+                                        <div class="portlet box blue-hoki1 employee-search-table">
+                                            <div class="portlet-body">
+                                                <table class="table table-striped table-bordered table-hover" id="sample_1">
+                                                    <thead>
+                                                    <tr>
+                                                        <th>Code</th>
+                                                        <th>Name</th>
+                                                        <th>Designation</th>
+                                                        <th>Department</th>
+                                                        <th>Action</th>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    <tr>
+                                                        <td>110</td>
+                                                        <td>Rajan Thapa Shrestha</td>
+                                                        <td>UI/UX Designer</td>
+                                                        <td>Development</td>
+                                                        <td>Yes</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>111</td>
+                                                        <td>Ukesh Gaiju</td>
+                                                        <td>PHP/Android Developer</td>
+                                                        <td>Development</td>
+                                                        <td>Yes</td>
+                                                    </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                        <div class="employee-facilities row">
+                                            <div class="flist col-sm-2 col-md-2">
+                                                <div class="iconbox">
+                                                    <i class="fa fa-user fonticon circlebgone" aria-hidden="true">
+                                                    </i>
+                                                </div>
+                                                <div class="description">
+                                                    Payroll
+                                                </div>
+                                            </div>
+                                            <div class="flist col-sm-2 col-md-2">
+                                                <div class="iconbox">
+                                                    <i class="fa fa-users  fonticon circlebgtwo" aria-hidden="true"></i>
+                                                </div>
+                                                <div class="description">
+                                                    Recruitment
+                                                </div>
+                                            </div>
+                                            <div class="flist col-sm-2 col-md-2">
+                                                <div class="iconbox">
+                                                    <i class="fa fa-television fonticon circlebgthree" aria-hidden="true"></i>
+                                                </div>
+                                                <div class="description">
+                                                    Trainning
+                                                </div>
+                                            </div>
+                                            <div class="flist col-sm-2 col-md-2">
+                                                <div class="iconbox">
+                                                    <i class="fa fa-ticket fonticon circlebgfour" aria-hidden="true"></i>
+                                                </div>
+                                                <div class="description">
+                                                    Travelling
+                                                </div>
+                                            </div>
+                                            <div class="flist col-sm-2 col-md-2">
+                                                <div class="iconbox">
+                                                    <i class="fa fa-gavel fonticon circlebgfive" aria-hidden="true">
+                                                    </i>
+                                                </div>
+                                                <div class="description">
+                                                    Compliance
+                                                </div>
+                                            </div>
+                                            <div class="flist col-sm-2 col-md-2">
+                                                <div class="iconbox">
+                                                    <i class="fa fa-bar-chart  fonticon circlebgsix" aria-hidden="true"></i>
+                                                </div>
+                                                <div class="description">
+                                                    Perfomance
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-12">
+                    <div class="profile-content">
+                        <div class="row">
+                            <div class="col-md-12 noticeboard">
+                                <div class="portlet-body">
+                                    <div class="portlet light">
+                                        <div class="portlet-title tabbable-line">
+                                            <div class="caption caption-md">
+                                                <i class="icon-globe theme-font hide"></i>
+                                                <span class="caption-subject bold uppercase">Notice Board</span>
+                                            </div>
+                                        </div>
+                                        <div class="noticeboard-list row">
+                                            <ul>
+                                                <li>
+                                                    <div class="calendardate-box col-sm-2 col-md-2">
+                                                        <span> 17 </span><br>
+                                                        Dec 2017
+                                                    </div>
+                                                    <div class="notice-details col-sm-10 col-md-10">
+                                                        <h5 class="title-color caption-subject  bold"> holdiday on dec 2015 </h5>
+                                                        <p>a distinct section of a piece of writing, usually dealing
+                                                            with a single theme and indicated by a new line,
+                                                            indentation, or numbering.
+                                                        </p>
+                                                    </div>
+                                                </li>
+                                                <li>
+                                                    <div class="calendardate-box col-sm-2 col-md-2">
+                                                        <span> 17 </span><br>
+                                                        Dec 2017
+                                                    </div>
+                                                    <div class="notice-details col-sm-10 col-md-10">
+                                                        <h5 class="title-color caption-subject  bold"> holdiday on dec 2015 </h5>
+                                                        <p>a distinct section of a piece of writing, usually dealing
+                                                            with a single theme and indicated by a new line,
+                                                            indentation, or numbering.
+                                                        </p>
+                                                    </div>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                        <!--END TABS-->
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- END PORTLET -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="row widget-row">
+                <div class="col-sm-6 col-md-6">
+                    <!-- BEGIN WIDGET THUMB -->
+                    <div class="wigetbox wigetbox-colorone clearfix widget-thumb widget-bg-color-lightgreen margin-bottom-20 bordered green-haze">
+                        <div class="widget-thumb-wrap widget-thumb-wrap-bgone">
+                            <h4 class="widget-thumb-heading">Total Head Count</h4>
+                            <div class="widget-thumb-body">
+                                <span class="widget-thumb-body-stat" data-counter="counterup">605</span>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="icons">
+                                <i class="widget-thumb-icon  fa fa-user colorone"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- BEGIN WIDGET THUMB -->
+                <div class="col-sm-6 col-md-6">
+                    <div class="wigetbox wigetbox-colortwo clearfix widget-thumb widget-bg-color-lightgreen margin-bottom-20 bordered green-haze">
+                        <div class="widget-thumb-wrap widget-thumb-wrap-bgtwo">
+                            <h4 class="widget-thumb-heading">Joining This Month</h4>
+                            <div class="widget-thumb-body">
+                                <span class="widget-thumb-body-stat" data-counter="counterup">7</span>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="icons">
+                                <i class="widget-thumb-icon fa fa-user-plus colortwo"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-sm-6 col-md-6">
+                    <!-- BEGIN WIDGET THUMB -->
+                    <div class="wigetbox wigetbox-colorthree clearfix widget-thumb widget-bg-color-lightgreen margin-bottom-20 bordered green-haze">
+                        <div class="widget-thumb-wrap widget-thumb-wrap-bgthree">
+                            <h4 class="widget-thumb-heading">Exits This Month</h4>
+                            <div class="widget-thumb-body">
+                                <span class="widget-thumb-body-stat" data-counter="counterup">0</span>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="icons">
+                                <i class="widget-thumb-icon fa fa fa-user-times colorthree"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6 col-md-6">
+                    <!-- BEGIN WIDGET THUMB -->
+                    <div class="wigetbox wigetbox-colorfour clearfix widget-thumb margin-bottom-20 bordered green-haze">
+                        <div class="widget-thumb-wrap widget-thumb-wrap-bgfour">
+                            <h4 class="widget-thumb-heading">Appraisal Due</h4>
+                            <div class="widget-thumb-body">
+                                <ul>
+                                    <li class="line">
+                                        <span class="widget-thumb-body-stat" data-counter="counterup">30</span>
+                                        This Month
+                                    </li>
+                                    <li>
+                                        <span class="widget-thumb-body-stat" data-counter="counterup">20</span>
+                                        Next Month
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="icons">
+                                <i class="widget-thumb-icon  fa fa-users colorfour"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="datepickeform">
+                        <div class="form-body">
+                            <h3 class="form-section">Todo</h3>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label class="control-label">Due for today 28 march 2017 </label>
+                                        <input id="firstName" class="form-control" placeholder="Chee Kin" type="text" />
+                                    </div>
+                                </div>
+
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label class="control-label">Evalution</label>
+                                        <input id="datepicker" class="form-control" placeholder="Chee Kin" type="text" />
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <input id="firstName" class="form-control" placeholder="Chee Kin" type="text" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- END CONTENT -->
+                </div>
+
+                <div class="col-md-12 holidays">
+                    <!-- BEGIN PORTLET -->
+                    <div class="portlet light">
+                        <div class="portlet-title tabbable-line">
+                            <div class="caption caption-md">
+                                <i class="icon-globe theme-font hide"></i>
+                                <span class="caption-subject bold uppercase">Upcoming Holidays</span>
+                            </div>
+                        </div>
+
+                        <div class="portlet-body">
+                            <div class="row">
+                                <div class="upcomingholidays">
+                                    <div class="upcomingholidays-loading" style="height:100%;width:100%;position:absolute;top:0;left:0;"></div>
+                                    <ul class="feeds" style="visibility:hidden;">
+                                        <li class="col1bg">
+                                            <div class="col1">
+                                                <div class="cont">
+                                                    <div class="cont-col2">
+                                                        <div class="desc">
+                                                            <span class="label label-sm ">Sunday</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col2">
+                                                <div class="date">Just now</div>
+                                            </div>
+                                        </li>
+                                        <li class="col2bg">
+                                            <a href="javascript:;">
+                                                <div class="col1 col2bg">
+                                                    <div class="cont">
+                                                        <div class="cont-col2">
+                                                            <div class="desc">
+                                                                <span class="label label-sm ">Monday</span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col2">
+                                                    <div class="date">20 mins</div>
+                                                </div>
+                                            </a>
+                                        </li>
+                                        <li class="col3bg">
+                                            <div class="col1">
+                                                <div class="cont">
+                                                    <div class="cont-col2">
+                                                        <div class="desc">
+                                                            <span class="label label-sm">Tuesday</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col2">
+                                                <div class="date">24 mins</div>
+                                            </div>
+                                        </li>
+                                        <li class="col4bg">
+                                            <div class="col1">
+                                                <div class="cont">
+                                                    <div class="cont-col2">
+                                                        <div class="desc">
+                                                            <span class="label label-sm">Wednesday</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col2">
+                                                <div class="date">30 mins</div>
+                                            </div>
+                                        </li>
+                                        <li class="col5bg">
+                                            <div class="col1">
+                                                <div class="cont">
+                                                    <div class="cont-col2">
+                                                        <div class="desc">
+                                                            <span class="label label-sm ">Thursday</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col2">
+                                                <div class="date">40 mins</div>
+                                            </div>
+                                        </li>
+                                        <li class="col6bg">
+                                            <div class="col1">
+                                                <div class="cont">
+                                                    <div class="cont-col2">
+                                                        <div class="desc">
+                                                            <span class="label label-sm">Friday</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col2">
+                                                <div class="date">1.5 hours</div>
+                                            </div>
+                                        </li>
+                                        <li class="col7bg">
+                                            <div class="col1">
+                                                <div class="cont">
+                                                    <div class="cont-col2">
+                                                        <div class="desc">
+                                                            <span class="label label-sm">Saturday</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col2">
+                                                <div class="date">1.5 hours</div>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="clearfix"></div>
+
+</div>

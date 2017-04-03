@@ -30,6 +30,9 @@ use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\Form\Element\Select;
 use Zend\Mvc\Controller\AbstractActionController;
 use Setup\Repository\RecommendApproveRepository;
+use SelfService\Repository\LeaveSubstituteRepository;
+use Setup\Model\HrEmployees;
+
 
 class LeaveStatus extends AbstractActionController {
 
@@ -195,6 +198,9 @@ class LeaveStatus extends AbstractActionController {
         //to get the previous balance of selected leave from assigned leave detail
         $result = $leaveApproveRepository->assignedLeaveDetail($detail['LEAVE_ID'], $detail['EMPLOYEE_ID'])->getArrayCopy();
         $preBalance = $result['BALANCE'];
+        
+        $leaveSubstituteRepo = new LeaveSubstituteRepository($this->adapter);
+        $leaveSubstituteDetail = $leaveSubstituteRepo->fetchById($detail['ID']);
 
         if (!$request->isPost()) {
             $leaveApply->exchangeArrayFromDB($detail);
@@ -245,7 +251,12 @@ class LeaveStatus extends AbstractActionController {
                     'allowHalfDay' => $leaveDtl['ALLOW_HALFDAY'],
                     'leave' => $leaveRequestRepository->getLeaveList($detail['EMPLOYEE_ID']),
                     'customRenderer' => Helper::renderCustomView(),
-                    'recommApprove'=> $recommApprove
+                    'recommApprove'=> $recommApprove,
+                    'subEmployeeId'=> $detail['SUB_EMPLOYEE_ID'],
+                    'subRemarks'=>$detail['SUB_REMARKS'],
+                    'subApprovedFlag'=>$detail['SUB_APPROVED_FLAG'],
+                    'employeeList'=>  EntityHelper::getTableKVListWithSortOption($this->adapter, HrEmployees::TABLE_NAME, HrEmployees::EMPLOYEE_ID, [HrEmployees::FIRST_NAME, HrEmployees::MIDDLE_NAME, HrEmployees::LAST_NAME],[HrEmployees::STATUS => "E",HrEmployees::RETIRED_FLAG => "N"], HrEmployees::FIRST_NAME, "ASC", " ")
+        
         ]);
     }
 

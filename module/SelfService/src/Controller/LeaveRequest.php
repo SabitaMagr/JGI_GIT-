@@ -241,15 +241,6 @@ class LeaveRequest extends AbstractActionController {
             $this->form->bind($leaveApply);
         }
         
-        $leaveSubstituteRepo = new LeaveSubstituteRepository($this->adapter);
-        $leaveSubstituteDetail = $leaveSubstituteRepo->fetchById($detail['ID']);
-        if($leaveSubstituteDetail!=null){
-            $substituteEmployee = 1;
-            $leaveSubstitute = $leaveSubstituteDetail->EMPLOYEE_ID;
-        }else{
-            $substituteEmployee = 0;
-            $leaveSubstitute = 0;
-        }
         return Helper::addFlashMessagesToArray($this, [
                     'form' => $this->form,
                     'id' => $id,
@@ -266,8 +257,9 @@ class LeaveRequest extends AbstractActionController {
                     'allowHalfDay' => $leaveDtl['ALLOW_HALFDAY'],
                     'leave' => $this->leaveRequestRepository->getLeaveList($detail['EMPLOYEE_ID']),
                     'customRenderer' => Helper::renderCustomView(),
-                    'leaveSubstitue'=> $leaveSubstitute,
-                    'substituteEmployee'=> $substituteEmployee,
+                    'subEmployeeId'=> $detail['SUB_EMPLOYEE_ID'],
+                    'subRemarks'=>$detail['SUB_REMARKS'],
+                    'subApprovedFlag'=>$detail['SUB_APPROVED_FLAG'],
                     'employeeList'=>  EntityHelper::getTableKVListWithSortOption($this->adapter, HrEmployees::TABLE_NAME, HrEmployees::EMPLOYEE_ID, [HrEmployees::FIRST_NAME, HrEmployees::MIDDLE_NAME, HrEmployees::LAST_NAME],[HrEmployees::STATUS => "E",HrEmployees::RETIRED_FLAG => "N"], HrEmployees::FIRST_NAME, "ASC", " ")
         ]);
     }
