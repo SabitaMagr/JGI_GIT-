@@ -193,8 +193,8 @@
                                 l.stop();
                                 console.log(success.data);
                                 var tempData = success.data;
-//                                $window.location.href = document.urlTravelRequest;
-//                                $window.localStorage.setItem("msg", tempData.msg);
+                                $window.location.href = document.urlTravelRequest;
+                                $window.localStorage.setItem("msg", tempData.msg);
                             });
                         }, function (failure) {
                             console.log(failure);

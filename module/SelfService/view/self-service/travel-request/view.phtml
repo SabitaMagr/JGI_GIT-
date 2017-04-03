@@ -1,6 +1,7 @@
 <?php
 $this->headScript()->appendFile($this->basePath('js/angular.min.js'))
-        ->appendFile($this->basePath('js/SelfService/travel-request/add.js'));
+        ->appendFile($this->basePath('js/SelfService/travel-request/add.js'))
+        ->appendFile($this->basePath('js/SelfService/travel-request/advanceRequestController.js'));
 
 $form->setAttribute('role', 'form');
 $form->setAttribute('id', 'travelRequest-form');
