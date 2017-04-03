@@ -1,5 +1,7 @@
 <?php
-$this->headScript()->appendFile($this->basePath('js/SelfService/travel-request/add.js'));
+$this->headScript()->appendFile($this->basePath('js/angular.min.js'));
+$this->headScript()->appendFile($this->basePath('js/SelfService/travel-request/add.js'))
+        ->appendFile($this->basePath('js/SelfService/travel-request/advanceRequestController.js'));
 
 $form->setAttribute('role', 'form');
 $form->setAttribute('id', 'travelApprove-form');
@@ -48,11 +50,12 @@ print $this->form()->openTag($form);
     <script>
         document.menu=<?php $menu = ["id" => "menuManagerService","subMenu"=>["id"=>"subMenuTraveltoApprove"]];echo json_encode($menu);?>;
         document.url = '<?= $this->url("restful", ["action" => "index"]) ?>';
+        document.urlCss='<?= $this->basePath('css/custom.css') ?>';
     </script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\travelApprove')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
-<div class="row margin-top-20">
+<div class="row margin-top-20" ng-app="hris" ng-controller="advanceRequestController">
     <div class="col-sm-8 col-sm-offset-2">
         <div class="portlet box custom-box">
             <div class="portlet-title">
@@ -275,10 +278,111 @@ print $this->form()->openTag($form);
 
         </div>
     </div>
-</div>
 
 <?php
 
 print $this->form()->closeTag();
 
 ?>
+
+    <div class="row">
+        <div style="border:1px solid; display: none;" id="printableArea" class="col-md-8">
+            <div class="row">
+                <div class="col-md-8 col-sm-offset-2">
+                    <ul id="headingList">
+                        <li><h2><?= strtoupper($empDtl['COMPANY_NAME']); ?></h2></li>
+                        <li id="underline"><h3>Travel Authorization Form</h3></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="row font-common" style="min-height: 70px;">
+                <div class="dtlTravel">
+                    <ul id="personalInfo">
+                        <li>Name: <?= $employeeName; ?></li>
+                        <li>Place of Visit: <?= $detail['DESTINATION']; ?></li>
+                        <li>Purpose of Visit: <?= $detail['PURPOSE']; ?></li>
+                    </ul>
+                </div>
+                <div class="dtlDate">
+                    <ul id="personalInfo">
+                        <li>Date: <?php print_r($todayDate); ?></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="row font-common detailOfRequest">
+                <ul id="personalInfo">
+                    <li>
+                        Visit Form : <?= $detail['FROM_DATE'];?> To <?= $detail['TO_DATE'];?> Total <?= $duration; ?> Day<?= ($duration>1)?"s":"" ?>
+                    </li>
+                    <li>
+                        Advance For Tour : Rs. <?= $detail['REQUESTED_AMOUNT'] ?> (<?= $advanceAmount; ?>)
+                    </li>
+                    <li>Mode of Transport: <?= $vehicle; ?></li>
+                </ul>
+            </div>
+            
+            <div class="row font-common signature">
+                <div class="signEmployee">
+                    <div class="border-dotted">
+                    Signature of Employee
+                    </div>
+                </div>
+                <div class="signRecommender">
+                    <p style="height: {{ hgtRecommender }}px"><label ng-if="signRecommender"><?= ucwords(strtolower($recommender)); ?></label></p>
+                    <div class="border-dotted" style="margin-left: 55px;">
+                        Recommended By 
+                    </div>
+                </div>
+                <div class="signApprover">
+                    <p style="height: {{ hgtApprover }}px"><label ng-if="signApprover"><?= ucwords(strtolower($approver)); ?></label></p>
+                    <div class="border-dotted" style="float:right;">
+                        Approving Authority
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row detailOfRequest" style="">
+                <h4 style="margin-bottom:3px;">To Account Section:</h4>
+                <div class="font-common">
+                    <p style="margin-top:0px;">
+                        Please provide to give him/her tour advance Rs. <?= $detail['REQUESTED_AMOUNT'] ?> which will be adjusted after presenting travel expenses & tour report within 15 days.
+                    </p>
+                </div>
+            </div>
+            
+            <div class="row font-common detailOfRequest1">
+                <div class="signEmployee2">
+                    <div class="border-dotted1">
+                    Administration Department
+                    </div>
+                </div>
+            </div>
+            <?php if(count($subDetail)>0){ ?>
+            <div class="row detailOfRequest" style="margin-top: 4%;">
+                <div class="font-common">
+                    <p style="margin-top:0px; font-size:11px;">
+                        I am responsible to do his/her official works in his/her absence from office due to travelling/leave training.
+                    </p>
+                    <div class="dtlTravel">
+                        <ul id="personalInfo">
+                            <li>Name: <?=  $subDetail['SUB_EMPLOYEE_NAME']; ?></li>
+                            <li>Design: <?= $subDetail['SUB_DESIGNATION']; ?></li>
+                            <li>Date: <?= $subDetail['SUB_APPROVED_DATE']; ?></li>
+                            <li>Signature: </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <?php } ?>
+        </div>
+    
+        <div class="row esetup" style="">
+            <div class="col-md-12" style="text-align:center;">
+                <a class="btn btn-success" ng-click="printDiv('printableArea');"> Print</a>
+            </div>
+        </div>
+    </div>
+    
+    </div>
