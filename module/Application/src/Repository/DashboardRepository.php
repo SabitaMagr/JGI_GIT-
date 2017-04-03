@@ -289,5 +289,46 @@ class DashboardRepository implements RepositoryInterface {
         return $result;
     }
 
+    public function fetchEmployeesBirthday() {
+        $sql = "SELECT * FROM (
+                                SELECT EMP.EMPLOYEE_ID,
+                                  ( CASE
+                                      WHEN EMP.MIDDLE_NAME IS NULL THEN EMP.FIRST_NAME || ' ' || EMP.LAST_NAME
+                                      ELSE EMP.FIRST_NAME || ' ' || EMP.MIDDLE_NAME || ' ' || EMP.LAST_NAME
+                                  END ) FULL_NAME, DSG.DESIGNATION_TITLE,
+                                  EMP.BIRTH_DATE, 'TODAY' BIRTHDAYFOR
+                                FROM HRIS_EMPLOYEES EMP, HRIS_DESIGNATIONS DSG
+                                WHERE TO_CHAR(EMP.BIRTH_DATE, 'MMDD') = TO_CHAR(SYSDATE,'MMDD')
+                                AND EMP.RETIRED_FLAG = 'N'
+                                AND EMP.DESIGNATION_ID = DSG.DESIGNATION_ID
+                                UNION ALL
+                                SELECT EMP.EMPLOYEE_ID,
+                                  ( CASE
+                                      WHEN EMP.MIDDLE_NAME IS NULL THEN EMP.FIRST_NAME || ' ' || EMP.LAST_NAME
+                                      ELSE EMP.FIRST_NAME || ' ' || EMP.MIDDLE_NAME || ' ' || EMP.LAST_NAME
+                                  END ) FULL_NAME, DSG.DESIGNATION_TITLE,
+                                  EMP.BIRTH_DATE, 'UPCOMING' BIRTHDAYFOR
+                                FROM HRIS_EMPLOYEES EMP, HRIS_DESIGNATIONS DSG
+                                WHERE TO_CHAR(EMP.BIRTH_DATE, 'MMDD') > TO_CHAR(SYSDATE,'MMDD')
+                                AND EMP.RETIRED_FLAG = 'N'
+                                AND EMP.DESIGNATION_ID = DSG.DESIGNATION_ID
+                ) ORDER BY TO_CHAR(BIRTH_DATE,'MMDD')";
+
+        $statement = $this->adapter->query($sql);
+        $result = $statement->execute();
+
+        $birtydayResult = array();
+        foreach($result as $rs) {
+            if ('TODAY' == strtoupper($rs['BIRTHDAYFOR'])) {
+                $birtydayResult['TODAY'][$rs['EMPLOYEE_ID']] = $rs;
+            }
+            if ('UPCOMING' == strtoupper($rs['BIRTHDAYFOR'])) {
+                $birtydayResult['UPCOMING'][$rs['EMPLOYEE_ID']] = $rs;
+            }
+        }
+
+        return $birtydayResult;
+    }
+
 
 }

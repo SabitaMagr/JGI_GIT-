@@ -1,4 +1,5 @@
 <?php
+//print"<pre>";print_r($employeesBirthday['TODAY']);exit;
 $this->headLink()
     ->appendStylesheet($this->basePath('assets/global/plugins/fullcalendar/fullcalendar.min.css'))
     ->appendStylesheet($this->basePath('css/dashboard.employee.css'));
@@ -11,6 +12,10 @@ $this->headScript()
     ->appendFile($this->basePath('assets/admin/pages/scripts/index.js'))
     ->appendFile($this->basePath('js/dashboard/employee-dashboard.js'));
 ?>
+
+<script>
+    document.calendarUrl = '<?php echo $this->url('dashboard', ['action' => 'fetchEmployeeCalendarData']); ?>';
+</script>
 
 <div class="employeedashboard">
     <div class="emplyoee-dashboard clearfix">
@@ -236,18 +241,31 @@ $this->headScript()
                                         </div>
                                         <div class="noticeboard-list row">
                                             <ul>
-                                                <?php foreach($employeeNotice as $notice) : ?>
+                                                <?php if(count($employeeNotice)> 0) : ?>
+                                                    <?php foreach($employeeNotice as $notice) : ?>
+                                                        <li style="width:100%;">
+                                                            <div class="calendardate-box col-sm-2 col-md-2">
+                                                                <span><?php print $notice['NEWS_DAY']; ?></span><br>
+                                                                <?php print $notice['NEWS_MONTH_YEAR']; ?>
+                                                            </div>
+                                                            <div class="notice-details col-sm-10 col-md-10">
+                                                                <h5 class="title-color caption-subject  bold"><?php print $notice['NEWS_TITLE']; ?></h5>
+                                                                <p><?php print $notice['NEWS_EDESC']; ?></p>
+                                                            </div>
+                                                        </li>
+                                                    <?php endforeach; ?>
+                                                 <?php else : ?>
                                                     <li style="width:100%;">
                                                         <div class="calendardate-box col-sm-2 col-md-2">
-                                                            <span><?php print $notice['NEWS_DAY']; ?></span><br>
-                                                            <?php print $notice['NEWS_MONTH_YEAR']; ?>
+                                                            <span><?php print date('d'); ?></span><br>
+                                                            <?php print date('M Y'); ?>
                                                         </div>
                                                         <div class="notice-details col-sm-10 col-md-10">
-                                                            <h5 class="title-color caption-subject  bold"><?php print $notice['NEWS_TITLE']; ?></h5>
-                                                            <p><?php print $notice['NEWS_EDESC']; ?></p>
+                                                            <h5 class="title-color caption-subject  bold">No notice found</h5>
+                                                            <p>Notice will be display when new notice is published</p>
                                                         </div>
                                                     </li>
-                                                <?php endforeach; ?>
+                                                <?php endif; ?>
                                             </ul>
                                         </div>
                                         <!--END TABS-->
@@ -435,7 +453,8 @@ $this->headScript()
                             <div class="row">
                                 <div class="tab-content birday-person-list">
                                     <div class="tab-pane active" id="tab-birthday-today">
-                                        <?php for($i=0; $i<5; $i++) : ?>
+                                        <?php if(isset($employeesBirthday) && isset($employeesBirthday['TODAY'])) : ?>
+                                        <?php foreach($employeesBirthday['TODAY'] as $todayBirthday) : ?>
                                             <div class="person-list clearfix">
                                                 <div class="col-md-3 col-sm-3">
                                                     <div class="person-pic">
@@ -444,29 +463,32 @@ $this->headScript()
                                                 </div>
                                                 <div class="col-xs-9 col-md-9 col-sm-9">
                                                     <div class="person-details">
-                                                        <h4>Rajan Shrestha</h4>
-                                                        <span>Web Designer</span>
+                                                        <h4><?php print $todayBirthday['FULL_NAME']; ?></h4>
+                                                        <span><?php print $todayBirthday['DESIGNATION_TITLE']; ?></span>
                                                     </div>
                                                 </div>
                                             </div>
-                                        <?php endfor; ?>
+                                        <?php endforeach; ?>
+                                        <?php endif; ?>
                                     </div>
                                     <div class="tab-pane" id="tab-birthday-upcoming" style="display:none;">
-                                        <?php for($i=0; $i<3; $i++) : ?>
-                                            <div class="person-list clearfix">
-                                                <div class="col-md-3 col-sm-3">
-                                                    <div class="person-pic">
-                                                        <img src="<?php print $this->basePath('img/nobody_m.original.jpg'); ?>" alt="person picture">
+                                        <?php if(isset($employeesBirthday) && isset($employeesBirthday['UPCOMING'])) : ?>
+                                            <?php foreach($employeesBirthday['UPCOMING'] as $upcomingBirthday) : ?>
+                                                <div class="person-list clearfix">
+                                                    <div class="col-md-3 col-sm-3">
+                                                        <div class="person-pic">
+                                                            <img src="<?php print $this->basePath('img/nobody_m.original.jpg'); ?>" alt="person picture">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-xs-9 col-md-9 col-sm-9">
+                                                        <div class="person-details">
+                                                            <h4><?php print $upcomingBirthday['FULL_NAME']; ?></h4>
+                                                            <span><?php print $upcomingBirthday['DESIGNATION_TITLE']; ?></span>
+                                                        </div>
                                                     </div>
                                                 </div>
-                                                <div class="col-xs-9 col-md-9 col-sm-9">
-                                                    <div class="person-details">
-                                                        <h4>Rajan Shrestha</h4>
-                                                        <span>Web Designer</span>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        <?php endfor; ?>
+                                            <?php endforeach; ?>
+                                        <?php endif; ?>
                                     </div>
                                 </div>
                             </div>

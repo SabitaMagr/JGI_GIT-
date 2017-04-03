@@ -39,53 +39,66 @@
             }
         }
 
+        // Fetch all the calendar events
+        app.pullDataById(document.calendarUrl, {}).then(function (response) {
+
+        }, function(err) {
+
+        });
+
         $('#calendar').fullCalendar('destroy'); // destroy the calendar
         $('#calendar').fullCalendar({ //re-initialize the calendar
             disableDragging : false,
+            navLinks: true,
+            eventLimit: true,
             header: h,
-            editable: true,
+            editable: false,
             events: [{
-                title: 'All Day',
-                start: new Date(y, m, 1),
-                backgroundColor: Metronic.getBrandColor('yellow')
-            }, {
-                title: 'Long Event',
-                start: new Date(y, m, d - 5),
-                end: new Date(y, m, d - 2),
-                backgroundColor: Metronic.getBrandColor('blue')
-            }, {
-                title: 'Repeating Event',
-                start: new Date(y, m, d - 3, 16, 0),
-                allDay: false,
-                backgroundColor: Metronic.getBrandColor('red')
-            }, {
-                title: 'Repeating Event',
-                start: new Date(y, m, d + 6, 16, 0),
-                allDay: false,
-                backgroundColor: Metronic.getBrandColor('green')
-            }, {
-                title: 'Meeting',
-                start: new Date(y, m, d+9, 10, 30),
-                allDay: false
-            }, {
-                title: 'Lunch',
-                start: new Date(y, m, d, 14, 0),
-                end: new Date(y, m, d, 14, 0),
-                backgroundColor: Metronic.getBrandColor('grey'),
-                allDay: false
-            }, {
-                title: 'Birthday',
-                start: new Date(y, m, d + 1, 19, 0),
-                end: new Date(y, m, d + 1, 22, 30),
-                backgroundColor: Metronic.getBrandColor('purple'),
-                allDay: false
-            }, {
-                title: 'Click for Google',
-                start: new Date(y, m, 28),
-                end: new Date(y, m, 29),
-                backgroundColor: Metronic.getBrandColor('yellow'),
-                url: 'http://google.com/'
-            }]
+                title: 'All Day Event',
+                start: '2017-04-01'
+                }, {
+                    title: 'Long Event',
+                    start: '2017-04-07',
+                    end: '2017-04-10'
+                }, {
+                    id: 999,
+                    title: 'Repeating Event',
+                    start: '2017-04-09T16:00:00'
+                }, {
+                    id: 999,
+                    title: 'Repeating Event',
+                    start: '2017-04-16T16:00:00'
+                }, {
+                    title: 'Conference',
+                    start: '2017-04-11',
+                    end: '2017-04-13'
+                }, {
+                    title: 'Meeting',
+                    start: '2017-04-12T10:30:00',
+                    end: '2017-04-12T12:30:00'
+                }, {
+                    title: 'Lunch',
+                    start: '2017-04-12T12:00:00'
+                },
+                {
+                    title: 'Meeting',
+                    start: '2017-04-12T14:30:00'
+                }, {
+                    title: 'Happy Hour',
+                    start: '2017-04-12T17:30:00'
+                },
+                {
+                    title: 'Dinner',
+                    start: '2017-04-12T20:00:00'
+                }, {
+                    title: 'Birthday Party',
+                    start: '2017-04-13T07:00:00'
+                }, {
+                    title: 'Click for Google',
+                    url: 'http://google.com/',
+                    start: '2017-04-28'
+                }
+            ]
         });
     });
 

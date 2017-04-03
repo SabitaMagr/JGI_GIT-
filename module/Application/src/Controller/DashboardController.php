@@ -74,7 +74,9 @@ class DashboardController extends AbstractActionController {
             "employeeDetail" => $employeeDetail,
             "upcomingHolidays" => $dahsboardRepo->fetchUpcomingHolidays($employeeDetail['GENDER_ID'], $employeeDetail['BRANCH_ID']),
             "employeeNotice" => $dahsboardRepo->fetchEmployeeNotice(),
+            "employeesBirthday" => $dahsboardRepo->fetchEmployeesBirthday(),
         ));
+
         $view->setTemplate("dashboard/employee");
 //        $view->setTemplate("dashboard/hrm");
         return $view;
@@ -217,6 +219,27 @@ class DashboardController extends AbstractActionController {
                 break;
         }
         return $data;
+    }
+
+    public function fetchEmployeeCalendarDataAction() {
+        try {
+            $request = $this->getRequest();
+            if ($request->isPost()) {
+                $postedData = $request->getPost();
+
+                $employeeId = $postedData['employeeId'];
+                if (!isset($employeeId)) {
+                    throw new Exception("parameter employeeId is required");
+                }
+
+                $reportData = $this->reportRepo->employeeWiseDailyReport($employeeId);
+                return new CustomViewModel(['success' => true, 'data' => $reportData, 'error' => '']);
+            } else {
+                throw new Exception("The request should be of type post");
+            }
+        } catch (Exception $e) {
+            return new CustomViewModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
+        }
     }
 
 }
