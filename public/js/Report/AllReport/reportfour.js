@@ -154,6 +154,10 @@
                 var absentDays = parseFloat(data['IS_ABSENT']);
                 var leaveDays = parseFloat(data['ON_LEAVE']);
 
+                $present.attr('title', data['IS_PRESENT']);
+                $absent.attr('title', data['IS_ABSENT']);
+                $leave.attr('title', data['ON_LEAVE']);
+
                 var total = presentDays + absentDays + leaveDays;
 
                 $present.html(Number((presentDays * 100 / total).toFixed(1)));
@@ -237,7 +241,9 @@
         var employeeId = document.employeeId;
         if (employeeId != 0) {
             initializeReport(employeeId);
+            $employeeList.val(employeeId);
         }
+
 
     });
 })(window.jQuery, window.app);

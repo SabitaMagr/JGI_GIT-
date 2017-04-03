@@ -147,8 +147,6 @@ class AllReportController extends AbstractActionController {
         $cbd = $this->reportRepo->getCompanyBranchDepartment();
         $comBraDepList = [];
         foreach ($cbd as $row) {
-
-
             if (isset($comBraDepList[$row['COMPANY_ID']])) {
                 if (isset($comBraDepList[$row['COMPANY_ID']]['BRANCH_LIST'][$row['BRANCH_ID']])) {
                     $comBraDepList[$row['COMPANY_ID']]['BRANCH_LIST'][$row['BRANCH_ID']]['DEPARTMENT_LIST'][$row['DEPARTMENT_ID']] = [

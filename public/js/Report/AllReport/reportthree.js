@@ -5,7 +5,6 @@
         var extractDetailData = function (rawData, departmentId) {
             var data = {};
             var column = {};
-            var counter = 1;
             for (var i in rawData) {
                 if (typeof data[rawData[i].EMPLOYEE_ID] !== 'undefined') {
                     data[rawData[i].EMPLOYEE_ID].DAYS[rawData[i].FORMATTED_ATTENDANCE_DT] =
@@ -44,10 +43,9 @@
                     var temp = rawData[i].FORMATTED_ATTENDANCE_DT;
                     column[rawData[i].FORMATTED_ATTENDANCE_DT] = {
                         field: temp,
-                        title: "" + counter,
+                        title: "" + rawData[i].DAY_COUNT,
                         template: '<span data="#: ' + temp + ' #" class="daily-attendance"></span>'
                     }
-                    counter++;
 
                 }
             }
@@ -121,6 +119,10 @@
                 var leaveDays = parseFloat(data['ON_LEAVE']);
 
                 var total = presentDays + absentDays + leaveDays;
+
+                $present.attr('title', data['IS_PRESENT']);
+                $absent.attr('title', data['IS_ABSENT']);
+                $leave.attr('title', data['ON_LEAVE']);
 
                 $present.html(Number((presentDays * 100 / total).toFixed(1)));
                 $absent.html(Number((absentDays * 100 / total).toFixed(1)));
@@ -202,7 +204,7 @@
 
         var monthId = document.monthId;
         var departmentId = document.departmentId;
-        
+
         if (monthId != 0 && departmentId != 0) {
             initializeReport(monthId, departmentId);
         }

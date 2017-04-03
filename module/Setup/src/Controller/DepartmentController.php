@@ -107,6 +107,7 @@ class DepartmentController extends AbstractActionController {
                 return $this->redirect()->toRoute("department");
             }
         }
+
         return Helper::addFlashMessagesToArray(
                         $this, [
                     'form' => $this->form, 'id' => $id,
