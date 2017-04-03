@@ -144,7 +144,7 @@ class LeaveRequest extends AbstractActionController {
                     $leaveSubstitute = $postData->leaveSubstitute;
                     
                     $leaveSubstituteModel->leaveRequestId = $leaveRequest->id;
-                    $leaveSubstituteModel->employeeId = $substituteEmployee;
+                    $leaveSubstituteModel->employeeId = $leaveSubstitute;
                     $leaveSubstituteModel->createdBy = $this->employeeId;
                     $leaveSubstituteModel->createdDate = Helper::getcurrentExpressionDate();
                     $leaveSubstituteModel->status = 'E';

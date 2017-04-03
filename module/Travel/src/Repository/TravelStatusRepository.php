@@ -75,7 +75,10 @@ class TravelStatusRepository implements RepositoryInterface{
                 TR.RECOMMENDED_BY AS RECOMMENDED_BY,
                 TR.APPROVED_BY AS APPROVED_BY,
                 TR.RECOMMENDED_REMARKS AS RECOMMENDED_REMARKS,
-                TR.APPROVED_REMARKS AS APPROVED_REMARKS
+                TR.APPROVED_REMARKS AS APPROVED_REMARKS,
+                TS.APPROVED_FLAG AS SUB_APPROVED_FLAG,
+                TO_CHAR(TS.APPROVED_DATE, 'DD-MON-YYYY') AS SUB_APPROVED_DATE,
+                TS.EMPLOYEE_ID AS SUB_EMPLOYEE_ID
                 FROM HRIS_EMPLOYEE_TRAVEL_REQUEST TR
                 LEFT OUTER JOIN HRIS_EMPLOYEES E ON
                 E.EMPLOYEE_ID=TR.EMPLOYEE_ID
@@ -89,6 +92,8 @@ class TravelStatusRepository implements RepositoryInterface{
                 RECM.EMPLOYEE_ID = RA.RECOMMEND_BY
                 LEFT OUTER JOIN HRIS_EMPLOYEES APRV ON
                 APRV.EMPLOYEE_ID = RA.APPROVED_BY
+                LEFT OUTER JOIN HRIS_TRAVEL_SUBSTITUTE TS
+                ON TR.TRAVEL_ID = TS.TRAVEL_ID
                 WHERE 
                 E.STATUS='E'".$retiredFlag."              
                 AND
@@ -103,7 +108,10 @@ class TravelStatusRepository implements RepositoryInterface{
                     END OR  RECM.STATUS is null) AND
                 (APRV.STATUS = CASE WHEN APRV.STATUS IS NOT NULL
                          THEN ('E')       
-                    END OR  APRV.STATUS is null)";
+                    END OR  APRV.STATUS is null)
+                    AND (TS.APPROVED_FLAG = CASE WHEN TS.EMPLOYEE_ID IS NOT NULL
+                         THEN ('Y')     
+                    END OR  TS.EMPLOYEE_ID is null)";
         if($recomApproveId==null){
             if ($travelRequestStatusId != -1) {
                 $sql .= " AND TR.STATUS ='" . $travelRequestStatusId . "'";

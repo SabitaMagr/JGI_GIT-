@@ -5,6 +5,8 @@
     'use strict';
     $(document).ready(function () {
         $('select').select2();
+        var branchList = document.branches;
+
         var inputFieldId = "form-departmentName";
         var formId = "department-form";
         var tableName = "HRIS_DEPARTMENTS";
@@ -16,7 +18,7 @@
         }
         window.app.checkUniqueConstraints(inputFieldId, formId, tableName, columnName, checkColumnName, selfId);
         window.app.checkUniqueConstraints("form-departmentCode", formId, tableName, "DEPARTMENT_CODE", checkColumnName, selfId);
-        var selectedBranchId = (typeof document.selectedBranchId === 'undefined') ? null : document.selectedBranchId;
+        var selectedBranchId = (typeof document.selectedBranchId === 'undefined' || document.selectedBranchId === '') ? null : document.selectedBranchId;
         var $companySelect = $('#form-companyId');
         var $branchSelect = $('#form-branchId');
 
@@ -28,13 +30,12 @@
                     .attr("value", "")
                     .text("Select Branch"));
 
-            var selectedCompanyBranches = document.branches[companyId];
+            var selectedCompanyBranches = branchList[companyId];
 
             selectedCompanyBranches = (typeof selectedCompanyBranches === 'undefined') ? [] : selectedCompanyBranches;
 
             $.each(selectedCompanyBranches, function (key, branch) {
                 if (selectedBranchId != null) {
-                    ;
                     if (branch.BRANCH_ID == selectedBranchId) {
                         $branchSelect.append($("<option selected='selected'></option>")
                                 .attr("value", branch.BRANCH_ID)

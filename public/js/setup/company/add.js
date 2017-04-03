@@ -14,5 +14,15 @@
         }
         window.app.checkUniqueConstraints(inputFieldId,formId,tableName,columnName,checkColumnName,selfId);
         window.app.checkUniqueConstraints("form-companyCode",formId,tableName,"COMPANY_CODE",checkColumnName,selfId);
+    
+        document.myDropzone = new Dropzone("#dropZoneContainer", {
+            url: document.fileUploadUrl,
+            autoProcessQueue: false,
+            maxFiles: 1,
+            addRemoveLinks: true
+        });
+        document.myDropzone.on("success", function (file, success) {
+            console.log("File Upload Response", success);
+        });
     });
 })(window.jQuery, window.app);

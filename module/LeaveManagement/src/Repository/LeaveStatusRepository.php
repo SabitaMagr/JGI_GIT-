@@ -203,7 +203,7 @@ class LeaveStatusRepository implements RepositoryInterface {
                 LA.APPROVED_BY AS APPROVED_BY,
                 LA.RECOMMENDED_REMARKS AS RECOMMENDED_REMARKS,
                 LA.APPROVED_REMARKS AS APPROVED_REMARKS,
-                LS.APPROVED_FLAG AS APPROVED_FLAG,
+                LS.APPROVED_FLAG AS SUB_APPROVED_FLAG,
                 TO_CHAR(LS.APPROVED_DATE, 'DD-MON-YYYY') AS SUB_APPROVED_DATE,
                 LS.EMPLOYEE_ID AS SUB_EMPLOYEE_ID
                 FROM HRIS_EMPLOYEE_LEAVE_REQUEST LA
@@ -238,7 +238,8 @@ class LeaveStatusRepository implements RepositoryInterface {
                     END OR  RECM.STATUS is null) AND
                 (APRV.STATUS = CASE WHEN APRV.STATUS IS NOT NULL
                          THEN ('E')       
-                    END OR  APRV.STATUS is null) AND (LS.APPROVED_FLAG = CASE WHEN LS.EMPLOYEE_ID IS NOT NULL
+                    END OR  APRV.STATUS is null) 
+                    AND (LS.APPROVED_FLAG = CASE WHEN LS.EMPLOYEE_ID IS NOT NULL
                          THEN ('Y')     
                     END OR  LS.EMPLOYEE_ID is null)";
         if ($recomApproveId == null) {

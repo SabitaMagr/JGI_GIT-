@@ -64,7 +64,8 @@ print $this->form()->openTag($form);
                                         Recommender :  
                                     </td>
                                     <td>
-                                        <?php echo ucwords(strtolower($recommender)); ?><input type="checkbox" ng-model="recommender" ng-click="recommenderView(recommender)" name="recommender" style="margin-top:-1%; margin-left:2%;"/>
+                                        <?php echo ucwords(strtolower($recommender)); ?>
+                                        <input type="checkbox" ng-model="recommender" ng-click="recommenderView(recommender)" name="recommender" style="margin-top:-1%; margin-left:2%;"/>
                                     </td>
                                 </tr>
                             </table>
@@ -76,7 +77,8 @@ print $this->form()->openTag($form);
                                         Approver :  
                                     </td>
                                     <td>
-                                        <?php echo ucwords(strtolower($approver)); ?><input type="checkbox"  ng-model="aprover" ng-click="approverView(aprover)" name="approver" style="margin-top:-1%; margin-left:2%;" />
+                                        <?php echo ucwords(strtolower($approver)); ?>
+                                        <input type="checkbox"  ng-model="aprover" ng-click="approverView(aprover)" name="approver" style="margin-top:-1%; margin-left:2%;" />
                                     </td>
                                 </tr>     
                             </table>

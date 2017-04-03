@@ -24,6 +24,7 @@ use Zend\Mvc\Controller\AbstractActionController;
 use SelfService\Repository\TravelExpenseDtlRepository;
 use Application\Helper\NumberHelper;
 use Setup\Repository\EmployeeRepository;
+use Setup\Model\HrEmployees;
 
 class TravelApproveController extends AbstractActionController {
 
@@ -200,6 +201,34 @@ class TravelApproveController extends AbstractActionController {
             'TI'=>'Taxi',
             'BS'=>'Bus'
         );
+        $vehicle = '';
+        foreach($transportTypes as $key=>$value){
+            if($detail['TRANSPORT_TYPE']==$key){
+                $vehicle = $value;
+            }
+        }
+        $empRepository = new EmployeeRepository($this->adapter);
+        $empDtl = $empRepository->fetchForProfileById($detail['EMPLOYEE_ID']);
+        
+        $fullName = function($id) {
+            $empRepository = new EmployeeRepository($this->adapter);
+            $empDtl = $empRepository->fetchById($id);
+            $empMiddleName = ($empDtl['MIDDLE_NAME'] != null) ? " " . $empDtl['MIDDLE_NAME'] . " " : " ";
+            return $empDtl['FIRST_NAME'] . $empMiddleName . $empDtl['LAST_NAME'];
+        };
+        
+        $numberInWord = new NumberHelper();
+        $advanceAmount = $numberInWord->toText($detail['REQUESTED_AMOUNT']);
+        $subDetail = [];
+        if($detail['SUB_EMPLOYEE_ID']!=null){
+            $subEmpDetail = $empRepository->fetchForProfileById($detail['SUB_EMPLOYEE_ID']);
+            $subDetail = [
+              'SUB_EMPLOYEE_NAME'=>  $fullName($detail['SUB_EMPLOYEE_ID']),
+              'SUB_DESIGNATION'=> $subEmpDetail['DESIGNATION'],
+              'SUB_APPROVED_DATE'=>$detail['SUB_APPROVED_DATE']
+            ];
+        }
+        $duration = ($detail['TO_DATE']-$detail['FROM_DATE'])+1;
         return Helper::addFlashMessagesToArray($this, [
                     'form' => $this->form,
                     'id' => $id,
@@ -215,7 +244,19 @@ class TravelApproveController extends AbstractActionController {
                     'employeeId' => $this->employeeId,
                     'advanceAmt'=>$advanceAmt,
                     'transportTypes'=>$transportTypes,
-                    'requestedEmployeeId' => $requestedEmployeeID,]);
+                    'requestedEmployeeId' => $requestedEmployeeID,
+                    'subEmployeeId'=> $detail['SUB_EMPLOYEE_ID'],
+                    'subRemarks'=>$detail['SUB_REMARKS'],
+                    'subApprovedFlag'=>$detail['SUB_APPROVED_FLAG'],
+                    'empDtl'=>$empDtl,
+                    'detail'=>$detail,
+                    'todayDate'=>date('d-M-Y'),
+                    'vehicle'=>$vehicle,
+                    'advanceAmount'=>$advanceAmount,
+                    'subDetail'=>$subDetail,
+                    'duration'=>$duration,
+                    'employeeList'=>  EntityHelper::getTableKVListWithSortOption($this->adapter, HrEmployees::TABLE_NAME, HrEmployees::EMPLOYEE_ID, [HrEmployees::FIRST_NAME, HrEmployees::MIDDLE_NAME, HrEmployees::LAST_NAME],[HrEmployees::STATUS => "E",HrEmployees::RETIRED_FLAG => "N"], HrEmployees::FIRST_NAME, "ASC", " ")
+                ]);
     }
     
     public function expenseDetailAction(){

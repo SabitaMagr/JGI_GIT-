@@ -1,7 +1,7 @@
 (function ($, app) {
     'use strict';
     $(document).ready(function () {
-        $('select').select2();
+        $('select#form-transportType').select2();
         app.startEndDatePicker('fromDate', 'toDate');
         /* prevent past event post */
         $('#fromDate').datepicker("setStartDate", new Date());

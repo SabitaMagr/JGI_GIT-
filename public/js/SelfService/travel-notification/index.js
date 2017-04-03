@@ -2,9 +2,9 @@
     'use strict';
     $(document).ready(function () {
         console.log(document.list);
-        $("#leaveNotificationTable").kendoGrid({
+        $("#travelNotificationTable").kendoGrid({
             excel: {
-                fileName: "LeaveNotification.xlsx",
+                fileName: "TravelNotification.xlsx",
                 filterable: true,
                 allPages: true
             },
@@ -24,12 +24,11 @@
             rowTemplate: kendo.template($("#rowTemplate").html()),
             columns: [
                 {field: "FIRST_NAME", title: "Employee Name", width: 150},
-                {field: "LEAVE_CODE", title: "Leave Code", width: 120},
-                {field: "LEAVE_ENAME", title: "Leave Name", width: 120},
-                {field: "APPLIED_DATE", title: "Requested Date", width: 140},
-                {field: "FROM_DATE", title: "From Date", width: 100},
-                {field: "TO_DATE", title: "To Date", width: 90},
-                {field: "NO_OF_DAYS", title: "Duration", width: 100},
+                {field: "TRAVEL_CODE", title: "Travel Code",width:120},
+                {field: "FROM_DATE", title: "Start Date",width:100},
+                {field: "TO_DATE", title: "To Date",width:90},
+                {field: "REQUESTED_DATE", title: "Applied Date",width:120},
+                {field: "DESTINATION", title: "Destination",width:110},
                 {field: "STATUS", title: "Status",width:80},
                 {field: "APPROVED_FLAG", title: "Approved Flag",width:120},
                 {title: "Action",width:80}
@@ -49,13 +48,15 @@
             var rows = [{
                     cells: [
                         {value: "Employee Name"},
-                        {value: "Leave Code"},
-                        {value: "Leave Name"},
+                        {value: "Travel Code"},
+                        {value: "From Date"},
+                        {value: "To Date"},
                         {value: "Applied Date"},
-                        {value: "Start Date"},
-                        {value: "End Date"},
-                        {value: "Duration"},
+                        {value: "Destination"},
+                        {value: "Requested Amount"},
+                        {value: "Requested Type"},
                         {value: "Status"},
+                        {value: "Purpose"},
                         {value: "Remarks"},
                         {value: "Recommender"},
                         {value: "Approver"},
@@ -63,12 +64,12 @@
                         {value: "Recommended Date"},
                         {value: "Remarks By Approver"},
                         {value: "Approved Date"},
-                        {value: "Leave Substitute"},
+                        {value: "Travel Substitute"},
                         {value: "Approved Flag"},
                         {value: "Approved Date"},
                     ]
                 }];
-            var dataSource = $("#leaveNotificationTable").data("kendoGrid").dataSource;
+            var dataSource = $("#travelNotificationTable").data("kendoGrid").dataSource;
             var filteredDataSource = new kendo.data.DataSource({
                 data: dataSource.data(),
                 filter: dataSource.filter()
@@ -79,24 +80,25 @@
 
             for (var i = 0; i < data.length; i++) {
                 var dataItem = data[i];
-                var middleName = dataItem.MIDDLE_NAME != null ? " " + dataItem.MIDDLE_NAME + " " : " ";
                 rows.push({
                     cells: [
-                        {value: dataItem.FIRST_NAME + middleName + dataItem.LAST_NAME},
-                        {value: dataItem.LEAVE_CODE},
-                        {value: dataItem.LEAVE_ENAME},
-                        {value: dataItem.REQUESTED_DT},
+                        {value: dataItem.EMPLOYEE_NAME},
+                        {value: dataItem.TRAVEL_CODE},
                         {value: dataItem.FROM_DATE},
                         {value: dataItem.TO_DATE},
-                        {value: dataItem.NO_OF_DAYS},
+                        {value: dataItem.REQUESTED_DATE},
+                        {value: dataItem.DESTINATION},
+                        {value: dataItem.REQUESTED_AMOUNT},
+                        {value: dataItem.REQUESTED_TYPE},
                         {value: dataItem.STATUS},
+                        {value: dataItem.PURPOSE},
                         {value: dataItem.REMARKS},
                         {value: dataItem.RECOMMENDER_NAME},
                         {value: dataItem.APPROVER_NAME},
                         {value: dataItem.RECOMMENDED_REMARKS},
-                        {value: dataItem.RECOMMENDED_DT},
+                        {value: dataItem.RECOMMENDED_DATE},
                         {value: dataItem.APPROVED_REMARKS},
-                        {value: dataItem.APPROVED_DT},
+                        {value: dataItem.APPROVED_DATE},
                         {value: dataItem.SUB_EMPLOYEE_NAME},
                         {value: dataItem.SUB_APPROVED_FLAG},
                         {value: dataItem.SUB_APPROVED_DATE}
@@ -130,12 +132,12 @@
                             {autoWidth: true}
                             
                         ],
-                        title: "Leave Notification",
+                        title: "Travel Notification",
                         rows: rows
                     }
                 ]
             });
-            kendo.saveAs({dataURI: workbook.toDataURL(), fileName: "LeaveNotification.xlsx"});
+            kendo.saveAs({dataURI: workbook.toDataURL(), fileName: "TravelNotificationList.xlsx"});
         }
         window.app.UIConfirmations();
     });

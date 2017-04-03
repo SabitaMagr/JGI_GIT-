@@ -16,6 +16,8 @@ return [
 //        'password'      => 'HRIS_JWL',
 //        'username' => 'HRIS_MODERN',
 //        'password' => 'HRIS_MODERN',
+//        'username'      => 'ITNEPAL_HRIS_APR2',
+//        'password'      => 'ITNEPAL_HRIS_APR2',
         'platform_options' => ['quote_identifiers' => false]
     ],
     'service_manager' => [

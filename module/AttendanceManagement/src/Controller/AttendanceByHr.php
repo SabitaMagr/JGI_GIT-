@@ -129,38 +129,44 @@ class AttendanceByHr extends AbstractActionController {
     public function addAction() {
         $this->initializeForm();
         $request = $this->getRequest();
-        if ($request->isPost()) {
-            $this->form->setData($request->getPost());
-            if ($this->form->isValid()) {
-                $attendanceByHrModel = new AttendanceByHrModel();
-                $formData = $this->form->getData();
-                $attendanceByHrModel->exchangeArrayFromForm($formData);
-                $attendanceByHrModel->attendanceDt = Helper::getExpressionDate($attendanceByHrModel->attendanceDt);
-                $attendanceByHrModel->id = ((int) Helper::getMaxId($this->adapter, AttendanceByHrModel::TABLE_NAME, "ID")) + 1;
-                $attendanceByHrModel->inTime = Helper::getExpressionTime($attendanceByHrModel->inTime);
-                $attendanceByHrModel->outTime = Helper::getExpressionTime($attendanceByHrModel->outTime);
+        try {
 
-                $employeeId = $attendanceByHrModel->employeeId;
-                $attendanceDt = $formData['attendanceDt'];
 
-                $previousDtl = $this->repository->getDtlWidEmpIdDate($employeeId, $attendanceDt);
+            if ($request->isPost()) {
+                $this->form->setData($request->getPost());
+                if ($this->form->isValid()) {
+                    $attendanceByHrModel = new AttendanceByHrModel();
+                    $formData = $this->form->getData();
+                    $attendanceByHrModel->exchangeArrayFromForm($formData);
+                    $attendanceByHrModel->attendanceDt = Helper::getExpressionDate($attendanceByHrModel->attendanceDt);
+                    $attendanceByHrModel->id = ((int) Helper::getMaxId($this->adapter, AttendanceByHrModel::TABLE_NAME, "ID")) + 1;
+                    $attendanceByHrModel->inTime = Helper::getExpressionTime($attendanceByHrModel->inTime);
+                    $attendanceByHrModel->outTime = Helper::getExpressionTime($attendanceByHrModel->outTime);
 
-                if ($previousDtl == null) {
-//                    $this->repository->add($attendanceByHrModel);
-                    throw new Exception("Attendance of employee with employeeId :$employeeId on $attendanceDt is not found.");
-                } else {
-                    $this->repository->edit($attendanceByHrModel, $previousDtl['ID']);
+                    $employeeId = $attendanceByHrModel->employeeId;
+                    $attendanceDt = $formData['attendanceDt'];
+
+                    $previousDtl = $this->repository->getDtlWidEmpIdDate($employeeId, $attendanceDt);
+
+                    if ($previousDtl == null) {
+                        throw new Exception("Attendance of employee with employeeId :$employeeId on $attendanceDt is not found.");
+                    } else {
+                        $this->repository->edit($attendanceByHrModel, $previousDtl['ID']);
+                    }
+
+                    $this->flashmessenger()->addMessage("Attendance Submitted Successfully!!");
+                    return $this->redirect()->toRoute("attendancebyhr");
                 }
-
-                $this->flashmessenger()->addMessage("Attendance Submitted Successfully!!");
-                return $this->redirect()->toRoute("attendancebyhr");
             }
+            return Helper::addFlashMessagesToArray($this, [
+                        'form' => $this->form,
+                        'employees' => EntityHelper::getTableKVListWithSortOption($this->adapter, "HRIS_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => 'E', 'RETIRED_FLAG' => 'N'], "FIRST_NAME", "ASC", " ")
+                            ]
+            );
+        } catch (Exception $e) {
+            $this->flashmessenger()->addMessage($e->getMessage());
+            return $this->redirect()->toRoute("attendancebyhr");
         }
-        return Helper::addFlashMessagesToArray($this, [
-                    'form' => $this->form,
-                    'employees' => EntityHelper::getTableKVListWithSortOption($this->adapter, "HRIS_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => 'E', 'RETIRED_FLAG' => 'N'], "FIRST_NAME", "ASC", " ")
-                        ]
-        );
     }
 
     public function editAction() {

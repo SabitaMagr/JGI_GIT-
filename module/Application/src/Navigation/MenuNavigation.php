@@ -29,14 +29,16 @@ class MenuNavigation extends DefaultNavigationFactory {
                         "label" => $row['MENU_NAME'],
                         "icon" => $row['ICON_CLASS'],
                         'uri' => 'javascript::',
-                        "pages" => $this->menu($row['MENU_ID'])
+                        "pages" => $this->menu($row['MENU_ID']),
+                        "visible" => true
                     );
                 } else {
                     $configuration['navigation'][$this->getName()][$row['MENU_NAME']] = array(
                         "label" => $row['MENU_NAME'],
                         "icon" => $row['ICON_CLASS'],
                         "route" => $row['ROUTE'],
-                        "action" => $row['ACTION']
+                        "action" => $row['ACTION'],
+                        "visible" => true
                     );
                 }
             }
