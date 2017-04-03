@@ -229,7 +229,7 @@ ul {
 }
 li.line:after {
     position: absolute;
-    left: 57.5px;
+    left: 50.5px;
 }
 .wigetbox,
 .wigetbox .widget-thumb-wrap {

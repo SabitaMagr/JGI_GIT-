@@ -24,6 +24,7 @@ use Zend\Mvc\Controller\AbstractActionController;
 use SelfService\Repository\TravelExpenseDtlRepository;
 use Application\Helper\NumberHelper;
 use Setup\Repository\EmployeeRepository;
+use Setup\Model\HrEmployees;
 
 class TravelApproveController extends AbstractActionController {
 
@@ -215,7 +216,12 @@ class TravelApproveController extends AbstractActionController {
                     'employeeId' => $this->employeeId,
                     'advanceAmt'=>$advanceAmt,
                     'transportTypes'=>$transportTypes,
-                    'requestedEmployeeId' => $requestedEmployeeID,]);
+                    'requestedEmployeeId' => $requestedEmployeeID,
+                    'subEmployeeId'=> $detail['SUB_EMPLOYEE_ID'],
+                    'subRemarks'=>$detail['SUB_REMARKS'],
+                    'subApprovedFlag'=>$detail['SUB_APPROVED_FLAG'],
+                    'employeeList'=>  EntityHelper::getTableKVListWithSortOption($this->adapter, HrEmployees::TABLE_NAME, HrEmployees::EMPLOYEE_ID, [HrEmployees::FIRST_NAME, HrEmployees::MIDDLE_NAME, HrEmployees::LAST_NAME],[HrEmployees::STATUS => "E",HrEmployees::RETIRED_FLAG => "N"], HrEmployees::FIRST_NAME, "ASC", " ")
+                ]);
     }
     
     public function expenseDetailAction(){

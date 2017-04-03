@@ -6,15 +6,14 @@ use Application\Model\Model;
 use Application\Model\Months;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\TableGateway\TableGateway;
+use Zend\Db\Adapter\Driver\Oci8\Result;
 
 class DashboardRepository implements RepositoryInterface {
 
-    private $gateway;
     private $adapter;
 
-    public function __construct(AdapterInterface $adapter) {
+    public function __construct(\Zend\Db\Adapter\AdapterInterface $adapter) {
         $this->adapter = $adapter;
-        $this->gateway = new TableGateway(Months::TABLE_NAME, $adapter);
     }
 
     public function add(Model $model) {
@@ -45,7 +44,7 @@ class DashboardRepository implements RepositoryInterface {
      * @param  string $endDate
      * @return array
      */
-    public function fetchEmployeeDashboardData($employeeId, $startDate, $endDate) {
+    public function fetchEmployeeDashboardDetail($employeeId, $startDate, $endDate) {
         $sql = "-- EMPLOYEE DETAIL
                 SELECT EMPLOYEE_TBL.*,
                        NVL(LATE_TBL.LATE_IN, 0) LATE_IN,
@@ -58,13 +57,18 @@ class DashboardRepository implements RepositoryInterface {
                        NVL(TOUR_TBL.TOUR, 0) TOUR,
                        NVL(TRAINING_TBL.TRAINING, 0) TRAINING,
                        NVL(AVERAGE_OFFICE_HRS_TBL.AVG_HOURS, 0) AVG_HOURS,
-                       NVL(AVERAGE_OFFICE_HRS_TBL.AVG_MINUTES, 0) AVG_MINUTES
+                       NVL(AVERAGE_OFFICE_HRS_TBL.AVG_MINUTES, 0) AVG_MINUTES,
+                       NVL(CUR_MONTH_WOH_TBL.CUR_MONTH_WOH, 0) CUR_MONTH_WOH,
+                       NVL(PREV_MONTH_WOH_TBL.PREV_MONTH_WOH, 0) PREV_MONTH_WOH
                 FROM
                   ( SELECT EMP.EMPLOYEE_ID,
                            ( CASE
                                  WHEN MIDDLE_NAME IS NULL THEN EMP.FIRST_NAME || ' ' || EMP.LAST_NAME
                                  ELSE EMP.FIRST_NAME || ' ' || EMP.MIDDLE_NAME || ' ' || EMP.LAST_NAME
                              END ) FULL_NAME,
+                           EMP.GENDER_ID,
+                           EMP.COMPANY_ID,
+                           EMP.BRANCH_ID,
                            EMP.EMAIL_OFFICIAL,
                            EMP.EMAIL_PERSONAL,
                            TO_CHAR(EMP.JOIN_DATE, 'DD-MON-YYYY') JOIN_DATE,
@@ -202,10 +206,85 @@ class DashboardRepository implements RepositoryInterface {
                       FROM HRIS_ATTENDANCE_DETAIL
                       WHERE EMPLOYEE_ID = {$employeeId}
                         AND ATTENDANCE_DT BETWEEN TO_DATE('{$startDate}', 'DD-MON-YYYY') AND TO_DATE('{$endDate}', 'DD-MON-YYYY')
-                      GROUP BY EMPLOYEE_ID)) AVERAGE_OFFICE_HRS_TBL ON AVERAGE_OFFICE_HRS_TBL.EMPLOYEE_ID = EMPLOYEE_TBL.EMPLOYEE_ID";
+                      GROUP BY EMPLOYEE_ID)) AVERAGE_OFFICE_HRS_TBL ON AVERAGE_OFFICE_HRS_TBL.EMPLOYEE_ID = EMPLOYEE_TBL.EMPLOYEE_ID
+                -- CURRENT MONTH WOH
+                LEFT JOIN
+                  (SELECT EMPLOYEE_ID, COUNT(*) CUR_MONTH_WOH
+                   FROM HRIS_ATTENDANCE_DETAIL
+                   WHERE TO_CHAR (ATTENDANCE_DT, 'MM') = TO_CHAR (SYSDATE, 'MM')
+                     AND IN_TIME IS NOT NULL
+                     AND (DAYOFF_FLAG = 'Y' OR HOLIDAY_ID IS NOT NULL)
+                     AND EMPLOYEE_ID = {$employeeId}
+                   GROUP BY EMPLOYEE_ID) CUR_MONTH_WOH_TBL ON CUR_MONTH_WOH_TBL.EMPLOYEE_ID = EMPLOYEE_TBL.EMPLOYEE_ID
+                -- PREVIOUS MONTH WOH
+                LEFT JOIN
+                  (SELECT EMPLOYEE_ID, COUNT(*) PREV_MONTH_WOH
+                   FROM HRIS_ATTENDANCE_DETAIL
+                   WHERE ADD_MONTHS (TRUNC (SYSDATE, 'MM'), -1) = ADD_MONTHS (TRUNC (ATTENDANCE_DT, 'MM'), 0)
+                     AND IN_TIME IS NOT NULL
+                     AND (DAYOFF_FLAG = 'Y' OR HOLIDAY_ID IS NOT NULL)
+                     AND EMPLOYEE_ID = {$employeeId}
+                   GROUP BY EMPLOYEE_ID) PREV_MONTH_WOH_TBL ON PREV_MONTH_WOH_TBL.EMPLOYEE_ID = EMPLOYEE_TBL.EMPLOYEE_ID";
 
         $statement = $this->adapter->query($sql);
         $result = $statement->execute()->current();
+
+        return $result;
+    }
+
+    /**
+     * Fetches all the upcoming holidays
+     *
+     * @param int $genderId
+     * @param int $branchId
+     * @return array
+     */
+    public function fetchUpcomingHolidays($genderId, $branchId) {
+        $sql = "SELECT HOLIDAY_ID,
+               HOLIDAY_ENAME,
+               GENDER_ID,
+               BRANCH_ID,
+               START_DATE,
+               END_DATE,
+               HALFDAY,
+               TO_CHAR(START_DATE, 'DAY') WEEK_DAY,
+               START_DATE - TRUNC(SYSDATE) DAYS_REMAINING
+        FROM HRIS_HOLIDAY_MASTER_SETUP
+        WHERE 1 = 1
+          AND TRUNC(SYSDATE)-1 < START_DATE
+          AND (GENDER_ID IS NULL
+               OR GENDER_ID = {$genderId})
+          AND (BRANCH_ID IS NULL
+               OR BRANCH_ID = {$branchId})
+        ORDER BY START_DATE";
+
+        $statement = $this->adapter->query($sql);
+        $result = $statement->execute();
+
+        return $result;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function fetchEmployeeNotice() {
+        $sql = "SELECT NEWS_ID,
+                       NEWS_DATE,
+                       TO_CHAR(NEWS_DATE, 'DD') NEWS_DAY,
+                       TO_CHAR(NEWS_DATE, 'Mon YYYY') NEWS_MONTH_YEAR,
+                       NEWS_TITLE,
+                       NEWS_EDESC
+                FROM HRIS_NEWS
+                WHERE NEWS_TYPE = 'NOTICE'
+                  AND NEWS_DATE > TRUNC(SYSDATE) - 1
+                  -- AND COMPANY_ID = :V_COMPANY_CODE
+                  -- AND BRANCH_ID = :V_BRANCH_CODE
+                  -- AND DESIGNATION_ID = :V_DESIGNATION_ID
+                  -- AND DEPARTMENT_ID = :V_DEPARTMENT_ID
+                ORDER BY NEWS_DATE ASC";
+
+        $statement = $this->adapter->query($sql);
+        $result = $statement->execute();
 
         return $result;
     }
