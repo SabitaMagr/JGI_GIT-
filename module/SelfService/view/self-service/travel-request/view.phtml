@@ -1,7 +1,6 @@
 <?php
-$this->headScript()->appendFile($this->basePath('js/SelfService/travel-request/add.js'))
-        ->appendFile($this->basePath('js/angular.min.js'))
-        ->appendFile($this->basePath('js/SelfService/travel-request/print.js'));
+$this->headScript()->appendFile($this->basePath('js/angular.min.js'))
+        ->appendFile($this->basePath('js/SelfService/travel-request/add.js'));
 
 $form->setAttribute('role', 'form');
 $form->setAttribute('id', 'travelRequest-form');
@@ -55,7 +54,7 @@ print $this->form()->openTag($form);
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\travelRequest')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
-<div class="row margin-top-20">
+<div class="row margin-top-20" ng-app="hris" ng-controller="advanceRequestController">
     <div class="col-sm-8 col-sm-offset-2">
         <div class="portlet box custom-box">
             <div class="portlet-title">
@@ -187,7 +186,39 @@ print $this->form()->openTag($form);
                     <?php print $this->formElement($remarks); ?>
                     <?php print $this->formElementErrors()->render($remarks, ['class' => 'help-block']); ?>
                 </div>
+                <?php
+                if($subEmployeeId!=null){
+                        $disabled = ($subApprovedFlag!=null) ? "disabled" : "";
+                        if($subApprovedFlag=='Y'){
+                            $note = "[Approved]";
+                        }else if($subApprovedFlag=='N'){
+                            $note = "[Rejected]";
+                        }else{
+                            $note = "[Pending]";
+                        }
+                    ?>
+                    <div class="form-group padding-0">
+                        <label for="noOfDays">
+                                Substitute Employee 
+                        </label>
+                        <div>
+                            <select disabled="disabled" class="form-control" name="travelSubstitute">
+                            <?php foreach($employeeList as $key=>$value){ 
+                                $selected = ($key==$subEmployeeId) ? "selected" : "";
+                                ?>
+                                <option style="cursor: pointer;" value="<?php echo $key; ?>" <?php echo $selected; ?>><?php echo $value; ?></option>
+                            <?php } ?>
+                            </select>
+                        </div>
+                    </div>
+                    <div
+                        class="form-group margin-top-10 required">
+                        <label>Reason for action [From Sub. Employee] <?php echo $note; ?></label>
+                        <textarea disabled="disabled" <?php echo $disabled; ?> name="subRemarks" id="form-subRemarks" required="required" class="form-subRemarks form-control" style="height: 50px; font-size:12px"><?php echo $subRemarks;  ?></textarea>
+                    </div>
+                    <?php } ?>
                 </div>
+                <?php if($subApprovedFlag!='N'){ ?>
                 <div
                     class="form-group margin-top-10 required <?= empty($recommendedRemarks->getMessages()) ? "" : "error" ?>">
                     <label>Reason for action [From Recommender]</label>
@@ -198,17 +229,20 @@ print $this->form()->openTag($form);
                     <label>Reason for action [From Approver]</label>
                     <?php print $this->formElement($approvedRemarks); ?>
                 </div>
+                 <?php }else if($subApprovedFlag=='N'){?>
+                    <div class="form-group" style="font-size:11px;">[note:You have to re-send leave detail!!!!]</div>
+                <?php } ?>
             </div>
         </div>
     </div>
-</div>
+
 
 <?php
 
 print $this->form()->closeTag();
 
 ?>
-    <div class="row" ng-app="hris" ng-controller="printController">
+    <div class="row">
         <div style="border:1px solid;" id="printableArea" class="col-md-8">
             <div class="row">
                 <div class="col-md-8 col-sm-offset-2">
@@ -300,4 +334,6 @@ print $this->form()->closeTag();
         </div>
     
     <button ng-click="printDiv('printableArea');">Print Div</button>
+    </div>
+    
     </div>

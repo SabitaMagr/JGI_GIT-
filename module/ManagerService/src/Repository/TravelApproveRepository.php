@@ -73,7 +73,8 @@ class TravelApproveRepository implements RepositoryInterface{
             ->join(['E2'=>"HRIS_EMPLOYEES"],"E2.EMPLOYEE_ID=TR.APPROVED_BY",['FN2'=>'FIRST_NAME','MN2'=>'MIDDLE_NAME','LN2'=>'LAST_NAME'],"left")
             ->join(['RA'=>"HRIS_RECOMMENDER_APPROVER"],"RA.EMPLOYEE_ID=TR.EMPLOYEE_ID",['RECOMMENDER'=>'RECOMMEND_BY','APPROVER'=>'APPROVED_BY'],"left")
             ->join(['RECM'=>"HRIS_EMPLOYEES"],"RECM.EMPLOYEE_ID=RA.RECOMMEND_BY",['RECM_FN'=>'FIRST_NAME','RECM_MN'=>'MIDDLE_NAME','RECM_LN'=>'LAST_NAME'],"left")
-            ->join(['APRV'=>"HRIS_EMPLOYEES"],"APRV.EMPLOYEE_ID=RA.APPROVED_BY",['APRV_FN'=>'FIRST_NAME','APRV_MN'=>'MIDDLE_NAME','APRV_LN'=>'LAST_NAME'],"left");
+            ->join(['APRV'=>"HRIS_EMPLOYEES"],"APRV.EMPLOYEE_ID=RA.APPROVED_BY",['APRV_FN'=>'FIRST_NAME','APRV_MN'=>'MIDDLE_NAME','APRV_LN'=>'LAST_NAME'],"left")
+            ->join(['TS'=>"HRIS_TRAVEL_SUBSTITUTE"],"TS.TRAVEL_ID=TR.TRAVEL_ID",['SUB_EMPLOYEE_ID'=>'EMPLOYEE_ID','SUB_APPROVED_DATE'=>'APPROVED_DATE','SUB_REMARKS'=>"REMARKS",'SUB_APPROVED_FLAG'=>"APPROVED_FLAG"],"left");
 
         $select->where([
             "TR.TRAVEL_ID=".$id
@@ -108,16 +109,25 @@ class TravelApproveRepository implements RepositoryInterface{
                     E.MIDDLE_NAME,
                     E.LAST_NAME,
                     RA.RECOMMEND_BY as RECOMMENDER,
-                    RA.APPROVED_BY AS APPROVER
+                    RA.APPROVED_BY AS APPROVER,
+                    TS.APPROVED_FLAG AS APPROVED_FLAG,
+                    TO_CHAR(TS.APPROVED_DATE, 'DD-MON-YYYY') AS SUB_APPROVED_DATE,
+                    TS.EMPLOYEE_ID AS SUB_EMPLOYEE_ID
                     FROM HRIS_EMPLOYEE_TRAVEL_REQUEST TR
                     LEFT JOIN HRIS_EMPLOYEES E ON 
                     E.EMPLOYEE_ID=TR.EMPLOYEE_ID
                     LEFT JOIN HRIS_RECOMMENDER_APPROVER RA
                     ON E.EMPLOYEE_ID=RA.EMPLOYEE_ID
+                    LEFT JOIN HRIS_TRAVEL_SUBSTITUTE TS
+                    ON TS.TRAVEL_ID = TR.TRAVEL_ID
                     WHERE E.STATUS='E'
                     AND E.RETIRED_FLAG='N'";
         if($status==null){
-            $sql .=" AND ((RA.RECOMMEND_BY=".$id." AND TR.STATUS='RQ') OR (RA.APPROVED_BY=".$id." AND TR.STATUS='RC') )";
+            $sql .=" AND ((RA.RECOMMEND_BY=".$id." AND TR.STATUS='RQ'"
+                    . " AND
+                    (TS.APPROVED_FLAG = CASE WHEN TS.EMPLOYEE_ID IS NOT NULL
+                         THEN ('Y')     
+                    END OR  TS.EMPLOYEE_ID is null)) OR (RA.APPROVED_BY=".$id." AND TR.STATUS='RC') )";
         }else if($status=='RC'){
             $sql .= " AND TR.STATUS='RC' AND
                 RA.RECOMMEND_BY=".$id;

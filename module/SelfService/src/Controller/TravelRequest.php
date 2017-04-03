@@ -18,6 +18,10 @@ use SelfService\Model\TravelExpenseDetail;
 use Zend\Mvc\Controller\AbstractActionController;
 use Application\Custom\CustomViewModel;
 use Application\Helper\NumberHelper;
+use Setup\Model\HrEmployees;
+use SelfService\Model\TravelSubstitute;
+use SelfService\Repository\TravelSubstituteRepository;
+use Application\Helper\EntityHelper;
 
 class TravelRequest extends AbstractActionController {
 
@@ -144,7 +148,9 @@ class TravelRequest extends AbstractActionController {
 
         $model = new TravelRequestModel();
         if ($request->isPost()) {
-            $this->form->setData($request->getPost());
+            $postData = $request->getPost();
+            $substituteEmployee = $postData->substituteEmployee;
+            $this->form->setData($postData);
             if ($this->form->isValid()) {
                 $model->exchangeArrayFromForm($this->form->getData());
                 $model->requestedAmount = ($model->requestedAmount==null)?0:$model->requestedAmount;
@@ -153,6 +159,22 @@ class TravelRequest extends AbstractActionController {
                 $model->requestedDate = Helper::getcurrentExpressionDate();
                 $model->status = 'RQ';
                 $this->repository->add($model);
+                
+                if($substituteEmployee==1){
+                    $travelSubstituteModel = new TravelSubstitute();
+                    $travelSubstituteRepo = new TravelSubstituteRepository($this->adapter);
+                    
+                    $travelSubstitute = $postData->travelSubstitute;
+                    
+                    $travelSubstituteModel->travelId = $model->travelId;
+                    $travelSubstituteModel->employeeId = $travelSubstitute;
+                    $travelSubstituteModel->createdBy = $this->employeeId;
+                    $travelSubstituteModel->createdDate = Helper::getcurrentExpressionDate();
+                    $travelSubstituteModel->status = 'E';
+                    
+                    $travelSubstituteRepo->add($travelSubstituteModel);
+                }
+                
                 HeadNotification::pushNotification(NotificationEvents::TRAVEL_APPLIED, $model, $this->adapter, $this->plugin('url'));
                 $this->flashmessenger()->addMessage("Travel Request Successfully added!!!");
                 return $this->redirect()->toRoute("travelRequest");
@@ -170,7 +192,8 @@ class TravelRequest extends AbstractActionController {
         return Helper::addFlashMessagesToArray($this, [
                     'form' => $this->form,
                     'requestTypes' => $requestType,
-                    'transportTypes'=>$transportTypes
+                    'transportTypes'=>$transportTypes,
+                    'employeeList'=> EntityHelper::getTableKVListWithSortOption($this->adapter, HrEmployees::TABLE_NAME, HrEmployees::EMPLOYEE_ID, [HrEmployees::FIRST_NAME, HrEmployees::MIDDLE_NAME, HrEmployees::LAST_NAME],[HrEmployees::STATUS => "E",HrEmployees::RETIRED_FLAG => "N"], HrEmployees::FIRST_NAME, "ASC", " ")
         ]);
     }
     
@@ -452,7 +475,11 @@ class TravelRequest extends AbstractActionController {
                     'recommender' => $authRecommender,
                     'approver' => $authApprover,
                     'advanceAmt'=>$advanceAmt,
-                    'transportTypes'=>$transportTypes
+                    'transportTypes'=>$transportTypes,
+                    'subEmployeeId'=> $detail['SUB_EMPLOYEE_ID'],
+                    'subRemarks'=>$detail['SUB_REMARKS'],
+                    'subApprovedFlag'=>$detail['SUB_APPROVED_FLAG'],
+                    'employeeList'=>  EntityHelper::getTableKVListWithSortOption($this->adapter, HrEmployees::TABLE_NAME, HrEmployees::EMPLOYEE_ID, [HrEmployees::FIRST_NAME, HrEmployees::MIDDLE_NAME, HrEmployees::LAST_NAME],[HrEmployees::STATUS => "E",HrEmployees::RETIRED_FLAG => "N"], HrEmployees::FIRST_NAME, "ASC", " ")
         ]);
     }
 

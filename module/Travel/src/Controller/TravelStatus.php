@@ -23,6 +23,7 @@ use Setup\Repository\RecommendApproveRepository;
 use SelfService\Repository\TravelExpenseDtlRepository;
 use Setup\Repository\EmployeeRepository;
 use Application\Helper\NumberHelper;
+use Setup\Model\HrEmployees;
 
 class TravelStatus extends AbstractActionController
 {
@@ -220,7 +221,12 @@ class TravelStatus extends AbstractActionController
                     'status' => $status,
                     'advanceAmt'=> $advanceAmt, 
                     'transportTypes'=>$transportTypes,
-                    'recommApprove'=>$recommApprove
+                    'recommApprove'=>$recommApprove,
+                    'subEmployeeId'=> $detail['SUB_EMPLOYEE_ID'],
+                    'subRemarks'=>$detail['SUB_REMARKS'],
+                    'subApprovedFlag'=>$detail['SUB_APPROVED_FLAG'],
+                    'employeeList'=>  EntityHelper::getTableKVListWithSortOption($this->adapter, HrEmployees::TABLE_NAME, HrEmployees::EMPLOYEE_ID, [HrEmployees::FIRST_NAME, HrEmployees::MIDDLE_NAME, HrEmployees::LAST_NAME],[HrEmployees::STATUS => "E",HrEmployees::RETIRED_FLAG => "N"], HrEmployees::FIRST_NAME, "ASC", " ")
+        
         ]);
     }   
     public function expenseDetailAction(){
