@@ -1,5 +1,9 @@
 <?php
+$this->headLink()
+        ->appendStylesheet($this->basePath('dropzone/dropzone.min.css'));
+
 $this->headScript()->appendFile($this->basePath('js/setup/company/add.js'));
+$this->headScript()->appendFile($this->basePath('dropzone/dropzone.min.js'));
 
 $form->setAttribute('role', 'form');
 $form->setAttribute('id', 'company-form');
@@ -37,6 +41,7 @@ $form->prepare();
     document.menu =<?php $menu = ["id" => "menuSetup", "subMenu" => ["id" => "subMenuCompany"]];
 echo json_encode($menu); ?>;
     document.url = '<?= $this->url("restful", ["action" => "index"]) ?>';
+    document.fileUploadUrl = '<?= $this->url('company', ["action" => "add"]) ?>';
 </script>
 <div class="page-bar">
 <?= $this->navigation('Zend\Navigation\Company')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
@@ -105,11 +110,15 @@ echo json_encode($menu); ?>;
 
 
                     <div class="col-sm-4">
-                <div class="form-group">
-                    <?php print $this->formLabel($swift); ?>
-                    <?php print $this->formElement($swift); ?>
-                    <?php print $this->formElementErrors()->render($swift, ['class' => 'help-block']); ?>
-                </div>
+                        <div class="form-group">
+                            <?php print $this->formLabel($swift); ?>
+                            <?php print $this->formElement($swift); ?>
+                            <?php print $this->formElementErrors()->render($swift, ['class' => 'help-block']); ?>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div id="dropZoneContainer" class="dropzone">
+                        </div>
                     </div>
                 </div>
                 

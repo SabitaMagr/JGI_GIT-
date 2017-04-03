@@ -31,7 +31,6 @@ class TaskRepository implements RepositoryInterface {
          $data = $model->getArrayCopyForDB();
         unset($data[TaskModel::CREATED_BY]);
         unset($data[TaskModel::CREATED_DT]);
-        unset($data[TaskModel::STATUS]);
         $this->tableGateway->update($data,[TaskModel::TASK_ID=>$id]);
     }
 
