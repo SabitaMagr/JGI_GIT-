@@ -14,11 +14,22 @@
                                 IS_PRESENT: rawData[i].IS_PRESENT,
                                 ON_LEAVE: rawData[i].ON_LEAVE
                             });
+                    data[rawData[i].MONTH_ID].TOTAL.IS_ABSENT = data[rawData[i].MONTH_ID].TOTAL.IS_ABSENT + parseFloat(rawData[i].IS_ABSENT);
+                    data[rawData[i].MONTH_ID].TOTAL.IS_PRESENT = data[rawData[i].MONTH_ID].TOTAL.IS_PRESENT + parseFloat(rawData[i].IS_PRESENT);
+                    data[rawData[i].MONTH_ID].TOTAL.ON_LEAVE = data[rawData[i].MONTH_ID].TOTAL.ON_LEAVE + parseFloat(rawData[i].ON_LEAVE);
+                    data[rawData[i].MONTH_ID].TOTAL.IS_DAYOFF = data[rawData[i].MONTH_ID].TOTAL.IS_DAYOFF + parseFloat(rawData[i].IS_DAYOFF);
+
                 } else {
                     data[rawData[i].MONTH_ID] = {
                         MONTH_ID: rawData[i].MONTH_ID,
                         MONTH_EDESC: rawData[i].MONTH_EDESC,
-                        MONTHS: {}
+                        MONTHS: {},
+                        TOTAL: {
+                            IS_ABSENT: parseFloat(rawData[i].IS_ABSENT),
+                            IS_PRESENT: parseFloat(rawData[i].IS_PRESENT),
+                            ON_LEAVE: parseFloat(rawData[i].ON_LEAVE),
+                            IS_DAYOFF: parseFloat(rawData[i].IS_DAYOFF)
+                        }
                     };
                     data[rawData[i].MONTH_ID].MONTHS['c' + rawData[i].DAY_COUNT] =
                             JSON.stringify({
@@ -45,6 +56,14 @@
             for (var k in column) {
                 returnData.cols.push(column[k]);
             }
+            returnData.cols.push({
+                field: 'total',
+                title: 'Total',
+                template: '<div data="#: total #" class="btn-group widget-btn-list total-attendance">' +
+                        '<a class="btn btn-default widget-btn custom-btn-present"></a>' +
+                        '<a class="btn btn-danger widget-btn custom-btn-absent"></a>' +
+                        '<a class="btn btn-info widget-btn custom-btn-leave"></a>' +
+                        '</div>'});
 
 
             for (var k in data) {
@@ -57,6 +76,7 @@
 
                 row['month'] = data[k].MONTH_EDESC;
                 returnData.rows.push(row);
+                row['total'] = JSON.stringify(data[k].TOTAL);
             }
 
             return returnData;
@@ -114,14 +134,37 @@
                     columns: extractedDetailData.cols
                 });
                 displayDataInBtnGroup('.custom-btn-group');
-
+                displayTotalInGrid('.total-attendance');
 
             }, function (error) {
                 $tableContainer.unblock();
                 console.log('departmentWiseEmployeeMonthlyE', error);
             });
         };
+        var displayTotalInGrid = function (selector) {
+            $(selector).each(function (k, group) {
+                var $group = $(group);
+                var data = JSON.parse($group.attr('data'));
+                var $childrens = $group.children();
+                var $present = $($childrens[0]);
+                var $absent = $($childrens[1]);
+                var $leave = $($childrens[2]);
 
+                var presentDays = parseFloat(data['IS_PRESENT']);
+                var absentDays = parseFloat(data['IS_ABSENT']);
+                var leaveDays = parseFloat(data['ON_LEAVE']);
+
+                $present.attr('title', data['IS_PRESENT']);
+                $absent.attr('title', data['IS_ABSENT']);
+                $leave.attr('title', data['ON_LEAVE']);
+
+                var total = presentDays + absentDays + leaveDays;
+
+                $present.html(Number((presentDays * 100 / total).toFixed(1)));
+                $absent.html(Number((absentDays * 100 / total).toFixed(1)));
+                $leave.html(Number((leaveDays * 100 / total).toFixed(1)));
+            });
+        };
         $('select').select2();
         var $companylist = $('#companyList');
         var $employeeList = $('#employeeList');
@@ -149,9 +192,11 @@
                 if (companyId != -1) {
                     if (branchId != -1) {
                         if (departmentId != -1) {
-                            return item['COMPANY_ID'] == companyId && item['BRANCH_ID'] == branchId && item['DEPARTMENT_ID'] == departmentId;
+//                            return item['COMPANY_ID'] == companyId && item['BRANCH_ID'] == branchId && item['DEPARTMENT_ID'] == departmentId;
+                            return item['DEPARTMENT_ID'] == departmentId;
                         } else {
-                            return item['COMPANY_ID'] == companyId && item['BRANCH_ID'] == branchId;
+//                            return item['COMPANY_ID'] == companyId && item['BRANCH_ID'] == branchId;
+                            return item['BRANCH_ID'] == branchId;
                         }
                     } else {
 
@@ -192,6 +237,12 @@
                 initializeReport(employeeId);
             }
         });
+
+        var employeeId = document.employeeId;
+        if (employeeId != 0) {
+            initializeReport(employeeId);
+            $employeeList.val(employeeId);
+        }
 
 
     });

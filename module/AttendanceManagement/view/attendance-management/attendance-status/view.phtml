@@ -1,3 +1,9 @@
+<?php if ($this->messages) { ?>
+    <script>
+        document.messages =<?php echo json_encode($this->messages); ?>
+    </script>
+<?php } ?>
+
 <?php
 $this->headScript()->appendFile($this->basePath('assets/global/plugins/combodate/js/moment.min.js'));
 $this->headScript()->appendFile($this->basePath('assets/global/plugins/combodate/js/combodate.js'));
@@ -105,58 +111,58 @@ $form->prepare();
                     print $this->form()->openTag($form);
                     ?>
                     <div class="form-group <?= empty($attendanceDt->getMessages()) ? "" : "error" ?>">
-                            <?php print $this->formLabel($attendanceDt); ?>
+                        <?php print $this->formLabel($attendanceDt); ?>
                         <div class="input-group">
-<?php print $this->formElement($attendanceDt); ?>
+                            <?php print $this->formElement($attendanceDt); ?>
                             <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
                         </div>
                     </div>
-<?php print $this->formElementErrors()->render($attendanceDt, ['class' => 'help-block error']); ?>
+                    <?php print $this->formElementErrors()->render($attendanceDt, ['class' => 'help-block error']); ?>
 
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group <?= empty($inTime->getMessages()) ? "" : "error" ?>">
-                                    <?php print $this->formLabel($inTime) ?>
+                                <?php print $this->formLabel($inTime) ?>
                                 <div class="input-group dropdown-select">
-                                <?php print $this->formElement($inTime) ?>
+                                    <?php print $this->formElement($inTime) ?>
                                 </div>
-<?php print $this->formElementErrors()->render($inTime, ['class' => 'help-block error']); ?>
+                                <?php print $this->formElementErrors()->render($inTime, ['class' => 'help-block error']); ?>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group <?= empty($outTime->getMessages()) ? "" : "error" ?> pull-right">
-                                    <?php print $this->formLabel($outTime) ?>
+                                <?php print $this->formLabel($outTime) ?>
                                 <div class="input-group dropdown-select">
-<?php print $this->formElement($outTime) ?>
+                                    <?php print $this->formElement($outTime) ?>
                                 </div>
                             </div>
-<?php print $this->formElementErrors()->render($outTime, ['class' => 'help-block error']); ?>
+                            <?php print $this->formElementErrors()->render($outTime, ['class' => 'help-block error']); ?>
 
                         </div>
                     </div>
                     <div class="form-group <?= empty($inRemarks->getMessages()) ? "" : "error" ?>">
                         <?php print $this->formLabel($inRemarks); ?>
-                    <?php print $this->formElement($inRemarks); ?>
+                        <?php print $this->formElement($inRemarks); ?>
                     </div>
-<?php print $this->formElementErrors()->render($inRemarks, ['class' => 'help-block error']); ?>
+                    <?php print $this->formElementErrors()->render($inRemarks, ['class' => 'help-block error']); ?>
 
                     <div class="form-group <?= empty($outRemarks->getMessages()) ? "" : "error" ?>">
                         <?php print $this->formLabel($outRemarks); ?>
-                    <?php print $this->formElement($outRemarks); ?>
+                        <?php print $this->formElement($outRemarks); ?>
                     </div>
-<?php print $this->formElementErrors()->render($outRemarks, ['class' => 'help-block error']); ?>
+                    <?php print $this->formElementErrors()->render($outRemarks, ['class' => 'help-block error']); ?>
 
                     <div class="form-group <?= empty($totalHour->getMessages()) ? "" : "error" ?>">
                         <?php print $this->formLabel($totalHour); ?>
-                    <?php print $this->formElement($totalHour); ?>
+                        <?php print $this->formElement($totalHour); ?>
                     </div>
-<?php print $this->formElementErrors()->render($totalHour, ['class' => 'help-block error']); ?>
+                    <?php print $this->formElementErrors()->render($totalHour, ['class' => 'help-block error']); ?>
                 </div>
                 <div class="form-group margin-top-10 <?= empty($approvedRemarks->getMessages()) ? "" : "error" ?>">
                     <?php print $this->formLabel($approvedRemarks); ?>
-                <?php print $this->formElement($approvedRemarks); ?>
+                    <?php print $this->formElement($approvedRemarks); ?>
                 </div>
-<?php print $this->formElementErrors()->render($approvedRemarks, ['class' => 'help-block error']); ?>
+                <?php print $this->formElementErrors()->render($approvedRemarks, ['class' => 'help-block error']); ?>
 
                 <div class="">
                     <?php if ($status == 'RQ') { ?>

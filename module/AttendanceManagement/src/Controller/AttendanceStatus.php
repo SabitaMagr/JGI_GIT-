@@ -7,6 +7,7 @@ use Application\Helper\Helper;
 use AttendanceManagement\Model\AttendanceDetail;
 use AttendanceManagement\Repository\AttendanceDetailRepository;
 use AttendanceManagement\Repository\AttendanceStatusRepository;
+use Exception;
 use SelfService\Form\AttendanceRequestForm;
 use SelfService\Model\AttendanceRequestModel;
 use SelfService\Repository\AttendanceRequestRepository;
@@ -166,56 +167,62 @@ class AttendanceStatus extends AbstractActionController {
         $attendanceDetail = new AttendanceDetail();
         $attendanceRepository = new AttendanceDetailRepository($this->adapter);
 
-        if (!$request->isPost()) {
-            $model->exchangeArrayFromDB($detail);
-            $this->form->bind($model);
-        } else {
-            $getData = $request->getPost();
-            $reason = $getData->approvedRemarks;
-            $action = $getData->submit;
+        try {
+            if (!$request->isPost()) {
+                $model->exchangeArrayFromDB($detail);
+                $this->form->bind($model);
+            } else {
+                $getData = $request->getPost();
+                $reason = $getData->approvedRemarks;
+                $action = $getData->submit;
 
-            $model->approvedDt = Helper::getcurrentExpressionDate();
+                $model->approvedDt = Helper::getcurrentExpressionDate();
 
-            if ($action == "Approve") {
-                $model->status = "AP";
-                $empAttDtl = $attendanceRepository->getDtlWidEmpIdDate($employeeId, $detail['ATTENDANCE_DT']);
-                if ($empAttDtl == null) {
-                    throw new Exception("Attendance of employee with employeeId :$employeeId on $attendanceDt is not found.");
-                }
+                if ($action == "Approve") {
+                    $model->status = "AP";
+                    $empAttDtl = $attendanceRepository->getDtlWidEmpIdDate($employeeId, $detail['ATTENDANCE_DT']);
+                    if ($empAttDtl == null) {
+                        $tempDate = $detail['ATTENDANCE_DT'];
+                        throw new Exception("Attendance of employee with employeeId :$employeeId on $tempDate is not found.");
+                    }
 
-                $attendanceDetail->inTime = Helper::getExpressionTime($detail['IN_TIME']);
-                $attendanceDetail->inRemarks = $detail['IN_REMARKS'];
-                $attendanceDetail->outTime = Helper::getExpressionTime($detail['OUT_TIME']);
-                $attendanceDetail->outRemarks = $detail['OUT_REMARKS'];
-                $attendanceDetail->totalHour = $detail['TOTAL_HOUR'];
+                    $attendanceDetail->inTime = Helper::getExpressionTime($detail['IN_TIME']);
+                    $attendanceDetail->inRemarks = $detail['IN_REMARKS'];
+                    $attendanceDetail->outTime = Helper::getExpressionTime($detail['OUT_TIME']);
+                    $attendanceDetail->outRemarks = $detail['OUT_REMARKS'];
+                    $attendanceDetail->totalHour = $detail['TOTAL_HOUR'];
 
 //                $attendanceDetail->id = (int) Helper::getMaxId($this->adapter, AttendanceDetail::TABLE_NAME, AttendanceDetail::ID) + 1;
 //                $attendanceRepository->add($attendanceDetail);
 
-                $attendanceRepository->editWith($attendanceDetail, [
-                    AttendanceDetail::EMPLOYEE_ID => $employeeId,
-                    AttendanceDetail::ATTENDANCE_DT => Helper::getExpressionDate($detail['ATTENDANCE_DT'])
-                ]);
+                    $attendanceRepository->editWith($attendanceDetail, [
+                        AttendanceDetail::EMPLOYEE_ID => $employeeId,
+                        AttendanceDetail::ATTENDANCE_DT => Helper::getExpressionDate($detail['ATTENDANCE_DT'])
+                    ]);
 
-                $this->flashmessenger()->addMessage("Attendance Request Approved!!!");
-            } else if ($action == "Reject") {
-                $model->status = "R";
-                $this->flashmessenger()->addMessage("Attendance Request Rejected!!!");
+                    $this->flashmessenger()->addMessage("Attendance Request Approved!!!");
+                } else if ($action == "Reject") {
+                    $model->status = "R";
+                    $this->flashmessenger()->addMessage("Attendance Request Rejected!!!");
+                }
+                $model->approvedBy = $this->employeeId;
+                $model->approvedRemarks = $reason;
+                $attendanceRequestRepository->edit($model, $id);
+                return $this->redirect()->toRoute("attendancestatus");
             }
-            $model->approvedBy = $this->employeeId;
-            $model->approvedRemarks = $reason;
-            $attendanceRequestRepository->edit($model, $id);
+            return Helper::addFlashMessagesToArray($this, [
+                        'form' => $this->form,
+                        'id' => $id,
+                        'employeeName' => $employeeName,
+                        'approver' => $authApprover,
+                        'employeeId' => $employeeId,
+                        'status' => $status,
+                        'requestedDt' => $detail['REQUESTED_DT'],
+            ]);
+        } catch (\Exception $e) {
+            $this->flashmessenger()->addMessage($e->getMessage());
             return $this->redirect()->toRoute("attendancestatus");
         }
-        return Helper::addFlashMessagesToArray($this, [
-                    'form' => $this->form,
-                    'id' => $id,
-                    'employeeName' => $employeeName,
-                    'approver' => $authApprover,
-                    'employeeId' => $employeeId,
-                    'status' => $status,
-                    'requestedDt' => $detail['REQUESTED_DT'],
-        ]);
     }
 
 }

@@ -23,6 +23,7 @@ $this->headScript()->appendFile($this->basePath('assets/global/plugins/jquery.bl
     document.wsEmployeeWiseDailyReport = '<?php echo $this->url('allreport', ['action' => 'employeeWiseDailyReport']); ?>';
     document.comBraDepList =<?php echo json_encode($comBraDepList); ?>;
     document.employeeList =<?php echo json_encode($employeeList); ?>;
+    document.employeeId =<?php echo $employeeId; ?>;
 </script>
 
 
