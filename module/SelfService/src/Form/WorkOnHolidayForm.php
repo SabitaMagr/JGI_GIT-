@@ -19,7 +19,7 @@ class WorkOnHolidayForm{
     
     /**
      * @Annotation\Type("Zend\Form\Element\Select")
-     * @Annotation\Required(false)
+     * @Annotation\Required({"required":"true"})
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
      * @Annotation\Options({"disable_inarray_validator":"true","label":"Holiday Name"})
      * @Annotation\Attributes({ "id":"form-holidayId","class":"form-control"})
