@@ -31,7 +31,7 @@ class HolidayForm
     /**
      * @Annotation\Type("Zend\Form\Element\Select")
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
-     * @Annotation\Required(false)
+     * @Annotation\Required(true)
      * @Annotation\Options({"disable_inarray_validator":"true","label":"Branch"})
      * @Annotation\Attributes({ "id":"branchId","class":"form-control","multiple":"multiple"})
      */

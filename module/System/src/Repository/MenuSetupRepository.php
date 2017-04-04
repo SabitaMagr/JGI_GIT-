@@ -121,7 +121,7 @@ class MenuSetupRepository implements RepositoryInterface {
         }
         $where .= " AND HR.ROLE_ID=" . $this->roleId;
 
-        $sql = "SELECT MENU_NAME,HM.MENU_ID,PARENT_MENU,ROUTE,ACTION,ICON_CLASS
+        $sql = "SELECT IS_VISIBLE,MENU_NAME,HM.MENU_ID,PARENT_MENU,ROUTE,ACTION,ICON_CLASS
 			             FROM HRIS_MENUS HM, HRIS_ROLE_PERMISSIONS HR
 			            WHERE HM.STATUS = 'E'
 			            AND HR.STATUS = 'E'
