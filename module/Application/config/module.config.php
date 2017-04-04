@@ -158,36 +158,36 @@ return [
     ],
     'navigation' => [
         'navigation-example' => [
-            [
+                [
                 'label' => 'Google',
                 'uri' => 'https://www.google.com',
                 'target' => '_blank'
             ],
-            [
+                [
                 'label' => 'Home',
                 'route' => 'leavesetup'
             ],
-            [
+                [
                 'label' => 'Modules',
                 'uri' => '#',
                 'pages' => [
-                    [
+                        [
                         'label' => 'LearnZF2Ajax',
                         'route' => 'leavesetup'
                     ],
-                    [
+                        [
                         'label' => 'LearnZF2FormUsage',
                         'route' => 'leavesetup'
                     ],
-                    [
+                        [
                         'label' => 'LearnZF2Barcode',
                         'route' => 'leavesetup'
                     ],
-                    [
+                        [
                         'label' => 'LearnZF2Pagination',
                         'route' => 'leavesetup'
                     ],
-                    [
+                        [
                         'label' => 'LearnZF2Log',
                         'route' => 'leavesetup'
                     ],
@@ -242,17 +242,22 @@ return [
         ],
     ],
     'dashboard-items' => [
-        'holiday-list' => 'dashboard-item/holiday-list',
-        'attendance-request' => 'dashboard-item/attendance-request',
-        'leave-apply' => 'dashboard-item/leave-apply',
-        'present-absent' => 'dashboard-item/present-absent',
-        'emp-cnt-by-branch' => 'dashboard-item/employee-count-by-branch',
-        'today-leave' => 'dashboard-item/today-leave',
-        'birthdays' => 'dashboard-item/birthdays'
+//        'holiday-list' => 'dashboard-item/holiday-list',
+//        'attendance-request' => 'dashboard-item/attendance-request',
+//        'leave-apply' => 'dashboard-item/leave-apply',
+//        'present-absent' => 'dashboard-item/present-absent',
+//        'emp-cnt-by-branch' => 'dashboard-item/employee-count-by-branch',
+//        'today-leave' => 'dashboard-item/today-leave',
+//        'birthdays' => 'dashboard-item/birthdays',
+        'dashboard' => "",
     ],
+//    'role-types' => [
+//        'A' => 'Admin',
+//        'B' => 'Branch Manager',
+//        'E' => 'Employee'
+//    ],
     'role-types' => [
-        'A' => 'Admin',
-        'B' => 'Branch Manager',
+        'H' => 'Human Resource',
         'E' => 'Employee'
     ],
     'mail' => [

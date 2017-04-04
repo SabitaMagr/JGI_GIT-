@@ -2,22 +2,24 @@
 
 namespace Application\Controller;
 
+use Application\Custom\CustomViewModel;
 use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
 use Application\Repository\DashboardRepository;
 use AttendanceManagement\Repository\AttendanceDetailRepository;
 use AttendanceManagement\Repository\AttendanceStatusRepository;
+use Exception;
 use HolidayManagement\Repository\HolidayRepository;
 use Interop\Container\ContainerInterface;
 use LeaveManagement\Repository\LeaveStatusRepository;
 use Setup\Model\Branch;
 use Setup\Model\HrEmployees;
 use Setup\Repository\EmployeeRepository;
+use System\Repository\DashboardDetailRepo;
 use Zend\Authentication\AuthenticationService;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
-use Application\Custom\CustomViewModel;
 
 class DashboardController extends AbstractActionController {
 
@@ -78,9 +80,43 @@ class DashboardController extends AbstractActionController {
             "employeesBirthday" => $dahsboardRepo->fetchEmployeesBirthday(),
         ));
 
-        $view->setTemplate("dashboard/employee");
-//        $view->setTemplate("dashboard/hrm");
+        $returnData = $this->roleWiseView($auth);
+        $view->setTemplate($returnData['template']);
         return $view;
+    }
+
+    public function roleWiseView(AuthenticationService $auth) {
+        $roleId = $auth->getStorage()->read()['role_id'];
+        $dashboardDetailRepo = new DashboardDetailRepo($this->adapter);
+        $result = $dashboardDetailRepo->fetchById($roleId);
+        $result = Helper::extractDbData($result, true);
+
+        $type = null;
+        foreach ($result as $dashboard) {
+            if ($dashboard['DASHBOARD'] == 'dashboard') {
+                $type = $dashboard['ROLE_TYPE'];
+                break;
+            }
+        }
+        $template = 'dashboard/employee';
+        $data = null;
+        switch ($type) {
+            case 'E':
+                $template = "dashboard/employee";
+
+
+                break;
+            case 'H':
+                $template = "dashboard/hrm";
+
+
+                break;
+        }
+
+        if ($template == null) {
+            throw new Exception("dashboard not set");
+        }
+        return ['template' => $template, 'data' => $data];
     }
 
     public function getDashBoardData($item, $roleType) {
@@ -254,7 +290,7 @@ class DashboardController extends AbstractActionController {
                 $endDate = $this->getRequest()->getPost('end');
                 $calendarData = $dahsboardRepo->fetchEmployeeCalendarData($employeeId, $startDate, $endDate);
                 $calendarJsonFeedArray = [];
-                foreach($calendarData as $eventData) {
+                foreach ($calendarData as $eventData) {
                     if ($eventData['ATTENDANCE_DT']) {
                         $inOutTitle = "";
                         if ($eventData['IN_TIME']) {
@@ -297,7 +333,6 @@ class DashboardController extends AbstractActionController {
                                 'textColor' => '#fff'
                             ];
                         }
-
                     }
                 }
                 //return new CustomViewModel(['success' => true, 'data' => $calendarJsonFeedArray, 'error' => '']);
