@@ -47,13 +47,15 @@ class CompanyController extends AbstractActionController {
         $this->initializeForm();
         $request = $this->getRequest();
         if ($request->isPost()) {
-            $this->form->setData($request->getPost());
+            $postedData = $request->getPost();
+            $this->form->setData($postedData);
             if ($this->form->isValid()) {
                 $company = new Company();
                 $company->exchangeArrayFromForm($this->form->getData());
                 $company->createdDt = Helper::getcurrentExpressionDate();
                 $company->createdBy = $this->employeeId;
                 $company->companyId = ((int) Helper::getMaxId($this->adapter, Company::TABLE_NAME, Company::COMPANY_ID)) + 1;
+                $company->logo = $postedData['logo'];
                 $company->status = 'E';
                 $this->repository->add($company);
                 $this->flashmessenger()->addMessage("Company Successfully added!!!");
@@ -83,18 +85,43 @@ class CompanyController extends AbstractActionController {
             $company->exchangeArrayFromDB($this->repository->fetchById($id)->getArrayCopy());
             $this->form->bind($company);
         } else {
-            $this->form->setData($request->getPost());
+            $postedData = $request->getPost();
+            $this->form->setData($postedData);
             if ($this->form->isValid()) {
                 $company->exchangeArrayFromForm($this->form->getData());
                 $company->modifiedDt = Helper::getcurrentExpressionDate();
                 $company->modifiedBy = $this->employeeId;
+                $company->logo = $postedData['logo'];
                 $this->repository->edit($company, $id);
                 $this->flashmessenger()->addMessage("Company Successfully Updated!!!");
                 return $this->redirect()->toRoute("company");
             }
         }
+
+        $fileRepo = new EmployeeFile($this->adapter);
+        $fileDetail = $fileRepo->fetchById($company->logo);
+
+        if ($fileDetail == null) {
+            $imageData = [
+                'fileCode' => null,
+                'fileName' => null,
+                'oldFileName' => null
+            ];
+        } else {
+            $imageData = [
+                'fileCode' => $fileDetail['FILE_CODE'],
+                'oldFileName' => $fileDetail['FILE_PATH'],
+                'fileName' => $fileDetail['FILE_NAME']
+            ];
+        }
+
+
         return Helper::addFlashMessagesToArray(
-                        $this, ['form' => $this->form, 'id' => $id]
+                        $this, [
+                    'form' => $this->form,
+                    'id' => $id,
+                    'imageData' => $imageData
+                        ]
         );
     }
 
