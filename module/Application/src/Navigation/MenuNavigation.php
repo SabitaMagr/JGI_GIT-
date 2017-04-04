@@ -22,7 +22,9 @@ class MenuNavigation extends DefaultNavigationFactory {
             $this->adapter = $adapter;
             $repository = new MenuSetupRepository($adapter);
             $data = $repository->getHierarchicalMenuWithRoleId();
-
+//            print "<pre>";
+//            print_r(\Application\Helper\Helper::extractDbData($data));
+//            exit;
             foreach ($data as $key => $row) {
                 if ($this->menu($row['MENU_ID'])) {
                     $configuration['navigation'][$this->getName()][$row['MENU_NAME']] = array(
@@ -30,7 +32,7 @@ class MenuNavigation extends DefaultNavigationFactory {
                         "icon" => $row['ICON_CLASS'],
                         'uri' => 'javascript::',
                         "pages" => $this->menu($row['MENU_ID']),
-                        "visible" => true
+                        "visible" => ($row['IS_VISIBLE'] == 'Y') ? TRUE : FALSE
                     );
                 } else {
                     $configuration['navigation'][$this->getName()][$row['MENU_NAME']] = array(
@@ -38,7 +40,7 @@ class MenuNavigation extends DefaultNavigationFactory {
                         "icon" => $row['ICON_CLASS'],
                         "route" => $row['ROUTE'],
                         "action" => $row['ACTION'],
-                        "visible" => true
+                        "visible" => ($row['IS_VISIBLE'] == 'Y') ? TRUE : FALSE
                     );
                 }
             }
