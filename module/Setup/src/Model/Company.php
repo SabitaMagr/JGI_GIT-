@@ -19,6 +19,7 @@ class Company extends Model {
     const STATUS = "STATUS";
     const CREATED_BY = "CREATED_BY";
     const MODIFIED_BY = "MODIFIED_BY";
+    const LOGO = "LOGO";
 
     public $companyId;
     public $companyCode;
@@ -32,6 +33,7 @@ class Company extends Model {
     public $status;
     public $createdBy;
     public $modifiedBy;
+    public $logo;
     public $mappings = [
         'companyId' => self::COMPANY_ID,
         'companyCode' => self::COMPANY_CODE,
@@ -45,6 +47,7 @@ class Company extends Model {
         'status' => self::STATUS,
         'createdBy' => self::CREATED_BY,
         'modifiedBy' => self::MODIFIED_BY,
+        'logo' => self::LOGO
     ];
 
 }

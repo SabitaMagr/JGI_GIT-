@@ -10,14 +10,14 @@ return [
         (SERVICE_NAME = ITN)
         )
         )',
-        'username'      => 'HRIS',
-        'password'      => 'NEO_HRIS',
+//        'username'      => 'HRIS',
+//        'password'      => 'NEO_HRIS',
 //        'username'      => 'HRIS_JWL',
 //        'password'      => 'HRIS_JWL',
 //        'username' => 'HRIS_MODERN',
 //        'password' => 'HRIS_MODERN',
-//        'username'      => 'ITNEPAL_HRIS_APR2',
-//        'password'      => 'ITNEPAL_HRIS_APR2',
+        'username'      => 'ITNEPAL_HRIS_APR2',
+        'password'      => 'ITNEPAL_HRIS_APR2',
         'platform_options' => ['quote_identifiers' => false]
     ],
     'service_manager' => [

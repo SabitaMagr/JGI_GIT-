@@ -38,13 +38,11 @@ if ($this->messages) {
 $form->prepare();
 ?>
 <script>
-    document.menu =<?php $menu = ["id" => "menuSetup", "subMenu" => ["id" => "subMenuCompany"]];
-echo json_encode($menu); ?>;
     document.url = '<?= $this->url("restful", ["action" => "index"]) ?>';
-    document.fileUploadUrl = '<?= $this->url('company', ["action" => "add"]) ?>';
+    document.wsFileUpload = '<?= $this->url('company', ["action" => "fileUpload"]) ?>';
 </script>
 <div class="page-bar">
-<?= $this->navigation('Zend\Navigation\Company')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
+    <?= $this->navigation('Zend\Navigation\Company')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
 <div class="row margin-top-20">
     <div class="col-sm-12">
@@ -55,57 +53,69 @@ echo json_encode($menu); ?>;
                 </div>
             </div>
             <div class="portlet-body">
+                <div class="row">
+                    <div class="col-sm-4">
+                        <form  action="<?= $this->url('company', ["action" => "fileUpload"]) ?>"
+                               class="dropzone"
+                               id="my-awesome-dropzone">
+                        </form>
+                        <button id="uploadFile">Upload</button>  
+                        <div id="uploadedImage" class="cbp-caption-defaultWrap">
+                            <image style="width:100%;height:144px;" />
+                        </div>
+                    </div>
+                </div>
                 <?php
                 print $this->form()->openTag($form);
                 ?>
-                
+                <input required name="logo" id="form-logo" class="form-control" type="hidden" value="">
                 <div class=" row">
                     <div class="col-sm-4">
-                <div class="form-group required ">
-                    <?php print $this->formLabel($companyCode); ?>
-                    <?php print $this->formElement($companyCode); ?>
-                    <?php print $this->formElementErrors()->render($companyCode, ['class' => 'help-block']); ?>
-                    <span class="errorMsg" style="font-size:11px; color:red;"></span>
-                </div>
+                        <div class="form-group required ">
+                            <?php print $this->formLabel($companyCode); ?>
+                            <?php print $this->formElement($companyCode); ?>
+                            <?php print $this->formElementErrors()->render($companyCode, ['class' => 'help-block']); ?>
+                            <span class="errorMsg" style="font-size:11px; color:red;"></span>
+                        </div>
                     </div>
 
 
                     <div class="col-sm-4">
-                <div class="form-group required ">
-                    <?php print $this->formLabel($companyName); ?>
-                    <?php print $this->formElement($companyName); ?>
-                    <?php print $this->formElementErrors()->render($companyName, ['class' => 'help-block']); ?>
-                    <span class="errorMsg" style="font-size:11px; color:red;"></span>
-                </div>
+                        <div class="form-group required ">
+                            <?php print $this->formLabel($companyName); ?>
+                            <?php print $this->formElement($companyName); ?>
+                            <?php print $this->formElementErrors()->render($companyName, ['class' => 'help-block']); ?>
+                            <span class="errorMsg" style="font-size:11px; color:red;"></span>
+                        </div>
                     </div>
 
 
                     <div class="col-sm-4">
-                <div class="form-group required ">
-                    <?php print $this->formLabel($address); ?>
-                    <?php print $this->formElement($address); ?>
-                    <?php print $this->formElementErrors()->render($address, ['class' => 'help-block']); ?>
-                </div>
+                        <div class="form-group required ">
+                            <?php print $this->formLabel($address); ?>
+                            <?php print $this->formElement($address); ?>
+                            <?php print $this->formElementErrors()->render($address, ['class' => 'help-block']); ?>
+                        </div>
                     </div>
                 </div>
-                
-                
+
+
                 <div class=" row">
                     <div class="col-sm-4">
-                <div class="form-group">
-                    <?php print $this->formLabel($telephone); ?>
-                    <?php print $this->formElement($telephone); ?>
-                    <?php print $this->formElementErrors()->render($telephone, ['class' => 'help-block']); ?>
-                </div>
+                        <div class="form-group">
+                            <?php print $this->formLabel($telephone); ?>
+                            <?php print $this->formElement($telephone); ?>
+                            <?php print $this->formElementErrors()->render($telephone, ['class' => 'help-block']); ?>
+                        </div>
                     </div>
 
 
                     <div class="col-sm-4">
-                <div class="form-group">
-                    <?php print $this->formLabel($fax); ?>
-                    <?php print $this->formElement($fax); ?>
-                    <?php print $this->formElementErrors()->render($fax, ['class' => 'help-block']); ?>
-                </div>
+                        <div class="form-group">
+                            <?php print $this->formLabel($fax); ?>
+                            <?php print $this->formElement($fax); ?>
+                            <?php print $this->formElementErrors()->render($fax, ['class' => 'help-block']); ?>
+                        </div>
                     </div>
 
 
@@ -116,12 +126,8 @@ echo json_encode($menu); ?>;
                             <?php print $this->formElementErrors()->render($swift, ['class' => 'help-block']); ?>
                         </div>
                     </div>
-                    <div class="col-sm-4">
-                        <div id="dropZoneContainer" class="dropzone">
-                        </div>
-                    </div>
                 </div>
-                
+
                 <?php print $this->formSubmit($submit); ?>
                 <?php
                 print $this->form()->closeTag($form);

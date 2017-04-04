@@ -1463,9 +1463,9 @@ json_encode($address);
                                       class="dropzone"
                                       id="my-awesome-dropzone">
                                 </form>
-                                <span ng-show="noImageSelected" class="errorMsg">Please Select an Image!</span>
-                                <div ng-hide="(file.fileCode == null || file.editMode)" class="cbp-caption-defaultWrap">
-                                    <image style="width:100%;height:144px;"   src="{{viewImage(file.filePath)}}"/>
+                                <span id="noImageSelected" class="errorMsg">Please Select an Image!</span>
+                                <div id="uploadedImage"  class="cbp-caption-defaultWrap">
+                                    <image style="width:100%;height:144px;"   />
                                 </div>
 
                             </div>
