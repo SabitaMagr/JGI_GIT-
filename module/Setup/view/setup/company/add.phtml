@@ -2,8 +2,8 @@
 $this->headLink()
         ->appendStylesheet($this->basePath('dropzone/dropzone.min.css'));
 
-$this->headScript()->appendFile($this->basePath('js/setup/company/add.js'));
 $this->headScript()->appendFile($this->basePath('dropzone/dropzone.min.js'));
+$this->headScript()->appendFile($this->basePath('js/setup/company/add.js'));
 
 $form->setAttribute('role', 'form');
 $form->setAttribute('id', 'company-form');
@@ -59,10 +59,10 @@ $form->prepare();
                                class="dropzone"
                                id="my-awesome-dropzone">
                         </form>
-                        <button id="uploadFile">Upload</button>  
                         <div id="uploadedImage" class="cbp-caption-defaultWrap">
                             <image style="width:100%;height:144px;" />
                         </div>
+                        <button id="uploadFile" class="btn btn-default">Upload</button>  
                     </div>
                 </div>
                 <?php

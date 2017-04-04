@@ -15,6 +15,7 @@ use Zend\Db\Sql\Expression;
 use Zend\Db\Sql\Sql;
 use Zend\Db\TableGateway\TableGateway;
 use HolidayManagement\Model\HolidayBranch;
+use Application\Helper\Helper;
 
 class HolidayRepository implements RepositoryInterface
 {
@@ -42,6 +43,7 @@ class HolidayRepository implements RepositoryInterface
 
    }
    function selectAll($employeeId){
+       $today = Helper::getcurrentExpressionDate();
        $sql = new Sql($this->adapter);
        $select = $sql->select();
        $select->columns([
@@ -62,6 +64,7 @@ class HolidayRepository implements RepositoryInterface
        $select->where([
            "H.STATUS='E'",
            "E.EMPLOYEE_ID=".$employeeId,
+           "H.END_DATE<=".$today->getExpression(),
            "((H.GENDER_ID IS NOT NULL AND H.GENDER_ID=E.GENDER_ID) OR H.GENDER_ID IS NULL)"
        ]);
        

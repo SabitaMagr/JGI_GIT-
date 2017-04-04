@@ -38,58 +38,82 @@ $form->prepare();
 print $this->form()->openTag($form);
 ?>
 <script>
-    document.menu =<?php $menu = ["id" => "menuLeave", "subMenu" => ["id" => "subMenuLeaveSetup"]];echo json_encode($menu);?>;
+    document.menu =<?php
+$menu = ["id" => "menuLeave", "subMenu" => ["id" => "subMenuLeaveSetup"]];
+echo json_encode($menu);
+?>;
     document.url = '<?= $this->url("restful", ["action" => "index"]) ?>';
 </script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\leavesetup')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
 <div class="row margin-top-20">
-    <div class="col-sm-8 col-sm-offset-2">
+    <div class="col-sm-12">
         <div class="portlet box custom-box">
             <div class="portlet-title">
                 <div class="caption">
                     <i class="fa fa-user"></i>New Entry
                 </div>
+                <div class="actions">
+                    <a class="btn btn-circle btn-icon-only btn-default fullscreen" href="javascript:;" data-original-title="" title=""> </a>
+                </div>
+
             </div>
             <div class="portlet-body">
-                <div class="form-group <?= empty($leaveCode->getMessages()) ? "" : "error" ?>">
-                    <?php print $this->formLabel($leaveCode); ?>
-                    <?php print $this->formElement($leaveCode); ?>
-                    <span class="errorMsg" style="font-size:11px; color:red;"></span>
-                </div>
-                <?php print $this->formElementErrors()->render($leaveCode, ['class' => 'help-block error']); ?>
 
-                <div class="form-group <?= empty($leaveEname->getMessages()) ? "" : "error" ?>">
-                    <?php print $this->formLabel($leaveEname); ?>
-                    <?php print $this->formElement($leaveEname); ?>
-                    <span class="errorMsg" style="font-size:11px; color:red;"></span>
-                </div>
-                <?php print $this->formElementErrors()->render($leaveEname, ['class' => 'help-block error']); ?>
+                <div class=" row">
+                    <div class="col-sm-4">
+                        <div class="form-group <?= empty($leaveCode->getMessages()) ? "" : "error" ?>">
+                            <?php print $this->formLabel($leaveCode); ?>
+                            <span class="required" aria-required="true">*</span>
+                            <?php print $this->formElement($leaveCode); ?>
+                            <span class="errorMsg" style="font-size:11px; color:red;"></span>
+                            <?php print $this->formElementErrors()->render($leaveCode, ['class' => 'help-block error']); ?>
+                        </div>
+                    </div>
 
-                <div class="form-group <?= empty($leaveLname->getMessages()) ? "" : "error" ?>">
-                    <?php print $this->formLabel($leaveLname); ?>
-                    <?php print $this->formElement($leaveLname); ?>
-                    <span class="errorMsg" style="font-size:11px; color:red;"></span>
+                    <div class="col-sm-4">
+                        <div class="form-group <?= empty($leaveEname->getMessages()) ? "" : "error" ?>">
+                            <?php print $this->formLabel($leaveEname); ?>
+                            <span class="required" aria-required="true">*</span>
+                            <?php print $this->formElement($leaveEname); ?>
+                            <span class="errorMsg" style="font-size:11px; color:red;"></span>
+                        </div>
+                        <?php print $this->formElementErrors()->render($leaveEname, ['class' => 'help-block error']); ?>
+                    </div>
+
+                    <div class="col-sm-4">
+                        <div class="form-group <?= empty($leaveLname->getMessages()) ? "" : "error" ?>">
+                            <?php print $this->formLabel($leaveLname); ?>
+                            <?php print $this->formElement($leaveLname); ?>
+                            <span class="errorMsg" style="font-size:11px; color:red;"></span>
+                        </div>
+                        <?php print $this->formElementErrors()->render($leaveLname, ['class' => 'help-block error']); ?>
+                    </div>
                 </div>
-                <?php print $this->formElementErrors()->render($leaveLname, ['class' => 'help-block error']); ?>
-                
-                
-                <div class="form-group <?= empty($companyId->getMessages()) ? "" : "error" ?>">
-                    <?php print $this->formLabel($companyId); ?>
-                    <?php print $this->formElement($companyId); ?>
-                    <span class="errorMsg" style="font-size:11px; color:red;"></span>
+
+                <div class=" row">
+                    <div class="col-sm-4">
+                        <div class="form-group <?= empty($companyId->getMessages()) ? "" : "error" ?>">
+                            <?php print $this->formLabel($companyId); ?>
+                            <span class="required" aria-required="true">*</span>
+                            <?php print $this->formElement($companyId); ?>
+                            <span class="errorMsg" style="font-size:11px; color:red;"></span>
+                        </div>
+                        <?php print $this->formElementErrors()->render($companyId, ['class' => 'help-block error']); ?>
+                    </div>
+
+                    <div class="col-sm-4">
+                        <div class="form-group <?= empty($fiscalYear->getMessages()) ? "" : "error" ?>">
+                            <?php print $this->formLabel($fiscalYear); ?>
+                            <span class="required" aria-required="true">*</span>
+                            <?php print $this->formElement($fiscalYear); ?>
+                        </div>
+                        <?php print $this->formElementErrors()->render($fiscalYear, ['class' => 'help-block error']); ?>
+                    </div>
+
+
                 </div>
-                <?php print $this->formElementErrors()->render($companyId, ['class' => 'help-block error']); ?>
-                
-                
-                
-                <div
-                    class="form-group <?= empty($fiscalYear->getMessages()) ? "" : "error" ?>">
-                    <?php print $this->formLabel($fiscalYear); ?>
-                    <?php print $this->formElement($fiscalYear); ?>
-                </div>
-                <?php print $this->formElementErrors()->render($fiscalYear, ['class' => 'help-block error']); ?>
 
 
                 <div class="padding-5">
@@ -136,17 +160,24 @@ print $this->form()->openTag($form);
                             <div class="form-group padding-0">
                                 <?php print $this->formLabel($carryForward); ?>
                                 <div class="md-radio-inline">
-                                     <?php $customRenderer($carryForward); ?>
+                                    <?php $customRenderer($carryForward); ?>
                                 </div>
                             </div>
                             <?php print $this->formElementErrors()->render($carryForward, ['class' => 'help-block error']); ?>
                         </div>
                     </div>
                 </div>
-                <div class="form-group">
-                    <?php print $this->formLabel($remarks); ?>
-                    <?php print $this->formElement($remarks); ?>
-                    <?php print $this->formElementErrors()->render($remarks, ['class' => 'help-block']); ?>
+
+
+                <div class=" row">
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <?php print $this->formLabel($remarks); ?>
+                            <?php print $this->formElement($remarks); ?>
+                            <?php print $this->formElementErrors()->render($remarks, ['class' => 'help-block']); ?>
+                        </div>
+                    </div>
+
                 </div>
 
                 <?php print $this->formSubmit($submit); ?>

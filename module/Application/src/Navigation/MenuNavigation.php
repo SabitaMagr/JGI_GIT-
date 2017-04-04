@@ -22,23 +22,35 @@ class MenuNavigation extends DefaultNavigationFactory {
             $this->adapter = $adapter;
             $repository = new MenuSetupRepository($adapter);
             $data = $repository->getHierarchicalMenuWithRoleId();
-
             foreach ($data as $key => $row) {
-                if ($this->menu($row['MENU_ID'])) {
-                    $configuration['navigation'][$this->getName()][$row['MENU_NAME']] = array(
+                $tempMenu = $this->menu($row['MENU_ID']);
+                if ($tempMenu) {
+                    if (strpos($row['ROUTE'], 'javascript') !== FALSE || strpos($row['ACTION'], 'javascript') !== FALSE) {
+                        $urlArray = array(
+                            'uri' => 'javascript::'
+                        );
+                    }else{
+                        $urlArray = array(
+                            "route" => $row['ROUTE'],
+                            "action" => $row['ACTION'],
+                        );
+                    }
+                    $menuDtlArray = array(
                         "label" => $row['MENU_NAME'],
                         "icon" => $row['ICON_CLASS'],
-                        'uri' => 'javascript::',
-                        "pages" => $this->menu($row['MENU_ID']),
-                        "visible" => true
+                        "pages" => $tempMenu['array'],
+                        "isVisible" => $row['IS_VISIBLE'],
+                        "isChildAllInvisible" => $tempMenu['allInvisible']
                     );
+                    $newMenuDtlArray = array_merge($menuDtlArray,$urlArray);
+                    $configuration['navigation'][$this->getName()][$row['MENU_NAME']] = $newMenuDtlArray;
                 } else {
                     $configuration['navigation'][$this->getName()][$row['MENU_NAME']] = array(
                         "label" => $row['MENU_NAME'],
                         "icon" => $row['ICON_CLASS'],
                         "route" => $row['ROUTE'],
                         "action" => $row['ACTION'],
-                        "visible" => true
+                        "isVisible" => $row['IS_VISIBLE']
                     );
                 }
             }
@@ -69,25 +81,53 @@ class MenuNavigation extends DefaultNavigationFactory {
 
         if ($num > 0) {
             $temArray = array();
+            $allInvisible = 0;
+            $total = 0;
             foreach ($result as $row) {
-                $children = $this->menu($row['MENU_ID']);
+                $tempMenu = $this->menu($row['MENU_ID']);
+                if (!$tempMenu) {
+                    $children = false;
+                } else {
+                    $children = $tempMenu['array'];
+                    $resAllInvisible = $tempMenu['allInvisible'];
+                }
+
+                if ($row['IS_VISIBLE'] == 'N') {
+                    $allInvisible++;
+                }
+                $total++;
                 if ($children) {
-                    $temArray[] = array(
-                        "label" => $row['MENU_NAME'],
-                        "icon" => $row['ICON_CLASS'],
-                        'uri' => 'javascript::',
-                        "pages" => $children
-                    );
+                    if (strpos($row['ROUTE'], 'javascript') !== FALSE || strpos($row['ACTION'], 'javascript') !== FALSE) {
+                        $urlArray = array(
+                            'uri' => 'javascript::'
+                        );
+                    }else{
+                        $urlArray = array(
+                            "route" => $row['ROUTE'],
+                            "action" => $row['ACTION'],
+                        );
+                    }
+                    $menuDtlArray = array(
+                            "label" => $row['MENU_NAME'],
+                            "icon" => $row['ICON_CLASS'],
+                            "pages" => $children,
+                            "isVisible" => $row['IS_VISIBLE'],
+                            "isChildAllInvisible" => $resAllInvisible
+                        );
+                    $newMenuDtlArray = array_merge($menuDtlArray,$urlArray);
+                    $temArray[] = $newMenuDtlArray;
                 } else {
                     $temArray[] = array(
                         "label" => $row['MENU_NAME'],
                         "icon" => $row['ICON_CLASS'],
                         "route" => $row['ROUTE'],
-                        "action" => $row['ACTION']
+                        "action" => $row['ACTION'],
+                        "isVisible" => $row['IS_VISIBLE']
                     );
                 }
             }
-            return $temArray;
+//            return $temArray;
+            return ['array' => $temArray, 'allInvisible' => ($allInvisible == $total)];
         } else {
             return false;
         }

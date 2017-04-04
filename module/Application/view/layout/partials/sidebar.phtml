@@ -35,15 +35,13 @@
                 $subMenus = generateSubMenus($page);
 
 
-                $showSubMenus = $page->hasPages() ? "class='nav-link nav-toggle'" : "";
+                $showSubMenus = $page->hasPages() && (!$page->isChildAllInvisible) ? "class='nav-link nav-toggle'" : "";
                 $selected = $isActive || $isChildActive ? "<span class='selected'></span>" : "";
                 $isOpen = $isChildActive ? 'open' : '';
-                $showArrow = $page->hasPages() ? "<span class='arrow " . $isOpen . "'></span>" : "";
+                $showArrow = $page->hasPages() && (!$page->isChildAllInvisible) ? "<span class='arrow " . $isOpen . "'></span>" : "";
 
-                if (!$page->isVisible()) {
-                    return '';
-                }
-                return "<li class='nav-item " . $active . "'>"
+                $showHide = (($page->isVisible == 'N') ? "hide" : "");
+                return "<li class='nav-item " . $active . " " . $showHide . "'>"
                         . "<a href='" . $page->getHref() . "' " . $showSubMenus . " >"
                         . "<i class='" . $page->icon . "'></i>"
                         . "<span class='title'>"
