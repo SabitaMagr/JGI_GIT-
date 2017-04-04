@@ -39,54 +39,64 @@
             }
         }
 
+        var isViewLoading = true;
         $('#calendar').fullCalendar('destroy'); // destroy the calendar
         $('#calendar').fullCalendar({ //re-initialize the calendar
+            defaultDate: '2017-03-12',
             disableDragging : false,
+            viewRender: function( view, element ) {
+                $('#calendar .html-loading').remove();
+                var intervalId = setInterval(function() {
+                    var $dataHtml = element.find('.fc-content-skeleton');
+                    if (!isViewLoading && $dataHtml) {
+                        clearInterval(intervalId);
+                        $dataHtml.find('tbody').each(function(k,v) {
+                            var $attnRow = $(v).find('tr:eq(0)');
+                            if ('undefined' != typeof($attnRow)) {
+                                $attnRow.find('.fc-title').html(function(i,inOutTxt) {
+                                    var inOutTime = inOutTxt.split(' ');
+                                    if (inOutTime.length) {
+                                        var output = "";
+                                        if (inOutTime[0]) {
+                                            output += '<span class="fc-title-in" style="background-color:#44fbaf;padding:1px 3px;">' + inOutTime[0] + '</span>';
+                                        }
+                                        if (inOutTime[1]) {
+                                            output += '<span class="fc-title-out" style="background-color:#e6fb44;padding:1px 3px;">' + inOutTime[1] + '</span>';
+                                        }
+                                        if (output) {
+                                            return output;
+                                        }
+                                    }
+                                })
+                            }
+                            var $eventRow = $(v).find('tr:gt(0)');
+                            if ('undefined' != typeof($eventRow)) {
+                                $eventRow.find('.fc-title').css('color', '#fff');
+                            }
+                        });
+                    }
+                }, 100);
+            },
+            eventLimit: true,
             header: h,
-            editable: true,
-            events: [{
-                title: 'All Day',
-                start: new Date(y, m, 1),
-                backgroundColor: Metronic.getBrandColor('yellow')
-            }, {
-                title: 'Long Event',
-                start: new Date(y, m, d - 5),
-                end: new Date(y, m, d - 2),
-                backgroundColor: Metronic.getBrandColor('blue')
-            }, {
-                title: 'Repeating Event',
-                start: new Date(y, m, d - 3, 16, 0),
-                allDay: false,
-                backgroundColor: Metronic.getBrandColor('red')
-            }, {
-                title: 'Repeating Event',
-                start: new Date(y, m, d + 6, 16, 0),
-                allDay: false,
-                backgroundColor: Metronic.getBrandColor('green')
-            }, {
-                title: 'Meeting',
-                start: new Date(y, m, d+9, 10, 30),
-                allDay: false
-            }, {
-                title: 'Lunch',
-                start: new Date(y, m, d, 14, 0),
-                end: new Date(y, m, d, 14, 0),
-                backgroundColor: Metronic.getBrandColor('grey'),
-                allDay: false
-            }, {
-                title: 'Birthday',
-                start: new Date(y, m, d + 1, 19, 0),
-                end: new Date(y, m, d + 1, 22, 30),
-                backgroundColor: Metronic.getBrandColor('purple'),
-                allDay: false
-            }, {
-                title: 'Click for Google',
-                start: new Date(y, m, 28),
-                end: new Date(y, m, 29),
-                backgroundColor: Metronic.getBrandColor('yellow'),
-                url: 'http://google.com/'
-            }]
+            editable: false,
+            cache: false,
+            data: {},
+            events: {
+                url: document.calendarJsonFeedUrl,
+                type: 'POST',
+                error: function() {
+
+                }
+            },
+            loading: function(isLoading, view) {
+                isViewLoading = isLoading;
+            }
         });
+    });
+
+    $('#tab-birthday-upcoming').slimScroll({
+        height: '298px'
     });
 
     /*************** BIRTHDAY TAB CLICK EVENT ***************/
@@ -105,9 +115,7 @@
             $('#tab-birthday-upcoming').show().addClass('active');
         }
     });
-    // setTimeout(function() {
-    //     $('.upcomingholidays-loading').remove();
-    //     $('.upcomingholidays .feeds').css('visibility', 'visible');
-    // }, 3000);
+
+    ComponentsPickers.init();
 
 })(window.jQuery, window.app);
