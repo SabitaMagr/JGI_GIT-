@@ -2,11 +2,8 @@
 
 namespace Application\Repository;
 
+use Application\Helper\Helper;
 use Application\Model\Model;
-use Application\Model\Months;
-use Zend\Db\Adapter\AdapterInterface;
-use Zend\Db\TableGateway\TableGateway;
-use Zend\Db\Adapter\Driver\Oci8\Result;
 
 class DashboardRepository implements RepositoryInterface {
 
@@ -244,8 +241,8 @@ class DashboardRepository implements RepositoryInterface {
                HOLIDAY_ENAME,
                GENDER_ID,
                BRANCH_ID,
-               START_DATE,
-               END_DATE,
+               TO_CHAR(START_DATE,'DD-MON-RRRR') START_DATE,
+               TO_CHAR(END_DATE,'DD-MON-RRRR') END_DATE,
                HALFDAY,
                TO_CHAR(START_DATE, 'DAY') WEEK_DAY,
                START_DATE - TRUNC(SYSDATE) DAYS_REMAINING
@@ -287,6 +284,112 @@ class DashboardRepository implements RepositoryInterface {
         $result = $statement->execute();
 
         return $result;
+    }
+
+    public function fetchEmployeesBirthday() {
+        $sql = "SELECT * FROM (
+                                SELECT EMP.EMPLOYEE_ID,
+                                  ( CASE
+                                      WHEN EMP.MIDDLE_NAME IS NULL THEN EMP.FIRST_NAME || ' ' || EMP.LAST_NAME
+                                      ELSE EMP.FIRST_NAME || ' ' || EMP.MIDDLE_NAME || ' ' || EMP.LAST_NAME
+                                  END ) FULL_NAME, 
+                                  DSG.DESIGNATION_TITLE,
+                                  EFL.FILE_PATH,
+                                  EMP.BIRTH_DATE,
+                                  TO_CHAR(EMP.BIRTH_DATE, 'DD Month') EMP_BIRTH_DATE, 
+                                  'TODAY' BIRTHDAYFOR
+                                FROM HRIS_EMPLOYEES EMP, HRIS_DESIGNATIONS DSG, HRIS_EMPLOYEE_FILE EFL
+                                WHERE TO_CHAR(EMP.BIRTH_DATE, 'MMDD') = TO_CHAR(SYSDATE,'MMDD')
+                                AND EMP.RETIRED_FLAG = 'N'
+                                AND EMP.DESIGNATION_ID = DSG.DESIGNATION_ID
+                                AND EMP.PROFILE_PICTURE_ID = EFL.FILE_CODE(+)
+                                UNION ALL
+                                SELECT EMP.EMPLOYEE_ID,
+                                  ( CASE
+                                      WHEN EMP.MIDDLE_NAME IS NULL THEN EMP.FIRST_NAME || ' ' || EMP.LAST_NAME
+                                      ELSE EMP.FIRST_NAME || ' ' || EMP.MIDDLE_NAME || ' ' || EMP.LAST_NAME
+                                  END ) FULL_NAME, 
+                                  DSG.DESIGNATION_TITLE,
+                                  EFL.FILE_PATH,
+                                  EMP.BIRTH_DATE,
+                                  TO_CHAR(EMP.BIRTH_DATE, 'DD Month') EMP_BIRTH_DATE, 
+                                  'UPCOMING' BIRTHDAYFOR
+                                FROM HRIS_EMPLOYEES EMP, HRIS_DESIGNATIONS DSG, HRIS_EMPLOYEE_FILE EFL
+                                WHERE TO_CHAR(EMP.BIRTH_DATE, 'MMDD') > TO_CHAR(SYSDATE,'MMDD')
+                                AND EMP.RETIRED_FLAG = 'N'
+                                AND EMP.DESIGNATION_ID = DSG.DESIGNATION_ID
+                                AND EMP.PROFILE_PICTURE_ID = EFL.FILE_CODE(+)
+                ) ORDER BY TO_CHAR(BIRTH_DATE,'MMDD')";
+
+        $statement = $this->adapter->query($sql);
+        $result = $statement->execute();
+
+        $birthdayResult = array();
+        foreach($result as $rs) {
+            if ('TODAY' == strtoupper($rs['BIRTHDAYFOR'])) {
+                $birthdayResult['TODAY'][$rs['EMPLOYEE_ID']] = $rs;
+            }
+            if ('UPCOMING' == strtoupper($rs['BIRTHDAYFOR'])) {
+                $birthdayResult['UPCOMING'][$rs['EMPLOYEE_ID']] = $rs;
+            }
+        }
+
+        return $birthdayResult;
+    }
+
+    public function fetchEmployeeCalendarData($employeeId, $startDate, $endDate) {
+        $rangeClause = "";
+        if ($startDate && $endDate) {
+            $rangeClause = "AND ATTENDANCE_DT BETWEEN TO_DATE('{$startDate}', 'YYYY-MM-DD') AND TO_DATE('{$endDate}', 'YYYY-MM-DD')";
+        }
+        $sql = "SELECT AD.EMPLOYEE_ID,
+                       TO_CHAR(ATTENDANCE_DT, 'YYYY-MM-DD') ATTENDANCE_DT,
+                       TO_CHAR(IN_TIME, 'HH24:MI') IN_TIME,
+                       TO_CHAR(OUT_TIME, 'HH24:MI') OUT_TIME,
+                       AD.LEAVE_ID,
+                       LMS.LEAVE_ENAME,
+                       AD.HOLIDAY_ID,
+                       HMS.HOLIDAY_ENAME,
+                       AD.TRAINING_ID,
+                       TMS.TRAINING_NAME,
+                       TR.TRAVEL_ID,
+                       TR.TRAVEL_CODE      
+                  FROM HRIS_ATTENDANCE_DETAIL AD, HRIS_LEAVE_MASTER_SETUP LMS, HRIS_HOLIDAY_MASTER_SETUP HMS, HRIS_TRAINING_MASTER_SETUP TMS, HRIS_EMPLOYEE_TRAVEL_REQUEST TR
+                WHERE AD.EMPLOYEE_ID = 1000376 --{$employeeId}
+                {$rangeClause}
+                AND AD.LEAVE_ID = LMS.LEAVE_ID(+)
+                AND AD.HOLIDAY_ID = HMS.HOLIDAY_ID(+)
+                AND AD.TRAINING_ID = TMS.TRAINING_ID(+)
+                AND AD.TRAVEL_ID = TR.TRAVEL_ID(+)
+                ORDER BY ATTENDANCE_DT DESC";
+
+        $statement = $this->adapter->query($sql);
+        $result = $statement->execute();
+
+        return Helper::extractDbData($result);
+    }
+
+    public function fetchEmployeeTask($employeeId) {
+        $sql = "SELECT TSK.TASK_ID,
+                        ( CASE
+                          WHEN EMP.MIDDLE_NAME IS NULL THEN EMP.FIRST_NAME || ' ' || EMP.LAST_NAME
+                          ELSE EMP.FIRST_NAME || ' ' || EMP.MIDDLE_NAME || ' ' || EMP.LAST_NAME
+                        END ) FULL_NAME, 
+                        DSG.DESIGNATION_TITLE,
+                        TSK.TASK_EDESC,
+                        TSK.END_DATE,
+                        TSK.STATUS
+                    FROM HRIS_TASK TSK, HRIS_EMPLOYEES EMP, HRIS_DESIGNATIONS DSG
+                    WHERE 1 = 1
+                        AND TSK.EMPLOYEE_ID = EMP.EMPLOYEE_ID
+                        AND EMP.DESIGNATION_ID = DSG.DESIGNATION_ID
+                        AND TSK.EMPLOYEE_ID = {$employeeId}
+                        AND (TSK.END_DATE> TRUNC(SYSDATE) OR TSK.STATUS = 'O')";
+
+        $statement = $this->adapter->query($sql);
+        $result = $statement->execute();
+
+        return Helper::extractDbData($result);
     }
 
 
