@@ -42,6 +42,7 @@ class EmployeeRepository implements RepositoryInterface {
         $select->from("HRIS_EMPLOYEES");
         $select->columns(Helper::convertColumnDateFormat($this->adapter, new HrEmployees(), ['birthDate']), false);
         $select->where(['STATUS' => 'E', 'RETIRED_FLAG' => 'N', "JOIN_DATE <= SYSDATE"]);
+        $select->order(['UPPER(FIRST_NAME)', 'UPPER(MIDDLE_NAME)', 'UPPER(LAST_NAME)']);
 
         $statement = $sql->prepareStatementForSqlObject($select);
         $result = $statement->execute();

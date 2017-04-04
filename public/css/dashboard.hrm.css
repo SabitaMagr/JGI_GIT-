@@ -123,7 +123,7 @@ ul {
     height: 225px;
     overflow: auto;
 }
-.upcomingholidays-loading
+.html-loading
 {
     background:url(../img/loader.gif) no-repeat center center;
 }
@@ -748,7 +748,117 @@ a .icon_edit:hover {
 .hrm-dashboard-employee-list.portlet-body .select2-container {
     width: inherit !important;
 }
+/*task css start here*/
+.date-date {
+    padding-bottom: 15px;
+}
 
+.date-date > span {
+    background-color: #4db3a2;
+    border-radius: 50% !important;
+    color: #ffffff;
+    display: inline-block;
+    font-size: 15px;
+    height: 35px;
+    line-height: 35px;
+    text-align: center;
+    width: 35px;
+}
+
+.nextbtn i {
+
+    border-radius: 50% !important;
+    color: #ffffff;
+    float: right;
+    font-size: 20px;
+    height: 23px;
+    line-height: 21px;
+    margin-top: 9px;
+    text-align: center;
+    width: 23px;
+    background-color: #4db3a2;
+}
+
+.taskaddbtn {
+    float: right;
+}
+
+.taskaddbtn i {
+    font-size: 15px;
+    padding-top: 10px;
+    color: #666;
+}
+
+.taskaddbtn a:hover {
+    color: #4db3a2 !important;
+}
+
+.task-list-content h4 {
+    font-weight: 600 !important;
+    font-size: 13px !important;
+    margin-bottom: 4px !important;
+}
+
+.task-list-content span {
+    font-size: 11px;
+}
+
+.task-list-content span.name {
+    padding-left: 5px;
+}
+
+.task-list li {
+    border-bottom: 1px solid #eeeeee;
+    padding-bottom: 10px;
+
+}
+
+.datepickeform {
+
+    padding-top: 12px;
+}
+
+.pickdate {
+    max-width: 100% !important;
+    width: 100% !important;
+}
+
+.taskbox {
+    width: 55%;
+    float: left;
+}
+
+*::after, *::before {
+    box-sizing: border-box;
+}
+
+*::after, *::before {
+    box-sizing: border-box;
+}
+
+.datepickeform {
+
+    padding-top: 12px;
+}
+
+.datepickeform {
+
+    float: left;
+    width: 45%;
+}
+
+.positon, .name {
+    font-size: 11px;
+}
+
+.positon {
+    width: 50%;
+    float: left;
+}
+
+.name {
+    text-align: right;
+}
 /* Large desktops and laptops */
 
 @media (min-width: 1200px) {}

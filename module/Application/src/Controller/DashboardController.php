@@ -72,12 +72,17 @@ class DashboardController extends AbstractActionController {
         $fiscalYear = $auth->getStorage()->read()['fiscal_year'];
         $dahsboardRepo = new DashboardRepository($this->adapter);
         $employeeDetail = $dahsboardRepo->fetchEmployeeDashboardDetail($employeeId, $fiscalYear['START_DATE'], $fiscalYear['END_DATE']);
+
         $view = new ViewModel(array(
             "employeeDetail" => $employeeDetail,
             "upcomingHolidays" => $dahsboardRepo->fetchUpcomingHolidays($employeeDetail['GENDER_ID'], $employeeDetail['BRANCH_ID']),
             "employeeNotice" => $dahsboardRepo->fetchEmployeeNotice(),
             "employeeTask" => $dahsboardRepo->fetchEmployeeTask($employeeId),
             "employeesBirthday" => $dahsboardRepo->fetchEmployeesBirthday(),
+            "employeeList" => $dahsboardRepo->fetchAllEmployee(),
+            "headCountGender" => $dahsboardRepo->fetchGenderHeadCount(),
+            "headCountDepartment" => $dahsboardRepo->fetchDepartmentHeadCount(),
+            "headCountLocation" => $dahsboardRepo->fetchLocationHeadCount()
         ));
 
         $returnData = $this->roleWiseView($auth);
