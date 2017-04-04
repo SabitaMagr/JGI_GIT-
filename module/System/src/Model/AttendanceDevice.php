@@ -16,6 +16,7 @@ class AttendanceDevice extends Model {
     const COMPANY_ID = "COMPANY_ID";
     const BRANCH_ID = "BRANCH_ID";
     const STATUS = "STATUS";
+    const DEVICE_COMPANY="DEVICE_COMPANY";
 
     public $deviceId;
     public $deviceName;
@@ -25,6 +26,7 @@ class AttendanceDevice extends Model {
     public $companyId;
     public $branchId;
     public $status;
+    public $deviceCompany;
 
     public $mappings = [
         'deviceId' => self::DEVICE_ID,
@@ -35,6 +37,7 @@ class AttendanceDevice extends Model {
         'companyId' => self::COMPANY_ID,
         'branchId' => self::BRANCH_ID,
         'status' => self::STATUS,
+        'deviceCompany' => self::DEVICE_COMPANY,
     ];
 
 }
