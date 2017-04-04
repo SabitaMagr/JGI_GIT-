@@ -237,23 +237,23 @@ class DashboardRepository implements RepositoryInterface {
      * @return array
      */
     public function fetchUpcomingHolidays($genderId, $branchId) {
-        $sql = "SELECT HOLIDAY_ID,
-               HOLIDAY_ENAME,
-               GENDER_ID,
-               BRANCH_ID,
-               TO_CHAR(START_DATE,'DD-MON-RRRR') START_DATE,
-               TO_CHAR(END_DATE,'DD-MON-RRRR') END_DATE,
-               HALFDAY,
-               TO_CHAR(START_DATE, 'DAY') WEEK_DAY,
-               START_DATE - TRUNC(SYSDATE) DAYS_REMAINING
-        FROM HRIS_HOLIDAY_MASTER_SETUP
+        $sql = "SELECT HM.HOLIDAY_ID,
+               HM.HOLIDAY_ENAME,
+               HM.GENDER_ID,
+               HM.BRANCH_ID,
+               TO_CHAR(HM.START_DATE,'Day, dth Month') START_DATE,
+               TO_CHAR(HM.END_DATE,'Day, dth Month') END_DATE,
+               HM.HALFDAY,
+               TO_CHAR(HM.START_DATE, 'DAY') WEEK_DAY,
+               HM.START_DATE - TRUNC(SYSDATE) DAYS_REMAINING
+        FROM HRIS_HOLIDAY_MASTER_SETUP HM
         WHERE 1 = 1
-          AND TRUNC(SYSDATE)-1 < START_DATE
-          AND (GENDER_ID IS NULL
-               OR GENDER_ID = {$genderId})
-          AND (BRANCH_ID IS NULL
-               OR BRANCH_ID = {$branchId})
-        ORDER BY START_DATE";
+          AND TRUNC(SYSDATE)-1 < HM.START_DATE
+          AND (HM.GENDER_ID IS NULL
+               OR HM.GENDER_ID = {$genderId})
+          AND (HM.BRANCH_ID IS NULL
+               OR HM.BRANCH_ID = {$branchId})
+        ORDER BY HM.START_DATE";
 
         $statement = $this->adapter->query($sql);
         $result = $statement->execute();
@@ -392,5 +392,77 @@ class DashboardRepository implements RepositoryInterface {
         return Helper::extractDbData($result);
     }
 
+    public function fetchAllEmployee() {
+        $sql = "SELECT EMP.EMPLOYEE_ID,
+                  EMP.EMPLOYEE_CODE,
+                  EMP.FIRST_NAME,
+                  EMP.MIDDLE_NAME,
+                  EMP.LAST_NAME,
+                  ( CASE
+                     WHEN MIDDLE_NAME IS NULL THEN EMP.FIRST_NAME || ' ' || EMP.LAST_NAME
+                     ELSE EMP.FIRST_NAME || ' ' || EMP.MIDDLE_NAME || ' ' || EMP.LAST_NAME
+                  END ) FULL_NAME,
+                  EMP.DESIGNATION_ID,
+                  DSG.DESIGNATION_TITLE,
+                  EMP.DEPARTMENT_ID,
+                  DPT.DEPARTMENT_NAME
+                FROM HRIS_EMPLOYEES EMP, HRIS_DESIGNATIONS DSG, HRIS_DEPARTMENTS DPT
+                WHERE 1 = 1
+                AND EMP.DESIGNATION_ID = DSG.DESIGNATION_ID
+                AND EMP.DEPARTMENT_ID = DPT.DEPARTMENT_ID
+                AND EMP.STATUS = 'E'
+                AND EMP.RETIRED_FLAG = 'N'
+                ORDER BY UPPER(EMP.FIRST_NAME), UPPER(EMP.MIDDLE_NAME), UPPER(EMP.LAST_NAME)";
+
+        $statement = $this->adapter->query($sql);
+        $result = $statement->execute();
+
+        return $result;
+    }
+
+    public function fetchGenderHeadCount() {
+        $sql = "SELECT COUNT (*) HEAD_COUNT, HE.GENDER_ID, HG.GENDER_NAME
+                    FROM HRIS_EMPLOYEES HE, HRIS_GENDERS HG
+                   WHERE HE.GENDER_ID(+) = HG.GENDER_ID
+                     AND HG.STATUS = 'E'
+                     AND HE.RETIRED_FLAG = 'N'
+                     --AND HE.COMPANY_ID = :V_COMPANY_ID
+                GROUP BY HE.GENDER_ID, HG.GENDER_NAME";
+
+        $statement = $this->adapter->query($sql);
+        $result = $statement->execute();
+
+        return $result;
+    }
+
+    public function fetchDepartmentHeadCount() {
+        $sql = "SELECT COUNT (*) HEAD_COUNT, HD.DEPARTMENT_ID , HD.DEPARTMENT_NAME
+                    FROM HRIS_EMPLOYEES HE, HRIS_DEPARTMENTS HD
+                   WHERE HE.DEPARTMENT_ID(+) = HD.DEPARTMENT_ID
+                   AND HD.STATUS = 'E'
+                   AND HE.RETIRED_FLAG = 'N'
+                   --AND HE.COMPANY_ID = :V_COMPANY_ID
+                GROUP BY HD.DEPARTMENT_ID, HD.DEPARTMENT_NAME";
+
+        $statement = $this->adapter->query($sql);
+        $result = $statement->execute();
+
+        return $result;
+    }
+
+    public function fetchLocationHeadCount() {
+        $sql = "SELECT COUNT (*) HEAD_COUNT, HB.BRANCH_ID , HB.BRANCH_NAME
+                    FROM HRIS_EMPLOYEES HE, HRIS_BRANCHES HB
+                   WHERE HE.BRANCH_ID(+) = HB.BRANCH_ID
+                   AND HB.STATUS = 'E'
+                   AND HE.RETIRED_FLAG = 'N'
+                   --AND HE.COMPANY_ID = :V_COMPANY_ID
+                GROUP BY HB.BRANCH_ID , HB.BRANCH_NAME";
+
+        $statement = $this->adapter->query($sql);
+        $result = $statement->execute();
+
+        return $result;
+    }
 
 }

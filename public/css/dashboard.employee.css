@@ -920,10 +920,6 @@ a .icon_edit:hover {
     font-size: 10px;
 }
 
-.fc-content-skeleton tbody tr:gt(0) {
-
-}
-
 /*task css start here*/
 .date-date {
     padding-bottom: 15px;
@@ -966,7 +962,7 @@ a .icon_edit:hover {
 }
 
 .taskaddbtn a:hover {
-    color: 4 db3a2 !important;
+    color: #4db3a2 !important;
 }
 
 .task-list-content h4 {
