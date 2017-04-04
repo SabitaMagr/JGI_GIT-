@@ -95,7 +95,7 @@ class MenuNavigation extends DefaultNavigationFactory {
                     $children = false;
                 } else {
                     $children = $tempMenu['array'];
-                    $resAllInvisible = $tempMenu['array'];
+                    $resAllInvisible = $tempMenu['allInvisible'];
                 }
 
                 if ($row['IS_VISIBLE'] == 'N') {
