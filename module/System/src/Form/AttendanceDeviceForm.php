@@ -70,6 +70,16 @@ class AttendanceDeviceForm {
     public $branchId;
     
     /**
+     * @Annotion\Type("Zend\Form\Element\Text")
+     * @Annotation\Required(true)
+     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
+     * @Annotation\Options({"label":"Device Company"})
+     * @Annotation\Attributes({ "id":"$deviceCompany", "class":" form-control" })
+     */    
+    public $deviceCompany;
+
+    
+    /**
      * @Annotation\Type("Zend\Form\Element\Submit")
      * @Annotation\Attributes({"value":"Submit","class":"btn btn-success","id":"btnSubmit"})
      */
