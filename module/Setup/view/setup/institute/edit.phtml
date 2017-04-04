@@ -12,7 +12,7 @@ $email = $form->get('email');
 $remarks = $form->get('remarks');
 
 $submit = $form->get('submit');
-$submit->setAttribute('value','SUBMIT');
+$submit->setAttribute('value', 'SUBMIT');
 
 //custom validatin message
 if (key($telephone->getMessages()) == "regexNotMatch") {
@@ -22,7 +22,7 @@ if (key($email->getMessages()) == "regexNotMatch") {
     $email->setMessages(["regexNotMatch" => "Invalid Email Address"]);
 }
 
-$form->setAttribute('action', $this->url('institute', ['action' => 'edit','id'=>$id]));
+$form->setAttribute('action', $this->url('institute', ['action' => 'edit', 'id' => $id]));
 
 if ($this->messages) {
     print '<ul class="help-block bg-danger" style="background:#f3e250;">';
@@ -34,59 +34,92 @@ if ($this->messages) {
 
 $form->prepare();
 ?>
-    <script>
-        document.menu=<?php $menu = ["id" => "menuSetup","subMenu"=>["id"=>"subMenuInstitute"]];echo json_encode($menu);?>;
-        document.url = '<?= $this->url("restful", ["action" => "index"]) ?>';
-    </script>
+<script>
+    document.menu =<?php
+$menu = ["id" => "menuSetup", "subMenu" => ["id" => "subMenuInstitute"]];
+echo json_encode($menu);
+?>;
+    document.url = '<?= $this->url("restful", ["action" => "index"]) ?>';
+</script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\institute')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
 <div class="row margin-top-20">
-    <div class="col-sm-8 col-sm-offset-2">
+    <div class="col-sm-12">
         <div class="portlet box custom-box">
             <div class="portlet-title">
                 <div class="caption">
                     <i class="fa fa-user"></i>Update
                 </div>
+                <div class="actions">
+                    <a class="btn btn-circle btn-icon-only btn-default fullscreen" href="javascript:;" data-original-title="" title=""> </a>
+                </div> 
             </div>
             <div class="portlet-body">
                 <?php
                 print $this->form()->openTag($form);
                 ?>
-                <div class="form-group">
-                    <?php print $this->formLabel($instituteCode); ?>
-                    <?php print $this->formElement($instituteCode); ?>
-                    <?php print $this->formElementErrors()->render($instituteCode, ['class' => 'help-block error']); ?>
+
+                <div class=" row">
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <?php print $this->formLabel($instituteCode); ?>
+                            <?php print $this->formElement($instituteCode); ?>
+                            <?php print $this->formElementErrors()->render($instituteCode, ['class' => 'help-block error']); ?>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <?php print $this->formLabel($instituteName); ?>
+                            <?php print $this->formElement($instituteName); ?>
+                            <input type="hidden" id="instituteID" value="<?php echo $id; ?>"/>
+                            <?php print $this->formElementErrors()->render($instituteName, ['class' => 'help-block error']); ?>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <?php print $this->formLabel($location); ?>
+                            <?php print $this->formElement($location); ?>
+                            <?php print $this->formElementErrors()->render($location, ['class' => 'help-block error']); ?>
+                        </div>
+                    </div>
+
                 </div>
-                <div class="form-group">
-                    <?php print $this->formLabel($instituteName); ?>
-                    <?php print $this->formElement($instituteName); ?>
-                    <input type="hidden" id="instituteID" value="<?php echo $id; ?>"/>
-                    <?php print $this->formElementErrors()->render($instituteName, ['class' => 'help-block error']); ?>
+
+                <div class=" row">
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <?php print $this->formLabel($telephone); ?>
+                            <?php print $this->formElement($telephone); ?>
+                            <?php print $this->formElementErrors()->render($telephone, ['class' => 'help-block error']); ?>
+                        </div>                                             
+                    </div>
+
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <?php print $this->formLabel($email); ?>
+                            <?php print $this->formElement($email); ?>
+                            <?php print $this->formElementErrors()->render($email, ['class' => 'help-block error']); ?>
+                        </div>                               
+                    </div>
+
+                    <div class="col-sm-4">
+                        <div class="form-group" >
+                            <?php print $this->formLabel($remarks); ?>
+                            <?php print $this->formElement($remarks); ?>
+                            <?php print $this->formElementErrors()->render($remarks, ['class' => 'help-block error']); ?>
+                        </div>
+                    </div>
+
                 </div>
-                <div class="form-group">
-                    <?php print $this->formLabel($location); ?>
-                    <?php print $this->formElement($location); ?>
-                    <?php print $this->formElementErrors()->render($location, ['class' => 'help-block error']); ?>
-                </div>
-                <div class="form-group">
-                    <?php print $this->formLabel($telephone); ?>
-                    <?php print $this->formElement($telephone); ?>
-                    <?php print $this->formElementErrors()->render($telephone, ['class' => 'help-block error']); ?>
-                </div>                                             
-                <div class="form-group">
-                    <?php print $this->formLabel($email); ?>
-                    <?php print $this->formElement($email); ?>
-                    <?php print $this->formElementErrors()->render($email, ['class' => 'help-block error']); ?>
-                </div>                               
-                <div class="form-group" >
-                    <?php print $this->formLabel($remarks); ?>
-                    <?php print $this->formElement($remarks); ?>
-                    <?php print $this->formElementErrors()->render($remarks, ['class' => 'help-block error']); ?>
-                </div>
+
+
+
                 <?php
-                    print $this->formSubmit($submit);
-                    print $this->form()->closeTag();
+                print $this->formSubmit($submit);
+                print $this->form()->closeTag();
                 ?>
             </div>
         </div>

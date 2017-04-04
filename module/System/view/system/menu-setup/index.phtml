@@ -149,6 +149,27 @@ $this->headScript()
                                                       class="form-menuDescription form-control"
                                                       style="height: 50px;" ng-model="menuDtl.menuDescription"></textarea>
                                         </div>
+                                        <div class="form-group">
+                                            <label for="form-isVisible">Visible</label>
+                                            <div class="md-radio-inline">
+                                                <div class="md-radio">
+                                                    <input checked="checked" type="radio" value="Y" name="isVisible" id="isVisible+Yes" ng-model="menuDtl.isVisible" class="md-radiobtn radioButton">
+                                                    <label for="isVisible+Yes">
+                                                        <span class="inc"></span>
+                                                        <span class="check"></span>
+                                                        <span class="box"></span> Yes
+                                                    </label>
+                                                </div>
+                                                <div class="md-radio">
+                                                    <input type="radio" value="N" name="isVisible" id="isVisible+No" ng-model="menuDtl.isVisible" class="md-radiobtn radioButton">
+                                                    <label for="isVisible+No">
+                                                        <span class="inc"></span>
+                                                        <span class="check"></span>
+                                                        <span class="box"></span> No
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
                                         <button type="submit" value="add" class="btn green">Submit</button>
                                         <input type="button" class="btn green pull-right" ng-click="deleteMenu();" id="delete" value="Delete" />
                                     </form>
@@ -183,7 +204,7 @@ $this->headScript()
         <h4 class="modal-title">New Entry</h4>
         </div>
         <form name="userForm" novalidate>
-        <div class="modal-body" style="background-color:#ffffff">
+        <div class="modal-body" style="background-color:#ffffff; padding-bottom:0px !important;">
         <div class="form-group">
         <label for="form-menuCode">Menu Code</label>
         <input name="menuCode" required="required" id="form-menuCode"
@@ -254,8 +275,29 @@ $this->headScript()
         class="form-menuDescription form-control"
         style="height: 50px;" ng-model="menuDtl.menuDescription"></textarea>
         </div>
+        <div class="form-group">
+            <label for="form-isVisible">Visible</label>
+            <div class="md-radio-inline">
+                <div class="md-radio">
+                    <input checked="checked" type="radio" value="Y" name="isVisible" id="isVisible+Yes" ng-model="menuDtl.isVisible" class="md-radiobtn radioButton">
+                    <label for="isVisible+Yes">
+                        <span class="inc"></span>
+                        <span class="check"></span>
+                        <span class="box"></span> Yes
+                    </label>
+                </div>
+                <div class="md-radio">
+                    <input type="radio" value="N" name="isVisible" id="isVisible+No" ng-model="menuDtl.isVisible" class="md-radiobtn radioButton">
+                    <label for="isVisible+No">
+                        <span class="inc"></span>
+                        <span class="check"></span>
+                        <span class="box"></span> No
+                    </label>
+                </div>
+            </div>
         </div>
-        <div class="modal-footer">
+        </div>
+        <div class="modal-footer" style="padding-top:0px !important;">
         <button type="button" class="btn dark btn-outline" ng-click="cancel()">Close</button>
         <button type="submit" class="btn green" ng-click="submitForm()">Submit</button>
         </div>
