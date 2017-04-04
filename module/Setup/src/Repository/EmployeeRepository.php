@@ -293,7 +293,7 @@ class EmployeeRepository implements RepositoryInterface {
         }
         $select->order("E.FIRST_NAME ASC");
         $statement = $sql->prepareStatementForSqlObject($select);
-//        return $statement->getSql();
+        
         $result = $statement->execute();
         if ($getResult != null) {
             return $result;
