@@ -1,5 +1,7 @@
 <?php
-$this->headScript()->appendFile($this->basePath('js/SelfService/travel-request/add.js'));
+$this->headScript()->appendFile($this->basePath('js/angular.min.js'));
+$this->headScript()->appendFile($this->basePath('js/SelfService/travel-request/add.js'))
+        ->appendFile($this->basePath('js/SelfService/travel-request/advanceRequestController.js'));
 
 $form->setAttribute('role', 'form');
 $form->setAttribute('id', 'travelRequest-form');
@@ -39,7 +41,7 @@ $form->prepare();
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\travelRequest')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
-<div class="row margin-top-20">
+    <div class="row margin-top-20" ng-app="hris" ng-controller="advanceRequestController">
     <div class="col-sm-8 col-sm-offset-2">
         <div class="portlet box custom-box">
             <div class="portlet-title">
@@ -101,6 +103,26 @@ $form->prepare();
                     <?php print $this->formLabel($remarks); ?>
                     <?php print $this->formElement($remarks); ?>
                     <?php print $this->formElementErrors()->render($remarks, ['class' => 'help-block']); ?>
+                </div>
+                <div class="form-group padding-0">
+                    <label for="noOfDays">
+                        <input type="hidden" name="substituteEmployee" value="0"/>
+                        <div class="md-checkbox">
+                            <input type="checkbox" value="1" ng-model="substituteEmployee" ng-click="viewSubstituteEmployee(substituteEmployee)" id="substituteEmployee" class="md-check" name="substituteEmployee"/>
+                            <label for="substituteEmployee">
+                            <span></span>
+                            <span class="check" style="left: 0px !important;"></span>
+                            <span class="box" style="left: 0px !important;"></span>
+                            Substitute Employee </label>
+                        </div>
+                    </label>
+                    <div ng-if="travelSubstitute">
+                        <select class="form-control" name="travelSubstitute" style="cursor: pointer;">
+                        <?php foreach($employeeList as $key=>$value){ ?>
+                            <option style="cursor: pointer;" value="<?php echo $key; ?>"><?php echo $value; ?></option>
+                        <?php } ?>
+                        </select>
+                    </div>
                 </div>
 
                 <?php

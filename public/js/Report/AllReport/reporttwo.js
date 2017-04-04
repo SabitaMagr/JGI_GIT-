@@ -44,8 +44,16 @@
                 }
             }
             var returnData = {rows: [], cols: []};
-
-            returnData.cols.push({field: 'employee', title: 'employees'});
+            returnData.cols.push({
+                field: 'employeeId',
+                title: 'Id',
+                width: 30
+            });
+            returnData.cols.push({
+                field: 'employee',
+                title: 'employees',
+                template: '<a href="' + document.linkToReportFour + '/#:employeeId#">#: employee# </a>'
+            });
             for (var k in column) {
                 returnData.cols.push(column[k]);
             }
@@ -53,6 +61,7 @@
             for (var k in data) {
                 var row = data[k].MONTHS;
                 row['employee'] = data[k].FULL_NAME;
+                row['employeeId'] = data[k].EMPLOYEE_ID;
                 returnData.rows.push(row);
             }
             return returnData;
@@ -66,9 +75,19 @@
                 var $absent = $($childrens[1]);
                 var $leave = $($childrens[2]);
 
-                $present.html(data['IS_PRESENT']);
-                $absent.html(data['IS_ABSENT']);
-                $leave.html(data['ON_LEAVE']);
+                var presentDays = parseFloat(data['IS_PRESENT']);
+                var absentDays = parseFloat(data['IS_ABSENT']);
+                var leaveDays = parseFloat(data['ON_LEAVE']);
+
+                var total = presentDays + absentDays + leaveDays;
+
+                $present.attr('title', data['IS_PRESENT']);
+                $absent.attr('title', data['IS_ABSENT']);
+                $leave.attr('title', data['ON_LEAVE']);
+
+                $present.html(Number((presentDays * 100 / total).toFixed(1)));
+                $absent.html(Number((absentDays * 100 / total).toFixed(1)));
+                $leave.html(Number((leaveDays * 100 / total).toFixed(1)));
             });
 
         };
@@ -86,8 +105,8 @@
                         pageSize: 20
                     },
                     scrollable: false,
-                    sortable: true,
-                    pageable: true,
+                    sortable: false,
+                    pageable: false,
                     columns: extractedDetailData.cols
                 });
                 displayDataInBtnGroup('.custom-btn-group.' + departmentId);
@@ -100,7 +119,7 @@
         };
 
         $('select').select2();
-        var $countryList = $('#countryList');
+        var $companyList = $('#companyList');
         var $branchList = $('#branchList');
         var $departmentList = $('#departmentList');
         var $generateReport = $('#generateReport');
@@ -114,21 +133,21 @@
         }
 
         var comBraDepList = document.comBraDepList;
-        populateList($countryList, comBraDepList, 'COMPANY_ID', 'COMPANY_NAME', "SELECT COUNTRY");
-        populateList($branchList, [], 'BRANCH_ID', 'BRANCH_NAME', "SELECT BRANCH");
-        populateList($departmentList, [], 'DEPARTMENT_ID', 'DEPARTMENT_NAME', "SELECT DEPARTMENT");
+        populateList($companyList, comBraDepList, 'COMPANY_ID', 'COMPANY_NAME', "Select Company");
+        populateList($branchList, [], 'BRANCH_ID', 'BRANCH_NAME', "Select Branch");
+        populateList($departmentList, [], 'DEPARTMENT_ID', 'DEPARTMENT_NAME', "Select Department");
 
-        $countryList.on('change', function () {
+        $companyList.on('change', function () {
             var $this = $(this);
             if ($this.val() != -1) {
-                populateList($branchList, comBraDepList[$this.val()]['BRANCH_LIST'], 'BRANCH_ID', 'BRANCH_NAME', "SELECT BRANCH");
-                populateList($departmentList, [], 'DEPARTMENT_ID', 'DEPARTMENT_NAME', "SELECT DEPARTMENT");
+                populateList($branchList, comBraDepList[$this.val()]['BRANCH_LIST'], 'BRANCH_ID', 'BRANCH_NAME', "Select Branch");
+                populateList($departmentList, [], 'DEPARTMENT_ID', 'DEPARTMENT_NAME', "Select Department");
             }
         });
         $branchList.on('change', function () {
             var $this = $(this);
             if ($this.val() != -1) {
-                populateList($departmentList, comBraDepList[$countryList.val()]['BRANCH_LIST'][$this.val()]['DEPARTMENT_LIST'], 'DEPARTMENT_ID', 'DEPARTMENT_NAME', "SELECT DEPARTMENT");
+                populateList($departmentList, comBraDepList[$companyList.val()]['BRANCH_LIST'][$this.val()]['DEPARTMENT_LIST'], 'DEPARTMENT_ID', 'DEPARTMENT_NAME', "Select Department");
             }
         });
 
@@ -140,5 +159,10 @@
                 initializeReport(departmentId);
             }
         });
+        var departmentId = document.departmentId;
+        if (departmentId != 0) {
+            initializeReport(departmentId);
+            
+        }
     });
 })(window.jQuery, window.app);

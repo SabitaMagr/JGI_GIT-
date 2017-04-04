@@ -36,27 +36,36 @@ class AllReportController extends AbstractActionController {
     }
 
     public function reportTwoAction() {
+        $departmentId = (int) $this->params()->fromRoute('id1');
         return Helper::addFlashMessagesToArray($this, [
-                    'comBraDepList' => $this->getComBraDepList()
+                    'comBraDepList' => $this->getComBraDepList(),
+                    'departmentId' => $departmentId
         ]);
     }
 
     public function reportThreeAction() {
+        $monthId = (int) $this->params()->fromRoute('id1');
+        $departmentId = (int) $this->params()->fromRoute('id2');
+
+
         $monthList = $this->reportRepo->getMonthList();
-
-
         return Helper::addFlashMessagesToArray($this, [
                     'comBraDepList' => $this->getComBraDepList(),
-                    'monthList' => $monthList
+                    'monthList' => $monthList,
+                    'monthId' => $monthId,
+                    'departmentId' => $departmentId
         ]);
     }
 
     public function reportFourAction() {
+
+        $employeeId = (int) $this->params()->fromRoute('id1');
         $employeeList = $this->reportRepo->getEmployeeList();
 
         return Helper::addFlashMessagesToArray($this, [
                     'comBraDepList' => $this->getComBraDepList(),
-                    'employeeList' => $employeeList
+                    'employeeList' => $employeeList,
+                    'employeeId' => $employeeId
         ]);
     }
 
@@ -138,8 +147,6 @@ class AllReportController extends AbstractActionController {
         $cbd = $this->reportRepo->getCompanyBranchDepartment();
         $comBraDepList = [];
         foreach ($cbd as $row) {
-
-
             if (isset($comBraDepList[$row['COMPANY_ID']])) {
                 if (isset($comBraDepList[$row['COMPANY_ID']]['BRANCH_LIST'][$row['BRANCH_ID']])) {
                     $comBraDepList[$row['COMPANY_ID']]['BRANCH_LIST'][$row['BRANCH_ID']]['DEPARTMENT_LIST'][$row['DEPARTMENT_ID']] = [

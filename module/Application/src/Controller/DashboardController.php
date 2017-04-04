@@ -13,11 +13,11 @@ use LeaveManagement\Repository\LeaveStatusRepository;
 use Setup\Model\Branch;
 use Setup\Model\HrEmployees;
 use Setup\Repository\EmployeeRepository;
-use System\Repository\DashboardDetailRepo;
 use Zend\Authentication\AuthenticationService;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
+use Application\Custom\CustomViewModel;
 
 class DashboardController extends AbstractActionController {
 
@@ -74,6 +74,7 @@ class DashboardController extends AbstractActionController {
             "employeeDetail" => $employeeDetail,
             "upcomingHolidays" => $dahsboardRepo->fetchUpcomingHolidays($employeeDetail['GENDER_ID'], $employeeDetail['BRANCH_ID']),
             "employeeNotice" => $dahsboardRepo->fetchEmployeeNotice(),
+            "employeeTask" => $dahsboardRepo->fetchEmployeeTask($employeeId),
             "employeesBirthday" => $dahsboardRepo->fetchEmployeesBirthday(),
         ));
 
@@ -225,15 +226,82 @@ class DashboardController extends AbstractActionController {
         try {
             $request = $this->getRequest();
             if ($request->isPost()) {
-                $postedData = $request->getPost();
 
-                $employeeId = $postedData['employeeId'];
-                if (!isset($employeeId)) {
-                    throw new Exception("parameter employeeId is required");
+                $auth = new AuthenticationService();
+                $employeeId = $auth->getStorage()->read()['employee_id'];
+                $dahsboardRepo = new DashboardRepository($this->adapter);
+
+                $calendarData = $dahsboardRepo->fetchEmployeeCalendarData($employeeId);
+                return new CustomViewModel(['success' => true, 'data' => $calendarData, 'error' => '']);
+            } else {
+                throw new Exception("The request should be of type post");
+            }
+        } catch (Exception $e) {
+            return new CustomViewModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
+        }
+    }
+
+    public function fetchEmployeeCalendarJsonFeedAction() {
+        try {
+            $request = $this->getRequest();
+            if ($request->isPost()) {
+
+                $auth = new AuthenticationService();
+                $employeeId = $auth->getStorage()->read()['employee_id'];
+                $dahsboardRepo = new DashboardRepository($this->adapter);
+
+                $startDate = $this->getRequest()->getPost('start');
+                $endDate = $this->getRequest()->getPost('end');
+                $calendarData = $dahsboardRepo->fetchEmployeeCalendarData($employeeId, $startDate, $endDate);
+                $calendarJsonFeedArray = [];
+                foreach($calendarData as $eventData) {
+                    if ($eventData['ATTENDANCE_DT']) {
+                        $inOutTitle = "";
+                        if ($eventData['IN_TIME']) {
+                            $inOutTitle .= $eventData['IN_TIME'];
+                        }
+                        if ($eventData['OUT_TIME']) {
+                            $inOutTitle .= ' ' . $eventData['OUT_TIME'];
+                        }
+                        // In/Out
+                        $calendarJsonFeedArray[] = [
+                            'title' => $inOutTitle,
+                            'start' => $eventData['ATTENDANCE_DT'],
+                            'backgroundColor' => '#fff'
+                        ];
+
+                        // Training
+                        if ($eventData['TRAINING_NAME']) {
+                            $calendarJsonFeedArray[] = [
+                                'title' => $eventData['TRAINING_NAME'],
+                                'start' => $eventData['ATTENDANCE_DT'],
+                                'backgroundColor' => '#39c7b8',
+                                'textColor' => '#fff'
+                            ];
+                        }
+                        // Leave
+                        if ($eventData['LEAVE_ENAME']) {
+                            $calendarJsonFeedArray[] = [
+                                'title' => $eventData['LEAVE_ENAME'],
+                                'start' => $eventData['ATTENDANCE_DT'],
+                                'backgroundColor' => '#a7aeaf',
+                                'textColor' => '#fff'
+                            ];
+                        }
+                        // Tour
+                        if ($eventData['TRAVEL_CODE']) {
+                            $calendarJsonFeedArray[] = [
+                                'title' => $eventData['TRAVEL_CODE'],
+                                'start' => $eventData['ATTENDANCE_DT'],
+                                'backgroundColor' => '#e89c0a',
+                                'textColor' => '#fff'
+                            ];
+                        }
+
+                    }
                 }
-
-                $reportData = $this->reportRepo->employeeWiseDailyReport($employeeId);
-                return new CustomViewModel(['success' => true, 'data' => $reportData, 'error' => '']);
+                //return new CustomViewModel(['success' => true, 'data' => $calendarJsonFeedArray, 'error' => '']);
+                return new CustomViewModel($calendarJsonFeedArray);
             } else {
                 throw new Exception("The request should be of type post");
             }

@@ -90,5 +90,4 @@ class MenuNavigation extends DefaultNavigationFactory {
             return false;
         }
     }
-
 }

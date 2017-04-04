@@ -1628,24 +1628,6 @@ ul#personalInfo li{
         margin-top: 2%;
 }
 
-.signEmployee{
-    width: 33.33%;
-    text-align: left;
-    float:left;
-}
-
-.signRecommender{
-    width: 33.33%;
-    text-align: center;
-    float:left;
-}
-
-.signApprover{
-    width: 33.33%;
-    text-align: center;
-    float:left;
-}
-
 .detailOfRequest1{
     margin-top:10%;
         min-height: 7px;
@@ -1770,14 +1752,14 @@ ul#personalInfo li{
 }
 
 .signature{
-    
+    height: 90px;
 }
 
 .signChecked{
     width: 25%;
     text-align: center;
     float:left;
-    margin-top:10%;
+    margin-top:8.5%;
 }
 
 .signEmployee1{
@@ -1805,6 +1787,37 @@ ul#personalInfo li{
 }
 
 .signApprover1 p{
+    margin-bottom: 5px;
+    text-align: right;
+}
+
+
+.signEmployee{
+    width: 33.33%;
+    text-align: center;
+    float:left;
+    margin-top:10%;
+}
+
+.signRecommender{
+    width: 33.33%;
+    text-align: center;
+    float:left;
+    margin-top:5%;
+}
+
+.signRecommender p{
+    margin-bottom: 5px;
+}
+
+.signApprover{
+    width: 33.33%;
+    text-align: center;
+    float:left;
+    margin-top:5%;
+}
+
+.signApprover p{
     margin-bottom: 5px;
     text-align: right;
 }

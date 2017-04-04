@@ -12,14 +12,14 @@ return[
             'allreport' => [
                 'type' => Segment::class,
                 'options' => [
-                    'route' => '/report/allreport[/:action[/:id]]',
+                    'route' => '/report/allreport[/:action[/:id1[/:id2]]]',
                     'constants' => [
                         'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
                         'id' => '[0-9]+',
                     ],
                     'defaults' => [
                         'controller' => AllReportController::class,
-                        'action' => 'reportone',
+                        'action' => 'reportOne',
                     ]
                 ],
             ],
@@ -27,37 +27,32 @@ return[
     ],
     'navigation' => [
         'allreport' => [
-            [
+                [
                 'label' => 'Asset Type',
                 'route' => 'allreport',
             ], [
                 'label' => 'Report',
                 'route' => 'allreport',
                 'pages' => [
-                    [
-                        'label' => 'index',
+                        [
+                        'label' => 'Departments|Months',
                         'route' => 'allreport',
-                        'action' => 'index',
+                        'action' => 'reportOne',
                     ],
-                    [
-                        'label' => 'Report One',
+                        [
+                        'label' => 'Department|Months',
                         'route' => 'allreport',
-                        'action' => 'reportone',
+                        'action' => 'reportTwo',
                     ],
-                    [
-                        'label' => 'report Two',
+                        [
+                        'label' => 'Department|Month',
                         'route' => 'allreport',
-                        'action' => 'reporttwo',
+                        'action' => 'reportThree',
                     ],
-                    [
-                        'label' => 'Report Three',
+                        [
+                        'label' => 'Employee|Months',
                         'route' => 'allreport',
-                        'action' => 'reportthree',
-                    ],
-                    [
-                        'label' => 'Report Four',
-                        'route' => 'allreport',
-                        'action' => 'reportfour',
+                        'action' => 'reportFour',
                     ],
                 ],
             ],

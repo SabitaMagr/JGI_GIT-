@@ -1,6 +1,7 @@
 <?php
 //print"<pre>";print_r($employeesBirthday['TODAY']);exit;
 $this->headLink()
+    ->appendStylesheet($this->basePath('assets/global/plugins/bootstrap-datepicker/css/datepicker3.css'))
     ->appendStylesheet($this->basePath('assets/global/plugins/fullcalendar/fullcalendar.min.css'))
     ->appendStylesheet($this->basePath('css/dashboard.employee.css'));
 
@@ -8,20 +9,24 @@ $this->headScript()
     ->appendFile($this->basePath('assets/global/plugins/bootstrap-daterangepicker/moment.min.js'))
     ->appendFile($this->basePath('assets/global/plugins/bootstrap-daterangepicker/daterangepicker.min.js'))
     ->appendFile($this->basePath('assets/global/plugins/fullcalendar/fullcalendar.min.js'))
+    ->appendFile($this->basePath('assets/admin/pages/scripts/components-pickers.js'))
+    ->appendFile($this->basePath('assets/global/plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js'))
     ->appendFile($this->basePath('assets/global/scripts/metronic.js'))
     ->appendFile($this->basePath('assets/admin/pages/scripts/index.js'))
     ->appendFile($this->basePath('js/dashboard/employee-dashboard.js'));
+
 ?>
 
-<script>
+<script type="text/javascript">
     document.calendarUrl = '<?php echo $this->url('dashboard', ['action' => 'fetchEmployeeCalendarData']); ?>';
+    document.calendarJsonFeedUrl = '<?php echo $this->url('dashboard', ['action' => 'fetchEmployeeCalendarJsonFeed']); ?>';
 </script>
 
 <div class="employeedashboard">
     <div class="emplyoee-dashboard clearfix">
         <div class="employe-descbox">
             <div class="col-sm-1 col-md-1 profile_pic">
-                <img src="<?php print $this->basePath("img/nobody_m.original.jpg"); ?>">
+                <img src="<?php print $employeeDetail['FILE_PATH'] ? $this->basePath('uploads/' . $employeeDetail['FILE_PATH']) : $this->basePath("img/nobody_m.original.jpg"); ?>">
             </div>
             <div class="col-sm-3 col-md-3 employee-details">
                 <?php
@@ -198,7 +203,7 @@ $this->headScript()
                             </div>
                         </div>
                         <div class="portlet-body">
-                            <div id="calendar"></div>
+                            <div id="calendar"><div class="html-loading" style="min-height:250px;"></div></div>
                             <div class="calendar-colorbox">
                                 <ul>
                                     <li>
@@ -209,17 +214,17 @@ $this->headScript()
                                     <li>
                                         <div class="color-box colorbox-color2">
                                         </div>
-                                        <span>Important notice</span>
+                                        <span>Leave</span>
                                     </li>
                                     <li>
                                         <div class="color-box colorbox-color3">
                                         </div>
-                                        <span>Meeting</span>
+                                        <span>Training</span>
                                     </li>
                                     <li>
                                         <div class="color-box colorbox-color4">
                                         </div>
-                                        <span>Message</span>
+                                        <span>Tour</span>
                                     </li>
                                 </ul>
                             </div>
@@ -364,32 +369,77 @@ $this->headScript()
 
             <div class="row">
                 <div class="col-md-12">
+                    <div class="taskbox">
+                        <div class="portlet light boxborder ">
+                            <div class="portlet-title">
+                                <div class="caption">
+                                    <i class="fa fa-tasks font-green-sharp"></i>
+                                    <span class="caption-subject font-green-sharp ">My Tasks</span>
+                                </div>
+                                <div class="nextbtn">
+                                    <a href="#"><i class="fa fa-angle-right" aria-hidden="true"></i></a>
+                                </div>
+                            </div>
+                            <div class="task">
+                                <div class="date-date">
+                                    <span><?php print date('d'); ?></span>
+                                    <div class="taskaddbtn">
+                                        <a href="#"> <i class="fa fa-plus" aria-hidden="true"></i></a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="task-list">
+                                <ul>
+                                    <?php foreach ($employeeTask as $task): ?>
+                                    <li>
+                                        <div class="task-list-content clearfix">
+                                            <h4><?php print $task['TASK_EDESC']; ?></h4>
+                                            <div class="positon">Position: <?php print $task['DESIGNATION_TITLE']; ?></div>
+                                            <div class="name"><?php print $task['FULL_NAME']; ?></div>
+                                        </div>
+                                    </li>
+                                    <?php endforeach; ?>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
                     <div class="datepickeform">
                         <div class="form-body">
-                            <h3 class="form-section">Todo</h3>
+                            <h3 class="form-section">TO do</h3>
                             <div class="row">
                                 <div class="col-md-12">
                                     <div class="form-group">
-                                        <label class="control-label">Due for today 28 march 2017 </label>
-                                        <input id="firstName" class="form-control" placeholder="Chee Kin" type="text" />
-                                    </div>
-                                </div>
-
-                                <div class="col-md-12">
-                                    <div class="form-group">
-                                        <label class="control-label">Evalution</label>
-                                        <input id="datepicker" class="form-control" placeholder="Chee Kin" type="text" />
+                                        <label class="control-label">Due for today <?php print date('d F Y'); ?> </label>
+                                        <input class="pickdate form-control form-control-inline input-medium date-picker" size="16" type="text" value=""/>
                                     </div>
                                 </div>
                                 <div class="col-md-12">
                                     <div class="form-group">
-                                        <input id="firstName" class="form-control" placeholder="Chee Kin" type="text" />
+                                        <label class="control-label">Task</label>
+                                        <input  class="form-control" placeholder="Task Name" type="text">
+                                    </div>
+                                </div>
+<!--                                <div class="col-md-12">-->
+<!--                                    <div class="form-group">-->
+<!--                                        <label class="control-label">Position</label>-->
+<!--                                        <input  class="form-control" placeholder="positon" type="text">-->
+<!--                                    </div>-->
+<!--                                </div>-->
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label class="control-label">Employee</label>
+                                        <div>
+                                            <select class="select2_category form-control" data-placeholder="Select Employee" tabindex="1">
+                                                <option value="Category 1">Rajan</option>
+                                                <option value="Category 2">Ukesh</option>
+                                                <option value="Category 3">Prabin</option>
+                                            </select>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <!-- END CONTENT -->
                 </div>
 
                 <div class="col-md-12 holidays">
@@ -405,21 +455,17 @@ $this->headScript()
                         <div class="portlet-body">
                             <div class="row">
                                 <div class="upcomingholidays">
-                                    <div class="upcomingholidays-loading" style="display:none;height:100%;width:100%;position:absolute;top:0;left:0;"></div>
+                                    <div class="html-loading" style="display:none;height:100%;width:100%;position:absolute;top:0;left:0;"></div>
                                     <ul class="feeds" style="visibility:visible;">
                                         <?php foreach($upcomingHolidays as $holiday) : ?>
-                                        <li class="col1bg">
-                                            <div class="col1">
-                                                <div class="cont">
-                                                    <div class="cont-col2">
-                                                        <div class="desc">
-                                                            <span class="label label-sm "><?php print $holiday['HOLIDAY_ENAME']; ?></span>
-                                                            <span class="label label-sm "><?php print $holiday['DAYS_REMAINING'] . "Day(s) Remaining"; ?></span>
-                                                        </div>
-                                                    </div>
-                                                </div>
+                                        <li>
+                                            <div class="col-xs-6 col-sm-4 col-md-4 desc holiday-title">
+                                                <span class="label holiday-color  "><?php print $holiday['HOLIDAY_ENAME']; ?></span>
                                             </div>
-                                            <div class="col2">
+                                            <div class="col-xs-6 col-sm-4 col-md-4 remaining-days">
+                                                <span class="label label-sm "><?php print $holiday['DAYS_REMAINING'] . "Day(s) Remaining"; ?></span>
+                                            </div>
+                                            <div class="col-xs-6 col-sm-4 col-md-4 holiday-date">
                                                 <div class="date"><?php printf("%s %s", $holiday['WEEK_DAY'], $holiday['START_DATE']); ?></div>
                                             </div>
                                         </li>
@@ -467,6 +513,9 @@ $this->headScript()
                                                         <span><?php print $todayBirthday['DESIGNATION_TITLE']; ?></span>
                                                     </div>
                                                 </div>
+                                                <div class="col-md-3 col-sm-3">
+                                                    <span><?php print $todayBirthday['EMP_BIRTH_DATE']; ?></span>
+                                                </div>
                                             </div>
                                         <?php endforeach; ?>
                                         <?php endif; ?>
@@ -477,14 +526,17 @@ $this->headScript()
                                                 <div class="person-list clearfix">
                                                     <div class="col-md-3 col-sm-3">
                                                         <div class="person-pic">
-                                                            <img src="<?php print $this->basePath('img/nobody_m.original.jpg'); ?>" alt="person picture">
+                                                            <img src="<?php print $upcomingBirthday['FILE_PATH'] ? $this->basePath('uploads/' . $upcomingBirthday['FILE_PATH']) : $this->basePath('img/nobody_m.original.jpg'); ?>" alt="person picture">
                                                         </div>
                                                     </div>
-                                                    <div class="col-xs-9 col-md-9 col-sm-9">
+                                                    <div class="col-xs-6 col-md-6 col-sm-6">
                                                         <div class="person-details">
                                                             <h4><?php print $upcomingBirthday['FULL_NAME']; ?></h4>
                                                             <span><?php print $upcomingBirthday['DESIGNATION_TITLE']; ?></span>
                                                         </div>
+                                                    </div>
+                                                    <div class="col-md-3 col-sm-3">
+                                                        <span><?php print $upcomingBirthday['EMP_BIRTH_DATE']; ?></span>
                                                     </div>
                                                 </div>
                                             <?php endforeach; ?>

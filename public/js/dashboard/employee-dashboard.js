@@ -39,67 +39,64 @@
             }
         }
 
-        // Fetch all the calendar events
-        app.pullDataById(document.calendarUrl, {}).then(function (response) {
-
-        }, function(err) {
-
-        });
-
+        var isViewLoading = true;
         $('#calendar').fullCalendar('destroy'); // destroy the calendar
         $('#calendar').fullCalendar({ //re-initialize the calendar
+            defaultDate: '2017-03-12',
             disableDragging : false,
-            navLinks: true,
+            viewRender: function( view, element ) {
+                $('#calendar .html-loading').remove();
+                var intervalId = setInterval(function() {
+                    var $dataHtml = element.find('.fc-content-skeleton');
+                    if (!isViewLoading && $dataHtml) {
+                        clearInterval(intervalId);
+                        $dataHtml.find('tbody').each(function(k,v) {
+                            var $attnRow = $(v).find('tr:eq(0)');
+                            if ('undefined' != typeof($attnRow)) {
+                                $attnRow.find('.fc-title').html(function(i,inOutTxt) {
+                                    var inOutTime = inOutTxt.split(' ');
+                                    if (inOutTime.length) {
+                                        var output = "";
+                                        if (inOutTime[0]) {
+                                            output += '<span class="fc-title-in" style="background-color:#44fbaf;padding:1px 3px;">' + inOutTime[0] + '</span>';
+                                        }
+                                        if (inOutTime[1]) {
+                                            output += '<span class="fc-title-out" style="background-color:#e6fb44;padding:1px 3px;">' + inOutTime[1] + '</span>';
+                                        }
+                                        if (output) {
+                                            return output;
+                                        }
+                                    }
+                                })
+                            }
+                            var $eventRow = $(v).find('tr:gt(0)');
+                            if ('undefined' != typeof($eventRow)) {
+                                $eventRow.find('.fc-title').css('color', '#fff');
+                            }
+                        });
+                    }
+                }, 100);
+            },
             eventLimit: true,
             header: h,
             editable: false,
-            events: [{
-                title: 'All Day Event',
-                start: '2017-04-01'
-                }, {
-                    title: 'Long Event',
-                    start: '2017-04-07',
-                    end: '2017-04-10'
-                }, {
-                    id: 999,
-                    title: 'Repeating Event',
-                    start: '2017-04-09T16:00:00'
-                }, {
-                    id: 999,
-                    title: 'Repeating Event',
-                    start: '2017-04-16T16:00:00'
-                }, {
-                    title: 'Conference',
-                    start: '2017-04-11',
-                    end: '2017-04-13'
-                }, {
-                    title: 'Meeting',
-                    start: '2017-04-12T10:30:00',
-                    end: '2017-04-12T12:30:00'
-                }, {
-                    title: 'Lunch',
-                    start: '2017-04-12T12:00:00'
-                },
-                {
-                    title: 'Meeting',
-                    start: '2017-04-12T14:30:00'
-                }, {
-                    title: 'Happy Hour',
-                    start: '2017-04-12T17:30:00'
-                },
-                {
-                    title: 'Dinner',
-                    start: '2017-04-12T20:00:00'
-                }, {
-                    title: 'Birthday Party',
-                    start: '2017-04-13T07:00:00'
-                }, {
-                    title: 'Click for Google',
-                    url: 'http://google.com/',
-                    start: '2017-04-28'
+            cache: false,
+            data: {},
+            events: {
+                url: document.calendarJsonFeedUrl,
+                type: 'POST',
+                error: function() {
+
                 }
-            ]
+            },
+            loading: function(isLoading, view) {
+                isViewLoading = isLoading;
+            }
         });
+    });
+
+    $('#tab-birthday-upcoming').slimScroll({
+        height: '298px'
     });
 
     /*************** BIRTHDAY TAB CLICK EVENT ***************/
@@ -118,9 +115,7 @@
             $('#tab-birthday-upcoming').show().addClass('active');
         }
     });
-    // setTimeout(function() {
-    //     $('.upcomingholidays-loading').remove();
-    //     $('.upcomingholidays .feeds').css('visibility', 'visible');
-    // }, 3000);
+
+    ComponentsPickers.init();
 
 })(window.jQuery, window.app);
