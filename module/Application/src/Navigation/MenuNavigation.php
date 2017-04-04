@@ -22,9 +22,6 @@ class MenuNavigation extends DefaultNavigationFactory {
             $this->adapter = $adapter;
             $repository = new MenuSetupRepository($adapter);
             $data = $repository->getHierarchicalMenuWithRoleId();
-//            print "<pre>";
-//            print_r(\Application\Helper\Helper::extractDbData($data));
-//            exit;
             foreach ($data as $key => $row) {
                 if ($this->menu($row['MENU_ID'])) {
                     $configuration['navigation'][$this->getName()][$row['MENU_NAME']] = array(
@@ -32,7 +29,7 @@ class MenuNavigation extends DefaultNavigationFactory {
                         "icon" => $row['ICON_CLASS'],
                         'uri' => 'javascript::',
                         "pages" => $this->menu($row['MENU_ID']),
-                        "visible" => ($row['IS_VISIBLE'] == 'Y') ? TRUE : FALSE
+                        "isVisible" => $row['IS_VISIBLE']
                     );
                 } else {
                     $configuration['navigation'][$this->getName()][$row['MENU_NAME']] = array(
@@ -40,7 +37,7 @@ class MenuNavigation extends DefaultNavigationFactory {
                         "icon" => $row['ICON_CLASS'],
                         "route" => $row['ROUTE'],
                         "action" => $row['ACTION'],
-                        "visible" => ($row['IS_VISIBLE'] == 'Y') ? TRUE : FALSE
+                        "isVisible" => $row['IS_VISIBLE']
                     );
                 }
             }
@@ -78,14 +75,16 @@ class MenuNavigation extends DefaultNavigationFactory {
                         "label" => $row['MENU_NAME'],
                         "icon" => $row['ICON_CLASS'],
                         'uri' => 'javascript::',
-                        "pages" => $children
+                        "pages" => $children,
+                        "isVisible" => $row['IS_VISIBLE']
                     );
                 } else {
                     $temArray[] = array(
                         "label" => $row['MENU_NAME'],
                         "icon" => $row['ICON_CLASS'],
                         "route" => $row['ROUTE'],
-                        "action" => $row['ACTION']
+                        "action" => $row['ACTION'],
+                        "isVisible" => $row['IS_VISIBLE']
                     );
                 }
             }

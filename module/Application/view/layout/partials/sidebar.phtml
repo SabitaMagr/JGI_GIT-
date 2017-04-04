@@ -40,10 +40,8 @@
                 $isOpen = $isChildActive ? 'open' : '';
                 $showArrow = $page->hasPages() ? "<span class='arrow " . $isOpen . "'></span>" : "";
 
-                if (!$page->visible) {
-                    return '';
-                }
-                return "<li class='nav-item " . $active . "'>"
+                $showHide = (($page->isVisible == 'N') ? "hide" : "");
+                return "<li class='nav-item " . $active . " " . $showHide . "'>"
                         . "<a href='" . $page->getHref() . "' " . $showSubMenus . " >"
                         . "<i class='" . $page->icon . "'></i>"
                         . "<span class='title'>"
