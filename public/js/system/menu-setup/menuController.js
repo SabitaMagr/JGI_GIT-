@@ -13,7 +13,8 @@ angularApp.controller('menuUpdateController', function ($scope, $uibModal, $log,
         menuIndex: '',
         iconClass: '',
         menuDescription: '',
-        menuId: ''
+        menuId: '',
+        isVisible:'Y'
     };
 
     $scope.permissionList = function (menuId) {
@@ -81,6 +82,7 @@ angularApp.controller('menuUpdateController', function ($scope, $uibModal, $log,
         }).then(function (success) {
             $scope.$apply(function () {
                 var temp = success.data;
+                console.log(temp);
                 $scope.menuDtl.menuId = temp.MENU_ID;
                 $scope.menuDtl.menuCode = temp.MENU_CODE;
                 $scope.menuDtl.menuName = temp.MENU_NAME;
@@ -89,6 +91,7 @@ angularApp.controller('menuUpdateController', function ($scope, $uibModal, $log,
                 $scope.menuDtl.menuIndex = parseInt(temp.MENU_INDEX);
                 $scope.menuDtl.iconClass = temp.ICON_CLASS;
                 $scope.menuDtl.menuDescription = temp.MENU_DESCRIPTION;
+                $scope.menuDtl.isVisible = temp.IS_VISIBLE;
                 $scope.isDisabled = false;
             });
         }, function (failure) {
@@ -171,6 +174,7 @@ angularApp.controller('menuUpdateController', function ($scope, $uibModal, $log,
                     menuIndex: '',
                     iconClass: '',
                     menuDescription: '',
+                    isVisible:'Y'
                 };
                 $scope.submitForm = function () {
                     if ($scope.userForm.$valid) {

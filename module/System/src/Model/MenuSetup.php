@@ -25,6 +25,7 @@ class MenuSetup extends Model {
     const ICON_CLASS = "ICON_CLASS";
     const CREATED_BY = "CREATED_BY";
     const MODIFIED_BY = "MODIFIED_BY";
+    const IS_VISIBLE = "IS_VISIBLE"; 
 
     public $menuId;
     public $menuCode;
@@ -40,6 +41,7 @@ class MenuSetup extends Model {
     public $iconClass;
     public $createdBy;
     public $modifiedBy;
+    public $isVisible;
 
     public $mappings = [
         'menuId'=>self::MENU_ID,
@@ -55,6 +57,7 @@ class MenuSetup extends Model {
         'modifiedDt'=>self::MODIFIED_DT,
         'iconClass'=>self::ICON_CLASS,
         'createdBy' => self::CREATED_BY,
-        'modifiedBy' => self::MODIFIED_BY
+        'modifiedBy' => self::MODIFIED_BY,
+        'isVisible'=>self::IS_VISIBLE
     ];
 }

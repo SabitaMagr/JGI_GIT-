@@ -725,6 +725,7 @@ class RestfulService extends AbstractRestfulController {
             $model->parentMenu = $data['parentMenu'];
         }
         $model->menuDescription = $record['menuDescription'];
+        $model->isVisible = $record['isVisible'];
         $model->status = 'E';
         $model->createdDt = Helper::getcurrentExpressionDate();
         $model->createdBy = $this->loggedIdEmployeeId;
@@ -772,6 +773,7 @@ class RestfulService extends AbstractRestfulController {
         $model->iconClass = $record['iconClass'];
 
         $model->menuDescription = $record['menuDescription'];
+        $model->isVisible = $record['isVisible'];
 
         unset($model->status);
         unset($model->parentMenu);

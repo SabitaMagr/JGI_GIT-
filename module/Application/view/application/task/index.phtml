@@ -22,7 +22,8 @@ $this->headScript()
     document.addUrl = '<?php echo $this->url('task', ['action' => 'add']); ?>';
     document.updateUrl = '<?php echo $this->url('task', ['action' => 'update']); ?>';
     document.delteUrl = '<?php echo $this->url('task', ['action' => 'delete']); ?>';
-    document.taskList = <?php echo json_encode($list); ?>
+    document.taskList = <?php echo json_encode($list); ?>;
+    document.taskUpdateStatus = '<?php echo $this->url('task', ['action' => 'updateStatus']); ?>';
 </script>
 
 <div id="lobilist"></div>
