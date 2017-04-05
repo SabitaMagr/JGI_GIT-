@@ -4,6 +4,10 @@ namespace ManagerService\Controller;
 
 use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
+use Exception;
+use LeaveManagement\Model\LeaveAssign;
+use LeaveManagement\Repository\LeaveAssignRepository;
+use LeaveManagement\Repository\LeaveMasterRepository;
 use ManagerService\Repository\DayoffWorkApproveRepository;
 use Notification\Controller\HeadNotification;
 use Notification\Model\NotificationEvents;
@@ -21,8 +25,6 @@ use Zend\Db\Adapter\AdapterInterface;
 use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\Form\Element\Select;
 use Zend\Mvc\Controller\AbstractActionController;
-use LeaveManagement\Repository\LeaveMasterRepository;
-use LeaveManagement\Repository\LeaveAssignRepository;
 
 class DayoffWorkApproveController extends AbstractActionController {
 
@@ -153,7 +155,11 @@ class DayoffWorkApproveController extends AbstractActionController {
                 $workOnDayoffModel->recommendedRemarks = $getData->recommendedRemarks;
                 $this->dayoffWorkApproveRepository->edit($workOnDayoffModel, $id);
                 $workOnDayoffModel->id = $id;
-               // HeadNotification::pushNotification(($workOnDayoffModel->status == 'RC') ? NotificationEvents::LOAN_RECOMMEND_ACCEPTED : NotificationEvents::LOAN_RECOMMEND_REJECTED, $loanRequestModel, $this->adapter, $this->plugin('url'));
+                try {
+                    HeadNotification::pushNotification(($workOnDayoffModel->status == 'RC') ? NotificationEvents::LOAN_RECOMMEND_ACCEPTED : NotificationEvents::LOAN_RECOMMEND_REJECTED, $loanRequestModel, $this->adapter, $this->plugin('url'));
+                } catch (Exception $e) {
+                    $this->flashmessenger()->addMessage($e->getMessage());
+                }
             } else if ($role == 3 || $role == 4) {
                 $workOnDayoffModel->approvedDate = Helper::getcurrentExpressionDate();
                 $workOnDayoffModel->approvedBy = $this->employeeId;
@@ -166,13 +172,13 @@ class DayoffWorkApproveController extends AbstractActionController {
                     $substituteLeave = $leaveMasterRepo->getSubstituteLeave()->getArrayCopy();
                     $substituteLeaveId = $substituteLeave['LEAVE_ID'];
                     $empSubLeaveDtl = $leaveAssignRepo->filterByLeaveEmployeeId($substituteLeaveId, $requestedEmployeeID);
-                    if(count($empSubLeaveDtl)>0){
+                    if (count($empSubLeaveDtl) > 0) {
                         $preBalance = $empSubLeaveDtl['BALANCE'];
                         $total = $empSubLeaveDtl['TOTAL_DAYS'] + $detail['DURATION'];
                         $balance = $preBalance + $detail['DURATION'];
-                        $leaveAssignRepo->updatePreYrBalance($requestedEmployeeID,$substituteLeaveId, 0,$total, $balance);
-                    }else{
-                        $leaveAssign = new \LeaveManagement\Model\LeaveAssign();
+                        $leaveAssignRepo->updatePreYrBalance($requestedEmployeeID, $substituteLeaveId, 0, $total, $balance);
+                    } else {
+                        $leaveAssign = new LeaveAssign();
                         $leaveAssign->createdDt = Helper::getcurrentExpressionDate();
                         $leaveAssign->createdBy = $this->employeeId;
                         $leaveAssign->employeeId = $requestedEmployeeID;
@@ -192,7 +198,11 @@ class DayoffWorkApproveController extends AbstractActionController {
                 $workOnDayoffModel->approvedRemarks = $getData->approvedRemarks;
                 $this->dayoffWorkApproveRepository->edit($workOnDayoffModel, $id);
                 $workOnDayoffModel->id = $id;
-                //HeadNotification::pushNotification(($loanRequestModel->status == 'AP') ? NotificationEvents::LOAN_APPROVE_ACCEPTED : NotificationEvents::LOAN_APPROVE_REJECTED, $loanRequestModel, $this->adapter, $this->plugin('url'));
+                try {
+                    HeadNotification::pushNotification(($loanRequestModel->status == 'AP') ? NotificationEvents::LOAN_APPROVE_ACCEPTED : NotificationEvents::LOAN_APPROVE_REJECTED, $loanRequestModel, $this->adapter, $this->plugin('url'));
+                } catch (Exception $e) {
+                    $this->flashmessenger()->addMessage($e->getMessage());
+                }
             }
             return $this->redirect()->toRoute("dayoffWorkApprove");
         }

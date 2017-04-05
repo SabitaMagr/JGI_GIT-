@@ -12,7 +12,7 @@ angular.module('hris', [])
             $scope.all = false;
             $scope.assignShowHide = false;
             var l;
-
+            var $tableContainer = $("#trainingAssignListTable");
             $scope.checkAll = function (item) {
                 for (var i = 0; i < $scope.employeeList.length; i++) {
                     $scope.employeeList[i].checked = item;
@@ -32,6 +32,7 @@ angular.module('hris', [])
                     $scope.assignShowHide = false;
                 }
             };
+            var $tableContainer1 = $("#trainingAssignListTable");
             $scope.view = function () {
                 $scope.all = false;
                 $scope.assignShowHide = false;
@@ -42,7 +43,7 @@ angular.module('hris', [])
                 var positionId = angular.element(document.getElementById('positionId')).val();
                 var serviceTypeId = angular.element(document.getElementById('serviceTypeId')).val();
                 var trainingId = angular.element(document.getElementById('trainingId')).val();
-
+                $tableContainer1.block();
                 window.app.pullDataById(document.url, {
                     action: 'pullEmployeeForTrainingAssign',
                     data: {
@@ -55,6 +56,7 @@ angular.module('hris', [])
                         trainingId:trainingId
                     }
                 }).then(function (success) {
+                    $tableContainer1.unblock();
                     //console.log("Employee list for assign", success);
                     $scope.$apply(function () {
                         $scope.employeeList = success.data;
@@ -65,6 +67,7 @@ angular.module('hris', [])
 
                     });
                 }, function (failure) {
+                    $tableContainer1.unblock();
                     console.log("Employee Get All", failure);
                 });
             };
@@ -134,7 +137,7 @@ angular.module('hris', [])
                 var serviceTypeId = angular.element(document.getElementById('serviceTypeId')).val();
                 var trainingId = angular.element(document.getElementById('trainingId')).val();
                 var serviceEventTypeId = angular.element(document.getElementById('serviceEventTypeId')).val();
-
+                $tableContainer.block();
                 window.app.pullDataById(document.url, {
                     action: 'pullTrainingAssignList',
                     data: {
@@ -148,8 +151,10 @@ angular.module('hris', [])
                         serviceEventTypeId:serviceEventTypeId
                     }
                 }).then(function (success) {
+                    $tableContainer.unblock();
                     console.log("Training Assign List", success);
                     $scope.$apply(function () {
+                        $tableContainer.unblock();
                         $scope.initializekendoGrid(success.data);
                         window.app.UIConfirmations();
                     });

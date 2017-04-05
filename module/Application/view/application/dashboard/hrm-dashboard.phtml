@@ -37,7 +37,6 @@ foreach($departmentAttendance as $deptAttn) {
     }
     $departmentAttendanceData[$deptAttn['DEPARTMENT_NAME']][$deptAttn['PRESENT_STATUS']] = $deptAttn['ATTN_COUNT'];
 }
-
 ?>
 
 <style type="text/css">
@@ -49,17 +48,17 @@ foreach($departmentAttendance as $deptAttn) {
 <script type="text/javascript">
     document.xndr = []; // Gender
     document.xndrhc = []; // Gender Head Count
-    <?php foreach ($headCountGender as $ghc) : ?>
-    document.xndr.push('<?php print $ghc['GENDER_NAME']; ?>');
-    document.xndrhc.push(<?php print $ghc['HEAD_COUNT'] ?>);
-    <?php endforeach; ?>
+<?php foreach ($headCountGender as $ghc) : ?>
+        document.xndr.push('<?php print $ghc['GENDER_NAME']; ?>');
+        document.xndrhc.push(<?php print $ghc['HEAD_COUNT'] ?>);
+<?php endforeach; ?>
 
     document.odept = []; // Office Department
     document.odepthc = []; // Department Head Count
-    <?php foreach ($headCountDepartment as $dhc) : ?>
-    document.odept.push('<?php print $dhc['DEPARTMENT_NAME']; ?>');
-    document.odepthc.push(<?php print $dhc['HEAD_COUNT']; ?>);
-    <?php endforeach; ?>
+<?php foreach ($headCountDepartment as $dhc) : ?>
+        document.odept.push('<?php print $dhc['DEPARTMENT_NAME']; ?>');
+        document.odepthc.push(<?php print $dhc['HEAD_COUNT']; ?>);
+<?php endforeach; ?>
 
     document.brln = []; // Branch Location
     document.brlnhc = []; // Department Head Count
@@ -70,6 +69,21 @@ foreach($departmentAttendance as $deptAttn) {
 
     document.deptattn = <?php print json_encode($departmentAttendanceData); ?>; // Departments Attendance
 </script>
+
+<?php
+if ($this->messages && (sizeof($this->messages) > 1)) {
+    print '<div class="alert alert-warning alert-dismissable">
+    <button type="button" class="close" data-dismiss="alert" aria-hidden="true"></button>
+    <strong>Warning!</strong> ';
+    print $this->messages[1];
+    print '</div>';
+}
+?>
+<?php if ($this->messages) { ?>
+    <script>
+        document.messages =<?php echo json_encode($this->messages); ?>
+    </script>
+<?php } ?>
 
 <div class="employeedashboard">
     <div class="emplyoee-dashboard clearfix">
@@ -86,8 +100,8 @@ foreach($departmentAttendance as $deptAttn) {
                 $serviceDays = trim(implode(" ", $service));
                 ?>
                 <h4 class="font-weight-bold"><?php print $employeeDetail['FULL_NAME']; ?></h4>
-                <?php if($email) : ?>
-                <span><?php print $email; ?></span><br>
+                <?php if ($email) : ?>
+                    <span><?php print $email; ?></span><br>
                 <?php endif; ?>
                 <span><?php print trim($employeeDetail['DESIGNATION_TITLE']); ?></span><br>
                 <span>At work for : <?php print $serviceDays ? $serviceDays : 0; ?></span><br>
@@ -150,81 +164,81 @@ foreach($departmentAttendance as $deptAttn) {
     <div class="row">
         <div class="col-md-6">
             <?php /*
-            <div class="employeestatusbox clearfix">
-                <div class="row">
-                    <div class="col-sm-3 col-md-3">
-                        <h4 class="font-weight-bold">Employee Status</h4>
-                    </div>
-                    <div class="col-sm-6 col-md-6">
-                        <div class="employee-status-details">
-                            <ul>
-                                <li>
-                                    <span>0.5/26</span>
-                                    Attendence
-                                </li>
-                                <li>
-                                    <span>1/10</span>
-                                    Leave
-                                </li>
-                                <li>
-                                    <span>0</span>
-                                    Awards
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="col-sm-3 col-md-3">
-                        <div id="dashboard-report-range1" class="pull-right tooltips btn btn-sm btn-custom-color active" data-container="body" data-placement="bottom" data-original-title="Change dashboard date range">
-                            <i class="fa fa-calendar"></i>&nbsp;<span class="thin uppercase visible-lg-inline-block"><?php print date('d M Y') ?></span>&nbsp; <i class="fa fa-angle-down"></i>
-                        </div>
-                    </div>
-                    <div class="col-md-12">
-                        <div class="row detailsbox">
-                            <div class="col-xs-6 col-sm-3 col-md-2 hexcustom">
-                                <div class="employee_details-box hexagon-bg1">
-                                    <span><?php print $employeeDetail['PRESENT_DAY']; ?></span>
-                                    <div class="face1"></div>
-                                    <div class="face2"></div>
-                                    <div class="headtitle">Present</div>
-                                </div>
-                            </div>
-                            <div class="col-xs-6 col-sm-3 col-md-2 hexcustom">
-                                <div class="employee_details-box hexagon-bg2">
-                                    <span><?php print $employeeDetail['LEAVE']; ?></span>
-                                    <div class="face1"></div>
-                                    <div class="face2"></div>
-                                    <div class="headtitle">On Leave</div>
-                                </div>
-                            </div>
-                            <div class="col-xs-6 col-sm-3 col-md-2 hexcustom">
-                                <div class="employee_details-box hexagon-bg3">
-                                    <span><?php print $employeeDetail['TRAINING']; ?></span>
-                                    <div class="face1"></div>
-                                    <div class="face2"></div>
-                                    <div class="headtitle">Training</div>
-                                </div>
-                            </div>
-                            <div class="col-xs-6 col-sm-3 col-md-2 hexcustom">
-                                <div class="employee_details-box hexagon-bg4">
-                                    <span><?php print $employeeDetail['TOUR']; ?></span>
-                                    <div class="face1"></div>
-                                    <div class="face2"></div>
-                                    <div class="headtitle">On Tour</div>
-                                </div>
-                            </div>
-                            <div class="col-xs-6 col-sm-3 col-md-2 hexcustom">
-                                <div class="employee_details-box hexagon-bg5">
-                                    <span><?php print $employeeDetail['WOH']; ?></span>
-                                    <div class="face1"></div>
-                                    <div class="face2"></div>
-                                    <div class="headtitle">WOH</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            */ ?>
+              <div class="employeestatusbox clearfix">
+              <div class="row">
+              <div class="col-sm-3 col-md-3">
+              <h4 class="font-weight-bold">Employee Status</h4>
+              </div>
+              <div class="col-sm-6 col-md-6">
+              <div class="employee-status-details">
+              <ul>
+              <li>
+              <span>0.5/26</span>
+              Attendence
+              </li>
+              <li>
+              <span>1/10</span>
+              Leave
+              </li>
+              <li>
+              <span>0</span>
+              Awards
+              </li>
+              </ul>
+              </div>
+              </div>
+              <div class="col-sm-3 col-md-3">
+              <div id="dashboard-report-range1" class="pull-right tooltips btn btn-sm btn-custom-color active" data-container="body" data-placement="bottom" data-original-title="Change dashboard date range">
+              <i class="fa fa-calendar"></i>&nbsp;<span class="thin uppercase visible-lg-inline-block"><?php print date('d M Y') ?></span>&nbsp; <i class="fa fa-angle-down"></i>
+              </div>
+              </div>
+              <div class="col-md-12">
+              <div class="row detailsbox">
+              <div class="col-xs-6 col-sm-3 col-md-2 hexcustom">
+              <div class="employee_details-box hexagon-bg1">
+              <span><?php print $employeeDetail['PRESENT_DAY']; ?></span>
+              <div class="face1"></div>
+              <div class="face2"></div>
+              <div class="headtitle">Present</div>
+              </div>
+              </div>
+              <div class="col-xs-6 col-sm-3 col-md-2 hexcustom">
+              <div class="employee_details-box hexagon-bg2">
+              <span><?php print $employeeDetail['LEAVE']; ?></span>
+              <div class="face1"></div>
+              <div class="face2"></div>
+              <div class="headtitle">On Leave</div>
+              </div>
+              </div>
+              <div class="col-xs-6 col-sm-3 col-md-2 hexcustom">
+              <div class="employee_details-box hexagon-bg3">
+              <span><?php print $employeeDetail['TRAINING']; ?></span>
+              <div class="face1"></div>
+              <div class="face2"></div>
+              <div class="headtitle">Training</div>
+              </div>
+              </div>
+              <div class="col-xs-6 col-sm-3 col-md-2 hexcustom">
+              <div class="employee_details-box hexagon-bg4">
+              <span><?php print $employeeDetail['TOUR']; ?></span>
+              <div class="face1"></div>
+              <div class="face2"></div>
+              <div class="headtitle">On Tour</div>
+              </div>
+              </div>
+              <div class="col-xs-6 col-sm-3 col-md-2 hexcustom">
+              <div class="employee_details-box hexagon-bg5">
+              <span><?php print $employeeDetail['WOH']; ?></span>
+              <div class="face1"></div>
+              <div class="face2"></div>
+              <div class="headtitle">WOH</div>
+              </div>
+              </div>
+              </div>
+              </div>
+              </div>
+              </div>
+             */ ?>
 
             <div class="row chart-row">
                 <div class="col-md-12">
@@ -278,8 +292,8 @@ foreach($departmentAttendance as $deptAttn) {
                                         </div>
                                         <div class="noticeboard-list row">
                                             <ul>
-                                                <?php if(count($employeeNotice)> 0) : ?>
-                                                    <?php foreach($employeeNotice as $notice) : ?>
+                                                <?php if (count($employeeNotice) > 0) : ?>
+                                                    <?php foreach ($employeeNotice as $notice) : ?>
                                                         <li style="width:100%;">
                                                             <div class="calendardate-box col-sm-2 col-md-2">
                                                                 <span><?php print $notice['NEWS_DAY']; ?></span><br>
@@ -602,7 +616,6 @@ foreach($departmentAttendance as $deptAttn) {
                     </div>
                     <!-- END CONTENT -->
                 </div>
-
             </div>
         </div>
     </div>

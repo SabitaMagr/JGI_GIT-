@@ -4,16 +4,20 @@ namespace ManagerService\Controller;
 
 use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
+use Exception;
+use HolidayManagement\Model\Holiday;
+use LeaveManagement\Model\LeaveAssign;
+use LeaveManagement\Repository\LeaveAssignRepository;
+use LeaveManagement\Repository\LeaveMasterRepository;
 use ManagerService\Repository\HolidayWorkApproveRepository;
 use Notification\Controller\HeadNotification;
 use Notification\Model\NotificationEvents;
 use SelfService\Form\WorkOnHolidayForm;
 use SelfService\Model\WorkOnHoliday;
-use SelfService\Repository\WorkOnHolidayRepository;
+use SelfService\Repository\HolidayRepository;
 use Setup\Model\Branch;
 use Setup\Model\Department;
 use Setup\Model\Designation;
-use HolidayManagement\Model\Holiday;
 use Setup\Model\Position;
 use Setup\Model\ServiceEventType;
 use Setup\Model\ServiceType;
@@ -23,9 +27,6 @@ use Zend\Db\Adapter\AdapterInterface;
 use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\Form\Element\Select;
 use Zend\Mvc\Controller\AbstractActionController;
-use SelfService\Repository\HolidayRepository;
-use LeaveManagement\Repository\LeaveMasterRepository;
-use LeaveManagement\Repository\LeaveAssignRepository;
 
 class HolidayWorkApproveController extends AbstractActionController {
 
@@ -157,7 +158,11 @@ class HolidayWorkApproveController extends AbstractActionController {
                 $workOnHolidayModel->recommendedRemarks = $getData->recommendedRemarks;
                 $this->holidayWorkApproveRepository->edit($workOnHolidayModel, $id);
                 $workOnHolidayModel->id = $id;
-                //HeadNotification::pushNotification(($loanRequestModel->status == 'RC') ? NotificationEvents::LOAN_RECOMMEND_ACCEPTED : NotificationEvents::LOAN_RECOMMEND_REJECTED, $loanRequestModel, $this->adapter, $this->plugin('url'));
+                try {
+                    HeadNotification::pushNotification(($loanRequestModel->status == 'RC') ? NotificationEvents::LOAN_RECOMMEND_ACCEPTED : NotificationEvents::LOAN_RECOMMEND_REJECTED, $loanRequestModel, $this->adapter, $this->plugin('url'));
+                } catch (Exception $e) {
+                    $this->flashmessenger()->addMessage($e->getMessage());
+                }
             } else if ($role == 3 || $role == 4) {
                 $workOnHolidayModel->approvedDate = Helper::getcurrentExpressionDate();
                 $workOnHolidayModel->approvedBy = $this->employeeId;
@@ -170,13 +175,13 @@ class HolidayWorkApproveController extends AbstractActionController {
                     $substituteLeave = $leaveMasterRepo->getSubstituteLeave()->getArrayCopy();
                     $substituteLeaveId = $substituteLeave['LEAVE_ID'];
                     $empSubLeaveDtl = $leaveAssignRepo->filterByLeaveEmployeeId($substituteLeaveId, $requestedEmployeeID);
-                    if(count($empSubLeaveDtl)>0){
+                    if (count($empSubLeaveDtl) > 0) {
                         $preBalance = $empSubLeaveDtl['BALANCE'];
                         $total = $empSubLeaveDtl['TOTAL_DAYS'] + $detail['DURATION'];
                         $balance = $preBalance + $detail['DURATION'];
-                        $leaveAssignRepo->updatePreYrBalance($requestedEmployeeID,$substituteLeaveId, 0,$total, $balance);
-                    }else{
-                        $leaveAssign = new \LeaveManagement\Model\LeaveAssign();
+                        $leaveAssignRepo->updatePreYrBalance($requestedEmployeeID, $substituteLeaveId, 0, $total, $balance);
+                    } else {
+                        $leaveAssign = new LeaveAssign();
                         $leaveAssign->createdDt = Helper::getcurrentExpressionDate();
                         $leaveAssign->createdBy = $this->employeeId;
                         $leaveAssign->employeeId = $requestedEmployeeID;
@@ -196,7 +201,11 @@ class HolidayWorkApproveController extends AbstractActionController {
                 $workOnHolidayModel->approvedRemarks = $getData->approvedRemarks;
                 $this->holidayWorkApproveRepository->edit($workOnHolidayModel, $id);
                 $workOnHolidayModel->id = $id;
-                //HeadNotification::pushNotification(($loanRequestModel->status == 'AP') ? NotificationEvents::LOAN_APPROVE_ACCEPTED : NotificationEvents::LOAN_APPROVE_REJECTED, $loanRequestModel, $this->adapter, $this->plugin('url'));
+                try {
+                    HeadNotification::pushNotification(($loanRequestModel->status == 'AP') ? NotificationEvents::LOAN_APPROVE_ACCEPTED : NotificationEvents::LOAN_APPROVE_REJECTED, $loanRequestModel, $this->adapter, $this->plugin('url'));
+                } catch (Exception $e) {
+                    $this->flashmessenger()->addMessage($e->getMessage());
+                }
             }
             return $this->redirect()->toRoute("holidayWorkApprove");
         }
@@ -310,14 +319,16 @@ class HolidayWorkApproveController extends AbstractActionController {
                     'serviceEventTypes' => $serviceEventTypeFormElement
         ]);
     }
-    public function getHolidayList($employeeId){
-       $holidayRepo = new HolidayRepository($this->adapter);
-       $holidayResult = $holidayRepo->selectAll($employeeId);
-       $holidayList = [];
-       foreach($holidayResult as $holidayRow){
-           //$todayDate = new \DateTime();
-           $holidayList[$holidayRow['HOLIDAY_ID']]=$holidayRow['HOLIDAY_ENAME']." (".$holidayRow['START_DATE']." to ".$holidayRow['END_DATE'].")";
-       }
-       return $holidayList;
+
+    public function getHolidayList($employeeId) {
+        $holidayRepo = new HolidayRepository($this->adapter);
+        $holidayResult = $holidayRepo->selectAll($employeeId);
+        $holidayList = [];
+        foreach ($holidayResult as $holidayRow) {
+            //$todayDate = new \DateTime();
+            $holidayList[$holidayRow['HOLIDAY_ID']] = $holidayRow['HOLIDAY_ENAME'] . " (" . $holidayRow['START_DATE'] . " to " . $holidayRow['END_DATE'] . ")";
+        }
+        return $holidayList;
     }
+
 }

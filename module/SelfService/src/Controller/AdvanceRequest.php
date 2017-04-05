@@ -4,6 +4,7 @@ namespace SelfService\Controller;
 
 use Application\Helper\Helper;
 use Application\Helper\LoanAdvanceHelper;
+use Exception;
 use Notification\Controller\HeadNotification;
 use Notification\Model\NotificationEvents;
 use SelfService\Form\AdvanceRequestForm;
@@ -113,9 +114,9 @@ class AdvanceRequest extends AbstractActionController {
                 'ACTION' => key($action),
                 'ACTION_TEXT' => $action[key($action)]
             ]);
-            if($statusID=='RQ'){
+            if ($statusID == 'RQ') {
                 $new_row['ALLOW_TO_EDIT'] = 1;
-            }else{
+            } else {
                 $new_row['ALLOW_TO_EDIT'] = 0;
             }
             array_push($list, $new_row);
@@ -137,7 +138,11 @@ class AdvanceRequest extends AbstractActionController {
                 $model->requestedDate = Helper::getcurrentExpressionDate();
                 $model->status = 'RQ';
                 $this->repository->add($model);
-                HeadNotification::pushNotification(NotificationEvents::ADVANCE_APPLIED, $model, $this->adapter, $this->plugin('url'));
+                try {
+                    HeadNotification::pushNotification(NotificationEvents::ADVANCE_APPLIED, $model, $this->adapter, $this->plugin('url'));
+                } catch (Exception $e) {
+                    $this->flashmessenger()->addMessage($e->getMessage());
+                }
 
                 $this->flashmessenger()->addMessage("Advance Request Successfully added!!!");
                 return $this->redirect()->toRoute("advanceRequest");
@@ -195,7 +200,7 @@ class AdvanceRequest extends AbstractActionController {
         return Helper::addFlashMessagesToArray($this, [
                     'form' => $this->form,
                     'employeeName' => $employeeName,
-                    'employeeId'=>$detail['EMPLOYEE_ID'],
+                    'employeeId' => $detail['EMPLOYEE_ID'],
                     'status' => $detail['STATUS'],
                     'requestedDate' => $detail['REQUESTED_DATE'],
                     'recommender' => $authRecommender,

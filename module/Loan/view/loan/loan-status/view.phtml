@@ -1,3 +1,20 @@
+<div class="page-bar">
+    <?= $this->navigation('Zend\Navigation\loanStatus')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb'); ?>
+</div>
+<?php
+if ($this->messages && (sizeof($this->messages) > 1)) {
+    print '<div class="alert alert-warning alert-dismissable">
+    <button type="button" class="close" data-dismiss="alert" aria-hidden="true"></button>
+    <strong>Warning!</strong> ';
+    print $this->messages[1];
+    print '</div>';
+}
+?>
+<?php if ($this->messages) { ?>
+    <script>
+        document.messages =<?php echo json_encode($this->messages); ?>
+    </script>
+<?php } ?>
 <?php
 $this->headScript()->appendFile($this->basePath('js/angular.min.js'));
 $this->headScript()->appendFile($this->basePath('js/LeaveManagement/LeaveRequest/leaveStatus.js'));
@@ -24,27 +41,15 @@ $submit->setAttribute('value', 'Approve');
 
 $form->setAttribute('action', $this->url('loanStatus', ['action' => 'view', 'id' => $id]));
 
-if ($this->messages) {
-    print '<ul class="help-block bg-danger" style="background:#f3e250;">';
-    foreach ($this->messages as $message) {
-        print '<li>' . $message . '</li>';
-    }
-    print '</ul>';
-}
 
 $form->prepare();
 print $this->form()->openTag($form);
 ?>
 <script>
-    document.menu =<?php $menu = ["id" => "menuLoan", "subMenu" => ["id" => "subMenuLoanStatus"]];
-echo json_encode($menu); ?>;
     document.url = '<?= $this->url("webService", ["action" => "index"]) ?>';
     document.employeeId =<?= json_encode($employeeId) ?>;
 </script>
 
-<div class="page-bar">
-<?= $this->navigation('Zend\Navigation\loanStatus')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb'); ?>
-</div>
 <div class="row margin-top-20">
     <div class="col-sm-8 col-sm-offset-2">
         <div class="portlet box custom-box">
@@ -65,7 +70,7 @@ echo json_encode($menu); ?>;
                                         </td>
                                         <td width="15">:</td>
                                         <td>
-<?php echo $employeeName; ?>
+                                            <?php echo $employeeName; ?>
                                         </td>
                                     </tr>
                                     <tr height="30">
@@ -74,7 +79,7 @@ echo json_encode($menu); ?>;
                                         </td>
                                         <td width="15">:</td>
                                         <td>
-<?php echo $requestedDt; ?>
+                                            <?php echo $requestedDt; ?>
                                         </td>
                                     </tr>
                                     <tr height="30">
@@ -83,7 +88,7 @@ echo json_encode($menu); ?>;
                                         </td>
                                         <td width="15">:</td>
                                         <td>
-<?php echo $recommender; ?>
+                                            <?php echo $recommender; ?>
                                         </td>
                                     </tr>
 
@@ -118,7 +123,7 @@ echo json_encode($menu); ?>;
                                         </td>
                                         <td width="15">:</td>
                                         <td>
-<?php echo $approver; ?>
+                                            <?php echo $approver; ?>
                                         </td>
                                     </tr>
                                 </table>
@@ -128,26 +133,26 @@ echo json_encode($menu); ?>;
 
                     <div class="form-group">
                         <?php print $this->formLabel($loanId); ?>
-<?php print $this->formElement($loanId); ?>
+                        <?php print $this->formElement($loanId); ?>
                         <?php print $this->formElementErrors()->render($loanId, ['class' => 'help-block']); ?>
                     </div>               
                     <div class="form-group">
                         <?php print $this->formLabel($requestedAmount); ?>
-<?php print $this->formElement($requestedAmount); ?>
+                        <?php print $this->formElement($requestedAmount); ?>
                         <?php print $this->formElementErrors()->render($requestedAmount, ['class' => 'help-block']); ?>
                     </div>
                     <div class="form-group">
-                            <?php print $this->formLabel($loanDate); ?>
+                        <?php print $this->formLabel($loanDate); ?>
                         <div class="input-group date" id="startDate">
-                        <?php print $this->formElement($loanDate); ?>
+                            <?php print $this->formElement($loanDate); ?>
                             <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
                         </div>
                         <?php print $this->formElementErrors()->render($loanDate, ['class' => 'help-block']); ?>
                     </div>
                     <div class="form-group">
                         <?php print $this->formLabel($reason); ?>
-<?php print $this->formElement($reason); ?>
-<?php print $this->formElementErrors()->render($reason, ['class' => 'help-block']); ?>
+                        <?php print $this->formElement($reason); ?>
+                        <?php print $this->formElementErrors()->render($reason, ['class' => 'help-block']); ?>
                     </div>
                 </div>
 
@@ -157,21 +162,22 @@ echo json_encode($menu); ?>;
                     ?>
                     <div class="form-group padding-0">
                         <label>Reason for action [From Recommender]</label>
-                    <?php print $this->formElement($recommendedRemarks); ?>
+                        <?php print $this->formElement($recommendedRemarks); ?>
                     </div>
-                    <?php }
-                    if ($status == 'RC' || $status == 'RQ' || $status == 'AP' || ($status == 'R' && $approvedDT != null)) {
-                        ?>
+                    <?php
+                }
+                if ($status == 'RC' || $status == 'RQ' || $status == 'AP' || ($status == 'R' && $approvedDT != null)) {
+                    ?>
                     <div class="form-group padding-0">
-                    <?php print $this->formLabel($approvedRemarks); ?>
-                    <?php print $this->formElement($approvedRemarks); ?>
+                        <?php print $this->formLabel($approvedRemarks); ?>
+                        <?php print $this->formElement($approvedRemarks); ?>
                     </div>
                 <?php } ?>
 
-<?php if ($status == 'RQ' || $status == 'RC') { ?>
-    <?php print $this->formSubmit($submit); ?>
+                <?php if ($status == 'RQ' || $status == 'RC') { ?>
+                    <?php print $this->formSubmit($submit); ?>
                     <input type="submit" name="submit" class="btn btn-success pull-right" value="Reject">
-<?php } ?>
+                <?php } ?>
             </div>
         </div>
     </div>

@@ -9,7 +9,6 @@ $this->headScript()->appendFile($this->basePath('js/LeaveManagement/LeaveRequest
 
 
 <?php
-
 $form->setAttribute('role', 'form');
 
 $startDate = $form->get('startDate');
@@ -22,28 +21,34 @@ $submit = $form->get('submit');
 $submit->setAttribute('value', 'Apply Leave');
 $submit->setAttribute('id', 'request');
 
-$form->setAttribute('action', $this->url('leavebalance', ['action' => 'apply','eid' => $employeeId,'id' => $leaveId]));
+$form->setAttribute('action', $this->url('leavebalance', ['action' => 'apply', 'eid' => $employeeId, 'id' => $leaveId]));
 
-if ($this->messages) {
-    print '<ul class="help-block bg-danger" style="background:#f3e250;">';
-    foreach ($this->messages as $message) {
-        print '<li>' . $message . '</li>';
-    }
-    print '</ul>';
-}
 
 $form->prepare();
 print $this->form()->openTag($form);
 ?>
-    <script>
-        document.menu =<?php $menu = ["id" => "menuLeave", "subMenu" => ["id" => "subMenuLeaveBalance"]];echo json_encode($menu);?>;
-        document.url = '<?= $this->url("webService", ["action" => "index"]) ?>';
-        document.employeeId=<?= json_encode($employeeId) ?>;
-    </script>
+<script>
+    document.url = '<?= $this->url("webService", ["action" => "index"]) ?>';
+    document.employeeId =<?= json_encode($employeeId) ?>;
+</script>
 
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\leavebalance')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
+<?php
+if ($this->messages && (sizeof($this->messages) > 1)) {
+    print '<div class="alert alert-warning alert-dismissable">
+    <button type="button" class="close" data-dismiss="alert" aria-hidden="true"></button>
+    <strong>Warning!</strong> ';
+    print $this->messages[1];
+    print '</div>';
+}
+?>
+<?php if ($this->messages) { ?>
+    <script>
+        document.messages =<?php echo json_encode($this->messages); ?>
+    </script>
+<?php } ?>
 <div ng-app="hris" ng-controller="leaveRequestController">
     <div class="row margin-top-20" >
         <div class="col-sm-8 col-sm-offset-2">
@@ -88,15 +93,15 @@ print $this->form()->openTag($form);
                     </div>
                     <div
                         class="form-group required  <?= empty($startDate->getMessages()) ? "" : "error" ?>">
-                        <?php print $this->formLabel($startDate) ?>
-                        <?php print $this->formElement($startDate) ?>
+                            <?php print $this->formLabel($startDate) ?>
+                            <?php print $this->formElement($startDate) ?>
                     </div>
                     <?php print $this->formElementErrors()->render($startDate, ['class' => 'help-block error']) ?>
 
                     <div
                         class="form-group required <?= empty($endDate->getMessages()) ? "" : "error" ?>">
-                        <?php print $this->formLabel($endDate) ?>
-                        <?php print $this->formElement($endDate) ?>
+                            <?php print $this->formLabel($endDate) ?>
+                            <?php print $this->formElement($endDate) ?>
                         <span id="errorMsgDate" style="font-size:11px; color:red;"></span>
                     </div>
                     <?php print $this->formElementErrors()->render($endDate, ['class' => 'help-block error']) ?>
@@ -107,21 +112,20 @@ print $this->form()->openTag($form);
                     </div>
                     <div
                         class="form-group required <?= empty($noOfDays->getMessages()) ? "" : "error" ?>">
-                        <?php print $this->formLabel($noOfDays); ?>
-                        <?php print $this->formElement($noOfDays); ?>
+                            <?php print $this->formLabel($noOfDays); ?>
+                            <?php print $this->formElement($noOfDays); ?>
                         <span id="errorMsg" style="font-size:11px; color:red;"></span>
                     </div>
                     <?php print $this->formElementErrors()->render($noOfDays, ['class' => 'help-block error']); ?>
 
-                    <?php
-                    if($allowHalfDay=='Y'){ ?>
-                    <div class="form-group padding-0" id="halfDay">
-                        <?php print $this->formLabel($halfDay); ?>
-                        <div class="md-radio-inline">
-                            <?php $customRenderer($halfDay); ?>
+                    <?php if ($allowHalfDay == 'Y') { ?>
+                        <div class="form-group padding-0" id="halfDay">
+                            <?php print $this->formLabel($halfDay); ?>
+                            <div class="md-radio-inline">
+                                <?php $customRenderer($halfDay); ?>
+                            </div>
                         </div>
-                    </div>
-                    <?php print $this->formElementErrors()->render($halfDay, ['class' => 'help-block error']); ?>
+                        <?php print $this->formElementErrors()->render($halfDay, ['class' => 'help-block error']); ?>
                     <?php } ?>
 
                     <div class="form-group padding-0" id="remarks">
@@ -137,7 +141,5 @@ print $this->form()->openTag($form);
     </div>
 </div>
 <?php
-
 print $this->form()->closeTag();
-
 ?>

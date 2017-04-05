@@ -4,6 +4,7 @@ namespace Training\Controller;
 
 use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
+use Exception;
 use Notification\Controller\HeadNotification;
 use Notification\Model\NotificationEvents;
 use Setup\Model\Branch;
@@ -214,8 +215,12 @@ class TrainingAssignController extends AbstractActionController {
         $model = new \Training\Model\TrainingAssign();
         $model->trainingId = $trainingId;
         $model->employeeId = $employeeId;
-        HeadNotification::pushNotification(NotificationEvents::TRAINING_CANCELLED, $model, $this->adapter, $this->plugin('url'));
         $this->flashmessenger()->addMessage("Training Assign Successfully Cancelled!!!");
+        try {
+            HeadNotification::pushNotification(NotificationEvents::TRAINING_CANCELLED, $model, $this->adapter, $this->plugin('url'));
+        } catch (Exception $e) {
+            $this->flashmessenger()->addMessage($e->getMessage());
+        }
         return $this->redirect()->toRoute('trainingAssign');
     }
 

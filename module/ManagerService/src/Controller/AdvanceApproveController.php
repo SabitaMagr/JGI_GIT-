@@ -4,6 +4,7 @@ namespace ManagerService\Controller;
 
 use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
+use Exception;
 use ManagerService\Repository\AdvanceApproveRepository;
 use Notification\Controller\HeadNotification;
 use Notification\Model\NotificationEvents;
@@ -144,7 +145,6 @@ class AdvanceApproveController extends AbstractActionController {
         } else {
             $getData = $request->getPost();
             $action = $getData->submit;
-
             if ($role == 2) {
                 $advanceRequestModel->recommendedDate = Helper::getcurrentExpressionDate();
                 $advanceRequestModel->recommendedBy = $this->employeeId;
@@ -159,8 +159,11 @@ class AdvanceApproveController extends AbstractActionController {
                 $this->advanceApproveRepository->edit($advanceRequestModel, $id);
 
                 $advanceRequestModel->advanceRequestId = $id;
-                HeadNotification::pushNotification(
-                        $advanceRequestModel->status == 'RC' ? NotificationEvents::ADVANCE_RECOMMEND_ACCEPTED : NotificationEvents::ADVANCE_RECOMMEND_REJECTED, $advanceRequestModel, $this->adapter, $this->plugin('url'));
+                try {
+                    HeadNotification::pushNotification($advanceRequestModel->status == 'RC' ? NotificationEvents::ADVANCE_RECOMMEND_ACCEPTED : NotificationEvents::ADVANCE_RECOMMEND_REJECTED, $advanceRequestModel, $this->adapter, $this->plugin('url'));
+                } catch (Exception $e) {
+                    $this->flashmessenger()->addMessage($e->getMessage());
+                }
             } else if ($role == 3 || $role == 4) {
                 $advanceRequestModel->approvedDate = Helper::getcurrentExpressionDate();
                 $advanceRequestModel->approvedBy = $this->employeeId;
@@ -179,8 +182,11 @@ class AdvanceApproveController extends AbstractActionController {
                 $this->advanceApproveRepository->edit($advanceRequestModel, $id);
 
                 $advanceRequestModel->advanceRequestId = $id;
-                HeadNotification::pushNotification(
-                        $advanceRequestModel->status == 'AP' ? NotificationEvents::ADVANCE_APPROVE_ACCEPTED : NotificationEvents::ADVANCE_APPROVE_REJECTED, $advanceRequestModel, $this->adapter, $this->plugin('url'));
+                try {
+                    HeadNotification::pushNotification($advanceRequestModel->status == 'AP' ? NotificationEvents::ADVANCE_APPROVE_ACCEPTED : NotificationEvents::ADVANCE_APPROVE_REJECTED, $advanceRequestModel, $this->adapter, $this->plugin('url'));
+                } catch (Exception $e) {
+                    $this->flashmessenger()->addMessage($e->getMessage());
+                }
             }
             return $this->redirect()->toRoute("advanceApprove");
         }

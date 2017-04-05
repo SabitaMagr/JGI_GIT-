@@ -112,7 +112,7 @@ class HrEmployeesFormTabOne extends Model {
      * @Annotation\Required(false)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Telephone No"})
-     * @Annotation\Attributes({ "id":"telephoneNo", "placeholder":"xx-xxxxxxx", "class":"form-control"})
+     * @Annotation\Attributes({ "id":"telephoneNo", "placeholder":"xx-xxxxxxx", "pattern":"^\(?\d{2}\)?[- ]?\d{7}$", "class":"form-control","title"="Enter your mobile number(xx-xxxxxxx)"})
      */
     public $telephoneNo;
 
@@ -121,7 +121,7 @@ class HrEmployeesFormTabOne extends Model {
      * @Annotation\Required(true)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Mobile No"})
-     * @Annotation\Attributes({ "id":"MobileNo", "placeholder":"xxx-xxx-xxxx", "class":"form-control"})
+     * @Annotation\Attributes({ "id":"MobileNo", "placeholder":"xxx-xxx-xxxx", "class":"form-control" , "pattern"="^\(?\d{3}\)?[- ]?\d{3}[- ]?\d{4}$", "title"="Enter your mobile number(xxx-xxx-xxxx)"})
      */
     public $mobileNo;
 
@@ -185,7 +185,7 @@ class HrEmployeesFormTabOne extends Model {
      * @Annotation\Required(true)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Phone No"})
-     * @Annotation\Attributes({ "id":"emergContactNo", "placeholder":"xxx-xxx-xxxx", "class":"form-control"})
+     * @Annotation\Attributes({ "id":"emergContactNo", "placeholder":"xxx-xxx-xxxx", "class":"form-control" , "pattern"="^\(?\d{3}\)?[- ]?\d{3}[- ]?\d{4}$", "title"="Enter your mobile number(xxx-xxx-xxxx)"})
      */
     public $emergContactNo;
 
@@ -223,7 +223,7 @@ class HrEmployeesFormTabOne extends Model {
      * @Annotation\Options({"label":" Ward No"})
      * @Annotation\Required(false)
      * @Annotation\Validator({"name":"StringLength", "options":{"max":"2"}})
-     * @Annotation\Attributes({ "id":"addrPermWardNo", "class":"form-control" })
+     * @Annotation\Attributes({ "id":"addrPermWardNo", "class":"form-control","min":"1" })
      */
     public $addrPermWardNo;
 
@@ -280,7 +280,7 @@ class HrEmployeesFormTabOne extends Model {
      * @Annotation\Required(false)
      * @Annotation\Options({"label":"Ward No"})
      * @Annotation\Validator({"name":"StringLength", "options":{"max":"2"}})
-     * @Annotation\Attributes({ "id":"addrTempWardNo", "class":"form-control" })
+     * @Annotation\Attributes({ "id":"addrTempWardNo", "class":"form-control","min":"1" })
      */
     public $addrTempWardNo;
 

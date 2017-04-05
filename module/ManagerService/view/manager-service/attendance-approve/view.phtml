@@ -27,22 +27,28 @@ $submit->setAttribute('value', 'Approve');
 
 $form->setAttribute('action', $this->url('attedanceapprove', ['action' => 'view', 'id' => $id]));
 
-if ($this->messages) {
-    print '<ul class="help-block bg-danger" style="background:#f3e250;">';
-    foreach ($this->messages as $message) {
-        print '<li>' . $message . '</li>';
-    }
-    print '</ul>';
-}
 
 $form->prepare();
 ?>
 <script>
-    document.menu =<?php $menu = ["id" => "menuManagerService", "subMenu" => ["id" => "subMenuAttendancetoApprove"]];echo json_encode($menu);?>;
 </script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\attedanceapprove')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
+<?php
+if ($this->messages && (sizeof($this->messages) > 1)) {
+    print '<div class="alert alert-warning alert-dismissable">
+    <button type="button" class="close" data-dismiss="alert" aria-hidden="true"></button>
+    <strong>Warning!</strong> ';
+    print $this->messages[1];
+    print '</div>';
+}
+?>
+<?php if ($this->messages) { ?>
+    <script>
+        document.messages =<?php echo json_encode($this->messages); ?>
+    </script>
+<?php } ?>
 <div class="row margin-top-20">
     <div class="col-sm-8 col-sm-offset-2">
         <div class="portlet box custom-box">
@@ -96,15 +102,16 @@ $form->prepare();
                                         <td width="15">:</td>
                                         <td>
                                             <?php
-                                            if($status=="RQ"){
+                                            if ($status == "RQ") {
                                                 echo "Pending";
-                                            }else if($status=="R"){
+                                            } else if ($status == "R") {
                                                 echo "Rejected";
-                                            }else if($status=="AP"){
+                                            } else if ($status == "AP") {
                                                 echo "Approved";
-                                            }else if($status=="C"){
+                                            } else if ($status == "C") {
                                                 echo "Cancelled";
-                                            } ?>
+                                            }
+                                            ?>
                                         </td>
                                     </tr>
                                 </table>
@@ -170,7 +177,8 @@ $form->prepare();
                 <div class="">
                     <?php
                     if ($status == 'RQ' || $status == 'RC') {
-                        print $this->formSubmit($submit); ?>
+                        print $this->formSubmit($submit);
+                        ?>
                         <input type="submit" name="submit" class="btn btn-success pull-right" value="Reject">
                         <?php
                         print $this->form()->closeTag();

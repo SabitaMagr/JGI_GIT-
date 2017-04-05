@@ -102,6 +102,7 @@ class TrainingRequest extends AbstractActionController {
                 return 'Company Personal';
             }
         };
+        
         foreach ($result as $row) {
             $status = $getValue($row['STATUS']);
             $action = $getAction($row['STATUS']);
@@ -151,17 +152,21 @@ class TrainingRequest extends AbstractActionController {
                 $model->employeeId = $this->employeeId;
                 $model->requestedDate = Helper::getcurrentExpressionDate();
                 $model->status = 'RQ';
-                // print_r($model); die();
                 $this->repository->add($model);
                 $this->flashmessenger()->addMessage("Training Request Successfully added!!!");
                 return $this->redirect()->toRoute("trainingRequest");
             }
         }
+        $trainingTypes = array(
+           'CP'=>'Company Personal',
+           'CC'=>'Company Contribution'
+        );
 
         $trainings = $this->getTrainingList($this->employeeId);
         return Helper::addFlashMessagesToArray($this, [
                     'form' => $this->form,
                     'trainings' => $trainings["trainingKVList"],
+                    'trainingTypes'=>$trainingTypes
         ]);
     }
 

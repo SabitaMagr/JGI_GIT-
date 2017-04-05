@@ -2,15 +2,14 @@
 
 namespace SelfService\Controller;
 
-use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
 use Application\Helper\LoanAdvanceHelper;
+use Exception;
 use Notification\Controller\HeadNotification;
 use Notification\Model\NotificationEvents;
 use SelfService\Form\LoanRequestForm;
 use SelfService\Model\LoanRequest as LoanRequestModel;
 use SelfService\Repository\LoanRequestRepository;
-use Setup\Model\Loan;
 use Setup\Repository\EmployeeRepository;
 use Setup\Repository\RecommendApproveRepository;
 use Zend\Authentication\AuthenticationService;
@@ -115,9 +114,9 @@ class LoanRequest extends AbstractActionController {
                 'ACTION' => key($action),
                 'ACTION_TEXT' => $action[key($action)]
             ]);
-            if($statusID=='RQ'){
+            if ($statusID == 'RQ') {
                 $new_row['ALLOW_TO_EDIT'] = 1;
-            }else{
+            } else {
                 $new_row['ALLOW_TO_EDIT'] = 0;
             }
             array_push($list, $new_row);
@@ -140,8 +139,12 @@ class LoanRequest extends AbstractActionController {
                 $model->status = 'RQ';
                 $model->deductOnSalary = 'Y';
                 $this->repository->add($model);
-                HeadNotification::pushNotification(NotificationEvents::LOAN_APPLIED, $model, $this->adapter, $this->plugin("url"));
                 $this->flashmessenger()->addMessage("Loan Request Successfully added!!!");
+                try {
+                    HeadNotification::pushNotification(NotificationEvents::LOAN_APPLIED, $model, $this->adapter, $this->plugin("url"));
+                } catch (Exception $e) {
+                    $this->flashmessenger()->addMessage($e->getMessage());
+                }
                 return $this->redirect()->toRoute("loanRequest");
             }
         }
@@ -195,13 +198,13 @@ class LoanRequest extends AbstractActionController {
 
         return Helper::addFlashMessagesToArray($this, [
                     'form' => $this->form,
-                    'employeeName'=>$employeeName,
-                    'status'=>$detail['STATUS'],
-                    'requestedDate'=>$detail['REQUESTED_DATE'],
-                    'recommender'=>$authRecommender,
-                    'approver'=>$authApprover,
+                    'employeeName' => $employeeName,
+                    'status' => $detail['STATUS'],
+                    'requestedDate' => $detail['REQUESTED_DATE'],
+                    'recommender' => $authRecommender,
+                    'approver' => $authApprover,
                     'loans' => LoanAdvanceHelper::getLoanList($this->adapter, $this->employeeId)
-        ]);       
+        ]);
     }
 
     public function recommendApproveList() {

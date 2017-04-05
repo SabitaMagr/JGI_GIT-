@@ -11,6 +11,7 @@ $this->headScript()->appendFile($this->basePath('jszip/dist/jszip.min.js'))
         ->appendFile($this->basePath('js/angular.min.js'))
         ->appendFile($this->basePath('js/training/training-assign/index.js'))
         ->appendFile($this->basePath('assets/global/plugins/bootstrap-confirmation/bootstrap-confirmation.min.js'));
+$this->headScript()->appendFile($this->basePath('assets/global/plugins/jquery.blockui.min.js'));
 ?>
 <?php if ($this->messages) { ?>
     <script>

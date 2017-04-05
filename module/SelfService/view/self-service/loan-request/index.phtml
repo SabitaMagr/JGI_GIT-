@@ -14,6 +14,7 @@ $this->headScript()
         ->appendFile($this->basePath('telerik_kendoui/js/kendo.all.min.js'))
         ->appendFile($this->basePath('js/SelfService/loan-request/index.js'))
         ->appendFile($this->basePath('assets/global/plugins/bootstrap-confirmation/bootstrap-confirmation.min.js'));
+$this->headScript()->appendFile($this->basePath('assets/global/plugins/jquery.blockui.min.js'));
 ?>
 <?php if ($this->messages) { ?>
     <script>

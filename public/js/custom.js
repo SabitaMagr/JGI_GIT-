@@ -51,7 +51,7 @@ window.app = (function ($, toastr) {
 
         }
     };
-    var addComboTimePicker = function(){
+    var addComboTimePicker = function () {
         for (var x in arguments) {
             arguments[x].combodate({
                 minuteStep: 1
@@ -182,7 +182,7 @@ window.app = (function ($, toastr) {
             });
         }
     }
-    
+
     var angularDatePicker = function () {
         $(this).datepicker({
             format: format,
@@ -193,8 +193,8 @@ window.app = (function ($, toastr) {
     };
 
     var successMessage = function (message) {
-        if (message) {
-            window.toastr.success(message, "Notifications");
+        if (message && (message.length > 0)) {
+            window.toastr.success(message[0], "Notifications");
         }
     };
     successMessage(document.messages);
@@ -575,7 +575,7 @@ window.app = (function ($, toastr) {
         startEndDatePicker: startEndDatePicker,
         startEndDatePickerWithNepali: startEndDatePickerWithNepali,
         getSystemDate: getDate,
-        addComboTimePicker:addComboTimePicker,
+        addComboTimePicker: addComboTimePicker,
         getServerDate: getServerDate
     };
 })(window.jQuery, window.toastr);

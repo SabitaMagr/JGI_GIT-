@@ -269,7 +269,7 @@
             }
         },
         title: {
-            text: 'Department Attendance'
+            text: 'Today\'s Attendance'
         },
         xAxis: {
             categories: deptAttnCategories

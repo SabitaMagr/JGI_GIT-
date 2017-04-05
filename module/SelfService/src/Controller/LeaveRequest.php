@@ -11,6 +11,7 @@ namespace SelfService\Controller;
 
 use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
+use Exception;
 use LeaveManagement\Form\LeaveApplyForm;
 use LeaveManagement\Model\LeaveApply;
 use LeaveManagement\Model\LeaveMaster;
@@ -18,7 +19,10 @@ use LeaveManagement\Repository\LeaveMasterRepository;
 use ManagerService\Repository\LeaveApproveRepository;
 use Notification\Controller\HeadNotification;
 use Notification\Model\NotificationEvents;
+use SelfService\Model\LeaveSubstitute;
 use SelfService\Repository\LeaveRequestRepository;
+use SelfService\Repository\LeaveSubstituteRepository;
+use Setup\Model\HrEmployees;
 use Setup\Repository\EmployeeRepository;
 use Setup\Repository\RecommendApproveRepository;
 use Zend\Authentication\AuthenticationService;
@@ -26,9 +30,6 @@ use Zend\Db\Adapter\AdapterInterface;
 use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\Form\Element\Select;
 use Zend\Mvc\Controller\AbstractActionController;
-use Setup\Model\HrEmployees;
-use SelfService\Model\LeaveSubstitute;
-use SelfService\Repository\LeaveSubstituteRepository;
 
 class LeaveRequest extends AbstractActionController {
 
@@ -123,7 +124,7 @@ class LeaveRequest extends AbstractActionController {
             $postData = $request->getPost();
             $this->form->setData($postData);
             $substituteEmployee = $postData->substituteEmployee;
-            
+
             if ($this->form->isValid()) {
                 $leaveRequest = new LeaveApply();
                 $leaveRequest->exchangeArrayFromForm($this->form->getData());
@@ -136,23 +137,26 @@ class LeaveRequest extends AbstractActionController {
                 $leaveRequest->status = "RQ";
 
                 $this->leaveRequestRepository->add($leaveRequest);
-                
-                if($substituteEmployee==1){
+
+                if ($substituteEmployee == 1) {
                     $leaveSubstituteModel = new LeaveSubstitute();
                     $leaveSubstituteRepo = new LeaveSubstituteRepository($this->adapter);
-                    
+
                     $leaveSubstitute = $postData->leaveSubstitute;
-                    
+
                     $leaveSubstituteModel->leaveRequestId = $leaveRequest->id;
                     $leaveSubstituteModel->employeeId = $leaveSubstitute;
                     $leaveSubstituteModel->createdBy = $this->employeeId;
                     $leaveSubstituteModel->createdDate = Helper::getcurrentExpressionDate();
                     $leaveSubstituteModel->status = 'E';
-                    
+
                     $leaveSubstituteRepo->add($leaveSubstituteModel);
                 }
-                
-                HeadNotification::pushNotification(NotificationEvents::LEAVE_APPLIED, $leaveRequest, $this->adapter,$this->plugin("url"));
+                try {
+                    HeadNotification::pushNotification(NotificationEvents::LEAVE_APPLIED, $leaveRequest, $this->adapter, $this->plugin("url"));
+                } catch (Exception $e) {
+                    $this->flashmessenger()->addMessage($e->getMessage());
+                }
                 $this->flashmessenger()->addMessage("Leave Request Successfully added!!!");
                 return $this->redirect()->toRoute("leaverequest");
             }
@@ -164,7 +168,7 @@ class LeaveRequest extends AbstractActionController {
                     'employeeId' => $this->employeeId,
                     'leave' => $this->leaveRequestRepository->getLeaveList($this->employeeId),
                     'customRenderer' => Helper::renderCustomView(),
-                    'employeeList'=> EntityHelper::getTableKVListWithSortOption($this->adapter, HrEmployees::TABLE_NAME, HrEmployees::EMPLOYEE_ID, [HrEmployees::FIRST_NAME, HrEmployees::MIDDLE_NAME, HrEmployees::LAST_NAME],[HrEmployees::STATUS => "E",HrEmployees::RETIRED_FLAG => "N"], HrEmployees::FIRST_NAME, "ASC", " ")
+                    'employeeList' => EntityHelper::getTableKVListWithSortOption($this->adapter, HrEmployees::TABLE_NAME, HrEmployees::EMPLOYEE_ID, [HrEmployees::FIRST_NAME, HrEmployees::MIDDLE_NAME, HrEmployees::LAST_NAME], [HrEmployees::STATUS => "E", HrEmployees::RETIRED_FLAG => "N"], HrEmployees::FIRST_NAME, "ASC", " ")
         ]);
     }
 
@@ -175,11 +179,11 @@ class LeaveRequest extends AbstractActionController {
         }
         $leaveApproveRepository = new LeaveApproveRepository($this->adapter);
         $detail = $leaveApproveRepository->fetchById($id);
-        if($detail['STATUS']=='AP'){
+        if ($detail['STATUS'] == 'AP') {
             //to get the previous balance of selected leave from assigned leave detail
             $result = $leaveApproveRepository->assignedLeaveDetail($detail['LEAVE_ID'], $detail['EMPLOYEE_ID'])->getArrayCopy();
             $preBalance = $result['BALANCE'];
-            
+
             if ($detail['HALF_DAY'] != 'N') {
                 $leaveTaken = 0.5;
             } else {
@@ -240,7 +244,7 @@ class LeaveRequest extends AbstractActionController {
             $leaveApply->exchangeArrayFromDB($detail);
             $this->form->bind($leaveApply);
         }
-        
+
         return Helper::addFlashMessagesToArray($this, [
                     'form' => $this->form,
                     'id' => $id,
@@ -257,10 +261,10 @@ class LeaveRequest extends AbstractActionController {
                     'allowHalfDay' => $leaveDtl['ALLOW_HALFDAY'],
                     'leave' => $this->leaveRequestRepository->getLeaveList($detail['EMPLOYEE_ID']),
                     'customRenderer' => Helper::renderCustomView(),
-                    'subEmployeeId'=> $detail['SUB_EMPLOYEE_ID'],
-                    'subRemarks'=>$detail['SUB_REMARKS'],
-                    'subApprovedFlag'=>$detail['SUB_APPROVED_FLAG'],
-                    'employeeList'=>  EntityHelper::getTableKVListWithSortOption($this->adapter, HrEmployees::TABLE_NAME, HrEmployees::EMPLOYEE_ID, [HrEmployees::FIRST_NAME, HrEmployees::MIDDLE_NAME, HrEmployees::LAST_NAME],[HrEmployees::STATUS => "E",HrEmployees::RETIRED_FLAG => "N"], HrEmployees::FIRST_NAME, "ASC", " ")
+                    'subEmployeeId' => $detail['SUB_EMPLOYEE_ID'],
+                    'subRemarks' => $detail['SUB_REMARKS'],
+                    'subApprovedFlag' => $detail['SUB_APPROVED_FLAG'],
+                    'employeeList' => EntityHelper::getTableKVListWithSortOption($this->adapter, HrEmployees::TABLE_NAME, HrEmployees::EMPLOYEE_ID, [HrEmployees::FIRST_NAME, HrEmployees::MIDDLE_NAME, HrEmployees::LAST_NAME], [HrEmployees::STATUS => "E", HrEmployees::RETIRED_FLAG => "N"], HrEmployees::FIRST_NAME, "ASC", " ")
         ]);
     }
 
