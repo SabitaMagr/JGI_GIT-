@@ -42,6 +42,7 @@ class DashboardRepository implements RepositoryInterface {
      * @return array
      */
     public function fetchEmployeeDashboardDetail($employeeId, $startDate, $endDate) {
+
         $sql = "-- EMPLOYEE DETAIL
                 SELECT EMPLOYEE_TBL.*,
                        NVL(LATE_TBL.LATE_IN, 0) LATE_IN,
@@ -56,7 +57,8 @@ class DashboardRepository implements RepositoryInterface {
                        NVL(AVERAGE_OFFICE_HRS_TBL.AVG_HOURS, 0) AVG_HOURS,
                        NVL(AVERAGE_OFFICE_HRS_TBL.AVG_MINUTES, 0) AVG_MINUTES,
                        NVL(CUR_MONTH_WOH_TBL.CUR_MONTH_WOH, 0) CUR_MONTH_WOH,
-                       NVL(PREV_MONTH_WOH_TBL.PREV_MONTH_WOH, 0) PREV_MONTH_WOH
+                       NVL(PREV_MONTH_WOH_TBL.PREV_MONTH_WOH, 0) PREV_MONTH_WOH,
+                       NVL(JOINED_THIS_MONTH_TBL.JOINED_THIS_MONTH, 0) JOINED_THIS_MONTH
                 FROM
                   ( SELECT EMP.EMPLOYEE_ID,
                            ( CASE
@@ -77,7 +79,7 @@ class DashboardRepository implements RepositoryInterface {
                    FROM HRIS_EMPLOYEES EMP,
                         HRIS_DESIGNATIONS DSG,
                         HRIS_EMPLOYEE_FILE EFL
-                   WHERE EMP.DEPARTMENT_ID = DSG.DESIGNATION_ID
+                   WHERE EMP.DEPARTMENT_ID = DSG.DESIGNATION_ID(+)
                      AND EMP.PROFILE_PICTURE_ID = EFL.FILE_CODE(+)
                      AND EMP.RETIRED_FLAG = 'N'
                      -- AND EMP.COMPANY_ID = 2
@@ -221,7 +223,14 @@ class DashboardRepository implements RepositoryInterface {
                      AND IN_TIME IS NOT NULL
                      AND (DAYOFF_FLAG = 'Y' OR HOLIDAY_ID IS NOT NULL)
                      AND EMPLOYEE_ID = {$employeeId}
-                   GROUP BY EMPLOYEE_ID) PREV_MONTH_WOH_TBL ON PREV_MONTH_WOH_TBL.EMPLOYEE_ID = EMPLOYEE_TBL.EMPLOYEE_ID";
+                   GROUP BY EMPLOYEE_ID) PREV_MONTH_WOH_TBL ON PREV_MONTH_WOH_TBL.EMPLOYEE_ID = EMPLOYEE_TBL.EMPLOYEE_ID
+                -- JOINED THIS MONTH
+                LEFT JOIN
+                   (SELECT EMPLOYEE_ID, COUNT (*) JOINED_THIS_MONTH
+                    FROM HRIS_EMPLOYEES
+                   WHERE TO_CHAR(JOIN_DATE, 'YYYYMM') = TO_CHAR(SYSDATE, 'YYYYMM')
+                   AND STATUS = 'E'
+                   GROUP BY EMPLOYEE_ID) JOINED_THIS_MONTH_TBL ON JOINED_THIS_MONTH_TBL.EMPLOYEE_ID = EMPLOYEE_TBL.EMPLOYEE_ID";
 
         $statement = $this->adapter->query($sql);
         $result = $statement->execute()->current();
