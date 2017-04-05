@@ -22,9 +22,9 @@ $this->headScript()->appendFile($this->basePath('assets/global/plugins/jquery.bl
 <script>
     document.wsUrl = '<?php echo $this->url('allreport', ['action' => 'departmentMonthReport']); ?>';
     document.wsDepartmentWise = '<?php echo $this->url('allreport', ['action' => 'departmentWiseMonthReport']); ?>';
-    document.linkToReportTwo = '<?php echo $this->url('allreport', ['action' => 'reportTwo']); ?>';
-    document.linkToReportThree = '<?php echo $this->url('allreport', ['action' => 'reportThree']); ?>';
-    document.linkToReportFour = '<?php echo $this->url('allreport', ['action' => 'reportFour']); ?>';
+    document.linkToReportTwo = '<?php echo $this->url('allreport', ['action' => 'departmentWise']); ?>';
+    document.linkToReportThree = '<?php echo $this->url('allreport', ['action' => 'departmentWiseDaily']); ?>';
+    document.linkToReportFour = '<?php echo $this->url('allreport', ['action' => 'employeeWise']); ?>';
 </script>
 
 

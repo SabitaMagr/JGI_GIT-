@@ -23,7 +23,7 @@ $this->headScript()->appendFile($this->basePath('assets/global/plugins/jquery.bl
     document.wsDepartmentWise = '<?php echo $this->url('allreport', ['action' => 'departmentWiseMonthReport']); ?>';
     document.comBraDepList =<?php echo json_encode($comBraDepList); ?>;
     document.departmentId =<?php echo $departmentId; ?>;
-    document.linkToReportFour = '<?php echo $this->url('allreport', ['action' => 'reportFour']); ?>';
+    document.linkToReportFour = '<?php echo $this->url('allreport', ['action' => 'employeeWise']); ?>';
 </script>
 
 

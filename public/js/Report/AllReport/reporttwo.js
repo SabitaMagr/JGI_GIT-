@@ -35,9 +35,9 @@
                         field: temp,
                         title: rawData[i].MONTH_EDESC,
                         template: '<div data="#: ' + temp + ' #" class="btn-group widget-btn-list custom-btn-group ' + departmentId + '">' +
-                                '<a class="btn btn-default widget-btn custom-btn-present"></a>' +
-                                '<a class="btn btn-danger widget-btn custom-btn-absent"></a>' +
-                                '<a class="btn btn-info widget-btn custom-btn-leave"></a>' +
+                                '<a class="btn  widget-btn custom-btn-present totalbtn"></a>' +
+                                '<a class="btn  widget-btn custom-btn-absent totalbtn"></a>' +
+                                '<a class="btn widget-btn custom-btn-leave totalbtn"></a>' +
                                 '</div>'
                     }
 
