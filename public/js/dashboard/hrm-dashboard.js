@@ -325,6 +325,27 @@
         height: '298px'
     });
 
+    /*************** BIRTHDAY TAB CLICK EVENT ***************/
+    $('.tab-pane-birthday').slimScroll({
+        height: '298px'
+    });
+
+    $('.ln-nav-tab-birthday').on('click', function(e) {
+        e.preventDefault();
+        $('.ln-birthday').removeClass('active');
+        $('.ln-birthday a').attr('aria-expanded', 'false');
+        $(this).attr('aria-expanded', 'true');
+        $(this).parent('li').addClass('active');
+        if ($(this).is('#ln-birthday-today')) {
+            $('#tab-birthday-upcoming').hide().removeClass('active');
+            $('#tab-birthday-today').show().addClass('active');
+        }
+        else {
+            $('#tab-birthday-today').hide().removeClass('active');
+            $('#tab-birthday-upcoming').show().addClass('active');
+        }
+    });
+
     ComponentsPickers.init();
 
 })(window.jQuery, window.app);
