@@ -10,6 +10,7 @@ use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\TableGateway\TableGateway;
 use Zend\Db\Sql\Sql;
 use Zend\Db\Sql\Expression;
+use Training\Model\TrainingAssign;
 
 class TrainingRepository implements RepositoryInterface
 {
@@ -90,6 +91,36 @@ class TrainingRepository implements RepositoryInterface
         $statement = $sql->prepareStatementForSqlObject($select);
         $result = $statement->execute();
         return $result->current();
+    }
+    
+    public function selectAll($employeeId){
+        $sql =  new Sql($this->adapter);
+        $select = $sql->select();
+        $select->columns([
+            new Expression("TO_CHAR(T.START_DATE, 'DD-MON-YYYY') AS START_DATE"),
+            new Expression("TO_CHAR(T.END_DATE, 'DD-MON-YYYY') AS END_DATE"), 
+            new Expression("T.TRAINING_CODE AS TRAINING_CODE"), 
+            new Expression("T.TRAINING_NAME AS TRAINING_NAME"),
+            new Expression("T.TRAINING_TYPE AS TRAINING_TYPE"),
+            new Expression("T.COMPANY_ID AS COMPANY_ID"),
+            new Expression("T.DURATION AS DURATION"),
+            new Expression("T.TRAINING_ID AS TRAINING_ID"),
+            new Expression("T.INSTRUCTOR_NAME AS INSTRUCTOR_NAME"),
+            new Expression("T.REMARKS AS REMARKS"),
+            new Expression("T.INSTITUTE_ID AS INSTITUTE_ID")
+            ], true);
+        $select->from(['T'=>Training::TABLE_NAME]);
+        $select->join(['I' => Institute::TABLE_NAME], "T." . Training::INSTITUTE_ID . "=I.".Institute::INSTITUTE_ID, [Institute::INSTITUTE_NAME], 'left');
+        
+        $select->where([
+            "T.STATUS='E'",
+            "T.END_DATE<=".$today->getExpression()
+        ]);
+       
+       $select->order("T.START_DATE DESC");
+       $statement = $sql->prepareStatementForSqlObject($select);
+       $result = $statement->execute();
+       return $result;
     }
 
     public function delete($id)
