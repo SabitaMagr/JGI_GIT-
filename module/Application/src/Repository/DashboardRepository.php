@@ -42,6 +42,7 @@ class DashboardRepository implements RepositoryInterface {
      * @return array
      */
     public function fetchEmployeeDashboardDetail($employeeId, $startDate, $endDate) {
+
         $sql = "-- EMPLOYEE DETAIL
                 SELECT EMPLOYEE_TBL.*,
                        NVL(LATE_TBL.LATE_IN, 0) LATE_IN,
@@ -78,7 +79,7 @@ class DashboardRepository implements RepositoryInterface {
                    FROM HRIS_EMPLOYEES EMP,
                         HRIS_DESIGNATIONS DSG,
                         HRIS_EMPLOYEE_FILE EFL
-                   WHERE EMP.DEPARTMENT_ID = DSG.DESIGNATION_ID
+                   WHERE EMP.DEPARTMENT_ID = DSG.DESIGNATION_ID(+)
                      AND EMP.PROFILE_PICTURE_ID = EFL.FILE_CODE(+)
                      AND EMP.RETIRED_FLAG = 'N'
                      -- AND EMP.COMPANY_ID = 2
