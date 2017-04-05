@@ -13,6 +13,7 @@ use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
 use AttendanceManagement\Model\AttendanceDetail;
 use AttendanceManagement\Repository\AttendanceDetailRepository;
+use Exception;
 use ManagerService\Repository\AttendanceApproveRepository;
 use Notification\Controller\HeadNotification;
 use Notification\Model\NotificationEvents;
@@ -112,59 +113,76 @@ class AttendanceApproveController extends AbstractActionController {
         $attendanceDetail = new AttendanceDetail();
         $attendanceRepository = new AttendanceDetailRepository($this->adapter);
 
-        if (!$request->isPost()) {
-            $model->exchangeArrayFromDB($detail);
-            $this->form->bind($model);
-        } else {
-            $getData = $request->getPost();
-            $reason = $getData->approvedRemarks;
-            $action = $getData->submit;
+        try {
+            if (!$request->isPost()) {
+                $model->exchangeArrayFromDB($detail);
+                $this->form->bind($model);
+            } else {
+                $getData = $request->getPost();
+                $reason = $getData->approvedRemarks;
+                $action = $getData->submit;
 
-            $model->approvedDt = Helper::getcurrentExpressionDate();
+                $model->approvedDt = Helper::getcurrentExpressionDate();
 
-            if ($action == "Approve") {
-                $model->status = "AP";
-                $attendanceDetail->attendanceDt = Helper::getcurrentExpressionDate($detail['ATTENDANCE_DT']);
-                $attendanceDetail->inTime = Helper::getExpressionTime($detail['IN_TIME']);
-                $attendanceDetail->inRemarks = $detail['IN_REMARKS'];
-                $attendanceDetail->outTime = Helper::getExpressionTime($detail['OUT_TIME']);
-                $attendanceDetail->outRemarks = $detail['OUT_REMARKS'];
-                $attendanceDetail->totalHour = $detail['TOTAL_HOUR'];
-                $attendanceDetail->employeeId = $detail['EMPLOYEE_ID'];
-                $attendanceDetail->id = (int) Helper::getMaxId($this->adapter, AttendanceDetail::TABLE_NAME, AttendanceDetail::ID) + 1;
+                if ($action == "Approve") {
+                    $model->status = "AP";
+                    $attendanceDetail->attendanceDt = Helper::getcurrentExpressionDate($detail['ATTENDANCE_DT']);
+                    $attendanceDetail->inTime = Helper::getExpressionTime($detail['IN_TIME']);
+                    $attendanceDetail->inRemarks = $detail['IN_REMARKS'];
+                    $attendanceDetail->outTime = Helper::getExpressionTime($detail['OUT_TIME']);
+                    $attendanceDetail->outRemarks = $detail['OUT_REMARKS'];
+                    $attendanceDetail->totalHour = $detail['TOTAL_HOUR'];
+                    $attendanceDetail->employeeId = $detail['EMPLOYEE_ID'];
+                    $attendanceDetail->id = (int) Helper::getMaxId($this->adapter, AttendanceDetail::TABLE_NAME, AttendanceDetail::ID) + 1;
 
-                $employeeId = $detail['EMPLOYEE_ID'];
-                $attendanceDt = $detail['ATTENDANCE_DT'];
+                    $employeeId = $detail['EMPLOYEE_ID'];
+                    $attendanceDt = $detail['ATTENDANCE_DT'];
 
-                $previousDtl = $attendanceRepository->getDtlWidEmpIdDate($employeeId, $attendanceDt);
+                    $previousDtl = $attendanceRepository->getDtlWidEmpIdDate($employeeId, $attendanceDt);
 
-                if ($previousDtl == null) {
+                    if ($previousDtl == null) {
 //                    $attendanceRepository->add($attendanceDetail);
-                    throw new Exception("Attendance of employee with employeeId :$employeeId on $attendanceDt is not found.");
-                } else {
-                    $attendanceRepository->edit($attendanceDetail, $previousDtl['ID']);
+                        throw new Exception("Attendance of employee with employeeId :$employeeId on $attendanceDt is not found.");
+                    } else {
+                        $attendanceRepository->edit($attendanceDetail, $previousDtl['ID']);
+                    }
+                    $this->flashmessenger()->addMessage("Attendance Request Approved!!!");
+                } else if ($action == "Reject") {
+                    $model->status = "R";
+                    $this->flashmessenger()->addMessage("Attendance Request Rejected!!!");
                 }
-                $this->flashmessenger()->addMessage("Attendance Request Approved!!!");
-            } else if ($action == "Reject") {
-                $model->status = "R";
-                $this->flashmessenger()->addMessage("Attendance Request Rejected!!!");
+                $model->approvedBy = $this->employeeId;
+                $model->approvedRemarks = $reason;
+                $this->repository->edit($model, $id);
+                $model->id = $id;
+                try {
+                    HeadNotification::pushNotification(NotificationEvents::ATTENDANCE_APPROVE_ACCEPTED, $model, $this->adapter, $this->plugin('url'));
+                } catch (Exception $e) {
+                    $this->flashmessenger()->addMessage($e->getMessage());
+                }
+                return $this->redirect()->toRoute("attedanceapprove");
             }
-            $model->approvedBy = $this->employeeId;
-            $model->approvedRemarks = $reason;
-            $this->repository->edit($model, $id);
-            $model->id = $id;
-            HeadNotification::pushNotification(NotificationEvents::ATTENDANCE_APPROVE_ACCEPTED, $model, $this->adapter, $this->plugin('url'));
-            return $this->redirect()->toRoute("attedanceapprove");
+            return Helper::addFlashMessagesToArray($this, [
+                        'form' => $this->form,
+                        'id' => $id,
+                        'status' => $detail['STATUS'],
+                        'employeeName' => $employeeName,
+                        'employeeId' => $employeeId,
+                        'approver' => $authApprover,
+                        'requestedDt' => $detail['REQUESTED_DT'],
+            ]);
+        } catch (Exception $e) {
+            $this->flashmessenger()->addMessage($e->getMessage());
+            return Helper::addFlashMessagesToArray($this, [
+                        'form' => $this->form,
+                        'id' => $id,
+                        'status' => $detail['STATUS'],
+                        'employeeName' => $employeeName,
+                        'employeeId' => $employeeId,
+                        'approver' => $authApprover,
+                        'requestedDt' => $detail['REQUESTED_DT'],
+            ]);
         }
-        return Helper::addFlashMessagesToArray($this, [
-                    'form' => $this->form,
-                    'id' => $id,
-                    'status' => $detail['STATUS'],
-                    'employeeName' => $employeeName,
-                    'employeeId' => $employeeId,
-                    'approver' => $authApprover,
-                    'requestedDt' => $detail['REQUESTED_DT'],
-        ]);
     }
 
     public function statusAction() {

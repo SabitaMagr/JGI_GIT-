@@ -10,6 +10,7 @@
 namespace SelfService\Controller;
 
 use Application\Helper\Helper;
+use Exception;
 use Notification\Controller\HeadNotification;
 use Notification\Model\NotificationEvents;
 use SelfService\Form\AttendanceRequestForm;
@@ -99,7 +100,11 @@ class AttendanceRequest extends AbstractActionController {
                 $model->status = "RQ";
 
                 $this->repository->add($model);
-                HeadNotification::pushNotification(NotificationEvents::ATTENDANCE_APPLIED, $model, $this->adapter, $this->plugin('url'));
+                try {
+                    HeadNotification::pushNotification(NotificationEvents::ATTENDANCE_APPLIED, $model, $this->adapter, $this->plugin('url'));
+                } catch (Exception $e) {
+                    $this->flashmessenger()->addMessage($e->getMessage());
+                }
 
                 $this->flashmessenger()->addMessage("Attendance Request Submitted Successfully!!");
                 return $this->redirect()->toRoute("attendancerequest");

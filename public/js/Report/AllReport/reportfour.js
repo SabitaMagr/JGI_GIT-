@@ -59,10 +59,11 @@
             returnData.cols.push({
                 field: 'total',
                 title: 'Total',
+                width:  200,
                 template: '<div data="#: total #" class="btn-group widget-btn-list total-attendance">' +
-                        '<a class="btn btn-default widget-btn custom-btn-present"></a>' +
-                        '<a class="btn btn-danger widget-btn custom-btn-absent"></a>' +
-                        '<a class="btn btn-info widget-btn custom-btn-leave"></a>' +
+                        '<a class="btn btn-default widget-btn custom-btn-present totalbtn"></a>' +
+                        '<a class="btn btn-danger widget-btn custom-btn-absent totalbtn"></a>' +
+                        '<a class="btn btn-info widget-btn custom-btn-leave totalbtn"></a>' +
                         '</div>'});
 
 
@@ -101,11 +102,11 @@
                         } else {
                             if (data['ON_LEAVE'] == 1) {
                                 $group.html('L');
-                                $group.parent().addClass('bg-blue textcolor2');
+                                $group.parent().addClass('bg-blue1 textcolor2');
 
                             } else {
                                 $group.html('H');
-                                $group.parent().addClass('bg-white textcolor3');
+                                $group.parent().addClass('bg-white1 textcolor3');
                             }
 
                         }
