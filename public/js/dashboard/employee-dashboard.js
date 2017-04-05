@@ -95,11 +95,11 @@
         });
     });
 
-    $('#tab-birthday-upcoming, #tab-birthday-upcoming').slimScroll({
+    /*************** BIRTHDAY TAB CLICK EVENT ***************/
+    $('.tab-pane-birthday').slimScroll({
         height: '298px'
     });
 
-    /*************** BIRTHDAY TAB CLICK EVENT ***************/
     $('.ln-nav-tab-birthday').on('click', function(e) {
         e.preventDefault();
         $('.ln-birthday').removeClass('active');

@@ -692,7 +692,7 @@ li.line:after {
 }
 
 .colorbox-color1 {
-    background-color: #1BBC9B;
+    background-color: #c2ce2c;
 }
 
 .colorbox-color2 {
@@ -1073,7 +1073,7 @@ a .icon_edit:hover {
 
 .upcomingholidays .label
 {
-    font-weight:normal;
+    font-weight:normal !important;
 }
 
 .iconbox i {
