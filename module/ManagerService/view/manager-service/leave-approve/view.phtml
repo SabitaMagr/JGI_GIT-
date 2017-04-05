@@ -1,3 +1,20 @@
+<div class="page-bar">
+    <?= $this->navigation('Zend\Navigation\leaveapprove')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb'); ?>
+</div>
+<?php
+if ($this->messages && (sizeof($this->messages) > 1)) {
+    print '<div class="alert alert-warning alert-dismissable">
+    <button type="button" class="close" data-dismiss="alert" aria-hidden="true"></button>
+    <strong>Warning!</strong> ';
+    print $this->messages[1];
+    print '</div>';
+}
+?>
+<?php if ($this->messages) { ?>
+    <script>
+        document.messages =<?php echo json_encode($this->messages); ?>
+    </script>
+<?php } ?>
 <?php
 $this->headScript()->appendFile($this->basePath('js/LeaveManagement/LeaveRequest/add.js'));
 $this->headScript()->appendFile($this->basePath('js/manager-service/leave-approve/view.js'));
@@ -33,26 +50,14 @@ $submit->setAttribute('id', 'approve');
 
 $form->setAttribute('action', $this->url('leaveapprove', ['action' => 'view', 'id' => $id, 'role' => $role]));
 
-if ($this->messages) {
-    print '<ul class="help-block bg-danger" style="background:#f3e250;">';
-    foreach ($this->messages as $message) {
-        print '<li>' . $message . '</li>';
-    }
-    print '</ul>';
-}
 
 $form->prepare();
 print $this->form()->openTag($form);
 ?>
 <script>
-    document.menu =<?php $menu = ["id" => "menuManagerService", "subMenu" => ["id" => "subMenuLeavetoApprove"]];
-echo json_encode($menu); ?>;
     document.url = '<?= $this->url("webService", ["action" => "index"]) ?>';
 </script>
 
-<div class="page-bar">
-<?= $this->navigation('Zend\Navigation\leaveapprove')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb'); ?>
-</div>
 <div class="row margin-top-20">
     <div class="col-sm-8 col-sm-offset-2">
         <div class="portlet box custom-box">
@@ -74,7 +79,7 @@ echo json_encode($menu); ?>;
                                         </td>
                                         <td width="15">:</td>
                                         <td>
-<?php echo $employeeName; ?>
+                                            <?php echo $employeeName; ?>
                                         </td>
                                     </tr>
                                     <tr height="30">
@@ -83,7 +88,7 @@ echo json_encode($menu); ?>;
                                         </td>
                                         <td width="15">:</td>
                                         <td>
-<?php echo $requestedDt; ?>
+                                            <?php echo $requestedDt; ?>
                                         </td>
                                     </tr>
                                     <tr height="30">
@@ -92,15 +97,15 @@ echo json_encode($menu); ?>;
                                         </td>
                                         <td width="15">:</td>
                                         <td>
-<?php
-if ($role == 3) {
-    echo 'Approver';
-} else if ($role == 2) {
-    echo 'Recommender';
-} else if ($role == 4) {
-    echo 'Recommender\Approver';
-}
-?>
+                                            <?php
+                                            if ($role == 3) {
+                                                echo 'Approver';
+                                            } else if ($role == 2) {
+                                                echo 'Recommender';
+                                            } else if ($role == 4) {
+                                                echo 'Recommender\Approver';
+                                            }
+                                            ?>
                                         </td>
                                     </tr>
                                     <?php if ($role != 4) { ?>
@@ -212,36 +217,38 @@ if ($role == 3) {
                                 <?php print $this->formLabel($remarks); ?>
                                 <?php print $this->formElement($remarks); ?>
                         </div>
-                    <?php } 
-                    if($subEmployeeId!=null){
-                        $disabled = ($subApprovedFlag!=null) ? "disabled" : "";
-                        if($subApprovedFlag=='Y'){
+                        <?php
+                    }
+                    if ($subEmployeeId != null) {
+                        $disabled = ($subApprovedFlag != null) ? "disabled" : "";
+                        if ($subApprovedFlag == 'Y') {
                             $note = "[Approved]";
-                        }else if($subApprovedFlag=='N'){
+                        } else if ($subApprovedFlag == 'N') {
                             $note = "[Rejected]";
                         }
-                    ?>
-                    <div class="form-group padding-0">
-                        <label for="noOfDays">
+                        ?>
+                        <div class="form-group padding-0">
+                            <label for="noOfDays">
                                 Substitute Employee 
 
-                        </label>
-                        <div>
-                            <select disabled="disabled" class="form-control" name="leaveSubstitute">
-                            <?php foreach($employeeList as $key=>$value){ 
-                                $selected = ($key==$subEmployeeId) ? "selected" : "";
-                                ?>
-                                <option style="cursor: pointer;" value="<?php echo $key; ?>" <?php echo $selected; ?>><?php echo $value; ?></option>
-                            <?php } ?>
-                            </select>
+                            </label>
+                            <div>
+                                <select disabled="disabled" class="form-control" name="leaveSubstitute">
+                                    <?php
+                                    foreach ($employeeList as $key => $value) {
+                                        $selected = ($key == $subEmployeeId) ? "selected" : "";
+                                        ?>
+                                        <option style="cursor: pointer;" value="<?php echo $key; ?>" <?php echo $selected; ?>><?php echo $value; ?></option>
+                                    <?php } ?>
+                                </select>
+                            </div>
                         </div>
-                    </div>
-                    <div
-                        class="form-group margin-top-10 required">
-                        <label>Reason for action [From Substitute Employee] <?php echo $note; ?></label>
-                        <textarea <?php echo $disabled; ?> name="subRemarks" id="form-subRemarks" required="required" class="form-subRemarks form-control" style="height: 50px; font-size:12px"><?php echo $subRemarks;  ?></textarea>
-                    </div>
-                    <?php }?>
+                        <div
+                            class="form-group margin-top-10 required">
+                            <label>Reason for action [From Substitute Employee] <?php echo $note; ?></label>
+                            <textarea <?php echo $disabled; ?> name="subRemarks" id="form-subRemarks" required="required" class="form-subRemarks form-control" style="height: 50px; font-size:12px"><?php echo $subRemarks; ?></textarea>
+                        </div>
+                    <?php } ?>
                 </div>
 
                 <?php if ($role == 2) { ?>
@@ -263,26 +270,26 @@ if ($role == 3) {
                 if ($role == 3 || $role == 4) {
                     $recommendedRemarks->setAttributes(['disabled' => 'disabled']);
                     ?>
-    <?php if ($role != 4) { ?>
+                    <?php if ($role != 4) { ?>
                         <div
                             class="form-group margin-top-10 required <?= empty($recommendedRemarks->getMessages()) ? "" : "error" ?>">
                             <label>Reason for action [From Recommender]</label>
-                        <?php print $this->formElement($recommendedRemarks); ?>
+                            <?php print $this->formElement($recommendedRemarks); ?>
                         </div>
-    <?php } ?>
+                    <?php } ?>
                     <div
                         class="form-group required <?= empty($approvedRemarks->getMessages()) ? "" : "error" ?>">
                             <?php print $this->formLabel($approvedRemarks); ?>
-                    <?php print $this->formElement($approvedRemarks); ?>
+                            <?php print $this->formElement($approvedRemarks); ?>
                     </div>
-                    <?php } ?>
+                <?php } ?>
                 <div class="form-group">
                     <?php
                     if ($status == 'RQ' || ($status == 'RC' && $employeeId != $recommendedBy)) {
                         print $this->formSubmit($submit);
                         ?>
                         <input type="submit" name="submit" class="btn btn-success pull-right" value="Reject">
-<?php } ?>
+                    <?php } ?>
                 </div>
             </div>
         </div>

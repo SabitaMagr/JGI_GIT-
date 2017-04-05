@@ -4,7 +4,7 @@ $this->headScript()->appendFile($this->basePath('js/Notification/news/add.js'));
 
 $form->setAttribute('role', 'form');
 $form->setAttribute('id', 'newsForm');
-$form->setAttribute('action', $this->url('news', ['action' => 'edit','id'=>$id]));
+$form->setAttribute('action', $this->url('news', ['action' => 'edit', 'id' => $id]));
 
 
 
@@ -40,15 +40,29 @@ $form->prepare();
     document.branches =<?php echo json_encode($branch); ?>;
     document.designation =<?php echo json_encode($designation); ?>;
     document.department =<?php echo json_encode($department); ?>;
-    
-    document.selectedBranchId ='<?php echo $branchId->getValue(); ?>';
-    document.selectedDepartmentId ='<?php echo $departmentId->getValue(); ?>';
-    document.selectedDesignationId ='<?php echo $designationId->getValue(); ?>';
+
+    document.selectedBranchId = '<?php echo $branchId->getValue(); ?>';
+    document.selectedDepartmentId = '<?php echo $departmentId->getValue(); ?>';
+    document.selectedDesignationId = '<?php echo $designationId->getValue(); ?>';
 </script>
 
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\news')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
+<?php
+if ($this->messages && (sizeof($this->messages) > 1)) {
+    print '<div class="alert alert-warning alert-dismissable">
+    <button type="button" class="close" data-dismiss="alert" aria-hidden="true"></button>
+    <strong>Warning!</strong> ';
+    print $this->messages[1];
+    print '</div>';
+}
+?>
+<?php if ($this->messages) { ?>
+    <script>
+        document.messages =<?php echo json_encode($this->messages); ?>
+    </script>
+<?php } ?>
 
 <div class="row margin-top-20">
     <div class="col-sm-12">
@@ -129,7 +143,7 @@ $form->prepare();
                             <?php print $this->formElementErrors()->render($departmentId, ['class' => 'help-block']); ?>
                         </div>
                     </div>
-                    
+
                     <div class="col-sm-3">
 
                         <div class="form-group">

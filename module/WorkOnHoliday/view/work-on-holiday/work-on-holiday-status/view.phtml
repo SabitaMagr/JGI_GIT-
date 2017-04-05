@@ -1,3 +1,20 @@
+<div class="page-bar">
+    <?= $this->navigation('Zend\Navigation\workOnHolidayStatus')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb'); ?>
+</div>
+<?php
+if ($this->messages && (sizeof($this->messages) > 1)) {
+    print '<div class="alert alert-warning alert-dismissable">
+    <button type="button" class="close" data-dismiss="alert" aria-hidden="true"></button>
+    <strong>Warning!</strong> ';
+    print $this->messages[1];
+    print '</div>';
+}
+?>
+<?php if ($this->messages) { ?>
+    <script>
+        document.messages =<?php echo json_encode($this->messages); ?>
+    </script>
+<?php } ?>
 <?php
 $this->headScript()->appendFile($this->basePath('js/angular.min.js'));
 $this->headScript()->appendFile($this->basePath('js/SelfService/work-on-holiday/add.js'));
@@ -7,15 +24,15 @@ $form->setAttribute('role', 'form');
 
 $holidayId = $form->get('holidayId');
 $holidayId->setValueOptions($holidays);
-$holidayId->setAttributes(["disabled"=>"disabled"]);
+$holidayId->setAttributes(["disabled" => "disabled"]);
 $fromDate = $form->get('fromDate');
-$fromDate->setAttributes(["disabled"=>"disabled"]);
+$fromDate->setAttributes(["disabled" => "disabled"]);
 $toDate = $form->get('toDate');
-$toDate->setAttributes(["disabled"=>"disabled"]);
+$toDate->setAttributes(["disabled" => "disabled"]);
 $duration = $form->get('duration');
-$duration->setAttributes(["disabled"=>"disabled"]);
+$duration->setAttributes(["disabled" => "disabled"]);
 $remarks = $form->get('remarks');
-$remarks->setAttributes(["disabled"=>"disabled"]);
+$remarks->setAttributes(["disabled" => "disabled"]);
 $recommendedRemarks = $form->get('recommendedRemarks');
 $recommendedRemarks->setAttributes(['required' => 'true']);
 $approvedRemarks = $form->get('approvedRemarks');
@@ -26,27 +43,15 @@ $submit->setAttribute('value', 'Approve');
 
 $form->setAttribute('action', $this->url('workOnHolidayStatus', ['action' => 'view', 'id' => $id]));
 
-if ($this->messages) {
-    print '<ul class="help-block bg-danger" style="background:#f3e250;">';
-    foreach ($this->messages as $message) {
-        print '<li>' . $message . '</li>';
-    }
-    print '</ul>';
-}
 
 $form->prepare();
 print $this->form()->openTag($form);
 ?>
 <script>
-    document.menu =<?php $menu = ["id" => "menuWorkOnHoliday", "subMenu" => ["id" => "subMenuStatus"]];
-echo json_encode($menu); ?>;
     document.url = '<?= $this->url("webService", ["action" => "index"]) ?>';
     document.employeeId =<?= json_encode($employeeId) ?>;
 </script>
 
-<div class="page-bar">
-<?= $this->navigation('Zend\Navigation\workOnHolidayStatus')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb'); ?>
-</div>
 <div class="row margin-top-20">
     <div class="col-sm-8 col-sm-offset-2">
         <div class="portlet box custom-box">
@@ -135,23 +140,23 @@ echo json_encode($menu); ?>;
                     </div>               
                     <div
                         class="form-group required  <?= empty($fromDate->getMessages()) ? "" : "error" ?>">
-                        <?php print $this->formLabel($fromDate) ?>
-                        <?php print $this->formElement($fromDate) ?>
+                            <?php print $this->formLabel($fromDate) ?>
+                            <?php print $this->formElement($fromDate) ?>
                     </div>
                     <?php print $this->formElementErrors()->render($fromDate, ['class' => 'help-block error']) ?>
 
                     <div
                         class="form-group required <?= empty($toDate->getMessages()) ? "" : "error" ?>">
-                        <?php print $this->formLabel($toDate) ?>
-                        <?php print $this->formElement($toDate) ?>
+                            <?php print $this->formLabel($toDate) ?>
+                            <?php print $this->formElement($toDate) ?>
                         <span id="errorMsgDate" style="font-size:11px; color:red;"></span>
                     </div>
                     <?php print $this->formElementErrors()->render($toDate, ['class' => 'help-block error']) ?>
 
                     <div
                         class="form-group required <?= empty($duration->getMessages()) ? "" : "error" ?>">
-                        <?php print $this->formLabel($duration); ?>
-                        <?php print $this->formElement($duration); ?>
+                            <?php print $this->formLabel($duration); ?>
+                            <?php print $this->formElement($duration); ?>
                         <span id="errorMsg" style="font-size:11px; color:red;"></span>
                     </div>
                     <?php print $this->formElementErrors()->render($duration, ['class' => 'help-block error']); ?>
@@ -169,21 +174,22 @@ echo json_encode($menu); ?>;
                     ?>
                     <div class="form-group padding-0">
                         <label>Reason for action [From Recommender]</label>
-                    <?php print $this->formElement($recommendedRemarks); ?>
+                        <?php print $this->formElement($recommendedRemarks); ?>
                     </div>
-                    <?php }
-                    if ($status == 'RC' || $status == 'RQ' || $status == 'AP' || ($status == 'R' && $approvedDT != null)) {
-                        ?>
+                    <?php
+                }
+                if ($status == 'RC' || $status == 'RQ' || $status == 'AP' || ($status == 'R' && $approvedDT != null)) {
+                    ?>
                     <div class="form-group padding-0">
-                    <?php print $this->formLabel($approvedRemarks); ?>
-                    <?php print $this->formElement($approvedRemarks); ?>
+                        <?php print $this->formLabel($approvedRemarks); ?>
+                        <?php print $this->formElement($approvedRemarks); ?>
                     </div>
                 <?php } ?>
 
-    <?php if ($status == 'RQ' || $status == 'RC') { ?>
-        <?php print $this->formSubmit($submit); ?>
+                <?php if ($status == 'RQ' || $status == 'RC') { ?>
+                    <?php print $this->formSubmit($submit); ?>
                     <input type="submit" name="submit" class="btn btn-success pull-right" value="Reject">
-    <?php } ?>
+                <?php } ?>
             </div>
         </div>
     </div>
