@@ -105,6 +105,11 @@
         },
         plotOptions: {
             pie: {
+                allowPointSelect: true,
+                cursor: 'pointer',
+                dataLabels: {
+                    enabled: false,
+                },
                 innerSize: 100,
                 depth: 45
             }
@@ -112,9 +117,9 @@
         legend: {
             layout: 'vertical',
             floating: true,
-            align: 'right',
+            align: 'left',
             verticalAlign: 'top',
-            symbolPadding: 20,
+            symbolPadding: 10,
             symbolWidth: 10
         },
         series: [{
@@ -144,6 +149,11 @@
         },
         plotOptions: {
             pie: {
+                allowPointSelect: true,
+                cursor: 'pointer',
+                dataLabels: {
+                    enabled: false,
+                },
                 innerSize: 100,
                 depth: 45
             }
@@ -153,7 +163,7 @@
             floating: true,
             align: 'left',
             verticalAlign: 'top',
-            symbolPadding: 20,
+            symbolPadding: 10,
             symbolWidth: 10
         },
         series: [{
@@ -212,13 +222,12 @@
             dataLabels: {
                 enabled: true,
                 rotation: 0,
-                color: '#FFFFFF',
+                color: '#544b4b',
                 align: 'right',
-                format: '{point.y}', // one decimal
-                y: -5, // 10 pixels down from the top
+                crop: false,
                 style: {
                     fontSize: '12px',
-                    // fontFamily: 'Verdana, sans-serif'
+                    textOutline: 0
                 }
             }
         }]
