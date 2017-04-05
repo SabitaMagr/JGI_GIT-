@@ -24,18 +24,11 @@ class AllReportController extends AbstractActionController {
 //        die();
     }
 
-    public function reportOneAction() {
-//        $reportRepo = new ReportRepository($this->adapter);
-//        $reportRepo->departmentMonthReport();
-//        $reportRepo->departmentWiseEmployeeMonthReport(1);
-//        print "<pre>";
-//        print_r(
-//                $reportRepo->departmentWiseDailyReport(21, 1)
-//        );
-//        exit;
+    public function departmentAllAction() {
+        
     }
 
-    public function reportTwoAction() {
+    public function departmentWiseAction() {
         $departmentId = (int) $this->params()->fromRoute('id1');
         return Helper::addFlashMessagesToArray($this, [
                     'comBraDepList' => $this->getComBraDepList(),
@@ -43,7 +36,7 @@ class AllReportController extends AbstractActionController {
         ]);
     }
 
-    public function reportThreeAction() {
+    public function departmentWiseDailyAction() {
         $monthId = (int) $this->params()->fromRoute('id1');
         $departmentId = (int) $this->params()->fromRoute('id2');
 
@@ -57,7 +50,7 @@ class AllReportController extends AbstractActionController {
         ]);
     }
 
-    public function reportFourAction() {
+    public function employeeWiseAction() {
 
         $employeeId = (int) $this->params()->fromRoute('id1');
         $employeeList = $this->reportRepo->getEmployeeList();
