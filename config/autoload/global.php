@@ -10,8 +10,19 @@ return [
         (SERVICE_NAME = ITN)
         )
         )',
+<<<<<<< HEAD
 //        'username' => 'HRIS',
 //        'password' => 'NEO_HRIS',
+=======
+
+//        'username' => 'HRIS',
+//        'password' => 'NEO_HRIS',
+
+        'username' => 'JWL_HRIS_APR4',
+        'password' => 'JWL_HRIS_APR4',
+
+
+>>>>>>> 4f72564a6e5737de5fc8f3afd58f60538e8af1be
 //        'username' => 'ITNEPAL_HRIS_APR2',
 //        'password' => 'ITNEPAL_HRIS_APR2',
 //        'username'      => 'HRIS_JWL',
