@@ -58,10 +58,10 @@
                                     if (inOutTime.length) {
                                         var output = "";
                                         if (inOutTime[0]) {
-                                            output += '<span class="fc-title-in" style="background-color:#44fbaf;padding:1px 3px;">' + inOutTime[0] + '</span>';
+                                            output += '<span class="fc-title-in" style="background-color:none;padding:1px 3px;">' + inOutTime[0] + '</span>';
                                         }
                                         if (inOutTime[1]) {
-                                            output += '<span class="fc-title-out" style="background-color:#e6fb44;padding:1px 3px;">' + inOutTime[1] + '</span>';
+                                            output += '<span class="fc-title-out" style="background-color:none;padding:1px 3px;">' + inOutTime[1] + '</span>';
                                         }
                                         if (output) {
                                             return output;
@@ -95,11 +95,11 @@
         });
     });
 
-    $('#tab-birthday-upcoming').slimScroll({
+    /*************** BIRTHDAY TAB CLICK EVENT ***************/
+    $('.tab-pane-birthday').slimScroll({
         height: '298px'
     });
 
-    /*************** BIRTHDAY TAB CLICK EVENT ***************/
     $('.ln-nav-tab-birthday').on('click', function(e) {
         e.preventDefault();
         $('.ln-birthday').removeClass('active');

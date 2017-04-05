@@ -4,11 +4,6 @@ $this->headScript()->appendFile($this->basePath('js/angular.min.js'));
 $this->headScript()->appendFile($this->basePath('js/HolidayManagement/HolidaySetup/holidayController.js'));
 ?>
 
-<?php if ($this->messages) { ?>
-    <script>
-        document.messages =<?php echo json_encode($this->messages); ?>
-    </script>
-<?php } ?>
 
 <script>
     document.urlBranchList = '<?= $this->url("webService", ["action" => "branchList"]) ?>';
@@ -39,8 +34,23 @@ $form->setAttribute('action', $this->url('holidaysetup', ['action' => 'edit']));
 $form->prepare();
 ?>
 <div class="page-bar">
-<?= $this->navigation('Zend\Navigation\holidaysetup')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
+    <?= $this->navigation('Zend\Navigation\holidaysetup')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
+
+<?php
+if ($this->messages && (sizeof($this->messages) > 1)) {
+    print '<div class="alert alert-warning alert-dismissable">
+    <button type="button" class="close" data-dismiss="alert" aria-hidden="true"></button>
+    <strong>Warning!</strong> ';
+    print $this->messages[1];
+    print '</div>';
+}
+?>
+<?php if ($this->messages) { ?>
+    <script>
+        document.messages =<?php echo json_encode($this->messages); ?>
+    </script>
+<?php } ?>
 <div ng-app="hris" ng-controller="holidayController">
     <div class="row margin-top-20">
         <div class="col-sm-8 col-sm-offset-2">
@@ -56,7 +66,7 @@ $form->prepare();
                             <div class="col-xs-12 col-sm-12 col-md-12">
                                 <div class="form-group">
                                     <select name="holiday" id="holidayId" class="form-control">
-<?php foreach ($holidayList as $key => $holidays) { ?>
+                                        <?php foreach ($holidayList as $key => $holidays) { ?>
                                             <option value="<?php echo $key ?>" <?php
                                             if ($selectedHoliday == $key) {
                                                 echo "selected";

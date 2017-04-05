@@ -164,6 +164,7 @@ class AttendanceByHr extends AbstractActionController {
                             ]
             );
         } catch (Exception $e) {
+            $this->flashmessenger()->addMessage("Attendance Submit Failed!!");
             $this->flashmessenger()->addMessage($e->getMessage());
             return Helper::addFlashMessagesToArray($this, [
                         'form' => $this->form,

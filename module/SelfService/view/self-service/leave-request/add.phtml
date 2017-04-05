@@ -1,3 +1,20 @@
+<div class="page-bar">
+    <?= $this->navigation('Zend\Navigation\leaverequest')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
+</div>
+<?php
+if ($this->messages && (sizeof($this->messages) > 1)) {
+    print '<div class="alert alert-warning alert-dismissable">
+    <button type="button" class="close" data-dismiss="alert" aria-hidden="true"></button>
+    <strong>Warning!</strong> ';
+    print $this->messages[1];
+    print '</div>';
+}
+?>
+<?php if ($this->messages) { ?>
+    <script>
+        document.messages =<?php echo json_encode($this->messages); ?>
+    </script>
+<?php } ?>
 <?php
 $this->headScript()->appendFile($this->basePath('js/LeaveManagement/LeaveRequest/add.js'));
 $this->headScript()->appendFile($this->basePath('js/angular.min.js'));
@@ -20,25 +37,14 @@ $submit->setAttribute('id', 'request');
 
 $form->setAttribute('action', $this->url('leaverequest', ['action' => 'add']));
 
-if ($this->messages) {
-    print '<ul class="help-block bg-danger" style="background:#f3e250;">';
-    foreach ($this->messages as $message) {
-        print '<li>' . $message . '</li>';
-    }
-    print '</ul>';
-}
 
 $form->prepare();
 print $this->form()->openTag($form);
 ?>
 <script>
-    document.menu =<?= json_encode(["id" => "menuSelfService", "subMenu" => ["id" => "subMenuLeaveApply"]]) ?>;
     document.url = '<?= $this->url("webService", ["action" => "index"]) ?>';
 </script>
 
-<div class="page-bar">
-    <?= $this->navigation('Zend\Navigation\leaverequest')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
-</div>
 <div ng-app="hris" ng-controller="leaveRequestController">
     <div class="row margin-top-20" >
         <div class="col-sm-8 col-sm-offset-2">
@@ -101,24 +107,24 @@ print $this->form()->openTag($form);
                         <?php print $this->formLabel($remarks); ?>
                         <?php print $this->formElement($remarks); ?>
                     </div>
-                    
+
                     <div class="form-group padding-0">
                         <label for="noOfDays">
                             <input type="hidden" name="substituteEmployee" value="0"/>
                             <div class="md-checkbox">
                                 <input type="checkbox" value="1" ng-model="substituteEmployee" ng-click="viewSubstituteEmployee(substituteEmployee)" id="substituteEmployee" class="md-check" name="substituteEmployee"/>
                                 <label for="substituteEmployee">
-                                <span></span>
-                                <span class="check" style="left: 0px !important;"></span>
-                                <span class="box" style="left: 0px !important;"></span>
-                                Substitute Employee </label>
+                                    <span></span>
+                                    <span class="check" style="left: 0px !important;"></span>
+                                    <span class="box" style="left: 0px !important;"></span>
+                                    Substitute Employee </label>
                             </div>
                         </label>
                         <div ng-if="leaveSubstitute">
                             <select class="form-control" name="leaveSubstitute" style="cursor: pointer;">
-                            <?php foreach($employeeList as $key=>$value){ ?>
-                                <option style="cursor: pointer;" value="<?php echo $key; ?>"><?php echo $value; ?></option>
-                            <?php } ?>
+                                <?php foreach ($employeeList as $key => $value) { ?>
+                                    <option style="cursor: pointer;" value="<?php echo $key; ?>"><?php echo $value; ?></option>
+                                <?php } ?>
                             </select>
                         </div>
                     </div>

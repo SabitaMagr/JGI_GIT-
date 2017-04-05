@@ -1,189 +1,196 @@
 <?php
 $this->headScript()->appendFile($this->basePath('js/SelfService/loan-request/add.js'));
-
-if ($this->messages) {
-    print '<ul class="help-block bg-danger" style="background:#f3e250;">';
-    foreach ($this->messages as $message) {
-        print '<li>' . $message . '</li>';
-    }
-    print '</ul>';
-}
 ?>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\performanceAppraisal')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
+
+<?php
+if ($this->messages && (sizeof($this->messages) > 1)) {
+    print '<div class="alert alert-warning alert-dismissable">
+    <button type="button" class="close" data-dismiss="alert" aria-hidden="true"></button>
+    <strong>Warning!</strong> ';
+    print $this->messages[1];
+    print '</div>';
+}
+?>
+<?php if ($this->messages) { ?>
+    <script>
+        document.messages =<?php echo json_encode($this->messages); ?>
+    </script>
+<?php } ?>
 <div class="row margin-top-20">
     <div class="col-md-12">
-    <div class="portlet box custom-box">
-        <div class="portlet-title">
-            <div class="caption">
-                <?=
-                $assignedAppraisalDetail['APPRAISAL_EDESC'];
-                ?>
-            </div>
-            <div class="btn-group pull-right open" style="margin-top:1%">
+        <div class="portlet box custom-box">
+            <div class="portlet-title">
+                <div class="caption">
+                    <?=
+                    $assignedAppraisalDetail['APPRAISAL_EDESC'];
+                    ?>
+                </div>
+                <div class="btn-group pull-right open" style="margin-top:1%">
 
-            </div>
-        </div>
-        <div class="portlet-body" style="padding-top:1px;">
-            <h5 id="headingForPanel"><b>Personal Information</b></h5>
-            <div class="row div-font-11">
-                <div class="col-md-4">
-                    <table>
-                        <tbody>
-                            <tr height="30">
-                                <td>
-                                    Appraisee's Name
-                                </td>
-                                <td width="15">:</td>
-                                <td>
-                                    <?php 
-                                    $middleName = ($employeeDetail['MIDDLE_NAME']==null || $employeeDetail['MIDDLE_NAME']=="") ? " ": " ".$employeeDetail['MIDDLE_NAME']." ";
-                                    $employeeName = $employeeDetail['FIRST_NAME'].$middleName.$employeeDetail['LAST_NAME'];
-                                    print_r($employeeName);
-                                    ?>  
-                                </td>
-                            </tr>
-                            
-                            <tr height="30">
-                                <td>
-                                    Department
-                                </td>
-                                <td width="15">:</td>
-                                <td>
-                                    <?= $employeeDetail['BRANCH_NAME']; ?>
-                                </td>
-                            </tr>
-                            <tr height="30">
-                                <td>
-                                    Appraisal Period
-                                </td>
-                                <td width="15">:</td>
-                                <td>
-                                    <?= $assignedAppraisalDetail['START_DATE']; ?>
-                                    To
-                                    <?= $assignedAppraisalDetail['END_DATE']; ?>
-                                </td>
-                            </tr>
-                        </tbody></table>
-                </div>
-                <div class="col-md-4">
-                    <table>
-                        <tbody>
-                            <tr height="30">
-                                <td>
-                                    Position
-                                </td>
-                                <td width="15">:</td>
-                                <td>
-                                    <?= $employeeDetail['POSITION_NAME']; ?>
-                                </td>
-                            </tr>
-                            <tr height="30">
-                                <td>
-                                    Joining Date
-                                </td>
-                                <td width="15">:</td>
-                                <td>
-                                    <?= $employeeDetail['JOIN_DATE']; ?>  
-                                </td>
-                            </tr>
-                            <tr height="30" id="availableDaysText">
-                                <td>
-                                    Appraiser's Name
-                                </td>
-                                <td width="15">:</td>
-                                <td>
-                                    <?php 
-                                    $middleName_A = ($assignedAppraisalDetail['MIDDLE_NAME_A']==null || $assignedAppraisalDetail['MIDDLE_NAME_A']=="") ? " ": " ".$assignedAppraisalDetail['MIDDLE_NAME_A']." ";
-                                    $employeeName_A = $assignedAppraisalDetail['FIRST_NAME_A'].$middleName_A.$assignedAppraisalDetail['LAST_NAME_A'];
-                                    print_r($employeeName_A);
-                                    ?>       
-                                </td>
-                            </tr>
-                        </tbody></table>
-                </div>
-                <div class="col-md-4">
-                    <table>
-                        <tbody>
-                            <tr height="30">
-                                <td>
-                                    Branch
-                                </td>
-                                <td width="15">:</td>
-                                <td>
-                                    <?= $employeeDetail['BRANCH_NAME']; ?>
-                                </td>
-                            </tr>
-                            <tr height="30">
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                            </tr>
-                            <tr height="30">
-                                <td>
-                                    Reviewer's Name
-                                </td>
-                                <td width="15">:</td>
-                                <td>
-                                    <?php 
-                                    $middleName_R = ($assignedAppraisalDetail['MIDDLE_NAME_R']==null || $assignedAppraisalDetail['MIDDLE_NAME_R']=="") ? " ": " ".$assignedAppraisalDetail['MIDDLE_NAME_R']." ";
-                                    $employeeName_R = $assignedAppraisalDetail['FIRST_NAME_R'].$middleName_R.$assignedAppraisalDetail['LAST_NAME_R'];
-                                    print_r($employeeName_R);
-                                    ?>                                         
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
                 </div>
             </div>
-        </div>
-        <div class="portlet-body" style="padding-top:1px;">
-            <h5 id="headingForPanel"><b>Performance Evaluation</b></h5>
-            <div class="portlet-body">
-                <div class="tabbable-line menusetuptab" style="padding-top:0px">
-                    <ul class="nav nav-tabs">
-                        <li class="active">
-                            <a href="#portlet_tab2_1" data-toggle="tab"> Appraisee's Evaluation </a>
-                        </li>
-                        <li class="">
-                            <a href="#portlet_tab2_2" data-toggle="tab"> Appraiser's Evaluation </a>
-                        </li>
-                        <li class="">
-                            <a href="#portlet_tab2_3" data-toggle="tab"> Reviewer's Evaluation </a>
-                        </li>
-                    </ul>
+            <div class="portlet-body" style="padding-top:1px;">
+                <h5 id="headingForPanel"><b>Personal Information</b></h5>
+                <div class="row div-font-11">
+                    <div class="col-md-4">
+                        <table>
+                            <tbody>
+                                <tr height="30">
+                                    <td>
+                                        Appraisee's Name
+                                    </td>
+                                    <td width="15">:</td>
+                                    <td>
+                                        <?php
+                                        $middleName = ($employeeDetail['MIDDLE_NAME'] == null || $employeeDetail['MIDDLE_NAME'] == "") ? " " : " " . $employeeDetail['MIDDLE_NAME'] . " ";
+                                        $employeeName = $employeeDetail['FIRST_NAME'] . $middleName . $employeeDetail['LAST_NAME'];
+                                        print_r($employeeName);
+                                        ?>  
+                                    </td>
+                                </tr>
+
+                                <tr height="30">
+                                    <td>
+                                        Department
+                                    </td>
+                                    <td width="15">:</td>
+                                    <td>
+                                        <?= $employeeDetail['BRANCH_NAME']; ?>
+                                    </td>
+                                </tr>
+                                <tr height="30">
+                                    <td>
+                                        Appraisal Period
+                                    </td>
+                                    <td width="15">:</td>
+                                    <td>
+                                        <?= $assignedAppraisalDetail['START_DATE']; ?>
+                                        To
+                                        <?= $assignedAppraisalDetail['END_DATE']; ?>
+                                    </td>
+                                </tr>
+                            </tbody></table>
+                    </div>
+                    <div class="col-md-4">
+                        <table>
+                            <tbody>
+                                <tr height="30">
+                                    <td>
+                                        Position
+                                    </td>
+                                    <td width="15">:</td>
+                                    <td>
+                                        <?= $employeeDetail['POSITION_NAME']; ?>
+                                    </td>
+                                </tr>
+                                <tr height="30">
+                                    <td>
+                                        Joining Date
+                                    </td>
+                                    <td width="15">:</td>
+                                    <td>
+                                        <?= $employeeDetail['JOIN_DATE']; ?>  
+                                    </td>
+                                </tr>
+                                <tr height="30" id="availableDaysText">
+                                    <td>
+                                        Appraiser's Name
+                                    </td>
+                                    <td width="15">:</td>
+                                    <td>
+                                        <?php
+                                        $middleName_A = ($assignedAppraisalDetail['MIDDLE_NAME_A'] == null || $assignedAppraisalDetail['MIDDLE_NAME_A'] == "") ? " " : " " . $assignedAppraisalDetail['MIDDLE_NAME_A'] . " ";
+                                        $employeeName_A = $assignedAppraisalDetail['FIRST_NAME_A'] . $middleName_A . $assignedAppraisalDetail['LAST_NAME_A'];
+                                        print_r($employeeName_A);
+                                        ?>       
+                                    </td>
+                                </tr>
+                            </tbody></table>
+                    </div>
+                    <div class="col-md-4">
+                        <table>
+                            <tbody>
+                                <tr height="30">
+                                    <td>
+                                        Branch
+                                    </td>
+                                    <td width="15">:</td>
+                                    <td>
+                                        <?= $employeeDetail['BRANCH_NAME']; ?>
+                                    </td>
+                                </tr>
+                                <tr height="30">
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                                <tr height="30">
+                                    <td>
+                                        Reviewer's Name
+                                    </td>
+                                    <td width="15">:</td>
+                                    <td>
+                                        <?php
+                                        $middleName_R = ($assignedAppraisalDetail['MIDDLE_NAME_R'] == null || $assignedAppraisalDetail['MIDDLE_NAME_R'] == "") ? " " : " " . $assignedAppraisalDetail['MIDDLE_NAME_R'] . " ";
+                                        $employeeName_R = $assignedAppraisalDetail['FIRST_NAME_R'] . $middleName_R . $assignedAppraisalDetail['LAST_NAME_R'];
+                                        print_r($employeeName_R);
+                                        ?>                                         
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
-                <div class="tab-content margin-top-15" >
-                    <div class="tab-pane active" id="portlet_tab2_1">
-                        <div class="row">
-                            <?php foreach($questionTemplate as $questionTemplateRow){ ?>
-                            <div class="col-md-6">
-                                <div style="border: 1px solid #ddd; padding: 2%;">
-                                    <h6 style="border-bottom: 1px solid #ddd; padding-bottom: 1%;"><?php echo $questionTemplateRow['HEADING_EDESC']; ?></h6>
-                                    <?php foreach($questionTemplateRow['QUESTIONS'] as $questionRow){ ?>
-                                    <div style="margin-top:2%;">    
-                                        <h7 style="border-bottom: 1px solid #ddd;"><?php echo $questionRow['QUESTION_EDESC']; ?></h7>  
-                                        <?php if($questionRow['ANSWER_TYPE']=='TEXTAREA'){ ?>
-                                        <textarea class="form-control" rows='5' style="height: 80px !important;">
-                                        </textarea>
+            </div>
+            <div class="portlet-body" style="padding-top:1px;">
+                <h5 id="headingForPanel"><b>Performance Evaluation</b></h5>
+                <div class="portlet-body">
+                    <div class="tabbable-line menusetuptab" style="padding-top:0px">
+                        <ul class="nav nav-tabs">
+                            <li class="active">
+                                <a href="#portlet_tab2_1" data-toggle="tab"> Appraisee's Evaluation </a>
+                            </li>
+                            <li class="">
+                                <a href="#portlet_tab2_2" data-toggle="tab"> Appraiser's Evaluation </a>
+                            </li>
+                            <li class="">
+                                <a href="#portlet_tab2_3" data-toggle="tab"> Reviewer's Evaluation </a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="tab-content margin-top-15" >
+                        <div class="tab-pane active" id="portlet_tab2_1">
+                            <div class="row">
+                                <?php foreach ($questionTemplate as $questionTemplateRow) { ?>
+                                    <div class="col-md-6">
+                                        <div style="border: 1px solid #ddd; padding: 2%;">
+                                            <h6 style="border-bottom: 1px solid #ddd; padding-bottom: 1%;"><?php echo $questionTemplateRow['HEADING_EDESC']; ?></h6>
+                                            <?php foreach ($questionTemplateRow['QUESTIONS'] as $questionRow) { ?>
+                                                <div style="margin-top:2%;">    
+                                                    <h7 style="border-bottom: 1px solid #ddd;"><?php echo $questionRow['QUESTION_EDESC']; ?></h7>  
+                                                    <?php if ($questionRow['ANSWER_TYPE'] == 'TEXTAREA') { ?>
+                                                        <textarea class="form-control" rows='5' style="height: 80px !important;">
+                                                        </textarea>
+                                                    </div>
+                                                <?php } ?>
+                                            <?php } ?>
+                                        </div>
                                     </div>
-                                        <?php } ?>
-                                    <?php } ?>
-                                </div>
+                                <?php } ?>
                             </div>
-                            <?php } ?>
+                        </div>
+                        <div class="tab-pane" id="portlet_tab2_2">
+                            helloww1
+                        </div>
+                        <div class="tab-pane" id="portlet_tab2_3">
+                            helloww2
                         </div>
                     </div>
-                    <div class="tab-pane" id="portlet_tab2_2">
-                        helloww1
-                    </div>
-                    <div class="tab-pane" id="portlet_tab2_3">
-                        helloww2
-                    </div>
                 </div>
             </div>
         </div>
-    </div>
     </div>
 </div>

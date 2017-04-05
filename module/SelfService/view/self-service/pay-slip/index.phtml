@@ -7,22 +7,27 @@ $this->headScript()
 ?>
 
 <script>
-    document.menu =<?php
-$menu = ["id" => "menuSelfService", "subMenu" => ["id" => "subMenuPaySlip"]];
-echo json_encode($menu);
-?>;
     document.rules =<?= json_encode($rules) ?>;
     document.employeeId =<?= $employeeId ?>;
 </script>
+
+<div class="page-bar">
+    <?= $this->navigation('Zend\Navigation\payslip')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
+</div>
+<?php
+if ($this->messages && (sizeof($this->messages) > 1)) {
+    print '<div class="alert alert-warning alert-dismissable">
+    <button type="button" class="close" data-dismiss="alert" aria-hidden="true"></button>
+    <strong>Warning!</strong> ';
+    print $this->messages[1];
+    print '</div>';
+}
+?>
 <?php if ($this->messages) { ?>
     <script>
         document.messages =<?php echo json_encode($this->messages); ?>
     </script>
 <?php } ?>
-
-<div class="page-bar">
-    <?= $this->navigation('Zend\Navigation\payslip')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
-</div>
 
 <div ng-app="hris" ng-controller="paySlipController">
     <div class="row margin-top-10">

@@ -220,8 +220,10 @@ if ($countryId->getValue() == 168) {
     $idCitizenshipIssuePlace->setValueOptions($districts);
     $idCitizenshipIssuePlace->setLabel($label);
     $idCitizenshipIssuePlace->setValue($value);
-} else {
+} else if($countryId->getValue()!=null){
     $idCitizenshipIssuePlace->setAttributes(['value' => $countries[$countryId->getValue()]]);
+    $idCitizenshipIssuePlace->setAttributes(["disabled" => 'true']);
+}else{
     $idCitizenshipIssuePlace->setAttributes(["disabled" => 'true']);
 }
 ?>
