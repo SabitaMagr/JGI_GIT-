@@ -16,6 +16,21 @@ $this->headScript()->appendFile($this->basePath('assets/global/plugins/jquery.bl
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\shiftassign')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
+<?php
+if ($this->messages && (sizeof($this->messages) > 1)) {
+    print '<div class="alert alert-warning alert-dismissable">
+    <button type="button" class="close" data-dismiss="alert" aria-hidden="true"></button>
+    <strong>Warning!</strong> ';
+    print $this->messages[1];
+    print '</div>';
+}
+?>
+<?php if ($this->messages) { ?>
+    <script>
+        document.messages =<?php echo json_encode($this->messages); ?>
+    </script>
+<?php } ?>
+
 
 <div class="" ng-app="hris" ng-controller="shiftAssignController">
     <div class="margin-top-20  formbg mgap">

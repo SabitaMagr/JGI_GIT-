@@ -1,31 +1,30 @@
 <?php
 $this->headLink()
-    ->appendStylesheet($this->basePath('assets/global/plugins/bootstrap-datepicker/css/datepicker3.css'))
-    ->appendStylesheet($this->basePath('assets/global/plugins/fullcalendar/fullcalendar.min.css'))
-    ->appendStylesheet($this->basePath('assets/global/plugins/datatables/extensions/Scroller/css/dataTables.scroller.min.css'))
-    ->appendStylesheet($this->basePath('assets/global/plugins/datatables/extensions/ColReorder/css/dataTables.colReorder.min.css'))
-    ->appendStylesheet($this->basePath('assets/global/plugins/datatables/plugins/bootstrap/dataTables.bootstrap.csss'))
-    ->appendStylesheet($this->basePath('css/dashboard.hrm.css'));
+        ->appendStylesheet($this->basePath('assets/global/plugins/bootstrap-datepicker/css/datepicker3.css'))
+        ->appendStylesheet($this->basePath('assets/global/plugins/fullcalendar/fullcalendar.min.css'))
+        ->appendStylesheet($this->basePath('assets/global/plugins/datatables/extensions/Scroller/css/dataTables.scroller.min.css'))
+        ->appendStylesheet($this->basePath('assets/global/plugins/datatables/extensions/ColReorder/css/dataTables.colReorder.min.css'))
+        ->appendStylesheet($this->basePath('assets/global/plugins/datatables/plugins/bootstrap/dataTables.bootstrap.csss'))
+        ->appendStylesheet($this->basePath('css/dashboard.hrm.css'));
 
 $this->headScript()
-    ->appendFile($this->basePath('assets/global/plugins/bootstrap-daterangepicker/moment.min.js'))
-    ->appendFile($this->basePath('assets/global/plugins/bootstrap-daterangepicker/daterangepicker.min.js'))
-    ->appendFile($this->basePath('assets/global/plugins/fullcalendar/fullcalendar.min.js'))
-    ->appendFile($this->basePath('assets/admin/pages/scripts/components-pickers.js'))
-    ->appendFile($this->basePath('assets/global/plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js'))
-    ->appendFile($this->basePath('assets/global/plugins/datatables/datatables.min.js'))
-    ->appendFile($this->basePath('assets/global/plugins/datatables/extensions/TableTools/js/dataTables.tableTools.min.js'))
-    ->appendFile($this->basePath('assets/global/plugins/datatables/extensions/ColReorder/js/dataTables.colReorder.min.js'))
-    ->appendFile($this->basePath('assets/global/plugins/datatables/extensions/Scroller/js/dataTables.scroller.min.js'))
-    ->appendFile($this->basePath('assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap.js'))
-    ->appendFile($this->basePath('assets/global/plugins/highcharts/js/highcharts.js'))
-    ->appendFile($this->basePath('assets/global/plugins/highcharts/js/highcharts-3d.js'))
-    ->appendFile($this->basePath('assets/global/plugins/highcharts/modules/exporting.js'))
-    ->appendFile($this->basePath('assets/global/scripts/metronic.js'))
-    ->appendFile($this->basePath('js/dashboard/hrm-dashboard.js'));
+        ->appendFile($this->basePath('assets/global/plugins/bootstrap-daterangepicker/moment.min.js'))
+        ->appendFile($this->basePath('assets/global/plugins/bootstrap-daterangepicker/daterangepicker.min.js'))
+        ->appendFile($this->basePath('assets/global/plugins/fullcalendar/fullcalendar.min.js'))
+        ->appendFile($this->basePath('assets/admin/pages/scripts/components-pickers.js'))
+        ->appendFile($this->basePath('assets/global/plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js'))
+        ->appendFile($this->basePath('assets/global/plugins/datatables/datatables.min.js'))
+        ->appendFile($this->basePath('assets/global/plugins/datatables/extensions/TableTools/js/dataTables.tableTools.min.js'))
+        ->appendFile($this->basePath('assets/global/plugins/datatables/extensions/ColReorder/js/dataTables.colReorder.min.js'))
+        ->appendFile($this->basePath('assets/global/plugins/datatables/extensions/Scroller/js/dataTables.scroller.min.js'))
+        ->appendFile($this->basePath('assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap.js'))
+        ->appendFile($this->basePath('assets/global/plugins/highcharts/js/highcharts.js'))
+        ->appendFile($this->basePath('assets/global/plugins/highcharts/js/highcharts-3d.js'))
+        ->appendFile($this->basePath('assets/global/plugins/highcharts/modules/exporting.js'))
+        ->appendFile($this->basePath('assets/global/scripts/metronic.js'))
+        ->appendFile($this->basePath('js/dashboard/hrm-dashboard.js'));
 
 $taskAssignEmployeeListOptionsHtml = "";
-
 ?>
 
 <style type="text/css">
@@ -37,25 +36,40 @@ $taskAssignEmployeeListOptionsHtml = "";
 <script type="text/javascript">
     document.xndr = []; // Gender
     document.xndrhc = []; // Gender Head Count
-    <?php foreach ($headCountGender as $ghc) : ?>
-    document.xndr.push('<?php print $ghc['GENDER_NAME']; ?>');
-    document.xndrhc.push(<?php print $ghc['HEAD_COUNT'] ?>);
-    <?php endforeach; ?>
+<?php foreach ($headCountGender as $ghc) : ?>
+        document.xndr.push('<?php print $ghc['GENDER_NAME']; ?>');
+        document.xndrhc.push(<?php print $ghc['HEAD_COUNT'] ?>);
+<?php endforeach; ?>
 
     document.odept = []; // Office Department
     document.odepthc = []; // Department Head Count
-    <?php foreach ($headCountDepartment as $dhc) : ?>
-    document.odept.push('<?php print $dhc['DEPARTMENT_NAME']; ?>');
-    document.odepthc.push(<?php print $dhc['HEAD_COUNT']; ?>);
-    <?php endforeach; ?>
+<?php foreach ($headCountDepartment as $dhc) : ?>
+        document.odept.push('<?php print $dhc['DEPARTMENT_NAME']; ?>');
+        document.odepthc.push(<?php print $dhc['HEAD_COUNT']; ?>);
+<?php endforeach; ?>
 
     document.brln = []; // Branch Location
     document.brlnhc = []; // Department Head Count
-    <?php foreach ($headCountLocation as $lhc) : ?>
-    document.brln.push('<?php print $lhc['BRANCH_NAME']; ?>');
-    document.brlnhc.push(<?php print $lhc['HEAD_COUNT']; ?>);
-    <?php endforeach; ?>
+<?php foreach ($headCountLocation as $lhc) : ?>
+        document.brln.push('<?php print $lhc['BRANCH_NAME']; ?>');
+        document.brlnhc.push(<?php print $lhc['HEAD_COUNT']; ?>);
+<?php endforeach; ?>
 </script>
+
+<?php
+if ($this->messages && (sizeof($this->messages) > 1)) {
+    print '<div class="alert alert-warning alert-dismissable">
+    <button type="button" class="close" data-dismiss="alert" aria-hidden="true"></button>
+    <strong>Warning!</strong> ';
+    print $this->messages[1];
+    print '</div>';
+}
+?>
+<?php if ($this->messages) { ?>
+    <script>
+        document.messages =<?php echo json_encode($this->messages); ?>
+    </script>
+<?php } ?>
 
 <div class="employeedashboard">
     <div class="emplyoee-dashboard clearfix">
@@ -72,8 +86,8 @@ $taskAssignEmployeeListOptionsHtml = "";
                 $serviceDays = trim(implode(" ", $service));
                 ?>
                 <h4 class="font-weight-bold"><?php print $employeeDetail['FULL_NAME']; ?></h4>
-                <?php if($email) : ?>
-                <span><?php print $email; ?></span><br>
+                <?php if ($email) : ?>
+                    <span><?php print $email; ?></span><br>
                 <?php endif; ?>
                 <span><?php print trim($employeeDetail['DESIGNATION_TITLE']); ?></span><br>
                 <span>At work for : <?php print $serviceDays ? $serviceDays : 0; ?></span><br>
@@ -136,81 +150,81 @@ $taskAssignEmployeeListOptionsHtml = "";
     <div class="row">
         <div class="col-md-6">
             <?php /*
-            <div class="employeestatusbox clearfix">
-                <div class="row">
-                    <div class="col-sm-3 col-md-3">
-                        <h4 class="font-weight-bold">Employee Status</h4>
-                    </div>
-                    <div class="col-sm-6 col-md-6">
-                        <div class="employee-status-details">
-                            <ul>
-                                <li>
-                                    <span>0.5/26</span>
-                                    Attendence
-                                </li>
-                                <li>
-                                    <span>1/10</span>
-                                    Leave
-                                </li>
-                                <li>
-                                    <span>0</span>
-                                    Awards
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="col-sm-3 col-md-3">
-                        <div id="dashboard-report-range1" class="pull-right tooltips btn btn-sm btn-custom-color active" data-container="body" data-placement="bottom" data-original-title="Change dashboard date range">
-                            <i class="fa fa-calendar"></i>&nbsp;<span class="thin uppercase visible-lg-inline-block"><?php print date('d M Y') ?></span>&nbsp; <i class="fa fa-angle-down"></i>
-                        </div>
-                    </div>
-                    <div class="col-md-12">
-                        <div class="row detailsbox">
-                            <div class="col-xs-6 col-sm-3 col-md-2 hexcustom">
-                                <div class="employee_details-box hexagon-bg1">
-                                    <span><?php print $employeeDetail['PRESENT_DAY']; ?></span>
-                                    <div class="face1"></div>
-                                    <div class="face2"></div>
-                                    <div class="headtitle">Present</div>
-                                </div>
-                            </div>
-                            <div class="col-xs-6 col-sm-3 col-md-2 hexcustom">
-                                <div class="employee_details-box hexagon-bg2">
-                                    <span><?php print $employeeDetail['LEAVE']; ?></span>
-                                    <div class="face1"></div>
-                                    <div class="face2"></div>
-                                    <div class="headtitle">On Leave</div>
-                                </div>
-                            </div>
-                            <div class="col-xs-6 col-sm-3 col-md-2 hexcustom">
-                                <div class="employee_details-box hexagon-bg3">
-                                    <span><?php print $employeeDetail['TRAINING']; ?></span>
-                                    <div class="face1"></div>
-                                    <div class="face2"></div>
-                                    <div class="headtitle">Training</div>
-                                </div>
-                            </div>
-                            <div class="col-xs-6 col-sm-3 col-md-2 hexcustom">
-                                <div class="employee_details-box hexagon-bg4">
-                                    <span><?php print $employeeDetail['TOUR']; ?></span>
-                                    <div class="face1"></div>
-                                    <div class="face2"></div>
-                                    <div class="headtitle">On Tour</div>
-                                </div>
-                            </div>
-                            <div class="col-xs-6 col-sm-3 col-md-2 hexcustom">
-                                <div class="employee_details-box hexagon-bg5">
-                                    <span><?php print $employeeDetail['WOH']; ?></span>
-                                    <div class="face1"></div>
-                                    <div class="face2"></div>
-                                    <div class="headtitle">WOH</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            */ ?>
+              <div class="employeestatusbox clearfix">
+              <div class="row">
+              <div class="col-sm-3 col-md-3">
+              <h4 class="font-weight-bold">Employee Status</h4>
+              </div>
+              <div class="col-sm-6 col-md-6">
+              <div class="employee-status-details">
+              <ul>
+              <li>
+              <span>0.5/26</span>
+              Attendence
+              </li>
+              <li>
+              <span>1/10</span>
+              Leave
+              </li>
+              <li>
+              <span>0</span>
+              Awards
+              </li>
+              </ul>
+              </div>
+              </div>
+              <div class="col-sm-3 col-md-3">
+              <div id="dashboard-report-range1" class="pull-right tooltips btn btn-sm btn-custom-color active" data-container="body" data-placement="bottom" data-original-title="Change dashboard date range">
+              <i class="fa fa-calendar"></i>&nbsp;<span class="thin uppercase visible-lg-inline-block"><?php print date('d M Y') ?></span>&nbsp; <i class="fa fa-angle-down"></i>
+              </div>
+              </div>
+              <div class="col-md-12">
+              <div class="row detailsbox">
+              <div class="col-xs-6 col-sm-3 col-md-2 hexcustom">
+              <div class="employee_details-box hexagon-bg1">
+              <span><?php print $employeeDetail['PRESENT_DAY']; ?></span>
+              <div class="face1"></div>
+              <div class="face2"></div>
+              <div class="headtitle">Present</div>
+              </div>
+              </div>
+              <div class="col-xs-6 col-sm-3 col-md-2 hexcustom">
+              <div class="employee_details-box hexagon-bg2">
+              <span><?php print $employeeDetail['LEAVE']; ?></span>
+              <div class="face1"></div>
+              <div class="face2"></div>
+              <div class="headtitle">On Leave</div>
+              </div>
+              </div>
+              <div class="col-xs-6 col-sm-3 col-md-2 hexcustom">
+              <div class="employee_details-box hexagon-bg3">
+              <span><?php print $employeeDetail['TRAINING']; ?></span>
+              <div class="face1"></div>
+              <div class="face2"></div>
+              <div class="headtitle">Training</div>
+              </div>
+              </div>
+              <div class="col-xs-6 col-sm-3 col-md-2 hexcustom">
+              <div class="employee_details-box hexagon-bg4">
+              <span><?php print $employeeDetail['TOUR']; ?></span>
+              <div class="face1"></div>
+              <div class="face2"></div>
+              <div class="headtitle">On Tour</div>
+              </div>
+              </div>
+              <div class="col-xs-6 col-sm-3 col-md-2 hexcustom">
+              <div class="employee_details-box hexagon-bg5">
+              <span><?php print $employeeDetail['WOH']; ?></span>
+              <div class="face1"></div>
+              <div class="face2"></div>
+              <div class="headtitle">WOH</div>
+              </div>
+              </div>
+              </div>
+              </div>
+              </div>
+              </div>
+             */ ?>
 
             <div class="row chart-row">
                 <div class="col-md-12">
@@ -252,18 +266,18 @@ $taskAssignEmployeeListOptionsHtml = "";
                                                         </tr>
                                                     </thead>
                                                     <tbody>
-                                                    <?php foreach($employeeList as $employee) : ?>
-                                                        <tr>
-                                                            <td><?php print $employee['EMPLOYEE_CODE']; ?></td>
-                                                            <td><?php print $employee['FULL_NAME']; ?></td>
-                                                            <td><?php print $employee['DESIGNATION_TITLE']; ?></td>
-                                                            <td><?php print $employee['DEPARTMENT_NAME']; ?></td>
-                                                            <td>&nbsp;</td>
-                                                            <?php
-                                                            $taskAssignEmployeeListOptionsHtml .= "<option value=\"{$employee['EMPLOYEE_ID']}\">{$employee['FULL_NAME']}</option>";
-                                                            ?>
-                                                        </tr>
-                                                    <?php endforeach; ?>
+                                                        <?php foreach ($employeeList as $employee) : ?>
+                                                            <tr>
+                                                                <td><?php print $employee['EMPLOYEE_CODE']; ?></td>
+                                                                <td><?php print $employee['FULL_NAME']; ?></td>
+                                                                <td><?php print $employee['DESIGNATION_TITLE']; ?></td>
+                                                                <td><?php print $employee['DEPARTMENT_NAME']; ?></td>
+                                                                <td>&nbsp;</td>
+                                                                <?php
+                                                                $taskAssignEmployeeListOptionsHtml .= "<option value=\"{$employee['EMPLOYEE_ID']}\">{$employee['FULL_NAME']}</option>";
+                                                                ?>
+                                                            </tr>
+                                                        <?php endforeach; ?>
                                                     </tbody>
                                                 </table>
                                             </div>
@@ -341,8 +355,8 @@ $taskAssignEmployeeListOptionsHtml = "";
                                         </div>
                                         <div class="noticeboard-list row">
                                             <ul>
-                                                <?php if(count($employeeNotice)> 0) : ?>
-                                                    <?php foreach($employeeNotice as $notice) : ?>
+                                                <?php if (count($employeeNotice) > 0) : ?>
+                                                    <?php foreach ($employeeNotice as $notice) : ?>
                                                         <li style="width:100%;">
                                                             <div class="calendardate-box col-sm-2 col-md-2">
                                                                 <span><?php print $notice['NEWS_DAY']; ?></span><br>
@@ -540,7 +554,7 @@ $taskAssignEmployeeListOptionsHtml = "";
                                 <div class="upcomingholidays">
                                     <div class="html-loading" style="display:none;height:100%;width:100%;position:absolute;top:0;left:0;"></div>
                                     <ul class="feeds" style="visibility:visible;">
-                                        <?php foreach($upcomingHolidays as $holiday) : ?>
+                                        <?php foreach ($upcomingHolidays as $holiday) : ?>
                                             <li>
                                                 <div class="col-xs-6 col-sm-4 col-md-4 desc holiday-title">
                                                     <span class="label holiday-color  "><?php print $holiday['HOLIDAY_ENAME']; ?></span>

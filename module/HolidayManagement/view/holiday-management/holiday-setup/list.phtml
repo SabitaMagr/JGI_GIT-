@@ -21,11 +21,6 @@ $this->headScript()
 $this->headScript()->appendFile($this->basePath('assets/global/plugins/jquery.blockui.min.js'));
 ?>
 
-<?php if ($this->messages) { ?>
-    <script>
-        document.messages =<?php echo json_encode($this->messages); ?>
-    </script>
-<?php } ?>
 
 <script>
     document.url = "<?= $this->url('restful', ['action', 'index']); ?>";
@@ -33,6 +28,21 @@ $this->headScript()->appendFile($this->basePath('assets/global/plugins/jquery.bl
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\holidaysetup')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
+
+<?php
+if ($this->messages && (sizeof($this->messages) > 1)) {
+    print '<div class="alert alert-warning alert-dismissable">
+    <button type="button" class="close" data-dismiss="alert" aria-hidden="true"></button>
+    <strong>Warning!</strong> ';
+    print $this->messages[1];
+    print '</div>';
+}
+?>
+<?php if ($this->messages) { ?>
+    <script>
+        document.messages =<?php echo json_encode($this->messages); ?>
+    </script>
+<?php } ?>
 <div ng-app="hris" ng-controller="holidayListController" class="formbg">
     <div class="margin-top-20">
         <div class="row" style="position: relative;">
