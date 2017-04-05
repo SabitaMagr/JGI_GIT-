@@ -12,7 +12,7 @@ return[
             'allreport' => [
                 'type' => Segment::class,
                 'options' => [
-                    'route' => '/allreport[/:action[/:id1[/:id2]]]',
+                    'route' => '/report[/:action[/:id1[/:id2]]]',
                     'constants' => [
                         'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
                         'id' => '[0-9]+',
@@ -27,32 +27,32 @@ return[
     ],
     'navigation' => [
         'allreport' => [
-            [
+                [
                 'label' => 'Asset Type',
                 'route' => 'allreport',
             ], [
                 'label' => 'Report',
                 'route' => 'allreport',
                 'pages' => [
-                    [
+                        [
                         'label' => 'Departments|Months',
                         'route' => 'allreport',
-                        'action' => 'reportOne',
+                        'action' => 'departmentAll',
                     ],
-                    [
+                        [
                         'label' => 'Department|Months',
                         'route' => 'allreport',
-                        'action' => 'reportTwo',
+                        'action' => 'departmentWise',
                     ],
-                    [
+                        [
                         'label' => 'Department|Month',
                         'route' => 'allreport',
-                        'action' => 'reportThree',
+                        'action' => 'departmentWiseDaily',
                     ],
-                    [
+                        [
                         'label' => 'Employee|Months',
                         'route' => 'allreport',
-                        'action' => 'reportFour',
+                        'action' => 'employeeWise',
                     ],
                 ],
             ],
