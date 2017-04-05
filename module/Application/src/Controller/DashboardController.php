@@ -111,7 +111,7 @@ class DashboardController extends AbstractActionController {
 
 
                 break;
-            case 'H':
+            case 'A':
                 $template = "dashboard/hrm";
 
 

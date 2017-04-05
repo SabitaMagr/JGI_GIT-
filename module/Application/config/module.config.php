@@ -251,15 +251,15 @@ return [
 //        'birthdays' => 'dashboard-item/birthdays',
         'dashboard' => "",
     ],
-//    'role-types' => [
-//        'A' => 'Admin',
-//        'B' => 'Branch Manager',
-//        'E' => 'Employee'
-//    ],
     'role-types' => [
-        'H' => 'Human Resource',
+        'A' => 'Human Resource',
+        'B' => 'Branch Manager',
         'E' => 'Employee'
     ],
+//    'role-types' => [
+//        'H' => 'Human Resource',
+//        'E' => 'Employee'
+//    ],
     'mail' => [
         'host' => 'duster.websitewelcome.com',
         'port' => 587,
