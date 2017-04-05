@@ -31,7 +31,7 @@ $this->headScript()->appendFile($this->basePath('assets/global/plugins/jquery.bl
     <?= $this->navigation('Zend\Navigation\allreport')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
 <div class="">
-    <div class="portlet solid default borderline shadow">
+    <div class="portlet solid default1 borderline1 shadow1 boxshadow gapboth">
         <div class="portlet-title border-bottom">
             <div class="caption">
                 <i class="icon-filter"></i>
@@ -42,30 +42,30 @@ $this->headScript()->appendFile($this->basePath('assets/global/plugins/jquery.bl
         <div class="portlet-body">
             <div class="row">
 
-                <div class="col-sm-2">
+                <div class="col-sm-2 col-md-2">
                     <select id="companyList">
 
                     </select> 
                 </div>
-                <div class="col-sm-2">
+                <div class="col-sm-2 col-md-2">
                     <select id="branchList">
 
                     </select> 
 
                 </div>
-                <div class="col-sm-2">
+                <div class="col-sm-2 col-md-2">
                     <select id="departmentList">
 
                     </select> 
 
                 </div>
-                <div class="col-sm-3">
+                <div class="col-sm-3 col-md-2">
                     <select id="employeeList" class="">
 
                     </select> 
                 </div>
-                <div class="col-sm-3">
-                    <button id="generateReport" class="btn btn-block">
+                <div class="col-sm-3 col-md-2">
+                    <button id="generateReport" class="btn btn-block btn-customized">
                         Generate Report
                     </button>
 
