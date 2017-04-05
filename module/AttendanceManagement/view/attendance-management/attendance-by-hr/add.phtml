@@ -25,19 +25,24 @@ $submit->setAttribute('value', 'SUBMIT');
 
 $form->setAttribute('action', $this->url('attendancebyhr', ['action' => 'add']));
 
-if ($this->messages) {
-    print '<ul class="help-block bg-danger" style="background:#f3e250;">';
-    foreach ($this->messages as $message) {
-        print '<li>' . $message . '</li>';
-    }
-    print '</ul>';
-}
 
 $form->prepare();
 ?>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\attendancebyhr')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
+<?php
+if ($this->messages) {
+    print '<div class="alert alert-warning alert-dismissable">
+    <button type="button" class="close" data-dismiss="alert" aria-hidden="true"></button>
+    <strong>Warning!</strong> ';
+    foreach ($this->messages as $message) {
+        print $message;
+    }
+    print '</div>';
+}
+?>
+
 <div class="row margin-top-20">
     <div class="col-sm-8 col-sm-offset-2">
         <div class="portlet box custom-box">

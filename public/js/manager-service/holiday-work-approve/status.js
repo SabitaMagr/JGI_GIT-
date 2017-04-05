@@ -8,7 +8,7 @@
 
 angular.module('hris', [])
         .controller("holidayWorkStatusListController", function ($scope, $http) {
-
+            var $tableContainer = $("#holidayWorkRequestStatusTable");
             $scope.view = function () {
                 var employeeId = angular.element(document.getElementById('employeeId')).val();
                 var branchId = angular.element(document.getElementById('branchId')).val();
@@ -22,7 +22,7 @@ angular.module('hris', [])
                 var fromDate = angular.element(document.getElementById('fromDate')).val();
                 var toDate = angular.element(document.getElementById('toDate')).val();
                 var recomApproveId = angular.element(document.getElementById('recomApproveId')).val();
-
+                $tableContainer.block();
                 window.app.pullDataById(document.url, {
                     action: 'pullHoliayWorkRequestStatusList',
                     data: {
@@ -40,9 +40,11 @@ angular.module('hris', [])
                         'recomApproveId': recomApproveId
                     }
                 }).then(function (success) {
+                    $tableContainer.unblock();
                     console.log(success.recomApproveId);
                     $scope.initializekendoGrid(success.data);
                 }, function (failure) {
+                    $tableContainer.unblock();
                     console.log(failure);
                 });
             }

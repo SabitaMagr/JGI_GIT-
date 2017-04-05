@@ -4,6 +4,7 @@ namespace ManagerService\Controller;
 
 use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
+use Exception;
 use ManagerService\Repository\LoanApproveRepository;
 use Notification\Controller\HeadNotification;
 use Notification\Model\NotificationEvents;
@@ -155,7 +156,11 @@ class LoanApproveController extends AbstractActionController {
                 $loanRequestModel->recommendedRemarks = $getData->recommendedRemarks;
                 $this->loanApproveRepository->edit($loanRequestModel, $id);
                 $loanRequestModel->loanRequestId = $id;
-                HeadNotification::pushNotification(($loanRequestModel->status == 'RC') ? NotificationEvents::LOAN_RECOMMEND_ACCEPTED : NotificationEvents::LOAN_RECOMMEND_REJECTED, $loanRequestModel, $this->adapter, $this->plugin('url'));
+                try {
+                    HeadNotification::pushNotification(($loanRequestModel->status == 'RC') ? NotificationEvents::LOAN_RECOMMEND_ACCEPTED : NotificationEvents::LOAN_RECOMMEND_REJECTED, $loanRequestModel, $this->adapter, $this->plugin('url'));
+                } catch (Exception $e) {
+                    $this->flashmessenger()->addMessage($e->getMessage());
+                }
             } else if ($role == 3 || $role == 4) {
                 $loanRequestModel->approvedDate = Helper::getcurrentExpressionDate();
                 $loanRequestModel->approvedBy = $this->employeeId;
@@ -173,7 +178,11 @@ class LoanApproveController extends AbstractActionController {
                 $loanRequestModel->approvedRemarks = $getData->approvedRemarks;
                 $this->loanApproveRepository->edit($loanRequestModel, $id);
                 $loanRequestModel->loanRequestId = $id;
-                HeadNotification::pushNotification(($loanRequestModel->status == 'AP') ? NotificationEvents::LOAN_APPROVE_ACCEPTED : NotificationEvents::LOAN_APPROVE_REJECTED, $loanRequestModel, $this->adapter, $this->plugin('url'));
+                try {
+                    HeadNotification::pushNotification(($loanRequestModel->status == 'AP') ? NotificationEvents::LOAN_APPROVE_ACCEPTED : NotificationEvents::LOAN_APPROVE_REJECTED, $loanRequestModel, $this->adapter, $this->plugin('url'));
+                } catch (Exception $e) {
+                    $this->flashmessenger()->addMessage($e->getMessage());
+                }
             }
             return $this->redirect()->toRoute("loanApprove");
         }

@@ -8,7 +8,7 @@
 
 angular.module('hris', [])
         .controller("advanceStatusListController", function ($scope, $http) {
-
+            var $tableContainer = $("#advanceRequestStatusTable");
             $scope.view = function () {
                 var employeeId = angular.element(document.getElementById('employeeId')).val();
                 var branchId = angular.element(document.getElementById('branchId')).val();
@@ -21,7 +21,7 @@ angular.module('hris', [])
                 var advanceRequestStatusId = angular.element(document.getElementById('advanceRequestStatusId')).val();
                 var fromDate = angular.element(document.getElementById('fromDate1')).val();
                 var toDate = angular.element(document.getElementById('toDate1')).val();
-
+                $tableContainer.block();
                 window.app.pullDataById(document.url, {
                     action: 'pullAdvanceRequestStatusList',
                     data: {
@@ -38,9 +38,11 @@ angular.module('hris', [])
                         'toDate': toDate
                     }
                 }).then(function (success) {
+                    $tableContainer.unblock();
                     console.log(success.data);
                     $scope.initializekendoGrid(success.data);
                 }, function (failure) {
+                    $tableContainer.unblock();
                     console.log(failure);
                 });
             }

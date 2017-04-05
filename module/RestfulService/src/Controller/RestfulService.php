@@ -45,7 +45,9 @@ use SelfService\Repository\AttendanceRequestRepository;
 use SelfService\Repository\HolidayRepository as SelfHolidayRepository;
 use SelfService\Repository\LeaveRequestRepository;
 use SelfService\Repository\ServiceRepository;
+use Setup\Model\EmployeeExperience;
 use Setup\Model\EmployeeQualification;
+use Setup\Model\EmployeeTraining;
 use Setup\Model\RecommendApprove;
 use Setup\Repository\AcademicCourseRepository;
 use Setup\Repository\AcademicDegreeRepository;
@@ -53,8 +55,10 @@ use Setup\Repository\AcademicProgramRepository;
 use Setup\Repository\AcademicUniversityRepository;
 use Setup\Repository\AdvanceRepository;
 use Setup\Repository\BranchRepository;
+use Setup\Repository\EmployeeExperienceRepository;
 use Setup\Repository\EmployeeQualificationRepository;
 use Setup\Repository\EmployeeRepository;
+use Setup\Repository\EmployeeTrainingRepository;
 use Setup\Repository\JobHistoryRepository;
 use Setup\Repository\RecommendApproveRepository;
 use System\Model\DashboardDetail;
@@ -74,10 +78,6 @@ use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Adapter\Driver\ResultInterface;
 use Zend\Mvc\Controller\AbstractRestfulController;
 use Zend\View\Model\JsonModel;
-use Setup\Repository\EmployeeExperienceRepository;
-use Setup\Repository\EmployeeTrainingRepository;
-use Setup\Model\EmployeeExperience;
-use Setup\Model\EmployeeTraining;
 
 class RestfulService extends AbstractRestfulController {
 
@@ -2514,7 +2514,6 @@ class RestfulService extends AbstractRestfulController {
             $trainingAssignModel->status = 'E';
             $trainingAssignRepo->add($trainingAssignModel);
         }
-
         HeadNotification::pushNotification(NotificationEvents::TRAINING_ASSIGNED, $trainingAssignModel, $this->adapter, $this->plugin('url'));
 
         return [

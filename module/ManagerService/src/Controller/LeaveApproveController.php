@@ -11,6 +11,7 @@ namespace ManagerService\Controller;
 
 use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
+use Exception;
 use LeaveManagement\Form\LeaveApplyForm;
 use LeaveManagement\Model\LeaveApply;
 use LeaveManagement\Model\LeaveMaster;
@@ -22,16 +23,16 @@ use SelfService\Repository\LeaveRequestRepository;
 use Setup\Model\Branch;
 use Setup\Model\Department;
 use Setup\Model\Designation;
+use Setup\Model\HrEmployees;
 use Setup\Model\Position;
 use Setup\Model\ServiceEventType;
 use Setup\Model\ServiceType;
+use Setup\Repository\RecommendApproveRepository;
 use Zend\Authentication\AuthenticationService;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\Form\Element\Select;
 use Zend\Mvc\Controller\AbstractActionController;
-use Setup\Repository\RecommendApproveRepository;
-use Setup\Model\HrEmployees;
 
 class LeaveApproveController extends AbstractActionController {
 
@@ -179,10 +180,14 @@ class LeaveApproveController extends AbstractActionController {
                 $leaveApply->id = $id;
                 $leaveApply->employeeId = $requestedEmployeeID;
                 $leaveApply->approvedBy = $detail['APPROVER'];
-                if ($leaveApply->status == 'RC') {
-                    HeadNotification::pushNotification(NotificationEvents::LEAVE_RECOMMEND_ACCEPTED, $leaveApply, $this->adapter, $this->plugin('url'));
-                } else {
-                    HeadNotification::pushNotification(NotificationEvents::LEAVE_RECOMMEND_REJECTED, $leaveApply, $this->adapter, $this->plugin('url'));
+                try {
+                    if ($leaveApply->status == 'RC') {
+                        HeadNotification::pushNotification(NotificationEvents::LEAVE_RECOMMEND_ACCEPTED, $leaveApply, $this->adapter, $this->plugin('url'));
+                    } else {
+                        HeadNotification::pushNotification(NotificationEvents::LEAVE_RECOMMEND_REJECTED, $leaveApply, $this->adapter, $this->plugin('url'));
+                    }
+                } catch (Exception $e) {
+                    $this->flashmessenger()->addMessage($e->getMessage());
                 }
             } else if ($role == 3 || $role == 4) {
                 $leaveApply->approvedDt = Helper::getcurrentExpressionDate();
@@ -213,8 +218,12 @@ class LeaveApproveController extends AbstractActionController {
 
                 $leaveApply->id = $id;
                 $leaveApply->employeeId = $requestedEmployeeID;
-                HeadNotification::pushNotification(($leaveApply->status == 'AP') ? NotificationEvents::LEAVE_APPROVE_ACCEPTED : NotificationEvents::LEAVE_APPROVE_REJECTED, $leaveApply, $this->adapter, $this->plugin('url'));
                 $this->repository->edit($leaveApply, $id);
+                try {
+                    HeadNotification::pushNotification(($leaveApply->status == 'AP') ? NotificationEvents::LEAVE_APPROVE_ACCEPTED : NotificationEvents::LEAVE_APPROVE_REJECTED, $leaveApply, $this->adapter, $this->plugin('url'));
+                } catch (Exception $e) {
+                    $this->flashmessenger()->addMessage($e->getMessage());
+                }
             }
             return $this->redirect()->toRoute("leaveapprove");
         }
@@ -237,10 +246,10 @@ class LeaveApproveController extends AbstractActionController {
                     'allowHalfDay' => $leaveDtl['ALLOW_HALFDAY'],
                     'leave' => $leaveRequestRepository->getLeaveList($detail['EMPLOYEE_ID']),
                     'customRenderer' => Helper::renderCustomView(),
-                    'subEmployeeId'=> $detail['SUB_EMPLOYEE_ID'],
-                    'subRemarks'=>$detail['SUB_REMARKS'],
-                    'subApprovedFlag'=>$detail['SUB_APPROVED_FLAG'],
-                    'employeeList'=>  EntityHelper::getTableKVListWithSortOption($this->adapter, HrEmployees::TABLE_NAME, HrEmployees::EMPLOYEE_ID, [HrEmployees::FIRST_NAME, HrEmployees::MIDDLE_NAME, HrEmployees::LAST_NAME],[HrEmployees::STATUS => "E",HrEmployees::RETIRED_FLAG => "N"], HrEmployees::FIRST_NAME, "ASC", " ")
+                    'subEmployeeId' => $detail['SUB_EMPLOYEE_ID'],
+                    'subRemarks' => $detail['SUB_REMARKS'],
+                    'subApprovedFlag' => $detail['SUB_APPROVED_FLAG'],
+                    'employeeList' => EntityHelper::getTableKVListWithSortOption($this->adapter, HrEmployees::TABLE_NAME, HrEmployees::EMPLOYEE_ID, [HrEmployees::FIRST_NAME, HrEmployees::MIDDLE_NAME, HrEmployees::LAST_NAME], [HrEmployees::STATUS => "E", HrEmployees::RETIRED_FLAG => "N"], HrEmployees::FIRST_NAME, "ASC", " ")
         ]);
     }
 

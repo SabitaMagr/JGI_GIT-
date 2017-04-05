@@ -221,7 +221,15 @@ class AttendanceStatus extends AbstractActionController {
             ]);
         } catch (\Exception $e) {
             $this->flashmessenger()->addMessage($e->getMessage());
-            return $this->redirect()->toRoute("attendancestatus");
+            return Helper::addFlashMessagesToArray($this, [
+                        'form' => $this->form,
+                        'id' => $id,
+                        'employeeName' => $employeeName,
+                        'approver' => $authApprover,
+                        'employeeId' => $employeeId,
+                        'status' => $status,
+                        'requestedDt' => $detail['REQUESTED_DT'],
+            ]);
         }
     }
 

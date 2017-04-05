@@ -337,7 +337,9 @@ print $this->form()->closeTag();
             <div class="wrapper">
                 <div class="col-sm-8 col-sm-offset-2">
                     <ul id="headingList">
-                        <li><h2><?= strtoupper($empDtl['COMPANY_NAME']); ?></h2></li>
+                        <li>
+                            <img src="<?= $this->basePath()."/uploads/".$empDtl['FILE_NAME']; ?>" style="float:left;" height="50" width="50"/>
+                            <h2><?= strtoupper($empDtl['COMPANY_NAME']); ?></h2></li>
                         <li><h3>TRAVEL EXPENSE CLAIM FORM</h3></li>
                     </ul>
                 </div>
