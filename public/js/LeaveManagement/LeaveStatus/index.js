@@ -9,7 +9,7 @@
 
 angular.module('hris', [])
         .controller("leaveStatusListController", function ($scope, $http) {
-
+            var $tableContainer = $("#leaveRequestStatusTable");
             $scope.view = function () {
                 var employeeId = angular.element(document.getElementById('employeeId')).val();
                 var branchId = angular.element(document.getElementById('branchId')).val();
@@ -22,7 +22,7 @@ angular.module('hris', [])
                 var leaveRequestStatusId = angular.element(document.getElementById('leaveRequestStatusId')).val();
                 var fromDate = angular.element(document.getElementById('fromDate1')).val();
                 var toDate = angular.element(document.getElementById('toDate1')).val();
-
+                $tableContainer.block();
                 window.app.pullDataById(document.url, {
                     action: 'pullLeaveRequestStatusList',
                     data: {
@@ -39,8 +39,10 @@ angular.module('hris', [])
                         'toDate': toDate
                     }
                 }).then(function (success) {
+                    $tableContainer.unblock();
                     $scope.initializekendoGrid(success.data);
                 }, function (failure) {
+                    $tableContainer.unblock();
                     console.log(failure);
                 });
             }

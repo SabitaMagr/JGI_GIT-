@@ -10,12 +10,13 @@
 
 angular.module('hris', [])
         .controller('serviceController', function ($scope, $http) {
+            var $tableContainer = $("#serviceHistoryTable");
             $scope.serviceHistory = [];
             $scope.view = function () {
                 var employeeId = angular.element(document.getElementById('employeeId')).val();
                 var fromDate = angular.element(document.getElementById('fromDate')).val();
                 var toDate = angular.element(document.getElementById('toDate')).val();
-
+                $tableContainer.block();
                 window.app.pullDataById(document.url, {
                     action: 'pullServiceHistory',
                     data: {
@@ -24,8 +25,10 @@ angular.module('hris', [])
                         'employeeId': employeeId
                     }
                 }).then(function (success) {
+                    $tableContainer.unblock();
                     $scope.initializeKendoGrid(success.data);
                 }, function (failure) {
+                    $tableContainer.unblock();
                     console.log(failure);
                 });
             }

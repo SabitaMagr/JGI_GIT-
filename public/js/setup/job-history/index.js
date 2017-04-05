@@ -9,12 +9,13 @@
 angular.module('hris', [])
         .controller('jobHistoryController', function ($scope, $http) {
             $scope.jobHistoryList = [];
+            var $tableContainer = $("#jobHistoryTable");
             $scope.view = function () {
                 var employeeId = angular.element(document.getElementById('employeeId')).val();
                 var serviceEventTypeId = angular.element(document.getElementById('serviceEventTypeId')).val();
                 var fromDate = angular.element(document.getElementById('fromDate')).val();
                 var toDate = angular.element(document.getElementById('toDate')).val();
-
+                $tableContainer.block();
                 window.app.pullDataById(document.url, {
                     action: 'pullJobHistoryList',
                     data: {
@@ -24,9 +25,11 @@ angular.module('hris', [])
                         'serviceEventTypeId': serviceEventTypeId
                     }
                 }).then(function (success) {
+                    $tableContainer.unblock();
                     console.log(success);
                     $scope.initializekendoGrid(success.data);
                 }, function (failure) {
+                    $tableContainer.unblock();
                     console.log(failure);
                 });
             }

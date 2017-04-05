@@ -239,7 +239,9 @@ print $this->form()->closeTag();
             <div class="row">
                 <div class="col-md-8 col-sm-offset-2">
                     <ul id="headingList">
-                        <li><h2><?= strtoupper($empDtl['COMPANY_NAME']); ?></h2></li>
+                        <li>
+                            <img src="<?= $this->basePath()."/uploads/".$empDtl['FILE_NAME']; ?>" style="float:left;" height="50" width="50"/>
+                            <h2><?= strtoupper($empDtl['COMPANY_NAME']); ?></h2></li>
                         <li id="underline"><h3>Travel Authorization Form</h3></li>
                     </ul>
                 </div>

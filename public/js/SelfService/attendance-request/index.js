@@ -8,13 +8,13 @@
 
 angular.module('hris', [])
         .controller("attendanceRequestListController", function ($scope, $http) {
-
+            var $tableContainer = $("#attendanceRequestTable");
             $scope.view = function () {
                 var employeeId = angular.element(document.getElementById('employeeId')).val();
                 var attendanceRequestStatusId = angular.element(document.getElementById('attendanceRequestStatusId')).val();
                 var fromDate = angular.element(document.getElementById('fromDate')).val();
                 var toDate = angular.element(document.getElementById('toDate')).val();
-
+                $tableContainer.block();
                 window.app.pullDataById(document.url, {
                     action: 'pullAttendanceRequestList',
                     data: {
@@ -24,9 +24,11 @@ angular.module('hris', [])
                         'toDate': toDate
                     }
                 }).then(function (success) {
+                    $tableContainer.unblock();
                     $scope.initializekendoGrid(success.data);
                     window.app.UIConfirmations();
                 }, function (failure) {
+                    $tableContainer.unblock();
                     console.log(failure);
                 });
             }
