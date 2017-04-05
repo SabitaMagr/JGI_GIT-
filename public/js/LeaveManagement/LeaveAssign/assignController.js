@@ -1,6 +1,7 @@
 angular.module('hris', ['ui.bootstrap'])
         .controller('assignController', function ($scope, $uibModal) {
             $('select').select2();
+            var $tableContainer = $("#loadingDiv");
             $scope.leaveList = [];
             $scope.all = false;
             $scope.daysForAll = 0;
@@ -67,7 +68,7 @@ angular.module('hris', ['ui.bootstrap'])
                 var designationId = angular.element(document.getElementById('designationId')).val();
                 var serviceTypeId = angular.element(document.getElementById('serviceTypeId')).val();
                 console.log(serviceTypeId);
-
+                $tableContainer.block();
                 window.app.pullDataById(document.url, {
                     action: 'pullEmployeeLeave',
                     id: {
@@ -79,6 +80,7 @@ angular.module('hris', ['ui.bootstrap'])
                         serviceTypeId: serviceTypeId
                     }
                 }).then(function (success) {
+                    $tableContainer.unblock();
                     $scope.$apply(function () {
                         $scope.leaveList = success.data;
                         for (var i = 0; i < $scope.leaveList.length; i++) {
@@ -87,6 +89,7 @@ angular.module('hris', ['ui.bootstrap'])
                     });
 
                 }, function (failure) {
+                    $tableContainer.unblock();
                     console.log(failure);
 
                 });
