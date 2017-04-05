@@ -23,9 +23,9 @@ class CompanyRepository implements RepositoryInterface {
     }
 
     public function add(Model $model) {
-//        print "<pre>";
-//        print_r($model);
-//        exit;
+        print "<pre>";
+        print_r($model);
+        exit;
         $this->tableGateway->insert($model->getArrayCopyForDB());
     }
 

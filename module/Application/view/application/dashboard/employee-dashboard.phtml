@@ -419,24 +419,6 @@ $this->headScript()
                                         <input  class="form-control" placeholder="Task Name" type="text">
                                     </div>
                                 </div>
-<!--                                <div class="col-md-12">-->
-<!--                                    <div class="form-group">-->
-<!--                                        <label class="control-label">Position</label>-->
-<!--                                        <input  class="form-control" placeholder="positon" type="text">-->
-<!--                                    </div>-->
-<!--                                </div>-->
-                                <div class="col-md-12">
-                                    <div class="form-group">
-                                        <label class="control-label">Employee</label>
-                                        <div>
-                                            <select class="select2_category form-control" data-placeholder="Select Employee" tabindex="1">
-                                                <option value="Category 1">Rajan</option>
-                                                <option value="Category 2">Ukesh</option>
-                                                <option value="Category 3">Prabin</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
                             </div>
                         </div>
                     </div>
@@ -463,10 +445,13 @@ $this->headScript()
                                                 <span class="label holiday-color  "><?php print $holiday['HOLIDAY_ENAME']; ?></span>
                                             </div>
                                             <div class="col-xs-6 col-sm-4 col-md-4 remaining-days">
-                                                <span class="label label-sm "><?php print $holiday['DAYS_REMAINING'] . "Day(s) Remaining"; ?></span>
+                                                <?php
+                                                $daysRemaining = $holiday['DAYS_REMAINING'] ? ((1 == $holiday['DAYS_REMAINING']) ? "1 Day Remaining" : $holiday['DAYS_REMAINING'] . " Days Remaining") : "Today";
+                                                ?>
+                                                <span class="label label-sm "><?php print $daysRemaining; ?></span>
                                             </div>
                                             <div class="col-xs-6 col-sm-4 col-md-4 holiday-date">
-                                                <div class="date"><?php printf("%s %s", $holiday['WEEK_DAY'], $holiday['START_DATE']); ?></div>
+                                                <div class="date"><?php print $holiday['START_DATE']; ?></div>
                                             </div>
                                         </li>
                                         <?php endforeach; ?>

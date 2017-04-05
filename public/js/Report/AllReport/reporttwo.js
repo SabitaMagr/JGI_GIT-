@@ -124,31 +124,64 @@
         var $departmentList = $('#departmentList');
         var $generateReport = $('#generateReport');
 
-        var populateList = function ($element, list, id, value, defaultMessage) {
+        var populateList = function ($element, list, id, value, defaultMessage, selectedId) {
             $element.html('');
             $element.append($("<option></option>").val(-1).text(defaultMessage));
             for (var i in list) {
-                $element.append($("<option></option>").val(list[i][id]).text(list[i][value]));
+                if (typeof selectedId !== 'undefined' && selectedId != null && selectedId == list[i][id]) {
+                    $element.append($("<option selected='selected'></option>").val(list[i][id]).text(list[i][value]));
+                } else {
+                    $element.append($("<option></option>").val(list[i][id]).text(list[i][value]));
+                }
             }
         }
 
         var comBraDepList = document.comBraDepList;
+        comBraDepList.findCompanyAndBranchId = function (deptId) {
+            var companyList = JSON.parse(JSON.stringify(this));
+            var cKeys = Object.keys(companyList);
+
+            for (var i in cKeys) {
+                var company = companyList[cKeys[i]];
+                var branchList = company['BRANCH_LIST'];
+                var bKeys = Object.keys(branchList);
+
+                for (var j in bKeys) {
+                    var branch = branchList[bKeys[j]];
+                    var departmentList = branch['DEPARTMENT_LIST'];
+                    var dKeys = Object.keys(departmentList);
+                    for (var k in dKeys) {
+                        var department = departmentList[dKeys[k]];
+
+                        if (department['DEPARTMENT_ID'] == deptId) {
+                            return {"companyId": company['COMPANY_ID'], "branchId": branch['BRANCH_ID']};
+                        }
+                    }
+                }
+                return null;
+            }
+
+        };
         populateList($companyList, comBraDepList, 'COMPANY_ID', 'COMPANY_NAME', "Select Company");
         populateList($branchList, [], 'BRANCH_ID', 'BRANCH_NAME', "Select Branch");
         populateList($departmentList, [], 'DEPARTMENT_ID', 'DEPARTMENT_NAME', "Select Department");
 
-        $companyList.on('change', function () {
-            var $this = $(this);
-            if ($this.val() != -1) {
-                populateList($branchList, comBraDepList[$this.val()]['BRANCH_LIST'], 'BRANCH_ID', 'BRANCH_NAME', "Select Branch");
+        var companyListChange = function (val, selectedId) {
+            if (val != -1) {
+                populateList($branchList, comBraDepList[val]['BRANCH_LIST'], 'BRANCH_ID', 'BRANCH_NAME', "Select Branch", selectedId);
                 populateList($departmentList, [], 'DEPARTMENT_ID', 'DEPARTMENT_NAME', "Select Department");
             }
+        };
+        $companyList.on('change', function () {
+            companyListChange($(this).val());
         });
-        $branchList.on('change', function () {
-            var $this = $(this);
-            if ($this.val() != -1) {
-                populateList($departmentList, comBraDepList[$companyList.val()]['BRANCH_LIST'][$this.val()]['DEPARTMENT_LIST'], 'DEPARTMENT_ID', 'DEPARTMENT_NAME', "Select Department");
+        var branchListChange = function (val, selectedId) {
+            if (val != -1) {
+                populateList($departmentList, comBraDepList[$companyList.val()]['BRANCH_LIST'][val]['DEPARTMENT_LIST'], 'DEPARTMENT_ID', 'DEPARTMENT_NAME', "Select Department", selectedId);
             }
+        };
+        $branchList.on('change', function () {
+            branchListChange($(this).val());
         });
 
         $generateReport.on('click', function () {
@@ -162,7 +195,12 @@
         var departmentId = document.departmentId;
         if (departmentId != 0) {
             initializeReport(departmentId);
-            
+            var comAndDept = comBraDepList.findCompanyAndBranchId(departmentId);
+            if (comAndDept != null) {
+                $companyList.val(comAndDept['companyId']);
+                companyListChange(comAndDept['companyId'], comAndDept['branchId']);
+                branchListChange(comAndDept['branchId'], departmentId)
+            }
         }
     });
 })(window.jQuery, window.app);

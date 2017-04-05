@@ -129,8 +129,8 @@
                         pageSize: 20
                     },
                     scrollable: false,
-                    sortable: true,
-                    pageable: true,
+                    sortable: false,
+                    pageable: false,
                     columns: extractedDetailData.cols
                 });
                 displayDataInBtnGroup('.custom-btn-group');

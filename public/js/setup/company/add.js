@@ -24,15 +24,21 @@
             fileName: null,
             oldFileName: null
         };
+        if (typeof document.imageData !== 'undefined') {
+            imageData = document.imageData
+        }
 
         var toggle = function () {
             if (imageData.fileName == null) {
                 $myAwesomeDropzone.show();
                 $uploadedImage.hide();
+                $('#uploadFile').text("Upload");
             } else {
                 $($uploadedImage.children()[0]).attr('src', document.basePath + "/uploads/" + imageData.fileName);
+                $logo.val(imageData.fileCode);
                 $myAwesomeDropzone.hide();
                 $uploadedImage.show();
+                $('#uploadFile').text("Edit");
             }
         }
         toggle();
@@ -53,14 +59,24 @@
             }
         };
         $('#uploadFile').on('click', function () {
-            dropZone.processQueue();
+            if ($(this).text() == "Edit") {
+                imageData.fileName = null;
+                toggle();
+            } else {
+                dropZone.processQueue();
+            }
         });
 
 
 
 
-        $(formId).on('submit', function (e) {
-            e.preventDefault();
+        $("form#company-form").submit(function (e) {
+            if ($logo.val() === "") {
+                app.errorMessage("No company logo is set.");
+                return false;
+            } else {
+                return true;
+            }
         });
     });
 })(window.jQuery, window.app);
