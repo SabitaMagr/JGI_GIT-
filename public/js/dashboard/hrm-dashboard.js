@@ -170,7 +170,14 @@
     }
     Highcharts.chart('chart-department-headcount', {
         chart: {
-            type: 'column'
+            type: 'column',
+            options3d: {
+                enabled: true,
+                alpha: 0,
+                beta: -1,
+                depth: 50,
+                viewDistance: 25
+            }
         },
         title: {
             text: 'Employees By Department'
@@ -183,8 +190,7 @@
             labels: {
                 rotation: -50,
                 style: {
-                    fontSize: '12px',
-                    // fontFamily: 'Verdana, sans-serif'
+                    fontSize: '12px'
                 }
             }
         },
