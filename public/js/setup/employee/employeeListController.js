@@ -8,6 +8,7 @@
 
 angular.module('hris', [])
         .controller('employeeListController', function ($scope, $http) {
+            var $tableContainer = $("#employeeTable");
 //            $scope.gridData = new kendo.data.ObservableArray([
 //            ]);
 //            $scope.gridColumns = [
@@ -38,6 +39,7 @@ angular.module('hris', [])
                 var serviceTypeId = angular.element(document.getElementById('serviceTypeId')).val();
                 var serviceEventTypeId = angular.element(document.getElementById('serviceEventTypeId')).val();
 
+                $tableContainer.block();
                 window.app.pullDataById(document.url, {
                     action: 'pullEmployeeListForEmployeeTable',
                     data: {
@@ -50,9 +52,11 @@ angular.module('hris', [])
                         'serviceEventTypeId': serviceEventTypeId
                     }
                 }).then(function (success) {
+                    $tableContainer.unblock();
                     console.log("pullEmployeeList", success.data);
                     $scope.initializekendoGrid(success.data);
                 }, function (failure) {
+                    $tableContainer.unblock();
                     console.log(failure);
                 });
             };

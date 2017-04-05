@@ -223,7 +223,7 @@ class HrEmployeesFormTabOne extends Model {
      * @Annotation\Options({"label":" Ward No"})
      * @Annotation\Required(false)
      * @Annotation\Validator({"name":"StringLength", "options":{"max":"2"}})
-     * @Annotation\Attributes({ "id":"addrPermWardNo", "class":"form-control" })
+     * @Annotation\Attributes({ "id":"addrPermWardNo", "class":"form-control","min":"1" })
      */
     public $addrPermWardNo;
 
@@ -280,7 +280,7 @@ class HrEmployeesFormTabOne extends Model {
      * @Annotation\Required(false)
      * @Annotation\Options({"label":"Ward No"})
      * @Annotation\Validator({"name":"StringLength", "options":{"max":"2"}})
-     * @Annotation\Attributes({ "id":"addrTempWardNo", "class":"form-control" })
+     * @Annotation\Attributes({ "id":"addrTempWardNo", "class":"form-control","min":"1" })
      */
     public $addrTempWardNo;
 

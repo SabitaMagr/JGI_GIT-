@@ -818,7 +818,8 @@ return [
             WorkOnDayoff::class => ControllerFactory::class,
             PerformanceAppraisal::class=> ControllerFactory::class,
             LeaveNotification::class=> ControllerFactory::class,
-            TravelNotification::class=> ControllerFactory::class
+            TravelNotification::class=> ControllerFactory::class,
+            TrainingRequest::class => ControllerFactory::class
         ],
     ],
     'view_manager' => [
