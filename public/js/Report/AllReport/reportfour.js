@@ -96,16 +96,16 @@
                     } else {
                         if (data['IS_ABSENT'] == 1) {
                             $group.html('A');
-                            $group.parent().addClass('bg-red');
+                            $group.parent().addClass('bg-red1 textcolor1');
 
                         } else {
                             if (data['ON_LEAVE'] == 1) {
                                 $group.html('L');
-                                $group.parent().addClass('bg-blue');
+                                $group.parent().addClass('bg-blue textcolor2');
 
                             } else {
                                 $group.html('H');
-                                $group.parent().addClass('bg-white');
+                                $group.parent().addClass('bg-white textcolor3');
                             }
 
                         }
