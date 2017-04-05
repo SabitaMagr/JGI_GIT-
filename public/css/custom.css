@@ -1564,7 +1564,7 @@ ul#optionList li{
 .bootstrap-timepicker-widget.dropdown-menu.timepicker-orient-left.timepicker-orient-top.open,.bootstrap-timepicker-widget
 {
     width:145px !important;
-        min-width: 144px !important;
+    min-width: 144px !important;
 }
 
 ul#headingList{
@@ -1625,12 +1625,12 @@ ul#personalInfo li{
     padding: 0px !important;
 }
 .detailOfRequest{
-        margin-top: 2%;
+    margin-top: 2%;
 }
 
 .detailOfRequest1{
     margin-top:10%;
-        min-height: 7px;
+    min-height: 7px;
 }
 .border-dotted{
     border-top: 1px solid #000;
@@ -1701,9 +1701,9 @@ ul#personalInfo li{
 }
 
 #expenseDtlTbl th{
-   font-weight: 400; 
-   border-bottom: 1px solid #e7ecf1;
-   border-right: 1px solid #e7ecf1;
+    font-weight: 400; 
+    border-bottom: 1px solid #e7ecf1;
+    border-right: 1px solid #e7ecf1;
     padding: 8px;
     line-height: 1.42857;
     vertical-align: top;
@@ -1714,11 +1714,11 @@ ul#personalInfo li{
     border: 1px solid #e7ecf1;
 }
 #expenseDtlTbl td{
-        border-bottom: 1px solid #e7ecf1;
-        border-right: 1px solid #e7ecf1;
-        padding: 8px;
-        line-height: 1.42857;
-        vertical-align: top;
+    border-bottom: 1px solid #e7ecf1;
+    border-right: 1px solid #e7ecf1;
+    padding: 8px;
+    line-height: 1.42857;
+    vertical-align: top;
 }
 .wrapper{
     width:100%;
@@ -1726,7 +1726,7 @@ ul#personalInfo li{
 }
 
 #expenseDtlTbl tbody > tr:last-child > td {
-  border-bottom: 0px !important;
+    border-bottom: 0px !important;
 }
 
 #expenseDtlTbl .lastColumn{
@@ -1824,15 +1824,15 @@ ul#personalInfo li{
 .textcolor1,.bg-red1
 {
     color:#F08080 !important;
-        /* background-color:#F08080 !important; */
-        background-color:#fff !important;
-       
+    /* background-color:#F08080 !important; */
+    background-color:#fff !important;
+
 }
- 
+
 .textcolor2 span
 {
     color:#0000C0 !important;
-    
+
 }
 .textcolor3 span
 {
@@ -1844,7 +1844,7 @@ ul#personalInfo li{
 }
 .custom-btn-present,.custom-btn-absent,.custom-btn-leave
 { 
-padding:4px 10px 2px !important;
+    padding:4px 10px 2px !important;
 }
 .custom-btn-leave
 {
@@ -1852,7 +1852,7 @@ padding:4px 10px 2px !important;
 }
 .custom-btn-absent
 {
-  background-color:rgba(255, 0, 0, 0.5) !important;  
+    background-color:rgba(255, 0, 0, 0.5) !important;  
 }
 
 
@@ -1864,7 +1864,7 @@ padding:4px 10px 2px !important;
     /* border-top: none !important; */
 }
 .btn-customized{
-  font-size: 11px !important;
+    font-size: 11px !important;
     font-weight: normal !important;
     padding-top: 3px !important;
     padding-bottom: 2px !important;
@@ -1878,7 +1878,7 @@ padding:4px 10px 2px !important;
 .totalbtn
 {
     margin-right:5px !important;
-        margin-right: 5px !important;
+    margin-right: 5px !important;
     border: solid #eee 1px;
     box-shadow: none !important;
     font-size:11px !important;
@@ -1892,15 +1892,17 @@ padding:4px 10px 2px !important;
 {
     border:solid #ddd 1px !important;
 }
- .custom-btn-present
- {
-     /*background-color:steelblue !important;*/
-     color:#fff !important;
-     
- }
- .custom-btn-present
+.custom-btn-present
+{
+    /*background-color:steelblue !important;*/
+    color:#fff !important;
+
+}
+.custom-btn-present
 {
     background-color:rgba(70,130,180,0.7) !important;
 }
- 
- 
+.blockUI{
+    z-index: 1011;
+    position: absolute; padding: 0px; margin: 0px; width: 30%; top: 122.5px; left: 172px; text-align: center; color: rgb(0, 0, 0); border: 0px; cursor: wait;
+}
