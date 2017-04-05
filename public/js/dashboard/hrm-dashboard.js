@@ -84,13 +84,14 @@
         tableWrapper.find('.dataTables_length select').select2(); // initialize select2 dropdown
 
         oTable.on( 'click', 'tr', function () {
-            console.log('dfd');
             if ( $(this).hasClass('selected') ) {
                 $(this).removeClass('selected');
+                $('.hrm-dashboard-employee-list .fonticon').css('background-color', '#ccc');
             }
             else {
                 table.$('tr.selected').removeClass('selected');
                 $(this).addClass('selected');
+                $('.hrm-dashboard-employee-list .fonticon').css('background-color', '');
             }
         } );
     });
