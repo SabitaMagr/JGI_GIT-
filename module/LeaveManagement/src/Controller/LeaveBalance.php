@@ -11,6 +11,7 @@ namespace LeaveManagement\Controller;
 
 use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
+use Exception;
 use LeaveManagement\Form\LeaveApplyForm;
 use LeaveManagement\Model\LeaveApply;
 use LeaveManagement\Repository\LeaveBalanceRepository;
@@ -152,7 +153,6 @@ class LeaveBalance extends AbstractActionController {
 
         $employeeRepository = new EmployeeRepository($this->adapter);
         $employeeDtl = $employeeRepository->fetchById($employeeId);
-
         if ($request->isPost()) {
             $this->form->setData($request->getPost());
 
@@ -168,8 +168,13 @@ class LeaveBalance extends AbstractActionController {
                 $leaveRequest->requestedDt = Helper::getcurrentExpressionDate();
                 $leaveRequest->status = "RQ";
                 $this->leaveRequestRepository->add($leaveRequest);
-                HeadNotification::pushNotification(NotificationEvents::LEAVE_APPLIED, $leaveRequest, $this->adapter, $this->plugin('url'));
                 $this->flashmessenger()->addMessage("Leave Request Successfully added!!!");
+
+                try {
+                    HeadNotification::pushNotification(NotificationEvents::LEAVE_APPLIED, $leaveRequest, $this->adapter, $this->plugin('url'));
+                } catch (Exception $e) {
+                    $this->flashmessenger()->addMessage($e->getMessage());
+                }
                 return $this->redirect()->toRoute("leavestatus");
             }
         }
@@ -257,16 +262,15 @@ class LeaveBalance extends AbstractActionController {
             }
 
 //            $objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, "Excel2007");
-            
 //            header('Content-Disposition: attachment;filename="LeaveBalance.xlsx"');
 //            header('Cache-Control: max-age=0');
 //            ob_end_clean();
 //            $objWriter->save('php://output');
-            
-            header('Content-Type: application/vnd.ms-excel'); 
-            header('Content-Disposition: attachment;filename="LeaveBalance.xls"'); 
-            header('Cache-Control: max-age=0'); 
-            $objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel5'); 
+
+            header('Content-Type: application/vnd.ms-excel');
+            header('Content-Disposition: attachment;filename="LeaveBalance.xls"');
+            header('Cache-Control: max-age=0');
+            $objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel5');
             $objWriter->save('php://output');
             exit;
         }
