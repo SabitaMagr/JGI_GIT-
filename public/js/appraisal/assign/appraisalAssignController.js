@@ -12,7 +12,7 @@ angular.module('hris', ['ui.bootstrap'])
             $scope.all = false;
             $scope.assignShowHide = false;
             $scope.showHideAssignBtn = false;
-            
+            var $tableContainer = $("#loadingTable");
             $scope.view = function () {
                 $scope.all = false;
                 $scope.assignShowHide = false;
@@ -22,6 +22,7 @@ angular.module('hris', ['ui.bootstrap'])
                 var employeeId = angular.element(document.getElementById('employeeId')).val();
                 var appraisalId = angular.element(document.getElementById('appraisalId')).val();
                 console.log(appraisalId);
+                $tableContainer.block();
                 window.app.pullDataById(document.url, {
                     action: 'pullEmployeeWidAssignDetail',
                     data: {
@@ -32,6 +33,7 @@ angular.module('hris', ['ui.bootstrap'])
                         appraisalId:appraisalId
                     }
                 }).then(function (success) {
+                    $tableContainer.unblock();
                     console.log("Employee list for assign", success);
                     $scope.$apply(function () {
                         $scope.employeeList = success.data;
@@ -41,6 +43,7 @@ angular.module('hris', ['ui.bootstrap'])
                         }
                     });
                 }, function (failure) {
+                    $tableContainer.unblock();
                     console.log("Employee Get All", failure);
                 });
             };

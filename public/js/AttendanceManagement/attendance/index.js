@@ -12,11 +12,12 @@
 angular.module('hris', [])
         .controller('attendanceController', function ($scope, $http) {
             $scope.attendanceList = [];
+            var $tableContainer = $("#attendanceTable");
             $scope.view = function () {
                 var employeeId = angular.element(document.getElementById('employeeId')).val();
                 var fromDate = angular.element(document.getElementById('fromDate')).val();
                 var toDate = angular.element(document.getElementById('toDate')).val();
-
+                $tableContainer.block();
                 window.app.pullDataById(document.url, {
                     action: 'pullAttendanceList',
                     data: {
@@ -25,8 +26,10 @@ angular.module('hris', [])
                         'employeeId': employeeId
                     }
                 }).then(function (success) {
+                    $tableContainer.unblock();
                     $scope.initializekendoGrid(success.data);
                 }, function (failure) {
+                    $tableContainer.unblock();
                     console.log(failure);
                 });
             }

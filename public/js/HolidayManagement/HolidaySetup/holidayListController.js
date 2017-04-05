@@ -11,12 +11,13 @@
 angular.module('hris', [])
         .controller('holidayListController', function ($scope, $http) {
             $scope.holidayList = [];
+            var $tableContainer = $("#holidayTable");
             $scope.view = function () {
                 var startDate = angular.element($("#startDate1")).val();
                 var endDate = angular.element($("#endDate1")).val();
                 var branchId = angular.element($("#branchId")).val();
                 var genderId = angular.element($("#genderId")).val();
-
+                $tableContainer.block();
                 window.app.pullDataById(document.url, {
                     action: 'pullHolidayList',
                     data: {
@@ -26,12 +27,14 @@ angular.module('hris', [])
                         'genderId': genderId
                     }
                 }).then(function (success) {
+                    $tableContainer.unblock();
                     $scope.$apply(function () {
                         // console.log(success.data);
                         //$scope.holidayList = success.data;
                         $scope.initializekendoGrid(success.data);
                     });
                 }, function (failure) {
+                    $tableContainer.unblock();
                     console.log(failure);
                 });
             }
