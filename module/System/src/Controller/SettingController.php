@@ -29,7 +29,7 @@ class SettingController extends AbstractActionController {
 
     public function indexAction() {
         $setting = $this->repository->fetchById($this->userId);
-        return new CustomViewModel($setting->getArrayCopy());
+        return new CustomViewModel(($setting == null) ? null : $setting->getArrayCopy());
     }
 
     public function updateAction() {

@@ -129,8 +129,8 @@
                         pageSize: 20
                     },
                     scrollable: false,
-                    sortable: true,
-                    pageable: true,
+                    sortable: false,
+                    pageable: false,
                     columns: extractedDetailData.cols
                 });
                 displayDataInBtnGroup('.custom-btn-group');
@@ -166,24 +166,68 @@
             });
         };
         $('select').select2();
-        var $companylist = $('#companyList');
+        var $companyList = $('#companyList');
         var $employeeList = $('#employeeList');
         var $branchList = $('#branchList');
         var $departmentList = $('#departmentList');
         var $generateReport = $('#generateReport');
 
-        var populateList = function ($element, list, id, value, defaultMessage) {
+        var populateList = function ($element, list, id, value, defaultMessage, selectedId) {
             $element.html('');
             $element.append($("<option></option>").val(-1).text(defaultMessage));
             for (var i in list) {
-                $element.append($("<option></option>").val(list[i][id]).text(list[i][value]));
+                if (typeof selectedId !== 'undefined' && selectedId != null && selectedId == list[i][id]) {
+                    $element.append($("<option selected='selected'></option>").val(list[i][id]).text(list[i][value]));
+                } else {
+                    $element.append($("<option></option>").val(list[i][id]).text(list[i][value]));
+                }
             }
         }
 
         var comBraDepList = document.comBraDepList;
+        comBraDepList.findCompanyAndBranchId = function (deptId) {
+            var companyList = JSON.parse(JSON.stringify(this));
+            var cKeys = Object.keys(companyList);
+
+            for (var i in cKeys) {
+                var company = companyList[cKeys[i]];
+                var branchList = company['BRANCH_LIST'];
+                var bKeys = Object.keys(branchList);
+
+                for (var j in bKeys) {
+                    var branch = branchList[bKeys[j]];
+                    var departmentList = branch['DEPARTMENT_LIST'];
+                    var dKeys = Object.keys(departmentList);
+                    for (var k in dKeys) {
+                        var department = departmentList[dKeys[k]];
+
+                        if (department['DEPARTMENT_ID'] == deptId) {
+                            return {"companyId": company['COMPANY_ID'], "branchId": branch['BRANCH_ID']};
+                        }
+                    }
+                }
+                return null;
+            }
+
+        };
         var employeeList = document.employeeList;
+        employeeList.findDepartmentId = function (searchKey) {
+            var empList = JSON.parse(JSON.stringify(this));
+            var keys = Object.keys(empList);
+
+            var returnData = {'departmentId': null};
+            for (var i in keys) {
+                var key = keys[i];
+                if (empList[key]['EMPLOYEE_ID'] == searchKey) {
+                    returnData['departmentId'] = empList[key]['DEPARTMENT_ID'];
+                    break;
+                }
+
+            }
+            return returnData;
+        };
         populateList($employeeList, employeeList, 'EMPLOYEE_ID', 'FULL_NAME', "Select Employee");
-        populateList($companylist, comBraDepList, 'COMPANY_ID', 'COMPANY_NAME', "All Company");
+        populateList($companyList, comBraDepList, 'COMPANY_ID', 'COMPANY_NAME', "All Company");
         populateList($branchList, [], 'BRANCH_ID', 'BRANCH_NAME', "All Branch");
         populateList($departmentList, [], 'DEPARTMENT_ID', 'DEPARTMENT_NAME', "All Department");
 
@@ -207,26 +251,32 @@
                 }
             });
         }
-        $companylist.on('change', function () {
-            var $this = $(this);
-            if ($this.val() != -1) {
-                populateList($branchList, comBraDepList[$this.val()]['BRANCH_LIST'], 'BRANCH_ID', 'BRANCH_NAME', "SELECT BRANCH");
-                populateList($departmentList, [], 'DEPARTMENT_ID', 'DEPARTMENT_NAME', "SELECT DEPARTMENT");
-                populateList($employeeList, employeeFilter(employeeList, $this.val(), -1, -1), 'EMPLOYEE_ID', 'FULL_NAME', "Select Employee");
+        var companyListChange = function (val, selectedId) {
+            if (val != -1) {
+                populateList($branchList, comBraDepList[val]['BRANCH_LIST'], 'BRANCH_ID', 'BRANCH_NAME', "Select Branch", selectedId);
+                populateList($departmentList, [], 'DEPARTMENT_ID', 'DEPARTMENT_NAME', "Select Department");
             }
+        };
+        $companyList.on('change', function () {
+            companyListChange($(this).val());
         });
+        var branchListChange = function (val, selectedId) {
+            if (val != -1) {
+                populateList($departmentList, comBraDepList[$companyList.val()]['BRANCH_LIST'][val]['DEPARTMENT_LIST'], 'DEPARTMENT_ID', 'DEPARTMENT_NAME', "Select Department", selectedId);
+            }
+        };
         $branchList.on('change', function () {
-            var $this = $(this);
-            if ($this.val() != -1) {
-                populateList($departmentList, comBraDepList[$companylist.val()]['BRANCH_LIST'][$this.val()]['DEPARTMENT_LIST'], 'DEPARTMENT_ID', 'DEPARTMENT_NAME', "SELECT DEPARTMENT");
-                populateList($employeeList, employeeFilter(employeeList, $companylist.val(), $this.val(), -1), 'EMPLOYEE_ID', 'FULL_NAME', "Select Employee");
-            }
+            branchListChange($(this).val());
         });
-        $departmentList.on('change', function () {
-            var $this = $(this);
-            if ($this.val() != -1) {
-                populateList($employeeList, employeeFilter(employeeList, $companylist.val(), $branchList.val(), $this.val()), 'EMPLOYEE_ID', 'FULL_NAME', "Select Employee");
+
+        var departmentListChange = function (val, selectedId) {
+            if (val != -1) {
+                populateList($employeeList, employeeFilter(employeeList, $companyList.val(), $branchList.val(), val), 'EMPLOYEE_ID', 'FULL_NAME', "Select Employee", selectedId);
             }
+
+        }
+        $departmentList.on('change', function () {
+            departmentListChange($(this).val());
         });
 
         $generateReport.on('click', function () {
@@ -241,7 +291,21 @@
         var employeeId = document.employeeId;
         if (employeeId != 0) {
             initializeReport(employeeId);
-            $employeeList.val(employeeId);
+            var departmentId = employeeList.findDepartmentId(employeeId)['departmentId'];
+
+            if (departmentId != null) {
+                var comAndDept = comBraDepList.findCompanyAndBranchId(departmentId);
+                if (comAndDept != null) {
+                    $companyList.val(comAndDept['companyId']);
+                    companyListChange(comAndDept['companyId'], comAndDept['branchId']);
+                    branchListChange(comAndDept['branchId'], departmentId);
+                    departmentListChange(departmentId, employeeId);
+                } else {
+                    console.log("system message", "companyId and branchId for department with departmentId " + departmentId + "not found");
+                }
+            } else {
+                console.log("system message", "departmentId for employee with employeeId " + employeeId + "not found");
+            }
         }
 
 

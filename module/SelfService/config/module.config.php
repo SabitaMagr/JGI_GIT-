@@ -26,6 +26,7 @@ use Zend\Router\Http\Segment;
 use SelfService\Controller\PerformanceAppraisal;
 use SelfService\Controller\LeaveNotification;
 use SelfService\Controller\TravelNotification;
+use SelfService\Controller\TrainingRequest;
 
 return [
     'router' => [
@@ -265,6 +266,20 @@ return [
                     ],
                     'defaults' => [
                         'controller' => TravelNotification::class,
+                        'action' => 'index',
+                    ]
+                ],
+            ],
+            'trainingRequest' => [
+                'type' => Segment::class,
+                'options' => [
+                    'route' => '/selfservice/trainingRequest[/:action[/:id]]',
+                    'constants' => [
+                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'id' => '[0-9]+',
+                    ],
+                    'defaults' => [
+                        'controller' => TrainingRequest::class,
                         'action' => 'index',
                     ]
                 ],
@@ -751,6 +766,33 @@ return [
                     [
                         'label' => 'Detail',
                         'route' => 'travelNotification',
+                        'action' => 'view',
+                    ],
+                ],
+            ],
+        ],
+        'trainingRequest' => [
+            [
+                'label' => 'Training Request',
+                'route' => 'trainingRequest',
+            ],
+            [
+                'label' => 'Training Request',
+                'route' => 'trainingRequest',
+                'pages' => [
+                    [
+                        'label' => 'List',
+                        'route' => 'trainingRequest',
+                        'action' => 'index',
+                    ],
+                    [
+                        'label' => 'Add',
+                        'route' => 'trainingRequest',
+                        'action' => 'add',
+                    ],
+                    [
+                        'label' => 'Detail',
+                        'route' => 'trainingRequest',
                         'action' => 'view',
                     ],
                 ],
