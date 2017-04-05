@@ -1821,3 +1821,30 @@ ul#personalInfo li{
     margin-bottom: 5px;
     text-align: right;
 }
+.textcolor1,.bg-red1
+{
+    color:#F08080 !important;
+        /* background-color:#F08080 !important; */
+        background-color:#fff !important;
+       
+}
+ 
+.textcolor2 span
+{
+    color:#0000C0 !important;
+}
+.textcolor3 span
+{
+    color:steelblue !important;
+}
+.textcolor3{
+    color:#ddd !important;
+}
+.custom-btn-present,.custom-btn-absent,.custom-btn-leave
+{ 
+padding: 4px 10px 2px !important;
+}
+.custom-btn-leave
+{
+    background-color:#ddd !important;
+}
