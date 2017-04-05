@@ -11,6 +11,7 @@ use Zend\Db\TableGateway\TableGateway;
 use Zend\Db\Sql\Sql;
 use Zend\Db\Sql\Expression;
 use Training\Model\TrainingAssign;
+use Application\Helper\Helper;
 
 class TrainingRepository implements RepositoryInterface
 {
@@ -94,6 +95,7 @@ class TrainingRepository implements RepositoryInterface
     }
     
     public function selectAll($employeeId){
+        $today = Helper::getcurrentExpressionDate();
         $sql =  new Sql($this->adapter);
         $select = $sql->select();
         $select->columns([
