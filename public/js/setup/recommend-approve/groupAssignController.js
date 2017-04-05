@@ -1,6 +1,7 @@
 angular.module('hris', ['ui.bootstrap'])
         .controller('groupAssignController', function ($scope, $uibModal, $log, $document) {
             $('select').select2();
+            var $tableContainer = $("#loadingDiv");
             $scope.employeeList = [];
             $scope.all = false;
             $scope.assignShowHide = false;
@@ -39,6 +40,7 @@ angular.module('hris', ['ui.bootstrap'])
                 var departmentId = angular.element(document.getElementById('departmentId')).val();
                 var designationId = angular.element(document.getElementById('designationId')).val();
                 var employeeId = angular.element(document.getElementById('employeeId')).val();
+                $tableContainer.block();
                 window.app.pullDataById(document.url, {
                     action: 'pullEmployeeForRecomApproverAssign',
                     // pullEmployeeForShiftAssign
@@ -49,6 +51,7 @@ angular.module('hris', ['ui.bootstrap'])
                         employeeId: employeeId
                     }
                 }).then(function (success) {
+                    $tableContainer.unblock();
                     console.log("Employee list for assign", success);
                     $scope.$apply(function () {
                         $scope.employeeList = success.data;
@@ -59,6 +62,7 @@ angular.module('hris', ['ui.bootstrap'])
 
                     });
                 }, function (failure) {
+                    $tableContainer.unblock();
                     console.log("Employee Get All", failure);
                 });
             };

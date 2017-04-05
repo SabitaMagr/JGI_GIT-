@@ -1377,31 +1377,31 @@ json_encode($address);
                             <tr ng-repeat="qualificationForm in qualificationFormList">
                                 <td>
                                     <input type="hidden" ng-model="qualificationForm.id"/>
-                                    <select class="form-control academicSelect"
+                                    <select select2 class="form-control academicSelect"
                                             ng-options="degree.name for degree in degreeList track by degree.id"
                                             ng-model="qualificationForm.academicDegreeId">
                                     </select>
                                 </td>
                                 <td>
-                                    <select class="form-control academicSelect"
+                                    <select select2 class="form-control academicSelect"
                                             ng-options="university.name for university in universityList track by university.id"
                                             ng-model="qualificationForm.academicUniversityId">
                                     </select>
                                 </td>
                                 <td>
-                                    <select class="form-control academicSelect"
+                                    <select select2 class="form-control academicSelect"
                                             ng-options="program.name for program in programList track by program.id"
                                             ng-model="qualificationForm.academicProgramId">
                                     </select>
                                 </td>
                                 <td>
-                                    <select class="form-control academicSelect"
+                                    <select select2 class="form-control academicSelect"
                                             ng-options="course.name for course in courseList track by course.id"
                                             ng-model="qualificationForm.academicCourseId">
                                     </select>
                                 </td>
                                 <td>
-                                    <select class="form-control academicSelect"
+                                    <select select2 class="form-control academicSelect"
                                             ng-options="rankTypes.name for rankTypes in rankType track by rankTypes.id"
                                             ng-model="qualificationForm.rankType">
                                     </select>
@@ -1463,9 +1463,9 @@ json_encode($address);
                                       class="dropzone"
                                       id="my-awesome-dropzone">
                                 </form>
-                                <span id="noImageSelected" class="errorMsg">Please Select an Image!</span>
-                                <div id="uploadedImage"  class="cbp-caption-defaultWrap">
-                                    <image style="width:100%;height:144px;"   />
+                                <span ng-show="noImageSelected" class="errorMsg">Please Select an Image!</span>
+                                <div ng-hide="(file.fileCode == null || file.editMode)" class="cbp-caption-defaultWrap">
+                                    <image style="width:100%;height:144px;"   src="{{viewImage(file.filePath)}}"/>
                                 </div>
 
                             </div>
@@ -1662,7 +1662,7 @@ json_encode($address);
                                         </div>
                                     </td>
                                     <td>
-                                        <input type="text" ng-model="training.fromDate" name="fromDate_{{training.checkbox}}" required="required" class="form-control" id="expfromDate_{{training.checkbox}}" value="">
+                                        <input dvalue="{{training.fromDate}}" datepicker type="text" ng-model="training.fromDate" name="fromDate_{{training.checkbox}}" required="required" class="form-control" id="expfromDate_{{training.checkbox}}" value="">
                                         <div ng-show="employeeTrainingForm.$submitted || employeeTrainingForm.fromDate_{{training.checkbox}}.$touched">
                                             <ul ng-show="employeeTrainingForm.fromDate_{{training.checkbox}}.$error.required" class="help-block error">
                                                 <li>From Date is required.</li>
@@ -1670,7 +1670,7 @@ json_encode($address);
                                         </div>
                                     </td>
                                     <td>
-                                        <input type="text" ng-model="training.toDate" name="toDate_{{training.checkbox}}" required="required" class="form-control" id="exptoDate_{{training.checkbox}}" value="">
+                                        <input dvalue="{{training.toDate}}" datepicker type="text" ng-model="training.toDate" name="toDate_{{training.checkbox}}" required="required" class="form-control" id="exptoDate_{{training.checkbox}}" value="">
                                         <div ng-show="employeeTrainingForm.$submitted || employeeTrainingForm.toDate_{{training.checkbox}}.$touched">
                                             <ul ng-show="employeeTrainingForm.toDate_{{training.checkbox}}.$error.required" class="help-block error">
                                                 <li>To Date is required.</li>

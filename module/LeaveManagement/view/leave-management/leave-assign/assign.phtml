@@ -7,6 +7,7 @@ $this->headScript()->appendFile($this->basePath('js/angular.min.js'));
 $this->headScript()->appendFile($this->basePath('assets/global/plugins/bootstrap-master/ui-bootstrap-tpls-2.2.0.min.js'));
 $this->headScript()->appendFile($this->basePath('js/LeaveManagement/LeaveAssign/assignController.js'));
 $this->headScript()->appendFile($this->basePath('dropzone/dropzone.min.js'));
+$this->headScript()->appendFile($this->basePath('assets/global/plugins/jquery.blockui.min.js'));
 ?>
 
 <script>
@@ -86,7 +87,7 @@ $designationFormElement->setAttribute("ng-model", "designationId");
         </div>
     </div>
     <div class="margin-top-20">
-        <div class="table-responsive">
+        <div class="table-responsive scrollbar-vertical" id="loadingDiv">
             <table class="table table-striped table-bordered table-hover no-footer customTable">
                 <thead>
                     <tr role="row">
