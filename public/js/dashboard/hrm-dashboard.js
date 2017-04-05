@@ -82,6 +82,17 @@
         var tableWrapper = $('#sample_1_wrapper'); // datatable creates the table wrapper by adding with id {your_table_jd}_wrapper
 
         tableWrapper.find('.dataTables_length select').select2(); // initialize select2 dropdown
+
+        oTable.on( 'click', 'tr', function () {
+            console.log('dfd');
+            if ( $(this).hasClass('selected') ) {
+                $(this).removeClass('selected');
+            }
+            else {
+                table.$('tr.selected').removeClass('selected');
+                $(this).addClass('selected');
+            }
+        } );
     });
 
     /***** Charts *****/
@@ -101,7 +112,7 @@
             text: 'Employees By Gender'
         },
         subtitle: {
-            text: 'Gender Wise Employees Head Count'
+            //text: 'Gender Wise Employees Head Count'
         },
         plotOptions: {
             pie: {
@@ -120,7 +131,8 @@
             align: 'left',
             verticalAlign: 'top',
             symbolPadding: 10,
-            symbolWidth: 10
+            symbolWidth: 10,
+            y: 15
         },
         series: [{
             name: 'Head Count',
@@ -145,7 +157,7 @@
             text: 'Employees By Branch'
         },
         subtitle: {
-            text: 'Branch Wise Employees Head Count'
+            //text: 'Branch Wise Employees Head Count'
         },
         plotOptions: {
             pie: {
@@ -154,8 +166,9 @@
                 dataLabels: {
                     enabled: false,
                 },
-                innerSize: 100,
-                depth: 45
+                innerSize: 60,
+                depth: 45,
+                size: 150
             }
         },
         legend: {
@@ -164,7 +177,8 @@
             align: 'left',
             verticalAlign: 'top',
             symbolPadding: 10,
-            symbolWidth: 10
+            symbolWidth: 10,
+            y: 20
         },
         series: [{
             name: 'Head Count',
@@ -193,7 +207,7 @@
             text: 'Employees By Department'
         },
         subtitle: {
-            text: 'Department Wise Employee Head Count'
+            //text: 'Department Wise Employee Head Count'
         },
         xAxis: {
             type: 'category',
@@ -231,6 +245,84 @@
                 }
             }
         }]
+    });
+
+    var deptAttnCategories = [];
+    var departmentAttendanceData = {
+        'present': [],
+        'absent' : []
+    };
+    for(var dept in document.deptattn) {
+        deptAttnCategories.push(dept);
+        departmentAttendanceData['present'].push(Number(document.deptattn[dept].PRESENT));
+        departmentAttendanceData['absent'].push(Number(document.deptattn[dept].ABSENT));
+    }
+    Highcharts.chart('chart-department-attendance', {
+        chart: {
+            type: 'column',
+            options3d: {
+                enabled: true,
+                alpha: 0,
+                beta: -1,
+                viewDistance: 25,
+                depth: 40
+            }
+        },
+        title: {
+            text: 'Today\'s Attendance'
+        },
+        xAxis: {
+            categories: deptAttnCategories
+        },
+        yAxis: {
+            min: 0,
+            title: {
+                text: 'No. of Employees'
+            },
+            stackLabels: {
+                enabled: true,
+                style: {
+                    fontWeight: 'bold',
+                    color: (Highcharts.theme && Highcharts.theme.textColor) || 'gray'
+                }
+            }
+        },
+        legend: {
+            verticalAlign: 'top',
+            align: 'right',
+            // x: -30,
+            // y: 0,
+            floating: true,
+            backgroundColor: (Highcharts.theme && Highcharts.theme.background2) || 'white',
+            borderColor: '#CCC',
+            borderWidth: 1,
+            shadow: false
+        },
+        tooltip: {
+            headerFormat: '<b>{point.x}</b><br/>',
+            pointFormat: '{series.name}: {point.y}<br/>Total: {point.stackTotal}'
+        },
+        plotOptions: {
+            column: {
+                stacking: 'normal',
+                dataLabels: {
+                    enabled: true,
+                    color: (Highcharts.theme && Highcharts.theme.dataLabelsColor) || 'white'
+                }
+            }
+        },
+        series: [{
+                name: "Present",
+                data: departmentAttendanceData.absent
+            },
+            {
+                name: "Absent",
+                data: departmentAttendanceData.present
+            }]
+    });
+
+    $('.task-list').slimScroll({
+        height: '298px'
     });
 
     ComponentsPickers.init();

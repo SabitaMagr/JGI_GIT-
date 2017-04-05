@@ -82,7 +82,8 @@ class DashboardController extends AbstractActionController {
             "employeeList" => $dahsboardRepo->fetchAllEmployee(),
             "headCountGender" => $dahsboardRepo->fetchGenderHeadCount(),
             "headCountDepartment" => $dahsboardRepo->fetchDepartmentHeadCount(),
-            "headCountLocation" => $dahsboardRepo->fetchLocationHeadCount()
+            "headCountLocation" => $dahsboardRepo->fetchLocationHeadCount(),
+            "departmentAttendance" => $dahsboardRepo->fetchDepartmentAttendance()
         ));
 
         $returnData = $this->roleWiseView($auth);

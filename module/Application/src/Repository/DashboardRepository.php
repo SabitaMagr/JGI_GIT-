@@ -436,7 +436,8 @@ class DashboardRepository implements RepositoryInterface {
                      AND HG.STATUS = 'E'
                      AND HE.RETIRED_FLAG = 'N'
                      --AND HE.COMPANY_ID = :V_COMPANY_ID
-                GROUP BY HE.GENDER_ID, HG.GENDER_NAME";
+                GROUP BY HE.GENDER_ID, HG.GENDER_NAME
+                ORDER BY UPPER(HG.GENDER_NAME)";
 
         $statement = $this->adapter->query($sql);
         $result = $statement->execute();
@@ -451,7 +452,8 @@ class DashboardRepository implements RepositoryInterface {
                    AND HD.STATUS = 'E'
                    AND HE.RETIRED_FLAG = 'N'
                    --AND HE.COMPANY_ID = :V_COMPANY_ID
-                GROUP BY HD.DEPARTMENT_ID, HD.DEPARTMENT_NAME";
+                GROUP BY HD.DEPARTMENT_ID, HD.DEPARTMENT_NAME
+                ORDER BY UPPER(HD.DEPARTMENT_NAME)";
 
         $statement = $this->adapter->query($sql);
         $result = $statement->execute();
@@ -466,7 +468,53 @@ class DashboardRepository implements RepositoryInterface {
                    AND HB.STATUS = 'E'
                    AND HE.RETIRED_FLAG = 'N'
                    --AND HE.COMPANY_ID = :V_COMPANY_ID
-                GROUP BY HB.BRANCH_ID , HB.BRANCH_NAME";
+                GROUP BY HB.BRANCH_ID, HB.BRANCH_NAME
+                ORDER BY UPPER(HB.BRANCH_NAME)";
+
+        $statement = $this->adapter->query($sql);
+        $result = $statement->execute();
+
+        return $result;
+    }
+
+    public function fetchDepartmentAttendance() {
+        $sql = "SELECT * FROM (
+                    SELECT HD.DEPARTMENT_CODE,
+                           HD.DEPARTMENT_NAME,
+                           'PRESENT' AS PRESENT_STATUS,
+                           COUNT(*) ATTN_COUNT
+                    FROM HRIS_DEPARTMENTS HD,
+                         HRIS_ATTENDANCE_DETAIL HAD,
+                         HRIS_EMPLOYEES HE
+                    WHERE HD.DEPARTMENT_ID = HE.DEPARTMENT_ID
+                      AND HE.EMPLOYEE_ID = HAD.EMPLOYEE_ID
+                      AND TRUNC(HAD.ATTENDANCE_DT) = TO_DATE('29-MAR-2017', 'DD-MON-YYYY')
+                      AND HAD.IN_TIME IS NOT NULL
+                    GROUP BY HD.DEPARTMENT_CODE,
+                             HD.DEPARTMENT_NAME,
+                             'PRESENT'
+                    UNION ALL
+                    SELECT HD.DEPARTMENT_CODE,
+                           HD.DEPARTMENT_NAME,
+                           'ABSENT' AS PRESENT_STATUS,
+                           COUNT(*) ATTN_COUNT
+                    FROM HRIS_DEPARTMENTS HD,
+                         HRIS_ATTENDANCE_DETAIL HAD,
+                         HRIS_EMPLOYEES HE
+                    WHERE HD.DEPARTMENT_ID = HE.DEPARTMENT_ID
+                      AND HE.EMPLOYEE_ID = HAD.EMPLOYEE_ID
+                      AND TRUNC(HAD.ATTENDANCE_DT) = TO_DATE('29-MAR-2017', 'DD-MON-YYYY')
+                      AND HAD.IN_TIME IS NULL
+                      AND HAD.OUT_TIME IS NULL
+                      AND LEAVE_ID IS NULL
+                      AND TRAINING_ID IS NULL
+                      AND TRAVEL_ID IS NULL
+                      AND HOLIDAY_ID IS NULL
+                    GROUP BY HD.DEPARTMENT_CODE,
+                             HD.DEPARTMENT_NAME,
+                             'ABSENT'
+                )
+                ORDER BY UPPER(DEPARTMENT_NAME)";
 
         $statement = $this->adapter->query($sql);
         $result = $statement->execute();

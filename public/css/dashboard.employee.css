@@ -944,7 +944,7 @@ a .icon_edit:hover {
     float: right;
     font-size: 20px;
     height: 23px;
-    line-height: 21px;
+    line-height: 21px !important;
     margin-top: 9px;
     text-align: center;
     width: 23px;
@@ -1030,6 +1030,101 @@ a .icon_edit:hover {
 
 .name {
     text-align: right;
+}
+
+.upcomingholidays ul li {
+    background-color: #eee !important;
+    border-bottom: 1px solid #dddddd !important;
+    padding-bottom: 3px !important;
+    padding-top: 3px !important;
+}
+
+.calendar span caption-subject,.noticeboard span .caption-subject,.holidays span .caption-subject
+{
+
+    font-size:12px !important;
+}
+.calendar .caption,.noticeboard .caption
+{
+    padding-bottom: 10px !important;
+}
+
+.noticeboard-list > ul,.upcomingholidays
+{
+    padding-left: 15px !important;
+    padding-right: 7px !important;
+}
+
+
+.noticeboard .portlet,.holidays .portlet,.calendar .portlet
+{
+    border: 1px solid #eee !important;
+}
+
+#tab-birthday-upcoming {
+    padding-left: 15px !important;
+    padding-right: 15px !important;
+}
+
+.taskbox .portlet
+{
+    min-height: 240px !important;
+}
+
+.upcomingholidays .label
+{
+    font-weight:normal;
+}
+
+.iconbox i {
+    color: #ffffff;
+    font-size: 21px;
+    padding-top: 19px;
+    text-align: center;
+}
+
+
+.fonticon {
+    background-color: #cccccc;
+    border-radius: 50%;
+    height: 50px;
+    width: 50px;
+}
+
+
+.description {
+    font-size: 11px;
+    font-weight: 600;
+    padding-bottom: 5px;
+    padding-top: 5px;
+}
+.employee-search-table .pagination
+{
+    margin-top: 0px !important;
+
+}
+.font-green-sharp {
+    color: #81c868 !important;
+}
+.remaining-days span,.holiday-date span
+{
+    color:#333 !important;
+}
+.holiday-color
+{
+    color:#993300 !important;
+
+}
+
+.person-list{
+    background-color: #eee !important;
+    box-shadow: 2px 2px 2px #cccccc !important;
+}
+
+.person-pic img {
+    border: 1px solid #dddddd;
+    padding: 5px;
+
 }
 
 /* Large desktops and laptops */
