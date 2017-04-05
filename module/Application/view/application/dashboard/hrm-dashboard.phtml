@@ -386,7 +386,7 @@ $taskAssignEmployeeListOptionsHtml = "";
                         <div class="widget-thumb-wrap widget-thumb-wrap-bgone">
                             <h4 class="widget-thumb-heading">Total Head Count</h4>
                             <div class="widget-thumb-body">
-                                <span class="widget-thumb-body-stat" data-counter="counterup">605</span>
+                                <span class="widget-thumb-body-stat" data-counter="counterup"><?php print count($employeeList); ?></span>
                             </div>
                         </div>
                         <div>
@@ -402,7 +402,7 @@ $taskAssignEmployeeListOptionsHtml = "";
                         <div class="widget-thumb-wrap widget-thumb-wrap-bgtwo">
                             <h4 class="widget-thumb-heading">Joining This Month</h4>
                             <div class="widget-thumb-body">
-                                <span class="widget-thumb-body-stat" data-counter="counterup">7</span>
+                                <span class="widget-thumb-body-stat" data-counter="counterup"><?php print $employeeDetail['JOINED_THIS_MONTH']; ?></span>
                             </div>
                         </div>
                         <div>
