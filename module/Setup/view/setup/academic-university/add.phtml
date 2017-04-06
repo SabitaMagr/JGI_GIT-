@@ -53,6 +53,7 @@ echo json_encode($menu);
                     <div class="col-sm-4">
                 <div class="form-group">
                     <?php print $this->formLabel($academicUniversityCode); ?>
+                    <span class="required" aria-required="true">*</span>
                     <?php print $this->formElement($academicUniversityCode); ?>
                     <?php print $this->formElementErrors()->render($academicUniversityCode, ['class' => 'help-block']); ?>
                     <span class="errorMsg" style="font-size:11px; color:red;"></span>
@@ -61,6 +62,7 @@ echo json_encode($menu);
                     <div class="col-sm-4">
                 <div class="form-group">
                     <?php print $this->formLabel($academicUniversityName); ?>
+                    <span class="required" aria-required="true">*</span>
                     <?php print $this->formElement($academicUniversityName); ?>
                     <?php print $this->formElementErrors()->render($academicUniversityName, ['class' => 'help-block']); ?>
                     <span class="errorMsg" style="font-size:11px; color:red;"></span>

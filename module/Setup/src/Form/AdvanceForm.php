@@ -31,7 +31,7 @@ class AdvanceForm
      * @Annotation\Required({"required":"true"})
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
      * @Annotation\Options({"label":"Min. Salary Amount"})
-     * @Annotation\Attributes({ "id":"form-minSalaryAmt","class":"form-control form-minSalaryAmt","step":"0.01"})
+     * @Annotation\Attributes({ "id":"form-minSalaryAmt","class":"form-control form-minSalaryAmt","step":"0.01","min":"0"})
      */
     public $minSalaryAmt;
     
@@ -40,7 +40,7 @@ class AdvanceForm
      * @Annotation\Required({"required":"true"})
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
      * @Annotation\Options({"label":"Max. Salary Amount"})
-     * @Annotation\Attributes({ "id":"form-maxAmount","class":"form-control","step":"0.01"})
+     * @Annotation\Attributes({ "id":"form-maxAmount","class":"form-control","step":"0.01","min":"0"})
      */
     public $maxSalaryAmt;
 
@@ -49,7 +49,7 @@ class AdvanceForm
      * @Annotation\Required({"required":"true"})
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Amount To Allow(in %)"})
-     * @Annotation\Attributes({ "id":"form-amountToAllow", "class":"form-amountToAllow form-control","step":"0.01" })
+     * @Annotation\Attributes({ "id":"form-amountToAllow", "class":"form-amountToAllow form-control","step":"0.01","min":"0"})
      */
     public $amountToAllow;
    
@@ -58,7 +58,7 @@ class AdvanceForm
      * @Annotation\Required({"required":"true"})
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Month To Allow(in month)"})
-     * @Annotation\Attributes({ "id":"form-monthToAllow", "class":"form-monthToAllow form-control" })
+     * @Annotation\Attributes({ "id":"form-monthToAllow", "class":"form-monthToAllow form-control","min":"0" })
      */
     public $monthToAllow;
 
