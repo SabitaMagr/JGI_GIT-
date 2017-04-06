@@ -209,8 +209,8 @@ ul {
     display: inline-block;
     float: right;
     font-size: 50px;
-    height: 60px;
-    line-height: 41px !important;
+    height: 30px;
+    line-height: 10px !important;
     margin-right: 15px;
     text-align: center;
     width: 60px;
@@ -233,7 +233,7 @@ li.line:after {
 }
 .wigetbox,
 .wigetbox .widget-thumb-wrap {
-    min-height: 111px;
+    min-height: 75px;
 }
 .wigetbox .widget-thumb-body ul {
     padding-left: 0px;
@@ -267,7 +267,7 @@ li.line:after {
     text-align: center;
     padding-left: 5px;
     padding-right: 5px;
-    padding-top: 21px;
+    padding-top: 10px;
 }
 .widget-thumb-wrap-bgone {
     background-color: #5fc2d2;
@@ -842,6 +842,16 @@ a .icon_edit:hover {
 
 }
 
+.col-chart-loc-hc,
+.col-chart-xndr-hc {
+    padding:0;
+}
+widget-appraisal-due h4 {
+    margin-bottom: 0;
+}
+.widget-appraisal-due ul {
+    margin: 0 !important;
+}
 /*task css start here*/
 .date-date {
     padding-bottom: 15px;
