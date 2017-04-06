@@ -17,7 +17,7 @@ angular.module('hris', [])
                 var employeeId = angular.element(document.getElementById('employeeId')).val();
                 var fromDate = angular.element(document.getElementById('fromDate')).val();
                 var toDate = angular.element(document.getElementById('toDate')).val();
-                $tableContainer.block();
+                App.blockUI({target: "#hris-page-content"});
                 window.app.pullDataById(document.url, {
                     action: 'pullAttendanceList',
                     data: {
@@ -26,10 +26,10 @@ angular.module('hris', [])
                         'employeeId': employeeId
                     }
                 }).then(function (success) {
-                    $tableContainer.unblock();
+                    App.unblockUI("#hris-page-content");
                     $scope.initializekendoGrid(success.data);
                 }, function (failure) {
-                    $tableContainer.unblock();
+                    App.unblockUI("#hris-page-content");
                     console.log(failure);
                 });
             }

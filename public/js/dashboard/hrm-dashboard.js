@@ -231,6 +231,7 @@
                 enabled: true,
                 rotation: 0,
                 color: '#544b4b',
+                x: 5,
                 align: 'right',
                 crop: false,
                 style: {

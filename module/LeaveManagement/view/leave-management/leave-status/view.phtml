@@ -213,6 +213,8 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                             $note = "[Approved]";
                         } else if ($subApprovedFlag == 'N') {
                             $note = "[Rejected]";
+                        }else{
+                            $note = "[Pending]";
                         }
                         ?>
                         <div class="form-group padding-0">

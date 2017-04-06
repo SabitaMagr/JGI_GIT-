@@ -3,6 +3,7 @@ $this->headScript()->appendFile($this->basePath('js/system/user-setup/add.js'));
 
 $form->setAttribute('role', 'form');
 $form->setAttribute('class', 'usersetup-form');
+$form->setAttribute('id', 'usersetup-form');
 
 $userName = $form->get('userName');
 $password = $form->get('password');

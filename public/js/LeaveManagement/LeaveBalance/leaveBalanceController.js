@@ -25,7 +25,7 @@ angular.module('hris', [])
                 var serviceEventTypeId = angular.element(document.getElementById('serviceEventTypeId')).val();
 
                 //console.log(employeeId+","+branchId+","+departmentId+","+designationId+","+positionId+","+serviceTypeId);
-                $tableContainer.block();
+                App.blockUI({target: "#hris-page-content"});
                 window.app.pullDataById(document.url, {
                     action: 'pullLeaveBalanceDetail',
                     data: {
@@ -38,7 +38,7 @@ angular.module('hris', [])
                         'serviceEventTypeId': serviceEventTypeId
                     }
                 }).then(function (success) {
-                    $tableContainer.unblock();
+                    App.unblockUI("#hris-page-content");
                     $scope.$apply(function () {
                         $scope.allList = success.allList;
                         $scope.num = success.num;
@@ -50,7 +50,7 @@ angular.module('hris', [])
                         initializekendoGrid(headers, datas);
                     });
                 }, function (failure) {
-                    $tableContainer.unblock();
+                    App.unblockUI("#hris-page-content");
                     console.log(failure);
                 });
 
