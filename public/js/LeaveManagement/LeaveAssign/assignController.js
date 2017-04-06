@@ -33,7 +33,7 @@ angular.module('hris', ['ui.bootstrap'])
                 }
             };
             $scope.assign = function () {
-
+                App.blockUI({target: "#hris-page-content"});
                 var promises = [];
                 for (var index in $scope.leaveList) {
                     if ($scope.leaveList[index].checked) {
@@ -49,8 +49,9 @@ angular.module('hris', ['ui.bootstrap'])
                     }
                 }
                 Promise.all(promises).then(function (success) {
+                    App.unblockUI("#hris-page-content");
                     console.log(success);
-                    window.toastr.info("Leave assigned successfully", "Notifications");
+                    window.toastr.success("Leave assigned successfully", "Notifications");
                 });
             };
             var leaveId;

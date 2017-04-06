@@ -100,8 +100,6 @@ angular.module('hris', [])
                                 .append('<tr class="kendo-data-row"><td colspan="' + colCount + '" class="no-data">There is no data to show in the grid.</td></tr>');
                     }
                 };
-                
-                $scope.initializekendoGrid([]);
 
 //                $("#export").click(function (e) {
 //                    var grid = $("#employeeTable").data("kendoGrid");

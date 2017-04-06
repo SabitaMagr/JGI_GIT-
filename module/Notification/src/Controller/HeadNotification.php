@@ -170,7 +170,7 @@ class HeadNotification {
             $leaveReqNotiMod->leaveRecommendStatus = $status;
 
             $notificationTitle = "Leave Request";
-            $notificationDesc = "Recommendation of Leave Request of"
+            $notificationDesc = "Recommendation of Leave Request by"
                     . " $leaveReqNotiMod->fromName from $leaveReqNotiMod->fromDate"
                     . " to $leaveReqNotiMod->toDate is $leaveReqNotiMod->leaveRecommendStatus";
             self::addNotifications($leaveReqNotiMod, $notificationTitle, $notificationDesc, $adapter);
@@ -196,7 +196,7 @@ class HeadNotification {
             $leaveReqNotiMod->leaveApprovedStatus = $status;
 
             $notificationTitle = "Leave Approval";
-            $notificationDesc = "Approval of Leave Request of $leaveReqNotiMod->fromName from "
+            $notificationDesc = "Approval of Leave Request by $leaveReqNotiMod->fromName from "
                     . "$leaveReqNotiMod->fromDate to $leaveReqNotiMod->toDate is $leaveReqNotiMod->leaveApprovedStatus";
             self::addNotifications($leaveReqNotiMod, $notificationTitle, $notificationDesc, $adapter);
             self::sendEmail($leaveReqNotiMod, 3, $adapter, $url);

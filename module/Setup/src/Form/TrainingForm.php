@@ -36,7 +36,7 @@ class TrainingForm
     public $trainingType;    
     /**
      * @Annotation\Type("Zend\Form\Element\Select")
-     * @Annotation\Required(false)
+     * @Annotation\Required({"required":"true"})
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
      * @Annotation\Options({"disable_inarray_validator":"true","label":"Institute Name"})
      * @Annotation\Attributes({ "id":"instituteId","class":"form-control form-instituteId"})

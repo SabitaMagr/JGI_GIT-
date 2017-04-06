@@ -135,8 +135,8 @@ angular.module('hris', ['ui.bootstrap'])
                 //l.stop();
             }
             $scope.assign = function () {
-                l.start();
-                l.setProgress(0.5);
+//                l.start();
+//                l.setProgress(0.5);
                 var recommenderElement = angular.element(document.getElementById('recommenderId'));
                 var recommenderId = recommenderElement.val();
                 var recommenderName = document.getElementById('recommenderId').options[document.getElementById('recommenderId').selectedIndex].text;
@@ -147,7 +147,7 @@ angular.module('hris', ['ui.bootstrap'])
                 var errorFlagR = false;
                 if ($scope.recommenderAssign) {
                     if (recommenderId == "?") {
-                        l.stop();
+//                        l.stop();
                         window.app.errorMessage(
                                 "Recommender is required!!!",
                                 "Application Error"
@@ -157,12 +157,12 @@ angular.module('hris', ['ui.bootstrap'])
                         errorFlagR = false;
                     }
                 } else {
-                    l.stop();
+//                    l.stop();
                 }
                 var errorFlagA = false;
                 if ($scope.approverAssign) {
                     if (approverId == "?") {
-                        l.stop();
+//                        l.stop();
                         window.app.errorMessage(
                                 "Approver is required!!!"
                                 ,
@@ -173,10 +173,11 @@ angular.module('hris', ['ui.bootstrap'])
                         errorFlagA = false;
                     }
                 } else {
-                    l.stop();
+//                    l.stop();
                 }
 
                 if (!errorFlagR && !errorFlagA) {
+                    App.blockUI({target: "#hris-page-content"});
                     submitRecord(recommenderId, recommenderName, approverId, approverName);
                 }
             };
@@ -208,7 +209,8 @@ angular.module('hris', ['ui.bootstrap'])
                     }
                 }
                 Promise.all(promises).then(function (success) {
-                    l.stop();
+//                    l.stop();
+                    App.unblockUI("#hris-page-content");
                     $scope.$apply(function () {
                         for (var index in $scope.employeeList) {
                             if ($scope.employeeList[index].checked) {
