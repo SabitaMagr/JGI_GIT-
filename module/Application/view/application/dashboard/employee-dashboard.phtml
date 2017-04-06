@@ -448,10 +448,10 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                     <span class="caption-subject font-green-sharp ">Birthday Wishes</span>
                                 </div>
                                 <ul class="nav nav-tabs">
-                                    <li class="ln-birthday <?php print $todayBirthdayActive ? 'active' : '' ?>">
+                                    <li class="ln-birthday <?php print $todayBirthdayActive ? 'active' : ''  ?>">
                                         <a id="ln-birthday-today" class="ln-nav-tab-birthday" href="javascript:void(0);" data-toggle="tab" aria-expanded="true">Today</a>
                                     </li>
-                                    <li class="ln-birthday <?php print $todayBirthdayActive ? '' : 'active'?>">
+                                    <li class="ln-birthday <?php print $todayBirthdayActive ? '' : 'active' ?>">
                                         <a id="ln-birthday-upcoming" class="ln-nav-tab-birthday" href="javascript:void(0);" data-toggle="tab" aria-expanded="false">Upcoming</a>
                                     </li>
                                 </ul>
@@ -499,19 +499,23 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                             <?php endif; ?>
                                         </div>
 
-                                        <div id="tab-birthday-upcoming" style="display:<?php print $todayBirthdayActive ? 'none' : 'block' ?>">
-                                        <?php if (isset($employeesBirthday) && isset($employeesBirthday['UPCOMING'])) : ?>
-                                            <?php foreach ($employeesBirthday['UPCOMING'] as $upcomingBirthday) : ?>
-                                                <div class="person-list clearfix">
-                                                    <div class="col-md-3 col-sm-3">
-                                                        <div class="person-pic">
-                                                            <img src="<?php print $upcomingBirthday['FILE_PATH'] ? $this->basePath('uploads/' . $upcomingBirthday['FILE_PATH']) : $this->basePath('img/nobody_m.original.jpg'); ?>" alt="person picture">
+                                        <div id="tab-birthday-upcoming" style="display:<?php print $todayBirthdayActive ? 'none' : 'block'  ?>">
+                                            <?php if (isset($employeesBirthday) && isset($employeesBirthday['UPCOMING'])) : ?>
+                                                <?php foreach ($employeesBirthday['UPCOMING'] as $upcomingBirthday) : ?>
+                                                    <div class="person-list clearfix">
+                                                        <div class="col-md-3 col-sm-3">
+                                                            <div class="person-pic">
+                                                                <img src="<?php print $upcomingBirthday['FILE_PATH'] ? $this->basePath('uploads/' . $upcomingBirthday['FILE_PATH']) : $this->basePath('img/nobody_m.original.jpg'); ?>" alt="person picture">
+                                                            </div>
                                                         </div>
-                                                    </div>
-                                                    <div class="col-xs-6 col-md-6 col-sm-6">
-                                                        <div class="person-details">
-                                                            <h4><?php print $upcomingBirthday['FULL_NAME']; ?></h4>
-                                                            <span><?php print $upcomingBirthday['DESIGNATION_TITLE']; ?></span>
+                                                        <div class="col-xs-6 col-md-6 col-sm-6">
+                                                            <div class="person-details">
+                                                                <h4><?php print $upcomingBirthday['FULL_NAME']; ?></h4>
+                                                                <span><?php print $upcomingBirthday['DESIGNATION_TITLE']; ?></span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-3 col-sm-3">
+                                                            <span><?php print $upcomingBirthday['EMP_BIRTH_DATE']; ?></span>
                                                         </div>
                                                     </div>
                                                     <div class="col-md-3 col-sm-3">

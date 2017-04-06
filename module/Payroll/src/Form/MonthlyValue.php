@@ -60,7 +60,7 @@ class MonthlyValue
      * @Annotation\Required(true)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Sh Index No"})
-     * @Annotation\Attributes({ "id":"shIndexNo","class":"form-control"})
+     * @Annotation\Attributes({ "id":"shIndexNo","class":"form-control","min":"1"})
      */
     public $shIndexNo;
 

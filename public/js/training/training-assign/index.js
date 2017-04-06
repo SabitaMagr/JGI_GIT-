@@ -43,7 +43,7 @@ angular.module('hris', [])
                 var positionId = angular.element(document.getElementById('positionId')).val();
                 var serviceTypeId = angular.element(document.getElementById('serviceTypeId')).val();
                 var trainingId = angular.element(document.getElementById('trainingId')).val();
-                $tableContainer1.block();
+                App.blockUI({target: "#hris-page-content"});
                 window.app.pullDataById(document.url, {
                     action: 'pullEmployeeForTrainingAssign',
                     data: {
@@ -56,7 +56,7 @@ angular.module('hris', [])
                         trainingId:trainingId
                     }
                 }).then(function (success) {
-                    $tableContainer1.unblock();
+                    App.unblockUI("#hris-page-content");
                     //console.log("Employee list for assign", success);
                     $scope.$apply(function () {
                         $scope.employeeList = success.data;
@@ -67,7 +67,7 @@ angular.module('hris', [])
 
                     });
                 }, function (failure) {
-                    $tableContainer1.unblock();
+                    App.unblockUI("#hris-page-content");
                     console.log("Employee Get All", failure);
                 });
             };
@@ -137,7 +137,7 @@ angular.module('hris', [])
                 var serviceTypeId = angular.element(document.getElementById('serviceTypeId')).val();
                 var trainingId = angular.element(document.getElementById('trainingId')).val();
                 var serviceEventTypeId = angular.element(document.getElementById('serviceEventTypeId')).val();
-                $tableContainer.block();
+                App.blockUI({target: "#hris-page-content1"});
                 window.app.pullDataById(document.url, {
                     action: 'pullTrainingAssignList',
                     data: {
@@ -151,10 +151,10 @@ angular.module('hris', [])
                         serviceEventTypeId:serviceEventTypeId
                     }
                 }).then(function (success) {
-                    $tableContainer.unblock();
+                    App.unblockUI("#hris-page-content1");
                     console.log("Training Assign List", success);
                     $scope.$apply(function () {
-                        $tableContainer.unblock();
+                        App.unblockUI("#hris-page-content1");
                         $scope.initializekendoGrid(success.data);
                         window.app.UIConfirmations();
                     });

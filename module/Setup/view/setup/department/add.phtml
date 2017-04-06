@@ -48,86 +48,98 @@ echo json_encode($menu);
 </div>
 
 
-    <div class="row margin-top-20">
-        <div class="col-sm-12">
-            <div class="portlet box custom-box">
-                <div class="portlet-title">
-                    <div class="caption">
-                        <i class="fa fa-user"></i>New Entry
+<div class="row margin-top-20">
+    <div class="col-sm-12">
+        <div class="portlet box custom-box">
+            <div class="portlet-title">
+                <div class="caption">
+                    <i class="fa fa-user"></i>New Entry
+                </div>
+                <div class="actions">
+                    <a class="btn btn-circle btn-icon-only btn-default fullscreen" href="javascript:;" data-original-title="" title=""> </a>
+                </div>
+            </div>
+            <div class="portlet-body">
+                <?php print $this->form()->openTag($form); ?>
+
+                <div class=" row">
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <?php print $this->formLabel($departmentCode); ?>
+                            <span class="required" aria-required="true">*</span>
+                            <?php print $this->formElement($departmentCode); ?>
+                            <?php print $this->formElementErrors()->render($departmentCode, ['class' => 'help-block']); ?>
+                            <span class="errorMsg" style="font-size:11px; color:red;"></span>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <?php print $this->formLabel($departmentName); ?>
+                            <span class="required" aria-required="true">*</span>
+                            <?php print $this->formElement($departmentName); ?>
+                            <?php print $this->formElementErrors()->render($departmentName, ['class' => 'help-block']); ?>
+                            <span class="errorMsg" style="font-size:11px; color:red;"></span>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <?php print $this->formLabel($countryId); ?>
+                            <span class="required" aria-required="true">*</span>
+                            <?php print $this->formElement($countryId); ?>
+                            <?php print $this->formElementErrors()->render($countryId, ['class' => 'help-block']); ?>
+                        </div>
                     </div>
                 </div>
-                <div class="portlet-body">
-                    <?php print $this->form()->openTag($form); ?>
-
-                    <div class=" row">
-                        <div class="col-sm-4">
-                            <div class="form-group">
-                                <?php print $this->formLabel($departmentCode); ?>
-                                <?php print $this->formElement($departmentCode); ?>
-                                <?php print $this->formElementErrors()->render($departmentCode, ['class' => 'help-block']); ?>
-                                <span class="errorMsg" style="font-size:11px; color:red;"></span>
-                            </div>
-                        </div>
-
-                        <div class="col-sm-4">
-                            <div class="form-group">
-                                <?php print $this->formLabel($departmentName); ?>
-                                <?php print $this->formElement($departmentName); ?>
-                                <?php print $this->formElementErrors()->render($departmentName, ['class' => 'help-block']); ?>
-                                <span class="errorMsg" style="font-size:11px; color:red;"></span>
-                            </div>
-                        </div>
-
-                        <div class="col-sm-4">
-                            <div class="form-group">
-                                <?php print $this->formLabel($countryId); ?>
-                                <?php print $this->formElement($countryId); ?>
-                                <?php print $this->formElementErrors()->render($countryId, ['class' => 'help-block']); ?>
-                            </div>
-                        </div>
-                    </div>
 
 
-                    <div class="form-group">
+
+
+
+
+
+                <div class=" row">
+                    <div class="col-sm-4">
                         <div class="form-group">
                             <?php print $this->formLabel($companyId); ?>
+                            <span class="required" aria-required="true">*</span>
                             <?php print $this->formElement($companyId); ?>
                             <?php print $this->formElementErrors()->render($companyId, ['class' => 'help-block']); ?>
                         </div>
                     </div>
-
-
-
-                    <div class=" row">
-
-                        <div class="col-sm-4">
-                            <div class="form-group">
-                                <?php print $this->formLabel($parentDepartment); ?>
-                                <?php print $this->formElement($parentDepartment); ?>
-                                <?php print $this->formElementErrors()->render($parentDepartment, ['class' => 'help-block']); ?>
-                            </div>
-                        </div>
-                        <div class="col-sm-4">
-                            <div class="form-group">
-                                <?php print $this->formLabel($branchId); ?>
-                                <?php print $this->formElement($branchId); ?>
-                                <?php print $this->formElementErrors()->render($branchId, ['class' => 'help-block']); ?>
-                            </div>
-                        </div>
-                        <div class="col-sm-4">
-                            <div class="form-group">
-                                <?php print $this->formLabel($remarks); ?>
-                                <?php print $this->formElement($remarks); ?>
-                                <?php print $this->formElementErrors()->render($remarks, ['class' => 'help-block']); ?>
-                            </div>
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <?php print $this->formLabel($parentDepartment); ?>
+                            <?php print $this->formElement($parentDepartment); ?>
+                            <?php print $this->formElementErrors()->render($parentDepartment, ['class' => 'help-block']); ?>
                         </div>
                     </div>
-
-                    <?php
-                    print $this->formSubmit($submit);
-                    print $this->form()->closeTag();
-                    ?>
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <?php print $this->formLabel($branchId); ?>
+                            <span class="required" aria-required="true">*</span>
+                            <?php print $this->formElement($branchId); ?>
+                            <?php print $this->formElementErrors()->render($branchId, ['class' => 'help-block']); ?>
+                        </div>
+                    </div>
                 </div>
+
+                <div class="row" >
+                    <div class="col-sm-4" >
+                        <div class="form-group">
+                            <?php print $this->formLabel($remarks); ?>
+                            <?php print $this->formElement($remarks); ?>
+                            <?php print $this->formElementErrors()->render($remarks, ['class' => 'help-block']); ?>
+                        </div>
+                    </div>
+                </div>
+
+                <?php
+                print $this->formSubmit($submit);
+                print $this->form()->closeTag();
+                ?>
             </div>
         </div>
     </div>
+</div>

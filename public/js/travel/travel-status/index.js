@@ -20,7 +20,7 @@ angular.module('hris', [])
                 var travelRequestStatusId = angular.element(document.getElementById('travelRequestStatusId')).val();
                 var fromDate = angular.element(document.getElementById('fromDate')).val();
                 var toDate = angular.element(document.getElementById('toDate')).val();
-                $tableContainer.block();
+                App.blockUI({target: "#hris-page-content"});
                 window.app.pullDataById(document.url, {
                     action: 'pullTravelRequestStatusList',
                     data: {
@@ -36,11 +36,11 @@ angular.module('hris', [])
                         'toDate': toDate
                     }
                 }).then(function (success) {
-                    $tableContainer.unblock();
+                    App.unblockUI("#hris-page-content");
                     console.log(success.data);
                     $scope.initializekendoGrid(success.data);
                 }, function (failure) {
-                    $tableContainer.unblock();
+                    App.unblockUI("#hris-page-content");
                     console.log(failure);
                 });
             }

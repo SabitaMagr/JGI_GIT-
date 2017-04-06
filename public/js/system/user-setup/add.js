@@ -28,5 +28,17 @@
               return true;  
             }
         });
+        
+        var inputFieldId = "form-userName";
+        var formId = "usersetup-form";
+        var tableName =  "HRIS_USERS";
+        var columnName = "USER_NAME";
+        var checkColumnName = "USER_ID";
+        var selfId = $("#userId").val();
+        if (typeof(selfId) == "undefined"){
+            selfId=0;
+        }
+        window.app.checkUniqueConstraints(inputFieldId,formId,tableName,columnName,checkColumnName,selfId);       
+       
     });
 })(window.jQuery, window.app);

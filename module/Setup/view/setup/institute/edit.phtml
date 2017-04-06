@@ -64,6 +64,7 @@ echo json_encode($menu);
                     <div class="col-sm-4">
                         <div class="form-group">
                             <?php print $this->formLabel($instituteCode); ?>
+                            <span class="required" aria-required="true">*</span>
                             <?php print $this->formElement($instituteCode); ?>
                             <?php print $this->formElementErrors()->render($instituteCode, ['class' => 'help-block error']); ?>
                         </div>
@@ -72,6 +73,7 @@ echo json_encode($menu);
                     <div class="col-sm-4">
                         <div class="form-group">
                             <?php print $this->formLabel($instituteName); ?>
+                            <span class="required" aria-required="true">*</span>
                             <?php print $this->formElement($instituteName); ?>
                             <input type="hidden" id="instituteID" value="<?php echo $id; ?>"/>
                             <?php print $this->formElementErrors()->render($instituteName, ['class' => 'help-block error']); ?>
@@ -81,6 +83,7 @@ echo json_encode($menu);
                     <div class="col-sm-4">
                         <div class="form-group">
                             <?php print $this->formLabel($location); ?>
+                            <span class="required" aria-required="true">*</span>
                             <?php print $this->formElement($location); ?>
                             <?php print $this->formElementErrors()->render($location, ['class' => 'help-block error']); ?>
                         </div>
@@ -92,6 +95,7 @@ echo json_encode($menu);
                     <div class="col-sm-4">
                         <div class="form-group">
                             <?php print $this->formLabel($telephone); ?>
+                            <span class="required" aria-required="true">*</span>
                             <?php print $this->formElement($telephone); ?>
                             <?php print $this->formElementErrors()->render($telephone, ['class' => 'help-block error']); ?>
                         </div>                                             
@@ -100,6 +104,7 @@ echo json_encode($menu);
                     <div class="col-sm-4">
                         <div class="form-group">
                             <?php print $this->formLabel($email); ?>
+                            <span class="required" aria-required="true">*</span>
                             <?php print $this->formElement($email); ?>
                             <?php print $this->formElementErrors()->render($email, ['class' => 'help-block error']); ?>
                         </div>                               

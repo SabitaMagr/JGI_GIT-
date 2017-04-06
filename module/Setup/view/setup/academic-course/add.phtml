@@ -39,6 +39,9 @@ $form->prepare();
                 <div class="caption">
                     <i class="fa fa-user"></i>New Entry
                 </div>
+                <div class="actions">
+                    <a class="btn btn-circle btn-icon-only btn-default fullscreen" href="javascript:;" data-original-title="" title=""> </a>
+                </div>
             </div>
             <div class="portlet-body">
                 <?php print $this->form()->openTag($form); ?>
@@ -47,6 +50,7 @@ $form->prepare();
                     <div class="col-sm-4">
                 <div class="form-group">
                     <?php print $this->formLabel($academicCourseCode); ?>
+                    <span class="required" aria-required="true">*</span>
                     <?php print $this->formElement($academicCourseCode); ?>
                     <?php print $this->formElementErrors()->render($academicCourseCode, ['class' => 'help-block']); ?>
                     <span class="errorMsg" style="font-size:11px; color:red;"></span>
@@ -56,6 +60,7 @@ $form->prepare();
                     <div class="col-sm-4">
                 <div class="form-group">
                     <?php print $this->formLabel($academicCourseName); ?>
+                    <span class="required" aria-required="true">*</span>
                     <?php print $this->formElement($academicCourseName); ?>
                     <?php print $this->formElementErrors()->render($academicCourseName, ['class' => 'help-block']); ?>
                     <span class="errorMsg" style="font-size:11px; color:red;"></span>
@@ -65,6 +70,7 @@ $form->prepare();
                     <div class="col-sm-4">
                 <div class="form-group">
                     <?php print $this->formLabel($academicProgramName); ?>
+                    <span class="required" aria-required="true">*</span>
                     <?php print $this->formElement($academicProgramName); ?>
                     <?php print $this->formElementErrors()->render($academicProgramName, ['class' => 'help-block']); ?>
                 </div>

@@ -36,7 +36,7 @@ class TrainingForm
     public $trainingType;    
     /**
      * @Annotation\Type("Zend\Form\Element\Select")
-     * @Annotation\Required(false)
+     * @Annotation\Required({"required":"true"})
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
      * @Annotation\Options({"disable_inarray_validator":"true","label":"Institute Name"})
      * @Annotation\Attributes({ "id":"instituteId","class":"form-control form-instituteId"})
@@ -58,13 +58,13 @@ class TrainingForm
      * @Annotation\Attributes({ "id":"endDate", "class":"form-endDate form-control" })
      */
     public $endDate;
-    
+  
     /**
-     * @Annotion\Type("Zend\Form\Element\Text")
-     * @Annotation\Required({"required":"true"})
+     * @Annotation\Type("Zend\Form\Element\Number")
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
+     * @Annotation\Required(true)
      * @Annotation\Options({"label":"Duration(in hour)"})
-     * @Annotation\Attributes({ "id":"form-duration", "class":"form-duration form-control" })
+     * @Annotation\Attributes({ "id":"form-duration","min":"0","step":"0.01", "class":"form-duration form-control" })
      */
     public $duration;
     

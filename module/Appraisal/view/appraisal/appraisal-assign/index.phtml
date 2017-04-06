@@ -17,6 +17,7 @@ $this->headScript()->appendFile($this->basePath('assets/global/plugins/jquery.bl
 <?= $this->navigation('Zend\Navigation\AppraisalAssign')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
 <div class="" ng-app="hris" ng-controller="appraisalAssignController">
+    <div id="hris-page-content">
     <div class="row margin-top-20">
         <div class="col-sm-4">
             <?php print $this->formElement($appraisals); ?>
@@ -160,7 +161,6 @@ $this->headScript()->appendFile($this->basePath('assets/global/plugins/jquery.bl
                 Assign
                 <i class="fa fa-edit"></i>
             </button>
-
         </div>
     </div>
 
@@ -200,3 +200,4 @@ $this->headScript()->appendFile($this->basePath('assets/global/plugins/jquery.bl
     </script>
 </div>
 
+</div>

@@ -39,7 +39,7 @@
                 }
             }
         }
-
+        var dateDiff = '';
         app.startEndDatePicker("startDate", "endDate", function (startDate, endDate) {
             if (startDate <= endDate) {
                 var oneDay = 24 * 60 * 60 * 1000; // hours*minutes*seconds*milliseconds
@@ -83,12 +83,17 @@
         
         
         $("#noOfDays").on("keyup", function () {
+            console.log(dateDiff);
             var availableDays = parseInt($("#availableDays").val());
             var noOfDays = parseInt($(this).val());
             if (noOfDays > availableDays) {
                 $("#errorMsg").html("* Applied days can't be more than available days");
                 $("#request").attr("disabled", "disabled");
-            } else {
+            }else if(noOfDays > parseInt(dateDiff)){
+                $("#errorMsg").html("* Applied days can't be more than date difference days");
+                $("#request").attr("disabled", "disabled");
+            }
+            else {
                 $("#errorMsg").html("");
                 $("#request").removeAttr("disabled");
             }

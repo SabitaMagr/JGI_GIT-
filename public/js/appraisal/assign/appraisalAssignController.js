@@ -22,7 +22,7 @@ angular.module('hris', ['ui.bootstrap'])
                 var employeeId = angular.element(document.getElementById('employeeId')).val();
                 var appraisalId = angular.element(document.getElementById('appraisalId')).val();
                 console.log(appraisalId);
-                $tableContainer.block();
+                App.blockUI({target: "#hris-page-content"});
                 window.app.pullDataById(document.url, {
                     action: 'pullEmployeeWidAssignDetail',
                     data: {
@@ -33,7 +33,7 @@ angular.module('hris', ['ui.bootstrap'])
                         appraisalId:appraisalId
                     }
                 }).then(function (success) {
-                    $tableContainer.unblock();
+                    App.unblockUI("#hris-page-content");
                     console.log("Employee list for assign", success);
                     $scope.$apply(function () {
                         $scope.employeeList = success.data;
@@ -43,7 +43,7 @@ angular.module('hris', ['ui.bootstrap'])
                         }
                     });
                 }, function (failure) {
-                    $tableContainer.unblock();
+                    App.unblockUI("#hris-page-content");
                     console.log("Employee Get All", failure);
                 });
             };
@@ -138,8 +138,6 @@ angular.module('hris', ['ui.bootstrap'])
                 }
             }
             $scope.assign = function () {
-                l.start();
-                l.setProgress(0.5);
                 var reviewerElement = angular.element(document.getElementById('reviewerId'));
                 var reviewerId = reviewerElement.val();
                 var reviewerName = document.getElementById('reviewerId').options[document.getElementById('reviewerId').selectedIndex].text;
@@ -155,7 +153,6 @@ angular.module('hris', ['ui.bootstrap'])
                 var errorFlagR = false;
                 if ($scope.reviewerAssign) {
                     if (reviewerId == "?") {
-                        l.stop();
                         window.app.errorMessage(
                                 "Reviewer is required!!!",
                                 "Application Error"
@@ -165,12 +162,10 @@ angular.module('hris', ['ui.bootstrap'])
                         errorFlagR = false;
                     }
                 } else {
-                    l.stop();
                 }
                 var errorFlagA = false;
                 if ($scope.appraiserAssign) {
                     if (appraiserId == "?") {
-                        l.stop();
                         window.app.errorMessage(
                                 "Appraiser is required!!!"
                                 ,
@@ -181,10 +176,10 @@ angular.module('hris', ['ui.bootstrap'])
                         errorFlagA = false;
                     }
                 } else {
-                    l.stop();
                 }
 
                 if (!errorFlagR && !errorFlagA) {
+                    App.blockUI({target: "#hris-page-content"});
                     submitRecord(reviewerId, reviewerName, appraiserId, appraiserName,appraisalId,appraisalName);
                 }
             };
@@ -216,7 +211,7 @@ angular.module('hris', ['ui.bootstrap'])
                     }
                 }
                 Promise.all(promises).then(function (success) {
-                    l.stop();
+                    App.unblockUI("#hris-page-content");
                     $scope.$apply(function () {
                         for (var index in $scope.employeeList) {
                             if ($scope.employeeList[index].checked) {

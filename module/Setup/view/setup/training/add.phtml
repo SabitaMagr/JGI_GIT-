@@ -51,6 +51,9 @@ echo json_encode($menu);
                 <div class="caption">
                     <i class="fa fa-user"></i>New Entry
                 </div>
+                <div class="actions">
+                    <a class="btn btn-circle btn-icon-only btn-default fullscreen" href="javascript:;" data-original-title="" title=""> </a>
+                </div>
             </div>
             <div class="portlet-body">
                 <?php
@@ -61,6 +64,7 @@ echo json_encode($menu);
                     <div class="col-sm-4">
                         <div class="form-group">
                             <?php print $this->formLabel($trainingCode); ?>
+                            <span class="required" aria-required="true">*</span>
                             <?php print $this->formElement($trainingCode); ?>
                             <?php print $this->formElementErrors()->render($trainingCode, ['class' => 'help-block error']); ?>
                         </div>
@@ -69,6 +73,7 @@ echo json_encode($menu);
                     <div class="col-sm-4">
                         <div class="form-group">
                             <?php print $this->formLabel($trainingName); ?>
+                            <span class="required" aria-required="true">*</span>
                             <?php print $this->formElement($trainingName); ?>
                             <?php print $this->formElementErrors()->render($trainingName, ['class' => 'help-block error']); ?>
                         </div>
@@ -77,6 +82,7 @@ echo json_encode($menu);
                     <div class="col-sm-4">
                         <div class="form-group" >
                             <?php print $this->formLabel($trainingType); ?>
+                            <span class="required" aria-required="true">*</span>
                             <?php print $this->formElement($trainingType); ?>
                             <?php print $this->formElementErrors()->render($trainingType, ['class' => 'help-block error']); ?>
                         </div>
@@ -87,6 +93,7 @@ echo json_encode($menu);
                     <div class="col-sm-4">
                         <div class="form-group">
                             <?php print $this->formLabel($startDate); ?>
+                            <span class="required" aria-required="true">*</span>
                             <div class="input-group date" id="startDate">
                                 <?php print $this->formElement($startDate); ?>
                                 <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
@@ -97,6 +104,7 @@ echo json_encode($menu);
                     <div class="col-sm-4">
                         <div class="form-group">
                             <?php print $this->formLabel($endDate); ?>
+                            <span class="required" aria-required="true">*</span>
                             <div class="input-group date" id="endDate">
                                 <?php print $this->formElement($endDate) ?>
                                 <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
@@ -107,6 +115,7 @@ echo json_encode($menu);
                     <div class="col-sm-4">
                         <div class="form-group" >
                             <?php print $this->formLabel($duration); ?>
+                            <span class="required" aria-required="true">*</span>
                             <?php print $this->formElement($duration); ?>
                             <?php print $this->formElementErrors()->render($duration, ['class' => 'help-block error']); ?>
                         </div> 
@@ -126,26 +135,28 @@ echo json_encode($menu);
                     <div class="col-sm-4">
                         <div class="form-group" >
                             <?php print $this->formLabel($instructorName); ?>
+                            <span class="required" aria-required="true">*</span>
                             <?php print $this->formElement($instructorName); ?>
                             <?php print $this->formElementErrors()->render($instructorName, ['class' => 'help-block error']); ?>
                         </div>
                     </div>
 
                     <div class="col-sm-4">
-                        <div class="form-group" >
-                            <?php print $this->formLabel($remarks); ?>
-                            <?php print $this->formElement($remarks); ?>
-                            <?php print $this->formElementErrors()->render($remarks, ['class' => 'help-block error']); ?>
+                        <div class="form-group">
+                            <?php print $this->formLabel($companyId); ?>
+                            <span class="required" aria-required="true">*</span>
+                            <?php print $this->formElement($companyId); ?>
+                            <?php print $this->formElementErrors()->render($companyId, ['class' => 'help-block error']); ?>
                         </div>
                     </div>
                 </div>
 
                 <div class="row">
                     <div class="col-sm-4">
-                        <div class="form-group">
-                            <?php print $this->formLabel($companyId); ?>
-                            <?php print $this->formElement($companyId); ?>
-                            <?php print $this->formElementErrors()->render($companyId, ['class' => 'help-block error']); ?>
+                        <div class="form-group" >
+                            <?php print $this->formLabel($remarks); ?>
+                            <?php print $this->formElement($remarks); ?>
+                            <?php print $this->formElementErrors()->render($remarks, ['class' => 'help-block error']); ?>
                         </div>
                     </div>
                 </div>

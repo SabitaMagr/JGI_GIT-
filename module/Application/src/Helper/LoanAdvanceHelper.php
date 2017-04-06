@@ -23,7 +23,12 @@ class LoanAdvanceHelper{
         $designation = $employeeDetail['DESIGNATION_ID'];
         
         $salary = (int)$employeeDetail['SALARY'];
-        $joinDate = \DateTime::createFromFormat(Helper::PHP_DATE_FORMAT, $employeeDetail['JOIN_DATE']);
+        if($employeeDetail['JOIN_DATE']==null){
+            $joinDate = new \DateTime();
+        }else{
+            $joinDate = \DateTime::createFromFormat(Helper::PHP_DATE_FORMAT, $employeeDetail['JOIN_DATE']);
+        }
+        
         $currentDate = new \DateTime();
         
         $different = date_diff($joinDate,$currentDate);

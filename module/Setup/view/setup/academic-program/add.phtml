@@ -40,6 +40,9 @@ echo json_encode($menu);
                 <div class="caption">
                     <i class="fa fa-user"></i>New Entry
                 </div>
+                <div class="actions">
+                    <a class="btn btn-circle btn-icon-only btn-default fullscreen" href="javascript:;" data-original-title="" title=""> </a>
+                </div>
             </div>
             <div class="portlet-body">
                 <?php
@@ -50,6 +53,7 @@ echo json_encode($menu);
                     <div class="col-sm-4">
                         <div class="form-group">
                             <?php print $this->formLabel($academicProgramCode); ?>
+                            <span class="required" aria-required="true">*</span>
                             <?php print $this->formElement($academicProgramCode); ?>
                             <?php print $this->formElementErrors()->render($academicProgramCode, ['class' => 'help-block']); ?>
                             <span class="errorMsg" style="font-size:11px; color:red;"></span>
@@ -59,6 +63,7 @@ echo json_encode($menu);
                     <div class="col-sm-4">
                         <div class="form-group">
                             <?php print $this->formLabel($academicProgramName); ?>
+                            <span class="required" aria-required="true">*</span>
                             <?php print $this->formElement($academicProgramName); ?>
                             <?php print $this->formElementErrors()->render($academicProgramName, ['class' => 'help-block']); ?>
                             <span class="errorMsg" style="font-size:11px; color:red;"></span>
