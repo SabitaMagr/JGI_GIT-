@@ -91,11 +91,21 @@
             });
 
         };
-
+        var firstTime = true;
         var initializeReport = function (departmentId) {
-            $tableContainer.block();
+            if (firstTime) {
+                App.blockUI({target: "#hris-page-content"});
+
+            } else {
+                App.blockUI({target: "#departmentMonthReport"});
+            }
             app.pullDataById(document.wsDepartmentWise, {departmentId: departmentId}).then(function (response) {
-                $tableContainer.unblock();
+                if (firstTime) {
+                    App.unblockUI("#hris-page-content");
+                    firstTime = false;
+                } else {
+                    App.unblockUI("#departmentMonthReport");
+                }
                 console.log('departmentWiseEmployeeMonthlyR', response);
                 var extractedDetailData = extractDetailData(response.data, departmentId);
                 console.log('extractedDetailData', extractedDetailData);
@@ -113,7 +123,12 @@
 
 
             }, function (error) {
-                $tableContainer.unblock();
+                if (firstTime) {
+                    App.unblockUI("#hris-page-content");
+                    firstTime = false;
+                } else {
+                    App.unblockUI("#departmentMonthReport");
+                }
                 console.log('departmentWiseEmployeeMonthlyE', error);
             });
         };

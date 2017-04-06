@@ -59,7 +59,7 @@
             returnData.cols.push({
                 field: 'total',
                 title: 'Total',
-                width:  400,
+                width: 400,
                 template: '<div data="#: total #" class="btn-group widget-btn-list total-attendance">' +
                         '<a class="btn  widget-btn custom-btn-present totalbtn"></a>' +
                         '<a class="btn  widget-btn custom-btn-absent totalbtn"></a>' +
@@ -116,11 +116,22 @@
             });
 
         };
-
+        var firstTime = true;
         var initializeReport = function (employeeId) {
-            $tableContainer.block();
+            if (firstTime) {
+                App.blockUI({target: "#hris-page-content"});
+
+            } else {
+                App.blockUI({target: "#reportTable"});
+
+            }
             app.pullDataById(document.wsEmployeeWiseDailyReport, {employeeId: employeeId}).then(function (response) {
-                $tableContainer.unblock();
+                if (firstTime) {
+                    App.unblockUI("#hris-page-content");
+                    firstTime = false;
+                } else {
+                    App.unblockUI("#reportTable");
+                }
                 console.log('departmentWiseEmployeeMonthlyR', response);
                 var extractedDetailData = extractDetailData(response.data, employeeId);
                 console.log('extractedDetailData', extractedDetailData);
@@ -138,7 +149,12 @@
                 displayTotalInGrid('.total-attendance');
 
             }, function (error) {
-                $tableContainer.unblock();
+                if (firstTime) {
+                    App.unblockUI("#hris-page-content");
+                    firstTime = false;
+                } else {
+                    App.unblockUI("#reportTable");
+                }
                 console.log('departmentWiseEmployeeMonthlyE', error);
             });
         };

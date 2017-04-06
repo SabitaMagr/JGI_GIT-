@@ -1,7 +1,7 @@
 (function ($, app) {
     'use strict';
     $(document).ready(function () {
-
+        var firstTime = true;
         var initializeGrid = function (rows, cols) {
             var $tableContainer = $("#departmentMonthReport");
             $tableContainer.kendoGrid({
@@ -14,11 +14,21 @@
                 pageable: false,
                 columns: cols,
                 detailInit: function (e) {
-                    $tableContainer.block();
+                    if (firstTime) {
+                        App.blockUI({target: "#hris-page-content"});
+
+                    } else {
+                        App.blockUI({target: "#departmentMonthReport"});
+                    }
                     console.log('drillInitCBObj', e);
                     var departmentId = e.data.id;
                     app.pullDataById(document.wsDepartmentWise, {departmentId: departmentId}).then(function (response) {
-                        $tableContainer.unblock();
+                        if (firstTime) {
+                            App.unblockUI("#hris-page-content");
+                            firstTime = false;
+                        } else {
+                            App.unblockUI("#departmentMonthReport");
+                        }
                         console.log('departmentWiseEmployeeMonthlyR', response);
 
                         var extractedDetailData = extractDetailData(response.data, departmentId);
@@ -37,7 +47,12 @@
 
 
                     }, function (error) {
-                        $tableContainer.unblock();
+                        if (firstTime) {
+                            App.unblockUI("#hris-page-content");
+                            firstTime = false;
+                        } else {
+                            App.unblockUI("#departmentMonthReport");
+                        }
                         console.log('departmentWiseEmployeeMonthlyE', error);
                     });
                 }
