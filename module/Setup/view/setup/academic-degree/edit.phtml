@@ -41,6 +41,9 @@ echo json_encode($menu);
                 <div class="caption">
                     <i class="fa fa-user"></i>Update
                 </div>
+                <div class="actions">
+                    <a class="btn btn-circle btn-icon-only btn-default fullscreen" href="javascript:;" data-original-title="" title=""> </a>
+                </div>
             </div>
             <div class="portlet-body">
                 <?php
@@ -51,6 +54,7 @@ echo json_encode($menu);
                     <div class="col-sm-4">
                         <div class="form-group">
                             <?php print $this->formLabel($academicDegreeCode); ?>
+                            <span class="required" aria-required="true">*</span>
                             <?php print $this->formElement($academicDegreeCode); ?>
                             <?php print $this->formElementErrors()->render($academicDegreeCode, ['class' => 'help-block']); ?>
                             <input type="hidden" id="academicDegreeId" value="<?php echo $id ?>" />
@@ -61,6 +65,7 @@ echo json_encode($menu);
                     <div class="col-sm-4">
                         <div class="form-group">
                             <?php print $this->formLabel($academicDegreeName); ?>
+                            <span class="required" aria-required="true">*</span>
                             <?php print $this->formElement($academicDegreeName); ?>
                             <?php print $this->formElementErrors()->render($academicDegreeName, ['class' => 'help-block']); ?>
                             <span class="errorMsg" style="font-size:11px; color:red;"></span>
@@ -70,6 +75,7 @@ echo json_encode($menu);
                     <div class="col-sm-4">
                         <div class="form-group">
                             <?php print $this->formLabel($weight); ?>
+                            <span class="required" aria-required="true">*</span>
                             <?php print $this->formElement($weight); ?>
                             <?php print $this->formElementErrors()->render($weight, ['class' => 'help-block']); ?>
                             <span class="errorMsg" style="font-size:11px; color:red;"></span>
