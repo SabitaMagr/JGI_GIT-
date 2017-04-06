@@ -108,7 +108,7 @@ class QuestionForm{
      * @Annotation\Required(false)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Min. Value"})
-     * @Annotation\Attributes({"id":"minValue","class":"form-control","step":"0.01"})
+     * @Annotation\Attributes({"id":"minValue","class":"form-control","min":"0","step":"0.01"})
      */
     public $minValue;
     
@@ -117,7 +117,7 @@ class QuestionForm{
      * @Annotation\Required(false)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Max. Value"})
-     * @Annotation\Attributes({"id":"maxValue","class":"form-control","step":"0.01"})
+     * @Annotation\Attributes({"id":"maxValue","class":"form-control","min":"0","step":"0.01"})
      */
     public $maxValue;
     
@@ -126,7 +126,7 @@ class QuestionForm{
      * @Annotation\Required(false)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Order No."})
-     * @Annotation\Attributes({"id":"orderNo","class":"form-control"})
+     * @Annotation\Attributes({"id":"orderNo","class":"form-control","min":"0"})
      */
     public $orderNo;
     
