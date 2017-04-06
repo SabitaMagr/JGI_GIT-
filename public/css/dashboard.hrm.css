@@ -858,7 +858,7 @@ widget-appraisal-due h4 {
 }
 
 .date-date > span {
-    background-color: #4db3a2;
+    background-color: #81C868;
     border-radius: 50% !important;
     color: #ffffff;
     display: inline-block;
@@ -880,7 +880,7 @@ widget-appraisal-due h4 {
     margin-top: 9px;
     text-align: center;
     width: 23px;
-    background-color: #4db3a2;
+    background-color:#81C868
 }
 
 .taskaddbtn {
@@ -963,7 +963,10 @@ widget-appraisal-due h4 {
 .name {
     text-align: right;
 }
-
+.employee_search i
+{
+  color:#fff;  
+}
 
 /* Large desktops and laptops */
 
