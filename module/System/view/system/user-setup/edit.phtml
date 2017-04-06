@@ -3,6 +3,7 @@ $this->headScript()->appendFile($this->basePath('js/system/user-setup/add.js'));
 
 $form->setAttribute('role', 'form');
 $form->setAttribute('class', 'usersetup-form');
+$form->setAttribute('id', 'usersetup-form');
 
 $userName = $form->get('userName');
 $password = $form->get('password');
@@ -54,6 +55,7 @@ echo json_encode($menu); ?>;
                 <div class="form-group<?= empty($userName->getMessages()) ? "" : "error" ?>">
                     <?php print $this->formLabel($userName); ?>
                 <?php print $this->formElement($userName); ?>
+                    <input type="hidden" id="userId" value="<?php echo $id; ?>"/>
                 </div>
 <?php print $this->formElementErrors()->render($userName, ['class' => 'help-block error']); ?>
 

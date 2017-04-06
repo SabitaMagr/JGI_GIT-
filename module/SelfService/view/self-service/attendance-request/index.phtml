@@ -43,6 +43,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
     </script>
 <?php } ?>
 <div ng-app="hris" ng-controller="attendanceRequestListController" class="formbg">
+    <div id="hris-page-content">
     <div class="row margin-top-20">
         <div class="col-sm-3">
             <?php print $this->formLabel($attendanceStatus); ?>
@@ -149,4 +150,5 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
         </script>
 
     </div>
+</div>
 </div>

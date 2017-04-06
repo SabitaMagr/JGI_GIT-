@@ -21,7 +21,7 @@ angular.module('hris', [])
                 var toDate = angular.element(document.getElementById('toDate')).val();
                 var recomApproveId = angular.element(document.getElementById('recomApproveId')).val();
                 var travelRequestStatusId = angular.element(document.getElementById('travelRequestStatusId')).val();
-                $tableContainer.block();
+                App.blockUI({target: "#hris-page-content"});
                 window.app.pullDataById(document.url, {
                     action: 'pullTravelRequestStatusList',
                     data: {
@@ -38,11 +38,11 @@ angular.module('hris', [])
                         'travelRequestStatusId':travelRequestStatusId
                     }
                 }).then(function (success) {
-                    $tableContainer.unblock();
+                    App.unblockUI("#hris-page-content");
                     console.log(success.recomApproveId);
                     $scope.initializekendoGrid(success.data);
                 }, function (failure) {
-                    $tableContainer.unblock();
+                    App.unblockUI("#hris-page-content");
                     console.log(failure);
                 });
             }

@@ -68,7 +68,7 @@ angular.module('hris', ['ui.bootstrap'])
                 var designationId = angular.element(document.getElementById('designationId')).val();
                 var serviceTypeId = angular.element(document.getElementById('serviceTypeId')).val();
                 console.log(serviceTypeId);
-                $tableContainer.block();
+                App.blockUI({target: "#hris-page-content"});
                 window.app.pullDataById(document.url, {
                     action: 'pullEmployeeLeave',
                     id: {
@@ -80,7 +80,7 @@ angular.module('hris', ['ui.bootstrap'])
                         serviceTypeId: serviceTypeId
                     }
                 }).then(function (success) {
-                    $tableContainer.unblock();
+                    App.unblockUI("#hris-page-content");
                     $scope.$apply(function () {
                         $scope.leaveList = success.data;
                         for (var i = 0; i < $scope.leaveList.length; i++) {
@@ -89,7 +89,7 @@ angular.module('hris', ['ui.bootstrap'])
                     });
 
                 }, function (failure) {
-                    $tableContainer.unblock();
+                    App.unblockUI("#hris-page-content");
                     console.log(failure);
 
                 });

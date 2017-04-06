@@ -40,7 +40,7 @@ angular.module('hris', ['ui.bootstrap'])
                 var departmentId = angular.element(document.getElementById('departmentId')).val();
                 var designationId = angular.element(document.getElementById('designationId')).val();
                 var employeeId = angular.element(document.getElementById('employeeId')).val();
-                $tableContainer.block();
+                App.blockUI({target: "#hris-page-content"});
                 window.app.pullDataById(document.url, {
                     action: 'pullEmployeeForRecomApproverAssign',
                     // pullEmployeeForShiftAssign
@@ -51,7 +51,7 @@ angular.module('hris', ['ui.bootstrap'])
                         employeeId: employeeId
                     }
                 }).then(function (success) {
-                    $tableContainer.unblock();
+                    App.unblockUI("#hris-page-content");
                     console.log("Employee list for assign", success);
                     $scope.$apply(function () {
                         $scope.employeeList = success.data;
@@ -62,7 +62,7 @@ angular.module('hris', ['ui.bootstrap'])
 
                     });
                 }, function (failure) {
-                    $tableContainer.unblock();
+                    App.unblockUI("#hris-page-content");
                     console.log("Employee Get All", failure);
                 });
             };
