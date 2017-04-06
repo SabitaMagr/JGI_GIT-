@@ -324,6 +324,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                     </div>
                                 </div>
                             </div>
+                            <?php if ($employeeTask) : ?>
                             <div class="task-list">
                                 <ul>
                                     <?php foreach ($employeeTask as $task): ?>
@@ -365,6 +366,13 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
 <!--                                    </li>-->
                                 </ul>
                             </div>
+                            <?php else : ?>
+                                <div class="notask">
+                                    <div class="notask-box">
+                                        <h4><i class="fa fa-universal-access" aria-hidden="true"></i>No Task Available</h4>
+                                    </div>
+                                </div>
+                            <?php endif; ?>
                         </div>
                     </div>
                     <div class="datepickeform">
@@ -453,7 +461,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                 <div class="tab-content birday-person-list">
                                     <div class="tab-pane tab-pane-birthday">
                                         <div id="tab-birthday-today" style="display:<?php print $todayBirthdayActive ? 'block' : 'none' ?>">
-                                            <?php if (isset($employeesBirthday) && isset($employeesBirthday['TODAY'])) : ?>
+                                            <?php if ($todayBirthdayActive) : ?>
                                                 <?php foreach ($employeesBirthday['TODAY'] as $todayBirthday) : ?>
                                                     <div class="person-list clearfix">
                                                         <div class="col-md-3 col-sm-3">
@@ -468,10 +476,26 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                                             </div>
                                                         </div>
                                                         <div class="col-md-3 col-sm-3">
-                                                            <span><?php print $todayBirthday['EMP_BIRTH_DATE']; ?></span>
+                                                            <span class="birth-date"><?php print $todayBirthday['EMP_BIRTH_DATE']; ?></span>
                                                         </div>
                                                     </div>
                                                 <?php endforeach; ?>
+                                            <?php else : ?>
+                                                <div class="dashborder clearfix">
+                                                    <div class="col-md-3 col-sm-3">
+                                                        <div class="person-pic birthday-pic">
+                                                            <img src="<?php print $this->basePath('img/nobody_m.original.jpg'); ?>" alt="person picture">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-xs-6 col-md-6 col-sm-6">
+                                                        <div class="nobirthday-text">
+                                                            <h4>No Birthday Available Today</h4>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-3 col-sm-3">
+                                                        <span class="calendar_date"><i class="fa fa-calendar" aria-hidden="true"></i><?php print date('jS F') ?></span>
+                                                    </div>
+                                                </div>
                                             <?php endif; ?>
                                         </div>
 
@@ -495,6 +519,19 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                                     </div>
                                                 </div>
                                             <?php endforeach; ?>
+                                        <?php else : ?>
+                                            <div class="dashborder clearfix">
+                                                <div class="col-md-3 col-sm-3">
+                                                    <div class="person-pic birthday-pic">
+                                                        <img src="<?php print $this->basePath('img/nobody_m.original.jpg'); ?>" alt="person picture">
+                                                    </div>
+                                                </div>
+                                                <div class="col-xs-6 col-md-6 col-sm-6">
+                                                    <div class="nobirthday-text">
+                                                        <h4>No Upcoming Birthdays Found!!!</h4>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         <?php endif; ?>
                                         </div>
                                     </div>

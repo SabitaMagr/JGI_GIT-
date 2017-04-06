@@ -9,10 +9,7 @@ return [
         'factories' => [
             Controller\TestController::class => ControllerFactory::class,
         ],
-
     ],
-
-
     'router' => [
         'routes' => [
             'test' => [
@@ -27,8 +24,6 @@ return [
             ],
         ],
     ],
-
-  
     'view_manager' => [
         'template_path_stack' => [
              __DIR__ . '/../view',
