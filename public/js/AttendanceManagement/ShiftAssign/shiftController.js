@@ -97,7 +97,7 @@ angular.module('hris', [])
                         }
                     }
                 });
-                window.toastr.info("Shift assigned successfully!", "Notification");
+                window.toastr.success("Shift assigned successfully!", "Notification");
                 // window.app.notification("Shift assigned successfully!", {position: "top right", className: "success"});
             });
         };
