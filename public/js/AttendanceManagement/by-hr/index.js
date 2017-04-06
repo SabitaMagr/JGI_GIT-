@@ -20,7 +20,7 @@ angular.module('hris', [])
                 var fromDate = angular.element(document.getElementById('fromDate')).val();
                 var toDate = angular.element(document.getElementById('toDate')).val();
                 var status = angular.element(document.getElementById('statusId')).val();
-                $tableContainer.block();
+                App.blockUI({target: "#hris-page-content"});
                 window.app.pullDataById(document.url, {
                     action: 'pullAttendanceList',
                     data: {
@@ -36,11 +36,11 @@ angular.module('hris', [])
                         'status': status
                     }
                 }).then(function (success) {
-                    $tableContainer.unblock();
+                    App.unblockUI("#hris-page-content");
                     console.log(success.data);
                     $scope.initializekendoGrid(success.data);
                 }, function (failure) {
-                    $tableContainer.unblock();
+                    App.unblockUI("#hris-page-content");
                     console.log(failure);
                 });
             };

@@ -1,3 +1,20 @@
+<div class="page-bar">
+    <?= $this->navigation('Zend\Navigation\loanApprove')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
+</div>
+<?php
+if ($this->messages && (sizeof($this->messages) > 1)) {
+    print '<div class="alert alert-warning alert-dismissable">
+    <button type="button" class="close" data-dismiss="alert" aria-hidden="true"></button>
+    <strong>Warning!</strong> ';
+    print $this->messages[1];
+    print '</div>';
+}
+?>
+<?php if ($this->messages) { ?>
+    <script>
+        document.messages =<?php echo json_encode($this->messages); ?>
+    </script>
+<?php } ?>
 <?php
 $this->headScript()->appendFile($this->basePath('js/SelfService/loan-request/add.js'));
 
@@ -6,41 +23,30 @@ $form->setAttribute('id', 'loanApprove-form');
 
 $loanId = $form->get('loanId');
 $loanId->setValueOptions($loans);
-$loanId->setAttributes(["disabled"=>"disabled"]);
+$loanId->setAttributes(["disabled" => "disabled"]);
 $requestedAmount = $form->get('requestedAmount');
-$requestedAmount->setAttributes(["disabled"=>"disabled"]);
+$requestedAmount->setAttributes(["disabled" => "disabled"]);
 $loanDate = $form->get('loanDate');
-$loanDate->setAttributes(["disabled"=>"disabled"]);
+$loanDate->setAttributes(["disabled" => "disabled"]);
 $reason = $form->get('reason');
-$reason->setAttributes(["disabled"=>"disabled"]);
+$reason->setAttributes(["disabled" => "disabled"]);
 $recommendedRemarks = $form->get('recommendedRemarks');
-$recommendedRemarks->setAttributes(['required'=>'true']);
+$recommendedRemarks->setAttributes(['required' => 'true']);
 $approvedRemarks = $form->get('approvedRemarks');
-$approvedRemarks->setAttributes(['required'=>'true']);
+$approvedRemarks->setAttributes(['required' => 'true']);
 
 $submit = $form->get('submit');
 $submit->setAttribute('value', 'Approve');
 
 $form->setAttribute('action', $this->url('loanApprove', ['action' => 'view', 'id' => $id, 'role' => $role]));
 
-if ($this->messages) {
-    print '<ul class="help-block bg-danger" style="background:#f3e250;">';
-    foreach ($this->messages as $message) {
-        print '<li>' . $message . '</li>';
-    }
-    print '</ul>';
-}
 
 $form->prepare();
 print $this->form()->openTag($form);
 ?>
-    <script>
-        document.menu=<?php $menu = ["id" => "menuManagerService","subMenu"=>["id"=>"subMenuLoantoApprove"]];echo json_encode($menu);?>;
-        document.url = '<?= $this->url("restful", ["action" => "index"]) ?>';
-    </script>
-<div class="page-bar">
-    <?= $this->navigation('Zend\Navigation\loanApprove')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
-</div>
+<script>
+    document.url = '<?= $this->url("restful", ["action" => "index"]) ?>';
+</script>
 <div class="row margin-top-20">
     <div class="col-sm-8 col-sm-offset-2">
         <div class="portlet box custom-box">
@@ -51,126 +57,130 @@ print $this->form()->openTag($form);
             </div>
             <div class="portlet-body">
                 <div class="border-bottom">
-                <div class="form-group">
-                    <div class="row div-font-11">
-                        <div class="col-md-6">
-                            <table>
-                                <tr height="30">
-                                    <td>
-                                        Employee Name
-                                    </td>
-                                    <td width="15">:</td>
-                                    <td>
-                                        <?php echo $employeeName; ?>
-                                    </td>
-                                </tr>
-                                
-                                <tr height="30">
-                                    <td>
-                                        Your Role
-                                    </td>
-                                    <td width="15">:</td>
-                                    <td>
-                                        <?php if ($role == 3) {
+                    <div class="form-group">
+                        <div class="row div-font-11">
+                            <div class="col-md-6">
+                                <table>
+                                    <tr height="30">
+                                        <td>
+                                            Employee Name
+                                        </td>
+                                        <td width="15">:</td>
+                                        <td>
+                                            <?php echo $employeeName; ?>
+                                        </td>
+                                    </tr>
+
+                                    <tr height="30">
+                                        <td>
+                                            Your Role
+                                        </td>
+                                        <td width="15">:</td>
+                                        <td>
+                                            <?php
+                                            if ($role == 3) {
                                                 echo 'Approver';
                                             } else if ($role == 2) {
                                                 echo 'Recommender';
-                                            }else if($role==4){
+                                            } else if ($role == 4) {
                                                 echo 'Recommender\Approver';
-                                            } ?>
-                                    </td>
-                                </tr>                               
-                            </table>
-                        </div>
-                        <div class="col-md-6">
-                            <table>  
-                                <tr height="30">
-                                    <td>
-                                        Requested Date
-                                    </td>
-                                    <td width="15">:</td>
-                                    <td>
-                                        <?php echo $requestedDate; ?>
-                                    </td>
-                                </tr>
-                                <tr height="30">
-                                    <td>
-                                        Status
-                                    </td>
-                                    <td width="15">:</td>
-                                    <td>
-                                        <?php
-                                        if ($status == 'RQ') {
-                                            echo "Pending";
-                                        } else if ($status == 'RC') {
-                                            echo "Recommended";
-                                        } else if ($status == 'AP') {
-                                            echo "Approved";
-                                        } else if ($status == "R") {
-                                            echo "Rejected";
-                                        } else if ($status == "C") {
-                                            echo "Cancelled";
-                                        } ?>
-                                    </td>
-                                </tr>
-                                <?php if($role!=4){ ?>
-                                <tr height="30">
-                                    <td>
-                                        <?= ($role==3)? "Recommender":"Approver"; ?>
-                                    </td>
-                                    <td width="15">:</td>
-                                    <td>
-                                        <?= ($role==3)? $recommender:$approver; ?>
-                                    </td>
-                                </tr> 
-                                <?php } ?>
-                            </table>
+                                            }
+                                            ?>
+                                        </td>
+                                    </tr>                               
+                                </table>
+                            </div>
+                            <div class="col-md-6">
+                                <table>  
+                                    <tr height="30">
+                                        <td>
+                                            Requested Date
+                                        </td>
+                                        <td width="15">:</td>
+                                        <td>
+                                            <?php echo $requestedDate; ?>
+                                        </td>
+                                    </tr>
+                                    <tr height="30">
+                                        <td>
+                                            Status
+                                        </td>
+                                        <td width="15">:</td>
+                                        <td>
+                                            <?php
+                                            if ($status == 'RQ') {
+                                                echo "Pending";
+                                            } else if ($status == 'RC') {
+                                                echo "Recommended";
+                                            } else if ($status == 'AP') {
+                                                echo "Approved";
+                                            } else if ($status == "R") {
+                                                echo "Rejected";
+                                            } else if ($status == "C") {
+                                                echo "Cancelled";
+                                            }
+                                            ?>
+                                        </td>
+                                    </tr>
+                                    <?php if ($role != 4) { ?>
+                                        <tr height="30">
+                                            <td>
+                                                <?= ($role == 3) ? "Recommender" : "Approver"; ?>
+                                            </td>
+                                            <td width="15">:</td>
+                                            <td>
+                                                <?= ($role == 3) ? $recommender : $approver; ?>
+                                            </td>
+                                        </tr> 
+                                    <?php } ?>
+                                </table>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="form-group">
-                    <?php print $this->formLabel($loanId); ?>
-                    <?php print $this->formElement($loanId); ?>
-                    <?php print $this->formElementErrors()->render($loanId, ['class' => 'help-block']); ?>
-                </div>               
-                <div class="form-group">
-                    <?php print $this->formLabel($requestedAmount); ?>
-                    <?php print $this->formElement($requestedAmount); ?>
-                    <?php print $this->formElementErrors()->render($requestedAmount, ['class' => 'help-block']); ?>
-                </div>
-                <div class="form-group">
-                    <?php print $this->formLabel($loanDate); ?>
-                    <div class="input-group date" id="startDate">
-                        <?php print $this->formElement($loanDate); ?>
-                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                    <div class="form-group">
+                        <?php print $this->formLabel($loanId); ?>
+                        <?php print $this->formElement($loanId); ?>
+                        <?php print $this->formElementErrors()->render($loanId, ['class' => 'help-block']); ?>
+                    </div>               
+                    <div class="form-group">
+                        <?php print $this->formLabel($requestedAmount); ?>
+                        <?php print $this->formElement($requestedAmount); ?>
+                        <?php print $this->formElementErrors()->render($requestedAmount, ['class' => 'help-block']); ?>
                     </div>
-                    <?php print $this->formElementErrors()->render($loanDate, ['class' => 'help-block']); ?>
-                </div>
-                <div class="form-group">
-                    <?php print $this->formLabel($reason); ?>
-                    <?php print $this->formElement($reason); ?>
-                    <?php print $this->formElementErrors()->render($reason, ['class' => 'help-block']); ?>
-                </div>
+                    <div class="form-group">
+                        <?php print $this->formLabel($loanDate); ?>
+                        <div class="input-group date" id="startDate">
+                            <?php print $this->formElement($loanDate); ?>
+                            <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                        </div>
+                        <?php print $this->formElementErrors()->render($loanDate, ['class' => 'help-block']); ?>
+                    </div>
+                    <div class="form-group">
+                        <?php print $this->formLabel($reason); ?>
+                        <?php print $this->formElement($reason); ?>
+                        <?php print $this->formElementErrors()->render($reason, ['class' => 'help-block']); ?>
+                    </div>
                 </div>     
                 <?php if ($role == 2) { ?>
                     <div
                         class="form-group margin-top-10 required <?= empty($recommendedRemarks->getMessages()) ? "" : "error" ?>">
-                        <?php print $this->formLabel($recommendedRemarks); ?>
-                        <?php print $this->formElement($recommendedRemarks); ?>
+                            <?php print $this->formLabel($recommendedRemarks); ?>
+                            <?php print $this->formElement($recommendedRemarks); ?>
                     </div>
                 <?php } ?>
-                <?php  if($role==2 && ($status=='AP' || ($status=='R' && $approvedDT!=null))){ ?>
+                <?php if ($role == 2 && ($status == 'AP' || ($status == 'R' && $approvedDT != null))) { ?>
                     <div
                         class="form-group required <?= empty($approvedRemarks->getMessages()) ? "" : "error" ?>">
                         <label>Reason for action [From Approver]</label>
                         <?php print $this->formElement($approvedRemarks); ?>
                     </div>
-                <?php }  ?>
+                <?php } ?>
 
-                <?php if ($role == 3 || $role==4) {
-                        $recommendedRemarks->setAttributes(['disabled'=>'disabled']);
-                        ?>
-                    <?php if($role!=4){ ?>
+                <?php
+                if ($role == 3 || $role == 4) {
+                    $recommendedRemarks->setAttributes(['disabled' => 'disabled']);
+                    ?>
+                    <?php if ($role != 4) { ?>
                         <div
                             class="form-group margin-top-10 required <?= empty($recommendedRemarks->getMessages()) ? "" : "error" ?>">
                             <label>Reason for action [From Recommender]</label>
@@ -179,8 +189,8 @@ print $this->form()->openTag($form);
                     <?php } ?>
                     <div
                         class="form-group required <?= empty($approvedRemarks->getMessages()) ? "" : "error" ?>">
-                        <?php print $this->formLabel($approvedRemarks); ?>
-                        <?php print $this->formElement($approvedRemarks); ?>
+                            <?php print $this->formLabel($approvedRemarks); ?>
+                            <?php print $this->formElement($approvedRemarks); ?>
                     </div>
                 <?php } ?>
 
@@ -198,7 +208,5 @@ print $this->form()->openTag($form);
 </div>
 
 <?php
-
 print $this->form()->closeTag();
-
 ?>

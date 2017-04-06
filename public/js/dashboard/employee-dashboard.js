@@ -42,7 +42,7 @@
         var isViewLoading = true;
         $('#calendar').fullCalendar('destroy'); // destroy the calendar
         $('#calendar').fullCalendar({ //re-initialize the calendar
-            defaultDate: '2017-03-12',
+            //defaultDate: '2017-03-12',
             disableDragging : false,
             viewRender: function( view, element ) {
                 $('#calendar .html-loading').remove();
@@ -58,10 +58,10 @@
                                     if (inOutTime.length) {
                                         var output = "";
                                         if (inOutTime[0]) {
-                                            output += '<span class="fc-title-in" style="background-color:#44fbaf;padding:1px 3px;">' + inOutTime[0] + '</span>';
+                                            output += '<span class="fc-title-in" style="padding:1px 3px;">' + inOutTime[0] + '</span>';
                                         }
                                         if (inOutTime[1]) {
-                                            output += '<span class="fc-title-out" style="background-color:#e6fb44;padding:1px 3px;">' + inOutTime[1] + '</span>';
+                                            output += '<span class="fc-title-out" style="padding:1px 3px;">' + inOutTime[1] + '</span>';
                                         }
                                         if (output) {
                                             return output;
@@ -95,11 +95,11 @@
         });
     });
 
-    $('#tab-birthday-upcoming').slimScroll({
-        height: '298px'
+    /*************** BIRTHDAY TAB CLICK EVENT ***************/
+    $('.task-list, .tab-pane-birthday').slimScroll({
+        height: '300px'
     });
 
-    /*************** BIRTHDAY TAB CLICK EVENT ***************/
     $('.ln-nav-tab-birthday').on('click', function(e) {
         e.preventDefault();
         $('.ln-birthday').removeClass('active');

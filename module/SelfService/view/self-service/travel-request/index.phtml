@@ -13,26 +13,33 @@ $this->headScript()
         ->appendFile($this->basePath('js/SelfService/travel-request/index.js'))
         ->appendFile($this->basePath('assets/global/plugins/bootstrap-confirmation/bootstrap-confirmation.min.js'));
 ?>
+
+<script>
+    document.urlCss = '<?= $this->basePath('css/custom.css') ?>';
+    document.deleteURL = '<?= $this->url("restful", ["action" => "index"]) ?>';
+    document.travelRequestList =<?php echo json_encode($list); ?>
+</script>
+<div class="page-bar">
+    <?= $this->navigation('Zend\Navigation\travelRequest')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
+</div>
+<?php
+if ($this->messages && (sizeof($this->messages) > 1)) {
+    print '<div class="alert alert-warning alert-dismissable">
+    <button type="button" class="close" data-dismiss="alert" aria-hidden="true"></button>
+    <strong>Warning!</strong> ';
+    print $this->messages[1];
+    print '</div>';
+}
+?>
 <?php if ($this->messages) { ?>
     <script>
         document.messages =<?php echo json_encode($this->messages); ?>
     </script>
 <?php } ?>
 
-<script>
-    document.menu =<?php $menu = ["id" => "menuSelfService", "subMenu" => ["id" => "subMenuTravelRequest"]];
-echo json_encode($menu); ?>;
-    document.urlCss='<?= $this->basePath('css/custom.css') ?>';
-    document.deleteURL ='<?= $this->url("restful", ["action" => "index"]) ?>';
-    document.travelRequestList =<?php echo json_encode($list); ?>
-</script>
-<div class="page-bar">
-    <?= $this->navigation('Zend\Navigation\travelRequest')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
-</div>
-
 
 <div class="margin-top-20" ng-app="hris" ng-controller="travelRequestList">
-    
+
     <div class="table-toolbar">
         <div class="row">
             <div class="col-md-6">

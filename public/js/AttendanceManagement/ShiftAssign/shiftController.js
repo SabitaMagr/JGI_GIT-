@@ -38,7 +38,7 @@ angular.module('hris', [])
             var designationId = angular.element(document.getElementById('designationId')).val();
             var positionId = angular.element(document.getElementById('positionId')).val();
             var serviceTypeId = angular.element(document.getElementById('serviceTypeId')).val();
-            $tableContainer.block();
+            App.blockUI({target: "#hris-page-content"});
             window.app.pullDataById(document.url, {
                 action: 'pullEmployeeForShiftAssign',
                 id: {
@@ -49,7 +49,7 @@ angular.module('hris', [])
                     serviceTypeId: serviceTypeId,
                 }
             }).then(function (success) {
-                $tableContainer.unblock();
+                App.unblockUI("#hris-page-content");
                 console.log("shift Assign Filter Success Response", success);
                 $scope.$apply(function () {
                     $scope.employeeShiftList = success.data;
@@ -61,7 +61,7 @@ angular.module('hris', [])
                 });
 
             }, function (failure) {
-                $tableContainer.unblock();
+                App.unblockUI("#hris-page-content");
                 console.log("shift Assign Filter Failure Response", failure);
             });
         };

@@ -24,15 +24,25 @@ $this->headScript()->appendFile($this->basePath('assets/global/plugins/jquery.bl
 ?>
 
 <script>
-    document.menu =<?php
-$menu = ["id" => "menuManagerService", "subMenu" => ["id" => "subMenuHolidayWorkStatus"]];
-echo json_encode($menu);
-?>;
     document.url = '<?= $this->url("restful", ["action" => "index"]) ?>';
 </script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\holidayWorkApprove')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
+<?php
+if ($this->messages && (sizeof($this->messages) > 1)) {
+    print '<div class="alert alert-warning alert-dismissable">
+    <button type="button" class="close" data-dismiss="alert" aria-hidden="true"></button>
+    <strong>Warning!</strong> ';
+    print $this->messages[1];
+    print '</div>';
+}
+?>
+<?php if ($this->messages) { ?>
+    <script>
+        document.messages =<?php echo json_encode($this->messages); ?>
+    </script>
+<?php } ?>
 <?php if ($this->messages) { ?>
     <script>
         document.messages =<?php echo json_encode($this->messages); ?>
@@ -40,6 +50,7 @@ echo json_encode($menu);
 <?php } ?>
 
 <div ng-app="hris" ng-controller="holidayWorkStatusListController">
+    <div id="hris-page-content">
     <div class="margin-top-20 formbg">
         <div class="row">
             <div class="col-sm-3 topgap">
@@ -177,4 +188,4 @@ echo json_encode($menu);
 
 </div>  
 
-
+</div>

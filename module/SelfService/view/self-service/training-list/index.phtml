@@ -7,23 +7,30 @@ $this->headLink()
         ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.dataviz.default.min.css'));
 
 $this->headScript()
-    ->appendFile($this->basePath('jszip/dist/jszip.min.js'))
-    ->appendFile($this->basePath('telerik_kendoui/js/kendo.all.min.js'))
-    ->appendFile($this->basePath('js/SelfService/training/index.js'))
-    ->appendFile($this->basePath('assets/global/plugins/bootstrap-confirmation/bootstrap-confirmation.min.js'));
+        ->appendFile($this->basePath('jszip/dist/jszip.min.js'))
+        ->appendFile($this->basePath('telerik_kendoui/js/kendo.all.min.js'))
+        ->appendFile($this->basePath('js/SelfService/training/index.js'))
+        ->appendFile($this->basePath('assets/global/plugins/bootstrap-confirmation/bootstrap-confirmation.min.js'));
 ?>
 
 <script>
-    document.menu =<?php $menu = ["id" => "menuSelfService", "subMenu" => ["id" => "subMenuTrainingList"]];echo json_encode($menu);?>;
-    document.list=<?php echo json_encode($list); ?>;
+    document.list =<?php echo json_encode($list); ?>;
 </script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\trainingList')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
 <?php
-if($this->messages) { ?>
+if ($this->messages && (sizeof($this->messages) > 1)) {
+    print '<div class="alert alert-warning alert-dismissable">
+    <button type="button" class="close" data-dismiss="alert" aria-hidden="true"></button>
+    <strong>Warning!</strong> ';
+    print $this->messages[1];
+    print '</div>';
+}
+?>
+<?php if ($this->messages) { ?>
     <script>
-        document.messages=<?php echo json_encode($this->messages); ?>
+        document.messages =<?php echo json_encode($this->messages); ?>
     </script>
 <?php } ?>
 
@@ -47,10 +54,10 @@ if($this->messages) { ?>
             </div>
         </div>
     </div>
-    
+
     <div id="trainingTable">
     </div>
-    
+
     <script id="rowTemplate" type="text/x-kendo-tmpl">
         <tr>
         <td>
@@ -76,7 +83,7 @@ if($this->messages) { ?>
         </td>
         <td>
         <a class="btn-edit"
-        href="<?= $this->url("trainingList",['action'=>'view']); ?>/#:EMPLOYEE_ID #/#:TRAINING_ID #" style="height:17px;" title="view detail">
+        href="<?= $this->url("trainingList", ['action' => 'view']); ?>/#:EMPLOYEE_ID #/#:TRAINING_ID #" style="height:17px;" title="view detail">
         <i class="fa fa-search-plus"></i>
         </a>
         </td>

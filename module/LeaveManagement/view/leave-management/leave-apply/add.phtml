@@ -20,14 +20,6 @@ $submit->setAttribute('id', 'request');
 $form->setAttribute('action', $this->url('leavebalance', ['action' => 'apply']));
 
 
-if ($this->messages) {
-    print '<ul class="help-block bg-danger" style="background:#f3e250;">';
-    foreach ($this->messages as $message) {
-        print '<li>' . $message . '</li>';
-    }
-    print '</ul>';
-}
-
 $form->prepare();
 print $this->form()->openTag($form);
 ?>
@@ -42,6 +34,21 @@ echo json_encode($menu);
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\leaveapply')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
+
+<?php
+if ($this->messages && (sizeof($this->messages) > 1)) {
+    print '<div class="alert alert-warning alert-dismissable">
+    <button type="button" class="close" data-dismiss="alert" aria-hidden="true"></button>
+    <strong>Warning!</strong> ';
+    print $this->messages[1];
+    print '</div>';
+}
+?>
+<?php if ($this->messages) { ?>
+    <script>
+        document.messages =<?php echo json_encode($this->messages); ?>
+    </script>
+<?php } ?>
 <div ng-app="hris" ng-controller="leaveRequestController">
     <div class="row margin-top-20" >
         <div class="col-sm-12">
@@ -59,8 +66,8 @@ echo json_encode($menu);
                     <div class=" row">
                         <div class="col-sm-4">
                             <div class="form-group <?= empty($employeeId->getMessages()) ? "" : "error" ?> ">
-                             <?php print $this->formLabel($employeeId) ?>
-                            <span class="required" aria-required="true">*</span>
+                                <?php print $this->formLabel($employeeId) ?>
+                                <span class="required" aria-required="true">*</span>
                                 <select name="employeeId" id="employeeId" required="required"  ng-model="employeeId" ng-change="employeeChange()" class="form-control">
                                     <option value="" disabled="" selected="" class="ng-binding">Please select</option>                           
                                     <?php foreach ($employees as $key => $value) { ?>

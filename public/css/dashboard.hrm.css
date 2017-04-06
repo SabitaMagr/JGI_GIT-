@@ -209,8 +209,8 @@ ul {
     display: inline-block;
     float: right;
     font-size: 50px;
-    height: 60px;
-    line-height: 41px !important;
+    height: 30px;
+    line-height: 10px !important;
     margin-right: 15px;
     text-align: center;
     width: 60px;
@@ -233,7 +233,7 @@ li.line:after {
 }
 .wigetbox,
 .wigetbox .widget-thumb-wrap {
-    min-height: 111px;
+    min-height: 75px;
 }
 .wigetbox .widget-thumb-body ul {
     padding-left: 0px;
@@ -267,7 +267,7 @@ li.line:after {
     text-align: center;
     padding-left: 5px;
     padding-right: 5px;
-    padding-top: 21px;
+    padding-top: 10px;
 }
 .widget-thumb-wrap-bgone {
     background-color: #5fc2d2;
@@ -559,10 +559,7 @@ li.line:after {
     display: inline-block;
 }
 .colorbox-color1 {
-    background-color: #1BBC9B;
-}
-.colorbox-color1 {
-    background-color: #1BBC9B;
+    background-color: #c2ce2c;
 }
 .colorbox-color2 {
     background-color: #89C4F4;
@@ -746,7 +743,114 @@ a .icon_edit:hover {
     padding: 5px !important;
 }
 .hrm-dashboard-employee-list.portlet-body .select2-container {
-    width: inherit !important;
+    width: 80px !important;
+    display: inline-block !important;
+}
+
+.upcomingholidays ul li {
+    background-color: #eee !important;
+    border-bottom: 1px solid #dddddd !important;
+    padding-bottom: 3px !important;
+    padding-top: 3px !important;
+}
+
+.calendar span caption-subject,.noticeboard span .caption-subject,.holidays span .caption-subject
+{
+
+    font-size:12px !important;
+}
+.calendar .caption,.noticeboard .caption
+{
+    padding-bottom: 10px !important;
+}
+
+.noticeboard-list > ul,.upcomingholidays .f-
+{
+    padding-left: 15px !important;
+    padding-right: 7px !important;
+}
+
+
+.noticeboard .portlet,.holidays .portlet,.calendar .portlet
+{
+    border: 1px solid #eee !important;
+}
+
+#tab-birthday-upcoming {
+    padding-left: 15px !important;
+    padding-right: 15px !important;
+}
+
+.taskbox .portlet
+{
+    min-height: 240px !important;
+}
+
+.upcomingholidays .label
+{
+    font-weight:normal;
+}
+
+.iconbox i {
+    color: #ffffff;
+    font-size: 21px;
+    padding-top: 19px;
+    text-align: center;
+}
+
+
+.fonticon {
+    background-color: #cccccc;
+    border-radius: 50%;
+    height: 50px;
+    width: 50px;
+}
+
+
+.description {
+    font-size: 11px;
+    font-weight: 600;
+    padding-bottom: 5px;
+    padding-top: 5px;
+}
+.employee-search-table .pagination
+{
+    margin-top: 0px !important;
+
+}
+.font-green-sharp {
+    color: #81c868 !important;
+}
+.remaining-days span,.holiday-date span
+{
+    color:#333 !important;
+}
+.holiday-color
+{
+    color:#993300 !important;
+
+}
+
+.person-list{
+    background-color: #eee !important;
+    box-shadow: 2px 2px 2px #cccccc !important;
+}
+
+.person-pic img {
+    border: 1px solid #dddddd;
+    padding: 5px;
+
+}
+
+.col-chart-loc-hc,
+.col-chart-xndr-hc {
+    padding:0;
+}
+.widget-appraisal-due h4 {
+    margin-bottom: 0;
+}
+.widget-appraisal-due ul {
+    margin: 0 !important;
 }
 /*task css start here*/
 .date-date {
@@ -754,7 +858,7 @@ a .icon_edit:hover {
 }
 
 .date-date > span {
-    background-color: #4db3a2;
+    background-color: #81C868;
     border-radius: 50% !important;
     color: #ffffff;
     display: inline-block;
@@ -772,11 +876,11 @@ a .icon_edit:hover {
     float: right;
     font-size: 20px;
     height: 23px;
-    line-height: 21px;
+    line-height: 21px !important;
     margin-top: 9px;
     text-align: center;
     width: 23px;
-    background-color: #4db3a2;
+    background-color:#81C868
 }
 
 .taskaddbtn {
@@ -859,6 +963,11 @@ a .icon_edit:hover {
 .name {
     text-align: right;
 }
+.employee_search i
+{
+  color:#fff;  
+}
+
 /* Large desktops and laptops */
 
 @media (min-width: 1200px) {}

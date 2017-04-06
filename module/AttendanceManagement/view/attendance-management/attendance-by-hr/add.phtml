@@ -32,16 +32,19 @@ $form->prepare();
     <?= $this->navigation('Zend\Navigation\attendancebyhr')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
 <?php
-if ($this->messages) {
+if ($this->messages && (sizeof($this->messages) > 1)) {
     print '<div class="alert alert-warning alert-dismissable">
     <button type="button" class="close" data-dismiss="alert" aria-hidden="true"></button>
     <strong>Warning!</strong> ';
-    foreach ($this->messages as $message) {
-        print $message;
-    }
+    print $this->messages[1];
     print '</div>';
 }
 ?>
+<?php if ($this->messages) { ?>
+    <script>
+        document.messages =<?php echo json_encode($this->messages); ?>
+    </script>
+<?php } ?>
 
 <div class="row margin-top-20">
     <div class="col-sm-8 col-sm-offset-2">

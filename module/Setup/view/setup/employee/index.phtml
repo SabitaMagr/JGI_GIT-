@@ -29,6 +29,7 @@ $this->headScript()->appendFile($this->basePath('assets/global/plugins/jquery.bl
     <?= $this->navigation('Zend\Navigation\Employee')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
 <div class="formbg arrowtop" ng-app="hris" ng-controller="employeeListController">
+    <div id="hris-page-content">
     <div class="margin-top-20">
         <div class="row">
             <div class="col-xs-12 col-sm-6 col-md-3">
@@ -133,4 +134,5 @@ $this->headScript()->appendFile($this->basePath('assets/global/plugins/jquery.bl
 
     </tr>
     </script>
+    </div>
 </div>
