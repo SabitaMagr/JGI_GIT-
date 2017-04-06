@@ -73,18 +73,19 @@ class DashboardController extends AbstractActionController {
         $dahsboardRepo = new DashboardRepository($this->adapter);
         $employeeDetail = $dahsboardRepo->fetchEmployeeDashboardDetail($employeeId, $fiscalYear['START_DATE'], $fiscalYear['END_DATE']);
 
-        $view = new ViewModel(array(
-            "employeeDetail" => $employeeDetail,
-            "upcomingHolidays" => $dahsboardRepo->fetchUpcomingHolidays($employeeDetail['GENDER_ID'], $employeeDetail['BRANCH_ID']),
-            "employeeNotice" => $dahsboardRepo->fetchEmployeeNotice(),
-            "employeeTask" => $dahsboardRepo->fetchEmployeeTask($employeeId),
-            "employeesBirthday" => $dahsboardRepo->fetchEmployeesBirthday(),
-            "employeeList" => $dahsboardRepo->fetchAllEmployee(),
-            "headCountGender" => $dahsboardRepo->fetchGenderHeadCount(),
-            "headCountDepartment" => $dahsboardRepo->fetchDepartmentHeadCount(),
-            "headCountLocation" => $dahsboardRepo->fetchLocationHeadCount(),
-            "departmentAttendance" => $dahsboardRepo->fetchDepartmentAttendance()
-        ));
+
+        $view = new ViewModel(Helper::addFlashMessagesToArray($this, array(
+                    "employeeDetail" => $employeeDetail,
+                    "upcomingHolidays" => $dahsboardRepo->fetchUpcomingHolidays($employeeDetail['GENDER_ID'], $employeeDetail['BRANCH_ID']),
+                    "employeeNotice" => $dahsboardRepo->fetchEmployeeNotice(),
+                    "employeeTask" => $dahsboardRepo->fetchEmployeeTask($employeeId),
+                    "employeesBirthday" => $dahsboardRepo->fetchEmployeesBirthday(),
+                    "employeeList" => $dahsboardRepo->fetchAllEmployee(),
+                    "headCountGender" => $dahsboardRepo->fetchGenderHeadCount(),
+                    "headCountDepartment" => $dahsboardRepo->fetchDepartmentHeadCount(),
+                    "headCountLocation" => $dahsboardRepo->fetchLocationHeadCount(),
+                    "departmentAttendance" => $dahsboardRepo->fetchDepartmentAttendance()
+        )));
 
         $returnData = $this->roleWiseView($auth);
         $view->setTemplate($returnData['template']);

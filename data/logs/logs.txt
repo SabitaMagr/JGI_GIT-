@@ -47,9 +47,7 @@
 2017-04-03T15:26:10+05:45 INFO (6): Email Sent =>From  To
 2017-04-03T15:28:50+05:45 INFO (6): Email Sent =>From  To
 2017-04-03T15:29:57+05:45 INFO (6): Email Sent =>From  To
-<<<<<<< HEAD
 2017-04-05T16:58:42+05:45 INFO (6): Email Sent =>From amrit.pariyar@itnepal.com To bikalp.karn@itnepal.com
-=======
 2017-04-05T16:51:34+05:45 INFO (6): Email Sent =>From dixon.thapa@itnepal.com To asmita.thapa@itnepal.com
 2017-04-05T16:52:42+05:45 INFO (6): Email Sent =>From dixon.thapa@itnepal.com To asmita.thapa@itnepal.com
 2017-04-05T16:53:32+05:45 INFO (6): Email Sent =>From dixon.thapa@itnepal.com To asmita.thapa@itnepal.com
@@ -64,6 +62,7 @@
 2017-04-05T17:29:21+05:45 INFO (6): Email Sent =>From miki.singh@itnepal.com To priyesh.goel@neoteric.com.np
 2017-04-05T17:41:11+05:45 INFO (6): Email Sent =>From miki.singh@itnepal.com To
 2017-04-05T17:41:17+05:45 INFO (6): Email Sent =>From  To
+<<<<<<< HEAD
 >>>>>>> 187c4aa65d9c53c7d21ef5d848e183a822c9f495
 2017-04-06T13:10:28+05:45 INFO (6): Email Sent =>From dixon.thapa@itnepal.com To miki.singh@itnepal.com
 2017-04-06T13:24:48+05:45 INFO (6): Email Sent =>From miki.singh@itnepal.com To dixon.thapa@itnepal.com
@@ -71,3 +70,21 @@
 2017-04-06T13:27:22+05:45 INFO (6): Email Sent =>From asmita.thapa@itnepal.com To dixon.thapa@itnepal.com
 2017-04-06T13:42:47+05:45 INFO (6): Email Sent =>From dixon.thapa@itnepal.com To miki.singh@itnepal.com
 2017-04-06T13:43:30+05:45 INFO (6): Email Sent =>From miki.singh@itnepal.com To dixon.thapa@itnepal.com
+=======
+2017-04-05T17:48:58+05:45 INFO (6): Email Sent =>From asmita.thapa@itnepal.com To
+2017-04-06T11:29:07+05:45 INFO (6): Email Sent =>From abc@hotmail.com To asmita.thapa@itnepal.com
+2017-04-06T11:42:50+05:45 INFO (6): Email Sent =>From abc@hotmail.com To miki.singh@itnepal.com
+2017-04-06T11:48:42+05:45 INFO (6): Email Sent =>From miki.singh@itnepal.com To abc@hotmail.com
+2017-04-06T11:48:50+05:45 INFO (6): Email Sent =>From abc@hotmail.com To asmita.thapa@itnepal.com
+2017-04-06T11:49:26+05:45 INFO (6): Email Sent =>From asmita.thapa@itnepal.com To abc@hotmail.com
+2017-04-06T11:53:52+05:45 INFO (6): Email Sent =>From priyesh.goel@neoteric.com.np To asmita.thapa@itnepal.com
+2017-04-06T12:03:35+05:45 INFO (6): Email Sent =>From dixon.thapa@itnepal.com To asmita.thapa@itnepal.com
+2017-04-06T12:11:18+05:45 INFO (6): Email Sent =>From miki.singh@itnepal.com To dixon.thapa@itnepal.com
+2017-04-06T12:11:25+05:45 INFO (6): Email Sent =>From dixon.thapa@itnepal.com To asmita.thapa@itnepal.com
+2017-04-06T12:13:25+05:45 INFO (6): Email Sent =>From asmita.thapa@itnepal.com To dixon.thapa@itnepal.com
+2017-04-06T12:18:41+05:45 INFO (6): Email Sent =>From dixon.thapa@itnepal.com To miki.singh@itnepal.com
+2017-04-06T12:37:32+05:45 INFO (6): Email Sent =>From miki.singh@itnepal.com To
+2017-04-06T13:24:52+05:45 INFO (6): Email Sent =>From  To asmita.thapa@itnepal.com
+2017-04-06T15:25:36+05:45 INFO (6): Email Sent =>From dixon.thapa@itnepal.com To miki.singh@itnepal.com
+2017-04-06T15:28:47+05:45 INFO (6): Email Sent =>From miki.singh@itnepal.com To dixon.thapa@itnepal.com
+>>>>>>> a3e114cf02474de321c70e859cf16672171309d6
