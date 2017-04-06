@@ -49,6 +49,9 @@ echo json_encode($menu);
                 <div class="caption">
                     <i class="fa fa-user"></i>New Entry
                 </div>
+                <div class="actions">
+                    <a class="btn btn-circle btn-icon-only btn-default fullscreen" href="javascript:;" data-original-title="" title=""> </a>
+                </div>
             </div>
             <div class="portlet-body">
                 <?php print $this->form()->openTag($form); ?>
@@ -57,6 +60,7 @@ echo json_encode($menu);
                     <div class="col-sm-4">
                         <div class="form-group">
                             <?= $this->formLabel($designationCode) ?>
+                            <span class="required" aria-required="true">*</span>
                             <?= $this->formElement($designationCode); ?>
                             <?= $this->formElementErrors()->render($designationCode, ['class' => 'help-block']) ?>
                             <span class="errorMsg" style="font-size:11px; color:red;"></span>
@@ -66,6 +70,7 @@ echo json_encode($menu);
                     <div class="col-sm-4">
                         <div class="form-group">
                             <?= $this->formLabel($designationTitle) ?>
+                            <span class="required" aria-required="true">*</span>
                             <?= $this->formElement($designationTitle); ?>
                             <?= $this->formElementErrors()->render($designationTitle, ['class' => 'help-block']) ?>
                             <span class="errorMsg" style="font-size:11px; color:red;"></span>
@@ -75,6 +80,7 @@ echo json_encode($menu);
                     <div class="col-sm-4">
                         <div class="form-group">
                             <?= $this->formLabel($basicSalary) ?>
+                            <span class="required" aria-required="true">*</span>
                             <?= $this->formElement($basicSalary); ?>
                             <?= $this->formElementErrors()->render($basicSalary, ['class' => 'help-block']) ?>
                         </div>
@@ -120,6 +126,7 @@ echo json_encode($menu);
                     <div class="col-sm-4">
                         <div class="form-group">
                             <?php print $this->formLabel($companyId); ?>
+                            <span class="required" aria-required="true">*</span>
                             <?php print $this->formElement($companyId); ?>
                             <?php print $this->formElementErrors()->render($companyId, ['class' => 'help-block error']); ?>
                         </div>
