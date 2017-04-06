@@ -78,17 +78,16 @@
                 <?php
                 $this->navigation('navigation-menu')->menu()->setPartial('partials/sidebar');
                 echo $this->navigation('navigation-menu')->menu()->render();
-
                 ?>
                 <div class="page-content-wrapper">
-                    <div class="page-content">
+                    <div id="hris-page-content" class="page-content">
                         <?php
                         print $this->content;
 
-                        if ($this->messages) {
-                            print_r($this->messages);
-                            die();
-                        }
+//                        if ($this->messages) {
+//                            print_r($this->messages);
+//                            die();
+//                        }
                         ?>
                     </div>
                 </div>

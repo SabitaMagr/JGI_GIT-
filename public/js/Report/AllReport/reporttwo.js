@@ -35,9 +35,9 @@
                         field: temp,
                         title: rawData[i].MONTH_EDESC,
                         template: '<div data="#: ' + temp + ' #" class="btn-group widget-btn-list custom-btn-group ' + departmentId + '">' +
-                                '<a class="btn btn-default widget-btn custom-btn-present"></a>' +
-                                '<a class="btn btn-danger widget-btn custom-btn-absent"></a>' +
-                                '<a class="btn btn-info widget-btn custom-btn-leave"></a>' +
+                                '<a class="btn  widget-btn custom-btn-present totalbtn"></a>' +
+                                '<a class="btn  widget-btn custom-btn-absent totalbtn"></a>' +
+                                '<a class="btn widget-btn custom-btn-leave totalbtn"></a>' +
                                 '</div>'
                     }
 
@@ -91,11 +91,21 @@
             });
 
         };
-
+        var firstTime = true;
         var initializeReport = function (departmentId) {
-            $tableContainer.block();
+            if (firstTime) {
+                App.blockUI({target: "#hris-page-content"});
+
+            } else {
+                App.blockUI({target: "#departmentMonthReport"});
+            }
             app.pullDataById(document.wsDepartmentWise, {departmentId: departmentId}).then(function (response) {
-                $tableContainer.unblock();
+                if (firstTime) {
+                    App.unblockUI("#hris-page-content");
+                    firstTime = false;
+                } else {
+                    App.unblockUI("#departmentMonthReport");
+                }
                 console.log('departmentWiseEmployeeMonthlyR', response);
                 var extractedDetailData = extractDetailData(response.data, departmentId);
                 console.log('extractedDetailData', extractedDetailData);
@@ -113,7 +123,12 @@
 
 
             }, function (error) {
-                $tableContainer.unblock();
+                if (firstTime) {
+                    App.unblockUI("#hris-page-content");
+                    firstTime = false;
+                } else {
+                    App.unblockUI("#departmentMonthReport");
+                }
                 console.log('departmentWiseEmployeeMonthlyE', error);
             });
         };

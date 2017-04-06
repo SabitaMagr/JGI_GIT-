@@ -466,4 +466,51 @@ ALTER TABLE HRIS_EMPLOYEE_TRAINING_REQUEST ADD REMARKS VARCHAR2(255 BYTE);
 
 
 
+-- JWL_HRIS_APR4 | Prabin  | APRIL 4 2017
+INSERT
+INTO JWL_HRIS_APR4.HRIS_LEAVE_MASTER_SETUP
+  (
+    LEAVE_ID,
+    LEAVE_CODE,
+    LEAVE_ENAME,
+    LEAVE_LNAME,
+    ALLOW_HALFDAY,
+    DEFAULT_DAYS,
+    FISCAL_YEAR,
+    CARRY_FORWARD,
+    CASHABLE,
+    CREATED_DT,
+    MODIFIED_DT,
+    STATUS,
+    REMARKS,
+    CREATED_BY,
+    MODIFIED_BY,
+    IS_SUBSTITUTE,
+    PAID,
+    COMPANY_ID
+  )
+  VALUES
+  (
+    4,
+    '004',
+    'Subsitute',
+    NULL,
+    'N',
+    'N',
+    '1',
+    'N',
+    'N',
+    to_date('06-APR-17','DD-MON-RR'),
+    NULL,
+    'E',
+    NULL,
+    NULL,
+    NULL,
+    'Y',
+    'N',
+    NULL
+  );
+--
+
+
 

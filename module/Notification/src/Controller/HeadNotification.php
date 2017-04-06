@@ -69,7 +69,9 @@ class HeadNotification {
     }
 
     private static function sendEmail(NotificationModel $model, int $type, AdapterInterface $adapter, Url $url) {
-
+        $isValidEmail = function ($email) {
+            return filter_var($email, FILTER_VALIDATE_EMAIL) !== false;
+        };
         $emailTemplateRepo = new \Notification\Repository\EmailTemplateRepo($adapter);
         $template = $emailTemplateRepo->fetchById($type);
 
@@ -80,8 +82,14 @@ class HeadNotification {
             $html2txt = new Html2Text($htmlDescription);
             $mail->setBody($html2txt->getText());
 
-            $mail->setFrom('ukesh.gaiju@itnepal.com', $model->fromName);
-            $mail->addTo('somkala.pachhai@itnepal.com', $model->toName);
+            if (!isset($model->fromEmail) || $model->fromEmail == null || $model->fromEmail == '' || !$isValidEmail($model->fromEmail)) {
+                throw new Exception("Sender email is not set or valid.");
+            }
+            if (!isset($model->toEmail) || $model->toEmail == null || $model->toEmail == '' || !$isValidEmail($model->toEmail)) {
+                throw new Exception("Receiver email is not set or valid.");
+            }
+            $mail->setFrom($model->fromEmail, $model->fromName);
+            $mail->addTo($model->toEmail, $model->toName);
 
             $cc = (array) json_decode($template['CC']);
             foreach ($cc as $ccObj) {

@@ -62,9 +62,9 @@
                 field: 'total',
                 title: 'Total',
                 template: '<div data="#: total #" class="btn-group widget-btn-list total-attendance">' +
-                        '<a class="btn btn-default widget-btn custom-btn-present totalbtn"></a>' +
-                        '<a class="btn btn-danger widget-btn custom-btn-absent totalbtn"></a>' +
-                        '<a class="btn btn-info widget-btn custom-btn-leave totalbtn"></a>' +
+                        '<a class="btn widget-btn custom-btn-present totalbtn"></a>' +
+                        '<a class="btn widget-btn custom-btn-absent totalbtn"></a>' +
+                        '<a class="btn widget-btn custom-btn-leave totalbtn"></a>' +
                         '</div>'});
 
             for (var k in data) {
@@ -85,16 +85,16 @@
                 } else {
                     if (data.IS_ABSENT == 1) {
                         $group.html('A');
-                        $group.parent().addClass('bg-red');
+                        $group.parent().addClass('bg-red1 textcolor1');
 
                     } else {
                         if (data.ON_LEAVE == 1) {
                             $group.html('L');
-                            $group.parent().addClass('bg-blue');
+                            $group.parent().addClass('bg-blue1 textcolor2');
 
                         } else {
                             $group.html('H');
-                            $group.parent().addClass('bg-white');
+                            $group.parent().addClass('bg-white1 textcolor3 ');
                         }
 
                     }
@@ -129,10 +129,22 @@
                 $leave.html(Number((leaveDays * 100 / total).toFixed(1)));
             });
         };
+        var firstTime = true;
         var initializeReport = function (monthId, departmentId) {
-            $tableContainer.block();
+            if (firstTime) {
+                App.blockUI({target: "#hris-page-content"});
+
+            } else {
+                App.blockUI({target: "#reportTable"});
+
+            }
             app.pullDataById(document.wsDepartmentWiseDailyReport, {departmentId: departmentId, monthId: monthId}).then(function (response) {
-                $tableContainer.unblock();
+                if (firstTime) {
+                    App.unblockUI("#hris-page-content");
+                    firstTime = false;
+                } else {
+                    App.unblockUI("#reportTable");
+                }
                 console.log('departmentWiseEmployeeMonthlyR', response);
                 var extractedDetailData = extractDetailData(response.data, departmentId);
                 console.log('extractedDetailData', extractedDetailData);
@@ -151,7 +163,12 @@
 
 
             }, function (error) {
-                $tableContainer.unblock();
+                if (firstTime) {
+                    App.unblockUI("#hris-page-content");
+                    firstTime = false;
+                } else {
+                    App.unblockUI("#reportTable");
+                }
                 console.log('departmentWiseEmployeeMonthlyE', error);
             });
         };
