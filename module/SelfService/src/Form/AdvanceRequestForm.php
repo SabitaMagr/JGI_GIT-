@@ -19,7 +19,7 @@ class AdvanceRequestForm{
     
     /**
      * @Annotation\Type("Zend\Form\Element\Select")
-     * @Annotation\Required(false)
+     * @Annotation\Required(true)
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
      * @Annotation\Options({"disable_inarray_validator":"true","label":"Advance Name"})
      * @Annotation\Attributes({ "id":"form-advanceId","class":"form-control"})
@@ -30,7 +30,7 @@ class AdvanceRequestForm{
      * @Annotation\Required({"required":"true"})
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Request Amount"})
-     * @Annotation\Attributes({ "id":"form-requestedAmount", "class":"form-requestedAmount form-control","step":"0.01" })
+     * @Annotation\Attributes({ "id":"form-requestedAmount", "class":"form-requestedAmount form-control","min":"0","step":"0.01" })
      */
     public $requestedAmount;
     

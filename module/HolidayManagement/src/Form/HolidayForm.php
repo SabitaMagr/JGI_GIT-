@@ -49,7 +49,7 @@ class HolidayForm
 
     /**
      * @Annotion\Type("Zend\Form\Element\Text")
-     * @Annotation\Required(true)
+     * @Annotation\Required(false)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Holiday Lname"})
      * @Annotation\Attributes({ "id":"holidayLname", "class":"form-control" })

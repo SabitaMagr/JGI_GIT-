@@ -44,7 +44,7 @@ class HeadingForm{
      * @Annotation\Required(false)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Percentage"})
-     * @Annotation\Attributes({"id":"percentage","class":"form-control","step":"0.01"})
+     * @Annotation\Attributes({"id":"percentage","class":"form-control","min":"0","step":"0.01"})
      */
     public $percentage;
     
