@@ -257,8 +257,8 @@ ul {
     display: inline-block;
     float: right;
     font-size: 50px;
-    height: 60px;
-    line-height: 41px !important;
+    height: 30px;
+    line-height: 10px !important;
     margin-right: 15px;
     text-align: center;
     width: 60px;
@@ -285,7 +285,7 @@ li.line:after {
 
 .wigetbox,
 .wigetbox .widget-thumb-wrap {
-    min-height: 111px;
+    min-height: 75px;
 }
 
 .wigetbox .widget-thumb-body ul {
@@ -325,7 +325,7 @@ li.line:after {
     text-align: center;
     padding-left: 5px;
     padding-right: 5px;
-    padding-top: 21px;
+    padding-top: 10px;
 }
 
 .widget-thumb-wrap-bgone {
@@ -918,6 +918,12 @@ a .icon_edit:hover {
 .portlet.calendar .fc-event .fc-title .fc-title-in,
 .portlet.calendar .fc-event .fc-title .fc-title-out {
     font-size: 10px;
+}
+.widget-woh h4 {
+    margin-bottom: 0;
+}
+.widget-woh ul {
+    margin: 0 !important;
 }
 
 /*task css start here*/

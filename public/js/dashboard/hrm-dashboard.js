@@ -97,97 +97,86 @@
     });
 
     /***** Charts *****/
-    var genderHeadCountData = [];
-    for(var x in document.xndr) {
-        genderHeadCountData.push([document.xndr[x], document.xndrhc[x]]);
+    var deptAttnCategories = [];
+    var departmentAttendanceData = {
+        'present': [],
+        'absent' : []
+    };
+    for(var dept in document.deptattn) {
+        deptAttnCategories.push(dept);
+        departmentAttendanceData['present'].push(Number(document.deptattn[dept].PRESENT));
+        departmentAttendanceData['absent'].push(Number(document.deptattn[dept].ABSENT));
     }
-    Highcharts.chart('chart-gender-headcount', {
+    Highcharts.chart('chart-department-attendance', {
         chart: {
-            type: 'pie',
+            type: 'column',
             options3d: {
                 enabled: true,
-                alpha: 45
+                alpha: 0,
+                beta: -1,
+                viewDistance: 25,
+                depth: 40
             }
         },
         title: {
-            text: 'Employees By Gender'
-        },
-        subtitle: {
-            //text: 'Gender Wise Employees Head Count'
-        },
-        plotOptions: {
-            pie: {
-                allowPointSelect: true,
-                cursor: 'pointer',
-                dataLabels: {
-                    enabled: false,
-                },
-                innerSize: 100,
-                depth: 45
+            text: 'Today\'s Attendance',
+            style: {
+                color: '#63AB6A',
+                fontSize: '15px'
             }
         },
-        legend: {
-            layout: 'vertical',
-            floating: true,
-            align: 'left',
-            verticalAlign: 'top',
-            symbolPadding: 10,
-            symbolWidth: 10,
-            y: 15
+        xAxis: {
+            categories: deptAttnCategories
         },
-        series: [{
-            name: 'Head Count',
-            data: genderHeadCountData,
-            showInLegend: true
-        }]
-    });
-
-    var locationHeadCountData = [];
-    for(var x in document.brln) {
-        locationHeadCountData.push([document.brln[x], document.brlnhc[x]]);
-    }
-    Highcharts.chart('chart-location-headcount', {
-        chart: {
-            type: 'pie',
-            options3d: {
+        yAxis: {
+            min: 0,
+            title: {
+                text: 'No. of Employees'
+            },
+            stackLabels: {
                 enabled: true,
-                alpha: 45
-            }
-        },
-        title: {
-            text: 'Employees By Branch'
-        },
-        subtitle: {
-            //text: 'Branch Wise Employees Head Count'
-        },
-        plotOptions: {
-            pie: {
-                allowPointSelect: true,
-                cursor: 'pointer',
-                dataLabels: {
-                    enabled: false,
-                },
-                innerSize: 60,
-                depth: 45,
-                size: 150
+                style: {
+                    fontWeight: 'bold',
+                    color: (Highcharts.theme && Highcharts.theme.textColor) || 'gray'
+                }
             }
         },
         legend: {
-            layout: 'vertical',
-            floating: true,
-            align: 'left',
             verticalAlign: 'top',
-            symbolPadding: 10,
+            align: 'right',
+            // x: -30,
+            // y: 0,
+            symbolPadding: 5,
             symbolWidth: 10,
-            y: 20
+            itemDistance: 10,
+            floating: true,
+            backgroundColor: (Highcharts.theme && Highcharts.theme.background2) || 'white',
+            borderColor: '#CCC',
+            borderWidth: 1,
+            shadow: false
+        },
+        tooltip: {
+            headerFormat: '<b>{point.x}</b><br/>',
+            pointFormat: '{series.name}: {point.y}<br/>Total: {point.stackTotal}'
+        },
+        plotOptions: {
+            column: {
+                stacking: 'normal',
+                dataLabels: {
+                    enabled: true,
+                    color: (Highcharts.theme && Highcharts.theme.dataLabelsColor) || 'white'
+                }
+            }
         },
         series: [{
-            name: 'Head Count',
-            data: locationHeadCountData,
-            showInLegend: true
-        }]
+            name: "Present",
+            data: departmentAttendanceData.absent
+        },
+            {
+                name: "Absent",
+                data: departmentAttendanceData.present
+            }]
     });
-
 
     var departmentHeadCountData = [];
     for(var x in document.odept) {
@@ -205,7 +194,11 @@
             }
         },
         title: {
-            text: 'Employees By Department'
+            text: 'Employees By Department',
+            style: {
+                color: '#63AB6A',
+                fontSize: '15px'
+            }
         },
         subtitle: {
             //text: 'Department Wise Employee Head Count'
@@ -248,87 +241,108 @@
         }]
     });
 
-    var deptAttnCategories = [];
-    var departmentAttendanceData = {
-        'present': [],
-        'absent' : []
-    };
-    for(var dept in document.deptattn) {
-        deptAttnCategories.push(dept);
-        departmentAttendanceData['present'].push(Number(document.deptattn[dept].PRESENT));
-        departmentAttendanceData['absent'].push(Number(document.deptattn[dept].ABSENT));
+    var locationHeadCountData = [];
+    for(var x in document.brln) {
+        locationHeadCountData.push([document.brln[x], document.brlnhc[x]]);
     }
-    Highcharts.chart('chart-department-attendance', {
+    Highcharts.chart('chart-location-headcount', {
         chart: {
-            type: 'column',
+            type: 'pie',
             options3d: {
                 enabled: true,
-                alpha: 0,
-                beta: -1,
-                viewDistance: 25,
-                depth: 40
+                alpha: 45
             }
         },
         title: {
-            text: 'Today\'s Attendance'
+            text: 'Employees By Branch',
+            style: {
+                color: '#63AB6A',
+                fontSize: '15px'
+            }
         },
-        xAxis: {
-            categories: deptAttnCategories
+        subtitle: {
+            //text: 'Branch Wise Employees Head Count'
         },
-        yAxis: {
-            min: 0,
-            title: {
-                text: 'No. of Employees'
-            },
-            stackLabels: {
-                enabled: true,
-                style: {
-                    fontWeight: 'bold',
-                    color: (Highcharts.theme && Highcharts.theme.textColor) || 'gray'
-                }
+        plotOptions: {
+            pie: {
+                allowPointSelect: true,
+                cursor: 'pointer',
+                dataLabels: {
+                    enabled: false,
+                },
+                innerSize: 60,
+                depth: 45,
+                size: 150
             }
         },
         legend: {
-            verticalAlign: 'top',
-            align: 'right',
-            // x: -30,
-            // y: 0,
+            layout: 'vertical',
             floating: true,
-            backgroundColor: (Highcharts.theme && Highcharts.theme.background2) || 'white',
-            borderColor: '#CCC',
-            borderWidth: 1,
-            shadow: false
-        },
-        tooltip: {
-            headerFormat: '<b>{point.x}</b><br/>',
-            pointFormat: '{series.name}: {point.y}<br/>Total: {point.stackTotal}'
-        },
-        plotOptions: {
-            column: {
-                stacking: 'normal',
-                dataLabels: {
-                    enabled: true,
-                    color: (Highcharts.theme && Highcharts.theme.dataLabelsColor) || 'white'
-                }
-            }
+            align: 'left',
+            verticalAlign: 'top',
+            symbolPadding: 10,
+            symbolWidth: 10,
+            y: 20
         },
         series: [{
-                name: "Present",
-                data: departmentAttendanceData.absent
-            },
-            {
-                name: "Absent",
-                data: departmentAttendanceData.present
-            }]
+            name: 'Head Count',
+            data: locationHeadCountData,
+            showInLegend: true
+        }]
     });
 
-    $('.task-list').slimScroll({
-        height: '298px'
+    var genderHeadCountData = [];
+    for(var x in document.xndr) {
+        genderHeadCountData.push([document.xndr[x], document.xndrhc[x]]);
+    }
+    Highcharts.chart('chart-gender-headcount', {
+        chart: {
+            type: 'pie',
+            options3d: {
+                enabled: true,
+                alpha: 45
+            }
+        },
+        title: {
+            text: 'Employees By Gender',
+            style: {
+                color: '#63AB6A',
+                fontSize: '15px'
+            }
+        },
+        subtitle: {
+            //text: 'Gender Wise Employees Head Count'
+        },
+        plotOptions: {
+            pie: {
+                allowPointSelect: true,
+                cursor: 'pointer',
+                dataLabels: {
+                    enabled: false,
+                },
+                innerSize: 70,
+                depth: 45
+            }
+        },
+        legend: {
+            layout: 'horizontal',
+            floating: true,
+            align: 'right',
+            verticalAlign: 'top',
+            symbolPadding: 10,
+            symbolWidth: 10,
+            y: 45
+        },
+        series: [{
+            name: 'Head Count',
+            data: genderHeadCountData,
+            showInLegend: true
+        }]
     });
 
     /*************** BIRTHDAY TAB CLICK EVENT ***************/
-    $('.tab-pane-birthday').slimScroll({
-        height: '298px'
+    $('.task-list, .tab-pane-birthday').slimScroll({
+        height: '300px'
     });
 
     $('.ln-nav-tab-birthday').on('click', function(e) {

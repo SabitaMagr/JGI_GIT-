@@ -364,7 +364,7 @@ class DashboardRepository implements RepositoryInterface {
                        TR.TRAVEL_ID,
                        TR.TRAVEL_CODE      
                   FROM HRIS_ATTENDANCE_DETAIL AD, HRIS_LEAVE_MASTER_SETUP LMS, HRIS_HOLIDAY_MASTER_SETUP HMS, HRIS_TRAINING_MASTER_SETUP TMS, HRIS_EMPLOYEE_TRAVEL_REQUEST TR
-                WHERE AD.EMPLOYEE_ID = 1000376 --{$employeeId}
+                WHERE AD.EMPLOYEE_ID = {$employeeId}
                 {$rangeClause}
                 AND AD.LEAVE_ID = LMS.LEAVE_ID(+)
                 AND AD.HOLIDAY_ID = HMS.HOLIDAY_ID(+)
@@ -488,7 +488,7 @@ class DashboardRepository implements RepositoryInterface {
                          HRIS_EMPLOYEES HE
                     WHERE HD.DEPARTMENT_ID = HE.DEPARTMENT_ID
                       AND HE.EMPLOYEE_ID = HAD.EMPLOYEE_ID
-                      AND TRUNC(HAD.ATTENDANCE_DT) = TO_DATE('29-MAR-2017', 'DD-MON-YYYY')
+                      AND TRUNC(HAD.ATTENDANCE_DT) = TO_DATE(SYSDATE, 'DD-MON-YYYY')
                       AND HAD.IN_TIME IS NOT NULL
                     GROUP BY HD.DEPARTMENT_CODE,
                              HD.DEPARTMENT_NAME,
@@ -503,7 +503,7 @@ class DashboardRepository implements RepositoryInterface {
                          HRIS_EMPLOYEES HE
                     WHERE HD.DEPARTMENT_ID = HE.DEPARTMENT_ID
                       AND HE.EMPLOYEE_ID = HAD.EMPLOYEE_ID
-                      AND TRUNC(HAD.ATTENDANCE_DT) = TO_DATE('29-MAR-2017', 'DD-MON-YYYY')
+                      AND TRUNC(HAD.ATTENDANCE_DT) = TO_DATE(SYSDATE, 'DD-MON-YYYY')
                       AND HAD.IN_TIME IS NULL
                       AND HAD.OUT_TIME IS NULL
                       AND LEAVE_ID IS NULL
