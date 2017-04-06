@@ -40,7 +40,7 @@ class WorkOnDayoffForm{
      * @Annotation\Required({"required":"true"})
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Duration"})
-     * @Annotation\Attributes({ "id":"duration", "class":"form-duration form-control","step":"0.01" })
+     * @Annotation\Attributes({ "id":"duration", "readonly":"readonly","class":"form-duration form-control","step":"0.01" })
      */
     public $duration;
     
