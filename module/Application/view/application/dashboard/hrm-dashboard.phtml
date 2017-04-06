@@ -21,6 +21,7 @@ $this->headScript()
     ->appendFile($this->basePath('assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap.js'))
     ->appendFile($this->basePath('assets/global/plugins/highcharts/js/highcharts.js'))
     ->appendFile($this->basePath('assets/global/plugins/highcharts/js/highcharts-3d.js'))
+    ->appendFile($this->basePath('assets/global/plugins/highcharts/modules/no-data-to-display.js'))
 //    ->appendFile($this->basePath('assets/global/plugins/highcharts/modules/exporting.js'))
     ->appendFile($this->basePath('assets/global/scripts/metronic.js'))
     ->appendFile($this->basePath('js/dashboard/hrm-dashboard.js'));
@@ -447,7 +448,6 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                 </div>
                             </div>
                             <div class="task-list">
-                                <?php /*
                                 <ul>
                                     <?php foreach ($employeeTask as $task): ?>
                                         <li>
@@ -459,44 +459,43 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                         </li>
                                     <?php endforeach; ?>
                                 </ul>
-                                */ ?>
-                                <ul>
-                                    <li>
-                                        <div class="task-list-content clearfix">
-                                            <h4>Approve/Reject Requisition</h4>
-                                            <div class="positon">Position: Logistics Executive</div>
-                                            <div class="name">Muna Kunwor</div>
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <div class="task-list-content clearfix">
-                                            <h4>Interview for new recruitment</h4>
-                                            <div class="positon">Position: Logistics Executive</div>
-                                            <div class="name">Muna Kunwor</div>
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <div class="task-list-content clearfix">
-                                            <h4>Evaluation of XYZ</h4>
-                                            <div class="positon">Position: Logistics Executive</div>
-                                            <div class="name">Muna Kunwor</div>
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <div class="task-list-content clearfix">
-                                            <h4>Meeting at 4 pm</h4>
-                                            <div class="positon">Position: Logistics Executive</div>
-                                            <div class="name">Muna Kunwor</div>
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <div class="task-list-content clearfix">
-                                            <h4>Publish notice</h4>
-                                            <div class="positon">Position: Logistics Executive</div>
-                                            <div class="name">Muna Kunwor</div>
-                                        </div>
-                                    </li>
-                                </ul>
+<!--                                <ul>-->
+<!--                                    <li>-->
+<!--                                        <div class="task-list-content clearfix">-->
+<!--                                            <h4>Approve/Reject Requisition</h4>-->
+<!--                                            <div class="positon">Position: Logistics Executive</div>-->
+<!--                                            <div class="name">Muna Kunwor</div>-->
+<!--                                        </div>-->
+<!--                                    </li>-->
+<!--                                    <li>-->
+<!--                                        <div class="task-list-content clearfix">-->
+<!--                                            <h4>Interview for new recruitment</h4>-->
+<!--                                            <div class="positon">Position: Logistics Executive</div>-->
+<!--                                            <div class="name">Muna Kunwor</div>-->
+<!--                                        </div>-->
+<!--                                    </li>-->
+<!--                                    <li>-->
+<!--                                        <div class="task-list-content clearfix">-->
+<!--                                            <h4>Evaluation of XYZ</h4>-->
+<!--                                            <div class="positon">Position: Logistics Executive</div>-->
+<!--                                            <div class="name">Muna Kunwor</div>-->
+<!--                                        </div>-->
+<!--                                    </li>-->
+<!--                                    <li>-->
+<!--                                        <div class="task-list-content clearfix">-->
+<!--                                            <h4>Meeting at 4 pm</h4>-->
+<!--                                            <div class="positon">Position: Logistics Executive</div>-->
+<!--                                            <div class="name">Muna Kunwor</div>-->
+<!--                                        </div>-->
+<!--                                    </li>-->
+<!--                                    <li>-->
+<!--                                        <div class="task-list-content clearfix">-->
+<!--                                            <h4>Publish notice</h4>-->
+<!--                                            <div class="positon">Position: Logistics Executive</div>-->
+<!--                                            <div class="name">Muna Kunwor</div>-->
+<!--                                        </div>-->
+<!--                                    </li>-->
+<!--                                </ul>-->
                             </div>
                         </div>
                     </div>
@@ -565,7 +564,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                                 <div class="person-list clearfix">
                                                     <div class="col-md-3 col-sm-3">
                                                         <div class="person-pic">
-                                                            <img src="<?php print $this->basePath('img/nobody_m.original.jpg'); ?>" alt="person picture">
+                                                            <img src="<?php print $todayBirthday['FILE_PATH'] ? $this->basePath('uploads/' . $todayBirthday['FILE_PATH']) : $this->basePath('img/nobody_m.original.jpg'); ?>" alt="person picture">
                                                         </div>
                                                     </div>
                                                     <div class="col-xs-9 col-md-9 col-sm-9">

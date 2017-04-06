@@ -42,7 +42,7 @@
         var isViewLoading = true;
         $('#calendar').fullCalendar('destroy'); // destroy the calendar
         $('#calendar').fullCalendar({ //re-initialize the calendar
-            defaultDate: '2017-03-12',
+            //defaultDate: '2017-03-12',
             disableDragging : false,
             viewRender: function( view, element ) {
                 $('#calendar .html-loading').remove();
