@@ -919,6 +919,12 @@ a .icon_edit:hover {
 .portlet.calendar .fc-event .fc-title .fc-title-out {
     font-size: 10px;
 }
+.widget-woh h4 {
+    margin-bottom: 0;
+}
+.widget-woh ul {
+    margin: 0 !important;
+}
 
 /*task css start here*/
 .date-date {

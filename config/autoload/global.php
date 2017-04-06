@@ -16,7 +16,9 @@ return [
         'password' => 'JWL_HRIS_APR5',
 
 //        'username' => 'JWL_HRIS_APR4',
-//        'password' => 'JWL_HRIS_APR4',status
+//        'password' => 'JWL_HRIS_APR4',
+//        s
+//        tatus
 //        
 //        'username' => 'ITNEPAL_HRIS_APR2',
 //        'password' => 'ITNEPAL_HRIS_APR2',

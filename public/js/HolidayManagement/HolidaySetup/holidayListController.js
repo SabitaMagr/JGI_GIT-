@@ -17,7 +17,7 @@ angular.module('hris', [])
                 var endDate = angular.element($("#endDate1")).val();
                 var branchId = angular.element($("#branchId")).val();
                 var genderId = angular.element($("#genderId")).val();
-                $tableContainer.block();
+                App.blockUI({target: "#hris-page-content"});
                 window.app.pullDataById(document.url, {
                     action: 'pullHolidayList',
                     data: {
@@ -27,14 +27,14 @@ angular.module('hris', [])
                         'genderId': genderId
                     }
                 }).then(function (success) {
-                    $tableContainer.unblock();
+                    App.unblockUI("#hris-page-content");
                     $scope.$apply(function () {
                         // console.log(success.data);
                         //$scope.holidayList = success.data;
                         $scope.initializekendoGrid(success.data);
                     });
                 }, function (failure) {
-                    $tableContainer.unblock();
+                    App.unblockUI("#hris-page-content");
                     console.log(failure);
                 });
             }

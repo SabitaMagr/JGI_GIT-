@@ -15,7 +15,7 @@ angular.module('hris', [])
                 var serviceEventTypeId = angular.element(document.getElementById('serviceEventTypeId')).val();
                 var fromDate = angular.element(document.getElementById('fromDate')).val();
                 var toDate = angular.element(document.getElementById('toDate')).val();
-                $tableContainer.block();
+                App.blockUI({target: "#hris-page-content"});
                 window.app.pullDataById(document.url, {
                     action: 'pullJobHistoryList',
                     data: {
@@ -25,11 +25,11 @@ angular.module('hris', [])
                         'serviceEventTypeId': serviceEventTypeId
                     }
                 }).then(function (success) {
-                    $tableContainer.unblock();
+                    App.unblockUI("#hris-page-content");
                     console.log(success);
                     $scope.initializekendoGrid(success.data);
                 }, function (failure) {
-                    $tableContainer.unblock();
+                    App.unblockUI("#hris-page-content");
                     console.log(failure);
                 });
             }

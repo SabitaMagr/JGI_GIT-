@@ -42,6 +42,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
     </script>
 <?php } ?>
 <div ng-app="hris" ng-controller="leaveRequestListController" class="formbg">
+    <div id="hris-page-content">
     <div class="row margin-top-20">
         <div class="col-sm-2">
             <?php print $this->formLabel($leaves); ?>
@@ -157,4 +158,5 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
         </tr>
     </script>
 
+</div>
 </div>

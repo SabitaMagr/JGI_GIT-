@@ -20,7 +20,7 @@ angular.module('hris', [])
                 var requestStatusId = angular.element(document.getElementById('requestStatusId')).val();
                 var fromDate = angular.element(document.getElementById('fromDate1')).val();
                 var toDate = angular.element(document.getElementById('toDate1')).val();
-                $tableContainer.block();
+                App.blockUI({target: "#hris-page-content"});
                 window.app.pullDataById(document.url, {
                     action: 'pullDayoffWorkRequestStatusList',
                     data: {
@@ -36,11 +36,11 @@ angular.module('hris', [])
                         'toDate': toDate
                     }
                 }).then(function (success) {
-                    $tableContainer.unblock();
+                    App.unblockUI("#hris-page-content");
                     console.log(success.data);
                     $scope.initializekendoGrid(success.data);
                 }, function (failure) {
-                    $tableContainer.unblock();
+                    App.unblockUI("#hris-page-content");
                     console.log(failure);
                 });
             }

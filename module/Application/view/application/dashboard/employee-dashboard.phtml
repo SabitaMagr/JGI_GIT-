@@ -129,83 +129,6 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
 
     <div class="row">
         <div class="col-md-6">
-            <?php /*
-              <div class="employeestatusbox clearfix">
-              <div class="row">
-              <div class="col-sm-3 col-md-3">
-              <h4 class="font-weight-bold">Employee Status</h4>
-              </div>
-              <div class="col-sm-6 col-md-6">
-              <div class="employee-status-details">
-              <ul>
-              <li>
-              <span>0.5/26</span>
-              Attendence
-              </li>
-              <li>
-              <span>1/10</span>
-              Leave
-              </li>
-              <li>
-              <span>0</span>
-              Awards
-              </li>
-              </ul>
-              </div>
-              </div>
-              <div class="col-sm-3 col-md-3">
-              <div id="dashboard-report-range1" class="pull-right tooltips btn btn-sm btn-custom-color active" data-container="body" data-placement="bottom" data-original-title="Change dashboard date range">
-              <i class="fa fa-calendar"></i>&nbsp;<span class="thin uppercase visible-lg-inline-block"><?php print date('d M Y') ?></span>&nbsp; <i class="fa fa-angle-down"></i>
-              </div>
-              </div>
-              <div class="col-md-12">
-              <div class="row detailsbox">
-              <div class="col-xs-6 col-sm-3 col-md-2 hexcustom">
-              <div class="employee_details-box hexagon-bg1">
-              <span><?php print $employeeDetail['PRESENT_DAY']; ?></span>
-              <div class="face1"></div>
-              <div class="face2"></div>
-              <div class="headtitle">Present</div>
-              </div>
-              </div>
-              <div class="col-xs-6 col-sm-3 col-md-2 hexcustom">
-              <div class="employee_details-box hexagon-bg2">
-              <span><?php print $employeeDetail['LEAVE']; ?></span>
-              <div class="face1"></div>
-              <div class="face2"></div>
-              <div class="headtitle">On Leave</div>
-              </div>
-              </div>
-              <div class="col-xs-6 col-sm-3 col-md-2 hexcustom">
-              <div class="employee_details-box hexagon-bg3">
-              <span><?php print $employeeDetail['TRAINING']; ?></span>
-              <div class="face1"></div>
-              <div class="face2"></div>
-              <div class="headtitle">Training</div>
-              </div>
-              </div>
-              <div class="col-xs-6 col-sm-3 col-md-2 hexcustom">
-              <div class="employee_details-box hexagon-bg4">
-              <span><?php print $employeeDetail['TOUR']; ?></span>
-              <div class="face1"></div>
-              <div class="face2"></div>
-              <div class="headtitle">On Tour</div>
-              </div>
-              </div>
-              <div class="col-xs-6 col-sm-3 col-md-2 hexcustom">
-              <div class="employee_details-box hexagon-bg5">
-              <span><?php print $employeeDetail['WOH']; ?></span>
-              <div class="face1"></div>
-              <div class="face2"></div>
-              <div class="headtitle">WOH</div>
-              </div>
-              </div>
-              </div>
-              </div>
-              </div>
-              </div>
-             */ ?>
-
             <div class="row">
                 <div class="col-md-12">
                     <div class="portlet light calendar ">
@@ -355,7 +278,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                 </div>
                 <div class="col-sm-6 col-md-6">
                     <!-- BEGIN WIDGET THUMB -->
-                    <div class="wigetbox wigetbox-colorfour clearfix widget-thumb margin-bottom-20 bordered green-haze">
+                    <div class="wigetbox wigetbox-colorfour clearfix widget-thumb margin-bottom-20 bordered green-haze widget-woh">
                         <div class="widget-thumb-wrap widget-thumb-wrap-bgfour">
                             <h4 class="widget-thumb-heading">Work on Holiday</h4>
                             <div class="widget-thumb-body">
@@ -535,7 +458,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                                     <div class="person-list clearfix">
                                                         <div class="col-md-3 col-sm-3">
                                                             <div class="person-pic">
-                                                                <img src="<?php print $this->basePath('img/nobody_m.original.jpg'); ?>" alt="person picture">
+                                                                <img src="<?php print $todayBirthday['FILE_PATH'] ? $this->basePath('uploads/' . $todayBirthday['FILE_PATH']) : $this->basePath('img/nobody_m.original.jpg'); ?>" alt="person picture">
                                                             </div>
                                                         </div>
                                                         <div class="col-xs-9 col-md-9 col-sm-9">
