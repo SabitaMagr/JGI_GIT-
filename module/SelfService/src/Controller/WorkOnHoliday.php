@@ -149,7 +149,7 @@ class WorkOnHoliday extends AbstractActionController {
                 return $this->redirect()->toRoute("workOnHoliday");
             }
         }
-
+        
         $holidays = $this->getHolidayList($this->employeeId);
         return Helper::addFlashMessagesToArray($this, [
                     'form' => $this->form,
