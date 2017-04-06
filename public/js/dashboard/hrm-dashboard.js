@@ -84,13 +84,14 @@
         tableWrapper.find('.dataTables_length select').select2(); // initialize select2 dropdown
 
         oTable.on( 'click', 'tr', function () {
-            console.log('dfd');
             if ( $(this).hasClass('selected') ) {
                 $(this).removeClass('selected');
+                $('.hrm-dashboard-employee-list .fonticon').css('background-color', '#ccc');
             }
             else {
                 table.$('tr.selected').removeClass('selected');
                 $(this).addClass('selected');
+                $('.hrm-dashboard-employee-list .fonticon').css('background-color', '');
             }
         } );
     });
@@ -323,6 +324,27 @@
 
     $('.task-list').slimScroll({
         height: '298px'
+    });
+
+    /*************** BIRTHDAY TAB CLICK EVENT ***************/
+    $('.tab-pane-birthday').slimScroll({
+        height: '298px'
+    });
+
+    $('.ln-nav-tab-birthday').on('click', function(e) {
+        e.preventDefault();
+        $('.ln-birthday').removeClass('active');
+        $('.ln-birthday a').attr('aria-expanded', 'false');
+        $(this).attr('aria-expanded', 'true');
+        $(this).parent('li').addClass('active');
+        if ($(this).is('#ln-birthday-today')) {
+            $('#tab-birthday-upcoming').hide().removeClass('active');
+            $('#tab-birthday-today').show().addClass('active');
+        }
+        else {
+            $('#tab-birthday-today').hide().removeClass('active');
+            $('#tab-birthday-upcoming').show().addClass('active');
+        }
     });
 
     ComponentsPickers.init();

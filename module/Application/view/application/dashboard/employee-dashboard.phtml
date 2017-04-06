@@ -326,7 +326,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                         <div class="widget-thumb-wrap widget-thumb-wrap-bgtwo">
                             <h4 class="widget-thumb-heading">Average Timesheet Hrs</h4>
                             <div class="widget-thumb-body">
-                                <span class="widget-thumb-body-stat" data-counter="counterup">7,644</span>
+                                <span class="widget-thumb-body-stat" data-counter="counterup">0</span>
                             </div>
                         </div>
                         <div>
@@ -343,7 +343,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                         <div class="widget-thumb-wrap widget-thumb-wrap-bgthree">
                             <h4 class="widget-thumb-heading">Total OT Hrs</h4>
                             <div class="widget-thumb-body">
-                                <span class="widget-thumb-body-stat" data-counter="counterup">7,644</span>
+                                <span class="widget-thumb-body-stat" data-counter="counterup">0</span>
                             </div>
                         </div>
                         <div>
@@ -446,7 +446,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                     </div>
                     <div class="datepickeform">
                         <div class="form-body">
-                            <h3 class="form-section">TO do</h3>
+                            <h3 class="form-section">To Do</h3>
                             <div class="row">
                                 <div class="col-md-12">
                                     <div class="form-group">
@@ -505,6 +505,10 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
 
                 <div class="birthday-wishes">
                     <div class="col-md-12 col-sm-12">
+                        <?php
+                        // Display Today's Birthday As Active
+                        $todayBirthdayActive = ((isset($employeesBirthday) && isset($employeesBirthday['TODAY']) && $employeesBirthday['TODAY'])) ? true : false;
+                        ?>
                         <!-- BEGIN PORTLET-->
                         <div class="portlet light ">
                             <div class="portlet-title tabbable-line tabline">
@@ -513,10 +517,10 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                     <span class="caption-subject font-green-sharp ">Birthday Wishes</span>
                                 </div>
                                 <ul class="nav nav-tabs">
-                                    <li class="ln-birthday active">
+                                    <li class="ln-birthday <?php print $todayBirthdayActive ? 'active' : '' ?>">
                                         <a id="ln-birthday-today" class="ln-nav-tab-birthday" href="javascript:void(0);" data-toggle="tab" aria-expanded="true">Today</a>
                                     </li>
-                                    <li class="ln-birthday">
+                                    <li class="ln-birthday <?php print $todayBirthdayActive ? '' : 'active'?>">
                                         <a id="ln-birthday-upcoming" class="ln-nav-tab-birthday" href="javascript:void(0);" data-toggle="tab" aria-expanded="false">Upcoming</a>
                                     </li>
                                 </ul>
@@ -524,29 +528,31 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
 
                             <div class="row">
                                 <div class="tab-content birday-person-list">
-                                    <div class="tab-pane active" id="tab-birthday-today">
-                                        <?php if (isset($employeesBirthday) && isset($employeesBirthday['TODAY'])) : ?>
-                                            <?php foreach ($employeesBirthday['TODAY'] as $todayBirthday) : ?>
-                                                <div class="person-list clearfix">
-                                                    <div class="col-md-3 col-sm-3">
-                                                        <div class="person-pic">
-                                                            <img src="<?php print $this->basePath('img/nobody_m.original.jpg'); ?>" alt="person picture">
+                                    <div class="tab-pane tab-pane-birthday">
+                                        <div id="tab-birthday-today" style="display:<?php print $todayBirthdayActive ? 'block' : 'none' ?>">
+                                            <?php if (isset($employeesBirthday) && isset($employeesBirthday['TODAY'])) : ?>
+                                                <?php foreach ($employeesBirthday['TODAY'] as $todayBirthday) : ?>
+                                                    <div class="person-list clearfix">
+                                                        <div class="col-md-3 col-sm-3">
+                                                            <div class="person-pic">
+                                                                <img src="<?php print $this->basePath('img/nobody_m.original.jpg'); ?>" alt="person picture">
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-xs-9 col-md-9 col-sm-9">
+                                                            <div class="person-details">
+                                                                <h4><?php print $todayBirthday['FULL_NAME']; ?></h4>
+                                                                <span><?php print $todayBirthday['DESIGNATION_TITLE']; ?></span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-3 col-sm-3">
+                                                            <span><?php print $todayBirthday['EMP_BIRTH_DATE']; ?></span>
                                                         </div>
                                                     </div>
-                                                    <div class="col-xs-9 col-md-9 col-sm-9">
-                                                        <div class="person-details">
-                                                            <h4><?php print $todayBirthday['FULL_NAME']; ?></h4>
-                                                            <span><?php print $todayBirthday['DESIGNATION_TITLE']; ?></span>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-md-3 col-sm-3">
-                                                        <span><?php print $todayBirthday['EMP_BIRTH_DATE']; ?></span>
-                                                    </div>
-                                                </div>
-                                            <?php endforeach; ?>
-                                        <?php endif; ?>
-                                    </div>
-                                    <div class="tab-pane" id="tab-birthday-upcoming" style="display:none;">
+                                                <?php endforeach; ?>
+                                            <?php endif; ?>
+                                        </div>
+
+                                        <div id="tab-birthday-upcoming" style="display:<?php print $todayBirthdayActive ? 'none' : 'block' ?>">
                                         <?php if (isset($employeesBirthday) && isset($employeesBirthday['UPCOMING'])) : ?>
                                             <?php foreach ($employeesBirthday['UPCOMING'] as $upcomingBirthday) : ?>
                                                 <div class="person-list clearfix">
@@ -567,6 +573,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                                 </div>
                                             <?php endforeach; ?>
                                         <?php endif; ?>
+                                        </div>
                                     </div>
                                 </div>
                             </div>

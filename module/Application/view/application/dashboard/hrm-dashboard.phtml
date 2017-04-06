@@ -163,83 +163,6 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
 
     <div class="row">
         <div class="col-md-6">
-            <?php /*
-              <div class="employeestatusbox clearfix">
-              <div class="row">
-              <div class="col-sm-3 col-md-3">
-              <h4 class="font-weight-bold">Employee Status</h4>
-              </div>
-              <div class="col-sm-6 col-md-6">
-              <div class="employee-status-details">
-              <ul>
-              <li>
-              <span>0.5/26</span>
-              Attendence
-              </li>
-              <li>
-              <span>1/10</span>
-              Leave
-              </li>
-              <li>
-              <span>0</span>
-              Awards
-              </li>
-              </ul>
-              </div>
-              </div>
-              <div class="col-sm-3 col-md-3">
-              <div id="dashboard-report-range1" class="pull-right tooltips btn btn-sm btn-custom-color active" data-container="body" data-placement="bottom" data-original-title="Change dashboard date range">
-              <i class="fa fa-calendar"></i>&nbsp;<span class="thin uppercase visible-lg-inline-block"><?php print date('d M Y') ?></span>&nbsp; <i class="fa fa-angle-down"></i>
-              </div>
-              </div>
-              <div class="col-md-12">
-              <div class="row detailsbox">
-              <div class="col-xs-6 col-sm-3 col-md-2 hexcustom">
-              <div class="employee_details-box hexagon-bg1">
-              <span><?php print $employeeDetail['PRESENT_DAY']; ?></span>
-              <div class="face1"></div>
-              <div class="face2"></div>
-              <div class="headtitle">Present</div>
-              </div>
-              </div>
-              <div class="col-xs-6 col-sm-3 col-md-2 hexcustom">
-              <div class="employee_details-box hexagon-bg2">
-              <span><?php print $employeeDetail['LEAVE']; ?></span>
-              <div class="face1"></div>
-              <div class="face2"></div>
-              <div class="headtitle">On Leave</div>
-              </div>
-              </div>
-              <div class="col-xs-6 col-sm-3 col-md-2 hexcustom">
-              <div class="employee_details-box hexagon-bg3">
-              <span><?php print $employeeDetail['TRAINING']; ?></span>
-              <div class="face1"></div>
-              <div class="face2"></div>
-              <div class="headtitle">Training</div>
-              </div>
-              </div>
-              <div class="col-xs-6 col-sm-3 col-md-2 hexcustom">
-              <div class="employee_details-box hexagon-bg4">
-              <span><?php print $employeeDetail['TOUR']; ?></span>
-              <div class="face1"></div>
-              <div class="face2"></div>
-              <div class="headtitle">On Tour</div>
-              </div>
-              </div>
-              <div class="col-xs-6 col-sm-3 col-md-2 hexcustom">
-              <div class="employee_details-box hexagon-bg5">
-              <span><?php print $employeeDetail['WOH']; ?></span>
-              <div class="face1"></div>
-              <div class="face2"></div>
-              <div class="headtitle">WOH</div>
-              </div>
-              </div>
-              </div>
-              </div>
-              </div>
-              </div>
-             */ ?>
-
             <div class="row chart-row">
                 <div class="col-md-12">
                     <div class="portlet-body">
@@ -267,15 +190,6 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                         </div>
                     </div>
                 </div>
-                <?php /*
-                <div class="col-md-12">
-                    <div class="portlet-body">
-                        <div class="portlet light">
-                            <div id="chart-gender-headcount" style="height:400px"></div>
-                        </div>
-                    </div>
-                </div>
-                */?>
             </div>
             <div class="row">
                 <div class="col-md-12">
@@ -587,7 +501,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                     </div>
                     <div class="datepickeform">
                         <div class="form-body">
-                            <h3 class="form-section">TO do</h3>
+                            <h3 class="form-section">To Do</h3>
                             <div class="row">
                                 <div class="col-md-12">
                                     <div class="form-group">
@@ -615,6 +529,84 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                         </div>
                     </div>
                     <!-- END CONTENT -->
+                </div>
+            </div>
+
+            <div class="birthday-wishes">
+                <div class="col-md-12 col-sm-12">
+                    <?php
+                    // Display Today's Birthday As Active
+                    $todayBirthdayActive = ((isset($employeesBirthday) && isset($employeesBirthday['TODAY']) && $employeesBirthday['TODAY'])) ? true : false;
+                    ?>
+                    <!-- BEGIN PORTLET-->
+                    <div class="portlet light ">
+                        <div class="portlet-title tabbable-line tabline">
+                            <div class="caption">
+                                <i class="fa fa-birthday-cake font-green-sharp"></i>
+                                <span class="caption-subject font-green-sharp ">Birthday Wishes</span>
+                            </div>
+                            <ul class="nav nav-tabs">
+                                <li class="ln-birthday <?php print $todayBirthdayActive ? 'active' : '' ?>">
+                                    <a id="ln-birthday-today" class="ln-nav-tab-birthday" href="javascript:void(0);" data-toggle="tab" aria-expanded="true">Today</a>
+                                </li>
+                                <li class="ln-birthday <?php print $todayBirthdayActive ? '' : 'active'?>">
+                                    <a id="ln-birthday-upcoming" class="ln-nav-tab-birthday" href="javascript:void(0);" data-toggle="tab" aria-expanded="false">Upcoming</a>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div class="row">
+                            <div class="tab-content birday-person-list">
+                                <div class="tab-pane tab-pane-birthday">
+                                    <div id="tab-birthday-today" style="display:<?php print $todayBirthdayActive ? 'block' : 'none' ?>">
+                                        <?php if (isset($employeesBirthday) && isset($employeesBirthday['TODAY'])) : ?>
+                                            <?php foreach ($employeesBirthday['TODAY'] as $todayBirthday) : ?>
+                                                <div class="person-list clearfix">
+                                                    <div class="col-md-3 col-sm-3">
+                                                        <div class="person-pic">
+                                                            <img src="<?php print $this->basePath('img/nobody_m.original.jpg'); ?>" alt="person picture">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-xs-9 col-md-9 col-sm-9">
+                                                        <div class="person-details">
+                                                            <h4><?php print $todayBirthday['FULL_NAME']; ?></h4>
+                                                            <span><?php print $todayBirthday['DESIGNATION_TITLE']; ?></span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-3 col-sm-3">
+                                                        <span><?php print $todayBirthday['EMP_BIRTH_DATE']; ?></span>
+                                                    </div>
+                                                </div>
+                                            <?php endforeach; ?>
+                                        <?php endif; ?>
+                                    </div>
+
+                                    <div id="tab-birthday-upcoming" style="display:<?php print $todayBirthdayActive ? 'none' : 'block' ?>">
+                                        <?php if (isset($employeesBirthday) && isset($employeesBirthday['UPCOMING'])) : ?>
+                                            <?php foreach ($employeesBirthday['UPCOMING'] as $upcomingBirthday) : ?>
+                                                <div class="person-list clearfix">
+                                                    <div class="col-md-3 col-sm-3">
+                                                        <div class="person-pic">
+                                                            <img src="<?php print $upcomingBirthday['FILE_PATH'] ? $this->basePath('uploads/' . $upcomingBirthday['FILE_PATH']) : $this->basePath('img/nobody_m.original.jpg'); ?>" alt="person picture">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-xs-6 col-md-6 col-sm-6">
+                                                        <div class="person-details">
+                                                            <h4><?php print $upcomingBirthday['FULL_NAME']; ?></h4>
+                                                            <span><?php print $upcomingBirthday['DESIGNATION_TITLE']; ?></span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-3 col-sm-3">
+                                                        <span><?php print $upcomingBirthday['EMP_BIRTH_DATE']; ?></span>
+                                                    </div>
+                                                </div>
+                                            <?php endforeach; ?>
+                                        <?php endif; ?>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
