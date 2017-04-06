@@ -40,7 +40,7 @@ class AcademicDegreeForm{
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Weight"})
      * @Annotation\Required(true)
-     * @Annotation\Attributes({ "id":"form-weight", "class":"form-weight form-control"})
+     * @Annotation\Attributes({ "id":"form-weight","min":"0", "class":"form-weight form-control"})
      */
     public $weight;
 

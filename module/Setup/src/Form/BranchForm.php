@@ -72,7 +72,7 @@ class BranchForm {
      * @Annotation\Required(true)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Telephone"})
-     * @Annotation\Attributes({ "id":"form-telephone", "placeholder":"xx-xxxxxxx", "class":"form-control"})
+     * @Annotation\Attributes({ "id":"form-telephone", "placeholder":"xx-xxxxxxx", "pattern":"^\(?\d{2}\)?[- ]?\d{7}$", "class":"form-control","title"="Enter your mobile number(xx-xxxxxxx)"})
      */
     public $telephone;
 
