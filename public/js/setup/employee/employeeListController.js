@@ -99,7 +99,8 @@ angular.module('hris', [])
                                 .find('tbody')
                                 .append('<tr class="kendo-data-row"><td colspan="' + colCount + '" class="no-data">There is no data to show in the grid.</td></tr>');
                     }
-                };
+                }
+                ;
 
 //                $("#export").click(function (e) {
 //                    var grid = $("#employeeTable").data("kendoGrid");
@@ -331,6 +332,7 @@ angular.module('hris', [])
 
                 window.app.UIConfirmations();
             };
+            $scope.initializekendoGrid([]);
 
         });
 
