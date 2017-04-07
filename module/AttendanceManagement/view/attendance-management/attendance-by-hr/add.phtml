@@ -83,13 +83,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                         <?php print $this->formElementErrors()->render($attendanceDt, ['class' => 'help-block error']); ?>
                     </div>
 
-                    <div class="col-sm-4">
-                        <div class="form-group <?= empty($totalHour->getMessages()) ? "" : "error" ?>">
-                            <?php print $this->formLabel($totalHour); ?>
-                            <?php print $this->formElement($totalHour); ?>
-                        </div>
-                        <?php print $this->formElementErrors()->render($totalHour, ['class' => 'help-block error']); ?>
-                    </div>
+
                 </div>
 
 
@@ -117,16 +111,25 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                     </div>
 
                     <div class="col-sm-4">
+                        <div class="form-group <?= empty($totalHour->getMessages()) ? "" : "error" ?>">
+                            <?php print $this->formLabel($totalHour); ?>
+                            <?php print $this->formElement($totalHour); ?>
+                        </div>
+                        <?php print $this->formElementErrors()->render($totalHour, ['class' => 'help-block error']); ?>
+                    </div>
+
+
+                </div>
+
+
+                <div class=" row">
+                    <div class="col-sm-4">
                         <div class="form-group  <?= empty($inRemarks->getMessages()) ? "" : "error" ?>">
                             <?php print $this->formLabel($inRemarks); ?>
                             <?php print $this->formElement($inRemarks); ?>
                         </div>
                         <?php print $this->formElementErrors()->render($inRemarks, ['class' => 'help-block error']); ?>
                     </div>
-                </div>
-
-
-                <div class=" row">
                     <div class="col-sm-4">
                         <div class="form-group <?= empty($outRemarks->getMessages()) ? "" : "error" ?>">
                             <?php print $this->formLabel($outRemarks); ?>
