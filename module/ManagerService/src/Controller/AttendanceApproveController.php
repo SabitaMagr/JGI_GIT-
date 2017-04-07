@@ -156,7 +156,7 @@ class AttendanceApproveController extends AbstractActionController {
                 $this->repository->edit($model, $id);
                 $model->id = $id;
                 try {
-                    HeadNotification::pushNotification(NotificationEvents::ATTENDANCE_APPROVE_ACCEPTED, $model, $this->adapter, $this->plugin('url'));
+                    HeadNotification::pushNotification(($model->status == 'AP') ? NotificationEvents::ATTENDANCE_APPROVE_ACCEPTED : NotificationEvents::ATTENDANCE_APPROVE_REJECTED, $model, $this->adapter, $this->plugin('url'));
                 } catch (Exception $e) {
                     $this->flashmessenger()->addMessage($e->getMessage());
                 }

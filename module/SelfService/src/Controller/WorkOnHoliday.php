@@ -15,7 +15,9 @@ use Setup\Repository\RecommendApproveRepository;
 use Zend\Authentication\AuthenticationService;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Form\Annotation\AnnotationBuilder;
+use Notification\Model\NotificationEvents;
 use Zend\Mvc\Controller\AbstractActionController;
+use Notification\Controller\HeadNotification;
 
 class WorkOnHoliday extends AbstractActionController {
 
@@ -145,6 +147,11 @@ class WorkOnHoliday extends AbstractActionController {
                 $model->status = 'RQ';
                 // print_r($model); die();
                 $this->repository->add($model);
+                try {
+                    HeadNotification::pushNotification(NotificationEvents::WORKONHOLIDAY_APPLIED, $model, $this->adapter, $this->plugin("url"));
+                } catch (Exception $e) {
+                    $this->flashmessenger()->addMessage($e->getMessage());
+                }
                 $this->flashmessenger()->addMessage("Work on Holiday Request Successfully added!!!");
                 return $this->redirect()->toRoute("workOnHoliday");
             }
