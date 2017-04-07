@@ -61,6 +61,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                     <div class="col-sm-4">
                 <div class="form-group">
                     <?php print $this->formLabel($loanId); ?>
+                    <span class="required" aria-required="true">*</span>
                     <?php print $this->formElement($loanId); ?>
                     <?php print $this->formElementErrors()->render($loanId, ['class' => 'help-block']); ?>
                 </div>               
@@ -69,6 +70,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                     <div class="col-sm-4">
                 <div class="form-group">
                     <?php print $this->formLabel($requestedAmount); ?>
+                    <span class="required" aria-required="true">*</span>
                     <?php print $this->formElement($requestedAmount); ?>
                     <?php print $this->formElementErrors()->render($requestedAmount, ['class' => 'help-block']); ?>
                 </div>
@@ -80,6 +82,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                     <div class="col-sm-4">
                 <div class="form-group">
                     <?php print $this->formLabel($loanDate); ?>
+                    <span class="required" aria-required="true">*</span>
                     <div class="input-group date" id="startDate">
                         <?php print $this->formElement($loanDate); ?>
                         <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
