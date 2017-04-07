@@ -199,7 +199,7 @@ class DayoffWorkApproveController extends AbstractActionController {
                 $this->dayoffWorkApproveRepository->edit($workOnDayoffModel, $id);
                 $workOnDayoffModel->id = $id;
                 try {
-                    HeadNotification::pushNotification(($workOnDayoffModel->status == 'AP') ? NotificationEvents::WORKONDAYOFF_APPROVE_ACCEPTED : NotificationEvents::WORKONDAYOFF_APPROVE_REJECTED, $loanRequestModel, $this->adapter, $this->plugin('url'));
+                    HeadNotification::pushNotification(($workOnDayoffModel->status == 'AP') ? NotificationEvents::WORKONDAYOFF_APPROVE_ACCEPTED : NotificationEvents::WORKONDAYOFF_APPROVE_REJECTED, $workOnDayoffModel, $this->adapter, $this->plugin('url'));
                 } catch (Exception $e) {
                     $this->flashmessenger()->addMessage($e->getMessage());
                 }
