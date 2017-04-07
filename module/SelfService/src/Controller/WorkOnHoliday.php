@@ -148,7 +148,7 @@ class WorkOnHoliday extends AbstractActionController {
                 // print_r($model); die();
                 $this->repository->add($model);
                 try {
-                    HeadNotification::pushNotification(NotificationEvents::WORKONHOLIDAY_APPLIED, $model, $this->adapter, $this->plugin("url"));
+                    HeadNotification::pushNotification(NotificationEvents::WORKONHOLIDAY_APPLIED, $model, $this->adapter, $this->plugin('url'));
                 } catch (Exception $e) {
                     $this->flashmessenger()->addMessage($e->getMessage());
                 }
