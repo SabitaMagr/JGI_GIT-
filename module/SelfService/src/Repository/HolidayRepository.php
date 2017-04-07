@@ -64,7 +64,7 @@ class HolidayRepository implements RepositoryInterface
        $select->where([
            "H.STATUS='E'",
            "E.EMPLOYEE_ID=".$employeeId,
-           "H.END_DATE>=".$today->getExpression(),
+//           "H.END_DATE>=".$today->getExpression(),
            "((H.GENDER_ID IS NOT NULL AND H.GENDER_ID=E.GENDER_ID) OR H.GENDER_ID IS NULL)"
        ]);
        
