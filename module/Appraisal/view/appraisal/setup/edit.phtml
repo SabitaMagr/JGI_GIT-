@@ -33,56 +33,95 @@ $form->prepare();
     <?= $this->navigation('Zend\Navigation\DetailSetup')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
 <div class="row margin-top-20">
-    <div class="col-sm-8 col-sm-offset-2">
+    <div class="col-sm-12">
         <div class="portlet box custom-box">
             <div class="portlet-title">
                 <div class="caption">
                     <i class="fa fa-user"></i>Update
                 </div>
+                <div class="actions">
+                    <a class="btn btn-circle btn-icon-only btn-default fullscreen" href="javascript:;" data-original-title="" title=""> </a>
+                </div>
             </div>
             <div class="portlet-body">
                 <?php print $this->form()->openTag($form); ?>
+                
+                <div class=" row">
+                    <div class="col-sm-4">
                 <div class="form-group">
                     <?php print $this->formLabel($appraisalCode); ?>
+                    <span class="required" aria-required="true">*</span>
                     <?php print $this->formElement($appraisalCode); ?>
                     <?php print $this->formElementErrors()->render($appraisalCode, ['class' => 'help-block']); ?>
                 <input type="hidden" id="appraisalId" value="<?php echo $id; ?>"/>
                 </div>
+                    </div>
+                    
+                    <div class="col-sm-4">
                 <div class="form-group">
                     <?php print $this->formLabel($appraisalEdesc); ?>
+                    <span class="required" aria-required="true">*</span>
                     <?php print $this->formElement($appraisalEdesc); ?>
                     <?php print $this->formElementErrors()->render($appraisalEdesc, ['class' => 'help-block']); ?>
                 </div>
+                    </div>
+                    
+                    <div class="col-sm-4">
                 <div class="form-group">
                     <?php print $this->formLabel($appraisalNdesc); ?>
                     <?php print $this->formElement($appraisalNdesc); ?>
                     <?php print $this->formElementErrors()->render($appraisalNdesc, ['class' => 'help-block']); ?>
                 </div>
+                    </div>
+                </div>
+                
+                
+                <div class=" row">
+                    <div class="col-sm-4">
                 <div class="form-group">
                     <?php print $this->formLabel($appraisalTypeId); ?>
+                    <span class="required" aria-required="true">*</span>
                     <?php print $this->formElement($appraisalTypeId); ?>
                     <?php print $this->formElementErrors()->render($appraisalTypeId, ['class' => 'help-block']); ?>
                 </div>
+                    </div>
+                    
+                    <div class="col-sm-4">
                 <div class="form-group">
                     <?php print $this->formLabel($startDate); ?>
                     <?php print $this->formElement($startDate); ?>
                     <?php print $this->formElementErrors()->render($startDate, ['class' => 'help-block']); ?>
                 </div>
+                    </div>
+                    
+                    <div class="col-sm-4">
                 <div class="form-group">
                     <?php print $this->formLabel($endDate); ?>
                     <?php print $this->formElement($endDate); ?>
                     <?php print $this->formElementErrors()->render($endDate, ['class' => 'help-block']); ?>
                 </div>
+                    </div>
+                </div>
+                
+                <div class=" row">
+                    <div class="col-sm-4">
                 <div class="form-group">
                     <?php print $this->formLabel($currentStageId); ?>
                     <?php print $this->formElement($currentStageId); ?>
                     <?php print $this->formElementErrors()->render($currentStageId, ['class' => 'help-block']); ?>
                 </div>
+                    </div>
+                    
+                    <div class="col-sm-4">
                 <div class="form-group">
                     <?php print $this->formLabel($remarks); ?>
                     <?php print $this->formElement($remarks); ?>
                     <?php print $this->formElementErrors()->render($remarks, ['class' => 'help-block']); ?>
                 </div>
+                    </div>
+                    
+                </div>
+                
                 <?php
                 print $this->formSubmit($submit);
                 print $this->form()->closeTag();

@@ -33,45 +33,73 @@ $form->prepare();
     <?= $this->navigation('Zend\Navigation\Heading')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
 <div class="row margin-top-20">
-    <div class="col-sm-8 col-sm-offset-2">
+    <div class="col-sm-12">
         <div class="portlet box custom-box">
             <div class="portlet-title">
                 <div class="caption">
                     <i class="fa fa-user"></i>New Entry
                 </div>
+                <div class="actions">
+                    <a class="btn btn-circle btn-icon-only btn-default fullscreen" href="javascript:;" data-original-title="" title=""> </a>
+                </div>
             </div>
             <div class="portlet-body">
                 <?php print $this->form()->openTag($form); ?>
+                
+                 <div class=" row">
+                    <div class="col-sm-4">
                 <div class="form-group">
                     <?php print $this->formLabel($headingCode); ?>
+                    <span class="required" aria-required="true">*</span>
                     <?php print $this->formElement($headingCode); ?>
                     <?php print $this->formElementErrors()->render($headingCode, ['class' => 'help-block']); ?>
                 </div>
+                    </div>
+                    
+                    <div class="col-sm-4">
                 <div class="form-group">
                     <?php print $this->formLabel($headingEdesc); ?>
+                    <span class="required" aria-required="true">*</span>
                     <?php print $this->formElement($headingEdesc); ?>
                     <?php print $this->formElementErrors()->render($headingEdesc, ['class' => 'help-block']); ?>
                 </div>
+                    </div>
+                    
+                    <div class="col-sm-4">
                 <div class="form-group">
                     <?php print $this->formLabel($headingNdesc); ?>
                     <?php print $this->formElement($headingNdesc); ?>
                     <?php print $this->formElementErrors()->render($headingNdesc, ['class' => 'help-block']); ?>
                 </div>
+                    </div>
+                </div>
+                
+                 <div class=" row">
+                    <div class="col-sm-4">
                 <div class="form-group">
                     <?php print $this->formLabel($percentage); ?>
                     <?php print $this->formElement($percentage); ?>
                     <?php print $this->formElementErrors()->render($percentage, ['class' => 'help-block']); ?>
                 </div>
+                    </div>
+                    
+                    <div class="col-sm-4">
                 <div class="form-group">
                     <?php print $this->formLabel($appraisalTypeId); ?>
                     <?php print $this->formElement($appraisalTypeId); ?>
                     <?php print $this->formElementErrors()->render($appraisalTypeId, ['class' => 'help-block']); ?>
                 </div>
+                    </div>
+                    
+                    <div class="col-sm-4">
                 <div class="form-group">
                     <?php print $this->formLabel($remarks); ?>
                     <?php print $this->formElement($remarks); ?>
                     <?php print $this->formElementErrors()->render($remarks, ['class' => 'help-block']); ?>
                 </div>
+                    </div>
+                </div>
+                
                 <?php
                 print $this->formSubmit($submit);
                 print $this->form()->closeTag();
