@@ -17,6 +17,7 @@ use Setup\Repository\RecommendApproveRepository;
 use LeaveManagement\Repository\LeaveAssignRepository;
 use LeaveManagement\Repository\LeaveMasterRepository;
 use Notification\Model\NotificationEvents;
+use Notification\Controller\HeadNotification;
 
 class WorkOnDayoff extends AbstractActionController {
 

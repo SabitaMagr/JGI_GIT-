@@ -17,6 +17,7 @@ use Zend\Db\Adapter\AdapterInterface;
 use Zend\Form\Annotation\AnnotationBuilder;
 use Notification\Model\NotificationEvents;
 use Zend\Mvc\Controller\AbstractActionController;
+use Notification\Controller\HeadNotification;
 
 class WorkOnHoliday extends AbstractActionController {
 
