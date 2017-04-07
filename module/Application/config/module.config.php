@@ -237,6 +237,7 @@ return [
             'dashboard/employee' => __DIR__ . '/../view/application/dashboard/employee-dashboard.phtml',
             'dashboard/hrm' => __DIR__ . '/../view/application/dashboard/hrm-dashboard.phtml',
         ],
+//        'base_path' => '/public/',
         'template_path_stack' => [
             __DIR__ . '/../view',
         ],

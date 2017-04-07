@@ -4,7 +4,7 @@ $this->headLink()
     ->appendStylesheet($this->basePath('assets/global/plugins/fullcalendar/fullcalendar.min.css'))
     ->appendStylesheet($this->basePath('assets/global/plugins/datatables/extensions/Scroller/css/dataTables.scroller.min.css'))
     ->appendStylesheet($this->basePath('assets/global/plugins/datatables/extensions/ColReorder/css/dataTables.colReorder.min.css'))
-    ->appendStylesheet($this->basePath('assets/global/plugins/datatables/plugins/bootstrap/dataTables.bootstrap.csss'))
+    ->appendStylesheet($this->basePath('assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap.css'))
     ->appendStylesheet($this->basePath('assets/global/plugins/datatables/datatables.min.css'))
     ->appendStylesheet($this->basePath('css/dashboard.hrm.css'));
 
@@ -326,8 +326,8 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
 
             <div class="row">
                 <div class="col-md-12">
-                    <div class="portlet box green">
-                        <div class="portlet-title">
+                    <div class="portlet box">
+                        <div class="portlet-title green">
                             <div class="caption employee_search">
                                 <i class="fa fa-user"></i>Search Employee
                             </div>
@@ -447,6 +447,8 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                     </div>
                                 </div>
                             </div>
+                            <?php //$employeeTask = []; ?>
+                            <?php if ($employeeTask) : ?>
                             <div class="task-list">
                                 <ul>
                                     <?php foreach ($employeeTask as $task): ?>
@@ -497,6 +499,13 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
 <!--                                    </li>-->
 <!--                                </ul>-->
                             </div>
+                            <?php else : ?>
+                                <div class="notask">
+                                    <div class="notask-box">
+                                        <h4><i class="fa fa-universal-access" aria-hidden="true"></i>No Task Available</h4>
+                                    </div>
+                                </div>
+                            <?php endif; ?>
                         </div>
                     </div>
                     <div class="datepickeform">
@@ -532,7 +541,8 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                 </div>
             </div>
 
-            <div class="birthday-wishes">
+            <div class="row">
+                <div class="birthday-wishes">
                 <div class="col-md-12 col-sm-12">
                     <?php
                     // Display Today's Birthday As Active
@@ -559,7 +569,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                             <div class="tab-content birday-person-list">
                                 <div class="tab-pane tab-pane-birthday">
                                     <div id="tab-birthday-today" style="display:<?php print $todayBirthdayActive ? 'block' : 'none' ?>">
-                                        <?php if (isset($employeesBirthday) && isset($employeesBirthday['TODAY'])) : ?>
+                                        <?php if ($todayBirthdayActive) : ?>
                                             <?php foreach ($employeesBirthday['TODAY'] as $todayBirthday) : ?>
                                                 <div class="person-list clearfix">
                                                     <div class="col-md-3 col-sm-3">
@@ -578,11 +588,27 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                                     </div>
                                                 </div>
                                             <?php endforeach; ?>
+                                        <?php else: ?>
+                                            <div class="dashborder clearfix">
+                                                <div class="col-md-3 col-sm-3">
+                                                    <div class="person-pic birthday-pic">
+                                                        <img src="<?php print $this->basePath('img/nobody_m.original.jpg'); ?>" alt="person picture">
+                                                    </div>
+                                                </div>
+                                                <div class="col-xs-6 col-md-6 col-sm-6">
+                                                    <div class="nobirthday-text">
+                                                        <h4>No Birthday Available Today</h4>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3 col-sm-3">
+                                                    <span class="calendar_date"><i class="fa fa-calendar" aria-hidden="true"></i><?php print date('jS F') ?></span>
+                                                </div>
+                                            </div>
                                         <?php endif; ?>
                                     </div>
 
                                     <div id="tab-birthday-upcoming" style="display:<?php print $todayBirthdayActive ? 'none' : 'block' ?>">
-                                        <?php if (isset($employeesBirthday) && isset($employeesBirthday['UPCOMING'])) : ?>
+                                        <?php if (isset($employeesBirthday) && isset($employeesBirthday['UPCOMING']) && $employeesBirthday['UPCOMING']) : ?>
                                             <?php foreach ($employeesBirthday['UPCOMING'] as $upcomingBirthday) : ?>
                                                 <div class="person-list clearfix">
                                                     <div class="col-md-3 col-sm-3">
@@ -597,10 +623,23 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                                         </div>
                                                     </div>
                                                     <div class="col-md-3 col-sm-3">
-                                                        <span><?php print $upcomingBirthday['EMP_BIRTH_DATE']; ?></span>
+                                                        <span class="birth-date"><?php print $upcomingBirthday['EMP_BIRTH_DATE']; ?></span>
                                                     </div>
                                                 </div>
                                             <?php endforeach; ?>
+                                        <?php else : ?>
+                                            <div class="dashborder clearfix">
+                                                <div class="col-md-3 col-sm-3">
+                                                    <div class="person-pic birthday-pic">
+                                                        <img src="<?php print $this->basePath('img/nobody_m.original.jpg'); ?>" alt="person picture">
+                                                    </div>
+                                                </div>
+                                                <div class="col-xs-6 col-md-6 col-sm-6">
+                                                    <div class="nobirthday-text">
+                                                        <h4>No Upcoming Birthdays Found!!!</h4>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         <?php endif; ?>
                                     </div>
                                 </div>
@@ -608,6 +647,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                         </div>
                     </div>
                 </div>
+            </div>
             </div>
         </div>
     </div>

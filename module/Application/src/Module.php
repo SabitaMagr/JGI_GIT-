@@ -146,7 +146,7 @@ class Module implements AutoloaderProviderInterface, ConsoleUsageProviderInterfa
     }
 
     public function getAutoloaderConfig() {
-        
+
     }
 
     public function getServiceConfig() {
