@@ -89,7 +89,27 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                             <div class="col-xs-4 col-sm-4 col-md-4"></div>
                         </div>
                     </div>
-
+                    <div class="row" style="display:none;">
+                    <div class="col-sm-4">
+                    <div class="border-bottom margin-bottom-20">
+                        <div class="row margin-top-5">
+                            <div class="col-xs-12 col-sm-12 col-md-12">
+                                <div class="form-group">
+                                    <select style="display:none;" name="holiday" id="holidayId1" class="form-control">
+                                        <?php foreach ($holidayList as $key => $holidays) { ?>
+                                            <option value="<?php echo $key ?>" <?php
+                                            if ($selectedHoliday == $key) {
+                                                echo "selected";
+                                            }
+                                            ?>><?php echo $holidays; ?></option>
+                                                <?php } ?>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    </div>
+                    </div>
                     <div class="form-group">
                         <label for="holidayCode" >Holiday Code</label>
                         <input name="holidayCode" required="required" id="holidayCode" class="form-control"

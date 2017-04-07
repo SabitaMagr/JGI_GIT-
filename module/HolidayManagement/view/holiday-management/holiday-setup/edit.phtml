@@ -29,9 +29,9 @@ $submit->setAttribute('value', 'UPDATE');
 
 $genderId->setValueOptions($genders);
 
-$form->setAttribute('role', 'form');
-$form->setAttribute('action', $this->url('holidaysetup', ['action' => 'edit']));
-$form->prepare();
+//$form->setAttribute('role', 'form');
+//$form->setAttribute('action', $this->url('holidaysetup', ['action' => 'edit']));
+//$form->prepare();
 ?>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\holidaysetup')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
@@ -49,6 +49,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
 <?php if ($this->messages) { ?>
     <script>
         document.messages =<?php echo json_encode($this->messages); ?>
+        document.urlIndex='<?= $this->url("holiday",["action"=>"index"]) ?>';
     </script>
 <?php } ?>
 <div ng-app="hris" ng-controller="holidayController">
@@ -64,29 +65,8 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                     </div>
                 </div>
                 <div class="portlet-body">
-                    <div class="row">
-                    <div class="col-sm-4">
-                    <div class="border-bottom margin-bottom-20">
-                        <div class="row margin-top-5">
-                            <div class="col-xs-12 col-sm-12 col-md-12">
-                                <div class="form-group">
-                                    <select name="holiday" id="holidayId" class="form-control">
-                                        <?php foreach ($holidayList as $key => $holidays) { ?>
-                                            <option value="<?php echo $key ?>" <?php
-                                            if ($selectedHoliday == $key) {
-                                                echo "selected";
-                                            }
-                                            ?>><?php echo $holidays; ?></option>
-                                                <?php } ?>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    </div>
-                    </div>
-
-
+                    <form name="holidayForm" id="holiday-form" ng-submit="update()" novalidate>
+                        <input type="hidden" id="holidayId" value="<?= $selectedHoliday ?>"/>
                     <div class=" row">
                         <div class="col-sm-4">
                             <div class="form-group">
@@ -94,6 +74,11 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                 <span class="required" aria-required="true">*</span>
                                 <input name="holidayCode" required="required" id="holidayCode" class="form-control"
                                        type="text" ng-model="holidayDtl.holidayCode">
+                                <div ng-show="holidayForm.$submitted || holidayForm.holidayCode.$touched">
+                                    <ul ng-show="holidayForm.holidayCode.$error.required" class="help-block error">
+                                        <li>Holiday Code is required.</li>
+                                    </ul>
+                                </div>
                             </div>
                         </div>
 
@@ -103,14 +88,18 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                 <span class="required" aria-required="true">*</span>
                                 <input name="holidayEname" required="required" id="holidayEname" class="form-control"
                                        type="text" value="" ng-model="holidayDtl.holidayEname">
+                                <div ng-show="holidayForm.$submitted || holidayForm.holidayEname.$touched">
+                                    <ul ng-show="holidayForm.holidayEname.$error.required" class="help-block error">
+                                        <li>Holiday Name is required.</li>
+                                    </ul>
+                                </div>
                             </div>
                         </div>
 
                         <div class="col-sm-4">
                             <div class="form-group">
                                 <label for="holidayLname">Holiday Lname</label>
-                                <span class="required" aria-required="true">*</span>
-                                <input name="holidayLname" required="required" id="holidayLname" class="form-control"
+                                <input name="holidayLname" id="holidayLname" class="form-control"
                                        type="text" value="" ng-model="holidayDtl.holidayLname">
                             </div>
                         </div>
@@ -127,6 +116,11 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                     <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
                                 </div>
                                 <?php print $this->formElementErrors()->render($startDate, ['class' => 'help-block error']) ?>
+                                <div ng-show="holidayForm.$submitted || holidayForm.startDate.$touched">
+                                    <ul ng-show="holidayForm.startDate.$error.required" class="help-block error">
+                                        <li>Start Date is required.</li>
+                                    </ul>
+                                </div>
                             </div>
                         </div>
 
@@ -140,6 +134,11 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                     <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
                                 </div>
                                 <?php print $this->formElementErrors()->render($startDate, ['class' => 'help-block error']) ?>
+                                <div ng-show="holidayForm.$submitted || holidayForm.endDate.$touched">
+                                    <ul ng-show="holidayForm.endDate.$error.required" class="help-block error">
+                                        <li>End Date is required.</li>
+                                    </ul>
+                                </div>
                             </div>
                         </div>
 
@@ -148,6 +147,11 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                 <?php print $this->formLabel($branchFormElement); ?>
                                 <span class="required" aria-required="true">*</span>
                                 <?php print $this->formElement($branchFormElement); ?>
+                                <div ng-show="holidayForm.$submitted || holidayForm.branch.$touched">
+                                    <ul ng-show="holidayForm.branch.$error.required" class="help-block error">
+                                        <li>Branch is required.</li>
+                                    </ul>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -242,12 +246,10 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                             </div>
                         </div>
                     </div>
-
-
-                    <button ng-click="update()" id="updateHoliday" class="btn btn-success">
-                        UPDATE
-                    </button>
-
+                        <button  id="submit" class="btn btn-success">
+                            UPDATE
+                        </button>
+                    </form>
                 </div>
             </div>
         </div>
