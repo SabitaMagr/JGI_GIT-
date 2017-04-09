@@ -97,8 +97,10 @@
 
         $('.ln-hrd-emp-lst').on( 'click', function(e) {
             var $this = $(this);
-            console.log(oTable.find('tbody'));
-            var employeeName = oTable.find('tbody tr.selected td:eq(1)').text();
+            var $selectedTr = oTable.find('tbody tr.selected');
+            var employeeId = $selectedTr.data('empid');
+            console.log(employeeId);
+            var employeeName = $selectedTr.find('td:eq(1)').text();
             switch(true) {
                 case $this.is('.ln-hrd-emp-payroll') :
                     alert('Generate the pay roll of' + ' ' + employeeName);
@@ -111,10 +113,12 @@
 //                    alert('Assgin the training of' + ' ' + employeeName);
                     break;
                 case $this.is('.ln-hrd-emp-travel') :
-                    alert('Approve the travel of' + ' ' + employeeName)
+                    window.location=document.travelUrl;
+//                    alert('Approve the travel of' + ' ' + employeeName)
                     break;
                 case $this.is('.ln-hrd-emp-leave') :
-                    alert('Approve the leave of selected' + ' ' + employeeName);
+                    window.location=document.leaveUrl;
+//                    alert('Approve the leave of selected' + ' ' + employeeName);
                     break;
                 case $this.is('.ln-hrd-emp-payslip') :
                     alert('Generate the pay slip of' + ' ' + employeeName);
