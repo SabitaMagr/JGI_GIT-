@@ -33,7 +33,7 @@ class LoanForm {
      * @Annotation\Required({"required":"true"})
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
      * @Annotation\Options({"label":"Min. Amount"})
-     * @Annotation\Attributes({ "id":"form-minAmount","class":"form-control","step":"0.01","min"="0"})
+     * @Annotation\Attributes({ "id":"form-minAmount","class":"form-control","step":"0.01","min":"0"})
      */
     public $minAmount;
 
@@ -42,7 +42,7 @@ class LoanForm {
      * @Annotation\Required({"required":"true"})
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
      * @Annotation\Options({"label":"Max. Amount"})
-     * @Annotation\Attributes({ "id":"form-maxAmount","class":"form-control","step":"0.01","min"="0"})
+     * @Annotation\Attributes({ "id":"form-maxAmount","class":"form-control","step":"0.01","min":"0"})
      */
     public $maxAmount;
 
@@ -51,7 +51,7 @@ class LoanForm {
      * @Annotation\Required({"required":"true"})
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
      * @Annotation\Options({"label":"Interest Rate(in %)"})
-     * @Annotation\Attributes({ "id":"form-interestRate","class":"form-control","step":"0.01","min"="0"})
+     * @Annotation\Attributes({ "id":"form-interestRate","class":"form-control","step":"0.01","min":"0"})
      */
     public $interestRate;
 
@@ -60,7 +60,7 @@ class LoanForm {
      * @Annotation\Required({"required":"true"})
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
      * @Annotation\Options({"label":"Re-Payment Amount(in %)"})
-     * @Annotation\Attributes({ "id":"form-repaymentAmount", "class":"form-control","step":"0.01","min"="0" })
+     * @Annotation\Attributes({ "id":"form-repaymentAmount", "class":"form-control","step":"0.01","min":"0" })
      */
     public $repaymentAmount;
 
@@ -69,7 +69,7 @@ class LoanForm {
      * @Annotation\Required({"required":"true"})
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
      * @Annotation\Options({"label":"Re-Payment Period(in month)"})
-     * @Annotation\Attributes({ "id":"form-repaymentPeriod", "class":"form-control,"min"="0" })
+     * @Annotation\Attributes({ "id":"form-repaymentPeriod", "class":"form-control","min":"0" })
      */
     public $repaymentPeriod;
 
@@ -78,7 +78,7 @@ class LoanForm {
      * @Annotation\Required(false)
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
      * @Annotation\Options({"label":"Remarks"})
-     * @Annotation\Attributes({"id":"form-remarks","class":"form-remarks form-control","style":"    height: 50px; font-size:12px"})
+     * @Annotation\Attributes({"id":"form-remarks","class":"form-remarks form-control","style":"height: 50px; font-size:12px"})
      */
     public $remarks;
 

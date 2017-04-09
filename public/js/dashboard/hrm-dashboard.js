@@ -107,7 +107,8 @@
                     alert('Functionality will be provided as requested');
                     break;
                 case $this.is('.ln-hrd-emp-training') :
-                    alert('Assgin the training of' + ' ' + employeeName);
+                    window.location=document.trainingUrl;
+//                    alert('Assgin the training of' + ' ' + employeeName);
                     break;
                 case $this.is('.ln-hrd-emp-travel') :
                     alert('Approve the travel of' + ' ' + employeeName)

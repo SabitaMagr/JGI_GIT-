@@ -77,7 +77,7 @@ angular.module('hris', [])
                     
                     var holidayId = angular.element(document.getElementById('holidayId')).val();
                     var branchIdValue = branchId.val();
-
+                    App.blockUI({target: "#hris-page-content"});
                     window.app.pullDataById(document.url, {
                         action: 'updateHolidayDetail',
                         data: {
@@ -103,11 +103,12 @@ angular.module('hris', [])
 //                            $('#holidayId').select2({
 //                                data: document.holidays
 //                            });
-
+                            App.unblockUI("#hris-page-content");
                             $window.location.href =  document.urlIndex;
                             $window.localStorage.setItem("msg",success.data);
                         });
                     }, function (failure) {
+                        App.unblockUI("#hris-page-content");
                         console.log(failure);
                     });
                 }
