@@ -111,10 +111,12 @@
 //                    alert('Assgin the training of' + ' ' + employeeName);
                     break;
                 case $this.is('.ln-hrd-emp-travel') :
-                    alert('Approve the travel of' + ' ' + employeeName)
+                    window.location=document.travelUrl;
+//                    alert('Approve the travel of' + ' ' + employeeName)
                     break;
                 case $this.is('.ln-hrd-emp-leave') :
-                    alert('Approve the leave of selected' + ' ' + employeeName);
+                    window.location=document.leaveUrl;
+//                    alert('Approve the leave of selected' + ' ' + employeeName);
                     break;
                 case $this.is('.ln-hrd-emp-payslip') :
                     alert('Generate the pay slip of' + ' ' + employeeName);

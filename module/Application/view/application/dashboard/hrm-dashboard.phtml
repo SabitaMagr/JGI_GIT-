@@ -70,6 +70,8 @@ foreach ($departmentAttendance as $deptAttn) {
 
     document.deptattn = <?php print json_encode($departmentAttendanceData); ?>; // Departments Attendance
     document.trainingUrl = '<?php print $this->url('trainingAssign', ["action" => 'index']); ?>';
+    document.travelUrl = '<?php print $this->url('travelStatus', ["action" => 'index']); ?>';
+    document.leaveUrl = '<?php print $this->url('leavestatus', ["action" => 'index']); ?>';
 </script>
 
 <?php
