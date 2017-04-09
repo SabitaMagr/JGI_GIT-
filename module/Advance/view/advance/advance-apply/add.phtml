@@ -48,18 +48,26 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
 <?php } ?>
 
 <div class="row margin-top-20" ng-app="hris" ng-controller="advanceController">
-    <div class="col-sm-8 col-sm-offset-2">
+    <div class="col-sm-12">
         <div class="portlet box custom-box">
             <div class="portlet-title">
                 <div class="caption">
                     <i class="fa fa-user"></i>New Entry
+                </div>
+                <div class="actions">
+                    <a class="btn btn-circle btn-icon-only btn-default fullscreen" href="javascript:;" data-original-title="" title=""> </a>
                 </div>
             </div>
             <div class="portlet-body">
                 <?php
                 print $this->form()->openTag($form);
                 ?>
+                
+                <div class=" row">
+                    <div class="col-sm-4">
                 <div class="form-group">
+                    <label for="employeeid">Employee</label>
+                    <span class="required" aria-required="true">*</span>
                     <select name="employeeId"  required="required"  ng-model="employeeId" ng-change="employeeChange()" class="form-control">
                         <option value="" disabled="" selected="" class="ng-binding">Please select</option>                           
                         <?php foreach ($employees as $key => $value) { ?>
@@ -68,8 +76,12 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                     </select>
                     <?php print $this->formElementErrors()->render($employeeId, ['class' => 'help-block']); ?>
                 </div>  
+                    </div>
+                    
+                    <div class="col-sm-4">
                 <div class="form-group">
                     <?php print $this->formLabel($advanceId); ?>
+                    <span class="required" aria-required="true">*</span>
                     <select name="advanceId" required="required" ng-options="key as value for (key,value) in advanceList track by key" ng-model="advanceId" ng-change="advanceChange()"  class="form-control">
                         <option style="display:none" value="" disabled="" selected>select a type</option>
                     </select>
@@ -79,32 +91,53 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                         Within : <span ng-bind="allowTerms" style="font-size:11px; font-weight: bold;"></span> Months
                     </span>
                 </div>               
+                    </div>
+                    
+                    <div class="col-sm-4">
                 <div class="form-group">
                     <?php print $this->formLabel($requestedAmount); ?>
+                    <span class="required" aria-required="true">*</span>
                     <input max="{{allowAmt}}" ng-model="requestedAmt" ng-change="requestChange()" type="number" name="requestedAmount" required="required" id="form-requestedAmount" class="form-requestedAmount form-control" min="0" step="0.01" value="">
                     <?php print $this->formElementErrors()->render($requestedAmount, ['class' => 'help-block']); ?>
                 </div>
+                    </div>
+                </div>
+                
+                
+                <div class=" row">
+                    <div class="col-sm-4">
                 <div class="form-group">
                     <?php print $this->formLabel($terms); ?>
+                    <span class="required" aria-required="true">*</span>
                     <input max="{{allowTerms}}" ng-model="terms" ng-change="requestChange()" type="number" name="terms" required="required" id="form-terms" class="form-terms form-control" min="1" value="">
                     <?php print $this->formElementErrors()->render($terms, ['class' => 'help-block']); ?>
                 </div>
                 <span ng-show="salaryDeduction !== null">
                     Deduction: {{salaryDeduction}} per month
                 </span>
+                    </div>
+                    
+                    <div class="col-sm-4">
                 <div class="form-group">
                     <?php print $this->formLabel($advanceDate); ?>
+                    <span class="required" aria-required="true">*</span>
                     <div class="input-group date" id="startDate">
                         <?php print $this->formElement($advanceDate); ?>
                         <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
                     </div>
                     <?php print $this->formElementErrors()->render($advanceDate, ['class' => 'help-block']); ?>
                 </div>
+                    </div>
+                    
+                    <div class="col-sm-4">
                 <div class="form-group">
                     <?php print $this->formLabel($reason); ?>
                     <?php print $this->formElement($reason); ?>
                     <?php print $this->formElementErrors()->render($reason, ['class' => 'help-block']); ?>
                 </div>
+                    </div>
+                </div>
+                
 
                 <?php
                 print $this->formSubmit($submit);
