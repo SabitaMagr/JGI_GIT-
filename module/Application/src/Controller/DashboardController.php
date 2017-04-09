@@ -298,6 +298,15 @@ class DashboardController extends AbstractActionController {
                 $calendarData = $dahsboardRepo->fetchEmployeeCalendarData($employeeId, $startDate, $endDate);
                 $calendarJsonFeedArray = [];
                 foreach ($calendarData as $eventData) {
+                    if ('ABSENT' == $eventData['ATTENDANCE_STATUS']) {
+                        $calendarJsonFeedArray[] = [
+                            'title' => 'Absent',
+                            'start' => $eventData['MONTH_DAY'],
+                            'textColor' => '#cc0000',
+                            'backgroundColor' => '#fff'
+                        ];
+                    }
+
                     if ($eventData['ATTENDANCE_DT']) {
                         $inOutTitle = "";
                         if ($eventData['IN_TIME']) {
@@ -310,6 +319,7 @@ class DashboardController extends AbstractActionController {
                         $calendarJsonFeedArray[] = [
                             'title' => $inOutTitle,
                             'start' => $eventData['ATTENDANCE_DT'],
+                            'textColor' => '#616161',
                             'backgroundColor' => '#fff'
                         ];
 
@@ -317,9 +327,10 @@ class DashboardController extends AbstractActionController {
                         if ($eventData['TRAINING_NAME']) {
                             $calendarJsonFeedArray[] = [
                                 'title' => $eventData['TRAINING_NAME'],
-                                'start' => $eventData['ATTENDANCE_DT'],
+                                'start' => $eventData['TRAINING_START_DATE'],
+                                'end' => $eventData['TRAINING_END_DATE'],
+                                'textColor' => '#fff',
                                 'backgroundColor' => '#39c7b8',
-                                'textColor' => '#fff'
                             ];
                         }
                         // Leave
@@ -327,17 +338,18 @@ class DashboardController extends AbstractActionController {
                             $calendarJsonFeedArray[] = [
                                 'title' => $eventData['LEAVE_ENAME'],
                                 'start' => $eventData['ATTENDANCE_DT'],
+                                'textColor' => '#fff',
                                 'backgroundColor' => '#a7aeaf',
-                                'textColor' => '#fff'
                             ];
                         }
                         // Tour
                         if ($eventData['TRAVEL_CODE']) {
                             $calendarJsonFeedArray[] = [
                                 'title' => $eventData['TRAVEL_CODE'],
-                                'start' => $eventData['ATTENDANCE_DT'],
+                                'start' => $eventData['TRAVEL_FROM_DATE'],
+                                'end' => $eventData['TRAVEL_TO_DATE'],
+                                'textColor' => '#fff',
                                 'backgroundColor' => '#e89c0a',
-                                'textColor' => '#fff'
                             ];
                         }
                     }

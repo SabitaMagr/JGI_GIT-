@@ -305,7 +305,7 @@ class DashboardRepository implements RepositoryInterface {
                                   DSG.DESIGNATION_TITLE,
                                   EFL.FILE_PATH,
                                   EMP.BIRTH_DATE,
-                                  TO_CHAR(EMP.BIRTH_DATE, 'DD Month') EMP_BIRTH_DATE, 
+                                  TO_CHAR(EMP.BIRTH_DATE, 'dth Month') EMP_BIRTH_DATE, 
                                   'TODAY' BIRTHDAYFOR
                                 FROM HRIS_EMPLOYEES EMP, HRIS_DESIGNATIONS DSG, HRIS_EMPLOYEE_FILE EFL
                                 WHERE TO_CHAR(EMP.BIRTH_DATE, 'MMDD') = TO_CHAR(SYSDATE,'MMDD')
@@ -321,7 +321,7 @@ class DashboardRepository implements RepositoryInterface {
                                   DSG.DESIGNATION_TITLE,
                                   EFL.FILE_PATH,
                                   EMP.BIRTH_DATE,
-                                  TO_CHAR(EMP.BIRTH_DATE, 'DD Month') EMP_BIRTH_DATE, 
+                                  TO_CHAR(EMP.BIRTH_DATE, 'dth Month') EMP_BIRTH_DATE, 
                                   'UPCOMING' BIRTHDAYFOR
                                 FROM HRIS_EMPLOYEES EMP, HRIS_DESIGNATIONS DSG, HRIS_EMPLOYEE_FILE EFL
                                 WHERE TO_CHAR(EMP.BIRTH_DATE, 'MMDD') > TO_CHAR(SYSDATE,'MMDD')
@@ -351,26 +351,90 @@ class DashboardRepository implements RepositoryInterface {
         if ($startDate && $endDate) {
             $rangeClause = "AND ATTENDANCE_DT BETWEEN TO_DATE('{$startDate}', 'YYYY-MM-DD') AND TO_DATE('{$endDate}', 'YYYY-MM-DD')";
         }
-        $sql = "SELECT AD.EMPLOYEE_ID,
-                       TO_CHAR(ATTENDANCE_DT, 'YYYY-MM-DD') ATTENDANCE_DT,
-                       TO_CHAR(IN_TIME, 'HH24:MI') IN_TIME,
-                       TO_CHAR(OUT_TIME, 'HH24:MI') OUT_TIME,
-                       AD.LEAVE_ID,
-                       LMS.LEAVE_ENAME,
-                       AD.HOLIDAY_ID,
-                       HMS.HOLIDAY_ENAME,
-                       AD.TRAINING_ID,
-                       TMS.TRAINING_NAME,
-                       TR.TRAVEL_ID,
-                       TR.TRAVEL_CODE      
-                  FROM HRIS_ATTENDANCE_DETAIL AD, HRIS_LEAVE_MASTER_SETUP LMS, HRIS_HOLIDAY_MASTER_SETUP HMS, HRIS_TRAINING_MASTER_SETUP TMS, HRIS_EMPLOYEE_TRAVEL_REQUEST TR
-                WHERE AD.EMPLOYEE_ID = {$employeeId}
-                {$rangeClause}
-                AND AD.LEAVE_ID = LMS.LEAVE_ID(+)
-                AND AD.HOLIDAY_ID = HMS.HOLIDAY_ID(+)
-                AND AD.TRAINING_ID = TMS.TRAINING_ID(+)
-                AND AD.TRAVEL_ID = TR.TRAVEL_ID(+)
-                ORDER BY ATTENDANCE_DT DESC";
+        $rangeClause = "AND ATTENDANCE_DT BETWEEN TRUNC(TO_DATE('{$startDate}', 'YYYY-MM-DD'), 'MONTH') AND LAST_DAY(TO_DATE('{$endDate}', 'YYYY-MM-DD'))";
+
+//        $sql = "SELECT AD.EMPLOYEE_ID,
+//                       TO_CHAR(ATTENDANCE_DT, 'YYYY-MM-DD') ATTENDANCE_DT,
+//                       TO_CHAR(IN_TIME, 'HH24:MI') IN_TIME,
+//                       TO_CHAR(OUT_TIME, 'HH24:MI') OUT_TIME,
+//                       AD.LEAVE_ID,
+//                       LMS.LEAVE_ENAME,
+//                       AD.HOLIDAY_ID,
+//                       HMS.HOLIDAY_ENAME,
+//                       AD.TRAINING_ID,
+//                       TMS.TRAINING_NAME,
+//                       TR.TRAVEL_ID,
+//                       TR.TRAVEL_CODE
+//                  FROM HRIS_ATTENDANCE_DETAIL AD, HRIS_LEAVE_MASTER_SETUP LMS, HRIS_HOLIDAY_MASTER_SETUP HMS, HRIS_TRAINING_MASTER_SETUP TMS, HRIS_EMPLOYEE_TRAVEL_REQUEST TR
+//                WHERE AD.EMPLOYEE_ID = {$employeeId}
+//                {$rangeClause}
+//                AND AD.LEAVE_ID = LMS.LEAVE_ID(+)
+//                AND AD.HOLIDAY_ID = HMS.HOLIDAY_ID(+)
+//                AND AD.TRAINING_ID = TMS.TRAINING_ID(+)
+//                AND AD.TRAVEL_ID = TR.TRAVEL_ID(+)
+//                ORDER BY ATTENDANCE_DT DESC";
+
+        $sql = "SELECT TO_CHAR(CAL.MONTH_DAY, 'YYYY-MM-DD') MONTH_DAY,
+                   ATN.EMPLOYEE_ID,
+                   TO_CHAR(ATN.ATTENDANCE_DT, 'YYYY-MM-DD') ATTENDANCE_DT,
+                   TO_CHAR(ATN.IN_TIME, 'HH24:MI') IN_TIME,
+                   TO_CHAR(ATN.OUT_TIME, 'HH24:MI') OUT_TIME,
+                   ATN.LEAVE_ID,
+                   LMS.LEAVE_ENAME,
+                   ATN.HOLIDAY_ID,
+                   HMS.HOLIDAY_ENAME,
+                   ATN.TRAINING_ID,
+                   TMS.TRAINING_NAME,
+                   TO_CHAR(TMS.START_DATE, 'YYYY-MM-DD') TRAINING_START_DATE,
+                   TO_CHAR(TMS.END_DATE, 'YYYY-MM-DD') TRAINING_END_DATE,
+                   ATN.TRAVEL_ID,
+                   ETR.TRAVEL_CODE,
+                   TO_CHAR(ETR.FROM_DATE, 'YYYY-MM-DD') TRAVEL_FROM_DATE,
+                   TO_CHAR(ETR.TO_DATE, 'YYYY-MM-DD') TRAVEL_TO_DATE,
+                   TRIM(TO_CHAR(CAL.MONTH_DAY, 'DAY')) WEEK_DAY,
+                   (CASE 
+                      WHEN TO_DATE(CAL.MONTH_DAY, 'DD-MON-YY') > TRUNC(SYSDATE)
+                        THEN 'NEXT'
+                      ELSE 
+                        CASE
+                          WHEN (ATN.ATTENDANCE_DT IS NULL
+                            AND ATN.IN_TIME IS NULL 
+                            AND ATN.OUT_TIME IS NULL 
+                            AND ATN.LEAVE_ID IS NULL 
+                            AND ATN.HOLIDAY_ID IS NULL 
+                            AND ATN.TRAINING_ID IS NULL 
+                            AND ATN.TRAVEL_ID IS NULL 
+                            --AND ATN.DAYOFF_FLAG = 'N'
+                            AND TRIM(TO_CHAR(CAL.MONTH_DAY, 'DAY')) = 'SATURDAY'
+                            )
+                          THEN 'SATURDAY'
+                          ELSE
+                            CASE 
+                              WHEN (ATN.ATTENDANCE_DT IS NULL
+                                AND ATN.IN_TIME IS NULL 
+                                AND ATN.OUT_TIME IS NULL
+                                AND ATN.LEAVE_ID IS NULL
+                                AND ATN.HOLIDAY_ID IS NULL
+                                AND ATN.TRAINING_ID IS NULL 
+                                AND ATN.TRAVEL_ID IS NULL 
+                                AND TRIM(TO_CHAR(CAL.MONTH_DAY, 'DAY')) <> 'SATURDAY'
+                                )
+                              THEN 'ABSENT'
+                            ELSE
+                            'PRESENT'
+                          END
+                        END
+                   END) ATTENDANCE_STATUS
+            FROM (SELECT TRUNC(SYSDATE, 'MONTH') - 1 + ROWNUM AS MONTH_DAY
+                  FROM ALL_OBJECTS
+                  WHERE TRUNC(SYSDATE, 'MONTH') - 1 + ROWNUM <= LAST_DAY(SYSDATE)) CAL
+            LEFT JOIN HRIS_ATTENDANCE_DETAIL ATN ON TRUNC(ATN.ATTENDANCE_DT) = CAL.MONTH_DAY AND ATN.EMPLOYEE_ID = {$employeeId}
+            LEFT JOIN HRIS_LEAVE_MASTER_SETUP LMS ON LMS.LEAVE_ID = ATN.LEAVE_ID
+            LEFT JOIN HRIS_HOLIDAY_MASTER_SETUP HMS ON HMS.HOLIDAY_ID = ATN.HOLIDAY_ID
+            LEFT JOIN HRIS_TRAINING_MASTER_SETUP TMS ON TMS.TRAINING_ID = ATN.TRAINING_ID
+            LEFT JOIN HRIS_EMPLOYEE_TRAVEL_REQUEST ETR ON ETR.TRAVEL_ID = ATN.TRAVEL_ID
+            WHERE 1 = 1
+            ORDER BY CAL.MONTH_DAY ASC";
 
         $statement = $this->adapter->query($sql);
         $result = $statement->execute();
@@ -488,7 +552,7 @@ class DashboardRepository implements RepositoryInterface {
                          HRIS_EMPLOYEES HE
                     WHERE HD.DEPARTMENT_ID = HE.DEPARTMENT_ID
                       AND HE.EMPLOYEE_ID = HAD.EMPLOYEE_ID
-                      AND TRUNC(HAD.ATTENDANCE_DT) = TO_DATE(SYSDATE, 'DD-MON-YYYY')
+                      AND TRUNC(HAD.ATTENDANCE_DT) = TO_DATE('07-APR-2017', 'DD-MON-YYYY')
                       AND HAD.IN_TIME IS NOT NULL
                     GROUP BY HD.DEPARTMENT_CODE,
                              HD.DEPARTMENT_NAME,
@@ -503,7 +567,7 @@ class DashboardRepository implements RepositoryInterface {
                          HRIS_EMPLOYEES HE
                     WHERE HD.DEPARTMENT_ID = HE.DEPARTMENT_ID
                       AND HE.EMPLOYEE_ID = HAD.EMPLOYEE_ID
-                      AND TRUNC(HAD.ATTENDANCE_DT) = TO_DATE(SYSDATE, 'DD-MON-YYYY')
+                      AND TRUNC(HAD.ATTENDANCE_DT) = TO_DATE('07-APR-2017', 'DD-MON-YYYY')
                       AND HAD.IN_TIME IS NULL
                       AND HAD.OUT_TIME IS NULL
                       AND LEAVE_ID IS NULL

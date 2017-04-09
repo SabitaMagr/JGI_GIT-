@@ -46,36 +46,36 @@
             disableDragging : false,
             viewRender: function( view, element ) {
                 $('#calendar .html-loading').remove();
-                var intervalId = setInterval(function() {
-                    var $dataHtml = element.find('.fc-content-skeleton');
-                    if (!isViewLoading && $dataHtml) {
-                        clearInterval(intervalId);
-                        $dataHtml.find('tbody').each(function(k,v) {
-                            var $attnRow = $(v).find('tr:eq(0)');
-                            if ('undefined' != typeof($attnRow)) {
-                                $attnRow.find('.fc-title').html(function(i,inOutTxt) {
-                                    var inOutTime = inOutTxt.split(' ');
-                                    if (inOutTime.length) {
-                                        var output = "";
-                                        if (inOutTime[0]) {
-                                            output += '<span class="fc-title-in" style="padding:1px 3px;">' + inOutTime[0] + '</span>';
-                                        }
-                                        if (inOutTime[1]) {
-                                            output += '<span class="fc-title-out" style="padding:1px 3px;">' + inOutTime[1] + '</span>';
-                                        }
-                                        if (output) {
-                                            return output;
-                                        }
-                                    }
-                                })
-                            }
-                            var $eventRow = $(v).find('tr:gt(0)');
-                            if ('undefined' != typeof($eventRow)) {
-                                $eventRow.find('.fc-title').css('color', '#fff');
-                            }
-                        });
-                    }
-                }, 100);
+                // var intervalId = setInterval(function() {
+                //     var $dataHtml = element.find('.fc-content-skeleton');
+                //     if (!isViewLoading && $dataHtml) {
+                //         clearInterval(intervalId);
+                //         $dataHtml.find('tbody').each(function(k,v) {
+                //             var $attnRow = $(v).find('tr:eq(0)');
+                //             if ('undefined' != typeof($attnRow)) {
+                //                 $attnRow.find('.fc-title').html(function(i,inOutTxt) {
+                //                     var inOutTime = inOutTxt.split(' ');
+                //                     if (inOutTime.length) {
+                //                         var output = "";
+                //                         if (inOutTime[0]) {
+                //                             output += '<span class="fc-title-in" style="padding:1px 3px;">' + inOutTime[0] + '</span>';
+                //                         }
+                //                         if (inOutTime[1]) {
+                //                             output += '<span class="fc-title-out" style="padding:1px 3px;">' + inOutTime[1] + '</span>';
+                //                         }
+                //                         if (output) {
+                //                             return output;
+                //                         }
+                //                     }
+                //                 })
+                //             }
+                //             var $eventRow = $(v).find('tr:gt(0)');
+                //             if ('undefined' != typeof($eventRow)) {
+                //                 $eventRow.find('.fc-title').css('color', '#fff');
+                //             }
+                //         });
+                //     }
+                // }, 100);
             },
             eventLimit: true,
             header: h,
@@ -96,7 +96,10 @@
     });
 
     /*************** BIRTHDAY TAB CLICK EVENT ***************/
-    $('.task-list, .tab-pane-birthday').slimScroll({
+    $('.task-list').slimScroll({
+        height: '200px'
+    });
+    $('.tab-pane-birthday').slimScroll({
         height: '300px'
     });
 

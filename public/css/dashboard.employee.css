@@ -449,6 +449,7 @@ li.line:after {
 
 .datepickeform .form-section {
     margin-top: 0px !important;
+    margin-bottom: 20px;
 }
 
 .margin-top {
@@ -692,7 +693,7 @@ li.line:after {
 }
 
 .colorbox-color1 {
-    background-color: #c2ce2c;
+    background-color: #eaea2a;
 }
 
 .colorbox-color2 {
@@ -706,6 +707,13 @@ li.line:after {
 .colorbox-color4 {
     background-color: #e89c0a;
 }
+
+.colorbox-color4 {
+    background-color: #e89c0a;
+}
+ .colorbox-color5 {
+     background-color: #cc0000;
+ }
 
 .calendar-colorbox span {
     display: inline-block;
@@ -910,10 +918,10 @@ a .icon_edit:hover {
 }
 
 .portlet.calendar .fc-event .fc-title {
-    font-size: 12px;
+    font-size: 10px;
     font-weight: 400;
     line-height: 1.5;
-    color: #616161;
+    /*color: #616161;*/
 }
 .portlet.calendar .fc-event .fc-title .fc-title-in,
 .portlet.calendar .fc-event .fc-title .fc-title-out {
@@ -942,21 +950,28 @@ a .icon_edit:hover {
     text-align: center;
     width: 35px;
 }
-
+.portlet-inner-task-wrapper .portlet-title .caption {
+    float: left;
+}
+.portlet-inner-task-wrapper .portlet-title .nextbtn {
+    float: right;
+}
 .nextbtn i {
-
     border-radius: 50% !important;
     color: #ffffff;
-    float: right;
     font-size: 20px;
     height: 23px;
     line-height: 21px !important;
-    margin-top: 9px;
     text-align: center;
     width: 23px;
     background-color: #4db3a2;
 }
-
+.taskbox .task {
+    padding-top:15px;
+}
+.taskbox .notask {
+    padding-top: 20px;
+}
 .taskaddbtn {
     float: right;
 }
@@ -1002,8 +1017,15 @@ a .icon_edit:hover {
 }
 
 .taskbox {
-    width: 55%;
-    float: left;
+    /*width: 55%;*/
+    /*float: left;*/
+}
+.taskbox .portlet {
+    padding-bottom: 0;
+}
+.portlet-inner-task-wrapper,
+.portlet-inner-datepicker-wrapper .datepickeform {
+    min-height: 280px;
 }
 
 *::after, *::before {
@@ -1015,14 +1037,8 @@ a .icon_edit:hover {
 }
 
 .datepickeform {
-
-    padding-top: 12px;
-}
-
-.datepickeform {
-
-    float: left;
-    width: 45%;
+    /*float: left;*/
+    /*width: 45%;*/
 }
 
 .positon, .name {
@@ -1070,11 +1086,6 @@ a .icon_edit:hover {
 #tab-birthday-upcoming {
     padding-left: 15px !important;
     padding-right: 15px !important;
-}
-
-.taskbox .portlet
-{
-    min-height: 240px !important;
 }
 
 .upcomingholidays .label

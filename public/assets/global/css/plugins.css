@@ -1318,7 +1318,7 @@ Fullcalendar
 .portlet.calendar .fc-event {
   border: 0px;
   background-color: #69a4e0;
-  color: #fff;
+  /*color: #fff;*/
 }
 .portlet.calendar .fc-event .fc-content {
   border: 0px;
@@ -1326,14 +1326,14 @@ Fullcalendar
 .portlet.calendar .fc-event .fc-time {
   float: left;
   text-align: left;
-  color: #fff;
+  /*color: #fff;*/
   font-size: 13px;
   font-weight: 300;
 }
 .portlet.calendar .fc-event .fc-title {
   text-align: left;
   float: left;
-  color: #fff;
+  /*color: #fff;*/
   font-size: 13px;
   font-weight: 300;
 }
