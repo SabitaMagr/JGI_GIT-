@@ -99,3 +99,6 @@
 2017-04-06T16:24:27+05:45 INFO (6): Email Sent =>From prabin.maharjan@itnepal.com To prabin.maharjan@itnepal.com
 2017-04-06T16:24:45+05:45 INFO (6): Email Sent =>From prabin.maharjan@itnepal.com To prabin.maharjan@itnepal.com
 2017-04-07T16:20:20+05:45 INFO (6): Email Sent =>From dixon.thapa@itnepal.com To miki.singh@itnepal.com
+2017-04-09T14:57:38+05:45 INFO (6): Email Sent =>From asmita.thapa@itnepal.com To priyesh.goel@neoteric.com.np
+2017-04-09T14:57:59+05:45 INFO (6): Email Sent =>From asmita.thapa@itnepal.com To dixon.thapa@itnepal.com
+2017-04-09T15:00:08+05:45 INFO (6): Email Sent =>From asmita.thapa@itnepal.com To dixon.thapa@itnepal.com
