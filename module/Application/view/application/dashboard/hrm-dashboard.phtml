@@ -203,8 +203,8 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                     <div class="portlet light">
                                         <div class="portlet-title tabbable-line">
                                             <div class="caption caption-md">
-                                                <i class="icon-globe theme-font hide"></i>
-                                                <span class="caption-subject bold uppercase">Notice Board</span>
+                                                <i class="fa fa-newspaper-o font-green-sharp" aria-hidden="true"></i>
+                                                <span class="caption-subject font-green-sharp ">Notice Board</span>
                                             </div>
                                         </div>
                                         <div class="noticeboard-list row">
@@ -571,19 +571,19 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                             <?php if ($todayBirthdayActive) : ?>
                                                 <?php foreach ($employeesBirthday['TODAY'] as $todayBirthday) : ?>
                                                     <div class="person-list clearfix">
-                                                        <div class="col-md-3 col-sm-3">
+                                                        <div class="col-xs-3 col-md-3 col-sm-3">
                                                             <div class="person-pic">
                                                                 <img src="<?php print $todayBirthday['FILE_PATH'] ? $this->basePath('uploads/' . $todayBirthday['FILE_PATH']) : $this->basePath('img/nobody_m.original.jpg'); ?>" alt="person picture">
                                                             </div>
                                                         </div>
-                                                        <div class="col-xs-9 col-md-9 col-sm-9">
+                                                        <div class="col-xs-6 col-md-6 col-sm-6">
                                                             <div class="person-details">
                                                                 <h4><?php print $todayBirthday['FULL_NAME']; ?></h4>
                                                                 <span><?php print $todayBirthday['DESIGNATION_TITLE']; ?></span>
                                                             </div>
                                                         </div>
-                                                        <div class="col-md-3 col-sm-3">
-                                                            <span><?php print $todayBirthday['EMP_BIRTH_DATE']; ?></span>
+                                                        <div class="col-xs-3 col-md-3 col-sm-3">
+                                                            <span class="birth-date"><?php print $todayBirthday['EMP_BIRTH_DATE']; ?></span>
                                                         </div>
                                                     </div>
                                                 <?php endforeach; ?>
