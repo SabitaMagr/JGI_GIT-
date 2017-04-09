@@ -16,6 +16,8 @@ use Setup\Repository\EmployeeRepository;
 use Setup\Repository\RecommendApproveRepository;
 use LeaveManagement\Repository\LeaveAssignRepository;
 use LeaveManagement\Repository\LeaveMasterRepository;
+use Notification\Model\NotificationEvents;
+use Notification\Controller\HeadNotification;
 
 class WorkOnDayoff extends AbstractActionController {
 
@@ -144,6 +146,11 @@ class WorkOnDayoff extends AbstractActionController {
                 $model->requestedDate = Helper::getcurrentExpressionDate();
                 $model->status = 'RQ';
                 $this->repository->add($model);
+                try {
+                    HeadNotification::pushNotification(NotificationEvents::WORKONDAYOFF_APPLIED, $model, $this->adapter, $this->plugin("url"));
+                } catch (Exception $e) {
+                    $this->flashmessenger()->addMessage($e->getMessage());
+                }
                 $this->flashmessenger()->addMessage("Work on Day-off Request Successfully added!!!");
                 return $this->redirect()->toRoute("workOnDayoff");
             }

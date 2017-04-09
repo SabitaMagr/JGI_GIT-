@@ -42,41 +42,65 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
     </script>
 <?php } ?>
 <div class="row margin-top-20">
-    <div class="col-sm-8 col-sm-offset-2">
+    <div class="col-sm-12">
         <div class="portlet box custom-box">
             <div class="portlet-title">
                 <div class="caption">
                     <i class="fa fa-user"></i>New Entry
+                </div>
+                <div class="actions">
+                    <a class="btn btn-circle btn-icon-only btn-default fullscreen" href="javascript:;" data-original-title="" title=""> </a>
                 </div>
             </div>
             <div class="portlet-body">
                 <?php
                 print $this->form()->openTag($form);
                 ?>
-
+                
+                <div class=" row">
+                    <div class="col-sm-4">
                 <div class="form-group">
                     <?php print $this->formLabel($loanId); ?>
+                    <span class="required" aria-required="true">*</span>
                     <?php print $this->formElement($loanId); ?>
                     <?php print $this->formElementErrors()->render($loanId, ['class' => 'help-block']); ?>
                 </div>               
+                    </div>
+                    
+                    <div class="col-sm-4">
                 <div class="form-group">
                     <?php print $this->formLabel($requestedAmount); ?>
+                    <span class="required" aria-required="true">*</span>
                     <?php print $this->formElement($requestedAmount); ?>
                     <?php print $this->formElementErrors()->render($requestedAmount, ['class' => 'help-block']); ?>
                 </div>
+                    </div>
+                    
+</div>
+                
+                <div class=" row">
+                    <div class="col-sm-4">
                 <div class="form-group">
                     <?php print $this->formLabel($loanDate); ?>
+                    <span class="required" aria-required="true">*</span>
                     <div class="input-group date" id="startDate">
                         <?php print $this->formElement($loanDate); ?>
                         <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
                     </div>
                     <?php print $this->formElementErrors()->render($loanDate, ['class' => 'help-block']); ?>
                 </div>
+                    </div>
+                    
+                    <div class="col-sm-4">
                 <div class="form-group">
                     <?php print $this->formLabel($reason); ?>
                     <?php print $this->formElement($reason); ?>
                     <?php print $this->formElementErrors()->render($reason, ['class' => 'help-block']); ?>
                 </div>
+                    </div>
+                    
+</div>
+
 
                 <?php
                 print $this->formSubmit($submit);

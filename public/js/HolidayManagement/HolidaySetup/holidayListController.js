@@ -9,7 +9,7 @@
 
 
 angular.module('hris', [])
-        .controller('holidayListController', function ($scope, $http) {
+        .controller('holidayListController', function ($scope, $http,$window) {
             $scope.holidayList = [];
             var $tableContainer = $("#holidayTable");
             $scope.view = function () {
@@ -153,4 +153,11 @@ angular.module('hris', [])
                 }
                 window.app.UIConfirmations();
             };
+            
+            
+            $scope.msg =  $window.localStorage.getItem("msg");
+            if($window.localStorage.getItem("msg")){
+                window.toastr.success($scope.msg, "Notifications");
+            }
+            $window.localStorage.removeItem("msg");
         });

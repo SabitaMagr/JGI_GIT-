@@ -1911,7 +1911,7 @@ padding:4px 10px 2px !important;
      
  }
  
-textarea#form-remarks {
+textarea#form-remarks,#remarks,.form-reason  {
     min-height: 45px;
     resize:none !important;
 }

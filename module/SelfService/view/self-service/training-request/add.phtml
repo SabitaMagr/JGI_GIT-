@@ -23,11 +23,13 @@ $form->setAttribute('action', $this->url('workOnHoliday', ['action' => 'add']));
 $form->prepare();
 ?>
 <script>
-    document.holidayList =<?= json_encode($holidayObjList) ?>;
+//    document.holidayList =<?php 
+//json_encode($holidayObjList) 
+//?>;
     document.url = '<?= $this->url("restful", ["action" => "index"]) ?>';
 </script>
 <div class="page-bar">
-    <?= $this->navigation('Zend\Navigation\workOnHoliday')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
+    <?= $this->navigation('Zend\Navigation\trainingRequest')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
 <?php
 if ($this->messages && (sizeof($this->messages) > 1)) {
@@ -44,11 +46,14 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
     </script>
 <?php } ?>
 <div class="row margin-top-20">
-    <div class="col-sm-8 col-sm-offset-2">
+    <div class="col-sm-12">
         <div class="portlet box custom-box">
             <div class="portlet-title">
                 <div class="caption">
                     <i class="fa fa-user"></i>New Entry
+                </div>
+                <div class="actions">
+                    <a class="btn btn-circle btn-icon-only btn-default fullscreen" href="javascript:;" data-original-title="" title=""> </a>
                 </div>
             </div>
             <div class="portlet-body">
@@ -56,43 +61,64 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                 print $this->form()->openTag($form);
                 ?>
 
-                <div class="form-group">
-                    <?php print $this->formLabel($trainingId); ?>
-                    <?php print $this->formElement($trainingId); ?>
-                    <?php print $this->formElementErrors()->render($trainingId, ['class' => 'help-block']); ?>
-                </div>               
-                <div
-                    class="form-group required  <?= empty($startDate->getMessages()) ? "" : "error" ?>">
-                        <?php print $this->formLabel($startDate) ?>
-                        <?php print $this->formElement($startDate) ?>
-                </div>
-                <?php print $this->formElementErrors()->render($startDate, ['class' => 'help-block error']) ?>
+                <div class=" row">
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <?php print $this->formLabel($trainingId); ?>
+                            <span class="required" aria-required="true">*</span>
+                            <?php print $this->formElement($trainingId); ?>
+                            <?php print $this->formElementErrors()->render($trainingId, ['class' => 'help-block']); ?>
+                        </div>               
+                    </div>
 
-                <div
-                    class="form-group required <?= empty($endDate->getMessages()) ? "" : "error" ?>">
-                        <?php print $this->formLabel($endDate) ?>
-                        <?php print $this->formElement($endDate) ?>
-                    <span id="errorMsgDate" style="font-size:11px; color:red;"></span>
-                </div>
-                <?php print $this->formElementErrors()->render($endDate, ['class' => 'help-block error']) ?>
+                    <div class="col-sm-4">
+                        <div
+                            class="form-group required  <?= empty($startDate->getMessages()) ? "" : "error" ?>">
+                                <?php print $this->formLabel($startDate) ?>
+                            <span class="required" aria-required="true">*</span>
+                            <?php print $this->formElement($startDate) ?>
+                        </div>
+                        <?php print $this->formElementErrors()->render($startDate, ['class' => 'help-block error']) ?>
+                    </div>
 
-                <div
-                    class="form-group required <?= empty($duration->getMessages()) ? "" : "error" ?>">
-                        <?php print $this->formLabel($duration); ?>
-                        <?php print $this->formElement($duration); ?>
-                    <span id="errorMsg" style="font-size:11px; color:red;"></span>
+                    <div class="col-sm-4">
+                        <div
+                            class="form-group required <?= empty($endDate->getMessages()) ? "" : "error" ?>">
+                                <?php print $this->formLabel($endDate) ?>
+                            <span class="required" aria-required="true">*</span>
+                            <?php print $this->formElement($endDate) ?>
+                            <span id="errorMsgDate" style="font-size:11px; color:red;"></span>
+                        </div>
+                        <?php print $this->formElementErrors()->render($endDate, ['class' => 'help-block error']) ?>
+                    </div>
                 </div>
-                <?php print $this->formElementErrors()->render($duration, ['class' => 'help-block error']); ?>
 
-                <div class="form-group">
-                    <?php print $this->formLabel($description); ?>
-                    <?php print $this->formElement($description); ?>
-                    <?php print $this->formElementErrors()->render($description, ['class' => 'help-block']); ?>
-                </div>
-                <div class="form-group">
-                    <?php print $this->formLabel($remarks); ?>
-                    <?php print $this->formElement($remarks); ?>
-                    <?php print $this->formElementErrors()->render($remarks, ['class' => 'help-block']); ?>
+                <div class=" row">
+                    <div class="col-sm-4">
+                        <div
+                            class="form-group required <?= empty($duration->getMessages()) ? "" : "error" ?>">
+                                <?php print $this->formLabel($duration); ?>
+                                <?php print $this->formElement($duration); ?>
+                            <span id="errorMsg" style="font-size:11px; color:red;"></span>
+                        </div>
+                        <?php print $this->formElementErrors()->render($duration, ['class' => 'help-block error']); ?>
+                    </div>
+
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <?php print $this->formLabel($description); ?>
+                            <?php print $this->formElement($description); ?>
+                            <?php print $this->formElementErrors()->render($description, ['class' => 'help-block']); ?>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <?php print $this->formLabel($remarks); ?>
+                            <?php print $this->formElement($remarks); ?>
+                            <?php print $this->formElementErrors()->render($remarks, ['class' => 'help-block']); ?>
+                        </div>
+                    </div>
                 </div>
 
                 <?php

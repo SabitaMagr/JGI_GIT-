@@ -95,7 +95,6 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                     <div class="col-sm-4">
                         <div class="form-group <?= empty($holidayLname->getMessages()) ? "" : "error" ?>">
                             <?php print $this->formLabel($holidayLname); ?>
-                            <span class="required" aria-required="true">*</span>
                             <?php print $this->formElement($holidayLname); ?>
                             <span class="errorMsg" style="font-size:11px; color:red;"></span>
                         </div>

@@ -169,7 +169,7 @@ class TravelApproveController extends AbstractActionController {
                 try {
                     HeadNotification::pushNotification(($travelRequestModel->status == 'RC') ? NotificationEvents::TRAVEL_RECOMMEND_ACCEPTED : NotificationEvents::TRAVEL_RECOMMEND_REJECTED, $travelRequestModel, $this->adapter, $this->plugin('url'));
                 } catch (Exception $e) {
-                    $this->flashmessenger()->addMessage("Travel Request Approved!!!");
+                    $this->flashmessenger()->addMessage($e->getMessage());
                 }
             } else if ($role == 3 || $role == 4) {
                 $travelRequestModel->approvedDate = Helper::getcurrentExpressionDate();
@@ -187,6 +187,12 @@ class TravelApproveController extends AbstractActionController {
                 }
                 $travelRequestModel->approvedRemarks = $getData->approvedRemarks;
                 $this->travelApproveRepository->edit($travelRequestModel, $id);
+                $travelRequestModel->travelId = $id;
+                try {
+                    HeadNotification::pushNotification(($travelRequestModel->status == 'AP') ? NotificationEvents::TRAVEL_APPROVE_ACCEPTED : NotificationEvents::TRAVEL_APPROVE_REJECTED, $travelRequestModel, $this->adapter, $this->plugin('url'));
+                } catch (Exception $e) {
+                     $this->flashmessenger()->addMessage($e->getMessage());
+                }
             }
             return $this->redirect()->toRoute("travelApprove");
         }

@@ -38,32 +38,48 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
     </script>
 <?php } ?>
 <div class="row margin-top-20">
-    <div class="col-sm-8 col-sm-offset-2">
+    <div class="col-sm-12">
         <div class="portlet box custom-box">
             <div class="portlet-title">
                 <div class="caption">
                     <i class="fa fa-user"></i>New Entry
                 </div>
+                <div class="actions">
+                    <a class="btn btn-circle btn-icon-only btn-default fullscreen" href="javascript:;" data-original-title="" title=""> </a>
+                </div>
             </div>
             <div class="portlet-body">
                 <?php
                 print $this->form()->openTag($form);
-                ?>         
+                ?>
+                
+                <div class=" row">
+                    <div class="col-sm-4">
                 <div
                     class="form-group required  <?= empty($fromDate->getMessages()) ? "" : "error" ?>">
                         <?php print $this->formLabel($fromDate) ?>
+                    <span class="required" aria-required="true">*</span>
                         <?php print $this->formElement($fromDate) ?>
                 </div>
                 <?php print $this->formElementErrors()->render($fromDate, ['class' => 'help-block error']) ?>
-
+                    </div>
+                    
+                    <div class="col-sm-4">
                 <div
                     class="form-group required <?= empty($toDate->getMessages()) ? "" : "error" ?>">
                         <?php print $this->formLabel($toDate) ?>
+                    <span class="required" aria-required="true">*</span>
                         <?php print $this->formElement($toDate) ?>
                     <span id="errorMsgDate" style="font-size:11px; color:red;"></span>
                 </div>
                 <?php print $this->formElementErrors()->render($toDate, ['class' => 'help-block error']) ?>
-
+                    </div>
+                    
+                </div>
+                
+                
+                <div class=" row">
+                    <div class="col-sm-4">
                 <div
                     class="form-group required <?= empty($duration->getMessages()) ? "" : "error" ?>">
                         <?php print $this->formLabel($duration); ?>
@@ -71,12 +87,21 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                     <span id="errorMsg" style="font-size:11px; color:red;"></span>
                 </div>
                 <?php print $this->formElementErrors()->render($duration, ['class' => 'help-block error']); ?>
-
+                    </div>
+                    
+                    <div class="col-sm-4">
                 <div class="form-group">
                     <?php print $this->formLabel($remarks); ?>
                     <?php print $this->formElement($remarks); ?>
                     <?php print $this->formElementErrors()->render($remarks, ['class' => 'help-block']); ?>
                 </div>
+                    </div>
+                    
+                </div>
+                
+
+
+
 
                 <?php
                 print $this->formSubmit($submit);
