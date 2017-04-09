@@ -86,14 +86,40 @@
         oTable.on( 'click', 'tr', function () {
             if ( $(this).hasClass('selected') ) {
                 $(this).removeClass('selected');
-                $('.hrm-dashboard-employee-list .fonticon').css('background-color', '#ccc');
+                $('.hrm-dashboard-employee-list .fonticon').removeClass('active').addClass('fonticon-disabled');
             }
             else {
                 table.$('tr.selected').removeClass('selected');
                 $(this).addClass('selected');
-                $('.hrm-dashboard-employee-list .fonticon').css('background-color', '');
+                $('.hrm-dashboard-employee-list .fonticon').addClass('active').removeClass('fonticon-disabled');
             }
-        } );
+        });
+
+        $('.ln-hrd-emp-lst').on( 'click', function(e) {
+            var $this = $(this);
+            console.log(oTable.find('tbody'));
+            var employeeName = oTable.find('tbody tr.selected td:eq(1)').text();
+            switch(true) {
+                case $this.is('.ln-hrd-emp-payroll') :
+                    alert('Generate the pay roll of' + ' ' + employeeName);
+                    break;
+                case $this.is('.ln-hrd-emp-recruitment') :
+                    alert('Functionality will be provided as requested');
+                    break;
+                case $this.is('.ln-hrd-emp-training') :
+                    alert('Assgin the training of' + ' ' + employeeName);
+                    break;
+                case $this.is('.ln-hrd-emp-travel') :
+                    alert('Approve the travel of' + ' ' + employeeName)
+                    break;
+                case $this.is('.ln-hrd-emp-leave') :
+                    alert('Approve the leave of selected' + ' ' + employeeName);
+                    break;
+                case $this.is('.ln-hrd-emp-payslip') :
+                    alert('Generate the pay slip of' + ' ' + employeeName);
+                    break;
+            }
+        });
     });
 
     /***** Charts *****/
@@ -342,7 +368,10 @@
     });
 
     /*************** BIRTHDAY TAB CLICK EVENT ***************/
-    $('.task-list, .tab-pane-birthday').slimScroll({
+    $('.task-list').slimScroll({
+        height: '200px'
+    });
+    $('.tab-pane-birthday').slimScroll({
         height: '300px'
     });
 
@@ -360,6 +389,32 @@
             $('#tab-birthday-today').hide().removeClass('active');
             $('#tab-birthday-upcoming').show().addClass('active');
         }
+    });
+
+    $('#task-save').on('click', function(e) {
+        var taskDate = $.trim($('#inp-task-dt').val());
+        var taskName = $.trim($('#inp-task-name').val());
+        var slEmp = $('#lst-task-emp option:selected');
+        if (taskDate && taskName && slEmp) {
+            var taskLi =
+                '<li>' +
+                    '<div class="task-list-content clearfix">' +
+                        '<h4>' + taskName + '</h4>' +
+                        '<div class="positon">' + slEmp.data('dsg') + '</div>' +
+                        '<div class="name">' + slEmp.text() + '</div>' +
+                    '</div>' +
+                '</li>';
+
+            if ($('.task-list').length) {
+                $('.task-list ul').append(taskLi);
+            }
+            else {
+                $('.notask').remove();
+                $('.portlet-inner-task-wrapper').append('<div class="task-list"><ul>' + taskLi + '</ul></div>')
+            }
+        }
+        $('#inp-task-dt').val('');
+        $('#inp-task-name').val('');
     });
 
     ComponentsPickers.init();

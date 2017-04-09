@@ -143,24 +143,24 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                             <div class="calendar-colorbox">
                                 <ul>
                                     <li>
-                                        <div class="color-box colorbox-color1">
-                                        </div>
+                                        <div class="color-box colorbox-color1"></div>
                                         <span>Holiday</span>
                                     </li>
                                     <li>
-                                        <div class="color-box colorbox-color2">
-                                        </div>
+                                        <div class="color-box colorbox-color2"></div>
                                         <span>Leave</span>
                                     </li>
                                     <li>
-                                        <div class="color-box colorbox-color3">
-                                        </div>
+                                        <div class="color-box colorbox-color3"></div>
                                         <span>Training</span>
                                     </li>
                                     <li>
-                                        <div class="color-box colorbox-color4">
-                                        </div>
+                                        <div class="color-box colorbox-color4"></div>
                                         <span>Tour</span>
+                                    </li>
+                                    <li>
+                                        <div class="color-box colorbox-color5"></div>
+                                        <span>Absent</span>
                                     </li>
                                 </ul>
                             </div>
@@ -229,8 +229,8 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                             <h4 class="widget-thumb-heading">Average Office Hrs</h4>
                             <div class="widget-thumb-body">
                                 <?php
-                                $avgOfficeHourParts[0] = $employeeDetail['AVG_HOURS'] ? ((1 == $employeeDetail['AVG_HOURS']) ? "1 hr" : $employeeDetail['AVG_HOURS'] . " hrs") : "";
-                                $avgOfficeHourParts[1] = $employeeDetail['AVG_MINUTES'] ? ((1 == $employeeDetail['AVG_MINUTES']) ? "1 min" : $employeeDetail['AVG_MINUTES'] . " mins") : "";
+                                $avgOfficeHourParts[0] = $employeeDetail['AVG_HOURS'] ? ((1 == $employeeDetail['AVG_HOURS']) ? "1 hr" : number_format($employeeDetail['AVG_HOURS']) . " hrs") : "";
+                                $avgOfficeHourParts[1] = $employeeDetail['AVG_MINUTES'] ? ((1 == $employeeDetail['AVG_MINUTES']) ? "1 min" : number_format($employeeDetail['AVG_MINUTES']) . " mins") : "";
                                 $avgOfficeHours = trim(implode(" ", $avgOfficeHourParts));
                                 ?>
                                 <span class="widget-thumb-body-stat" data-counter="counterup"><?php print $avgOfficeHours ? $avgOfficeHours : 0; ?></span>
@@ -306,96 +306,79 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
             <div class="row">
                 <div class="col-md-12">
                     <div class="taskbox">
-                        <div class="portlet light boxborder ">
-                            <div class="portlet-title">
-                                <div class="caption">
-                                    <i class="fa fa-tasks font-green-sharp"></i>
-                                    <span class="caption-subject font-green-sharp ">My Tasks</span>
+                        <div class="portlet light boxborder">
+                            <div class="col-md-6 portlet-inner-task-wrapper">
+                                <div class="portlet-title">
+                                    <div class="caption">
+                                        <i class="fa fa-tasks font-green-sharp"></i>
+                                        <span class="caption-subject font-green-sharp ">My Tasks</span>
+                                    </div>
+                                    <div class="nextbtn">
+                                        <a href="#"><i class="fa fa-angle-right" aria-hidden="true"></i></a>
+                                    </div>
+                                    <div class="clearfix"></div>
                                 </div>
-                                <div class="nextbtn">
-                                    <a href="#"><i class="fa fa-angle-right" aria-hidden="true"></i></a>
-                                </div>
-                            </div>
-                            <div class="task">
-                                <div class="date-date">
-                                    <span><?php print date('d'); ?></span>
-                                    <div class="taskaddbtn">
-                                        <a href="#"> <i class="fa fa-plus" aria-hidden="true"></i></a>
+                                <div class="task">
+                                    <div class="date-date">
+                                        <span><?php print date('d'); ?></span>
+                                        <div class="taskaddbtn">
+                                            <a href="#"> <i class="fa fa-plus" aria-hidden="true"></i></a>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                            <?php if ($employeeTask) : ?>
-                            <div class="task-list">
-                                <ul>
-                                    <?php foreach ($employeeTask as $task): ?>
-                                        <li>
-                                            <div class="task-list-content clearfix">
-                                                <h4><?php print $task['TASK_EDESC']; ?></h4>
-                                                <div class="positon">Position: <?php print $task['DESIGNATION_TITLE']; ?></div>
-                                                <div class="name"><?php print $task['FULL_NAME']; ?></div>
-                                            </div>
-                                        </li>
-                                    <?php endforeach; ?>
-<!--                                    <li>-->
-<!--                                        <div class="task-list-content clearfix">-->
-<!--                                            <h4>Install Google Analytics</h4>-->
-<!--                                            <div class="positon">Position: Developer</div>-->
-<!--                                            <div class="name">Ukesh Gaiju</div>-->
-<!--                                        </div>-->
-<!--                                    </li>-->
-<!--                                    <li>-->
-<!--                                        <div class="task-list-content clearfix">-->
-<!--                                            <h4>Delete II test data</h4>-->
-<!--                                            <div class="positon">Position: Developer</div>-->
-<!--                                            <div class="name">Ukesh Gaiju</div>-->
-<!--                                        </div>-->
-<!--                                    </li>-->
-<!--                                    <li>-->
-<!--                                        <div class="task-list-content clearfix">-->
-<!--                                            <h4>Make sure DB file has a Domain case</h4>-->
-<!--                                            <div class="positon">Position: Developer</div>-->
-<!--                                            <div class="name">Ukesh Gaiju</div>-->
-<!--                                        </div>-->
-<!--                                    </li>-->
-<!--                                    <li>-->
-<!--                                        <div class="task-list-content clearfix">-->
-<!--                                            <h4>Test contract from and change email address</h4>-->
-<!--                                            <div class="positon">Position: Developer</div>-->
-<!--                                            <div class="name">Ukesh Gaiju</div>-->
-<!--                                        </div>-->
-<!--                                    </li>-->
-                                </ul>
-                            </div>
-                            <?php else : ?>
-                                <div class="notask">
-                                    <div class="notask-box">
-                                        <h4><i class="fa fa-universal-access" aria-hidden="true"></i>No Task Available</h4>
-                                    </div>
-                                </div>
-                            <?php endif; ?>
-                        </div>
-                    </div>
-                    <div class="datepickeform">
-                        <div class="form-body">
-                            <h3 class="form-section">To Do</h3>
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <div class="form-group">
-                                        <label class="control-label">Due for today <?php print date('d F Y'); ?> </label>
-                                        <input class="pickdate form-control form-control-inline input-medium date-picker" size="16" type="text" value=""/>
-                                    </div>
-                                </div>
-                                <div class="col-md-12">
-                                    <div class="form-group">
-                                        <label class="control-label">Task</label>
-                                        <input  class="form-control" placeholder="Task Name" type="text">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
 
+                                <?php $employeeTask = []; ?>
+                                <?php if ($employeeTask) : ?>
+                                    <div class="task-list">
+                                        <ul>
+                                            <?php foreach ($employeeTask as $task): ?>
+                                                <li>
+                                                    <div class="task-list-content clearfix">
+                                                        <h4><?php print $task['TASK_EDESC']; ?></h4>
+                                                        <div class="positon">Position: <?php print $task['DESIGNATION_TITLE']; ?></div>
+                                                        <div class="name"><?php print $task['FULL_NAME']; ?></div>
+                                                    </div>
+                                                </li>
+                                            <?php endforeach; ?>
+                                        </ul>
+                                    </div>
+                                <?php else : ?>
+                                    <div class="notask">
+                                        <div class="notask-box">
+                                            <h4><i class="fa fa-universal-access" aria-hidden="true"></i>No Task Available</h4>
+                                        </div>
+                                    </div>
+                                <?php endif; ?>
+                            </div>
+                            <div class="col-md-6 portlet-inner-datepicker-wrapper">
+                                <div class="datepickeform">
+                                    <div class="form-body">
+                                        <h3 class="form-section">To Do</h3>
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="form-group">
+                                                    <label class="control-label">Due for today <?php print date('d F Y'); ?> </label>
+                                                    <input class="pickdate form-control form-control-inline input-medium date-picker" size="16" type="text" value=""/>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-12">
+                                                <div class="form-group">
+                                                    <label class="control-label">Task</label>
+                                                    <input  class="form-control" placeholder="Task Name" type="text">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="clearfix"></div>
+                        </div>
+                    </div>
+                    <!-- END CONTENT -->
+                </div>
+            </div>
+
+            <div class="row">
                 <div class="col-md-12 holidays">
                     <!-- BEGIN PORTLET -->
                     <div class="portlet light">
@@ -448,10 +431,10 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                     <span class="caption-subject font-green-sharp ">Birthday Wishes</span>
                                 </div>
                                 <ul class="nav nav-tabs">
-                                    <li class="ln-birthday <?php print $todayBirthdayActive ? 'active' : ''  ?>">
+                                    <li class="ln-birthday <?php print $todayBirthdayActive ? 'active' : '' ?>">
                                         <a id="ln-birthday-today" class="ln-nav-tab-birthday" href="javascript:void(0);" data-toggle="tab" aria-expanded="true">Today</a>
                                     </li>
-                                    <li class="ln-birthday <?php print $todayBirthdayActive ? '' : 'active' ?>">
+                                    <li class="ln-birthday <?php print $todayBirthdayActive ? '' : 'active'?>">
                                         <a id="ln-birthday-upcoming" class="ln-nav-tab-birthday" href="javascript:void(0);" data-toggle="tab" aria-expanded="false">Upcoming</a>
                                     </li>
                                 </ul>
@@ -476,11 +459,11 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                                             </div>
                                                         </div>
                                                         <div class="col-md-3 col-sm-3">
-                                                            <span class="birth-date"><?php print $todayBirthday['EMP_BIRTH_DATE']; ?></span>
+                                                            <span><?php print $todayBirthday['EMP_BIRTH_DATE']; ?></span>
                                                         </div>
                                                     </div>
                                                 <?php endforeach; ?>
-                                            <?php else : ?>
+                                            <?php else: ?>
                                                 <div class="dashborder clearfix">
                                                     <div class="col-md-3 col-sm-3">
                                                         <div class="person-pic birthday-pic">
@@ -493,14 +476,14 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                                         </div>
                                                     </div>
                                                     <div class="col-md-3 col-sm-3">
-                                                        <span class="calendar_date"><i class="fa fa-calendar" aria-hidden="true"></i><?php print date('jS F') ?></span>
+                                                        <span class="calendar_date"><i class="fa fa-calendar" aria-hidden="true"></i>&nbsp;<?php print date('jS F') ?></span>
                                                     </div>
                                                 </div>
                                             <?php endif; ?>
                                         </div>
 
-                                        <div id="tab-birthday-upcoming" style="display:<?php print $todayBirthdayActive ? 'none' : 'block'  ?>">
-                                            <?php if (isset($employeesBirthday) && isset($employeesBirthday['UPCOMING'])) : ?>
+                                        <div id="tab-birthday-upcoming" style="display:<?php print $todayBirthdayActive ? 'none' : 'block' ?>">
+                                            <?php if (isset($employeesBirthday) && isset($employeesBirthday['UPCOMING']) && $employeesBirthday['UPCOMING']) : ?>
                                                 <?php foreach ($employeesBirthday['UPCOMING'] as $upcomingBirthday) : ?>
                                                     <div class="person-list clearfix">
                                                         <div class="col-md-3 col-sm-3">
@@ -515,28 +498,24 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                                             </div>
                                                         </div>
                                                         <div class="col-md-3 col-sm-3">
-                                                            <span><?php print $upcomingBirthday['EMP_BIRTH_DATE']; ?></span>
+                                                            <span class="birth-date"><?php print $upcomingBirthday['EMP_BIRTH_DATE']; ?></span>
                                                         </div>
                                                     </div>
+                                                <?php endforeach; ?>
+                                            <?php else : ?>
+                                                <div class="dashborder clearfix">
                                                     <div class="col-md-3 col-sm-3">
-                                                        <span><?php print $upcomingBirthday['EMP_BIRTH_DATE']; ?></span>
+                                                        <div class="person-pic birthday-pic">
+                                                            <img src="<?php print $this->basePath('img/nobody_m.original.jpg'); ?>" alt="person picture">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-xs-6 col-md-6 col-sm-6">
+                                                        <div class="nobirthday-text">
+                                                            <h4>No Upcoming Birthdays Found!!!</h4>
+                                                        </div>
                                                     </div>
                                                 </div>
-                                            <?php endforeach; ?>
-                                        <?php else : ?>
-                                            <div class="dashborder clearfix">
-                                                <div class="col-md-3 col-sm-3">
-                                                    <div class="person-pic birthday-pic">
-                                                        <img src="<?php print $this->basePath('img/nobody_m.original.jpg'); ?>" alt="person picture">
-                                                    </div>
-                                                </div>
-                                                <div class="col-xs-6 col-md-6 col-sm-6">
-                                                    <div class="nobirthday-text">
-                                                        <h4>No Upcoming Birthdays Found!!!</h4>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        <?php endif; ?>
+                                            <?php endif; ?>
                                         </div>
                                     </div>
                                 </div>

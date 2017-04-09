@@ -367,6 +367,7 @@ li.line:after {
 }
 .datepickeform .form-section {
     margin-top: 0px !important;
+    margin-bottom: 20px;
 }
 .margin-top {
     margin-top: 10px;
@@ -419,18 +420,6 @@ li.line:after {
     font-size: 12px !important;
     min-width: 152px;
     border-radius: 3px !important;
-}
-.fonticon {
-    background-color: #cccccc;
-    border-radius: 50%;
-    height: 70px;
-    width: 70px;
-}
-.iconbox i {
-    color: #ffffff;
-    font-size: 35px;
-    padding-top: 25px;
-    text-align: center;
 }
 .circlebgone {
     background-color: #3ca04d;
@@ -781,11 +770,6 @@ a .icon_edit:hover {
     padding-right: 15px !important;
 }
 
-.taskbox .portlet
-{
-    min-height: 240px !important;
-}
-
 .upcomingholidays .label
 {
     font-weight:normal;
@@ -797,15 +781,16 @@ a .icon_edit:hover {
     padding-top: 19px;
     text-align: center;
 }
-
-
 .fonticon {
-    background-color: #cccccc;
     border-radius: 50%;
     height: 50px;
     width: 50px;
+    cursor: pointer;
 }
-
+.fonticon-disabled {
+    background-color: #cccccc;
+    cursor: default;
+}
 
 .description {
     font-size: 11px;
@@ -868,21 +853,28 @@ a .icon_edit:hover {
     text-align: center;
     width: 35px;
 }
-
+.portlet-inner-task-wrapper .portlet-title .caption {
+    float: left;
+}
+.portlet-inner-task-wrapper .portlet-title .nextbtn {
+    float: right;
+}
 .nextbtn i {
-
     border-radius: 50% !important;
     color: #ffffff;
-    float: right;
     font-size: 20px;
     height: 23px;
     line-height: 21px !important;
-    margin-top: 9px;
     text-align: center;
     width: 23px;
     background-color:#81C868
 }
-
+.taskbox .task {
+    padding-top:15px;
+}
+.taskbox .notask {
+    padding-top: 20px;
+}
 .taskaddbtn {
     float: right;
 }
@@ -917,21 +909,26 @@ a .icon_edit:hover {
 
 }
 
-.datepickeform {
-
-    padding-top: 12px;
-}
-
 .pickdate {
     max-width: 100% !important;
     width: 100% !important;
 }
 
 .taskbox {
-    width: 55%;
-    float: left;
+    /*width: 55%;*/
+    /*float: left;*/
 }
-
+.taskbox .portlet {
+    padding-bottom: 0;
+}
+.taskbox .portlet-inner-task-wrapper,
+.taskbox .portlet-inner-datepicker-wrapper .datepickeform {
+    min-height: 280px;
+}
+.portlet-inner-datepicker-wrapper {
+    background: #81C868;
+    padding: 0 5px 5px 5px
+}
 *::after, *::before {
     box-sizing: border-box;
 }
@@ -941,14 +938,8 @@ a .icon_edit:hover {
 }
 
 .datepickeform {
-
-    padding-top: 12px;
-}
-
-.datepickeform {
-
-    float: left;
-    width: 45%;
+    /*float: left;*/
+    /*width: 45%;*/
 }
 
 .positon, .name {
