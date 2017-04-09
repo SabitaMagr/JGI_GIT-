@@ -1,36 +1,36 @@
 <?php
 $this->headLink()
-    ->appendStylesheet($this->basePath('assets/global/plugins/bootstrap-datepicker/css/datepicker3.css'))
-    ->appendStylesheet($this->basePath('assets/global/plugins/fullcalendar/fullcalendar.min.css'))
-    ->appendStylesheet($this->basePath('assets/global/plugins/datatables/extensions/Scroller/css/dataTables.scroller.min.css'))
-    ->appendStylesheet($this->basePath('assets/global/plugins/datatables/extensions/ColReorder/css/dataTables.colReorder.min.css'))
-    ->appendStylesheet($this->basePath('assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap.css'))
-    ->appendStylesheet($this->basePath('assets/global/plugins/datatables/datatables.min.css'))
-    ->appendStylesheet($this->basePath('css/dashboard.hrm.css'));
+        ->appendStylesheet($this->basePath('assets/global/plugins/bootstrap-datepicker/css/datepicker3.css'))
+        ->appendStylesheet($this->basePath('assets/global/plugins/fullcalendar/fullcalendar.min.css'))
+        ->appendStylesheet($this->basePath('assets/global/plugins/datatables/extensions/Scroller/css/dataTables.scroller.min.css'))
+        ->appendStylesheet($this->basePath('assets/global/plugins/datatables/extensions/ColReorder/css/dataTables.colReorder.min.css'))
+        ->appendStylesheet($this->basePath('assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap.css'))
+        ->appendStylesheet($this->basePath('assets/global/plugins/datatables/datatables.min.css'))
+        ->appendStylesheet($this->basePath('css/dashboard.hrm.css'));
 
 $this->headScript()
-    ->appendFile($this->basePath('assets/global/plugins/bootstrap-daterangepicker/moment.min.js'))
-    ->appendFile($this->basePath('assets/global/plugins/bootstrap-daterangepicker/daterangepicker.min.js'))
-    ->appendFile($this->basePath('assets/global/plugins/fullcalendar/fullcalendar.min.js'))
-    ->appendFile($this->basePath('assets/admin/pages/scripts/components-pickers.js'))
-    ->appendFile($this->basePath('assets/global/plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js'))
-    ->appendFile($this->basePath('assets/global/plugins/datatables/datatables.min.js'))
-    ->appendFile($this->basePath('assets/global/plugins/datatables/extensions/TableTools/js/dataTables.tableTools.min.js'))
-    ->appendFile($this->basePath('assets/global/plugins/datatables/extensions/ColReorder/js/dataTables.colReorder.min.js'))
-    ->appendFile($this->basePath('assets/global/plugins/datatables/extensions/Scroller/js/dataTables.scroller.min.js'))
-    ->appendFile($this->basePath('assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap.js'))
-    ->appendFile($this->basePath('assets/global/plugins/highcharts/js/highcharts.js'))
-    ->appendFile($this->basePath('assets/global/plugins/highcharts/js/highcharts-3d.js'))
-    ->appendFile($this->basePath('assets/global/plugins/highcharts/modules/no-data-to-display.js'))
+        ->appendFile($this->basePath('assets/global/plugins/bootstrap-daterangepicker/moment.min.js'))
+        ->appendFile($this->basePath('assets/global/plugins/bootstrap-daterangepicker/daterangepicker.min.js'))
+        ->appendFile($this->basePath('assets/global/plugins/fullcalendar/fullcalendar.min.js'))
+        ->appendFile($this->basePath('assets/admin/pages/scripts/components-pickers.js'))
+        ->appendFile($this->basePath('assets/global/plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js'))
+        ->appendFile($this->basePath('assets/global/plugins/datatables/datatables.min.js'))
+        ->appendFile($this->basePath('assets/global/plugins/datatables/extensions/TableTools/js/dataTables.tableTools.min.js'))
+        ->appendFile($this->basePath('assets/global/plugins/datatables/extensions/ColReorder/js/dataTables.colReorder.min.js'))
+        ->appendFile($this->basePath('assets/global/plugins/datatables/extensions/Scroller/js/dataTables.scroller.min.js'))
+        ->appendFile($this->basePath('assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap.js'))
+        ->appendFile($this->basePath('assets/global/plugins/highcharts/js/highcharts.js'))
+        ->appendFile($this->basePath('assets/global/plugins/highcharts/js/highcharts-3d.js'))
+        ->appendFile($this->basePath('assets/global/plugins/highcharts/modules/no-data-to-display.js'))
 //    ->appendFile($this->basePath('assets/global/plugins/highcharts/modules/exporting.js'))
-    ->appendFile($this->basePath('assets/global/scripts/metronic.js'))
-    ->appendFile($this->basePath('js/dashboard/hrm-dashboard.js'));
+        ->appendFile($this->basePath('assets/global/scripts/metronic.js'))
+        ->appendFile($this->basePath('js/dashboard/hrm-dashboard.js'));
 
 $taskAssignEmployeeListOptionsHtml = "";
 
 $departmentAttendanceData = [];
-foreach($departmentAttendance as $deptAttn) {
-    if (! isset($departmentAttendanceData[$deptAttn['DEPARTMENT_NAME']])) {
+foreach ($departmentAttendance as $deptAttn) {
+    if (!isset($departmentAttendanceData[$deptAttn['DEPARTMENT_NAME']])) {
         $departmentAttendanceData[$deptAttn['DEPARTMENT_NAME']] = [
             'PRESENT' => 0,
             'ABSENT' => 0
@@ -63,12 +63,13 @@ foreach($departmentAttendance as $deptAttn) {
 
     document.brln = []; // Branch Location
     document.brlnhc = []; // Department Head Count
-    <?php foreach ($headCountLocation as $lhc) : ?>
-    document.brln.push('<?php print $lhc['BRANCH_NAME']; ?>');
-    document.brlnhc.push(<?php print $lhc['HEAD_COUNT']; ?>);
-    <?php endforeach; ?>
+<?php foreach ($headCountLocation as $lhc) : ?>
+        document.brln.push('<?php print $lhc['BRANCH_NAME']; ?>');
+        document.brlnhc.push(<?php print $lhc['HEAD_COUNT']; ?>);
+<?php endforeach; ?>
 
     document.deptattn = <?php print json_encode($departmentAttendanceData); ?>; // Departments Attendance
+    document.trainingUrl = '<?php print $this->url('trainingAssign', ["action" => 'index']); ?>';
 </script>
 
 <?php
@@ -344,25 +345,25 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                             <div class="portlet-body">
                                                 <table class="table table-striped table-bordered table-hover" id="sample_1">
                                                     <thead>
-                                                    <tr>
-                                                        <th>Code</th>
-                                                        <th>Name</th>
-                                                        <th>Designation</th>
-                                                        <th>Department</th>
-                                                    </tr>
+                                                        <tr>
+                                                            <th>Code</th>
+                                                            <th>Name</th>
+                                                            <th>Designation</th>
+                                                            <th>Department</th>
+                                                        </tr>
                                                     </thead>
                                                     <tbody>
-                                                    <?php foreach($employeeList as $employee) : ?>
-                                                        <tr>
-                                                            <td><?php print $employee['EMPLOYEE_CODE']; ?></td>
-                                                            <td><?php print $employee['FULL_NAME']; ?></td>
-                                                            <td><?php print $employee['DESIGNATION_TITLE']; ?></td>
-                                                            <td><?php print $employee['DEPARTMENT_NAME']; ?></td>
-                                                            <?php
-                                                            $taskAssignEmployeeListOptionsHtml .= "<option data-dsg=\"{$employee['DESIGNATION_TITLE']}\" value=\"{$employee['EMPLOYEE_ID']}\">{$employee['FULL_NAME']}</option>";
-                                                            ?>
-                                                        </tr>
-                                                    <?php endforeach; ?>
+                                                        <?php foreach ($employeeList as $employee) : ?>
+                                                            <tr>
+                                                                <td><?php print $employee['EMPLOYEE_CODE']; ?></td>
+                                                                <td><?php print $employee['FULL_NAME']; ?></td>
+                                                                <td><?php print $employee['DESIGNATION_TITLE']; ?></td>
+                                                                <td><?php print $employee['DEPARTMENT_NAME']; ?></td>
+                                                                <?php
+                                                                $taskAssignEmployeeListOptionsHtml .= "<option data-dsg=\"{$employee['DESIGNATION_TITLE']}\" value=\"{$employee['EMPLOYEE_ID']}\">{$employee['FULL_NAME']}</option>";
+                                                                ?>
+                                                            </tr>
+                                                        <?php endforeach; ?>
                                                     </tbody>
                                                 </table>
                                             </div>
@@ -438,62 +439,62 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
 
                                 <?php $employeeTask = []; ?>
                                 <?php if ($employeeTask) : ?>
-                                <div class="task-list">
-                                    <ul>
-                                        <?php foreach ($employeeTask as $task): ?>
-                                            <li>
-                                                <div class="task-list-content clearfix">
-                                                    <h4><?php print $task['TASK_EDESC']; ?></h4>
-                                                    <div class="positon">Position: <?php print $task['DESIGNATION_TITLE']; ?></div>
-                                                    <div class="name"><?php print $task['FULL_NAME']; ?></div>
-                                                </div>
-                                            </li>
-                                        <?php endforeach; ?>
-                                    </ul>
-<!--                                    <ul>-->
-<!--                                        <li>-->
-<!--                                            <div class="task-list-content clearfix">-->
-<!--                                                <h4>Approve/Reject Requisition</h4>-->
-<!--                                                <div class="positon">Position: Logistics Executive</div>-->
-<!--                                                <div class="name">Muna Kunwor</div>-->
-<!--                                            </div>-->
-<!--                                        </li>-->
-<!--                                        <li>-->
-<!--                                            <div class="task-list-content clearfix">-->
-<!--                                                <h4>Interview for new recruitment</h4>-->
-<!--                                                <div class="positon">Position: Logistics Executive</div>-->
-<!--                                                <div class="name">Muna Kunwor</div>-->
-<!--                                            </div>-->
-<!--                                        </li>-->
-<!--                                        <li>-->
-<!--                                            <div class="task-list-content clearfix">-->
-<!--                                                <h4>Evaluation of XYZ</h4>-->
-<!--                                                <div class="positon">Position: Logistics Executive</div>-->
-<!--                                                <div class="name">Muna Kunwor</div>-->
-<!--                                            </div>-->
-<!--                                        </li>-->
-<!--                                        <li>-->
-<!--                                            <div class="task-list-content clearfix">-->
-<!--                                                <h4>Meeting at 4 pm</h4>-->
-<!--                                                <div class="positon">Position: Logistics Executive</div>-->
-<!--                                                <div class="name">Muna Kunwor</div>-->
-<!--                                            </div>-->
-<!--                                        </li>-->
-<!--                                        <li>-->
-<!--                                            <div class="task-list-content clearfix">-->
-<!--                                                <h4>Publish notice</h4>-->
-<!--                                                <div class="positon">Position: Logistics Executive</div>-->
-<!--                                                <div class="name">Muna Kunwor</div>-->
-<!--                                            </div>-->
-<!--                                        </li>-->
-<!--                                    </ul>-->
-                                </div>
-                                <?php else : ?>
-                                <div class="notask">
-                                    <div class="notask-box">
-                                        <h4><i class="fa fa-universal-access" aria-hidden="true"></i>No Task Available</h4>
+                                    <div class="task-list">
+                                        <ul>
+                                            <?php foreach ($employeeTask as $task): ?>
+                                                <li>
+                                                    <div class="task-list-content clearfix">
+                                                        <h4><?php print $task['TASK_EDESC']; ?></h4>
+                                                        <div class="positon">Position: <?php print $task['DESIGNATION_TITLE']; ?></div>
+                                                        <div class="name"><?php print $task['FULL_NAME']; ?></div>
+                                                    </div>
+                                                </li>
+                                            <?php endforeach; ?>
+                                        </ul>
+                                        <!--                                    <ul>-->
+                                        <!--                                        <li>-->
+                                        <!--                                            <div class="task-list-content clearfix">-->
+                                        <!--                                                <h4>Approve/Reject Requisition</h4>-->
+                                        <!--                                                <div class="positon">Position: Logistics Executive</div>-->
+                                        <!--                                                <div class="name">Muna Kunwor</div>-->
+                                        <!--                                            </div>-->
+                                        <!--                                        </li>-->
+                                        <!--                                        <li>-->
+                                        <!--                                            <div class="task-list-content clearfix">-->
+                                        <!--                                                <h4>Interview for new recruitment</h4>-->
+                                        <!--                                                <div class="positon">Position: Logistics Executive</div>-->
+                                        <!--                                                <div class="name">Muna Kunwor</div>-->
+                                        <!--                                            </div>-->
+                                        <!--                                        </li>-->
+                                        <!--                                        <li>-->
+                                        <!--                                            <div class="task-list-content clearfix">-->
+                                        <!--                                                <h4>Evaluation of XYZ</h4>-->
+                                        <!--                                                <div class="positon">Position: Logistics Executive</div>-->
+                                        <!--                                                <div class="name">Muna Kunwor</div>-->
+                                        <!--                                            </div>-->
+                                        <!--                                        </li>-->
+                                        <!--                                        <li>-->
+                                        <!--                                            <div class="task-list-content clearfix">-->
+                                        <!--                                                <h4>Meeting at 4 pm</h4>-->
+                                        <!--                                                <div class="positon">Position: Logistics Executive</div>-->
+                                        <!--                                                <div class="name">Muna Kunwor</div>-->
+                                        <!--                                            </div>-->
+                                        <!--                                        </li>-->
+                                        <!--                                        <li>-->
+                                        <!--                                            <div class="task-list-content clearfix">-->
+                                        <!--                                                <h4>Publish notice</h4>-->
+                                        <!--                                                <div class="positon">Position: Logistics Executive</div>-->
+                                        <!--                                                <div class="name">Muna Kunwor</div>-->
+                                        <!--                                            </div>-->
+                                        <!--                                        </li>-->
+                                        <!--                                    </ul>-->
                                     </div>
-                                </div>
+                                <?php else : ?>
+                                    <div class="notask">
+                                        <div class="notask-box">
+                                            <h4><i class="fa fa-universal-access" aria-hidden="true"></i>No Task Available</h4>
+                                        </div>
+                                    </div>
                                 <?php endif; ?>
                             </div>
                             <div class="col-md-6 portlet-inner-datepicker-wrapper">
@@ -554,10 +555,10 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                     <span class="caption-subject font-green-sharp ">Birthday Wishes</span>
                                 </div>
                                 <ul class="nav nav-tabs">
-                                    <li class="ln-birthday <?php print $todayBirthdayActive ? 'active' : '' ?>">
+                                    <li class="ln-birthday <?php print $todayBirthdayActive ? 'active' : ''  ?>">
                                         <a id="ln-birthday-today" class="ln-nav-tab-birthday" href="javascript:void(0);" data-toggle="tab" aria-expanded="true">Today</a>
                                     </li>
-                                    <li class="ln-birthday <?php print $todayBirthdayActive ? '' : 'active'?>">
+                                    <li class="ln-birthday <?php print $todayBirthdayActive ? '' : 'active' ?>">
                                         <a id="ln-birthday-upcoming" class="ln-nav-tab-birthday" href="javascript:void(0);" data-toggle="tab" aria-expanded="false">Upcoming</a>
                                     </li>
                                 </ul>
@@ -566,7 +567,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                             <div class="row">
                                 <div class="tab-content birday-person-list">
                                     <div class="tab-pane tab-pane-birthday">
-                                        <div id="tab-birthday-today" style="display:<?php print $todayBirthdayActive ? 'block' : 'none' ?>">
+                                        <div id="tab-birthday-today" style="display:<?php print $todayBirthdayActive ? 'block' : 'none'  ?>">
                                             <?php if ($todayBirthdayActive) : ?>
                                                 <?php foreach ($employeesBirthday['TODAY'] as $todayBirthday) : ?>
                                                     <div class="person-list clearfix">
@@ -605,7 +606,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                             <?php endif; ?>
                                         </div>
 
-                                        <div id="tab-birthday-upcoming" style="display:<?php print $todayBirthdayActive ? 'none' : 'block' ?>">
+                                        <div id="tab-birthday-upcoming" style="display:<?php print $todayBirthdayActive ? 'none' : 'block'  ?>">
                                             <?php if (isset($employeesBirthday) && isset($employeesBirthday['UPCOMING']) && $employeesBirthday['UPCOMING']) : ?>
                                                 <?php foreach ($employeesBirthday['UPCOMING'] as $upcomingBirthday) : ?>
                                                     <div class="person-list clearfix">

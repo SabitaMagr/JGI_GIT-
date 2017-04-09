@@ -52,7 +52,7 @@ class HolidaySetup extends AbstractActionController
         $branchFormElement->setName("branch");
         $branches=\Application\Helper\EntityHelper::getTableKVListWithSortOption($this->adapter, Branch::TABLE_NAME, Branch::BRANCH_ID, [Branch::BRANCH_NAME],["STATUS"=>"E"], Branch::BRANCH_NAME,"ASC");
         $branchFormElement->setValueOptions($branches);
-        $branchFormElement->setAttributes(["id" => "branchId", "class" => "form-control", "multiple"=>"multiple"]);
+        $branchFormElement->setAttributes(["id" => "branchId","required"=>"required", "class" => "form-control", "multiple"=>"multiple"]);
         $branchFormElement->setLabel("Branch");
 
         $genderFormElement = new Select();
