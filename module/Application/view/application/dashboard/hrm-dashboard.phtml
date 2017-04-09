@@ -354,13 +354,13 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                                     </thead>
                                                     <tbody>
                                                         <?php foreach ($employeeList as $employee) : ?>
-                                                            <tr>
+                                                            <tr data-empid="<?php print $employee['EMPLOYEE_ID']; ?>">
                                                                 <td><?php print $employee['EMPLOYEE_CODE']; ?></td>
                                                                 <td><?php print $employee['FULL_NAME']; ?></td>
                                                                 <td><?php print $employee['DESIGNATION_TITLE']; ?></td>
                                                                 <td><?php print $employee['DEPARTMENT_NAME']; ?></td>
                                                                 <?php
-                                                                $taskAssignEmployeeListOptionsHtml .= "<option data-dsg=\"{$employee['DESIGNATION_TITLE']}\" value=\"{$employee['EMPLOYEE_ID']}\">{$employee['FULL_NAME']}</option>";
+                                                                $taskAssignEmployeeListOptionsHtml .= "<option data-empid=\"{$employee['EMPLOYEE_ID']}\" data-dsg=\"{$employee['DESIGNATION_TITLE']}\" value=\"{$employee['EMPLOYEE_ID']}\">{$employee['FULL_NAME']}</option>";
                                                                 ?>
                                                             </tr>
                                                         <?php endforeach; ?>
@@ -558,7 +558,11 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                     <li class="ln-birthday <?php print $todayBirthdayActive ? 'active' : ''  ?>">
                                         <a id="ln-birthday-today" class="ln-nav-tab-birthday" href="javascript:void(0);" data-toggle="tab" aria-expanded="true">Today</a>
                                     </li>
-                                    <li class="ln-birthday <?php print $todayBirthdayActive ? '' : 'active' ?>">
+                                    <<<<<<< HEAD
+                                    <li class="ln-birthday <?php print $todayBirthdayActive ? '' : 'active'  ?>">
+                                        =======
+                                    <li class="ln-birthday <?php print $todayBirthdayActive ? '' : 'active'  ?>">
+                                        >>>>>>> a42b95baed635cd1874e69e8fee68fa1b7a5a600
                                         <a id="ln-birthday-upcoming" class="ln-nav-tab-birthday" href="javascript:void(0);" data-toggle="tab" aria-expanded="false">Upcoming</a>
                                     </li>
                                 </ul>

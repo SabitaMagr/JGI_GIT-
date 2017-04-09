@@ -250,8 +250,8 @@ class DashboardRepository implements RepositoryInterface {
                HM.HOLIDAY_ENAME,
                HM.GENDER_ID,
                HM.BRANCH_ID,
-               TO_CHAR(HM.START_DATE,'Day, dth Month') START_DATE,
-               TO_CHAR(HM.END_DATE,'Day, dth Month') END_DATE,
+               TO_CHAR(HM.START_DATE,'Day, fmddth Month') START_DATE,
+               TO_CHAR(HM.END_DATE,'Day, fmddth Month') END_DATE,
                HM.HALFDAY,
                TO_CHAR(HM.START_DATE, 'DAY') WEEK_DAY,
                HM.START_DATE - TRUNC(SYSDATE) DAYS_REMAINING
@@ -305,7 +305,7 @@ class DashboardRepository implements RepositoryInterface {
                                   DSG.DESIGNATION_TITLE,
                                   EFL.FILE_PATH,
                                   EMP.BIRTH_DATE,
-                                  TO_CHAR(EMP.BIRTH_DATE, 'dth Month') EMP_BIRTH_DATE, 
+                                  TO_CHAR(EMP.BIRTH_DATE, 'fmddth Month') EMP_BIRTH_DATE, 
                                   'TODAY' BIRTHDAYFOR
                                 FROM HRIS_EMPLOYEES EMP, HRIS_DESIGNATIONS DSG, HRIS_EMPLOYEE_FILE EFL
                                 WHERE TO_CHAR(EMP.BIRTH_DATE, 'MMDD') = TO_CHAR(SYSDATE,'MMDD')
@@ -321,7 +321,7 @@ class DashboardRepository implements RepositoryInterface {
                                   DSG.DESIGNATION_TITLE,
                                   EFL.FILE_PATH,
                                   EMP.BIRTH_DATE,
-                                  TO_CHAR(EMP.BIRTH_DATE, 'dth Month') EMP_BIRTH_DATE, 
+                                  TO_CHAR(EMP.BIRTH_DATE, 'fmddth Month') EMP_BIRTH_DATE, 
                                   'UPCOMING' BIRTHDAYFOR
                                 FROM HRIS_EMPLOYEES EMP, HRIS_DESIGNATIONS DSG, HRIS_EMPLOYEE_FILE EFL
                                 WHERE TO_CHAR(EMP.BIRTH_DATE, 'MMDD') > TO_CHAR(SYSDATE,'MMDD')
