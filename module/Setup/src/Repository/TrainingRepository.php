@@ -113,14 +113,16 @@ class TrainingRepository implements RepositoryInterface
             ], true);
         $select->from(['T'=>Training::TABLE_NAME]);
         $select->join(['I' => Institute::TABLE_NAME], "T." . Training::INSTITUTE_ID . "=I.".Institute::INSTITUTE_ID, [Institute::INSTITUTE_NAME], 'left');
+               //->join(['TA'=> TrainingAssign::TABLE_NAME],"TA.".TrainingAssign::TRAINING_ID."=T.".Training::TRAINING_ID,[TrainingAssign::EMPLOYEE_ID],"left");
         
         $select->where([
             "T.STATUS='E'",
-            "T.END_DATE<=".$today->getExpression()
+//            "T.END_DATE<=".$today->getExpression()
         ]);
        
        $select->order("T.START_DATE DESC");
        $statement = $sql->prepareStatementForSqlObject($select);
+//       print_r($statement->getSql()); die();
        $result = $statement->execute();
        return $result;
     }

@@ -2,6 +2,7 @@
 $this->headScript()->appendFile($this->basePath('js/HolidayManagement/HolidaySetup/add.js'));
 $this->headScript()->appendFile($this->basePath('js/angular.min.js'));
 $this->headScript()->appendFile($this->basePath('js/HolidayManagement/HolidaySetup/holidayController.js'));
+$this->headScript()->appendFile($this->basePath('assets/global/plugins/jquery.blockui.min.js'));
 ?>
 
 
@@ -53,6 +54,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
     </script>
 <?php } ?>
 <div ng-app="hris" ng-controller="holidayController">
+    <div id="hris-page-content">
     <div class="row margin-top-20">
         <div class="col-sm-12">
             <div class="portlet box custom-box form-box">
@@ -254,4 +256,5 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
             </div>
         </div>
     </div>
+</div>
 </div>

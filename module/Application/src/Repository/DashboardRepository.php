@@ -250,8 +250,8 @@ class DashboardRepository implements RepositoryInterface {
                HM.HOLIDAY_ENAME,
                HM.GENDER_ID,
                HM.BRANCH_ID,
-               TO_CHAR(HM.START_DATE,'Day, dth Month') START_DATE,
-               TO_CHAR(HM.END_DATE,'Day, dth Month') END_DATE,
+               TO_CHAR(HM.START_DATE,'Day, fmddth Month') START_DATE,
+               TO_CHAR(HM.END_DATE,'Day, fmddth Month') END_DATE,
                HM.HALFDAY,
                TO_CHAR(HM.START_DATE, 'DAY') WEEK_DAY,
                HM.START_DATE - TRUNC(SYSDATE) DAYS_REMAINING
@@ -305,7 +305,7 @@ class DashboardRepository implements RepositoryInterface {
                                   DSG.DESIGNATION_TITLE,
                                   EFL.FILE_PATH,
                                   EMP.BIRTH_DATE,
-                                  TO_CHAR(EMP.BIRTH_DATE, 'dth Month') EMP_BIRTH_DATE, 
+                                  TO_CHAR(EMP.BIRTH_DATE, 'fmddth Month') EMP_BIRTH_DATE, 
                                   'TODAY' BIRTHDAYFOR
                                 FROM HRIS_EMPLOYEES EMP, HRIS_DESIGNATIONS DSG, HRIS_EMPLOYEE_FILE EFL
                                 WHERE TO_CHAR(EMP.BIRTH_DATE, 'MMDD') = TO_CHAR(SYSDATE,'MMDD')
@@ -321,7 +321,7 @@ class DashboardRepository implements RepositoryInterface {
                                   DSG.DESIGNATION_TITLE,
                                   EFL.FILE_PATH,
                                   EMP.BIRTH_DATE,
-                                  TO_CHAR(EMP.BIRTH_DATE, 'dth Month') EMP_BIRTH_DATE, 
+                                  TO_CHAR(EMP.BIRTH_DATE, 'fmddth Month') EMP_BIRTH_DATE, 
                                   'UPCOMING' BIRTHDAYFOR
                                 FROM HRIS_EMPLOYEES EMP, HRIS_DESIGNATIONS DSG, HRIS_EMPLOYEE_FILE EFL
                                 WHERE TO_CHAR(EMP.BIRTH_DATE, 'MMDD') > TO_CHAR(SYSDATE,'MMDD')
@@ -552,7 +552,7 @@ class DashboardRepository implements RepositoryInterface {
                          HRIS_EMPLOYEES HE
                     WHERE HD.DEPARTMENT_ID = HE.DEPARTMENT_ID
                       AND HE.EMPLOYEE_ID = HAD.EMPLOYEE_ID
-                      AND TRUNC(HAD.ATTENDANCE_DT) = TO_DATE('07-APR-2017', 'DD-MON-YYYY')
+                      AND TRUNC(HAD.ATTENDANCE_DT) = TO_DATE('27-MAR-2017', 'DD-MON-YYYY')
                       AND HAD.IN_TIME IS NOT NULL
                     GROUP BY HD.DEPARTMENT_CODE,
                              HD.DEPARTMENT_NAME,
@@ -567,7 +567,7 @@ class DashboardRepository implements RepositoryInterface {
                          HRIS_EMPLOYEES HE
                     WHERE HD.DEPARTMENT_ID = HE.DEPARTMENT_ID
                       AND HE.EMPLOYEE_ID = HAD.EMPLOYEE_ID
-                      AND TRUNC(HAD.ATTENDANCE_DT) = TO_DATE('07-APR-2017', 'DD-MON-YYYY')
+                      AND TRUNC(HAD.ATTENDANCE_DT) = TO_DATE('27-MAR-2017', 'DD-MON-YYYY')
                       AND HAD.IN_TIME IS NULL
                       AND HAD.OUT_TIME IS NULL
                       AND LEAVE_ID IS NULL

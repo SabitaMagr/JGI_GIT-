@@ -69,6 +69,7 @@ foreach ($departmentAttendance as $deptAttn) {
 <?php endforeach; ?>
 
     document.deptattn = <?php print json_encode($departmentAttendanceData); ?>; // Departments Attendance
+    document.trainingUrl = '<?php print $this->url('trainingAssign', ["action" => 'index']); ?>';
 </script>
 
 <?php
@@ -202,8 +203,8 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                     <div class="portlet light">
                                         <div class="portlet-title tabbable-line">
                                             <div class="caption caption-md">
-                                                <i class="icon-globe theme-font hide"></i>
-                                                <span class="caption-subject bold uppercase">Notice Board</span>
+                                                <i class="fa fa-newspaper-o font-green-sharp" aria-hidden="true"></i>
+                                                <span class="caption-subject font-green-sharp ">Notice Board</span>
                                             </div>
                                         </div>
                                         <div class="noticeboard-list row">
@@ -557,7 +558,11 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                     <li class="ln-birthday <?php print $todayBirthdayActive ? 'active' : ''  ?>">
                                         <a id="ln-birthday-today" class="ln-nav-tab-birthday" href="javascript:void(0);" data-toggle="tab" aria-expanded="true">Today</a>
                                     </li>
+                                    <<<<<<< HEAD
                                     <li class="ln-birthday <?php print $todayBirthdayActive ? '' : 'active'  ?>">
+                                        =======
+                                    <li class="ln-birthday <?php print $todayBirthdayActive ? '' : 'active'  ?>">
+                                        >>>>>>> a42b95baed635cd1874e69e8fee68fa1b7a5a600
                                         <a id="ln-birthday-upcoming" class="ln-nav-tab-birthday" href="javascript:void(0);" data-toggle="tab" aria-expanded="false">Upcoming</a>
                                     </li>
                                 </ul>
@@ -570,19 +575,19 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                             <?php if ($todayBirthdayActive) : ?>
                                                 <?php foreach ($employeesBirthday['TODAY'] as $todayBirthday) : ?>
                                                     <div class="person-list clearfix">
-                                                        <div class="col-md-3 col-sm-3">
+                                                        <div class="col-xs-3 col-md-3 col-sm-3">
                                                             <div class="person-pic">
                                                                 <img src="<?php print $todayBirthday['FILE_PATH'] ? $this->basePath('uploads/' . $todayBirthday['FILE_PATH']) : $this->basePath('img/nobody_m.original.jpg'); ?>" alt="person picture">
                                                             </div>
                                                         </div>
-                                                        <div class="col-xs-9 col-md-9 col-sm-9">
+                                                        <div class="col-xs-6 col-md-6 col-sm-6">
                                                             <div class="person-details">
                                                                 <h4><?php print $todayBirthday['FULL_NAME']; ?></h4>
                                                                 <span><?php print $todayBirthday['DESIGNATION_TITLE']; ?></span>
                                                             </div>
                                                         </div>
-                                                        <div class="col-md-3 col-sm-3">
-                                                            <span><?php print $todayBirthday['EMP_BIRTH_DATE']; ?></span>
+                                                        <div class="col-xs-3 col-md-3 col-sm-3">
+                                                            <span class="birth-date"><?php print $todayBirthday['EMP_BIRTH_DATE']; ?></span>
                                                         </div>
                                                     </div>
                                                 <?php endforeach; ?>
