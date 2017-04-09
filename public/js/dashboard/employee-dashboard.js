@@ -119,6 +119,31 @@
         }
     });
 
+    $('#task-save').on('click', function(e) {
+        var taskDate = $.trim($('#inp-task-dt').val());
+        var taskName = $.trim($('#inp-task-name').val());
+        if (taskDate && taskName) {
+            var taskLi =
+                '<li>' +
+                    '<div class="task-list-content clearfix">' +
+                        '<h4>' + taskName + '</h4>' +
+                        '<div class="positon">' + $('.employee-details span:eq(1)').text() + '</div>' +
+                        '<div class="name">' + $('.employee-details h4').text() + '</div>' +
+                    '</div>' +
+                '</li>';
+
+            if ($('.task-list').length) {
+                $('.task-list ul').append(taskLi);
+            }
+            else {
+                $('.notask').remove();
+                $('.portlet-inner-task-wrapper').append('<div class="task-list"><ul>' + taskLi + '</ul></div>')
+            }
+        }
+        $('#inp-task-dt').val('');
+        $('#inp-task-name').val('');
+    });
+
     ComponentsPickers.init();
 
 })(window.jQuery, window.app);

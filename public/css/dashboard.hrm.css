@@ -1000,13 +1000,15 @@ a .icon_edit:hover {
 .notask-box {
     box-shadow: 3px 6px 13px -7px #999999;
     border:dashed 1px #ccc;
-    padding: 40px;
+    padding: 40px 28px;
+    text-aligh:center;
 }
 
 .notask-box > h4 {
     color: #F3565D;
     font-size: 14px;
     font-weight: 400;
+    text-align: center;
 }
 
 .notask-box i {
