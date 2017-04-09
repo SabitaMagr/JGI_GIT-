@@ -332,7 +332,7 @@ angular.module('hris', [])
 
                 window.app.UIConfirmations();
             };
-            $scope.initializekendoGrid([]);
+//            $scope.initializekendoGrid([]);
 
         });
 
