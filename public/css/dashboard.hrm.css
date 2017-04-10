@@ -16,8 +16,8 @@ ul {
 
 .profile_pic > img {
     border-radius: 50% !important;
-    height: 100px;
-    width: 100px;
+    height: 94px;
+    width:94px;
 }
 .employee-details h4 {
     padding-bottom: 5px;
@@ -32,7 +32,7 @@ ul {
     border: solid #ddd 1px;
     background-color: #e8ecef;
     margin-bottom: 10px;
-    padding-bottom: 5px;
+    padding-bottom: 15px;
     padding-top: 5px;
 }
 .profile_pic {
@@ -310,10 +310,11 @@ li.line:after {
     padding-top: 10px;
 }
 .noticeboard-list li {
-    border-bottom: solid #ddd 1px;
+    border-bottom: solid #eee 1px;
     float: left;
     margin-top: 5px;
     margin-bottom: 5px;
+       padding-bottom: 5px;
 }
 .notice-details h5 {
     margin-top: 0px !important;
@@ -1028,6 +1029,10 @@ a .icon_edit:hover {
 .employee_search i{
     color:#fff !important;
 }
+.boxborder {
+    border: solid #eee 1px;
+}
+
 /* Large desktops and laptops */
 
 @media (min-width: 1200px) {}
