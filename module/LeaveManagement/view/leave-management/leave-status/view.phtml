@@ -59,18 +59,21 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
 <?php } ?>
 
 <div class="row margin-top-20">
-    <div class="col-sm-8 col-sm-offset-2">
+    <div class="col-sm-12">
         <div class="portlet box custom-box">
             <div class="portlet-title">
                 <div class="caption">
                     <i class="fa fa-user"></i>leave Request Detail
+                </div>
+                <div class="actions">
+                    <a class="btn btn-circle btn-icon-only btn-default fullscreen" href="javascript:;" data-original-title="" title=""> </a>
                 </div>
             </div>
             <div class="portlet-body">
                 <div class="border-bottom margin-bottom-10">
                     <div class="form-group">
                         <div class="row div-font-11">
-                            <div class="col-md-6">
+                            <div class="col-sm-4">
                                 <table>
                                     <tr height="30">
                                         <td>
@@ -81,15 +84,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                             <?php echo $employeeName; ?>
                                         </td>
                                     </tr>
-                                    <tr height="30">
-                                        <td>
-                                            Requested Date
-                                        </td>
-                                        <td width="15">:</td>
-                                        <td>
-                                            <?php echo $requestedDt; ?>
-                                        </td>
-                                    </tr>
+                                    
                                     <tr height="30">
                                         <td>
                                             Recommender
@@ -122,7 +117,33 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                     </tr>
                                 </table>
                             </div>
-                            <div class="col-md-6">
+                            
+                            <div class="col-sm-4">
+                                <table>
+                                    <tr height="30">
+                                        <td>
+                                            Requested Date
+                                        </td>
+                                        <td width="15">:</td>
+                                        <td>
+                                            <?php echo $requestedDt; ?>
+                                        </td>
+                                    </tr>
+                                    
+                                    <tr height="30">
+                                        <td>
+                                            Approver
+                                        </td>
+                                        <td width="15">:</td>
+                                        <td>
+                                            <?php echo $approver; ?>
+                                        </td>
+                                    </tr>
+                                    
+                                </table>
+                            </div>
+                            
+                            <div class="col-sm-4">
                                 <table>
                                     <tr height="30">
                                         <td>
@@ -143,26 +164,22 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                             <input type="hidden" id="availableDays" value="<?php echo $availableDays; ?>"/>
                                         </td>
                                     </tr>
-                                    <tr height="30">
-                                        <td>
-                                            Approver
-                                        </td>
-                                        <td width="15">:</td>
-                                        <td>
-                                            <?php echo $approver; ?>
-                                        </td>
-                                    </tr>
+                                    
                                 </table>
                             </div>
                         </div>
                     </div>
-
+                    
+                    <div class="row">
+                        <div class="col-sm-4">
                     <div
                         class="form-group required <?= empty($leaveId->getMessages()) ? "" : "error" ?>">
                             <?php print $this->formLabel($leaveId); ?>
                             <?php print $this->formElement($leaveId); ?>
                     </div>
-
+                        </div>
+                        
+                        <div class="col-sm-4">
                     <div
                         class="form-group required  <?= empty($startDate->getMessages()) ? "" : "error" ?>">
                             <?php print $this->formLabel($startDate) ?>
@@ -172,7 +189,9 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                         </div>
                     </div>
                     <?php print $this->formElementErrors()->render($startDate, ['class' => 'help-block error']) ?>
-
+                        </div>
+                        
+                        <div class="col-sm-4">
                     <div
                         class="form-group required <?= empty($endDate->getMessages()) ? "" : "error" ?>">
                             <?php print $this->formLabel($endDate) ?>
@@ -182,7 +201,11 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                         </div>
                     </div>
                     <?php print $this->formElementErrors()->render($endDate, ['class' => 'help-block error']) ?>
-
+                        </div>  
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-sm-4">
                     <div
                         class="form-group required <?= empty($noOfDays->getMessages()) ? "" : "error" ?>">
                             <?php print $this->formLabel($noOfDays); ?>
@@ -190,6 +213,13 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                         <span id="errorMsg" style="font-size:11px; color:red;"></span>
                     </div>
                     <?php print $this->formElementErrors()->render($noOfDays, ['class' => 'help-block error']); ?>
+                        </div>
+         
+                    </div>
+
+
+
+
 
                     <?php if ($allowHalfDay == 'Y') { ?>
                         <div class="form-group padding-0" id="halfDay">

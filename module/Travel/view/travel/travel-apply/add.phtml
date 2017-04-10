@@ -59,18 +59,27 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                 <?php
                 print $this->form()->openTag($form);
                 ?>
+                
+                <div class="row">
+                    <div class="col-sm-4">
                 <div class="form-group">
                     <?php print $this->formLabel($employeeId); ?>
                     <span class="required" aria-required="true">*</span>
                     <?php print $this->formElement($employeeId); ?>
                     <?php print $this->formElementErrors()->render($employeeId, ['class' => 'help-block']); ?>
                 </div>  
+                    </div>
+                    
+                    <div class="col-sm-4">
                 <div class="form-group">
                     <?php print $this->formLabel($travelCode); ?>
                     <span class="required" aria-required="true">*</span>
                     <?php print $this->formElement($travelCode); ?>
                     <?php print $this->formElementErrors()->render($travelCode, ['class' => 'help-block']); ?>
                 </div>
+                    </div>
+                    
+                    <div class="col-sm-4">
                 <div class="form-group">
                     <?php print $this->formLabel($fromDate); ?>
                     <span class="required" aria-required="true">*</span>
@@ -80,6 +89,13 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                     </div>
                     <?php print $this->formElementErrors()->render($fromDate, ['class' => 'help-block']); ?>
                 </div>
+                    </div>
+                    
+                </div>
+                
+                
+                <div class="row">
+                    <div class="col-sm-4">
                 <div class="form-group">
                     <?php print $this->formLabel($toDate); ?>
                     <div class="input-group date" id="toDate">
@@ -88,31 +104,55 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                     </div>
                     <?php print $this->formElementErrors()->render($toDate, ['class' => 'help-block']); ?>
                 </div>
+                    </div>
+                    
+                    <div class="col-sm-4">
                 <div class="form-group">
                     <?php print $this->formLabel($destination); ?>
                     <?php print $this->formElement($destination); ?>
                     <?php print $this->formElementErrors()->render($destination, ['class' => 'help-block']); ?>
                 </div>               
+                    </div>
+                    
+                    <div class="col-sm-4">
                 <div class="form-group">
                     <?php print $this->formLabel($purpose); ?>
                     <?php print $this->formElement($purpose); ?>
                     <?php print $this->formElementErrors()->render($purpose, ['class' => 'help-block']); ?>
                 </div>
+                    </div>
+                    
+                </div>
+                
+                
+                <div class="row">
+                    <div class="col-sm-4">
                 <div class="form-group">
                     <?php print $this->formLabel($requestedType); ?>
                     <?php print $this->formElement($requestedType); ?>
                     <?php print $this->formElementErrors()->render($requestedType, ['class' => 'help-block']); ?>
                 </div>               
+                    </div>
+                    
+                    <div class="col-sm-4">
                 <div class="form-group">
                     <?php print $this->formLabel($requestedAmount); ?>
                     <?php print $this->formElement($requestedAmount); ?>
                     <?php print $this->formElementErrors()->render($requestedAmount, ['class' => 'help-block']); ?>
                 </div>
+                    </div>
+                    
+                    <div class="col-sm-4">
                 <div class="form-group">
                     <?php print $this->formLabel($remarks); ?>
                     <?php print $this->formElement($remarks); ?>
                     <?php print $this->formElementErrors()->render($remarks, ['class' => 'help-block']); ?>
                 </div>
+                    </div>
+                    
+                </div>
+                
+                
                 <?php
                 print $this->formSubmit($submit);
                 print $this->form()->closeTag();
