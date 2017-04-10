@@ -28,7 +28,7 @@ class TrainingRequestForm{
     
     /**
      * @Annotation\Type("Zend\Form\Element\Text")
-     * @Annotation\Required({"required":"true"})
+     * @Annotation\Required(false)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Training Name"})
      * @Annotation\Attributes({ "id":"form-title", "class":"form-title form-control" })

@@ -18,7 +18,7 @@ $remarks = $form->get('remarks');
 $submit = $form->get('submit');
 $submit->setAttribute('value', 'SUBMIT');
 
-$form->setAttribute('action', $this->url('workOnHoliday', ['action' => 'add']));
+$form->setAttribute('action', $this->url('trainingRequest', ['action' => 'add']));
 
 
 $form->prepare();
@@ -68,18 +68,16 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                         <div class="form-group">
                             <?php print $this->formLabel($trainingId); ?>
                             <span class="required" aria-required="true">*</span>
+                            <span> 
+                                 [ list by setup
+                                 <input type="hidden" name="companyList" value="0"/>
+                                <input type="checkbox" name="companyList" checked="checked" value="1" id="companyList"/>
+                                ]</span>
                             <?php print $this->formElement($trainingId); ?>
-                            <?php print $this->formElementErrors()->render($trainingId, ['class' => 'help-block']); ?>
-                        </div>               
-                    </div>
-                    
-                    <div class="col-sm-4">
-                        <div class="form-group">
-                            <?php print $this->formLabel($title); ?>
-                            <span class="required" aria-required="true">*</span>
                             <?php print $this->formElement($title); ?>
+                            <?php print $this->formElementErrors()->render($trainingId, ['class' => 'help-block']); ?>
                             <?php print $this->formElementErrors()->render($title, ['class' => 'help-block']); ?>
-                        </div> 
+                        </div>               
                     </div>
                     <div class="col-sm-4">
                         <div class="form-group">
@@ -89,8 +87,6 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                             <?php print $this->formElementErrors()->render($trainingType, ['class' => 'help-block']); ?>
                         </div> 
                     </div>
-                </div>
-                <div class="row">
                     <div class="col-sm-4">
                         <div
                             class="form-group required  <?= empty($startDate->getMessages()) ? "" : "error" ?>">
@@ -100,7 +96,8 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                         </div>
                         <?php print $this->formElementErrors()->render($startDate, ['class' => 'help-block error']) ?>
                     </div>
-
+                </div>
+                <div class="row">
                     <div class="col-sm-4">
                         <div
                             class="form-group required <?= empty($endDate->getMessages()) ? "" : "error" ?>">
@@ -120,9 +117,6 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                         </div>
                         <?php print $this->formElementErrors()->render($duration, ['class' => 'help-block error']); ?>
                     </div>
-                </div>
-
-                <div class=" row">
                     <div class="col-sm-4">
                         <div class="form-group">
                             <?php print $this->formLabel($description); ?>
@@ -130,7 +124,9 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                             <?php print $this->formElementErrors()->render($description, ['class' => 'help-block']); ?>
                         </div>
                     </div>
+                </div>
 
+                <div class=" row">
                     <div class="col-sm-4">
                         <div class="form-group">
                             <?php print $this->formLabel($remarks); ?>
