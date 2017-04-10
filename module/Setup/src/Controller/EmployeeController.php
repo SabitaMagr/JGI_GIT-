@@ -6,10 +6,10 @@ use Application\Helper\EntityHelper as ApplicationHelper;
 use Application\Helper\EntityHelper as EntityHelper2;
 use Application\Helper\Helper;
 use Setup\Form\HrEmployeesFormTabEight;
-use Setup\Form\HrEmployeesFormTabSeven;
 use Setup\Form\HrEmployeesFormTabFive;
 use Setup\Form\HrEmployeesFormTabFour;
 use Setup\Form\HrEmployeesFormTabOne;
+use Setup\Form\HrEmployeesFormTabSeven;
 use Setup\Form\HrEmployeesFormTabSix;
 use Setup\Form\HrEmployeesFormTabThree;
 use Setup\Form\HrEmployeesFormTabTwo;
@@ -25,11 +25,11 @@ use Setup\Model\Position;
 use Setup\Model\ServiceEventType;
 use Setup\Model\ServiceType;
 use Setup\Model\VdcMunicipalities;
+use Setup\Repository\EmployeeExperienceRepository;
 use Setup\Repository\EmployeeFile;
 use Setup\Repository\EmployeeQualificationRepository;
-use Setup\Repository\EmployeeExperienceRepository;
-use Setup\Repository\EmployeeTrainingRepository;
 use Setup\Repository\EmployeeRepository;
+use Setup\Repository\EmployeeTrainingRepository;
 use Setup\Repository\JobHistoryRepository;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Form\Annotation\AnnotationBuilder;
@@ -44,10 +44,15 @@ class EmployeeController extends AbstractActionController {
     private $repository;
     private $employeeFileRepo;
     private $jobHistoryRepo;
+    private $formOne;
+    private $formTwo;
+    private $formThree;
+    private $formFour;
+    private $formSix;
+    private $formSeven;
+    private $formEight;
 
     public function __construct(AdapterInterface $adapter) {
-        
-
         $this->adapter = $adapter;
         $this->repository = new EmployeeRepository($adapter);
         $this->employeeFileRepo = new EmployeeFile($this->adapter);
@@ -126,14 +131,6 @@ class EmployeeController extends AbstractActionController {
         ]);
     }
 
-    private $formOne;
-    private $formTwo;
-    private $formThree;
-    private $formFour;
-    private $formSix;
-    private $formSeven;
-    private $formEight;
-
     public function initializeForm() {
         $builder = new AnnotationBuilder();
         $formTabOne = new HrEmployeesFormTabOne();
@@ -199,7 +196,7 @@ class EmployeeController extends AbstractActionController {
             'formFour' => $this->formFour,
             'formSix' => $this->formSix,
             'formSeven' => $this->formSeven,
-            'formEight'=>$this->formEight,
+            'formEight' => $this->formEight,
             "bloodGroups" => EntityHelper::getTableKVList($this->adapter, EntityHelper::HRIS_BLOOD_GROUPS),
             "districts" => EntityHelper::getTableKVList($this->adapter, EntityHelper::HRIS_DISTRICTS),
             "genders" => EntityHelper::getTableKVList($this->adapter, EntityHelper::HRIS_GENDERS),
@@ -396,11 +393,11 @@ class EmployeeController extends AbstractActionController {
             $formSixModel->exchangeArrayFromDB($employeeData);
             $this->formSix->bind($formSixModel);
         }
-        
+
         if ($tab != 7 || !$request->isPost()) {
             
         }
-        
+
         if ($tab != 8 || !$request->isPost()) {
             
         }
@@ -458,16 +455,16 @@ class EmployeeController extends AbstractActionController {
         $empExperienceRepo = new EmployeeExperienceRepository($this->adapter);
         $empTrainingRepo = new EmployeeTrainingRepository($this->adapter);
 
-        $formOneModel = new HrEmployeesFormTabOne();
-        $formTwoModel = new HrEmployeesFormTabTwo();
-        $formThreeModel = new HrEmployeesFormTabThree();
-        $formFourModel = new HrEmployeesFormTabFour();
-        $formSixModel = new HrEmployeesFormTabSix();
+//        $formOneModel = new HrEmployeesFormTabOne();
+//        $formTwoModel = new HrEmployeesFormTabTwo();
+//        $formThreeModel = new HrEmployeesFormTabThree();
+//        $formFourModel = new HrEmployeesFormTabFour();
+//        $formSixModel = new HrEmployeesFormTabSix();
 
         $employeeData = (array) $this->repository->getById($id);
         $profilePictureId = $employeeData[HrEmployees::PROFILE_PICTURE_ID];
-        $filePathArray=ApplicationHelper::getTableKVList($this->adapter, EmployeeFileModel::TABLE_NAME, EmployeeFileModel::FILE_CODE, [EmployeeFileModel::FILE_PATH], [EmployeeFileModel::FILE_CODE => $profilePictureId], null);
-        $filePath = $filePathArray==null?null:$filePathArray[$profilePictureId];
+        $filePathArray = ApplicationHelper::getTableKVList($this->adapter, EmployeeFileModel::TABLE_NAME, EmployeeFileModel::FILE_CODE, [EmployeeFileModel::FILE_PATH], [EmployeeFileModel::FILE_CODE => $profilePictureId], null);
+        $filePath = $filePathArray == null ? null : $filePathArray[$profilePictureId];
 
         $perVdcMunicipalityDtl = $this->repository->getVdcMunicipalityDtl($employeeData[HrEmployees::ADDR_PERM_VDC_MUNICIPALITY_ID]);
         $perDistrictDtl = $this->repository->getDistrictDtl($perVdcMunicipalityDtl['DISTRICT_ID']);
@@ -487,8 +484,8 @@ class EmployeeController extends AbstractActionController {
                     'formThree' => $this->formThree,
                     'formFour' => $this->formFour,
                     'formSix' => $this->formSix,
-                    "formSeven"=>$this->formSeven,
-                    'formEight'=>$this->formEight,
+                    "formSeven" => $this->formSeven,
+                    'formEight' => $this->formEight,
                     "id" => $id,
                     'profilePictureId' => $profilePictureId,
                     'employeeData' => $employeeData,
@@ -498,8 +495,8 @@ class EmployeeController extends AbstractActionController {
                     'tempDistrictName' => $tempDistrictDtl['DISTRICT_NAME'],
                     'tempZoneName' => $tempZoneDtl['ZONE_NAME'],
                     'empQualificationList' => $empQualificationDtl,
-                    'empExperienceList'=>$empExperienceList,
-                    'empTrainingList'=>$empTrainingList
+                    'empExperienceList' => $empExperienceList,
+                    'empTrainingList' => $empTrainingList
         ]);
     }
 
