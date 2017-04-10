@@ -1974,3 +1974,9 @@ textarea#form-remarks,#remarks,.form-reason  {
     min-height: 45px;
     resize:none !important;
 }
+#companyList{
+    position: absolute;
+    margin-top: 2px;
+    width: 15px;
+    height: 19px;
+}

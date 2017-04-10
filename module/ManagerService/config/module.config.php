@@ -95,6 +95,16 @@ return [
                     ]
                 ]
             ],
+            'trainingApprove' => [
+                'type' => Segment::class,
+                'options' => [
+                    'route' => '/managerservice/trainingApprove[/:action[/:id][/:role]]',
+                    'defaults' => [
+                        'controller' => Controller\TrainingApproveController::class,
+                        'action' => 'index'
+                    ]
+                ]
+            ],
         ]
     ],
     'navigation' => [
@@ -323,6 +333,33 @@ return [
                 ]
             ]
         ],
+        'trainingApprove' => [
+                [
+                'label' => 'Training Request',
+                'route' => 'trainingRequest',
+            ],
+                [
+                'label' => 'Training Request',
+                'route' => 'trainingRequest',
+                'pages' => [
+                        [
+                        'label' => 'List',
+                        'route' => 'trainingRequest',
+                        'action' => 'index',
+                    ],
+                        [
+                        'label' => 'List',
+                        'route' => 'trainingRequest',
+                        'action' => 'status',
+                    ],
+                        [
+                        'label' => 'View',
+                        'route' => 'trainingRequest',
+                        'action' => 'view',
+                    ],
+                ]
+            ]
+        ],
         'salaryReview' => [
                 [
                 'label' => 'Salary Review',
@@ -360,7 +397,8 @@ return [
             Controller\AdvanceApproveController::class => ControllerFactory::class,
             Controller\TravelApproveController::class => ControllerFactory::class,
             Controller\DayoffWorkApproveController::class => ControllerFactory::class,
-            Controller\HolidayWorkApproveController::class => ControllerFactory::class
+            Controller\HolidayWorkApproveController::class => ControllerFactory::class,
+            Controller\TrainingApproveController::class => ControllerFactory::class
         ],
     ],
     'view_manager' => [
