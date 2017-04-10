@@ -2,6 +2,7 @@
 
 namespace Setup\Controller;
 
+use Application\Factory\ConfigInterface;
 use Application\Helper\EntityHelper as ApplicationHelper;
 use Application\Helper\EntityHelper as EntityHelper2;
 use Application\Helper\Helper;
@@ -40,6 +41,7 @@ use Zend\View\Model\ViewModel;
 class EmployeeController extends AbstractActionController {
 
     private $adapter;
+    private $config;
     private $form;
     private $repository;
     private $employeeFileRepo;
@@ -52,8 +54,9 @@ class EmployeeController extends AbstractActionController {
     private $formSeven;
     private $formEight;
 
-    public function __construct(AdapterInterface $adapter) {
+    public function __construct(AdapterInterface $adapter, ConfigInterface $config) {
         $this->adapter = $adapter;
+        $this->config = $config;
         $this->repository = new EmployeeRepository($adapter);
         $this->employeeFileRepo = new EmployeeFile($this->adapter);
         $this->jobHistoryRepo = new JobHistoryRepository($this->adapter);
@@ -450,7 +453,7 @@ class EmployeeController extends AbstractActionController {
         }
 
         $this->initializeForm();
-        $request = $this->getRequest();
+//        $request = $this->getRequest();
         $empQualificationRepo = new EmployeeQualificationRepository($this->adapter);
         $empExperienceRepo = new EmployeeExperienceRepository($this->adapter);
         $empTrainingRepo = new EmployeeTrainingRepository($this->adapter);
@@ -464,7 +467,7 @@ class EmployeeController extends AbstractActionController {
         $employeeData = (array) $this->repository->getById($id);
         $profilePictureId = $employeeData[HrEmployees::PROFILE_PICTURE_ID];
         $filePathArray = ApplicationHelper::getTableKVList($this->adapter, EmployeeFileModel::TABLE_NAME, EmployeeFileModel::FILE_CODE, [EmployeeFileModel::FILE_PATH], [EmployeeFileModel::FILE_CODE => $profilePictureId], null);
-        $filePath = $filePathArray == null ? null : $filePathArray[$profilePictureId];
+        $filePath = $filePathArray == null ?$this->config->getApplicationConfig()['default-profile-picture']: $filePathArray[$profilePictureId];
 
         $perVdcMunicipalityDtl = $this->repository->getVdcMunicipalityDtl($employeeData[HrEmployees::ADDR_PERM_VDC_MUNICIPALITY_ID]);
         $perDistrictDtl = $this->repository->getDistrictDtl($perVdcMunicipalityDtl['DISTRICT_ID']);

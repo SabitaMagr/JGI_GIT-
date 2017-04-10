@@ -138,7 +138,8 @@ $empId = isset($id) ? $id : -1;
 ?>
 
 <script>
-    document.menu =<?php $menu = ["id" => "menuSelfService", "subMenu" => ["id" => "subMenuMyProfile"]];
+    document.menu =<?php
+$menu = ["id" => "menuSelfService", "subMenu" => ["id" => "subMenuMyProfile"]];
 echo json_encode($menu);
 ?>;
     document.urlDistrict = '<?= $this->url("webService", ["action" => "district"]) ?>';
@@ -148,7 +149,7 @@ echo json_encode($menu);
     document.employeeId =<?= $id ?>;</script>
 
 <div class="page-bar">
-<?= $this->navigation('Zend\Navigation\Profile')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb'); ?>
+    <?= $this->navigation('Zend\Navigation\Profile')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb'); ?>
 </div>
 <?php
 if ($this->messages && (sizeof($this->messages) > 1)) {
@@ -184,7 +185,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                             <div class="col-xs-6 col-sm-6 col-md-6 rightalign">
                                 <?php print $this->formLabel($employeeCode); ?></div>
                             <div class="col-xs-6 col-sm-6 col-md-6 cgap">
-<?php echo $employeeData[\Setup\Model\HrEmployees::EMPLOYEE_CODE]; ?>
+                                <?php echo $employeeData[\Setup\Model\HrEmployees::EMPLOYEE_CODE]; ?>
                             </div>               
                         </div>
                     </div>   
@@ -197,17 +198,17 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                             <div class="col-xs-6 col-sm-6  col-md-6 rightalign">
                                 <?php print $this->formLabel($middleName) ?></div>
                             <div class="col-xs-6 col-sm-6 col-md-6 cgap">
-<?php print $employeeData[\Setup\Model\HrEmployees::MIDDLE_NAME]; ?></div>
+                                <?php print $employeeData[\Setup\Model\HrEmployees::MIDDLE_NAME]; ?></div>
                         </div>
                     </div> 
 
 
                     <div class="row bottomgap">
                         <div class="col-xs-6 col-sm-6  col-md-6 rightalign">
-<?php print $this->formLabel($birthDate) ?></div>
+                            <?php print $this->formLabel($birthDate) ?></div>
                         <div class="col-xs-6 col-sm-6 col-md-6 cgap">
                             <div class="input-group">
-<?php print $employeeData[\Setup\Model\HrEmployees::BIRTH_DATE]; ?>
+                                <?php print $employeeData[\Setup\Model\HrEmployees::BIRTH_DATE]; ?>
                             </div>
                         </div>
                     </div>
@@ -217,8 +218,8 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                             <div class="col-xs-6 col-sm-6 col-md-6 rightalign">
                                 <?php print $this->formLabel($companyId); ?></div>
                             <div class="col-xs-6 col-sm-6 col-md-6 cgap">
-                            <?php print $employeeData[Setup\Model\Company::COMPANY_NAME]; ?></div>
-<?php print $this->formElementErrors()->render($companyId, ['class' => 'error']) ?>
+                                <?php print $employeeData[Setup\Model\Company::COMPANY_NAME]; ?></div>
+                            <?php print $this->formElementErrors()->render($companyId, ['class' => 'error']) ?>
                         </div>
                     </div>
                     <div class="row bottomgap">
@@ -226,7 +227,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                             <div class="col-xs-6 col-sm-6 col-md-6 rightalign">
                                 <?php print $this->formLabel($telephoneNo); ?></div>
                             <div class="col-xs-6 col-sm-6 col-md-6 cgap">
-<?php print $employeeData[\Setup\Model\HrEmployees::TELEPHONE_NO]; ?></div>
+                                <?php print $employeeData[\Setup\Model\HrEmployees::TELEPHONE_NO]; ?></div>
                         </div>
                     </div>
 
@@ -235,7 +236,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                             <div class="col-xs-6 col-sm-6 col-md-6 rightalign">
                                 <?php print $this->formLabel($emailOfficial); ?></div>
                             <div class="col-xs-6 col-sm-6 col-md-6 cgap">
-<?php print $employeeData[\Setup\Model\HrEmployees::EMAIL_OFFICIAL]; ?></div>
+                                <?php print $employeeData[\Setup\Model\HrEmployees::EMAIL_OFFICIAL]; ?></div>
                         </div>
                     </div>  
 
@@ -249,7 +250,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                             <div class="col-xs-6 col-sm-6 col-md-6 rightalign"> 
                                 <?php print $this->formLabel($firstName) ?></div>
                             <div class="col-xs-6 col-sm-6 col-md-6 cgap">
-<?php print $employeeData[\Setup\Model\HrEmployees::FIRST_NAME]; ?></div>
+                                <?php print $employeeData[\Setup\Model\HrEmployees::FIRST_NAME]; ?></div>
                         </div>
                     </div>
                     <div class="row bottomgap">
@@ -257,18 +258,18 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                             <div class="col-xs-6 col-sm-6  col-md-6 rightalign">
                                 <?php print $this->formLabel($nameNepali); ?></div>
                             <div class="col-xs-6 col-sm-6 col-md-6 cgap">
-<?php print $employeeData[\Setup\Model\HrEmployees::NAME_NEPALI]; ?></div>
+                                <?php print $employeeData[\Setup\Model\HrEmployees::NAME_NEPALI]; ?></div>
                         </div>
                     </div>
 
                     <div class="row bottomgap">
                         <div class="form-group  <?= empty($countryId->getMessages()) ? "" : "error" ?>">
                             <div class="col-xs-6 col-sm-6 col-md-6 rightalign">
-<?php print $this->formLabel($countryId); ?>
+                                <?php print $this->formLabel($countryId); ?>
                             </div>
                             <div class="col-xs-6 col-sm-6 col-md-6 cgap">
-                            <?php print $employeeData['COUNTRY_NAME'] ?></div>
-<?php print $this->formElementErrors()->render($countryId, ['class' => 'help-block error']); ?>
+                                <?php print $employeeData['COUNTRY_NAME'] ?></div>
+                            <?php print $this->formElementErrors()->render($countryId, ['class' => 'help-block error']); ?>
                         </div>
                     </div>
 
@@ -278,7 +279,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                         <div class="col-xs-6 col-sm-6  col-md-6 rightalign">
                             <?php print $this->formLabel($bloodGroupId) ?></div>
                         <div class="col-xs-6 col-sm-6 col-md-6 cgap">
-<?php print $employeeData['BLOOD_GROUP_CODE']; ?></div>
+                            <?php print $employeeData['BLOOD_GROUP_CODE']; ?></div>
                     </div>
 
 
@@ -292,7 +293,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                             <div class="col-xs-6 col-sm-6  col-md-6 rightalign">
                                 <?php print $this->formLabel($socialActivity) ?></div>
                             <div class="col-xs-6 col-sm-6 col-md-6 cgap">
-<?php print $employeeData[\Setup\Model\HrEmployees::SOCIAL_ACTIVITY]; ?></div>
+                                <?php print $employeeData[\Setup\Model\HrEmployees::SOCIAL_ACTIVITY]; ?></div>
                         </div>
                     </div>
                     <div class="row bottomgap">
@@ -300,7 +301,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                             <div class="col-xs-6 col-sm-6 col-md-6 rightalign">
                                 <?php print $this->formLabel($emailPersonal); ?></div>
                             <div class="col-xs-6 col-sm-6 col-md-6 cgap">
-<?php print $employeeData[\Setup\Model\HrEmployees::EMAIL_PERSONAL]; ?></div>
+                                <?php print $employeeData[\Setup\Model\HrEmployees::EMAIL_PERSONAL]; ?></div>
                         </div>
                     </div>
 
@@ -312,31 +313,31 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                         <div class="col-xs-6 col-sm-6  col-md-6 rightalign">
                             <?php print $this->formLabel($lastName) ?></div>
                         <div class="col-xs-6 col-sm-6 col-md-6 cgap">
-<?php print $employeeData[\Setup\Model\HrEmployees::LAST_NAME]; ?>
+                            <?php print $employeeData[\Setup\Model\HrEmployees::LAST_NAME]; ?>
                         </div>
                     </div>
                     <div class="row bottomgap">
                         <div class="col-xs-6 col-sm-6  col-md-6 rightalign">
                             <?php print $this->formLabel($genderId); ?></div>
                         <div class="col-xs-6 col-sm-6 col-md-6 cgap">
-<?php print $employeeData[\Setup\Model\Gender::GENDER_NAME]; ?></div>
+                            <?php print $employeeData[\Setup\Model\Gender::GENDER_NAME]; ?></div>
                     </div>
                     <div class="row bottomgap">
                         <div class="form-group ">
                             <div class="col-xs-6 col-sm-6 col-md-6 rightalign">
                                 <?php print $this->formLabel($religionId) ?></div>
                             <div class="col-xs-6 col-sm-6 col-md-6 cgap">
-<?php print $employeeData['RELIGION_NAME']; ?>
+                                <?php print $employeeData['RELIGION_NAME']; ?>
                             </div>
                         </div>
                     </div>
                     <div class="row bottomgap">
                         <div class="form-group">
                             <div class="col-xs-6 col-sm-6 col-md-6 rightalign">
-<?php print $this->formLabel($mobileNo); ?>
+                                <?php print $this->formLabel($mobileNo); ?>
                             </div>
                             <div class="col-xs-6 col-sm-6 col-md-6 cgap">
-<?php print $employeeData[\Setup\Model\HrEmployees::MOBILE_NO]; ?></div>
+                                <?php print $employeeData[\Setup\Model\HrEmployees::MOBILE_NO]; ?></div>
                         </div>
                     </div>
 
@@ -350,7 +351,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                             <div class="col-xs-6 col-sm-6 col-md-6 rightalign">
                                 <?php print $this->formLabel($extensionNo); ?></div>
                             <div class="col-xs-6 col-sm-6 col-md-6 cgap">
-<?php print $employeeData[\Setup\Model\HrEmployees::EXTENSION_NO]; ?></div>
+                                <?php print $employeeData[\Setup\Model\HrEmployees::EXTENSION_NO]; ?></div>
                         </div>
                     </div>
 
@@ -366,7 +367,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                             <div class="col-xs-6 col-sm-6 col-md-6 rightalign">
                                 <?php print $this->formLabel($socialNetwork); ?></div>
                             <div class="col-xs-6 col-sm-6 col-md-6 cgap">
-<?php print $employeeData[\Setup\Model\HrEmployees::SOCIAL_NETWORK]; ?></div>
+                                <?php print $employeeData[\Setup\Model\HrEmployees::SOCIAL_NETWORK]; ?></div>
                         </div>
                     </div>
 
@@ -389,7 +390,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                             <div class="col-xs-6 col-sm-6 col-md-6 rightalign">
                                 <?php print $this->formLabel($addrPermHouseNo); ?></div>
                             <div class="col-xs-6 col-sm-6 col-md-6 cgap">
-<?php print $employeeData[\Setup\Model\HrEmployees::ADDR_PERM_HOUSE_NO]; ?></div>
+                                <?php print $employeeData[\Setup\Model\HrEmployees::ADDR_PERM_HOUSE_NO]; ?></div>
                         </div>
                     </div>
                 </div>
@@ -400,7 +401,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                             <div class="col-xs-6 col-sm-6 col-md-6 rightalign">
                                 <?php print $this->formLabel($addrPermWardNo); ?></div>
                             <div class="col-xs-6 col-sm-6 col-md-6 cgap">
-<?php print $employeeData[\Setup\Model\HrEmployees::ADDR_PERM_WARD_NO]; ?></div>
+                                <?php print $employeeData[\Setup\Model\HrEmployees::ADDR_PERM_WARD_NO]; ?></div>
                         </div>
                     </div>
                 </div>
@@ -411,7 +412,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                             <div class="col-xs-6 col-sm-6 col-md-6 rightalign">
                                 <?php print $this->formLabel($addrPermStreetAddress); ?></div>
                             <div class="col-xs-6 col-sm-6 col-md-6 cgap">
-<?php print $employeeData[\Setup\Model\HrEmployees::ADDR_PERM_STREET_ADDRESS]; ?></div>
+                                <?php print $employeeData[\Setup\Model\HrEmployees::ADDR_PERM_STREET_ADDRESS]; ?></div>
                         </div>
                     </div>
                 </div>
@@ -422,7 +423,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                             <div class="col-xs-6 col-sm-6 col-md-6 rightalign">
                                 <?php print $this->formLabel($addrPermZoneId); ?></div>
                             <div class="col-xs-6 col-sm-6 col-md-6 cgap">
-<?php print $perZoneName; ?></div>
+                                <?php print $perZoneName; ?></div>
                         </div>
                     </div>
                 </div>
@@ -433,7 +434,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                             <div class="col-xs-6 col-sm-6 col-md-6 rightalign">
                                 <?php print $this->formLabel($addrPermDistrictId); ?></div>
                             <div class="col-xs-6 col-sm-6 col-md-6 cgap">
-<?php print $perDistrictName; ?></div>
+                                <?php print $perDistrictName; ?></div>
                         </div>
                     </div>
                 </div>
@@ -445,7 +446,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                             <div class="col-xs-6 col-sm-6 col-md-6 rightalign">
                                 <?php print $this->formLabel($addrPermVdcMunicipalityId); ?></div>
                             <div class="col-xs-6 col-sm-6 col-md-6 cgap">
-<?php print $employeeData['VDC_MUNICIPALITY_NAME']; ?></div>
+                                <?php print $employeeData['VDC_MUNICIPALITY_NAME']; ?></div>
                         </div>
                     </div>
 
@@ -465,7 +466,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                             <div class="col-xs-6 col-sm-6 col-md-6 rightalign">
                                 <?php print $this->formLabel($addrTempHouseNo); ?></div>
                             <div class="col-xs-6 col-sm-6 col-md-6 cgap">
-<?php print $employeeData[\Setup\Model\HrEmployees::ADDR_TEMP_HOUSE_NO]; ?></div>
+                                <?php print $employeeData[\Setup\Model\HrEmployees::ADDR_TEMP_HOUSE_NO]; ?></div>
                         </div>
                     </div>
                 </div>
@@ -476,7 +477,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                             <div class="col-xs-6 col-sm-6 col-md-6 rightalign">
                                 <?php print $this->formLabel($addrTempWardNo); ?></div>
                             <div class="col-xs-6 col-sm-6 col-md-6 cgap">
-<?php print $employeeData[\Setup\Model\HrEmployees::ADDR_TEMP_WARD_NO]; ?></div>
+                                <?php print $employeeData[\Setup\Model\HrEmployees::ADDR_TEMP_WARD_NO]; ?></div>
                         </div>
                     </div>
                 </div>
@@ -487,7 +488,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                             <div class="col-xs-6 col-sm-6 col-md-6 rightalign">
                                 <?php print $this->formLabel($addrTempStreetAddress); ?></div>
                             <div class="col-xs-6 col-sm-6 col-md-6 cgap">
-<?php print $employeeData[\Setup\Model\HrEmployees::ADDR_TEMP_STREET_ADDRESS]; ?></div>
+                                <?php print $employeeData[\Setup\Model\HrEmployees::ADDR_TEMP_STREET_ADDRESS]; ?></div>
                         </div>
                     </div>
                 </div>
@@ -498,7 +499,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                             <div class="col-xs-6 col-sm-6 col-md-6 rightalign">
                                 <?php print $this->formLabel($addrTempZoneId); ?></div>
                             <div class="col-xs-6 col-sm-6 col-md-6 cgap">
-<?php print $tempZoneName; ?></div>
+                                <?php print $tempZoneName; ?></div>
                         </div>
                     </div>
                 </div>
@@ -508,7 +509,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                             <div class="col-xs-6 col-sm-6 col-md-6 rightalign">
                                 <?php print $this->formLabel($addrTempDistrictId); ?></div>
                             <div class="col-xs-6 col-sm-6 col-md-6 cgap">
-<?php print $tempDistrictName; ?></div>
+                                <?php print $tempDistrictName; ?></div>
                         </div>
                     </div>
                 </div>
@@ -519,7 +520,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                             <div class="col-xs-6 col-sm-6 col-md-6 rightalign">
                                 <?php print $this->formLabel($addrTempVdcMunicipalityId); ?></div>
                             <div class="col-xs-6 col-sm-6 col-md-6 cgap">
-<?php print $employeeData['VDC_MUNICIPALITY_NAME_TEMP']; ?></div>
+                                <?php print $employeeData['VDC_MUNICIPALITY_NAME_TEMP']; ?></div>
                         </div>
                     </div>
                 </div>
@@ -539,7 +540,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                             <div class="col-xs-6 col-sm-6 col-md-6 rightalign">
                                 <?php print $this->formLabel($emergContactName); ?></div>
                             <div class="col-xs-6 col-sm-6 col-md-6 cgap">
-<?php print $employeeData[\Setup\Model\HrEmployees::EMRG_CONTACT_NAME]; ?></div>
+                                <?php print $employeeData[\Setup\Model\HrEmployees::EMRG_CONTACT_NAME]; ?></div>
                         </div>
                     </div>
                 </div>
@@ -550,7 +551,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                             <div class="col-xs-6 col-sm-6 col-md-6 rightalign">
                                 <?php print $this->formLabel($emergContactRelationship); ?></div>
                             <div class="col-xs-6 col-sm-6 col-md-6 cgap">
-<?php print $employeeData[\Setup\Model\HrEmployees::EMERG_CONTACT_RELATIONSHIP]; ?></div>
+                                <?php print $employeeData[\Setup\Model\HrEmployees::EMERG_CONTACT_RELATIONSHIP]; ?></div>
                         </div>
                     </div>
                 </div>
@@ -561,7 +562,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                             <div class="col-xs-6 col-sm-6 col-md-6 rightalign">
                                 <?php print $this->formLabel($emergContactAddress); ?></div>
                             <div class="col-xs-6 col-sm-6 col-md-6 cgap">
-<?php print $employeeData[\Setup\Model\HrEmployees::EMERG_CONTACT_ADDRESS]; ?></div>
+                                <?php print $employeeData[\Setup\Model\HrEmployees::EMERG_CONTACT_ADDRESS]; ?></div>
                         </div>
                     </div>
                 </div>
@@ -572,7 +573,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                             <div class="col-xs-6 col-sm-6 col-md-6 rightalign">
                                 <?php print $this->formLabel($emergContactNo); ?></div>
                             <div class="col-xs-6 col-sm-6 col-md-6 cgap">
-<?php print $employeeData[\Setup\Model\HrEmployees::EMERG_CONTACT_NO]; ?></div>
+                                <?php print $employeeData[\Setup\Model\HrEmployees::EMERG_CONTACT_NO]; ?></div>
                         </div>
                     </div>
 
@@ -597,7 +598,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                             <div class="col-xs-6 col-sm-6 col-md-6 rightalign-2">
                                 <?php print $this->formLabel($famFatherName); ?></div>
                             <div class="col-xs-6 col-sm-6 col-md-6 cgap-2">
-<?php print $employeeData[\Setup\Model\HrEmployees::FAM_FATHER_NAME]; ?></div>
+                                <?php print $employeeData[\Setup\Model\HrEmployees::FAM_FATHER_NAME]; ?></div>
                         </div>
                     </div>
                 </div>
@@ -608,7 +609,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                             <div class="col-xs-6 col-sm-6 col-md-6 rightalign-2">
                                 <?php print $this->formLabel($famFatherOccupation); ?></div>
                             <div class="col-xs-6 col-sm-6 col-md-6 cgap-2">
-<?php print $employeeData[\Setup\Model\HrEmployees::FAM_FATHER_OCCUPATION]; ?></div>
+                                <?php print $employeeData[\Setup\Model\HrEmployees::FAM_FATHER_OCCUPATION]; ?></div>
                         </div>
                     </div>
                 </div>
@@ -619,7 +620,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                             <div class="col-xs-6 col-sm-6 col-md-6 rightalign-2">
                                 <?php print $this->formLabel($famGrandFatherName); ?></div>
                             <div class="col-xs-6 col-sm-6 col-md-6 cgap-2">
-<?php print $employeeData[\Setup\Model\HrEmployees::FAM_GRAND_FATHER_NAME]; ?></div>
+                                <?php print $employeeData[\Setup\Model\HrEmployees::FAM_GRAND_FATHER_NAME]; ?></div>
                         </div>
                     </div>
                 </div>
@@ -647,7 +648,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                             <div class="col-xs-6 col-sm-6 col-md-6 rightalign-2">
                                 <?php print $this->formLabel($famSpouseName); ?></div>
                             <div class="col-xs-6 col-sm-6 col-md-6 cgap-2">
-<?php print $employeeData[\Setup\Model\HrEmployees::FAM_SPOUSE_NAME]; ?></div>
+                                <?php print $employeeData[\Setup\Model\HrEmployees::FAM_SPOUSE_NAME]; ?></div>
                         </div>
                     </div>
                 </div>
@@ -657,7 +658,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                             <div class="col-xs-6 col-sm-6 col-md-6 rightalign-2">
                                 <?php print $this->formLabel($famSpouseOccupation); ?></div>
                             <div class="col-xs-6 col-sm-6 col-md-6 cgap-2">
-<?php print $employeeData[\Setup\Model\HrEmployees::FAM_SPOUSE_OCCUPATION]; ?></div>
+                                <?php print $employeeData[\Setup\Model\HrEmployees::FAM_SPOUSE_OCCUPATION]; ?></div>
                         </div>
                     </div>
 
@@ -671,7 +672,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                             <div class="col-xs-6 col-sm-6 col-md-6 rightalign-2">
                                 <?php print $this->formLabel($famMotherName); ?></div>
                             <div class="col-xs-6 col-sm-6 col-md-6 cgap-2">
-<?php print $employeeData[\Setup\Model\HrEmployees::FAM_MOTHER_NAME]; ?></div>
+                                <?php print $employeeData[\Setup\Model\HrEmployees::FAM_MOTHER_NAME]; ?></div>
                         </div>
                     </div>
                 </div>
@@ -682,7 +683,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                             <div class="col-xs-6 col-sm-6 col-md-6 rightalign-2">
                                 <?php print $this->formLabel($famMotherOccupation); ?></div>
                             <div class="col-xs-6 col-sm-6 col-md-6 cgap-2">
-<?php print $employeeData[\Setup\Model\HrEmployees::FAM_MOTHER_OCCUPATION]; ?></div>
+                                <?php print $employeeData[\Setup\Model\HrEmployees::FAM_MOTHER_OCCUPATION]; ?></div>
                         </div>
                     </div>
                 </div>
@@ -693,7 +694,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                             <div class="col-xs-6 col-sm-6 col-md-6 rightalign-2">
                                 <?php print $this->formLabel($famGrandMotherName); ?></div>
                             <div class="col-xs-6 col-sm-6 col-md-6 cgap-2">
-<?php print $employeeData[\Setup\Model\HrEmployees::FAM_GRAND_MOTHER_NAME]; ?></div>
+                                <?php print $employeeData[\Setup\Model\HrEmployees::FAM_GRAND_MOTHER_NAME]; ?></div>
                         </div>
                     </div>
                 </div>
@@ -703,10 +704,10 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
 
                         <div class="form-group <?= empty($famSpouseBirthDate->getMessages()) ? "" : "error" ?>">
                             <div class="col-xs-6 col-sm-6 col-md-6 rightalign-2">
-<?php print $this->formLabel($famSpouseBirthDate); ?></div>
+                                <?php print $this->formLabel($famSpouseBirthDate); ?></div>
                             <div class="col-xs-6 col-sm-6 col-md-6 cgap-2">
 
-<?php print $employeeData[\Setup\Model\HrEmployees::FAM_SPOUSE_BIRTH_DATE]; ?>
+                                <?php print $employeeData[\Setup\Model\HrEmployees::FAM_SPOUSE_BIRTH_DATE]; ?>
 
                             </div>
                         </div>
@@ -719,7 +720,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                             <div class="col-xs-6 col-sm-6 col-md-6 rightalign-2">
                                 <?php print $this->formLabel($famSpouseWeddingAnniversary); ?></div>
                             <div class="col-xs-6 col-sm-6 col-md-6 cgap-2">
-<?php print $employeeData[\Setup\Model\HrEmployees::FAM_SPOUSE_WEDDING_ANNIVERSARY]; ?>
+                                <?php print $employeeData[\Setup\Model\HrEmployees::FAM_SPOUSE_WEDDING_ANNIVERSARY]; ?>
                             </div>
                         </div>
                     </div>
@@ -740,7 +741,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                             <div class="col-xs-6 col-sm-6 col-md-6 rightalign-3">
                                 <?php print $this->formLabel($idCardNo); ?></div>
                             <div class="col-xs-6 col-sm-6 col-md-6 cgap-3">
-<?php print $employeeData[\Setup\Model\HrEmployees::ID_CARD_NO]; ?></div>
+                                <?php print $employeeData[\Setup\Model\HrEmployees::ID_CARD_NO]; ?></div>
                         </div>
                     </div>
                 </div>
@@ -748,10 +749,10 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                     <div class="row bottomgap">
                         <div class="form-group  <?= empty($idLbrf->getMessages()) ? "" : "error" ?>">
                             <div class="col-xs-6 col-sm-6 col-md-6 rightalign-3">
-<?php print $this->formLabel($idLbrf); ?>
+                                <?php print $this->formLabel($idLbrf); ?>
                             </div>
                             <div class="col-xs-6 col-sm-6 col-md-6 cgap-3">
-<?php print $employeeData[\Setup\Model\HrEmployees::ID_LBRF]; ?>
+                                <?php print $employeeData[\Setup\Model\HrEmployees::ID_LBRF]; ?>
                             </div>
                         </div>
                     </div>
@@ -761,10 +762,10 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
 
                         <div class="form-group  <?= empty($idBarCode->getMessages()) ? "" : "error" ?>">
                             <div class="col-xs-6 col-sm-6 col-md-6 rightalign-3">
-<?php print $this->formLabel($idBarCode); ?>
+                                <?php print $this->formLabel($idBarCode); ?>
                             </div>
                             <div class="col-xs-6 col-sm-6 col-md-6 cgap-3">
-<?php print $employeeData[\Setup\Model\HrEmployees::ID_BAR_CODE]; ?>
+                                <?php print $employeeData[\Setup\Model\HrEmployees::ID_BAR_CODE]; ?>
                             </div>
                         </div>
                     </div>
@@ -775,7 +776,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                             <div class="col-xs-6 col-sm-6 col-md-6 rightalign-3">
                                 <?php print $this->formLabel($idProvidentFundNo); ?></div>
                             <div class="col-xs-6 col-sm-6 col-md-6 cgap-3">
-<?php print $employeeData[\Setup\Model\HrEmployees::ID_PROVIDENT_FUND_NO]; ?></div>
+                                <?php print $employeeData[\Setup\Model\HrEmployees::ID_PROVIDENT_FUND_NO]; ?></div>
                         </div>
                     </div>
                 </div>
@@ -785,7 +786,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                             <div class="col-xs-6 col-sm-6 col-md-6 rightalign-3">
                                 <?php print $this->formLabel($idDrivingLicenseNo); ?></div>
                             <div class="col-xs-6 col-sm-6 col-md-6 cgap-3">
-<?php print $employeeData[\Setup\Model\HrEmployees::ID_DRIVING_LICENCE_NO]; ?></div>
+                                <?php print $employeeData[\Setup\Model\HrEmployees::ID_DRIVING_LICENCE_NO]; ?></div>
                         </div>
                     </div>
                 </div>
@@ -796,7 +797,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                             <div class="col-xs-6 col-sm-6 col-md-6 rightalign-3">
                                 <?php print $this->formLabel($idDrivingLicenseExpiry); ?></div>
                             <div class="col-xs-6 col-sm-6 col-md-6 cgap-3">  
-<?php print $employeeData[\Setup\Model\HrEmployees::ID_DRIVING_LICENCE_EXPIRY]; ?>
+                                <?php print $employeeData[\Setup\Model\HrEmployees::ID_DRIVING_LICENCE_EXPIRY]; ?>
                             </div>
                         </div>
                     </div>
@@ -808,7 +809,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                             <div class="col-xs-6 col-sm-6 col-md-6 rightalign-3">
                                 <?php print $this->formLabel($idDrivingLicenseType); ?></div>
                             <div class="col-xs-6 col-sm-6 col-md-6 cgap-3">  
-<?php print $employeeData[\Setup\Model\HrEmployees::ID_DRIVING_LICENCE_TYPE]; ?></div>
+                                <?php print $employeeData[\Setup\Model\HrEmployees::ID_DRIVING_LICENCE_TYPE]; ?></div>
                         </div>
                     </div>
                 </div>
@@ -819,7 +820,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                             <div class="col-xs-6 col-sm-6 col-md-6 rightalign-3">
                                 <?php print $this->formLabel($idPassportNo); ?></div>
                             <div class="col-xs-6 col-sm-6 col-md-6 cgap-3"> 
-<?php print $employeeData[\Setup\Model\HrEmployees::ID_PASSPORT_NO]; ?></div>
+                                <?php print $employeeData[\Setup\Model\HrEmployees::ID_PASSPORT_NO]; ?></div>
                         </div>
                     </div>
 
@@ -847,7 +848,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                             <div class="col-xs-6 col-sm-6 col-md-6 rightalign-3">
                                 <?php print $this->formLabel($idPanNo); ?></div>
                             <div class="col-xs-6 col-sm-6 col-md-6 cgap-3">
-<?php print $employeeData[\Setup\Model\HrEmployees::ID_PAN_NO]; ?></div>
+                                <?php print $employeeData[\Setup\Model\HrEmployees::ID_PAN_NO]; ?></div>
                         </div>
                     </div>
                 </div>
@@ -857,7 +858,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                             <div class="col-xs-6 col-sm-6 col-md-6 rightalign-3">
                                 <?php print $this->formLabel($idAccountId); ?></div>
                             <div class="col-xs-6 col-sm-6 col-md-6 cgap-3">
-<?php print $employeeData[\Setup\Model\HrEmployees::ID_ACCOUNT_NO]; ?></div>
+                                <?php print $employeeData[\Setup\Model\HrEmployees::ID_ACCOUNT_NO]; ?></div>
                         </div>
                     </div>
                 </div>
@@ -867,7 +868,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                             <div class="col-xs-6 col-sm-6 col-md-6 rightalign-3">
                                 <?php print $this->formLabel($idRetirementNo); ?></div>
                             <div class="col-xs-6 col-sm-6 col-md-6 cgap-3">
-<?php print $employeeData[\Setup\Model\HrEmployees::ID_RETIREMENT_NO]; ?></div>
+                                <?php print $employeeData[\Setup\Model\HrEmployees::ID_RETIREMENT_NO]; ?></div>
                         </div>
                     </div>
                 </div>
@@ -889,10 +890,10 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                     <div class="row bottomgap">
                         <div class="form-group   <?= empty($idCitizenshipIssueDate->getMessages()) ? "" : "error" ?>">
                             <div class="col-xs-6 col-sm-6 col-md-6 rightalign-3">
-<?php print $this->formLabel($idCitizenshipIssueDate); ?></div>
+                                <?php print $this->formLabel($idCitizenshipIssueDate); ?></div>
                             <div class="col-xs-6 col-sm-6 col-md-6 cgap-3">
                                 <div class="input-group">
-<?php print $employeeData[\Setup\Model\HrEmployees::ID_CITIZENSHIP_ISSUE_DATE]; ?>
+                                    <?php print $employeeData[\Setup\Model\HrEmployees::ID_CITIZENSHIP_ISSUE_DATE]; ?>
 
                                 </div>
                             </div> 
@@ -905,7 +906,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                             <div class="col-xs-6 col-sm-6 col-md-6 rightalign-3">
                                 <?php print $this->formLabel($idCitizenshipIssuePlace); ?></div>
                             <div class="col-xs-6 col-sm-6 col-md-6 cgap-3">
-<?php print $employeeData[\Setup\Model\HrEmployees::ID_CITIZENSHIP_ISSUE_PLACE]; ?></div>
+                                <?php print $employeeData[\Setup\Model\HrEmployees::ID_CITIZENSHIP_ISSUE_PLACE]; ?></div>
                         </div>
                     </div>
                 </div>
@@ -913,10 +914,10 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                     <div class="row bottomgap">
                         <div class="form-group   <?= empty($idPassportExpiry->getMessages()) ? "" : "error" ?>">
                             <div class="col-xs-6 col-sm-6 col-md-6 rightalign-3">
-<?php print $this->formLabel($idPassportExpiry); ?></div>
+                                <?php print $this->formLabel($idPassportExpiry); ?></div>
                             <div class="col-xs-6 col-sm-6 col-md-6 cgap-3">
                                 <div class="input-group">
-<?php print $employeeData[\Setup\Model\HrEmployees::ID_PASSPORT_EXPIRY]; ?>
+                                    <?php print $employeeData[\Setup\Model\HrEmployees::ID_PASSPORT_EXPIRY]; ?>
 
                                 </div>
                             </div>
@@ -935,10 +936,10 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                     <div class="row bottomgap">
                         <div class="form-group">
                             <div class="col-xs-6 col-sm-6 col-md-6 rightalign-4">
-<?php print $this->formLabel($joinDate); ?></div>
+                                <?php print $this->formLabel($joinDate); ?></div>
                             <div class="col-xs-6 col-sm-6 cgap-4">
                                 <div class="input-group"> 
-<?php print $employeeData[\Setup\Model\HrEmployees::JOIN_DATE]; ?>
+                                    <?php print $employeeData[\Setup\Model\HrEmployees::JOIN_DATE]; ?>
                                 </div>
                             </div>
                         </div>
@@ -952,7 +953,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                             <div class="col-xs-6 col-sm-6 col-md-6 rightalign-4">
                                 <?php print $this->formLabel($salary); ?></div>
                             <div class="col-xs-6 col-sm-6 cgap-4">
-<?php print $employeeData[\Setup\Model\HrEmployees::SALARY]; ?></div>
+                                <?php print $employeeData[\Setup\Model\HrEmployees::SALARY]; ?></div>
                         </div>
                     </div>
                 </div>
@@ -963,7 +964,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                             <div class="col-xs-6 col-sm-6 col-md-6 rightalign-4">
                                 <?php print $this->formLabel($salaryPf); ?></div>
                             <div class="col-xs-6 col-sm-6 cgap-4">
-<?php print $employeeData[\Setup\Model\HrEmployees::SALARY_PF]; ?></div>
+                                <?php print $employeeData[\Setup\Model\HrEmployees::SALARY_PF]; ?></div>
                         </div>
                     </div>
                 </div>
@@ -974,7 +975,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                             <div class="col-xs-6 col-sm-6 col-md-6 rightalign-4">
                                 <?php print $this->formLabel($serviceTypeId); ?></div>
                             <div class="col-xs-6 col-sm-6 cgap-4">
-<?php print $employeeData[Setup\Model\ServiceType::SERVICE_TYPE_NAME]; ?></div>
+                                <?php print $employeeData[Setup\Model\ServiceType::SERVICE_TYPE_NAME]; ?></div>
                         </div>
                     </div>
                 </div>
@@ -985,7 +986,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                             <div class="col-xs-6 col-sm-6 col-md-6 rightalign-4">
                                 <?php print $this->formLabel($serviceEventTypeId); ?></div>
                             <div class="col-xs-6 col-sm-6 cgap-4">
-<?php print $employeeData[Setup\Model\ServiceEventType::SERVICE_EVENT_TYPE_NAME]; ?></div>
+                                <?php print $employeeData[Setup\Model\ServiceEventType::SERVICE_EVENT_TYPE_NAME]; ?></div>
                         </div>
                     </div>
 
@@ -1000,7 +1001,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                             <div class="col-xs-6 col-sm-6 col-md-6 rightalign-4">
                                 <?php print $this->formLabel($positionId); ?></div>
                             <div class="col-xs-6 col-sm-6 cgap-4">
-<?php print $employeeData[Setup\Model\Position::POSITION_NAME]; ?></div>
+                                <?php print $employeeData[Setup\Model\Position::POSITION_NAME]; ?></div>
                         </div>
                     </div>
                 </div>
@@ -1012,7 +1013,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
 
                                 <?php print $this->formLabel($designationId); ?></div>
                             <div class="col-xs-6 col-sm-6 cgap-4">
-<?php print $employeeData[Setup\Model\Designation::DESIGNATION_TITLE]; ?></div>
+                                <?php print $employeeData[Setup\Model\Designation::DESIGNATION_TITLE]; ?></div>
                         </div>
                     </div>
                 </div>
@@ -1023,7 +1024,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                             <div class="col-xs-6 col-sm-6 col-md-6 rightalign-4">
                                 <?php print $this->formLabel($departmentId); ?></div>
                             <div class="col-xs-6 col-sm-6 cgap-4">
-<?php print $employeeData[\Setup\Model\Department::DEPARTMENT_NAME]; ?></div>
+                                <?php print $employeeData[\Setup\Model\Department::DEPARTMENT_NAME]; ?></div>
                         </div>
                     </div>
                 </div>
@@ -1034,7 +1035,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                             <div class="col-xs-6 col-sm-6 col-md-6 rightalign-4">
                                 <?php print $this->formLabel($branchId); ?></div>
                             <div class="col-xs-6 col-sm-6 cgap-4">
-<?php print $employeeData[\Setup\Model\Branch::BRANCH_NAME]; ?></div>
+                                <?php print $employeeData[\Setup\Model\Branch::BRANCH_NAME]; ?></div>
                         </div>
                     </div>
 
@@ -1067,16 +1068,16 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                 ?>
                                 <tr>
                                     <td>
-    <?php print $empQualificationRow['ACADEMIC_DEGREE_NAME']; ?>
+                                        <?php print $empQualificationRow['ACADEMIC_DEGREE_NAME']; ?>
                                     </td>
                                     <td>
-    <?php print $empQualificationRow['ACADEMIC_UNIVERSITY_NAME']; ?>
+                                        <?php print $empQualificationRow['ACADEMIC_UNIVERSITY_NAME']; ?>
                                     </td>
                                     <td>
-    <?php print $empQualificationRow['ACADEMIC_PROGRAM_NAME']; ?>
+                                        <?php print $empQualificationRow['ACADEMIC_PROGRAM_NAME']; ?>
                                     </td>
                                     <td>
-    <?php print $empQualificationRow['ACADEMIC_COURSE_NAME']; ?>
+                                        <?php print $empQualificationRow['ACADEMIC_COURSE_NAME']; ?>
                                     </td>
                                     <td>
                                         <?php
@@ -1089,14 +1090,14 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                     </td>
 
                                     <td>
-    <?php print $empQualificationRow['RANK_VALUE']; ?>
+                                        <?php print $empQualificationRow['RANK_VALUE']; ?>
                                     </td>
                                     <td>
-    <?php print $empQualificationRow['PASSED_YR']; ?>
+                                        <?php print $empQualificationRow['PASSED_YR']; ?>
                                     </td>
 
                                 </tr>
-<?php } ?>
+                            <?php } ?>
 
                         </table>
                     </div>
@@ -1124,23 +1125,23 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                 ?>
                                 <tr>
                                     <td>
-    <?php print $experience['ORGANIZATION_TYPE']; ?>
+                                        <?php print $experience['ORGANIZATION_TYPE']; ?>
                                     </td>
                                     <td>
-    <?php print $experience['ORGANIZATION_NAME']; ?>
+                                        <?php print $experience['ORGANIZATION_NAME']; ?>
                                     </td>
                                     <td>
-    <?php print $experience['POSITION']; ?>
+                                        <?php print $experience['POSITION']; ?>
                                     </td>
                                     <td>
-    <?php print $experience['FROM_DATE']; ?>
+                                        <?php print $experience['FROM_DATE']; ?>
                                     </td>
 
                                     <td>
-    <?php print $experience['TO_DATE']; ?>
+                                        <?php print $experience['TO_DATE']; ?>
                                     </td>
                                 </tr>
-<?php } ?>
+                            <?php } ?>
                         </table>
                     </div>
                 </div>
@@ -1165,20 +1166,20 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                 ?>
                                 <tr>
                                     <td>
-    <?php print $training['TRAINING_NAME']; ?>
+                                        <?php print $training['TRAINING_NAME']; ?>
                                     </td>
                                     <td>
-    <?php print $training['DESCRIPTION']; ?>
+                                        <?php print $training['DESCRIPTION']; ?>
                                     </td>
                                     <td>
-    <?php print $training['FROM_DATE']; ?>
+                                        <?php print $training['FROM_DATE']; ?>
                                     </td>
 
                                     <td>
-    <?php print $experience['TO_DATE']; ?>
+                                        <?php print $experience['TO_DATE']; ?>
                                     </td>
                                 </tr>
-<?php } ?>
+                            <?php } ?>
                         </table>
                     </div>
                 </div>
