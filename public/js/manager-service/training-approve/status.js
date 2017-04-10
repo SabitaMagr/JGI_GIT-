@@ -17,7 +17,6 @@ angular.module('hris', [])
                 var positionId = angular.element(document.getElementById('positionId')).val();
                 var serviceTypeId = angular.element(document.getElementById('serviceTypeId')).val();
                 var serviceEventTypeId = angular.element(document.getElementById('serviceEventTypeId')).val();
-                var trainingId = angular.element(document.getElementById('trainingId')).val();
                 var requestStatusId = angular.element(document.getElementById('requestStatusId')).val();
                 var fromDate = angular.element(document.getElementById('fromDate')).val();
                 var toDate = angular.element(document.getElementById('toDate')).val();
@@ -33,7 +32,6 @@ angular.module('hris', [])
                         'positionId': positionId,
                         'serviceTypeId': serviceTypeId,
                         'serviceEventTypeId': serviceEventTypeId,
-                        'trainingId': trainingId,
                         'requestStatusId': requestStatusId,
                         'fromDate': fromDate,
                         'toDate': toDate,
@@ -49,7 +47,7 @@ angular.module('hris', [])
                 });
             }
             $scope.initializekendoGrid = function (trainingRequestStatus) {
-                console.log(holidayWorkRequestStatus);
+                console.log(trainingRequestStatus);
                 $("#trainingRequestStatusTable").kendoGrid({
                     excel: {
                         fileName: "TrainingRequestList.xlsx",
@@ -72,10 +70,10 @@ angular.module('hris', [])
                     rowTemplate: kendo.template($("#rowTemplate").html()),
                     columns: [
                         {field: "FIRST_NAME", title: "Employee Name", width: 200},
-                        {field: "TRAINING_NAME", title: "Training Name", width: 120},
+                        {field: "TITLE", title: "Training Name", width: 120},
                         {field: "REQUESTED_DATE", title: "Requested Date", width: 130},
-                        {field: "FROM_DATE", title: "From Date", width: 100},
-                        {field: "TO_DATE", title: "To Date", width: 100},
+                        {field: "START_DATE", title: "Start Date", width: 100},
+                        {field: "END_DATE", title: "End Date", width: 100},
                         {field: "DURATION", title: "Duration", width: 90},
                         {field: "TRAINING_TYPE", title: "Training Type", width: 90},
                         {field: "YOUR_ROLE", title: "Your Role", width: 130},
@@ -101,8 +99,8 @@ angular.module('hris', [])
                                 {value: "Training Code"},
                                 {value: "Training Name"},
                                 {value: "Requested Date"},
-                                {value: "From Date"},
-                                {value: "To Date"},
+                                {value: "Start Date"},
+                                {value: "End Date"},
                                 {value: "Your Role"},
                                 {value: "Duration"},
                                 {value: "Training Type"},
@@ -134,8 +132,8 @@ angular.module('hris', [])
                                 {value: dataItem.TRAINING_CODE},
                                 {value: dataItem.TRAINING_NAME},
                                 {value: dataItem.REQUESTED_DATE},
-                                {value: dataItem.FROM_DATE},
-                                {value: dataItem.TO_DATE},
+                                {value: dataItem.START_DATE},
+                                {value: dataItem.END_DATE},
                                 {value: dataItem.YOUR_ROLE},
                                 {value: dataItem.DURATION},
                                 {value: dataItem.TRAINING_TYPE},
