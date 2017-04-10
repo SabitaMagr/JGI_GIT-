@@ -155,7 +155,7 @@ $designationFormElement->setAttribute("ng-model", "designationId");
 
         <div class="row">
             <div class="col-sm-offset-8 col-sm-2">
-                <input class="form-control" type="number" ng-model="daysForAll"
+                <input min="0" class="form-control" type="number" ng-model="daysForAll"
                        ng-change="daysForAllChange(daysForAll)"
                        ng-show="daysForAllFlag"/>
             </div>

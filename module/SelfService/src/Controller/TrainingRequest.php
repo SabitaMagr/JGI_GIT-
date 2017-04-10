@@ -166,7 +166,8 @@ class TrainingRequest extends AbstractActionController {
         return Helper::addFlashMessagesToArray($this, [
                     'form' => $this->form,
                     'trainings' => $trainings["trainingKVList"],
-                    'trainingTypes'=>$trainingTypes
+                    'trainingTypes'=>$trainingTypes,
+                    'trainingList'=>$trainings['trainingList']
         ]);
     }
 
@@ -283,9 +284,11 @@ class TrainingRequest extends AbstractActionController {
         $trainingRepo = new TrainingRepository($this->adapter);
         $trainingResult = $trainingRepo->selectAll($employeeId);
         $trainingList = [];
+        $allTrainings = [];
         foreach ($trainingResult as $trainingRow) {
             $trainingList[$trainingRow['TRAINING_ID']] = $trainingRow['TRAINING_NAME'] . " (" . $trainingRow['START_DATE'] . " to " . $trainingRow['END_DATE'] . ")";
+            $allTrainings[$trainingRow['TRAINING_ID']] = $trainingRow;
         }
-        return ['trainingKVList' => $trainingList];
+        return ['trainingKVList' => $trainingList,'trainingList'=>$allTrainings];
     }
 }
