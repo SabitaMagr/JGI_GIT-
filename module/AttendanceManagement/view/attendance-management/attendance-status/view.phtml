@@ -72,42 +72,6 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                             <?php echo $approver; ?>
                                         </td>
                                     </tr>
-                                </table>
-                            </div>
-                            <div class="col-sm-4">
-                                <table>
-                                    <tr height="30">
-                                        <td>
-                                            Employee Name
-                                            <input type="hidden" id="employeeId"value="<?php echo $employeeId; ?>"/>
-                                        </td>
-                                        <td width="15">:</td>
-                                        <td>
-                                            <?php echo $employeeName; ?>
-                                        </td>
-                                    </tr>
-                                    <tr height="30">
-                                        <td>
-                                            Approver
-                                        </td>
-                                        <td width="15">:</td>
-                                        <td>
-                                            <?php echo $approver; ?>
-                                        </td>
-                                    </tr>
-                                </table>
-                            </div>
-                            <div class="col-sm-4">
-                                <table>
-                                    <tr height="30">
-                                        <td>
-                                            Requested Date
-                                        </td>
-                                        <td width="15">:</td>
-                                        <td>
-                                            <?php echo $requestedDt; ?>
-                                        </td>
-                                    </tr>
                                     <tr height="30">
                                         <td>
                                             Status
@@ -127,6 +91,34 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                             ?>
                                         </td>
                                     </tr>
+                                </table>
+                            </div>
+                            <div class="col-sm-4">
+                                <table>
+                                    <tr height="30">
+                                        <td>
+                                            Employee Name
+                                            <input type="hidden" id="employeeId"value="<?php echo $employeeId; ?>"/>
+                                        </td>
+                                        <td width="15">:</td>
+                                        <td>
+                                            <?php echo $employeeName; ?>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <div class="col-sm-4">
+                                <table>
+                                    <tr height="30">
+                                        <td>
+                                            Requested Date
+                                        </td>
+                                        <td width="15">:</td>
+                                        <td>
+                                            <?php echo $requestedDt; ?>
+                                        </td>
+                                    </tr>
+                                    
                                 </table>
                             </div>
                         </div>
