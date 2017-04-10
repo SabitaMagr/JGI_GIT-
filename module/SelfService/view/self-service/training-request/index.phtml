@@ -68,16 +68,16 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
         #: (TRAINING_CODE == null) ? '-' : TRAINING_CODE #
         </td>
         <td>
-        #: (TRAINING_NAME == null) ? '-' : TRAINING_NAME #
+        #: (TITLE == null) ? '-' : TITLE #
         </td>
         <td>
         #: (REQUESTED_DATE == null) ? '-' : REQUESTED_DATE #
         </td>
         <td>
-        #: (FROM_DATE == null) ? '-' : FROM_DATE #
+        #: (START_DATE == null) ? '-' : START_DATE #
         </td>
         <td>
-        #: (TO_DATE == null) ? '-' : TO_DATE #
+        #: (END_DATE == null) ? '-' : END_DATE #
         </td>
         <td>
         #: (DURATION == null) ? '-' : DURATION #
@@ -95,7 +95,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
         </a>
         #if(ALLOW_TO_EDIT == 1){#       
         <a class="confirmation btn-delete"
-        href="<?= $this->url("trainingRequest", ["action" => "delete"]) ?>/#: REQUEST_ID #" id="bs_#:ID #" style="height:17px;">
+        href="<?= $this->url("trainingRequest", ["action" => "delete"]) ?>/#: REQUEST_ID #" id="bs_#:REQUEST_ID #" style="height:17px;">
         <i class="fa fa-trash-o"></i></a>
         </a>
         #}#

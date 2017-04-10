@@ -1,7 +1,7 @@
 (function ($, app) {
     'use strict';
     $(document).ready(function () {
-        console.log(document.workOnHolidayRequestList);
+        console.log(document.trainingRequestList);
         $("#trainingRequestTable").kendoGrid({
             excel: {
                 fileName: "TrainingRequestList.xlsx",
@@ -24,10 +24,10 @@
             rowTemplate: kendo.template($("#rowTemplate").html()),
             columns: [
                 {field: "TRAINING_CODE", title: "Training Code"},
-                {field: "TRAINING_NAME", title: "Training Name"},
+                {field: "TITLE", title: "Training Name"},
                 {field: "REQUESTED_DATE", title: "Applied Date"},
-                {field: "FROM_DATE", title: "From Date"},
-                {field: "TO_DATE", title: "To Date"},
+                {field: "START_DATE", title: "Start Date"},
+                {field: "END_DATE", title: "End Date"},
                 {field: "DURATION", title: "Duration"},
                 {field: "TRAINING_TYPE", title: "Training Type"},
                 {field: "STATUS", title: "Status"},
@@ -50,8 +50,8 @@
                         {value: "Training Code"},
                         {value: "Training Name"},
                         {value: "Applied Date"},
-                        {value: "From Date"},
-                        {value: "To Date"},
+                        {value: "Start Date"},
+                        {value: "End Date"},
                         {value: "Duration"},
                         {value: "Training Type"},
                         {value: "Status"},
@@ -79,10 +79,10 @@
                 rows.push({
                     cells: [
                         {value: dataItem.TRAINING_CODE},
-                        {value: dataItem.TRAINING_NAME},
+                        {value: dataItem.TITLE},
                         {value: dataItem.REQUESTED_DATE},
-                        {value: dataItem.FROM_DATE},
-                        {value: dataItem.TO_DATE},
+                        {value: dataItem.START_DATE},
+                        {value: dataItem.END_DATE},
                         {value: dataItem.DURATION},
                         {value: dataItem.TRAINING_TYPE},
                         {value: dataItem.STATUS},
