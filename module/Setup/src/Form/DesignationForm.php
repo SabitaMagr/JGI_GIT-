@@ -49,7 +49,7 @@ class DesignationForm
      * @Annotation\Required({"required":"true"})
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Basic Salary"})
-     * @Annotation\Attributes({ "id":"form-basicSalary", ,"min":"0","step":"0.01","class":"form-basicSalary form-control" })
+     * @Annotation\Attributes({ "id":"form-basicSalary" ,"min":"0","step":"0.01","class":"form-basicSalary form-control" })
      */
     public $basicSalary;
 

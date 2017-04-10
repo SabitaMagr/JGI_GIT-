@@ -72,7 +72,7 @@ class WebServiceController extends AbstractActionController
                     foreach ($temp as $item) {
                         $tmp = $leaveAssign->filterByLeaveEmployeeId($ids['leaveId'], $item['EMPLOYEE_ID']);
                         if($tmp!=null){
-                            $item["BALANCE"]=$tmp->BALANCE;
+                            $item["BALANCE"]=(float)$tmp->BALANCE;
                             $item["LEAVE_ID"]=$tmp->LEAVE_ID;
                         }else{
                             $item["BALANCE"]="";

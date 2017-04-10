@@ -31,7 +31,7 @@ class TrainingRequestForm{
      * @Annotation\Required({"required":"true"})
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Training Name"})
-     * @Annotation\Attributes({ "id":"title", "class":"form-title form-control" })
+     * @Annotation\Attributes({ "id":"form-title", "class":"form-title form-control" })
      */
     public $title;
     
@@ -40,7 +40,7 @@ class TrainingRequestForm{
      * @Annotation\Required({"required":"true"})
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
      * @Annotation\Options({"disable_inarray_validator":"true","label":"Training Type"})
-     * @Annotation\Attributes({ "id":"trainingType","class":"form-control form-trainingType"})
+     * @Annotation\Attributes({ "id":"form-trainingType","class":"form-control form-trainingType"})
      */
     public $trainingType;  
     
@@ -49,7 +49,7 @@ class TrainingRequestForm{
      * @Annotation\Required({"required":"true"})
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Start Date"})
-     * @Annotation\Attributes({ "id":"startDate", "class":"form-startDate form-control" })
+     * @Annotation\Attributes({ "id":"form-startDate", "class":"form-startDate form-control" })
      */
     public $startDate;
     
@@ -58,7 +58,7 @@ class TrainingRequestForm{
      * @Annotation\Required({"required":"true"})
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"End Date"})
-     * @Annotation\Attributes({ "id":"endDate", "class":"form-endDate form-control" })
+     * @Annotation\Attributes({ "id":"form-endDate", "class":"form-endDate form-control" })
      */
     public $endDate;   
     
@@ -67,7 +67,7 @@ class TrainingRequestForm{
      * @Annotation\Required({"required":"true"})
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Duration"})
-     * @Annotation\Attributes({ "id":"duration","readonly":"readonly", "class":"form-duration form-control","step":"0.01" })
+     * @Annotation\Attributes({ "id":"form-duration","readonly":"readonly", "class":"form-duration form-control","step":"0.01" })
      */
     public $duration;
     

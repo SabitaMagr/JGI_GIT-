@@ -9,6 +9,7 @@ $trainingId->setValueOptions($trainings);
 $startDate = $form->get('startDate');
 $endDate = $form->get('endDate');
 $duration = $form->get('duration');
+$title = $form->get('title');
 $trainingType = $form->get('trainingType');
 $trainingType->setValueOptions($trainingTypes);
 $description = $form->get('description');
@@ -26,6 +27,7 @@ $form->prepare();
 //    document.holidayList =<?php 
 //json_encode($holidayObjList) 
 //?>;
+    document.trainingList =<?= json_encode($trainingList) ?>;
     document.url = '<?= $this->url("restful", ["action" => "index"]) ?>';
 </script>
 <div class="page-bar">
@@ -70,7 +72,25 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                             <?php print $this->formElementErrors()->render($trainingId, ['class' => 'help-block']); ?>
                         </div>               
                     </div>
-
+                    
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <?php print $this->formLabel($title); ?>
+                            <span class="required" aria-required="true">*</span>
+                            <?php print $this->formElement($title); ?>
+                            <?php print $this->formElementErrors()->render($title, ['class' => 'help-block']); ?>
+                        </div> 
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <?php print $this->formLabel($trainingType); ?>
+                            <span class="required" aria-required="true">*</span>
+                            <?php print $this->formElement($trainingType); ?>
+                            <?php print $this->formElementErrors()->render($trainingType, ['class' => 'help-block']); ?>
+                        </div> 
+                    </div>
+                </div>
+                <div class="row">
                     <div class="col-sm-4">
                         <div
                             class="form-group required  <?= empty($startDate->getMessages()) ? "" : "error" ?>">
@@ -91,9 +111,6 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                         </div>
                         <?php print $this->formElementErrors()->render($endDate, ['class' => 'help-block error']) ?>
                     </div>
-                </div>
-
-                <div class=" row">
                     <div class="col-sm-4">
                         <div
                             class="form-group required <?= empty($duration->getMessages()) ? "" : "error" ?>">
@@ -103,7 +120,9 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                         </div>
                         <?php print $this->formElementErrors()->render($duration, ['class' => 'help-block error']); ?>
                     </div>
+                </div>
 
+                <div class=" row">
                     <div class="col-sm-4">
                         <div class="form-group">
                             <?php print $this->formLabel($description); ?>

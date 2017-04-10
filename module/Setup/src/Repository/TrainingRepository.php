@@ -94,6 +94,7 @@ class TrainingRepository implements RepositoryInterface
         return $result->current();
     }
     
+    //select only those training list that were not exist in training assign table
     public function selectAll($employeeId){
         $today = Helper::getcurrentExpressionDate();
         $sql =  new Sql($this->adapter);
@@ -113,10 +114,10 @@ class TrainingRepository implements RepositoryInterface
             ], true);
         $select->from(['T'=>Training::TABLE_NAME]);
         $select->join(['I' => Institute::TABLE_NAME], "T." . Training::INSTITUTE_ID . "=I.".Institute::INSTITUTE_ID, [Institute::INSTITUTE_NAME], 'left');
-               //->join(['TA'=> TrainingAssign::TABLE_NAME],"TA.".TrainingAssign::TRAINING_ID."=T.".Training::TRAINING_ID,[TrainingAssign::EMPLOYEE_ID],"left");
         
         $select->where([
             "T.STATUS='E'",
+            "T.TRAINING_ID NOT IN (SELECT TRAINING_ID FROM HRIS_EMPLOYEE_TRAINING_ASSIGN WHERE EMPLOYEE_ID=$employeeId)"
 //            "T.END_DATE<=".$today->getExpression()
         ]);
        
