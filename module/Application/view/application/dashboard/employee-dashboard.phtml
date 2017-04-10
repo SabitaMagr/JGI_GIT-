@@ -36,9 +36,10 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
 <?php } ?>
 
 <div class="employeedashboard">
-    <div class="emplyoee-dashboard clearfix">
+    <div class="emplyoee-dashboard col-md-12">
+    <div class="row">
         <div class="employe-descbox">
-            <div class="col-sm-1 col-md-1 profile_pic">
+            <div class="col-sm-2 col-md-1 profile_pic">
                 <img src="<?php print $employeeDetail['FILE_PATH'] ? $this->basePath('uploads/' . $employeeDetail['FILE_PATH']) : $this->basePath("img/nobody_m.original.jpg"); ?>">
             </div>
             <div class="col-sm-3 col-md-3 employee-details">
@@ -100,22 +101,22 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                     </div>
                 </div>
             </div>
-            <div class="col-xs-3 col-sm-3 col-md-3">
-                <div class="col-hris pull-right">
+            <div class="col-xs-12  col-sm-7 col-md-3">
+                <div class="col-hris row attendence-box">
                     <ul>
-                        <li class="col-md-4">
+                        <li class="col-xs-4 col-sm-4 col-md-4">
                             <div class="hris efficiency efficiency-bg1">
                                 <span><?php print $employeeDetail['LATE_IN']; ?></span>
                                 <div>Late In</div>
                             </div>
                         </li>
-                        <li class="col-md-4">
+                        <li class="col-xs-4 col-sm-4 col-md-4">
                             <div class="hris efficiency efficiency-bg2">
                                 <span><?php print $employeeDetail['EARLY_OUT']; ?></span>
                                 <div>Early Out</div>
                             </div>
                         </li>
-                        <li class="col-md-4">
+                        <li class="col-xs-4 col-sm-4 col-md-4">
                             <div class="hris efficiency efficiency-bg3">
                                 <span><?php print $employeeDetail['MISSED_PUNCH']; ?></span>
                                 <div>Missed Punch</div>
@@ -125,17 +126,19 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                 </div>
             </div>
         </div>
+        </div>
+        </div>
     </div>
 
     <div class="row">
         <div class="col-md-6">
             <div class="row">
                 <div class="col-md-12">
-                    <div class="portlet light calendar ">
+                    <div class="portlet light calendar boxborder">
                         <div class="portlet-title ">
                             <div class="caption">
                                 <i class="fa fa-calendar font-green-sharp"></i>
-                                <span class="caption-subject font-green-sharp bold uppercase">Calendar</span>
+                                <span class="caption-subject font-green-sharp bold">Calendar</span>
                             </div>
                         </div>
                         <div class="portlet-body">
@@ -173,11 +176,11 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                         <div class="row">
                             <div class="col-md-12 noticeboard">
                                 <div class="portlet-body">
-                                    <div class="portlet light">
+                                    <div class="portlet light boxborder">
                                         <div class="portlet-title tabbable-line">
                                             <div class="caption caption-md">
-                                                <i class="icon-globe theme-font hide"></i>
-                                                <span class="caption-subject bold uppercase">Notice Board</span>
+                                               <i class="fa fa-newspaper-o font-green-sharp" aria-hidden="true"></i>
+                                                <span class="caption-subject font-green-sharp bold">Notice Board</span>
                                             </div>
                                         </div>
                                         <div class="noticeboard-list row">
@@ -185,11 +188,11 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                                 <?php if (count($employeeNotice) > 0) : ?>
                                                     <?php foreach ($employeeNotice as $notice) : ?>
                                                         <li style="width:100%;">
-                                                            <div class="calendardate-box col-sm-2 col-md-2">
+                                                            <div class="calendardate-box col-xs-4 col-sm-2 col-md-2">
                                                                 <span><?php print $notice['NEWS_DAY']; ?></span><br>
                                                                 <?php print $notice['NEWS_MONTH_YEAR']; ?>
                                                             </div>
-                                                            <div class="notice-details col-sm-10 col-md-10">
+                                                            <div class="notice-details col-xs-8 col-sm-10 col-md-10">
                                                                 <h5 class="title-color caption-subject  bold"><?php print $notice['NEWS_TITLE']; ?></h5>
                                                                 <p><?php print $notice['NEWS_EDESC']; ?></p>
                                                             </div>
@@ -197,11 +200,11 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                                     <?php endforeach; ?>
                                                 <?php else : ?>
                                                     <li style="width:100%;">
-                                                        <div class="calendardate-box col-sm-2 col-md-2">
+                                                        <div class="calendardate-box col-xs-4 col-sm-2 col-md-2">
                                                             <span><?php print date('d'); ?></span><br>
                                                             <?php print date('M Y'); ?>
                                                         </div>
-                                                        <div class="notice-details col-sm-10 col-md-10">
+                                                        <div class="notice-details col-xs-8 col-sm-10 col-md-10">
                                                             <h5 class="title-color caption-subject  bold">No notice found</h5>
                                                             <p>Notice will be display when new notice is published</p>
                                                         </div>
@@ -305,27 +308,32 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
 
             <div class="row">
                 <div class="col-md-12">
+
+                <div class="mytask-todo">
                     <div class="taskbox">
-                        <div class="portlet light boxborder">
-                            <div class="col-md-6 portlet-inner-task-wrapper">
+                        <div class="portlet light portlet-inner-task-wrapper boxborder">
+                            <!--<div class="portlet-inner-task-wrapper">-->
                                 <div class="portlet-title">
-                                    <div class="caption">
+                                    <div class="caption caption-md">
                                         <i class="fa fa-tasks font-green-sharp"></i>
-                                        <span class="caption-subject font-green-sharp ">My Tasks</span>
+                                        <span class="caption-subject font-green-sharp bold">My Tasks</span>
                                     </div>
-                                    <div class="nextbtn">
-                                        <a href="#"><i class="fa fa-angle-right" aria-hidden="true"></i></a>
-                                    </div>
-                                    <div class="clearfix"></div>
-                                </div>
-                                <div class="task">
+
+                                          <div class="task pull-right">
                                     <div class="date-date">
                                         <span><?php print date('d'); ?></span>
-                                        <div class="taskaddbtn">
+                                        <!--<div class="taskaddbtn">
                                             <a href="#"> <i class="fa fa-plus" aria-hidden="true"></i></a>
-                                        </div>
+                                        </div>-->
                                     </div>
+                                   <!-- <div class="nextbtn">
+                                        <a href="#"><i class="fa fa-angle-right" aria-hidden="true"></i></a>
+                                    </div> -->
+                                  
                                 </div>
+                                </div>
+                          
+                               <!-- </div> -->
 
                                 <?php $employeeTask = []; ?>
                                 <?php if ($employeeTask) : ?>
@@ -350,10 +358,35 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                     </div>
                                 <?php endif; ?>
                             </div>
-                            <div class="col-md-6 portlet-inner-datepicker-wrapper">
+
+                          </div>
+
+                       
+                           
                                 <div class="datepickeform">
-                                    <div class="form-body">
-                                        <h3 class="form-section">To Do</h3>
+                                   <div class="portlet light portlet-inner-datepicker-wrapper boxborder">
+
+
+                                                <div class="portlet-title">
+                                                    <div class="caption caption-md">
+
+
+                                                        <i class="fa fa-check-square-o font-green-sharp" aria-hidden="true"></i>
+
+
+                                                        <span class="caption-subject font-green-sharp bold">TO Do</span>
+                                                    </div>     
+                                                </div>
+
+
+
+
+
+
+
+
+                                    
+                                       
                                         <div class="row">
                                             <div class="col-md-12">
                                                 <div class="form-group">
@@ -367,30 +400,39 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                                     <input id="inp-task-name" class="form-control" placeholder="Task Name" type="text">
                                                 </div>
                                             </div>
-                                            <div class="col-md-12">
+                                         <!--div class="col-md-12">
                                                 <div class="form-group">
-                                                    <input type="button" id="task-save" value="Save" />
+                                                  <input type="button" id="task-save btn" class="btn btn-dafault" value="Save" />
+                                                </div> -->
+                                                <div class="col-md-12">
+                                                <div class="form-group1">
+                                                <button type="button" class="btn btn-theme  savebutton"  id="task-save btn" value="Save">
+                                                <i class="fa fa-floppy-o" aria-hidden="true"></i>
+                                                     Save
+                                                 </button>
                                                 </div>
+
                                             </div>
                                         </div>
                                     </div>
-                                </div>
+                                
                             </div>
                             <div class="clearfix"></div>
-                        </div>
+                        
                     </div>
                     <!-- END CONTENT -->
                 </div>
-            </div>
+                </div>
+           
 
             <div class="row">
                 <div class="col-md-12 holidays">
                     <!-- BEGIN PORTLET -->
-                    <div class="portlet light">
+                    <div class="portlet light boxborder">
                         <div class="portlet-title tabbable-line">
                             <div class="caption caption-md">
-                                <i class="icon-globe theme-font hide"></i>
-                                <span class="caption-subject bold uppercase">Upcoming Holidays</span>
+                                <i class="fa fa-plane font-green-sharp" aria-hidden="true"></i>
+                                <span class="caption-subject font-green-sharp bold">Upcoming Holidays</span>
                             </div>
                         </div>
 
@@ -401,17 +443,17 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                     <ul class="feeds" style="visibility:visible;">
                                         <?php foreach ($upcomingHolidays as $holiday) : ?>
                                             <li>
-                                                <div class="col-xs-6 col-sm-4 col-md-4 desc holiday-title">
+                                                <div class="col-xs-6 col-sm-3 col-md-3 desc holiday-title">
                                                     <span class="label holiday-color  "><?php print $holiday['HOLIDAY_ENAME']; ?></span>
                                                 </div>
                                                 <div class="col-xs-6 col-sm-4 col-md-4 remaining-days">
                                                     <?php
                                                     $daysRemaining = $holiday['DAYS_REMAINING'] ? ((1 == $holiday['DAYS_REMAINING']) ? "1 Day Remaining" : $holiday['DAYS_REMAINING'] . " Days Remaining") : "Today";
                                                     ?>
-                                                    <span class="label label-sm "><?php print $daysRemaining; ?></span>
+                                                    <span class="label"><?php print $daysRemaining; ?></span>
                                                 </div>
-                                                <div class="col-xs-6 col-sm-4 col-md-4 holiday-date">
-                                                    <div class="date"><?php print $holiday['START_DATE']; ?></div>
+                                                <div class="col-xs-6 col-sm-5 col-md-5 holiday-date">
+                                                    <div class="label date"><?php print $holiday['START_DATE']; ?></div>
                                                 </div>
                                             </li>
                                         <?php endforeach; ?>
@@ -429,11 +471,11 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                         $todayBirthdayActive = ((isset($employeesBirthday) && isset($employeesBirthday['TODAY']) && $employeesBirthday['TODAY'])) ? true : false;
                         ?>
                         <!-- BEGIN PORTLET-->
-                        <div class="portlet light ">
+                        <div class="portlet light boxborder">
                             <div class="portlet-title tabbable-line tabline">
                                 <div class="caption">
                                     <i class="fa fa-birthday-cake font-green-sharp"></i>
-                                    <span class="caption-subject font-green-sharp ">Birthday Wishes</span>
+                                    <span class="caption-subject font-green-sharp bold">Birthday Wishes</span>
                                 </div>
                                 <ul class="nav nav-tabs">
                                     <li class="ln-birthday <?php print $todayBirthdayActive ? 'active' : '' ?>">
@@ -452,7 +494,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                             <?php if ($todayBirthdayActive) : ?>
                                                 <?php foreach ($employeesBirthday['TODAY'] as $todayBirthday) : ?>
                                                     <div class="person-list clearfix">
-                                                        <div class="col-xs-3 col-md-3 col-sm-3">
+                                                        <div class="col-xs-4 col-md-3 col-sm-3">
                                                             <div class="person-pic">
                                                                 <img src="<?php print $todayBirthday['FILE_PATH'] ? $this->basePath('uploads/' . $todayBirthday['FILE_PATH']) : $this->basePath('img/nobody_m.original.jpg'); ?>" alt="person picture">
                                                             </div>
@@ -463,14 +505,14 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                                                 <span><?php print $todayBirthday['DESIGNATION_TITLE']; ?></span>
                                                             </div>
                                                         </div>
-                                                        <div class="col-xs-3 col-md-3 col-sm-3">
+                                                        <div class="col-xs-2 col-md-3 col-sm-3">
                                                             <span class="birth-date"><?php print $todayBirthday['EMP_BIRTH_DATE']; ?></span>
                                                         </div>
                                                     </div>
                                                 <?php endforeach; ?>
                                             <?php else: ?>
                                                 <div class="dashborder clearfix">
-                                                    <div class="col-md-3 col-sm-3">
+                                                    <div class="col-xs-4 col-md-3 col-sm-3">
                                                         <div class="person-pic birthday-pic">
                                                             <img src="<?php print $this->basePath('img/nobody_m.original.jpg'); ?>" alt="person picture">
                                                         </div>
@@ -480,7 +522,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                                             <h4>No Birthday Available Today</h4>
                                                         </div>
                                                     </div>
-                                                    <div class="col-md-3 col-sm-3">
+                                                    <div class="col-xs-2 col-md-3 col-sm-3">
                                                         <span class="calendar_date"><i class="fa fa-calendar" aria-hidden="true"></i>&nbsp;<?php print date('jS F') ?></span>
                                                     </div>
                                                 </div>
@@ -491,7 +533,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                             <?php if (isset($employeesBirthday) && isset($employeesBirthday['UPCOMING']) && $employeesBirthday['UPCOMING']) : ?>
                                                 <?php foreach ($employeesBirthday['UPCOMING'] as $upcomingBirthday) : ?>
                                                     <div class="person-list clearfix">
-                                                        <div class="col-md-3 col-sm-3">
+                                                        <div class="col-xs-4 col-md-3 col-sm-3">
                                                             <div class="person-pic">
                                                                 <img src="<?php print $upcomingBirthday['FILE_PATH'] ? $this->basePath('uploads/' . $upcomingBirthday['FILE_PATH']) : $this->basePath('img/nobody_m.original.jpg'); ?>" alt="person picture">
                                                             </div>
@@ -502,7 +544,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                                                 <span><?php print $upcomingBirthday['DESIGNATION_TITLE']; ?></span>
                                                             </div>
                                                         </div>
-                                                        <div class="col-md-3 col-sm-3">
+                                                        <div class="col-xs-2 col-md-3 col-sm-3">
                                                             <span class="birth-date"><?php print $upcomingBirthday['EMP_BIRTH_DATE']; ?></span>
                                                         </div>
                                                     </div>

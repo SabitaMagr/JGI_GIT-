@@ -90,7 +90,8 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
 <?php } ?>
 
 <div class="employeedashboard">
-    <div class="emplyoee-dashboard clearfix">
+    <div class="emplyoee-dashboard col-md-12">
+    <div class="row">
         <div class="employe-descbox">
             <div class="col-sm-1 col-md-1 profile_pic">
                 <img src="<?php print $employeeDetail['FILE_PATH'] ? $this->basePath('uploads/' . $employeeDetail['FILE_PATH']) : $this->basePath("img/nobody_m.original.jpg"); ?>">
@@ -163,6 +164,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                 </div>
             </div>
         </div>
+        </div>
     </div>
 
     <div class="row">
@@ -170,7 +172,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
             <div class="row chart-row">
                 <div class="col-md-12 col-chart-dept-attn">
                     <div class="portlet-body">
-                        <div class="portlet light">
+                        <div class="portlet light boxborder">
                             <div id="chart-department-attendance" style="height:500px"></div>
                         </div>
                     </div>
