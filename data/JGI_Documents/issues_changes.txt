@@ -1,0 +1,5 @@
+1. check remember me is working or not. if not fix it.(prabin)(open)
+2. remove '/public' from url.(ukesh)(open)
+3. notification and email testing.(ukesh)(open)
+4. news broadcasting. (ukesh)(open)
+5.

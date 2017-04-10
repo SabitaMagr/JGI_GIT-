@@ -2,6 +2,8 @@
 
 namespace Application\Controller;
 
+use Application\Factory\ApplicationConfig;
+use Application\Factory\ConfigInterface;
 use Application\Factory\HrLogger;
 use Interop\Container\ContainerInterface;
 use ReflectionClass;
@@ -24,8 +26,8 @@ class ControllerFactory implements FactoryInterface {
                 case ContainerInterface::class:
                     $output = $container;
                     break;
-                case \Application\Factory\ConfigInterface::class:
-                    $appConfig = new \Application\Factory\ApplicationConfig();
+                case ConfigInterface::class:
+                    $appConfig = new ApplicationConfig();
                     $appConfig->setApplicationConfig($container->get('config'));
                     $output = $appConfig;
                     break;

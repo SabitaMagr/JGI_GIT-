@@ -1,40 +1,35 @@
 <?php
 
-/**
- * Created by PhpStorm.
- * User: root
- * Date: 11/3/16
- * Time: 11:11 AM
- */
-
 namespace SelfService\Controller;
 
+use Application\Factory\ConfigInterface;
 use Application\Helper\EntityHelper as ApplicationHelper;
 use Application\Helper\Helper;
+use Setup\Form\HrEmployeesFormTabEight;
 use Setup\Form\HrEmployeesFormTabFive;
 use Setup\Form\HrEmployeesFormTabFour;
 use Setup\Form\HrEmployeesFormTabOne;
+use Setup\Form\HrEmployeesFormTabSeven;
 use Setup\Form\HrEmployeesFormTabSix;
 use Setup\Form\HrEmployeesFormTabThree;
 use Setup\Form\HrEmployeesFormTabTwo;
 use Setup\Helper\EntityHelper;
+use Setup\Model\EmployeeFile as EmployeeFileModel;
 use Setup\Model\HrEmployees;
+use Setup\Repository\EmployeeExperienceRepository;
 use Setup\Repository\EmployeeFile;
+use Setup\Repository\EmployeeQualificationRepository;
 use Setup\Repository\EmployeeRepository;
+use Setup\Repository\EmployeeTrainingRepository;
 use Zend\Authentication\AuthenticationService;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\Mvc\Controller\AbstractActionController;
-use Setup\Model\EmployeeFile as EmployeeFileModel;
-use Setup\Repository\EmployeeQualificationRepository;
-use Setup\Repository\EmployeeExperienceRepository;
-use Setup\Repository\EmployeeTrainingRepository;
-use Setup\Form\HrEmployeesFormTabEight;
-use Setup\Form\HrEmployeesFormTabSeven;
 
 class Profile extends AbstractActionController {
 
     private $adapter;
+    private $config;
     private $repository;
     private $employeeId;
     private $employeeFileRepo;
@@ -46,8 +41,9 @@ class Profile extends AbstractActionController {
     private $formSeven;
     private $formEight;
 
-    public function __construct(AdapterInterface $adapter) {
+    public function __construct(AdapterInterface $adapter, ConfigInterface $config) {
         $this->adapter = $adapter;
+        $this->config = $config;
         $this->repository = new EmployeeRepository($adapter);
         $this->employeeFileRepo = new EmployeeFile($this->adapter);
 
@@ -89,59 +85,55 @@ class Profile extends AbstractActionController {
             $this->formEight = $builder->createForm($formTabEight);
         }
     }
+
     public function indexAction() {
-       $id = $this->employeeId;
+        $id = $this->employeeId;
         $tab = (int) $this->params()->fromRoute('tab', 0);
         if ($tab === 0) {
             $tab = 1;
         }
         $this->initializeForm();
-        $request = $this->getRequest();
-        $empQualificationRepo =  new EmployeeQualificationRepository($this->adapter);
+        $empQualificationRepo = new EmployeeQualificationRepository($this->adapter);
         $empExperienceRepo = new EmployeeExperienceRepository($this->adapter);
         $empTrainingRepo = new EmployeeTrainingRepository($this->adapter);
 
-        $formOneModel = new HrEmployeesFormTabOne();
-        $formTwoModel = new HrEmployeesFormTabTwo();
-        $formThreeModel = new HrEmployeesFormTabThree();
-        $formFourModel = new HrEmployeesFormTabFour();
-        $formSixModel = new HrEmployeesFormTabSix();
 
         $employeeData = (array) $this->repository->getById($id);
         $profilePictureId = $employeeData[HrEmployees::PROFILE_PICTURE_ID];
-        $filePath = ApplicationHelper::getTableKVList($this->adapter, EmployeeFileModel::TABLE_NAME, EmployeeFileModel::FILE_CODE, [EmployeeFileModel::FILE_PATH], [EmployeeFileModel::FILE_CODE => $profilePictureId], null)[$profilePictureId];
-        
-        $perVdcMunicipalityDtl = $this->repository->getVdcMunicipalityDtl($employeeData[HrEmployees::ADDR_PERM_VDC_MUNICIPALITY_ID]);       
-        $perDistrictDtl = $this->repository->getDistrictDtl($perVdcMunicipalityDtl['DISTRICT_ID']);       
+        $filePathArray = ApplicationHelper::getTableKVList($this->adapter, EmployeeFileModel::TABLE_NAME, EmployeeFileModel::FILE_CODE, [EmployeeFileModel::FILE_PATH], [EmployeeFileModel::FILE_CODE => $profilePictureId], null);
+        $filePath = empty($filePathArray) ? $this->config->getApplicationConfig()['default-profile-picture'] : $filePathArray[0];
+
+        $perVdcMunicipalityDtl = $this->repository->getVdcMunicipalityDtl($employeeData[HrEmployees::ADDR_PERM_VDC_MUNICIPALITY_ID]);
+        $perDistrictDtl = $this->repository->getDistrictDtl($perVdcMunicipalityDtl['DISTRICT_ID']);
         $perZoneDtl = $this->repository->getZoneDtl($perDistrictDtl['ZONE_ID']);
-        
-        $tempVdcMunicipalityDtl = $this->repository->getVdcMunicipalityDtl($employeeData[HrEmployees::ADDR_TEMP_VDC_MUNICIPALITY_ID]);       
-        $tempDistrictDtl = $this->repository->getDistrictDtl($tempVdcMunicipalityDtl['DISTRICT_ID']);       
+
+        $tempVdcMunicipalityDtl = $this->repository->getVdcMunicipalityDtl($employeeData[HrEmployees::ADDR_TEMP_VDC_MUNICIPALITY_ID]);
+        $tempDistrictDtl = $this->repository->getDistrictDtl($tempVdcMunicipalityDtl['DISTRICT_ID']);
         $tempZoneDtl = $this->repository->getZoneDtl($tempDistrictDtl['ZONE_ID']);
-        
+
         $empQualificationDtl = $empQualificationRepo->getByEmpId($id);
         $empExperienceList = $empExperienceRepo->getByEmpId($id);
         $empTrainingList = $empTrainingRepo->getByEmpId($id);
- 
+
         return Helper::addFlashMessagesToArray($this, [
                     'formOne' => $this->formOne,
                     'formTwo' => $this->formTwo,
                     'formThree' => $this->formThree,
                     'formFour' => $this->formFour,
                     'formSix' => $this->formSix,
-                    'formSeven'=>$this->formSeven,
-                    'formEight'=>$this->formEight,
+                    'formSeven' => $this->formSeven,
+                    'formEight' => $this->formEight,
                     "id" => $id,
                     'profilePictureId' => $profilePictureId,
-                    'employeeData'=>$employeeData,
-                    'filePath'=>$filePath,
-                    'perDistrictName'=>$perDistrictDtl['DISTRICT_NAME'],
-                    'perZoneName'=>$perZoneDtl['ZONE_NAME'],
-                    'tempDistrictName'=>$tempDistrictDtl['DISTRICT_NAME'],
-                    'tempZoneName'=>$tempZoneDtl['ZONE_NAME'],
-                    'empQualificationList'=>$empQualificationDtl,
-                    'empExperienceList'=>$empExperienceList,
-                    'empTrainingList'=>$empTrainingList
+                    'employeeData' => $employeeData,
+                    'filePath' => $filePath,
+                    'perDistrictName' => $perDistrictDtl['DISTRICT_NAME'],
+                    'perZoneName' => $perZoneDtl['ZONE_NAME'],
+                    'tempDistrictName' => $tempDistrictDtl['DISTRICT_NAME'],
+                    'tempZoneName' => $tempZoneDtl['ZONE_NAME'],
+                    'empQualificationList' => $empQualificationDtl,
+                    'empExperienceList' => $empExperienceList,
+                    'empTrainingList' => $empTrainingList
         ]);
     }
 
@@ -162,7 +154,7 @@ class Profile extends AbstractActionController {
 
         $employeeData = (array) $this->repository->fetchById($id);
         $profilePictureId = $employeeData[HrEmployees::PROFILE_PICTURE_ID];
-        
+
         ///print_r($employeeData); die();
 
         if ($request->isPost()) {
