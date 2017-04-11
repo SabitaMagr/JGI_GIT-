@@ -143,11 +143,11 @@ class TrainingStatusRepository implements RepositoryInterface{
         }
      
         if($fromDate!=null){
-            $sql .= " AND TR.FROM_DATE>=TO_DATE('".$fromDate."','DD-MM-YYYY')";
+            $sql .= " AND TR.START_DATE>=TO_DATE('".$fromDate."','DD-MM-YYYY')";
         }
         
         if($toDate!=null){   
-            $sql .= "AND TR.TO_DATE<=TO_DATE('".$toDate."','DD-MM-YYYY')";
+            $sql .= "AND TR.END_DATE<=TO_DATE('".$toDate."','DD-MM-YYYY')";
         }
 
         if ($employeeId != -1) {
