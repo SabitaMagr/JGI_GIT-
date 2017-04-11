@@ -1,5 +1,11 @@
 <?php
-$this->headScript()->appendFile($this->basePath('js/SelfService/loan-request/add.js'));
+$this->headLink()
+        ->appendStylesheet($this->basePath('assets/global/plugins/nepalidate/nepali.datepicker.v2.1.min.css'));
+
+$this->headScript()
+        ->appendFile($this->basePath('assets/global/plugins/nepalidate/nepali.datepicker.v2.1.min.js'))
+        ->appendFile($this->basePath('js/nepali-datepicker-ext.js'))
+        ->appendFile($this->basePath('js/SelfService/loan-request/add.js'));
 
 $form->setAttribute('role', 'form');
 $form->setAttribute('id', 'loan-form');
@@ -83,10 +89,8 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                 <div class="form-group">
                     <?php print $this->formLabel($loanDate); ?>
                     <span class="required" aria-required="true">*</span>
-                    <div class="input-group date" id="startDate">
-                        <?php print $this->formElement($loanDate); ?>
-                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                    </div>
+                    <?php print $this->formElement($loanDate); ?>
+                    <input type="text" id="nepaliDate" name="nepaliDate"  class="form-control"/>
                     <?php print $this->formElementErrors()->render($loanDate, ['class' => 'help-block']); ?>
                 </div>
                     </div>

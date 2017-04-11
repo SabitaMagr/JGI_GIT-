@@ -174,6 +174,27 @@ window.app = (function ($, toastr) {
             console.log('changed', this);
         });
     };
+    
+    var datePickerWithNepali = function(englishDate,nepaliDate){
+        var $nepaliDate = $('#' + nepaliDate);
+        var $englishDate = $('#' + englishDate);
+        var oldNepali = null;
+        
+        $nepaliDate.nepaliDatePicker({
+            onChange: function () {
+                var temp = nepaliDatePickerExt.fromNepaliToEnglish($nepaliDate.val());
+                $englishDate.val(temp);
+            }
+        });
+        
+        $englishDate.datepicker({
+            format: 'dd-M-yyyy',
+            todayHighlight: true,
+            autoclose: true
+        }).on('changeDate', function () {
+            $nepaliDate.val(nepaliDatePickerExt.fromEnglishToNepali($(this).val()));
+        });
+    };
 
     var addTimePicker = function () {
         for (var x in arguments) {
@@ -574,6 +595,7 @@ window.app = (function ($, toastr) {
         UIConfirmations: UIConfirmations,
         startEndDatePicker: startEndDatePicker,
         startEndDatePickerWithNepali: startEndDatePickerWithNepali,
+        datePickerWithNepali: datePickerWithNepali,
         getSystemDate: getDate,
         addComboTimePicker: addComboTimePicker,
         getServerDate: getServerDate

@@ -2,7 +2,7 @@
     'use strict';
     $(document).ready(function () {
         $('select').select2();
-        app.addDatePicker($("#startDate"));
+        app.datePickerWithNepali("form-loanDate","nepaliDate");
         /* prevent past event post */
         //$('#startDate').datepicker("setStartDate", new Date());
         /* end of  prevent past event post */
