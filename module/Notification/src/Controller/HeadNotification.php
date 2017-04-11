@@ -33,6 +33,14 @@ use Zend\Authentication\AuthenticationService;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Mail\Message;
 use Zend\Mvc\Controller\Plugin\Url;
+use SelfService\Model\WorkOnDayoff;
+use SelfService\Model\WorkOnHoliday;
+use SelfService\Repository\WorkOnDayoffRepository;
+use SelfService\Repository\WorkOnHolidayRepository;
+use SelfService\Model\TrainingRequest;
+use SelfService\Repository\TrainingRequestRepository;
+use Notification\Model\WorkOnDayoffNotificationModel;
+use Notification\Model\WorkOnHolidayNotificationModel;
 
 class HeadNotification {
 
@@ -555,6 +563,84 @@ class HeadNotification {
 
             self::addNotifications($notification, $title, $desc, $adapter);
             self::sendEmail($notification, 15, $adapter, $url);
+        };
+        ${"fn" . NotificationEvents::WORKONDAYOFF_APPLIED} = function (WorkOnDayoff $model, AdapterInterface $adapter, Url $url, $type) {
+            $workOnDayoffRepo = new WorkOnDayoffRepository($adapter);
+            $workOnDayoffArray = $workOnDayoffRepo->fetchById($model->id)->getArrayCopy();
+            $workOnDayoff = new WorkOnDayoff();
+            $workOnDayoff->exchangeArrayFromDB($workOnDayoffArray);
+
+            $recommdAppRepo = new RecommendApproveRepository($adapter);
+            $recommdAppModel = $recommdAppRepo->getDetailByEmployeeID($workOnDayoff->employeeId);
+
+            if ($recommdAppModel == null) {
+                throw new Exception("recommender and approver not set for employee with id =>" . $leaveApply->employeeId);
+            }
+            $workOnDayoffReqNotiMod = new WorkOnDayoffNotificationModel();
+            self::setNotificationModel($recommdAppModel[RecommendApprove::EMPLOYEE_ID], $recommdAppModel[($type == self::RECOMMENDER) ? RecommendApprove::RECOMMEND_BY : RecommendApprove::APPROVED_BY], $workOnDayoffReqNotiMod, $adapter);
+
+            $workOnDayoffReqNotiMod->route = json_encode(["route" => "dayoffWorkApprove", "action" => "view", "id" => $workOnDayoff->id, "role" => ($type == self::RECOMMENDER) ? 2 : 3]);
+            $workOnDayoffReqNotiMod->fromDate = $workOnDayoff->fromDate;
+            $workOnDayoffReqNotiMod->toDate = $workOnDayoff->toDate;
+            $workOnDayoffReqNotiMod->duration = $workOnDayoff->duration;
+            $workOnDayoffReqNotiMod->remarks = $workOnDayoff->remarks;
+
+            $notificationTitle = "Work On Day-off Request";
+            $notificationDesc = "Work On Day-off Request of $workOnDayoffReqNotiMod->fromName from $workOnDayoffReqNotiMod->fromDate to $workOnDayoffReqNotiMod->toDate";
+
+            self::addNotifications($workOnDayoffReqNotiMod, $notificationTitle, $notificationDesc, $adapter);
+            self::sendEmail($workOnDayoffReqNotiMod, 1, $adapter, $url);
+        };
+        ${"fn" . NotificationEvents::WORKONDAYOFF_RECOMMEND_ACCEPTED} = function (WorkOnDayoff $model, AdapterInterface $adapter, Url $url, string $status) {
+            $workOnDayoffRepo = new WorkOnDayoffRepository($adapter);
+            $workOnDayoffArray = $workOnDayoffRepo->fetchById($model->id)->getArrayCopy();
+            $workOnDayoff = new WorkOnDayoff();
+            $workOnDayoff->exchangeArrayFromDB($workOnDayoffArray);
+
+            $recommdAppRepo = new RecommendApproveRepository($adapter);
+            $recommdAppModel = $recommdAppRepo->getDetailByEmployeeID($workOnDayoff->employeeId);
+
+            if ($recommdAppModel == null) {
+                throw new Exception("recommender and approver not set for employee with id =>" . $leaveApply->employeeId);
+            }
+            $workOnDayoffReqNotiMod = new WorkOnDayoffNotificationModel();
+            self::setNotificationModel($recommdAppModel[RecommendApprove::EMPLOYEE_ID], $recommdAppModel[($type == self::RECOMMENDER) ? RecommendApprove::RECOMMEND_BY : RecommendApprove::APPROVED_BY], $workOnDayoffReqNotiMod, $adapter);
+
+            $workOnDayoffReqNotiMod->route = json_encode(["route" => "dayoffWorkApprove", "action" => "view", "id" => $workOnDayoff->id, "role" => ($type == self::RECOMMENDER) ? 2 : 3]);
+            $workOnDayoffReqNotiMod->fromDate = $workOnDayoff->fromDate;
+            $workOnDayoffReqNotiMod->toDate = $workOnDayoff->toDate;
+            $workOnDayoffReqNotiMod->duration = $workOnDayoff->duration;
+            $workOnDayoffReqNotiMod->remarks = $workOnDayoff->remarks;
+
+            $notificationTitle = "Work On Day-off Request";
+            $notificationDesc = "Work On Day-off Request of $workOnDayoffReqNotiMod->fromName from $workOnDayoffReqNotiMod->fromDate to $workOnDayoffReqNotiMod->toDate";
+
+            self::addNotifications($workOnDayoffReqNotiMod, $notificationTitle, $notificationDesc, $adapter);
+            self::sendEmail($workOnDayoffReqNotiMod, 1, $adapter, $url);
+            
+            $leaveApplyRepo = new LeaveApplyRepository($adapter);
+            $leaveApplyArray = $leaveApplyRepo->fetchById($model->id)->getArrayCopy();
+            $leaveApply = new LeaveApply();
+            $leaveApply->exchangeArrayFromDB($leaveApplyArray);
+            $leaveApply->approvedBy = $model->approvedBy;
+
+            $leaveReqNotiMod = new LeaveRequestNotificationModel();
+            self::setNotificationModel($leaveApply->approvedBy, $leaveApply->employeeId, $leaveReqNotiMod, $adapter);
+
+            $leaveReqNotiMod->route = json_encode(["route" => "leaverequest", "action" => "view", "id" => $leaveApply->id]);
+
+            $leaveReqNotiMod->fromDate = $leaveApply->startDate;
+            $leaveReqNotiMod->toDate = $leaveApply->endDate;
+            $leaveReqNotiMod->leaveName = $leaveApply->leaveId;
+            $leaveReqNotiMod->leaveType = $leaveApply->halfDay;
+            $leaveReqNotiMod->noOfDays = $leaveApply->noOfDays;
+            $leaveReqNotiMod->leaveApprovedStatus = $status;
+
+            $notificationTitle = "Leave Approval";
+            $notificationDesc = "Approval of Leave Request by $leaveReqNotiMod->fromName from "
+                    . "$leaveReqNotiMod->fromDate to $leaveReqNotiMod->toDate is $leaveReqNotiMod->leaveApprovedStatus";
+            self::addNotifications($leaveReqNotiMod, $notificationTitle, $notificationDesc, $adapter);
+            self::sendEmail($leaveReqNotiMod, 3, $adapter, $url);
         };
         switch ($eventType) {
             case NotificationEvents::LEAVE_APPLIED:
