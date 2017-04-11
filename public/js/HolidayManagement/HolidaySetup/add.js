@@ -15,7 +15,8 @@
 
         document.holidays = holidays;
 
-        app.startEndDatePicker('startDate', 'endDate');
+//        app.startEndDatePicker('startDate', 'endDate');
+        app.startEndDatePickerWithNepali('nepaliStartDate1', 'startDate', 'nepaliEndDate1', 'endDate');
         /* prevent past event post */
         $('#startDate').datepicker("setStartDate", new Date());
         $('#endDate').datepicker("setStartDate", new Date());
