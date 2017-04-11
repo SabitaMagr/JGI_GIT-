@@ -78,6 +78,7 @@ use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Adapter\Driver\ResultInterface;
 use Zend\Mvc\Controller\AbstractRestfulController;
 use Zend\View\Model\JsonModel;
+use Training\Repository\TrainingStatusRepository;
 
 class RestfulService extends AbstractRestfulController {
 
@@ -361,6 +362,9 @@ class RestfulService extends AbstractRestfulController {
                         break;
                     case "getServerDate":
                         $responseData = $this->getServerDate($postedData->data);
+                        break;
+                    case "pullTrainingRequestStatusList":
+                        $responseData = $this->pullTrainingRequestStatusList($postedData->data);
                         break;
 
                     default:
@@ -2953,6 +2957,109 @@ class RestfulService extends AbstractRestfulController {
 
     public function getServerDate($data) {
         return ["success" => true, "data" => ["serverDate" => date(Helper::PHP_DATE_FORMAT)]];
+    }
+    
+    public function pullTrainingRequestStatusList($data) {
+        $trainingStatusRepo = new TrainingStatusRepository($this->adapter);
+        if (key_exists('recomApproveId', $data)) {
+            $recomApproveId = $data['recomApproveId'];
+        } else {
+            $recomApproveId = null;
+        }
+        $result = $trainingStatusRepo->getFilteredRecord($data, $recomApproveId);
+
+        $recordList = [];
+        $getRoleDtl = function($recommender, $approver, $recomApproveId) {
+            if ($recomApproveId == $recommender) {
+                return 'RECOMMENDER';
+            } else if ($recomApproveId == $approver) {
+                return 'APPROVER';
+            } else {
+                return null;
+            }
+        };
+        $getRole = function($recommender, $approver, $recomApproveId) {
+            if ($recomApproveId == $recommender) {
+                return 2;
+            } else if ($recomApproveId == $approver) {
+                return 3;
+            } else {
+                return null;
+            }
+        };
+        $fullName = function($id) {
+            $empRepository = new EmployeeRepository($this->adapter);
+            $empDtl = $empRepository->fetchById($id);
+            $empMiddleName = ($empDtl['MIDDLE_NAME'] != null) ? " " . $empDtl['MIDDLE_NAME'] . " " : " ";
+            return $empDtl['FIRST_NAME'] . $empMiddleName . $empDtl['LAST_NAME'];
+        };
+
+        $getValue = function($status) {
+            if ($status == "RQ") {
+                return "Pending";
+            } else if ($status == 'RC') {
+                return "Recommended";
+            } else if ($status == "R") {
+                return "Rejected";
+            } else if ($status == "AP") {
+                return "Approved";
+            } else if ($status == "C") {
+                return "Cancelled";
+            }
+        };
+        $getValueComType = function($trainingTypeId){
+            if($trainingTypeId=='CC'){
+                return 'Company Contribution';
+            }else if($trainingTypeId=='CP'){
+                return 'Company Personal';
+            }
+        };
+
+        foreach ($result as $row) {
+            $recommendApproveRepository = new RecommendApproveRepository($this->adapter);
+            $empRecommendApprove = $recommendApproveRepository->fetchById($row['EMPLOYEE_ID']);
+
+            $status = $getValue($row['STATUS']);
+            $statusId = $row['STATUS'];
+            $approvedDT = $row['APPROVED_DATE'];
+
+            $authRecommender = ($statusId == 'RQ' || $statusId == 'C') ? $row['RECOMMENDER'] : $row['RECOMMENDED_BY'];
+            $authApprover = ($statusId == 'RC' || $statusId == 'RQ' || $statusId == 'C' || ($statusId == 'R' && $approvedDT == null)) ? $row['APPROVER'] : $row['APPROVED_BY'];
+
+            $roleID = $getRole($authRecommender, $authApprover, $recomApproveId);
+            $recommenderName = $fullName($authRecommender);
+            $approverName = $fullName($authApprover);
+            
+            if($row['TRAINING_ID']!=0){
+                $row['START_DATE']=$row['T_START_DATE'];
+                $row['END_DATE'] = $row['T_END_DATE'];
+                $row['DURATION'] = $row['T_DURATION'];
+                $row['TRAINING_TYPE'] = $row['T_TRAINING_TYPE'];
+                $row['TITLE'] = $row['TRAINING_NAME'];
+            }
+            $role = [
+                'APPROVER_NAME' => $approverName,
+                'RECOMMENDER_NAME' => $recommenderName,
+                'YOUR_ROLE' => $getRoleDtl($authRecommender, $authApprover, $recomApproveId),
+                'ROLE' => $roleID,
+                'TRAINING_TYPE'=> $getValueComType($row['TRAINING_TYPE']),
+            ];
+            if ($empRecommendApprove['RECOMMEND_BY'] == $empRecommendApprove['APPROVED_BY']) {
+                $role['YOUR_ROLE'] = 'Recommender\Approver';
+                $role['ROLE'] = 4;
+            }
+            
+            $new_row = array_merge($row, ['STATUS' => $status]);
+            $final_record = array_merge($new_row, $role);
+            array_push($recordList, $final_record);
+        }
+
+        return [
+            "success" => "true",
+            "data" => $recordList,
+            "num" => count($recordList),
+            "recomApproveId" => $recomApproveId
+        ];
     }
 
 }

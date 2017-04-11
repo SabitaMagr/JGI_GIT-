@@ -6,6 +6,7 @@ use Application\Repository\RepositoryInterface;
 use Zend\Db\Adapter\AdapterInterface;
 use SelfService\Model\TrainingRequest;
 use Zend\Db\TableGateway\TableGateway;
+use Setup\Model\Training;
 use Zend\Db\Sql\Expression;
 use Zend\Db\Sql\Sql;
 use Setup\Model\HrEmployees;
@@ -32,7 +33,7 @@ class TrainingApproveRepository implements RepositoryInterface{
 
     public function edit(\Application\Model\Model $model, $id) {
         $temp=$model->getArrayCopyForDB();
-        $this->tableGateway->update($temp,[TrainingRequest::ID=>$id]);
+        $this->tableGateway->update($temp,[TrainingRequest::REQUEST_ID=>$id]);
     }
 
     public function fetchAll() {
@@ -46,9 +47,9 @@ class TrainingApproveRepository implements RepositoryInterface{
             new Expression("TR.REQUEST_ID AS REQUEST_ID"),
             new Expression("TR.EMPLOYEE_ID AS EMPLOYEE_ID"),
             new Expression("TR.TRAINING_ID AS TRAINING_ID") ,
-            new Expression("TO_CHAR(TR.REQUESTED_DATE, 'DD-MON-YYYY') AS REQUESTED_DATE"),
-            new Expression("TO_CHAR(TR.START_DATE, 'DD-MON-YYYY') AS FROM_DATE"),
-            new Expression("TO_CHAR(TR.END_DATE, 'DD-MON-YYYY') AS TO_DATE"),
+            new Expression("INITCAP(TO_CHAR(TR.REQUESTED_DATE, 'DD-MON-YYYY')) AS REQUESTED_DATE"),
+            new Expression("INITCAP(TO_CHAR(TR.START_DATE, 'DD-MON-YYYY')) AS START_DATE"),
+            new Expression("INITCAP(TO_CHAR(TR.END_DATE, 'DD-MON-YYYY')) AS END_DATE"),
             new Expression("TR.DURATION AS DURATION"),
             new Expression("TR.DESCRIPTION AS DESCRIPTION"),
             new Expression("TR.STATUS AS STATUS"),
@@ -56,16 +57,17 @@ class TrainingApproveRepository implements RepositoryInterface{
             new Expression("TR.TITLE AS TITLE"),
             new Expression("TR.REMARKS AS REMARKS"),
             new Expression("TR.RECOMMENDED_BY AS RECOMMENDED_BY"),
-            new Expression("TO_CHAR(TR.RECOMMENDED_DATE, 'DD-MON-YYYY') AS RECOMMENDED_DATE"),
+            new Expression("INITCAP(TO_CHAR(TR.RECOMMENDED_DATE, 'DD-MON-YYYY')) AS RECOMMENDED_DATE"),
             new Expression("TR.RECOMMENDED_REMARKS AS RECOMMENDED_REMARKS"),
             new Expression("TR.APPROVED_BY AS APPROVED_BY"),
-            new Expression("TO_CHAR(TR.APPROVED_DATE, 'DD-MON-YYYY') AS APPROVED_DATE"),
+            new Expression("INITCAP(TO_CHAR(TR.APPROVED_DATE, 'DD-MON-YYYY')) AS APPROVED_DATE"),
             new Expression("TR.APPROVED_REMARKS AS APPROVED_REMARKS"),
-            new Expression("TO_CHAR(TR.MODIFIED_DATE, 'DD-MON-YYYY') AS MODIFIED_DATE"),
+            new Expression("INITCAP(TO_CHAR(TR.MODIFIED_DATE, 'DD-MON-YYYY')) AS MODIFIED_DATE"),
                 ], true);
 
         $select->from(['TR' => TrainingRequest::TABLE_NAME])
             ->join(['E'=>"HRIS_EMPLOYEES"],"E.EMPLOYEE_ID=TR.EMPLOYEE_ID",['FIRST_NAME','MIDDLE_NAME','LAST_NAME'],"left")
+            ->join(['T' => Training::TABLE_NAME], "T.". Training::TRAINING_ID."=TR.". TrainingRequest::TRAINING_ID, [Training::TRAINING_CODE, Training::TRAINING_NAME,"T_START_DATE" => new Expression("INITCAP(TO_CHAR(T.START_DATE, 'DD-MON-YYYY'))"),"T_END_DATE" => new Expression("INITCAP(TO_CHAR(T.END_DATE, 'DD-MON-YYYY'))"),"T_DURATION"=> Training::DURATION,"T_TRAINING_TYPE"=>Training::TRAINING_TYPE],"left")
             ->join(['E1'=>"HRIS_EMPLOYEES"],"E1.EMPLOYEE_ID=TR.RECOMMENDED_BY",['FN1'=>'FIRST_NAME','MN1'=>'MIDDLE_NAME','LN1'=>'LAST_NAME'],"left")
             ->join(['E2'=>"HRIS_EMPLOYEES"],"E2.EMPLOYEE_ID=TR.APPROVED_BY",['FN2'=>'FIRST_NAME','MN2'=>'MIDDLE_NAME','LN2'=>'LAST_NAME'],"left")
             ->join(['RA'=>"HRIS_RECOMMENDER_APPROVER"],"RA.EMPLOYEE_ID=TR.EMPLOYEE_ID",['RECOMMENDER'=>'RECOMMEND_BY','APPROVER'=>'APPROVED_BY'],"left")
@@ -94,6 +96,7 @@ class TrainingApproveRepository implements RepositoryInterface{
                     TR.TITLE,
                     TR.STATUS,
                     TR.TRAINING_ID,
+                    TR.TRAINING_TYPE,
                     TR.RECOMMENDED_REMARKS,
                     TR.APPROVED_REMARKS,
                     INITCAP(TO_CHAR(TR.START_DATE, 'DD-MON-YYYY')) AS START_DATE,

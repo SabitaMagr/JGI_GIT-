@@ -336,25 +336,25 @@ return [
         'trainingApprove' => [
                 [
                 'label' => 'Training Request',
-                'route' => 'trainingRequest',
+                'route' => 'trainingApprove',
             ],
                 [
                 'label' => 'Training Request',
-                'route' => 'trainingRequest',
+                'route' => 'trainingApprove',
                 'pages' => [
                         [
                         'label' => 'List',
-                        'route' => 'trainingRequest',
+                        'route' => 'trainingApprove',
                         'action' => 'index',
                     ],
                         [
                         'label' => 'List',
-                        'route' => 'trainingRequest',
+                        'route' => 'trainingApprove',
                         'action' => 'status',
                     ],
                         [
                         'label' => 'View',
-                        'route' => 'trainingRequest',
+                        'route' => 'trainingApprove',
                         'action' => 'view',
                     ],
                 ]

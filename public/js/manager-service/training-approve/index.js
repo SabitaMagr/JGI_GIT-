@@ -1,7 +1,7 @@
 (function ($) {
     'use strict';
     $(document).ready(function () {
-        console.log(document.holidayWorkApprove);
+        console.log(document.trainingApprove);
         $("#trainingApproveTable").kendoGrid({
             excel: {
                 fileName: "TrainingRequestList.xlsx",
@@ -9,7 +9,7 @@
                 allPages: true
             },
             dataSource: {
-                data: document.trainingRequestList,
+                data: document.trainingApprove,
                 pageSize: 20
             },
             height: 450,
@@ -24,11 +24,11 @@
             rowTemplate: kendo.template($("#rowTemplate").html()),
             columns: [
                 {field: "FIRST_NAME", title: "Employee Name", width: 150},
-                {field: "TRAINING_NAME", title: "Training Name", width: 120},
+                {field: "TITLE", title: "Training Name", width: 130},
                 {field: "REQUESTED_DATE", title: "Requested Date", width: 140},
-                {field: "FROM_DATE", title: "From Date", width: 100},
-                {field: "TO_DATE", title: "To Date", width: 100},
-                {field: "DURATION", title: "Duration", width: 120},
+                {field: "START_DATE", title: "Start Date", width: 100},
+                {field: "END_DATE", title: "End Date", width: 100},
+                {field: "DURATION", title: "Duration", width: 100},
                 {field: "TRAINING_TYPE", title: "Training Type", width: 120},
                 {field: "YOUR_ROLE", title: "Your Role", width: 120},
                 {title: "Action", width: 70}
@@ -51,8 +51,8 @@
                         {value: "Training Code"},
                         {value: "Training Name"},
                         {value: "Requested Date"},
-                        {value: "From Date"},
-                        {value: "To Date"},
+                        {value: "Start Date"},
+                        {value: "End Date"},
                         {value: "Duration"},
                         {value: "Training Type"},
                         {value: "Your Role"},
@@ -81,10 +81,11 @@
                 rows.push({
                     cells: [
                         {value: dataItem.FIRST_NAME + middleName + dataItem.LAST_NAME},
+                        {value: dataItem.TRAINING_CODE},
                         {value: dataItem.TRAINING_NAME},
                         {value: dataItem.REQUESTED_DATE},
-                        {value: dataItem.FROM_DATE},
-                        {value: dataItem.TO_DATE},
+                        {value: dataItem.START_DATE},
+                        {value: dataItem.END_DATE},
                         {value: dataItem.DURATION},
                         {value: dataItem.TRAINING_TYPE},
                         {value: dataItem.YOUR_ROLE},

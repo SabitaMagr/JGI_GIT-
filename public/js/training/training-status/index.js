@@ -17,7 +17,6 @@ angular.module('hris', [])
                 var positionId = angular.element(document.getElementById('positionId')).val();
                 var serviceEventTypeId = angular.element(document.getElementById('serviceEventTypeId')).val();
                 var serviceTypeId = angular.element(document.getElementById('serviceTypeId')).val();
-                var trainingId = angular.element(document.getElementById('trainingId')).val();
                 var requestStatusId = angular.element(document.getElementById('requestStatusId')).val();
                 var fromDate = angular.element(document.getElementById('fromDate1')).val();
                 var toDate = angular.element(document.getElementById('toDate1')).val();
@@ -32,7 +31,6 @@ angular.module('hris', [])
                         'positionId': positionId,
                         'serviceTypeId': serviceTypeId,
                         'serviceEventTypeId': serviceEventTypeId,
-                        'trainingId': trainingId,
                         'requestStatusId': requestStatusId,
                         'fromDate': fromDate,
                         'toDate': toDate
@@ -71,8 +69,8 @@ angular.module('hris', [])
                         {field: "FIRST_NAME", title: "Employee Name", width: 150},
                         {field: "TRAINING_NAME", title: "Training Name", width: 120},
                         {field: "REQUESTED_DATE", title: "Requested Date", width: 130},
-                        {field: "FROM_DATE", title: "From Date", width: 100},
-                        {field: "TO_DATE", title: "To Date", width: 100},
+                        {field: "START_DATE", title: "Start Date", width: 100},
+                        {field: "END_DATE", title: "End Date", width: 100},
                         {field: "DURATION", title: "Duration", width: 80},
                         {field: "TRAINING_TYPE", title: "Training Type", width: 80},
                         {field: "RECOMMENDER_NAME", title: "Recommender", width: 120},
@@ -99,8 +97,8 @@ angular.module('hris', [])
                                 {value: "Training Code"},
                                 {value: "Training Name"},
                                 {value: "Requested Date"},
-                                {value: "From Date"},
-                                {value: "To Date"},
+                                {value: "Start Date"},
+                                {value: "End Date"},
                                 {value: "Duration"},
                                 {value: "Training Type"},
                                 {value: "Recommender"},
@@ -134,8 +132,8 @@ angular.module('hris', [])
                                 {value: dataItem.TRAINING_CODE},
                                 {value: dataItem.TRAINING_NAME},
                                 {value: dataItem.REQUESTED_DATE},
-                                {value: dataItem.FROM_DATE},
-                                {value: dataItem.TO_DATE},
+                                {value: dataItem.START_DATE},
+                                {value: dataItem.END_DATE},
                                 {value: dataItem.DURATION},
                                 {value: dataItem.TRAINING_TYPE},
                                 {value: dataItem.RECOMMENDER_NAME},

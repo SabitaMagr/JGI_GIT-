@@ -1,5 +1,4 @@
 <?php
-
 namespace ManagerService\Controller;
 
 use Application\Helper\EntityHelper;
@@ -73,6 +72,15 @@ class TrainingApproveController extends AbstractActionController {
                 return "Cancelled";
             }
         };
+        
+        $getValueComType = function($trainingTypeId){
+            if($trainingTypeId=='CC'){
+                return 'Company Contribution';
+            }else if($trainingTypeId=='CP'){
+                return 'Company Personal';
+            }
+        };
+        
         $getRole = function($recommender, $approver) {
             if ($this->employeeId == $recommender) {
                 return 2;
@@ -84,29 +92,29 @@ class TrainingApproveController extends AbstractActionController {
             $requestedEmployeeID = $row['EMPLOYEE_ID'];
             $recommendApproveRepository = new RecommendApproveRepository($this->adapter);
             $empRecommendApprove = $recommendApproveRepository->fetchById($requestedEmployeeID);
-
-            $dataArray = [
-                'FIRST_NAME' => $row['FIRST_NAME'],
-                'MIDDLE_NAME' => $row['MIDDLE_NAME'],
-                'LAST_NAME' => $row['LAST_NAME'],
-                'FROM_DATE' => $row['FROM_DATE'],
-                'TO_DATE' => $row['TO_DATE'],
-                'DURATION' => $row['DURATION'],
-                'REQUESTED_DATE' => $row['REQUESTED_DATE'],
-                'REMARKS' => $row['REMARKS'],
-                'HOLIDAY_ENAME' => $row['HOLIDAY_ENAME'],
-                'STATUS' => $getStatusValue($row['STATUS']),
-                'ID' => $row['ID'],
-                'YOUR_ROLE' => $getValue($row['RECOMMENDER'], $row['APPROVER']),
-                'ROLE' => $getRole($row['RECOMMENDER'], $row['APPROVER'])
-            ];
-            if ($empRecommendApprove['RECOMMEND_BY'] == $empRecommendApprove['APPROVED_BY']) {
-                $dataArray['YOUR_ROLE'] = 'Recommender\Approver';
-                $dataArray['ROLE'] = 4;
+            
+            if($row['TRAINING_ID']!=0){
+                $row['START_DATE']=$row['T_START_DATE'];
+                $row['END_DATE'] = $row['T_END_DATE'];
+                $row['DURATION'] = $row['T_DURATION'];
+                $row['TRAINING_TYPE'] = $row['T_TRAINING_TYPE'];
+                $row['TITLE'] = $row['TRAINING_NAME'];
             }
-            array_push($holidayWorkApprove, $dataArray);
+            
+            $new_row = array_merge($row, [
+                'YOUR_ROLE' => $getValue($row['RECOMMENDER'], $row['APPROVER']),
+                'ROLE' => $getRole($row['RECOMMENDER'], $row['APPROVER']),
+                'STATUS' => $getStatusValue($row['STATUS']),
+                'TRAINING_TYPE'=> $getValueComType($row['TRAINING_TYPE']),
+            ]);
+            
+            if ($empRecommendApprove['RECOMMEND_BY'] == $empRecommendApprove['APPROVED_BY']) {
+                $new_row['YOUR_ROLE'] = 'Recommender\Approver';
+                $new_row['ROLE'] = 4;
+            }
+            array_push($trainingApprove, $new_row);
         }
-        return Helper::addFlashMessagesToArray($this, ['holidayWorkApprove' => $holidayWorkApprove, 'id' => $this->employeeId]);
+        return Helper::addFlashMessagesToArray($this, ['trainingApprove' => $trainingApprove, 'id' => $this->employeeId]);
     }
 
     public function viewAction() {
@@ -116,12 +124,12 @@ class TrainingApproveController extends AbstractActionController {
         $role = $this->params()->fromRoute('role');
 
         if ($id === 0) {
-            return $this->redirect()->toRoute("holidayWorkApprove");
+            return $this->redirect()->toRoute("trainingApprove");
         }
-        $workOnHolidayModel = new WorkOnHoliday();
+        $trainingRequestModel = new TrainingRequest();
         $request = $this->getRequest();
 
-        $detail = $this->holidayWorkApproveRepository->fetchById($id);
+        $detail = $this->trainingApproveRepository->fetchById($id);
         $status = $detail['STATUS'];
         $approvedDT = $detail['APPROVED_DATE'];
 
@@ -138,77 +146,54 @@ class TrainingApproveController extends AbstractActionController {
         $authRecommender = ($status == 'RQ') ? $recommender : $recommended_by;
         $authApprover = ($status == 'RC' || $status == 'RQ' || ($status == 'R' && $approvedDT == null)) ? $approver : $approved_by;
         $recommenderId = ($status == 'RQ') ? $detail['RECOMMENDER'] : $detail['RECOMMENDED_BY'];
+        if($detail['TRAINING_ID']!=0){
+            $detail['START_DATE']=$detail['T_START_DATE'];
+            $detail['END_DATE'] = $detail['T_END_DATE'];
+            $detail['DURATION'] = $detail['T_DURATION'];
+            $detail['TRAINING_TYPE'] = $detail['T_TRAINING_TYPE'];
+        }
         if (!$request->isPost()) {
-            $workOnHolidayModel->exchangeArrayFromDB($detail);
-            $this->form->bind($workOnHolidayModel);
+            $trainingRequestModel->exchangeArrayFromDB($detail);
+            $this->form->bind($trainingRequestModel);
         } else {
             $getData = $request->getPost();
             $action = $getData->submit;
-
             if ($role == 2) {
-                $workOnHolidayModel->recommendedDate = Helper::getcurrentExpressionDate();
-                $workOnHolidayModel->recommendedBy = $this->employeeId;
+                $trainingRequestModel->recommendedDate = Helper::getcurrentExpressionDate();
+                $trainingRequestModel->recommendedBy = $this->employeeId;
                 if ($action == "Reject") {
-                    $workOnHolidayModel->status = "R";
-                    $this->flashmessenger()->addMessage("Work on Holiday Request Rejected!!!");
+                    $trainingRequestModel->status = "R";
+                    $this->flashmessenger()->addMessage("Training Request Rejected!!!");
                 } else if ($action == "Approve") {
-                    $workOnHolidayModel->status = "RC";
-                    $this->flashmessenger()->addMessage("Work on Holiday Request Approved!!!");
+                    $trainingRequestModel->status = "RC";
+                    $this->flashmessenger()->addMessage("Training Request Approved!!!");
                 }
-                $workOnHolidayModel->recommendedRemarks = $getData->recommendedRemarks;
-                $this->holidayWorkApproveRepository->edit($workOnHolidayModel, $id);
-                $workOnHolidayModel->id = $id;
-                try {
-                    HeadNotification::pushNotification(($workOnHolidayModel->status == 'RC') ? NotificationEvents::WORKONHOLIDAY_RECOMMEND_ACCEPTED : NotificationEvents::WORKONHOLIDAY_RECOMMEND_REJECTED, $workOnHolidayModel, $this->adapter, $this->plugin('url'));
-                } catch (Exception $e) {
-                    $this->flashmessenger()->addMessage($e->getMessage());
-                }
+                $trainingRequestModel->recommendedRemarks = $getData->recommendedRemarks;
+                $this->trainingApproveRepository->edit($trainingRequestModel, $id);
             } else if ($role == 3 || $role == 4) {
-                $workOnHolidayModel->approvedDate = Helper::getcurrentExpressionDate();
-                $workOnHolidayModel->approvedBy = $this->employeeId;
+                $trainingRequestModel->approvedDate = Helper::getcurrentExpressionDate();
+                $trainingRequestModel->approvedBy = $this->employeeId;
                 if ($action == "Reject") {
-                    $workOnHolidayModel->status = "R";
-                    $this->flashmessenger()->addMessage("Work on Holiday Request Rejected!!!");
+                    $trainingRequestModel->status = "R";
+                    $this->flashmessenger()->addMessage("Training Request Rejected!!!");
                 } else if ($action == "Approve") {
-                    $leaveMasterRepo = new LeaveMasterRepository($this->adapter);
-                    $leaveAssignRepo = new LeaveAssignRepository($this->adapter);
-                    $substituteLeave = $leaveMasterRepo->getSubstituteLeave()->getArrayCopy();
-                    $substituteLeaveId = $substituteLeave['LEAVE_ID'];
-                    $empSubLeaveDtl = $leaveAssignRepo->filterByLeaveEmployeeId($substituteLeaveId, $requestedEmployeeID);
-                    if (count($empSubLeaveDtl) > 0) {
-                        $preBalance = $empSubLeaveDtl['BALANCE'];
-                        $total = $empSubLeaveDtl['TOTAL_DAYS'] + $detail['DURATION'];
-                        $balance = $preBalance + $detail['DURATION'];
-                        $leaveAssignRepo->updatePreYrBalance($requestedEmployeeID, $substituteLeaveId, 0, $total, $balance);
-                    } else {
-                        $leaveAssign = new LeaveAssign();
-                        $leaveAssign->createdDt = Helper::getcurrentExpressionDate();
-                        $leaveAssign->createdBy = $this->employeeId;
-                        $leaveAssign->employeeId = $requestedEmployeeID;
-                        $leaveAssign->leaveId = $substituteLeaveId;
-                        $leaveAssign->totalDays = $detail['DURATION'];
-                        $leaveAssign->previousYearBalance = 0;
-                        $leaveAssign->balance = $detail['DURATION'];
-                        $leaveAssignRepo->add($leaveAssign);
-                    }
-                    $workOnHolidayModel->status = "AP";
-                    $this->flashmessenger()->addMessage("Work on Holiday Request Approved");
+                    $trainingRequestModel->status = "AP";
+                    $this->flashmessenger()->addMessage("Training Request Approved");
                 }
                 if ($role == 4) {
-                    $workOnHolidayModel->recommendedBy = $this->employeeId;
-                    $workOnHolidayModel->recommendedDate = Helper::getcurrentExpressionDate();
+                    $trainingRequestModel->recommendedBy = $this->employeeId;
+                    $trainingRequestModel->recommendedDate = Helper::getcurrentExpressionDate();
                 }
-                $workOnHolidayModel->approvedRemarks = $getData->approvedRemarks;
-                $this->holidayWorkApproveRepository->edit($workOnHolidayModel, $id);
-                $workOnHolidayModel->id = $id;
-                try {
-                    HeadNotification::pushNotification(($workOnHolidayModel->status == 'AP') ? NotificationEvents::WORKONHOLIDAY_APPROVE_ACCEPTED : NotificationEvents::WORKONHOLIDAY_APPROVE_REJECTED, $workOnHolidayModel, $this->adapter, $this->plugin('url'));
-                } catch (Exception $e) {
-                    $this->flashmessenger()->addMessage($e->getMessage());
-                }
+                $trainingRequestModel->approvedRemarks = $getData->approvedRemarks;
+                $this->trainingApproveRepository->edit($trainingRequestModel, $id);
             }
-            return $this->redirect()->toRoute("holidayWorkApprove");
+            return $this->redirect()->toRoute("trainingApprove");
         }
+        $trainingTypes = array(
+           'CP'=>'Company Personal',
+           'CC'=>'Company Contribution'
+        );
+        $trainings = $this->getTrainingList($requestedEmployeeID);
         return Helper::addFlashMessagesToArray($this, [
                     'form' => $this->form,
                     'id' => $id,
@@ -222,7 +207,9 @@ class TrainingApproveController extends AbstractActionController {
                     'approvedDT' => $approvedDT,
                     'employeeId' => $this->employeeId,
                     'requestedEmployeeId' => $requestedEmployeeID,
-                    'holidays' => $this->getHolidayList($requestedEmployeeID)
+                    'trainingIdSelected'=>$detail['TRAINING_ID'],
+                    'trainings' => $trainings["trainingKVList"],
+                    'trainingTypes'=>$trainingTypes,
         ]);
     }
 
@@ -285,14 +272,6 @@ class TrainingApproveController extends AbstractActionController {
         $serviceEventTypeFormElement->setAttributes(["id" => "serviceEventTypeId", "class" => "form-control"]);
         $serviceEventTypeFormElement->setLabel("Service Event Type");
 
-        $holidayFormElement = new Select();
-        $holidayFormElement->setName("holiday");
-        $holidays = EntityHelper::getTableKVList($this->adapter, Holiday::TABLE_NAME, Holiday::HOLIDAY_ID, [Holiday::HOLIDAY_ENAME], [Holiday::STATUS => 'E']);
-        $holidays1 = [-1 => "All"] + $holidays;
-        $holidayFormElement->setValueOptions($holidays1);
-        $holidayFormElement->setAttributes(["id" => "holidayId", "class" => "form-control"]);
-        $holidayFormElement->setLabel("Holiday Type");
-
         $status = [
             '-1' => 'All',
             'RQ' => 'Pending',
@@ -312,7 +291,6 @@ class TrainingApproveController extends AbstractActionController {
                     'designations' => $designationFormElement,
                     'positions' => $positionFormElement,
                     'serviceTypes' => $serviceTypeFormElement,
-                    'holidays' => $holidayFormElement,
                     'employees' => $employeeNameFormElement,
                     'status' => $statusFormElement,
                     'recomApproveId' => $this->employeeId,
@@ -320,15 +298,16 @@ class TrainingApproveController extends AbstractActionController {
         ]);
     }
 
-    public function getHolidayList($employeeId) {
-        $holidayRepo = new HolidayRepository($this->adapter);
-        $holidayResult = $holidayRepo->selectAll($employeeId);
-        $holidayList = [];
-        foreach ($holidayResult as $holidayRow) {
-            //$todayDate = new \DateTime();
-            $holidayList[$holidayRow['HOLIDAY_ID']] = $holidayRow['HOLIDAY_ENAME'] . " (" . $holidayRow['START_DATE'] . " to " . $holidayRow['END_DATE'] . ")";
+    public function getTrainingList($employeeId) {
+        $trainingRepo = new TrainingRepository($this->adapter);
+        $trainingResult = $trainingRepo->selectAll($employeeId);
+        $trainingList = [];
+        $allTrainings = [];
+        foreach ($trainingResult as $trainingRow) {
+            $trainingList[$trainingRow['TRAINING_ID']] = $trainingRow['TRAINING_NAME'] . " (" . $trainingRow['START_DATE'] . " to " . $trainingRow['END_DATE'] . ")";
+            $allTrainings[$trainingRow['TRAINING_ID']] = $trainingRow;
         }
-        return $holidayList;
+        return ['trainingKVList' => $trainingList,'trainingList'=>$allTrainings];
     }
 
 }
