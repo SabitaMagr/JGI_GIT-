@@ -51,18 +51,21 @@ print $this->form()->openTag($form);
     document.url = '<?= $this->url("restful", ["action" => "index"]) ?>';
 </script>
 <div class="row margin-top-20" ng-app="hris" ng-controller="advanceDetailController">
-    <div class="col-sm-8 col-sm-offset-2">
+    <div class="col-sm-12">
         <div class="portlet box custom-box">
             <div class="portlet-title">
                 <div class="caption">
                     <i class="fa fa-user"></i>Advance Request Detail
+                </div>
+                <div class="actions">
+                    <a class="btn btn-circle btn-icon-only btn-default fullscreen" href="javascript:;" data-original-title="" title=""> </a>
                 </div>
             </div>
             <div class="portlet-body">
                 <div class="border-bottom">
                     <div class="form-group">
                         <div class="row div-font-11">
-                            <div class="col-md-6">
+                            <div class="col-sm-4">
                                 <table>
                                     <tr height="30">
                                         <td>
@@ -93,8 +96,8 @@ print $this->form()->openTag($form);
                                     </tr>                               
                                 </table>
                             </div>
-                            <div class="col-md-6">
-                                <table>  
+                            <div class="col-sm-4">
+                                <table>
                                     <tr height="30">
                                         <td>
                                             Requested Date
@@ -103,7 +106,11 @@ print $this->form()->openTag($form);
                                         <td>
                                             <?php echo $requestedDate; ?>
                                         </td>
-                                    </tr>
+                                    </tr>                         
+                                </table>
+                            </div>
+                            <div class="col-sm-4">
+                                <table>  
                                     <tr height="30">
                                         <td>
                                             Status
@@ -141,6 +148,10 @@ print $this->form()->openTag($form);
                         </div>
                     </div>
                     <input type="hidden" id="form-employeeId" value="<?php echo $requestedEmployeeId; ?>"/>
+                    
+                    
+                    <div class=" row">
+                    <div class="col-sm-4">
                     <div class="form-group">
                         <?php print $this->formLabel($advanceId); ?>
                         <?php print $this->formElement($advanceId); ?>
@@ -148,16 +159,28 @@ print $this->form()->openTag($form);
                         <span ng-bind="allowAmt" style="font-size:11px; font-weight: bold;"></span>
                         <span ng-bind="allowTerms" style="font-size:11px; font-weight: bold;"></span>
                     </div>               
+                    </div>
+                    
+                    <div class="col-sm-4">
                     <div class="form-group">
                         <?php print $this->formLabel($requestedAmount); ?>
                         <?php print $this->formElement($requestedAmount); ?>
                         <?php print $this->formElementErrors()->render($requestedAmount, ['class' => 'help-block']); ?>
                     </div>
+                    </div>
+                    
+                    <div class="col-sm-4">
                     <div class="form-group">
                         <?php print $this->formLabel($terms); ?>
                         <?php print $this->formElement($terms); ?>
                         <?php print $this->formElementErrors()->render($terms, ['class' => 'help-block']); ?>
                     </div>
+                    </div>
+                </div>
+                    
+                    
+                    <div class=" row">
+                    <div class="col-sm-4">
                     <div class="form-group">
                         <?php print $this->formLabel($advanceDate); ?>
                         <div class="input-group date" id="startDate">
@@ -166,11 +189,20 @@ print $this->form()->openTag($form);
                         </div>
                         <?php print $this->formElementErrors()->render($advanceDate, ['class' => 'help-block']); ?>
                     </div>
+                    </div>
+                    
+                    <div class="col-sm-4">
                     <div class="form-group">
                         <?php print $this->formLabel($reason); ?>
                         <?php print $this->formElement($reason); ?>
                         <?php print $this->formElementErrors()->render($reason, ['class' => 'help-block']); ?>
                     </div>
+                    </div>
+                    
+                    <div class="col-sm-4">
+                    </div>
+                </div>
+                    
                 </div>     
                 <?php if ($role == 2) { ?>
                     <div

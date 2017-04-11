@@ -110,8 +110,8 @@ $passedYr = $formSix->get('passedYr');
 $formSeven->setAttribute('id', 'form7');
 
 $expOrgName = $formSeven->get('organizationName');
-$orgType=[
-    'Financial'=>'Financial',
+$orgType = [
+    'Financial' => 'Financial',
     'Non-Financial' => 'Non-Financial'
 ];
 $expOrgType = $formSeven->get('organizationType');
@@ -121,12 +121,12 @@ $expOrgType->setValueOptions($orgType);
 $expPosition = $formSeven->get('position');
 $expFromDate = $formSeven->get('fromDate');
 $expToDate = $formSeven->get('toDate');
-       
+
 
 $formEight->setAttribute('id', 'form8');
 
-$traName= $formEight->get('trainingName');
-$traDescription=$formEight->get('description');
+$traName = $formEight->get('trainingName');
+$traDescription = $formEight->get('description');
 $traFromDate = $formEight->get('fromDate');
 $traToDate = $formEight->get('toDate');
 
@@ -170,7 +170,7 @@ echo json_encode($menu);
     <div class="row esetup" style="margin-top:10px;">
         <div class="col-md-12" style="">
             <a class="btn btn-success pull-right" href="<?= $this->url("employee", ["action" => "edit"]) ?>/<?php echo $id; ?>/1"> Edit
-            <i class="fa fa-edit"></i>
+                <i class="fa fa-edit"></i>
             </a>
         </div>   
     </div>    
@@ -180,7 +180,11 @@ echo json_encode($menu);
                 Personal Information</p>
 
             <div class="row clearfix e-setup">
-                
+                <div class="col-xs-12 col-sm-3 col-md-3 col-box">
+                    <div class="profile-img-box">
+                        <img alt="profile image"  class="profilepic" src="<?= $this->basePath("uploads/" . $filePath) ?>" />
+                    </div>
+                </div>
 
                 <div class="col-xs-12 col-sm-3 col-md-3 col-box">
                     <div class="row bottomgap">
@@ -1049,143 +1053,143 @@ echo json_encode($menu);
         <div class="status-info"> 
             <p><i class="fa fa-info-circle ticon ticon"></i>Qualification Details</p>
             <div class="row clearfix e-setup">
-            <input type="hidden" name="employeeId" id="employeeId" value="<?php echo $id; ?>">
-            <div class="col-sm-12">
-                <div class="table-responsive">
-                    <table class="table table-striped table-bordered table-hover no-footer customtbl profile-table-header" id="qualificationTbl">
-                        <tr>
-                            <td><?php print $this->formLabel($academicDegreeId); ?></td>
-                            <td><?php print $this->formLabel($academicUniversityId); ?></td>
-                            <td><?php print $this->formLabel($academicProgramId); ?></td>
-                            <td><?php print $this->formLabel($academicCourseId); ?></td>
-                            <td class="rankwidth"><?php print $this->formLabel($rankType); ?></td>
-                            <td><?php print $this->formLabel($rankValue); ?></td>
-                            <td class="passedyr"><?php print $this->formLabel($passedYr); ?></td>
-                        </tr>
-                        <?php
-                        //print(count($empQualificationList)); die();
-                        foreach ($empQualificationList as $empQualificationRow) {
-                            // print_r($empQualificationRow); die();
-                            ?>
+                <input type="hidden" name="employeeId" id="employeeId" value="<?php echo $id; ?>">
+                <div class="col-sm-12">
+                    <div class="table-responsive">
+                        <table class="table table-striped table-bordered table-hover no-footer customtbl profile-table-header" id="qualificationTbl">
                             <tr>
-                                <td>
-                                    <?php print $empQualificationRow['ACADEMIC_DEGREE_NAME']; ?>
-                                </td>
-                                <td>
-                                    <?php print $empQualificationRow['ACADEMIC_UNIVERSITY_NAME']; ?>
-                                </td>
-                                <td>
-                                    <?php print $empQualificationRow['ACADEMIC_PROGRAM_NAME']; ?>
-                                </td>
-                                <td>
-                                    <?php print $empQualificationRow['ACADEMIC_COURSE_NAME']; ?>
-                                </td>
-                                <td>
-                                    <?php
-                                    if ($empQualificationRow['RANK_TYPE'] == 'GPA') {
-                                        print 'GPA';
-                                    } else if ($empQualificationRow['RANK_TYPE'] == 'PER') {
-                                        print 'Percentage';
-                                    }
-                                    ?>
-                                </td>
-
-                                <td>
-                                    <?php print $empQualificationRow['RANK_VALUE']; ?>
-                                </td>
-                                <td>
-                                    <?php print $empQualificationRow['PASSED_YR']; ?>
-                                </td>
-
+                                <td><?php print $this->formLabel($academicDegreeId); ?></td>
+                                <td><?php print $this->formLabel($academicUniversityId); ?></td>
+                                <td><?php print $this->formLabel($academicProgramId); ?></td>
+                                <td><?php print $this->formLabel($academicCourseId); ?></td>
+                                <td class="rankwidth"><?php print $this->formLabel($rankType); ?></td>
+                                <td><?php print $this->formLabel($rankValue); ?></td>
+                                <td class="passedyr"><?php print $this->formLabel($passedYr); ?></td>
                             </tr>
-                        <?php } ?>
+                            <?php
+                            //print(count($empQualificationList)); die();
+                            foreach ($empQualificationList as $empQualificationRow) {
+                                // print_r($empQualificationRow); die();
+                                ?>
+                                <tr>
+                                    <td>
+                                        <?php print $empQualificationRow['ACADEMIC_DEGREE_NAME']; ?>
+                                    </td>
+                                    <td>
+                                        <?php print $empQualificationRow['ACADEMIC_UNIVERSITY_NAME']; ?>
+                                    </td>
+                                    <td>
+                                        <?php print $empQualificationRow['ACADEMIC_PROGRAM_NAME']; ?>
+                                    </td>
+                                    <td>
+                                        <?php print $empQualificationRow['ACADEMIC_COURSE_NAME']; ?>
+                                    </td>
+                                    <td>
+                                        <?php
+                                        if ($empQualificationRow['RANK_TYPE'] == 'GPA') {
+                                            print 'GPA';
+                                        } else if ($empQualificationRow['RANK_TYPE'] == 'PER') {
+                                            print 'Percentage';
+                                        }
+                                        ?>
+                                    </td>
 
-                    </table>
+                                    <td>
+                                        <?php print $empQualificationRow['RANK_VALUE']; ?>
+                                    </td>
+                                    <td>
+                                        <?php print $empQualificationRow['PASSED_YR']; ?>
+                                    </td>
+
+                                </tr>
+                            <?php } ?>
+
+                        </table>
+                    </div>
                 </div>
+                <!--<button id="qualificationSubmitBtn" ng-click="addQualification()">Submit</button>-->
             </div>
-            <!--<button id="qualificationSubmitBtn" ng-click="addQualification()">Submit</button>-->
         </div>
-        </div>
-        
+
         <div class="status-info"> 
             <p><i class="fa fa-info-circle ticon ticon"></i>Experience Details</p>
             <div class="row clearfix e-setup">
-            <input type="hidden" name="employeeId" id="employeeId" value="<?php echo $id; ?>">
-            <div class="col-sm-12">
-                <div class="table-responsive">
-                    <table class="table table-striped table-bordered table-hover no-footer customtbl profile-table-header" id="qualificationTbl">
-                        <tr>
-                            <td><?php print $this->formLabel($expOrgType); ?></td>
-                            <td><?php print $this->formLabel($expOrgName); ?></td>
-                            <td><?php print $this->formLabel($expPosition); ?></td>
-                            <td><?php print $this->formLabel($expFromDate); ?></td>
-                            <td><?php print $this->formLabel($expToDate); ?></td>
-                        </tr>
-                        <?php
-                        foreach ($empExperienceList as $experience) {
-                            ?>
+                <input type="hidden" name="employeeId" id="employeeId" value="<?php echo $id; ?>">
+                <div class="col-sm-12">
+                    <div class="table-responsive">
+                        <table class="table table-striped table-bordered table-hover no-footer customtbl profile-table-header" id="qualificationTbl">
                             <tr>
-                                <td>
-                                    <?php print $experience['ORGANIZATION_TYPE']; ?>
-                                </td>
-                                <td>
-                                    <?php print $experience['ORGANIZATION_NAME']; ?>
-                                </td>
-                                <td>
-                                    <?php print $experience['POSITION']; ?>
-                                </td>
-                                <td>
-                                    <?php print $experience['FROM_DATE']; ?>
-                                </td>
-
-                                <td>
-                                    <?php print $experience['TO_DATE']; ?>
-                                </td>
+                                <td><?php print $this->formLabel($expOrgType); ?></td>
+                                <td><?php print $this->formLabel($expOrgName); ?></td>
+                                <td><?php print $this->formLabel($expPosition); ?></td>
+                                <td><?php print $this->formLabel($expFromDate); ?></td>
+                                <td><?php print $this->formLabel($expToDate); ?></td>
                             </tr>
-                        <?php } ?>
-                    </table>
+                            <?php
+                            foreach ($empExperienceList as $experience) {
+                                ?>
+                                <tr>
+                                    <td>
+                                        <?php print $experience['ORGANIZATION_TYPE']; ?>
+                                    </td>
+                                    <td>
+                                        <?php print $experience['ORGANIZATION_NAME']; ?>
+                                    </td>
+                                    <td>
+                                        <?php print $experience['POSITION']; ?>
+                                    </td>
+                                    <td>
+                                        <?php print $experience['FROM_DATE']; ?>
+                                    </td>
+
+                                    <td>
+                                        <?php print $experience['TO_DATE']; ?>
+                                    </td>
+                                </tr>
+                            <?php } ?>
+                        </table>
+                    </div>
                 </div>
+                <!--<button id="qualificationSubmitBtn" ng-click="addQualification()">Submit</button>-->
             </div>
-            <!--<button id="qualificationSubmitBtn" ng-click="addQualification()">Submit</button>-->
-        </div>
         </div>
         <div class="status-info"> 
             <p><i class="fa fa-info-circle ticon ticon"></i>Training Details</p>
             <div class="row clearfix e-setup">
-            <input type="hidden" name="employeeId" id="employeeId" value="<?php echo $id; ?>">
-            <div class="col-sm-12">
-                <div class="table-responsive">
-                    <table class="table table-striped table-bordered table-hover no-footer customtbl profile-table-header" id="qualificationTbl">
-                        <tr>
-                            <td><?php print $this->formLabel($traName); ?></td>
-                            <td><?php print $this->formLabel($traDescription); ?></td>
-                            <td><?php print $this->formLabel($traFromDate); ?></td>
-                            <td><?php print $this->formLabel($traToDate); ?></td>
-                        </tr>
-                        <?php
-                        foreach ($empTrainingList as $training) {
-                            ?>
+                <input type="hidden" name="employeeId" id="employeeId" value="<?php echo $id; ?>">
+                <div class="col-sm-12">
+                    <div class="table-responsive">
+                        <table class="table table-striped table-bordered table-hover no-footer customtbl profile-table-header" id="qualificationTbl">
                             <tr>
-                                <td>
-                                    <?php print $training['TRAINING_NAME']; ?>
-                                </td>
-                                <td>
-                                    <?php print $training['DESCRIPTION']; ?>
-                                </td>
-                                <td>
-                                    <?php print $training['FROM_DATE']; ?>
-                                </td>
-
-                                <td>
-                                    <?php print $experience['TO_DATE']; ?>
-                                </td>
+                                <td><?php print $this->formLabel($traName); ?></td>
+                                <td><?php print $this->formLabel($traDescription); ?></td>
+                                <td><?php print $this->formLabel($traFromDate); ?></td>
+                                <td><?php print $this->formLabel($traToDate); ?></td>
                             </tr>
-                        <?php } ?>
-                    </table>
+                            <?php
+                            foreach ($empTrainingList as $training) {
+                                ?>
+                                <tr>
+                                    <td>
+                                        <?php print $training['TRAINING_NAME']; ?>
+                                    </td>
+                                    <td>
+                                        <?php print $training['DESCRIPTION']; ?>
+                                    </td>
+                                    <td>
+                                        <?php print $training['FROM_DATE']; ?>
+                                    </td>
+
+                                    <td>
+                                        <?php print $experience['TO_DATE']; ?>
+                                    </td>
+                                </tr>
+                            <?php } ?>
+                        </table>
+                    </div>
                 </div>
+                <!--<button id="qualificationSubmitBtn" ng-click="addQualification()">Submit</button>-->
             </div>
-            <!--<button id="qualificationSubmitBtn" ng-click="addQualification()">Submit</button>-->
-        </div>
         </div>
     </div>
 </div>

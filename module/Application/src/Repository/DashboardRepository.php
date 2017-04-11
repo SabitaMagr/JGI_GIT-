@@ -245,7 +245,7 @@ class DashboardRepository implements RepositoryInterface {
      * @param int $branchId
      * @return array
      */
-    public function fetchUpcomingHolidays($genderId, $branchId) {
+    public function fetchUpcomingHolidays($genderId, $branchId) {        
         $sql = "SELECT HM.HOLIDAY_ID,
                HM.HOLIDAY_ENAME,
                HM.GENDER_ID,
