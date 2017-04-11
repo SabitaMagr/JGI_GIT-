@@ -64,11 +64,30 @@ class HolidayRepository implements RepositoryInterface {
     }
 
     public function fetchById($id) {
-        $rowset = $this->tableGateway->select([
+        $sql = new Sql($this->adapter);
+        $select = $sql->select();
+        $select->columns([
+            new Expression("HOLIDAY_ID AS HOLIDAY_ID"),
+            new Expression("HOLIDAY_CODE AS HOLIDAY_CODE"),
+            new Expression("HOLIDAY_ENAME AS HOLIDAY_ENAME") ,
+            new Expression("INITCAP(TO_CHAR(START_DATE, 'DD-MON-YYYY')) AS START_DATE"),
+            new Expression("INITCAP(TO_CHAR(END_DATE, 'DD-MON-YYYY')) AS END_DATE"),
+            new Expression("HOLIDAY_LNAME AS HOLIDAY_LNAME"),
+            new Expression("GENDER_ID AS GENDER_ID"),
+            new Expression("STATUS AS STATUS"),
+            new Expression("HALFDAY AS HALFDAY"),
+            new Expression("REMARKS AS REMARKS"),
+                ], true);
+
+        $select->from(Holiday::TABLE_NAME);
+
+        $select->where([
             Holiday::HOLIDAY_ID => $id,
             Holiday::STATUS => 'E'
         ]);
-        return $rowset->current();
+        $statement = $sql->prepareStatementForSqlObject($select);
+        $result = $statement->execute();
+        return $result->current();
     }
 
     public function delete($id) {

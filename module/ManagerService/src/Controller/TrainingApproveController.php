@@ -1,5 +1,4 @@
 <?php
-
 namespace ManagerService\Controller;
 
 use Application\Helper\EntityHelper;
@@ -207,8 +206,8 @@ class TrainingApproveController extends AbstractActionController {
                     'recommendedBy' => $recommenderId,
                     'approvedDT' => $approvedDT,
                     'employeeId' => $this->employeeId,
-                    'trainingIdSelected'=>$detail['TRAINING_ID'],
                     'requestedEmployeeId' => $requestedEmployeeID,
+                    'trainingIdSelected'=>$detail['TRAINING_ID'],
                     'trainings' => $trainings["trainingKVList"],
                     'trainingTypes'=>$trainingTypes,
         ]);

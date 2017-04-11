@@ -194,19 +194,6 @@ class TrainingRequest extends AbstractActionController {
         if (!$id) {
             return $this->redirect()->toRoute('trainingRequest');
         }
-        $detail = $this->repository->fetchById($id);
-        if ($detail['STATUS'] == 'AP') {
-            //to get the previous balance of selected leave from assigned leave detail
-            $leaveAssignRepo = new LeaveAssignRepository($this->adapter);
-            $leaveMasterRepo = new LeaveMasterRepository($this->adapter);
-            $substituteLeave = $leaveMasterRepo->getSubstituteLeave()->getArrayCopy();
-            $substituteLeaveId = $substituteLeave['LEAVE_ID'];
-            $empSubLeaveDtl = $leaveAssignRepo->filterByLeaveEmployeeId($substituteLeaveId, $detail['EMPLOYEE_ID']);
-            $preBalance = $empSubLeaveDtl['BALANCE'];
-            $total = $empSubLeaveDtl['TOTAL_DAYS'] - $detail['DURATION'];
-            $balance = $preBalance - $detail['DURATION'];
-            $leaveAssignRepo->updatePreYrBalance($detail['EMPLOYEE_ID'], $substituteLeaveId, 0, $total, $balance);
-        }
         $this->repository->delete($id);
         $this->flashmessenger()->addMessage("Training Request Successfully Cancelled!!!");
         return $this->redirect()->toRoute('trainingRequest');
