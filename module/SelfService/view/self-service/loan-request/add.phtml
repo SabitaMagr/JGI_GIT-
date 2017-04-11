@@ -62,48 +62,46 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                 <?php
                 print $this->form()->openTag($form);
                 ?>
-                
+
                 <div class=" row">
                     <div class="col-sm-4">
-                <div class="form-group">
-                    <?php print $this->formLabel($loanId); ?>
-                    <span class="required" aria-required="true">*</span>
-                    <?php print $this->formElement($loanId); ?>
-                    <?php print $this->formElementErrors()->render($loanId, ['class' => 'help-block']); ?>
-                </div>               
+                        <div class="form-group">
+                            <?php print $this->formLabel($loanId); ?>
+                            <span class="required" aria-required="true">*</span>
+                            <?php print $this->formElement($loanId); ?>
+                            <?php print $this->formElementErrors()->render($loanId, ['class' => 'help-block']); ?>
+                        </div>               
                     </div>
-                    
+
                     <div class="col-sm-4">
-                <div class="form-group">
-                    <?php print $this->formLabel($requestedAmount); ?>
-                    <span class="required" aria-required="true">*</span>
-                    <?php print $this->formElement($requestedAmount); ?>
-                    <?php print $this->formElementErrors()->render($requestedAmount, ['class' => 'help-block']); ?>
-                </div>
+                        <div class="form-group">
+                            <?php print $this->formLabel($requestedAmount); ?>
+                            <span class="required" aria-required="true">*</span>
+                            <?php print $this->formElement($requestedAmount); ?>
+                            <?php print $this->formElementErrors()->render($requestedAmount, ['class' => 'help-block']); ?>
+                        </div>
                     </div>
-                    
-</div>
-                
-                <div class=" row">
+
                     <div class="col-sm-4">
-                <div class="form-group">
-                    <?php print $this->formLabel($loanDate); ?>
-                    <span class="required" aria-required="true">*</span>
-                    <?php print $this->formElement($loanDate); ?>
-                    <input type="text" id="nepaliDate" name="nepaliDate"  class="form-control"/>
-                    <?php print $this->formElementErrors()->render($loanDate, ['class' => 'help-block']); ?>
-                </div>
+                        <div class="form-group">
+                            <?php print $this->formLabel($loanDate); ?>
+                            <span class="required" aria-required="true">*</span>
+                            <?php print $this->formElement($loanDate); ?>
+                            <input type="text" id="nepaliDate" name="nepaliDate"  class="form-control"/>
+                            <?php print $this->formElementErrors()->render($loanDate, ['class' => 'help-block']); ?>
+                        </div>
                     </div>
-                    
+                </div>
+
+                <div class="row">
                     <div class="col-sm-4">
-                <div class="form-group">
-                    <?php print $this->formLabel($reason); ?>
-                    <?php print $this->formElement($reason); ?>
-                    <?php print $this->formElementErrors()->render($reason, ['class' => 'help-block']); ?>
-                </div>
+                        <div class="form-group">
+                            <?php print $this->formLabel($reason); ?>
+                            <?php print $this->formElement($reason); ?>
+                            <?php print $this->formElementErrors()->render($reason, ['class' => 'help-block']); ?>
+                        </div>
                     </div>
-                    
-</div>
+                </div>
 
 
                 <?php

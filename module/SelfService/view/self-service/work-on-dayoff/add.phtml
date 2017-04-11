@@ -52,53 +52,53 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                 <?php
                 print $this->form()->openTag($form);
                 ?>
-                
+
                 <div class=" row">
                     <div class="col-sm-4">
-                <div
-                    class="form-group required  <?= empty($fromDate->getMessages()) ? "" : "error" ?>">
-                        <?php print $this->formLabel($fromDate) ?>
-                    <span class="required" aria-required="true">*</span>
-                        <?php print $this->formElement($fromDate) ?>
-                </div>
-                <?php print $this->formElementErrors()->render($fromDate, ['class' => 'help-block error']) ?>
+                        <div
+                            class="form-group required  <?= empty($fromDate->getMessages()) ? "" : "error" ?>">
+                                <?php print $this->formLabel($fromDate) ?>
+                            <span class="required" aria-required="true">*</span>
+                            <?php print $this->formElement($fromDate) ?>
+                        </div>
+                        <?php print $this->formElementErrors()->render($fromDate, ['class' => 'help-block error']) ?>
                     </div>
-                    
+
                     <div class="col-sm-4">
-                <div
-                    class="form-group required <?= empty($toDate->getMessages()) ? "" : "error" ?>">
-                        <?php print $this->formLabel($toDate) ?>
-                    <span class="required" aria-required="true">*</span>
-                        <?php print $this->formElement($toDate) ?>
-                    <span id="errorMsgDate" style="font-size:11px; color:red;"></span>
-                </div>
-                <?php print $this->formElementErrors()->render($toDate, ['class' => 'help-block error']) ?>
+                        <div
+                            class="form-group required <?= empty($toDate->getMessages()) ? "" : "error" ?>">
+                                <?php print $this->formLabel($toDate) ?>
+                            <span class="required" aria-required="true">*</span>
+                            <?php print $this->formElement($toDate) ?>
+                            <span id="errorMsgDate" style="font-size:11px; color:red;"></span>
+                        </div>
+                        <?php print $this->formElementErrors()->render($toDate, ['class' => 'help-block error']) ?>
                     </div>
-                    
+
+                    <div class="col-sm-4">
+                        <div
+                            class="form-group required <?= empty($duration->getMessages()) ? "" : "error" ?>">
+                                <?php print $this->formLabel($duration); ?>
+                                <?php print $this->formElement($duration); ?>
+                            <span id="errorMsg" style="font-size:11px; color:red;"></span>
+                        </div>
+                        <?php print $this->formElementErrors()->render($duration, ['class' => 'help-block error']); ?>
+                    </div>
+
                 </div>
-                
-                
+
+
                 <div class=" row">
                     <div class="col-sm-4">
-                <div
-                    class="form-group required <?= empty($duration->getMessages()) ? "" : "error" ?>">
-                        <?php print $this->formLabel($duration); ?>
-                        <?php print $this->formElement($duration); ?>
-                    <span id="errorMsg" style="font-size:11px; color:red;"></span>
-                </div>
-                <?php print $this->formElementErrors()->render($duration, ['class' => 'help-block error']); ?>
+                        <div class="form-group">
+                            <?php print $this->formLabel($remarks); ?>
+                            <?php print $this->formElement($remarks); ?>
+                            <?php print $this->formElementErrors()->render($remarks, ['class' => 'help-block']); ?>
+                        </div>
                     </div>
-                    
-                    <div class="col-sm-4">
-                <div class="form-group">
-                    <?php print $this->formLabel($remarks); ?>
-                    <?php print $this->formElement($remarks); ?>
-                    <?php print $this->formElementErrors()->render($remarks, ['class' => 'help-block']); ?>
+
                 </div>
-                    </div>
-                    
-                </div>
-                
+
 
 
 

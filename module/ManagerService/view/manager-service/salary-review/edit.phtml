@@ -42,7 +42,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
 <?php } ?>
 
 <div class="row">
-    <div class="col-sm-8 col-sm-offset-2">
+    <div class="col-sm-12">
         <div class="portlet box custom-box">
             <div class="portlet-title">
                 <div class="caption">
@@ -50,36 +50,58 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                     </i>
                     Salary Review
                 </div>
+                <div class="actions">
+                    <a class="btn btn-circle btn-icon-only btn-default fullscreen" href="javascript:;" data-original-title="" title=""> </a>
+                </div>
             </div>
             <div class="portlet-body">
                 <form action="<?= $this->url('salaryReview', ['action' => 'edit', 'id' => $id]) ?>" method="POST">
+                    
+                     <div class=" row">
+                    <div class="col-sm-4">
                     <div class="form-group">
                         <?php print $this->formLabel($employeeElement); ?>
                         <?php print $this->formElement($employeeElement); ?>
                     </div>
+                    </div>
+                    
+                    <div class="col-sm-4">
                     <div class="form-group">
                         <label for="oldAmount">Old Amount</label>
                         <input type="number" required id="oldAmount" name="oldAmount" class="form-control" >
                     </div>
+                    </div>
+                    
+                    <div class="col-sm-4">
                     <div class="form-group">
                         <label for="oldAmount">New Amount</label>
                         <input type="number" required id="newAmount" name="newAmount" class="form-control" >
                     </div>
-                    <div class="row">
-                        <div class="form-group col-md-6">
+                    </div>
+                </div>
+                    
+                     <div class=" row">
+                    <div class="col-sm-4">
+                        <div class="form-group">
                             <label for="effectiveDate">Effective Date</label>
                             <input type="text" required id="effectiveDate" name="effectiveDate" class="form-control" >
                         </div>
-                        <div class="form-group col-md-6">
+                    </div>
+                    
+                    <div class="col-sm-4">
+                        <div class="form-group">
                             <label for="effectiveNepaliDate">Effective Nepali Date</label>
                             <input type="text" required id="effectiveNepaliDate" name="effectiveNepaliDate" class="form-control" >
                         </div>
                     </div>
-
+                    
+                    <div class="col-sm-4">
                     <div class="form-group">
                         <label for="jobHistoryId"> Service Events  </label>
                         <select id="jobHistoryId" name="jobHistoryId" class="form-control" ></select>
                     </div>
+                    </div>
+                </div>
 
                     <input type="submit" class="btn btn-success" />
 

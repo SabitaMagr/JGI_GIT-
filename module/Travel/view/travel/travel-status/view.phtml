@@ -67,18 +67,21 @@ print $this->form()->openTag($form);
 </script>
 
 <div class="row margin-top-20" ng-app="hris" ng-controller="advanceRequestController">
-    <div class="col-sm-8 col-sm-offset-2">
+    <div class="col-sm-12">
         <div class="portlet box custom-box">
             <div class="portlet-title">
                 <div class="caption">
                     <i class="fa fa-user"></i>Travel Request Detail
+                </div>
+                <div class="actions">
+                    <a class="btn btn-circle btn-icon-only btn-default fullscreen" href="javascript:;" data-original-title="" title=""> </a>
                 </div>
             </div>
             <div class="portlet-body">
                 <div class="border-bottom margin-bottom-10">
                     <div class="form-group">
                         <div class="row div-font-11">
-                            <div class="col-md-6">
+                            <div class="col-sm-4">
                                 <table width="100%">
                                     <tr height="30">
                                         <td>
@@ -87,15 +90,6 @@ print $this->form()->openTag($form);
                                         <td width="15">:</td>
                                         <td>
                                             <?php echo $employeeName; ?>
-                                        </td>
-                                    </tr>
-                                    <tr height="30">
-                                        <td>
-                                            Requested Date
-                                        </td>
-                                        <td width="15">:</td>
-                                        <td>
-                                            <?php echo $requestedDt; ?>
                                         </td>
                                     </tr>
                                     <tr height="30">
@@ -111,27 +105,15 @@ print $this->form()->openTag($form);
 
                                 </table>
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-sm-4">
                                 <table width="100%">
                                     <tr height="30">
                                         <td>
-                                            Status
+                                            Requested Date
                                         </td>
                                         <td width="15">:</td>
                                         <td>
-                                            <?php
-                                            if ($status == 'RQ') {
-                                                echo "Pending";
-                                            } else if ($status == 'RC') {
-                                                echo "Recommended";
-                                            } else if ($status == 'AP') {
-                                                echo "Approved";
-                                            } else if ($status == "R") {
-                                                echo "Rejected";
-                                            } else if ($status == "C") {
-                                                echo "Cancelled";
-                                            }
-                                            ?>
+                                            <?php echo $requestedDt; ?>
                                         </td>
                                     </tr>
                                     <tr height="30">
@@ -157,13 +139,44 @@ print $this->form()->openTag($form);
                                     <?php } ?>
                                 </table>
                             </div>
+                            <div class="col-sm-4">
+                                <table width="100%">
+                                    <tr height="30">
+                                        <td>
+                                            Status
+                                        </td>
+                                        <td width="15">:</td>
+                                        <td>
+                                            <?php
+                                            if ($status == 'RQ') {
+                                                echo "Pending";
+                                            } else if ($status == 'RC') {
+                                                echo "Recommended";
+                                            } else if ($status == 'AP') {
+                                                echo "Approved";
+                                            } else if ($status == "R") {
+                                                echo "Rejected";
+                                            } else if ($status == "C") {
+                                                echo "Cancelled";
+                                            }
+                                            ?>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
                         </div>
                     </div>
+                    
+                    <div class=" row">
+                    <div class="col-sm-4">
                     <div class="form-group">
                         <?php print $this->formLabel($travelCode); ?>
                         <?php print $this->formElement($travelCode); ?>
                         <?php print $this->formElementErrors()->render($travelCode, ['class' => 'help-block']); ?>
                     </div>  
+                    </div>
+                    
+                    <div class="col-sm-4">
                     <div class="form-group">
                         <?php print $this->formLabel($fromDate); ?>
                         <div class="input-group date" id="fromDate">
@@ -172,6 +185,9 @@ print $this->form()->openTag($form);
                         </div>
                         <?php print $this->formElementErrors()->render($fromDate, ['class' => 'help-block']); ?>
                     </div>
+                    </div>
+                    
+                    <div class="col-sm-4">
                     <div class="form-group">
                         <?php print $this->formLabel($toDate); ?>
                         <div class="input-group date" id="toDate">
@@ -180,36 +196,63 @@ print $this->form()->openTag($form);
                         </div>
                         <?php print $this->formElementErrors()->render($toDate, ['class' => 'help-block']); ?>
                     </div>
+                    </div>
+                </div>
+                    
+                    
+                    <div class=" row">
+                    <div class="col-sm-4">
                     <div class="form-group">
                         <?php print $this->formLabel($destination); ?>
                         <?php print $this->formElement($destination); ?>
                         <?php print $this->formElementErrors()->render($destination, ['class' => 'help-block']); ?>
                     </div>               
+                    </div>
+                    
+                    <div class="col-sm-4">
                     <div class="form-group">
                         <?php print $this->formLabel($purpose); ?>
                         <?php print $this->formElement($purpose); ?>
                         <?php print $this->formElementErrors()->render($purpose, ['class' => 'help-block']); ?>
                     </div>
+                    </div>
+                    
+                    <div class="col-sm-4">
                     <div class="form-group">
                         <?php print $this->formLabel($requestedType); ?>
                         <?php print $this->formElement($requestedType); ?>
                         <?php print $this->formElementErrors()->render($requestedType, ['class' => 'help-block']); ?>
                     </div>     
+                    </div>
+                </div>
+                    
+                    <div class=" row">
+                    <div class="col-sm-4">
                     <div class="form-group">
                         <?php print $this->formLabel($transportType); ?>
                         <?php print $this->formElement($transportType); ?>
                         <?php print $this->formElementErrors()->render($transportType, ['class' => 'help-block']); ?>
                     </div> 
+                    </div>
+                    
+                    <div class="col-sm-4">
                     <div class="form-group">
                         <?php print $this->formLabel($requestedAmount); ?>
                         <?php print $this->formElement($requestedAmount); ?>
                         <?php print $this->formElementErrors()->render($requestedAmount, ['class' => 'help-block']); ?>
                     </div>
+                    </div>
+                    
+                    <div class="col-sm-4">
                     <div class="form-group">
                         <?php print $this->formLabel($remarks); ?>
                         <?php print $this->formElement($remarks); ?>
                         <?php print $this->formElementErrors()->render($remarks, ['class' => 'help-block']); ?>
                     </div>
+                    </div>
+                </div>
+                    
+                    
                     <?php
                     if ($subEmployeeId != null) {
                         $disabled = ($subApprovedFlag != null) ? "disabled" : "";
