@@ -207,7 +207,6 @@ class TrainingStatusController extends AbstractActionController
                     'approvedDT'=>$detail['APPROVED_DATE'],
                     'approver' => $authApprover,
                     'status' => $status,
-                    'holidays' => $this->getHolidayList($requestedEmployeeID),
                     'customRenderer' => Helper::renderCustomView(),
                     'recommApprove'=>$recommApprove,
                     'trainingIdSelected'=>$detail['TRAINING_ID'],
