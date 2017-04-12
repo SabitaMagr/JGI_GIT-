@@ -566,7 +566,7 @@ class HeadNotification {
         };
         ${"fn" . NotificationEvents::WORKONDAYOFF_APPLIED} = function (WorkOnDayoff $model, AdapterInterface $adapter, Url $url, $type) {
             $workOnDayoffRepo = new WorkOnDayoffRepository($adapter);
-            $workOnDayoffArray = $workOnDayoffRepo->fetchById($model->id)->getArrayCopy();
+            $workOnDayoffArray = $workOnDayoffRepo->fetchById($model->id);
             $workOnDayoff = new WorkOnDayoff();
             $workOnDayoff->exchangeArrayFromDB($workOnDayoffArray);
 
@@ -574,7 +574,7 @@ class HeadNotification {
             $recommdAppModel = $recommdAppRepo->getDetailByEmployeeID($workOnDayoff->employeeId);
 
             if ($recommdAppModel == null) {
-                throw new Exception("recommender and approver not set for employee with id =>" . $leaveApply->employeeId);
+                throw new Exception("recommender and approver not set for employee with id =>" . $workOnDayoff->employeeId);
             }
             $workOnDayoffReqNotiMod = new WorkOnDayoffNotificationModel();
             self::setNotificationModel($recommdAppModel[RecommendApprove::EMPLOYEE_ID], $recommdAppModel[($type == self::RECOMMENDER) ? RecommendApprove::RECOMMEND_BY : RecommendApprove::APPROVED_BY], $workOnDayoffReqNotiMod, $adapter);
@@ -589,59 +589,140 @@ class HeadNotification {
             $notificationDesc = "Work On Day-off Request of $workOnDayoffReqNotiMod->fromName from $workOnDayoffReqNotiMod->fromDate to $workOnDayoffReqNotiMod->toDate";
 
             self::addNotifications($workOnDayoffReqNotiMod, $notificationTitle, $notificationDesc, $adapter);
-            self::sendEmail($workOnDayoffReqNotiMod, 1, $adapter, $url);
+            self::sendEmail($workOnDayoffReqNotiMod, 16, $adapter, $url);
         };
-        ${"fn" . NotificationEvents::WORKONDAYOFF_RECOMMEND_ACCEPTED} = function (WorkOnDayoff $model, AdapterInterface $adapter, Url $url, string $status) {
+        ${"fn" . NotificationEvents::WORKONDAYOFF_RECOMMEND_ACCEPTED} = function (WorkOnDayoff $request, AdapterInterface $adapter, Url $url, string $status) {
             $workOnDayoffRepo = new WorkOnDayoffRepository($adapter);
-            $workOnDayoffArray = $workOnDayoffRepo->fetchById($model->id)->getArrayCopy();
-            $workOnDayoff = new WorkOnDayoff();
-            $workOnDayoff->exchangeArrayFromDB($workOnDayoffArray);
+            $request->exchangeArrayFromDB($workOnDayoffRepo->fetchById($request->id));
 
             $recommdAppRepo = new RecommendApproveRepository($adapter);
-            $recommdAppModel = $recommdAppRepo->getDetailByEmployeeID($workOnDayoff->employeeId);
+            $recommdAppModel = $recommdAppRepo->getDetailByEmployeeID($request->employeeId);
+
+            $notification = new WorkOnDayoffNotificationModel();
+            self::setNotificationModel($recommdAppModel[RecommendApprove::RECOMMEND_BY], $recommdAppModel[RecommendApprove::EMPLOYEE_ID], $notification, $adapter);
+
+            $notification->fromDate = $request->fromDate;
+            $notification->toDate = $request->toDate;
+            $notification->duration = $request->duration;
+            $notification->remarks = $request->remarks;
+            $notification->status =  $status;
+
+            $notification->route = json_encode(["route" => "workOnDayoff", "action" => "view", "id" => $request->id]);
+            $title = "Work On Day-off Recommendation";
+            $desc = "Recommendation of Work on Day-off Request by"
+                    . " $notification->fromName from $notification->fromDate"
+                    . " to $notification->toDate is $notification->status";
+            
+            self::addNotifications($notification, $title, $desc, $adapter);
+            self::sendEmail($notification, 17, $adapter, $url);
+        };
+        ${"fn" . NotificationEvents::WORKONDAYOFF_APPROVE_ACCEPTED} = function (WorkOnDayoff $request, AdapterInterface $adapter, Url $url, string $status) {
+            $workOnDayoffRepo = new WorkOnDayoffRepository($adapter);
+            $request->exchangeArrayFromDB($workOnDayoffRepo->fetchById($request->id));
+
+            $recommdAppRepo = new RecommendApproveRepository($adapter);
+            $recommdAppModel = $recommdAppRepo->getDetailByEmployeeID($request->employeeId);
+
+            $notification = new WorkOnDayoffNotificationModel();
+            self::setNotificationModel(
+                    $recommdAppModel[RecommendApprove::APPROVED_BY], $recommdAppModel[RecommendApprove::EMPLOYEE_ID], $notification, $adapter);
+
+            $notification->fromDate = $request->fromDate;
+            $notification->toDate = $request->toDate;
+            $notification->duration = $request->duration;
+            $notification->remarks = $request->remarks;
+            $notification->status =  $status;
+
+            $notification->route = json_encode(["route" => "workOnDayoff", "action" => "view", "id" => $request->id]);
+            $title = "Work On Day-off Approval";
+            $desc = "Approval of Work on Day-off Request by"
+                    . " $notification->fromName from $notification->fromDate"
+                    . " to $notification->toDate is $notification->status";
+
+            self::addNotifications($notification, $title, $desc, $adapter);
+            self::sendEmail($notification, 18, $adapter, $url);
+        };
+        
+        ${"fn" . NotificationEvents::WORKONHOLIDAY_APPLIED} = function (WorkOnHoliday $request, AdapterInterface $adapter, Url $url, $type) {
+            $workOnHolidayRep = new WorkOnHolidayRepository($adapter);
+            $request->exchangeArrayFromDB($workOnHolidayRep->fetchById($request->id));
+
+            $recommdAppRepo = new RecommendApproveRepository($adapter);
+            $recommdAppModel = $recommdAppRepo->getDetailByEmployeeID($request->employeeId);
 
             if ($recommdAppModel == null) {
-                throw new Exception("recommender and approver not set for employee with id =>" . $leaveApply->employeeId);
+                throw new Exception("recommender and approver not set for employee with id =>" . $request->employeeId);
             }
-            $workOnDayoffReqNotiMod = new WorkOnDayoffNotificationModel();
-            self::setNotificationModel($recommdAppModel[RecommendApprove::EMPLOYEE_ID], $recommdAppModel[($type == self::RECOMMENDER) ? RecommendApprove::RECOMMEND_BY : RecommendApprove::APPROVED_BY], $workOnDayoffReqNotiMod, $adapter);
+            $notification = new WorkOnHolidayNotificationModel();
+            self::setNotificationModel($recommdAppModel[RecommendApprove::EMPLOYEE_ID], $recommdAppModel[($type == self::RECOMMENDER) ? RecommendApprove::RECOMMEND_BY : RecommendApprove::APPROVED_BY], $notification, $adapter);
 
-            $workOnDayoffReqNotiMod->route = json_encode(["route" => "dayoffWorkApprove", "action" => "view", "id" => $workOnDayoff->id, "role" => ($type == self::RECOMMENDER) ? 2 : 3]);
-            $workOnDayoffReqNotiMod->fromDate = $workOnDayoff->fromDate;
-            $workOnDayoffReqNotiMod->toDate = $workOnDayoff->toDate;
-            $workOnDayoffReqNotiMod->duration = $workOnDayoff->duration;
-            $workOnDayoffReqNotiMod->remarks = $workOnDayoff->remarks;
+            $notification->route = json_encode(["route" => "holidayWorkApprove", "action" => "view", "id" => $request->id, "role" => ($type == self::RECOMMENDER) ? 2 : 3]);
+            $notification->holidayName = $request->holidayId;
+            $notification->fromDate = $request->fromDate;
+            $notification->toDate = $request->toDate;
+            $notification->duration = $request->duration;
+            $notification->remarks = $request->remarks;
 
-            $notificationTitle = "Work On Day-off Request";
-            $notificationDesc = "Work On Day-off Request of $workOnDayoffReqNotiMod->fromName from $workOnDayoffReqNotiMod->fromDate to $workOnDayoffReqNotiMod->toDate";
+            $title = "Work On Holiday Request";
+            $desc = "Work On Holiday Request of $notification->fromName from $notification->fromDate to $notification->toDate";
 
-            self::addNotifications($workOnDayoffReqNotiMod, $notificationTitle, $notificationDesc, $adapter);
-            self::sendEmail($workOnDayoffReqNotiMod, 1, $adapter, $url);
-            
-            $leaveApplyRepo = new LeaveApplyRepository($adapter);
-            $leaveApplyArray = $leaveApplyRepo->fetchById($model->id)->getArrayCopy();
-            $leaveApply = new LeaveApply();
-            $leaveApply->exchangeArrayFromDB($leaveApplyArray);
-            $leaveApply->approvedBy = $model->approvedBy;
-
-            $leaveReqNotiMod = new LeaveRequestNotificationModel();
-            self::setNotificationModel($leaveApply->approvedBy, $leaveApply->employeeId, $leaveReqNotiMod, $adapter);
-
-            $leaveReqNotiMod->route = json_encode(["route" => "leaverequest", "action" => "view", "id" => $leaveApply->id]);
-
-            $leaveReqNotiMod->fromDate = $leaveApply->startDate;
-            $leaveReqNotiMod->toDate = $leaveApply->endDate;
-            $leaveReqNotiMod->leaveName = $leaveApply->leaveId;
-            $leaveReqNotiMod->leaveType = $leaveApply->halfDay;
-            $leaveReqNotiMod->noOfDays = $leaveApply->noOfDays;
-            $leaveReqNotiMod->leaveApprovedStatus = $status;
-
-            $notificationTitle = "Leave Approval";
-            $notificationDesc = "Approval of Leave Request by $leaveReqNotiMod->fromName from "
-                    . "$leaveReqNotiMod->fromDate to $leaveReqNotiMod->toDate is $leaveReqNotiMod->leaveApprovedStatus";
-            self::addNotifications($leaveReqNotiMod, $notificationTitle, $notificationDesc, $adapter);
-            self::sendEmail($leaveReqNotiMod, 3, $adapter, $url);
+            self::addNotifications($notification, $title, $desc, $adapter);
+            self::sendEmail($notification, 19, $adapter, $url);
         };
+        ${"fn" . NotificationEvents::WORKONHOLIDAY_RECOMMEND_ACCEPTED} = function (WorkOnHoliday $request, AdapterInterface $adapter, Url $url, string $status) {
+            $workOnHolidayRepo = new WorkOnHolidayRepository($adapter);
+            $request->exchangeArrayFromDB($workOnHolidayRepo->fetchById($request->id));
+
+            $recommdAppRepo = new RecommendApproveRepository($adapter);
+            $recommdAppModel = $recommdAppRepo->getDetailByEmployeeID($request->employeeId);
+
+            $notification = new WorkOnHolidayNotificationModel();
+            self::setNotificationModel($recommdAppModel[RecommendApprove::RECOMMEND_BY], $recommdAppModel[RecommendApprove::EMPLOYEE_ID], $notification, $adapter);
+
+            $notification->holidayName = $request->holidayId;
+            $notification->fromDate = $request->fromDate;
+            $notification->toDate = $request->toDate;
+            $notification->duration = $request->duration;
+            $notification->remarks = $request->remarks;
+            $notification->status =  $status;
+
+            $notification->route = json_encode(["route" => "workOnHoliday", "action" => "view", "id" => $request->id]);
+            $title = "Work On Holiday Recommendation";
+            $desc = "Recommendation of Work on Holiday Request by"
+                    . " $notification->fromName from $notification->fromDate"
+                    . " to $notification->toDate is $notification->status";
+            
+            self::addNotifications($notification, $title, $desc, $adapter);
+            self::sendEmail($notification, 20, $adapter, $url);
+        };
+        ${"fn" . NotificationEvents::WORKONHOLIDAY_APPROVE_ACCEPTED} = function (WorkOnHoliday $request, AdapterInterface $adapter, Url $url, string $status) {
+            $workOnHolidayRepo = new WorkOnHolidayRepository($adapter);
+            $request->exchangeArrayFromDB($workOnHolidayRepo->fetchById($request->id));
+
+            $recommdAppRepo = new RecommendApproveRepository($adapter);
+            $recommdAppModel = $recommdAppRepo->getDetailByEmployeeID($request->employeeId);
+
+            $notification = new WorkOnHolidayNotificationModel();
+            self::setNotificationModel(
+                    $recommdAppModel[RecommendApprove::APPROVED_BY], $recommdAppModel[RecommendApprove::EMPLOYEE_ID], $notification, $adapter);
+
+            $notification->holidayName = $request->holidayId;
+            $notification->fromDate = $request->fromDate;
+            $notification->toDate = $request->toDate;
+            $notification->duration = $request->duration;
+            $notification->remarks = $request->remarks;
+            $notification->status =  $status;
+
+            $notification->route = json_encode(["route" => "workOnHoliday", "action" => "view", "id" => $request->id]);
+            $title = "Work On Holiday Approval";
+            $desc = "Approval of Work on Holiday Request by"
+                    . " $notification->fromName from $notification->fromDate"
+                    . " to $notification->toDate is $notification->status";
+
+            self::addNotifications($notification, $title, $desc, $adapter);
+            self::sendEmail($notification, 21, $adapter, $url);
+        };
+        
         switch ($eventType) {
             case NotificationEvents::LEAVE_APPLIED:
                 ${"fn" . NotificationEvents::LEAVE_APPLIED}($model, $adapter, $url, self::RECOMMENDER);
@@ -727,6 +808,38 @@ class HeadNotification {
                 break;
             case NotificationEvents::LOAN_APPROVE_REJECTED:
                 ${"fn" . NotificationEvents::LOAN_APPROVE_ACCEPTED}($model, $adapter, $url, self::REJECTED);
+                break;
+            case NotificationEvents::WORKONDAYOFF_APPLIED:
+                ${"fn" . NotificationEvents::WORKONDAYOFF_APPLIED}($model, $adapter, $url, self::RECOMMENDER);
+                break;
+            case NotificationEvents::WORKONDAYOFF_RECOMMEND_ACCEPTED:
+                ${"fn" . NotificationEvents::WORKONDAYOFF_RECOMMEND_ACCEPTED}($model, $adapter, $url, self::ACCEPTED);
+                ${"fn" . NotificationEvents::WORKONDAYOFF_APPLIED}($model, $adapter, $url, self::APPROVER);
+                break;
+            case NotificationEvents::WORKONDAYOFF_RECOMMEND_REJECTED:
+                ${"fn" . NotificationEvents::WORKONDAYOFF_RECOMMEND_ACCEPTED}($model, $adapter, $url, self::REJECTED);
+                break;
+            case NotificationEvents::WORKONDAYOFF_APPROVE_ACCEPTED:
+                ${"fn" . NotificationEvents::WORKONDAYOFF_APPROVE_ACCEPTED}($model, $adapter, $url, self::ACCEPTED);
+                break;
+            case NotificationEvents::WORKONDAYOFF_APPROVE_REJECTED:
+                ${"fn" . NotificationEvents::WORKONDAYOFF_APPROVE_ACCEPTED}($model, $adapter, $url, self::REJECTED);
+                break;
+            case NotificationEvents::WORKONHOLIDAY_APPLIED:
+                ${"fn" . NotificationEvents::WORKONHOLIDAY_APPLIED}($model, $adapter, $url, self::RECOMMENDER);
+                break;
+            case NotificationEvents::WORKONHOLIDAY_RECOMMEND_ACCEPTED:
+                ${"fn" . NotificationEvents::WORKONHOLIDAY_RECOMMEND_ACCEPTED}($model, $adapter, $url, self::ACCEPTED);
+                ${"fn" . NotificationEvents::WORKONHOLIDAY_APPLIED}($model, $adapter, $url, self::APPROVER);
+                break;
+            case NotificationEvents::WORKONHOLIDAY_RECOMMEND_REJECTED:
+                ${"fn" . NotificationEvents::WORKONHOLIDAY_RECOMMEND_ACCEPTED}($model, $adapter, $url, self::REJECTED);
+                break;
+            case NotificationEvents::WORKONHOLIDAY_APPROVE_ACCEPTED:
+                ${"fn" . NotificationEvents::WORKONHOLIDAY_APPROVE_ACCEPTED}($model, $adapter, $url, self::ACCEPTED);
+                break;
+            case NotificationEvents::WORKONHOLIDAY_APPROVE_REJECTED:
+                ${"fn" . NotificationEvents::WORKONHOLIDAY_APPROVE_ACCEPTED}($model, $adapter, $url, self::REJECTED);
                 break;
         }
     }

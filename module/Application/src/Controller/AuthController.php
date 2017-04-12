@@ -121,15 +121,11 @@ class AuthController extends AbstractActionController {
                         if (!isset($result)) {
                             throw new Exception("Today's Attendance of employee with employeeId :$employeeId is not found.");
                         }
-                        if ($result['IN_TIME'] == null || isEmpty($result['IN_TIME'])) {
-                            $attendanceModel = new Attendance();
-                            $attendanceModel->employeeId = $employeeId;
-                            $attendanceModel->attendanceDt = $todayDate;
-                            $attendanceModel->attendanceTime = $todayTime;
-                            $attendanceRepo->add($attendanceModel);
-                        } else {
-                            // user's attendance is already done.
-                        }
+                        $attendanceModel = new Attendance();
+                        $attendanceModel->employeeId = $employeeId;
+                        $attendanceModel->attendanceDt = $todayDate;
+                        $attendanceModel->attendanceTime = $todayTime;
+                        $attendanceRepo->add($attendanceModel);
                     }
 //                    $employeeRepo = new EmployeeRepository($this->adapter);
 //                    $employeeDetail = $employeeRepo->getById($resultRow->EMPLOYEE_ID);
