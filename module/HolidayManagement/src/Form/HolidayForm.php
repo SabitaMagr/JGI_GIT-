@@ -8,8 +8,8 @@ use Zend\Form\Annotation;
  * @Annotation\Hydrator("Zend\Hydrator\ObjectProperty")
  * @Annotation\Name("Holiday")
  */
-class HolidayForm
-{
+class HolidayForm {
+
     /**
      * @Annotion\Type("Zend\Form\Element\Text")
      * @Annotation\Required(true)
@@ -36,6 +36,15 @@ class HolidayForm
      * @Annotation\Attributes({ "id":"branchId","class":"form-control","multiple":"multiple"})
      */
     public $branchId;
+
+    /**
+     * @Annotation\Type("Zend\Form\Element\Select")
+     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
+     * @Annotation\Required(true)
+     * @Annotation\Options({"disable_inarray_validator":"true","label":"Designation"})
+     * @Annotation\Attributes({ "id":"designationId","class":"form-control","multiple":"multiple"})
+     */
+    public $designationId;
 
     /**
      * @Annotion\Type("Zend\Form\Element\Text")
@@ -83,7 +92,6 @@ class HolidayForm
      * @Annotation\Attributes({ "id":"halfday"})
      */
     public $halfday;
-
 
     /**
      * @Annotion\Type("Zend\Form\Element\Textarea")

@@ -6,8 +6,7 @@ use Application\Model\Model;
 use Application\Repository\RepositoryInterface;
 use HolidayManagement\Model\Holiday;
 use HolidayManagement\Model\HolidayBranch;
-use Setup\Model\Branch;
-use Setup\Model\HrEmployees;
+use Setup\Model\HolidayDesignation;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Sql\Expression;
 use Zend\Db\Sql\Sql;
@@ -17,11 +16,13 @@ class HolidayRepository implements RepositoryInterface {
 
     private $tableGateway;
     private $tableGatewayHolidayBranch;
+    private $tableGatewayHolidayDesignation;
     private $adapter;
 
     public function __construct(AdapterInterface $adapter) {
         $this->tableGateway = new TableGateway(Holiday::TABLE_NAME, $adapter);
         $this->tableGatewayHolidayBranch = new TableGateway(HolidayBranch::TABLE_NAME, $adapter);
+        $this->tableGatewayHolidayDesignation = new TableGateway(HolidayDesignation::TABLE_NAME, $adapter);
         $this->adapter = $adapter;
     }
 
@@ -69,7 +70,7 @@ class HolidayRepository implements RepositoryInterface {
         $select->columns([
             new Expression("HOLIDAY_ID AS HOLIDAY_ID"),
             new Expression("HOLIDAY_CODE AS HOLIDAY_CODE"),
-            new Expression("HOLIDAY_ENAME AS HOLIDAY_ENAME") ,
+            new Expression("HOLIDAY_ENAME AS HOLIDAY_ENAME"),
             new Expression("INITCAP(TO_CHAR(START_DATE, 'DD-MON-YYYY')) AS START_DATE"),
             new Expression("INITCAP(TO_CHAR(END_DATE, 'DD-MON-YYYY')) AS END_DATE"),
             new Expression("HOLIDAY_LNAME AS HOLIDAY_LNAME"),
@@ -102,10 +103,21 @@ class HolidayRepository implements RepositoryInterface {
         $this->tableGatewayHolidayBranch->insert($model->getArrayCopyForDB());
     }
 
+    public function addHolidayDesignation(HolidayDesignation $model) {
+        $this->tableGatewayHolidayDesignation->insert($model->getArrayCopyForDB());
+    }
+
     public function deleteHolidayBranch($holidayId, $branchId) {
         $this->tableGatewayHolidayBranch->delete([
             HolidayBranch::HOLIDAY_ID => $holidayId,
             HolidayBranch::BRANCH_ID => $branchId
+        ]);
+    }
+
+    public function deleteHolidayDesignation($holidayId, $designationId) {
+        $this->tableGatewayHolidayDesignation->delete([
+            HolidayDesignation::HOLIDAY_ID => $holidayId,
+            HolidayDesignation::DESIGNATION_ID => $designationId
         ]);
     }
 
@@ -169,7 +181,7 @@ ON A.GENDER_ID=B.GENDER_ID " . $joinQuery . " WHERE A.STATUS ='E'";
         if ($branchId != -1) {
             $sql .= " AND C.BRANCH_ID=" . $branchId;
         }
-        $sql .=" ORDER BY A.START_DATE DESC";
+        $sql .= " ORDER BY A.START_DATE DESC";
         $statement = $this->adapter->query($sql);
         $result = $statement->execute();
         return $result;

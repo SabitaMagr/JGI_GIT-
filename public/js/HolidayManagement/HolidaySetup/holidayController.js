@@ -1,10 +1,5 @@
-/**
- * Created by punam on 9/19/16.
- */
-
-
 angular.module('hris', [])
-        .controller('holidayController', function ($scope, $http,$window) {
+        .controller('holidayController', function ($scope, $http, $window) {
             $scope.holidayDtl = {
                 holidayCode: '',
                 genderId: '',
@@ -18,6 +13,7 @@ angular.module('hris', [])
 
             var holidayId = angular.element(document.getElementById('holidayId'));
             var branchId = angular.element(document.getElementById('branchId'));
+            var designationId = angular.element(document.getElementById('designationId'));
 
             var getHolidayDetail = function () {
                 var holidayIdValue = holidayId.val();
@@ -57,6 +53,19 @@ angular.module('hris', [])
                 }, function (failure) {
                     console.log(failure);
                 });
+                window.app.pullDataById(document.urlDepartmentList, {
+                    id: holidayIdValue
+                }).then(function (data) {
+                    $scope.$apply(function () {
+                        var valArray = [];
+                        for (key in data) {
+                            valArray.push(key);
+                        }
+                        designationId.val(valArray).trigger("change");
+                    });
+                }, function (failure) {
+                    console.log(failure);
+                });
             }
             holidayId.on("change", getHolidayDetail);
             getHolidayDetail();
@@ -74,16 +83,18 @@ angular.module('hris', [])
                     {
                         return;
                     }
-                    
+
                     var holidayId = angular.element(document.getElementById('holidayId')).val();
                     var branchIdValue = branchId.val();
+                    var designationIdValue = designationId.val();
                     App.blockUI({target: "#hris-page-content"});
                     window.app.pullDataById(document.url, {
                         action: 'updateHolidayDetail',
                         data: {
                             holidayId: holidayId,
                             dataArray: $scope.holidayDtl,
-                            branchIds: branchIdValue
+                            branchIds: branchIdValue,
+                            designationIds: designationIdValue
                         },
                     }).then(function (success) {
                         $scope.$apply(function () {
@@ -104,8 +115,8 @@ angular.module('hris', [])
 //                                data: document.holidays
 //                            });
                             App.unblockUI("#hris-page-content");
-                            $window.location.href =  document.urlIndex;
-                            $window.localStorage.setItem("msg",success.data);
+                            $window.location.href = document.urlIndex;
+                            $window.localStorage.setItem("msg", success.data);
                         });
                     }, function (failure) {
                         App.unblockUI("#hris-page-content");

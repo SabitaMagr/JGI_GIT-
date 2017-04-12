@@ -15,6 +15,7 @@ $this->headScript()->appendFile($this->basePath('assets/global/plugins/jquery.bl
 
 <script>
     document.urlBranchList = '<?= $this->url("webService", ["action" => "branchList"]) ?>';
+    document.urlDepartmentList = '<?= $this->url("webService", ["action" => "designationList"]) ?>';
     document.url = '<?= $this->url("webService", ["action" => "index"]) ?>';
 </script>
 
@@ -23,23 +24,9 @@ $holidayFormElement->setAttributes(["ng-model" => "holidayId"]);
 $branchFormElement->setAttribute("ng-model", "branchId");
 $genderFormElement->setAttribute("ng-model", "genderId");
 
-$holidayCode = $form->get('holidayCode');
-$genderId = $form->get('genderId');
-$branchId = $form->get('branchId');
-$holidayEname = $form->get('holidayEname');
-$holidayLname = $form->get('holidayLname');
 $startDate = $form->get('startDate');
-$endDate = $form->get('endDate');
-$halfday = $form->get('halfday');
-$remarks = $form->get('remarks');
 $submit = $form->get('submit');
 $submit->setAttribute('value', 'UPDATE');
-
-$genderId->setValueOptions($genders);
-
-//$form->setAttribute('role', 'form');
-//$form->setAttribute('action', $this->url('holidaysetup', ['action' => 'edit']));
-//$form->prepare();
 ?>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\holidaysetup')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
@@ -154,9 +141,9 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                             <div class="form-group required">
                                                 <label for="endDate">End Date</label>
                                                 <span class="required" aria-required="true">*</span>
-                                                    <input type="text" id="endDate" name="endDate" required="required" class="form-control"
-                                                           value="" ng-model="holidayDtl.endDate">
-                                                <?php print $this->formElementErrors()->render($startDate, ['class' => 'help-block error']) ?>
+                                                <input type="text" id="endDate" name="endDate" required="required" class="form-control"
+                                                       value="" ng-model="holidayDtl.endDate">
+                                                       <?php print $this->formElementErrors()->render($startDate, ['class' => 'help-block error']) ?>
                                                 <div ng-show="holidayForm.$submitted || holidayForm.endDate.$touched">
                                                     <ul ng-show="holidayForm.endDate.$error.required" class="help-block error">
                                                         <li>End Date is required.</li>
@@ -186,6 +173,18 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                         <div ng-show="holidayForm.$submitted || holidayForm.branch.$touched">
                                             <ul ng-show="holidayForm.branch.$error.required" class="help-block error">
                                                 <li>Branch is required.</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-4">
+                                    <div class="form-group">
+                                        <?php print $this->formLabel($designationFormElement); ?>
+                                        <span class="required" aria-required="true">*</span>
+                                        <?php print $this->formElement($designationFormElement); ?>
+                                        <div ng-show="holidayForm.$submitted || holidayForm.designation.$touched">
+                                            <ul ng-show="holidayForm.designation.$error.required" class="help-block error">
+                                                <li>Designation is required.</li>
                                             </ul>
                                         </div>
                                     </div>

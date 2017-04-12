@@ -6,7 +6,6 @@ $this->headScript()
         ->appendFile($this->basePath('assets/global/plugins/nepalidate/nepali.datepicker.v2.1.min.js'))
         ->appendFile($this->basePath('js/nepali-datepicker-ext.js'))
         ->appendFile($this->basePath('js/HolidayManagement/HolidaySetup/add.js'));
-
 ?>
 
 <script>
@@ -22,6 +21,7 @@ $this->headScript()
 $holidayCode = $form->get('holidayCode');
 $genderId = $form->get('genderId');
 $branchId = $form->get('branchId');
+$designationId = $form->get('designationId');
 $holidayEname = $form->get('holidayEname');
 $holidayLname = $form->get('holidayLname');
 $startDate = $form->get('startDate');
@@ -34,6 +34,7 @@ $submit->setAttribute('value', 'SUBMIT');
 
 $genderId->setValueOptions($genders);
 $branchId->setValueOptions($branches);
+$designationId->setValueOptions($designations);
 ?>
 
 <?php
@@ -76,8 +77,6 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                 <?php
                 print $this->form()->openTag($form);
                 ?>
-
-
                 <div class=" row">
                     <div class="col-sm-4">
                         <div class="form-group <?= empty($holidayCode->getMessages()) ? "" : "error" ?>">
@@ -109,64 +108,64 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                     </div>
 
                 </div>
-                
-                 
-                 
+
+
+
                 <div class=" row">
 
                     <div class="col-sm-4">
-                        
+
                         <div class="row">
                             <div class="col-sm-6">
-                                 <div class="form-group required ">
-                            <label for="startDate">Start Date</label>
-                            <span class="required" aria-required="true">*</span>
-                                <input type="text" name="startDate" required="required"
-                                       class="form-control" id="startDate" value="" ng-model="holidayDtl.startDate">
-                          
-                            <?php print $this->formElementErrors()->render($startDate, ['class' => 'help-block error']) ?>
-                        </div>
+                                <div class="form-group required ">
+                                    <label for="startDate">Start Date</label>
+                                    <span class="required" aria-required="true">*</span>
+                                    <input type="text" name="startDate" required="required"
+                                           class="form-control" id="startDate" value="" ng-model="holidayDtl.startDate">
+
+                                    <?php print $this->formElementErrors()->render($startDate, ['class' => 'help-block error']) ?>
+                                </div>
                             </div>
-                            
+
                             <div class="col-sm-6">
-                               <div class="form-group">
-                            <label for="nepaliStartDate">&nbsp;</label>
-                            <div class="input-group">
-                                <input type="text" name="nepaliStartDate" id="nepaliStartDate1"
-                                       class="form-control" value="">
-                            </div>
-                        </div>
+                                <div class="form-group">
+                                    <label for="nepaliStartDate">&nbsp;</label>
+                                    <div class="input-group">
+                                        <input type="text" name="nepaliStartDate" id="nepaliStartDate1"
+                                               class="form-control" value="">
+                                    </div>
+                                </div>
                             </div>    
                         </div>
-                        
-                       
+
+
                     </div>
 
                     <div class="col-sm-4">
-                        
+
                         <div class="row">
                             <div class="col-sm-6">
                                 <div class="form-group required">
-                            <label for="endDate">End Date</label>
-                            <span class="required" aria-required="true">*</span>
-                                <input type="text" name="endDate" id="endDate" required="required" class="form-control"
-                                       value="" ng-model="holidayDtl.endDate">
-                            <?php print $this->formElementErrors()->render($startDate, ['class' => 'help-block error']) ?>
-                        </div>
+                                    <label for="endDate">End Date</label>
+                                    <span class="required" aria-required="true">*</span>
+                                    <input type="text" name="endDate" id="endDate" required="required" class="form-control"
+                                           value="" ng-model="holidayDtl.endDate">
+                                           <?php print $this->formElementErrors()->render($startDate, ['class' => 'help-block error']) ?>
+                                </div>
                             </div>
-                            
+
                             <div class="col-sm-6">
                                 <div class="form-group">
-                            <label for="nepaliEndDate">&nbsp;</label>
-                            <div class="input-group">
-                                <input type="text" name="nepaliEndDate" id="nepaliEndDate1"
-                                       class="form-control" value="">
+                                    <label for="nepaliEndDate">&nbsp;</label>
+                                    <div class="input-group">
+                                        <input type="text" name="nepaliEndDate" id="nepaliEndDate1"
+                                               class="form-control" value="">
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                            </div>
-                        </div>
-                        
-                        
+
+
                     </div>
                     <div class="col-sm-4">
                         <div class="form-group form-group-default-select2">
@@ -175,6 +174,14 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                             <?php print $this->formElement($branchId); ?>
                         </div>
                         <?php print $this->formElementErrors()->render($branchId, ['class' => 'help-block error']) ?>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="form-group form-group-default-select2">
+                            <?php print $this->formLabel($designationId); ?>
+                            <span class="required" aria-required="true">*</span>
+                            <?php print $this->formElement($designationId); ?>
+                        </div>
+                        <?php print $this->formElementErrors()->render($designationId, ['class' => 'help-block error']) ?>
                     </div>
                 </div>
 
