@@ -92,7 +92,8 @@ window.app = (function ($, toastr) {
         });
     };
 
-    var startEndDatePickerWithNepali = function (fromNepali, fromEnglish, toNepali, toEnglish) {
+    var startEndDatePickerWithNepali = function (fromNepali, fromEnglish, toNepali, toEnglish, fn) {
+//        console.log(fn);
         var $fromNepaliDate = $('#' + fromNepali);
         var $fromEnglishDate = $('#' + fromEnglish);
         var $toNepaliDate = $('#' + toNepali);
@@ -117,6 +118,12 @@ window.app = (function ($, toastr) {
                         $fromEnglishDate.val(temp);
                         $toEnglishDate.datepicker('setStartDate', nepaliDatePickerExt.getDate(temp));
                         oldFromNepali = $fromNepaliDate.val();
+
+                        if (typeof fn !== "undefined" && fn != null && typeof $fromEnglishDate !== "undefined" &&
+                                $fromEnglishDate.val() != "" && typeof $toEnglishDate !== "undefined" && $toEnglishDate.val() != "") {
+                            fn(getDate($fromEnglishDate.val()), getDate($toEnglishDate.val()));
+                        }
+
                     } else {
                         errorMessage("Selected Date should not exceed more than " + toVal);
                         $fromNepaliDate.focus();
@@ -134,6 +141,13 @@ window.app = (function ($, toastr) {
             $fromNepaliDate.val(nepaliDatePickerExt.fromEnglishToNepali($(this).val()));
             var minDate = nepaliDatePickerExt.getDate($(this).val());
             $toEnglishDate.datepicker('setStartDate', minDate);
+
+
+            if (typeof fn !== "undefined" && fn != null && typeof $fromEnglishDate !== "undefined" &&
+                    $fromEnglishDate.val() != "" && typeof $toEnglishDate !== "undefined" && $toEnglishDate.val() != "") {
+                fn(getDate($fromEnglishDate.val()), getDate($toEnglishDate.val()));
+            }
+
         });
 
         $toNepaliDate.nepaliDatePicker({
@@ -152,6 +166,12 @@ window.app = (function ($, toastr) {
                         $toEnglishDate.val(temp);
                         $fromEnglishDate.datepicker('setEndDate', nepaliDatePickerExt.getDate(temp));
                         oldtoNepali = $toNepaliDate.val();
+
+                        if (typeof fn !== "undefined" && fn != null && typeof $fromEnglishDate !== "undefined" &&
+                                $fromEnglishDate.val() != "" && typeof $toEnglishDate !== "undefined" && $toEnglishDate.val() != "") {
+                            fn(getDate($fromEnglishDate.val()), getDate($toEnglishDate.val()));
+                        }
+
                     } else {
                         errorMessage("Selected Date should not preceed more than " + fromVal);
                         $toNepaliDate.val(oldtoNepali);
@@ -168,25 +188,30 @@ window.app = (function ($, toastr) {
             $toNepaliDate.val(nepaliDatePickerExt.fromEnglishToNepali($(this).val()));
             var maxDate = nepaliDatePickerExt.getDate($(this).val());
 //            $fromEnglishDate.datepicker('setEndDate', maxDate);
+
+            if (typeof fn !== "undefined" && fn != null && typeof $fromEnglishDate !== "undefined" &&
+                    $fromEnglishDate.val() != "" && typeof $toEnglishDate !== "undefined" && $toEnglishDate.val() != "") {
+                fn(getDate($fromEnglishDate.val()), getDate($toEnglishDate.val()));
+            }
         });
 
         $fromNepaliDate.on('input', function () {
             console.log('changed', this);
         });
     };
-    
-    var datePickerWithNepali = function(englishDate,nepaliDate){
+
+    var datePickerWithNepali = function (englishDate, nepaliDate) {
         var $nepaliDate = $('#' + nepaliDate);
         var $englishDate = $('#' + englishDate);
         var oldNepali = null;
-        
+
         $nepaliDate.nepaliDatePicker({
             onChange: function () {
                 var temp = nepaliDatePickerExt.fromNepaliToEnglish($nepaliDate.val());
                 $englishDate.val(temp);
             }
         });
-        
+
         $englishDate.datepicker({
             format: 'dd-M-yyyy',
             todayHighlight: true,

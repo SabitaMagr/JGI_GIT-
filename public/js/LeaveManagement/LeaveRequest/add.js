@@ -40,7 +40,8 @@
             }
         }
         var dateDiff = '';
-        app.startEndDatePicker("startDate", "endDate", function (startDate, endDate) {
+//        app.startEndDatePicker("startDate", "endDate", function (startDate, endDate) {
+        app.startEndDatePickerWithNepali('nepaliStartDate1', 'startDate', 'nepaliEndDate1', 'endDate', function (startDate, endDate) {
             if (startDate <= endDate) {
                 var oneDay = 24 * 60 * 60 * 1000; // hours*minutes*seconds*milliseconds
                 var diffDays = Math.abs((startDate.getTime() - endDate.getTime()) / (oneDay));
@@ -75,6 +76,7 @@
             }
 
         });
+//        app.startEndDatePickerWithNepali('nepaliStartDate1', 'startDate', 'nepaliEndDate1', 'endDate');
 
         /* prevent past event post */
 //        $('#startDate').datepicker("setStartDate", new Date());
