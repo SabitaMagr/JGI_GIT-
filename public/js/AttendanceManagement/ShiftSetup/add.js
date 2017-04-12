@@ -73,7 +73,8 @@
             onChangeTime();
         });
 
-        app.startEndDatePicker('startDate', 'endDate');
+//        app.startEndDatePicker('startDate', 'endDate');
+app.startEndDatePickerWithNepali('nepaliStartDate1', 'startDate', 'nepaliEndDate1', 'endDate');
         /* prevent past event post || commented for now as needs discussion*/
 //        $('#startDate').datepicker("setStartDate", new Date());
 //        $('#endDate').datepicker("setStartDate", new Date());

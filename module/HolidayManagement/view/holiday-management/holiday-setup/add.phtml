@@ -1,5 +1,12 @@
 <?php
-$this->headScript()->appendFile($this->basePath('js/HolidayManagement/HolidaySetup/add.js'));
+$this->headLink()
+        ->appendStylesheet($this->basePath('assets/global/plugins/nepalidate/nepali.datepicker.v2.1.min.css'));
+
+$this->headScript()
+        ->appendFile($this->basePath('assets/global/plugins/nepalidate/nepali.datepicker.v2.1.min.js'))
+        ->appendFile($this->basePath('js/nepali-datepicker-ext.js'))
+        ->appendFile($this->basePath('js/HolidayManagement/HolidaySetup/add.js'));
+
 ?>
 
 <script>
@@ -102,33 +109,64 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                     </div>
 
                 </div>
-
+                
+                 
+                 
                 <div class=" row">
 
                     <div class="col-sm-4">
-                        <div class="form-group required ">
+                        
+                        <div class="row">
+                            <div class="col-sm-6">
+                                 <div class="form-group required ">
                             <label for="startDate">Start Date</label>
                             <span class="required" aria-required="true">*</span>
-                            <div class="input-group date" id="startDate">
                                 <input type="text" name="startDate" required="required"
-                                       class="form-control" value="" ng-model="holidayDtl.startDate">
-                                <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                            </div>
+                                       class="form-control" id="startDate" value="" ng-model="holidayDtl.startDate">
+                          
                             <?php print $this->formElementErrors()->render($startDate, ['class' => 'help-block error']) ?>
                         </div>
+                            </div>
+                            
+                            <div class="col-sm-6">
+                               <div class="form-group">
+                            <label for="nepaliStartDate">&nbsp;</label>
+                            <div class="input-group">
+                                <input type="text" name="nepaliStartDate" id="nepaliStartDate1"
+                                       class="form-control" value="">
+                            </div>
+                        </div>
+                            </div>    
+                        </div>
+                        
+                       
                     </div>
 
                     <div class="col-sm-4">
-                        <div class="form-group required">
+                        
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group required">
                             <label for="endDate">End Date</label>
                             <span class="required" aria-required="true">*</span>
-                            <div class="input-group date" id="endDate">
-                                <input type="text" name="endDate" required="required" class="form-control"
+                                <input type="text" name="endDate" id="endDate" required="required" class="form-control"
                                        value="" ng-model="holidayDtl.endDate">
-                                <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                            </div>
                             <?php print $this->formElementErrors()->render($startDate, ['class' => 'help-block error']) ?>
                         </div>
+                            </div>
+                            
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                            <label for="nepaliEndDate">&nbsp;</label>
+                            <div class="input-group">
+                                <input type="text" name="nepaliEndDate" id="nepaliEndDate1"
+                                       class="form-control" value="">
+                            </div>
+                        </div>
+                            </div>
+                        </div>
+                        
+                        
                     </div>
                     <div class="col-sm-4">
                         <div class="form-group form-group-default-select2">
