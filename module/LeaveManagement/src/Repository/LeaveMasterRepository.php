@@ -75,10 +75,7 @@ class LeaveMasterRepository implements RepositoryInterface {
     }
     
     public function getSubstituteLeave(){
-        $result =  $this->tableGateway->select(function(Select $select){
-            $select->where([LeaveMaster::STATUS => 'E', LeaveMaster::IS_SUBSTITUTE=>'Y']);
-            $select->order(LeaveMaster::LEAVE_ENAME." ASC");
-        });
+        $result =  $this->tableGateway->select([LeaveMaster::STATUS => 'E', LeaveMaster::IS_SUBSTITUTE=>'Y']);
         return $result->current();
     }
 }
