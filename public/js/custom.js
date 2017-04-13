@@ -235,6 +235,12 @@ window.app = (function ($, toastr) {
         }).on('changeDate', function () {
             $nepaliDate.val(nepaliDatePickerExt.fromEnglishToNepali($(this).val()));
         });
+
+        var englishDateValue = $englishDate.val();
+        if (typeof englishDateValue !== 'undefined' && englishDateValue !== null && englishDateValue !== '') {
+            $nepaliDate.val(nepaliDatePickerExt.fromEnglishToNepali(englishDateValue));
+        }
+
     };
 
     var addTimePicker = function () {
