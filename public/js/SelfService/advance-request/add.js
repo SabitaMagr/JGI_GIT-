@@ -2,8 +2,10 @@
     'use strict';
     $(document).ready(function () {
         $('select').select2();
-        var $startDate = $("#startDate");
-        app.addDatePicker($startDate);
+        var $startDate = $("#form-advanceDate");
+//        app.addDatePicker($startDate);
+        app.datePickerWithNepali("form-advanceDate","nepaliDate");
+
         $startDate.datepicker('setStartDate', new Date());
     });
 })(window.jQuery, window.app);
