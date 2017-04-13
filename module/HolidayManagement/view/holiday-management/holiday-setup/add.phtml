@@ -9,9 +9,6 @@ $this->headScript()
 ?>
 
 <script>
-    /*
-     * load js vars here
-     * */
     document.url = '<?= $this->url("restful", ["action" => "index"]) ?>';
 </script>
 
@@ -78,7 +75,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                 print $this->form()->openTag($form);
                 ?>
                 <div class=" row">
-                    <div class="col-sm-4">
+                    <div class="col-sm-6">
                         <div class="form-group <?= empty($holidayCode->getMessages()) ? "" : "error" ?>">
                             <?php print $this->formLabel($holidayCode); ?>
                             <span class="required" aria-required="true">*</span>
@@ -87,8 +84,9 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                         </div>
                         <?php print $this->formElementErrors()->render($holidayCode, ['class' => 'help-block error']); ?>
                     </div>
-
-                    <div class="col-sm-4">
+                </div>
+                <div class="row">
+                    <div class="col-sm-6">
                         <div class="form-group <?= empty($holidayEname->getMessages()) ? "" : "error" ?>">
                             <?php print $this->formLabel($holidayEname); ?>
                             <span class="required" aria-required="true">*</span>
@@ -98,7 +96,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                         <?php print $this->formElementErrors()->render($holidayEname, ['class' => 'help-block error']); ?>
                     </div>
 
-                    <div class="col-sm-4">
+                    <div class="col-sm-6">
                         <div class="form-group <?= empty($holidayLname->getMessages()) ? "" : "error" ?>">
                             <?php print $this->formLabel($holidayLname); ?>
                             <?php print $this->formElement($holidayLname); ?>
@@ -111,10 +109,8 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
 
 
 
-                <div class=" row">
-
-                    <div class="col-sm-4">
-
+                <div class="row">
+                    <div class="col-sm-6">
                         <div class="row">
                             <div class="col-sm-6">
                                 <div class="form-group required ">
@@ -126,23 +122,17 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                     <?php print $this->formElementErrors()->render($startDate, ['class' => 'help-block error']) ?>
                                 </div>
                             </div>
-
                             <div class="col-sm-6">
                                 <div class="form-group">
                                     <label for="nepaliStartDate">&nbsp;</label>
-                                    <div class="input-group">
-                                        <input type="text" name="nepaliStartDate" id="nepaliStartDate1"
-                                               class="form-control" value="">
-                                    </div>
+                                    <input type="text" name="nepaliStartDate" id="nepaliStartDate1"
+                                           class="form-control" value="">
                                 </div>
                             </div>    
                         </div>
-
-
                     </div>
 
-                    <div class="col-sm-4">
-
+                    <div class="col-sm-6">
                         <div class="row">
                             <div class="col-sm-6">
                                 <div class="form-group required">
@@ -153,21 +143,20 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                            <?php print $this->formElementErrors()->render($startDate, ['class' => 'help-block error']) ?>
                                 </div>
                             </div>
-
                             <div class="col-sm-6">
                                 <div class="form-group">
                                     <label for="nepaliEndDate">&nbsp;</label>
-                                    <div class="input-group">
-                                        <input type="text" name="nepaliEndDate" id="nepaliEndDate1"
-                                               class="form-control" value="">
-                                    </div>
+                                    <input type="text" name="nepaliEndDate" id="nepaliEndDate1"
+                                           class="form-control" value="">
                                 </div>
                             </div>
                         </div>
 
 
                     </div>
-                    <div class="col-sm-4">
+                </div>
+                <div class="row">
+                    <div class="col-sm-6">
                         <div class="form-group form-group-default-select2">
                             <?php print $this->formLabel($branchId); ?>
                             <span class="required" aria-required="true">*</span>
@@ -175,7 +164,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                         </div>
                         <?php print $this->formElementErrors()->render($branchId, ['class' => 'help-block error']) ?>
                     </div>
-                    <div class="col-sm-4">
+                    <div class="col-sm-6">
                         <div class="form-group form-group-default-select2">
                             <?php print $this->formLabel($designationId); ?>
                             <span class="required" aria-required="true">*</span>
@@ -186,7 +175,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                 </div>
 
                 <div class=" row">
-                    <div class="col-sm-4">
+                    <div class="col-sm-6">
                         <div class="form-group padding-0">
                             <?php print $this->formLabel($genderId); ?>
                             <div class="md-radio-inline">
@@ -196,7 +185,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                         <?php print $this->formElementErrors()->render($genderId, ['class' => 'help-block error']); ?>
                     </div>
 
-                    <div class="col-sm-4">
+                    <div class="col-sm-6">
                         <div class="form-group">
                             <?php print $this->formLabel($halfday); ?>
                             <div class="md-radio-inline">
@@ -205,8 +194,9 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                         </div>
                         <?php print $this->formElementErrors()->render($halfday, ['class' => 'help-block error']); ?>
                     </div>
-
-                    <div class="col-sm-4">
+                </div>
+                <div class="row">
+                    <div class="col-sm-12">
                         <div class="form-group">
                             <?php print $this->formLabel($remarks); ?>
                             <?php print $this->formElement($remarks); ?>

@@ -24,7 +24,7 @@ angular.module('hris', [])
                     $scope.$apply(function () {
                         var temp = success.data;
                         $scope.holidayDtl.holidayCode = temp.HOLIDAY_CODE;
-                        if (temp.GENDER_ID == null) {
+                        if (temp.GENDER_ID === null) {
                             $scope.holidayDtl.genderId = -1;
                         } else {
                             $scope.holidayDtl.genderId = temp.GENDER_ID;
@@ -35,6 +35,8 @@ angular.module('hris', [])
                         $scope.holidayDtl.endDate = temp.END_DATE;
                         $scope.holidayDtl.halfday = temp.HALFDAY;
                         $scope.holidayDtl.remarks = temp.REMARKS;
+                        
+                        window.app.startEndDatePickerWithNepali('nepaliStartDate1', 'startDate', 'nepaliEndDate1', 'endDate');
                     });
                 }, function (failure) {
                     console.log(failure);
@@ -110,10 +112,6 @@ angular.module('hris', [])
                                 return item;
                             });
 
-//                            $('#holidayId').text("");
-//                            $('#holidayId').select2({
-//                                data: document.holidays
-//                            });
                             App.unblockUI("#hris-page-content");
                             $window.location.href = document.urlIndex;
                             $window.localStorage.setItem("msg", success.data);

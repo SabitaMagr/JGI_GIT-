@@ -93,7 +93,7 @@ window.app = (function ($, toastr) {
     };
 
     var startEndDatePickerWithNepali = function (fromNepali, fromEnglish, toNepali, toEnglish, fn) {
-//        console.log(fn);
+
         var $fromNepaliDate = $('#' + fromNepali);
         var $fromEnglishDate = $('#' + fromEnglish);
         var $toNepaliDate = $('#' + toNepali);
@@ -187,7 +187,6 @@ window.app = (function ($, toastr) {
         }).on('changeDate', function () {
             $toNepaliDate.val(nepaliDatePickerExt.fromEnglishToNepali($(this).val()));
             var maxDate = nepaliDatePickerExt.getDate($(this).val());
-//            $fromEnglishDate.datepicker('setEndDate', maxDate);
 
             if (typeof fn !== "undefined" && fn != null && typeof $fromEnglishDate !== "undefined" &&
                     $fromEnglishDate.val() != "" && typeof $toEnglishDate !== "undefined" && $toEnglishDate.val() != "") {
@@ -198,6 +197,23 @@ window.app = (function ($, toastr) {
         $fromNepaliDate.on('input', function () {
             console.log('changed', this);
         });
+
+        /*
+         * 
+         * check for fromEnglish input and toEnglish input is set or not and setting nepalidate.
+         */
+        var fromEnglishDateValue = $fromEnglishDate.val();
+        var toEnglishDateValue = $toEnglishDate.val();
+        if (typeof fromEnglishDateValue !== 'undefined' && fromEnglishDateValue !== null && fromEnglishDateValue !== '') {
+            $fromNepaliDate.val(nepaliDatePickerExt.fromEnglishToNepali(fromEnglishDateValue));
+        }
+        if (typeof toEnglishDateValue !== 'undefined' && toEnglishDateValue !== null && toEnglishDateValue !== '') {
+            $toNepaliDate.val(nepaliDatePickerExt.fromEnglishToNepali(toEnglishDateValue));
+        }
+        /*
+         * 
+         */
+
     };
 
     var datePickerWithNepali = function (englishDate, nepaliDate) {

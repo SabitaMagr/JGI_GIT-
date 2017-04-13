@@ -54,7 +54,8 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                 <div class="portlet box custom-box form-box">
                     <div class="portlet-title">
                         <div class="caption">
-                            <i class="fa fa-user"></i>Holiday Detail
+                            <i class="fa fa-user"></i>
+                            Holiday Detail
                         </div>
                         <div class="actions">
                             <a class="btn btn-circle btn-icon-only btn-default fullscreen" href="javascript:;" data-original-title="" title=""> </a>
@@ -64,7 +65,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                         <form name="holidayForm" id="holiday-form" ng-submit="update()" novalidate>
                             <input type="hidden" id="holidayId" value="<?= $selectedHoliday ?>"/>
                             <div class=" row">
-                                <div class="col-sm-4">
+                                <div class="col-sm-6">
                                     <div class="form-group">
                                         <label for="holidayCode">Holiday Code</label>
                                         <span class="required" aria-required="true">*</span>
@@ -77,8 +78,9 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                         </div>
                                     </div>
                                 </div>
-
-                                <div class="col-sm-4">
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-6">
                                     <div class="form-group">
                                         <label for="holidayEname">Holiday Ename</label>
                                         <span class="required" aria-required="true">*</span>
@@ -92,7 +94,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                     </div>
                                 </div>
 
-                                <div class="col-sm-4">
+                                <div class="col-sm-6">
                                     <div class="form-group">
                                         <label for="holidayLname">Holiday Lname</label>
                                         <input name="holidayLname" id="holidayLname" class="form-control"
@@ -102,8 +104,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                             </div>
 
                             <div class=" row">
-                                <div class="col-sm-4">
-
+                                <div class="col-sm-6">
                                     <div class="row">
                                         <div class="col-sm-6">
                                             <div class="form-group required ">
@@ -123,19 +124,14 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                         <div class="col-sm-6">
                                             <div class="form-group">
                                                 <label for="nepaliStartDate">&nbsp;</label>
-                                                <div class="input-group">
-                                                    <input type="text" name="nepaliStartDate" id="nepaliStartDate1"
-                                                           class="form-control" value="">
-                                                </div>
+                                                <input type="text" name="nepaliStartDate" id="nepaliStartDate1"
+                                                       class="form-control" value="">
                                             </div>
                                         </div>     
                                     </div>  
-
-
                                 </div>
 
-                                <div class="col-sm-4">
-
+                                <div class="col-sm-6">
                                     <div class="row">
                                         <div class="col-sm-6">
                                             <div class="form-group required">
@@ -154,18 +150,15 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                         <div class="col-sm-6">
                                             <div class="form-group">
                                                 <label for="nepaliEndDate">&nbsp;</label>
-                                                <div class="input-group">
-                                                    <input type="text" name="nepaliEndDate" id="nepaliEndDate1"
-                                                           class="form-control" value="">
-                                                </div>
+                                                <input type="text" name="nepaliEndDate" id="nepaliEndDate1"
+                                                       class="form-control" value="">
                                             </div>
                                         </div>     
                                     </div>        
-
-
                                 </div>
-
-                                <div class="col-sm-4">
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-6">
                                     <div class="form-group">
                                         <?php print $this->formLabel($branchFormElement); ?>
                                         <span class="required" aria-required="true">*</span>
@@ -177,7 +170,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-sm-4">
+                                <div class="col-sm-6">
                                     <div class="form-group">
                                         <?php print $this->formLabel($designationFormElement); ?>
                                         <span class="required" aria-required="true">*</span>
@@ -191,10 +184,8 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                 </div>
                             </div>
 
-
-
                             <div class=" row">
-                                <div class="col-sm-4">
+                                <div class="col-sm-6">
                                     <div class="form-group padding-0">
                                         <label for="genderId">Gender</label>
                                         <div class="md-radio-inline">
@@ -238,7 +229,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                     </div>
                                 </div>
 
-                                <div class="col-sm-4">
+                                <div class="col-sm-6">
                                     <div class="form-group padding-0">
                                         <label for="halfday">Halfday</label>
                                         <div class="md-radio-inline">
@@ -272,8 +263,9 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                         </div>
                                     </div>
                                 </div>
-
-                                <div class="col-sm-4">
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-12">
                                     <div class="form-group">
                                         <label for="remarks">Remarks</label>
                                         <input name="remarks" id="remarks" class="form-control" type="text" value=""

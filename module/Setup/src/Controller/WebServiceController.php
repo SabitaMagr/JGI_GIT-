@@ -5,7 +5,6 @@ namespace Setup\Controller;
 use Application\Custom\CustomViewModel;
 use Application\Helper\EntityHelper as ApplicationEntityHelper;
 use Application\Helper\Helper;
-use Application\Repository\RepositoryInterface;
 use HolidayManagement\Model\Holiday;
 use HolidayManagement\Model\HolidayBranch;
 use HolidayManagement\Repository\HolidayRepository;
@@ -115,8 +114,8 @@ class WebServiceController extends AbstractActionController {
                     break;
                 case "pullHolidayList":
                     $holidayRepository = new HolidayRepository($this->adapter);
-                    $filtersId = $postedData->id;
-                    $resultSet = $holidayRepository->filterRecords($filtersId['holidayId'], $filtersId['branchId'], $filtersId['genderId']);
+                    $inputData = $postedData->id;
+                    $resultSet = $holidayRepository->filterRecords($inputData['holidayId'], $inputData['branchId'], $inputData['genderId']);
 
                     $tempArray = [];
                     foreach ($resultSet as $item) {
@@ -129,8 +128,8 @@ class WebServiceController extends AbstractActionController {
                     break;
                 case "pullHolidayDetail":
                     $holidayRepository = new HolidayRepository($this->adapter);
-                    $filtersId = $postedData->id;
-                    $resultSet = $holidayRepository->fetchById($filtersId);
+                    $inputData = $postedData->id;
+                    $resultSet = $holidayRepository->fetchById($inputData);
 
                     $responseData = [
                         "success" => true,
@@ -138,14 +137,15 @@ class WebServiceController extends AbstractActionController {
                     ];
                     break;
                 case "updateHolidayDetail":
-                    $holidayModel = new Holiday();
-                    $holidayBranchModel = new HolidayBranch();
                     $holidayRepository = new HolidayRepository($this->adapter);
-                    $filtersId = $postedData->data;
-                    $branchIds = $filtersId['branchIds'];
-                    $designationIds = $filtersId['designationIds'];
 
-                    $data = $filtersId['dataArray'];
+                    $inputData = $postedData->data;
+
+                    $branchIds = $inputData['branchIds'];
+                    $designationIds = $inputData['designationIds'];
+                    $data = $inputData['dataArray'];
+
+                    $holidayModel = new Holiday();
                     $holidayModel->holidayCode = (isset($data['holidayCode']) ? $data['holidayCode'] : "" );
                     if ($data['genderId'] == '-1') {
                         $holidayModel->genderId = "";
@@ -160,30 +160,12 @@ class WebServiceController extends AbstractActionController {
                     $holidayModel->remarks = (isset($data['remarks']) ? $data['remarks'] : "" );
                     $holidayModel->modifiedDt = Helper::getcurrentExpressionDate();
                     $holidayModel->modifiedBy = $this->loggedInEmployeeId;
-                    $resultSet = $holidayRepository->edit($holidayModel, $filtersId['holidayId']);
 
-                    $holidayBranchResult = $holidayRepository->selectHolidayBranch($filtersId['holidayId']);
-
-                    // delete database record if database record doesn't exist on submitted value
-                    $branchTemp = [];
-                    foreach ($holidayBranchResult as $holidayBranchList) {
-                        $branchId = $holidayBranchList['BRANCH_ID'];
-                        if (!in_array($branchId, $branchIds)) {
-                            $holidayRepository->deleteHolidayBranch($filtersId['holidayId'], $branchId);
-                        }
-                        array_push($branchTemp, $branchId);
-                    }
-
-                    // insert database record if submitted value doesn't exist on database
-                    foreach ($branchIds as $branchIdList) {
-                        if (!in_array($branchIdList, $branchTemp)) {
-                            $holidayBranchModel->branchId = $branchIdList;
-                            $holidayBranchModel->holidayId = $filtersId['holidayId'];
-                            $holidayRepository->addHolidayBranch($holidayBranchModel);
-                        }
-                    }
+                    $resultSet = $holidayRepository->edit($holidayModel, $inputData['holidayId']);
 
 
+                    $this->branchHolidayEdit($holidayRepository, $inputData['holidayId'], $branchIds);
+                    $this->designationHolidayEdit($holidayRepository, $inputData['holidayId'], $designationIds);
 
 
                     $responseData = [
@@ -194,9 +176,9 @@ class WebServiceController extends AbstractActionController {
                     break;
                 case "pullLeaveDetail":
                     $leaveRequestRepository = new LeaveRequestRepository($this->adapter);
-                    $filtersId = $postedData->data;
-                    $leaveId = $filtersId['leaveId'];
-                    $employeeId = $filtersId['employeeId'];
+                    $inputData = $postedData->data;
+                    $leaveId = $inputData['leaveId'];
+                    $employeeId = $inputData['employeeId'];
                     $leaveDetail = $leaveRequestRepository->getLeaveDetail($employeeId, $leaveId);
 
                     $responseData = [
@@ -206,8 +188,8 @@ class WebServiceController extends AbstractActionController {
                     break;
                 case "pullLeaveDetailWidEmployeeId":
                     $leaveRequestRepository = new LeaveRequestRepository($this->adapter);
-                    $filtersId = $postedData->data;
-                    $employeeId = $filtersId['employeeId'];
+                    $inputData = $postedData->data;
+                    $employeeId = $inputData['employeeId'];
                     $leaveList = $leaveRequestRepository->getLeaveList($employeeId);
 
                     $leaveRow = [];
@@ -374,23 +356,47 @@ class WebServiceController extends AbstractActionController {
         }
     }
 
-    private function designationHolidayEdit(RepositoryInterface $repository, $holidayId, $designationIds) {
-        $holidayDesignationList = $repository->selectHolidayBranch($holidayId);
+    private function branchHolidayEdit(HolidayRepository $holidayRepository, $holidayId, $branchIds) {
+        $holidayBranchResult = $holidayRepository->selectHolidayBranch($holidayId);
+
+        $branchTemp = [];
+        foreach ($holidayBranchResult as $holidayBranchList) {
+            $branchId = $holidayBranchList['BRANCH_ID'];
+            if (!in_array($branchId, $branchIds)) {
+                $holidayRepository->deleteHolidayBranch($inputData['holidayId'], $branchId);
+            }
+            array_push($branchTemp, $branchId);
+        }
+
+        foreach ($branchIds as $branchIdList) {
+            if (!in_array($branchIdList, $branchTemp)) {
+                $holidayBranchModel = new HolidayBranch();
+                $holidayBranchModel->branchId = $branchIdList;
+                $holidayBranchModel->holidayId = $holidayId;
+                $holidayRepository->addHolidayBranch($holidayBranchModel);
+            }
+        }
+    }
+
+    private function designationHolidayEdit(HolidayRepository $repository, $holidayId, $designationIds) {
+        $holidayDesignationList = $repository->selectHolidayDesignation($holidayId);
 
         $designTemp = [];
         foreach ($holidayDesignationList as $holidayDesignation) {
             $designationId = $holidayDesignation[HolidayDesignation::DESIGNATION_ID];
             if (!in_array($designationId, $designationIds)) {
-                $repository->deleteHolidayBranch($holidayId, $designationId);
+                $repository->deleteHolidayDesignation($holidayId, $designationId);
             }
             array_push($designTemp, $designationId);
         }
 
-        foreach ($designationIds as $branchIdList) {
-            if (!in_array($branchIdList, $designTemp)) {
-                $holidayBranchModel->branchId = $branchIdList;
-                $holidayBranchModel->holidayId = $filtersId['holidayId'];
-                $repository->addHolidayBranch($holidayBranchModel);
+
+        foreach ($designationIds as $designationId) {
+            if (!in_array($designationId, $designTemp)) {
+                $holidayDesignationModel = new HolidayDesignation();
+                $holidayDesignationModel->designationId = $designationId;
+                $holidayDesignationModel->holidayId = $holidayId;
+                $repository->addHolidayDesignation($holidayDesignationModel);
             }
         }
     }
