@@ -41,7 +41,6 @@ angular.module('hris', [])
                             $scope.holidayDtl.halfday = temp.HALFDAY;
                             $scope.holidayDtl.remarks = temp.REMARKS;
 
-                            window.app.startEndDatePickerWithNepali('nepaliStartDate1', 'startDate', 'nepaliEndDate1', 'endDate');
                         });
 
                     } catch (e) {
