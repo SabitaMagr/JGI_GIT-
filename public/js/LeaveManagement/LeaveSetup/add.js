@@ -1,4 +1,4 @@
-(function ($,app) {
+(function ($, app) {
     'use strict';
     $(document).ready(function () {
         var leaveId = $('#leaveId');
@@ -8,13 +8,11 @@
         app.pullDataById(document.urlAssignedLeaves, {action: 'assignedLeaves', id: document.id}).then(function (data) {
             if (data.success) {
                 leaves = data.data;
-                console.log(leaves);
                 var tempObj = {};
                 for (var index in leaves) {
                     tempObj[leaves[index]['LEAVE_ID']] = leaves[index]['LEAVE_ENAME'];
                 }
-                console.log(tempObj);
-              app.  populateSelectElement(leaveId, tempObj);
+                app.populateSelectElement(leaveId, tempObj);
                 if (leaves.length >= 1) {
                     availableDays.val(leaves[0]['TOTAL_DAYS']);
                 }
@@ -33,8 +31,6 @@
         });
 
         app.addDatePicker(startDate, endDate);
-
-
     });
 
-})(window.jQuery,window.app);
+})(window.jQuery, window.app);
