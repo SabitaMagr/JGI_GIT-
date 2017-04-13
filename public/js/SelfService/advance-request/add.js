@@ -18,20 +18,24 @@ angular.module("hris", [])
 
             $scope.advanceChange = function () {
                 var advanceId = angular.element(document.getElementById('form-advanceId')).val();
-                var employeeId = angular.element(document.getElementById('form-employeeId')).val();
+                console.log(advanceId);
+                if (typeof advanceId !== "undefined" || advanceId != null) {
+                    var employeeId = angular.element(document.getElementById('form-employeeId')).val();
 
-                window.app.pullDataById(document.url, {
-                    action: 'pullAdvanceDetailByEmpId',
-                    data: {
-                        'employeeId': employeeId,
-                        'advanceId': advanceId
-                    }
-                }).then(function (success) {
-                    $scope.$apply(function () {
-                        $scope.allowAmt = success.data.allowAmt;
-                        $scope.allowTerms = success.data.allowTerms;
+                    window.app.pullDataById(document.url, {
+                        action: 'pullAdvanceDetailByEmpId',
+                        data: {
+                            'employeeId': employeeId,
+                            'advanceId': advanceId
+                        }
+                    }).then(function (success) {
+                        console.log(success);
+                        $scope.$apply(function () {
+                            $scope.allowAmt = success.data.allowAmt;
+                            $scope.allowTerms = success.data.allowTerms;
+                        });
                     });
-                });
+                }
             };
 
             $scope.requestChange = function () {

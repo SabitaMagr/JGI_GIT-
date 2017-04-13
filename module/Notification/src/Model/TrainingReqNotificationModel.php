@@ -1,5 +1,4 @@
 <?php
-
 namespace Notification\Model;
 
 class TrainingReqNotificationModel extends NotificationModel {
@@ -12,5 +11,4 @@ class TrainingReqNotificationModel extends NotificationModel {
     public $duration;
     public $instuctorName;
     public $status;
-
 }

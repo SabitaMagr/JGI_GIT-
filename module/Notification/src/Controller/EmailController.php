@@ -44,7 +44,10 @@ class EmailController extends AbstractActionController {
         18 => "WorkOnDayoff_Approval",
         19 => "WorkOnHoliday_Request",
         20 => "WorkOnHoliday_Recommend",
-        21 => "WorkOnHoliday_Approval"
+        21 => "WorkOnHoliday_Approval",
+        22 => "Training_Request",
+        23 => "Training_Recommend",
+        24 => "Training_Approval"
     ];
 
     private function getVariables() {
@@ -72,6 +75,9 @@ class EmailController extends AbstractActionController {
         $type8 = new WorkOnHolidayNotificationModel();
         $type8ObjVars = $type8->getObjectAttrs();
         
+        $type9 = new TrainingReqNotificationModel();
+        $type9ObjVars = $type9->getObjectAttrs();
+        
         return [
             1 => $type1ObjVars,
             2 => $type1ObjVars,
@@ -93,7 +99,10 @@ class EmailController extends AbstractActionController {
             18 => $type7ObjVars,
             19 => $type8ObjVars,
             20 => $type8ObjVars,
-            21 => $type8ObjVars
+            21 => $type8ObjVars,
+            22 => $type9ObjVars,
+            23 => $type9ObjVars,
+            24 => $type9ObjVars
         ];
     }
 

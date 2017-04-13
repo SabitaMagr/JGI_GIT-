@@ -16,6 +16,8 @@ use Zend\Authentication\AuthenticationService;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\Mvc\Controller\AbstractActionController;
+use Notification\Model\NotificationEvents;
+use Notification\Controller\HeadNotification;
 
 class TrainingRequest extends AbstractActionController {
 
@@ -168,9 +170,12 @@ class TrainingRequest extends AbstractActionController {
                 $model->employeeId = $this->employeeId;
                 $model->requestedDate = Helper::getcurrentExpressionDate();
                 $model->status = 'RQ';
-//                print "<pre>";
-//                print_r($model); die();
                 $this->repository->add($model);
+                try {
+                    HeadNotification::pushNotification(NotificationEvents::TRAINING_APPLIED, $model, $this->adapter, $this->plugin("url"));
+                } catch (Exception $e) {
+                    $this->flashmessenger()->addMessage($e->getMessage());
+                }
                 $this->flashmessenger()->addMessage("Training Request Successfully added!!!");
                 return $this->redirect()->toRoute("trainingRequest");
             }
