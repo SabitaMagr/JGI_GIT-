@@ -41,6 +41,9 @@ use SelfService\Model\TrainingRequest;
 use SelfService\Repository\TrainingRequestRepository;
 use Notification\Model\WorkOnDayoffNotificationModel;
 use Notification\Model\WorkOnHolidayNotificationModel;
+use HolidayManagement\Repository\HolidayRepository;
+use Setup\Repository\LeaveMasterRepository;
+use Notification\Model\TrainingReqNotificationModel;
 
 class HeadNotification {
 
@@ -116,6 +119,10 @@ class HeadNotification {
             throw new Exception('email template not set.');
         }
     }
+    public static function getName($id,$repo,$name){
+        $detail = $repo->fetchById($id);
+        return $detail[$name];
+    }
 
     public static function pushNotification(int $eventType, Model $model, AdapterInterface $adapter, Url $url) {
         ${"fn" . NotificationEvents::LEAVE_APPLIED} = function (LeaveApply $model, AdapterInterface $adapter, Url $url, $type) {
@@ -134,9 +141,12 @@ class HeadNotification {
             self::setNotificationModel($recommdAppModel[RecommendApprove::EMPLOYEE_ID], $recommdAppModel[($type == self::RECOMMENDER) ? RecommendApprove::RECOMMEND_BY : RecommendApprove::APPROVED_BY], $leaveReqNotiMod, $adapter);
 
             $leaveReqNotiMod->route = json_encode(["route" => "leaveapprove", "action" => "view", "id" => $leaveApply->id, "role" => ($type == self::RECOMMENDER) ? 2 : 3]);
+            
+            $leaveRepo = new LeaveMasterRepository($adapter);
+            $leaveName = self::getName($leaveApply->leaveId, $leaveRepo, 'LEAVE_ENAME');
             $leaveReqNotiMod->fromDate = $leaveApply->startDate;
             $leaveReqNotiMod->toDate = $leaveApply->endDate;
-            $leaveReqNotiMod->leaveName = $leaveApply->leaveId;
+            $leaveReqNotiMod->leaveName = $leaveName;
             $leaveReqNotiMod->leaveType = $leaveApply->halfDay;
             $leaveReqNotiMod->noOfDays = $leaveApply->noOfDays;
 
@@ -170,9 +180,11 @@ class HeadNotification {
             $leaveReqNotiMod->toName = $toEmployee['FIRST_NAME'] . " " . $toEmployee['MIDDLE_NAME'] . " " . $toEmployee['LAST_NAME'];
             $leaveReqNotiMod->route = json_encode(["route" => "leaverequest", "action" => "view", "id" => $leaveApply->id]);
 
+            $leaveRepo = new LeaveMasterRepository($adapter);
+            $leaveName = self::getName($leaveApply->leaveId, $leaveRepo, 'LEAVE_ENAME');
             $leaveReqNotiMod->fromDate = $leaveApply->startDate;
             $leaveReqNotiMod->toDate = $leaveApply->endDate;
-            $leaveReqNotiMod->leaveName = $leaveApply->leaveId;
+            $leaveReqNotiMod->leaveName = $leaveName;
             $leaveReqNotiMod->leaveType = $leaveApply->halfDay;
             $leaveReqNotiMod->noOfDays = $leaveApply->noOfDays;
             $leaveReqNotiMod->leaveRecommendStatus = $status;
@@ -196,9 +208,11 @@ class HeadNotification {
 
             $leaveReqNotiMod->route = json_encode(["route" => "leaverequest", "action" => "view", "id" => $leaveApply->id]);
 
+            $leaveRepo = new LeaveMasterRepository($adapter);
+            $leaveName = self::getName($leaveApply->leaveId, $leaveRepo, 'LEAVE_ENAME');
             $leaveReqNotiMod->fromDate = $leaveApply->startDate;
             $leaveReqNotiMod->toDate = $leaveApply->endDate;
-            $leaveReqNotiMod->leaveName = $leaveApply->leaveId;
+            $leaveReqNotiMod->leaveName = $leaveName;
             $leaveReqNotiMod->leaveType = $leaveApply->halfDay;
             $leaveReqNotiMod->noOfDays = $leaveApply->noOfDays;
             $leaveReqNotiMod->leaveApprovedStatus = $status;
@@ -656,8 +670,11 @@ class HeadNotification {
             $notification = new WorkOnHolidayNotificationModel();
             self::setNotificationModel($recommdAppModel[RecommendApprove::EMPLOYEE_ID], $recommdAppModel[($type == self::RECOMMENDER) ? RecommendApprove::RECOMMEND_BY : RecommendApprove::APPROVED_BY], $notification, $adapter);
 
+            $holidayRepo = new HolidayRepository($adapter);
+            $holidayName = self::getName($request->holidayId, $holidayRepo, 'HOLIDAY_ENAME');
+            
             $notification->route = json_encode(["route" => "holidayWorkApprove", "action" => "view", "id" => $request->id, "role" => ($type == self::RECOMMENDER) ? 2 : 3]);
-            $notification->holidayName = $request->holidayId;
+            $notification->holidayName = $holidayName;
             $notification->fromDate = $request->fromDate;
             $notification->toDate = $request->toDate;
             $notification->duration = $request->duration;
@@ -679,7 +696,9 @@ class HeadNotification {
             $notification = new WorkOnHolidayNotificationModel();
             self::setNotificationModel($recommdAppModel[RecommendApprove::RECOMMEND_BY], $recommdAppModel[RecommendApprove::EMPLOYEE_ID], $notification, $adapter);
 
-            $notification->holidayName = $request->holidayId;
+            $holidayRepo = new HolidayRepository($adapter);
+            $holidayName = self::getName($request->holidayId, $holidayRepo, 'HOLIDAY_ENAME');
+            $notification->holidayName = $holidayName;
             $notification->fromDate = $request->fromDate;
             $notification->toDate = $request->toDate;
             $notification->duration = $request->duration;
@@ -706,7 +725,9 @@ class HeadNotification {
             self::setNotificationModel(
                     $recommdAppModel[RecommendApprove::APPROVED_BY], $recommdAppModel[RecommendApprove::EMPLOYEE_ID], $notification, $adapter);
 
-            $notification->holidayName = $request->holidayId;
+            $holidayRepo = new HolidayRepository($adapter);
+            $holidayName = self::getName($request->holidayId, $holidayRepo, 'HOLIDAY_ENAME');
+            $notification->holidayName = $holidayName;
             $notification->fromDate = $request->fromDate;
             $notification->toDate = $request->toDate;
             $notification->duration = $request->duration;
@@ -721,6 +742,145 @@ class HeadNotification {
 
             self::addNotifications($notification, $title, $desc, $adapter);
             self::sendEmail($notification, 21, $adapter, $url);
+        };
+        
+        ${"fn" . NotificationEvents::TRAINING_APPLIED} = function (TrainingRequest $request, AdapterInterface $adapter, Url $url, $type) {
+            $trainingRequestRepo = new TrainingRequestRepository($adapter);
+            $trainingRequestDetail = $trainingRequestRepo->fetchById($request->requestId);
+            $request->exchangeArrayFromDB($trainingRequestDetail);
+
+            $recommdAppRepo = new RecommendApproveRepository($adapter);
+            $recommdAppModel = $recommdAppRepo->getDetailByEmployeeID($request->employeeId);
+
+            if ($recommdAppModel == null) {
+                throw new Exception("recommender and approver not set for employee with id =>" . $request->employeeId);
+            }
+            $notification = new TrainingReqNotificationModel();
+            self::setNotificationModel($recommdAppModel[RecommendApprove::EMPLOYEE_ID], $recommdAppModel[($type == self::RECOMMENDER) ? RecommendApprove::RECOMMEND_BY : RecommendApprove::APPROVED_BY], $notification, $adapter);
+
+            $notification->route = json_encode(["route" => "trainingApprove", "action" => "view", "id" => $request->requestId, "role" => ($type == self::RECOMMENDER) ? 2 : 3]);
+            
+            if($trainingRequestDetail['TRAINING_ID']!=0){
+                $trainingRequestDetail['START_DATE']=$trainingRequestDetail['T_START_DATE'];
+                $trainingRequestDetail['END_DATE'] = $trainingRequestDetail['T_END_DATE'];
+                $trainingRequestDetail['DURATION'] = $trainingRequestDetail['T_DURATION'];
+                $trainingRequestDetail['TRAINING_TYPE'] = $trainingRequestDetail['T_TRAINING_TYPE'];
+                $trainingRequestDetail['TITLE'] = $trainingRequestDetail['TRAINING_NAME'];
+            }
+            $getValueComType = function($trainingTypeId){
+                if($trainingTypeId=='CC'){
+                    return 'Company Contribution';
+                }else if($trainingTypeId=='CP'){
+                    return 'Company Personal';
+                }
+            };
+            
+            $notification->trainingType = $getValueComType($trainingRequestDetail['TRAINING_TYPE']);
+            $notification->trainingName = $trainingRequestDetail['TITLE'];
+            $notification->trainingCode = $trainingRequestDetail['TRAINING_CODE'];
+            $notification->instuctorName = $trainingRequestDetail['INSTRUCTOR_NAME'];
+            $notification->fromDate = $trainingRequestDetail['START_DATE'];
+            $notification->toDate = $trainingRequestDetail['END_DATE'];
+            $notification->duration = $trainingRequestDetail['DURATION'];
+            $notification->remarks = $request->remarks;
+
+            $title = "Trining Request";
+            $desc = "Trining Request of $notification->fromName from $notification->fromDate to $notification->toDate";
+
+            self::addNotifications($notification, $title, $desc, $adapter);
+            self::sendEmail($notification, 22, $adapter, $url);
+        };
+        
+        ${"fn" . NotificationEvents::TRAINING_RECOMMEND_ACCEPTED} = function (TrainingRequest $request, AdapterInterface $adapter, Url $url, string $status) {
+            $trainingRequestRepo = new TrainingRequestRepository($adapter);
+            $trainingRequestDetail = $trainingRequestRepo->fetchById($request->requestId);
+            $request->exchangeArrayFromDB($trainingRequestDetail);
+
+            $recommdAppRepo = new RecommendApproveRepository($adapter);
+            $recommdAppModel = $recommdAppRepo->getDetailByEmployeeID($request->employeeId);
+
+            $notification = new TrainingReqNotificationModel();
+            self::setNotificationModel($recommdAppModel[RecommendApprove::RECOMMEND_BY], $recommdAppModel[RecommendApprove::EMPLOYEE_ID], $notification, $adapter);
+
+            if($trainingRequestDetail['TRAINING_ID']!=0){
+                $trainingRequestDetail['START_DATE']=$trainingRequestDetail['T_START_DATE'];
+                $trainingRequestDetail['END_DATE'] = $trainingRequestDetail['T_END_DATE'];
+                $trainingRequestDetail['DURATION'] = $trainingRequestDetail['T_DURATION'];
+                $trainingRequestDetail['TRAINING_TYPE'] = $trainingRequestDetail['T_TRAINING_TYPE'];
+                $trainingRequestDetail['TITLE'] = $trainingRequestDetail['TRAINING_NAME'];
+            }
+            $getValueComType = function($trainingTypeId){
+                if($trainingTypeId=='CC'){
+                    return 'Company Contribution';
+                }else if($trainingTypeId=='CP'){
+                    return 'Company Personal';
+                }
+            };
+            
+            $notification->trainingType = $getValueComType($trainingRequestDetail['TRAINING_TYPE']);
+            $notification->trainingName = $trainingRequestDetail['TITLE'];
+            $notification->trainingCode = $trainingRequestDetail['TRAINING_CODE'];
+            $notification->instuctorName = $trainingRequestDetail['INSTRUCTOR_NAME'];
+            $notification->fromDate = $trainingRequestDetail['START_DATE'];
+            $notification->toDate = $trainingRequestDetail['END_DATE'];
+            $notification->duration = $trainingRequestDetail['DURATION'];
+            $notification->remarks = $request->remarks;
+            $notification->status =  $status;
+
+            $notification->route = json_encode(["route" => "trainingRequest", "action" => "view", "id" => $request->requestId]);
+            $title = "Training Recommendation";
+            $desc = "Recommendation of Training Request by"
+                    . " $notification->fromName from $notification->fromDate"
+                    . " to $notification->toDate is $notification->status";
+            
+            self::addNotifications($notification, $title, $desc, $adapter);
+            self::sendEmail($notification, 23, $adapter, $url);
+        };
+        
+        ${"fn" . NotificationEvents::TRAINING_APPROVE_ACCEPTED} = function (TrainingRequest $request, AdapterInterface $adapter, Url $url, string $status) {
+            $trainingRequestRepo = new TrainingRequestRepository($adapter);
+            $trainingRequestDetail = $trainingRequestRepo->fetchById($request->requestId);
+            $request->exchangeArrayFromDB($trainingRequestDetail);
+
+            $recommdAppRepo = new RecommendApproveRepository($adapter);
+            $recommdAppModel = $recommdAppRepo->getDetailByEmployeeID($request->employeeId);
+
+            $notification = new TrainingReqNotificationModel();
+            self::setNotificationModel(
+                    $recommdAppModel[RecommendApprove::APPROVED_BY], $recommdAppModel[RecommendApprove::EMPLOYEE_ID], $notification, $adapter);
+
+            if($trainingRequestDetail['TRAINING_ID']!=0){
+                $trainingRequestDetail['START_DATE']=$trainingRequestDetail['T_START_DATE'];
+                $trainingRequestDetail['END_DATE'] = $trainingRequestDetail['T_END_DATE'];
+                $trainingRequestDetail['DURATION'] = $trainingRequestDetail['T_DURATION'];
+                $trainingRequestDetail['TRAINING_TYPE'] = $trainingRequestDetail['T_TRAINING_TYPE'];
+                $trainingRequestDetail['TITLE'] = $trainingRequestDetail['TRAINING_NAME'];
+            }
+            $getValueComType = function($trainingTypeId){
+                if($trainingTypeId=='CC'){
+                    return 'Company Contribution';
+                }else if($trainingTypeId=='CP'){
+                    return 'Company Personal';
+                }
+            };
+            $notification->trainingType = $getValueComType($trainingRequestDetail['TRAINING_TYPE']);
+            $notification->trainingName = $trainingRequestDetail['TITLE'];
+            $notification->trainingCode = $trainingRequestDetail['TRAINING_CODE'];
+            $notification->instuctorName = $trainingRequestDetail['INSTRUCTOR_NAME'];
+            $notification->fromDate = $trainingRequestDetail['START_DATE'];
+            $notification->toDate = $trainingRequestDetail['END_DATE'];
+            $notification->duration = $trainingRequestDetail['DURATION'];
+            $notification->remarks = $request->remarks;
+            $notification->status =  $status;
+
+            $notification->route = json_encode(["route" => "trainingRequest", "action" => "view", "id" => $request->requestId]);
+            $title = "Training Approval";
+            $desc = "Approval of Training Request by"
+                    . " $notification->fromName from $notification->fromDate"
+                    . " to $notification->toDate is $notification->status";
+
+            self::addNotifications($notification, $title, $desc, $adapter);
+            self::sendEmail($notification, 24, $adapter, $url);
         };
         
         switch ($eventType) {
@@ -840,6 +1000,22 @@ class HeadNotification {
                 break;
             case NotificationEvents::WORKONHOLIDAY_APPROVE_REJECTED:
                 ${"fn" . NotificationEvents::WORKONHOLIDAY_APPROVE_ACCEPTED}($model, $adapter, $url, self::REJECTED);
+                break;
+            case NotificationEvents::TRAINING_APPLIED:
+                ${"fn" . NotificationEvents::TRAINING_APPLIED}($model, $adapter, $url, self::RECOMMENDER);
+                break;
+            case NotificationEvents::TRAINING_RECOMMEND_ACCEPTED:
+                ${"fn" . NotificationEvents::TRAINING_RECOMMEND_ACCEPTED}($model, $adapter, $url, self::ACCEPTED);
+                ${"fn" . NotificationEvents::TRAINING_APPLIED}($model, $adapter, $url, self::APPROVER);
+                break;
+            case NotificationEvents::TRAINING_RECOMMEND_REJECTED:
+                ${"fn" . NotificationEvents::TRAINING_RECOMMEND_ACCEPTED}($model, $adapter, $url, self::REJECTED);
+                break;
+            case NotificationEvents::TRAINING_APPROVE_ACCEPTED:
+                ${"fn" . NotificationEvents::TRAINING_APPROVE_ACCEPTED}($model, $adapter, $url, self::ACCEPTED);
+                break;
+            case NotificationEvents::TRAINING_APPROVE_REJECTED:
+                ${"fn" . NotificationEvents::TRAINING_APPROVE_ACCEPTED}($model, $adapter, $url, self::REJECTED);
                 break;
         }
     }

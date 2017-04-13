@@ -2,8 +2,10 @@
 
 namespace HolidayManagement\Controller;
 
-use Application\Helper\EntityHelper as EntityHelper2;
+use Application\Custom\CustomViewModel;
+use Application\Helper\EntityHelper as ApplicationEntityHelper;
 use Application\Helper\Helper;
+use Exception;
 use HolidayManagement\Form\HolidayForm;
 use HolidayManagement\Model\Holiday;
 use HolidayManagement\Model\HolidayBranch;
@@ -43,7 +45,7 @@ class HolidaySetup extends AbstractActionController {
         $this->initializeForm();
         $holidayFormElement = new Select();
         $holidayFormElement->setName("branch");
-        $holidays = EntityHelper2::getTableKVList($this->adapter, Holiday::TABLE_NAME, Holiday::HOLIDAY_ID, [Holiday::HOLIDAY_ENAME]);
+        $holidays = ApplicationEntityHelper::getTableKVList($this->adapter, Holiday::TABLE_NAME, Holiday::HOLIDAY_ID, [Holiday::HOLIDAY_ENAME]);
         ksort($holidays);
         $holidayFormElement->setValueOptions($holidays);
         $holidayFormElement->setAttributes(["id" => "holidayId", "class" => "form-control"]);
@@ -51,14 +53,14 @@ class HolidaySetup extends AbstractActionController {
 
         $branchFormElement = new Select();
         $branchFormElement->setName("branch");
-        $branches = EntityHelper2::getTableKVListWithSortOption($this->adapter, Branch::TABLE_NAME, Branch::BRANCH_ID, [Branch::BRANCH_NAME], ["STATUS" => "E"], Branch::BRANCH_NAME, "ASC");
+        $branches = ApplicationEntityHelper::getTableKVListWithSortOption($this->adapter, Branch::TABLE_NAME, Branch::BRANCH_ID, [Branch::BRANCH_NAME], ["STATUS" => "E"], Branch::BRANCH_NAME, "ASC");
         $branchFormElement->setValueOptions($branches);
         $branchFormElement->setAttributes(["id" => "branchId", "required" => "required", "class" => "form-control", "multiple" => "multiple"]);
         $branchFormElement->setLabel("Branch");
 
         $genderFormElement = new Select();
         $genderFormElement->setName("gender");
-        $genders = EntityHelper2::getTableKVList($this->adapter, "HRIS_GENDERS", "GENDER_ID", ["GENDER_NAME"]);
+        $genders = ApplicationEntityHelper::getTableKVList($this->adapter, "HRIS_GENDERS", "GENDER_ID", ["GENDER_NAME"]);
         $genders[-1] = "All";
         ksort($genders);
 
@@ -122,8 +124,8 @@ class HolidaySetup extends AbstractActionController {
                     'form' => $this->form,
                     'customRenderer' => Helper::renderCustomView(),
                     "genders" => EntityHelper::getTableKVList($this->adapter, EntityHelper::HRIS_GENDERS),
-                    'branches' => EntityHelper2::getTableKVList($this->adapter, Branch::TABLE_NAME, Branch::BRANCH_ID, [Branch::BRANCH_NAME], ["STATUS" => "E"]),
-                    'designations' => EntityHelper2::getTableKVList($this->adapter, Designation::TABLE_NAME, Designation::DESIGNATION_ID, [Designation::DESIGNATION_TITLE], [Designation::STATUS => "E"])
+                    'branches' => ApplicationEntityHelper::getTableKVList($this->adapter, Branch::TABLE_NAME, Branch::BRANCH_ID, [Branch::BRANCH_NAME], ["STATUS" => "E"]),
+                    'designations' => ApplicationEntityHelper::getTableKVList($this->adapter, Designation::TABLE_NAME, Designation::DESIGNATION_ID, [Designation::DESIGNATION_TITLE], [Designation::STATUS => "E"])
                         ]
                 )
         );
@@ -140,7 +142,7 @@ class HolidaySetup extends AbstractActionController {
         $this->initializeForm();
         $holidayFormElement = new Select();
         $holidayFormElement->setName("holiday");
-        $holidays = EntityHelper2::getTableKVList($this->adapter, Holiday::TABLE_NAME, Holiday::HOLIDAY_ID, [Holiday::HOLIDAY_ENAME]);
+        $holidays = ApplicationEntityHelper::getTableKVList($this->adapter, Holiday::TABLE_NAME, Holiday::HOLIDAY_ID, [Holiday::HOLIDAY_ENAME]);
         ksort($holidays);
         $holidayFormElement->setValueOptions($holidays);
         $holidayFormElement->setAttributes(["id" => "holidayId", "class" => "form-control"]);
@@ -150,7 +152,7 @@ class HolidaySetup extends AbstractActionController {
 
         $branchFormElement = new Select();
         $branchFormElement->setName("branch");
-        $branches = EntityHelper2::getTableKVList($this->adapter, Branch::TABLE_NAME, Branch::BRANCH_ID, [Branch::BRANCH_NAME], ["STATUS" => "E"]);
+        $branches = ApplicationEntityHelper::getTableKVList($this->adapter, Branch::TABLE_NAME, Branch::BRANCH_ID, [Branch::BRANCH_NAME], ["STATUS" => "E"]);
 
         ksort($branches);
         $branchFormElement->setValueOptions($branches);
@@ -159,7 +161,7 @@ class HolidaySetup extends AbstractActionController {
 
         $designationFormElement = new Select();
         $designationFormElement->setName("designation");
-        $designations = EntityHelper2::getTableKVList($this->adapter, Designation::TABLE_NAME, Designation::DESIGNATION_ID, [Designation::DESIGNATION_TITLE], [Designation::STATUS => "E"]);
+        $designations = ApplicationEntityHelper::getTableKVList($this->adapter, Designation::TABLE_NAME, Designation::DESIGNATION_ID, [Designation::DESIGNATION_TITLE], [Designation::STATUS => "E"]);
 
         ksort($designations);
         $designationFormElement->setValueOptions($designations);
@@ -168,7 +170,7 @@ class HolidaySetup extends AbstractActionController {
 
         $genderFormElement = new Select();
         $genderFormElement->setName("gender");
-        $genders = EntityHelper2::getTableKVList($this->adapter, "HRIS_GENDERS", "GENDER_ID", ["GENDER_NAME"]);
+        $genders = ApplicationEntityHelper::getTableKVList($this->adapter, "HRIS_GENDERS", "GENDER_ID", ["GENDER_NAME"]);
         $genders[-1] = "All";
         ksort($genders);
 
@@ -201,7 +203,7 @@ class HolidaySetup extends AbstractActionController {
     public function listAction() {
         $list = $this->repository->fetchAll();
 
-        $branches = EntityHelper2::getTableKVList($this->adapter, Branch::TABLE_NAME, Branch::BRANCH_ID, [Branch::BRANCH_NAME], ["STATUS" => "E"]);
+        $branches = ApplicationEntityHelper::getTableKVList($this->adapter, Branch::TABLE_NAME, Branch::BRANCH_ID, [Branch::BRANCH_NAME], ["STATUS" => "E"]);
         $branches[-1] = "All";
         ksort($branches);
 
@@ -211,7 +213,7 @@ class HolidaySetup extends AbstractActionController {
         $branchFormElement->setAttributes(["id" => "branchId", "class" => "form-control"]);
         $branchFormElement->setLabel("Branch");
 
-        $genders = EntityHelper2::getTableKVList($this->adapter, "HRIS_GENDERS", "GENDER_ID", ["GENDER_NAME"]);
+        $genders = ApplicationEntityHelper::getTableKVList($this->adapter, "HRIS_GENDERS", "GENDER_ID", ["GENDER_NAME"]);
         $genders[-1] = "All";
         ksort($genders);
 
@@ -226,6 +228,164 @@ class HolidaySetup extends AbstractActionController {
                     'branches' => $branchFormElement,
                     'genders' => $genderFormElement
         ]);
+    }
+
+    public function pullHolidayDetailAction() {
+        try {
+            $request = $this->getRequest();
+            if (!$request->isPost()) {
+                throw new Exception('Request should be post');
+            }
+            $postedData = $request->getPost();
+
+            $inputData = $postedData->id;
+            $holidayRepository = new HolidayRepository($this->adapter);
+            $resultSet = $holidayRepository->fetchById($inputData);
+
+            return new CustomViewModel([
+                "success" => true,
+                "data" => $resultSet,
+                "error" => null
+            ]);
+        } catch (Exception $e) {
+            return new CustomViewModel([
+                "success" => false,
+                "data" => null,
+                "error" => $e->getMessage()
+            ]);
+        }
+    }
+
+    public function branchListAction() {
+        try {
+            $request = $this->getRequest();
+            if (!$request->isPost()) {
+                throw new Exception('Request should be post');
+            }
+            $id = $request->getPost()->id;
+            $data = ApplicationEntityHelper::getColumnsList($this->adapter, $id, "BRANCH_ID", ["BRANCH_NAME"]);
+            return new CustomViewModel([
+                'success' => true,
+                'data' => $data,
+                'error' => null
+            ]);
+        } catch (Exception $e) {
+            return new CustomViewModel([
+                'success' => false,
+                'data' => null,
+                'error' => $e->getMessage()
+            ]);
+        }
+    }
+
+    public function designationListAction() {
+        try {
+            $request = $this->getRequest();
+            if (!$request->isPost()) {
+                throw new Exception('Request should be post');
+            }
+            $id = $request->getPost()->id;
+            $designationList = ApplicationEntityHelper::getTableKVList($this->adapter, HolidayDesignation::TABLE_NAME, HolidayDesignation::DESIGNATION_ID, [HolidayDesignation::DESIGNATION_ID], [HolidayDesignation::HOLIDAY_ID => $id]);
+            return new CustomViewModel(['success' => true, 'data' => $designationList, 'error' => null]);
+        } catch (Exception $e) {
+            return new CustomViewModel(['success' => true, 'data' => null, 'error' => $e->getMessage()]);
+        }
+    }
+
+    public function updateHolidayDetailAction() {
+        try {
+            $request = $this->getRequest();
+            if (!$request->isPost()) {
+                throw new Exception('Request should be post');
+            }
+            $postedData = $request->getPost();
+            $inputData = $postedData->data;
+            $holidayRepository = new HolidayRepository($this->adapter);
+
+
+            $branchIds = $inputData['branchIds'];
+            $designationIds = $inputData['designationIds'];
+            $data = $inputData['dataArray'];
+
+            $holidayModel = new Holiday();
+            $holidayModel->holidayCode = (isset($data['holidayCode']) ? $data['holidayCode'] : "" );
+            if ($data['genderId'] == '-1') {
+                $holidayModel->genderId = "";
+            } else {
+                $holidayModel->genderId = $data['genderId'];
+            }
+            $holidayModel->holidayEname = (isset($data['holidayEname']) ? $data['holidayEname'] : "" );
+            $holidayModel->holidayLname = (isset($data['holidayLname']) ? $data['holidayLname'] : "" );
+            $holidayModel->startDate = (isset($data['startDate']) ? $data['startDate'] : "" );
+            $holidayModel->endDate = (isset($data['endDate']) ? $data['endDate'] : "" );
+            $holidayModel->halfday = $data['halfday'];
+            $holidayModel->remarks = (isset($data['remarks']) ? $data['remarks'] : "" );
+            $holidayModel->modifiedDt = Helper::getcurrentExpressionDate();
+            $holidayModel->modifiedBy = $this->employeeId;
+
+            $resultSet = $holidayRepository->edit($holidayModel, $inputData['holidayId']);
+
+
+            $this->branchHolidayEdit($holidayRepository, $inputData['holidayId'], $branchIds);
+            $this->designationHolidayEdit($holidayRepository, $inputData['holidayId'], $designationIds);
+
+            return new CustomViewModel([
+                "success" => true,
+                "data" => "Holiday Successfully Updated!!",
+                'error' => null
+            ]);
+        } catch (Exception $e) {
+            return new CustomViewModel([
+                "success" => false,
+                "data" => null,
+                'error' => $e->getMessage()
+            ]);
+        }
+    }
+
+    private function branchHolidayEdit(HolidayRepository $holidayRepository, $holidayId, $branchIds) {
+        $holidayBranchResult = $holidayRepository->selectHolidayBranch($holidayId);
+
+        $branchTemp = [];
+        foreach ($holidayBranchResult as $holidayBranchList) {
+            $branchId = $holidayBranchList['BRANCH_ID'];
+            if (!in_array($branchId, $branchIds)) {
+                $holidayRepository->deleteHolidayBranch($inputData['holidayId'], $branchId);
+            }
+            array_push($branchTemp, $branchId);
+        }
+
+        foreach ($branchIds as $branchIdList) {
+            if (!in_array($branchIdList, $branchTemp)) {
+                $holidayBranchModel = new HolidayBranch();
+                $holidayBranchModel->branchId = $branchIdList;
+                $holidayBranchModel->holidayId = $holidayId;
+                $holidayRepository->addHolidayBranch($holidayBranchModel);
+            }
+        }
+    }
+
+    private function designationHolidayEdit(HolidayRepository $repository, $holidayId, $designationIds) {
+        $holidayDesignationList = $repository->selectHolidayDesignation($holidayId);
+
+        $designTemp = [];
+        foreach ($holidayDesignationList as $holidayDesignation) {
+            $designationId = $holidayDesignation[HolidayDesignation::DESIGNATION_ID];
+            if (!in_array($designationId, $designationIds)) {
+                $repository->deleteHolidayDesignation($holidayId, $designationId);
+            }
+            array_push($designTemp, $designationId);
+        }
+
+
+        foreach ($designationIds as $designationId) {
+            if (!in_array($designationId, $designTemp)) {
+                $holidayDesignationModel = new HolidayDesignation();
+                $holidayDesignationModel->designationId = $designationId;
+                $holidayDesignationModel->holidayId = $holidayId;
+                $repository->addHolidayDesignation($holidayDesignationModel);
+            }
+        }
     }
 
 }

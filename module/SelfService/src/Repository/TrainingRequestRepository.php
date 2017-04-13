@@ -64,7 +64,7 @@ class TrainingRequestRepository implements RepositoryInterface{
 
         $select->from(['TR' => TrainingRequest::TABLE_NAME])
                 ->join(['E' => HrEmployees::TABLE_NAME], "E.".HrEmployees::EMPLOYEE_ID."=TR.". TrainingRequest::EMPLOYEE_ID, [HrEmployees::FIRST_NAME,HrEmployees::MIDDLE_NAME, HrEmployees::LAST_NAME])
-                ->join(['T' => Training::TABLE_NAME], "T.". Training::TRAINING_ID."=TR.". TrainingRequest::TRAINING_ID, [Training::TRAINING_CODE, Training::TRAINING_NAME,"T_START_DATE" => new Expression("INITCAP(TO_CHAR(T.START_DATE, 'DD-MON-YYYY'))"),"T_END_DATE" => new Expression("INITCAP(TO_CHAR(T.END_DATE, 'DD-MON-YYYY'))"),"T_DURATION"=> Training::DURATION,"T_TRAINING_TYPE"=>Training::TRAINING_TYPE],"left")
+                ->join(['T' => Training::TABLE_NAME], "T.". Training::TRAINING_ID."=TR.". TrainingRequest::TRAINING_ID, [Training::TRAINING_CODE,Training::INSTRUCTOR_NAME, Training::TRAINING_NAME,"T_START_DATE" => new Expression("INITCAP(TO_CHAR(T.START_DATE, 'DD-MON-YYYY'))"),"T_END_DATE" => new Expression("INITCAP(TO_CHAR(T.END_DATE, 'DD-MON-YYYY'))"),"T_DURATION"=> Training::DURATION,"T_TRAINING_TYPE"=>Training::TRAINING_TYPE],"left")
                 ->join(['E1'=>"HRIS_EMPLOYEES"],"E1.EMPLOYEE_ID=TR.RECOMMENDED_BY",['FN1'=>'FIRST_NAME','MN1'=>'MIDDLE_NAME','LN1'=>'LAST_NAME'],"left")
                 ->join(['E2'=>"HRIS_EMPLOYEES"],"E2.EMPLOYEE_ID=TR.APPROVED_BY",['FN2'=>'FIRST_NAME','MN2'=>'MIDDLE_NAME','LN2'=>'LAST_NAME'],"left");
 

@@ -79,7 +79,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                 <?php } ?>
                             </select>
                             <?php print $this->formElementErrors()->render($advanceId, ['class' => 'help-block']); ?>
-                            <span ng-show="(allowAmt !== null) && (allowTerms !== null)">
+                            <span ng-show="(allowAmt != null) && (allowTerms != null)" style="font-size:9px; font-weight: bold;">
                                 Max Amount: <span ng-bind="allowAmt" style="font-size:9px; font-weight: bold;"></span>
                                 Within : <span ng-bind="allowTerms" style="font-size:9px; font-weight: bold;"></span> Months
                             </span>
@@ -140,10 +140,6 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                         </div>
                     </div>
                 </div>
-
-
-
-
                 <?php
                 print $this->formSubmit($submit);
                 print $this->form()->closeTag();

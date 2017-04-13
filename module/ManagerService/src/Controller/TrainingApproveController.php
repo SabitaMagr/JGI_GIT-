@@ -170,6 +170,12 @@ class TrainingApproveController extends AbstractActionController {
                 }
                 $trainingRequestModel->recommendedRemarks = $getData->recommendedRemarks;
                 $this->trainingApproveRepository->edit($trainingRequestModel, $id);
+                $trainingRequestModel->requestId = $id;
+                try {
+                    HeadNotification::pushNotification(($trainingRequestModel->status == 'RC') ? NotificationEvents::TRAINING_RECOMMEND_ACCEPTED : NotificationEvents::TRAINING_RECOMMEND_REJECTED, $trainingRequestModel, $this->adapter, $this->plugin('url'));
+                } catch (Exception $e) {
+                    $this->flashmessenger()->addMessage($e->getMessage());
+                }
             } else if ($role == 3 || $role == 4) {
                 $trainingRequestModel->approvedDate = Helper::getcurrentExpressionDate();
                 $trainingRequestModel->approvedBy = $this->employeeId;
@@ -186,6 +192,12 @@ class TrainingApproveController extends AbstractActionController {
                 }
                 $trainingRequestModel->approvedRemarks = $getData->approvedRemarks;
                 $this->trainingApproveRepository->edit($trainingRequestModel, $id);
+                $trainingRequestModel->requestId = $id;
+                try {
+                    HeadNotification::pushNotification(($trainingRequestModel->status == 'AP') ? NotificationEvents::TRAINING_APPROVE_ACCEPTED : NotificationEvents::TRAINING_APPROVE_REJECTED, $trainingRequestModel, $this->adapter, $this->plugin('url'));
+                } catch (Exception $e) {
+                    $this->flashmessenger()->addMessage($e->getMessage());
+                }
             }
             return $this->redirect()->toRoute("trainingApprove");
         }
