@@ -2,7 +2,8 @@
     'use strict';
     $(document).ready(function () {
         $('select#form-trainingType').select2();
-        app.startEndDatePicker("form-startDate", "form-endDate", function (fromDate, toDate) {
+//        app.startEndDatePicker("form-startDate", "form-endDate", function (fromDate, toDate) {  
+        app.startEndDatePickerWithNepali('nepaliStartDate1', 'form-startDate', 'nepaliEndDate1', 'form-endDate', function (fromDate, toDate) {
             if (fromDate <= toDate) {
                 var oneDay = 24 * 60 * 60 * 1000; // hours*minutes*seconds*milliseconds
                 var diffDays = Math.abs((fromDate.getTime() - toDate.getTime()) / (oneDay));

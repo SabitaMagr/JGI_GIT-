@@ -14,9 +14,10 @@ $this->headScript()->appendFile($this->basePath('assets/global/plugins/jquery.bl
 
 
 <script>
-    document.urlBranchList = '<?= $this->url("webService", ["action" => "branchList"]) ?>';
-    document.urlDepartmentList = '<?= $this->url("webService", ["action" => "designationList"]) ?>';
-    document.url = '<?= $this->url("webService", ["action" => "index"]) ?>';
+    document.urlBranchList = '<?= $this->url("holidaysetup", ["action" => "branchList"]) ?>';
+    document.urlDepartmentList = '<?= $this->url("holidaysetup", ["action" => "designationList"]) ?>';
+    document.updateHolidayDetailWS = '<?= $this->url("holidaysetup", ["action" => "updateHolidayDetail"]) ?>';
+    document.pullHolidayDetailWS = '<?= $this->url("holidaysetup", ["action" => "pullHolidayDetail"]) ?>';
 </script>
 
 <?php

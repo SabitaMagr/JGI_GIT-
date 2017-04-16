@@ -2,18 +2,13 @@
 
 namespace Setup\Controller;
 
-use Application\Custom\CustomViewModel;
-use Application\Helper\EntityHelper as ApplicationEntityHelper;
 use Application\Helper\Helper;
-use HolidayManagement\Model\Holiday;
-use HolidayManagement\Model\HolidayBranch;
 use HolidayManagement\Repository\HolidayRepository;
 use LeaveManagement\Model\LeaveAssign;
 use LeaveManagement\Repository\LeaveAssignRepository;
 use SelfService\Repository\AttendanceRepository;
 use SelfService\Repository\LeaveRequestRepository;
 use Setup\Helper\EntityHelper;
-use Setup\Model\HolidayDesignation;
 use Setup\Repository\EmployeeRepository;
 use Setup\Repository\RecommendApproveRepository;
 use Zend\Authentication\AuthenticationService;
@@ -126,54 +121,7 @@ class WebServiceController extends AbstractActionController {
                         "data" => $tempArray
                     ];
                     break;
-                case "pullHolidayDetail":
-                    $holidayRepository = new HolidayRepository($this->adapter);
-                    $inputData = $postedData->id;
-                    $resultSet = $holidayRepository->fetchById($inputData);
 
-                    $responseData = [
-                        "success" => true,
-                        "data" => $resultSet
-                    ];
-                    break;
-                case "updateHolidayDetail":
-                    $holidayRepository = new HolidayRepository($this->adapter);
-
-                    $inputData = $postedData->data;
-
-                    $branchIds = $inputData['branchIds'];
-                    $designationIds = $inputData['designationIds'];
-                    $data = $inputData['dataArray'];
-
-                    $holidayModel = new Holiday();
-                    $holidayModel->holidayCode = (isset($data['holidayCode']) ? $data['holidayCode'] : "" );
-                    if ($data['genderId'] == '-1') {
-                        $holidayModel->genderId = "";
-                    } else {
-                        $holidayModel->genderId = $data['genderId'];
-                    }
-                    $holidayModel->holidayEname = (isset($data['holidayEname']) ? $data['holidayEname'] : "" );
-                    $holidayModel->holidayLname = (isset($data['holidayLname']) ? $data['holidayLname'] : "" );
-                    $holidayModel->startDate = (isset($data['startDate']) ? $data['startDate'] : "" );
-                    $holidayModel->endDate = (isset($data['endDate']) ? $data['endDate'] : "" );
-                    $holidayModel->halfday = $data['halfday'];
-                    $holidayModel->remarks = (isset($data['remarks']) ? $data['remarks'] : "" );
-                    $holidayModel->modifiedDt = Helper::getcurrentExpressionDate();
-                    $holidayModel->modifiedBy = $this->loggedInEmployeeId;
-
-                    $resultSet = $holidayRepository->edit($holidayModel, $inputData['holidayId']);
-
-
-                    $this->branchHolidayEdit($holidayRepository, $inputData['holidayId'], $branchIds);
-                    $this->designationHolidayEdit($holidayRepository, $inputData['holidayId'], $designationIds);
-
-
-                    $responseData = [
-                        "data1" => $holidayModel,
-                        "success" => true,
-                        "data" => "Holiday Successfully Updated!!"
-                    ];
-                    break;
                 case "pullLeaveDetail":
                     $leaveRequestRepository = new LeaveRequestRepository($this->adapter);
                     $inputData = $postedData->data;
@@ -332,72 +280,6 @@ class WebServiceController extends AbstractActionController {
             ]);
         } else {
             
-        }
-    }
-
-    public function branchListAction() {
-        $request = $this->getRequest();
-        if ($request->isPost()) {
-            $id = $request->getPost()->id;
-            return new JsonModel([
-                'data' => ApplicationEntityHelper::getColumnsList($this->adapter, $id, "BRANCH_ID", ["BRANCH_NAME"])
-            ]);
-        }
-    }
-
-    public function designationListAction() {
-        $request = $this->getRequest();
-        if ($request->isPost()) {
-            $id = $request->getPost()->id;
-            $designationList = ApplicationEntityHelper::getTableKVList($this->adapter, HolidayDesignation::TABLE_NAME, HolidayDesignation::DESIGNATION_ID, [HolidayDesignation::DESIGNATION_ID], [HolidayDesignation::HOLIDAY_ID => $id]);
-            return new CustomViewModel($designationList);
-        } else {
-            
-        }
-    }
-
-    private function branchHolidayEdit(HolidayRepository $holidayRepository, $holidayId, $branchIds) {
-        $holidayBranchResult = $holidayRepository->selectHolidayBranch($holidayId);
-
-        $branchTemp = [];
-        foreach ($holidayBranchResult as $holidayBranchList) {
-            $branchId = $holidayBranchList['BRANCH_ID'];
-            if (!in_array($branchId, $branchIds)) {
-                $holidayRepository->deleteHolidayBranch($inputData['holidayId'], $branchId);
-            }
-            array_push($branchTemp, $branchId);
-        }
-
-        foreach ($branchIds as $branchIdList) {
-            if (!in_array($branchIdList, $branchTemp)) {
-                $holidayBranchModel = new HolidayBranch();
-                $holidayBranchModel->branchId = $branchIdList;
-                $holidayBranchModel->holidayId = $holidayId;
-                $holidayRepository->addHolidayBranch($holidayBranchModel);
-            }
-        }
-    }
-
-    private function designationHolidayEdit(HolidayRepository $repository, $holidayId, $designationIds) {
-        $holidayDesignationList = $repository->selectHolidayDesignation($holidayId);
-
-        $designTemp = [];
-        foreach ($holidayDesignationList as $holidayDesignation) {
-            $designationId = $holidayDesignation[HolidayDesignation::DESIGNATION_ID];
-            if (!in_array($designationId, $designationIds)) {
-                $repository->deleteHolidayDesignation($holidayId, $designationId);
-            }
-            array_push($designTemp, $designationId);
-        }
-
-
-        foreach ($designationIds as $designationId) {
-            if (!in_array($designationId, $designTemp)) {
-                $holidayDesignationModel = new HolidayDesignation();
-                $holidayDesignationModel->designationId = $designationId;
-                $holidayDesignationModel->holidayId = $holidayId;
-                $repository->addHolidayDesignation($holidayDesignationModel);
-            }
         }
     }
 

@@ -4,9 +4,9 @@ namespace HolidayManagement\Repository;
 
 use Application\Model\Model;
 use Application\Repository\RepositoryInterface;
+use Exception;
 use HolidayManagement\Model\Holiday;
 use HolidayManagement\Model\HolidayBranch;
-use Setup\Model\Branch;
 use Setup\Model\Designation;
 use Setup\Model\HolidayDesignation;
 use Zend\Db\Adapter\AdapterInterface;
