@@ -56,7 +56,8 @@ class Service extends AbstractActionController {
 
         $jobHistory = new JobHistory();
         if (!$request->isPost()) {
-            $jobHistory->exchangeArrayFromDb($this->repository->fetchById($id)->getArrayCopy());
+//            $jobHistory->exchangeArrayFromDb($this->repository->fetchById($id)->getArrayCopy());
+            $jobHistory->exchangeArrayFromDb($this->repository->fetchById($id));
             $this->form->bind($jobHistory);
         } else {
 

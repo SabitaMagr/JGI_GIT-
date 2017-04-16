@@ -2,12 +2,15 @@
 
 namespace ManagerService\Repository;
 
+use Application\Helper\Helper;
 use Application\Model\Model;
 use Application\Repository\RepositoryInterface;
 use ManagerService\Model\SalaryDetail;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Sql\Expression;
 use Zend\Db\TableGateway\TableGateway;
+use Zend\Db\Sql\Select;
+use Zend\Db\Sql\Sql;
 
 class SalaryDetailRepo implements RepositoryInterface {
 
@@ -32,11 +35,26 @@ class SalaryDetailRepo implements RepositoryInterface {
     }
 
     public function fetchAll() {
-        return $this->tableGateway->select();
+        return $this->tableGateway->select([SalaryDetail::STATUS=>'E']);
     }
 
+
+//    public function fetchById($id) {
+//        return $this->tableGateway->select([SalaryDetail::SALARY_DETAIL_ID => $id])->current();
+//    }
+
     public function fetchById($id) {
-        return $this->tableGateway->select($id)->current();
+     $sql = new Sql($this->adapter);
+        $select = $sql->select();
+        $select->from(['SD' => SalaryDetail::TABLE_NAME]);
+        $select->where(["SD." . SalaryDetail::SALARY_DETAIL_ID . "='".$id."'"]);
+        $select->columns(Helper::convertColumnDateFormat($this->adapter, new SalaryDetail(), [
+                    'effectiveDate',
+                        ], NULL, 'SD'), false);
+        
+        $statement = $sql->prepareStatementForSqlObject($select);
+        $result = $statement->execute();
+        return $result->current();
     }
 
     public function fetchIfAvailable(Expression $fromDate, Expression $toDate, int $employeeId) {

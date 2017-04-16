@@ -39,7 +39,7 @@ class LoanRequestRepository implements RepositoryInterface{
         $sql = new Sql($this->adapter);
         $select = $sql->select();
         $select->columns([
-            new Expression("TO_CHAR(LR.LOAN_DATE, 'DD-MON-YYYY') AS LOAN_DATE"),
+            new Expression("INITCAP(TO_CHAR(LR.LOAN_DATE, 'DD-MON-YYYY')) AS LOAN_DATE"),
             new Expression("LR.STATUS AS STATUS"),
             new Expression("TO_CHAR(LR.REQUESTED_DATE, 'DD-MON-YYYY') AS REQUESTED_DATE"),
             new Expression("TO_CHAR(LR.APPROVED_DATE, 'DD-MON-YYYY') AS APPROVED_DATE"),

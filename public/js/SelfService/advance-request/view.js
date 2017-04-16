@@ -3,7 +3,8 @@
     $(document).ready(function () {
         $('select').select2();
         var $startDate = $("#startDate");
-        app.addDatePicker($startDate);
+//        app.addDatePicker($startDate);
+        app.datePickerWithNepali("form-advanceDate","nepaliDate");
         $startDate.datepicker('setStartDate', new Date());
     });
 })(window.jQuery, window.app);

@@ -44,7 +44,7 @@ class AdvanceApproveRepository implements RepositoryInterface{
         $sql = new Sql($this->adapter);
         $select = $sql->select();
         $select->columns([
-            new Expression("TO_CHAR(AR.ADVANCE_DATE, 'DD-MON-YYYY') AS ADVANCE_DATE"),
+            new Expression("INITCAP(TO_CHAR(AR.ADVANCE_DATE, 'DD-MON-YYYY')) AS ADVANCE_DATE"),
             new Expression("TO_CHAR(AR.REQUESTED_DATE, 'DD-MON-YYYY') AS REQUESTED_DATE"),
             new Expression("AR.STATUS AS STATUS"),
             new Expression("AR.ADVANCE_REQUEST_ID AS ADVANCE_REQUEST_ID"),
