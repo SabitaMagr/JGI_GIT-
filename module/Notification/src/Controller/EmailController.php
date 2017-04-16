@@ -12,6 +12,8 @@ use Notification\Model\TrainingReqNotificationModel;
 use Notification\Model\TravelReqNotificationModel;
 use Notification\Model\WorkOnDayoffNotificationModel;
 use Notification\Model\WorkOnHolidayNotificationModel;
+use Notification\Model\LeaveSubNotificationModel;
+use Notification\Model\TravelSubNotificationModel;
 use Notification\Repository\EmailTemplateRepo;
 use Zend\Authentication\AuthenticationService;
 use Zend\Db\Adapter\AdapterInterface;
@@ -47,7 +49,11 @@ class EmailController extends AbstractActionController {
         21 => "WorkOnHoliday_Approval",
         22 => "Training_Request",
         23 => "Training_Recommend",
-        24 => "Training_Approval"
+        24 => "Training_Approval",
+        25 => "Leave_Substitute_Applied",
+        26 => "Leave_Substitute_Approval",
+        27 => "Travel_Substitute_Applied",
+        28 => "Travel_Substitute_Approval",
     ];
 
     private function getVariables() {
@@ -78,6 +84,12 @@ class EmailController extends AbstractActionController {
         $type9 = new TrainingReqNotificationModel();
         $type9ObjVars = $type9->getObjectAttrs();
         
+        $type10 = new LeaveSubNotificationModel();
+        $type10ObjVars = $type10->getObjectAttrs();
+        
+        $type11 = new TravelSubNotificationModel();
+        $type11ObjVars = $type11->getObjectAttrs();
+        
         return [
             1 => $type1ObjVars,
             2 => $type1ObjVars,
@@ -102,7 +114,11 @@ class EmailController extends AbstractActionController {
             21 => $type8ObjVars,
             22 => $type9ObjVars,
             23 => $type9ObjVars,
-            24 => $type9ObjVars
+            24 => $type9ObjVars,
+            25 => $type10ObjVars,
+            26 => $type10ObjVars,
+            27 => $type11ObjVars,
+            28 => $type11ObjVars,
         ];
     }
 
