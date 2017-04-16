@@ -19,6 +19,8 @@
         var $endDate = $("#form-endDate");
         var $duration = $("#form-duration");
         var $trainingType = $("#form-trainingType");
+        var $nepaliStartDate=$("#nepaliStartDate1");
+        var $nepaliEndDate=$("#nepaliEndDate1");
         
         const TRAINING_NAME = "TRAINING_NAME";
         const START_DATE = "START_DATE";
@@ -39,6 +41,7 @@
             $startDate.datepicker('setEndDate', endDate);
             $endDate.datepicker('setStartDate', startDate);
             $endDate.datepicker('setEndDate', endDate);
+            
             
             $startDate.datepicker('setDate', startDate);
             $endDate.datepicker('setDate', endDate);
@@ -62,10 +65,14 @@
                 $duration.val("");
                 $startDate.val("");
                 $endDate.val("");
+                $nepaliStartDate.val("");
+                $nepaliEndDate.val("");
                 
                 $trainingType.attr('disabled', false);
                 $startDate.attr('disabled', false);
                 $endDate.attr('disabled', false);
+                $nepaliStartDate.attr('disabled', false);
+                $nepaliEndDate.attr('disabled', false);
                
                 $startDate.datepicker('setStartDate', "");
                 $startDate.datepicker('setEndDate', "");
