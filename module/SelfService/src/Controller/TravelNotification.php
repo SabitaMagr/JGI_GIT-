@@ -3,6 +3,7 @@ namespace SelfService\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\Db\Adapter\AdapterInterface;
+use Exception;
 use Application\Helper\Helper;
 use SelfService\Model\TravelSubstitute;
 use Zend\Authentication\AuthenticationService;
