@@ -1621,53 +1621,61 @@ echo json_encode($menu);
         
         <div class="tab-pane aditional" id="tab9">
             <div class="row clearfix">
-                <div class="col-sm-6">
+                <div class="col-sm-4">
                     <div class="form-group">
                         <label> Shift </label>
-                        <select>
-                            <option>Day Shift</option>
-                            <option> Night Shift</option>
+                        <select name="shift">
+                            <?php foreach($shifts as $shiftKey => $shiftValue){ ?>
+                            <option  value="<?php echo $shiftKey; ?>"><?php echo $shiftValue; ?></option>
+                            <?php }?>
                         </select>
                     </div>
                 </div>
-                <div class="col-sm-6">
+                <div class="col-sm-4">
                     <div class="form-group">
                         <label> Recommender</label>
-                        <select>
-                            <option>First Recommender Name</option>
+                        <select name="recommender">
+                            <?php foreach($recommenders as $recommenderKey => $recommenderValue){ ?>
+                            <option  value="<?php echo $recommenderKey; ?>"><?php echo $recommenderValue; ?></option>
+                            <?php }?>
                         </select>
                     </div>
                 </div>
-            </div>
-            <div class="row clearfix">
-                 <div class="col-sm-6">
+                <div class="col-sm-4">
                     <div class="form-group">
                         <label> Approver</label>
-                        <select>
-                            <option>First Approver Name</option>
+                        <select name="approver">
+                            <?php foreach($approvers as $approverKey => $approverValue){ ?>
+                            <option  value="<?php echo $approverKey; ?>"><?php echo $approverValue; ?></option>
+                            <?php }?>
                         </select>
-                    </div>
-                </div>
-                <div class="col-sm-6">
-                    <div class="form-group">
-                        <label> Leave </label>
                     </div>
                 </div>
             </div>
             <div class="row clearfix">
-                <div class="col-sm-6">
+                <div class="col-sm-4">
                     <div class="form-group">
-                        <label> Relative Working in Related Organisation </label>
-                    </div>
-                </div>
-                <div class="col-sm-6">
-                    <div class="form-group">
-                        <label> Children Information </label>
+                        <label> Leave </label>
+                        <table style="font-size:11px; width:100%;">
+                            <tr height="30">
+                                <th>Leave</th>
+                                <th>Days</th>
+                            </tr>
+                            <?php foreach($leaves as $leaveKey => $leaveValue){ ?>
+                            <tr height="30">
+                                <td>
+                                    <?php echo $leaveValue; ?>
+                                </td>
+                                <td>
+                                    <input type="number" name="days[$leaveKey]" min="0"/>
+                                </td>
+                            </tr>
+                            <?php } ?>
+                        </table>
                     </div>
                 </div>
             </div>
         </div>
-        
         
         <div class="padding-20">
             <ul class="pager wizard">
