@@ -22,6 +22,8 @@
             }, function (error) {
                 console.log("error=>getServerDate", error);
             });
+        }else{
+                app.datePickerWithNepali("attendanceDt","nepaliDate");            
         }
 
         var totalHour = function () {

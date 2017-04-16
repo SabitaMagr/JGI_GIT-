@@ -238,7 +238,7 @@ window.app = (function ($, toastr) {
 
         var englishDateValue = $englishDate.val();
         if (typeof englishDateValue !== 'undefined' && englishDateValue !== null && englishDateValue !== '') {
-            $nepaliDate.val(nepaliDatePickerExt.fromEnglishToNepali(englishDateValue));
+         $nepaliDate.val(nepaliDatePickerExt.fromEnglishToNepali(englishDateValue));
         }
 
     };
