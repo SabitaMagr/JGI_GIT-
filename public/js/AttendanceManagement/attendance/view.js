@@ -2,6 +2,8 @@
     'use strict';
     $(document).ready(function () {
         
+        app.datePickerWithNepali("attendanceDt","nepaliDate");
+        
         var employeeId = $('#employeeId').val();
         window.app.floatingProfile.setDataFromRemote(employeeId);
 

@@ -54,7 +54,7 @@ class AttendanceRequestRepository implements RepositoryInterface {
         $sql = new Sql($this->adapter);
         $select = $sql->select();
         $select->columns([
-            new Expression("TO_CHAR(A.ATTENDANCE_DT, 'DD-MON-YYYY') AS ATTENDANCE_DT"),
+            new Expression("INITCAP(TO_CHAR(A.ATTENDANCE_DT, 'DD-MON-YYYY')) AS ATTENDANCE_DT"),
             new Expression("TO_CHAR(A.IN_TIME, 'HH:MI AM') AS IN_TIME"),
             new Expression("TO_CHAR(A.OUT_TIME, 'HH:MI AM') AS OUT_TIME"),
             new Expression("E.EMPLOYEE_ID AS EMPLOYEE_ID"),
