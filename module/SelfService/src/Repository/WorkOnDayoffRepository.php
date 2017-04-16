@@ -41,19 +41,19 @@ class WorkOnDayoffRepository implements RepositoryInterface{
         $select->columns([
             new Expression("WD.ID AS ID"),
             new Expression("WD.EMPLOYEE_ID AS EMPLOYEE_ID"),
-            new Expression("TO_CHAR(WD.REQUESTED_DATE, 'DD-MON-YYYY') AS REQUESTED_DATE"),
-            new Expression("TO_CHAR(WD.FROM_DATE, 'DD-MON-YYYY') AS FROM_DATE"),
-            new Expression("TO_CHAR(WD.TO_DATE, 'DD-MON-YYYY') AS TO_DATE"),
+            new Expression("INITCAP(TO_CHAR(WD.REQUESTED_DATE, 'DD-MON-YYYY')) AS REQUESTED_DATE"),
+            new Expression("INITCAP(TO_CHAR(WD.FROM_DATE, 'DD-MON-YYYY')) AS FROM_DATE"),
+            new Expression("INITCAP(TO_CHAR(WD.TO_DATE, 'DD-MON-YYYY')) AS TO_DATE"),
             new Expression("WD.DURATION AS DURATION"),
             new Expression("WD.REMARKS AS REMARKS"),
             new Expression("WD.STATUS AS STATUS"),
             new Expression("WD.RECOMMENDED_BY AS RECOMMENDED_BY"),
-            new Expression("TO_CHAR(WD.RECOMMENDED_DATE, 'DD-MON-YYYY') AS RECOMMENDED_DATE"),
+            new Expression("INITCAP(TO_CHAR(WD.RECOMMENDED_DATE, 'DD-MON-YYYY')) AS RECOMMENDED_DATE"),
             new Expression("WD.RECOMMENDED_REMARKS AS RECOMMENDED_REMARKS"),
             new Expression("WD.APPROVED_BY AS APPROVED_BY"),
-            new Expression("TO_CHAR(WD.APPROVED_DATE, 'DD-MON-YYYY') AS APPROVED_DATE"),
+            new Expression("INITCAP(TO_CHAR(WD.APPROVED_DATE, 'DD-MON-YYYY')) AS APPROVED_DATE"),
             new Expression("WD.APPROVED_REMARKS AS APPROVED_REMARKS"),
-            new Expression("TO_CHAR(WD.MODIFIED_DATE, 'DD-MON-YYYY') AS MODIFIED_DATE"), 
+            new Expression("INITCAP(TO_CHAR(WD.MODIFIED_DATE, 'DD-MON-YYYY')) AS MODIFIED_DATE"), 
                 ], true);
 
         $select->from(['WD' => WorkOnDayoff::TABLE_NAME])
@@ -75,19 +75,19 @@ class WorkOnDayoffRepository implements RepositoryInterface{
         $select->columns([
             new Expression("WD.ID AS ID"),
             new Expression("WD.EMPLOYEE_ID AS EMPLOYEE_ID"),
-            new Expression("TO_CHAR(WD.REQUESTED_DATE, 'DD-MON-YYYY') AS REQUESTED_DATE"),
-            new Expression("TO_CHAR(WD.FROM_DATE, 'DD-MON-YYYY') AS FROM_DATE"),
-            new Expression("TO_CHAR(WD.TO_DATE, 'DD-MON-YYYY') AS TO_DATE"),
+            new Expression("INITCAP(TO_CHAR(WD.REQUESTED_DATE, 'DD-MON-YYYY')) AS REQUESTED_DATE"),
+            new Expression("INITCAP(TO_CHAR(WD.FROM_DATE, 'DD-MON-YYYY')) AS FROM_DATE"),
+            new Expression("INITCAP(TO_CHAR(WD.TO_DATE, 'DD-MON-YYYY')) AS TO_DATE"),
             new Expression("WD.DURATION AS DURATION"),
             new Expression("WD.REMARKS AS REMARKS"),
             new Expression("WD.STATUS AS STATUS"),
             new Expression("WD.RECOMMENDED_BY AS RECOMMENDED_BY"),
-            new Expression("TO_CHAR(WD.RECOMMENDED_DATE, 'DD-MON-YYYY') AS RECOMMENDED_DATE"),
+            new Expression("INITCAP(TO_CHAR(WD.RECOMMENDED_DATE, 'DD-MON-YYYY')) AS RECOMMENDED_DATE"),
             new Expression("WD.RECOMMENDED_REMARKS AS RECOMMENDED_REMARKS"),
             new Expression("WD.APPROVED_BY AS APPROVED_BY"),
-            new Expression("TO_CHAR(WD.APPROVED_DATE, 'DD-MON-YYYY') AS APPROVED_DATE"),
+            new Expression("INITCAP(TO_CHAR(WD.APPROVED_DATE, 'DD-MON-YYYY')) AS APPROVED_DATE"),
             new Expression("WD.APPROVED_REMARKS AS APPROVED_REMARKS"),
-            new Expression("TO_CHAR(WD.MODIFIED_DATE, 'DD-MON-YYYY') AS MODIFIED_DATE"), 
+            new Expression("INITCAP(TO_CHAR(WD.MODIFIED_DATE, 'DD-MON-YYYY')) AS MODIFIED_DATE"), 
                 ], true);
 
         $select->from(['WD' => WorkOnDayoff::TABLE_NAME])

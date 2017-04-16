@@ -2,7 +2,8 @@
     'use strict';
     $(document).ready(function () {
         $('select#form-transportType').select2();
-        app.startEndDatePicker('fromDate', 'toDate');
+//        app.startEndDatePicker('fromDate', 'toDate');
+        app.startEndDatePickerWithNepali('nepaliStartDate1', 'form-fromDate', 'nepaliEndDate1', 'form-toDate')
         /* prevent past event post */
         $('#fromDate').datepicker("setStartDate", new Date());
         $('#toDate').datepicker("setStartDate", new Date());
