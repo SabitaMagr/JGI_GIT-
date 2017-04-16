@@ -2,7 +2,8 @@
     'use strict';
     $(document).ready(function () {
         $('select').select2();
-        app.startEndDatePicker('startDate', 'endDate');
+//        app.startEndDatePicker('startDate', 'endDate');
+        app.startEndDatePickerWithNepali('nepaliStartDate1', 'startDate', 'nepaliEndDate1', 'endDate');
         var inputFieldId = "appraisalEdesc";
         var formId = "appraisalSetup-form";
         var tableName =  "HRIS_APPRAISAL_SETUP";
