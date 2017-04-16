@@ -36,6 +36,7 @@ class TrainingList extends AbstractActionController{
             $row['TRAINING_TYPE']= $getValue($row['TRAINING_TYPE']);
             array_push($list, $row);
         }
+        //print_r($list); die();
         return Helper::addFlashMessagesToArray($this, ['list'=>$list]);
     }
     public function viewAction(){
