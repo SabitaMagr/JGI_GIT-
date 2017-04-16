@@ -6,6 +6,7 @@ use Zend\Mvc\Controller\AbstractActionController;
 use Zend\Authentication\AuthenticationService;
 use Zend\Db\Adapter\AdapterInterface;
 use Application\Helper\Helper;
+use Exception;
 use Application\Helper\EntityHelper;
 use Zend\Form\Annotation\AnnotationBuilder;
 use SelfService\Form\WorkOnDayoffForm;

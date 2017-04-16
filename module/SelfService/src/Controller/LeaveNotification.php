@@ -4,6 +4,7 @@ namespace SelfService\Controller;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\Db\Adapter\AdapterInterface;
 use Application\Helper\Helper;
+use Exception;
 use SelfService\Model\LeaveSubstitute;
 use Zend\Authentication\AuthenticationService;
 use Setup\Repository\EmployeeRepository;
