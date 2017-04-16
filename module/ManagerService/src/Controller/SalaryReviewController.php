@@ -106,7 +106,7 @@ class SalaryReviewController extends AbstractActionController {
             return $this->redirect()->toRoute("salaryReview");
         }
 
-        $salaryDetail = $this->repo->fetchById([SalaryDetail::SALARY_DETAIL_ID => $id]);
+        $salaryDetail = $this->repo->fetchById($id);
 //        print "<pre>";
 //        print_r($salaryDetail);
 //        exit;

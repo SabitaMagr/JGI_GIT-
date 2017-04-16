@@ -16,6 +16,13 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
     </script>
 <?php } ?>
 <?php
+$this->headLink()
+        ->appendStylesheet($this->basePath('assets/global/plugins/nepalidate/nepali.datepicker.v2.1.min.css'));
+
+$this->headScript()
+        ->appendFile($this->basePath('assets/global/plugins/nepalidate/nepali.datepicker.v2.1.min.js'))
+        ->appendFile($this->basePath('js/nepali-datepicker-ext.js'));
+
 $this->headScript()->appendFile($this->basePath('js/angular.min.js'));
 $this->headScript()->appendFile($this->basePath('js/SelfService/advance-request/view.js'));
 
@@ -132,63 +139,74 @@ print $this->form()->openTag($form);
                         </div>
                     </div>
                     <input type="hidden" id="form-employeeId" value="<?php echo $employeeId; ?>"/>
-                    
+
                     <div class=" row">
-                    <div class="col-sm-4">
-                    <div class="form-group">
-                        <?php print $this->formLabel($advanceId); ?>
-                        <?php print $this->formElement($advanceId); ?>
-                        <?php print $this->formElementErrors()->render($advanceId, ['class' => 'help-block']); ?>
-                        <span>
-                            Max Amount: <span ng-bind="allowAmt" style="font-size:11px; font-weight: bold;"></span>
-                            Within : <span ng-bind="allowTerms" style="font-size:11px; font-weight: bold;"></span> Months
-                        </span>
-                    </div>               
-                    </div>
-                    
-                    <div class="col-sm-4">
-                    <div class="form-group">
-                        <?php print $this->formLabel($requestedAmount); ?>
-                        <?php print $this->formElement($requestedAmount); ?>
-                        <?php print $this->formElementErrors()->render($requestedAmount, ['class' => 'help-block']); ?>
-                    </div>
-                    </div>
-                    
-                    <div class="col-sm-4">
-                    <div class="form-group">
-                        <?php print $this->formLabel($terms); ?>
-                        <?php print $this->formElement($terms); ?>
-                        <?php print $this->formElementErrors()->render($terms, ['class' => 'help-block']); ?>
-                    </div>
-                    <span >
-                        Deduction: {{salaryDeduction}} per month
-                    </span>
-                    </div>
-                </div>
-                    
-                    <div class=" row">
-                    <div class="col-sm-4">
-                    <div class="form-group">
-                        <?php print $this->formLabel($advanceDate); ?>
-                        <div class="input-group date" id="startDate">
-                            <?php print $this->formElement($advanceDate); ?>
-                            <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <?php print $this->formLabel($advanceId); ?>
+                                <?php print $this->formElement($advanceId); ?>
+                                <?php print $this->formElementErrors()->render($advanceId, ['class' => 'help-block']); ?>
+                                <span>
+                                    Max Amount: <span ng-bind="allowAmt" style="font-size:11px; font-weight: bold;"></span>
+                                    Within : <span ng-bind="allowTerms" style="font-size:11px; font-weight: bold;"></span> Months
+                                </span>
+                            </div>               
                         </div>
-                        <?php print $this->formElementErrors()->render($advanceDate, ['class' => 'help-block']); ?>
+
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <?php print $this->formLabel($requestedAmount); ?>
+                                <?php print $this->formElement($requestedAmount); ?>
+                                <?php print $this->formElementErrors()->render($requestedAmount, ['class' => 'help-block']); ?>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <?php print $this->formLabel($terms); ?>
+                                <?php print $this->formElement($terms); ?>
+                                <?php print $this->formElementErrors()->render($terms, ['class' => 'help-block']); ?>
+                            </div>
+                            <span >
+                                Deduction: {{salaryDeduction}} per month
+                            </span>
+                        </div>
                     </div>
+
+                    <div class=" row">
+                        <div class="col-sm-4">
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <?php print $this->formLabel($advanceDate); ?>
+                                            <?php print $this->formElement($advanceDate); ?>
+                                        <?php print $this->formElementErrors()->render($advanceDate, ['class' => 'help-block']); ?>
+                                    </div>
+                                </div>     
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label for="nepaliDate">&nbsp;</label>
+                                        <div class="input-group">
+                                            <input type="text" name="nepaliDate" id="nepaliDate"
+                                                   class="form-control" value="" disabled="disabled">
+                                        </div>
+                                    </div>
+                                </div>     
+                            </div> 
+
+                        </div>
+
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <?php print $this->formLabel($reason); ?>
+                                <?php print $this->formElement($reason); ?>
+                                <?php print $this->formElementErrors()->render($reason, ['class' => 'help-block']); ?>
+                            </div>
+                        </div>
+
                     </div>
-                    
-                    <div class="col-sm-4">
-                    <div class="form-group">
-                        <?php print $this->formLabel($reason); ?>
-                        <?php print $this->formElement($reason); ?>
-                        <?php print $this->formElementErrors()->render($reason, ['class' => 'help-block']); ?>
-                    </div>
-                    </div>
-                    
-                </div>
-                    
-                    
+
+
                 </div>
                 <div
                     class="form-group margin-top-10 required <?= empty($recommendedRemarks->getMessages()) ? "" : "error" ?>">

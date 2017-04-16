@@ -14,6 +14,9 @@ use Setup\Model\JobHistory;
 use Zend\Db\TableGateway\TableGateway;
 use Zend\Db\Sql\Expression;
 use Zend\Db\Sql\Sql;
+use Zend\Db\Sql\Select;
+use Application\Helper\Helper;
+
 
 class ServiceRepository implements RepositoryInterface {
 
@@ -40,9 +43,33 @@ class ServiceRepository implements RepositoryInterface {
 
     }
 
+//    public function fetchById($id)
+//    {
+//        $result = $this->tableGateway->select([JobHistory::JOB_HISTORY_ID=>$id]);
+//        
+//        echo '<pre>';
+//        print_r($result->current());
+//        echo '</pre>';
+//        die();
+//        return $result->current();
+//    }
+    
     public function fetchById($id)
     {
-        $result = $this->tableGateway->select([JobHistory::JOB_HISTORY_ID=>$id]);
+        $sql = new Sql($this->adapter);
+        $select = $sql->select();
+        $select->from(['JH' => JobHistory::TABLE_NAME]);
+        $select->where(["JH." . JobHistory::JOB_HISTORY_ID . "='".$id."'"]);
+        $select->columns(Helper::convertColumnDateFormat($this->adapter, new JobHistory(), [
+                    'startDate',
+                    'endDate'
+                        ], NULL, 'JH'), false);
+        
+        $statement = $sql->prepareStatementForSqlObject($select);
+        $result = $statement->execute();
+//        echo '<pre>';
+//        print_r($result->current());
+//        die();
         return $result->current();
     }
 
