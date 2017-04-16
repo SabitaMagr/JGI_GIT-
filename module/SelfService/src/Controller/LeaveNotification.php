@@ -16,6 +16,8 @@ use SelfService\Repository\LeaveSubstituteRepository;
 use SelfService\Repository\LeaveRequestRepository;
 use Application\Helper\EntityHelper;
 use Setup\Model\HrEmployees;
+use Notification\Controller\HeadNotification;
+use Notification\Model\NotificationEvents;
 
 class LeaveNotification extends AbstractActionController{
     private $adapter;
@@ -155,6 +157,12 @@ class LeaveNotification extends AbstractActionController{
                 $this->flashmessenger()->addMessage("Substitute Work Request Rejected!!!");
             }
             $this->repository->edit($leaveSubstitute, $id);
+            $leaveApply->id = $id;
+            try {
+                HeadNotification::pushNotification(($leaveSubstitute->approvedFlag == 'Y') ? NotificationEvents::LEAVE_SUBSTITUTE_ACCEPTED : NotificationEvents::LEAVE_SUBSTITUTE_REJECTED, $leaveApply, $this->adapter, $this->plugin('url'));
+            } catch (Exception $e) {
+                $this->flashmessenger()->addMessage($e->getMessage());
+            }
             $this->redirect()->toRoute('leaveNotification');
         }
         
