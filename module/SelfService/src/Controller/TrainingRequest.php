@@ -260,7 +260,7 @@ class TrainingRequest extends AbstractActionController {
                     'approver' => $authApprover,
                     'trainings' => $trainings["trainingKVList"],
                     'trainingTypes'=>$trainingTypes,
-                    'trainingList'=>$trainings['trainingList']
+//                    'trainingList'=>$trainings['trainingList']
         ]);
     }
 
