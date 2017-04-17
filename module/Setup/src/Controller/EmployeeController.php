@@ -345,6 +345,10 @@ class EmployeeController extends AbstractActionController {
                     break;
                 case 8:
                     break;
+                case 9:
+//                    print "<pre>";
+//                    print_r($postData); die();
+                    break;
             }
         }
         if ($tab != 1 || !$request->isPost()) {
@@ -451,7 +455,11 @@ class EmployeeController extends AbstractActionController {
                     'rankTypes' => $rankTypes,
                     'profilePictureId' => $profilePictureId,
                     'address' => $address,
-        ]);
+                    'shifts'=> ApplicationHelper::getTableKVListWithSortOption($this->adapter, ShiftSetup::TABLE_NAME, ShiftSetup::SHIFT_ID, [ShiftSetup::SHIFT_ENAME], [ShiftSetup::STATUS => 'E'], ShiftSetup::SHIFT_ENAME, "ASC"),
+                    'leaves'=> ApplicationHelper::getTableKVListWithSortOption($this->adapter, LeaveMaster::TABLE_NAME, LeaveMaster::LEAVE_ID, [LeaveMaster::LEAVE_ENAME], [LeaveMaster::STATUS => 'E'], LeaveMaster::LEAVE_ENAME, "ASC"),
+                    'recommenders' => ApplicationHelper::getTableKVListWithSortOption($this->adapter, "HRIS_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => "E"], "FIRST_NAME", "ASC", " "),
+                    'approvers' => ApplicationHelper::getTableKVListWithSortOption($this->adapter, "HRIS_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => "E"], "FIRST_NAME", "ASC", " ")
+                ]);
     }
 
     public function viewAction() {
