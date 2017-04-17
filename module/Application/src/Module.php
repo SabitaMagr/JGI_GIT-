@@ -119,8 +119,6 @@ class Module implements AutoloaderProviderInterface, ConsoleUsageProviderInterfa
     }
 
     private function initNotification(DbAdapterInterface $adapter, ViewModel $viewModel, array $identity = null) {
-
-
         $employeeId = $identity['employee_id'];
         $viewModel->setVariable('dateCompare', function($date) {
             $startDate = DateTime::createFromFormat(Helper::PHP_DATE_FORMAT . " " . Helper::PHP_TIME_FORMAT, $date);

@@ -54,7 +54,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                 <?php if ($notification['STATUS'] == 'U'): ?>
                                     <div class="mt-comment">
                                         <div class="mt-comment-img">
-                                            <img width="41" height="41" src="<?= $this->basePath("uploads/" . $notification['FILE_PATH']) ?>" /> </div>
+                                            <img width="41" height="41" src="<?= $this->basePath(($notification['FILE_PATH'] == null) ? "uploads/" . $defaultProfilePicture : "uploads/" . $notification['FILE_PATH'] ) ?>" /> </div>
                                         <div class="mt-comment-body">
                                             <div class="mt-comment-info">
                                                 <span class="mt-comment-author"><?= $notification['FIRST_NAME'] . " " . $notification['MIDDLE_NAME'] . " " . $notification['LAST_NAME'] ?></span>
@@ -88,7 +88,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                 <?php if ($notification['STATUS'] == 'S'): ?>
                                     <div class="mt-comment">
                                         <div class="mt-comment-img">
-                                            <img width="41" height="41" src="<?= $this->basePath("uploads/" . $notification['FILE_PATH']) ?>" /> </div>
+                                            <img width="41" height="41" src="<?= $this->basePath(($notification['FILE_PATH'] == null) ? "uploads/" . $defaultProfilePicture : "uploads/" . $notification['FILE_PATH'] ) ?>" /> </div>
                                         <div class="mt-comment-body">
                                             <div class="mt-comment-info">
                                                 <span class="mt-comment-author"><?= $notification['FIRST_NAME'] . " " . $notification['MIDDLE_NAME'] . " " . $notification['LAST_NAME'] ?></span>
