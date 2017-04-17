@@ -211,6 +211,7 @@ class TrainingStatusController extends AbstractActionController
                     'recommApprove'=>$recommApprove,
                     'trainingIdSelected'=>$detail['TRAINING_ID'],
                     'trainings' => $trainings["trainingKVList"],
+                    'trainingList'=>$trainings['trainingList'],
                     'trainingTypes'=>$trainingTypes,
         ]);
     }
