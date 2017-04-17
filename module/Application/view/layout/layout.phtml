@@ -83,11 +83,6 @@
                     <div id="hris-page-content" class="page-content">
                         <?php
                         print $this->content;
-
-//                        if ($this->messages) {
-//                            print_r($this->messages);
-//                            die();
-//                        }
                         ?>
                     </div>
                 </div>
@@ -113,8 +108,6 @@
         <?php
         $this->headScript()
                 ->prependFile($this->basePath('js/user-setting.js'));
-//        $this->headScript()
-//                ->prependFile($this->basePath('js/menu.js'));
         $this->headScript()
                 ->prependFile($this->basePath('js/custom.js'));
         ?>
@@ -138,6 +131,11 @@
                 ->prependFile($this->basePath('assets/global/scripts/app.min.js'));
         ?>
         <!-- END THEME GLOBAL SCRIPTS -->
+        <!-- BLOCK UI -->
+        <?php
+        $this->headScript()->prepend($this->basePath('assets/global/plugins/jquery.blockui.min.js'));
+        ?>
+        <!-- BLOCK UI -->
         <!--Select 2-->
         <?php
         $this->headScript()

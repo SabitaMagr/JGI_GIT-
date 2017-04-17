@@ -11,10 +11,6 @@ $this->headScript()
 <?php } ?>
 
 <script>
-    document.menu =<?php
-$menu = ["id" => "menuSystem", "subMenu" => ["id" => "subMenuDashboard"]];
-echo json_encode($menu);
-?>;
     document.roles =<?= json_encode($roles) ?>;
     document.dashboardItems =<?= json_encode($dashboardItems) ?>;
     document.roleTypes =<?= json_encode($roleTypes) ?>;

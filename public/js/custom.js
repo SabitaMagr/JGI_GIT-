@@ -238,7 +238,7 @@ window.app = (function ($, toastr) {
 
         var englishDateValue = $englishDate.val();
         if (typeof englishDateValue !== 'undefined' && englishDateValue !== null && englishDateValue !== '') {
-         $nepaliDate.val(nepaliDatePickerExt.fromEnglishToNepali(englishDateValue));
+            $nepaliDate.val(nepaliDatePickerExt.fromEnglishToNepali(englishDateValue));
         }
 
     };
@@ -427,7 +427,7 @@ window.app = (function ($, toastr) {
     };
     floatingProfile.initialize();
 
-    var checkUniqueConstraints = function (inputFieldId, formId, tableName, columnName, checkColumnName, selfId) {
+    var checkUniqueConstraints = function (inputFieldId, formId, tableName, columnName, checkColumnName, selfId, onSubmitFormSuccessfully) {
         $('#' + inputFieldId).on("blur", function () {
             var id = $(this);
             var nameValue = id.val();
@@ -437,7 +437,6 @@ window.app = (function ($, toastr) {
             columnsWidValues[columnName] = nameValue;
             var displayErrorMessage = function (formGroup, check, message, id) {
                 var flag = formGroup.find('span.errorMsg').length > 0;
-                console.log(formGroup);
                 if (flag) {
                     var errorMsgSpan = formGroup.find('span.errorMsg');
                     errorMsgSpan.each(function () {
@@ -487,6 +486,8 @@ window.app = (function ($, toastr) {
             if (err.length > 0)
             {
                 return false;
+            } else {
+                onSubmitFormSuccessfully();
             }
         });
     };
