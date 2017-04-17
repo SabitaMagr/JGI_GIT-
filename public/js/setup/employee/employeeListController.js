@@ -7,7 +7,7 @@
 })(window.jQuery, window.app);
 
 angular.module('hris', [])
-        .controller('employeeListController', function ($scope, $http) {
+        .controller('employeeListController', function ($scope, $http,$window) {
 //            $scope.gridData = new kendo.data.ObservableArray([
 //            ]);
 //            $scope.gridColumns = [
@@ -333,6 +333,12 @@ angular.module('hris', [])
                 window.app.UIConfirmations();
             };
 //            $scope.initializekendoGrid([]);
+
+            $scope.msg =  $window.localStorage.getItem("msg");
+            if($window.localStorage.getItem("msg")){
+                window.toastr.success($scope.msg, "Notifications");
+            }
+            $window.localStorage.removeItem("msg");
 
         });
 

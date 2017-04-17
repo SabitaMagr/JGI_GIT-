@@ -1334,17 +1334,59 @@ echo json_encode($menu);
                                     <?php print $this->formElementErrors()->render($branchId, ['class' => 'help-block error']); ?> 
                                 </div>
                             </div>
-
                         </div>
-
-
-
+                        <div class="col-xs-12 col-sm-6 col-md-6">
+                            <div class="row bottomgap">
+                                <div class="form-group">
+                                    <div class="col-xs-6 col-sm-6 col-md-6 rightalign-4">
+                                    <label> Shift </label>
+                                    </div>
+                                    <div class="col-xs-6 col-sm-6 cgap-4">
+                                        <select required="required" name="shift">
+                                            <?php foreach($shifts as $shiftKey => $shiftValue){ 
+                                                ?>
+                                            <option  value="<?php echo $shiftKey; ?>"><?php echo $shiftValue; ?></option>
+                                            <?php }?>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-sm-6 col-md-6">
+                            <div class="row bottomgap">
+                                <div class="form-group">
+                                    <div class="col-xs-6 col-sm-6 col-md-6 rightalign-4">
+                                    <label> Recommender</label>
+                                    </div>
+                                    <div class="col-xs-6 col-sm-6 cgap-4">
+                                        <select required="required" name="recommender">
+                                            <?php foreach($recommenders as $recommenderKey => $recommenderValue){ 
+                                                ?>
+                                            <option  value="<?php echo $recommenderKey; ?>"><?php echo $recommenderValue; ?></option>
+                                            <?php }?>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-sm-6 col-md-6">
+                            <div class="row bottomgap">
+                                <div class="form-group">
+                                    <div class="col-xs-6 col-sm-6 col-md-6 rightalign-4">
+                                    <label> Approver</label>
+                                    </div>
+                                    <div class="col-xs-6 col-sm-6 cgap-4">
+                                        <select required="required" name="approver">
+                                            <?php foreach($approvers as $approverKey => $approverValue){ 
+                                                ?>
+                                            <option  value="<?php echo $approverKey; ?>"><?php echo $approverValue; ?></option>
+                                            <?php }?>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-
-
-
-
-
                     <input type="submit" class="hidden" id="btnform4" value="submit">
                     <?php
                     print $this->form()->closeTag();
@@ -1489,8 +1531,6 @@ echo json_encode($menu);
             </div>
         </div>
         
-        
-        
         <div class="tab-pane aditional" id="tab7">
                 <div class="row esetup">
                     <div class="col-md-12">
@@ -1620,64 +1660,38 @@ echo json_encode($menu);
         </div>
         
         <div class="tab-pane aditional" id="tab9">
-            <form name="form9" id="form9" action="<?php echo  $this->url('employee', ['action' => 'edit', 'id' => $empId, 'tab' => 0]) ?>">
-            <div class="row clearfix">
-                <div class="col-sm-4">
-                    <div class="form-group">
-                        <label> Shift </label>
-                        <select name="shift">
-                            <?php foreach($shifts as $shiftKey => $shiftValue){ ?>
-                            <option  value="<?php echo $shiftKey; ?>"><?php echo $shiftValue; ?></option>
-                            <?php }?>
-                        </select>
-                    </div>
+            <div class="col-md-offset-2 col-xs-offset-0 col-xs-12 col-sm-offset-0 col-sm-12 col-md-8 margin gapspaceing">
+                <div class="identification-infomation">  
+                    <p><i class="fa fa-plus-circle ticon" aria-hidden="true"></i>
+                        Additional Infomation</p>
+                    <div class="row clearfix e-setup">
+                        <div class="col-md-12">
+                    <div id="rolePanel">
+                    <ul id="roleList">
+                        <li>
+                            Leave Assign
+                            <a href="<?php echo $this->url("leaveassign",["action"=>"assign"]) ?>">
+                                <i class="fa fa-arrow-circle-right pull-right" aria-hidden="true" style="font-size:20px; line-height:20px!important;"></i>
+                            </a>
+                        </li>
+                        <li>
+                            Training Assign
+                            <a href="<?php echo $this->url("trainingAssign",["action"=>"assign"]) ?>">
+                                <i class="fa fa-arrow-circle-right pull-right" aria-hidden="true" style="font-size:20px; line-height:20px!important;"></i>
+                            </a>
+                        </li>
+                        <li>
+                            Appraisal Assign
+                            <a href="<?php echo $this->url("appraisalAssign",["action"=>"index"]) ?>">
+                                <i class="fa fa-arrow-circle-right pull-right" aria-hidden="true" style="font-size:20px; line-height:20px!important;"></i>
+                            </a>
+                        </li>
+                    </ul>
                 </div>
-                <div class="col-sm-4">
-                    <div class="form-group">
-                        <label> Recommender</label>
-                        <select name="recommender">
-                            <?php foreach($recommenders as $recommenderKey => $recommenderValue){ ?>
-                            <option  value="<?php echo $recommenderKey; ?>"><?php echo $recommenderValue; ?></option>
-                            <?php }?>
-                        </select>
-                    </div>
                 </div>
-                <div class="col-sm-4">
-                    <div class="form-group">
-                        <label> Approver</label>
-                        <select name="approver">
-                            <?php foreach($approvers as $approverKey => $approverValue){ ?>
-                            <option  value="<?php echo $approverKey; ?>"><?php echo $approverValue; ?></option>
-                            <?php }?>
-                        </select>
-                    </div>
-                </div>
-            </div>
-            <div class="row clearfix">
-                <div class="col-sm-4">
-                    <div class="form-group">
-                        <label> Leave </label>
-                        <table style="font-size:11px; width:100%;">
-                            <tr height="30">
-                                <th>Leave</th>
-                                <th>Days</th>
-                            </tr>
-                            <?php foreach($leaves as $leaveKey => $leaveValue){ ?>
-                            <tr height="30">
-                                <td>
-                                    <?php echo $leaveValue; ?>
-                                </td>
-                                <td>
-                                    <input type="number" name="days[<?php echo$leaveKey;?>]" min="0"/>
-                                </td>
-                            </tr>
-                            <?php } ?>
-                        </table>
                     </div>
                 </div>
             </div>
-                <input type="submit" class="hidden" id="btnform9" value="submit">
-            </form>
         </div>
         
         <div class="padding-20">

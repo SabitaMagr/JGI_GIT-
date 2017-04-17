@@ -41,6 +41,11 @@ use LeaveManagement\Repository\LeaveMasterRepository;
 use AttendanceManagement\Repository\ShiftRepository;
 use AttendanceManagement\Model\ShiftSetup;
 use Setup\Model\LeaveMaster;
+use AttendanceManagement\Model\ShiftAssign;
+use AttendanceManagement\Repository\ShiftAssignRepository;
+use Zend\Authentication\AuthenticationService;
+use Setup\Repository\RecommendApproveRepository;
+use Setup\Model\RecommendApprove;
 
 class EmployeeController extends AbstractActionController {
 
@@ -57,6 +62,7 @@ class EmployeeController extends AbstractActionController {
     private $formSix;
     private $formSeven;
     private $formEight;
+    private $loggedIdEmployeeId;
 
     public function __construct(AdapterInterface $adapter, ConfigInterface $config) {
         $this->adapter = $adapter;
@@ -64,6 +70,8 @@ class EmployeeController extends AbstractActionController {
         $this->repository = new EmployeeRepository($adapter);
         $this->employeeFileRepo = new EmployeeFile($this->adapter);
         $this->jobHistoryRepo = new JobHistoryRepository($this->adapter);
+        $auth = new AuthenticationService();
+        $this->loggedIdEmployeeId = $auth->getStorage()->read()['employee_id'];
     }
 
     public function indexAction() {
@@ -253,7 +261,13 @@ class EmployeeController extends AbstractActionController {
         $formSixModel = new HrEmployeesFormTabSix();
         $formSevenModel = new HrEmployeesFormTabSeven();
         $formEightModel = new HrEmployeesFormTabEight();
+        
+        $shiftAssignRepo = new ShiftAssignRepository($this->adapter);
+        $getEmpShiftDtl = $shiftAssignRepo->fetchByEmployeeId($id);
 
+        $recommApproverRepo = new RecommendApproveRepository($this->adapter);
+        $employeePreDtl = $recommApproverRepo->fetchById($id);
+                        
         $employeeData = (array) $this->repository->fetchById($id);
         $profilePictureId = $employeeData[HrEmployees::PROFILE_PICTURE_ID];
         $address = [];
@@ -311,6 +325,60 @@ class EmployeeController extends AbstractActionController {
                         $formFourModel->positionId = $formFourModel->appPositionId;
                         $formFourModel->serviceTypeId = $formFourModel->appServiceTypeId;
                         $formFourModel->serviceEventTypeId = $formFourModel->appServiceEventTypeId;
+                        
+                        $shiftId = $postData->shift;
+                        $recommenderId = $postData->recommender;
+                        $approverId = $postData->approver;
+                        
+                        $shiftAssign = new ShiftAssign();
+
+                        $shiftAssign->employeeId = $id;
+                        $shiftAssign->shiftId = $shiftId;
+
+                        if ($getEmpShiftDtl!=null) {
+                            $shiftAssignClone = clone $shiftAssign;
+
+                            unset($shiftAssignClone->employeeId);
+                            unset($shiftAssignClone->shiftId);
+                            unset($shiftAssignClone->createdDt);
+                            
+                            if($shiftId!=$getEmpShiftDtl['SHIFT_ID']){
+                                $shiftAssignClone->status = 'D';
+                                $shiftAssignClone->modifiedDt = Helper::getcurrentExpressionDate();
+                                $shiftAssignClone->modifiedBy = $this->loggedIdEmployeeId;
+                                $shiftAssignRepo->edit($shiftAssignClone, [$id, $getEmpShiftDtl['SHIFT_ID']]);
+
+                                $shiftAssign->createdDt = Helper::getcurrentExpressionDate();
+                                $shiftAssign->createdBy = $this->loggedIdEmployeeId;
+                                $shiftAssign->status = 'E';
+                                $shiftAssignRepo->add($shiftAssign);
+                            }
+                        } else {
+                            $shiftAssign->createdDt = Helper::getcurrentExpressionDate();
+                            $shiftAssign->createdBy = $this->loggedIdEmployeeId;
+                            $shiftAssign->status = 'E';
+                            $shiftAssignRepo->add($shiftAssign);
+                        }
+                        
+                        $recommendApprove = new RecommendApprove();
+                        
+                        if ($employeePreDtl == null) {
+                            $recommendApprove->employeeId = $id;
+                            $recommendApprove->recommendBy = $recommenderId;
+                            $recommendApprove->approvedBy = $approverId;
+                            $recommendApprove->createdDt = Helper::getcurrentExpressionDate();
+                            $recommendApprove->status = 'E';
+                            $recommApproverRepo->add($recommendApprove);
+                        } else if ($employeePreDtl != null) {
+                            $id = $employeePreDtl['EMPLOYEE_ID'];
+                            $recommendApprove->employeeId = $id;
+                            $recommendApprove->recommendBy = $recommenderId;
+                            $recommendApprove->approvedBy = $approverId;
+                            $recommendApprove->modifiedDt = Helper::getcurrentExpressionDate();
+                            $recommendApprove->status = 'E';
+                            $recommApproverRepo->edit($recommendApprove, $id);
+                        }
+                        
                         $this->repository->edit($formFourModel, $id);
 
                         if ($jobHistoryListNum == 0) {
@@ -344,10 +412,6 @@ class EmployeeController extends AbstractActionController {
                 case 7:
                     break;
                 case 8:
-                    break;
-                case 9:
-//                    print "<pre>";
-//                    print_r($postData); die();
                     break;
             }
         }
@@ -455,6 +519,9 @@ class EmployeeController extends AbstractActionController {
                     'rankTypes' => $rankTypes,
                     'profilePictureId' => $profilePictureId,
                     'address' => $address,
+                    'shiftId'=>($getEmpShiftDtl!=null)?$getEmpShiftDtl['SHIFT_ID']:0,
+                    'recommenderId'=>($employeePreDtl!=null)?$employeePreDtl['RECOMMEND_BY']:0,
+                    'approverId'=>($employeePreDtl!=null)? $employeePreDtl['APPROVED_BY']:0,
                     'shifts'=> ApplicationHelper::getTableKVListWithSortOption($this->adapter, ShiftSetup::TABLE_NAME, ShiftSetup::SHIFT_ID, [ShiftSetup::SHIFT_ENAME], [ShiftSetup::STATUS => 'E'], ShiftSetup::SHIFT_ENAME, "ASC"),
                     'leaves'=> ApplicationHelper::getTableKVListWithSortOption($this->adapter, LeaveMaster::TABLE_NAME, LeaveMaster::LEAVE_ID, [LeaveMaster::LEAVE_ENAME], [LeaveMaster::STATUS => 'E'], LeaveMaster::LEAVE_ENAME, "ASC"),
                     'recommenders' => ApplicationHelper::getTableKVListWithSortOption($this->adapter, "HRIS_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => "E"], "FIRST_NAME", "ASC", " "),

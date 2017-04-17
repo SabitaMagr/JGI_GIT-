@@ -47,6 +47,10 @@ $designationFormElement->setAttribute("ng-model", "designationId");
                 <?php print $this->formElement($leaveFormElement); ?>
             </div>
             <div class="col-xs-12 col-sm-3">
+                <?php print $this->formLabel($employeeFormElement); ?>
+                <?php print $this->formElement($employeeFormElement); ?>
+            </div>
+            <div class="col-xs-12 col-sm-3">
                 <?php print $this->formLabel($genderFormElement); ?>
                 <?php print $this->formElement($genderFormElement); ?>
             </div>
@@ -54,12 +58,13 @@ $designationFormElement->setAttribute("ng-model", "designationId");
                 <?php print $this->formLabel($branchFormElement); ?>
                 <?php print $this->formElement($branchFormElement); ?>
             </div>
+            
+        </div>
+        <div class="row">
             <div class="col-xs-12 col-sm-3">
                 <?php print $this->formLabel($designationFormElement); ?>
                 <?php print $this->formElement($designationFormElement); ?>
             </div>
-        </div>
-        <div class="row">
             <div class="col-xs-12 col-sm-3">
                 <?php print $this->formLabel($departmentFormElement); ?>
                 <?php print $this->formElement($departmentFormElement); ?>
