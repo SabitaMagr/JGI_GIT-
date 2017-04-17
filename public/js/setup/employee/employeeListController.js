@@ -334,11 +334,11 @@ angular.module('hris', [])
             };
 //            $scope.initializekendoGrid([]);
 
-            $scope.msg =  $window.localStorage.getItem("msg");
-            if($window.localStorage.getItem("msg")){
-                window.toastr.success($scope.msg, "Notifications");
-            }
-            $window.localStorage.removeItem("msg");
+//            $scope.msg =  $window.localStorage.getItem("msg");
+//            if($window.localStorage.getItem("msg")){
+//                window.toastr.success($scope.msg, "Notifications");
+//            }
+//            $window.localStorage.removeItem("msg");
 
         });
 
