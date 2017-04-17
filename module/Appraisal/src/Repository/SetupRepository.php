@@ -44,8 +44,8 @@ class SetupRepository implements RepositoryInterface{
             new Expression("S.APPRAISAL_CODE AS APPRAISAL_CODE"),
             new Expression("S.APPRAISAL_EDESC AS APPRAISAL_EDESC"), 
             new Expression("S.APPRAISAL_NDESC AS APPRAISAL_NDESC"),
-            new Expression("TO_CHAR(S.START_DATE,'DD-MON-YYYY') AS START_DATE"), 
-            new Expression("TO_CHAR(S.END_DATE,'DD-MON-YYYY') AS END_DATE"),
+            new Expression("TINITCAP(O_CHAR(S.START_DATE,'DD-MON-YYYY')) AS START_DATE"), 
+            new Expression("INITCAP(TO_CHAR(S.END_DATE,'DD-MON-YYYY')) AS END_DATE"),
             new Expression("S.REMARKS AS REMARKS")
             ], true);
         $select->from(['S' => Setup::TABLE_NAME])
@@ -68,8 +68,8 @@ class SetupRepository implements RepositoryInterface{
             new Expression("S.APPRAISAL_CODE AS APPRAISAL_CODE"),
             new Expression("S.APPRAISAL_EDESC AS APPRAISAL_EDESC"), 
             new Expression("S.APPRAISAL_NDESC AS APPRAISAL_NDESC"),
-            new Expression("TO_CHAR(S.START_DATE,'DD-MON-YYYY') AS START_DATE"), 
-            new Expression("TO_CHAR(S.END_DATE,'DD-MON-YYYY') AS END_DATE"),
+            new Expression("INITCAP(TO_CHAR(S.START_DATE,'DD-MON-YYYY')) AS START_DATE"), 
+            new Expression("INITCAP(TO_CHAR(S.END_DATE,'DD-MON-YYYY')) AS END_DATE"),
             new Expression("S.REMARKS AS REMARKS"),
             new Expression("S.APPRAISAL_TYPE_ID AS APPRAISAL_TYPE_ID"),
             new Expression("S.CURRENT_STAGE_ID AS CURRENT_STAGE_ID")

@@ -39,8 +39,8 @@ class StageRepository implements RepositoryInterface{
         $sql = new Sql($this->adapter);
         $select = $sql->select();
         $select->columns([
-            new Expression("TO_CHAR(START_DATE,'DD-MON-YYYY') AS START_DATE"), 
-            new Expression("TO_CHAR(END_DATE,'DD-MON-YYYY') AS END_DATE"),
+            new Expression("INITCAP(TO_CHAR(START_DATE,'DD-MON-YYYY')) AS START_DATE"), 
+            new Expression("INITCAP(TO_CHAR(END_DATE,'DD-MON-YYYY')) AS END_DATE"),
             new Expression("STAGE_ID AS STAGE_ID"),
             new Expression("STAGE_CODE AS STAGE_CODE"),
             new Expression("STAGE_EDESC AS STAGE_EDESC"),
@@ -60,8 +60,8 @@ class StageRepository implements RepositoryInterface{
         $sql = new Sql($this->adapter);
         $select = $sql->select();
         $select->columns([
-            new Expression("TO_CHAR(START_DATE,'DD-MON-YYYY') AS START_DATE"), 
-            new Expression("TO_CHAR(END_DATE,'DD-MON-YYYY') AS END_DATE"),
+            new Expression("INITCAP(TO_CHAR(START_DATE,'DD-MON-YYYY')) AS START_DATE"), 
+            new Expression("INITCAP(TO_CHAR(END_DATE,'DD-MON-YYYY')) AS END_DATE"),
             new Expression("STAGE_ID AS STAGE_ID"),
             new Expression("STAGE_CODE AS STAGE_CODE"),
             new Expression("STAGE_EDESC AS STAGE_EDESC"),
