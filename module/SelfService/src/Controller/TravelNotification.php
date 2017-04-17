@@ -3,6 +3,7 @@ namespace SelfService\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\Db\Adapter\AdapterInterface;
+use Exception;
 use Application\Helper\Helper;
 use SelfService\Model\TravelSubstitute;
 use Zend\Authentication\AuthenticationService;
@@ -16,6 +17,8 @@ use SelfService\Repository\TravelSubstituteRepository;
 use SelfService\Repository\TravelRequestRepository;
 use Application\Helper\EntityHelper;
 use Setup\Model\HrEmployees;
+use Notification\Controller\HeadNotification;
+use Notification\Model\NotificationEvents;
 
 class TravelNotification extends AbstractActionController{
     private $adapter;
@@ -157,6 +160,12 @@ class TravelNotification extends AbstractActionController{
                 $this->flashmessenger()->addMessage("Substitute Work Request Rejected!!!");
             }
             $this->repository->edit($travelSubstituteModel, $id);
+            $travelRequest->travelId = $id;
+            try {
+                HeadNotification::pushNotification(($travelSubstituteModel->approvedFlag == 'Y') ? NotificationEvents::TRAVEL_SUBSTITUTE_ACCEPTED : NotificationEvents::TRAVEL_SUBSTITUTE_REJECTED, $travelRequest, $this->adapter, $this->plugin('url'));
+            } catch (Exception $e) {
+                $this->flashmessenger()->addMessage($e->getMessage());
+            }
             $this->redirect()->toRoute('travelNotification');
         }
         $transportTypes = array(

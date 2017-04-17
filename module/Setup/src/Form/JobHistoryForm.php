@@ -34,7 +34,7 @@ class JobHistoryForm
      * @Annotation\Required({"required":"true"})
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
      * @Annotation\Options({"label":"Start Date"})
-     * @Annotation\Attributes({"class":"form-control"})
+     * @Annotation\Attributes({"class":"form-control","id":"startDate"})
      */
     public $startDate;
 
@@ -43,7 +43,7 @@ class JobHistoryForm
      * @Annotation\Required(false)
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
      * @Annotation\Options({"label":"End Date"})
-     * @Annotation\Attributes({ "class":"form-control"})
+     * @Annotation\Attributes({ "class":"form-control","id":"endDate"})
      */
     public $endDate;
 

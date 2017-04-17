@@ -44,6 +44,10 @@ use Notification\Model\WorkOnHolidayNotificationModel;
 use HolidayManagement\Repository\HolidayRepository;
 use Setup\Repository\LeaveMasterRepository;
 use Notification\Model\TrainingReqNotificationModel;
+use SelfService\Repository\LeaveSubstituteRepository;
+use SelfService\Repository\TravelSubstituteRepository;
+use Notification\Model\LeaveSubNotificationModel;
+use Notification\Model\TravelSubNotificationModel;
 
 class HeadNotification {
 
@@ -882,6 +886,109 @@ class HeadNotification {
             self::addNotifications($notification, $title, $desc, $adapter);
             self::sendEmail($notification, 24, $adapter, $url);
         };
+        ${"fn" . NotificationEvents::LEAVE_SUBSTITUTE_APPLIED} = function (LeaveApply $request, AdapterInterface $adapter, Url $url) {
+            $leaveApplyRepo = new LeaveApplyRepository($adapter);
+            $request->exchangeArrayFromDB($leaveApplyRepo->fetchById($request->id)->getArrayCopy());
+            
+            $leaveSubstituteRepo = new LeaveSubstituteRepository($adapter);
+            $leaveSubstituteDetail = $leaveSubstituteRepo->fetchById($request->id);
+
+            $notification = new LeaveSubNotificationModel();
+            self::setNotificationModel($request->employeeId,$leaveSubstituteDetail['EMPLOYEE_ID'] , $notification, $adapter);
+            
+            $leaveRepo = new LeaveMasterRepository($adapter);
+            $leaveName = self::getName($request->leaveId, $leaveRepo, 'LEAVE_ENAME');
+            $notification->leaveName = $leaveName;
+            $notification->fromDate = $request->startDate;
+            $notification->toDate = $request->endDate;
+            $notification->duration = $request->noOfDays;
+            $notification->remarks = $request->remarks;
+
+            $notification->route = json_encode(["route" => "leaveNotification", "action" => "view", "id" => $request->id]);
+            $title = "Substitue Work Request On Leave";
+            $desc = "Substitue Work Request On Leave From ".$notification->fromDate." To ".$notification->toDate;
+
+            self::addNotifications($notification, $title, $desc, $adapter);
+            self::sendEmail($notification, 25, $adapter, $url);
+        };
+        ${"fn" . NotificationEvents::LEAVE_SUBSTITUTE_ACCEPTED} = function (LeaveApply $request, AdapterInterface $adapter, Url $url, string $status) {
+            $leaveApplyRepo = new LeaveApplyRepository($adapter);
+            $request->exchangeArrayFromDB($leaveApplyRepo->fetchById($request->id)->getArrayCopy());
+            
+            $leaveSubstituteRepo = new LeaveSubstituteRepository($adapter);
+            $leaveSubstituteDetail = $leaveSubstituteRepo->fetchById($request->id);
+
+            $notification = new LeaveSubNotificationModel();
+            self::setNotificationModel($leaveSubstituteDetail['EMPLOYEE_ID'], $request->employeeId, $notification, $adapter);
+            
+            $leaveRepo = new LeaveMasterRepository($adapter);
+            $leaveName = self::getName($request->leaveId, $leaveRepo, 'LEAVE_ENAME');
+            $notification->leaveName = $leaveName;
+            $notification->fromDate = $request->startDate;
+            $notification->toDate = $request->endDate;
+            $notification->duration = $request->noOfDays;
+            $notification->remarks = $request->remarks;
+            $notification->status = $status;
+
+            $notification->route = json_encode(["route" => "leaverequest", "action" => "view", "id" => $request->id]);
+            $title = "Substitue Work On Leave Recommendation";
+            $desc = "Substitue Work Request On Leave From ".$notification->fromDate." To ".$notification->toDate." is ".$status;
+
+            self::addNotifications($notification, $title, $desc, $adapter);
+            self::sendEmail($notification, 26, $adapter, $url);
+        };
+        
+        ${"fn" . NotificationEvents::TRAVEL_SUBSTITUTE_APPLIED} = function (TravelRequest $request, AdapterInterface $adapter, Url $url) {
+            $travelRequestRepo = new TravelRequestRepository($adapter);
+            $request->exchangeArrayFromDB($travelRequestRepo->fetchById($request->travelId));
+            
+            $travelSubstituteRepo = new TravelSubstituteRepository($adapter);
+            $travelSubstituteDetail = $travelSubstituteRepo->fetchById($request->travelId);
+
+            $notification = new TravelSubNotificationModel();
+            self::setNotificationModel($request->employeeId,$travelSubstituteDetail['EMPLOYEE_ID'] , $notification, $adapter);
+            
+            $notification->travelCode = $request->travelCode;
+            $notification->fromDate = $request->fromDate;
+            $notification->toDate = $request->toDate;
+            $notification->duration =  ($request->toDate -  $request->fromDate) + 1;
+            $notification->destination = $request->destination;
+            $notification->purpose = $request->purpose;
+            $notification->remarks = $request->remarks;
+
+            $notification->route = json_encode(["route" => "travelNotification", "action" => "view", "id" => $request->travelId]);
+            $title = "Substitue Work Request On Travel";
+            $desc = "Substitue Work Request On Travel From ".$notification->fromDate." To ".$notification->toDate;
+
+            self::addNotifications($notification, $title, $desc, $adapter);
+            self::sendEmail($notification, 27, $adapter, $url);
+        };
+        ${"fn" . NotificationEvents::TRAVEL_SUBSTITUTE_ACCEPTED} = function (TravelRequest $request, AdapterInterface $adapter, Url $url, string $status) {
+            $travelRequestRepo = new TravelRequestRepository($adapter);
+            $request->exchangeArrayFromDB($travelRequestRepo->fetchById($request->travelId));
+            
+            $travelSubstituteRepo = new TravelSubstituteRepository($adapter);
+            $travelSubstituteDetail = $travelSubstituteRepo->fetchById($request->travelId);
+
+            $notification = new TravelSubNotificationModel();
+            self::setNotificationModel($travelSubstituteDetail['EMPLOYEE_ID'], $request->employeeId, $notification, $adapter);
+            
+            $notification->travelCode = $request->travelCode;
+            $notification->fromDate = $request->fromDate;
+            $notification->toDate = $request->toDate;
+            $notification->duration =  ($request->toDate -  $request->fromDate) + 1;
+            $notification->destination = $request->destination;
+            $notification->purpose = $request->purpose;
+            $notification->remarks = $request->remarks;
+            $notification->status = $status;
+
+            $notification->route = json_encode(["route" => "travelRequest", "action" => "view", "id" => $request->travelId]);
+            $title = "Substitue Work On Travel Recommendation";
+            $desc = "Substitue Work Request On Travel From ".$notification->fromDate." To ".$notification->toDate." is ".$status;
+
+            self::addNotifications($notification, $title, $desc, $adapter);
+            self::sendEmail($notification, 28, $adapter, $url);
+        };
         
         switch ($eventType) {
             case NotificationEvents::LEAVE_APPLIED:
@@ -1016,6 +1123,24 @@ class HeadNotification {
                 break;
             case NotificationEvents::TRAINING_APPROVE_REJECTED:
                 ${"fn" . NotificationEvents::TRAINING_APPROVE_ACCEPTED}($model, $adapter, $url, self::REJECTED);
+                break;
+            case NotificationEvents::LEAVE_SUBSTITUTE_APPLIED:
+                ${"fn" . NotificationEvents::LEAVE_SUBSTITUTE_APPLIED}($model, $adapter, $url);
+                break;
+            case NotificationEvents::LEAVE_SUBSTITUTE_ACCEPTED:
+                ${"fn" . NotificationEvents::LEAVE_SUBSTITUTE_ACCEPTED}($model, $adapter, $url, self::ACCEPTED);
+                break;
+            case NotificationEvents::LEAVE_SUBSTITUTE_REJECTED:
+                ${"fn" . NotificationEvents::LEAVE_SUBSTITUTE_ACCEPTED}($model, $adapter, $url, self::REJECTED);
+                break;
+            case NotificationEvents::TRAVEL_SUBSTITUTE_APPLIED:
+                ${"fn" . NotificationEvents::TRAVEL_SUBSTITUTE_APPLIED}($model, $adapter, $url);
+                break;
+            case NotificationEvents::TRAVEL_SUBSTITUTE_ACCEPTED:
+                ${"fn" . NotificationEvents::TRAVEL_SUBSTITUTE_ACCEPTED}($model, $adapter, $url, self::ACCEPTED);
+                break;
+            case NotificationEvents::TRAVEL_SUBSTITUTE_REJECTED:
+                ${"fn" . NotificationEvents::TRAVEL_SUBSTITUTE_ACCEPTED}($model, $adapter, $url, self::REJECTED);
                 break;
         }
     }

@@ -151,6 +151,11 @@ class LeaveRequest extends AbstractActionController {
                     $leaveSubstituteModel->status = 'E';
 
                     $leaveSubstituteRepo->add($leaveSubstituteModel);
+                    try {
+                        HeadNotification::pushNotification(NotificationEvents::LEAVE_SUBSTITUTE_APPLIED, $leaveRequest, $this->adapter, $this->plugin("url"));
+                    } catch (Exception $e) {
+                        $this->flashmessenger()->addMessage($e->getMessage());
+                    }
                 }
                 try {
                     HeadNotification::pushNotification(NotificationEvents::LEAVE_APPLIED, $leaveRequest, $this->adapter, $this->plugin("url"));

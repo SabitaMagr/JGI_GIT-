@@ -1,7 +1,8 @@
 (function ($, app) {
     $(document).ready(function () {
         $('select').select2();
-        app.startEndDatePicker('startDate', 'endDate');
+//        app.startEndDatePicker('startDate', 'endDate');
+        app.startEndDatePickerWithNepali('nepaliStartDate1', 'startDate', 'nepaliEndDate1', 'endDate');
         var editMode = typeof document.employeeId !== "undefined";
 
         var selectobject = document.getElementById("serviceEventTypeId")

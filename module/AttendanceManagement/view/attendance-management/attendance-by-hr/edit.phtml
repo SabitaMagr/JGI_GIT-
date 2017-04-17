@@ -19,6 +19,7 @@ $employeeId->setAttributes(['disabled' => 'disabled']);
 $attendanceDt = $form->get('attendanceDt');
 $attendanceDt->removeAttribute('required');
 $attendanceDt->setAttributes(['readonly' => 'readonly']);
+$attendanceDt->setAttributes(['disabled' => 'disabled']);
 
 
 $inTime = $form->get('inTime');
@@ -107,7 +108,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                     <label for="nepaliDate">&nbsp;</label>
                                     <div class="input-group">
                                         <input type="text" name="nepaliDate" id="nepaliDate"
-                                               class="form-control" value="">
+                                               class="form-control" value="" disabled="disabled">
                                     </div>
                                 </div>
                             </div>     

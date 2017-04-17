@@ -54,7 +54,8 @@ class UserSetupRepository implements RepositoryInterface {
             ->join(['R'=>'HRIS_ROLES'],"R.ROLE_ID=US.ROLE_ID",['ROLE_NAME']);
 
         $select->where([
-            "US.STATUS='E'"
+            "US.STATUS='E'",
+            "E.STATUS='E'"
         ]);
 
         $statement = $sql->prepareStatementForSqlObject($select);

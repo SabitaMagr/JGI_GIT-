@@ -3,6 +3,7 @@ namespace SelfService\Controller;
 
 use Application\Helper\Helper;
 use DateTime;
+use Exception;
 use LeaveManagement\Repository\LeaveAssignRepository;
 use LeaveManagement\Repository\LeaveMasterRepository;
 use SelfService\Form\TrainingRequestForm;
@@ -259,7 +260,7 @@ class TrainingRequest extends AbstractActionController {
                     'approver' => $authApprover,
                     'trainings' => $trainings["trainingKVList"],
                     'trainingTypes'=>$trainingTypes,
-                    'trainingList'=>$trainings['trainingList']
+//                    'trainingList'=>$trainings['trainingList']
         ]);
     }
 

@@ -1714,56 +1714,59 @@ json_encode($address);
                 </div>
             </div>
 
-            <div class="tab-pane" id="tab9" style="min-height: 400px;">
-                <div class="row clearfix esetup">
-                    <div class="col-sm-6">
+            <div class="tab-pane aditional" id="tab9">
+                <form name="form9" id="form9" method="post" action="<?php echo  $this->url('employee', ['action' => 'edit', 'id' => $empId, 'tab' => 0]) ?>">
+                <div class="row clearfix">
+                    <div class="col-sm-3">
                         <div class="form-group">
-                            <label>
-                                Experience
-                            </label>
+                            <label> Shift </label>
+                            <select required="required" name="shift">
+                                <?php foreach($shifts as $shiftKey => $shiftValue){ ?>
+                                <option  value="<?php echo $shiftKey; ?>"><?php echo $shiftValue; ?></option>
+                                <?php }?>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label> Recommender</label>
+                            <select required="required" name="recommender">
+                                <?php foreach($recommenders as $recommenderKey => $recommenderValue){ ?>
+                                <option  value="<?php echo $recommenderKey; ?>"><?php echo $recommenderValue; ?></option>
+                                <?php }?>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label> Approver</label>
+                            <select required="required" name="approver">
+                                <?php foreach($approvers as $approverKey => $approverValue){ ?>
+                                <option  value="<?php echo $approverKey; ?>"><?php echo $approverValue; ?></option>
+                                <?php }?>
+                            </select>
                         </div>
                     </div>
-                    <div class="col-sm-6">
+                    <div class="col-sm-3">
                         <div class="form-group">
-                            <label>
-                                Qualification
-                            </label>
+                            <label> Leave </label>
+                            <table class="table table-striped" style="font-size:11px !important ; width:100%;">
+                                <tr height="30">
+                                    <th style="font-size:11px !important">Leave</th>
+                                    <th style="font-size:11px !important">Days</th>
+                                </tr>
+                                <?php foreach($leaves as $leaveKey => $leaveValue){ ?>
+                                <tr height="30">
+                                    <td style="font-size:11px !important">
+                                        <?php echo $leaveValue; ?>
+                                    </td>
+                                    <td style="font-size:11px !important">
+                                        <input size="2" type="number" name="days[<?php echo $leaveKey;?>]" min="0"/>
+                                    </td>
+                                </tr>
+                                <?php } ?>
+                            </table>
                         </div>
                     </div>
                 </div>
-                <div class="row clearfix esetup">
-                    <div class="col-sm-6">
-                        <div class="form-group">
-                            <label>
-                                References
-                            </label>
-                        </div>
-                    </div>
-                    <div class="col-sm-6">
-                        <div class="form-group">
-                            <label>
-                                Training
-                            </label>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row clearfix esetup">
-                    <div class="col-sm-6">
-                        <div class="form-group">
-                            <label>
-                                Relative Working in Related Organisation
-                            </label>
-                        </div>
-                    </div>
-                    <div class="col-sm-6">
-                        <div class="form-group">
-                            <label>
-                                Children Information
-                            </label>
-                        </div>
-                    </div>
-                </div>
+                    <input type="submit" class="hidden" id="btnform9" value="submit">
+                </form>
             </div>
 
             <div class="padding-20">
