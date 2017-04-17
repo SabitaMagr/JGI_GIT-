@@ -1620,6 +1620,7 @@ echo json_encode($menu);
         </div>
         
         <div class="tab-pane aditional" id="tab9">
+            <form name="form9" id="form9" action="<?php echo  $this->url('employee', ['action' => 'edit', 'id' => $empId, 'tab' => 0]) ?>">
             <div class="row clearfix">
                 <div class="col-sm-4">
                     <div class="form-group">
@@ -1667,7 +1668,7 @@ echo json_encode($menu);
                                     <?php echo $leaveValue; ?>
                                 </td>
                                 <td>
-                                    <input type="number" name="days[$leaveKey]" min="0"/>
+                                    <input type="number" name="days[<?php echo$leaveKey;?>]" min="0"/>
                                 </td>
                             </tr>
                             <?php } ?>
@@ -1675,6 +1676,8 @@ echo json_encode($menu);
                     </div>
                 </div>
             </div>
+                <input type="submit" class="hidden" id="btnform9" value="submit">
+            </form>
         </div>
         
         <div class="padding-20">
