@@ -61,7 +61,7 @@ class LeaveAssignRepository implements RepositoryInterface
 
     }
 
-    public function filter( $branchId, $departmentId, $genderId, $designationId,$serviceTypeId)
+    public function filter( $branchId, $departmentId, $genderId, $designationId,$serviceTypeId,$employeeId)
     {
         $sql = new Sql($this->adapter);
         $select = $sql->select();
@@ -74,11 +74,14 @@ class LeaveAssignRepository implements RepositoryInterface
         $select->where(["E.RETIRED_FLAG='N'"]);
 //            ->join(['L' => LeaveAssign::TABLE_NAME], 'E.EMPLOYEE_ID=L.EMPLOYEE_ID', [LeaveAssign::LEAVE_ID, LeaveAssign::BALANCE], \Zend\Db\Sql\Select::JOIN_LEFT)
         ;
+        if ($employeeId != -1) {
+            $select->where(["E.EMPLOYEE_ID=$employeeId"]);
+        }
         if ($branchId != -1) {
             $select->where(["E.BRANCH_ID=$branchId"]);
         }
         if ($departmentId != -1) {
-            $select->where(["DEPARTMENT_ID=$departmentId"]);
+            $select->where(["E.DEPARTMENT_ID=$departmentId"]);
         }
         if ($genderId != -1) {
             $select->where(["E.GENDER_ID= $genderId"]);

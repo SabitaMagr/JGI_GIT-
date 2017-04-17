@@ -137,6 +137,7 @@ class LeaveRequest extends AbstractActionController {
                 $leaveRequest->status = "RQ";
 
                 $this->leaveRequestRepository->add($leaveRequest);
+                $this->flashmessenger()->addMessage("Leave Request Successfully added!!!");
 
                 if ($substituteEmployee == 1) {
                     $leaveSubstituteModel = new LeaveSubstitute();
@@ -162,7 +163,6 @@ class LeaveRequest extends AbstractActionController {
                 } catch (Exception $e) {
                     $this->flashmessenger()->addMessage($e->getMessage());
                 }
-                $this->flashmessenger()->addMessage("Leave Request Successfully added!!!");
                 return $this->redirect()->toRoute("leaverequest");
             }
         }
