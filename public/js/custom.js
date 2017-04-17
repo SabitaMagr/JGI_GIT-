@@ -486,9 +486,11 @@ window.app = (function ($, toastr) {
             if (err.length > 0)
             {
                 return false;
-            } else {
+            }
+            if (typeof onSubmitFormSuccessfully !== 'undefined') {
                 onSubmitFormSuccessfully();
             }
+
         });
     };
     var checkErrorSpan = function (formId) {
