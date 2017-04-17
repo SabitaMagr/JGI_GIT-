@@ -74,8 +74,8 @@ class TrainingRepository implements RepositoryInterface
         $sql =  new Sql($this->adapter);
         $select = $sql->select();
         $select->columns([
-            new Expression("TO_CHAR(T.START_DATE, 'DD-MON-YYYY') AS START_DATE"),
-            new Expression("TO_CHAR(T.END_DATE, 'DD-MON-YYYY') AS END_DATE"), 
+            new Expression("INITCAP(TO_CHAR(T.START_DATE, 'DD-MON-YYYY')) AS START_DATE"),
+            new Expression("INITCAP(TO_CHAR(T.END_DATE, 'DD-MON-YYYY')) AS END_DATE"), 
             new Expression("T.TRAINING_CODE AS TRAINING_CODE"), 
             new Expression("T.TRAINING_NAME AS TRAINING_NAME"),
             new Expression("T.TRAINING_TYPE AS TRAINING_TYPE"),
