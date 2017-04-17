@@ -68,6 +68,7 @@ angular.module('hris', ['ui.bootstrap'])
                 var genderId = angular.element(document.getElementById('genderId')).val();
                 var designationId = angular.element(document.getElementById('designationId')).val();
                 var serviceTypeId = angular.element(document.getElementById('serviceTypeId')).val();
+                var employeeId = angular.element(document.getElementById('employeeId')).val();
                 console.log(serviceTypeId);
                 App.blockUI({target: "#hris-page-content"});
                 window.app.pullDataById(document.url, {
@@ -78,7 +79,8 @@ angular.module('hris', ['ui.bootstrap'])
                         departmentId: departmentId,
                         genderId: genderId,
                         designationId: designationId,
-                        serviceTypeId: serviceTypeId
+                        serviceTypeId: serviceTypeId,
+                        employeeId:employeeId
                     }
                 }).then(function (success) {
                     App.unblockUI("#hris-page-content");
@@ -95,7 +97,11 @@ angular.module('hris', ['ui.bootstrap'])
 
                 });
             };
-
+            var employeeIdFromParam = window.location.href.substr(window.location.href.lastIndexOf('/') + 1);
+            if(parseInt(employeeIdFromParam)>0){
+                angular.element(document.getElementById('employeeId')).val(employeeIdFromParam).change();
+                $scope.view();
+            }
             $scope.importExcel = function () {
                 var modalInstance = $uibModal.open({
                     ariaLabelledBy: 'modal-title',

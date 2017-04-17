@@ -244,7 +244,7 @@ echo json_encode($menu);
 ?>;
     document.urlDistrict = '<?= $this->url("webService", ["action" => "district"]) ?>';
     document.urlSubmitExperience = '<?= $this->url('employee', ['action' => 'edit', 'id' => $id, 'tab' => 8]) ?>';
-    document.urlSubmitTraining = '<?= $this->url('employee', ['action' => 'edit', 'id' => $id, 'tab' => 9]) ?>';
+    document.urlSubmitTraining = '<?= $this->url('employee', ['action' => 'edit', 'id' => $id, 'tab' =>0]) ?>';
     document.urlMunicipality = '<?= $this->url("webService", ["action" => "municipality"]) ?>';
     document.urlEmployeeList = '<?= $this->url("employee", ["action" => "index"]) ?>'
     document.currentTab = '<?= $tab ?>';
@@ -1346,8 +1346,60 @@ json_encode($address);
                                         <?php print $this->formElementErrors()->render($branchId, ['class' => 'help-block error']); ?>
                                     </div>
                                 </div>
-
-
+                            </div>
+                            <div class="col-xs-12 col-sm-6 col-md-6">
+                                <div class="row bottomgap">
+                                    <div class="form-group">
+                                        <div class="col-xs-6 col-sm-6 col-md-6 rightalign-4">
+                                        <label> Shift </label>
+                                        </div>
+                                        <div class="col-xs-6 col-sm-6 cgap-4">
+                                            <select required="required" name="shift">
+                                                <?php foreach($shifts as $shiftKey => $shiftValue){ 
+                                                    $shiftSelected = ($shiftId==$shiftKey)? "selected":"";
+                                                    ?>
+                                                <option  value="<?php echo $shiftKey; ?>" <?php echo $shiftSelected; ?>><?php echo $shiftValue; ?></option>
+                                                <?php }?>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xs-12 col-sm-6 col-md-6">
+                                <div class="row bottomgap">
+                                    <div class="form-group">
+                                        <div class="col-xs-6 col-sm-6 col-md-6 rightalign-4">
+                                        <label> Recommender</label>
+                                        </div>
+                                        <div class="col-xs-6 col-sm-6 cgap-4">
+                                            <select required="required" name="recommender">
+                                                <?php foreach($recommenders as $recommenderKey => $recommenderValue){ 
+                                                    $recommenderSelected = ($recommenderId==$recommenderKey)? "selected":"";
+                                                    ?>
+                                                <option  value="<?php echo $recommenderKey; ?>" <?php echo $recommenderSelected; ?>><?php echo $recommenderValue; ?></option>
+                                                <?php }?>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xs-12 col-sm-6 col-md-6">
+                                <div class="row bottomgap">
+                                    <div class="form-group">
+                                        <div class="col-xs-6 col-sm-6 col-md-6 rightalign-4">
+                                        <label> Approver</label>
+                                        </div>
+                                        <div class="col-xs-6 col-sm-6 cgap-4">
+                                            <select required="required" name="approver">
+                                                <?php foreach($approvers as $approverKey => $approverValue){ 
+                                                    $approverSelected = ($approverId==$approverKey)? "selected":"";
+                                                    ?>
+                                                <option  value="<?php echo $approverKey; ?>" <?php echo $approverSelected; ?>><?php echo $approverValue; ?></option>
+                                                <?php }?>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
@@ -1713,60 +1765,39 @@ json_encode($address);
                     </div>
                 </div>
             </div>
-
             <div class="tab-pane aditional" id="tab9">
-                <form name="form9" id="form9" method="post" action="<?php echo  $this->url('employee', ['action' => 'edit', 'id' => $empId, 'tab' => 0]) ?>">
-                <div class="row clearfix">
-                    <div class="col-sm-3">
-                        <div class="form-group">
-                            <label> Shift </label>
-                            <select required="required" name="shift">
-                                <?php foreach($shifts as $shiftKey => $shiftValue){ ?>
-                                <option  value="<?php echo $shiftKey; ?>"><?php echo $shiftValue; ?></option>
-                                <?php }?>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label> Recommender</label>
-                            <select required="required" name="recommender">
-                                <?php foreach($recommenders as $recommenderKey => $recommenderValue){ ?>
-                                <option  value="<?php echo $recommenderKey; ?>"><?php echo $recommenderValue; ?></option>
-                                <?php }?>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label> Approver</label>
-                            <select required="required" name="approver">
-                                <?php foreach($approvers as $approverKey => $approverValue){ ?>
-                                <option  value="<?php echo $approverKey; ?>"><?php echo $approverValue; ?></option>
-                                <?php }?>
-                            </select>
-                        </div>
+                <div class="col-md-offset-2 col-xs-offset-0 col-xs-12 col-sm-offset-0 col-sm-12 col-md-8 margin gapspaceing">
+                    <div class="identification-infomation">  
+                        <p><i class="fa fa-plus-circle ticon" aria-hidden="true"></i>
+                            Additional Infomation</p>
+                        <div class="row clearfix e-setup">
+                            <div class="col-md-12">
+                        <div id="rolePanel">
+                        <ul id="roleList">
+                            <li>
+                                Leave Assign
+                                <a href="<?php echo $this->url("leaveassign",["action"=>"assign","eid"=>$id]) ?>">
+                                    <i class="fa fa-arrow-circle-right pull-right" aria-hidden="true" style="font-size:20px; line-height:20px!important;"></i>
+                                </a>
+                            </li>
+                            <li>
+                                Training Assign
+                                <a href="<?php echo $this->url("trainingAssign",["action"=>"assign","employeeId"=>$id]) ?>">
+                                    <i class="fa fa-arrow-circle-right pull-right" aria-hidden="true" style="font-size:20px; line-height:20px!important;"></i>
+                                </a>
+                            </li>
+                            <li>
+                                Appraisal Assign
+                                <a href="<?php echo $this->url("appraisalAssign",["action"=>"index","id"=>$id]) ?>">
+                                    <i class="fa fa-arrow-circle-right pull-right" aria-hidden="true" style="font-size:20px; line-height:20px!important;"></i>
+                                </a>
+                            </li>
+                        </ul>
                     </div>
-                    <div class="col-sm-3">
-                        <div class="form-group">
-                            <label> Leave </label>
-                            <table class="table table-striped" style="font-size:11px !important ; width:100%;">
-                                <tr height="30">
-                                    <th style="font-size:11px !important">Leave</th>
-                                    <th style="font-size:11px !important">Days</th>
-                                </tr>
-                                <?php foreach($leaves as $leaveKey => $leaveValue){ ?>
-                                <tr height="30">
-                                    <td style="font-size:11px !important">
-                                        <?php echo $leaveValue; ?>
-                                    </td>
-                                    <td style="font-size:11px !important">
-                                        <input size="2" type="number" name="days[<?php echo $leaveKey;?>]" min="0"/>
-                                    </td>
-                                </tr>
-                                <?php } ?>
-                            </table>
+                    </div>
                         </div>
                     </div>
                 </div>
-                    <input type="submit" class="hidden" id="btnform9" value="submit">
-                </form>
             </div>
 
             <div class="padding-20">

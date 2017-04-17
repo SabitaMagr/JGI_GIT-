@@ -47,6 +47,11 @@ angular.module('hris', ['ui.bootstrap'])
                     console.log("Employee Get All", failure);
                 });
             };
+            var employeeIdFromParam = window.location.href.substr(window.location.href.lastIndexOf('/') + 1);
+            if(parseInt(employeeIdFromParam)>0){
+                angular.element(document.getElementById('employeeId')).val(employeeIdFromParam).change();
+                $scope.view();
+            }
             var l = null;
             $scope.checkAll = function (item) {
                 for (var i = 0; i < $scope.employeeList.length; i++) {
