@@ -8,7 +8,6 @@ use Notification\Form\NewsForm;
 use Notification\Model\NewsModel;
 use Notification\Repository\NewsRepository;
 use Setup\Model\Company;
-use Setup\Repository\CompanyRepository;
 use Setup\Repository\DepartmentRepository;
 use Zend\Authentication\AuthenticationService;
 use Zend\Db\Adapter\AdapterInterface;
@@ -25,6 +24,7 @@ class NewsController extends AbstractActionController {
     public function __construct(AdapterInterface $adapter) {
         $this->adapter = $adapter;
         $this->repository = new NewsRepository($adapter);
+
         $auth = new AuthenticationService();
         $this->employeeId = $auth->getStorage()->read()['employee_id'];
     }
@@ -37,10 +37,7 @@ class NewsController extends AbstractActionController {
 
     public function indexAction() {
         $result = $this->repository->fetchAll();
-        $list = [];
-        foreach ($result as $row) {
-            array_push($list, $row);
-        }
+        $list = Helper::extractDbData($result);
         return Helper::addFlashMessagesToArray($this, [
                     'news' => $list
         ]);
