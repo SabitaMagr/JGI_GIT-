@@ -6,6 +6,7 @@
         /* prevent past event post */
         $('#form-loanDate').datepicker("setStartDate", new Date());
         /* end of  prevent past event post */
+        app.setLoadingOnSubmit("loanApprove-form");
     });
 })(window.jQuery, window.app);
 

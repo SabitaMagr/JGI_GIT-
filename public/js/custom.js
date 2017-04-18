@@ -488,11 +488,19 @@ window.app = (function ($, toastr) {
                 return false;
             }
             if (typeof onSubmitFormSuccessfully !== 'undefined') {
-                onSubmitFormSuccessfully();
+                var returnVal = onSubmitFormSuccessfully();
+                if (typeof returnVal !== 'undefined') {
+                    return returnVal;
+                }
             }
 
         });
     };
+    var setLoadingOnSubmit = function(formId){
+        $('#' + formId).submit(function (e) {
+            App.blockUI({target: "#hris-page-content"});
+        });
+    }
     var checkErrorSpan = function (formId) {
         $('#' + formId).submit(function (e) {
             var err = [];
@@ -648,7 +656,8 @@ window.app = (function ($, toastr) {
         datePickerWithNepali: datePickerWithNepali,
         getSystemDate: getDate,
         addComboTimePicker: addComboTimePicker,
-        getServerDate: getServerDate
+        getServerDate: getServerDate,
+        setLoadingOnSubmit:setLoadingOnSubmit
     };
 })(window.jQuery, window.toastr);
 

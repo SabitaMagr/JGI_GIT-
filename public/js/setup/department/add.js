@@ -16,7 +16,9 @@
         if (typeof (selfId) == "undefined") {
             selfId = 0;
         }
-        window.app.checkUniqueConstraints(inputFieldId, formId, tableName, columnName, checkColumnName, selfId);
+        window.app.checkUniqueConstraints(inputFieldId, formId, tableName, columnName, checkColumnName, selfId, function () {
+            App.blockUI({target: "#hris-page-content"});
+        });   
         window.app.checkUniqueConstraints("form-departmentCode", formId, tableName, "DEPARTMENT_CODE", checkColumnName, selfId);
         var selectedBranchId = (typeof document.selectedBranchId === 'undefined' || document.selectedBranchId === '') ? null : document.selectedBranchId;
         var $companySelect = $('#form-companyId');

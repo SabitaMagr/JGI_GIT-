@@ -36,7 +36,7 @@
         });
 
         holidayChange($holidayId);
-
+        app.setLoadingOnSubmit("workOnHoliday-form");
     });
 })(window.jQuery, window.app);
 

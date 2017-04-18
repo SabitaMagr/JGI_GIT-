@@ -111,6 +111,7 @@
         $(".radioButton").each(function () {
             $(this).on("click", checkHalfDay);
         });
+        app.setLoadingOnSubmit("leaveApply");
 
     });
 })(window.jQuery, window.app);
