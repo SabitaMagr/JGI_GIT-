@@ -19,6 +19,13 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
 /**
  * Load Javascript files here
  */
+
+$this->headLink()
+        ->appendStylesheet($this->basePath('assets/global/plugins/nepalidate/nepali.datepicker.v2.1.min.css'));
+ 
+$this->headScript()
+        ->appendFile($this->basePath('assets/global/plugins/nepalidate/nepali.datepicker.v2.1.min.js'))
+        ->appendFile($this->basePath('js/nepali-datepicker-ext.js'));
 $this->headScript()->appendFile($this->basePath('js/LeaveManagement/LeaveRequest/add.js'));
 $this->headScript()->appendFile($this->basePath('js/angular.min.js'));
 $this->headScript()->appendFile($this->basePath('js/LeaveManagement/LeaveRequest/leaveRequestController.js'));
@@ -60,18 +67,21 @@ print $this->form()->openTag($form);
 </script>
 
 <div class="row margin-top-20">
-    <div class="col-sm-8 col-sm-offset-2">
+    <div class="col-sm-12">
         <div class="portlet box custom-box">
             <div class="portlet-title">
                 <div class="caption">
                     <i class="fa fa-user"></i>Substitute Work Request
+                </div>
+                <div class="actions">
+                    <a class="btn btn-circle btn-icon-only btn-default fullscreen" href="javascript:;" data-original-title="" title=""> </a>
                 </div>
             </div>
             <div class="portlet-body">
                 <div>
                     <div class="form-group">
                         <div class="row div-font-11">
-                            <div class="col-md-6">
+                            <div class="col-sm-4">
                                 <table>
                                     <tr height="30">
                                         <td>
@@ -80,15 +90,6 @@ print $this->form()->openTag($form);
                                         <td width="15">:</td>
                                         <td>
                                             <?php echo $employeeName; ?>
-                                        </td>
-                                    </tr>
-                                    <tr height="30">
-                                        <td>
-                                            Requested Date
-                                        </td>
-                                        <td width="15">:</td>
-                                        <td>
-                                            <?php echo $requestedDt; ?>
                                         </td>
                                     </tr>
                                     <tr height="30">
@@ -123,7 +124,31 @@ print $this->form()->openTag($form);
                                     </tr>
                                 </table>
                             </div>
-                            <div class="col-md-6">
+
+                            <div class="col-sm-4">
+                                <table>
+                                    <tr height="30">
+                                        <td>
+                                            Requested Date
+                                        </td>
+                                        <td width="15">:</td>
+                                        <td>
+                                            <?php echo $requestedDt; ?>
+                                        </td>
+                                    </tr>
+                                    <tr height="30">
+                                        <td>
+                                            Approver
+                                        </td>
+                                        <td width="15">:</td>
+                                        <td>
+                                            <?php echo $approver; ?>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+
+                            <div class="col-sm-4">
                                 <table>
                                     <tr height="30">
                                         <td>
@@ -143,66 +168,104 @@ print $this->form()->openTag($form);
                                             <?php echo $availableDays; ?>
                                         </td>
                                     </tr>
-                                    <tr height="30">
-                                        <td>
-                                            Approver
-                                        </td>
-                                        <td width="15">:</td>
-                                        <td>
-                                            <?php echo $approver; ?>
-                                        </td>
-                                    </tr>
                                 </table>
                             </div>
+
                         </div>
                     </div>
-                    <div
-                        class="form-group required <?= empty($leaveId->getMessages()) ? "" : "error" ?>">
-                            <?php print $this->formLabel($leaveId); ?>
-                            <?php print $this->formElement($leaveId); ?>
-                    </div>
 
-                    <div
-                        class="form-group required  <?= empty($startDate->getMessages()) ? "" : "error" ?>">
-                            <?php print $this->formLabel($startDate) ?>
-                            <?php print $this->formElement($startDate) ?>
-                    </div>
-                    <?php print $this->formElementErrors()->render($startDate, ['class' => 'help-block error']) ?>
-
-                    <div
-                        class="form-group required <?= empty($endDate->getMessages()) ? "" : "error" ?>">
-                            <?php print $this->formLabel($endDate) ?>
-                            <?php print $this->formElement($endDate) ?>
-                    </div>
-                    <?php print $this->formElementErrors()->render($endDate, ['class' => 'help-block error']) ?>
-
-                    <div
-                        class="form-group required <?= empty($noOfDays->getMessages()) ? "" : "error" ?>">
-                            <?php print $this->formLabel($noOfDays); ?>
-                            <?php print $this->formElement($noOfDays); ?>
-                        <span id="errorMsg" style="font-size:11px; color:red;"></span>
-                    </div>
-                    <?php print $this->formElementErrors()->render($noOfDays, ['class' => 'help-block error']); ?>
-
-                    <?php if ($allowHalfDay == 'Y') { ?>
-                        <div class="form-group padding-0" id="halfDay">
-                            <?php print $this->formLabel($halfDay); ?>
-                            <div class="md-radio-inline">
-                                <?php $customRenderer($halfDay); ?>
+                    <div class=" row">
+                        <div class="col-sm-4">
+                            <div
+                                class="form-group required <?= empty($leaveId->getMessages()) ? "" : "error" ?>">
+                                    <?php print $this->formLabel($leaveId); ?>
+                                    <?php print $this->formElement($leaveId); ?>
                             </div>
                         </div>
-                        <?php print $this->formElementErrors()->render($halfDay, ['class' => 'help-block error']); ?>
-                    <?php } ?>
 
-                    <?php if ($remarksDtl != null) { ?>
-                        <div
-                            class="form-group required <?= empty($remarks->getMessages()) ? "" : "error" ?>">
-                                <?php print $this->formLabel($remarks); ?>
-                                <?php print $this->formElement($remarks); ?>
+                        <div class="col-sm-4">
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="form-group required  <?= empty($startDate->getMessages()) ? "" : "error" ?>">
+                                        <?php print $this->formLabel($startDate) ?>
+                                        <?php print $this->formElement($startDate) ?>
+                                    </div>
+                                    <?php print $this->formElementErrors()->render($startDate, ['class' => 'help-block error']) ?>
+                                </div>     
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label for="nepaliStartDate">&nbsp;</label>
+                                        <div class="input-group">
+                                            <input type="text" name="nepaliStartDate" id="nepaliStartDate1"
+                                                   class="form-control" value="" disabled="disabled">
+                                        </div>
+                                    </div>
+                                </div>     
+                            </div>        
+
                         </div>
-                        <?php
-                    }
 
+                        <div class="col-sm-4">
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="form-group required <?= empty($endDate->getMessages()) ? "" : "error" ?>">
+                                        <?php print $this->formLabel($endDate) ?>
+                                        <?php print $this->formElement($endDate) ?>
+                                    </div>
+                                    <?php print $this->formElementErrors()->render($endDate, ['class' => 'help-block error']) ?>
+                                </div>     
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label for="nepaliEndDate">&nbsp;</label>
+                                        <div class="input-group">
+                                            <input type="text" name="nepaliEndDate" id="nepaliEndDate1"
+                                                   class="form-control" value="" disabled="disabled">
+                                        </div>
+                                    </div>
+                                </div>     
+                            </div>        
+
+                        </div>
+                    </div>
+
+
+                    <div class=" row">
+                        <div class="col-sm-4">
+                            <div
+                                class="form-group required <?= empty($noOfDays->getMessages()) ? "" : "error" ?>">
+                                    <?php print $this->formLabel($noOfDays); ?>
+                                    <?php print $this->formElement($noOfDays); ?>
+                                <span id="errorMsg" style="font-size:11px; color:red;"></span>
+                            </div>
+                            <?php print $this->formElementErrors()->render($noOfDays, ['class' => 'help-block error']); ?>
+                        </div>
+
+                        <div class="col-sm-4">
+                            <?php if ($allowHalfDay == 'Y') { ?>
+                                <div class="form-group padding-0" id="halfDay">
+                                    <?php print $this->formLabel($halfDay); ?>
+                                    <div class="md-radio-inline">
+                                        <?php $customRenderer($halfDay); ?>
+                                    </div>
+                                </div>
+                                <?php print $this->formElementErrors()->render($halfDay, ['class' => 'help-block error']); ?>
+                            <?php } ?>
+                        </div>
+
+                        <div class="col-sm-4">
+                            <?php if ($remarksDtl != null) { ?>
+                                <div
+                                    class="form-group required <?= empty($remarks->getMessages()) ? "" : "error" ?>">
+                                        <?php print $this->formLabel($remarks); ?>
+                                        <?php print $this->formElement($remarks); ?>
+                                </div>
+                            <?php }
+                            ?>
+                        </div>
+                    </div>
+
+
+                    <?php
                     if ($subEmployeeId != null) {
                         $disabled = ($subApprovedFlag != null) ? "disabled" : "";
                         if ($subApprovedFlag == 'Y') {

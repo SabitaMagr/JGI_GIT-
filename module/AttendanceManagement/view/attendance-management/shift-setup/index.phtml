@@ -13,7 +13,6 @@ $this->headScript()
         ->appendFile($this->basePath('js/AttendanceManagement/ShiftSetup/index.js'))
         ->appendFile($this->basePath('assets/global/plugins/bootstrap-confirmation/bootstrap-confirmation.min.js'));
 ?>
-?>
 <script>
     document.shifts =<?php echo json_encode($shifts); ?>;
 </script>

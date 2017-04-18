@@ -20,7 +20,6 @@ $this->headScript()
         ->appendFile($this->basePath('js/nepali-datepicker-ext.js'))
         ->appendFile($this->basePath('js/manager-service/training-approve/status.js'))
         ->appendFile($this->basePath('assets/global/plugins/bootstrap-confirmation/bootstrap-confirmation.min.js'));
-$this->headScript()->appendFile($this->basePath('assets/global/plugins/jquery.blockui.min.js'));
 ?>
 
 <script>
@@ -51,140 +50,140 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
 
 <div ng-app="hris" ng-controller="trainingStatusListController">
     <div id="hris-page-content">
-    <div class="margin-top-20 formbg">
-        <div class="row">
-            <div class="col-sm-3 topgap">
-                <?php print $this->formLabel($employees); ?>
-                <?php print $this->formElement($employees); ?>
-            </div>
-            <div class="col-sm-3 topgap">
-                <?php print $this->formLabel($branches); ?>
-                <?php print $this->formElement($branches); ?>
-            </div>
-            <div class="col-sm-3 topgap">
-                <?php print $this->formLabel($departments); ?>
-                <?php print $this->formElement($departments); ?>
-            </div>
-            <div class="col-sm-3 topgap">
-                <?php print $this->formLabel($designations); ?>
-                <?php print $this->formElement($designations); ?>
-            </div>
-            <div class="col-sm-3 topgap">
-                <?php print $this->formLabel($positions); ?>
-                <?php print $this->formElement($positions); ?>
-            </div>            
+        <div class="margin-top-20 formbg">
+            <div class="row">
+                <div class="col-sm-3 topgap">
+                    <?php print $this->formLabel($employees); ?>
+                    <?php print $this->formElement($employees); ?>
+                </div>
+                <div class="col-sm-3 topgap">
+                    <?php print $this->formLabel($branches); ?>
+                    <?php print $this->formElement($branches); ?>
+                </div>
+                <div class="col-sm-3 topgap">
+                    <?php print $this->formLabel($departments); ?>
+                    <?php print $this->formElement($departments); ?>
+                </div>
+                <div class="col-sm-3 topgap">
+                    <?php print $this->formLabel($designations); ?>
+                    <?php print $this->formElement($designations); ?>
+                </div>
+                <div class="col-sm-3 topgap">
+                    <?php print $this->formLabel($positions); ?>
+                    <?php print $this->formElement($positions); ?>
+                </div>            
 
 
-            <div class="col-sm-3 topgap">
-                <?php print $this->formLabel($serviceTypes); ?>
-                <?php print $this->formElement($serviceTypes); ?>
-            </div>
-            <div class="col-sm-3 topgap">
-                <?php print $this->formLabel($serviceEventTypes); ?>
-                <?php print $this->formElement($serviceEventTypes); ?>
-            </div>
-            <div class="col-sm-3 topgap">
-                <?php print $this->formLabel($status); ?>
-                <?php print $this->formElement($status); ?>
-            </div>    
-            <input type="hidden" id="recomApproveId" value="<?php echo $recomApproveId; ?>"/>
-            <div class="col-sm-6">
-                <div class="row">
-                    <div class="col-sm-3">
-                        <div class="form-group">
-                            <label for="fromDate">From Date</label>
-                            <input type="text" id="fromDate" name="fromDate" ng-model="fromDate" class="form-control"/>
+                <div class="col-sm-3 topgap">
+                    <?php print $this->formLabel($serviceTypes); ?>
+                    <?php print $this->formElement($serviceTypes); ?>
+                </div>
+                <div class="col-sm-3 topgap">
+                    <?php print $this->formLabel($serviceEventTypes); ?>
+                    <?php print $this->formElement($serviceEventTypes); ?>
+                </div>
+                <div class="col-sm-3 topgap">
+                    <?php print $this->formLabel($status); ?>
+                    <?php print $this->formElement($status); ?>
+                </div>    
+                <input type="hidden" id="recomApproveId" value="<?php echo $recomApproveId; ?>"/>
+                <div class="col-sm-6">
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label for="fromDate">From Date</label>
+                                <input type="text" id="fromDate" name="fromDate" ng-model="fromDate" class="form-control"/>
+                            </div>
+
                         </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label for="nepaliFromDate">&nbsp;</label>
+                                <input type="text" id="nepaliFromDate" name="nepaliFromDate"  class="form-control"/>
+                            </div>
 
-                    </div>
-                    <div class="col-sm-3">
-                        <div class="form-group">
-                            <label for="nepaliFromDate">&nbsp;</label>
-                            <input type="text" id="nepaliFromDate" name="nepaliFromDate"  class="form-control"/>
                         </div>
-
-                    </div>
-                    <div class="col-sm-3">
-                        <div class="form-group">
-                            <label for="toDate">To Date</label>
-                            <input type="text"  id="toDate" name="toDate" ng-model="toDate" class="form-control"/>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label for="toDate">To Date</label>
+                                <input type="text"  id="toDate" name="toDate" ng-model="toDate" class="form-control"/>
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-sm-3">
-                        <div class="form-group">
-                            <label for="nepaliToDate">&nbsp;</label>
-                            <input type="text"  id="nepaliToDate" name="nepaliToDate" class="form-control"/>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label for="nepaliToDate">&nbsp;</label>
+                                <input type="text"  id="nepaliToDate" name="nepaliToDate" class="form-control"/>
+                            </div>
                         </div>
                     </div>
                 </div>
+                <div class="col-sm-3 topgap">
+                    <label height="45"></label>
+                    <button ng-click="view()" id="viewTrainingRequestStatus" class="btn btn-default form-control i-search">
+                        Search
+                        <i class="fa fa-search"></i>
+                    </button>
+                </div>
             </div>
-            <div class="col-sm-3 topgap">
-                <label height="45"></label>
-                <button ng-click="view()" id="viewTrainingRequestStatus" class="btn btn-default form-control i-search">
-                    Search
-                    <i class="fa fa-search"></i>
+        </div>
+        <div class="row">
+            <div class="btn-group pull-right gaptop">
+                <button class="btn green btn-outline dropdown-toggle cbtn" data-toggle="dropdown">Tools
+                    <i class="fa fa-angle-down"></i>
                 </button>
+                <ul class="dropdown-menu pull-right">
+                    <li>
+                        <a href="javascript:;" id="export"> Export to Excel </a>
+                    </li>
+                </ul>
             </div>
         </div>
-    </div>
-    <div class="row">
-        <div class="btn-group pull-right gaptop">
-            <button class="btn green btn-outline dropdown-toggle cbtn" data-toggle="dropdown">Tools
-                <i class="fa fa-angle-down"></i>
-            </button>
-            <ul class="dropdown-menu pull-right">
-                <li>
-                    <a href="javascript:;" id="export"> Export to Excel </a>
-                </li>
-            </ul>
+        <div class="margin-top-20">  
+
+            <div id="trainingRequestStatusTable">
+            </div>
         </div>
-    </div>
-    <div class="margin-top-20">  
 
-        <div id="trainingRequestStatusTable">
-        </div>
-    </div>
+        <script id="rowTemplate" type="text/x-kendo-tmpl">
+            <tr>
+            <td>    
+            #: (FIRST_NAME == null) ? ' ' : FIRST_NAME #
+            #: (MIDDLE_NAME == null) ? ' ' : MIDDLE_NAME #
+            #: (LAST_NAME == null) ? ' ' : LAST_NAME #
+            </td>
+            <td>
+            #: (TITLE == null) ? '-' : TITLE #
+            </td>
+            <td>
+            #: (REQUESTED_DATE == null) ? '-' : REQUESTED_DATE #
+            </td>
+            <td>
+            #: (START_DATE == null) ? '-' : START_DATE #
+            </td>
+            <td>
+            #: (END_DATE == null) ? '-' : END_DATE #
+            </td>
+            <td>
+            #: (DURATION == null) ? '-' : DURATION #
+            </td>
+            <td>
+            #: (TRAINING_TYPE == null) ? '-' : TRAINING_TYPE #
+            </td>
+            <td>
+            #: (YOUR_ROLE == null) ? '-' : YOUR_ROLE #
+            </td>
+            <td>
+            #: (STATUS == null) ? '-' : STATUS #
+            </td>
+            <td>
+            <a class="btn  btn-icon-only btn-success"
+            href="<?= $this->url("trainingApprove", ["action" => "view"]) ?>/#: REQUEST_ID #/#: ROLE #" style="height:17px;" title="view">
+            <i class="fa fa-search-plus"></i></a>
+            </a>
+            </td>
+            </tr>
+        </script>
 
-    <script id="rowTemplate" type="text/x-kendo-tmpl">
-        <tr>
-        <td>    
-        #: (FIRST_NAME == null) ? ' ' : FIRST_NAME #
-        #: (MIDDLE_NAME == null) ? ' ' : MIDDLE_NAME #
-        #: (LAST_NAME == null) ? ' ' : LAST_NAME #
-        </td>
-        <td>
-        #: (TITLE == null) ? '-' : TITLE #
-        </td>
-        <td>
-        #: (REQUESTED_DATE == null) ? '-' : REQUESTED_DATE #
-        </td>
-        <td>
-        #: (START_DATE == null) ? '-' : START_DATE #
-        </td>
-        <td>
-        #: (END_DATE == null) ? '-' : END_DATE #
-        </td>
-        <td>
-        #: (DURATION == null) ? '-' : DURATION #
-        </td>
-        <td>
-        #: (TRAINING_TYPE == null) ? '-' : TRAINING_TYPE #
-        </td>
-        <td>
-        #: (YOUR_ROLE == null) ? '-' : YOUR_ROLE #
-        </td>
-        <td>
-        #: (STATUS == null) ? '-' : STATUS #
-        </td>
-        <td>
-        <a class="btn  btn-icon-only btn-success"
-        href="<?= $this->url("trainingApprove", ["action" => "view"]) ?>/#: REQUEST_ID #/#: ROLE #" style="height:17px;" title="view">
-        <i class="fa fa-search-plus"></i></a>
-        </a>
-        </td>
-        </tr>
-    </script>
-
-</div>  
+    </div>  
 
 </div>

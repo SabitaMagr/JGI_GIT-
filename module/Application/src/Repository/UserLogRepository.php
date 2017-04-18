@@ -3,7 +3,7 @@
 namespace Application\Repository;
 
 use Application\Model\Model;
-use Application\Model\userLog;
+use Application\Model\UserLog;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\TableGateway\TableGateway;
 
@@ -14,7 +14,7 @@ class UserLogRepository implements RepositoryInterface {
 
     public function __construct(AdapterInterface $adapter) {
         $this->adapter = $adapter;
-        $this->tableGateway = new TableGateway(userLog::TABLE_NAME, $adapter);
+        $this->tableGateway = new TableGateway(UserLog::TABLE_NAME, $adapter);
     }
 
     public function add(Model $model) {

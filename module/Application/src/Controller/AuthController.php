@@ -12,7 +12,6 @@ use AttendanceManagement\Model\Attendance;
 use AttendanceManagement\Repository\AttendanceDetailRepository;
 use AttendanceManagement\Repository\AttendanceRepository;
 use Exception;
-use Setup\Repository\EmployeeRepository;
 use Zend\Authentication\AuthenticationService;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\EventManager\EventManagerInterface;
@@ -140,17 +139,24 @@ class AuthController extends AbstractActionController {
 //                        "employee_detail" => $employeeDetail,
                         "fiscal_year" => $fiscalYear
                     ]);
+
+
                     // to add user log details in HRIS_USER_LOG
-                    $clientIp = $request->getServer('REMOTE_ADDR');
-                    $userLog = new UserLog();
-                    $userLogRepo = new UserLogRepository($this->adapter);
-                    $userLog->loginIp = $clientIp;
-                    $userLog->userId = $resultRow->USER_ID;
-                    $userLogRepo->add($userLog);
+                    $this->setUserLog($this->adapter, $request->getServer('REMOTE_ADDR'), $resultRow->USER_ID);
                 }
             }
         }
         return $this->redirect()->toRoute($redirect);
+    }
+
+    private function setUserLog(AdapterInterface $adapter, $clientIp, $userId) {
+        $userLogRepo = new UserLogRepository($adapter);
+
+        $userLog = new UserLog();
+        $userLog->loginIp = $clientIp;
+        $userLog->userId = $userId;
+
+        $userLogRepo->add($userLog);
     }
 
     public function logoutAction() {

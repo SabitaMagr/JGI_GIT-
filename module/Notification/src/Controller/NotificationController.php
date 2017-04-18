@@ -3,6 +3,7 @@
 namespace Notification\Controller;
 
 use Application\Custom\CustomViewModel;
+use Application\Factory\ConfigInterface;
 use Application\Helper\Helper;
 use Notification\Model\Notification;
 use Notification\Repository\NotificationRepo;
@@ -15,9 +16,12 @@ class NotificationController extends AbstractActionController {
     private $notiRepo;
     private $employeeId;
     private $adapter;
+    private $config;
 
-    public function __construct(AdapterInterface $adapter) {
+    public function __construct(AdapterInterface $adapter, ConfigInterface $config) {
         $this->adapter = $adapter;
+        $this->config = $config;
+
         $this->notiRepo = new NotificationRepo($adapter);
         $auth = new AuthenticationService();
         $this->employeeId = $auth->getStorage()->read()['employee_id'];
@@ -25,8 +29,10 @@ class NotificationController extends AbstractActionController {
 
     public function indexAction() {
         $notifications = $this->notiRepo->fetchAllWithEmpDet([Notification::MESSAGE_TO => $this->employeeId]);
+        $defaultProfilePicture = $this->config->getApplicationConfig()['default-profile-picture'];
         return Helper::addFlashMessagesToArray($this, [
-                    "notifications" => Helper::extractDbData($notifications)
+                    "notifications" => Helper::extractDbData($notifications),
+                    "defaultProfilePicture" => $defaultProfilePicture
         ]);
     }
 
