@@ -775,12 +775,14 @@ form.k-filter-menu .k-widget, form.k-filter-menu .k-textbox
  }*/
 
 .profilepic {
-    border: 2px solid #eee;
+    border: 1px solid #eee;
     float: left;
     margin-left: 13px;
     margin-right: 90px;
-    max-width:85%;
+    padding:5px;
     text-align: center !important;
+    height:142px;
+    width:142px;
 }
 .customtbl td
 {
@@ -1352,6 +1354,10 @@ ul#roleList li {
     color:#fff;
     text-transform:capitalize;
 }
+.img-polaroid
+{
+    border-radius:50%;
+}
 /*Large desktops and laptops*/
 
 @media (min-width: 1200px) {
@@ -1384,7 +1390,7 @@ ul#roleList li {
         margin-bottom: 20px;
         margin-left: 13px;
         float:none !important;
-        max-width: 20%;
+        /*max-width: 20%;*/
         border:solid #ddd 2px;
     }
 
@@ -1408,9 +1414,9 @@ ul#roleList li {
     {
 
         margin-bottom: 20px;
-        margin-left: 35px;
+       /* margin-left: 35px;*/
         margin-right: 90px;
-        max-width: 16%;
+        /*max-width: 16%;*/
         float:none !important;
 
     }
@@ -1454,7 +1460,7 @@ ul#roleList li {
         margin-bottom: 20px;
         margin-left: 35px;
         margin-right: 90px;
-        max-width:16%;
+       /* max-width:16%;*/
     }
     .leftvalues,.rules 
     {
@@ -1557,6 +1563,14 @@ ul#roleList li {
     {
         margin-bottom:10px;
     }
+    .page-header.navbar .top-menu .navbar-nav > li.dropdown-notification .dropdown-menu {
+    margin-right: -107px;
+}
+
+.page-header.navbar .top-menu .navbar-nav > li.dropdown-notification .dropdown-menu::after, .page-header.navbar .top-menu .navbar-nav > li.dropdown-notification .dropdown-menu::before {
+    margin-right: 112px;
+}
+ 
 }
 
 
@@ -1929,7 +1943,7 @@ padding:4px 10px 2px !important;
     font-weight: normal !important;
     padding-top: 3px !important;
     padding-bottom: 2px !important;
-    width: 80%;
+    width:auto;
     border-radius:15px !important;
 }
 .gapboth{
@@ -1973,4 +1987,25 @@ padding:4px 10px 2px !important;
 textarea#form-remarks,#remarks,.form-reason  {
     min-height: 45px;
     resize:none !important;
+}
+
+
+.companylogo
+{
+     
+}
+.company-logo-box h6{
+    font-size:12px;
+    margin-top:4px !important;
+     font-weight: 400;
+    margin-top: 2px !important;
+}
+.company-logo-box
+{
+ display:block;
+ float: left;
+ height: 24px;
+ width:190px;
+ padding-left: 20px;
+  padding-right: 20px;   
 }

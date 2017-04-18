@@ -186,6 +186,8 @@ ul {
 .upcomingholidays .label {
     color: #523c3c;
     box-shadow: none;
+    font-size: 11px;
+  text-transform: capitalize !important;
 }
 
 .upcomingholidays .date {
@@ -400,13 +402,22 @@ li.line:after {
     height: 80px;
     width: 80px;
 }
-
+.person-details {
+    padding-top: 10px;
+}
 .person-details h4 {
-    font-size: medium !important;
+ 
+    margin-bottom:5px !important;
+       color: #333333;
+    font-size: 12px;
+    font-weight: 600;
+    margin-bottom: 5px;
 }
 
 .person-details span {
     display: block;
+        font-size:12px;
+      color: #333;
 }
 
 .person-details .head-title {
@@ -932,6 +943,7 @@ a .icon_edit:hover {
 .portlet.calendar .fc-event .fc-title .fc-title-in,
 .portlet.calendar .fc-event .fc-title .fc-title-out {
     font-size: 10px;
+     font-weight: 900;
 }
 .widget-woh h4 {
     margin-bottom: 0;
@@ -1099,7 +1111,10 @@ a .icon_edit:hover {
 {
     font-weight:normal !important;
 }
-
+.birth-date i
+{
+    padding-right:3px;
+}
 .iconbox i {
     color: #ffffff;
     font-size: 21px;
@@ -1159,6 +1174,7 @@ a .icon_edit:hover {
     color: #ffffff;
     margin-top: 24px;
     padding: 6px;
+    font-size: 12px;
 }
 
 
@@ -1171,7 +1187,7 @@ a .icon_edit:hover {
     color:#F3565D !important;
     font-weight: 400 !important;
     padding-top: 23px !important;
-    font-size: 14px !important;
+    font-size: 12px !important;
 }
 .dashborder
 {
@@ -1237,7 +1253,8 @@ a .icon_edit:hover {
 }
 .fc-title-out
 {
-    color:#4db3a2;
+    color:#81c868;
+    font-weight:900 !important;
     
 
 }
@@ -1255,8 +1272,17 @@ a .icon_edit:hover {
 }
 
 .fc-icon-left-single-arrow::after,.portlet.calendar .fc-button .fc-icon-left-single-arrow::after
+{   content:"\f104" !important;  
+   font-size: 16px;
+    font-family: fontawesome;
+       color:#666;
+}
+.portlet.calendar .fc-button .fc-icon-right-single-arrow::after,.fc-icon-right-single-arrow::after
 {
-    content:"" !important;
+  content:"\f105" !important;
+   font-size: 16px;
+   color:#666;
+       font-family: fontawesome;
 }
 /* Large desktops and laptops */
 
@@ -1313,6 +1339,11 @@ a .icon_edit:hover {
 .detailsbox {
     margin-top: 42px;
 }
+.birth-date
+{
+    padding-top:5px;
+}
+ 
 }
 
 /* Portrait phones and smaller */
@@ -1338,5 +1369,17 @@ a .icon_edit:hover {
     padding-bottom: 30px;
     padding-top: 10px;
 }
-
+.birth-date
+{
+    padding-top:5px;
+}
+.person-details > span
+{
+    font-size: 11px;
+}
+.calendar_date
+{
+    margin-top:5px;
+}
+ 
 }
