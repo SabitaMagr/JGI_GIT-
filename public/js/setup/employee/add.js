@@ -77,7 +77,7 @@
 
         $('#finishBtn').on('click', function () {
             if (typeof document.urlEmployeeList !== 'undefined') {
-                location.href = document.urlEmployeeList;
+                location.href = document.urlSetupComplete;
             }
         });
         if (typeof document.currentTab !== "undefined") {

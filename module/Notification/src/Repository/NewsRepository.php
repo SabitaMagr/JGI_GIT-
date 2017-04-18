@@ -2,10 +2,13 @@
 
 namespace Notification\Repository;
 
+use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
 use Application\Model\Model;
 use Application\Repository\RepositoryInterface;
 use Notification\Model\NewsModel;
+use Setup\Model\Company;
+use Setup\Model\Designation;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Sql\Select;
 use Zend\Db\Sql\Sql;
@@ -26,7 +29,7 @@ class NewsRepository implements RepositoryInterface {
     }
 
     public function delete($id) {
-        $this->tableGateway->update([NewsModel::STATUS=>'D'],[NewsModel::NEWS_ID=>$id]);
+        $this->tableGateway->update([NewsModel::STATUS => 'D'], [NewsModel::NEWS_ID => $id]);
     }
 
     public function edit(Model $model, $id) {
@@ -34,34 +37,54 @@ class NewsRepository implements RepositoryInterface {
         unset($data[NewsModel::CREATED_BY]);
         unset($data[NewsModel::CREATED_DT]);
         unset($data[NewsModel::STATUS]);
-        $this->tableGateway->update($data,[NewsModel::NEWS_ID=>$id]);
+        $this->tableGateway->update($data, [NewsModel::NEWS_ID => $id]);
     }
 
     public function fetchAll() {
-        return $this->tableGateway->select(function(Select $select){
-            $select->where([NewsModel::STATUS=>'E']);
-            $select->order(NewsModel::NEWS_DATE." DESC");
-        });
+        return $this->tableGateway->select(function(Select $select) {
+                    $select->where([NewsModel::STATUS => 'E']);
+                    $select->order(NewsModel::NEWS_DATE . " DESC");
+                });
     }
 
     public function fetchById($id) {
-//          $rowset = $this->tableGateway->select([NewsModel::NEWS_ID => $id, NewsModel::STATUS => 'E']);
-//        return $result = $rowset->current();
         $sql = new Sql($this->adapter);
         $select = $sql->select();
         $select->from(['N' => NewsModel::TABLE_NAME]);
-        $select->where(["N." . NewsModel::NEWS_ID . "='".$id."'"]);
+        $select->where(["N." . NewsModel::NEWS_ID . "='" . $id . "'"]);
         $select->columns(Helper::convertColumnDateFormat($this->adapter, new NewsModel(), [
                     'newsDate',
                         ], NULL, 'N'), false);
-        
+
         $statement = $sql->prepareStatementForSqlObject($select);
         $result = $statement->execute();
-        
-//        echo '<pre>';
-//        print_r($result->current());
-//        die();
+
         return $result->current();
+    }
+
+    public function fetchAllDesignationAndCompany() {
+        $sql = new Sql($this->adapter);
+        $select = $sql->select();
+
+        $select->columns([Designation::DESIGNATION_ID, Designation::DESIGNATION_TITLE]);
+        $select->from(['D' => Designation::TABLE_NAME]);
+
+        $select->join(['C' => Company::TABLE_NAME], "C." . Company::COMPANY_ID . "=D." . Designation::COMPANY_ID, array('COMPANY_ID', 'COMPANY_NAME'), 'inner');
+
+        $select->where(["C." . Company::STATUS => EntityHelper::STATUS_ENABLED]);
+        $select->where(["D." . Designation::STATUS => EntityHelper::STATUS_ENABLED]);
+        $select->order(["D." . Designation::DESIGNATION_TITLE => Select::ORDER_ASCENDING]);
+
+        $statement = $sql->prepareStatementForSqlObject($select);
+
+        $result = $statement->execute();
+        $list = Helper::extractDbData($result);
+        $designationList = [];
+        foreach ($list as $val) {
+            $newKey = $val[Company::COMPANY_ID];
+            $designationList[$newKey][] = $val;
+        }
+        return $designationList;
     }
 
 }
