@@ -1,4 +1,3 @@
-//angular.module('hris', ["kendo.directives"])
 (function ($, app) {
     'use strict';
     $(document).ready(function () {
@@ -7,7 +6,7 @@
 })(window.jQuery, window.app);
 
 angular.module('hris', [])
-        .controller('employeeListController', function ($scope, $http,$window) {
+        .controller('employeeListController', function ($scope, $http, $window) {
 //            $scope.gridData = new kendo.data.ObservableArray([
 //            ]);
 //            $scope.gridColumns = [
@@ -102,10 +101,6 @@ angular.module('hris', [])
                 }
                 ;
 
-//                $("#export").click(function (e) {
-//                    var grid = $("#employeeTable").data("kendoGrid");
-//                    grid.saveAsExcel();
-//                });
 
                 $("#export").click(function (e) {
                     var rows = [{
@@ -334,8 +329,8 @@ angular.module('hris', [])
             };
 //            $scope.initializekendoGrid([]);
 
-            $scope.msg =  $window.localStorage.getItem("msg");
-            if($window.localStorage.getItem("msg")){
+            $scope.msg = $window.localStorage.getItem("msg");
+            if ($window.localStorage.getItem("msg")) {
                 window.toastr.success($scope.msg, "Notifications");
             }
             $window.localStorage.removeItem("msg");

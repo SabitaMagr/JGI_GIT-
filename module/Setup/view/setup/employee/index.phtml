@@ -14,12 +14,6 @@ $this->headScript()
         ->appendFile($this->basePath('js/setup/employee/employeeListController.js'))
         ->appendFile($this->basePath('assets/global/plugins/bootstrap-confirmation/bootstrap-confirmation.min.js'));
 ?>
-<?php if ($this->messages) { ?>
-    <script>
-        document.messages =<?php echo json_encode($this->messages); ?>
-    </script>
-<?php } ?>
-
 <script>
     document.url = '<?= $this->url("restful", ["action" => "index"]) ?>';
 </script>
@@ -27,111 +21,126 @@ $this->headScript()
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\Employee')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
+<?php
+if ($this->messages && (sizeof($this->messages) > 1)) {
+    print '<div class="alert alert-warning alert-dismissable">
+    <button type="button" class="close" data-dismiss="alert" aria-hidden="true"></button>
+    <strong>Warning!</strong> ';
+    print $this->messages[1];
+    print '</div>';
+}
+?>
+<?php if ($this->messages) { ?>
+    <script>
+        document.messages =<?php echo json_encode($this->messages); ?>
+    </script>
+<?php } ?>
+
 <div class="formbg arrowtop" ng-app="hris" ng-controller="employeeListController">
     <div id="hris-page-content">
-    <div class="margin-top-20">
-        <div class="row">
-            <div class="col-xs-12 col-sm-6 col-md-3">
-                <?php print $this->formLabel($employees); ?>
-                <?php print $this->formElement($employees); ?>
-            </div>
-            <div class="col-xs-12 col-sm-6 col-md-3">
-                <?php print $this->formLabel($branches); ?>
-                <?php print $this->formElement($branches); ?>
-            </div>
-            <div class="col-xs-12 col-sm-6 col-md-3">
-                <?php print $this->formLabel($departments); ?>
-                <?php print $this->formElement($departments); ?>
-            </div>
-            <div class="col-xs-12 col-sm-6 col-md-3">
-                <?php print $this->formLabel($designations); ?>
-                <?php print $this->formElement($designations); ?>
-            </div>
-        </div>
-        <div class="row margin-top-10">
-           <div class="col-xs-12 col-sm-6 col-md-3">
-                <?php print $this->formLabel($positions); ?>
-                <?php print $this->formElement($positions); ?>
-            </div>
-            <div class="col-xs-12 col-sm-6 col-md-3">
-                <?php print $this->formLabel($serviceTypes); ?>
-                <?php print $this->formElement($serviceTypes); ?>
-            </div>
-           <div class="col-xs-12 col-sm-6 col-md-3">
-                <?php print $this->formLabel($serviceEventTypes); ?>
-                <?php print $this->formElement($serviceEventTypes); ?>
-            </div>
-          <div class="col-xs-12 col-sm-6 col-md-3">
-                <label height="45"></label>
-                <button ng-click="view()" id="viewEmployees" class="btn btn-default form-control i-search">
-                    Search
-                    <i class="fa fa-search"></i>
-                </button>
-            </div>
-        </div>
-    </div>
-    <div class="margin-top-20">   
-        <div class="table-toolbar">
+        <div class="margin-top-20">
             <div class="row">
-                <div class="col-xs-6 col-md-6">
-                    <div class="btn-group">
-                        <a href="<?= $this->url('employee', ['action' => 'add']) ?>" id="sample_editable_1_new" class="btn cbtn"> Add New
-                            <i class="fa fa-plus"></i>
-                        </a>
-                    </div>
+                <div class="col-xs-12 col-sm-6 col-md-3">
+                    <?php print $this->formLabel($employees); ?>
+                    <?php print $this->formElement($employees); ?>
                 </div>
-                <div class="col-xs-6 col-md-6">
-                    <div class="btn-group pull-right">
-                        <button class="btn cbtn btn-outline dropdown-toggle" data-toggle="dropdown">Tools
-                            <i class="fa fa-angle-down"></i>
-                        </button>
-                        <ul class="dropdown-menu pull-right">
-                            <li>
-                                <a href="javascript:;" id="export"> Export to Excel </a>
-                            </li>
-                        </ul>
-                    </div>
+                <div class="col-xs-12 col-sm-6 col-md-3">
+                    <?php print $this->formLabel($branches); ?>
+                    <?php print $this->formElement($branches); ?>
+                </div>
+                <div class="col-xs-12 col-sm-6 col-md-3">
+                    <?php print $this->formLabel($departments); ?>
+                    <?php print $this->formElement($departments); ?>
+                </div>
+                <div class="col-xs-12 col-sm-6 col-md-3">
+                    <?php print $this->formLabel($designations); ?>
+                    <?php print $this->formElement($designations); ?>
+                </div>
+            </div>
+            <div class="row margin-top-10">
+                <div class="col-xs-12 col-sm-6 col-md-3">
+                    <?php print $this->formLabel($positions); ?>
+                    <?php print $this->formElement($positions); ?>
+                </div>
+                <div class="col-xs-12 col-sm-6 col-md-3">
+                    <?php print $this->formLabel($serviceTypes); ?>
+                    <?php print $this->formElement($serviceTypes); ?>
+                </div>
+                <div class="col-xs-12 col-sm-6 col-md-3">
+                    <?php print $this->formLabel($serviceEventTypes); ?>
+                    <?php print $this->formElement($serviceEventTypes); ?>
+                </div>
+                <div class="col-xs-12 col-sm-6 col-md-3">
+                    <label height="45"></label>
+                    <button ng-click="view()" id="viewEmployees" class="btn btn-default form-control i-search">
+                        Search
+                        <i class="fa fa-search"></i>
+                    </button>
                 </div>
             </div>
         </div>
+        <div class="margin-top-20">   
+            <div class="table-toolbar">
+                <div class="row">
+                    <div class="col-xs-6 col-md-6">
+                        <div class="btn-group">
+                            <a href="<?= $this->url('employee', ['action' => 'add']) ?>" id="sample_editable_1_new" class="btn cbtn"> Add New
+                                <i class="fa fa-plus"></i>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-xs-6 col-md-6">
+                        <div class="btn-group pull-right">
+                            <button class="btn cbtn btn-outline dropdown-toggle" data-toggle="dropdown">Tools
+                                <i class="fa fa-angle-down"></i>
+                            </button>
+                            <ul class="dropdown-menu pull-right">
+                                <li>
+                                    <a href="javascript:;" id="export"> Export to Excel </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-        <!--        <kendo-grid options="kendoGridOptions" k-data-source="gridData"  k-columns="gridColumns">
-                </kendo-grid>-->
+            <!--        <kendo-grid options="kendoGridOptions" k-data-source="gridData"  k-columns="gridColumns">
+                    </kendo-grid>-->
 
-        <div id="employeeTable">
+            <div id="employeeTable">
+            </div>
         </div>
-    </div>
 
-    <script id="rowTemplate" type="text/x-kendo-tmpl">
-    <tr>
-        <td>                 
+        <script id="rowTemplate" type="text/x-kendo-tmpl">
+            <tr>
+            <td>                 
             #: (EMPLOYEE_CODE == null) ? '-' : EMPLOYEE_CODE #
-        </td>
-        <td>
+            </td>
+            <td>
             #: (FIRST_NAME == null) ? ' ' : FIRST_NAME #
             #: (MIDDLE_NAME == null) ? ' ' : MIDDLE_NAME #
             #: (LAST_NAME == null) ? ' ' : LAST_NAME #
             </td>
-        <td>
+            <td>
             #: (BIRTH_DATE == null) ? '-' : BIRTH_DATE #
             </td>
             <td>
             #: (MOBILE_NO == null) ? '-' : MOBILE_NO #
-        </td>
-        <td>
+            </td>
+            <td>
             #: (EMAIL_OFFICIAL == null) ? '-' : EMAIL_OFFICIAL #
             </td>
-        <td>
+            <td>
             <a class="btn-edit" title="Edit"
-               href="<?= $this->url("employee", ["action" => "view"]) ?>/#:EMPLOYEE_ID#/1" style="height:17px;">
-                <i class="fa fa-edit"></i>
+            href="<?= $this->url("employee", ["action" => "view"]) ?>/#:EMPLOYEE_ID#/1" style="height:17px;">
+            <i class="fa fa-edit"></i>
             </a> 
             <a class="confirmation btn-delete" title="Delete"
-               href="<?= $this->url("employee", ["action" => "delete"]) ?>/#:EMPLOYEE_ID#" id="bs_#:EMPLOYEE_ID #" style="height:17px;">
-                <i class="fa fa-trash-o"></i></a>
-        </td>
+            href="<?= $this->url("employee", ["action" => "delete"]) ?>/#:EMPLOYEE_ID#" id="bs_#:EMPLOYEE_ID #" style="height:17px;">
+            <i class="fa fa-trash-o"></i></a>
+            </td>
 
-    </tr>
-    </script>
+            </tr>
+        </script>
     </div>
 </div>

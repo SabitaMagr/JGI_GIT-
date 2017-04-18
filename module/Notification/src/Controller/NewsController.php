@@ -52,7 +52,6 @@ class NewsController extends AbstractActionController {
 //        $employeeDetail = $employeeRepo->fetchById($this->employeeId);
         $request = $this->getRequest();
 
-        $companyRepo = new CompanyRepository($this->adapter);
         $departmentRepo = new DepartmentRepository($this->adapter);
         if ($request->isPost()) {
             $this->form->setData($request->getPost());
@@ -84,7 +83,7 @@ class NewsController extends AbstractActionController {
                     'newsTypeValue' => $newsType,
                     'company' => ApplicationEntityHelper::getTableKVListWithSortOption($this->adapter, Company::TABLE_NAME, Company::COMPANY_ID, [Company::COMPANY_NAME], ["STATUS" => "E"], "COMPANY_NAME", "ASC"),
                     'branch' => $departmentRepo->fetchAllBranchAndCompany(),
-                    'designation' => $companyRepo->fetchAllDesignationAndCompany(),
+                    'designation' => $this->repository->fetchAllDesignationAndCompany(),
                     'department' => $departmentRepo->fetchAllBranchAndDepartment()
         ]);
     }
@@ -113,8 +112,6 @@ class NewsController extends AbstractActionController {
             }
         }
 
-
-        $companyRepo = new CompanyRepository($this->adapter);
         $departmentRepo = new DepartmentRepository($this->adapter);
         $newsType = [
             'NEWS' => 'NEWS',
@@ -130,7 +127,7 @@ class NewsController extends AbstractActionController {
                     'newsTypeValue' => $newsType,
                     'company' => ApplicationEntityHelper::getTableKVListWithSortOption($this->adapter, Company::TABLE_NAME, Company::COMPANY_ID, [Company::COMPANY_NAME], ["STATUS" => "E"], "COMPANY_NAME", "ASC"),
                     'branch' => $departmentRepo->fetchAllBranchAndCompany(),
-                    'designation' => $companyRepo->fetchAllDesignationAndCompany(),
+                    'designation' => $this->repository->fetchAllDesignationAndCompany(),
                     'department' => $departmentRepo->fetchAllBranchAndDepartment()
         ]);
     }

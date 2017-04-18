@@ -75,9 +75,6 @@ class DepartmentRepository implements RepositoryInterface {
             $newKey = $val['COMPANY_ID'];
             $companyList[$newKey][] = $val;
         }
-//        echo '<pre>';
-//        print_r($companyList);
-//        die();
         return $companyList;
     }
 
