@@ -3,7 +3,8 @@
 (function ($, app) {
     'use strict';
     $(document).ready(function () {
-        app.addDatePicker($('#newsDate'));
+//        app.addDatePicker($('#newsDate'));
+app.datePickerWithNepali("newsDate","nepaliDate");
 
         var selectedBranchId = (typeof document.selectedBranchId === 'undefined') ? null : document.selectedBranchId;
         var selectedDepartmentId = (typeof document.selectedDepartmentId === 'undefined') ? null : document.selectedDepartmentId;

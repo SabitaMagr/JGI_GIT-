@@ -103,4 +103,8 @@ class ShiftAssignRepository implements RepositoryInterface
         return $result->current();
     }
 
+    public function fetchByEmployeeId($employeeId){
+        $result = $this->tableGateway->select([ShiftAssign::EMPLOYEE_ID."=".$employeeId, ShiftAssign::STATUS=>'E']);
+        return $result->current();
+    }
 }

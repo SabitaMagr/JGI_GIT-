@@ -45,7 +45,6 @@ class TrainingStatusRepository implements RepositoryInterface{
         $positionId = $data['positionId'];
         $serviceTypeId = $data['serviceTypeId'];
         $serviceEventTypeId = $data['serviceEventTypeId'];
-        $trainingId = $data['trainingId'];
         $requestStatusId = $data['requestStatusId'];
         
         if($serviceEventTypeId==5 || $serviceEventTypeId==8 || $serviceEventTypeId==14){
@@ -54,10 +53,16 @@ class TrainingStatusRepository implements RepositoryInterface{
             $retiredFlag = " AND E.RETIRED_FLAG='N' ";
         }
         
-        $sql = "SELECT T.TRAINING_NAME,T.TRAINING_CODE,
+        $sql = "SELECT 
+                T.TRAINING_NAME,
+                T.TRAINING_CODE,
+                INITCAP(TO_CHAR(T.START_DATE, 'DD-MON-YYYY')) AS T_START_DATE,
+                INITCAP(TO_CHAR(T.END_DATE, 'DD-MON-YYYY')) AS T_END_DATE,
+                T.DURATION AS T_DURATION,
+                T.TRAINING_TYPE AS T_TRAINING_TYPE,
                 TR.DURATION,
-                TO_CHAR(TR.START_DATE, 'DD-MON-YYYY') AS FROM_DATE,
-                TO_CHAR(TR.END_DATE, 'DD-MON-YYYY') AS TO_DATE,
+                TO_CHAR(TR.START_DATE, 'DD-MON-YYYY') AS START_DATE,
+                TO_CHAR(TR.END_DATE, 'DD-MON-YYYY') AS END_DATE,
                 TO_CHAR(TR.REQUESTED_DATE, 'DD-MON-YYYY') AS REQUESTED_DATE,
                 TO_CHAR(TR.MODIFIED_DATE, 'DD-MON-YYYY') AS MODIFIED_DATE,
                 TR.STATUS AS STATUS,
@@ -67,6 +72,7 @@ class TrainingStatusRepository implements RepositoryInterface{
                 TR.REQUEST_ID AS REQUEST_ID,
                 TR.TRAINING_TYPE AS TRAINING_TYPE,
                 TR.REMARKS AS REMARKS,
+                TR.TRAINING_ID,
                 TO_CHAR(TR.RECOMMENDED_DATE, 'DD-MON-YYYY') AS RECOMMENDED_DATE,
                 TO_CHAR(TR.APPROVED_DATE, 'DD-MON-YYYY') AS APPROVED_DATE,
                 E.FIRST_NAME,E.MIDDLE_NAME,E.LAST_NAME,
@@ -95,8 +101,7 @@ class TrainingStatusRepository implements RepositoryInterface{
                 RECM.EMPLOYEE_ID = RA.RECOMMEND_BY
                 LEFT OUTER JOIN HRIS_EMPLOYEES APRV ON
                 APRV.EMPLOYEE_ID = RA.APPROVED_BY
-                WHERE 
-                H.STATUS='E' AND
+                WHERE
                 E.STATUS='E'".$retiredFlag."              
                 AND
                 (E1.STATUS = CASE WHEN E1.STATUS IS NOT NULL
@@ -136,17 +141,13 @@ class TrainingStatusRepository implements RepositoryInterface{
                     ((TR.RECOMMENDED_BY=".$recomApproveId.") OR (TR.APPROVED_BY=".$recomApproveId." AND TR.APPROVED_DATE IS NOT NULL) )";
             }
         }
-        
-        if ($trainingId != -1) {
-            $sql .= " AND TR.TRAINING_ID ='" . $trainingId . "'";
-        }
      
         if($fromDate!=null){
-            $sql .= " AND TR.FROM_DATE>=TO_DATE('".$fromDate."','DD-MM-YYYY')";
+            $sql .= " AND TR.START_DATE>=TO_DATE('".$fromDate."','DD-MM-YYYY')";
         }
         
         if($toDate!=null){   
-            $sql .= "AND TR.TO_DATE<=TO_DATE('".$toDate."','DD-MM-YYYY')";
+            $sql .= "AND TR.END_DATE<=TO_DATE('".$toDate."','DD-MM-YYYY')";
         }
 
         if ($employeeId != -1) {

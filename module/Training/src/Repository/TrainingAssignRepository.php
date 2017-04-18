@@ -79,6 +79,7 @@ class TrainingAssignRepository implements RepositoryInterface {
             "TA.STATUS='E'"
         ]);
         $statement = $sql->prepareStatementForSqlObject($select);
+//        print_r($statement->getSql()); die();
         $result = $statement->execute();
         return $result;
     }

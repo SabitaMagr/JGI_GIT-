@@ -1,4 +1,11 @@
 <?php
+$this->headLink()
+        ->appendStylesheet($this->basePath('assets/global/plugins/nepalidate/nepali.datepicker.v2.1.min.css'));
+
+$this->headScript()
+        ->appendFile($this->basePath('assets/global/plugins/nepalidate/nepali.datepicker.v2.1.min.js'))
+        ->appendFile($this->basePath('js/nepali-datepicker-ext.js'));
+
 $this->headScript()->appendFile($this->basePath('assets/global/plugins/combodate/js/moment.min.js'));
 $this->headScript()->appendFile($this->basePath('assets/global/plugins/combodate/js/combodate.js'));
 $this->headScript()->appendFile($this->basePath('js/AttendanceManagement/attendance/add.js'));
@@ -61,15 +68,27 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
 
                 <div class=" row">
                     <div class="col-sm-4">
-                        <div class="form-group <?= empty($attendanceDt->getMessages()) ? "" : "error" ?>">
-                            <?php print $this->formLabel($attendanceDt); ?>
-                            <span class="required" aria-required="true">*</span>
-                            <div class="input-group date" id="attendanceDt">
-                                <?php print $this->formElement($attendanceDt); ?>
-                                <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                            </div>
-                        </div>
-                        <?php print $this->formElementErrors()->render($attendanceDt, ['class' => 'help-block error']); ?>
+
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group <?= empty($attendanceDt->getMessages()) ? "" : "error" ?>">
+                                    <?php print $this->formLabel($attendanceDt); ?>
+                                    <span class="required" aria-required="true">*</span>
+                                        <?php print $this->formElement($attendanceDt); ?>
+                                </div>
+                                <?php print $this->formElementErrors()->render($attendanceDt, ['class' => 'help-block error']); ?>
+                            </div>     
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="nepaliDate">&nbsp;</label>
+                                    <div class="input-group">
+                                        <input type="text" name="nepaliDate" id="nepaliDate"
+                                               class="form-control" value="">
+                                    </div>
+                                </div>
+                            </div>     
+                        </div>     
+
                     </div>
 
                     <div class="col-sm-4">

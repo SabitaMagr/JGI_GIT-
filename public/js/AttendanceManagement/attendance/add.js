@@ -15,12 +15,15 @@
 
         var $attendanceDt = $("#attendanceDt");
         if (!($attendanceDt.is('[readonly]'))) {
-            app.addDatePicker($attendanceDt);
+//            app.addDatePicker($attendanceDt);
+                app.datePickerWithNepali("attendanceDt","nepaliDate");
             app.getServerDate().then(function (response) {
                 $attendanceDt.datepicker('setEndDate', app.getSystemDate(response.data.serverDate));
             }, function (error) {
                 console.log("error=>getServerDate", error);
             });
+        }else{
+                app.datePickerWithNepali("attendanceDt","nepaliDate");            
         }
 
         var totalHour = function () {

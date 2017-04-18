@@ -2,14 +2,15 @@
 
 namespace Setup\Controller;
 
+use Application\Factory\ConfigInterface;
 use Application\Helper\EntityHelper as ApplicationHelper;
 use Application\Helper\EntityHelper as EntityHelper2;
 use Application\Helper\Helper;
 use Setup\Form\HrEmployeesFormTabEight;
-use Setup\Form\HrEmployeesFormTabSeven;
 use Setup\Form\HrEmployeesFormTabFive;
 use Setup\Form\HrEmployeesFormTabFour;
 use Setup\Form\HrEmployeesFormTabOne;
+use Setup\Form\HrEmployeesFormTabSeven;
 use Setup\Form\HrEmployeesFormTabSix;
 use Setup\Form\HrEmployeesFormTabThree;
 use Setup\Form\HrEmployeesFormTabTwo;
@@ -25,33 +26,52 @@ use Setup\Model\Position;
 use Setup\Model\ServiceEventType;
 use Setup\Model\ServiceType;
 use Setup\Model\VdcMunicipalities;
+use Setup\Repository\EmployeeExperienceRepository;
 use Setup\Repository\EmployeeFile;
 use Setup\Repository\EmployeeQualificationRepository;
-use Setup\Repository\EmployeeExperienceRepository;
-use Setup\Repository\EmployeeTrainingRepository;
 use Setup\Repository\EmployeeRepository;
+use Setup\Repository\EmployeeTrainingRepository;
 use Setup\Repository\JobHistoryRepository;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\Form\Element\Select;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
+use LeaveManagement\Repository\LeaveMasterRepository;
+use AttendanceManagement\Repository\ShiftRepository;
+use AttendanceManagement\Model\ShiftSetup;
+use Setup\Model\LeaveMaster;
+use AttendanceManagement\Model\ShiftAssign;
+use AttendanceManagement\Repository\ShiftAssignRepository;
+use Zend\Authentication\AuthenticationService;
+use Setup\Repository\RecommendApproveRepository;
+use Setup\Model\RecommendApprove;
 
 class EmployeeController extends AbstractActionController {
 
     private $adapter;
+    private $config;
     private $form;
     private $repository;
     private $employeeFileRepo;
     private $jobHistoryRepo;
+    private $formOne;
+    private $formTwo;
+    private $formThree;
+    private $formFour;
+    private $formSix;
+    private $formSeven;
+    private $formEight;
+    private $loggedIdEmployeeId;
 
-    public function __construct(AdapterInterface $adapter) {
-        
-
+    public function __construct(AdapterInterface $adapter, ConfigInterface $config) {
         $this->adapter = $adapter;
+        $this->config = $config;
         $this->repository = new EmployeeRepository($adapter);
         $this->employeeFileRepo = new EmployeeFile($this->adapter);
         $this->jobHistoryRepo = new JobHistoryRepository($this->adapter);
+        $auth = new AuthenticationService();
+        $this->loggedIdEmployeeId = $auth->getStorage()->read()['employee_id'];
     }
 
     public function indexAction() {
@@ -126,14 +146,6 @@ class EmployeeController extends AbstractActionController {
         ]);
     }
 
-    private $formOne;
-    private $formTwo;
-    private $formThree;
-    private $formFour;
-    private $formSix;
-    private $formSeven;
-    private $formEight;
-
     public function initializeForm() {
         $builder = new AnnotationBuilder();
         $formTabOne = new HrEmployeesFormTabOne();
@@ -199,7 +211,7 @@ class EmployeeController extends AbstractActionController {
             'formFour' => $this->formFour,
             'formSix' => $this->formSix,
             'formSeven' => $this->formSeven,
-            'formEight'=>$this->formEight,
+            'formEight' => $this->formEight,
             "bloodGroups" => EntityHelper::getTableKVList($this->adapter, EntityHelper::HRIS_BLOOD_GROUPS),
             "districts" => EntityHelper::getTableKVList($this->adapter, EntityHelper::HRIS_DISTRICTS),
             "genders" => EntityHelper::getTableKVList($this->adapter, EntityHelper::HRIS_GENDERS),
@@ -219,7 +231,11 @@ class EmployeeController extends AbstractActionController {
             'academicUniversity' => ApplicationHelper::getTableKVListWithSortOption($this->adapter, "HRIS_ACADEMIC_UNIVERSITY", "ACADEMIC_UNIVERSITY_ID", ["ACADEMIC_UNIVERSITY_NAME"], ["STATUS" => 'E'], "ACADEMIC_UNIVERSITY_NAME", "ASC"),
             'academicProgram' => ApplicationHelper::getTableKVListWithSortOption($this->adapter, "HRIS_ACADEMIC_PROGRAMS", "ACADEMIC_PROGRAM_ID", ["ACADEMIC_PROGRAM_NAME"], ["STATUS" => 'E'], "ACADEMIC_PROGRAM_NAME", "ASC"),
             'academicCourse' => ApplicationHelper::getTableKVListWithSortOption($this->adapter, "HRIS_ACADEMIC_COURSES", "ACADEMIC_COURSE_ID", ["ACADEMIC_COURSE_NAME"], ["STATUS" => 'E'], "ACADEMIC_COURSE_NAME", "ASC"),
-            'rankTypes' => $rankTypes
+            'rankTypes' => $rankTypes,
+            'shifts'=> ApplicationHelper::getTableKVListWithSortOption($this->adapter, ShiftSetup::TABLE_NAME, ShiftSetup::SHIFT_ID, [ShiftSetup::SHIFT_ENAME], [ShiftSetup::STATUS => 'E'], ShiftSetup::SHIFT_ENAME, "ASC"),
+            'leaves'=> ApplicationHelper::getTableKVListWithSortOption($this->adapter, LeaveMaster::TABLE_NAME, LeaveMaster::LEAVE_ID, [LeaveMaster::LEAVE_ENAME], [LeaveMaster::STATUS => 'E'], LeaveMaster::LEAVE_ENAME, "ASC"),
+            'recommenders' => ApplicationHelper::getTableKVListWithSortOption($this->adapter, "HRIS_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => "E"], "FIRST_NAME", "ASC", " "),
+            'approvers' => ApplicationHelper::getTableKVListWithSortOption($this->adapter, "HRIS_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => "E"], "FIRST_NAME", "ASC", " ")
         ]);
     }
 
@@ -245,7 +261,13 @@ class EmployeeController extends AbstractActionController {
         $formSixModel = new HrEmployeesFormTabSix();
         $formSevenModel = new HrEmployeesFormTabSeven();
         $formEightModel = new HrEmployeesFormTabEight();
+        
+        $shiftAssignRepo = new ShiftAssignRepository($this->adapter);
+        $getEmpShiftDtl = $shiftAssignRepo->fetchByEmployeeId($id);
 
+        $recommApproverRepo = new RecommendApproveRepository($this->adapter);
+        $employeePreDtl = $recommApproverRepo->fetchById($id);
+                        
         $employeeData = (array) $this->repository->fetchById($id);
         $profilePictureId = $employeeData[HrEmployees::PROFILE_PICTURE_ID];
         $address = [];
@@ -303,6 +325,60 @@ class EmployeeController extends AbstractActionController {
                         $formFourModel->positionId = $formFourModel->appPositionId;
                         $formFourModel->serviceTypeId = $formFourModel->appServiceTypeId;
                         $formFourModel->serviceEventTypeId = $formFourModel->appServiceEventTypeId;
+                        
+                        $shiftId = $postData->shift;
+                        $recommenderId = $postData->recommender;
+                        $approverId = $postData->approver;
+                        
+                        $shiftAssign = new ShiftAssign();
+
+                        $shiftAssign->employeeId = $id;
+                        $shiftAssign->shiftId = $shiftId;
+
+                        if ($getEmpShiftDtl!=null) {
+                            $shiftAssignClone = clone $shiftAssign;
+
+                            unset($shiftAssignClone->employeeId);
+                            unset($shiftAssignClone->shiftId);
+                            unset($shiftAssignClone->createdDt);
+                            
+                            if($shiftId!=$getEmpShiftDtl['SHIFT_ID']){
+                                $shiftAssignClone->status = 'D';
+                                $shiftAssignClone->modifiedDt = Helper::getcurrentExpressionDate();
+                                $shiftAssignClone->modifiedBy = $this->loggedIdEmployeeId;
+                                $shiftAssignRepo->edit($shiftAssignClone, [$id, $getEmpShiftDtl['SHIFT_ID']]);
+
+                                $shiftAssign->createdDt = Helper::getcurrentExpressionDate();
+                                $shiftAssign->createdBy = $this->loggedIdEmployeeId;
+                                $shiftAssign->status = 'E';
+                                $shiftAssignRepo->add($shiftAssign);
+                            }
+                        } else {
+                            $shiftAssign->createdDt = Helper::getcurrentExpressionDate();
+                            $shiftAssign->createdBy = $this->loggedIdEmployeeId;
+                            $shiftAssign->status = 'E';
+                            $shiftAssignRepo->add($shiftAssign);
+                        }
+                        
+                        $recommendApprove = new RecommendApprove();
+                        
+                        if ($employeePreDtl == null) {
+                            $recommendApprove->employeeId = $id;
+                            $recommendApprove->recommendBy = $recommenderId;
+                            $recommendApprove->approvedBy = $approverId;
+                            $recommendApprove->createdDt = Helper::getcurrentExpressionDate();
+                            $recommendApprove->status = 'E';
+                            $recommApproverRepo->add($recommendApprove);
+                        } else if ($employeePreDtl != null) {
+                            $id = $employeePreDtl['EMPLOYEE_ID'];
+                            $recommendApprove->employeeId = $id;
+                            $recommendApprove->recommendBy = $recommenderId;
+                            $recommendApprove->approvedBy = $approverId;
+                            $recommendApprove->modifiedDt = Helper::getcurrentExpressionDate();
+                            $recommendApprove->status = 'E';
+                            $recommApproverRepo->edit($recommendApprove, $id);
+                        }
+                        
                         $this->repository->edit($formFourModel, $id);
 
                         if ($jobHistoryListNum == 0) {
@@ -396,11 +472,11 @@ class EmployeeController extends AbstractActionController {
             $formSixModel->exchangeArrayFromDB($employeeData);
             $this->formSix->bind($formSixModel);
         }
-        
+
         if ($tab != 7 || !$request->isPost()) {
             
         }
-        
+
         if ($tab != 8 || !$request->isPost()) {
             
         }
@@ -443,7 +519,14 @@ class EmployeeController extends AbstractActionController {
                     'rankTypes' => $rankTypes,
                     'profilePictureId' => $profilePictureId,
                     'address' => $address,
-        ]);
+                    'shiftId'=>($getEmpShiftDtl!=null)?$getEmpShiftDtl['SHIFT_ID']:0,
+                    'recommenderId'=>($employeePreDtl!=null)?$employeePreDtl['RECOMMEND_BY']:0,
+                    'approverId'=>($employeePreDtl!=null)? $employeePreDtl['APPROVED_BY']:0,
+                    'shifts'=> ApplicationHelper::getTableKVListWithSortOption($this->adapter, ShiftSetup::TABLE_NAME, ShiftSetup::SHIFT_ID, [ShiftSetup::SHIFT_ENAME], [ShiftSetup::STATUS => 'E'], ShiftSetup::SHIFT_ENAME, "ASC"),
+                    'leaves'=> ApplicationHelper::getTableKVListWithSortOption($this->adapter, LeaveMaster::TABLE_NAME, LeaveMaster::LEAVE_ID, [LeaveMaster::LEAVE_ENAME], [LeaveMaster::STATUS => 'E'], LeaveMaster::LEAVE_ENAME, "ASC"),
+                    'recommenders' => ApplicationHelper::getTableKVListWithSortOption($this->adapter, "HRIS_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => "E"], "FIRST_NAME", "ASC", " "),
+                    'approvers' => ApplicationHelper::getTableKVListWithSortOption($this->adapter, "HRIS_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => "E"], "FIRST_NAME", "ASC", " ")
+                ]);
     }
 
     public function viewAction() {
@@ -453,21 +536,21 @@ class EmployeeController extends AbstractActionController {
         }
 
         $this->initializeForm();
-        $request = $this->getRequest();
+//        $request = $this->getRequest();
         $empQualificationRepo = new EmployeeQualificationRepository($this->adapter);
         $empExperienceRepo = new EmployeeExperienceRepository($this->adapter);
         $empTrainingRepo = new EmployeeTrainingRepository($this->adapter);
 
-        $formOneModel = new HrEmployeesFormTabOne();
-        $formTwoModel = new HrEmployeesFormTabTwo();
-        $formThreeModel = new HrEmployeesFormTabThree();
-        $formFourModel = new HrEmployeesFormTabFour();
-        $formSixModel = new HrEmployeesFormTabSix();
+//        $formOneModel = new HrEmployeesFormTabOne();
+//        $formTwoModel = new HrEmployeesFormTabTwo();
+//        $formThreeModel = new HrEmployeesFormTabThree();
+//        $formFourModel = new HrEmployeesFormTabFour();
+//        $formSixModel = new HrEmployeesFormTabSix();
 
         $employeeData = (array) $this->repository->getById($id);
         $profilePictureId = $employeeData[HrEmployees::PROFILE_PICTURE_ID];
-        $filePathArray=ApplicationHelper::getTableKVList($this->adapter, EmployeeFileModel::TABLE_NAME, EmployeeFileModel::FILE_CODE, [EmployeeFileModel::FILE_PATH], [EmployeeFileModel::FILE_CODE => $profilePictureId], null);
-        $filePath = $filePathArray==null?null:$filePathArray[$profilePictureId];
+        $filePathArray = ApplicationHelper::getTableKVList($this->adapter, EmployeeFileModel::TABLE_NAME, null, [EmployeeFileModel::FILE_PATH], [EmployeeFileModel::FILE_CODE => $profilePictureId], null);
+        $filePath = empty($filePathArray) ? $this->config->getApplicationConfig()['default-profile-picture'] : $filePathArray[0];
 
         $perVdcMunicipalityDtl = $this->repository->getVdcMunicipalityDtl($employeeData[HrEmployees::ADDR_PERM_VDC_MUNICIPALITY_ID]);
         $perDistrictDtl = $this->repository->getDistrictDtl($perVdcMunicipalityDtl['DISTRICT_ID']);
@@ -487,8 +570,8 @@ class EmployeeController extends AbstractActionController {
                     'formThree' => $this->formThree,
                     'formFour' => $this->formFour,
                     'formSix' => $this->formSix,
-                    "formSeven"=>$this->formSeven,
-                    'formEight'=>$this->formEight,
+                    "formSeven" => $this->formSeven,
+                    'formEight' => $this->formEight,
                     "id" => $id,
                     'profilePictureId' => $profilePictureId,
                     'employeeData' => $employeeData,
@@ -498,8 +581,8 @@ class EmployeeController extends AbstractActionController {
                     'tempDistrictName' => $tempDistrictDtl['DISTRICT_NAME'],
                     'tempZoneName' => $tempZoneDtl['ZONE_NAME'],
                     'empQualificationList' => $empQualificationDtl,
-                    'empExperienceList'=>$empExperienceList,
-                    'empTrainingList'=>$empTrainingList
+                    'empExperienceList' => $empExperienceList,
+                    'empTrainingList' => $empTrainingList
         ]);
     }
 

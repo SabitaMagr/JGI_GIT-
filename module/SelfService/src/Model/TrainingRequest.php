@@ -12,7 +12,7 @@ class TrainingRequest extends Model{
     const TRAINING_ID = "TRAINING_ID";
     const TITLE = "TITLE";
     const DESCRIPTION = "DESCRIPTION";
-    const TRAINING_TYPE = "TRAININT_TYPE";
+    const TRAINING_TYPE = "TRAINING_TYPE";
     const START_DATE = "START_DATE";
     const END_DATE = "END_DATE";
     const STATUS = "STATUS";
@@ -27,7 +27,7 @@ class TrainingRequest extends Model{
     const REMARKS = "REMARKS";
     
     public $requestId;
-    public $reqestedDate;
+    public $requestedDate;
     public $employeeId;
     public $trainingId;
     public $title;

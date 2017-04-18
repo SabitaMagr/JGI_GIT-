@@ -7,6 +7,8 @@
         var $effectiveDate = $('#effectiveDate');
         var $effectiveNepaliDate = $('#effectiveNepaliDate');
         var $jobHistoryId = $('#jobHistoryId');
+        
+        
 
         var salaryDetail = document.salaryDetail;
         console.log(salaryDetail);
@@ -15,6 +17,8 @@
 
         $newAmount.val(salaryDetail['NEW_AMOUNT']);
         $effectiveDate.val(salaryDetail['EFFECTIVE_DATE']);
+        
+        
 
 
 //        var fetchServiceEvents = function ($this) {
@@ -36,7 +40,9 @@
 //        };
 //
 //        fetchServiceEvents($employeeId);
-
+    
+    
+    app.datePickerWithNepali("effectiveDate","effectiveNepaliDate");
 
     });
 

@@ -4,6 +4,7 @@ namespace Application;
 
 use Application\Controller\AuthController;
 use Application\Factory\HrLogger;
+use Application\Helper\Helper;
 use Application\Helper\SessionHelper;
 use Application\Model\HrisAuthStorage;
 use DateTime;
@@ -24,7 +25,6 @@ use Zend\ModuleManager\Feature\ConsoleUsageProviderInterface;
 use Zend\Mvc\ModuleRouteListener;
 use Zend\Mvc\MvcEvent;
 use Zend\View\Model\ViewModel;
-use Application\Helper\Helper;
 
 class Module implements AutoloaderProviderInterface, ConsoleUsageProviderInterface {
 
@@ -119,8 +119,6 @@ class Module implements AutoloaderProviderInterface, ConsoleUsageProviderInterfa
     }
 
     private function initNotification(DbAdapterInterface $adapter, ViewModel $viewModel, array $identity = null) {
-
-
         $employeeId = $identity['employee_id'];
         $viewModel->setVariable('dateCompare', function($date) {
             $startDate = DateTime::createFromFormat(Helper::PHP_DATE_FORMAT . " " . Helper::PHP_TIME_FORMAT, $date);
@@ -146,7 +144,7 @@ class Module implements AutoloaderProviderInterface, ConsoleUsageProviderInterfa
     }
 
     public function getAutoloaderConfig() {
-
+        
     }
 
     public function getServiceConfig() {
@@ -157,7 +155,6 @@ class Module implements AutoloaderProviderInterface, ConsoleUsageProviderInterfa
                 },
                 'AuthService' => function ($container) {
                     $dbAdapter = $container->get(DbAdapter::class);
-                    //$dbTableAuthAdapter = new DbTableAuthAdapter($dbAdapter, 'users', 'username', 'password', 'MD5(?)');
                     $dbTableAuthAdapter = new DbTableAuthAdapter($dbAdapter, 'HRIS_USERS', 'USER_NAME', 'PASSWORD');
                     $authService = new AuthenticationService();
                     $authService->setAdapter($dbTableAuthAdapter);

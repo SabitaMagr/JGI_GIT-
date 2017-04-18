@@ -30,17 +30,39 @@
         var $endTime = $('#endTime');
         var $totalWorkingHr = $('#totalWorkingHr');
 
+        var format = function (input) {
+            var str = "" + input;
+            var pad = "00";
+            return pad.substring(0, pad.length - str.length) + str;
+        };
+
         var onChangeTime = function () {
-            var st = $startTime.combodate('getValue', 'h,m');
-            var et = $endTime.combodate('getValue', 'h,m');
+            try {
+                var startValue = $startTime.combodate('getValue', 'YYYY-MM-DDTHH:mm:ss.sssZ');
+                var endValue = $endTime.combodate('getValue', 'YYYY-MM-DDTHH:mm:ss.sssZ');
 
-            var stA = st.split(',');
-            var etA = et.split(',');
+                if (startValue == '' || endValue == '') {
+                    throw {message: 'Start Time or End Time not set.', type: 'internal'};
+                }
+                var startDate = new Date(startValue);
+                var endDate = new Date(endValue);
 
-            var diff1 = parseInt(st[0]) - parseInt(et[0]);
-            var diff2 = parseInt(st[1]) - parseInt(et[1]);
-            console.log(diff1 + ":" + diff2);
-//            $totalWorkingHr.combodate('setValue', diff1 + ":" + diff2);
+                var timeDiff = endDate.getTime() - startDate.getTime();
+                if (timeDiff <= 0) {
+                    throw {message: 'End Time should be greater than Start Time.', type: 'external'};
+                }
+
+                var diffHr = Math.floor(timeDiff / (1000 * 3600));
+                var diffMin = Math.floor((timeDiff % (1000 * 3600)) / (1000 * 60));
+                $totalWorkingHr.combodate('setValue', format(diffHr) + ":" + format(diffMin));
+
+            } catch (e) {
+                console.log('exceptions', e);
+                if (e.type == 'external') {
+                    app.errorMessage(e.message);
+                }
+            }
+
         };
 
         $startTime.on('change', function () {
@@ -51,7 +73,8 @@
             onChangeTime();
         });
 
-        app.startEndDatePicker('startDate', 'endDate');
+//        app.startEndDatePicker('startDate', 'endDate');
+app.startEndDatePickerWithNepali('nepaliStartDate1', 'startDate', 'nepaliEndDate1', 'endDate');
         /* prevent past event post || commented for now as needs discussion*/
 //        $('#startDate').datepicker("setStartDate", new Date());
 //        $('#endDate').datepicker("setStartDate", new Date());

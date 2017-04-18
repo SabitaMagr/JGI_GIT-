@@ -1,4 +1,11 @@
 <?php
+$this->headLink()
+        ->appendStylesheet($this->basePath('assets/global/plugins/nepalidate/nepali.datepicker.v2.1.min.css'));
+
+$this->headScript()
+        ->appendFile($this->basePath('assets/global/plugins/nepalidate/nepali.datepicker.v2.1.min.js'))
+        ->appendFile($this->basePath('js/nepali-datepicker-ext.js'));
+
 $this->headScript()->appendFile($this->basePath('js/angular.min.js'));
 $this->headScript()->appendFile($this->basePath('js/SelfService/travel-request/add.js'))
         ->appendFile($this->basePath('js/SelfService/travel-request/advanceRequestController.js'));
@@ -74,27 +81,49 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                     </div>
 
                     <div class="col-sm-4">
-                        <div class="form-group">
-                            <?php print $this->formLabel($fromDate); ?>
-                            <span class="required" aria-required="true">*</span>
-                            <div class="input-group date" id="fromDate">
-                                <?php print $this->formElement($fromDate); ?>
-                                <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                            </div>
-                            <?php print $this->formElementErrors()->render($fromDate, ['class' => 'help-block']); ?>
-                        </div>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <?php print $this->formLabel($fromDate); ?>
+                                    <span class="required" aria-required="true">*</span>
+                                        <?php print $this->formElement($fromDate); ?>
+                                    <?php print $this->formElementErrors()->render($fromDate, ['class' => 'help-block']); ?>
+                                </div>
+                            </div>     
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="nepaliStartDate">&nbsp;</label>
+                                    <div class="input-group">
+                                        <input type="text" name="nepaliStartDate" id="nepaliStartDate1"
+                                               class="form-control" value="">
+                                    </div>
+                                </div>
+                            </div>     
+                        </div>  
+
                     </div>
 
                     <div class="col-sm-4">
-                        <div class="form-group">
-                            <?php print $this->formLabel($toDate); ?>
-                            <span class="required" aria-required="true">*</span>
-                            <div class="input-group date" id="toDate">
-                                <?php print $this->formElement($toDate); ?>
-                                <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                            </div>
-                            <?php print $this->formElementErrors()->render($toDate, ['class' => 'help-block']); ?>
-                        </div>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <?php print $this->formLabel($toDate); ?>
+                                    <span class="required" aria-required="true">*</span>
+                                        <?php print $this->formElement($toDate); ?>
+                                    <?php print $this->formElementErrors()->render($toDate, ['class' => 'help-block']); ?>
+                                </div>
+                            </div>     
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="nepaliEndDate">&nbsp;</label>
+                                    <div class="input-group">
+                                        <input type="text" name="nepaliEndDate" id="nepaliEndDate1"
+                                               class="form-control" value="">
+                                    </div>
+                                </div>
+                            </div>     
+                        </div>  
+
                     </div>
                 </div>
 

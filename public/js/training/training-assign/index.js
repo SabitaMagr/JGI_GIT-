@@ -6,7 +6,7 @@
 })(window.jQuery, window.app);
 
 angular.module('hris', [])
-        .controller('trainingAssignController', function ($scope, $http) {
+        .controller('trainingAssignController', function ($scope, $http,$window) {
             $('select').select2();
             $scope.employeeList = [];
             $scope.all = false;
@@ -127,6 +127,11 @@ angular.module('hris', [])
                     window.toastr.success("Training assign cancelled successfully!", "Notification");
                 });
             };
+            var employeeIdFromParam = window.location.href.substr(window.location.href.lastIndexOf('/') + 1);
+            if(parseInt(employeeIdFromParam)>0){
+                angular.element(document.getElementById('employeeId')).val(employeeIdFromParam).change();
+                $scope.view();
+            }
             
             $scope.viewTrainingAssignList = function () {
                 var branchId = angular.element(document.getElementById('branchId')).val();

@@ -16,6 +16,13 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
     </script>
 <?php } ?>
 <?php
+$this->headLink()
+        ->appendStylesheet($this->basePath('assets/global/plugins/nepalidate/nepali.datepicker.v2.1.min.css'));
+
+$this->headScript()
+        ->appendFile($this->basePath('assets/global/plugins/nepalidate/nepali.datepicker.v2.1.min.js'))
+        ->appendFile($this->basePath('js/nepali-datepicker-ext.js'));
+
 $this->headScript()->appendFile($this->basePath('js/SelfService/work-on-holiday/add.js'));
 
 $form->setAttribute('role', 'form');
@@ -50,18 +57,21 @@ print $this->form()->openTag($form);
     document.url = '<?= $this->url("restful", ["action" => "index"]) ?>';
 </script>
 <div class="row margin-top-20">
-    <div class="col-sm-8 col-sm-offset-2">
+    <div class="col-sm-12">
         <div class="portlet box custom-box">
             <div class="portlet-title">
                 <div class="caption">
                     <i class="fa fa-user"></i>Work on Holiday Request Detail
+                </div>
+                <div class="actions">
+                    <a class="btn btn-circle btn-icon-only btn-default fullscreen" href="javascript:;" data-original-title="" title=""> </a>
                 </div>
             </div>
             <div class="portlet-body">
                 <div class="border-bottom">
                     <div class="form-group">
                         <div class="row div-font-11">
-                            <div class="col-md-6">
+                            <div class="col-sm-4">
                                 <table>
                                     <tr height="30">
                                         <td>
@@ -92,7 +102,7 @@ print $this->form()->openTag($form);
                                     </tr>                               
                                 </table>
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-sm-4">
                                 <table>  
                                     <tr height="30">
                                         <td>
@@ -103,6 +113,21 @@ print $this->form()->openTag($form);
                                             <?php echo $requestedDate; ?>
                                         </td>
                                     </tr>
+                                    <?php if ($role != 4) { ?>
+                                        <tr height="30">
+                                            <td>
+                                                <?= ($role == 3) ? "Recommender" : "Approver"; ?>
+                                            </td>
+                                            <td width="15">:</td>
+                                            <td>
+                                                <?= ($role == 3) ? $recommender : $approver; ?>
+                                            </td>
+                                        </tr> 
+                                    <?php } ?>
+                                </table>
+                            </div>
+                            <div class="col-sm-4">
+                                <table>  
                                     <tr height="30">
                                         <td>
                                             Status
@@ -124,54 +149,89 @@ print $this->form()->openTag($form);
                                             ?>
                                         </td>
                                     </tr>
-                                    <?php if ($role != 4) { ?>
-                                        <tr height="30">
-                                            <td>
-                                                <?= ($role == 3) ? "Recommender" : "Approver"; ?>
-                                            </td>
-                                            <td width="15">:</td>
-                                            <td>
-                                                <?= ($role == 3) ? $recommender : $approver; ?>
-                                            </td>
-                                        </tr> 
-                                    <?php } ?>
                                 </table>
                             </div>
                         </div>
                     </div>
-                    <div class="form-group">
-                        <?php print $this->formLabel($holidayId); ?>
-                        <?php print $this->formElement($holidayId); ?>
-                        <?php print $this->formElementErrors()->render($holidayId, ['class' => 'help-block']); ?>
-                    </div>               
-                    <div
-                        class="form-group required  <?= empty($fromDate->getMessages()) ? "" : "error" ?>">
-                            <?php print $this->formLabel($fromDate) ?>
-                            <?php print $this->formElement($fromDate) ?>
-                    </div>
-                    <?php print $this->formElementErrors()->render($fromDate, ['class' => 'help-block error']) ?>
 
-                    <div
-                        class="form-group required <?= empty($toDate->getMessages()) ? "" : "error" ?>">
-                            <?php print $this->formLabel($toDate) ?>
-                            <?php print $this->formElement($toDate) ?>
-                        <span id="errorMsgDate" style="font-size:11px; color:red;"></span>
-                    </div>
-                    <?php print $this->formElementErrors()->render($toDate, ['class' => 'help-block error']) ?>
 
-                    <div
-                        class="form-group required <?= empty($duration->getMessages()) ? "" : "error" ?>">
-                            <?php print $this->formLabel($duration); ?>
-                            <?php print $this->formElement($duration); ?>
-                        <span id="errorMsg" style="font-size:11px; color:red;"></span>
-                    </div>
-                    <?php print $this->formElementErrors()->render($duration, ['class' => 'help-block error']); ?>
+                    <div class=" row">
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <?php print $this->formLabel($holidayId); ?>
+                                <?php print $this->formElement($holidayId); ?>
+                                <?php print $this->formElementErrors()->render($holidayId, ['class' => 'help-block']); ?>
+                            </div>               
+                        </div>
 
-                    <div class="form-group">
-                        <?php print $this->formLabel($remarks); ?>
-                        <?php print $this->formElement($remarks); ?>
-                        <?php print $this->formElementErrors()->render($remarks, ['class' => 'help-block']); ?>
+                        <div class="col-sm-4">  
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="form-group required  <?= empty($fromDate->getMessages()) ? "" : "error" ?>">
+                                        <?php print $this->formLabel($fromDate) ?>
+                                        <?php print $this->formElement($fromDate) ?>
+                                    </div>
+                                    <?php print $this->formElementErrors()->render($fromDate, ['class' => 'help-block error']) ?>
+                                </div>     
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label for="nepaliStartDate">&nbsp;</label>
+                                        <div class="input-group">
+                                            <input type="text" name="nepaliStartDate" id="nepaliStartDate1"
+                                                   class="form-control" value="" disabled="disabled">
+                                        </div>
+                                    </div>
+                                </div>     
+                            </div> 
+
+                        </div>
+
+                        <div class="col-sm-4">
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div
+                                        class="form-group required <?= empty($toDate->getMessages()) ? "" : "error" ?>">
+                                            <?php print $this->formLabel($toDate) ?>
+                                            <?php print $this->formElement($toDate) ?>
+                                        <span id="errorMsgDate" style="font-size:11px; color:red;"></span>
+                                    </div>
+                                    <?php print $this->formElementErrors()->render($toDate, ['class' => 'help-block error']) ?>
+                                </div>     
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label for="nepaliEndDate">&nbsp;</label>
+                                        <div class="input-group">
+                                            <input type="text" name="nepaliEndDate" id="nepaliEndDate1"
+                                                   class="form-control" value="" disabled="disabled">
+                                        </div>
+                                    </div>
+                                </div>     
+                            </div> 
+                        </div>
                     </div>
+
+                    <div class=" row">
+                        <div class="col-sm-4">
+                            <div
+                                class="form-group required <?= empty($duration->getMessages()) ? "" : "error" ?>">
+                                    <?php print $this->formLabel($duration); ?>
+                                    <?php print $this->formElement($duration); ?>
+                                <span id="errorMsg" style="font-size:11px; color:red;"></span>
+                            </div>
+                            <?php print $this->formElementErrors()->render($duration, ['class' => 'help-block error']); ?>
+                        </div>
+
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <?php print $this->formLabel($remarks); ?>
+                                <?php print $this->formElement($remarks); ?>
+                                <?php print $this->formElementErrors()->render($remarks, ['class' => 'help-block']); ?>
+                            </div>
+                        </div>
+                    </div>
+
+
+
                 </div>     
                 <?php if ($role == 2) { ?>
                     <div

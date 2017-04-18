@@ -1,14 +1,22 @@
 <?php
+$this->headLink()
+        ->appendStylesheet($this->basePath('assets/global/plugins/nepalidate/nepali.datepicker.v2.1.min.css'));
+
+
+$this->headScript()
+        ->appendFile($this->basePath('assets/global/plugins/nepalidate/nepali.datepicker.v2.1.min.js'))
+        ->appendFile($this->basePath('js/nepali-datepicker-ext.js'));
 $this->headScript()->appendFile($this->basePath('js/HolidayManagement/HolidaySetup/add.js'));
 $this->headScript()->appendFile($this->basePath('js/angular.min.js'));
 $this->headScript()->appendFile($this->basePath('js/HolidayManagement/HolidaySetup/holidayController.js'));
-$this->headScript()->appendFile($this->basePath('assets/global/plugins/jquery.blockui.min.js'));
 ?>
 
 
 <script>
-    document.urlBranchList = '<?= $this->url("webService", ["action" => "branchList"]) ?>';
-    document.url = '<?= $this->url("webService", ["action" => "index"]) ?>';
+    document.urlBranchList = '<?= $this->url("holidaysetup", ["action" => "branchList"]) ?>';
+    document.urlDepartmentList = '<?= $this->url("holidaysetup", ["action" => "designationList"]) ?>';
+    document.updateHolidayDetailWS = '<?= $this->url("holidaysetup", ["action" => "updateHolidayDetail"]) ?>';
+    document.pullHolidayDetailWS = '<?= $this->url("holidaysetup", ["action" => "pullHolidayDetail"]) ?>';
 </script>
 
 <?php
@@ -16,23 +24,9 @@ $holidayFormElement->setAttributes(["ng-model" => "holidayId"]);
 $branchFormElement->setAttribute("ng-model", "branchId");
 $genderFormElement->setAttribute("ng-model", "genderId");
 
-$holidayCode = $form->get('holidayCode');
-$genderId = $form->get('genderId');
-$branchId = $form->get('branchId');
-$holidayEname = $form->get('holidayEname');
-$holidayLname = $form->get('holidayLname');
 $startDate = $form->get('startDate');
-$endDate = $form->get('endDate');
-$halfday = $form->get('halfday');
-$remarks = $form->get('remarks');
 $submit = $form->get('submit');
 $submit->setAttribute('value', 'UPDATE');
-
-$genderId->setValueOptions($genders);
-
-//$form->setAttribute('role', 'form');
-//$form->setAttribute('action', $this->url('holidaysetup', ['action' => 'edit']));
-//$form->prepare();
 ?>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\holidaysetup')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
@@ -50,211 +44,242 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
 <?php if ($this->messages) { ?>
     <script>
         document.messages =<?php echo json_encode($this->messages); ?>
-        document.urlIndex='<?= $this->url("holiday",["action"=>"index"]) ?>';
+        document.urlIndex = '<?= $this->url("holiday", ["action" => "index"]) ?>';
     </script>
 <?php } ?>
 <div ng-app="hris" ng-controller="holidayController">
     <div id="hris-page-content">
-    <div class="row margin-top-20">
-        <div class="col-sm-12">
-            <div class="portlet box custom-box form-box">
-                <div class="portlet-title">
-                    <div class="caption">
-                        <i class="fa fa-user"></i>Holiday Detail
-                    </div>
-                    <div class="actions">
-                        <a class="btn btn-circle btn-icon-only btn-default fullscreen" href="javascript:;" data-original-title="" title=""> </a>
-                    </div>
-                </div>
-                <div class="portlet-body">
-                    <form name="holidayForm" id="holiday-form" ng-submit="update()" novalidate>
-                        <input type="hidden" id="holidayId" value="<?= $selectedHoliday ?>"/>
-                    <div class=" row">
-                        <div class="col-sm-4">
-                            <div class="form-group">
-                                <label for="holidayCode">Holiday Code</label>
-                                <span class="required" aria-required="true">*</span>
-                                <input name="holidayCode" required="required" id="holidayCode" class="form-control"
-                                       type="text" ng-model="holidayDtl.holidayCode">
-                                <div ng-show="holidayForm.$submitted || holidayForm.holidayCode.$touched">
-                                    <ul ng-show="holidayForm.holidayCode.$error.required" class="help-block error">
-                                        <li>Holiday Code is required.</li>
-                                    </ul>
-                                </div>
-                            </div>
+        <div class="row margin-top-20">
+            <div class="col-sm-12">
+                <div class="portlet box custom-box form-box">
+                    <div class="portlet-title">
+                        <div class="caption">
+                            <i class="fa fa-user"></i>
+                            Holiday Detail
                         </div>
-
-                        <div class="col-sm-4">
-                            <div class="form-group">
-                                <label for="holidayEname">Holiday Ename</label>
-                                <span class="required" aria-required="true">*</span>
-                                <input name="holidayEname" required="required" id="holidayEname" class="form-control"
-                                       type="text" value="" ng-model="holidayDtl.holidayEname">
-                                <div ng-show="holidayForm.$submitted || holidayForm.holidayEname.$touched">
-                                    <ul ng-show="holidayForm.holidayEname.$error.required" class="help-block error">
-                                        <li>Holiday Name is required.</li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="col-sm-4">
-                            <div class="form-group">
-                                <label for="holidayLname">Holiday Lname</label>
-                                <input name="holidayLname" id="holidayLname" class="form-control"
-                                       type="text" value="" ng-model="holidayDtl.holidayLname">
-                            </div>
+                        <div class="actions">
+                            <a class="btn btn-circle btn-icon-only btn-default fullscreen" href="javascript:;" data-original-title="" title=""> </a>
                         </div>
                     </div>
-
-                    <div class=" row">
-                        <div class="col-sm-4">
-                            <div class="form-group required ">
-                                <label for="startDate">Start Date</label>
-                                <span class="required" aria-required="true">*</span>
-                                <div class="input-group date" id="startDate">
-                                    <input type="text" name="startDate" required="required"
-                                           class="form-control" value="" ng-model="holidayDtl.startDate">
-                                    <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                                </div>
-                                <?php print $this->formElementErrors()->render($startDate, ['class' => 'help-block error']) ?>
-                                <div ng-show="holidayForm.$submitted || holidayForm.startDate.$touched">
-                                    <ul ng-show="holidayForm.startDate.$error.required" class="help-block error">
-                                        <li>Start Date is required.</li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="col-sm-4">
-                            <div class="form-group required">
-                                <label for="endDate">End Date</label>
-                                <span class="required" aria-required="true">*</span>
-                                <div class="input-group date" id="endDate">
-                                    <input type="text" name="endDate" required="required" class="form-control"
-                                           value="" ng-model="holidayDtl.endDate">
-                                    <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                                </div>
-                                <?php print $this->formElementErrors()->render($startDate, ['class' => 'help-block error']) ?>
-                                <div ng-show="holidayForm.$submitted || holidayForm.endDate.$touched">
-                                    <ul ng-show="holidayForm.endDate.$error.required" class="help-block error">
-                                        <li>End Date is required.</li>
-                                    </ul>
+                    <div class="portlet-body">
+                        <form name="holidayForm" id="holiday-form" ng-submit="update()" novalidate>
+                            <input type="hidden" id="holidayId" value="<?= $selectedHoliday ?>"/>
+                            <div class=" row">
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label for="holidayCode">Holiday Code</label>
+                                        <span class="required" aria-required="true">*</span>
+                                        <input name="holidayCode" required="required" id="holidayCode" class="form-control"
+                                               type="text" ng-model="holidayDtl.holidayCode">
+                                        <div ng-show="holidayForm.$submitted || holidayForm.holidayCode.$touched">
+                                            <ul ng-show="holidayForm.holidayCode.$error.required" class="help-block error">
+                                                <li>Holiday Code is required.</li>
+                                            </ul>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label for="holidayEname">Holiday Ename</label>
+                                        <span class="required" aria-required="true">*</span>
+                                        <input name="holidayEname" required="required" id="holidayEname" class="form-control"
+                                               type="text" value="" ng-model="holidayDtl.holidayEname">
+                                        <div ng-show="holidayForm.$submitted || holidayForm.holidayEname.$touched">
+                                            <ul ng-show="holidayForm.holidayEname.$error.required" class="help-block error">
+                                                <li>Holiday Name is required.</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
 
-                        <div class="col-sm-4">
-                            <div class="form-group">
-                                <?php print $this->formLabel($branchFormElement); ?>
-                                <span class="required" aria-required="true">*</span>
-                                <?php print $this->formElement($branchFormElement); ?>
-                                <div ng-show="holidayForm.$submitted || holidayForm.branch.$touched">
-                                    <ul ng-show="holidayForm.branch.$error.required" class="help-block error">
-                                        <li>Branch is required.</li>
-                                    </ul>
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label for="holidayLname">Holiday Lname</label>
+                                        <input name="holidayLname" id="holidayLname" class="form-control"
+                                               type="text" value="" ng-model="holidayDtl.holidayLname">
+                                    </div>
                                 </div>
                             </div>
-                        </div>
+
+                            <div class=" row">
+                                <div class="col-sm-6">
+                                    <div class="row">
+                                        <div class="col-sm-6">
+                                            <div class="form-group required ">
+                                                <label for="startDate">Start Date</label>
+                                                <span class="required" aria-required="true">*</span>
+
+                                                <input type="text" name="startDate" id="startDate" required="required"
+                                                       class="form-control" value="" ng-model="holidayDtl.startDate">
+                                                       <?php print $this->formElementErrors()->render($startDate, ['class' => 'help-block error']) ?>
+                                                <div ng-show="holidayForm.$submitted || holidayForm.startDate.$touched">
+                                                    <ul ng-show="holidayForm.startDate.$error.required" class="help-block error">
+                                                        <li>Start Date is required.</li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </div>     
+                                        <div class="col-sm-6">
+                                            <div class="form-group">
+                                                <label for="nepaliStartDate">&nbsp;</label>
+                                                <input type="text" name="nepaliStartDate" id="nepaliStartDate1"
+                                                       class="form-control" value="">
+                                            </div>
+                                        </div>     
+                                    </div>  
+                                </div>
+
+                                <div class="col-sm-6">
+                                    <div class="row">
+                                        <div class="col-sm-6">
+                                            <div class="form-group required">
+                                                <label for="endDate">End Date</label>
+                                                <span class="required" aria-required="true">*</span>
+                                                <input type="text" id="endDate" name="endDate" required="required" class="form-control"
+                                                       value="" ng-model="holidayDtl.endDate">
+                                                       <?php print $this->formElementErrors()->render($startDate, ['class' => 'help-block error']) ?>
+                                                <div ng-show="holidayForm.$submitted || holidayForm.endDate.$touched">
+                                                    <ul ng-show="holidayForm.endDate.$error.required" class="help-block error">
+                                                        <li>End Date is required.</li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </div>     
+                                        <div class="col-sm-6">
+                                            <div class="form-group">
+                                                <label for="nepaliEndDate">&nbsp;</label>
+                                                <input type="text" name="nepaliEndDate" id="nepaliEndDate1"
+                                                       class="form-control" value="">
+                                            </div>
+                                        </div>     
+                                    </div>        
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <?php print $this->formLabel($branchFormElement); ?>
+                                        <span class="required" aria-required="true">*</span>
+                                        <?php print $this->formElement($branchFormElement); ?>
+                                        <div ng-show="holidayForm.$submitted || holidayForm.branch.$touched">
+                                            <ul ng-show="holidayForm.branch.$error.required" class="help-block error">
+                                                <li>Branch is required.</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <?php print $this->formLabel($designationFormElement); ?>
+                                        <span class="required" aria-required="true">*</span>
+                                        <?php print $this->formElement($designationFormElement); ?>
+                                        <div ng-show="holidayForm.$submitted || holidayForm.designation.$touched">
+                                            <ul ng-show="holidayForm.designation.$error.required" class="help-block error">
+                                                <li>Designation is required.</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class=" row">
+                                <div class="col-sm-6">
+                                    <div class="form-group padding-0">
+                                        <label for="genderId">Gender</label>
+                                        <div class="md-radio-inline">
+                                            <div class='md-radio'>
+                                                <input type='radio' value='1' name='genderId' id='genderId+Male' class='md-radiobtn'
+                                                       ng-model="holidayDtl.genderId">
+                                                <label for='genderId+Male'>
+                                                    <span></span>
+                                                    <span class='check'></span>
+                                                    <span class='box'></span> Male
+                                                </label>
+                                            </div>
+                                            <div class='md-radio'>
+                                                <input type='radio' value='2' name='genderId' id='genderId+Female' class='md-radiobtn'
+                                                       ng-model="holidayDtl.genderId">
+                                                <label for='genderId+Female'>
+                                                    <span></span>
+                                                    <span class='check'></span>
+                                                    <span class='box'></span> Female
+                                                </label>
+                                            </div>
+                                            <div class='md-radio'>
+                                                <input type='radio' value='3' name='genderId' id='genderId+Other' class='md-radiobtn'
+                                                       ng-model="holidayDtl.genderId">
+                                                <label for='genderId+Other'>
+                                                    <span></span>
+                                                    <span class='check'></span>
+                                                    <span class='box'></span> Other
+                                                </label>
+                                            </div>
+                                            <div class='md-radio'>
+                                                <input type='radio' checked value='-1' name='genderId' id='genderId+All'
+                                                       class='md-radiobtn' ng-model="holidayDtl.genderId">
+                                                <label for='genderId+All'>
+                                                    <span></span>
+                                                    <span class='check'></span>
+                                                    <span class='box'></span> All
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-6">
+                                    <div class="form-group padding-0">
+                                        <label for="halfday">Halfday</label>
+                                        <div class="md-radio-inline">
+                                            <div class='md-radio'>
+                                                <input type='radio' value='F' name='halfday' id='halfday+First Half' class='md-radiobtn'
+                                                       ng-model="holidayDtl.halfday">
+                                                <label for='halfday+First Half'>
+                                                    <span></span>
+                                                    <span class='check'></span>
+                                                    <span class='box'></span> First Half
+                                                </label>
+                                            </div>
+                                            <div class='md-radio'>
+                                                <input type='radio' value='S' name='halfday' id='halfday+Second Half'
+                                                       class='md-radiobtn' ng-model="holidayDtl.halfday">
+                                                <label for='halfday+Second Half'>
+                                                    <span></span>
+                                                    <span class='check'></span>
+                                                    <span class='box'></span> Second Half
+                                                </label>
+                                            </div>
+                                            <div class='md-radio'>
+                                                <input type='radio' value='N' name='halfday' id='halfday+Full Day' class='md-radiobtn'
+                                                       ng-model="holidayDtl.halfday">
+                                                <label for='halfday+Full Day'>
+                                                    <span></span>
+                                                    <span class='check'></span>
+                                                    <span class='box'></span> Full Day
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <div class="form-group">
+                                        <label for="remarks">Remarks</label>
+                                        <input name="remarks" id="remarks" class="form-control" type="text" value=""
+                                               ng-model="holidayDtl.remarks">
+                                    </div>
+                                </div>
+                            </div>
+                            <button  id="submit" class="btn btn-success">
+                                UPDATE
+                            </button>
+                        </form>
                     </div>
-
-
-
-                    <div class=" row">
-                        <div class="col-sm-4">
-                            <div class="form-group padding-0">
-                                <label for="genderId">Gender</label>
-                                <div class="md-radio-inline">
-                                    <div class='md-radio'>
-                                        <input type='radio' value='1' name='genderId' id='genderId+Male' class='md-radiobtn'
-                                               ng-model="holidayDtl.genderId">
-                                        <label for='genderId+Male'>
-                                            <span></span>
-                                            <span class='check'></span>
-                                            <span class='box'></span> Male
-                                        </label>
-                                    </div>
-                                    <div class='md-radio'>
-                                        <input type='radio' value='2' name='genderId' id='genderId+Female' class='md-radiobtn'
-                                               ng-model="holidayDtl.genderId">
-                                        <label for='genderId+Female'>
-                                            <span></span>
-                                            <span class='check'></span>
-                                            <span class='box'></span> Female
-                                        </label>
-                                    </div>
-                                    <div class='md-radio'>
-                                        <input type='radio' value='3' name='genderId' id='genderId+Other' class='md-radiobtn'
-                                               ng-model="holidayDtl.genderId">
-                                        <label for='genderId+Other'>
-                                            <span></span>
-                                            <span class='check'></span>
-                                            <span class='box'></span> Other
-                                        </label>
-                                    </div>
-                                    <div class='md-radio'>
-                                        <input type='radio' checked value='-1' name='genderId' id='genderId+All'
-                                               class='md-radiobtn' ng-model="holidayDtl.genderId">
-                                        <label for='genderId+All'>
-                                            <span></span>
-                                            <span class='check'></span>
-                                            <span class='box'></span> All
-                                        </label>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="col-sm-4">
-                            <div class="form-group padding-0">
-                                <label for="halfday">Halfday</label>
-                                <div class="md-radio-inline">
-                                    <div class='md-radio'>
-                                        <input type='radio' value='F' name='halfday' id='halfday+First Half' class='md-radiobtn'
-                                               ng-model="holidayDtl.halfday">
-                                        <label for='halfday+First Half'>
-                                            <span></span>
-                                            <span class='check'></span>
-                                            <span class='box'></span> First Half
-                                        </label>
-                                    </div>
-                                    <div class='md-radio'>
-                                        <input type='radio' value='S' name='halfday' id='halfday+Second Half'
-                                               class='md-radiobtn' ng-model="holidayDtl.halfday">
-                                        <label for='halfday+Second Half'>
-                                            <span></span>
-                                            <span class='check'></span>
-                                            <span class='box'></span> Second Half
-                                        </label>
-                                    </div>
-                                    <div class='md-radio'>
-                                        <input type='radio' value='N' name='halfday' id='halfday+Full Day' class='md-radiobtn'
-                                               ng-model="holidayDtl.halfday">
-                                        <label for='halfday+Full Day'>
-                                            <span></span>
-                                            <span class='check'></span>
-                                            <span class='box'></span> Full Day
-                                        </label>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="col-sm-4">
-                            <div class="form-group">
-                                <label for="remarks">Remarks</label>
-                                <input name="remarks" id="remarks" class="form-control" type="text" value=""
-                                       ng-model="holidayDtl.remarks">
-                            </div>
-                        </div>
-                    </div>
-                        <button  id="submit" class="btn btn-success">
-                            UPDATE
-                        </button>
-                    </form>
                 </div>
             </div>
         </div>
     </div>
-</div>
 </div>

@@ -10,6 +10,10 @@ use Notification\Model\LeaveRequestNotificationModel;
 use Notification\Model\LoanRequestNotificationModel;
 use Notification\Model\TrainingReqNotificationModel;
 use Notification\Model\TravelReqNotificationModel;
+use Notification\Model\WorkOnDayoffNotificationModel;
+use Notification\Model\WorkOnHolidayNotificationModel;
+use Notification\Model\LeaveSubNotificationModel;
+use Notification\Model\TravelSubNotificationModel;
 use Notification\Repository\EmailTemplateRepo;
 use Zend\Authentication\AuthenticationService;
 use Zend\Db\Adapter\AdapterInterface;
@@ -37,6 +41,19 @@ class EmailController extends AbstractActionController {
         13 => "Loan_Request",
         14 => "Loan_Recommend",
         15 => "Loan_Approval",
+        16 => "WorkOnDayoff_Request",
+        17 => "WorkOnDayoff_Recommend",
+        18 => "WorkOnDayoff_Approval",
+        19 => "WorkOnHoliday_Request",
+        20 => "WorkOnHoliday_Recommend",
+        21 => "WorkOnHoliday_Approval",
+        22 => "Training_Request",
+        23 => "Training_Recommend",
+        24 => "Training_Approval",
+        25 => "Leave_Substitute_Applied",
+        26 => "Leave_Substitute_Approval",
+        27 => "Travel_Substitute_Applied",
+        28 => "Travel_Substitute_Approval",
     ];
 
     private function getVariables() {
@@ -57,6 +74,22 @@ class EmailController extends AbstractActionController {
 
         $type6 = new LoanRequestNotificationModel();
         $type6ObjVars = $type6->getObjectAttrs();
+        
+        $type7 = new WorkOnDayoffNotificationModel();
+        $type7ObjVars = $type7->getObjectAttrs();
+        
+        $type8 = new WorkOnHolidayNotificationModel();
+        $type8ObjVars = $type8->getObjectAttrs();
+        
+        $type9 = new TrainingReqNotificationModel();
+        $type9ObjVars = $type9->getObjectAttrs();
+        
+        $type10 = new LeaveSubNotificationModel();
+        $type10ObjVars = $type10->getObjectAttrs();
+        
+        $type11 = new TravelSubNotificationModel();
+        $type11ObjVars = $type11->getObjectAttrs();
+        
         return [
             1 => $type1ObjVars,
             2 => $type1ObjVars,
@@ -73,6 +106,19 @@ class EmailController extends AbstractActionController {
             13 => $type6ObjVars,
             14 => $type6ObjVars,
             15 => $type6ObjVars,
+            16 => $type7ObjVars,
+            17 => $type7ObjVars,
+            18 => $type7ObjVars,
+            19 => $type8ObjVars,
+            20 => $type8ObjVars,
+            21 => $type8ObjVars,
+            22 => $type9ObjVars,
+            23 => $type9ObjVars,
+            24 => $type9ObjVars,
+            25 => $type10ObjVars,
+            26 => $type10ObjVars,
+            27 => $type11ObjVars,
+            28 => $type11ObjVars,
         ];
     }
 
