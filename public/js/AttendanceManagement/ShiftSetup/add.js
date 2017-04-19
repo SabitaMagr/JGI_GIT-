@@ -89,7 +89,9 @@ app.startEndDatePickerWithNepali('nepaliStartDate1', 'startDate', 'nepaliEndDate
         if (typeof selfId === "undefined") {
             selfId = 0;
         }
-        window.app.checkUniqueConstraints(inputFieldId, formId, tableName, columnName, checkColumnName, selfId);
+        window.app.checkUniqueConstraints(inputFieldId, formId, tableName, columnName, checkColumnName, selfId, function () {
+            App.blockUI({target: "#hris-page-content"});
+        });
         window.app.checkUniqueConstraints("shiftLname", formId, tableName, "SHIFT_LNAME", checkColumnName, selfId);
         window.app.checkUniqueConstraints("shiftCode", formId, tableName, "SHIFT_CODE", checkColumnName, selfId);
     });

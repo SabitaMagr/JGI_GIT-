@@ -115,6 +115,7 @@ angular.module('hris', [])
                         $scope.optionListEmpty = 0;
                     }
                     console.log(typeof questionId);
+                    App.blockUI({target: "#hris-page-content"});
                     window.app.pullDataById(document.urlSubmit, {
                         data: {
                             questionOptionList: $scope.questionOptionList,
@@ -127,11 +128,13 @@ angular.module('hris', [])
                             console.log(success.data);
                             $window.location.href =  document.urlIndex;
                             $window.localStorage.setItem("msg",success.data);
+                            App.unblockUI("#hris-page-content");
 //                            setTimeout(function() {
 //                               window.toastr.success(params, "Notifications");
 //                            }, 3000);
                         });
                     }, function (failure) {
+                        App.unblockUI("#hris-page-content");
                         console.log(failure);
                     });
                 }

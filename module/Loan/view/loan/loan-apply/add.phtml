@@ -11,7 +11,7 @@ $this->headScript()->appendFile($this->basePath('js/angular.min.js'));
 $this->headScript()->appendFile($this->basePath('js/SelfService/loan-request/loanController.js'));
 
 $form->setAttribute('role', 'form');
-$form->setAttribute('id', 'loanAdvance-form');
+$form->setAttribute('id', 'loan-form');
 
 $employeeId = $form->get('employeeId');
 $employeeId->setValueOptions($employees);

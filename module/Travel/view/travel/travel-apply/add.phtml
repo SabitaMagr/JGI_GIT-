@@ -8,7 +8,7 @@ $this->headScript()
 $this->headScript()->appendFile($this->basePath('js/SelfService/travel-request/add.js'));
 
 $form->setAttribute('role', 'form');
-$form->setAttribute('id', 'travelAdvance-form');
+$form->setAttribute('id', 'travelRequest-form');
 
 $employeeId = $form->get('employeeId');
 $employeeId->setValueOptions($employees);

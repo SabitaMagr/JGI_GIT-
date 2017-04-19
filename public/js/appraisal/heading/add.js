@@ -12,7 +12,9 @@
         if (typeof(selfId) == "undefined"){
             selfId=0;
         }
-        window.app.checkUniqueConstraints(inputFieldId,formId,tableName,columnName,checkColumnName,selfId);       
+        window.app.checkUniqueConstraints(inputFieldId,formId,tableName,columnName,checkColumnName,selfId, function () {
+            App.blockUI({target: "#hris-page-content"});
+        });      
         window.app.checkUniqueConstraints("headingCode",formId,tableName,"HEADING_CODE",checkColumnName,selfId);
         window.app.checkUniqueConstraints("headingNdesc",formId,tableName,"HEADING_NDESC",checkColumnName,selfId);
     });

@@ -27,6 +27,7 @@ $leaveLname = $form->get('leaveLname');
 $allowHalfday = $form->get('allowHalfday');
 $defaultDays = $form->get('defaultDays');
 $fiscalYear = $form->get('fiscalYear');
+$maxAccumulateDays = $form->get('maxAccumulateDays');
 $carryForward = $form->get('carryForward');
 $paid = $form->get('paid');
 $cashable = $form->get('cashable');
@@ -116,6 +117,13 @@ print $this->form()->openTag($form);
                             <?php print $this->formElement($fiscalYear); ?>
                         </div>
                         <?php print $this->formElementErrors()->render($fiscalYear, ['class' => 'help-block error']); ?>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="form-group <?= empty($maxAccumulateDays->getMessages()) ? "" : "error" ?>">
+                            <?php print $this->formLabel($maxAccumulateDays); ?>
+                            <?php print $this->formElement($maxAccumulateDays); ?>
+                        </div>
+                        <?php print $this->formElementErrors()->render($maxAccumulateDays, ['class' => 'help-block error']); ?>
                     </div>
 
                 </div>

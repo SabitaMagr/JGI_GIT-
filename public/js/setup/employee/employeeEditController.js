@@ -593,7 +593,7 @@
                             $scope.$apply(function () {
                                 console.log(success.data);
                                 $window.location.href = document.urlSubmitTraining;
-                                $window.localStorage.setItem("msg", "Employee Profile Successfully Submitted!!!");
+//                                $window.localStorage.setItem("msg","Employee Profile Successfully Submitted!!!");
                             });
                         }, function (failure) {
                             console.log(failure);

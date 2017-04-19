@@ -14,7 +14,9 @@
         if (typeof(selfId) == "undefined"){
             selfId=0;
         }
-        window.app.checkUniqueConstraints(inputFieldId,formId,tableName,columnName,checkColumnName,selfId);
+        window.app.checkUniqueConstraints(inputFieldId,formId,tableName,columnName,checkColumnName,selfId, function () {
+            App.blockUI({target: "#hris-page-content"});
+        });
         window.app.checkUniqueConstraints("leaveCode",formId,tableName,"LEAVE_CODE",checkColumnName,selfId);
         window.app.checkUniqueConstraints("leaveLname",formId,tableName,"LEAVE_LNAME",checkColumnName,selfId);
     });

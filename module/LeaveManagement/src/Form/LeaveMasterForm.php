@@ -91,7 +91,16 @@ class LeaveMasterForm
      * @Annotation\Attributes({ "id":"cashable"})
      */
     public $cashable;
-
+    
+    /**
+     * @Annotation\Type("Zend\Form\Element\Number")
+     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
+     * @Annotation\Options({"label":"Max Accumulate Days"})
+     * @Annotation\Required(false)
+     * @Annotation\Attributes({ "id":"maxAccumulateDays","min":"0", "class":"form-control"})
+     */
+    public $maxAccumulateDays;
+    
     /**
      * @Annotation\Type("Zend\Form\Element\Textarea")
      * @Annotation\Required(false)

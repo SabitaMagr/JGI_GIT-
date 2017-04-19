@@ -6,6 +6,7 @@
 //        app.addDatePicker($startDate);
         app.datePickerWithNepali("form-advanceDate","nepaliDate");
         $startDate.datepicker('setStartDate', new Date());
+        app.setLoadingOnSubmit("advanceAdvance-form");
     });
 })(window.jQuery, window.app);
 angular.module('hris', [])

@@ -1,6 +1,7 @@
 (function ($, app) {
     'use strict';
     $(document).ready(function () {
+        app.setLoadingOnSubmit("travelApprove-form");
         $('select#form-transportType').select2();
 //        app.startEndDatePicker('fromDate', 'toDate');
         app.startEndDatePickerWithNepali('nepaliStartDate1', 'form-fromDate', 'nepaliEndDate1', 'form-toDate')
@@ -18,6 +19,8 @@
         if (typeof(selfId) == "undefined"){
             selfId='R';
         }
-        window.app.checkUniqueConstraints(inputFieldId,formId,tableName,columnName,checkColumnName,selfId);
+        window.app.checkUniqueConstraints(inputFieldId,formId,tableName,columnName,checkColumnName,selfId, function () {
+            App.blockUI({target: "#hris-page-content"});
+        });
     });
 })(window.jQuery, window.app);

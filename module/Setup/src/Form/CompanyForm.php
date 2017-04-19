@@ -17,7 +17,7 @@ class CompanyForm {
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Validator({"name":"StringLength", "options":{"max":"10"}})
      * @Annotation\Options({"label":"Company Code"})
-     * @Annotation\Attributes({ "id":"form-companyCode", "class":"form-companyCode form-control", "placeholder":"Company Code..."  })
+     * @Annotation\Attributes({ "id":"form-companyCode","maxlength":"10", "class":"form-companyCode form-control", "placeholder":"Company Code..."  })
      */
     public $companyCode;
 
