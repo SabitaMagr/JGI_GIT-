@@ -13,14 +13,21 @@ class EntityHelper {
     const STATUS_DISABLED = 'D';
     const ORACLE_FUNCTION_INITCAP = 'INITCAP';
 
-    public static function getTableKVList(AdapterInterface $adapter, $tableName, $key = null, array $values, $where = null, $concatWith = null, $emptyColumn = false) {
+    public static function getTableKVList(AdapterInterface $adapter, $tableName, $key = null, array $values, $where = null, $concatWith = null, $emptyColumn = false, $orderBy = null, $orderAs = null) {
         $gateway = new TableGateway($tableName, $adapter);
+        $resultset = $gateway->select(function(Select $select) use ($key, $values, $where, $orderBy, $orderAs) {
+            if ($key !== null) {
+                array_push($values, $key);
+            }
+            $select->columns($values, false);
+            if ($where !== null) {
+                $select->where($where);
+            }
 
-        if ($where == null) {
-            $resultset = $gateway->select();
-        } else {
-            $resultset = $gateway->select($where);
-        }
+            if ($orderBy !== null) {
+                $select->order([$orderBy => ($orderAs !== null) ? $orderAs : Select::ORDER_ASCENDING]);
+            }
+        });
         $concatWith = ($concatWith == null) ? " " : ($concatWith == null) ? "" : $concatWith;
 
         $entitiesArray = array();
@@ -46,35 +53,7 @@ class EntityHelper {
     }
 
     public static function getTableKVListWithSortOption(AdapterInterface $adapter, $tableName, $key, array $values, $where = null, $orderBy = null, $orderAs = null, $concatWith = null, $emptyColumn = false) {
-        $gateway = new TableGateway($tableName, $adapter);
-
-        $resultset = $gateway->select(function(Select $select) use($where, $orderBy, $orderAs) {
-            if ($select != null) {
-                $select->where($where);
-            }
-            if ($orderBy != null) {
-                $orderAs = ($orderAs != null) ? $orderAs : "";
-                $select->order($orderBy . " " . $orderAs);
-            }
-        });
-        $concatWith = ($concatWith == null) ? " " : ($concatWith == null) ? "" : $concatWith;
-
-        $entitiesArray = array();
-        if ($emptyColumn) {
-            $entitiesArray[null] = "----";
-        }
-        foreach ($resultset as $result) {
-            $concattedValue = "";
-            for ($i = 0; $i < count($values); $i++) {
-                if ($i == 0) {
-                    $concattedValue = $result[$values[$i]];
-                    continue;
-                }
-                $concattedValue = $concattedValue . $concatWith . $result[$values[$i]];
-            }
-            $entitiesArray[$result[$key]] = $concattedValue;
-        }
-        return $entitiesArray;
+        return self::getTableKVList($adapter, $tableName, $key, $values, $where, $concatWith, $emptyColumn, $orderBy, $orderAs);
     }
 
     public static function rawQueryResult(AdapterInterface $adapter, string $sql) {
