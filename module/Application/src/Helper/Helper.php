@@ -3,6 +3,7 @@
 namespace Application\Helper;
 
 use Application\Model\Model;
+use DateTime;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\ResultSet\ResultSet;
 use Zend\Db\Sql\Expression;
@@ -201,26 +202,15 @@ class Helper {
         return self::getExpressionDateTime($currentDate);
     }
 
-    public static function getCurrentDate() {
-        $currentDate = date(self::PHP_DATE_FORMAT);
-        return $currentDate;
-    }
-
     public static function getcurrentMonthDayExpression() {
         $currentDate = date('d-M');
         $format = 'DD-MON';
         return new Expression("TO_DATE('{$currentDate}','{$format}')");
     }
 
-    public static function hydrate($class, ResultSet $resultSet) {
-        $tempArray = [];
-        foreach ($resultSet as $item) {
-            $model = new $class();
-            $model->exchangeArrayFromDB(
-                    $item->getArrayCopy());
-            array_push($tempArray, $model);
-        }
-        return $tempArray;
+    public static function getCurrentDate() {
+        $currentDate = date(self::PHP_DATE_FORMAT);
+        return $currentDate;
     }
 
     public static function renderCustomView() {
@@ -254,11 +244,20 @@ class Helper {
         };
     }
 
-    public static function generateUniqueName() {
-        $date = new \DateTime();
-        $t = $date->getTimestamp();
-        return $t + rand(0, 1000);
+    public static function hydrate($class, ResultSet $resultSet) {
+        $tempArray = [];
+        foreach ($resultSet as $item) {
+            $model = new $class();
+            $model->exchangeArrayFromDB(
+                    $item->getArrayCopy());
+            array_push($tempArray, $model);
+        }
+        return $tempArray;
     }
+
+    /*
+     * This function return the raw result in array or object array form
+     */
 
     public static function extractDbData($rawArray, bool $inArray = false, string $arrangeWithKey = null): array {
         $extractedArray = [];
@@ -275,8 +274,16 @@ class Helper {
         return $extractedArray;
     }
 
+    public static function generateUniqueName() {
+        $date = new DateTime();
+        $t = $date->getTimestamp();
+        return $t + rand(0, 1000);
+    }
+
     public static function maintainFloatNumberFormat($floatNumber) {
         return number_format($floatNumber, self::FLOAT_ROUNDING_DIGIT_NO, '.', '');
     }
+
+
 
 }

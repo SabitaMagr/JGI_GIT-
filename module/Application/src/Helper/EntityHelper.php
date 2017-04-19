@@ -2,6 +2,7 @@
 
 namespace Application\Helper;
 
+use ReflectionClass;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Sql\Select;
 use Zend\Db\TableGateway\TableGateway;
@@ -78,6 +79,30 @@ class EntityHelper {
     public static function rawQueryResult(AdapterInterface $adapter, string $sql) {
         $statement = $adapter->query($sql);
         return $statement->execute();
+    }
+
+    public static function getColumnNameArrayWithInitCaps(string $requestedName, array $columnList, string $shortForm = null, $selectedOnly = false) {
+        $refl = new ReflectionClass($requestedName);
+        $table = $refl->newInstanceArgs();
+
+        $objAttrs = array_keys(get_object_vars($table));
+        $objCols = [];
+
+        foreach ($objAttrs as $objAttr) {
+            if ('mappings' === $objAttr) {
+                continue;
+            }
+            $tempCol = $table->mappings[$objAttr];
+            if (in_array($tempCol, $columnList)) {
+                array_push($objCols, Helper::columnExpression($tempCol, $shortForm, 'INITCAP'));
+                continue;
+            }
+            if (!$selectedOnly) {
+                array_push($objCols, $tempCol);
+            }
+        }
+
+        return $objCols;
     }
 
 }
