@@ -8,7 +8,10 @@
 namespace SelfService\Form;
 
 use Zend\Form\Annotation;
-
+/**
+ * @Annotation\Hydrator("Zend\Hydrator\ObjectProperty")
+ * @Annotation\Name("attendanceByHr")
+ */
 class AttendanceRequestForm
 {
     /**

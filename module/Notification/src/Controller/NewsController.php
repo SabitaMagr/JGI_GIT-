@@ -8,7 +8,6 @@ use Notification\Form\NewsForm;
 use Notification\Model\NewsModel;
 use Notification\Repository\NewsRepository;
 use Setup\Model\Company;
-use Setup\Repository\CompanyRepository;
 use Setup\Repository\DepartmentRepository;
 use Zend\Authentication\AuthenticationService;
 use Zend\Db\Adapter\AdapterInterface;
@@ -25,6 +24,7 @@ class NewsController extends AbstractActionController {
     public function __construct(AdapterInterface $adapter) {
         $this->adapter = $adapter;
         $this->repository = new NewsRepository($adapter);
+
         $auth = new AuthenticationService();
         $this->employeeId = $auth->getStorage()->read()['employee_id'];
     }
@@ -37,10 +37,7 @@ class NewsController extends AbstractActionController {
 
     public function indexAction() {
         $result = $this->repository->fetchAll();
-        $list = [];
-        foreach ($result as $row) {
-            array_push($list, $row);
-        }
+        $list = Helper::extractDbData($result);
         return Helper::addFlashMessagesToArray($this, [
                     'news' => $list
         ]);
@@ -52,7 +49,6 @@ class NewsController extends AbstractActionController {
 //        $employeeDetail = $employeeRepo->fetchById($this->employeeId);
         $request = $this->getRequest();
 
-        $companyRepo = new CompanyRepository($this->adapter);
         $departmentRepo = new DepartmentRepository($this->adapter);
         if ($request->isPost()) {
             $this->form->setData($request->getPost());
@@ -84,7 +80,7 @@ class NewsController extends AbstractActionController {
                     'newsTypeValue' => $newsType,
                     'company' => ApplicationEntityHelper::getTableKVListWithSortOption($this->adapter, Company::TABLE_NAME, Company::COMPANY_ID, [Company::COMPANY_NAME], ["STATUS" => "E"], "COMPANY_NAME", "ASC"),
                     'branch' => $departmentRepo->fetchAllBranchAndCompany(),
-                    'designation' => $companyRepo->fetchAllDesignationAndCompany(),
+                    'designation' => $this->repository->fetchAllDesignationAndCompany(),
                     'department' => $departmentRepo->fetchAllBranchAndDepartment()
         ]);
     }
@@ -113,8 +109,6 @@ class NewsController extends AbstractActionController {
             }
         }
 
-
-        $companyRepo = new CompanyRepository($this->adapter);
         $departmentRepo = new DepartmentRepository($this->adapter);
         $newsType = [
             'NEWS' => 'NEWS',
@@ -130,7 +124,7 @@ class NewsController extends AbstractActionController {
                     'newsTypeValue' => $newsType,
                     'company' => ApplicationEntityHelper::getTableKVListWithSortOption($this->adapter, Company::TABLE_NAME, Company::COMPANY_ID, [Company::COMPANY_NAME], ["STATUS" => "E"], "COMPANY_NAME", "ASC"),
                     'branch' => $departmentRepo->fetchAllBranchAndCompany(),
-                    'designation' => $companyRepo->fetchAllDesignationAndCompany(),
+                    'designation' => $this->repository->fetchAllDesignationAndCompany(),
                     'department' => $departmentRepo->fetchAllBranchAndDepartment()
         ]);
     }

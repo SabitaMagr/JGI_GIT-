@@ -220,10 +220,10 @@ if ($countryId->getValue() == 168) {
     $idCitizenshipIssuePlace->setValueOptions($districts);
     $idCitizenshipIssuePlace->setLabel($label);
     $idCitizenshipIssuePlace->setValue($value);
-} else if($countryId->getValue()!=null){
+} else if ($countryId->getValue() != null) {
     $idCitizenshipIssuePlace->setAttributes(['value' => $countries[$countryId->getValue()]]);
     $idCitizenshipIssuePlace->setAttributes(["disabled" => 'true']);
-}else{
+} else {
     $idCitizenshipIssuePlace->setAttributes(["disabled" => 'true']);
 }
 ?>
@@ -238,13 +238,9 @@ if ($this->messages) {
 }
 ?>
 <script>
-    document.menu =<?php
-$menu = ["id" => "menuSetup", "subMenu" => ["id" => "subMenuEmployee"]];
-echo json_encode($menu);
-?>;
     document.urlDistrict = '<?= $this->url("webService", ["action" => "district"]) ?>';
     document.urlSubmitExperience = '<?= $this->url('employee', ['action' => 'edit', 'id' => $id, 'tab' => 8]) ?>';
-    document.urlSubmitTraining = '<?= $this->url('employee', ['action' => 'edit', 'id' => $id, 'tab' =>0]) ?>';
+    document.urlSubmitTraining = '<?= $this->url('employee', ['action' => 'edit', 'id' => $id, 'tab' => 0]) ?>';
     document.urlMunicipality = '<?= $this->url("webService", ["action" => "municipality"]) ?>';
     document.urlEmployeeList = '<?= $this->url("employee", ["action" => "index"]) ?>'
     document.currentTab = '<?= $tab ?>';
@@ -252,9 +248,9 @@ echo json_encode($menu);
     document.fileTypes = <?= json_encode($filetypes); ?>;
     document.profilePictureId =<?= ($profilePictureId == null) ? -1 : $profilePictureId ?>;
     document.employeeId =<?= $id ?>;
-    document.address =<?=
-json_encode($address);
-?>;</script>
+    document.address =<?php echo json_encode($address); ?>;
+    document.urlSetupComplete = '<?php echo $this->url('employee', ['action' => 'edit', 'id' => $id, 'tab' => 10]); ?>';
+</script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\Employee')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
@@ -1351,15 +1347,16 @@ json_encode($address);
                                 <div class="row bottomgap">
                                     <div class="form-group">
                                         <div class="col-xs-6 col-sm-6 col-md-6 rightalign-4">
-                                        <label> Shift </label>
+                                            <label> Shift </label>
                                         </div>
                                         <div class="col-xs-6 col-sm-6 cgap-4">
                                             <select required="required" name="shift">
-                                                <?php foreach($shifts as $shiftKey => $shiftValue){ 
-                                                    $shiftSelected = ($shiftId==$shiftKey)? "selected":"";
+                                                <?php
+                                                foreach ($shifts as $shiftKey => $shiftValue) {
+                                                    $shiftSelected = ($shiftId == $shiftKey) ? "selected" : "";
                                                     ?>
-                                                <option  value="<?php echo $shiftKey; ?>" <?php echo $shiftSelected; ?>><?php echo $shiftValue; ?></option>
-                                                <?php }?>
+                                                    <option  value="<?php echo $shiftKey; ?>" <?php echo $shiftSelected; ?>><?php echo $shiftValue; ?></option>
+                                                <?php } ?>
                                             </select>
                                         </div>
                                     </div>
@@ -1369,15 +1366,16 @@ json_encode($address);
                                 <div class="row bottomgap">
                                     <div class="form-group">
                                         <div class="col-xs-6 col-sm-6 col-md-6 rightalign-4">
-                                        <label> Recommender</label>
+                                            <label> Recommender</label>
                                         </div>
                                         <div class="col-xs-6 col-sm-6 cgap-4">
                                             <select required="required" name="recommender">
-                                                <?php foreach($recommenders as $recommenderKey => $recommenderValue){ 
-                                                    $recommenderSelected = ($recommenderId==$recommenderKey)? "selected":"";
+                                                <?php
+                                                foreach ($recommenders as $recommenderKey => $recommenderValue) {
+                                                    $recommenderSelected = ($recommenderId == $recommenderKey) ? "selected" : "";
                                                     ?>
-                                                <option  value="<?php echo $recommenderKey; ?>" <?php echo $recommenderSelected; ?>><?php echo $recommenderValue; ?></option>
-                                                <?php }?>
+                                                    <option  value="<?php echo $recommenderKey; ?>" <?php echo $recommenderSelected; ?>><?php echo $recommenderValue; ?></option>
+                                                <?php } ?>
                                             </select>
                                         </div>
                                     </div>
@@ -1387,15 +1385,16 @@ json_encode($address);
                                 <div class="row bottomgap">
                                     <div class="form-group">
                                         <div class="col-xs-6 col-sm-6 col-md-6 rightalign-4">
-                                        <label> Approver</label>
+                                            <label> Approver</label>
                                         </div>
                                         <div class="col-xs-6 col-sm-6 cgap-4">
                                             <select required="required" name="approver">
-                                                <?php foreach($approvers as $approverKey => $approverValue){ 
-                                                    $approverSelected = ($approverId==$approverKey)? "selected":"";
+                                                <?php
+                                                foreach ($approvers as $approverKey => $approverValue) {
+                                                    $approverSelected = ($approverId == $approverKey) ? "selected" : "";
                                                     ?>
-                                                <option  value="<?php echo $approverKey; ?>" <?php echo $approverSelected; ?>><?php echo $approverValue; ?></option>
-                                                <?php }?>
+                                                    <option  value="<?php echo $approverKey; ?>" <?php echo $approverSelected; ?>><?php echo $approverValue; ?></option>
+                                                <?php } ?>
                                             </select>
                                         </div>
                                     </div>
@@ -1772,29 +1771,29 @@ json_encode($address);
                             Additional Infomation</p>
                         <div class="row clearfix e-setup">
                             <div class="col-md-12">
-                        <div id="rolePanel">
-                        <ul id="roleList">
-                            <li>
-                                Leave Assign
-                                <a href="<?php echo $this->url("leaveassign",["action"=>"assign","eid"=>$id]) ?>">
-                                    <i class="fa fa-arrow-circle-right pull-right" aria-hidden="true" style="font-size:20px; line-height:20px!important;"></i>
-                                </a>
-                            </li>
-                            <li>
-                                Training Assign
-                                <a href="<?php echo $this->url("trainingAssign",["action"=>"assign","employeeId"=>$id]) ?>">
-                                    <i class="fa fa-arrow-circle-right pull-right" aria-hidden="true" style="font-size:20px; line-height:20px!important;"></i>
-                                </a>
-                            </li>
-                            <li>
-                                Appraisal Assign
-                                <a href="<?php echo $this->url("appraisalAssign",["action"=>"index","id"=>$id]) ?>">
-                                    <i class="fa fa-arrow-circle-right pull-right" aria-hidden="true" style="font-size:20px; line-height:20px!important;"></i>
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
-                    </div>
+                                <div id="rolePanel">
+                                    <ul id="roleList">
+                                        <li>
+                                            Leave Assign
+                                            <a href="<?php echo $this->url("leaveassign", ["action" => "assign", "eid" => $id]) ?>">
+                                                <i class="fa fa-arrow-circle-right pull-right" aria-hidden="true" style="font-size:20px; line-height:20px!important;"></i>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            Training Assign
+                                            <a href="<?php echo $this->url("trainingAssign", ["action" => "assign", "employeeId" => $id]) ?>">
+                                                <i class="fa fa-arrow-circle-right pull-right" aria-hidden="true" style="font-size:20px; line-height:20px!important;"></i>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            Appraisal Assign
+                                            <a href="<?php echo $this->url("appraisalAssign", ["action" => "index", "id" => $id]) ?>">
+                                                <i class="fa fa-arrow-circle-right pull-right" aria-hidden="true" style="font-size:20px; line-height:20px!important;"></i>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>

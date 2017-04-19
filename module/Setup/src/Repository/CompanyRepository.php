@@ -2,9 +2,9 @@
 
 namespace Setup\Repository;
 
+use Application\Helper\EntityHelper;
 use Application\Model\Model;
 use Application\Repository\RepositoryInterface;
-use Setup\Model\Branch;
 use Setup\Model\Company;
 use Setup\Model\Designation;
 use Zend\Db\Adapter\AdapterInterface;
@@ -23,9 +23,6 @@ class CompanyRepository implements RepositoryInterface {
     }
 
     public function add(Model $model) {
-        print "<pre>";
-        print_r($model);
-        exit;
         $this->tableGateway->insert($model->getArrayCopyForDB());
     }
 
@@ -36,44 +33,24 @@ class CompanyRepository implements RepositoryInterface {
 
     public function fetchAll() {
         return $this->tableGateway->select(function(Select $select) {
-                    $select->where([Company::STATUS => 'E']);
-                    $select->order(Company::COMPANY_NAME . " ASC");
+                    $select->where([Company::STATUS => EntityHelper::STATUS_ENABLED]);
+                    $select->order([Company::COMPANY_NAME => Select::ORDER_ASCENDING]);
                 });
     }
 
     public function fetchById($id) {
-        $rowset = $this->tableGateway->select([Company::COMPANY_ID => $id, Company::STATUS => 'E']);
+        $rowset = $this->tableGateway->select([
+            Company::COMPANY_ID => $id,
+            Company::STATUS => EntityHelper::STATUS_ENABLED
+        ]);
         return $rowset->current();
     }
 
     public function delete($id) {
-        $this->tableGateway->update([Company::STATUS => 'D'], [Company::COMPANY_ID => $id]);
+        $this->tableGateway->update([
+            Company::STATUS => EntityHelper::STATUS_DISABLED
+                ], [
+            Company::COMPANY_ID => $id
+        ]);
     }
-
-    public function fetchAllDesignationAndCompany() {
-        $sql = new Sql($this->adapter);
-        $select = $sql->select();
-        $select->columns(['DESIGNATION_ID', 'DESIGNATION_TITLE']);
-        $select->from(['D' => Designation::TABLE_NAME]);
-        $select->join(['C' => Company::TABLE_NAME], "C." . Company::COMPANY_ID . "=D." . Designation::COMPANY_ID, array('COMPANY_ID', 'COMPANY_NAME'), 'inner');
-        $select->where(["C.STATUS='E'"]);
-        $select->where(["D.STATUS='E'"]);
-        $select->order("D." . Designation::DESIGNATION_TITLE . " ASC");
-        $statement = $sql->prepareStatementForSqlObject($select);
-
-        $result = $statement->execute();
-
-        $list = [];
-        foreach ($result as $row) {
-            array_push($list, $row);
-        }
-
-        $designationList = [];
-        foreach ($list as $val) {
-            $newKey = $val['COMPANY_ID'];
-            $designationList[$newKey][] = $val;
-        }
-        return $designationList;
-    }
-
 }

@@ -7,6 +7,8 @@
         app.datePickerWithNepali("form-advanceDate","nepaliDate");
 
         $startDate.datepicker('setStartDate', new Date());
+        app.setLoadingOnSubmit("advanceApprove-form");
+        app.setLoadingOnSubmit("advance-form");
     });
 })(window.jQuery, window.app);
 

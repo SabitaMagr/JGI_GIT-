@@ -9,7 +9,7 @@ $this->headScript()
 $this->headScript()->appendFile($this->basePath('js/setup/job-history/add.js'));
 
 $form->setAttribute('role', 'form');
-$form->setAttribute('class', 'jobHistory-form');
+$form->setAttribute('id', 'jobHistory-form');
 
 $employeeId = $form->get('employeeId');
 $employeeId->setValueOptions($employeesAll);

@@ -67,7 +67,7 @@
             holidayChange($(this));
         });
 
-
+        app.setLoadingOnSubmit("workOnHoliday-form");
     });
 })(window.jQuery, window.app);
 

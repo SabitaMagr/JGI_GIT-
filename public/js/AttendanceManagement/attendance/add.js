@@ -49,7 +49,7 @@
         $employeeId.on("change", function (e) {
             app.floatingProfile.setDataFromRemote($(e.target).val());
         });
-
+        app.setLoadingOnSubmit("attendanceByHr");
     });
 })(window.jQuery, window.app);
 

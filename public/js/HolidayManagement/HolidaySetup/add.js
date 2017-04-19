@@ -31,7 +31,9 @@
         if (typeof (selfId) === "undefined") {
             selfId = 0;
         }
-        window.app.checkUniqueConstraints(inputFieldId, formId, tableName, columnName, checkColumnName, selfId);
+        window.app.checkUniqueConstraints(inputFieldId, formId, tableName, columnName, checkColumnName, selfId, function () {
+            App.blockUI({target: "#hris-page-content"});
+        });
         window.app.checkUniqueConstraints("holidayLname", formId, tableName, "HOLIDAY_LNAME", checkColumnName, selfId);
         window.app.checkUniqueConstraints("holidayCode", formId, tableName, "HOLIDAY_CODE", checkColumnName, selfId);
     });

@@ -4,8 +4,10 @@ namespace Setup\Controller;
 
 use Application\Factory\ConfigInterface;
 use Application\Helper\EntityHelper as ApplicationHelper;
-use Application\Helper\EntityHelper as EntityHelper2;
 use Application\Helper\Helper;
+use AttendanceManagement\Model\ShiftAssign;
+use AttendanceManagement\Model\ShiftSetup;
+use AttendanceManagement\Repository\ShiftAssignRepository;
 use Setup\Form\HrEmployeesFormTabEight;
 use Setup\Form\HrEmployeesFormTabFive;
 use Setup\Form\HrEmployeesFormTabFour;
@@ -22,7 +24,9 @@ use Setup\Model\District;
 use Setup\Model\EmployeeFile as EmployeeFileModel;
 use Setup\Model\HrEmployees;
 use Setup\Model\JobHistory;
+use Setup\Model\LeaveMaster;
 use Setup\Model\Position;
+use Setup\Model\RecommendApprove;
 use Setup\Model\ServiceEventType;
 use Setup\Model\ServiceType;
 use Setup\Model\VdcMunicipalities;
@@ -32,20 +36,13 @@ use Setup\Repository\EmployeeQualificationRepository;
 use Setup\Repository\EmployeeRepository;
 use Setup\Repository\EmployeeTrainingRepository;
 use Setup\Repository\JobHistoryRepository;
+use Setup\Repository\RecommendApproveRepository;
+use Zend\Authentication\AuthenticationService;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\Form\Element\Select;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
-use LeaveManagement\Repository\LeaveMasterRepository;
-use AttendanceManagement\Repository\ShiftRepository;
-use AttendanceManagement\Model\ShiftSetup;
-use Setup\Model\LeaveMaster;
-use AttendanceManagement\Model\ShiftAssign;
-use AttendanceManagement\Repository\ShiftAssignRepository;
-use Zend\Authentication\AuthenticationService;
-use Setup\Repository\RecommendApproveRepository;
-use Setup\Model\RecommendApprove;
 
 class EmployeeController extends AbstractActionController {
 
@@ -77,7 +74,7 @@ class EmployeeController extends AbstractActionController {
     public function indexAction() {
         $employeeNameFormElement = new Select();
         $employeeNameFormElement->setName("branch");
-        $employeeName = EntityHelper2::getTableKVListWithSortOption($this->adapter, "HRIS_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => "E"], "FIRST_NAME", "ASC", " ");
+        $employeeName = ApplicationHelper::getTableKVListWithSortOption($this->adapter, "HRIS_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => "E"], "FIRST_NAME", "ASC", " ");
         $employeeName1 = [-1 => "All"] + $employeeName;
         $employeeNameFormElement->setValueOptions($employeeName1);
         $employeeNameFormElement->setAttributes(["id" => "employeeId", "class" => "form-control"]);
@@ -86,7 +83,7 @@ class EmployeeController extends AbstractActionController {
 
         $branchFormElement = new Select();
         $branchFormElement->setName("branch");
-        $branches = EntityHelper2::getTableKVListWithSortOption($this->adapter, Branch::TABLE_NAME, Branch::BRANCH_ID, [Branch::BRANCH_NAME], [Branch::STATUS => 'E'], "BRANCH_NAME", "ASC");
+        $branches = ApplicationHelper::getTableKVListWithSortOption($this->adapter, Branch::TABLE_NAME, Branch::BRANCH_ID, [Branch::BRANCH_NAME], [Branch::STATUS => 'E'], "BRANCH_NAME", "ASC");
         $branches1 = [-1 => "All"] + $branches;
         $branchFormElement->setValueOptions($branches1);
         $branchFormElement->setAttributes(["id" => "branchId", "class" => "form-control"]);
@@ -95,7 +92,7 @@ class EmployeeController extends AbstractActionController {
 
         $departmentFormElement = new Select();
         $departmentFormElement->setName("department");
-        $departments = EntityHelper2::getTableKVListWithSortOption($this->adapter, Department::TABLE_NAME, Department::DEPARTMENT_ID, [Department::DEPARTMENT_NAME], [Department::STATUS => 'E'], "DEPARTMENT_NAME", "ASC");
+        $departments = ApplicationHelper::getTableKVListWithSortOption($this->adapter, Department::TABLE_NAME, Department::DEPARTMENT_ID, [Department::DEPARTMENT_NAME], [Department::STATUS => 'E'], "DEPARTMENT_NAME", "ASC");
         $departments1 = [-1 => "All"] + $departments;
         $departmentFormElement->setValueOptions($departments1);
         $departmentFormElement->setAttributes(["id" => "departmentId", "class" => "form-control"]);
@@ -103,7 +100,7 @@ class EmployeeController extends AbstractActionController {
 
         $designationFormElement = new Select();
         $designationFormElement->setName("designation");
-        $designations = EntityHelper2::getTableKVListWithSortOption($this->adapter, Designation::TABLE_NAME, Designation::DESIGNATION_ID, [Designation::DESIGNATION_TITLE], [Designation::STATUS => 'E'], "DESIGNATION_TITLE", "ASC");
+        $designations = ApplicationHelper::getTableKVListWithSortOption($this->adapter, Designation::TABLE_NAME, Designation::DESIGNATION_ID, [Designation::DESIGNATION_TITLE], [Designation::STATUS => 'E'], "DESIGNATION_TITLE", "ASC");
         $designations1 = [-1 => "All"] + $designations;
         $designationFormElement->setValueOptions($designations1);
         $designationFormElement->setAttributes(["id" => "designationId", "class" => "form-control"]);
@@ -111,7 +108,7 @@ class EmployeeController extends AbstractActionController {
 
         $positionFormElement = new Select();
         $positionFormElement->setName("position");
-        $positions = EntityHelper2::getTableKVListWithSortOption($this->adapter, Position::TABLE_NAME, Position::POSITION_ID, [Position::POSITION_NAME], [Position::STATUS => 'E'], "POSITION_NAME", "ASC");
+        $positions = ApplicationHelper::getTableKVListWithSortOption($this->adapter, Position::TABLE_NAME, Position::POSITION_ID, [Position::POSITION_NAME], [Position::STATUS => 'E'], "POSITION_NAME", "ASC");
         $positions1 = [-1 => "All"] + $positions;
         $positionFormElement->setValueOptions($positions1);
         $positionFormElement->setAttributes(["id" => "positionId", "class" => "form-control"]);
@@ -119,7 +116,7 @@ class EmployeeController extends AbstractActionController {
 
         $serviceTypeFormElement = new Select();
         $serviceTypeFormElement->setName("serviceType");
-        $serviceTypes = EntityHelper2::getTableKVListWithSortOption($this->adapter, ServiceType::TABLE_NAME, ServiceType::SERVICE_TYPE_ID, [ServiceType::SERVICE_TYPE_NAME], [ServiceType::STATUS => 'E'], "SERVICE_TYPE_NAME", "ASC");
+        $serviceTypes = ApplicationHelper::getTableKVListWithSortOption($this->adapter, ServiceType::TABLE_NAME, ServiceType::SERVICE_TYPE_ID, [ServiceType::SERVICE_TYPE_NAME], [ServiceType::STATUS => 'E'], "SERVICE_TYPE_NAME", "ASC");
         $serviceTypes1 = [-1 => "All"] + $serviceTypes;
         $serviceTypeFormElement->setValueOptions($serviceTypes1);
         $serviceTypeFormElement->setAttributes(["id" => "serviceTypeId", "class" => "form-control"]);
@@ -127,7 +124,7 @@ class EmployeeController extends AbstractActionController {
 
         $serviceEventTypeFormElement = new Select();
         $serviceEventTypeFormElement->setName("serviceEventType");
-        $serviceEventTypes = EntityHelper2::getTableKVListWithSortOption($this->adapter, ServiceEventType::TABLE_NAME, ServiceEventType::SERVICE_EVENT_TYPE_ID, [ServiceEventType::SERVICE_EVENT_TYPE_NAME], [ServiceEventType::STATUS => 'E'], "SERVICE_EVENT_TYPE_NAME", "ASC");
+        $serviceEventTypes = ApplicationHelper::getTableKVListWithSortOption($this->adapter, ServiceEventType::TABLE_NAME, ServiceEventType::SERVICE_EVENT_TYPE_ID, [ServiceEventType::SERVICE_EVENT_TYPE_NAME], [ServiceEventType::STATUS => 'E'], "SERVICE_EVENT_TYPE_NAME", "ASC");
         $serviceEventTypes1 = [-1 => "Working"] + $serviceEventTypes;
         $serviceEventTypeFormElement->setValueOptions($serviceEventTypes1);
         $serviceEventTypeFormElement->setAttributes(["id" => "serviceEventTypeId", "class" => "form-control"]);
@@ -232,8 +229,8 @@ class EmployeeController extends AbstractActionController {
             'academicProgram' => ApplicationHelper::getTableKVListWithSortOption($this->adapter, "HRIS_ACADEMIC_PROGRAMS", "ACADEMIC_PROGRAM_ID", ["ACADEMIC_PROGRAM_NAME"], ["STATUS" => 'E'], "ACADEMIC_PROGRAM_NAME", "ASC"),
             'academicCourse' => ApplicationHelper::getTableKVListWithSortOption($this->adapter, "HRIS_ACADEMIC_COURSES", "ACADEMIC_COURSE_ID", ["ACADEMIC_COURSE_NAME"], ["STATUS" => 'E'], "ACADEMIC_COURSE_NAME", "ASC"),
             'rankTypes' => $rankTypes,
-            'shifts'=> ApplicationHelper::getTableKVListWithSortOption($this->adapter, ShiftSetup::TABLE_NAME, ShiftSetup::SHIFT_ID, [ShiftSetup::SHIFT_ENAME], [ShiftSetup::STATUS => 'E'], ShiftSetup::SHIFT_ENAME, "ASC"),
-            'leaves'=> ApplicationHelper::getTableKVListWithSortOption($this->adapter, LeaveMaster::TABLE_NAME, LeaveMaster::LEAVE_ID, [LeaveMaster::LEAVE_ENAME], [LeaveMaster::STATUS => 'E'], LeaveMaster::LEAVE_ENAME, "ASC"),
+            'shifts' => ApplicationHelper::getTableKVListWithSortOption($this->adapter, ShiftSetup::TABLE_NAME, ShiftSetup::SHIFT_ID, [ShiftSetup::SHIFT_ENAME], [ShiftSetup::STATUS => 'E'], ShiftSetup::SHIFT_ENAME, "ASC"),
+            'leaves' => ApplicationHelper::getTableKVListWithSortOption($this->adapter, LeaveMaster::TABLE_NAME, LeaveMaster::LEAVE_ID, [LeaveMaster::LEAVE_ENAME], [LeaveMaster::STATUS => 'E'], LeaveMaster::LEAVE_ENAME, "ASC"),
             'recommenders' => ApplicationHelper::getTableKVListWithSortOption($this->adapter, "HRIS_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => "E"], "FIRST_NAME", "ASC", " "),
             'approvers' => ApplicationHelper::getTableKVListWithSortOption($this->adapter, "HRIS_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => "E"], "FIRST_NAME", "ASC", " ")
         ]);
@@ -250,6 +247,11 @@ class EmployeeController extends AbstractActionController {
             return $this->redirect()->toRoute('employee', ['action' => 'index']);
         }
 
+        if (10 === $tab) {
+            $this->flashmessenger()->addMessage("Employee Successfully Submitted!!!");
+            return $this->redirect()->toRoute('employee', ['action' => 'index']);
+        }
+
 
         $this->initializeForm();
         $request = $this->getRequest();
@@ -261,13 +263,13 @@ class EmployeeController extends AbstractActionController {
         $formSixModel = new HrEmployeesFormTabSix();
         $formSevenModel = new HrEmployeesFormTabSeven();
         $formEightModel = new HrEmployeesFormTabEight();
-        
+
         $shiftAssignRepo = new ShiftAssignRepository($this->adapter);
         $getEmpShiftDtl = $shiftAssignRepo->fetchByEmployeeId($id);
 
         $recommApproverRepo = new RecommendApproveRepository($this->adapter);
         $employeePreDtl = $recommApproverRepo->fetchById($id);
-                        
+
         $employeeData = (array) $this->repository->fetchById($id);
         $profilePictureId = $employeeData[HrEmployees::PROFILE_PICTURE_ID];
         $address = [];
@@ -325,24 +327,24 @@ class EmployeeController extends AbstractActionController {
                         $formFourModel->positionId = $formFourModel->appPositionId;
                         $formFourModel->serviceTypeId = $formFourModel->appServiceTypeId;
                         $formFourModel->serviceEventTypeId = $formFourModel->appServiceEventTypeId;
-                        
+
                         $shiftId = $postData->shift;
                         $recommenderId = $postData->recommender;
                         $approverId = $postData->approver;
-                        
+
                         $shiftAssign = new ShiftAssign();
 
                         $shiftAssign->employeeId = $id;
                         $shiftAssign->shiftId = $shiftId;
 
-                        if ($getEmpShiftDtl!=null) {
+                        if ($getEmpShiftDtl != null) {
                             $shiftAssignClone = clone $shiftAssign;
 
                             unset($shiftAssignClone->employeeId);
                             unset($shiftAssignClone->shiftId);
                             unset($shiftAssignClone->createdDt);
-                            
-                            if($shiftId!=$getEmpShiftDtl['SHIFT_ID']){
+
+                            if ($shiftId != $getEmpShiftDtl['SHIFT_ID']) {
                                 $shiftAssignClone->status = 'D';
                                 $shiftAssignClone->modifiedDt = Helper::getcurrentExpressionDate();
                                 $shiftAssignClone->modifiedBy = $this->loggedIdEmployeeId;
@@ -359,9 +361,9 @@ class EmployeeController extends AbstractActionController {
                             $shiftAssign->status = 'E';
                             $shiftAssignRepo->add($shiftAssign);
                         }
-                        
+
                         $recommendApprove = new RecommendApprove();
-                        
+
                         if ($employeePreDtl == null) {
                             $recommendApprove->employeeId = $id;
                             $recommendApprove->recommendBy = $recommenderId;
@@ -378,7 +380,7 @@ class EmployeeController extends AbstractActionController {
                             $recommendApprove->status = 'E';
                             $recommApproverRepo->edit($recommendApprove, $id);
                         }
-                        
+
                         $this->repository->edit($formFourModel, $id);
 
                         if ($jobHistoryListNum == 0) {
@@ -413,8 +415,11 @@ class EmployeeController extends AbstractActionController {
                     break;
                 case 8:
                     break;
+                case 9:
+                    break;
             }
         }
+
         if ($tab != 1 || !$request->isPost()) {
             $formOneModel->exchangeArrayFromDB($employeeData);
 
@@ -519,14 +524,14 @@ class EmployeeController extends AbstractActionController {
                     'rankTypes' => $rankTypes,
                     'profilePictureId' => $profilePictureId,
                     'address' => $address,
-                    'shiftId'=>($getEmpShiftDtl!=null)?$getEmpShiftDtl['SHIFT_ID']:0,
-                    'recommenderId'=>($employeePreDtl!=null)?$employeePreDtl['RECOMMEND_BY']:0,
-                    'approverId'=>($employeePreDtl!=null)? $employeePreDtl['APPROVED_BY']:0,
-                    'shifts'=> ApplicationHelper::getTableKVListWithSortOption($this->adapter, ShiftSetup::TABLE_NAME, ShiftSetup::SHIFT_ID, [ShiftSetup::SHIFT_ENAME], [ShiftSetup::STATUS => 'E'], ShiftSetup::SHIFT_ENAME, "ASC"),
-                    'leaves'=> ApplicationHelper::getTableKVListWithSortOption($this->adapter, LeaveMaster::TABLE_NAME, LeaveMaster::LEAVE_ID, [LeaveMaster::LEAVE_ENAME], [LeaveMaster::STATUS => 'E'], LeaveMaster::LEAVE_ENAME, "ASC"),
+                    'shiftId' => ($getEmpShiftDtl != null) ? $getEmpShiftDtl['SHIFT_ID'] : 0,
+                    'recommenderId' => ($employeePreDtl != null) ? $employeePreDtl['RECOMMEND_BY'] : 0,
+                    'approverId' => ($employeePreDtl != null) ? $employeePreDtl['APPROVED_BY'] : 0,
+                    'shifts' => ApplicationHelper::getTableKVListWithSortOption($this->adapter, ShiftSetup::TABLE_NAME, ShiftSetup::SHIFT_ID, [ShiftSetup::SHIFT_ENAME], [ShiftSetup::STATUS => 'E'], ShiftSetup::SHIFT_ENAME, "ASC"),
+                    'leaves' => ApplicationHelper::getTableKVListWithSortOption($this->adapter, LeaveMaster::TABLE_NAME, LeaveMaster::LEAVE_ID, [LeaveMaster::LEAVE_ENAME], [LeaveMaster::STATUS => 'E'], LeaveMaster::LEAVE_ENAME, "ASC"),
                     'recommenders' => ApplicationHelper::getTableKVListWithSortOption($this->adapter, "HRIS_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => "E"], "FIRST_NAME", "ASC", " "),
                     'approvers' => ApplicationHelper::getTableKVListWithSortOption($this->adapter, "HRIS_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => "E"], "FIRST_NAME", "ASC", " ")
-                ]);
+        ]);
     }
 
     public function viewAction() {

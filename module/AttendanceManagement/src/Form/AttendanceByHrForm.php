@@ -11,7 +11,7 @@ use Zend\Form\Annotation;
 
 /**
  * @Annotation\Hydrator("Zend\Hydrator\ObjectProperty")
- * @Annotation\Name("Attendance By Hr")
+ * @Annotation\Name("attendanceByHr")
      */
 class AttendanceByHrForm
 {
