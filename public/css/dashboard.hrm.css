@@ -119,10 +119,10 @@ ul {
     width: 0;
     border-top: 20.21px solid #64C7CC;
 }
-.upcomingholidays {
+/*.upcomingholidays {
     height: 225px;
     overflow: auto;
-}
+}*/
 .html-loading
 {
     background:url(../img/loader.gif) no-repeat center center;
@@ -154,6 +154,8 @@ ul {
 .upcomingholidays .label {
     color: #523c3c;
     box-shadow: none;
+    font-size: 11px;
+  text-transform: capitalize !important;
 }
 .upcomingholidays .date {
     color: #666 !important;
@@ -328,11 +330,20 @@ li.line:after {
     height: 80px;
     width: 80px;
 }
+.person-details {
+    padding-top: 10px;
+}
 .person-details h4 {
-    font-size: medium !important;
+     color: #333;
+    margin-bottom:5px !important;
+     font-size: 12px !important;
+    font-weight: 600;
+    margin-bottom: 5px;
 }
 .person-details span {
     display: block;
+    font-size:12px;
+      color: #333;
 }
 .person-details .head-title {
     padding-bottom: 5px;
@@ -352,7 +363,7 @@ li.line:after {
     padding-bottom: 5px;
 }
 .datepickeform {
-    background-color: #81C868;
+   /* background-color: #81C868; */
 }
 .datepickeform .form-body {
     padding: 10px;
@@ -775,7 +786,10 @@ a .icon_edit:hover {
 {
     font-weight:normal;
 }
-
+.birth-date i
+{
+    padding-right:3px;
+}
 .iconbox i {
     color: #ffffff;
     font-size: 21px;
@@ -840,19 +854,26 @@ a .icon_edit:hover {
 }
 /*task css start here*/
 .date-date {
-    padding-bottom: 15px;
+    /*padding-bottom: 15px;*/
 }
-
+.taskbox {
+    float: left;
+    width: 55%;
+}
+.datepickeform {
+    float: left;
+    width: 45%;
+}
 .date-date > span {
     background-color: #81C868;
     border-radius: 50% !important;
     color: #ffffff;
     display: inline-block;
     font-size: 15px;
-    height: 35px;
-    line-height: 35px;
+    height: 30px;
+    line-height: 30px;
     text-align: center;
-    width: 35px;
+    width: 30px;
 }
 .portlet-inner-task-wrapper .portlet-title .caption {
     float: left;
@@ -871,7 +892,7 @@ a .icon_edit:hover {
     background-color:#81C868
 }
 .taskbox .task {
-    padding-top:15px;
+    /*padding-top:15px; */
 }
 .taskbox .notask {
     padding-top: 20px;
@@ -926,9 +947,17 @@ a .icon_edit:hover {
 .taskbox .portlet-inner-datepicker-wrapper .datepickeform {
     min-height: 280px;
 }
+.portlet-inner-task-wrapper-two,.portlet-inner-datepicker-wrapper-two
+{
+    min-height: 300px;
+}
 .portlet-inner-datepicker-wrapper {
     background: #81C868;
     padding: 0 5px 5px 5px
+}
+.datepickeform  label.control-label
+{
+      color: #333;  
 }
 *::after, *::before {
     box-sizing: border-box;
@@ -963,6 +992,7 @@ a .icon_edit:hover {
     color: #ffffff;
     margin-top: 24px;
     padding: 6px;
+    font-size:12px;
 }
 
 
@@ -975,7 +1005,7 @@ a .icon_edit:hover {
     color:#F3565D !important;
     font-weight: 400 !important;
     padding-top: 23px !important;
-    font-size: 14px !important;
+    font-size: 12px !important;
 }
 .dashborder
 {
@@ -1029,10 +1059,17 @@ a .icon_edit:hover {
 .employee_search i{
     color:#fff !important;
 }
+.background-green
+{
+    background-color: #81c868;
+}
 .boxborder {
     border: solid #eee 1px;
 }
-
+table.dataTable.no-footer
+{
+    border-bottom: none !important;
+}
 /* Large desktops and laptops */
 
 @media (min-width: 1200px) {}
@@ -1043,9 +1080,29 @@ a .icon_edit:hover {
         width: 100%;
     }
     .hexcustom {
-        margin-bottom: 102px;
+       padding-bottom: 72px;
         width: 33%;
     }
+    .profile_pic {
+    width: 13%;
+}
+.employee-details
+{
+      width: 37%;  
+}
+.employee-detailbox
+{
+    width:50%;
+}
+.flist
+{
+    width:33.33%;
+     margin-bottom: 15px;
+}
+.notask-box
+{
+    padding:40px 25px;
+}
 }
 /* Portrait tablets and small desktops */
 
@@ -1053,10 +1110,15 @@ a .icon_edit:hover {
     .wigetbox .widget-thumb-body ul {
         float: none;
     }
-    .detailsbox {
-        margin-bottom: 80px;
-        margin-top: 108px;
-    }
+   .detailsbox {
+    margin-bottom: 49px;
+    margin-top: 40px;
+}
+.hexcustom {
+    margin-bottom: 63px;
+    width: 25%;
+}
+
 }
 /* Landscape phones and portrait tablets */
 
@@ -1068,9 +1130,29 @@ a .icon_edit:hover {
         float: none;
     }
     .employee_details-box {
-        margin-bottom: 100px;
+        margin-bottom: 50px;
     }
+    .detailsbox {
+    margin-top: 44px;
 }
+.hexcustom {
+    width: 16%;
+
+}
+.flist
+{
+    margin-bottom: 15px;
+}
+.birth-date
+{
+    padding-top:5px;
+}
+.calendar_date
+{
+    margin-top:5px;
+}
+}
+
 /* Portrait phones and smaller */
 
 @media (max-width: 480px) {
@@ -1080,7 +1162,46 @@ a .icon_edit:hover {
     .employee_details-box {
         margin-bottom: 100px;
     }
-    .hexcustom {
-        width: 50%;
-    }
+  .hexcustom {
+    width: 33%;
+}
+.employee-details {
+    padding-left: 18px !important;
+}
+.detailsbox {
+    float: left;
+    margin-top: 33px;
+}
+.notask-box > h4
+{
+    font-size: 11px;
+}
+.notask-box
+{
+    padding:40px 0px;
+}
+.flist
+{
+    margin-bottom: 15px;
+}
+.nobirthday-text > h4 {
+    color: #f3565d;
+    font-size: 12px;
+    font-weight: 400;
+    padding-top: 23px;
+}
+ 
+.birth-date
+{
+    padding-top:5px;
+}
+.person-details > span
+{
+    font-size: 11px;
+}
+.calendar_date
+{
+    margin-top:5px;
+}
+ 
 }

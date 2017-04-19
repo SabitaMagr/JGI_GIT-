@@ -102,6 +102,9 @@
     $('.tab-pane-birthday').slimScroll({
         height: '300px'
     });
+      $('.upcomingholidays').slimScroll({
+        height: '218px'  
+     });
 
     $('.ln-nav-tab-birthday').on('click', function(e) {
         e.preventDefault();

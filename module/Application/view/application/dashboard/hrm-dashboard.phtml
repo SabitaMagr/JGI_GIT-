@@ -192,14 +192,14 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                 </div>
                 <div class="col-md-12 col-chart-dept-hc">
                     <div class="portlet-body">
-                        <div class="portlet light">
+                        <div class="portlet light boxborder">
                             <div id="chart-department-headcount" style="height:400px"></div>
                         </div>
                     </div>
                 </div>
                 <div class="col-md-12">
                     <div class="portlet-body">
-                        <div class="portlet light" style="padding-left:0;padding-right:0;">
+                        <div class="portlet light boxborder" style="padding-left:0;padding-right:0;">
                             <div class="col-md-6  col-chart-loc-hc">
                                 <div id="chart-location-headcount" style="height:400px"></div>
                             </div>
@@ -217,11 +217,11 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                         <div class="row">
                             <div class="col-md-12 noticeboard">
                                 <div class="portlet-body">
-                                    <div class="portlet light">
+                                    <div class="portlet light boxborder">
                                         <div class="portlet-title tabbable-line">
                                             <div class="caption caption-md">
                                                 <i class="fa fa-newspaper-o font-green-sharp" aria-hidden="true"></i>
-                                                <span class="caption-subject font-green-sharp ">Notice Board</span>
+                                                <span class="caption-subject font-green-sharp bold">Notice Board</span>
                                             </div>
                                         </div>
                                         <div class="noticeboard-list row">
@@ -229,11 +229,11 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                                 <?php if (count($employeeNotice) > 0) : ?>
                                                     <?php foreach ($employeeNotice as $notice) : ?>
                                                         <li style="width:100%;">
-                                                            <div class="calendardate-box col-sm-2 col-md-2">
+                                                            <div class="calendardate-box col-xs-4 col-sm-2 col-md-2">
                                                                 <span><?php print $notice['NEWS_DAY']; ?></span><br>
                                                                 <?php print $notice['NEWS_MONTH_YEAR']; ?>
                                                             </div>
-                                                            <div class="notice-details col-sm-10 col-md-10">
+                                                            <div class="notice-details col-xs-8 col-sm-10 col-md-10">
                                                                 <h5 class="title-color caption-subject  bold"><?php print $notice['NEWS_TITLE']; ?></h5>
                                                                 <p><?php print $notice['NEWS_EDESC']; ?></p>
                                                             </div>
@@ -241,11 +241,11 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                                     <?php endforeach; ?>
                                                 <?php else : ?>
                                                     <li style="width:100%;">
-                                                        <div class="calendardate-box col-sm-2 col-md-2">
+                                                        <div class="calendardate-box col-xs-4 col-sm-2 col-md-2">
                                                             <span><?php print date('d'); ?></span><br>
                                                             <?php print date('M Y'); ?>
                                                         </div>
-                                                        <div class="notice-details col-sm-10 col-md-10">
+                                                        <div class="notice-details col-xs-8 col-sm-10 col-md-10">
                                                             <h5 class="title-color caption-subject  bold">No notice found</h5>
                                                             <p>Notice will be display when new notice is published</p>
                                                         </div>
@@ -345,7 +345,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
             <div class="row">
                 <div class="col-md-12">
                     <div class="portlet box">
-                        <div class="portlet-title green">
+                        <div class="portlet-title background-green">
                             <div class="caption employee_search">
                                 <i class="fa fa-user"></i>Search Employee
                             </div>
@@ -386,37 +386,37 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                             </div>
                                         </div>
                                         <div class="employee-facilities row">
-                                            <div class="flist col-sm-2 col-md-2">
+                                            <div class="flist col-xs-4 col-sm-2 col-md-2">
                                                 <div class="iconbox">
                                                     <i class="fa fa-user fonticon fonticon-disabled circlebgone ln-hrd-emp-lst ln-hrd-emp-payroll" aria-hidden="true"></i>
                                                 </div>
                                                 <div class="description">Payroll</div>
                                             </div>
-                                            <div class="flist col-sm-2 col-md-2">
+                                            <div class="flist col-xs-4 col-sm-2 col-md-2">
                                                 <div class="iconbox">
                                                     <i class="fa fa-users fonticon fonticon-disabled circlebgtwo ln-hrd-emp-lst ln-hrd-emp-recruitment" aria-hidden="true"></i>
                                                 </div>
                                                 <div class="description">Recruitment</div>
                                             </div>
-                                            <div class="flist col-sm-2 col-md-2">
+                                            <div class="flist col-xs-4 col-sm-2 col-md-2">
                                                 <div class="iconbox">
                                                     <i class="fa fa-television fonticon fonticon-disabled circlebgthree ln-hrd-emp-lst ln-hrd-emp-training" aria-hidden="true"></i>
                                                 </div>
                                                 <div class="description">Training</div>
                                             </div>
-                                            <div class="flist col-sm-2 col-md-2">
+                                            <div class="flist  col-xs-4 col-sm-2 col-md-2">
                                                 <div class="iconbox">
                                                     <i class="fa fa-ticket fonticon fonticon-disabled circlebgfour ln-hrd-emp-lst ln-hrd-emp-travel" aria-hidden="true"></i>
                                                 </div>
                                                 <div class="description">Travel</div>
                                             </div>
-                                            <div class="flist col-sm-2 col-md-2">
+                                            <div class="flist col-xs-4 col-sm-2 col-md-2">
                                                 <div class="iconbox">
                                                     <i class="fa fa-gavel fonticon fonticon-disabled circlebgfive ln-hrd-emp-lst ln-hrd-emp-leave" aria-hidden="true"></i>
                                                 </div>
                                                 <div class="description">Leave</div>
                                             </div>
-                                            <div class="flist col-sm-2 col-md-2">
+                                            <div class="flist  col-xs-4 col-sm-2 col-md-2">
                                                 <div class="iconbox">
                                                     <i class="fa fa-bar-chart fonticon fonticon-disabled circlebgsix ln-hrd-emp-lst ln-hrd-emp-payslip" aria-hidden="true"></i>
                                                 </div>
@@ -432,27 +432,26 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
             </div>
             <div class="row">
                 <div class="col-md-12">
-                    <div class="taskbox">
-                        <div class="portlet light boxborder">
-                            <div class="col-md-6 portlet-inner-task-wrapper">
+                    <div class="mytask-todo">
+<!--                        <div class="taskbox">
+
+                            <div class="portlet light portlet-inner-task-wrapper-two boxborder">
                                 <div class="portlet-title">
-                                    <div class="caption">
+                                    <div class="caption caption-md">
                                         <i class="fa fa-tasks font-green-sharp"></i>
-                                        <span class="caption-subject font-green-sharp ">My Tasks</span>
+                                        <span class="caption-subject font-green-sharp bold">My Tasks</span>
                                     </div>
-                                    <div class="nextbtn">
-                                        <a href="#"><i class="fa fa-angle-right" aria-hidden="true"></i></a>
-                                    </div>
-                                    <div class="clearfix"></div>
-                                </div>
-                                <div class="task">
-                                    <div class="date-date">
-                                        <span><?php print date('d'); ?></span>
-                                        <div class="taskaddbtn">
-                                            <a href="#"> <i class="fa fa-plus" aria-hidden="true"></i></a>
+                                    <div class="task pull-right">
+                                        <div class="date-date">
+                                            <span><?php print date('d'); ?></span>
+                                            <div class="taskaddbtn">
+                                                <a href="#"> <i class="fa fa-plus" aria-hidden="true"></i></a>
+                                            </div> 
                                         </div>
                                     </div>
+
                                 </div>
+
 
                                 <?php $employeeTask = []; ?>
                                 <?php if ($employeeTask) : ?>
@@ -468,43 +467,43 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                                 </li>
                                             <?php endforeach; ?>
                                         </ul>
-                                        <!--                                    <ul>-->
-                                        <!--                                        <li>-->
-                                        <!--                                            <div class="task-list-content clearfix">-->
-                                        <!--                                                <h4>Approve/Reject Requisition</h4>-->
-                                        <!--                                                <div class="positon">Position: Logistics Executive</div>-->
-                                        <!--                                                <div class="name">Muna Kunwor</div>-->
-                                        <!--                                            </div>-->
-                                        <!--                                        </li>-->
-                                        <!--                                        <li>-->
-                                        <!--                                            <div class="task-list-content clearfix">-->
-                                        <!--                                                <h4>Interview for new recruitment</h4>-->
-                                        <!--                                                <div class="positon">Position: Logistics Executive</div>-->
-                                        <!--                                                <div class="name">Muna Kunwor</div>-->
-                                        <!--                                            </div>-->
-                                        <!--                                        </li>-->
-                                        <!--                                        <li>-->
-                                        <!--                                            <div class="task-list-content clearfix">-->
-                                        <!--                                                <h4>Evaluation of XYZ</h4>-->
-                                        <!--                                                <div class="positon">Position: Logistics Executive</div>-->
-                                        <!--                                                <div class="name">Muna Kunwor</div>-->
-                                        <!--                                            </div>-->
-                                        <!--                                        </li>-->
-                                        <!--                                        <li>-->
-                                        <!--                                            <div class="task-list-content clearfix">-->
-                                        <!--                                                <h4>Meeting at 4 pm</h4>-->
-                                        <!--                                                <div class="positon">Position: Logistics Executive</div>-->
-                                        <!--                                                <div class="name">Muna Kunwor</div>-->
-                                        <!--                                            </div>-->
-                                        <!--                                        </li>-->
-                                        <!--                                        <li>-->
-                                        <!--                                            <div class="task-list-content clearfix">-->
-                                        <!--                                                <h4>Publish notice</h4>-->
-                                        <!--                                                <div class="positon">Position: Logistics Executive</div>-->
-                                        <!--                                                <div class="name">Muna Kunwor</div>-->
-                                        <!--                                            </div>-->
-                                        <!--                                        </li>-->
-                                        <!--                                    </ul>-->
+                                                                            <ul>
+                                                                                <li>
+                                                                                    <div class="task-list-content clearfix">
+                                                                                        <h4>Approve/Reject Requisition</h4>
+                                                                                        <div class="positon">Position: Logistics Executive</div>
+                                                                                        <div class="name">Muna Kunwor</div>
+                                                                                    </div>
+                                                                                </li>
+                                                                                <li>
+                                                                                    <div class="task-list-content clearfix">
+                                                                                        <h4>Interview for new recruitment</h4>
+                                                                                        <div class="positon">Position: Logistics Executive</div>
+                                                                                        <div class="name">Muna Kunwor</div>
+                                                                                    </div>
+                                                                                </li>
+                                                                                <li>
+                                                                                    <div class="task-list-content clearfix">
+                                                                                        <h4>Evaluation of XYZ</h4>
+                                                                                        <div class="positon">Position: Logistics Executive</div>
+                                                                                        <div class="name">Muna Kunwor</div>
+                                                                                    </div>
+                                                                                </li>
+                                                                                <li>
+                                                                                    <div class="task-list-content clearfix">
+                                                                                        <h4>Meeting at 4 pm</h4>
+                                                                                        <div class="positon">Position: Logistics Executive</div>
+                                                                                        <div class="name">Muna Kunwor</div>
+                                                                                    </div>
+                                                                                </li>
+                                                                                <li>
+                                                                                    <div class="task-list-content clearfix">
+                                                                                        <h4>Publish notice</h4>
+                                                                                        <div class="positon">Position: Logistics Executive</div>
+                                                                                        <div class="name">Muna Kunwor</div>
+                                                                                    </div>
+                                                                                </li>
+                                                                            </ul>
                                     </div>
                                 <?php else : ?>
                                     <div class="notask">
@@ -514,48 +513,66 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                     </div>
                                 <?php endif; ?>
                             </div>
-                            <div class="col-md-6 portlet-inner-datepicker-wrapper">
-                                <div class="datepickeform">
-                                    <div class="form-body">
-                                        <h3 class="form-section">To Do</h3>
-                                        <div class="row">
-                                            <div class="col-md-12">
-                                                <div class="form-group">
-                                                    <label class="control-label">Due for today <?php print date('d F Y'); ?> </label>
-                                                    <input id="inp-task-dt" class="pickdate form-control form-control-inline input-medium date-picker" size="16" type="text" value=""/>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-12">
-                                                <div class="form-group">
-                                                    <label class="control-label">Task</label>
-                                                    <input id="inp-task-name" class="form-control" placeholder="Task Name" type="text">
-                                                </div>
-                                            </div>
-                                            <div class="col-md-12">
-                                                <div class="form-group">
-                                                    <label class="control-label">Employee</label>
-                                                    <div>
-                                                        <select id="lst-task-emp" class="select2_category form-control" data-placeholder="Select Employee" tabindex="1">
-                                                            <?php print $taskAssignEmployeeListOptionsHtml; ?>
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-12">
-                                                <div class="form-group">
-                                                    <input type="button" id="task-save" value="Save" />
-                                                </div>
+                        </div> 
+
+
+                        <div class="datepickeform">
+                            <div class="portlet light portlet-inner-datepicker-wrapper-two boxborder">
+
+                                <div class="portlet-title">
+                                    <div class="caption caption-md">
+                                        <i class="fa fa-check-square-o font-green-sharp" aria-hidden="true"></i>
+                                        <span class="caption-subject font-green-sharp bold">TO Do</span>
+                                    </div>     
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label class="control-label">Due for today <?php print date('d F Y'); ?> </label>
+                                            <input id="inp-task-dt" class="pickdate form-control form-control-inline input-medium date-picker" size="16" type="text" value=""/>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label class="control-label">Task</label>
+                                            <input id="inp-task-name" class="form-control" placeholder="Task Name" type="text">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label class="control-label">Employee</label>
+                                            <div>
+                                                <select id="lst-task-emp" class="select2_category form-control" data-placeholder="Select Employee" tabindex="1">
+                                                    <?php print $taskAssignEmployeeListOptionsHtml; ?>
+                                                </select>
                                             </div>
                                         </div>
                                     </div>
+                                    <div class="col-md-12">
+                                         <div class="form-group">
+                                             <input type="button" id="task-save" value="Save" />
+                                         </div> 
+                                        <button type="button" class="btn btn-theme  savebutton" id="task-save btn" value="Save">
+                                            <i class="fa fa-floppy-o" aria-hidden="true"></i>
+                                            Save
+                                        </button>
+                                    </div>
                                 </div>
+                           
+
                             </div>
-                            <div class="clearfix"></div>
-                        </div>
+                        </div>-->
                     </div>
-                    <!-- END CONTENT -->
+
+                            <div id="lobilist">
+
+                            </div>
                 </div>
             </div>
+
+
+
 
             <div class="row">
                 <div class="birthday-wishes">
@@ -565,11 +582,11 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                         $todayBirthdayActive = ((isset($employeesBirthday) && isset($employeesBirthday['TODAY']) && $employeesBirthday['TODAY'])) ? true : false;
                         ?>
                         <!-- BEGIN PORTLET-->
-                        <div class="portlet light ">
+                        <div class="portlet light boxborder">
                             <div class="portlet-title tabbable-line tabline">
                                 <div class="caption">
                                     <i class="fa fa-birthday-cake font-green-sharp"></i>
-                                    <span class="caption-subject font-green-sharp ">Birthday Wishes</span>
+                                    <span class="caption-subject font-green-sharp bold">Birthday Wishes</span>
                                 </div>
                                 <ul class="nav nav-tabs">
                                     <li class="ln-birthday <?php print $todayBirthdayActive ? 'active' : ''  ?>">
@@ -588,35 +605,35 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                             <?php if ($todayBirthdayActive) : ?>
                                                 <?php foreach ($employeesBirthday['TODAY'] as $todayBirthday) : ?>
                                                     <div class="person-list clearfix">
-                                                        <div class="col-xs-3 col-md-3 col-sm-3">
+                                                        <div class="col-xs-5 col-md-3 col-sm-3">
                                                             <div class="person-pic">
                                                                 <img src="<?php print $todayBirthday['FILE_PATH'] ? $this->basePath('uploads/' . $todayBirthday['FILE_PATH']) : $this->basePath('img/nobody_m.original.jpg'); ?>" alt="person picture">
                                                             </div>
                                                         </div>
-                                                        <div class="col-xs-6 col-md-6 col-sm-6">
+                                                        <div class="col-xs-7 col-md-5 col-sm-6">
                                                             <div class="person-details">
                                                                 <h4><?php print $todayBirthday['FULL_NAME']; ?></h4>
                                                                 <span><?php print $todayBirthday['DESIGNATION_TITLE']; ?></span>
                                                             </div>
                                                         </div>
-                                                        <div class="col-xs-3 col-md-3 col-sm-3">
+                                                        <div class="col-xs-7 col-md-4 col-sm-3">
                                                             <span class="birth-date"><?php print $todayBirthday['EMP_BIRTH_DATE']; ?></span>
                                                         </div>
                                                     </div>
                                                 <?php endforeach; ?>
                                             <?php else: ?>
                                                 <div class="dashborder clearfix">
-                                                    <div class="col-md-3 col-sm-3">
+                                                    <div class="col-xs-5 col-md-3 col-sm-3">
                                                         <div class="person-pic birthday-pic">
                                                             <img src="<?php print $this->basePath('img/nobody_m.original.jpg'); ?>" alt="person picture">
                                                         </div>
                                                     </div>
-                                                    <div class="col-xs-6 col-md-6 col-sm-6">
+                                                    <div class="col-xs-7 col-md-5 col-sm-6">
                                                         <div class="nobirthday-text">
                                                             <h4>No Birthday Available Today</h4>
                                                         </div>
                                                     </div>
-                                                    <div class="col-md-3 col-sm-3">
+                                                    <div class="col-xs-7 col-md-4 col-sm-3">
                                                         <span class="calendar_date"><i class="fa fa-calendar" aria-hidden="true"></i>&nbsp;<?php print date('jS F') ?></span>
                                                     </div>
                                                 </div>
@@ -627,30 +644,30 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                             <?php if (isset($employeesBirthday) && isset($employeesBirthday['UPCOMING']) && $employeesBirthday['UPCOMING']) : ?>
                                                 <?php foreach ($employeesBirthday['UPCOMING'] as $upcomingBirthday) : ?>
                                                     <div class="person-list clearfix">
-                                                        <div class="col-md-3 col-sm-3">
+                                                        <div class="col-xs-5 col-md-3 col-sm-3">
                                                             <div class="person-pic">
                                                                 <img src="<?php print $upcomingBirthday['FILE_PATH'] ? $this->basePath('uploads/' . $upcomingBirthday['FILE_PATH']) : $this->basePath('img/nobody_m.original.jpg'); ?>" alt="person picture">
                                                             </div>
                                                         </div>
-                                                        <div class="col-xs-6 col-md-6 col-sm-6">
+                                                        <div class="col-xs-7 col-md-5 col-sm-6">
                                                             <div class="person-details">
                                                                 <h4><?php print $upcomingBirthday['FULL_NAME']; ?></h4>
                                                                 <span><?php print $upcomingBirthday['DESIGNATION_TITLE']; ?></span>
                                                             </div>
                                                         </div>
-                                                        <div class="col-md-3 col-sm-3">
-                                                            <span class="birth-date"><?php print $upcomingBirthday['EMP_BIRTH_DATE']; ?></span>
+                                                        <div class="col-xs-7 col-md-4 col-sm-3">
+                                                            <span class="birth-date"><i class="fa fa-calendar"></i><?php print $upcomingBirthday['EMP_BIRTH_DATE']; ?></span>
                                                         </div>
                                                     </div>
                                                 <?php endforeach; ?>
                                             <?php else : ?>
                                                 <div class="dashborder clearfix">
-                                                    <div class="col-md-3 col-sm-3">
+                                                    <div class="col-xs-5 col-md-3 col-sm-3">
                                                         <div class="person-pic birthday-pic">
                                                             <img src="<?php print $this->basePath('img/nobody_m.original.jpg'); ?>" alt="person picture">
                                                         </div>
                                                     </div>
-                                                    <div class="col-xs-6 col-md-6 col-sm-6">
+                                                    <div class="col-xs-7 col-md-5 col-sm-6">
                                                         <div class="nobirthday-text">
                                                             <h4>No Upcoming Birthdays Found!!!</h4>
                                                         </div>
@@ -665,18 +682,10 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                     </div>
                 </div>
             </div>
-            <div class="row">
-                <div class="col-sm-12 col-md-12">
-                    <div id="lobilist">
-
-                    </div>
-
-                </div>
-
-            </div>
         </div>
     </div>
 
     <div class="clearfix"></div>
 
 </div>
+
