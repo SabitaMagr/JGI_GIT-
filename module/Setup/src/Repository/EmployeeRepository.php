@@ -2,13 +2,16 @@
 
 namespace Setup\Repository;
 
+use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
 use Application\Model\Model;
 use Application\Repository\RepositoryInterface;
 use Setup\Model\Branch;
+use Setup\Model\Company;
 use Setup\Model\Department;
 use Setup\Model\Designation;
 use Setup\Model\EmployeeFile;
+use Setup\Model\Gender;
 use Setup\Model\HrEmployees;
 use Setup\Model\Position;
 use Setup\Model\ServiceEventType;
@@ -16,9 +19,7 @@ use Setup\Model\ServiceType;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Sql\Select;
 use Zend\Db\Sql\Sql;
-use Setup\Model\Company;
 use Zend\Db\TableGateway\TableGateway;
-use Setup\Model\Gender;
 
 class EmployeeRepository implements RepositoryInterface {
 
@@ -40,7 +41,9 @@ class EmployeeRepository implements RepositoryInterface {
         $sql = new Sql($this->adapter);
         $select = $sql->select();
         $select->from("HRIS_EMPLOYEES");
-        $select->columns(Helper::convertColumnDateFormat($this->adapter, new HrEmployees(), ['birthDate']), false);
+        $colList = EntityHelper::getColumnNameArrayWithOracleFns(HrEmployees::class, [HrEmployees::FIRST_NAME, HrEmployees::MIDDLE_NAME, HrEmployees::LAST_NAME], [HrEmployees::BIRTH_DATE]);
+
+        $select->columns($colList, false);
         $select->where(['STATUS' => 'E', 'RETIRED_FLAG' => 'N', "JOIN_DATE <= SYSDATE"]);
         $select->order(['UPPER(FIRST_NAME)', 'UPPER(MIDDLE_NAME)', 'UPPER(LAST_NAME)']);
 

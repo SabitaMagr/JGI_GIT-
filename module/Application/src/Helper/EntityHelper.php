@@ -11,6 +11,7 @@ class EntityHelper {
 
     const STATUS_ENABLED = 'E';
     const STATUS_DISABLED = 'D';
+    const ORACLE_FUNCTION_INITCAP = 'INITCAP';
 
     public static function getTableKVList(AdapterInterface $adapter, $tableName, $key = null, array $values, $where = null, $concatWith = null, $emptyColumn = false) {
         $gateway = new TableGateway($tableName, $adapter);
@@ -81,7 +82,7 @@ class EntityHelper {
         return $statement->execute();
     }
 
-    public static function getColumnNameArrayWithInitCaps(string $requestedName, array $columnList, string $shortForm = null, $selectedOnly = false) {
+    public static function getColumnNameArrayWithOracleFns(string $requestedName, array $initCapColumnList = null, array $dateColumnList = null, array $timeColumnList = null, array $timeIntervalColumnList = null, array $otherColumnList = null, string $shortForm = null, $selectedOnly = false) {
         $refl = new ReflectionClass($requestedName);
         $table = $refl->newInstanceArgs();
 
@@ -93,16 +94,43 @@ class EntityHelper {
                 continue;
             }
             $tempCol = $table->mappings[$objAttr];
-            if (in_array($tempCol, $columnList)) {
-                array_push($objCols, Helper::columnExpression($tempCol, $shortForm, 'INITCAP'));
+            if ($initCapColumnList !== null && in_array($tempCol, $initCapColumnList)) {
+                array_push($objCols, Helper::columnExpression($tempCol, $shortForm, self::ORACLE_FUNCTION_INITCAP));
                 continue;
             }
-            if (!$selectedOnly) {
+
+            if ($dateColumnList !== null && in_array($tempCol, $dateColumnList)) {
+                array_push($objCols, self::formatColumn($tempCol, $shortForm, Helper::ORACLE_DATE_FORMAT));
+                continue;
+            }
+            if ($timeColumnList !== null && in_array($tempCol, $timeColumnList)) {
+                array_push($objCols, self::formatColumn($tempCol, $shortForm, Helper::ORACLE_TIME_FORMAT));
+                continue;
+            }
+            if ($timeIntervalColumnList !== null && in_array($tempCol, $timeIntervalColumnList)) {
+                array_push($objCols, self::formatColumn($tempCol, $shortForm, Helper::ORACLE_TIMESTAMP_FORMAT));
+                continue;
+            }
+            if ($otherColumnList !== null && in_array($tempCol, $otherColumnList)) {
                 array_push($objCols, $tempCol);
+                continue;
+            }
+
+
+            if (!$selectedOnly) {
+                array_push($objCols, Helper::columnExpression($tempCol));
             }
         }
 
         return $objCols;
+    }
+
+    public static function formatColumn($columnName, $shortForm = null, $format) {
+        $pre = "";
+        if ($shortForm != null && sizeof($shortForm) != 0) {
+            $pre = $shortForm . ".";
+        }
+        return "INITCAP(TO_CHAR({$pre}{$columnName}, '{$format}')) AS {$columnName}";
     }
 
 }

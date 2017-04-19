@@ -45,8 +45,6 @@ class Helper {
     }
 
     public static function convertColumnDateFormat(AdapterInterface $adapter, Model $table, $attrs = null, $timeAttrs = null, $shortForm = null, $timeIntervalAttrs = null) {
-        $format = 'DD-MON-YYYY HH24:MI:SS';
-
         $temp = get_object_vars($table);
         if ($attrs != null) {
             foreach ($attrs as $attr) {
@@ -283,7 +281,5 @@ class Helper {
     public static function maintainFloatNumberFormat($floatNumber) {
         return number_format($floatNumber, self::FLOAT_ROUNDING_DIGIT_NO, '.', '');
     }
-
-
 
 }

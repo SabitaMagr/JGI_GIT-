@@ -68,11 +68,6 @@ class DashboardController extends AbstractActionController {
 //    }
 
     public function indexAction() {
-        $test = EntityHelper::getColumnNameArrayWithInitCaps(NewsModel::class, [NewsModel::NEWS_TITLE], null, true);
-        print "<pre>";
-        print_r($test)
-        ;
-        exit;
         $auth = new AuthenticationService();
         $employeeId = $auth->getStorage()->read()['employee_id'];
         $fiscalYear = $auth->getStorage()->read()['fiscal_year'];
