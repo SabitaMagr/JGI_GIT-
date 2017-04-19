@@ -854,7 +854,7 @@ a .icon_edit:hover {
 }
 /*task css start here*/
 .date-date {
-    padding-bottom: 15px;
+    /*padding-bottom: 15px;*/
 }
 .taskbox {
     float: left;
