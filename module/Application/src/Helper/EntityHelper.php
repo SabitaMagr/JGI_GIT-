@@ -13,11 +13,18 @@ class EntityHelper {
     const STATUS_DISABLED = 'D';
     const ORACLE_FUNCTION_INITCAP = 'INITCAP';
 
-    public static function getTableKVList(AdapterInterface $adapter, $tableName, $key = null, array $values, $where = null, $concatWith = null, $emptyColumn = false, $orderBy = null, $orderAs = null) {
+    public static function getTableKVList(AdapterInterface $adapter, $tableName, $key = null, array $values, $where = null, $concatWith = null, $emptyColumn = false, $orderBy = null, $orderAs = null, $initCap = false) {
         $gateway = new TableGateway($tableName, $adapter);
-        $resultset = $gateway->select(function(Select $select) use ($key, $values, $where, $orderBy, $orderAs) {
+        $resultset = $gateway->select(function(Select $select) use ($key, $values, $where, $orderBy, $orderAs, $initCap) {
             if ($key !== null) {
                 array_push($values, $key);
+            }
+            if ($initCap) {
+                $tempValues = [];
+                foreach ($values as $key => $value) {
+                    $tempValues[$key] = "INITCAP({$value}) AS {$value}";
+                }
+                $values = $tempValues;
             }
             $select->columns($values, false);
             if ($where !== null) {
@@ -52,8 +59,8 @@ class EntityHelper {
         return $entitiesArray;
     }
 
-    public static function getTableKVListWithSortOption(AdapterInterface $adapter, $tableName, $key, array $values, $where = null, $orderBy = null, $orderAs = null, $concatWith = null, $emptyColumn = false) {
-        return self::getTableKVList($adapter, $tableName, $key, $values, $where, $concatWith, $emptyColumn, $orderBy, $orderAs);
+    public static function getTableKVListWithSortOption(AdapterInterface $adapter, $tableName, $key, array $values, $where = null, $orderBy = null, $orderAs = null, $concatWith = null, $emptyColumn = false, $initCap = false) {
+        return self::getTableKVList($adapter, $tableName, $key, $values, $where, $concatWith, $emptyColumn, $orderBy, $orderAs, $initCap);
     }
 
     public static function rawQueryResult(AdapterInterface $adapter, string $sql) {

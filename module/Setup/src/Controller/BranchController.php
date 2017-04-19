@@ -2,24 +2,16 @@
 
 namespace Setup\Controller;
 
-/**
- * Master Setup for Branch
- * Branch controller.
- * Created By: Ukesh Gaiju
- * Edited By: Somkala Pachhai
- * Date: August 3, 2016, Wednesday
- * Last Modified By: Somkala Pachhai
- * Last Modified Date: August 10,2016, Wednesday
- */
+use Application\Helper\EntityHelper as EntityHelper2;
 use Application\Helper\Helper;
 use Setup\Form\BranchForm;
 use Setup\Helper\EntityHelper;
-use Application\Helper\EntityHelper as EntityHelper2;
 use Setup\Model\Branch;
 use Setup\Model\Company;
 use Setup\Repository\BranchRepository;
 use Zend\Authentication\AuthenticationService;
 use Zend\Db\Adapter\AdapterInterface;
+use Zend\Db\Sql\Select;
 use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\Mvc\Controller\AbstractActionController;
 
@@ -79,8 +71,7 @@ class BranchController extends AbstractActionController {
         return Helper::addFlashMessagesToArray($this, [
                     'form' => $this->form,
                     'countries' => EntityHelper::getTableKVList($this->adapter, EntityHelper::HRIS_COUNTRIES),
-//                    'companies' => EntityHelper::getTableKVList($this->adapter, Company::TABLE_NAME),
-                    'companies' => EntityHelper2::getTableKVListWithSortOption($this->adapter, Company::TABLE_NAME, Company::COMPANY_ID, [Company::COMPANY_NAME], ["STATUS" => "E"], Company::COMPANY_NAME, "ASC"),
+                    'companies' => EntityHelper2::getTableKVListWithSortOption($this->adapter, Company::TABLE_NAME, Company::COMPANY_ID, [Company::COMPANY_NAME], ["STATUS" => "E"], Company::COMPANY_NAME, Select::ORDER_ASCENDING, null, false, true),
                     'customRenderer' => Helper::renderCustomView()
                         ]
         );
@@ -112,7 +103,7 @@ class BranchController extends AbstractActionController {
                     'id' => $id,
                     'countries' => EntityHelper::getTableKVList($this->adapter, EntityHelper::HRIS_COUNTRIES),
 //                    'companies' => EntityHelper::getTableKVList($this->adapter, Company::TABLE_NAME),
-                    'companies' => EntityHelper2::getTableKVListWithSortOption($this->adapter, Company::TABLE_NAME, Company::COMPANY_ID, [Company::COMPANY_NAME], ["STATUS" => "E"], Company::COMPANY_NAME, "ASC"),
+                    'companies' => EntityHelper2::getTableKVListWithSortOption($this->adapter, Company::TABLE_NAME, Company::COMPANY_ID, [Company::COMPANY_NAME], ["STATUS" => "E"], Company::COMPANY_NAME, "ASC", null, false, TRUE),
                     'customRenderer' => Helper::renderCustomView()
         ]);
     }
