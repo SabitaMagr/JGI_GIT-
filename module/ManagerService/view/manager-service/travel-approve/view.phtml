@@ -28,7 +28,7 @@ $this->headScript()->appendFile($this->basePath('js/SelfService/travel-request/a
         ->appendFile($this->basePath('js/SelfService/travel-request/advanceRequestController.js'));
 
 $form->setAttribute('role', 'form');
-$form->setAttribute('id', 'travelApprove-form');
+$form->setAttribute('id', 'travelRequest-form');
 
 $travelCode = $form->get('travelCode');
 $travelCode->setAttributes(["disabled" => "disabled"]);

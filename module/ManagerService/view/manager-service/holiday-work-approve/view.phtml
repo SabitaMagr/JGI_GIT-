@@ -26,7 +26,7 @@ $this->headScript()
 $this->headScript()->appendFile($this->basePath('js/SelfService/work-on-holiday/add.js'));
 
 $form->setAttribute('role', 'form');
-$form->setAttribute('id', 'holidayWorkApprove-form');
+$form->setAttribute('id', 'workOnHoliday-form');
 
 $holidayId = $form->get('holidayId');
 $holidayId->setValueOptions($holidays);

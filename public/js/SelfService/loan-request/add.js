@@ -7,6 +7,7 @@
         $('#form-loanDate').datepicker("setStartDate", new Date());
         /* end of  prevent past event post */
         app.setLoadingOnSubmit("loanApprove-form");
+        app.setLoadingOnSubmit("loan-form");
     });
 })(window.jQuery, window.app);
 

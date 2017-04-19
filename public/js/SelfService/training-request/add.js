@@ -98,7 +98,7 @@
             companyCheckChange($(this));
         });
         companyCheckChange($("#companyList"));
-        
+        app.setLoadingOnSubmit("trainingRequest-form");
         $('form').bind('submit', function () {
             $(this).find(':disabled').removeAttr('disabled');
         });
