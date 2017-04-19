@@ -17,7 +17,9 @@
         if (typeof(selfId) == "undefined"){
             selfId=0;
         }
-        window.app.checkUniqueConstraints(inputFieldId,formId,tableName,columnName,checkColumnName,selfId);       
+        window.app.checkUniqueConstraints(inputFieldId,formId,tableName,columnName,checkColumnName,selfId, function () {
+            App.blockUI({target: "#hris-page-content"});
+        });       
         window.app.checkUniqueConstraints("assetEdesc",formId,tableName,"ASSET_EDESC",checkColumnName,selfId);
         window.app.checkUniqueConstraints("assetNdesc",formId,tableName,"ASSET_NDESC",checkColumnName,selfId);
     });
