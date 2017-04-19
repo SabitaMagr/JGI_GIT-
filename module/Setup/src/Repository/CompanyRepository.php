@@ -6,10 +6,8 @@ use Application\Helper\EntityHelper;
 use Application\Model\Model;
 use Application\Repository\RepositoryInterface;
 use Setup\Model\Company;
-use Setup\Model\Designation;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Sql\Select;
-use Zend\Db\Sql\Sql;
 use Zend\Db\TableGateway\TableGateway;
 
 class CompanyRepository implements RepositoryInterface {
@@ -33,16 +31,19 @@ class CompanyRepository implements RepositoryInterface {
 
     public function fetchAll() {
         return $this->tableGateway->select(function(Select $select) {
+                    $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(Company::class, [Company::COMPANY_NAME]), false);
                     $select->where([Company::STATUS => EntityHelper::STATUS_ENABLED]);
                     $select->order([Company::COMPANY_NAME => Select::ORDER_ASCENDING]);
                 });
     }
 
     public function fetchById($id) {
-        $rowset = $this->tableGateway->select([
-            Company::COMPANY_ID => $id,
-            Company::STATUS => EntityHelper::STATUS_ENABLED
-        ]);
+        $rowset = $this->tableGateway->select(function(Select $select) use($id) {
+            $select->where([
+                Company::COMPANY_ID => $id,
+                Company::STATUS => EntityHelper::STATUS_ENABLED
+            ]);
+        });
         return $rowset->current();
     }
 
@@ -53,4 +54,5 @@ class CompanyRepository implements RepositoryInterface {
             Company::COMPANY_ID => $id
         ]);
     }
+
 }
