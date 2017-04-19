@@ -263,7 +263,7 @@ class HolidaySetup extends AbstractActionController {
                 throw new Exception('Request should be post');
             }
             $id = $request->getPost()->id;
-            $data = ApplicationEntityHelper::getColumnsList($this->adapter, $id, "BRANCH_ID", ["BRANCH_NAME"]);
+            $data = $this->repository->getBranchListWithHolidayId($id);
             return new CustomViewModel([
                 'success' => true,
                 'data' => $data,

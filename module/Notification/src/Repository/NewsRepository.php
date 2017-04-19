@@ -42,8 +42,8 @@ class NewsRepository implements RepositoryInterface {
 
     public function fetchAll() {
         return $this->tableGateway->select(function(Select $select) {
-                    $select->where([NewsModel::STATUS => 'E']);
-                    $select->order(NewsModel::NEWS_DATE . " DESC");
+                    $select->where([NewsModel::STATUS => EntityHelper::STATUS_ENABLED]);
+                    $select->order([NewsModel::NEWS_DATE => Select::ORDER_DESCENDING]);
                 });
     }
 
@@ -51,10 +51,8 @@ class NewsRepository implements RepositoryInterface {
         $sql = new Sql($this->adapter);
         $select = $sql->select();
         $select->from(['N' => NewsModel::TABLE_NAME]);
-        $select->where(["N." . NewsModel::NEWS_ID . "='" . $id . "'"]);
-        $select->columns(Helper::convertColumnDateFormat($this->adapter, new NewsModel(), [
-                    'newsDate',
-                        ], NULL, 'N'), false);
+        $select->where(["N." . NewsModel::NEWS_ID => $id]);
+        $select->columns(Helper::convertColumnDateFormat($this->adapter, new NewsModel(), ['newsDate'], NULL, 'N'), false);
 
         $statement = $sql->prepareStatementForSqlObject($select);
         $result = $statement->execute();
@@ -85,6 +83,27 @@ class NewsRepository implements RepositoryInterface {
             $designationList[$newKey][] = $val;
         }
         return $designationList;
+    }
+
+    public function fetchForEmployee($employeeId, $date) {
+        $rawResult = EntityHelper::rawQueryResult($this->adapter, "
+        SELECT N.*
+        FROM HRIS_NEWS N,
+          (SELECT COMPANY_ID,   
+            BRANCH_ID,
+            DEPARTMENT_ID,
+            DESIGNATION_ID
+          FROM HRIS_EMPLOYEES
+          WHERE EMPLOYEE_ID=$employeeId
+          ) E
+        WHERE (N.COMPANY_ID=E.COMPANY_ID
+        OR N.BRANCH_ID     =E.BRANCH_ID
+        OR N.DEPARTMENT_ID =E.DEPARTMENT_ID
+        OR N.DESIGNATION_ID=E.DESIGNATION_ID)
+        AND (N.STATUS      ='E') 
+        AND N.NEWS_DATE=$date"
+        );
+        return $rawResult;
     }
 
 }

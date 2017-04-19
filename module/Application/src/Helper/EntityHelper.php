@@ -4,7 +4,6 @@ namespace Application\Helper;
 
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Sql\Select;
-use Zend\Db\Sql\Sql;
 use Zend\Db\TableGateway\TableGateway;
 
 class EntityHelper {
@@ -76,32 +75,9 @@ class EntityHelper {
         return $entitiesArray;
     }
 
-    public static function getColumnsList(AdapterInterface $adapter, $holidayId, $key, array $values, $concatWith = null) {
-
-        $sql = new Sql($adapter);
-        $select = $sql->select();
-        $select->from(['HB' => 'HRIS_HOLIDAY_BRANCH'])
-                ->join(['B' => "HRIS_BRANCHES"], 'HB.BRANCH_ID=B.BRANCH_ID', ['BRANCH_NAME']);
-
-        $select->where(["HB.HOLIDAY_ID" => $holidayId]);
-        $statement = $sql->prepareStatementForSqlObject($select);
-        $resultset = $statement->execute();
-
-        $concatWith = ($concatWith == null) ? " " : $concatWith;
-
-        $entitiesArray = array();
-        foreach ($resultset as $result) {
-            $concattedValue = "";
-            for ($i = 0; $i < count($values); $i++) {
-                if ($i == 0) {
-                    $concattedValue = $result[$values[$i]];
-                    continue;
-                }
-                $concattedValue = $concattedValue . $concatWith . $result[$values[$i]];
-            }
-            $entitiesArray[$result[$key]] = $concattedValue;
-        }
-        return $entitiesArray;
+    public static function rawQueryResult(AdapterInterface $adapter, string $sql) {
+        $statement = $adapter->query($sql);
+        return $statement->execute();
     }
 
 }
