@@ -26,6 +26,13 @@ $this->headScript()
         ->appendFile($this->basePath('assets/global/scripts/metronic.js'))
         ->appendFile($this->basePath('js/dashboard/hrm-dashboard.js'));
 
+$this->headLink()
+        ->appendStylesheet($this->basePath('assets/global/plugins/lobilist-master/dist/lobilist.min.css'));
+
+$this->headScript()
+        ->appendFile($this->basePath('assets/global/plugins/lobilist-master/dist/lobilist.min.js'))
+        ->appendFile($this->basePath('js/dashboard/todo.js'));
+
 $taskAssignEmployeeListOptionsHtml = "";
 
 $departmentAttendanceData = [];
@@ -73,7 +80,13 @@ foreach ($departmentAttendance as $deptAttn) {
     document.travelUrl = '<?php print $this->url('travelStatus', ["action" => 'index']); ?>';
     document.leaveUrl = '<?php print $this->url('leavestatus', ["action" => 'index']); ?>';
 </script>
-
+<script>
+    document.todoAddUrl = '<?php echo $this->url('task', ['action' => 'add']); ?>';
+    document.todoUpdateUrl = '<?php echo $this->url('task', ['action' => 'update']); ?>';
+    document.todoDeleteUrl = '<?php echo $this->url('task', ['action' => 'delete']); ?>';
+    document.todoTaskList = <?php echo json_encode($todoList); ?>;
+    document.todoTaskUpdateStatus = '<?php echo $this->url('task', ['action' => 'updateStatus']); ?>';
+</script>
 <?php
 if ($this->messages && (sizeof($this->messages) > 1)) {
     print '<div class="alert alert-warning alert-dismissable">
@@ -91,79 +104,79 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
 
 <div class="employeedashboard">
     <div class="emplyoee-dashboard col-md-12">
-    <div class="row">
-        <div class="employe-descbox">
-            <div class="col-sm-1 col-md-1 profile_pic">
-                <img src="<?php print $employeeDetail['FILE_PATH'] ? $this->basePath('uploads/' . $employeeDetail['FILE_PATH']) : $this->basePath("img/nobody_m.original.jpg"); ?>">
-            </div>
-            <div class="col-sm-3 col-md-3 employee-details">
-                <?php
-                $email = trim($employeeDetail['EMAIL_OFFICIAL']) ? trim($employeeDetail['EMAIL_OFFICIAL']) : trim($employeeDetail['EMAIL_PERSONAL']);
-                $service[0] = $employeeDetail['SERVICE_YEARS'] ? ((1 == $employeeDetail['SERVICE_YEARS']) ? "1 Year" : $employeeDetail['SERVICE_YEARS'] . " Years") : "";
-                $service[1] = $employeeDetail['SERVICE_MONTHS'] ? ((1 == $employeeDetail['SERVICE_MONTHS']) ? "1 Month" : $employeeDetail['SERVICE_MONTHS'] . " Months") : "";
-                $service[2] = $employeeDetail['SERVICE_DAYS'] ? ((1 == $employeeDetail['SERVICE_DAYS']) ? "1 Day" : $employeeDetail['SERVICE_DAYS'] . " Days") : "";
-                $serviceDays = trim(implode(" ", $service));
-                ?>
-                <h4 class="font-weight-bold"><?php print $employeeDetail['FULL_NAME']; ?></h4>
-                <?php if ($email) : ?>
-                    <span><?php print $email; ?></span><br>
-                <?php endif; ?>
-                <span><?php print trim($employeeDetail['DESIGNATION_TITLE']); ?></span><br>
-                <span>At work for : <?php print $serviceDays ? $serviceDays : 0; ?></span><br>
-            </div>
-            <div class="col-md-8">
-                <div class="row detailsbox">
-                    <div class="col-xs-6 col-sm-3 col-md-2 hexcustom">
-                        <div class="employee_details-box hexagon-bg1">
-                            <span><?php print $employeeDetail['PRESENT_DAY']; ?></span>
-                            <div class="face1"></div>
-                            <div class="face2"></div>
-                            <div class="headtitle">Present</div>
+        <div class="row">
+            <div class="employe-descbox">
+                <div class="col-sm-1 col-md-1 profile_pic">
+                    <img src="<?php print $employeeDetail['FILE_PATH'] ? $this->basePath('uploads/' . $employeeDetail['FILE_PATH']) : $this->basePath("img/nobody_m.original.jpg"); ?>">
+                </div>
+                <div class="col-sm-3 col-md-3 employee-details">
+                    <?php
+                    $email = trim($employeeDetail['EMAIL_OFFICIAL']) ? trim($employeeDetail['EMAIL_OFFICIAL']) : trim($employeeDetail['EMAIL_PERSONAL']);
+                    $service[0] = $employeeDetail['SERVICE_YEARS'] ? ((1 == $employeeDetail['SERVICE_YEARS']) ? "1 Year" : $employeeDetail['SERVICE_YEARS'] . " Years") : "";
+                    $service[1] = $employeeDetail['SERVICE_MONTHS'] ? ((1 == $employeeDetail['SERVICE_MONTHS']) ? "1 Month" : $employeeDetail['SERVICE_MONTHS'] . " Months") : "";
+                    $service[2] = $employeeDetail['SERVICE_DAYS'] ? ((1 == $employeeDetail['SERVICE_DAYS']) ? "1 Day" : $employeeDetail['SERVICE_DAYS'] . " Days") : "";
+                    $serviceDays = trim(implode(" ", $service));
+                    ?>
+                    <h4 class="font-weight-bold"><?php print $employeeDetail['FULL_NAME']; ?></h4>
+                    <?php if ($email) : ?>
+                        <span><?php print $email; ?></span><br>
+                    <?php endif; ?>
+                    <span><?php print trim($employeeDetail['DESIGNATION_TITLE']); ?></span><br>
+                    <span>At work for : <?php print $serviceDays ? $serviceDays : 0; ?></span><br>
+                </div>
+                <div class="col-md-8">
+                    <div class="row detailsbox">
+                        <div class="col-xs-6 col-sm-3 col-md-2 hexcustom">
+                            <div class="employee_details-box hexagon-bg1">
+                                <span><?php print $employeeDetail['PRESENT_DAY']; ?></span>
+                                <div class="face1"></div>
+                                <div class="face2"></div>
+                                <div class="headtitle">Present</div>
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-xs-6 col-sm-3 col-md-2 hexcustom">
-                        <div class="employee_details-box hexagon-bg2">
-                            <span><?php print $employeeDetail['LEAVE']; ?></span>
-                            <div class="face1"></div>
-                            <div class="face2"></div>
-                            <div class="headtitle">On Leave</div>
+                        <div class="col-xs-6 col-sm-3 col-md-2 hexcustom">
+                            <div class="employee_details-box hexagon-bg2">
+                                <span><?php print $employeeDetail['LEAVE']; ?></span>
+                                <div class="face1"></div>
+                                <div class="face2"></div>
+                                <div class="headtitle">On Leave</div>
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-xs-6 col-sm-3 col-md-2 hexcustom">
-                        <div class="employee_details-box hexagon-bg3">
-                            <span><?php print $employeeDetail['TRAINING']; ?></span>
-                            <div class="face1"></div>
-                            <div class="face2"></div>
-                            <div class="headtitle">Training</div>
+                        <div class="col-xs-6 col-sm-3 col-md-2 hexcustom">
+                            <div class="employee_details-box hexagon-bg3">
+                                <span><?php print $employeeDetail['TRAINING']; ?></span>
+                                <div class="face1"></div>
+                                <div class="face2"></div>
+                                <div class="headtitle">Training</div>
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-xs-6 col-sm-3 col-md-2 hexcustom">
-                        <div class="employee_details-box hexagon-bg4">
-                            <span><?php print $employeeDetail['TOUR']; ?></span>
-                            <div class="face1"></div>
-                            <div class="face2"></div>
-                            <div class="headtitle">On Tour</div>
+                        <div class="col-xs-6 col-sm-3 col-md-2 hexcustom">
+                            <div class="employee_details-box hexagon-bg4">
+                                <span><?php print $employeeDetail['TOUR']; ?></span>
+                                <div class="face1"></div>
+                                <div class="face2"></div>
+                                <div class="headtitle">On Tour</div>
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-xs-6 col-sm-3 col-md-2 hexcustom">
-                        <div class="employee_details-box hexagon-bg5">
-                            <span><?php print $employeeDetail['WOH']; ?></span>
-                            <div class="face1"></div>
-                            <div class="face2"></div>
-                            <div class="headtitle">WOH</div>
+                        <div class="col-xs-6 col-sm-3 col-md-2 hexcustom">
+                            <div class="employee_details-box hexagon-bg5">
+                                <span><?php print $employeeDetail['WOH']; ?></span>
+                                <div class="face1"></div>
+                                <div class="face2"></div>
+                                <div class="headtitle">WOH</div>
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-xs-6 col-sm-3 col-md-2 hexcustom">
-                        <div class="employee_details-box hexagon-bg6">
-                            <span>1</span>
-                            <div class="face1"></div>
-                            <div class="face2"></div>
-                            <div class="headtitle">Late Comers</div>
+                        <div class="col-xs-6 col-sm-3 col-md-2 hexcustom">
+                            <div class="employee_details-box hexagon-bg6">
+                                <span>1</span>
+                                <div class="face1"></div>
+                                <div class="face2"></div>
+                                <div class="headtitle">Late Comers</div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
         </div>
     </div>
 
@@ -651,6 +664,15 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                         </div>
                     </div>
                 </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-12 col-md-12">
+                    <div id="lobilist">
+
+                    </div>
+
+                </div>
+
             </div>
         </div>
     </div>

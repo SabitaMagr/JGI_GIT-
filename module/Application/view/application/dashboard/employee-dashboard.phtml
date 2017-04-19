@@ -14,11 +14,25 @@ $this->headScript()
         ->appendFile($this->basePath('assets/global/scripts/metronic.js'))
         ->appendFile($this->basePath('assets/admin/pages/scripts/index.js'))
         ->appendFile($this->basePath('js/dashboard/employee-dashboard.js'));
+
+$this->headLink()
+        ->appendStylesheet($this->basePath('assets/global/plugins/lobilist-master/dist/lobilist.min.css'));
+
+$this->headScript()
+        ->appendFile($this->basePath('assets/global/plugins/lobilist-master/dist/lobilist.min.js'))
+        ->appendFile($this->basePath('js/dashboard/todo.js'));
 ?>
 
 <script type="text/javascript">
     document.calendarUrl = '<?php echo $this->url('dashboard', ['action' => 'fetchEmployeeCalendarData']); ?>';
     document.calendarJsonFeedUrl = '<?php echo $this->url('dashboard', ['action' => 'fetchEmployeeCalendarJsonFeed']); ?>';
+</script>
+<script>
+    document.todoAddUrl = '<?php echo $this->url('task', ['action' => 'add']); ?>';
+    document.todoUpdateUrl = '<?php echo $this->url('task', ['action' => 'update']); ?>';
+    document.todoDeleteUrl = '<?php echo $this->url('task', ['action' => 'delete']); ?>';
+    document.todoTaskList = <?php echo json_encode($todoList); ?>;
+    document.todoTaskUpdateStatus = '<?php echo $this->url('task', ['action' => 'updateStatus']); ?>';
 </script>
 <?php
 if ($this->messages && (sizeof($this->messages) > 1)) {
@@ -37,544 +51,553 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
 
 <div class="employeedashboard">
     <div class="emplyoee-dashboard col-md-12">
-    <div class="row">
-        <div class="employe-descbox">
-            <div class="col-sm-2 col-md-1 profile_pic">
-                <img src="<?php print $employeeDetail['FILE_PATH'] ? $this->basePath('uploads/' . $employeeDetail['FILE_PATH']) : $this->basePath("img/nobody_m.original.jpg"); ?>">
+        <div class="row">
+            <div class="employe-descbox">
+                <div class="col-sm-2 col-md-1 profile_pic">
+                    <img src="<?php print $employeeDetail['FILE_PATH'] ? $this->basePath('uploads/' . $employeeDetail['FILE_PATH']) : $this->basePath("img/nobody_m.original.jpg"); ?>">
+                </div>
+                <div class="col-sm-3 col-md-3 employee-details">
+                    <?php
+                    $email = trim($employeeDetail['EMAIL_OFFICIAL']) ? trim($employeeDetail['EMAIL_OFFICIAL']) : trim($employeeDetail['EMAIL_PERSONAL']);
+                    $service[0] = $employeeDetail['SERVICE_YEARS'] ? ((1 == $employeeDetail['SERVICE_YEARS']) ? "1 Year" : $employeeDetail['SERVICE_YEARS'] . " Years") : "";
+                    $service[1] = $employeeDetail['SERVICE_MONTHS'] ? ((1 == $employeeDetail['SERVICE_MONTHS']) ? "1 Month" : $employeeDetail['SERVICE_MONTHS'] . " Months") : "";
+                    $service[2] = $employeeDetail['SERVICE_DAYS'] ? ((1 == $employeeDetail['SERVICE_DAYS']) ? "1 Day" : $employeeDetail['SERVICE_DAYS'] . " Days") : "";
+                    $serviceDays = trim(implode(" ", $service));
+                    ?>
+                    <h4 class="font-weight-bold"><?php print $employeeDetail['FULL_NAME']; ?></h4>
+                    <?php if ($email) : ?>
+                        <span><?php print $email; ?></span><br>
+                    <?php endif; ?>
+                    <span><?php print trim($employeeDetail['DESIGNATION_TITLE']); ?></span><br>
+                    <span>At work for : <?php print $serviceDays ? $serviceDays : 0; ?></span><br>
+                </div>
+                <div class="col-md-5">
+                    <div class="row detailsbox">
+                        <div class="col-xs-6 col-sm-3 col-md-2 hexcustom">
+                            <div class="employee_details-box hexagon-bg1">
+                                <span><?php print $employeeDetail['PRESENT_DAY']; ?></span>
+                                <div class="face1"></div>
+                                <div class="face2"></div>
+                                <div class="headtitle">Present</div>
+                            </div>
+                        </div>
+                        <div class="col-xs-6 col-sm-3 col-md-2 hexcustom">
+                            <div class="employee_details-box hexagon-bg2">
+                                <span><?php print $employeeDetail['LEAVE']; ?></span>
+                                <div class="face1"></div>
+                                <div class="face2"></div>
+                                <div class="headtitle">On Leave</div>
+                            </div>
+                        </div>
+                        <div class="col-xs-6 col-sm-3 col-md-2 hexcustom">
+                            <div class="employee_details-box hexagon-bg3">
+                                <span><?php print $employeeDetail['TRAINING']; ?></span>
+                                <div class="face1"></div>
+                                <div class="face2"></div>
+                                <div class="headtitle">Training</div>
+                            </div>
+                        </div>
+                        <div class="col-xs-6 col-sm-3 col-md-2 hexcustom">
+                            <div class="employee_details-box hexagon-bg4">
+                                <span><?php print $employeeDetail['TOUR']; ?></span>
+                                <div class="face1"></div>
+                                <div class="face2"></div>
+                                <div class="headtitle">On Tour</div>
+                            </div>
+                        </div>
+                        <div class="col-xs-6 col-sm-3 col-md-2 hexcustom">
+                            <div class="employee_details-box hexagon-bg5">
+                                <span><?php print $employeeDetail['WOH']; ?></span>
+                                <div class="face1"></div>
+                                <div class="face2"></div>
+                                <div class="headtitle">WOH</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-12  col-sm-7 col-md-3">
+                    <div class="col-hris row attendence-box">
+                        <ul>
+                            <li class="col-xs-4 col-sm-4 col-md-4">
+                                <div class="hris efficiency efficiency-bg1">
+                                    <span><?php print $employeeDetail['LATE_IN']; ?></span>
+                                    <div>Late In</div>
+                                </div>
+                            </li>
+                            <li class="col-xs-4 col-sm-4 col-md-4">
+                                <div class="hris efficiency efficiency-bg2">
+                                    <span><?php print $employeeDetail['EARLY_OUT']; ?></span>
+                                    <div>Early Out</div>
+                                </div>
+                            </li>
+                            <li class="col-xs-4 col-sm-4 col-md-4">
+                                <div class="hris efficiency efficiency-bg3">
+                                    <span><?php print $employeeDetail['MISSED_PUNCH']; ?></span>
+                                    <div>Missed Punch</div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
             </div>
-            <div class="col-sm-3 col-md-3 employee-details">
-                <?php
-                $email = trim($employeeDetail['EMAIL_OFFICIAL']) ? trim($employeeDetail['EMAIL_OFFICIAL']) : trim($employeeDetail['EMAIL_PERSONAL']);
-                $service[0] = $employeeDetail['SERVICE_YEARS'] ? ((1 == $employeeDetail['SERVICE_YEARS']) ? "1 Year" : $employeeDetail['SERVICE_YEARS'] . " Years") : "";
-                $service[1] = $employeeDetail['SERVICE_MONTHS'] ? ((1 == $employeeDetail['SERVICE_MONTHS']) ? "1 Month" : $employeeDetail['SERVICE_MONTHS'] . " Months") : "";
-                $service[2] = $employeeDetail['SERVICE_DAYS'] ? ((1 == $employeeDetail['SERVICE_DAYS']) ? "1 Day" : $employeeDetail['SERVICE_DAYS'] . " Days") : "";
-                $serviceDays = trim(implode(" ", $service));
-                ?>
-                <h4 class="font-weight-bold"><?php print $employeeDetail['FULL_NAME']; ?></h4>
-                <?php if ($email) : ?>
-                    <span><?php print $email; ?></span><br>
-                <?php endif; ?>
-                <span><?php print trim($employeeDetail['DESIGNATION_TITLE']); ?></span><br>
-                <span>At work for : <?php print $serviceDays ? $serviceDays : 0; ?></span><br>
-            </div>
-            <div class="col-md-5">
-                <div class="row detailsbox">
-                    <div class="col-xs-6 col-sm-3 col-md-2 hexcustom">
-                        <div class="employee_details-box hexagon-bg1">
-                            <span><?php print $employeeDetail['PRESENT_DAY']; ?></span>
-                            <div class="face1"></div>
-                            <div class="face2"></div>
-                            <div class="headtitle">Present</div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="portlet light calendar boxborder">
+                    <div class="portlet-title ">
+                        <div class="caption">
+                            <i class="fa fa-calendar font-green-sharp"></i>
+                            <span class="caption-subject font-green-sharp bold">Calendar</span>
                         </div>
                     </div>
-                    <div class="col-xs-6 col-sm-3 col-md-2 hexcustom">
-                        <div class="employee_details-box hexagon-bg2">
-                            <span><?php print $employeeDetail['LEAVE']; ?></span>
-                            <div class="face1"></div>
-                            <div class="face2"></div>
-                            <div class="headtitle">On Leave</div>
-                        </div>
-                    </div>
-                    <div class="col-xs-6 col-sm-3 col-md-2 hexcustom">
-                        <div class="employee_details-box hexagon-bg3">
-                            <span><?php print $employeeDetail['TRAINING']; ?></span>
-                            <div class="face1"></div>
-                            <div class="face2"></div>
-                            <div class="headtitle">Training</div>
-                        </div>
-                    </div>
-                    <div class="col-xs-6 col-sm-3 col-md-2 hexcustom">
-                        <div class="employee_details-box hexagon-bg4">
-                            <span><?php print $employeeDetail['TOUR']; ?></span>
-                            <div class="face1"></div>
-                            <div class="face2"></div>
-                            <div class="headtitle">On Tour</div>
-                        </div>
-                    </div>
-                    <div class="col-xs-6 col-sm-3 col-md-2 hexcustom">
-                        <div class="employee_details-box hexagon-bg5">
-                            <span><?php print $employeeDetail['WOH']; ?></span>
-                            <div class="face1"></div>
-                            <div class="face2"></div>
-                            <div class="headtitle">WOH</div>
+                    <div class="portlet-body">
+                        <div id="calendar"><div class="html-loading" style="min-height:250px;"></div></div>
+                        <div class="calendar-colorbox">
+                            <ul>
+                                <li>
+                                    <div class="color-box colorbox-color1"></div>
+                                    <span>Holiday</span>
+                                </li>
+                                <li>
+                                    <div class="color-box colorbox-color2"></div>
+                                    <span>Leave</span>
+                                </li>
+                                <li>
+                                    <div class="color-box colorbox-color3"></div>
+                                    <span>Training</span>
+                                </li>
+                                <li>
+                                    <div class="color-box colorbox-color4"></div>
+                                    <span>Tour</span>
+                                </li>
+                                <li>
+                                    <div class="color-box colorbox-color5"></div>
+                                    <span>Absent</span>
+                                </li>
+                            </ul>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="col-xs-12  col-sm-7 col-md-3">
-                <div class="col-hris row attendence-box">
-                    <ul>
-                        <li class="col-xs-4 col-sm-4 col-md-4">
-                            <div class="hris efficiency efficiency-bg1">
-                                <span><?php print $employeeDetail['LATE_IN']; ?></span>
-                                <div>Late In</div>
+
+            <div class="col-md-12">
+                <div class="profile-content">
+                    <div class="row">
+                        <div class="col-md-12 noticeboard">
+                            <div class="portlet-body">
+                                <div class="portlet light boxborder">
+                                    <div class="portlet-title tabbable-line">
+                                        <div class="caption caption-md">
+                                            <i class="fa fa-newspaper-o font-green-sharp" aria-hidden="true"></i>
+                                            <span class="caption-subject font-green-sharp bold">Notice Board</span>
+                                        </div>
+                                    </div>
+                                    <div class="noticeboard-list row">
+                                        <ul>
+                                            <?php if (count($employeeNotice) > 0) : ?>
+                                                <?php foreach ($employeeNotice as $notice) : ?>
+                                                    <li style="width:100%;">
+                                                        <div class="calendardate-box col-xs-4 col-sm-2 col-md-2">
+                                                            <span><?php print $notice['NEWS_DAY']; ?></span><br>
+                                                            <?php print $notice['NEWS_MONTH_YEAR']; ?>
+                                                        </div>
+                                                        <div class="notice-details col-xs-8 col-sm-10 col-md-10">
+                                                            <h5 class="title-color caption-subject  bold"><?php print $notice['NEWS_TITLE']; ?></h5>
+                                                            <p><?php print $notice['NEWS_EDESC']; ?></p>
+                                                        </div>
+                                                    </li>
+                                                <?php endforeach; ?>
+                                            <?php else : ?>
+                                                <li style="width:100%;">
+                                                    <div class="calendardate-box col-xs-4 col-sm-2 col-md-2">
+                                                        <span><?php print date('d'); ?></span><br>
+                                                        <?php print date('M Y'); ?>
+                                                    </div>
+                                                    <div class="notice-details col-xs-8 col-sm-10 col-md-10">
+                                                        <h5 class="title-color caption-subject  bold">No notice found</h5>
+                                                        <p>Notice will be display when new notice is published</p>
+                                                    </div>
+                                                </li>
+                                            <?php endif; ?>
+                                        </ul>
+                                    </div>
+                                    <!--END TABS-->
+                                </div>
                             </div>
-                        </li>
-                        <li class="col-xs-4 col-sm-4 col-md-4">
-                            <div class="hris efficiency efficiency-bg2">
-                                <span><?php print $employeeDetail['EARLY_OUT']; ?></span>
-                                <div>Early Out</div>
-                            </div>
-                        </li>
-                        <li class="col-xs-4 col-sm-4 col-md-4">
-                            <div class="hris efficiency efficiency-bg3">
-                                <span><?php print $employeeDetail['MISSED_PUNCH']; ?></span>
-                                <div>Missed Punch</div>
-                            </div>
-                        </li>
-                    </ul>
+                        </div>
+                        <!-- END PORTLET -->
+                    </div>
                 </div>
             </div>
-        </div>
-        </div>
         </div>
     </div>
 
-    <div class="row">
-        <div class="col-md-6">
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="portlet light calendar boxborder">
-                        <div class="portlet-title ">
-                            <div class="caption">
-                                <i class="fa fa-calendar font-green-sharp"></i>
-                                <span class="caption-subject font-green-sharp bold">Calendar</span>
-                            </div>
+    <div class="col-md-6">
+        <div class="row widget-row">
+            <div class="col-sm-6 col-md-6">
+                <!-- BEGIN WIDGET THUMB -->
+                <div class="wigetbox wigetbox-colorone clearfix widget-thumb widget-bg-color-lightgreen margin-bottom-20 bordered green-haze">
+                    <div class="widget-thumb-wrap widget-thumb-wrap-bgone">
+                        <h4 class="widget-thumb-heading">Average Office Hrs</h4>
+                        <div class="widget-thumb-body">
+                            <?php
+                            $avgOfficeHourParts[0] = $employeeDetail['AVG_HOURS'] ? ((1 == $employeeDetail['AVG_HOURS']) ? "1 hr" : number_format($employeeDetail['AVG_HOURS']) . " hrs") : "";
+                            $avgOfficeHourParts[1] = $employeeDetail['AVG_MINUTES'] ? ((1 == $employeeDetail['AVG_MINUTES']) ? "1 min" : number_format($employeeDetail['AVG_MINUTES']) . " mins") : "";
+                            $avgOfficeHours = trim(implode(" ", $avgOfficeHourParts));
+                            ?>
+                            <span class="widget-thumb-body-stat" data-counter="counterup"><?php print $avgOfficeHours ? $avgOfficeHours : 0; ?></span>
                         </div>
-                        <div class="portlet-body">
-                            <div id="calendar"><div class="html-loading" style="min-height:250px;"></div></div>
-                            <div class="calendar-colorbox">
-                                <ul>
-                                    <li>
-                                        <div class="color-box colorbox-color1"></div>
-                                        <span>Holiday</span>
-                                    </li>
-                                    <li>
-                                        <div class="color-box colorbox-color2"></div>
-                                        <span>Leave</span>
-                                    </li>
-                                    <li>
-                                        <div class="color-box colorbox-color3"></div>
-                                        <span>Training</span>
-                                    </li>
-                                    <li>
-                                        <div class="color-box colorbox-color4"></div>
-                                        <span>Tour</span>
-                                    </li>
-                                    <li>
-                                        <div class="color-box colorbox-color5"></div>
-                                        <span>Absent</span>
-                                    </li>
-                                </ul>
-                            </div>
+                    </div>
+                    <div>
+                        <div class="icons">
+                            <i class="widget-thumb-icon  fa fa-user colorone"></i>
                         </div>
                     </div>
                 </div>
+            </div>
+            <!-- BEGIN WIDGET THUMB -->
+            <div class="col-sm-6 col-md-6">
+                <div class="wigetbox wigetbox-colortwo clearfix widget-thumb widget-bg-color-lightgreen margin-bottom-20 bordered green-haze">
+                    <div class="widget-thumb-wrap widget-thumb-wrap-bgtwo">
+                        <h4 class="widget-thumb-heading">Average Timesheet Hrs</h4>
+                        <div class="widget-thumb-body">
+                            <span class="widget-thumb-body-stat" data-counter="counterup">0</span>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="icons">
+                            <i class="widget-thumb-icon fa fa-user-plus colortwo"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-                <div class="col-md-12">
-                    <div class="profile-content">
-                        <div class="row">
-                            <div class="col-md-12 noticeboard">
-                                <div class="portlet-body">
-                                    <div class="portlet light boxborder">
-                                        <div class="portlet-title tabbable-line">
-                                            <div class="caption caption-md">
-                                               <i class="fa fa-newspaper-o font-green-sharp" aria-hidden="true"></i>
-                                                <span class="caption-subject font-green-sharp bold">Notice Board</span>
-                                            </div>
-                                        </div>
-                                        <div class="noticeboard-list row">
-                                            <ul>
-                                                <?php if (count($employeeNotice) > 0) : ?>
-                                                    <?php foreach ($employeeNotice as $notice) : ?>
-                                                        <li style="width:100%;">
-                                                            <div class="calendardate-box col-xs-4 col-sm-2 col-md-2">
-                                                                <span><?php print $notice['NEWS_DAY']; ?></span><br>
-                                                                <?php print $notice['NEWS_MONTH_YEAR']; ?>
-                                                            </div>
-                                                            <div class="notice-details col-xs-8 col-sm-10 col-md-10">
-                                                                <h5 class="title-color caption-subject  bold"><?php print $notice['NEWS_TITLE']; ?></h5>
-                                                                <p><?php print $notice['NEWS_EDESC']; ?></p>
-                                                            </div>
-                                                        </li>
-                                                    <?php endforeach; ?>
-                                                <?php else : ?>
-                                                    <li style="width:100%;">
-                                                        <div class="calendardate-box col-xs-4 col-sm-2 col-md-2">
-                                                            <span><?php print date('d'); ?></span><br>
-                                                            <?php print date('M Y'); ?>
-                                                        </div>
-                                                        <div class="notice-details col-xs-8 col-sm-10 col-md-10">
-                                                            <h5 class="title-color caption-subject  bold">No notice found</h5>
-                                                            <p>Notice will be display when new notice is published</p>
-                                                        </div>
-                                                    </li>
-                                                <?php endif; ?>
-                                            </ul>
-                                        </div>
-                                        <!--END TABS-->
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- END PORTLET -->
+            <div class="col-sm-6 col-md-6">
+                <!-- BEGIN WIDGET THUMB -->
+                <div class="wigetbox wigetbox-colorthree clearfix widget-thumb widget-bg-color-lightgreen margin-bottom-20 bordered green-haze">
+                    <div class="widget-thumb-wrap widget-thumb-wrap-bgthree">
+                        <h4 class="widget-thumb-heading">Total OT Hrs</h4>
+                        <div class="widget-thumb-body">
+                            <span class="widget-thumb-body-stat" data-counter="counterup">0</span>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="icons">
+                            <i class="widget-thumb-icon fa fa fa-user-times colorthree"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6 col-md-6">
+                <!-- BEGIN WIDGET THUMB -->
+                <div class="wigetbox wigetbox-colorfour clearfix widget-thumb margin-bottom-20 bordered green-haze widget-woh">
+                    <div class="widget-thumb-wrap widget-thumb-wrap-bgfour">
+                        <h4 class="widget-thumb-heading">Work on Holiday</h4>
+                        <div class="widget-thumb-body">
+                            <ul>
+                                <li class="line">
+                                    <span class="widget-thumb-body-stat" data-counter="counterup"><?php print $employeeDetail['CUR_MONTH_WOH']; ?></span>
+                                    This Month
+                                </li>
+                                <li>
+                                    <span class="widget-thumb-body-stat" data-counter="counterup"><?php print $employeeDetail['PREV_MONTH_WOH']; ?></span>
+                                    Last Month
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="icons">
+                            <i class="widget-thumb-icon  fa fa-users colorfour"></i>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="col-md-6">
-            <div class="row widget-row">
-                <div class="col-sm-6 col-md-6">
-                    <!-- BEGIN WIDGET THUMB -->
-                    <div class="wigetbox wigetbox-colorone clearfix widget-thumb widget-bg-color-lightgreen margin-bottom-20 bordered green-haze">
-                        <div class="widget-thumb-wrap widget-thumb-wrap-bgone">
-                            <h4 class="widget-thumb-heading">Average Office Hrs</h4>
-                            <div class="widget-thumb-body">
-                                <?php
-                                $avgOfficeHourParts[0] = $employeeDetail['AVG_HOURS'] ? ((1 == $employeeDetail['AVG_HOURS']) ? "1 hr" : number_format($employeeDetail['AVG_HOURS']) . " hrs") : "";
-                                $avgOfficeHourParts[1] = $employeeDetail['AVG_MINUTES'] ? ((1 == $employeeDetail['AVG_MINUTES']) ? "1 min" : number_format($employeeDetail['AVG_MINUTES']) . " mins") : "";
-                                $avgOfficeHours = trim(implode(" ", $avgOfficeHourParts));
-                                ?>
-                                <span class="widget-thumb-body-stat" data-counter="counterup"><?php print $avgOfficeHours ? $avgOfficeHours : 0; ?></span>
-                            </div>
-                        </div>
-                        <div>
-                            <div class="icons">
-                                <i class="widget-thumb-icon  fa fa-user colorone"></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- BEGIN WIDGET THUMB -->
-                <div class="col-sm-6 col-md-6">
-                    <div class="wigetbox wigetbox-colortwo clearfix widget-thumb widget-bg-color-lightgreen margin-bottom-20 bordered green-haze">
-                        <div class="widget-thumb-wrap widget-thumb-wrap-bgtwo">
-                            <h4 class="widget-thumb-heading">Average Timesheet Hrs</h4>
-                            <div class="widget-thumb-body">
-                                <span class="widget-thumb-body-stat" data-counter="counterup">0</span>
-                            </div>
-                        </div>
-                        <div>
-                            <div class="icons">
-                                <i class="widget-thumb-icon fa fa-user-plus colortwo"></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-sm-6 col-md-6">
-                    <!-- BEGIN WIDGET THUMB -->
-                    <div class="wigetbox wigetbox-colorthree clearfix widget-thumb widget-bg-color-lightgreen margin-bottom-20 bordered green-haze">
-                        <div class="widget-thumb-wrap widget-thumb-wrap-bgthree">
-                            <h4 class="widget-thumb-heading">Total OT Hrs</h4>
-                            <div class="widget-thumb-body">
-                                <span class="widget-thumb-body-stat" data-counter="counterup">0</span>
-                            </div>
-                        </div>
-                        <div>
-                            <div class="icons">
-                                <i class="widget-thumb-icon fa fa fa-user-times colorthree"></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-sm-6 col-md-6">
-                    <!-- BEGIN WIDGET THUMB -->
-                    <div class="wigetbox wigetbox-colorfour clearfix widget-thumb margin-bottom-20 bordered green-haze widget-woh">
-                        <div class="widget-thumb-wrap widget-thumb-wrap-bgfour">
-                            <h4 class="widget-thumb-heading">Work on Holiday</h4>
-                            <div class="widget-thumb-body">
-                                <ul>
-                                    <li class="line">
-                                        <span class="widget-thumb-body-stat" data-counter="counterup"><?php print $employeeDetail['CUR_MONTH_WOH']; ?></span>
-                                        This Month
-                                    </li>
-                                    <li>
-                                        <span class="widget-thumb-body-stat" data-counter="counterup"><?php print $employeeDetail['PREV_MONTH_WOH']; ?></span>
-                                        Last Month
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                        <div>
-                            <div class="icons">
-                                <i class="widget-thumb-icon  fa fa-users colorfour"></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col-md-12">
+        <div class="row">
+            <div class="col-md-12">
 
                 <div class="mytask-todo">
                     <div class="taskbox">
                         <div class="portlet light portlet-inner-task-wrapper boxborder">
                             <!--<div class="portlet-inner-task-wrapper">-->
-                                <div class="portlet-title">
-                                    <div class="caption caption-md">
-                                        <i class="fa fa-tasks font-green-sharp"></i>
-                                        <span class="caption-subject font-green-sharp bold">My Tasks</span>
-                                    </div>
+                            <div class="portlet-title">
+                                <div class="caption caption-md">
+                                    <i class="fa fa-tasks font-green-sharp"></i>
+                                    <span class="caption-subject font-green-sharp bold">My Tasks</span>
+                                </div>
 
-                                          <div class="task pull-right">
+                                <div class="task pull-right">
                                     <div class="date-date">
                                         <span><?php print date('d'); ?></span>
                                         <!--<div class="taskaddbtn">
                                             <a href="#"> <i class="fa fa-plus" aria-hidden="true"></i></a>
                                         </div>-->
                                     </div>
-                                   <!-- <div class="nextbtn">
-                                        <a href="#"><i class="fa fa-angle-right" aria-hidden="true"></i></a>
-                                    </div> -->
-                                  
+                                    <!-- <div class="nextbtn">
+                                         <a href="#"><i class="fa fa-angle-right" aria-hidden="true"></i></a>
+                                     </div> -->
+
                                 </div>
-                                </div>
-                          
-                               <!-- </div> -->
-
-                                <?php $employeeTask = []; ?>
-                                <?php if ($employeeTask) : ?>
-                                    <div class="task-list">
-                                        <ul>
-                                            <?php foreach ($employeeTask as $task): ?>
-                                                <li>
-                                                    <div class="task-list-content clearfix">
-                                                        <h4><?php print $task['TASK_EDESC']; ?></h4>
-                                                        <div class="positon">Position: <?php print $task['DESIGNATION_TITLE']; ?></div>
-                                                        <div class="name"><?php print $task['FULL_NAME']; ?></div>
-                                                    </div>
-                                                </li>
-                                            <?php endforeach; ?>
-                                        </ul>
-                                    </div>
-                                <?php else : ?>
-                                    <div class="notask">
-                                        <div class="notask-box">
-                                            <h4><i class="fa fa-universal-access" aria-hidden="true"></i>No Task Available</h4>
-                                        </div>
-                                    </div>
-                                <?php endif; ?>
                             </div>
 
-                          </div>
+                            <!-- </div> -->
 
-                       
-                           
-                                <div class="datepickeform">
-                                   <div class="portlet light portlet-inner-datepicker-wrapper boxborder">
-
-
-                                                <div class="portlet-title">
-                                                    <div class="caption caption-md">
-
-
-                                                        <i class="fa fa-check-square-o font-green-sharp" aria-hidden="true"></i>
-
-
-                                                        <span class="caption-subject font-green-sharp bold">TO Do</span>
-                                                    </div>     
-                                                </div>
-
-
-
-
-
-
-
-
-                                    
-                                       
-                                        <div class="row">
-                                            <div class="col-md-12">
-                                                <div class="form-group">
-                                                    <label class="control-label">Due for today <?php print date('d F Y'); ?> </label>
-                                                    <input id="inp-task-dt" class="pickdate form-control form-control-inline input-medium date-picker" size="16" type="text" value=""/>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-12">
-                                                <div class="form-group">
-                                                    <label class="control-label">Task</label>
-                                                    <input id="inp-task-name" class="form-control" placeholder="Task Name" type="text">
-                                                </div>
-                                            </div>
-                                         <!--div class="col-md-12">
-                                                <div class="form-group">
-                                                  <input type="button" id="task-save btn" class="btn btn-dafault" value="Save" />
-                                                </div> -->
-                                                <div class="col-md-12">
-                                                <div class="form-group1">
-                                                <button type="button" class="btn btn-theme  savebutton"  id="task-save btn" value="Save">
-                                                <i class="fa fa-floppy-o" aria-hidden="true"></i>
-                                                     Save
-                                                 </button>
-                                                </div>
-
-                                            </div>
-                                        </div>
-                                    </div>
-                                
-                            </div>
-                            <div class="clearfix"></div>
-                        
-                    </div>
-                    <!-- END CONTENT -->
-                </div>
-                </div>
-           
-
-            <div class="row">
-                <div class="col-md-12 holidays">
-                    <!-- BEGIN PORTLET -->
-                    <div class="portlet light boxborder">
-                        <div class="portlet-title tabbable-line">
-                            <div class="caption caption-md">
-                                <i class="fa fa-plane font-green-sharp" aria-hidden="true"></i>
-                                <span class="caption-subject font-green-sharp bold">Upcoming Holidays</span>
-                            </div>
-                        </div>
-
-                        <div class="portlet-body">
-                            <div class="row">
-                                <div class="upcomingholidays">
-                                    <div class="html-loading" style="display:none;height:100%;width:100%;position:absolute;top:0;left:0;"></div>
-                                    <ul class="feeds" style="visibility:visible;">
-                                        <?php foreach ($upcomingHolidays as $holiday) : ?>
+                            <?php $employeeTask = []; ?>
+                            <?php if ($employeeTask) : ?>
+                                <div class="task-list">
+                                    <ul>
+                                        <?php foreach ($employeeTask as $task): ?>
                                             <li>
-                                                <div class="col-xs-6 col-sm-3 col-md-3 desc holiday-title">
-                                                    <span class="label holiday-color  "><?php print $holiday['HOLIDAY_ENAME']; ?></span>
-                                                </div>
-                                                <div class="col-xs-6 col-sm-4 col-md-4 remaining-days">
-                                                    <?php
-                                                    $daysRemaining = $holiday['DAYS_REMAINING'] ? ((1 == $holiday['DAYS_REMAINING']) ? "1 Day Remaining" : $holiday['DAYS_REMAINING'] . " Days Remaining") : "Today";
-                                                    ?>
-                                                    <span class="label"><?php print $daysRemaining; ?></span>
-                                                </div>
-                                                <div class="col-xs-6 col-sm-5 col-md-5 holiday-date">
-                                                    <div class="label date"><?php print $holiday['START_DATE']; ?></div>
+                                                <div class="task-list-content clearfix">
+                                                    <h4><?php print $task['TASK_EDESC']; ?></h4>
+                                                    <div class="positon">Position: <?php print $task['DESIGNATION_TITLE']; ?></div>
+                                                    <div class="name"><?php print $task['FULL_NAME']; ?></div>
                                                 </div>
                                             </li>
                                         <?php endforeach; ?>
                                     </ul>
                                 </div>
+                            <?php else : ?>
+                                <div class="notask">
+                                    <div class="notask-box">
+                                        <h4><i class="fa fa-universal-access" aria-hidden="true"></i>No Task Available</h4>
+                                    </div>
+                                </div>
+                            <?php endif; ?>
+                        </div>
+
+                    </div>
+
+
+
+                    <div class="datepickeform">
+                        <div class="portlet light portlet-inner-datepicker-wrapper boxborder">
+
+
+                            <div class="portlet-title">
+                                <div class="caption caption-md">
+
+
+                                    <i class="fa fa-check-square-o font-green-sharp" aria-hidden="true"></i>
+
+
+                                    <span class="caption-subject font-green-sharp bold">TO Do</span>
+                                </div>     
+                            </div>
+
+
+
+
+
+
+
+
+
+
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label class="control-label">Due for today <?php print date('d F Y'); ?> </label>
+                                        <input id="inp-task-dt" class="pickdate form-control form-control-inline input-medium date-picker" size="16" type="text" value=""/>
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label class="control-label">Task</label>
+                                        <input id="inp-task-name" class="form-control" placeholder="Task Name" type="text">
+                                    </div>
+                                </div>
+                                <!--div class="col-md-12">
+                                       <div class="form-group">
+                                         <input type="button" id="task-save btn" class="btn btn-dafault" value="Save" />
+                                       </div> -->
+                                <div class="col-md-12">
+                                    <div class="form-group1">
+                                        <button type="button" class="btn btn-theme  savebutton"  id="task-save btn" value="Save">
+                                            <i class="fa fa-floppy-o" aria-hidden="true"></i>
+                                            Save
+                                        </button>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="clearfix"></div>
+
+                </div>
+                <!-- END CONTENT -->
+            </div>
+        </div>
+
+
+        <div class="row">
+            <div class="col-md-12 holidays">
+                <!-- BEGIN PORTLET -->
+                <div class="portlet light boxborder">
+                    <div class="portlet-title tabbable-line">
+                        <div class="caption caption-md">
+                            <i class="fa fa-plane font-green-sharp" aria-hidden="true"></i>
+                            <span class="caption-subject font-green-sharp bold">Upcoming Holidays</span>
+                        </div>
+                    </div>
+
+                    <div class="portlet-body">
+                        <div class="row">
+                            <div class="upcomingholidays">
+                                <div class="html-loading" style="display:none;height:100%;width:100%;position:absolute;top:0;left:0;"></div>
+                                <ul class="feeds" style="visibility:visible;">
+                                    <?php foreach ($upcomingHolidays as $holiday) : ?>
+                                        <li>
+                                            <div class="col-xs-6 col-sm-3 col-md-3 desc holiday-title">
+                                                <span class="label holiday-color  "><?php print $holiday['HOLIDAY_ENAME']; ?></span>
+                                            </div>
+                                            <div class="col-xs-6 col-sm-4 col-md-4 remaining-days">
+                                                <?php
+                                                $daysRemaining = $holiday['DAYS_REMAINING'] ? ((1 == $holiday['DAYS_REMAINING']) ? "1 Day Remaining" : $holiday['DAYS_REMAINING'] . " Days Remaining") : "Today";
+                                                ?>
+                                                <span class="label"><?php print $daysRemaining; ?></span>
+                                            </div>
+                                            <div class="col-xs-6 col-sm-5 col-md-5 holiday-date">
+                                                <div class="label date"><?php print $holiday['START_DATE']; ?></div>
+                                            </div>
+                                        </li>
+                                    <?php endforeach; ?>
+                                </ul>
                             </div>
                         </div>
                     </div>
                 </div>
+            </div>
 
-                <div class="birthday-wishes">
-                    <div class="col-md-12 col-sm-12">
-                        <?php
-                        // Display Today's Birthday As Active
-                        $todayBirthdayActive = ((isset($employeesBirthday) && isset($employeesBirthday['TODAY']) && $employeesBirthday['TODAY'])) ? true : false;
-                        ?>
-                        <!-- BEGIN PORTLET-->
-                        <div class="portlet light boxborder">
-                            <div class="portlet-title tabbable-line tabline">
-                                <div class="caption">
-                                    <i class="fa fa-birthday-cake font-green-sharp"></i>
-                                    <span class="caption-subject font-green-sharp bold">Birthday Wishes</span>
-                                </div>
-                                <ul class="nav nav-tabs">
-                                    <li class="ln-birthday <?php print $todayBirthdayActive ? 'active' : '' ?>">
-                                        <a id="ln-birthday-today" class="ln-nav-tab-birthday" href="javascript:void(0);" data-toggle="tab" aria-expanded="true">Today</a>
-                                    </li>
-                                    <li class="ln-birthday <?php print $todayBirthdayActive ? '' : 'active'?>">
-                                        <a id="ln-birthday-upcoming" class="ln-nav-tab-birthday" href="javascript:void(0);" data-toggle="tab" aria-expanded="false">Upcoming</a>
-                                    </li>
-                                </ul>
+            <div class="birthday-wishes">
+                <div class="col-md-12 col-sm-12">
+                    <?php
+                    // Display Today's Birthday As Active
+                    $todayBirthdayActive = ((isset($employeesBirthday) && isset($employeesBirthday['TODAY']) && $employeesBirthday['TODAY'])) ? true : false;
+                    ?>
+                    <!-- BEGIN PORTLET-->
+                    <div class="portlet light boxborder">
+                        <div class="portlet-title tabbable-line tabline">
+                            <div class="caption">
+                                <i class="fa fa-birthday-cake font-green-sharp"></i>
+                                <span class="caption-subject font-green-sharp bold">Birthday Wishes</span>
                             </div>
+                            <ul class="nav nav-tabs">
+                                <li class="ln-birthday <?php print $todayBirthdayActive ? 'active' : ''  ?>">
+                                    <a id="ln-birthday-today" class="ln-nav-tab-birthday" href="javascript:void(0);" data-toggle="tab" aria-expanded="true">Today</a>
+                                </li>
+                                <li class="ln-birthday <?php print $todayBirthdayActive ? '' : 'active'  ?>">
+                                    <a id="ln-birthday-upcoming" class="ln-nav-tab-birthday" href="javascript:void(0);" data-toggle="tab" aria-expanded="false">Upcoming</a>
+                                </li>
+                            </ul>
+                        </div>
 
-                            <div class="row">
-                                <div class="tab-content birday-person-list">
-                                    <div class="tab-pane tab-pane-birthday">
-                                        <div id="tab-birthday-today" style="display:<?php print $todayBirthdayActive ? 'block' : 'none' ?>">
-                                            <?php if ($todayBirthdayActive) : ?>
-                                                <?php foreach ($employeesBirthday['TODAY'] as $todayBirthday) : ?>
-                                                    <div class="person-list clearfix">
-                                                        <div class="col-xs-4 col-md-3 col-sm-3">
-                                                            <div class="person-pic">
-                                                                <img src="<?php print $todayBirthday['FILE_PATH'] ? $this->basePath('uploads/' . $todayBirthday['FILE_PATH']) : $this->basePath('img/nobody_m.original.jpg'); ?>" alt="person picture">
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-xs-6 col-md-6 col-sm-6">
-                                                            <div class="person-details">
-                                                                <h4><?php print $todayBirthday['FULL_NAME']; ?></h4>
-                                                                <span><?php print $todayBirthday['DESIGNATION_TITLE']; ?></span>
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-xs-2 col-md-3 col-sm-3">
-                                                            <span class="birth-date"><?php print $todayBirthday['EMP_BIRTH_DATE']; ?></span>
-                                                        </div>
-                                                    </div>
-                                                <?php endforeach; ?>
-                                            <?php else: ?>
-                                                <div class="dashborder clearfix">
+                        <div class="row">
+                            <div class="tab-content birday-person-list">
+                                <div class="tab-pane tab-pane-birthday">
+                                    <div id="tab-birthday-today" style="display:<?php print $todayBirthdayActive ? 'block' : 'none'  ?>">
+                                        <?php if ($todayBirthdayActive) : ?>
+                                            <?php foreach ($employeesBirthday['TODAY'] as $todayBirthday) : ?>
+                                                <div class="person-list clearfix">
                                                     <div class="col-xs-4 col-md-3 col-sm-3">
-                                                        <div class="person-pic birthday-pic">
-                                                            <img src="<?php print $this->basePath('img/nobody_m.original.jpg'); ?>" alt="person picture">
+                                                        <div class="person-pic">
+                                                            <img src="<?php print $todayBirthday['FILE_PATH'] ? $this->basePath('uploads/' . $todayBirthday['FILE_PATH']) : $this->basePath('img/nobody_m.original.jpg'); ?>" alt="person picture">
                                                         </div>
                                                     </div>
                                                     <div class="col-xs-6 col-md-6 col-sm-6">
-                                                        <div class="nobirthday-text">
-                                                            <h4>No Birthday Available Today</h4>
+                                                        <div class="person-details">
+                                                            <h4><?php print $todayBirthday['FULL_NAME']; ?></h4>
+                                                            <span><?php print $todayBirthday['DESIGNATION_TITLE']; ?></span>
                                                         </div>
                                                     </div>
                                                     <div class="col-xs-2 col-md-3 col-sm-3">
-                                                        <span class="calendar_date"><i class="fa fa-calendar" aria-hidden="true"></i>&nbsp;<?php print date('jS F') ?></span>
+                                                        <span class="birth-date"><?php print $todayBirthday['EMP_BIRTH_DATE']; ?></span>
                                                     </div>
                                                 </div>
-                                            <?php endif; ?>
-                                        </div>
-
-                                        <div id="tab-birthday-upcoming" style="display:<?php print $todayBirthdayActive ? 'none' : 'block' ?>">
-                                            <?php if (isset($employeesBirthday) && isset($employeesBirthday['UPCOMING']) && $employeesBirthday['UPCOMING']) : ?>
-                                                <?php foreach ($employeesBirthday['UPCOMING'] as $upcomingBirthday) : ?>
-                                                    <div class="person-list clearfix">
-                                                        <div class="col-xs-4 col-md-3 col-sm-3">
-                                                            <div class="person-pic">
-                                                                <img src="<?php print $upcomingBirthday['FILE_PATH'] ? $this->basePath('uploads/' . $upcomingBirthday['FILE_PATH']) : $this->basePath('img/nobody_m.original.jpg'); ?>" alt="person picture">
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-xs-6 col-md-6 col-sm-6">
-                                                            <div class="person-details">
-                                                                <h4><?php print $upcomingBirthday['FULL_NAME']; ?></h4>
-                                                                <span><?php print $upcomingBirthday['DESIGNATION_TITLE']; ?></span>
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-xs-2 col-md-3 col-sm-3">
-                                                            <span class="birth-date"><?php print $upcomingBirthday['EMP_BIRTH_DATE']; ?></span>
-                                                        </div>
+                                            <?php endforeach; ?>
+                                        <?php else: ?>
+                                            <div class="dashborder clearfix">
+                                                <div class="col-xs-4 col-md-3 col-sm-3">
+                                                    <div class="person-pic birthday-pic">
+                                                        <img src="<?php print $this->basePath('img/nobody_m.original.jpg'); ?>" alt="person picture">
                                                     </div>
-                                                <?php endforeach; ?>
-                                            <?php else : ?>
-                                                <div class="dashborder clearfix">
-                                                    <div class="col-md-3 col-sm-3">
-                                                        <div class="person-pic birthday-pic">
-                                                            <img src="<?php print $this->basePath('img/nobody_m.original.jpg'); ?>" alt="person picture">
+                                                </div>
+                                                <div class="col-xs-6 col-md-6 col-sm-6">
+                                                    <div class="nobirthday-text">
+                                                        <h4>No Birthday Available Today</h4>
+                                                    </div>
+                                                </div>
+                                                <div class="col-xs-2 col-md-3 col-sm-3">
+                                                    <span class="calendar_date"><i class="fa fa-calendar" aria-hidden="true"></i>&nbsp;<?php print date('jS F') ?></span>
+                                                </div>
+                                            </div>
+                                        <?php endif; ?>
+                                    </div>
+
+                                    <div id="tab-birthday-upcoming" style="display:<?php print $todayBirthdayActive ? 'none' : 'block'  ?>">
+                                        <?php if (isset($employeesBirthday) && isset($employeesBirthday['UPCOMING']) && $employeesBirthday['UPCOMING']) : ?>
+                                            <?php foreach ($employeesBirthday['UPCOMING'] as $upcomingBirthday) : ?>
+                                                <div class="person-list clearfix">
+                                                    <div class="col-xs-4 col-md-3 col-sm-3">
+                                                        <div class="person-pic">
+                                                            <img src="<?php print $upcomingBirthday['FILE_PATH'] ? $this->basePath('uploads/' . $upcomingBirthday['FILE_PATH']) : $this->basePath('img/nobody_m.original.jpg'); ?>" alt="person picture">
                                                         </div>
                                                     </div>
                                                     <div class="col-xs-6 col-md-6 col-sm-6">
-                                                        <div class="nobirthday-text">
-                                                            <h4>No Upcoming Birthdays Found!!!</h4>
+                                                        <div class="person-details">
+                                                            <h4><?php print $upcomingBirthday['FULL_NAME']; ?></h4>
+                                                            <span><?php print $upcomingBirthday['DESIGNATION_TITLE']; ?></span>
                                                         </div>
                                                     </div>
+                                                    <div class="col-xs-2 col-md-3 col-sm-3">
+                                                        <span class="birth-date"><?php print $upcomingBirthday['EMP_BIRTH_DATE']; ?></span>
+                                                    </div>
                                                 </div>
-                                            <?php endif; ?>
-                                        </div>
+                                            <?php endforeach; ?>
+                                        <?php else : ?>
+                                            <div class="dashborder clearfix">
+                                                <div class="col-md-3 col-sm-3">
+                                                    <div class="person-pic birthday-pic">
+                                                        <img src="<?php print $this->basePath('img/nobody_m.original.jpg'); ?>" alt="person picture">
+                                                    </div>
+                                                </div>
+                                                <div class="col-xs-6 col-md-6 col-sm-6">
+                                                    <div class="nobirthday-text">
+                                                        <h4>No Upcoming Birthdays Found!!!</h4>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        <?php endif; ?>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
+            </div>
+
+        </div>
+        <div class="row">
+            <div class="col-sm-12 col-md-12">
+                <div id="lobilist">
+
+                </div>
 
             </div>
+
         </div>
     </div>
+</div>
 
-    <div class="clearfix"></div>
+<div class="clearfix"></div>
 
 </div>
