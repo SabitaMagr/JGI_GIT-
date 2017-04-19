@@ -44,7 +44,7 @@ class SetupRepository implements RepositoryInterface{
             new Expression("S.APPRAISAL_CODE AS APPRAISAL_CODE"),
             new Expression("S.APPRAISAL_EDESC AS APPRAISAL_EDESC"), 
             new Expression("S.APPRAISAL_NDESC AS APPRAISAL_NDESC"),
-            new Expression("TINITCAP(O_CHAR(S.START_DATE,'DD-MON-YYYY')) AS START_DATE"), 
+            new Expression("INITCAP(TO_CHAR(S.START_DATE,'DD-MON-YYYY')) AS START_DATE"), 
             new Expression("INITCAP(TO_CHAR(S.END_DATE,'DD-MON-YYYY')) AS END_DATE"),
             new Expression("S.REMARKS AS REMARKS")
             ], true);

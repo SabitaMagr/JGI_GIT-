@@ -10,6 +10,7 @@ use LeaveManagement\Repository\LeaveMasterRepository;
 use Setup\Model\Company;
 use Zend\Authentication\AuthenticationService;
 use Zend\Db\Adapter\AdapterInterface;
+use Zend\Db\Sql\Select;
 use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
@@ -49,7 +50,7 @@ class LeaveSetup extends AbstractActionController {
                 'DEFAULT_DAYS' => $getValue($leaveRow['DEFAULT_DAYS']),
                 'CARRY_FORWARD' => $getValue($leaveRow['CARRY_FORWARD']),
                 'CASHABLE' => $getValue($leaveRow['CASHABLE']),
-                'PAID'=>$getValue($leaveRow['PAID']),
+                'PAID' => $getValue($leaveRow['PAID']),
                 'IS_SUBSTITUTE' => $leaveRow['IS_SUBSTITUTE']
                     ]
             );
@@ -85,7 +86,7 @@ class LeaveSetup extends AbstractActionController {
                         $this, [
                     'form' => $this->form,
                     'customRenderer' => Helper::renderCustomView(),
-                    'companies' => EntityHelper::getTableKVListWithSortOption($this->adapter, Company::TABLE_NAME, Company::COMPANY_ID, [Company::COMPANY_NAME], ["STATUS" => "E"], Company::COMPANY_NAME, "ASC"),
+                    'companies' => EntityHelper::getTableKVListWithSortOption($this->adapter, Company::TABLE_NAME, Company::COMPANY_ID, [Company::COMPANY_NAME], ["STATUS" => "E"], Company::COMPANY_NAME),
                     'fiscalYears' => EntityHelper::getTableKVList($this->adapter, "HRIS_FISCAL_YEARS", "FISCAL_YEAR_ID", ["START_DATE", "END_DATE"], null, "|")
                         ]
                 )

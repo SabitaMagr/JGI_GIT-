@@ -2,13 +2,16 @@
 
 namespace Setup\Repository;
 
+use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
 use Application\Model\Model;
 use Application\Repository\RepositoryInterface;
 use Setup\Model\Branch;
+use Setup\Model\Company;
 use Setup\Model\Department;
 use Setup\Model\Designation;
 use Setup\Model\EmployeeFile;
+use Setup\Model\Gender;
 use Setup\Model\HrEmployees;
 use Setup\Model\Position;
 use Setup\Model\ServiceEventType;
@@ -16,9 +19,7 @@ use Setup\Model\ServiceType;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Sql\Select;
 use Zend\Db\Sql\Sql;
-use Setup\Model\Company;
 use Zend\Db\TableGateway\TableGateway;
-use Setup\Model\Gender;
 
 class EmployeeRepository implements RepositoryInterface {
 
@@ -40,7 +41,9 @@ class EmployeeRepository implements RepositoryInterface {
         $sql = new Sql($this->adapter);
         $select = $sql->select();
         $select->from("HRIS_EMPLOYEES");
-        $select->columns(Helper::convertColumnDateFormat($this->adapter, new HrEmployees(), ['birthDate']), false);
+        $colList = EntityHelper::getColumnNameArrayWithOracleFns(HrEmployees::class, [HrEmployees::FIRST_NAME, HrEmployees::MIDDLE_NAME, HrEmployees::LAST_NAME], [HrEmployees::BIRTH_DATE]);
+
+        $select->columns($colList, false);
         $select->where(['STATUS' => 'E', 'RETIRED_FLAG' => 'N', "JOIN_DATE <= SYSDATE"]);
         $select->order(['UPPER(FIRST_NAME)', 'UPPER(MIDDLE_NAME)', 'UPPER(LAST_NAME)']);
 
@@ -156,7 +159,7 @@ class EmployeeRepository implements RepositoryInterface {
                 ], true);
         $select->join(['B1' => Branch::TABLE_NAME], "E." . HrEmployees::BRANCH_ID . "=B1." . Branch::BRANCH_ID, ['BRANCH' => 'BRANCH_NAME'], 'left')
                 ->join(['C' => Company::TABLE_NAME], "E." . HrEmployees::COMPANY_ID . "=C." . Company::COMPANY_ID, ['COMPANY_NAME'], 'left')
-                ->join(['F' => EmployeeFile::TABLE_NAME], "F." . EmployeeFile::FILE_CODE . "=C." . Company::LOGO, ['FILE_PATH','FILE_CODE','FILE_NAME'], 'left')
+                ->join(['F' => EmployeeFile::TABLE_NAME], "F." . EmployeeFile::FILE_CODE . "=C." . Company::LOGO, ['FILE_PATH', 'FILE_CODE', 'FILE_NAME'], 'left')
                 ->join(['B2' => Branch::TABLE_NAME], "E." . HrEmployees::APP_BRANCH_ID . "=B2." . Branch::BRANCH_ID, ['APP_BRANCH' => 'BRANCH_NAME'], 'left')
                 ->join(['D1' => Department::TABLE_NAME], "E." . HrEmployees::DEPARTMENT_ID . "=D1." . Department::DEPARTMENT_ID, ['DEPARTMENT' => 'DEPARTMENT_NAME'], 'left')
                 ->join(['D2' => Department::TABLE_NAME], "E." . HrEmployees::APP_DEPARTMENT_ID . "=D2." . Department::DEPARTMENT_ID, ['APP_DEPARTMENT' => 'DEPARTMENT_NAME'], 'left')
@@ -248,7 +251,7 @@ class EmployeeRepository implements RepositoryInterface {
                 ->join(['P1' => Position::TABLE_NAME], "E." . HrEmployees::APP_POSITION_ID . "=P1." . Position::POSITION_ID, ['POSITION_NAME'], 'left')
                 ->join(['S1' => ServiceType::TABLE_NAME], "E." . HrEmployees::APP_SERVICE_TYPE_ID . "=S1." . ServiceType::SERVICE_TYPE_ID, ['SERVICE_TYPE_NAME'], 'left')
                 ->join(['SE1' => ServiceEventType::TABLE_NAME], "E." . HrEmployees::APP_SERVICE_EVENT_TYPE_ID . "=SE1." . ServiceEventType::SERVICE_EVENT_TYPE_ID, ['SERVICE_EVENT_TYPE_NAME'], 'left')
-                ;
+        ;
 
         $select->where(["E.STATUS='E'"]);
 
@@ -295,7 +298,7 @@ class EmployeeRepository implements RepositoryInterface {
         }
         $select->order("E.FIRST_NAME ASC");
         $statement = $sql->prepareStatementForSqlObject($select);
-        
+
         $result = $statement->execute();
         if ($getResult != null) {
             return $result;

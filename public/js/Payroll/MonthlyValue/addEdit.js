@@ -6,6 +6,8 @@
                 document.tableName,
                 document.mthCodeAttr,
                 document.mthIdAttr,
-                (typeof document.mthId !== 'undefined') ? document.mthId : 0);
+                (typeof document.mthId !== 'undefined') ? document.mthId : 0, function () {
+            App.blockUI({target: "#hris-page-content"});
+        });
     });
 })(window.jQuery, window.app);

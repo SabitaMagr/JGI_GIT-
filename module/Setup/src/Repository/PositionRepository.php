@@ -9,6 +9,7 @@ use Zend\Db\Adapter\AdapterInterface;
 use Setup\Model\Position;
 use Zend\Db\Sql\Sql;
 use Zend\Db\Sql\Select;
+use Application\Helper\EntityHelper;
 
 class PositionRepository implements RepositoryInterface {
 
@@ -41,6 +42,7 @@ class PositionRepository implements RepositoryInterface {
 
     public function fetchActiveRecord() {
         $rowset = $this->tableGateway->select(function(Select $select) {
+            $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(Position::class,[Position::POSITION_NAME]),false);
             $select->where([Position::STATUS => 'E']);
             $select->order(Position::POSITION_NAME . " ASC");
         });

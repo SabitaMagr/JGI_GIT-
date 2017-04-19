@@ -13,7 +13,9 @@
         if (typeof(selfId) == "undefined"){
             selfId=0;
         }
-        window.app.checkUniqueConstraints(inputFieldId,formId,tableName,columnName,checkColumnName,selfId);       
+        window.app.checkUniqueConstraints(inputFieldId,formId,tableName,columnName,checkColumnName,selfId, function () {
+            App.blockUI({target: "#hris-page-content"});
+        });     
         window.app.checkUniqueConstraints("appraisalCode",formId,tableName,"APPRAISAL_CODE",checkColumnName,selfId);
         window.app.checkUniqueConstraints("appraisalNdesc",formId,tableName,"APPRAISAL_NDESC",checkColumnName,selfId);
     });

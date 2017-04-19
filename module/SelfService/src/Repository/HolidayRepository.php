@@ -16,6 +16,7 @@ use Zend\Db\Sql\Sql;
 use Zend\Db\TableGateway\TableGateway;
 use HolidayManagement\Model\HolidayBranch;
 use Application\Helper\Helper;
+use Setup\Model\HolidayDesignation;
 
 class HolidayRepository implements RepositoryInterface
 {
@@ -59,7 +60,8 @@ class HolidayRepository implements RepositoryInterface
 
        $select->from(['H' => Holiday::TABLE_NAME])
                 ->join(['HB'=>HolidayBranch::TABLE_NAME],"HB.HOLIDAY_ID=H.HOLIDAY_ID",['HOLIDAY_ID'],"left")
-                ->join(['E'=>'HRIS_EMPLOYEES'],"E.BRANCH_ID=HB.BRANCH_ID",['GENDER_ID'],"left");
+                ->join(['HD'=> HolidayDesignation::TABLE_NAME],"H.HOLIDAY_ID=HD.HOLIDAY_ID",['DESIGNATION_ID'],"left")
+                ->join(['E'=>'HRIS_EMPLOYEES'],"E.BRANCH_ID=HB.BRANCH_ID AND E.DESIGNATION_ID=HD.DESIGNATION_ID",['GENDER_ID'],"left");
 
        $select->where([
            "H.STATUS='E'",

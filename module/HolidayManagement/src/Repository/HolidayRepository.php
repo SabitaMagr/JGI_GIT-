@@ -4,9 +4,9 @@ namespace HolidayManagement\Repository;
 
 use Application\Model\Model;
 use Application\Repository\RepositoryInterface;
-use Exception;
 use HolidayManagement\Model\Holiday;
 use HolidayManagement\Model\HolidayBranch;
+use Setup\Model\Branch;
 use Setup\Model\Designation;
 use Setup\Model\HolidayDesignation;
 use Zend\Db\Adapter\AdapterInterface;
@@ -239,6 +239,23 @@ class HolidayRepository implements RepositoryInterface {
 //        print "<pre>";
 //        print($statement->getSql());
 //        exit;
+    }
+
+    public function getBranchListWithHolidayId($holidayId) {
+        $sql = new Sql($this->adapter);
+        $select = $sql->select();
+        $select->from(['HB' => HolidayBranch::TABLE_NAME])
+                ->join(['B' => Branch::TABLE_NAME], "HB." . HolidayBranch::BRANCH_ID . "=B." . Branch::BRANCH_ID, [Branch::BRANCH_NAME]);
+
+        $select->where(["HB." . HolidayBranch::HOLIDAY_ID => $holidayId]);
+        $statement = $sql->prepareStatementForSqlObject($select);
+        $resultset = $statement->execute();
+
+        $returnData = [];
+        foreach ($resultset as $value) {
+            $returnData[$value[Branch::BRANCH_ID]] = $value[Branch::BRANCH_NAME];
+        }
+        return $returnData;
     }
 
 }

@@ -11,6 +11,7 @@ $this->headScript()->appendFile($this->basePath('js/SelfService/advance-request/
 
 
 $form->setAttribute('role', 'form');
+$form->setAttribute('id',"advance-form");
 
 $advanceId = $form->get('advanceId');
 $advanceId->setValueOptions($advances);

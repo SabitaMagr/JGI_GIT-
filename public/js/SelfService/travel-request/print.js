@@ -25,3 +25,7 @@ angular.module("hris",[])
                 }
             }
 });
+
+$(document).ready(function(){
+    app.setLoadingOnSubmit("travelApprove-form");
+});

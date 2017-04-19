@@ -11,7 +11,7 @@ use Zend\Form\Annotation;
 
 /**
  * @Annotation\Hydrator("Zend\Hydrator\ObjectProperty")
- * @Annotation\Name("Leave Apply")
+ * @Annotation\Name("leaveApply")
  */
 class LeaveApplyForm
 {

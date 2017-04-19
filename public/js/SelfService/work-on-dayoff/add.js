@@ -12,6 +12,7 @@
                 $("#duration").val(newValue);
             }
         });
+        app.setLoadingOnSubmit("workOnDayoff-form");
     });
 })(window.jQuery, window.app);
 

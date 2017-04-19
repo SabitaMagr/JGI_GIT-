@@ -8,6 +8,8 @@
                 document.tableName,
                 document.flatCodeAttr,
                 document.flatIdAttr,
-                (typeof document.flatId !== 'undefined') ? document.flatId : 0);
+                (typeof document.flatId !== 'undefined') ? document.flatId : 0, function () {
+            App.blockUI({target: "#hris-page-content"});
+        });
     });
 })(window.jQuery, window.app);

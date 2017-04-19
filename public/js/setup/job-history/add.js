@@ -157,7 +157,7 @@
         $fromPositionId.on("change", function () {
             $toPositionId.val($(this).val()).trigger("change");
         });
-
+        app.setLoadingOnSubmit("jobHistory-form");
         $('form').bind('submit', function () {
             $(this).find(':disabled').removeAttr('disabled');
         });

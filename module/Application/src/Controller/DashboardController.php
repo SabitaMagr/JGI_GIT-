@@ -12,6 +12,7 @@ use Exception;
 use HolidayManagement\Repository\HolidayRepository;
 use Interop\Container\ContainerInterface;
 use LeaveManagement\Repository\LeaveStatusRepository;
+use Notification\Model\NewsModel;
 use Setup\Model\Branch;
 use Setup\Model\HrEmployees;
 use Setup\Repository\EmployeeRepository;

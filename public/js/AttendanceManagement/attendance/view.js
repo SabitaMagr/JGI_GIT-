@@ -18,6 +18,8 @@
         $('.hour').attr("disabled", true);
         $('.minute').attr("disabled", true);
         $('.ampm').attr("disabled", true);
+        
+        app.setLoadingOnSubmit("form");
 
     });
 })(window.jQuery,window.app);
