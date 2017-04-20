@@ -54,7 +54,7 @@ class TrainingStatusRepository implements RepositoryInterface{
         }
         
         $sql = "SELECT 
-                T.TRAINING_NAME,
+                INITCAP(T.TRAINING_NAME) AS TRAINING_NAME,
                 T.TRAINING_CODE,
                 INITCAP(TO_CHAR(T.START_DATE, 'DD-MON-YYYY')) AS T_START_DATE,
                 INITCAP(TO_CHAR(T.END_DATE, 'DD-MON-YYYY')) AS T_END_DATE,
@@ -67,7 +67,7 @@ class TrainingStatusRepository implements RepositoryInterface{
                 TO_CHAR(TR.MODIFIED_DATE, 'DD-MON-YYYY') AS MODIFIED_DATE,
                 TR.STATUS AS STATUS,
                 TR.DESCRIPTION AS DESCRIPTION,
-                TR.TITLE AS TITLE,
+                INITCAP(TR.TITLE) AS TITLE,
                 TR.EMPLOYEE_ID AS EMPLOYEE_ID,
                 TR.REQUEST_ID AS REQUEST_ID,
                 TR.TRAINING_TYPE AS TRAINING_TYPE,
