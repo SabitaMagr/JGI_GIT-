@@ -3,6 +3,7 @@
 namespace Asset\Repository;
 
 use Application\Model\Model;
+use Application\Helper\EntityHelper;
 use Application\Repository\RepositoryInterface;
 use Asset\Model\Issue;
 use Asset\Model\Setup;
@@ -43,6 +44,7 @@ class IssueRepository implements RepositoryInterface {
     public function fetchAssetRemBalance($id) {
         $sql = new Sql($this->adapter);
         $select = $sql->select();
+//        $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(Setup::class, [Setup::ASSET_EDESC, Setup::ASSET_NDESC]),false);
 //        $select->columns([
 //            new Expression("A.ASSET_ID AS ASSET_ID"),
 //            new Expression("A.ASSET_CODE AS ASSET_CODE"),

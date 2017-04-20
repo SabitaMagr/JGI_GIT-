@@ -3,6 +3,7 @@
 namespace Asset\Repository;
 
 use Application\Model\Model;
+use Application\Helper\EntityHelper;
 use Application\Repository\RepositoryInterface;
 use Asset\Model\Group;
 use Zend\Db\Adapter\AdapterInterface;
@@ -41,13 +42,17 @@ class GroupRepository implements RepositoryInterface {
     
     public function fetchAll() {
          return $this->tableGateway->select(function(Select $select){
+            $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(Group::class,[Group::ASSET_GROUP_EDESC,Group::ASSET_GROUP_NDESC]),false);
             $select->where([Group::STATUS=>'E']);
             $select->order(Group::ASSET_GROUP_EDESC." ASC");
         });
     }
 
     public function fetchById($id) {
-          $rowset = $this->tableGateway->select([Group::ASSET_GROUP_ID => $id, Group::STATUS => 'E']);
+        $rowset = $this->tableGateway->select(function($select) use($id){
+            $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(Group::class,[Group::ASSET_GROUP_EDESC,Group::ASSET_GROUP_NDESC]),false);
+            $select->where([Group::ASSET_GROUP_ID => $id, Group::STATUS => 'E']);
+        });
         return $result = $rowset->current();
     }
 
