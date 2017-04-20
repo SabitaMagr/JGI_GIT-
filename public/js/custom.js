@@ -152,7 +152,8 @@ window.app = (function ($, toastr) {
             todayHighlight: true,
             autoclose: true
         }).on('changeDate', function () {
-            $fromNepaliDate.val(nepaliDatePickerExt.fromEnglishToNepali($(this).val()));
+            oldFromNepali = nepaliDatePickerExt.fromEnglishToNepali($(this).val());
+            $fromNepaliDate.val(oldFromNepali);
             var minDate = nepaliDatePickerExt.getDate($(this).val());
             $toEnglishDate.datepicker('setStartDate', minDate);
 
@@ -217,7 +218,8 @@ window.app = (function ($, toastr) {
             todayHighlight: true,
             autoclose: true
         }).on('changeDate', function () {
-            $toNepaliDate.val(nepaliDatePickerExt.fromEnglishToNepali($(this).val()));
+            oldtoNepali = nepaliDatePickerExt.fromEnglishToNepali($(this).val())
+            $toNepaliDate.val(oldtoNepali);
             var maxDate = nepaliDatePickerExt.getDate($(this).val());
             $fromEnglishDate.datepicker('setEndDate', maxDate);
             if (typeof fn !== "undefined" && fn != null && typeof $fromEnglishDate !== "undefined" &&
