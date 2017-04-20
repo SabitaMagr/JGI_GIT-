@@ -2,6 +2,7 @@
 
 namespace Setup\Repository;
 
+use Application\Helper\EntityHelper;
 use Application\Model\Model;
 use Application\Repository\RepositoryInterface;
 use Setup\Model\Branch;
@@ -33,6 +34,11 @@ class DepartmentRepository implements RepositoryInterface {
     public function fetchAll() {
         $sql = new Sql($this->adapter);
         $select = $sql->select();
+        $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(Department::class,
+                [Department::DEPARTMENT_NAME],
+                NULL, NULL, NULL, NULL,'D'),false);
+        
+        
         $select->from(['D' => Department::TABLE_NAME]);
         $select->join(['C' => "HRIS_COUNTRIES"], "D." . Department::COUNTRY_ID . "=C.COUNTRY_ID", ['COUNTRY_NAME'], 'left')
                 ->join(['PD' => Department::TABLE_NAME], "D." . Department::PARENT_DEPARTMENT . "=PD.DEPARTMENT_ID", ['PARENT_DEPARTMENT' => 'DEPARTMENT_NAME'], 'left');

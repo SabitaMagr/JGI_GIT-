@@ -2,6 +2,7 @@
 
 namespace Setup\Repository;
 
+use Application\Helper\EntityHelper;
 use Application\Model\Model;
 use Application\Repository\RepositoryInterface;
 use Setup\Model\Branch;
@@ -29,6 +30,7 @@ class BranchRepository implements RepositoryInterface {
 
     public function fetchAll() {
         return $this->tableGateway->select(function(Select $select) {
+            $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(Branch::class, [Branch::BRANCH_NAME]), false);
                     $select->where([Branch::STATUS => 'E']);
                     $select->order(Branch::BRANCH_NAME . " ASC");
                 });

@@ -104,7 +104,7 @@ class EntityHelper {
 
 
             if (!$selectedOnly) {
-                array_push($objCols, Helper::columnExpression($tempCol));
+                array_push($objCols, Helper::columnExpression($tempCol,$shortForm));
             }
         }
 

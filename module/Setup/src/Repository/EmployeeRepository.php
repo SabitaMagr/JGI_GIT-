@@ -85,14 +85,14 @@ class EmployeeRepository implements RepositoryInterface {
 
     public function fetchById($id) {
         $rowset = $this->gateway->select(function (Select $select) use ($id) {
-            $select->columns(Helper::convertColumnDateFormat($this->adapter, new HrEmployees(), [
-                        'birthDate',
-                        'famSpouseBirthDate',
-                        'famSpouseWeddingAnniversary',
-                        'idDrivingLicenseExpiry',
-                        'idCitizenshipIssueDate',
-                        'idPassportExpiry',
-                        'joinDate'
+            $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(HrEmployees::class, [HrEmployees::FIRST_NAME, HrEmployees::MIDDLE_NAME, HrEmployees::LAST_NAME], [
+            HrEmployees::BIRTH_DATE,
+            HrEmployees::FAM_SPOUSE_BIRTH_DATE,
+            HrEmployees::FAM_SPOUSE_WEDDING_ANNIVERSARY,
+            HrEmployees::ID_DRIVING_LICENCE_EXPIRY,
+            HrEmployees::ID_CITIZENSHIP_ISSUE_DATE,
+            HrEmployees::ID_PASSPORT_EXPIRY,
+            HrEmployees::JOIN_DATE
                     ]), false);
             $select->where(['EMPLOYEE_ID' => $id]);
         });
@@ -102,17 +102,18 @@ class EmployeeRepository implements RepositoryInterface {
     public function getById($id) {
         $sql = new Sql($this->adapter);
         $select = $sql->select();
+        
+        $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(HrEmployees::class, [HrEmployees::FIRST_NAME, HrEmployees::MIDDLE_NAME, HrEmployees::LAST_NAME], [
+            HrEmployees::BIRTH_DATE,
+            HrEmployees::FAM_SPOUSE_BIRTH_DATE,
+            HrEmployees::FAM_SPOUSE_WEDDING_ANNIVERSARY,
+            HrEmployees::ID_DRIVING_LICENCE_EXPIRY,
+            HrEmployees::ID_CITIZENSHIP_ISSUE_DATE,
+            HrEmployees::ID_PASSPORT_EXPIRY,
+            HrEmployees::JOIN_DATE
+                    ], NULL, NULL, NULL,'E'),false);
+       
         $select->from(['E' => HrEmployees::TABLE_NAME]);
-        $select->columns(Helper::convertColumnDateFormat($this->adapter, new HrEmployees(), [
-                    'birthDate',
-                    'famSpouseBirthDate',
-                    'famSpouseWeddingAnniversary',
-                    'idDrivingLicenseExpiry',
-                    'idCitizenshipIssueDate',
-                    'idPassportExpiry',
-                    'joinDate'
-                        ], NULL, 'E'), false);
-
         $select
                 ->join(['B' => Branch::TABLE_NAME], "E." . HrEmployees::BRANCH_ID . "=B." . Branch::BRANCH_ID, ['BRANCH_NAME'], 'left')
                 ->join(['C' => Company::TABLE_NAME], "E." . HrEmployees::COMPANY_ID . "=C." . Company::COMPANY_ID, ['COMPANY_NAME'], 'left')
@@ -132,7 +133,7 @@ class EmployeeRepository implements RepositoryInterface {
                 ->join(['SE1' => ServiceEventType::TABLE_NAME], "E." . HrEmployees::APP_SERVICE_EVENT_TYPE_ID . "=SE1." . ServiceEventType::SERVICE_EVENT_TYPE_ID, ['SERVICE_EVENT_TYPE_NAME'], 'left');
         $select->where(["E." . HrEmployees::EMPLOYEE_ID . "=$id"]);
         $statement = $sql->prepareStatementForSqlObject($select);
-        //print_r($statement->getSql()); die();
+//        print_r($statement->getSql()); die();
         $result = $statement->execute();
         return $result->current();
     }
