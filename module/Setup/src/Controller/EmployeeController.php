@@ -24,7 +24,7 @@ use Setup\Model\District;
 use Setup\Model\EmployeeFile as EmployeeFileModel;
 use Setup\Model\HrEmployees;
 use Setup\Model\JobHistory;
-use Setup\Model\LeaveMaster;
+use LeaveManagement\Model\LeaveMaster;
 use Setup\Model\Position;
 use Setup\Model\RecommendApprove;
 use Setup\Model\ServiceEventType;
