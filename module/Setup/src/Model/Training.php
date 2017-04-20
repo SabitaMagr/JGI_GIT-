@@ -36,7 +36,7 @@ class Training extends Model{
     public $createdBy;
     public $modifiedDate;
     public $modifiedBy;
-    public $instuctorName;
+    public $instructorName;
     public $companyId;
     
     public $mappings = [

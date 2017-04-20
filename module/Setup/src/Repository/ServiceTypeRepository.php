@@ -2,13 +2,13 @@
 
 namespace Setup\Repository;
 
+use Application\Helper\EntityHelper;
 use Application\Model\Model;
 use Application\Repository\RepositoryInterface;
-use Zend\Db\Adapter\AdapterInterface;
-use Zend\Db\TableGateway\TableGateway;
 use Setup\Model\ServiceType;
-use Zend\Db\Sql\Sql;
+use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Sql\Select;
+use Zend\Db\TableGateway\TableGateway;
 
 class ServiceTypeRepository implements RepositoryInterface
 {
@@ -39,12 +39,17 @@ class ServiceTypeRepository implements RepositoryInterface
 
     public function fetchById($id)
     {
-        $rowset= $this->tableGateway->select([ServiceType::SERVICE_TYPE_ID=>$id]);
+        $rowset= $this->tableGateway->select(function(Select $select)use($id){
+        $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(ServiceType::class, [ServiceType::SERVICE_TYPE_NAME]), false);  
+        $select->where([ServiceType::SERVICE_TYPE_ID=>$id]);
+                
+        });
         return $rowset->current();
     }
     public function fetchActiveRecord()
     {
          return  $rowset= $this->tableGateway->select(function(Select $select){
+             $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(ServiceType::class, [ServiceType::SERVICE_TYPE_NAME]), false);
              $select->where([ServiceType::STATUS=>'E']);
              $select->order(ServiceType::SERVICE_TYPE_NAME." ASC");
          });

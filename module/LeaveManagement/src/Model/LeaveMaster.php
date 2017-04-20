@@ -33,6 +33,7 @@ class LeaveMaster extends Model
     const PAID="PAID";
     const COMPANY_ID = "COMPANY_ID";
     const MAX_ACCUMULATE_DAYS = "MAX_ACCUMULATE_DAYS";
+    const IS_SUBSTITUTE = "IS_SUBSTITUTE";
 
     public $leaveId;
     public $leaveCode;
@@ -52,6 +53,7 @@ class LeaveMaster extends Model
     public $paid;
     public $companyId;
     public $maxAccumulateDays;
+    public $isSubstitute;
 
     public $mappings=[
         'leaveId'=>self::LEAVE_ID,
@@ -71,7 +73,8 @@ class LeaveMaster extends Model
         'modifiedBy' => self::MODIFIED_BY,
         'paid'=>self::PAID,
         'companyId' => self::COMPANY_ID,
-        'maxAccumulateDays'=>self::MAX_ACCUMULATE_DAYS
+        'maxAccumulateDays'=>self::MAX_ACCUMULATE_DAYS,
+        'isSubstitute'=>self::IS_SUBSTITUTE
     ];
 
 

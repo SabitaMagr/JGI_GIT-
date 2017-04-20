@@ -61,7 +61,10 @@ class PositionRepository implements RepositoryInterface {
     }
 
     public function fetchById($id) {
-        $row = $this->tableGateway->select([Position::POSITION_ID => $id]);
+        $row = $this->tableGateway->select(function(Select $select)use($id){
+            $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(Position::class, [Position::POSITION_NAME]), false);
+            $select->where([Position::POSITION_ID => $id]);
+        });     
         return $row->current();
     }
 
