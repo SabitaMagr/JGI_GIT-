@@ -39,7 +39,7 @@ class JobHistoryController extends AbstractActionController {
     public function indexAction() {
         $employeeNameFormElement = new Select();
         $employeeNameFormElement->setName("branch");
-        $employeeName = \Application\Helper\EntityHelper::getTableKVListWithSortOption($this->adapter, "HRIS_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => "E"], "FIRST_NAME", "ASC", " ");
+        $employeeName = \Application\Helper\EntityHelper::getTableKVListWithSortOption($this->adapter, "HRIS_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => "E"], "FIRST_NAME", "ASC", " ",false,true);
         $employeeName1 = [-1 => "All"] + $employeeName;
         $employeeNameFormElement->setValueOptions($employeeName1);
         $employeeNameFormElement->setAttributes(["id" => "employeeId", "class" => "form-control"]);
@@ -48,7 +48,7 @@ class JobHistoryController extends AbstractActionController {
 
         $serviceEventTypeFormElement = new Select();
         $serviceEventTypeFormElement->setName("serviceEventType");
-        $serviceEventTypes = \Application\Helper\EntityHelper::getTableKVListWithSortOption($this->adapter, ServiceEventType::TABLE_NAME, ServiceEventType::SERVICE_EVENT_TYPE_ID, [ServiceEventType::SERVICE_EVENT_TYPE_NAME], [ServiceEventType::STATUS => 'E'], "SERVICE_EVENT_TYPE_NAME", "ASC");
+        $serviceEventTypes = \Application\Helper\EntityHelper::getTableKVListWithSortOption($this->adapter, ServiceEventType::TABLE_NAME, ServiceEventType::SERVICE_EVENT_TYPE_ID, [ServiceEventType::SERVICE_EVENT_TYPE_NAME], [ServiceEventType::STATUS => 'E'], "SERVICE_EVENT_TYPE_NAME", "ASC",null,false,true);
         $serviceEventTypes1 = [-1 => "All"] + $serviceEventTypes;
         $serviceEventTypeFormElement->setValueOptions($serviceEventTypes1);
         $serviceEventTypeFormElement->setAttributes(["id" => "serviceEventTypeId", "class" => "form-control"]);
@@ -89,13 +89,13 @@ class JobHistoryController extends AbstractActionController {
                         $this, [
                     'form' => $this->form,
                     'messages' => $this->flashmessenger()->getMessages(),
-                    'employees' => EntityHelper1::getTableKVListWithSortOption($this->adapter, "HRIS_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => "E","RETIRED_FLAG"=>"N"], "FIRST_NAME", "ASC", " "),
-                    'departments' => EntityHelper1::getTableKVListWithSortOption($this->adapter, "HRIS_DEPARTMENTS", "DEPARTMENT_ID", ["DEPARTMENT_NAME"], ["STATUS" => 'E'],"DEPARTMENT_NAME","ASC",null,true),
-                    'designations' => EntityHelper1::getTableKVListWithSortOption($this->adapter, "HRIS_DESIGNATIONS", "DESIGNATION_ID", ["DESIGNATION_TITLE"], ["STATUS" => 'E'],"DESIGNATION_TITLE","ASC",null,true),
-                    'branches' => EntityHelper1::getTableKVListWithSortOption($this->adapter, "HRIS_BRANCHES", "BRANCH_ID", ["BRANCH_NAME"], ["STATUS" => 'E'],"BRANCH_NAME","ASC",null,true),
-                    'positions' => EntityHelper1::getTableKVListWithSortOption($this->adapter, "HRIS_POSITIONS", "POSITION_ID", ["POSITION_NAME"], ["STATUS" => 'E'],"POSITION_NAME","ASC",null,true),
-                    'serviceTypes' => EntityHelper1::getTableKVListWithSortOption($this->adapter, "HRIS_SERVICE_TYPES", "SERVICE_TYPE_ID", ["SERVICE_TYPE_NAME"], ["STATUS" => 'E'],"SERVICE_TYPE_NAME","ASC",null,true),
-                    'serviceEventTypes' => EntityHelper1::getTableKVListWithSortOption($this->adapter, "HRIS_SERVICE_EVENT_TYPES", "SERVICE_EVENT_TYPE_ID", ["SERVICE_EVENT_TYPE_NAME"], ["STATUS" => 'E'],"SERVICE_EVENT_TYPE_NAME","ASC")
+                    'employees' => EntityHelper1::getTableKVListWithSortOption($this->adapter, "HRIS_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => "E","RETIRED_FLAG"=>"N"], "FIRST_NAME", "ASC", " ",false,true),
+                    'departments' => EntityHelper1::getTableKVListWithSortOption($this->adapter, "HRIS_DEPARTMENTS", "DEPARTMENT_ID", ["DEPARTMENT_NAME"], ["STATUS" => 'E'],"DEPARTMENT_NAME","ASC",null,true,true),
+                    'designations' => EntityHelper1::getTableKVListWithSortOption($this->adapter, "HRIS_DESIGNATIONS", "DESIGNATION_ID", ["DESIGNATION_TITLE"], ["STATUS" => 'E'],"DESIGNATION_TITLE","ASC",null,true,true),
+                    'branches' => EntityHelper1::getTableKVListWithSortOption($this->adapter, "HRIS_BRANCHES", "BRANCH_ID", ["BRANCH_NAME"], ["STATUS" => 'E'],"BRANCH_NAME","ASC",null,true,true),
+                    'positions' => EntityHelper1::getTableKVListWithSortOption($this->adapter, "HRIS_POSITIONS", "POSITION_ID", ["POSITION_NAME"], ["STATUS" => 'E'],"POSITION_NAME","ASC",null,true,true),
+                    'serviceTypes' => EntityHelper1::getTableKVListWithSortOption($this->adapter, "HRIS_SERVICE_TYPES", "SERVICE_TYPE_ID", ["SERVICE_TYPE_NAME"], ["STATUS" => 'E'],"SERVICE_TYPE_NAME","ASC",null,true,true),
+                    'serviceEventTypes' => EntityHelper1::getTableKVListWithSortOption($this->adapter, "HRIS_SERVICE_EVENT_TYPES", "SERVICE_EVENT_TYPE_ID", ["SERVICE_EVENT_TYPE_NAME"], ["STATUS" => 'E'],"SERVICE_EVENT_TYPE_NAME","ASC",null,false,true)
                         ]
         );
     }
@@ -150,13 +150,13 @@ class JobHistoryController extends AbstractActionController {
                     'latestJobHistoryId'=>$latestJobHistoryId,
                     'empId' => EntityHelper1::getTableKVList($this->adapter, JobHistory::TABLE_NAME, JobHistory::JOB_HISTORY_ID, [JobHistory::EMPLOYEE_ID], [JobHistory::JOB_HISTORY_ID => $id], null)[$id],
                     'messages' => $this->flashmessenger()->getMessages(),
-                    'employeesAll' => EntityHelper1::getTableKVListWithSortOption($this->adapter, "HRIS_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => "E"], "FIRST_NAME", "ASC", " "),
-                    'departments' => EntityHelper1::getTableKVListWithSortOption($this->adapter, "HRIS_DEPARTMENTS", "DEPARTMENT_ID", ["DEPARTMENT_NAME"], ["STATUS" => 'E'],"DEPARTMENT_NAME","ASC",null,true),
-                    'designations' => EntityHelper1::getTableKVListWithSortOption($this->adapter, "HRIS_DESIGNATIONS", "DESIGNATION_ID", ["DESIGNATION_TITLE"], ["STATUS" => 'E'],"DESIGNATION_TITLE","ASC",null,true),
-                    'branches' => EntityHelper1::getTableKVListWithSortOption($this->adapter, "HRIS_BRANCHES", "BRANCH_ID", ["BRANCH_NAME"], ["STATUS" => 'E'],"BRANCH_NAME","ASC",null,true),
-                    'positions' => EntityHelper1::getTableKVListWithSortOption($this->adapter, "HRIS_POSITIONS", "POSITION_ID", ["POSITION_NAME"], ["STATUS" => 'E'],"POSITION_NAME","ASC",null,true),
-                    'serviceTypes' => EntityHelper1::getTableKVListWithSortOption($this->adapter, "HRIS_SERVICE_TYPES", "SERVICE_TYPE_ID", ["SERVICE_TYPE_NAME"], ["STATUS" => 'E'],"SERVICE_TYPE_NAME","ASC",null,true),
-                    'serviceEventTypes' => EntityHelper1::getTableKVListWithSortOption($this->adapter, "HRIS_SERVICE_EVENT_TYPES", "SERVICE_EVENT_TYPE_ID", ["SERVICE_EVENT_TYPE_NAME"], ["STATUS" => 'E'],"SERVICE_EVENT_TYPE_NAME","ASC")
+                    'employeesAll' => EntityHelper1::getTableKVListWithSortOption($this->adapter, "HRIS_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => "E"], "FIRST_NAME", "ASC", " ",false,true),
+                    'departments' => EntityHelper1::getTableKVListWithSortOption($this->adapter, "HRIS_DEPARTMENTS", "DEPARTMENT_ID", ["DEPARTMENT_NAME"], ["STATUS" => 'E'],"DEPARTMENT_NAME","ASC",null,true,true),
+                    'designations' => EntityHelper1::getTableKVListWithSortOption($this->adapter, "HRIS_DESIGNATIONS", "DESIGNATION_ID", ["DESIGNATION_TITLE"], ["STATUS" => 'E'],"DESIGNATION_TITLE","ASC",null,true,true),
+                    'branches' => EntityHelper1::getTableKVListWithSortOption($this->adapter, "HRIS_BRANCHES", "BRANCH_ID", ["BRANCH_NAME"], ["STATUS" => 'E'],"BRANCH_NAME","ASC",null,true,true),
+                    'positions' => EntityHelper1::getTableKVListWithSortOption($this->adapter, "HRIS_POSITIONS", "POSITION_ID", ["POSITION_NAME"], ["STATUS" => 'E'],"POSITION_NAME","ASC",null,true,true),
+                    'serviceTypes' => EntityHelper1::getTableKVListWithSortOption($this->adapter, "HRIS_SERVICE_TYPES", "SERVICE_TYPE_ID", ["SERVICE_TYPE_NAME"], ["STATUS" => 'E'],"SERVICE_TYPE_NAME","ASC",null,true,true),
+                    'serviceEventTypes' => EntityHelper1::getTableKVListWithSortOption($this->adapter, "HRIS_SERVICE_EVENT_TYPES", "SERVICE_EVENT_TYPE_ID", ["SERVICE_EVENT_TYPE_NAME"], ["STATUS" => 'E'],"SERVICE_EVENT_TYPE_NAME","ASC",null,false,true)
                       ]
         );
     }

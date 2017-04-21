@@ -110,19 +110,16 @@ class TrainingRepository implements RepositoryInterface
         $today = Helper::getcurrentExpressionDate();
         $sql =  new Sql($this->adapter);
         $select = $sql->select();
-        $select->columns([
-            new Expression("TO_CHAR(T.START_DATE, 'DD-MON-YYYY') AS START_DATE"),
-            new Expression("TO_CHAR(T.END_DATE, 'DD-MON-YYYY') AS END_DATE"), 
-            new Expression("T.TRAINING_CODE AS TRAINING_CODE"), 
-            new Expression("T.TRAINING_NAME AS TRAINING_NAME"),
-            new Expression("T.TRAINING_TYPE AS TRAINING_TYPE"),
-            new Expression("T.COMPANY_ID AS COMPANY_ID"),
-            new Expression("T.DURATION AS DURATION"),
-            new Expression("T.TRAINING_ID AS TRAINING_ID"),
-            new Expression("T.INSTRUCTOR_NAME AS INSTRUCTOR_NAME"),
-            new Expression("T.REMARKS AS REMARKS"),
-            new Expression("T.INSTITUTE_ID AS INSTITUTE_ID")
-            ], true);
+        $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(
+                Training::class,
+                [
+                    Training::TRAINING_NAME
+                ],
+                [
+                    Training::START_DATE,
+                    Training::END_DATE
+                ], NULL, NULL, NULL,'T')
+                , false);
         $select->from(['T'=>Training::TABLE_NAME]);
         $select->join(['I' => Institute::TABLE_NAME], "T." . Training::INSTITUTE_ID . "=I.".Institute::INSTITUTE_ID, [Institute::INSTITUTE_NAME=> new Expression('INITCAP(I.'.Institute::INSTITUTE_NAME.')')], 'left');
         
