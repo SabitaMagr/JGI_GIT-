@@ -12,6 +12,7 @@ use Application\Model\Model;
 use Appraisal\Model\Question;
 use Appraisal\Model\Stage;
 use Application\Helper\Helper;
+use Application\Helper\EntityHelper;
 
 class StageQuestionRepository implements RepositoryInterface{
     private $tableGateway;
@@ -53,8 +54,8 @@ class StageQuestionRepository implements RepositoryInterface{
             new Expression("QS.STATUS AS STATUS"), 
             ], true);
         $select->from(['QS' => StageQuestion::TABLE_NAME])
-                ->join(['S' => Stage::TABLE_NAME], "S.".Stage::STAGE_ID.'=QS.'.StageQuestion::STAGE_ID, [Stage::STAGE_EDESC], "left")
-                ->join(['Q' => Question::TABLE_NAME], "Q.". Question::QUESTION_ID.'=QS.'.StageQuestion::QUESTION_ID, [Question::QUESTION_EDESC], "left");
+                ->join(['S' => Stage::TABLE_NAME], "S.".Stage::STAGE_ID.'=QS.'.StageQuestion::STAGE_ID, ["STAGE_EDESC"=>new Expression("INITCAP(S.STAGE_EDESC)")], "left")
+                ->join(['Q' => Question::TABLE_NAME], "Q.". Question::QUESTION_ID.'=QS.'.StageQuestion::QUESTION_ID, ["QUESTION_EDESC"=>new Expression("INITCAP(Q.QUESTION_EDESC)")], "left");
         
         $select->where(["QS.STATUS='E' AND QS.QUESTION_ID=".$questionId]);
         $select->order("S.STAGE_ID");
@@ -72,8 +73,8 @@ class StageQuestionRepository implements RepositoryInterface{
             new Expression("QS.STATUS AS STATUS"), 
             ], true);
         $select->from(['QS' => StageQuestion::TABLE_NAME])
-                ->join(['S' => Stage::TABLE_NAME], "S.".Stage::STAGE_ID.'=QS.'.StageQuestion::STAGE_ID, [Stage::STAGE_EDESC], "left")
-                ->join(['Q' => Question::TABLE_NAME], "Q.". Question::QUESTION_ID.'=QS.'.StageQuestion::QUESTION_ID, [Question::QUESTION_EDESC], "left");
+                ->join(['S' => Stage::TABLE_NAME], "S.".Stage::STAGE_ID.'=QS.'.StageQuestion::STAGE_ID, ["STAGE_EDESC"=>new Expression("INITCAP(S.STAGE_EDESC)")], "left")
+                ->join(['Q' => Question::TABLE_NAME], "Q.". Question::QUESTION_ID.'=QS.'.StageQuestion::QUESTION_ID, ["QUESTION_EDESC"=>new Expression("INITCAP(Q.QUESTION_EDESC)")], "left");
         
         $select->where(["QS.QUESTION_ID=".$questionId." AND QS.STAGE_ID=".$stageId]);
         $select->order("S.STAGE_ID");
@@ -84,27 +85,11 @@ class StageQuestionRepository implements RepositoryInterface{
     public function getByStageIdHeadingId($headingId,$currentStageId,$flag=null){
         $sql = new Sql($this->adapter);
         $select = $sql->select();
-        $select->columns([
-            new Expression("Q.QUESTION_ID AS QUESTION_ID"),
-            new Expression("Q.QUESTION_CODE AS QUESTION_CODE"),
-            new Expression("Q.QUESTION_EDESC AS QUESTION_EDESC"),
-            new Expression("Q.HEADING_ID AS HEADING_ID"),
-            new Expression("Q.APPRAISEE_FLAG AS APPRAISEE_FLAG"),
-            new Expression("Q.APPRAISEE_RATING AS APPRAISEE_RATING"),
-            new Expression("Q.APPRAISER_FLAG AS APPRAISER_FLAG"),
-            new Expression("Q.APPRAISER_RATING AS APPRAISER_RATING"),
-            new Expression("Q.REVIEWER_FLAG AS REVIEWER_FLAG"),
-            new Expression("Q.REVIEWER_RATING AS REVIEWER_RATING"),
-            new Expression("Q.STATUS AS STATUS"),
-            new Expression("Q.REMARKS AS REMARKS"),
-            new Expression("Q.ANSWER_TYPE AS ANSWER_TYPE"),
-            new Expression("Q.MIN_VALUE AS MIN_VALUE"),
-            new Expression("Q.MAX_VALUE AS MAX_VALUE"),
-            new Expression("Q.ORDER_NO AS ORDER_NO"),
-        ],true);
+        $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(Question::class,
+                [Question::QUESTION_EDESC, Question::QUESTION_NDESC]),false);
         $select->from(['Q' => Question::TABLE_NAME])
                 ->join(['QS' => StageQuestion::TABLE_NAME], "Q.". Question::QUESTION_ID.'=QS.'.StageQuestion::QUESTION_ID, [StageQuestion::QUESTION_ID])
-                ->join(['S' => Stage::TABLE_NAME], "S.".Stage::STAGE_ID.'=QS.'.StageQuestion::STAGE_ID, [Stage::STAGE_EDESC]);
+                ->join(['S' => Stage::TABLE_NAME], "S.".Stage::STAGE_ID.'=QS.'.StageQuestion::STAGE_ID, ["STAGE_EDESC"=>new Expression("INITCAP(S.STAGE_EDESC)")]);
         
         $select->where(["Q.HEADING_ID=".$headingId." AND QS.STAGE_ID=".$currentStageId]);
         if($flag!=null){

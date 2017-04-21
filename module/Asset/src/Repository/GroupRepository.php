@@ -49,7 +49,7 @@ class GroupRepository implements RepositoryInterface {
     }
 
     public function fetchById($id) {
-        $rowset = $this->tableGateway->select(function($select) use($id){
+        $rowset = $this->tableGateway->select(function(Select $select) use($id){
             $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(Group::class,[Group::ASSET_GROUP_EDESC,Group::ASSET_GROUP_NDESC]),false);
             $select->where([Group::ASSET_GROUP_ID => $id, Group::STATUS => 'E']);
         });

@@ -82,9 +82,9 @@ class TravelRequestRepository implements RepositoryInterface {
                 ], true);
 
         $select->from(['TR' => TravelRequest::TABLE_NAME])
-                ->join(['E' => HrEmployees::TABLE_NAME], "E." . HrEmployees::EMPLOYEE_ID . "=TR." . TravelRequest::EMPLOYEE_ID, [HrEmployees::FIRST_NAME, HrEmployees::MIDDLE_NAME, HrEmployees::LAST_NAME])
-                ->join(['E1' => "HRIS_EMPLOYEES"], "E1.EMPLOYEE_ID=TR.RECOMMENDED_BY", ['FN1' => 'FIRST_NAME', 'MN1' => 'MIDDLE_NAME', 'LN1' => 'LAST_NAME'], "left")
-                ->join(['E2' => "HRIS_EMPLOYEES"], "E2.EMPLOYEE_ID=TR.APPROVED_BY", ['FN2' => 'FIRST_NAME', 'MN2' => 'MIDDLE_NAME', 'LN2' => 'LAST_NAME'], "left")
+                ->join(['E' => HrEmployees::TABLE_NAME], "E." . HrEmployees::EMPLOYEE_ID . "=TR." . TravelRequest::EMPLOYEE_ID, ["FIRST_NAME" => new Expression("INITCAP(E.FIRST_NAME)"),"MIDDLE_NAME" => new Expression("INITCAP(E.MIDDLE_NAME)"),"LAST_NAME" => new Expression("INITCAP(E.LAST_NAME)")])
+                ->join(['E1' => "HRIS_EMPLOYEES"], "E1.EMPLOYEE_ID=TR.RECOMMENDED_BY", ['FN1' =>  new Expression("INITCAP(E1.FIRST_NAME)"), 'MN1' => new Expression("INITCAP(E1.MIDDLE_NAME)"), 'LN1' => new Expression("INITCAP(E1.LAST_NAME)")], "left")
+                ->join(['E2' => "HRIS_EMPLOYEES"], "E2.EMPLOYEE_ID=TR.APPROVED_BY", ['FN2' =>  new Expression("INITCAP(E2.FIRST_NAME)"), 'MN2' => new Expression("INITCAP(E2.MIDDLE_NAME)"), 'LN2' => new Expression("INITCAP(E2.LAST_NAME)")], "left")
                 ->join(['TS'=>"HRIS_TRAVEL_SUBSTITUTE"],"TS.TRAVEL_ID=TR.TRAVEL_ID",['SUB_EMPLOYEE_ID'=>'EMPLOYEE_ID','SUB_APPROVED_DATE'=>new Expression("INITCAP(TO_CHAR(TS.APPROVED_DATE, 'DD-MON-YYYY'))"),'SUB_REMARKS'=>"REMARKS",'SUB_APPROVED_FLAG'=>"APPROVED_FLAG"],"left");
 
         $select->where([
@@ -100,13 +100,13 @@ class TravelRequestRepository implements RepositoryInterface {
         $sql = new Sql($this->adapter);
         $select = $sql->select();
         $select->columns([
-            new Expression("TO_CHAR(TR.FROM_DATE, 'DD-MON-YYYY') AS FROM_DATE"),
-            new Expression("TO_CHAR(TR.TO_DATE, 'DD-MON-YYYY') AS TO_DATE"),
+            new Expression("INITCAP(TO_CHAR(TR.FROM_DATE, 'DD-MON-YYYY')) AS FROM_DATE"),
+            new Expression("INITCAP(TO_CHAR(TR.TO_DATE, 'DD-MON-YYYY')) AS TO_DATE"),
             new Expression("TR.STATUS AS STATUS"),
             new Expression("TR.DESTINATION AS DESTINATION"),
-            new Expression("TO_CHAR(TR.REQUESTED_DATE, 'DD-MON-YYYY') AS REQUESTED_DATE"),
-            new Expression("TO_CHAR(TR.APPROVED_DATE, 'DD-MON-YYYY') AS APPROVED_DATE"),
-            new Expression("TO_CHAR(TR.RECOMMENDED_DATE, 'DD-MON-YYYY') AS RECOMMENDED_DATE"),
+            new Expression("INITCAP(TO_CHAR(TR.REQUESTED_DATE, 'DD-MON-YYYY')) AS REQUESTED_DATE"),
+            new Expression("INITCAP(TO_CHAR(TR.APPROVED_DATE, 'DD-MON-YYYY')) AS APPROVED_DATE"),
+            new Expression("INITCAP(TO_CHAR(TR.RECOMMENDED_DATE, 'DD-MON-YYYY')) AS RECOMMENDED_DATE"),
             new Expression("TR.REQUESTED_AMOUNT AS REQUESTED_AMOUNT"),
             new Expression("TR.TRAVEL_ID AS TRAVEL_ID"),
             new Expression("TR.TRAVEL_CODE AS TRAVEL_CODE"),
@@ -121,9 +121,9 @@ class TravelRequestRepository implements RepositoryInterface {
                 ], true);
 
         $select->from(['TR' => TravelRequest::TABLE_NAME])
-                ->join(['E' => HrEmployees::TABLE_NAME], "E." . HrEmployees::EMPLOYEE_ID . "=TR." . TravelRequest::EMPLOYEE_ID, [HrEmployees::FIRST_NAME, HrEmployees::MIDDLE_NAME, HrEmployees::LAST_NAME])
-                ->join(['E1' => "HRIS_EMPLOYEES"], "E1.EMPLOYEE_ID=TR.RECOMMENDED_BY", ['FN1' => 'FIRST_NAME', 'MN1' => 'MIDDLE_NAME', 'LN1' => 'LAST_NAME'], "left")
-                ->join(['E2' => "HRIS_EMPLOYEES"], "E2.EMPLOYEE_ID=TR.APPROVED_BY", ['FN2' => 'FIRST_NAME', 'MN2' => 'MIDDLE_NAME', 'LN2' => 'LAST_NAME'], "left");
+                ->join(['E' => HrEmployees::TABLE_NAME], "E." . HrEmployees::EMPLOYEE_ID . "=TR." . TravelRequest::EMPLOYEE_ID, ["FIRST_NAME" => new Expression("INITCAP(E.FIRST_NAME)"),"MIDDLE_NAME" => new Expression("INITCAP(E.MIDDLE_NAME)"),"LAST_NAME" => new Expression("INITCAP(E.LAST_NAME)")])
+                ->join(['E1' => "HRIS_EMPLOYEES"], "E1.EMPLOYEE_ID=TR.RECOMMENDED_BY", ['FN1' =>  new Expression("INITCAP(E1.FIRST_NAME)"), 'MN1' => new Expression("INITCAP(E1.MIDDLE_NAME)"), 'LN1' => new Expression("INITCAP(E1.LAST_NAME)")], "left")
+                ->join(['E2' => "HRIS_EMPLOYEES"], "E2.EMPLOYEE_ID=TR.APPROVED_BY", ['FN2' =>  new Expression("INITCAP(E2.FIRST_NAME)"), 'MN2' => new Expression("INITCAP(E2.MIDDLE_NAME)"), 'LN2' => new Expression("INITCAP(E2.LAST_NAME)")], "left");
 
         $select->where([
             "E.EMPLOYEE_ID=" . $employeeId

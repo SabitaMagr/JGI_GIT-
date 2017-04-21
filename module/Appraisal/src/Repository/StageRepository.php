@@ -8,6 +8,7 @@ use Zend\Db\Sql\Sql;
 use Zend\Db\Sql\Select;
 use Zend\Db\Sql\Expression;
 use Zend\Db\TableGateway\TableGateway;
+use Application\Helper\EntityHelper;
 
 class StageRepository implements RepositoryInterface{
     
@@ -38,15 +39,10 @@ class StageRepository implements RepositoryInterface{
     public function fetchAll() {
         $sql = new Sql($this->adapter);
         $select = $sql->select();
-        $select->columns([
-            new Expression("INITCAP(TO_CHAR(START_DATE,'DD-MON-YYYY')) AS START_DATE"), 
-            new Expression("INITCAP(TO_CHAR(END_DATE,'DD-MON-YYYY')) AS END_DATE"),
-            new Expression("STAGE_ID AS STAGE_ID"),
-            new Expression("STAGE_CODE AS STAGE_CODE"),
-            new Expression("STAGE_EDESC AS STAGE_EDESC"),
-            new Expression("STAGE_NDESC AS STAGE_NDESC"),
-            new Expression("ORDER_NO AS ORDER_NO")
-            ], true);
+        $select->columns(
+        EntityHelper::getColumnNameArrayWithOracleFns(Stage::class,
+                [Stage::STAGE_EDESC, Stage::STAGE_NDESC],
+                [Stage::START_DATE, Stage::END_DATE]),false);
         $select->from("HRIS_APPRAISAL_STAGE");
         
         $select->where(["STATUS='E'"]);
@@ -59,16 +55,10 @@ class StageRepository implements RepositoryInterface{
     public function fetchById($id) {
         $sql = new Sql($this->adapter);
         $select = $sql->select();
-        $select->columns([
-            new Expression("INITCAP(TO_CHAR(START_DATE,'DD-MON-YYYY')) AS START_DATE"), 
-            new Expression("INITCAP(TO_CHAR(END_DATE,'DD-MON-YYYY')) AS END_DATE"),
-            new Expression("STAGE_ID AS STAGE_ID"),
-            new Expression("STAGE_CODE AS STAGE_CODE"),
-            new Expression("STAGE_EDESC AS STAGE_EDESC"),
-            new Expression("STAGE_NDESC AS STAGE_NDESC"),
-            new Expression("ORDER_NO AS ORDER_NO"),
-            new Expression("REMARKS AS REMARKS")
-            ], true);
+        $select->columns(
+        EntityHelper::getColumnNameArrayWithOracleFns(Stage::class,
+                [Stage::STAGE_EDESC, Stage::STAGE_NDESC],
+                [Stage::START_DATE, Stage::END_DATE]),false);
         $select->from("HRIS_APPRAISAL_STAGE");
         
         $select->where(["STAGE_ID=".$id]);

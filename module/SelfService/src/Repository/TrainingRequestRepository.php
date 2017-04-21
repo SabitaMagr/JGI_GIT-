@@ -51,7 +51,7 @@ class TrainingRequestRepository implements RepositoryInterface{
             new Expression("TR.DESCRIPTION AS DESCRIPTION"),
             new Expression("TR.STATUS AS STATUS"),
             new Expression("TR.TRAINING_TYPE AS TRAINING_TYPE"),
-            new Expression("TR.TITLE AS TITLE"),
+            new Expression("INITCAP(TR.TITLE) AS TITLE"),
             new Expression("TR.REMARKS AS REMARKS"),
             new Expression("TR.RECOMMENDED_BY AS RECOMMENDED_BY"),
             new Expression("INITCAP(TO_CHAR(TR.RECOMMENDED_DATE, 'DD-MON-YYYY')) AS RECOMMENDED_DATE"),
@@ -63,10 +63,10 @@ class TrainingRequestRepository implements RepositoryInterface{
                 ], true);
 
         $select->from(['TR' => TrainingRequest::TABLE_NAME])
-                ->join(['E' => HrEmployees::TABLE_NAME], "E.".HrEmployees::EMPLOYEE_ID."=TR.". TrainingRequest::EMPLOYEE_ID, [HrEmployees::FIRST_NAME,HrEmployees::MIDDLE_NAME, HrEmployees::LAST_NAME])
-                ->join(['T' => Training::TABLE_NAME], "T.". Training::TRAINING_ID."=TR.". TrainingRequest::TRAINING_ID, [Training::TRAINING_CODE,Training::INSTRUCTOR_NAME, Training::TRAINING_NAME,"T_START_DATE" => new Expression("INITCAP(TO_CHAR(T.START_DATE, 'DD-MON-YYYY'))"),"T_END_DATE" => new Expression("INITCAP(TO_CHAR(T.END_DATE, 'DD-MON-YYYY'))"),"T_DURATION"=> Training::DURATION,"T_TRAINING_TYPE"=>Training::TRAINING_TYPE],"left")
-                ->join(['E1'=>"HRIS_EMPLOYEES"],"E1.EMPLOYEE_ID=TR.RECOMMENDED_BY",['FN1'=>'FIRST_NAME','MN1'=>'MIDDLE_NAME','LN1'=>'LAST_NAME'],"left")
-                ->join(['E2'=>"HRIS_EMPLOYEES"],"E2.EMPLOYEE_ID=TR.APPROVED_BY",['FN2'=>'FIRST_NAME','MN2'=>'MIDDLE_NAME','LN2'=>'LAST_NAME'],"left");
+                ->join(['E' => HrEmployees::TABLE_NAME], "E.".HrEmployees::EMPLOYEE_ID."=TR.". TrainingRequest::EMPLOYEE_ID, ["FIRST_NAME" => new Expression("INITCAP(E.FIRST_NAME)"),"MIDDLE_NAME" => new Expression("INITCAP(E.MIDDLE_NAME)"),"LAST_NAME" => new Expression("INITCAP(E.LAST_NAME)")])
+                ->join(['T' => Training::TABLE_NAME], "T.". Training::TRAINING_ID."=TR.". TrainingRequest::TRAINING_ID, [Training::TRAINING_CODE,"INSTRUCTOR_NAME"=> new Expression("INITCAP(T.INSTRUCTOR_NAME)"), "TRAINING_NAME"=> new Expression("INITCAP(T.TRAINING_NAME)"),"T_START_DATE" => new Expression("INITCAP(TO_CHAR(T.START_DATE, 'DD-MON-YYYY'))"),"T_END_DATE" => new Expression("INITCAP(TO_CHAR(T.END_DATE, 'DD-MON-YYYY'))"),"T_DURATION"=> Training::DURATION,"T_TRAINING_TYPE"=>Training::TRAINING_TYPE],"left")
+                ->join(['E1'=>"HRIS_EMPLOYEES"],"E1.EMPLOYEE_ID=TR.RECOMMENDED_BY",['FN1' =>  new Expression("INITCAP(E1.FIRST_NAME)"), 'MN1' => new Expression("INITCAP(E1.MIDDLE_NAME)"), 'LN1' => new Expression("INITCAP(E1.LAST_NAME)")],"left")
+                ->join(['E2'=>"HRIS_EMPLOYEES"],"E2.EMPLOYEE_ID=TR.APPROVED_BY",['FN2' =>  new Expression("INITCAP(E2.FIRST_NAME)"), 'MN2' => new Expression("INITCAP(E2.MIDDLE_NAME)"), 'LN2' => new Expression("INITCAP(E2.LAST_NAME)")],"left");
 
         $select->where([
             "TR.REQUEST_ID=" . $id
@@ -90,7 +90,7 @@ class TrainingRequestRepository implements RepositoryInterface{
             new Expression("TR.DESCRIPTION AS DESCRIPTION"),
             new Expression("TR.STATUS AS STATUS"),
             new Expression("TR.TRAINING_TYPE AS TRAINING_TYPE"),
-            new Expression("TR.TITLE AS TITLE"),
+            new Expression("INITCAP(TR.TITLE) AS TITLE"),
             new Expression("TR.REMARKS AS REMARKS"),
             new Expression("TR.RECOMMENDED_BY AS RECOMMENDED_BY"),
             new Expression("INITCAP(TO_CHAR(TR.RECOMMENDED_DATE, 'DD-MON-YYYY')) AS RECOMMENDED_DATE"),
@@ -102,10 +102,10 @@ class TrainingRequestRepository implements RepositoryInterface{
                 ], true);
 
          $select->from(['TR' => TrainingRequest::TABLE_NAME])
-                ->join(['E' => HrEmployees::TABLE_NAME], "E.".HrEmployees::EMPLOYEE_ID."=TR.". TrainingRequest::EMPLOYEE_ID, [HrEmployees::FIRST_NAME,HrEmployees::MIDDLE_NAME, HrEmployees::LAST_NAME])
-                ->join(['T' => Training::TABLE_NAME], "T.". Training::TRAINING_ID."=TR.". TrainingRequest::TRAINING_ID, [Training::TRAINING_CODE, Training::TRAINING_NAME,"T_START_DATE" => new Expression("INITCAP(TO_CHAR(T.START_DATE, 'DD-MON-YYYY'))"),"T_END_DATE" => new Expression("INITCAP(TO_CHAR(T.END_DATE, 'DD-MON-YYYY'))"),"T_DURATION"=> Training::DURATION,"T_TRAINING_TYPE"=>Training::TRAINING_TYPE],"left")
-                ->join(['E1'=>"HRIS_EMPLOYEES"],"E1.EMPLOYEE_ID=TR.RECOMMENDED_BY",['FN1'=>'FIRST_NAME','MN1'=>'MIDDLE_NAME','LN1'=>'LAST_NAME'],"left")
-                ->join(['E2'=>"HRIS_EMPLOYEES"],"E2.EMPLOYEE_ID=TR.APPROVED_BY",['FN2'=>'FIRST_NAME','MN2'=>'MIDDLE_NAME','LN2'=>'LAST_NAME'],"left");
+                ->join(['E' => HrEmployees::TABLE_NAME], "E.".HrEmployees::EMPLOYEE_ID."=TR.". TrainingRequest::EMPLOYEE_ID, ["FIRST_NAME" => new Expression("INITCAP(E.FIRST_NAME)"),"MIDDLE_NAME" => new Expression("INITCAP(E.MIDDLE_NAME)"),"LAST_NAME" => new Expression("INITCAP(E.LAST_NAME)")])
+                ->join(['T' => Training::TABLE_NAME], "T.". Training::TRAINING_ID."=TR.". TrainingRequest::TRAINING_ID, [Training::TRAINING_CODE, "INSTRUCTOR_NAME"=> new Expression("INITCAP(T.INSTRUCTOR_NAME)"), "TRAINING_NAME"=> new Expression("INITCAP(T.TRAINING_NAME)"),"T_START_DATE" => new Expression("INITCAP(TO_CHAR(T.START_DATE, 'DD-MON-YYYY'))"),"T_END_DATE" => new Expression("INITCAP(TO_CHAR(T.END_DATE, 'DD-MON-YYYY'))"),"T_DURATION"=> Training::DURATION,"T_TRAINING_TYPE"=>Training::TRAINING_TYPE],"left")
+                ->join(['E1'=>"HRIS_EMPLOYEES"],"E1.EMPLOYEE_ID=TR.RECOMMENDED_BY",['FN1' =>  new Expression("INITCAP(E1.FIRST_NAME)"), 'MN1' => new Expression("INITCAP(E1.MIDDLE_NAME)"), 'LN1' => new Expression("INITCAP(E1.LAST_NAME)")],"left")
+                ->join(['E2'=>"HRIS_EMPLOYEES"],"E2.EMPLOYEE_ID=TR.APPROVED_BY",['FN2' =>  new Expression("INITCAP(E2.FIRST_NAME)"), 'MN2' => new Expression("INITCAP(E2.MIDDLE_NAME)"), 'LN2' => new Expression("INITCAP(E2.LAST_NAME)")],"left");
 
         $select->where([
             "E.EMPLOYEE_ID=" . $employeeId

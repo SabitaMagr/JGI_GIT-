@@ -11,6 +11,7 @@ use Zend\Db\Sql\Expression;
 use Zend\Db\Sql\Sql;
 use Setup\Model\HrEmployees;
 use Setup\Model\Advance;
+use Application\Helper\EntityHelper;
 
 class AdvanceRequestRepository implements RepositoryInterface {
 
@@ -44,9 +45,9 @@ class AdvanceRequestRepository implements RepositoryInterface {
         $select->columns([
             new Expression("INITCAP(TO_CHAR(AR.ADVANCE_DATE, 'DD-MON-YYYY')) AS ADVANCE_DATE"),
             new Expression("AR.STATUS AS STATUS"),
-            new Expression("TO_CHAR(AR.REQUESTED_DATE, 'DD-MON-YYYY') AS REQUESTED_DATE"),
-            new Expression("TO_CHAR(AR.APPROVED_DATE, 'DD-MON-YYYY') AS APPROVED_DATE"),
-            new Expression("TO_CHAR(AR.RECOMMENDED_DATE, 'DD-MON-YYYY') AS RECOMMENDED_DATE"),
+            new Expression("INITCAP(TO_CHAR(AR.REQUESTED_DATE, 'DD-MON-YYYY')) AS REQUESTED_DATE"),
+            new Expression("INITCAP(TO_CHAR(AR.APPROVED_DATE, 'DD-MON-YYYY')) AS APPROVED_DATE"),
+            new Expression("INITCAP(TO_CHAR(AR.RECOMMENDED_DATE, 'DD-MON-YYYY')) AS RECOMMENDED_DATE"),
             new Expression("AR.REQUESTED_AMOUNT AS REQUESTED_AMOUNT"),
             new Expression("AR.ADVANCE_REQUEST_ID AS ADVANCE_REQUEST_ID"),
             new Expression("AR.REASON AS REASON"),
@@ -60,10 +61,10 @@ class AdvanceRequestRepository implements RepositoryInterface {
                 ], true);
 
         $select->from(['AR' => AdvanceRequest::TABLE_NAME])
-                ->join(['E' => HrEmployees::TABLE_NAME], "E." . HrEmployees::EMPLOYEE_ID . "=AR." . AdvanceRequest::EMPLOYEE_ID, [HrEmployees::FIRST_NAME, HrEmployees::MIDDLE_NAME, HrEmployees::LAST_NAME])
-                ->join(['A' => Advance::TABLE_NAME], "A." . Advance::ADVANCE_ID . "=AR." . AdvanceRequest::ADVANCE_ID, [Advance::ADVANCE_CODE, Advance::ADVANCE_NAME])
-                ->join(['E1' => "HRIS_EMPLOYEES"], "E1.EMPLOYEE_ID=AR.RECOMMENDED_BY", ['FN1' => 'FIRST_NAME', 'MN1' => 'MIDDLE_NAME', 'LN1' => 'LAST_NAME'], "left")
-                ->join(['E2' => "HRIS_EMPLOYEES"], "E2.EMPLOYEE_ID=AR.APPROVED_BY", ['FN2' => 'FIRST_NAME', 'MN2' => 'MIDDLE_NAME', 'LN2' => 'LAST_NAME'], "left");
+                ->join(['E' => HrEmployees::TABLE_NAME], "E." . HrEmployees::EMPLOYEE_ID . "=AR." . AdvanceRequest::EMPLOYEE_ID, ["FIRST_NAME"=>new Expression("INITCAP(E.FIRST_NAME)"),"MIDDLE_NAME"=>new Expression("INITCAP(E.MIDDLE_NAME)"),"LAST_NAME"=>new Expression("INITCAP(E.LAST_NAME)")])
+                ->join(['A' => Advance::TABLE_NAME], "A." . Advance::ADVANCE_ID . "=AR." . AdvanceRequest::ADVANCE_ID, [Advance::ADVANCE_CODE, "ADVANCE_NAME"=>new Expression("INITCAP(A.ADVANCE_NAME)")])
+                ->join(['E1' => "HRIS_EMPLOYEES"], "E1.EMPLOYEE_ID=AR.RECOMMENDED_BY", ['FN1' =>new Expression("INITCAP(E1.FIRST_NAME)"), 'MN1' =>new Expression("INITCAP(E1.MIDDLE_NAME)"), 'LN1' =>new Expression("INITCAP(E1.LAST_NAME)")], "left")
+                ->join(['E2' => "HRIS_EMPLOYEES"], "E2.EMPLOYEE_ID=AR.APPROVED_BY", ['FN2' =>new Expression("INITCAP(E2.FIRST_NAME)"), 'MN2' =>new Expression("INITCAP(E2.MIDDLE_NAME)"), 'LN2' =>new Expression("INITCAP(E2.LAST_NAME)")], "left");
 
         $select->where([
             "AR.ADVANCE_REQUEST_ID=" . $id
@@ -78,11 +79,11 @@ class AdvanceRequestRepository implements RepositoryInterface {
         $sql = new Sql($this->adapter);
         $select = $sql->select();
         $select->columns([
-            new Expression("TO_CHAR(AR.ADVANCE_DATE, 'DD-MON-YYYY') AS ADVANCE_DATE"),
+            new Expression("INITCAP(TO_CHAR(AR.ADVANCE_DATE, 'DD-MON-YYYY')) AS ADVANCE_DATE"),
             new Expression("AR.STATUS AS STATUS"),
-            new Expression("TO_CHAR(AR.REQUESTED_DATE, 'DD-MON-YYYY') AS REQUESTED_DATE"),
-            new Expression("TO_CHAR(AR.APPROVED_DATE, 'DD-MON-YYYY') AS APPROVED_DATE"),
-            new Expression("TO_CHAR(AR.RECOMMENDED_DATE, 'DD-MON-YYYY') AS RECOMMENDED_DATE"),
+            new Expression("INITCAP(TO_CHAR(AR.REQUESTED_DATE, 'DD-MON-YYYY')) AS REQUESTED_DATE"),
+            new Expression("INITCAP(TO_CHAR(AR.APPROVED_DATE, 'DD-MON-YYYY')) AS APPROVED_DATE"),
+            new Expression("INITCAP(TO_CHAR(AR.RECOMMENDED_DATE, 'DD-MON-YYYY')) AS RECOMMENDED_DATE"),
             new Expression("AR.ADVANCE_REQUEST_ID AS ADVANCE_REQUEST_ID"),
             new Expression("AR.REASON AS REASON"),
             new Expression("AR.ADVANCE_ID AS ADVANCE_ID"),
@@ -93,10 +94,10 @@ class AdvanceRequestRepository implements RepositoryInterface {
                 ], true);
 
         $select->from(['AR' => AdvanceRequest::TABLE_NAME])
-                ->join(['E' => HrEmployees::TABLE_NAME], "E." . HrEmployees::EMPLOYEE_ID . "=AR." . AdvanceRequest::EMPLOYEE_ID, [HrEmployees::FIRST_NAME, HrEmployees::MIDDLE_NAME, HrEmployees::LAST_NAME])
-                ->join(['A' => Advance::TABLE_NAME], "A." . Advance::ADVANCE_ID . "=AR." . AdvanceRequest::ADVANCE_ID, [Advance::ADVANCE_CODE, Advance::ADVANCE_NAME])
-                ->join(['E1' => "HRIS_EMPLOYEES"], "E1.EMPLOYEE_ID=AR.RECOMMENDED_BY", ['FN1' => 'FIRST_NAME', 'MN1' => 'MIDDLE_NAME', 'LN1' => 'LAST_NAME'], "left")
-                ->join(['E2' => "HRIS_EMPLOYEES"], "E2.EMPLOYEE_ID=AR.APPROVED_BY", ['FN2' => 'FIRST_NAME', 'MN2' => 'MIDDLE_NAME', 'LN2' => 'LAST_NAME'], "left");
+                ->join(['E' => HrEmployees::TABLE_NAME], "E." . HrEmployees::EMPLOYEE_ID . "=AR." . AdvanceRequest::EMPLOYEE_ID, ["FIRST_NAME"=>new Expression("INITCAP(E.FIRST_NAME)"),"MIDDLE_NAME"=>new Expression("INITCAP(E.MIDDLE_NAME)"),"LAST_NAME"=>new Expression("INITCAP(E.LAST_NAME)")])
+                ->join(['A' => Advance::TABLE_NAME], "A." . Advance::ADVANCE_ID . "=AR." . AdvanceRequest::ADVANCE_ID, [Advance::ADVANCE_CODE, "ADVANCE_NAME"=>new Expression("INITCAP(A.ADVANCE_NAME)")])
+                ->join(['E1' => "HRIS_EMPLOYEES"], "E1.EMPLOYEE_ID=AR.RECOMMENDED_BY", ['FN1' =>new Expression("INITCAP(E1.FIRST_NAME)"), 'MN1' =>new Expression("INITCAP(E1.MIDDLE_NAME)"), 'LN1' =>new Expression("INITCAP(E1.LAST_NAME)")], "left")
+                ->join(['E2' => "HRIS_EMPLOYEES"], "E2.EMPLOYEE_ID=AR.APPROVED_BY", ['FN2' =>new Expression("INITCAP(E2.FIRST_NAME)"), 'MN2' =>new Expression("INITCAP(E2.MIDDLE_NAME)"), 'LN2' =>new Expression("INITCAP(E2.LAST_NAME)")], "left");
 
         $select->where([
             "E.EMPLOYEE_ID=" . $employeeId

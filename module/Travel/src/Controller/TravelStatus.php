@@ -157,17 +157,16 @@ class TravelStatus extends AbstractActionController
             $recommApprove=1;
         }
         
-        $employeeName = $detail['FIRST_NAME'] . " " . $detail['MIDDLE_NAME'] . " " . $detail['LAST_NAME'];        
-        $RECM_MN = ($detail['RECM_MN']!=null)? " ".$detail['RECM_MN']." ":" ";
-        $recommender = $detail['RECM_FN'].$RECM_MN.$detail['RECM_LN'];        
-        $APRV_MN = ($detail['APRV_MN']!=null)? " ".$detail['APRV_MN']." ":" ";
-        $approver = $detail['APRV_FN'].$APRV_MN.$detail['APRV_LN'];
-        $MN1 = ($detail['MN1']!=null)? " ".$detail['MN1']." ":" ";
-        $recommended_by = $detail['FN1'].$MN1.$detail['LN1'];        
-        $MN2 = ($detail['MN2']!=null)? " ".$detail['MN2']." ":" ";
-        $approved_by = $detail['FN2'].$MN2.$detail['LN2'];
-        $authRecommender = ($status=='RQ' || $status=='C')?$recommender:$recommended_by;
-        $authApprover = ($status=='RC' || $status=='C' || $status=='RQ' || ($status=='R' && $approvedDT==null))?$approver:$approved_by;
+        $fullName = function($id) {
+            $empRepository = new EmployeeRepository($this->adapter);
+            $empDtl = $empRepository->fetchById($id);
+            $empMiddleName = ($empDtl['MIDDLE_NAME'] != null) ? " " . $empDtl['MIDDLE_NAME'] . " " : " ";
+            return $empDtl['FIRST_NAME'] . $empMiddleName . $empDtl['LAST_NAME'];
+        };
+        
+        $employeeName = $fullName($detail['EMPLOYEE_ID']);        
+        $authRecommender = ($status=='RQ' || $status=='C')? $detail['RECOMMENDER'] : $detail['RECOMMENDED_BY'];
+        $authApprover = ($status=='RC' || $status=='C' || $status=='RQ' || ($status=='R' && $approvedDT==null))? $detail['APPROVER'] : $detail['APPROVED_BY'];
 
 
         if (!$request->isPost()) {
@@ -217,13 +216,6 @@ class TravelStatus extends AbstractActionController
         $empRepository = new EmployeeRepository($this->adapter);
         $empDtl = $empRepository->fetchForProfileById($detail['EMPLOYEE_ID']);
         
-        $fullName = function($id) {
-            $empRepository = new EmployeeRepository($this->adapter);
-            $empDtl = $empRepository->fetchById($id);
-            $empMiddleName = ($empDtl['MIDDLE_NAME'] != null) ? " " . $empDtl['MIDDLE_NAME'] . " " : " ";
-            return $empDtl['FIRST_NAME'] . $empMiddleName . $empDtl['LAST_NAME'];
-        };
-        
         $numberInWord = new NumberHelper();
         $advanceAmount = $numberInWord->toText($detail['REQUESTED_AMOUNT']);
         $subDetail = [];
@@ -243,9 +235,9 @@ class TravelStatus extends AbstractActionController
                     'employeeId' => $employeeId,
                     'employeeName' => $employeeName,
                     'requestedDt' => $detail['REQUESTED_DATE'],
-                    'recommender' => $authRecommender,
+                    'recommender' => $fullName($authRecommender),
+                    'approver' => $fullName($authApprover),
                     'approvedDT'=>$detail['APPROVED_DATE'],
-                    'approver' => $authApprover,
                     'status' => $status,
                     'advanceAmt'=> $advanceAmt, 
                     'transportTypes'=>$transportTypes,
@@ -290,17 +282,16 @@ class TravelStatus extends AbstractActionController
             $recommApprove=1;
         }
         
-        $employeeName = $detail['FIRST_NAME'] . " " . $detail['MIDDLE_NAME'] . " " . $detail['LAST_NAME'];        
-        $RECM_MN = ($detail['RECM_MN']!=null)? " ".$detail['RECM_MN']." ":" ";
-        $recommender = $detail['RECM_FN'].$RECM_MN.$detail['RECM_LN'];        
-        $APRV_MN = ($detail['APRV_MN']!=null)? " ".$detail['APRV_MN']." ":" ";
-        $approver = $detail['APRV_FN'].$APRV_MN.$detail['APRV_LN'];
-        $MN1 = ($detail['MN1']!=null)? " ".$detail['MN1']." ":" ";
-        $recommended_by = $detail['FN1'].$MN1.$detail['LN1'];        
-        $MN2 = ($detail['MN2']!=null)? " ".$detail['MN2']." ":" ";
-        $approved_by = $detail['FN2'].$MN2.$detail['LN2'];
-        $authRecommender = ($status=='RQ' || $status=='C')?$recommender:$recommended_by;
-        $authApprover = ($status=='RC' || $status=='C' || $status=='RQ' || ($status=='R' && $approvedDT==null))?$approver:$approved_by;
+        $fullName = function($id) {
+            $empRepository = new EmployeeRepository($this->adapter);
+            $empDtl = $empRepository->fetchById($id);
+            $empMiddleName = ($empDtl['MIDDLE_NAME'] != null) ? " " . $empDtl['MIDDLE_NAME'] . " " : " ";
+            return $empDtl['FIRST_NAME'] . $empMiddleName . $empDtl['LAST_NAME'];
+        };
+        
+        $employeeName = $fullName($detail['EMPLOYEE_ID']);        
+        $authRecommender = ($status=='RQ' || $status=='C')? $detail['RECOMMENDER'] : $detail['RECOMMENDED_BY'];
+        $authApprover = ($status=='RC' || $status=='C' || $status=='RQ' || ($status=='R' && $approvedDT==null))? $detail['APPROVER'] : $detail['APPROVED_BY'];
 
         if($detail['REFERENCE_TRAVEL_ID']!=null){
             $referenceTravelDtl = $this->travelApproveRepository->fetchById($detail['REFERENCE_TRAVEL_ID']);
@@ -333,9 +324,9 @@ class TravelStatus extends AbstractActionController
                     'employeeId' => $employeeId,
                     'employeeName' => $employeeName,
                     'requestedDt' => $detail['REQUESTED_DATE'],
-                    'recommender' => $authRecommender,
+                    'recommender' => $fullName($authRecommender),
+                    'approver' => $fullName($authApprover),
                     'approvedDT'=>$detail['APPROVED_DATE'],
-                    'approver' => $authApprover,
                     'status' => $status,
                     'advanceAmt'=> $advanceAmt,
                     'recommApprove'=>$recommApprove,

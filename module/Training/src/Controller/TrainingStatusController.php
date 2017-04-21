@@ -21,6 +21,7 @@ use Zend\Form\Element\Select;
 use Setup\Model\ServiceEventType;
 use Zend\Authentication\AuthenticationService;
 use Setup\Repository\RecommendApproveRepository;
+use Setup\Repository\EmployeeRepository;
 
 class TrainingStatusController extends AbstractActionController
 {
@@ -152,17 +153,16 @@ class TrainingStatusController extends AbstractActionController
             $recommApprove=1;
         }
         
-        $employeeName = $detail['FIRST_NAME'] . " " . $detail['MIDDLE_NAME'] . " " . $detail['LAST_NAME'];        
-        $RECM_MN = ($detail['RECM_MN']!=null)? " ".$detail['RECM_MN']." ":" ";
-        $recommender = $detail['RECM_FN'].$RECM_MN.$detail['RECM_LN'];        
-        $APRV_MN = ($detail['APRV_MN']!=null)? " ".$detail['APRV_MN']." ":" ";
-        $approver = $detail['APRV_FN'].$APRV_MN.$detail['APRV_LN'];
-        $MN1 = ($detail['MN1']!=null)? " ".$detail['MN1']." ":" ";
-        $recommended_by = $detail['FN1'].$MN1.$detail['LN1'];        
-        $MN2 = ($detail['MN2']!=null)? " ".$detail['MN2']." ":" ";
-        $approved_by = $detail['FN2'].$MN2.$detail['LN2'];
-        $authRecommender = ($status=='RQ' || $status=='C')?$recommender:$recommended_by;
-        $authApprover = ($status=='RC' || $status=='C' || $status=='RQ' || ($status=='R' && $approvedDT==null))?$approver:$approved_by;
+        $fullName = function($id) {
+            $empRepository = new EmployeeRepository($this->adapter);
+            $empDtl = $empRepository->fetchById($id);
+            $empMiddleName = ($empDtl['MIDDLE_NAME'] != null) ? " " . $empDtl['MIDDLE_NAME'] . " " : " ";
+            return $empDtl['FIRST_NAME'] . $empMiddleName . $empDtl['LAST_NAME'];
+        };
+        
+        $employeeName = $fullName($detail['EMPLOYEE_ID']);        
+        $authRecommender = ($status=='RQ' || $status=='C')? $detail['RECOMMENDER'] : $detail['RECOMMENDED_BY'];
+        $authApprover = ($status=='RC' || $status=='C' || $status=='RQ' || ($status=='R' && $approvedDT==null))? $detail['APPROVER'] : $detail['APPROVED_BY'];
 
         if($detail['TRAINING_ID']!=0){
             $detail['START_DATE']=$detail['T_START_DATE'];
@@ -203,9 +203,9 @@ class TrainingStatusController extends AbstractActionController
                     'employeeId' => $employeeId,
                     'employeeName' => $employeeName,
                     'requestedDt' => $detail['REQUESTED_DATE'],
-                    'recommender' => $authRecommender,
+                    'recommender' => $fullName($authRecommender),
+                    'approver' => $fullName($authApprover),
                     'approvedDT'=>$detail['APPROVED_DATE'],
-                    'approver' => $authApprover,
                     'status' => $status,
                     'customRenderer' => Helper::renderCustomView(),
                     'recommApprove'=>$recommApprove,

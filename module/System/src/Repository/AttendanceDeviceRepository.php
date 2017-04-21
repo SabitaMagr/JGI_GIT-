@@ -8,7 +8,7 @@ use System\Model\AttendanceDevice;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\TableGateway\TableGateway;
 use Zend\Db\Sql\Select;
-
+use Application\Helper\EntityHelper;
 
 class AttendanceDeviceRepository implements RepositoryInterface {
     
@@ -34,13 +34,19 @@ class AttendanceDeviceRepository implements RepositoryInterface {
 
     public function fetchAll() {
          return $this->tableGateway->select(function(Select $select){
+            $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(AttendanceDevice::class,
+                    [AttendanceDevice::DEVICE_NAME, AttendanceDevice::DEVICE_COMPANY]),false);
             $select->where([AttendanceDevice::STATUS=>'E']);
             $select->order(AttendanceDevice::DEVICE_NAME." ASC");
         });
     }
 
     public function fetchById($id) {
-         $result = $this->tableGateway->select([AttendanceDevice::DEVICE_ID=>$id]);
+         $result = $this->tableGateway->select(function(Select $select) use($id){
+             $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(AttendanceDevice::class,
+                    [AttendanceDevice::DEVICE_NAME, AttendanceDevice::DEVICE_COMPANY]),false);
+            $select->where([AttendanceDevice::DEVICE_ID=>$id]);
+         });
         return $result->current();
     }
 

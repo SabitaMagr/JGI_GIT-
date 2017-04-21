@@ -8,6 +8,7 @@ use Zend\Db\Sql\Expression;
 use Appraisal\Model\Question;
 use Zend\Db\Sql\Select;
 use Application\Repository\RepositoryInterface;
+use Application\Helper\EntityHelper;
 
 class QuestionRepository implements RepositoryInterface{
     private $tableGateway;
@@ -37,25 +38,10 @@ class QuestionRepository implements RepositoryInterface{
     public function fetchAll() {
         $sql = new Sql($this->adapter);
         $select = $sql->select();
-        $select->columns([
-            new Expression("AQ.QUESTION_ID AS QUESTION_ID"), 
-            new Expression("AQ.QUESTION_CODE AS QUESTION_CODE"),
-            new Expression("AQ.QUESTION_EDESC AS QUESTION_EDESC"), 
-            new Expression("AQ.QUESTION_NDESC AS QUESTION_NDESC"),
-            new Expression("AQ.ANSWER_TYPE AS ANSWER_TYPE"),
-            new Expression("AQ.APPRAISEE_FLAG AS APPRAISEE_FLAG"),
-            new Expression("AQ.APPRAISER_FLAG AS APPRAISER_FLAG"),
-            new Expression("AQ.REVIEWER_FLAG AS REVIEWER_FLAG"),
-            new Expression("AQ.APPRAISEE_RATING AS APPRAISEE_RATING"),
-            new Expression("AQ.APPRAISER_RATING AS APPRAISER_RATING"),
-            new Expression("AQ.REVIEWER_RATING AS REVIEWER_RATING"),
-            new Expression("AQ.MIN_VALUE AS MIN_VALUE"),
-            new Expression("AQ.MAX_VALUE AS MAX_VALUE"),
-            new Expression("AQ.REMARKS AS REMARKS"),
-            new Expression("AQ.ORDER_NO AS ORDER_NO")
-            ], true);
+        $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(Question::class,
+                [Question::QUESTION_EDESC,Question::QUESTION_NDESC],null,null,null,null,"AQ"),false);
         $select->from(['AQ' => "HRIS_APPRAISAL_QUESTION"])
-                ->join(['AH' => 'HRIS_APPRAISAL_HEADING'], 'AH.HEADING_ID=AQ.HEADING_ID', ["HEADING_EDESC"], "left");
+                ->join(['AH' => 'HRIS_APPRAISAL_HEADING'], 'AH.HEADING_ID=AQ.HEADING_ID', ["HEADING_EDESC"=>new Expression("INITCAP(AH.HEADING_EDESC)")], "left");
         
         $select->where(["AQ.STATUS='E'"]);
         $select->order("AQ.QUESTION_EDESC");
@@ -65,11 +51,17 @@ class QuestionRepository implements RepositoryInterface{
     }
 
     public function fetchById($id) {
-        $rowset = $this->tableGateway->select([Question::QUESTION_ID => $id, Question::STATUS => 'E']);
+        $rowset = $this->tableGateway->select(function(Select $select) use($id){
+            $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(Question::class,
+                [Question::QUESTION_EDESC,Question::QUESTION_NDESC]),false);
+            $select->where([Question::QUESTION_ID => $id, Question::STATUS => 'E']);
+        });
         return $result = $rowset->current();
     }
     public function fetchByHeadingId($headingId){
         $rowset= $this->tableGateway->select(function(Select $select) use($headingId) {
+            $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(Question::class,
+                [Question::QUESTION_EDESC,Question::QUESTION_NDESC]),false);
             $select->where([Question::STATUS=>'E',Question::HEADING_ID=>$headingId]);
             $select->order(Question::QUESTION_ID." ASC");
         });

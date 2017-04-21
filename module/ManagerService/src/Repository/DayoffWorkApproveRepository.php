@@ -45,28 +45,28 @@ class DayoffWorkApproveRepository implements RepositoryInterface{
         $select->columns([
             new Expression("WD.ID AS ID"),
             new Expression("WD.EMPLOYEE_ID AS EMPLOYEE_ID"),
-            new Expression("TO_CHAR(WD.REQUESTED_DATE, 'DD-MON-YYYY') AS REQUESTED_DATE"),
+            new Expression("INITCAP(TO_CHAR(WD.REQUESTED_DATE, 'DD-MON-YYYY')) AS REQUESTED_DATE"),
             new Expression("INITCAP(TO_CHAR(WD.FROM_DATE, 'DD-MON-YYYY')) AS FROM_DATE"),
             new Expression("INITCAP(TO_CHAR(WD.TO_DATE, 'DD-MON-YYYY')) AS TO_DATE"),
             new Expression("WD.DURATION AS DURATION"),
             new Expression("WD.REMARKS AS REMARKS"),
             new Expression("WD.STATUS AS STATUS"),
             new Expression("WD.RECOMMENDED_BY AS RECOMMENDED_BY"),
-            new Expression("TO_CHAR(WD.RECOMMENDED_DATE, 'DD-MON-YYYY') AS RECOMMENDED_DATE"),
+            new Expression("INITCAP(TO_CHAR(WD.RECOMMENDED_DATE, 'DD-MON-YYYY')) AS RECOMMENDED_DATE"),
             new Expression("WD.RECOMMENDED_REMARKS AS RECOMMENDED_REMARKS"),
             new Expression("WD.APPROVED_BY AS APPROVED_BY"),
-            new Expression("TO_CHAR(WD.APPROVED_DATE, 'DD-MON-YYYY') AS APPROVED_DATE"),
+            new Expression("INITCAP(TO_CHAR(WD.APPROVED_DATE, 'DD-MON-YYYY')) AS APPROVED_DATE"),
             new Expression("WD.APPROVED_REMARKS AS APPROVED_REMARKS"),
-            new Expression("TO_CHAR(WD.MODIFIED_DATE, 'DD-MON-YYYY') AS MODIFIED_DATE"), 
+            new Expression("INITCAP(TO_CHAR(WD.MODIFIED_DATE, 'DD-MON-YYYY')) AS MODIFIED_DATE"), 
         ], true);
 
         $select->from(['WD' => WorkOnDayoff::TABLE_NAME])
-            ->join(['E'=>"HRIS_EMPLOYEES"],"E.EMPLOYEE_ID=WD.EMPLOYEE_ID",['FIRST_NAME','MIDDLE_NAME','LAST_NAME'],"left")
-            ->join(['E1'=>"HRIS_EMPLOYEES"],"E1.EMPLOYEE_ID=WD.RECOMMENDED_BY",['FN1'=>'FIRST_NAME','MN1'=>'MIDDLE_NAME','LN1'=>'LAST_NAME'],"left")
-            ->join(['E2'=>"HRIS_EMPLOYEES"],"E2.EMPLOYEE_ID=WD.APPROVED_BY",['FN2'=>'FIRST_NAME','MN2'=>'MIDDLE_NAME','LN2'=>'LAST_NAME'],"left")
+            ->join(['E'=>"HRIS_EMPLOYEES"],"E.EMPLOYEE_ID=WD.EMPLOYEE_ID",["FIRST_NAME" => new Expression("INITCAP(E.FIRST_NAME)"),"MIDDLE_NAME" => new Expression("INITCAP(E.MIDDLE_NAME)"),"LAST_NAME" => new Expression("INITCAP(E.LAST_NAME)")],"left")
+            ->join(['E1'=>"HRIS_EMPLOYEES"],"E1.EMPLOYEE_ID=WD.RECOMMENDED_BY",['FN1' =>  new Expression("INITCAP(E1.FIRST_NAME)"), 'MN1' => new Expression("INITCAP(E1.MIDDLE_NAME)"), 'LN1' => new Expression("INITCAP(E1.LAST_NAME)")],"left")
+            ->join(['E2'=>"HRIS_EMPLOYEES"],"E2.EMPLOYEE_ID=WD.APPROVED_BY",['FN2' =>  new Expression("INITCAP(E2.FIRST_NAME)"), 'MN2' => new Expression("INITCAP(E2.MIDDLE_NAME)"), 'LN2' => new Expression("INITCAP(E2.LAST_NAME)")],"left")
             ->join(['RA'=>"HRIS_RECOMMENDER_APPROVER"],"RA.EMPLOYEE_ID=WD.EMPLOYEE_ID",['RECOMMENDER'=>'RECOMMEND_BY','APPROVER'=>'APPROVED_BY'],"left")
-            ->join(['RECM'=>"HRIS_EMPLOYEES"],"RECM.EMPLOYEE_ID=RA.RECOMMEND_BY",['RECM_FN'=>'FIRST_NAME','RECM_MN'=>'MIDDLE_NAME','RECM_LN'=>'LAST_NAME'],"left")
-            ->join(['APRV'=>"HRIS_EMPLOYEES"],"APRV.EMPLOYEE_ID=RA.APPROVED_BY",['APRV_FN'=>'FIRST_NAME','APRV_MN'=>'MIDDLE_NAME','APRV_LN'=>'LAST_NAME'],"left");
+            ->join(['RECM'=>"HRIS_EMPLOYEES"],"RECM.EMPLOYEE_ID=RA.RECOMMEND_BY",['RECM_FN' =>  new Expression("INITCAP(RECM.FIRST_NAME)"), 'RECM_MN' => new Expression("INITCAP(RECM.MIDDLE_NAME)"), 'RECM_LN' => new Expression("INITCAP(RECM.LAST_NAME)")],"left")
+            ->join(['APRV'=>"HRIS_EMPLOYEES"],"APRV.EMPLOYEE_ID=RA.APPROVED_BY",['APRV_FN' =>  new Expression("INITCAP(APRV.FIRST_NAME)"), 'APRV_MN' => new Expression("INITCAP(APRV.MIDDLE_NAME)"), 'APRV_LN' => new Expression("INITCAP(APRV.LAST_NAME)")],"left");
 
         $select->where([
             "WD.ID=".$id
@@ -81,7 +81,7 @@ class DayoffWorkApproveRepository implements RepositoryInterface{
         $sql = "SELECT 
                     WD.ID,
                     WD.EMPLOYEE_ID,
-                    TO_CHAR(WD.REQUESTED_DATE, 'DD-MON-YYYY') AS REQUESTED_DATE,
+                    INITCAP(TO_CHAR(WD.REQUESTED_DATE, 'DD-MON-YYYY')) AS REQUESTED_DATE,
                     WD.APPROVED_BY,
                     WD.RECOMMENDED_BY,
                     WD.REMARKS,
@@ -89,14 +89,14 @@ class DayoffWorkApproveRepository implements RepositoryInterface{
                     WD.STATUS,
                     WD.RECOMMENDED_REMARKS,
                     WD.APPROVED_REMARKS,
-                    TO_CHAR(WD.FROM_DATE, 'DD-MON-YYYY') AS FROM_DATE,
-                    TO_CHAR(WD.TO_DATE, 'DD-MON-YYYY') AS TO_DATE,
-                    TO_CHAR(WD.RECOMMENDED_DATE, 'DD-MON-YYYY') AS RECOMMENDED_DATE,
-                    TO_CHAR(WD.APPROVED_DATE, 'DD-MON-YYYY') AS APPROVED_DATE,
-                    TO_CHAR(WD.MODIFIED_DATE, 'DD-MON-YYYY') AS MODIFIED_DATE,
-                    E.FIRST_NAME,
-                    E.MIDDLE_NAME,
-                    E.LAST_NAME,
+                    INITCAP(TO_CHAR(WD.FROM_DATE, 'DD-MON-YYYY')) AS FROM_DATE,
+                    INITCAP(TO_CHAR(WD.TO_DATE, 'DD-MON-YYYY')) AS TO_DATE,
+                    INITCAP(TO_CHAR(WD.RECOMMENDED_DATE, 'DD-MON-YYYY')) AS RECOMMENDED_DATE,
+                    INITCAP(TO_CHAR(WD.APPROVED_DATE, 'DD-MON-YYYY')) AS APPROVED_DATE,
+                    INITCAP(TO_CHAR(WD.MODIFIED_DATE, 'DD-MON-YYYY')) AS MODIFIED_DATE,
+                    INITCAP(E.FIRST_NAME) AS FIRST_NAME,
+                    INITCAP(E.MIDDLE_NAME) AS MIDDLE_NAME,
+                    INITCAP(E.LAST_NAME) AS LAST_NAME,
                     RA.RECOMMEND_BY as RECOMMENDER,
                     RA.APPROVED_BY AS APPROVER
                     FROM HRIS_EMPLOYEE_WORK_DAYOFF WD
