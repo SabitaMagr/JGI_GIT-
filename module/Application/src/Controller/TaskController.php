@@ -3,10 +3,16 @@
 namespace Application\Controller;
 
 use Application\Custom\CustomViewModel;
+use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
 use Application\Model\TaskModel;
 use Application\Repository\TaskRepository;
 use Exception;
+use Setup\Model\Branch;
+use Setup\Model\Company;
+use Setup\Model\Department;
+use Setup\Model\Designation;
+use Setup\Model\Position;
 use Zend\Authentication\AuthenticationService;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Mvc\Controller\AbstractActionController;
@@ -40,7 +46,7 @@ class TaskController extends AbstractActionController {
             array_push($list, $nrow);
         }
         return [
-            'todoList' => $list
+            'todoList' => $list,
         ];
     }
 

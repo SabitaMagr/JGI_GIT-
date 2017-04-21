@@ -68,6 +68,17 @@ class EntityHelper {
         return $statement->execute();
     }
 
+    public static function getTableList(AdapterInterface $adapter, string $tableName, array $columnList, array $where = null) {
+        $gateway = new TableGateway($tableName, $adapter);
+        $zendResult = $gateway->select(function(Select $select) use($columnList, $where) {
+            $select->columns($columnList, false);
+            if ($where != null) {
+                $select->where($where);
+            }
+        });
+        return Helper::extractDbData($zendResult, true);
+    }
+
     public static function getColumnNameArrayWithOracleFns(string $requestedName, array $initCapColumnList = null, array $dateColumnList = null, array $timeColumnList = null, array $timeIntervalColumnList = null, array $otherColumnList = null, string $shortForm = null, $selectedOnly = false) {
         $refl = new ReflectionClass($requestedName);
         $table = $refl->newInstanceArgs();
@@ -104,7 +115,7 @@ class EntityHelper {
 
 
             if (!$selectedOnly) {
-                array_push($objCols, Helper::columnExpression($tempCol,$shortForm));
+                array_push($objCols, Helper::columnExpression($tempCol, $shortForm));
             }
         }
 

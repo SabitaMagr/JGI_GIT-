@@ -8,6 +8,7 @@ use Application\Helper\Helper;
 use AttendanceManagement\Model\ShiftAssign;
 use AttendanceManagement\Model\ShiftSetup;
 use AttendanceManagement\Repository\ShiftAssignRepository;
+use LeaveManagement\Model\LeaveMaster;
 use Setup\Form\HrEmployeesFormTabEight;
 use Setup\Form\HrEmployeesFormTabFive;
 use Setup\Form\HrEmployeesFormTabFour;
@@ -18,13 +19,13 @@ use Setup\Form\HrEmployeesFormTabThree;
 use Setup\Form\HrEmployeesFormTabTwo;
 use Setup\Helper\EntityHelper;
 use Setup\Model\Branch;
+use Setup\Model\Company;
 use Setup\Model\Department;
 use Setup\Model\Designation;
 use Setup\Model\District;
 use Setup\Model\EmployeeFile as EmployeeFileModel;
 use Setup\Model\HrEmployees;
 use Setup\Model\JobHistory;
-use LeaveManagement\Model\LeaveMaster;
 use Setup\Model\Position;
 use Setup\Model\RecommendApprove;
 use Setup\Model\ServiceEventType;
@@ -81,38 +82,6 @@ class EmployeeController extends AbstractActionController {
         $employeeNameFormElement->setLabel("Employee");
         $employeeNameFormElement->setAttribute("ng-click", "view()");
 
-        $branchFormElement = new Select();
-        $branchFormElement->setName("branch");
-        $branches = ApplicationHelper::getTableKVListWithSortOption($this->adapter, Branch::TABLE_NAME, Branch::BRANCH_ID, [Branch::BRANCH_NAME], [Branch::STATUS => 'E'], "BRANCH_NAME", "ASC");
-        $branches1 = [-1 => "All"] + $branches;
-        $branchFormElement->setValueOptions($branches1);
-        $branchFormElement->setAttributes(["id" => "branchId", "class" => "form-control"]);
-        $branchFormElement->setLabel("Branch");
-        $branchFormElement->setAttribute("ng-click", "view()");
-
-        $departmentFormElement = new Select();
-        $departmentFormElement->setName("department");
-        $departments = ApplicationHelper::getTableKVListWithSortOption($this->adapter, Department::TABLE_NAME, Department::DEPARTMENT_ID, [Department::DEPARTMENT_NAME], [Department::STATUS => 'E'], "DEPARTMENT_NAME", "ASC");
-        $departments1 = [-1 => "All"] + $departments;
-        $departmentFormElement->setValueOptions($departments1);
-        $departmentFormElement->setAttributes(["id" => "departmentId", "class" => "form-control"]);
-        $departmentFormElement->setLabel("Department");
-
-        $designationFormElement = new Select();
-        $designationFormElement->setName("designation");
-        $designations = ApplicationHelper::getTableKVListWithSortOption($this->adapter, Designation::TABLE_NAME, Designation::DESIGNATION_ID, [Designation::DESIGNATION_TITLE], [Designation::STATUS => 'E'], "DESIGNATION_TITLE", "ASC");
-        $designations1 = [-1 => "All"] + $designations;
-        $designationFormElement->setValueOptions($designations1);
-        $designationFormElement->setAttributes(["id" => "designationId", "class" => "form-control"]);
-        $designationFormElement->setLabel("Designation");
-
-        $positionFormElement = new Select();
-        $positionFormElement->setName("position");
-        $positions = ApplicationHelper::getTableKVListWithSortOption($this->adapter, Position::TABLE_NAME, Position::POSITION_ID, [Position::POSITION_NAME], [Position::STATUS => 'E'], "POSITION_NAME", "ASC");
-        $positions1 = [-1 => "All"] + $positions;
-        $positionFormElement->setValueOptions($positions1);
-        $positionFormElement->setAttributes(["id" => "positionId", "class" => "form-control"]);
-        $positionFormElement->setLabel("Position");
 
         $serviceTypeFormElement = new Select();
         $serviceTypeFormElement->setName("serviceType");
@@ -131,15 +100,28 @@ class EmployeeController extends AbstractActionController {
         $serviceEventTypeFormElement->setLabel("Service Event Type");
 
         $employees = $this->repository->fetchAll();
+
+        $companyList = ApplicationHelper::getTableList($this->adapter, Company::TABLE_NAME, [Company::COMPANY_ID, Company::COMPANY_NAME]);
+        $branchList = ApplicationHelper::getTableList($this->adapter, Branch::TABLE_NAME, [Branch::BRANCH_ID, Branch::BRANCH_NAME, Branch::COMPANY_ID]);
+        $departmentList = ApplicationHelper::getTableList($this->adapter, Department::TABLE_NAME, [Department::DEPARTMENT_ID, Department::DEPARTMENT_NAME, Department::COMPANY_ID, Department::BRANCH_ID]);
+        $designationList = ApplicationHelper::getTableList($this->adapter, Designation::TABLE_NAME, [Designation::DESIGNATION_ID, Designation::DESIGNATION_TITLE, Designation::COMPANY_ID]);
+        $positionList = ApplicationHelper::getTableList($this->adapter, Position::TABLE_NAME, [Position::POSITION_ID, Position::POSITION_NAME, Position::COMPANY_ID]);
+        $serviceTypeList = ApplicationHelper::getTableList($this->adapter, ServiceType::TABLE_NAME, [ServiceType::SERVICE_TYPE_ID, ServiceType::SERVICE_TYPE_NAME]);
+        
+        $searchValues = [
+            'company' => $companyList,
+            'branch' => $branchList,
+            'department' => $departmentList,
+            'designation' => $designationList,
+            'position' => $positionList
+        ];
+
         return Helper::addFlashMessagesToArray($this, [
                     'list' => $employees,
-                    "branches" => $branchFormElement,
-                    "departments" => $departmentFormElement,
-                    'designations' => $designationFormElement,
-                    'positions' => $positionFormElement,
                     'serviceTypes' => $serviceTypeFormElement,
                     'serviceEventTypes' => $serviceEventTypeFormElement,
-                    'employees' => $employeeNameFormElement
+                    'employees' => $employeeNameFormElement,
+                    'searchValues' => $searchValues
         ]);
     }
 
