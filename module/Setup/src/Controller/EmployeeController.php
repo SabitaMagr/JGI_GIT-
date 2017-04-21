@@ -73,32 +73,6 @@ class EmployeeController extends AbstractActionController {
     }
 
     public function indexAction() {
-        $employeeNameFormElement = new Select();
-        $employeeNameFormElement->setName("branch");
-        $employeeName = ApplicationHelper::getTableKVListWithSortOption($this->adapter, "HRIS_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => "E"], "FIRST_NAME", "ASC", " ", false, true);
-        $employeeName1 = [-1 => "All"] + $employeeName;
-        $employeeNameFormElement->setValueOptions($employeeName1);
-        $employeeNameFormElement->setAttributes(["id" => "employeeId", "class" => "form-control"]);
-        $employeeNameFormElement->setLabel("Employee");
-        $employeeNameFormElement->setAttribute("ng-click", "view()");
-
-
-        $serviceTypeFormElement = new Select();
-        $serviceTypeFormElement->setName("serviceType");
-        $serviceTypes = ApplicationHelper::getTableKVListWithSortOption($this->adapter, ServiceType::TABLE_NAME, ServiceType::SERVICE_TYPE_ID, [ServiceType::SERVICE_TYPE_NAME], [ServiceType::STATUS => 'E'], "SERVICE_TYPE_NAME", "ASC", null, false, true);
-        $serviceTypes1 = [-1 => "All"] + $serviceTypes;
-        $serviceTypeFormElement->setValueOptions($serviceTypes1);
-        $serviceTypeFormElement->setAttributes(["id" => "serviceTypeId", "class" => "form-control"]);
-        $serviceTypeFormElement->setLabel("Service Type");
-
-        $serviceEventTypeFormElement = new Select();
-        $serviceEventTypeFormElement->setName("serviceEventType");
-        $serviceEventTypes = ApplicationHelper::getTableKVListWithSortOption($this->adapter, ServiceEventType::TABLE_NAME, ServiceEventType::SERVICE_EVENT_TYPE_ID, [ServiceEventType::SERVICE_EVENT_TYPE_NAME], [ServiceEventType::STATUS => 'E'], "SERVICE_EVENT_TYPE_NAME", "ASC", null, false, true);
-        $serviceEventTypes1 = [-1 => "Working"] + $serviceEventTypes;
-        $serviceEventTypeFormElement->setValueOptions($serviceEventTypes1);
-        $serviceEventTypeFormElement->setAttributes(["id" => "serviceEventTypeId", "class" => "form-control"]);
-        $serviceEventTypeFormElement->setLabel("Service Event Type");
-
         $employees = $this->repository->fetchAll();
 
         $companyList = ApplicationHelper::getTableList($this->adapter, Company::TABLE_NAME, [Company::COMPANY_ID, Company::COMPANY_NAME]);
@@ -107,20 +81,34 @@ class EmployeeController extends AbstractActionController {
         $designationList = ApplicationHelper::getTableList($this->adapter, Designation::TABLE_NAME, [Designation::DESIGNATION_ID, Designation::DESIGNATION_TITLE, Designation::COMPANY_ID]);
         $positionList = ApplicationHelper::getTableList($this->adapter, Position::TABLE_NAME, [Position::POSITION_ID, Position::POSITION_NAME, Position::COMPANY_ID]);
         $serviceTypeList = ApplicationHelper::getTableList($this->adapter, ServiceType::TABLE_NAME, [ServiceType::SERVICE_TYPE_ID, ServiceType::SERVICE_TYPE_NAME]);
+        $serviceEventTypeList = ApplicationHelper::getTableList($this->adapter, ServiceEventType::TABLE_NAME, [ServiceEventType::SERVICE_EVENT_TYPE_ID, ServiceEventType::SERVICE_EVENT_TYPE_NAME]);
+        $employeeList = ApplicationHelper::getTableList($this->adapter, HrEmployees::TABLE_NAME, [
+                    HrEmployees::EMPLOYEE_ID,
+                    HrEmployees::FIRST_NAME,
+                    HrEmployees::MIDDLE_NAME,
+                    HrEmployees::LAST_NAME,
+                    HrEmployees::COMPANY_ID,
+                    HrEmployees::BRANCH_ID,
+                    HrEmployees::DEPARTMENT_ID,
+                    HrEmployees::DESIGNATION_ID,
+                    HrEmployees::POSITION_ID,
+                    HrEmployees::SERVICE_TYPE_ID,
+                    HrEmployees::SERVICE_EVENT_TYPE_ID
+        ]);
 
         $searchValues = [
             'company' => $companyList,
             'branch' => $branchList,
             'department' => $departmentList,
             'designation' => $designationList,
-            'position' => $positionList
+            'position' => $positionList,
+            'serviceType' => $serviceTypeList,
+            'serviceEventType' => $serviceEventTypeList,
+            'employee' => $employeeList
         ];
 
         return Helper::addFlashMessagesToArray($this, [
                     'list' => $employees,
-                    'serviceTypes' => $serviceTypeFormElement,
-                    'serviceEventTypes' => $serviceEventTypeFormElement,
-                    'employees' => $employeeNameFormElement,
                     'searchValues' => $searchValues
         ]);
     }

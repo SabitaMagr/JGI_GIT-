@@ -8,6 +8,9 @@
         var $department = $('#departmentId');
         var $designation = $('#designationId');
         var $position = $('#positionId');
+        var $serviceType = $('#serviceTypeId');
+        var $serviceEventType = $('#serviceEventTypeId');
+        var $employee = $('#employeeId');
 
         /* setup functions */
         var populateList = function ($element, list, id, value, defaultMessage, selectedId) {
@@ -23,8 +26,12 @@
         };
         var search = function (list, where) {
             return list.filter(function (item) {
-                var whereKeys = Object.keys(where);
-                return item[whereKeys[0]] === where[whereKeys[0]] || where[whereKeys[0]] == -1;
+                for (var i in where) {
+                    if (!(item[i] === where[i] || where[i] == -1)) {
+                        return false;
+                    }
+                }
+                return true;
             });
         };
         var onChangeEvent = function ($element, fn) {
@@ -41,6 +48,9 @@
         populateList($department, document.searchValues['department'], 'DEPARTMENT_ID', 'DEPARTMENT_NAME', 'Department');
         populateList($designation, document.searchValues['designation'], 'DESIGNATION_ID', 'DESIGNATION_TITLE', 'Designation');
         populateList($position, document.searchValues['position'], 'POSITION_ID', 'POSITION_NAME', 'Position');
+        populateList($serviceType, document.searchValues['serviceType'], 'SERVICE_TYPE_ID', 'SERVICE_TYPE_NAME', 'Service Type');
+        populateList($serviceEventType, document.searchValues['serviceEventType'], 'SERVICE_EVENT_TYPE_ID', 'SERVICE_EVENT_TYPE_NAME', 'Service Event Type');
+        populateList($employee, document.searchValues['employee'], 'EMPLOYEE_ID', 'FIRST_NAME', 'Employee');
         /* initialize dropdowns */
 
         /* setup change events */
@@ -49,11 +59,34 @@
             populateList($department, search(document.searchValues['department'], {'COMPANY_ID': $this.val()}), 'DEPARTMENT_ID', 'DEPARTMENT_NAME', 'Department');
             populateList($designation, search(document.searchValues['designation'], {'COMPANY_ID': $this.val()}), 'DESIGNATION_ID', 'DESIGNATION_TITLE', 'Designation');
             populateList($position, search(document.searchValues['position'], {'COMPANY_ID': $this.val()}), 'POSITION_ID', 'POSITION_NAME', 'Position');
+
+            populateList($employee, search(document.searchValues['employee'], {'COMPANY_ID': $company.val(), 'BRANCH_ID': $branch.val(), 'DEPARTMENT_ID': $department.val(), 'DESIGNATION_ID': $designation.val(), 'POSITION_ID': $position.val(), 'SERVICE_TYPE_ID': $serviceType.val(), 'SERVICE_EVENT_TYPE_ID': $serviceEventType.val()}), 'EMPLOYEE_ID', 'FIRST_NAME', 'Employee');
+
         });
 
         onChangeEvent($branch, function ($this) {
             populateList($department, search(document.searchValues['department'], {'BRANCH_ID': $this.val()}), 'DEPARTMENT_ID', 'DEPARTMENT_NAME', 'Department');
+
+            populateList($employee, search(document.searchValues['employee'], {'COMPANY_ID': $company.val(), 'BRANCH_ID': $branch.val(), 'DEPARTMENT_ID': $department.val(), 'DESIGNATION_ID': $designation.val(), 'POSITION_ID': $position.val(), 'SERVICE_TYPE_ID': $serviceType.val(), 'SERVICE_EVENT_TYPE_ID': $serviceEventType.val()}), 'EMPLOYEE_ID', 'FIRST_NAME', 'Employee');
         });
+
+        onChangeEvent($department, function ($this) {
+            populateList($employee, search(document.searchValues['employee'], {'COMPANY_ID': $company.val(), 'BRANCH_ID': $branch.val(), 'DEPARTMENT_ID': $department.val(), 'DESIGNATION_ID': $designation.val(), 'POSITION_ID': $position.val(), 'SERVICE_TYPE_ID': $serviceType.val(), 'SERVICE_EVENT_TYPE_ID': $serviceEventType.val()}), 'EMPLOYEE_ID', 'FIRST_NAME', 'Employee');
+        });
+        onChangeEvent($designation, function ($this) {
+            populateList($employee, search(document.searchValues['employee'], {'COMPANY_ID': $company.val(), 'BRANCH_ID': $branch.val(), 'DEPARTMENT_ID': $department.val(), 'DESIGNATION_ID': $designation.val(), 'POSITION_ID': $position.val(), 'SERVICE_TYPE_ID': $serviceType.val(), 'SERVICE_EVENT_TYPE_ID': $serviceEventType.val()}), 'EMPLOYEE_ID', 'FIRST_NAME', 'Employee');
+        });
+        onChangeEvent($position, function ($this) {
+            populateList($employee, search(document.searchValues['employee'], {'COMPANY_ID': $company.val(), 'BRANCH_ID': $branch.val(), 'DEPARTMENT_ID': $department.val(), 'DESIGNATION_ID': $designation.val(), 'POSITION_ID': $position.val(), 'SERVICE_TYPE_ID': $serviceType.val(), 'SERVICE_EVENT_TYPE_ID': $serviceEventType.val()}), 'EMPLOYEE_ID', 'FIRST_NAME', 'Employee');
+        });
+        onChangeEvent($serviceType, function ($this) {
+            populateList($employee, search(document.searchValues['employee'], {'COMPANY_ID': $company.val(), 'BRANCH_ID': $branch.val(), 'DEPARTMENT_ID': $department.val(), 'DESIGNATION_ID': $designation.val(), 'POSITION_ID': $position.val(), 'SERVICE_TYPE_ID': $serviceType.val(), 'SERVICE_EVENT_TYPE_ID': $serviceEventType.val()}), 'EMPLOYEE_ID', 'FIRST_NAME', 'Employee');
+        });
+        onChangeEvent($serviceEventType, function ($this) {
+            populateList($employee, search(document.searchValues['employee'], {'COMPANY_ID': $company.val(), 'BRANCH_ID': $branch.val(), 'DEPARTMENT_ID': $department.val(), 'DESIGNATION_ID': $designation.val(), 'POSITION_ID': $position.val(), 'SERVICE_TYPE_ID': $serviceType.val(), 'SERVICE_EVENT_TYPE_ID': $serviceEventType.val()}), 'EMPLOYEE_ID', 'FIRST_NAME', 'Employee');
+        });
+
+
         /* setup change events */
     });
 
