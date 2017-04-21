@@ -8,15 +8,15 @@
 
 namespace LeaveManagement\Repository;
 
-
+use Application\Helper\EntityHelper;
 use Application\Model\Model;
 use Application\Repository\RepositoryInterface;
-use LeaveManagement\Model\LeaveMaster;
-use Zend\Console\Prompt\Select;
+use LeaveManagement\Model\LeaveAssign;
+use Setup\Model\HrEmployees;
 use Zend\Db\Adapter\AdapterInterface;
+use Zend\Db\Sql\Expression;
 use Zend\Db\Sql\Sql;
 use Zend\Db\TableGateway\TableGateway;
-use LeaveManagement\Model\LeaveAssign;
 
 class LeaveAssignRepository implements RepositoryInterface
 {
@@ -65,11 +65,14 @@ class LeaveAssignRepository implements RepositoryInterface
     {
         $sql = new Sql($this->adapter);
         $select = $sql->select();
+        
+        $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(HrEmployees::class,
+	 [HrEmployees::FIRST_NAME, HrEmployees::MIDDLE_NAME, HrEmployees::LAST_NAME], NULL, NULL, NULL, NULL,'E'),true);
 
-        $select->columns(["EMPLOYEE_ID", "FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], true);
+//        $select->columns(["EMPLOYEE_ID", "FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], true);
         $select->from(['E' => "HRIS_EMPLOYEES"])
-            ->join(['DE'=>'HRIS_DESIGNATIONS'],'DE.DESIGNATION_ID=E.DESIGNATION_ID',["DESIGNATION_ID","DESIGNATION_TITLE"],"left")
-            ->join(['B'=>'HRIS_BRANCHES'],'B.BRANCH_ID=E.BRANCH_ID',["BRANCH_ID","BRANCH_NAME"],"left");
+            ->join(['DE'=>'HRIS_DESIGNATIONS'],'DE.DESIGNATION_ID=E.DESIGNATION_ID',["DESIGNATION_ID","DESIGNATION_TITLE"=>new Expression('INITCAP(DE.DESIGNATION_TITLE)')],"left")
+            ->join(['B'=>'HRIS_BRANCHES'],'B.BRANCH_ID=E.BRANCH_ID',["BRANCH_ID","BRANCH_NAME"=>new Expression('INITCAP(B.BRANCH_NAME)')],"left");
         $select->where(["E.STATUS='E'"]);
         $select->where(["E.RETIRED_FLAG='N'"]);
 //            ->join(['L' => LeaveAssign::TABLE_NAME], 'E.EMPLOYEE_ID=L.EMPLOYEE_ID', [LeaveAssign::LEAVE_ID, LeaveAssign::BALANCE], \Zend\Db\Sql\Select::JOIN_LEFT)

@@ -8,17 +8,17 @@
 
 namespace AttendanceManagement\Repository;
 
+use Application\Model\Model;
 use Application\Repository\RepositoryInterface;
+use AttendanceManagement\Model\ShiftAssign;
 use AttendanceManagement\Model\ShiftSetup;
-use LeaveManagement\Model\LeaveAssign;
 use Setup\Model\Department;
 use Setup\Model\Position;
 use Setup\Model\ServiceType;
 use Zend\Db\Adapter\AdapterInterface;
-use Application\Model\Model;
+use Zend\Db\Sql\Expression;
 use Zend\Db\Sql\Sql;
 use Zend\Db\TableGateway\TableGateway;
-use AttendanceManagement\Model\ShiftAssign;
 
 class ShiftAssignRepository implements RepositoryInterface
 {
@@ -61,11 +61,11 @@ class ShiftAssignRepository implements RepositoryInterface
 
         $select->columns(["EMPLOYEE_ID", "FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], true);
         $select->from(['E' => "HRIS_EMPLOYEES"])
-            ->join(['B' => 'HRIS_BRANCHES'], 'B.BRANCH_ID=E.BRANCH_ID', ["BRANCH_ID", "BRANCH_NAME"],"left")
-            ->join(['DEP' => Department::TABLE_NAME], 'DEP.' . Department::DEPARTMENT_ID . '=E.' . Department::DEPARTMENT_ID . '', [Department::DEPARTMENT_ID, Department::DEPARTMENT_NAME],"left")
-            ->join(['DE' => 'HRIS_DESIGNATIONS'], 'DE.DESIGNATION_ID=E.DESIGNATION_ID', ["DESIGNATION_ID", "DESIGNATION_TITLE"],"left")
-            ->join(['P' => Position::TABLE_NAME], 'P.' . Position::POSITION_ID . '=E.' . Position::POSITION_ID . '', [Position::POSITION_ID, Position::POSITION_NAME],"left")
-            ->join(['ST' => ServiceType::TABLE_NAME], 'ST.' . ServiceType::SERVICE_TYPE_ID . '=E.' . ServiceType::SERVICE_TYPE_ID . '', [ServiceType::SERVICE_TYPE_ID, ServiceType::SERVICE_TYPE_NAME],"left");
+            ->join(['B' => 'HRIS_BRANCHES'], 'B.BRANCH_ID=E.BRANCH_ID', ["BRANCH_ID", "BRANCH_NAME"=>new Expression('INITCAP(B.BRANCH_NAME)')],"left")
+            ->join(['DEP' => Department::TABLE_NAME], 'DEP.' . Department::DEPARTMENT_ID . '=E.' . Department::DEPARTMENT_ID . '', [Department::DEPARTMENT_ID, Department::DEPARTMENT_NAME=>new Expression('INITCAP(DEP.'.Department::DEPARTMENT_NAME.')')],"left")
+            ->join(['DE' => 'HRIS_DESIGNATIONS'], 'DE.DESIGNATION_ID=E.DESIGNATION_ID', ["DESIGNATION_ID", "DESIGNATION_TITLE"=>new Expression('INITCAP(DE.DESIGNATION_TITLE)')],"left")
+            ->join(['P' => Position::TABLE_NAME], 'P.' . Position::POSITION_ID . '=E.' . Position::POSITION_ID . '', [Position::POSITION_ID, Position::POSITION_NAME=>new Expression('INITCAP(P.POSITION_NAME)')],"left")
+            ->join(['ST' => ServiceType::TABLE_NAME], 'ST.' . ServiceType::SERVICE_TYPE_ID . '=E.' . ServiceType::SERVICE_TYPE_ID . '', [ServiceType::SERVICE_TYPE_ID, ServiceType::SERVICE_TYPE_NAME =>new Expression('INITCAP(ST.'.ServiceType::SERVICE_TYPE_NAME.')')],"left");
        $select->where(["E.STATUS='E'"]);
        $select->where(["E.RETIRED_FLAG='N'"]);
         if ($branchId != -1) {
