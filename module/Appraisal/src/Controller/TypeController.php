@@ -51,7 +51,7 @@ class TypeController extends AbstractActionController{
         $employeeRepo = new EmployeeRepository($this->adapter);
         $employeeDetail = $employeeRepo->fetchById($this->employeeId);
         
-        $serviceTypes = EntityHelper::getTableKVListWithSortOption($this->adapter, ServiceType::TABLE_NAME, ServiceType::SERVICE_TYPE_ID, [ServiceType::SERVICE_TYPE_NAME], ["STATUS" => "E"], "SERVICE_TYPE_NAME", "ASC");
+        $serviceTypes = EntityHelper::getTableKVListWithSortOption($this->adapter, ServiceType::TABLE_NAME, ServiceType::SERVICE_TYPE_ID, [ServiceType::SERVICE_TYPE_NAME], ["STATUS" => "E"], "SERVICE_TYPE_NAME", "ASC",NULL,FALSE,TRUE);
         $request = $this->getRequest();
         if($request->isPost()){
             $this->form->setData($request->getPost());
@@ -109,7 +109,7 @@ class TypeController extends AbstractActionController{
         return Helper::addFlashMessagesToArray($this, [
             'form'=>$this->form,
             'id'=>$id,
-            'serviceTypes' => EntityHelper::getTableKVListWithSortOption($this->adapter, ServiceType::TABLE_NAME, ServiceType::SERVICE_TYPE_ID, [ServiceType::SERVICE_TYPE_NAME], ["STATUS" => "E"], "SERVICE_TYPE_NAME", "ASC")
+            'serviceTypes' => EntityHelper::getTableKVListWithSortOption($this->adapter, ServiceType::TABLE_NAME, ServiceType::SERVICE_TYPE_ID, [ServiceType::SERVICE_TYPE_NAME], ["STATUS" => "E"], "SERVICE_TYPE_NAME", "ASC",NULL,FALSE,TRUE)
         ]);
     }
     public function deleteAction(){
