@@ -41,7 +41,7 @@ class HolidayRepository implements RepositoryInterface {
 
     public function fetchAll($today = null) {
 
-        $sql = "SELECT  TO_CHAR(A.START_DATE, 'DD-MON-YYYY') AS START_DATE,TO_CHAR(A.END_DATE, 'DD-MON-YYYY') AS END_DATE,A.HOLIDAY_ID,A.HOLIDAY_CODE,A.HOLIDAY_ENAME,A.HOLIDAY_LNAME,B.GENDER_NAME,A.HALFDAY
+        $sql = "SELECT  INITCAP(TO_CHAR(A.START_DATE, 'DD-MON-YYYY')) AS START_DATE,INITCAP(TO_CHAR(A.END_DATE, 'DD-MON-YYYY')) AS END_DATE,A.HOLIDAY_ID,A.HOLIDAY_CODE,INITCAP(A.HOLIDAY_ENAME) AS HOLIDAY_ENAME,INITCAP(A.HOLIDAY_LNAME) AS HOLIDAY_LNAME,B.GENDER_NAME,A.HALFDAY
                 FROM HRIS_HOLIDAY_MASTER_SETUP A 
                 LEFT OUTER JOIN HRIS_GENDERS B 
                 ON A.GENDER_ID=B.GENDER_ID
@@ -72,10 +72,10 @@ class HolidayRepository implements RepositoryInterface {
         $select->columns([
             new Expression("HOLIDAY_ID AS HOLIDAY_ID"),
             new Expression("HOLIDAY_CODE AS HOLIDAY_CODE"),
-            new Expression("HOLIDAY_ENAME AS HOLIDAY_ENAME"),
+            new Expression("INITCAP(HOLIDAY_ENAME) AS HOLIDAY_ENAME"),
             new Expression("INITCAP(TO_CHAR(START_DATE, 'DD-MON-YYYY')) AS START_DATE"),
             new Expression("INITCAP(TO_CHAR(END_DATE, 'DD-MON-YYYY')) AS END_DATE"),
-            new Expression("HOLIDAY_LNAME AS HOLIDAY_LNAME"),
+            new Expression("INITCAP(HOLIDAY_LNAME) AS HOLIDAY_LNAME"),
             new Expression("GENDER_ID AS GENDER_ID"),
             new Expression("STATUS AS STATUS"),
             new Expression("HALFDAY AS HALFDAY"),
@@ -123,7 +123,7 @@ class HolidayRepository implements RepositoryInterface {
         $sql = new Sql($this->adapter);
         $select = $sql->select();
         $select->from(['HB' => HolidayBranch::TABLE_NAME])
-                ->join(['B' => "HRIS_BRANCHES"], 'HB.BRANCH_ID=B.BRANCH_ID', ['BRANCH_NAME']);
+                ->join(['B' => "HRIS_BRANCHES"], 'HB.BRANCH_ID=B.BRANCH_ID', ['BRANCH_NAME'=> new Expression('INITCAP(B.BRANCH_NAME)')]);
 
         $select->where(["HB.HOLIDAY_ID" => $holidayId]);
         $select->where(["B.STATUS" => 'E']);
@@ -136,7 +136,7 @@ class HolidayRepository implements RepositoryInterface {
         $sql = new Sql($this->adapter);
         $select = $sql->select();
         $select->from(['HD' => HolidayDesignation::TABLE_NAME])
-                ->join(['D' => Designation::TABLE_NAME], 'HD.' . HolidayDesignation::DESIGNATION_ID . '=D.' . Designation::DESIGNATION_ID, [Designation::DESIGNATION_TITLE]);
+                ->join(['D' => Designation::TABLE_NAME], 'HD.' . HolidayDesignation::DESIGNATION_ID . '=D.' . Designation::DESIGNATION_ID, [Designation::DESIGNATION_TITLE=> new Expression('INITCAP(D.'.Designation::DESIGNATION_TITLE.')')]);
 
         $select->where(["HD.HOLIDAY_ID" => $holidayId]);
         $select->where(["D.STATUS" => 'E']);
@@ -149,7 +149,7 @@ class HolidayRepository implements RepositoryInterface {
         $sql = new Sql($this->adapter);
         $select = $sql->select();
         $select->from(['HB' => HolidayBranch::TABLE_NAME])
-                ->join(['B' => "HRIS_BRANCHES"], 'HB.BRANCH_ID=B.BRANCH_ID', ['BRANCH_NAME']);
+                ->join(['B' => "HRIS_BRANCHES"], 'HB.BRANCH_ID=B.BRANCH_ID', ['BRANCH_NAME'=>new Expression('INITCAP(B.BRANCH_NAME)')]);
 
         $select->where(["HB.HOLIDAY_ID" => $holidayId]);
         $select->where(["HB.BRANCH_ID" => $branchId]);
@@ -169,7 +169,7 @@ class HolidayRepository implements RepositoryInterface {
                             ON C.BRANCH_ID=D.BRANCH_ID";
         }
 
-        $sql = "SELECT TO_CHAR(A.START_DATE, 'DD-MON-YYYY') AS START_DATE,TO_CHAR(A.END_DATE, 'DD-MON-YYYY') AS END_DATE, A.HOLIDAY_ID,A.HOLIDAY_CODE,A.HOLIDAY_ENAME,A.HOLIDAY_LNAME,B.GENDER_NAME,A.HALFDAY
+        $sql = "SELECT INITCAP(TO_CHAR(A.START_DATE, 'DD-MON-YYYY')) AS START_DATE,INITCAP(TO_CHAR(A.END_DATE, 'DD-MON-YYYY')) AS END_DATE, A.HOLIDAY_ID,A.HOLIDAY_CODE,INITCAP(A.HOLIDAY_ENAME) AS HOLIDAY_ENAME,INITCAP(A.HOLIDAY_LNAME) AS HOLIDAY_LNAME,B.GENDER_NAME,A.HALFDAY
                 " . $branchName . " FROM HRIS_HOLIDAY_MASTER_SETUP A 
                 LEFT OUTER JOIN HRIS_GENDERS B 
                 ON A.GENDER_ID=B.GENDER_ID " . $joinQuery . " WHERE A.STATUS ='E'";
@@ -245,7 +245,7 @@ class HolidayRepository implements RepositoryInterface {
         $sql = new Sql($this->adapter);
         $select = $sql->select();
         $select->from(['HB' => HolidayBranch::TABLE_NAME])
-                ->join(['B' => Branch::TABLE_NAME], "HB." . HolidayBranch::BRANCH_ID . "=B." . Branch::BRANCH_ID, [Branch::BRANCH_NAME]);
+                ->join(['B' => Branch::TABLE_NAME], "HB." . HolidayBranch::BRANCH_ID . "=B." . Branch::BRANCH_ID, [Branch::BRANCH_NAME => new Expression('INITCAP(B.'.Branch::BRANCH_NAME.')')]);
 
         $select->where(["HB." . HolidayBranch::HOLIDAY_ID => $holidayId]);
         $statement = $sql->prepareStatementForSqlObject($select);

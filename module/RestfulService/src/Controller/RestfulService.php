@@ -2958,7 +2958,7 @@ class RestfulService extends AbstractRestfulController {
     public function getServerDate($data) {
         return ["success" => true, "data" => ["serverDate" => date(Helper::PHP_DATE_FORMAT)]];
     }
-    
+
     public function pullTrainingRequestStatusList($data) {
         $trainingStatusRepo = new TrainingStatusRepository($this->adapter);
         if (key_exists('recomApproveId', $data)) {
@@ -3007,10 +3007,10 @@ class RestfulService extends AbstractRestfulController {
                 return "Cancelled";
             }
         };
-        $getValueComType = function($trainingTypeId){
-            if($trainingTypeId=='CC'){
+        $getValueComType = function($trainingTypeId) {
+            if ($trainingTypeId == 'CC') {
                 return 'Company Contribution';
-            }else if($trainingTypeId=='CP'){
+            } else if ($trainingTypeId == 'CP') {
                 return 'Company Personal';
             }
         };
@@ -3029,9 +3029,9 @@ class RestfulService extends AbstractRestfulController {
             $roleID = $getRole($authRecommender, $authApprover, $recomApproveId);
             $recommenderName = $fullName($authRecommender);
             $approverName = $fullName($authApprover);
-            
-            if($row['TRAINING_ID']!=0){
-                $row['START_DATE']=$row['T_START_DATE'];
+
+            if ($row['TRAINING_ID'] != 0) {
+                $row['START_DATE'] = $row['T_START_DATE'];
                 $row['END_DATE'] = $row['T_END_DATE'];
                 $row['DURATION'] = $row['T_DURATION'];
                 $row['TRAINING_TYPE'] = $row['T_TRAINING_TYPE'];
@@ -3042,13 +3042,13 @@ class RestfulService extends AbstractRestfulController {
                 'RECOMMENDER_NAME' => $recommenderName,
                 'YOUR_ROLE' => $getRoleDtl($authRecommender, $authApprover, $recomApproveId),
                 'ROLE' => $roleID,
-                'TRAINING_TYPE'=> $getValueComType($row['TRAINING_TYPE']),
+                'TRAINING_TYPE' => $getValueComType($row['TRAINING_TYPE']),
             ];
             if ($empRecommendApprove['RECOMMEND_BY'] == $empRecommendApprove['APPROVED_BY']) {
                 $role['YOUR_ROLE'] = 'Recommender\Approver';
                 $role['ROLE'] = 4;
             }
-            
+
             $new_row = array_merge($row, ['STATUS' => $status]);
             $final_record = array_merge($new_row, $role);
             array_push($recordList, $final_record);

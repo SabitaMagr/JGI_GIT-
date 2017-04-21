@@ -17,10 +17,11 @@ angular.module('hris', [])
 
             var getHolidayDetail = function () {
                 var holidayIdValue = holidayId.val();
-
+                App.blockUI({target: "#hris-page-content"});
                 window.app.pullDataById(document.pullHolidayDetailWS, {
                     id: holidayIdValue
                 }).then(function (response) {
+                    App.unblockUI("#hris-page-content");
                     try {
                         if (!response.success) {
                             throw response.error;
@@ -41,12 +42,22 @@ angular.module('hris', [])
                             $scope.holidayDtl.halfday = temp.HALFDAY;
                             $scope.holidayDtl.remarks = temp.REMARKS;
 
+                            setTimeout(function () {
+                                window.app.startEndDatePickerWithNepali('nepaliStartDate1', 'startDate', 'nepaliEndDate1', 'endDate');
+
+                                /* prevent past event post */
+                                $('#startDate').datepicker("setStartDate", new Date());
+                                $('#endDate').datepicker("setStartDate", new Date());
+                                /* end of  prevent past event post */
+                            }, 500);
+
                         });
 
                     } catch (e) {
                         window.app.errorMessage(e, 'Error');
                     }
                 }, function (failure) {
+                    App.unblockUI("#hris-page-content");
                     window.app.errorMessage(JSON.stringify(failure), "SYSTEM ERROR MESSAGE");
                 });
 
@@ -128,7 +139,7 @@ angular.module('hris', [])
                             designationIds: designationIdValue
                         },
                     }).then(function (response) {
-
+                        App.unblockUI("#hris-page-content");
                         try {
                             if (!response.success) {
                                 throw response.error;
@@ -143,7 +154,6 @@ angular.module('hris', [])
                                     return item;
                                 });
 
-                                App.unblockUI("#hris-page-content");
                                 $window.location.href = document.urlIndex;
                                 $window.localStorage.setItem("msg", response.data);
                             });

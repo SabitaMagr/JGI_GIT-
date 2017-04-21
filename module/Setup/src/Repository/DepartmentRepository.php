@@ -9,6 +9,8 @@ use Setup\Model\Branch;
 use Setup\Model\Company;
 use Setup\Model\Department;
 use Zend\Db\Adapter\AdapterInterface;
+use Zend\Db\Sql\Expression;
+use Zend\Db\Sql\Select;
 use Zend\Db\Sql\Sql;
 use Zend\Db\TableGateway\TableGateway;
 
@@ -40,8 +42,8 @@ class DepartmentRepository implements RepositoryInterface {
         
         
         $select->from(['D' => Department::TABLE_NAME]);
-        $select->join(['C' => "HRIS_COUNTRIES"], "D." . Department::COUNTRY_ID . "=C.COUNTRY_ID", ['COUNTRY_NAME'], 'left')
-                ->join(['PD' => Department::TABLE_NAME], "D." . Department::PARENT_DEPARTMENT . "=PD.DEPARTMENT_ID", ['PARENT_DEPARTMENT' => 'DEPARTMENT_NAME'], 'left');
+        $select->join(['C' => "HRIS_COUNTRIES"], "D." . Department::COUNTRY_ID . "=C.COUNTRY_ID", ['COUNTRY_NAME'=> new Expression('INITCAP(C.COUNTRY_NAME)')], 'left')
+                ->join(['PD' => Department::TABLE_NAME], "D." . Department::PARENT_DEPARTMENT . "=PD.DEPARTMENT_ID", ['PARENT_DEPARTMENT' => new Expression('INITCAP(PD.DEPARTMENT_NAME)')], 'left');
         $select->where(["D.STATUS='E'"]);
         $select->order("D." . Department::DEPARTMENT_NAME . " ASC");
         $statement = $sql->prepareStatementForSqlObject($select);
@@ -50,7 +52,12 @@ class DepartmentRepository implements RepositoryInterface {
     }
 
     public function fetchById($id) {
-        $result = $this->tableGateway->select([Department::DEPARTMENT_ID => $id]);
+        $result = $this->tableGateway->select(function(Select $select)use($id){
+            $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(Department::class, [Department::DEPARTMENT_NAME]), false);
+            $select->where([Department::DEPARTMENT_ID => $id]);
+        });
+                
+//                [Department::DEPARTMENT_ID => $id]);
         return $result->current();
     }
 
@@ -63,7 +70,7 @@ class DepartmentRepository implements RepositoryInterface {
         $select = $sql->select();
         $select->columns(['BRANCH_ID', 'BRANCH_NAME']);
         $select->from(['B' => Branch::TABLE_NAME]);
-        $select->join(['C' => Company::TABLE_NAME], "C." . Company::COMPANY_ID . "=B." . Branch::COMPANY_ID, array('COMPANY_ID', 'COMPANY_NAME'), 'inner');
+        $select->join(['C' => Company::TABLE_NAME], "C." . Company::COMPANY_ID . "=B." . Branch::COMPANY_ID, array('COMPANY_ID', 'COMPANY_NAME' => new Expression('INITCAP(C.COMPANY_NAME)')), 'inner');
         $select->where(["C.STATUS='E'"]);
         $select->where(["B.STATUS='E'"]);
         $select->order("B." . Branch::BRANCH_NAME . " ASC");
@@ -89,7 +96,7 @@ class DepartmentRepository implements RepositoryInterface {
         $select = $sql->select();
         $select->columns(['DEPARTMENT_ID', 'DEPARTMENT_NAME']);
         $select->from(['D' => Department::TABLE_NAME]);
-        $select->join(['B' => Branch::TABLE_NAME], "B." . Branch::BRANCH_ID . "=D." . Department::BRANCH_ID, array('BRANCH_ID', 'BRANCH_NAME'), 'inner');
+        $select->join(['B' => Branch::TABLE_NAME], "B." . Branch::BRANCH_ID . "=D." . Department::BRANCH_ID, array('BRANCH_ID', 'BRANCH_NAME'=> new Expression('B.BRANCH_NAME')), 'inner');
         $select->where(["B.STATUS='E'"]);
         $select->where(["D.STATUS='E'"]);
         $select->order("D." . Department::DEPARTMENT_NAME . " ASC");

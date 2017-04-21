@@ -2,14 +2,15 @@
 
 namespace AttendanceManagement\Repository;
 
+use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
 use Application\Model\Model;
 use Application\Repository\RepositoryInterface;
 use AttendanceManagement\Model\ShiftSetup;
 use Zend\Db\Adapter\AdapterInterface;
+use Zend\Db\Sql\Select;
 use Zend\Db\Sql\Sql;
 use Zend\Db\TableGateway\TableGateway;
-use Zend\Db\Sql\Select;
 
 class ShiftRepository implements RepositoryInterface {
 
@@ -37,8 +38,15 @@ class ShiftRepository implements RepositoryInterface {
 //        return $this->tableGateway->select();
         $sql = new Sql($this->adapter);
         $select = $sql->select();
+        $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(ShiftSetup::class, [ShiftSetup::SHIFT_ENAME], [
+                    ShiftSetup::START_DATE,
+                    ShiftSetup::END_DATE
+                        ], [
+                    ShiftSetup::START_TIME,
+                    ShiftSetup::END_TIME
+                ]), false);
+//        $select->columns(Helper::convertColumnDateFormat($this->adapter, new ShiftSetup(), ['startDate', 'endDate'], ['startTime', 'endTime']), false);
         $select->from(ShiftSetup::TABLE_NAME);
-        $select->columns(Helper::convertColumnDateFormat($this->adapter, new ShiftSetup(), ['startDate', 'endDate'], ['startTime', 'endTime']), false);
         $select->where([ShiftSetup::STATUS => 'E']);
         $select->order(ShiftSetup::SHIFT_ENAME . " ASC");
         $statement = $sql->prepareStatementForSqlObject($select);
@@ -51,9 +59,28 @@ class ShiftRepository implements RepositoryInterface {
         $sql = new Sql($this->adapter);
         $select = $sql->select();
         $select->from(ShiftSetup::TABLE_NAME);
-        $select->columns(Helper::convertColumnDateFormat($this->adapter, new ShiftSetup(), ['startDate', 'endDate'], ['startTime', 'endTime', 'halfTime', 'halfDayEndTime'], null, ['lateIn', 'earlyOut', 'totalWorkingHr', 'actualWorkingHr']), false);
-        $select->where([ShiftSetup::SHIFT_ID => $id]);
+//        $select->columns(Helper::convertColumnDateFormat($this->adapter, new ShiftSetup(), ['startDate', 'endDate'], ['startTime', 'endTime', 'halfTime', 'halfDayEndTime'], null, ['lateIn', 'earlyOut', 'totalWorkingHr', 'actualWorkingHr']), false);
+        $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(ShiftSetup::class, [ShiftSetup::SHIFT_ENAME, ShiftSetup::SHIFT_LNAME], [
+                    ShiftSetup::START_DATE,
+                    ShiftSetup::END_DATE
+                        ], [
+                    ShiftSetup::START_TIME,
+                    ShiftSetup::END_TIME,
+                    ShiftSetup::HALF_TIME,
+                    ShiftSetup::HALF_DAY_END_TIME
+                        ], [
+                    ShiftSetup::LATE_IN,
+                    ShiftSetup::EARLY_OUT,
+                    ShiftSetup::TOTAL_WORKING_HR,
+                    ShiftSetup::ACTUAL_WORKING_HR
+                ]), false);
+
+//        $select->columns(Helper::convertColumnDateFormat($this->adapter, new ShiftSetup(), ['startDate', 'endDate'], ['startTime', 'endTime', 'halfTime', 'halfDayEndTime'], null, ['lateIn', 'earlyOut', 'totalWorkingHr', 'actualWorkingHr']), false);
+        $select->where([ShiftSetup::SHIFT_ID.'='.$id]);
         $statement = $sql->prepareStatementForSqlObject($select);
+        
+//        print_r($statement->getSql());
+//        die();
 
         $result = $statement->execute();
         return $result->current();

@@ -8,18 +8,15 @@
 
 namespace LeaveManagement\Repository;
 
-
+use Application\Helper\EntityHelper;
 use Application\Model\Model;
 use Application\Repository\RepositoryInterface;
-use LeaveManagement\Model\LeaveMaster;
-use Zend\Console\Prompt\Select;
+use LeaveManagement\Model\LeaveAssign;
+use Setup\Model\HrEmployees;
 use Zend\Db\Adapter\AdapterInterface;
+use Zend\Db\Sql\Expression;
 use Zend\Db\Sql\Sql;
 use Zend\Db\TableGateway\TableGateway;
-use LeaveManagement\Model\LeaveAssign;
-use Application\Helper\EntityHelper;
-use Setup\Model\HrEmployees;
-use Zend\Db\Sql\Expression;
 
 class LeaveAssignRepository implements RepositoryInterface
 {
@@ -68,7 +65,9 @@ class LeaveAssignRepository implements RepositoryInterface
     {
         $sql = new Sql($this->adapter);
         $select = $sql->select();
-
+        
+        $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(HrEmployees::class,
+	 [HrEmployees::FIRST_NAME, HrEmployees::MIDDLE_NAME, HrEmployees::LAST_NAME], NULL, NULL, NULL, NULL,'E'),true);
         $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(HrEmployees::class,
                 [HrEmployees::FIRST_NAME, HrEmployees::MIDDLE_NAME, HrEmployees::LAST_NAME],null,null,null,[new Expression("E.EMPLOYEE_ID")],"E"), true);
         $select->from(['E' => "HRIS_EMPLOYEES"])

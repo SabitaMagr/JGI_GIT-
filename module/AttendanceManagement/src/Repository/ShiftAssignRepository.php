@@ -69,6 +69,7 @@ class ShiftAssignRepository implements RepositoryInterface
             ->join(['DE' => 'HRIS_DESIGNATIONS'], 'DE.DESIGNATION_ID=E.DESIGNATION_ID', ["DESIGNATION_ID", "DESIGNATION_TITLE"=>new Expression("INITCAP(DE.DESIGNATION_TITLE)")],"left")
             ->join(['P' => Position::TABLE_NAME], 'P.' . Position::POSITION_ID . '=E.' . Position::POSITION_ID . '', [Position::POSITION_ID, "POSITION_NAME"=>new Expression("INITCAP(P.POSITION_NAME)")],"left")
             ->join(['ST' => ServiceType::TABLE_NAME], 'ST.' . ServiceType::SERVICE_TYPE_ID . '=E.' . ServiceType::SERVICE_TYPE_ID . '', [ServiceType::SERVICE_TYPE_ID, "SERVICE_TYPE_NAME"=>new Expression("INITCAP(ST.SERVICE_TYPE_NAME)")],"left");
+
        $select->where(["E.STATUS='E'"]);
        $select->where(["E.RETIRED_FLAG='N'"]);
         if ($branchId != -1) {

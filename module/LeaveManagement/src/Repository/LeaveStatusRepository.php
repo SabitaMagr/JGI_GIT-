@@ -9,6 +9,7 @@
 
 namespace LeaveManagement\Repository;
 
+use Application\Helper\EntityHelper;
 use Application\Model\Model;
 use Application\Repository\RepositoryInterface;
 use LeaveManagement\Model\LeaveApply;
@@ -83,18 +84,18 @@ class LeaveStatusRepository implements RepositoryInterface {
 //    }
     public function getAllRequest($status = null, $date = null, $branchId = NULL, $employeeId = NULL) {
 
-        $sql = "SELECT L.LEAVE_ENAME,
+        $sql = "SELECT INITCAP(L.LEAVE_ENAME) AS LEAVE_ENAME,
                 LA.NO_OF_DAYS,
-                TO_CHAR(LA.START_DATE, 'DD-MON-YYYY')     AS START_DATE,
-                TO_CHAR(LA.END_DATE, 'DD-MON-YYYY')       AS END_DATE,
-                TO_CHAR(LA.REQUESTED_DT, 'DD-MON-YYYY')   AS APPLIED_DATE,
+                INITCAP(TO_CHAR(LA.START_DATE, 'DD-MON-YYYY'))     AS START_DATE,
+                INITCAP(TO_CHAR(LA.END_DATE, 'DD-MON-YYYY'))       AS END_DATE,
+                INITCAP(TO_CHAR(LA.REQUESTED_DT, 'DD-MON-YYYY'))   AS APPLIED_DATE,
                 LA.STATUS                                 AS STATUS,
                 LA.ID                                     AS ID,
-                TO_CHAR(LA.RECOMMENDED_DT, 'DD-MON-YYYY') AS RECOMMENDED_DT,
-                TO_CHAR(LA.APPROVED_DT, 'DD-MON-YYYY')    AS APPROVED_DT,
-                E.FIRST_NAME,
-                E.MIDDLE_NAME,
-                E.LAST_NAME
+                INITCAP(TO_CHAR(LA.RECOMMENDED_DT, 'DD-MON-YYYY')) AS RECOMMENDED_DT,
+                INITCAP(TO_CHAR(LA.APPROVED_DT, 'DD-MON-YYYY'))    AS APPROVED_DT,
+                INITCAP(E.FIRST_NAME) AS FIRST_NAME,
+                INITCAP(E.MIDDLE_NAME AS MIDDLE_NAME,
+                INITCAP(E.LAST_NAME) AS LAST_NAME
                 FROM HRIS_EMPLOYEE_LEAVE_REQUEST LA,
                   HRIS_LEAVE_MASTER_SETUP L,
                   HRIS_EMPLOYEES E
@@ -129,24 +130,34 @@ class LeaveStatusRepository implements RepositoryInterface {
     public function fetchById($id) {
         $sql = new Sql($this->adapter);
         $select = $sql->select();
-        $select->columns([
-            new Expression("TO_CHAR(LA.START_DATE, 'DD-MON-YYYY') AS START_DATE"),
-            new Expression("TO_CHAR(LA.REQUESTED_DT, 'DD-MON-YYYY') AS REQUESTED_DT"),
-            new Expression("LA.STATUS AS STATUS"),
-            new Expression("LA.ID AS ID"),
-            new Expression("TO_CHAR(LA.END_DATE, 'DD-MON-YYYY') AS END_DATE"),
-            new Expression("TO_CHAR(LA.APPROVED_DT, 'DD-MON-YYYY') AS APPROVED_DT"),
-            new Expression("LA.NO_OF_DAYS AS NO_OF_DAYS"),
-            new Expression("LA.HALF_DAY AS HALF_DAY"),
-            new Expression("LA.EMPLOYEE_ID AS EMPLOYEE_ID"),
-            new Expression("LA.LEAVE_ID AS LEAVE_ID"),
-            new Expression("LA.REMARKS AS REMARKS"),
-            new Expression("LA.RECOMMENDED_REMARKS AS RECOMMENDED_REMARKS"),
-            new Expression("LA.APPROVED_REMARKS AS APPROVED_REMARKS"),
-                ], true);
+        $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(LeaveApply::class,
+	 NULL,
+                [
+                LeaveApply::START_DATE,
+                LeaveApply::REQUESTED_DT,
+                LeaveApply::END_DATE,
+                LeaveApply::APPROVED_DT
+                    ], NULL, NULL, NULL,'L'),false);
+        
+//        $select->columns([
+//            new Expression("TO_CHAR(LA.START_DATE, 'DD-MON-YYYY') AS START_DATE"),
+//            new Expression("TO_CHAR(LA.REQUESTED_DT, 'DD-MON-YYYY') AS REQUESTED_DT"),
+//            new Expression("LA.STATUS AS STATUS"),
+//            new Expression("LA.ID AS ID"),
+//            new Expression("TO_CHAR(LA.END_DATE, 'DD-MON-YYYY') AS END_DATE"),
+//            new Expression("TO_CHAR(LA.APPROVED_DT, 'DD-MON-YYYY') AS APPROVED_DT"),
+//            new Expression("LA.NO_OF_DAYS AS NO_OF_DAYS"),
+//            new Expression("LA.HALF_DAY AS HALF_DAY"),
+//            new Expression("LA.EMPLOYEE_ID AS EMPLOYEE_ID"),
+//            new Expression("LA.LEAVE_ID AS LEAVE_ID"),
+//            new Expression("LA.REMARKS AS REMARKS"),
+//            new Expression("LA.RECOMMENDED_REMARKS AS RECOMMENDED_REMARKS"),
+//            new Expression("LA.APPROVED_REMARKS AS APPROVED_REMARKS"),
+//                ], true);
 
         $select->from(['LA' => LeaveApply::TABLE_NAME])
-                ->join(['E' => "HRIS_EMPLOYEES"], "E.EMPLOYEE_ID=LA.EMPLOYEE_ID", ['FIRST_NAME', 'MIDDLE_NAME', 'LAST_NAME'], "left")
+//                ->join(['E' => "HRIS_EMPLOYEES"], "E.EMPLOYEE_ID=LA.EMPLOYEE_ID", ['FIRST_NAME', 'MIDDLE_NAME', 'LAST_NAME'], "left")
+                ->join(['E' => "HRIS_EMPLOYEES"], "E.EMPLOYEE_ID=LA.EMPLOYEE_ID", ['FIRST_NAME'=>new Expression('INITCAP(E.FIRST_NAME)'),'MIDDLE_NAME'=>new Expression('INITCAP(E.MIDDLE_NAME)'),'LAST_NAME'=>new Expression('INITCAP(E.LAST_NAME)')], "left")
                 ->join(['E1' => "HRIS_EMPLOYEES"], "E1.EMPLOYEE_ID=LA.RECOMMENDED_BY", ['FN1' => 'FIRST_NAME', 'MN1' => 'MIDDLE_NAME', 'LN1' => 'LAST_NAME'], "left")
                 ->join(['E2' => "HRIS_EMPLOYEES"], "E2.EMPLOYEE_ID=LA.APPROVED_BY", ['FN2' => 'FIRST_NAME', 'MN2' => 'MIDDLE_NAME', 'LN2' => 'LAST_NAME'], "left");
 
@@ -184,21 +195,21 @@ class LeaveStatusRepository implements RepositoryInterface {
         }
 
         $sql = "SELECT L.LEAVE_ENAME,L.LEAVE_CODE,LA.NO_OF_DAYS,
-                TO_CHAR(LA.START_DATE, 'DD-MON-YYYY') AS START_DATE,
-                TO_CHAR(LA.END_DATE, 'DD-MON-YYYY') AS END_DATE,
-                TO_CHAR(LA.REQUESTED_DT, 'DD-MON-YYYY') AS APPLIED_DATE,
+                INITCAP(TO_CHAR(LA.START_DATE, 'DD-MON-YYYY')) AS START_DATE,
+                INITCAP(TO_CHAR(LA.END_DATE, 'DD-MON-YYYY')) AS END_DATE,
+                INITCAP(TO_CHAR(LA.REQUESTED_DT, 'DD-MON-YYYY')) AS APPLIED_DATE,
                 LA.STATUS AS STATUS,
                 LA.ID AS ID,
                 LA.EMPLOYEE_ID AS EMPLOYEE_ID,
-                TO_CHAR(LA.RECOMMENDED_DT, 'DD-MON-YYYY') AS RECOMMENDED_DT,
-                TO_CHAR(LA.APPROVED_DT, 'DD-MON-YYYY') AS APPROVED_DT,
-                E.FIRST_NAME,E.MIDDLE_NAME,E.LAST_NAME,
-                E1.FIRST_NAME AS FN1,E1.MIDDLE_NAME AS MN1,E1.LAST_NAME AS LN1,
-                E2.FIRST_NAME AS FN2,E2.MIDDLE_NAME AS MN2,E2.LAST_NAME AS LN2,
+                INITCAP(TO_CHAR(LA.RECOMMENDED_DT, 'DD-MON-YYYY')) AS RECOMMENDED_DT,
+                INITCAP(TO_CHAR(LA.APPROVED_DT, 'DD-MON-YYYY')) AS APPROVED_DT,
+                INITCAP(E.FIRST_NAME) AS FIRST_NAME,INITCAP(E.MIDDLE_NAME) AS MIDDLE_NAME,INITCAP(E.LAST_NAME) AS LAST_NAME,
+                INITCAP(E1.FIRST_NAME) AS FN1,INITCAP(E1.MIDDLE_NAME) AS MN1,INITCAP(E1.LAST_NAME) AS LN1,
+                INITCAP(E2.FIRST_NAME) AS FN2,INITCAP(E2.MIDDLE_NAME) AS MN2,INITCAP(E2.LAST_NAME) AS LN2,
                 RA.RECOMMEND_BY AS RECOMMENDER,
                 RA.APPROVED_BY AS APPROVER,
-                RECM.FIRST_NAME AS RECM_FN,RECM.MIDDLE_NAME AS RECM_MN,RECM.LAST_NAME AS RECM_LN,
-                APRV.FIRST_NAME AS APRV_FN,APRV.MIDDLE_NAME AS APRV_MN,APRV.LAST_NAME AS APRV_LN,
+                INITCAP(RECM.FIRST_NAME) AS RECM_FN,INITCAP(RECM.MIDDLE_NAME) AS RECM_MN,INITCAP(RECM.LAST_NAME) AS RECM_LN,
+                INITCAP(APRV.FIRST_NAME) AS APRV_FN,INITCAP(APRV.MIDDLE_NAME) AS APRV_MN,INITCAP(APRV.LAST_NAME) AS APRV_LN,
                 LA.RECOMMENDED_BY AS RECOMMENDED_BY,
                 LA.APPROVED_BY AS APPROVED_BY,
                 LA.RECOMMENDED_REMARKS AS RECOMMENDED_REMARKS,

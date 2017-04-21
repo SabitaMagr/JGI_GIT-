@@ -86,7 +86,7 @@ class leaveAssign extends AbstractActionController {
         $leaveFormElement = new Select();
         $leaveFormElement->setName("leave");
         $leaveFormElement->setLabel("Leave Type");
-        $leaveFormElement->setValueOptions(AppEntityHelper::getTableKVListWithSortOption($this->adapter, LeaveMaster::TABLE_NAME, LeaveMaster::LEAVE_ID, [LeaveMaster::LEAVE_ENAME], [LeaveMaster::STATUS . " ='E'"], \Setup\Model\LeaveMaster::LEAVE_ENAME,"ASC"));
+        $leaveFormElement->setValueOptions(AppEntityHelper::getTableKVListWithSortOption($this->adapter, LeaveMaster::TABLE_NAME, LeaveMaster::LEAVE_ID, [LeaveMaster::LEAVE_ENAME], [LeaveMaster::STATUS . " ='E'"], LeaveMaster::LEAVE_ENAME,"ASC"));
         $leaveFormElement->setAttributes(["id" => "leaveId", "class" => "form-control", "data-init-plugin" => "select2"]);
 
         $branchFormElement = new Select();

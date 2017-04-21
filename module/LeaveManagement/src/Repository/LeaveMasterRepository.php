@@ -1,13 +1,13 @@
 <?php
 namespace LeaveManagement\Repository;
 
+use Application\Helper\EntityHelper;
 use Application\Model\Model;
 use Application\Repository\RepositoryInterface;
+use LeaveManagement\Model\LeaveMaster;
 use Zend\Db\Adapter\AdapterInterface;
-use Zend\Db\TableGateway\TableGateway;
-use Setup\Model\LeaveMaster;
 use Zend\Db\Sql\Select;
-use Zend\Db\Sql\Sql;
+use Zend\Db\TableGateway\TableGateway;
 
 class LeaveMasterRepository implements RepositoryInterface {
 
@@ -33,6 +33,7 @@ class LeaveMasterRepository implements RepositoryInterface {
 
     public function fetchAll() {
         return $this->tableGateway->select(function(Select $select){
+            $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(LeaveMaster::class, [LeaveMaster::LEAVE_ENAME]), false);
             $select->where([LeaveMaster::STATUS => 'E']);
             $select->order(LeaveMaster::LEAVE_ENAME." ASC");
         });
@@ -47,7 +48,10 @@ class LeaveMasterRepository implements RepositoryInterface {
     }
 
     public function fetchById($id) {
-        $rowset = $this->tableGateway->select([LeaveMaster::LEAVE_ID => $id, LeaveMaster::STATUS => 'E']);
+        $rowset = $this->tableGateway->select(function(Select $select)use($id){
+            $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(LeaveMaster::class, [LeaveMaster::LEAVE_ENAME]), false);
+            $select->where([LeaveMaster::LEAVE_ID => $id, LeaveMaster::STATUS => 'E']);
+        });
         return $result = $rowset->current();
 //        if($result!=null){
 //            $r = $result->getArrayCopy();
