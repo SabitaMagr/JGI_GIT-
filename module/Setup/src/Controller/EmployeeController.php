@@ -74,7 +74,7 @@ class EmployeeController extends AbstractActionController {
     public function indexAction() {
         $employeeNameFormElement = new Select();
         $employeeNameFormElement->setName("branch");
-        $employeeName = ApplicationHelper::getTableKVListWithSortOption($this->adapter, "HRIS_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => "E"], "FIRST_NAME", "ASC", " ");
+        $employeeName = ApplicationHelper::getTableKVListWithSortOption($this->adapter, "HRIS_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => "E"], "FIRST_NAME", "ASC", " ",false,true);
         $employeeName1 = [-1 => "All"] + $employeeName;
         $employeeNameFormElement->setValueOptions($employeeName1);
         $employeeNameFormElement->setAttributes(["id" => "employeeId", "class" => "form-control"]);
@@ -83,7 +83,7 @@ class EmployeeController extends AbstractActionController {
 
         $branchFormElement = new Select();
         $branchFormElement->setName("branch");
-        $branches = ApplicationHelper::getTableKVListWithSortOption($this->adapter, Branch::TABLE_NAME, Branch::BRANCH_ID, [Branch::BRANCH_NAME], [Branch::STATUS => 'E'], "BRANCH_NAME", "ASC");
+        $branches = ApplicationHelper::getTableKVListWithSortOption($this->adapter, Branch::TABLE_NAME, Branch::BRANCH_ID, [Branch::BRANCH_NAME], [Branch::STATUS => 'E'], "BRANCH_NAME", "ASC",null,false,true);
         $branches1 = [-1 => "All"] + $branches;
         $branchFormElement->setValueOptions($branches1);
         $branchFormElement->setAttributes(["id" => "branchId", "class" => "form-control"]);
@@ -92,7 +92,7 @@ class EmployeeController extends AbstractActionController {
 
         $departmentFormElement = new Select();
         $departmentFormElement->setName("department");
-        $departments = ApplicationHelper::getTableKVListWithSortOption($this->adapter, Department::TABLE_NAME, Department::DEPARTMENT_ID, [Department::DEPARTMENT_NAME], [Department::STATUS => 'E'], "DEPARTMENT_NAME", "ASC");
+        $departments = ApplicationHelper::getTableKVListWithSortOption($this->adapter, Department::TABLE_NAME, Department::DEPARTMENT_ID, [Department::DEPARTMENT_NAME], [Department::STATUS => 'E'], "DEPARTMENT_NAME", "ASC",null,false,true);
         $departments1 = [-1 => "All"] + $departments;
         $departmentFormElement->setValueOptions($departments1);
         $departmentFormElement->setAttributes(["id" => "departmentId", "class" => "form-control"]);
@@ -100,7 +100,7 @@ class EmployeeController extends AbstractActionController {
 
         $designationFormElement = new Select();
         $designationFormElement->setName("designation");
-        $designations = ApplicationHelper::getTableKVListWithSortOption($this->adapter, Designation::TABLE_NAME, Designation::DESIGNATION_ID, [Designation::DESIGNATION_TITLE], [Designation::STATUS => 'E'], "DESIGNATION_TITLE", "ASC");
+        $designations = ApplicationHelper::getTableKVListWithSortOption($this->adapter, Designation::TABLE_NAME, Designation::DESIGNATION_ID, [Designation::DESIGNATION_TITLE], [Designation::STATUS => 'E'], "DESIGNATION_TITLE", "ASC",null,false,true);
         $designations1 = [-1 => "All"] + $designations;
         $designationFormElement->setValueOptions($designations1);
         $designationFormElement->setAttributes(["id" => "designationId", "class" => "form-control"]);
@@ -108,7 +108,7 @@ class EmployeeController extends AbstractActionController {
 
         $positionFormElement = new Select();
         $positionFormElement->setName("position");
-        $positions = ApplicationHelper::getTableKVListWithSortOption($this->adapter, Position::TABLE_NAME, Position::POSITION_ID, [Position::POSITION_NAME], [Position::STATUS => 'E'], "POSITION_NAME", "ASC");
+        $positions = ApplicationHelper::getTableKVListWithSortOption($this->adapter, Position::TABLE_NAME, Position::POSITION_ID, [Position::POSITION_NAME], [Position::STATUS => 'E'], "POSITION_NAME", "ASC",null,false,true);
         $positions1 = [-1 => "All"] + $positions;
         $positionFormElement->setValueOptions($positions1);
         $positionFormElement->setAttributes(["id" => "positionId", "class" => "form-control"]);
@@ -116,7 +116,7 @@ class EmployeeController extends AbstractActionController {
 
         $serviceTypeFormElement = new Select();
         $serviceTypeFormElement->setName("serviceType");
-        $serviceTypes = ApplicationHelper::getTableKVListWithSortOption($this->adapter, ServiceType::TABLE_NAME, ServiceType::SERVICE_TYPE_ID, [ServiceType::SERVICE_TYPE_NAME], [ServiceType::STATUS => 'E'], "SERVICE_TYPE_NAME", "ASC");
+        $serviceTypes = ApplicationHelper::getTableKVListWithSortOption($this->adapter, ServiceType::TABLE_NAME, ServiceType::SERVICE_TYPE_ID, [ServiceType::SERVICE_TYPE_NAME], [ServiceType::STATUS => 'E'], "SERVICE_TYPE_NAME", "ASC",null,false,true);
         $serviceTypes1 = [-1 => "All"] + $serviceTypes;
         $serviceTypeFormElement->setValueOptions($serviceTypes1);
         $serviceTypeFormElement->setAttributes(["id" => "serviceTypeId", "class" => "form-control"]);
@@ -124,7 +124,7 @@ class EmployeeController extends AbstractActionController {
 
         $serviceEventTypeFormElement = new Select();
         $serviceEventTypeFormElement->setName("serviceEventType");
-        $serviceEventTypes = ApplicationHelper::getTableKVListWithSortOption($this->adapter, ServiceEventType::TABLE_NAME, ServiceEventType::SERVICE_EVENT_TYPE_ID, [ServiceEventType::SERVICE_EVENT_TYPE_NAME], [ServiceEventType::STATUS => 'E'], "SERVICE_EVENT_TYPE_NAME", "ASC");
+        $serviceEventTypes = ApplicationHelper::getTableKVListWithSortOption($this->adapter, ServiceEventType::TABLE_NAME, ServiceEventType::SERVICE_EVENT_TYPE_ID, [ServiceEventType::SERVICE_EVENT_TYPE_NAME], [ServiceEventType::STATUS => 'E'], "SERVICE_EVENT_TYPE_NAME", "ASC",null,false,true);
         $serviceEventTypes1 = [-1 => "Working"] + $serviceEventTypes;
         $serviceEventTypeFormElement->setValueOptions($serviceEventTypes1);
         $serviceEventTypeFormElement->setAttributes(["id" => "serviceEventTypeId", "class" => "form-control"]);
@@ -215,24 +215,24 @@ class EmployeeController extends AbstractActionController {
             "vdcMunicipalities" => EntityHelper::getTableKVList($this->adapter, EntityHelper::HRIS_VDC_MUNICIPALITY),
             "zones" => EntityHelper::getTableKVList($this->adapter, EntityHelper::HRIS_ZONES),
             "religions" => EntityHelper::getTableKVList($this->adapter, EntityHelper::HRIS_RELIGIONS),
-            "companies" => EntityHelper::getTableKVList($this->adapter, EntityHelper::HRIS_COMPANY),
+            "companies" => ApplicationHelper::getTableKVListWithSortOption($this->adapter, "HRIS_COMPANY","COMPANY_ID",["COMPANY_NAME"],["STATUS"=>"E"],"COMPANY_NAME","ASC",null,false,true),
             "countries" => EntityHelper::getTableKVList($this->adapter, EntityHelper::HRIS_COUNTRIES),
             'filetypes' => EntityHelper::getTableKVList($this->adapter, EntityHelper::HRIS_FILE_TYPE),
-            'serviceTypes' => ApplicationHelper::getTableKVListWithSortOption($this->adapter, "HRIS_SERVICE_TYPES", "SERVICE_TYPE_ID", ["SERVICE_TYPE_NAME"], ["STATUS" => 'E'], "SERVICE_TYPE_NAME", "ASC", null, true),
-            'positions' => ApplicationHelper::getTableKVListWithSortOption($this->adapter, "HRIS_POSITIONS", "POSITION_ID", ["POSITION_NAME"], ["STATUS" => 'E'], "POSITION_NAME", "ASC", null, true),
-            'designations' => ApplicationHelper::getTableKVListWithSortOption($this->adapter, "HRIS_DESIGNATIONS", "DESIGNATION_ID", ["DESIGNATION_TITLE"], ["STATUS" => 'E'], "DESIGNATION_TITLE", "ASC", null, true),
-            'departments' => ApplicationHelper::getTableKVListWithSortOption($this->adapter, "HRIS_DEPARTMENTS", "DEPARTMENT_ID", ["DEPARTMENT_NAME"], ["STATUS" => 'E'], "DEPARTMENT_NAME", "ASC", null, true),
-            'branches' => ApplicationHelper::getTableKVListWithSortOption($this->adapter, "HRIS_BRANCHES", "BRANCH_ID", ["BRANCH_NAME"], ["STATUS" => 'E'], "BRANCH_NAME", "ASC", null, true),
-            'serviceEventTypes' => ApplicationHelper::getTableKVListWithSortOption($this->adapter, "HRIS_SERVICE_EVENT_TYPES", "SERVICE_EVENT_TYPE_ID", ["SERVICE_EVENT_TYPE_NAME"], ["STATUS" => 'E'], "SERVICE_EVENT_TYPE_NAME", "ASC", null, true),
-            'academicDegree' => ApplicationHelper::getTableKVListWithSortOption($this->adapter, "HRIS_ACADEMIC_DEGREES", "ACADEMIC_DEGREE_ID", ["ACADEMIC_DEGREE_NAME"], ["STATUS" => 'E'], "ACADEMIC_DEGREE_NAME", "ASC"),
-            'academicUniversity' => ApplicationHelper::getTableKVListWithSortOption($this->adapter, "HRIS_ACADEMIC_UNIVERSITY", "ACADEMIC_UNIVERSITY_ID", ["ACADEMIC_UNIVERSITY_NAME"], ["STATUS" => 'E'], "ACADEMIC_UNIVERSITY_NAME", "ASC"),
-            'academicProgram' => ApplicationHelper::getTableKVListWithSortOption($this->adapter, "HRIS_ACADEMIC_PROGRAMS", "ACADEMIC_PROGRAM_ID", ["ACADEMIC_PROGRAM_NAME"], ["STATUS" => 'E'], "ACADEMIC_PROGRAM_NAME", "ASC"),
-            'academicCourse' => ApplicationHelper::getTableKVListWithSortOption($this->adapter, "HRIS_ACADEMIC_COURSES", "ACADEMIC_COURSE_ID", ["ACADEMIC_COURSE_NAME"], ["STATUS" => 'E'], "ACADEMIC_COURSE_NAME", "ASC"),
+            'serviceTypes' => ApplicationHelper::getTableKVListWithSortOption($this->adapter, "HRIS_SERVICE_TYPES", "SERVICE_TYPE_ID", ["SERVICE_TYPE_NAME"], ["STATUS" => 'E'], "SERVICE_TYPE_NAME", "ASC", null, true,true),
+            'positions' => ApplicationHelper::getTableKVListWithSortOption($this->adapter, "HRIS_POSITIONS", "POSITION_ID", ["POSITION_NAME"], ["STATUS" => 'E'], "POSITION_NAME", "ASC", null, true,true),
+            'designations' => ApplicationHelper::getTableKVListWithSortOption($this->adapter, "HRIS_DESIGNATIONS", "DESIGNATION_ID", ["DESIGNATION_TITLE"], ["STATUS" => 'E'], "DESIGNATION_TITLE", "ASC", null, true,true),
+            'departments' => ApplicationHelper::getTableKVListWithSortOption($this->adapter, "HRIS_DEPARTMENTS", "DEPARTMENT_ID", ["DEPARTMENT_NAME"], ["STATUS" => 'E'], "DEPARTMENT_NAME", "ASC", null, true,true),
+            'branches' => ApplicationHelper::getTableKVListWithSortOption($this->adapter, "HRIS_BRANCHES", "BRANCH_ID", ["BRANCH_NAME"], ["STATUS" => 'E'], "BRANCH_NAME", "ASC", null, true,true),
+            'serviceEventTypes' => ApplicationHelper::getTableKVListWithSortOption($this->adapter, "HRIS_SERVICE_EVENT_TYPES", "SERVICE_EVENT_TYPE_ID", ["SERVICE_EVENT_TYPE_NAME"], ["STATUS" => 'E'], "SERVICE_EVENT_TYPE_NAME", "ASC", null, true,true),
+            'academicDegree' => ApplicationHelper::getTableKVListWithSortOption($this->adapter, "HRIS_ACADEMIC_DEGREES", "ACADEMIC_DEGREE_ID", ["ACADEMIC_DEGREE_NAME"], ["STATUS" => 'E'], "ACADEMIC_DEGREE_NAME", "ASC",null,false,true),
+            'academicUniversity' => ApplicationHelper::getTableKVListWithSortOption($this->adapter, "HRIS_ACADEMIC_UNIVERSITY", "ACADEMIC_UNIVERSITY_ID", ["ACADEMIC_UNIVERSITY_NAME"], ["STATUS" => 'E'], "ACADEMIC_UNIVERSITY_NAME", "ASC",null,false,true),
+            'academicProgram' => ApplicationHelper::getTableKVListWithSortOption($this->adapter, "HRIS_ACADEMIC_PROGRAMS", "ACADEMIC_PROGRAM_ID", ["ACADEMIC_PROGRAM_NAME"], ["STATUS" => 'E'], "ACADEMIC_PROGRAM_NAME", "ASC",null,false,true),
+            'academicCourse' => ApplicationHelper::getTableKVListWithSortOption($this->adapter, "HRIS_ACADEMIC_COURSES", "ACADEMIC_COURSE_ID", ["ACADEMIC_COURSE_NAME"], ["STATUS" => 'E'], "ACADEMIC_COURSE_NAME", "ASC",null,false,true),
             'rankTypes' => $rankTypes,
-            'shifts' => ApplicationHelper::getTableKVListWithSortOption($this->adapter, ShiftSetup::TABLE_NAME, ShiftSetup::SHIFT_ID, [ShiftSetup::SHIFT_ENAME], [ShiftSetup::STATUS => 'E'], ShiftSetup::SHIFT_ENAME, "ASC"),
-            'leaves' => ApplicationHelper::getTableKVListWithSortOption($this->adapter, LeaveMaster::TABLE_NAME, LeaveMaster::LEAVE_ID, [LeaveMaster::LEAVE_ENAME], [LeaveMaster::STATUS => 'E'], LeaveMaster::LEAVE_ENAME, "ASC"),
-            'recommenders' => ApplicationHelper::getTableKVListWithSortOption($this->adapter, "HRIS_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => "E"], "FIRST_NAME", "ASC", " "),
-            'approvers' => ApplicationHelper::getTableKVListWithSortOption($this->adapter, "HRIS_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => "E"], "FIRST_NAME", "ASC", " ")
+            'shifts' => ApplicationHelper::getTableKVListWithSortOption($this->adapter, ShiftSetup::TABLE_NAME, ShiftSetup::SHIFT_ID, [ShiftSetup::SHIFT_ENAME], [ShiftSetup::STATUS => 'E'], ShiftSetup::SHIFT_ENAME, "ASC",null,false,true),
+            'leaves' => ApplicationHelper::getTableKVListWithSortOption($this->adapter, LeaveMaster::TABLE_NAME, LeaveMaster::LEAVE_ID, [LeaveMaster::LEAVE_ENAME], [LeaveMaster::STATUS => 'E'], LeaveMaster::LEAVE_ENAME, "ASC",null,false,true),
+            'recommenders' => ApplicationHelper::getTableKVListWithSortOption($this->adapter, "HRIS_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => "E"], "FIRST_NAME", "ASC", " ",false,true),
+            'approvers' => ApplicationHelper::getTableKVListWithSortOption($this->adapter, "HRIS_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => "E"], "FIRST_NAME", "ASC", " ",false,true)
         ]);
     }
 
@@ -425,14 +425,14 @@ class EmployeeController extends AbstractActionController {
 
             if (isset($formOneModel->addrPermVdcMunicipalityId)) {
                 $address['addrPermVdcMunicipalityId'] = $formOneModel->addrPermVdcMunicipalityId;
-                $tempArray = ApplicationHelper::getTableKVList($this->adapter, VdcMunicipalities::TABLE_NAME, null, [VdcMunicipalities::DISTRICT_ID], [VdcMunicipalities::VDC_MUNICIPALITY_ID => $formOneModel->addrPermVdcMunicipalityId], null);
+                $tempArray = ApplicationHelper::getTableKVList($this->adapter, VdcMunicipalities::TABLE_NAME, null, [VdcMunicipalities::DISTRICT_ID], [VdcMunicipalities::VDC_MUNICIPALITY_ID => $formOneModel->addrPermVdcMunicipalityId], null,null,null,false,true);
                 if (isset($tempArray) && (sizeof($tempArray) > 0)) {
                     $formOneModel->addrPermDistrictId = $tempArray[0];
                     $address["addrPermDistrictId"] = $tempArray[0];
                 }
             }
             if (isset($formOneModel->addrPermDistrictId)) {
-                $tempArray = ApplicationHelper::getTableKVList($this->adapter, District::TABLE_NAME, null, [District::ZONE_ID], [District::DISTRICT_ID => $formOneModel->addrPermDistrictId], null);
+                $tempArray = ApplicationHelper::getTableKVList($this->adapter, District::TABLE_NAME, null, [District::ZONE_ID], [District::DISTRICT_ID => $formOneModel->addrPermDistrictId], null,null,null,false,true);
                 if (isset($tempArray) && (sizeof($tempArray) > 0)) {
                     $formOneModel->addrPermZoneId = $tempArray[0];
                     $address["addrPermZoneId"] = $tempArray[0];
@@ -440,14 +440,14 @@ class EmployeeController extends AbstractActionController {
             }
             if (isset($formOneModel->addrTempVdcMunicipalityId)) {
                 $address['addrTempVdcMunicipalityId'] = $formOneModel->addrTempVdcMunicipalityId;
-                $tempArray = ApplicationHelper::getTableKVList($this->adapter, VdcMunicipalities::TABLE_NAME, null, [VdcMunicipalities::DISTRICT_ID], [VdcMunicipalities::VDC_MUNICIPALITY_ID => $formOneModel->addrTempVdcMunicipalityId], null);
+                $tempArray = ApplicationHelper::getTableKVList($this->adapter, VdcMunicipalities::TABLE_NAME, null, [VdcMunicipalities::DISTRICT_ID], [VdcMunicipalities::VDC_MUNICIPALITY_ID => $formOneModel->addrTempVdcMunicipalityId],null, null,null,false,true);
                 if (isset($tempArray) && (sizeof($tempArray) > 0)) {
                     $formOneModel->addrTempDistrictId = $tempArray[0];
                     $address["addrTempDistrictId"] = $tempArray[0];
                 }
             }
             if (isset($formOneModel->addrTempDistrictId)) {
-                $tempArray = ApplicationHelper::getTableKVList($this->adapter, District::TABLE_NAME, null, [District::ZONE_ID], [District::DISTRICT_ID => $formOneModel->addrTempDistrictId], null);
+                $tempArray = ApplicationHelper::getTableKVList($this->adapter, District::TABLE_NAME, null, [District::ZONE_ID], [District::DISTRICT_ID => $formOneModel->addrTempDistrictId],null, null,null,false,true);
                 if (isset($tempArray) && (sizeof($tempArray) > 0)) {
                     $formOneModel->addrTempZoneId = $tempArray[0];
                     $address["addrTempZoneId"] = $tempArray[0];
@@ -508,29 +508,29 @@ class EmployeeController extends AbstractActionController {
                     "vdcMunicipalities" => EntityHelper::getTableKVList($this->adapter, EntityHelper::HRIS_VDC_MUNICIPALITY),
                     "zones" => EntityHelper::getTableKVList($this->adapter, EntityHelper::HRIS_ZONES),
                     "religions" => EntityHelper::getTableKVList($this->adapter, EntityHelper::HRIS_RELIGIONS),
-                    "companies" => EntityHelper::getTableKVList($this->adapter, EntityHelper::HRIS_COMPANY),
+                    "companies" => ApplicationHelper::getTableKVListWithSortOption($this->adapter, "HRIS_COMPANY","COMPANY_ID",["COMPANY_ID"],["STATUS"=>"E"],"COMPANY_NAME","ASC",null,false,true),
                     "countries" => EntityHelper::getTableKVList($this->adapter, EntityHelper::HRIS_COUNTRIES),
                     'filetypes' => EntityHelper::getTableKVList($this->adapter, EntityHelper::HRIS_FILE_TYPE),
-                    'serviceTypes' => ApplicationHelper::getTableKVListWithSortOption($this->adapter, "HRIS_SERVICE_TYPES", "SERVICE_TYPE_ID", ["SERVICE_TYPE_NAME"], ["STATUS" => 'E'], "SERVICE_TYPE_NAME", "ASC", null, true),
-                    'positions' => ApplicationHelper::getTableKVListWithSortOption($this->adapter, "HRIS_POSITIONS", "POSITION_ID", ["POSITION_NAME"], ["STATUS" => 'E'], "POSITION_NAME", "ASC", null, true),
-                    'designations' => ApplicationHelper::getTableKVListWithSortOption($this->adapter, "HRIS_DESIGNATIONS", "DESIGNATION_ID", ["DESIGNATION_TITLE"], ["STATUS" => 'E'], "DESIGNATION_TITLE", "ASC", null, true),
-                    'departments' => ApplicationHelper::getTableKVListWithSortOption($this->adapter, "HRIS_DEPARTMENTS", "DEPARTMENT_ID", ["DEPARTMENT_NAME"], ["STATUS" => 'E'], "DEPARTMENT_NAME", "ASC", null, true),
-                    'branches' => ApplicationHelper::getTableKVListWithSortOption($this->adapter, "HRIS_BRANCHES", "BRANCH_ID", ["BRANCH_NAME"], ["STATUS" => 'E'], "BRANCH_NAME", "ASC", null, true),
-                    'serviceEventTypes' => ApplicationHelper::getTableKVListWithSortOption($this->adapter, "HRIS_SERVICE_EVENT_TYPES", "SERVICE_EVENT_TYPE_ID", ["SERVICE_EVENT_TYPE_NAME"], ["STATUS" => 'E'], "SERVICE_EVENT_TYPE_NAME", "ASC", null, true),
-                    'academicDegree' => ApplicationHelper::getTableKVListWithSortOption($this->adapter, "HRIS_ACADEMIC_DEGREES", "ACADEMIC_DEGREE_ID", ["ACADEMIC_DEGREE_NAME"], ["STATUS" => 'E'], "ACADEMIC_DEGREE_NAME", "ASC"),
-                    'academicUniversity' => ApplicationHelper::getTableKVListWithSortOption($this->adapter, "HRIS_ACADEMIC_UNIVERSITY", "ACADEMIC_UNIVERSITY_ID", ["ACADEMIC_UNIVERSITY_NAME"], ["STATUS" => 'E'], "ACADEMIC_UNIVERSITY_NAME", "ASC"),
-                    'academicProgram' => ApplicationHelper::getTableKVListWithSortOption($this->adapter, "HRIS_ACADEMIC_PROGRAMS", "ACADEMIC_PROGRAM_ID", ["ACADEMIC_PROGRAM_NAME"], ["STATUS" => 'E'], "ACADEMIC_PROGRAM_NAME", "ASC"),
-                    'academicCourse' => ApplicationHelper::getTableKVListWithSortOption($this->adapter, "HRIS_ACADEMIC_COURSES", "ACADEMIC_COURSE_ID", ["ACADEMIC_COURSE_NAME"], ["STATUS" => 'E'], "ACADEMIC_COURSE_NAME", "ASC"),
+                    'serviceTypes' => ApplicationHelper::getTableKVListWithSortOption($this->adapter, "HRIS_SERVICE_TYPES", "SERVICE_TYPE_ID", ["SERVICE_TYPE_NAME"], ["STATUS" => 'E'], "SERVICE_TYPE_NAME", "ASC", null, true,true),
+                    'positions' => ApplicationHelper::getTableKVListWithSortOption($this->adapter, "HRIS_POSITIONS", "POSITION_ID", ["POSITION_NAME"], ["STATUS" => 'E'], "POSITION_NAME", "ASC", null, true,true),
+                    'designations' => ApplicationHelper::getTableKVListWithSortOption($this->adapter, "HRIS_DESIGNATIONS", "DESIGNATION_ID", ["DESIGNATION_TITLE"], ["STATUS" => 'E'], "DESIGNATION_TITLE", "ASC", null, true,true),
+                    'departments' => ApplicationHelper::getTableKVListWithSortOption($this->adapter, "HRIS_DEPARTMENTS", "DEPARTMENT_ID", ["DEPARTMENT_NAME"], ["STATUS" => 'E'], "DEPARTMENT_NAME", "ASC", null, true,true),
+                    'branches' => ApplicationHelper::getTableKVListWithSortOption($this->adapter, "HRIS_BRANCHES", "BRANCH_ID", ["BRANCH_NAME"], ["STATUS" => 'E'], "BRANCH_NAME", "ASC", null, true,true),
+                    'serviceEventTypes' => ApplicationHelper::getTableKVListWithSortOption($this->adapter, "HRIS_SERVICE_EVENT_TYPES", "SERVICE_EVENT_TYPE_ID", ["SERVICE_EVENT_TYPE_NAME"], ["STATUS" => 'E'], "SERVICE_EVENT_TYPE_NAME", "ASC", null, true,true),
+                    'academicDegree' => ApplicationHelper::getTableKVListWithSortOption($this->adapter, "HRIS_ACADEMIC_DEGREES", "ACADEMIC_DEGREE_ID", ["ACADEMIC_DEGREE_NAME"], ["STATUS" => 'E'], "ACADEMIC_DEGREE_NAME", "ASC",null,false,true),
+                    'academicUniversity' => ApplicationHelper::getTableKVListWithSortOption($this->adapter, "HRIS_ACADEMIC_UNIVERSITY", "ACADEMIC_UNIVERSITY_ID", ["ACADEMIC_UNIVERSITY_NAME"], ["STATUS" => 'E'], "ACADEMIC_UNIVERSITY_NAME", "ASC",null,false,true),
+                    'academicProgram' => ApplicationHelper::getTableKVListWithSortOption($this->adapter, "HRIS_ACADEMIC_PROGRAMS", "ACADEMIC_PROGRAM_ID", ["ACADEMIC_PROGRAM_NAME"], ["STATUS" => 'E'], "ACADEMIC_PROGRAM_NAME", "ASC",null,false,true),
+                    'academicCourse' => ApplicationHelper::getTableKVListWithSortOption($this->adapter, "HRIS_ACADEMIC_COURSES", "ACADEMIC_COURSE_ID", ["ACADEMIC_COURSE_NAME"], ["STATUS" => 'E'], "ACADEMIC_COURSE_NAME", "ASC",null,false,true),
                     'rankTypes' => $rankTypes,
                     'profilePictureId' => $profilePictureId,
                     'address' => $address,
                     'shiftId' => ($getEmpShiftDtl != null) ? $getEmpShiftDtl['SHIFT_ID'] : 0,
                     'recommenderId' => ($employeePreDtl != null) ? $employeePreDtl['RECOMMEND_BY'] : 0,
                     'approverId' => ($employeePreDtl != null) ? $employeePreDtl['APPROVED_BY'] : 0,
-                    'shifts' => ApplicationHelper::getTableKVListWithSortOption($this->adapter, ShiftSetup::TABLE_NAME, ShiftSetup::SHIFT_ID, [ShiftSetup::SHIFT_ENAME], [ShiftSetup::STATUS => 'E'], ShiftSetup::SHIFT_ENAME, "ASC"),
-                    'leaves' => ApplicationHelper::getTableKVListWithSortOption($this->adapter, LeaveMaster::TABLE_NAME, LeaveMaster::LEAVE_ID, [LeaveMaster::LEAVE_ENAME], [LeaveMaster::STATUS => 'E'], LeaveMaster::LEAVE_ENAME, "ASC"),
-                    'recommenders' => ApplicationHelper::getTableKVListWithSortOption($this->adapter, "HRIS_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => "E"], "FIRST_NAME", "ASC", " "),
-                    'approvers' => ApplicationHelper::getTableKVListWithSortOption($this->adapter, "HRIS_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => "E"], "FIRST_NAME", "ASC", " ")
+                    'shifts' => ApplicationHelper::getTableKVListWithSortOption($this->adapter, ShiftSetup::TABLE_NAME, ShiftSetup::SHIFT_ID, [ShiftSetup::SHIFT_ENAME], [ShiftSetup::STATUS => 'E'], ShiftSetup::SHIFT_ENAME, "ASC",null,false,true),
+                    'leaves' => ApplicationHelper::getTableKVListWithSortOption($this->adapter, LeaveMaster::TABLE_NAME, LeaveMaster::LEAVE_ID, [LeaveMaster::LEAVE_ENAME], [LeaveMaster::STATUS => 'E'], LeaveMaster::LEAVE_ENAME, "ASC",null,false,true),
+                    'recommenders' => ApplicationHelper::getTableKVListWithSortOption($this->adapter, "HRIS_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => "E"], "FIRST_NAME", "ASC", " ",false,true),
+                    'approvers' => ApplicationHelper::getTableKVListWithSortOption($this->adapter, "HRIS_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => "E"], "FIRST_NAME", "ASC", " ",false,true)
         ]);
     }
 

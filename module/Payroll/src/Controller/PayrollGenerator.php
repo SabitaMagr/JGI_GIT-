@@ -72,8 +72,8 @@ class PayrollGenerator {
         $this->ruleDetailRepo = new RulesDetailRepo($adapter);
         $this->ruleRepo = new RulesRepository($adapter);
 
-        $this->monthlyValues = EntityHelper::getTableKVList($this->adapter, MonthlyValueModel::TABLE_NAME, MonthlyValueModel::MTH_ID, [MonthlyValueModel::MTH_EDESC]);
-        $this->flatValues = EntityHelper::getTableKVList($this->adapter, FlatValueModel::TABLE_NAME, FlatValueModel::FLAT_ID, [FlatValueModel::FLAT_EDESC]);
+        $this->monthlyValues = EntityHelper::getTableKVList($this->adapter, MonthlyValueModel::TABLE_NAME, MonthlyValueModel::MTH_ID, [MonthlyValueModel::MTH_EDESC],null,null,null,null,false,true);
+        $this->flatValues = EntityHelper::getTableKVList($this->adapter, FlatValueModel::TABLE_NAME, FlatValueModel::FLAT_ID, [FlatValueModel::FLAT_EDESC],null,null,null,null,false,true);
 
         $this->sanitizeStringArray($this->monthlyValues);
         $this->sanitizeStringArray($this->flatValues);

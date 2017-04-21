@@ -71,7 +71,7 @@ class PositionController extends AbstractActionController {
         return new ViewModel(Helper::addFlashMessagesToArray(
                         $this, [
                     'form' => $this->form,
-                    'companies' => EntityHelper::getTableKVListWithSortOption($this->adapter, Company::TABLE_NAME, Company::COMPANY_ID, [Company::COMPANY_NAME], ["STATUS" => "E"], Company::COMPANY_NAME, "ASC"),
+                    'companies' => EntityHelper::getTableKVListWithSortOption($this->adapter, Company::TABLE_NAME, Company::COMPANY_ID, [Company::COMPANY_NAME], ["STATUS" => "E"], Company::COMPANY_NAME, "ASC",null,false,true),
                     'messages' => $this->flashmessenger()->getMessages()
                         ]
                 )
@@ -106,7 +106,7 @@ class PositionController extends AbstractActionController {
         return Helper::addFlashMessagesToArray(
                         $this, [
                             'form' => $this->form,
-                            'companies' => EntityHelper::getTableKVListWithSortOption($this->adapter, Company::TABLE_NAME, Company::COMPANY_ID, [Company::COMPANY_NAME], ["STATUS" => "E"], Company::COMPANY_NAME, "ASC"),
+                            'companies' => EntityHelper::getTableKVListWithSortOption($this->adapter, Company::TABLE_NAME, Company::COMPANY_ID, [Company::COMPANY_NAME], ["STATUS" => "E"], Company::COMPANY_NAME, "ASC",null,false,true),
                             'id' => $id
                 ]
         );
