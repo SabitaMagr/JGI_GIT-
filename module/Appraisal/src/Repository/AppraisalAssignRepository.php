@@ -57,10 +57,10 @@ class AppraisalAssignRepository implements RepositoryInterface{
             new Expression("AA.REMARKS AS REMARKS")
         ]);
         $select->from(["AA"=>AppraisalAssign::TABLE_NAME])
-                ->join(["A"=> Setup::TABLE_NAME],"A.".Setup::APPRAISAL_ID."=AA.".AppraisalAssign::APPRAISAL_ID,[Setup::APPRAISAL_EDESC],"left")
-                ->join(['E'=> HrEmployees::TABLE_NAME],"E.".HrEmployees::EMPLOYEE_ID."=AA.". AppraisalAssign::EMPLOYEE_ID,[HrEmployees::FIRST_NAME, HrEmployees::MIDDLE_NAME, HrEmployees::LAST_NAME],"left")
-                ->join(['E1'=> HrEmployees::TABLE_NAME],"E1.".HrEmployees::EMPLOYEE_ID."=AA.". AppraisalAssign::REVIEWER_ID,['FIRST_NAME_R'=>HrEmployees::FIRST_NAME,"MIDDLE_NAME_R"=>HrEmployees::MIDDLE_NAME,"LAST_NAME_R"=>HrEmployees::LAST_NAME,"RETIRED_R"=> HrEmployees::RETIRED_FLAG,"STATUS_R"=> HrEmployees::STATUS],"left")
-                ->join(['E2'=> HrEmployees::TABLE_NAME],"E2.". HrEmployees::EMPLOYEE_ID."=AA.". AppraisalAssign::APPRAISER_ID,['FIRST_NAME_A'=>HrEmployees::FIRST_NAME,"MIDDLE_NAME_A"=>HrEmployees::MIDDLE_NAME,"LAST_NAME_A"=>HrEmployees::LAST_NAME,"RETIRED_A"=>HrEmployees::RETIRED_FLAG,"STATUS_A"=>HrEmployees::STATUS],"left");
+                ->join(["A"=> Setup::TABLE_NAME],"A.".Setup::APPRAISAL_ID."=AA.".AppraisalAssign::APPRAISAL_ID,["APPRAISAL_EDESC"=>new Expression("INITCAP(A.APPRAISAL_EDESC)")],"left")
+                ->join(['E'=> HrEmployees::TABLE_NAME],"E.".HrEmployees::EMPLOYEE_ID."=AA.". AppraisalAssign::EMPLOYEE_ID,["FIRST_NAME"=>new Expression("INITCAP(E.FIRST_NAME)"), "MIDDLE_NAME"=>new Expression("INITCAP(E.MIDDLE_NAME)"), "LAST_NAME"=>new Expression("INITCAP(E.LAST_NAME)")],"left")
+                ->join(['E1'=> HrEmployees::TABLE_NAME],"E1.".HrEmployees::EMPLOYEE_ID."=AA.". AppraisalAssign::REVIEWER_ID,['FIRST_NAME_R'=>new Expression("INITCAP(E1.FIRST_NAME)"),"MIDDLE_NAME_R"=>new Expression("INITCAP(E1.MIDDLE_NAME)"),"LAST_NAME_R"=>new Expression("INITCAP(E1.LAST_NAME)"),"RETIRED_R"=> HrEmployees::RETIRED_FLAG,"STATUS_R"=> HrEmployees::STATUS],"left")
+                ->join(['E2'=> HrEmployees::TABLE_NAME],"E2.". HrEmployees::EMPLOYEE_ID."=AA.". AppraisalAssign::APPRAISER_ID,['FIRST_NAME_A'=>new Expression("INITCAP(E2.FIRST_NAME)"),"MIDDLE_NAME_A"=>new Expression("INITCAP(E2.MIDDLE_NAME)"),"LAST_NAME_A"=>new Expression("INITCAP(E2.LAST_NAME)"),"RETIRED_A"=>HrEmployees::RETIRED_FLAG,"STATUS_A"=>HrEmployees::STATUS],"left");
         
         $select->where([
             "AA.".AppraisalAssign::APPRAISAL_ID."=".$appraisalId,
@@ -110,14 +110,14 @@ AND
             new Expression("A.APPRAISAL_CODE AS APPRAISAL_CODE"),
             new Expression("A.APPRAISAL_EDESC AS APPRAISAL_EDESC"),
             new Expression("A.REMARKS AS REMARKS"),
-            new Expression("TO_CHAR(A.START_DATE,'DD-MON-YYYY') AS START_DATE"), 
-            new Expression("TO_CHAR(A.END_DATE,'DD-MON-YYYY') AS END_DATE"),
+            new Expression("INITCAP(TO_CHAR(A.START_DATE,'DD-MON-YYYY')) AS START_DATE"), 
+            new Expression("INITCAP(TO_CHAR(A.END_DATE,'DD-MON-YYYY')) AS END_DATE"),
         ]);
         $select->from(["A"=>Setup::TABLE_NAME])
                 ->join(["AA"=> AppraisalAssign::TABLE_NAME],"A.".Setup::APPRAISAL_ID."=AA.".AppraisalAssign::APPRAISAL_ID,[AppraisalAssign::APPRAISAL_ID])
-                ->join(['E'=> HrEmployees::TABLE_NAME],"E.".HrEmployees::EMPLOYEE_ID."=AA.". AppraisalAssign::EMPLOYEE_ID,[HrEmployees::FIRST_NAME, HrEmployees::MIDDLE_NAME, HrEmployees::LAST_NAME, HrEmployees::EMPLOYEE_ID])
-                ->join(['T'=> Type::TABLE_NAME],"T.".Type::APPRAISAL_TYPE_ID."=A.". Setup::APPRAISAL_TYPE_ID,[Type::APPRAISAL_TYPE_EDESC])
-                ->join(['S'=> Stage::TABLE_NAME],"S.". Stage::STAGE_ID."=A.". Setup::CURRENT_STAGE_ID,[Stage::STAGE_EDESC]);
+                ->join(['E'=> HrEmployees::TABLE_NAME],"E.".HrEmployees::EMPLOYEE_ID."=AA.". AppraisalAssign::EMPLOYEE_ID,["FIRST_NAME"=>new Expression("INITCAP(E.FIRST_NAME)"), "MIDDLE_NAME"=>new Expression("INITCAP(E.MIDDLE_NAME)"), "LAST_NAME"=>new Expression("INITCAP(E.LAST_NAME)"), HrEmployees::EMPLOYEE_ID])
+                ->join(['T'=> Type::TABLE_NAME],"T.".Type::APPRAISAL_TYPE_ID."=A.". Setup::APPRAISAL_TYPE_ID,["APPRAISAL_TYPE_EDESC"=>new Expression("INITCAP(T.APPRAISAL_TYPE_EDESC)")])
+                ->join(['S'=> Stage::TABLE_NAME],"S.". Stage::STAGE_ID."=A.". Setup::CURRENT_STAGE_ID,["STAGE_EDESC"=>new Expression("INITCAP(S.STAGE_EDESC)")]);
         
         $select->where([
             "AA.".AppraisalAssign::EMPLOYEE_ID."=".$employeeId,
@@ -138,16 +138,16 @@ AND
             new Expression("A.APPRAISAL_CODE AS APPRAISAL_CODE"),
             new Expression("A.APPRAISAL_EDESC AS APPRAISAL_EDESC"),
             new Expression("A.REMARKS AS REMARKS"),
-            new Expression("TO_CHAR(A.START_DATE,'DD-MON-YYYY') AS START_DATE"), 
-            new Expression("TO_CHAR(A.END_DATE,'DD-MON-YYYY') AS END_DATE"),
+            new Expression("INITCAP(TO_CHAR(A.START_DATE,'DD-MON-YYYY')) AS START_DATE"), 
+            new Expression("INITCAP(TO_CHAR(A.END_DATE,'DD-MON-YYYY')) AS END_DATE"),
         ]);
         $select->from(["A"=>Setup::TABLE_NAME])
                 ->join(["AA"=> AppraisalAssign::TABLE_NAME],"A.".Setup::APPRAISAL_ID."=AA.".AppraisalAssign::APPRAISAL_ID,[AppraisalAssign::APPRAISAL_ID])
-                ->join(['E'=> HrEmployees::TABLE_NAME],"E.".HrEmployees::EMPLOYEE_ID."=AA.". AppraisalAssign::EMPLOYEE_ID,[HrEmployees::FIRST_NAME, HrEmployees::MIDDLE_NAME, HrEmployees::LAST_NAME, HrEmployees::EMPLOYEE_ID])
-                ->join(['T'=> Type::TABLE_NAME],"T.".Type::APPRAISAL_TYPE_ID."=A.". Setup::APPRAISAL_TYPE_ID,[Type::APPRAISAL_TYPE_EDESC])
-                ->join(['S'=> Stage::TABLE_NAME],"S.". Stage::STAGE_ID."=A.". Setup::CURRENT_STAGE_ID,[Stage::STAGE_EDESC])
-                ->join(['E1'=> HrEmployees::TABLE_NAME],"E1.".HrEmployees::EMPLOYEE_ID."=AA.". AppraisalAssign::APPRAISER_ID,["FIRST_NAME_A"=>HrEmployees::FIRST_NAME,"MIDDLE_NAME_A"=> HrEmployees::MIDDLE_NAME, "LAST_NAME_A"=>HrEmployees::LAST_NAME, "EMPLOYEE_ID_A"=>HrEmployees::EMPLOYEE_ID],"left")
-                ->join(['E2'=> HrEmployees::TABLE_NAME],"E2.".HrEmployees::EMPLOYEE_ID."=AA.". AppraisalAssign::REVIEWER_ID,["FIRST_NAME_R"=>HrEmployees::FIRST_NAME,"MIDDLE_NAME_R"=> HrEmployees::MIDDLE_NAME, "LAST_NAME_R"=>HrEmployees::LAST_NAME, "EMPLOYEE_ID_R"=>HrEmployees::EMPLOYEE_ID],"left");
+                ->join(['E'=> HrEmployees::TABLE_NAME],"E.".HrEmployees::EMPLOYEE_ID."=AA.". AppraisalAssign::EMPLOYEE_ID,["FIRST_NAME"=>new Expression("INITCAP(E.FIRST_NAME)"), "MIDDLE_NAME"=>new Expression("INITCAP(E.MIDDLE_NAME)"), "LAST_NAME"=>new Expression("INITCAP(E.LAST_NAME)"), HrEmployees::EMPLOYEE_ID])
+                ->join(['T'=> Type::TABLE_NAME],"T.".Type::APPRAISAL_TYPE_ID."=A.". Setup::APPRAISAL_TYPE_ID,["APPRAISAL_TYPE_EDESC"=>new Expression("INITCAP(T.APPRAISAL_TYPE_EDESC)")])
+                ->join(['S'=> Stage::TABLE_NAME],"S.". Stage::STAGE_ID."=A.". Setup::CURRENT_STAGE_ID,["STAGE_EDESC"=>new Expression("INITCAP(S.STAGE_EDESC)")])
+                ->join(['E1'=> HrEmployees::TABLE_NAME],"E1.".HrEmployees::EMPLOYEE_ID."=AA.". AppraisalAssign::APPRAISER_ID,["FIRST_NAME_A"=>new Expression("INITCAP(E1.FIRST_NAME)"), "MIDDLE_NAME_A"=>new Expression("INITCAP(E1.MIDDLE_NAME)"), "LAST_NAME_A"=>new Expression("INITCAP(E1.LAST_NAME)"),"EMPLOYEE_ID_A"=> HrEmployees::EMPLOYEE_ID],"left")
+                ->join(['E2'=> HrEmployees::TABLE_NAME],"E2.".HrEmployees::EMPLOYEE_ID."=AA.". AppraisalAssign::REVIEWER_ID,["FIRST_NAME_R"=>new Expression("INITCAP(E2.FIRST_NAME)"),"MIDDLE_NAME_R"=>new Expression("INITCAP(E2.MIDDLE_NAME)"), "LAST_NAME_R"=>new Expression("INITCAP(E2.LAST_NAME)"), "EMPLOYEE_ID_R"=>HrEmployees::EMPLOYEE_ID],"left");
         
         $select->where([
             "AA.".AppraisalAssign::EMPLOYEE_ID."=".$employeeId,

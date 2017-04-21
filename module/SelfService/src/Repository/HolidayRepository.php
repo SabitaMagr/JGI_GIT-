@@ -25,7 +25,6 @@ class HolidayRepository implements RepositoryInterface {
     function add(Model $model) {
         // TODO: Implement add() method.
     }
-
     function edit(Model $model, $id) {
         // TODO: Implement edit() method.
     }
@@ -43,15 +42,15 @@ class HolidayRepository implements RepositoryInterface {
         $sql = new Sql($this->adapter);
         $select = $sql->select();
         $select->columns([
-            new Expression("TO_CHAR(H.START_DATE, 'DD-MON-YYYY') AS START_DATE"),
-            new Expression("TO_CHAR(H.END_DATE, 'DD-MON-YYYY') AS END_DATE"),
+            new Expression("INITCAP(TO_CHAR(H.START_DATE, 'DD-MON-YYYY')) AS START_DATE"),
+            new Expression("INITCAP(TO_CHAR(H.END_DATE, 'DD-MON-YYYY')) AS END_DATE"),
             new Expression("H.HOLIDAY_ID AS HOLIDAY_ID"),
             new Expression("H.HOLIDAY_CODE AS HOLIDAY_CODE"),
-            new Expression("H.HOLIDAY_ENAME AS HOLIDAY_ENAME"),
+            new Expression("INITCAP(H.HOLIDAY_ENAME) AS HOLIDAY_ENAME"),
             new Expression("H.HALFDAY AS HALFDAY"),
             new Expression("H.FISCAL_YEAR AS FISCAL_YEAR"),
             new Expression("H.REMARKS AS REMARKS"),
-                ], true);
+        ], true);
 
         $select->from(['H' => Holiday::TABLE_NAME])
                 ->join(['HB' => HolidayBranch::TABLE_NAME], "HB.HOLIDAY_ID=H.HOLIDAY_ID", ['HOLIDAY_ID'], "left")

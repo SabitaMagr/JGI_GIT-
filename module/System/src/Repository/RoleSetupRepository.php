@@ -12,6 +12,8 @@ use Application\Repository\RepositoryInterface;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\TableGateway\TableGateway;
 use System\Model\RoleSetup;
+use Zend\Db\Sql\Select;
+use Application\Helper\EntityHelper;
 
 class RoleSetupRepository implements RepositoryInterface {
 
@@ -35,7 +37,11 @@ class RoleSetupRepository implements RepositoryInterface {
 
     public function fetchAll()
     {
-        $rowset = $this->tableGateway->select([RoleSetup::STATUS=>"E"]);
+        $rowset = $this->tableGateway->select(function(Select $select){
+            $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(RoleSetup::class, 
+                    [RoleSetup::ROLE_NAME]),false);
+            $select->where([RoleSetup::STATUS=>"E"]);
+        });
         $result = [];
         $i=1;
         foreach($rowset as $row){
@@ -51,7 +57,11 @@ class RoleSetupRepository implements RepositoryInterface {
 
     public function fetchById($id)
     {
-        $result = $this->tableGateway->select([RoleSetup::ROLE_ID=>$id]);
+        $result = $this->tableGateway->select(function(Select $select)use($id){
+            $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(RoleSetup::class, 
+                    [RoleSetup::ROLE_NAME]),false);
+            $select->where([RoleSetup::ROLE_ID=>$id]);
+        });
         return $result->current();
     }
 

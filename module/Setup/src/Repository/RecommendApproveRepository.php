@@ -30,7 +30,7 @@ class RecommendApproveRepository implements RepositoryInterface
 
     public function getDesignationList($employeeId)
     {
-        $sql = "SELECT  DESIGNATION_ID, DESIGNATION_TITLE, PARENT_DESIGNATION, WITHIN_BRANCH, WITHIN_DEPARTMENT, LEVEL 
+        $sql = "SELECT  DESIGNATION_ID, INITCAP(DESIGNATION_TITLE) AS DESIGNATION_TITLE, PARENT_DESIGNATION, WITHIN_BRANCH, WITHIN_DEPARTMENT, LEVEL 
                 FROM HRIS_DESIGNATIONS WHERE (LEVEL=2 OR LEVEL=3)
                 START WITH DESIGNATION_ID = (SELECT E.DESIGNATION_ID FROM HRIS_EMPLOYEES E WHERE E.EMPLOYEE_ID=".$employeeId.")
                 CONNECT BY PRIOR  PARENT_DESIGNATION=DESIGNATION_ID";
@@ -42,7 +42,7 @@ class RecommendApproveRepository implements RepositoryInterface
 
     //to get recommender and approver based on designation and branch id
     public function getEmployeeList($withinBranch,$withinDepartment,$designationId,$branchId,$departmentId){
-        $sql = "SELECT EMPLOYEE_ID,FIRST_NAME,MIDDLE_NAME,LAST_NAME FROM HRIS_EMPLOYEES WHERE STATUS='E' AND RETIRED_FLAG='N' AND DESIGNATION_ID=".$designationId;
+        $sql = "SELECT EMPLOYEE_ID,INITCAP(FIRST_NAME) AS FIRST_NAME,INITCAP(MIDDLE_NAME) AS MIDDLE_NAME,INITCAP(LAST_NAME) AS LAST_NAME FROM HRIS_EMPLOYEES WHERE STATUS='E' AND RETIRED_FLAG='N' AND DESIGNATION_ID=".$designationId;
 
         if($withinBranch!=null && $withinBranch!="N"){
             $sql.=" AND BRANCH_ID=".$branchId;
@@ -74,9 +74,9 @@ class RecommendApproveRepository implements RepositoryInterface
             new Expression("RA.APPROVED_BY AS APPROVED_BY"),
         ], true);
         $select->from(['RA' => RecommendApprove::TABLE_NAME])
-            ->join(['E'=>"HRIS_EMPLOYEES"],"E.EMPLOYEE_ID=RA.EMPLOYEE_ID",['FIRST_NAME','MIDDLE_NAME','LAST_NAME'],"left")
-            ->join(['E1'=>"HRIS_EMPLOYEES"],"E1.EMPLOYEE_ID=RA.RECOMMEND_BY",['FIRST_NAME_R'=>"FIRST_NAME","MIDDLE_NAME_R"=>'MIDDLE_NAME',"LAST_NAME_R"=>'LAST_NAME',"RETIRED_R"=>"RETIRED_FLAG","STATUS_R"=>"STATUS"],"left")
-            ->join(['E2'=>"HRIS_EMPLOYEES"],"E2.EMPLOYEE_ID=RA.APPROVED_BY",['FIRST_NAME_A'=>"FIRST_NAME","MIDDLE_NAME_A"=>'MIDDLE_NAME',"LAST_NAME_A"=>'LAST_NAME',"RETIRED_A"=>"RETIRED_FLAG","STATUS_A"=>"STATUS"],"left");
+            ->join(['E'=>"HRIS_EMPLOYEES"],"E.EMPLOYEE_ID=RA.EMPLOYEE_ID",['FIRST_NAME'=>new Expression("INITCAP(E.FIRST_NAME)"),'MIDDLE_NAME'=>new Expression("INITCAP(E.MIDDLE_NAME)"),'LAST_NAME'=>new Expression("INITCAP(E.LAST_NAME)")],"left")
+            ->join(['E1'=>"HRIS_EMPLOYEES"],"E1.EMPLOYEE_ID=RA.RECOMMEND_BY",['FIRST_NAME_R'=>new Expression("INITCAP(E1.FIRST_NAME)"),"MIDDLE_NAME_R"=>new Expression("INITCAP(E1.MIDDLE_NAME)"),"LAST_NAME_R"=>new Expression("INITCAP(E1.LAST_NAME)"),"RETIRED_R"=>"RETIRED_FLAG","STATUS_R"=>"STATUS"],"left")
+            ->join(['E2'=>"HRIS_EMPLOYEES"],"E2.EMPLOYEE_ID=RA.APPROVED_BY",['FIRST_NAME_A'=>new Expression("INITCAP(E2.FIRST_NAME)"),"MIDDLE_NAME_A"=>new Expression("INITCAP(E2.MIDDLE_NAME)"),"LAST_NAME_A"=>new Expression("INITCAP(E2.LAST_NAME)"),"RETIRED_A"=>"RETIRED_FLAG","STATUS_A"=>"STATUS"],"left");
 
         $select->where([
             "RA.STATUS='E'",
@@ -123,7 +123,7 @@ AND
             $empresult = $this->employeeTableGateway->select(['EMPLOYEE_ID' => $id])->current();
             $entitiesArray[$empresult['EMPLOYEE_ID']] = $empresult['FIRST_NAME'] . " " . $empresult['MIDDLE_NAME'] . " " . $empresult['LAST_NAME'];
         }
-        $sql = "SELECT EMPLOYEE_ID,FIRST_NAME,MIDDLE_NAME,LAST_NAME FROM 
+        $sql = "SELECT EMPLOYEE_ID,INITCAP(FIRST_NAME) AS FIRST_NAME,INITCAP(MIDDLE_NAME) AS MIDDLE_NAME,INITCAP(LAST_NAME) AS LAST_NAME FROM 
                 HRIS_EMPLOYEES WHERE STATUS='E' AND RETIRED_FLAG='N'
                 AND EMPLOYEE_ID NOT IN 
                 (SELECT EMPLOYEE_ID FROM HRIS_RECOMMENDER_APPROVER WHERE STATUS='E')";
@@ -159,9 +159,9 @@ AND
             new Expression("RA.APPROVED_BY AS APPROVED_BY"),
         ], true);
         $select->from(['RA' => RecommendApprove::TABLE_NAME])
-            ->join(['E'=>"HRIS_EMPLOYEES"],"E.EMPLOYEE_ID=RA.EMPLOYEE_ID",['FIRST_NAME','MIDDLE_NAME','LAST_NAME'],"left")
-            ->join(['E1'=>"HRIS_EMPLOYEES"],"E1.EMPLOYEE_ID=RA.RECOMMEND_BY",['FIRST_NAME_R'=>"FIRST_NAME","MIDDLE_NAME_R"=>'MIDDLE_NAME',"LAST_NAME_R"=>'LAST_NAME',"RETIRED_R"=>"RETIRED_FLAG","STATUS_R"=>"STATUS"],"left")
-            ->join(['E2'=>"HRIS_EMPLOYEES"],"E2.EMPLOYEE_ID=RA.APPROVED_BY",['FIRST_NAME_A'=>"FIRST_NAME","MIDDLE_NAME_A"=>'MIDDLE_NAME',"LAST_NAME_A"=>'LAST_NAME',"RETIRED_A"=>"RETIRED_FLAG","STATUS_A"=>"STATUS"],"left");
+            ->join(['E'=>"HRIS_EMPLOYEES"],"E.EMPLOYEE_ID=RA.EMPLOYEE_ID",['FIRST_NAME'=>new Expression("INITCAP(E.FIRST_NAME)"),'MIDDLE_NAME'=>new Expression("INITCAP(E.MIDDLE_NAME)"),'LAST_NAME'=>new Expression("INITCAP(E.LAST_NAME)")],"left")
+            ->join(['E1'=>"HRIS_EMPLOYEES"],"E1.EMPLOYEE_ID=RA.RECOMMEND_BY",['FIRST_NAME_R'=>new Expression("INITCAP(E1.FIRST_NAME)"),"MIDDLE_NAME_R"=>new Expression("INITCAP(E1.MIDDLE_NAME)"),"LAST_NAME_R"=>new Expression("INITCAP(E1.LAST_NAME)"),"RETIRED_R"=>"RETIRED_FLAG","STATUS_R"=>"STATUS"],"left")
+            ->join(['E2'=>"HRIS_EMPLOYEES"],"E2.EMPLOYEE_ID=RA.APPROVED_BY",['FIRST_NAME_A'=>new Expression("INITCAP(E2.FIRST_NAME)"),"MIDDLE_NAME_A"=>new Expression("INITCAP(E2.MIDDLE_NAME)"),"LAST_NAME_A"=>new Expression("INITCAP(E2.LAST_NAME)"),"RETIRED_A"=>"RETIRED_FLAG","STATUS_A"=>"STATUS"],"left");
 
         $select->where([
             "RA.STATUS='E'",

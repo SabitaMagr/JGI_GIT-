@@ -7,6 +7,7 @@ use AttendanceManagement\Form\ShiftForm;
 use AttendanceManagement\Model\ShiftSetup as Shift;
 use AttendanceManagement\Repository\ShiftRepository;
 use Setup\Helper\EntityHelper;
+use Application\Helper\EntityHelper as EntityHelper2;
 use Setup\Model\Company;
 use Zend\Authentication\AuthenticationService;
 use Zend\Db\Adapter\AdapterInterface;
@@ -82,7 +83,7 @@ class ShiftSetup extends AbstractActionController {
                         $this, [
                     'form' => $this->form,
                     'customRenderer' => Helper::renderCustomView(),
-                    'companies' => EntityHelper::getTableKVList($this->adapter, Company::TABLE_NAME)
+                    'companies' => EntityHelper2::getTableKVListWithSortOption($this->adapter, Company::TABLE_NAME, Company::COMPANY_ID, [Company::COMPANY_NAME], [Company::STATUS => 'E'], "COMPANY_NAME", "ASC",NULL,FALSE,TRUE)
                         ]
                 )
         );
@@ -134,7 +135,7 @@ class ShiftSetup extends AbstractActionController {
                     'form' => $this->form,
                     'id' => $id,
                     'customRenderer' => Helper::renderCustomView(),
-                    'companies' => EntityHelper::getTableKVList($this->adapter, Company::TABLE_NAME)
+                    'companies' => EntityHelper2::getTableKVListWithSortOption($this->adapter, Company::TABLE_NAME, Company::COMPANY_ID, [Company::COMPANY_NAME], [Company::STATUS => 'E'], "COMPANY_NAME", "ASC",NULL,FALSE,TRUE)
                         ]
                 )
         );

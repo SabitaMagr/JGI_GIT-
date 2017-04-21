@@ -16,6 +16,9 @@ use Payroll\Model\Rules;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\TableGateway\TableGateway;
 use Zend\I18n\Translator\Plural\Rule;
+use Application\Helper\EntityHelper;
+use Zend\Db\Sql\Select;
+use Zend\Db\Sql\Expression;
 
 class RulesRepository implements RepositoryInterface {
 
@@ -36,11 +39,19 @@ class RulesRepository implements RepositoryInterface {
     }
 
     public function fetchAll() {
-        return $this->gateway->select([Rules::STATUS => 'E']);
+        return $this->gateway->select(function(Select $select){
+            $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(Rules::class,
+                    [Rules::PAY_EDESC,Rules::PAY_LDESC]),false);
+            $select->where([Rules::STATUS => 'E']);
+        });
     }
 
     public function fetchById($id) {
-        return $this->gateway->select([Rules::STATUS => 'E', Rules::PAY_ID => $id])->current();
+        return $this->gateway->select(function(Select $select) use($id){
+            $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(Rules::class,
+                    [Rules::PAY_EDESC,Rules::PAY_LDESC]),false);
+            $select->where([Rules::STATUS => 'E', Rules::PAY_ID => $id]);
+        })->current();
     }
 
     public function delete($id) {
@@ -52,8 +63,8 @@ class RulesRepository implements RepositoryInterface {
 
     public function fetchReferencingRules($payId) {
         $sql = "SELECT P.PAY_ID,
-  P.PAY_EDESC,
-  P.PAY_LDESC
+  INITCAP(P.PAY_EDESC) AS PAY_EDESC,
+  INITCAP(P.PAY_LDESC) AS PAY_LDESC
 FROM HRIS_PAY_SETUP P,
   (SELECT PRIORITY_INDEX FROM HRIS_PAY_SETUP WHERE PAY_ID=$payId
   ) PS

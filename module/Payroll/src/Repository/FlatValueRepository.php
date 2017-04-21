@@ -14,6 +14,8 @@ use Application\Repository\RepositoryInterface;
 use Payroll\Model\FlatValue;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\TableGateway\TableGateway;
+use Application\Helper\EntityHelper;
+use Zend\Db\Sql\Select;
 
 class FlatValueRepository implements RepositoryInterface
 {
@@ -38,12 +40,20 @@ class FlatValueRepository implements RepositoryInterface
 
     public function fetchAll()
     {
-        return $this->tableGateway->select([FlatValue::STATUS=>'E']);
+        return $this->tableGateway->select(function(Select $select){
+            $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(FlatValue::class,
+                    [FlatValue::FLAT_EDESC, FlatValue::FLAT_LDESC]),false);
+            $select->where([FlatValue::STATUS=>'E']);
+        });
     }
 
     public function fetchById($id)
     {
-        return $this->tableGateway->select([FlatValue::FLAT_ID=>$id])->current();
+        return $this->tableGateway->select(function(Select $select) use($id){
+            $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(FlatValue::class,
+                    [FlatValue::FLAT_EDESC, FlatValue::FLAT_LDESC]),false);
+            $select->where([FlatValue::FLAT_ID=>$id]);    
+        })->current();
     }
 
     public function delete($id)

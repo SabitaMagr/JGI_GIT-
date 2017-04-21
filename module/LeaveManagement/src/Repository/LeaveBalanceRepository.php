@@ -7,15 +7,16 @@
  */
 namespace LeaveManagement\Repository;
 
+use Application\Helper\EntityHelper;
 use Application\Model\Model;
 use Application\Repository\RepositoryInterface;
 use LeaveManagement\Model\LeaveAssign;
 use LeaveManagement\Model\LeaveMaster;
 use Setup\Model\HrEmployees;
 use Zend\Db\Adapter\AdapterInterface;
-use Zend\Db\TableGateway\TableGateway;
-use Zend\Db\Sql\Sql;
 use Zend\Db\Sql\Expression;
+use Zend\Db\Sql\Sql;
+use Zend\Db\TableGateway\TableGateway;
 
 class LeaveBalanceRepository implements RepositoryInterface {
 
@@ -37,7 +38,7 @@ class LeaveBalanceRepository implements RepositoryInterface {
         // TODO: Implement add() method.
     }
     public function getAllLeave(){
-        $sql = "SELECT * FROM HRIS_LEAVE_MASTER_SETUP WHERE STATUS='E' ORDER BY LEAVE_ID";
+        $sql = "SELECT LEAVE_ID,INITCAP(LEAVE_ENAME) FROM HRIS_LEAVE_MASTER_SETUP WHERE STATUS='E' ORDER BY LEAVE_ID";
         $statement = $this->adapter->query($sql);
         $result = $statement->execute();
         return $result;
@@ -45,12 +46,16 @@ class LeaveBalanceRepository implements RepositoryInterface {
     public function getAllEmployee($emplyoeeId,$branchId,$departmentId,$designationId,$positionId,$serviceTypeId,$serviceEventTypeId){
         $sql = new Sql($this->adapter);
         $select = $sql->select();
-        $select->columns([
-            new Expression("E.FIRST_NAME AS FIRST_NAME"),
-            new Expression("E.MIDDLE_NAME AS MIDDLE_NAME"),
-            new Expression("E.LAST_NAME AS LAST_NAME"),
-            new Expression("E.EMPLOYEE_ID AS EMPLOYEE_ID")
-        ], true);
+        $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(HrEmployees::class,
+	 [HrEmployees::FIRST_NAME, HrEmployees::MIDDLE_NAME, HrEmployees::LAST_NAME],NULL, NULL, NULL, NULL,'E'),false);
+        
+        
+//        $select->columns([
+//            new Expression("E.FIRST_NAME AS FIRST_NAME"),
+//            new Expression("E.MIDDLE_NAME AS MIDDLE_NAME"),
+//            new Expression("E.LAST_NAME AS LAST_NAME"),
+//            new Expression("E.EMPLOYEE_ID AS EMPLOYEE_ID")
+//        ], true);
 
         $select->from(['E' => "HRIS_EMPLOYEES"]);
 
@@ -115,8 +120,8 @@ class LeaveBalanceRepository implements RepositoryInterface {
         ], true);
 
         $select->from(['LA' => LeaveAssign::TABLE_NAME])
-            ->join(['E'=>"HRIS_EMPLOYEES"],"E.EMPLOYEE_ID=LA.EMPLOYEE_ID",['FIRST_NAME','MIDDLE_NAME','LAST_NAME','SERVICE_EVENT_TYPE_ID'],"left")
-            ->join(['L'=>'HRIS_LEAVE_MASTER_SETUP'],"L.LEAVE_ID=LA.LEAVE_ID",['LEAVE_CODE','LEAVE_ENAME'],"left");
+            ->join(['E'=>"HRIS_EMPLOYEES"],"E.EMPLOYEE_ID=LA.EMPLOYEE_ID",['FIRST_NAME'=>new Expression('INITCAP(E.FIRST_NAME)'),'MIDDLE_NAME'=>new Expression('INITCAP(E.MIDDLE_NAME)'),'LAST_NAME'=>new Expression('INITCAP(E.LAST_NAME)'),'SERVICE_EVENT_TYPE_ID'],"left")
+            ->join(['L'=>'HRIS_LEAVE_MASTER_SETUP'],"L.LEAVE_ID=LA.LEAVE_ID",['LEAVE_CODE','LEAVE_ENAME'=> new Expression('INITCAP(L.LEAVE_ENAME)')],"left");
 
         $select->where([
             "L.STATUS='E'",
@@ -163,8 +168,9 @@ class LeaveBalanceRepository implements RepositoryInterface {
         ], true);
 
         $select->from(['LA' => LeaveAssign::TABLE_NAME])
-            ->join(['E'=>"HRIS_EMPLOYEES"],"E.EMPLOYEE_ID=LA.EMPLOYEE_ID",['FIRST_NAME','MIDDLE_NAME','LAST_NAME'],"left")
-            ->join(['L'=>'HRIS_LEAVE_MASTER_SETUP'],"L.LEAVE_ID=LA.LEAVE_ID",['LEAVE_CODE','LEAVE_ENAME'],"left");
+//            ->join(['E'=>"HRIS_EMPLOYEES"],"E.EMPLOYEE_ID=LA.EMPLOYEE_ID",['FIRST_NAME','MIDDLE_NAME','LAST_NAME'],"left")
+            ->join(['E'=>"HRIS_EMPLOYEES"],"E.EMPLOYEE_ID=LA.EMPLOYEE_ID",['FIRST_NAME'=>new Expression('INITCAP(E.FIRST_NAME)'),'MIDDLE_NAME'=>new Expression('INITCAP(E.MIDDLE_NAME)'),'LAST_NAME'=>new Expression('INITCAP(E.LAST_NAME)')],"left")
+            ->join(['L'=>'HRIS_LEAVE_MASTER_SETUP'],"L.LEAVE_ID=LA.LEAVE_ID",['LEAVE_CODE','LEAVE_ENAME'=>new Expression('INITCAP(LEAVE_ENAME)')],"left");
 
         $select->where([
             "L.STATUS='E'",

@@ -15,6 +15,8 @@ use AttendanceManagement\Model\AttendanceDetail;
 use Zend\Db\Sql\Sql;
 use Application\Helper\Helper;
 use Zend\Db\Sql\Expression;
+use Application\Helper\EntityHelper;
+use Zend\Db\Sql\Select;
 
 class AttendanceRepository implements RepositoryInterface
 {
@@ -46,9 +48,18 @@ class AttendanceRepository implements RepositoryInterface
     public function fetchByEmpId($id){
         $sql = new Sql($this->adapter);
         $select = $sql->select();
-        $select->columns([new Expression("TO_CHAR(A.ATTENDANCE_DT, 'DD-MON-YYYY') AS ATTENDANCE_DT"), new Expression("TO_CHAR(A.IN_TIME, 'HH:MI AM') AS IN_TIME"), new Expression("TO_CHAR(A.OUT_TIME, 'HH:MI AM') AS OUT_TIME"), new Expression("E.EMPLOYEE_ID AS EMPLOYEE_ID"), new Expression("A.ID AS ID"), new Expression("A.IN_REMARKS AS IN_REMARKS"), new Expression("A.OUT_REMARKS AS OUT_REMARKS"), new Expression("A.TOTAL_HOUR AS TOTAL_HOUR")], true);
+        $select->columns([
+            new Expression("INITCAP(TO_CHAR(A.ATTENDANCE_DT, 'DD-MON-YYYY')) AS ATTENDANCE_DT"), 
+            new Expression("INITCAP(TO_CHAR(A.IN_TIME, 'HH:MI AM')) AS IN_TIME"),
+            new Expression("INITCAP(TO_CHAR(A.OUT_TIME, 'HH:MI AM')) AS OUT_TIME"), 
+            new Expression("E.EMPLOYEE_ID AS EMPLOYEE_ID"), 
+            new Expression("A.ID AS ID"), 
+            new Expression("A.IN_REMARKS AS IN_REMARKS"), 
+            new Expression("A.OUT_REMARKS AS OUT_REMARKS"), 
+            new Expression("A.TOTAL_HOUR AS TOTAL_HOUR")
+            ], true);
         $select->from(['A' => AttendanceDetail::TABLE_NAME])
-            ->join(['E' => 'HRIS_EMPLOYEES'], 'A.EMPLOYEE_ID=E.EMPLOYEE_ID', ["FIRST_NAME" => 'FIRST_NAME'],"left");
+            ->join(['E' => 'HRIS_EMPLOYEES'], 'A.EMPLOYEE_ID=E.EMPLOYEE_ID', ["FIRST_NAME" => new Expression("INITCAP(E.FIRST_NAME)")],"left");
         $select->where(['A.EMPLOYEE_ID'=> $id]);
         $select->order("A.ATTENDANCE_DT DESC");
         $statement = $sql->prepareStatementForSqlObject($select);
@@ -64,7 +75,15 @@ class AttendanceRepository implements RepositoryInterface
 //        return $result;
         $sql = new Sql($this->adapter);
         $select = $sql->select();
-        $select->columns([new Expression("TO_CHAR(A.ATTENDANCE_DT, 'DD-MON-YYYY') AS ATTENDANCE_DT"), new Expression("TO_CHAR(A.IN_TIME, 'HH:MI AM') AS IN_TIME"), new Expression("TO_CHAR(A.OUT_TIME, 'HH:MI AM') AS OUT_TIME"), new Expression("A.ID AS ID"), new Expression("A.IN_REMARKS AS IN_REMARKS"), new Expression("A.OUT_REMARKS AS OUT_REMARKS"), new Expression("A.TOTAL_HOUR AS TOTAL_HOUR")], true);
+        $select->columns([
+            new Expression("INITCAP(TO_CHAR(A.ATTENDANCE_DT, 'DD-MON-YYYY')) AS ATTENDANCE_DT"), 
+            new Expression("INITCAP(TO_CHAR(A.IN_TIME, 'HH:MI AM')) AS IN_TIME"),
+            new Expression("INITCAP(TO_CHAR(A.OUT_TIME, 'HH:MI AM')) AS OUT_TIME"), 
+            new Expression("A.ID AS ID"), 
+            new Expression("A.IN_REMARKS AS IN_REMARKS"), 
+            new Expression("A.OUT_REMARKS AS OUT_REMARKS"), 
+            new Expression("A.TOTAL_HOUR AS TOTAL_HOUR")
+            ], true);
         $select->from(['A' => AttendanceDetail::TABLE_NAME]);
         if($fromDate!=null){
             $startDate = " AND A.ATTENDANCE_DT>=TO_DATE('".$fromDate."','DD-MM-YYYY')";

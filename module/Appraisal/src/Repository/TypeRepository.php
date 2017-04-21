@@ -8,6 +8,7 @@ use Zend\Db\Sql\Sql;
 use Zend\Db\Sql\Select;
 use Zend\Db\Sql\Expression;
 use Appraisal\Model\Type;
+use Application\Helper\EntityHelper;
 
 class TypeRepository implements RepositoryInterface{
     private $tableGateway;
@@ -37,14 +38,9 @@ class TypeRepository implements RepositoryInterface{
     public function fetchAll() {
         $sql = new Sql($this->adapter);
         $select = $sql->select();
-        $select->columns([
-            new Expression("AT.APPRAISAL_TYPE_ID AS APPRAISAL_TYPE_ID"), 
-            new Expression("AT.APPRAISAL_TYPE_CODE AS APPRAISAL_TYPE_CODE"),
-            new Expression("AT.APPRAISAL_TYPE_EDESC AS APPRAISAL_TYPE_EDESC"), 
-            new Expression("AT.APPRAISAL_TYPE_NDESC AS APPRAISAL_TYPE_NDESC")
-            ], true);
+        $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(Type::class,[Type::APPRAISAL_TYPE_EDESC,Type::APPRAISAL_TYPE_NDESC],null,null,null,null,"AT"),false);
         $select->from(['AT' => "HRIS_APPRAISAL_TYPE"])
-                ->join(['ST' => 'HRIS_SERVICE_TYPES'], 'AT.SERVICE_TYPE_ID=ST.SERVICE_TYPE_ID', ["SERVICE_TYPE_NAME"], "left");
+                ->join(['ST' => 'HRIS_SERVICE_TYPES'], 'AT.SERVICE_TYPE_ID=ST.SERVICE_TYPE_ID', ["SERVICE_TYPE_NAME"=>new Expression("INITCAP(ST.SERVICE_TYPE_NAME)")], "left");
         
         $select->where(["AT.STATUS='E'"]);
         $select->order("AT.APPRAISAL_TYPE_EDESC");
@@ -54,7 +50,10 @@ class TypeRepository implements RepositoryInterface{
     }
 
     public function fetchById($id) {
-        $rowset = $this->tableGateway->select([Type::APPRAISAL_TYPE_ID => $id, Type::STATUS => 'E']);
+        $rowset = $this->tableGateway->select(function(Select $select) use($id){
+            $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(Type::class,[Type::APPRAISAL_TYPE_EDESC,Type::APPRAISAL_TYPE_NDESC]),false);
+            $select->where([Type::APPRAISAL_TYPE_ID => $id, Type::STATUS => 'E']);
+        });
         return $result = $rowset->current();
     }
 

@@ -83,7 +83,7 @@ class Question extends Model{
         'createdBy'=>self::CREATED_BY,
         'createdDate'=>self::CREATED_DATE,
         'modifiedBy'=>self::MODIFIED_BY,
-        'modifedDate'=>self::MODIFIED_DATE,
+        'modifiedDate'=>self::MODIFIED_DATE,
         'checked'=>self::CHECKED,
         'approvedBy'=>self::APPROVED_BY,
         'approvedDate'=>self::APPROVED_DATE,

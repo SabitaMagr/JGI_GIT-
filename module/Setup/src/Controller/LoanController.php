@@ -49,21 +49,21 @@ class LoanController extends AbstractActionController{
        
         $designationFormElement = new Select();
         $designationFormElement->setName("designation");
-        $designations = EntityHelper2::getTableKVListWithSortOption($this->adapter, Designation::TABLE_NAME, Designation::DESIGNATION_ID, [Designation::DESIGNATION_TITLE], [Designation::STATUS => 'E'], "DESIGNATION_TITLE", "ASC");
+        $designations = EntityHelper2::getTableKVListWithSortOption($this->adapter, Designation::TABLE_NAME, Designation::DESIGNATION_ID, [Designation::DESIGNATION_TITLE], [Designation::STATUS => 'E'], "DESIGNATION_TITLE", "ASC",null,false,true);
         $designationFormElement->setValueOptions($designations);
         $designationFormElement->setAttributes(["id" => "designationId", "class" => "form-control","multiple"=>"multiple"]);
         $designationFormElement->setLabel("Designation");
 
         $positionFormElement = new Select();
         $positionFormElement->setName("position");
-        $positions = EntityHelper2::getTableKVListWithSortOption($this->adapter, Position::TABLE_NAME, Position::POSITION_ID, [Position::POSITION_NAME], [Position::STATUS => 'E'], "POSITION_NAME", "ASC");
+        $positions = EntityHelper2::getTableKVListWithSortOption($this->adapter, Position::TABLE_NAME, Position::POSITION_ID, [Position::POSITION_NAME], [Position::STATUS => 'E'], "POSITION_NAME", "ASC",null,false,true);
         $positionFormElement->setValueOptions($positions);
         $positionFormElement->setAttributes(["id" => "positionId", "class" => "form-control","multiple"=>"multiple"]);
         $positionFormElement->setLabel("Position");
 
         $serviceTypeFormElement = new Select();
         $serviceTypeFormElement->setName("serviceType");
-        $serviceTypes = EntityHelper2::getTableKVListWithSortOption($this->adapter, ServiceType::TABLE_NAME, ServiceType::SERVICE_TYPE_ID, [ServiceType::SERVICE_TYPE_NAME], [ServiceType::STATUS => 'E'], "SERVICE_TYPE_NAME", "ASC");
+        $serviceTypes = EntityHelper2::getTableKVListWithSortOption($this->adapter, ServiceType::TABLE_NAME, ServiceType::SERVICE_TYPE_ID, [ServiceType::SERVICE_TYPE_NAME], [ServiceType::STATUS => 'E'], "SERVICE_TYPE_NAME", "ASC",null,false,true);
         $serviceTypeFormElement->setValueOptions($serviceTypes);
         $serviceTypeFormElement->setAttributes(["id" => "serviceTypeId", "class" => "form-control","multiple"=>"multiple"]);
         $serviceTypeFormElement->setLabel("Service Type");
@@ -141,7 +141,7 @@ class LoanController extends AbstractActionController{
             'designation'=>$designationFormElement,
             'position'=>$positionFormElement,
             'serviceType'=>$serviceTypeFormElement,
-            'companies' => EntityHelper2::getTableKVListWithSortOption($this->adapter, Company::TABLE_NAME, Company::COMPANY_ID, [Company::COMPANY_NAME], ["STATUS" => "E"], Company::COMPANY_NAME, "ASC")
+            'companies' => EntityHelper2::getTableKVListWithSortOption($this->adapter, Company::TABLE_NAME, Company::COMPANY_ID, [Company::COMPANY_NAME], ["STATUS" => "E"], Company::COMPANY_NAME, "ASC",null,false,true)
                 ]);              
     }
     
@@ -156,21 +156,21 @@ class LoanController extends AbstractActionController{
         
         $designationFormElement = new Select();
         $designationFormElement->setName("designation");
-        $designations = EntityHelper2::getTableKVListWithSortOption($this->adapter, Designation::TABLE_NAME, Designation::DESIGNATION_ID, [Designation::DESIGNATION_TITLE], [Designation::STATUS => 'E'], "DESIGNATION_TITLE", "ASC");
+        $designations = EntityHelper2::getTableKVListWithSortOption($this->adapter, Designation::TABLE_NAME, Designation::DESIGNATION_ID, [Designation::DESIGNATION_TITLE], [Designation::STATUS => 'E'], "DESIGNATION_TITLE", "ASC",null,false,true);
         $designationFormElement->setValueOptions($designations);
         $designationFormElement->setAttributes(["id" => "designationId", "class" => "form-control","multiple"=>"multiple"]);
         $designationFormElement->setLabel("Designation");
 
         $positionFormElement = new Select();
         $positionFormElement->setName("position");
-        $positions = EntityHelper2::getTableKVListWithSortOption($this->adapter, Position::TABLE_NAME, Position::POSITION_ID, [Position::POSITION_NAME], [Position::STATUS => 'E'], "POSITION_NAME", "ASC");
+        $positions = EntityHelper2::getTableKVListWithSortOption($this->adapter, Position::TABLE_NAME, Position::POSITION_ID, [Position::POSITION_NAME], [Position::STATUS => 'E'], "POSITION_NAME", "ASC",null,false,true);
         $positionFormElement->setValueOptions($positions);
         $positionFormElement->setAttributes(["id" => "positionId", "class" => "form-control","multiple"=>"multiple"]);
         $positionFormElement->setLabel("Position");
 
         $serviceTypeFormElement = new Select();
         $serviceTypeFormElement->setName("serviceType");
-        $serviceTypes = EntityHelper2::getTableKVListWithSortOption($this->adapter, ServiceType::TABLE_NAME, ServiceType::SERVICE_TYPE_ID, [ServiceType::SERVICE_TYPE_NAME], [ServiceType::STATUS => 'E'], "SERVICE_TYPE_NAME", "ASC");
+        $serviceTypes = EntityHelper2::getTableKVListWithSortOption($this->adapter, ServiceType::TABLE_NAME, ServiceType::SERVICE_TYPE_ID, [ServiceType::SERVICE_TYPE_NAME], [ServiceType::STATUS => 'E'], "SERVICE_TYPE_NAME", "ASC",null,false,true);
         $serviceTypeFormElement->setValueOptions($serviceTypes);
         $serviceTypeFormElement->setAttributes(["id" => "serviceTypeId", "class" => "form-control","multiple"=>"multiple"]);
         $serviceTypeFormElement->setLabel("Service Type");
@@ -261,7 +261,7 @@ class LoanController extends AbstractActionController{
                             'serviceTypeRestriction'=>$serviceTypeRestriction,
                             'designationRestriction'=>$designationRestriction,
                             'positionRestriction'=>$positionRestriction,
-                            'companies' => EntityHelper2::getTableKVListWithSortOption($this->adapter, Company::TABLE_NAME, Company::COMPANY_ID, [Company::COMPANY_NAME], ["STATUS" => "E"], Company::COMPANY_NAME, "ASC")
+                            'companies' => EntityHelper2::getTableKVListWithSortOption($this->adapter, Company::TABLE_NAME, Company::COMPANY_ID, [Company::COMPANY_NAME], ["STATUS" => "E"], Company::COMPANY_NAME, "ASC",null,false,true)
                 ]
         );
     }
