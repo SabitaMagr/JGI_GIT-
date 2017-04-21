@@ -161,7 +161,7 @@ class AttendanceStatusRepository implements RepositoryInterface {
 //                ->join(['E1' => "HRIS_EMPLOYEES"], "E1.EMPLOYEE_ID=AR.APPROVED_BY", ['FIRST_NAME1' => "FIRST_NAME", 'MIDDLE_NAME1' => "MIDDLE_NAME", 'LAST_NAME1' => "LAST_NAME"],"left")
                 ->join(['E1' => "HRIS_EMPLOYEES"], "E1.EMPLOYEE_ID=AR.APPROVED_BY", ['FIRST_NAME1' =>new Expression('INITCAP(E1.FIRST_NAME)'), 'MIDDLE_NAME1' => new Expression('INITCAP(E1.MIDDLE_NAME)'), 'LAST_NAME1' => new Expression('INITCAP(E1.LAST_NAME)')],"left")
                 ->join(['RA'=>"HRIS_RECOMMENDER_APPROVER"],"RA.EMPLOYEE_ID=AR.EMPLOYEE_ID",['APPROVER'=>'RECOMMEND_BY'],"left")
-                ->join(['APRV'=>"HRIS_EMPLOYEES"],"APRV.EMPLOYEE_ID=RA.RECOMMEND_BY",['APRV_FN'=>new Expression('INITCAP(FIRST_NAME)'),'APRV_MN'=>new Expression('INITCAP(MIDDLE_NAME)'),'APRV_LN'=>new Expression('INITCAP(LAST_NAME)')],"left");
+                ->join(['APRV'=>"HRIS_EMPLOYEES"],"APRV.EMPLOYEE_ID=RA.RECOMMEND_BY",['APRV_FN'=>new Expression('INITCAP(APRV.FIRST_NAME)'),'APRV_MN'=>new Expression('INITCAP(APRV.MIDDLE_NAME)'),'APRV_LN'=>new Expression('INITCAP(APRV.LAST_NAME)')],"left");
 
         
         $select->where([

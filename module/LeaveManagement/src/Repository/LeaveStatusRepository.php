@@ -137,7 +137,7 @@ class LeaveStatusRepository implements RepositoryInterface {
                 LeaveApply::REQUESTED_DT,
                 LeaveApply::END_DATE,
                 LeaveApply::APPROVED_DT
-                    ], NULL, NULL, NULL,'L'),false);
+                    ], NULL, NULL, NULL,'LA'),false);
         
 //        $select->columns([
 //            new Expression("TO_CHAR(LA.START_DATE, 'DD-MON-YYYY') AS START_DATE"),
@@ -158,8 +158,8 @@ class LeaveStatusRepository implements RepositoryInterface {
         $select->from(['LA' => LeaveApply::TABLE_NAME])
 //                ->join(['E' => "HRIS_EMPLOYEES"], "E.EMPLOYEE_ID=LA.EMPLOYEE_ID", ['FIRST_NAME', 'MIDDLE_NAME', 'LAST_NAME'], "left")
                 ->join(['E' => "HRIS_EMPLOYEES"], "E.EMPLOYEE_ID=LA.EMPLOYEE_ID", ['FIRST_NAME'=>new Expression('INITCAP(E.FIRST_NAME)'),'MIDDLE_NAME'=>new Expression('INITCAP(E.MIDDLE_NAME)'),'LAST_NAME'=>new Expression('INITCAP(E.LAST_NAME)')], "left")
-                ->join(['E1' => "HRIS_EMPLOYEES"], "E1.EMPLOYEE_ID=LA.RECOMMENDED_BY", ['FN1' => 'FIRST_NAME', 'MN1' => 'MIDDLE_NAME', 'LN1' => 'LAST_NAME'], "left")
-                ->join(['E2' => "HRIS_EMPLOYEES"], "E2.EMPLOYEE_ID=LA.APPROVED_BY", ['FN2' => 'FIRST_NAME', 'MN2' => 'MIDDLE_NAME', 'LN2' => 'LAST_NAME'], "left");
+                ->join(['E1' => "HRIS_EMPLOYEES"], "E1.EMPLOYEE_ID=LA.RECOMMENDED_BY", ['FN1' =>  new Expression("INITCAP(E1.FIRST_NAME)"), 'MN1' => new Expression("INITCAP(E1.MIDDLE_NAME)"), 'LN1' => new Expression("INITCAP(E1.LAST_NAME)")], "left")
+                ->join(['E2' => "HRIS_EMPLOYEES"], "E2.EMPLOYEE_ID=LA.APPROVED_BY",['FN2' =>  new Expression("INITCAP(E2.FIRST_NAME)"), 'MN2' => new Expression("INITCAP(E2.MIDDLE_NAME)"), 'LN2' => new Expression("INITCAP(E2.LAST_NAME)")], "left");
 
         $select->where([
             "LA.ID=" . $id
@@ -194,7 +194,9 @@ class LeaveStatusRepository implements RepositoryInterface {
             $retiredFlag = " AND E.RETIRED_FLAG='N' ";
         }
 
-        $sql = "SELECT L.LEAVE_ENAME,L.LEAVE_CODE,LA.NO_OF_DAYS,
+        $sql = "SELECT 
+                INITCAP(L.LEAVE_ENAME) AS LEAVE_ENAME,
+                L.LEAVE_CODE,LA.NO_OF_DAYS,
                 INITCAP(TO_CHAR(LA.START_DATE, 'DD-MON-YYYY')) AS START_DATE,
                 INITCAP(TO_CHAR(LA.END_DATE, 'DD-MON-YYYY')) AS END_DATE,
                 INITCAP(TO_CHAR(LA.REQUESTED_DT, 'DD-MON-YYYY')) AS APPLIED_DATE,
@@ -215,7 +217,7 @@ class LeaveStatusRepository implements RepositoryInterface {
                 LA.RECOMMENDED_REMARKS AS RECOMMENDED_REMARKS,
                 LA.APPROVED_REMARKS AS APPROVED_REMARKS,
                 LS.APPROVED_FLAG AS SUB_APPROVED_FLAG,
-                TO_CHAR(LS.APPROVED_DATE, 'DD-MON-YYYY') AS SUB_APPROVED_DATE,
+                INITCAP(TO_CHAR(LS.APPROVED_DATE, 'DD-MON-YYYY')) AS SUB_APPROVED_DATE,
                 LS.EMPLOYEE_ID AS SUB_EMPLOYEE_ID
                 FROM HRIS_EMPLOYEE_LEAVE_REQUEST LA
                 LEFT OUTER JOIN HRIS_LEAVE_MASTER_SETUP L ON
