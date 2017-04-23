@@ -75,6 +75,7 @@ class EmployeeController extends AbstractActionController {
     public function indexAction() {
         $employees = $this->repository->fetchAll();
 
+        /* search values */
         $companyList = ApplicationHelper::getTableList($this->adapter, Company::TABLE_NAME, [Company::COMPANY_ID, Company::COMPANY_NAME]);
         $branchList = ApplicationHelper::getTableList($this->adapter, Branch::TABLE_NAME, [Branch::BRANCH_ID, Branch::BRANCH_NAME, Branch::COMPANY_ID]);
         $departmentList = ApplicationHelper::getTableList($this->adapter, Department::TABLE_NAME, [Department::DEPARTMENT_ID, Department::DEPARTMENT_NAME, Department::COMPANY_ID, Department::BRANCH_ID]);
@@ -106,6 +107,7 @@ class EmployeeController extends AbstractActionController {
             'serviceEventType' => $serviceEventTypeList,
             'employee' => $employeeList
         ];
+        /* end of search values */
 
         return Helper::addFlashMessagesToArray($this, [
                     'list' => $employees,
