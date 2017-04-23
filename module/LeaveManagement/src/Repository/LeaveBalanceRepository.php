@@ -38,7 +38,7 @@ class LeaveBalanceRepository implements RepositoryInterface {
         // TODO: Implement add() method.
     }
     public function getAllLeave(){
-        $sql = "SELECT LEAVE_ID,INITCAP(LEAVE_ENAME) FROM HRIS_LEAVE_MASTER_SETUP WHERE STATUS='E' ORDER BY LEAVE_ID";
+        $sql = "SELECT LEAVE_ID,INITCAP(LEAVE_ENAME) AS LEAVE_ENAME FROM HRIS_LEAVE_MASTER_SETUP WHERE STATUS='E' ORDER BY LEAVE_ID";
         $statement = $this->adapter->query($sql);
         $result = $statement->execute();
         return $result;
