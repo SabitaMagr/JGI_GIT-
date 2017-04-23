@@ -51,10 +51,17 @@ class TravelApply extends AbstractActionController{
         $requestType = array(
             'ad'=>'Advance'            
         );
+        $transportTypes = array(
+            'AP' => 'Aero Plane',
+            'OV' => 'Office Vehicles',
+            'TI' => 'Taxi',
+            'BS' => 'Bus'
+        );
 
         return Helper::addFlashMessagesToArray($this, [
                     'form' => $this->form,
                     'requestTypes'=>$requestType,
+                    'transportTypes' => $transportTypes,
                     'employees'=> EntityHelper::getTableKVListWithSortOption($this->adapter, "HRIS_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"],["STATUS"=>'E','RETIRED_FLAG'=>'N'],"FIRST_NAME","ASC"," ",false,true),
         ]);
     }

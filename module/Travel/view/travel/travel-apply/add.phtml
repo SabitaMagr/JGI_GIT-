@@ -19,6 +19,8 @@ $destination = $form->get('destination');
 $requestedAmount = $form->get('requestedAmount');
 $requestedType = $form->get('requestedType');
 $requestedType->setValueOptions($requestTypes);
+$transportType = $form->get('transportType');
+$transportType->setValueOptions($transportTypes);
 $purpose = $form->get('purpose');
 $remarks = $form->get('remarks');
 
@@ -161,6 +163,13 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                         <?php print $this->formElementErrors()->render($requestedType, ['class' => 'help-block']); ?>
                     </div>               
                 </div>
+                <div class="col-sm-4">
+                    <div class="form-group">
+                        <?php print $this->formLabel($transportType); ?>
+                        <?php print $this->formElement($transportType); ?>
+                        <?php print $this->formElementErrors()->render($transportType, ['class' => 'help-block']); ?>
+                    </div> 
+                </div>
 
                 <div class="col-sm-4">
                     <div class="form-group">
@@ -169,6 +178,8 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                         <?php print $this->formElementErrors()->render($requestedAmount, ['class' => 'help-block']); ?>
                     </div>
                 </div>
+            </div>
+            <div class="row">
 
                 <div class="col-sm-4">
                     <div class="form-group">

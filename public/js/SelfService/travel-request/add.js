@@ -3,6 +3,7 @@
     $(document).ready(function () {
         app.setLoadingOnSubmit("travelApprove-form");
         $('select#form-transportType').select2();
+        $('select#form-employeeId').select2();
 //        app.startEndDatePicker('fromDate', 'toDate');
         app.startEndDatePickerWithNepali('nepaliStartDate1', 'form-fromDate', 'nepaliEndDate1', 'form-toDate')
         /* prevent past event post */
