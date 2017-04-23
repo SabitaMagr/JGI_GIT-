@@ -268,7 +268,7 @@ class AdvanceApproveController extends AbstractActionController {
 
         $advanceFormElement = new Select();
         $advanceFormElement->setName("advance");
-        $advances = EntityHelper::getTableKVList($this->adapter, Advance::TABLE_NAME, Advance::ADVANCE_ID, [Advance::ADVANCE_NAME], [Advance::STATUS => 'E'], Advance::ADVANCE_NAME, "ASC",NULL,FALSE,TRUE);
+        $advances = EntityHelper::getTableKVListWithSortOption($this->adapter, Advance::TABLE_NAME, Advance::ADVANCE_ID, [Advance::ADVANCE_NAME], [Advance::STATUS => 'E'], Advance::ADVANCE_NAME, "ASC",NULL,FALSE,TRUE);
         $advances1 = [-1 => "All"] + $advances;
         $advanceFormElement->setValueOptions($advances1);
         $advanceFormElement->setAttributes(["id" => "advanceId", "class" => "form-control"]);

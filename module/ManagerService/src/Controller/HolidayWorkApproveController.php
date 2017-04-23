@@ -287,7 +287,7 @@ class HolidayWorkApproveController extends AbstractActionController {
 
         $holidayFormElement = new Select();
         $holidayFormElement->setName("holiday");
-        $holidays = EntityHelper::getTableKVList($this->adapter, Holiday::TABLE_NAME, Holiday::HOLIDAY_ID, [Holiday::HOLIDAY_ENAME], [Holiday::STATUS => 'E'], Holiday::HOLIDAY_ENAME, "ASC",NULL,FALSE,TRUE);
+        $holidays = EntityHelper::getTableKVListWithSortOption($this->adapter, Holiday::TABLE_NAME, Holiday::HOLIDAY_ID, [Holiday::HOLIDAY_ENAME], [Holiday::STATUS => 'E'], Holiday::HOLIDAY_ENAME, "ASC",NULL,FALSE,TRUE);
         $holidays1 = [-1 => "All"] + $holidays;
         $holidayFormElement->setValueOptions($holidays1);
         $holidayFormElement->setAttributes(["id" => "holidayId", "class" => "form-control"]);
