@@ -38,14 +38,8 @@ class BranchController extends AbstractActionController {
     }
 
     public function indexAction() {
-        $branchesRaw = $this->repository->fetchAll();
-        $branches = [];
-
-        foreach ($branchesRaw as $branch) {
-            array_push($branches, $branch);
-        }
-
-        return Helper::addFlashMessagesToArray($this, ['branches' => $branches]);
+        $branchesRaw = $this->repository->fetchAllWithCompany();
+        return Helper::addFlashMessagesToArray($this, ['branches' => Helper::extractDbData($branchesRaw)]);
     }
 
     public function addAction() {

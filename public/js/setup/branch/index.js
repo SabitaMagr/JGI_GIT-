@@ -18,12 +18,13 @@
             pageable: true,
             rowTemplate: kendo.template($("#rowTemplate").html()),
             columns: [
-                {field: "BRANCH_CODE", title: "Branch Code",width:100},
-                {field: "BRANCH_NAME", title: "Branch Name",width:200},
-                {field: "STREET_ADDRESS", title: "Street Address",width:180},
-                {field: "TELEPHONE", title: "Telephone",width:100},
-                {field: "EMAIL", title: "Email",width:140},
-                {title: "Action",width:100}
+                {field: "BRANCH_CODE", title: "Code", width: 80},
+                {field: "BRANCH_NAME", title: "Name", width: 100},
+                {field: "STREET_ADDRESS", title: "Address", width: 180},
+                {field: "TELEPHONE", title: "Telephone", width: 100},
+                {field: "EMAIL", title: "Email", width: 140},
+                {field: "COMPANY_NAME", title: "Company", width: 100},
+                {title: "Action", width: 80}
             ],
         });
         $("#export").click(function (e) {

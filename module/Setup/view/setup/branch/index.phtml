@@ -76,6 +76,9 @@ echo json_encode($menu);
         #: (EMAIL == null) ? '-' : EMAIL #
         </td>
         <td>
+        #: (COMPANY_NAME == null) ? '-' : COMPANY_NAME#
+        </td>
+        <td>
         <a class="btn-edit"
         href="<?= $this->url("branch", ["action" => "edit"]) ?>/#:BRANCH_ID #" style="height:17px;">
         <i class="fa fa-edit"></i>

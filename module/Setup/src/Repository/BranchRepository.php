@@ -6,17 +6,22 @@ use Application\Helper\EntityHelper;
 use Application\Model\Model;
 use Application\Repository\RepositoryInterface;
 use Setup\Model\Branch;
+use Setup\Model\Company;
 use Zend\Db\Adapter\AdapterInterface;
+use Zend\Db\Sql\Join;
+use Zend\Db\Sql\Predicate\Expression;
+use Zend\Db\Sql\Select;
 use Zend\Db\Sql\Sql;
 use Zend\Db\TableGateway\TableGateway;
-use Zend\Db\Sql\Select;
 
 class BranchRepository implements RepositoryInterface {
 
     private $tableGateway;
+    private $adapter;
 
     public function __construct(AdapterInterface $adapter) {
         $this->tableGateway = new TableGateway(Branch::TABLE_NAME, $adapter);
+        $this->adapter = $adapter;
     }
 
     public function add(Model $model) {
@@ -30,10 +35,25 @@ class BranchRepository implements RepositoryInterface {
 
     public function fetchAll() {
         return $this->tableGateway->select(function(Select $select) {
-            $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(Branch::class, [Branch::BRANCH_NAME]), false);
-                    $select->where([Branch::STATUS => 'E']);
-                    $select->order(Branch::BRANCH_NAME . " ASC");
+                    $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(Branch::class, [Branch::BRANCH_NAME]), false);
+                    $select->where([Branch::STATUS => EntityHelper::STATUS_ENABLED]);
+                    $select->order([Branch::BRANCH_NAME => Select::ORDER_ASCENDING]);
                 });
+    }
+
+    public function fetchAllWithCompany() {
+        $sql = new Sql($this->adapter);
+        $select = $sql->select();
+        $select->from(['B' => Branch::TABLE_NAME]);
+        $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(Branch::class, [Branch::BRANCH_NAME], null, null, null, null, 'B'), false);
+        $companyIdKey = Company::COMPANY_ID;
+        $companyNameKey = Company::COMPANY_NAME;
+        $select->join(['C' => Company::TABLE_NAME], "C.{$companyIdKey} = B.{$companyIdKey}", [Company::COMPANY_NAME => new Expression("INITCAP(C.{$companyNameKey})")], Join::JOIN_LEFT);
+        $select->where(['B.' . Branch::STATUS => EntityHelper::STATUS_ENABLED]);
+        $select->order(['B.' . Branch::BRANCH_NAME => Select::ORDER_ASCENDING]);
+        $statement = $sql->prepareStatementForSqlObject($select);
+        $return = $statement->execute();
+        return $return;
     }
 
     public function fetchById($id) {
