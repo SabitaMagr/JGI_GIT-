@@ -83,7 +83,7 @@ class LeaveRequest extends AbstractActionController {
     public function indexAction() {
         $leaveFormElement = new Select();
         $leaveFormElement->setName("leave");
-        $leaves = EntityHelper::getTableKVList($this->adapter, LeaveMaster::TABLE_NAME, LeaveMaster::LEAVE_ID, [LeaveMaster::LEAVE_ENAME], [LeaveMaster::STATUS => 'E'], LeaveMaster::LEAVE_ENAME,"ASC",null,false,true);
+        $leaves = EntityHelper::getTableKVListWithSortOption($this->adapter, LeaveMaster::TABLE_NAME, LeaveMaster::LEAVE_ID, [LeaveMaster::LEAVE_ENAME], [LeaveMaster::STATUS => 'E'], LeaveMaster::LEAVE_ENAME,"ASC",null,false,true);
         $leaves[-1] = "All";
         ksort($leaves);
         $leaveFormElement->setValueOptions($leaves);

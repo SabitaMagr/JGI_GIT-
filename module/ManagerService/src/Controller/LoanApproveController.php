@@ -264,7 +264,7 @@ class LoanApproveController extends AbstractActionController {
 
         $loanFormElement = new Select();
         $loanFormElement->setName("loan");
-        $loans = EntityHelper::getTableKVList($this->adapter, Loan::TABLE_NAME, Loan::LOAN_ID, [Loan::LOAN_NAME], [Loan::STATUS => 'E'],null,null,null,false,true);
+        $loans = EntityHelper::getTableKVListWithSortOption($this->adapter, Loan::TABLE_NAME, Loan::LOAN_ID, [Loan::LOAN_NAME], [Loan::STATUS => 'E'],null,null,null,false,true);
         $loans1 = [-1 => "All"] + $loans;
         $loanFormElement->setValueOptions($loans1);
         $loanFormElement->setAttributes(["id" => "loanId", "class" => "form-control"]);
