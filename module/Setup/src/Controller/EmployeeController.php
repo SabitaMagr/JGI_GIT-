@@ -75,43 +75,10 @@ class EmployeeController extends AbstractActionController {
     public function indexAction() {
         $employees = $this->repository->fetchAll();
 
-        /* search values */
-        $companyList = ApplicationHelper::getTableList($this->adapter, Company::TABLE_NAME, [Company::COMPANY_ID, Company::COMPANY_NAME]);
-        $branchList = ApplicationHelper::getTableList($this->adapter, Branch::TABLE_NAME, [Branch::BRANCH_ID, Branch::BRANCH_NAME, Branch::COMPANY_ID]);
-        $departmentList = ApplicationHelper::getTableList($this->adapter, Department::TABLE_NAME, [Department::DEPARTMENT_ID, Department::DEPARTMENT_NAME, Department::COMPANY_ID, Department::BRANCH_ID]);
-        $designationList = ApplicationHelper::getTableList($this->adapter, Designation::TABLE_NAME, [Designation::DESIGNATION_ID, Designation::DESIGNATION_TITLE, Designation::COMPANY_ID]);
-        $positionList = ApplicationHelper::getTableList($this->adapter, Position::TABLE_NAME, [Position::POSITION_ID, Position::POSITION_NAME, Position::COMPANY_ID]);
-        $serviceTypeList = ApplicationHelper::getTableList($this->adapter, ServiceType::TABLE_NAME, [ServiceType::SERVICE_TYPE_ID, ServiceType::SERVICE_TYPE_NAME]);
-        $serviceEventTypeList = ApplicationHelper::getTableList($this->adapter, ServiceEventType::TABLE_NAME, [ServiceEventType::SERVICE_EVENT_TYPE_ID, ServiceEventType::SERVICE_EVENT_TYPE_NAME]);
-        $employeeList = ApplicationHelper::getTableList($this->adapter, HrEmployees::TABLE_NAME, [
-                    HrEmployees::EMPLOYEE_ID,
-                    HrEmployees::FIRST_NAME,
-                    HrEmployees::MIDDLE_NAME,
-                    HrEmployees::LAST_NAME,
-                    HrEmployees::COMPANY_ID,
-                    HrEmployees::BRANCH_ID,
-                    HrEmployees::DEPARTMENT_ID,
-                    HrEmployees::DESIGNATION_ID,
-                    HrEmployees::POSITION_ID,
-                    HrEmployees::SERVICE_TYPE_ID,
-                    HrEmployees::SERVICE_EVENT_TYPE_ID
-        ]);
-
-        $searchValues = [
-            'company' => $companyList,
-            'branch' => $branchList,
-            'department' => $departmentList,
-            'designation' => $designationList,
-            'position' => $positionList,
-            'serviceType' => $serviceTypeList,
-            'serviceEventType' => $serviceEventTypeList,
-            'employee' => $employeeList
-        ];
-        /* end of search values */
 
         return Helper::addFlashMessagesToArray($this, [
                     'list' => $employees,
-                    'searchValues' => $searchValues
+                    'searchValues' => ApplicationHelper::getSearchData($this->adapter)
         ]);
     }
 
