@@ -1807,9 +1807,15 @@ textarea#form-remarks,#remarks,.form-reason  {
     padding-top:11px;
 
 }
-
-
-
+.company-logo-box address
+{
+font-size:8px !important;
+}
+.kendo-report th
+{
+    font-size:11px !important;
+        padding: 3px !important;
+}
 
 /*Large desktops and laptops*/
 
