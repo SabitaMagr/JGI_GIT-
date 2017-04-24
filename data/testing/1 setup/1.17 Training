@@ -8,7 +8,7 @@ Requirment
 test log
 1. add => success
 2. edit => true
-3. delete => true (status chaged to D)
+3. delete => true (status changed to D)
 4. export to excel => success
 
 

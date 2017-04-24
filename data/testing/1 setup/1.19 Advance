@@ -1,0 +1,24 @@
+Requirment
+1. add
+2. edit
+3. delete
+4. export to excel
+
+
+test log
+1. add => success
+2. edit => true
+3. delete => true (status changed to D)
+4. export to excel => success
+
+
+
+system problem 
+1. no company code in excel export
+2. min amount cannot be greater than maximum amount
+
+
+
+changes
+
+

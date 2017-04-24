@@ -3,6 +3,7 @@ Requirment
 2. edit
 3. delete
 4. export to excel
+5. employee profile view
 
 
 test log
@@ -10,7 +11,7 @@ test log
 2. edit => true
 3. delete => true (status changed to D)
 4. export to excel => success
-5. employee profile view
+
 
 
 system problem 
@@ -19,6 +20,8 @@ system problem
 3. academic progarm should change academic course.
 4. recommender and approver could not be self employee eg(for employee a he himself cant be his recommender or approver)
 5. no current status of employee info in employee view
+6. no company name in employee profile
+7. company filter dosent work .
 
 
 
