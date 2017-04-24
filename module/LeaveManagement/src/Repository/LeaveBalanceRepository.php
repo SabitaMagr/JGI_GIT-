@@ -43,7 +43,7 @@ class LeaveBalanceRepository implements RepositoryInterface {
         $result = $statement->execute();
         return $result;
     }
-    public function getAllEmployee($emplyoeeId,$branchId,$departmentId,$designationId,$positionId,$serviceTypeId,$serviceEventTypeId){
+    public function getAllEmployee($emplyoeeId,$companyId,$branchId,$departmentId,$designationId,$positionId,$serviceTypeId,$serviceEventTypeId){
         $sql = new Sql($this->adapter);
         $select = $sql->select();
         $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(HrEmployees::class,
@@ -72,6 +72,11 @@ class LeaveBalanceRepository implements RepositoryInterface {
         if($emplyoeeId!=-1){
             $select->where([
                 "E.EMPLOYEE_ID=".$emplyoeeId
+            ]);
+        }
+        if($companyId!=-1){
+            $select->where([
+                "E.COMPANY_ID=".$companyId
             ]);
         }
         if($branchId!=-1){

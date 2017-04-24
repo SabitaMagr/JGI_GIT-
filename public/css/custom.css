@@ -1354,227 +1354,12 @@ ul#roleList li {
     color:#fff;
     text-transform:capitalize;
 }
-.img-polaroid
+.img-polaroid,.Picture
 {
-    border-radius:50%;
+    border-radius:50% !important;
+    height: 29px !important;
+    width:29px !important;
 }
-/*Large desktops and laptops*/
-
-@media (min-width: 1200px) {
-
-}
-
-
-/* Landscape tablets and medium desktops */
-@media (min-width: 992px) and (max-width: 1199px) {
-    .col-box
-    {
-        width:33.3333% !important;   
-
-    }
-    .rightalign{
-        width:54% !important;
-    }
-    .cgap {
-        width: 42% !important;
-    }
-    .gapspaceing{
-        margin-left: 0px !important;
-        width:100% !important;
-    }
-    .previous button,.next button
-    {
-        margin-top: 8px;
-    }
-    .profilepic {
-        margin-bottom: 20px;
-        margin-left: 13px;
-        float:none !important;
-        /*max-width: 20%;*/
-        border:solid #ddd 2px;
-    }
-
-}
-
-/* Portrait tablets and small desktops */
-@media screen and (min-width: 768px) and (max-width: 991px) {
-    .rightalign {
-        width:40% !important;
-    }
-    .cgap {
-
-        width:60%;
-    }
-    .previous button,.next button
-    {
-        margin-top: 8px;
-    }
-
-    .profilepic
-    {
-
-        margin-bottom: 20px;
-        /* margin-left: 35px;*/
-        margin-right: 90px;
-        /*max-width: 16%;*/
-        float:none !important;
-
-    }
-
-}
-
-/* Landscape phones and portrait tablets */
-@media(max-width:767px) {
-    .rightalign {
-
-        width:25% !important;
-    }
-    .cgap {
-
-        width:75%;
-    }
-    .rightalign-2{
-        width:26% !important; 
-    }
-    .cgap-2{
-        width:74% !important;
-    }
-    .rightalign-3{
-        width:26% !important; 
-    }
-    .cgap-3{
-        width:74% !important;
-    }
-    .rightalign-4{
-        width:26% !important; 
-    }
-    .cgap-4{
-        width:74% !important;
-    }
-    .previous button,.next button
-    {
-        margin-top: 8px;
-    }
-    .profilepic
-    {
-        margin-bottom: 20px;
-        margin-left: 35px;
-        margin-right: 90px;
-        /* max-width:16%;*/
-    }
-    .leftvalues,.rules 
-    {
-        width:33%!important;
-    }
-    .rightvalues {
-        width: 34%!important;
-    }
-    ul#roleList li {
-        border-radius: 0 !important;
-        height: 22px !important;
-        margin-bottom: 10px !important;
-        margin-top: 10px !important;
-        padding: 0 3px 4px 5px !important;
-    }
-    .cwidth2,.cwidth4,.cwidth5{
-        width:100% !important;
-    }
-    .cwidth1,cwidth2,cwidth3,cwidth4,cwidth5
-    {
-        margin-bottom:10px;
-    }
-}
-
-/* Portrait phones and smaller */
-@media (max-width: 480px) {
-    .rightalign {
-
-        width: 43% !important;
-    }
-    .cgap {
-
-        width: 57%;
-    } 
-    .gapspaceing{
-        padding-right:0px;
-        padding-left:0px;
-        padding-bottom: 25px !important; 
-    }
-    .rightalign-2{
-        width:47% !important; 
-    }
-    .cgap-2{
-        width:53% !important;
-    }
-
-    .rightalign-3{
-        width:52% !important; 
-    }
-    .cgap-3{
-        width:48% !important;
-    }
-    .post-btn
-    {
-        margin-top: 0px;
-        margin-bottom: 0px;
-
-    }
-    .tabbable-custom > .nav-tabs > li{
-        width:100%;
-    }
-    .tabbable-custom > .nav-tabs > li.active
-    {
-        border-bottom: solid #eee 1px;
-    }
-    .profilepic {
-
-        float: left;
-        margin-bottom: 20px;
-        margin-left: 67px;
-        margin-right: 90px;
-        max-width: 44%;
-    }
-
-    .msgForError{
-        padding:15px;
-        color:red;
-        font-size:11px;
-
-    }
-    .leftvalues,.rules,.rightvalues
-    {
-        width:100% !important;
-    }
-    ul#roleList li {
-        border-radius: 0 !important;
-        height: 22px !important;
-        margin-bottom: 10px !important;
-        margin-top: 10px !important;
-        padding: 0 3px 4px 5px !important;
-    }
-    .md-radio-inline .md-radio
-    {
-        margin-right:12px !important;
-    }
-    .cwidth2,.cwidth4,.cwidth5{
-        width:100% !important;
-    }
-    .cwidth1,cwidth2,cwidth3,cwidth4,cwidth5
-    {
-        margin-bottom:10px;
-    }
-    .page-header.navbar .top-menu .navbar-nav > li.dropdown-notification .dropdown-menu {
-        margin-right: -107px;
-    }
-
-    .page-header.navbar .top-menu .navbar-nav > li.dropdown-notification .dropdown-menu::after, .page-header.navbar .top-menu .navbar-nav > li.dropdown-notification .dropdown-menu::before {
-        margin-right: 112px;
-    }
-
-}
-
-
-
 /*rajan's css new end here*/
 
 
@@ -1953,11 +1738,12 @@ ul#personalInfo li{
 {
     margin-right:5px !important;
     margin-right: 5px !important;
-    border: solid #eee 1px;
+    /* border: solid #eee 1px; */
     box-shadow: none !important;
     font-size:11px !important;
     min-width:23px;
     font-weight:bold !important;
+    padding:2px !important;
 }
 .custom-btn-leave
 {
@@ -1989,10 +1775,6 @@ textarea#form-remarks,#remarks,.form-reason  {
 }
 
 
-.companylogo
-{
-
-}
 .company-logo-box h6{
     font-size:12px;
     margin-top:4px !important;
@@ -2004,7 +1786,252 @@ textarea#form-remarks,#remarks,.form-reason  {
     display:block;
     float: left;
     height: 24px;
-    width:190px;
-    padding-left: 20px;
-    padding-right: 20px;   
+    width:30% !imprtant;
+    /*padding-left: 20px;
+     padding-right: 20px;  */ 
+}
+
+.companylogo
+{
+    margin: 3px 0 0;
+    float: left;
+    padding-left:20px;
+
+}
+.company-logo-box span
+{
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 600;
+    padding-left: 5px;
+    padding-top:11px;
+
+}
+
+
+
+
+/*Large desktops and laptops*/
+
+@media (min-width: 1200px) {
+
+}
+
+
+/* Landscape tablets and medium desktops */
+@media (min-width: 992px) and (max-width: 1199px) {
+    .col-box
+    {
+        width:33.3333% !important;   
+
+    }
+    .rightalign{
+        width:54% !important;
+    }
+    .cgap {
+        width: 42% !important;
+    }
+    .gapspaceing{
+        margin-left: 0px !important;
+        width:100% !important;
+    }
+    .previous button,.next button
+    {
+        margin-top: 8px;
+    }
+    .profilepic {
+        margin-bottom: 20px;
+        margin-left: 13px;
+        float:none !important;
+        /*max-width: 20%;*/
+        border:solid #ddd 2px;
+    }
+
+}
+
+/* Portrait tablets and small desktops */
+@media screen and (min-width: 768px) and (max-width: 991px) {
+    .rightalign {
+        width:40% !important;
+    }
+    .cgap {
+
+        width:60%;
+    }
+    .previous button,.next button
+    {
+        margin-top: 8px;
+    }
+
+    .profilepic
+    {
+
+        margin-bottom: 20px;
+        /* margin-left: 35px;*/
+        margin-right: 90px;
+        /*max-width: 16%;*/
+        float:none !important;
+
+    }
+
+}
+
+/* Landscape phones and portrait tablets */
+@media(max-width:767px) {
+    .rightalign {
+
+        width:25% !important;
+    }
+    .cgap {
+
+        width:75%;
+    }
+    .rightalign-2{
+        width:26% !important; 
+    }
+    .cgap-2{
+        width:74% !important;
+    }
+    .rightalign-3{
+        width:26% !important; 
+    }
+    .cgap-3{
+        width:74% !important;
+    }
+    .rightalign-4{
+        width:26% !important; 
+    }
+    .cgap-4{
+        width:74% !important;
+    }
+    .previous button,.next button
+    {
+        margin-top: 8px;
+    }
+    .profilepic
+    {
+        margin-bottom: 20px;
+        margin-left: 35px;
+        margin-right: 90px;
+        /* max-width:16%;*/
+    }
+    .leftvalues,.rules 
+    {
+        width:33%!important;
+    }
+    .rightvalues {
+        width: 34%!important;
+    }
+    ul#roleList li {
+        border-radius: 0 !important;
+        height: 22px !important;
+        margin-bottom: 10px !important;
+        margin-top: 10px !important;
+        padding: 0 3px 4px 5px !important;
+    }
+    .cwidth2,.cwidth4,.cwidth5{
+        width:100% !important;
+    }
+    .cwidth1,cwidth2,cwidth3,cwidth4,cwidth5
+    {
+        margin-bottom:10px;
+    }
+    .page-header.navbar .top-menu
+    {
+        margin-top:25px;
+    }
+}
+
+/* Portrait phones and smaller */
+@media (max-width: 480px) {
+    .rightalign {
+
+        width: 43% !important;
+    }
+    .cgap {
+
+        width: 57%;
+    } 
+    .gapspaceing{
+        padding-right:0px;
+        padding-left:0px;
+        padding-bottom: 25px !important; 
+    }
+    .rightalign-2{
+        width:47% !important; 
+    }
+    .cgap-2{
+        width:53% !important;
+    }
+
+    .rightalign-3{
+        width:52% !important; 
+    }
+    .cgap-3{
+        width:48% !important;
+    }
+    .post-btn
+    {
+        margin-top: 0px;
+        margin-bottom: 0px;
+
+    }
+    .tabbable-custom > .nav-tabs > li{
+        width:100%;
+    }
+    .tabbable-custom > .nav-tabs > li.active
+    {
+        border-bottom: solid #eee 1px;
+    }
+    .profilepic {
+
+        float: left;
+        margin-bottom: 20px;
+        margin-left: 67px;
+        margin-right: 90px;
+        max-width: 44%;
+    }
+
+    .msgForError{
+        padding:15px;
+        color:red;
+        font-size:11px;
+
+    }
+    .leftvalues,.rules,.rightvalues
+    {
+        width:100% !important;
+    }
+    ul#roleList li {
+        border-radius: 0 !important;
+        height: 22px !important;
+        margin-bottom: 10px !important;
+        margin-top: 10px !important;
+        padding: 0 3px 4px 5px !important;
+    }
+    .md-radio-inline .md-radio
+    {
+        margin-right:12px !important;
+    }
+    .cwidth2,.cwidth4,.cwidth5{
+        width:100% !important;
+    }
+    .cwidth1,cwidth2,cwidth3,cwidth4,cwidth5
+    {
+        margin-bottom:10px;
+    }
+    .page-header.navbar .top-menu .navbar-nav > li.dropdown-notification .dropdown-menu {
+        margin-right: -107px;
+    }
+
+    .page-header.navbar .top-menu .navbar-nav > li.dropdown-notification .dropdown-menu::after, .page-header.navbar .top-menu .navbar-nav > li.dropdown-notification .dropdown-menu::before {
+        margin-right: 112px;
+    }
+    .company-logo-box{
+        height:45px;
+    }
+    .companylogo
+    {
+        padding-left:0px;
+    }
 }

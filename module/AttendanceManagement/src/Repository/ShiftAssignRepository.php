@@ -14,6 +14,8 @@ use AttendanceManagement\Model\ShiftAssign;
 use AttendanceManagement\Model\ShiftSetup;
 use Setup\Model\Department;
 use Setup\Model\Position;
+use Setup\Model\ServiceEventType;
+use Setup\Model\Company;
 use Setup\Model\ServiceType;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Sql\Sql;
@@ -56,7 +58,7 @@ class ShiftAssignRepository implements RepositoryInterface
     {
     }
 
-    public function filter($branchId, $departmentId, $designationId, $positionId, $serviceTypeId)
+    public function filter($branchId, $departmentId, $designationId, $positionId, $serviceTypeId,$companyId,$serviceEventTypeId,$employeeId)
     {
         $sql = new Sql($this->adapter);
         $select = $sql->select();
@@ -86,6 +88,15 @@ class ShiftAssignRepository implements RepositoryInterface
         }
         if ($serviceTypeId != -1) {
             $select->where(['E.' . ServiceType::SERVICE_TYPE_ID . "=$serviceTypeId"]);
+        }
+        if ($companyId != -1) {
+            $select->where(['E.' . HrEmployees::COMPANY_ID. "=$companyId"]);
+        }
+        if ($serviceEventTypeId != -1) {
+            $select->where(['E.' . HrEmployees::SERVICE_EVENT_TYPE_ID . "=$serviceEventTypeId"]);
+        }
+        if ($employeeId != -1) {
+            $select->where(['E.' . HrEmployees::EMPLOYEE_ID . "=$employeeId"]);
         }
         $select->order("E.FIRST_NAME ASC");
         $statement = $sql->prepareStatementForSqlObject($select);

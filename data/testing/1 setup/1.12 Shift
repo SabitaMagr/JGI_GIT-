@@ -1,0 +1,33 @@
+Requirment
+1. add
+2. edit
+3. delete
+4. export to excel
+
+
+test log
+1. add => success
+2. edit => true
+3. delete => true (status chaged to D)
+4. export to excel => success
+
+
+
+system problem 
+1. form half day end is at beginning than half day start
+2. current shift defualt no validation
+3. validation is not showing
+4.  no company shown in shift view
+5.  no company details while exportin in excel
+
+
+
+changes
+
+
+
+self view
+1. start date should be select only after current date
+
+
+

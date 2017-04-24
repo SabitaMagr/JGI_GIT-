@@ -37,6 +37,7 @@ class TravelStatusRepository implements RepositoryInterface{
         $fromDate = $data['fromDate'];
         $toDate = $data['toDate'];
         $employeeId = $data['employeeId'];
+        $companyId = $data['companyId'];
         $branchId = $data['branchId'];
         $departmentId = $data['departmentId'];
         $designationId = $data['designationId'];
@@ -149,6 +150,9 @@ class TravelStatusRepository implements RepositoryInterface{
             $sql .= "AND E." . HrEmployees::EMPLOYEE_ID . " = $employeeId";
         }
         
+        if ($companyId != -1) {
+            $sql .= " AND E." . HrEmployees::EMPLOYEE_ID . " IN (SELECT " . HrEmployees::EMPLOYEE_ID . " FROM " . HrEmployees::TABLE_NAME . " WHERE " . HrEmployees::COMPANY_ID . "= $companyId)";
+        }
         if ($branchId != -1) {
             $sql .= " AND E." . HrEmployees::EMPLOYEE_ID . " IN (SELECT " . HrEmployees::EMPLOYEE_ID . " FROM " . HrEmployees::TABLE_NAME . " WHERE " . HrEmployees::BRANCH_ID . "= $branchId)";
         }
@@ -171,7 +175,7 @@ class TravelStatusRepository implements RepositoryInterface{
         $sql .=" ORDER BY TR.REQUESTED_DATE DESC";
 
         $statement = $this->adapter->query($sql);
-       // print_r($statement->getSql());  die();
+//        print_r($statement->getSql());  die();
         $result = $statement->execute();
         return $result;
     }

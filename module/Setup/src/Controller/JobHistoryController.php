@@ -37,28 +37,20 @@ class JobHistoryController extends AbstractActionController {
     }
 
     public function indexAction() {
-        $employeeNameFormElement = new Select();
-        $employeeNameFormElement->setName("branch");
-        $employeeName = \Application\Helper\EntityHelper::getTableKVListWithSortOption($this->adapter, "HRIS_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => "E"], "FIRST_NAME", "ASC", " ",false,true);
-        $employeeName1 = [-1 => "All"] + $employeeName;
-        $employeeNameFormElement->setValueOptions($employeeName1);
-        $employeeNameFormElement->setAttributes(["id" => "employeeId", "class" => "form-control"]);
-        $employeeNameFormElement->setLabel("Employee");
-        $employeeNameFormElement->setAttribute("ng-click", "view()");
 
         $serviceEventTypeFormElement = new Select();
         $serviceEventTypeFormElement->setName("serviceEventType");
         $serviceEventTypes = \Application\Helper\EntityHelper::getTableKVListWithSortOption($this->adapter, ServiceEventType::TABLE_NAME, ServiceEventType::SERVICE_EVENT_TYPE_ID, [ServiceEventType::SERVICE_EVENT_TYPE_NAME], [ServiceEventType::STATUS => 'E'], "SERVICE_EVENT_TYPE_NAME", "ASC",null,false,true);
-        $serviceEventTypes1 = [-1 => "All"] + $serviceEventTypes;
+        $serviceEventTypes1 = [-1 => "All Service Event Type"] + $serviceEventTypes;
         $serviceEventTypeFormElement->setValueOptions($serviceEventTypes1);
-        $serviceEventTypeFormElement->setAttributes(["id" => "serviceEventTypeId", "class" => "form-control"]);
+        $serviceEventTypeFormElement->setAttributes(["id" => "serviceEventTypeId1", "class" => "form-control"]);
         $serviceEventTypeFormElement->setLabel("Service Event Type");
-
+        
         $jobHistory = $this->repository->fetchAll();
         return Helper::addFlashMessagesToArray($this, [
                     'jobHistoryList' => $jobHistory,
-                    'serviceEventTypes' => $serviceEventTypeFormElement,
-                    'employees' => $employeeNameFormElement
+                    'serviceEventType' => $serviceEventTypeFormElement,
+                    'searchValues' => EntityHelper1::getSearchData($this->adapter),
         ]);
     }
 
