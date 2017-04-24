@@ -350,7 +350,7 @@ class HolidaySetup extends AbstractActionController {
         foreach ($holidayBranchResult as $holidayBranchList) {
             $branchId = $holidayBranchList['BRANCH_ID'];
             if (!in_array($branchId, $branchIds)) {
-                $holidayRepository->deleteHolidayBranch($inputData['holidayId'], $branchId);
+                $holidayRepository->deleteHolidayBranch($holidayId, $branchId);
             }
             array_push($branchTemp, $branchId);
         }
