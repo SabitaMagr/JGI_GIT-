@@ -1,0 +1,27 @@
+Requirment
+1. add
+2. edit
+3. delete
+4. export to excel
+
+
+test log
+1. add => success
+2. edit => true
+3. delete => true (status changed to D)
+4. export to excel => success
+
+
+
+system problem 
+1. (parent designation field is not according to company wise)
+2. (no comapny name in table index page)
+2. (no comapny name while exporting to excel)
+
+
+
+
+changes
+
+
+

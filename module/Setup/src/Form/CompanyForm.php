@@ -61,7 +61,7 @@ class CompanyForm {
      * @Annotion\Type("Zend\Form\Element\Text")
      * @Annotation\Required(false)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
-     * @Annotation\Options({"label":"Shift"})
+     * @Annotation\Options({"label":"Swift"})
      * @Annotation\Attributes({ "id":"form-swift", "class":"form-web form-control"})
      */
     public $swift;

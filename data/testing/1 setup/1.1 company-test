@@ -1,0 +1,31 @@
+Requirment
+1. company add
+2. company edit
+3. company delete
+4. export to excel
+
+
+test log
+1.company add => success
+2. company edit => true
+3. company delete => true (status chaged to D)
+4. export to excel => success
+
+
+
+system problem 
+1) shift  in form  
+2) loss of company log if error of validation in phone no in both add edit
+3) no company upload validation in company add
+
+
+
+
+
+changes
+1)shift form name ? changes to swift
+
+
+self view
+1.(other details in coampany table in index page)
+2.(limited field while exporting company)

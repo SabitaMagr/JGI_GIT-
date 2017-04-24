@@ -1,0 +1,25 @@
+Requirment
+1. add
+2. edit
+3. delete
+4. export to excel
+
+
+test log
+1. add => success
+2.edit => true
+3. delete => true (status chaged to D)
+4. export to excel => success
+
+
+
+system problem 
+1.(some company field is not show  in all departments company view)
+2.(company field is not shown while exporting)
+3.(parent department field in not according to company wise)
+
+
+
+
+changes
+
