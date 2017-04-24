@@ -37,6 +37,7 @@ class LoanStatusRepository implements RepositoryInterface{
         $fromDate = $data['fromDate'];
         $toDate = $data['toDate'];
         $employeeId = $data['employeeId'];
+        $companyId = $data['companyId'];
         $branchId = $data['branchId'];
         $departmentId = $data['departmentId'];
         $designationId = $data['designationId'];
@@ -144,6 +145,9 @@ class LoanStatusRepository implements RepositoryInterface{
             $sql .= "AND E." . HrEmployees::EMPLOYEE_ID . " = $employeeId";
         }
         
+        if ($companyId != -1) {
+            $sql .= " AND E." . HrEmployees::EMPLOYEE_ID . " IN (SELECT " . HrEmployees::EMPLOYEE_ID . " FROM " . HrEmployees::TABLE_NAME . " WHERE " . HrEmployees::COMPANY_ID . "= $companyId)";
+        }
         if ($branchId != -1) {
             $sql .= " AND E." . HrEmployees::EMPLOYEE_ID . " IN (SELECT " . HrEmployees::EMPLOYEE_ID . " FROM " . HrEmployees::TABLE_NAME . " WHERE " . HrEmployees::BRANCH_ID . "= $branchId)";
         }

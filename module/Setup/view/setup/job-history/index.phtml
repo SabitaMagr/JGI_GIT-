@@ -13,6 +13,7 @@ $this->headScript()
         ->appendFile($this->basePath('jszip/dist/jszip.min.js'))
         ->appendFile($this->basePath('telerik_kendoui/js/kendo.all.min.js'))
         ->appendFile($this->basePath('js/angular.min.js'))
+        ->appendFile($this->basePath('js/jobHistorySearch.js'))
         ->appendFile($this->basePath('assets/global/plugins/nepalidate/nepali.datepicker.v2.1.min.js'))
         ->appendFile($this->basePath('js/nepali-datepicker-ext.js'))
         ->appendFile($this->basePath('js/setup/job-history/index.js'))
@@ -25,139 +26,160 @@ $this->headScript()
 <?php } ?>
 
 <script>
-    document.menu =<?php
-$menu = ["id" => "menuServiceStatusUpdate"];
-echo json_encode($menu);
-?>;
     document.url = '<?= $this->url("restful", ["action" => "index"]) ?>';
+    document.searchValues =<?php echo json_encode($searchValues); ?>;
 </script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\jobHistory')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
 
-<div ng-app="hris" ng-controller="jobHistoryController" class="formbg">
-    <div id="hris-page-content">
-    <div class="margin-top-20">
-        <div class="row">
-            <div class="col-sm-6">
-                <div class="row">
-                    <div class="col-sm-3">
-                        <div class="form-group">
-                            <label for="fromDate">From Date</label>
-                            <input type="text" id="fromDate" name="fromDate" ng-model="fromDate" class="form-control"/>
-                        </div>
-
-                    </div>
-                    <div class="col-sm-3">
-                        <div class="form-group">
-                            <label for="nepaliFromDate">&nbsp;</label>
-                            <input type="text" id="nepaliFromDate" name="nepaliFromDate"  class="form-control"/>
-                        </div>
-
-                    </div>
-                    <div class="col-sm-3">
-                        <div class="form-group">
-                            <label for="toDate">To Date</label>
-                            <input type="text"  id="toDate" name="toDate" ng-model="toDate" class="form-control"/>
-                        </div>
-                    </div>
-                    <div class="col-sm-3">
-                        <div class="form-group">
-                            <label for="nepaliToDate">&nbsp;</label>
-                            <input type="text"  id="nepaliToDate" name="nepaliToDate" class="form-control"/>
-                        </div>
-                    </div>
-                </div>
+<div ng-app="hris" ng-controller="jobHistoryController">
+    <div class="portlet light bg-inverse">
+        <div class="portlet-title">
+            <div class="caption">
+                <i class="icon-paper-plane font-green-haze"></i>
+                <span class="caption-subject bold font-green-haze uppercase"> Filter Employees</span>
             </div>
-            <div class="col-sm-2">
-                <?php print $this->formLabel($employees); ?>
-                <?php print $this->formElement($employees); ?>
-            </div>
-            <div class="col-sm-2">
-                <?php print $this->formLabel($serviceEventTypes); ?>
-                <?php print $this->formElement($serviceEventTypes); ?>
-            </div>
-            <div class="col-sm-2">
-                <label height="45"></label>
-                <button ng-click="view()" id="viewEmployees" class="btn btn-default form-control i-search">
-                    Search
-                    <i class="fa fa-search"></i>
-                </button>
+            <div class="tools">
+                <a href="" class="collapse" data-original-title="" title=""> </a>
             </div>
         </div>
-
-        <div class="margin-top-20"> 
-            <div class="table-toolbar">
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="btn-group">
-                            <a href="<?= $this->url('jobHistory', ['action' => 'add']) ?>" id="sample_editable_1_new"
-                               class="btn green"> Add New
-                                <i class="fa fa-plus"></i>
-                            </a>
-                        </div>
+        <div class="portlet-body">
+            <div class="row">
+                <div class="col-sm-2">
+                    <select class="form-control" name="company" id="companyId">
+                    </select>
+                </div>
+                <div class="col-sm-2">
+                    <select class="form-control" name="branchId" id="branchId">
+                    </select>
+                </div>
+                <div class="col-sm-2">
+                    <select class="form-control" name="department" id="departmentId">
+                    </select>
+                </div>
+                <div class="col-sm-2">
+                    <select class="form-control" name="designation" id="designationId">
+                    </select>
+                </div>
+                <div class="col-sm-2">
+                    <select class="form-control" name="position" id="positionId">
+                    </select>
+                </div>
+                <div class="col-sm-2">
+                    <select class="form-control" name="serviceType" id="serviceTypeId">
+                    </select>
+                </div>
+            </div>
+            <div class="row margin-top-10">
+                <div class="col-sm-2">
+                    <select class="form-control" name="employee" id="employeeId">
+                    </select>
+                </div>
+                <div class="col-sm-2">
+                    <?php echo $this->formElement($serviceEventType); ?>
+                </div>
+                <div class="col-sm-2">
+                    <div class="form-group">
+                        <input type="text" id="fromDate" name="fromDate" ng-model="fromDate" class="form-control" placeholder="From Date"/>
                     </div>
-                    <div class="col-md-6">
-                        <div class="btn-group pull-right">
-                            <button class="btn green btn-outline dropdown-toggle" data-toggle="dropdown">Tools
-                                <i class="fa fa-angle-down"></i>
-                            </button>
-                            <ul class="dropdown-menu pull-right">
-                                <li>
-                                    <a href="javascript:;" id="export"> Export to Excel </a>
-                                </li>
-                            </ul>
-                        </div>
+                </div>
+                <div class="col-sm-2">
+                    <div class="form-group">
+                        <input type="text" id="nepaliFromDate" name="nepaliFromDate" class="form-control" placeholder="From Date Nepali"/>
+                    </div>
+                </div>
+                <div class="col-sm-2">
+                    <div class="form-group">
+                        <input type="text" id="toDate" name="toDate" ng-model="toDate" class="form-control" placeholder="To Date"/>
+                    </div>
+                </div>
+                <div class="col-sm-2">
+                    <div class="form-group">
+                        <input type="text" id="nepaliToDate" name="nepaliToDate" class="form-control" placeholder="To Date Nepali"/>
                     </div>
                 </div>
             </div>
-            <div id="jobHistoryTable" >           
+            <div class="row">
+                <div class="col-sm-2 col-lg-offset-10">
+                     <button ng-click="view()" id="viewEmployees" class="btn btn-default btn-sm pull-right">
+                        Search
+                        <i class="fa fa-search"></i>
+                    </button>
+                </div>
             </div>
-
-            <script id="rowTemplate" type="text/x-kendo-tmpl">
-                <tr>
-                <td>
-                #: (FIRST_NAME == null) ? ' ' : FIRST_NAME #
-                #: (MIDDLE_NAME == null) ? ' ' : MIDDLE_NAME #
-                #: (LAST_NAME == null) ? ' ' : LAST_NAME #
-                </td>
-                <td>
-                #: (START_DATE == null) ? '-' : START_DATE #
-                </td>
-                <td>    
-                #: (END_DATE == null) ? '-' : END_DATE #
-                </td>
-                <td>
-                #: (SERVICE_EVENT_TYPE_NAME == null) ? '-' : SERVICE_EVENT_TYPE_NAME #
-                </td>
-                <td>
-                #: (FROM_SERVICE_NAME == null) ? ' ' : FROM_SERVICE_NAME # - #: (TO_SERVICE_NAME == null) ? ' ' : TO_SERVICE_NAME #
-                </td>
-                <td>
-                #: (FROM_BRANCH_NAME == null) ? ' ' : FROM_BRANCH_NAME # - #: (TO_BRANCH_NAME == null) ? ' ' : TO_BRANCH_NAME #
-                </td>
-                <td>
-                #: (FROM_DEPARTMENT_NAME == null) ? ' ' : FROM_DEPARTMENT_NAME # - #: (TO_DEPARTMENT_NAME == null) ? ' ' : TO_DEPARTMENT_NAME #
-                </td>
-                <td>
-                #: (FROM_DESIGNATION_TITLE == null) ? ' ' : FROM_DESIGNATION_TITLE # - #: (TO_DESIGNATION_TITLE == null) ? ' ' : TO_DESIGNATION_TITLE #
-                </td>
-                <td>
-                #: (FROM_POSITION_NAME == null) ? ' ' : FROM_POSITION_NAME # - #: (TO_POSITION_NAME == null) ? ' ' : TO_POSITION_NAME #
-                </td>
-                <td>
-                <a class="btn-edit"
-                href="<?= $this->url("jobHistory", ["action" => "edit"]) ?>/#: JOB_HISTORY_ID #" style="height:17px;">
-                <i class="fa fa-edit"></i>
-                </a>
-                <a class="btn-delete confirmation"
-                href="<?= $this->url("jobHistory", ["action" => "delete"]) ?>/#: JOB_HISTORY_ID #" id="bs_#:JOB_HISTORY_ID #" style="height:17px;">
-                <i class="fa fa-trash-o"></i></a>
-                </a>
-                </td>
-                </tr>
-            </script>
         </div>
     </div>
-</div>
+    <div class="margin-top-20"> 
+        <div class="table-toolbar">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="btn-group">
+                        <a href="<?= $this->url('jobHistory', ['action' => 'add']) ?>" id="sample_editable_1_new"
+                           class="btn green"> Add New
+                            <i class="fa fa-plus"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="btn-group pull-right">
+                        <button class="btn green btn-outline dropdown-toggle" data-toggle="dropdown">Tools
+                            <i class="fa fa-angle-down"></i>
+                        </button>
+                        <ul class="dropdown-menu pull-right">
+                            <li>
+                                <a href="javascript:;" id="export"> Export to Excel </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="jobHistoryTable" >           
+        </div>
+
+        <script id="rowTemplate" type="text/x-kendo-tmpl">
+            <tr>
+            <td>
+            #: (FIRST_NAME == null) ? ' ' : FIRST_NAME #
+            #: (MIDDLE_NAME == null) ? ' ' : MIDDLE_NAME #
+            #: (LAST_NAME == null) ? ' ' : LAST_NAME #
+            </td>
+            <td>
+            #: (START_DATE == null) ? '-' : START_DATE #
+            </td>
+            <td>    
+            #: (END_DATE == null) ? '-' : END_DATE #
+            </td>
+            <td>
+            #: (SERVICE_EVENT_TYPE_NAME == null) ? '-' : SERVICE_EVENT_TYPE_NAME #
+            </td>
+            <td>
+            #: (FROM_SERVICE_NAME == null) ? ' ' : FROM_SERVICE_NAME # - #: (TO_SERVICE_NAME == null) ? ' ' : TO_SERVICE_NAME #
+            </td>
+            <td>
+            #: (FROM_BRANCH_NAME == null) ? ' ' : FROM_BRANCH_NAME # - #: (TO_BRANCH_NAME == null) ? ' ' : TO_BRANCH_NAME #
+            </td>
+            <td>
+            #: (FROM_DEPARTMENT_NAME == null) ? ' ' : FROM_DEPARTMENT_NAME # - #: (TO_DEPARTMENT_NAME == null) ? ' ' : TO_DEPARTMENT_NAME #
+            </td>
+            <td>
+            #: (FROM_DESIGNATION_TITLE == null) ? ' ' : FROM_DESIGNATION_TITLE # - #: (TO_DESIGNATION_TITLE == null) ? ' ' : TO_DESIGNATION_TITLE #
+            </td>
+            <td>
+            #: (FROM_POSITION_NAME == null) ? ' ' : FROM_POSITION_NAME # - #: (TO_POSITION_NAME == null) ? ' ' : TO_POSITION_NAME #
+            </td>
+            <td>
+            <a class="btn-edit"
+            href="<?= $this->url("jobHistory", ["action" => "edit"]) ?>/#: JOB_HISTORY_ID #" style="height:17px;">
+            <i class="fa fa-edit"></i>
+            </a>
+            <a class="btn-delete confirmation"
+            href="<?= $this->url("jobHistory", ["action" => "delete"]) ?>/#: JOB_HISTORY_ID #" id="bs_#:JOB_HISTORY_ID #" style="height:17px;">
+            <i class="fa fa-trash-o"></i></a>
+            </a>
+            </td>
+            </tr>
+        </script>
+    </div>
 </div>
