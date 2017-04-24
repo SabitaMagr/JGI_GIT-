@@ -10,15 +10,15 @@ test log
 2. edit => true
 3. delete => true (status changed to D)
 4. export to excel => success
-
+5. employee profile view
 
 
 system problem 
-1 . html validtaion of mobile no and phone no email is not shown appropriately
-2. no company in employee profile 
-3. branch and destination all should be according to company 
-4. academic progarm should change academic course.
-5. recommender and approver could not be self employee eg(for employee a he himself cant be his recommender or approver)
+1 . html validtaion of mobile no and phone no email is not shown appropriately 
+2. branch and destination all should be according to company 
+3. academic progarm should change academic course.
+4. recommender and approver could not be self employee eg(for employee a he himself cant be his recommender or approver)
+5. no current status of employee info in employee view
 
 
 
