@@ -74,45 +74,11 @@ class leaveAssign extends AbstractActionController {
 //        $empFormElement->setValueOptions(\Application\Helper\EntityHelper::getTableKVList($this->adapter, "HRIS_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"]));
 //        $empFormElement->setAttributes(["id" => "employeeId", "class" => "form-control", "data-init-plugin" => "select2"]);
 
-        $employeeNameFormElement = new Select();
-        $employeeNameFormElement->setName("branch");
-        $employeeName = AppEntityHelper::getTableKVListWithSortOption($this->adapter, "HRIS_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => "E","RETIRED_FLAG"=>"N"], "FIRST_NAME", "ASC", " ",FALSE,TRUE);
-        $employeeName1 = [-1 => "All"] + $employeeName;
-        $employeeNameFormElement->setValueOptions($employeeName1);
-        $employeeNameFormElement->setAttributes(["id" => "employeeId", "class" => "form-control"]);
-        $employeeNameFormElement->setLabel("Employee");
-        $employeeNameFormElement->setAttribute("ng-click", "view()");
-        
         $leaveFormElement = new Select();
         $leaveFormElement->setName("leave");
         $leaveFormElement->setLabel("Leave Type");
         $leaveFormElement->setValueOptions(AppEntityHelper::getTableKVListWithSortOption($this->adapter, LeaveMaster::TABLE_NAME, LeaveMaster::LEAVE_ID, [LeaveMaster::LEAVE_ENAME], [LeaveMaster::STATUS . " ='E'"], LeaveMaster::LEAVE_ENAME,"ASC",NULL,FALSE,TRUE));
         $leaveFormElement->setAttributes(["id" => "leaveId", "class" => "form-control", "data-init-plugin" => "select2"]);
-
-        $branchFormElement = new Select();
-        $branchFormElement->setName("branch");
-        $branches = AppEntityHelper::getTableKVListWithSortOption($this->adapter, Branch::TABLE_NAME, Branch::BRANCH_ID, [Branch::BRANCH_NAME], [Branch::STATUS => 'E'], "BRANCH_NAME", "ASC");
-        $branches1 = [-1 => "All"] + $branches;
-        $branchFormElement->setValueOptions($branches1);
-        $branchFormElement->setAttributes(["id" => "branchId", "class" => "form-control"]);
-        $branchFormElement->setLabel("Branch");
-        $branchFormElement->setAttribute("ng-click", "view()");
-
-        $departmentFormElement = new Select();
-        $departmentFormElement->setName("department");
-        $departments = AppEntityHelper::getTableKVListWithSortOption($this->adapter, Department::TABLE_NAME, Department::DEPARTMENT_ID, [Department::DEPARTMENT_NAME], [Department::STATUS => 'E'], "DEPARTMENT_NAME", "ASC",NULL,FALSE,TRUE);
-        $departments1 = [-1 => "All"] + $departments;
-        $departmentFormElement->setValueOptions($departments1);
-        $departmentFormElement->setAttributes(["id" => "departmentId", "class" => "form-control"]);
-        $departmentFormElement->setLabel("Department");
-        
-        $serviceTypeFormElement = new Select();
-        $serviceTypeFormElement->setName("serviceType");
-        $serviceTypes = AppEntityHelper::getTableKVListWithSortOption($this->adapter, ServiceType::TABLE_NAME, ServiceType::SERVICE_TYPE_ID, [ServiceType::SERVICE_TYPE_NAME], [ServiceType::STATUS => 'E'], ServiceType::SERVICE_TYPE_NAME, "ASC",NULL,FALSE,TRUE);
-        $serviceTypes1 = [-1 => "All"] + $serviceTypes;
-        $serviceTypeFormElement->setValueOptions($serviceTypes1);
-        $serviceTypeFormElement->setAttributes(["id" => "serviceTypeId", "class" => "form-control"]);
-        $serviceTypeFormElement->setLabel("Service Type");
 
         $genderFormElement = new Select();
         $genderFormElement->setName("gender");
@@ -123,23 +89,11 @@ class leaveAssign extends AbstractActionController {
         $genderFormElement->setAttributes(["id" => "genderId", "class" => "form-control", "data-init-plugin" => "select2"]);
         $genderFormElement->setLabel("Gender");
 
-        $designationFormElement = new Select();
-        $designationFormElement->setName("designation");
-        $designations = AppEntityHelper::getTableKVListWithSortOption($this->adapter, Designation::TABLE_NAME, Designation::DESIGNATION_ID, [Designation::DESIGNATION_TITLE], [Designation::STATUS => 'E'], "DESIGNATION_TITLE", "ASC",NULL,FALSE,TRUE);
-        $designations1 = [-1 => "All"] + $designations;
-        $designationFormElement->setValueOptions($designations1);
-        $designationFormElement->setAttributes(["id" => "designationId", "class" => "form-control"]);
-        $designationFormElement->setLabel("Designation");
-
         return Helper::addFlashMessagesToArray($this, [
                     'leaveFormElement' => $leaveFormElement,
-                    'branchFormElement' => $branchFormElement,
-                    'departmentFormElement' => $departmentFormElement,
                     'genderFormElement' => $genderFormElement,
-                    'designationFormElement' => $designationFormElement,
-                    'serviceTypeFormElement'=>$serviceTypeFormElement,
-                    'employeeFormElement'=>$employeeNameFormElement,
-                    'form' => $this->excelImportForm
+                    'form' => $this->excelImportForm,
+                    'searchValues'=>AppEntityHelper::getSearchData($this->adapter)
         ]);
     }
 

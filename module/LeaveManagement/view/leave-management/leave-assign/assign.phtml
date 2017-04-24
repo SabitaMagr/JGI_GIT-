@@ -3,7 +3,8 @@ $this->headLink()
         ->appendStylesheet($this->basePath('dropzone/dropzone.min.css'));
 
 $this->headScript()->appendFile($this->basePath('assets/pages/scripts/ui-modals.min.js'));
-$this->headScript()->appendFile($this->basePath('js/angular.min.js'));
+$this->headScript()->appendFile($this->basePath('js/angular.min.js'))
+        ->appendFile($this->basePath('js/jobHistorySearch.js'));
 $this->headScript()->appendFile($this->basePath('assets/global/plugins/bootstrap-master/ui-bootstrap-tpls-2.2.0.min.js'));
 $this->headScript()->appendFile($this->basePath('js/LeaveManagement/LeaveAssign/assignController.js'));
 $this->headScript()->appendFile($this->basePath('dropzone/dropzone.min.js'));
@@ -12,6 +13,7 @@ $this->headScript()->appendFile($this->basePath('dropzone/dropzone.min.js'));
 <script>
     document.url = '<?= $this->url("webService", ["action" => "index"]) ?>';
     document.excelUploadUrl = '<?= $this->url('leaveassign', ["action" => "import"]) ?>';
+    document.searchValues =<?php echo json_encode($searchValues); ?>;
 </script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\leaveassign')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
@@ -32,145 +34,156 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
 <?php } ?>
 <?php
 $leaveFormElement->setAttributes(["ng-model" => "leaveId"]);
-$branchFormElement->setAttribute("ng-model", "branchId");
-$departmentFormElement->setAttribute("ng-model", "departmentId");
 $genderFormElement->setAttribute("ng-model", "genderId");
-$designationFormElement->setAttribute("ng-model", "designationId");
 ?>
 <div ng-app="hris" ng-controller="assignController">
-    <div id="hris-page-content">
-        <div class="margin-top-20  formbg mgap">
-            <div class="row" style="margin-bottom:1%;">
-                <div class="col-xs-12 col-sm-3">
-                    <?php print $this->formLabel($leaveFormElement); ?>
+    <div class="portlet light bg-inverse">
+        <div class="portlet-title">
+            <div class="caption">
+                <i class="icon-paper-plane font-green-haze"></i>
+                <span class="caption-subject bold font-green-haze uppercase"> Filter Employees</span>
+            </div>
+            <div class="tools">
+                <a href="" class="collapse" data-original-title="" title=""> </a>
+            </div>
+        </div>
+        <div class="portlet-body">
+            <div class="row">
+                <div class="col-sm-2">
+                    <select class="form-control" name="company" id="companyId">
+                    </select>
+                </div>
+                <div class="col-sm-2">
+                    <select class="form-control" name="branchId" id="branchId">
+                    </select>
+                </div>
+                <div class="col-sm-2">
+                    <select class="form-control" name="department" id="departmentId">
+                    </select>
+                </div>
+                <div class="col-sm-2">
+                    <select class="form-control" name="designation" id="designationId">
+                    </select>
+                </div>
+                <div class="col-sm-2">
+                    <select class="form-control" name="position" id="positionId">
+                    </select>
+                </div>
+            </div>
+            <div class="row margin-top-10">
+                <div class="col-sm-2">
+                    <select class="form-control" name="serviceType" id="serviceTypeId">
+                    </select>
+                </div>
+                <div class="col-sm-2">
+                    <select class="form-control" name="employee" id="employeeId">
+                    </select>
+                </div>
+                <div class="col-sm-2">
                     <?php print $this->formElement($leaveFormElement); ?>
                 </div>
-                <div class="col-xs-12 col-sm-3">
-                    <?php print $this->formLabel($employeeFormElement); ?>
-                    <?php print $this->formElement($employeeFormElement); ?>
-                </div>
-                <div class="col-xs-12 col-sm-3">
-                    <?php print $this->formLabel($genderFormElement); ?>
+                <div class="col-sm-2">
                     <?php print $this->formElement($genderFormElement); ?>
                 </div>
-                <div class="col-xs-12 col-sm-3">
-                    <?php print $this->formLabel($branchFormElement); ?>
-                    <?php print $this->formElement($branchFormElement); ?>
-                </div>
-
-            </div>
-            <div class="row">
-                <div class="col-xs-12 col-sm-3">
-                    <?php print $this->formLabel($designationFormElement); ?>
-                    <?php print $this->formElement($designationFormElement); ?>
-                </div>
-                <div class="col-xs-12 col-sm-3">
-                    <?php print $this->formLabel($departmentFormElement); ?>
-                    <?php print $this->formElement($departmentFormElement); ?>
-                </div>
-                <div class="col-xs-12 col-sm-3">
-                    <?php print $this->formLabel($serviceTypeFormElement); ?>
-                    <?php print $this->formElement($serviceTypeFormElement); ?>
-                </div>
-                <div class="col-xs-12 col-sm-2">
-                    <button ng-click="view()" id="viewEmployees" class="btn btn-default form-control i-search " style="margin-top:20px !important;">
-                        View
+                <div class="col-sm-2 col-lg-offset-2">
+                    <label height="45"></label>
+                    <button ng-click="view()" id="viewEmployees" class="btn btn-default btn-sm pull-right">
+                        Search
                         <i class="fa fa-search"></i>
                     </button>
                 </div>
             </div>
-            <div class="margin-top-20">
-                <div class="table-responsive scrollbar-vertical" id="loadingDiv">
-                    <table class="table table-striped table-bordered table-hover no-footer customTable">
-                        <thead>
-                            <tr role="row">
-                                <th>Name</th>
-                                <th>Leave</th>
-                                <th>Job Title</th>
-                                <th>Branch</th>
-                                <th>Days</th>
-                                <th class="bs-checkbox " style="width: 36px; " data-field="state" tabindex="0">
-                                    <div class="th-inner ">
-                                        <label class="mt-checkbox mt-checkbox-single mt-checkbox-outline">
-                                            <input class="" type="checkbox" ng-model="all" ng-click="checkAll(all)"/>
-                                            <span></span>
-                                        </label>
-                                    </div>
-                                    <div class="fht-cell" style="width: 46px;"></div>
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody id="target">
-                            <tr role="row" ng-repeat="item in leaveList">
-                                <td>
-                                    <span ng-bind="item.FIRST_NAME">
-                                    </span>
-                                    <span ng-bind="item.MIDDLE_NAME">
-                                    </span>
-                                    <span ng-bind="item.LAST_NAME">
-                                    </span>
-
-                                </td>
-                                <td ng-bind="leaveName">
-                                </td>
-                                <td ng-bind="item.DESIGNATION_TITLE">
-                                </td>
-                                <td ng-bind="item.BRANCH_NAME">
-                                </td>
-                                <td>
-                                    <input class="form-control input-sm" id="balance" style="width: 100px;" type="number" min="0" ng-model="item.BALANCE"/>
-                                </td>
-                                <td class="bs-checkbox " style="width: 36px; " data-field="state" tabindex="0">
-                                    <div class="th-inner ">
-                                        <label class="mt-checkbox mt-checkbox-single mt-checkbox-outline">
-                                            <input class="" ng-model="item.checked" type="checkbox"
-                                                   ng-change="checkUnit(item.checked)"/>
-                                            <span></span>
-                                        </label>
-                                    </div>
-                                    <div class="fht-cell" style="width: 46px;"></div>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-
-                <div class="row">
-                    <div class="col-sm-offset-8 col-sm-2">
-                        <input min="0" class="form-control" type="number" ng-model="daysForAll"
-                               ng-change="daysForAllChange(daysForAll)"
-                               ng-show="daysForAllFlag"/>
-                    </div>
-                    <div class="col-sm-2">
-                        <button ng-show="daysForAllFlag" class="btn btn-sm green pull-right" ng-click="assign()">
-                            Assign
-                            <i class="fa fa-edit"></i>
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <script type="text/ng-template" id="myModalContent.html">
-                <div class="modal-header">
-                <h3 class="modal-title" id="modal-title">Document Upload</h3>
-                </div>
-                <div class="modal-body" id="modal-body">
-                <div class="row">
-                <div class="col-sm-12">
-                <div id="dropZoneContainer" class="dropzone">
-                </div>
-                <div class="error" ng-show="!valid">Please upload Image.</div>
-                </div>
-                </div>
-                </div>
-                </div>
-                <div class="modal-footer">
-                <button class="btn btn-primary" type="button" ng-click="ok()">OK</button>
-                <button class="btn btn-warning" type="button" ng-click="cancel()">Cancel</button>
-                </div>
-            </script>
-
-
         </div>
     </div>
+    <div class="margin-top-20">
+        <div class="table-responsive scrollbar-vertical" id="loadingDiv">
+            <table class="table table-striped table-bordered table-hover no-footer customTable">
+                <thead>
+                    <tr role="row">
+                        <th>Name</th>
+                        <th>Leave</th>
+                        <th>Job Title</th>
+                        <th>Branch</th>
+                        <th>Days</th>
+                        <th class="bs-checkbox " style="width: 36px; " data-field="state" tabindex="0">
+                            <div class="th-inner ">
+                                <label class="mt-checkbox mt-checkbox-single mt-checkbox-outline">
+                                    <input class="" type="checkbox" ng-model="all" ng-click="checkAll(all)"/>
+                                    <span></span>
+                                </label>
+                            </div>
+                            <div class="fht-cell" style="width: 46px;"></div>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody id="target">
+                    <tr role="row" ng-repeat="item in leaveList">
+                        <td>
+                            <span ng-bind="item.FIRST_NAME">
+                            </span>
+                            <span ng-bind="item.MIDDLE_NAME">
+                            </span>
+                            <span ng-bind="item.LAST_NAME">
+                            </span>
+
+                        </td>
+                        <td ng-bind="leaveName">
+                        </td>
+                        <td ng-bind="item.DESIGNATION_TITLE">
+                        </td>
+                        <td ng-bind="item.BRANCH_NAME">
+                        </td>
+                        <td>
+                            <input class="form-control input-sm" id="balance" style="width: 100px;" type="number" min="0" ng-model="item.BALANCE"/>
+                        </td>
+                        <td class="bs-checkbox " style="width: 36px; " data-field="state" tabindex="0">
+                            <div class="th-inner ">
+                                <label class="mt-checkbox mt-checkbox-single mt-checkbox-outline">
+                                    <input class="" ng-model="item.checked" type="checkbox"
+                                           ng-change="checkUnit(item.checked)"/>
+                                    <span></span>
+                                </label>
+                            </div>
+                            <div class="fht-cell" style="width: 46px;"></div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-offset-8 col-sm-2">
+                <input min="0" class="form-control" type="number" ng-model="daysForAll"
+                       ng-change="daysForAllChange(daysForAll)"
+                       ng-show="daysForAllFlag"/>
+            </div>
+            <div class="col-sm-2">
+                <button ng-show="daysForAllFlag" class="btn btn-sm green pull-right" ng-click="assign()">
+                    Assign
+                    <i class="fa fa-edit"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script type="text/ng-template" id="myModalContent.html">
+        <div class="modal-header">
+        <h3 class="modal-title" id="modal-title">Document Upload</h3>
+        </div>
+        <div class="modal-body" id="modal-body">
+        <div class="row">
+        <div class="col-sm-12">
+        <div id="dropZoneContainer" class="dropzone">
+        </div>
+        <div class="error" ng-show="!valid">Please upload Image.</div>
+        </div>
+        </div>
+        </div>
+        </div>
+        <div class="modal-footer">
+        <button class="btn btn-primary" type="button" ng-click="ok()">OK</button>
+        <button class="btn btn-warning" type="button" ng-click="cancel()">Cancel</button>
+        </div>
+    </script>
+</div>
 
