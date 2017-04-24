@@ -32,21 +32,26 @@ angular.module('hris', [])
         $scope.view = function () {
             $scope.all = false;
             $scope.assignShowHide = false;
-
+            var companyId = angular.element(document.getElementById('companyId')).val();
             var branchId = angular.element(document.getElementById('branchId')).val();
             var departmentId = angular.element(document.getElementById('departmentId')).val();
             var designationId = angular.element(document.getElementById('designationId')).val();
             var positionId = angular.element(document.getElementById('positionId')).val();
             var serviceTypeId = angular.element(document.getElementById('serviceTypeId')).val();
+            var serviceEventTypeId = angular.element(document.getElementById('serviceEventTypeId')).val();
+            var employeeId = angular.element(document.getElementById('employeeId')).val();
             App.blockUI({target: "#hris-page-content"});
             window.app.pullDataById(document.url, {
                 action: 'pullEmployeeForShiftAssign',
                 id: {
+                    companyId: companyId,
                     branchId: branchId,
                     departmentId: departmentId,
                     designationId: designationId,
                     positionId: positionId,
                     serviceTypeId: serviceTypeId,
+                    serviceEventTypeId: serviceEventTypeId,
+                    employeeId:employeeId
                 }
             }).then(function (success) {
                 App.unblockUI("#hris-page-content");

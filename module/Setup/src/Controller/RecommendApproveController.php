@@ -102,15 +102,6 @@ class RecommendApproveController extends AbstractActionController {
     }
 
     public function groupAssignAction() {
-        $employeeNameFormElement = new Select();
-        $employeeNameFormElement->setName("branch");
-        $employeeName = EntityHelper::getTableKVListWithSortOption($this->adapter, "HRIS_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => "E", "RETIRED_FLAG" => "N"], "FIRST_NAME", "ASC", " ",false,true);
-        $employeeName1 = [-1 => "All"] + $employeeName;
-        $employeeNameFormElement->setValueOptions($employeeName1);
-        $employeeNameFormElement->setAttributes(["id" => "employeeId", "class" => "form-control"]);
-        $employeeNameFormElement->setLabel("Employee");
-        $employeeNameFormElement->setAttribute("ng-click", "view()");
-
         $branchFormElement = new Select();
         $branchFormElement->setName("branch");
         $branches = EntityHelper::getTableKVListWithSortOption($this->adapter, Branch::TABLE_NAME, Branch::BRANCH_ID, [Branch::BRANCH_NAME], [Branch::STATUS => 'E'], "BRANCH_NAME", "ASC",null,false,true);
@@ -135,12 +126,11 @@ class RecommendApproveController extends AbstractActionController {
         $designationFormElement->setValueOptions($designations1);
         $designationFormElement->setAttributes(["id" => "designationId", "class" => "form-control"]);
         $designationFormElement->setLabel("Designation");
-
         return Helper::addFlashMessagesToArray($this, [
-                    "branches" => $branchFormElement,
-                    "departments" => $departmentFormElement,
-                    'designations' => $designationFormElement,
-                    'employees' => $employeeNameFormElement
+            "branches" => $branchFormElement,
+            "departments" => $departmentFormElement,
+            'designations' => $designationFormElement,
+            'searchValues' => EntityHelper::getSearchData($this->adapter)
         ]);
     }
 

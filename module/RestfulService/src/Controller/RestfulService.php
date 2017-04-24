@@ -2354,7 +2354,7 @@ class RestfulService extends AbstractRestfulController {
 
     private function pullEmployeeForShiftAssign(array $ids) {
         $shiftAssignRepo = new ShiftAssignRepository($this->adapter);
-        $result = $shiftAssignRepo->filter($ids['branchId'], $ids['departmentId'], $ids['designationId'], $ids['positionId'], $ids['serviceTypeId']);
+        $result = $shiftAssignRepo->filter($ids['branchId'], $ids['departmentId'], $ids['designationId'], $ids['positionId'], $ids['serviceTypeId'],$ids['companyId'],$ids['serviceEventTypeId'],$ids['employeeId']);
 
         $tempArray = [];
         foreach ($result as $item) {
@@ -2375,6 +2375,9 @@ class RestfulService extends AbstractRestfulController {
     }
 
     public function pullEmployeeForRecomApproverAssign($data) {
+        $companyId = $data['companyId'];
+        $positionId = $data['positionId'];
+        $serviceTypeId = $data['serviceTypeId'];
         $branchId = $data['branchId'];
         $departmentId = $data['departmentId'];
         $designationId = $data['designationId'];
@@ -2383,7 +2386,7 @@ class RestfulService extends AbstractRestfulController {
         $recommApproverRepo = new RecommendApproveRepository($this->adapter);
 
         $employeeRepo = new EmployeeRepository($this->adapter);
-        $employeeResult = $employeeRepo->filterRecords($employeeId, $branchId, $departmentId, $designationId, -1, -1, -1, 1);
+        $employeeResult = $employeeRepo->filterRecords($employeeId, $branchId, $departmentId, $designationId, $positionId, $serviceTypeId, -1, 1,$companyId);
 
         $employeeList = [];
         foreach ($employeeResult as $employeeRow) {

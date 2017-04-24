@@ -70,7 +70,7 @@ angular.module('hris', [])
                         data: employees,
                         pageSize: 20,
                     },
-                    height: 450,
+                    height: 590,
                     scrollable: true,
                     sortable: true,
                     filterable: true,
@@ -83,9 +83,10 @@ angular.module('hris', [])
                     columns: [
                         {field: "EMPLOYEE_CODE", title: "Employee Code", width: 130},
                         {field: "FIRST_NAME", title: "Name", width: 220},
-                        {field: "BIRTH_DATE", title: "Birth Date", width: 120},
                         {field: "MOBILE_NO", title: "Mobile No", width: 130},
-                        {field: "EMAIL_ADDRESS", title: "Email Official", width: 200},
+                        {field: "BRANCH_NAME", title: "Branch", width: 120},
+                        {field: "DEPARTMENT_NAME", title: "Department", width: 150},
+                        {field: "DESIGNATION_TITLE", title: "Designation", width: 150},
                         {title: "Action", width: 120}
                     ]
                 });
