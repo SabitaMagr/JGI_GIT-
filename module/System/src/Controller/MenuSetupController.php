@@ -1,10 +1,5 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: root
- * Date: 10/18/16
- * Time: 12:01 PM
- */
+
 namespace System\Controller;
 
 use Application\Helper\EntityHelper;
@@ -12,12 +7,11 @@ use Application\Helper\Helper;
 use System\Form\MenuSetupForm;
 use System\Model\MenuSetup;
 use System\Repository\MenuSetupRepository;
+use System\Repository\RoleSetupRepository;
+use Zend\Authentication\AuthenticationService;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\Mvc\Controller\AbstractActionController;
-use Zend\View\Helper\Navigation\Menu;
-use System\Repository\RoleSetupRepository;
-use Zend\Authentication\AuthenticationService;
 
 class MenuSetupController extends AbstractActionController {
 
@@ -26,87 +20,85 @@ class MenuSetupController extends AbstractActionController {
     private $form;
     private $employeeId;
 
-    public function __construct(AdapterInterface $adapter)
-    {
+    public function __construct(AdapterInterface $adapter) {
         $this->repository = new MenuSetupRepository($adapter);
         $this->adapter = $adapter;
         $auth = new AuthenticationService();
         $this->employeeId = $auth->getStorage()->read()['employee_id'];
     }
 
-    public function initializeForm(){
+    public function initializeForm() {
         $menuSetupForm = new MenuSetupForm();
         $builder = new AnnotationBuilder();
-        $this->form =  $builder->createForm($menuSetupForm);
+        $this->form = $builder->createForm($menuSetupForm);
     }
 
-    public function indexAction()
-    {
+    public function indexAction() {
         $list = $this->repository->fetchAll();
 
         $request = $this->getRequest();
         $this->initializeForm();
 
-        $menuList = EntityHelper::getTableKVList($this->adapter,MenuSetup::TABLE_NAME,MenuSetup::MENU_ID,[MenuSetup::MENU_NAME],[MenuSetup::STATUS=>"E"]);
+        $menuList = EntityHelper::getTableKVList($this->adapter, MenuSetup::TABLE_NAME, MenuSetup::MENU_ID, [MenuSetup::MENU_NAME], [MenuSetup::STATUS => "E"]);
         ksort($menuList);
 
         $roleSetupRepository = new RoleSetupRepository($this->adapter);
         $roleList = $roleSetupRepository->fetchAll();
 
-        if($request->isPost()){
+        if ($request->isPost()) {
             $menuSetup = new MenuSetup();
             $this->form->setData($request->getPost());
-            if($this->form->isValid()){
+            if ($this->form->isValid()) {
                 $menuSetup->exchangeArrayFromForm($this->form->getData());
-                $menuSetup->menuId = ((int)Helper::getMaxId($this->adapter, MenuSetup::TABLE_NAME, MenuSetup::MENU_ID)) + 1;
+                $menuSetup->menuId = ((int) Helper::getMaxId($this->adapter, MenuSetup::TABLE_NAME, MenuSetup::MENU_ID)) + 1;
                 $menuSetup->createdDt = Helper::getcurrentExpressionDate();
                 $menuSetup->createdBy = $this->employeeId;
-                $menuSetup->status='E';
+                $menuSetup->status = 'E';
                 $this->repository->add($menuSetup);
 
                 $this->flashmessenger()->addMessage("Menu Successfully Added!!!");
                 return $this->redirect()->toRoute("menusetup");
             }
         }
-        return Helper::addFlashMessagesToArray($this,[
-            'form'=>$this->form,
-            'menuList'=> $menuList,
-            "list"=>$list,
-            "roleList"=>$roleList
+        return Helper::addFlashMessagesToArray($this, [
+                    'form' => $this->form,
+                    'menuList' => $menuList,
+                    "list" => $list,
+                    "roleList" => $roleList
         ]);
     }
 
-    public function addAction(){
+    public function addAction() {
         $request = $this->getRequest();
         $this->initializeForm();
 
-        $menuList = EntityHelper::getTableKVList($this->adapter,MenuSetup::TABLE_NAME,MenuSetup::MENU_ID,[MenuSetup::MENU_NAME],[MenuSetup::STATUS=>"E"]);
-        $menuList[-1]="None";
+        $menuList = EntityHelper::getTableKVList($this->adapter, MenuSetup::TABLE_NAME, MenuSetup::MENU_ID, [MenuSetup::MENU_NAME], [MenuSetup::STATUS => "E"]);
+        $menuList[-1] = "None";
         ksort($menuList);
 
-        if($request->isPost()){
+        if ($request->isPost()) {
             $menuSetup = new MenuSetup();
             $this->form->setData($request->getPost());
-            if($this->form->isValid()){
+            if ($this->form->isValid()) {
                 $menuSetup->exchangeArrayFromForm($this->form->getData());
-                $menuSetup->menuId = ((int)Helper::getMaxId($this->adapter, MenuSetup::TABLE_NAME, MenuSetup::MENU_ID)) + 1;
+                $menuSetup->menuId = ((int) Helper::getMaxId($this->adapter, MenuSetup::TABLE_NAME, MenuSetup::MENU_ID)) + 1;
                 $menuSetup->createdDt = Helper::getcurrentExpressionDate();
                 $menuSetup->createdBy = $this->employeeId;
-                $menuSetup->status='E';
+                $menuSetup->status = 'E';
                 $this->repository->add($menuSetup);
 
                 $this->flashmessenger()->addMessage("Menu Successfully Added!!!");
                 return $this->redirect()->toRoute("menusetup");
             }
         }
-        return Helper::addFlashMessagesToArray($this,[
-            'form'=>$this->form,
-            'menuList'=> $menuList
+        return Helper::addFlashMessagesToArray($this, [
+                    'form' => $this->form,
+                    'menuList' => $menuList
         ]);
     }
 
-    public function editAction(){
-        $id = (int)$this->params()->fromRoute("id");
+    public function editAction() {
+        $id = (int) $this->params()->fromRoute("id");
         $this->initializeForm();
         $request = $this->getRequest();
 
@@ -131,15 +123,15 @@ class MenuSetupController extends AbstractActionController {
                 return $this->redirect()->toRoute("menusetup");
             }
         }
-        return Helper::addFlashMessagesToArray($this,[
-            'id'=>$id,
-            'form'=>$this->form,
-            'menuList'=> $menuList
+        return Helper::addFlashMessagesToArray($this, [
+                    'id' => $id,
+                    'form' => $this->form,
+                    'menuList' => $menuList
         ]);
     }
 
-    public function deleteAction(){
-        $id = (int)$this->params()->fromRoute("id");
+    public function deleteAction() {
+        $id = (int) $this->params()->fromRoute("id");
 
         if (!$id) {
             return $this->redirect()->toRoute('menusetup');

@@ -274,7 +274,7 @@ form.k-filter-menu .k-widget, form.k-filter-menu .k-textbox
 }
 .portlet.light > .portlet-title > .caption
 {
-   /* padding-bottom:5px !important;*/
+    /* padding-bottom:5px !important;*/
 }
 .cborder
 {
@@ -1296,11 +1296,11 @@ ul#roleList li {
     width: 100% !important;
 }
 /*report indicator*/
-.indicator
+/*.indicator
 {
-   margin-bottom: 50px;
+    margin-bottom: 50px;
     margin-top: 10px;
-}
+}*/
 .indicator ul 
 {
     float:right;
@@ -1308,7 +1308,7 @@ ul#roleList li {
 .indicator ul li
 {
     list-style: none;
-   float:left;
+    float:left;
 }
 
 .indicator ul li {
@@ -1318,10 +1318,10 @@ ul#roleList li {
 }
 .indicator ul li div
 {
-  height: 13px;
+    height: 13px;
     margin-top: 1px;
     width: 15px;
- 
+
 }
 .indicator ul li span
 {
@@ -1329,7 +1329,7 @@ ul#roleList li {
 }
 .indicator-color-present
 {
- background-color: rgba(70, 130, 180, 0.7);   
+    background-color: rgba(70, 130, 180, 0.7);   
 }
 
 .indicator-color-leave
@@ -1339,7 +1339,7 @@ ul#roleList li {
 
 .indicator-color-Absent
 {
-   background-color: #ff7f7f; 
+    background-color: #ff7f7f; 
 }
 .indicator span
 {
@@ -1357,8 +1357,8 @@ ul#roleList li {
 .img-polaroid,.Picture
 {
     border-radius:50% !important;
-     height: 29px !important;
-     width:29px !important;
+    height: 29px !important;
+    width:29px !important;
 }
 /*rajan's css new end here*/
 
@@ -1682,9 +1682,9 @@ ul#personalInfo li{
 .textcolor1,.bg-red1
 {
     color:#F08080 !important;
-        /* background-color:#F08080 !important; */
-       /* background-color:#fff !important; */
-       
+    /* background-color:#F08080 !important; */
+    /* background-color:#fff !important; */
+
 }
 
 .textcolor2 span
@@ -1702,17 +1702,17 @@ ul#personalInfo li{
 }
 .custom-btn-present,.custom-btn-absent,.custom-btn-leave
 { 
-padding:4px 10px 2px !important;
- 
+    padding:4px 10px 2px !important;
+
 }
 .custom-btn-leave
 {
     /*background-color:#ddd !important;*/
-   
+
 }
 .custom-btn-absent
 {
-  /*background-color:rgba(255, 0, 0, 0.5) !important;  */
+    /*background-color:rgba(255, 0, 0, 0.5) !important;  */
 }
 
 
@@ -1729,7 +1729,6 @@ padding:4px 10px 2px !important;
     padding-top: 3px !important;
     padding-bottom: 2px !important;
     width:auto;
-    border-radius:15px !important;
 }
 .gapboth{
     padding-bottom: 15px !important;
@@ -1739,7 +1738,7 @@ padding:4px 10px 2px !important;
 {
     margin-right:5px !important;
     margin-right: 5px !important;
-   /* border: solid #eee 1px; */
+    /* border: solid #eee 1px; */
     box-shadow: none !important;
     font-size:11px !important;
     min-width:23px;
@@ -1754,22 +1753,22 @@ padding:4px 10px 2px !important;
 {
     border:solid #ddd 1px !important;
 }
- .custom-btn-present
+.custom-btn-present
 {
-   /* background-color:rgba(70,130,180,0.7) !important; */
-   color:rgba(70,130,180,0.7) !important;
+    /* background-color:rgba(70,130,180,0.7) !important; */
+    color:rgba(70,130,180,0.7) !important;
 }
- .custom-btn-absent
- {
-   background-color:none !important;
-   color:#ff7f7f !important;
- }
- .custom-btn-leave
- {   background-color:none !important;
+.custom-btn-absent
+{
+    background-color:none !important;
+    color:#ff7f7f !important;
+}
+.custom-btn-leave
+{   background-color:none !important;
 
-     
- }
- 
+
+}
+
 textarea#form-remarks,#remarks,.form-reason  {
     min-height: 45px;
     resize:none !important;
@@ -1779,40 +1778,40 @@ textarea#form-remarks,#remarks,.form-reason  {
 .company-logo-box h6{
     font-size:12px;
     margin-top:4px !important;
-     font-weight: 400;
+    font-weight: 400;
     margin-top: 2px !important;
 }
 .company-logo-box
 {
- display:block;
- float: left;
- height: 24px;
+    display:block;
+    float: left;
+    height: 24px;
     width:30% !imprtant;
- /*padding-left: 20px;
-  padding-right: 20px;  */ 
+    /*padding-left: 20px;
+     padding-right: 20px;  */ 
 }
 
 .companylogo
 {
-  margin: 3px 0 0;
-     float: left;
-     padding-left:20px;
- 
-  }
-  .company-logo-box span
-  {
-   display: inline-block;
+    margin: 3px 0 0;
+    float: left;
+    padding-left:20px;
+
+}
+.company-logo-box span
+{
+    display: inline-block;
     font-size: 11px;
     font-weight: 600;
     padding-left: 5px;
     padding-top:11px;
-      
-  }
-  
-  
-  
-  
-  /*Large desktops and laptops*/
+
+}
+
+
+
+
+/*Large desktops and laptops*/
 
 @media (min-width: 1200px) {
 
@@ -1868,7 +1867,7 @@ textarea#form-remarks,#remarks,.form-reason  {
     {
 
         margin-bottom: 20px;
-       /* margin-left: 35px;*/
+        /* margin-left: 35px;*/
         margin-right: 90px;
         /*max-width: 16%;*/
         float:none !important;
@@ -1914,7 +1913,7 @@ textarea#form-remarks,#remarks,.form-reason  {
         margin-bottom: 20px;
         margin-left: 35px;
         margin-right: 90px;
-       /* max-width:16%;*/
+        /* max-width:16%;*/
     }
     .leftvalues,.rules 
     {
@@ -2022,17 +2021,17 @@ textarea#form-remarks,#remarks,.form-reason  {
         margin-bottom:10px;
     }
     .page-header.navbar .top-menu .navbar-nav > li.dropdown-notification .dropdown-menu {
-    margin-right: -107px;
-}
+        margin-right: -107px;
+    }
 
-.page-header.navbar .top-menu .navbar-nav > li.dropdown-notification .dropdown-menu::after, .page-header.navbar .top-menu .navbar-nav > li.dropdown-notification .dropdown-menu::before {
-    margin-right: 112px;
-}
-.company-logo-box{
-    height:45px;
-}
-.companylogo
-{
-    padding-left:0px;
-}
+    .page-header.navbar .top-menu .navbar-nav > li.dropdown-notification .dropdown-menu::after, .page-header.navbar .top-menu .navbar-nav > li.dropdown-notification .dropdown-menu::before {
+        margin-right: 112px;
+    }
+    .company-logo-box{
+        height:45px;
+    }
+    .companylogo
+    {
+        padding-left:0px;
+    }
 }

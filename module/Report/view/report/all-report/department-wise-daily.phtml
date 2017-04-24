@@ -31,69 +31,73 @@ $this->headScript()->appendFile($this->basePath('js/Report/AllReport/reportthree
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\allreport')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
-<div class="">
-    <div class="portlet solid default1 borderline1 shadow1 boxshadow gapboth">
-        <div class="portlet-title border-bottom">
-            <div class="caption">
-                <i class="icon-filter"></i>
-                <span class="caption-subject bold uppercase"> Filter</span>
-                <span class="caption-helper">options...</span>
-            </div>
+
+
+
+<div class="portlet light bg-inverse">
+    <div class="portlet-title">
+        <div class="caption">
+            <i class="icon-paper-plane font-green-haze"></i>
+            <span class="caption-subject bold font-green-haze uppercase"> Filter Employees</span>
         </div>
-        <div class="portlet-body">
-            <div class="row">
-                <div class="col-xs-12 col-sm-4 col-md-2 bottomgap">
-                    <select id="monthList" class="">
+        <div class="indicator tools">
 
-                    </select> 
-                </div>
-                <div class="col-xs-12 col-sm-4 col-md-3 bottomgap">
-                    <select id="countryList">
-
-                    </select> 
-                </div>
-                <div class="col-xs-12 col-sm-4 col-md-3 bottomgap">
-                    <select id="branchList">
-
-                    </select> 
-
-                </div>
-                <div class="col-xs-12 col-sm-4 col-md-2 bottomgap">
-                    <select id="departmentList">
-
-                    </select> 
-
-                </div>
-                <div class="col-xs-7 col-sm-4 col-md-2 bottomgap">
-                    <button id="generateReport" class="btn btn-block btn-customized">
-                        Generate Report
-                    </button>
-
-                </div>
-
-            </div>
+            <ul>
+                <li>
+                    <div class="indicator-box indicator-color-present"></div> 
+                    <span>Present</span>
+                </li>
+                <li>
+                    <div class="indicator-box indicator-color-Absent"> </div>   
+                    <span>Absent</span>
+                </li>
+                <li>
+                    <div class="indicator-box indicator-color-leave"> </div> 
+                    <span>leave</span>
+                </li>
+            </ul>
         </div>
     </div>
+    <div class="portlet-body">
+        <div class="row">
+            <div class="col-xs-12 col-sm-4 col-md-2 bottomgap">
+                <select id="monthList" class="">
+
+                </select> 
+            </div>
+            <div class="col-xs-12 col-sm-4 col-md-3 bottomgap">
+                <select id="countryList">
+
+                </select> 
+            </div>
+            <div class="col-xs-12 col-sm-4 col-md-3 bottomgap">
+                <select id="branchList">
+
+                </select> 
+
+            </div>
+            <div class="col-xs-12 col-sm-4 col-md-2 bottomgap">
+                <select id="departmentList">
+
+                </select> 
+
+            </div>
+            <div class="col-xs-7 col-sm-4 col-md-2 bottomgap">
+                <button id="generateReport" class="btn btn-block btn-customized">
+                    Generate Report
+                </button>
+
+            </div>
+
+        </div>
+        <div class="row">
+            <div class="col-sm-12">
+                <div id="reportTable">
+                </div>
+            </div>
+        </div>
+
+    </div>
 </div>
-<div class="indicator">
-    <ul>
-        <li>
-            <div class="indicator-box indicator-color-present"></div> 
-            <span>Present</span>
-        </li>
-        <li>
-            <div class="indicator-box indicator-color-Absent"> </div>   
-            <span>Absent</span>
-        </li>
 
 
-        <li>
-            <div class="indicator-box indicator-color-leave"> </div> 
-            <span>leave</span>
-        </li>
-
-
-    </ul>
-</div>
-<div id="reportTable">
-</div>
