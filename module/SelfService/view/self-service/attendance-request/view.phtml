@@ -66,6 +66,9 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                 </div>
             </div>
             <div class="portlet-body">
+                <?php
+                    print $this->form()->openTag($form);
+                    ?>
                 <div class="border-bottom">
                     <div class="form-group">
                         <div class="row div-font-11">
@@ -129,10 +132,6 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                             </div>
                         </div>
                     </div>
-                    <?php
-                    print $this->form()->openTag($form);
-                    ?>
-
 
                     <div class=" row">
                         <div class="col-sm-4">
@@ -217,7 +216,9 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                     <?php print $this->formElement($approvedRemarks); ?>
                 </div>
                 <?php print $this->formElementErrors()->render($approvedRemarks, ['class' => 'help-block error']); ?>
-
+                 <?php
+                     $this->form()->closeTag($form);
+                 ?>
             </div>
 
         </div>

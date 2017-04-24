@@ -45,7 +45,7 @@ class HolidaySetup extends AbstractActionController {
         $this->initializeForm();
         $holidayFormElement = new Select();
         $holidayFormElement->setName("branch");
-        $holidays = ApplicationEntityHelper::getTableKVList($this->adapter, Holiday::TABLE_NAME, Holiday::HOLIDAY_ID, [Holiday::HOLIDAY_ENAME]);
+        $holidays = ApplicationEntityHelper::getTableKVListWithSortOption($this->adapter, Holiday::TABLE_NAME, Holiday::HOLIDAY_ID, [Holiday::HOLIDAY_ENAME], ["STATUS" => "E"], Holiday::HOLIDAY_ENAME, "ASC",NULL,FALSE,TRUE);
         ksort($holidays);
         $holidayFormElement->setValueOptions($holidays);
         $holidayFormElement->setAttributes(["id" => "holidayId", "class" => "form-control"]);
@@ -53,7 +53,7 @@ class HolidaySetup extends AbstractActionController {
 
         $branchFormElement = new Select();
         $branchFormElement->setName("branch");
-        $branches = ApplicationEntityHelper::getTableKVListWithSortOption($this->adapter, Branch::TABLE_NAME, Branch::BRANCH_ID, [Branch::BRANCH_NAME], ["STATUS" => "E"], Branch::BRANCH_NAME, "ASC");
+        $branches = ApplicationEntityHelper::getTableKVListWithSortOption($this->adapter, Branch::TABLE_NAME, Branch::BRANCH_ID, [Branch::BRANCH_NAME], ["STATUS" => "E"], Branch::BRANCH_NAME, "ASC",NULL,FALSE,TRUE);
         $branchFormElement->setValueOptions($branches);
         $branchFormElement->setAttributes(["id" => "branchId", "required" => "required", "class" => "form-control", "multiple" => "multiple"]);
         $branchFormElement->setLabel("Branch");
@@ -124,8 +124,8 @@ class HolidaySetup extends AbstractActionController {
                     'form' => $this->form,
                     'customRenderer' => Helper::renderCustomView(),
                     "genders" => EntityHelper::getTableKVList($this->adapter, EntityHelper::HRIS_GENDERS),
-                    'branches' => ApplicationEntityHelper::getTableKVList($this->adapter, Branch::TABLE_NAME, Branch::BRANCH_ID, [Branch::BRANCH_NAME], ["STATUS" => "E"]),
-                    'designations' => ApplicationEntityHelper::getTableKVList($this->adapter, Designation::TABLE_NAME, Designation::DESIGNATION_ID, [Designation::DESIGNATION_TITLE], [Designation::STATUS => "E"])
+                    'branches' => ApplicationEntityHelper::getTableKVListWithSortOption($this->adapter, Branch::TABLE_NAME, Branch::BRANCH_ID, [Branch::BRANCH_NAME], ["STATUS" => "E"], Branch::BRANCH_NAME, "ASC",NULL,FALSE,TRUE),
+                    'designations' => ApplicationEntityHelper::getTableKVListWithSortOption($this->adapter, Designation::TABLE_NAME, Designation::DESIGNATION_ID, [Designation::DESIGNATION_TITLE], [Designation::STATUS => "E"], Designation::DESIGNATION_TITLE, "ASC",NULL,FALSE,TRUE)
                         ]
                 )
         );
@@ -142,7 +142,7 @@ class HolidaySetup extends AbstractActionController {
         $this->initializeForm();
         $holidayFormElement = new Select();
         $holidayFormElement->setName("holiday");
-        $holidays = ApplicationEntityHelper::getTableKVList($this->adapter, Holiday::TABLE_NAME, Holiday::HOLIDAY_ID, [Holiday::HOLIDAY_ENAME]);
+        $holidays = ApplicationEntityHelper::getTableKVListWithSortOption($this->adapter, Holiday::TABLE_NAME, Holiday::HOLIDAY_ID, [Holiday::HOLIDAY_ENAME], ["STATUS" => "E"], Holiday::HOLIDAY_ENAME, "ASC",NULL,FALSE,TRUE);
         ksort($holidays);
         $holidayFormElement->setValueOptions($holidays);
         $holidayFormElement->setAttributes(["id" => "holidayId", "class" => "form-control"]);
@@ -152,7 +152,7 @@ class HolidaySetup extends AbstractActionController {
 
         $branchFormElement = new Select();
         $branchFormElement->setName("branch");
-        $branches = ApplicationEntityHelper::getTableKVList($this->adapter, Branch::TABLE_NAME, Branch::BRANCH_ID, [Branch::BRANCH_NAME], ["STATUS" => "E"]);
+        $branches = ApplicationEntityHelper::getTableKVListWithSortOption($this->adapter, Branch::TABLE_NAME, Branch::BRANCH_ID, [Branch::BRANCH_NAME], ["STATUS" => "E"], Branch::BRANCH_NAME, "ASC",NULL,FALSE,TRUE);
 
         ksort($branches);
         $branchFormElement->setValueOptions($branches);
@@ -161,7 +161,7 @@ class HolidaySetup extends AbstractActionController {
 
         $designationFormElement = new Select();
         $designationFormElement->setName("designation");
-        $designations = ApplicationEntityHelper::getTableKVList($this->adapter, Designation::TABLE_NAME, Designation::DESIGNATION_ID, [Designation::DESIGNATION_TITLE], [Designation::STATUS => "E"]);
+        $designations = ApplicationEntityHelper::getTableKVListWithSortOption($this->adapter, Designation::TABLE_NAME, Designation::DESIGNATION_ID, [Designation::DESIGNATION_TITLE], [Designation::STATUS => "E"], Designation::DESIGNATION_TITLE, "ASC",NULL,FALSE,TRUE);
 
         ksort($designations);
         $designationFormElement->setValueOptions($designations);
@@ -203,7 +203,7 @@ class HolidaySetup extends AbstractActionController {
     public function listAction() {
         $list = $this->repository->fetchAll();
 
-        $branches = ApplicationEntityHelper::getTableKVList($this->adapter, Branch::TABLE_NAME, Branch::BRANCH_ID, [Branch::BRANCH_NAME], ["STATUS" => "E"]);
+        $branches = ApplicationEntityHelper::getTableKVListWithSortOption($this->adapter, Branch::TABLE_NAME, Branch::BRANCH_ID, [Branch::BRANCH_NAME], ["STATUS" => "E"], Branch::BRANCH_NAME, "ASC",NULL,FALSE,TRUE);
         $branches[-1] = "All";
         ksort($branches);
 

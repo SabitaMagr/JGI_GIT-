@@ -3,10 +3,16 @@
 namespace Application\Controller;
 
 use Application\Custom\CustomViewModel;
+use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
 use Application\Model\TaskModel;
 use Application\Repository\TaskRepository;
 use Exception;
+use Setup\Model\Branch;
+use Setup\Model\Company;
+use Setup\Model\Department;
+use Setup\Model\Designation;
+use Setup\Model\Position;
 use Zend\Authentication\AuthenticationService;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Mvc\Controller\AbstractActionController;
@@ -23,29 +29,24 @@ class TaskController extends AbstractActionController {
     }
 
     public function indexAction() {
-         $taskRepo = new TaskRepository($this->adapter);
-                $result = $taskRepo->fetchEmployeeTask($this->employeeId);
-                $list = [];
-                foreach ($result as $row) {
-                    $nrow['id']=$row['TASK_ID'];
-                    $nrow['title']=$row['TASK_TITLE'];
-                    $nrow['description']=$row['TASK_EDESC'];
-                    $nrow['dueDate']=$row['END_DATE'];
-                    if($row['STATUS']=='C'){
-                        $done=true;
-                    }
-                    else{
-                        $done=false;
-                    }
-                    $nrow['done']=$done;
-                    array_push($list, $nrow);
-//                    array_push($list, $row);
-                }
-//                echo '<pre>';
-//                print_r($list);
-//                die();
+        $taskRepo = new TaskRepository($this->adapter);
+        $result = $taskRepo->fetchEmployeeTask($this->employeeId);
+        $list = [];
+        foreach ($result as $row) {
+            $nrow['id'] = $row['TASK_ID'];
+            $nrow['title'] = $row['TASK_TITLE'];
+            $nrow['description'] = $row['TASK_EDESC'];
+            $nrow['dueDate'] = $row['END_DATE'];
+            if ($row['STATUS'] == 'C') {
+                $done = true;
+            } else {
+                $done = false;
+            }
+            $nrow['done'] = $done;
+            array_push($list, $nrow);
+        }
         return [
-        'list'=> $list
+            'todoList' => $list,
         ];
     }
 
@@ -59,18 +60,15 @@ class TaskController extends AbstractActionController {
                 $taskModel->taskId = ((int) Helper::getMaxId($this->adapter, $taskModel::TABLE_NAME, $taskModel::TASK_ID)) + 1;
                 $taskModel->employeeId = $this->employeeId;
                 $taskModel->taskTitle = $data->title;
-//                $taskModel->taskTitle = $data->taskTitle;
                 $taskModel->taskEdesc = $data->description;
-//                $taskModel->taskEdesc = $data->taskEdesc;
-                $taskModel->endDate =  Helper::getExpressionDate($data->dueDate);
-//                $taskModel->endDate =  Helper::getExpressionDate($data->endDate);
+                $taskModel->endDate = Helper::getExpressionDate($data->dueDate);
                 $taskModel->createdBy = $this->employeeId;
                 $taskModel->approvedBy = $this->employeeId;
                 $taskModel->approvedDate = Helper::getcurrentExpressionDate();
-                
+
                 $taskRepo->add($taskModel);
-                $responseid=$taskModel->taskId;
-                return new CustomViewModel(['success' => true, 'msg' => 'sucessfully added', 'data' => [$taskModel],'id'=>$responseid, 'error' => '']);
+                $responseid = $taskModel->taskId;
+                return new CustomViewModel(['success' => true, 'msg' => 'sucessfully added', 'data' => [$taskModel], 'id' => $responseid, 'error' => '']);
             } else {
                 throw new Exception("The request should be of type post");
             }
@@ -87,10 +85,9 @@ class TaskController extends AbstractActionController {
                 $result = $taskRepo->fetchEmployeeTask($this->employeeId);
                 $list = [];
                 foreach ($result as $row) {
-                    $nrow['title']='title';
-                    $nrow['description']=$row['TASK_EDESC'];
-//                    $nrow['dueDate']=$row['END_DATE'];
-                    $nrow['dueDate']='2015-01-31';
+                    $nrow['title'] = 'title';
+                    $nrow['description'] = $row['TASK_EDESC'];
+                    $nrow['dueDate'] = '2015-01-31';
                     array_push($list, $nrow);
                 }
                 return new CustomViewModel(['success' => true, 'msg' => 'fetched', 'data' => $list, 'error' => '']);
@@ -128,14 +125,10 @@ class TaskController extends AbstractActionController {
                 $taskRepo = new TaskRepository($this->adapter);
                 $taskModel = new TaskModel();
                 $data = $this->getRequest()->getPost();
-//                $id = $data->taskId;
                 $id = $data->id;
                 $taskModel->taskTitle = $data->title;
-//                $taskModel->taskTitle = $data->taskTitle;
                 $taskModel->taskEdesc = $data->description;
-//                $taskModel->taskEdesc = $data->taskEdesc;
-                $taskModel->endDate =  Helper::getExpressionDate($data->dueDate);
-//                $taskModel->endDate =  Helper::getExpressionDate($data->endDate);
+                $taskModel->endDate = Helper::getExpressionDate($data->dueDate);
                 $taskModel->modifiedBy = $this->employeeId;
                 $taskModel->modifiedDt = Helper::getcurrentExpressionDate();
                 $taskRepo->edit($taskModel, $id);
@@ -147,19 +140,14 @@ class TaskController extends AbstractActionController {
             return new CustomViewModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
         }
     }
-    
-    
-    public function deleteAction(){
+
+    public function deleteAction() {
         try {
             $request = $this->getRequest();
             if ($request->isPost()) {
                 $taskRepo = new TaskRepository($this->adapter);
                 $taskModel = new TaskModel();
                 $data = $this->getRequest()->getPost();
-//                                print_r($data);
-//                return new CustomViewModel(['data'=>$data]);
-//                die();
-//                $id = $data->taskId;
                 $id = $data->id;
                 $taskRepo->delete($id);
                 return new CustomViewModel(['success' => true, 'msg' => 'sucessfully delted', 'data' => [], 'error' => '']);
@@ -170,26 +158,25 @@ class TaskController extends AbstractActionController {
             return new CustomViewModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
         }
     }
-    
-    
-        public function updateStatusAction() {
+
+    public function updateStatusAction() {
         try {
             $request = $this->getRequest();
             if ($request->isPost()) {
                 $taskRepo = new TaskRepository($this->adapter);
                 $taskModel = new TaskModel();
                 $data = $this->getRequest()->getPost();
-                
+
                 $done = 'O';
-                if($data['item']['done']=='true'){
-                    $done= 'C';
+                if ($data['item']['done'] == 'true') {
+                    $done = 'C';
                 }
-                
+
                 $id = $data['item']['id'];
-                $taskModel->status=$done;
-                
+                $taskModel->status = $done;
+
                 $taskRepo->edit($taskModel, $id);
-                return new CustomViewModel(['success' => true, 'msg' => 'sucessfully changed', 'data' =>[], 'error' => '']);
+                return new CustomViewModel(['success' => true, 'msg' => 'sucessfully changed', 'data' => [], 'error' => '']);
             } else {
                 throw new Exception("The request should be of type post");
             }
@@ -197,6 +184,5 @@ class TaskController extends AbstractActionController {
             return new CustomViewModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
         }
     }
-    
-    
+
 }

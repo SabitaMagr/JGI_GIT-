@@ -26,6 +26,13 @@ $this->headScript()
         ->appendFile($this->basePath('assets/global/scripts/metronic.js'))
         ->appendFile($this->basePath('js/dashboard/hrm-dashboard.js'));
 
+$this->headLink()
+        ->appendStylesheet($this->basePath('assets/global/plugins/lobilist-master/dist/lobilist.min.css'));
+
+$this->headScript()
+        ->appendFile($this->basePath('assets/global/plugins/lobilist-master/dist/lobilist.min.js'))
+        ->appendFile($this->basePath('js/dashboard/todo.js'));
+
 $taskAssignEmployeeListOptionsHtml = "";
 
 $departmentAttendanceData = [];
@@ -73,7 +80,13 @@ foreach ($departmentAttendance as $deptAttn) {
     document.travelUrl = '<?php print $this->url('travelStatus', ["action" => 'index']); ?>';
     document.leaveUrl = '<?php print $this->url('leavestatus', ["action" => 'index']); ?>';
 </script>
-
+<script>
+    document.todoAddUrl = '<?php echo $this->url('task', ['action' => 'add']); ?>';
+    document.todoUpdateUrl = '<?php echo $this->url('task', ['action' => 'update']); ?>';
+    document.todoDeleteUrl = '<?php echo $this->url('task', ['action' => 'delete']); ?>';
+    document.todoTaskList = <?php echo json_encode($todoList); ?>;
+    document.todoTaskUpdateStatus = '<?php echo $this->url('task', ['action' => 'updateStatus']); ?>';
+</script>
 <?php
 if ($this->messages && (sizeof($this->messages) > 1)) {
     print '<div class="alert alert-warning alert-dismissable">
@@ -91,79 +104,79 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
 
 <div class="employeedashboard">
     <div class="emplyoee-dashboard col-md-12">
-    <div class="row">
-        <div class="employe-descbox">
-            <div class="col-xs-4 col-sm-2 col-md-1 profile_pic">
-                <img src="<?php print $employeeDetail['FILE_PATH'] ? $this->basePath('uploads/' . $employeeDetail['FILE_PATH']) : $this->basePath("img/nobody_m.original.jpg"); ?>">
-            </div>
-            <div class="col-xs-8 col-sm-4 col-md-3 employee-details">
-                <?php
-                $email = trim($employeeDetail['EMAIL_OFFICIAL']) ? trim($employeeDetail['EMAIL_OFFICIAL']) : trim($employeeDetail['EMAIL_PERSONAL']);
-                $service[0] = $employeeDetail['SERVICE_YEARS'] ? ((1 == $employeeDetail['SERVICE_YEARS']) ? "1 Year" : $employeeDetail['SERVICE_YEARS'] . " Years") : "";
-                $service[1] = $employeeDetail['SERVICE_MONTHS'] ? ((1 == $employeeDetail['SERVICE_MONTHS']) ? "1 Month" : $employeeDetail['SERVICE_MONTHS'] . " Months") : "";
-                $service[2] = $employeeDetail['SERVICE_DAYS'] ? ((1 == $employeeDetail['SERVICE_DAYS']) ? "1 Day" : $employeeDetail['SERVICE_DAYS'] . " Days") : "";
-                $serviceDays = trim(implode(" ", $service));
-                ?>
-                <h4 class="font-weight-bold"><?php print $employeeDetail['FULL_NAME']; ?></h4>
-                <?php if ($email) : ?>
-                    <span><?php print $email; ?></span><br>
-                <?php endif; ?>
-                <span><?php print trim($employeeDetail['DESIGNATION_TITLE']); ?></span><br>
-                <span>At work for : <?php print $serviceDays ? $serviceDays : 0; ?></span><br>
-            </div>
-            <div class="col-xs-12 col-md-8 col-sm-6 employee-detailbox">
-                <div class="row detailsbox">
-                    <div class="col-xs-6 col-sm-3 col-md-2 hexcustom">
-                        <div class="employee_details-box hexagon-bg1">
-                            <span><?php print $employeeDetail['PRESENT_DAY']; ?></span>
-                            <div class="face1"></div>
-                            <div class="face2"></div>
-                            <div class="headtitle">Present</div>
+        <div class="row">
+            <div class="employe-descbox">
+                <div class="col-sm-1 col-md-1 profile_pic">
+                    <img src="<?php print $employeeDetail['FILE_PATH'] ? $this->basePath('uploads/' . $employeeDetail['FILE_PATH']) : $this->basePath("img/nobody_m.original.jpg"); ?>">
+                </div>
+                <div class="col-sm-3 col-md-3 employee-details">
+                    <?php
+                    $email = trim($employeeDetail['EMAIL_OFFICIAL']) ? trim($employeeDetail['EMAIL_OFFICIAL']) : trim($employeeDetail['EMAIL_PERSONAL']);
+                    $service[0] = $employeeDetail['SERVICE_YEARS'] ? ((1 == $employeeDetail['SERVICE_YEARS']) ? "1 Year" : $employeeDetail['SERVICE_YEARS'] . " Years") : "";
+                    $service[1] = $employeeDetail['SERVICE_MONTHS'] ? ((1 == $employeeDetail['SERVICE_MONTHS']) ? "1 Month" : $employeeDetail['SERVICE_MONTHS'] . " Months") : "";
+                    $service[2] = $employeeDetail['SERVICE_DAYS'] ? ((1 == $employeeDetail['SERVICE_DAYS']) ? "1 Day" : $employeeDetail['SERVICE_DAYS'] . " Days") : "";
+                    $serviceDays = trim(implode(" ", $service));
+                    ?>
+                    <h4 class="font-weight-bold"><?php print $employeeDetail['FULL_NAME']; ?></h4>
+                    <?php if ($email) : ?>
+                        <span><?php print $email; ?></span><br>
+                    <?php endif; ?>
+                    <span><?php print trim($employeeDetail['DESIGNATION_TITLE']); ?></span><br>
+                    <span>At work for : <?php print $serviceDays ? $serviceDays : 0; ?></span><br>
+                </div>
+                <div class="col-md-8">
+                    <div class="row detailsbox">
+                        <div class="col-xs-6 col-sm-3 col-md-2 hexcustom">
+                            <div class="employee_details-box hexagon-bg1">
+                                <span><?php print $employeeDetail['PRESENT_DAY']; ?></span>
+                                <div class="face1"></div>
+                                <div class="face2"></div>
+                                <div class="headtitle">Present</div>
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-xs-6 col-sm-3 col-md-2 hexcustom">
-                        <div class="employee_details-box hexagon-bg2">
-                            <span><?php print $employeeDetail['LEAVE']; ?></span>
-                            <div class="face1"></div>
-                            <div class="face2"></div>
-                            <div class="headtitle">On Leave</div>
+                        <div class="col-xs-6 col-sm-3 col-md-2 hexcustom">
+                            <div class="employee_details-box hexagon-bg2">
+                                <span><?php print $employeeDetail['LEAVE']; ?></span>
+                                <div class="face1"></div>
+                                <div class="face2"></div>
+                                <div class="headtitle">On Leave</div>
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-xs-6 col-sm-3 col-md-2 hexcustom">
-                        <div class="employee_details-box hexagon-bg3">
-                            <span><?php print $employeeDetail['TRAINING']; ?></span>
-                            <div class="face1"></div>
-                            <div class="face2"></div>
-                            <div class="headtitle">Training</div>
+                        <div class="col-xs-6 col-sm-3 col-md-2 hexcustom">
+                            <div class="employee_details-box hexagon-bg3">
+                                <span><?php print $employeeDetail['TRAINING']; ?></span>
+                                <div class="face1"></div>
+                                <div class="face2"></div>
+                                <div class="headtitle">Training</div>
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-xs-6 col-sm-3 col-md-2 hexcustom">
-                        <div class="employee_details-box hexagon-bg4">
-                            <span><?php print $employeeDetail['TOUR']; ?></span>
-                            <div class="face1"></div>
-                            <div class="face2"></div>
-                            <div class="headtitle">On Tour</div>
+                        <div class="col-xs-6 col-sm-3 col-md-2 hexcustom">
+                            <div class="employee_details-box hexagon-bg4">
+                                <span><?php print $employeeDetail['TOUR']; ?></span>
+                                <div class="face1"></div>
+                                <div class="face2"></div>
+                                <div class="headtitle">On Tour</div>
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-xs-6 col-sm-3 col-md-2 hexcustom">
-                        <div class="employee_details-box hexagon-bg5">
-                            <span><?php print $employeeDetail['WOH']; ?></span>
-                            <div class="face1"></div>
-                            <div class="face2"></div>
-                            <div class="headtitle">WOH</div>
+                        <div class="col-xs-6 col-sm-3 col-md-2 hexcustom">
+                            <div class="employee_details-box hexagon-bg5">
+                                <span><?php print $employeeDetail['WOH']; ?></span>
+                                <div class="face1"></div>
+                                <div class="face2"></div>
+                                <div class="headtitle">WOH</div>
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-xs-6 col-sm-3 col-md-2 hexcustom">
-                        <div class="employee_details-box hexagon-bg6">
-                            <span>1</span>
-                            <div class="face1"></div>
-                            <div class="face2"></div>
-                            <div class="headtitle">Late Comers</div>
+                        <div class="col-xs-6 col-sm-3 col-md-2 hexcustom">
+                            <div class="employee_details-box hexagon-bg6">
+                                <span>1</span>
+                                <div class="face1"></div>
+                                <div class="face2"></div>
+                                <div class="headtitle">Late Comers</div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
         </div>
     </div>
 
@@ -419,26 +432,26 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
             </div>
             <div class="row">
                 <div class="col-md-12">
-                 <div class="mytask-todo">
-                    <div class="taskbox">
-                   
+                    <div class="mytask-todo">
+<!--                        <div class="taskbox">
+
                             <div class="portlet light portlet-inner-task-wrapper-two boxborder">
                                 <div class="portlet-title">
                                     <div class="caption caption-md">
-                                          <i class="fa fa-tasks font-green-sharp"></i>
+                                        <i class="fa fa-tasks font-green-sharp"></i>
                                         <span class="caption-subject font-green-sharp bold">My Tasks</span>
                                     </div>
-                                      <div class="task pull-right">
-                                    <div class="date-date">
-                                        <span><?php print date('d'); ?></span>
-                                        <!--<div class="taskaddbtn">
-                                            <a href="#"> <i class="fa fa-plus" aria-hidden="true"></i></a>
-                                        </div> -->
+                                    <div class="task pull-right">
+                                        <div class="date-date">
+                                            <span><?php print date('d'); ?></span>
+                                            <div class="taskaddbtn">
+                                                <a href="#"> <i class="fa fa-plus" aria-hidden="true"></i></a>
+                                            </div> 
+                                        </div>
                                     </div>
+
                                 </div>
-                                   
-                                </div>
-                              
+
 
                                 <?php $employeeTask = []; ?>
                                 <?php if ($employeeTask) : ?>
@@ -454,43 +467,43 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                                 </li>
                                             <?php endforeach; ?>
                                         </ul>
-                                        <!--                                    <ul>-->
-                                        <!--                                        <li>-->
-                                        <!--                                            <div class="task-list-content clearfix">-->
-                                        <!--                                                <h4>Approve/Reject Requisition</h4>-->
-                                        <!--                                                <div class="positon">Position: Logistics Executive</div>-->
-                                        <!--                                                <div class="name">Muna Kunwor</div>-->
-                                        <!--                                            </div>-->
-                                        <!--                                        </li>-->
-                                        <!--                                        <li>-->
-                                        <!--                                            <div class="task-list-content clearfix">-->
-                                        <!--                                                <h4>Interview for new recruitment</h4>-->
-                                        <!--                                                <div class="positon">Position: Logistics Executive</div>-->
-                                        <!--                                                <div class="name">Muna Kunwor</div>-->
-                                        <!--                                            </div>-->
-                                        <!--                                        </li>-->
-                                        <!--                                        <li>-->
-                                        <!--                                            <div class="task-list-content clearfix">-->
-                                        <!--                                                <h4>Evaluation of XYZ</h4>-->
-                                        <!--                                                <div class="positon">Position: Logistics Executive</div>-->
-                                        <!--                                                <div class="name">Muna Kunwor</div>-->
-                                        <!--                                            </div>-->
-                                        <!--                                        </li>-->
-                                        <!--                                        <li>-->
-                                        <!--                                            <div class="task-list-content clearfix">-->
-                                        <!--                                                <h4>Meeting at 4 pm</h4>-->
-                                        <!--                                                <div class="positon">Position: Logistics Executive</div>-->
-                                        <!--                                                <div class="name">Muna Kunwor</div>-->
-                                        <!--                                            </div>-->
-                                        <!--                                        </li>-->
-                                        <!--                                        <li>-->
-                                        <!--                                            <div class="task-list-content clearfix">-->
-                                        <!--                                                <h4>Publish notice</h4>-->
-                                        <!--                                                <div class="positon">Position: Logistics Executive</div>-->
-                                        <!--                                                <div class="name">Muna Kunwor</div>-->
-                                        <!--                                            </div>-->
-                                        <!--                                        </li>-->
-                                        <!--                                    </ul>-->
+                                                                            <ul>
+                                                                                <li>
+                                                                                    <div class="task-list-content clearfix">
+                                                                                        <h4>Approve/Reject Requisition</h4>
+                                                                                        <div class="positon">Position: Logistics Executive</div>
+                                                                                        <div class="name">Muna Kunwor</div>
+                                                                                    </div>
+                                                                                </li>
+                                                                                <li>
+                                                                                    <div class="task-list-content clearfix">
+                                                                                        <h4>Interview for new recruitment</h4>
+                                                                                        <div class="positon">Position: Logistics Executive</div>
+                                                                                        <div class="name">Muna Kunwor</div>
+                                                                                    </div>
+                                                                                </li>
+                                                                                <li>
+                                                                                    <div class="task-list-content clearfix">
+                                                                                        <h4>Evaluation of XYZ</h4>
+                                                                                        <div class="positon">Position: Logistics Executive</div>
+                                                                                        <div class="name">Muna Kunwor</div>
+                                                                                    </div>
+                                                                                </li>
+                                                                                <li>
+                                                                                    <div class="task-list-content clearfix">
+                                                                                        <h4>Meeting at 4 pm</h4>
+                                                                                        <div class="positon">Position: Logistics Executive</div>
+                                                                                        <div class="name">Muna Kunwor</div>
+                                                                                    </div>
+                                                                                </li>
+                                                                                <li>
+                                                                                    <div class="task-list-content clearfix">
+                                                                                        <h4>Publish notice</h4>
+                                                                                        <div class="positon">Position: Logistics Executive</div>
+                                                                                        <div class="name">Muna Kunwor</div>
+                                                                                    </div>
+                                                                                </li>
+                                                                            </ul>
                                     </div>
                                 <?php else : ?>
                                     <div class="notask">
@@ -502,68 +515,64 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                             </div>
                         </div> 
 
-                          
-                                <div class="datepickeform">
-                                  <div class="portlet light portlet-inner-datepicker-wrapper-two boxborder">
 
-                                                <div class="portlet-title">
-                                                    <div class="caption caption-md">
+                        <div class="datepickeform">
+                            <div class="portlet light portlet-inner-datepicker-wrapper-two boxborder">
 
+                                <div class="portlet-title">
+                                    <div class="caption caption-md">
+                                        <i class="fa fa-check-square-o font-green-sharp" aria-hidden="true"></i>
+                                        <span class="caption-subject font-green-sharp bold">TO Do</span>
+                                    </div>     
+                                </div>
 
-                                                        <i class="fa fa-check-square-o font-green-sharp" aria-hidden="true"></i>
-
-
-                                                        <span class="caption-subject font-green-sharp bold">TO Do</span>
-                                                    </div>     
-                                                </div>
-
-
-
-
- 
-                                        
-                                        <div class="row">
-                                            <div class="col-md-12">
-                                                <div class="form-group">
-                                                    <label class="control-label">Due for today <?php print date('d F Y'); ?> </label>
-                                                    <input id="inp-task-dt" class="pickdate form-control form-control-inline input-medium date-picker" size="16" type="text" value=""/>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-12">
-                                                <div class="form-group">
-                                                    <label class="control-label">Task</label>
-                                                    <input id="inp-task-name" class="form-control" placeholder="Task Name" type="text">
-                                                </div>
-                                            </div>
-                                            <div class="col-md-12">
-                                                <div class="form-group">
-                                                    <label class="control-label">Employee</label>
-                                                    <div>
-                                                        <select id="lst-task-emp" class="select2_category form-control" data-placeholder="Select Employee" tabindex="1">
-                                                            <?php print $taskAssignEmployeeListOptionsHtml; ?>
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-12">
-                                               <!-- <div class="form-group">
-                                                    <input type="button" id="task-save" value="Save" />
-                                                </div> -->
-                                                <button type="button" class="btn btn-theme  savebutton" id="task-save btn" value="Save">
-                                                <i class="fa fa-floppy-o" aria-hidden="true"></i>
-                                                     Save
-                                                 </button>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label class="control-label">Due for today <?php print date('d F Y'); ?> </label>
+                                            <input id="inp-task-dt" class="pickdate form-control form-control-inline input-medium date-picker" size="16" type="text" value=""/>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label class="control-label">Task</label>
+                                            <input id="inp-task-name" class="form-control" placeholder="Task Name" type="text">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label class="control-label">Employee</label>
+                                            <div>
+                                                <select id="lst-task-emp" class="select2_category form-control" data-placeholder="Select Employee" tabindex="1">
+                                                    <?php print $taskAssignEmployeeListOptionsHtml; ?>
+                                                </select>
                                             </div>
                                         </div>
                                     </div>
+                                    <div class="col-md-12">
+                                         <div class="form-group">
+                                             <input type="button" id="task-save" value="Save" />
+                                         </div> 
+                                        <button type="button" class="btn btn-theme  savebutton" id="task-save btn" value="Save">
+                                            <i class="fa fa-floppy-o" aria-hidden="true"></i>
+                                            Save
+                                        </button>
+                                    </div>
                                 </div>
-                            </div>
                            
-                        </div>
+
+                            </div>
+                        </div>-->
                     </div>
-                    
-                  
-        
+
+                            <div id="lobilist">
+
+                            </div>
+                </div>
+            </div>
+
+
+
 
             <div class="row">
                 <div class="birthday-wishes">
@@ -679,5 +688,4 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
     <div class="clearfix"></div>
 
 </div>
-    
-    
+

@@ -57,9 +57,9 @@ class WorkOnDayoffRepository implements RepositoryInterface{
                 ], true);
 
         $select->from(['WD' => WorkOnDayoff::TABLE_NAME])
-                ->join(['E' => HrEmployees::TABLE_NAME], "E.".HrEmployees::EMPLOYEE_ID."=WD.". WorkOnDayoff::EMPLOYEE_ID, [HrEmployees::FIRST_NAME,HrEmployees::MIDDLE_NAME, HrEmployees::LAST_NAME])
-                ->join(['E1'=>"HRIS_EMPLOYEES"],"E1.EMPLOYEE_ID=WD.RECOMMENDED_BY",['FN1'=>'FIRST_NAME','MN1'=>'MIDDLE_NAME','LN1'=>'LAST_NAME'],"left")
-                ->join(['E2'=>"HRIS_EMPLOYEES"],"E2.EMPLOYEE_ID=WD.APPROVED_BY",['FN2'=>'FIRST_NAME','MN2'=>'MIDDLE_NAME','LN2'=>'LAST_NAME'],"left");
+                ->join(['E' => HrEmployees::TABLE_NAME], "E.".HrEmployees::EMPLOYEE_ID."=WD.". WorkOnDayoff::EMPLOYEE_ID, ["FIRST_NAME" => new Expression("INITCAP(E.FIRST_NAME)"),"MIDDLE_NAME" => new Expression("INITCAP(E.MIDDLE_NAME)"),"LAST_NAME" => new Expression("INITCAP(E.LAST_NAME)")])
+                ->join(['E1'=>"HRIS_EMPLOYEES"],"E1.EMPLOYEE_ID=WD.RECOMMENDED_BY",['FN1' =>  new Expression("INITCAP(E1.FIRST_NAME)"), 'MN1' => new Expression("INITCAP(E1.MIDDLE_NAME)"), 'LN1' => new Expression("INITCAP(E1.LAST_NAME)")],"left")
+                ->join(['E2'=>"HRIS_EMPLOYEES"],"E2.EMPLOYEE_ID=WD.APPROVED_BY",['FN2' =>  new Expression("INITCAP(E2.FIRST_NAME)"), 'MN2' => new Expression("INITCAP(E2.MIDDLE_NAME)"), 'LN2' => new Expression("INITCAP(E2.LAST_NAME)")],"left");
 
         $select->where([
             "WD.ID=" . $id
@@ -91,9 +91,9 @@ class WorkOnDayoffRepository implements RepositoryInterface{
                 ], true);
 
         $select->from(['WD' => WorkOnDayoff::TABLE_NAME])
-                ->join(['E' => HrEmployees::TABLE_NAME], "E.".HrEmployees::EMPLOYEE_ID."=WD.". WorkOnDayoff::EMPLOYEE_ID, [HrEmployees::FIRST_NAME,HrEmployees::MIDDLE_NAME, HrEmployees::LAST_NAME])
-                ->join(['E1'=>"HRIS_EMPLOYEES"],"E1.EMPLOYEE_ID=WD.RECOMMENDED_BY",['FN1'=>'FIRST_NAME','MN1'=>'MIDDLE_NAME','LN1'=>'LAST_NAME'],"left")
-                ->join(['E2'=>"HRIS_EMPLOYEES"],"E2.EMPLOYEE_ID=WD.APPROVED_BY",['FN2'=>'FIRST_NAME','MN2'=>'MIDDLE_NAME','LN2'=>'LAST_NAME'],"left");
+                ->join(['E' => HrEmployees::TABLE_NAME], "E.".HrEmployees::EMPLOYEE_ID."=WD.". WorkOnDayoff::EMPLOYEE_ID, ["FIRST_NAME" => new Expression("INITCAP(E.FIRST_NAME)"),"MIDDLE_NAME" => new Expression("INITCAP(E.MIDDLE_NAME)"),"LAST_NAME" => new Expression("INITCAP(E.LAST_NAME)")])
+                ->join(['E1'=>"HRIS_EMPLOYEES"],"E1.EMPLOYEE_ID=WD.RECOMMENDED_BY",['FN1' =>  new Expression("INITCAP(E1.FIRST_NAME)"), 'MN1' => new Expression("INITCAP(E1.MIDDLE_NAME)"), 'LN1' => new Expression("INITCAP(E1.LAST_NAME)")],"left")
+                ->join(['E2'=>"HRIS_EMPLOYEES"],"E2.EMPLOYEE_ID=WD.APPROVED_BY",['FN2' =>  new Expression("INITCAP(E2.FIRST_NAME)"), 'MN2' => new Expression("INITCAP(E2.MIDDLE_NAME)"), 'LN2' => new Expression("INITCAP(E2.LAST_NAME)")],"left");
 
         $select->where([
             "E.EMPLOYEE_ID=" . $employeeId

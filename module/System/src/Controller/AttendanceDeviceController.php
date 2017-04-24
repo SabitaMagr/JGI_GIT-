@@ -62,7 +62,7 @@ class AttendanceDeviceController extends AbstractActionController {
         }
         return Helper::addFlashMessagesToArray($this, [
                     'form' => $this->form,
-                    'company' => ApplicationEntityHelper::getTableKVListWithSortOption($this->adapter, Company::TABLE_NAME, Company::COMPANY_ID, [Company::COMPANY_NAME], ["STATUS" => "E"], "COMPANY_NAME", "ASC"),
+                    'company' => ApplicationEntityHelper::getTableKVListWithSortOption($this->adapter, Company::TABLE_NAME, Company::COMPANY_ID, [Company::COMPANY_NAME], ["STATUS" => "E"], "COMPANY_NAME", "ASC",null,false,true),
                     'branch' => $allCompanyBranches->fetchAllBranchAndCompany(),
         ]);
     }
@@ -91,7 +91,7 @@ class AttendanceDeviceController extends AbstractActionController {
         return Helper::addFlashMessagesToArray($this, [
                     'id' => $id,
                     'form' => $this->form,
-                    'company' => ApplicationEntityHelper::getTableKVListWithSortOption($this->adapter, Company::TABLE_NAME, Company::COMPANY_ID, [Company::COMPANY_NAME], ["STATUS" => "E"], "COMPANY_NAME", "ASC"),
+                    'company' => ApplicationEntityHelper::getTableKVListWithSortOption($this->adapter, Company::TABLE_NAME, Company::COMPANY_ID, [Company::COMPANY_NAME], ["STATUS" => "E"], "COMPANY_NAME", "ASC",null,false,true),
                     'branch' => $allCompanyBranches->fetchAllBranchAndCompany(),
         ]);
     }

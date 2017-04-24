@@ -73,7 +73,7 @@ class SetupController extends AbstractActionController {
         return Helper::addFlashMessagesToArray($this, [
                     'form' => $this->form,
 //            'group'=>$groupList
-                    'group' => ApplicationEntityHelper::getTableKVListWithSortOption($this->adapter, Group::TABLE_NAME, Group::ASSET_GROUP_ID, [Group::ASSET_GROUP_EDESC], ["STATUS" => "E"], Group::ASSET_GROUP_EDESC, "ASC"),
+                    'group' => ApplicationEntityHelper::getTableKVListWithSortOption($this->adapter, Group::TABLE_NAME, Group::ASSET_GROUP_ID, [Group::ASSET_GROUP_EDESC], ["STATUS" => "E"], Group::ASSET_GROUP_EDESC, "ASC",NULL,FALSE,TRUE),
         ]);
     }
 
@@ -103,7 +103,7 @@ class SetupController extends AbstractActionController {
         }
         return Helper::addFlashMessagesToArray($this, [
             'form'=>$this->form,
-            'group' => ApplicationEntityHelper::getTableKVListWithSortOption($this->adapter, Group::TABLE_NAME, Group::ASSET_GROUP_ID, [Group::ASSET_GROUP_EDESC], ["STATUS" => "E"], Group::ASSET_GROUP_EDESC, "ASC"),
+            'group' => ApplicationEntityHelper::getTableKVListWithSortOption($this->adapter, Group::TABLE_NAME, Group::ASSET_GROUP_ID, [Group::ASSET_GROUP_EDESC], ["STATUS" => "E"], Group::ASSET_GROUP_EDESC, "ASC",NULL,FALSE,TRUE),
             'id'=>$id
         ]);
         

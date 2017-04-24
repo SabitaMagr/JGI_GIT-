@@ -79,7 +79,7 @@ class QuestionController extends AbstractActionController{
         }
         return Helper::addFlashMessagesToArray($this, [
             'form'=>$this->form,
-            'headings'=> EntityHelper::getTableKVListWithSortOption($this->adapter, Heading::TABLE_NAME, Heading::HEADING_ID, [Heading::HEADING_EDESC],[Heading::STATUS=>'E'], Heading::HEADING_EDESC,"ASC"),
+            'headings'=> EntityHelper::getTableKVListWithSortOption($this->adapter, Heading::TABLE_NAME, Heading::HEADING_ID, [Heading::HEADING_EDESC],[Heading::STATUS=>'E'], Heading::HEADING_EDESC,"ASC",NULL,FALSE,TRUE),
             'answerTypeList'=>$answerTypeList,
             'customRenderer'=>Helper::renderCustomView()
         ]);
@@ -118,7 +118,7 @@ class QuestionController extends AbstractActionController{
         }
         return Helper::addFlashMessagesToArray($this, [
             'form'=>$this->form,
-            'headings'=> EntityHelper::getTableKVListWithSortOption($this->adapter, Heading::TABLE_NAME, Heading::HEADING_ID, [Heading::HEADING_EDESC],[Heading::STATUS=>'E'], Heading::HEADING_EDESC,"ASC"),
+            'headings'=> EntityHelper::getTableKVListWithSortOption($this->adapter, Heading::TABLE_NAME, Heading::HEADING_ID, [Heading::HEADING_EDESC],[Heading::STATUS=>'E'], Heading::HEADING_EDESC,"ASC",NULL,FALSE,TRUE),
             'answerTypeList'=>$answerTypeList,
             'customRenderer'=>Helper::renderCustomView(),
             'id'=>$id

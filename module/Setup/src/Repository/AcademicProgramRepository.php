@@ -7,13 +7,13 @@
  */
 namespace Setup\Repository;
 
+use Application\Helper\EntityHelper;
 use Application\Model\Model;
 use Application\Repository\RepositoryInterface;
-use Zend\Db\Adapter\AdapterInterface;
-use Zend\Db\TableGateway\TableGateway;
 use Setup\Model\AcademicProgram;
-use Zend\Db\Sql\Sql;
+use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Sql\Select;
+use Zend\Db\TableGateway\TableGateway;
 
 class AcademicProgramRepository implements RepositoryInterface {
 
@@ -38,6 +38,7 @@ class AcademicProgramRepository implements RepositoryInterface {
     public function fetchAll()
     {
         return $this->tableGateway->select(function(Select $select){
+            $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(AcademicProgram::class, [AcademicProgram::ACADEMIC_PROGRAM_NAME]), false);
             $select->where([AcademicProgram::STATUS=>'E']);
             $select->order(AcademicProgram::ACADEMIC_PROGRAM_NAME);
         });
@@ -46,7 +47,10 @@ class AcademicProgramRepository implements RepositoryInterface {
 
     public function fetchById($id)
     {
-        $rowset= $this->tableGateway->select([AcademicProgram::ACADEMIC_PROGRAM_ID=>$id]);
+        $rowset= $this->tableGateway->select(function(Select $select)use($id){
+            $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(AcademicProgram::class, [AcademicProgram::ACADEMIC_PROGRAM_NAME]), false);
+            $select->where([AcademicProgram::ACADEMIC_PROGRAM_ID=>$id]);
+        });
         return $rowset->current();
     }
 

@@ -68,12 +68,12 @@ class TravelApproveRepository implements RepositoryInterface{
         ], true);
 
         $select->from(['TR' => TravelRequest::TABLE_NAME])
-            ->join(['E'=>"HRIS_EMPLOYEES"],"E.EMPLOYEE_ID=TR.EMPLOYEE_ID",['FIRST_NAME','MIDDLE_NAME','LAST_NAME'],"left")
-            ->join(['E1'=>"HRIS_EMPLOYEES"],"E1.EMPLOYEE_ID=TR.RECOMMENDED_BY",['FN1'=>'FIRST_NAME','MN1'=>'MIDDLE_NAME','LN1'=>'LAST_NAME'],"left")
-            ->join(['E2'=>"HRIS_EMPLOYEES"],"E2.EMPLOYEE_ID=TR.APPROVED_BY",['FN2'=>'FIRST_NAME','MN2'=>'MIDDLE_NAME','LN2'=>'LAST_NAME'],"left")
+            ->join(['E'=>"HRIS_EMPLOYEES"],"E.EMPLOYEE_ID=TR.EMPLOYEE_ID",["FIRST_NAME" => new Expression("INITCAP(E.FIRST_NAME)"),"MIDDLE_NAME" => new Expression("INITCAP(E.MIDDLE_NAME)"),"LAST_NAME" => new Expression("INITCAP(E.LAST_NAME)")],"left")
+            ->join(['E1'=>"HRIS_EMPLOYEES"],"E1.EMPLOYEE_ID=TR.RECOMMENDED_BY",['FN1' =>  new Expression("INITCAP(E1.FIRST_NAME)"), 'MN1' => new Expression("INITCAP(E1.MIDDLE_NAME)"), 'LN1' => new Expression("INITCAP(E1.LAST_NAME)")],"left")
+            ->join(['E2'=>"HRIS_EMPLOYEES"],"E2.EMPLOYEE_ID=TR.APPROVED_BY",['FN2' =>  new Expression("INITCAP(E2.FIRST_NAME)"), 'MN2' => new Expression("INITCAP(E2.MIDDLE_NAME)"), 'LN2' => new Expression("INITCAP(E2.LAST_NAME)")],"left")
             ->join(['RA'=>"HRIS_RECOMMENDER_APPROVER"],"RA.EMPLOYEE_ID=TR.EMPLOYEE_ID",['RECOMMENDER'=>'RECOMMEND_BY','APPROVER'=>'APPROVED_BY'],"left")
-            ->join(['RECM'=>"HRIS_EMPLOYEES"],"RECM.EMPLOYEE_ID=RA.RECOMMEND_BY",['RECM_FN'=>'FIRST_NAME','RECM_MN'=>'MIDDLE_NAME','RECM_LN'=>'LAST_NAME'],"left")
-            ->join(['APRV'=>"HRIS_EMPLOYEES"],"APRV.EMPLOYEE_ID=RA.APPROVED_BY",['APRV_FN'=>'FIRST_NAME','APRV_MN'=>'MIDDLE_NAME','APRV_LN'=>'LAST_NAME'],"left")
+            ->join(['RECM'=>"HRIS_EMPLOYEES"],"RECM.EMPLOYEE_ID=RA.RECOMMEND_BY",['RECM_FN' =>  new Expression("INITCAP(RECM.FIRST_NAME)"), 'RECM_MN' => new Expression("INITCAP(RECM.MIDDLE_NAME)"), 'RECM_LN' => new Expression("INITCAP(RECM.LAST_NAME)")],"left")
+            ->join(['APRV'=>"HRIS_EMPLOYEES"],"APRV.EMPLOYEE_ID=RA.APPROVED_BY",['APRV_FN' =>  new Expression("INITCAP(APRV.FIRST_NAME)"), 'APRV_MN' => new Expression("INITCAP(APRV.MIDDLE_NAME)"), 'APRV_LN' => new Expression("INITCAP(APRV.LAST_NAME)")],"left")
             ->join(['TS'=>"HRIS_TRAVEL_SUBSTITUTE"],"TS.TRAVEL_ID=TR.TRAVEL_ID",['SUB_EMPLOYEE_ID'=>'EMPLOYEE_ID','SUB_APPROVED_DATE'=>new Expression("INITCAP(TO_CHAR(TS.APPROVED_DATE, 'DD-MON-YYYY'))"),'SUB_REMARKS'=>"REMARKS",'SUB_APPROVED_FLAG'=>"APPROVED_FLAG"],"left");
 
         $select->where([
@@ -91,7 +91,7 @@ class TravelApproveRepository implements RepositoryInterface{
                     TR.TRAVEL_CODE,
                     TR.EMPLOYEE_ID,
                     TR.REQUESTED_AMOUNT,
-                    TO_CHAR(TR.REQUESTED_DATE, 'DD-MON-YYYY') AS REQUESTED_DATE,
+                    INITCAP(TO_CHAR(TR.REQUESTED_DATE, 'DD-MON-YYYY')) AS REQUESTED_DATE,
                     TR.APPROVED_BY,
                     TR.RECOMMENDED_BY,
                     TR.PURPOSE,
@@ -101,17 +101,17 @@ class TravelApproveRepository implements RepositoryInterface{
                     TR.RECOMMENDED_REMARKS,
                     TR.APPROVED_REMARKS,
                     TR.DESTINATION,
-                    TO_CHAR(TR.FROM_DATE, 'DD-MON-YYYY') AS FROM_DATE,
-                    TO_CHAR(TR.TO_DATE, 'DD-MON-YYYY') AS TO_DATE,
-                    TO_CHAR(TR.RECOMMENDED_DATE, 'DD-MON-YYYY') AS RECOMMENDED_DATE,
-                    TO_CHAR(TR.APPROVED_DATE, 'DD-MON-YYYY') AS APPROVED_DATE,
-                    E.FIRST_NAME,
-                    E.MIDDLE_NAME,
-                    E.LAST_NAME,
+                    INITCAP(TO_CHAR(TR.FROM_DATE, 'DD-MON-YYYY')) AS FROM_DATE,
+                    INITCAP(TO_CHAR(TR.TO_DATE, 'DD-MON-YYYY')) AS TO_DATE,
+                    INITCAP(TO_CHAR(TR.RECOMMENDED_DATE, 'DD-MON-YYYY')) AS RECOMMENDED_DATE,
+                    INITCAP(TO_CHAR(TR.APPROVED_DATE, 'DD-MON-YYYY')) AS APPROVED_DATE,
+                    INITCAP(E.FIRST_NAME) AS FIRST_NAME,
+                    INITCAP(E.MIDDLE_NAME) AS MIDDLE_NAME,
+                    INITCAP(E.LAST_NAME) AS LAST_NAME,
                     RA.RECOMMEND_BY as RECOMMENDER,
                     RA.APPROVED_BY AS APPROVER,
                     TS.APPROVED_FLAG AS APPROVED_FLAG,
-                    TO_CHAR(TS.APPROVED_DATE, 'DD-MON-YYYY') AS SUB_APPROVED_DATE,
+                    INITCAP(TO_CHAR(TS.APPROVED_DATE, 'DD-MON-YYYY')) AS SUB_APPROVED_DATE,
                     TS.EMPLOYEE_ID AS SUB_EMPLOYEE_ID
                     FROM HRIS_EMPLOYEE_TRAVEL_REQUEST TR
                     LEFT JOIN HRIS_EMPLOYEES E ON 

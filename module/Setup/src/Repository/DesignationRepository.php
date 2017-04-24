@@ -2,13 +2,15 @@
 
 namespace Setup\Repository;
 
+use Application\Helper\EntityHelper;
 use Application\Model\Model;
 use Application\Repository\RepositoryInterface;
 use Setup\Model\Designation;
 use Zend\Db\Adapter\AdapterInterface;
-use Zend\Db\TableGateway\TableGateway;
-use Zend\Db\Sql\Sql;
 use Zend\Db\Sql\Expression;
+use Zend\Db\Sql\Select;
+use Zend\Db\Sql\Sql;
+use Zend\Db\TableGateway\TableGateway;
 
 class DesignationRepository implements RepositoryInterface
 {
@@ -25,9 +27,11 @@ class DesignationRepository implements RepositoryInterface
     {
         $sql = new Sql($this->adapter);
         $select = $sql->select();
-        
+        $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(Designation::class,
+                [Designation::DESIGNATION_TITLE],
+                NULL, NULL, NULL, NULL,'D1'),false);
         $select->from(["D1" => Designation::TABLE_NAME])
-                ->join(["D2" => Designation::TABLE_NAME],'D1.PARENT_DESIGNATION=D2.DESIGNATION_ID',["PARENT_DESIGNATION_TITLE"=>"DESIGNATION_TITLE"],"left");
+                ->join(["D2" => Designation::TABLE_NAME],'D1.PARENT_DESIGNATION=D2.DESIGNATION_ID',["PARENT_DESIGNATION_TITLE"=>new Expression('INITCAP(D2.DESIGNATION_TITLE)')],"left");
         $select->where(["D1.STATUS= 'E'"]);
         $select->order("D1.".Designation::DESIGNATION_TITLE." ASC");
         $statement = $sql->prepareStatementForSqlObject($select);
@@ -39,7 +43,10 @@ class DesignationRepository implements RepositoryInterface
 
     public function fetchById($id)
     {
-        $rowset = $this->tableGateway->select([Designation::DESIGNATION_ID => $id,Designation::STATUS=>'E']);
+        $rowset = $this->tableGateway->select(function(Select $select)use($id){
+            $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(Designation::class, [Designation::DESIGNATION_TITLE]), false);
+            $select->where([Designation::DESIGNATION_ID => $id,Designation::STATUS=>'E']);
+        });
         return $rowset->current();
     }
 

@@ -16,6 +16,7 @@ $this->headScript()
         ->appendFile($this->basePath('jszip/dist/jszip.min.js'))
         ->appendFile($this->basePath('telerik_kendoui/js/kendo.all.min.js'))
         ->appendFile($this->basePath('js/angular.min.js'))
+        ->appendFile($this->basePath('js/search.js'))
         ->appendFile($this->basePath('assets/global/plugins/nepalidate/nepali.datepicker.v2.1.min.js'))
         ->appendFile($this->basePath('js/nepali-datepicker-ext.js'))
         ->appendFile($this->basePath('js/manager-service/dayoff-work-approve/status.js'))
@@ -24,6 +25,7 @@ $this->headScript()
 
 <script>
     document.url = '<?= $this->url("restful", ["action" => "index"]) ?>';
+    document.searchValues =<?php echo json_encode($searchValues); ?>;
 </script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\dayoffWorkApprove')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
@@ -43,136 +45,130 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
     </script>
 <?php } ?>
 <div ng-app="hris" ng-controller="dayoffWorkStatusListController">
-    <div id="hris-page-content">
-        <div class="margin-top-20 formbg">
+    <div class="portlet light bg-inverse">
+        <div class="portlet-title">
+            <div class="caption">
+                <i class="icon-paper-plane font-green-haze"></i>
+                <span class="caption-subject bold font-green-haze uppercase"> Search</span>
+            </div>
+            <div class="tools">
+                <a href="" class="collapse" data-original-title="" title=""> </a>
+            </div>
+        </div>
+        <div class="portlet-body">
             <div class="row">
-                <div class="col-sm-3 topgap">
-                    <?php print $this->formLabel($employees); ?>
-                    <?php print $this->formElement($employees); ?>
+                <div class="col-sm-2">
+                    <select class="form-control" name="company" id="companyId">
+                    </select>
                 </div>
-                <div class="col-sm-3 topgap">
-                    <?php print $this->formLabel($branches); ?>
-                    <?php print $this->formElement($branches); ?>
+                <div class="col-sm-2">
+                    <select class="form-control" name="branchId" id="branchId">
+                    </select>
                 </div>
-                <div class="col-sm-3 topgap">
-                    <?php print $this->formLabel($departments); ?>
-                    <?php print $this->formElement($departments); ?>
+                <div class="col-sm-2">
+                    <select class="form-control" name="department" id="departmentId">
+                    </select>
                 </div>
-                <div class="col-sm-3 topgap">
-                    <?php print $this->formLabel($designations); ?>
-                    <?php print $this->formElement($designations); ?>
+                <div class="col-sm-2">
+                    <select class="form-control" name="designation" id="designationId">
+                    </select>
                 </div>
-                <div class="col-sm-3 topgap">
-                    <?php print $this->formLabel($positions); ?>
-                    <?php print $this->formElement($positions); ?>
-                </div>            
-
-
-                <div class="col-sm-3 topgap">
-                    <?php print $this->formLabel($serviceTypes); ?>
-                    <?php print $this->formElement($serviceTypes); ?>
+                <div class="col-sm-2">
+                    <select class="form-control" name="position" id="positionId">
+                    </select>
                 </div>
-                <div class="col-sm-3 topgap">
-                    <?php print $this->formLabel($serviceEventTypes); ?>
-                    <?php print $this->formElement($serviceEventTypes); ?>
+            </div>
+            <div class="row margin-top-10">
+                <div class="col-sm-2">
+                    <select class="form-control" name="serviceType" id="serviceTypeId">
+                    </select>
                 </div>
-                <div class="col-sm-3 topgap">
-                    <?php print $this->formLabel($status); ?>
+                <div class="col-sm-2">
+                    <select class="form-control" name="serviceEventType" id="serviceEventTypeId">
+                    </select>
+                </div>
+                <div class="col-sm-2">
+                    <select class="form-control" name="employee" id="employeeId">
+                    </select>
+                </div>
+                <div class="col-sm-2 ">
                     <?php print $this->formElement($status); ?>
-                </div>    
-                <input type="hidden" id="recomApproveId" value="<?php echo $recomApproveId; ?>"/>
-                <div class="col-sm-6">
-                    <div class="row">
-                        <div class="col-sm-3">
-                            <div class="form-group">
-                                <label for="fromDate">From Date</label>
-                                <input type="text" id="fromDate" name="fromDate" ng-model="fromDate" class="form-control"/>
-                            </div>
-
-                        </div>
-                        <div class="col-sm-3">
-                            <div class="form-group">
-                                <label for="nepaliFromDate">&nbsp;</label>
-                                <input type="text" id="nepaliFromDate" name="nepaliFromDate"  class="form-control"/>
-                            </div>
-
-                        </div>
-                        <div class="col-sm-3">
-                            <div class="form-group">
-                                <label for="toDate">To Date</label>
-                                <input type="text"  id="toDate" name="toDate" ng-model="toDate" class="form-control"/>
-                            </div>
-                        </div>
-                        <div class="col-sm-3">
-                            <div class="form-group">
-                                <label for="nepaliToDate">&nbsp;</label>
-                                <input type="text"  id="nepaliToDate" name="nepaliToDate" class="form-control"/>
-                            </div>
-                        </div>
-                    </div>
                 </div>
-                <div class="col-sm-3 topgap">
-                    <label height="45"></label>
-                    <button ng-click="view()" id="viewDayoffWorkRequestStatus" class="btn btn-default form-control i-search">
+            </div>
+            <div class="row margin-top-10">
+                <div class="col-sm-2">
+                    <input type="text" id="fromDate" name="fromDate" ng-model="fromDate" class="form-control" placeholder="From Date"/>
+                </div>
+                <div class="col-sm-2">
+                    <input type="text" id="nepaliFromDate" name="nepaliFromDate"  class="form-control" placeholder="From Date Nepali"/>
+
+                </div>
+                <div class="col-sm-2">
+                    <input type="text"  id="toDate" name="toDate" ng-model="toDate" class="form-control" placeholder="To Date"/>
+                </div>
+                <div class="col-sm-2">
+                    <input type="text"  id="nepaliToDate" name="nepaliToDate" class="form-control" placeholder="To Date Nepali"/>
+                </div>
+                <input type="hidden" id="recomApproveId" value="<?php echo $recomApproveId; ?>"/>
+                <div class="col-sm-2 col-sm-offset-2">
+                    <button ng-click="view()" id="viewDayoffWorkRequestStatus" class="btn btn-default btn-sm pull-right">
                         Search
                         <i class="fa fa-search"></i>
                     </button>
                 </div>
             </div>
         </div>
-        <div class="row">
-            <div class="btn-group pull-right gaptop">
-                <button class="btn green btn-outline dropdown-toggle cbtn" data-toggle="dropdown">Tools
-                    <i class="fa fa-angle-down"></i>
-                </button>
-                <ul class="dropdown-menu pull-right">
-                    <li>
-                        <a href="javascript:;" id="export"> Export to Excel </a>
-                    </li>
-                </ul>
-            </div>
+    </div>
+    <div class="row">
+        <div class="btn-group pull-right gaptop">
+            <button class="btn green btn-outline dropdown-toggle cbtn" data-toggle="dropdown">Tools
+                <i class="fa fa-angle-down"></i>
+            </button>
+            <ul class="dropdown-menu pull-right">
+                <li>
+                    <a href="javascript:;" id="export"> Export to Excel </a>
+                </li>
+            </ul>
         </div>
-        <div class="margin-top-20">  
+    </div>
+    <div class="margin-top-20">  
 
-            <div id="dayoffWorkRequestStatusTable">
-            </div>
+        <div id="dayoffWorkRequestStatusTable">
         </div>
+    </div>
 
-        <script id="rowTemplate" type="text/x-kendo-tmpl">
-            <tr>
-            <td>    
-            #: (FIRST_NAME == null) ? ' ' : FIRST_NAME #
-            #: (MIDDLE_NAME == null) ? ' ' : MIDDLE_NAME #
-            #: (LAST_NAME == null) ? ' ' : LAST_NAME #
-            </td>
-            <td>
-            #: (REQUESTED_DATE == null) ? '-' : REQUESTED_DATE #
-            </td>        
-            <td>
-            #: (FROM_DATE == null) ? '-' : FROM_DATE #
-            </td>
-            <td>
-            #: (TO_DATE == null) ? '-' : TO_DATE #
-            </td>
-            <td>
-            #: (DURATION == null) ? '-' : DURATION #
-            </td>
-            <td>
-            #: (YOUR_ROLE == null) ? '-' : YOUR_ROLE #
-            </td>
-            <td>
-            #: (STATUS == null) ? '-' : STATUS #
-            </td>
-            <td>
-            <a class="btn  btn-icon-only btn-success"
-            href="<?= $this->url("dayoffWorkApprove", ["action" => "view"]) ?>/#: ID #/#: ROLE #" style="height:17px;" title="view">
-            <i class="fa fa-search-plus"></i></a>
-            </a>
-            </td>
-            </tr>
-        </script>
-
-    </div>  
-
+    <script id="rowTemplate" type="text/x-kendo-tmpl">
+        <tr>
+        <td>    
+        #: (FIRST_NAME == null) ? ' ' : FIRST_NAME #
+        #: (MIDDLE_NAME == null) ? ' ' : MIDDLE_NAME #
+        #: (LAST_NAME == null) ? ' ' : LAST_NAME #
+        </td>
+        <td>
+        #: (REQUESTED_DATE == null) ? '-' : REQUESTED_DATE #
+        </td>        
+        <td>
+        #: (FROM_DATE == null) ? '-' : FROM_DATE #
+        </td>
+        <td>
+        #: (TO_DATE == null) ? '-' : TO_DATE #
+        </td>
+        <td>
+        #: (DURATION == null) ? '-' : DURATION #
+        </td>
+        <td>
+        #: (YOUR_ROLE == null) ? '-' : YOUR_ROLE #
+        </td>
+        <td>
+        #: (STATUS == null) ? '-' : STATUS #
+        </td>
+        <td>
+        <a class="btn  btn-icon-only btn-success"
+        href="<?= $this->url("dayoffWorkApprove", ["action" => "view"]) ?>/#: ID #/#: ROLE #" style="height:17px;" title="view">
+        <i class="fa fa-search-plus"></i></a>
+        </a>
+        </td>
+        </tr>
+    </script>
 </div>
 

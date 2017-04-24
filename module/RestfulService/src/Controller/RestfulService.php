@@ -950,6 +950,7 @@ class RestfulService extends AbstractRestfulController {
 
     public function pullLeaveBalanceDetail($data) {
         $emplyoeeId = $data['employeeId'];
+        $companyId = $data['companyId'];
         $branchId = $data['branchId'];
         $departmentId = $data['departmentId'];
         $designationId = $data['designationId'];
@@ -958,7 +959,7 @@ class RestfulService extends AbstractRestfulController {
         $serviceEventTypeId = $data['serviceEventTypeId'];
 
         $repository = new LeaveBalanceRepository($this->adapter);
-        $employeeList = $repository->getAllEmployee($emplyoeeId, $branchId, $departmentId, $designationId, $positionId, $serviceTypeId, $serviceEventTypeId);
+        $employeeList = $repository->getAllEmployee($emplyoeeId,$companyId, $branchId, $departmentId, $designationId, $positionId, $serviceTypeId, $serviceEventTypeId);
 
         $mainArray = [];
         foreach ($employeeList as $row) {
@@ -1729,10 +1730,16 @@ class RestfulService extends AbstractRestfulController {
         $fromDate = $data['fromDate'];
         $toDate = $data['toDate'];
         $employeeId = $data['employeeId'];
+        $companyId = $data['companyId'];
+        $branchId = $data['branchId'];
+        $departmentId = $data['departmentId'];
+        $designationId = $data['designationId'];
+        $positionId = $data['positionId'];
+        $serviceTypeId = $data['serviceTypeId'];
         $serviceEventTypeId = $data['serviceEventTypeId'];
 
         $jobHistoryRepository = new JobHistoryRepository($this->adapter);
-        $result = $jobHistoryRepository->filter($fromDate, $toDate, $employeeId, $serviceEventTypeId);
+        $result = $jobHistoryRepository->filter($fromDate, $toDate, $employeeId, $serviceEventTypeId,$companyId,$branchId,$departmentId,$designationId,$positionId,$serviceTypeId);
 
         $jobHistoryRecord = [];
         foreach ($result as $row) {
@@ -2347,7 +2354,7 @@ class RestfulService extends AbstractRestfulController {
 
     private function pullEmployeeForShiftAssign(array $ids) {
         $shiftAssignRepo = new ShiftAssignRepository($this->adapter);
-        $result = $shiftAssignRepo->filter($ids['branchId'], $ids['departmentId'], $ids['designationId'], $ids['positionId'], $ids['serviceTypeId']);
+        $result = $shiftAssignRepo->filter($ids['branchId'], $ids['departmentId'], $ids['designationId'], $ids['positionId'], $ids['serviceTypeId'],$ids['companyId'],$ids['serviceEventTypeId'],$ids['employeeId']);
 
         $tempArray = [];
         foreach ($result as $item) {
@@ -2368,6 +2375,9 @@ class RestfulService extends AbstractRestfulController {
     }
 
     public function pullEmployeeForRecomApproverAssign($data) {
+        $companyId = $data['companyId'];
+        $positionId = $data['positionId'];
+        $serviceTypeId = $data['serviceTypeId'];
         $branchId = $data['branchId'];
         $departmentId = $data['departmentId'];
         $designationId = $data['designationId'];
@@ -2376,7 +2386,7 @@ class RestfulService extends AbstractRestfulController {
         $recommApproverRepo = new RecommendApproveRepository($this->adapter);
 
         $employeeRepo = new EmployeeRepository($this->adapter);
-        $employeeResult = $employeeRepo->filterRecords($employeeId, $branchId, $departmentId, $designationId, -1, -1, -1, 1);
+        $employeeResult = $employeeRepo->filterRecords($employeeId, $branchId, $departmentId, $designationId, $positionId, $serviceTypeId, -1, 1,$companyId);
 
         $employeeList = [];
         foreach ($employeeResult as $employeeRow) {
@@ -2594,6 +2604,7 @@ class RestfulService extends AbstractRestfulController {
     public function pullAttendanceList($data) {
         $attendanceDetailRepository = new AttendanceDetailRepository($this->adapter);
         $employeeId = $data['employeeId'];
+        $companyId = $data['companyId'];
         $branchId = $data['branchId'];
         $departmentId = $data['departmentId'];
         $positionId = $data['positionId'];
@@ -2604,7 +2615,7 @@ class RestfulService extends AbstractRestfulController {
         $toDate = $data['toDate'];
         $status = $data['status'];
 
-        $result = $attendanceDetailRepository->filterRecord($employeeId, $branchId, $departmentId, $positionId, $designationId, $serviceTypeId, $serviceEventTypeId, $fromDate, $toDate, $status);
+        $result = $attendanceDetailRepository->filterRecord($employeeId, $branchId, $departmentId, $positionId, $designationId, $serviceTypeId, $serviceEventTypeId, $fromDate, $toDate, $status,$companyId);
         $list = [];
         foreach ($result as $row) {
             if ($status == 'L') {
@@ -2958,7 +2969,7 @@ class RestfulService extends AbstractRestfulController {
     public function getServerDate($data) {
         return ["success" => true, "data" => ["serverDate" => date(Helper::PHP_DATE_FORMAT)]];
     }
-    
+
     public function pullTrainingRequestStatusList($data) {
         $trainingStatusRepo = new TrainingStatusRepository($this->adapter);
         if (key_exists('recomApproveId', $data)) {
@@ -3007,10 +3018,10 @@ class RestfulService extends AbstractRestfulController {
                 return "Cancelled";
             }
         };
-        $getValueComType = function($trainingTypeId){
-            if($trainingTypeId=='CC'){
+        $getValueComType = function($trainingTypeId) {
+            if ($trainingTypeId == 'CC') {
                 return 'Company Contribution';
-            }else if($trainingTypeId=='CP'){
+            } else if ($trainingTypeId == 'CP') {
                 return 'Company Personal';
             }
         };
@@ -3029,9 +3040,9 @@ class RestfulService extends AbstractRestfulController {
             $roleID = $getRole($authRecommender, $authApprover, $recomApproveId);
             $recommenderName = $fullName($authRecommender);
             $approverName = $fullName($authApprover);
-            
-            if($row['TRAINING_ID']!=0){
-                $row['START_DATE']=$row['T_START_DATE'];
+
+            if ($row['TRAINING_ID'] != 0) {
+                $row['START_DATE'] = $row['T_START_DATE'];
                 $row['END_DATE'] = $row['T_END_DATE'];
                 $row['DURATION'] = $row['T_DURATION'];
                 $row['TRAINING_TYPE'] = $row['T_TRAINING_TYPE'];
@@ -3042,13 +3053,13 @@ class RestfulService extends AbstractRestfulController {
                 'RECOMMENDER_NAME' => $recommenderName,
                 'YOUR_ROLE' => $getRoleDtl($authRecommender, $authApprover, $recomApproveId),
                 'ROLE' => $roleID,
-                'TRAINING_TYPE'=> $getValueComType($row['TRAINING_TYPE']),
+                'TRAINING_TYPE' => $getValueComType($row['TRAINING_TYPE']),
             ];
             if ($empRecommendApprove['RECOMMEND_BY'] == $empRecommendApprove['APPROVED_BY']) {
                 $role['YOUR_ROLE'] = 'Recommender\Approver';
                 $role['ROLE'] = 4;
             }
-            
+
             $new_row = array_merge($row, ['STATUS' => $status]);
             $final_record = array_merge($new_row, $role);
             array_push($recordList, $final_record);

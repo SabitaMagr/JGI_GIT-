@@ -83,7 +83,7 @@ class LeaveRequest extends AbstractActionController {
     public function indexAction() {
         $leaveFormElement = new Select();
         $leaveFormElement->setName("leave");
-        $leaves = EntityHelper::getTableKVList($this->adapter, LeaveMaster::TABLE_NAME, LeaveMaster::LEAVE_ID, [LeaveMaster::LEAVE_ENAME], [LeaveMaster::STATUS => 'E']);
+        $leaves = EntityHelper::getTableKVListWithSortOption($this->adapter, LeaveMaster::TABLE_NAME, LeaveMaster::LEAVE_ID, [LeaveMaster::LEAVE_ENAME], [LeaveMaster::STATUS => 'E'], LeaveMaster::LEAVE_ENAME,"ASC",null,false,true);
         $leaves[-1] = "All";
         ksort($leaves);
         $leaveFormElement->setValueOptions($leaves);
@@ -173,7 +173,7 @@ class LeaveRequest extends AbstractActionController {
                     'employeeId' => $this->employeeId,
                     'leave' => $this->leaveRequestRepository->getLeaveList($this->employeeId),
                     'customRenderer' => Helper::renderCustomView(),
-                    'employeeList' => EntityHelper::getTableKVListWithSortOption($this->adapter, HrEmployees::TABLE_NAME, HrEmployees::EMPLOYEE_ID, [HrEmployees::FIRST_NAME, HrEmployees::MIDDLE_NAME, HrEmployees::LAST_NAME], [HrEmployees::STATUS => "E", HrEmployees::RETIRED_FLAG => "N"], HrEmployees::FIRST_NAME, "ASC", " ")
+                    'employeeList' => EntityHelper::getTableKVListWithSortOption($this->adapter, HrEmployees::TABLE_NAME, HrEmployees::EMPLOYEE_ID, [HrEmployees::FIRST_NAME, HrEmployees::MIDDLE_NAME, HrEmployees::LAST_NAME], [HrEmployees::STATUS => "E", HrEmployees::RETIRED_FLAG => "N"], HrEmployees::FIRST_NAME, "ASC", " ",false,true)
         ]);
     }
 
@@ -269,7 +269,7 @@ class LeaveRequest extends AbstractActionController {
                     'subEmployeeId' => $detail['SUB_EMPLOYEE_ID'],
                     'subRemarks' => $detail['SUB_REMARKS'],
                     'subApprovedFlag' => $detail['SUB_APPROVED_FLAG'],
-                    'employeeList' => EntityHelper::getTableKVListWithSortOption($this->adapter, HrEmployees::TABLE_NAME, HrEmployees::EMPLOYEE_ID, [HrEmployees::FIRST_NAME, HrEmployees::MIDDLE_NAME, HrEmployees::LAST_NAME], [HrEmployees::STATUS => "E", HrEmployees::RETIRED_FLAG => "N"], HrEmployees::FIRST_NAME, "ASC", " ")
+                    'employeeList' => EntityHelper::getTableKVListWithSortOption($this->adapter, HrEmployees::TABLE_NAME, HrEmployees::EMPLOYEE_ID, [HrEmployees::FIRST_NAME, HrEmployees::MIDDLE_NAME, HrEmployees::LAST_NAME], [HrEmployees::STATUS => "E", HrEmployees::RETIRED_FLAG => "N"], HrEmployees::FIRST_NAME, "ASC", " ",false,true)
         ]);
     }
 

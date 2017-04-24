@@ -11,6 +11,7 @@ angular.module('hris', [])
             var $tableContainer = $("#travelRequestStatusTable");
             $scope.view = function () {
                 var employeeId = angular.element(document.getElementById('employeeId')).val();
+                var companyId = angular.element(document.getElementById('companyId')).val();
                 var branchId = angular.element(document.getElementById('branchId')).val();
                 var departmentId = angular.element(document.getElementById('departmentId')).val();
                 var designationId = angular.element(document.getElementById('designationId')).val();
@@ -26,6 +27,7 @@ angular.module('hris', [])
                     action: 'pullTravelRequestStatusList',
                     data: {
                         'employeeId': employeeId,
+                        'companyId':companyId,
                         'branchId': branchId,
                         'departmentId': departmentId,
                         'designationId': designationId,

@@ -1,31 +1,20 @@
 <?php
 $this->headLink()
-//        ->appendStylesheet($this->basePath('assets/global/plugins/lobilist-master/lib/bootstrap/css/bootstrap.min.css'))
         ->appendStylesheet($this->basePath('assets/global/plugins/lobilist-master/dist/lobilist.min.css'));
 
 $this->headScript()
-        ->appendFile($this->basePath('assets/global/plugins/lobilist-master/lib/jquery/jquery.ui.touch-punch-improved.js'))
-        ->appendFile($this->basePath('assets/global/plugins/lobilist-master/dist/lobilist.js'))
         ->appendFile($this->basePath('assets/global/plugins/lobilist-master/dist/lobilist.min.js'))
-        ->appendFile($this->basePath('assets/global/plugins/lobilist-master/lib/highlight/highlight.pack.js'))
-        ->appendFile($this->basePath('js/Notification/news/test.js'));
-
-
-?>
-
-<?php
-//echo'<pre>';
-//print_r($list);
+        ->appendFile($this->basePath('js/dashboard/todo.js'));
 ?>
 
 <script>
-    document.addUrl = '<?php echo $this->url('task', ['action' => 'add']); ?>';
-    document.updateUrl = '<?php echo $this->url('task', ['action' => 'update']); ?>';
-    document.delteUrl = '<?php echo $this->url('task', ['action' => 'delete']); ?>';
-    document.taskList = <?php echo json_encode($list); ?>;
-    document.taskUpdateStatus = '<?php echo $this->url('task', ['action' => 'updateStatus']); ?>';
+    document.todoAddUrl = '<?php echo $this->url('task', ['action' => 'add']); ?>';
+    document.todoUpdateUrl = '<?php echo $this->url('task', ['action' => 'update']); ?>';
+    document.todoDeleteUrl = '<?php echo $this->url('task', ['action' => 'delete']); ?>';
+    document.todoTaskList = <?php echo json_encode($todoList); ?>;
+    document.todoTaskUpdateStatus = '<?php echo $this->url('task', ['action' => 'updateStatus']); ?>';
 </script>
 
-<div id="lobilist"></div>
+<div id="lobilist">
 
-
+</div>

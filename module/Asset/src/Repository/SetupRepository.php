@@ -11,6 +11,7 @@ use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Sql\Predicate\Expression;
 use Zend\Db\Sql\Sql;
 use Zend\Db\TableGateway\TableGateway;
+use Application\Helper\EntityHelper;
 
 class SetupRepository implements RepositoryInterface {
 
@@ -43,33 +44,16 @@ class SetupRepository implements RepositoryInterface {
     }
 
     public function fetchAll() {
-//        return $this->tableGateway->select(function(Select $select){
-//            $select->where([Setup::STATUS=>'E']);
-//            $select->order(Setup::ASSET_EDESC." ASC");
-//        });
-
-
         $sql = new Sql($this->adapter);
         $select = $sql->select();
-        $select->columns([
-            new Expression("A.ASSET_ID AS ASSET_ID"),
-            new Expression("A.ASSET_CODE AS ASSET_CODE"),
-            new Expression("A.ASSET_EDESC AS ASSET_EDESC"),
-            new Expression("A.BRAND_NAME AS BRAND_NAME"),
-            new Expression("A.MODEL_NO AS MODEL_NO"),
-            new Expression("A.QUANTITY AS QUANTITY")
-                ], true);
+        $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(Setup::class,[Setup::ASSET_EDESC,Setup::ASSET_NDESC,Setup::BRAND_NAME],null,null,null,null,"A"),false);
         $select->from(['A' => Setup::TABLE_NAME])
-                ->join(['AG' => Group::TABLE_NAME], 'A.' . Setup::ASSET_GROUP_ID . '=AG.' . Group::ASSET_GROUP_ID, [Group::ASSET_GROUP_EDESC], "left");
+                ->join(['AG' => Group::TABLE_NAME], 'A.' . Setup::ASSET_GROUP_ID . '=AG.' . Group::ASSET_GROUP_ID, ["ASSET_GROUP_EDESC"=>new Expression("INITCAP(AG.ASSET_GROUP_EDESC)")], "left");
 
         $select->where(["A." . Setup::STATUS . "='E'"]);
         $select->order("A." . Setup::ASSET_EDESC);
         $statement = $sql->prepareStatementForSqlObject($select);
-//        print_r($statement->getSql());
-//        die();
         $result = $statement->execute();
-//        print_r($result);
-//        die();
         return $result;
     }
 
@@ -79,11 +63,9 @@ class SetupRepository implements RepositoryInterface {
         $select = $sql->select();
         $select->from(['E' => Setup::TABLE_NAME]);
         $select->where(["E." . Setup::ASSET_ID . "='".$id."'"]);
-        $select->columns(Helper::convertColumnDateFormat($this->adapter, new Setup(), [
-                    'purchaseDate',
-                    'expiaryDate'
-                        ], NULL, 'E'), false);
-        
+        $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(Setup::class,
+                [Setup::ASSET_EDESC,Setup::ASSET_NDESC,Setup::BRAND_NAME],
+                [Setup::PURCHASE_DATE,Setup::EXPIARY_DATE],null,null,null,"E"),false);
         $statement = $sql->prepareStatementForSqlObject($select);
         $result = $statement->execute();
         return $result->current();

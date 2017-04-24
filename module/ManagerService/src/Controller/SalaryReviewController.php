@@ -65,7 +65,7 @@ class SalaryReviewController extends AbstractActionController {
         }
 
 
-        $employeeList = EntityHelper::getTableKVList($this->adapter, HrEmployees::TABLE_NAME, HrEmployees::EMPLOYEE_ID, [HrEmployees::FIRST_NAME, HrEmployees::MIDDLE_NAME, HrEmployees::LAST_NAME], [HrEmployees::STATUS => 'E', HrEmployees::RETIRED_FLAG => 'N'], null, false);
+        $employeeList = EntityHelper::getTableKVListWithSortOption($this->adapter, HrEmployees::TABLE_NAME, HrEmployees::EMPLOYEE_ID, [HrEmployees::FIRST_NAME, HrEmployees::MIDDLE_NAME, HrEmployees::LAST_NAME], [HrEmployees::STATUS => 'E', HrEmployees::RETIRED_FLAG => 'N'], HrEmployees::FIRST_NAME,"ASC", " ", false,true);
         $employeeSelect = new Select();
         $employeeSelect->setName("employeeId");
         $employeeSelect->setValueOptions($employeeList);
@@ -110,7 +110,7 @@ class SalaryReviewController extends AbstractActionController {
 //        print "<pre>";
 //        print_r($salaryDetail);
 //        exit;
-        $employeeList = EntityHelper::getTableKVList($this->adapter, HrEmployees::TABLE_NAME, HrEmployees::EMPLOYEE_ID, [HrEmployees::FIRST_NAME, HrEmployees::MIDDLE_NAME, HrEmployees::LAST_NAME], [HrEmployees::STATUS => 'E', HrEmployees::RETIRED_FLAG => 'N'], null, false);
+        $employeeList = EntityHelper::getTableKVListWithSortOption($this->adapter, HrEmployees::TABLE_NAME, HrEmployees::EMPLOYEE_ID, [HrEmployees::FIRST_NAME, HrEmployees::MIDDLE_NAME, HrEmployees::LAST_NAME], [HrEmployees::STATUS => 'E', HrEmployees::RETIRED_FLAG => 'N'], HrEmployees::FIRST_NAME,"ASC", " ", false,true);
         $employeeSelect = new Select();
         $employeeSelect->setName("employeeId");
         $employeeSelect->setValue($salaryDetail[SalaryDetail::EMPLOYEE_ID]);

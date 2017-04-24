@@ -32,7 +32,7 @@ class AppraisalAssignController extends AbstractActionController{
     public function indexAction() {
         $employeeNameFormElement = new Select();
         $employeeNameFormElement->setName("branch");
-        $employeeName = EntityHelper::getTableKVListWithSortOption($this->adapter, "HRIS_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => "E", "RETIRED_FLAG" => "N"], "FIRST_NAME", "ASC", " ");
+        $employeeName = EntityHelper::getTableKVListWithSortOption($this->adapter, "HRIS_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => "E", "RETIRED_FLAG" => "N"], "FIRST_NAME", "ASC", " ",FALSE,TRUE);
         $employeeName1 = [-1 => "All"] + $employeeName;
         $employeeNameFormElement->setValueOptions($employeeName1);
         $employeeNameFormElement->setAttributes(["id" => "employeeId", "class" => "form-control"]);
@@ -41,7 +41,7 @@ class AppraisalAssignController extends AbstractActionController{
 
         $branchFormElement = new Select();
         $branchFormElement->setName("branch");
-        $branches = EntityHelper::getTableKVListWithSortOption($this->adapter, Branch::TABLE_NAME, Branch::BRANCH_ID, [Branch::BRANCH_NAME], [Branch::STATUS => 'E'], "BRANCH_NAME", "ASC");
+        $branches = EntityHelper::getTableKVListWithSortOption($this->adapter, Branch::TABLE_NAME, Branch::BRANCH_ID, [Branch::BRANCH_NAME], [Branch::STATUS => 'E'], "BRANCH_NAME", "ASC",NULL,FALSE,TRUE);
         $branches1 = [-1 => "All"] + $branches;
         $branchFormElement->setValueOptions($branches1);
         $branchFormElement->setAttributes(["id" => "branchId", "class" => "form-control"]);
@@ -50,7 +50,7 @@ class AppraisalAssignController extends AbstractActionController{
 
         $departmentFormElement = new Select();
         $departmentFormElement->setName("department");
-        $departments = EntityHelper::getTableKVListWithSortOption($this->adapter, Department::TABLE_NAME, Department::DEPARTMENT_ID, [Department::DEPARTMENT_NAME], [Department::STATUS => 'E'], "DEPARTMENT_NAME", "ASC");
+        $departments = EntityHelper::getTableKVListWithSortOption($this->adapter, Department::TABLE_NAME, Department::DEPARTMENT_ID, [Department::DEPARTMENT_NAME], [Department::STATUS => 'E'], "DEPARTMENT_NAME", "ASC",NULL,FALSE,TRUE);
         $departments1 = [-1 => "All"] + $departments;
         $departmentFormElement->setValueOptions($departments1);
         $departmentFormElement->setAttributes(["id" => "departmentId", "class" => "form-control"]);
@@ -58,7 +58,7 @@ class AppraisalAssignController extends AbstractActionController{
 
         $designationFormElement = new Select();
         $designationFormElement->setName("designation");
-        $designations = EntityHelper::getTableKVListWithSortOption($this->adapter, Designation::TABLE_NAME, Designation::DESIGNATION_ID, [Designation::DESIGNATION_TITLE], [Designation::STATUS => 'E'], "DESIGNATION_TITLE", "ASC");
+        $designations = EntityHelper::getTableKVListWithSortOption($this->adapter, Designation::TABLE_NAME, Designation::DESIGNATION_ID, [Designation::DESIGNATION_TITLE], [Designation::STATUS => 'E'], "DESIGNATION_TITLE", "ASC",NULL,FALSE,TRUE);
         $designations1 = [-1 => "All"] + $designations;
         $designationFormElement->setValueOptions($designations1);
         $designationFormElement->setAttributes(["id" => "designationId", "class" => "form-control"]);
@@ -66,7 +66,7 @@ class AppraisalAssignController extends AbstractActionController{
         
         $appraisalFormElement = new Select();
         $appraisalFormElement->setName("appraisal");
-        $appraisals = EntityHelper::getTableKVListWithSortOption($this->adapter, Setup::TABLE_NAME, Setup::APPRAISAL_ID, [Setup::APPRAISAL_EDESC], [Setup::STATUS => 'E'], Setup::APPRAISAL_EDESC, "ASC");
+        $appraisals = EntityHelper::getTableKVListWithSortOption($this->adapter, Setup::TABLE_NAME, Setup::APPRAISAL_ID, [Setup::APPRAISAL_EDESC], [Setup::STATUS => 'E'], Setup::APPRAISAL_EDESC, "ASC",NULL,FALSE,TRUE);
         $appraisalFormElement->setValueOptions($appraisals);
         $appraisalFormElement->setAttributes(["id" => "appraisalId", "class" => "form-control"]);
         $appraisalFormElement->setLabel("Appraisal");

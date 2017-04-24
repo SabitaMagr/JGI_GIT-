@@ -9,6 +9,7 @@ use Appraisal\Model\QuestionOption;
 use Zend\Db\Sql\Select;
 use Appraisal\Model\Question;
 use Application\Repository\RepositoryInterface;
+use Application\Helper\EntityHelper;
 
 class QuestionOptionRepository implements RepositoryInterface{
     private $adapter;
@@ -47,6 +48,7 @@ class QuestionOptionRepository implements RepositoryInterface{
     public function fetchByQuestionId($questionId){
         //return $this->tableGateway->select([QuestionOption::QUESTION_ID=>$questionId, QuestionOption::STATUS=>'E']);
         return $rowset= $this->tableGateway->select(function(Select $select) use($questionId) {
+            $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(QuestionOption::class,[QuestionOption::OPTION_EDESC, QuestionOption::OPTION_NDESC]),false);
             $select->where([QuestionOption::STATUS=>'E',QuestionOption::QUESTION_ID=>$questionId]);
             $select->order(QuestionOption::OPTION_ID." ASC");
         });

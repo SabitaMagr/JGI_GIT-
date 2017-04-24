@@ -6,13 +6,13 @@ use Application\Custom\CustomViewModel;
 use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
 use Application\Repository\DashboardRepository;
+use Application\Repository\TaskRepository;
 use AttendanceManagement\Repository\AttendanceDetailRepository;
 use AttendanceManagement\Repository\AttendanceStatusRepository;
 use Exception;
 use HolidayManagement\Repository\HolidayRepository;
 use Interop\Container\ContainerInterface;
 use LeaveManagement\Repository\LeaveStatusRepository;
-use Notification\Model\NewsModel;
 use Setup\Model\Branch;
 use Setup\Model\HrEmployees;
 use Setup\Repository\EmployeeRepository;
@@ -70,6 +70,7 @@ class DashboardController extends AbstractActionController {
     public function indexAction() {
         $auth = new AuthenticationService();
         $employeeId = $auth->getStorage()->read()['employee_id'];
+        $this->employeeId = $employeeId;
         $fiscalYear = $auth->getStorage()->read()['fiscal_year'];
         $dahsboardRepo = new DashboardRepository($this->adapter);
         $employeeDetail = $dahsboardRepo->fetchEmployeeDashboardDetail($employeeId, $fiscalYear['START_DATE'], $fiscalYear['END_DATE']);
@@ -85,7 +86,8 @@ class DashboardController extends AbstractActionController {
                     "headCountGender" => $dahsboardRepo->fetchGenderHeadCount(),
                     "headCountDepartment" => $dahsboardRepo->fetchDepartmentHeadCount(),
                     "headCountLocation" => $dahsboardRepo->fetchLocationHeadCount(),
-                    "departmentAttendance" => $dahsboardRepo->fetchDepartmentAttendance()
+                    "departmentAttendance" => $dahsboardRepo->fetchDepartmentAttendance(),
+                    'todoList' => $this->getTodoList()
         )));
 
         $returnData = $this->roleWiseView($auth);
@@ -363,6 +365,26 @@ class DashboardController extends AbstractActionController {
         } catch (Exception $e) {
             return new CustomViewModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
         }
+    }
+
+    private function getTodoList() {
+        $taskRepo = new TaskRepository($this->adapter);
+        $result = $taskRepo->fetchEmployeeTask($this->employeeId);
+        $list = [];
+        foreach ($result as $row) {
+            $nrow['id'] = $row['TASK_ID'];
+            $nrow['title'] = $row['TASK_TITLE'];
+            $nrow['description'] = $row['TASK_EDESC'];
+            $nrow['dueDate'] = $row['END_DATE'];
+            if ($row['STATUS'] == 'C') {
+                $done = true;
+            } else {
+                $done = false;
+            }
+            $nrow['done'] = $done;
+            array_push($list, $nrow);
+        }
+        return $list;
     }
 
 }

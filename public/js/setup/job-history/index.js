@@ -12,7 +12,13 @@ angular.module('hris', [])
             var $tableContainer = $("#jobHistoryTable");
             $scope.view = function () {
                 var employeeId = angular.element(document.getElementById('employeeId')).val();
-                var serviceEventTypeId = angular.element(document.getElementById('serviceEventTypeId')).val();
+                var companyId = angular.element(document.getElementById('companyId')).val();
+                var branchId = angular.element(document.getElementById('branchId')).val();
+                var departmentId = angular.element(document.getElementById('departmentId')).val();
+                var designationId = angular.element(document.getElementById('designationId')).val();
+                var positionId = angular.element(document.getElementById('positionId')).val();
+                var serviceTypeId = angular.element(document.getElementById('serviceTypeId')).val();
+                var serviceEventTypeId = angular.element(document.getElementById('serviceEventTypeId1')).val();
                 var fromDate = angular.element(document.getElementById('fromDate')).val();
                 var toDate = angular.element(document.getElementById('toDate')).val();
                 App.blockUI({target: "#hris-page-content"});
@@ -22,7 +28,13 @@ angular.module('hris', [])
                         'fromDate': fromDate,
                         'toDate': toDate,
                         'employeeId': employeeId,
-                        'serviceEventTypeId': serviceEventTypeId
+                        'serviceEventTypeId': serviceEventTypeId,
+                        'companyId': companyId,
+                        'branchId': branchId,
+                        'departmentId': departmentId,
+                        'designationId': designationId,
+                        'positionId': positionId,
+                        'serviceTypeId': serviceTypeId,
                     }
                 }).then(function (success) {
                     App.unblockUI("#hris-page-content");

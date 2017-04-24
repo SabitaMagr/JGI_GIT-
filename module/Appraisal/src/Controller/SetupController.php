@@ -44,8 +44,8 @@ class SetupController extends AbstractActionController{
         $employeeRepo = new EmployeeRepository($this->adapter);
         $employeeDetail = $employeeRepo->fetchById($this->employeeId);
         $request = $this->getRequest();
-        $appraisalTypes = EntityHelper::getTableKVListWithSortOption($this->adapter, Type::TABLE_NAME, Type::APPRAISAL_TYPE_ID, [Type::APPRAISAL_TYPE_EDESC], ["STATUS" => "E"], Type::APPRAISAL_TYPE_EDESC, "ASC");
-        $stages = EntityHelper::getTableKVListWithSortOption($this->adapter, Stage::TABLE_NAME, Stage::STAGE_ID, [Stage::STAGE_EDESC], ["STATUS" => "E"], Stage::STAGE_EDESC, "ASC");
+        $appraisalTypes = EntityHelper::getTableKVListWithSortOption($this->adapter, Type::TABLE_NAME, Type::APPRAISAL_TYPE_ID, [Type::APPRAISAL_TYPE_EDESC], ["STATUS" => "E"], Type::APPRAISAL_TYPE_EDESC, "ASC",NULL,FALSE,TRUE);
+        $stages = EntityHelper::getTableKVListWithSortOption($this->adapter, Stage::TABLE_NAME, Stage::STAGE_ID, [Stage::STAGE_EDESC], ["STATUS" => "E"], Stage::STAGE_EDESC, "ASC",NULL,FALSE,TRUE);
         if($request->isPost()){
             $this->form->setData($request->getPost());
             if($this->form->isValid()){
@@ -78,8 +78,8 @@ class SetupController extends AbstractActionController{
         $this->initializeForm();
         $employeeRepo = new EmployeeRepository($this->adapter);
         $employeeDetail = $employeeRepo->fetchById($this->employeeId);
-        $appraisalTypes = EntityHelper::getTableKVListWithSortOption($this->adapter, Type::TABLE_NAME, Type::APPRAISAL_TYPE_ID, [Type::APPRAISAL_TYPE_EDESC], ["STATUS" => "E"], Type::APPRAISAL_TYPE_EDESC, "ASC");
-        $stages = EntityHelper::getTableKVListWithSortOption($this->adapter, Stage::TABLE_NAME, Stage::STAGE_ID, [Stage::STAGE_EDESC], ["STATUS" => "E"], Stage::STAGE_EDESC, "ASC");
+        $appraisalTypes = EntityHelper::getTableKVListWithSortOption($this->adapter, Type::TABLE_NAME, Type::APPRAISAL_TYPE_ID, [Type::APPRAISAL_TYPE_EDESC], ["STATUS" => "E"], Type::APPRAISAL_TYPE_EDESC, "ASC",NULL,FALSE,TRUE);
+        $stages = EntityHelper::getTableKVListWithSortOption($this->adapter, Stage::TABLE_NAME, Stage::STAGE_ID, [Stage::STAGE_EDESC], ["STATUS" => "E"], Stage::STAGE_EDESC, "ASC",NULL,FALSE,TRUE);
         $request = $this->getRequest();
         $appraisalModel = new Setup();
         if(!$request->isPost()){

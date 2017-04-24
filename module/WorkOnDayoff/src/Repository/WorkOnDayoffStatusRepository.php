@@ -37,6 +37,7 @@ class WorkOnDayoffStatusRepository implements RepositoryInterface{
         $fromDate = $data['fromDate'];
         $toDate = $data['toDate'];
         $employeeId = $data['employeeId'];
+        $companyId = $data['companyId'];
         $branchId = $data['branchId'];
         $departmentId = $data['departmentId'];
         $designationId = $data['designationId'];
@@ -51,24 +52,24 @@ class WorkOnDayoffStatusRepository implements RepositoryInterface{
             $retiredFlag = " AND E.RETIRED_FLAG='N' ";
         }
         
-        $sql = "SELECT TO_CHAR(WD.FROM_DATE, 'DD-MON-YYYY') AS FROM_DATE,
-                TO_CHAR(WD.TO_DATE, 'DD-MON-YYYY') AS TO_DATE,
-                TO_CHAR(WD.REQUESTED_DATE, 'DD-MON-YYYY') AS REQUESTED_DATE,
+        $sql = "SELECT INITCAP(TO_CHAR(WD.FROM_DATE, 'DD-MON-YYYY')) AS FROM_DATE,
+                INITCAP(TO_CHAR(WD.TO_DATE, 'DD-MON-YYYY')) AS TO_DATE,
+                INITCAP(TO_CHAR(WD.REQUESTED_DATE, 'DD-MON-YYYY')) AS REQUESTED_DATE,
                 WD.STATUS AS STATUS,
                 WD.REMARKS AS REMARKS,
                 WD.DURATION AS DURATION,
                 WD.EMPLOYEE_ID AS EMPLOYEE_ID,
                 WD.ID AS ID,
                 WD.MODIFIED_DATE AS MODIFIED_DATE,
-                TO_CHAR(WD.RECOMMENDED_DATE, 'DD-MON-YYYY') AS RECOMMENDED_DATE,
-                TO_CHAR(WD.APPROVED_DATE, 'DD-MON-YYYY') AS APPROVED_DATE,
+                INITCAP(TO_CHAR(WD.RECOMMENDED_DATE, 'DD-MON-YYYY')) AS RECOMMENDED_DATE,
+                INITCAP(TO_CHAR(WD.APPROVED_DATE, 'DD-MON-YYYY')) AS APPROVED_DATE,
                 E.FIRST_NAME,E.MIDDLE_NAME,E.LAST_NAME,
-                E1.FIRST_NAME AS FN1,E1.MIDDLE_NAME AS MN1,E1.LAST_NAME AS LN1,
-                E2.FIRST_NAME AS FN2,E2.MIDDLE_NAME AS MN2,E2.LAST_NAME AS LN2,
+                INITCAP(E1.FIRST_NAME) AS FN1,INITCAP(E1.MIDDLE_NAME) AS MN1,INITCAP(E1.LAST_NAME) AS LN1,
+                INITCAP(E2.FIRST_NAME) AS FN2,INITCAP(E2.MIDDLE_NAME) AS MN2,INITCAP(E2.LAST_NAME) AS LN2,
                 RA.RECOMMEND_BY AS RECOMMENDER,
                 RA.APPROVED_BY AS APPROVER,
-                RECM.FIRST_NAME AS RECM_FN,RECM.MIDDLE_NAME AS RECM_MN,RECM.LAST_NAME AS RECM_LN,
-                APRV.FIRST_NAME AS APRV_FN,APRV.MIDDLE_NAME AS APRV_MN,APRV.LAST_NAME AS APRV_LN,
+                INITCAP(RECM.FIRST_NAME) AS RECM_FN,INITCAP(RECM.MIDDLE_NAME) AS RECM_MN,INITCAP(RECM.LAST_NAME) AS RECM_LN,
+                INITCAP(APRV.FIRST_NAME) AS APRV_FN,INITCAP(APRV.MIDDLE_NAME) AS APRV_MN,INITCAP(APRV.LAST_NAME) AS APRV_LN,
                 WD.RECOMMENDED_BY AS RECOMMENDED_BY,
                 WD.APPROVED_BY AS APPROVED_BY,
                 WD.RECOMMENDED_REMARKS AS RECOMMENDED_REMARKS,
@@ -138,7 +139,9 @@ class WorkOnDayoffStatusRepository implements RepositoryInterface{
         if ($employeeId != -1) {
             $sql .= "AND E." . HrEmployees::EMPLOYEE_ID . " = $employeeId";
         }
-        
+        if ($companyId != -1) {
+            $sql .= " AND E." . HrEmployees::EMPLOYEE_ID . " IN (SELECT " . HrEmployees::EMPLOYEE_ID . " FROM " . HrEmployees::TABLE_NAME . " WHERE " . HrEmployees::COMPANY_ID . "= $companyId)";
+        }
         if ($branchId != -1) {
             $sql .= " AND E." . HrEmployees::EMPLOYEE_ID . " IN (SELECT " . HrEmployees::EMPLOYEE_ID . " FROM " . HrEmployees::TABLE_NAME . " WHERE " . HrEmployees::BRANCH_ID . "= $branchId)";
         }

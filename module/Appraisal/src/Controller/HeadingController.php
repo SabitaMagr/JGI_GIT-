@@ -47,7 +47,7 @@ class HeadingController extends AbstractActionController{
         $employeeRepo = new EmployeeRepository($this->adapter);
         $employeeDetail = $employeeRepo->fetchById($this->employeeId);
         
-        $appraisalTypes = EntityHelper::getTableKVListWithSortOption($this->adapter, Type::TABLE_NAME, Type::APPRAISAL_TYPE_ID, [Type::APPRAISAL_TYPE_EDESC], ["STATUS" => "E"], "APPRAISAL_TYPE_EDESC", "ASC");
+        $appraisalTypes = EntityHelper::getTableKVListWithSortOption($this->adapter, Type::TABLE_NAME, Type::APPRAISAL_TYPE_ID, [Type::APPRAISAL_TYPE_EDESC], ["STATUS" => "E"], "APPRAISAL_TYPE_EDESC", "ASC",NULL,FALSE,TRUE);
         $request = $this->getRequest();
         if($request->isPost()){
             $this->form->setData($request->getPost());
@@ -104,7 +104,7 @@ class HeadingController extends AbstractActionController{
         return Helper::addFlashMessagesToArray($this, [
             'form'=>$this->form,
             'id'=>$id,
-            'appraisalTypes' => EntityHelper::getTableKVListWithSortOption($this->adapter, Type::TABLE_NAME, Type::APPRAISAL_TYPE_ID, [Type::APPRAISAL_TYPE_EDESC], ["STATUS" => "E"], "APPRAISAL_TYPE_EDESC", "ASC")
+            'appraisalTypes' => EntityHelper::getTableKVListWithSortOption($this->adapter, Type::TABLE_NAME, Type::APPRAISAL_TYPE_ID, [Type::APPRAISAL_TYPE_EDESC], ["STATUS" => "E"], "APPRAISAL_TYPE_EDESC", "ASC",NULL,FALSE,TRUE)
         ]);
     }
     public function deleteAction(){

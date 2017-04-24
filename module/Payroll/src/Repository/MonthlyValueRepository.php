@@ -7,6 +7,8 @@ use Application\Repository\RepositoryInterface;
 use Payroll\Model\MonthlyValue;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\TableGateway\TableGateway;
+use Application\Helper\EntityHelper;
+use Zend\Db\Sql\Select;
 
 class MonthlyValueRepository implements RepositoryInterface
 {
@@ -31,12 +33,20 @@ class MonthlyValueRepository implements RepositoryInterface
 
     public function fetchAll()
     {
-        return $this->tableGateway->select([MonthlyValue::STATUS=>'E']);
+        return $this->tableGateway->select(function(Select $select){
+            $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(MonthlyValue::class,
+                    [MonthlyValue::MTH_EDESC, MonthlyValue::MTH_LDESC]),false);
+            $select->where([MonthlyValue::STATUS=>'E']);
+        });
     }
 
     public function fetchById($id)
     {
-        return $this->tableGateway->select([MonthlyValue::MTH_ID=>$id])->current();
+        return $this->tableGateway->select(function(Select $select)use($id){
+            $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(MonthlyValue::class,
+                    [MonthlyValue::MTH_EDESC, MonthlyValue::MTH_LDESC]),false);
+            $select->where([MonthlyValue::MTH_ID=>$id]);
+        })->current();
     }
 
     public function delete($id)

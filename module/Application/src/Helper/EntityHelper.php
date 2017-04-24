@@ -3,6 +3,14 @@
 namespace Application\Helper;
 
 use ReflectionClass;
+use Setup\Model\Branch;
+use Setup\Model\Company;
+use Setup\Model\Department;
+use Setup\Model\Designation;
+use Setup\Model\HrEmployees;
+use Setup\Model\Position;
+use Setup\Model\ServiceEventType;
+use Setup\Model\ServiceType;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Sql\Select;
 use Zend\Db\TableGateway\TableGateway;
@@ -68,7 +76,18 @@ class EntityHelper {
         return $statement->execute();
     }
 
-    public static function getColumnNameArrayWithOracleFns(string $requestedName, array $initCapColumnList = null, array $dateColumnList = null, array $timeColumnList = null, array $timeIntervalColumnList = null, array $otherColumnList = null, string $shortForm = null, $selectedOnly = false) {
+    public static function getTableList(AdapterInterface $adapter, string $tableName, array $columnList, array $where = null) {
+        $gateway = new TableGateway($tableName, $adapter);
+        $zendResult = $gateway->select(function(Select $select) use($columnList, $where) {
+            $select->columns($columnList, false);
+            if ($where != null) {
+                $select->where($where);
+            }
+        });
+        return Helper::extractDbData($zendResult, true);
+    }
+
+    public static function getColumnNameArrayWithOracleFns(string $requestedName, array $initCapColumnList = null, array $dateColumnList = null, array $timeColumnList = null, array $timeIntervalColumnList = null, array $otherColumnList = null, string $shortForm = null, $selectedOnly = false, $inStringForm = false) {
         $refl = new ReflectionClass($requestedName);
         $table = $refl->newInstanceArgs();
 
@@ -81,20 +100,24 @@ class EntityHelper {
             }
             $tempCol = $table->mappings[$objAttr];
             if ($initCapColumnList !== null && in_array($tempCol, $initCapColumnList)) {
-                array_push($objCols, Helper::columnExpression($tempCol, $shortForm, self::ORACLE_FUNCTION_INITCAP));
+                $initCapExpression = Helper::columnExpression($tempCol, $shortForm, self::ORACLE_FUNCTION_INITCAP);
+                array_push($objCols, $inStringForm ? $initCapExpression->getExpression() : $initCapExpression);
                 continue;
             }
 
             if ($dateColumnList !== null && in_array($tempCol, $dateColumnList)) {
-                array_push($objCols, self::formatColumn($tempCol, $shortForm, Helper::ORACLE_DATE_FORMAT));
+                $dateExpression = self::formatColumn($tempCol, $shortForm, Helper::ORACLE_DATE_FORMAT);
+                array_push($objCols, $inStringForm ? $dateExpression->getExpression() : $dateExpression);
                 continue;
             }
             if ($timeColumnList !== null && in_array($tempCol, $timeColumnList)) {
-                array_push($objCols, self::formatColumn($tempCol, $shortForm, Helper::ORACLE_TIME_FORMAT));
+                $timeExpression = self::formatColumn($tempCol, $shortForm, Helper::ORACLE_TIME_FORMAT);
+                array_push($objCols, $inStringForm ? $timeExpression->getExpression() : $timeExpression);
                 continue;
             }
             if ($timeIntervalColumnList !== null && in_array($tempCol, $timeIntervalColumnList)) {
-                array_push($objCols, self::formatColumn($tempCol, $shortForm, Helper::ORACLE_TIMESTAMP_FORMAT));
+                $timeIntervalExpression = self::formatColumn($tempCol, $shortForm, Helper::ORACLE_TIMESTAMP_FORMAT);
+                array_push($objCols, $inStringForm ? $timeIntervalExpression->getExpression() : $timeIntervalExpression);
                 continue;
             }
             if ($otherColumnList !== null && in_array($tempCol, $otherColumnList)) {
@@ -104,7 +127,7 @@ class EntityHelper {
 
 
             if (!$selectedOnly) {
-                array_push($objCols, Helper::columnExpression($tempCol));
+                array_push($objCols, Helper::columnExpression($tempCol, $shortForm));
             }
         }
 
@@ -117,6 +140,44 @@ class EntityHelper {
             $pre = $shortForm . ".";
         }
         return "INITCAP(TO_CHAR({$pre}{$columnName}, '{$format}')) AS {$columnName}";
+    }
+
+    public static function getSearchData($adapter) {
+        /* search values */
+        $companyList = self::getTableList($adapter, Company::TABLE_NAME, [Company::COMPANY_ID, Company::COMPANY_NAME]);
+        $branchList = self::getTableList($adapter, Branch::TABLE_NAME, [Branch::BRANCH_ID, Branch::BRANCH_NAME, Branch::COMPANY_ID]);
+        $departmentList = self::getTableList($adapter, Department::TABLE_NAME, [Department::DEPARTMENT_ID, Department::DEPARTMENT_NAME, Department::COMPANY_ID, Department::BRANCH_ID]);
+        $designationList = self::getTableList($adapter, Designation::TABLE_NAME, [Designation::DESIGNATION_ID, Designation::DESIGNATION_TITLE, Designation::COMPANY_ID]);
+        $positionList = self::getTableList($adapter, Position::TABLE_NAME, [Position::POSITION_ID, Position::POSITION_NAME, Position::COMPANY_ID]);
+        $serviceTypeList = self::getTableList($adapter, ServiceType::TABLE_NAME, [ServiceType::SERVICE_TYPE_ID, ServiceType::SERVICE_TYPE_NAME]);
+        $serviceEventTypeList = self::getTableList($adapter, ServiceEventType::TABLE_NAME, [ServiceEventType::SERVICE_EVENT_TYPE_ID, ServiceEventType::SERVICE_EVENT_TYPE_NAME]);
+        $employeeList = self::getTableList($adapter, HrEmployees::TABLE_NAME, [
+                    HrEmployees::EMPLOYEE_ID,
+                    HrEmployees::FIRST_NAME,
+                    HrEmployees::MIDDLE_NAME,
+                    HrEmployees::LAST_NAME,
+                    HrEmployees::COMPANY_ID,
+                    HrEmployees::BRANCH_ID,
+                    HrEmployees::DEPARTMENT_ID,
+                    HrEmployees::DESIGNATION_ID,
+                    HrEmployees::POSITION_ID,
+                    HrEmployees::SERVICE_TYPE_ID,
+                    HrEmployees::SERVICE_EVENT_TYPE_ID
+        ]);
+
+        $searchValues = [
+            'company' => $companyList,
+            'branch' => $branchList,
+            'department' => $departmentList,
+            'designation' => $designationList,
+            'position' => $positionList,
+            'serviceType' => $serviceTypeList,
+            'serviceEventType' => $serviceEventTypeList,
+            'employee' => $employeeList
+        ];
+        /* end of search values */
+
+        return $searchValues;
     }
 
 }

@@ -58,7 +58,7 @@ class AdvanceController extends AbstractActionController {
         }
         return Helper::addFlashMessagesToArray($this, [
                     'form' => $this->form,
-                    'companies' => EntityHelper::getTableKVListWithSortOption($this->adapter, Company::TABLE_NAME, Company::COMPANY_ID, [Company::COMPANY_NAME], ["STATUS" => "E"], Company::COMPANY_NAME, "ASC")
+                    'companies' => EntityHelper::getTableKVListWithSortOption($this->adapter, Company::TABLE_NAME, Company::COMPANY_ID, [Company::COMPANY_NAME], ["STATUS" => "E"], Company::COMPANY_NAME, "ASC",null,false,true)
         ]);
     }
 
@@ -92,7 +92,7 @@ class AdvanceController extends AbstractActionController {
                         $this, [
                     'form' => $this->form,
                     'id' => $id,
-                    'companies' => EntityHelper::getTableKVListWithSortOption($this->adapter, Company::TABLE_NAME, Company::COMPANY_ID, [Company::COMPANY_NAME], ["STATUS" => "E"], Company::COMPANY_NAME, "ASC")
+                    'companies' => EntityHelper::getTableKVListWithSortOption($this->adapter, Company::TABLE_NAME, Company::COMPANY_ID, [Company::COMPANY_NAME], ["STATUS" => "E"], Company::COMPANY_NAME, "ASC",null,false,true)
                         ]
         );
     }
