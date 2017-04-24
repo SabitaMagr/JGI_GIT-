@@ -63,7 +63,7 @@ class JobHistoryRepository implements RepositoryInterface {
         return $result;
     }
 
-    public function filter($fromDate, $toDate, $employeeId, $serviceEventTypeId) {
+    public function filter($fromDate, $toDate, $employeeId, $serviceEventTypeId,$companyId,$branchId,$departmentId,$designationId,$positionId,$serviceTypeId) {
         $sql = new Sql($this->adapter);
         $select = $sql->select();
         $select->columns([
@@ -99,13 +99,43 @@ class JobHistoryRepository implements RepositoryInterface {
 
         if ($employeeId != -1) {
             $select->where([
-                'H.EMPLOYEE_ID=' . $employeeId
+                'E.EMPLOYEE_ID=' . $employeeId
             ]);
         }
 
         if ($serviceEventTypeId != -1) {
             $select->where([
                 "H.SERVICE_EVENT_TYPE_ID=" . $serviceEventTypeId
+            ]);
+        }
+        if ($companyId != -1) {
+            $select->where([
+                "E.COMPANY_ID=" . $companyId
+            ]);
+        }
+        if ($branchId != -1) {
+            $select->where([
+                "E.BRANCH_ID=" . $branchId
+            ]);
+        }
+        if ($departmentId != -1) {
+            $select->where([
+                "E.DEPARTMENT_ID=" . $departmentId
+            ]);
+        }
+        if ($designationId != -1) {
+            $select->where([
+                "E.DESIGNATION_ID=" . $designationId
+            ]);
+        }
+        if ($positionId != -1) {
+            $select->where([
+                "E.POSITION_ID=" . $positionId
+            ]);
+        }
+        if ($serviceTypeId != -1) {
+            $select->where([
+                "E.SERVICE_TYPE_ID=" . $serviceTypeId
             ]);
         }
         $select->order("E.FIRST_NAME,H.START_DATE DESC");

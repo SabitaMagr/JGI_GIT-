@@ -135,6 +135,7 @@ class AttendanceStatusRepository implements RepositoryInterface {
         $fromDate = $data['fromDate'];
         $toDate = $data['toDate'];
         $employeeId = $data['employeeId'];
+        $companyId = $data['companyId'];
         $branchId = $data['branchId'];
         $departmentId = $data['departmentId'];
         $designationId = $data['designationId'];
@@ -200,6 +201,12 @@ class AttendanceStatusRepository implements RepositoryInterface {
         if ($employeeId != -1) {
             $select->where([
                 "E." . HrEmployees::EMPLOYEE_ID . " = $employeeId"
+            ]);
+        }
+        
+        if ($companyId != -1) {
+            $select->where([
+                "E." . HrEmployees::EMPLOYEE_ID . " IN (SELECT " . HrEmployees::EMPLOYEE_ID . " FROM " . HrEmployees::TABLE_NAME . " WHERE " . HrEmployees::COMPANY_ID . "= $companyId)"
             ]);
         }
         
