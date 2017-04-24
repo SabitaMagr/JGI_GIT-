@@ -6,7 +6,6 @@ use Application\Helper\EntityHelper as ApplicationEntityHelper;
 use Application\Helper\Helper;
 use Setup\Form\DepartmentForm;
 use Setup\Helper\EntityHelper;
-use Setup\Model\Branch;
 use Setup\Model\Company;
 use Setup\Model\Department;
 use Setup\Repository\DepartmentRepository;

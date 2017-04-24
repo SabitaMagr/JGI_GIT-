@@ -16,14 +16,16 @@
             },
             rowTemplate: kendo.template($("#rowTemplate").html()),
             columns: [
-                {field: "DEPARTMENT_CODE", title: "Department Code",width:120},
-                {field: "DEPARTMENT_NAME", title: "Department Name",width:200},
-                 {field: "PARENT_DEPARTMENT", title: "Paren Department Name",width:200},
-                {title: "Action",width:80}
+                {field: "DEPARTMENT_CODE", title: "Code", width: 80},
+                {field: "DEPARTMENT_NAME", title: "Name", width: 150},
+                {field: "PARENT_DEPARTMENT", title: "Parent Dept Name", width: 150},
+                {field: "COMPANY_NAME", title: "Company", width: 150},
+                {field: "BRANCH_NAME", title: "Branch", width: 150},
+                {title: "Action", width: 80}
             ]
         });
 
-            $("#export").click(function (e) {
+        $("#export").click(function (e) {
             var rows = [{
                     cells: [
                         {value: "Department Code"},
@@ -41,7 +43,7 @@
 
             filteredDataSource.read();
             var data = filteredDataSource.view();
-            
+
             for (var i = 0; i < data.length; i++) {
                 var dataItem = data[i];
                 rows.push({
@@ -57,7 +59,7 @@
             excelExport(rows);
             e.preventDefault();
         });
-        
+
         function excelExport(rows) {
             var workbook = new kendo.ooxml.Workbook({
                 sheets: [
@@ -76,7 +78,7 @@
             });
             kendo.saveAs({dataURI: workbook.toDataURL(), fileName: "DepartmentList.xlsx"});
         }
-        
+
         window.app.UIConfirmations();
 
     });

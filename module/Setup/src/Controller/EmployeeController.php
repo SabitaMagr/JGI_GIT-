@@ -18,18 +18,11 @@ use Setup\Form\HrEmployeesFormTabSix;
 use Setup\Form\HrEmployeesFormTabThree;
 use Setup\Form\HrEmployeesFormTabTwo;
 use Setup\Helper\EntityHelper;
-use Setup\Model\Branch;
-use Setup\Model\Company;
-use Setup\Model\Department;
-use Setup\Model\Designation;
 use Setup\Model\District;
 use Setup\Model\EmployeeFile as EmployeeFileModel;
 use Setup\Model\HrEmployees;
 use Setup\Model\JobHistory;
-use Setup\Model\Position;
 use Setup\Model\RecommendApprove;
-use Setup\Model\ServiceEventType;
-use Setup\Model\ServiceType;
 use Setup\Model\VdcMunicipalities;
 use Setup\Repository\EmployeeExperienceRepository;
 use Setup\Repository\EmployeeFile;
@@ -41,7 +34,6 @@ use Setup\Repository\RecommendApproveRepository;
 use Zend\Authentication\AuthenticationService;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Form\Annotation\AnnotationBuilder;
-use Zend\Form\Element\Select;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 
@@ -74,8 +66,6 @@ class EmployeeController extends AbstractActionController {
 
     public function indexAction() {
         $employees = $this->repository->fetchAll();
-
-
         return Helper::addFlashMessagesToArray($this, [
                     'list' => $employees,
                     'searchValues' => ApplicationHelper::getSearchData($this->adapter)
