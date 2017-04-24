@@ -1,6 +1,3 @@
-/**
- * Created by root on 10/19/16.
- */
 var angularApp = angular.module('hris', ['ui.bootstrap']);
 
 angularApp.controller('menuUpdateController', function ($scope, $uibModal, $log, $document) {
@@ -14,7 +11,7 @@ angularApp.controller('menuUpdateController', function ($scope, $uibModal, $log,
         iconClass: '',
         menuDescription: '',
         menuId: '',
-        isVisible:'Y'
+        isVisible: 'Y'
     };
 
     $scope.permissionList = function (menuId) {
@@ -64,7 +61,6 @@ angularApp.controller('menuUpdateController', function ($scope, $uibModal, $log,
     }
     $scope.isDisabled = true;
     $(document).on('click', '#tree_3 ul li a', function () {
-        //$("a#addChild").attr("ng-click", "open(true)");
         $('#editForm').css('display', 'block');
 
         var attrId = $(this).attr("id");
@@ -102,7 +98,6 @@ angularApp.controller('menuUpdateController', function ($scope, $uibModal, $log,
     });
 
     $scope.submitForm = function () {
-        // console.log($scope.userForm);
         if ($scope.userForm.$valid) {
             App.blockUI({target: "#hris-page-content"});
             window.app.pullDataById(document.url, {
@@ -179,7 +174,7 @@ angularApp.controller('menuUpdateController', function ($scope, $uibModal, $log,
                     menuIndex: '',
                     iconClass: '',
                     menuDescription: '',
-                    isVisible:'Y'
+                    isVisible: 'Y'
                 };
                 $scope.submitForm = function () {
                     if ($scope.userForm.$valid) {

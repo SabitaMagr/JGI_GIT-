@@ -24,7 +24,7 @@
                 {field: "TELEPHONE", title: "Telephone", width: 100},
                 {field: "EMAIL", title: "Email", width: 140},
                 {field: "COMPANY_NAME", title: "Company", width: 100},
-                {title: "Action", width: 80}
+                {title: "Action", width: 100}
             ],
         });
         $("#export").click(function (e) {

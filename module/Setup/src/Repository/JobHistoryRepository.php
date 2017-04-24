@@ -63,7 +63,7 @@ class JobHistoryRepository implements RepositoryInterface {
         return $result;
     }
 
-    public function filter($fromDate, $toDate, $employeeId, $serviceEventTypeId,$companyId,$branchId,$departmentId,$designationId,$positionId,$serviceTypeId) {
+    public function filter($fromDate, $toDate, $employeeId, $serviceEventTypeId,$companyId=null,$branchId=null,$departmentId=null,$designationId=null,$positionId=null,$serviceTypeId=null) {
         $sql = new Sql($this->adapter);
         $select = $sql->select();
         $select->columns([
@@ -108,38 +108,39 @@ class JobHistoryRepository implements RepositoryInterface {
                 "H.SERVICE_EVENT_TYPE_ID=" . $serviceEventTypeId
             ]);
         }
-        if ($companyId != -1) {
+        if ($companyId!=null && $companyId != -1) {
             $select->where([
                 "E.COMPANY_ID=" . $companyId
             ]);
         }
-        if ($branchId != -1) {
+        if ($branchId!=null && $branchId != -1) {
             $select->where([
                 "E.BRANCH_ID=" . $branchId
             ]);
         }
-        if ($departmentId != -1) {
+        if ($departmentId!=null && $departmentId != -1) {
             $select->where([
                 "E.DEPARTMENT_ID=" . $departmentId
             ]);
         }
-        if ($designationId != -1) {
+        if ($designationId!=null && $designationId != -1) {
             $select->where([
                 "E.DESIGNATION_ID=" . $designationId
             ]);
         }
-        if ($positionId != -1) {
+        if ($positionId!=null && $positionId != -1) {
             $select->where([
                 "E.POSITION_ID=" . $positionId
             ]);
         }
-        if ($serviceTypeId != -1) {
+        if ($serviceTypeId!=null && $serviceTypeId != -1) {
             $select->where([
                 "E.SERVICE_TYPE_ID=" . $serviceTypeId
             ]);
         }
         $select->order("E.FIRST_NAME,H.START_DATE DESC");
         $statement = $sql->prepareStatementForSqlObject($select);
+        
         //return $statement->getSql();
         $result = $statement->execute();
         return $result;

@@ -1,0 +1,27 @@
+Requirment
+1. add
+2. edit
+3. delete
+4. export to excel
+
+
+test log
+1. add => success
+2. edit => true
+3. delete => true (status chaged to D)
+4. export to excel => success
+
+
+
+system problem 
+1. institute name instructor name actually not required but here required
+(to make changes in both form required and datanase not null to null)
+2. start date and end date nepali date piker validation not function properly
+
+
+
+changes
+
+
+
+

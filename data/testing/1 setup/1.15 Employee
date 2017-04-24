@@ -1,0 +1,29 @@
+Requirment
+1. add
+2. edit
+3. delete
+4. export to excel
+
+
+test log
+1. add => success
+2. edit => true
+3. delete => true (status changed to D)
+4. export to excel => success
+5. employee profile view
+
+
+system problem 
+1 . html validtaion of mobile no and phone no email is not shown appropriately 
+2. branch and destination all should be according to company 
+3. academic progarm should change academic course.
+4. recommender and approver could not be self employee eg(for employee a he himself cant be his recommender or approver)
+5. no current status of employee info in employee view
+
+
+
+
+
+changes
+
+
