@@ -34,82 +34,19 @@ class TrainingAssignController extends AbstractActionController {
     }
 
     public function indexAction() {
-        $employeeNameFormElement = new Select();
-        $employeeNameFormElement->setName("branch");
-        $employeeName = EntityHelper::getTableKVListWithSortOption($this->adapter, "HRIS_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => "E"], "FIRST_NAME", "ASC", " ",false,true);
-        $employeeName1 = [-1 => "All"] + $employeeName;
-        $employeeNameFormElement->setValueOptions($employeeName1);
-        $employeeNameFormElement->setAttributes(["id" => "employeeId", "class" => "form-control"]);
-        $employeeNameFormElement->setLabel("Employee");
-        $employeeNameFormElement->setAttribute("ng-click", "view()");
-
-        $branchFormElement = new Select();
-        $branchFormElement->setName("branch");
-        $branches = EntityHelper::getTableKVListWithSortOption($this->adapter, Branch::TABLE_NAME, Branch::BRANCH_ID, [Branch::BRANCH_NAME], [Branch::STATUS => 'E'], "BRANCH_NAME", "ASC",null,false,true);
-        $branches1 = [-1 => "All"] + $branches;
-        $branchFormElement->setValueOptions($branches1);
-        $branchFormElement->setAttributes(["id" => "branchId", "class" => "form-control"]);
-        $branchFormElement->setLabel("Branch");
-        $branchFormElement->setAttribute("ng-click", "view()");
-
-        $departmentFormElement = new Select();
-        $departmentFormElement->setName("department");
-        $departments = EntityHelper::getTableKVListWithSortOption($this->adapter, Department::TABLE_NAME, Department::DEPARTMENT_ID, [Department::DEPARTMENT_NAME], [Department::STATUS => 'E'], "DEPARTMENT_NAME", "ASC",null,false,true);
-        $departments1 = [-1 => "All"] + $departments;
-        $departmentFormElement->setValueOptions($departments1);
-        $departmentFormElement->setAttributes(["id" => "departmentId", "class" => "form-control"]);
-        $departmentFormElement->setLabel("Department");
-
-        $designationFormElement = new Select();
-        $designationFormElement->setName("designation");
-        $designations = EntityHelper::getTableKVListWithSortOption($this->adapter, Designation::TABLE_NAME, Designation::DESIGNATION_ID, [Designation::DESIGNATION_TITLE], [Designation::STATUS => 'E'], "DESIGNATION_TITLE", "ASC",null,false,true);
-        $designations1 = [-1 => "All"] + $designations;
-        $designationFormElement->setValueOptions($designations1);
-        $designationFormElement->setAttributes(["id" => "designationId", "class" => "form-control"]);
-        $designationFormElement->setLabel("Designation");
-
-        $positionFormElement = new Select();
-        $positionFormElement->setName("position");
-        $positions = EntityHelper::getTableKVListWithSortOption($this->adapter, Position::TABLE_NAME, Position::POSITION_ID, [Position::POSITION_NAME], [Position::STATUS => 'E'], "POSITION_NAME", "ASC",null,false,true);
-        $positions1 = [-1 => "All"] + $positions;
-        $positionFormElement->setValueOptions($positions1);
-        $positionFormElement->setAttributes(["id" => "positionId", "class" => "form-control"]);
-        $positionFormElement->setLabel("Position");
-
-        $serviceTypeFormElement = new Select();
-        $serviceTypeFormElement->setName("serviceType");
-        $serviceTypes = EntityHelper::getTableKVListWithSortOption($this->adapter, ServiceType::TABLE_NAME, ServiceType::SERVICE_TYPE_ID, [ServiceType::SERVICE_TYPE_NAME], [ServiceType::STATUS => 'E'], "SERVICE_TYPE_NAME", "ASC",null,false,true);
-        $serviceTypes1 = [-1 => "All"] + $serviceTypes;
-        $serviceTypeFormElement->setValueOptions($serviceTypes1);
-        $serviceTypeFormElement->setAttributes(["id" => "serviceTypeId", "class" => "form-control"]);
-        $serviceTypeFormElement->setLabel("Service Type");
-
-        $serviceEventTypeFormElement = new Select();
-        $serviceEventTypeFormElement->setName("serviceEventType");
-        $serviceEventTypes = EntityHelper::getTableKVListWithSortOption($this->adapter, ServiceEventType::TABLE_NAME, ServiceEventType::SERVICE_EVENT_TYPE_ID, [ServiceEventType::SERVICE_EVENT_TYPE_NAME], [ServiceEventType::STATUS => 'E'], "SERVICE_EVENT_TYPE_NAME", "ASC",null,false,true);
-        $serviceEventTypes1 = [-1 => "All"] + $serviceEventTypes;
-        $serviceEventTypeFormElement->setValueOptions($serviceEventTypes1);
-        $serviceEventTypeFormElement->setAttributes(["id" => "serviceEventTypeId", "class" => "form-control"]);
-        $serviceEventTypeFormElement->setLabel("Service Event Type");
-
+        
         $trainingFormElement = new Select();
         $trainingFormElement->setName("training");
         $trainings = EntityHelper::getTableKVListWithSortOption($this->adapter, Training::TABLE_NAME, Training::TRAINING_ID, [Training::TRAINING_NAME], [Training::STATUS => 'E'], "TRAINING_NAME", "ASC",null,false,true);
-        $trainings1 = [-1 => "All"] + $trainings;
+        $trainings1 = [-1 => "All Training"] + $trainings;
         $trainingFormElement->setValueOptions($trainings1);
         $trainingFormElement->setAttributes(["id" => "trainingId", "class" => "form-control"]);
         $trainingFormElement->setLabel("Training");
 
         return Helper::addFlashMessagesToArray($this, [
                     'list' => 'list',
-                    'employees' => $employeeNameFormElement,
-                    'branches' => $branchFormElement,
-                    'departments' => $departmentFormElement,
-                    'positions' => $positionFormElement,
-                    'designations' => $designationFormElement,
-                    'serviceTypes' => $serviceTypeFormElement,
                     'trainings' => $trainingFormElement,
-                    'serviceEventTypes' => $serviceEventTypeFormElement
+                    'searchValues'=> EntityHelper::getSearchData($this->adapter)
         ]);
     }
 
@@ -135,56 +72,6 @@ class TrainingAssignController extends AbstractActionController {
     }
 
     public function assignAction() {
-        $employeeNameFormElement = new Select();
-        $employeeNameFormElement->setName("branch");
-        $employeeName = EntityHelper::getTableKVListWithSortOption($this->adapter, "HRIS_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => "E","RETIRED_FLAG"=>"N"], "FIRST_NAME", "ASC", " ",false,true);
-        $employeeName1 = [-1 => "All"] + $employeeName;
-        $employeeNameFormElement->setValueOptions($employeeName1);
-        $employeeNameFormElement->setAttributes(["id" => "employeeId", "class" => "form-control"]);
-        $employeeNameFormElement->setLabel("Employee");
-        $employeeNameFormElement->setAttribute("ng-click", "view()");
-
-        $branchFormElement = new Select();
-        $branchFormElement->setName("branch");
-        $branches = EntityHelper::getTableKVListWithSortOption($this->adapter, Branch::TABLE_NAME, Branch::BRANCH_ID, [Branch::BRANCH_NAME], [Branch::STATUS => 'E'], "BRANCH_NAME", "ASC",null,false,true);
-        $branches1 = [-1 => "All"] + $branches;
-        $branchFormElement->setValueOptions($branches1);
-        $branchFormElement->setAttributes(["id" => "branchId", "class" => "form-control"]);
-        $branchFormElement->setLabel("Branch");
-        $branchFormElement->setAttribute("ng-click", "view()");
-
-        $departmentFormElement = new Select();
-        $departmentFormElement->setName("department");
-        $departments = EntityHelper::getTableKVListWithSortOption($this->adapter, Department::TABLE_NAME, Department::DEPARTMENT_ID, [Department::DEPARTMENT_NAME], [Department::STATUS => 'E'], "DEPARTMENT_NAME", "ASC",null,false,true);
-        $departments1 = [-1 => "All"] + $departments;
-        $departmentFormElement->setValueOptions($departments1);
-        $departmentFormElement->setAttributes(["id" => "departmentId", "class" => "form-control"]);
-        $departmentFormElement->setLabel("Department");
-
-        $designationFormElement = new Select();
-        $designationFormElement->setName("designation");
-        $designations = EntityHelper::getTableKVListWithSortOption($this->adapter, Designation::TABLE_NAME, Designation::DESIGNATION_ID, [Designation::DESIGNATION_TITLE], [Designation::STATUS => 'E'], "DESIGNATION_TITLE", "ASC",null,false,true);
-        $designations1 = [-1 => "All"] + $designations;
-        $designationFormElement->setValueOptions($designations1);
-        $designationFormElement->setAttributes(["id" => "designationId", "class" => "form-control"]);
-        $designationFormElement->setLabel("Designation");
-
-        $positionFormElement = new Select();
-        $positionFormElement->setName("position");
-        $positions = EntityHelper::getTableKVListWithSortOption($this->adapter, Position::TABLE_NAME, Position::POSITION_ID, [Position::POSITION_NAME], [Position::STATUS => 'E'], "POSITION_NAME", "ASC",null,false,true);
-        $positions1 = [-1 => "All"] + $positions;
-        $positionFormElement->setValueOptions($positions1);
-        $positionFormElement->setAttributes(["id" => "positionId", "class" => "form-control"]);
-        $positionFormElement->setLabel("Position");
-
-        $serviceTypeFormElement = new Select();
-        $serviceTypeFormElement->setName("serviceType");
-        $serviceTypes = EntityHelper::getTableKVListWithSortOption($this->adapter, ServiceType::TABLE_NAME, ServiceType::SERVICE_TYPE_ID, [ServiceType::SERVICE_TYPE_NAME], [ServiceType::STATUS => 'E'], "SERVICE_TYPE_NAME", "ASC",null,false,true);
-        $serviceTypes1 = [-1 => "All"] + $serviceTypes;
-        $serviceTypeFormElement->setValueOptions($serviceTypes1);
-        $serviceTypeFormElement->setAttributes(["id" => "serviceTypeId", "class" => "form-control"]);
-        $serviceTypeFormElement->setLabel("Service Type");
-
         $trainingFormElement = new Select();
         $trainingFormElement->setName("training");
         $trainings = EntityHelper::getTableKVListWithSortOption($this->adapter, Training::TABLE_NAME, Training::TRAINING_ID, [Training::TRAINING_NAME], [Training::STATUS => 'E'], "TRAINING_NAME", "ASC",null,false,true);
@@ -194,12 +81,7 @@ class TrainingAssignController extends AbstractActionController {
 
         return Helper::addFlashMessagesToArray($this, [
                     'list' => 'list',
-                    'employees' => $employeeNameFormElement,
-                    'branches' => $branchFormElement,
-                    'departments' => $departmentFormElement,
-                    'positions' => $positionFormElement,
-                    'designations' => $designationFormElement,
-                    'serviceTypes' => $serviceTypeFormElement,
+                    'searchValues'=> EntityHelper::getSearchData($this->adapter),
                     'trainings' => $trainingFormElement
         ]);
     }

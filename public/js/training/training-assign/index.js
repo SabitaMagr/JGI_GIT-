@@ -36,6 +36,7 @@ angular.module('hris', [])
             $scope.view = function () {
                 $scope.all = false;
                 $scope.assignShowHide = false;
+                var companyId = angular.element(document.getElementById('companyId')).val();
                 var branchId = angular.element(document.getElementById('branchId')).val();
                 var departmentId = angular.element(document.getElementById('departmentId')).val();
                 var designationId = angular.element(document.getElementById('designationId')).val();
@@ -53,7 +54,8 @@ angular.module('hris', [])
                         employeeId: employeeId,
                         positionId: positionId,
                         serviceTypeId: serviceTypeId,
-                        trainingId:trainingId
+                        trainingId:trainingId,
+                        companyId:companyId,
                     }
                 }).then(function (success) {
                     App.unblockUI("#hris-page-content");
@@ -134,6 +136,7 @@ angular.module('hris', [])
             }
             
             $scope.viewTrainingAssignList = function () {
+                var companyId = angular.element(document.getElementById('companyId')).val();
                 var branchId = angular.element(document.getElementById('branchId')).val();
                 var departmentId = angular.element(document.getElementById('departmentId')).val();
                 var designationId = angular.element(document.getElementById('designationId')).val();
@@ -153,6 +156,7 @@ angular.module('hris', [])
                         positionId: positionId,
                         serviceTypeId: serviceTypeId,
                         trainingId:trainingId,
+                        companyId:companyId,
                         serviceEventTypeId:serviceEventTypeId
                     }
                 }).then(function (success) {

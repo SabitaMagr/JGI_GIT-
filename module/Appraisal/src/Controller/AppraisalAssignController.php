@@ -30,15 +30,6 @@ class AppraisalAssignController extends AbstractActionController{
     }
     
     public function indexAction() {
-        $employeeNameFormElement = new Select();
-        $employeeNameFormElement->setName("branch");
-        $employeeName = EntityHelper::getTableKVListWithSortOption($this->adapter, "HRIS_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => "E", "RETIRED_FLAG" => "N"], "FIRST_NAME", "ASC", " ",FALSE,TRUE);
-        $employeeName1 = [-1 => "All"] + $employeeName;
-        $employeeNameFormElement->setValueOptions($employeeName1);
-        $employeeNameFormElement->setAttributes(["id" => "employeeId", "class" => "form-control"]);
-        $employeeNameFormElement->setLabel("Employee");
-        $employeeNameFormElement->setAttribute("ng-click", "view()");
-
         $branchFormElement = new Select();
         $branchFormElement->setName("branch");
         $branches = EntityHelper::getTableKVListWithSortOption($this->adapter, Branch::TABLE_NAME, Branch::BRANCH_ID, [Branch::BRANCH_NAME], [Branch::STATUS => 'E'], "BRANCH_NAME", "ASC",NULL,FALSE,TRUE);
@@ -94,11 +85,11 @@ class AppraisalAssignController extends AbstractActionController{
         }
         
         return Helper::addFlashMessagesToArray($this, [
-            'employees'=>$employeeNameFormElement,
             'branches'=>$branchFormElement,
             'departments'=>$departmentFormElement,
             'designations'=>$designationFormElement,
-            'appraisals'=>$appraisalFormElement            
+            'appraisals'=>$appraisalFormElement,
+            'searchValues' => EntityHelper::getSearchData($this->adapter)            
         ]);
     }
     
@@ -108,10 +99,13 @@ class AppraisalAssignController extends AbstractActionController{
         $designationId = $data['designationId'];
         $employeeId = $data['employeeId'];
         $appraisalId = $data['appraisalId'];
+        $companyId = $data['companyId'];
+        $serviceTypeId = $data['serviceTypeId'];
+        $positionId = $data['positionId'];
 
         
         $employeeRepo = new EmployeeRepository($this->adapter);
-        $employeeResult = $employeeRepo->filterRecords($employeeId, $branchId, $departmentId, $designationId, -1, -1, -1, 1);
+        $employeeResult = $employeeRepo->filterRecords($employeeId, $branchId, $departmentId, $designationId, $positionId, $serviceTypeId, -1, 1,$companyId);
 
         $employeeList = [];
         foreach ($employeeResult as $employeeRow) {

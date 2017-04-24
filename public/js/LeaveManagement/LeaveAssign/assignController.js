@@ -63,6 +63,8 @@ angular.module('hris', ['ui.bootstrap'])
                 var leaveList = document.querySelector('#leaveId');
                 $scope.leaveName = leaveList.options[leaveList.selectedIndex].text;
                 console.log($scope.leaveName);
+                var companyId = angular.element(document.getElementById('companyId')).val();
+                var positionId = angular.element(document.getElementById('positionId')).val();
                 var branchId = angular.element(document.getElementById('branchId')).val();
                 var departmentId = angular.element(document.getElementById('departmentId')).val();
                 var genderId = angular.element(document.getElementById('genderId')).val();
@@ -80,7 +82,9 @@ angular.module('hris', ['ui.bootstrap'])
                         genderId: genderId,
                         designationId: designationId,
                         serviceTypeId: serviceTypeId,
-                        employeeId:employeeId
+                        employeeId:employeeId,
+                        companyId:companyId,
+                        positionId:positionId
                     }
                 }).then(function (success) {
                     App.unblockUI("#hris-page-content");

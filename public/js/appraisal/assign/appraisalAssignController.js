@@ -16,6 +16,9 @@ angular.module('hris', ['ui.bootstrap'])
             $scope.view = function () {
                 $scope.all = false;
                 $scope.assignShowHide = false;
+                var companyId = angular.element(document.getElementById('companyId')).val();
+                var serviceTypeId = angular.element(document.getElementById('serviceTypeId')).val();
+                var positionId = angular.element(document.getElementById('positionId')).val();
                 var branchId = angular.element(document.getElementById('branchId')).val();
                 var departmentId = angular.element(document.getElementById('departmentId')).val();
                 var designationId = angular.element(document.getElementById('designationId')).val();
@@ -30,7 +33,10 @@ angular.module('hris', ['ui.bootstrap'])
                         departmentId: departmentId,
                         designationId: designationId,
                         employeeId: employeeId,
-                        appraisalId:appraisalId
+                        appraisalId:appraisalId,
+                        companyId:companyId,
+                        serviceTypeId:serviceTypeId,
+                        positionId:positionId
                     }
                 }).then(function (success) {
                     App.unblockUI("#hris-page-content");

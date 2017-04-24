@@ -110,7 +110,7 @@ class TrainingAssignRepository implements RepositoryInterface {
         return $result;
     }
 
-    public function filterRecords($employeeId, $branchId, $departmentId, $designationId, $positionId, $serviceTypeId, $serviceEventTypeId, $trainingId) {
+    public function filterRecords($employeeId, $branchId, $departmentId, $designationId, $positionId, $serviceTypeId, $serviceEventTypeId, $trainingId,$companyId=null) {
         $sql = new Sql($this->adapter);
         $select = $sql->select();
         $select->columns([
@@ -144,6 +144,11 @@ class TrainingAssignRepository implements RepositoryInterface {
         if ($employeeId != -1) {
             $select->where([
                 "E.EMPLOYEE_ID=" . $employeeId
+            ]);
+        }
+        if ($companyId!=null && $companyId != -1) {
+            $select->where([
+                "E.COMPANY_ID=" . $companyId
             ]);
         }
         if ($branchId != -1) {
