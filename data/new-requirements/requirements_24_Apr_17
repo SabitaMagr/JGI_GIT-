@@ -1,14 +1,14 @@
-1. Report Menu name change
+1. Report Menu name change | DONE
     Name must be as follows:
         Department Summary Analysis
         Department/Employee Analysis
         Employee Monthly Analysis
         Employee Daywise Summary
 
-2. Login Process change
+2. Login Process change | NO NEED
     Login needs Branch and Company Select 
 
-3. Dashboard 
+3. Dashboard | NEED DISCUSSION
     Access not defined by default
 
 4. Label defined by default all department should show
@@ -17,3 +17,5 @@
 
 6. logo design 
     Logo [Company Name] [address detail..]
+
+7. Employee view not showing status information

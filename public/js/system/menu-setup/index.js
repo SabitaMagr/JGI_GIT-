@@ -15,7 +15,9 @@ var UITree = function () {
         });
         var to = false;
         $('#search').keyup(function () {
-            if(to) { clearTimeout(to); }
+            if (to) {
+                clearTimeout(to);
+            }
             to = setTimeout(function () {
                 var v = $('#search').val();
                 $('#tree_3').jstree(true).search(v);
@@ -25,12 +27,15 @@ var UITree = function () {
 
     return {
         init: function () {
+            App.blockUI({target: "#hris-page-content"});
             window.app.pullDataById(document.url, {
                 action: 'menu',
             }).then(function (success) {
+                App.unblockUI("#hris-page-content");
                 console.log("success", success);
                 n(success);
             }, function (failure) {
+                App.unblockUI("#hris-page-content");
                 console.log("failure", failure);
             });
         },
@@ -39,7 +44,7 @@ var UITree = function () {
 }();
 App.isAngularJsApp() === !1 && jQuery(document).ready(function () {
     UITree.init();
-    $('.menusForm').on('hidden.bs.modal', function(){
+    $('.menusForm').on('hidden.bs.modal', function () {
         $(this).find('form')[0].reset();
     });
 });
