@@ -164,14 +164,6 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                             <?php print $this->formElementErrors()->render($noOfDays, ['class' => 'help-block error']); ?>
                         </div>
                     </div>
-
-                    <div class="form-group padding-0" id="halfDay">
-                        <?php print $this->formLabel($halfDay); ?>
-                        <div class="md-radio-inline">
-                            <?php $customRenderer($halfDay); ?>
-                        </div>
-                    </div>
-                    <?php print $this->formElementErrors()->render($halfDay, ['class' => 'help-block error']); ?>
                     <div class="form-group padding-0" id="remarks">
                         <?php print $this->formLabel($remarks); ?>
                         <?php print $this->formElement($remarks); ?>
