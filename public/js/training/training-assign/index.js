@@ -54,12 +54,12 @@ angular.module('hris', [])
                         employeeId: employeeId,
                         positionId: positionId,
                         serviceTypeId: serviceTypeId,
-                        trainingId:trainingId,
+                        trainingId:(typeof trainingId==='undefined')?0:trainingId,
                         companyId:companyId,
                     }
                 }).then(function (success) {
                     App.unblockUI("#hris-page-content");
-                    //console.log("Employee list for assign", success);
+                    console.log("Employee list for assign", success);
                     $scope.$apply(function () {
                         $scope.employeeList = success.data;
                         //console.log(success.data);
