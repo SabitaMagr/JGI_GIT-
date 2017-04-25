@@ -1596,12 +1596,14 @@ class RestfulService extends AbstractRestfulController {
     }
 
     public function pullEmployeeListForReportingRole($data) {
+        $companyId = $data['companyId'];
         $branchId = $data['branchId'];
         $departmentId = $data['departmentId'];
         $designationId = $data['designationId'];
+        $employeeId = $data['employeeId'];
 
         $repository = new EmployeeRepository($this->adapter);
-        $employeeResult = $repository->filterRecords(-1, $branchId, $departmentId, $designationId, -1, -1, -1, 1);
+        $employeeResult = $repository->filterRecords($employeeId, $branchId, $departmentId, $designationId, -1, -1, -1, 1,$companyId);
 
         $employeeList = [];
         $i = 0;
