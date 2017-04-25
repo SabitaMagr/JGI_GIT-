@@ -425,7 +425,7 @@ class RestfulService extends AbstractRestfulController {
 
     private function pullEmployeeMonthlyValue(array $data) {
         $monValDetRepo = new MonthlyValueDetailRepo($this->adapter);
-        $empListRaw = $monValDetRepo->fetchEmployees($data['branch'], $data['department'], $data['designation']);
+        $empListRaw = $monValDetRepo->fetchEmployees($data['branch'], $data['department'], $data['designation'],$data['company'],$data['employee']);
         $empListP = [];
         foreach ($empListRaw as $key => $emp) {
             $empListP[$key] = $emp;
@@ -510,7 +510,7 @@ class RestfulService extends AbstractRestfulController {
 
     private function pullEmployeeFlatValue(array $data) {
         $flatValDetRepo = new FlatValueDetailRepo($this->adapter);
-        $empListRaw = $flatValDetRepo->fetchEmployees($data['branch'], $data['department'], $data['designation']);
+        $empListRaw = $flatValDetRepo->fetchEmployees($data['branch'], $data['department'], $data['designation'],$data['company'],$data['employee']);
         $empListP = [];
         foreach ($empListRaw as $key => $emp) {
             $empListP[$key] = $emp;
