@@ -32,7 +32,7 @@ jwl-training-session-1_25-Apr-17  issues | changes
 
 password forget implemetation flow
     on forget password link click=>
-    page with send code to username, code input field and submit button. => 
+    page with send code to username, code input field and submit button. =>
     on submit success, new password and retype new password with change button => 
     on change success, success message on login page should be displayed.
 

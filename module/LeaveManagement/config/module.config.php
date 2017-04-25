@@ -11,7 +11,7 @@ return [
             'leavesetup' => [
                 'type' => Segment::class,
                 'options' => [
-                    'route' => '/leave/leavesetup[/:action[/:id]]',
+                    'route' => '/leave-setup[/:action[/:id]]',
                     'defaults' => [
                         'controller' => Controller\LeaveSetup::class,
                         'action' => 'index'
@@ -21,7 +21,7 @@ return [
             'leaveassign' => [
                 'type' => Segment::class,
                 'options' => [
-                    'route' => '/leave/leaveassign[/:action[/:eid[/:id]]]',
+                    'route' => '/leave-assign[/:action[/:eid[/:id]]]',
                     'defaults' => [
                         'controller' => Controller\leaveAssign::class,
                         'action' => 'index'
@@ -31,7 +31,7 @@ return [
             'leaveapply' => [
                 'type' => Segment::class,
                 'options' => [
-                    'route' => '/leave/leaveapply[/:action[/:id]]',
+                    'route' => '/leave-apply[/:action[/:id]]',
                     'defaults' => [
                         'controller' => Controller\LeaveApply::class,
                         'action' => 'index'
@@ -41,7 +41,7 @@ return [
             'leavestatus' => [
                 'type' => Segment::class,
                 'options' => [
-                    'route' => '/leave/leavestatus[/:action[/:id]]',
+                    'route' => '/leave-status[/:action[/:id]]',
                     'defaults' => [
                         'controller' => Controller\LeaveStatus::class,
                         'action' => 'index'
@@ -51,7 +51,7 @@ return [
             'leavebalance' => [
                 'type' => Segment::class,
                 'options' => [
-                    'route' => '/leave/leavebalance[/:action[/:eid[/:id]]]',
+                    'route' => '/leave-balance[/:action[/:eid[/:id]]]',
                     'defaults' => [
                         'controller' => Controller\LeaveBalance::class,
                         'action' => 'index'
