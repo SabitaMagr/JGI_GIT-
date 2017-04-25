@@ -69,7 +69,7 @@
             document.settingUrl = '<?= $this->url("user-setting", ["action" => "index"]) ?>';
             document.updateSettingUrl = '<?= $this->url("user-setting", ["action" => "update"]) ?>';
         </script>
-        <div class="page-wrapper">
+        <div class="page-wrapper" id="hris-page-content">
             <?php
             print $this->partial('partials/header.phtml');
             ?>
@@ -80,7 +80,7 @@
                 echo $this->navigation('navigation-menu')->menu()->render();
                 ?>
                 <div class="page-content-wrapper">
-                    <div id="hris-page-content" class="page-content">
+                    <div  class="page-content">
                         <?php
                         print $this->content;
                         ?>
