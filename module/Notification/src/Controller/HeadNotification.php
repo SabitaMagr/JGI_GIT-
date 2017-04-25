@@ -42,7 +42,7 @@ use SelfService\Repository\TrainingRequestRepository;
 use Notification\Model\WorkOnDayoffNotificationModel;
 use Notification\Model\WorkOnHolidayNotificationModel;
 use HolidayManagement\Repository\HolidayRepository;
-use Setup\Repository\LeaveMasterRepository;
+use LeaveManagement\Repository\LeaveMasterRepository;
 use Notification\Model\TrainingReqNotificationModel;
 use SelfService\Repository\LeaveSubstituteRepository;
 use SelfService\Repository\TravelSubstituteRepository;

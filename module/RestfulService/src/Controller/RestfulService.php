@@ -2469,7 +2469,7 @@ class RestfulService extends AbstractRestfulController {
         $designationId = $data['designationId'];
         $positionId = $data['positionId'];
         $serviceTypeId = $data['serviceTypeId'];
-        $trainingId = $data['trainingId'];
+        $trainingId = (int)$data['trainingId'];
         $companyId = $data['companyId'];
         $employeeRepository = new EmployeeRepository($this->adapter);
         $trainingAssignRepo = new TrainingAssignRepository($this->adapter);
@@ -2479,7 +2479,11 @@ class RestfulService extends AbstractRestfulController {
         $employeeList = [];
         foreach ($employeeResult as $employeeRow) {
             $employeeId = $employeeRow['EMPLOYEE_ID'];
-            $trainingAssignList = $trainingAssignRepo->getDetailByEmployeeID($employeeId, $trainingId);
+            if($trainingId!=0){
+                $trainingAssignList = $trainingAssignRepo->getDetailByEmployeeID($employeeId, $trainingId);
+            }else{
+                $trainingAssignList=null;
+            }
             if ($trainingAssignList != null) {
                 $employeeRow['TRAINING_NAME'] = $trainingAssignList['TRAINING_NAME'];
                 $employeeRow['TRAINING_ID'] = $trainingAssignList['TRAINING_ID'];

@@ -266,22 +266,6 @@ print $this->form()->openTag($form);
                         </div>
                     </div>
 
-
-
-
-
-
-                    <?php if ($allowHalfDay == 'Y') { ?>
-                        <div class="form-group padding-0" id="halfDay">
-                            <?php print $this->formLabel($halfDay); ?>
-                            <div class="md-radio-inline">
-                                <?php $customRenderer($halfDay); ?>
-                            </div>
-                        </div>
-                        <?php print $this->formElementErrors()->render($halfDay, ['class' => 'help-block error']); ?>
-                    <?php } ?>
-
-
                     <?php
                     if ($subEmployeeId != null) {
                         $disabled = ($subApprovedFlag != null) ? "disabled" : "";
