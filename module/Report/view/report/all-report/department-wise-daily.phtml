@@ -37,25 +37,25 @@ $this->headScript()->appendFile($this->basePath('js/Report/AllReport/reportthree
 <div class="portlet light bg-inverse">
     <div class="portlet-title">
         <div class="caption">
-            <i class="icon-paper-plane font-green-haze"></i>
-            <span class="caption-subject bold font-green-haze uppercase"> Filter Employees</span>
+            <div class="indicator">
+                <ul>
+                    <li>
+                        <div class="indicator-box indicator-color-present"></div> 
+                        <span>Present</span>
+                    </li>
+                    <li>
+                        <div class="indicator-box indicator-color-Absent"> </div>   
+                        <span>Absent</span>
+                    </li>
+                    <li>
+                        <div class="indicator-box indicator-color-leave"> </div> 
+                        <span>leave</span>
+                    </li>
+                </ul>
+            </div>
         </div>
-        <div class="indicator tools">
-
-            <ul>
-                <li>
-                    <div class="indicator-box indicator-color-present"></div> 
-                    <span>Present</span>
-                </li>
-                <li>
-                    <div class="indicator-box indicator-color-Absent"> </div>   
-                    <span>Absent</span>
-                </li>
-                <li>
-                    <div class="indicator-box indicator-color-leave"> </div> 
-                    <span>leave</span>
-                </li>
-            </ul>
+        <div class="actions">
+            <a class="btn btn-circle btn-icon-only btn-default fullscreen" href="javascript:;" data-original-title="" title=""> </a>
         </div>
     </div>
     <div class="portlet-body">
@@ -92,7 +92,7 @@ $this->headScript()->appendFile($this->basePath('js/Report/AllReport/reportthree
         </div>
         <div class="row">
             <div class="col-sm-12">
-                <div id="reportTable">
+                <div id="reportTable" class="kendo-report">
                 </div>
             </div>
         </div>

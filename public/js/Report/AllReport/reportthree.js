@@ -7,7 +7,7 @@
             var column = {};
             for (var i in rawData) {
                 if (typeof data[rawData[i].EMPLOYEE_ID] !== 'undefined') {
-                    data[rawData[i].EMPLOYEE_ID].DAYS[rawData[i].FORMATTED_ATTENDANCE_DT] =
+                    data[rawData[i].EMPLOYEE_ID].DAYS['C' + rawData[i].DAY_COUNT] =
                             JSON.stringify({
                                 IS_ABSENT: rawData[i].IS_ABSENT,
                                 IS_PRESENT: rawData[i].IS_PRESENT,
@@ -30,7 +30,7 @@
                             IS_DAYOFF: parseFloat(rawData[i].IS_DAYOFF)
                         }
                     };
-                    data[rawData[i].EMPLOYEE_ID].DAYS[rawData[i].FORMATTED_ATTENDANCE_DT] =
+                    data[rawData[i].EMPLOYEE_ID].DAYS['C' + rawData[i].DAY_COUNT] =
                             JSON.stringify({
                                 IS_ABSENT: rawData[i].IS_ABSENT,
                                 IS_PRESENT: rawData[i].IS_PRESENT,
@@ -39,15 +39,15 @@
                             });
 
                 }
-                if (typeof column[rawData[i].FORMATTED_ATTENDANCE_DT] === 'undefined') {
-                    var temp = rawData[i].FORMATTED_ATTENDANCE_DT;
-                    column[rawData[i].FORMATTED_ATTENDANCE_DT] = {
-                        field: temp,
-                        title: "" + rawData[i].DAY_COUNT,
-                        template: '<span data="#: ' + temp + ' #" class="daily-attendance"></span>'
-                    }
-
-                }
+//                if (typeof column['C' + rawData[i].DAY_COUNT] === 'undefined') {
+//                    var temp = 'C' + rawData[i].DAY_COUNT;
+//                    column[temp] = {
+//                        field: temp,
+//                        title: "" + rawData[i].DAY_COUNT,
+//                        template: '<span data="#: ' + temp + ' #" class="daily-attendance"></span>'
+//                    }
+//
+//                }
             }
             var returnData = {rows: [], cols: []};
 
@@ -55,8 +55,13 @@
                 field: 'employee',
                 title: 'employees'
             });
-            for (var k in column) {
-                returnData.cols.push(column[k]);
+            for (var i = 1; i < 33; i++) {
+                var temp = 'C' + i;
+                returnData.cols.push({
+                    field: temp,
+                    title: "" + i,
+                    template: '<span data="#: ' + temp + ' #" class="daily-attendance"></span>'
+                });
             }
             returnData.cols.push({
                 field: 'total',
@@ -69,6 +74,11 @@
 
             for (var k in data) {
                 var row = data[k].DAYS;
+                for (var i = 1; i < 33; i++) {
+                    if (typeof row['C' + i] === 'undefined') {
+                        row['C' + i] = null;
+                    }
+                }
                 row['employee'] = data[k].FULL_NAME;
                 returnData.rows.push(row);
                 row['total'] = JSON.stringify(data[k].TOTAL);
@@ -78,28 +88,35 @@
         var displayDataInBtnGroup = function (selector) {
             $(selector).each(function (k, group) {
                 var $group = $(group);
-                var data = JSON.parse($group.attr('data'));
-                if (data.IS_PRESENT == 1) {
-                    $group.html('P');
-                    $group.parent().addClass('bg-green');
-                } else {
-                    if (data.IS_ABSENT == 1) {
-                        $group.html('A');
-                        $group.parent().addClass('bg-red1 textcolor1');
 
+                var data = $group.attr('data');
+                if (data == 'null') {
+
+                } else {
+                    data = JSON.parse(data);
+                    if (data.IS_PRESENT == 1) {
+                        $group.html('P');
+                        $group.parent().addClass('bg-green');
                     } else {
-                        if (data.ON_LEAVE == 1) {
-                            $group.html('L');
-                            $group.parent().addClass('bg-blue1 textcolor2');
+                        if (data.IS_ABSENT == 1) {
+                            $group.html('A');
+                            $group.parent().addClass('bg-red1 textcolor1');
 
                         } else {
-                            $group.html('H');
-                            $group.parent().addClass('bg-white1 textcolor3 ');
+                            if (data.ON_LEAVE == 1) {
+                                $group.html('L');
+                                $group.parent().addClass('bg-blue1 textcolor2');
+
+                            } else {
+                                $group.html('H');
+                                $group.parent().addClass('bg-white1 textcolor3 ');
+                            }
+
                         }
 
                     }
-
                 }
+
 //                $group.html((data.IS_PRESENT == 1) ? 'P' : ((data.IS_ABSENT == 1) ? 'A' : (data.ON_LEAVE == 1) ? 'L' : 'H'));
 //                $group.parent().addClass('bg-red');
             });
@@ -148,6 +165,7 @@
                 console.log('departmentWiseEmployeeMonthlyR', response);
                 var extractedDetailData = extractDetailData(response.data, departmentId);
                 console.log('extractedDetailData', extractedDetailData);
+//                $tableContainer.remove();
                 $tableContainer.kendoGrid({
                     dataSource: {
                         data: extractedDetailData.rows,

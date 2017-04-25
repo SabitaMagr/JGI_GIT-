@@ -90,7 +90,6 @@ SELECT
   E.LAST_NAME                                                                    AS LAST_NAME,
   CONCAT(CONCAT(CONCAT(E.FIRST_NAME,' '),CONCAT(E.MIDDLE_NAME, '')),E.LAST_NAME) AS FULL_NAME,
   AD.ATTENDANCE_DT                                                               AS ATTENDANCE_DT,
-  TO_CHAR(AD.ATTENDANCE_DT,'MONDDYYYY')                                          AS FORMATTED_ATTENDANCE_DT,
   (
   CASE 
     WHEN AD.DAYOFF_FLAG ='N'

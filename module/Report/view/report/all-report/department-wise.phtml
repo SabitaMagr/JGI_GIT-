@@ -33,24 +33,22 @@ $this->headScript()->appendFile($this->basePath('js/Report/AllReport/reporttwo.j
 <div class="portlet light bg-inverse">
     <div class="portlet-title">
         <div class="caption">
-            <i class="icon-paper-plane font-green-haze"></i>
-            <span class="caption-subject bold font-green-haze uppercase"> Filter Employees</span>
-        </div>
-        <div class="tools indicator">
-            <ul>
-                <li>
-                    <div class="indicator-box indicator-color-present"></div> 
-                    <span>Present</span>
-                </li>
-                <li>
-                    <div class="indicator-box indicator-color-Absent"> </div>   
-                    <span>Absent</span>
-                </li>
-                <li>
-                    <div class="indicator-box indicator-color-leave"> </div> 
-                    <span>leave</span>
-                </li>
-            </ul>
+            <div class="indicator">
+                <ul>
+                    <li>
+                        <div class="indicator-box indicator-color-present"></div> 
+                        <span>Present</span>
+                    </li>
+                    <li>
+                        <div class="indicator-box indicator-color-Absent"> </div>   
+                        <span>Absent</span>
+                    </li>
+                    <li>
+                        <div class="indicator-box indicator-color-leave"> </div> 
+                        <span>leave</span>
+                    </li>
+                </ul>
+            </div>
         </div>
         <div class="actions">
             <a class="btn btn-circle btn-icon-only btn-default fullscreen" href="javascript:;" data-original-title="" title=""> </a>
@@ -81,7 +79,7 @@ $this->headScript()->appendFile($this->basePath('js/Report/AllReport/reporttwo.j
         </div>
         <div class="row margin-top-10">
             <div class="col-sm-12">
-                <div id="departmentMonthReport">
+                <div id="departmentMonthReport" >
                 </div>
             </div>
         </div>

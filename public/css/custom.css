@@ -1809,12 +1809,12 @@ textarea#form-remarks,#remarks,.form-reason  {
 }
 .company-logo-box address
 {
-font-size:8px !important;
+    font-size:8px !important;
 }
 .kendo-report th
 {
     font-size:11px !important;
-        padding: 3px !important;
+    padding: 3px !important;
 }
 
 /*Large desktops and laptops*/
@@ -2040,4 +2040,9 @@ font-size:8px !important;
     {
         padding-left:0px;
     }
+}
+
+
+.portlet.portlet-fullscreen{
+    z-index: 1000 !important;
 }

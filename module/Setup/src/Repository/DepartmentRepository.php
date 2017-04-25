@@ -45,7 +45,11 @@ class DepartmentRepository implements RepositoryInterface {
                 ->join(['B' => Branch::TABLE_NAME], "D." . Department::BRANCH_ID . "=B." . Branch::BRANCH_ID, [Branch::BRANCH_NAME => new Expression('INITCAP(B.' . Branch::BRANCH_NAME . ')')], 'left')
                 ->join(['CP' => Company::TABLE_NAME], "CP." . Company::COMPANY_ID . "=D." . Department::DEPARTMENT_ID, [Company::COMPANY_NAME => new Expression('INITCAP(CP.COMPANY_NAME)')], 'left');
         $select->where(["D.STATUS='E'"]);
-        $select->order("D." . Department::DEPARTMENT_NAME . " ASC");
+        $select->order([
+            "D." . Department::DEPARTMENT_NAME => Select::ORDER_ASCENDING,
+            'CP.' . Company::COMPANY_NAME => Select::ORDER_ASCENDING,
+            'B.' . Branch::BRANCH_NAME => Select::ORDER_ASCENDING
+        ]);
         $statement = $sql->prepareStatementForSqlObject($select);
         $result = $statement->execute();
         return $result;
