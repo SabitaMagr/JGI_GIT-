@@ -94,6 +94,7 @@ angular.module('hris', ['ui.bootstrap'])
                         $scope.cancel = function () {
                             $uibModalInstance.dismiss('cancel');
                         };
+                        comBranchDeptDesignSearch("recomCompanyId","recomBranchId","recomDepartmentId","recomDesingationId","recomEmployeeId");
                         $scope.filterForRole = function () {
                             var branchId = angular.element(document.getElementById('branchId')).val();
                             var departmentId = angular.element(document.getElementById('departmentId')).val();

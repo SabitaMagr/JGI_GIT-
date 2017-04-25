@@ -7,7 +7,8 @@ $this->headScript()->appendFile($this->basePath('assets/global/plugins/ladda/lad
 $this->headScript()->appendFile($this->basePath('js/angular.min.js'))
         ->appendFile($this->basePath('js/jobHistorySearch.js'))
         ->appendFile($this->basePath('assets/global/plugins/bootstrap-master/ui-bootstrap-tpls-2.2.0.min.js'));
-$this->headScript()->appendFile($this->basePath('js/setup/recommend-approve/groupAssignController.js'));
+$this->headScript()->appendFile($this->basePath('js/setup/recommend-approve/comBranchDeptDesignSearch.js'))
+        ->appendFile($this->basePath('js/setup/recommend-approve/groupAssignController.js'));
 ?>
 
 <script>
@@ -178,6 +179,7 @@ $this->headScript()->appendFile($this->basePath('js/setup/recommend-approve/grou
 
         </div>
     </div>
+    
 
     <script type="text/ng-template" id="myModalContent.html">
         <div class="modal-header"> 
@@ -199,6 +201,26 @@ $this->headScript()->appendFile($this->basePath('js/setup/recommend-approve/grou
         <div class="col-sm-4">
         <?php print $this->formLabel($designations); ?>
         <?php print $this->formElement($designations); ?>
+        </div>
+        <div class="col-sm-2">
+            <select class="form-control" name="company" id="recomCompanyId">
+            </select>
+        </div>
+        <div class="col-sm-2">
+            <select class="form-control" name="branchId" id="recomBranchId">
+            </select>
+        </div>
+        <div class="col-sm-2">
+            <select class="form-control" name="department" id="recomDepartmentId">
+            </select>
+        </div>
+        <div class="col-sm-2">
+            <select class="form-control" name="designation" id="recomDesignationId">
+            </select>
+        </div>
+        <div class="col-sm-2">
+            <select class="form-control" name="employee" id="recomEmployeeId">
+            </select>
         </div>
         </div>
         <div class="row">                   
