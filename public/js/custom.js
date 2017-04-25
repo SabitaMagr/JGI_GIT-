@@ -1,5 +1,9 @@
-window.app = (function ($, toastr) {
+window.app = (function ($, toastr, App) {
     "use strict";
+    $(document).ready(function () {
+        App.setAssetsPath(document.basePath + '/assets/');
+    });
+
     var format = "dd-M-yyyy";
     window.toastr.options = {"positionClass": "toast-bottom-right"};
 
@@ -713,5 +717,5 @@ window.app = (function ($, toastr) {
         getServerDate: getServerDate,
         setLoadingOnSubmit: setLoadingOnSubmit
     };
-})(window.jQuery, window.toastr);
+})(window.jQuery, window.toastr, window.App);
 
