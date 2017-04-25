@@ -85,8 +85,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                     <select class="form-control" name="employee" id="employeeId">
                     </select>
                 </div>
-                <div class="col-sm-2 col-lg-offset-4">
-                    <label height="45"></label>
+                <div class="col-sm-2 col-sm-offset-4">
                     <button ng-click="view()" id="viewEmployees" class="btn btn-default btn-sm pull-right">
                         Search
                         <i class="fa fa-search"></i>
@@ -131,6 +130,9 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
         </td>
         <td>
         #: (MOBILE_NO == null) ? '-' : MOBILE_NO #
+        </td>
+        <td>
+        #: (BIRTH_DATE == null) ? '-' : BIRTH_DATE #
         </td>
         <td>
         #: (BRANCH_NAME == null) ? '-' : BRANCH_NAME #

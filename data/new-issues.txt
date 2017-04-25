@@ -14,13 +14,13 @@ payroll features
 
 jwl-training-session-1_25-Apr-17  issues | changes
 1. service event types menu should be shown.
-2. Label Change in Training 
-    Company Personal => Personal
+2. Label Change in Training [done]
+    Company Personal => Personal 
 3. Phone no format need to be updated.
 4. Dropdown requires a default option.
 5. 3 days late should deduct 1 leave as per policy in JGI.
 6. 3 grace time leave should deduct 1 leave as per policy in JGI.
-7. Date of Birth should be listed in Employee list.
+7. Date of Birth should be listed in Employee list.[done]
 8. concept of profile copy.
 9. Data update on JGI database | only two branches should be listed i.e. Head Office, Factory
 10. Company should also be displayed in designation list.

@@ -6,7 +6,7 @@
 })(window.jQuery, window.app);
 
 angular.module('hris', [])
-        .controller('trainingAssignController', function ($scope, $http,$window) {
+        .controller('trainingAssignController', function ($scope, $http, $window) {
             $('select').select2();
             $scope.employeeList = [];
             $scope.all = false;
@@ -54,15 +54,14 @@ angular.module('hris', [])
                         employeeId: employeeId,
                         positionId: positionId,
                         serviceTypeId: serviceTypeId,
-                        trainingId:(typeof trainingId==='undefined')?0:trainingId,
-                        companyId:companyId,
+                        trainingId: (typeof trainingId === 'undefined' || trainingId === null || trainingId === '') ? -1 : trainingId,
+                        companyId: companyId,
                     }
                 }).then(function (success) {
                     App.unblockUI("#hris-page-content");
                     console.log("Employee list for assign", success);
                     $scope.$apply(function () {
                         $scope.employeeList = success.data;
-                        //console.log(success.data);
                         for (var i = 0; i < $scope.employeeList.length; i++) {
                             $scope.employeeList[i].checked = false;
                         }
@@ -74,13 +73,16 @@ angular.module('hris', [])
                 });
             };
             $scope.assign = function () {
+                var trainingId = angular.element(document.getElementById('trainingId')).val();
+                if (typeof trainingId === 'undefined' || trainingId === null || trainingId == '' || trainingId == -1) {
+                    window.toastr.error("No Training Selected.", "Alert");
+                    return;
+                }
                 l.start();
                 l.setProgress(0.5);
-                var trainingId = angular.element(document.getElementById('trainingId')).val();
 
                 var promises = [];
                 for (var index in $scope.employeeList) {
-                   // console.log($scope.employeeList[index]);
                     if ($scope.employeeList[index].checked) {
                         promises.push(window.app.pullDataById(document.url, {
                             action: 'assignEmployeeTraining',
@@ -93,23 +95,24 @@ angular.module('hris', [])
                     }
                 }
                 Promise.all(promises).then(function (success) {
-                    console.log(success);
                     l.stop();
                     $scope.$apply(function () {
                         $scope.view();
                     });
                     window.toastr.success("Training assigned successfully!", "Notification");
+                }, function (error) {
+                    console.log(error);
                 });
             };
-            
-            $scope.cancel = function(){
+
+            $scope.cancel = function () {
                 l.start();
                 l.setProgress(0.5);
                 var trainingId = angular.element(document.getElementById('trainingId')).val();
 
                 var promises = [];
                 for (var index in $scope.employeeList) {
-                   // console.log($scope.employeeList[index]);
+                    // console.log($scope.employeeList[index]);
                     if ($scope.employeeList[index].checked) {
                         promises.push(window.app.pullDataById(document.url, {
                             action: 'cancelEmployeeTraining',
@@ -130,11 +133,11 @@ angular.module('hris', [])
                 });
             };
             var employeeIdFromParam = window.location.href.substr(window.location.href.lastIndexOf('/') + 1);
-            if(parseInt(employeeIdFromParam)>0){
+            if (parseInt(employeeIdFromParam) > 0) {
                 angular.element(document.getElementById('employeeId')).val(employeeIdFromParam).change();
                 $scope.view();
             }
-            
+
             $scope.viewTrainingAssignList = function () {
                 var companyId = angular.element(document.getElementById('companyId')).val();
                 var branchId = angular.element(document.getElementById('branchId')).val();
@@ -155,9 +158,9 @@ angular.module('hris', [])
                         employeeId: employeeId,
                         positionId: positionId,
                         serviceTypeId: serviceTypeId,
-                        trainingId:trainingId,
-                        companyId:companyId,
-                        serviceEventTypeId:serviceEventTypeId
+                        trainingId: trainingId,
+                        companyId: companyId,
+                        serviceEventTypeId: serviceEventTypeId
                     }
                 }).then(function (success) {
                     App.unblockUI("#hris-page-content1");
