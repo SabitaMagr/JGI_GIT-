@@ -99,15 +99,19 @@ angular.module('hris', ['ui.bootstrap'])
                             $uibModalInstance.dismiss('cancel');
                         };
                         $scope.filterForRole = function () {
-                            var branchId = angular.element(document.getElementById('branchId')).val();
-                            var departmentId = angular.element(document.getElementById('departmentId')).val();
-                            var designationId = angular.element(document.getElementById('designationId')).val();
+                            var companyId = angular.element(document.getElementById('recomCompanyId')).val();
+                            var branchId = angular.element(document.getElementById('recomBranchId')).val();
+                            var departmentId = angular.element(document.getElementById('recomDepartmentId')).val();
+                            var designationId = angular.element(document.getElementById('recomDesignationId')).val();
+                            var employeeId = angular.element(document.getElementById('recomEmployeeId')).val();
                             window.app.pullDataById(document.url, {
                                 action: 'pullEmployeeListForReportingRole',
                                 data: {
                                     branchId: branchId,
                                     departmentId: departmentId,
-                                    designationId: designationId
+                                    designationId: designationId,
+                                    companyId:companyId,
+                                    employeeId:employeeId
                                 }
                             }).then(function (success) {
                                 console.log("Employee list for success", success.data);
@@ -139,6 +143,7 @@ angular.module('hris', ['ui.bootstrap'])
                 });
                 modalInstance.rendered.then(function () {
                     $("select").select2();
+                    comBranchDeptDesignSearch("recomCompanyId", "recomBranchId", "recomDepartmentId", "recomDesignationId", "recomEmployeeId");
                 });
             };
             $scope.checkReportingHierarchy = function () {

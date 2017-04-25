@@ -26,7 +26,7 @@ angular.module('hris', ["ui.multiselect"])
             $scope.tableDataCopy;
 
             $scope.showTable = false;
-
+            comBranchDeptDesignSearch("company","branch","department","designation","employee")
             $scope.view = function () {
                 if ($scope.selectedMonthlyValues.length === 0) {
                     window.toastr.info("No Monthly Values selected!", "Notification");
@@ -38,16 +38,25 @@ angular.module('hris', ["ui.multiselect"])
                 for (var i = 0; i < $scope.selectedMonthlyValues.length; i++) {
                     $scope.monthlyValuekeys.push($scope.selectedMonthlyValues[i].id);
                 }
+                var company = angular.element(document.getElementById('company')).val();
+                var branch = angular.element(document.getElementById('branch')).val();
+                var department = angular.element(document.getElementById('department')).val();
+                var designation = angular.element(document.getElementById('designation')).val();
+                var employee = angular.element(document.getElementById('employee')).val();
+                App.blockUI({target: "#hris-page-content"});
                 window.app.pullDataById(document.url, {
                     action: 'pullEmployeeMonthlyValue',
                     id: {
-                        branch: (($scope.branch === null) || (typeof $scope.branch === 'undefined')) ? -1 : $scope.branch,
-                        department: (($scope.department === null) || (typeof $scope.department === 'undefined')) ? -1 : $scope.department,
-                        designation: (($scope.designation === null) || (typeof $scope.designation === 'undefined')) ? -1 : $scope.designation,
+                        branch: ((branch === null) || (typeof branch === 'undefined')) ? -1 : branch,
+                        department: ((department === null) || (typeof department === 'undefined')) ? -1 : department,
+                        designation: ((designation === null) || (typeof designation === 'undefined')) ? -1 : designation,
+                        company: ((company === null) || (typeof company === 'undefined')) ? -1 : company,
+                        employee: ((employee === null) || (typeof employee === 'undefined')) ? -1 : employee,
                         monthlyValues: $scope.monthlyValuekeys
                     }
                 }).then(function (success) {
                     console.log(success);
+                    App.unblockUI("#hris-page-content");
                     $scope.$apply(function () {
                         tableData = angular.copy(success.data);
                         $scope.tableDataCopy = success.data;
@@ -55,6 +64,7 @@ angular.module('hris', ["ui.multiselect"])
                     });
 
                 }, function (failure) {
+                    App.unblockUI("#hris-page-content");
                     console.log("failure", failure);
 
                 });

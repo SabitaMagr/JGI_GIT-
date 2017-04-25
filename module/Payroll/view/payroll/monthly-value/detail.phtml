@@ -5,7 +5,9 @@ $this->headLink()
 
 $this->headScript()->appendFile($this->basePath('js/angular.min.js'));
 $this->headScript()->appendFile($this->basePath('js/ng-bootstrap-multiselect.js'));
-$this->headScript()->appendFile($this->basePath('js/Payroll/MonthlyValue/detailController.js'));
+$this->headScript()
+        ->appendFile($this->basePath('js/setup/recommend-approve/comBranchDeptDesignSearch.js'))
+        ->appendFile($this->basePath('js/Payroll/MonthlyValue/detailController.js'));
 $this->headScript()->appendFile($this->basePath('assets/global/plugins/bootstrap-multiselect/js/bootstrap-multiselect.js'));
 ?>
 
@@ -18,7 +20,9 @@ echo json_encode($menu);
     document.branches =<?= json_encode($branches) ?>;
     document.departments =<?= json_encode($departments) ?>;
     document.designations =<?= json_encode($designations) ?>;
-    document.monthlyValues =<?= json_encode($monthlyValues) ?>;</script>
+    document.monthlyValues =<?= json_encode($monthlyValues) ?>;
+    document.searchValues =<?php echo json_encode($searchValues); ?>;
+</script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\monthlyValue')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
@@ -28,72 +32,104 @@ echo json_encode($menu);
         <div class="col-sm-12 ">
             <div class="portlet light bg-inverse">
                 <div class="portlet-title">
-                    <table class="table">
+                    <table class="table" style="margin-bottom:0px!important;">
                         <thead>
                             <tr>
                                 <th>
-                                    Flat Values
+                                    <label>
+                                        Company
+                                    </label>
+
                                 </th>
                                 <th>
-                                    Branch
+                                    <label>
+                                        Branch
+                                    </label>
+
                                 </th>
                                 <th>
-                                    Department
+                                    <label>
+                                        Department
+                                    </label>
+
                                 </th>
                                 <th>
-                                    Designation
+                                    <label>
+                                        Designation
+                                    </label>
                                 </th>
                                 <th>
-                                    Search
+                                    <label>
+                                        Employee
+                                    </label>
+
                                 </th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
-                                <td class="col-md-3">
-                                    <div>
-                                        <multiselect
-                                            ng-change="selectedMonthlyValuesChange()()"
-                                            ng-model="selectedMonthlyValues"
-                                            options="monthlyValue.text for monthlyValue in monthlyValues"    
-                                            data-multiple="true"                 
-                                            data-compare-by="id"                 
-                                            scroll-after-rows="5"                
-                                            filter-after-rows="5"      
-                                            max-width="100"                      
-                                            tabindex="-1">                     
-                                        </multiselect>
-                                        <button ng-click="selectAllFlagFN()" class="btn btn-default btn-sm fa fa-address-book" >
-                                        </button>
-                                    </div>
-
-                                </td>
                                 <td class="col-md-2">
-                                    <select class="form-control" ng-model="branch" ng-options="key as branch for (key, branch) in branches">
-                                        <option value="">All</option>
+                                    <select id="company" class="form-control">
                                     </select>
 
                                 </td>
                                 <td class="col-md-2">
-                                    <select class="form-control" ng-model="department"
-                                            ng-options="key as department for (key, department) in departments">
-                                        <option value="">All</option>
+                                    <select id="branch" class="form-control">
                                     </select>
 
                                 </td>
                                 <td class="col-md-2">
-                                    <select class="form-control" ng-model="designation"
-                                            ng-options="key as designation for (key, designation) in designations">
-                                        <option value="">All</option>
+                                    <select id="department" class="form-control">
+                                    </select>
+
+                                </td>
+                                <td class="col-md-2">
+                                    <select id="designation" class="form-control">
                                     </select>
                                 </td>
-                                <td class="col-md-3">
-                                    <button ng-click="view()" class="btn btn-default btn-info btn-sm ">
-                                        View
-                                        <i class="fa fa-search"></i>
-                                    </button>
+                                <td class="col-md-2">
+                                    <select id="employee" class="form-control">
+                                    </select>
                                 </td>
                             </tr>
+                        </tbody>
+
+                    </table>
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th>
+                                <label>Flat Value</label></th>
+                            <th>
+                                <label>Filter</label></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td class="col-sm-11">
+                                <div>
+                                    <multiselect
+                                        ng-change="selectedMonthlyValuesChange()()"
+                                        ng-model="selectedMonthlyValues"
+                                        options="monthlyValue.text for monthlyValue in monthlyValues"    
+                                        data-multiple="true"                 
+                                        data-compare-by="id"                 
+                                        scroll-after-rows="5"                
+                                        filter-after-rows="5"      
+                                        max-width="100"                      
+                                        tabindex="-1">                     
+                                    </multiselect>
+                                    <button ng-click="selectAllFlagFN()" class="btn btn-default btn-sm fa fa-address-book" >
+                                    </button>
+                                </div>
+                            </td>
+                            <td class="col-sm-1">
+                                <button ng-click="view()" class="btn btn-default btn-info btn-sm ">
+                                    View
+                                    <i class="fa fa-search"></i>
+                                </button>
+                            </td>
+                        </tr>
                         </tbody>
                     </table>
                 </div>

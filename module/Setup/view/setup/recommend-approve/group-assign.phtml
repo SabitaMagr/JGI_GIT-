@@ -7,7 +7,9 @@ $this->headScript()->appendFile($this->basePath('assets/global/plugins/ladda/lad
 $this->headScript()->appendFile($this->basePath('js/angular.min.js'))
         ->appendFile($this->basePath('js/jobHistorySearch.js'))
         ->appendFile($this->basePath('assets/global/plugins/bootstrap-master/ui-bootstrap-tpls-2.2.0.min.js'));
-$this->headScript()->appendFile($this->basePath('js/setup/recommend-approve/groupAssignController.js'));
+$this->headScript()
+        ->appendFile($this->basePath('js/setup/recommend-approve/comBranchDeptDesignSearch.js'))
+        ->appendFile($this->basePath('js/setup/recommend-approve/groupAssignController.js'));
 ?>
 
 <script>
@@ -178,7 +180,6 @@ $this->headScript()->appendFile($this->basePath('js/setup/recommend-approve/grou
 
         </div>
     </div>
-
     <script type="text/ng-template" id="myModalContent.html">
         <div class="modal-header"> 
         <button type="button" class="close" ng-click="cancel()" data-dismiss="modal" aria-label="Close">
@@ -188,17 +189,32 @@ $this->headScript()->appendFile($this->basePath('js/setup/recommend-approve/grou
         </div>
         <div class="modal-body"> 
         <div class="row">
-         <div class="col-sm-4">
-        <?php print $this->formLabel($branches); ?>
-        <?php print $this->formElement($branches); ?>
+        <div class="col-sm-4">
+            <label for="branchId">Company</label>
+            <select class="form-control" name="company" id="recomCompanyId">
+            </select>
         </div>
         <div class="col-sm-4">
-        <?php print $this->formLabel($departments); ?>
-        <?php print $this->formElement($departments); ?>
+            <label for="branchId">Branch</label>
+            <select class="form-control" name="branchId" id="recomBranchId">
+            </select>
         </div>
         <div class="col-sm-4">
-        <?php print $this->formLabel($designations); ?>
-        <?php print $this->formElement($designations); ?>
+            <label for="branchId">Department</label>
+            <select class="form-control" name="department" id="recomDepartmentId">
+            </select>
+        </div>
+        </div>
+        <div class="row" style="margin-top:10px;">
+        <div class="col-sm-4">
+            <label for="branchId">Designation</label>
+            <select class="form-control" name="designation" id="recomDesignationId">
+            </select>
+        </div>
+        <div class="col-sm-4">
+            <label for="branchId">Employee</label>
+            <select class="form-control" name="employee" id="recomEmployeeId">
+            </select>
         </div>
         </div>
         <div class="row">                   

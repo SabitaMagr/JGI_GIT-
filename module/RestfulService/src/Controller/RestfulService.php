@@ -425,7 +425,7 @@ class RestfulService extends AbstractRestfulController {
 
     private function pullEmployeeMonthlyValue(array $data) {
         $monValDetRepo = new MonthlyValueDetailRepo($this->adapter);
-        $empListRaw = $monValDetRepo->fetchEmployees($data['branch'], $data['department'], $data['designation']);
+        $empListRaw = $monValDetRepo->fetchEmployees($data['branch'], $data['department'], $data['designation'],$data['company'],$data['employee']);
         $empListP = [];
         foreach ($empListRaw as $key => $emp) {
             $empListP[$key] = $emp;
@@ -510,7 +510,7 @@ class RestfulService extends AbstractRestfulController {
 
     private function pullEmployeeFlatValue(array $data) {
         $flatValDetRepo = new FlatValueDetailRepo($this->adapter);
-        $empListRaw = $flatValDetRepo->fetchEmployees($data['branch'], $data['department'], $data['designation']);
+        $empListRaw = $flatValDetRepo->fetchEmployees($data['branch'], $data['department'], $data['designation'],$data['company'],$data['employee']);
         $empListP = [];
         foreach ($empListRaw as $key => $emp) {
             $empListP[$key] = $emp;
@@ -1596,12 +1596,14 @@ class RestfulService extends AbstractRestfulController {
     }
 
     public function pullEmployeeListForReportingRole($data) {
+        $companyId = $data['companyId'];
         $branchId = $data['branchId'];
         $departmentId = $data['departmentId'];
         $designationId = $data['designationId'];
+        $employeeId = $data['employeeId'];
 
         $repository = new EmployeeRepository($this->adapter);
-        $employeeResult = $repository->filterRecords(-1, $branchId, $departmentId, $designationId, -1, -1, -1, 1);
+        $employeeResult = $repository->filterRecords($employeeId, $branchId, $departmentId, $designationId, -1, -1, -1, 1,$companyId);
 
         $employeeList = [];
         $i = 0;
