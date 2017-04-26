@@ -9,6 +9,6 @@ class TrainingReqNotificationModel extends NotificationModel {
     public $startDate;
     public $endDate;
     public $duration;
-    public $instuctorName;
+    public $instructorName;
     public $status;
 }
