@@ -21,11 +21,11 @@ jwl-training-session-1_25-Apr-17  issues | changes
 7. Date of Birth should be listed in Employee list.[done]
 8. concept of profile copy.
 9. Data update on JGI database | only two branches should be listed i.e. Head Office, Factory
-10. Company should also be displayed in designation list.
+10. Company should also be displayed in designation list.[done]
 11. Dropdowns with no list.
-12. Appointment and Re-appointment concept for JGI.
-13. Password forget implementation
-14. password encryption required.
+12. Appointment and Re-appointment concept for JGI.[pending]
+13. Password forget implementation[under process]
+14. password encryption required.[done ]
 
 
 password forget implemetation flow

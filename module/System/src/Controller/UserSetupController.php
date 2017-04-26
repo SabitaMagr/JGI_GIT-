@@ -1,22 +1,23 @@
 <?php
+
 /**
  * Created by PhpStorm.
  * User: root
  * Date: 10/17/16
  * Time: 1:25 PM
  */
+
 namespace System\Controller;
 
 use Application\Helper\EntityHelper;
+use Application\Helper\Helper;
 use System\Form\UserSetupForm;
 use System\Model\UserSetup;
+use System\Repository\UserSetupRepository;
+use Zend\Authentication\AuthenticationService;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\Mvc\Controller\AbstractActionController;
-use Zend\View\Model\ViewModel;
-use Application\Helper\Helper;
-use System\Repository\UserSetupRepository;
-use Zend\Authentication\AuthenticationService;
 
 class UserSetupController extends AbstractActionController {
 
@@ -25,42 +26,43 @@ class UserSetupController extends AbstractActionController {
     private $repository;
     private $employeeId;
 
-    public function __construct(AdapterInterface $adapter)
-    {
+    public function __construct(AdapterInterface $adapter) {
         $this->repository = new UserSetupRepository($adapter);
         $this->adapter = $adapter;
         $auth = new AuthenticationService();
         $this->employeeId = $auth->getStorage()->read()['employee_id'];
     }
 
-    public function initializeForm(){
+    public function initializeForm() {
         $roleSetupForm = new UserSetupForm();
         $builder = new AnnotationBuilder();
         $this->form = $builder->createForm($roleSetupForm);
     }
 
-    public function indexAction()
-    {
+    public function indexAction() {
         $list = $this->repository->fetchAll();
         $users = [];
-        foreach($list as $row){
+        foreach ($list as $row) {
             array_push($users, $row);
         }
         return Helper::addFlashMessagesToArray($this, ['users' => $users]);
     }
-    public function addAction(){
+
+    public function addAction() {
         $request = $this->getRequest();
         $this->initializeForm();
 
-        if($request->isPost()){
+        if ($request->isPost()) {
             $this->form->setData($request->getPost());
             if ($this->form->isValid()) {
                 $userSetup = new UserSetup();
                 $userSetup->exchangeArrayFromForm($this->form->getData());
-                $userSetup->userId = ((int)Helper::getMaxId($this->adapter, UserSetup::TABLE_NAME, UserSetup::USER_ID)) + 1;
+                $userSetup->userId = ((int) Helper::getMaxId($this->adapter, UserSetup::TABLE_NAME, UserSetup::USER_ID)) + 1;
                 $userSetup->createdDt = Helper::getcurrentExpressionDate();
                 $userSetup->createdBy = $this->employeeId;
-                $userSetup->status='E';
+                $userSetup->status = 'E';
+
+//                $userSetup->password= md5($userSetup->password);
 
                 $this->repository->add($userSetup);
 
@@ -68,15 +70,15 @@ class UserSetupController extends AbstractActionController {
                 return $this->redirect()->toRoute("usersetup");
             }
         }
-        return Helper::addFlashMessagesToArray($this,[
-            'form'=>$this->form,
-            'employeeList'=>$this->repository->getEmployeeList(),
-            'roleList'=>EntityHelper::getTableKVListWithSortOption($this->adapter,"HRIS_ROLES","ROLE_ID",["ROLE_NAME"],["STATUS"=>"E"],"ROLE_NAME","ASC",null,false,true)
+        return Helper::addFlashMessagesToArray($this, [
+                    'form' => $this->form,
+                    'employeeList' => $this->repository->getEmployeeList(),
+                    'roleList' => EntityHelper::getTableKVListWithSortOption($this->adapter, "HRIS_ROLES", "ROLE_ID", ["ROLE_NAME"], ["STATUS" => "E"], "ROLE_NAME", "ASC", null, false, true)
         ]);
     }
 
-    public function editAction(){
-        $id = (int)$this->params()->fromRoute("id");
+    public function editAction() {
+        $id = (int) $this->params()->fromRoute("id");
         $this->initializeForm();
         $request = $this->getRequest();
 
@@ -96,22 +98,25 @@ class UserSetupController extends AbstractActionController {
                 unset($userSetup->createdDt);
                 unset($userSetup->userId);
                 unset($userSetup->status);
+
+//                $userSetup->password = md5($userSetup->password);
+
                 $this->repository->edit($userSetup, $id);
                 $this->flashmessenger()->addMessage("User Successfully Updated!!!");
                 return $this->redirect()->toRoute("usersetup");
             }
         }
-        return Helper::addFlashMessagesToArray($this,[
-            'form'=>$this->form,
-            'id'=>$id,
-            'passwordDtl'=>$detail['PASSWORD'],
-            'employeeList'=>$this->repository->getEmployeeList($detail['EMPLOYEE_ID']),
-            'roleList'=>EntityHelper::getTableKVListWithSortOption($this->adapter,"HRIS_ROLES","ROLE_ID",["ROLE_NAME"],["STATUS"=>"E"],"ROLE_NAME","ASC",null,false,true)
+        return Helper::addFlashMessagesToArray($this, [
+                    'form' => $this->form,
+                    'id' => $id,
+                    'passwordDtl' => $detail['PASSWORD'],
+                    'employeeList' => $this->repository->getEmployeeList($detail['EMPLOYEE_ID']),
+                    'roleList' => EntityHelper::getTableKVListWithSortOption($this->adapter, "HRIS_ROLES", "ROLE_ID", ["ROLE_NAME"], ["STATUS" => "E"], "ROLE_NAME", "ASC", null, false, true)
         ]);
     }
 
-    public function deleteAction(){
-        $id = (int)$this->params()->fromRoute("id");
+    public function deleteAction() {
+        $id = (int) $this->params()->fromRoute("id");
 
         if (!$id) {
             return $this->redirect()->toRoute('usersetup');
@@ -120,4 +125,5 @@ class UserSetupController extends AbstractActionController {
         $this->flashmessenger()->addMessage("User Successfully Deleted!!!");
         return $this->redirect()->toRoute('usersetup');
     }
+
 }

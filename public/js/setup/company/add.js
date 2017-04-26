@@ -21,7 +21,7 @@
                 App.blockUI({target: "#hris-page-content"});
                 return true;
             }
-        });  
+        });
         window.app.checkUniqueConstraints("form-companyCode", formId, tableName, "COMPANY_CODE", checkColumnName, selfId);
 
         var $myAwesomeDropzone = $('#my-awesome-dropzone');
@@ -32,7 +32,7 @@
             fileName: null,
             oldFileName: null
         };
-        if (typeof document.imageData !== 'undefined') {
+        if (typeof document.imageData !== 'undefined' && document.imageData != null) {
             imageData = document.imageData
         }
 
