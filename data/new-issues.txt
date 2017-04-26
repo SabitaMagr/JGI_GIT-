@@ -8,15 +8,13 @@ payroll features
 7. check for queries that need joining tables (remaining and need testing)
 8. meaningful notifications (remaining)
 9. maintain order by on all queries. (remaining and need testing)
-10. date format conflict between oracle and date picker.
-11. menu assign issue, notification should be provided to all.
-12. need code review on leave approve or view on manager service.
+
 
 jwl-training-session-1_25-Apr-17  issues | changes
-1. service event types menu should be shown.
+1. service event types menu should be shown.[done]
 2. Label Change in Training [done]
     Company Personal => Personal 
-3. Phone no format need to be updated.
+3. Phone no format need to be updated.[done] xxx-xxxxxxx is new format
 4. Dropdown requires a default option.
 5. 3 days late should deduct 1 leave as per policy in JGI.
 6. 3 grace time leave should deduct 1 leave as per policy in JGI.
