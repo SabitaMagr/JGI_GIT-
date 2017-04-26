@@ -71,7 +71,7 @@ class FlatValueDetailRepo implements RepositoryInterface
     }
 
 
-    public function fetchEmployees($branchId, $departmentId, $designationId)
+    public function fetchEmployees($branchId, $departmentId, $designationId,$companyId=null,$employeeId=null)
     {
         $sql = new Sql($this->adapter);
         $select = $sql->select();
@@ -87,6 +87,12 @@ class FlatValueDetailRepo implements RepositoryInterface
         }
         if ($designationId != -1) {
             $select->where(["E." . Designation::DESIGNATION_ID . "=$designationId"]);
+        }
+        if ($companyId!=null && $companyId != -1) {
+            $select->where(["E." . HrEmployees::COMPANY_ID . "=$companyId"]);
+        }
+        if ($employeeId!=null && $employeeId != -1) {
+            $select->where(["E." . HrEmployees::EMPLOYEE_ID . "=$employeeId"]);
         }
         $select->order("E.EMPLOYEE_ID ASC");
 

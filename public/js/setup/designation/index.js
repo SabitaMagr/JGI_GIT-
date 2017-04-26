@@ -16,8 +16,9 @@
             },
             rowTemplate: kendo.template($("#rowTemplate").html()),
             columns: [
-                {field: "DESIGNATION_CODE", title: "Designation Code",width:120},
-                {field: "DESIGNATION_TITLE", title: "Designation Name",width:200},
+                {field: "COMPANY_NAME", title: "Company",width:120},
+                {field: "DESIGNATION_CODE", title: "Code",width:120},
+                {field: "DESIGNATION_TITLE", title: "Name",width:200},
                 {field: "PARENT_DESIGNATION_TITLE", title: "Parent Designation",width:200},
                 {field: "BASIC_SALARY", title: "Basic Salary",width:120},
                 {title: "Action",width:100}

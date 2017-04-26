@@ -39,7 +39,7 @@ class Telephone extends Element implements InputProviderInterface
     protected function getValidator()
     {
         if (null === $this->validator) {
-            $this->validator = new RegexValidator("/\b\d{2}[-.]?\d{7}\b/");
+            $this->validator = new RegexValidator("/\b\d{2,3}[-.]?\d{7}\b/");
         }
         return $this->validator;
     }

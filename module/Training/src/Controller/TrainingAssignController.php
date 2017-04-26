@@ -7,13 +7,7 @@ use Application\Helper\Helper;
 use Exception;
 use Notification\Controller\HeadNotification;
 use Notification\Model\NotificationEvents;
-use Setup\Model\Branch;
-use Setup\Model\Department;
-use Setup\Model\Designation;
 use Setup\Model\HrEmployees;
-use Setup\Model\Position;
-use Setup\Model\ServiceEventType;
-use Setup\Model\ServiceType;
 use Setup\Model\Training;
 use Training\Form\TrainingAssignForm;
 use Training\Repository\TrainingAssignRepository;
@@ -34,10 +28,10 @@ class TrainingAssignController extends AbstractActionController {
     }
 
     public function indexAction() {
-        
+
         $trainingFormElement = new Select();
         $trainingFormElement->setName("training");
-        $trainings = EntityHelper::getTableKVListWithSortOption($this->adapter, Training::TABLE_NAME, Training::TRAINING_ID, [Training::TRAINING_NAME], [Training::STATUS => 'E'], "TRAINING_NAME", "ASC",null,false,true);
+        $trainings = EntityHelper::getTableKVListWithSortOption($this->adapter, Training::TABLE_NAME, Training::TRAINING_ID, [Training::TRAINING_NAME], [Training::STATUS => 'E'], "TRAINING_NAME", "ASC", null, false, true);
         $trainings1 = [-1 => "All Training"] + $trainings;
         $trainingFormElement->setValueOptions($trainings1);
         $trainingFormElement->setAttributes(["id" => "trainingId", "class" => "form-control"]);
@@ -46,7 +40,7 @@ class TrainingAssignController extends AbstractActionController {
         return Helper::addFlashMessagesToArray($this, [
                     'list' => 'list',
                     'trainings' => $trainingFormElement,
-                    'searchValues'=> EntityHelper::getSearchData($this->adapter)
+                    'searchValues' => EntityHelper::getSearchData($this->adapter)
         ]);
     }
 
@@ -74,14 +68,14 @@ class TrainingAssignController extends AbstractActionController {
     public function assignAction() {
         $trainingFormElement = new Select();
         $trainingFormElement->setName("training");
-        $trainings = EntityHelper::getTableKVListWithSortOption($this->adapter, Training::TABLE_NAME, Training::TRAINING_ID, [Training::TRAINING_NAME], [Training::STATUS => 'E'], "TRAINING_NAME", "ASC",null,false,true);
+        $trainings = EntityHelper::getTableKVListWithSortOption($this->adapter, Training::TABLE_NAME, Training::TRAINING_ID, [Training::TRAINING_NAME], [Training::STATUS => 'E'], "TRAINING_NAME", "ASC", null, true, true);
         $trainingFormElement->setValueOptions($trainings);
         $trainingFormElement->setAttributes(["id" => "trainingId", "class" => "form-control"]);
         $trainingFormElement->setLabel("Training");
 
         return Helper::addFlashMessagesToArray($this, [
                     'list' => 'list',
-                    'searchValues'=> EntityHelper::getSearchData($this->adapter),
+                    'searchValues' => EntityHelper::getSearchData($this->adapter),
                     'trainings' => $trainingFormElement
         ]);
     }
@@ -92,7 +86,6 @@ class TrainingAssignController extends AbstractActionController {
         if (!$trainingId && !$employeeId) {
             return $this->redirect()->toRoute('trainingAssign');
         }
-        //print_r("hellow"); die();
         $this->repository->delete([$employeeId, $trainingId]);
         $model = new \Training\Model\TrainingAssign();
         $model->trainingId = $trainingId;

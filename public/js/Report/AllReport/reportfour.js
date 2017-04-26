@@ -8,7 +8,7 @@
 
             for (var i in rawData) {
                 if (typeof data[rawData[i].MONTH_ID] !== 'undefined') {
-                    data[rawData[i].MONTH_ID].MONTHS['c' + rawData[i].DAY_COUNT] =
+                    data[rawData[i].MONTH_ID].MONTHS['C' + rawData[i].DAY_COUNT] =
                             JSON.stringify({
                                 IS_ABSENT: rawData[i].IS_ABSENT,
                                 IS_PRESENT: rawData[i].IS_PRESENT,
@@ -31,7 +31,7 @@
                             IS_DAYOFF: parseFloat(rawData[i].IS_DAYOFF)
                         }
                     };
-                    data[rawData[i].MONTH_ID].MONTHS['c' + rawData[i].DAY_COUNT] =
+                    data[rawData[i].MONTH_ID].MONTHS['C' + rawData[i].DAY_COUNT] =
                             JSON.stringify({
                                 IS_ABSENT: rawData[i].IS_ABSENT,
                                 IS_PRESENT: rawData[i].IS_PRESENT,
@@ -40,7 +40,7 @@
 
                 }
                 if (typeof column[rawData[i].DAY_COUNT] === 'undefined') {
-                    var temp = 'c' + rawData[i].DAY_COUNT;
+                    var temp = 'C' + rawData[i].DAY_COUNT;
                     column[rawData[i].DAY_COUNT] = {
                         field: temp,
                         title: rawData[i].DAY_COUNT,

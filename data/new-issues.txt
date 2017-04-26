@@ -1,31 +1,39 @@
 payroll features
-1. PF according to salary increment.(done)
-2. notification setting(user wise) (done)
-3. add columns [trainingId,travel] on attendance-detail (done)
-4. validation remaining in advance request (done)
-5. check for past date in all form. (done)
-6. sidemenu is not highlighted on selfservice-leaveapply (done)
-7. leave apply not shown in dashboard bcoz of query and joins. (done)
-17. on login, zend default page is shown (done)
-19. on sidemenu, two level menu is not open (done)
-8. design issues in monthly value detail (done,need discussion)
-9. design issues in flat value detail (done, need discussion)
-10. issue regarding recommender,approver being null on notification (need discussion)
-14. loan deduction in payroll (need discussion)
-11. just include in tax.(need discussion)
-12. check for holidays, leave, travel, training on new request for holiday, leave, travel, training (remaining and need discussion)
-13. check for queries that need joining tables (remaining and need testing)
-15. meaningful notifications (remaining)
-16. maintain order by on all queries. (remaining and need testing)
-18. date format conflict between oracle and date picker.
-19. employee list issue on, not showing all employees (done)
-20. menu assign issue, notification should be provided to all.
-21. employee list issue due to fk conflict (done)
-22. employee should be able to request past leave.(done)
-23. email notification null check. (done)
-24. email setup on live. (done)
-25. holiday setup branch update. (done)
-26. employee leave apply issue, not enough days message is showing even when the assigned leave days are enough (done)
-27. need code review on leave approve or view on manager service.
+1. design issues in monthly value detail (done,need discussion)
+2. design issues in flat value detail (done, need discussion)
+3. issue regarding recommender,approver being null on notification (need discussion)
+4. loan deduction in payroll (need discussion)
+5. just include in tax.(need discussion)
+6. check for holidays, leave, travel, training on new request for holiday, leave, travel, training (remaining and need discussion)
+7. check for queries that need joining tables (remaining and need testing)
+8. meaningful notifications (remaining)
+9. maintain order by on all queries. (remaining and need testing)
 
-test
+
+jwl-training-session-1_25-Apr-17  issues | changes
+1. service event types menu should be shown.[done]
+2. Label Change in Training [done]
+    Company Personal => Personal 
+3. Phone no format need to be updated.[done] xxx-xxxxxxx is new format
+4. Dropdown requires a default option.
+5. 3 days late should deduct 1 leave as per policy in JGI.
+6. 3 grace time leave should deduct 1 leave as per policy in JGI.
+7. Date of Birth should be listed in Employee list.[done]
+8. concept of profile copy.
+9. Data update on JGI database | only two branches should be listed i.e. Head Office, Factory
+10. Company should also be displayed in designation list.
+11. Dropdowns with no list.
+12. Appointment and Re-appointment concept for JGI.
+13. Password forget implementation
+14. password encryption required.
+
+
+password forget implemetation flow
+    on forget password link click=>
+    page with send code to username, code input field and submit button. =>
+    on submit success, new password and retype new password with change button => 
+    on change success, success message on login page should be displayed.
+
+    
+Assign Flow in all the assign part
+    

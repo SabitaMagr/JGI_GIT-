@@ -9,7 +9,7 @@
                     data: rows,
                     pageSize: 20
                 },
-                height: 600,
+                height: 400,
                 sortable: false,
                 pageable: false,
                 columns: cols,

@@ -50,7 +50,10 @@ class BranchRepository implements RepositoryInterface {
         $companyNameKey = Company::COMPANY_NAME;
         $select->join(['C' => Company::TABLE_NAME], "C.{$companyIdKey} = B.{$companyIdKey}", [Company::COMPANY_NAME => new Expression("INITCAP(C.{$companyNameKey})")], Join::JOIN_LEFT);
         $select->where(['B.' . Branch::STATUS => EntityHelper::STATUS_ENABLED]);
-        $select->order(['B.' . Branch::BRANCH_NAME => Select::ORDER_ASCENDING]);
+        $select->order([
+            'B.' . Branch::BRANCH_NAME => Select::ORDER_ASCENDING,
+            'C.' . Company::COMPANY_NAME => Select::ORDER_ASCENDING
+        ]);
         $statement = $sql->prepareStatementForSqlObject($select);
         $return = $statement->execute();
         return $return;

@@ -109,6 +109,7 @@
                 console.log('departmentWiseEmployeeMonthlyR', response);
                 var extractedDetailData = extractDetailData(response.data, departmentId);
                 console.log('extractedDetailData', extractedDetailData);
+//                $tableContainer.remove();
                 $tableContainer.kendoGrid({
                     dataSource: {
                         data: extractedDetailData.rows,

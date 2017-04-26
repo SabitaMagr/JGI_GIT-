@@ -130,7 +130,8 @@ class MonthlyValue extends AbstractActionController
             'branches' => $branches,
             'departments' => $departments,
             'designations' => $designations,
-            'monthlyValues'=>$monthlyValues
+            'monthlyValues'=>$monthlyValues,
+            'searchValues' => EntityHelper::getSearchData($this->adapter)
         ]);
     }
 }

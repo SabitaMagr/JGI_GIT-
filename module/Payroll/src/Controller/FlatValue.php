@@ -140,7 +140,8 @@ class FlatValue extends AbstractActionController
             'branches' => $branches,
             'departments' => $departments,
             'designations' => $designations,
-            'flatValues'=>$flatValues
+            'flatValues'=>$flatValues,
+            'searchValues' => EntityHelper::getSearchData($this->adapter)
         ]);
     }
 }

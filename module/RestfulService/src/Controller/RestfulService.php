@@ -425,7 +425,7 @@ class RestfulService extends AbstractRestfulController {
 
     private function pullEmployeeMonthlyValue(array $data) {
         $monValDetRepo = new MonthlyValueDetailRepo($this->adapter);
-        $empListRaw = $monValDetRepo->fetchEmployees($data['branch'], $data['department'], $data['designation']);
+        $empListRaw = $monValDetRepo->fetchEmployees($data['branch'], $data['department'], $data['designation'], $data['company'], $data['employee']);
         $empListP = [];
         foreach ($empListRaw as $key => $emp) {
             $empListP[$key] = $emp;
@@ -510,7 +510,7 @@ class RestfulService extends AbstractRestfulController {
 
     private function pullEmployeeFlatValue(array $data) {
         $flatValDetRepo = new FlatValueDetailRepo($this->adapter);
-        $empListRaw = $flatValDetRepo->fetchEmployees($data['branch'], $data['department'], $data['designation']);
+        $empListRaw = $flatValDetRepo->fetchEmployees($data['branch'], $data['department'], $data['designation'], $data['company'], $data['employee']);
         $empListP = [];
         foreach ($empListRaw as $key => $emp) {
             $empListP[$key] = $emp;
@@ -959,7 +959,7 @@ class RestfulService extends AbstractRestfulController {
         $serviceEventTypeId = $data['serviceEventTypeId'];
 
         $repository = new LeaveBalanceRepository($this->adapter);
-        $employeeList = $repository->getAllEmployee($emplyoeeId,$companyId, $branchId, $departmentId, $designationId, $positionId, $serviceTypeId, $serviceEventTypeId);
+        $employeeList = $repository->getAllEmployee($emplyoeeId, $companyId, $branchId, $departmentId, $designationId, $positionId, $serviceTypeId, $serviceEventTypeId);
 
         $mainArray = [];
         foreach ($employeeList as $row) {
@@ -1564,8 +1564,7 @@ class RestfulService extends AbstractRestfulController {
         $serviceEventTypeId = $data['serviceEventTypeId'];
 
         $repository = new EmployeeRepository($this->adapter);
-        $result = $repository->filterRecords($emplyoeeId, $branchId, $departmentId, $designationId, $positionId, $serviceTypeId, $serviceEventTypeId, 1,$companyId);
-
+        $result = $repository->filterRecords($emplyoeeId, $branchId, $departmentId, $designationId, $positionId, $serviceTypeId, $serviceEventTypeId, 1, $companyId);
         $employeeList = [];
         foreach ($result as $row) {
             if ($row['MARITAL_STATUS'] == 'U') {
@@ -1596,12 +1595,14 @@ class RestfulService extends AbstractRestfulController {
     }
 
     public function pullEmployeeListForReportingRole($data) {
+        $companyId = $data['companyId'];
         $branchId = $data['branchId'];
         $departmentId = $data['departmentId'];
         $designationId = $data['designationId'];
+        $employeeId = $data['employeeId'];
 
         $repository = new EmployeeRepository($this->adapter);
-        $employeeResult = $repository->filterRecords(-1, $branchId, $departmentId, $designationId, -1, -1, -1, 1);
+        $employeeResult = $repository->filterRecords($employeeId, $branchId, $departmentId, $designationId, -1, -1, -1, 1, $companyId);
 
         $employeeList = [];
         $i = 0;
@@ -1740,7 +1741,7 @@ class RestfulService extends AbstractRestfulController {
         $serviceEventTypeId = $data['serviceEventTypeId'];
 
         $jobHistoryRepository = new JobHistoryRepository($this->adapter);
-        $result = $jobHistoryRepository->filter($fromDate, $toDate, $employeeId, $serviceEventTypeId,$companyId,$branchId,$departmentId,$designationId,$positionId,$serviceTypeId);
+        $result = $jobHistoryRepository->filter($fromDate, $toDate, $employeeId, $serviceEventTypeId, $companyId, $branchId, $departmentId, $designationId, $positionId, $serviceTypeId);
 
         $jobHistoryRecord = [];
         foreach ($result as $row) {
@@ -2355,7 +2356,7 @@ class RestfulService extends AbstractRestfulController {
 
     private function pullEmployeeForShiftAssign(array $ids) {
         $shiftAssignRepo = new ShiftAssignRepository($this->adapter);
-        $result = $shiftAssignRepo->filter($ids['branchId'], $ids['departmentId'], $ids['designationId'], $ids['positionId'], $ids['serviceTypeId'],$ids['companyId'],$ids['serviceEventTypeId'],$ids['employeeId']);
+        $result = $shiftAssignRepo->filter($ids['branchId'], $ids['departmentId'], $ids['designationId'], $ids['positionId'], $ids['serviceTypeId'], $ids['companyId'], $ids['serviceEventTypeId'], $ids['employeeId']);
 
         $tempArray = [];
         foreach ($result as $item) {
@@ -2387,7 +2388,7 @@ class RestfulService extends AbstractRestfulController {
         $recommApproverRepo = new RecommendApproveRepository($this->adapter);
 
         $employeeRepo = new EmployeeRepository($this->adapter);
-        $employeeResult = $employeeRepo->filterRecords($employeeId, $branchId, $departmentId, $designationId, $positionId, $serviceTypeId, -1, 1,$companyId);
+        $employeeResult = $employeeRepo->filterRecords($employeeId, $branchId, $departmentId, $designationId, $positionId, $serviceTypeId, -1, 1, $companyId);
 
         $employeeList = [];
         foreach ($employeeResult as $employeeRow) {
@@ -2433,7 +2434,7 @@ class RestfulService extends AbstractRestfulController {
         $serviceEventTypeId = $data['serviceEventTypeId'];
 
         $trainingAssignRepo = new TrainingAssignRepository($this->adapter);
-        $result = $trainingAssignRepo->filterRecords($employeeId, $branchId, $departmentId, $designationId, $positionId, $serviceTypeId, $serviceEventTypeId, $trainingId,$companyId);
+        $result = $trainingAssignRepo->filterRecords($employeeId, $branchId, $departmentId, $designationId, $positionId, $serviceTypeId, $serviceEventTypeId, $trainingId, $companyId);
         $list = [];
         $getValue = function($trainingTypeId) {
             if ($trainingTypeId == 'CP') {
@@ -2469,20 +2470,20 @@ class RestfulService extends AbstractRestfulController {
         $designationId = $data['designationId'];
         $positionId = $data['positionId'];
         $serviceTypeId = $data['serviceTypeId'];
-        $trainingId = (int)$data['trainingId'];
+        $trainingId = (int) $data['trainingId'];
         $companyId = $data['companyId'];
         $employeeRepository = new EmployeeRepository($this->adapter);
         $trainingAssignRepo = new TrainingAssignRepository($this->adapter);
 
-        $employeeResult = $employeeRepository->filterRecords($employeeId, $branchId, $departmentId, $designationId, $positionId, $serviceTypeId, -1, 1,$companyId);
+        $employeeResult = $employeeRepository->filterRecords($employeeId, $branchId, $departmentId, $designationId, $positionId, $serviceTypeId, -1, 1, $companyId);
 
         $employeeList = [];
         foreach ($employeeResult as $employeeRow) {
             $employeeId = $employeeRow['EMPLOYEE_ID'];
-            if($trainingId!=0){
+            if ($trainingId != -1) {
                 $trainingAssignList = $trainingAssignRepo->getDetailByEmployeeID($employeeId, $trainingId);
-            }else{
-                $trainingAssignList=null;
+            } else {
+                $trainingAssignList = null;
             }
             if ($trainingAssignList != null) {
                 $employeeRow['TRAINING_NAME'] = $trainingAssignList['TRAINING_NAME'];
@@ -2501,7 +2502,6 @@ class RestfulService extends AbstractRestfulController {
             }
             array_push($employeeList, $employeeRow);
         }
-        ///  print_r($employeeList); die();
         return [
             "success" => true,
             "data" => $employeeList
@@ -2509,16 +2509,22 @@ class RestfulService extends AbstractRestfulController {
     }
 
     public function assignEmployeeTraining($data) {
+        if (!isset($data['trainingId']) || $data['trainingId'] == '' || $data['trainingId'] == -1) {
+            throw new Exception('Invalid training selection.');
+        }
         $trainingAssignRepo = new TrainingAssignRepository($this->adapter);
         $trainingAssignModel = new TrainingAssign();
 
         $trainingAssignModel->employeeId = $data['employeeId'];
         $trainingAssignModel->trainingId = $data['trainingId'];
 
-        $getPreviousDtl = $trainingAssignRepo->getAllDetailByEmployeeID($data['employeeId'], $data['trainingId']);
+        $emptrainingAssignedList = $trainingAssignRepo->getAllDetailByEmployeeID($data['employeeId'], $data['trainingId']);
+        $empTrainingAssignedDetail = $emptrainingAssignedList->current();
 
-
-        if (count($getPreviousDtl) > 0) {
+        if ($empTrainingAssignedDetail != null) {
+            if ($empTrainingAssignedDetail['STATUS'] == EntityHelper::STATUS_ENABLED) {
+                throw new Exception('Already Assigned');
+            }
             $trainingAssignClone = clone $trainingAssignModel;
             unset($trainingAssignClone->employeeId);
             unset($trainingAssignClone->trainingId);
@@ -2534,11 +2540,20 @@ class RestfulService extends AbstractRestfulController {
             $trainingAssignModel->status = 'E';
             $trainingAssignRepo->add($trainingAssignModel);
         }
-        HeadNotification::pushNotification(NotificationEvents::TRAINING_ASSIGNED, $trainingAssignModel, $this->adapter, $this->plugin('url'));
+        try {
+            HeadNotification::pushNotification(NotificationEvents::TRAINING_ASSIGNED, $trainingAssignModel, $this->adapter, $this->plugin('url'));
+        } catch (Exception $e) {
+            return[
+                "success" => true,
+                "data" => null,
+                "message" => "Training assigned successfully with following error : " . $e->getMessage()
+            ];
+        }
 
         return [
             "success" => true,
-            "data" => $data
+            "data" => null,
+            "message" => "Training assigned successfully."
         ];
     }
 
@@ -2621,7 +2636,7 @@ class RestfulService extends AbstractRestfulController {
         $toDate = $data['toDate'];
         $status = $data['status'];
 
-        $result = $attendanceDetailRepository->filterRecord($employeeId, $branchId, $departmentId, $positionId, $designationId, $serviceTypeId, $serviceEventTypeId, $fromDate, $toDate, $status,$companyId);
+        $result = $attendanceDetailRepository->filterRecord($employeeId, $branchId, $departmentId, $positionId, $designationId, $serviceTypeId, $serviceEventTypeId, $fromDate, $toDate, $status, $companyId);
         $list = [];
         foreach ($result as $row) {
             if ($status == 'L') {
