@@ -1796,6 +1796,7 @@ textarea#form-remarks,#remarks,.form-reason  {
     margin: 3px 0 0;
     float: left;
     padding-left:20px;
+    max-height:45px;
 
 }
 .company-logo-box span
