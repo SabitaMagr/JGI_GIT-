@@ -72,7 +72,7 @@ angular.module('hris', [])
                         data: employees,
                         pageSize: 20,
                     },
-                    height: 590,
+                    height: 500,
                     scrollable: true,
                     sortable: true,
                     filterable: true,
