@@ -87,6 +87,7 @@ angular.module('hris', [])
                         {field: "FIRST_NAME", title: "Name", width: 220},
                         {field: "MOBILE_NO", title: "Mobile No", width: 130},
                         {field: "BIRTH_DATE", title: "Birth Date", width: 130},
+                        {field: "COMPANY_NAME", title: "Company Name", width: 130},
                         {field: "BRANCH_NAME", title: "Branch", width: 120},
                         {field: "DEPARTMENT_NAME", title: "Department", width: 150},
                         {field: "DESIGNATION_TITLE", title: "Designation", width: 150},
@@ -177,6 +178,7 @@ angular.module('hris', [])
                                 {value: "Designation Name"},
                                 {value: "Department Name"},
                                 {value: "Branch Name"},
+                                {value: "Company Name"},
                             ]
                         }];
                     var dataSource = $("#employeeTable").data("kendoGrid").dataSource;
@@ -265,7 +267,8 @@ angular.module('hris', [])
                                 {value: dataItem.POSITION_NAME},
                                 {value: dataItem.DESIGNATION_TITLE},
                                 {value: dataItem.DEPARTMENT_NAME},
-                                {value: dataItem.BRANCH_NAME}
+                                {value: dataItem.BRANCH_NAME},
+                                {value: dataItem.COMPANY_NAME}
                             ]
                         });
                     }

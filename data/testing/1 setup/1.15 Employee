@@ -19,9 +19,9 @@ system problem
 2. branch and destination all should be according to company 
 3. academic progarm should change academic course.
 4. recommender and approver could not be self employee eg(for employee a he himself cant be his recommender or approver)
-5. no current status of employee info in employee view
-6. no company name in employee profile
-7. company filter dosent work .
+5. no current status of employee info in employee view  (fixed)
+6. no company name in employee profile   (fixed)
+7. company filter dosent work . (fixed)
 
 
 

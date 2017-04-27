@@ -3,11 +3,12 @@
 namespace AttendanceManagement\Repository;
 
 use Application\Helper\EntityHelper;
-use Application\Helper\Helper;
 use Application\Model\Model;
 use Application\Repository\RepositoryInterface;
 use AttendanceManagement\Model\ShiftSetup;
+use Setup\Model\Company;
 use Zend\Db\Adapter\AdapterInterface;
+use Zend\Db\Sql\Expression;
 use Zend\Db\Sql\Select;
 use Zend\Db\Sql\Sql;
 use Zend\Db\TableGateway\TableGateway;
@@ -35,7 +36,6 @@ class ShiftRepository implements RepositoryInterface {
     }
 
     public function fetchAll() {
-//        return $this->tableGateway->select();
         $sql = new Sql($this->adapter);
         $select = $sql->select();
         $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(ShiftSetup::class, [ShiftSetup::SHIFT_ENAME], [
@@ -44,13 +44,13 @@ class ShiftRepository implements RepositoryInterface {
                         ], [
                     ShiftSetup::START_TIME,
                     ShiftSetup::END_TIME
-                ]), false);
+                ],NULL,NULL,'S',FALSE,FALSE), false);
 //        $select->columns(Helper::convertColumnDateFormat($this->adapter, new ShiftSetup(), ['startDate', 'endDate'], ['startTime', 'endTime']), false);
-        $select->from(ShiftSetup::TABLE_NAME);
-        $select->where([ShiftSetup::STATUS => 'E']);
-        $select->order(ShiftSetup::SHIFT_ENAME . " ASC");
+        $select->from(['S' => ShiftSetup::TABLE_NAME]);
+        $select->join(['C' => Company::TABLE_NAME], "C.".Company::COMPANY_ID."=S.". ShiftSetup::COMPANY_ID, [Company::COMPANY_NAME => new Expression('INITCAP(C.COMPANY_NAME)')], 'left');
+        $select->where(["S.".ShiftSetup::STATUS."='E'"]);
+        $select->order("S.".ShiftSetup::SHIFT_ENAME . " ASC");
         $statement = $sql->prepareStatementForSqlObject($select);
-
         $result = $statement->execute();
         return $result;
     }
