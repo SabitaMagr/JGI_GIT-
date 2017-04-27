@@ -2,6 +2,9 @@
     'use strict';
     $(document).ready(function () {
         $("select").select2();
+        $("#export").click(function (e) {
+            app.errorMessage("No List to export data from.", "Alert");
+        });
     });
 })(window.jQuery, window.app);
 
@@ -48,18 +51,21 @@ angular.module('hris', [])
                         'designationId': designationId,
                         'positionId': positionId,
                         'serviceTypeId': serviceTypeId,
-                        'companyId':companyId,
+                        'companyId': companyId,
                         'serviceEventTypeId': serviceEventTypeId
                     }
                 }).then(function (success) {
                     App.unblockUI("#hris-page-content");
                     console.log("pullEmployeeList", success.data);
                     $scope.initializekendoGrid(success.data);
+//                    window.scrollTo(0, $('#employeeTable').position().top);
+                    window.app.scrollTo('employeeTable');
                 }, function (failure) {
                     App.unblockUI("#hris-page-content");
                     console.log(failure);
                 });
             };
+
 
             $scope.initializekendoGrid = function (employees) {
                 $("#employeeTable").kendoGrid({
@@ -103,9 +109,8 @@ angular.module('hris', [])
                                 .append('<tr class="kendo-data-row"><td colspan="' + colCount + '" class="no-data">There is no data to show in the grid.</td></tr>');
                     }
                 }
-                ;
 
-
+                $("#export").unbind("click");
                 $("#export").click(function (e) {
                     var rows = [{
                             cells: [
