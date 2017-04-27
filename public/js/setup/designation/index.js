@@ -31,6 +31,7 @@
                         {value: "Designation Name"},                        
                         {value: "Basic Salary"},
                         {value: "Parent Designation Name"},
+                        {value: "Company Name"},
                         {value: "Within Branch"},
                        {value: "Within Department"}
                     ]
@@ -54,6 +55,7 @@
                         {value: dataItem.DESIGNATION_TITLE},
                         {value: dataItem.BASIC_SALARY},
                         {value: dataItem.PARENT_DESIGNATION_TITLE},
+                        {value: dataItem.COMPANY_NAME},
                         {value: withinBranch},
                         {value: withinDepartment}
                     ]
