@@ -312,3 +312,61 @@ login-form label .checkIn,.login .content .rememberme,.login-form label.checkIn.
         font-size: 13px;
     }
 }
+
+
+.codeTitle{
+    padding-bottom: 5px !important;
+    border-bottom: 1px solid #e9edef !important;
+    margin-bottom:10px !important;
+}
+
+.codeLabel{
+        font-size: 11px !important;
+        margin-bottom: 25px !important;
+}
+
+.codeInput{
+    float: left;
+    height: 35px;
+}
+
+.codeList{
+    float: left;
+}
+
+.codeList ul{
+    list-style: none;
+    font-size: 11px;
+}
+
+
+.codeList ul li.bold{
+        font-weight: bold;
+}
+.forget-password{
+    font-size: 11px !important;
+}
+
+.codeBottom{
+     margin-top: 80px;
+}
+
+.codeSubmit{
+    float:left;
+}
+
+.codeCancel{
+    float:left;
+    color:#000 !important;
+    padding:6px 12px 5px !important;
+}
+
+a.codeCancel:hover{
+    color:#ffffff !important;
+}
+
+.errorMsg{
+    color: red;
+    font-size: 11px;
+    float: left;
+}

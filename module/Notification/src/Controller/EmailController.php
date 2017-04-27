@@ -14,6 +14,7 @@ use Notification\Model\WorkOnDayoffNotificationModel;
 use Notification\Model\WorkOnHolidayNotificationModel;
 use Notification\Model\LeaveSubNotificationModel;
 use Notification\Model\TravelSubNotificationModel;
+use Notification\Model\ForgotPasswordNotificationModel;
 use Notification\Repository\EmailTemplateRepo;
 use Zend\Authentication\AuthenticationService;
 use Zend\Db\Adapter\AdapterInterface;

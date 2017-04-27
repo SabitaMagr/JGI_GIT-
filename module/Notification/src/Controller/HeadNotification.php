@@ -48,6 +48,8 @@ use SelfService\Repository\LeaveSubstituteRepository;
 use SelfService\Repository\TravelSubstituteRepository;
 use Notification\Model\LeaveSubNotificationModel;
 use Notification\Model\TravelSubNotificationModel;
+use Application\Model\ForgotPassword;
+use Application\Repository\ForgotPasswordRepository;
 
 class HeadNotification {
 
@@ -128,7 +130,7 @@ class HeadNotification {
         return $detail[$name];
     }
 
-    public static function pushNotification(int $eventType, Model $model, AdapterInterface $adapter, Url $url) {
+    public static function pushNotification(int $eventType, Model $model, AdapterInterface $adapter, Url $url=null,$senderDetail=null) {
         ${"fn" . NotificationEvents::LEAVE_APPLIED} = function (LeaveApply $model, AdapterInterface $adapter, Url $url, $type) {
             $leaveApplyRepo = new LeaveApplyRepository($adapter);
             $leaveApplyArray = $leaveApplyRepo->fetchById($model->id)->getArrayCopy();
@@ -989,7 +991,38 @@ class HeadNotification {
             self::addNotifications($notification, $title, $desc, $adapter);
             self::sendEmail($notification, 28, $adapter, $url);
         };
-        
+        ${"fn" . NotificationEvents::FORGOT_PASSWORD} = function (ForgotPassword $forgotPassword, AdapterInterface $adapter,$senderDetail) {
+            $isValidEmail = function ($email) {
+                return filter_var($email, FILTER_VALIDATE_EMAIL) !== false;
+            };
+            
+            $employeeRepo = new EmployeeRepository($adapter);
+            $toEmployee = $employeeRepo->fetchById($forgotPassword->employeeId);
+            $toEmail = $toEmployee['EMAIL_OFFICIAL'];
+            $toName = $toEmployee['FIRST_NAME'] . " " . $toEmployee['MIDDLE_NAME'] . " " . $toEmployee['LAST_NAME'];
+            
+            try{
+                $mail = new Message();
+                $mail->setSubject($forgotPassword->code." is your password recovery code");
+                $htmlDescription = "Hi ".$toName.", You can enter the following reset code<br>".$forgotPassword->code."<br><br>Your Code will be expired in ".$forgotPassword->expiryDate;
+                $html2txt = new Html2Text($htmlDescription);
+                $mail->setBody($html2txt->getText());
+
+                if (!isset($senderDetail['fromMail']) || $senderDetail['fromMail'] == null || $senderDetail['fromMail'] == '' || !$isValidEmail($senderDetail['fromMail'])) {
+                    throw new Exception("Sender email is not set or valid.");
+                }
+                if (!isset($toEmail) || $toEmail == null || $toEmail == '' || !$isValidEmail($toEmail)) {
+                    throw new Exception("Receiver email is not set or valid.");
+                }
+                $mail->setFrom($senderDetail['fromMail'], $senderDetail['fromName']);
+                $mail->addTo($toEmail, $toName);
+
+                EmailHelper::sendEmail($mail);
+                HrLogger::getInstance()->info("Email Sent =>" . "From " . $senderDetail['fromMail'] . " To " . $toEmail);
+            } catch(Exception $e) {
+                $this->flashmessenger()->addMessage($e->getMessage());
+            }
+        };
         switch ($eventType) {
             case NotificationEvents::LEAVE_APPLIED:
                 ${"fn" . NotificationEvents::LEAVE_APPLIED}($model, $adapter, $url, self::RECOMMENDER);
@@ -1141,6 +1174,9 @@ class HeadNotification {
                 break;
             case NotificationEvents::TRAVEL_SUBSTITUTE_REJECTED:
                 ${"fn" . NotificationEvents::TRAVEL_SUBSTITUTE_ACCEPTED}($model, $adapter, $url, self::REJECTED);
+                break;
+            case NotificationEvents::FORGOT_PASSWORD:
+                ${"fn" . NotificationEvents::FORGOT_PASSWORD}($model, $adapter,$senderDetail);
                 break;
         }
     }

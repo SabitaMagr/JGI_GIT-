@@ -78,7 +78,7 @@ print $this->form()->openTag($form);
             Remember me </label>
     </div>
     <div class="pull-right forget-password-block">
-        <a href="javascript:;" id="forget-password" class="forget-password">Forgot Password?</a>
+        <a href="<?= $this->url("recover"); ?>" id="forget-password" class="forget-password">Forgot Password?</a>
     </div>
 </div>
 <?php

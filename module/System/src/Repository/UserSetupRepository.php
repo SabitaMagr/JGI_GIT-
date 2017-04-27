@@ -90,9 +90,41 @@ SELECT * FROM HRIS_EMPLOYEES WHERE STATUS='E' AND EMPLOYEE_ID IN (".$employeeId.
         $result = $this->tableGateway->select([UserSetup::USER_ID=>$id]);
         return $result->current();
     }
+    
+    public function fetchByUsername($username){
+        $sql = new Sql($this->adapter);
+        $select = $sql->select();
+        $select->columns([
+            new Expression("US.STATUS AS STATUS"),
+            new Expression("US.USER_ID AS USER_ID"),
+            new Expression("US.USER_NAME AS USER_NAME"),
+            new Expression("US.PASSWORD AS PASSWORD"),
+            new Expression("US.EMPLOYEE_ID AS EMPLOYEE_ID"),
+            new Expression("US.ROLE_ID AS ROLE_ID"),
+        ], true);
+
+        $select->from(['US' => UserSetup::TABLE_NAME])
+            ->join(['E'=>"HRIS_EMPLOYEES"],"E.EMPLOYEE_ID=US.EMPLOYEE_ID",['FIRST_NAME'=>new Expression("INITCAP(E.FIRST_NAME)"),'MIDDLE_NAME'=>new Expression("INITCAP(E.MIDDLE_NAME)"),'LAST_NAME'=>new Expression("INITCAP(E.LAST_NAME)"),'EMAIL_OFFICIAL'])
+            ->join(['R'=>'HRIS_ROLES'],"R.ROLE_ID=US.ROLE_ID",['ROLE_NAME']);
+
+        $select->where([
+            "US.STATUS='E'",
+            "E.STATUS='E'",
+            "US.USER_NAME='".$username."'"
+        ]);
+
+        $statement = $sql->prepareStatementForSqlObject($select);
+        $result = $statement->execute();
+
+        return $result->current();
+    }
 
     public function delete($id)
     {
         $this->tableGateway->update([UserSetup::STATUS=>"D"],[UserSetup::USER_ID=>$id]);
+    }
+    public function updateByEmpId($employeeId,$password)
+    {
+        $this->tableGateway->update([UserSetup::PASSWORD=>$password],[UserSetup::EMPLOYEE_ID=>$employeeId]);
     }
 }
