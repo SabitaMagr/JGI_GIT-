@@ -38,6 +38,18 @@
         var designation = $('#form-parentDesignation');
         var designationListCompanyWise = document.designationListCompanyWise;
 
+        if (document.DesignationValue == 'undefined' || document.DesignationValue == null) {
+            var parentDesignationValue = -1;
+        } else {
+            var parentDesignationValue = document.DesignationValue;
+        }
+
+        if (document.DesignationId == 'undefined' || document.DesignationId == null) {
+            var designationId = -1;
+        } else {
+            var designationId = document.DesignationId;
+        }
+
         // company change function
         var companyChange = function () {
             designation.html('');
@@ -47,10 +59,18 @@
             var deparmentList = designationListCompanyWise[companyName.val()];
             if (deparmentList != 'undefined') {
                 $.each(deparmentList, function (key, des) {
-                    designation.append($("<option></option>")
-                            .attr("value", des.DESIGNATION_ID)
-                            .text(des.DESIGNATION_TITLE));
-
+                    if (designationId != des.DESIGNATION_ID) {
+                        if (parentDesignationValue == des.DESIGNATION_ID) {
+                            designation.append($("<option selected='selected'></option>")
+                                    .attr("value", des.DESIGNATION_ID)
+                                    .text(des.DESIGNATION_TITLE));
+                        } else
+                        {
+                            designation.append($("<option></option>")
+                                    .attr("value", des.DESIGNATION_ID)
+                                    .text(des.DESIGNATION_TITLE));
+                        }
+                    }
                 });
             }
             scopeArea();

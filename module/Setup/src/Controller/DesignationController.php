@@ -70,7 +70,7 @@ class DesignationController extends AbstractActionController {
         }
         $designationList = EntityHelper::getTableKVListWithSortOption($this->adapter, Designation::TABLE_NAME, Designation::DESIGNATION_ID, [Designation::DESIGNATION_TITLE], ["STATUS" => "E"], "DESIGNATION_TITLE", "ASC",null,false,true);
         $CompanyWisedesignationList = $this->repository->fetchAllDesignationCompanyWise();
-        $designationList1 = ["" => "none"] + $designationList;
+//        $designationList1 = ["" => "none"] + $designationList;
         return new ViewModel(Helper::addFlashMessagesToArray(
                         $this, [
                     'form' => $this->form,
@@ -94,7 +94,9 @@ class DesignationController extends AbstractActionController {
         $request = $this->getRequest();
         $designation = new Designation();
         if (!$request->isPost()) {
-            $designation->exchangeArrayFromDB($this->repository->fetchById($id)->getArrayCopy());
+            $fetchData=$this->repository->fetchById($id)->getArrayCopy();
+            $designation->exchangeArrayFromDB($fetchData);
+            $desginationId=$fetchData['DESIGNATION_ID'];
             $this->form->bind($designation);
         } else {
 
@@ -111,12 +113,15 @@ class DesignationController extends AbstractActionController {
             }
         }
         $designationList = EntityHelper::getTableKVListWithSortOption($this->adapter, Designation::TABLE_NAME, Designation::DESIGNATION_ID, [Designation::DESIGNATION_TITLE], ["STATUS" => "E"], Designation::DESIGNATION_TITLE,"ASC",null,false,true);
-        $designationList1 = ["" => "none"] + $designationList;
+//        $designationList1 = ["" => "none"] + $designationList;
+        $CompanyWisedesignationList = $this->repository->fetchAllDesignationCompanyWise();
         return new ViewModel(Helper::addFlashMessagesToArray(
                         $this, [
                     'form' => $this->form,
                     'customRender' => Helper::renderCustomView(),
-                    'designationList' => $designationList1,
+//                    'designationList' => $designationList1,
+                    'fetchedDesignationId' => $desginationId,
+                    'designationListCompanyWise' => $CompanyWisedesignationList,
                     'companies' => EntityHelper::getTableKVListWithSortOption($this->adapter, Company::TABLE_NAME, Company::COMPANY_ID, [Company::COMPANY_NAME], ["STATUS" => "E"], Company::COMPANY_NAME, "ASC",null,false,true),
                     'messages' => $this->flashmessenger()->getMessages(),
                     'id' => $id
