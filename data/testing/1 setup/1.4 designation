@@ -14,9 +14,10 @@ test log
 
 
 system problem 
-1. (parent designation field is not according to company wise)
-2. (no comapny name in table index page)
-2. (no comapny name while exporting to excel)
+1. (parent designation field is not according to company wise)   add(fixed) edit(fixed) 
+2. (while in edit parent designation cannot be itself designation)   add(fixed) edit(fixed) 
+3. (no comapny name in table index page)  fixed 
+4. (no comapny name while exporting to excel) fixed
 
 
 

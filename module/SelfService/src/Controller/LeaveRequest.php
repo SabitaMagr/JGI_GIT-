@@ -131,6 +131,7 @@ class LeaveRequest extends AbstractActionController {
 
                 $leaveRequest->id = (int) Helper::getMaxId($this->adapter, LeaveApply::TABLE_NAME, LeaveApply::ID) + 1;
                 $leaveRequest->employeeId = $this->employeeId;
+//                $leaveRequest->halfDay = 'N';
                 $leaveRequest->startDate = Helper::getExpressionDate($leaveRequest->startDate);
                 $leaveRequest->endDate = Helper::getExpressionDate($leaveRequest->endDate);
                 $leaveRequest->requestedDt = Helper::getcurrentExpressionDate();

@@ -2,17 +2,18 @@
     'use strict';
     $(document).ready(function () {
         window.app.UIConfirmations();
+        $('select').select2();
     });
 })(window.jQuery, window.app);
 
 angular.module('hris', [])
         .controller('trainingAssignController', function ($scope, $http, $window) {
-            $('select').select2();
             $scope.employeeList = [];
             $scope.all = false;
             $scope.assignShowHide = false;
             var l;
             var $tableContainer = $("#trainingAssignListTable");
+
             $scope.checkAll = function (item) {
                 for (var i = 0; i < $scope.employeeList.length; i++) {
                     $scope.employeeList[i].checked = item;
@@ -22,6 +23,7 @@ angular.module('hris', [])
                     l = Ladda.create(document.querySelector('#assignBtn'));
                 }
             };
+
             $scope.checkUnit = function (item) {
                 for (var i = 0; i < $scope.employeeList.length; i++) {
                     if ($scope.employeeList[i].checked) {
@@ -32,10 +34,9 @@ angular.module('hris', [])
                     $scope.assignShowHide = false;
                 }
             };
-            var $tableContainer1 = $("#trainingAssignListTable");
+
             $scope.view = function () {
-                $scope.all = false;
-                $scope.assignShowHide = false;
+                var trainingId = angular.element(document.getElementById('trainingId')).val();
                 var companyId = angular.element(document.getElementById('companyId')).val();
                 var branchId = angular.element(document.getElementById('branchId')).val();
                 var departmentId = angular.element(document.getElementById('departmentId')).val();
@@ -43,7 +44,12 @@ angular.module('hris', [])
                 var employeeId = angular.element(document.getElementById('employeeId')).val();
                 var positionId = angular.element(document.getElementById('positionId')).val();
                 var serviceTypeId = angular.element(document.getElementById('serviceTypeId')).val();
-                var trainingId = angular.element(document.getElementById('trainingId')).val();
+
+                trainingId = (typeof trainingId === 'undefined' || trainingId === null || trainingId === '') ? -1 : trainingId;
+
+                $scope.all = false;
+                $scope.assignShowHide = false;
+
                 App.blockUI({target: "#hris-page-content"});
                 window.app.pullDataById(document.url, {
                     action: 'pullEmployeeForTrainingAssign',
@@ -54,7 +60,7 @@ angular.module('hris', [])
                         employeeId: employeeId,
                         positionId: positionId,
                         serviceTypeId: serviceTypeId,
-                        trainingId: (typeof trainingId === 'undefined' || trainingId === null || trainingId === '') ? -1 : trainingId,
+                        trainingId: trainingId,
                         companyId: companyId,
                     }
                 }).then(function (success) {
@@ -72,18 +78,21 @@ angular.module('hris', [])
                     console.log("Employee Get All", failure);
                 });
             };
+
             $scope.assign = function () {
                 var trainingId = angular.element(document.getElementById('trainingId')).val();
                 if (typeof trainingId === 'undefined' || trainingId === null || trainingId == '' || trainingId == -1) {
                     window.toastr.error("No Training Selected.", "Alert");
                     return;
                 }
-                l.start();
-                l.setProgress(0.5);
 
                 var promises = [];
                 for (var index in $scope.employeeList) {
                     if ($scope.employeeList[index].checked) {
+                        if (trainingId == $scope.employeeList[index].TRAINING_ID) {
+                            console.log($scope.employeeList[index].EMPLOYEE_ID + 'is already assigned');
+                            continue;
+                        }
                         promises.push(window.app.pullDataById(document.url, {
                             action: 'assignEmployeeTraining',
                             data: {
@@ -94,13 +103,33 @@ angular.module('hris', [])
                         }));
                     }
                 }
-                Promise.all(promises).then(function (success) {
+
+                if (promises.length > 0) {
+                    l.start();
+                    l.setProgress(0.5);
+                } else {
+                    window.toastr.success("Already Assigned", "Notification");
+                }
+
+                Promise.all(promises).then(function (response) {
                     l.stop();
-                    $scope.$apply(function () {
-                        $scope.view();
-                    });
-                    window.toastr.success("Training assigned successfully!", "Notification");
+                    var assignedStatus = false;
+                    for (var i in response) {
+                        if (response[i].success) {
+                            assignedStatus = true;
+                            window.toastr.success(response[i].message, "Notification");
+                        } else {
+                            window.toastr.error(response[i].message, "Error");
+                        }
+                    }
+                    if (assignedStatus) {
+                        $scope.$apply(function () {
+                            $scope.view();
+                        });
+                    }
+
                 }, function (error) {
+                    l.stop();
                     console.log(error);
                 });
             };
@@ -112,7 +141,6 @@ angular.module('hris', [])
 
                 var promises = [];
                 for (var index in $scope.employeeList) {
-                    // console.log($scope.employeeList[index]);
                     if ($scope.employeeList[index].checked) {
                         promises.push(window.app.pullDataById(document.url, {
                             action: 'cancelEmployeeTraining',

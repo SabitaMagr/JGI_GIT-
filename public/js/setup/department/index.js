@@ -32,6 +32,7 @@
                         {value: "Department Name"},
                         {value: "Country Name"},
                         {value: "Parent Department Name"},
+                        {value: "COMPANY"},
                         {value: "Remarks"}
                     ]
                 }];
@@ -52,6 +53,7 @@
                         {value: dataItem.DEPARTMENT_NAME},
                         {value: dataItem.COUNTRY_NAME},
                         {value: dataItem.PARENT_DEPARTMENT},
+                        {value: dataItem.COMPANY_NAME},
                         {value: dataItem.REMARKS}
                     ]
                 });

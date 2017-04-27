@@ -2533,10 +2533,13 @@ class RestfulService extends AbstractRestfulController {
         $trainingAssignModel->employeeId = $data['employeeId'];
         $trainingAssignModel->trainingId = $data['trainingId'];
 
-        $getPreviousDtl = $trainingAssignRepo->getAllDetailByEmployeeID($data['employeeId'], $data['trainingId']);
+        $emptrainingAssignedList = $trainingAssignRepo->getAllDetailByEmployeeID($data['employeeId'], $data['trainingId']);
+        $empTrainingAssignedDetail = $emptrainingAssignedList->current();
 
-
-        if (count($getPreviousDtl) > 0) {
+        if ($empTrainingAssignedDetail != null) {
+            if ($empTrainingAssignedDetail['STATUS'] == EntityHelper::STATUS_ENABLED) {
+                throw new Exception('Already Assigned');
+            }
             $trainingAssignClone = clone $trainingAssignModel;
             unset($trainingAssignClone->employeeId);
             unset($trainingAssignClone->trainingId);
@@ -2552,11 +2555,20 @@ class RestfulService extends AbstractRestfulController {
             $trainingAssignModel->status = 'E';
             $trainingAssignRepo->add($trainingAssignModel);
         }
-        HeadNotification::pushNotification(NotificationEvents::TRAINING_ASSIGNED, $trainingAssignModel, $this->adapter, $this->plugin('url'));
+        try {
+            HeadNotification::pushNotification(NotificationEvents::TRAINING_ASSIGNED, $trainingAssignModel, $this->adapter, $this->plugin('url'));
+        } catch (Exception $e) {
+            return[
+                "success" => true,
+                "data" => null,
+                "message" => "Training assigned successfully with following error : " . $e->getMessage()
+            ];
+        }
 
         return [
             "success" => true,
-            "data" => []
+            "data" => null,
+            "message" => "Training assigned successfully."
         ];
     }
 

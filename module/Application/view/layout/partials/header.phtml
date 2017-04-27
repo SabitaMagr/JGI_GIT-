@@ -12,7 +12,12 @@
         </div>
         
      <div class="company-logo company-logo-box">
-        <span>Jawalakhel Group of Industries<br><address>Jawalakhel, Lalitpur</address></span>
+         <?php if(isset($companyLogoUrl) && $companyLogoUrl!="NO") {  ?>
+       <img src="<?= $this->basePath("uploads/" . $companyLogoUrl) ?>" alt="logo" class="logo-default1 companylogo">
+          <?php  }?>
+        <?php // print_r($profilePictureUrl);  ?>
+        <span><?=$companyName?><br>
+        <address><?=$companyAddress?></address></span>
      </div>
 
         <!-- END LOGO -->

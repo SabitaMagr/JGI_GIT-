@@ -51,7 +51,8 @@ class LeaveSetup extends AbstractActionController {
                 'CARRY_FORWARD' => $getValue($leaveRow['CARRY_FORWARD']),
                 'CASHABLE' => $getValue($leaveRow['CASHABLE']),
                 'PAID' => $getValue($leaveRow['PAID']),
-                'IS_SUBSTITUTE' => $leaveRow['IS_SUBSTITUTE']
+                'IS_SUBSTITUTE' => $leaveRow['IS_SUBSTITUTE'],
+                'COMPANY_NAME' => $leaveRow['COMPANY_NAME']
                     ]
             );
         }

@@ -318,11 +318,15 @@ window.app = (function ($, toastr, App) {
         });
     };
 
-    var successMessage = function (message) {
+    var successMessage = function (message, title) {
+        if (typeof title === 'undefined') {
+            title = "Notifications";
+        }
         if (message && (message.length > 0)) {
-            window.toastr.success(message[0], "Notifications");
+            window.toastr.success(message[0], title);
         }
     };
+
     successMessage(document.messages);
 
     var errorMessage = function (message, title) {
@@ -330,6 +334,26 @@ window.app = (function ($, toastr, App) {
             window.toastr.error(message, title);
         }
     }
+    var showMessage = function (message, type, title) {
+        try {
+            if (typeof message === 'undefined') {
+                throw {message: 'No message provided.'};
+            }
+            if (typeof type === 'undefined') {
+                type = 'info';
+            } else if ($.inArray(type, ['info', 'success', 'error', 'warning']) === -1) {
+                throw {message: 'Type defined must be info,success,error or warning.'};
+            }
+            if (typeof title === 'undefined') {
+                title = "System Information";
+            }
+
+            window.toastr[type](message, title);
+
+        } catch (e) {
+            console.log('showMessage()=>', e.message);
+        }
+    };
 
     var floatingProfile = {
         minStatus: false,
@@ -694,6 +718,12 @@ window.app = (function ($, toastr, App) {
             });
         }
     };
+    var scrollTo = function (id) {
+        id = id.replace("link", "");
+        $('html,body').animate({
+            scrollTop: $("#" + id).offset().top - 50},
+                1000);
+    };
 
     return {
         format: format,
@@ -715,7 +745,9 @@ window.app = (function ($, toastr, App) {
         getSystemDate: getDate,
         addComboTimePicker: addComboTimePicker,
         getServerDate: getServerDate,
-        setLoadingOnSubmit: setLoadingOnSubmit
+        setLoadingOnSubmit: setLoadingOnSubmit,
+        scrollTo: scrollTo,
+        showMessage: showMessage
     };
 })(window.jQuery, window.toastr, window.App);
 

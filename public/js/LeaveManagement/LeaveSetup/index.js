@@ -24,6 +24,7 @@
             rowTemplate: kendo.template($("#rowTemplate").html()),
             columns: [
                 {field: "LEAVE_CODE", title: "Leave Code"},
+                {field: "COMPANY_NAME", title: "Company Name"},
                 {field: "LEAVE_ENAME", title: "Leave Name"},
                 {field: "ALLOW_HALFDAY", title: "Allow Halfday"},
                 {field: "DEFAULT_DAYS", title: "Default Days"},

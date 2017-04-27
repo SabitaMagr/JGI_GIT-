@@ -46,6 +46,7 @@ class CompanyController extends AbstractActionController {
     public function addAction() {
         $this->initializeForm();
         $request = $this->getRequest();
+        $imageData = null;
         if ($request->isPost()) {
             $postedData = $request->getPost();
             $this->form->setData($postedData);
@@ -60,15 +61,38 @@ class CompanyController extends AbstractActionController {
                 $this->repository->add($company);
                 $this->flashmessenger()->addMessage("Company Successfully added!!!");
                 return $this->redirect()->toRoute("company");
+            } else {
+                $imageData = $this->getFileInfo($this->adapter, $postedData['logo']);
             }
         }
         return new ViewModel(Helper::addFlashMessagesToArray(
                         $this, [
                     'form' => $this->form,
-                    'messages' => $this->flashmessenger()->getMessages()
+                    'messages' => $this->flashmessenger()->getMessages(),
+                    'imageData' => $imageData
                         ]
                 )
         );
+    }
+
+    private function getFileInfo(AdapterInterface $adapter, $fileId) {
+        $fileRepo = new EmployeeFile($adapter);
+        $fileDetail = $fileRepo->fetchById($fileId);
+
+        if ($fileDetail == null) {
+            $imageData = [
+                'fileCode' => null,
+                'fileName' => null,
+                'oldFileName' => null
+            ];
+        } else {
+            $imageData = [
+                'fileCode' => $fileDetail['FILE_CODE'],
+                'oldFileName' => $fileDetail['FILE_PATH'],
+                'fileName' => $fileDetail['FILE_NAME']
+            ];
+        }
+        return $imageData;
     }
 
     public function editAction() {
@@ -87,34 +111,18 @@ class CompanyController extends AbstractActionController {
         } else {
             $postedData = $request->getPost();
             $this->form->setData($postedData);
+            $company->logo = $postedData['logo'];
             if ($this->form->isValid()) {
                 $company->exchangeArrayFromForm($this->form->getData());
                 $company->modifiedDt = Helper::getcurrentExpressionDate();
                 $company->modifiedBy = $this->employeeId;
-                $company->logo = $postedData['logo'];
                 $this->repository->edit($company, $id);
                 $this->flashmessenger()->addMessage("Company Successfully Updated!!!");
                 return $this->redirect()->toRoute("company");
             }
         }
 
-        $fileRepo = new EmployeeFile($this->adapter);
-        $fileDetail = $fileRepo->fetchById($company->logo);
-
-        if ($fileDetail == null) {
-            $imageData = [
-                'fileCode' => null,
-                'fileName' => null,
-                'oldFileName' => null
-            ];
-        } else {
-            $imageData = [
-                'fileCode' => $fileDetail['FILE_CODE'],
-                'oldFileName' => $fileDetail['FILE_PATH'],
-                'fileName' => $fileDetail['FILE_NAME']
-            ];
-        }
-
+        $imageData = $this->getFileInfo($this->adapter, $company->logo);
 
         return Helper::addFlashMessagesToArray(
                         $this, [

@@ -71,7 +71,7 @@ class UserSetupRepository implements RepositoryInterface {
 
         if($employeeId!=null){
             $sql .= " UNION 
-SELECT * FROM HRIS_EMPLOYEES WHERE STATUS='E' AND EMPLOYEE_ID IN (".$employeeId.")";
+SELECT INITCAP(FIRST_NAME) AS FIRST_NAME,INITCAP(MIDDLE_NAME) AS MIDDLE_NAME, INITCAP(LAST_NAME) AS LAST_NAME,EMPLOYEE_ID FROM HRIS_EMPLOYEES WHERE STATUS='E' AND EMPLOYEE_ID IN (".$employeeId.")";
         }
 
         $statement = $this->adapter->query($sql);

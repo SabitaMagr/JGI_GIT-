@@ -105,6 +105,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                     <div class="col-sm-6">
                         <div class="form-group">
                             <?php print $this->formLabel($companyId); ?>
+                            <span class="required" aria-required="true">*</span>
                             <?php print $this->formElement($companyId); ?>
                             <?php print $this->formElementErrors()->render($companyId, ['class' => 'help-block error']); ?>
                         </div>
@@ -112,6 +113,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                     <div class="col-sm-6">
                         <div class="form-group  <?= empty($shiftCode->getMessages()) ? "" : "error" ?>">
                             <?php print $this->formLabel($shiftCode); ?>
+                            <span class="required" aria-required="true">*</span>
                             <?php print $this->formElement($shiftCode); ?>
                             <span class="errorMsg" style="font-size:11px; color:red;"></span>
                         </div>
@@ -125,6 +127,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                         <div
                             class="form-group  <?= empty($shiftEname->getMessages()) ? "" : "error" ?>">
                                 <?php print $this->formLabel($shiftEname); ?>
+                            <span class="required" aria-required="true">*</span>
                                 <?php print $this->formElement($shiftEname); ?>
                             <span class="errorMsg" style="font-size:11px; color:red;"></span>
                         </div>
@@ -135,6 +138,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                         <div
                             class="form-group  <?= empty($shiftLname->getMessages()) ? "" : "error" ?>">
                                 <?php print $this->formLabel($shiftLname); ?>
+                            <span class="required" aria-required="true">*</span>
                                 <?php print $this->formElement($shiftLname); ?>
                             <span class="errorMsg" style="font-size:11px; color:red;"></span>
                         </div>
@@ -214,21 +218,21 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
 
                     <div class="col-sm-6">
                         <div class="form-group required">
-                            <?php print $this->formLabel($halfDayEndTime) ?>
-                            <div class="input-group dropdown-select">
-                                <?php print $this->formElement($halfDayEndTime) ?>
-                            </div>
-                        </div>
-                        <?php print $this->formElementErrors()->render($halfDayEndTime, ['class' => 'help-block error']) ?>
-                    </div>
-                    <div class="col-sm-6">
-                        <div class="form-group required">
                             <?php print $this->formLabel($halfTime) ?>
                             <div class="input-group dropdown-select">
                                 <?php print $this->formElement($halfTime) ?>
                             </div>
                         </div>
                         <?php print $this->formElementErrors()->render($halfTime, ['class' => 'help-block error']) ?>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group required">
+                            <?php print $this->formLabel($halfDayEndTime) ?>
+                            <div class="input-group dropdown-select">
+                                <?php print $this->formElement($halfDayEndTime) ?>
+                            </div>
+                        </div>
+                        <?php print $this->formElementErrors()->render($halfDayEndTime, ['class' => 'help-block error']) ?>
                     </div>
 
                     <div class="col-sm-6">
