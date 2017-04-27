@@ -27,7 +27,6 @@ use SelfService\Model\AdvanceRequest;
 use SelfService\Model\AttendanceRequestModel;
 use SelfService\Model\LoanRequest;
 use SelfService\Model\TrainingRequest;
-use SelfService\Model\TrainingRequest;
 use SelfService\Model\TravelRequest;
 use SelfService\Model\WorkOnDayoff;
 use SelfService\Model\WorkOnHoliday;
