@@ -86,6 +86,17 @@ echo json_encode($menu);
                         </div>
                     </div>
                 </div>
+                
+                <div class=" row">
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <?php print $this->formLabel($companyId); ?>
+                            <span class="required" aria-required="true">*</span>
+                            <?php print $this->formElement($companyId); ?>
+                            <?php print $this->formElementErrors()->render($companyId, ['class' => 'help-block error']); ?>
+                        </div>
+                    </div>
+                </div>
 
                 <div class=" row">
                     <div class="col-sm-4">
@@ -121,19 +132,7 @@ echo json_encode($menu);
                         </div>
                     </div>
                 </div>
-
-                <div class=" row">
-                    <div class="col-sm-4">
-                        <div class="form-group">
-                            <?php print $this->formLabel($companyId); ?>
-                            <span class="required" aria-required="true">*</span>
-                            <?php print $this->formElement($companyId); ?>
-                            <?php print $this->formElementErrors()->render($companyId, ['class' => 'help-block error']); ?>
-                        </div>
-                    </div>
-                </div>
-
-
+                
                 <?php
                 print $this->formSubmit($submit);
                 print $this->form()->closeTag();
