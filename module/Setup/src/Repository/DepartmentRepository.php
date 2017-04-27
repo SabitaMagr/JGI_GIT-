@@ -43,7 +43,7 @@ class DepartmentRepository implements RepositoryInterface {
         $select->join(['C' => "HRIS_COUNTRIES"], "D." . Department::COUNTRY_ID . "=C.COUNTRY_ID", ['COUNTRY_NAME' => new Expression('INITCAP(C.COUNTRY_NAME)')], 'left')
                 ->join(['PD' => Department::TABLE_NAME], "D." . Department::PARENT_DEPARTMENT . "=PD.DEPARTMENT_ID", ['PARENT_DEPARTMENT' => new Expression('INITCAP(PD.DEPARTMENT_NAME)')], 'left')
                 ->join(['B' => Branch::TABLE_NAME], "D." . Department::BRANCH_ID . "=B." . Branch::BRANCH_ID, [Branch::BRANCH_NAME => new Expression('INITCAP(B.' . Branch::BRANCH_NAME . ')')], 'left')
-                ->join(['CP' => Company::TABLE_NAME], "CP." . Company::COMPANY_ID . "=D." . Department::DEPARTMENT_ID, [Company::COMPANY_NAME => new Expression('INITCAP(CP.COMPANY_NAME)')], 'left');
+                ->join(['CP' => Company::TABLE_NAME], "CP." . Company::COMPANY_ID . "=D." . Department::COMPANY_ID, [Company::COMPANY_NAME => new Expression('INITCAP(CP.COMPANY_NAME)')], 'left');
         $select->where(["D.STATUS='E'"]);
         $select->order([
             "D." . Department::DEPARTMENT_NAME => Select::ORDER_ASCENDING,

@@ -60,5 +60,32 @@ class DesignationRepository implements RepositoryInterface {
     public function delete($id) {
         $this->tableGateway->update([Designation::STATUS => 'D'], ["DESIGNATION_ID" => $id]);
     }
+    
+    
+    public function fetchAllDesignationCompanyWise() {
+        $sql = new Sql($this->adapter);
+        $select = $sql->select();
+        $select->columns([Designation::DESIGNATION_ID, Designation::DESIGNATION_TITLE]);
+        $select->from(['D' => Designation::TABLE_NAME]);
+        $select->join(['C' => Company::TABLE_NAME], "C." . Company::COMPANY_ID . "=D." . Designation::COMPANY_ID, array(Company::COMPANY_ID, 'COMPANY_NAME' => new Expression('INITCAP(C.'.Company::COMPANY_NAME.')')), 'inner');
+        $select->where(["C.STATUS='E'"]);
+        $select->where(["D.STATUS='E'"]);
+        $select->order("D." . Designation::DESIGNATION_TITLE . " ASC");
+        $statement = $sql->prepareStatementForSqlObject($select);
+        $result = $statement->execute();
+        
+        $list = [];
+        foreach ($result as $row) {
+            array_push($list, $row);
+        }
+        $designationList = [];
+        foreach ($list as $val) {
+            $newKey = $val['COMPANY_ID'];
+            $designationList[$newKey][] = $val;
+        }
+        
+        return $designationList;
+    }
+    
 
 }
