@@ -79,6 +79,7 @@ use Zend\Db\Adapter\Driver\ResultInterface;
 use Zend\Mvc\Controller\AbstractRestfulController;
 use Zend\View\Model\JsonModel;
 use Training\Repository\TrainingStatusRepository;
+use Application\Repository\ForgotPasswordRepository;
 
 class RestfulService extends AbstractRestfulController {
 
@@ -365,6 +366,9 @@ class RestfulService extends AbstractRestfulController {
                         break;
                     case "pullTrainingRequestStatusList":
                         $responseData = $this->pullTrainingRequestStatusList($postedData->data);
+                        break;
+                    case "checkUserName":
+                        $responseData = $this->checkUserName($postedData->data);
                         break;
 
                     default:
@@ -2308,6 +2312,17 @@ class RestfulService extends AbstractRestfulController {
             "msg" => "* Already Exist!!!"
         ];
     }
+    
+    public function checkUserName($data){
+        $tableName = $data['tableName'];
+        $columnsWidValues = [$data['columnName']=>$data['value']];
+        $result = ConstraintHelper::checkUniqueConstraint($this->adapter, $tableName, $columnsWidValues, nulll, 0, 0);
+        return [
+            "success" => "true",
+            "data" => (int) $result,
+            "msg" => "* There is no account registered for this username.!!!"
+        ];
+    }
 
     private function pullMonthsByFiscalYear($data) {
         $fiscalYearId = $data['fiscalYearId'];
@@ -3093,5 +3108,4 @@ class RestfulService extends AbstractRestfulController {
             "recomApproveId" => $recomApproveId
         ];
     }
-
 }

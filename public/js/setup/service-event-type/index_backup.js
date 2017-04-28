@@ -24,6 +24,7 @@
             columns: [
                 {field: "SERVICE_EVENT_TYPE_CODE", title: "Service Event Type Code",width:120},
                 {field: "SERVICE_EVENT_TYPE_NAME", title: "Service Event Type Name",width:200},
+                {title: "Action",width:50}
             ]
         });
         $("#export").click(function (e) {

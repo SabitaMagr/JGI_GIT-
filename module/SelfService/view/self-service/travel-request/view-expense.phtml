@@ -16,7 +16,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
     </script>
 <?php } ?>
 <?php
-$this->headScript()->appendFile($this->basePath('js/SelfService/travel-request/add.js'))
+$this->headScript()
         ->appendFile($this->basePath('js/angular.min.js'))
         ->appendFile($this->basePath('js/SelfService/travel-request/print.js'));
 

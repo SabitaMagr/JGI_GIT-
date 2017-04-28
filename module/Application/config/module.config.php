@@ -154,6 +154,16 @@ return [
                     ],
                 ],
             ],
+            'recover' => [
+                'type' => Segment::class,
+                'options' => [
+                    'route' => '/recover[/:action[/:employeeId]]',
+                    'defaults' => [
+                        'controller' => Controller\ForgotPasswordController::class,
+                        'action' => 'email',
+                    ],
+                ],
+            ],
         ],
     ],
     'navigation' => [
@@ -205,7 +215,8 @@ return [
             Controller\IndexController::class => InvokableFactory::class,
             Controller\DashboardController::class => Controller\ControllerFactory::class,
             Controller\CronController::class => Controller\ControllerFactory::class,
-            Controller\TaskController::class => Controller\ControllerFactory::class
+            Controller\TaskController::class => Controller\ControllerFactory::class,
+            Controller\ForgotPasswordController::class => Controller\ControllerFactory::class
         ],
     ],
     'view_manager' => [
@@ -277,4 +288,6 @@ return [
         3 => 'Other'
     ],
     'default-profile-picture' => "default-profile-picture.jpg",
+    'default-system-mail'=>"somkala.pachhai@itnepal.com",
+    'default-system-name'=>"neo hris"
 ];
