@@ -370,3 +370,9 @@ a.codeCancel:hover{
     font-size: 11px;
     float: left;
 }
+
+
+
+.passwordLabel {
+    font-size:11px;
+}

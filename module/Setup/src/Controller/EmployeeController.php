@@ -437,7 +437,7 @@ class EmployeeController extends AbstractActionController {
                     "vdcMunicipalities" => EntityHelper::getTableKVList($this->adapter, EntityHelper::HRIS_VDC_MUNICIPALITY),
                     "zones" => EntityHelper::getTableKVList($this->adapter, EntityHelper::HRIS_ZONES),
                     "religions" => EntityHelper::getTableKVList($this->adapter, EntityHelper::HRIS_RELIGIONS),
-                    "companies" => ApplicationHelper::getTableKVListWithSortOption($this->adapter, "HRIS_COMPANY", "COMPANY_ID", ["COMPANY_ID"], ["STATUS" => "E"], "COMPANY_NAME", "ASC", null, false, true),
+                    "companies" => ApplicationHelper::getTableKVListWithSortOption($this->adapter, "HRIS_COMPANY", "COMPANY_ID", ["COMPANY_NAME"], ["STATUS" => "E"], "COMPANY_NAME", "ASC", null, false, true),
                     "countries" => EntityHelper::getTableKVList($this->adapter, EntityHelper::HRIS_COUNTRIES),
                     'filetypes' => EntityHelper::getTableKVList($this->adapter, EntityHelper::HRIS_FILE_TYPE),
                     'serviceTypes' => ApplicationHelper::getTableKVListWithSortOption($this->adapter, "HRIS_SERVICE_TYPES", "SERVICE_TYPE_ID", ["SERVICE_TYPE_NAME"], ["STATUS" => 'E'], "SERVICE_TYPE_NAME", "ASC", null, true, true),

@@ -13,7 +13,7 @@ payroll features
 jwl-training-session-1_25-Apr-17  issues | changes
 1. service event types menu should be shown.[done]
 2. Label Change in Training [done]
-    Company Personal => Personal 
+   Company Personal => Personal 
 3. Phone no format need to be updated.[done] xxx-xxxxxxx is new format
 4. Dropdown requires a default option.
 5. 3 days late should deduct 1 leave as per policy in JGI.
@@ -21,11 +21,11 @@ jwl-training-session-1_25-Apr-17  issues | changes
 7. Date of Birth should be listed in Employee list.[done]
 8. concept of profile copy.
 9. Data update on JGI database | only two branches should be listed i.e. Head Office, Factory
-10. Company should also be displayed in designation list.[done]
-11. Dropdowns with no list.
-12. Appointment and Re-appointment concept for JGI.[pending]
-13. Password forget implementation[under process]
-14. password encryption required.[done ]
+10.Company should also be displayed in designation list.[done]
+11.Dropdowns with no list.
+12.Appointment and Re-appointment concept for JGI.[pending]
+13.Password forget implementation[under process]
+14.password encryption required.[done ]
 
 
 password forget implemetation flow
@@ -48,3 +48,61 @@ jwl-training-session-2_27-Apr-17 issues | changes
 10. JGI work on holiday, dayoff factor.    
 
 11. EMAIL TEMPLATE VALIDATION REQUIRED and notification required
+11. dropdown list according to foreign relations.
+12. Voucher generation in travel request.
+13. link with payroll desktop version. 
+14. Nepal banda half day shift test.
+15. Attendance Daily report popover detail.
+16. Report popover detail.
+
+
+
+
+from rajkumr
+1) → attendance report name list [done]
+	→ department summary analysis
+	→ department/employee analysis
+	→ employee monthly analysis
+	→ employee day wise summary (department wise daily)
+
+2) on login view [not required]
+→ user need to select :: Branch and Company from list
+
+3) Label should be defined on filter option [need discussion]
+
+4) Set default dashboard for user if not assigned
+
+5) Logo design [completed]
+	→ Logo [company name] [company address]
+
+6) Substitute Work Request on travel and leave [completed]
+	→ set notification for requested substitute person
+
+7) Employee join
+	→ latest employee join alert up to 9 
+	→ set link on employee list and have to go through link to view all detail information
+
+9) Mispuncth
+	→ set link on icon to list all detail
+10) Attendance request detail
+	→ should go through 2 level hierarchy
+
+
+11) Travel request
+	→ advance request [advance amount should set on debit and credit]
+	→ need to send account department [should get notification by all employee of under a/c dept]
+	→ department type should be set
+		→ hr
+		→ general
+		→ account
+		→ production
+	→ advance voucher generate option with debit credit
+		→ settlement 
+		→ travel expense request on defined date
+		→ if defined date closed, then employee can’t open the expense request table
+
+12) recommender and approver assign for loan request
+13) filter option
+	→ service event type 
+		→ first need to be set label as working 
+		→ and only working employee should be displayed in list
