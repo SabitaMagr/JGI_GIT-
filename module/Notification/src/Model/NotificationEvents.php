@@ -77,4 +77,6 @@ class NotificationEvents {
     const TRAVEL_SUBSTITUTE_APPLIED = 57;
     const TRAVEL_SUBSTITUTE_ACCEPTED = 58;
     const TRAVEL_SUBSTITUTE_REJECTED = 59;
+    
+    const FORGOT_PASSWORD = 60;
 }

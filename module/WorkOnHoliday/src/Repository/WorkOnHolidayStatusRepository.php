@@ -140,11 +140,11 @@ class WorkOnHolidayStatusRepository implements RepositoryInterface{
         }
         
         if($toDate!=null){   
-            $sql .= "AND WH.TO_DATE<=TO_DATE('".$toDate."','DD-MM-YYYY')";
+            $sql .= " AND WH.TO_DATE<=TO_DATE('".$toDate."','DD-MM-YYYY')";
         }
 
         if ($employeeId != -1) {
-            $sql .= "AND E." . HrEmployees::EMPLOYEE_ID . " = $employeeId";
+            $sql .= " AND E." . HrEmployees::EMPLOYEE_ID . " = $employeeId";
         }
         if ($companyId != -1) {
             $sql .= " AND E." . HrEmployees::EMPLOYEE_ID . " IN (SELECT " . HrEmployees::EMPLOYEE_ID . " FROM " . HrEmployees::TABLE_NAME . " WHERE " . HrEmployees::COMPANY_ID . "= $companyId)";

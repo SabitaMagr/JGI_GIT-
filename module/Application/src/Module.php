@@ -24,6 +24,7 @@ use Zend\ModuleManager\Feature\AutoloaderProviderInterface;
 use Zend\ModuleManager\Feature\ConsoleUsageProviderInterface;
 use Zend\Mvc\ModuleRouteListener;
 use Zend\Mvc\MvcEvent;
+use Application\Controller\ForgotPasswordController;
 use Zend\View\Model\ViewModel;
 
 class Module implements AutoloaderProviderInterface, ConsoleUsageProviderInterface {
@@ -58,6 +59,11 @@ class Module implements AutoloaderProviderInterface, ConsoleUsageProviderInterfa
             AuthController::class . '-logout',
             AuthController::class . '-authenticate',
             RestfulService::class . '-restful',
+            ForgotPasswordController::class."-checkCodeDetail",
+            ForgotPasswordController::class."-index",
+            ForgotPasswordController::class."-code",
+            ForgotPasswordController::class."-password",
+            ForgotPasswordController::class."-email",
             Controller\CronController::class . '-index',
             Controller\CronController::class . '-employee-attendance',
         ];

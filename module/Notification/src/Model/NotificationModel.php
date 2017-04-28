@@ -1,5 +1,4 @@
 <?php
-
 namespace Notification\Model;
 
 use Zend\Mvc\Controller\Plugin\Url;
