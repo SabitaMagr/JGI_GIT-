@@ -497,7 +497,13 @@ class EmployeeController extends AbstractActionController {
         $empQualificationDtl = $empQualificationRepo->getByEmpId($id);
         $empExperienceList = $empExperienceRepo->getByEmpId($id);
         $empTrainingList = $empTrainingRepo->getByEmpId($id);
-
+        
+        $jobHistoryRepo = new JobHistoryRepository($this->adapter);
+        $jobHistoryList = $jobHistoryRepo->filter(null, null, $id);
+        
+        $employeeFileRepo = new EmployeeFile($this->adapter);
+        $employeeFile = $employeeFileRepo->fetchByEmpId($id);
+        
         return Helper::addFlashMessagesToArray($this, [
                     'formOne' => $this->formOne,
                     'formTwo' => $this->formTwo,
@@ -516,7 +522,9 @@ class EmployeeController extends AbstractActionController {
                     'tempZoneName' => $tempZoneDtl['ZONE_NAME'],
                     'empQualificationList' => $empQualificationDtl,
                     'empExperienceList' => $empExperienceList,
-                    'empTrainingList' => $empTrainingList
+                    'empTrainingList' => $empTrainingList,
+                    'jobHistoryList'=>$jobHistoryList,
+                    "employeeFile"=>$employeeFile
         ]);
     }
 

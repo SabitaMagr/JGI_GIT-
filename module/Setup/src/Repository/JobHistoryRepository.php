@@ -63,7 +63,7 @@ class JobHistoryRepository implements RepositoryInterface {
         return $result;
     }
 
-    public function filter($fromDate, $toDate, $employeeId, $serviceEventTypeId,$companyId=null,$branchId=null,$departmentId=null,$designationId=null,$positionId=null,$serviceTypeId=null) {
+    public function filter($fromDate, $toDate, $employeeId, $serviceEventTypeId=null,$companyId=null,$branchId=null,$departmentId=null,$designationId=null,$positionId=null,$serviceTypeId=null) {
         $sql = new Sql($this->adapter);
         $select = $sql->select();
         $select->columns([
@@ -103,7 +103,7 @@ class JobHistoryRepository implements RepositoryInterface {
             ]);
         }
 
-        if ($serviceEventTypeId != -1) {
+        if ($serviceEventTypeId!=null && $serviceEventTypeId != -1) {
             $select->where([
                 "H.SERVICE_EVENT_TYPE_ID=" . $serviceEventTypeId
             ]);
