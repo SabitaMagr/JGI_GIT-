@@ -17,6 +17,7 @@
             rowTemplate: kendo.template($("#rowTemplate").html()),
             columns: [
                 {field: "ADVANCE_CODE", title: "Advance Code",width:80},
+                {field: "COMPANY_NAME", title: "Company",width:100},
                 {field: "ADVANCE_NAME", title: "Advance Name",width:130},
                 {field: "MIN_SALARY_AMT", title: "Min. Salary Amount",width:120},
                 {field: "AMOUNT_TO_ALLOW", title: "Amount To Allow",width:120},
@@ -29,6 +30,7 @@
             var rows = [{
                     cells: [
                         {value: "Advance Code"},
+                        {value: "Company"},
                         {value: "Advance Name"},
                         {value: "Salary Range"},
                         {value: "Amount To Allow"},
@@ -50,6 +52,7 @@
                 rows.push({
                     cells: [
                         {value: dataItem.ADVANCE_CODE},
+                        {value: dataItem.COMPANY_NAME},
                         {value: dataItem.ADVANCE_NAME},
                         {value: dataItem.MIN_SALARY_AMT+"-"+dataItem.MAX_SALARY_AMT},
                         {value: dataItem.AMOUNT_TO_ALLOW+"%"},

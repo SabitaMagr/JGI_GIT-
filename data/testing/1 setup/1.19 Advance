@@ -14,7 +14,7 @@ test log
 
 
 system problem 
-1. no company code in excel export
+1. no company code in excel export  (fixed)
 2. min amount cannot be greater than maximum amount
 
 
