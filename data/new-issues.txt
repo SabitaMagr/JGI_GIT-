@@ -46,3 +46,5 @@ jwl-training-session-2_27-Apr-17 issues | changes
 8. Recommender not filtered.
 9. Email link issue.
 10. JGI work on holiday, dayoff factor.    
+
+11. EMAIL TEMPLATE VALIDATION REQUIRED and notification required
