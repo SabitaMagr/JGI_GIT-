@@ -46,3 +46,54 @@ jwl-training-session-2_27-Apr-17 issues | changes
 8. Recommender not filtered.
 9. Email link issue.
 10. JGI work on holiday, dayoff factor.    
+
+
+
+from rajkumr
+1) → attendance report name list [done]
+	→ department summary analysis
+	→ department/employee analysis
+	→ employee monthly analysis
+	→ employee day wise summary (department wise daily)
+
+2) on login view [not required]
+→ user need to select :: Branch and Company from list
+
+3) Label should be defined on filter option [need discussion]
+
+4) Set default dashboard for user if not assigned
+
+5) Logo design [completed]
+	→ Logo [company name] [company address]
+
+6) Substitute Work Request on travel and leave [completed]
+	→ set notification for requested substitute person
+
+7) Employee join
+	→ latest employee join alert up to 9 
+	→ set link on employee list and have to go through link to view all detail information
+
+9) Mispuncth
+	→ set link on icon to list all detail
+10) Attendance request detail
+	→ should go through 2 level hierarchy
+
+
+11) Travel request
+	→ advance request [advance amount should set on debit and credit]
+	→ need to send account department [should get notification by all employee of under a/c dept]
+	→ department type should be set
+		→ hr
+		→ general
+		→ account
+		→ production
+	→ advance voucher generate option with debit credit
+		→ settlement 
+		→ travel expense request on defined date
+		→ if defined date closed, then employee can’t open the expense request table
+
+12) recommender and approver assign for loan request
+13) filter option
+	→ service event type 
+		→ first need to be set label as working 
+		→ and only working employee should be displayed in list
