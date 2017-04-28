@@ -6,15 +6,20 @@ use Application\Helper\EntityHelper;
 use Application\Model\Model;
 use Application\Repository\RepositoryInterface;
 use Setup\Model\Advance;
+use Setup\Model\Company;
 use Zend\Db\Adapter\AdapterInterface;
+use Zend\Db\Sql\Expression;
 use Zend\Db\Sql\Select;
+use Zend\Db\Sql\Sql;
 use Zend\Db\TableGateway\TableGateway;
 
 class AdvanceRepository implements RepositoryInterface {
 
     private $tableGateway;
+    private $adapter;
 
     public function __construct(AdapterInterface $adapter) {
+        $this->adapter = $adapter;
         $this->tableGateway = new TableGateway(Advance::TABLE_NAME, $adapter);
     }
 
@@ -38,11 +43,26 @@ class AdvanceRepository implements RepositoryInterface {
     }
 
     public function fetchActiveRecord() {
-        $rowset = $this->tableGateway->select(function(Select $select) {
-            $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(Advance::class, [Advance::ADVANCE_NAME]), false);
-            $select->where([Advance::STATUS => 'E']);
-            $select->order(Advance::ADVANCE_NAME . " ASC");
-        });
+//        $rowset = $this->tableGateway->select(function(Select $select) {
+//            $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(Advance::class, [Advance::ADVANCE_NAME]), false);
+//            $select->where([Advance::STATUS => 'E']);
+//            $select->order(Advance::ADVANCE_NAME . " ASC");
+//        });
+        
+        $sql = new Sql($this->adapter);
+        $select = $sql->select();
+        $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(Advance::class, [Advance::ADVANCE_NAME],NULL,NULL,NULL,NULL,'A',FALSE,FALSE), false);
+        $select->from(['A' => Advance::TABLE_NAME]);
+        $select->join(['C' => Company::TABLE_NAME], "C.".Company::COMPANY_ID."=A.".Advance::COMPANY_ID, [Company::COMPANY_NAME => new Expression('INITCAP(C.COMPANY_NAME)')], 'left');
+        $select->where(["A.".Advance::STATUS."='E'"]);
+        $select->order("A.".Advance::ADVANCE_NAME . " ASC");
+        $statement = $sql->prepareStatementForSqlObject($select);
+//        
+//        print_r($statement->getSql());
+//        die();
+        $rowset = $statement->execute();
+        
+        
         $result = [];
         $i = 1;
         foreach ($rowset as $row) {
@@ -55,6 +75,7 @@ class AdvanceRepository implements RepositoryInterface {
                 'MAX_SALARY_AMT' => $row['MAX_SALARY_AMT'],
                 'AMOUNT_TO_ALLOW' => $row['AMOUNT_TO_ALLOW'],
                 'MONTH_TO_ALLOW' => $row['MONTH_TO_ALLOW'],
+                'COMPANY_NAME' => $row['COMPANY_NAME'],
                 'REMARKS' => $row['REMARKS']
             ]);
             $i += 1;
