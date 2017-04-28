@@ -7,7 +7,6 @@ $form->setAttribute('id', 'designation-form');
 $designationCode = $form->get('designationCode');
 $designationTitle = $form->get("designationTitle");
 $parentDesignation = $form->get("parentDesignation");
-$parentDesignation->setValueOptions($designationList);
 $withinBranch = $form->get("withinBranch");
 $withinDepartment = $form->get("withinDepartment");
 
@@ -38,6 +37,7 @@ $menu = ["id" => "menuSetup", "subMenu" => ["id" => "subMenuDesignation"]];
 echo json_encode($menu);
 ?>;
     document.url = '<?= $this->url("restful", ["action" => "index"]) ?>';
+    document.designationListCompanyWise = <?php echo json_encode($designationListCompanyWise);?>;
 </script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\Designation')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
@@ -86,6 +86,17 @@ echo json_encode($menu);
                         </div>
                     </div>
                 </div>
+                
+                <div class=" row">
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <?php print $this->formLabel($companyId); ?>
+                            <span class="required" aria-required="true">*</span>
+                            <?php print $this->formElement($companyId); ?>
+                            <?php print $this->formElementErrors()->render($companyId, ['class' => 'help-block error']); ?>
+                        </div>
+                    </div>
+                </div>
 
                 <div class=" row">
                     <div class="col-sm-4">
@@ -121,19 +132,7 @@ echo json_encode($menu);
                         </div>
                     </div>
                 </div>
-
-                <div class=" row">
-                    <div class="col-sm-4">
-                        <div class="form-group">
-                            <?php print $this->formLabel($companyId); ?>
-                            <span class="required" aria-required="true">*</span>
-                            <?php print $this->formElement($companyId); ?>
-                            <?php print $this->formElementErrors()->render($companyId, ['class' => 'help-block error']); ?>
-                        </div>
-                    </div>
-                </div>
-
-
+                
                 <?php
                 print $this->formSubmit($submit);
                 print $this->form()->closeTag();

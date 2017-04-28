@@ -183,7 +183,7 @@ class LeaveApproveController extends AbstractActionController {
                     $this->flashmessenger()->addMessage("Leave Request Rejected!!!");
                 } else if ($action == "Approve") {
                     $leaveApply->status = "AP";
-                    if ($detail['HALF_DAY'] != 'N') {
+                    if ($detail['HALF_DAY'] !=null && $detail['HALF_DAY'] != 'N') {
                         $leaveTaken = 0.5;
                     } else {
                         $leaveTaken = $detail['NO_OF_DAYS'];

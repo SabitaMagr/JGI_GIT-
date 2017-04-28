@@ -90,7 +90,9 @@ class AuthController extends AbstractActionController {
                 //check authentication...
                 $this->getAuthService()->getAdapter()
                         ->setIdentity($request->getPost('username'))
-                        ->setCredential($request->getPost('password'));
+//                        ->setCredential(md5($request->getPost('password')))
+                        ->setCredential($request->getPost('password'))
+                ;
                 $result = $this->getAuthService()->authenticate();
                 foreach ($result->getMessages() as $message) {
                     //save message temporary into flashmessenger

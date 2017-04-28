@@ -1,4 +1,4 @@
-Requirment
+Requirement
 1. add
 2. edit
 3. delete
@@ -14,9 +14,9 @@ test log
 
 
 system problem 
-1.(some company field is not show  in all departments company view)
-2.(company field is not shown while exporting)
-3.(parent department field in not according to company wise)
+1.(some company field is not show  in all departments company view) fixed(query problem solved)
+2.(company field is not shown while exporting)  fixed
+3.(parent department field in not according to company wise)   not needed
 
 
 

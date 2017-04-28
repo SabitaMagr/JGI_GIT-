@@ -46,9 +46,10 @@
             rowTemplate: kendo.template($("#rowTemplate").html()),
             columns: [
                 {field: "SN", title: "S.N.", width: 100},
-                {field: "POSITION_NAME", title: "Position Name", width: 400},
+                {field: "POSITION_NAME", title: "Position Name", width: 300},
+                {field: "COMPANY_NAME", title: "Company Name", width: 300},
                 {field: "REMARKS", title: "Remarks", hidden: true},
-                {title: "Action", width: 80}
+                {title: "Action", width: 80,width: 100}
             ]
         });
 
@@ -57,6 +58,7 @@
                     cells: [
                         {value: "SN"},
                         {value: "Position Name"},
+                        {value: "Company Name"},
                         {value: "Remarks"}
                     ]
                 }];
@@ -75,6 +77,7 @@
                     cells: [
                         {value: dataItem.SN},
                         {value: dataItem.POSITION_NAME},
+                        {value: dataItem.COMPANY_NAME},
                         {value: dataItem.REMARKS}
                     ]
                 });

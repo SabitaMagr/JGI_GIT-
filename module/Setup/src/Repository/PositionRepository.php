@@ -2,14 +2,16 @@
 
 namespace Setup\Repository;
 
+use Application\Helper\EntityHelper;
 use Application\Model\Model;
 use Application\Repository\RepositoryInterface;
-use Zend\Db\TableGateway\TableGateway;
-use Zend\Db\Adapter\AdapterInterface;
+use Setup\Model\Company;
 use Setup\Model\Position;
-use Zend\Db\Sql\Sql;
+use Zend\Db\Adapter\AdapterInterface;
+use Zend\Db\Sql\Expression;
 use Zend\Db\Sql\Select;
-use Application\Helper\EntityHelper;
+use Zend\Db\Sql\Sql;
+use Zend\Db\TableGateway\TableGateway;
 
 class PositionRepository implements RepositoryInterface {
 
@@ -41,11 +43,22 @@ class PositionRepository implements RepositoryInterface {
     }
 
     public function fetchActiveRecord() {
-        $rowset = $this->tableGateway->select(function(Select $select) {
-            $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(Position::class,[Position::POSITION_NAME]),false);
-            $select->where([Position::STATUS => 'E']);
-            $select->order(Position::POSITION_NAME . " ASC");
-        });
+//        $rowset = $this->tableGateway->select(function(Select $select) {
+//            $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(Position::class,[Position::POSITION_NAME]),false);
+//            $select->where([Position::STATUS => 'E']);
+//            $select->order(Position::POSITION_NAME . " ASC");
+//        });
+        
+        $sql = new Sql($this->adapter);
+        $select = $sql->select();
+        $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(Position::class, [Position::POSITION_NAME],NULL,NULL,NULL,NULL,'P',FALSE,FALSE), false);
+        $select->from(['P' => Position::TABLE_NAME]);
+        $select->join(['C' => Company::TABLE_NAME], "C.".Company::COMPANY_ID."=P.".Position::COMPANY_ID, [Company::COMPANY_NAME => new Expression('INITCAP(C.COMPANY_NAME)')], 'left');
+        $select->where(["P.".Position::STATUS."='E'"]);
+        $select->order("P.".Position::POSITION_NAME . " ASC");
+        
+        $statement = $sql->prepareStatementForSqlObject($select);
+        $rowset = $statement->execute();
         $result = [];
         $i = 1;
         foreach ($rowset as $row) {
@@ -53,7 +66,8 @@ class PositionRepository implements RepositoryInterface {
                 'SN' => $i,
                 'POSITION_ID' => $row['POSITION_ID'],
                 'POSITION_NAME' => $row['POSITION_NAME'],
-                'REMARKS' => $row['REMARKS']
+                'REMARKS' => $row['REMARKS'],
+                'COMPANY_NAME' => $row['COMPANY_NAME']
             ]);
             $i += 1;
         }
