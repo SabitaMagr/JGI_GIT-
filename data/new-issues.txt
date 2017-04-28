@@ -46,3 +46,12 @@ jwl-training-session-2_27-Apr-17 issues | changes
 8. Recommender not filtered.
 9. Email link issue.
 10. JGI work on holiday, dayoff factor.    
+
+11. dropdown list according to foreign relations.
+12. Voucher generation in travel request.
+13. link with payroll desktop version. 
+14. Nepal banda half day shift test.
+15. Attendance Daily report popover detail.
+16. Report popover detail.
+
+
