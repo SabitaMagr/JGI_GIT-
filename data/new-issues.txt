@@ -13,7 +13,7 @@ payroll features
 jwl-training-session-1_25-Apr-17  issues | changes
 1. service event types menu should be shown.[done]
 2. Label Change in Training [done]
-    Company Personal => Personal 
+   Company Personal => Personal 
 3. Phone no format need to be updated.[done] xxx-xxxxxxx is new format
 4. Dropdown requires a default option.
 5. 3 days late should deduct 1 leave as per policy in JGI.
@@ -21,11 +21,11 @@ jwl-training-session-1_25-Apr-17  issues | changes
 7. Date of Birth should be listed in Employee list.[done]
 8. concept of profile copy.
 9. Data update on JGI database | only two branches should be listed i.e. Head Office, Factory
-10. Company should also be displayed in designation list.[done]
-11. Dropdowns with no list.
-12. Appointment and Re-appointment concept for JGI.[pending]
-13. Password forget implementation[under process]
-14. password encryption required.[done ]
+10.Company should also be displayed in designation list.[done]
+11.Dropdowns with no list.
+12.Appointment and Re-appointment concept for JGI.[pending]
+13.Password forget implementation[under process]
+14.password encryption required.[done ]
 
 
 password forget implemetation flow
@@ -36,13 +36,96 @@ password forget implemetation flow
 
     
 jwl-training-session-2_27-Apr-17 issues | changes
-1. History in Employee Profile
-2. link to history from employee profile.
-3. retired flag missing in employee list search 
-4. Nepali Calendar, manual input 
-5. Exchange position and designation
-6. Search in Reporting Hierarchy.
-7. Pending leave Approval in dashboard.
-8. Recommender not filtered.
-9. Email link issue.
-10. JGI work on holiday, dayoff factor.    
+1. History in Employee Profile | uploaded document download list punam
+2. link to history from employee profile. punam
+4. Nepali Calendar, manual input ukesh
+6. Search in Reporting Hierarchy. punam
+7. Pending leave Approval in dashboard. ukesh
+9. Email link issue. ukesh
+10. JGI work on holiday, dayoff factor 1.  ukesh   
+
+11. dropdown list according to foreign relations. | default working ukesn|punam
+11. EMAIL TEMPLATE VALIDATION REQUIRED and notification required prabin
+11. dropdown list according to foreign relations. ukesh
+12. Voucher generation in travel request. punam| ukesh
+13. link with payroll desktop version. ukesh
+14. Nepal banda half day shift test. ukesh
+15. Attendance Daily report popover detail. ukesh
+16. Report popover detail. ukesh
+
+
+
+
+from rajkumr
+1) → attendance report name list [done]
+	→ department summary analysis
+	→ department/employee analysis
+	→ employee monthly analysis
+	→ employee day wise summary (department wise daily)
+
+2) on login view [not required]
+→ user need to select :: Branch and Company from list
+
+3) Label should be defined on filter option [need discussion]
+
+4) Set default dashboard for user if not assigned
+
+5) Logo design [completed]
+	→ Logo [company name] [company address]
+
+6) Substitute Work Request on travel and leave [completed]
+	→ set notification for requested substitute person
+
+7) Employee join ukesh
+	→ latest employee join alert up to 9 
+	→ set link on employee list and have to go through link to view all detail information
+
+9) Mispuncth ukesh
+	→ set link on icon to list all detail
+10) Attendance request detail punam
+	→ should go through 2 level hierarchy
+
+
+11) Travel request
+	→ advance request [advance amount should set on debit and credit]
+	→ need to send account department [should get notification by all employee of under a/c dept]
+	→ department type should be set
+		→ hr
+		→ general
+		→ account
+		→ production
+	→ advance voucher generate option with debit credit
+		→ settlement 
+		→ travel expense request on defined date
+		→ if defined date closed, then employee can’t open the expense request table
+
+12) recommender and approver assign for loan request
+13) filter option
+	→ service event type 
+		→ first need to be set label as working 
+		→ and only working employee should be displayed in list
+
+
+JGI_training_session_3
+1. list column label rename ['employee code'=> 'code' ] prabin
+2. list column space reconsider. prabin
+3. OT automation. ukesh
+4. Shift schedule automation. ukesh
+5. shift overlap management. ['employee can work on different shift on a day. total working stays same.']ukesh
+6. To Do list finalize. ukesh
+7. Staff working as intern trainee, his/her job is to edit hr employee data. this staff should not affect payroll. ukesh
+8. On Nepali Date, Same date is not allowed to select on both from and to date. ukesh
+9. Company Wise Holiday Assign needed on JGI. punam
+10. Leave Requirements of JGI. ukesh
+11. Menus not needed or under process should be hidden. prabin
+12. list code should be removed from all the tables (view). prabin
+13. Travel Request flow implementation. 
+15. Assets Implementation. prabin 
+16. Menu Name Refactor/ should be meaningful and short. prabin
+17. Reasons should not be mandatory on approve or recommend but mandatory on reject case. punam
+18. Team Status/Report. ukesh
+19. Salary increment notification. ukesh
+20. on travel request voucher, no image is displayed. punam
+21. Expire notifications. | Resign  ukesh 
+22. Disabled list should not be seen. ukesh
+23. On Employee Report, % wise gender should be displayed. ukesh

@@ -32,6 +32,31 @@ echo json_encode($menu);
 
 
 <div class="margin-top-20">
+    <div class="table-toolbar">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="btn-group">
+                    <a href="<?= $this->url('serviceEventType', ['action' => 'add']) ?>" id="sample_editable_1_new"
+                       class="btn green"> Add New
+                        <!--                        <i class="fa fa-plus"></i>-->
+                    </a>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="btn-group pull-right">
+                    <button class="btn green btn-outline dropdown-toggle" data-toggle="dropdown">Tools
+                        <i class="fa fa-angle-down"></i>
+                    </button>
+                    <ul class="dropdown-menu pull-right">
+                        <li>
+                            <a href="javascript:;" id="export"> Export to Excel </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div id="serviceEventTypeTable">
     </div>
     <script id="rowTemplate" type="text/x-kendo-tmpl">
@@ -41,6 +66,16 @@ echo json_encode($menu);
         </td>
         <td>
         #: (SERVICE_EVENT_TYPE_NAME == null) ? '-' : SERVICE_EVENT_TYPE_NAME #
+        </td>
+        <td>
+        <a class="btn-edit"
+        href="<?= $this->url("serviceEventType", ["action" => "edit"]) ?>/#:SERVICE_EVENT_TYPE_ID #" style="height:17px;">
+        <i class="fa fa-edit"></i>
+        </a> 
+        <a class="btn-delete confirmation"
+        href="<?= $this->url("serviceEventType", ["action" => "delete"]); ?>/#:SERVICE_EVENT_TYPE_ID #" id="bs_#:SERVICE_EVENT_TYPE_ID #" style="height:17px;">
+        <i class="fa fa-trash-o"></i></a>
+        </a>
         </td>
         </tr>
     </script>
