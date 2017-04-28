@@ -167,3 +167,8 @@
 2017-04-27T17:35:25+05:45 INFO (6): Email Sent =>From somkala.pachhai@itnepal.com To prabin.maharjan@itnepal.com
 2017-04-27T17:51:04+05:45 INFO (6): Email Sent =>From somkala.pachhai@itnepal.com To prabin.maharjan@itnepal.com
 2017-04-27T17:55:54+05:45 INFO (6): Email Sent =>From somkala.pachhai@itnepal.com To prabin.maharjan@itnepal.com
+2017-04-28T10:52:28+05:45 INFO (6): Email Sent =>From somkala.pachhai@itnepal.com To prabin.maharjan@itnepal.com
+2017-04-28T11:27:24+05:45 INFO (6): Email Sent =>From somkala.pachhai@itnepal.com To prabin.maharjan@itnepal.com
+2017-04-28T11:40:11+05:45 INFO (6): Email Sent =>From somkala.pachhai@itnepal.com To prabin.maharjan@itnepal.com
+2017-04-28T11:40:19+05:45 INFO (6): Email Sent =>From somkala.pachhai@itnepal.com To prabin.maharjan@itnepal.com
+2017-04-28T11:41:49+05:45 INFO (6): Email Sent =>From somkala.pachhai@itnepal.com To prabin.maharjan@itnepal.com
