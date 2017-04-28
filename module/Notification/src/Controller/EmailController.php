@@ -180,7 +180,7 @@ class EmailController extends AbstractActionController {
                 $template->modifiedDt = Helper::getcurrentExpressionDate();
                 $this->templateRepo->edit($template, $postedData['id']);
             }
-
+            $this->flashmessenger()->addMessage("Email Template Sucessfully Updated");
             return $this->redirect()->toRoute('email', ['id' => $postedData['id']]);
         }
     }

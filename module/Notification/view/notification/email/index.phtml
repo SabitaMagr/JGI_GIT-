@@ -6,6 +6,15 @@ $this->headLink()
         ->appendStylesheet($this->basePath('assets/global/plugins/bootstrap-summernote/summernote.css'));
 ?>
 
+<?php
+if ($this->messages) { ?>
+    <script>
+        document.messages =<?php echo json_encode($this->messages); ?>
+    </script>
+<?php } 
+?>
+
+
 <script>
     document.menu =<?php
 $menu = ["id" => "menuNotification", "subMenu" => ["id" => "subMenuEmail"]];
@@ -36,7 +45,8 @@ echo json_encode($menu);
                             <div class="form-body">
                                 <div class="form-group">
                                     <label class="control-label">Subject</label>
-                                    <input name="subject" type="text" class="form-control" placeholder="Enter Subject" value="<?= isset($templates[$key]) ? $templates[$key]['SUBJECT'] : '' ?>">
+                                    <span class="required" aria-required="true">*</span>
+                                    <input required="required" name="subject" type="text" class="form-control" placeholder="Enter Subject" value="<?= isset($templates[$key]) ? $templates[$key]['SUBJECT'] : '' ?>">
                                     <input type="hidden" name="id" value="<?= $key ?>"/>
                                 </div>
                                 <div class="row">

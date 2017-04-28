@@ -45,7 +45,7 @@ jwl-training-session-2_27-Apr-17 issues | changes
 10. JGI work on holiday, dayoff factor 1.  ukesh   
 
 11. dropdown list according to foreign relations. | default working ukesn|punam
-11. EMAIL TEMPLATE VALIDATION REQUIRED and notification required prabin
+11. EMAIL TEMPLATE VALIDATION REQUIRED and notification required prabin   [done]
 11. dropdown list according to foreign relations. ukesh
 12. Voucher generation in travel request. punam| ukesh
 13. link with payroll desktop version. ukesh
