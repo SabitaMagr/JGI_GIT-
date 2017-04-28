@@ -66,10 +66,10 @@ class EmployeeTrainingRepository implements RepositoryInterface {
         $sql = new Sql($this->adapter);
         $select = $sql->select();
         $select->columns([
-            new Expression("TO_CHAR(ET.FROM_DATE, 'DD-MON-YYYY') AS FROM_DATE"),
-            new Expression("TO_CHAR(ET.TO_DATE, 'DD-MON-YYYY') AS TO_DATE"), 
+            new Expression("INITCAP(TO_CHAR(ET.FROM_DATE, 'DD-MON-YYYY')) AS FROM_DATE"),
+            new Expression("INITCAP(TO_CHAR(ET.TO_DATE, 'DD-MON-YYYY')) AS TO_DATE"), 
             new Expression("ET.ID AS ID"), 
-            new Expression("ET.TRAINING_NAME AS TRAINING_NAME"),
+            new Expression("INITCAP(ET.TRAINING_NAME) AS TRAINING_NAME"),
             new Expression("ET.DESCRIPTION AS DESCRIPTION")],TRUE);
         $select->from(['ET'=>EmployeeTraining::TABLE_NAME]); 
         $select->where(["ET." . EmployeeTraining::EMPLOYEE_ID . "=$employeeId"]);
