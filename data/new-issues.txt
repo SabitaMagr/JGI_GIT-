@@ -36,18 +36,16 @@ password forget implemetation flow
 
     
 jwl-training-session-2_27-Apr-17 issues | changes
-1. History in Employee Profile
-2. link to history from employee profile.
-3. retired flag missing in employee list search 
+1. History in Employee Profile | uploaded document download list 
+2. link to history from employee profile. 
+3. retired flag missing in employee list search.
 4. Nepali Calendar, manual input 
-5. Exchange position and designation
 6. Search in Reporting Hierarchy.
-7. Pending leave Approval in dashboard.
-8. Recommender not filtered.
+7. Pending leave Approval in dashboard. 
 9. Email link issue.
-10. JGI work on holiday, dayoff factor.    
+10. JGI work on holiday, dayoff factor 1.     
 
-11. dropdown list according to foreign relations.
+11. dropdown list according to foreign relations. | default working
 12. Voucher generation in travel request.
 13. link with payroll desktop version. 
 14. Nepal banda half day shift test.
@@ -105,3 +103,29 @@ from rajkumr
 	→ service event type 
 		→ first need to be set label as working 
 		→ and only working employee should be displayed in list
+
+
+JGI_training_session_3
+1. list column label rename ['employee code'=> 'code' ]
+2. list column space reconsider. 
+3. OT automation. 
+4. Shift schedule automation.
+5. shift overlap management. ['employee can work on different shift on a day. total working stays same.']
+6. To Do list finalize.
+7. Staff working as intern trainee, his/her job is to edit hr employee data. this staff should not affect payroll. 
+8. On Nepali Date, Same date is not allowed to select on both from and to date.
+9. Company Wise Holiday Assign needed on JGI. 
+10. Leave Requirements of JGI.
+11. Menus not needed or under process should be hidden.
+12. list code should be removed from all the tables (view).
+13. Travel Request flow implementation.
+14. Work on Holiday Request/ Duration field ???
+15. Assets Implementation.
+16. Menu Name Refactor/ should be meaningful and short.
+17. Reasons should not be mandatory on approve or recommend but mandatory on reject case.
+18. Team Status/Report.
+19. Salary increment notification.
+20. on travel request voucher, no image is displayed.
+21. Expire notifications. | Resign
+22. Disabled list should not be seen.
+23. On Employee Report, % wise gender should be displayed.
