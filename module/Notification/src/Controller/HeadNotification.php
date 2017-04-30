@@ -49,6 +49,9 @@ use Zend\Authentication\AuthenticationService;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Mail\Message;
 use Zend\Mvc\Controller\Plugin\Url;
+use Notification\Model\SalaryReviewNotificationModel;
+use ManagerService\Model\SalaryDetail;
+use ManagerService\Repository\SalaryDetailRepo;
 
 class HeadNotification {
 
@@ -85,7 +88,7 @@ class HeadNotification {
     }
 
     private static function sendEmail(NotificationModel $model, int $type, AdapterInterface $adapter, Url $url) {
-        return;
+//        return;
         $isValidEmail = function ($email) {
             return filter_var($email, FILTER_VALIDATE_EMAIL) !== false;
         };
@@ -1027,6 +1030,28 @@ class HeadNotification {
                 $this->flashmessenger()->addMessage($e->getMessage());
             }
         };
+        
+        ${"fn" . NotificationEvents::SALARY_REVIEW} = function (SalaryDetail $request, AdapterInterface $adapter, Url $url) {
+            $salaryDetailRepo = new SalaryDetailRepo($adapter);
+            $request->exchangeArrayFromDB($salaryDetailRepo->fetchById($request->salaryDetailId));
+
+            $recommdAppRepo = new RecommendApproveRepository($adapter);
+            $recommdAppModel = $recommdAppRepo->getDetailByEmployeeID($request->employeeId);
+
+            $notification = new SalaryReviewNotificationModel();
+            self::setNotificationModel($request->createdBy, $request->employeeId, $notification, $adapter);
+
+            $notification->newAmount = $request->newAmount;
+            $notification->oldAmount = $request->oldAmount;
+            $notification->effectiveDate = $request->effectiveDate;
+
+            $notification->route = json_encode(["route" => "salaryReview", "action" => "edit", "id" => $request->salaryDetailId]);
+            $title = "Salary Review";
+            $desc = "Salary Review From " . $notification->oldAmount . " To " . $notification->newAmount;
+
+            self::addNotifications($notification, $title, $desc, $adapter);
+            self::sendEmail($notification, 29, $adapter, $url);
+        };
         switch ($eventType) {
             case NotificationEvents::LEAVE_APPLIED:
                 ${"fn" . NotificationEvents::LEAVE_APPLIED}($model, $adapter, $url, self::RECOMMENDER);
@@ -1181,6 +1206,9 @@ class HeadNotification {
                 break;
             case NotificationEvents::FORGOT_PASSWORD:
                 ${"fn" . NotificationEvents::FORGOT_PASSWORD}($model, $adapter,$senderDetail);
+                break;
+            case NotificationEvents::SALARY_REVIEW:
+                ${"fn" . NotificationEvents::SALARY_REVIEW}($model, $adapter, $url);
                 break;
         }
     }

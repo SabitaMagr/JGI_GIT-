@@ -14,6 +14,9 @@ use Zend\Db\Adapter\AdapterInterface;
 use Zend\Form\Element\Select;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
+use Exception;
+use Notification\Controller\HeadNotification;
+use Notification\Model\NotificationEvents;
 
 class SalaryReviewController extends AbstractActionController {
 
@@ -55,6 +58,11 @@ class SalaryReviewController extends AbstractActionController {
             }
 
             $successFlag = $this->repo->add($salaryDetail);
+            try {
+                HeadNotification::pushNotification( NotificationEvents::SALARY_REVIEW , $salaryDetail, $this->adapter, $this->plugin('url'));
+            } catch (Exception $e) {
+                $this->flashmessenger()->addMessage($e->getMessage());
+            }
             if ($successFlag) {
                 $this->flashmessenger()->addMessage("SalaryReview Successfully Added!!!");
                 return $this->redirect()->toRoute("salaryReview");

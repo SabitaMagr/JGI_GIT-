@@ -19,6 +19,7 @@ use Notification\Repository\EmailTemplateRepo;
 use Zend\Authentication\AuthenticationService;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Mvc\Controller\AbstractActionController;
+use Notification\Model\SalaryReviewNotificationModel;
 
 class EmailController extends AbstractActionController {
 
@@ -55,6 +56,7 @@ class EmailController extends AbstractActionController {
         26 => "Leave_Substitute_Approval",
         27 => "Travel_Substitute_Applied",
         28 => "Travel_Substitute_Approval",
+        29 => "Salary_Reviewed"
     ];
 
     private function getVariables() {
@@ -91,6 +93,9 @@ class EmailController extends AbstractActionController {
         $type11 = new TravelSubNotificationModel();
         $type11ObjVars = $type11->getObjectAttrs();
         
+        $type12 = new SalaryReviewNotificationModel();
+        $type12ObjVars = $type12->getObjectAttrs();
+        
         return [
             1 => $type1ObjVars,
             2 => $type1ObjVars,
@@ -120,6 +125,7 @@ class EmailController extends AbstractActionController {
             26 => $type10ObjVars,
             27 => $type11ObjVars,
             28 => $type11ObjVars,
+            29 => $type12ObjVars
         ];
     }
 
