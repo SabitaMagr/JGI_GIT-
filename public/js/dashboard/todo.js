@@ -8,7 +8,7 @@ $(document).ready(function () {
                 id: 'lob',
                 title: 'TODO',
                 defaultStyle: 'lobilist-default',
-                controls: ['edit', 'add', 'remove', 'styleChange'],
+                controls: ['styleChange'],
                 useCheckboxes: true,
                 items: itemVal,
 

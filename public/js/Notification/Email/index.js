@@ -24,6 +24,22 @@
                 var summernote = $this.find('.summernote');
                 var message = $this.find("input[name='description']");
                 $(message).val(summernote.summernote('code'));
+                // form validation start
+                if (message.val() == "" || message.val() == " ") {
+                    var parentId = message.parent(".form-group");
+                    var errorMsgSpan = parentId.find('span.errorMsg');
+                    console.log(errorMsgSpan.length);
+                    if (errorMsgSpan.length == 0) {
+                        var errorMsgSpan = $('<span />', {
+                            "class": 'errorMsg',
+                            text: 'Message body cant be Empty'
+                        });
+                        parentId.append(errorMsgSpan);
+                        message.focus();
+                    }
+                    return false;
+                }
+                // form validation end
                 return true;
             });
         });
