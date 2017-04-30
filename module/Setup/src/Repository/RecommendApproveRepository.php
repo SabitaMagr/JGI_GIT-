@@ -149,7 +149,7 @@ AND
         $row = $this->tableGateway->select([RecommendApprove::EMPLOYEE_ID=>$id]);
         return $row->current();
     }
-    public function getDetailByEmployeeID($employeeId){
+    public function getDetailByEmployeeID($employeeId,$recommenderId=null,$approverId=null){
         $sql = new Sql($this->adapter);
         $select = $sql->select();
         $select->columns([
@@ -196,6 +196,16 @@ AND
     END
   OR E2.RETIRED_FLAG IS NULL)))"         
         ]);
+        
+        if($recommenderId!=null && $recommenderId!=-1){
+            $select->where([
+            "RA.RECOMMEND_BY=".$recommenderId]);
+        }
+        
+        if($approverId!=null && $approverId!=-1){
+            $select->where([
+            "RA.APPROVED_BY=".$approverId]);
+        }
         
         $select->order("E.FIRST_NAME ASC");
         $statement = $sql->prepareStatementForSqlObject($select);

@@ -2399,35 +2399,57 @@ class RestfulService extends AbstractRestfulController {
         $departmentId = $data['departmentId'];
         $designationId = $data['designationId'];
         $employeeId = $data['employeeId'];
-
+        $serviceEventTypeId = (!isset($data['serviceEventTypeId']) || $data['serviceEventTypeId']==null) ? -1 : $data['serviceEventTypeId'];
+        $recommenderId = (!isset($data['recommenderId']) || $data['recommenderId']==null) ? -1 : $data['recommenderId'];
+        $approverId = (!isset($data['approverId']) || $data['approverId']==null) ? -1 : $data['approverId'];
+        
         $recommApproverRepo = new RecommendApproveRepository($this->adapter);
 
         $employeeRepo = new EmployeeRepository($this->adapter);
-        $employeeResult = $employeeRepo->filterRecords($employeeId, $branchId, $departmentId, $designationId, $positionId, $serviceTypeId, -1, 1, $companyId);
+        $employeeResult = $employeeRepo->filterRecords($employeeId, $branchId, $departmentId, $designationId, $positionId, $serviceTypeId, $serviceEventTypeId, 1, $companyId);
 
         $employeeList = [];
         foreach ($employeeResult as $employeeRow) {
             $employeeId = $employeeRow['EMPLOYEE_ID'];
-            $recommedApproverList = $recommApproverRepo->getDetailByEmployeeID($employeeId);
+            $recommedApproverList = $recommApproverRepo->getDetailByEmployeeID($employeeId,$recommenderId,$approverId);
             if ($recommedApproverList != null) {
                 $middleNameR = ($recommedApproverList['MIDDLE_NAME_R'] != null) ? " " . $recommedApproverList['MIDDLE_NAME_R'] . " " : " ";
                 $middleNameA = ($recommedApproverList['MIDDLE_NAME_A'] != null) ? " " . $recommedApproverList['MIDDLE_NAME_A'] . " " : " ";
 
                 if ($recommedApproverList['RETIRED_R'] != 'Y' && $recommedApproverList['STATUS_R'] != 'D') {
                     $employeeRow['RECOMMENDER_NAME'] = $recommedApproverList['FIRST_NAME_R'] . $middleNameR . $recommedApproverList['LAST_NAME_R'];
+                    $employeeRow['RETIRED_R']=$recommedApproverList['RETIRED_R'];
+                    $employeeRow['STATUS_R']=$recommedApproverList['STATUS_R'];
+                    $employeeRow['RECOMMENDER_ID'] = $recommedApproverList['RECOMMEND_BY'];
                 } else {
                     $employeeRow['RECOMMENDER_NAME'] = "";
+                    $employeeRow['RETIRED_R']="";
+                    $employeeRow['STATUS_R']="";
+                    $employeeRow['RECOMMENDER_ID']=null;
                 }
                 if ($recommedApproverList['RETIRED_A'] != 'Y' && $recommedApproverList['STATUS_A'] != 'D') {
                     $employeeRow['APPROVER_NAME'] = $recommedApproverList['FIRST_NAME_A'] . $middleNameA . $recommedApproverList['LAST_NAME_A'];
+                    $employeeRow['RETIRED_A']=$recommedApproverList['RETIRED_A'];
+                    $employeeRow['STATUS_A']=$recommedApproverList['STATUS_A'];
+                    $employeeRow['APPROVER_ID'] = $recommedApproverList['APPROVED_BY'];
+                    
                 } else {
                     $employeeRow['APPROVER_NAME'] = "";
+                    $employeeRow['RETIRED_A']="";
+                    $employeeRow['STATUS_A']="";
+                    $employeeRow['APPROVER_ID']=null;
                 }
             } else {
                 $employeeRow['RECOMMENDER_NAME'] = "";
+                $employeeRow['RETIRED_R']="";
+                $employeeRow['STATUS_R']="";
+                $employeeRow['RECOMMENDER_ID']=null;
+                
                 $employeeRow['APPROVER_NAME'] = "";
+                $employeeRow['RETIRED_A']="";
+                $employeeRow['STATUS_A']="";
+                $employeeRow['APPROVER_ID']=null;
             }
-
             array_push($employeeList, $employeeRow);
         }
         ///  print_r($employeeList); die();

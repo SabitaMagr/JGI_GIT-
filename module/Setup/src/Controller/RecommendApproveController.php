@@ -15,6 +15,7 @@ use Zend\Db\Adapter\AdapterInterface;
 use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\Form\Element\Select;
 use Zend\Mvc\Controller\AbstractActionController;
+use Setup\Model\HrEmployees;
 
 class RecommendApproveController extends AbstractActionController {
 
@@ -31,12 +32,33 @@ class RecommendApproveController extends AbstractActionController {
     }
 
     public function indexAction() {
+        $recommenderFormElement = new Select();
+        $recommenderFormElement->setName("leave");
+        $recommeders = EntityHelper::getTableKVListWithSortOption($this->adapter, "HRIS_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => "E"], "FIRST_NAME", "ASC", " ", false, true);
+        $recommenders1 = [-1 => "All Recommender"] + $recommeders;
+        $recommenderFormElement->setValueOptions($recommenders1);
+        $recommenderFormElement->setAttributes(["id" => "recommenderId", "class" => "form-control"]);
+        $recommenderFormElement->setLabel("Recommender");
+        
+        $approverFormElement = new Select();
+        $approverFormElement->setName("leave");
+        $approvers = EntityHelper::getTableKVListWithSortOption($this->adapter, "HRIS_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => "E"], "FIRST_NAME", "ASC", " ", false, true);
+        $approvers1 = [-1 => "All Approver"] + $approvers;
+        $approverFormElement->setValueOptions($approvers1);
+        $approverFormElement->setAttributes(["id" => "approverId", "class" => "form-control"]);
+        $approverFormElement->setLabel("Approver");
+        
         $list = $this->repository->fetchAll();
         $recommendApproves = [];
         foreach ($list as $row) {
             array_push($recommendApproves, $row);
         }
-        return Helper::addFlashMessagesToArray($this, ['recommendApproves' => $recommendApproves]);
+        return Helper::addFlashMessagesToArray($this, [
+            'recommendApproves' => $recommendApproves,
+            'searchValues' => EntityHelper::getSearchData($this->adapter),
+            'approverFormElement'=>$approverFormElement,
+            'recommenderFormElement'=>$recommenderFormElement
+                ]);
     }
 
     public function initializeForm() {
