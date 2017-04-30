@@ -369,8 +369,8 @@ print $this->form()->openTag($form);
                 <div class="col-sm-8 col-sm-offset-2">
                     <ul id="headingList">
                         <li>
-                            <?php if($empDtl['COMPANY_FILE_NAME']!=null || $empDtl['COMPANY_FILE_NAME']!=""){ ?>
-                            <img src="<?= $this->basePath() . "/uploads/" . $empDtl['COMPANY_FILE_NAME']; ?>" style="float:left;" height="50" width="50"/>
+                            <?php if($empDtl['COMPANY_FILE_PATH']!=null || $empDtl['COMPANY_FILE_PATH']!=""){ ?>
+                            <img src="<?= $this->basePath() . "/uploads/" . $empDtl['COMPANY_FILE_PATH']; ?>" style="float:left;" height="50" width="50"/>
                             <?php } ?>
                             <h2><?= strtoupper($empDtl['COMPANY_NAME']); ?></h2></li>
                         <li><h3>TRAVEL EXPENSE CLAIM FORM</h3></li>

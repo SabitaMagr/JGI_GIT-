@@ -125,7 +125,9 @@ JGI_training_session_3
 17. Reasons should not be mandatory on approve or recommend but mandatory on reject case. punam
 18. Team Status/Report. ukesh
 19. Salary increment notification. ukesh
-20. on travel request voucher, no image is displayed. punam
+20. on travel request voucher, no image is displayed. punam [done]
+20.A on travel request voucher, set landscape for expense report and portrait for advance report. punam[done]
 21. Expire notifications. | Resign  ukesh 
 22. Disabled list should not be seen. ukesh
 23. On Employee Report, % wise gender should be displayed. ukesh
+24. file name and file path need to be changed. punam [done]

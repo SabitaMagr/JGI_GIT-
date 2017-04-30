@@ -42,7 +42,7 @@
                 $uploadedImage.hide();
                 $('#uploadFile').text("Upload");
             } else {
-                $($uploadedImage.children()[0]).attr('src', document.basePath + "/uploads/" + imageData.fileName);
+                $($uploadedImage.children()[0]).attr('src', document.basePath + "/uploads/" + imageData.oldFileName);
                 $logo.val(imageData.fileCode);
                 $myAwesomeDropzone.hide();
                 $uploadedImage.show();

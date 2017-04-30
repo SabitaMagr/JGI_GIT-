@@ -111,11 +111,11 @@ class CompanyController extends AbstractActionController {
         } else {
             $postedData = $request->getPost();
             $this->form->setData($postedData);
-            $company->logo = $postedData['logo'];
             if ($this->form->isValid()) {
                 $company->exchangeArrayFromForm($this->form->getData());
                 $company->modifiedDt = Helper::getcurrentExpressionDate();
                 $company->modifiedBy = $this->employeeId;
+                $company->logo = $postedData['logo'];
                 $this->repository->edit($company, $id);
                 $this->flashmessenger()->addMessage("Company Successfully Updated!!!");
                 return $this->redirect()->toRoute("company");
@@ -154,8 +154,8 @@ class CompanyController extends AbstractActionController {
                     $fileRepository = new EmployeeFile($this->adapter);
                     $file = new EmployeeFile2();
                     $file->fileCode = ((int) Helper::getMaxId($this->adapter, 'HRIS_EMPLOYEE_FILE', 'FILE_CODE')) + 1;
-                    $file->filePath = $fileName . "." . $ext;
-                    $file->fileName = $newFileName;
+                    $file->filePath = $newFileName;
+                    $file->fileName = $fileName . "." . $ext;
                     $file->status = 'E';
                     $file->createdDt = Helper::getcurrentExpressionDate();
                     $fileRepository->add($file);

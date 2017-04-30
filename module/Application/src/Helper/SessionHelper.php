@@ -38,7 +38,7 @@ class SessionHelper {
             }
             
             if ($companyLogoCode != null) {
-                $companyImageFilePath= EntityHelper::getTableKVList($adapter, EmployeeFile::TABLE_NAME, EmployeeFile::FILE_CODE, [EmployeeFile::FILE_NAME], [EmployeeFile::FILE_CODE => $companyLogoCode], null)[$companyLogoCode];
+                $companyImageFilePath= EntityHelper::getTableKVList($adapter, EmployeeFile::TABLE_NAME, EmployeeFile::FILE_CODE, [EmployeeFile::FILE_PATH], [EmployeeFile::FILE_CODE => $companyLogoCode], null)[$companyLogoCode];
                 $event->getViewModel()->setVariable("companyLogoUrl", $companyImageFilePath);
             } else {
                 $config = $app->getServiceManager()->get('config');
