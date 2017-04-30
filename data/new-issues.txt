@@ -122,12 +122,12 @@ JGI_training_session_3
 13. Travel Request flow implementation. 
 15. Assets Implementation. prabin 
 16. Menu Name Refactor/ should be meaningful and short. prabin
-17. Reasons should not be mandatory on approve or recommend but mandatory on reject case. punam
+17. Reasons should not be mandatory on approve or recommend but mandatory on reject case. punam[done]
 18. Team Status/Report. ukesh
-19. Salary increment notification. ukesh
+19. Salary increment notification. ukesh[continue by punam]
 20. on travel request voucher, no image is displayed. punam [done]
 20.A on travel request voucher, set landscape for expense report and portrait for advance report. punam[done]
 21. Expire notifications. | Resign  ukesh 
-22. Disabled list should not be seen. ukesh
+22. Disabled list should not be seen. ukesh [done by punam]
 23. On Employee Report, % wise gender should be displayed. ukesh
 24. file name and file path need to be changed. punam [done]
