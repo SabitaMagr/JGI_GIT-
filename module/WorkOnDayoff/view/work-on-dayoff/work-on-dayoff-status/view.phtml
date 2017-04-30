@@ -27,7 +27,8 @@ $this->headScript()
         ->appendFile($this->basePath('js/nepali-datepicker-ext.js'));
 
 $this->headScript()->appendFile($this->basePath('js/angular.min.js'));
-$this->headScript()->appendFile($this->basePath('js/SelfService/work-on-dayoff/add.js'));
+$this->headScript()->appendFile($this->basePath('js/SelfService/work-on-dayoff/add.js'))
+            ->appendFile($this->basePath('js/manager-service/dayoff-work-approve/view.js'));
 
 
 $form->setAttribute('role', 'form');
@@ -47,6 +48,7 @@ $approvedRemarks->setAttributes(['required' => 'true']);
 
 $submit = $form->get('submit');
 $submit->setAttribute('value', 'Approve');
+$submit->setAttribute('id','approve');
 
 $form->setAttribute('action', $this->url('workOnDayoffStatus', ['action' => 'view', 'id' => $id]));
 

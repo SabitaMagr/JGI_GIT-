@@ -9,7 +9,8 @@ $this->headScript()
 
 $this->headScript()->appendFile($this->basePath('assets/global/plugins/combodate/js/moment.min.js'));
 $this->headScript()->appendFile($this->basePath('assets/global/plugins/combodate/js/combodate.js'));
-$this->headScript()->appendFile($this->basePath('js/AttendanceManagement/attendance/view.js'));
+$this->headScript()->appendFile($this->basePath('js/AttendanceManagement/attendance/view.js'))
+                    ->appendFile($this->basePath('js/manager-service/attendance-approve/view.js'));
 
 
 $form->setAttribute('role', 'form');
@@ -32,6 +33,7 @@ $approvedRemarks->setAttributes(['required' => 'true']);
 
 $submit = $form->get('submit');
 $submit->setAttribute('value', 'Approve');
+$submit->setAttribute('id','approve');
 
 $form->setAttribute('action', $this->url('attedanceapprove', ['action' => 'view', 'id' => $id]));
 
@@ -69,6 +71,9 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                 </div>
             </div>
             <div class="portlet-body">
+                <?php
+                    print $this->form()->openTag($form);
+                    ?>
                 <div class="border-bottom">
                     <div class="form-group">
                         <div class="row div-font-11">
@@ -133,9 +138,6 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                             </div>
                         </div>
                     </div>
-                    <?php
-                    print $this->form()->openTag($form);
-                    ?>
 
                     <div class=" row">
                         <div class="col-sm-4">
@@ -227,10 +229,11 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                         ?>
                         <input type="submit" name="submit" class="btn btn-success pull-right" value="Reject">
                         <?php
-                        print $this->form()->closeTag();
+                        
                     }
                     ?>
                 </div>
+                <?php print $this->form()->closeTag(); ?>
             </div>
 
         </div>

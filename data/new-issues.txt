@@ -36,10 +36,10 @@ password forget implemetation flow
 
     
 jwl-training-session-2_27-Apr-17 issues | changes
-1. History in Employee Profile | uploaded document download list punam
-2. link to history from employee profile. punam
+1. History in Employee Profile | uploaded document download list punam [done]
+2. link to history from employee profile. punam [done]
 4. Nepali Calendar, manual input ukesh
-6. Search in Reporting Hierarchy. punam
+6. Search in Reporting Hierarchy. punam [done]
 7. Pending leave Approval in dashboard. ukesh
 9. Email link issue. ukesh
 10. JGI work on holiday, dayoff factor 1.  ukesh   

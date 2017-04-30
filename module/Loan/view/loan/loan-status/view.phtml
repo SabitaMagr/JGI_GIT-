@@ -25,7 +25,8 @@ $this->headScript()
 
 $this->headScript()->appendFile($this->basePath('js/SelfService/loan-request/add.js'));
 $this->headScript()->appendFile($this->basePath('js/angular.min.js'));
-$this->headScript()->appendFile($this->basePath('js/LeaveManagement/LeaveRequest/leaveStatus.js'));
+$this->headScript()->appendFile($this->basePath('js/LeaveManagement/LeaveRequest/leaveStatus.js'))
+                    ->appendFile($this->basePath('js/manager-service/loan-approve/view.js'));
 
 
 $form->setAttribute('role', 'form');
@@ -47,6 +48,7 @@ $approvedRemarks->setAttributes(['required' => 'true']);
 
 $submit = $form->get('submit');
 $submit->setAttribute('value', 'Approve');
+$submit->setAttribute('id','approve');
 
 $form->setAttribute('action', $this->url('loanStatus', ['action' => 'view', 'id' => $id]));
 

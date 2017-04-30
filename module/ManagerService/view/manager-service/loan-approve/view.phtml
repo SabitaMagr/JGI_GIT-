@@ -24,7 +24,8 @@ $this->headScript()
         ->appendFile($this->basePath('js/nepali-datepicker-ext.js'));
 
 
-$this->headScript()->appendFile($this->basePath('js/SelfService/loan-request/add.js'));
+$this->headScript()->appendFile($this->basePath('js/SelfService/loan-request/add.js'))
+                    ->appendFile($this->basePath('js/manager-service/loan-approve/view.js'));
 
 $form->setAttribute('role', 'form');
 $form->setAttribute('id', 'loanApprove-form');
@@ -45,6 +46,7 @@ $approvedRemarks->setAttributes(['required' => 'true']);
 
 $submit = $form->get('submit');
 $submit->setAttribute('value', 'Approve');
+$submit->setAttribute('id','approve');
 
 $form->setAttribute('action', $this->url('loanApprove', ['action' => 'view', 'id' => $id, 'role' => $role]));
 

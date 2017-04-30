@@ -25,7 +25,8 @@ $this->headScript()
 
 $this->headScript()->appendFile($this->basePath('js/angular.min.js'));
 $this->headScript()->appendFile($this->basePath('js/SelfService/travel-request/add.js'))
-        ->appendFile($this->basePath('js/SelfService/travel-request/advanceRequestController.js'));
+        ->appendFile($this->basePath('js/SelfService/travel-request/advanceRequestController.js'))
+                        ->appendFile($this->basePath('js/manager-service/travel-approve/view.js'));
 
 $form->setAttribute('role', 'form');
 $form->setAttribute('id', 'travelRequest-form');
@@ -57,6 +58,7 @@ $approvedRemarks->setAttributes(['required' => 'true']);
 
 $submit = $form->get('submit');
 $submit->setAttribute('value', 'Approve');
+$submit->setAttribute('id','approve');
 
 $form->setAttribute('action', $this->url('travelApprove', ['action' => 'view', 'id' => $id, 'role' => $role]));
 

@@ -25,7 +25,8 @@ $this->headScript()
         ->appendFile($this->basePath('js/nepali-datepicker-ext.js'));
 
 $this->headScript()->appendFile($this->basePath('js/angular.min.js'));
-$this->headScript()->appendFile($this->basePath('js/SelfService/work-on-holiday/add.js'));
+$this->headScript()->appendFile($this->basePath('js/SelfService/work-on-holiday/add.js'))
+            ->appendFile($this->basePath('js/manager-service/holiday-work-approve/view.js'));
 
 
 $form->setAttribute('role', 'form');
@@ -48,6 +49,7 @@ $approvedRemarks->setAttributes(['required' => 'true']);
 
 $submit = $form->get('submit');
 $submit->setAttribute('value', 'Approve');
+$submit->setAttribute('id','approve');
 
 $form->setAttribute('action', $this->url('workOnHolidayStatus', ['action' => 'view', 'id' => $id]));
 
@@ -56,6 +58,7 @@ $form->prepare();
 print $this->form()->openTag($form);
 ?>
 <script>
+    document.holidayList =<?= json_encode($holidayObjList) ?>;
     document.url = '<?= $this->url("webService", ["action" => "index"]) ?>';
     document.employeeId =<?= json_encode($employeeId) ?>;
 </script>

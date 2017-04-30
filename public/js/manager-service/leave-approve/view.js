@@ -3,6 +3,15 @@
     $(document).ready(function (e) {
         $("#approve").on("click", function () {
             try {
+                var recommendRemarksId = $("#form-recommendedRemarks");
+                var approveRemarksId = $("#form-approvedRemarks");
+                
+                if(typeof recommendRemarksId !=="undefined"){
+                    recommendRemarksId.removeAttr("required");
+                }
+                if(typeof approveRemarksId !=="undefined"){
+                    approveRemarksId.removeAttr("required");
+                }
                 var id = $(this);
                 var parentId = id.parent(".form-group");
                 var availableBalance = parseFloat($("#availableDays").val());

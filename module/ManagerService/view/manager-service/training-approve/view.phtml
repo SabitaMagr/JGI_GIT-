@@ -6,7 +6,8 @@ $this->headScript()
         ->appendFile($this->basePath('assets/global/plugins/nepalidate/nepali.datepicker.v2.1.min.js'))
         ->appendFile($this->basePath('js/nepali-datepicker-ext.js'));
 
-$this->headScript()->appendFile($this->basePath('js/SelfService/training-request/datepick.js'));
+$this->headScript()->appendFile($this->basePath('js/SelfService/training-request/datepick.js'))
+                    ->appendFile($this->basePath('js/manager-service/training-approve/view.js'));
 //$this->headScript()->appendFile($this->basePath('js/SelfService/training-request/add.js'));
 
 $form->setAttribute('role', 'form');
@@ -38,6 +39,7 @@ $approvedRemarks->setAttributes(['required' => 'true']);
 
 $submit = $form->get('submit');
 $submit->setAttribute('value', 'Approve');
+$submit->setAttribute('id','approve');
 
 $form->setAttribute('action', $this->url('trainingApprove', ['action' => 'view', 'id' => $id, 'role' => $role]));
 

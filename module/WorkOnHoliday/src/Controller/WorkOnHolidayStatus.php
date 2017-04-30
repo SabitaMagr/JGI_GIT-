@@ -156,6 +156,7 @@ class WorkOnHolidayStatus extends AbstractActionController
 
             return $this->redirect()->toRoute("workOnHolidayStatus");
         }
+        $holidays = $this->getHolidayList($requestedEmployeeID);
         return Helper::addFlashMessagesToArray($this, [
                     'form' => $this->form,
                     'id' => $id,
@@ -166,19 +167,23 @@ class WorkOnHolidayStatus extends AbstractActionController
                     'approvedDT'=>$detail['APPROVED_DATE'],
                     'approver' => $authApprover,
                     'status' => $status,
-                    'holidays' => $this->getHolidayList($requestedEmployeeID),
+                    'holidays' => $holidays["holidayKVList"],
+                    'holidayObjList' => $holidays["holidayList"],
                     'customRenderer' => Helper::renderCustomView(),
                     'recommApprove'=>$recommApprove
         ]);
     }
-    public function getHolidayList($employeeId){
-       $holidayRepo = new HolidayRepository($this->adapter);
-       $holidayResult = $holidayRepo->selectAll($employeeId);
-       $holidayList = [];
-       foreach($holidayResult as $holidayRow){
-           //$todayDate = new \DateTime();
-           $holidayList[$holidayRow['HOLIDAY_ID']]=$holidayRow['HOLIDAY_ENAME']." (".$holidayRow['START_DATE']." to ".$holidayRow['END_DATE'].")";
-       }
-       return $holidayList;
-    }    
+    public function getHolidayList($employeeId) {
+        $holidayRepo = new HolidayRepository($this->adapter);
+        $holidayResult = $holidayRepo->selectAll($employeeId);
+        $holidayList = [];
+        $holidayObjList = [];
+        foreach ($holidayResult as $holidayRow) {
+            //$todayDate = new \DateTime();
+            $holidayList[$holidayRow['HOLIDAY_ID']] = $holidayRow['HOLIDAY_ENAME'] . " (" . $holidayRow['START_DATE'] . " to " . $holidayRow['END_DATE'] . ")";
+            $holidayObjList[$holidayRow['HOLIDAY_ID']] = $holidayRow;
+        }
+        return ['holidayKVList' => $holidayList, 'holidayList' => $holidayObjList];
+    }
+  
 }
