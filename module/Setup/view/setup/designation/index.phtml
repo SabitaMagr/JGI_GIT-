@@ -59,14 +59,11 @@ echo json_encode($menu); ?>;
     </div>
     <script id="rowTemplate" type="text/x-kendo-tmpl">
         <tr>
-        <td>    
-        #: (COMPANY_NAME == null) ? '-' : COMPANY_NAME #
-        </td>
-        <td>    
-        #: (DESIGNATION_CODE == null) ? '-' : DESIGNATION_CODE #
-        </td>
         <td> 
         #: (DESIGNATION_TITLE == null) ? '-' : DESIGNATION_TITLE #
+        </td>
+        <td>    
+        #: (COMPANY_NAME == null) ? '-' : COMPANY_NAME #
         </td>
         <td>
         #: (PARENT_DESIGNATION_TITLE == null) ? '-' : PARENT_DESIGNATION_TITLE #

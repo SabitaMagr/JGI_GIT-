@@ -16,13 +16,14 @@
             },
             rowTemplate: kendo.template($("#rowTemplate").html()),
             columns: [
-                {field: "LOAN_CODE", title: "Loan Code",width:80},
+//                {field: "LOAN_CODE", title: "Loan Code",width:80},
                 {field: "LOAN_NAME", title: "Loan Name",width:130},
-                {field: "MIN_AMOUNT", title: "Amount Range",width:90},
-                {field: "INTEREST_RATE", title: "Interest Rate",width:90},
-                {field: "REPAYMENT_AMOUNT", title: "Repayment Amount",width:120},
-                {field: "REPAYMENT_PERIOD", title: "Repayment Period(in month)",width:150},
-                {title: "Action",width:100}
+                {field: "COMPANY_NAME", title: "Company",width:110},
+                {field: "MIN_AMOUNT", title: "Amount Range",width:110},
+                {field: "INTEREST_RATE", title: "Interest Rate",width:110},
+                {field: "REPAYMENT_AMOUNT", title: "Repayment Amount",width:130},
+                {field: "REPAYMENT_PERIOD", title: "Repayment(In Month)",width:150},
+                {title: "Action",width:110}
             ]
         });
         

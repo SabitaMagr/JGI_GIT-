@@ -16,7 +16,7 @@
             },
             rowTemplate: kendo.template($("#rowTemplate").html()),
             columns: [
-                {field: "DEPARTMENT_CODE", title: "Code", width: 80},
+//                {field: "DEPARTMENT_CODE", title: "Code", width: 80},
                 {field: "DEPARTMENT_NAME", title: "Name", width: 150},
                 {field: "PARENT_DEPARTMENT", title: "Parent Dept Name", width: 150},
                 {field: "COMPANY_NAME", title: "Company", width: 150},
@@ -28,7 +28,7 @@
         $("#export").click(function (e) {
             var rows = [{
                     cells: [
-                        {value: "Department Code"},
+//                        {value: "Department Code"},
                         {value: "Department Name"},
                         {value: "Country Name"},
                         {value: "Parent Department Name"},
