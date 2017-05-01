@@ -1,6 +1,11 @@
 <?php
 $this->headLink()
+        ->appendStylesheet($this->basePath('assets/global/plugins/bootstrap-multiselect/css/bootstrap-multiselect.css'));
+
+$this->headLink()
         ->appendStylesheet($this->basePath('assets/global/plugins/nepalidate/nepali.datepicker.v2.1.min.css'));
+
+$this->headScript()->appendFile($this->basePath('assets/global/plugins/bootstrap-multiselect/js/bootstrap-multiselect.js'));
 
 $this->headScript()
         ->appendFile($this->basePath('assets/global/plugins/nepalidate/nepali.datepicker.v2.1.min.js'))
@@ -162,6 +167,16 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                             <span class="required" aria-required="true">*</span>
                             <?php print $this->formElement($branchId); ?>
                         </div>
+                        
+                        <select class="mt-multiselect btn btn-default" multiple="multiple" data-label="left" data-select-all="true" data-width="100%" data-filter="true" data-action-onchange="true">
+                            <option value="1">Option 1</option>
+                            <option value="2" selected="selected">Option 2</option>
+                            <!-- Option 3 will be selected in advance ... -->
+                            <option value="3" selected="selected">Option 3</option>
+                            <option value="4">Option 4</option>
+                            <option value="5">Option 5</option>
+                            <option value="6">Option 6</option>
+                        </select>
                         <?php print $this->formElementErrors()->render($branchId, ['class' => 'help-block error']) ?>
                     </div>
                     <div class="col-sm-6">

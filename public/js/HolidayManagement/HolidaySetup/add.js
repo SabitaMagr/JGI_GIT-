@@ -2,6 +2,11 @@
     'use strict';
     $(document).ready(function () {
         $('select').select2();
+//$('#example-enableFiltering-includeSelectAllOption').multiselect({
+//            enableFiltering: true,
+//            includeSelectAllOption: true
+//        });
+
         var holidays = [];
         var holidayOptionElements = document.querySelectorAll('#holidayId option');
         for (var index = 0; index < holidayOptionElements.length; index++) {

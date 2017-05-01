@@ -119,12 +119,15 @@ class HolidaySetup extends AbstractActionController {
                 return $this->redirect()->toRoute("holidaysetup");
             }
         }
+        $branches = ApplicationEntityHelper::getTableKVListWithSortOption($this->adapter, Branch::TABLE_NAME, Branch::BRANCH_ID, [Branch::BRANCH_NAME], ["STATUS" => "E"], Branch::BRANCH_NAME, "ASC",NULL,FALSE,TRUE);
+        $branches[-1] = "Select All";
+        ksort($branches);
         return new ViewModel(Helper::addFlashMessagesToArray(
                         $this, [
                     'form' => $this->form,
                     'customRenderer' => Helper::renderCustomView(),
                     "genders" => EntityHelper::getTableKVList($this->adapter, EntityHelper::HRIS_GENDERS),
-                    'branches' => ApplicationEntityHelper::getTableKVListWithSortOption($this->adapter, Branch::TABLE_NAME, Branch::BRANCH_ID, [Branch::BRANCH_NAME], ["STATUS" => "E"], Branch::BRANCH_NAME, "ASC",NULL,FALSE,TRUE),
+                    'branches' =>$branches, 
                     'designations' => ApplicationEntityHelper::getTableKVListWithSortOption($this->adapter, Designation::TABLE_NAME, Designation::DESIGNATION_ID, [Designation::DESIGNATION_TITLE], [Designation::STATUS => "E"], Designation::DESIGNATION_TITLE, "ASC",NULL,FALSE,TRUE)
                         ]
                 )
