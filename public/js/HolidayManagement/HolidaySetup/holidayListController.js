@@ -60,7 +60,7 @@ angular.module('hris', [])
                     dataBound: gridDataBound,
                     rowTemplate: kendo.template($("#rowTemplate").html()),
                     columns: [
-                        {field: "HOLIDAY_CODE", title: "Holiday Code", width: 130},
+//                        {field: "HOLIDAY_CODE", title: "Holiday Code", width: 130},
                         {field: "HOLIDAY_ENAME", title: "Holiday Name", width: 150},
                         {field: "START_DATE", title: "From Date", width: 130},
                         {field: "END_DATE", title: "To Date", width: 130},
@@ -84,7 +84,7 @@ angular.module('hris', [])
                 $("#export").click(function (e) {
                     var rows = [{
                             cells: [
-                                {value: "Holiday Code"},
+//                                {value: "Holiday Code"},
                                 {value: "Holiday Name"},
                                 {value: "From Date"},
                                 {value: "To Date"},
@@ -115,7 +115,7 @@ angular.module('hris', [])
                         console.log(branch1);
                         rows.push({
                             cells: [
-                                {value: dataItem.HOLIDAY_CODE},
+//                                {value: dataItem.HOLIDAY_CODE},
                                 {value: dataItem.HOLIDAY_ENAME},
                                 {value: dataItem.START_DATE},
                                 {value: dataItem.END_DATE},
@@ -135,7 +135,7 @@ angular.module('hris', [])
                         sheets: [
                             {
                                 columns: [
-                                    {autoWidth: true},
+//                                    {autoWidth: true},
                                     {autoWidth: true},
                                     {autoWidth: true},
                                     {autoWidth: true},

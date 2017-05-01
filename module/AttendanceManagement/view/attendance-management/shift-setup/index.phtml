@@ -65,13 +65,10 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
     <script id="rowTemplate" type="text/x-kendo-tmpl">
         <tr>
         <td>
-        #: (SHIFT_CODE == null) ? '-' : SHIFT_CODE #
+        #: (SHIFT_ENAME == null) ? '-' : SHIFT_ENAME #
         </td>
         <td>
         #: (COMPANY_NAME == null) ? '-' : COMPANY_NAME #
-        </td>
-        <td>
-        #: (SHIFT_ENAME == null) ? '-' : SHIFT_ENAME #
         </td>
         <td>
         #: (START_TIME == null) ? '-' : START_TIME #

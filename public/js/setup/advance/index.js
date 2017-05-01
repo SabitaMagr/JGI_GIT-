@@ -16,13 +16,13 @@
             },
             rowTemplate: kendo.template($("#rowTemplate").html()),
             columns: [
-                {field: "ADVANCE_CODE", title: "Advance Code",width:80},
-                {field: "COMPANY_NAME", title: "Company",width:100},
+//                {field: "ADVANCE_CODE", title: "Advance Code",width:80},
                 {field: "ADVANCE_NAME", title: "Advance Name",width:130},
-                {field: "MIN_SALARY_AMT", title: "Min. Salary Amount",width:120},
+                {field: "COMPANY_NAME", title: "Company",width:110},
+                {field: "MIN_SALARY_AMT", title: "Min. Salary Amount",width:130},
                 {field: "AMOUNT_TO_ALLOW", title: "Amount To Allow",width:120},
-                {field: "MONTH_TO_ALLOW", title: "Month To Allow",width:100},
-                {title: "Action",width:100}
+                {field: "MONTH_TO_ALLOW", title: "Month To Allow",width:110},
+                {title: "Action",width:110}
             ]
         });
         

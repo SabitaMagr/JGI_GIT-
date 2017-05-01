@@ -6,6 +6,7 @@ use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
 use Application\Model\Model;
 use Application\Repository\RepositoryInterface;
+use Setup\Model\Company;
 use Setup\Model\Institute;
 use Setup\Model\Training;
 use Zend\Db\Adapter\AdapterInterface;
@@ -63,6 +64,7 @@ class TrainingRepository implements RepositoryInterface
 //            ], true);
         $select->from(['T'=>Training::TABLE_NAME]);
         $select->join(['I' => Institute::TABLE_NAME], "T." . Training::INSTITUTE_ID . "=I.".Institute::INSTITUTE_ID, [Institute::INSTITUTE_NAME=>new Expression('INITCAP(I.'.Institute::INSTITUTE_NAME.')')], 'left');
+        $select->join(['C' => Company::TABLE_NAME], "T." . Training::COMPANY_ID . "=C.". Company::COMPANY_ID, [Company::COMPANY_NAME=>new Expression('INITCAP(C.'. Company::COMPANY_NAME.')')], 'left');
         $select->where(["T.STATUS='E'"]);
         $select->order("T.".Training::TRAINING_NAME." ASC");        
         $statement = $sql->prepareStatementForSqlObject($select);

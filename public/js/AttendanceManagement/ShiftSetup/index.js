@@ -23,12 +23,12 @@
             dataBound: gridDataBound,
             rowTemplate: kendo.template($("#rowTemplate").html()),
             columns: [
-                {field: "SHIFT_CODE", title: "Shift Code",width:80},
+//                {field: "SHIFT_CODE", title: "Shift Code",width:80},
+                {field: "SHIFT_ENAME", title: "Shift Name",width:120},
                 {field: "COMPANY_NAME", title: "COMPANY NAME",width:130},
-                {field: "SHIFT_ENAME", title: "Shift Name",width:200},
                 {field: "START_TIME", title: "Start Time",width:120},
                 {field: "END_TIME", title: "End Time",width:120},
-                {title: "Action",width:80}
+                {title: "Action",width:110}
             ]
         });
         function gridDataBound(e) {

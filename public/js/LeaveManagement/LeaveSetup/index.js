@@ -23,9 +23,9 @@
             dataBound:gridDataBound,
             rowTemplate: kendo.template($("#rowTemplate").html()),
             columns: [
-                {field: "LEAVE_CODE", title: "Leave Code"},
-                {field: "COMPANY_NAME", title: "Company Name"},
+//                {field: "LEAVE_CODE", title: "Leave Code"},
                 {field: "LEAVE_ENAME", title: "Leave Name"},
+                {field: "COMPANY_NAME", title: "Company"},
                 {field: "ALLOW_HALFDAY", title: "Allow Halfday"},
                 {field: "DEFAULT_DAYS", title: "Default Days"},
                 {field: "CARRY_FORWARD", title: "Carry Forward"},

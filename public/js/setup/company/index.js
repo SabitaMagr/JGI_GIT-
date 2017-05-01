@@ -21,7 +21,7 @@
             },
             rowTemplate: kendo.template($("#rowTemplate").html()),
             columns: [
-                {field: "COMPANY_CODE", title: "Company Code",width:120},
+//                {field: "COMPANY_CODE", title: "Company Code",width:120},
                 {field: "COMPANY_NAME", title: "Company Name",width:200},
                 {title: "Action",width:50}
             ]

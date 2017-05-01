@@ -68,13 +68,10 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
     <script id="rowTemplate" type="text/x-kendo-tmpl">
         <tr>
         <td>
-        #: (LEAVE_CODE == null) ? '-' : LEAVE_CODE #
+        #: (LEAVE_ENAME == null) ? '-' : LEAVE_ENAME #
         </td>
         <td>
         #: (COMPANY_NAME == null) ? '-' : COMPANY_NAME #
-        </td>
-        <td>
-        #: (LEAVE_ENAME == null) ? '-' : LEAVE_ENAME #
         </td>
         <td>
         #: (ALLOW_HALFDAY == null) ? '-' : ALLOW_HALFDAY #
