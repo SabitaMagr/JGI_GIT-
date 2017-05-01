@@ -23,10 +23,10 @@
             dataBound: gridDataBound,
             rowTemplate: kendo.template($("#rowTemplate").html()),
             columns: [
-                {field: "ACADEMIC_DEGREE_CODE", title: "Academic Degree Code",width:120},
+//                {field: "ACADEMIC_DEGREE_CODE", title: "Academic Degree Code",width:120},
                 {field: "ACADEMIC_DEGREE_NAME", title: "Academic Degree Name",width:300},
                 {field: "WEIGHT", title: "Weight",width:100},
-                {title: "Action",width:80}
+                {title: "Action",width:110}
             ]
         });
         function gridDataBound(e) {

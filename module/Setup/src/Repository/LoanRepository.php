@@ -5,16 +5,21 @@ namespace Setup\Repository;
 use Application\Helper\EntityHelper;
 use Application\Model\Model;
 use Application\Repository\RepositoryInterface;
+use Setup\Model\Company;
 use Setup\Model\Loan;
 use Zend\Db\Adapter\AdapterInterface;
+use Zend\Db\Sql\Expression;
 use Zend\Db\Sql\Select;
+use Zend\Db\Sql\Sql;
 use Zend\Db\TableGateway\TableGateway;
 
 class LoanRepository implements RepositoryInterface {
 
     private $tableGateway;
+    private $adapter;
 
     public function __construct(AdapterInterface $adapter) {
+        $this->adapter=$adapter;
         $this->tableGateway = new TableGateway(Loan::TABLE_NAME, $adapter);
     }
 
@@ -37,12 +42,16 @@ class LoanRepository implements RepositoryInterface {
         return $this->tableGateway->select();
     }
 
-    public function fetchActiveRecord() {
-        $rowset = $this->tableGateway->select(function(Select $select) {
-            $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(Loan::class, [Loan::LOAN_NAME]), false);
-            $select->where([Loan::STATUS => 'E']);
-            $select->order(Loan::LOAN_NAME . " ASC");
-        });
+    public function fetchActiveRecord() {        
+        $sql = new Sql($this->adapter);
+        $select = $sql->select();
+        $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(Loan::class, [Loan::LOAN_NAME],NULL,NULL,NULL,NULL,'L',FALSE,FALSE), false);
+        $select->from(['L' => Loan::TABLE_NAME]);
+        $select->join(['C' => Company::TABLE_NAME], "C.".Company::COMPANY_ID."=L.". Loan::COMPANY_ID, [Company::COMPANY_NAME => new Expression('INITCAP(C.COMPANY_NAME)')], 'left');
+        $select->where(["L.".Loan::STATUS."='E'"]);
+        $select->order("L.".Loan::LOAN_NAME . " ASC");
+        $statement = $sql->prepareStatementForSqlObject($select);
+        $rowset = $statement->execute();
         $result = [];
         $i = 1;
         foreach ($rowset as $row) {
@@ -56,7 +65,8 @@ class LoanRepository implements RepositoryInterface {
                 'INTEREST_RATE' => $row['INTEREST_RATE'],
                 'REPAYMENT_AMOUNT' => $row['REPAYMENT_AMOUNT'],
                 'REPAYMENT_PERIOD' => $row['REPAYMENT_PERIOD'],
-                'REMARKS' => $row['REMARKS']
+                'REMARKS' => $row['REMARKS'],
+                'COMPANY_NAME' => $row['COMPANY_NAME']
             ]);
             $i += 1;
         }

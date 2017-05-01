@@ -21,9 +21,9 @@
             },
             rowTemplate: kendo.template($("#rowTemplate").html()),
             columns: [
-                {field: "SERVICE_TYPE_CODE", title: "Service Type Code",width:120},
-                {field: "SERVICE_TYPE_NAME", title: "Service Type Name",width:200},
-                {title: "Action",width:50}
+//                {field: "SERVICE_TYPE_CODE", title: "Service Type Code",width:120},
+                {field: "SERVICE_TYPE_NAME", title: "Service Type Name",width:500},
+                {title: "Action",width:110}
             ]
         });
         $("#export").click(function (e) {

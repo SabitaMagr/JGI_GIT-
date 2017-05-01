@@ -16,12 +16,12 @@
             },
             rowTemplate: kendo.template($("#rowTemplate").html()),
             columns: [
-                {field: "INSTITUTE_CODE", title: "Institute Code",width:80},
+//                {field: "INSTITUTE_CODE", title: "Institute Code",width:80},
                 {field: "INSTITUTE_NAME", title: "Institute Name",width:130},
-                {field: "LOCATION", title: "Location Detail",width:100},
+                {field: "LOCATION", title: "Location Detail",width:110},
                 {field: "TELEPHONE", title: "Telephone",width:120},
                 {field: "EMAIL", title: "Email",width:150},
-                {title: "Action",width:100}
+                {title: "Action",width:110}
             ]
         });
         

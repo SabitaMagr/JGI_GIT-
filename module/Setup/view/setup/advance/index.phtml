@@ -61,13 +61,10 @@ echo json_encode($menu);
     <script id="rowTemplate" type="text/x-kendo-tmpl">
         <tr>
         <td>    
-        #: (ADVANCE_CODE == null) ? '-' : ADVANCE_CODE #
+        #: (ADVANCE_NAME == null) ? '-' : ADVANCE_NAME #
         </td>
         <td>    
         #: (COMPANY_NAME == null) ? '-' : COMPANY_NAME #
-        </td>
-        <td>    
-        #: (ADVANCE_NAME == null) ? '-' : ADVANCE_NAME #
         </td>
         <td>    
         #: MIN_SALARY_AMT # - #: MAX_SALARY_AMT #

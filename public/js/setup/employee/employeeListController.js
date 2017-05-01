@@ -89,14 +89,14 @@ angular.module('hris', [])
                     },
                     rowTemplate: kendo.template($("#rowTemplate").html()),
                     columns: [
-                        {field: "EMPLOYEE_CODE", title: "Employee Code", width: 130},
-                        {field: "FIRST_NAME", title: "Name", width: 220},
-                        {field: "MOBILE_NO", title: "Mobile No", width: 130},
-                        {field: "BIRTH_DATE", title: "Birth Date", width: 130},
-                        {field: "COMPANY_NAME", title: "Company Name", width: 130},
-                        {field: "BRANCH_NAME", title: "Branch", width: 120},
-                        {field: "DEPARTMENT_NAME", title: "Department", width: 150},
-                        {field: "DESIGNATION_TITLE", title: "Designation", width: 150},
+//                        {field: "EMPLOYEE_CODE", title: "Employee Code", width: 130},
+                        {field: "FIRST_NAME", title: "Name", width: 180},
+                        {field: "MOBILE_NO", title: "Mobile No", width: 110},
+                        {field: "BIRTH_DATE", title: "Birth Date", width: 110},
+                        {field: "COMPANY_NAME", title: "Company", width: 110},
+                        {field: "BRANCH_NAME", title: "Branch", width: 110},
+                        {field: "DEPARTMENT_NAME", title: "Department", width: 130},
+                        {field: "DESIGNATION_TITLE", title: "Designation", width: 130},
                         {title: "Action", width: 120}
                     ]
                 });
@@ -115,7 +115,7 @@ angular.module('hris', [])
                 $("#export").click(function (e) {
                     var rows = [{
                             cells: [
-                                {value: "Employee Code"},
+//                                {value: "Employee Code"},
                                 {value: "Employee Name"},
                                 {value: "Name in Nepali"},
                                 {value: "Gender"},

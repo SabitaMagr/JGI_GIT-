@@ -21,9 +21,9 @@
             },
             rowTemplate: kendo.template($("#rowTemplate").html()),
             columns: [
-                {field: "ACADEMIC_UNIVERSITY_CODE", title: "Academic University Code",width:120},
-                {field: "ACADEMIC_UNIVERSITY_NAME", title: "Academic University Name",width:200},
-                {title: "Action",width:50}
+//                {field: "ACADEMIC_UNIVERSITY_CODE", title: "Academic University Code",width:120},
+                {field: "ACADEMIC_UNIVERSITY_NAME", title: "Academic University Name",width:400},
+                {title: "Action",width:110}
             ]
         });
         $("#export").click(function (e) {

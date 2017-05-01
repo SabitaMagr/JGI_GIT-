@@ -16,21 +16,22 @@
             },
             rowTemplate: kendo.template($("#rowTemplate").html()),
             columns: [
-                {field: "TRAINING_CODE", title: "Training Code",width:100},
+//                {field: "TRAINING_CODE", title: "Training Code",width:100},
                 {field: "TRAINING_NAME", title: "Training Name",width:130},
-                {field: "START_DATE", title: "Start Date",width:90},
-                {field: "END_DATE", title: "End Date",width:90},
+                {field: "COMPANY_NAME", title: "Company",width:110},
+                {field: "START_DATE", title: "Start Date",width:110},
+                {field: "END_DATE", title: "End Date",width:110},
                 {field: "DURATION", title: "Duration(in hour)",width:120},
-                {field: "INSTITUTE_NAME", title: "Institute Name",width:150},
-                {title: "Action",width:100}
+                {field: "INSTITUTE_NAME", title: "Institute Name",width:130},
+                {title: "Action",width:110}
             ]
         });
         
         $("#export").click(function (e) {
             var rows = [{
                     cells: [
-                        {value: "Training Code"},
                         {value: "Training Name"},
+                        {value: "Company"},
                         {value: "Training Type"},
                         {value: "Start Date"},
                         {value: "End Date"},
@@ -53,8 +54,9 @@
                 var dataItem = data[i];
                 rows.push({
                     cells: [
-                        {value: dataItem.TRAINING_CODE},
+//                        {value: dataItem.TRAINING_CODE},
                         {value: dataItem.TRAINING_NAME},
+                        {value: dataItem.COMPANY_NAME},
                         {value: dataItem.TRAINING_TYPE},
                         {value: dataItem.START_DATE},
                         {value: dataItem.END_DATE},
@@ -74,6 +76,7 @@
                 sheets: [
                     {
                         columns: [
+                            {autoWidth: true},
                             {autoWidth: true},
                             {autoWidth: true},
                             {autoWidth: true},
