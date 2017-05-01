@@ -141,10 +141,13 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
         #: (DESIGNATION_TITLE == null) ? '-' : DESIGNATION_TITLE #
         </td>
         <td>
-        <a class="btn-edit" title="Edit"
+        <a class="btn-edit" title="View"
         href="<?= $this->url("employee", ["action" => "view"]) ?>/#:EMPLOYEE_ID#/1" style="height:17px;">
-        <i class="fa fa-edit"></i>
+        <i class="fa fa-search-plus"></i>
         </a> 
+        <a class="btn-edit" title="Edit"
+        href="<?= $this->url("employee", ["action" => "edit"]) ?>/#:EMPLOYEE_ID#/1" style="height:17px;">
+        <i class="fa fa-edit"></i></a>
         <a class="confirmation btn-delete" title="Delete"
         href="<?= $this->url("employee", ["action" => "delete"]) ?>/#:EMPLOYEE_ID#" id="bs_#:EMPLOYEE_ID #" style="height:17px;">
         <i class="fa fa-trash-o"></i></a>

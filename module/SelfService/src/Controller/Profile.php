@@ -25,6 +25,7 @@ use Zend\Authentication\AuthenticationService;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\Mvc\Controller\AbstractActionController;
+use Setup\Repository\JobHistoryRepository;
 
 class Profile extends AbstractActionController {
 
@@ -101,8 +102,7 @@ class Profile extends AbstractActionController {
         $employeeData = (array) $this->repository->getById($id);
         $profilePictureId = $employeeData[HrEmployees::PROFILE_PICTURE_ID];
         $filePathArray = ApplicationHelper::getTableKVList($this->adapter, EmployeeFileModel::TABLE_NAME, EmployeeFileModel::FILE_CODE, [EmployeeFileModel::FILE_PATH], [EmployeeFileModel::FILE_CODE => $profilePictureId], null);
-        $filePath = empty($filePathArray) ? $this->config->getApplicationConfig()['default-profile-picture'] : $filePathArray[0];
-
+        $filePath = empty($filePathArray) ? $this->config->getApplicationConfig()['default-profile-picture'] : $filePathArray[key($filePathArray)];
         $perVdcMunicipalityDtl = $this->repository->getVdcMunicipalityDtl($employeeData[HrEmployees::ADDR_PERM_VDC_MUNICIPALITY_ID]);
         $perDistrictDtl = $this->repository->getDistrictDtl($perVdcMunicipalityDtl['DISTRICT_ID']);
         $perZoneDtl = $this->repository->getZoneDtl($perDistrictDtl['ZONE_ID']);
@@ -114,6 +114,12 @@ class Profile extends AbstractActionController {
         $empQualificationDtl = $empQualificationRepo->getByEmpId($id);
         $empExperienceList = $empExperienceRepo->getByEmpId($id);
         $empTrainingList = $empTrainingRepo->getByEmpId($id);
+        
+        $jobHistoryRepo = new JobHistoryRepository($this->adapter);
+        $jobHistoryList = $jobHistoryRepo->filter(null, null, $id);
+        
+        $employeeFileRepo = new EmployeeFile($this->adapter);
+        $employeeFile = $employeeFileRepo->fetchByEmpId($id);
 
         return Helper::addFlashMessagesToArray($this, [
                     'formOne' => $this->formOne,
@@ -133,7 +139,9 @@ class Profile extends AbstractActionController {
                     'tempZoneName' => $tempZoneDtl['ZONE_NAME'],
                     'empQualificationList' => $empQualificationDtl,
                     'empExperienceList' => $empExperienceList,
-                    'empTrainingList' => $empTrainingList
+                    'empTrainingList' => $empTrainingList,
+                    'jobHistoryList'=>$jobHistoryList,
+                    "employeeFile"=>$employeeFile
         ]);
     }
 

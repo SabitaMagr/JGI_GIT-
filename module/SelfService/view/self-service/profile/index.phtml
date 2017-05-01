@@ -1186,7 +1186,107 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                 <!--<button id="qualificationSubmitBtn" ng-click="addQualification()">Submit</button>-->
             </div>
         </div>
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="status-info"> 
+                    <p><i class="fa fa-info-circle ticon ticon"></i>Service Status Details</p>
+                    <div class="row clearfix e-setup">
+                        <div class="col-sm-12">
+                            <div class="table-responsive">
+                                <table class="table table-striped table-bordered table-hover no-footer customtbl profile-table-header" id="qualificationTbl">
+                                    <tr>
+                                        <td><label>Start Date</label></td>
+                                        <td><label>End Date</label></td>
+                                        <td><label>Service Event Type</label></td>
+                                        <td><label>Service Type (From-To)</label></td>
+                                        <td><label>Branch (From-To)</label></td>
+                                        <td><label>Department (From-To)</label></td>
+                                        <td><label>Designation (From-To)</label></td>
+                                        <td><label>Position (From-To)</label></td>
+                                    </tr>
+                                    <?php
+                                    foreach ($jobHistoryList as $jobHistory) {
+                                        ?>
+                                        <tr>
+                                            <td>
+                                                <?php print $jobHistory['START_DATE']; ?>
+                                            </td>
+                                            <td>
+                                                <?php print $jobHistory['END_DATE']; ?>
+                                            </td>
+                                            <td>
+                                                <?php print ($jobHistory['SERVICE_EVENT_TYPE_NAME']!=null)?$jobHistory['SERVICE_EVENT_TYPE_NAME']:"-"; ?>
+                                            </td>
 
+                                            <td>
+                                                <?php 
+                                                print ($jobHistory['FROM_SERVICE_NAME'] == null) ? ' ' : $jobHistory['FROM_SERVICE_NAME']." - "; print  ($jobHistory['TO_SERVICE_NAME'] == null) ? ' ' : $jobHistory['TO_SERVICE_NAME'] 
+                                                ?>
+                                            </td>
+                                            <td>
+                                                <?php 
+                                                print ($jobHistory['FROM_BRANCH_NAME'] == null) ? ' ' : $jobHistory['FROM_BRANCH_NAME']." - "; print  ($jobHistory['TO_BRANCH_NAME'] == null) ? ' ' : $jobHistory['TO_BRANCH_NAME'] 
+                                                ?>
+                                            </td>
+                                            <td>
+                                                <?php 
+                                                print ($jobHistory['FROM_DEPARTMENT_NAME'] == null) ? ' ' : $jobHistory['FROM_DEPARTMENT_NAME']." - "; print  ($jobHistory['TO_DEPARTMENT_NAME'] == null) ? ' ' : $jobHistory['TO_DEPARTMENT_NAME'] 
+                                                ?>
+                                            </td>
+                                            <td>
+                                                <?php 
+                                                print ($jobHistory['FROM_DESIGNATION_TITLE'] == null) ? ' ' : $jobHistory['FROM_DESIGNATION_TITLE']." - "; print  ($jobHistory['TO_DESIGNATION_TITLE'] == null) ? ' ' : $jobHistory['TO_DESIGNATION_TITLE'] 
+                                                ?>
+                                            </td>
+                                            <td>
+                                                <?php 
+                                                print ($jobHistory['FROM_POSITION_NAME'] == null) ? ' ' : $jobHistory['FROM_POSITION_NAME']." - "; print  ($jobHistory['TO_POSITION_NAME'] == null) ? ' ' : $jobHistory['TO_POSITION_NAME'] 
+                                                ?>
+                                            </td>
+                                        </tr>
+                                    <?php } ?>
+                                </table>
+                            </div>
+                        </div>
+                        <!--<button id="qualificationSubmitBtn" ng-click="addQualification()">Submit</button>-->
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-12">
+                <div class="status-info"> 
+                    <p><i class="fa fa-info-circle ticon ticon"></i>Document Details</p>
+                    <div class="row clearfix e-setup">
+                        <div class="col-sm-6">
+                            <div class="table-responsive">
+                                <table class="table table-striped table-bordered table-hover no-footer customtbl profile-table-header" id="qualificationTbl">
+                                    <tr>
+                                        <td><label>Document Name</label></td>
+                                        <td><label>Action</label></td>
+                                    </tr>
+                                    <?php
+                                    foreach ($employeeFile as $file) {
+                                        ?>
+                                        <tr>
+                                            <td>
+                                                <?php print $file['FILE_NAME']; ?>
+                                            </td>
+
+                                            <td width="10%">
+                                                <a class="btn-delete"
+                                                    href="<?= $this->basePath() . "/uploads/" . $file['FILE_PATH']; ?>" download="<?php echo $file['FILE_NAME']; ?>" style="height:27px;">
+                                                    <i class="fa fa-download"></i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    <?php } ?>
+                                </table>
+                            </div>
+                        </div>
+                        <!--<button id="qualificationSubmitBtn" ng-click="addQualification()">Submit</button>-->
+                    </div>
+                </div>
+            </div>
+        </div>
 
         <div class="row esetup" style="margin-top:10px;">
             <div class="col-md-12" style="text-align:center;">
