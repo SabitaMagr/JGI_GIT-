@@ -24,7 +24,6 @@
             rowTemplate: kendo.template($("#rowTemplate").html()),
             columns: [
                 {field: "TRAINING_CODE", title: "Training Code",width:90},
-                {field: "TRAINING_NAME", title: "Training Name",width:150},
                 {field: "START_DATE", title: "Start Date",width:80},
                 {field: "END_DATE", title: "End Date",width:80},
                 {field: "DURATION", title: "Duration(in hour)",width:100},

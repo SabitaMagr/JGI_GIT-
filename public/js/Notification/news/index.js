@@ -22,7 +22,7 @@
                 {field: "NEWS_DATE", title: "News Date",width:80},
                 {field: "NEWS_TYPE", title: "News Type",width:120},
                 {field: "NEWS_TITLE", title: "News Title",width:120},
-                {field: "NEWS_EDESC", title: "News In English",width:120},
+                {field: "NEWS_EDESC", title: "News",width:120},
                 {title: "Action",width:100}
             ],
         });

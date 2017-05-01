@@ -24,8 +24,8 @@
             rowTemplate: kendo.template($("#rowTemplate").html()),
             columns: [
 //                {field: "SHIFT_CODE", title: "Shift Code",width:80},
-                {field: "SHIFT_ENAME", title: "Shift Name",width:120},
-                {field: "COMPANY_NAME", title: "COMPANY NAME",width:130},
+                {field: "SHIFT_ENAME", title: "Shift",width:120},
+                {field: "COMPANY_NAME", title: "COMPANY",width:130},
                 {field: "START_TIME", title: "Start Time",width:120},
                 {field: "END_TIME", title: "End Time",width:120},
                 {title: "Action",width:110}

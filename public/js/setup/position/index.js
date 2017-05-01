@@ -46,8 +46,8 @@
             rowTemplate: kendo.template($("#rowTemplate").html()),
             columns: [
                 {field: "SN", title: "S.N.", width: 100},
-                {field: "POSITION_NAME", title: "Position Name", width: 300},
-                {field: "COMPANY_NAME", title: "Company Name", width: 300},
+                {field: "POSITION_NAME", title: "Position", width: 300},
+                {field: "COMPANY_NAME", title: "Company", width: 300},
                 {field: "REMARKS", title: "Remarks", hidden: true},
                 {title: "Action", width: 80,width: 100}
             ]

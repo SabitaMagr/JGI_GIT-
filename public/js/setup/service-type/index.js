@@ -22,7 +22,7 @@
             rowTemplate: kendo.template($("#rowTemplate").html()),
             columns: [
 //                {field: "SERVICE_TYPE_CODE", title: "Service Type Code",width:120},
-                {field: "SERVICE_TYPE_NAME", title: "Service Type Name",width:500},
+                {field: "SERVICE_TYPE_NAME", title: "Service Type",width:400},
                 {title: "Action",width:110}
             ]
         });

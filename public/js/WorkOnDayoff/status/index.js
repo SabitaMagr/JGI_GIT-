@@ -68,14 +68,14 @@ angular.module('hris', [])
                     dataBound: gridDataBound,
                     rowTemplate: kendo.template($("#rowTemplate").html()),
                     columns: [
-                        {field: "FIRST_NAME", title: "Employee Name", width: 150},
+                        {field: "FIRST_NAME", title: "Employee", width: 150},
                         {field: "REQUESTED_DATE", title: "Requested Date", width: 150},
-                        {field: "FROM_DATE", title: "From Date", width: 100},
-                        {field: "TO_DATE", title: "To Date", width: 100},
-                        {field: "DURATION", title: "Duration", width: 140},
-                        {field: "RECOMMENDER_NAME", title: "Recommender", width: 120},
+                        {field: "FROM_DATE", title: "From Date", width: 110},
+                        {field: "TO_DATE", title: "To Date", width: 110},
+                        {field: "DURATION", title: "Duration", width: 100},
+                        {field: "RECOMMENDER_NAME", title: "Recommender", width: 130},
                         {field: "APPROVER_NAME", title: "Approver", width: 120},                        
-                        {field: "STATUS", title: "Status", width: 100},
+                        {field: "STATUS", title: "Status", width: 90},
                         {title: "Action", width: 80}
                     ]
                 });

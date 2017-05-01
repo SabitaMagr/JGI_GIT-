@@ -23,7 +23,6 @@
             dataBound: gridDataBound,
             rowTemplate: kendo.template($("#rowTemplate").html()),
             columns: [
-                {field: "ADVANCE_CODE", title: "Advance Code"},
                 {field: "ADVANCE_NAME", title: "Advance Name"},
                 {field: "REQUESTED_DATE", title: "Applied Date"},
                 {field: "ADVANCE_DATE", title: "Advance Date"},

@@ -18,7 +18,7 @@
             pageable: true,
             rowTemplate: kendo.template($("#rowTemplate").html()),
             columns: [
-                {field: "EMPLOYEE_ID", title: "Employee Id", width: 100},
+                {field: "FIRST_NAME", title: "Employee", width: 100},
                 {field: "OLD_AMOUNT", title: "Old Amount", width: 200},
                 {field: "NEW_AMOUNT", title: "New Amount", width: 180},
                 {field: "EFFECTIVE_DATE", title: "Effective Date", width: 100},

@@ -61,7 +61,7 @@ angular.module('hris', [])
                     rowTemplate: kendo.template($("#rowTemplate").html()),
                     columns: [
 //                        {field: "HOLIDAY_CODE", title: "Holiday Code", width: 130},
-                        {field: "HOLIDAY_ENAME", title: "Holiday Name", width: 150},
+                        {field: "HOLIDAY_ENAME", title: "Holiday", width: 150},
                         {field: "START_DATE", title: "From Date", width: 130},
                         {field: "END_DATE", title: "To Date", width: 130},
                         {field: "GENDER_NAME", title: "Gender", width: 100},

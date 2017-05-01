@@ -23,7 +23,6 @@
             dataBound: gridDataBound,
             rowTemplate: kendo.template($("#rowTemplate").html()),
             columns: [
-                {field: "LOAN_CODE", title: "Loan Code"},
                 {field: "LOAN_NAME", title: "Loan Name"},
                 {field: "REQUESTED_DATE", title: "Applied Date"},
                 {field: "LOAN_DATE", title: "Loan Date"},
