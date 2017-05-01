@@ -23,7 +23,6 @@
             dataBound:gridDataBound,
             rowTemplate: kendo.template($("#rowTemplate").html()),
             columns: [
-                {field: "FLAT_CODE", title: "Code"},
                 {field: "FLAT_EDESC", title: "EDesc"},
                 {field: "FLAT_LDESC", title: "LDesc"},
                 {field: "SHOW_AT_RULE", title: "Show At Rule"},

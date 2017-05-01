@@ -22,7 +22,6 @@
             dataBound: gridDataBound,
             rowTemplate: kendo.template($("#rowTemplate").html()),
             columns: [
-                {field: "PAY_CODE", title: "Pay Code"},
                 {field: "PAY_EDESC", title: "EDesc"},
                 {field: "PAY_TYPE_FLAG", title: "Type"},
                 {field: "PRIORITY_INDEX", title: "Priority Index", type: "numbers"},

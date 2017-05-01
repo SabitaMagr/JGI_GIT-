@@ -18,9 +18,8 @@
             pageable: true,
             rowTemplate: kendo.template($("#rowTemplate").html()),
             columns: [
-                {field: "STAGE_CODE", title: "Stage Code",width:100},
-                {field: "STAGE_EDESC", title: "Stage Name (in Eng.)",width:180},
-                {field: "STAGE_NDESC", title: "Stage Name (in Nep.)",width:180},
+                {field: "STAGE_EDESC", title: "Stage(in Eng.)",width:180},
+                {field: "STAGE_NDESC", title: "Stage(in Nep.)",width:180},
                 {field: "ORDER_NO", title: "Order No.",width:80},
                 {field: "START_DATE", title: "Start Date",width:80},
                 {field: "END_DATE", title: "End Date",width:80},
