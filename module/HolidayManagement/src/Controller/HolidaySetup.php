@@ -120,8 +120,6 @@ class HolidaySetup extends AbstractActionController {
             }
         }
         $branches = ApplicationEntityHelper::getTableKVListWithSortOption($this->adapter, Branch::TABLE_NAME, Branch::BRANCH_ID, [Branch::BRANCH_NAME], ["STATUS" => "E"], Branch::BRANCH_NAME, "ASC", NULL, FALSE, TRUE);
-        $branches[-1] = "Select All";
-        ksort($branches);
         return new ViewModel(Helper::addFlashMessagesToArray(
                         $this, [
                     'form' => $this->form,

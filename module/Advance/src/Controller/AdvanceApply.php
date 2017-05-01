@@ -2,16 +2,15 @@
 
 namespace Advance\Controller;
 
-use Zend\Mvc\Controller\AbstractActionController;
-use Zend\Db\Adapter\AdapterInterface;
-use Application\Helper\Helper;
 use Application\Helper\EntityHelper;
-use Zend\Form\Annotation\AnnotationBuilder;
+use Application\Helper\Helper;
 use SelfService\Form\AdvanceRequestForm;
-use Setup\Model\HrEmployees;
-use SelfService\Repository\AdvanceRequestRepository;
 use SelfService\Model\AdvanceRequest as AdvanceRequestModel;
+use SelfService\Repository\AdvanceRequestRepository;
 use Setup\Model\Advance;
+use Zend\Db\Adapter\AdapterInterface;
+use Zend\Form\Annotation\AnnotationBuilder;
+use Zend\Mvc\Controller\AbstractActionController;
 
 class AdvanceApply extends AbstractActionController {
 
