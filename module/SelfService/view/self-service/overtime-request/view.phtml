@@ -1,0 +1,100 @@
+<?php
+$this->headLink()
+        ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.common.min.css'))
+        ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.rtl.min.css'))
+        ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.default.min.css'))
+        ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.dataviz.min.css'))
+        ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.dataviz.default.min.css'));
+
+$this->headScript()
+        ->appendFile($this->basePath('jszip/dist/jszip.min.js'))
+        ->appendFile($this->basePath('telerik_kendoui/js/kendo.all.min.js'))
+        ->appendFile($this->basePath('js/SelfService/overtime-request/index.js'))
+        ->appendFile($this->basePath('assets/global/plugins/bootstrap-confirmation/bootstrap-confirmation.min.js'));
+?>
+
+<script>
+    document.overtimeRequestList =<?php echo json_encode($list); ?>
+</script>
+<div class="page-bar">
+    <?= $this->navigation('Zend\Navigation\overtimeRequest')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
+</div>
+<?php
+if ($this->messages && (sizeof($this->messages) > 1)) {
+    print '<div class="alert alert-warning alert-dismissable">
+    <button type="button" class="close" data-dismiss="alert" aria-hidden="true"></button>
+    <strong>Warning!</strong> ';
+    print $this->messages[1];
+    print '</div>';
+}
+?>
+<?php if ($this->messages) { ?>
+    <script>
+        document.messages =<?php echo json_encode($this->messages); ?>
+    </script>
+<?php } ?>
+
+
+<div class="margin-top-20">
+    <div class="table-toolbar">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="btn-group">
+                    <a href="<?= $this->url('overtimeRequest', ['action' => 'add']) ?>" id="sample_editable_1_new"
+                       class="btn green"> Add New
+                        <!--                        <i class="fa fa-plus"></i>-->
+                    </a>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="btn-group pull-right">
+                    <button class="btn green btn-outline dropdown-toggle" data-toggle="dropdown">Tools
+                        <i class="fa fa-angle-down"></i>
+                    </button>
+                    <ul class="dropdown-menu pull-right">      
+                        <li>
+                            <a href="javascript:;" id="export"> Export to Excel </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>      
+        </div>
+    </div>    
+    <div id="trainingRequestTable">
+    </div>
+    <script id="rowTemplate" type="text/x-kendo-tmpl">
+        <tr>
+        <td>
+        #: (OVERTIME_DATE == null) ? '-' : OVERTIME_DATE #
+        </td>
+        <td>
+        <ul id="branchList">  
+        #  ln=DETAILS.length #
+        #for(var i=0; i<ln; i++) { #
+        <li>
+        - #=DETAILS[i].START_TIME # - #=DETAILS[i].END_TIME #
+        </li>
+        #}#
+        </ul>
+        </td>
+        <td>
+        #: (REQUESTED_DATE == null) ? '-' : REQUESTED_DATE #
+        </td>
+        <td>
+        #: (STATUS == null) ? '-' : STATUS #
+        </td>
+        <td>
+        <a class="btn-edit"
+        href="<?= $this->url("overtimeRequest", ["action" => "view"]) ?>/#: OVERTIME_ID #" style="height:17px;" title="view detail">
+        <i class="fa fa-search-plus"></i></a>
+        </a>
+        #if(ALLOW_TO_EDIT == 1){#       
+        <a class="confirmation btn-delete"
+        href="<?= $this->url("overtimeRequest", ["action" => "delete"]) ?>/#: OVERTIME_ID #" id="bs_#:OVERTIME_ID #" style="height:17px;">
+        <i class="fa fa-trash-o"></i></a>
+        </a>
+        #}#
+        </td>
+        </tr>
+    </script>
+</div>

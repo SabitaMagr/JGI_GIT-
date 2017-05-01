@@ -4,13 +4,11 @@ namespace SelfService\Controller;
 use Application\Helper\Helper;
 use DateTime;
 use Exception;
-use LeaveManagement\Repository\LeaveAssignRepository;
-use LeaveManagement\Repository\LeaveMasterRepository;
-use SelfService\Form\TrainingRequestForm;
-use SelfService\Model\TrainingRequest as TrainingRequestModel;
-use Setup\Model\Training;
-use Setup\Repository\TrainingRepository;
-use SelfService\Repository\TrainingRequestRepository;
+use SelfService\Model\Overtime;
+use SelfService\Model\OvertimeDetail;
+use SelfService\Form\OvertimeRequestForm;
+use SelfService\Repository\OvertimeRepository;
+use SelfService\Repository\OvertimeDetailRepository;
 use Setup\Repository\EmployeeRepository;
 use Setup\Repository\RecommendApproveRepository;
 use Zend\Authentication\AuthenticationService;
@@ -20,25 +18,27 @@ use Zend\Mvc\Controller\AbstractActionController;
 use Notification\Model\NotificationEvents;
 use Notification\Controller\HeadNotification;
 
-class TrainingRequest extends AbstractActionController {
+class OvertimeRequest extends AbstractActionController {
 
     private $form;
     private $adapter;
     private $repository;
+    private $detailRepository;
     private $employeeId;
     private $recommender;
     private $approver;
 
     public function __construct(AdapterInterface $adapter) {
         $this->adapter = $adapter;
-        $this->repository = new TrainingRequestRepository($adapter);
+        $this->repository = new OvertimeRepository($adapter);
+        $this->detailRepository = new OvertimeDetailRepository($adapter);
         $auth = new AuthenticationService();
         $this->employeeId = $auth->getStorage()->read()['employee_id'];
     }
 
     public function initializeForm() {
         $builder = new AnnotationBuilder();
-        $form = new TrainingRequestForm();
+        $form = new OvertimeRequestForm();
         $this->form = $builder->createForm($form);
     }
 
@@ -98,13 +98,6 @@ class TrainingRequest extends AbstractActionController {
                 return ["view" => 'View'];
             }
         };
-        $getValueComType = function($trainingTypeId){
-            if($trainingTypeId=='CC'){
-                return 'Company Contribution';
-            }else if($trainingTypeId=='CP'){
-                return 'Company Personal';
-            }
-        };
         
         foreach ($result as $row) {
             $status = $getValue($row['STATUS']);
@@ -118,30 +111,16 @@ class TrainingRequest extends AbstractActionController {
             $authRecommender = ($statusID == 'RQ' || $statusID == 'C') ? $recommenderName : $recommended_by;
             $authApprover = ($statusID == 'RC' || $statusID == 'RQ' || $statusID == 'C' || ($statusID == 'R' && $approvedDT == null)) ? $approverName : $approved_by;
 
-            if($row['TRAINING_ID']!=0){
-                $row['START_DATE']=$row['T_START_DATE'];
-                $row['END_DATE'] = $row['T_END_DATE'];
-                $row['DURATION'] = $row['T_DURATION'];
-                $row['TRAINING_TYPE'] = $row['T_TRAINING_TYPE'];
-                $row['TITLE'] = $row['TRAINING_NAME'];
-            }
-            
             $new_row = array_merge($row, [
                 'RECOMMENDER_NAME' => $authRecommender,
                 'APPROVER_NAME' => $authApprover,
                 'STATUS' => $status,
                 'ACTION' => key($action),
-                'TRAINING_TYPE'=> $getValueComType($row['TRAINING_TYPE']),
                 'ACTION_TEXT' => $action[key($action)]
             ]);
-            $startDate = DateTime::createFromFormat(Helper::PHP_DATE_FORMAT, $row['START_DATE']);
-            $toDayDate = new DateTime();
-            if (($toDayDate < $startDate) && ($statusID == 'RQ' || $statusID == 'RC' || $statusID == 'AP')) {
+            
+            if ($statusID == 'RQ') {
                 $new_row['ALLOW_TO_EDIT'] = 1;
-            } else if (($toDayDate >= $startDate) && $statusID == 'RQ') {
-                $new_row['ALLOW_TO_EDIT'] = 1;
-            } else if ($toDayDate >= $startDate) {
-                $new_row['ALLOW_TO_EDIT'] = 0;
             } else {
                 $new_row['ALLOW_TO_EDIT'] = 0;
             }
@@ -154,55 +133,41 @@ class TrainingRequest extends AbstractActionController {
         $this->initializeForm();
         $request = $this->getRequest();
 
-        $model = new TrainingRequestModel();
+        $model = new Overtime();
+        $detailModel = new OvertimeDetail();
         if ($request->isPost()) {
             $postData = $request->getPost();
             $this->form->setData($postData);
             if ($this->form->isValid()) {
-                if($postData['companyList']==1){
-                    $model->trainingId=$postData['trainingId'];
-                    $model->remarks = $postData['remarks'];
-                    $model->description = $postData['description'];
-                }else if($postData['companyList']==0){
-                    $model->exchangeArrayFromForm($this->form->getData());
-                    $model->trainingId = 0;
-                }
-                $model->requestId = ((int) Helper::getMaxId($this->adapter, TrainingRequestModel::TABLE_NAME, TrainingRequestModel::REQUEST_ID)) + 1;
+                $model->exchangeArrayFromForm($this->form->getData());
+                $model->overtimeId = ((int) Helper::getMaxId($this->adapter, Overtime::TABLE_NAME, Overtime::OVERTIME_ID)) + 1;
                 $model->employeeId = $this->employeeId;
                 $model->requestedDate = Helper::getcurrentExpressionDate();
                 $model->status = 'RQ';
                 $this->repository->add($model);
-                try {
-                    HeadNotification::pushNotification(NotificationEvents::TRAINING_APPLIED, $model, $this->adapter, $this->plugin("url"));
-                } catch (Exception $e) {
-                    $this->flashmessenger()->addMessage($e->getMessage());
-                }
-                $this->flashmessenger()->addMessage("Training Request Successfully added!!!");
-                return $this->redirect()->toRoute("trainingRequest");
+//                try {
+//                    HeadNotification::pushNotification(NotificationEvents::TRAINING_APPLIED, $model, $this->adapter, $this->plugin("url"));
+//                } catch (Exception $e) {
+//                    $this->flashmessenger()->addMessage($e->getMessage());
+//                }
+                $this->flashmessenger()->addMessage("Overtime Request Successfully added!!!");
+                return $this->redirect()->toRoute("overtimeRequest");
             }
         }
-        $trainingTypes = array(
-           'CP'=>'Company Personal',
-           'CC'=>'Company Contribution'
-        );
 
-        $trainings = $this->getTrainingList($this->employeeId);
         return Helper::addFlashMessagesToArray($this, [
                     'form' => $this->form,
-                    'trainings' => $trainings["trainingKVList"],
-                    'trainingTypes'=>$trainingTypes,
-                    'trainingList'=>$trainings['trainingList']
         ]);
     }
 
     public function deleteAction() {
         $id = (int) $this->params()->fromRoute("id");
         if (!$id) {
-            return $this->redirect()->toRoute('trainingRequest');
+            return $this->redirect()->toRoute('overtimeRequest');
         }
         $this->repository->delete($id);
-        $this->flashmessenger()->addMessage("Training Request Successfully Cancelled!!!");
-        return $this->redirect()->toRoute('trainingRequest');
+        $this->flashmessenger()->addMessage("Overtime Request Successfully Cancelled!!!");
+        return $this->redirect()->toRoute('overtimeRequest');
     }
 
     public function viewAction() {
@@ -211,7 +176,7 @@ class TrainingRequest extends AbstractActionController {
         $id = (int) $this->params()->fromRoute('id');
 
         if ($id === 0) {
-            return $this->redirect()->toRoute("trainingRequest");
+            return $this->redirect()->toRoute("overtimeRequest");
         }
         $fullName = function($id) {
             $empRepository = new EmployeeRepository($this->adapter);
@@ -223,7 +188,8 @@ class TrainingRequest extends AbstractActionController {
         $recommenderName = $fullName($this->recommender);
         $approverName = $fullName($this->approver);
 
-        $model = new TrainingRequestModel();
+        $model = new Overtime();
+        $detailModel =  new OvertimeDetail();
         $detail = $this->repository->fetchById($id);
         $status = $detail['STATUS'];
         $approvedDT = $detail['APPROVED_DATE'];
@@ -232,35 +198,17 @@ class TrainingRequest extends AbstractActionController {
         $authRecommender = ($status == 'RQ' || $status == 'C') ? $recommenderName : $recommended_by;
         $authApprover = ($status == 'RC' || $status == 'RQ' || $status == 'C' || ($status == 'R' && $approvedDT == null)) ? $approverName : $approved_by;
 
-        if($detail['TRAINING_ID']!=0){
-            $detail['START_DATE']=$detail['T_START_DATE'];
-            $detail['END_DATE'] = $detail['T_END_DATE'];
-            $detail['DURATION'] = $detail['T_DURATION'];
-            $detail['TRAINING_TYPE'] = $detail['T_TRAINING_TYPE'];
-        }
-//        print '<pre>';
-//        print_r($detail); die();
         $model->exchangeArrayFromDB($detail);
         $this->form->bind($model);
         
-        $trainingTypes = array(
-           'CP'=>'Company Personal',
-           'CC'=>'Company Contribution'
-        );
-
         $employeeName = $fullName($detail['EMPLOYEE_ID']);
-        $trainings = $this->getTrainingList($this->employeeId);
         return Helper::addFlashMessagesToArray($this, [
                     'form' => $this->form,
                     'employeeName' => $employeeName,
                     'status' => $detail['STATUS'],
-                    'trainingIdSelected'=>$detail['TRAINING_ID'],
                     'requestedDate' => $detail['REQUESTED_DATE'],
                     'recommender' => $authRecommender,
                     'approver' => $authApprover,
-                    'trainings' => $trainings["trainingKVList"],
-                    'trainingTypes'=>$trainingTypes,
-//                    'trainingList'=>$trainings['trainingList']
         ]);
     }
 
@@ -306,15 +254,4 @@ class TrainingRequest extends AbstractActionController {
         return $responseData;
     }
 
-    public function getTrainingList($employeeId) {
-        $trainingRepo = new TrainingRepository($this->adapter);
-        $trainingResult = $trainingRepo->selectAll($employeeId);
-        $trainingList = [];
-        $allTrainings = [];
-        foreach ($trainingResult as $trainingRow) {
-            $trainingList[$trainingRow['TRAINING_ID']] = $trainingRow['TRAINING_NAME'] . " (" . $trainingRow['START_DATE'] . " to " . $trainingRow['END_DATE'] . ")";
-            $allTrainings[$trainingRow['TRAINING_ID']] = $trainingRow;
-        }
-        return ['trainingKVList' => $trainingList,'trainingList'=>$allTrainings];
-    }
 }

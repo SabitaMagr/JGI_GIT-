@@ -1,28 +1,21 @@
 <?php
 namespace Advance\Controller;
 
-use Application\Helper\Helper;
-use Application\Helper\EntityHelper;
 use Advance\Repository\AdvanceStatusRepository;
+use Application\Helper\EntityHelper;
+use Application\Helper\Helper;
 use ManagerService\Repository\AdvanceApproveRepository;
-use SelfService\Repository\AdvanceRequestRepository;
-use Zend\Db\Adapter\AdapterInterface;
-use Zend\Mvc\Controller\AbstractActionController;
 use SelfService\Form\AdvanceRequestForm;
-use Zend\Form\Annotation\AnnotationBuilder;
 use SelfService\Model\AdvanceRequest;
-use Setup\Repository\AdvanceRepository;
-use Setup\Model\Branch;
-use Setup\Model\Department;
-use Setup\Model\Designation;
-use Setup\Model\Position;
-use Setup\Model\ServiceType;
-use Zend\Form\Element\Select;
-use Setup\Model\ServiceEventType;
+use SelfService\Repository\AdvanceRequestRepository;
 use Setup\Model\Advance;
-use Zend\Authentication\AuthenticationService;
-use Setup\Repository\RecommendApproveRepository;
 use Setup\Repository\EmployeeRepository;
+use Setup\Repository\RecommendApproveRepository;
+use Zend\Authentication\AuthenticationService;
+use Zend\Db\Adapter\AdapterInterface;
+use Zend\Form\Annotation\AnnotationBuilder;
+use Zend\Form\Element\Select;
+use Zend\Mvc\Controller\AbstractActionController;
 
 class AdvanceStatus extends AbstractActionController
 {
@@ -50,7 +43,7 @@ class AdvanceStatus extends AbstractActionController
     public function indexAction() {
         $advanceFormElement = new Select();
         $advanceFormElement->setName("advance");
-        $advances = \Application\Helper\EntityHelper::getTableKVListWithSortOption($this->adapter, Advance::TABLE_NAME, Advance::ADVANCE_ID, [Advance::ADVANCE_NAME], [Advance::STATUS => 'E'], "ADVANCE_NAME", "ASC",NULL,FALSE,TRUE);
+        $advances = EntityHelper::getTableKVListWithSortOption($this->adapter, Advance::TABLE_NAME, Advance::ADVANCE_ID, [Advance::ADVANCE_NAME], [Advance::STATUS => 'E'], "ADVANCE_NAME", "ASC",NULL,FALSE,TRUE);
         $advances1 = [-1 => "All"] + $advances;
         $advanceFormElement->setValueOptions($advances1);
         $advanceFormElement->setAttributes(["id" => "advanceId", "class" => "form-control"]);
