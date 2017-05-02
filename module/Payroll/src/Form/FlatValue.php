@@ -17,15 +17,6 @@ use Zend\Form\Annotation;
  */
 class FlatValue
 {
-    /**
-     * @Annotation\Type("Zend\Form\Element\Text")
-     * @Annotation\Required(true)
-     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
-     * @Annotation\Validator({"name":"StringLength", "options":{"max":"30"}})
-     * @Annotation\Options({"label":"Flat Value Code"})
-     * @Annotation\Attributes({ "id":"flatCode","class":"form-control"})
-     */
-    public $flatCode;
 
     /**
      * @Annotation\Type("Zend\Form\Element\Textarea")
