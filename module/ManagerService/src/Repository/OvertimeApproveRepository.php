@@ -9,7 +9,7 @@ use Zend\Db\TableGateway\TableGateway;
 use Zend\Db\Sql\Expression;
 use Zend\Db\Sql\Sql;
 use Setup\Model\HrEmployees;
-use Application\Model\Model;
+use Application\Helper\EntityHelper;
 
 class OvertimeApproveRepository implements RepositoryInterface{
     private $tableGateway;

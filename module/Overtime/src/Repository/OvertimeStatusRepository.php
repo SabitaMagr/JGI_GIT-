@@ -9,7 +9,7 @@ use Setup\Model\HrEmployees;
 use Application\Model\Model;
 use Zend\Db\Adapter\AdapterInterface;
 
-class WorkOnDayoffStatusRepository implements RepositoryInterface{
+class OvertimeStatusRepository implements RepositoryInterface{
     private $adapter;
     public function __construct(AdapterInterface $adapter) {
         $this->adapter = $adapter;
@@ -68,14 +68,14 @@ class WorkOnDayoffStatusRepository implements RepositoryInterface{
                 OT.RECOMMENDED_BY AS RECOMMENDED_BY,
                 OT.APPROVED_BY AS APPROVED_BY,
                 OT.RECOMMENDED_REMARKS AS RECOMMENDED_REMARKS,
-                OT.APPROVED_REMARKS AS APPROVED_REMARKS
+                OT.APPROVED_REMARKS AS APPROVED_REMARKS,
                 E.FIRST_NAME,E.MIDDLE_NAME,E.LAST_NAME,
                 INITCAP(E1.FIRST_NAME) AS FN1,INITCAP(E1.MIDDLE_NAME) AS MN1,INITCAP(E1.LAST_NAME) AS LN1,
                 INITCAP(E2.FIRST_NAME) AS FN2,INITCAP(E2.MIDDLE_NAME) AS MN2,INITCAP(E2.LAST_NAME) AS LN2,
                 RA.RECOMMEND_BY AS RECOMMENDER,
                 RA.APPROVED_BY AS APPROVER,
                 INITCAP(RECM.FIRST_NAME) AS RECM_FN,INITCAP(RECM.MIDDLE_NAME) AS RECM_MN,INITCAP(RECM.LAST_NAME) AS RECM_LN,
-                INITCAP(APRV.FIRST_NAME) AS APRV_FN,INITCAP(APRV.MIDDLE_NAME) AS APRV_MN,INITCAP(APRV.LAST_NAME) AS APRV_LN,
+                INITCAP(APRV.FIRST_NAME) AS APRV_FN,INITCAP(APRV.MIDDLE_NAME) AS APRV_MN,INITCAP(APRV.LAST_NAME) AS APRV_LN
                 FROM HRIS_OVERTIME OT
                 LEFT OUTER JOIN HRIS_EMPLOYEES E ON
                 E.EMPLOYEE_ID=OT.EMPLOYEE_ID
@@ -131,11 +131,11 @@ class WorkOnDayoffStatusRepository implements RepositoryInterface{
         }
      
         if($fromDate!=null){
-            $sql .= " AND OT.FROM_DATE>=TO_DATE('".$fromDate."','DD-MM-YYYY')";
+            $sql .= " AND OT.OVERTIME_DATE>=TO_DATE('".$fromDate."','DD-MON-YYYY')";
         }
         
         if($toDate!=null){   
-            $sql .= "AND OT.TO_DATE<=TO_DATE('".$toDate."','DD-MM-YYYY')";
+            $sql .= "AND OT.OVERTIME_DATE<=TO_DATE('".$toDate."','DD-MON-YYYY')";
         }
 
         if ($employeeId != -1) {

@@ -24,9 +24,9 @@
             rowTemplate: kendo.template($("#rowTemplate").html()),
             columns: [
                 {field: "FIRST_NAME", title: "Employee", width: 150},
-                {field: "REQUESTED_DATE", title: "Requested Date", width: 140},
+                {field: "REQUESTED_DATE", title: "Requested Date", width: 100},
                 {field: "OVERTIME_DATE", title: "Overtime Date", width: 100},
-                {field: "DETAILS", title: "Time (From-To)", width: 100},
+                {field: "DETAILS", title: "Time (From-To)", width: 150},
                 {field: "YOUR_ROLE", title: "Your Role", width: 120},
                 {title: "Action", width: 70}
             ]
