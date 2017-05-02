@@ -23,7 +23,6 @@
             dataBound:gridDataBound,
             rowTemplate: kendo.template($("#rowTemplate").html()),
             columns: [
-                {field: "MTH_CODE", title: "Code"},
                 {field: "MTH_EDESC", title: "EDesc"},
                 {field: "MTH_LDESC", title: "NDesc"},
                 {field: "SHOW_AT_RULE", title: "Show At Rule"},

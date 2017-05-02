@@ -17,12 +17,12 @@
             rowTemplate: kendo.template($("#rowTemplate").html()),
             columns: [
 //                {field: "TRAINING_CODE", title: "Training Code",width:100},
-                {field: "TRAINING_NAME", title: "Training Name",width:130},
+                {field: "TRAINING_NAME", title: "Training",width:130},
                 {field: "COMPANY_NAME", title: "Company",width:110},
                 {field: "START_DATE", title: "Start Date",width:110},
                 {field: "END_DATE", title: "End Date",width:110},
                 {field: "DURATION", title: "Duration(in hour)",width:120},
-                {field: "INSTITUTE_NAME", title: "Institute Name",width:130},
+                {field: "INSTITUTE_NAME", title: "Institute",width:130},
                 {title: "Action",width:110}
             ]
         });

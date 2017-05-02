@@ -23,8 +23,7 @@
             dataBound: gridDataBound,
             rowTemplate: kendo.template($("#rowTemplate").html()),
             columns: [
-                {field: "FIRST_NAME", title: "Employee Name", width: 150},
-                {field: "TRAVEL_CODE", title: "Travel Code",width:120},
+                {field: "FIRST_NAME", title: "Employee", width: 150},
                 {field: "FROM_DATE", title: "Start Date",width:100},
                 {field: "TO_DATE", title: "To Date",width:90},
                 {field: "REQUESTED_DATE", title: "Applied Date",width:120},

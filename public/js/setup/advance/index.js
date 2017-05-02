@@ -17,7 +17,7 @@
             rowTemplate: kendo.template($("#rowTemplate").html()),
             columns: [
 //                {field: "ADVANCE_CODE", title: "Advance Code",width:80},
-                {field: "ADVANCE_NAME", title: "Advance Name",width:130},
+                {field: "ADVANCE_NAME", title: "Advance",width:130},
                 {field: "COMPANY_NAME", title: "Company",width:110},
                 {field: "MIN_SALARY_AMT", title: "Min. Salary Amount",width:130},
                 {field: "AMOUNT_TO_ALLOW", title: "Amount To Allow",width:120},

@@ -18,7 +18,7 @@
             columns: [
 //                {field: "DEPARTMENT_CODE", title: "Code", width: 80},
                 {field: "DEPARTMENT_NAME", title: "Name", width: 150},
-                {field: "PARENT_DEPARTMENT", title: "Parent Dept Name", width: 150},
+                {field: "PARENT_DEPARTMENT", title: "Parent Dept", width: 130},
                 {field: "COMPANY_NAME", title: "Company", width: 150},
                 {field: "BRANCH_NAME", title: "Branch", width: 150},
                 {title: "Action", width: 80}

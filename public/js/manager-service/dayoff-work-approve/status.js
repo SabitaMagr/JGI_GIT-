@@ -71,7 +71,7 @@ angular.module('hris', [])
                     dataBound: gridDataBound,
                     rowTemplate: kendo.template($("#rowTemplate").html()),
                     columns: [
-                        {field: "FIRST_NAME", title: "Employee Name", width: 200},
+                        {field: "FIRST_NAME", title: "Employee", width: 200},
                         {field: "REQUESTED_DATE", title: "Requested Date", width: 150},
                         {field: "FROM_DATE", title: "From Date", width: 100},
                         {field: "TO_DATE", title: "To Date", width: 100},

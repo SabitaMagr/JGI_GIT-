@@ -17,7 +17,7 @@
             rowTemplate: kendo.template($("#rowTemplate").html()),
             columns: [
 //                {field: "LOAN_CODE", title: "Loan Code",width:80},
-                {field: "LOAN_NAME", title: "Loan Name",width:130},
+                {field: "LOAN_NAME", title: "Loan",width:130},
                 {field: "COMPANY_NAME", title: "Company",width:110},
                 {field: "MIN_AMOUNT", title: "Amount Range",width:110},
                 {field: "INTEREST_RATE", title: "Interest Rate",width:110},
