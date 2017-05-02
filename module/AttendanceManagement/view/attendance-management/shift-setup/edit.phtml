@@ -18,7 +18,6 @@ $this->headScript()->appendFile($this->basePath('js/AttendanceManagement/ShiftSe
 $form->setAttribute('role', 'form');
 $form->setAttribute('id', 'shiftSetup-form');
 
-$shiftCode = $form->get('shiftCode');
 $shiftEname = $form->get('shiftEname');
 $shiftLname = $form->get('shiftLname');
 
@@ -100,16 +99,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                             <?php print $this->formElementErrors()->render($companyId, ['class' => 'help-block error']); ?>
                         </div>
                     </div>
-                    <div class="col-sm-6">
-                        <div
-                            class="form-group  <?= empty($shiftCode->getMessages()) ? "" : "error" ?>">
-                                <?php print $this->formLabel($shiftCode); ?>
-                                <?php print $this->formElement($shiftCode); ?>
-                            <input type="hidden" id="shiftId" value="<?php echo $id; ?>"/>
-                            <span class="errorMsg" style="font-size:11px; color:red;"></span>
-                        </div>
-                        <?php print $this->formElementErrors()->render($shiftCode, ['class' => 'help-block error']); ?>
-                    </div>
+                   
 
                 </div> 
                 <div class="row shiftdetails">

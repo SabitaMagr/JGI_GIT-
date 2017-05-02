@@ -4,7 +4,6 @@ $this->headScript()->appendFile($this->basePath('js/setup/department/add.js'));
 $form->setAttribute('role', 'form');
 $form->setAttribute('id', 'department-form');
 
-$departmentCode = $form->get('departmentCode');
 $departmentName = $form->get('departmentName');
 $remarks = $form->get('remarks');
 
@@ -64,15 +63,6 @@ echo json_encode($menu);
                 ?>
 
                 <div class=" row">
-                    <div class="col-sm-4">
-                        <div class="form-group">
-                            <?php print $this->formLabel($departmentCode); ?>
-                            <span class="required" aria-required="true">*</span>
-                            <?php print $this->formElement($departmentCode); ?>
-                            <?php print $this->formElementErrors()->render($departmentCode, ['class' => 'help-block']); ?>
-                            <span class="errorMsg" style="font-size:11px; color:red;"></span>
-                        </div>
-                    </div>
 
                     <div class="col-sm-4">
                         <div class="form-group">
@@ -93,6 +83,14 @@ echo json_encode($menu);
                             <?php print $this->formElementErrors()->render($countryId, ['class' => 'help-block']); ?>
                         </div>
                     </div>
+
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <?php print $this->formLabel($parentDepartment); ?>
+                            <?php print $this->formElement($parentDepartment); ?>
+                            <?php print $this->formElementErrors()->render($parentDepartment, ['class' => 'help-block']); ?>
+                        </div>
+                    </div>
                 </div>
 
 
@@ -109,13 +107,6 @@ echo json_encode($menu);
                         </div>
                     </div>
 
-                    <div class="col-sm-4">
-                        <div class="form-group">
-                            <?php print $this->formLabel($parentDepartment); ?>
-                            <?php print $this->formElement($parentDepartment); ?>
-                            <?php print $this->formElementErrors()->render($parentDepartment, ['class' => 'help-block']); ?>
-                        </div>
-                    </div>
 
                     <div class="col-sm-4">
                         <div class="form-group">
@@ -125,9 +116,7 @@ echo json_encode($menu);
                             <?php print $this->formElementErrors()->render($branchId, ['class' => 'help-block']); ?>
                         </div>
                     </div>
-                </div>
 
-                <div class="row" >
                     <div class="col-sm-4" >
                         <div class="form-group">
                             <?php print $this->formLabel($remarks); ?>

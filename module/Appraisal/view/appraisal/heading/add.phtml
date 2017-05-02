@@ -4,7 +4,6 @@ $this->headScript()->appendFile($this->basePath('js/appraisal/heading/add.js'));
 $form->setAttribute('role', 'form');
 $form->setAttribute('id', 'appraisalHeading-form');
 
-$headingCode = $form->get('headingCode');
 $headingEdesc = $form->get('headingEdesc');
 $headingNdesc = $form->get('headingNdesc');
 $remarks = $form->get('remarks');
@@ -47,14 +46,6 @@ $form->prepare();
                 <?php print $this->form()->openTag($form); ?>
                 
                  <div class=" row">
-                    <div class="col-sm-4">
-                <div class="form-group">
-                    <?php print $this->formLabel($headingCode); ?>
-                    <span class="required" aria-required="true">*</span>
-                    <?php print $this->formElement($headingCode); ?>
-                    <?php print $this->formElementErrors()->render($headingCode, ['class' => 'help-block']); ?>
-                </div>
-                    </div>
                     
                     <div class="col-sm-4">
                 <div class="form-group">

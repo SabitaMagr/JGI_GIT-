@@ -9,14 +9,6 @@ use Zend\Form\Annotation;
  */
 class AdvanceForm
 {
-    /**
-     * @Annotation\Type("Zend\Form\Element\Text")
-     * @Annotation\Required({"required":"true"})
-     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
-     * @Annotation\Options({"label":"Advance Code"})
-     * @Annotation\Attributes({ "id":"form-advanceCode", "class":"form-advanceCode form-control" })
-     */
-    public $advanceCode;
      /**
      * @Annotation\Type("Zend\Form\Element\Text")
      * @Annotation\Required({"required":"true"})

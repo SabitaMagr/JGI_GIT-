@@ -4,7 +4,6 @@ $this->headScript()->appendFile($this->basePath('js/setup/academic-degree/add.js
 $form->setAttribute('role', 'form');
 $form->setAttribute('id', 'academicDegree-form');
 
-$academicDegreeCode = $form->get('academicDegreeCode');
 $academicDegreeName = $form->get('academicDegreeName');
 $remarks = $form->get('remarks');
 $weight = $form->get('weight');
@@ -51,17 +50,6 @@ echo json_encode($menu);
                 ?>
 
                 <div class=" row">
-                    <div class="col-sm-4">
-                        <div class="form-group">
-                            <?php print $this->formLabel($academicDegreeCode); ?>
-                            <span class="required" aria-required="true">*</span>
-                            <?php print $this->formElement($academicDegreeCode); ?>
-                            <?php print $this->formElementErrors()->render($academicDegreeCode, ['class' => 'help-block']); ?>
-                            <input type="hidden" id="academicDegreeId" value="<?php echo $id ?>" />
-                            <span class="errorMsg" style="font-size:11px; color:red;"></span>
-                        </div>
-                    </div>
-
                     <div class="col-sm-4">
                         <div class="form-group">
                             <?php print $this->formLabel($academicDegreeName); ?>

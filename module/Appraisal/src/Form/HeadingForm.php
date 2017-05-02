@@ -9,15 +9,6 @@ use Zend\Form\Annotation;
  */
 
 class HeadingForm{
-    /**
-     * @Annotation\Type("Zend\Form\Element\Text")
-     * @Annotation\Required(true)
-     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
-     * @Annotation\Options({"label":"Heading Code"})
-     * @Annotation\Attributes({"id":"headingCode","class":"form-control"})
-     * @Annotation\Validator({"name":"StringLength", "options":{"max":"15"}})
-     */
-    public $headingCode;
     
     /**
      * @Annotation\Type("Zend\Form\Element\Text")

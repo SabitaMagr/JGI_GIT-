@@ -10,14 +10,6 @@ use Zend\Form\Annotation;
  */
 class LoanForm {
 
-    /**
-     * @Annotation\Type("Zend\Form\Element\Text")
-     * @Annotation\Required({"required":"true"})
-     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
-     * @Annotation\Options({"label":"Loan Code"})
-     * @Annotation\Attributes({ "id":"form-loanCode", "class":"form-loanCode form-control" })
-     */
-    public $loanCode;
 
     /**
      * @Annotion\Type("Zend\Form\Element\Text")

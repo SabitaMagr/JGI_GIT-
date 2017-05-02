@@ -8,15 +8,6 @@ use Zend\Form\Annotation;
  * @Annotation\Name("Advance")
  */
 class InstituteForm{
-   /**
-     * @Annotion\Type("Zend\Form\Element\Text")
-     * @Annotation\Required(true)
-     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
-     * @Annotation\Options({"label":"Institute Code"})
-     * @Annotation\Validator({"name":"StringLength", "options":{"max":"15"}})
-     * @Annotation\Attributes({ "id":"form-instituteCode", "class":"form-instituteCode form-control" })
-     */
-    public $instituteCode;
 
     /**
      * @Annotion\Type("Zend\Form\Element\Text")

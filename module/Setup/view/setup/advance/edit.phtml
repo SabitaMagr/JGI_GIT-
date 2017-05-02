@@ -4,7 +4,6 @@ $this->headScript()->appendFile($this->basePath('js/setup/advance/add.js'));
 $form->setAttribute('role', 'form');
 $form->setAttribute('id', 'advance-form');
 
-$advanceCode = $form->get('advanceCode');
 $advanceName = $form->get('advanceName');
 $minSalaryAmt = $form->get('minSalaryAmt');
 $maxSalaryAmt = $form->get('maxSalaryAmt');
@@ -54,14 +53,7 @@ $form->prepare();
                 ?>
                 
                 <div class=" row">
-                    <div class="col-sm-4">
-                <div class="form-group">
-                    <?php print $this->formLabel($advanceCode); ?>
-                    <span class="required" aria-required="true">*</span>
-                    <?php print $this->formElement($advanceCode); ?>
-                    <?php print $this->formElementErrors()->render($advanceCode, ['class' => 'help-block error']); ?>
-                </div>
-                    </div>
+                  
 
                     <div class="col-sm-4">
                 <div class="form-group">

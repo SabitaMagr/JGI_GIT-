@@ -11,7 +11,6 @@ $this->headScript()->appendFile($this->basePath('js/appraisal/setup/add.js'));
 $form->setAttribute('role', 'form');
 $form->setAttribute('id', 'appraisalSetup-form');
 
-$appraisalCode = $form->get('appraisalCode');
 $appraisalEdesc = $form->get('appraisalEdesc');
 $appraisalNdesc = $form->get('appraisalNdesc');
 $remarks = $form->get('remarks');
@@ -54,14 +53,6 @@ $form->prepare();
                 <?php print $this->form()->openTag($form); ?>
 
                 <div class=" row">
-                    <div class="col-sm-4">
-                        <div class="form-group">
-                            <?php print $this->formLabel($appraisalCode); ?>
-                            <span class="required" aria-required="true">*</span>
-                            <?php print $this->formElement($appraisalCode); ?>
-                            <?php print $this->formElementErrors()->render($appraisalCode, ['class' => 'help-block']); ?>
-                        </div>
-                    </div>
 
                     <div class="col-sm-4">
                         <div class="form-group">
@@ -79,9 +70,7 @@ $form->prepare();
                             <?php print $this->formElementErrors()->render($appraisalNdesc, ['class' => 'help-block']); ?>
                         </div>
                     </div>
-                </div>
-
-                <div class=" row">
+                    
                     <div class="col-sm-4">
                         <div class="form-group">
                             <?php print $this->formLabel($appraisalTypeId); ?>
@@ -90,7 +79,9 @@ $form->prepare();
                             <?php print $this->formElementErrors()->render($appraisalTypeId, ['class' => 'help-block']); ?>
                         </div>
                     </div>
+                </div>
 
+                <div class=" row">
                     <div class="col-sm-4">
                         <div class="row">
                             <div class="col-sm-6">
@@ -132,9 +123,7 @@ $form->prepare();
                             </div>     
                         </div>     
                     </div>
-                </div>
-
-                <div class=" row">
+                    
                     <div class="col-sm-4">
                         <div class="form-group">
                             <?php print $this->formLabel($currentStageId); ?>
@@ -142,7 +131,9 @@ $form->prepare();
                             <?php print $this->formElementErrors()->render($currentStageId, ['class' => 'help-block']); ?>
                         </div>
                     </div>
+                </div>
 
+                <div class=" row">
                     <div class="col-sm-4">
                         <div class="form-group">
                             <?php print $this->formLabel($remarks); ?>
