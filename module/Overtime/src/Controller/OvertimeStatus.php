@@ -11,6 +11,7 @@ use Zend\Mvc\Controller\AbstractActionController;
 use SelfService\Form\OvertimeRequestForm;
 use Zend\Form\Annotation\AnnotationBuilder;
 use SelfService\Model\Overtime;
+use Zend\Form\Element\Select;
 use Zend\Authentication\AuthenticationService;
 use Setup\Repository\RecommendApproveRepository;
 
@@ -116,7 +117,7 @@ class OvertimeStatus extends AbstractActionController
 
             return $this->redirect()->toRoute("overtimeStatus");
         }
-        $overtimeDetailRepo = new OvertimeDetailRepository($thi->adapter);
+        $overtimeDetailRepo = new OvertimeDetailRepository($this->adapter);
         $overtimeDetailResult =$overtimeDetailRepo->fetchByOvertimeId($detail['OVERTIME_ID']);
         $overtimeDetails = [];
         foreach($overtimeDetailResult as $overtimeDetailRow){

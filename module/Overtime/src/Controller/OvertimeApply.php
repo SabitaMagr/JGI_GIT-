@@ -39,11 +39,12 @@ class OvertimeApply extends AbstractActionController{
 
         $model = new Overtime();
         if ($request->isPost()) {
-            $this->form->setData($request->getPost());
+            $postData = $request->getPost();
+            $this->form->setData($postData);
              if ($this->form->isValid()) {
                 $model->exchangeArrayFromForm($this->form->getData());
                 $model->overtimeId = ((int) Helper::getMaxId($this->adapter, Overtime::TABLE_NAME, Overtime::OVERTIME_ID)) + 1;
-                $model->employeeId = $this->employeeId;
+                $model->employeeId = $postData['employeeId'];
                 $model->requestedDate = Helper::getcurrentExpressionDate();
                 $model->status = 'RQ';
                 $this->overtimeRepository->add($model);

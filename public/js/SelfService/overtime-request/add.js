@@ -4,7 +4,7 @@
 (function ($, app) {
     'use strict';
     $(document).ready(function () {
-
+        $('select').select2();
         var $overtimeDate = $("#overtimeDate");
         if (!($overtimeDate.is('[readonly]'))) {
             app.datePickerWithNepali("overtimeDate", "nepaliDate");
