@@ -145,6 +145,13 @@ class OvertimeRequest extends AbstractActionController {
                 } else {
                     $new_row['ALLOW_TO_EDIT'] = 0;
                 }
+                
+                $overtimeDetailResult = $this->detailRepository->fetchByOvertimeId($row['OVERTIME_ID']);
+                $overtimeDetails = [];
+                foreach($overtimeDetailResult as $overtimeDetailRow){
+                    array_push($overtimeDetails,$overtimeDetailRow);
+                }
+                $new_row['DETAILS']=$overtimeDetails;
                 array_push($list, $new_row);
             }
             return Helper::addFlashMessagesToArray($this, ['list' => $list]);
@@ -167,6 +174,24 @@ class OvertimeRequest extends AbstractActionController {
                 $model->requestedDate = Helper::getcurrentExpressionDate();
                 $model->status = 'RQ';
                 $this->repository->add($model);
+                
+                $postDataArray = $postData->getArrayCopy();
+                $overtimeDetailNum = $postDataArray['overtimeDetailNum'];
+                $overtimeDetailModel = new OvertimeDetail();
+                for($i=0; $i<=$overtimeDetailNum; $i++){
+                    $startTime = $postDataArray['startTime'][$i];
+                    $endTime = $postDataArray['endTime'][$i];
+                    $totalHour = $postDataArray['totalHour'][$i];
+                    $overtimeDetailModel->overtimeId = $model->overtimeId;
+                    $overtimeDetailModel->detailId = ((int) Helper::getMaxId($this->adapter, OvertimeDetail::TABLE_NAME, OvertimeDetail::DETAIL_ID)) + 1;
+                    $overtimeDetailModel->startTime = Helper::getExpressionTime($startTime);
+                    $overtimeDetailModel->endTime = Helper::getExpressionTime($endTime);
+                    $overtimeDetailModel->totalHour = $totalHour;
+                    $overtimeDetailModel->status = 'E';
+                    $overtimeDetailModel->createdBy = $this->employeeId;
+                    $overtimeDetailModel->createdDate = Helper::getcurrentExpressionDate();
+                    $this->detailRepository->add($overtimeDetailModel);
+                }
 //                try {
 //                    HeadNotification::pushNotification(NotificationEvents::TRAINING_APPLIED, $model, $this->adapter, $this->plugin("url"));
 //                } catch (Exception $e) {
@@ -223,6 +248,12 @@ class OvertimeRequest extends AbstractActionController {
         $model->exchangeArrayFromDB($detail);
         $this->form->bind($model);
         
+        $overtimeDetailResult = $this->detailRepository->fetchByOvertimeId($detail['OVERTIME_ID']);
+        $overtimeDetails = [];
+        foreach($overtimeDetailResult as $overtimeDetailRow){
+            array_push($overtimeDetails,$overtimeDetailRow);
+        }
+        
         $employeeName = $fullName($detail['EMPLOYEE_ID']);
         return Helper::addFlashMessagesToArray($this, [
                     'form' => $this->form,
@@ -231,6 +262,7 @@ class OvertimeRequest extends AbstractActionController {
                     'requestedDate' => $detail['REQUESTED_DATE'],
                     'recommender' => $authRecommender,
                     'approver' => $authApprover,
+                    'overtimeDetails'=>$overtimeDetails
         ]);
     }
 

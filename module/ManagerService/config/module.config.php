@@ -105,6 +105,16 @@ return [
                     ]
                 ]
             ],
+            'overtimeApprove' => [
+                'type' => Segment::class,
+                'options' => [
+                    'route' => '/managerservice/overtimeApprove[/:action[/:id][/:role]]',
+                    'defaults' => [
+                        'controller' => Controller\OvertimeApproveController::class,
+                        'action' => 'index'
+                    ]
+                ]
+            ],
         ]
     ],
     'navigation' => [
@@ -387,6 +397,33 @@ return [
                 ]
             ]
         ],
+        'overtimeApprove' => [
+                [
+                'label' => 'Overtime Request',
+                'route' => 'overtimeApprove',
+            ],
+                [
+                'label' => 'Overtime Request',
+                'route' => 'overtimeApprove',
+                'pages' => [
+                        [
+                        'label' => 'List',
+                        'route' => 'overtimeApprove',
+                        'action' => 'index',
+                    ],
+                        [
+                        'label' => 'List',
+                        'route' => 'overtimeApprove',
+                        'action' => 'status',
+                    ],
+                        [
+                        'label' => 'View',
+                        'route' => 'overtimeApprove',
+                        'action' => 'view',
+                    ],
+                ]
+            ]
+        ],
     ],
     'controllers' => [
         'factories' => [
@@ -398,7 +435,8 @@ return [
             Controller\TravelApproveController::class => ControllerFactory::class,
             Controller\DayoffWorkApproveController::class => ControllerFactory::class,
             Controller\HolidayWorkApproveController::class => ControllerFactory::class,
-            Controller\TrainingApproveController::class => ControllerFactory::class
+            Controller\TrainingApproveController::class => ControllerFactory::class,
+            Controller\OvertimeApproveController::class=> ControllerFactory::class
         ],
     ],
     'view_manager' => [

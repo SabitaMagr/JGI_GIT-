@@ -13,7 +13,7 @@ class OvertimeRequestForm
      * @Annotation\Required(true)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Overtime Date"})
-     * @Annotation\Attributes({ "class":"form-control","id":"overtimeDate" })
+     * @Annotation\Attributes({ "class":"form-control","id":"overtimeDate","placeholder":"Overtime Date" })
      */
     public $overtimeDate;
 

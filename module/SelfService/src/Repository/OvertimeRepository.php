@@ -46,7 +46,6 @@ class OvertimeRepository implements RepositoryInterface{
 
         $select->from(['OT' => Overtime::TABLE_NAME])
                 ->join(['E' => HrEmployees::TABLE_NAME], "E.".HrEmployees::EMPLOYEE_ID."=OT.". Overtime::EMPLOYEE_ID, ["FIRST_NAME" => new Expression("INITCAP(E.FIRST_NAME)"),"MIDDLE_NAME" => new Expression("INITCAP(E.MIDDLE_NAME)"),"LAST_NAME" => new Expression("INITCAP(E.LAST_NAME)")])
-                ->join(['OTD' => OvertimeDetail::TABLE_NAME], "OTD.". OvertimeDetail::OVERTIME_ID."=OT.". Overtime::OVERTIME_ID, [OvertimeDetail::OVERTIME_ID,"START_TIME"=> new Expression("INITCAP(TO_CHAR(OTD.START_TIME,'HH:MI AM'))"), "END_TIME"=> new Expression("INITCAP(TO_CHAR(OTD.START_TIME,'HH:MI AM'))")],"left")
                 ->join(['E1'=>"HRIS_EMPLOYEES"],"E1.EMPLOYEE_ID=OT.RECOMMENDED_BY",['FN1' =>  new Expression("INITCAP(E1.FIRST_NAME)"), 'MN1' => new Expression("INITCAP(E1.MIDDLE_NAME)"), 'LN1' => new Expression("INITCAP(E1.LAST_NAME)")],"left")
                 ->join(['E2'=>"HRIS_EMPLOYEES"],"E2.EMPLOYEE_ID=OT.APPROVED_BY",['FN2' =>  new Expression("INITCAP(E2.FIRST_NAME)"), 'MN2' => new Expression("INITCAP(E2.MIDDLE_NAME)"), 'LN2' => new Expression("INITCAP(E2.LAST_NAME)")],"left");
 
@@ -65,7 +64,6 @@ class OvertimeRepository implements RepositoryInterface{
 
         $select->from(['OT' => Overtime::TABLE_NAME])
                 ->join(['E' => HrEmployees::TABLE_NAME], "E.".HrEmployees::EMPLOYEE_ID."=OT.". Overtime::EMPLOYEE_ID, ["FIRST_NAME" => new Expression("INITCAP(E.FIRST_NAME)"),"MIDDLE_NAME" => new Expression("INITCAP(E.MIDDLE_NAME)"),"LAST_NAME" => new Expression("INITCAP(E.LAST_NAME)")])
-                ->join(['OTD' => OvertimeDetail::TABLE_NAME], "OTD.". OvertimeDetail::OVERTIME_ID."=OT.". Overtime::OVERTIME_ID, [OvertimeDetail::OVERTIME_ID,"START_TIME"=> new Expression("INITCAP(TO_CHAR(OTD.START_TIME,'HH:MI AM'))"), "END_TIME"=> new Expression("INITCAP(TO_CHAR(OTD.START_TIME,'HH:MI AM'))")],"left")
                 ->join(['E1'=>"HRIS_EMPLOYEES"],"E1.EMPLOYEE_ID=OT.RECOMMENDED_BY",['FN1' =>  new Expression("INITCAP(E1.FIRST_NAME)"), 'MN1' => new Expression("INITCAP(E1.MIDDLE_NAME)"), 'LN1' => new Expression("INITCAP(E1.LAST_NAME)")],"left")
                 ->join(['E2'=>"HRIS_EMPLOYEES"],"E2.EMPLOYEE_ID=OT.APPROVED_BY",['FN2' =>  new Expression("INITCAP(E2.FIRST_NAME)"), 'MN2' => new Expression("INITCAP(E2.MIDDLE_NAME)"), 'LN2' => new Expression("INITCAP(E2.LAST_NAME)")],"left");
 

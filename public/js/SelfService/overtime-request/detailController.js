@@ -4,9 +4,6 @@ angular.module('hris', [])
         .controller('detailController', function ($scope, $http,$window) {
             $scope.overtimeDetailList = [];
             $scope.calculateHour = function(startTime,endTime){
-                console.log(startTime);
-                console.log(endTime);
-                
                 var tim_i = new Date("01/01/2007 " + startTime);
                 var tim_o = new Date("01/01/2007 " + endTime);
                 
@@ -22,8 +19,7 @@ angular.module('hris', [])
                 detailId : 0,
                 startTime: "",
                 endTime: "",
-                totalHour:$scope.calculateHour(startTime,endTime),
-                checkbox: "checkboxq0",
+                checkbox:0,
                 checked: false
             };
             var overtimeId = parseInt(angular.element(document.getElementById('overtimeId')).val());
@@ -45,8 +41,7 @@ angular.module('hris', [])
                                         detailId: overtimeDetailList[j].DETAIL_ID,
                                         startTime: overtimeDetailList[j].START_TIME,
                                         endTime: overtimeDetailList[j].END_TIME,
-                                        totalHour: overtimeDetailList[j].TOTAL_HOUR,
-                                        checkbox: "checkboxq" + j,
+                                        checkbox:  j,
                                         checked: false
                                     }));
                                 }
@@ -67,8 +62,7 @@ angular.module('hris', [])
                     detailId:0,
                     startTime: "",
                     endTime: "",
-                    totalHour:$scope.calculateHour(startTime,endTime),
-                    checkbox: "checkboxq"+$scope.counter,
+                    checkbox: $scope.counter,
                     checked: false
                 }));
                 $scope.counter++;

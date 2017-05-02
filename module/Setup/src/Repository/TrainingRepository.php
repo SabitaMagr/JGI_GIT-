@@ -34,6 +34,9 @@ class TrainingRepository implements RepositoryInterface
     public function edit(Model $model,$id)
     {
         $temp=$model->getArrayCopyForDB();
+        if(!$temp['INSTITUTE_ID']){
+            $temp['INSTITUTE_ID']=null;
+        }
         $this->tableGateway->update($temp,[Training::TRAINING_ID=>$id]);
     }
 

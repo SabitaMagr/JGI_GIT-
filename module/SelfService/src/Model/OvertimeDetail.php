@@ -9,6 +9,7 @@ class OvertimeDetail extends Model{
     const OVERTIME_ID = "OVERTIME_ID";
     const START_TIME = "START_TIME";
     const END_TIME = "END_TIME";
+    const TOTAL_HOUR = "TOTAL_HOUR";
     const STATUS = "STATUS";
     const CREATED_BY = "CREATED_BY";
     const CREATED_DATE = "CREATED_DATE";
@@ -19,6 +20,7 @@ class OvertimeDetail extends Model{
     public $overtimeId;
     public $startTime;
     public $endTime;
+    public $totalHour;
     public $status;
     public $createdBy;
     public $createdDate;
@@ -30,6 +32,7 @@ class OvertimeDetail extends Model{
         'overtimeId'=>self::OVERTIME_ID,
         'startTime'=>self::START_TIME,
         'endTime'=>self::END_TIME,
+        'totalHour'=>self::TOTAL_HOUR,
         'status'=>self::STATUS,
         'createdBy'=>self::CREATED_BY,
         'createdDate'=>self::CREATED_DATE,
