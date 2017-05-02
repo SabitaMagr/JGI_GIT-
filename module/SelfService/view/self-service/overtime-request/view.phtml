@@ -1,21 +1,46 @@
 <?php
 $this->headLink()
-        ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.common.min.css'))
-        ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.rtl.min.css'))
-        ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.default.min.css'))
-        ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.dataviz.min.css'))
-        ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.dataviz.default.min.css'));
+        ->appendStylesheet($this->basePath('assets/global/plugins/nepalidate/nepali.datepicker.v2.1.min.css'));
 
 $this->headScript()
-        ->appendFile($this->basePath('jszip/dist/jszip.min.js'))
-        ->appendFile($this->basePath('telerik_kendoui/js/kendo.all.min.js'))
-        ->appendFile($this->basePath('js/SelfService/overtime-request/index.js'))
-        ->appendFile($this->basePath('assets/global/plugins/bootstrap-confirmation/bootstrap-confirmation.min.js'));
-?>
+        ->appendFile($this->basePath('assets/global/plugins/nepalidate/nepali.datepicker.v2.1.min.js'))
+        ->appendFile($this->basePath('js/nepali-datepicker-ext.js'));
+$this->headScript()->appendFile($this->basePath('js/SelfService/overtime-request/add.js'));
 
-<script>
-    document.overtimeRequestList =<?php echo json_encode($list); ?>
-</script>
+
+$form->setAttribute('role', 'form');
+$form->setAttribute('class', 'overtimeRequest-form');
+$form->setAttribute('id', 'overtimeRequest-form');
+
+$overtimeDate = $form->get('overtimeDate');
+$overtimeDate->setAttributes(["disabled"=>"disabled"]);
+$startTime = $form->get('startTime');
+$startTime->setValue("10:00 AM");
+$startTime->setAttributes(['readonly' => "readonly"]);
+$endTime = $form->get('endTime');
+$endTime->setValue("5:00 PM");
+$endTime->setAttributes(['readonly' => "readonly"]);
+$description = $form->get('description');
+$description->setAttributes(["disabled"=>"disabled"]);
+$remarks = $form->get('remarks');
+$remarks->setAttributes(["disabled"=>"disabled"]);
+$totalHour = $form->get('totalHour');
+$totalHour->setValue("7.0");
+$totalHour->setAttributes(['readonly' => "readonly"]);
+$recommendedRemarks = $form->get('recommendedRemarks');
+$recommendedRemarks->setAttributes(["disabled" => "disabled"]);
+$approvedRemarks = $form->get('approvedRemarks');
+$approvedRemarks->setAttributes(["disabled" => "disabled"]);
+
+
+$submit = $form->get('submit');
+$submit->setAttribute('value', 'SUBMIT');
+
+$form->setAttribute('action', $this->url('overtimeRequest', ['action' => 'add']));
+
+
+$form->prepare();
+?>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\overtimeRequest')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
@@ -33,68 +58,162 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
         document.messages =<?php echo json_encode($this->messages); ?>
     </script>
 <?php } ?>
-
-
-<div class="margin-top-20">
-    <div class="table-toolbar">
-        <div class="row">
-            <div class="col-md-6">
-                <div class="btn-group">
-                    <a href="<?= $this->url('overtimeRequest', ['action' => 'add']) ?>" id="sample_editable_1_new"
-                       class="btn green"> Add New
-                        <!--                        <i class="fa fa-plus"></i>-->
-                    </a>
+<script>
+    document.urlOvertime = '<?= $this->url("overtimeRequest", ["action" => "index"]) ?>';
+</script>
+    <div class="row margin-top-20">
+    <div class="col-sm-12">
+        <div class="portlet box custom-box">
+            <div class="portlet-title">
+                <div class="caption">
+                    <i class="fa fa-user"></i>Overtime Request
+                </div>
+                <div class="actions">
+                    <a class="btn btn-circle btn-icon-only btn-default fullscreen" href="javascript:;" data-original-title="" title=""> </a>
                 </div>
             </div>
-            <div class="col-md-6">
-                <div class="btn-group pull-right">
-                    <button class="btn green btn-outline dropdown-toggle" data-toggle="dropdown">Tools
-                        <i class="fa fa-angle-down"></i>
-                    </button>
-                    <ul class="dropdown-menu pull-right">      
-                        <li>
-                            <a href="javascript:;" id="export"> Export to Excel </a>
-                        </li>
-                    </ul>
+            <div class="portlet-body div-font-11">
+                <div class="border-bottom">
+                    <div class="form-group">
+                        <div class="row div-font-11">
+                            <div class="col-sm-4">
+                                <table width="100%">
+                                    <tr height="30">
+                                        <td>
+                                            Requested Date
+                                        </td>
+                                        <td width="15">:</td>
+                                        <td>
+                                            <?php echo $requestedDate; ?>
+                                        </td>
+                                    </tr>
+                                    <tr height="30">
+                                        <td>
+                                            Status
+                                        </td>
+                                        <td width="15">:</td>
+                                        <td>
+                                            <?php
+                                            if ($status == 'RQ') {
+                                                echo "Pending";
+                                            } else if ($status == 'RC') {
+                                                echo "Recommended";
+                                            } else if ($status == 'AP') {
+                                                echo "Approved";
+                                            } else if ($status == "R") {
+                                                echo "Rejected";
+                                            } else if ($status == "C") {
+                                                echo "Cancelled";
+                                            }
+                                            ?>
+                                        </td>
+                                    </tr>
+
+
+                                </table>
+                            </div>
+                            <div class="col-sm-4">
+                                <table width="100%">
+                                    <tr height="30">
+                                        <td>
+                                            Recommender
+                                        </td>
+                                        <td width="15">:</td>
+                                        <td>
+                                            <?php echo $recommender; ?>
+                                        </td>
+                                    </tr>
+
+                                </table>
+                            </div>
+                            <div class="col-sm-4">
+                                <table width="100%">  
+                                    <tr height="30">
+                                        <td>
+                                            Approver
+                                        </td>
+                                        <td width="15">:</td>
+                                        <td>
+                                            <?php echo $approver; ?>
+                                        </td>
+                                    </tr>                               
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <input type="hidden" id="overtimeId" value="0"/>
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <div class="form-group <?= empty($overtimeDate->getMessages()) ? "" : "error" ?>">
+                                <?php print $this->formLabel($overtimeDate); ?>
+                                <span class="required" aria-required="true">*</span>
+                                    <?php print $this->formElement($overtimeDate); ?>
+                            </div>
+                            <?php print $this->formElementErrors()->render($overtimeDate, ['class' => 'help-block error']); ?>
+                        </div>     
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label for="nepaliDate">&nbsp;</label>
+                                <input disabled="disabled" placeholder="Overtime Date Nepali" type="text" name="nepaliDate" id="nepaliDate"
+                                           class="form-control" value="">
+                            </div>
+                        </div>  
+                        <div class="col-sm-4">
+                            <div class="form-group <?= empty($description->getMessages()) ? "" : "error" ?>">
+                                <?php print $this->formLabel($description); ?>
+                                <?php print $this->formElement($description); ?>
+                            </div>
+                            <?php print $this->formElementErrors()->render($description, ['class' => 'help-block error']); ?>
+                        </div>
+                    </div>     
+
+                    <div class="row">
+                        <div class="col-sm-8">
+                        <table width='100%' style="margin-bottom:10px;">
+                            <tr>
+                                <td class="col-sm-4" style="padding:0px;"><label>Start Time</label></td>
+                                <td class="col-sm-4" style="padding:0px;"><label>End Time</label></td>
+                                <td><label>Total Hour</label></td>
+                            </tr>
+                            <?php foreach($overtimeDetails as $detail){ ?>
+                            <tr height="30"> 
+                                <td width="45%" style="padding-right:5px;">
+                                    <input timepicker type="text" size="3" class="form-control" name="startTime[]"  value="<?= $detail['START_TIME']; ?>" required="required" readonly="readonly"/>
+                                </td>
+                                <td width="45%" style="padding:5px;">
+                                    <input timepicker type="text" size="3"  class="form-control" name="endTime[]"   value="<?= $detail['END_TIME']; ?>" required="required" readonly="readonly"/>
+                                </td>
+                                <td width="45%" style="padding:5px;">
+                                    <input type="text" size="3" class="form-control" name="totalHour[]"  value="<?= $detail['TOTAL_HOUR']; ?>"  required="required" readonly="readonly"/>
+                                </td>
+                            </tr>
+                            <?php } ?>
+                        </table>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="form-group <?= empty($remarks->getMessages()) ? "" : "error" ?>">
+                                <?php print $this->formLabel($remarks); ?>
+                                <?php print $this->formElement($remarks); ?>
+                            </div>
+                            <?php print $this->formElementErrors()->render($remarks, ['class' => 'help-block error']); ?>
+                        </div>
+                    </div>
+
+                    <div class=" row">
+                    </div>
                 </div>
-            </div>      
+                <div
+                    class="form-group margin-top-10 required <?= empty($recommendedRemarks->getMessages()) ? "" : "error" ?>">
+                    <label>Reason for action [From Recommender]</label>
+                    <?php print $this->formElement($recommendedRemarks); ?>
+                </div>
+                <div
+                    class="form-group required <?= empty($approvedRemarks->getMessages()) ? "" : "error" ?>">
+                    <label>Reason for action [From Approver]</label>
+                    <?php print $this->formElement($approvedRemarks); ?>
+                </div>
+            </div>
+
         </div>
-    </div>    
-    <div id="trainingRequestTable">
     </div>
-    <script id="rowTemplate" type="text/x-kendo-tmpl">
-        <tr>
-        <td>
-        #: (OVERTIME_DATE == null) ? '-' : OVERTIME_DATE #
-        </td>
-        <td>
-        <ul id="branchList">  
-        #  ln=DETAILS.length #
-        #for(var i=0; i<ln; i++) { #
-        <li>
-        - #=DETAILS[i].START_TIME # - #=DETAILS[i].END_TIME #
-        </li>
-        #}#
-        </ul>
-        </td>
-        <td>
-        #: (REQUESTED_DATE == null) ? '-' : REQUESTED_DATE #
-        </td>
-        <td>
-        #: (STATUS == null) ? '-' : STATUS #
-        </td>
-        <td>
-        <a class="btn-edit"
-        href="<?= $this->url("overtimeRequest", ["action" => "view"]) ?>/#: OVERTIME_ID #" style="height:17px;" title="view detail">
-        <i class="fa fa-search-plus"></i></a>
-        </a>
-        #if(ALLOW_TO_EDIT == 1){#       
-        <a class="confirmation btn-delete"
-        href="<?= $this->url("overtimeRequest", ["action" => "delete"]) ?>/#: OVERTIME_ID #" id="bs_#:OVERTIME_ID #" style="height:17px;">
-        <i class="fa fa-trash-o"></i></a>
-        </a>
-        #}#
-        </td>
-        </tr>
-    </script>
 </div>
