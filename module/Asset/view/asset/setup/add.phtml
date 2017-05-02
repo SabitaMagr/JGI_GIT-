@@ -87,6 +87,7 @@ $form->prepare();
                     <div class="col-sm-4">
                         <div class="form-group">
                             <?php print $this->formLabel($assetGroupId); ?>
+                            <span class="required" aria-required="true">*</span>
                             <?php print $this->formElement($assetGroupId); ?>
                             <?php print $this->formElementErrors()->render($assetGroupId, ['class' => 'help-block']); ?>
                         </div>

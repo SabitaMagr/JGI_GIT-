@@ -43,7 +43,7 @@ class SetupForm {
     
     /**
      * @Annotation\Type("Zend\Form\Element\Text")
-     * @Annotation\Required(true)
+     * @Annotation\Required(false)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Brand Name"})
      * @Annotation\Attributes({"id":"brandName","class":"form-control"})
@@ -53,7 +53,7 @@ class SetupForm {
     
     /**
      * @Annotation\Type("Zend\Form\Element\Text")
-     * @Annotation\Required(true)
+     * @Annotation\Required(false)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Model No"})
      * @Annotation\Attributes({"id":"modelNo","class":"form-control"})
@@ -63,7 +63,7 @@ class SetupForm {
     
     /**
      * @Annotation\Type("Zend\Form\Element\Text")
-     * @Annotation\Required(true)
+     * @Annotation\Required(false)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Series No"})
      * @Annotation\Attributes({"id":"series","class":"form-control"})
@@ -73,7 +73,7 @@ class SetupForm {
     
     /**
      * @Annotation\Type("Zend\Form\Element\Text")
-     * @Annotation\Required(true)
+     * @Annotation\Required(false)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Vendor Name"})
      * @Annotation\Attributes({"id":"vendorName","class":"form-control"})
@@ -93,7 +93,7 @@ class SetupForm {
     
     /**
      * @Annotation\Type("Zend\Form\Element\Number")
-     * @Annotation\Required(true)
+     * @Annotation\Required(false)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Warranty"})
      * @Annotation\Attributes({"id":"warranty","class":"form-control"})
@@ -114,7 +114,7 @@ class SetupForm {
     
      /**
      * @Annotation\Type("Zend\Form\Element\Text")
-     * @Annotation\Required(true)
+     * @Annotation\Required(false)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Expiary Date"})
      * @Annotation\Attributes({"id":"expiaryDate","class":"form-control"})
@@ -135,7 +135,7 @@ class SetupForm {
     
      /**
      * @Annotation\Type("Zend\Form\Element\Text")
-     * @Annotation\Required(true)
+     * @Annotation\Required(false)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Image"})
      * @Annotation\Attributes({"id":"assetImage","class":"form-control"})
