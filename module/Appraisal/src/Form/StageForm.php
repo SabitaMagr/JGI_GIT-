@@ -9,15 +9,6 @@ use Zend\Form\Annotation;
  */
 
 class StageForm{
-    /**
-     * @Annotation\Type("Zend\Form\Element\Text")
-     * @Annotation\Required(true)
-     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
-     * @Annotation\Options({"label":"Stage Code"})
-     * @Annotation\Attributes({"id":"stageCode","class":"form-control"})
-     * @Annotation\Validator({"name":"StringLength", "options":{"max":"15"}})
-     */
-    public $stageCode;
     
     /**
      * @Annotation\Type("Zend\Form\Element\Text")
