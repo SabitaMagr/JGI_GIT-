@@ -54,6 +54,8 @@ class LoanAdvanceHelper{
             
             if(count($salaryRange)>1){
                 $salaryFrom = (int)$salaryRange[0];
+            }else{
+                $salaryFrom="";
             }
             if(count($salaryRange)==2){
                $salaryTo = (int)$salaryRange[1];
@@ -65,6 +67,8 @@ class LoanAdvanceHelper{
             $workingPeriod =  explode(",",$restrictionDtl['workingPeriod']);
             if(count($workingPeriod)>1){
                 $workingPeriodFrom = (int)$workingPeriod[0];
+            }else{
+                $workingPeriodFrom="";
             }
             if(count($workingPeriod)==2){
                $workingPeriodTo = (int)$workingPeriod[1];

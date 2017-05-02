@@ -136,7 +136,7 @@ class OvertimeApproveController extends AbstractActionController {
         $authApprover = ($status == 'RC' || $status == 'RQ' || ($status == 'R' && $approvedDT == null)) ? $approver : $approved_by;
         $recommenderId = ($status == 'RQ') ? $detail['RECOMMENDER'] : $detail['RECOMMENDED_BY'];
         
-        $overtimeDetailResult = $this->detailRepository->fetchByOvertimeId($detail['OVERTIME_ID']);
+        $overtimeDetailResult = $this->overtimeDetailRepository->fetchByOvertimeId($detail['OVERTIME_ID']);
         $overtimeDetails = [];
         foreach($overtimeDetailResult as $overtimeDetailRow){
             array_push($overtimeDetails,$overtimeDetailRow);
