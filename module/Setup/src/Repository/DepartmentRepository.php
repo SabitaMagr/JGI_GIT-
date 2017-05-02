@@ -30,6 +30,9 @@ class DepartmentRepository implements RepositoryInterface {
 
     public function edit(Model $model, $id) {
         $temp = $model->getArrayCopyForDB();
+        if(!isset($temp['PARENT_DEPARTMENT'])){
+            $temp['PARENT_DEPARTMENT']=NULL;
+        }
         $this->tableGateway->update($temp, [Department::DEPARTMENT_ID => $id]);
     }
 

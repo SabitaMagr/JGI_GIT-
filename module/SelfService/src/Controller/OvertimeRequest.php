@@ -65,68 +65,90 @@ class OvertimeRequest extends AbstractActionController {
     }
 
     public function indexAction() {
-        $this->getRecommendApprover();
-        $result = $this->repository->getAllByEmployeeId($this->employeeId);
-        $fullName = function($id) {
-            $empRepository = new EmployeeRepository($this->adapter);
-            $empDtl = $empRepository->fetchById($id);
-            $empMiddleName = ($empDtl['MIDDLE_NAME'] != null) ? " " . $empDtl['MIDDLE_NAME'] . " " : " ";
-            return $empDtl['FIRST_NAME'] . $empMiddleName . $empDtl['LAST_NAME'];
-        };
-
-        $recommenderName = $fullName($this->recommender);
-        $approverName = $fullName($this->approver);
-
-        $list = [];
-        $getValue = function($status) {
-            if ($status == "RQ") {
-                return "Pending";
-            } else if ($status == 'RC') {
-                return "Recommended";
-            } else if ($status == "R") {
-                return "Rejected";
-            } else if ($status == "AP") {
-                return "Approved";
-            } else if ($status == "C") {
-                return "Cancelled";
+        $request = $this->getRequest();
+        if($request->isPost()){
+            try{
+                $postedData = $request->getPost()->getArrayCopy();
+                switch ($postedData['action']) {
+                    case "pullOvertimeDetail":
+                        $responseData = $this->pullOvertimeDetail($postedData['data']);
+                        break;
+                    default:
+                        throw new Exception("action not found");
+                        break;
+                }
+            }catch(Exception $e){
+                $responseData = [
+                    "success" => false,
+                    "message" => $e->getMessage(),
+                    "traceAsString" => $e->getTraceAsString(),
+                    "line" => $e->getLine()
+                ];
             }
-        };
-        $getAction = function($status) {
-            if ($status == "RQ") {
-                return ["delete" => 'Cancel Request'];
-            } else {
-                return ["view" => 'View'];
-            }
-        };
-        
-        foreach ($result as $row) {
-            $status = $getValue($row['STATUS']);
-            $action = $getAction($row['STATUS']);
-            $statusID = $row['STATUS'];
-            $approvedDT = $row['APPROVED_DATE'];
-            $MN1 = ($row['MN1'] != null) ? " " . $row['MN1'] . " " : " ";
-            $recommended_by = $row['FN1'] . $MN1 . $row['LN1'];
-            $MN2 = ($row['MN2'] != null) ? " " . $row['MN2'] . " " : " ";
-            $approved_by = $row['FN2'] . $MN2 . $row['LN2'];
-            $authRecommender = ($statusID == 'RQ' || $statusID == 'C') ? $recommenderName : $recommended_by;
-            $authApprover = ($statusID == 'RC' || $statusID == 'RQ' || $statusID == 'C' || ($statusID == 'R' && $approvedDT == null)) ? $approverName : $approved_by;
+        }else{
+            $this->getRecommendApprover();
+            $result = $this->repository->getAllByEmployeeId($this->employeeId);
+            $fullName = function($id) {
+                $empRepository = new EmployeeRepository($this->adapter);
+                $empDtl = $empRepository->fetchById($id);
+                $empMiddleName = ($empDtl['MIDDLE_NAME'] != null) ? " " . $empDtl['MIDDLE_NAME'] . " " : " ";
+                return $empDtl['FIRST_NAME'] . $empMiddleName . $empDtl['LAST_NAME'];
+            };
 
-            $new_row = array_merge($row, [
-                'RECOMMENDER_NAME' => $authRecommender,
-                'APPROVER_NAME' => $authApprover,
-                'STATUS' => $status,
-                'ACTION' => key($action),
-                'ACTION_TEXT' => $action[key($action)]
-            ]);
-            
-            if ($statusID == 'RQ') {
-                $new_row['ALLOW_TO_EDIT'] = 1;
-            } else {
-                $new_row['ALLOW_TO_EDIT'] = 0;
+            $recommenderName = $fullName($this->recommender);
+            $approverName = $fullName($this->approver);
+
+            $list = [];
+            $getValue = function($status) {
+                if ($status == "RQ") {
+                    return "Pending";
+                } else if ($status == 'RC') {
+                    return "Recommended";
+                } else if ($status == "R") {
+                    return "Rejected";
+                } else if ($status == "AP") {
+                    return "Approved";
+                } else if ($status == "C") {
+                    return "Cancelled";
+                }
+            };
+            $getAction = function($status) {
+                if ($status == "RQ") {
+                    return ["delete" => 'Cancel Request'];
+                } else {
+                    return ["view" => 'View'];
+                }
+            };
+
+            foreach ($result as $row) {
+                $status = $getValue($row['STATUS']);
+                $action = $getAction($row['STATUS']);
+                $statusID = $row['STATUS'];
+                $approvedDT = $row['APPROVED_DATE'];
+                $MN1 = ($row['MN1'] != null) ? " " . $row['MN1'] . " " : " ";
+                $recommended_by = $row['FN1'] . $MN1 . $row['LN1'];
+                $MN2 = ($row['MN2'] != null) ? " " . $row['MN2'] . " " : " ";
+                $approved_by = $row['FN2'] . $MN2 . $row['LN2'];
+                $authRecommender = ($statusID == 'RQ' || $statusID == 'C') ? $recommenderName : $recommended_by;
+                $authApprover = ($statusID == 'RC' || $statusID == 'RQ' || $statusID == 'C' || ($statusID == 'R' && $approvedDT == null)) ? $approverName : $approved_by;
+
+                $new_row = array_merge($row, [
+                    'RECOMMENDER_NAME' => $authRecommender,
+                    'APPROVER_NAME' => $authApprover,
+                    'STATUS' => $status,
+                    'ACTION' => key($action),
+                    'ACTION_TEXT' => $action[key($action)]
+                ]);
+
+                if ($statusID == 'RQ') {
+                    $new_row['ALLOW_TO_EDIT'] = 1;
+                } else {
+                    $new_row['ALLOW_TO_EDIT'] = 0;
+                }
+                array_push($list, $new_row);
             }
-            array_push($list, $new_row);
+            return Helper::addFlashMessagesToArray($this, ['list' => $list]);
         }
-        return Helper::addFlashMessagesToArray($this, ['list' => $list]);
     }
 
     public function addAction() {
@@ -212,6 +234,20 @@ class OvertimeRequest extends AbstractActionController {
         ]);
     }
 
+    public function pullOvertimeDetail($data){
+        $overtimeId = $data['overtimeId'];
+        $result = $this->detailRepository->fetchByOvertimeId($overtimeId);
+        $overtimeDetailList = [];
+        foreach($result as $row){
+            array_push($overtimeDetailList, $row);
+        }
+        return [
+          'success'=>true,
+            'data'=>[
+                'overtimeDetailList'=>$overtimeDetailList
+            ]
+        ];
+    }
     public function recommendApproveList() {
         $employeeRepository = new EmployeeRepository($this->adapter);
         $recommendApproveRepository = new RecommendApproveRepository($this->adapter);

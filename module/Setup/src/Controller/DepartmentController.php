@@ -97,10 +97,11 @@ class DepartmentController extends AbstractActionController {
             if ($this->form->isValid()) {
                 $department->exchangeArrayFromForm($this->form->getData());
                 if ($department->parentDepartment == 0) {
-                    unset($department->parentDepartment);
+                    $department->parentDepartment=null;
                 }
                 $department->modifiedDt = Helper::getcurrentExpressionDate();
                 $department->modifiedBy = $this->employeeId;
+                
                 $this->repository->edit($department, $id);
                 $this->flashmessenger()->addMessage("Department Successfully Updated!!!");
                 return $this->redirect()->toRoute("department");
