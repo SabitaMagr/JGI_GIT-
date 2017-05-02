@@ -813,6 +813,33 @@ return [
                 ],
             ],
         ],
+        'overtimeRequest' => [
+            [
+                'label' => 'Overtime Request',
+                'route' => 'overtimeRequest',
+            ],
+            [
+                'label' => 'Overtime Request',
+                'route' => 'overtimeRequest',
+                'pages' => [
+                    [
+                        'label' => 'List',
+                        'route' => 'overtimeRequest',
+                        'action' => 'index',
+                    ],
+                    [
+                        'label' => 'Add',
+                        'route' => 'overtimeRequest',
+                        'action' => 'add',
+                    ],
+                    [
+                        'label' => 'Detail',
+                        'route' => 'overtimeRequest',
+                        'action' => 'view',
+                    ],
+                ],
+            ],
+        ],
     ],
 
     'controllers' => [
