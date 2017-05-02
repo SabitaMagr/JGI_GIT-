@@ -15,17 +15,9 @@ use Zend\Form\Annotation;
  */
 
 class AcademicDegreeForm{
-
-    /**
-     * @Annotion\Type("Zend\Form\Element\Text")
-     * @Annotation\Required({"required":"true"})
-     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
-     * @Annotation\Options({"label":"Academic Degree Code"})
-     * @Annotation\Attributes({ "id":"form-academicDegreeCode", "class":"form-academicDegreeCode form-control" })
-     */
-    public $academicDegreeCode;
-
-    /**
+    
+    
+     /**
      * @Annotion\Type("Zend\Form\Element\Text")
      * @Annotation\Required({"required":"true"})
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})

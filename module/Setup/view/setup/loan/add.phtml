@@ -4,7 +4,7 @@ $this->headScript()->appendFile($this->basePath('js/setup/loan/add.js'));
 $form->setAttribute('role', 'form');
 $form->setAttribute('id', 'loan-form');
 
-$loanCode = $form->get('loanCode');
+
 $loanName = $form->get('loanName');
 $minAmount = $form->get('minAmount');
 $maxAmount = $form->get('maxAmount');
@@ -55,14 +55,7 @@ $form->prepare();
                 ?>
                 
                 <div class=" row">
-                    <div class="col-sm-4">
-                <div class="form-group">
-                    <?php print $this->formLabel($loanCode); ?>
-                    <span class="required" aria-required="true">*</span>
-                    <?php print $this->formElement($loanCode); ?>
-                    <?php print $this->formElementErrors()->render($loanCode, ['class' => 'help-block error']); ?>
-                </div>
-                    </div>
+                 
 
                     <div class="col-sm-4">
                 <div class="form-group">
@@ -79,6 +72,15 @@ $form->prepare();
                             <span class="required" aria-required="true">*</span>
                             <?php print $this->formElement($companyId); ?>
                             <?php print $this->formElementErrors()->render($companyId, ['class' => 'help-block error']); ?>
+                        </div>
+                    </div>
+                    
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <?php print $this->formLabel($interestRate); ?>
+                            <span class="required" aria-required="true">*</span>
+                            <?php print $this->formElement($interestRate); ?>
+                            <?php print $this->formElementErrors()->render($interestRate, ['class' => 'help-block error']); ?>
                         </div>
                     </div>
                 </div>
@@ -99,16 +101,7 @@ $form->prepare();
                             <?php print $this->formElementErrors()->render($maxAmount, ['class' => 'help-block error']); ?>
                         </div>
                     </div>
-                    <div class="col-sm-4">
-                        <div class="form-group">
-                            <?php print $this->formLabel($interestRate); ?>
-                            <span class="required" aria-required="true">*</span>
-                            <?php print $this->formElement($interestRate); ?>
-                            <?php print $this->formElementErrors()->render($interestRate, ['class' => 'help-block error']); ?>
-                        </div>
-                    </div>
-                </div>                                              
-                <div class="row">
+                    
                     <div class="col-sm-4">
                         <div class="form-group">
                             <?php print $this->formLabel($repaymentAmount); ?>
@@ -117,6 +110,8 @@ $form->prepare();
                             <?php print $this->formElementErrors()->render($repaymentAmount, ['class' => 'help-block error']); ?>
                         </div>
                     </div>
+                </div>                                              
+                <div class="row">
                     <div class="col-sm-4">
                         <div class="form-group">
                             <?php print $this->formLabel($repaymentPeriod); ?>

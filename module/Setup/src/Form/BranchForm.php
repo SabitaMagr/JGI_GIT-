@@ -19,15 +19,7 @@ use Zend\Form\Annotation;
  */
 class BranchForm {
 
-    /**
-     * @Annotion\Type("Zend\Form\Element\Text")
-     * @Annotation\Required(true)
-     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
-     * @Annotation\Options({"label":"Branch Code"})
-     * @Annotation\Validator({"name":"StringLength", "options":{"max":"15"}})
-     * @Annotation\Attributes({ "id":"form-branchCode", "class":"form-branchCode form-control" })
-     */
-    public $branchCode;
+ 
 
     /**
      * @Annotion\Type("Zend\Form\Element\Text")

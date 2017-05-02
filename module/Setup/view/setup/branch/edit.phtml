@@ -4,7 +4,6 @@ $this->headScript()->appendFile($this->basePath('js/setup/branch/add.js'));
 $form->setAttribute('role', 'form');
 $form->setAttribute('id', 'branch-form');
 
-$branchCode = $form->get('branchCode');
 $branchName = $form->get('branchName');
 $streetAddress = $form->get('streetAddress');
 $telephone = $form->get('telephone');
@@ -69,17 +68,6 @@ echo json_encode($menu);
 
                 <div class=" row">
                     <div class="col-sm-4">
-                        <div class="form-group <?= empty($branchCode->getMessages()) ? "" : "has-error" ?>">
-                            <?php print $this->formLabel($branchCode); ?>
-                            <span class="required" aria-required="true">*</span>
-                            <?php print $this->formElement($branchCode); ?>
-                            <?php print $this->formElementErrors()->render($branchCode, ['class' => 'help-block error']); ?>
-                            <input type="hidden" id="branchId" value="<?php echo $id; ?>" />
-                        </div>
-                    </div>
-
-
-                    <div class="col-sm-4">
                         <div class="form-group <?= empty($branchName->getMessages()) ? "" : "has-error" ?>">
                             <?php print $this->formLabel($branchName); ?>
                             <span class="required" aria-required="true">*</span>
@@ -97,10 +85,7 @@ echo json_encode($menu);
                             <?php print $this->formElementErrors()->render($streetAddress, ['class' => 'help-block error']); ?>
                         </div>
                     </div>
-                </div>
-
-
-                <div class=" row">
+                    
                     <div class="col-sm-4">
                         <div class="form-group ">
                             <?php print $this->formLabel($countryId); ?>
@@ -109,8 +94,10 @@ echo json_encode($menu);
                             <?php print $this->formElementErrors()->render($countryId, ['class' => 'help-block error']); ?>
                         </div>
                     </div>
+                </div>
 
 
+                <div class=" row">
                     <div class="col-sm-4">
                         <div class="form-group <?= empty($telephone->getMessages()) ? "" : "has-error" ?>">
                             <?php print $this->formLabel($telephone); ?>
@@ -128,9 +115,7 @@ echo json_encode($menu);
                             <?php print $this->formElementErrors()->render($fax, ['class' => 'help-block error']); ?>
                         </div>
                     </div>
-                </div>
-
-                <div class=" row">
+                    
                     <div class="col-sm-4">
                         <div class="form-group  <?= empty($email->getMessages()) ? "" : "has-error" ?>">
                             <?php print $this->formLabel($email); ?>
@@ -139,8 +124,9 @@ echo json_encode($menu);
                             <?php print $this->formElementErrors()->render($email, ['class' => 'help-block error']); ?>
                         </div>
                     </div>
+                </div>
 
-
+                <div class=" row">
                     <div class="col-sm-4">
                         <div class="form-group">
                             <?php print $this->formLabel($companyId); ?>

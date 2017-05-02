@@ -4,7 +4,6 @@ $this->headScript()->appendFile($this->basePath('js/setup/institute/add.js'));
 $form->setAttribute('role', 'form');
 $form->setAttribute('id', 'institute-form');
 
-$instituteCode = $form->get('instituteCode');
 $instituteName = $form->get('instituteName');
 $location = $form->get('location');
 $telephone = $form->get('telephone');
@@ -63,15 +62,6 @@ echo json_encode($menu);
                 <div class=" row">
                     <div class="col-sm-4">
                         <div class="form-group">
-                            <?php print $this->formLabel($instituteCode); ?>
-                            <span class="required" aria-required="true">*</span>
-                            <?php print $this->formElement($instituteCode); ?>
-                            <?php print $this->formElementErrors()->render($instituteCode, ['class' => 'help-block error']); ?>
-                        </div>
-                    </div>
-
-                    <div class="col-sm-4">
-                        <div class="form-group">
                             <?php print $this->formLabel($instituteName); ?>
                             <span class="required" aria-required="true">*</span>
                             <?php print $this->formElement($instituteName); ?>
@@ -89,9 +79,6 @@ echo json_encode($menu);
                         </div>
                     </div>
 
-                </div>
-
-                <div class=" row">
                     <div class="col-sm-4">
                         <div class="form-group">
                             <?php print $this->formLabel($telephone); ?>
@@ -100,7 +87,9 @@ echo json_encode($menu);
                             <?php print $this->formElementErrors()->render($telephone, ['class' => 'help-block error']); ?>
                         </div>                                             
                     </div>
+                </div>
 
+                <div class=" row">
                     <div class="col-sm-4">
                         <div class="form-group">
                             <?php print $this->formLabel($email); ?>

@@ -25,14 +25,6 @@ class DesignationForm
 {
     
 
-    /**
-     * @Annotation\Type("Zend\Form\Element\Text")
-     * @Annotation\Required({"required":"true"})
-     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
-     * @Annotation\Options({"label":"Designation Code"})
-     * @Annotation\Attributes({ "id":"form-designationCode", "class":"form-designationCode form-control" })
-     */
-    public $designationCode;
 
     /**
      * @Annotation\Type("Zend\Form\Element\Text")

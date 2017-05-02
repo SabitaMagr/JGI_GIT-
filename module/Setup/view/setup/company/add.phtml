@@ -8,7 +8,6 @@ $this->headScript()->appendFile($this->basePath('js/setup/company/add.js'));
 $form->setAttribute('role', 'form');
 $form->setAttribute('id', 'company-form');
 
-$companyCode = $form->get('companyCode');
 $companyName = $form->get('companyName');
 $address = $form->get('address');
 $telephone = $form->get('telephone');
@@ -79,17 +78,6 @@ $form->prepare();
                 <div class=" row">
                     <div class="col-sm-4">
                         <div class="form-group required ">
-                            <?php print $this->formLabel($companyCode); ?>
-                            <span class="required" aria-required="true">*</span>
-                            <?php print $this->formElement($companyCode); ?>
-                            <?php print $this->formElementErrors()->render($companyCode, ['class' => 'help-block']); ?>
-                            <span class="errorMsg" style="font-size:11px; color:red;"></span>
-                        </div>
-                    </div>
-
-
-                    <div class="col-sm-4">
-                        <div class="form-group required ">
                             <?php print $this->formLabel($companyName); ?>
                             <span class="required" aria-required="true">*</span>
                             <?php print $this->formElement($companyName); ?>
@@ -107,10 +95,7 @@ $form->prepare();
                             <?php print $this->formElementErrors()->render($address, ['class' => 'help-block']); ?>
                         </div>
                     </div>
-                </div>
-
-
-                <div class=" row">
+                    
                     <div class="col-sm-4">
                         <div class="form-group">
                             <?php print $this->formLabel($telephone); ?>
@@ -118,8 +103,10 @@ $form->prepare();
                             <?php print $this->formElementErrors()->render($telephone, ['class' => 'help-block']); ?>
                         </div>
                     </div>
+                </div>
 
 
+                <div class=" row">
                     <div class="col-sm-4">
                         <div class="form-group">
                             <?php print $this->formLabel($fax); ?>

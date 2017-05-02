@@ -15,16 +15,6 @@ class CompanyForm {
      * @Annotion\Type("Zend\Form\Element\Text")
      * @Annotation\Required({"required":"true"})
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
-     * @Annotation\Validator({"name":"StringLength", "options":{"max":"10"}})
-     * @Annotation\Options({"label":"Company Code"})
-     * @Annotation\Attributes({ "id":"form-companyCode","maxlength":"10", "class":"form-companyCode form-control", "placeholder":"Company Code..."  })
-     */
-    public $companyCode;
-
-    /**
-     * @Annotion\Type("Zend\Form\Element\Text")
-     * @Annotation\Required({"required":"true"})
-     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Company Name"})
      * @Annotation\Attributes({ "id":"form-companyName", "class":"form-companyName form-control" })
      */

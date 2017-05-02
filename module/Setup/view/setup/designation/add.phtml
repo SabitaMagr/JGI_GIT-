@@ -4,7 +4,6 @@ $this->headScript()->appendFile($this->basePath('js/setup/designation/add.js'));
 $form->setAttribute('role', 'form');
 $form->setAttribute('id', 'designation-form');
 
-$designationCode = $form->get('designationCode');
 $designationTitle = $form->get("designationTitle");
 $parentDesignation = $form->get("parentDesignation");
 $withinBranch = $form->get("withinBranch");
@@ -37,7 +36,7 @@ $menu = ["id" => "menuSetup", "subMenu" => ["id" => "subMenuDesignation"]];
 echo json_encode($menu);
 ?>;
     document.url = '<?= $this->url("restful", ["action" => "index"]) ?>';
-    document.designationListCompanyWise = <?php echo json_encode($designationListCompanyWise);?>;
+    document.designationListCompanyWise = <?php echo json_encode($designationListCompanyWise); ?>;
 </script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\Designation')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
@@ -57,15 +56,6 @@ echo json_encode($menu);
                 <?php print $this->form()->openTag($form); ?>
 
                 <div class=" row">
-                    <div class="col-sm-4">
-                        <div class="form-group">
-                            <?= $this->formLabel($designationCode) ?>
-                            <span class="required" aria-required="true">*</span>
-                            <?= $this->formElement($designationCode); ?>
-                            <?= $this->formElementErrors()->render($designationCode, ['class' => 'help-block']) ?>
-                            <span class="errorMsg" style="font-size:11px; color:red;"></span>
-                        </div>
-                    </div>
 
                     <div class="col-sm-4">
                         <div class="form-group">
@@ -85,9 +75,7 @@ echo json_encode($menu);
                             <?= $this->formElementErrors()->render($basicSalary, ['class' => 'help-block']) ?>
                         </div>
                     </div>
-                </div>
-                
-                <div class=" row">
+
                     <div class="col-sm-4">
                         <div class="form-group">
                             <?php print $this->formLabel($companyId); ?>
@@ -132,7 +120,7 @@ echo json_encode($menu);
                         </div>
                     </div>
                 </div>
-                
+
                 <?php
                 print $this->formSubmit($submit);
                 print $this->form()->closeTag();

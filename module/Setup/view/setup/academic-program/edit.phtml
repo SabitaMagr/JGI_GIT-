@@ -4,7 +4,6 @@ $this->headScript()->appendFile($this->basePath('js/setup/academic-program/add.j
 $form->setAttribute('role', 'form');
 $form->setAttribute('id', 'academicProgram-form');
 
-$academicProgramCode = $form->get('academicProgramCode');
 $academicProgramName = $form->get('academicProgramName');
 $remarks = $form->get('remarks');
 
@@ -50,16 +49,6 @@ echo json_encode($menu);
                 ?>
 
                 <div class=" row">
-                    <div class="col-sm-4">
-                        <div class="form-group">
-                            <?php print $this->formLabel($academicProgramCode); ?>
-                            <span class="required" aria-required="true">*</span>
-                            <?php print $this->formElement($academicProgramCode); ?>
-                            <?php print $this->formElementErrors()->render($academicProgramCode, ['class' => 'help-block']); ?>
-                            <input type="hidden" id="academicProgramId" value="<?php echo $id; ?>"/>
-                            <span class="errorMsg" style="font-size:11px; color:red;"></span>
-                        </div>
-                    </div>
 
                     <div class="col-sm-4">
                         <div class="form-group">

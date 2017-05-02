@@ -64,21 +64,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                     <div class="portlet-body">
                         <form name="holidayForm" id="holiday-form" ng-submit="update()" novalidate>
                             <input type="hidden" id="holidayId" value="<?= $selectedHoliday ?>"/>
-                            <div class=" row">
-                                <div class="col-sm-6">
-                                    <div class="form-group">
-                                        <label for="holidayCode">Holiday Code</label>
-                                        <span class="required" aria-required="true">*</span>
-                                        <input name="holidayCode" required="required" id="holidayCode" class="form-control"
-                                               type="text" ng-model="holidayDtl.holidayCode">
-                                        <div ng-show="holidayForm.$submitted || holidayForm.holidayCode.$touched">
-                                            <ul ng-show="holidayForm.holidayCode.$error.required" class="help-block error">
-                                                <li>Holiday Code is required.</li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+
                             <div class="row">
                                 <div class="col-sm-6">
                                     <div class="form-group">

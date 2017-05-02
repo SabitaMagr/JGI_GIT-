@@ -9,15 +9,6 @@ use Zend\Form\Annotation;
  */
 
 class SetupForm{
-    /**
-     * @Annotation\Type("Zend\Form\Element\Text")
-     * @Annotation\Required(true)
-     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
-     * @Annotation\Options({"label":"Appraisal Code"})
-     * @Annotation\Attributes({"id":"appraisalCode","class":"form-control"})
-     * @Annotation\Validator({"name":"StringLength", "options":{"max":"15"}})
-     */
-    public $appraisalCode;
     
     /**
      * @Annotation\Type("Zend\Form\Element\Text")
