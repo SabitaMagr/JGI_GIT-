@@ -11,7 +11,6 @@ $form->setAttribute('action', $this->url('assetSetup', ['action' => 'edit', 'id'
 //$groupNdesc = $form->get('assetGroupNdesc');
 //$remarks = $form->get('remarks');
 
-$assetCode = $form->get('assetCode');
 $assetEdesc = $form->get('assetEdesc');
 $assetNdesc = $form->get('assetNdesc');
 $brandName = $form->get('brandName');
@@ -49,11 +48,14 @@ $form->prepare();
 
 
 <div class="row margin-top-20">
-    <div class="col-sm-8 col-sm-offset-2">
+    <div class="col-sm-12">
         <div class="portlet box custom-box">
             <div class="portlet-title">
                 <div class="caption">
                     <i class="fa fa-user"></i>New Entry
+                </div>
+                <div class="actions">
+                    <a class="btn btn-circle btn-icon-only btn-default fullscreen" href="javascript:;" data-original-title="" title=""> </a>
                 </div>
             </div>
             <div class="portlet-body">
@@ -61,16 +63,6 @@ $form->prepare();
                 
                        
                        <div class=" row">
-                    <div class="col-sm-4">
-                        <div class="form-group">
-                            <?php print $this->formLabel($assetCode); ?>
-                            <?php print $this->formElement($assetCode); ?>
-                            <?php print $this->formElementErrors()->render($assetCode, ['class' => 'help-block']); ?>
-                            <input type="hidden" value="<?php echo $id; ?>" id="assetSetupId"/>
-                        </div>
-                    </div>
-
-
                     <div class="col-sm-4">
                         <div class="form-group">
                             <?php print $this->formLabel($assetEdesc); ?>
@@ -81,18 +73,13 @@ $form->prepare();
 
 
                     <div class="col-sm-4">
-
                         <div class="form-group">
                             <?php print $this->formLabel($assetNdesc); ?>
                             <?php print $this->formElement($assetNdesc); ?>
                             <?php print $this->formElementErrors()->render($assetNdesc, ['class' => 'help-block']); ?>
                         </div>
                     </div>
-                </div>
-
-
-
-                <div class=" row">
+                           
                     <div class="col-sm-4">
                         <div class="form-group">
                             <?php print $this->formLabel($assetGroupId); ?>
@@ -100,8 +87,11 @@ $form->prepare();
                             <?php print $this->formElementErrors()->render($assetGroupId, ['class' => 'help-block']); ?>
                         </div>
                     </div>
+                </div>
 
 
+
+                <div class=" row">
                     <div class="col-sm-4">
                         <div class="form-group">
                             <?php print $this->formLabel($brandName); ?>
@@ -118,12 +108,7 @@ $form->prepare();
                             <?php print $this->formElementErrors()->render($modelNo, ['class' => 'help-block']); ?>
                         </div>
                     </div>
-                </div>
-
-
-
-
-                <div class=" row">
+                    
                     <div class="col-sm-4">
                         <div class="form-group">
                             <?php print $this->formLabel($series); ?>
@@ -131,8 +116,12 @@ $form->prepare();
                             <?php print $this->formElementErrors()->render($series, ['class' => 'help-block']); ?>
                         </div>
                     </div>
+                </div>
 
 
+
+
+                <div class=" row">
                     <div class="col-sm-4">
                         <div class="form-group">
                             <?php print $this->formLabel($vendorName); ?>
@@ -149,10 +138,7 @@ $form->prepare();
                             <?php print $this->formElementErrors()->render($quantity, ['class' => 'help-block']); ?>
                         </div>
                     </div>
-                </div>
-
-
-                <div class=" row">
+                    
                     <div class="col-sm-4">
                         <div class="form-group">
                             <?php print $this->formLabel($warranty); ?>
@@ -160,8 +146,10 @@ $form->prepare();
                             <?php print $this->formElementErrors()->render($warranty, ['class' => 'help-block']); ?>
                         </div>
                     </div>
+                </div>
 
 
+                <div class=" row">
                     <div class="col-sm-4">
                         <div class="form-group">
                             <?php print $this->formLabel($purchaseDate); ?>
@@ -178,12 +166,7 @@ $form->prepare();
                             <?php print $this->formElementErrors()->render($expiaryDate, ['class' => 'help-block']); ?>
                         </div>
                     </div>
-                </div>
-
-
-
-
-                <div class=" row">
+                    
                     <div class="col-sm-4">
                         <div class="form-group">
                             <?php print $this->formLabel($purchaseThrough); ?>
@@ -191,8 +174,12 @@ $form->prepare();
                             <?php print $this->formElementErrors()->render($purchaseThrough, ['class' => 'help-block']); ?>
                         </div>
                     </div>
+                </div>
 
 
+
+
+                <div class=" row">
                     <div class="col-sm-4">
                         <div class="form-group">
                             <?php print $this->formLabel($assetImage); ?>

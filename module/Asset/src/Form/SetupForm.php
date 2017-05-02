@@ -9,16 +9,6 @@ use Zend\Form\Annotation;
  * @Annotation\Name("AssetSetup")
  */
 class SetupForm {
-
-    /**
-     * @Annotation\Type("Zend\Form\Element\Text")
-     * @Annotation\Required(true)
-     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
-     * @Annotation\Options({"label":"Asset Code"})
-     * @Annotation\Attributes({"id":"assetCode","class":"form-control"})
-     * @Annotation\Validator({"name":"StringLength", "options":{"max":"15"}})
-     */
-    public $assetCode;
     
     /**
      * @Annotation\Type("Zend\Form\Element\Text")
@@ -32,7 +22,7 @@ class SetupForm {
     
     /**
      * @Annotation\Type("Zend\Form\Element\Text")
-     * @Annotation\Required(true)
+     * @Annotation\Required(false)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Asset Name (in Nep)"})
      * @Annotation\Attributes({"id":"assetNdesc","class":"form-control"})
