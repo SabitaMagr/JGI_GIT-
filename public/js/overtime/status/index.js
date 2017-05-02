@@ -69,9 +69,9 @@ angular.module('hris', [])
                     rowTemplate: kendo.template($("#rowTemplate").html()),
                     columns: [
                         {field: "FIRST_NAME", title: "Employee", width: 150},
-                        {field: "REQUESTED_DATE", title: "Requested Date", width: 150},
-                        {field: "OVERTIME_DATE", title: "Overtime Date", width: 110},
-                        {field: "DETAILS", title: "Time (From-To)", width: 110},
+                        {field: "REQUESTED_DATE", title: "Requested Date", width: 130},
+                        {field: "OVERTIME_DATE", title: "Overtime Date", width: 120},
+                        {field: "DETAILS", title: "Time (From-To)", width: 150},
                         {field: "RECOMMENDER_NAME", title: "Recommender", width: 130},
                         {field: "APPROVER_NAME", title: "Approver", width: 120},                        
                         {field: "STATUS", title: "Status", width: 90},
