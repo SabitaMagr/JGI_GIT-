@@ -122,7 +122,7 @@ class DepartmentController extends AbstractActionController {
     public function deleteAction() {
         $id = (int) $this->params()->fromRoute("id");
         if (!$id) {
-            return $this->redirect()->toRoute('position');
+            return $this->redirect()->toRoute('department');
         }
         $this->repository->delete($id);
         $this->flashmessenger()->addMessage("Department Successfully Deleted!!!");

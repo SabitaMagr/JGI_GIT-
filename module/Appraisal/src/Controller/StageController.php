@@ -57,9 +57,9 @@ class StageController extends AbstractActionController{
                 $stage->exchangeArrayFromForm($this->form->getData());
                 $stage->createdDate = Helper::getcurrentExpressionDate();
                 $stage->approvedDate = Helper::getcurrentExpressionDate();
-                $stage->createdBy = $this->employeeId;
                 $stage->companyId = $employeeDetail['COMPANY_ID'];
                 $stage->branchId = $employeeDetail['BRANCH_ID'];
+                $stage->createdBy = $this->employeeId;
                 $stage->stageId = ((int) Helper::getMaxId($this->adapter, "HRIS_APPRAISAL_STAGE", "STAGE_ID")) + 1;
                 $stage->status = 'E';
                 $this->repository->add($stage);

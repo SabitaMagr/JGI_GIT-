@@ -33,7 +33,7 @@ class DepartmentForm
 
     /**
      * @Annotation\Type("Zend\Form\Element\Text")
-     * @Annotation\Required({"required":"false"})
+     * @Annotation\Required({"required":"true"})
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Department Name"})
      * @Annotation\Validator({"name":"StringLength", "options":{"min":"5"}})
