@@ -13,6 +13,7 @@ use Zend\Db\Adapter\AdapterInterface;
 use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
+use Setup\Repository\EmployeeRepository;
 
 class ServiceQuestionController extends AbstractActionController {
 
@@ -61,7 +62,8 @@ class ServiceQuestionController extends AbstractActionController {
                 $serviceQuestion->approvedDate = Helper::getcurrentExpressionDate();
                 $serviceQuestion->companyId = $employeeDetail['COMPANY_ID'];
                 $serviceQuestion->branchId = $employeeDetail['BRANCH_ID'];
-
+//                print "<pre>";
+//                print_r($serviceQuestion); die();
                 $this->repository->add($serviceQuestion);
                 $this->flashmessenger()->addMessage("Question for Services Successfully added!!!");
                 return $this->redirect()->toRoute("serviceQuestion");
@@ -71,7 +73,7 @@ class ServiceQuestionController extends AbstractActionController {
                         $this, [
                     'form' => $this->form,
                     'serviceEventType' => ApplicationEntityHelper::getTableKVListWithSortOption($this->adapter, ServiceEventType::TABLE_NAME, ServiceEventType::SERVICE_EVENT_TYPE_ID, [ServiceEventType::SERVICE_EVENT_TYPE_NAME], ["STATUS" => "E"], "SERVICE_EVENT_TYPE_NAME", "ASC",null,false,true),
-                    'serviceQuestion' => ApplicationEntityHelper::getTableKVListWithSortOption($this->adapter, ServiceQuestion::TABLE_NAME, ServiceQuestion::QA_ID, [ServiceQuestion::QUESTION_NDESC], ["STATUS" => "E"], "QUESTION_NDESC", "ASC",null,false,true),
+                    'serviceQuestion' => ApplicationEntityHelper::getTableKVListWithSortOption($this->adapter, ServiceQuestion::TABLE_NAME, ServiceQuestion::QA_ID, [ServiceQuestion::QUESTION_NDESC], ["STATUS" => "E"], "QUESTION_NDESC", "ASC",null,false,false),
                         ]
         ));
     }
@@ -112,7 +114,7 @@ class ServiceQuestionController extends AbstractActionController {
                     'id' => $id,
                     'form' => $this->form,
                     'serviceEventType' => ApplicationEntityHelper::getTableKVListWithSortOption($this->adapter, ServiceEventType::TABLE_NAME, ServiceEventType::SERVICE_EVENT_TYPE_ID, [ServiceEventType::SERVICE_EVENT_TYPE_NAME], ["STATUS" => "E"], "SERVICE_EVENT_TYPE_NAME", "ASC",null,false,true),
-                    'serviceQuestion' => ApplicationEntityHelper::getTableKVListWithSortOption($this->adapter, ServiceQuestion::TABLE_NAME, ServiceQuestion::QA_ID, [ServiceQuestion::QUESTION_NDESC], ["STATUS" => "E"], "QUESTION_NDESC", "ASC",null,false,true),
+                    'serviceQuestion' => ApplicationEntityHelper::getTableKVListWithSortOption($this->adapter, ServiceQuestion::TABLE_NAME, ServiceQuestion::QA_ID, [ServiceQuestion::QUESTION_NDESC], ["STATUS" => "E"], "QUESTION_NDESC", "ASC",null,false,false),
                         ]
         );
     }

@@ -44,7 +44,7 @@ class ServiceQuestion extends Model{
     
     public $mappings = [
         'qaId'=>self::QA_ID,
-        'parentId'=>self::PARENT_QA_ID,
+        'parentQaId'=>self::PARENT_QA_ID,
         'serviceEventTypeId'=>self::SERVICE_EVENT_TYPE_ID,
         'questionEdesc'=>self::QUESTION_EDESC,
         'questionNdesc'=>self::QUESTION_NDESC,

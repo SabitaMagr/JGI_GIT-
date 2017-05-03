@@ -41,7 +41,7 @@ class ServiceQuestionRepository implements RepositoryInterface {
         $select = $sql->select();
         
         $select->from(['QA' => ServiceQuestion::TABLE_NAME]);
-        $select->join(['SET' => ServiceEventType::TABLE_NAME], "QA." . ServiceQuestion::SERVICE_EVENT_TYPE_ID . "=SET.".ServiceEventType::SERVICE_EVENT_TYPE_ID, ['SERVICE_EVENT_TYPE_NAME' => new Expression('INITCAP(SET.SERVICE_EVENT_TYPE_NAME)')], 'left')
+        $select->join(['ST' => ServiceEventType::TABLE_NAME], "QA." . ServiceQuestion::SERVICE_EVENT_TYPE_ID . "=ST.".ServiceEventType::SERVICE_EVENT_TYPE_ID, ['SERVICE_EVENT_TYPE_NAME' => new Expression('INITCAP(ST.SERVICE_EVENT_TYPE_NAME)')], 'left')
                 ->join(['PQA' => ServiceQuestion::TABLE_NAME], "QA." . ServiceQuestion::PARENT_QA_ID . "=PQA.".ServiceQuestion::QA_ID, ['PARENT_QUESTION_EDESC'=>ServiceQuestion::QUESTION_EDESC,'PARENT_QUESTION_NDESC'=>ServiceQuestion::QUESTION_NDESC], 'left');
         
         $select->where(["QA.STATUS='E'"]);

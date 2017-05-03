@@ -17,7 +17,7 @@
             rowTemplate: kendo.template($("#rowTemplate").html()),
             columns: [
                 {field: "QUESTION_EDESC", title: "Question Name", width: 150},
-                {field: "PARENT_QUESTION_EDESC", title: "Prent Question", width: 130},
+                {field: "PARENT_QUESTION_EDESC", title: "Parent Question", width: 130},
                 {field: "SERVICE_EVENT_TYPE_NAME", title: "Service Event Type", width: 150},
                 {title: "Action", width: 80}
             ]
