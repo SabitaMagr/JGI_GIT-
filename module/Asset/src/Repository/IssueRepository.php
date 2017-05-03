@@ -43,12 +43,14 @@ class IssueRepository implements RepositoryInterface {
     
     public function fetchallIssuableAsset(){
         
-        $sql = "SELECT * FROM HRIS_ASSET_SETUP";
+        $sql = "SELECT * FROM HRIS_ASSET_SETUP WHERE QUANTITY_BALANCE>0 AND STATUS='E' ";
         $statement = $this->adapter->query($sql);
         $result = $statement->execute();
         $list = [];
+        $list = [];
         foreach ($result as $row) {
-            $list[$row['ASSET_ID']]=$row;
+            $list['A'][$row['ASSET_ID']]=$row;
+            $list['B'][$row['ASSET_ID']]=$row['ASSET_EDESC'];
         }
         return $list;
     
@@ -57,31 +59,11 @@ class IssueRepository implements RepositoryInterface {
     }
 
     public function fetchAssetRemBalance($id) {
-        $sql = new Sql($this->adapter);
-        $select = $sql->select();
-//        $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(Setup::class, [Setup::ASSET_EDESC, Setup::ASSET_NDESC]),false);
-//        $select->columns([
-//            new Expression("A.ASSET_ID AS ASSET_ID"),
-//            new Expression("A.ASSET_CODE AS ASSET_CODE"),
-//            new Expression("A.ASSET_EDESC AS ASSET_EDESC"),
-//            new Expression("A.BRAND_NAME AS BRAND_NAME"),
-//            new Expression("A.MODEL_NO AS MODEL_NO"),
-//            new Expression("A.QUANTITY AS QUANTITY")
-//                ], true);
-        $select->from(['A' => Setup::TABLE_NAME]);
-//                ->join(['AG' => Group::TABLE_NAME], 'A.' . Setup::ASSET_GROUP_ID . '=AG.' . Group::ASSET_GROUP_ID, [Group::ASSET_GROUP_EDESC], "left");
-
-        $select->where(["A." . Setup::ASSET_ID . "='" . $id . "'"]);
-        $select->where(["A." . Setup::STATUS . "='E'"]);
-//        $select->order("A." . Setup::ASSET_EDESC);
-        $statement = $sql->prepareStatementForSqlObject($select);
-//        print_r($statement->getSql());
-//        die();
-//        die();SELECT A.* FROM HRIS_ASSET_SETUP A
+        $sql = "SELECT * FROM HRIS_ASSET_SETUP ";
+        $sql.="WHERE ASSET_ID='$id'";
+        $statement = $this->adapter->query($sql);   
         $result = $statement->execute();
-
         return $result->current();
-
     }
 
 }
