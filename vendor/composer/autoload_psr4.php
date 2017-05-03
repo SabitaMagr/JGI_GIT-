@@ -62,6 +62,7 @@ return array(
     'System\\' => array($baseDir . '/module/System/src'),
     'Symfony\\Component\\Yaml\\' => array($vendorDir . '/symfony/yaml'),
     'Setup\\' => array($baseDir . '/module/Setup/src'),
+    'ServiceQuestion\\' => array($baseDir . '/module/ServiceQuestion/src'),
     'SelfService\\' => array($baseDir . '/module/SelfService/src'),
     'RestfulService\\' => array($baseDir . '/module/RestfulService/src'),
     'Report\\' => array($baseDir . '/module/Report/src'),
