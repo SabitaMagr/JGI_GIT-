@@ -2,6 +2,7 @@
 
 namespace SelfService\Controller;
 
+use Application\Custom\CustomViewModel;
 use Application\Helper\Helper;
 use Application\Helper\LoanAdvanceHelper;
 use Exception;
@@ -138,13 +139,13 @@ class AdvanceRequest extends AbstractActionController {
                 $model->requestedDate = Helper::getcurrentExpressionDate();
                 $model->status = 'RQ';
                 $this->repository->add($model);
+                $this->flashmessenger()->addMessage("Advance Request Successfully added!!!");
                 try {
                     HeadNotification::pushNotification(NotificationEvents::ADVANCE_APPLIED, $model, $this->adapter, $this->plugin('url'));
                 } catch (Exception $e) {
                     $this->flashmessenger()->addMessage($e->getMessage());
                 }
 
-                $this->flashmessenger()->addMessage("Advance Request Successfully added!!!");
                 return $this->redirect()->toRoute("advanceRequest");
             }
         }
@@ -205,7 +206,8 @@ class AdvanceRequest extends AbstractActionController {
                     'requestedDate' => $detail['REQUESTED_DATE'],
                     'recommender' => $authRecommender,
                     'approver' => $authApprover,
-                    'advances' => LoanAdvanceHelper::getAdvanceList($this->adapter, $this->employeeId)
+                    'advances' => LoanAdvanceHelper::getAdvanceList($this->adapter, $this->employeeId),
+                    'advanceRequestData' => $detail
         ]);
     }
 
@@ -249,6 +251,21 @@ class AdvanceRequest extends AbstractActionController {
             "approver" => $approver
         ];
         return $responseData;
+    }
+
+    public function generateAdvanceVoucherAction() {
+        try {
+            $request = $this->getRequest();
+            if (!$request->isPost()) {
+                throw new Exception("The request should be of type post");
+            }
+            
+            $postedData = $request->getPost();
+            $resultData = ["VOUCHER_NO" => "TEST"];
+            return new CustomViewModel(['success' => true, 'data' => $resultData, 'error' => '']);
+        } catch (Exception $e) {
+            return new CustomViewModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
+        }
     }
 
 }
