@@ -20,8 +20,8 @@
             rowTemplate: kendo.template($("#rowTemplate").html()),
             columns: [
 //                {field: "ACADEMIC_COURSE_CODE", title: "Academic Course Code",width:120},
-                {field: "ACADEMIC_COURSE_NAME", title: "Academic Course Name",width:200},
-                {field: "ACADEMIC_PROGRAM_NAME", title: "Academic Program Name",width:200},
+                {field: "ACADEMIC_COURSE_NAME", title: "Academic Course",width:200},
+                {field: "ACADEMIC_PROGRAM_NAME", title: "Academic Program",width:200},
                 {title: "Action",width:110}
             ]
         });

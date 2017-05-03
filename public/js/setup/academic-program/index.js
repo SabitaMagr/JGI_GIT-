@@ -23,7 +23,7 @@
             rowTemplate: kendo.template($("#rowTemplate").html()),
             columns: [
 //                {field: "ACADEMIC_PROGRAM_CODE", title: "Academic Program Code",width:120},
-                {field: "ACADEMIC_PROGRAM_NAME", title: "Academic Program Name",width:400},
+                {field: "ACADEMIC_PROGRAM_NAME", title: "Academic Program",width:400},
                 {title: "Action",width:110}
             ]
         });

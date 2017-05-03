@@ -21,14 +21,6 @@ class DepartmentForm
 
 {
 
-    /**
-     * @Annotation\Type("Zend\Form\Element\Text")
-     * @Annotation\Required({"required":"false"})
-     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
-     * @Annotation\Options({"label":"Department Code"})
-     * @Annotation\Attributes({ "id":"form-departmentCode", "class":"form-departmentCode form-control" })
-     */
-    public $departmentCode;
 
     /**
      * @Annotation\Type("Zend\Form\Element\Select")
@@ -41,7 +33,7 @@ class DepartmentForm
 
     /**
      * @Annotation\Type("Zend\Form\Element\Text")
-     * @Annotation\Required({"required":"false"})
+     * @Annotation\Required({"required":"true"})
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Department Name"})
      * @Annotation\Validator({"name":"StringLength", "options":{"min":"5"}})

@@ -27,10 +27,10 @@
 
         var totalHour = function () {
             var inTime = $('#inTime').val();
-
+            
             var tim_i = new Date("01/01/2007 " + $('#inTime').val());
             var tim_o = new Date("01/01/2007 " + $('#outTime').val());
-
+            console.log(inTime);
             var diff1 = (tim_i - tim_o) / 60000; //dividing by seconds and milliseconds
             var diff = Math.abs(diff1);
             var minutes = diff % 60;

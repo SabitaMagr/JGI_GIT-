@@ -73,8 +73,8 @@ angular.module('hris', [])
                     dataBound: gridDataBound,
                     rowTemplate: kendo.template($("#rowTemplate").html()),
                     columns: [
-                        {field: "FIRST_NAME", title: "Employee Name", width: 150},
-                        {field: "ADVANCE_NAME", title: "Advance Name", width: 120},
+                        {field: "FIRST_NAME", title: "Employee", width: 150},
+                        {field: "ADVANCE_NAME", title: "Advance", width: 120},
                         {field: "REQUESTED_DATE", title: "Requested Date", width: 125},
                         {field: "ADVANCE_DATE", title: "Advance Date", width: 115},
                         {field: "REQUESTED_AMOUNT", title: "Requested Amt.", width: 120},

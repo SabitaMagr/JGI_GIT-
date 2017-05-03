@@ -21,7 +21,6 @@ $this->headScript()->appendFile($this->basePath('js/LeaveManagement/LeaveSetup/a
 $form->setAttribute('role', 'form');
 $form->setAttribute('id', 'leaveSetup-form');
 
-$leaveCode = $form->get('leaveCode');
 $leaveEname = $form->get('leaveEname');
 $leaveLname = $form->get('leaveLname');
 $allowHalfday = $form->get('allowHalfday');
@@ -65,20 +64,11 @@ print $this->form()->openTag($form);
             <div class="portlet-body">
                 <div class=" row">
                     <div class="col-sm-4">
-                        <div class="form-group <?= empty($leaveCode->getMessages()) ? "" : "error" ?>">
-                            <?php print $this->formLabel($leaveCode); ?>
-                            <span class="required" aria-required="true">*</span>
-                            <?php print $this->formElement($leaveCode); ?>
-                            <input type="hidden" id="leaveId" value="<?php echo $id; ?>"/>
-                            <span class="errorMsg" style="font-size:11px; color:red;"></span>
-                        </div>
-                        <?php print $this->formElementErrors()->render($leaveCode, ['class' => 'help-block error']); ?>
-                    </div>
-                    <div class="col-sm-4">
                         <div class="form-group  <?= empty($leaveEname->getMessages()) ? "" : "error" ?>">
                             <?php print $this->formLabel($leaveEname); ?>
                             <span class="required" aria-required="true">*</span>
                             <?php print $this->formElement($leaveEname); ?>
+                            <input type="hidden" id="leaveId" value="<?php echo $id; ?>"/>
                             <span class="errorMsg" style="font-size:11px; color:red;"></span>
                         </div>
                         <?php print $this->formElementErrors()->render($leaveEname, ['class' => 'help-block error']); ?>
@@ -90,9 +80,7 @@ print $this->form()->openTag($form);
                             <span class="errorMsg" style="font-size:11px; color:red;"></span>
                         </div>
                         <?php print $this->formElementErrors()->render($leaveLname, ['class' => 'help-block error']); ?>
-                    </div>
-                </div>
-                <div class=" row">
+                    </div>                    
                     <div class="col-sm-4">
                         <div class="form-group <?= empty($companyId->getMessages()) ? "" : "error" ?>">
                             <?php print $this->formLabel($companyId); ?>
@@ -102,6 +90,10 @@ print $this->form()->openTag($form);
                         </div>
                         <?php print $this->formElementErrors()->render($companyId, ['class' => 'help-block error']); ?>
                     </div>
+                </div>
+
+
+                <div class=" row">
 
                     <div class="col-sm-4">
                         <div class="form-group <?= empty($fiscalYear->getMessages()) ? "" : "error" ?>">

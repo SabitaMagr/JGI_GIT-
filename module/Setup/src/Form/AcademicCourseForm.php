@@ -14,15 +14,7 @@ use Zend\Form\Annotation;
  */
 
 class AcademicCourseForm{
-    /**
-     * @Annotion\Type("Zend\Form\Element\Text")
-     * @Annotation\Required({"required":"true"})
-     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
-     * @Annotation\Options({"label":"Academic Course Code"})
-     * @Annotation\Attributes({ "id":"form-academicCourseCode", "class":"form-academicCourseCode form-control" })
-     */
-    public $academicCourseCode;
-
+  
     /**
      * @Annotion\Type("Zend\Form\Element\Text")
      * @Annotation\Required({"required":"true"})

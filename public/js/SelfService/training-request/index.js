@@ -23,7 +23,6 @@
             dataBound: gridDataBound,
             rowTemplate: kendo.template($("#rowTemplate").html()),
             columns: [
-                {field: "TRAINING_CODE", title: "Training Code"},
                 {field: "TITLE", title: "Training Name"},
                 {field: "REQUESTED_DATE", title: "Applied Date"},
                 {field: "START_DATE", title: "Start Date"},

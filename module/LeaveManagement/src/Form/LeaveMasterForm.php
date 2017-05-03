@@ -14,16 +14,6 @@ class LeaveMasterForm {
      * @Annotation\Type("Zend\Form\Element\Text")
      * @Annotation\Required(true)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
-     * @Annotation\Options({"label":"Leave Code"})
-     * @Annotation\Attributes({ "id":"leaveCode", "class":"form-control" })
-     * @Annotation\Validator({"name":"StringLength", "options":{"max":"20"}})
-     */
-    public $leaveCode;
-
-    /**
-     * @Annotation\Type("Zend\Form\Element\Text")
-     * @Annotation\Required(true)
-     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"leave Ename"})
      * @Annotation\Attributes({ "id":"leaveEname", "class":"form-control" })
      * @Annotation\Validator({"name":"StringLength", "options":{"max":"150"}})

@@ -8,16 +8,7 @@ use Zend\Form\Annotation;
  * @Annotation\Name("Training")
  */
 class TrainingForm
-{
-
-    /**
-     * @Annotion\Type("Zend\Form\Element\Text")
-     * @Annotation\Required({"required":"true"})
-     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
-     * @Annotation\Options({"label":"Training Code"})
-     * @Annotation\Attributes({ "id":"form-trainingCode", "class":"form-trainingCode form-control" })
-     */
-    public $trainingCode;    
+{ 
     /**
      * @Annotion\Type("Zend\Form\Element\Text")
      * @Annotation\Required({"required":"true"})
@@ -36,7 +27,7 @@ class TrainingForm
     public $trainingType;    
     /**
      * @Annotation\Type("Zend\Form\Element\Select")
-     * @Annotation\Required({"required":"true"})
+     * @Annotation\Required(false)
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
      * @Annotation\Options({"disable_inarray_validator":"true","label":"Institute Name"})
      * @Annotation\Attributes({ "id":"instituteId","class":"form-control form-instituteId"})
@@ -70,7 +61,7 @@ class TrainingForm
     
     /**
      * @Annotion\Type("Zend\Form\Element\Text")
-     * @Annotation\Required({"required":"true"})
+     * @Annotation\Required(false)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Instructor Name"})
      * @Annotation\Attributes({ "id":"form-instructorName", "class":"form-instructorName form-control" })

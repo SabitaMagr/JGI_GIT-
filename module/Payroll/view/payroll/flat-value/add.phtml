@@ -19,7 +19,6 @@ echo json_encode($menu);
 <?php } ?>
 
 <?php
-$flatCode = $form->get('flatCode');
 $flatEdesc = $form->get('flatEdesc');
 $flatLdesc = $form->get('flatLdesc');
 $showAtRule = $form->get('showAtRule');
@@ -37,48 +36,67 @@ $form->setAttribute("id", "flatValueFormId");
 
 
 <div class="row margin-top-20">
-    <div class="col-sm-8 col-sm-offset-2">
+    <div class="col-sm-12">
         <div class="portlet box custom-box">
             <div class="portlet-title">
                 <div class="caption">
                     <i class="fa fa-user"></i>New Entry
                 </div>
+                <div class="actions">
+                    <a class="btn btn-circle btn-icon-only btn-default fullscreen" href="javascript:;" data-original-title="" title=""> </a>
+                </div>
             </div>
             <div class="portlet-body">
                 <?php print $this->form()->openTag($form); ?>
-                <div class="form-group<?= empty($flatCode->getMessages()) ? "" : "error" ?>">
-                    <?php print $this->formLabel($flatCode); ?>
-                    <?php print $this->formElement($flatCode); ?>
-                    <span class="errorMsg" style="color:red;"></span>
-                </div>
-                <?php print $this->formElementErrors()->render($flatCode, ['class' => 'help-block error']); ?>
 
-                <div class="form-group<?= empty($flatEdesc->getMessages()) ? "" : "error" ?>">
-                    <?php print $this->formLabel($flatEdesc); ?>
-                    <?php print $this->formElement($flatEdesc); ?>
-                </div>
-                <?php print $this->formElementErrors()->render($flatEdesc, ['class' => 'help-block error']); ?>
+                <div class="row">
+                    <div class="col-sm-4">
+                        <div class="form-group<?= empty($flatEdesc->getMessages()) ? "" : "error" ?>">
+                            <?php print $this->formLabel($flatEdesc); ?>
+                            <span class="required" aria-required="true">*</span>
+                            <?php print $this->formElement($flatEdesc); ?>
+                        </div>
+                        <?php print $this->formElementErrors()->render($flatEdesc, ['class' => 'help-block error']); ?>
+                    </div>
 
-                <div class="form-group <?= empty($flatLdesc->getMessages()) ? "" : "error" ?>">
-                    <?php print $this->formLabel($flatLdesc); ?>
-                    <?php print $this->formElement($flatLdesc); ?>
-                </div>
-                <?php print $this->formElementErrors()->render($flatLdesc, ['class' => 'help-block error']); ?>
+                    <div class="col-sm-4">
+                        <div class="form-group <?= empty($flatLdesc->getMessages()) ? "" : "error" ?>">
+                            <?php print $this->formLabel($flatLdesc); ?>
+                            <span class="required" aria-required="true">*</span>
+                            <?php print $this->formElement($flatLdesc); ?>
+                        </div>
+                        <?php print $this->formElementErrors()->render($flatLdesc, ['class' => 'help-block error']); ?>
+                    </div>
 
-                <div class="form-group">
-                    <?php print $this->formLabel($showAtRule); ?>
-                    <div class="md-radio-inline">
-                        <?php $customRenderer($showAtRule); ?>
+                </div>
+
+                <div class="row">
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <?php print $this->formLabel($showAtRule); ?>
+                            <div class="md-radio-inline">
+                                <?php $customRenderer($showAtRule); ?>
+                            </div>
+                        </div>
+
+                        <?php print $this->formElementErrors()->render($showAtRule, ['class' => 'help-block error']); ?>
                     </div>
                 </div>
 
-                <?php print $this->formElementErrors()->render($showAtRule, ['class' => 'help-block error']); ?>
-
-                <div class="form-group <?= empty($remarks->getMessages()) ? "" : "error" ?>">
-                    <?php print $this->formLabel($remarks); ?>
-                    <?php print $this->formElement($remarks); ?>
+                <div class="row">
+                    <div class="col-sm-4">
+                        <div class="form-group <?= empty($remarks->getMessages()) ? "" : "error" ?>">
+                            <?php print $this->formLabel($remarks); ?>
+                            <span class="required" aria-required="true">*</span>
+                            <?php print $this->formElement($remarks); ?>
+                        </div>
+                        <?php print $this->formElementErrors()->render($remarks, ['class' => 'help-block error']); ?>
+                    </div>
                 </div>
-                <?php print $this->formElementErrors()->render($remarks, ['class' => 'help-block error']); ?>
+
+
+
+
 
 
                 <?php print $this->formSubmit($submit); ?>

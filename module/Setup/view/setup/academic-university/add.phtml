@@ -4,7 +4,6 @@ $this->headScript()->appendFile($this->basePath('js/setup/academic-university/ad
 $form->setAttribute('role', 'form');
 $form->setAttribute('id', 'academicUniversity-form');
 
-$academicUniversityCode = $form->get('academicUniversityCode');
 $academicUniversityName = $form->get('academicUniversityName');
 $remarks = $form->get('remarks');
 
@@ -50,15 +49,6 @@ echo json_encode($menu);
                 ?>
 
                 <div class=" row">
-                    <div class="col-sm-4">
-                <div class="form-group">
-                    <?php print $this->formLabel($academicUniversityCode); ?>
-                    <span class="required" aria-required="true">*</span>
-                    <?php print $this->formElement($academicUniversityCode); ?>
-                    <?php print $this->formElementErrors()->render($academicUniversityCode, ['class' => 'help-block']); ?>
-                    <span class="errorMsg" style="font-size:11px; color:red;"></span>
-                </div>
-                    </div>
                     <div class="col-sm-4">
                 <div class="form-group">
                     <?php print $this->formLabel($academicUniversityName); ?>

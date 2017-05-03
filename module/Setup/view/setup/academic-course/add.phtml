@@ -4,7 +4,6 @@ $this->headScript()->appendFile($this->basePath('js/setup/academic-course/add.js
 $form->setAttribute('role', 'form');
 $form->setAttribute('id', 'academicCourse-form');
 
-$academicCourseCode = $form->get('academicCourseCode');
 $academicCourseName = $form->get('academicCourseName');
 
 $remarks = $form->get('remarks');
@@ -45,49 +44,38 @@ $form->prepare();
             </div>
             <div class="portlet-body">
                 <?php print $this->form()->openTag($form); ?>
-                
+
                 <div class=" row">
+
                     <div class="col-sm-4">
-                <div class="form-group">
-                    <?php print $this->formLabel($academicCourseCode); ?>
-                    <span class="required" aria-required="true">*</span>
-                    <?php print $this->formElement($academicCourseCode); ?>
-                    <?php print $this->formElementErrors()->render($academicCourseCode, ['class' => 'help-block']); ?>
-                    <span class="errorMsg" style="font-size:11px; color:red;"></span>
-                </div>
+                        <div class="form-group">
+                            <?php print $this->formLabel($academicCourseName); ?>
+                            <span class="required" aria-required="true">*</span>
+                            <?php print $this->formElement($academicCourseName); ?>
+                            <?php print $this->formElementErrors()->render($academicCourseName, ['class' => 'help-block']); ?>
+                            <span class="errorMsg" style="font-size:11px; color:red;"></span>
+                        </div>
                     </div>
 
                     <div class="col-sm-4">
-                <div class="form-group">
-                    <?php print $this->formLabel($academicCourseName); ?>
-                    <span class="required" aria-required="true">*</span>
-                    <?php print $this->formElement($academicCourseName); ?>
-                    <?php print $this->formElementErrors()->render($academicCourseName, ['class' => 'help-block']); ?>
-                    <span class="errorMsg" style="font-size:11px; color:red;"></span>
-                </div>
+                        <div class="form-group">
+                            <?php print $this->formLabel($academicProgramName); ?>
+                            <span class="required" aria-required="true">*</span>
+                            <?php print $this->formElement($academicProgramName); ?>
+                            <?php print $this->formElementErrors()->render($academicProgramName, ['class' => 'help-block']); ?>
+                        </div>
                     </div>
-
                     <div class="col-sm-4">
-                <div class="form-group">
-                    <?php print $this->formLabel($academicProgramName); ?>
-                    <span class="required" aria-required="true">*</span>
-                    <?php print $this->formElement($academicProgramName); ?>
-                    <?php print $this->formElementErrors()->render($academicProgramName, ['class' => 'help-block']); ?>
-                </div>
+                        <div class="form-group">
+                            <?php print $this->formLabel($remarks); ?>
+                            <?php print $this->formElement($remarks); ?>
+                            <?php print $this->formElementErrors()->render($remarks, ['class' => 'help-block']); ?>
+                        </div>
                     </div>
                 </div>
-                
-                <div class=" row">
-                    <div class="col-sm-4">
-                <div class="form-group">
-                    <?php print $this->formLabel($remarks); ?>
-                    <?php print $this->formElement($remarks); ?>
-                    <?php print $this->formElementErrors()->render($remarks, ['class' => 'help-block']); ?>
-                </div>
-                    </div>
 
-                </div>
-                
+
+
                 <?php
                 print $this->formSubmit($submit);
                 print $this->form()->closeTag();

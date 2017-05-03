@@ -33,7 +33,8 @@ class SalaryReviewController extends AbstractActionController {
 
     public function indexAction() {
         $salaryDetailRepo = new SalaryDetailRepo($this->adapter);
-        $salaryDetails = $salaryDetailRepo->fetchAll();
+//        $salaryDetails = $salaryDetailRepo->fetchAll();
+        $salaryDetails = $salaryDetailRepo->fetchActiveRecord();
         $salaryDetails = Helper::extractDbData($salaryDetails);
         return Helper::addFlashMessagesToArray($this, [
                     'salaryDetails' => $salaryDetails

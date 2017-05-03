@@ -101,6 +101,7 @@ class DepartmentController extends AbstractActionController {
                 }
                 $department->modifiedDt = Helper::getcurrentExpressionDate();
                 $department->modifiedBy = $this->employeeId;
+
                 $this->repository->edit($department, $id);
                 $this->flashmessenger()->addMessage("Department Successfully Updated!!!");
                 return $this->redirect()->toRoute("department");
@@ -121,7 +122,7 @@ class DepartmentController extends AbstractActionController {
     public function deleteAction() {
         $id = (int) $this->params()->fromRoute("id");
         if (!$id) {
-            return $this->redirect()->toRoute('position');
+            return $this->redirect()->toRoute('department');
         }
         $this->repository->delete($id);
         $this->flashmessenger()->addMessage("Department Successfully Deleted!!!");

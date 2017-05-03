@@ -211,7 +211,7 @@ class TrainingRequest extends AbstractActionController {
         $id = (int) $this->params()->fromRoute('id');
 
         if ($id === 0) {
-            return $this->redirect()->toRoute("workOnHoliday");
+            return $this->redirect()->toRoute("trainingRequest");
         }
         $fullName = function($id) {
             $empRepository = new EmployeeRepository($this->adapter);

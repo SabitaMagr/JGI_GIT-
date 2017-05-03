@@ -23,7 +23,6 @@
             dataBound: gridDataBound,
             rowTemplate: kendo.template($("#rowTemplate").html()),
             columns: [
-                {field: "TRAVEL_CODE", title: "Travel Code",width:100},
                 {field: "FROM_DATE", title: "Start Date",width:100},
                 {field: "TO_DATE", title: "To Date",width:90},
                 {field: "REQUESTED_DATE", title: "Applied Date",width:120},
@@ -31,7 +30,7 @@
                 {field: "REQUESTED_AMOUNT", title: "Request Amt.",width:110},
                 {field: "REQUESTED_TYPE", title: "Request For",width:100},
                 {field: "STATUS", title: "Status",width:80},
-                {title: "Action",width:120}
+                {title: "Action",width:110}
             ]
         });
         function gridDataBound(e) {

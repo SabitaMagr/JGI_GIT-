@@ -23,7 +23,6 @@
             dataBound: gridDataBound,
             rowTemplate: kendo.template($("#rowTemplate").html()),
             columns: [
-                {field: "HOLIDAY_CODE", title: "Holiday Code"},
                 {field: "HOLIDAY_ENAME", title: "Holiday Name"},
                 {field: "START_DATE", title: "Start Date"},
                 {field: "END_DATE", title: "End Date"},

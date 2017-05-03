@@ -4,7 +4,7 @@ $this->headScript()->appendFile($this->basePath('js/setup/academic-degree/add.js
 $form->setAttribute('role', 'form');
 $form->setAttribute('id', 'academicDegree-form');
 
-$academicDegreeCode = $form->get('academicDegreeCode');
+
 $academicDegreeName = $form->get('academicDegreeName');
 $remarks = $form->get('remarks');
 $weight = $form->get('weight');
@@ -25,7 +25,10 @@ if ($this->messages) {
 $form->prepare();
 ?>
 <script>
-    document.menu =<?php $menu = ["id" => "menuSetup", "subMenu" => ["id" => "subMenuAcademicDegree"]];echo json_encode($menu);?>;
+    document.menu =<?php
+$menu = ["id" => "menuSetup", "subMenu" => ["id" => "subMenuAcademicDegree"]];
+echo json_encode($menu);
+?>;
     document.url = '<?= $this->url("restful", ["action" => "index"]) ?>';
 </script>
 <div class="page-bar">
@@ -46,52 +49,36 @@ $form->prepare();
                 <?php
                 print $this->form()->openTag($form);
                 ?>
-                
+
                 <div class=" row">
                     <div class="col-sm-4">
-                <div class="form-group">
-                    <?php print $this->formLabel($academicDegreeCode); ?>
-                    <span class="required" aria-required="true">*</span>
-                    <?php print $this->formElement($academicDegreeCode); ?>
-                    <?php print $this->formElementErrors()->render($academicDegreeCode, ['class' => 'help-block']); ?>
-                    <span class="errorMsg" style="font-size:11px; color:red;"></span>
-                </div>
+                        <div class="form-group">
+                            <?php print $this->formLabel($academicDegreeName); ?>
+                            <span class="required" aria-required="true">*</span>
+                            <?php print $this->formElement($academicDegreeName); ?>
+                            <?php print $this->formElementErrors()->render($academicDegreeName, ['class' => 'help-block']); ?>
+                            <span class="errorMsg" style="font-size:11px; color:red;"></span>
+                        </div>
                     </div>
 
                     <div class="col-sm-4">
-                <div class="form-group">
-                    <?php print $this->formLabel($academicDegreeName); ?>
-                    <span class="required" aria-required="true">*</span>
-                    <?php print $this->formElement($academicDegreeName); ?>
-                    <?php print $this->formElementErrors()->render($academicDegreeName, ['class' => 'help-block']); ?>
-                    <span class="errorMsg" style="font-size:11px; color:red;"></span>
-                </div>
+                        <div class="form-group">
+                            <?php print $this->formLabel($weight); ?>
+                            <span class="required" aria-required="true">*</span>
+                            <?php print $this->formElement($weight); ?>
+                            <?php print $this->formElementErrors()->render($weight, ['class' => 'help-block']); ?>
+                            <span class="errorMsg" style="font-size:11px; color:red;"></span>
+                        </div>
                     </div>
 
                     <div class="col-sm-4">
-                <div class="form-group">
-                    <?php print $this->formLabel($weight); ?>
-                    <span class="required" aria-required="true">*</span>
-                    <?php print $this->formElement($weight); ?>
-                    <?php print $this->formElementErrors()->render($weight, ['class' => 'help-block']); ?>
-                    <span class="errorMsg" style="font-size:11px; color:red;"></span>
-                </div>
+                        <div class="form-group">
+                            <?php print $this->formLabel($remarks); ?>
+                            <?php print $this->formElement($remarks); ?>
+                            <?php print $this->formElementErrors()->render($remarks, ['class' => 'help-block']); ?>
+                        </div>
                     </div>
                 </div>
-                
-                <div class=" row">
-                    <div class="col-sm-4">
-                <div class="form-group">
-                    <?php print $this->formLabel($remarks); ?>
-                    <?php print $this->formElement($remarks); ?>
-                    <?php print $this->formElementErrors()->render($remarks, ['class' => 'help-block']); ?>
-                </div>
-                    </div>
-
-                </div>
-                
-
-
 
                 <?php
                 print $this->formSubmit($submit);

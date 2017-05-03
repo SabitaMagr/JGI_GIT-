@@ -67,7 +67,7 @@ angular.module('hris', [])
             var initializeHeaders = function (cols) {
                 headers = [];
                 headerForExcel = [];
-                headers.push({field: "EMPLOYEE_NAME", title: "Employee Name"});
+                headers.push({field: "EMPLOYEE_NAME", title: "Employee"});
                 headerForExcel.push({value: "Employee Name"});
                 for (var i in cols) {
                     headers.push({

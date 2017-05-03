@@ -12,7 +12,7 @@ $this->headScript()->appendFile($this->basePath('dropzone/dropzone.min.js'));
 $formOne->setAttribute('role', 'form');
 $formOne->setAttribute('id', 'form1');
 
-$employeeCode = $formOne->get('employeeCode');
+//$employeeCode = $formOne->get('employeeCode');
 $companyId = $formOne->get('companyId');
 /**
  * Personal Information
@@ -281,19 +281,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                 <div class="row clearfix e-setup">
 
 
-                    <div class="col-xs-12 col-sm-6 col-md-3 col-box">
-                        <div class="row bottomgap">
-                            <div class="form-group">
-                                <div class="col-xs-6 col-sm-6 col-md-6 rightalign"> 
-                                    <?php print $this->formLabel($employeeCode); ?>
-                                    <span class="required" aria-required="true">*</span>
-                                </div>
-                                <div class="col-xs-6 col-sm-6 col-md-6 cgap"> <?php print $this->formElement($employeeCode); ?> </div>
-                                <?php print $this->formElementErrors()->render($employeeCode, ['class' => 'error']) ?>
-                                <span class="errorMsg" style="font-size:11px; color:red;"></span>
-                            </div>                            
-                        </div>
-                    </div>
+
 
                     <div class="col-xs-12 col-sm-6 col-md-3 col-box">
                         <div class="row bottomgap">

@@ -16,15 +16,6 @@ use Zend\Form\Annotation;
  */
 class MonthlyValue
 {
-    /**
-     * @Annotation\Type("Zend\Form\Element\Text")
-     * @Annotation\Required(true)
-     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
-     * @Annotation\Validator({"name":"StringLength", "options":{"max":"30"}})
-     * @Annotation\Options({"label":"Monthly Value Code"})
-     * @Annotation\Attributes({ "id":"mthCode","class":"form-control"})
-     */
-    public $mthCode;
 
     /**
      * @Annotation\Type("Zend\Form\Element\Textarea")

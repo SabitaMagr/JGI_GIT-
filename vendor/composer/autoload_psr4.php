@@ -71,6 +71,7 @@ return array(
     'Payroll\\' => array($baseDir . '/module/Payroll/src'),
     'PHPixie\\Tests\\' => array($vendorDir . '/phpixie/image/tests/PHPixie/Tests'),
     'PHPixie\\' => array($vendorDir . '/phpixie/image/src/PHPixie'),
+    'Overtime\\' => array($baseDir . '/module/Overtime/src'),
     'Other\\' => array($baseDir . '/module/Other/src'),
     'Notification\\' => array($baseDir . '/module/Notification/src'),
     'ManagerService\\' => array($baseDir . '/module/ManagerService/src'),

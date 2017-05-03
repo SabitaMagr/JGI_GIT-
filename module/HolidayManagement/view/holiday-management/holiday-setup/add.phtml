@@ -20,7 +20,6 @@ $this->headScript()
 
 
 <?php
-$holidayCode = $form->get('holidayCode');
 $genderId = $form->get('genderId');
 $branchId = $form->get('branchId');
 $designationId = $form->get('designationId');
@@ -79,17 +78,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                 <?php
                 print $this->form()->openTag($form);
                 ?>
-                <div class=" row">
-                    <div class="col-sm-6">
-                        <div class="form-group <?= empty($holidayCode->getMessages()) ? "" : "error" ?>">
-                            <?php print $this->formLabel($holidayCode); ?>
-                            <span class="required" aria-required="true">*</span>
-                            <?php print $this->formElement($holidayCode); ?>
-                            <span class="errorMsg" style="font-size:11px; color:red;"></span>
-                        </div>
-                        <?php print $this->formElementErrors()->render($holidayCode, ['class' => 'help-block error']); ?>
-                    </div>
-                </div>
+                
                 <div class="row">
                     <div class="col-sm-6">
                         <div class="form-group <?= empty($holidayEname->getMessages()) ? "" : "error" ?>">

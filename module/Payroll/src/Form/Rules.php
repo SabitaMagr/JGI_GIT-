@@ -17,16 +17,7 @@ use Zend\Form\Annotation;
  */
 class Rules
 {
-    /**
-     * @Annotation\Type("Zend\Form\Element\Text")
-     * @Annotation\Required(true)
-     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
-     * @Annotation\Validator({"name":"StringLength", "options":{"max":"4"}})
-     * @Annotation\Options({"label":"Pay Code"})
-     * @Annotation\Attributes({ "id":"payCode","class":"form-control"})
-     */
-    public $payCode;
-
+ 
     /**
      * @Annotation\Type("Zend\Form\Element\Textarea")
      * @Annotation\Required(true)

@@ -42,7 +42,8 @@ return [
     'WorkOnDayoff',
     'Asset',
     'Other',
-    'Report'
+    'Report',
+    'Overtime'
 ];
 
 

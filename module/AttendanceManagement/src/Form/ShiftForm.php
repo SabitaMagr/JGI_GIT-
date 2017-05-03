@@ -14,16 +14,6 @@ class ShiftForm {
      * @Annotion\Type("Zend\Form\Element\Text")
      * @Annotation\Required(true)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
-     * @Annotation\Options({"label":"Shift Code"})
-     * @Annotation\Attributes({ "id":"shiftCode", "class":"form-control" })
-     * @Annotation\Validator({"name":"StringLength", "options":{"max":"6"}})
-     */
-    public $shiftCode;
-
-    /**
-     * @Annotion\Type("Zend\Form\Element\Text")
-     * @Annotation\Required(true)
-     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Shift Ename"})
      * @Annotation\Attributes({ "id":"shiftEname", "class":"form-control" })
      */

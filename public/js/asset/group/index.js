@@ -19,10 +19,8 @@
             pageable: true,
             rowTemplate: kendo.template($("#rowTemplate").html()),
             columns: [
-                {field: "ASSET_GROUP_CODE", title: "Asset Group Code",width:80},
-                {field: "ASSET_GROUP_EDESC", title: "Asset Group Name (in Eng.)",width:120},
-                {field: "ASSET_GROUP_NDESC", title: "Asset Group Name (in Nep.)",width:120},
-                {title: "Action",width:100}
+                {field: "ASSET_GROUP_EDESC", title: "Asset Group",width:400},
+                {title: "Action",width:120}
             ],
         });
         $("#export").click(function (e) {

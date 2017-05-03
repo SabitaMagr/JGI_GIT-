@@ -62,6 +62,7 @@
             "Travel\\": "module/Travel/src/",
             "WorkOnHoliday\\": "module/WorkOnHoliday/src/",
             "WorkOnDayoff\\": "module/WorkOnDayoff/src/",
+            "Overtime\\": "module/Overtime/src/",
             "Asset\\": "module/Asset/src/",
             "Other\\": "module/Other/src/",
             "Report\\": "module/Report/src/"

@@ -4,7 +4,6 @@ $this->headScript()->appendFile($this->basePath('js/appraisal/type/add.js'));
 $form->setAttribute('role', 'form');
 $form->setAttribute('id', 'appraisalType-form');
 
-$appraisalTypeCode = $form->get('appraisalTypeCode');
 $appraisalTypeEdesc = $form->get('appraisalTypeEdesc');
 $appraisalTypeNdesc = $form->get('appraisalTypeNdesc');
 $remarks = $form->get('remarks');
@@ -51,14 +50,6 @@ echo json_encode($menu);
                 <?php print $this->form()->openTag($form); ?>
 
                 <div class=" row">
-                    <div class="col-sm-4">
-                        <div class="form-group">
-                            <?php print $this->formLabel($appraisalTypeCode); ?>
-                            <span class="required" aria-required="true">*</span>
-                            <?php print $this->formElement($appraisalTypeCode); ?>
-                            <?php print $this->formElementErrors()->render($appraisalTypeCode, ['class' => 'help-block']); ?>
-                        </div>
-                    </div>
 
                     <div class="col-sm-4">
                         <div class="form-group">
@@ -76,9 +67,7 @@ echo json_encode($menu);
                             <?php print $this->formElementErrors()->render($appraisalTypeNdesc, ['class' => 'help-block']); ?>
                         </div>
                     </div>
-                </div>
-
-                <div class=" row">
+                    
                     <div class="col-sm-4">
                         <div class="form-group">
                             <?php print $this->formLabel($serviceTypeId); ?>
@@ -86,7 +75,9 @@ echo json_encode($menu);
                             <?php print $this->formElementErrors()->render($serviceTypeId, ['class' => 'help-block']); ?>
                         </div>
                     </div>
+                </div>
 
+                <div class=" row">
                     <div class="col-sm-4">
                         <div class="form-group">
                             <?php print $this->formLabel($remarks); ?>

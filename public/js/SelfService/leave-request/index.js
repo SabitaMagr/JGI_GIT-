@@ -57,7 +57,6 @@ angular.module('hris', [])
                     dataBound: gridDataBound,
                     rowTemplate: kendo.template($("#rowTemplate").html()),
                     columns: [
-                        {field: "LEAVE_CODE", title: "Leave Code"},
                         {field: "LEAVE_ENAME", title: "Leave Name"},
                         {field: "REQUESTED_DT", title: "Applied Date"},
                         {field: "FROM_DATE", title: "From Date"},

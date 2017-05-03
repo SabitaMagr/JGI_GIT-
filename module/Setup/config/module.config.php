@@ -294,6 +294,20 @@ return [
                     ]
                 ],
             ],
+            'serviceQuestion' => [
+                'type' => segment::class,
+                'options' => [
+                    'route' => '/setup/serviceQuestion[/:action[/:id]]',
+                    'constants' => [
+                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'id' => '[0-9]+',
+                    ],
+                    'defaults' => [
+                        'controller' => Controller\ServiceQuestionController::class,
+                        'action' => 'index',
+                    ]
+                ],
+            ],
         ]
     ],
     'navigation' => [
@@ -846,7 +860,34 @@ return [
                     ],
                 ]
             ]
-        ]
+        ],
+        'serviceQuestion' => [
+                [
+                'label' => 'Service Question',
+                'route' => 'serviceQuestion',
+            ],
+                [
+                'label' => 'Service Question',
+                'route' => 'serviceQuestion',
+                'pages' => [
+                        [
+                        'label' => 'List',
+                        'route' => 'serviceQuestion',
+                        'action' => 'index',
+                    ],
+                        [
+                        'label' => 'Add',
+                        'route' => 'serviceQuestion',
+                        'action' => 'add',
+                    ],
+                        [
+                        'label' => 'Edit',
+                        'route' => 'serviceQuestion',
+                        'action' => 'edit',
+                    ],
+                ]
+            ]
+        ],
     ],
     'controllers' => [
         'factories' => [
@@ -870,7 +911,8 @@ return [
             Controller\LoanController::class => ControllerFactory::class,
             Controller\AdvanceController::class => ControllerFactory::class,
             Controller\InstituteController::class => ControllerFactory::class,
-            Controller\ExperienceController::class => ControllerFactory::class
+            Controller\ExperienceController::class => ControllerFactory::class,
+            Controller\ServiceQuestionController::class => ControllerFactory::class
         ],
     ],
     'view_manager' => [

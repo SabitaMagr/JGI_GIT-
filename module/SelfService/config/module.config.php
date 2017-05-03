@@ -22,6 +22,7 @@ use SelfService\Controller\PerformanceAppraisal;
 use SelfService\Controller\LeaveNotification;
 use SelfService\Controller\TravelNotification;
 use SelfService\Controller\TrainingRequest;
+use SelfService\Controller\OvertimeRequest;
 
 return [
     'router' => [
@@ -274,6 +275,20 @@ return [
                     ],
                     'defaults' => [
                         'controller' => TrainingRequest::class,
+                        'action' => 'index',
+                    ]
+                ],
+            ],
+            'overtimeRequest' => [
+                'type' => Segment::class,
+                'options' => [
+                    'route' => '/selfservice/overtimeRequest[/:action[/:id]]',
+                    'constants' => [
+                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'id' => '[0-9]+',
+                    ],
+                    'defaults' => [
+                        'controller' => OvertimeRequest::class,
                         'action' => 'index',
                     ]
                 ],
@@ -792,6 +807,33 @@ return [
                 ],
             ],
         ],
+        'overtimeRequest' => [
+                [
+                'label' => 'Overtime Request',
+                'route' => 'overtimeRequest',
+            ],
+                [
+                'label' => 'Overtime Request',
+                'route' => 'overtimeRequest',
+                'pages' => [
+                        [
+                        'label' => 'List',
+                        'route' => 'overtimeRequest',
+                        'action' => 'index',
+                    ],
+                        [
+                        'label' => 'Add',
+                        'route' => 'overtimeRequest',
+                        'action' => 'add',
+                    ],
+                        [
+                        'label' => 'Detail',
+                        'route' => 'overtimeRequest',
+                        'action' => 'view',
+                    ],
+                ],
+            ],
+        ],
     ],
     'controllers' => [
         'factories' => [
@@ -812,7 +854,8 @@ return [
             PerformanceAppraisal::class => ControllerFactory::class,
             LeaveNotification::class => ControllerFactory::class,
             TravelNotification::class => ControllerFactory::class,
-            TrainingRequest::class => ControllerFactory::class
+            TrainingRequest::class => ControllerFactory::class,
+            OvertimeRequest::class => ControllerFactory::class
         ],
     ],
     'view_manager' => [

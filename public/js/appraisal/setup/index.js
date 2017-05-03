@@ -19,10 +19,9 @@
             pageable: true,
             rowTemplate: kendo.template($("#rowTemplate").html()),
             columns: [
-                {field: "APPRAISAL_CODE", title: "Code",width:80},
-                {field: "APPRAISAL_EDESC", title: "Name (in Eng.)",width:120},
-                {field: "APPRAISAL_NDESC", title: "Name (in Nep.)",width:120},
-                {field: "APPRAISAL_TYPE_EDESC", title: "Type Name",width:120},
+                {field: "APPRAISAL_EDESC", title: "Appraisal Detail(in Eng.)",width:120},
+                {field: "APPRAISAL_NDESC", title: "Appraisal Detail(in Nep.)",width:120},
+                {field: "APPRAISAL_TYPE_EDESC", title: "Type",width:120},
                 {field: "START_DATE", title: "Start Date",width:80},
                 {field: "END_DATE", title: "End Date",width:80},
                 {field: "STAGE_EDESC", title: "Current Stage",width:100},

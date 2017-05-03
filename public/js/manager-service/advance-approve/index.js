@@ -23,12 +23,12 @@
             dataBound: gridDataBound,
             rowTemplate: kendo.template($("#rowTemplate").html()),
             columns: [
-                {field: "FIRST_NAME", title: "Employee Name", width: 150},
-                {field: "ADVANCE_NAME", title: "Advance Name", width: 120},
+                {field: "FIRST_NAME", title: "Employee", width: 150},
+                {field: "ADVANCE_NAME", title: "Advance", width: 120},
                 {field: "REQUESTED_DATE", title: "Requested Date", width: 120},
-                {field: "ADVANCE_DATE", title: "Advance Date", width: 100},
+                {field: "ADVANCE_DATE", title: "Advance Date", width: 110},
                 {field: "REQUESTED_AMOUNT", title: "Requested Amt.", width: 120},
-                {field: "TERMS", title: "Terms(in terms)", width: 120},
+                {field: "TERMS", title: "Terms", width: 110},
                 {field: "YOUR_ROLE", title: "Your Role", width: 100},
                 {title: "Action", width: 70}
             ]
