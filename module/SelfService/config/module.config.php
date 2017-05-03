@@ -1,10 +1,5 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: punam
- * Date: 9/15/16
- * Time: 12:55 PM
- */
+
 namespace SelfService;
 
 use Application\Controller\ControllerFactory;
@@ -143,7 +138,6 @@ return [
                     ]
                 ],
             ],
-            
             'loanRequest' => [
                 'type' => Segment::class,
                 'options' => [
@@ -288,25 +282,25 @@ return [
     ],
     'navigation' => [
         'myattendance' => [
-            [
+                [
                 'label' => 'Attendance',
                 'route' => 'myattendance',
             ],
-            [
+                [
                 'label' => 'Attendance',
                 'route' => 'myattendance',
                 'pages' => [
-                    [
+                        [
                         'label' => 'List',
                         'route' => 'myattendance',
                         'action' => 'index',
                     ],
-                    [
+                        [
                         'label' => 'Entry',
                         'route' => 'myattendance',
                         'action' => 'add',
                     ],
-                    [
+                        [
                         'label' => 'Edit',
                         'route' => 'myattendance',
                         'action' => 'edit',
@@ -315,25 +309,25 @@ return [
             ],
         ],
         'holiday' => [
-            [
+                [
                 'label' => 'Holiday',
                 'route' => 'holiday',
             ],
-            [
+                [
                 'label' => 'Holiday',
                 'route' => 'holiday',
                 'pages' => [
-                    [
+                        [
                         'label' => 'List',
                         'route' => 'holiday',
                         'action' => 'index',
                     ],
-                    [
+                        [
                         'label' => 'Add',
                         'route' => 'holiday',
                         'action' => 'add',
                     ],
-                    [
+                        [
                         'label' => 'Edit',
                         'route' => 'holiday',
                         'action' => 'edit',
@@ -342,25 +336,25 @@ return [
             ],
         ],
         'leave' => [
-            [
+                [
                 'label' => 'Leave',
                 'route' => 'leave',
             ],
-            [
+                [
                 'label' => 'Leave',
                 'route' => 'leave',
                 'pages' => [
-                    [
+                        [
                         'label' => 'List',
                         'route' => 'leave',
                         'action' => 'index',
                     ],
-                    [
+                        [
                         'label' => 'Add',
                         'route' => 'leave',
                         'action' => 'add',
                     ],
-                    [
+                        [
                         'label' => 'Edit',
                         'route' => 'leave',
                         'action' => 'edit',
@@ -369,30 +363,30 @@ return [
             ],
         ],
         'leaverequest' => [
-            [
+                [
                 'label' => 'Leave Request',
                 'route' => 'leaverequest',
             ],
-            [
+                [
                 'label' => 'Leave Request',
                 'route' => 'leaverequest',
                 'pages' => [
-                    [
+                        [
                         'label' => 'List',
                         'route' => 'leaverequest',
                         'action' => 'index',
                     ],
-                    [
+                        [
                         'label' => 'Add',
                         'route' => 'leaverequest',
                         'action' => 'add',
                     ],
-                    [
+                        [
                         'label' => 'Edit',
                         'route' => 'leaverequest',
                         'action' => 'edit',
                     ],
-                    [
+                        [
                         'label' => 'Detail',
                         'route' => 'leaverequest',
                         'action' => 'view',
@@ -401,30 +395,30 @@ return [
             ],
         ],
         'attendancerequest' => [
-            [
+                [
                 'label' => 'Attendance Request',
                 'route' => 'attendancerequest',
             ],
-            [
+                [
                 'label' => 'Attendance Request',
                 'route' => 'attendancerequest',
                 'pages' => [
-                    [
+                        [
                         'label' => 'List',
                         'route' => 'attendancerequest',
                         'action' => 'index',
                     ],
-                    [
+                        [
                         'label' => 'Add',
                         'route' => 'attendancerequest',
                         'action' => 'add',
                     ],
-                    [
+                        [
                         'label' => 'Edit',
                         'route' => 'attendancerequest',
                         'action' => 'edit',
                     ],
-                    [
+                        [
                         'label' => 'Detail',
                         'route' => 'attendancerequest',
                         'action' => 'view',
@@ -433,25 +427,25 @@ return [
             ],
         ],
         'service' => [
-            [
+                [
                 'label' => 'Service',
                 'route' => 'service',
             ],
-            [
+                [
                 'label' => 'Service',
                 'route' => 'service',
                 'pages' => [
-                    [
+                        [
                         'label' => 'History',
                         'route' => 'service',
                         'action' => 'index',
                     ],
-                    [
+                        [
                         'label' => 'Detail',
                         'route' => 'service',
                         'action' => 'view',
                     ],
-                    [
+                        [
                         'label' => 'Edit',
                         'route' => 'service',
                         'action' => 'edit',
@@ -460,25 +454,25 @@ return [
             ],
         ],
         'profile' => [
-            [
+                [
                 'label' => 'Profile',
                 'route' => 'profile',
             ],
-            [
+                [
                 'label' => 'Profile',
                 'route' => 'profile',
                 'pages' => [
-                    [
+                        [
                         'label' => 'Detail',
                         'route' => 'profile',
                         'action' => 'index',
                     ],
-                    [
+                        [
                         'label' => 'Add',
                         'route' => 'profile',
                         'action' => 'add',
                     ],
-                    [
+                        [
                         'label' => 'Edit',
                         'route' => 'profile',
                         'action' => 'edit',
@@ -487,15 +481,15 @@ return [
             ],
         ],
         'payslip' => [
-            [
+                [
                 'label' => 'PaySlip',
                 'route' => 'payslip',
             ],
-            [
+                [
                 'label' => 'PaySlip',
                 'route' => 'payslip',
                 'pages' => [
-                    [
+                        [
                         'label' => 'Detail',
                         'route' => 'payslip',
                         'action' => 'index',
@@ -504,30 +498,30 @@ return [
             ],
         ],
         'loanRequest' => [
-            [
+                [
                 'label' => 'Loan Request',
                 'route' => 'loanRequest',
             ],
-            [
+                [
                 'label' => 'Loan Request',
                 'route' => 'loanRequest',
                 'pages' => [
-                    [
+                        [
                         'label' => 'Detail',
                         'route' => 'loanRequest',
                         'action' => 'index',
                     ],
-                    [
+                        [
                         'label' => 'Add',
                         'route' => 'loanRequest',
                         'action' => 'add',
                     ],
-                    [
+                        [
                         'label' => 'Edit',
                         'route' => 'loanRequest',
                         'action' => 'edit',
                     ],
-                    [
+                        [
                         'label' => 'Detail',
                         'route' => 'loanRequest',
                         'action' => 'view',
@@ -536,30 +530,30 @@ return [
             ],
         ],
         'advanceRequest' => [
-            [
+                [
                 'label' => 'Advance Request',
                 'route' => 'advanceRequest',
             ],
-            [
+                [
                 'label' => 'Advance Request',
                 'route' => 'advanceRequest',
                 'pages' => [
-                    [
+                        [
                         'label' => 'Detail',
                         'route' => 'advanceRequest',
                         'action' => 'index',
                     ],
-                    [
+                        [
                         'label' => 'Add',
                         'route' => 'advanceRequest',
                         'action' => 'add',
                     ],
-                    [
+                        [
                         'label' => 'Edit',
                         'route' => 'advanceRequest',
                         'action' => 'edit',
                     ],
-                    [
+                        [
                         'label' => 'Detail',
                         'route' => 'advanceRequest',
                         'action' => 'view',
@@ -568,25 +562,25 @@ return [
             ],
         ],
         'trainingList' => [
-            [
+                [
                 'label' => 'Training List',
                 'route' => 'trainingList',
             ],
-            [
+                [
                 'label' => 'Training List',
                 'route' => 'trainingList',
                 'pages' => [
-                    [
+                        [
                         'label' => 'List',
                         'route' => 'trainingList',
                         'action' => 'index',
                     ],
-                    [
+                        [
                         'label' => 'Add',
                         'route' => 'trainingList',
                         'action' => 'add',
                     ],
-                    [
+                        [
                         'label' => 'Detail',
                         'route' => 'trainingList',
                         'action' => 'view',
@@ -595,40 +589,40 @@ return [
             ],
         ],
         'travelRequest' => [
-            [
+                [
                 'label' => 'Travel Request',
                 'route' => 'travelRequest',
             ],
-            [
+                [
                 'label' => 'Travel Request',
                 'route' => 'travelRequest',
                 'pages' => [
-                    [
+                        [
                         'label' => 'List',
                         'route' => 'travelRequest',
                         'action' => 'index',
                     ],
-                    [
+                        [
                         'label' => 'Add',
                         'route' => 'travelRequest',
                         'action' => 'add',
                     ],
-                    [
+                        [
                         'label' => 'Edit',
                         'route' => 'travelRequest',
                         'action' => 'edit',
                     ],
-                    [
+                        [
                         'label' => 'Detail',
                         'route' => 'travelRequest',
                         'action' => 'view',
                     ],
-                    [
+                        [
                         'label' => 'Detail',
                         'route' => 'travelRequest',
                         'action' => 'viewExpense',
                     ],
-                    [
+                        [
                         'label' => 'For Expense',
                         'route' => 'travelRequest',
                         'action' => 'expenseRequest',
@@ -637,25 +631,25 @@ return [
             ],
         ],
         'workOnHoliday' => [
-            [
+                [
                 'label' => 'Work on Holiday Request',
                 'route' => 'workOnHoliday',
             ],
-            [
+                [
                 'label' => 'Work on Holiday Request',
                 'route' => 'workOnHoliday',
                 'pages' => [
-                    [
+                        [
                         'label' => 'List',
                         'route' => 'workOnHoliday',
                         'action' => 'index',
                     ],
-                    [
+                        [
                         'label' => 'Add',
                         'route' => 'workOnHoliday',
                         'action' => 'add',
                     ],
-                    [
+                        [
                         'label' => 'Detail',
                         'route' => 'workOnHoliday',
                         'action' => 'view',
@@ -664,25 +658,25 @@ return [
             ],
         ],
         'workOnDayoff' => [
-            [
+                [
                 'label' => 'Work on Day-off Request',
                 'route' => 'workOnDayoff',
             ],
-            [
+                [
                 'label' => 'Work on Day-off Request',
                 'route' => 'workOnDayoff',
                 'pages' => [
-                    [
+                        [
                         'label' => 'List',
                         'route' => 'workOnDayoff',
                         'action' => 'index',
                     ],
-                    [
+                        [
                         'label' => 'Add',
                         'route' => 'workOnDayoff',
                         'action' => 'add',
                     ],
-                    [
+                        [
                         'label' => 'Detail',
                         'route' => 'workOnDayoff',
                         'action' => 'view',
@@ -691,25 +685,25 @@ return [
             ],
         ],
         'performanceAppraisal' => [
-            [
+                [
                 'label' => 'Performance Appraisal',
                 'route' => 'performanceAppraisal',
             ],
-            [
+                [
                 'label' => 'Performance Appraisal',
                 'route' => 'performanceAppraisal',
                 'pages' => [
-                    [
+                        [
                         'label' => 'List',
                         'route' => 'performanceAppraisal',
                         'action' => 'index',
                     ],
-                    [
+                        [
                         'label' => 'Add',
                         'route' => 'performanceAppraisal',
                         'action' => 'add',
                     ],
-                    [
+                        [
                         'label' => 'Detail',
                         'route' => 'performanceAppraisal',
                         'action' => 'view',
@@ -718,25 +712,25 @@ return [
             ],
         ],
         'leaveNotification' => [
-            [
+                [
                 'label' => 'Leave Notification',
                 'route' => 'leaveNotification',
             ],
-            [
+                [
                 'label' => 'Leave Notification',
                 'route' => 'leaveNotification',
                 'pages' => [
-                    [
+                        [
                         'label' => 'List',
                         'route' => 'leaveNotification',
                         'action' => 'index',
                     ],
-                    [
+                        [
                         'label' => 'Add',
                         'route' => 'leaveNotification',
                         'action' => 'add',
                     ],
-                    [
+                        [
                         'label' => 'Detail',
                         'route' => 'leaveNotification',
                         'action' => 'view',
@@ -745,25 +739,25 @@ return [
             ],
         ],
         'travelNotification' => [
-            [
+                [
                 'label' => 'Travel Notification',
                 'route' => 'travelNotification',
             ],
-            [
+                [
                 'label' => 'Travel Notification',
                 'route' => 'travelNotification',
                 'pages' => [
-                    [
+                        [
                         'label' => 'List',
                         'route' => 'travelNotification',
                         'action' => 'index',
                     ],
-                    [
+                        [
                         'label' => 'Add',
                         'route' => 'travelNotification',
                         'action' => 'add',
                     ],
-                    [
+                        [
                         'label' => 'Detail',
                         'route' => 'travelNotification',
                         'action' => 'view',
@@ -772,25 +766,25 @@ return [
             ],
         ],
         'trainingRequest' => [
-            [
+                [
                 'label' => 'Training Request',
                 'route' => 'trainingRequest',
             ],
-            [
+                [
                 'label' => 'Training Request',
                 'route' => 'trainingRequest',
                 'pages' => [
-                    [
+                        [
                         'label' => 'List',
                         'route' => 'trainingRequest',
                         'action' => 'index',
                     ],
-                    [
+                        [
                         'label' => 'Add',
                         'route' => 'trainingRequest',
                         'action' => 'add',
                     ],
-                    [
+                        [
                         'label' => 'Detail',
                         'route' => 'trainingRequest',
                         'action' => 'view',
@@ -799,7 +793,6 @@ return [
             ],
         ],
     ],
-
     'controllers' => [
         'factories' => [
             MyAttendance::class => ControllerFactory::class,
@@ -816,9 +809,9 @@ return [
             TravelRequest::class => ControllerFactory::class,
             WorkOnHoliday::class => ControllerFactory::class,
             WorkOnDayoff::class => ControllerFactory::class,
-            PerformanceAppraisal::class=> ControllerFactory::class,
-            LeaveNotification::class=> ControllerFactory::class,
-            TravelNotification::class=> ControllerFactory::class,
+            PerformanceAppraisal::class => ControllerFactory::class,
+            LeaveNotification::class => ControllerFactory::class,
+            TravelNotification::class => ControllerFactory::class,
             TrainingRequest::class => ControllerFactory::class
         ],
     ],

@@ -131,3 +131,7 @@ JGI_training_session_3
 22. Disabled list should not be seen. punam [done]
 23. On Employee Report, % wise gender should be displayed. ukesh
 24. file name and file path need to be changed. punam [done]
+
+
+employee profile form label not correct like LBRF, "ID" prefix used
+Parent Department and Parent Designation should be removed and not being edited correctly.

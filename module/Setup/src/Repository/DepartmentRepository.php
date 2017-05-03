@@ -30,6 +30,9 @@ class DepartmentRepository implements RepositoryInterface {
 
     public function edit(Model $model, $id) {
         $temp = $model->getArrayCopyForDB();
+        print "<pre>";
+        print_r($temp);
+        exit;
         $this->tableGateway->update($temp, [Department::DEPARTMENT_ID => $id]);
     }
 

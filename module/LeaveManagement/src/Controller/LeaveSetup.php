@@ -10,7 +10,6 @@ use LeaveManagement\Repository\LeaveMasterRepository;
 use Setup\Model\Company;
 use Zend\Authentication\AuthenticationService;
 use Zend\Db\Adapter\AdapterInterface;
-use Zend\Db\Sql\Select;
 use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;

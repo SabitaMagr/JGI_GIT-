@@ -1,19 +1,18 @@
 <?php
 namespace Advance\Repository;
 
-use Zend\Db\TableGateway\TableGateway;
-use Zend\Db\Sql\Sql;
-use Zend\Db\Sql\Select;
+use Application\Model\Model;
 use Application\Repository\RepositoryInterface;
 use Setup\Model\HrEmployees;
+use Zend\Db\Adapter\AdapterInterface;
 
 class AdvanceStatusRepository implements RepositoryInterface{
     private $adapter;
-    public function __construct(\Zend\Db\Adapter\AdapterInterface $adapter) {
+    public function __construct(AdapterInterface $adapter) {
         $this->adapter = $adapter;
     }
 
-    public function add(\Application\Model\Model $model) {
+    public function add(Model $model) {
         
     }
 
@@ -21,7 +20,7 @@ class AdvanceStatusRepository implements RepositoryInterface{
         
     }
 
-    public function edit(\Application\Model\Model $model, $id) {
+    public function edit(Model $model, $id) {
         
     }
 

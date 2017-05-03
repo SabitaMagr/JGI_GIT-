@@ -63,8 +63,6 @@ print $this->form()->openTag($form);
                 </div>
             </div>
             <div class="portlet-body">
-
-
                 <div class=" row">
                     <div class="col-sm-4">
                         <div class="form-group <?= empty($leaveCode->getMessages()) ? "" : "error" ?>">
@@ -76,7 +74,6 @@ print $this->form()->openTag($form);
                         </div>
                         <?php print $this->formElementErrors()->render($leaveCode, ['class' => 'help-block error']); ?>
                     </div>
-
                     <div class="col-sm-4">
                         <div class="form-group  <?= empty($leaveEname->getMessages()) ? "" : "error" ?>">
                             <?php print $this->formLabel($leaveEname); ?>
@@ -86,7 +83,6 @@ print $this->form()->openTag($form);
                         </div>
                         <?php print $this->formElementErrors()->render($leaveEname, ['class' => 'help-block error']); ?>
                     </div>
-
                     <div class="col-sm-4">
                         <div class="form-group <?= empty($leaveLname->getMessages()) ? "" : "error" ?>">
                             <?php print $this->formLabel($leaveLname); ?>
@@ -96,11 +92,8 @@ print $this->form()->openTag($form);
                         <?php print $this->formElementErrors()->render($leaveLname, ['class' => 'help-block error']); ?>
                     </div>
                 </div>
-
-
                 <div class=" row">
                     <div class="col-sm-4">
-
                         <div class="form-group <?= empty($companyId->getMessages()) ? "" : "error" ?>">
                             <?php print $this->formLabel($companyId); ?>
                             <span class="required" aria-required="true">*</span>
@@ -125,11 +118,7 @@ print $this->form()->openTag($form);
                         </div>
                         <?php print $this->formElementErrors()->render($maxAccumulateDays, ['class' => 'help-block error']); ?>
                     </div>
-
                 </div>
-
-
-
                 <div class="padding-5">
                     <div class="row  bg-master-lightest">
                         <div class=" col-sm-4 ">
@@ -142,11 +131,10 @@ print $this->form()->openTag($form);
                             <?php print $this->formElementErrors()->render($allowHalfday, ['class' => 'help-block error']); ?>
                         </div>
                         <div class="col-sm-4">
-                            <div class="form-group padding-0">
+                            <div class="form-group <?= empty($defaultDays->getMessages()) ? "" : "error" ?>">
                                 <?php print $this->formLabel($defaultDays); ?>
-                                <div class="md-radio-inline">
-                                    <?php $customRenderer($defaultDays); ?>
-                                </div>
+                                <?php print $this->formElement($defaultDays); ?>
+                                <span class="errorMsg" style="font-size:11px; color:red;"></span>
                             </div>
                             <?php print $this->formElementErrors()->render($defaultDays, ['class' => 'help-block error']); ?>
                         </div>
