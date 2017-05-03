@@ -1,0 +1,13 @@
+"DEPARTMENT_ID","COUNTRY_ID","DEPARTMENT_CODE","DEPARTMENT_NAME","REMARKS","PARENT_DEPARTMENT","STATUS","CREATED_DT","MODIFIED_DT","CREATED_BY","MODIFIED_BY","BRANCH_ID","COMPANY_ID"
+1,168,"1","MSI","",,"E",05-JUL-16,,1,,1,1
+2,168,"2","Account","",,"E",13-JAN-17,,1,,1,1
+3,168,"3","HR & Admin","",,"E",13-JAN-17,,1,,1,1
+4,168,"4","Procurement & Logistic","",,"E",13-JAN-17,,1,,1,1
+5,168,"5","Production","",,"E",13-JAN-17,,1,,1,1
+6,168,"6","Sales","",,"E",13-JAN-17,,1,,1,1
+7,168,"7","Security & Peon","",,"E",13-JAN-17,,1,,1,1
+8,168,"8","Technical","",,"E",13-JAN-17,,1,,1,1
+9,168,"9","Unit-1","",,"E",13-JAN-17,,1,,1,1
+10,168,"10","Unit-2","",,"E",13-JAN-17,,1,,1,1
+11,168,"11","NA","",,"E",13-JAN-17,,1,,1,1
+12,1,"05","Test Dept","",,"E",24-MAR-17,,1001,,1,1

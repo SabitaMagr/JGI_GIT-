@@ -1,0 +1,8 @@
+create backup of following tables:
+1. company
+2. branch
+3. department
+4. position
+5. designation
+6. service_type
+7. employee

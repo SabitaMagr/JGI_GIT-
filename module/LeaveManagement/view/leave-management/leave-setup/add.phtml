@@ -84,7 +84,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                         </div>
                         <?php print $this->formElementErrors()->render($leaveLname, ['class' => 'help-block error']); ?>
                     </div>
-                    
+
                     <div class="col-sm-4">
                         <div class="form-group <?= empty($companyId->getMessages()) ? "" : "error" ?>">
                             <?php print $this->formLabel($companyId); ?>
