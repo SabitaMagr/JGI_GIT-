@@ -3,7 +3,6 @@
 namespace Asset\Repository;
 
 use Application\Model\Model;
-use Application\Helper\EntityHelper;
 use Application\Repository\RepositoryInterface;
 use Asset\Model\Issue;
 use Asset\Model\Setup;
@@ -38,6 +37,22 @@ class IssueRepository implements RepositoryInterface {
     }
 
     public function fetchById($id) {
+        
+    }
+    
+    
+    public function fetchallIssuableAsset(){
+        
+        $sql = "SELECT * FROM HRIS_ASSET_SETUP";
+        $statement = $this->adapter->query($sql);
+        $result = $statement->execute();
+        $list = [];
+        foreach ($result as $row) {
+            $list[$row['ASSET_ID']]=$row;
+        }
+        return $list;
+    
+        
         
     }
 
