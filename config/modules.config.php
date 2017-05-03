@@ -43,7 +43,8 @@ return [
     'Asset',
     'Other',
     'Report',
-    'Overtime'
+    'Overtime',
+    'ServiceQuestion'
 ];
 
 

@@ -84,7 +84,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                         </div>
                         <?php print $this->formElementErrors()->render($leaveLname, ['class' => 'help-block error']); ?>
                     </div>
-                    
+
                     <div class="col-sm-4">
                         <div class="form-group <?= empty($companyId->getMessages()) ? "" : "error" ?>">
                             <?php print $this->formLabel($companyId); ?>
@@ -130,11 +130,10 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                             <?php print $this->formElementErrors()->render($allowHalfday, ['class' => 'help-block error']); ?>
                         </div>
                         <div class="col-sm-4">
-                            <div class="form-group padding-0">
+                            <div class="form-group <?= empty($defaultDays->getMessages()) ? "" : "error" ?>">
                                 <?php print $this->formLabel($defaultDays); ?>
-                                <div class="md-radio-inline">
-                                    <?php $customRenderer($defaultDays); ?>
-                                </div>
+                                <?php print $this->formElement($defaultDays); ?>
+                                <span class="errorMsg" style="font-size:11px; color:red;"></span>
                             </div>
                             <?php print $this->formElementErrors()->render($defaultDays, ['class' => 'help-block error']); ?>
                         </div>

@@ -1,9 +1,11 @@
 <?php
+
 namespace SelfService\Model;
 
 use Application\Model\Model;
 
-class AdvanceRequest extends Model{
+class AdvanceRequest extends Model {
+
     const TABLE_NAME = "HRIS_EMPLOYEE_ADVANCE_REQUEST";
     const ADVANCE_REQUEST_ID = "ADVANCE_REQUEST_ID";
     const EMPLOYEE_ID = "EMPLOYEE_ID";
@@ -20,7 +22,8 @@ class AdvanceRequest extends Model{
     const APPROVED_BY = "APPROVED_BY";
     const APPROVED_DATE = "APPROVED_DATE";
     const APPROVED_REMARKS = "APPROVED_REMARKS";
-    
+    const VOUCHER_NO = "VOUCHER_NO";
+
     public $advanceRequestId;
     public $employeeId;
     public $advanceId;
@@ -36,22 +39,24 @@ class AdvanceRequest extends Model{
     public $approvedBy;
     public $approvedRemarks;
     public $approvedDate;
-    
+    public $voucherNo;
     public $mappings = [
-        'advanceRequestId'=>self::ADVANCE_REQUEST_ID,
-        'employeeId'=>self::EMPLOYEE_ID,
-        'advanceId'=>self::ADVANCE_ID,
-        'requestedDate'=>self::REQUESTED_DATE,
-        'requestedAmount'=>self::REQUESTED_AMOUNT,
-        'advanceDate'=>self::ADVANCE_DATE,
-        'terms'=>self::TERMS,
-        'reason'=>self::REASON,
-        'status'=>self::STATUS,
-        'recommendedBy'=>self::RECOMMENDED_BY,
-        'recommendedDate'=>self::RECOMMENDED_DATE,
-        'recommendedRemarks'=>self::RECOMMENDED_REMARKS,
-        'approvedBy'=>self::APPROVED_BY,
-        'approvedDate'=>self::APPROVED_DATE,
-        'approvedRemarks'=>self::APPROVED_REMARKS
+        'advanceRequestId' => self::ADVANCE_REQUEST_ID,
+        'employeeId' => self::EMPLOYEE_ID,
+        'advanceId' => self::ADVANCE_ID,
+        'requestedDate' => self::REQUESTED_DATE,
+        'requestedAmount' => self::REQUESTED_AMOUNT,
+        'advanceDate' => self::ADVANCE_DATE,
+        'terms' => self::TERMS,
+        'reason' => self::REASON,
+        'status' => self::STATUS,
+        'recommendedBy' => self::RECOMMENDED_BY,
+        'recommendedDate' => self::RECOMMENDED_DATE,
+        'recommendedRemarks' => self::RECOMMENDED_REMARKS,
+        'approvedBy' => self::APPROVED_BY,
+        'approvedDate' => self::APPROVED_DATE,
+        'approvedRemarks' => self::APPROVED_REMARKS,
+        'voucherNo' => self::VOUCHER_NO
     ];
- }
+
+}

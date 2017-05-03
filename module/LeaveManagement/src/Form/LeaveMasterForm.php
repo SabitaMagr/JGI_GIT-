@@ -1,4 +1,5 @@
 <?php
+
 namespace LeaveManagement\Form;
 
 use Zend\Form\Annotation;
@@ -7,8 +8,7 @@ use Zend\Form\Annotation;
  * @Annotation\Hydrator("Zend\Hydrator\ObjectProperty")
  * @Annotation\Name("LeaveMaster")
  */
-class LeaveMasterForm
-{
+class LeaveMasterForm {
 
     /**
      * @Annotation\Type("Zend\Form\Element\Text")
@@ -37,7 +37,7 @@ class LeaveMasterForm
      * @Annotation\Attributes({ "id":"allowHalfday"})
      */
     public $allowHalfday;
-    
+
     /**
      * @Annotation\Type("Zend\Form\Element\Radio")
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
@@ -48,14 +48,13 @@ class LeaveMasterForm
     public $paid;
 
     /**
-     * @Annotation\Type("Zend\Form\Element\Radio")
+     * @Annotation\Type("Zend\Form\Element\Number")
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
-     * @Annotation\Options({"value_options":{"Y":"Yes","N":"No"},"label":"Default Days"})
+     * @Annotation\Options({"label":"Default Days"})
      * @Annotation\Required(false)
-     * @Annotation\Attributes({ "id":"defaultDays"})
+     * @Annotation\Attributes({ "id":"defaultDays", "class":"form-control"})
      */
     public $defaultDays;
-
 
     /**
      * @Annotation\Type("Zend\Form\Element\Select")
@@ -65,7 +64,6 @@ class LeaveMasterForm
      * @Annotation\Attributes({ "id":"fiscalYear","class":"form-control"})
      */
     public $fiscalYear;
-
 
     /**
      * @Annotation\Type("Zend\Form\Element\Radio")
@@ -82,7 +80,7 @@ class LeaveMasterForm
      * @Annotation\Attributes({ "id":"cashable"})
      */
     public $cashable;
-    
+
     /**
      * @Annotation\Type("Zend\Form\Element\Number")
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
@@ -91,7 +89,7 @@ class LeaveMasterForm
      * @Annotation\Attributes({ "id":"maxAccumulateDays","min":"0", "class":"form-control"})
      */
     public $maxAccumulateDays;
-    
+
     /**
      * @Annotation\Type("Zend\Form\Element\Textarea")
      * @Annotation\Required(false)
@@ -106,8 +104,8 @@ class LeaveMasterForm
      * @Annotation\Attributes({"value":"Submit","class":"btn btn-success"})
      */
     public $submit;
-    
-        /**
+
+    /**
      * @Annotation\Type("Zend\Form\Element\Select")
      * @Annotation\Required(true)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
@@ -115,4 +113,5 @@ class LeaveMasterForm
      * @Annotation\Attributes({ "id":"companyId","class":"form-control"})
      */
     public $companyId;
+
 }

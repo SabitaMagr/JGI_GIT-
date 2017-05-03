@@ -32,16 +32,22 @@ $form->setAttribute('id', 'advance-form');
 $advanceId = $form->get('advanceId');
 $advanceId->setValueOptions($advances);
 $advanceId->setAttributes(["disabled" => "disabled"]);
+
 $requestedAmount = $form->get('requestedAmount');
 $requestedAmount->setAttributes(["disabled" => "disabled"]);
+
 $advanceDate = $form->get('advanceDate');
 $advanceDate->setAttributes(["disabled" => "disabled"]);
+
 $reason = $form->get('reason');
 $reason->setAttributes(["disabled" => "disabled"]);
+
 $terms = $form->get('terms');
 $terms->setAttributes(["disabled" => "disabled"]);
+
 $recommendedRemarks = $form->get('recommendedRemarks');
 $recommendedRemarks->setAttributes(["disabled" => "disabled"]);
+
 $approvedRemarks = $form->get('approvedRemarks');
 $approvedRemarks->setAttributes(["disabled" => "disabled"]);
 
@@ -49,13 +55,11 @@ $submit = $form->get('submit');
 $submit->setAttribute('value', 'SUBMIT');
 
 $form->setAttribute('action', $this->url('advanceRequest', ['action' => 'add']));
-
-
-$form->prepare();
-print $this->form()->openTag($form);
 ?>
 <script>
     document.url = '<?= $this->url("restful", ["action" => "index"]) ?>';
+    document.advanceRequestData =<?php echo json_encode($advanceRequestData); ?>;
+    document.wsGenerateAdvanceVoucher = '<?= $this->url("advanceRequest", ["action" => "generateAdvanceVoucher"]) ?>';
 </script>
 
 <div class="row margin-top-20" ng-app="hris" ng-controller="advanceDetailController">
@@ -179,7 +183,7 @@ print $this->form()->openTag($form);
                                 <div class="col-sm-6">
                                     <div class="form-group">
                                         <?php print $this->formLabel($advanceDate); ?>
-                                            <?php print $this->formElement($advanceDate); ?>
+                                        <?php print $this->formElement($advanceDate); ?>
                                         <?php print $this->formElementErrors()->render($advanceDate, ['class' => 'help-block']); ?>
                                     </div>
                                 </div>     
@@ -218,13 +222,13 @@ print $this->form()->openTag($form);
                     <label>Reason for action [From Approver]</label>
                     <?php print $this->formElement($approvedRemarks); ?>
                 </div>
-
+                <div class="row">
+                    <div class="col-sm-12" >
+                        <button ng-show="voucherBtn.display" id="voucherBtn" class="btn btn-info pull-right" ng-bind="voucherBtn.text" ng-click="voucherBtn.fn()"> Generate Voucher </button>
+                    </div>
+                </div>
             </div>
 
         </div>
     </div>
 </div>
-
-<?php
-print $this->form()->closeTag();
-?>

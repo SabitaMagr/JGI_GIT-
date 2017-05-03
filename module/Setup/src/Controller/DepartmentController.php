@@ -69,8 +69,8 @@ class DepartmentController extends AbstractActionController {
         return new ViewModel(Helper::addFlashMessagesToArray(
                         $this, [
                     'form' => $this->form,
-                    'departments' => ApplicationEntityHelper::getTableKVListWithSortOption($this->adapter, Department::TABLE_NAME, Department::DEPARTMENT_ID, [Department::DEPARTMENT_NAME], ["STATUS" => "E"], "DEPARTMENT_NAME", "ASC",null,false,true),
-                    'company' => ApplicationEntityHelper::getTableKVListWithSortOption($this->adapter, Company::TABLE_NAME, Company::COMPANY_ID, [Company::COMPANY_NAME], ["STATUS" => "E"], "COMPANY_NAME", "ASC",null,false,true),
+                    'departments' => ApplicationEntityHelper::getTableKVListWithSortOption($this->adapter, Department::TABLE_NAME, Department::DEPARTMENT_ID, [Department::DEPARTMENT_NAME], ["STATUS" => "E"], "DEPARTMENT_NAME", "ASC", null, false, true),
+                    'company' => ApplicationEntityHelper::getTableKVListWithSortOption($this->adapter, Company::TABLE_NAME, Company::COMPANY_ID, [Company::COMPANY_NAME], ["STATUS" => "E"], "COMPANY_NAME", "ASC", null, false, true),
                     'branch' => $this->repository->fetchAllBranchAndCompany(),
                     'countries' => EntityHelper::getTableKVList($this->adapter, EntityHelper::HRIS_COUNTRIES)
                         ]
@@ -97,11 +97,11 @@ class DepartmentController extends AbstractActionController {
             if ($this->form->isValid()) {
                 $department->exchangeArrayFromForm($this->form->getData());
                 if ($department->parentDepartment == 0) {
-                    $department->parentDepartment=null;
+                    $department->parentDepartment = null;
                 }
                 $department->modifiedDt = Helper::getcurrentExpressionDate();
                 $department->modifiedBy = $this->employeeId;
-                
+
                 $this->repository->edit($department, $id);
                 $this->flashmessenger()->addMessage("Department Successfully Updated!!!");
                 return $this->redirect()->toRoute("department");
@@ -111,8 +111,8 @@ class DepartmentController extends AbstractActionController {
         return Helper::addFlashMessagesToArray(
                         $this, [
                     'form' => $this->form, 'id' => $id,
-                    'departments' => ApplicationEntityHelper::getTableKVListWithSortOption($this->adapter, Department::TABLE_NAME, Department::DEPARTMENT_ID, [Department::DEPARTMENT_NAME], ["STATUS" => "E"], "DEPARTMENT_NAME", "ASC",null,false,true),
-                    'company' => ApplicationEntityHelper::getTableKVListWithSortOption($this->adapter, Company::TABLE_NAME, Company::COMPANY_ID, [Company::COMPANY_NAME], ["STATUS" => "E"], "COMPANY_NAME", "ASC",null,false,true),
+                    'departments' => ApplicationEntityHelper::getTableKVListWithSortOption($this->adapter, Department::TABLE_NAME, Department::DEPARTMENT_ID, [Department::DEPARTMENT_NAME], ["STATUS" => "E"], "DEPARTMENT_NAME", "ASC", null, false, true),
+                    'company' => ApplicationEntityHelper::getTableKVListWithSortOption($this->adapter, Company::TABLE_NAME, Company::COMPANY_ID, [Company::COMPANY_NAME], ["STATUS" => "E"], "COMPANY_NAME", "ASC", null, false, true),
                     'branch' => $this->repository->fetchAllBranchAndCompany(),
                     'countries' => EntityHelper::getTableKVList($this->adapter, EntityHelper::HRIS_COUNTRIES),
                         ]

@@ -20,6 +20,7 @@ $this->headScript()
 ?>
 
 <script>
+    document.ids=<?php echo json_encode(["leaveId"=>-1,"leaveRequestStatusId"=>-1,"fromDate1"=>"","nepaliFromDate1"=>"","toDate1"=>"","nepaliToDate1"=>""]) ?>;
     document.url = '<?= $this->url("restful", ["action" => "index"]) ?>';
     document.searchValues =<?php echo json_encode($searchValues); ?>;
 </script>
@@ -40,7 +41,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
         document.messages =<?php echo json_encode($this->messages); ?>
     </script>
 <?php } ?>
-<div ng-app="hris" ng-controller="leaveStatusListController">
+    <div id="leaveStatusList" ng-app="hris" ng-controller="leaveStatusListController">
     <div class="portlet light bg-inverse">
         <div class="portlet-title">
             <div class="caption">
@@ -119,7 +120,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                         <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
                     </div>
                 </div>
-                <div class="col-sm-2 col-lg-offset-2">
+                <div class="col-sm-2 col-sm-offset-2">
                      <button ng-click="view()" id="viewEmployees" class="btn btn-default btn-sm pull-right">
                         Search
                         <i class="fa fa-search"></i>

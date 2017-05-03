@@ -38,7 +38,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
     </script>
 <?php } ?>
 
-<div class="" ng-app="hris" ng-controller="employeeListController">
+    <div id="employeeList" class="" ng-app="hris" ng-controller="employeeListController">
     <div class="portlet light bg-inverse">
         <div class="portlet-title">
             <div class="caption">
@@ -64,6 +64,10 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                         </li>
                     </ul>
                 </div>
+                <button id="reset" class="btn default btn-sm pull-right">
+                        Reset
+                        <i class="fa fa-search"></i>
+                    </button>
             </div>
         </div>
         <div class="portlet-body">
@@ -102,7 +106,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                     <select class="form-control" name="employee" id="employeeId">
                     </select>
                 </div>
-                <div class="col-sm-2 col-sm-offset-4">
+                <div class="col-sm-4 col-sm-offset-2">
                     <button ng-click="view()" id="viewEmployees" class="btn btn-default btn-sm pull-right">
                         Search
                         <i class="fa fa-search"></i>

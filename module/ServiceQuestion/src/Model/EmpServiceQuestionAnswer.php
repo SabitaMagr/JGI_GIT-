@@ -1,16 +1,16 @@
 <?php
-namespace Setup\Model;
+namespace ServiceQuestion\Model;
 
 use Application\Model\Model;
 
-class ServiceQuestion extends Model{
-    const TABLE_NAME = "HRIS_SERVICE_QA";
+class EmpServiceQuestionAnswer extends Model{
+    const TABLE_NAME = "HRIS_EMPLOYEE_SERVICE_QA";
     
+    const EMP_QA_ID = "EMP_QA_ID";
+    const EMPLOYEE_ID = "EMPLOYEE_ID";
     const QA_ID = "QA_ID";
-    const PARENT_QA_ID = "PARENT_QA_ID";
-    const SERVICE_EVENT_TYPE_ID = "SERVICE_EVENT_TYPE_ID";
-    const QUESTION_EDESC = "QUESTION_EDESC";
-    const QUESTION_NDESC = "QUESTION_NDESC";
+    const QA_DATE = "QA_DATE";
+    const ANSWER = "ANSWER";
     const REMARKS = "REMARKS";
     const STATUS = "STATUS";
     const COMPANY_ID = "COMPANY_ID";
@@ -24,11 +24,11 @@ class ServiceQuestion extends Model{
     const APPROVED_BY = "APPROVED_BY";
     const APPROVED_DATE = "APPROVED_DATE";
     
+    public $empQaId;
+    public $employeeId;
     public $qaId;
-    public $parentQaId;
-    public $serviceEventTypeId;
-    public $questionEdesc;
-    public $questionNdesc;
+    public $qaDate;
+    public $answer;
     public $remarks;
     public $status;
     public $companyId;
@@ -38,16 +38,16 @@ class ServiceQuestion extends Model{
     public $modifiedBy;
     public $modifiedDate;
     public $checked;
-    public $approved;
     public $approvedBy;
     public $approvedDate;
+    public $approved;
     
     public $mappings = [
+        'empQaId'=>self::EMP_QA_ID,
+        'employeeId'=>self::EMPLOYEE_ID,
         'qaId'=>self::QA_ID,
-        'parentQaId'=>self::PARENT_QA_ID,
-        'serviceEventTypeId'=>self::SERVICE_EVENT_TYPE_ID,
-        'questionEdesc'=>self::QUESTION_EDESC,
-        'questionNdesc'=>self::QUESTION_NDESC,
+        'qaDate'=>self::QA_DATE,
+        'answer'=>self::ANSWER,
         'remarks'=>self::REMARKS,
         'status'=>self::STATUS,
         'companyId'=>self::COMPANY_ID,
@@ -57,10 +57,9 @@ class ServiceQuestion extends Model{
         'modifiedBy'=>self::MODIFIED_BY,
         'modifiedDate'=>self::MODIFIED_DATE,
         'checked'=>self::CHECKED,
-        'approved'=>self::APPROVED,
         'approvedBy'=>self::APPROVED_BY,
-        'approvedDate'=>self::APPROVED_DATE
+        'approvedDate'=>self::APPROVED_DATE,
+        'approved'=>self::APPROVED
     ];
-    
 }
 
