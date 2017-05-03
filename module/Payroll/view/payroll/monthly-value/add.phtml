@@ -21,7 +21,6 @@ echo json_encode($menu);
 <?php } ?>
 
 <?php
-$mthCode = $form->get('mthCode');
 $mthEdesc = $form->get('mthEdesc');
 $mthLdesc = $form->get('mthLdesc');
 $showAtRule = $form->get('showAtRule');
@@ -39,34 +38,38 @@ $form->setAttribute('id', "monthlyValueFormId");
 
 
 <div class="row margin-top-20">
-    <div class="col-sm-8 col-sm-offset-2">
+    <div class="col-sm-12">
         <div class="portlet box custom-box">
             <div class="portlet-title">
                 <div class="caption">
                     <i class="fa fa-user"></i>New Entry
                 </div>
+                <div class="actions">
+                    <a class="btn btn-circle btn-icon-only btn-default fullscreen" href="javascript:;" data-original-title="" title=""> </a>
+                </div>
             </div>
             <div class="portlet-body">
                 <?php print $this->form()->openTag($form); ?>
-                <div class="form-group<?= empty($mthCode->getMessages()) ? "" : "error" ?>">
-                    <?php print $this->formLabel($mthCode); ?>
-                    <?php print $this->formElement($mthCode); ?>
-                    <span class="errorMsg" style="color:red;"></span>
-                </div>
-                <?php print $this->formElementErrors()->render($mthCode, ['class' => 'help-block error']); ?>
+                <div class="row">
+                    <div class="col-sm-4">
+                        <div class="form-group<?= empty($mthEdesc->getMessages()) ? "" : "error" ?>">
+                            <?php print $this->formLabel($mthEdesc); ?>
+                            <?php print $this->formElement($mthEdesc); ?>
+                        </div>
+                        <?php print $this->formElementErrors()->render($mthEdesc, ['class' => 'help-block error']); ?>
+                    </div>
 
-                <div class="form-group<?= empty($mthEdesc->getMessages()) ? "" : "error" ?>">
-                    <?php print $this->formLabel($mthEdesc); ?>
-                    <?php print $this->formElement($mthEdesc); ?>
-                </div>
-                <?php print $this->formElementErrors()->render($mthEdesc, ['class' => 'help-block error']); ?>
+                    <div class="col-sm-4">
+                        <div class="form-group <?= empty($mthLdesc->getMessages()) ? "" : "error" ?>">
+                            <?php print $this->formLabel($mthLdesc); ?>
+                            <?php print $this->formElement($mthLdesc); ?>
+                        </div>
+                        <?php print $this->formElementErrors()->render($mthLdesc, ['class' => 'help-block error']); ?>
+                    </div>
 
-                <div class="form-group <?= empty($mthLdesc->getMessages()) ? "" : "error" ?>">
-                    <?php print $this->formLabel($mthLdesc); ?>
-                    <?php print $this->formElement($mthLdesc); ?>
                 </div>
-                <?php print $this->formElementErrors()->render($mthLdesc, ['class' => 'help-block error']); ?>
-
+                
+                
                 <div class="row">
                     <div class="col-sm-2">
                         <div class="form-group <?= empty($shIndexNo->getMessages()) ? "" : "error" ?>">
@@ -75,7 +78,7 @@ $form->setAttribute('id', "monthlyValueFormId");
                         </div>
                         <?php print $this->formElementErrors()->render($shIndexNo, ['class' => 'help-block error']); ?>
                     </div>
-                    <div class="col-sm-6 col-sm-offset-4">
+                    <div class="col-sm-4 col-sm-offset-2">
                         <div class="form-group">
                             <?php print $this->formLabel($showAtRule); ?>
                             <div class="md-radio-inline">

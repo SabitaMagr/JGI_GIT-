@@ -9,14 +9,7 @@ class HrEmployeesFormTabOne extends Model {
 
     public $employeeId;
 
-    /**
-     * @Annotation\Type("Zend\Form\Element\Text")
-     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
-     * @Annotation\Required(true)
-     * @Annotation\Options({"label":"Employee Code"})
-     * @Annotation\Attributes({ "id":"employeeCode", "class":"form-control" })
-     */
-    public $employeeCode;
+   
 
     /**
      * @Annotation\Type("Zend\Form\Element\Select")

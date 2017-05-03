@@ -139,6 +139,7 @@ $form->prepare();
                     <div class="col-sm-4">
                         <div class="form-group">
                             <?php print $this->formLabel($quantity); ?>
+                            <span class="required" aria-required="true">*</span>
                             <?php print $this->formElement($quantity); ?>
                             <?php print $this->formElementErrors()->render($quantity, ['class' => 'help-block']); ?>
                         </div>
@@ -159,6 +160,7 @@ $form->prepare();
                     <div class="col-sm-4">
                         <div class="form-group">
                             <?php print $this->formLabel($purchaseDate); ?>
+                            <span class="required" aria-required="true">*</span>
                             <?php print $this->formElement($purchaseDate); ?>
                             <?php print $this->formElementErrors()->render($purchaseDate, ['class' => 'help-block']); ?>
                         </div>
@@ -176,6 +178,7 @@ $form->prepare();
                     <div class="col-sm-4">
                         <div class="form-group">
                             <?php print $this->formLabel($purchaseThrough); ?>
+                            <span class="required" aria-required="true">*</span>
                             <?php print $this->formElement($purchaseThrough); ?>
                             <?php print $this->formElementErrors()->render($purchaseThrough, ['class' => 'help-block']); ?>
                         </div>
