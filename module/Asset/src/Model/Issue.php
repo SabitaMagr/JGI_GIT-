@@ -8,7 +8,7 @@ class Issue extends Model {
     const TABLE_NAME = 'HRIS_ASSET_ISSUE';
     const ISSUE_ID = 'ISSUE_ID';
     const ISSUE_DATE = 'ISSUE_DATE';
-    const ASSET_ID = 'ISSUE_DATE';
+    const ASSET_ID = 'ASSET_ID';
     const SNO = 'SNO';
     const EMPLOYEE_ID = 'EMPLOYEE_ID';
     const QUANTITY = 'QUANTITY';

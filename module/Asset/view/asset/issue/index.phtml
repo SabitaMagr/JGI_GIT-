@@ -1,7 +1,31 @@
 <?php
+$this->headLink()
+        ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.common.min.css'))
+        ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.rtl.min.css'))
+        ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.default.min.css'))
+        ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.dataviz.min.css'))
+        ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.dataviz.default.min.css'));
 
-
+$this->headScript()
+        ->appendFile($this->basePath('jszip/dist/jszip.min.js'))
+        ->appendFile($this->basePath('telerik_kendoui/js/kendo.all.min.js'))
+        ->appendFile($this->basePath('js/asset/issue/index.js'))
+        ->appendFile($this->basePath('assets/global/plugins/bootstrap-confirmation/bootstrap-confirmation.min.js'));
 ?>
+
+<?php
+if ($this->messages) { ?>
+    <script>
+        document.messages =<?php echo json_encode($this->messages); ?>
+    </script>
+<?php } 
+?>
+    
+<script>
+    document.issue =<?= json_encode($issue) ?>;
+</script>
+
+
 
 
 
@@ -34,6 +58,44 @@
             </div>
         </div>
     </div>
+    
+    <div id="assetIssueTable">
+
+    </div>
+    <script id="rowTemplate" type="text/x-kendo-tmpl">
+        <tr>
+        <td>    
+        #: (ASSET_EDESC == null) ? '-' : ASSET_EDESC #
+        </td>
+        <td> 
+        #: (FIRST_NAME == null) ? ' ' : FIRST_NAME #
+        #: (MIDDLE_NAME == null) ? ' ' : MIDDLE_NAME #
+        #: (LAST_NAME == null) ? ' ' : LAST_NAME #
+        </td>
+        <td>    
+        #: (ISSUE_DATE == null) ? '-' : ISSUE_DATE #
+        </td>
+        <td>    
+        #: (QUANTITY == null) ? '-' : QUANTITY #
+        </td>
+        <td>    
+        #: (RETURNED_DATE == null) ? '-' : RETURNED_DATE #
+        </td>
+        <td>
+        <a class="btn-edit"
+        href="<?= $this->url("assetIssue", ["action" => "edit"]); ?>/#:ISSUE_ID#" style="height:17px;">
+        <i class="fa fa-edit"></i>
+        </a>
+        # if(RETURNED_DATE!=null){#
+        <a class="btn-edit"
+        href="<?= $this->url("assetIssue", ["action" => "edit"]); ?>/#:ISSUE_ID#" style="height:17px;">
+        <i class="fa fa-send-o"></i>
+        </a>
+        # } #
+        </a>
+        </td>
+        </tr>
+    </script>
 
 
 
