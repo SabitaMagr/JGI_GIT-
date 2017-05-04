@@ -2,7 +2,7 @@
 
 namespace ServiceQuestion\Controller;
 
-use ServiceQuestion\Model\EmpServiceQuestion;
+use ServiceQuestion\Model\EmpServiceQuestion as EmpServiceQuestionModel;
 use ServiceQuestion\Repository\EmpServiceQuestionRepo;
 use Application\Helper\Helper;
 use Application\Helper\EntityHelper;
