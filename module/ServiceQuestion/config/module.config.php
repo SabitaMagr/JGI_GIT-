@@ -2,22 +2,22 @@
 namespace ServiceQuestion;
 
 use Application\Controller\ControllerFactory;
-use ServiceQuestion\Controller\ResignationQuestion;
+use ServiceQuestion\Controller\EmpServiceQuestion;
 use Zend\Router\Http\Segment;
 
 return [
     'router' => [
         'routes' => [
-            'resignationQuestion' => [
+            'empServiceQuestion' => [
                 'type' => Segment::class,
                 'options' => [
-                    'route' => '/serviceQuestion/resignation[/:action[/:id]]',
+                    'route' => '/serviceQuestion/empServiceQuestion[/:action[/:id]]',
                     'constraints' => [
                         'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
                         'id' => '[0-9]+',
                     ],
                     'defaults' => [
-                        'controller' => ResignationQuestion::class,
+                        'controller' => EmpServiceQuestion::class,
                         'action' => 'index'
                     ],
                 ],
@@ -25,28 +25,28 @@ return [
         ],
     ],
     'navigation' => [
-        'resignationQuestion' => [
+        'empServiceQuestion' => [
                 [
                 'label' => "Employee Service Question for Resignation",
-                'route' => "resignationQuestion"
+                'route' => "empServiceQuestion"
             ],
                 [
                 'label' => "Employee Service Question for Resignation",
-                'route' => "resignationQuestion",
+                'route' => "empServiceQuestion",
                 'pages' => [
                         [
                         'label' => 'List',
-                        'route' => 'resignationQuestion',
+                        'route' => 'empServiceQuestion',
                         'action' => 'index',
                     ],
                         [
                         'label' => 'Add',
-                        'route' => 'resignationQuestion',
+                        'route' => 'empServiceQuestion',
                         'action' => 'add',
                     ],
                         [
                         'label' => 'Detail',
-                        'route' => 'resignationQuestion',
+                        'route' => 'empServiceQuestion',
                         'action' => 'view',
                     ],
                 ],
@@ -55,7 +55,7 @@ return [
     ],
     'controllers' => [
         'factories' => [
-            Controller\ResignationQuestion::class => ControllerFactory::class,
+            Controller\EmpServiceQuestion::class => ControllerFactory::class,
         ],
     ],
     'view_manager' => [

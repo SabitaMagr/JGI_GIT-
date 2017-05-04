@@ -9,7 +9,7 @@ use Application\Helper\EntityHelper;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\Db\Adapter\AdapterInterface;
 
-class ResignationQuestion extends AbstractActionController {
+class EmpServiceQuestion extends AbstractActionController {
 
     public function __construct(AdapterInterface $adapter) {
         
