@@ -1,188 +1,175 @@
 <?php
-$this->headLink()
-        ->appendStylesheet($this->basePath('assets/global/plugins/ladda/ladda-themeless.min.css'));
-
-$this->headScript()->appendFile($this->basePath('assets/global/plugins/ladda/spin.min.js'));
-$this->headScript()->appendFile($this->basePath('assets/global/plugins/ladda/ladda.min.js'));
-$this->headScript()->appendFile($this->basePath('js/angular.min.js'))
-        ->appendFile($this->basePath('js/jobHistorySearch.js'));
+$this->headScript()->appendFile($this->basePath('js/asset/issue/add.js'));
+$this->headScript()->appendFile($this->basePath('js/angular.min.js'));
 $this->headScript()->appendFile($this->basePath('js/asset/issue/assetIssueController'));
+//print_r($asset);
+//print_r($employee);
+//die();
+
+$form->setAttribute('role', 'form');
+$form->setAttribute('id', 'assetIssue-form');
+$form->setAttribute('action', $this->url('assetIssue', ['action' => 'add']));
+
+
+$issueDate = $form->get('issueDate');
+
+$assetId = $form->get('assetId');
+$assetId->setValueOptions($asset);
+
+//    echo '<pre>';
+//    print_r($assetId);
+//    die();
+
+$employeeId = $form->get('employeeId');
+$employeeId->setValueOptions($employee);
+
+$quantity = $form->get('quantity');
+
+$requestDate = $form->get('requestDate');
+
+$returnable = $form->get('returnable');
+
+$returnDate = $form->get('returnDate');
+
+$purpose = $form->get('purpose');
+
+$remarks = $form->get('remarks');
+
+
+$submit = $form->get('submit');
+$submit->setAttribute('value', 'SUBMIT');
+$form->prepare();
+
+//    echo '<pre>';
+//    print_r($issueDate);
+//    print_r($this->formElement($returnable));
+//    echo '</pre>';
+//    die();
 ?>
 
-<script>
-    document.url = '<?= $this->url("restful", ["action" => "index"]) ?>';
-    document.searchValues =<?php echo json_encode($searchValues); ?>;
-</script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\assetIssue')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
-<?php
-if ($this->messages && (sizeof($this->messages) > 1)) {
-    print '<div class="alert alert-warning alert-dismissable">
-    <button type="button" class="close" data-dismiss="alert" aria-hidden="true"></button>
-    <strong>Warning!</strong> ';
-    print $this->messages[1];
-    print '</div>';
-}
-?>
-<?php if ($this->messages) { ?>
-    <script>
-        document.messages =<?php echo json_encode($this->messages); ?>
-    </script>
-<?php } ?>
 
-<div class="" ng-app="hris" ng-controller="assetIssuecontroller">
-    <div id="hris-page-content">
-    
-    <div class="portlet light bg-inverse margin-top-10">
-        <div class="portlet-title">
-            <div class="caption">
-                <i class="icon-paper-plane font-green-haze"></i>
-                <span class="caption-subject bold font-green-haze uppercase"> Filter Employees</span>
-            </div>
-            <div class="tools">
-                <a href="" class="collapse" data-original-title="" title=""> </a>
-            </div>
-        </div>
-        <div class="portlet-body">
-            <div class="row">
-                <div class="col-sm-2">
-                    <select class="form-control" name="company" id="companyId">
-                    </select>
+<div ng-app="hris" ng-controller="assetIssuecontroller">
+    <div class="row margin-top-20">
+        <div class="col-sm-12">
+            <div class="portlet box custom-box">
+                <div class="portlet-title">
+                    <div class="caption">
+                        <i class="fa fa-user"></i>New Entry
+                    </div>
+                    <div class="actions">
+                        <a class="btn btn-circle btn-icon-only btn-default fullscreen" href="javascript:;" data-original-title="" title=""> </a>
+                    </div>
                 </div>
-                <div class="col-sm-2">
-                    <select class="form-control" name="branchId" id="branchId">
-                    </select>
-                </div>
-                <div class="col-sm-2">
-                    <select class="form-control" name="department" id="departmentId">
-                    </select>
-                </div>
-                <div class="col-sm-2">
-                    <select class="form-control" name="designation" id="designationId">
-                    </select>
-                </div>
-                <div class="col-sm-2">
-                    <select class="form-control" name="position" id="positionId">
-                    </select>
-                </div>
-            </div>
-            <div class="row margin-top-10">
-                <div class="col-sm-2">
-                    <select class="form-control" name="serviceType" id="serviceTypeId">
-                    </select>
-                </div>
-                <div class="col-sm-2">
-                    <select class="form-control" name="employee" id="employeeId">
-                    </select>
-                </div>
-                <div class="col-sm-2">
-                    <?php print $this->formElement($assetForm); ?>
-                </div>
-                <div class="col-sm-2 col-lg-offset-6">
-                    <label height="45"></label>
-                    <button  ng-click="view()" id="viewEmployees" class="btn btn-default btn-sm pull-right">
-                        Search
-                        <i class="fa fa-search"></i>
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-        
-        <div id="assetData">
-            <table>
-                <tr>
-                    <td>Remaining Stock :  </td>
-                    <td><input ng-model="assetAvailableStock" type="text" readonly="readonly"> </td>
-                    <td>Total Issue Quantity</td>
-                    <td><input ng-model="assetTotalIssueQuantity" type="text" readonly="readonly"></td>
-                </tr>
-                <tr>
-                    <td>Returnable</td>
-                    <td><input ng-model="returnableChkVal" ng-click="returnableCheckbox(returnableChkVal)" type="checkbox"></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-            </table>
-        </div>
-        
-    <div class="margin-top-30 scrollbar-vertical" id="loadingTable">
-        <table class="table table-striped table-bordered table-hover no-footer custometbletwo">
-            <thead>
-                <tr>
-                    <th>
-                        Employee Name
-                    </th>               
-                    <th>
-                        Quantity
-                    </th>
-                    <th>
-                        Return Date
-                    </th>
-                    <th>
-                        Purpose
-                    </th>
-                    <th>
-                        Remarks
-                    </th>
-                    <th class="bs-checkbox " style="width: 36px; " data-field="state" tabindex="0">
-                        <div class="th-inner ">
-                            <label class="mt-checkbox mt-checkbox-single mt-checkbox-outline">
-                                <input class="" type="checkbox" ng-model="all" ng-click="checkAll(all)"/>
-                                <span></span>
-                            </label>
+                <div class="portlet-body">
+                    <?php print $this->form()->openTag($form); ?>
+                    <input type="hidden" name="balance" ng-model="bal" value="{{bal}}">
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <?php print $this->formLabel($issueDate); ?>
+                                <?php print $this->formElement($issueDate); ?>
+                                <?php print $this->formElementErrors()->render($issueDate, ['class' => 'help-block']); ?>
+                            </div>
                         </div>
-                        <div class="fht-cell" style="width: 46px;"></div>
-                    </th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr ng-repeat="employeeAsset in employeeList">
-                    <td>
-                        <span ng-bind="employeeAsset.FIRST_NAME"></span>
-                        <span ng-bind="employeeAsset.MIDDLE_NAME"></span>
-                        <span ng-bind="employeeAsset.LAST_NAME"></span>
-                    </td>
-                    <td>
-                        <input  min="0" ng-model="employeeAsset.QUANTITY" ng-change="issueBalfn()" type="number"  >
-                    </td>
-                    <td>
-                        <input ng-model="employeeAsset.RETURN_DATE" ng-disabled="retrunDate" datepicker type="text" >
-                    </td>
-                    <td>
-                        <textarea ng-model="employeeAsset.PURPOSE"> </textarea>
-                    </td>
-                    <td>
-                        <textarea ng-model="employeeAsset.REMARKS"> </textarea>
-                    </td>
-                    <td class="bs-checkbox " style="width: 36px; " data-field="state" tabindex="0">
-                        <div class="th-inner ">
-                            <label class="mt-checkbox mt-checkbox-single mt-checkbox-outline">
-                                <input class="" ng-model="employeeAsset.checked" type="checkbox"
-                                       ng-change="checkBoxChngfn()"/>
-                                <span></span>
-                            </label>
+
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label for="assetId">Asset Name</label>
+                                <select ng-model="employee" ng-change="astChange()" name="assetId" required="required" id="assetId" class="form-control">
+                                    <option value="" disabled="" selected="" class="ng-binding">Please select</option>   
+                                    <?php foreach ($asset as $key => $value) { ?>
+                                        <option value="<?php echo $key; ?>"><?php echo $value; ?></option> 
+                                    <?php } ?>
+                                </select>
+
+                                <span ng-model="rQ" ng-bind="rQ"></span>
+
+                            </div>
                         </div>
-                        <div class="fht-cell" style="width: 46px;"></div>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-    <div class="row" ng-show="assignShowHide">
-        <div class="col-sm-6">
-            <!--            <button class="pull-left btn btn-sm green mt-ladda-btn ladda-button mt-progress-demo" id="cancelBtn" ng-click="cancel()">
-                            Cancel
-                            <i class="fa fa-trash"></i>
-                        </button>-->
-        </div>
-        <div class="col-sm-6">
-            <button class="pull-right btn btn-sm green mt-ladda-btn ladda-button mt-progress-demo" id="assignBtn" ng-click="assign()">
-                Assign
-                <i class="fa fa-edit"></i>
-            </button>           
+
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label for="employeeId">Employee</label>                    
+                                <select name="employeeId" required="required" id="employeeId" class="form-control">
+                                    <option value="" disabled="" selected="" class="ng-binding">Please select</option>   
+                                    <?php foreach ($employee as $key => $value) { ?>
+                                        <option value="<?php echo $key; ?>"><?php echo $value; ?></option> 
+                                    <?php } ?>
+                                </select>                                    
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <?php print $this->formLabel($quantity); ?>
+                                <?php print $this->formElement($quantity); ?>
+                                <?php print $this->formElementErrors()->render($quantity, ['class' => 'help-block']); ?>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <?php print $this->formLabel($requestDate); ?>
+                                <?php print $this->formElement($requestDate); ?>
+                                <?php print $this->formElementErrors()->render($requestDate, ['class' => 'help-block']); ?>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <?php print $this->formLabel($purpose); ?>
+                                <?php print $this->formElement($purpose); ?>
+                                <?php print $this->formElementErrors()->render($purpose, ['class' => 'help-block']); ?>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class=" row">
+                        <div class="col-sm-1">
+                            <div class="form-group">
+                                <label for="returnable">Returnable</label>                    
+                                <input type="hidden" name="returnable" value="N">
+                                <input ng-model="rdChk" ng-click="rdClk()" type="checkbox" name="returnable"  id="returnable" class="form-control" value="Y">
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label for="returnDate">Return Date</label>
+                                <input ng-model="rdTxt" ng-disabled="!rdChk" type="text" name="returnDate" id="returnDate" class="form-control" disabled="disabled" value="">
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <?php print $this->formLabel($remarks); ?>
+                                <?php print $this->formElement($remarks); ?>
+                                <?php print $this->formElementErrors()->render($remarks, ['class' => 'help-block']); ?>
+                            </div>
+                        </div>
+                    </div>
+
+
+
+
+
+                    <?php
+                    print $this->formSubmit($submit);
+                    print $this->form()->closeTag();
+                    ?>
+                </div>
+            </div>
         </div>
     </div>
 </div>
-</div>
+
+
+

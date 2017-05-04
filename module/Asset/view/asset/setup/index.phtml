@@ -68,7 +68,11 @@ $this->headScript()
         <td>    
         #: (QUANTITY == null) ? '-' : QUANTITY #
         </td>
+        <td>    
+        #: (QUANTITY_BALANCE == null) ? '-' : QUANTITY_BALANCE #
+        </td>
         <td>
+        # if(QUANTITY==QUANTITY_BALANCE){#
         <a class="btn-edit"
         href="<?= $this->url("assetSetup", ["action" => "edit"]); ?>/#:ASSET_ID#" style="height:17px;">
         <i class="fa fa-edit"></i>
@@ -77,6 +81,7 @@ $this->headScript()
         href="<?= $this->url("assetSetup", ["action" => "delete"]); ?>/#:ASSET_ID#" id="bs_#:ASSET_ID #" style="height:17px;"> 
         <i class="fa fa-trash-o"></i></a>
         </a>
+        # } #
         </td>
         </tr>
     </script>

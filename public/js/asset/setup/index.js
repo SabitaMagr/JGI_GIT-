@@ -25,6 +25,7 @@
                 {field: "BRAND_NAME", title: "Brand", width: 130},
                 {field: "MODEL_NO", title: "Model No ", width: 140},
                 {field: "QUANTITY", title: "Quantity ", width: 140},
+                {field: "QUANTITY_BALANCE", title: " Stock Qty ", width: 140},
                 {title: "Action", width: 120}
             ],
         });
