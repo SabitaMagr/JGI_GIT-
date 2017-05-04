@@ -33,6 +33,7 @@ class Setup extends Model {
     const APPROVED_BY = 'APPROVED_BY';
     const APPROVED_DATE = 'APPROVED_DATE';
     const STATUS = 'STATUS';
+    const QUANTITY_BALANCE = 'QUANTITY_BALANCE';
 
     public $assetId;
     public $assetCode;
@@ -60,7 +61,7 @@ class Setup extends Model {
     public $approvedBy;
     public $approvedDate;
     public $status;
-
+    public $quantityBalance;
 
     public $mappings = [
     'assetId'=>self::ASSET_ID,
@@ -88,6 +89,7 @@ class Setup extends Model {
     'approved'=>self::APPROVED,
     'approvedBy'=>self::APPROVED_BY,
     'approvedDate'=>self::APPROVED_DATE,
-    'status'=>self::STATUS
+    'status'=>self::STATUS,
+    'quantityBalance'=>self::QUANTITY_BALANCE
     ];
 }

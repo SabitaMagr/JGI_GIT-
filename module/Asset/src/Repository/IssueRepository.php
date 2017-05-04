@@ -2,11 +2,14 @@
 
 namespace Asset\Repository;
 
+use Application\Helper\EntityHelper;
 use Application\Model\Model;
 use Application\Repository\RepositoryInterface;
 use Asset\Model\Issue;
 use Asset\Model\Setup;
+use Setup\Model\HrEmployees;
 use Zend\Db\Adapter\AdapterInterface;
+use Zend\Db\Sql\Expression;
 use Zend\Db\Sql\Sql;
 use Zend\Db\TableGateway\TableGateway;
 
@@ -21,7 +24,8 @@ class IssueRepository implements RepositoryInterface {
     }
 
     public function add(Model $model) {
-        
+        $this->tableGateway->insert($model->getArrayCopyForDB());
+        return true;
     }
 
     public function delete($id) {
@@ -29,59 +33,68 @@ class IssueRepository implements RepositoryInterface {
     }
 
     public function edit(Model $model, $id) {
+        $data = $model->getArrayCopyForDB();
         
+//        echo '<pre>';
+//        print_r($data);
+//        die();
+        
+        unset($data[Issue::ISSUE_ID]);
+        unset($data[Issue::CREATED_DATE]);
+        unset($data[Issue::STATUS]);
+        $this->tableGateway->update($data, [Issue::ISSUE_ID => $id]);
     }
 
     public function fetchAll() {
-        
+        $sql = new Sql($this->adapter);
+        $select = $sql->select();
+        $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(Issue::class, null, null, null, null, null, "AI"), false);
+        $select->from(['AI' => Issue::TABLE_NAME])
+                ->join(['S' => Setup::TABLE_NAME], 'S.' . Setup::ASSET_ID . '=AI.' . Issue::ASSET_ID, ["ASSET_EDESC" => new Expression("INITCAP(S.ASSET_EDESC)")], "left")
+                ->join(['E' => HrEmployees::TABLE_NAME], 'E.' . HrEmployees::EMPLOYEE_ID . '=AI.' . Issue::EMPLOYEE_ID, ["FIRST_NAME" => new Expression("INITCAP(E.FIRST_NAME)"),"MIDDLE_NAME" => new Expression("INITCAP(E.MIDDLE_NAME)"),"LAST_NAME" => new Expression("INITCAP(E.LAST_NAME)")], "left");
+
+        $select->where(["AI." . Setup::STATUS . "='E'"]);
+//        $select->order("A." . Setup::ASSET_EDESC);
+        $statement = $sql->prepareStatementForSqlObject($select);
+        $result = $statement->execute();
+        return $result;
     }
 
     public function fetchById($id) {
         
-    }
-    
-    
-    public function fetchallIssuableAsset(){
+        $sql = new Sql($this->adapter);
+        $select = $sql->select();
+        $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(Issue::class,
+                null,
+                [Issue::ISSUE_DATE,Issue::REQUEST_DATE,Issue::RETURN_DATE],null,null,null,"AI"),false);
+        $select->from(['AI' => Issue::TABLE_NAME]);
+        $select->where(["AI." . Issue::ISSUE_ID . "='".$id."'"]);
+        $statement = $sql->prepareStatementForSqlObject($select);
+        $result = $statement->execute();
+        return $result->current();
         
-        $sql = "SELECT * FROM HRIS_ASSET_SETUP";
+    }
+
+    public function fetchallIssuableAsset() {
+
+        $sql = "SELECT * FROM HRIS_ASSET_SETUP WHERE QUANTITY_BALANCE>0 AND STATUS='E' ";
         $statement = $this->adapter->query($sql);
         $result = $statement->execute();
         $list = [];
+        $list = [];
         foreach ($result as $row) {
-            $list[$row['ASSET_ID']]=$row;
+            $list['A'][$row['ASSET_ID']] = $row;
+            $list['B'][$row['ASSET_ID']] = $row['ASSET_EDESC'];
         }
         return $list;
-    
-        
-        
     }
 
     public function fetchAssetRemBalance($id) {
-        $sql = new Sql($this->adapter);
-        $select = $sql->select();
-//        $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(Setup::class, [Setup::ASSET_EDESC, Setup::ASSET_NDESC]),false);
-//        $select->columns([
-//            new Expression("A.ASSET_ID AS ASSET_ID"),
-//            new Expression("A.ASSET_CODE AS ASSET_CODE"),
-//            new Expression("A.ASSET_EDESC AS ASSET_EDESC"),
-//            new Expression("A.BRAND_NAME AS BRAND_NAME"),
-//            new Expression("A.MODEL_NO AS MODEL_NO"),
-//            new Expression("A.QUANTITY AS QUANTITY")
-//                ], true);
-        $select->from(['A' => Setup::TABLE_NAME]);
-//                ->join(['AG' => Group::TABLE_NAME], 'A.' . Setup::ASSET_GROUP_ID . '=AG.' . Group::ASSET_GROUP_ID, [Group::ASSET_GROUP_EDESC], "left");
-
-        $select->where(["A." . Setup::ASSET_ID . "='" . $id . "'"]);
-        $select->where(["A." . Setup::STATUS . "='E'"]);
-//        $select->order("A." . Setup::ASSET_EDESC);
-        $statement = $sql->prepareStatementForSqlObject($select);
-//        print_r($statement->getSql());
-//        die();
-//        die();SELECT A.* FROM HRIS_ASSET_SETUP A
+        $sql = "SELECT * FROM HRIS_ASSET_SETUP ";
+        $sql .= "WHERE ASSET_ID='$id'";
+        $statement = $this->adapter->query($sql);
         $result = $statement->execute();
-
         return $result->current();
-
     }
 
 }

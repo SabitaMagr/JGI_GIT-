@@ -42,6 +42,17 @@ class SetupRepository implements RepositoryInterface {
         unset($data[Setup::STATUS]);
         $this->tableGateway->update($data, [Setup::ASSET_ID => $id]);
     }
+    
+    
+    public function updateRemainingAssetBalance(Model $model, $id){
+        $data = $model->getArrayCopyForDB();
+        unset($data[Setup::ASSET_ID]);
+        unset($data[Setup::CREATED_DATE]);
+        unset($data[Setup::MODIFIED_DATE]);
+        unset($data[Setup::STATUS]);
+        $this->tableGateway->update($data, [Setup::ASSET_ID => $id]);
+        
+    }
 
     public function fetchAll() {
         $sql = new Sql($this->adapter);

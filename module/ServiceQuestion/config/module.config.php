@@ -2,37 +2,22 @@
 namespace ServiceQuestion;
 
 use Application\Controller\ControllerFactory;
-use Overtime\Controller\OvertimeApply;
-use Overtime\Controller\OvertimeStatus;
+use ServiceQuestion\Controller\EmpServiceQuestion;
 use Zend\Router\Http\Segment;
 
 return [
     'router' => [
         'routes' => [
-            'overtimeStatus' => [
+            'empServiceQuestion' => [
                 'type' => Segment::class,
                 'options' => [
-                    'route' => '/overtime/status[/:action[/:id]]',
+                    'route' => '/serviceQuestion/empServiceQuestion[/:action[/:id]]',
                     'constraints' => [
                         'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
                         'id' => '[0-9]+',
                     ],
                     'defaults' => [
-                        'controller' => OvertimeStatus::class,
-                        'action' => 'index'
-                    ],
-                ],
-            ],
-            'overtimeApply' => [
-                'type' => Segment::class,
-                'options' => [
-                    'route' => '/overtime/apply[/:action[/:id]]',
-                    'constraints' => [
-                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
-                        'id' => '[0-9]+',
-                    ],
-                    'defaults' => [
-                        'controller' => OvertimeApply::class,
+                        'controller' => EmpServiceQuestion::class,
                         'action' => 'index'
                     ],
                 ],
@@ -40,56 +25,29 @@ return [
         ],
     ],
     'navigation' => [
-        'overtimeStatus' => [
+        'empServiceQuestion' => [
                 [
-                'label' => "Overtime Request",
-                'route' => "overtimeStatus"
+                'label' => "Employee Service Question for Resignation",
+                'route' => "empServiceQuestion"
             ],
                 [
-                'label' => "Overtime Request",
-                'route' => "overtimeStatus",
+                'label' => "Employee Service Question for Resignation",
+                'route' => "empServiceQuestion",
                 'pages' => [
                         [
                         'label' => 'List',
-                        'route' => 'overtimeStatus',
+                        'route' => 'empServiceQuestion',
                         'action' => 'index',
                     ],
                         [
                         'label' => 'Add',
-                        'route' => 'overtimeStatus',
+                        'route' => 'empServiceQuestion',
                         'action' => 'add',
                     ],
                         [
                         'label' => 'Detail',
-                        'route' => 'overtimeStatus',
+                        'route' => 'empServiceQuestion',
                         'action' => 'view',
-                    ],
-                ],
-            ],
-        ],
-        'overtimeApply' => [
-                [
-                'label' => "Overtime Apply",
-                'route' => "overtimeApply"
-            ],
-                [
-                'label' => "Overtime Apply",
-                'route' => "overtimeApply",
-                'pages' => [
-                        [
-                        'label' => 'List',
-                        'route' => 'overtimeApply',
-                        'action' => 'index',
-                    ],
-                        [
-                        'label' => 'Add',
-                        'route' => 'overtimeApply',
-                        'action' => 'add',
-                    ],
-                        [
-                        'label' => 'Edit',
-                        'route' => 'overtimeApply',
-                        'action' => 'edit',
                     ],
                 ],
             ],
@@ -97,8 +55,7 @@ return [
     ],
     'controllers' => [
         'factories' => [
-            Controller\OvertimeStatus::class => ControllerFactory::class,
-            Controller\OvertimeApply::class => ControllerFactory::class
+            Controller\EmpServiceQuestion::class => ControllerFactory::class,
         ],
     ],
     'view_manager' => [

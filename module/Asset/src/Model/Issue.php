@@ -8,7 +8,7 @@ class Issue extends Model {
     const TABLE_NAME = 'HRIS_ASSET_ISSUE';
     const ISSUE_ID = 'ISSUE_ID';
     const ISSUE_DATE = 'ISSUE_DATE';
-    const ASSET_ID = 'ISSUE_DATE';
+    const ASSET_ID = 'ASSET_ID';
     const SNO = 'SNO';
     const EMPLOYEE_ID = 'EMPLOYEE_ID';
     const QUANTITY = 'QUANTITY';
@@ -65,7 +65,7 @@ class Issue extends Model {
     'employeeId'=>self::EMPLOYEE_ID,
     'quantity'=>self::QUANTITY,
     'requestDate'=>self::REQUEST_DATE,
-    'returnDate'=>self::RETURNED_DATE,
+    'returnDate'=>self::RETURN_DATE,
     'purpose'=>self::PURPOSE,
     'returnable'=>self::RETURNABLE,
     'autorizedBy'=>self::AUTHORIZED_BY,

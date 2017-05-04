@@ -64,6 +64,7 @@ class SetupController extends AbstractActionController {
                 $setup->status = 'E';
                 $setup->purchaseDate = Helper::getExpressionDate($setup->purchaseDate);
                 $setup->expiaryDate = Helper::getExpressionDate($setup->expiaryDate);
+                $setup->quantityBalance = $setup->quantity;
                 $this->repository->add($setup);
                 $this->flashmessenger()->addMessage("Asset Successfully added!!!");
                 return $this->redirect()->toRoute("assetSetup");
@@ -95,6 +96,7 @@ class SetupController extends AbstractActionController {
                 
                 $setup->modifiedDate = Helper::getcurrentExpressionDate();
                 $setup->modifiedBy = $this->employeeId;
+                $setup->quantityBalance = $setup->quantity;
                 
                 $this->repository->edit($setup, $id);
                 $this->flashmessenger()->addMessage("Asset Setup Successfully Updated!!!");
