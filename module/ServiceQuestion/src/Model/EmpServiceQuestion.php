@@ -3,7 +3,7 @@ namespace ServiceQuestion\Model;
 
 use Application\Model\Model;
 
-class EmpServiceQuestionAnswer extends Model{
+class EmpServiceQuestion extends Model{
     const TABLE_NAME = "HRIS_EMPLOYEE_SERVICE_QA";
     
     const EMP_QA_ID = "EMP_QA_ID";
