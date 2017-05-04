@@ -361,7 +361,7 @@ class RestfulService extends AbstractRestfulController {
                         $responseData = $this->pullHoliayWorkRequestStatusList($postedData->data);
                         break;
                     case "pullAssetBalance":
-                        $responseData = $this->pullAssetBalance($postedData->id);
+                        $responseData = $this->pullAssetBalance($postedData->data);
                         break;
                     case "getServerDate":
                         $responseData = $this->getServerDate($postedData->data);
@@ -374,6 +374,9 @@ class RestfulService extends AbstractRestfulController {
                         break;
                     case "pullOvertimeRequestStatusList":
                         $responseData = $this->pullOvertimeRequestStatusList($postedData->data);
+                        break;
+                    case "pullAssetIssueList":
+                        $responseData = $this->pullAssetIssueList($postedData->data);
                         break;
 
                     default:
@@ -3014,18 +3017,15 @@ class RestfulService extends AbstractRestfulController {
         ];
     }
 
-    public function pullAssetBalance($id) {
+    public function pullAssetBalance($data) {
+        $assetId=$data['assetId'];
 
         $assetIssueRepo = new IssueRepository($this->adapter);
-        $assetBalQuantity = $assetIssueRepo->fetchAssetRemBalance($id);
-
+        $assetRemQuantity = $assetIssueRepo->fetchAssetRemBalance($assetId);
 
         return [
             "success" => "true",
-            "data" => $assetBalQuantity,
-//            "id" => $id,
-//            "num" => 'count($recordList)',
-            "num" => 'test count'
+            "data" => $assetRemQuantity['QUANTITY_BALANCE']
         ];
     }
 
@@ -3229,4 +3229,36 @@ class RestfulService extends AbstractRestfulController {
             "recomApproveId" => $recomApproveId
         ];
     }
+    
+    public function pullAssetIssueList($data){
+        $employeeId = $data['employeeId'];
+        $branchId = $data['branchId'];
+        $departmentId = $data['departmentId'];
+        $designationId = $data['designationId'];
+        $positionId = $data['positionId'];
+        $serviceTypeId = $data['serviceTypeId'];
+        $companyId = $data['companyId'];
+        $assetId = $data['assetId'];
+        $employeeRepository = new EmployeeRepository($this->adapter);
+
+        $employeeResult = $employeeRepository->filterRecords($employeeId, $branchId, $departmentId, $designationId, $positionId, $serviceTypeId, -1, 1, $companyId);
+
+        $employeeList = [];
+        foreach ($employeeResult as $employeeRow) {
+            $employeeId = $employeeRow['EMPLOYEE_ID'];
+            
+            $employeeRow['QUANTITY'] = 0;
+            $employeeRow['RETURN_DATE'] = "";
+            $employeeRow['PURPOSE'] = "";
+            $employeeRow['REMARKS'] = "";
+
+            array_push($employeeList, $employeeRow);
+        }
+
+        return [
+            "success" => true,
+            "data" => $employeeList
+        ];
+    }
+    
 }
