@@ -5,6 +5,7 @@ namespace SelfService\Controller;
 use Application\Custom\CustomViewModel;
 use Application\Helper\Helper;
 use Application\Helper\LoanAdvanceHelper;
+use Application\Repository\VoucherRepository;
 use Exception;
 use Notification\Controller\HeadNotification;
 use Notification\Model\NotificationEvents;
@@ -259,9 +260,23 @@ class AdvanceRequest extends AbstractActionController {
             if (!$request->isPost()) {
                 throw new Exception("The request should be of type post");
             }
-            
             $postedData = $request->getPost();
-            $resultData = ["VOUCHER_NO" => "TEST"];
+            if (!isset($postedData['ADVANCE_REQUEST_ID'])) {
+                throw new Exception("The request should contain ADVANCE_ID");
+            }
+
+            $advanceRequestId = $postedData['ADVANCE_REQUEST_ID'];
+
+//            $voucherRepo = new VoucherRepository($this->adapter);
+//            $voucherNo = $voucherRepo->generateAdvanceVoucher($companyId, $formCode, $transactionDate, $tableName, $branchId, $createdBy, $createdDate, $accCode, $particulars, $amount, $subCode);
+            $voucherNo = "FCT/BPM/00086/73-74";
+
+            $advanceRequest = new AdvanceRequestModel();
+            $advanceRequest->voucherNo = $voucherNo;
+
+            $this->repository->edit($advanceRequest, $advanceRequestId);
+
+            $resultData = ["VOUCHER_NO" => $voucherNo];
             return new CustomViewModel(['success' => true, 'data' => $resultData, 'error' => '']);
         } catch (Exception $e) {
             return new CustomViewModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
