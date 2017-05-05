@@ -7,11 +7,11 @@ use Application\Model\Model;
 use Application\Repository\RepositoryInterface;
 use Asset\Model\Issue;
 use Asset\Model\Setup;
+use Setup\Model\HrEmployees;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Sql\Expression;
 use Zend\Db\Sql\Sql;
 use Zend\Db\TableGateway\TableGateway;
-use Setup\Model\HrEmployees;
 
 class IssueRepository implements RepositoryInterface {
 
@@ -33,7 +33,16 @@ class IssueRepository implements RepositoryInterface {
     }
 
     public function edit(Model $model, $id) {
+        $data = $model->getArrayCopyForDB();
         
+//        echo '<pre>';
+//        print_r($data);
+//        die();
+        
+        unset($data[Issue::ISSUE_ID]);
+        unset($data[Issue::CREATED_DATE]);
+        unset($data[Issue::STATUS]);
+        $this->tableGateway->update($data, [Issue::ISSUE_ID => $id]);
     }
 
     public function fetchAll() {
@@ -52,6 +61,17 @@ class IssueRepository implements RepositoryInterface {
     }
 
     public function fetchById($id) {
+        
+        $sql = new Sql($this->adapter);
+        $select = $sql->select();
+        $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(Issue::class,
+                null,
+                [Issue::ISSUE_DATE,Issue::REQUEST_DATE,Issue::RETURN_DATE],null,null,null,"AI"),false);
+        $select->from(['AI' => Issue::TABLE_NAME]);
+        $select->where(["AI." . Issue::ISSUE_ID . "='".$id."'"]);
+        $statement = $sql->prepareStatementForSqlObject($select);
+        $result = $statement->execute();
+        return $result->current();
         
     }
 

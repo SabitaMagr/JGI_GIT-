@@ -23,7 +23,9 @@ $this->headScript()
         ->appendFile($this->basePath('assets/global/plugins/nepalidate/nepali.datepicker.v2.1.min.js'))
         ->appendFile($this->basePath('js/nepali-datepicker-ext.js'));
 
+$this->headScript()->appendFile($this->basePath('assets/pages/scripts/ui-modals.min.js'));
 $this->headScript()->appendFile($this->basePath('js/angular.min.js'));
+$this->headScript()->appendFile($this->basePath('assets/global/plugins/bootstrap-master/ui-bootstrap-tpls-2.2.0.min.js'));
 $this->headScript()->appendFile($this->basePath('js/SelfService/advance-request/view.js'));
 
 $form->setAttribute('role', 'form');
@@ -231,4 +233,32 @@ $form->setAttribute('action', $this->url('advanceRequest', ['action' => 'add']))
 
         </div>
     </div>
+    <script type="text/ng-template" id="myModalContent.html">
+    <div class="modal-header">
+        <h3 class="modal-title" id="modal-title">Advance Voucher</h3>
+    </div>
+    <div class="modal-body" id="modal-body">
+        <div class="form-body">
+            <div class="form-group">
+                <label class="control-label">Form Type</label>
+                <select class="form-control">
+                <option value="01">Red</option>
+                <option value="02">Green</option>
+                </select>
+               <!-- <span class="help-block"> A block of help text. </span>-->
+            </div>
+            <div class="form-group">
+                <label class="control-label">Account Code</label>
+                <select class="form-control">
+                <option value="01">Red</option>
+                <option value="02">Green</option>
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary btn-sm" type="button" ng-click="ok()">OK</button>
+        <button class="btn btn-warning btn-sm" type="button" ng-click="cancel()">Cancel</button>
+    </div>
+    </script>
 </div>

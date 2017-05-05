@@ -8,8 +8,8 @@
     });
 })(window.jQuery, window.app);
 
-angular.module("hris", [])
-        .controller("advanceDetailController", function ($scope, $http) {
+angular.module("hris", ['ui.bootstrap'])
+        .controller("advanceDetailController", function ($scope, $http, $uibModal) {
             var employeeId = angular.element(document.getElementById('form-employeeId')).val();
             var advanceId = angular.element(document.getElementById('form-advanceId')).val();
             var reqAmt = angular.element(document.getElementById("form-requestedAmount")).val();
@@ -38,7 +38,9 @@ angular.module("hris", [])
             $scope.advanceRequestData = document.advanceRequestData;
             var generateVoucherFn = function () {
                 App.blockUI({target: "#hris-page-content"});
-                window.app.pullDataById(document.wsGenerateAdvanceVoucher, {}).then(function (response) {
+                window.app.pullDataById(document.wsGenerateAdvanceVoucher, {
+                    ADVANCE_REQUEST_ID: $scope.advanceRequestData.ADVANCE_REQUEST_ID
+                }).then(function (response) {
                     App.unblockUI("#hris-page-content");
                     if (response.success) {
                         $scope.$apply(function () {
@@ -60,15 +62,45 @@ angular.module("hris", [])
                 });
             };
             var printVoucherFn = function () {
-                alert("print");
+                
             };
 
+            var showNGModal = function () {
+                var modalInstance = $uibModal.open({
+                    ariaLabelledBy: 'modal-title',
+                    ariaDescribedBy: 'modal-body',
+                    templateUrl: 'myModalContent.html',
+                    resolve: {
+                        fileTypes: function () {
+                            return $scope.fileTypes;
+                        }
+                    },
+                    controller: function ($scope, $uibModalInstance, fileTypes) {
+                        $scope.formCode = null;
+                        $scope.accCode = null;
+
+                        $scope.ok = function () {
+                            $uibModalInstance.close({formCode: $scope.formCode, accCode: $scope.accCode});
+                        };
+                        $scope.cancel = function () {
+                            $uibModalInstance.dismiss('cancel');
+                        };
+                    }
+                });
+                modalInstance.rendered.then(function () {
+
+                });
+                modalInstance.result.then(function (selectedItem) {
+                    generateVoucherFn();
+                }, function () {
+                    console.log("Modal Action Cancelled");
+                });
+            };
             $scope.voucherBtn = {
                 display: $scope.advanceRequestData.STATUS === 'AP',
                 text: ($scope.advanceRequestData.VOUCHER_NO == null) ? "Generate Voucher" : "Print Voucher",
-                fn: ($scope.advanceRequestData.VOUCHER_NO == null) ? generateVoucherFn : printVoucherFn
+                fn: ($scope.advanceRequestData.VOUCHER_NO == null) ? showNGModal : printVoucherFn
             };
-
 
 
 

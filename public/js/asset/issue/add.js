@@ -7,7 +7,7 @@
     app.addDatePicker($('#issueDate'));
     app.addDatePicker($('#requestDate'));
     app.addDatePicker($('#returnDate'));
-        $('select').select2();
+//        $('select').select2();
         
 //        var inputFieldId = "assetCode";
 //        var formId = "assetSetup-form";

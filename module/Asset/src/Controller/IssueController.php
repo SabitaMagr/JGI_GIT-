@@ -98,6 +98,41 @@ class IssueController extends AbstractActionController {
         if ($id == 0) {
             $this->redirect()->toRoute('assetIssue');
         }
+
+        $this->initializeForm();
+        $request = $this->getRequest();
+        $issue = new Issue();
+        if (!$request->isPost()) {
+            $issue->exchangeArrayFromDB($this->repository->fetchById($id));
+            $this->form->bind($issue);
+        } else {
+            $this->form->setData($request->getPost());
+            if ($this->form->isValid()) {
+                $issue->exchangeArrayFromForm($this->form->getData());
+                $issue->modifiedDate = Helper::getcurrentExpressionDate();
+                $issue->modifiedBy = $this->employeeId;
+
+//                echo '<pre>';
+//                print_r($issue);
+//                die();
+                $this->repository->edit($issue, $id);
+                $this->flashmessenger()->addMessage("Asset issue Sucessfully updated");
+                return $this->redirect()->toRoute("assetIssue");
+            }
+        }
+
+        return Helper::addFlashMessagesToArray($this, [
+                    'form' => $this->form,
+                    'editVal' => $issue,
+                    'asset' => ApplicationEntityHelper::getTableKVListWithSortOption($this->adapter, Setup::TABLE_NAME, Setup::ASSET_ID, [Setup::ASSET_EDESC], ["STATUS" => "E"], Setup::ASSET_EDESC, "ASC", NULL, FALSE, TRUE),
+//            'asset' => $asset['B'],
+                    'employee' => ApplicationEntityHelper::getTableKVListWithSortOption($this->adapter, HrEmployees::TABLE_NAME, "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => 'E', 'RETIRED_FLAG' => 'N'], "FIRST_NAME", "ASC", " ", FALSE, TRUE),
+                    'id' => $id
+        ]);
+
+        echo "<pre>";
+        print_r($issue);
+        die();
     }
 
 }

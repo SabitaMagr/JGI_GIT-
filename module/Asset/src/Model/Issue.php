@@ -65,7 +65,7 @@ class Issue extends Model {
     'employeeId'=>self::EMPLOYEE_ID,
     'quantity'=>self::QUANTITY,
     'requestDate'=>self::REQUEST_DATE,
-    'returnDate'=>self::RETURNED_DATE,
+    'returnDate'=>self::RETURN_DATE,
     'purpose'=>self::PURPOSE,
     'returnable'=>self::RETURNABLE,
     'autorizedBy'=>self::AUTHORIZED_BY,

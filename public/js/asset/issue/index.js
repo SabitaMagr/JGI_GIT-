@@ -24,7 +24,7 @@
                 {field: "FIRST_NAME", title: "Employee ", width: 140},
                 {field: "ISSUE_DATE", title: "Issue Date", width: 140},
                 {field: "QUANTITY", title: "Quantity ", width: 140},
-                {field: "RETURNED_DATE", title: "ReturnDate", width: 130},
+                {field: "RETURN_DATE", title: "ReturnDate", width: 130},
                 {title: "Action", width: 120}
             ],
         });

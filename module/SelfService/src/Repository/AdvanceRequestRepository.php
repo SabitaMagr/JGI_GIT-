@@ -4,14 +4,14 @@ namespace SelfService\Repository;
 
 use Application\Model\Model;
 use Application\Repository\RepositoryInterface;
-use Zend\Db\Adapter\AdapterInterface;
+use Exception;
 use SelfService\Model\AdvanceRequest;
-use Zend\Db\TableGateway\TableGateway;
+use Setup\Model\Advance;
+use Setup\Model\HrEmployees;
+use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Sql\Expression;
 use Zend\Db\Sql\Sql;
-use Setup\Model\HrEmployees;
-use Setup\Model\Advance;
-use Application\Helper\EntityHelper;
+use Zend\Db\TableGateway\TableGateway;
 
 class AdvanceRequestRepository implements RepositoryInterface {
 
@@ -32,7 +32,7 @@ class AdvanceRequestRepository implements RepositoryInterface {
     }
 
     public function edit(Model $model, $id) {
-        
+        return $this->tableGateway->update($model->getArrayCopyForDB(), [AdvanceRequest::ADVANCE_REQUEST_ID => $id]);
     }
 
     public function fetchAll() {
@@ -57,14 +57,15 @@ class AdvanceRequestRepository implements RepositoryInterface {
             new Expression("AR.APPROVED_REMARKS AS APPROVED_REMARKS"),
             new Expression("AR.RECOMMENDED_REMARKS AS RECOMMENDED_REMARKS"),
             new Expression("AR.ADVANCE_ID AS ADVANCE_ID"),
-            new Expression("AR.TERMS AS TERMS")
+            new Expression("AR.TERMS AS TERMS"),
+            new Expression("AR.VOUCHER_NO AS VOUCHER_NO"),
                 ], true);
 
         $select->from(['AR' => AdvanceRequest::TABLE_NAME])
-                ->join(['E' => HrEmployees::TABLE_NAME], "E." . HrEmployees::EMPLOYEE_ID . "=AR." . AdvanceRequest::EMPLOYEE_ID, ["FIRST_NAME"=>new Expression("INITCAP(E.FIRST_NAME)"),"MIDDLE_NAME"=>new Expression("INITCAP(E.MIDDLE_NAME)"),"LAST_NAME"=>new Expression("INITCAP(E.LAST_NAME)")])
-                ->join(['A' => Advance::TABLE_NAME], "A." . Advance::ADVANCE_ID . "=AR." . AdvanceRequest::ADVANCE_ID, [Advance::ADVANCE_CODE, "ADVANCE_NAME"=>new Expression("INITCAP(A.ADVANCE_NAME)")])
-                ->join(['E1' => "HRIS_EMPLOYEES"], "E1.EMPLOYEE_ID=AR.RECOMMENDED_BY", ['FN1' =>new Expression("INITCAP(E1.FIRST_NAME)"), 'MN1' =>new Expression("INITCAP(E1.MIDDLE_NAME)"), 'LN1' =>new Expression("INITCAP(E1.LAST_NAME)")], "left")
-                ->join(['E2' => "HRIS_EMPLOYEES"], "E2.EMPLOYEE_ID=AR.APPROVED_BY", ['FN2' =>new Expression("INITCAP(E2.FIRST_NAME)"), 'MN2' =>new Expression("INITCAP(E2.MIDDLE_NAME)"), 'LN2' =>new Expression("INITCAP(E2.LAST_NAME)")], "left");
+                ->join(['E' => HrEmployees::TABLE_NAME], "E." . HrEmployees::EMPLOYEE_ID . "=AR." . AdvanceRequest::EMPLOYEE_ID, ["FIRST_NAME" => new Expression("INITCAP(E.FIRST_NAME)"), "MIDDLE_NAME" => new Expression("INITCAP(E.MIDDLE_NAME)"), "LAST_NAME" => new Expression("INITCAP(E.LAST_NAME)")])
+                ->join(['A' => Advance::TABLE_NAME], "A." . Advance::ADVANCE_ID . "=AR." . AdvanceRequest::ADVANCE_ID, [Advance::ADVANCE_CODE, "ADVANCE_NAME" => new Expression("INITCAP(A.ADVANCE_NAME)")])
+                ->join(['E1' => "HRIS_EMPLOYEES"], "E1.EMPLOYEE_ID=AR.RECOMMENDED_BY", ['FN1' => new Expression("INITCAP(E1.FIRST_NAME)"), 'MN1' => new Expression("INITCAP(E1.MIDDLE_NAME)"), 'LN1' => new Expression("INITCAP(E1.LAST_NAME)")], "left")
+                ->join(['E2' => "HRIS_EMPLOYEES"], "E2.EMPLOYEE_ID=AR.APPROVED_BY", ['FN2' => new Expression("INITCAP(E2.FIRST_NAME)"), 'MN2' => new Expression("INITCAP(E2.MIDDLE_NAME)"), 'LN2' => new Expression("INITCAP(E2.LAST_NAME)")], "left");
 
         $select->where([
             "AR.ADVANCE_REQUEST_ID=" . $id
@@ -94,10 +95,10 @@ class AdvanceRequestRepository implements RepositoryInterface {
                 ], true);
 
         $select->from(['AR' => AdvanceRequest::TABLE_NAME])
-                ->join(['E' => HrEmployees::TABLE_NAME], "E." . HrEmployees::EMPLOYEE_ID . "=AR." . AdvanceRequest::EMPLOYEE_ID, ["FIRST_NAME"=>new Expression("INITCAP(E.FIRST_NAME)"),"MIDDLE_NAME"=>new Expression("INITCAP(E.MIDDLE_NAME)"),"LAST_NAME"=>new Expression("INITCAP(E.LAST_NAME)")])
-                ->join(['A' => Advance::TABLE_NAME], "A." . Advance::ADVANCE_ID . "=AR." . AdvanceRequest::ADVANCE_ID, [Advance::ADVANCE_CODE, "ADVANCE_NAME"=>new Expression("INITCAP(A.ADVANCE_NAME)")])
-                ->join(['E1' => "HRIS_EMPLOYEES"], "E1.EMPLOYEE_ID=AR.RECOMMENDED_BY", ['FN1' =>new Expression("INITCAP(E1.FIRST_NAME)"), 'MN1' =>new Expression("INITCAP(E1.MIDDLE_NAME)"), 'LN1' =>new Expression("INITCAP(E1.LAST_NAME)")], "left")
-                ->join(['E2' => "HRIS_EMPLOYEES"], "E2.EMPLOYEE_ID=AR.APPROVED_BY", ['FN2' =>new Expression("INITCAP(E2.FIRST_NAME)"), 'MN2' =>new Expression("INITCAP(E2.MIDDLE_NAME)"), 'LN2' =>new Expression("INITCAP(E2.LAST_NAME)")], "left");
+                ->join(['E' => HrEmployees::TABLE_NAME], "E." . HrEmployees::EMPLOYEE_ID . "=AR." . AdvanceRequest::EMPLOYEE_ID, ["FIRST_NAME" => new Expression("INITCAP(E.FIRST_NAME)"), "MIDDLE_NAME" => new Expression("INITCAP(E.MIDDLE_NAME)"), "LAST_NAME" => new Expression("INITCAP(E.LAST_NAME)")])
+                ->join(['A' => Advance::TABLE_NAME], "A." . Advance::ADVANCE_ID . "=AR." . AdvanceRequest::ADVANCE_ID, [Advance::ADVANCE_CODE, "ADVANCE_NAME" => new Expression("INITCAP(A.ADVANCE_NAME)")])
+                ->join(['E1' => "HRIS_EMPLOYEES"], "E1.EMPLOYEE_ID=AR.RECOMMENDED_BY", ['FN1' => new Expression("INITCAP(E1.FIRST_NAME)"), 'MN1' => new Expression("INITCAP(E1.MIDDLE_NAME)"), 'LN1' => new Expression("INITCAP(E1.LAST_NAME)")], "left")
+                ->join(['E2' => "HRIS_EMPLOYEES"], "E2.EMPLOYEE_ID=AR.APPROVED_BY", ['FN2' => new Expression("INITCAP(E2.FIRST_NAME)"), 'MN2' => new Expression("INITCAP(E2.MIDDLE_NAME)"), 'LN2' => new Expression("INITCAP(E2.LAST_NAME)")], "left");
 
         $select->where([
             "E.EMPLOYEE_ID=" . $employeeId
