@@ -153,7 +153,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                     <div class="col-sm-6">
                         <div class="form-group form-group-default-select2">
                             <?php print $this->formLabel($branchId); ?>
-                            <span class="required" aria-required="true">*</span>
+                            <!--<span class="required" aria-required="true">*</span>-->
                             <?php print $this->formElement($branchId); ?>
                         </div>
                         <?php print $this->formElementErrors()->render($branchId, ['class' => 'help-block error']) ?>
@@ -161,7 +161,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                     <div class="col-sm-6">
                         <div class="form-group form-group-default-select2">
                             <?php print $this->formLabel($designationId); ?>
-                            <span class="required" aria-required="true">*</span>
+                            <!--<span class="required" aria-required="true">*</span>-->
                             <?php print $this->formElement($designationId); ?>
                         </div>
                         <?php print $this->formElementErrors()->render($designationId, ['class' => 'help-block error']) ?>
