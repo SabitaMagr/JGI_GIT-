@@ -54,26 +54,33 @@ if ($this->messages) {
                                 </select>
                             </div>
                         </div>
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label for="questionDate">Date</label>
+                                <span class="required" aria-required="true">*</span>
+                                <input type="text" name="questionDate" class="form-control"/>
+                            </div>
+                        </div>
                     </div>
                     <div class="row">
                         <div class="col-sm-12" ng-repeat="serviceQuestion in serviceQuestionList">
                             <div class="form-group" ng-style="serviceQuestion.subQuestion === true && {'margin-bottom': '0px'}">
                                 <label>{{serviceQuestion.sn}}. <span ng-bind="serviceQuestion.questionEdesc"></span></label>
-                                <input type="hidden" name="serviceQuestion[]" value="{{serviceQuestion.qaId}}"/>
-                                <input ng-if="serviceQuestion.subQuestion==true" type="hidden" name="serviceQuestionAnswer[]" value=""/>
-                                <input ng-if="serviceQuestion.subQuestion==false" type="text" name="serviceQuestionAnswer[]" value="" class="form-control"/>
+                                <input ng-if="serviceQuestion.subQuestion==true" type="hidden" name="serviceQuestionAnswer[{{serviceQuestion.qaId}}]" value=""/>
+                                <input ng-if="serviceQuestion.subQuestion==false" type="text" name="serviceQuestionAnswer[{{serviceQuestion.qaId}}]" value="" class="form-control"/>
                             </div>
                             <div ng-if="serviceQuestion.subQuestion==true" ng-repeat="subQuestion in serviceQuestion.subQuestionList">
                                 <div class="form-group">
                                     <label>{{subQuestion.sn}}. <span ng-bind="subQuestion.questionEdesc"></span></label>
-                                    <input type="hidden" name="serviceQuestion[]" value="{{subQuestion.qaId}}"/>
-                                    <input ng-if="subQuestion.subQuestion==true" type="hidden" name="serviceQuestionAnswer[]" value=""/>
-                                    <input ng-if="subQuestion.subQuestion==false" type="text" name="serviceQuestionAnswer[]" value="" class="form-control"/>
+                                    <input ng-if="subQuestion.subQuestion==true" type="hidden" name="serviceQuestionAnswer[{{subQuestion.qaId}}]" value=""/>
+                                    <input ng-if="subQuestion.subQuestion==false" type="text" name="serviceQuestionAnswer[{{subQuestion.qaId}}]" value="" class="form-control"/>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <input type="submit" name="submit" class="btn btn-success" value="SUBMIT">
+                    <div class="form-group">
+                        <input type="submit" name="submit" class="btn btn-success" value="SUBMIT">
+                    </div>
                 </form>
             </div>
 

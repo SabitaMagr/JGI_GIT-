@@ -10,10 +10,9 @@ $this->headLink()
 $this->headScript()
         ->appendFile($this->basePath('jszip/dist/jszip.min.js'))
         ->appendFile($this->basePath('telerik_kendoui/js/kendo.all.min.js'))
-        ->appendFile($this->basePath('js/setup/academic-program/index.js'))
+        ->appendFile($this->basePath('js/service-question/emp-service-question/index.js'))
         ->appendFile($this->basePath('assets/global/plugins/bootstrap-confirmation/bootstrap-confirmation.min.js'));
 ?>
-
 <?php if ($this->messages) { ?>
     <script>
         document.messages =<?php echo json_encode($this->messages); ?>
@@ -21,11 +20,11 @@ $this->headScript()
 <?php } ?>
 
 <script>
+    document.list =<?php echo json_encode($list); ?>
 </script>
 <div class="page-bar">
 <?= $this->navigation('Zend\Navigation\empServiceQuestion')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
-
 
 <div class="margin-top-20">
     <div class="table-toolbar">
@@ -53,21 +52,29 @@ $this->headScript()
         </div>
     </div>
 
-    <div id="academicProgramTable">
+    <div id="serviceQuestionTable">
     </div>
 
     <script id="rowTemplate" type="text/x-kendo-tmpl">
         <tr>
+         <td>
+        #: (FIRST_NAME == null) ? ' ' : FIRST_NAME #
+        #: (MIDDLE_NAME == null) ? ' ' : MIDDLE_NAME #
+        #: (LAST_NAME == null) ? ' ' : LAST_NAME #
+        </td>
         <td>
-        #: (ACADEMIC_PROGRAM_NAME == null) ? '-' : ACADEMIC_PROGRAM_NAME #
+        #: (SERVICE_EVENT_TYPE_NAME == null) ? '-' : SERVICE_EVENT_TYPE_NAME #
+        </td>
+        <td>
+        #: (QA_DATE == null) ? '-' : QA_DATE #
         </td>
         <td>
         <a class="btn-edit"
-        href="<?= $this->url("academicProgram", ["action" => "edit"]) ?>/#:ACADEMIC_PROGRAM_ID #" style="height:17px;">
+        href="<?= $this->url("empServiceQuestion", ["action" => "edit"]) ?>/#:EMP_QA_ID #" style="height:17px;">
         <i class="fa fa-edit"></i>
         </a> 
         <a class="btn-delete confirmation"
-        href="<?= $this->url("academicProgram", ["action" => "delete"]); ?>/#:ACADEMIC_PROGRAM_ID #" id="bs_#:ACADEMIC_PROGRAM_ID #" style="height:17px;">
+        href="<?= $this->url("empServiceQuestion", ["action" => "delete"]); ?>/#:EMP_QA_ID #" id="bs_#:EMP_QA_ID #" style="height:17px;">
         <i class="fa fa-trash-o"></i></a>
         </a>
         </td>

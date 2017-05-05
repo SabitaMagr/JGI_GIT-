@@ -9,7 +9,6 @@ $this->headScript()->appendFile($this->basePath('js/setup/employee/view.js'))
 <?php
 $formOne->setAttribute('role', 'form');
 $formOne->setAttribute('id', 'form1');
-$employeeCode = $formOne->get('employeeCode');
 $companyId = $formOne->get('companyId');
 /**
  * Personal Information
@@ -178,26 +177,14 @@ echo json_encode($menu);
                 </div>
 
                 <div class="col-xs-12 col-sm-3 col-md-3 col-box">
-                    <div class="row bottomgap">
-
+                     <div class="row bottomgap">
                         <div class="form-group">
-                            <div class="col-xs-6 col-sm-6 col-md-6 rightalign">
-                                <?php print $this->formLabel($employeeCode); ?></div>
+                            <div class="col-xs-6 col-sm-6 col-md-6 rightalign"> 
+                                <?php print $this->formLabel($firstName) ?></div>
                             <div class="col-xs-6 col-sm-6 col-md-6 cgap">
-                                <?php echo $employeeData[\Setup\Model\HrEmployees::EMPLOYEE_CODE]; ?>
-                            </div>               
+                                <?php print $employeeData[\Setup\Model\HrEmployees::FIRST_NAME]; ?></div>
                         </div>
-                    </div>   
-
-                    <div class="row bottomgap">
-                        <div class="form-group <?= empty($middleName->getMessages()) ? "" : "error" ?>">
-                            <div class="col-xs-6 col-sm-6  col-md-6 rightalign">
-                                <?php print $this->formLabel($middleName) ?></div>
-                            <div class="col-xs-6 col-sm-6 col-md-6 cgap">
-                                <?php print $employeeData[\Setup\Model\HrEmployees::MIDDLE_NAME]; ?></div>
-                        </div>
-                    </div> 
-
+                    </div>
 
                     <div class="row bottomgap">
                         <div class="col-xs-6 col-sm-6  col-md-6 rightalign">
@@ -240,15 +227,15 @@ echo json_encode($menu);
                 </div>
 
                 <div class="col-xs-12 col-sm-3 col-md-3 col-box">
-
                     <div class="row bottomgap">
-                        <div class="form-group">
-                            <div class="col-xs-6 col-sm-6 col-md-6 rightalign"> 
-                                <?php print $this->formLabel($firstName) ?></div>
+                        <div class="form-group <?= empty($middleName->getMessages()) ? "" : "error" ?>">
+                            <div class="col-xs-6 col-sm-6  col-md-6 rightalign">
+                                <?php print $this->formLabel($middleName) ?></div>
                             <div class="col-xs-6 col-sm-6 col-md-6 cgap">
-                                <?php print $employeeData[\Setup\Model\HrEmployees::FIRST_NAME]; ?></div>
+                                <?php print $employeeData[\Setup\Model\HrEmployees::MIDDLE_NAME]; ?></div>
                         </div>
                     </div>
+                    
                     <div class="row bottomgap">
                         <div class="form-group  <?= empty($nameNepali->getMessages()) ? "" : "error" ?>">
                             <div class="col-xs-6 col-sm-6  col-md-6 rightalign">

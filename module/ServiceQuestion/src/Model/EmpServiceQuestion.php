@@ -8,10 +8,7 @@ class EmpServiceQuestion extends Model{
     
     const EMP_QA_ID = "EMP_QA_ID";
     const EMPLOYEE_ID = "EMPLOYEE_ID";
-    const QA_ID = "QA_ID";
     const QA_DATE = "QA_DATE";
-    const ANSWER = "ANSWER";
-    const REMARKS = "REMARKS";
     const STATUS = "STATUS";
     const COMPANY_ID = "COMPANY_ID";
     const BRANCH_ID = "BRANCH_ID";
@@ -23,13 +20,12 @@ class EmpServiceQuestion extends Model{
     const APPROVED = "APPROVED";
     const APPROVED_BY = "APPROVED_BY";
     const APPROVED_DATE = "APPROVED_DATE";
+    const SERVICE_EVENT_TYPE_ID = "SERVICE_EVENT_TYPE_ID";
+    const REMARKS = "REMARKS";
     
     public $empQaId;
     public $employeeId;
-    public $qaId;
     public $qaDate;
-    public $answer;
-    public $remarks;
     public $status;
     public $companyId;
     public $branchId;
@@ -41,14 +37,13 @@ class EmpServiceQuestion extends Model{
     public $approvedBy;
     public $approvedDate;
     public $approved;
+    public $serviceEventTypeId;
+    public $remarks;
     
     public $mappings = [
         'empQaId'=>self::EMP_QA_ID,
         'employeeId'=>self::EMPLOYEE_ID,
-        'qaId'=>self::QA_ID,
         'qaDate'=>self::QA_DATE,
-        'answer'=>self::ANSWER,
-        'remarks'=>self::REMARKS,
         'status'=>self::STATUS,
         'companyId'=>self::COMPANY_ID,
         'branchId'=>self::BRANCH_ID,
@@ -59,7 +54,9 @@ class EmpServiceQuestion extends Model{
         'checked'=>self::CHECKED,
         'approvedBy'=>self::APPROVED_BY,
         'approvedDate'=>self::APPROVED_DATE,
-        'approved'=>self::APPROVED
+        'approved'=>self::APPROVED,
+        'remarks'=>self::REMARKS,
+        'serviceEventTypeId'=>self::SERVICE_EVENT_TYPE_ID
     ];
 }
 
