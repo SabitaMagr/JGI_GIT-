@@ -10,7 +10,7 @@ $this->headLink()
 $this->headScript()
         ->appendFile($this->basePath('jszip/dist/jszip.min.js'))
         ->appendFile($this->basePath('telerik_kendoui/js/kendo.all.min.js'))
-        ->appendFile($this->basePath('js/setup/service-question/index.js'))
+        ->appendFile($this->basePath('js/setup/academic-program/index.js'))
         ->appendFile($this->basePath('assets/global/plugins/bootstrap-confirmation/bootstrap-confirmation.min.js'));
 ?>
 
@@ -21,20 +21,20 @@ $this->headScript()
 <?php } ?>
 
 <script>
-    document.serviceQuestion =<?= json_encode($serviceQuestion) ?>;
 </script>
 <div class="page-bar">
-    <?= $this->navigation('Zend\Navigation\serviceQuestion')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
+<?= $this->navigation('Zend\Navigation\empServiceQuestion')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
+
 
 <div class="margin-top-20">
     <div class="table-toolbar">
         <div class="row">
             <div class="col-md-6">
                 <div class="btn-group">
-                    <a href="<?= $this->url('serviceQuestion', ['action' => 'add']) ?>" id="sample_editable_1_new"
-                       class="btn green"> Add New <i class="fa fa-plus"></i>
-<!--                        <i class="fa fa-plus"></i>-->
+                    <a href="<?= $this->url('empServiceQuestion', ['action' => 'add']) ?>" id="sample_editable_1_new"
+                       class="btn green"> Add New
+                        <i class="fa fa-plus"></i>
                     </a>
                 </div>
             </div>
@@ -43,7 +43,7 @@ $this->headScript()
                     <button class="btn green btn-outline dropdown-toggle" data-toggle="dropdown">Tools
                         <i class="fa fa-angle-down"></i>
                     </button>
-                    <ul class="dropdown-menu pull-right">                      
+                    <ul class="dropdown-menu pull-right">
                         <li>
                             <a href="javascript:;" id="export"> Export to Excel </a>
                         </li>
@@ -52,30 +52,22 @@ $this->headScript()
             </div>
         </div>
     </div>
-    <div id="serviceQuestionTable">
 
+    <div id="academicProgramTable">
     </div>
+
     <script id="rowTemplate" type="text/x-kendo-tmpl">
         <tr>
-        <td>    
-        #: (QUESTION_EDESC == null) ? '-' : QUESTION_EDESC #
-        </td>
-        <td>    
-        #: (PARENT_QUESTION_EDESC == null) ? '-' : PARENT_QUESTION_EDESC #
-        </td>
-        <td>    
-        #: (SERVICE_EVENT_TYPE_NAME == null) ? '-' : SERVICE_EVENT_TYPE_NAME #
-        </td>
-        <td>    
-        #: (QA_INDEX == null) ? '-' : QA_INDEX #
+        <td>
+        #: (ACADEMIC_PROGRAM_NAME == null) ? '-' : ACADEMIC_PROGRAM_NAME #
         </td>
         <td>
         <a class="btn-edit"
-        href="<?= $this->url("serviceQuestion", ["action" => "edit"]); ?>/#:QA_ID#" style="height:17px;">
+        href="<?= $this->url("academicProgram", ["action" => "edit"]) ?>/#:ACADEMIC_PROGRAM_ID #" style="height:17px;">
         <i class="fa fa-edit"></i>
-        </a>
+        </a> 
         <a class="btn-delete confirmation"
-        href="<?= $this->url("serviceQuestion", ["action" => "delete"]); ?>/#:QA_ID#" id="bs_#:QA_ID #" style="height:17px;"> 
+        href="<?= $this->url("academicProgram", ["action" => "delete"]); ?>/#:ACADEMIC_PROGRAM_ID #" id="bs_#:ACADEMIC_PROGRAM_ID #" style="height:17px;">
         <i class="fa fa-trash-o"></i></a>
         </a>
         </td>

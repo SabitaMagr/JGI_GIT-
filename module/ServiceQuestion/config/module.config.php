@@ -27,11 +27,11 @@ return [
     'navigation' => [
         'empServiceQuestion' => [
                 [
-                'label' => "Employee Service Question for Resignation",
+                'label' => "Employee Service Question",
                 'route' => "empServiceQuestion"
             ],
                 [
-                'label' => "Employee Service Question for Resignation",
+                'label' => "Employee Service Question",
                 'route' => "empServiceQuestion",
                 'pages' => [
                         [

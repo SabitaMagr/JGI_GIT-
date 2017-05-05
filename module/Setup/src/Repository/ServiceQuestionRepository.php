@@ -46,7 +46,7 @@ class ServiceQuestionRepository implements RepositoryInterface {
         
         $select->where(["QA.STATUS='E'"]);
         $select->order([
-            "QA." . ServiceQuestion::QUESTION_EDESC => Select::ORDER_ASCENDING,
+            "QA." . ServiceQuestion::QA_ID => Select::ORDER_ASCENDING,
         ]);
         $statement = $sql->prepareStatementForSqlObject($select);
         $result = $statement->execute();
@@ -58,6 +58,32 @@ class ServiceQuestionRepository implements RepositoryInterface {
             $select->where([ServiceQuestion::QA_ID => $id]);
         });
         return $result->current();
+    }
+    public function fetchByServiceEventTypeId($serviceEventTypeId,$parentQaId=null){
+        $sql = new Sql($this->adapter);
+        $select = $sql->select();
+        
+        if($parentQaId!=null){
+            $where = " AND QA.PARENT_QA_ID=".$parentQaId;
+        }else{
+            $where = " AND QA.PARENT_QA_ID IS NULL";
+        }
+        
+        $select->from(['QA' => ServiceQuestion::TABLE_NAME]);
+        $select->join(['ST' => ServiceEventType::TABLE_NAME], "QA." . ServiceQuestion::SERVICE_EVENT_TYPE_ID . "=ST.".ServiceEventType::SERVICE_EVENT_TYPE_ID, ['SERVICE_EVENT_TYPE_NAME' => new Expression('INITCAP(ST.SERVICE_EVENT_TYPE_NAME)')], 'left')
+                ->join(['PQA' => ServiceQuestion::TABLE_NAME], "QA." . ServiceQuestion::PARENT_QA_ID . "=PQA.".ServiceQuestion::QA_ID, ['PARENT_QUESTION_EDESC'=>ServiceQuestion::QUESTION_EDESC,'PARENT_QUESTION_NDESC'=>ServiceQuestion::QUESTION_NDESC], 'left');
+        
+        $select->where([
+            "QA.STATUS='E'",
+            "QA.SERVICE_EVENT_TYPE_ID=".$serviceEventTypeId.$where
+            ]);
+        $select->order([
+            "QA." . ServiceQuestion::QA_INDEX => Select::ORDER_ASCENDING,
+        ]);
+        $statement = $sql->prepareStatementForSqlObject($select);
+//        print_r($statement->getSql()); die();
+        $result = $statement->execute();
+        return $result;
     }
 
     public function delete($id) {

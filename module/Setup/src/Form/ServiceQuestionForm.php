@@ -49,6 +49,15 @@ class ServiceQuestionForm
     public $serviceEventTypeId;
     
     /**
+     * @Annotation\Type("Zend\Form\Element\Number")
+     * @Annotation\Required({"required":"true"})
+     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
+     * @Annotation\Options({"label":"Question Index"})
+     * @Annotation\Attributes({ "id":"form-qaIndex", "class":"form-qaIndex form-control" })
+     */
+    public $qaIndex;
+    
+    /**
      * @Annotation\Type("Zend\Form\Element\Textarea")
      * @Annotation\Required(false)
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})

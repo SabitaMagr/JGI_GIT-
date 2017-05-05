@@ -73,7 +73,7 @@ class ServiceQuestionController extends AbstractActionController {
                         $this, [
                     'form' => $this->form,
                     'serviceEventType' => ApplicationEntityHelper::getTableKVListWithSortOption($this->adapter, ServiceEventType::TABLE_NAME, ServiceEventType::SERVICE_EVENT_TYPE_ID, [ServiceEventType::SERVICE_EVENT_TYPE_NAME], ["STATUS" => "E"], "SERVICE_EVENT_TYPE_NAME", "ASC",null,false,true),
-                    'serviceQuestion' => ApplicationEntityHelper::getTableKVListWithSortOption($this->adapter, ServiceQuestion::TABLE_NAME, ServiceQuestion::QA_ID, [ServiceQuestion::QUESTION_NDESC], ["STATUS" => "E"], "QUESTION_NDESC", "ASC",null,false,false),
+                    'serviceQuestion' => ApplicationEntityHelper::getTableKVListWithSortOption($this->adapter, ServiceQuestion::TABLE_NAME, ServiceQuestion::QA_ID, [ServiceQuestion::QUESTION_EDESC], ["STATUS" => "E"], "QA_ID", "ASC",null,false,false),
                         ]
         ));
     }
@@ -114,7 +114,7 @@ class ServiceQuestionController extends AbstractActionController {
                     'id' => $id,
                     'form' => $this->form,
                     'serviceEventType' => ApplicationEntityHelper::getTableKVListWithSortOption($this->adapter, ServiceEventType::TABLE_NAME, ServiceEventType::SERVICE_EVENT_TYPE_ID, [ServiceEventType::SERVICE_EVENT_TYPE_NAME], ["STATUS" => "E"], "SERVICE_EVENT_TYPE_NAME", "ASC",null,false,true),
-                    'serviceQuestion' => ApplicationEntityHelper::getTableKVListWithSortOption($this->adapter, ServiceQuestion::TABLE_NAME, ServiceQuestion::QA_ID, [ServiceQuestion::QUESTION_NDESC], ["STATUS" => "E"], "QUESTION_NDESC", "ASC",null,false,false),
+                    'serviceQuestion' => ApplicationEntityHelper::getTableKVListWithSortOption($this->adapter, ServiceQuestion::TABLE_NAME, ServiceQuestion::QA_ID, [ServiceQuestion::QUESTION_EDESC], ["STATUS" => "E"], "QA_ID", "ASC",null,false,false),
                         ]
         );
     }

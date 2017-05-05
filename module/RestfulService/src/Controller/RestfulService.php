@@ -82,6 +82,8 @@ use Training\Repository\TrainingStatusRepository;
 use Application\Repository\ForgotPasswordRepository;
 use Overtime\Repository\OvertimeStatusRepository;
 use SelfService\Repository\OvertimeDetailRepository;
+use ServiceQuestion\Repository\EmpServiceQuestionRepo;
+use Setup\Repository\ServiceQuestionRepository;
 
 class RestfulService extends AbstractRestfulController {
 
@@ -377,6 +379,9 @@ class RestfulService extends AbstractRestfulController {
                         break;
                     case "pullAssetIssueList":
                         $responseData = $this->pullAssetIssueList($postedData->data);
+                        break;
+                    case "pullServiceQuestionList":
+                        $responseData = $this->pullServiceQuestionList($postedData->data);
                         break;
 
                     default:
@@ -3259,6 +3264,69 @@ class RestfulService extends AbstractRestfulController {
             "success" => true,
             "data" => $employeeList
         ];
+    }
+    public function pullServiceQuestionList($data){
+        $serviceEventTypeId = $data['id'];
+        $serviceQuestionRepo = new ServiceQuestionRepository($this->adapter);
+        $result = $serviceQuestionRepo->fetchByServiceEventTypeId($serviceEventTypeId);
+        $questionDtlArray = [];
+        $i = 1;
+        foreach($result as $row){
+            $tempResult = $this->pullHierarchicalQuestion($serviceEventTypeId,$row['QA_ID']);
+            if($tempResult){
+                $questionDtlArray[] = array(
+                        "sn"=>$i,
+                        "qaId" => $row['QA_ID'],
+                        "questionEdesc" => $row['QUESTION_EDESC'],
+                        "subQuestion"=>true,
+                        "subQuestionList" => $tempResult['array'],
+                    );
+            }else{
+                $questionDtlArray[] = array(
+                        "sn"=>$i,
+                        "qaId" => $row['QA_ID'],
+                        "questionEdesc" => $row['QUESTION_EDESC'],
+                        "subQuestion" => false,
+                    );
+            }
+            $i++;
+        }
+        return[
+            "success"=>true,
+            "data"=>$questionDtlArray
+        ];
+    }
+    public function pullHierarchicalQuestion($serviceEventTypeId,$parentQaId=null){
+        $serviceQuestionRepo = new ServiceQuestionRepository($this->adapter);
+        $result = $serviceQuestionRepo->fetchByServiceEventTypeId($serviceEventTypeId,$parentQaId);
+        $num = count($result);
+        if($num>0){
+            $x = 'a';
+            $questionDtlArray=[];
+            foreach ($result as $row) {
+                $tempResult = $this->pullHierarchicalQuestion($serviceEventTypeId,$row['QA_ID']);
+                if($tempResult){
+                    $questionDtlArray[] = array(
+                            "sn"=>$x,
+                            "qaId" => $row['QA_ID'],
+                            "questionEdesc" => $row['QUESTION_EDESC'],
+                            "subQuestion"=>true,
+                            "subQuestionList" => $tempResult,
+                        );
+                }else{
+                    $questionDtlArray[] = array(
+                            "sn"=>$x,
+                            "qaId" => $row['QA_ID'],
+                            "questionEdesc" => $row['QUESTION_EDESC'],
+                            "subQuestion" => false,
+                        );
+                }
+                $x++;
+            }
+            return ['array' => $questionDtlArray];
+        } else {
+            return false;
+        }
     }
     
 }
