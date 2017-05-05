@@ -28,7 +28,7 @@ if ($this->messages) {
                 </div>
             </div>
             <div class="portlet-body">
-                <form>
+                <form name="empServiceQuestionForm" action="<?= $this->url('empServiceQuestion',['action'=>"add"]) ?>" method="post">
                     <div class=" row">
                         <div class="col-sm-4">
                             <div class="form-group">
@@ -73,6 +73,7 @@ if ($this->messages) {
                             </div>
                         </div>
                     </div>
+                    <input type="submit" name="submit" class="btn btn-success" value="SUBMIT">
                 </form>
             </div>
 

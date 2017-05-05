@@ -30,7 +30,8 @@ class EmpServiceQuestion extends AbstractActionController {
     public function addAction(){
         $request = $this->getRequest();
         if($request->isPost()){
-            
+            $postData = $request->getPost();
+            print_r($postData); die();
         }
         return Helper::addFlashMessagesToArray($this, [
                 'employees'=> EntityHelper::getTableKVListWithSortOption($this->adapter, HrEmployees::TABLE_NAME, HrEmployees::EMPLOYEE_ID, [HrEmployees::FIRST_NAME, HrEmployees::MIDDLE_NAME, HrEmployees::LAST_NAME], [HrEmployees::STATUS=>'E', HrEmployees::RETIRED_FLAG=>'N'], HrEmployees::FIRST_NAME, "ASC", " ", FALSE,TRUE),
