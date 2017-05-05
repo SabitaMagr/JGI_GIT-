@@ -85,15 +85,8 @@ $form->prepare();
                         <div class="col-sm-4">
                             <div class="form-group">
                                 <label for="assetId">Asset Name</label>
-                                <select ng-model="asset" ng-change="astChange()" name="assetId" required="required" id="assetId" class="form-control">
-                                    <option value="" disabled="" selected="" class="ng-binding">Please select</option>   
-                                    <?php foreach ($asset as $key => $value) { ?>
-                                        <?php if ($editVal->assetId == $key) { ?>
-                                            <option selected="selected" value="<?php echo $key; ?>"><?php echo $value; ?></option> 
-                                        <?php } else { ?>
-                                            <option value="<?php echo $key; ?>"><?php echo $value; ?></option> 
-                                        <?php } ?>
-                                    <?php } ?>
+                                <select ng-options="key as value for (key , value) in assetList" ng-model="asset" ng-change="astChange()" name="assetId" required="required" id="assetId" class="form-control">
+                                   
 
                                 </select>
 

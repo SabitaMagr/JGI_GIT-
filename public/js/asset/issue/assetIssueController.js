@@ -13,6 +13,9 @@ angular.module('hris', [])
                     $scope.rdChk = true;
                     $scope.rdTxt = editVal.returnDate;
                 }
+            $scope.assetList=document.assetList;
+            console.log($scope.assetList[editAsset]);
+            $scope.asset=$scope.assetList[editAsset];
             }else{
                 var editQuantity=0;
                 var editAsset='jpt';
