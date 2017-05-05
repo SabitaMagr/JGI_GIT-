@@ -183,11 +183,11 @@ window.app = (function ($, toastr, App) {
 
                     try {
                         var toEnglishStartDate = $toEnglishDate.datepicker('getStartDate');
-                        if (toEnglishStartDate !== -Infinity && toEnglishStartDate.getTime() > nepaliDatePickerExt.getDate(toDate).getTime()) {
+                        if (toEnglishStartDate !== -Infinity && toEnglishStartDate.getTime() >= nepaliDatePickerExt.getDate(toDate).getTime()) {
                             throw {message: 'The Selected Date cannot be less than ' + toEnglishStartDate};
                         }
                         var toEnglishEndDate = $toEnglishDate.datepicker('getEndDate');
-                        if (toEnglishEndDate !== Infinity && toEnglishEndDate.getTime() < nepaliDatePickerExt.getDate(toDate).getTime()) {
+                        if (toEnglishEndDate !== Infinity && toEnglishEndDate.getTime() <= nepaliDatePickerExt.getDate(toDate).getTime()) {
                             throw {message: 'The Selected Date cannot be more than ' + toEnglishEndDate};
                         }
 
@@ -265,11 +265,11 @@ window.app = (function ($, toastr, App) {
                 var englishStartDate = $englishDate.datepicker('getStartDate');
                 var englishEndDate = $englishDate.datepicker('getEndDate');
                 try {
-                    if (englishStartDate !== -Infinity && englishStartDate.getTime() > nepaliDatePickerExt.getDate(temp).getTime()) {
+                    if (englishStartDate !== -Infinity && englishStartDate.getTime() >= nepaliDatePickerExt.getDate(temp).getTime()) {
                         throw {message: 'The Selected Date cannot be less than ' + englishStartDate};
                     }
                     console.log('englishEndDate', englishEndDate);
-                    if (englishEndDate !== Infinity && englishEndDate.getTime() < nepaliDatePickerExt.getDate(temp).getTime()) {
+                    if (englishEndDate !== Infinity && englishEndDate.getTime() <= nepaliDatePickerExt.getDate(temp).getTime()) {
                         throw {message: 'The Selected Date cannot be more than ' + englishEndDate};
                     }
 
