@@ -84,6 +84,7 @@ use Overtime\Repository\OvertimeStatusRepository;
 use SelfService\Repository\OvertimeDetailRepository;
 use ServiceQuestion\Repository\EmpServiceQuestionRepo;
 use Setup\Repository\ServiceQuestionRepository;
+use ServiceQuestion\Repository\EmpServiceQuestionDtlRepo;
 
 class RestfulService extends AbstractRestfulController {
 
@@ -3267,12 +3268,15 @@ class RestfulService extends AbstractRestfulController {
     }
     public function pullServiceQuestionList($data){
         $serviceEventTypeId = $data['id'];
+        $empQaId = (gettype($data['empQaId']) == 'undefined' || $data['empQaId']==null || $data['empQaId']=="") ? 0 :$data['empQaId'];
         $serviceQuestionRepo = new ServiceQuestionRepository($this->adapter);
+        $empServiceQuestionDtlRepo = new EmpServiceQuestionDtlRepo($this->adapter);
         $result = $serviceQuestionRepo->fetchByServiceEventTypeId($serviceEventTypeId);
         $questionDtlArray = [];
         $i = 1;
         foreach($result as $row){
-            $tempResult = $this->pullHierarchicalQuestion($serviceEventTypeId,$row['QA_ID']);
+            $tempResult = $this->pullHierarchicalQuestion($serviceEventTypeId,$empQaId,$row['QA_ID']);
+            $questionAnswerDtl = $empServiceQuestionDtlRepo->fetchByEmpQaIdQaId($row['QA_ID'],$empQaId);  
             if($tempResult){
                 $questionDtlArray[] = array(
                         "sn"=>$i,
@@ -3280,6 +3284,7 @@ class RestfulService extends AbstractRestfulController {
                         "questionEdesc" => $row['QUESTION_EDESC'],
                         "subQuestion"=>true,
                         "subQuestionList" => $tempResult['array'],
+                        "answer"=>(!isset($questionAnswerDtl) || $questionAnswerDtl==null || gettype($questionAnswerDtl)=='undefined') ? null : $questionAnswerDtl->ANSWER
                     );
             }else{
                 $questionDtlArray[] = array(
@@ -3287,6 +3292,7 @@ class RestfulService extends AbstractRestfulController {
                         "qaId" => $row['QA_ID'],
                         "questionEdesc" => $row['QUESTION_EDESC'],
                         "subQuestion" => false,
+                        "answer"=>(!isset($questionAnswerDtl) || $questionAnswerDtl==null || gettype($questionAnswerDtl)=='undefined') ? null : $questionAnswerDtl->ANSWER
                     );
             }
             $i++;
@@ -3296,15 +3302,18 @@ class RestfulService extends AbstractRestfulController {
             "data"=>$questionDtlArray
         ];
     }
-    public function pullHierarchicalQuestion($serviceEventTypeId,$parentQaId=null){
+    public function pullHierarchicalQuestion($serviceEventTypeId,$empQaId,$parentQaId=null){
         $serviceQuestionRepo = new ServiceQuestionRepository($this->adapter);
+        $empServiceQuestionDtlRepo = new EmpServiceQuestionDtlRepo($this->adapter);
+        
         $result = $serviceQuestionRepo->fetchByServiceEventTypeId($serviceEventTypeId,$parentQaId);
         $num = count($result);
         if($num>0){
             $x = 'a';
             $questionDtlArray=[];
             foreach ($result as $row) {
-                $tempResult = $this->pullHierarchicalQuestion($serviceEventTypeId,$row['QA_ID']);
+                $questionAnswerDtl = $empServiceQuestionDtlRepo->fetchByEmpQaIdQaId($row['QA_ID'],$empQaId);    
+                $tempResult = $this->pullHierarchicalQuestion($serviceEventTypeId,$empQaId,$row['QA_ID']);
                 if($tempResult){
                     $questionDtlArray[] = array(
                             "sn"=>$x,
@@ -3312,6 +3321,7 @@ class RestfulService extends AbstractRestfulController {
                             "questionEdesc" => $row['QUESTION_EDESC'],
                             "subQuestion"=>true,
                             "subQuestionList" => $tempResult,
+                            "answer"=>(!isset($questionAnswerDtl) || $questionAnswerDtl==null || gettype($questionAnswerDtl)=='undefined') ? null : $questionAnswerDtl->ANSWER
                         );
                 }else{
                     $questionDtlArray[] = array(
@@ -3319,6 +3329,8 @@ class RestfulService extends AbstractRestfulController {
                             "qaId" => $row['QA_ID'],
                             "questionEdesc" => $row['QUESTION_EDESC'],
                             "subQuestion" => false,
+                            "answer"=>(!isset($questionAnswerDtl) || $questionAnswerDtl==null || gettype($questionAnswerDtl)=='undefined') ? null : $questionAnswerDtl->ANSWER
+
                         );
                 }
                 $x++;

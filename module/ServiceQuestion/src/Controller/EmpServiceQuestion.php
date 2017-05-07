@@ -13,6 +13,7 @@ use Setup\Model\HrEmployees;
 use Zend\Authentication\AuthenticationService;
 use Setup\Repository\EmployeeRepository;
 use ServiceQuestion\Model\EmpServiceQuestionDtl;
+use Setup\Repository\ServiceEventTypeRepository;
 use ServiceQuestion\Repository\EmpServiceQuestionDtlRepo;
 
 class EmpServiceQuestion extends AbstractActionController {
@@ -80,14 +81,49 @@ class EmpServiceQuestion extends AbstractActionController {
         if($id===0){
             $this->redirect()->toRoute('empServiceQuestion');
         }
+        $request = $this->getRequest();
+        $empServiceQuestion = new EmpServiceQuestionModel();
+        $empServiceQuestionDtl = new EmpServiceQuestionDtl();
+        if($request->isPost()){
+            $postData = $request->getPost()->getArrayCopy();
+            
+            $serviceQuestionAnswer = $postData['serviceQuestionAnswer'];
+            $empServiceQuestion->qaDate = $postData['questionDate'];
+            $empServiceQuestion->remarks = $postData['remarks'];
+            $empServiceQuestion->modifiedBy = $this->employeeId;
+            $empServiceQuestion->modifiedDate = Helper::getcurrentExpressionDate();
+            $this->repository->edit($empServiceQuestion,$id);
+            
+            foreach($serviceQuestionAnswer as $qaId => $answer){
+                $empServiceQuestionDtl->answer = $answer;
+                $empServiceQuestionDtl->status = 'E';
+                $ids = ['qaId'=>$qaId,'empQaId'=>$id];
+                $this->dtlRepository->edit($empServiceQuestionDtl,$ids);
+            }
+            $this->flashmessenger()->addMessage("Answer for Service Question Successfully updated!!!");
+            $this->redirect()->toRoute("empServiceQuestion");
+        }
         $detail = $this->repository->fetchById($id);
-//        print "<pre>";
-//        print_r($detail); die();
-        Helper::addFlashMessagesToArray($this, [
+        return Helper::addFlashMessagesToArray($this, [
                 'id'=>$id,
                 'detail'=>$detail,
                 'employees'=> EntityHelper::getTableKVListWithSortOption($this->adapter, HrEmployees::TABLE_NAME, HrEmployees::EMPLOYEE_ID, [HrEmployees::FIRST_NAME, HrEmployees::MIDDLE_NAME, HrEmployees::LAST_NAME], [HrEmployees::STATUS=>'E', HrEmployees::RETIRED_FLAG=>'N'], HrEmployees::FIRST_NAME, "ASC", " ", FALSE,TRUE),
                 'serviceEventTypes'=> EntityHelper::getTableKVListWithSortOption($this->adapter, ServiceEventType::TABLE_NAME, ServiceEventType::SERVICE_EVENT_TYPE_ID, [ServiceEventType::SERVICE_EVENT_TYPE_NAME], [ServiceEventType::STATUS=>'E'], ServiceEventType::SERVICE_EVENT_TYPE_NAME, "ASC", null, FALSE,TRUE)
+        ]);
+    }
+    public function viewAction(){
+        $id = $this->params()->fromRoute('id');
+        $employeeRepository = new EmployeeRepository($this->adapter);
+        $detail = $this->repository->fetchById($id);
+        $empDetail = $employeeRepository->fetchForProfileById($detail['EMPLOYEE_ID']);
+        $serviceEventTypeRepo = new ServiceEventTypeRepository($this->adapter);
+        if($detail['SERVICE_EVENT_TYPE_ID']==5){
+            $detail['SERVICE_EVENT_TYPE_NAME'] = 'EXIT INTERVIEW';
+        }
+        return Helper::addFlashMessagesToArray($this, [
+            'id'=>$id,
+            'detail'=>$detail,
+            'empDetail'=>$empDetail
         ]);
     }
 }
