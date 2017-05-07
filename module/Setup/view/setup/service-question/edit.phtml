@@ -11,6 +11,7 @@ $serviceQuestion1 = ["0" => "none"] + $serviceQuestion;
 $parentQaId->setValueOptions($serviceQuestion1);
 $serviceEventTypeId = $form->get('serviceEventTypeId');
 $serviceEventTypeId->setValueOptions($serviceEventType);
+$qaIndex = $form->get('qaIndex');
 $remarks = $form->get('remarks');
 $submit = $form->get('submit');
 $submit->setAttribute('value', 'SUBMIT');
@@ -83,7 +84,13 @@ $form->prepare();
                             <?php print $this->formElementErrors()->render($serviceEventTypeId, ['class' => 'help-block']); ?>
                         </div>
                     </div>
-                    
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <?php print $this->formLabel($qaIndex); ?>
+                            <?php print $this->formElement($qaIndex); ?>
+                            <?php print $this->formElementErrors()->render($qaIndex, ['class' => 'help-block']); ?>
+                        </div>
+                    </div>
                     <div class="col-sm-4">
                         <div class="form-group">
                             <?php print $this->formLabel($remarks); ?>

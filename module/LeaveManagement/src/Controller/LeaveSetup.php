@@ -46,7 +46,7 @@ class LeaveSetup extends AbstractActionController {
                 'LEAVE_CODE' => $leaveRow['LEAVE_CODE'],
                 'LEAVE_ENAME' => $leaveRow['LEAVE_ENAME'],
                 'ALLOW_HALFDAY' => $getValue($leaveRow['ALLOW_HALFDAY']),
-                'DEFAULT_DAYS' => $getValue($leaveRow['DEFAULT_DAYS']),
+                'DEFAULT_DAYS' => $leaveRow['DEFAULT_DAYS'],
                 'CARRY_FORWARD' => $getValue($leaveRow['CARRY_FORWARD']),
                 'CASHABLE' => $getValue($leaveRow['CASHABLE']),
                 'PAID' => $getValue($leaveRow['PAID']),

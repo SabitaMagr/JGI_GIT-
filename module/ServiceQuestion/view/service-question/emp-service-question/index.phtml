@@ -10,10 +10,9 @@ $this->headLink()
 $this->headScript()
         ->appendFile($this->basePath('jszip/dist/jszip.min.js'))
         ->appendFile($this->basePath('telerik_kendoui/js/kendo.all.min.js'))
-        ->appendFile($this->basePath('js/setup/service-question/index.js'))
+        ->appendFile($this->basePath('js/service-question/emp-service-question/index.js'))
         ->appendFile($this->basePath('assets/global/plugins/bootstrap-confirmation/bootstrap-confirmation.min.js'));
 ?>
-
 <?php if ($this->messages) { ?>
     <script>
         document.messages =<?php echo json_encode($this->messages); ?>
@@ -21,10 +20,10 @@ $this->headScript()
 <?php } ?>
 
 <script>
-    document.serviceQuestion =<?= json_encode($serviceQuestion) ?>;
+    document.list =<?php echo json_encode($list); ?>
 </script>
 <div class="page-bar">
-    <?= $this->navigation('Zend\Navigation\serviceQuestion')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
+<?= $this->navigation('Zend\Navigation\empServiceQuestion')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
 
 <div class="margin-top-20">
@@ -32,9 +31,9 @@ $this->headScript()
         <div class="row">
             <div class="col-md-6">
                 <div class="btn-group">
-                    <a href="<?= $this->url('serviceQuestion', ['action' => 'add']) ?>" id="sample_editable_1_new"
-                       class="btn green"> Add New <i class="fa fa-plus"></i>
-<!--                        <i class="fa fa-plus"></i>-->
+                    <a href="<?= $this->url('empServiceQuestion', ['action' => 'add']) ?>" id="sample_editable_1_new"
+                       class="btn green"> Add New
+                        <i class="fa fa-plus"></i>
                     </a>
                 </div>
             </div>
@@ -43,7 +42,7 @@ $this->headScript()
                     <button class="btn green btn-outline dropdown-toggle" data-toggle="dropdown">Tools
                         <i class="fa fa-angle-down"></i>
                     </button>
-                    <ul class="dropdown-menu pull-right">                      
+                    <ul class="dropdown-menu pull-right">
                         <li>
                             <a href="javascript:;" id="export"> Export to Excel </a>
                         </li>
@@ -52,30 +51,34 @@ $this->headScript()
             </div>
         </div>
     </div>
-    <div id="serviceQuestionTable">
 
+    <div id="serviceQuestionTable">
     </div>
+
     <script id="rowTemplate" type="text/x-kendo-tmpl">
         <tr>
-        <td>    
-        #: (QUESTION_EDESC == null) ? '-' : QUESTION_EDESC #
+         <td>
+        #: (FIRST_NAME == null) ? ' ' : FIRST_NAME #
+        #: (MIDDLE_NAME == null) ? ' ' : MIDDLE_NAME #
+        #: (LAST_NAME == null) ? ' ' : LAST_NAME #
         </td>
-        <td>    
-        #: (PARENT_QUESTION_EDESC == null) ? '-' : PARENT_QUESTION_EDESC #
-        </td>
-        <td>    
+        <td>
         #: (SERVICE_EVENT_TYPE_NAME == null) ? '-' : SERVICE_EVENT_TYPE_NAME #
         </td>
-        <td>    
-        #: (QA_INDEX == null) ? '-' : QA_INDEX #
+        <td>
+        #: (QA_DATE == null) ? '-' : QA_DATE #
         </td>
         <td>
         <a class="btn-edit"
-        href="<?= $this->url("serviceQuestion", ["action" => "edit"]); ?>/#:QA_ID#" style="height:17px;">
+        href="<?= $this->url("empServiceQuestion", ["action" => "view"]) ?>/#:EMP_QA_ID #" style="height:17px;" title="view">
+        <i class="fa fa-search-plus"></i>
+        </a> 
+        <a class="btn-edit"
+        href="<?= $this->url("empServiceQuestion", ["action" => "edit"]) ?>/#:EMP_QA_ID #" style="height:17px;" title="edit">
         <i class="fa fa-edit"></i>
         </a>
         <a class="btn-delete confirmation"
-        href="<?= $this->url("serviceQuestion", ["action" => "delete"]); ?>/#:QA_ID#" id="bs_#:QA_ID #" style="height:17px;"> 
+        href="<?= $this->url("empServiceQuestion", ["action" => "delete"]); ?>/#:EMP_QA_ID #" id="bs_#:EMP_QA_ID #" style="height:17px;">
         <i class="fa fa-trash-o"></i></a>
         </a>
         </td>

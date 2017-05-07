@@ -16,9 +16,10 @@
             },
             rowTemplate: kendo.template($("#rowTemplate").html()),
             columns: [
-                {field: "QUESTION_EDESC", title: "Question Name", width: 150},
-                {field: "PARENT_QUESTION_EDESC", title: "Parent Question", width: 130},
-                {field: "SERVICE_EVENT_TYPE_NAME", title: "Service Event Type", width: 150},
+                {field: "QUESTION_EDESC", title: "Question Name", width: 200},
+                {field: "PARENT_QUESTION_EDESC", title: "Parent Question", width: 200},
+                {field: "SERVICE_EVENT_TYPE_NAME", title: "Service Event Type", width: 100},
+                {field: "QA_INDEX", title: "Question Index", width: 90},
                 {title: "Action", width: 80}
             ]
         });
@@ -30,6 +31,7 @@
                         {value: "Question Name (in Nep.)"},
                         {value: "Parent Question Name"},
                         {value: "Service Event Type"},
+                        {value: "Question Index"},
                         {value: "Remarks"}
                     ]
                 }];
@@ -50,6 +52,7 @@
                         {value: dataItem.QUESTION_NDESC},
                         {value: dataItem.PARENT_QUESTION_EDESC},
                         {value: dataItem.SERVICE_EVENT_TYPE_NAME},
+                        {value: dataItem.QA_INDEX},
                         {value: dataItem.REMARKS}
                     ]
                 });
@@ -63,6 +66,7 @@
                 sheets: [
                     {
                         columns: [
+                            {autoWidth: true},
                             {autoWidth: true},
                             {autoWidth: true},
                             {autoWidth: true},

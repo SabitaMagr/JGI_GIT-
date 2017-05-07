@@ -23,6 +23,7 @@ class ServiceQuestion extends Model{
     const APPROVED = "APPROVED";
     const APPROVED_BY = "APPROVED_BY";
     const APPROVED_DATE = "APPROVED_DATE";
+    const QA_INDEX = "QA_INDEX";
     
     public $qaId;
     public $parentQaId;
@@ -41,6 +42,7 @@ class ServiceQuestion extends Model{
     public $approved;
     public $approvedBy;
     public $approvedDate;
+    public $qaIndex;
     
     public $mappings = [
         'qaId'=>self::QA_ID,
@@ -59,7 +61,8 @@ class ServiceQuestion extends Model{
         'checked'=>self::CHECKED,
         'approved'=>self::APPROVED,
         'approvedBy'=>self::APPROVED_BY,
-        'approvedDate'=>self::APPROVED_DATE
+        'approvedDate'=>self::APPROVED_DATE,
+        'qaIndex'=>self::QA_INDEX
     ];
     
 }
