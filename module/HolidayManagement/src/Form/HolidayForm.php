@@ -10,7 +10,6 @@ use Zend\Form\Annotation;
  */
 class HolidayForm {
 
-
     /**
      * @Annotation\Type("Zend\Form\Element\Radio")
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
