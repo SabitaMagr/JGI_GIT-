@@ -1,3 +1,4 @@
+
 <?php
 $this->headLink()
         ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.common.min.css'))
@@ -21,13 +22,14 @@ if ($this->messages) { ?>
 <?php } 
 ?>
     
+    <?php 
+    $assetReturnUrl=$this->url('assetIssue', ['action' => 'returnAsset', 'id' => $id]);
+    ?>
+    
 <script>
     document.issue =<?= json_encode($issue) ?>;
 </script>
 
-<?php 
-    $assetReturnUrl=$this->url('assetIssue', ['action' => 'returnAsset', 'id' => $id]);
-    ?>
 
 
 
@@ -97,6 +99,7 @@ if ($this->messages) { ?>
         </td>
         </tr>
     </script>
+    
     
     
     

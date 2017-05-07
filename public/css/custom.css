@@ -1775,7 +1775,7 @@ ul#personalInfo li{
 
 }
 
-textarea#form-remarks,#remarks,.form-reason  {
+textarea#form-remarks,#remarks,.form-reason,#purposeTA  {
     min-height: 45px;
     resize:none !important;
 }

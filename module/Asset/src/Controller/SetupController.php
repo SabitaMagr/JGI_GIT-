@@ -4,10 +4,13 @@ namespace Asset\Controller;
 
 use Application\Helper\EntityHelper as ApplicationEntityHelper;
 use Application\Helper\Helper;
+use Asset\Form\IssueForm;
 use Asset\Form\SetupForm;
 use Asset\Model\Group;
 use Asset\Model\Setup;
+use Asset\Repository\IssueRepository;
 use Asset\Repository\SetupRepository;
+use Setup\Model\HrEmployees;
 use Setup\Repository\EmployeeRepository;
 use Zend\Authentication\AuthenticationService;
 use Zend\Db\Adapter\AdapterInterface;
@@ -35,13 +38,24 @@ class SetupController extends AbstractActionController {
     }
 
     public function indexAction() {
+
+        $issueRepo = new IssueRepository($this->adapter);
+        $asset = $issueRepo->fetchallIssuableAsset();
+        $issueForm = new IssueForm();
+        $builder = new AnnotationBuilder();
+        $issueFm = $builder->createForm($issueForm);
+
+
         $result = $this->repository->fetchAll();
         $list = [];
         foreach ($result as $row) {
             array_push($list, $row);
         }
         return Helper::addFlashMessagesToArray($this, [
-                    'setup' => $list
+                    'setup' => $list,
+                    'form' => $issueFm,
+                    'asset' => $asset['B'],
+                    'employee' => ApplicationEntityHelper::getTableKVListWithSortOption($this->adapter, HrEmployees::TABLE_NAME, "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => 'E', 'RETIRED_FLAG' => 'N'], "FIRST_NAME", "ASC", " ", FALSE, TRUE),
         ]);
     }
 
@@ -74,7 +88,7 @@ class SetupController extends AbstractActionController {
         return Helper::addFlashMessagesToArray($this, [
                     'form' => $this->form,
 //            'group'=>$groupList
-                    'group' => ApplicationEntityHelper::getTableKVListWithSortOption($this->adapter, Group::TABLE_NAME, Group::ASSET_GROUP_ID, [Group::ASSET_GROUP_EDESC], ["STATUS" => "E"], Group::ASSET_GROUP_EDESC, "ASC",NULL,FALSE,TRUE),
+                    'group' => ApplicationEntityHelper::getTableKVListWithSortOption($this->adapter, Group::TABLE_NAME, Group::ASSET_GROUP_ID, [Group::ASSET_GROUP_EDESC], ["STATUS" => "E"], Group::ASSET_GROUP_EDESC, "ASC", NULL, FALSE, TRUE),
         ]);
     }
 
@@ -85,33 +99,31 @@ class SetupController extends AbstractActionController {
         }
         $this->initializeForm();
         $request = $this->getRequest();
-        $setup= new Setup();
-        if(!$request->isPost()){
+        $setup = new Setup();
+        if (!$request->isPost()) {
             $setup->exchangeArrayFromDB($this->repository->fetchById($id));
             $this->form->bind($setup);
-        }else{
+        } else {
             $this->form->setData($request->getPost());
-            if($this->form->isValid()){
+            if ($this->form->isValid()) {
                 $setup->exchangeArrayFromForm($this->form->getData());
-                
+
                 $setup->modifiedDate = Helper::getcurrentExpressionDate();
                 $setup->modifiedBy = $this->employeeId;
                 $setup->quantityBalance = $setup->quantity;
-                
+
                 $this->repository->edit($setup, $id);
                 $this->flashmessenger()->addMessage("Asset Setup Successfully Updated!!!");
                 return $this->redirect()->toRoute("assetSetup");
             }
         }
         return Helper::addFlashMessagesToArray($this, [
-            'form'=>$this->form,
-            'group' => ApplicationEntityHelper::getTableKVListWithSortOption($this->adapter, Group::TABLE_NAME, Group::ASSET_GROUP_ID, [Group::ASSET_GROUP_EDESC], ["STATUS" => "E"], Group::ASSET_GROUP_EDESC, "ASC",NULL,FALSE,TRUE),
-            'id'=>$id
+                    'form' => $this->form,
+                    'group' => ApplicationEntityHelper::getTableKVListWithSortOption($this->adapter, Group::TABLE_NAME, Group::ASSET_GROUP_ID, [Group::ASSET_GROUP_EDESC], ["STATUS" => "E"], Group::ASSET_GROUP_EDESC, "ASC", NULL, FALSE, TRUE),
+                    'id' => $id
         ]);
-        
     }
-    
-    
+
     public function deleteAction() {
         $id = $this->params()->fromRoute('id');
         if ($id == 0) {
