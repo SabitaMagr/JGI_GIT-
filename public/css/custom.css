@@ -1775,7 +1775,7 @@ ul#personalInfo li{
 
 }
 
-textarea#form-remarks,#remarks,.form-reason  {
+textarea#form-remarks,#remarks,.form-reason,#purposeTA  {
     min-height: 45px;
     resize:none !important;
 }
@@ -2052,4 +2052,29 @@ textarea#form-remarks,#remarks,.form-reason  {
 
 .portlet.portlet-fullscreen{
     z-index: 1000 !important;
+}
+
+
+.div-3-name{
+    width: 40%;
+    float:left;
+}
+
+.div-3-designation{
+     width: 35%;
+    float:left;
+}
+
+.div-3-department{
+     width: 25%;
+    float:left;
+}
+
+.serviceQuestionList{
+    margin-bottom: 3%;
+}
+
+.serviceQuestionList1{
+    margin-top: 1%;
+    margin-bottom: 1%;
 }

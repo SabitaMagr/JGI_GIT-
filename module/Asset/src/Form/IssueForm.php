@@ -73,12 +73,11 @@ class IssueForm {
     public $returnDate;
     
     /**
-     * @Annotation\Type("Zend\Form\Element\Text")
+     * @Annotation\Type("Zend\Form\Element\Textarea")
      * @Annotation\Required(true)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Purpose"})
-     * @Annotation\Attributes({"id":"purpose","class":"form-control"})
-     * @Annotation\Validator({"name":"StringLength", "options":{"max":"15"}})
+     * @Annotation\Attributes({"id":"purposeTA","class":"form-control"})
      */
     public $purpose;
     

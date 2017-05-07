@@ -1,4 +1,11 @@
 <?php
+$this->headLink()
+        ->appendStylesheet($this->basePath('assets/global/plugins/nepalidate/nepali.datepicker.v2.1.min.css'));
+
+$this->headScript()
+        ->appendFile($this->basePath('assets/global/plugins/nepalidate/nepali.datepicker.v2.1.min.js'))
+        ->appendFile($this->basePath('js/nepali-datepicker-ext.js'));
+
 $this->headScript()->appendFile($this->basePath('js/angular.min.js'))
         ->appendFile($this->basePath('js/service-question/emp-service-question/serviceQuestionList.js'));
 
@@ -18,6 +25,15 @@ if ($this->messages) {
 </div>
 <div class="row margin-top-20" ng-app="hris" ng-controller="serviceQuestionList"> 
     <div class="col-sm-12">
+        <script type="text/ng-template" id="serviceQuestionTree">
+            <div class="form-group" ng-style="serviceQuestion.subQuestion === true && {'margin-bottom': '0px'}">
+                <label>{{serviceQuestion.sn}}. <span ng-bind="serviceQuestion.questionEdesc"></span></label>
+                <input ng-if="serviceQuestion.subQuestion==true" type="hidden" name="serviceQuestionAnswer[{{serviceQuestion.qaId}}]" value=""/>
+                <input ng-if="serviceQuestion.subQuestion==false" type="text" name="serviceQuestionAnswer[{{serviceQuestion.qaId}}]" value="" class="form-control"/>
+            </div>
+            <div ng-repeat="serviceQuestion in serviceQuestion.subQuestionList" ng-include="'serviceQuestionTree'">
+            </div>
+        </script>
         <div class="portlet box custom-box">
             <div class="portlet-title">
                 <div class="caption">
@@ -29,6 +45,7 @@ if ($this->messages) {
             </div>
             <div class="portlet-body">
                 <form name="empServiceQuestionForm" action="<?= $this->url('empServiceQuestion',['action'=>"add"]) ?>" method="post">
+                    <input type="hidden" id="empQaId" value="0"/>
                     <div class=" row">
                         <div class="col-sm-4">
                             <div class="form-group">
@@ -55,27 +72,27 @@ if ($this->messages) {
                             </div>
                         </div>
                         <div class="col-sm-4">
-                            <div class="form-group">
-                                <label for="questionDate">Date</label>
-                                <span class="required" aria-required="true">*</span>
-                                <input type="text" name="questionDate" class="form-control"/>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label for="questionDate">Date</label>
+                                        <span class="required" aria-required="true">*</span>
+                                        <input type="text" name="questionDate" class="form-control" id="qaDate" placeholder="date"/>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label for="nepaliDate">&nbsp;</label>
+                                        <div class="input-group">
+                                            <input type="text" name="nepaliDate" id="nepaliDate" class="form-control" value="" placeholder="nepali date">
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-sm-12" ng-repeat="serviceQuestion in serviceQuestionList">
-                            <div class="form-group" ng-style="serviceQuestion.subQuestion === true && {'margin-bottom': '0px'}">
-                                <label>{{serviceQuestion.sn}}. <span ng-bind="serviceQuestion.questionEdesc"></span></label>
-                                <input ng-if="serviceQuestion.subQuestion==true" type="hidden" name="serviceQuestionAnswer[{{serviceQuestion.qaId}}]" value=""/>
-                                <input ng-if="serviceQuestion.subQuestion==false" type="text" name="serviceQuestionAnswer[{{serviceQuestion.qaId}}]" value="" class="form-control"/>
-                            </div>
-                            <div ng-if="serviceQuestion.subQuestion==true" ng-repeat="subQuestion in serviceQuestion.subQuestionList">
-                                <div class="form-group">
-                                    <label>{{subQuestion.sn}}. <span ng-bind="subQuestion.questionEdesc"></span></label>
-                                    <input ng-if="subQuestion.subQuestion==true" type="hidden" name="serviceQuestionAnswer[{{subQuestion.qaId}}]" value=""/>
-                                    <input ng-if="subQuestion.subQuestion==false" type="text" name="serviceQuestionAnswer[{{subQuestion.qaId}}]" value="" class="form-control"/>
-                                </div>
-                            </div>
+                        <div class="col-sm-12" ng-repeat="serviceQuestion in serviceQuestionList" ng-include="'serviceQuestionTree'">
                         </div>
                     </div>
                     <div class="form-group">
@@ -87,3 +104,4 @@ if ($this->messages) {
         </div>
     </div>
 </div>
+

@@ -139,6 +139,11 @@ return[
                         'route' => 'assetIssue',
                         'action' => 'edit',
                     ],
+                        [
+                        'label' => 'View',
+                        'route' => 'assetIssue',
+                        'action' => 'view',
+                    ],
                 ],
             ],
         ],

@@ -24,8 +24,8 @@ class IssueRepository implements RepositoryInterface {
     }
 
     public function add(Model $model) {
-        $this->tableGateway->insert($model->getArrayCopyForDB());
-        return true;
+        return $this->tableGateway->insert($model->getArrayCopyForDB());
+//        return true;
     }
 
     public function delete($id) {
@@ -42,7 +42,7 @@ class IssueRepository implements RepositoryInterface {
         unset($data[Issue::ISSUE_ID]);
         unset($data[Issue::CREATED_DATE]);
         unset($data[Issue::STATUS]);
-        $this->tableGateway->update($data, [Issue::ISSUE_ID => $id]);
+        return $this->tableGateway->update($data, [Issue::ISSUE_ID => $id]);
     }
 
     public function fetchAll() {
@@ -53,8 +53,24 @@ class IssueRepository implements RepositoryInterface {
                 ->join(['S' => Setup::TABLE_NAME], 'S.' . Setup::ASSET_ID . '=AI.' . Issue::ASSET_ID, ["ASSET_EDESC" => new Expression("INITCAP(S.ASSET_EDESC)")], "left")
                 ->join(['E' => HrEmployees::TABLE_NAME], 'E.' . HrEmployees::EMPLOYEE_ID . '=AI.' . Issue::EMPLOYEE_ID, ["FIRST_NAME" => new Expression("INITCAP(E.FIRST_NAME)"),"MIDDLE_NAME" => new Expression("INITCAP(E.MIDDLE_NAME)"),"LAST_NAME" => new Expression("INITCAP(E.LAST_NAME)")], "left");
 
-        $select->where(["AI." . Setup::STATUS . "='E'"]);
+        $select->where(["AI." . Issue::STATUS . "='E'"]);
 //        $select->order("A." . Setup::ASSET_EDESC);
+        $statement = $sql->prepareStatementForSqlObject($select);
+        $result = $statement->execute();
+        return $result;
+    }
+    
+    public function fetchAllById($id) {
+        $sql = new Sql($this->adapter);
+        $select = $sql->select();
+        $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(Issue::class, null, null, null, null, null, "AI"), false);
+        $select->from(['AI' => Issue::TABLE_NAME])
+                ->join(['S' => Setup::TABLE_NAME], 'S.' . Setup::ASSET_ID . '=AI.' . Issue::ASSET_ID, ["ASSET_EDESC" => new Expression("INITCAP(S.ASSET_EDESC)")], "left")
+                ->join(['E' => HrEmployees::TABLE_NAME], 'E.' . HrEmployees::EMPLOYEE_ID . '=AI.' . Issue::EMPLOYEE_ID, ["FIRST_NAME" => new Expression("INITCAP(E.FIRST_NAME)"),"MIDDLE_NAME" => new Expression("INITCAP(E.MIDDLE_NAME)"),"LAST_NAME" => new Expression("INITCAP(E.LAST_NAME)")], "left");
+
+        $select->where(["AI." . Issue::STATUS . "='E'"]);
+        $select->where(["AI." . Issue::ASSET_ID . "=$id"]);
+//        $select->order("S." . Setup::ASSET_EDESC);
         $statement = $sql->prepareStatementForSqlObject($select);
         $result = $statement->execute();
         return $result;

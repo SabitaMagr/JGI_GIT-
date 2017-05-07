@@ -48,4 +48,8 @@ class EmpServiceQuestionDtlRepo implements RepositoryInterface
     {
         $this->tableGateway->update([EmpServiceQuestionDtl::STATUS=>'D'],[EmpServiceQuestionDtl::EMP_QA_ID=>$id['empQaId'],EmpServiceQuestionDtl::QA_ID=>$id['qaId']]);
     }
+    public function fetchByEmpQaIdQaId($qaId,$empQaId){
+        $rowset= $this->tableGateway->select([EmpServiceQuestionDtl::EMP_QA_ID=>$empQaId,EmpServiceQuestionDtl::QA_ID=>$qaId, EmpServiceQuestionDtl::STATUS=>'E']);
+        return $rowset->current();
+    }
 }

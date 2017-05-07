@@ -33,7 +33,8 @@ class EmpServiceQuestionRepo implements RepositoryInterface {
     }
 
     public function edit(Model $model, $id) {
-        
+        $tempData = $model->getArrayCopyForDB();
+        $this->tableGateway->update($tempData,[EmpServiceQuestion::EMP_QA_ID=>$id]);
     }
 
     public function fetchAll() {
