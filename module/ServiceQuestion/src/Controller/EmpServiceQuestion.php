@@ -76,6 +76,18 @@ class EmpServiceQuestion extends AbstractActionController {
     }
     
     public function editAction(){
-        
+        $id = $this->params()->fromRoute('id');
+        if($id===0){
+            $this->redirect()->toRoute('empServiceQuestion');
+        }
+        $detail = $this->repository->fetchById($id);
+//        print "<pre>";
+//        print_r($detail); die();
+        Helper::addFlashMessagesToArray($this, [
+                'id'=>$id,
+                'detail'=>$detail,
+                'employees'=> EntityHelper::getTableKVListWithSortOption($this->adapter, HrEmployees::TABLE_NAME, HrEmployees::EMPLOYEE_ID, [HrEmployees::FIRST_NAME, HrEmployees::MIDDLE_NAME, HrEmployees::LAST_NAME], [HrEmployees::STATUS=>'E', HrEmployees::RETIRED_FLAG=>'N'], HrEmployees::FIRST_NAME, "ASC", " ", FALSE,TRUE),
+                'serviceEventTypes'=> EntityHelper::getTableKVListWithSortOption($this->adapter, ServiceEventType::TABLE_NAME, ServiceEventType::SERVICE_EVENT_TYPE_ID, [ServiceEventType::SERVICE_EVENT_TYPE_NAME], [ServiceEventType::STATUS=>'E'], ServiceEventType::SERVICE_EVENT_TYPE_NAME, "ASC", null, FALSE,TRUE)
+        ]);
     }
 }

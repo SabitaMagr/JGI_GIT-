@@ -70,9 +70,13 @@ $this->headScript()
         </td>
         <td>
         <a class="btn-edit"
-        href="<?= $this->url("empServiceQuestion", ["action" => "edit"]) ?>/#:EMP_QA_ID #" style="height:17px;">
-        <i class="fa fa-edit"></i>
+        href="<?= $this->url("empServiceQuestion", ["action" => "view"]) ?>/#:EMP_QA_ID #" style="height:17px;" title="view">
+        <i class="fa fa-search-plus"></i>
         </a> 
+        <a class="btn-edit"
+        href="<?= $this->url("empServiceQuestion", ["action" => "edit"]) ?>/#:EMP_QA_ID #" style="height:17px;" title="edit">
+        <i class="fa fa-edit"></i>
+        </a>
         <a class="btn-delete confirmation"
         href="<?= $this->url("empServiceQuestion", ["action" => "delete"]); ?>/#:EMP_QA_ID #" id="bs_#:EMP_QA_ID #" style="height:17px;">
         <i class="fa fa-trash-o"></i></a>
