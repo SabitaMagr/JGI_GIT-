@@ -25,6 +25,9 @@ if ($this->messages) { ?>
     document.issue =<?= json_encode($issue) ?>;
 </script>
 
+<?php 
+    $assetReturnUrl=$this->url('assetIssue', ['action' => 'returnAsset', 'id' => $id]);
+    ?>
 
 
 
@@ -77,14 +80,16 @@ if ($this->messages) { ?>
         <td>    
         #: (RETURN_DATE == null) ? '-' : RETURN_DATE #
         </td>
+        <td>    
+        #: (RETURNED_DATE == null) ? '-' : RETURNED_DATE #
+        </td>
         <td>
-        <a class="btn-edit"
-        href="<?= $this->url("assetIssue", ["action" => "edit"]); ?>/#:ISSUE_ID#" style="height:17px;">
-        <i class="fa fa-edit"></i>
-        </a>
-        # if(RETURNED_DATE!=null){#
-        <a class="btn-edit"
-        href="<?= $this->url("assetIssue", ["action" => "edit"]); ?>/#:ISSUE_ID#" style="height:17px;">
+        # if(RETURN_DATE!=null&&RETURNED!='Y'){#
+        <a class="btn-edit" data-issueid="#:ISSUE_ID#" data-assetid="#:ASSET_ID#" data-rdate=#:RETURN_DATE# 
+        href="\\#" data-toggle="modal" data-asset="#:ASSET_EDESC#" data-quantity="#:QUANTITY#" 
+        data-employee=" #: (FIRST_NAME == null) ? ' ' : FIRST_NAME #
+        #: (MIDDLE_NAME == null) ? ' ' : MIDDLE_NAME #
+        #: (LAST_NAME == null) ? ' ' : LAST_NAME #" data-target="\\#myModal" id="btnReturn"  style="height:17px;">
         <i class="fa fa-send-o"></i>
         </a>
         # } #
@@ -92,6 +97,89 @@ if ($this->messages) { ?>
         </td>
         </tr>
     </script>
+    
+    
+    
+    <div id="myModal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Asset Return</h4>
+      </div>
+      <div class="modal-body">
+          <form action="<?=$assetReturnUrl?>" method="post">
+              <input id="assetId" name="assetId" type="hidden">
+              <input id="issueId" name="issueId" type="hidden">
+              <input id="issueBal" name="issueBal" type="hidden">
+          <div class="row">
+              <div class="col-sm-3">
+                  <lable>Employee : </lable>
+              </div>
+              
+              <div class="col-sm-3">
+                  <label class="form-group" id="returnEmployee"></label>
+              </div>
+          </div>
+        
+          <div class="row">
+              <div class="col-sm-3">
+                  <lable>Asset : </lable>
+              </div>
+              
+              <div class="col-sm-3">
+                  <label class="form-group" id="returnAsset"></label>
+              </div>
+          </div>
+          <div class="row">
+              <div class="col-sm-3">
+                  <lable>Quantity : </lable>
+              </div>
+              
+              <div class="col-sm-3">
+                  <label class="form-group" id="returnQuantity" ></label>
+              </div>
+          </div>
+        
+          <div class="row">
+              <div class="col-sm-3">
+                  <lable>Return Date : </lable>
+              </div>
+              
+              <div class="col-sm-3">
+                  <label class="form-group" id='rDate'></label>
+              </div>    
+          </div>
+              
+          <div class="row">
+              <div class="col-sm-3">
+                  <lable>Returned Date : </lable>
+              </div>
+              
+              <div class="col-sm-3">
+                  <input required="required" id="returnedDate" name="returndeDate" class="form-group" type="text">
+              </div>    
+          </div>
+              
+              <div class='row'>
+                  <div class=' col-sm-offset-3 col-sm-4'>
+              <input class="btn btn-default " type="submit">
+                  </div>
+              </div>
+                  
+          </form>
+        
+        
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal" id="">Close</button>
+      </div>
+    </div>
+
+  </div>
+</div>
 
 
 

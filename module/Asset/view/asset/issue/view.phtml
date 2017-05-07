@@ -22,10 +22,8 @@ if ($this->messages) { ?>
 <?php } 
 ?>
     
-    <?php
-        
+    <?php 
     $assetReturnUrl=$this->url('assetIssue', ['action' => 'returnAsset', 'id' => $id]);
-
     ?>
     
 <script>
@@ -84,8 +82,11 @@ if ($this->messages) { ?>
         <td>    
         #: (RETURN_DATE == null) ? '-' : RETURN_DATE #
         </td>
+        <td>    
+        #: (RETURNED_DATE == null) ? '-' : RETURNED_DATE #
+        </td>
         <td>
-        # if(RETURN_DATE!=null){#
+        # if(RETURN_DATE!=null&&RETURNED!='Y'){#
         <a class="btn-edit" data-issueid="#:ISSUE_ID#" data-assetid="#:ASSET_ID#" data-rdate=#:RETURN_DATE# 
         href="\\#" data-toggle="modal" data-asset="#:ASSET_EDESC#" data-quantity="#:QUANTITY#" 
         data-employee=" #: (FIRST_NAME == null) ? ' ' : FIRST_NAME #
@@ -115,6 +116,7 @@ if ($this->messages) { ?>
           <form action="<?=$assetReturnUrl?>" method="post">
               <input id="assetId" name="assetId" type="hidden">
               <input id="issueId" name="issueId" type="hidden">
+              <input id="issueBal" name="issueBal" type="hidden">
           <div class="row">
               <div class="col-sm-3">
                   <lable>Employee : </lable>

@@ -22,9 +22,10 @@
             columns: [
                 {field: "ASSET_EDESC", title: "Asset", width: 120},
                 {field: "FIRST_NAME", title: "Employee ", width: 140},
-                {field: "ISSUE_DATE", title: "Issue Date", width: 140},
-                {field: "QUANTITY", title: "Quantity ", width: 140},
+                {field: "ISSUE_DATE", title: "Issue Date", width: 90},
+                {field: "QUANTITY", title: "Quantity ", width: 80},
                 {field: "RETURN_DATE", title: "ReturnDate", width: 130},
+                {field: "RETURNED_DATE", title: "ReturnedDate", width: 130},
                 {title: "Action", width: 120}
             ],
         });
@@ -62,6 +63,7 @@
             
             $('#assetId').val(selectedassetId);
             $('#issueId').val(selectedIssueId);
+            $('#issueBal').val(selectedQuantity);
             
           });
 

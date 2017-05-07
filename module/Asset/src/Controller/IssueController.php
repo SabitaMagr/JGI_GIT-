@@ -72,8 +72,8 @@ class IssueController extends AbstractActionController {
                 $remQty = $request->getPost()['balance'];
                 $newRemQty = $remQty - $issue->quantity;
 
-                $a = $this->repository->add($issue);
-                if ($a) {
+                $assetadd = $this->repository->add($issue);
+                if ($assetadd) {
                     $setupModel = new Setup();
                     $setupModel->quantityBalance = $newRemQty;
                     $setupRepo = new SetupRepository($this->adapter);
@@ -165,37 +165,32 @@ class IssueController extends AbstractActionController {
             $postdata = $request->getPost();
             $assetId = $postdata['assetId'];
             $issueId = $postdata['issueId'];
+            $issueBal = $postdata['issueBal'];
             $returnedDate = $postdata['returndeDate'];
 
-            if (!empty($assetId) && !empty($assetId) && !empty($issueId)) {
-                
+            if (!empty($assetId) && !empty($assetId) && !empty($issueId) && !empty($issueBal)) {
                 $issue->modifiedDate = Helper::getcurrentExpressionDate();
                 $issue->modifiedBy = $this->employeeId;
-                $issue->assetId = $assetId;
-//                $issue->assetId = ;
+                $issue->returned = 'Y';
+                $issue->returnedDate = $returnedDate;
 
-                echo '<pre>';
-                print_r($issue);
-                die();
-                
-//                $this->repository->edit($issue, $id);
-//                $this->flashmessenger()->addMessage("Asset issue Sucessfully updated");
-//                return $this->redirect()->toRoute("assetIssue");
-            }
-                
-                
-                die();
-                
-                
-            } else {
-                $this->redirect()->toRoute('assetIssue', ['action' => 'view', 'id' => $id]);
+                $setupRepo = new SetupRepository($this->adapter);
+                $remQty = $setupRepo->fetchById($assetId)['QUANTITY_BALANCE'];
+                $newRemQty = $remQty + $issueBal;
+
+                $updateRD = $this->repository->edit($issue, $issueId);
+                if ($updateRD) {
+                    $setupModel = new Setup();
+                    $setupModel->quantityBalance = $newRemQty;
+                    $setupRepo->updateRemainingAssetBalance($setupModel, $assetId);
+                }
+
+                $this->flashmessenger()->addMessage("Asset return Sucessfully recorded");
+                return $this->redirect()->toRoute('assetIssue', ['action' => 'view', 'id' => $id]);
             }
         } else {
             $this->redirect()->toRoute('assetIssue', ['action' => 'view', 'id' => $id]);
         }
-
-//        print_r('return asset');
-        die();
     }
 
 }

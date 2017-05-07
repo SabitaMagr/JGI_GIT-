@@ -24,8 +24,8 @@ class IssueRepository implements RepositoryInterface {
     }
 
     public function add(Model $model) {
-        $this->tableGateway->insert($model->getArrayCopyForDB());
-        return true;
+        return $this->tableGateway->insert($model->getArrayCopyForDB());
+//        return true;
     }
 
     public function delete($id) {
@@ -42,7 +42,7 @@ class IssueRepository implements RepositoryInterface {
         unset($data[Issue::ISSUE_ID]);
         unset($data[Issue::CREATED_DATE]);
         unset($data[Issue::STATUS]);
-        $this->tableGateway->update($data, [Issue::ISSUE_ID => $id]);
+        return $this->tableGateway->update($data, [Issue::ISSUE_ID => $id]);
     }
 
     public function fetchAll() {
