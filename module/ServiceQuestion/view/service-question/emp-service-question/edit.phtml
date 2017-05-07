@@ -24,6 +24,15 @@ if ($this->messages) {
 </div>
 <div class="row margin-top-20" ng-app="hris" ng-controller="serviceQuestionList"> 
     <div class="col-sm-12">
+        <script type="text/ng-template" id="serviceQuestionTree">
+            <div class="form-group" ng-style="serviceQuestion.subQuestion === true && {'margin-bottom': '0px'}">
+                <label>{{serviceQuestion.sn}}. <span ng-bind="serviceQuestion.questionEdesc"></span></label>
+                <input ng-if="serviceQuestion.subQuestion==true" type="hidden" name="serviceQuestionAnswer[{{serviceQuestion.qaId}}]" value=""/>
+                <input ng-if="serviceQuestion.subQuestion==false" type="text" name="serviceQuestionAnswer[{{serviceQuestion.qaId}}]" value="" class="form-control"/>
+            </div>
+            <div ng-repeat="serviceQuestion in serviceQuestion.subQuestionList" ng-include="'serviceQuestionTree'">
+            </div>
+        </script>
         <div class="portlet box custom-box">
             <div class="portlet-title">
                 <div class="caption">
@@ -85,19 +94,7 @@ if ($this->messages) {
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-sm-12" ng-repeat="serviceQuestion in serviceQuestionList">
-                            <div class="form-group" ng-style="serviceQuestion.subQuestion === true && {'margin-bottom': '0px'}">
-                                <label>{{serviceQuestion.sn}}. <span ng-bind="serviceQuestion.questionEdesc"></span></label>
-                                <input ng-if="serviceQuestion.subQuestion==true" type="hidden" name="serviceQuestionAnswer[{{serviceQuestion.qaId}}]" value="" ng-model="serviceQuestion.answer"/>
-                                <input ng-if="serviceQuestion.subQuestion==false" type="text" name="serviceQuestionAnswer[{{serviceQuestion.qaId}}]" value="" ng-model="serviceQuestion.answer" class="form-control"/>
-                            </div>
-                            <div ng-if="serviceQuestion.subQuestion==true" ng-repeat="subQuestion in serviceQuestion.subQuestionList">
-                                <div class="form-group">
-                                    <label>{{subQuestion.sn}}. <span ng-bind="subQuestion.questionEdesc"></span></label>
-                                    <input ng-if="subQuestion.subQuestion==true" type="hidden" name="serviceQuestionAnswer[{{subQuestion.qaId}}]" value="" ng-model="subQuestion.answer"/>
-                                    <input ng-if="subQuestion.subQuestion==false" type="text" name="serviceQuestionAnswer[{{subQuestion.qaId}}]" value="" ng-model="subQuestion.answer" class="form-control"/>
-                                </div>
-                            </div>
+                        <div class="col-sm-12" ng-repeat="serviceQuestion in serviceQuestionList" ng-include="'serviceQuestionTree'">
                         </div>
                     </div>
                     <div class="form-group">

@@ -3320,7 +3320,7 @@ class RestfulService extends AbstractRestfulController {
                             "qaId" => $row['QA_ID'],
                             "questionEdesc" => $row['QUESTION_EDESC'],
                             "subQuestion"=>true,
-                            "subQuestionList" => $tempResult,
+                            "subQuestionList" => $tempResult['array'],
                             "answer"=>(!isset($questionAnswerDtl) || $questionAnswerDtl==null || gettype($questionAnswerDtl)=='undefined') ? null : $questionAnswerDtl->ANSWER
                         );
                 }else{

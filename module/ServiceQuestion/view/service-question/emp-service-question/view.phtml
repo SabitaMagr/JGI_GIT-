@@ -33,6 +33,14 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
 </script>
 <div class="row margin-top-20" ng-app="hris" ng-controller="serviceQuestionList">
     <div class="col-sm-12">
+        <script type="text/ng-template" id="serviceQuestionTree">
+            <div class="form-group serviceQuestionList" ng-style="serviceQuestion.subQuestion === true && {'margin-bottom': '0px'}">
+                {{serviceQuestion.sn}}. <span ng-bind="serviceQuestion.questionEdesc"></span><br/>
+                <div class="serviceQuestionList1"><span ng-if="serviceQuestion.subQuestion==false" ng-bind="serviceQuestion.answer"></span></div>
+            </div>
+            <div ng-repeat="serviceQuestion in serviceQuestion.subQuestionList" ng-include="'serviceQuestionTree'">
+            </div>
+        </script>
         <div class="portlet box custom-box">
             <div class="portlet-title">
                 <div class="caption">
@@ -99,17 +107,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                 <input type="hidden" id="employeeId" value="<?php echo $detail['EMPLOYEE_ID'] ?>"/>
                 <input type="hidden" id="serviceEventTypeId" value="<?php echo $detail['SERVICE_EVENT_TYPE_ID'] ?>"/>
                     <div class="row">
-                        <div class="col-sm-12" ng-repeat="serviceQuestion in serviceQuestionList">
-                            <div class="form-group serviceQuestionList" ng-style="serviceQuestion.subQuestion === true && {'margin-bottom': '0px'}">
-                                {{serviceQuestion.sn}}. <span ng-bind="serviceQuestion.questionEdesc"></span><br/>
-                                <div class="serviceQuestionList1"><span ng-if="serviceQuestion.subQuestion==false" ng-bind="serviceQuestion.answer"></span></div>
-                            </div>
-                            <div ng-if="serviceQuestion.subQuestion==true" ng-repeat="subQuestion in serviceQuestion.subQuestionList">
-                                <div class="form-group serviceQuestionList">
-                                    {{subQuestion.sn}}. <span ng-bind="subQuestion.questionEdesc"></span><br/>
-                                    <div class="serviceQuestionList1"><span ng-if="subQuestion.subQuestion==false" ng-bind="subQuestion.answer"></span></div>
-                                </div>
-                            </div>
+                        <div class="col-sm-12" ng-repeat="serviceQuestion in serviceQuestionList" ng-include="'serviceQuestionTree'">
                         </div>
                     </div>
                     <div class="row">
