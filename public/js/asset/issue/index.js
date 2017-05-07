@@ -1,4 +1,4 @@
-(function ($) {
+(function ($,app) {
     'use strict';
 
     $(document).ready(function () {
@@ -33,6 +33,42 @@
             grid.saveAsExcel();
         });
         window.app.UIConfirmations();
+
+
+        app.addDatePicker($('#returnedDate'));
+
+        $("#assetIssueTable").on("click", "#btnReturn", function () {
+            returnedDate
+            
+            $('#returnedDate').val('');
+            var returnButton =$(this);
+            
+            var selectedassetId=returnButton.attr('data-assetid');
+            var selectedIssueId=returnButton.attr('data-issueid');
+            
+            var selectedEmployee=returnButton.attr('data-employee');
+            var selectedAsset=returnButton.attr('data-asset');
+            var selectedQuantity=returnButton.attr('data-quantity');
+            var selectedRdate=returnButton.attr('data-rdate');
+
+            $('#returnEmployee').text(selectedEmployee);
+            $('#returnAsset').text(selectedAsset);
+            $('#returnQuantity').text(selectedQuantity);
+            $('#rDate').text(selectedRdate);
+            
+//            console.log(selectedAsset);
+//            console.log(selectedassetId);
+//            console.log(selectedIssueId);
+            
+            $('#assetId').val(selectedassetId);
+            $('#issueId').val(selectedIssueId);
+            
+          });
+
+
+
     });
 
-})(window.jQuery);
+
+
+})(window.jQuery, window.app);

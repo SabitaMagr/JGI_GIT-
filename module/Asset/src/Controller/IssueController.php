@@ -81,7 +81,7 @@ class IssueController extends AbstractActionController {
                 }
 
                 $this->flashmessenger()->addMessage("Asset Successfully issued!!!");
-                return $this->redirect()->toRoute("assetIssue");
+                return $this->redirect()->toRoute("assetSetup");
             }
         }
 
@@ -132,6 +132,69 @@ class IssueController extends AbstractActionController {
 
         echo "<pre>";
         print_r($issue);
+        die();
+    }
+
+    public function viewAction() {
+        $id = $this->params()->fromRoute('id');
+        if ($id == 0) {
+            $this->redirect()->toRoute('assetSetup');
+        }
+
+        $result = $this->repository->fetchAllById($id);
+        $list = [];
+        foreach ($result as $row) {
+            array_push($list, $row);
+        }
+        return Helper::addFlashMessagesToArray($this, [
+                    'issue' => $list,
+                    'id' => $id
+        ]);
+    }
+
+    public function returnAssetAction() {
+        $id = $this->params()->fromRoute('id');
+        if ($id == 0) {
+            $this->redirect()->toRoute('assetIssue', ['action' => 'view', 'id' => $id]);
+        }
+        $this->initializeForm();
+        $request = $this->getRequest();
+        $issue = new Issue();
+        if ($request->isPost()) {
+
+            $postdata = $request->getPost();
+            $assetId = $postdata['assetId'];
+            $issueId = $postdata['issueId'];
+            $returnedDate = $postdata['returndeDate'];
+
+            if (!empty($assetId) && !empty($assetId) && !empty($issueId)) {
+                
+                $issue->modifiedDate = Helper::getcurrentExpressionDate();
+                $issue->modifiedBy = $this->employeeId;
+                $issue->assetId = $assetId;
+//                $issue->assetId = ;
+
+                echo '<pre>';
+                print_r($issue);
+                die();
+                
+//                $this->repository->edit($issue, $id);
+//                $this->flashmessenger()->addMessage("Asset issue Sucessfully updated");
+//                return $this->redirect()->toRoute("assetIssue");
+            }
+                
+                
+                die();
+                
+                
+            } else {
+                $this->redirect()->toRoute('assetIssue', ['action' => 'view', 'id' => $id]);
+            }
+        } else {
+            $this->redirect()->toRoute('assetIssue', ['action' => 'view', 'id' => $id]);
+        }
+
+//        print_r('return asset');
         die();
     }
 
