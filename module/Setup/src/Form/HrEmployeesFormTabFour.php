@@ -96,6 +96,15 @@ class HrEmployeesFormTabFour extends Model
      */
     public $appBranchId;
     
+    /**
+     * @Annotation\Type("Zend\Form\Element\Select")
+     * @Annotation\Required(False)
+     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
+     * @Annotation\Options({"disable_inarray_validator":"true","label":"Employee Type"})
+     * @Annotation\Attributes({ "id":"employeeType","class":"form-control"})
+     */
+    public $employeeType;
+    
     public $branchId;
     public $departmentId;
     public $designationId;
