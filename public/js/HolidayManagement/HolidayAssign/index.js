@@ -22,24 +22,13 @@ angular.module('hris', [])
             $scope.employeeList = [];
             $scope.alreadyAssignedEmpList = [];
             $scope.all = false;
-            $scope.assignShowHide = false;
 
             $scope.checkAll = function (item) {
                 for (var i = 0; i < $scope.employeeList.length; i++) {
                     $scope.employeeList[i].checked = item;
                 }
-                $scope.assignShowHide = item && ($scope.employeeList.length > 0);
             };
 
-            $scope.checkUnit = function (item) {
-                for (var i = 0; i < $scope.employeeList.length; i++) {
-                    if ($scope.employeeList[i].checked) {
-                        $scope.assignShowHide = true;
-                        break;
-                    }
-                    $scope.assignShowHide = false;
-                }
-            };
 
             $scope.holidayChangeFn = function () {
                 if ($scope.holiday == null) {
@@ -54,8 +43,6 @@ angular.module('hris', [])
                 }
 
                 $scope.all = false;
-                $scope.assignShowHide = false;
-
 
                 App.blockUI({target: "#hris-page-content"});
                 window.app.pullDataById(document.wsGetHolidayAssignedEmployees, {
@@ -112,6 +99,16 @@ angular.module('hris', [])
             };
 
             $scope.assign = function () {
+                if ($scope.employeeList.length == 0) {
+                    window.app.showMessage("No Employees to Assign.", "error");
+                    return;
+                }
+                if ($scope.holiday == null) {
+                    window.app.showMessage("Select the holiday first to assign to", "error");
+                    return;
+                }
+
+
                 var checkedEmpList = [];
                 for (var index in $scope.employeeList) {
                     if ($scope.employeeList[index].checked) {
@@ -130,7 +127,7 @@ angular.module('hris', [])
                         window.app.showMessage(response.error);
                     }
                 }, function (failure) {
-                    console.log("shift Assign Filter Success Response", response);
+                    console.log("shift Assign Filter Success Response", failure);
                 });
 
             };

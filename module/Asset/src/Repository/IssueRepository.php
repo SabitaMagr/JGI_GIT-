@@ -69,6 +69,7 @@ class IssueRepository implements RepositoryInterface {
                 ->join(['E' => HrEmployees::TABLE_NAME], 'E.' . HrEmployees::EMPLOYEE_ID . '=AI.' . Issue::EMPLOYEE_ID, ["FIRST_NAME" => new Expression("INITCAP(E.FIRST_NAME)"),"MIDDLE_NAME" => new Expression("INITCAP(E.MIDDLE_NAME)"),"LAST_NAME" => new Expression("INITCAP(E.LAST_NAME)")], "left");
 
         $select->where(["AI." . Issue::STATUS . "='E'"]);
+        $select->where("(AI.RETURNED!='Y' OR AI.RETURNED IS NULL)");
         $select->where(["AI." . Issue::ASSET_ID . "=$id"]);
 //        $select->order("S." . Setup::ASSET_EDESC);
         $statement = $sql->prepareStatementForSqlObject($select);

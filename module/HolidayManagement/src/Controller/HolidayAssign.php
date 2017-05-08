@@ -85,7 +85,11 @@ class HolidayAssign extends AbstractActionController {
             if ($request->isPost()) {
                 $postedData = $request->getPost();
                 $holidayId = $postedData['holidayId'];
-                $employeeIdList = $postedData['employeeIdList'];
+                if (!isset($postedData['employeeIdList'])) {
+                    $employeeIdList = [];
+                } else {
+                    $employeeIdList = $postedData['employeeIdList'];
+                }
 
                 $reportData = $this->repository->multipleEmployeeAssignToHoliday($holidayId, $employeeIdList);
                 return new CustomViewModel(['success' => true, 'data' => $reportData, 'error' => '']);

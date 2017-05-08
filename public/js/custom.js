@@ -722,7 +722,7 @@ window.app = (function ($, toastr, App) {
         id = id.replace("link", "");
         $('html,body').animate({
             scrollTop: $("#" + id).offset().top - 50},
-                1000);
+                500);
     };
 
     return {
