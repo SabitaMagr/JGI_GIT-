@@ -11,33 +11,6 @@ use Zend\Form\Annotation;
 class HolidayForm {
 
     /**
-     * @Annotation\Type("Zend\Form\Element\Radio")
-     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
-     * @Annotation\Required(false)
-     * @Annotation\Options({"disable_inarray_validator":"true","label":"Gender"})
-     * @Annotation\Attributes({ "id":"genderId"})
-     */
-    public $genderId;
-
-    /**
-     * @Annotation\Type("Zend\Form\Element\Select")
-     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
-     * @Annotation\Required(true)
-     * @Annotation\Options({"disable_inarray_validator":"true","label":"Branch"})
-     * @Annotation\Attributes({ "id":"branchId","class":"form-control","multiple":"multiple"})
-     */
-    public $branchId;
-
-    /**
-     * @Annotation\Type("Zend\Form\Element\Select")
-     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
-     * @Annotation\Required(true)
-     * @Annotation\Options({"disable_inarray_validator":"true","label":"Designation"})
-     * @Annotation\Attributes({ "id":"designationId","class":"form-control","multiple":"multiple"})
-     */
-    public $designationId;
-
-    /**
      * @Annotion\Type("Zend\Form\Element\Text")
      * @Annotation\Required(true)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})

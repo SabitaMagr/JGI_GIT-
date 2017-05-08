@@ -9,9 +9,6 @@ class Holiday extends Model {
     const TABLE_NAME = "HRIS_HOLIDAY_MASTER_SETUP";
     const HOLIDAY_ID = "HOLIDAY_ID";
     const HOLIDAY_CODE = "HOLIDAY_CODE";
-    const GENDER_ID = "GENDER_ID";
-    const BRANCH_ID = "BRANCH_ID";
-    const DESIGNATION_ID = "DESIGNATION_ID";
     const HOLIDAY_ENAME = "HOLIDAY_ENAME";
     const HOLIDAY_LNAME = "HOLIDAY_LNAME";
     const START_DATE = "START_DATE";
@@ -27,9 +24,6 @@ class Holiday extends Model {
 
     public $holidayId;
     public $holidayCode;
-    public $genderId;
-    public $branchId;
-    public $designationId;
     public $holidayEname;
     public $holidayLname;
     public $startDate;
@@ -45,9 +39,6 @@ class Holiday extends Model {
     public $mappings = [
         'holidayId' => self::HOLIDAY_ID,
         'holidayCode' => self::HOLIDAY_CODE,
-        'genderId' => self::GENDER_ID,
-        'branchId' => self::BRANCH_ID,
-        'designationId' => self::DESIGNATION_ID,
         'holidayEname' => self::HOLIDAY_ENAME,
         'holidayLname' => self::HOLIDAY_LNAME,
         'startDate' => self::START_DATE,

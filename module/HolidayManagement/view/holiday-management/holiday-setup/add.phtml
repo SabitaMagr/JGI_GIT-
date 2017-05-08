@@ -20,9 +20,6 @@ $this->headScript()
 
 
 <?php
-$genderId = $form->get('genderId');
-$branchId = $form->get('branchId');
-$designationId = $form->get('designationId');
 $holidayEname = $form->get('holidayEname');
 $holidayLname = $form->get('holidayLname');
 $startDate = $form->get('startDate');
@@ -32,10 +29,6 @@ $remarks = $form->get('remarks');
 
 $submit = $form->get('submit');
 $submit->setAttribute('value', 'SUBMIT');
-
-$genderId->setValueOptions($genders);
-$branchId->setValueOptions($branches);
-$designationId->setValueOptions($designations);
 ?>
 
 <?php
@@ -78,7 +71,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                 <?php
                 print $this->form()->openTag($form);
                 ?>
-                
+
                 <div class="row">
                     <div class="col-sm-6">
                         <div class="form-group <?= empty($holidayEname->getMessages()) ? "" : "error" ?>">
@@ -149,36 +142,8 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
 
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col-sm-6">
-                        <div class="form-group form-group-default-select2">
-                            <?php print $this->formLabel($branchId); ?>
-                            <!--<span class="required" aria-required="true">*</span>-->
-                            <?php print $this->formElement($branchId); ?>
-                        </div>
-                        <?php print $this->formElementErrors()->render($branchId, ['class' => 'help-block error']) ?>
-                    </div>
-                    <div class="col-sm-6">
-                        <div class="form-group form-group-default-select2">
-                            <?php print $this->formLabel($designationId); ?>
-                            <!--<span class="required" aria-required="true">*</span>-->
-                            <?php print $this->formElement($designationId); ?>
-                        </div>
-                        <?php print $this->formElementErrors()->render($designationId, ['class' => 'help-block error']) ?>
-                    </div>
-                </div>
 
                 <div class=" row">
-                    <div class="col-sm-6">
-                        <div class="form-group padding-0">
-                            <?php print $this->formLabel($genderId); ?>
-                            <div class="md-radio-inline">
-                                <?php $customRenderer($genderId); ?>
-                            </div>
-                        </div>
-                        <?php print $this->formElementErrors()->render($genderId, ['class' => 'help-block error']); ?>
-                    </div>
-
                     <div class="col-sm-6">
                         <div class="form-group">
                             <?php print $this->formLabel($halfday); ?>
