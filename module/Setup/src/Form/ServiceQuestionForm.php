@@ -58,6 +58,15 @@ class ServiceQuestionForm
     public $qaIndex;
     
     /**
+     * @Annotation\Type("Zend\Form\Element\Select")
+     * @Annotation\Required(false)
+     * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
+     * @Annotation\Options({"disable_inarray_validator":"true","label":"Question Type"})
+     * @Annotation\Attributes({ "id":"form-questionType","class":"form-control"})
+     */
+    public $questionType;
+    
+    /**
      * @Annotation\Type("Zend\Form\Element\Textarea")
      * @Annotation\Required(false)
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})

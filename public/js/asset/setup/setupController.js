@@ -17,12 +17,12 @@ angular.module('hris', [])
         .controller('setupController', function ($scope, $http) {
 
 
-            assetIssue = function (assetname,assetId) {
-                console.log(assetname);
-                console.log(assetId);
-                $scope.asset=assetId;
-                $scope.assetNameView=assetname;
-                
+            $scope.assetIssue = function (assetname, assetId) {
+//                console.log(assetname);
+//                console.log(assetId);
+                $scope.asset = assetId;
+                $scope.assetNameView = assetname;
+
                 window.app.pullDataById(document.restfulUrl, {
                     action: 'pullAssetBalance',
                     data: {
@@ -38,14 +38,46 @@ angular.module('hris', [])
                 }, function (error) {
                     console.log("error", error);
                 })
-                
-                
+
+
             }
             
-            $scope.modalIssue = function(assetname,assetId){
-                assetIssue(assetname,assetId);
+            $scope.radioClik = function () {
+                console.log('sdfdsf');
+                console.log($scope.rdChk);
+                if ($scope.rdChk == false) {
+                    $("#returnDate").prop('required', false);
+                    $scope.rdTxt = '';
+                } else {
+                    $("#returnDate").prop('required', true);
+                }
             }
             
+            $scope.rdClk=function(){
+                $scope.radioClik();
+            }
+            
+
+            
+            $("#assetSetupTable").on("click", "#btnIssue", function () {
+                $('#returnedDate').val('');
+                var issueButton =$(this);
+                var selectedassetId=issueButton.attr('data-assetid');
+                var selectedassetName=issueButton.attr('data-asset');
+                
+                $('#requestDate').val('');
+                $('#issueDate').val('');
+                $('#quantity').val('');
+                $('#purposeTA').val('');
+                $('#remarks').val('');
+                $("#returnDate").val('');
+                
+                
+                $scope.$apply(function(){
+                $scope.assetIssue(selectedassetName, selectedassetId);
+                });
+            });
+
 
 
             $scope.astChange = function () {
@@ -68,16 +100,33 @@ angular.module('hris', [])
 
 
 
-            $scope.rdClk = function () {
-                if ($scope.rdChk == false) {
-                    $("#returnDate").prop('required', false);
-                    $scope.rdTxt = '';
-                } else {
-                    $("#returnDate").prop('required', true);
-                }
-            }
+            
 
 
 
 
-        });
+        }).directive('assetissue', function ($parse) {
+    return {
+        restrict: 'A',
+        link: function (scope, element, attrs) {
+            var selector = attrs.selector;
+            var fun = $parse(attrs.assetissue);
+            element.on('click', selector, function (e) {
+                // no need to create a jQuery object to get the attribute 
+                var idx = e.target.getAttribute('data-index');
+                fun(scope)(idx);
+//            console.log(e);
+            });
+
+        }
+    };
+});
+
+
+// var selector = attrs.selector;
+//            var fun = $parse(attrs.clickChildren);
+//            element.on('click', selector, function (e) {
+//                // no need to create a jQuery object to get the attribute 
+//                var idx = e.target.getAttribute('data-index');
+//                fun(scope)(idx);
+//            });
