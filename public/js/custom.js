@@ -107,6 +107,8 @@ window.app = (function ($, toastr, App) {
         var oldtoNepali = null;
 
         $fromNepaliDate.nepaliDatePicker({
+            npdMonth: true,
+	npdYear: true,
             onChange: function () {
                 var toVal = $toNepaliDate.val();
                 if (toVal === 'undefined' || toVal == '') {
@@ -170,6 +172,8 @@ window.app = (function ($, toastr, App) {
         });
 
         $toNepaliDate.nepaliDatePicker({
+            npdMonth: true,
+	npdYear: true,
             onChange: function () {
                 var fromVal = $fromNepaliDate.val();
                 if (fromVal === 'undefined' || fromVal == '') {
@@ -260,6 +264,8 @@ window.app = (function ($, toastr, App) {
         var oldNepali = null;
 
         $nepaliDate.nepaliDatePicker({
+            npdMonth: true,
+	npdYear: true,
             onChange: function () {
                 var temp = nepaliDatePickerExt.fromNepaliToEnglish($nepaliDate.val());
                 var englishStartDate = $englishDate.datepicker('getStartDate');
