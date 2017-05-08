@@ -125,13 +125,4 @@ angular.module('hris', [])
 
 
 
-        }).directive("datepicker", function () {
-    return {
-        restrict: "A",
-        require: "ngModel",
-        link: function (scope, elem, attrs, ngModelCtrl) {
-//                $(elem).val(attrs.dvalue);
-            app.addDatePicker($(elem));
-        }
-    }
-});
+        });

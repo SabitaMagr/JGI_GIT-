@@ -39,7 +39,7 @@
         app.addDatePicker($('#returnedDate'));
 
         $("#assetIssueTable").on("click", "#btnReturn", function () {
-            returnedDate
+//            returnedDate
             
             $('#returnedDate').val('');
             var returnButton =$(this);
