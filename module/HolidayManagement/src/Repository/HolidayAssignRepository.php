@@ -129,6 +129,7 @@ class HolidayAssignRepository {
         } catch (Exception $e) {
             EntityHelper::rawQueryResult($this->adapter, "ROLLBACK TO SAVEPOINT multipleEmployeeAssign");
         }
+        EntityHelper::rawQueryResult($this->adapter, "COMMIT");
     }
 
 }
