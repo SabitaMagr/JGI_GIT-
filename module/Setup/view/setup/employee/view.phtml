@@ -97,6 +97,14 @@ $designationId = $formFour->get('appDesignationId');
 $departmentId = $formFour->get('appDepartmentId');
 $branchId = $formFour->get('appBranchId');
 
+$employeeType = $formFour->get('employeeType');
+$employeeTypeValue = [
+    'R' => 'Regular',
+    'C' => 'Contract'
+];
+$employeeType->setValueOptions($employeeTypeValue);
+
+
 $formSix->setAttribute('id', 'form6');
 $academicDegreeId = $formSix->get('academicDegreeId');
 $academicUniversityId = $formSix->get('academicUniversityId');
@@ -1019,6 +1027,19 @@ echo json_encode($menu);
                                 <?php print $this->formLabel($branchId); ?></div>
                             <div class="col-xs-6 col-sm-6 cgap-4">
                                 <?php print $employeeData[\Setup\Model\Branch::BRANCH_NAME]; ?></div>
+                        </div>
+                    </div>
+
+
+                </div>
+                
+                <div class="col-xs-12 col-sm-4 col-md-4">
+                    <div class="row bottomgap">
+                        <div class="form-group<?= empty($employeeType->getMessages()) ? "" : "error" ?>">
+                            <div class="col-xs-6 col-sm-6 col-md-6 rightalign-4">
+                                <?php print $this->formLabel($employeeType); ?></div>
+                            <div class="col-xs-6 col-sm-6 cgap-4">
+                                <?php print ($employeeTypeValue[$employeeData[\Setup\Model\HrEmployees::EMPLOYEE_TYPE]]); ?></div>
                         </div>
                     </div>
 
