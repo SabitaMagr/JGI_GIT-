@@ -45,6 +45,14 @@ class ServiceQuestionController extends AbstractActionController {
     public function addAction() {
         $this->initializeForm();
         $request = $this->getRequest();
+        $questionTypeList = [
+            'TEXT'=>'Text',
+            'NUMBER'=>'Number',
+            'TEXTAREA'=>'Textarea',
+            'DATEPICKER'=>'DatePicker',
+            'TIMEPICKER'=>'TimePicker'
+            
+        ];
         $employeeRepo = new EmployeeRepository($this->adapter);
         $employeeDetail = $employeeRepo->fetchById($this->employeeId);
         if ($request->isPost()) {
@@ -72,6 +80,7 @@ class ServiceQuestionController extends AbstractActionController {
         return new ViewModel(Helper::addFlashMessagesToArray(
                         $this, [
                     'form' => $this->form,
+                    'questionTypeList'=>$questionTypeList,
                     'serviceEventType' => ApplicationEntityHelper::getTableKVListWithSortOption($this->adapter, ServiceEventType::TABLE_NAME, ServiceEventType::SERVICE_EVENT_TYPE_ID, [ServiceEventType::SERVICE_EVENT_TYPE_NAME], ["STATUS" => "E"], "SERVICE_EVENT_TYPE_NAME", "ASC",null,false,true),
                     'serviceQuestion' => ApplicationEntityHelper::getTableKVListWithSortOption($this->adapter, ServiceQuestion::TABLE_NAME, ServiceQuestion::QA_ID, [ServiceQuestion::QUESTION_EDESC], ["STATUS" => "E"], "QA_ID", "ASC",null,false,false),
                         ]
@@ -87,7 +96,14 @@ class ServiceQuestionController extends AbstractActionController {
         }
         $this->initializeForm();
         $request = $this->getRequest();
-
+        $questionTypeList = [
+            'TEXT'=>'Text',
+            'NUMBER'=>'Number',
+            'TEXTAREA'=>'Textarea',
+            'DATEPICKER'=>'DatePicker',
+            'TIMEPICKER'=>'TimePicker'
+            
+        ];
         $serviceQuestion = new ServiceQuestion();
         $detail = $this->repository->fetchById($id)->getArrayCopy();
         if (!$request->isPost()) {
@@ -113,6 +129,7 @@ class ServiceQuestionController extends AbstractActionController {
                         $this, [
                     'id' => $id,
                     'form' => $this->form,
+                    'questionTypeList'=>$questionTypeList,
                     'serviceEventType' => ApplicationEntityHelper::getTableKVListWithSortOption($this->adapter, ServiceEventType::TABLE_NAME, ServiceEventType::SERVICE_EVENT_TYPE_ID, [ServiceEventType::SERVICE_EVENT_TYPE_NAME], ["STATUS" => "E"], "SERVICE_EVENT_TYPE_NAME", "ASC",null,false,true),
                     'serviceQuestion' => ApplicationEntityHelper::getTableKVListWithSortOption($this->adapter, ServiceQuestion::TABLE_NAME, ServiceQuestion::QA_ID, [ServiceQuestion::QUESTION_EDESC], ["STATUS" => "E"], "QA_ID", "ASC",null,false,false),
                         ]
