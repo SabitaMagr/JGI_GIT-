@@ -15,7 +15,7 @@
             var $serviceEventType = $('#' + serviceEventTypeId);
             var $employee = $('#' + employeeId);
 
-            var $gender = null;
+            var $gender = $('#' + "random-random");
             if (genderId != null) {
                 $gender = $('#' + genderId);
             }
@@ -133,7 +133,7 @@
 
 
         };
-        changeSearchOption("companyId", "branchId", "departmentId", "designationId", "positionId", "serviceTypeId", "serviceEventTypeId", "employeeId");
+        changeSearchOption("companyId", "branchId", "departmentId", "designationId", "positionId", "serviceTypeId", "serviceEventTypeId", "employeeId", "genderId");
 
         $("#reset").on("click", function () {
             changeSearchOption("companyId", "branchId", "departmentId", "designationId", "positionId", "serviceTypeId", "serviceEventTypeId", "employeeId");
