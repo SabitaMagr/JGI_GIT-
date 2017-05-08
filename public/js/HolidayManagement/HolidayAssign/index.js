@@ -17,6 +17,7 @@ angular.module('hris', [])
             var $employeeId = angular.element(document.getElementById('employeeId'));
 
 
+            $scope.holidayList = document.holidayList;
 
             $scope.employeeList = [];
             $scope.alreadyAssignedEmpList = [];
@@ -41,19 +42,36 @@ angular.module('hris', [])
             };
 
             $scope.holidayChangeFn = function () {
+                if ($scope.holiday == null) {
+                    $scope.alreadyAssignedEmpList = [];
+                    var empList = $scope.employeeList;
+                    for (var i in empList) {
+                        var emp = empList[i];
+                        emp.checked = ($scope.alreadyAssignedEmpList.indexOf(emp.EMPLOYEE_ID) >= 0);
+                        $scope.employeeList.push(emp);
+                    }
+                    return;
+                }
+
                 $scope.all = false;
                 $scope.assignShowHide = false;
 
 
                 App.blockUI({target: "#hris-page-content"});
                 window.app.pullDataById(document.wsGetHolidayAssignedEmployees, {
-                    holidayId: 1
+                    holidayId: $scope.holiday
                 }).then(function (response) {
                     App.unblockUI("#hris-page-content");
                     console.log("shift Assign Filter Success Response", response);
                     if (response.success) {
                         $scope.$apply(function () {
                             $scope.alreadyAssignedEmpList = response.data;
+                            var empList = $scope.employeeList;
+                            for (var i in empList) {
+                                var emp = empList[i];
+                                emp.checked = ($scope.alreadyAssignedEmpList.indexOf(emp.EMPLOYEE_ID) >= 0);
+                                $scope.employeeList.push(emp);
+                            }
                         });
                     } else {
                         console.log("getHolidayAssignedEmployees=>", response.error);
@@ -77,6 +95,7 @@ angular.module('hris', [])
                     employeeId: $employeeId.val()
                 }).then(function (response) {
                     $scope.$apply(function () {
+                        $scope.employeeList = [];
                         var empList = response.data;
                         for (var i in empList) {
                             var emp = empList[i];
@@ -84,6 +103,7 @@ angular.module('hris', [])
                             $scope.employeeList.push(emp);
                         }
                     });
+                    window.app.scrollTo('employeeTable');
 
                 }, function (failure) {
 
@@ -98,13 +118,19 @@ angular.module('hris', [])
                         checkedEmpList.push($scope.employeeList[index].EMPLOYEE_ID);
                     }
                 }
+                App.blockUI({target: "#hris-page-content"});
                 window.app.pullDataById(document.wsAssignHolidayToEmployees, {
-                    holidayId: 1,
+                    holidayId: $scope.holiday,
                     employeeIdList: checkedEmpList
                 }).then(function (response) {
-
+                    App.unblockUI("#hris-page-content");
+                    if (response.success) {
+                        window.app.showMessage("Holiday Assigned Successfully");
+                    } else {
+                        window.app.showMessage(response.error);
+                    }
                 }, function (failure) {
-
+                    console.log("shift Assign Filter Success Response", response);
                 });
 
             };

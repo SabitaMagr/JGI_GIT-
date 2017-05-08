@@ -7,6 +7,7 @@ use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
 use Exception;
 use HolidayManagement\Model\EmployeeHoliday;
+use HolidayManagement\Model\Holiday;
 use HolidayManagement\Repository\HolidayAssignRepository;
 use Zend\Authentication\AuthenticationService;
 use Zend\Db\Adapter\AdapterInterface;
@@ -29,7 +30,8 @@ class HolidayAssign extends AbstractActionController {
 
     public function indexAction() {
         return Helper::addFlashMessagesToArray($this, [
-                    'searchValues' => EntityHelper::getSearchData($this->adapter)
+                    'searchValues' => EntityHelper::getSearchData($this->adapter),
+                    'holidayList' => EntityHelper::getTableKVList($this->adapter, Holiday::TABLE_NAME, Holiday::HOLIDAY_ID, [Holiday::HOLIDAY_ENAME], [Holiday::STATUS => EntityHelper::STATUS_ENABLED], null, null, Holiday::START_DATE)
         ]);
     }
 

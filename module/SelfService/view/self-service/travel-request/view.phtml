@@ -316,7 +316,6 @@ print $this->form()->openTag($form);
     <?php
     print $this->form()->closeTag();
     ?>
-    <div class="row">
         <div style="border:1px solid; display: none;" id="printableArea" class="col-md-8">
             <div class="row">
                 <div class="col-md-8 col-sm-offset-2">
@@ -413,11 +412,8 @@ print $this->form()->openTag($form);
             <?php } ?>
         </div>
 
-        <div class="row esetup" style="">
-            <div class="col-md-12" style="text-align:center;">
-                <a class="btn btn-success" ng-click="printDiv('printableArea');"> Print</a>
-            </div>
+        <div class="col-md-12" style="text-align:center;">
+            <a class="btn btn-success" ng-click="printDiv('printableArea');"> Print</a>
         </div>
-    </div>
 
 </div>

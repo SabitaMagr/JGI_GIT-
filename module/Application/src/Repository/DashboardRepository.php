@@ -552,7 +552,7 @@ class DashboardRepository implements RepositoryInterface {
                          HRIS_EMPLOYEES HE
                     WHERE HD.DEPARTMENT_ID = HE.DEPARTMENT_ID
                       AND HE.EMPLOYEE_ID = HAD.EMPLOYEE_ID
-                      AND TRUNC(HAD.ATTENDANCE_DT) = TO_DATE('27-MAR-2017', 'DD-MON-YYYY')
+                      AND TRUNC(HAD.ATTENDANCE_DT) = TRUNC(SYSDATE)
                       AND HAD.IN_TIME IS NOT NULL
                     GROUP BY HD.DEPARTMENT_CODE,
                              HD.DEPARTMENT_NAME,
@@ -567,7 +567,7 @@ class DashboardRepository implements RepositoryInterface {
                          HRIS_EMPLOYEES HE
                     WHERE HD.DEPARTMENT_ID = HE.DEPARTMENT_ID
                       AND HE.EMPLOYEE_ID = HAD.EMPLOYEE_ID
-                      AND TRUNC(HAD.ATTENDANCE_DT) = TO_DATE('27-MAR-2017', 'DD-MON-YYYY')
+                      AND TRUNC(HAD.ATTENDANCE_DT) = TRUNC(SYSDATE)
                       AND HAD.IN_TIME IS NULL
                       AND HAD.OUT_TIME IS NULL
                       AND LEAVE_ID IS NULL

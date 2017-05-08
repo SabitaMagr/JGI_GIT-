@@ -44,6 +44,11 @@ return [
                         'route' => 'empServiceQuestion',
                         'action' => 'add',
                     ],
+                     [
+                        'label' => 'Edit',
+                        'route' => 'empServiceQuestion',
+                        'action' => 'edit',
+                    ],
                         [
                         'label' => 'Detail',
                         'route' => 'empServiceQuestion',
