@@ -15,8 +15,8 @@ return [
 //        'password' => 'NEO_HRIS',
 
         
-//        'username' => 'JWL_HRIS_APR5',
-//        'password' => 'JWL_HRIS_APR5',
+        'username' => 'JWL_HRIS_APR5',
+        'password' => 'JWL_HRIS_APR5',
 //        
 //        'username' => 'JWL_HRIS_APR4',
 //        'password' => 'JWL_HRIS_APR4',
@@ -26,8 +26,8 @@ return [
         
 //        'username'      => 'HRIS_JWL',
 //        'password'      => 'HRIS_JWL',
-        'username' => 'HRIS_MODERN',
-        'password' => 'HRIS_MODERN',
+//        'username' => 'HRIS_MODERN',
+//        'password' => 'HRIS_MODERN',
         'platform_options' => ['quote_identifiers' => false]
     ],
     'service_manager' => [
