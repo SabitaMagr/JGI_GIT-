@@ -91,14 +91,6 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                     </div>
                 </div>
                 <div class="col-sm-2">
-                    <?php print $this->formLabel($branches); ?>
-                    <?php print $this->formElement($branches); ?>
-                </div>
-                <div class="col-sm-2">
-                    <?php print $this->formLabel($genders); ?>
-                    <?php print $this->formElement($genders); ?>
-                </div>
-                <div class="col-sm-2">
 
                     <button ng-click="view()" id="viewHolidays" class="btn btn-default form-control i-search" style="margin-top:22px !important;">
                         View
@@ -152,25 +144,6 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
             </td>
             <td>
             #: (END_DATE == null) ? '-' : END_DATE #
-            </td>
-            <td>
-            #: (GENDER_NAME == null) ? '-' : GENDER_NAME #
-            </td>
-            <td>
-            <ul id="branchList">  
-            # (BRANCHES.length >3) ? ln=3 : ln=BRANCHES.length #
-            #for(var i=0; i<ln; i++) { #
-            <li>
-            - #=BRANCHES[i].BRANCH_NAME #
-            </li>
-            #}#
-            <li>              
-            # if (BRANCHES.length >3) { #
-            <a href="<?= $this->url("holidaysetup", ["action" => "edit"]) ?>/#:HOLIDAY_ID#" style="margin-left:8px;"> (View More)
-            </a>
-            # } #
-            </li>
-            </ul>
             </td>
             <td>
             #: (HALFDAY == null) ? '-' : HALFDAY #
