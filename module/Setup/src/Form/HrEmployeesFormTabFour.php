@@ -127,6 +127,7 @@ class HrEmployeesFormTabFour extends Model
         'designationId'=>'DESIGNATION_ID',
         'positionId'=>'POSITION_ID',
         'serviceTypeId'=>'SERVICE_TYPE_ID',
-        'serviceEventTypeId'=>'SERVICE_EVENT_TYPE_ID'
+        'serviceEventTypeId'=>'SERVICE_EVENT_TYPE_ID',
+        'employeeType'=>'EMPLOYEE_TYPE'
     ];
 }
