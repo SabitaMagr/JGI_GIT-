@@ -64,6 +64,15 @@ class PreferenceSetupForm{
     public $requestType;
     
     /**
+     * @Annotation\Type("Zend\Form\Element\Select")
+     * @Annotation\Required({"required":"true"})
+     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
+     * @Annotation\Options({"disable_inarray_validator":"true","label":"Employee Type"})
+     * @Annotation\Attributes({ "id":"employeeType","class":"form-control"})
+     */
+    public $employeeType;
+    
+    /**
      * @Annotion\Type("Zend\Form\Element\Text")
      * @Annotation\Required(true)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})

@@ -15,6 +15,8 @@ $preferenceCondition = $form->get('preferenceCondition');
 $preferenceCondition->setValueOptions($preferenceConditionList);
 $requestType = $form->get('requestType');
 $requestType->setValueOptions($requestTypeList);
+$employeeType = $form->get('employeeType');
+$employeeType->setValueOptions($employeeTypeList);
 $companyId = $form->get('companyId');
 $companyId->setValueOptions($companies);
 $submit = $form->get('submit');
@@ -104,6 +106,13 @@ if ($this->messages) {
                             <?php print $this->formElement($requestType); ?>
                             <?php print $this->formElementErrors()->render($requestType, ['class' => 'help-block error']); ?>
                         </div>
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="form-group <?= empty($employeeType->getMessages()) ? "" : "has-error" ?>">
+                        <?php print $this->formLabel($employeeType); ?>
+                        <?php print $this->formElement($employeeType); ?>
+                        <?php print $this->formElementErrors()->render($employeeType, ['class' => 'help-block error']); ?>
                     </div>
                 </div>
                 <?php print $this->formSubmit($submit); ?>

@@ -38,6 +38,10 @@ class PreferenceSetup extends AbstractActionController{
         'RQ'=>"Pending",
         'AP'=>'Approved'
     ];
+    const  EMPLOYEE_TYPE = [
+        'R' => 'Regular',
+        'C' => 'Contract'
+    ];
     private $form;
     private $repository;
     private $employeeId;
@@ -92,7 +96,8 @@ class PreferenceSetup extends AbstractActionController{
             'preferenceConstraintList'=>self::PREFERENCE_CONSTRAINT,
             'constraintTypeList'=>self::CONSTRAINT_TYPE,
             "preferenceConditionList"=>self::PREFERENCE_CONDITION,
-            'requestTypeList'=>self::REQUEST_TYPE
+            'requestTypeList'=>self::REQUEST_TYPE,
+            'employeeTypeList'=>self::EMPLOYEE_TYPE
         ]);
     }
     public function editAction(){
@@ -130,7 +135,8 @@ class PreferenceSetup extends AbstractActionController{
             'preferenceConstraintList'=>self::PREFERENCE_CONSTRAINT,
             'constraintTypeList'=>self::CONSTRAINT_TYPE,
             "preferenceConditionList"=>self::PREFERENCE_CONDITION,
-            'requestTypeList'=>self::REQUEST_TYPE
+            'requestTypeList'=>self::REQUEST_TYPE,
+            'employeeTypeList'=>self::EMPLOYEE_TYPE
         ]);
     }
 }
