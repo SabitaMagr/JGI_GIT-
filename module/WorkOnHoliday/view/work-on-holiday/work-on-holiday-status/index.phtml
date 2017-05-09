@@ -21,6 +21,7 @@ $this->headScript()
 
 <script>
     document.url = '<?= $this->url("restful", ["action" => "index"]) ?>';
+    document.ids=<?php echo json_encode(["holidayId"=>-1,"requestStatusId"=>-1,"fromDate1"=>"","nepaliFromDate"=>"","toDate1"=>"","nepaliToDate"=>""]) ?>;
     document.searchValues =<?php echo json_encode($searchValues); ?>;
 </script>
 <div class="page-bar">
