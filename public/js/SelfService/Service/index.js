@@ -5,6 +5,16 @@
     'use strict';
     $(document).ready(function () {
         app.startEndDatePickerWithNepali('nepaliFromDate', 'fromDate', 'nepaliToDate', 'toDate');
+        
+          $("#reset").on("click", function () {
+            if (typeof document.ids !== "undefined") {
+                $.each(document.ids, function (key, value) {
+                    $("#" + key).val(value).change();
+                });
+            }
+        });
+        
+        
     });
 })(window.jQuery, window.app);
 

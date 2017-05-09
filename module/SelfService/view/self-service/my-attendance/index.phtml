@@ -25,6 +25,7 @@ $this->headScript()
 
 
 <script>
+    document.ids=<?php echo json_encode(["fromDate"=>"","nepaliFromDate"=>"","toDate"=>"","nepaliToDate"=>""]) ?>;
     document.url = '<?= $this->url("webService", ["action" => "index"]) ?>';
 </script>
 
