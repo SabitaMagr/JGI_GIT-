@@ -49,11 +49,19 @@ class PreferenceSetupForm{
      * @Annotation\Type("Zend\Form\Element\Select")
      * @Annotation\Required({"required":"true"})
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
-     * @Annotation\Options({"disable_inarray_validator":"true","label":"PreferenceCondition"})
+     * @Annotation\Options({"disable_inarray_validator":"true","label":"Preference Condition"})
      * @Annotation\Attributes({ "id":"preferenceCondition","class":"form-control"})
      */
     public $preferenceCondition;
     
+    /**
+     * @Annotation\Type("Zend\Form\Element\Select")
+     * @Annotation\Required({"required":"true"})
+     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
+     * @Annotation\Options({"disable_inarray_validator":"true","label":"Request Type"})
+     * @Annotation\Attributes({ "id":"requestType","class":"form-control"})
+     */
+    public $requestType;
     
     /**
      * @Annotion\Type("Zend\Form\Element\Text")

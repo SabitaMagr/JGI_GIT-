@@ -13,6 +13,8 @@ $constraintType->setValueOptions($constraintTypeList);
 $constraitnValue = $form->get('constraintValue');
 $preferenceCondition = $form->get('preferenceCondition');
 $preferenceCondition->setValueOptions($preferenceConditionList);
+$requestType = $form->get('requestType');
+$requestType->setValueOptions($requestTypeList);
 $companyId = $form->get('companyId');
 $companyId->setValueOptions($companies);
 $submit = $form->get('submit');
@@ -92,6 +94,15 @@ if ($this->messages) {
                             <?php print $this->formLabel($preferenceCondition); ?>
                             <?php print $this->formElement($preferenceCondition); ?>
                             <?php print $this->formElementErrors()->render($preferenceCondition, ['class' => 'help-block error']); ?>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-4">
+                        <div class="form-group <?= empty($requestType->getMessages()) ? "" : "has-error" ?>">
+                            <?php print $this->formLabel($requestType); ?>
+                            <?php print $this->formElement($requestType); ?>
+                            <?php print $this->formElementErrors()->render($requestType, ['class' => 'help-block error']); ?>
                         </div>
                     </div>
                 </div>

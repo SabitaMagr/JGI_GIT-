@@ -24,7 +24,8 @@ class PreferenceSetup extends AbstractActionController{
         'TEXT'=>'Text',
         'NUMBER'=>"Number",
         'DATE'=>"Date",
-        'TIMESTAMP'=>"Timestamp"
+        'TIMESTAMP'=>"Timestamp",
+        'HOUR'=>"Hour"
     ];
     const PREFERENCE_CONDITION =[
         "BEFORE"=>"Before",
@@ -32,6 +33,10 @@ class PreferenceSetup extends AbstractActionController{
         "LESS_THAN"=>"Less than",
         "GREATER_THAN"=>"Greater than",
         "EQUAL"=>"Equal"
+    ];
+    const REQUEST_TYPE = [
+        'RQ'=>"Pending",
+        'AP'=>'Approved'
     ];
     private $form;
     private $repository;
@@ -50,6 +55,7 @@ class PreferenceSetup extends AbstractActionController{
             $row['PREFERENCE_CONSTRAINT'] = self::PREFERENCE_CONSTRAINT[$row['PREFERENCE_CONSTRAINT']];
             $row['CONSTRAINT_TYPE'] = self::CONSTRAINT_TYPE[$row['CONSTRAINT_TYPE']];
             $row['PREFERENCE_CONDITION'] = self::PREFERENCE_CONDITION[$row['PREFERENCE_CONDITION']];
+            $row['REQUEST_TYPE']=self::REQUEST_TYPE[$row['REQUEST_TYPE']];
             array_push($list, $row);
         }
         return Helper::addFlashMessagesToArray($this, ['list'=>$list]);
@@ -85,7 +91,8 @@ class PreferenceSetup extends AbstractActionController{
             'preferenceNameList'=>self::PREFERENCE_NAME,
             'preferenceConstraintList'=>self::PREFERENCE_CONSTRAINT,
             'constraintTypeList'=>self::CONSTRAINT_TYPE,
-            "preferenceConditionList"=>self::PREFERENCE_CONDITION
+            "preferenceConditionList"=>self::PREFERENCE_CONDITION,
+            'requestTypeList'=>self::REQUEST_TYPE
         ]);
     }
     public function editAction(){
@@ -122,7 +129,8 @@ class PreferenceSetup extends AbstractActionController{
             'preferenceNameList'=>self::PREFERENCE_NAME,
             'preferenceConstraintList'=>self::PREFERENCE_CONSTRAINT,
             'constraintTypeList'=>self::CONSTRAINT_TYPE,
-            "preferenceConditionList"=>self::PREFERENCE_CONDITION
+            "preferenceConditionList"=>self::PREFERENCE_CONDITION,
+            'requestTypeList'=>self::REQUEST_TYPE
         ]);
     }
 }

@@ -18,6 +18,7 @@ class PreferenceSetup extends Model{
     const MODIFIED_BY = "MODIFIED_BY";
     const MODIFIED_DATE = "MODIFIED_DATE";
     const STATUS = "STATUS";
+    const REQUEST_TYPE = "REQUEST_TYPE";
     
     public $preferenceId;
     public $companyId;
@@ -31,6 +32,7 @@ class PreferenceSetup extends Model{
     public $modifiedBy;
     public $modifiedDate;
     public $status;
+    public $requestType;
     
     public $mappings = [
         'companyId'=>self::COMPANY_ID,
@@ -44,6 +46,7 @@ class PreferenceSetup extends Model{
         'createdDate'=>self::CREATED_DATE,
         'modifiedBy'=>self::MODIFIED_BY,
         'modifiedDate'=>self::MODIFIED_DATE,
-        'status'=>self::STATUS
+        'status'=>self::STATUS,
+        'requestType'=>self::REQUEST_TYPE
     ];
 }
