@@ -134,7 +134,11 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                         <input type="text" id="nepaliToDate" name="nepaliToDate" class="form-control" placeholder="To Date Nepali"/>
                     </div>
                 </div>
-                <div class="col-sm-2 col-lg-offset-2">
+<!---- col-lg-offset-2-->
+                <div class="col-sm-4">
+                    <a href="<?= $this->url('overtimeStatus', ['action' => 'calculate']) ?>" id="sample_editable_1_new" class="btn green">Calculate
+                        <i class="fa fa-plus"></i>
+                    </a>
                      <button ng-click="view()" id="viewOvertimRequestStatus" class="btn btn-default btn-sm pull-right">
                         Search
                         <i class="fa fa-search"></i>

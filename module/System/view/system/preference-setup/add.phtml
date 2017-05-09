@@ -107,12 +107,12 @@ if ($this->messages) {
                             <?php print $this->formElementErrors()->render($requestType, ['class' => 'help-block error']); ?>
                         </div>
                     </div>
-                </div>
-                <div class="col-sm-4">
-                    <div class="form-group <?= empty($employeeType->getMessages()) ? "" : "has-error" ?>">
-                        <?php print $this->formLabel($employeeType); ?>
-                        <?php print $this->formElement($employeeType); ?>
-                        <?php print $this->formElementErrors()->render($employeeType, ['class' => 'help-block error']); ?>
+                    <div class="col-sm-4">
+                        <div class="form-group <?= empty($employeeType->getMessages()) ? "" : "has-error" ?>">
+                            <?php print $this->formLabel($employeeType); ?>
+                            <?php print $this->formElement($employeeType); ?>
+                            <?php print $this->formElementErrors()->render($employeeType, ['class' => 'help-block error']); ?>
+                        </div>
                     </div>
                 </div>
                 <?php print $this->formSubmit($submit); ?>
