@@ -15,8 +15,7 @@ use System\Repository\PreferenceSetupRepo;
 
 class PreferenceSetup extends AbstractActionController{
     const PREFERENCE_NAME = [
-        "OVERTIME_REQUEST"=>"Overtime Request",
-        "ATTENDANCE_REQEST"=>"HELLOW"
+        "OVERTIME_REQUEST"=>"Overtime Request"
     ];
     const PREFERENCE_CONSTRAINT = [
         "OVERTIME_GRACE_TIME" => "Overtime Grace Time"
