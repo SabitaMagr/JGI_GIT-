@@ -2,37 +2,31 @@
     'use strict';
     $(document).ready(function () {
         $("select").select2();
-//        app.startEndDatePicker('startDate', 'endDate');
         app.startEndDatePickerWithNepali('nepaliStartDate1', 'startDate1', 'nepaliEndDate1', 'endDate1');
     });
 })(window.jQuery, window.app);
 
 
 angular.module('hris', [])
-        .controller('holidayListController', function ($scope, $http,$window) {
+        .controller('holidayListController', function ($scope, $http, $window) {
             $scope.holidayList = [];
             var $tableContainer = $("#holidayTable");
             $scope.view = function () {
                 var startDate = angular.element($("#startDate1")).val();
                 var endDate = angular.element($("#endDate1")).val();
-                var branchId = angular.element($("#branchId")).val();
-                var genderId = angular.element($("#genderId")).val();
                 App.blockUI({target: "#hris-page-content"});
                 window.app.pullDataById(document.url, {
                     action: 'pullHolidayList',
                     data: {
                         'fromDate': startDate,
                         'toDate': endDate,
-                        'branchId': branchId,
-                        'genderId': genderId
                     }
                 }).then(function (success) {
                     App.unblockUI("#hris-page-content");
                     $scope.$apply(function () {
-                        // console.log(success.data);
-                        //$scope.holidayList = success.data;
                         $scope.initializekendoGrid(success.data);
                     });
+                    window.app.scrollTo("holidayTable");
                 }, function (failure) {
                     App.unblockUI("#hris-page-content");
                     console.log(failure);
@@ -64,8 +58,6 @@ angular.module('hris', [])
                         {field: "HOLIDAY_ENAME", title: "Holiday", width: 150},
                         {field: "START_DATE", title: "From Date", width: 130},
                         {field: "END_DATE", title: "To Date", width: 130},
-                        {field: "GENDER_NAME", title: "Gender", width: 100},
-                        {field: "BRANCHES", title: "Branch", width: 200},
                         {field: "HALFDAY", title: "Half Day", width: 100},
                         {title: "Action", width: 100}
                     ]
@@ -88,8 +80,6 @@ angular.module('hris', [])
                                 {value: "Holiday Name"},
                                 {value: "From Date"},
                                 {value: "To Date"},
-                                {value: "Gender"},
-                                {value: "Branches"},
                                 {value: "Half Day"},
                                 {value: "Remarks"}
                             ]
@@ -105,22 +95,12 @@ angular.module('hris', [])
 
                     for (var i = 0; i < data.length; i++) {
                         var dataItem = data[i];
-                        var branch = [];
-                        for (var j = 0; j < dataItem.BRANCHES.length; j++) {
-                            branch.push(dataItem.BRANCHES[j].BRANCH_NAME);
-                        }
-                        console.log(branch, "hellow branches");
-                        var branch1 = branch.toString();
-                        ;
-                        console.log(branch1);
                         rows.push({
                             cells: [
 //                                {value: dataItem.HOLIDAY_CODE},
                                 {value: dataItem.HOLIDAY_ENAME},
                                 {value: dataItem.START_DATE},
                                 {value: dataItem.END_DATE},
-                                {value: dataItem.GENDER_NAME},
-                                {value: branch1},
                                 {value: dataItem.HALFDAY},
                                 {value: dataItem.REMARKS}
                             ]
@@ -140,8 +120,6 @@ angular.module('hris', [])
                                     {autoWidth: true},
                                     {autoWidth: true},
                                     {autoWidth: true},
-                                    {autoWidth: true},
-                                    {autoWidth: true},
                                     {autoWidth: true}
                                 ],
                                 title: "Holiday List",
@@ -153,10 +131,10 @@ angular.module('hris', [])
                 }
                 window.app.UIConfirmations();
             };
-            
-            
-            $scope.msg =  $window.localStorage.getItem("msg");
-            if($window.localStorage.getItem("msg")){
+
+
+            $scope.msg = $window.localStorage.getItem("msg");
+            if ($window.localStorage.getItem("msg")) {
                 window.toastr.success($scope.msg, "Notifications");
             }
             $window.localStorage.removeItem("msg");

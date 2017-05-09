@@ -25,7 +25,7 @@ class HolidayAssignRepository {
         $this->adapter = $adapter;
     }
 
-    public function filterEmployees($employeeId, $branchId, $departmentId, $designationId, $positionId, $serviceTypeId, $serviceEventTypeId, $companyId) {
+    public function filterEmployees($employeeId, $branchId, $departmentId, $designationId, $positionId, $serviceTypeId, $serviceEventTypeId, $companyId, $genderId = null) {
         $sql = new Sql($this->adapter);
         $select = $sql->select();
 
@@ -57,8 +57,7 @@ class HolidayAssignRepository {
                 ->join(['DES1' => Designation::TABLE_NAME], "E." . HrEmployees::APP_DESIGNATION_ID . "=DES1." . Designation::DESIGNATION_ID, ['APP_DESIGNATION_TITLE' => new Expression('INITCAP(DES1.DESIGNATION_TITLE)')], 'left')
                 ->join(['P1' => Position::TABLE_NAME], "E." . HrEmployees::APP_POSITION_ID . "=P1." . Position::POSITION_ID, ['APP_POSITION_NAME' => new Expression('INITCAP(P1.POSITION_NAME)')], 'left')
                 ->join(['S1' => ServiceType::TABLE_NAME], "E." . HrEmployees::APP_SERVICE_TYPE_ID . "=S1." . ServiceType::SERVICE_TYPE_ID, ['APP_SERVICE_TYPE_NAME' => new Expression('INITCAP(S1.SERVICE_TYPE_NAME)')], 'left')
-                ->join(['SE1' => ServiceEventType::TABLE_NAME], "E." . HrEmployees::APP_SERVICE_EVENT_TYPE_ID . "=SE1." . ServiceEventType::SERVICE_EVENT_TYPE_ID, ['APP_SERVICE_EVENT_TYPE_NAME' => new Expression('INITCAP(SE1.SERVICE_EVENT_TYPE_NAME)')], 'left')
-        ;
+                ->join(['SE1' => ServiceEventType::TABLE_NAME], "E." . HrEmployees::APP_SERVICE_EVENT_TYPE_ID . "=SE1." . ServiceEventType::SERVICE_EVENT_TYPE_ID, ['APP_SERVICE_EVENT_TYPE_NAME' => new Expression('INITCAP(SE1.SERVICE_EVENT_TYPE_NAME)')], 'left');
 
         $select->where(["E.STATUS='E'"]);
 
@@ -106,6 +105,11 @@ class HolidayAssignRepository {
         if ($serviceEventTypeId != -1) {
             $select->where([
                 "E.SERVICE_EVENT_TYPE_ID=" . $serviceEventTypeId
+            ]);
+        }
+        if ($genderId != null && $genderId != -1) {
+            $select->where([
+                "E.GENDER_ID=" . $genderId
             ]);
         }
         $select->order("E.FIRST_NAME ASC");

@@ -1023,54 +1023,14 @@ class RestfulService extends AbstractRestfulController {
     public function pullHolidayList($data) {
         $fromDate = $data['fromDate'];
         $toDate = $data['toDate'];
-        $branchId = $data['branchId'];
-        $genderId = $data['genderId'];
 
-        if ($genderId == -1) {
-            $genderId = null;
-        } else {
-            $genderId = $genderId;
-        }
 
         $holidayRepository = new HolidayRepository($this->adapter);
-        $list = $holidayRepository->filterRecords($fromDate, $toDate, $branchId, $genderId);
-
-        $data = [];
-        foreach ($list as $row) {
-            if ($row['GENDER_NAME'] != null) {
-                $row['GENDER_NAME'] = $row['GENDER_NAME'];
-            } else {
-                $row['GENDER_NAME'] = 'All';
-            }
-
-            if ($row['HALFDAY'] == 'F') {
-                $row['HALFDAY'] = 'First Half';
-            } else if ($row['HALFDAY'] == 'S') {
-                $row['HALFDAY'] = 'Second Half';
-            } else if ($row['HALFDAY'] == 'N') {
-                $row['HALFDAY'] = 'Full Day';
-            }
-
-            if ($branchId != -1) {
-                $branchRepository = new BranchRepository($this->adapter);
-                $branchDtl = $branchRepository->fetchById($branchId);
-                $childData = [];
-                array_push($childData, $branchDtl);
-                $row['BRANCHES'] = $childData;
-                array_push($data, $row);
-            } else if ($branchId == -1) {
-                $holidayBranch = $holidayRepository->selectHolidayBranch($row['HOLIDAY_ID']);
-                $childData = [];
-                foreach ($holidayBranch as $childRow) {
-                    array_push($childData, $childRow);
-                }
-                $row['BRANCHES'] = $childData;
-                array_push($data, $row);
-            }
-        }
+        $rawList = $holidayRepository->filterRecords($fromDate, $toDate);
+        $list = Helper::extractDbData($rawList);
         return $responseData = [
             "success" => true,
-            "data" => $data
+            "data" => $list
         ];
     }
 
@@ -2326,10 +2286,10 @@ class RestfulService extends AbstractRestfulController {
             "msg" => "* Already Exist!!!"
         ];
     }
-    
-    public function checkUserName($data){
+
+    public function checkUserName($data) {
         $tableName = $data['tableName'];
-        $columnsWidValues = [$data['columnName']=>$data['value']];
+        $columnsWidValues = [$data['columnName'] => $data['value']];
         $result = ConstraintHelper::checkUniqueConstraint($this->adapter, $tableName, $columnsWidValues, nulll, 0, 0);
         return [
             "success" => "true",
@@ -2413,10 +2373,10 @@ class RestfulService extends AbstractRestfulController {
         $departmentId = $data['departmentId'];
         $designationId = $data['designationId'];
         $employeeId = $data['employeeId'];
-        $serviceEventTypeId = (!isset($data['serviceEventTypeId']) || $data['serviceEventTypeId']==null) ? -1 : $data['serviceEventTypeId'];
-        $recommenderId = (!isset($data['recommenderId']) || $data['recommenderId']==null) ? -1 : $data['recommenderId'];
-        $approverId = (!isset($data['approverId']) || $data['approverId']==null) ? -1 : $data['approverId'];
-        
+        $serviceEventTypeId = (!isset($data['serviceEventTypeId']) || $data['serviceEventTypeId'] == null) ? -1 : $data['serviceEventTypeId'];
+        $recommenderId = (!isset($data['recommenderId']) || $data['recommenderId'] == null) ? -1 : $data['recommenderId'];
+        $approverId = (!isset($data['approverId']) || $data['approverId'] == null) ? -1 : $data['approverId'];
+
         $recommApproverRepo = new RecommendApproveRepository($this->adapter);
 
         $employeeRepo = new EmployeeRepository($this->adapter);
@@ -2425,44 +2385,43 @@ class RestfulService extends AbstractRestfulController {
         $employeeList = [];
         foreach ($employeeResult as $employeeRow) {
             $employeeId = $employeeRow['EMPLOYEE_ID'];
-            $recommedApproverList = $recommApproverRepo->getDetailByEmployeeID($employeeId,$recommenderId,$approverId);
+            $recommedApproverList = $recommApproverRepo->getDetailByEmployeeID($employeeId, $recommenderId, $approverId);
             if ($recommedApproverList != null) {
                 $middleNameR = ($recommedApproverList['MIDDLE_NAME_R'] != null) ? " " . $recommedApproverList['MIDDLE_NAME_R'] . " " : " ";
                 $middleNameA = ($recommedApproverList['MIDDLE_NAME_A'] != null) ? " " . $recommedApproverList['MIDDLE_NAME_A'] . " " : " ";
 
                 if ($recommedApproverList['RETIRED_R'] != 'Y' && $recommedApproverList['STATUS_R'] != 'D') {
                     $employeeRow['RECOMMENDER_NAME'] = $recommedApproverList['FIRST_NAME_R'] . $middleNameR . $recommedApproverList['LAST_NAME_R'];
-                    $employeeRow['RETIRED_R']=$recommedApproverList['RETIRED_R'];
-                    $employeeRow['STATUS_R']=$recommedApproverList['STATUS_R'];
+                    $employeeRow['RETIRED_R'] = $recommedApproverList['RETIRED_R'];
+                    $employeeRow['STATUS_R'] = $recommedApproverList['STATUS_R'];
                     $employeeRow['RECOMMENDER_ID'] = $recommedApproverList['RECOMMEND_BY'];
                 } else {
                     $employeeRow['RECOMMENDER_NAME'] = "";
-                    $employeeRow['RETIRED_R']="";
-                    $employeeRow['STATUS_R']="";
-                    $employeeRow['RECOMMENDER_ID']=null;
+                    $employeeRow['RETIRED_R'] = "";
+                    $employeeRow['STATUS_R'] = "";
+                    $employeeRow['RECOMMENDER_ID'] = null;
                 }
                 if ($recommedApproverList['RETIRED_A'] != 'Y' && $recommedApproverList['STATUS_A'] != 'D') {
                     $employeeRow['APPROVER_NAME'] = $recommedApproverList['FIRST_NAME_A'] . $middleNameA . $recommedApproverList['LAST_NAME_A'];
-                    $employeeRow['RETIRED_A']=$recommedApproverList['RETIRED_A'];
-                    $employeeRow['STATUS_A']=$recommedApproverList['STATUS_A'];
+                    $employeeRow['RETIRED_A'] = $recommedApproverList['RETIRED_A'];
+                    $employeeRow['STATUS_A'] = $recommedApproverList['STATUS_A'];
                     $employeeRow['APPROVER_ID'] = $recommedApproverList['APPROVED_BY'];
-                    
                 } else {
                     $employeeRow['APPROVER_NAME'] = "";
-                    $employeeRow['RETIRED_A']="";
-                    $employeeRow['STATUS_A']="";
-                    $employeeRow['APPROVER_ID']=null;
+                    $employeeRow['RETIRED_A'] = "";
+                    $employeeRow['STATUS_A'] = "";
+                    $employeeRow['APPROVER_ID'] = null;
                 }
             } else {
                 $employeeRow['RECOMMENDER_NAME'] = "";
-                $employeeRow['RETIRED_R']="";
-                $employeeRow['STATUS_R']="";
-                $employeeRow['RECOMMENDER_ID']=null;
-                
+                $employeeRow['RETIRED_R'] = "";
+                $employeeRow['STATUS_R'] = "";
+                $employeeRow['RECOMMENDER_ID'] = null;
+
                 $employeeRow['APPROVER_NAME'] = "";
-                $employeeRow['RETIRED_A']="";
-                $employeeRow['STATUS_A']="";
-                $employeeRow['APPROVER_ID']=null;
+                $employeeRow['RETIRED_A'] = "";
+                $employeeRow['STATUS_A'] = "";
+                $employeeRow['APPROVER_ID'] = null;
             }
             array_push($employeeList, $employeeRow);
         }
@@ -3024,7 +2983,7 @@ class RestfulService extends AbstractRestfulController {
     }
 
     public function pullAssetBalance($data) {
-        $assetId=$data['assetId'];
+        $assetId = $data['assetId'];
 
         $assetIssueRepo = new IssueRepository($this->adapter);
         $assetRemQuantity = $assetIssueRepo->fetchAssetRemBalance($assetId);
@@ -3141,7 +3100,7 @@ class RestfulService extends AbstractRestfulController {
             "recomApproveId" => $recomApproveId
         ];
     }
-    
+
     public function pullOvertimeRequestStatusList($data) {
         $overtimeStatusRepo = new OvertimeStatusRepository($this->adapter);
         $overtimeDetailRepo = new OvertimeDetailRepository($this->adapter);
@@ -3220,10 +3179,10 @@ class RestfulService extends AbstractRestfulController {
             $new_row = array_merge($row, ['STATUS' => $status]);
             $overtimeDetailResult = $overtimeDetailRepo->fetchByOvertimeId($row['OVERTIME_ID']);
             $overtimeDetails = [];
-            foreach($overtimeDetailResult as $overtimeDetailRow){
-                array_push($overtimeDetails,$overtimeDetailRow);
+            foreach ($overtimeDetailResult as $overtimeDetailRow) {
+                array_push($overtimeDetails, $overtimeDetailRow);
             }
-            $new_row['DETAILS']=$overtimeDetails;
+            $new_row['DETAILS'] = $overtimeDetails;
             $final_record = array_merge($new_row, $role);
             array_push($recordList, $final_record);
         }
@@ -3235,8 +3194,8 @@ class RestfulService extends AbstractRestfulController {
             "recomApproveId" => $recomApproveId
         ];
     }
-    
-    public function pullAssetIssueList($data){
+
+    public function pullAssetIssueList($data) {
         $employeeId = $data['employeeId'];
         $branchId = $data['branchId'];
         $departmentId = $data['departmentId'];
@@ -3252,7 +3211,7 @@ class RestfulService extends AbstractRestfulController {
         $employeeList = [];
         foreach ($employeeResult as $employeeRow) {
             $employeeId = $employeeRow['EMPLOYEE_ID'];
-            
+
             $employeeRow['QUANTITY'] = 0;
             $employeeRow['RETURN_DATE'] = "";
             $employeeRow['PURPOSE'] = "";
@@ -3266,72 +3225,73 @@ class RestfulService extends AbstractRestfulController {
             "data" => $employeeList
         ];
     }
-    public function pullServiceQuestionList($data){
+
+    public function pullServiceQuestionList($data) {
         $serviceEventTypeId = $data['id'];
-        $empQaId = (gettype($data['empQaId']) == 'undefined' || $data['empQaId']==null || $data['empQaId']=="") ? 0 :$data['empQaId'];
+        $empQaId = (gettype($data['empQaId']) == 'undefined' || $data['empQaId'] == null || $data['empQaId'] == "") ? 0 : $data['empQaId'];
         $serviceQuestionRepo = new ServiceQuestionRepository($this->adapter);
         $empServiceQuestionDtlRepo = new EmpServiceQuestionDtlRepo($this->adapter);
         $result = $serviceQuestionRepo->fetchByServiceEventTypeId($serviceEventTypeId);
         $questionDtlArray = [];
         $i = 1;
-        foreach($result as $row){
-            $tempResult = $this->pullHierarchicalQuestion($serviceEventTypeId,$empQaId,$row['QA_ID']);
-            $questionAnswerDtl = $empServiceQuestionDtlRepo->fetchByEmpQaIdQaId($row['QA_ID'],$empQaId);  
-            if($tempResult){
+        foreach ($result as $row) {
+            $tempResult = $this->pullHierarchicalQuestion($serviceEventTypeId, $empQaId, $row['QA_ID']);
+            $questionAnswerDtl = $empServiceQuestionDtlRepo->fetchByEmpQaIdQaId($row['QA_ID'], $empQaId);
+            if ($tempResult) {
                 $questionDtlArray[] = array(
-                        "sn"=>$i,
-                        "qaId" => $row['QA_ID'],
-                        "questionEdesc" => $row['QUESTION_EDESC'],
-                        "subQuestion"=>true,
-                        "subQuestionList" => $tempResult['array'],
-                        "answer"=>(!isset($questionAnswerDtl) || $questionAnswerDtl==null || gettype($questionAnswerDtl)=='undefined') ? null : $questionAnswerDtl->ANSWER
-                    );
-            }else{
+                    "sn" => $i,
+                    "qaId" => $row['QA_ID'],
+                    "questionEdesc" => $row['QUESTION_EDESC'],
+                    "subQuestion" => true,
+                    "subQuestionList" => $tempResult['array'],
+                    "answer" => (!isset($questionAnswerDtl) || $questionAnswerDtl == null || gettype($questionAnswerDtl) == 'undefined') ? null : $questionAnswerDtl->ANSWER
+                );
+            } else {
                 $questionDtlArray[] = array(
-                        "sn"=>$i,
-                        "qaId" => $row['QA_ID'],
-                        "questionEdesc" => $row['QUESTION_EDESC'],
-                        "subQuestion" => false,
-                        "answer"=>(!isset($questionAnswerDtl) || $questionAnswerDtl==null || gettype($questionAnswerDtl)=='undefined') ? null : $questionAnswerDtl->ANSWER
-                    );
+                    "sn" => $i,
+                    "qaId" => $row['QA_ID'],
+                    "questionEdesc" => $row['QUESTION_EDESC'],
+                    "subQuestion" => false,
+                    "answer" => (!isset($questionAnswerDtl) || $questionAnswerDtl == null || gettype($questionAnswerDtl) == 'undefined') ? null : $questionAnswerDtl->ANSWER
+                );
             }
             $i++;
         }
         return[
-            "success"=>true,
-            "data"=>$questionDtlArray
+            "success" => true,
+            "data" => $questionDtlArray
         ];
     }
-    public function pullHierarchicalQuestion($serviceEventTypeId,$empQaId,$parentQaId=null){
+
+    public function pullHierarchicalQuestion($serviceEventTypeId, $empQaId, $parentQaId = null) {
         $serviceQuestionRepo = new ServiceQuestionRepository($this->adapter);
         $empServiceQuestionDtlRepo = new EmpServiceQuestionDtlRepo($this->adapter);
-        
-        $result = $serviceQuestionRepo->fetchByServiceEventTypeId($serviceEventTypeId,$parentQaId);
-        $num = count($result);
-        if($num>0){
-            $x = 'a';
-            $questionDtlArray=[];
-            foreach ($result as $row) {
-                $questionAnswerDtl = $empServiceQuestionDtlRepo->fetchByEmpQaIdQaId($row['QA_ID'],$empQaId);    
-                $tempResult = $this->pullHierarchicalQuestion($serviceEventTypeId,$empQaId,$row['QA_ID']);
-                if($tempResult){
-                    $questionDtlArray[] = array(
-                            "sn"=>$x,
-                            "qaId" => $row['QA_ID'],
-                            "questionEdesc" => $row['QUESTION_EDESC'],
-                            "subQuestion"=>true,
-                            "subQuestionList" => $tempResult['array'],
-                            "answer"=>(!isset($questionAnswerDtl) || $questionAnswerDtl==null || gettype($questionAnswerDtl)=='undefined') ? null : $questionAnswerDtl->ANSWER
-                        );
-                }else{
-                    $questionDtlArray[] = array(
-                            "sn"=>$x,
-                            "qaId" => $row['QA_ID'],
-                            "questionEdesc" => $row['QUESTION_EDESC'],
-                            "subQuestion" => false,
-                            "answer"=>(!isset($questionAnswerDtl) || $questionAnswerDtl==null || gettype($questionAnswerDtl)=='undefined') ? null : $questionAnswerDtl->ANSWER
 
-                        );
+        $result = $serviceQuestionRepo->fetchByServiceEventTypeId($serviceEventTypeId, $parentQaId);
+        $num = count($result);
+        if ($num > 0) {
+            $x = 'a';
+            $questionDtlArray = [];
+            foreach ($result as $row) {
+                $questionAnswerDtl = $empServiceQuestionDtlRepo->fetchByEmpQaIdQaId($row['QA_ID'], $empQaId);
+                $tempResult = $this->pullHierarchicalQuestion($serviceEventTypeId, $empQaId, $row['QA_ID']);
+                if ($tempResult) {
+                    $questionDtlArray[] = array(
+                        "sn" => $x,
+                        "qaId" => $row['QA_ID'],
+                        "questionEdesc" => $row['QUESTION_EDESC'],
+                        "subQuestion" => true,
+                        "subQuestionList" => $tempResult['array'],
+                        "answer" => (!isset($questionAnswerDtl) || $questionAnswerDtl == null || gettype($questionAnswerDtl) == 'undefined') ? null : $questionAnswerDtl->ANSWER
+                    );
+                } else {
+                    $questionDtlArray[] = array(
+                        "sn" => $x,
+                        "qaId" => $row['QA_ID'],
+                        "questionEdesc" => $row['QUESTION_EDESC'],
+                        "subQuestion" => false,
+                        "answer" => (!isset($questionAnswerDtl) || $questionAnswerDtl == null || gettype($questionAnswerDtl) == 'undefined') ? null : $questionAnswerDtl->ANSWER
+                    );
                 }
                 $x++;
             }
@@ -3340,5 +3300,5 @@ class RestfulService extends AbstractRestfulController {
             return false;
         }
     }
-    
+
 }

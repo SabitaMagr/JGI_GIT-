@@ -26,11 +26,11 @@ class DashboardRepository implements RepositoryInterface {
     }
 
     public function fetchById($id) {
-
+        
     }
 
     public function fetchAll() {
-
+        
     }
 
     /**
@@ -245,30 +245,49 @@ class DashboardRepository implements RepositoryInterface {
      * @param int $branchId
      * @return array
      */
-    public function fetchUpcomingHolidays($genderId, $branchId) {        
+    public function fetchUpcomingHolidays($employeeId) {
         $sql = "SELECT HM.HOLIDAY_ID,
-               HM.HOLIDAY_ENAME,
-               HM.GENDER_ID,
-               HM.BRANCH_ID,
-               TO_CHAR(HM.START_DATE,'Day, fmddth Month') START_DATE,
-               TO_CHAR(HM.END_DATE,'Day, fmddth Month') END_DATE,
-               HM.HALFDAY,
-               TO_CHAR(HM.START_DATE, 'DAY') WEEK_DAY,
-               HM.START_DATE - TRUNC(SYSDATE) DAYS_REMAINING
-        FROM HRIS_HOLIDAY_MASTER_SETUP HM
-        WHERE 1 = 1
-          AND TRUNC(SYSDATE)-1 < HM.START_DATE
-          AND (HM.GENDER_ID IS NULL
-               OR HM.GENDER_ID = {$genderId})
-          AND (HM.BRANCH_ID IS NULL
-               OR HM.BRANCH_ID = {$branchId})
-        ORDER BY HM.START_DATE";
+                  HM.HOLIDAY_ENAME,
+                  TO_CHAR(HM.START_DATE,'Day, fmddth Month') START_DATE,
+                  TO_CHAR(HM.END_DATE,'Day, fmddth Month') END_DATE,
+                  HM.HALFDAY,
+                  TO_CHAR(HM.START_DATE, 'DAY') WEEK_DAY,
+                  HM.START_DATE - TRUNC(SYSDATE) DAYS_REMAINING
+                FROM HRIS_HOLIDAY_MASTER_SETUP HM
+                JOIN HRIS_EMPLOYEE_HOLIDAY EH
+                ON (HM.HOLIDAY_ID   =EH.HOLIDAY_ID)
+                WHERE EH.EMPLOYEE_ID={$employeeId}";
 
         $statement = $this->adapter->query($sql);
         $result = $statement->execute();
 
         return $result;
     }
+
+//    public function fetchUpcomingHolidays($genderId, $branchId) {        
+//        $sql = "SELECT HM.HOLIDAY_ID,
+//               HM.HOLIDAY_ENAME,
+//               HM.GENDER_ID,
+//               HM.BRANCH_ID,
+//               TO_CHAR(HM.START_DATE,'Day, fmddth Month') START_DATE,
+//               TO_CHAR(HM.END_DATE,'Day, fmddth Month') END_DATE,
+//               HM.HALFDAY,
+//               TO_CHAR(HM.START_DATE, 'DAY') WEEK_DAY,
+//               HM.START_DATE - TRUNC(SYSDATE) DAYS_REMAINING
+//        FROM HRIS_HOLIDAY_MASTER_SETUP HM
+//        WHERE 1 = 1
+//          AND TRUNC(SYSDATE)-1 < HM.START_DATE
+//          AND (HM.GENDER_ID IS NULL
+//               OR HM.GENDER_ID = {$genderId})
+//          AND (HM.BRANCH_ID IS NULL
+//               OR HM.BRANCH_ID = {$branchId})
+//        ORDER BY HM.START_DATE";
+//
+//        $statement = $this->adapter->query($sql);
+//        $result = $statement->execute();
+//
+//        return $result;
+//    }
 
     /**
      * @return mixed
@@ -334,7 +353,7 @@ class DashboardRepository implements RepositoryInterface {
         $result = $statement->execute();
 
         $birthdayResult = array();
-        foreach($result as $rs) {
+        foreach ($result as $rs) {
             if ('TODAY' == strtoupper($rs['BIRTHDAYFOR'])) {
                 $birthdayResult['TODAY'][$rs['EMPLOYEE_ID']] = $rs;
             }
