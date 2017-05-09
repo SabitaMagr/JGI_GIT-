@@ -46,7 +46,6 @@ class BranchController extends AbstractActionController {
         $this->initializeForm();
         $request = $this->getRequest();
         if ($request->isPost()) {
-
             $this->form->setData($request->getPost());
             if ($this->form->isValid()) {
                 $branch = new Branch();

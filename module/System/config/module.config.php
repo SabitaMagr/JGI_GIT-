@@ -10,6 +10,7 @@ use System\Controller\RoleSetupController;
 use System\Controller\SettingController;
 use System\Controller\UserSetupController;
 use Zend\Router\Http\Segment;
+use System\Controller\PreferenceSetup;
 
 return [
     'router' => [
@@ -94,6 +95,20 @@ return [
                     ],
                     'defaults' => [
                         'controller' => AttendanceDeviceController::class,
+                        'action' => 'index'
+                    ]
+                ]
+            ],
+            'preferenceSetup' => [
+                'type' => Segment::class,
+                'options' => [
+                    'route' => '/system/preferenceSetup[/:action[/:id]]',
+                    'constraint' => [
+                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'id' => '[0-9]+',
+                    ],
+                    'defaults' => [
+                        'controller' => PreferenceSetup::class,
                         'action' => 'index'
                     ]
                 ]
@@ -225,6 +240,33 @@ return [
                     ],
                 ],
             ],
+        ],
+        'preferenceSetup' => [
+                [
+                'label' => "Preference Setup",
+                'route' => "preferenceSetup"
+            ],
+                [
+                'label' => "Preference Setup",
+                'route' => "preferenceSetup",
+                'pages' => [
+                        [
+                        'label' => 'List',
+                        'route' => 'preferenceSetup',
+                        'action' => 'index',
+                    ],
+                        [
+                        'label' => 'Add',
+                        'route' => 'preferenceSetup',
+                        'action' => 'add',
+                    ],
+                        [
+                        'label' => 'Edit',
+                        'route' => 'preferenceSetup',
+                        'action' => 'edit',
+                    ],
+                ],
+            ],
         ]
     ],
     'controllers' => [
@@ -234,7 +276,8 @@ return [
             MenuSetupController::class => ControllerFactory::class,
             DashboardController::class => ControllerFactory::class,
             SettingController::class => ControllerFactory::class,
-            AttendanceDeviceController::class => ControllerFactory::class
+            AttendanceDeviceController::class => ControllerFactory::class,
+            PreferenceSetup::class => ControllerFactory::class
         ],
     ],
     'view_manager' => [
