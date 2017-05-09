@@ -97,8 +97,8 @@ class IssueRepository implements RepositoryInterface {
         $sql = "SELECT * FROM HRIS_ASSET_SETUP WHERE QUANTITY_BALANCE>0 AND STATUS='E' ";
         $statement = $this->adapter->query($sql);
         $result = $statement->execute();
-        $list = [];
-        $list = [];
+        $list['A'] = [];
+        $list['B'] = [];
         foreach ($result as $row) {
             $list['A'][$row['ASSET_ID']] = $row;
             $list['B'][$row['ASSET_ID']] = $row['ASSET_EDESC'];
