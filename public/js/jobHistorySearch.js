@@ -1,5 +1,11 @@
 (function ($, app) {
     $(document).ready(function () {
+        
+        
+        
+        var changeSearchOption = function (companyId, branchId, departmentId, designationId, positionId, serviceTypeId, serviceEventTypeId, employeeId) {
+            
+        
         /*
          * Search javascript code starts here
          */
@@ -102,8 +108,27 @@
         onChangeEvent($serviceType, function ($this) {
             populateList($employee, search(document.searchValues['employee'], {'COMPANY_ID': $company.val(), 'BRANCH_ID': $branch.val(), 'DEPARTMENT_ID': $department.val(), 'DESIGNATION_ID': $designation.val(), 'POSITION_ID': $position.val(), 'SERVICE_TYPE_ID': $serviceType.val()}), 'EMPLOYEE_ID', ['FIRST_NAME', 'MIDDLE_NAME', 'LAST_NAME'], 'All Employee');
         });
+    }
+    
+    changeSearchOption("companyId", "branchId", "departmentId", "designationId", "positionId", "serviceTypeId", "serviceEventTypeId", "employeeId");
 
         /* setup change events */
+        
+        
+        
+         $("#reset").on("click", function () {
+            changeSearchOption("companyId", "branchId", "departmentId", "designationId", "positionId", "serviceTypeId", "serviceEventTypeId", "employeeId");
+            if (typeof document.ids !== "undefined") {
+                $.each(document.ids, function (key, value) {
+                    $("#" + key).val(value).change();
+                });
+            }
+//            var angularElementId = Object.keys(document.angularElementDetail)[0];
+//            var angularSearchFunction = document.angularElementDetail[angularElementId];
+//            console.log(angularSearchFunction);
+//            angular.element('#'+angularElementId).scope().angularSearchFunction();
+        });
+        
     });
 
 })(window.jQuery, window.app);
