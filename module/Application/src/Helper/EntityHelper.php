@@ -2,11 +2,13 @@
 
 namespace Application\Helper;
 
+use Exception;
 use ReflectionClass;
 use Setup\Model\Branch;
 use Setup\Model\Company;
 use Setup\Model\Department;
 use Setup\Model\Designation;
+use Setup\Model\Gender;
 use Setup\Model\HrEmployees;
 use Setup\Model\Position;
 use Setup\Model\ServiceEventType;
@@ -151,6 +153,7 @@ class EntityHelper {
         $positionList = self::getTableList($adapter, Position::TABLE_NAME, [Position::POSITION_ID, Position::POSITION_NAME, Position::COMPANY_ID], [Position::STATUS => "E"]);
         $serviceTypeList = self::getTableList($adapter, ServiceType::TABLE_NAME, [ServiceType::SERVICE_TYPE_ID, ServiceType::SERVICE_TYPE_NAME], [ServiceType::STATUS => "E"]);
         $serviceEventTypeList = self::getTableList($adapter, ServiceEventType::TABLE_NAME, [ServiceEventType::SERVICE_EVENT_TYPE_ID, ServiceEventType::SERVICE_EVENT_TYPE_NAME], [ServiceEventType::STATUS => "E"]);
+        $genderList = self::getTableList($adapter, Gender::TABLE_NAME, [Gender::GENDER_ID, Gender::GENDER_NAME], [Gender::STATUS => "E"]);
         $employeeList = self::getTableList($adapter, HrEmployees::TABLE_NAME, [
                     HrEmployees::EMPLOYEE_ID,
                     HrEmployees::FIRST_NAME,
@@ -162,7 +165,8 @@ class EntityHelper {
                     HrEmployees::DESIGNATION_ID,
                     HrEmployees::POSITION_ID,
                     HrEmployees::SERVICE_TYPE_ID,
-                    HrEmployees::SERVICE_EVENT_TYPE_ID
+                    HrEmployees::SERVICE_EVENT_TYPE_ID,
+                    HrEmployees::GENDER_ID,
                         ], [HrEmployees::STATUS => "E"]);
 
         $searchValues = [
@@ -173,6 +177,7 @@ class EntityHelper {
             'position' => $positionList,
             'serviceType' => $serviceTypeList,
             'serviceEventType' => $serviceEventTypeList,
+            'gender' => $genderList,
             'employee' => $employeeList
         ];
         /* end of search values */

@@ -24,10 +24,9 @@ angular.module('hris', [])
                 }).then(function (success) {
                     App.unblockUI("#hris-page-content");
                     $scope.$apply(function () {
-                        // console.log(success.data);
-                        //$scope.holidayList = success.data;
                         $scope.initializekendoGrid(success.data);
                     });
+                    window.app.scrollTo("holidayTable");
                 }, function (failure) {
                     App.unblockUI("#hris-page-content");
                     console.log(failure);
@@ -96,11 +95,6 @@ angular.module('hris', [])
 
                     for (var i = 0; i < data.length; i++) {
                         var dataItem = data[i];
-                        var branch = [];
-                        for (var j = 0; j < dataItem.BRANCHES.length; j++) {
-                            branch.push(dataItem.BRANCHES[j].BRANCH_NAME);
-                        }
-                        var branch1 = branch.toString();
                         rows.push({
                             cells: [
 //                                {value: dataItem.HOLIDAY_CODE},

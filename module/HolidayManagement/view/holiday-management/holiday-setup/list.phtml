@@ -41,120 +41,106 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
         document.messages =<?php echo json_encode($this->messages); ?>
     </script>
 <?php } ?>
-<div ng-app="hris" ng-controller="holidayListController" class="formbg">
-    <div id="hris-page-content">
-        <div class="margin-top-20">
-            <div class="row" style="position: relative;">
-                <div class="col-sm-3">
-                    <div class="row">
-                        <div class="col-sm-6">
-                            <div class="form-group">
-                                <label>From Date</label>
-                                <div class="input-group date" id="startDate">
-                                    <input type="text" placeholder="From Date" name="startDate" ng-model="startDate" id="startDate1"
-                                           class="form-control"/>       
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-sm-6">
-                            <div class="form-group">
-                                <label for="nepaliStartDate">&nbsp;</label>
-                                <div class="input-group">
-                                    <input type="text" name="nepaliStartDate" id="nepaliStartDate1"
-                                           class="form-control" value="">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+<div ng-app="hris" ng-controller="holidayListController">
+    <div class="portlet light bg-inverse">
+        <div class="portlet-title">
+            <div class="caption">
+                <i class="icon-paper-plane font-green-haze"></i>
+                <span class="caption-subject bold font-green-haze uppercase"> Filter</span>
+            </div>
+            <div class="tools">
+                <a href="javascript:;" class="collapse" data-original-title="" title=""> </a>
+                <a href="" class="fullscreen" data-original-title="" title=""> </a>
+            </div>
+            <div class="actions">
+                <a href="<?= $this->url('holidaysetup', ['action' => 'add']) ?>" class="btn default btn-sm">
+                    <i class="fa fa-plus-square icon-black"></i> New </a>
+                <div class="btn-group">
+                    <a class="btn btn-sm blue-soft" href="javascript:;" data-toggle="dropdown" aria-expanded="false">
+                        <i class="fa fa-copy"></i> Tools
+                        <i class="fa fa-angle-down "></i>
+                    </a>
+                    <ul class="dropdown-menu pull-right">
+                        <li id="export">
+                            <a href="javascript:;">
+                                <i class="fa fa-pencil" ></i> Export to Excel </a>
+                        </li>
+                    </ul>
                 </div>
-                <div class="col-sm-3">
-                    <div class="row">
-                        <div class="col-sm-6">
-                            <div class="form-group">
-                                <label>To Date</label>
-                                <div class="input-group date" id="endDate">
-                                    <input type="text" placeholder="To Date" name="endDate" ng-model="endDate" id="endDate1"
-                                           class="form-control"/>
-                                </div>
-                            </div>
-
-                        </div>
-                        <div class="col-sm-6">
-                            <div class="form-group">
-                                <label for="nepaliEndDate">&nbsp;</label>
-                                <div class="input-group">
-                                    <input type="text" name="nepaliEndDate" id="nepaliEndDate1"
-                                           class="form-control" value="">
-                                </div>
-                            </div>
+            </div>
+        </div>
+        <div class="portlet-body">
+            <div class="row">
+                <div class="col-sm-2">
+                    <div class="form-group">
+                        <label>From Date</label>
+                        <div class="input-group date" id="startDate">
+                            <input type="text" placeholder="From Date" name="startDate" ng-model="startDate" id="startDate1"
+                                   class="form-control"/>       
                         </div>
                     </div>
                 </div>
                 <div class="col-sm-2">
-
-                    <button ng-click="view()" id="viewHolidays" class="btn btn-default form-control i-search" style="margin-top:22px !important;">
+                    <div class="form-group">
+                        <label for="nepaliStartDate">&nbsp;</label>
+                        <div class="input-group">
+                            <input type="text" name="nepaliStartDate" id="nepaliStartDate1"
+                                   class="form-control" value="">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-2">
+                    <div class="form-group">
+                        <label>To Date</label>
+                        <div class="input-group date" id="endDate">
+                            <input type="text" placeholder="To Date" name="endDate" ng-model="endDate" id="endDate1"
+                                   class="form-control"/>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-2">
+                    <div class="form-group">
+                        <label for="nepaliEndDate">&nbsp;</label>
+                        <div class="input-group">
+                            <input type="text" name="nepaliEndDate" id="nepaliEndDate1"
+                                   class="form-control" value="">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <button ng-click="view()" id="viewHolidays" class="btn btn-default btn-sm pull-right" style="margin-top:22px !important;">
                         View
                         <i class="fa fa-search"></i>
                     </button>
                 </div>
             </div>
-
-
-            <div class="margin-top-20">
-                <div class="row">
-
-                    <div class="col-sm-6">
-                        <div class="btn-group">
-                            <a href="<?= $this->url('holidaysetup', ['action' => 'add']) ?>" id="sample_editable_1_new"
-                               class="btn green"> Add New
-                                <i class="fa fa-plus"></i>
-                            </a>
-                        </div>
-                    </div>
-                    <div class="col-sm-6">
-                        <div class="btn-group pull-right">
-                            <button class="btn green btn-outline dropdown-toggle" data-toggle="dropdown">Tools
-                                <i class="fa fa-angle-down"></i>
-                            </button>
-                            <ul class="dropdown-menu pull-right">
-                                <li>
-                                    <a href="javascript:;" id="export"> Export to Excel </a>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-
-
-            </div>
         </div>
-
-
-        <div class="margin-top-20">
-            <div id="holidayTable"></div>
-        </div>
-
-        <script id="rowTemplate" type="text/x-kendo-tmpl">
-            <tr>
-            <td>
-            #: (HOLIDAY_ENAME == null) ? '-' : HOLIDAY_ENAME #
-            </td>
-            <td>
-            #: (START_DATE == null) ? '-' : START_DATE #
-            </td>
-            <td>
-            #: (END_DATE == null) ? '-' : END_DATE #
-            </td>
-            <td>
-            #: (HALFDAY == null) ? '-' : HALFDAY #
-            </td>
-            <td>
-            <a class="btn-edit"
-            href="<?= $this->url("holidaysetup", ["action" => "edit"]) ?>/#:HOLIDAY_ID#" style="height:17px;"> 
-            <i class="fa fa-edit"></i>
-            </a>
-            </tr>
-        </script>
-
     </div>
+    <div class="">
+        <div id="holidayTable">
+
+        </div>
+    </div>
+
+    <script id="rowTemplate" type="text/x-kendo-tmpl">
+        <tr>
+        <td>
+        #: (HOLIDAY_ENAME == null) ? '-' : HOLIDAY_ENAME #
+        </td>
+        <td>
+        #: (START_DATE == null) ? '-' : START_DATE #
+        </td>
+        <td>
+        #: (END_DATE == null) ? '-' : END_DATE #
+        </td>
+        <td>
+        #: (HALFDAY == null) ? '-' : HALFDAY #
+        </td>
+        <td>
+        <a class="btn-edit"
+        href="<?= $this->url("holidaysetup", ["action" => "edit"]) ?>/#:HOLIDAY_ID#" style="height:17px;"> 
+        <i class="fa fa-edit"></i>
+        </a>
+        </tr>
+    </script>
 </div>

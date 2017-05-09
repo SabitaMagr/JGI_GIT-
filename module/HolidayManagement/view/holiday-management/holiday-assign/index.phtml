@@ -70,10 +70,14 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                     </select>
                 </div>
                 <div class="col-sm-2">
+                    <select class="form-control" name="gender" id="genderId">
+                    </select>
+                </div>
+                <div class="col-sm-2">
                     <select class="form-control" name="employee" id="employeeId">
                     </select>
                 </div>
-                <div class="col-sm-2 col-sm-offset-4">
+                <div class="col-sm-4 ">
                     <button  ng-click="view()" class="btn btn-default btn-sm pull-right">
                         Search
                         <i class="fa fa-search"></i>
