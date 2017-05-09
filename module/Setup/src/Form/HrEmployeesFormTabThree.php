@@ -18,7 +18,7 @@ class HrEmployeesFormTabThree extends  Model
      * @Annotation\Required(false)
      * @Annotation\Type("Zend\Form\Element\Text")
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
-     * @Annotation\Options({"label":"Id Card No"})
+     * @Annotation\Options({"label":"Card No"})
      * @Annotation\Validator({"name":"StringLength", "options":{"max":"15"}})
      * @Annotation\Attributes({ "id":"idCardNo", "class":"form-control" })
      */
@@ -29,7 +29,7 @@ class HrEmployeesFormTabThree extends  Model
      * @Annotation\Required(false)
      * @Annotation\Type("Zend\Form\Element\Text")
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
-     * @Annotation\Options({"label":"Id Lb rf"})
+     * @Annotation\Options({"label":"Retirement Fund ID"})
      * @Annotation\Attributes({ "id":"idLbrf", "class":"form-control" })
      */
     public $idLbrf;
@@ -39,7 +39,7 @@ class HrEmployeesFormTabThree extends  Model
      * @Annotation\Required(false)
      * @Annotation\Type("Zend\Form\Element\Text")
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
-     * @Annotation\Options({"label":"Id Bar code"})
+     * @Annotation\Options({"label":"Bar Code"})
      * @Annotation\Validator({"name":"StringLength", "options":{"max":"50"}})
      * @Annotation\Attributes({ "id":"idBarCode", "class":"form-control" })
      */
@@ -90,7 +90,7 @@ class HrEmployeesFormTabThree extends  Model
      * @Annotation\Required(false)
      * @Annotation\Type("Zend\Form\Element\Text")
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
-     * @Annotation\Options({"label":"Thumb Id"})
+     * @Annotation\Options({"label":"Thumb ID"})
      * @Annotation\Validator({"name":"StringLength", "options":{"max":"50"}})
      * @Annotation\Attributes({ "id":"idThumbId", "class":"form-control" })
      */
@@ -111,7 +111,7 @@ class HrEmployeesFormTabThree extends  Model
      * @Annotation\Required(false)
      * @Annotation\Type("Zend\Form\Element\Text")
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
-     * @Annotation\Options({"label":"Account Id"})
+     * @Annotation\Options({"label":"Account ID"})
      * @Annotation\Validator({"name":"StringLength", "options":{"max":"50"}})
      * @Annotation\Attributes({ "id":"idAccountId", "class":"form-control" })
      */

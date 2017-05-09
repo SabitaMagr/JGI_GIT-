@@ -10,7 +10,7 @@ $preferenceConstraint = $form->get('preferenceConstraint');
 $preferenceConstraint->setValueOptions($preferenceConstraintList);
 $constraintType = $form->get('constraintType');
 $constraintType->setValueOptions($constraintTypeList);
-$constraitnValue = $form->get('constraintValue');
+$constraintValue = $form->get('constraintValue');
 $preferenceCondition = $form->get('preferenceCondition');
 $preferenceCondition->setValueOptions($preferenceConditionList);
 $requestType = $form->get('requestType');
@@ -22,7 +22,7 @@ $companyId->setValueOptions($companies);
 $submit = $form->get('submit');
 $submit->setAttribute('value', 'SUBMIT');
 
-$form->setAttribute('action', $this->url('preferenceSetup', ['action' => 'add']));
+$form->setAttribute('action', $this->url('preferenceSetup', ['action' => 'edit','id'=>$id]));
 
 $form->prepare();
 if ($this->messages) {
@@ -45,7 +45,7 @@ if ($this->messages) {
             <div class="portlet-title">
                 <div class="caption">
                     <i class="fa fa-plus"></i>
-                    New Entry
+                    Update
                 </div>
                 <div class="actions">
                     <a class="btn btn-circle btn-icon-only btn-default fullscreen" href="javascript:;" data-original-title="" title=""> </a>
@@ -86,9 +86,10 @@ if ($this->messages) {
                     </div>
                     
                     <div class="col-sm-4">
-                        <div class="form-group">
-                            <label>Constraint Value</label>
-                            <input type="text" class="form-control" name="constraintValue"/>
+                        <div class="form-group <?= empty($constraintValue->getMessages()) ? "" : "has-error" ?>">
+                            <?php print $this->formLabel($constraintValue); ?>
+                            <?php print $this->formElement($constraintValue); ?>
+                            <?php print $this->formElementErrors()->render($constraintValue, ['class' => 'help-block error']); ?>
                         </div>
                     </div>
                     <div class="col-sm-4">
