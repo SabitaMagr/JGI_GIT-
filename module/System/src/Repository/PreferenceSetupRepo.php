@@ -33,7 +33,20 @@ class PreferenceSetupRepo implements RepositoryInterface {
     }
 
     public function fetchAll() {
-        return $this->tableGateway->select([PreferenceSetup::STATUS=>"E"]);
+        $sql = new Sql($this->adapter);
+        $select = $sql->select();
+        $select->from(['P' => PreferenceSetup::TABLE_NAME]);
+        $companyIdKey = Company::COMPANY_ID;
+        $companyNameKey = Company::COMPANY_NAME;
+        $select->join(['C' => Company::TABLE_NAME], "C.{$companyIdKey} = P.{$companyIdKey}", [Company::COMPANY_NAME => new Expression("INITCAP(C.{$companyNameKey})")], Join::JOIN_LEFT);
+        $select->where(['P.' . PreferenceSetup::STATUS => EntityHelper::STATUS_ENABLED]);
+        $select->order([
+            'P.' . PreferenceSetup::PREFERENCE_NAME => Select::ORDER_ASCENDING,
+            'C.' . Company::COMPANY_NAME => Select::ORDER_ASCENDING
+        ]);
+        $statement = $sql->prepareStatementForSqlObject($select);
+        $return = $statement->execute();
+        return $return;
     }
 
     public function fetchById($id) {

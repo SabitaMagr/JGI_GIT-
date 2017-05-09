@@ -53,12 +53,14 @@ class PreferenceSetupForm{
      * @Annotation\Attributes({ "id":"preferenceCondition","class":"form-control"})
      */
     public $preferenceCondition;
+    
+    
     /**
      * @Annotion\Type("Zend\Form\Element\Text")
      * @Annotation\Required(true)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Constraint Value"})
-     * @Annotation\Attributes({ "id":"form-constraintValue", "class":"form-constraintValue form-control" })
+     * @Annotation\Attributes({ "id":"form-constraintValue", "class":"form-control" })
      */
     public $constraintValue;
 

@@ -15,7 +15,8 @@ use System\Repository\PreferenceSetupRepo;
 
 class PreferenceSetup extends AbstractActionController{
     const PREFERENCE_NAME = [
-        "OVERTIME_REQUEST"=>"Overtime Request"
+        "OVERTIME_REQUEST"=>"Overtime Request",
+        "ATTENDANCE_REQEST"=>"HELLOW"
     ];
     const PREFERENCE_CONSTRAINT = [
         "OVERTIME_GRACE_TIME" => "Overtime Grace Time"
@@ -43,7 +44,16 @@ class PreferenceSetup extends AbstractActionController{
         $this->repository = new PreferenceSetupRepo($adapter);
     }
     public function indexAction() {
-        return Helper::addFlashMessagesToArray($this, ['list'=>"hellow"]);
+        $result = $this->repository->fetchAll();
+        $list = [];
+        foreach ($result as $row){
+            $row['PREFERENCE_NAME'] = self::PREFERENCE_NAME[$row['PREFERENCE_NAME']];
+            $row['PREFERENCE_CONSTRAINT'] = self::PREFERENCE_CONSTRAINT[$row['PREFERENCE_CONSTRAINT']];
+            $row['CONSTRAINT_TYPE'] = self::CONSTRAINT_TYPE[$row['CONSTRAINT_TYPE']];
+            $row['PREFERENCE_CONDITION'] = self::PREFERENCE_CONDITION[$row['PREFERENCE_CONDITION']];
+            array_push($list, $row);
+        }
+        return Helper::addFlashMessagesToArray($this, ['list'=>$list]);
     }
     public function initializeForm(){
         $preferenceForm = new PreferenceSetupForm();
@@ -72,6 +82,43 @@ class PreferenceSetup extends AbstractActionController{
         }
         return Helper::addFlashMessagesToArray($this, [
             'form'=> $this->form,
+            'companies' => EntityHelper::getTableKVListWithSortOption($this->adapter, Company::TABLE_NAME, Company::COMPANY_ID, [Company::COMPANY_NAME], ["STATUS" => "E"], Company::COMPANY_NAME, Select::ORDER_ASCENDING, null, false, true),
+            'preferenceNameList'=>self::PREFERENCE_NAME,
+            'preferenceConstraintList'=>self::PREFERENCE_CONSTRAINT,
+            'constraintTypeList'=>self::CONSTRAINT_TYPE,
+            "preferenceConditionList"=>self::PREFERENCE_CONDITION
+        ]);
+    }
+    public function editAction(){
+        $this->initializeForm();
+        $id = $this->params()->fromRoute('id');
+        if($id===0){
+            $this->redirect()->toRoute('preferenceSetup');
+        }
+        $request = $this->getRequest();
+        $preferenceSetupModel = new PreferenceSetupModel();
+        if(!$request->isPost()){
+           $detail = $this->repository->fetchById($id)->getArrayCopy();
+           $preferenceSetupModel->exchangeArrayFromDB($detail);
+           $this->form->bind($preferenceSetupModel);
+        }else{
+            $postData = $request->getPost();
+            $this->form->setData($postData);
+            if($this->form->isValid()){
+                $preferenceSetup = new PreferenceSetupModel();
+                $preferenceSetup->exchangeArrayFromForm($this->form->getData());
+                $preferenceSetup->modifiedDate = Helper::getcurrentExpressionDate();
+                $preferenceSetup->modifiedBy = $this->employeeId;
+
+                $this->repository->edit($preferenceSetup,$id);
+
+                $this->flashmessenger()->addMessage("Preference Detail Successfully Updated!!!");
+                return $this->redirect()->toRoute("preferenceSetup");
+            }
+        }
+        return Helper::addFlashMessagesToArray($this, [
+            'form'=> $this->form,
+            'id'=>$id,
             'companies' => EntityHelper::getTableKVListWithSortOption($this->adapter, Company::TABLE_NAME, Company::COMPANY_ID, [Company::COMPANY_NAME], ["STATUS" => "E"], Company::COMPANY_NAME, Select::ORDER_ASCENDING, null, false, true),
             'preferenceNameList'=>self::PREFERENCE_NAME,
             'preferenceConstraintList'=>self::PREFERENCE_CONSTRAINT,
