@@ -70,10 +70,6 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                         </li>
                     </ul>
                 </div>
-                <button id="reset" class="btn btn-default btn-sm pull-right">
-                        Reset
-                        <i class="fa fa-refresh"></i>
-                    </button>
             </div>
             
         </div>
@@ -120,14 +116,20 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                 </div>
             </div>
         </div>
-        <div class="col-sm-2">
+    </div>
+        <div class="row">
+        <div class="col-sm-4 col-sm-offset-8">
+            <button id="reset" class="btn default btn-sm pull-right">
+                        Reset
+                        <i class="fa fa-refresh"></i>
+                    </button>
             <label height="45"></label>
             <button ng-click="view()" id="viewLeaveRequestStatus" class="btn btn-default btn-sm pull-right">
                 Search
                 <i class="fa fa-search"></i>
             </button>
         </div>
-    </div>
+        </div>
     </div>
     </div>
         

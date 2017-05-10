@@ -68,10 +68,6 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                         </li>
                     </ul>
                 </div>
-                <button id="reset" class="btn default btn-sm pull-right">
-                        Reset
-                        <i class="fa fa-search"></i>
-                    </button>
             </div>
         </div>
         <div class="portlet-body">
@@ -135,7 +131,11 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                         <input type="text" id="nepaliToDate" name="nepaliToDate" class="form-control" placeholder="To Date Nepali"/>
                     </div>
                 </div>
-                <div class="col-sm-2 col-lg-offset-2">
+                <div class="col-sm-4">
+                    <button id="reset" class="btn default btn-sm pull-right">
+                        Reset
+                        <i class="fa fa-refresh"></i>
+                    </button>
                      <button ng-click="view()" id="viewWorkOnDayoffRequestStatus" class="btn btn-default btn-sm pull-right">
                         Search
                         <i class="fa fa-search"></i>
