@@ -108,7 +108,7 @@ window.app = (function ($, toastr, App) {
 
         $fromNepaliDate.nepaliDatePicker({
             npdMonth: true,
-	npdYear: true,
+            npdYear: true,
             onChange: function () {
                 var toVal = $toNepaliDate.val();
                 if (toVal === 'undefined' || toVal == '') {
@@ -121,15 +121,18 @@ window.app = (function ($, toastr, App) {
                     var toDate = nepaliDatePickerExt.fromNepaliToEnglish($toNepaliDate.val());
                     try {
                         var fromEnglishStartDate = $fromEnglishDate.datepicker('getStartDate');
-                        if (fromEnglishStartDate !== -Infinity && fromEnglishStartDate.getTime() > nepaliDatePickerExt.getDate(fromDate).getTime()) {
+//                        if (fromEnglishStartDate !== -Infinity && (fromEnglishStartDate.getTime() > nepaliDatePickerExt.getDate(fromDate).getTime())) {
+                        if (fromEnglishStartDate !== -Infinity && daysBetween(nepaliDatePickerExt.getDate(fromDate), fromEnglishStartDate) > 0) {
                             throw {message: 'The Selected Date cannot be less than ' + fromEnglishStartDate};
                         }
                         var fromEnglishEndDate = $fromEnglishDate.datepicker('getEndDate');
-                        if (fromEnglishEndDate !== Infinity && fromEnglishEndDate.getTime() < nepaliDatePickerExt.getDate(fromDate).getTime()) {
+//                        if (fromEnglishEndDate !== Infinity && (fromEnglishEndDate.getTime() < nepaliDatePickerExt.getDate(fromDate).getTime())) {
+                        if (fromEnglishEndDate !== Infinity && daysBetween(fromEnglishEndDate, nepaliDatePickerExt.getDate(fromDate)) > 0) {
                             throw {message: 'The Selected Date cannot be more than ' + fromEnglishEndDate};
                         }
 
-                        if (nepaliDatePickerExt.getDate(toDate).getTime() > nepaliDatePickerExt.getDate(fromDate).getTime()) {
+//                        if (nepaliDatePickerExt.getDate(toDate).getTime() > nepaliDatePickerExt.getDate(fromDate).getTime()) {
+                        if (daysBetween(nepaliDatePickerExt.getDate(fromDate), nepaliDatePickerExt.getDate(toDate)) >= 0) {
                             var temp = nepaliDatePickerExt.fromNepaliToEnglish($fromNepaliDate.val());
                             $fromEnglishDate.val(temp);
                             $toEnglishDate.datepicker('setStartDate', nepaliDatePickerExt.getDate(temp));
@@ -173,7 +176,7 @@ window.app = (function ($, toastr, App) {
 
         $toNepaliDate.nepaliDatePicker({
             npdMonth: true,
-	npdYear: true,
+            npdYear: true,
             onChange: function () {
                 var fromVal = $fromNepaliDate.val();
                 if (fromVal === 'undefined' || fromVal == '') {
@@ -187,15 +190,20 @@ window.app = (function ($, toastr, App) {
 
                     try {
                         var toEnglishStartDate = $toEnglishDate.datepicker('getStartDate');
-                        if (toEnglishStartDate !== -Infinity && toEnglishStartDate.getTime() >= nepaliDatePickerExt.getDate(toDate).getTime()) {
+                        console.log("test", toEnglishStartDate.getTime());
+                        console.log("test", nepaliDatePickerExt.getDate(toDate).getTime());
+//                        if ((toEnglishStartDate !== -Infinity) && (toEnglishStartDate.getTime() > nepaliDatePickerExt.getDate(toDate).getTime())) {
+                        if ((toEnglishStartDate !== -Infinity) && daysBetween(nepaliDatePickerExt.getDate(toDate), toEnglishStartDate) > 0) {
                             throw {message: 'The Selected Date cannot be less than ' + toEnglishStartDate};
                         }
                         var toEnglishEndDate = $toEnglishDate.datepicker('getEndDate');
-                        if (toEnglishEndDate !== Infinity && toEnglishEndDate.getTime() <= nepaliDatePickerExt.getDate(toDate).getTime()) {
+//                        if (toEnglishEndDate !== Infinity && (toEnglishEndDate.getTime() < nepaliDatePickerExt.getDate(toDate).getTime())) {
+                        if (toEnglishEndDate !== Infinity && daysBetween(toEnglishEndDate, nepaliDatePickerExt.getDate(toDate)) > 0) {
                             throw {message: 'The Selected Date cannot be more than ' + toEnglishEndDate};
                         }
 
-                        if (nepaliDatePickerExt.getDate(toDate).getTime() > nepaliDatePickerExt.getDate(fromDate).getTime()) {
+//                        if (nepaliDatePickerExt.getDate(toDate).getTime() > nepaliDatePickerExt.getDate(fromDate).getTime()) {
+                        if (daysBetween(nepaliDatePickerExt.getDate(fromDate), nepaliDatePickerExt.getDate(toDate)) >= 0) {
                             var temp = nepaliDatePickerExt.fromNepaliToEnglish($toNepaliDate.val());
                             $toEnglishDate.val(temp);
                             $fromEnglishDate.datepicker('setEndDate', nepaliDatePickerExt.getDate(temp));
@@ -265,7 +273,7 @@ window.app = (function ($, toastr, App) {
 
         $nepaliDate.nepaliDatePicker({
             npdMonth: true,
-	npdYear: true,
+            npdYear: true,
             onChange: function () {
                 var temp = nepaliDatePickerExt.fromNepaliToEnglish($nepaliDate.val());
                 var englishStartDate = $englishDate.datepicker('getStartDate');
@@ -731,6 +739,21 @@ window.app = (function ($, toastr, App) {
                 500);
     };
 
+    var daysBetween = function (first, second) {
+
+        // Copy date parts of the timestamps, discarding the time parts.
+        var one = new Date(first.getFullYear(), first.getMonth(), first.getDate());
+        var two = new Date(second.getFullYear(), second.getMonth(), second.getDate());
+
+        // Do the math.
+        var millisecondsPerDay = 1000 * 60 * 60 * 24;
+        var millisBetween = two.getTime() - one.getTime();
+        var days = millisBetween / millisecondsPerDay;
+
+        // Round down.
+        return Math.floor(days);
+    }
+
     return {
         format: format,
         pullDataById: pullDataById,
@@ -753,7 +776,8 @@ window.app = (function ($, toastr, App) {
         getServerDate: getServerDate,
         setLoadingOnSubmit: setLoadingOnSubmit,
         scrollTo: scrollTo,
-        showMessage: showMessage
+        showMessage: showMessage,
+        daysBetween: daysBetween
     };
 })(window.jQuery, window.toastr, window.App);
 

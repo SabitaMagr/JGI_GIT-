@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Created by PhpStorm.
  * User: ukesh
@@ -11,8 +12,8 @@ namespace Setup\Form;
 use Application\Model\Model;
 use Zend\Form\Annotation;
 
-class HrEmployeesFormTabFour extends Model
-{
+class HrEmployeesFormTabFour extends Model {
+
     /**
      * @Annotation\Required(true)
      * @Annotation\Type("Zend\Form\Element\Text")
@@ -95,7 +96,7 @@ class HrEmployeesFormTabFour extends Model
      * @Annotation\Attributes({ "id":"branchId","class":"form-control"})
      */
     public $appBranchId;
-    
+
     /**
      * @Annotation\Type("Zend\Form\Element\Select")
      * @Annotation\Required(False)
@@ -104,30 +105,33 @@ class HrEmployeesFormTabFour extends Model
      * @Annotation\Attributes({ "id":"employeeType","class":"form-control"})
      */
     public $employeeType;
-    
     public $branchId;
     public $departmentId;
     public $designationId;
     public $positionId;
     public $serviceTypeId;
     public $serviceEventTypeId;
-    
-    public $mappings=[
-        'joinDate'=>'JOIN_DATE',
-        'salary'=>'SALARY',
-        'salaryPf'=>'SALARY_PF',
-        'appServiceTypeId'=>'APP_SERVICE_TYPE_ID',
-        'appServiceEventTypeId'=>'APP_SERVICE_EVENT_TYPE_ID',
-        'appPositionId'=>'APP_POSITION_ID',
-        'appDesignationId'=>'APP_DESIGNATION_ID',
-        'appDepartmentId'=>'APP_DEPARTMENT_ID',
-        'appBranchId'=>'APP_BRANCH_ID',
-        'branchId'=>'BRANCH_ID',
-        'departmentId'=>'DEPARTMENT_ID',
-        'designationId'=>'DESIGNATION_ID',
-        'positionId'=>'POSITION_ID',
-        'serviceTypeId'=>'SERVICE_TYPE_ID',
-        'serviceEventTypeId'=>'SERVICE_EVENT_TYPE_ID',
-        'employeeType'=>'EMPLOYEE_TYPE'
+    public $modifiedBy;
+    public $modifiedDt;
+    public $mappings = [
+        'joinDate' => 'JOIN_DATE',
+        'salary' => 'SALARY',
+        'salaryPf' => 'SALARY_PF',
+        'appServiceTypeId' => 'APP_SERVICE_TYPE_ID',
+        'appServiceEventTypeId' => 'APP_SERVICE_EVENT_TYPE_ID',
+        'appPositionId' => 'APP_POSITION_ID',
+        'appDesignationId' => 'APP_DESIGNATION_ID',
+        'appDepartmentId' => 'APP_DEPARTMENT_ID',
+        'appBranchId' => 'APP_BRANCH_ID',
+        'branchId' => 'BRANCH_ID',
+        'departmentId' => 'DEPARTMENT_ID',
+        'designationId' => 'DESIGNATION_ID',
+        'positionId' => 'POSITION_ID',
+        'serviceTypeId' => 'SERVICE_TYPE_ID',
+        'serviceEventTypeId' => 'SERVICE_EVENT_TYPE_ID',
+        'employeeType' => 'EMPLOYEE_TYPE',
+        'modifiedBy' => 'MODIFIED_BY',
+        'modifiedDt' => 'MODIFIED_DT',
     ];
+
 }

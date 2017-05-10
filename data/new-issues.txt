@@ -20,12 +20,12 @@ jwl-training-session-1_25-Apr-17  issues | changes
 6. 3 grace time leave should deduct 1 leave as per policy in JGI.
 7. Date of Birth should be listed in Employee list.[done]
 8. concept of profile copy.
-9. Data update on JGI database | only two branches should be listed i.e. Head Office, Factory
+9. Data update on JGI database | only two branches should be listed i.e. Head Office, Factory vishma [done]
 10.Company should also be displayed in designation list.[done]
 11.Dropdowns with no list.
 12.Appointment and Re-appointment concept for JGI.[pending]
-13.Password forget implementation[under process]
-14.password encryption required.[done ]
+13.Password forget implementation. punam [done]
+14.password encryption required. ukesh [done ]
 
 
 password forget implemetation flow
@@ -115,10 +115,10 @@ JGI_training_session_3
 6. To Do list finalize. ukesh
 7. Staff working as intern trainee, his/her job is to edit hr employee data. this staff should not affect payroll. ukesh
 8. On Nepali Date, Same date is not allowed to select on both from and to date. ukesh
-9. Company Wise Holiday Assign needed on JGI. punam
+9. Company Wise Holiday Assign needed on JGI. ukesh [done]
 10. Leave Requirements of JGI. ukesh
 11. Menus not needed or under process should be hidden. prabin
-12. list code should be removed from all the tables (view). prabin
+12. list code should be removed from all the tables (view). prabin [done]
 13. Travel Request flow implementation. 
 15. Assets Implementation. prabin 
 16. Menu Name Refactor/ should be meaningful and short. prabin
@@ -132,8 +132,8 @@ JGI_training_session_3
 23. On Employee Report, % wise gender should be displayed. ukesh
 24. file name and file path need to be changed. punam [done]
 
-employee profile form label not correct like LBRF, "ID" prefix used
-Parent Department and Parent Designation should be removed and not being edited correctly.
+employee profile form label not correct like LBRF, "ID" prefix used PRABIN [DONE]
+Parent Department and Parent Designation should be removed and not being edited correctly. ukesh[done]
 
 
 shift assign issue

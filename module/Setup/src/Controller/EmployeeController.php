@@ -122,6 +122,8 @@ class EmployeeController extends AbstractActionController {
                 $formOneModel->birthDate = Helper::getExpressionDate($formOneModel->birthDate);
                 $formOneModel->addrPermCountryId = 168;
                 $formOneModel->addrTempCountryId = 168;
+
+                $formOneModel->createdBy = $this->loggedIdEmployeeId;
                 $this->repository->add($formOneModel);
                 return $this->redirect()->toRoute('employee', ['action' => 'edit', 'id' => $formOneModel->employeeId, 'tab' => 2]);
             }
@@ -219,6 +221,8 @@ class EmployeeController extends AbstractActionController {
                         $formOneModel->birthDate = Helper::getExpressionDate($formOneModel->birthDate);
                         $formOneModel->addrPermCountryId = 168;
                         $formOneModel->addrTempCountryId = 168;
+                        $formOneModel->modifiedBy = $this->loggedIdEmployeeId;
+                        $formOneModel->modifiedDt = Helper::getcurrentExpressionDate();
                         $this->repository->edit($formOneModel, $id);
                         return $this->redirect()->toRoute('employee', ['action' => 'edit', 'id' => $id, 'tab' => 2]);
                     }
@@ -229,7 +233,9 @@ class EmployeeController extends AbstractActionController {
                         $formTwoModel->exchangeArrayFromForm($this->formTwo->getData());
                         $formTwoModel->famSpouseBirthDate = Helper::getExpressionDate($formTwoModel->famSpouseBirthDate);
                         $formTwoModel->famSpouseWeddingAnniversary = Helper::getExpressionDate($formTwoModel->famSpouseWeddingAnniversary);
-                        ;
+
+                        $formTwoModel->modifiedBy = $this->loggedIdEmployeeId;
+                        $formTwoModel->modifiedDt = Helper::getcurrentExpressionDate();
                         $this->repository->edit($formTwoModel, $id);
                         return $this->redirect()->toRoute('employee', ['action' => 'edit', 'id' => $id, 'tab' => 3]);
                     }
@@ -241,6 +247,8 @@ class EmployeeController extends AbstractActionController {
                         $formThreeModel->idDrivingLicenseExpiry = Helper::getExpressionDate($formThreeModel->idDrivingLicenseExpiry);
                         $formThreeModel->idCitizenshipIssueDate = Helper::getExpressionDate($formThreeModel->idCitizenshipIssueDate);
                         $formThreeModel->idPassportExpiry = Helper::getExpressionDate($formThreeModel->idPassportExpiry);
+                        $formThreeModel->modifiedBy = $this->loggedIdEmployeeId;
+                        $formThreeModel->modifiedDt = Helper::getcurrentExpressionDate();
                         $this->repository->edit($formThreeModel, $id);
                         return $this->redirect()->toRoute('employee', ['action' => 'edit', 'id' => $id, 'tab' => 4]);
                     }
@@ -256,6 +264,9 @@ class EmployeeController extends AbstractActionController {
                         $formFourModel->positionId = $formFourModel->appPositionId;
                         $formFourModel->serviceTypeId = $formFourModel->appServiceTypeId;
                         $formFourModel->serviceEventTypeId = $formFourModel->appServiceEventTypeId;
+
+                        $formFourModel->modifiedBy = $this->loggedIdEmployeeId;
+                        $formFourModel->modifiedDt = Helper::getcurrentExpressionDate();
 
                         $shiftId = $postData->shift;
                         $recommenderId = $postData->recommender;
@@ -497,13 +508,13 @@ class EmployeeController extends AbstractActionController {
         $empQualificationDtl = $empQualificationRepo->getByEmpId($id);
         $empExperienceList = $empExperienceRepo->getByEmpId($id);
         $empTrainingList = $empTrainingRepo->getByEmpId($id);
-        
+
         $jobHistoryRepo = new JobHistoryRepository($this->adapter);
         $jobHistoryList = $jobHistoryRepo->filter(null, null, $id);
-        
+
         $employeeFileRepo = new EmployeeFile($this->adapter);
         $employeeFile = $employeeFileRepo->fetchByEmpId($id);
-        
+
         return Helper::addFlashMessagesToArray($this, [
                     'formOne' => $this->formOne,
                     'formTwo' => $this->formTwo,
@@ -523,8 +534,8 @@ class EmployeeController extends AbstractActionController {
                     'empQualificationList' => $empQualificationDtl,
                     'empExperienceList' => $empExperienceList,
                     'empTrainingList' => $empTrainingList,
-                    'jobHistoryList'=>$jobHistoryList,
-                    "employeeFile"=>$employeeFile
+                    'jobHistoryList' => $jobHistoryList,
+                    "employeeFile" => $employeeFile
         ]);
     }
 

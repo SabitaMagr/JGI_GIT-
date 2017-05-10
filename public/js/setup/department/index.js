@@ -18,7 +18,7 @@
             columns: [
 //                {field: "DEPARTMENT_CODE", title: "Code", width: 80},
                 {field: "DEPARTMENT_NAME", title: "Name", width: 150},
-                {field: "PARENT_DEPARTMENT", title: "Parent Dept", width: 130},
+//                {field: "PARENT_DEPARTMENT", title: "Parent Dept", width: 130},
                 {field: "COMPANY_NAME", title: "Company", width: 150},
                 {field: "BRANCH_NAME", title: "Branch", width: 150},
                 {title: "Action", width: 80}
@@ -31,7 +31,7 @@
 //                        {value: "Department Code"},
                         {value: "Department Name"},
                         {value: "Country Name"},
-                        {value: "Parent Department Name"},
+//                        {value: "Parent Department Name"},
                         {value: "COMPANY"},
                         {value: "Remarks"}
                     ]
@@ -49,10 +49,10 @@
                 var dataItem = data[i];
                 rows.push({
                     cells: [
-                        {value: dataItem.DEPARTMENT_CODE},
+//                        {value: dataItem.DEPARTMENT_CODE},
                         {value: dataItem.DEPARTMENT_NAME},
                         {value: dataItem.COUNTRY_NAME},
-                        {value: dataItem.PARENT_DEPARTMENT},
+//                        {value: dataItem.PARENT_DEPARTMENT},
                         {value: dataItem.COMPANY_NAME},
                         {value: dataItem.REMARKS}
                     ]
@@ -71,7 +71,7 @@
                             {autoWidth: true},
                             {autoWidth: true},
                             {autoWidth: true},
-                            {autoWidth: true}
+//                            {autoWidth: true}
                         ],
                         title: "Department",
                         rows: rows
