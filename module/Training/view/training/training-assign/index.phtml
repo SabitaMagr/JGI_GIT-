@@ -65,10 +65,6 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                         </li>
                     </ul>
                 </div>
-                <button id="reset" class="btn default btn-sm pull-right">
-                        Reset
-                        <i class="fa fa-refresh"></i>
-                    </button>
             </div>
         </div>
         <div class="portlet-body">
@@ -110,8 +106,12 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                 <div class="col-sm-2">
                     <?php print $this->formElement($trainings); ?>
                 </div> 
-                <div class="col-sm-2 col-lg-offset-2">
+                <div class="col-sm-4">
                     <label height="45"></label>
+                    <button id="reset" class="btn default btn-sm pull-right">
+                        Reset
+                        <i class="fa fa-refresh"></i>
+                    </button>
                     <button  ng-click="viewTrainingAssignList()" id="viewEmployees" class="btn btn-default btn-sm pull-right">
                         Search
                         <i class="fa fa-search"></i>

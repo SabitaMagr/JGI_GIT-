@@ -31,10 +31,6 @@ $this->headScript()
                 <a href="" class="fullscreen" data-original-title="" title=""> </a>
             </div>
             <div class="actions">
-                <button id="reset" class="btn default btn-sm pull-right">
-                        Reset
-                        <i class="fa fa-refresh"></i>
-                    </button>
             </div>
         </div>
         <div class="portlet-body">
@@ -69,8 +65,12 @@ $this->headScript()
                     <select class="form-control" name="employee" id="employeeId">
                     </select>
                 </div>
-                <div class="col-sm-2 col-lg-offset-6">
+                <div class="col-sm-4 col-sm-offset-4">
                     <label height="45"></label>
+                    <button id="reset" class="btn default btn-sm pull-right">
+                        Reset
+                        <i class="fa fa-refresh"></i>
+                    </button>
                     <button ng-click="view()" id="viewEmployees" class="btn btn-default btn-sm pull-right">
                         Search
                         <i class="fa fa-search"></i>
