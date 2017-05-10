@@ -21,6 +21,7 @@ $this->headScript()
 ?>
 
 <script>
+    document.ids=<?php echo json_encode(["advanceId"=>-1,"advanceRequestStatusId"=>-1,"fromDate1"=>"","nepaliFromDate"=>"","toDate1"=>"","nepaliToDate"=>""]) ?>;
     document.url = '<?= $this->url("restful", ["action" => "index"]) ?>';
     document.searchValues =<?php echo json_encode($searchValues); ?>;
 </script>
@@ -67,7 +68,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                 </div>
                 <button id="reset" class="btn default btn-sm pull-right">
                         Reset
-                        <i class="fa fa-search"></i>
+                        <i class="fa fa-refresh"></i>
                     </button>
             </div>
             

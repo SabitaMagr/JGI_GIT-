@@ -22,6 +22,7 @@ $this->headScript()
 <?php } ?>
 
 <script>
+    document.ids=<?php echo json_encode(["recommenderId"=>-1,"approverId"=>-1]) ?>;
     document.searchValues =<?php echo json_encode($searchValues); ?>;
     document.recommendApproves =<?php echo json_encode($recommendApproves); ?>;
     document.url='<?= $this->url("restful",["action"=>"index"]) ?>';
@@ -71,7 +72,7 @@ $this->headScript()
                 </div>
                 <button id="reset" class="btn default btn-sm pull-right">
                         Reset
-                        <i class="fa fa-search"></i>
+                        <i class="fa fa-refresh"></i>
                     </button>
             </div>
         </div>

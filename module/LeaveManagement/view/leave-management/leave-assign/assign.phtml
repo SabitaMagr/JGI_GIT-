@@ -11,6 +11,7 @@ $this->headScript()->appendFile($this->basePath('dropzone/dropzone.min.js'));
 ?>
 
 <script>
+    document.ids=<?php echo json_encode(["leaveId"=>1,"genderId"=>-1]) ?>;
     document.url = '<?= $this->url("webService", ["action" => "index"]) ?>';
     document.excelUploadUrl = '<?= $this->url('leaveassign', ["action" => "import"]) ?>';
     document.searchValues =<?php echo json_encode($searchValues); ?>;
@@ -50,7 +51,7 @@ $genderFormElement->setAttribute("ng-model", "genderId");
             <div class="actions">
                 <button id="reset" class="btn default btn-sm pull-right">
                         Reset
-                        <i class="fa fa-search"></i>
+                        <i class="fa fa-refresh"></i>
                     </button>
             </div>
         </div>
