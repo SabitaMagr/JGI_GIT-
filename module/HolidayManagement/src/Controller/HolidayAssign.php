@@ -58,7 +58,7 @@ class HolidayAssign extends AbstractActionController {
                 throw new Exception("The request should be of type post");
             }
         } catch (Exception $e) {
-            return new CustomViewModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
+            return new CustomViewModel(['success' => false, 'data' => [], 'error' => $e->getMessage(), 'errorDetail' => $e->getTraceAsString()]);
         }
     }
 
@@ -91,7 +91,6 @@ class HolidayAssign extends AbstractActionController {
                 } else {
                     $employeeIdList = $postedData['employeeIdList'];
                 }
-
                 $reportData = $this->repository->multipleEmployeeAssignToHoliday($holidayId, $employeeIdList);
                 return new CustomViewModel(['success' => true, 'data' => $reportData, 'error' => '']);
             } else {
