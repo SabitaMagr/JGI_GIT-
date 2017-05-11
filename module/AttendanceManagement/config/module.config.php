@@ -85,6 +85,20 @@ return [
                         'action' => 'index',
                     ]
                 ],
+            ],
+            'allattendancereport' => [
+                'type' => Segment::class,
+                'options' => [
+                    'route' => '/attendance/attendancereport[/:action[/:id]]',
+                    'constants' => [
+                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'id' => '[0-9]+',
+                    ],
+                    'defaults' => [
+                        'controller' => Controller\AttendanceReportController::class,
+                        'action' => 'index',
+                    ]
+                ],
             ]
         ],
     ],
@@ -207,6 +221,7 @@ return [
             Controller\ShiftSetup::class=>ControllerFactory::class,
             Controller\AttendanceStatus::class=>ControllerFactory::class,
             Controller\DailyAttendance::class=>ControllerFactory::class,
+            Controller\AttendanceReportController::class=>ControllerFactory::class,
         ],
 
     ],
