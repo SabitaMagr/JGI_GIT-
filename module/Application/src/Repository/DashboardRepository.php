@@ -504,6 +504,7 @@ class DashboardRepository implements RepositoryInterface {
                 AND EMP.DEPARTMENT_ID = DPT.DEPARTMENT_ID
                 AND EMP.STATUS = 'E'
                 AND EMP.RETIRED_FLAG = 'N'
+                AND EMP.IS_ADMIN='N'
                 ORDER BY UPPER(EMP.FIRST_NAME), UPPER(EMP.MIDDLE_NAME), UPPER(EMP.LAST_NAME)";
 
         $statement = $this->adapter->query($sql);
@@ -593,6 +594,8 @@ class DashboardRepository implements RepositoryInterface {
                       AND TRAINING_ID IS NULL
                       AND TRAVEL_ID IS NULL
                       AND HOLIDAY_ID IS NULL
+                      AND HE.STATUS = 'E'
+                      AND HE.IS_ADMIN= 'N'
                     GROUP BY HD.DEPARTMENT_CODE,
                              HD.DEPARTMENT_NAME,
                              'ABSENT'

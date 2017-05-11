@@ -83,6 +83,19 @@ echo json_encode($menu);
                             <?php print $this->formElementErrors()->render($countryId, ['class' => 'help-block']); ?>
                         </div>
                     </div>
+
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <?php print $this->formLabel($parentDepartment); ?>
+                            <?php print $this->formElement($parentDepartment); ?>
+                            <?php print $this->formElementErrors()->render($parentDepartment, ['class' => 'help-block']); ?>
+                        </div>
+                    </div>
+                </div>
+
+
+
+                <div class=" row">
                     <div class="col-sm-4">
                         <div class="form-group">
                             <div class="form-group">
@@ -93,12 +106,6 @@ echo json_encode($menu);
                             </div>
                         </div>
                     </div>
-
-                </div>
-
-
-
-                <div class=" row">
 
 
                     <div class="col-sm-4">

@@ -2,12 +2,13 @@
 
 namespace Application\Helper;
 
+use Exception;
+use Setup\Model\Company;
 use Setup\Model\EmployeeFile;
 use Setup\Model\HrEmployees;
-use Setup\Model\Company;
 use Zend\Authentication\AuthenticationService;
-use Zend\Mvc\MvcEvent;
 use Zend\Db\Adapter\AdapterInterface as DbAdapterInterface;
+use Zend\Mvc\MvcEvent;
 
 class SessionHelper {
 
@@ -19,7 +20,13 @@ class SessionHelper {
         if ($employeeId != null) {
             $tempEmployeeFileData = EntityHelper::getTableKVList($adapter, HrEmployees::TABLE_NAME, HrEmployees::EMPLOYEE_ID, [HrEmployees::PROFILE_PICTURE_ID], [HrEmployees::EMPLOYEE_ID => $employeeId], null);
             $employeeFileId = (sizeof($tempEmployeeFileData) == 0) ? null : $tempEmployeeFileData[$employeeId];
-            $employeeName = EntityHelper::getTableKVList($adapter, HrEmployees::TABLE_NAME, HrEmployees::EMPLOYEE_ID, [HrEmployees::FIRST_NAME], [HrEmployees::EMPLOYEE_ID => $employeeId], null)[$employeeId];
+
+
+            $employeeNameList = EntityHelper::getTableKVList($adapter, HrEmployees::TABLE_NAME, null, [HrEmployees::FIRST_NAME], [HrEmployees::EMPLOYEE_ID => $employeeId], null);
+            if (sizeof($employeeNameList) == 0) {
+                throw new Exception("Employee With EMPLOYEE_ID => {$employeeId} doesn't exist!");
+            }
+            $employeeName = $employeeNameList[0];
             //start to set company logo details
             $companyId = EntityHelper::getTableKVList($adapter, HrEmployees::TABLE_NAME, HrEmployees::EMPLOYEE_ID, [HrEmployees::COMPANY_ID], [HrEmployees::EMPLOYEE_ID => $employeeId], null)[$employeeId];
             $companyName = EntityHelper::getTableKVList($adapter, Company::TABLE_NAME, Company::COMPANY_ID, [Company::COMPANY_NAME], [Company::COMPANY_ID => $companyId], null)[$companyId];
@@ -36,15 +43,14 @@ class SessionHelper {
                 $config = $app->getServiceManager()->get('config');
                 $event->getViewModel()->setVariable("profilePictureUrl", $config['default-profile-picture']);
             }
-            
+
             if ($companyLogoCode != null) {
-                $companyImageFilePath= EntityHelper::getTableKVList($adapter, EmployeeFile::TABLE_NAME, EmployeeFile::FILE_CODE, [EmployeeFile::FILE_PATH], [EmployeeFile::FILE_CODE => $companyLogoCode], null)[$companyLogoCode];
+                $companyImageFilePath = EntityHelper::getTableKVList($adapter, EmployeeFile::TABLE_NAME, EmployeeFile::FILE_CODE, [EmployeeFile::FILE_PATH], [EmployeeFile::FILE_CODE => $companyLogoCode], null)[$companyLogoCode];
                 $event->getViewModel()->setVariable("companyLogoUrl", $companyImageFilePath);
             } else {
                 $config = $app->getServiceManager()->get('config');
                 $event->getViewModel()->setVariable("companyLogoUrl", "NO");
             }
-            
         }
     }
 

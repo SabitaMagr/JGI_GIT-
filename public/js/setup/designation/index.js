@@ -19,7 +19,7 @@
 //                {field: "DESIGNATION_CODE", title: "Code",width:120},
                 {field: "DESIGNATION_TITLE", title: "Name",width:200},
                 {field: "COMPANY_NAME", title: "Company",width:120},
-                {field: "PARENT_DESIGNATION_TITLE", title: "Parent Designation",width:200},
+//                {field: "PARENT_DESIGNATION_TITLE", title: "Parent Designation",width:200},
                 {field: "BASIC_SALARY", title: "Basic Salary",width:120},
                 {title: "Action",width:100}
             ]
@@ -27,13 +27,13 @@
                $("#export").click(function (e) {
             var rows = [{
                     cells: [
-                        {value: "Designation Code"},
+//                        {value: "Designation Code"},
                         {value: "Designation Name"},                        
                         {value: "Basic Salary"},
-                        {value: "Parent Designation Name"},
+//                        {value: "Parent Designation Name"},
                         {value: "Company Name"},
-                        {value: "Within Branch"},
-                       {value: "Within Department"}
+//                        {value: "Within Branch"},
+//                       {value: "Within Department"}
                     ]
                 }];
             var dataSource = $("#designationTable").data("kendoGrid").dataSource;
@@ -47,17 +47,17 @@
             
             for (var i = 0; i < data.length; i++) {
                 var dataItem = data[i];
-                var withinBranch = dataItem.WITHIN_BRANCH=='Y'?'Yes':'No';
-                var withinDepartment = dataItem.WITHIN_DEPARTMENT=='Y'?'Yes':'No';
+//                var withinBranch = dataItem.WITHIN_BRANCH=='Y'?'Yes':'No';
+//                var withinDepartment = dataItem.WITHIN_DEPARTMENT=='Y'?'Yes':'No';
                 rows.push({
                     cells: [
-                        {value: dataItem.DESIGNATION_CODE},
+//                        {value: dataItem.DESIGNATION_CODE},
                         {value: dataItem.DESIGNATION_TITLE},
                         {value: dataItem.BASIC_SALARY},
-                        {value: dataItem.PARENT_DESIGNATION_TITLE},
+//                        {value: dataItem.PARENT_DESIGNATION_TITLE},
                         {value: dataItem.COMPANY_NAME},
-                        {value: withinBranch},
-                        {value: withinDepartment}
+//                        {value: withinBranch},
+//                        {value: withinDepartment}
                     ]
                 });
             }
@@ -70,12 +70,12 @@
                 sheets: [
                     {
                         columns: [
+//                            {autoWidth: true},
                             {autoWidth: true},
                             {autoWidth: true},
                             {autoWidth: true},
-                            {autoWidth: true},
-                            {autoWidth: true},
-                            {autoWidth: true}
+//                            {autoWidth: true},
+//                            {autoWidth: true}
                         ],
                         title: "Designation",
                         rows: rows

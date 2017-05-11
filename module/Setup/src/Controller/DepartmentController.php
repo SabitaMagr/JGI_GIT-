@@ -53,9 +53,6 @@ class DepartmentController extends AbstractActionController {
             if ($this->form->isValid()) {
                 $department = new Department();
                 $department->exchangeArrayFromForm($this->form->getData());
-                if ($department->parentDepartment == 0) {
-                    unset($department->parentDepartment);
-                }
                 $department->createdDt = Helper::getcurrentExpressionDate();
                 $department->createdBy = $this->employeeId;
                 $department->departmentId = ((int) Helper::getMaxId($this->adapter, "HRIS_DEPARTMENTS", "DEPARTMENT_ID")) + 1;
@@ -96,9 +93,6 @@ class DepartmentController extends AbstractActionController {
             $this->form->setData($request->getPost());
             if ($this->form->isValid()) {
                 $department->exchangeArrayFromForm($this->form->getData());
-                if ($department->parentDepartment == 0) {
-                    $department->parentDepartment = null;
-                }
                 $department->modifiedDt = Helper::getcurrentExpressionDate();
                 $department->modifiedBy = $this->employeeId;
 

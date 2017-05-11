@@ -9,12 +9,11 @@
 
 namespace SelfService\Controller;
 
-use Zend\View\Model\ViewModel;
+use Application\Helper\Helper;
+use SelfService\Repository\HolidayRepository;
+use Zend\Authentication\AuthenticationService;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Mvc\Controller\AbstractActionController;
-use Zend\Authentication\AuthenticationService;
-use SelfService\Repository\HolidayRepository;
-use Application\Helper\Helper;
 
 class Holiday extends AbstractActionController {
 

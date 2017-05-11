@@ -11,6 +11,7 @@ $this->headScript()->appendFile($this->basePath('dropzone/dropzone.min.js'));
 ?>
 
 <script>
+    document.ids=<?php echo json_encode(["leaveId"=>1,"genderId"=>-1]) ?>;
     document.url = '<?= $this->url("webService", ["action" => "index"]) ?>';
     document.excelUploadUrl = '<?= $this->url('leaveassign', ["action" => "import"]) ?>';
     document.searchValues =<?php echo json_encode($searchValues); ?>;
@@ -46,12 +47,6 @@ $genderFormElement->setAttribute("ng-model", "genderId");
             <div class="tools">
                 <a href="" class="collapse" data-original-title="" title=""> </a>
                 <a href="" class="fullscreen" data-original-title="" title=""> </a>
-            </div>
-            <div class="actions">
-                <button id="reset" class="btn default btn-sm pull-right">
-                        Reset
-                        <i class="fa fa-search"></i>
-                    </button>
             </div>
         </div>
         <div class="portlet-body">
@@ -92,8 +87,12 @@ $genderFormElement->setAttribute("ng-model", "genderId");
                 <div class="col-sm-2">
                     <?php print $this->formElement($genderFormElement); ?>
                 </div>
-                <div class="col-sm-2 col-lg-offset-2">
+                <div class="col-sm-4">
                     <label height="45"></label>
+                    <button id="reset" class="btn default btn-sm pull-right">
+                        Reset
+                        <i class="fa fa-refresh"></i>
+                    </button>
                     <button ng-click="view()" id="viewEmployees" class="btn btn-default btn-sm pull-right">
                         Search
                         <i class="fa fa-search"></i>

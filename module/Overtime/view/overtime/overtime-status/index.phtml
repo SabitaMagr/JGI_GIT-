@@ -23,6 +23,7 @@ $this->headScript()
 ?>
 
 <script>
+    document.ids=<?php echo json_encode(["requestStatusId"=>-1,"fromDate1"=>"","nepaliFromDate"=>"","toDate1"=>"","nepaliToDate"=>""]) ?>;
     document.url = '<?= $this->url("restful", ["action" => "index"]) ?>';
     document.searchValues =<?php echo json_encode($searchValues); ?>;
 </script>
@@ -67,10 +68,6 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                         </li>
                     </ul>
                 </div>
-                <button id="reset" class="btn default btn-sm pull-right">
-                        Reset
-                        <i class="fa fa-search"></i>
-                    </button>
             </div>
         </div>
         <div class="portlet-body">
@@ -139,6 +136,10 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                     <a href="<?= $this->url('overtimeStatus', ['action' => 'calculate']) ?>" id="sample_editable_1_new" class="btn green">Calculate
                         <i class="fa fa-plus"></i>
                     </a>
+                    <button id="reset" class="btn default btn-sm pull-right">
+                        Reset
+                        <i class="fa fa-refresh"></i>
+                    </button>
                      <button ng-click="view()" id="viewOvertimRequestStatus" class="btn btn-default btn-sm pull-right">
                         Search
                         <i class="fa fa-search"></i>

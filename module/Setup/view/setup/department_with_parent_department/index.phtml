@@ -6,10 +6,11 @@ $this->headLink()
         ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.dataviz.min.css'))
         ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.dataviz.default.min.css'));
 
+
 $this->headScript()
         ->appendFile($this->basePath('jszip/dist/jszip.min.js'))
         ->appendFile($this->basePath('telerik_kendoui/js/kendo.all.min.js'))
-        ->appendFile($this->basePath('js/setup/designation/index.js'))
+        ->appendFile($this->basePath('js/setup/department/index.js'))
         ->appendFile($this->basePath('assets/global/plugins/bootstrap-confirmation/bootstrap-confirmation.min.js'));
 ?>
 
@@ -20,24 +21,24 @@ $this->headScript()
 <?php } ?>
 
 <script>
-    document.menu =<?php $menu = ["id" => "menuSetup", "subMenu" => ["id" => "subMenuDesignation"]];
-echo json_encode($menu); ?>;
-    document.designations =<?php echo json_encode($designations); ?>
+    document.departments =<?= json_encode($departments) ?>;
+    document.menu =<?php
+$menu = ["id" => "menuSetup", "subMenu" => ["id" => "subMenuDepartment"]];
+echo json_encode($menu);
+?>;
 </script>
-
 <div class="page-bar">
-    <?= $this->navigation('Zend\Navigation\Designation')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
+    <?= $this->navigation('Zend\Navigation\Department')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
-
 
 <div class="margin-top-20">
     <div class="table-toolbar">
         <div class="row">
             <div class="col-md-6">
                 <div class="btn-group">
-                    <a href="<?= $this->url('designation', ['action' => 'add']) ?>" id="sample_editable_1_new"
-                       class="btn green"> Add New   <i class="fa fa-plus"></i>
-
+                    <a href="<?= $this->url('department', ['action' => 'add']) ?>" id="sample_editable_1_new"
+                       class="btn green"> Add New <i class="fa fa-plus"></i>
+<!--                        <i class="fa fa-plus"></i>-->
                     </a>
                 </div>
             </div>
@@ -46,7 +47,7 @@ echo json_encode($menu); ?>;
                     <button class="btn green btn-outline dropdown-toggle" data-toggle="dropdown">Tools
                         <i class="fa fa-angle-down"></i>
                     </button>
-                    <ul class="dropdown-menu pull-right">
+                    <ul class="dropdown-menu pull-right">                      
                         <li>
                             <a href="javascript:;" id="export"> Export to Excel </a>
                         </li>
@@ -54,31 +55,34 @@ echo json_encode($menu); ?>;
                 </div>
             </div>
         </div>
-    </div>    
-    <div id="designationTable">
+    </div>
+    <div id="departmentTable">
+
     </div>
     <script id="rowTemplate" type="text/x-kendo-tmpl">
         <tr>
-        <td> 
-        #: (DESIGNATION_TITLE == null) ? '-' : DESIGNATION_TITLE #
+        <td>    
+        #: (DEPARTMENT_NAME == null) ? '-' : DEPARTMENT_NAME #
+        </td>
+        <td>    
+        #: (PARENT_DEPARTMENT == null) ? '-' : PARENT_DEPARTMENT #
         </td>
         <td>    
         #: (COMPANY_NAME == null) ? '-' : COMPANY_NAME #
         </td>
-        <td>
-        #: (BASIC_SALARY == null) ? '-' : BASIC_SALARY #
+        <td>    
+        #: (BRANCH_NAME == null) ? '-' : BRANCH_NAME #
         </td>
         <td>
         <a class="btn-edit"
-        href="<?= $this->url("designation", ["action" => "edit"]) ?>/#:DESIGNATION_ID #" style="height:17px;">
+        href="<?= $this->url("department", ["action" => "edit"]); ?>/#:DEPARTMENT_ID#" style="height:17px;">
         <i class="fa fa-edit"></i>
-        </a> 
+        </a>
         <a class="btn-delete confirmation"
-        href="<?= $this->url("designation", ["action" => "delete"]); ?>/#:DESIGNATION_ID #" id="bs_#:DESIGNATION_ID #" style="height:17px;">
+        href="<?= $this->url("department", ["action" => "delete"]); ?>/#:DEPARTMENT_ID#" id="bs_#:DEPARTMENT_ID #" style="height:17px;"> 
         <i class="fa fa-trash-o"></i></a>
         </a>
         </td>
         </tr>
     </script>
-
 </div>

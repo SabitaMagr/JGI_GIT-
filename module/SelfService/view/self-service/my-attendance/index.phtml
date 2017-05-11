@@ -74,10 +74,6 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                         </li>
                     </ul>
                 </div>
-                <button id="reset" class="btn default btn-sm pull-right">
-                        Reset
-                        <i class="fa fa-search"></i>
-                    </button>
             </div>
             
         </div>
@@ -118,6 +114,10 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                         </div>
                         <input type="hidden" name="employeeId" ng-model="employeeId" id="employeeId" value="<?php echo $employeeId; ?>"/>
                         <div class=" col-sm-4 ">
+                            <button id="reset" class="btn default btn-sm pull-right">
+                        Reset
+                        <i class="fa fa-refresh"></i>
+                    </button>
                             <button ng-click="view()" id="myAttendance" class="btn btn-default btn-sm pull-right">
                                 VIEW<i class="fa fa-search"></i>
                             </button>

@@ -18,7 +18,7 @@ $this->headScript()
 ?>
 
 <script>
-    document.ids=<?php echo json_encode(["travelRequestStatusId"=>-1,"fromDate"=>"","nepaliFromDate"=>"","toDate"=>"","nepaliToDate"=>""]) ?>;
+    document.ids =<?php echo json_encode(["travelRequestStatusId" => -1, "fromDate" => "", "nepaliFromDate" => "", "toDate" => "", "nepaliToDate" => ""]) ?>;
     document.url = '<?= $this->url("restful", ["action" => "index"]) ?>';
     document.searchValues =<?php echo json_encode($searchValues); ?>;
 </script>
@@ -63,10 +63,6 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                         </li>
                     </ul>
                 </div>
-                <button id="reset" class="btn default btn-sm pull-right">
-                        Reset
-                        <i class="fa fa-search"></i>
-                    </button>
             </div>
         </div>
         <div class="portlet-body">
@@ -124,7 +120,11 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                     <input type="text"  id="nepaliToDate" name="nepaliToDate" class="form-control" placeholder="To Date Nepali"/>
                 </div>
                 <input type="hidden" id="recomApproveId" value="<?php echo $recomApproveId; ?>"/>
-                <div class="col-sm-2 col-sm-offset-2">
+                <div class="col-sm-4">
+                    <button id="reset" class="btn default btn-sm pull-right">
+                        Reset
+                        <i class="fa fa-refresh"></i>
+                    </button>
                     <button ng-click="view()" id="viewTravelRequestStatus" class="btn btn-default btn-sm pull-right">
                         Search
                         <i class="fa fa-search"></i>
@@ -133,7 +133,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
             </div>
         </div>
     </div>
-    
+
     <div class="margin-top-20">  
 
         <div id="travelRequestStatusTable">

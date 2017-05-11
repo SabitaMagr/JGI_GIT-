@@ -9,8 +9,6 @@ class HrEmployeesFormTabOne extends Model {
 
     public $employeeId;
 
-   
-
     /**
      * @Annotation\Type("Zend\Form\Element\Select")
      * @Annotation\Required(true)
@@ -316,6 +314,9 @@ class HrEmployeesFormTabOne extends Model {
     public $addrTempCountryId;
     public $status;
     public $createdDt;
+    public $createdBy;
+    public $modifiedBy;
+    public $modifiedDt;
     public $mappings = [
         'employeeId' => 'EMPLOYEE_ID',
         'companyId' => 'COMPANY_ID',
@@ -352,6 +353,9 @@ class HrEmployeesFormTabOne extends Model {
         'addrTempCountryId' => 'ADDR_TEMP_COUNTRY_ID',
         'status' => 'STATUS',
         'createdDt' => 'CREATED_DT',
+        'createdBy' => 'CREATED_BY',
+        'modifiedBy' => 'MODIFIED_BY',
+        'modifiedDt' => 'MODIFIED_DT',
     ];
 
 }

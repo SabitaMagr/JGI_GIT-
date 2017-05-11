@@ -22,6 +22,7 @@ $this->headScript()
 <?php } ?>
 
 <script>
+    document.ids=<?php echo json_encode(["recommenderId"=>-1,"approverId"=>-1]) ?>;
     document.searchValues =<?php echo json_encode($searchValues); ?>;
     document.recommendApproves =<?php echo json_encode($recommendApproves); ?>;
     document.url='<?= $this->url("restful",["action"=>"index"]) ?>';
@@ -69,10 +70,6 @@ $this->headScript()
                         </li>
                     </ul>
                 </div>
-                <button id="reset" class="btn default btn-sm pull-right">
-                        Reset
-                        <i class="fa fa-search"></i>
-                    </button>
             </div>
         </div>
         <div class="portlet-body">
@@ -117,13 +114,19 @@ $this->headScript()
                 <div class="col-sm-2">
                     <?php print $this->formElement($approverFormElement); ?>
                 </div> 
-                <div class="col-sm-2">
+            </div>
+                <div class="row margin-top-20">
+                <div class="col-sm-4 col-sm-offset-8">
+                    <button id="reset" class="btn default btn-sm pull-right">
+                        Reset
+                        <i class="fa fa-refresh"></i>
+                    </button>
                      <button ng-click="view()" id="viewEmployees" class="btn btn-default btn-sm pull-right">
                         Search
                         <i class="fa fa-search"></i>
                     </button>
                 </div>
-            </div>
+                </div>
         </div>
     </div>
     

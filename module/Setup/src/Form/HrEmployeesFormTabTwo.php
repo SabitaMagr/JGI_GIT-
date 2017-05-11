@@ -1,17 +1,18 @@
 <?php
+
 /**
  * Created by PhpStorm.
  * User: ukesh
  * Date: 8/31/16
  * Time: 11:48 AM
  */
+
 namespace Setup\Form;
 
 use Application\Model\Model;
 use Zend\Form\Annotation;
 
-class HrEmployeesFormTabTwo extends Model
-{
+class HrEmployeesFormTabTwo extends Model {
 
     /**
      * @Annotation\Required(false)
@@ -40,7 +41,6 @@ class HrEmployeesFormTabTwo extends Model
      */
     public $famMotherName;
 
-
     /**
      * @Annotation\Type("Zend\Form\Element\Text")
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
@@ -59,7 +59,6 @@ class HrEmployeesFormTabTwo extends Model
      */
     public $famGrandFatherName;
 
-
     /**
      * @Annotation\Type("Zend\Form\Element\Text")
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
@@ -68,7 +67,6 @@ class HrEmployeesFormTabTwo extends Model
      * @Annotation\Attributes({ "id":"famGrandMotherName", "class":"form-control" })
      */
     public $famGrandMotherName;
-
 
     /**
      * @Annotation\Type("Zend\Form\Element\Select")
@@ -79,7 +77,6 @@ class HrEmployeesFormTabTwo extends Model
      */
     public $maritualStatus;
 
-
     /**
      * @Annotation\Type("Zend\Form\Element\Text")
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
@@ -88,7 +85,6 @@ class HrEmployeesFormTabTwo extends Model
      * @Annotation\Attributes({ "id":"famSpouseName", "class":"form-control" })
      */
     public $famSpouseName;
-
 
     /**
      * @Annotation\Type("Zend\Form\Element\Text")
@@ -99,7 +95,6 @@ class HrEmployeesFormTabTwo extends Model
      */
     public $famSpouseOccupation;
 
-
     /**
      * @Annotation\Type("Zend\Form\Element\Text")
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
@@ -109,7 +104,6 @@ class HrEmployeesFormTabTwo extends Model
      */
     public $famSpouseBirthDate;
 
-
     /**
      * @Annotation\Type("Zend\Form\Element\Text")
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
@@ -118,21 +112,22 @@ class HrEmployeesFormTabTwo extends Model
      * @Annotation\Required(false)
      */
     public $famSpouseWeddingAnniversary;
-
-
-    public $mappings=[
-        'famFatherName'=>'FAM_FATHER_NAME',
-        'famFatherOccupation'=>'FAM_FATHER_OCCUPATION',
-
-        'famMotherName'=>'FAM_MOTHER_NAME',
-        'famMotherOccupation'=>'FAM_MOTHER_OCCUPATION',
-        'famGrandFatherName'=>'FAM_GRAND_FATHER_NAME',
-        'famGrandMotherName'=>'FAM_GRAND_MOTHER_NAME',
-        'maritualStatus'=>'MARITAL_STATUS',
-
-        'famSpouseName'=>'FAM_SPOUSE_NAME',
-        'famSpouseOccupation'=>'FAM_SPOUSE_OCCUPATION',
-        'famSpouseBirthDate'=>'FAM_SPOUSE_BIRTH_DATE',
-        'famSpouseWeddingAnniversary'=>'FAM_SPOUSE_WEDDING_ANNIVERSARY',
+    public $modifiedBy;
+    public $modifiedDt;
+    public $mappings = [
+        'famFatherName' => 'FAM_FATHER_NAME',
+        'famFatherOccupation' => 'FAM_FATHER_OCCUPATION',
+        'famMotherName' => 'FAM_MOTHER_NAME',
+        'famMotherOccupation' => 'FAM_MOTHER_OCCUPATION',
+        'famGrandFatherName' => 'FAM_GRAND_FATHER_NAME',
+        'famGrandMotherName' => 'FAM_GRAND_MOTHER_NAME',
+        'maritualStatus' => 'MARITAL_STATUS',
+        'famSpouseName' => 'FAM_SPOUSE_NAME',
+        'famSpouseOccupation' => 'FAM_SPOUSE_OCCUPATION',
+        'famSpouseBirthDate' => 'FAM_SPOUSE_BIRTH_DATE',
+        'famSpouseWeddingAnniversary' => 'FAM_SPOUSE_WEDDING_ANNIVERSARY',
+        'modifiedBy' => 'MODIFIED_BY',
+        'modifiedDt' => 'MODIFIED_DT',
     ];
+
 }

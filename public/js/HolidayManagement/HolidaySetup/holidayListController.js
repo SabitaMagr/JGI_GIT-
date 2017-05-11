@@ -3,6 +3,15 @@
     $(document).ready(function () {
         $("select").select2();
         app.startEndDatePickerWithNepali('nepaliStartDate1', 'startDate1', 'nepaliEndDate1', 'endDate1');
+        
+        $("#reset").on("click", function () {
+            if (typeof document.ids !== "undefined") {
+                $.each(document.ids, function (key, value) {
+                    $("#" + key).val(value).change();
+                });
+            }
+        });
+        
     });
 })(window.jQuery, window.app);
 

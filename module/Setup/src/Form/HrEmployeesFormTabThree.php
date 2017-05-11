@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Created by PhpStorm.
  * User: ukesh
@@ -11,8 +12,7 @@ namespace Setup\Form;
 use Application\Model\Model;
 use Zend\Form\Annotation;
 
-class HrEmployeesFormTabThree extends  Model
-{
+class HrEmployeesFormTabThree extends Model {
 
     /**
      * @Annotation\Required(false)
@@ -24,7 +24,6 @@ class HrEmployeesFormTabThree extends  Model
      */
     public $idCardNo;
 
-
     /**
      * @Annotation\Required(false)
      * @Annotation\Type("Zend\Form\Element\Text")
@@ -33,7 +32,6 @@ class HrEmployeesFormTabThree extends  Model
      * @Annotation\Attributes({ "id":"idLbrf", "class":"form-control" })
      */
     public $idLbrf;
-
 
     /**
      * @Annotation\Required(false)
@@ -65,7 +63,6 @@ class HrEmployeesFormTabThree extends  Model
      */
     public $idDrivingLicenseNo;
 
-
     /**
      * @Annotation\Required(false)
      * @Annotation\Type("Zend\Form\Element\Text")
@@ -84,7 +81,6 @@ class HrEmployeesFormTabThree extends  Model
      * @Annotation\Attributes({"class":"form-control","id":"idDrivingLicenseExpiry" })
      */
     public $idDrivingLicenseExpiry;
-
 
     /**
      * @Annotation\Required(false)
@@ -106,7 +102,6 @@ class HrEmployeesFormTabThree extends  Model
      */
     public $idPanNo;
 
-
     /**
      * @Annotation\Required(false)
      * @Annotation\Type("Zend\Form\Element\Text")
@@ -127,7 +122,6 @@ class HrEmployeesFormTabThree extends  Model
      */
     public $idRetirementNo;
 
-
     /**
      * @Annotation\Required(true)
      * @Annotation\Type("Zend\Form\Element\Text")
@@ -146,7 +140,6 @@ class HrEmployeesFormTabThree extends  Model
      * @Annotation\Attributes({"class":"form-control","id":"idCitizenshipIssueDate" })
      */
     public $idCitizenshipIssueDate;
-
 
     /**
      * @Annotation\Required(false)
@@ -167,7 +160,6 @@ class HrEmployeesFormTabThree extends  Model
      */
     public $idPassportNo;
 
-
     /**
      * @Annotation\Type("Zend\Form\Element\Text")
      * @Annotation\Required(false)
@@ -176,26 +168,27 @@ class HrEmployeesFormTabThree extends  Model
      * @Annotation\Attributes({"class":"form-control","id":"idPassportExpiry" })
      */
     public $idPassportExpiry;
-
-    public $mappings=[
-        'idCardNo'=>'ID_CARD_NO',
-
-        'idLbrf'=>'ID_LBRF',
-        'idBarCode'=>'ID_BAR_CODE',
-        'idProvidentFundNo'=>'ID_PROVIDENT_FUND_NO',
-        'idDrivingLicenseNo'=>'ID_DRIVING_LICENCE_NO',
-        'idDrivingLicenseType'=>'ID_DRIVING_LICENCE_TYPE',
-
-        'idDrivingLicenseExpiry'=>'ID_DRIVING_LICENCE_EXPIRY',
-        'idThumbId'=>'ID_THUMB_ID',
-        'idPanNo'=>'ID_PAN_NO',
-        'idAccountId'=>'ID_ACCOUNT_NO',
-        'idRetirementNo'=>'ID_RETIREMENT_NO',
-
-        'idCitizenshipNo'=>'ID_CITIZENSHIP_NO',
-        'idCitizenshipIssueDate'=>'ID_CITIZENSHIP_ISSUE_DATE',
-        'idCitizenshipIssuePlace'=>'ID_CITIZENSHIP_ISSUE_PLACE',
-        'idPassportNo'=>'ID_PASSPORT_NO',
-        'idPassportExpiry'=>'ID_PASSPORT_EXPIRY',
+    public $modifiedBy;
+    public $modifiedDt;
+    public $mappings = [
+        'idCardNo' => 'ID_CARD_NO',
+        'idLbrf' => 'ID_LBRF',
+        'idBarCode' => 'ID_BAR_CODE',
+        'idProvidentFundNo' => 'ID_PROVIDENT_FUND_NO',
+        'idDrivingLicenseNo' => 'ID_DRIVING_LICENCE_NO',
+        'idDrivingLicenseType' => 'ID_DRIVING_LICENCE_TYPE',
+        'idDrivingLicenseExpiry' => 'ID_DRIVING_LICENCE_EXPIRY',
+        'idThumbId' => 'ID_THUMB_ID',
+        'idPanNo' => 'ID_PAN_NO',
+        'idAccountId' => 'ID_ACCOUNT_NO',
+        'idRetirementNo' => 'ID_RETIREMENT_NO',
+        'idCitizenshipNo' => 'ID_CITIZENSHIP_NO',
+        'idCitizenshipIssueDate' => 'ID_CITIZENSHIP_ISSUE_DATE',
+        'idCitizenshipIssuePlace' => 'ID_CITIZENSHIP_ISSUE_PLACE',
+        'idPassportNo' => 'ID_PASSPORT_NO',
+        'idPassportExpiry' => 'ID_PASSPORT_EXPIRY',
+        'modifiedBy' => 'MODIFIED_BY',
+        'modifiedDt' => 'MODIFIED_DT',
     ];
+
 }
