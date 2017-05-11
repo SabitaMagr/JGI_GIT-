@@ -94,7 +94,7 @@ class IssueForm {
     
     /**
      * @Annotation\Type("Zend\Form\Element\Submit")
-     * @Annotation\Attributes({"value":"Submit","class":"btn btn-success"})
+     * @Annotation\Attributes({"id":"IssueSubmitBtn","value":"Submit","class":"btn btn-success"})
      */
     public $submit;   
     

@@ -3,6 +3,10 @@
 //print_r($group);
 //echo '</pre>';
 //die();
+$this->headLink()
+        ->appendStylesheet($this->basePath('dropzone/dropzone.min.css'));
+
+$this->headScript()->appendFile($this->basePath('dropzone/dropzone.min.js'));
 
 $this->headScript()->appendFile($this->basePath('js/asset/setup/add.js'));
 
@@ -45,6 +49,12 @@ $submit->setAttribute('value', 'SUBMIT');
 $form->prepare();
 ?>
 
+<script>
+    document.url = '<?= $this->url("restful", ["action" => "index"]) ?>';
+    document.wsFileUpload = '<?= $this->url('company', ["action" => "fileUpload"]) ?>';
+    document.imageData =<?php echo json_encode($imageData); ?>;
+</script>
+
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\assetSetup')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
@@ -61,9 +71,22 @@ $form->prepare();
                 </div>
             </div>
             <div class="portlet-body">
+                <div class="row form-group">
+                    <div class="col-sm-4">
+                        <form  action="<?= $this->url('company', ["action" => "fileUpload"]) ?>"
+                               class="dropzone"
+                               id="my-awesome-dropzone">
+                        </form>
+                        <div id="uploadedImage" class="cbp-caption-defaultWrap">
+                            <image style="width:100%;height:100px;" />
+                        </div>
+
+                        <button id="uploadFile" class="btn btn-default">Upload</button> 
+
+                    </div>
+                </div>
                 <?php print $this->form()->openTag($form); ?>
-
-
+                <input  name="logo" id="form-logo" class="form-control" type="hidden" value="">
                 <div class=" row">
 
                     <div class="col-sm-4">
@@ -189,13 +212,6 @@ $form->prepare();
 
 
                 <div class=" row">
-                    <div class="col-sm-4">
-                        <div class="form-group">
-                            <?php print $this->formLabel($assetImage); ?>
-                            <?php print $this->formElement($assetImage); ?>
-                            <?php print $this->formElementErrors()->render($assetImage, ['class' => 'help-block']); ?>
-                        </div>
-                    </div>
 
 
                     <div class="col-sm-4">

@@ -173,9 +173,12 @@ class AttendanceDetailRepository implements RepositoryInterface {
             $select->where(["E.SERVICE_EVENT_TYPE_ID=" . $serviceEventTypeId]);
         }
 
-        $select->order("A.ATTENDANCE_DT,E.FIRST_NAME DESC");
+        $select->order("A.ATTENDANCE_DT DESC");
+        $select->order("A.IN_TIME");
         $statement = $sql->prepareStatementForSqlObject($select);
-        //return $statement->getSql();
+//        return $statement->getSql();
+//        print_r($statement->getSql());
+//        die();
         $result = $statement->execute();
         return $result;
     }
