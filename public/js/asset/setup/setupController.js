@@ -31,6 +31,9 @@ angular.module('hris', [])
 
                 }).then(function (success) {
                     $scope.$apply(function () {
+                        if(success.data==null||success.data==0||success.data=='undefined'){
+                        disableBtn();
+                        }
                         $scope.rQ = 'REM BALANCE: ' + success.data;
                         $scope.bal = success.data;
                         $("#quantity").attr({"max": success.data, "min": 1});
@@ -40,6 +43,10 @@ angular.module('hris', [])
                 })
 
 
+            }
+            
+            var disableBtn = function (){
+               $('#IssueSubmitBtn').attr('disabled','disabled');
             }
             
             $scope.radioClik = function () {
