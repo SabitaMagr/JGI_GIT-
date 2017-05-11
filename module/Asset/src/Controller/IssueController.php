@@ -10,6 +10,7 @@ use Asset\Model\Setup;
 use Asset\Repository\IssueRepository;
 use Asset\Repository\SetupRepository;
 use Setup\Model\HrEmployees;
+use Setup\Repository\EmployeeFile;
 use Setup\Repository\EmployeeRepository;
 use Zend\Authentication\AuthenticationService;
 use Zend\Db\Adapter\AdapterInterface;
@@ -140,7 +141,16 @@ class IssueController extends AbstractActionController {
         if ($id == 0) {
             $this->redirect()->toRoute('assetSetup');
         }
-
+        $assetSetupRepo= new SetupRepository($this->adapter);
+        $assetImageId=$assetSetupRepo->fetchById($id)['ASSET_IMAGE'];
+            $assetFile=null;
+        if($assetImageId>0){
+            $assetFile=$this->getFileInfo($this->adapter, $assetImageId)['fileName'];
+        }
+//        echo '<pre>';
+//        print_r($assetData);
+//        print_r($assetFile);
+//        die();
         $result = $this->repository->fetchAllById($id);
         $list = [];
         foreach ($result as $row) {
@@ -148,7 +158,8 @@ class IssueController extends AbstractActionController {
         }
         return Helper::addFlashMessagesToArray($this, [
                     'issue' => $list,
-                    'id' => $id
+                    'id' => $id,
+                    'assetImage' => $assetFile
         ]);
     }
 
@@ -191,6 +202,27 @@ class IssueController extends AbstractActionController {
         } else {
             $this->redirect()->toRoute('assetIssue', ['action' => 'view', 'id' => $id]);
         }
+    }
+    
+    
+    private function getFileInfo(AdapterInterface $adapter, $fileId) {
+        $fileRepo = new EmployeeFile($adapter);
+        $fileDetail = $fileRepo->fetchById($fileId);
+
+        if ($fileDetail == null) {
+            $imageData = [
+                'fileCode' => null,
+                'fileName' => null,
+                'oldFileName' => null
+            ];
+        } else {
+            $imageData = [
+                'fileCode' => $fileDetail['FILE_CODE'],
+                'oldFileName' => $fileDetail['FILE_NAME'],
+                'fileName' => $fileDetail['FILE_PATH']
+            ];
+        }
+        return $imageData;
     }
 
 }

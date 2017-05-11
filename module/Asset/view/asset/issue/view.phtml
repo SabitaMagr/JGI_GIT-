@@ -22,7 +22,7 @@ if ($this->messages) { ?>
 <?php } 
 ?>
     
-    <?php 
+    <?php
     $assetReturnUrl=$this->url('assetIssue', ['action' => 'returnAsset', 'id' => $id]);
     ?>
     
@@ -38,13 +38,21 @@ if ($this->messages) { ?>
     <?= $this->navigation('Zend\Navigation\assetIssue')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
 
+
+
+
 <div class="margin-top-20">
     <div class="table-toolbar">
         <div class="row">
             <div class="col-md-6">
-                <div class="btn-group">
-                </div>
+                 <div>
+                    <?php  if(1==2){  ?>
+                    <?php //  if($assetImage!=null){  ?>
+                    <img style="width:30%;height:100px;" src="<?=$this->basePath()?>/uploads/<?=$assetImage?>">
+                    <?php } ?>
+                 </div>
             </div>
+            
             <div class="col-md-6">
                 <div class="btn-group pull-right">
                     <button class="btn green btn-outline dropdown-toggle" data-toggle="dropdown">Tools
