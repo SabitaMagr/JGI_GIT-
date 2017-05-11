@@ -88,8 +88,8 @@ class CompanyController extends AbstractActionController {
         } else {
             $imageData = [
                 'fileCode' => $fileDetail['FILE_CODE'],
-                'oldFileName' => $fileDetail['FILE_PATH'],
-                'fileName' => $fileDetail['FILE_NAME']
+                'oldFileName' => $fileDetail['FILE_NAME'],
+                'fileName' => $fileDetail['FILE_PATH']
             ];
         }
         return $imageData;
