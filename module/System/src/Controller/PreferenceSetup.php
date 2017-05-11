@@ -14,34 +14,6 @@ use System\Model\PreferenceSetup as PreferenceSetupModel;
 use System\Repository\PreferenceSetupRepo;
 
 class PreferenceSetup extends AbstractActionController{
-    const PREFERENCE_NAME = [
-        "OVERTIME_REQUEST"=>"Overtime Request"
-    ];
-    const PREFERENCE_CONSTRAINT = [
-        "OVERTIME_GRACE_TIME" => "Overtime Grace Time"
-    ];
-    const CONSTRAINT_TYPE = [
-        'TEXT'=>'Text',
-        'NUMBER'=>"Number",
-        'DATE'=>"Date",
-        'TIMESTAMP'=>"Timestamp",
-        'HOUR'=>"Hour"
-    ];
-    const PREFERENCE_CONDITION =[
-        "BEFORE"=>"Before",
-        "AFTER"=>"After",
-        "LESS_THAN"=>"Less than",
-        "GREATER_THAN"=>"Greater than",
-        "EQUAL"=>"Equal"
-    ];
-    const REQUEST_TYPE = [
-        'RQ'=>"Pending",
-        'AP'=>'Approved'
-    ];
-    const  EMPLOYEE_TYPE = [
-        'R' => 'Regular',
-        'C' => 'Contract'
-    ];
     private $form;
     private $repository;
     private $employeeId;
@@ -55,11 +27,11 @@ class PreferenceSetup extends AbstractActionController{
         $result = $this->repository->fetchAll();
         $list = [];
         foreach ($result as $row){
-            $row['PREFERENCE_NAME'] = self::PREFERENCE_NAME[$row['PREFERENCE_NAME']];
-            $row['PREFERENCE_CONSTRAINT'] = self::PREFERENCE_CONSTRAINT[$row['PREFERENCE_CONSTRAINT']];
-            $row['CONSTRAINT_TYPE'] = self::CONSTRAINT_TYPE[$row['CONSTRAINT_TYPE']];
-            $row['PREFERENCE_CONDITION'] = self::PREFERENCE_CONDITION[$row['PREFERENCE_CONDITION']];
-            $row['REQUEST_TYPE']=self::REQUEST_TYPE[$row['REQUEST_TYPE']];
+            $row['PREFERENCE_NAME'] = PreferenceSetupModel::PREFERENCE_NAME_LIST[$row['PREFERENCE_NAME']];
+            $row['PREFERENCE_CONSTRAINT'] = PreferenceSetupModel::PREFERENCE_CONSTRAINT_LIST[$row['PREFERENCE_CONSTRAINT']];
+            $row['CONSTRAINT_TYPE'] = PreferenceSetupModel::CONSTRAINT_TYPE_LIST[$row['CONSTRAINT_TYPE']];
+            $row['PREFERENCE_CONDITION'] = PreferenceSetupModel::PREFERENCE_CONDITION_LIST[$row['PREFERENCE_CONDITION']];
+            $row['REQUEST_TYPE']=PreferenceSetupModel::REQUEST_TYPE_LIST[$row['REQUEST_TYPE']];
             array_push($list, $row);
         }
         return Helper::addFlashMessagesToArray($this, ['list'=>$list]);
@@ -92,12 +64,12 @@ class PreferenceSetup extends AbstractActionController{
         return Helper::addFlashMessagesToArray($this, [
             'form'=> $this->form,
             'companies' => EntityHelper::getTableKVListWithSortOption($this->adapter, Company::TABLE_NAME, Company::COMPANY_ID, [Company::COMPANY_NAME], ["STATUS" => "E"], Company::COMPANY_NAME, Select::ORDER_ASCENDING, null, false, true),
-            'preferenceNameList'=>self::PREFERENCE_NAME,
-            'preferenceConstraintList'=>self::PREFERENCE_CONSTRAINT,
-            'constraintTypeList'=>self::CONSTRAINT_TYPE,
-            "preferenceConditionList"=>self::PREFERENCE_CONDITION,
-            'requestTypeList'=>self::REQUEST_TYPE,
-            'employeeTypeList'=>self::EMPLOYEE_TYPE
+            'preferenceNameList'=>PreferenceSetupModel::PREFERENCE_NAME_LIST,
+            'preferenceConstraintList'=>PreferenceSetupModel::PREFERENCE_CONSTRAINT_LIST,
+            'constraintTypeList'=>PreferenceSetupModel::CONSTRAINT_TYPE_LIST,
+            "preferenceConditionList"=>PreferenceSetupModel::PREFERENCE_CONDITION_LIST,
+            'requestTypeList'=>PreferenceSetupModel::REQUEST_TYPE_LIST,
+            'employeeTypeList'=>PreferenceSetupModel::EMPLOYEE_TYPE_LIST
         ]);
     }
     public function editAction(){
@@ -131,12 +103,12 @@ class PreferenceSetup extends AbstractActionController{
             'form'=> $this->form,
             'id'=>$id,
             'companies' => EntityHelper::getTableKVListWithSortOption($this->adapter, Company::TABLE_NAME, Company::COMPANY_ID, [Company::COMPANY_NAME], ["STATUS" => "E"], Company::COMPANY_NAME, Select::ORDER_ASCENDING, null, false, true),
-            'preferenceNameList'=>self::PREFERENCE_NAME,
-            'preferenceConstraintList'=>self::PREFERENCE_CONSTRAINT,
-            'constraintTypeList'=>self::CONSTRAINT_TYPE,
-            "preferenceConditionList"=>self::PREFERENCE_CONDITION,
-            'requestTypeList'=>self::REQUEST_TYPE,
-            'employeeTypeList'=>self::EMPLOYEE_TYPE
+            'preferenceNameList'=>PreferenceSetupModel::PREFERENCE_NAME_LIST,
+            'preferenceConstraintList'=>PreferenceSetupModel::PREFERENCE_CONSTRAINT_LIST,
+            'constraintTypeList'=>PreferenceSetupModel::CONSTRAINT_TYPE_LIST,
+            "preferenceConditionList"=>PreferenceSetupModel::PREFERENCE_CONDITION_LIST,
+            'requestTypeList'=>PreferenceSetupModel::REQUEST_TYPE_LIST,
+            'employeeTypeList'=>PreferenceSetupModel::EMPLOYEE_TYPE_LIST
         ]);
     }
 }

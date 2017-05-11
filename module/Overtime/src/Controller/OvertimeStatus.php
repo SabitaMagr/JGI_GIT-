@@ -14,6 +14,10 @@ use SelfService\Model\Overtime;
 use Zend\Form\Element\Select;
 use Zend\Authentication\AuthenticationService;
 use Setup\Repository\RecommendApproveRepository;
+use System\Model\PreferenceSetup;
+use System\Repository\PreferenceSetupRepo;
+use Setup\Repository\EmployeeRepository;
+use AttendanceManagement\Repository\AttendanceRepository;
 
 class OvertimeStatus extends AbstractActionController
 {
@@ -140,6 +144,40 @@ class OvertimeStatus extends AbstractActionController
     }
     
     public function calculateAction(){
-        print_r("hellow"); die();
+        $preferenceSetupRepo = new PreferenceSetupRepo($this->adapter);
+        $employeeRepo = new EmployeeRepository($this->adapter);
+//        array_keys(PreferenceSetup::PREFERENCE_NAME_LIST)[0]
+        $overtimeRequestSetting = $preferenceSetupRepo->fetchByPreferenceName("OVERTIME_REQUEST");
+        foreach($overtimeRequestSetting as $overtimeRequestSettingRow){
+            $employeeResult = $employeeRepo->fetchByEmployeeTypeWidShift($overtimeRequestSettingRow['EMPLOYEE_TYPE'],date(Helper::PHP_DATE_FORMAT));
+            
+            $preferenceConstraint = $overtimeRequestSettingRow['PREFERENCE_CONSTRAINT'];
+            $preferenceCondition = $overtimeRequestSettingRow['PREFERENCE_CONDITION'];
+            $constraintValue = $overtimeRequestSettingRow['CONSTRAINT_VALUE'];
+            $constraintType = $overtimeRequestSettingRow['CONSTRAINT_TYPE'];
+            
+            foreach($employeeResult as $employeeRow){
+                if($preferenceConstraint=='OVERTIME_GRACE_TIME'){
+                    $attendanceRepository = new AttendanceRepository($this->adapter);
+//                    $attendanceDt = date(Helper::PHP_DATE_FORMAT);
+                    $attendanceDt = "10-May-2017";
+                    $attendanceResult = $attendanceRepository->fetchAllByEmpIdAttendanceDt($employeeRow['EMPLOYEE_ID'],$attendanceDt);
+                    $attendanceNum = count($attendanceResult);
+                    if($attendanceNum!=0 && $attendanceNum%2==0){
+                        $getTotalHourTime = $attendanceRepository->getTotalByEmpIdAttendanceDt($employeeRow['EMPLOYEE_ID'], $attendanceDt);
+                        $constraintValue;
+                        print_r($employeeRow['ACTUAL_WORKING_HR'])."<br/>";
+                        print_r($getTotalHourTime['TOTAL_HRS'])."<br/>";
+                        $ts1 = strtotime($employeeRow['ACTUAL_WORKING_HR']);
+                        $ts2 = strtotime($getTotalHourTime['TOTAL_HRS']);     
+                        $seconds_diff = $ts2 - $ts1;                            
+                        $time = ($seconds_diff/3600);
+                        print_r($getTotalHourTime['TOTAL_HRS']-$employeeRow['ACTUAL_WORKING_HR']); die();
+                    }
+                }
+            }
+        }
+        print "<pre>";
+        print_r("hellow2"); die();
     }
 }
