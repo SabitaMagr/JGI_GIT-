@@ -221,6 +221,7 @@ return [
             Controller\ShiftSetup::class=>ControllerFactory::class,
             Controller\AttendanceStatus::class=>ControllerFactory::class,
             Controller\DailyAttendance::class=>ControllerFactory::class,
+            Controller\AttendanceReportController::class=>ControllerFactory::class,
         ],
 
     ],

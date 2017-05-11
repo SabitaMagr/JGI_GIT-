@@ -13,7 +13,7 @@ use Application\Helper\Helper;
 use AttendanceManagement\Repository\AttendanceStatusRepository;
 use Zend\Authentication\AuthenticationService;
 use Zend\Db\Adapter\AdapterInterface;
-use Zend\Db\Sql\Select;
+use Zend\Form\Element\Select;
 use Zend\Mvc\Controller\AbstractActionController;
 
 
@@ -35,24 +35,8 @@ class AttendanceReportController extends AbstractActionController {
     }
     
     public function indexAction() {
-        echo 'attendance repor index action';
-        die();
-        $attendanceStatus = [
-            '-1' => 'All Status',
-            'RQ' => 'Pending',
-            'AP' => 'Approved',
-            'R' => 'Rejected',
-            'C' => 'Cancelled'
-        ];
-        $attendanceStatusFormElement = new Select();
-        $attendanceStatusFormElement->setName("attendanceStatus");
-        $attendanceStatusFormElement->setValueOptions($attendanceStatus);
-        $attendanceStatusFormElement->setAttributes(["id" => "attendanceRequestStatusId", "class" => "form-control"]);
-        $attendanceStatusFormElement->setLabel("Status");
-
         return Helper::addFlashMessagesToArray($this, [
-                    'searchValues' => EntityHelper::getSearchData($this->adapter),
-                    'attendanceStatus' => $attendanceStatusFormElement
+                    'searchValues' => EntityHelper::getSearchData($this->adapter)
         ]);
     }
     
