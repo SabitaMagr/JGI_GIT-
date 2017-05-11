@@ -150,14 +150,13 @@ class OvertimeStatus extends AbstractActionController
         $overtimeRequestSetting = $preferenceSetupRepo->fetchByPreferenceName("OVERTIME_REQUEST");
         foreach($overtimeRequestSetting as $overtimeRequestSettingRow){
             $employeeResult = $employeeRepo->fetchByEmployeeTypeWidShift($overtimeRequestSettingRow['EMPLOYEE_TYPE'],date(Helper::PHP_DATE_FORMAT));
-            
             $preferenceConstraint = $overtimeRequestSettingRow['PREFERENCE_CONSTRAINT'];
             $preferenceCondition = $overtimeRequestSettingRow['PREFERENCE_CONDITION'];
             $constraintValue = $overtimeRequestSettingRow['CONSTRAINT_VALUE'];
             $constraintType = $overtimeRequestSettingRow['CONSTRAINT_TYPE'];
-            
+            $requestType = $overtimeRequestSettingRow['REQUEST_TYPE'];
             foreach($employeeResult as $employeeRow){
-                if($preferenceConstraint=='OVERTIME_GRACE_TIME'){
+                if($preferenceConstraint=='OVERTIME_GRACE_TIME' && $constraintType=='HOUR'){
                     $attendanceRepository = new AttendanceRepository($this->adapter);
 //                    $attendanceDt = date(Helper::PHP_DATE_FORMAT);
                     $attendanceDt = "10-May-2017";
@@ -165,14 +164,20 @@ class OvertimeStatus extends AbstractActionController
                     $attendanceNum = count($attendanceResult);
                     if($attendanceNum!=0 && $attendanceNum%2==0){
                         $getTotalHourTime = $attendanceRepository->getTotalByEmpIdAttendanceDt($employeeRow['EMPLOYEE_ID'], $attendanceDt);
-                        $constraintValue;
-                        print_r($employeeRow['ACTUAL_WORKING_HR'])."<br/>";
-                        print_r($getTotalHourTime['TOTAL_HRS'])."<br/>";
-                        $ts1 = strtotime($employeeRow['ACTUAL_WORKING_HR']);
-                        $ts2 = strtotime($getTotalHourTime['TOTAL_HRS']);     
-                        $seconds_diff = $ts2 - $ts1;                            
-                        $time = ($seconds_diff/3600);
-                        print_r($getTotalHourTime['TOTAL_HRS']-$employeeRow['ACTUAL_WORKING_HR']); die();
+                        $actualWorkingHrMin = Helper::hoursToMinutes($employeeRow['ACTUAL_WORKING_HR']);
+                        $totalWorkingHrMin = $getTotalHourTime['TOTAL_MINS'];
+                        if($totalWorkingHrMin>$actualWorkingHrMin){
+                            $overtime = $totalWorkingHrMin - $actualWorkingHrMin;  
+                            print_r($overtime);
+                            echo "<br>";
+                            $constraintValueMin = Helper::hoursToMinutes($constraintValue);
+                            print_r($constraintValueMin); 
+                            echo "<br>";
+                            print_r($preferenceCondition); 
+                            die();
+                            print_r($requestType); 
+                            die();
+                        }
                     }
                 }
             }
