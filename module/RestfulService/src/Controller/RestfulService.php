@@ -384,10 +384,7 @@ class RestfulService extends AbstractRestfulController {
                     case "pullServiceQuestionList":
                         $responseData = $this->pullServiceQuestionList($postedData->data);
                         break;
-                    case 'pullAllAttendanceReport':
-                        $responseData = $this->pullAllAttendanceReport($postedData->data);
-                        break;
-
+                    
                     default:
                         throw new Exception("action not found");
                         break;
@@ -3302,59 +3299,6 @@ class RestfulService extends AbstractRestfulController {
         } else {
             return false;
         }
-    }
-    
-    
-    public function pullAllAttendanceReport($data){
-        
-        $attendanceStatusRepository = new AttendanceStatusRepository($this->adapter);
-        if (key_exists('approverId', $data)) {
-            $approverId = $data['approverId'];
-        } else {
-            $approverId = null;
-        }
-        $result = $attendanceStatusRepository->getFilteredRecord($data, $approverId);
-
-        $recordList = [];
-        $getValue = function($status) {
-            if ($status == "RQ") {
-                return "Pending";
-            } else if ($status == "R") {
-                return "Rejected";
-            } else if ($status == "AP") {
-                return "Approved";
-            } else if ($status == "C") {
-                return "Cancelled";
-            }
-        };
-        $fullName = function($id) {
-            $empRepository = new EmployeeRepository($this->adapter);
-            $empDtl = $empRepository->fetchById($id);
-            $empMiddleName = ($empDtl['MIDDLE_NAME'] != null) ? " " . $empDtl['MIDDLE_NAME'] . " " : " ";
-            return $empDtl['FIRST_NAME'] . $empMiddleName . $empDtl['LAST_NAME'];
-        };
-        foreach ($result as $row) {
-            $status = $getValue($row['STATUS']);
-            $statusId = $row['STATUS'];
-            $approvedDT = $row['APPROVED_DT'];
-
-            $authApprover = ( $statusId == 'RQ' || $statusId == 'C' || ($statusId == 'R' && $approvedDT == null)) ? $row['APPROVER'] : $row['APPROVED_BY'];
-            $approverName = $fullName($authApprover);
-
-            $new_row = array_merge($row, [
-                'STATUS' => $status,
-                'YOUR_ROLE' => 'Approver',
-                'APPROVER_NAME' => $approverName
-            ]);
-            array_push($recordList, $new_row);
-        }
-
-        return [
-            "success" => "true",
-            "data" => $recordList,
-            "num" => count($recordList)
-        ];
-        
     }
 
 }
