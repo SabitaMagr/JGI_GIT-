@@ -114,7 +114,7 @@ WHERE A.STATUS ='E'
             $sql .= " AND A.END_DATE<=TO_DATE('" . $toDate . "','DD-MM-YYYY')";
         }
 
-        $sql .= " ORDER BY A.START_DATE DESC";
+        $sql .= " ORDER BY A.START_DATE";
         $statement = $this->adapter->query($sql);
         $result = $statement->execute();
         return $result;

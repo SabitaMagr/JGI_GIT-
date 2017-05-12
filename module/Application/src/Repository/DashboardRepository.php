@@ -256,7 +256,7 @@ class DashboardRepository implements RepositoryInterface {
                 FROM HRIS_HOLIDAY_MASTER_SETUP HM
                 JOIN HRIS_EMPLOYEE_HOLIDAY EH
                 ON (HM.HOLIDAY_ID   =EH.HOLIDAY_ID)
-                WHERE EH.EMPLOYEE_ID={$employeeId} AND HM.START_DATE > TRUNC(SYSDATE)";
+                WHERE EH.EMPLOYEE_ID={$employeeId} AND HM.START_DATE > TRUNC(SYSDATE) ORDER BY HM.START_DATE";
 
         $statement = $this->adapter->query($sql);
         $result = $statement->execute();
