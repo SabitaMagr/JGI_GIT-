@@ -62,20 +62,38 @@ class AttendanceRepository implements RepositoryInterface{
         return $result;
     }
     public function getTotalByEmpIdAttendanceDt($employeeId, $attendanceDt){
-        $sql = "select round(total_mins/60,0)||':'||mod(total_mins,60) total_hrs, total_mins from(
-SELECT sum(abs(extract( hour from diff ))*60 +
-           abs(extract( minute from diff )))  total_mins  FROM (
-SELECT row_number() over ( order by A.ATTENDANCE_TIME ) as rnum,mod((row_number() over ( order by A.ATTENDANCE_TIME )),2) as num, A.EMPLOYEE_ID,A.IP_ADDRESS, A.ATTENDANCE_DT,A.ATTENDANCE_TIME,
-(A.ATTENDANCE_TIME - LAG(A.ATTENDANCE_TIME) OVER (ORDER BY A.ATTENDANCE_TIME))  AS diff
-  FROM HRIS_ATTENDANCE A 
-  WHERE 
-  A.EMPLOYEE_ID = ".$employeeId."
-AND A.ATTENDANCE_DT = TO_DATE('".$attendanceDt."','DD-MON-YYYY')
-) WHERE mod(rnum,2)=0)
-
-";
+        $sql = " SELECT ROUND(TOTAL_MINS/60,0)
+  ||':'
+  ||MOD(TOTAL_MINS,60) TOTAL_HRS,
+  TOTAL_MINS,
+  HR_TYPE
+FROM
+  (SELECT
+    CASE MOD(RNUM,2)
+      WHEN 0
+      THEN 'WORKING'
+      ELSE 'NON-WORKING'
+    END AS HR_TYPE,
+    SUM(ABS(EXTRACT( HOUR FROM DIFF ))*60 + ABS(EXTRACT( MINUTE FROM DIFF ))) TOTAL_MINS
+  FROM
+    (SELECT ROW_NUMBER() OVER ( ORDER BY A.ATTENDANCE_TIME )    AS RNUM,
+      MOD((ROW_NUMBER() OVER ( ORDER BY A.ATTENDANCE_TIME )),2) AS NUM,
+      A.EMPLOYEE_ID,
+      A.IP_ADDRESS,
+      A.ATTENDANCE_DT,
+      A.ATTENDANCE_TIME,
+      (A.ATTENDANCE_TIME - LAG(A.ATTENDANCE_TIME) OVER (ORDER BY A.ATTENDANCE_TIME)) AS DIFF
+    FROM HRIS_ATTENDANCE A
+    WHERE A.EMPLOYEE_ID = 7
+    AND A.ATTENDANCE_DT = TO_DATE('10-May-2017','DD-MON-YYYY')
+    )
+  GROUP BY MOD(RNUM,2)
+  )";
         $statement = $this->adapter->query($sql);
         $result = $statement->execute();
-        return $result->current();
+        foreach ($result as $row ) {
+          $list[$row['HR_TYPE']]=$row;
+        }
+        return $list;
     }
 }

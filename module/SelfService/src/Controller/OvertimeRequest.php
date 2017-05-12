@@ -168,14 +168,15 @@ class OvertimeRequest extends AbstractActionController {
             $postData = $request->getPost();
             $this->form->setData($postData);
             if ($this->form->isValid()) {
+                $postDataArray = $postData->getArrayCopy();
                 $model->exchangeArrayFromForm($this->form->getData());
                 $model->overtimeId = ((int) Helper::getMaxId($this->adapter, Overtime::TABLE_NAME, Overtime::OVERTIME_ID)) + 1;
                 $model->employeeId = $this->employeeId;
                 $model->requestedDate = Helper::getcurrentExpressionDate();
                 $model->status = 'RQ';
+                $model->allTotalHour = Helper::getExpressionTime($postDataArray['allTotalHour'], Helper::ORACLE_TIMESTAMP_FORMAT);
                 $this->repository->add($model);
                 
-                $postDataArray = $postData->getArrayCopy();
                 $overtimeDetailNum = $postDataArray['overtimeDetailNum'];
                 $overtimeDetailModel = new OvertimeDetail();
                 for($i=0; $i<=$overtimeDetailNum; $i++){
@@ -186,7 +187,7 @@ class OvertimeRequest extends AbstractActionController {
                     $overtimeDetailModel->detailId = ((int) Helper::getMaxId($this->adapter, OvertimeDetail::TABLE_NAME, OvertimeDetail::DETAIL_ID)) + 1;
                     $overtimeDetailModel->startTime = Helper::getExpressionTime($startTime);
                     $overtimeDetailModel->endTime = Helper::getExpressionTime($endTime);
-                    $overtimeDetailModel->totalHour = $totalHour;
+                    $overtimeDetailModel->totalHour = Helper::getExpressionTime($totalHour, Helper::ORACLE_TIMESTAMP_FORMAT);
                     $overtimeDetailModel->status = 'E';
                     $overtimeDetailModel->createdBy = $this->employeeId;
                     $overtimeDetailModel->createdDate = Helper::getcurrentExpressionDate();
@@ -262,7 +263,8 @@ class OvertimeRequest extends AbstractActionController {
                     'requestedDate' => $detail['REQUESTED_DATE'],
                     'recommender' => $authRecommender,
                     'approver' => $authApprover,
-                    'overtimeDetails'=>$overtimeDetails
+                    'overtimeDetails'=>$overtimeDetails,
+                    'totalHour'=>$detail['TOTAL_HOUR']
         ]);
     }
 

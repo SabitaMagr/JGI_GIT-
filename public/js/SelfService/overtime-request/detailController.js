@@ -12,9 +12,33 @@ angular.module('hris', [])
                 var minutes = diff % 60;
                 var hours = (diff - minutes) / 60;
 
-                var total_tim = hours + '.' + minutes;
+                var total_tim = hours + ':' + minutes;
                 return total_tim;
             }
+            
+            $scope.totalCalculateHour = function(startTime,endTime){
+                var tim_i = new Date("01/01/2007 " + startTime);
+                var tim_o = new Date("01/01/2007 " + endTime);
+                
+                var diff1 = (tim_i - tim_o) / 60000; //dividing by seconds and milliseconds
+                var diff = Math.abs(diff1);
+                return diff;
+            }
+            
+            $scope.sumAllTotalHour = function(list) {
+                var total=0;
+                angular.forEach(list , function(item){
+                  var total1 = $scope.totalCalculateHour(item.startTime,item.endTime);
+                  total+= parseFloat(total1);
+                });
+                var minutes = total % 60;
+                var hours = (total - minutes) / 60;
+
+                var total_tim = hours + ':' + minutes;
+                return total_tim;
+            }
+            
+            
             $scope.overtimeDetailTemplate = {
                 detailId : 0,
                 startTime: "",

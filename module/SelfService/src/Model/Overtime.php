@@ -20,6 +20,7 @@ class Overtime extends Model{
     const APPROVED_DATE = "APPROVED_DATE";
     const APPROVED_REMARKS = "APPROVED_REMARKS";
     const MODIFIED_DATE = "MODIFIED_DATE";
+    const TOTAL_HOUR = "TOTAL_HOUR";
     
     public $overtimeId;
     public $employeeId;
@@ -35,6 +36,7 @@ class Overtime extends Model{
     public $approvedDate;
     public $approvedRemarks;
     public $modifiedDate;
+    public $allTotalHour;
     
     public $mappings = [
         'overtimeId'=>self::OVERTIME_ID,
@@ -50,6 +52,7 @@ class Overtime extends Model{
         'approvedBy'=>self::APPROVED_BY,
         'approvedDate'=>self::APPROVED_DATE,
         'approvedRemarks'=>self::APPROVED_REMARKS,
-        'modifiedDate'=>self::MODIFIED_DATE
+        'modifiedDate'=>self::MODIFIED_DATE,
+        'allTotalHour'=>self::TOTAL_HOUR
     ];
 }

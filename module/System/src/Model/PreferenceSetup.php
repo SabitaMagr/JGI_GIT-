@@ -20,8 +20,6 @@ class PreferenceSetup extends Model{
         'HOUR'=>"Hour"
     ];
     const PREFERENCE_CONDITION_LIST =[
-        "BEFORE"=>"Before",
-        "AFTER"=>"After",
         "LESS_THAN"=>"Less than",
         "GREATER_THAN"=>"Greater than",
         "EQUAL"=>"Equal"

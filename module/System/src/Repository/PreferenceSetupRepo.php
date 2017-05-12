@@ -59,7 +59,14 @@ class PreferenceSetupRepo implements RepositoryInterface {
     }
     
     public function fetchByPreferenceName($preferenceName){
-        $result = $this->tableGateway->select([PreferenceSetup::PREFERENCE_NAME=>$preferenceName, PreferenceSetup::STATUS=>'E']);
+        $result = $this->tableGateway->select(function(Select $select)use($preferenceName){
+            $select->where([PreferenceSetup::PREFERENCE_NAME=>$preferenceName, PreferenceSetup::STATUS=>'E']);
+            $select->order(PreferenceSetup::PREFERENCE_ID." ASC");
+        });
         return $result;
+    }
+    public function getByCondition($preferenceCondition,$preferenceName){
+        $result = $this->tableGateway->select([PreferenceSetup::PREFERENCE_CONDITION=>$preferenceCondition,PreferenceSetup::PREFERENCE_NAME=>$preferenceName, PreferenceSetup::STATUS=>'E']);
+        return $result->current();
     }
 }

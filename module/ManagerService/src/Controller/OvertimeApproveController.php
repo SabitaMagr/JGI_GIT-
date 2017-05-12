@@ -88,6 +88,7 @@ class OvertimeApproveController extends AbstractActionController {
                 'REMARKS' => $row['REMARKS'],
                 'STATUS' => $getStatusValue($row['STATUS']),
                 'OVERTIME_ID' => $row['OVERTIME_ID'],
+                'TOTAL_HOUR'=>$row['TOTAL_HOUR'],
                 'YOUR_ROLE' => $getValue($row['RECOMMENDER'], $row['APPROVER']),
                 'ROLE' => $getRole($row['RECOMMENDER'], $row['APPROVER'])
             ];
@@ -204,7 +205,8 @@ class OvertimeApproveController extends AbstractActionController {
                     'approvedDT' => $approvedDT,
                     'employeeId' => $this->employeeId,
                     'requestedEmployeeId' => $requestedEmployeeID,
-                    'overtimeDetails'=>$overtimeDetails
+                    'overtimeDetails'=>$overtimeDetails,
+                    'totalHour'=>$detail['TOTAL_HOUR']
         ]);
     }
 

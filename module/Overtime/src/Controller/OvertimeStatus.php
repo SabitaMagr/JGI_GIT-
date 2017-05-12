@@ -18,6 +18,8 @@ use System\Model\PreferenceSetup;
 use System\Repository\PreferenceSetupRepo;
 use Setup\Repository\EmployeeRepository;
 use AttendanceManagement\Repository\AttendanceRepository;
+use SelfService\Model\OvertimeDetail;
+use SelfService\Repository\OvertimeRepository;
 
 class OvertimeStatus extends AbstractActionController
 {
@@ -139,15 +141,20 @@ class OvertimeStatus extends AbstractActionController
                     'status' => $status,
                     'customRenderer' => Helper::renderCustomView(),
                     'recommApprove'=>$recommApprove,
-                    'overtimeDetails'=>$overtimeDetails
+                    'overtimeDetails'=>$overtimeDetails,
+                    'totalHour'=>$detail['TOTAL_HOUR']
         ]);
     }
     
     public function calculateAction(){
         $preferenceSetupRepo = new PreferenceSetupRepo($this->adapter);
         $employeeRepo = new EmployeeRepository($this->adapter);
-//        array_keys(PreferenceSetup::PREFERENCE_NAME_LIST)[0]
+        $overtimeModel = new Overtime();
+        $overtimeRepository = new OvertimeRepository($this->adapter);
+        $overtimeDetailModel = new OvertimeDetail();
+        $overtimeDetailRepo = new OvertimeDetailRepository($this->adapter);
         $overtimeRequestSetting = $preferenceSetupRepo->fetchByPreferenceName("OVERTIME_REQUEST");
+        $employeeAdmin = $employeeRepo->fetchByAdminFlag();
         foreach($overtimeRequestSetting as $overtimeRequestSettingRow){
             $employeeResult = $employeeRepo->fetchByEmployeeTypeWidShift($overtimeRequestSettingRow['EMPLOYEE_TYPE'],date(Helper::PHP_DATE_FORMAT));
             $preferenceConstraint = $overtimeRequestSettingRow['PREFERENCE_CONSTRAINT'];
@@ -164,17 +171,53 @@ class OvertimeStatus extends AbstractActionController
                     $attendanceNum = count($attendanceResult);
                     if($attendanceNum!=0 && $attendanceNum%2==0){
                         $getTotalHourTime = $attendanceRepository->getTotalByEmpIdAttendanceDt($employeeRow['EMPLOYEE_ID'], $attendanceDt);
+                        $shiftTotalWorkingHrMin = Helper::hoursToMinutes($employeeRow['TOTAL_WORKING_HR']);
                         $actualWorkingHrMin = Helper::hoursToMinutes($employeeRow['ACTUAL_WORKING_HR']);
-                        $totalWorkingHrMin = $getTotalHourTime['TOTAL_MINS'];
+                        $actualBreakTime = $shiftTotalWorkingHrMin-$actualWorkingHrMin;
+                        $totalWorkingHrMin = $getTotalHourTime['WORKING']['TOTAL_MINS'];
+                        $totalNonWorkingHrMin = $getTotalHourTime['NON-WORKING']['TOTAL_MINS'];
                         if($totalWorkingHrMin>$actualWorkingHrMin){
-                            $overtime = $totalWorkingHrMin - $actualWorkingHrMin;  
-                            print_r($overtime);
+                            $extraOvertime = ($actualBreakTime>$totalNonWorkingHrMin)?$actualBreakTime-$totalNonWorkingHrMin:0;
+                            print_r($extraOvertime);
+                            echo "<br>";
+                            print_r($actualBreakTime);
+                            echo "<br>";
+                            print_r($totalNonWorkingHrMin);
+                            echo "<br>";
+                            $overtime = ($totalWorkingHrMin - $actualWorkingHrMin)-$extraOvertime;  
+                            $overtimeHr = Helper::minutesToHours($overtime);
+                            print_r($overtimeHr);
                             echo "<br>";
                             $constraintValueMin = Helper::hoursToMinutes($constraintValue);
                             print_r($constraintValueMin); 
                             echo "<br>";
                             print_r($preferenceCondition); 
-                            die();
+                            $overtimeModel->overtimeId = ((int) Helper::getMaxId($this->adapter, Overtime::TABLE_NAME, Overtime::OVERTIME_ID)) + 1;
+                            $overtimeModel->employeeId = $employeeRow['EMPLOYEE_ID'];
+                            $overtimeModel->overtimeDate = Helper::getExpressionDate($attendanceDt);
+                            $overtimeModel->requestedDate = Helper::getcurrentExpressionDate();
+                            $overtimeModel->description = "Overtime Request";
+                            $overtimeModel->allTotalHour = Helper::getExpressionTime($overtimeHr, Helper::ORACLE_TIMESTAMP_FORMAT);;
+                            $overtimeModel->status = $requestType;
+                            if($requestType=='AP'){
+                                $overtimeModel->recommendedBy = $employeeAdmin['EMPLOYEE_ID'];
+                                $overtimeModel->approvedBy = $employeeAdmin['EMPLOYEE_ID'];
+                            }
+                                    
+                            if($preferenceCondition=="LESS_THAN"){
+                                if($overtime<$constraintValueMin){
+                                     $overtimeRepository->add($overtimeModel);
+                                }
+                            }else if($preferenceCondition=="GREATER_THAN"){
+                                if($overtime>$constraintValueMin){
+                                    $overtimeRepository->add($overtimeModel);
+                                }
+                            }else if($preferenceCondition=='EQUAL'){
+                                if($overtime==$constraintValueMin){
+                                    $overtimeRepository->add($overtimeModel);
+                                }
+                            }
+                            echo "<br>";
                             print_r($requestType); 
                             die();
                         }

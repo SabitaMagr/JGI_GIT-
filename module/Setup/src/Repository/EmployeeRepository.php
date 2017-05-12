@@ -413,4 +413,8 @@ class EmployeeRepository implements RepositoryInterface {
         $result = $statement->execute();
         return $result;
     }
+    public function fetchByAdminFlag(){
+        $result = $this->gateway->select(["IS_ADMIN='Y'"]);
+        return $result->current()->getArrayCopy();
+    }
 }

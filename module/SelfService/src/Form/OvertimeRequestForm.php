@@ -54,13 +54,13 @@ class OvertimeRequestForm
     public $remarks;
 
     /**
-     * @Annotion\Type("Zend\Form\Element\Number")
+     * @Annotion\Type("Zend\Form\Element\Text")
      * @Annotation\Required(false)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Total Hour"})
      * @Annotation\Attributes({ "id":"totalHour", "class":"form-control" })
      */
-    public $totalHour;
+    public $allTotalHour;
 
     /**
      * @Annotation\Type("Zend\Form\Element\Textarea")
