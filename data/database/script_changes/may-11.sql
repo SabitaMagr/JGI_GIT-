@@ -11,4 +11,5 @@ modify
     ADD TOTAL_HOUR TIMESTAMP(6);
 --
 
-UPDATE HRIS_MENUS SET MENU_NAME='Report' where MENU_ID=27;  --prabin query 1
+--prabin |neo-hris|APR2
+UPDATE HRIS_MENUS SET MENU_NAME='Report' where MENU_ID=27;  
