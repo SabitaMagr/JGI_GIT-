@@ -25,6 +25,7 @@
             columns: [
                 {field: "OVERTIME_DATE", title: "Overtime Date"},
                 {field: "DETAILS", title: "Overtime (From - To)"},
+                {field: "TOTAL_HOUR", title: "Total Hour"},
                 {field: "REQUESTED_DATE", title: "Requested Date"},
                 {field: "STATUS", title: "Status"},
                 {title: "Action"}

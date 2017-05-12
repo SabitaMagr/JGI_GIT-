@@ -90,7 +90,6 @@ class AttendanceDetailRepository implements RepositoryInterface {
                         AttendanceDetail::OUT_TIME
                         ], NULL, NULL,'A'),false);
         
-        
 //        $select->columns(
 //                [new Expression("TO_CHAR(A.ATTENDANCE_DT, 'DD-MON-YYYY') AS ATTENDANCE_DT"),
 //                    new Expression("TO_CHAR(A.IN_TIME, 'HH:MI AM') AS IN_TIME"),

@@ -47,9 +47,6 @@ $description = $form->get('description');
 $description->setAttributes(["disabled"=>"disabled"]);
 $remarks = $form->get('remarks');
 $remarks->setAttributes(["disabled"=>"disabled"]);
-$totalHour = $form->get('totalHour');
-$totalHour->setValue("7.0");
-$totalHour->setAttributes(['readonly' => "readonly"]);
 $recommendedRemarks = $form->get('recommendedRemarks');
 $recommendedRemarks->setAttributes(['required' => 'true']);
 $approvedRemarks = $form->get('approvedRemarks');
@@ -205,6 +202,18 @@ print $this->form()->openTag($form);
                                 </td>
                             </tr>
                             <?php } ?>
+                            <tr height="30">
+                                </td>
+                                <td>
+                                </td>
+                                <td width="45%" style="padding:5px;">
+                                    <label class="pull-right">Total Hour:</label>
+                                </td>
+                                <td width="45%" style="padding:5px;"> 
+                                    <input size="3" class="form-control" type="text" name="allTotalHour" id="sumAllTotal" step="0.01" min="0" readonly="readonly"  value="<?= $totalHour; ?>" />
+                                </td>
+                                <td>
+                            </tr>
                         </table>
                         </div>
                         <div class="col-sm-4">

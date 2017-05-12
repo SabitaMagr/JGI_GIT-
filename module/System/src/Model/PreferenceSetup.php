@@ -6,6 +6,33 @@ use Application\Model\Model;
 class PreferenceSetup extends Model{
     const TABLE_NAME = "HRIS_PREFERENCE_SETUP";
     
+    const PREFERENCE_NAME_LIST = [
+        "OVERTIME_REQUEST"=>"Overtime Request"
+    ];
+    const PREFERENCE_CONSTRAINT_LIST = [
+        "OVERTIME_GRACE_TIME" => "Overtime Grace Time"
+    ];
+    const CONSTRAINT_TYPE_LIST = [
+        'TEXT'=>'Text',
+        'NUMBER'=>"Number",
+        'DATE'=>"Date",
+        'TIMESTAMP'=>"Timestamp",
+        'HOUR'=>"Hour"
+    ];
+    const PREFERENCE_CONDITION_LIST =[
+        "LESS_THAN"=>"Less than",
+        "GREATER_THAN"=>"Greater than",
+        "EQUAL"=>"Equal"
+    ];
+    const REQUEST_TYPE_LIST = [
+        'RQ'=>"Pending",
+        'AP'=>'Approved'
+    ];
+    const  EMPLOYEE_TYPE_LIST = [
+        'R' => 'Regular',
+        'C' => 'Contract'
+    ];
+    
     const PREFERENCE_ID = "PREFERENCE_ID";
     const COMPANY_ID = "COMPANY_ID";
     const PREFERENCE_NAME = "PREFERENCE_NAME";

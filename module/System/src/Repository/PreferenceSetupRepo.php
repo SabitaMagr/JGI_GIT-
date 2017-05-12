@@ -57,5 +57,16 @@ class PreferenceSetupRepo implements RepositoryInterface {
     public function delete($id) {
         $this->tableGateway->update([PreferenceSetup::STATUS => 'D'], [PreferenceSetup::PREFERENCE_ID => $id]);
     }
-
+    
+    public function fetchByPreferenceName($preferenceName){
+        $result = $this->tableGateway->select(function(Select $select)use($preferenceName){
+            $select->where([PreferenceSetup::PREFERENCE_NAME=>$preferenceName, PreferenceSetup::STATUS=>'E']);
+            $select->order(PreferenceSetup::PREFERENCE_ID." ASC");
+        });
+        return $result;
+    }
+    public function getByCondition($preferenceCondition,$preferenceName){
+        $result = $this->tableGateway->select([PreferenceSetup::PREFERENCE_CONDITION=>$preferenceCondition,PreferenceSetup::PREFERENCE_NAME=>$preferenceName, PreferenceSetup::STATUS=>'E']);
+        return $result->current();
+    }
 }

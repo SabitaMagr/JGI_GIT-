@@ -72,6 +72,7 @@ angular.module('hris', [])
                         {field: "REQUESTED_DATE", title: "Requested Date", width: 130},
                         {field: "OVERTIME_DATE", title: "Overtime Date", width: 120},
                         {field: "DETAILS", title: "Time (From-To)", width: 150},
+                        {field: "TOTAL_HOUR", title: "Total Hour", width: 100},
                         {field: "RECOMMENDER_NAME", title: "Recommender", width: 130},
                         {field: "APPROVER_NAME", title: "Approver", width: 120},                        
                         {field: "STATUS", title: "Status", width: 90},

@@ -20,6 +20,8 @@ use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Sql\Expression;
 use Zend\Db\Sql\Select;
 use Zend\Db\Sql\Sql;
+use AttendanceManagement\Model\ShiftAssign;
+use AttendanceManagement\Model\ShiftSetup;
 use Zend\Db\TableGateway\TableGateway;
 
 class EmployeeRepository implements RepositoryInterface {
@@ -377,5 +379,42 @@ class EmployeeRepository implements RepositoryInterface {
         $result = $this->zoneGateway->select(['ZONE_ID' => $id]);
         return $result->current();
     }
-
+    public function fetchByEmployeeTypeWidShift($employeeType,$currentDate=null){
+        $sql = new Sql($this->adapter);
+        $select = $sql->select();
+        $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(HrEmployees::class, [HrEmployees::FIRST_NAME, HrEmployees::MIDDLE_NAME, HrEmployees::LAST_NAME], [
+                    HrEmployees::BIRTH_DATE
+                ],null,null,null,'E'), false);
+        $select->from(['E'=>"HRIS_EMPLOYEES"])
+                ->join(['SA' => ShiftAssign::TABLE_NAME], "E." . HrEmployees::EMPLOYEE_ID . "=SA." . ShiftAssign::EMPLOYEE_ID, ['EMPLOYEE_ID','SHIFT_ID'], 'left')
+                ->join(['S' => ShiftSetup::TABLE_NAME], "SA." . ShiftAssign::SHIFT_ID . "=S." . ShiftSetup::SHIFT_ID, 
+                        ['SHIFT_CODE',
+                            'SHIFT_ENAME' => new Expression('INITCAP(S.SHIFT_ENAME)'),
+                            'SHIFT_LNAME' => new Expression('INITCAP(S.SHIFT_LNAME)'),
+                            'START_DATE'=>new Expression("INITCAP(TO_CHAR(S.START_DATE, 'DD-MON-YYYY'))"),
+                            'END_DATE'=>new Expression("INITCAP(TO_CHAR(S.END_DATE, 'DD-MON-YYYY'))"),
+                            'START_TIME'=>new Expression("TO_CHAR(S.START_TIME, 'HH:MI AM')"),
+                            'END_TIME'=>new Expression("TO_CHAR(S.END_TIME, 'HH:MI AM')"),
+                            'HALF_TIME'=>new Expression("TO_CHAR(S.HALF_TIME, 'HH:MI AM')"),
+                            'HALF_DAY_END_TIME'=>new Expression("TO_CHAR(S.HALF_DAY_END_TIME, 'HH:MI AM')"),
+                            'LATE_IN'=>new Expression("TO_CHAR(S.LATE_IN, 'HH:MI AM')"),
+                            'EARLY_OUT'=>new Expression("TO_CHAR(S.EARLY_OUT, 'HH:MI AM')"),
+                            'TOTAL_WORKING_HR'=>new Expression("TO_CHAR(S.TOTAL_WORKING_HR, 'HH:MI')"),
+                            'ACTUAL_WORKING_HR'=>new Expression("TO_CHAR(S.ACTUAL_WORKING_HR, 'HH:MI')"),
+                            ], 'left');
+        if($currentDate!=null){
+            $startDate = " AND TO_DATE('" . $currentDate . "','DD-MON-YYYY') >= S.START_DATE AND TO_DATE('" . $currentDate . "','DD-MON-YYYY') <= S.END_DATE";
+        }else{
+            $startDate="";
+        }
+        $select->where(["E.STATUS='E' AND E.RETIRED_FLAG='N' AND S.STATUS='E' AND SA.STATUS='E'", "E.".HrEmployees::EMPLOYEE_TYPE."='".$employeeType."'".$startDate]);
+        $statement = $sql->prepareStatementForSqlObject($select);
+//        print_r($statement->getSql()); die();
+        $result = $statement->execute();
+        return $result;
+    }
+    public function fetchByAdminFlag(){
+        $result = $this->gateway->select(["IS_ADMIN='Y'"]);
+        return $result->current()->getArrayCopy();
+    }
 }

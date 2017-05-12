@@ -281,5 +281,23 @@ class Helper {
     public static function maintainFloatNumberFormat($floatNumber) {
         return number_format($floatNumber, self::FLOAT_ROUNDING_DIGIT_NO, '.', '');
     }
+    
+    public static function hoursToMinutes($hours) 
+    { 
+        $minutes = 0; 
+        if (strpos($hours, ':') !== false) 
+        { 
+            // Split hours and minutes. 
+            list($hours, $minutes) = explode(':', $hours); 
+        } 
+        return $hours * 60 + $minutes; 
+    } 
+
+    public static function minutesToHours($minutes) 
+    { 
+        $hours = (int)($minutes / 60); 
+        $minutes -= $hours * 60; 
+        return sprintf("%d:%02.0f", $hours, $minutes); 
+    } 
 
 }

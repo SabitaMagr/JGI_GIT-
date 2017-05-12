@@ -23,9 +23,7 @@ $endTime->setValue("5:00 PM");
 $endTime->setAttributes(['readonly' => "readonly"]);
 $description = $form->get('description');
 $remarks = $form->get('remarks');
-$totalHour = $form->get('totalHour');
-$totalHour->setValue("7.0");
-$totalHour->setAttributes(['readonly' => "readonly"]);
+
 
 $submit = $form->get('submit');
 $submit->setAttribute('value', 'SUBMIT');
@@ -129,10 +127,14 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                             </td>
                         </tr>
                         <tr height="30">
-                            <td></td>
-                            <td></td>
+                            <td width="45%" style="padding:5px;">
+                                <label class="pull-right">Total Hour:</label>
+                            </td>
+                            <td width="45%" style="padding:5px;"> 
+                                <input size="3" class="form-control" type="text" name="allTotalHour" id="sumAllTotal" step="0.01" min="0" readonly="readonly"  value="{{sumAllTotalHour(overtimeDetailList)}}" />
+                            </td>
                             <td>
-                                <a href="javascript:;" class="btn btn-icon-only default pull-right" style="margin-left:17%;" ng-click="addOvertimeDetail()" id="plushIcon">
+                                <a href="javascript:;" class="btn btn-icon-only default" style="margin-left:17%;" ng-click="addOvertimeDetail()" id="plushIcon">
                                     <i class="fa fa-plus"></i>
                                 </a>
                             </td>
