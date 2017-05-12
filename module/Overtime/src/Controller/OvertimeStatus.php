@@ -172,28 +172,17 @@ class OvertimeStatus extends AbstractActionController
                     if($attendanceNum!=0 && $attendanceNum%2==0){
                         $getTotalHourTime = $attendanceRepository->getTotalByEmpIdAttendanceDt($employeeRow['EMPLOYEE_ID'], $attendanceDt);
                         $shiftTotalWorkingHrMin = Helper::hoursToMinutes($employeeRow['TOTAL_WORKING_HR']);
+                        $lateInHrMin =  Helper::hoursToMinutes($employeeRow['LATE_IN']);
+                        $earlyOutHrMin =  Helper::hoursToMinutes($employeeRow['EARLY_OUT']);
                         $actualWorkingHrMin = Helper::hoursToMinutes($employeeRow['ACTUAL_WORKING_HR']);
                         $actualBreakTime = $shiftTotalWorkingHrMin-$actualWorkingHrMin;
                         $totalWorkingHrMin = $getTotalHourTime['WORKING']['TOTAL_MINS'];
                         $totalNonWorkingHrMin = $getTotalHourTime['NON-WORKING']['TOTAL_MINS'];
                         if($totalWorkingHrMin>$actualWorkingHrMin){
                             $extraOvertime = ($actualBreakTime>$totalNonWorkingHrMin)?$actualBreakTime-$totalNonWorkingHrMin:0;
-                            print_r($extraOvertime);
-                            echo "<br>";
-                            print_r($actualBreakTime);
-                            echo "<br>";
-                            print_r($totalNonWorkingHrMin);
-                            echo "<br>";
                             $overtime = ($totalWorkingHrMin - $actualWorkingHrMin)-$extraOvertime;  
                             $overtimeHr = Helper::minutesToHours($overtime);
-                            print_r($overtime);
-                            echo "<br>";
-                            print_r($overtimeHr);
-                            echo "<br>";
                             $constraintValueMin = Helper::hoursToMinutes($constraintValue);
-                            print_r($constraintValueMin); 
-                            echo "<br>";
-                            print_r($preferenceCondition); 
                             $overtimeModel->overtimeId = ((int) Helper::getMaxId($this->adapter, Overtime::TABLE_NAME, Overtime::OVERTIME_ID)) + 1;
                             $overtimeModel->employeeId = $employeeRow['EMPLOYEE_ID'];
                             $overtimeModel->overtimeDate = Helper::getExpressionDate($attendanceDt);
@@ -209,7 +198,7 @@ class OvertimeStatus extends AbstractActionController
                             $shiftStartTime = strtotime($employeeRow['START_TIME']);
                             $outTime = strtotime($employeeRow['OUT_TIME']);
                             $shiftEndTime = strtotime($employeeRow['END_TIME']);
-                            
+                            $result=0;
                             if($preferenceCondition=="LESS_THAN"){
                                 if($overtime<$constraintValueMin){
                                     $result = $overtimeRepository->add($overtimeModel);
@@ -236,7 +225,6 @@ class OvertimeStatus extends AbstractActionController
                                     $overtimeDetailModel->createdDate =  Helper::getcurrentExpressionDate();
                                     $overtimeDetailRepo->add($overtimeDetailModel);
                                 }
-
                                 if($outTime!=$shiftEndTime && $shiftEndTime<$outTime){
                                     $dtlTotalHr = Helper::minutesToHours(round(abs($outTime - $shiftEndTime) / 60,2));
                                     $overtimeDetailModel->overtimeId = $overtimeModel->overtimeId;
@@ -250,13 +238,12 @@ class OvertimeStatus extends AbstractActionController
                                     $overtimeDetailRepo->add($overtimeDetailModel);
                                 }
                             }
-                            echo "<br>";
-                            print_r($requestType); 
-                            die();
                         }
                     }
                 }
             }
         }
+        $this->flashmessenger()->addMessage("Overtime Request Successfully Generated!!!");
+        $this->redirect()->toRoute('overtimeStatus');
     }
 }
