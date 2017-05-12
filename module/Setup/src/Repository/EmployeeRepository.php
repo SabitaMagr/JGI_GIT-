@@ -23,6 +23,7 @@ use Zend\Db\Sql\Sql;
 use AttendanceManagement\Model\ShiftAssign;
 use AttendanceManagement\Model\ShiftSetup;
 use Zend\Db\TableGateway\TableGateway;
+use AttendanceManagement\Model\AttendanceDetail;
 
 class EmployeeRepository implements RepositoryInterface {
 
@@ -397,17 +398,22 @@ class EmployeeRepository implements RepositoryInterface {
                             'END_TIME'=>new Expression("TO_CHAR(S.END_TIME, 'HH:MI AM')"),
                             'HALF_TIME'=>new Expression("TO_CHAR(S.HALF_TIME, 'HH:MI AM')"),
                             'HALF_DAY_END_TIME'=>new Expression("TO_CHAR(S.HALF_DAY_END_TIME, 'HH:MI AM')"),
-                            'LATE_IN'=>new Expression("TO_CHAR(S.LATE_IN, 'HH:MI AM')"),
-                            'EARLY_OUT'=>new Expression("TO_CHAR(S.EARLY_OUT, 'HH:MI AM')"),
-                            'TOTAL_WORKING_HR'=>new Expression("TO_CHAR(S.TOTAL_WORKING_HR, 'HH:MI')"),
-                            'ACTUAL_WORKING_HR'=>new Expression("TO_CHAR(S.ACTUAL_WORKING_HR, 'HH:MI')"),
-                            ], 'left');
+                            'LATE_IN'=>new Expression("TO_CHAR(S.LATE_IN, 'HH24:MI')"),
+                            'EARLY_OUT'=>new Expression("TO_CHAR(S.EARLY_OUT, 'HH24:MI')"),
+                            'TOTAL_WORKING_HR'=>new Expression("TO_CHAR(S.TOTAL_WORKING_HR, 'HH24:MI')"),
+                            'ACTUAL_WORKING_HR'=>new Expression("TO_CHAR(S.ACTUAL_WORKING_HR, 'HH24:MI')"),
+                            ], 'left')
+                ->join(['AD'=> AttendanceDetail::TABLE_NAME],"E.".HrEmployees::EMPLOYEE_ID."=AD.".AttendanceDetail::EMPLOYEE_ID,[
+                            'IN_TIME'=>new Expression("TO_CHAR(AD.IN_TIME, 'HH:MI AM')"),
+                            'OUT_TIME'=>new Expression("TO_CHAR(AD.OUT_TIME, 'HH:MI AM')"),
+                ],"left");
         if($currentDate!=null){
             $startDate = " AND TO_DATE('" . $currentDate . "','DD-MON-YYYY') >= S.START_DATE AND TO_DATE('" . $currentDate . "','DD-MON-YYYY') <= S.END_DATE";
         }else{
             $startDate="";
         }
         $select->where(["E.STATUS='E' AND E.RETIRED_FLAG='N' AND S.STATUS='E' AND SA.STATUS='E'", "E.".HrEmployees::EMPLOYEE_TYPE."='".$employeeType."'".$startDate]);
+        $select->where([AttendanceDetail::ATTENDANCE_DT."=TO_DATE('" . $currentDate . "','DD-MON-YYYY')"]);
         $statement = $sql->prepareStatementForSqlObject($select);
 //        print_r($statement->getSql()); die();
         $result = $statement->execute();

@@ -75,7 +75,7 @@ class OvertimeApproveRepository implements RepositoryInterface{
                     OT.STATUS,
                     OT.RECOMMENDED_REMARKS,
                     OT.APPROVED_REMARKS,
-                    TO_CHAR(OT.TOTAL_HOUR, 'HH:MI') AS TOTAL_HOUR,
+                    TO_CHAR(OT.TOTAL_HOUR, 'HH24:MI') AS TOTAL_HOUR,
                     INITCAP(TO_CHAR(OT.RECOMMENDED_DATE, 'DD-MON-YYYY')) AS RECOMMENDED_DATE,
                     INITCAP(TO_CHAR(OT.APPROVED_DATE, 'DD-MON-YYYY')) AS APPROVED_DATE,
                     INITCAP(TO_CHAR(OT.MODIFIED_DATE, 'DD-MON-YYYY')) AS MODIFIED_DATE,

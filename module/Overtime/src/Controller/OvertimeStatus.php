@@ -156,7 +156,9 @@ class OvertimeStatus extends AbstractActionController
         $overtimeRequestSetting = $preferenceSetupRepo->fetchByPreferenceName("OVERTIME_REQUEST");
         $employeeAdmin = $employeeRepo->fetchByAdminFlag();
         foreach($overtimeRequestSetting as $overtimeRequestSettingRow){
-            $employeeResult = $employeeRepo->fetchByEmployeeTypeWidShift($overtimeRequestSettingRow['EMPLOYEE_TYPE'],date(Helper::PHP_DATE_FORMAT));
+//            $attendanceDt = date(Helper::PHP_DATE_FORMAT);
+            $attendanceDt = "10-May-2017";
+            $employeeResult = $employeeRepo->fetchByEmployeeTypeWidShift($overtimeRequestSettingRow['EMPLOYEE_TYPE'],$attendanceDt);
             $preferenceConstraint = $overtimeRequestSettingRow['PREFERENCE_CONSTRAINT'];
             $preferenceCondition = $overtimeRequestSettingRow['PREFERENCE_CONDITION'];
             $constraintValue = $overtimeRequestSettingRow['CONSTRAINT_VALUE'];
@@ -165,8 +167,6 @@ class OvertimeStatus extends AbstractActionController
             foreach($employeeResult as $employeeRow){
                 if($preferenceConstraint=='OVERTIME_GRACE_TIME' && $constraintType=='HOUR'){
                     $attendanceRepository = new AttendanceRepository($this->adapter);
-//                    $attendanceDt = date(Helper::PHP_DATE_FORMAT);
-                    $attendanceDt = "10-May-2017";
                     $attendanceResult = $attendanceRepository->fetchAllByEmpIdAttendanceDt($employeeRow['EMPLOYEE_ID'],$attendanceDt);
                     $attendanceNum = count($attendanceResult);
                     if($attendanceNum!=0 && $attendanceNum%2==0){
@@ -186,6 +186,8 @@ class OvertimeStatus extends AbstractActionController
                             echo "<br>";
                             $overtime = ($totalWorkingHrMin - $actualWorkingHrMin)-$extraOvertime;  
                             $overtimeHr = Helper::minutesToHours($overtime);
+                            print_r($overtime);
+                            echo "<br>";
                             print_r($overtimeHr);
                             echo "<br>";
                             $constraintValueMin = Helper::hoursToMinutes($constraintValue);
@@ -197,24 +199,55 @@ class OvertimeStatus extends AbstractActionController
                             $overtimeModel->overtimeDate = Helper::getExpressionDate($attendanceDt);
                             $overtimeModel->requestedDate = Helper::getcurrentExpressionDate();
                             $overtimeModel->description = "Overtime Request";
-                            $overtimeModel->allTotalHour = Helper::getExpressionTime($overtimeHr, Helper::ORACLE_TIMESTAMP_FORMAT);;
+                            $overtimeModel->allTotalHour = Helper::getExpressionTime($overtimeHr, Helper::ORACLE_TIMESTAMP_FORMAT);
                             $overtimeModel->status = $requestType;
                             if($requestType=='AP'){
                                 $overtimeModel->recommendedBy = $employeeAdmin['EMPLOYEE_ID'];
                                 $overtimeModel->approvedBy = $employeeAdmin['EMPLOYEE_ID'];
                             }
-                                    
+                            $inTime = strtotime($employeeRow['IN_TIME']);
+                            $shiftStartTime = strtotime($employeeRow['START_TIME']);
+                            $outTime = strtotime($employeeRow['OUT_TIME']);
+                            $shiftEndTime = strtotime($employeeRow['END_TIME']);
+                            
                             if($preferenceCondition=="LESS_THAN"){
                                 if($overtime<$constraintValueMin){
-                                     $overtimeRepository->add($overtimeModel);
+                                    $result = $overtimeRepository->add($overtimeModel);
                                 }
                             }else if($preferenceCondition=="GREATER_THAN"){
                                 if($overtime>$constraintValueMin){
-                                    $overtimeRepository->add($overtimeModel);
+                                    $result =$overtimeRepository->add($overtimeModel);
                                 }
                             }else if($preferenceCondition=='EQUAL'){
                                 if($overtime==$constraintValueMin){
-                                    $overtimeRepository->add($overtimeModel);
+                                    $result =$overtimeRepository->add($overtimeModel);
+                                }
+                            }
+                            if($result==1){
+                                if($inTime!=$shiftStartTime && $inTime<$shiftStartTime){
+                                    $dtlTotalHr = Helper::minutesToHours(round(abs($outTime - $shiftEndTime) / 60,2));
+                                    $overtimeDetailModel->overtimeId = $overtimeModel->overtimeId;
+                                    $overtimeDetailModel->detailId = ((int) Helper::getMaxId($this->adapter, OvertimeDetail::TABLE_NAME, OvertimeDetail::DETAIL_ID)) + 1;
+                                    $overtimeDetailModel->startTime = Helper::getExpressionTime($employeeRow['IN_TIME']);
+                                    $overtimeDetailModel->endTime = Helper::getExpressionTime($employeeRow['START_TIME']);
+                                    $overtimeDetailModel->status = 'E';
+                                    $overtimeDetailModel->createdBy = $this->employeeId;
+                                    $overtimeDetailModel->totalHour =Helper::getExpressionTime($dtlTotalHr, Helper::ORACLE_TIMESTAMP_FORMAT);
+                                    $overtimeDetailModel->createdDate =  Helper::getcurrentExpressionDate();
+                                    $overtimeDetailRepo->add($overtimeDetailModel);
+                                }
+
+                                if($outTime!=$shiftEndTime && $shiftEndTime<$outTime){
+                                    $dtlTotalHr = Helper::minutesToHours(round(abs($outTime - $shiftEndTime) / 60,2));
+                                    $overtimeDetailModel->overtimeId = $overtimeModel->overtimeId;
+                                    $overtimeDetailModel->detailId = ((int) Helper::getMaxId($this->adapter, OvertimeDetail::TABLE_NAME, OvertimeDetail::DETAIL_ID)) + 1;
+                                    $overtimeDetailModel->startTime = Helper::getExpressionTime($employeeRow['END_TIME']);
+                                    $overtimeDetailModel->endTime = Helper::getExpressionTime($employeeRow['OUT_TIME']);
+                                    $overtimeDetailModel->status = 'E';
+                                    $overtimeDetailModel->totalHour =Helper::getExpressionTime($dtlTotalHr, Helper::ORACLE_TIMESTAMP_FORMAT);
+                                    $overtimeDetailModel->createdBy = $this->employeeId;
+                                    $overtimeDetailModel->createdDate =  Helper::getcurrentExpressionDate();
+                                    $overtimeDetailRepo->add($overtimeDetailModel);
                                 }
                             }
                             echo "<br>";
@@ -225,7 +258,5 @@ class OvertimeStatus extends AbstractActionController
                 }
             }
         }
-        print "<pre>";
-        print_r("hellow2"); die();
     }
 }

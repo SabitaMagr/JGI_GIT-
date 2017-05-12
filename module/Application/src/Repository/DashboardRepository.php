@@ -259,6 +259,7 @@ class DashboardRepository implements RepositoryInterface {
                 WHERE EH.EMPLOYEE_ID={$employeeId} AND HM.START_DATE > TRUNC(SYSDATE)";
 
         $statement = $this->adapter->query($sql);
+        print_r($statement->getSql()); die();
         $result = $statement->execute();
 
         return $result;

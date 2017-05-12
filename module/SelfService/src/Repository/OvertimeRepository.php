@@ -24,6 +24,7 @@ class OvertimeRepository implements RepositoryInterface{
 
     public function add(Model $model) {
         $this->tableGateway->insert($model->getArrayCopyForDB());
+        return 1;
     }
 
     public function delete($id) {

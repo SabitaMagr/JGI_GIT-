@@ -95,5 +95,7 @@ FROM
           $list[$row['HR_TYPE']]=$row;
         }
         return $list;
+//        print "<pre>";
+//        print_r($list); die;
     }
 }
