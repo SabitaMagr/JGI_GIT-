@@ -114,7 +114,6 @@ class HolidayAssignRepository {
         }
         $select->order("E.FIRST_NAME ASC");
         $statement = $sql->prepareStatementForSqlObject($select);
-
         $result = $statement->execute();
         return $result;
     }

@@ -11,6 +11,7 @@ use Asset\Model\Setup;
 use Asset\Repository\IssueRepository;
 use Asset\Repository\SetupRepository;
 use Setup\Model\HrEmployees;
+use Setup\Repository\EmployeeFile;
 use Setup\Repository\EmployeeRepository;
 use Zend\Authentication\AuthenticationService;
 use Zend\Db\Adapter\AdapterInterface;
@@ -64,11 +65,14 @@ class SetupController extends AbstractActionController {
         $employeeRepo = new EmployeeRepository($this->adapter);
         $employeeDetail = $employeeRepo->fetchById($this->employeeId);
         $request = $this->getRequest();
+        $imageData = null;
         if ($request->isPost()) {
-            $this->form->setData($request->getPost());
+            $postedData = $request->getPost();
+            $this->form->setData($postedData);
             if ($this->form->isValid()) {
                 $setup = new Setup();
                 $setup->exchangeArrayFromForm($this->form->getData());
+                $setup->assetImage=$postedData['logo'];
                 $setup->createdBy = $this->employeeId;
                 $setup->createdDate = Helper::getcurrentExpressionDate();
                 $setup->approvedDate = Helper::getcurrentExpressionDate();
@@ -82,6 +86,8 @@ class SetupController extends AbstractActionController {
                 $this->repository->add($setup);
                 $this->flashmessenger()->addMessage("Asset Successfully added!!!");
                 return $this->redirect()->toRoute("assetSetup");
+            } else {
+                $imageData = $this->getFileInfo($this->adapter, $postedData['logo']);
             }
         }
 
@@ -89,7 +95,29 @@ class SetupController extends AbstractActionController {
                     'form' => $this->form,
 //            'group'=>$groupList
                     'group' => ApplicationEntityHelper::getTableKVListWithSortOption($this->adapter, Group::TABLE_NAME, Group::ASSET_GROUP_ID, [Group::ASSET_GROUP_EDESC], ["STATUS" => "E"], Group::ASSET_GROUP_EDESC, "ASC", NULL, FALSE, TRUE),
+            'imageData' => $imageData
         ]);
+    }
+    
+    
+    private function getFileInfo(AdapterInterface $adapter, $fileId) {
+        $fileRepo = new EmployeeFile($adapter);
+        $fileDetail = $fileRepo->fetchById($fileId);
+
+        if ($fileDetail == null) {
+            $imageData = [
+                'fileCode' => null,
+                'fileName' => null,
+                'oldFileName' => null
+            ];
+        } else {
+            $imageData = [
+                'fileCode' => $fileDetail['FILE_CODE'],
+                'oldFileName' => $fileDetail['FILE_NAME'],
+                'fileName' => $fileDetail['FILE_PATH']
+            ];
+        }
+        return $imageData;
     }
 
     public function editAction() {
@@ -104,10 +132,11 @@ class SetupController extends AbstractActionController {
             $setup->exchangeArrayFromDB($this->repository->fetchById($id));
             $this->form->bind($setup);
         } else {
-            $this->form->setData($request->getPost());
+            $postedData = $request->getPost();
+            $this->form->setData($postedData);
             if ($this->form->isValid()) {
                 $setup->exchangeArrayFromForm($this->form->getData());
-
+                $setup->assetImage=$postedData['logo'];
                 $setup->modifiedDate = Helper::getcurrentExpressionDate();
                 $setup->modifiedBy = $this->employeeId;
                 $setup->quantityBalance = $setup->quantity;
@@ -117,10 +146,16 @@ class SetupController extends AbstractActionController {
                 return $this->redirect()->toRoute("assetSetup");
             }
         }
+        
+        $imageData = $this->getFileInfo($this->adapter, $setup->assetImage);
+//        print_r($imageData);
+//        die();
+        
         return Helper::addFlashMessagesToArray($this, [
                     'form' => $this->form,
                     'group' => ApplicationEntityHelper::getTableKVListWithSortOption($this->adapter, Group::TABLE_NAME, Group::ASSET_GROUP_ID, [Group::ASSET_GROUP_EDESC], ["STATUS" => "E"], Group::ASSET_GROUP_EDESC, "ASC", NULL, FALSE, TRUE),
-                    'id' => $id
+                    'id' => $id,
+                    'imageData' => $imageData
         ]);
     }
 

@@ -384,7 +384,7 @@ class RestfulService extends AbstractRestfulController {
                     case "pullServiceQuestionList":
                         $responseData = $this->pullServiceQuestionList($postedData->data);
                         break;
-
+                    
                     default:
                         throw new Exception("action not found");
                         break;

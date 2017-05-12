@@ -34,7 +34,8 @@ angular.module('hris', [])
             $scope.holidayChangeFn = function () {
                 if ($scope.holiday == null) {
                     $scope.alreadyAssignedEmpList = [];
-                    var empList = $scope.employeeList;
+                    var empList = angular.copy($scope.employeeList);
+                    $scope.employeeList = [];
                     for (var i in empList) {
                         var emp = empList[i];
                         emp.checked = ($scope.alreadyAssignedEmpList.indexOf(emp.EMPLOYEE_ID) >= 0);
@@ -54,7 +55,8 @@ angular.module('hris', [])
                     if (response.success) {
                         $scope.$apply(function () {
                             $scope.alreadyAssignedEmpList = response.data;
-                            var empList = $scope.employeeList;
+                            var empList = angular.copy($scope.employeeList);
+                            $scope.employeeList = [];
                             for (var i in empList) {
                                 var emp = empList[i];
                                 emp.checked = ($scope.alreadyAssignedEmpList.indexOf(emp.EMPLOYEE_ID) >= 0);
