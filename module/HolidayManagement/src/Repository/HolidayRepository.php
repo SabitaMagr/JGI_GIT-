@@ -12,6 +12,7 @@ use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Sql\Expression;
 use Zend\Db\Sql\Sql;
 use Zend\Db\TableGateway\TableGateway;
+use Zend\Authentication\AuthenticationService;
 
 class HolidayRepository implements RepositoryInterface {
 
@@ -21,6 +22,8 @@ class HolidayRepository implements RepositoryInterface {
     public function __construct(AdapterInterface $adapter) {
         $this->tableGateway = new TableGateway(Holiday::TABLE_NAME, $adapter);
         $this->adapter = $adapter;
+        $auth = new AuthenticationService();
+        $this->fiscalYr = $auth->getStorage()->read()['fiscal_year']['FISCAL_YEAR_ID'];
     }
 
     public function add(Model $model) {
@@ -45,10 +48,11 @@ class HolidayRepository implements RepositoryInterface {
             INITCAP(A.HOLIDAY_LNAME) AS HOLIDAY_LNAME,
             A.HALFDAY
                 FROM HRIS_HOLIDAY_MASTER_SETUP A 
-                WHERE A.STATUS='E'";
+                WHERE A.STATUS='E' AND A.FISCAL_YEAR=".$this->fiscalYr;
         if ($today != null) {
             $sql .= " AND (" . $today->getExpression() . " between A.START_DATE AND A.END_DATE) OR " . $today->getExpression() . " <= A.START_DATE";
         }
+        $sql .=" ORDER BY A.START_DATE";
         $statement = $this->adapter->query($sql);
         $result = $statement->execute();
         return $result;
@@ -103,8 +107,7 @@ SELECT INITCAP(TO_CHAR(A.START_DATE, 'DD-MON-YYYY')) AS START_DATE,
       END
   END AS HALFDAY
 FROM HRIS_HOLIDAY_MASTER_SETUP A
-WHERE A.STATUS ='E'
-";
+WHERE A.STATUS ='E'";
 
         if ($fromDate != null) {
             $sql .= " AND A.START_DATE>=TO_DATE('" . $fromDate . "','DD-MM-YYYY')";
@@ -113,8 +116,11 @@ WHERE A.STATUS ='E'
         if ($toDate != null) {
             $sql .= " AND A.END_DATE<=TO_DATE('" . $toDate . "','DD-MM-YYYY')";
         }
+        if($fromDate==null && $toDate==null){
+            $sql .=" AND A.FISCAL_YEAR=".$this->fiscalYr;
+        }
 
-        $sql .= " ORDER BY A.START_DATE DESC";
+        $sql .= " ORDER BY A.START_DATE";
         $statement = $this->adapter->query($sql);
         $result = $statement->execute();
         return $result;

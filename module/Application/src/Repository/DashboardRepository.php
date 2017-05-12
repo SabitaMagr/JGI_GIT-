@@ -4,13 +4,16 @@ namespace Application\Repository;
 
 use Application\Helper\Helper;
 use Application\Model\Model;
+use Zend\Authentication\AuthenticationService;
 
 class DashboardRepository implements RepositoryInterface {
 
     private $adapter;
-
+    private $fiscalYr;
     public function __construct(\Zend\Db\Adapter\AdapterInterface $adapter) {
         $this->adapter = $adapter;
+        $auth = new AuthenticationService();
+        $this->fiscalYr = $auth->getStorage()->read()['fiscal_year'];
     }
 
     public function add(Model $model) {
@@ -256,10 +259,9 @@ class DashboardRepository implements RepositoryInterface {
                 FROM HRIS_HOLIDAY_MASTER_SETUP HM
                 JOIN HRIS_EMPLOYEE_HOLIDAY EH
                 ON (HM.HOLIDAY_ID   =EH.HOLIDAY_ID)
-                WHERE EH.EMPLOYEE_ID={$employeeId} AND HM.START_DATE > TRUNC(SYSDATE)";
+                WHERE EH.EMPLOYEE_ID={$employeeId} AND HM.START_DATE > TRUNC(SYSDATE) ORDER BY HM.START_DATE";
 
         $statement = $this->adapter->query($sql);
-        print_r($statement->getSql()); die();
         $result = $statement->execute();
 
         return $result;
