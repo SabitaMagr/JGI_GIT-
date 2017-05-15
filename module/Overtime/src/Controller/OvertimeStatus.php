@@ -237,13 +237,15 @@ class OvertimeStatus extends AbstractActionController
                                     $overtimeDetailModel->createdDate =  Helper::getcurrentExpressionDate();
                                     $overtimeDetailRepo->add($overtimeDetailModel);
                                 }
+                                $this->flashmessenger()->addMessage("Overtime Request Successfully Generated!!!");
+                            }else{
+                                $this->flashmessenger()->addMessage("There is no required data to generate overtime request!!!");
                             }
                         }
                     }
                 }
             }
         }
-        $this->flashmessenger()->addMessage("Overtime Request Successfully Generated!!!");
         $this->redirect()->toRoute('overtimeStatus');
     }
 }

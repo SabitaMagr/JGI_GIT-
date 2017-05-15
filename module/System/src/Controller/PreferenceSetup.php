@@ -29,7 +29,6 @@ class PreferenceSetup extends AbstractActionController{
         foreach ($result as $row){
             $row['PREFERENCE_NAME'] = PreferenceSetupModel::PREFERENCE_NAME_LIST[$row['PREFERENCE_NAME']];
             $row['PREFERENCE_CONSTRAINT'] = PreferenceSetupModel::PREFERENCE_CONSTRAINT_LIST[$row['PREFERENCE_CONSTRAINT']];
-            $row['CONSTRAINT_TYPE'] = PreferenceSetupModel::CONSTRAINT_TYPE_LIST[$row['CONSTRAINT_TYPE']];
             $row['PREFERENCE_CONDITION'] = PreferenceSetupModel::PREFERENCE_CONDITION_LIST[$row['PREFERENCE_CONDITION']];
             $row['REQUEST_TYPE']=PreferenceSetupModel::REQUEST_TYPE_LIST[$row['REQUEST_TYPE']];
             array_push($list, $row);
@@ -66,7 +65,6 @@ class PreferenceSetup extends AbstractActionController{
             'companies' => EntityHelper::getTableKVListWithSortOption($this->adapter, Company::TABLE_NAME, Company::COMPANY_ID, [Company::COMPANY_NAME], ["STATUS" => "E"], Company::COMPANY_NAME, Select::ORDER_ASCENDING, null, false, true),
             'preferenceNameList'=>PreferenceSetupModel::PREFERENCE_NAME_LIST,
             'preferenceConstraintList'=>PreferenceSetupModel::PREFERENCE_CONSTRAINT_LIST,
-            'constraintTypeList'=>PreferenceSetupModel::CONSTRAINT_TYPE_LIST,
             "preferenceConditionList"=>PreferenceSetupModel::PREFERENCE_CONDITION_LIST,
             'requestTypeList'=>PreferenceSetupModel::REQUEST_TYPE_LIST,
             'employeeTypeList'=>PreferenceSetupModel::EMPLOYEE_TYPE_LIST
@@ -105,7 +103,6 @@ class PreferenceSetup extends AbstractActionController{
             'companies' => EntityHelper::getTableKVListWithSortOption($this->adapter, Company::TABLE_NAME, Company::COMPANY_ID, [Company::COMPANY_NAME], ["STATUS" => "E"], Company::COMPANY_NAME, Select::ORDER_ASCENDING, null, false, true),
             'preferenceNameList'=>PreferenceSetupModel::PREFERENCE_NAME_LIST,
             'preferenceConstraintList'=>PreferenceSetupModel::PREFERENCE_CONSTRAINT_LIST,
-            'constraintTypeList'=>PreferenceSetupModel::CONSTRAINT_TYPE_LIST,
             "preferenceConditionList"=>PreferenceSetupModel::PREFERENCE_CONDITION_LIST,
             'requestTypeList'=>PreferenceSetupModel::REQUEST_TYPE_LIST,
             'employeeTypeList'=>PreferenceSetupModel::EMPLOYEE_TYPE_LIST
