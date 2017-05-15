@@ -1,4 +1,6 @@
 <?php
+$this->headScript()->appendFile($this->basePath('assets/global/plugins/combodate/js/moment.min.js'));
+$this->headScript()->appendFile($this->basePath('assets/global/plugins/combodate/js/combodate.js'));
 $this->headScript()->appendFile($this->basePath('js/system/preference-setup/add.js'));
 
 $form->setAttribute('role', 'form');
@@ -8,9 +10,7 @@ $preferenceName = $form->get('preferenceName');
 $preferenceName->setValueOptions($preferenceNameList);
 $preferenceConstraint = $form->get('preferenceConstraint');
 $preferenceConstraint->setValueOptions($preferenceConstraintList);
-$constraintType = $form->get('constraintType');
-$constraintType->setValueOptions($constraintTypeList);
-$constraitnValue = $form->get('constraintValue');
+$constraintValue = $form->get('constraintValue');
 $preferenceCondition = $form->get('preferenceCondition');
 $preferenceCondition->setValueOptions($preferenceConditionList);
 $requestType = $form->get('requestType');
@@ -78,17 +78,11 @@ if ($this->messages) {
                 </div>
                 <div class="row">
                     <div class="col-sm-4">
-                        <div class="form-group <?= empty($constraintType->getMessages()) ? "" : "has-error" ?>">
-                            <?php print $this->formLabel($constraintType); ?>
-                            <?php print $this->formElement($constraintType); ?>
-                            <?php print $this->formElementErrors()->render($constraintType, ['class' => 'help-block error']); ?>
-                        </div>
-                    </div>
-                    
-                    <div class="col-sm-4">
                         <div class="form-group">
-                            <label>Constraint Value</label>
-                            <input type="text" class="form-control" name="constraintValue"/>
+                            <?php print $this->formLabel($constraintValue); ?>
+                            <div class="input-group dropdown-select">
+                                <?php print $this->formElement($constraintValue); ?>
+                            </div>
                         </div>
                     </div>
                     <div class="col-sm-4">
@@ -98,8 +92,6 @@ if ($this->messages) {
                             <?php print $this->formElementErrors()->render($preferenceCondition, ['class' => 'help-block error']); ?>
                         </div>
                     </div>
-                </div>
-                <div class="row">
                     <div class="col-sm-4">
                         <div class="form-group <?= empty($requestType->getMessages()) ? "" : "has-error" ?>">
                             <?php print $this->formLabel($requestType); ?>
@@ -107,6 +99,8 @@ if ($this->messages) {
                             <?php print $this->formElementErrors()->render($requestType, ['class' => 'help-block error']); ?>
                         </div>
                     </div>
+                </div>
+                <div class="row">
                     <div class="col-sm-4">
                         <div class="form-group <?= empty($employeeType->getMessages()) ? "" : "has-error" ?>">
                             <?php print $this->formLabel($employeeType); ?>

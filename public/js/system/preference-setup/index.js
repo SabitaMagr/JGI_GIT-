@@ -21,7 +21,6 @@
                 {field: "COMPANY_NAME", title: "Company", width: 150},
                 {field: "PREFERENCE_NAME", title: "Preference Name", width: 150},
                 {field: "PREFERENCE_CONSTRAINT", title: "Preference Constraint", width: 170},
-                {field: "CONSTRAINT_TYPE", title: "Constraint Type", width: 140},
                 {field: "CONSTRAINT_VALUE", title: "Constraint Value", width: 140},
                 {field: "PREFERENCE_CONDITION", title: "Preference Condition", width: 170},
                 {title: "Action", width: 120}
