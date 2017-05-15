@@ -214,7 +214,7 @@ class OvertimeStatus extends AbstractActionController
                             }
                             if($result==1){
                                 if($inTime!=$shiftStartTime && $inTime<$shiftStartTime){
-                                    $dtlTotalHr = Helper::minutesToHours(round(abs($outTime - $shiftEndTime) / 60,2));
+                                    $dtlTotalHr = Helper::minutesToHours(round(abs($shiftStartTime - $inTime) / 60,2));
                                     $overtimeDetailModel->overtimeId = $overtimeModel->overtimeId;
                                     $overtimeDetailModel->detailId = ((int) Helper::getMaxId($this->adapter, OvertimeDetail::TABLE_NAME, OvertimeDetail::DETAIL_ID)) + 1;
                                     $overtimeDetailModel->startTime = Helper::getExpressionTime($employeeRow['IN_TIME']);
