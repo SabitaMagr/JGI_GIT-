@@ -33,6 +33,7 @@ class PreferenceSetup extends AbstractActionController{
             $row['REQUEST_TYPE']=PreferenceSetupModel::REQUEST_TYPE_LIST[$row['REQUEST_TYPE']];
             array_push($list, $row);
         }
+//        print_r($list);die();
         return Helper::addFlashMessagesToArray($this, ['list'=>$list]);
     }
     public function initializeForm(){
@@ -52,8 +53,8 @@ class PreferenceSetup extends AbstractActionController{
                 $preferenceSetup->preferenceId = ((int) Helper::getMaxId($this->adapter, "HRIS_PREFERENCE_SETUP", "PREFERENCE_ID")) + 1;
                 $preferenceSetup->createdDate = Helper::getcurrentExpressionDate();
                 $preferenceSetup->createdBy = $this->employeeId;
+                $preferenceSetup->constraintValue = Helper::getExpressionTime($preferenceSetup->constraintValue, Helper::ORACLE_TIMESTAMP_FORMAT);
                 $preferenceSetup->status = 'E';
-
                 $this->repository->add($preferenceSetup);
 
                 $this->flashmessenger()->addMessage("Preference Detail Successfully Added!!!");
@@ -90,6 +91,7 @@ class PreferenceSetup extends AbstractActionController{
                 $preferenceSetup->exchangeArrayFromForm($this->form->getData());
                 $preferenceSetup->modifiedDate = Helper::getcurrentExpressionDate();
                 $preferenceSetup->modifiedBy = $this->employeeId;
+                $preferenceSetup->constraintValue = Helper::getExpressionTime($preferenceSetup->constraintValue, Helper::ORACLE_TIMESTAMP_FORMAT);
 
                 $this->repository->edit($preferenceSetup,$id);
 

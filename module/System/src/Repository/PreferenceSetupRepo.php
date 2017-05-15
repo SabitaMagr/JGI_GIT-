@@ -1,11 +1,12 @@
 <?php
+
 namespace System\Repository;
 
 use Application\Helper\EntityHelper;
 use Application\Model\Model;
 use Application\Repository\RepositoryInterface;
-use System\Model\PreferenceSetup;
 use Setup\Model\Company;
+use System\Model\PreferenceSetup;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Sql\Join;
 use Zend\Db\Sql\Predicate\Expression;
@@ -35,11 +36,12 @@ class PreferenceSetupRepo implements RepositoryInterface {
     public function fetchAll() {
         $sql = new Sql($this->adapter);
         $select = $sql->select();
+        $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(PreferenceSetup::class, null, null, null, [PreferenceSetup::CONSTRAINT_VALUE], null, "P", false), false);
         $select->from(['P' => PreferenceSetup::TABLE_NAME]);
         $companyIdKey = Company::COMPANY_ID;
         $companyNameKey = Company::COMPANY_NAME;
         $select->join(['C' => Company::TABLE_NAME], "C.{$companyIdKey} = P.{$companyIdKey}", [Company::COMPANY_NAME => new Expression("INITCAP(C.{$companyNameKey})")], Join::JOIN_LEFT);
-        $select->where(['P.' . PreferenceSetup::STATUS => EntityHelper::STATUS_ENABLED]);
+        $select->where(['P.' . PreferenceSetup::STATUS."='E'"]);
         $select->order([
             'P.' . PreferenceSetup::PREFERENCE_NAME => Select::ORDER_ASCENDING,
             'C.' . Company::COMPANY_NAME => Select::ORDER_ASCENDING
@@ -50,23 +52,32 @@ class PreferenceSetupRepo implements RepositoryInterface {
     }
 
     public function fetchById($id) {
-        $rowset = $this->tableGateway->select([PreferenceSetup::PREFERENCE_ID => $id]);
+        $rowset = $this->tableGateway->select(function(Select $select)use($id){
+            $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(PreferenceSetup::class, null, null, null, [PreferenceSetup::CONSTRAINT_VALUE], null, null, false), false);
+            $select->where([PreferenceSetup::PREFERENCE_ID => $id]);
+        });
         return $rowset->current();
     }
 
     public function delete($id) {
         $this->tableGateway->update([PreferenceSetup::STATUS => 'D'], [PreferenceSetup::PREFERENCE_ID => $id]);
     }
-    
-    public function fetchByPreferenceName($preferenceName){
-        $result = $this->tableGateway->select(function(Select $select)use($preferenceName){
-            $select->where([PreferenceSetup::PREFERENCE_NAME=>$preferenceName, PreferenceSetup::STATUS=>'E']);
-            $select->order(PreferenceSetup::PREFERENCE_ID." ASC");
+
+    public function fetchByPreferenceName($preferenceName) {
+        $result = $this->tableGateway->select(function(Select $select)use($preferenceName) {
+            $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(PreferenceSetup::class, null, null, null, [PreferenceSetup::CONSTRAINT_VALUE], null, null, false), false);
+            $select->where([PreferenceSetup::PREFERENCE_NAME => $preferenceName, PreferenceSetup::STATUS => 'E']);
+            $select->order(PreferenceSetup::PREFERENCE_ID . " ASC");
         });
         return $result;
     }
-    public function getByCondition($preferenceCondition,$preferenceName){
-        $result = $this->tableGateway->select([PreferenceSetup::PREFERENCE_CONDITION=>$preferenceCondition,PreferenceSetup::PREFERENCE_NAME=>$preferenceName, PreferenceSetup::STATUS=>'E']);
+
+    public function getByCondition($preferenceCondition, $preferenceName) {
+        $result = $this->tableGateway->select(function(Select $select)use($preferenceCondition, $preferenceName){
+            $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(PreferenceSetup::class, null, null, null, [PreferenceSetup::CONSTRAINT_VALUE], null, null, false), false);
+            $select->where([PreferenceSetup::PREFERENCE_CONDITION => $preferenceCondition, PreferenceSetup::PREFERENCE_NAME => $preferenceName, PreferenceSetup::STATUS => 'E']);
+        });
         return $result->current();
     }
+
 }
