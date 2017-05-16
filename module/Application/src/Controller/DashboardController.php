@@ -73,7 +73,8 @@ class DashboardController extends AbstractActionController {
         $this->employeeId = $employeeId;
         $fiscalYear = $auth->getStorage()->read()['fiscal_year'];
         $dahsboardRepo = new DashboardRepository($this->adapter);
-        $employeeDetail = $dahsboardRepo->fetchEmployeeDashboardDetail($employeeId, $fiscalYear['START_DATE'], $fiscalYear['END_DATE']);
+//        $employeeDetail = $dahsboardRepo->fetchEmployeeDashboardDetail($employeeId, $fiscalYear['START_DATE'], $fiscalYear['END_DATE']);
+        $employeeDetail = $dahsboardRepo->fetchEmployeeDashboardDetail($employeeId, Helper::getCurrentDate(), Helper::getCurrentDate());
 
 
         $view = new ViewModel(Helper::addFlashMessagesToArray($this, array(
