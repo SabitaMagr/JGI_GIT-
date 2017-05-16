@@ -89,7 +89,7 @@ class EntityHelper {
         return Helper::extractDbData($zendResult, true);
     }
 
-    public static function getColumnNameArrayWithOracleFns(string $requestedName, array $initCapColumnList = null, array $dateColumnList = null, array $timeColumnList = null, array $timeIntervalColumnList = null, array $otherColumnList = null, string $shortForm = null, $selectedOnly = false, $inStringForm = false) {
+    public static function getColumnNameArrayWithOracleFns(string $requestedName, array $initCapColumnList = null, array $dateColumnList = null, array $timeColumnList = null, array $timeIntervalColumnList = null, array $otherColumnList = null, string $shortForm = null, $selectedOnly = false, $inStringForm = false,array $minuteToHourColumnList = null) {
         $refl = new ReflectionClass($requestedName);
         $table = $refl->newInstanceArgs();
 
@@ -126,6 +126,11 @@ class EntityHelper {
                 array_push($objCols, $tempCol);
                 continue;
             }
+            if($minuteToHourColumnList!=null && in_array($tempCol,$minuteToHourColumnList)){
+                $minuteToHour = self::minuteToHourColumn($tempCol, $shortForm);
+                array_push($objCols, $inStringForm ? $minuteToHour->getExpression() : $minuteToHour);
+                continue;
+            }
 
 
             if (!$selectedOnly) {
@@ -142,6 +147,13 @@ class EntityHelper {
             $pre = $shortForm . ".";
         }
         return "INITCAP(TO_CHAR({$pre}{$columnName}, '{$format}')) AS {$columnName}";
+    }
+    public static function minuteToHourColumn($columnName,$shortForm=null){
+        $pre = "";
+        if ($shortForm != null && sizeof($shortForm) != 0) {
+            $pre = $shortForm . ".";
+        }
+        return "TRUNC({$pre}{$columnName}/60,0)||':'||MOD({$pre}{$columnName},60) AS {$columnName}";
     }
 
     public static function getSearchData($adapter) {

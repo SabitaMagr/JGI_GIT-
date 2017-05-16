@@ -48,7 +48,7 @@ class OvertimeApply extends AbstractActionController{
                 $model->employeeId = $postData['employeeId'];
                 $model->requestedDate = Helper::getcurrentExpressionDate();
                 $model->status = 'RQ';
-                $model->allTotalHour = Helper::getExpressionTime($postDataArray['allTotalHour'], Helper::ORACLE_TIMESTAMP_FORMAT);
+                $model->allTotalHour = Helper::hoursToMinutes($postDataArray['allTotalHour']);
                 $this->overtimeRepository->add($model);
                 
                 $overtimeDetailNum = $postDataArray['overtimeDetailNum'];
@@ -61,7 +61,7 @@ class OvertimeApply extends AbstractActionController{
                     $overtimeDetailModel->detailId = ((int) Helper::getMaxId($this->adapter, OvertimeDetail::TABLE_NAME, OvertimeDetail::DETAIL_ID)) + 1;
                     $overtimeDetailModel->startTime = Helper::getExpressionTime($startTime);
                     $overtimeDetailModel->endTime = Helper::getExpressionTime($endTime);
-                    $overtimeDetailModel->totalHour = Helper::getExpressionTime($totalHour, Helper::ORACLE_TIMESTAMP_FORMAT);
+                    $overtimeDetailModel->totalHour = Helper::hoursToMinutes($totalHour);
                     $overtimeDetailModel->status = 'E';
                     $overtimeDetailModel->createdBy = $this->employeeId;
                     $overtimeDetailModel->createdDate = Helper::getcurrentExpressionDate();

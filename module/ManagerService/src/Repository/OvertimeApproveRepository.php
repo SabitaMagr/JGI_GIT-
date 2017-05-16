@@ -43,7 +43,7 @@ class OvertimeApproveRepository implements RepositoryInterface{
     public function fetchById($id) {
         $sql = new Sql($this->adapter);
         $select = $sql->select();
-        $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(Overtime::class, null, [Overtime::OVERTIME_DATE,Overtime::REQUESTED_DATE, Overtime::RECOMMENDED_DATE, Overtime::APPROVED_DATE, Overtime::MODIFIED_DATE], NULL, [Overtime::TOTAL_HOUR], NULL, "OT"), false);
+        $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(Overtime::class, null, [Overtime::OVERTIME_DATE,Overtime::REQUESTED_DATE, Overtime::RECOMMENDED_DATE, Overtime::APPROVED_DATE, Overtime::MODIFIED_DATE], NULL,NULL, NULL, "OT",false,false,[Overtime::TOTAL_HOUR]), false);
 
         $select->from(['OT' => Overtime::TABLE_NAME])
                 ->join(['E' => HrEmployees::TABLE_NAME], "E.".HrEmployees::EMPLOYEE_ID."=OT.". Overtime::EMPLOYEE_ID, ["FIRST_NAME" => new Expression("INITCAP(E.FIRST_NAME)"),"MIDDLE_NAME" => new Expression("INITCAP(E.MIDDLE_NAME)"),"LAST_NAME" => new Expression("INITCAP(E.LAST_NAME)")])
@@ -75,7 +75,9 @@ class OvertimeApproveRepository implements RepositoryInterface{
                     OT.STATUS,
                     OT.RECOMMENDED_REMARKS,
                     OT.APPROVED_REMARKS,
-                    TO_CHAR(OT.TOTAL_HOUR, 'HH24:MI') AS TOTAL_HOUR,
+                    TRUNC(OT.TOTAL_HOUR/60,0)
+                  ||':'
+                  ||MOD(OT.TOTAL_HOUR,60) AS TOTAL_HOUR,
                     INITCAP(TO_CHAR(OT.RECOMMENDED_DATE, 'DD-MON-YYYY')) AS RECOMMENDED_DATE,
                     INITCAP(TO_CHAR(OT.APPROVED_DATE, 'DD-MON-YYYY')) AS APPROVED_DATE,
                     INITCAP(TO_CHAR(OT.MODIFIED_DATE, 'DD-MON-YYYY')) AS MODIFIED_DATE,

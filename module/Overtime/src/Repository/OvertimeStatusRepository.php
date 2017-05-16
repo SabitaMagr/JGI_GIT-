@@ -69,7 +69,9 @@ class OvertimeStatusRepository implements RepositoryInterface{
                 OT.APPROVED_BY AS APPROVED_BY,
                 OT.RECOMMENDED_REMARKS AS RECOMMENDED_REMARKS,
                 OT.APPROVED_REMARKS AS APPROVED_REMARKS,
-                TO_CHAR(OT.TOTAL_HOUR, 'HH24:MI') AS TOTAL_HOUR,
+                TRUNC(OT.TOTAL_HOUR/60,0)
+                  ||':'
+                  ||MOD(OT.TOTAL_HOUR,60) AS TOTAL_HOUR,
                 E.FIRST_NAME,E.MIDDLE_NAME,E.LAST_NAME,
                 INITCAP(E1.FIRST_NAME) AS FN1,INITCAP(E1.MIDDLE_NAME) AS MN1,INITCAP(E1.LAST_NAME) AS LN1,
                 INITCAP(E2.FIRST_NAME) AS FN2,INITCAP(E2.MIDDLE_NAME) AS MN2,INITCAP(E2.LAST_NAME) AS LN2,
@@ -167,6 +169,7 @@ class OvertimeStatusRepository implements RepositoryInterface{
         $sql .=" ORDER BY OT.REQUESTED_DATE DESC";
 
         $statement = $this->adapter->query($sql);
+//        print_r($statement->getSql()); die();
         $result = $statement->execute();
         return $result;
     }
