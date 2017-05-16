@@ -40,6 +40,7 @@ angular.module('hris', [])
                     App.unblockUI("#hris-page-content");
                     console.log(success);
                     $scope.initializekendoGrid(success.data);
+                    window.app.scrollTo('jobHistoryTable');
                 }, function (failure) {
                     App.unblockUI("#hris-page-content");
                     console.log(failure);
