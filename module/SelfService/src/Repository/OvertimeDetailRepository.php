@@ -48,7 +48,7 @@ class OvertimeDetailRepository implements RepositoryInterface{
     }
     public function fetchByOvertimeId($overtimeId){
         return $rowset= $this->tableGateway->select(function(Select $select) use($overtimeId) {
-            $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(OvertimeDetail::class,null,[OvertimeDetail::CREATED_DATE, OvertimeDetail::MODIFIED_DATE],[OvertimeDetail::START_TIME, OvertimeDetail::END_TIME],[OvertimeDetail::TOTAL_HOUR]),false);
+            $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(OvertimeDetail::class,null,[OvertimeDetail::CREATED_DATE, OvertimeDetail::MODIFIED_DATE],[OvertimeDetail::START_TIME, OvertimeDetail::END_TIME],null,null,null,false,false,[OvertimeDetail::TOTAL_HOUR]),false);
             $select->where([OvertimeDetail::STATUS=>'E',OvertimeDetail::OVERTIME_ID=>$overtimeId]);
             $select->order(OvertimeDetail::DETAIL_ID." ASC");
         });
