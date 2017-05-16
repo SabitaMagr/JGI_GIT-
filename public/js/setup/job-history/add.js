@@ -157,10 +157,26 @@
         $fromPositionId.on("change", function () {
             $toPositionId.val($(this).val()).trigger("change");
         });
-        app.setLoadingOnSubmit("jobHistory-form");
+        app.setLoadingOnSubmit("jobHistory-form",function(){
+        localStorage.setItem("ServiceJobHistorylastEmployeeId", $employeeId.val());
+            return true;
+        });
+        
         $('form').bind('submit', function () {
             $(this).find(':disabled').removeAttr('disabled');
         });
+        
+        //localstroage if set
+        var lastEmpId=localStorage.getItem("ServiceJobHistorylastEmployeeId");
+        if(lastEmpId!=null){
+            $employeeId.val(lastEmpId).change();
+            app.floatingProfile.setDataFromRemote(lastEmpId);
+            if (!editMode) {
+                pullEmployeeDetail(lastEmpId);
+            }
+        console.log(lastEmpId);
+        }
+        
 
     });
 })(window.jQuery, window.app);
