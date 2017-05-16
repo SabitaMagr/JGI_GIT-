@@ -1,5 +1,3 @@
--- 1
--- NEO_HRIS | SOMKALA PACHHAI | 11 MAY 2017
 alter table 
    HRIS_OVERTIME_DETAIL
 modify 
