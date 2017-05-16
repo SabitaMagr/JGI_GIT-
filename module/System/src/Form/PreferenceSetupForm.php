@@ -38,7 +38,7 @@ class PreferenceSetupForm{
     
     /**
      * @Annotation\Type("Zend\Form\Element\Select")
-     * @Annotation\Required({"required":"true"})
+     * @Annotation\Required(false)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"disable_inarray_validator":"true","label":"Constraint Type"})
      * @Annotation\Attributes({ "id":"constraintType","class":"form-control"})
@@ -77,7 +77,7 @@ class PreferenceSetupForm{
      * @Annotation\Required(true)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Constraint Value"})
-     * @Annotation\Attributes({ "id":"form-constraintValue", "class":"form-control" })
+     * @Annotation\Attributes({ "id":"form-constraintValue","data-format":"h:mm", "data-template":"hh : mm", "class":"form-control" })
      */
     public $constraintValue;
 
