@@ -34,6 +34,46 @@
             grid.saveAsExcel();
         });
         window.app.UIConfirmations();
+
+
+        //saerch in kendo grid
+
+        $("#kendoSearchField").keyup(function () {
+            var val = $('#kendoSearchField').val();
+            console.log(val);
+            $("#assetSetupTable").data("kendoGrid").dataSource.filter({
+                logic: "or",
+                filters: [
+                    {
+                        field: "ASSET_EDESC",
+                        operator: "contains",
+                        value: val
+                    },
+                    {
+                        field: "ASSET_GROUP_EDESC",
+                        operator: "contains",
+                        value: val
+                    },
+                    {
+                        field: "BRAND_NAME",
+                        operator: "contains",
+                        value: val
+                    },
+                    {
+                        field: "MODEL_NO",
+                        operator: "contains",
+                        value: val
+                    },
+                    {
+                        field: "QUANTITY",
+                        operator: "contains",
+                        value: val
+                    },
+                ]
+            });
+        });
+
+
     });
 
 })(window.jQuery);
