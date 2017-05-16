@@ -159,6 +159,7 @@
         });
         app.setLoadingOnSubmit("jobHistory-form",function(){
         localStorage.setItem("ServiceJobHistorylastEmployeeId", $employeeId.val());
+            return true;
         });
         
         $('form').bind('submit', function () {
