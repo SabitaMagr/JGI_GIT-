@@ -10,6 +10,7 @@ class DashboardRepository implements RepositoryInterface {
 
     private $adapter;
     private $fiscalYr;
+
     public function __construct(\Zend\Db\Adapter\AdapterInterface $adapter) {
         $this->adapter = $adapter;
         $auth = new AuthenticationService();
@@ -95,9 +96,9 @@ class DashboardRepository implements RepositoryInterface {
                               S.START_TIME,
                               A.IN_TIME,
                               (((TRUNC (S.START_TIME) - S.START_TIME)) - (TRUNC (A.IN_TIME) - A.IN_TIME) ) LATE_HRS,
-                              S.LATE_IN - TRUNC (S.LATE_IN) LATE_GRACE
+                              S.LATE_IN_NO - TRUNC (S.LATE_IN_NO) LATE_GRACE
                       FROM HRIS_ATTENDANCE_DETAIL A,
-                           HRIS_SHIFTS S
+                           (SELECT S.*,TO_TIMESTAMP( LPAD(TRUNC(NVL(S.LATE_IN,0)/60,0),2, 0)||':'||LPAD(MOD(NVL(S.LATE_IN,0),60),2, 0),'HH24:MI') AS LATE_IN_NO FROM HRIS_SHIFTS S) S
                       WHERE 1 = 1
                         AND A.EMPLOYEE_ID = {$employeeId}
                         AND A.SHIFT_ID = S.SHIFT_ID
@@ -112,9 +113,9 @@ class DashboardRepository implements RepositoryInterface {
                               S.END_TIME,
                               A.OUT_TIME,
                               ((TRUNC (A.OUT_TIME) - A.OUT_TIME) - ((TRUNC (S.END_TIME) - S.END_TIME)) ) EARLY_HRS,
-                              S.EARLY_OUT - TRUNC (S.EARLY_OUT) EARLY_GRACE
+                              S.EARLY_OUT_NO - TRUNC (S.EARLY_OUT_NO) EARLY_GRACE
                       FROM HRIS_ATTENDANCE_DETAIL A,
-                           HRIS_SHIFTS S
+                           (SELECT S.*,TO_TIMESTAMP( LPAD(TRUNC(NVL(S.EARLY_OUT,0)/60,0),2, 0)||':'||LPAD(MOD(NVL(S.EARLY_OUT,0),60),2, 0),'HH24:MI') AS EARLY_OUT_NO FROM HRIS_SHIFTS S) S
                       WHERE 1 = 1
                         AND A.EMPLOYEE_ID = {$employeeId}
                         AND A.SHIFT_ID = S.SHIFT_ID
