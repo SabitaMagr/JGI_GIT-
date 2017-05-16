@@ -74,7 +74,7 @@ class JobHistoryController extends AbstractActionController {
                 $jobHistory->status='E';
                 $this->repository->add($jobHistory);
                 $this->flashmessenger()->addMessage("Job History Successfully added!!!");
-                return $this->redirect()->toRoute("jobHistory");
+                return $this->redirect()->toRoute("jobHistory", ['action' => 'add']);
             }
         }
         return Helper::addFlashMessagesToArray(
