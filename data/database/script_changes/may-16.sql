@@ -1,8 +1,6 @@
--- NEO_HRIS |Somkala Pachhai | may 16
 ALTER TABLE HRIS_OVERTIME MODIFY TOTAL_HOUR NUMBER(7,0);
 
 ALTER TABLE HRIS_OVERTIME_DETAIL MODIFY TOTAL_HOUR NUMBER(7,0);
-
 
 --to modify on hris_shift first need to disable constraint and after inserting new record enable it
 ALTER TABLE HRIS_SHIFTS MODIFY LATE_IN NUMBER(7,0);
