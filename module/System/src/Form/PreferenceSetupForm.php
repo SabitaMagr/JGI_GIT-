@@ -74,7 +74,7 @@ class PreferenceSetupForm{
     
     /**
      * @Annotion\Type("Zend\Form\Element\Text")
-     * @Annotation\Required(true)
+     * @Annotation\Required(false)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Constraint Value"})
      * @Annotation\Attributes({ "id":"form-constraintValue","data-format":"H:mm", "data-template":"HH : mm", "class":"form-control" })

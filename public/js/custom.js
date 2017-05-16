@@ -592,8 +592,16 @@ window.app = (function ($, toastr, App) {
 
         });
     };
-    var setLoadingOnSubmit = function (formId) {
+    var setLoadingOnSubmit = function (formId, callback) {
         $('#' + formId).submit(function (e) {
+
+            if (typeof callback !== "undefined") {
+                var returnBool = callback();
+                if (!returnBool) {
+                    return false;
+                }
+            }
+
             App.blockUI({target: "#hris-page-content"});
         });
     }
