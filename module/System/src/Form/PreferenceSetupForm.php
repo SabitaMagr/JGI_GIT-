@@ -77,7 +77,7 @@ class PreferenceSetupForm{
      * @Annotation\Required(true)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Constraint Value"})
-     * @Annotation\Attributes({ "id":"form-constraintValue","data-format":"HH : mm", "data-template":"HH : mm", "class":"form-control" })
+     * @Annotation\Attributes({ "id":"form-constraintValue","data-format":"H:mm", "data-template":"HH : mm", "class":"form-control" })
      */
     public $constraintValue;
 

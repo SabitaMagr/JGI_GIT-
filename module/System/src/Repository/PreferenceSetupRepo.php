@@ -36,7 +36,7 @@ class PreferenceSetupRepo implements RepositoryInterface {
     public function fetchAll() {
         $sql = new Sql($this->adapter);
         $select = $sql->select();
-        $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(PreferenceSetup::class, null, null, null, [PreferenceSetup::CONSTRAINT_VALUE], null, "P", false), false);
+        $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(PreferenceSetup::class, null, null, null, null, null, "P", false,false,[PreferenceSetup::CONSTRAINT_VALUE]), false);
         $select->from(['P' => PreferenceSetup::TABLE_NAME]);
         $companyIdKey = Company::COMPANY_ID;
         $companyNameKey = Company::COMPANY_NAME;
@@ -53,7 +53,7 @@ class PreferenceSetupRepo implements RepositoryInterface {
 
     public function fetchById($id) {
         $rowset = $this->tableGateway->select(function(Select $select)use($id){
-            $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(PreferenceSetup::class, null, null, null, [PreferenceSetup::CONSTRAINT_VALUE], null, null, false), false);
+            $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(PreferenceSetup::class, null, null, null, null, null, null, false,false,[PreferenceSetup::CONSTRAINT_VALUE]), false);
             $select->where([PreferenceSetup::PREFERENCE_ID => $id]);
         });
         return $rowset->current();
@@ -65,7 +65,7 @@ class PreferenceSetupRepo implements RepositoryInterface {
 
     public function fetchByPreferenceName($preferenceName) {
         $result = $this->tableGateway->select(function(Select $select)use($preferenceName) {
-            $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(PreferenceSetup::class, null, null, null, [PreferenceSetup::CONSTRAINT_VALUE], null, null, false), false);
+            $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(PreferenceSetup::class, null, null, null, null, null, null, false,false,[PreferenceSetup::CONSTRAINT_VALUE]), false);
             $select->where([PreferenceSetup::PREFERENCE_NAME => $preferenceName, PreferenceSetup::STATUS => 'E']);
             $select->order(PreferenceSetup::PREFERENCE_ID . " ASC");
         });
@@ -74,7 +74,7 @@ class PreferenceSetupRepo implements RepositoryInterface {
 
     public function getByCondition($preferenceCondition, $preferenceName) {
         $result = $this->tableGateway->select(function(Select $select)use($preferenceCondition, $preferenceName){
-            $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(PreferenceSetup::class, null, null, null, [PreferenceSetup::CONSTRAINT_VALUE], null, null, false), false);
+            $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(PreferenceSetup::class, null, null, null, null, null, null, false,false,[PreferenceSetup::CONSTRAINT_VALUE]), false);
             $select->where([PreferenceSetup::PREFERENCE_CONDITION => $preferenceCondition, PreferenceSetup::PREFERENCE_NAME => $preferenceName, PreferenceSetup::STATUS => 'E']);
         });
         return $result->current();

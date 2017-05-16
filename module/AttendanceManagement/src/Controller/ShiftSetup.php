@@ -63,10 +63,10 @@ class ShiftSetup extends AbstractActionController {
                 $shift->createdBy = $this->employeeId;
                 $shift->status = 'E';
 
-                $shift->actualWorkingHr = Helper::getExpressionTime($shift->actualWorkingHr, Helper::ORACLE_TIMESTAMP_FORMAT);
-                $shift->totalWorkingHr = Helper::getExpressionTime($shift->totalWorkingHr, Helper::ORACLE_TIMESTAMP_FORMAT);
-                $shift->lateIn = Helper::getExpressionTime($shift->lateIn, Helper::ORACLE_TIMESTAMP_FORMAT);
-                $shift->earlyOut = Helper::getExpressionTime($shift->earlyOut, Helper::ORACLE_TIMESTAMP_FORMAT);
+                $shift->actualWorkingHr = Helper::hoursToMinutes($shift->actualWorkingHr);
+                $shift->totalWorkingHr = Helper::hoursToMinutes($shift->totalWorkingHr);
+                $shift->lateIn = Helper::hoursToMinutes($shift->lateIn);
+                $shift->earlyOut = Helper::hoursToMinutes($shift->earlyOut);
 
 
 //                $shift->shiftLname=mb_convert_encoding($shift->shiftLname, 'UTF-16LE');
@@ -118,11 +118,10 @@ class ShiftSetup extends AbstractActionController {
                 $shift->modifiedDt = Helper::getcurrentExpressionDate();
                 $shift->modifiedBy = $this->employeeId;
 
-                $shift->actualWorkingHr = Helper::getExpressionTime($shift->actualWorkingHr, Helper::ORACLE_TIMESTAMP_FORMAT);
-                $shift->totalWorkingHr = Helper::getExpressionTime($shift->totalWorkingHr, Helper::ORACLE_TIMESTAMP_FORMAT);
-                $shift->lateIn = Helper::getExpressionTime($shift->lateIn, Helper::ORACLE_TIMESTAMP_FORMAT);
-                $shift->earlyOut = Helper::getExpressionTime($shift->earlyOut, Helper::ORACLE_TIMESTAMP_FORMAT);
-
+                $shift->actualWorkingHr = Helper::hoursToMinutes($shift->actualWorkingHr);
+                $shift->totalWorkingHr = Helper::hoursToMinutes($shift->totalWorkingHr);
+                $shift->lateIn = Helper::hoursToMinutes($shift->lateIn);
+                $shift->earlyOut = Helper::hoursToMinutes($shift->earlyOut);
 
 
                 $this->repository->edit($shift, $id);

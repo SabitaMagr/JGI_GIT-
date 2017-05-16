@@ -53,7 +53,7 @@ class PreferenceSetup extends AbstractActionController{
                 $preferenceSetup->preferenceId = ((int) Helper::getMaxId($this->adapter, "HRIS_PREFERENCE_SETUP", "PREFERENCE_ID")) + 1;
                 $preferenceSetup->createdDate = Helper::getcurrentExpressionDate();
                 $preferenceSetup->createdBy = $this->employeeId;
-                $preferenceSetup->constraintValue = Helper::getExpressionTime($preferenceSetup->constraintValue, Helper::ORACLE_TIMESTAMP_FORMAT);
+                $preferenceSetup->constraintValue = Helper::hoursToMinutes($preferenceSetup->constraintValue);
                 $preferenceSetup->status = 'E';
                 $this->repository->add($preferenceSetup);
 
@@ -91,7 +91,7 @@ class PreferenceSetup extends AbstractActionController{
                 $preferenceSetup->exchangeArrayFromForm($this->form->getData());
                 $preferenceSetup->modifiedDate = Helper::getcurrentExpressionDate();
                 $preferenceSetup->modifiedBy = $this->employeeId;
-                $preferenceSetup->constraintValue = Helper::getExpressionTime($preferenceSetup->constraintValue, Helper::ORACLE_TIMESTAMP_FORMAT);
+                $preferenceSetup->constraintValue = Helper::hoursToMinutes($preferenceSetup->constraintValue);
 
                 $this->repository->edit($preferenceSetup,$id);
 
