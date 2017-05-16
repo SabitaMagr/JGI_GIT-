@@ -69,7 +69,7 @@ class ShiftForm {
      * @Annotation\Required(false)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Late In"})
-     * @Annotation\Attributes({ "id":"lateIn","data-format":"h:mm", "data-template":"hh : mm", "class":"form-control"})
+     * @Annotation\Attributes({ "id":"lateIn","data-format":"HH : mm", "data-template":"HH : mm", "class":"form-control"})
      */
     public $lateIn;
 
@@ -78,7 +78,7 @@ class ShiftForm {
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Early Out"})
      * @Annotation\Required(false)
-     * @Annotation\Attributes({ "id":"earlyOut","data-format":"h:mm", "data-template":"hh : mm", "class":"form-control"})
+     * @Annotation\Attributes({ "id":"earlyOut","data-format":"HH : mm", "data-template":"HH : mm", "class":"form-control"})
      */
     public $earlyOut;
 
