@@ -85,7 +85,22 @@ return [
                         'action' => 'index',
                     ]
                 ],
+            ],
+            'calculateOvertime'=>[
+                'type' => Segment::class,
+                'options' => [
+                    'route' => '/attendance/calculateOvertime[/:action[/:id]]',
+                    'constants' => [
+                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'id' => '[0-9]+',
+                    ],
+                    'defaults' => [
+                        'controller' => Controller\CalculateOvertime::class,
+                        'action' => 'index',
+                    ]
+                ],
             ]
+            
         ],
     ],
     'navigation' => [
@@ -197,7 +212,33 @@ return [
                 ],
             ],
         ],
-
+        'calculateOvertime' => [
+            [
+                'label' => 'Overtime Report',
+                'route' => 'calculateOvertime',
+            ],
+            [
+                'label' => 'Overtime Report',
+                'route' => 'calculateOvertime',
+                'pages' => [
+                    [
+                        'label' => 'List',
+                        'route' => 'calculateOvertime',
+                        'action' => 'index',
+                    ],
+                    [
+                        'label' => 'Add',
+                        'route' => 'calculateOvertime',
+                        'action' => 'add',
+                    ],
+                    [
+                        'label' => 'Detail',
+                        'route' => 'calculateOvertime',
+                        'action' => 'view',
+                    ],
+                ],
+            ],
+        ],
     ],
 
     'controllers' => [
@@ -207,6 +248,7 @@ return [
             Controller\ShiftSetup::class=>ControllerFactory::class,
             Controller\AttendanceStatus::class=>ControllerFactory::class,
             Controller\DailyAttendance::class=>ControllerFactory::class,
+            Controller\CalculateOvertime::class=>ControllerFactory::class,
         ],
 
     ],
