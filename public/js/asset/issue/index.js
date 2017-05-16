@@ -68,6 +68,47 @@
           });
 
 
+          $("#kendoSearchField").keyup(function () {
+            var val = $('#kendoSearchField').val();
+            console.log(val);
+            $("#assetIssueTable").data("kendoGrid").dataSource.filter({
+                logic: "or",
+                filters: [
+                    {
+                        field: "ASSET_EDESC",
+                        operator: "contains",
+                        value: val
+                    },
+                    {
+                        field: "FIRST_NAME",
+                        operator: "contains",
+                        value: val
+                    },
+                    {
+                        field: "ISSUE_DATE",
+                        operator: "contains",
+                        value: val
+                    },
+                    {
+                        field: "QUANTITY",
+                        operator: "contains",
+                        value: val
+                    },
+                    {
+                        field: "RETURN_DATE",
+                        operator: "contains",
+                        value: val
+                    },
+                    {
+                        field: "RETURNED_DATE",
+                        operator: "contains",
+                        value: val
+                    },
+                ]
+            });
+        });
+        
+
 
     });
 
