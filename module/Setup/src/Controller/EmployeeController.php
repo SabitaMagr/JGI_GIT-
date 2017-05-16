@@ -329,16 +329,19 @@ class EmployeeController extends AbstractActionController {
                                 $jobHistoryModel->employeeId = $id;
                                 $jobHistoryModel->startDate = Helper::getExpressionDate($formFourModel->joinDate);
                                 $jobHistoryModel->serviceEventTypeId = $formFourModel->appServiceEventTypeId;
+                                
                                 $jobHistoryModel->fromBranchId = $formFourModel->appBranchId;
                                 $jobHistoryModel->fromDepartmentId = $formFourModel->appDepartmentId;
                                 $jobHistoryModel->fromDesignationId = $formFourModel->appDesignationId;
                                 $jobHistoryModel->fromPositionId = $formFourModel->appPositionId;
                                 $jobHistoryModel->fromServiceTypeId = $formFourModel->appServiceTypeId;
+                               
                                 $jobHistoryModel->toBranchId = $formFourModel->appBranchId;
                                 $jobHistoryModel->toDepartmentId = $formFourModel->appDepartmentId;
                                 $jobHistoryModel->toDesignationId = $formFourModel->appDesignationId;
                                 $jobHistoryModel->toPositionId = $formFourModel->appPositionId;
                                 $jobHistoryModel->toServiceTypeId = $formFourModel->appServiceTypeId;
+                                
                                 $jobHistoryModel->status = 'E';
                                 $this->jobHistoryRepo->add($jobHistoryModel);
                             }
