@@ -2,6 +2,8 @@
     'use strict';
     $(document).ready(function () {
 
+        console.log(document.shifts);
+        
         $("#shiftTable").kendoGrid({
             excel: {
                 fileName: "ShiftList.xlsx",
@@ -42,9 +44,66 @@
         }
         ;
         $("#export").click(function (e) {
-            var grid = $("#shiftTable").data("kendoGrid");
-            grid.saveAsExcel();
+//            var grid = $("#shiftTable").data("kendoGrid");
+//            grid.saveAsExcel();
+
+              var rows = [{
+                    cells: [
+                        {value: "Shift"},
+                        {value: "Company"},
+                        {value: "Start Time"},
+                        {value: "End Time"}
+                    ]
+                }];
+            var dataSource = $("#shiftTable").data("kendoGrid").dataSource;
+            var filteredDataSource = new kendo.data.DataSource({
+                data: dataSource.data(),
+                filter: dataSource.filter()
+            });
+
+            filteredDataSource.read();
+            var data = filteredDataSource.view();
+            
+            for (var i = 0; i < data.length; i++) {
+                var dataItem = data[i];
+                rows.push({
+                    cells: [
+//                        {value: dataItem.TRAINING_CODE},
+                        {value: dataItem.SHIFT_ENAME},
+                        {value: dataItem.COMPANY_NAME},
+                        {value: dataItem.START_TIME},
+                        {value: dataItem.END_TIME},
+                
+                    ]
+                });
+            }
+            excelExport(rows);
+            e.preventDefault();
+
+
         });
+        
+        
+          function excelExport(rows) {
+            var workbook = new kendo.ooxml.Workbook({
+                sheets: [
+                    {
+                        columns: [
+                            {autoWidth: true},
+                            {autoWidth: true},
+                            {autoWidth: true},
+                            {autoWidth: true}
+                        ],
+                        title: "Training",
+                        rows: rows
+                    }
+                ]
+            });
+            kendo.saveAs({dataURI: workbook.toDataURL(), fileName: "ShiftList.xlsx"});
+        }
+        
+        
+        
         window.app.UIConfirmations();
     });
 })(window.jQuery, window.app);
