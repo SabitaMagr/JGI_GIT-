@@ -52,7 +52,14 @@
                         {value: "Shift"},
                         {value: "Company"},
                         {value: "Start Time"},
-                        {value: "End Time"}
+                        {value: "End Time"},
+                        {value: "Start Date"},
+                        {value: "End Date"},
+                        {value: "Half Time"},
+                        {value: "Half Day End Time"},
+                        {value: "Late In"},
+                        {value: "Early Out"},
+                        {value: "Remarks"}
                     ]
                 }];
             var dataSource = $("#shiftTable").data("kendoGrid").dataSource;
@@ -68,11 +75,17 @@
                 var dataItem = data[i];
                 rows.push({
                     cells: [
-//                        {value: dataItem.TRAINING_CODE},
                         {value: dataItem.SHIFT_ENAME},
                         {value: dataItem.COMPANY_NAME},
                         {value: dataItem.START_TIME},
                         {value: dataItem.END_TIME},
+                        {value: dataItem.START_DATE},
+                        {value: dataItem.END_DATE},
+                        {value: dataItem.HALF_TIME},
+                        {value: dataItem.HALF_DAY_END_TIME},
+                        {value: dataItem.LATE_IN},
+                        {value: dataItem.EARLY_OUT},
+                        {value: dataItem.REMARKS},
                 
                     ]
                 });
@@ -89,6 +102,13 @@
                 sheets: [
                     {
                         columns: [
+                            {autoWidth: true},
+                            {autoWidth: true},
+                            {autoWidth: true},
+                            {autoWidth: true},
+                            {autoWidth: true},
+                            {autoWidth: true},
+                            {autoWidth: true},
                             {autoWidth: true},
                             {autoWidth: true},
                             {autoWidth: true},
