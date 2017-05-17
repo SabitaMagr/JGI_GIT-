@@ -85,6 +85,9 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
         <td>                 
         #: (NEWS_EDESC == null) ? '-' : NEWS_EDESC #
         </td>
+        <td>                 
+        #: (NEWS_EDESC == null) ? '-' : COMPANY_NAME #
+        </td>
         <td>
         <a class="btn-edit" href="<?= $this->url("news", ["action" => "edit"]); ?>/#:NEWS_ID#" style="height:17px;">
         <i class="fa fa-edit"></i>
