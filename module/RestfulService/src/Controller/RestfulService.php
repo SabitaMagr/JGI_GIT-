@@ -82,6 +82,7 @@ use Training\Repository\TrainingStatusRepository;
 use Application\Repository\ForgotPasswordRepository;
 use Overtime\Repository\OvertimeStatusRepository;
 use SelfService\Repository\OvertimeDetailRepository;
+use SelfService\Repository\OvertimeRepository;
 use ServiceQuestion\Repository\EmpServiceQuestionRepo;
 use Setup\Repository\ServiceQuestionRepository;
 use ServiceQuestion\Repository\EmpServiceQuestionDtlRepo;
@@ -383,6 +384,9 @@ class RestfulService extends AbstractRestfulController {
                         break;
                     case "pullServiceQuestionList":
                         $responseData = $this->pullServiceQuestionList($postedData->data);
+                        break;
+                    case "pullAttendanceWidOvertimeList":
+                        $responseData = $this->pullAttendanceWidOvertimeList($postedData->data);
                         break;
                     
                     default:
@@ -3300,5 +3304,64 @@ class RestfulService extends AbstractRestfulController {
             return false;
         }
     }
+    
+    public function pullAttendanceWidOvertimeList($data) {
+        $attendanceDetailRepository = new AttendanceDetailRepository($this->adapter);
+        $overtimeRepo = new OvertimeRepository($this->adapter);
+        $overtimeDetailRepo = new OvertimeDetailRepository($this->adapter);
+        $employeeId = $data['employeeId'];
+        $companyId = $data['companyId'];
+        $branchId = $data['branchId'];
+        $departmentId = $data['departmentId'];
+        $positionId = $data['positionId'];
+        $designationId = $data['designationId'];
+        $serviceTypeId = $data['serviceTypeId'];
+        $serviceEventTypeId = $data['serviceEventTypeId'];
+        $fromDate = $data['fromDate'];
+        $toDate = $data['toDate'];
+        $status = $data['status'];
+        $employeeTypeId = $data['employeeTypeId'];
+        $overtimeOnly = (int)$data['overtimeOnly'];
 
+        $result = $attendanceDetailRepository->filterRecord($employeeId, $branchId, $departmentId, $positionId, $designationId, $serviceTypeId, $serviceEventTypeId, $fromDate, $toDate, $status, $companyId,$employeeTypeId);
+        $list = [];
+        foreach ($result as $row) {
+            if ($status == 'L') {
+                $row['STATUS'] = "On Leave[" . $row['LEAVE_ENAME'] . "]";
+            } else if ($status == 'H') {
+                $row['STATUS'] = "On Holiday[" . $row['HOLIDAY_ENAME'] . "]";
+            } else if ($status == 'A') {
+                $row['STATUS'] = "Absent";
+            } else if ($status == 'P') {
+                $row['STATUS'] = "Present";
+            } else {
+                if ($row['LEAVE_ENAME'] != null) {
+                    $row['STATUS'] = "On Leave[" . $row['LEAVE_ENAME'] . "]";
+                } else if ($row['HOLIDAY_ENAME'] != null) {
+                    $row['STATUS'] = "On Holiday[" . $row['HOLIDAY_ENAME'] . "]";
+                } else if ($row['HOLIDAY_ENAME'] == null && $row['LEAVE_ENAME'] == null && $row['IN_TIME'] == null) {
+                    $row['STATUS'] = "Absent";
+                } else if ($row['IN_TIME'] != null) {
+                    $row['STATUS'] = "Present";
+                }
+            }
+            $overtime = $overtimeRepo->getAllByEmployeeId($row['EMPLOYEE_ID'],$row['ATTENDANCE_DT'],'AP',true);
+            $overtimeDetailResult = $overtimeDetailRepo->fetchByOvertimeId($overtime['OVERTIME_ID']);
+            $overtimeDetails = [];
+            foreach($overtimeDetailResult as $overtimeDetailRow){
+                array_push($overtimeDetails,$overtimeDetailRow);
+            }
+            $row['DETAILS']=$overtimeDetails;
+            $row['OVERTIME_IN_HOUR']=$overtime['TOTAL_HOUR'];
+            if($overtimeOnly==1 && $overtime!=null){
+                array_push($list, $row);
+            }else if($overtimeOnly==0){
+                array_push($list, $row);
+            }
+        }
+        return [
+            'success' => "true",
+            "data" => $list
+        ];
+    }        
 }

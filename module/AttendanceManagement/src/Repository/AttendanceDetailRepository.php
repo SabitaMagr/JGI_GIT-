@@ -78,7 +78,7 @@ class AttendanceDetailRepository implements RepositoryInterface {
     }
 
     //this function need changes
-    public function filterRecord($employeeId, $branchId, $departmentId, $positionId, $designationId, $serviceTypeId, $serviceEventTypeId, $fromDate, $toDate, $status,$companyId=null) {
+    public function filterRecord($employeeId, $branchId, $departmentId, $positionId, $designationId, $serviceTypeId, $serviceEventTypeId, $fromDate, $toDate, $status,$companyId=null,$employeeTypeId=null) {
         $sql = new Sql($this->adapter);
         $select = $sql->select();
         
@@ -144,8 +144,11 @@ class AttendanceDetailRepository implements RepositoryInterface {
             $select->where(["E.EMPLOYEE_ID=" . $employeeId]);
         }
         
-        if($companyId!=-1){
+        if($companyId!=null && $companyId!=-1){
             $select->where(["E.COMPANY_ID=".$companyId]);
+        }
+        if($employeeTypeId!=null && $employeeTypeId!=-1){
+            $select->where(["E.EMPLOYEE_TYPE='".$employeeTypeId."'"]);
         }
 
         if ($branchId != -1) {
