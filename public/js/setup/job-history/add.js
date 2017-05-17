@@ -48,7 +48,6 @@
         };
 
         var updateView = function (employee) {
-            console.log('employeeDetail', employee);
             if (employee.SERVICE_TYPE_ID !== null) {
                 $fromServiceTypeId.val(employee.SERVICE_TYPE_ID).trigger("change");
             }
@@ -112,7 +111,6 @@
 
         var checkAppointmentOption = function (employeeDtl) {
             if (employeeDtl.APP_BRANCH_ID == null && employeeDtl.APP_DEPARTMENT_ID == null && employeeDtl.APP_DESIGNATION_ID == null && employeeDtl.APP_POSITION_ID == null && employeeDtl.APP_SERVICE_TYPE_ID == null) {
-                console.log($serviceEventTypeId.html());
                 if ($serviceEventTypeId.has('option[value="2"]').length == 0) {
                     $serviceEventTypeId.append('<option value="2">Appointment</option>');
                 }

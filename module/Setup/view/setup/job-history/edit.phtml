@@ -55,12 +55,9 @@ $form->prepare();
 print $this->form()->openTag($form);
 ?>
 <script>
-    document.menu =<?php
-$menu = ["id" => "menuServiceStatusUpdate"];
-echo json_encode($menu);
-?>;
     document.jobHistoryId =<?= $id ?>;
     document.employeeId =<?= $empId ?>;
+    document.wsPullEmployeeDetailWithOptions = '<?php echo $this->url('jobHistory', ['action' => 'pullEmployeeDetailWithOptions']); ?>';
 </script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\jobHistory')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
