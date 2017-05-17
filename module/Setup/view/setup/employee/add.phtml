@@ -1210,6 +1210,18 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                 </div>
                             </div>
                         </div>
+                        
+                        <div class="col-xs-12 col-sm-6 col-md-6">
+                            <div class="row bottomgap">
+                                <div class="form-group<?= empty($employeeType->getMessages()) ? "" : "error" ?>">
+                                    <div class="col-xs-6 col-sm-6 col-md-6 rightalign-4">
+                                        <?php print $this->formLabel($employeeType); ?></div>
+                                    <div class="col-xs-6 col-sm-6 cgap-4">
+                                        <?php print $this->formElement($employeeType); ?></div>
+                                    <?php print $this->formElementErrors()->render($employeeType, ['class' => 'help-block error']); ?>
+                                </div>
+                            </div>
+                        </div>
 
 
                         <div class="col-xs-12 col-sm-6 col-md-6">
@@ -1264,14 +1276,49 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                             </div>
                         </div>
 
+                        
+                        <div class="col-xs-12 col-sm-6 col-md-6">
+                            <div class="row bottomgap">
+                                <div class="form-group <?= empty($branchId->getMessages()) ? "" : "error" ?>"> 
+                                    <div class="col-xs-6 col-sm-6 col-md-6 rightalign-4">
+                                        <?php print $this->formLabel($branchId); ?>
+                                    </div>
+                                    <div class="col-xs-6 col-sm-6 col-md-6 cgap-4">
+                                        <?php print $this->formElement($branchId); ?>
+                                    </div>
+                                    <?php print $this->formElementErrors()->render($branchId, ['class' => 'help-block error']); ?> 
+                                </div>
+                            </div>
+                        </div>
 
+                        <div class="col-xs-12 col-sm-6 col-md-6">
+                            <div class="row bottomgap">
+                                <div class="form-group   <?= empty($departmentId->getMessages()) ? "" : "error" ?>">
+                                    <div class="col-xs-6 col-sm-6 col-md-6 rightalign-4">
+                                        <?php print $this->formLabel($departmentId); ?> 
+                                    </div>
+                                    <div class="col-xs-6 col-sm-6 col-md-6 cgap-4">
+                                        <?php print $this->formElement($departmentId); ?> </div>
+                                    <?php print $this->formElementErrors()->render($departmentId, ['class' => 'help-block error']); ?>
+                                </div>
+                            </div>
+                        </div>
+                        
+                         <div class="col-xs-12 col-sm-6 col-md-6">
+                            <div class="row bottomgap">
 
-
-
-
-
-
-
+                                <div class="form-group   <?= empty($designationId->getMessages()) ? "" : "error" ?>">
+                                    <div class="col-xs-6 col-sm-6 col-md-6 rightalign-4">
+                                        <?php print $this->formLabel($designationId); ?>
+                                    </div> 
+                                    <div class="col-xs-6 col-sm-6 col-md-6 cgap-4"> 
+                                        <?php print $this->formElement($designationId); ?> </div>
+                                    <?php print $this->formElementErrors()->render($designationId, ['class' => 'help-block error']); ?>
+                                </div>
+                            </div> 
+                        </div>    
+                        
+                        
                         <div class="col-xs-12 col-sm-6 col-md-6">
                             <div class="row bottomgap">
                                 <div class="form-group   <?= empty($positionId->getMessages()) ? "" : "error" ?>">
@@ -1286,64 +1333,8 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                 </div>
                             </div> 
                         </div>
-
-                        <div class="col-xs-12 col-sm-6 col-md-6">
-                            <div class="row bottomgap">
-
-                                <div class="form-group   <?= empty($designationId->getMessages()) ? "" : "error" ?>">
-                                    <div class="col-xs-6 col-sm-6 col-md-6 rightalign-4">
-                                        <?php print $this->formLabel($designationId); ?>
-                                    </div> 
-                                    <div class="col-xs-6 col-sm-6 col-md-6 cgap-4"> 
-                                        <?php print $this->formElement($designationId); ?> </div>
-                                    <?php print $this->formElementErrors()->render($designationId, ['class' => 'help-block error']); ?>
-                                </div>
-                            </div> 
-                        </div>
-
-
-                        <div class="col-xs-12 col-sm-6 col-md-6">
-                            <div class="row bottomgap">
-                                <div class="form-group   <?= empty($departmentId->getMessages()) ? "" : "error" ?>">
-                                    <div class="col-xs-6 col-sm-6 col-md-6 rightalign-4">
-                                        <?php print $this->formLabel($departmentId); ?> 
-                                    </div>
-                                    <div class="col-xs-6 col-sm-6 col-md-6 cgap-4">
-                                        <?php print $this->formElement($departmentId); ?> </div>
-                                    <?php print $this->formElementErrors()->render($departmentId, ['class' => 'help-block error']); ?>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-xs-12 col-sm-6 col-md-6">
-                            <div class="row bottomgap">
-                                <div class="form-group <?= empty($branchId->getMessages()) ? "" : "error" ?>"> 
-                                    <div class="col-xs-6 col-sm-6 col-md-6 rightalign-4">
-                                        <?php print $this->formLabel($branchId); ?>
-                                    </div>
-                                    <div class="col-xs-6 col-sm-6 col-md-6 cgap-4">
-                                        <?php print $this->formElement($branchId); ?>
-                                    </div>
-                                    <?php print $this->formElementErrors()->render($branchId, ['class' => 'help-block error']); ?> 
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-xs-12 col-sm-6 col-md-6">
-                            <div class="row bottomgap">
-                                <div class="form-group">
-                                    <div class="col-xs-6 col-sm-6 col-md-6 rightalign-4">
-                                        <label> Shift </label>
-                                    </div>
-                                    <div class="col-xs-6 col-sm-6 cgap-4">
-                                        <select required="required" name="shift">
-                                            <?php foreach ($shifts as $shiftKey => $shiftValue) {
-                                                ?>
-                                                <option  value="<?php echo $shiftKey; ?>"><?php echo $shiftValue; ?></option>
-                                            <?php } ?>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        
+                        
                         <div class="col-xs-12 col-sm-6 col-md-6">
                             <div class="row bottomgap">
                                 <div class="form-group">
@@ -1378,18 +1369,27 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                 </div>
                             </div>
                         </div>
-
+                        
+                        
                         <div class="col-xs-12 col-sm-6 col-md-6">
                             <div class="row bottomgap">
-                                <div class="form-group<?= empty($employeeType->getMessages()) ? "" : "error" ?>">
+                                <div class="form-group">
                                     <div class="col-xs-6 col-sm-6 col-md-6 rightalign-4">
-                                        <?php print $this->formLabel($employeeType); ?></div>
+                                        <label> Shift </label>
+                                    </div>
                                     <div class="col-xs-6 col-sm-6 cgap-4">
-                                        <?php print $this->formElement($employeeType); ?></div>
-                                    <?php print $this->formElementErrors()->render($employeeType, ['class' => 'help-block error']); ?>
+                                        <select required="required" name="shift">
+                                            <?php foreach ($shifts as $shiftKey => $shiftValue) {
+                                                ?>
+                                                <option  value="<?php echo $shiftKey; ?>"><?php echo $shiftValue; ?></option>
+                                            <?php } ?>
+                                        </select>
+                                    </div>
                                 </div>
                             </div>
                         </div>
+
+                        
 
                     </div>
                     <input type="submit" class="hidden" id="btnform4" value="submit">
