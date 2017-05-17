@@ -384,6 +384,9 @@ class RestfulService extends AbstractRestfulController {
                     case "pullServiceQuestionList":
                         $responseData = $this->pullServiceQuestionList($postedData->data);
                         break;
+                    case "pullDepartmentAccordingToBranch":
+                        $responseData = $this->pullDepartmentAccordingToBranch($postedData->data);
+                        break;
                     
                     default:
                         throw new Exception("action not found");
@@ -3299,6 +3302,16 @@ class RestfulService extends AbstractRestfulController {
         } else {
             return false;
         }
+    }
+    
+    
+    public function pullDepartmentAccordingToBranch($data){
+//        $n=$data['branchId'];
+        $result=EntityHelper::getTableKVListWithSortOption($this->adapter, "HRIS_DEPARTMENTS", "DEPARTMENT_ID", ["DEPARTMENT_NAME"], ["BRANCH_ID"=>$data['branchId'],"STATUS" => 'E'], "DEPARTMENT_NAME", "ASC", null, false, true);
+        return[
+            "success" => true,
+            "data" => $result
+        ];
     }
 
 }

@@ -144,6 +144,10 @@ $designationId->setValueOptions($designations);
 $departmentId = $formFour->get('appDepartmentId');
 $departmentId->setValueOptions($departments);
 
+//print_r($departmentId->getValue());
+//
+//die();
+
 $branchId = $formFour->get('appBranchId');
 $branchId->setValueOptions($branches);
 
@@ -244,8 +248,16 @@ if ($this->messages) {
     }
     print '</ul>';
 }
+
+//print_r($designations);
+//print_r($departments);
+//print_r($branches);
+//die();
 ?>
 <script>
+
+    document.editDepartmentValue = <?php echo $departmentId->getValue(); ?>;
+    document.url = '<?= $this->url("restful", ["action" => "index"]) ?>';
     document.urlDistrict = '<?= $this->url("webService", ["action" => "district"]) ?>';
     document.urlSubmitExperience = '<?= $this->url('employee', ['action' => 'edit', 'id' => $id, 'tab' => 8]) ?>';
     document.urlSubmitTraining = '<?= $this->url('employee', ['action' => 'edit', 'id' => $id, 'tab' => 9]) ?>';

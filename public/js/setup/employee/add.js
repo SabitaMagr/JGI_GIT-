@@ -116,10 +116,49 @@
 //        window.app.checkUniqueConstraints(inputFieldId,formId,tableName,columnName,checkColumnName,selfId);
 //
 //        
+            
+            
+            var branchChangeFun=function(){
+                var selectedBranchId = $('#branchId').val();
+            $('#departmentId').html('');
+            if (selectedBranchId > 0) {
+                window.app.pullDataById(document.url, {
+                    action: 'pullDepartmentAccordingToBranch',
+                    data: {
+                        'branchId': selectedBranchId
+                            } 
+                }).then(function (success) {
+                    $.each(success.data, function (key, dep) {
+                if(document.editDepartmentValue==key){
+                    $('#departmentId').append($("<option selected='selected'></option>")
+                                .attr("value", key)
+                                .text(dep));
+                }else{
+                    $('#departmentId').append($("<option></option>")
+                                .attr("value", key)
+                                .text(dep));
+                }
+                    });
+                    
+                }, function (failure) {
+                    console.log(failure);
+                });
+                
+                }else{
+                    $('#departmentId').append($("<option></option>")
+                    .attr("value", "")
+                    .text("Select Branch First"));
+                }
+            }
+
+            $('#branchId').on('change', function () {
+                branchChangeFun();
+              });
+
+            branchChangeFun();
+    
+    
     });
-
-
-
 
 })(window.jQuery, window.app);
 
