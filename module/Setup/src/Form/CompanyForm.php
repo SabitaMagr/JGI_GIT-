@@ -34,7 +34,7 @@ class CompanyForm {
      * @Annotation\Required(false)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Telephone"})
-     * @Annotation\Attributes({ "id":"form-telephone", "placeholder":"xxx-xxxxxxx", "class":"form-control"})
+     * @Annotation\Attributes({ "id":"form-telephone", "placeholder":"xxx-xxxxxxx", "pattern":"^\(?\d{2,3}\)?[- ]?\d{7}$","class":"form-control"})
      */
     public $telephone;
 
