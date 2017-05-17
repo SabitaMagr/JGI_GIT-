@@ -1,7 +1,7 @@
 (function ($, app) {
     'use strict';
     $(document).ready(function () {
-        app.startEndDatePickerWithNepali("FromnepaliDate","FromenglishDate","TonepaliDate","ToenglishDate");
+        app.startEndDatePickerWithNepali("FromnepaliDate", "FromenglishDate", "TonepaliDate", "ToenglishDate");
 //        var $fromNepaliDate = $('#FromnepaliDate');
 //        var $fromEnglishDate = $('#FromenglishDate');
 //        var $toNepaliDate = $('#TonepaliDate');
@@ -45,18 +45,18 @@
             },
             rowTemplate: kendo.template($("#rowTemplate").html()),
             columns: [
-                {field: "SN", title: "S.N.", width: 100},
+                {field: "LEVEL_NO", title: "Level", width: 100},
                 {field: "POSITION_NAME", title: "Position", width: 300},
                 {field: "COMPANY_NAME", title: "Company", width: 300},
                 {field: "REMARKS", title: "Remarks", hidden: true},
-                {title: "Action", width: 80,width: 100}
+                {title: "Action", width: 80, width: 100}
             ]
         });
 
         $("#export").click(function (e) {
             var rows = [{
                     cells: [
-                        {value: "SN"},
+                        {value: "Level"},
                         {value: "Position Name"},
                         {value: "Company Name"},
                         {value: "Remarks"}
@@ -75,7 +75,7 @@
                 var dataItem = data[i];
                 rows.push({
                     cells: [
-                        {value: dataItem.SN},
+                        {value: dataItem.LEVEL_NO},
                         {value: dataItem.POSITION_NAME},
                         {value: dataItem.COMPANY_NAME},
                         {value: dataItem.REMARKS}
