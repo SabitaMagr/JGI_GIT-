@@ -12,7 +12,7 @@ class HrEmployeesFormTabOne extends Model {
     /**
      * @Annotation\Type("Zend\Form\Element\Select")
      * @Annotation\Required(true)
-     * @Annotation\Options({"disable_inarray_validator":"true","label":"Companies"})
+     * @Annotation\Options({"disable_inarray_validator":"true","label":"Company"})
      * @Annotation\Attributes({ "id":"companyId","class":"form-control"})
      */
     public $companyId;
