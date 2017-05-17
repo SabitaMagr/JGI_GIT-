@@ -48,13 +48,6 @@ $submit->setAttribute('value', 'SUBMIT');
 
 $form->setAttribute('action', $this->url('jobHistory', ['action' => 'add']));
 
-if ($this->messages) {
-    print '<ul class="help-block bg-danger" style="background:#f3e250;">';
-    foreach ($this->messages as $message) {
-        print '<li>' . $message . '</li>';
-    }
-    print '</ul>';
-}
 
 $form->prepare();
 print $this->form()->openTag($form);
@@ -68,6 +61,22 @@ echo json_encode($menu);
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\jobHistory')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
+<?php
+if ($this->messages && (sizeof($this->messages) > 1)) {
+    print '<div class="alert alert-warning alert-dismissable">
+    <button type="button" class="close" data-dismiss="alert" aria-hidden="true"></button>
+    <strong>Warning!</strong> ';
+    print $this->messages[1];
+    print '</div>';
+}
+?>
+<?php if ($this->messages) { ?>
+    <script>
+        document.messages =<?php echo json_encode($this->messages); ?>
+    </script>
+<?php } ?>
+
+
 <div class="row margin-top-20">
     <div class="col-sm-12">
         <div class="portlet box custom-box">
@@ -89,7 +98,7 @@ echo json_encode($menu);
                             <div class="col-sm-6">
                                 <div class="form-group">
                                     <?php print $this->formLabel($startDate); ?>
-                                        <?php print $this->formElement($startDate) ?>
+                                    <?php print $this->formElement($startDate) ?>
                                     <?php print $this->formElementErrors()->render($startDate, ['class' => 'help-block']); ?>
                                 </div>
                             </div>     
@@ -142,7 +151,7 @@ echo json_encode($menu);
                             <div class="col-sm-6">
                                 <div class="form-group">
                                     <?php print $this->formLabel($endDate); ?>
-                                        <?php print $this->formElement($endDate) ?>
+                                    <?php print $this->formElement($endDate) ?>
                                     <?php print $this->formElementErrors()->render($endDate, ['class' => 'help-block']); ?>
                                 </div>
                             </div>     

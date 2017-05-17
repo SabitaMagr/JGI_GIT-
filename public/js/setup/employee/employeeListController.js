@@ -58,7 +58,6 @@ angular.module('hris', [])
                     App.unblockUI("#hris-page-content");
                     console.log("pullEmployeeList", success.data);
                     $scope.initializekendoGrid(success.data);
-//                    window.scrollTo(0, $('#employeeTable').position().top);
                     window.app.scrollTo('employeeTable');
                 }, function (failure) {
                     App.unblockUI("#hris-page-content");

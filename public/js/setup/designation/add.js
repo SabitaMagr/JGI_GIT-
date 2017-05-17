@@ -1,10 +1,7 @@
-/**
- * Created by punam on 9/28/16.
- */
 (function ($, app) {
     'use strict';
     $(document).ready(function () {
-//        $('select').select2();
+        $('select').select2();
         var scopeArea = function () {
             var parentDesignation = $("#form-parentDesignation").val();
             if (parentDesignation == "" || parentDesignation == "-1") {
