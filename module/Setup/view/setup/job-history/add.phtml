@@ -13,35 +13,44 @@ $form->setAttribute('id', 'jobHistory-form');
 
 $employeeId = $form->get('employeeId');
 $employeeId->setValueOptions($employees);
+
 $startDate = $form->get('startDate');
 $endDate = $form->get('endDate');
+
 $serviceEventTypeId = $form->get('serviceEventTypeId');
 $serviceEventTypeId->setValueOptions($serviceEventTypes);
+
 $fromServiceTypeId = $form->get('fromServiceTypeId');
 $fromServiceTypeId->setValueOptions($serviceTypes);
 //$fromServiceTypeId->setAttributes(['disabled' => "disabled"]);
 $toServiceTypeId = $form->get('toServiceTypeId');
 $toServiceTypeId->setValueOptions($serviceTypes);
+
 $fromBranchId = $form->get('fromBranchId');
 $fromBranchId->setValueOptions($branches);
 //$fromBranchId->setAttributes(['disabled' => "disabled"]);
 $toBranchId = $form->get('toBranchId');
 $toBranchId->setValueOptions($branches);
+
 $fromDepartmentId = $form->get('fromDepartmentId');
 $fromDepartmentId->setValueOptions($departments);
 //$fromDepartmentId->setAttributes(['disabled' => "disabled"]);
 $toDepartmentId = $form->get('toDepartmentId');
 $toDepartmentId->setValueOptions($departments);
+
 $fromDesignationId = $form->get('fromDesignationId');
 $fromDesignationId->setValueOptions($designations);
 //$fromDesignationId->setAttributes(['disabled' => "disabled"]);
 $toDesignationId = $form->get('toDesignationId');
 $toDesignationId->setValueOptions($designations);
+
 $fromPositionId = $form->get('fromPositionId');
 $fromPositionId->setValueOptions($positions);
+
 //$fromPositionId->setAttributes(['disabled' => "disabled"]);
 $toPositionId = $form->get('toPositionId');
 $toPositionId->setValueOptions($positions);
+
 
 $submit = $form->get('submit');
 $submit->setAttribute('value', 'SUBMIT');
@@ -52,11 +61,6 @@ $form->setAttribute('action', $this->url('jobHistory', ['action' => 'add']));
 $form->prepare();
 print $this->form()->openTag($form);
 ?>
-<script>
-    document.menu =<?php
-$menu = ["id" => "menuServiceStatusUpdate"];
-echo json_encode($menu);
-?>;
 </script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\jobHistory')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
@@ -76,6 +80,9 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
     </script>
 <?php } ?>
 
+<script>
+    document.wsPullEmployeeDetailWithOptions = '<?php echo $this->url('jobHistory', ['action' => 'pullEmployeeDetailWithOptions']); ?>';
+</script>
 
 <div class="row margin-top-20">
     <div class="col-sm-12">

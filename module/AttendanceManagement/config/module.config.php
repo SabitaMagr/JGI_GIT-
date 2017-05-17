@@ -214,11 +214,11 @@ return [
         ],
         'calculateOvertime' => [
             [
-                'label' => 'Overtime Report',
+                'label' => 'Report With Overtime',
                 'route' => 'calculateOvertime',
             ],
             [
-                'label' => 'Overtime Report',
+                'label' => 'Report With Overtime',
                 'route' => 'calculateOvertime',
                 'pages' => [
                     [

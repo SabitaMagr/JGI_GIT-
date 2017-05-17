@@ -11,6 +11,8 @@ $status = $form->get('status');
 $companyId = $form->get('companyId');
 $companyId->setValueOptions($companies);
 
+$levelNo = $form->get('levelNo');
+
 $submit = $form->get('submit');
 $submit->setAttribute('value', 'SUBMIT');
 
@@ -53,7 +55,15 @@ echo json_encode($menu);
                 ?>
 
                 <div class=" row">
-                    <div class="col-sm-4">
+                    <div class="col-sm-6">
+                        <div class="form-group <?= empty($levelNo->getMessages()) ? "" : "has-error" ?>" >
+                            <?php print $this->formLabel($levelNo); ?>
+                            <span class="required" aria-required="true">*</span>
+                            <?php print $this->formElement($levelNo); ?>
+                            <?php print $this->formElementErrors()->render($levelNo, ['class' => 'help-block']); ?>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
                         <div class="form-group <?= empty($positionName->getMessages()) ? "" : "has-error" ?>">
                             <?php print $this->formLabel($positionName); ?>
                             <span class="required" aria-required="true">*</span>
@@ -62,8 +72,9 @@ echo json_encode($menu);
                             <input type="hidden" id="positionId" value="<?php echo $id; ?>"/>
                         </div>
                     </div>
-                    
-                    <div class="col-sm-4">
+                </div>
+                <div class="row">
+                    <div class="col-sm-6">
                         <div class="form-group">
                             <?php print $this->formLabel($companyId); ?>
                             <span class="required" aria-required="true">*</span>
@@ -72,7 +83,7 @@ echo json_encode($menu);
                         </div>
                     </div>
 
-                    <div class="col-sm-4">
+                    <div class="col-sm-6">
                         <div class="form-group <?= empty($remarks->getMessages()) ? "" : "has-error" ?>">
                             <?php print $this->formLabel($remarks); ?>
                             <?php print $this->formElement($remarks); ?>

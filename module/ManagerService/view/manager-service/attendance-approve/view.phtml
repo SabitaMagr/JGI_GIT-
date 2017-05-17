@@ -162,6 +162,8 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                             </div> 
 
                         </div>
+                    </div>
+                    <div class="row">
 
                         <div class="col-sm-4">
                             <div class="form-group <?= empty($inTime->getMessages()) ? "" : "error" ?>">
@@ -174,13 +176,25 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                         </div>
 
                         <div class="col-sm-4">
-                            <div class="form-group <?= empty($outTime->getMessages()) ? "" : "error" ?>">
-                                <?php print $this->formLabel($outTime) ?>
-                                <div class="input-group dropdown-select">
-                                    <?php print $this->formElement($outTime) ?>
+                            <div class="row">
+                                <div class="col-sm-8">
+                                    <div class="form-group <?= empty($outTime->getMessages()) ? "" : "error" ?>">
+                                        <?php print $this->formLabel($outTime) ?>
+                                        <span class="required" aria-required="true">*</span>
+                                        <div class="input-group dropdown-select">
+                                            <?php print $this->formElement($outTime) ?>
+                                        </div>
+                                    </div>
+                                    <?php print $this->formElementErrors()->render($outTime, ['class' => 'help-block error']); ?>
+                                </div>
+                                <div class="col-sm-4">
+                                    <div class="form-group <?= empty($totalHour->getMessages()) ? "" : "error" ?>">
+                                        <?php print $this->formLabel($totalHour); ?>
+                                        <?php print $this->formElement($totalHour); ?>
+                                    </div>
+                                    <?php print $this->formElementErrors()->render($totalHour, ['class' => 'help-block error']); ?>
                                 </div>
                             </div>
-                            <?php print $this->formElementErrors()->render($outTime, ['class' => 'help-block error']); ?>
                         </div>
                     </div>
 
@@ -200,14 +214,6 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                 <?php print $this->formElement($outRemarks); ?>
                             </div>
                             <?php print $this->formElementErrors()->render($outRemarks, ['class' => 'help-block error']); ?>
-                        </div>
-
-                        <div class="col-sm-4">
-                            <div class="form-group <?= empty($totalHour->getMessages()) ? "" : "error" ?>">
-                                <?php print $this->formLabel($totalHour); ?>
-                                <?php print $this->formElement($totalHour); ?>
-                            </div>
-                            <?php print $this->formElementErrors()->render($totalHour, ['class' => 'help-block error']); ?>
                         </div>
 
                     </div>

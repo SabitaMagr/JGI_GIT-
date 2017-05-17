@@ -58,7 +58,7 @@ class OvertimeRepository implements RepositoryInterface{
         $result = $statement->execute();
         return $result->current();
     }
-    public function getAllByEmployeeId($employeeId){
+    public function getAllByEmployeeId($employeeId,$overtimeDate=null,$status=null,$getCurrent=false){
         $sql = new Sql($this->adapter);
         $select = $sql->select();
         $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(Overtime::class, null, [Overtime::OVERTIME_DATE,Overtime::REQUESTED_DATE, Overtime::RECOMMENDED_DATE, Overtime::APPROVED_DATE, Overtime::MODIFIED_DATE], NULL, NULL, NULL, "OT",false,false,[Overtime::TOTAL_HOUR]), false);
@@ -71,10 +71,24 @@ class OvertimeRepository implements RepositoryInterface{
         $select->where([
             "E.EMPLOYEE_ID=" . $employeeId
         ]);
+        if($overtimeDate!=null){
+           $select->where([
+                "OT.".Overtime::OVERTIME_DATE."=TO_DATE('".$overtimeDate."','DD-MON-YYYY')"
+            ]); 
+        }
+        if($status!=null && $status!=-1){
+            $select->where([
+                "OT.".Overtime::STATUS."='" . $status."'"
+            ]);
+        }
         $select->order("OT.REQUESTED_DATE DESC");
         $statement = $sql->prepareStatementForSqlObject($select);
-//        print_r($statement->getSql()); die();
         $result = $statement->execute();
-        return $result;
+        
+        if($getCurrent){
+            return $result->current();
+        }else{
+            return $result;
+        }
     }
 }

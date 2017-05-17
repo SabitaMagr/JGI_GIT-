@@ -103,7 +103,7 @@ class HrEmployeesFormTabOne extends Model {
      * @Annotation\Required(false)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Telephone No"})
-     * @Annotation\Attributes({ "id":"telephoneNo", "placeholder":"xx-xxxxxxx", "pattern":"^\(?\d{2}\)?[- ]?\d{7}$", "class":"form-control","title"="Enter your mobile number(xx-xxxxxxx)"})
+     * @Annotation\Attributes({ "id":"telephoneNo", "placeholder":"xxx-xxxxxxx", "pattern":"^\(?\d{2,3}\)?[- ]?\d{7}$", "class":"form-control","title"="Enter your mobile number(xx-xxxxxxx)"})
      */
     public $telephoneNo;
 
