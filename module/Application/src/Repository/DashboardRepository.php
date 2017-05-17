@@ -296,21 +296,42 @@ class DashboardRepository implements RepositoryInterface {
     /**
      * @return mixed
      */
-    public function fetchEmployeeNotice() {
-        $sql = "SELECT NEWS_ID,
-                       NEWS_DATE,
-                       TO_CHAR(NEWS_DATE, 'DD') NEWS_DAY,
-                       TO_CHAR(NEWS_DATE, 'Mon YYYY') NEWS_MONTH_YEAR,
-                       NEWS_TITLE,
-                       NEWS_EDESC
-                FROM HRIS_NEWS
-                WHERE NEWS_TYPE = 'NOTICE'
-                  AND NEWS_DATE > TRUNC(SYSDATE) - 1
-                  -- AND COMPANY_ID = :V_COMPANY_CODE
-                  -- AND BRANCH_ID = :V_BRANCH_CODE
-                  -- AND DESIGNATION_ID = :V_DESIGNATION_ID
-                  -- AND DEPARTMENT_ID = :V_DEPARTMENT_ID
-                ORDER BY NEWS_DATE ASC";
+    public function fetchEmployeeNotice($employeeId) {
+        $sql = "SELECT N.NEWS_ID,
+  N.NEWS_DATE,
+  TO_CHAR(N.NEWS_DATE, 'DD') NEWS_DAY,
+  TO_CHAR(N.NEWS_DATE, 'Mon YYYY') NEWS_MONTH_YEAR,
+  N.NEWS_TITLE,
+  N.NEWS_EDESC
+FROM HRIS_NEWS N,(SELECT COMPANY_ID,BRANCH_ID,DEPARTMENT_ID, DESIGNATION_ID FROM HRIS_EMPLOYEES WHERE EMPLOYEE_ID ={$employeeId}) E
+WHERE N.NEWS_TYPE = 'NOTICE'
+AND N.NEWS_DATE   > TRUNC(SYSDATE) - 1
+AND (N.COMPANY_ID =
+  CASE
+    WHEN N.COMPANY_ID IS NOT NULL
+    THEN E.COMPANY_ID
+  END
+OR N.COMPANY_ID  IS NULL)
+AND ( N.BRANCH_ID =
+  CASE
+    WHEN N.BRANCH_ID IS NOT NULL
+    THEN E.BRANCH_ID
+  END
+OR N.BRANCH_ID      IS NULL)
+AND (N.DEPARTMENT_ID =
+  CASE
+    WHEN N.DEPARTMENT_ID IS NOT NULL
+    THEN E.DEPARTMENT_ID
+  END
+OR N.DEPARTMENT_ID   IS NULL)
+AND (N.DESIGNATION_ID =
+  CASE
+    WHEN N.DESIGNATION_ID IS NOT NULL
+    THEN E.DESIGNATION_ID
+  END
+OR N.DESIGNATION_ID IS NULL)
+ORDER BY N.NEWS_DATE ASC
+";
 
         $statement = $this->adapter->query($sql);
         $result = $statement->execute();

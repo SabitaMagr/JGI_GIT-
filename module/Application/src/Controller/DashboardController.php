@@ -80,7 +80,7 @@ class DashboardController extends AbstractActionController {
         $view = new ViewModel(Helper::addFlashMessagesToArray($this, array(
                     "employeeDetail" => $employeeDetail,
                     "upcomingHolidays" => $dahsboardRepo->fetchUpcomingHolidays($employeeDetail['EMPLOYEE_ID']),
-                    "employeeNotice" => $dahsboardRepo->fetchEmployeeNotice(),
+                    "employeeNotice" => $dahsboardRepo->fetchEmployeeNotice($employeeDetail['EMPLOYEE_ID']),
                     "employeeTask" => $dahsboardRepo->fetchEmployeeTask($employeeId),
                     "employeesBirthday" => $dahsboardRepo->fetchEmployeesBirthday(),
                     "employeeList" => $dahsboardRepo->fetchAllEmployee(),
