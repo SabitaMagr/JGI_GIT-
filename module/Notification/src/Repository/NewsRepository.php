@@ -41,10 +41,18 @@ class NewsRepository implements RepositoryInterface {
     }
 
     public function fetchAll() {
-        return $this->tableGateway->select(function(Select $select) {
-                    $select->where([NewsModel::STATUS => EntityHelper::STATUS_ENABLED]);
-                    $select->order([NewsModel::NEWS_DATE => Select::ORDER_DESCENDING]);
-                });
+        
+         $sql = new Sql($this->adapter);
+        $select = $sql->select();
+        $select->from(['N' => NewsModel::TABLE_NAME]);
+        $select->join(['C' => Company::TABLE_NAME], "C." . Company::COMPANY_ID . "=N." . NewsModel::COMPANY_ID, array('COMPANY_ID', 'COMPANY_NAME'), 'inner');
+        $select->where(["N." . NewsModel::STATUS => 'E']);
+        $select->order(["N." . NewsModel::NEWS_DATE => Select::ORDER_DESCENDING]);
+
+        $statement = $sql->prepareStatementForSqlObject($select);
+        $result = $statement->execute();
+
+        return $result;
     }
 
     public function fetchById($id) {

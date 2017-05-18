@@ -1,4 +1,5 @@
 <?php
+
 namespace Setup\Form;
 
 use Zend\Form\Annotation;
@@ -7,7 +8,7 @@ use Zend\Form\Annotation;
  * @Annotation\Hydrator("Zend\Hydrator\ObjectProperty")
  * @Annotation\Name("Advance")
  */
-class InstituteForm{
+class InstituteForm {
 
     /**
      * @Annotion\Type("Zend\Form\Element\Text")
@@ -28,13 +29,13 @@ class InstituteForm{
      * @Annotation\Attributes({ "id":"form-location", "class":"form-location form-control"  })
      */
     public $location;
-    
+
     /**
      * @Annotation\Type("Application\Custom\FormElement\Telephone")
      * @Annotation\Required(true)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Telephone"})
-     * @Annotation\Attributes({ "id":"form-telephone", "placeholder":"xx-xxxxxxx", "pattern":"^\(?\d{2}\)?[- ]?\d{7}$", "class":"form-control","title"="Enter your mobile number(xx-xxxxxxx)"})
+     * @Annotation\Attributes({ "id":"form-telephone", "placeholder":"xxx-xxxxxxx", "pattern":"^\(?\d{2,3}\)?[- ]?\d{7}$", "class":"form-control","title"="Enter your mobile number(xx-xxxxxxx)"})
      */
     public $telephone;
 
@@ -61,5 +62,5 @@ class InstituteForm{
      * @Annotation\Attributes({"value":"Submit","class":"btn btn-success"})
      */
     public $submit;
- 
+
 }

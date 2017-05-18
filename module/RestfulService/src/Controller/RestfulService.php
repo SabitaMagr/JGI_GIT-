@@ -385,6 +385,9 @@ class RestfulService extends AbstractRestfulController {
                     case "pullServiceQuestionList":
                         $responseData = $this->pullServiceQuestionList($postedData->data);
                         break;
+                    case "pullDepartmentAccordingToBranch":
+                        $responseData = $this->pullDepartmentAccordingToBranch($postedData->data);
+                        break;
                     case "pullAttendanceWidOvertimeList":
                         $responseData = $this->pullAttendanceWidOvertimeList($postedData->data);
                         break;
@@ -3305,6 +3308,15 @@ class RestfulService extends AbstractRestfulController {
         }
     }
     
+    
+    public function pullDepartmentAccordingToBranch($data){
+        $result=EntityHelper::getTableKVListWithSortOption($this->adapter, "HRIS_DEPARTMENTS", "DEPARTMENT_ID", ["DEPARTMENT_NAME"], ["BRANCH_ID"=>$data['branchId'],"STATUS" => 'E'], "DEPARTMENT_NAME", "ASC", null, false, true);
+        return[
+            "success" => true,
+            "data" => $result
+        ];
+    }
+
     public function pullAttendanceWidOvertimeList($data) {
         $attendanceDetailRepository = new AttendanceDetailRepository($this->adapter);
         $overtimeRepo = new OvertimeRepository($this->adapter);
@@ -3322,7 +3334,6 @@ class RestfulService extends AbstractRestfulController {
         $status = $data['status'];
         $employeeTypeId = $data['employeeTypeId'];
         $overtimeOnly = (int)$data['overtimeOnly'];
-
         $result = $attendanceDetailRepository->filterRecord($employeeId, $branchId, $departmentId, $positionId, $designationId, $serviceTypeId, $serviceEventTypeId, $fromDate, $toDate, $status, $companyId,$employeeTypeId,true);
         $list = [];
         foreach ($result as $row) {

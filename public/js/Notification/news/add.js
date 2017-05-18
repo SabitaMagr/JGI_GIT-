@@ -1,10 +1,8 @@
-
-
 (function ($, app) {
     'use strict';
     $(document).ready(function () {
-//        app.addDatePicker($('#newsDate'));
-app.datePickerWithNepali("newsDate","nepaliDate");
+        $('select').select2();
+        app.datePickerWithNepali("newsDate", "nepaliDate");
 
         var selectedBranchId = (typeof document.selectedBranchId === 'undefined') ? null : document.selectedBranchId;
         var selectedDepartmentId = (typeof document.selectedDepartmentId === 'undefined') ? null : document.selectedDepartmentId;
@@ -14,7 +12,6 @@ app.datePickerWithNepali("newsDate","nepaliDate");
         var $designationSelect = $('#designationId');
         var $departmentSelect = $('#departmentId');
 
-//        console.log(selectedBranchId);
 
         var companySelectChange = function (companyId) {
             $branchSelect.html('');
@@ -23,15 +20,15 @@ app.datePickerWithNepali("newsDate","nepaliDate");
 
             $branchSelect.append($("<option></option>")
                     .attr("value", "")
-                    .text("Select Branch"));
+                    .text("----"));
 
             $designationSelect.append($("<option></option>")
                     .attr("value", "")
-                    .text("Select Designation"));
+                    .text("----"));
 
             $departmentSelect.append($("<option></option>")
                     .attr("value", "")
-                    .text("Select Branch"));
+                    .text("----"));
 
             var selectedCompanyBranches = document.branches[companyId];
             var selectedCompanyDesingations = document.designation[companyId];
@@ -98,8 +95,7 @@ app.datePickerWithNepali("newsDate","nepaliDate");
             $departmentSelect.html('');
             $departmentSelect.append($("<option></option>")
                     .attr("value", "")
-                    .text("Select Branch"));
-//            var branchId = $branchSelect.val();
+                    .text("----"));
             var selectedBranchDepartment = document.department[branchId];
             selectedBranchDepartment = (typeof selectedBranchDepartment === 'undefined') ? [] : selectedBranchDepartment;
 

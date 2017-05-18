@@ -1,6 +1,6 @@
 1. remove '/public' from url.(ukesh)(open)
 2. notification and email testing.(ukesh)(open)
-3. news broadcasting. (ukesh)(open)
+
 
 4. leave: validation in late post.(ukesh)(open)
 5. Wages tracking system for daily basis and contract basis.(ukesh)(open)
@@ -11,12 +11,10 @@
 10.Training Request and Training Call Process.(ukesh)(open)
 14. Late In, Early Out Report. (ukesh)(open)
 15. Forwardable days in leave table. (ukesh) (open)
-16. Paid and unpaid flag in leave. (punam)(completed)
 18. Assign while creating profile. (ukesh) (open)
 19. Service Type in leave Assign. (punam) (completed)
 
 
-23. Shift should have total hour and grace time for late in and early out.(ukesh) (completed)
 24. Overtime Approval system as leave Assign. (ukesh)(open)
 
 jwl-training-session-1_25-Apr-17  issues | changes
@@ -90,20 +88,20 @@ JGI_training_session_3
 
 7. Staff working as intern trainee, his/her job is to edit hr employee data. this staff should not affect payroll. ukesh
 
-
-
 10. Leave Requirements of JGI. ukesh
 
 
-
-15. Assets Implementation. prabin 
 16. Menu Name Refactor/ should be meaningful and short. prabin
 17. Reasons should not be mandatory on approve or recommend but mandatory on reject case. punam[done]
+
 18. Team Status/Report. ukesh
-19. Salary increment notification. punam[continue]
 
 
-21. Expire notifications. | Resign  ukesh 
+19. Salary increment notification. prabin[need discussion]
+
+21. Expire notifications. | Resign  prabin [continue] 
+
+
 
 23. On Employee Report, % wise gender should be displayed. ukesh
 
@@ -113,6 +111,8 @@ shift assign issue
 
 
 Branch Name subfix should be changed to company short code.
+
+
 
 
 

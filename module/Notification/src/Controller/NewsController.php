@@ -78,7 +78,7 @@ class NewsController extends AbstractActionController {
         return Helper::addFlashMessagesToArray($this, [
                     'form' => $this->form,
                     'newsTypeValue' => $newsType,
-                    'company' => ApplicationEntityHelper::getTableKVListWithSortOption($this->adapter, Company::TABLE_NAME, Company::COMPANY_ID, [Company::COMPANY_NAME], ["STATUS" => "E"], "COMPANY_NAME", "ASC",null,false,true),
+                    'company' => ApplicationEntityHelper::getTableKVListWithSortOption($this->adapter, Company::TABLE_NAME, Company::COMPANY_ID, [Company::COMPANY_NAME], ["STATUS" => "E"], "COMPANY_NAME", "ASC", null, true, true),
                     'branch' => $departmentRepo->fetchAllBranchAndCompany(),
                     'designation' => $this->repository->fetchAllDesignationAndCompany(),
                     'department' => $departmentRepo->fetchAllBranchAndDepartment()
@@ -122,7 +122,7 @@ class NewsController extends AbstractActionController {
                     'form' => $this->form,
                     'id' => $id,
                     'newsTypeValue' => $newsType,
-                    'company' => ApplicationEntityHelper::getTableKVListWithSortOption($this->adapter, Company::TABLE_NAME, Company::COMPANY_ID, [Company::COMPANY_NAME], ["STATUS" => "E"], "COMPANY_NAME", "ASC",null,false,true),
+                    'company' => ApplicationEntityHelper::getTableKVListWithSortOption($this->adapter, Company::TABLE_NAME, Company::COMPANY_ID, [Company::COMPANY_NAME], ["STATUS" => "E"], "COMPANY_NAME", "ASC", null, false, true),
                     'branch' => $departmentRepo->fetchAllBranchAndCompany(),
                     'designation' => $this->repository->fetchAllDesignationAndCompany(),
                     'department' => $departmentRepo->fetchAllBranchAndDepartment()

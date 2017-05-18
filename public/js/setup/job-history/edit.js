@@ -34,7 +34,6 @@
             $fromPositionId.prop("disabled", !flag);
 
             $serviceEventTypeId.prop("disabled", flag);
-
             $toBranchId.prop("disabled", flag);
             $toServiceTypeId.prop("disabled", flag);
             $toDepartmentId.prop("disabled", flag);
@@ -107,7 +106,10 @@
         });
 
         app.floatingProfile.setDataFromRemote($employeeId.val());
+
+        $employeeId.val(document.employeeId);
         pullEmployeeDetail($employeeId.val());
+        disableEmployee();
 
         var checkAppointmentOption = function (employeeDtl) {
             if (employeeDtl.APP_BRANCH_ID == null && employeeDtl.APP_DEPARTMENT_ID == null && employeeDtl.APP_DESIGNATION_ID == null && employeeDtl.APP_POSITION_ID == null && employeeDtl.APP_SERVICE_TYPE_ID == null) {
@@ -118,10 +120,16 @@
                 $serviceEventTypeId.val(2).trigger("change");
                 toggleEmployeeInfo(true);
             } else {
+                if (2 == $serviceEventTypeId.val()) {
+                    toggleEmployeeInfo(true);
+                    return;
+                }
+
                 if ($serviceEventTypeId.has('option[value="2"]').length != 0) {
                     $serviceEventTypeId.find('option[value="2"]').remove();
                 }
                 toggleEmployeeInfo(false);
+
             }
         };
         $fromServiceTypeId.on("change", function () {
@@ -160,10 +168,7 @@
         if (lastEmpId != null) {
             $employeeId.val(lastEmpId).change();
             app.floatingProfile.setDataFromRemote(lastEmpId);
-            pullEmployeeDetail(lastEmpId);
         }
-
-
 
         var populateList = function ($element, list, id, value, defaultMessage, selectedId) {
             $element.html('');

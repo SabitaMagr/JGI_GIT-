@@ -48,15 +48,15 @@ class PositionRepository implements RepositoryInterface {
 //            $select->where([Position::STATUS => 'E']);
 //            $select->order(Position::POSITION_NAME . " ASC");
 //        });
-        
+
         $sql = new Sql($this->adapter);
         $select = $sql->select();
-        $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(Position::class, [Position::POSITION_NAME],NULL,NULL,NULL,NULL,'P',FALSE,FALSE), false);
+        $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(Position::class, [Position::POSITION_NAME], NULL, NULL, NULL, NULL, 'P', FALSE, FALSE), false);
         $select->from(['P' => Position::TABLE_NAME]);
-        $select->join(['C' => Company::TABLE_NAME], "C.".Company::COMPANY_ID."=P.".Position::COMPANY_ID, [Company::COMPANY_NAME => new Expression('INITCAP(C.COMPANY_NAME)')], 'left');
-        $select->where(["P.".Position::STATUS."='E'"]);
-        $select->order("P.".Position::POSITION_NAME . " ASC");
-        
+        $select->join(['C' => Company::TABLE_NAME], "C." . Company::COMPANY_ID . "=P." . Position::COMPANY_ID, [Company::COMPANY_NAME => new Expression('INITCAP(C.COMPANY_NAME)')], 'left');
+        $select->where(["P." . Position::STATUS . "='E'"]);
+        $select->order("P." . Position::POSITION_NAME . " ASC");
+
         $statement = $sql->prepareStatementForSqlObject($select);
         $rowset = $statement->execute();
         $result = [];
@@ -65,6 +65,7 @@ class PositionRepository implements RepositoryInterface {
             array_push($result, [
                 'SN' => $i,
                 'POSITION_ID' => $row['POSITION_ID'],
+                'LEVEL_NO' => $row['LEVEL_NO'],
                 'POSITION_NAME' => $row['POSITION_NAME'],
                 'REMARKS' => $row['REMARKS'],
                 'COMPANY_NAME' => $row['COMPANY_NAME']
@@ -75,10 +76,10 @@ class PositionRepository implements RepositoryInterface {
     }
 
     public function fetchById($id) {
-        $row = $this->tableGateway->select(function(Select $select)use($id){
+        $row = $this->tableGateway->select(function(Select $select)use($id) {
             $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(Position::class, [Position::POSITION_NAME]), false);
             $select->where([Position::POSITION_ID => $id]);
-        });     
+        });
         return $row->current();
     }
 
