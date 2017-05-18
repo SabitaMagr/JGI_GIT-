@@ -1,12 +1,5 @@
 <?php
 
-/**
- * Created by PhpStorm.
- * User: punam
- * Date: 9/15/16
- * Time: 1:20 PM
- */
-
 namespace SelfService\Controller;
 
 use Application\Helper\Helper;
@@ -100,13 +93,13 @@ class AttendanceRequest extends AbstractActionController {
                 $model->status = "RQ";
 
                 $this->repository->add($model);
+                $this->flashmessenger()->addMessage("Attendance Request Submitted Successfully!!");
                 try {
                     HeadNotification::pushNotification(NotificationEvents::ATTENDANCE_APPLIED, $model, $this->adapter, $this->plugin('url'));
                 } catch (Exception $e) {
                     $this->flashmessenger()->addMessage($e->getMessage());
                 }
 
-                $this->flashmessenger()->addMessage("Attendance Request Submitted Successfully!!");
                 return $this->redirect()->toRoute("attendancerequest");
             }
         }
