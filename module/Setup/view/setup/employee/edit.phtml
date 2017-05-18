@@ -250,7 +250,7 @@ if ($this->messages) {
 }
 ?>
 <script>
-    document.editDepartmentValue = <?php echo ($departmentId->getValue() == null) ? -1 : $departmentId->getValue(); ?>;
+
     document.url = '<?= $this->url("restful", ["action" => "index"]) ?>';
     document.urlDistrict = '<?= $this->url("webService", ["action" => "district"]) ?>';
     document.urlSubmitExperience = '<?= $this->url('employee', ['action' => 'edit', 'id' => $id, 'tab' => 8]) ?>';

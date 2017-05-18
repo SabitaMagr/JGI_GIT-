@@ -136,7 +136,7 @@
             $toServiceTypeId.val($(this).val()).trigger("change");
         });
         $fromBranchId.on("change", function () {
-            populateList($fromDepartmentId, search(departmentList, {'BRANCH_ID': $(this).val()}), "DEPARTMENT_ID", "DEPARTMENT_NAME", "----");
+//            populateList($fromDepartmentId, search(departmentList, {'BRANCH_ID': $(this).val()}), "DEPARTMENT_ID", "DEPARTMENT_NAME", "----");
             $toBranchId.val($(this).val()).trigger("change");
         });
         $fromDepartmentId.on("change", function () {
