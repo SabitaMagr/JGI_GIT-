@@ -55,6 +55,7 @@ angular.module('hris', [])
                     App.unblockUI("#hris-page-content");
                     console.log(success.data);
                     $scope.initializekendoGrid(success.data);
+                    window.app.scrollTo('attendanceWidOTTable');
                 }, function (failure) {
                     App.unblockUI("#hris-page-content");
                     console.log(failure);
