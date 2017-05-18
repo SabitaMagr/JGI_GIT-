@@ -250,7 +250,7 @@ if ($this->messages) {
 }
 ?>
 <script>
-    document.editDepartmentValue = <?php echo $departmentId->getValue(); ?>;
+    document.editDepartmentValue = <?php echo ($departmentId->getValue() == null) ? -1 : $departmentId->getValue(); ?>;
     document.url = '<?= $this->url("restful", ["action" => "index"]) ?>';
     document.urlDistrict = '<?= $this->url("webService", ["action" => "district"]) ?>';
     document.urlSubmitExperience = '<?= $this->url('employee', ['action' => 'edit', 'id' => $id, 'tab' => 8]) ?>';
@@ -420,7 +420,7 @@ if ($this->messages) {
                                 </div>
                             </div>
                         </div>
-                        
+
                         <div class="col-xs-12 col-sm-6 col-md-3 col-box">
                             <div class="row bottomgap">
                                 <div class="form-group  <?= empty($countryId->getMessages()) ? "" : "error" ?>">
@@ -434,7 +434,7 @@ if ($this->messages) {
                                 </div>
                             </div>
                         </div>
-                        
+
 
 
 
@@ -452,7 +452,7 @@ if ($this->messages) {
                                 </div>
                             </div>
                         </div>
-                        
+
                         <div class="col-xs-12 col-sm-6 col-md-3 col-box">
                             <div class="row bottomgap">
                                 <div class="form-group <?= empty($companyId->getMessages()) ? '' : 'hasError' ?>">
@@ -467,7 +467,7 @@ if ($this->messages) {
                                 </div>
                             </div>
                         </div>
-                        
+
                         <div class="col-xs-12 col-sm-6 col-md-3 col-box">
                             <div class="row bottomgap">
                                 <div class="form-group  <?= empty($bloodGroupId->getMessages()) ? "" : "error" ?>">
@@ -482,7 +482,7 @@ if ($this->messages) {
                                 </div>
                             </div>
                         </div>
-                        
+
                         <div class="col-xs-12 col-sm-6 col-md-3 col-box">
                             <div class="row bottomgap">
                                 <div class="form-group">
@@ -1309,7 +1309,7 @@ if ($this->messages) {
 
                             </div>
 
-                            
+
                             <div class="col-xs-12 col-sm-6 col-md-6">
                                 <div class="row bottomgap">
                                     <div class="form-group<?= empty($branchId->getMessages()) ? "" : "error" ?>">
@@ -1333,7 +1333,7 @@ if ($this->messages) {
                                     </div>
                                 </div>
                             </div>
-                            
+
                             <div class="col-xs-12 col-sm-6 col-md-6">
                                 <div class="row bottomgap">
 
@@ -1361,8 +1361,8 @@ if ($this->messages) {
                                 </div>
                             </div>
 
-                            
-                            
+
+
                             <div class="col-xs-12 col-sm-6 col-md-6">
                                 <div class="row bottomgap">
                                     <div class="form-group">
@@ -1382,7 +1382,7 @@ if ($this->messages) {
                                     </div>
                                 </div>
                             </div>
-                            
+
                             <div class="col-xs-12 col-sm-6 col-md-6">
                                 <div class="row bottomgap">
                                     <div class="form-group">
@@ -1402,7 +1402,7 @@ if ($this->messages) {
                                     </div>
                                 </div>
                             </div>
-                            
+
                             <div class="col-xs-12 col-sm-6 col-md-6">
                                 <div class="row bottomgap">
                                     <div class="form-group">
@@ -1422,7 +1422,7 @@ if ($this->messages) {
                                     </div>
                                 </div>
                             </div>
-                            
+
 
                         </div>
 
