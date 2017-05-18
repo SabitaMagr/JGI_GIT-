@@ -116,6 +116,10 @@ window.app = (function ($, toastr, App) {
                     $fromEnglishDate.val(temp);
                     $toEnglishDate.datepicker('setStartDate', nepaliDatePickerExt.getDate(temp));
                     oldFromNepali = $fromNepaliDate.val();
+                    
+                    //to set value of to date from value of from date
+                    $toEnglishDate.val(temp);
+                    $toNepaliDate.val(oldFromNepali);
                 } else {
                     var fromDate = nepaliDatePickerExt.fromNepaliToEnglish($fromNepaliDate.val());
                     var toDate = nepaliDatePickerExt.fromNepaliToEnglish($toNepaliDate.val());
@@ -165,7 +169,11 @@ window.app = (function ($, toastr, App) {
             $fromNepaliDate.val(oldFromNepali);
             var minDate = nepaliDatePickerExt.getDate($(this).val());
             $toEnglishDate.datepicker('setStartDate', minDate);
-
+            
+            //to set value of to date from value of from date
+            $toEnglishDate.datepicker('update', $(this).val());
+            oldtoNepali = nepaliDatePickerExt.fromEnglishToNepali($(this).val())
+            $toNepaliDate.val(oldtoNepali);
 
             if (typeof fn !== "undefined" && fn != null && typeof $fromEnglishDate !== "undefined" &&
                     $fromEnglishDate.val() != "" && typeof $toEnglishDate !== "undefined" && $toEnglishDate.val() != "") {
@@ -238,6 +246,7 @@ window.app = (function ($, toastr, App) {
             $toNepaliDate.val(oldtoNepali);
             var maxDate = nepaliDatePickerExt.getDate($(this).val());
             $fromEnglishDate.datepicker('setEndDate', maxDate);
+            
             if (typeof fn !== "undefined" && fn != null && typeof $fromEnglishDate !== "undefined" &&
                     $fromEnglishDate.val() != "" && typeof $toEnglishDate !== "undefined" && $toEnglishDate.val() != "") {
                 fn(getDate($fromEnglishDate.val()), getDate($toEnglishDate.val()));
