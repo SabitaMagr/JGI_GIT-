@@ -2,14 +2,34 @@
     'use strict';
     $(document).ready(function () {
         $("select").select2();
-        var $overtimeDate = $("#overtimeDate")
-        app.datePickerWithNepali("overtimeDate", "nepaliDate");
-        app.getServerDate().then(function (response) {
-            $overtimeDate.datepicker('setEndDate', app.getSystemDate(response.data.serverDate));
-        }, function (error) {
-            console.log("error=>getServerDate", error);
-        });
         app.startEndDatePickerWithNepali('nepaliFromDate', 'fromDate', 'nepaliToDate', 'toDate');
+
+        app.startEndDatePickerWithNepali('nepaliFromDate1', 'fromDate1', 'nepaliToDate1', 'toDate1');
+
+        var setEndDate = function () {
+            app.getServerDate().then(function (response) {
+                $("#fromDate1").datepicker('setEndDate', app.getSystemDate(response.data.serverDate));
+                $("#toDate1").datepicker('setEndDate', app.getSystemDate(response.data.serverDate))
+            }, function (error) {
+                console.log("error=>getServerDate", error);
+            });
+        }
+        var resetDate = function(){
+            $("#calculateOvertimeForm").trigger('reset');
+            $("#fromDate1").val('').datepicker('remove').datepicker();
+            $("#toDate1").val('').datepicker('remove').datepicker();
+            setEndDate();
+        }
+        $('.calculateOvertimeFormModal').on('hidden.bs.modal', function (e)
+        {
+            resetDate();
+        });
+        $("#resetForm").on("click", function () {
+            resetDate();
+        });
+
+        setEndDate();
+
     });
 })(window.jQuery, window.app);
 
@@ -30,8 +50,8 @@ angular.module('hris', [])
                 var status = angular.element(document.getElementById('statusId')).val();
                 var employeeTypeId = angular.element(document.getElementById('employeeTypeId')).val();
                 var overtimeOnly = 0;
-                if(($("#overtimeOnly").is(":checked"))){
-                    overtimeOnly=1;
+                if (($("#overtimeOnly").is(":checked"))) {
+                    overtimeOnly = 1;
                 }
                 App.blockUI({target: "#hris-page-content"});
                 window.app.pullDataById(document.url, {
@@ -48,8 +68,8 @@ angular.module('hris', [])
                         'fromDate': fromDate,
                         'toDate': toDate,
                         'status': status,
-                        'employeeTypeId':employeeTypeId,
-                        'overtimeOnly':parseInt(overtimeOnly)
+                        'employeeTypeId': employeeTypeId,
+                        'overtimeOnly': parseInt(overtimeOnly)
                     }
                 }).then(function (success) {
                     App.unblockUI("#hris-page-content");

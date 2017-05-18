@@ -97,10 +97,15 @@ class CalculateOvertime extends AbstractActionController{
     public function calculateAction(){
         $request = $this->getRequest();
         $postData = $request->getPost()->getArrayCopy();
-        $overtimeDate = $postData['overtimeDate'];
+        $fromDate = $postData['fromDate'];
+        $toDate = $postData['toDate'];
+        $begin = new \DateTime($fromDate );
+        $end = new \DateTime($toDate);
         try{
             $overtimeRepo = new OvertimeRepository($this->adapter);
-            $overtimeAutoCalc = $overtimeRepo->executeProcedure($overtimeDate);
+            for($i = $begin; $i <= $end; $i->modify('+1 day')){
+            $overtimeAutoCalc = $overtimeRepo->executeProcedure($i->format( "d-M-Y" ));
+        }
             $this->flashmessenger()->addMessage("Calculation of Overtime Successfully Completed!!");
         }catch(Exception $e){
             $this->flashmessenger()->addMessage("Calculation of Overtime Failed!!");
