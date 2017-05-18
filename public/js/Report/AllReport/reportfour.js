@@ -183,10 +183,7 @@
             });
         };
         $('select').select2();
-        var $companyList = $('#companyList');
         var $employeeList = $('#employeeList');
-        var $branchList = $('#branchList');
-        var $departmentList = $('#departmentList');
         var $generateReport = $('#generateReport');
 
         var populateList = function ($element, list, id, value, defaultMessage, selectedId) {
@@ -202,104 +199,19 @@
         }
 
         var comBraDepList = document.comBraDepList;
-        comBraDepList.findCompanyAndBranchId = function (deptId) {
-            var companyList = JSON.parse(JSON.stringify(this));
-            var cKeys = Object.keys(companyList);
 
-            for (var i in cKeys) {
-                var company = companyList[cKeys[i]];
-                var branchList = company['BRANCH_LIST'];
-                var bKeys = Object.keys(branchList);
-
-                for (var j in bKeys) {
-                    var branch = branchList[bKeys[j]];
-                    var departmentList = branch['DEPARTMENT_LIST'];
-                    var dKeys = Object.keys(departmentList);
-                    for (var k in dKeys) {
-                        var department = departmentList[dKeys[k]];
-
-                        if (department['DEPARTMENT_ID'] == deptId) {
-                            return {"companyId": company['COMPANY_ID'], "branchId": branch['BRANCH_ID']};
-                        }
-                    }
-                }
-                return null;
-            }
-
-        };
         var employeeList = document.employeeList;
-        employeeList.findDepartmentId = function (searchKey) {
-            var empList = JSON.parse(JSON.stringify(this));
-            var keys = Object.keys(empList);
 
-            var returnData = {'departmentId': null};
-            for (var i in keys) {
-                var key = keys[i];
-                if (empList[key]['EMPLOYEE_ID'] == searchKey) {
-                    returnData['departmentId'] = empList[key]['DEPARTMENT_ID'];
-                    break;
-                }
-
-            }
-            return returnData;
-        };
         populateList($employeeList, employeeList, 'EMPLOYEE_ID', 'FULL_NAME', "Select Employee");
-        populateList($companyList, comBraDepList, 'COMPANY_ID', 'COMPANY_NAME', "All Company");
-        populateList($branchList, [], 'BRANCH_ID', 'BRANCH_NAME', "All Branch");
-        populateList($departmentList, [], 'DEPARTMENT_ID', 'DEPARTMENT_NAME', "All Department");
 
-        var employeeFilter = function (empList, companyId, branchId, departmentId) {
-            return empList.filter(function (item) {
-                if (companyId != -1) {
-                    if (branchId != -1) {
-                        if (departmentId != -1) {
-//                            return item['COMPANY_ID'] == companyId && item['BRANCH_ID'] == branchId && item['DEPARTMENT_ID'] == departmentId;
-                            return item['DEPARTMENT_ID'] == departmentId;
-                        } else {
-//                            return item['COMPANY_ID'] == companyId && item['BRANCH_ID'] == branchId;
-                            return item['BRANCH_ID'] == branchId;
-                        }
-                    } else {
 
-                        return item['COMPANY_ID'] == companyId;
-                    }
-                } else {
-                    return true;
-                }
-            });
-        }
-        var companyListChange = function (val, selectedId) {
-            if (val != -1) {
-                populateList($branchList, comBraDepList[val]['BRANCH_LIST'], 'BRANCH_ID', 'BRANCH_NAME', "Select Branch", selectedId);
-                populateList($departmentList, [], 'DEPARTMENT_ID', 'DEPARTMENT_NAME', "Select Department");
-            }
-        };
-        $companyList.on('change', function () {
-            companyListChange($(this).val());
-        });
-        var branchListChange = function (val, selectedId) {
-            if (val != -1) {
-                populateList($departmentList, comBraDepList[$companyList.val()]['BRANCH_LIST'][val]['DEPARTMENT_LIST'], 'DEPARTMENT_ID', 'DEPARTMENT_NAME', "Select Department", selectedId);
-            }
-        };
-        $branchList.on('change', function () {
-            branchListChange($(this).val());
-        });
 
-        var departmentListChange = function (val, selectedId) {
-            if (val != -1) {
-                populateList($employeeList, employeeFilter(employeeList, $companyList.val(), $branchList.val(), val), 'EMPLOYEE_ID', 'FULL_NAME', "Select Employee", selectedId);
-            }
 
-        }
-        $departmentList.on('change', function () {
-            departmentListChange($(this).val());
-        });
 
         $generateReport.on('click', function () {
             var employeeId = $employeeList.val();
             if (employeeId == -1) {
-                app.errorMessage("No Department Selected", "Notification");
+                app.errorMessage("No Employee Selected", "Notification");
             } else {
                 initializeReport(employeeId);
             }
@@ -308,21 +220,7 @@
         var employeeId = document.employeeId;
         if (employeeId != 0) {
             initializeReport(employeeId);
-            var departmentId = employeeList.findDepartmentId(employeeId)['departmentId'];
-
-            if (departmentId != null) {
-                var comAndDept = comBraDepList.findCompanyAndBranchId(departmentId);
-                if (comAndDept != null) {
-                    $companyList.val(comAndDept['companyId']);
-                    companyListChange(comAndDept['companyId'], comAndDept['branchId']);
-                    branchListChange(comAndDept['branchId'], departmentId);
-                    departmentListChange(departmentId, employeeId);
-                } else {
-                    console.log("system message", "companyId and branchId for department with departmentId " + departmentId + "not found");
-                }
-            } else {
-                console.log("system message", "departmentId for employee with employeeId " + employeeId + "not found");
-            }
+            $employeeList.val(employeeId);
         }
 
 

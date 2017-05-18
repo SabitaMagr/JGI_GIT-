@@ -192,9 +192,7 @@
         };
 
         $('select').select2();
-        var $companyList = $('#countryList');
         var $monthList = $('#monthList');
-        var $branchList = $('#branchList');
         var $departmentList = $('#departmentList');
         var $generateReport = $('#generateReport');
 
@@ -211,57 +209,14 @@
         }
 
         var comBraDepList = document.comBraDepList;
-        comBraDepList.findCompanyAndBranchId = function (deptId) {
-            var companyList = JSON.parse(JSON.stringify(this));
-            var cKeys = Object.keys(companyList);
-
-            for (var i in cKeys) {
-                var company = companyList[cKeys[i]];
-                var branchList = company['BRANCH_LIST'];
-                var bKeys = Object.keys(branchList);
-
-                for (var j in bKeys) {
-                    var branch = branchList[bKeys[j]];
-                    var departmentList = branch['DEPARTMENT_LIST'];
-                    var dKeys = Object.keys(departmentList);
-                    for (var k in dKeys) {
-                        var department = departmentList[dKeys[k]];
-
-                        if (department['DEPARTMENT_ID'] == deptId) {
-                            return {"companyId": company['COMPANY_ID'], "branchId": branch['BRANCH_ID']};
-                        }
-                    }
-                }
-                return null;
-            }
-
-        };
         var monthList = document.monthList;
-
         var monthId = document.monthId;
         var departmentId = document.departmentId;
-        populateList($monthList, monthList, 'MONTH_ID', 'MONTH_EDESC', "Select Month", monthId);
-        populateList($companyList, comBraDepList, 'COMPANY_ID', 'COMPANY_NAME', "Select Company");
-        populateList($branchList, [], 'BRANCH_ID', 'BRANCH_NAME', "SELECT BRANCH");
-        populateList($departmentList, [], 'DEPARTMENT_ID', 'DEPARTMENT_NAME', "SELECT DEPARTMENT");
 
-        var companyListChange = function (val, selectedId) {
-            if (val != -1) {
-                populateList($branchList, comBraDepList[val]['BRANCH_LIST'], 'BRANCH_ID', 'BRANCH_NAME', "Select Branch", selectedId);
-                populateList($departmentList, [], 'DEPARTMENT_ID', 'DEPARTMENT_NAME', "Select Department");
-            }
-        };
-        $companyList.on('change', function () {
-            companyListChange($(this).val());
-        });
-        var branchListChange = function (val, selectedId) {
-            if (val != -1) {
-                populateList($departmentList, comBraDepList[$companyList.val()]['BRANCH_LIST'][val]['DEPARTMENT_LIST'], 'DEPARTMENT_ID', 'DEPARTMENT_NAME', "Select Department", selectedId);
-            }
-        };
-        $branchList.on('change', function () {
-            branchListChange($(this).val());
-        });
+        populateList($monthList, monthList, 'MONTH_ID', 'MONTH_EDESC', "Select Month", monthId);
+        populateList($departmentList, comBraDepList['DEPARTMENT_LIST'], 'DEPARTMENT_ID', 'DEPARTMENT_NAME', "SELECT DEPARTMENT");
+
+
         $generateReport.on('click', function () {
             var departmentId = $departmentList.val();
             var monthId = $monthList.val();
@@ -276,12 +231,8 @@
 
         if (monthId != 0 && departmentId != 0) {
             initializeReport(monthId, departmentId);
-            var comAndDept = comBraDepList.findCompanyAndBranchId(departmentId);
-            if (comAndDept != null) {
-                $companyList.val(comAndDept['companyId']);
-                companyListChange(comAndDept['companyId'], comAndDept['branchId']);
-                branchListChange(comAndDept['branchId'], departmentId)
-            }
+            $monthList.val(monthId);
+            $departmentList.val(departmentId);
         }
 
     });

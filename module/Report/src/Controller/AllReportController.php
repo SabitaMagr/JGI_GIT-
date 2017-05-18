@@ -3,9 +3,11 @@
 namespace Report\Controller;
 
 use Application\Custom\CustomViewModel;
+use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
 use Exception;
 use Report\Repository\ReportRepository;
+use Setup\Model\Department;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Mvc\Controller\AbstractActionController;
 
@@ -31,7 +33,9 @@ class AllReportController extends AbstractActionController {
     public function departmentWiseAction() {
         $departmentId = (int) $this->params()->fromRoute('id1');
         return Helper::addFlashMessagesToArray($this, [
-                    'comBraDepList' => $this->getComBraDepList(),
+                    'comBraDepList' => [
+                        'DEPARTMENT_LIST' => EntityHelper::getTableList($this->adapter, Department::TABLE_NAME, [Department::DEPARTMENT_ID, Department::DEPARTMENT_NAME, Department::COMPANY_ID, Department::BRANCH_ID], [Department::STATUS => "E"])
+                    ],
                     'departmentId' => $departmentId
         ]);
     }
@@ -43,7 +47,9 @@ class AllReportController extends AbstractActionController {
 
         $monthList = $this->reportRepo->getMonthList();
         return Helper::addFlashMessagesToArray($this, [
-                    'comBraDepList' => $this->getComBraDepList(),
+                    'comBraDepList' => [
+                        'DEPARTMENT_LIST' => EntityHelper::getTableList($this->adapter, Department::TABLE_NAME, [Department::DEPARTMENT_ID, Department::DEPARTMENT_NAME, Department::COMPANY_ID, Department::BRANCH_ID], [Department::STATUS => "E"])
+                    ],
                     'monthList' => $monthList,
                     'monthId' => $monthId,
                     'departmentId' => $departmentId
