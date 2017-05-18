@@ -1,68 +1,48 @@
 1. remove '/public' from url.(ukesh)(open)
 2. notification and email testing.(ukesh)(open)
-
-
-4. leave: validation in late post.(ukesh)(open)
-5. Wages tracking system for daily basis and contract basis.(ukesh)(open)
-6. Day off exchange.(ukesh)(open)
-
-8. Late Office in for two days a month leave(ukesh)(open)
-9. Family detail maintain. (ukesh)(open)
-10.Training Request and Training Call Process.(ukesh)(open)
-14. Late In, Early Out Report. (ukesh)(open)
-15. Forwardable days in leave table. (ukesh) (open)
-18. Assign while creating profile. (ukesh) (open)
-19. Service Type in leave Assign. (punam) (completed)
-
-
-24. Overtime Approval system as leave Assign. (ukesh)(open)
+3. leave: validation in late post.(ukesh)(open)
+4. Wages tracking system for daily basis and contract basis.(ukesh)(open)
+5. Day off exchange.(ukesh)(open)
+6. Late Office in for two days a month leave(ukesh)(open)
+7. Family detail maintain. (ukesh)(open)
+8.Training Request and Training Call Process.(ukesh)(open)
+9. Late In, Early Out Report. (ukesh)(open)
+10. Forwardable days in leave table. (ukesh) (open)
+11. Assign while creating profile. (ukesh) (open)
+12. Service Type in leave Assign. (punam) (completed)
+13. Overtime Approval system as leave Assign. (ukesh)(open)
 
 jwl-training-session-1_25-Apr-17  issues | changes
-4. Dropdown requires a default option.
-5. 3 days late should deduct 1 leave as per policy in JGI.
-6. 3 grace time leave should deduct 1 leave as per policy in JGI.
-8. concept of profile copy.
-11.Dropdowns with no list.
-12.Appointment and Re-appointment concept for JGI.[pending]
+1. Dropdown requires a default option.
+2. 3 days late should deduct 1 leave as per policy in JGI.
+3. 3 grace time leave should deduct 1 leave as per policy in JGI.
+4. concept of profile copy.
+5. Dropdowns with no list.
+6. Appointment and Re-appointment concept for JGI.[pending]
 
     
 
 jwl-training-session-2_27-Apr-17 issues | changes
-
-
-4. Nepali Calendar, manual input ukesh
-7. Pending leave Approval in dashboard. ukesh
-9. Email link issue. ukesh
-10. JGI work on holiday, dayoff factor 1.  ukesh   
-
-
-13. link with payroll desktop version. pramod
-
-14. Nepal banda half day shift test. ukesh
-15. Attendance Daily report popover detail. ukesh
-16. Report popover detail. ukesh
+1. Pending leave Approval in dashboard. ukesh
+2. Email link issue. ukesh
+3. JGI work on holiday, dayoff factor 1.  ukesh   
+4. link with payroll desktop version. pramod
+5. Nepal banda half day shift test. ukesh
+6. Attendance Daily report popover detail. ukesh
+7. Report popover detail. ukesh
 
 
 
-from rajkumr
+Requirements from Rajkumar.
 
-2) on login view [not required]
-→ user need to select :: Branch and Company from list
-
-3) Label should be defined on filter option [need discussion]
-
-
-7) Employee join ukesh
+1. Employee join ukesh
 	→ latest employee join alert up to 9 
 	→ set link on employee list and have to go through link to view all detail information
-
-9) Mispuncth ukesh
+2. Mispuncth ukesh
 	→ set link on icon to list all detail
-10) Attendance request detail punam
+3. Attendance request detail punam
 	→ should go through 2 level hierarchy
-
-
-11) Travel request
+4. Travel request
 	→ advance request [advance amount should set on debit and credit]
 	→ need to send account department [should get notification by all employee of under a/c dept]
 	→ department type should be set
@@ -74,46 +54,42 @@ from rajkumr
 		→ settlement 
 		→ travel expense request on defined date
 		→ if defined date closed, then employee can’t open the expense request table
-
-12) recommender and approver assign for loan request [punam]
+5. recommender and approver assign for loan request [punam]
 
 
 
 JGI_training_session_3
 
 
-3. OT automation. ukesh
-4. Shift schedule automation. ukesh
-5. shift overlap management. ['employee can work on different shift on a day. total working stays same.'] ukesh
-
-7. Staff working as intern trainee, his/her job is to edit hr employee data. this staff should not affect payroll. ukesh
-
-10. Leave Requirements of JGI. ukesh
-
-
-16. Menu Name Refactor/ should be meaningful and short. prabin
-17. Reasons should not be mandatory on approve or recommend but mandatory on reject case. punam[done]
-
-18. Team Status/Report. ukesh
-
-
-19. Salary increment notification. prabin[need discussion]
-
-21. Expire notifications. | Resign  prabin [continue] 
-
-
-
-23. On Employee Report, % wise gender should be displayed. ukesh
+1. Shift schedule automation. ukesh
+2. shift overlap management. ['employee can work on different shift on a day. total working stays same.'] ukesh
+3. Staff working as intern trainee, his/her job is to edit hr employee data. this staff should not affect payroll. ukesh
+4. Leave Requirements of JGI. ukesh
+5. Team Status/Report. ukesh
+6. Salary increment notification. prabin[need discussion]
+7. Expire notifications. | Resign  prabin [continue] 
 
 
 
 shift assign issue
 
-
 Branch Name subfix should be changed to company short code.
 
+Reasons to recommend and approve should not be mandatory.
 
+Menu names need refactoring, icons should be proper and reordering of menu.
 
+Gender wise Graph or report on Dashboard.
+
+News automation procedure for events like Employee Resignation, if possible new employee join.
+
+OT automation procedure.
+
+Dashboard Reports need testing and fixing.
+
+on manual input of nepali date, date should be validated and trigger change on english date.
+
+Error Message Type should be error on attendance approve.
 
 
 

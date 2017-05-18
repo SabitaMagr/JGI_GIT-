@@ -1,12 +1,5 @@
 <?php
 
-/**
- * Created by PhpStorm.
- * User: punam
- * Date: 10/4/16
- * Time: 5:05 PM
- */
-
 namespace ManagerService\Controller;
 
 use Application\Helper\EntityHelper;
@@ -20,12 +13,6 @@ use Notification\Model\NotificationEvents;
 use SelfService\Form\AttendanceRequestForm;
 use SelfService\Model\AttendanceRequestModel;
 use SelfService\Repository\AttendanceRequestRepository;
-use Setup\Model\Branch;
-use Setup\Model\Department;
-use Setup\Model\Designation;
-use Setup\Model\Position;
-use Setup\Model\ServiceEventType;
-use Setup\Model\ServiceType;
 use Setup\Repository\EmployeeRepository;
 use Zend\Authentication\AuthenticationService;
 use Zend\Db\Adapter\AdapterInterface;
@@ -202,7 +189,6 @@ class AttendanceApproveController extends AbstractActionController {
                     'attendanceStatus' => $attendanceStatusFormElement,
                     'approverId' => $this->employeeId,
                     'searchValues' => EntityHelper::getSearchData($this->adapter),
-                    
         ]);
     }
 

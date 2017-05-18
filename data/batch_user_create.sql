@@ -7,13 +7,19 @@ BEGIN
     FIRST_NAME,
     MIDDLE_NAME,
     LAST_NAME
-  FROM JWL_HRIS_APR5.HRIS_EMPLOYEES
+  FROM HRIS.HRIS_EMPLOYEES
   )
   LOOP
     BEGIN
-      USERNAME := CONCAT(CONCAT(CONCAT(LOWER(CUR_EMP.FIRST_NAME),'_'),CONCAT(LOWER(CUR_EMP.MIDDLE_NAME), '_')),LOWER(CUR_EMP.LAST_NAME));
+      USERNAME := CONCAT(CONCAT(CONCAT(LOWER(TRIM(CUR_EMP.FIRST_NAME)),'_'),
+      CASE
+      WHEN CUR_EMP.MIDDLE_NAME IS NOT NULL THEN
+        CONCAT(LOWER(TRIM(CUR_EMP.MIDDLE_NAME)), '_')
+      ELSE
+        ''
+      END ),LOWER(TRIM(CUR_EMP.LAST_NAME)));
       INSERT
-      INTO JWL_HRIS_APR5.HRIS_USERS
+      INTO HRIS.HRIS_USERS
         (
           USER_ID,
           EMPLOYEE_ID,
@@ -32,11 +38,11 @@ BEGIN
           CUR_EMP.EMPLOYEE_ID,
           USERNAME,
           'password@123',
-          3,
+          11,
           'E',
           TRUNC(SYSDATE),
           NULL,
-          7000195,
+          167,
           NULL
         );
       C:=C+1;
