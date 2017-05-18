@@ -18,6 +18,7 @@ use AttendanceManagement\Form\AttendanceByHrForm;
 use AttendanceManagement\Model\AttendanceDetail as AttendanceByHrModel;
 use SelfService\Repository\OvertimeDetailRepository;
 use SelfService\Repository\OvertimeRepository;
+use Exception;
 
 class CalculateOvertime extends AbstractActionController{
     private $adapter;
@@ -45,7 +46,7 @@ class CalculateOvertime extends AbstractActionController{
         $employeeTypeFormElement = new Select();
         $employeeTypeFormElement->setName("employeeType");
         $employeeType = array(
-            '-1'=>"All",
+            '-1'=>"All Employee Type",
             "C" => "Contract",
             "R" => "Regular"
         );
@@ -93,5 +94,20 @@ class CalculateOvertime extends AbstractActionController{
                         ]
         );
     }
+    public function calculateAction(){
+        $request = $this->getRequest();
+        $postData = $request->getPost()->getArrayCopy();
+        $overtimeDate = $postData['overtimeDate'];
+        try{
+            $overtimeRepo = new OvertimeRepository($this->adapter);
+            $overtimeAutoCalc = $overtimeRepo->executeProcedure($overtimeDate);
+            $this->flashmessenger()->addMessage("Calculation of Overtime Successfully Completed!!");
+        }catch(Exception $e){
+            $this->flashmessenger()->addMessage("Calculation of Overtime Failed!!");
+            $this->flashmessenger()->addMessage($e->getMessage());
+        }
+        $this->redirect()->toRoute("calculateOvertime");
+    }
+    
 }
 

@@ -3323,7 +3323,7 @@ class RestfulService extends AbstractRestfulController {
         $employeeTypeId = $data['employeeTypeId'];
         $overtimeOnly = (int)$data['overtimeOnly'];
 
-        $result = $attendanceDetailRepository->filterRecord($employeeId, $branchId, $departmentId, $positionId, $designationId, $serviceTypeId, $serviceEventTypeId, $fromDate, $toDate, $status, $companyId,$employeeTypeId);
+        $result = $attendanceDetailRepository->filterRecord($employeeId, $branchId, $departmentId, $positionId, $designationId, $serviceTypeId, $serviceEventTypeId, $fromDate, $toDate, $status, $companyId,$employeeTypeId,true);
         $list = [];
         foreach ($result as $row) {
             if ($status == 'L') {
@@ -3345,15 +3345,13 @@ class RestfulService extends AbstractRestfulController {
                     $row['STATUS'] = "Present";
                 }
             }
-            $overtime = $overtimeRepo->getAllByEmployeeId($row['EMPLOYEE_ID'],$row['ATTENDANCE_DT'],'AP',true);
-            $overtimeDetailResult = $overtimeDetailRepo->fetchByOvertimeId($overtime['OVERTIME_ID']);
+            $overtimeDetailResult = $overtimeDetailRepo->fetchByOvertimeId($row['OVERTIME_ID']);
             $overtimeDetails = [];
             foreach($overtimeDetailResult as $overtimeDetailRow){
                 array_push($overtimeDetails,$overtimeDetailRow);
             }
             $row['DETAILS']=$overtimeDetails;
-            $row['OVERTIME_IN_HOUR']=$overtime['TOTAL_HOUR'];
-            if($overtimeOnly==1 && $overtime!=null){
+            if($overtimeOnly==1 && $row['OVERTIME_ID']!=null){
                 array_push($list, $row);
             }else if($overtimeOnly==0){
                 array_push($list, $row);

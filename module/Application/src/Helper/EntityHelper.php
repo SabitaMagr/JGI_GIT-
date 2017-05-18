@@ -153,7 +153,7 @@ class EntityHelper {
         if ($shortForm != null && sizeof($shortForm) != 0) {
             $pre = $shortForm . ".";
         }
-        return "LPAD(TRUNC({$pre}{$columnName}/60,0),2, 0)||':'||LPAD(MOD({$pre}{$columnName},60),2, 0) AS {$columnName}";
+        return "NVL2({$pre}{$columnName},LPAD(TRUNC({$pre}{$columnName}/60,0),2, 0)||':'||LPAD(MOD({$pre}{$columnName},60),2, 0),null) AS {$columnName}";
     }
 
     public static function getSearchData($adapter) {

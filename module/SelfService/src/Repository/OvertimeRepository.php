@@ -12,6 +12,7 @@ use Zend\Db\Sql\Sql;
 use Setup\Model\HrEmployees;
 use Application\Helper\Helper;
 use Application\Helper\EntityHelper;
+use Exception;
 
 class OvertimeRepository implements RepositoryInterface{
     private $tableGateway;
@@ -90,5 +91,11 @@ class OvertimeRepository implements RepositoryInterface{
         }else{
             return $result;
         }
+    }
+    public function executeProcedure($overtimeDate){
+        $dbAdapter = $this->tableGateway->getAdapter(); 
+        $stmt = $dbAdapter->createStatement(); 
+        $stmt->prepare("CALL HRIS_OVERTIME_AUTOMATION(TRUNC(TO_DATE('".$overtimeDate."','DD-MON-YYYY')))"); 
+        $stmt->execute(); 
     }
 }

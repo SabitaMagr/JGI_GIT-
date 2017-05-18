@@ -2078,3 +2078,6 @@ textarea#form-remarks,#remarks,.form-reason,#purposeTA  {
     margin-top: 1%;
     margin-bottom: 1%;
 }
+div#ndp-nepali-box{
+    z-index: 99999 !important ;
+}

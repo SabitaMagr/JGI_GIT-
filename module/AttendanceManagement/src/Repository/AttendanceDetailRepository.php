@@ -78,7 +78,7 @@ class AttendanceDetailRepository implements RepositoryInterface {
     }
 
     //this function need changes
-    public function filterRecord($employeeId, $branchId, $departmentId, $positionId, $designationId, $serviceTypeId, $serviceEventTypeId, $fromDate, $toDate, $status,$companyId=null,$employeeTypeId=null) {
+    public function filterRecord($employeeId, $branchId, $departmentId, $positionId, $designationId, $serviceTypeId, $serviceEventTypeId, $fromDate, $toDate, $status,$companyId=null,$employeeTypeId=null,$widOvertime=false) {
         $sql = new Sql($this->adapter);
         $select = $sql->select();
         
@@ -105,6 +105,9 @@ class AttendanceDetailRepository implements RepositoryInterface {
                 ->join(['H' => 'HRIS_HOLIDAY_MASTER_SETUP'], 'A.HOLIDAY_ID=H.HOLIDAY_ID', ["HOLIDAY_ENAME" => 'HOLIDAY_ENAME'], "left")
                 ->join(['L' => 'HRIS_LEAVE_MASTER_SETUP'], 'A.LEAVE_ID=L.LEAVE_ID', ["LEAVE_ENAME" => 'LEAVE_ENAME'], "left");
 
+        if($widOvertime!=false){
+           $select->join(['OT' => 'HRIS_OVERTIME'], 'A.EMPLOYEE_ID = OT.EMPLOYEE_ID AND A.ATTENDANCE_DT=OT.OVERTIME_DATE', ["OVERTIME_ID" => 'OVERTIME_ID','OVERTIME_IN_HOUR'=>new Expression("NVL2(OT.TOTAL_HOUR,LPAD(TRUNC(OT.TOTAL_HOUR/60,0),2, 0)||':'||LPAD(MOD(OT.TOTAL_HOUR,60),2, 0),NULL)")], "left");
+        }
         if ($fromDate != null) {
             $startDate = " AND A.ATTENDANCE_DT>=TO_DATE('" . $fromDate . "','DD-MM-YYYY')";
         } else {

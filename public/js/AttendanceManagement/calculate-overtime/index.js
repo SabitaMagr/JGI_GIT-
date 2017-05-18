@@ -2,6 +2,13 @@
     'use strict';
     $(document).ready(function () {
         $("select").select2();
+        var $overtimeDate = $("#overtimeDate")
+        app.datePickerWithNepali("overtimeDate", "nepaliDate");
+        app.getServerDate().then(function (response) {
+            $overtimeDate.datepicker('setEndDate', app.getSystemDate(response.data.serverDate));
+        }, function (error) {
+            console.log("error=>getServerDate", error);
+        });
         app.startEndDatePickerWithNepali('nepaliFromDate', 'fromDate', 'nepaliToDate', 'toDate');
     });
 })(window.jQuery, window.app);
