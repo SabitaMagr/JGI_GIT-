@@ -155,30 +155,16 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
             </div>
         </div>
     </div>
-
-    
-
     <div id="attendanceWidOTTable">
     </div>
 
     <script id="rowTemplate" type="text/x-kendo-tmpl">
         <tr>
         <td>
-        #: (FIRST_NAME == null) ? ' ' : FIRST_NAME #
-        #: (MIDDLE_NAME == null) ? ' ' : MIDDLE_NAME #
-        #: (LAST_NAME == null) ? ' ' : LAST_NAME #
-        </td>        
-        <td>
-        #: (ATTENDANCE_DT == null) ? '-' : ATTENDANCE_DT #
+        #: (IN_REMARKS == null) ? '-' : IN_REMARKS #
         </td>
         <td>
-        #: (IN_TIME == null) ? '-' : IN_TIME #
-        </td>
-        <td>
-        #: (OUT_TIME == null) ? '-' : OUT_TIME #
-        </td>
-        <td>
-        #: (STATUS == null) ? '-' : STATUS #
+        #: (OUT_REMARKS == null) ? '-' : OUT_REMARKS #
         </td>
         <td>
         <ul id="branchList">  
@@ -191,14 +177,21 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
         </ul>
         </td>
         <td>
-        #: (OVERTIME_IN_HOUR == null) ? '-' : OVERTIME_IN_HOUR #
+        <ul id="branchList">  
+        #  ln=DETAILS.length #
+        #for(var i=0; i<ln; i++) { #
+        <li>
+        #=i+1 #) #=DETAILS[i].TOTAL_HOUR #
+        </li>
+        #}#
+        </ul>
         </td>
-        <td>
-        <a class="btn-edit" 
-        href="<?= $this->url("calculateOvertime", ["action" => "view"]); ?>/#:ID #" style="height:17px;" title="edit">
-        <i class="fa fa-search-plus"></i>
-        </a>
-        </td>
+        </tr>
+        <tr class="k-alt">
+            <td colspan="3">
+                <span class="pull-right">Total Hour</span>
+            </td>
+            <td> #: (OVERTIME_IN_HOUR == null) ? '' : OVERTIME_IN_HOUR #</td>
         </tr>
     </script>
     

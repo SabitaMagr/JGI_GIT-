@@ -86,6 +86,7 @@ use SelfService\Repository\OvertimeRepository;
 use ServiceQuestion\Repository\EmpServiceQuestionRepo;
 use Setup\Repository\ServiceQuestionRepository;
 use ServiceQuestion\Repository\EmpServiceQuestionDtlRepo;
+use AttendanceManagement\Repository\AttendanceRepository;
 
 class RestfulService extends AbstractRestfulController {
 
@@ -390,6 +391,9 @@ class RestfulService extends AbstractRestfulController {
 //                        break;
                     case "pullAttendanceWidOvertimeList":
                         $responseData = $this->pullAttendanceWidOvertimeList($postedData->data);
+                        break;
+                    case "pullInOutTime":
+                        $responseData = $this->pullInOutTime($postedData->data);
                         break;
                     
                     default:
@@ -3372,5 +3376,20 @@ class RestfulService extends AbstractRestfulController {
             'success' => "true",
             "data" => $list
         ];
-    }        
+    }
+    public function pullInOutTime($data){
+        $attendanceDt = $data['attendanceDt'];
+        $employeeId = $data['employeeId'];
+        
+        $attendanceRepository = new AttendanceRepository($this->adapter);
+        $result = $attendanceRepository->fetchInOutTimeList($employeeId,$attendanceDt);
+        $list = [];
+        foreach($result as $row){
+            array_push($list,$row);
+        }
+        return [
+            'success' => "true",
+            "data" => $list
+        ];
+    }
 }

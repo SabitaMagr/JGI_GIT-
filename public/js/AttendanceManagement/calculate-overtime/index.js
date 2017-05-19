@@ -14,7 +14,7 @@
                 console.log("error=>getServerDate", error);
             });
         }
-        var resetDate = function(){
+        var resetDate = function () {
             $("#calculateOvertimeForm").trigger('reset');
             $("#fromDate1").val('').datepicker('remove').datepicker();
             $("#toDate1").val('').datepicker('remove').datepicker();
@@ -81,7 +81,7 @@ angular.module('hris', [])
                     console.log(failure);
                 });
             };
-
+            var firstTime = true;
             $scope.initializekendoGrid = function (attendanceList) {
                 $("#attendanceWidOTTable").kendoGrid({
                     excel: {
@@ -102,17 +102,100 @@ angular.module('hris', [])
                         numeric: false
                     },
                     dataBound: gridDataBound,
-                    rowTemplate: kendo.template($("#rowTemplate").html()),
                     columns: [
                         {field: "FIRST_NAME", title: "Employee", width: 160},
                         {field: "ATTENDANCE_DT", title: "Attendance Date", width: 120},
                         {field: "IN_TIME", title: "Check In", width: 80},
                         {field: "OUT_TIME", title: "Check Out", width: 100},
                         {field: "STATUS", title: "Status", width: 80},
-                        {field: "DETAILS", title: "Overtime(From-To)", width: 150},
-                        {field: "TOTAL_HOUR", title: "Overtime(in Hour)", width: 130},
-                        {title: "Action", width: 80}
-                    ]
+                        {field: "OVERTIME_IN_HOUR", title: "Overtime(in Hour)", width: 130},
+                    ],
+                    detailInit: function detailInit(e) {
+                        console.log(attendanceList);
+                        console.log(e.data.ID)
+                        var parentId = e.data.ID;
+                        var childData = $.grep(attendanceList, function (e) {
+                            return e.ID === parentId;
+                        });
+                        if (firstTime) {
+                            App.blockUI({target: "#hris-page-content"});
+
+                        } else {
+                            App.blockUI({target: "#attendanceWidOTTable"});
+                        }
+                        window.app.pullDataById(document.url, {
+                            action: 'pullInOutTime',
+                            data: {
+                                employeeId: e.data.EMPLOYEE_ID,
+                                attendanceDt: e.data.ATTENDANCE_DT
+                            },
+                        }).then(function (success) {
+                            if (firstTime) {
+                                App.unblockUI("#hris-page-content");
+                                firstTime = false;
+                            } else {
+                                App.unblockUI("#attendanceWidOTTable");
+                            }
+                            console.log(success.data);
+                            if (success.data.length > 0) {
+                                inOutTimeList = success.data;
+                            } else {
+                                inOutTimeList = childData;
+                            }
+                            $("<div/>", {
+                                class: "col-sm-3",
+                                css: {
+                                    float: "left",
+                                    padding: "0px",
+                                }
+                            }).appendTo(e.detailCell).kendoGrid({
+                                dataSource: {
+                                    data: inOutTimeList,
+                                    pageSize: 10,
+                                },
+                                scrollable: false,
+                                sortable: false,
+                                pageable: false,
+                                columns:
+                                        [
+                                            {field: "IN_TIME", title: "In Time"},
+                                            {field: "OUT_TIME", title: "Out Out"},
+                                        ]
+                            }).data("kendoGrid");
+                            $("<div/>", {
+                                class: "col-sm-8",
+                                css: {
+                                    float: "left",
+                                    padding: "0px",
+                                    margin: "0px 0px 0px 20px"
+                                }
+                            }).appendTo(e.detailCell).kendoGrid({
+                                dataSource: {
+                                    data: childData,
+                                    pageSize: 5,
+                                },
+                                scrollable: false,
+                                sortable: false,
+                                pageable: false,
+                                rowTemplate: kendo.template($("#rowTemplate").html()),
+                                columns:
+                                        [
+                                            {field: "IN_REMARKS", title: "In Remarks"},
+                                            {field: "OUT_REMARKS", title: "Out Remarks"},
+                                            {field: "DETAILS", title: "Overtime(From-To)"},
+                                            {field: "DETAILS", title: "Overtime(In Hour)"},
+                                        ]
+                            }).data("kendoGrid");
+                        }, function (failure) {
+                            if (firstTime) {
+                                App.unblockUI("#hris-page-content");
+                                firstTime = false;
+                            } else {
+                                App.unblockUI("#attendanceWidOTTable");
+                            }
+                            console.log(failure);
+                        });
+                    },
                 });
             };
             function gridDataBound(e) {
@@ -125,6 +208,7 @@ angular.module('hris', [])
                 }
             }
             ;
+
             $("#export").click(function (e) {
                 var rows = [{
                         cells: [
@@ -191,6 +275,12 @@ angular.module('hris', [])
                     ]
                 });
                 kendo.saveAs({dataURI: workbook.toDataURL(), fileName: "AttendanceWidOTList.xlsx"});
+            }
+
+            function getInOutTime(employeeId, attendanceDt) {
+                console.log(employeeId);
+                console.log(attendanceDt);
+
             }
 
             window.app.UIConfirmations();

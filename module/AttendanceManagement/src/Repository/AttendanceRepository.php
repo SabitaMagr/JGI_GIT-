@@ -98,4 +98,50 @@ FROM
 //        print "<pre>";
 //        print_r($list); die;
     }
+    
+    public function fetchInOutTimeList($employeeId,$attendanceDt){
+        $sql = "SELECT IN_TIME_QUERY.IN_TIME,
+  OUT_TIME_QUERY.OUT_TIME  FROM
+  (SELECT INITCAP(TO_CHAR(ATTENDANCE_TIME,'HH:MI AM')) AS OUT_TIME,
+    ATTENDANCE_DT,
+    EMPLOYEE_ID,
+    OUT_REMARKS,
+    ROW_NUMBER() OVER ( ORDER BY ATTENDANCE_TIME ) AS RNUM1
+  FROM
+    (SELECT A.*,
+      ROW_NUMBER() OVER ( ORDER BY A.ATTENDANCE_TIME ) AS RNUM,
+      AD.OUT_REMARKS
+    FROM HRIS_ATTENDANCE A
+    LEFT JOIN HRIS_ATTENDANCE_DETAIL AD
+    ON A.ATTENDANCE_DT =AD.ATTENDANCE_DT
+    AND A.EMPLOYEE_ID  =AD.EMPLOYEE_ID
+    WHERE A.EMPLOYEE_ID=".$employeeId."
+    AND A.ATTENDANCE_DT=TO_DATE('".$attendanceDt."','DD-MON-YYYY')
+    ORDER BY A.ATTENDANCE_TIME
+    )
+  WHERE mod(RNUM,2)=0
+  ) OUT_TIME_QUERY
+  LEFT JOIN
+  (SELECT INITCAP(TO_CHAR(ATTENDANCE_TIME,'HH:MI AM')) AS IN_TIME ,
+    ATTENDANCE_DT,
+    EMPLOYEE_ID ,
+    ROW_NUMBER() OVER ( ORDER BY ATTENDANCE_TIME ) AS RNUM1
+  FROM
+    (SELECT A.*,
+      ROW_NUMBER() OVER ( ORDER BY A.ATTENDANCE_TIME ) AS RNUM
+    FROM HRIS_ATTENDANCE A
+     WHERE A.EMPLOYEE_ID=".$employeeId."
+    AND A.ATTENDANCE_DT=TO_DATE('".$attendanceDt."','DD-MON-YYYY')
+    ORDER BY A.ATTENDANCE_TIME
+    )
+  WHERE mod(RNUM,2)=1
+  )IN_TIME_QUERY
+ON
+IN_TIME_QUERY.RNUM1 = OUT_TIME_QUERY.RNUM1
+";
+        $statement = $this->adapter->query($sql);
+//        print_r($statement->getSql()); die();
+        $result = $statement->execute();
+        return $result;
+    }
 }
