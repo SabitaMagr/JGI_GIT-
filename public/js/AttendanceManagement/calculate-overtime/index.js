@@ -81,7 +81,7 @@ angular.module('hris', [])
                     console.log(failure);
                 });
             };
-
+            var firstTime = true;
             $scope.initializekendoGrid = function (attendanceList) {
                 $("#attendanceWidOTTable").kendoGrid({
                     excel: {
@@ -102,7 +102,7 @@ angular.module('hris', [])
                         numeric: false
                     },
                     dataBound: gridDataBound,
-                    rowTemplate: kendo.template($("#rowTemplate").html()),
+//                    rowTemplate: kendo.template($("#rowTemplate").html()),
                     columns: [
                         {field: "FIRST_NAME", title: "Employee", width: 160},
                         {field: "ATTENDANCE_DT", title: "Attendance Date", width: 120},
@@ -112,7 +112,33 @@ angular.module('hris', [])
                         {field: "DETAILS", title: "Overtime(From-To)", width: 150},
                         {field: "TOTAL_HOUR", title: "Overtime(in Hour)", width: 130},
                         {title: "Action", width: 80}
-                    ]
+                    ],
+                    detailInit: function detailInit(e) {
+                        console.log(attendanceList);
+                        console.log(e.data.ID)
+                        $("<div/>",{
+                            text: e.data.IN_REMARKS
+                        }).appendTo(e.detailCell);
+//$("<div/>").appendTo(e.detailCell).kendoGrid({
+//    dataSource: {
+//        data: attendanceList,
+//        serverPaging: true,
+//        serverSorting: true,
+//        serverFiltering: true,
+//        pageSize: 5,
+//        filter: { field: "ID", operator: "eq", value: e.data.ID }
+//    },
+//    scrollable: false,
+//    sortable: false,
+//    selectable: true,
+//    pageable: true,
+//    columns:
+//            [
+//                { field: "IN_REMARKS", title: "In Remarks", width: "110px" },
+//                { field: "OUT_REMARKS", title: "Out Remarks" },
+//            ]
+//}).data("kendoGrid");
+},
                 });
             };
             function gridDataBound(e) {
@@ -123,8 +149,8 @@ angular.module('hris', [])
                             .find('tbody')
                             .append('<tr class="kendo-data-row"><td colspan="' + colCount + '" class="no-data">There is no data to show in the grid.</td></tr>');
                 }
-            }
-            ;
+            };
+            
             $("#export").click(function (e) {
                 var rows = [{
                         cells: [
@@ -196,3 +222,69 @@ angular.module('hris', [])
             window.app.UIConfirmations();
 
         });
+
+
+
+
+
+
+
+
+
+var childgrid = undefined;
+
+
+
+var element = $("#grid").kendoGrid({
+    dataSource: {
+        type: "odata",
+        transport: {
+            read: "http://demos.kendoui.com/service/Northwind.svc/Employees"
+        },
+        pageSize: 6,
+        serverPaging: true,
+        serverSorting: true
+    },
+    height: 430,
+    sortable: true,
+    pageable: true,
+    detailInit: detailInit,
+    columns:
+            [
+                {field: "FirstName", title: "First Name", width: "110px" },
+                { field: "LastName", title: "Last Name", width: "110px" },
+                { field: "Country", width: "110px" },
+                { field: "City", width: "110px" },
+                { field: "Title" }
+            ]
+});
+
+
+
+function detailInit(e) {
+    console.log(e.data);
+childgrid = $("<div/>").appendTo(e.detailCell).kendoGrid({
+    dataSource: {
+        type: "odata",
+        transport: {
+            read: "http://demos.kendoui.com/service/Northwind.svc/Orders"
+        },
+        serverPaging: true,
+        serverSorting: true,
+        serverFiltering: true,
+        pageSize: 5,
+        filter: { field: "EmployeeID", operator: "eq", value: e.data.EmployeeID }
+    },
+    scrollable: false,
+    sortable: false,
+    selectable: true,
+    pageable: true,
+    columns:
+            [
+                { field: "OrderID", width: "70px" },
+                { field: "ShipCountry", title: "Ship Country", width: "110px" },
+                { field: "ShipAddress", title: "Ship Address" },
+                { field: "ShipName", title: "Ship Name", width: "200px" }
+            ]
+}).data("kendoGrid");
+}
