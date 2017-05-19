@@ -151,6 +151,25 @@ class JobHistoryForm
      * @Annotation\Attributes({"value":"Submit","class":"btn btn-success"})
      */
     public $submit;
+    
+    
+     /**
+     * @Annotation\Type("Zend\Form\Element\Select")
+     * @Annotation\Required({"required":"true"})
+     * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
+     * @Annotation\Options({"disable_inarray_validator":"true","label":"From Company Name"})
+     * @Annotation\Attributes({ "id":"fromCompanyId","class":"form-control"})
+     */
+    public $fromCompanyId;
+
+    /**
+     * @Annotation\Type("Zend\Form\Element\Select")
+     * @Annotation\Required({"required":"true"})
+     * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
+     * @Annotation\Options({"disable_inarray_validator":"true","label":"To Company Name"})
+     * @Annotation\Attributes({ "id":"toCompanyId","class":"form-control"})
+     */
+    public $toCompanyId;
 
 }
 

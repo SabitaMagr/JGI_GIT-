@@ -6,12 +6,14 @@
         var $employeeId = $("#employeeID");
 
         var $fromServiceTypeId = $('#fromServiceTypeId');
+        var $fromCompanyId = $('#fromCompanyId');
         var $fromBranchId = $('#fromBranchId');
         var $fromDepartmentId = $('#fromDepartmentId');
         var $fromDesignationId = $('#fromDesignationId');
         var $fromPositionId = $('#fromPositionId');
 
         var $toServiceTypeId = $('#toServiceTypeId');
+        var $toCompanyId = $('#toCompanyId');
         var $toBranchId = $('#toBranchId');
         var $toDepartmentId = $('#toDepartmentId');
         var $toDesignationId = $('#toDesignationId');
@@ -20,13 +22,16 @@
         var $serviceEventTypeId = $("#serviceEventTypeId");
 
 
+        var companyList = [];
         var branchList = [];
         var departmentList = [];
         var designationList = [];
         var positionList = [];
-
+        
+        
 
         var toggleEmployeeInfo = function (flag) {
+            $fromCompanyId.prop("disabled", !flag);
             $fromBranchId.prop("disabled", !flag);
             $fromServiceTypeId.prop("disabled", !flag);
             $fromDepartmentId.prop("disabled", !flag);
@@ -34,7 +39,8 @@
             $fromPositionId.prop("disabled", !flag);
 
             $serviceEventTypeId.prop("disabled", flag);
-
+            
+            $toCompanyId.prop("disabled", flag);
             $toBranchId.prop("disabled", flag);
             $toServiceTypeId.prop("disabled", flag);
             $toDepartmentId.prop("disabled", flag);
@@ -42,6 +48,21 @@
             $toPositionId.prop("disabled", flag);
 
         };
+        
+        var toggleCompanyChange= function(){
+           var selectedServiceEventType=$serviceEventTypeId.val();
+           console.log('service id',selectedServiceEventType);
+           if(selectedServiceEventType==17){
+               $(".companyToggle").show();
+           }else{
+               $(".companyToggle").hide();
+           }
+        }
+         toggleCompanyChange();
+        
+        $serviceEventTypeId.on('change',function(){
+            toggleCompanyChange();
+        });
 
         var disableEmployee = function () {
             $employeeId.prop("disabled", true);
@@ -51,7 +72,12 @@
             if (employee.SERVICE_TYPE_ID !== null) {
                 $fromServiceTypeId.val(employee.SERVICE_TYPE_ID).trigger("change");
             }
-
+            
+            console.log(employee.COMPANY_ID);
+            if (employee.COMPANY_ID !== null) {
+                $fromCompanyId.val(employee.COMPANY_ID).trigger("change");
+            }
+            
             if (employee.BRANCH_ID !== null) {
                 $fromBranchId.val(employee.BRANCH_ID).trigger("change");
             }
@@ -75,11 +101,17 @@
             }).then(function (success) {
                 var employeeDetail = success.data.employeeDetail;
 
+                companyList = success.data.companyList;
                 branchList = success.data.branchList;
                 departmentList = success.data.departmentList;
                 designationList = success.data.designationList;
                 positionList = success.data.positionList;
-
+//                console.log(employeeDetail);
+                
+                
+                populateList($fromCompanyId, companyList, "COMPANY_ID", "COMPANY_NAME", "----");
+                populateList($toCompanyId, companyList, "COMPANY_ID", "COMPANY_NAME", "----");
+                
                 populateList($fromBranchId, branchList, "BRANCH_ID", "BRANCH_NAME", "----");
                 populateList($toBranchId, branchList, "BRANCH_ID", "BRANCH_NAME", "----");
 
@@ -127,6 +159,9 @@
         $fromServiceTypeId.on("change", function () {
             $toServiceTypeId.val($(this).val()).trigger("change");
         });
+         $fromCompanyId.on("change", function () {
+            $toCompanyId.val($(this).val()).trigger("change");
+        });
         $fromBranchId.on("change", function () {
 //            populateList($fromDepartmentId, search(departmentList, {'BRANCH_ID': $(this).val()}), "DEPARTMENT_ID", "DEPARTMENT_NAME", "----");
             $toBranchId.val($(this).val()).trigger("change");
@@ -141,10 +176,12 @@
             $toPositionId.val($(this).val()).trigger("change");
         });
 
+
 //        $toBranchId.on('change', function () {
 //            $this = $(this);
 //            populateList($toDepartmentId, search(departmentList, {'BRANCH_ID': $(this).val()}), "DEPARTMENT_ID", "DEPARTMENT_NAME", "----");
 //        });
+
 
         app.setLoadingOnSubmit("jobHistory-form", function () {
             localStorage.setItem("ServiceJobHistorylastEmployeeId", $employeeId.val());
