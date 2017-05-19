@@ -3365,6 +3365,8 @@ class RestfulService extends AbstractRestfulController {
             foreach($overtimeDetailResult as $overtimeDetailRow){
                 array_push($overtimeDetails,$overtimeDetailRow);
             }
+            $middleName = ($row['MIDDLE_NAME']!=null)? " ".$row['MIDDLE_NAME']." ":" ";
+            $row['EMPLOYEE_NAME'] = $row['FIRST_NAME'].$middleName.$row['LAST_NAME']; 
             $row['DETAILS']=$overtimeDetails;
             if($overtimeOnly==1 && $row['OVERTIME_ID']!=null){
                 array_push($list, $row);

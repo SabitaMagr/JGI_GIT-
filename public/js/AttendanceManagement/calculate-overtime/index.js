@@ -103,7 +103,7 @@ angular.module('hris', [])
                     },
                     dataBound: gridDataBound,
                     columns: [
-                        {field: "FIRST_NAME", title: "Employee", width: 160},
+                        {field: "EMPLOYEE_NAME", title: "Employee", width: 160},
                         {field: "ATTENDANCE_DT", title: "Attendance Date", width: 120},
                         {field: "IN_TIME", title: "Check In", width: 80},
                         {field: "OUT_TIME", title: "Check Out", width: 100},
