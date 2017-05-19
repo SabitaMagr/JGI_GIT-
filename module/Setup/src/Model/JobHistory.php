@@ -34,6 +34,8 @@ class JobHistory extends Model
     const MODIFIED_DT = "MODIFIED_DT";
     const CREATED_BY = "CREATED_BY";
     const MODIFIED_BY = "MODIFIED_BY";
+    const FROM_COMPANY_ID ="FROM_COMPANY_ID";
+    const TO_COMPANY_ID ="TO_COMPANY_ID";
 
     public $jobHistoryId;
     public $employeeId;
@@ -56,6 +58,9 @@ class JobHistory extends Model
     public $createdBy;
     public $modifiedBy;
     
+    public $fromCompanyId;
+    public $toCompanyId;
+    
     public $mappings = [
         'jobHistoryId' => self::JOB_HISTORY_ID,
         'employeeId' => self::EMPLOYEE_ID,
@@ -76,6 +81,8 @@ class JobHistory extends Model
         'createdDt' => self::CREATED_DT,
         'modifiedDt' => self::MODIFIED_DT,
         'createdBy' => self::CREATED_BY,
-        'modifiedBy' => self::MODIFIED_BY
+        'modifiedBy' => self::MODIFIED_BY,
+        'fromCompanyId'=>self::FROM_COMPANY_ID,
+        'toCompanyId'=>self::TO_COMPANY_ID
     ];
 }
