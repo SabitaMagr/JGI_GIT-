@@ -127,7 +127,7 @@ class JobHistoryController extends AbstractActionController {
             } else {
                 $latestJobHistoryId = 0;
             }
-
+ 
             $jobHistory->exchangeArrayFromDb($jobHistoryDetail);
             $this->form->bind($jobHistory);
         } else {

@@ -47,6 +47,21 @@
             $toPositionId.prop("disabled", flag);
 
         };
+        
+        var toggleCompanyChange= function(){
+           var selectedServiceEventType=$serviceEventTypeId.val();
+           console.log('service id',selectedServiceEventType);
+           if(selectedServiceEventType==17){
+               $(".companyToggle").show();
+           }else{
+               $(".companyToggle").hide();
+           }
+        }
+         toggleCompanyChange();
+        
+        $serviceEventTypeId.on('change',function(){
+            toggleCompanyChange();
+        });
 
         var disableEmployee = function () {
             $employeeId.prop("disabled", true);
