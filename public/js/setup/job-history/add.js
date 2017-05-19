@@ -160,10 +160,12 @@
             $toPositionId.val($(this).val()).trigger("change");
         });
 
-        $toBranchId.on('change', function () {
-            $this = $(this);
+
+//        $toBranchId.on('change', function () {
+//            $this = $(this);
 //            populateList($toDepartmentId, search(departmentList, {'BRANCH_ID': $(this).val()}), "DEPARTMENT_ID", "DEPARTMENT_NAME", "----");
-        });
+//        });
+
 
         app.setLoadingOnSubmit("jobHistory-form", function () {
             localStorage.setItem("ServiceJobHistorylastEmployeeId", $employeeId.val());
