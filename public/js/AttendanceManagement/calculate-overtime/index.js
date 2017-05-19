@@ -137,6 +137,11 @@ angular.module('hris', [])
                                 App.unblockUI("#attendanceWidOTTable");
                             }
                             console.log(success.data);
+                            if(success.data.length>0){
+                                inOutTimeList = success.data;
+                            }else{
+                                inOutTimeList = childData;
+                            }
                             $("<div/>", {
                                 class: "col-sm-3",
                                 css: {
@@ -145,7 +150,7 @@ angular.module('hris', [])
                                 }
                             }).appendTo(e.detailCell).kendoGrid({
                                 dataSource: {
-                                    data: success.data,
+                                    data: inOutTimeList,
                                     pageSize: 10,
                                 },
                                 columns:
