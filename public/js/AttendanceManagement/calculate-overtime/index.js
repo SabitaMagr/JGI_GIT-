@@ -137,9 +137,9 @@ angular.module('hris', [])
                                 App.unblockUI("#attendanceWidOTTable");
                             }
                             console.log(success.data);
-                            if(success.data.length>0){
+                            if (success.data.length > 0) {
                                 inOutTimeList = success.data;
-                            }else{
+                            } else {
                                 inOutTimeList = childData;
                             }
                             $("<div/>", {
@@ -153,6 +153,9 @@ angular.module('hris', [])
                                     data: inOutTimeList,
                                     pageSize: 10,
                                 },
+                                scrollable: false,
+                                sortable: false,
+                                pageable: false,
                                 columns:
                                         [
                                             {field: "IN_TIME", title: "In Time"},
@@ -171,6 +174,9 @@ angular.module('hris', [])
                                     data: childData,
                                     pageSize: 5,
                                 },
+                                scrollable: false,
+                                sortable: false,
+                                pageable: false,
                                 rowTemplate: kendo.template($("#rowTemplate").html()),
                                 columns:
                                         [
