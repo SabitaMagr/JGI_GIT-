@@ -117,46 +117,50 @@
 //
 //        
 
+        /*
+         document.editDepartmentValue = <?php echo ($departmentId->getValue() == null) ? -1 : $departmentId->getValue(); ?>;
+         */
 
-        var branchChangeFun = function () {
-            var selectedBranchId = $('#branchId').val();
-            $('#departmentId').html('');
-            if (selectedBranchId > 0) {
-                window.app.pullDataById(document.url, {
-                    action: 'pullDepartmentAccordingToBranch',
-                    data: {
-                        'branchId': selectedBranchId
-                    }
-                }).then(function (success) {
-                    $.each(success.data, function (key, dep) {
-                        if (document.editDepartmentValue == key) {
-                            $('#departmentId').append($("<option selected='selected'></option>")
-                                    .attr("value", key)
-                                    .text(dep));
-                        } else {
-                            $('#departmentId').append($("<option></option>")
-                                    .attr("value", key)
-                                    .text(dep));
-                        }
-                    });
-
-                }, function (failure) {
-                    console.log(failure);
-                });
-
-            } else {
-                $('#departmentId').append($("<option></option>")
-                        .attr("value", "")
-                        .text("Select Branch First"));
-            }
-        }
-
-        $('#branchId').on('change', function () {
-            branchChangeFun();
-        });
-
-        branchChangeFun();
-
+        /* commented as no company wise branch, designation, position and department is needed
+         var branchChangeFun = function () {
+         var selectedBranchId = $('#branchId').val();
+         $('#departmentId').html('');
+         if (selectedBranchId > 0) {
+         window.app.pullDataById(document.url, {
+         action: 'pullDepartmentAccordingToBranch',
+         data: {
+         'branchId': selectedBranchId
+         }
+         }).then(function (success) {
+         $.each(success.data, function (key, dep) {
+         if (document.editDepartmentValue == key) {
+         $('#departmentId').append($("<option selected='selected'></option>")
+         .attr("value", key)
+         .text(dep));
+         } else {
+         $('#departmentId').append($("<option></option>")
+         .attr("value", key)
+         .text(dep));
+         }
+         });
+         
+         }, function (failure) {
+         console.log(failure);
+         });
+         
+         } else {
+         $('#departmentId').append($("<option></option>")
+         .attr("value", "")
+         .text("Select Branch First"));
+         }
+         }
+         
+         $('#branchId').on('change', function () {
+         branchChangeFun();
+         });
+         
+         branchChangeFun();
+         */
 
     });
 

@@ -14,6 +14,7 @@ use Setup\Model\Position;
 use Setup\Model\ServiceEventType;
 use Setup\Model\ServiceType;
 use Zend\Db\Adapter\AdapterInterface;
+use Zend\Db\Sql\Predicate\Predicate;
 use Zend\Db\Sql\Select;
 use Zend\Db\TableGateway\TableGateway;
 
@@ -78,18 +79,18 @@ class EntityHelper {
         return $statement->execute();
     }
 
-    public static function getTableList(AdapterInterface $adapter, string $tableName, array $columnList, array $where = null) {
+    public static function getTableList(AdapterInterface $adapter, string $tableName, array $columnList, array $where = null, string $predicate = Predicate::OP_AND) {
         $gateway = new TableGateway($tableName, $adapter);
-        $zendResult = $gateway->select(function(Select $select) use($columnList, $where) {
+        $zendResult = $gateway->select(function(Select $select) use($columnList, $where, $predicate) {
             $select->columns($columnList, false);
             if ($where != null) {
-                $select->where($where);
+                $select->where($where, $predicate);
             }
         });
         return Helper::extractDbData($zendResult, true);
     }
 
-    public static function getColumnNameArrayWithOracleFns(string $requestedName, array $initCapColumnList = null, array $dateColumnList = null, array $timeColumnList = null, array $timeIntervalColumnList = null, array $otherColumnList = null, string $shortForm = null, $selectedOnly = false, $inStringForm = false,array $minuteToHourColumnList = null) {
+    public static function getColumnNameArrayWithOracleFns(string $requestedName, array $initCapColumnList = null, array $dateColumnList = null, array $timeColumnList = null, array $timeIntervalColumnList = null, array $otherColumnList = null, string $shortForm = null, $selectedOnly = false, $inStringForm = false, array $minuteToHourColumnList = null) {
         $refl = new ReflectionClass($requestedName);
         $table = $refl->newInstanceArgs();
 
@@ -126,7 +127,7 @@ class EntityHelper {
                 array_push($objCols, $tempCol);
                 continue;
             }
-            if($minuteToHourColumnList!=null && in_array($tempCol,$minuteToHourColumnList)){
+            if ($minuteToHourColumnList != null && in_array($tempCol, $minuteToHourColumnList)) {
                 $minuteToHour = self::minuteToHourColumn($tempCol, $shortForm);
                 array_push($objCols, $inStringForm ? $minuteToHour->getExpression() : $minuteToHour);
                 continue;
@@ -148,7 +149,8 @@ class EntityHelper {
         }
         return "INITCAP(TO_CHAR({$pre}{$columnName}, '{$format}')) AS {$columnName}";
     }
-    public static function minuteToHourColumn($columnName,$shortForm=null){
+
+    public static function minuteToHourColumn($columnName, $shortForm = null) {
         $pre = "";
         if ($shortForm != null && sizeof($shortForm) != 0) {
             $pre = $shortForm . ".";

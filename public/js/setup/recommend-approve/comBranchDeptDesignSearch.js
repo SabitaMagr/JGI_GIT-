@@ -70,17 +70,16 @@ var comBranchDeptDesignSearch = function (recomCompanyId, recomBranchId, recomDe
 
     /* setup change events */
     onChangeEvent($recomCompany, function ($this) {
-        populateList($recomBranch, search(document.searchValues['branch'], {'COMPANY_ID': $this.val()}), 'BRANCH_ID', 'BRANCH_NAME', 'All Branch');
-        populateList($recomDepartment, search(document.searchValues['department'], {'COMPANY_ID': $this.val()}), 'DEPARTMENT_ID', 'DEPARTMENT_NAME', 'All Department');
-        populateList($recomDesignation, search(document.searchValues['designation'], {'COMPANY_ID': $this.val()}), 'DESIGNATION_ID', 'DESIGNATION_TITLE', 'All Designation');
+//        populateList($recomBranch, search(document.searchValues['branch'], {'COMPANY_ID': $this.val()}), 'BRANCH_ID', 'BRANCH_NAME', 'All Branch');
+//        populateList($recomDepartment, search(document.searchValues['department'], {'COMPANY_ID': $this.val()}), 'DEPARTMENT_ID', 'DEPARTMENT_NAME', 'All Department');
+//        populateList($recomDesignation, search(document.searchValues['designation'], {'COMPANY_ID': $this.val()}), 'DESIGNATION_ID', 'DESIGNATION_TITLE', 'All Designation');
 
         populateList($recomEmployee, search(document.searchValues['employee'], {'COMPANY_ID': $recomCompany.val(), 'BRANCH_ID': $recomBranch.val(), 'DEPARTMENT_ID': $recomDepartment.val(), 'DESIGNATION_ID': $recomDesignation.val()}), 'EMPLOYEE_ID', ['FIRST_NAME', 'MIDDLE_NAME', 'LAST_NAME'], 'All Employee');
 
     });
 
     onChangeEvent($recomBranch, function ($this) {
-        populateList($recomDepartment, search(document.searchValues['department'], {'BRANCH_ID': $this.val()}), 'DEPARTMENT_ID', 'DEPARTMENT_NAME', 'All Department');
-
+//        populateList($recomDepartment, search(document.searchValues['department'], {'BRANCH_ID': $this.val()}), 'DEPARTMENT_ID', 'DEPARTMENT_NAME', 'All Department');
         populateList($recomEmployee, search(document.searchValues['employee'], {'COMPANY_ID': $recomCompany.val(), 'BRANCH_ID': $recomBranch.val(), 'DEPARTMENT_ID': $recomDepartment.val(), 'DESIGNATION_ID': $recomDesignation.val()}), 'EMPLOYEE_ID', ['FIRST_NAME', 'MIDDLE_NAME', 'LAST_NAME'], 'All Employee');
     });
 
