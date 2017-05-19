@@ -4,16 +4,16 @@
 4. Wages tracking system for daily basis and contract basis.(ukesh)(open)
 5. Day off exchange.(ukesh)(open)
 6. Late Office in for two days a month leave(ukesh)(open)
-7. Family detail maintain. (ukesh)(open)
-8.Training Request and Training Call Process.(ukesh)(open)
+7. Family detail maintain. (ukesh)(open)  -- not needed now
+8.Training Request and Training Call Process.(ukesh)(open) -- yes
 9. Late In, Early Out Report. (ukesh)(open)
 10. Forwardable days in leave table. (ukesh) (open)
-11. Assign while creating profile. (ukesh) (open)
-12. Service Type in leave Assign. (punam) (completed)
-13. Overtime Approval system as leave Assign. (ukesh)(open)
+11. Assign while creating profile. (ukesh) (open)  --done
+12. Service Type in leave Assign. (punam) (completed)  -- done
+13. Overtime Approval system as leave Assign. (ukesh)(open)  --done
 
 jwl-training-session-1_25-Apr-17  issues | changes
-1. Dropdown requires a default option.
+1. Dropdown requires a default option.  
 2. 3 days late should deduct 1 leave as per policy in JGI.
 3. 3 grace time leave should deduct 1 leave as per policy in JGI.
 4. concept of profile copy.
