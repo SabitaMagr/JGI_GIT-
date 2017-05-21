@@ -27,57 +27,40 @@
         var departmentList = [];
         var designationList = [];
         var positionList = [];
-        
-        
 
-        var toggleEmployeeInfo = function (flag) {
-            $fromCompanyId.prop("disabled", !flag);
-            $fromBranchId.prop("disabled", !flag);
-            $fromServiceTypeId.prop("disabled", !flag);
-            $fromDepartmentId.prop("disabled", !flag);
-            $fromDesignationId.prop("disabled", !flag);
-            $fromPositionId.prop("disabled", !flag);
+        var prevAndNextHistory = document.prevAndNextHistory;
+        var from = null;
 
-            $serviceEventTypeId.prop("disabled", flag);
-            
-            $toCompanyId.prop("disabled", flag);
-            $toBranchId.prop("disabled", flag);
-            $toServiceTypeId.prop("disabled", flag);
-            $toDepartmentId.prop("disabled", flag);
-            $toDesignationId.prop("disabled", flag);
-            $toPositionId.prop("disabled", flag);
-
-        };
-        
-        var toggleCompanyChange= function(){
-           var selectedServiceEventType=$serviceEventTypeId.val();
-           console.log('service id',selectedServiceEventType);
-           if(selectedServiceEventType==17){
-               $(".companyToggle").show();
-           }else{
-               $(".companyToggle").hide();
-           }
-        }
-         toggleCompanyChange();
-        
-        $serviceEventTypeId.on('change',function(){
-            toggleCompanyChange();
+        $fromServiceTypeId.on("change", function () {
+            $toServiceTypeId.val($(this).val()).trigger("change");
+        });
+        $fromCompanyId.on("change", function () {
+            $toCompanyId.val($(this).val()).trigger("change");
+        });
+        $fromBranchId.on("change", function () {
+//            populateList($fromDepartmentId, search(departmentList, {'BRANCH_ID': $(this).val()}), "DEPARTMENT_ID", "DEPARTMENT_NAME", "----");
+            $toBranchId.val($(this).val()).trigger("change");
+        });
+        $fromDepartmentId.on("change", function () {
+            $toDepartmentId.val($(this).val()).trigger("change");
+        });
+        $fromDesignationId.on("change", function () {
+            $toDesignationId.val($(this).val()).trigger("change");
+        });
+        $fromPositionId.on("change", function () {
+            $toPositionId.val($(this).val()).trigger("change");
         });
 
-        var disableEmployee = function () {
-            $employeeId.prop("disabled", true);
-        };
 
         var updateView = function (employee) {
             if (employee.SERVICE_TYPE_ID !== null) {
                 $fromServiceTypeId.val(employee.SERVICE_TYPE_ID).trigger("change");
             }
-            
-            console.log(employee.COMPANY_ID);
+
             if (employee.COMPANY_ID !== null) {
                 $fromCompanyId.val(employee.COMPANY_ID).trigger("change");
             }
-            
+
             if (employee.BRANCH_ID !== null) {
                 $fromBranchId.val(employee.BRANCH_ID).trigger("change");
             }
@@ -94,8 +77,33 @@
                 $fromPositionId.val(employee.POSITION_ID).trigger("change");
             }
         };
+        var toggleEmployeeInfo = function (flag) {
+            $fromCompanyId.prop("disabled", !flag);
+            $fromBranchId.prop("disabled", !flag);
+            $fromServiceTypeId.prop("disabled", !flag);
+            $fromDepartmentId.prop("disabled", !flag);
+            $fromDesignationId.prop("disabled", !flag);
+            $fromPositionId.prop("disabled", !flag);
+
+//            $serviceEventTypeId.prop("disabled", flag);
+
+            $toCompanyId.prop("disabled", flag);
+            $toBranchId.prop("disabled", flag);
+            $toServiceTypeId.prop("disabled", flag);
+            $toDepartmentId.prop("disabled", flag);
+            $toDesignationId.prop("disabled", flag);
+            $toPositionId.prop("disabled", flag);
+
+        };
+
+        var disableEmployee = function () {
+            $employeeId.prop("disabled", true);
+        };
 
         var pullEmployeeDetail = function (employeeId) {
+            if (typeof prevAndNextHistory['prev'] !== 'undefined') {
+                return;
+            }
             app.pullDataById(document.wsPullEmployeeDetailWithOptions, {
                 employeeId: employeeId
             }).then(function (success) {
@@ -106,12 +114,11 @@
                 departmentList = success.data.departmentList;
                 designationList = success.data.designationList;
                 positionList = success.data.positionList;
-//                console.log(employeeDetail);
-                
-                
+
+
                 populateList($fromCompanyId, companyList, "COMPANY_ID", "COMPANY_NAME", "----");
                 populateList($toCompanyId, companyList, "COMPANY_ID", "COMPANY_NAME", "----");
-                
+
                 populateList($fromBranchId, branchList, "BRANCH_ID", "BRANCH_NAME", "----");
                 populateList($toBranchId, branchList, "BRANCH_ID", "BRANCH_NAME", "----");
 
@@ -124,22 +131,22 @@
                 populateList($fromPositionId, positionList, "POSITION_ID", "POSITION_NAME", "----");
                 populateList($toPositionId, positionList, "POSITION_ID", "POSITION_NAME", "----");
 
-                updateView(employeeDetail);
-                checkAppointmentOption(employeeDetail);
+
+                from = employeeDetail;
+                serviceEventChangeAction();
+//                updateView(from);
+//                checkAppointmentOption(employeeDetail);
+//                toggleEmployeeInfo(false);
+
+                if (typeof employeeDetail['LAST_EVENT_DATE'] !== 'undefined') {
+                    $('#startDate').datepicker('setStartDate', nepaliDatePickerExt.getDate(employeeDetail['LAST_EVENT_DATE']));
+                }
 
             }, function (failure) {
                 console.log("pullEmployeeById failure", failure);
             });
         };
 
-        $employeeId.on("change", function () {
-            var $this = $(this);
-            app.floatingProfile.setDataFromRemote($this.val());
-            pullEmployeeDetail($this.val())
-        });
-
-        app.floatingProfile.setDataFromRemote($employeeId.val());
-        pullEmployeeDetail($employeeId.val());
 
         var checkAppointmentOption = function (employeeDtl) {
             if (employeeDtl.APP_BRANCH_ID == null && employeeDtl.APP_DEPARTMENT_ID == null && employeeDtl.APP_DESIGNATION_ID == null && employeeDtl.APP_POSITION_ID == null && employeeDtl.APP_SERVICE_TYPE_ID == null) {
@@ -156,25 +163,60 @@
                 toggleEmployeeInfo(false);
             }
         };
-        $fromServiceTypeId.on("change", function () {
-            $toServiceTypeId.val($(this).val()).trigger("change");
+        var serviceEventChangeAction = function () {
+            var selectedServiceEventType = $serviceEventTypeId.val();
+            if (selectedServiceEventType == 2) {
+                toggleEmployeeInfo(true);
+            } else {
+                toggleEmployeeInfo(false);
+            }
+            if (from != null) {
+                updateView(from);
+            }
+        }
+        $serviceEventTypeId.on('change', function () {
+            serviceEventChangeAction();
         });
-         $fromCompanyId.on("change", function () {
-            $toCompanyId.val($(this).val()).trigger("change");
+        serviceEventChangeAction();
+
+
+
+
+        if (typeof prevAndNextHistory['prev'] !== 'undefined') {
+            $employeeId.prop("disabled", true);
+
+            var prevHistory = prevAndNextHistory['prev'];
+            from = {
+                SERVICE_TYPE_ID: prevHistory['TO_SERVICE_TYPE_ID'],
+                COMPANY_ID: prevHistory['TO_COMPANY_ID'],
+                BRANCH_ID: prevHistory['TO_BRANCH_ID'],
+                DEPARTMENT_ID: prevHistory['TO_DEPARTMENT_ID'],
+                DESIGNATION_ID: prevHistory['TO_DESIGNATION_ID'],
+                POSITION_ID: prevHistory['TO_POSITION_ID']
+            };
+            updateView(from);
+            $('#startDate').datepicker('setStartDate', nepaliDatePickerExt.getDate(prevHistory['START_DATE']));
+
+            var nextHistory = prevAndNextHistory['next'];
+            if (typeof nextHistory !== "undefined") {
+                $('#startDate').datepicker('setEndDate', nepaliDatePickerExt.getDate(nextHistory['START_DATE']));
+            }
+
+
+        }
+
+
+        $employeeId.on("change", function () {
+            var $this = $(this);
+            app.floatingProfile.setDataFromRemote($this.val());
+            pullEmployeeDetail($this.val())
         });
-        $fromBranchId.on("change", function () {
-//            populateList($fromDepartmentId, search(departmentList, {'BRANCH_ID': $(this).val()}), "DEPARTMENT_ID", "DEPARTMENT_NAME", "----");
-            $toBranchId.val($(this).val()).trigger("change");
-        });
-        $fromDepartmentId.on("change", function () {
-            $toDepartmentId.val($(this).val()).trigger("change");
-        });
-        $fromDesignationId.on("change", function () {
-            $toDesignationId.val($(this).val()).trigger("change");
-        });
-        $fromPositionId.on("change", function () {
-            $toPositionId.val($(this).val()).trigger("change");
-        });
+
+        app.floatingProfile.setDataFromRemote($employeeId.val());
+        pullEmployeeDetail($employeeId.val());
+
+
+
 
 
 //        $toBranchId.on('change', function () {

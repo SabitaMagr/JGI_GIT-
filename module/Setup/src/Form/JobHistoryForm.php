@@ -1,15 +1,6 @@
 <?php
 namespace Setup\Form;
 
-/**
- * Form Setup Job History
- * Job History Form.
- * Created By: Somkala Pachhai
- * Edited By:
- * Date: August 11, 2016, Thursday
- * Last Modified By:
- * Last Modified Date:
- */
 
 use Zend\Form\Annotation;
 
@@ -58,7 +49,7 @@ class JobHistoryForm
 
     /**
      * @Annotation\Type("Zend\Form\Element\Select")
-     * @Annotation\Required({"required":"true"})
+     * @Annotation\Required({"required":"false"})
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
      * @Annotation\Options({"disable_inarray_validator":"true","label":"From Service Type Name"})
      * @Annotation\Attributes({ "id":"fromServiceTypeId","class":"form-control"})
@@ -76,7 +67,7 @@ class JobHistoryForm
 
     /**
      * @Annotation\Type("Zend\Form\Element\Select")
-     * @Annotation\Required({"required":"true"})
+     * @Annotation\Required({"required":"false"})
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
      * @Annotation\Options({"disable_inarray_validator":"true","label":"From Branch Name"})
      * @Annotation\Attributes({ "id":"fromBranchId","class":"form-control"})
@@ -94,7 +85,7 @@ class JobHistoryForm
 
     /**
      * @Annotation\Type("Zend\Form\Element\Select")
-     * @Annotation\Required({"required":"true"})
+     * @Annotation\Required({"required":"false"})
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
      * @Annotation\Options({"disable_inarray_validator":"true","label":"From Department Name"})
      * @Annotation\Attributes({ "id":"fromDepartmentId","class":"form-control"})
@@ -112,7 +103,7 @@ class JobHistoryForm
 
     /**
      * @Annotation\Type("Zend\Form\Element\Select")
-     * @Annotation\Required({"required":"true"})
+     * @Annotation\Required({"required":"false"})
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
      * @Annotation\Options({"disable_inarray_validator":"true","label":"From Designation Name"})
      * @Annotation\Attributes({ "id":"fromDesignationId","class":"form-control"})
@@ -130,7 +121,7 @@ class JobHistoryForm
 
     /**
      * @Annotation\Type("Zend\Form\Element\Select")
-     * @Annotation\Required({"required":"true"})
+     * @Annotation\Required({"required":"false"})
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
      * @Annotation\Options({"disable_inarray_validator":"true","label":"From Position Name"})
      * @Annotation\Attributes({ "id":"fromPositionId","class":"form-control"})
@@ -155,7 +146,7 @@ class JobHistoryForm
     
      /**
      * @Annotation\Type("Zend\Form\Element\Select")
-     * @Annotation\Required({"required":"true"})
+     * @Annotation\Required({"required":"false"})
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
      * @Annotation\Options({"disable_inarray_validator":"true","label":"From Company Name"})
      * @Annotation\Attributes({ "id":"fromCompanyId","class":"form-control"})

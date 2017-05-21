@@ -2,6 +2,7 @@
 
 namespace Setup\Repository;
 
+use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
 use Application\Model\Model;
 use Application\Repository\RepositoryInterface;
@@ -10,8 +11,6 @@ use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Sql\Expression;
 use Zend\Db\Sql\Sql;
 use Zend\Db\TableGateway\TableGateway;
-use Zend\Db\Sql\Select;
-use Application\Helper\EntityHelper;
 
 class JobHistoryRepository implements RepositoryInterface {
 
@@ -63,7 +62,7 @@ class JobHistoryRepository implements RepositoryInterface {
         return $result;
     }
 
-    public function filter($fromDate, $toDate, $employeeId, $serviceEventTypeId=null,$companyId=null,$branchId=null,$departmentId=null,$designationId=null,$positionId=null,$serviceTypeId=null) {
+    public function filter($fromDate, $toDate, $employeeId, $serviceEventTypeId = null, $companyId = null, $branchId = null, $departmentId = null, $designationId = null, $positionId = null, $serviceTypeId = null) {
         $sql = new Sql($this->adapter);
         $select = $sql->select();
         $select->columns([
@@ -80,8 +79,8 @@ class JobHistoryRepository implements RepositoryInterface {
                 ->join(['P2' => 'HRIS_POSITIONS'], 'P2.POSITION_ID=H.TO_POSITION_ID', ['TO_POSITION_NAME' => new Expression("INITCAP(P2.POSITION_NAME)")], "left")
                 ->join(['D1' => 'HRIS_DESIGNATIONS'], 'D1.DESIGNATION_ID=H.FROM_DESIGNATION_ID', ['FROM_DESIGNATION_TITLE' => new Expression("INITCAP(D1.DESIGNATION_TITLE)")], "left")
                 ->join(['D2' => 'HRIS_DESIGNATIONS'], 'D2.DESIGNATION_ID=H.TO_DESIGNATION_ID', ['TO_DESIGNATION_TITLE' => new Expression("INITCAP(D2.DESIGNATION_TITLE)")], "left")
-                ->join(['DES1' => 'HRIS_DEPARTMENTS'], 'DES1.DEPARTMENT_ID=H.FROM_DEPARTMENT_ID', ['FROM_DEPARTMENT_NAME' =>  new Expression("INITCAP(DES1.DEPARTMENT_NAME)")], "left")
-                ->join(['DES2' => 'HRIS_DEPARTMENTS'], 'DES2.DEPARTMENT_ID=H.TO_DEPARTMENT_ID', ['TO_DEPARTMENT_NAME' =>  new Expression("INITCAP(DES2.DEPARTMENT_NAME)")], "left")
+                ->join(['DES1' => 'HRIS_DEPARTMENTS'], 'DES1.DEPARTMENT_ID=H.FROM_DEPARTMENT_ID', ['FROM_DEPARTMENT_NAME' => new Expression("INITCAP(DES1.DEPARTMENT_NAME)")], "left")
+                ->join(['DES2' => 'HRIS_DEPARTMENTS'], 'DES2.DEPARTMENT_ID=H.TO_DEPARTMENT_ID', ['TO_DEPARTMENT_NAME' => new Expression("INITCAP(DES2.DEPARTMENT_NAME)")], "left")
                 ->join(['B1' => 'HRIS_BRANCHES'], 'B1.BRANCH_ID=H.FROM_BRANCH_ID', ['FROM_BRANCH_NAME' => new Expression("INITCAP(B1.BRANCH_NAME)")], "left")
                 ->join(['B2' => 'HRIS_BRANCHES'], 'B2.BRANCH_ID=H.TO_BRANCH_ID', ['TO_BRANCH_NAME' => new Expression("INITCAP(B2.BRANCH_NAME)")], "left");
 
@@ -103,44 +102,44 @@ class JobHistoryRepository implements RepositoryInterface {
             ]);
         }
 
-        if ($serviceEventTypeId!=null && $serviceEventTypeId != -1) {
+        if ($serviceEventTypeId != null && $serviceEventTypeId != -1) {
             $select->where([
                 "H.SERVICE_EVENT_TYPE_ID=" . $serviceEventTypeId
             ]);
         }
-        if ($companyId!=null && $companyId != -1) {
+        if ($companyId != null && $companyId != -1) {
             $select->where([
                 "E.COMPANY_ID=" . $companyId
             ]);
         }
-        if ($branchId!=null && $branchId != -1) {
+        if ($branchId != null && $branchId != -1) {
             $select->where([
                 "E.BRANCH_ID=" . $branchId
             ]);
         }
-        if ($departmentId!=null && $departmentId != -1) {
+        if ($departmentId != null && $departmentId != -1) {
             $select->where([
                 "E.DEPARTMENT_ID=" . $departmentId
             ]);
         }
-        if ($designationId!=null && $designationId != -1) {
+        if ($designationId != null && $designationId != -1) {
             $select->where([
                 "E.DESIGNATION_ID=" . $designationId
             ]);
         }
-        if ($positionId!=null && $positionId != -1) {
+        if ($positionId != null && $positionId != -1) {
             $select->where([
                 "E.POSITION_ID=" . $positionId
             ]);
         }
-        if ($serviceTypeId!=null && $serviceTypeId != -1) {
+        if ($serviceTypeId != null && $serviceTypeId != -1) {
             $select->where([
                 "E.SERVICE_TYPE_ID=" . $serviceTypeId
             ]);
         }
-        $select->order("E.FIRST_NAME,H.START_DATE DESC");
+        $select->order("E.FIRST_NAME,H.START_DATE ASC");
         $statement = $sql->prepareStatementForSqlObject($select);
-        
+
         //return $statement->getSql();
         $result = $statement->execute();
         return $result;
@@ -165,6 +164,8 @@ class JobHistoryRepository implements RepositoryInterface {
             new Expression("H.TO_POSITION_ID AS TO_POSITION_ID"),
             new Expression("H.FROM_SERVICE_TYPE_ID AS FROM_SERVICE_TYPE_ID"),
             new Expression("H.TO_SERVICE_TYPE_ID AS TO_SERVICE_TYPE_ID"),
+            new Expression("H.FROM_COMPANY_ID AS FROM_COMPANY_ID"),
+            new Expression("H.TO_COMPANY_ID AS TO_COMPANY_ID"),
                 ], true);
         $select->from(['H' => "HRIS_JOB_HISTORY"]);
         $select->where(['H.JOB_HISTORY_ID' => $id]);
@@ -188,6 +189,107 @@ AND JOB_HISTORY_ID NOT IN
         $result = $statement->execute();
         $result = Helper::extractDbData($result);
         return $result;
+    }
+
+    function fetchLatestJobHistory($employeeId) {
+        return Helper::extractDbData(EntityHelper::rawQueryResult($this->adapter, " 
+SELECT TO_BRANCH_ID,
+  TO_DEPARTMENT_ID,
+  TO_DESIGNATION_ID,
+  TO_POSITION_ID,
+  TO_SERVICE_TYPE_ID,
+  TO_COMPANY_ID,
+  START_DATE_FORMATTED AS START_DATE
+FROM
+  (SELECT TO_BRANCH_ID,
+    TO_DEPARTMENT_ID,
+    TO_DESIGNATION_ID,
+    TO_POSITION_ID,
+    TO_SERVICE_TYPE_ID,
+    TO_COMPANY_ID,
+    INITCAP(TO_CHAR(START_DATE,'DD-MON-YYYY')) AS START_DATE_FORMATTED
+  FROM HRIS_JOB_HISTORY
+  WHERE EMPLOYEE_ID ={$employeeId}
+  AND STATUS        ='E'
+  ORDER BY START_DATE DESC
+  )
+WHERE ROWNUM=1
+
+"));
+    }
+
+    function fetchBeforeJobHistory($historyId) {
+        return Helper::extractDbData(EntityHelper::rawQueryResult($this->adapter, "
+SELECT INITCAP(TO_CHAR(H.START_DATE, 'DD-MON-YYYY')) AS START_DATE,
+  INITCAP(TO_CHAR(H.END_DATE, 'DD-MON-YYYY'))        AS END_DATE,
+  H.EMPLOYEE_ID                                      AS EMPLOYEE_ID,
+  H.JOB_HISTORY_ID                                   AS JOB_HISTORY_ID,
+  H.SERVICE_EVENT_TYPE_ID                            AS SERVICE_EVENT_TYPE_ID,
+  H.FROM_BRANCH_ID                                   AS FROM_BRANCH_ID,
+  H.TO_BRANCH_ID                                     AS TO_BRANCH_ID,
+  H.FROM_DEPARTMENT_ID                               AS FROM_DEPARTMENT_ID,
+  H.TO_DEPARTMENT_ID                                 AS TO_DEPARTMENT_ID,
+  H.FROM_DESIGNATION_ID                              AS FROM_DESIGNATION_ID,
+  H.TO_DESIGNATION_ID                                AS TO_DESIGNATION_ID,
+  H.FROM_POSITION_ID                                 AS FROM_POSITION_ID,
+  H.TO_POSITION_ID                                   AS TO_POSITION_ID,
+  H.FROM_SERVICE_TYPE_ID                             AS FROM_SERVICE_TYPE_ID,
+  H.TO_SERVICE_TYPE_ID                               AS TO_SERVICE_TYPE_ID
+FROM HRIS_JOB_HISTORY H,
+  (SELECT START_DATE FROM HRIS_JOB_HISTORY WHERE JOB_HISTORY_ID={$historyId}
+  ) PH
+WHERE H.START_DATE<PH.START_DATE
+AND ROWNUM        =1
+"));
+    }
+
+    function fetchAfterJobHistory($historyId) {
+
+        return Helper::extractDbData(EntityHelper::rawQueryResult($this->adapter, "
+SELECT INITCAP(TO_CHAR(H.START_DATE, 'DD-MON-YYYY')) AS START_DATE,
+  INITCAP(TO_CHAR(H.END_DATE, 'DD-MON-YYYY'))        AS END_DATE,
+  H.EMPLOYEE_ID                                      AS EMPLOYEE_ID,
+  H.JOB_HISTORY_ID                                   AS JOB_HISTORY_ID,
+  H.SERVICE_EVENT_TYPE_ID                            AS SERVICE_EVENT_TYPE_ID,
+  H.FROM_BRANCH_ID                                   AS FROM_BRANCH_ID,
+  H.TO_BRANCH_ID                                     AS TO_BRANCH_ID,
+  H.FROM_DEPARTMENT_ID                               AS FROM_DEPARTMENT_ID,
+  H.TO_DEPARTMENT_ID                                 AS TO_DEPARTMENT_ID,
+  H.FROM_DESIGNATION_ID                              AS FROM_DESIGNATION_ID,
+  H.TO_DESIGNATION_ID                                AS TO_DESIGNATION_ID,
+  H.FROM_POSITION_ID                                 AS FROM_POSITION_ID,
+  H.TO_POSITION_ID                                   AS TO_POSITION_ID,
+  H.FROM_SERVICE_TYPE_ID                             AS FROM_SERVICE_TYPE_ID,
+  H.TO_SERVICE_TYPE_ID                               AS TO_SERVICE_TYPE_ID
+FROM HRIS_JOB_HISTORY H,
+  (SELECT START_DATE FROM HRIS_JOB_HISTORY WHERE JOB_HISTORY_ID={$historyId}
+  ) PH
+WHERE H.START_DATE>PH.START_DATE
+AND ROWNUM        =1
+"));
+    }
+
+    function fetchAfterStartDate($date) {
+        return Helper::extractDbData(EntityHelper::rawQueryResult($this->adapter, "
+SELECT INITCAP(TO_CHAR(H.START_DATE, 'DD-MON-YYYY')) AS START_DATE,
+  INITCAP(TO_CHAR(H.END_DATE, 'DD-MON-YYYY'))        AS END_DATE,
+  H.EMPLOYEE_ID                                      AS EMPLOYEE_ID,
+  H.JOB_HISTORY_ID                                   AS JOB_HISTORY_ID,
+  H.SERVICE_EVENT_TYPE_ID                            AS SERVICE_EVENT_TYPE_ID,
+  H.FROM_BRANCH_ID                                   AS FROM_BRANCH_ID,
+  H.TO_BRANCH_ID                                     AS TO_BRANCH_ID,
+  H.FROM_DEPARTMENT_ID                               AS FROM_DEPARTMENT_ID,
+  H.TO_DEPARTMENT_ID                                 AS TO_DEPARTMENT_ID,
+  H.FROM_DESIGNATION_ID                              AS FROM_DESIGNATION_ID,
+  H.TO_DESIGNATION_ID                                AS TO_DESIGNATION_ID,
+  H.FROM_POSITION_ID                                 AS FROM_POSITION_ID,
+  H.TO_POSITION_ID                                   AS TO_POSITION_ID,
+  H.FROM_SERVICE_TYPE_ID                             AS FROM_SERVICE_TYPE_ID,
+  H.TO_SERVICE_TYPE_ID                               AS TO_SERVICE_TYPE_ID
+FROM HRIS_JOB_HISTORY H
+WHERE H.START_DATE>{$date}
+AND ROWNUM        =1
+"));
     }
 
 }
