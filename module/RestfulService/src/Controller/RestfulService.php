@@ -395,6 +395,9 @@ class RestfulService extends AbstractRestfulController {
                     case "pullInOutTime":
                         $responseData = $this->pullInOutTime($postedData->data);
                         break;
+                    case "pullMisPunchAttendanceList";
+                        $responseData = $this->pullMisPunchAttendanceList($postedData->data);
+                        break;
                     
                     default:
                         throw new Exception("action not found");
@@ -2656,8 +2659,9 @@ class RestfulService extends AbstractRestfulController {
         $fromDate = $data['fromDate'];
         $toDate = $data['toDate'];
         $status = $data['status'];
-
-        $result = $attendanceDetailRepository->filterRecord($employeeId, $branchId, $departmentId, $positionId, $designationId, $serviceTypeId, $serviceEventTypeId, $fromDate, $toDate, $status, $companyId);
+        $missPunchOnly = ((int)$data['missPunchOnly']==1)?true:false;
+        
+        $result = $attendanceDetailRepository->filterRecord($employeeId, $branchId, $departmentId, $positionId, $designationId, $serviceTypeId, $serviceEventTypeId, $fromDate, $toDate, $status, $companyId,null,false,$missPunchOnly);
         $list = [];
         foreach ($result as $row) {
             if ($status == 'L') {
@@ -2679,6 +2683,8 @@ class RestfulService extends AbstractRestfulController {
                     $row['STATUS'] = "Present";
                 }
             }
+            $middleName = ($row['MIDDLE_NAME']!=null)? " ".$row['MIDDLE_NAME']." ":" ";
+            $row['EMPLOYEE_NAME'] = $row['FIRST_NAME'].$middleName.$row['LAST_NAME']; 
             array_push($list, $row);
         }
         return [
@@ -3360,19 +3366,19 @@ class RestfulService extends AbstractRestfulController {
                     $row['STATUS'] = "Present";
                 }
             }
-            $overtimeDetailResult = $overtimeDetailRepo->fetchByOvertimeId($row['OVERTIME_ID']);
-            $overtimeDetails = [];
-            foreach($overtimeDetailResult as $overtimeDetailRow){
-                array_push($overtimeDetails,$overtimeDetailRow);
-            }
+                $overtimeDetailResult = $overtimeDetailRepo->fetchByOvertimeId($row['OVERTIME_ID']);
+                $overtimeDetails = [];
+                foreach($overtimeDetailResult as $overtimeDetailRow){
+                    array_push($overtimeDetails,$overtimeDetailRow);
+                }
             $middleName = ($row['MIDDLE_NAME']!=null)? " ".$row['MIDDLE_NAME']." ":" ";
             $row['EMPLOYEE_NAME'] = $row['FIRST_NAME'].$middleName.$row['LAST_NAME']; 
             $row['DETAILS']=$overtimeDetails;
             if($overtimeOnly==1 && $row['OVERTIME_ID']!=null){
-                array_push($list, $row);
+            array_push($list, $row);
             }else if($overtimeOnly==0){
                 array_push($list, $row);
-            }
+        }
         }
         return [
             'success' => "true",
@@ -3388,6 +3394,50 @@ class RestfulService extends AbstractRestfulController {
         $list = [];
         foreach($result as $row){
             array_push($list,$row);
+        }
+        return [
+            'success' => "true",
+            "data" => $list
+        ];
+    }
+    public function pullMisPunchAttendanceList($data){
+        $attendanceDetailRepository = new AttendanceDetailRepository($this->adapter);
+        $employeeId = $data['employeeId'];
+        $companyId = $data['companyId'];
+        $branchId = $data['branchId'];
+        $departmentId = $data['departmentId'];
+        $positionId = $data['positionId'];
+        $designationId = $data['designationId'];
+        $serviceTypeId = $data['serviceTypeId'];
+        $serviceEventTypeId = $data['serviceEventTypeId'];
+        $fromDate = $data['fromDate'];
+        $toDate = $data['toDate'];
+        $status = $data['status'];
+        $employeeTypeId = $data['employeeTypeId'];
+        $result = $attendanceDetailRepository->filterRecord($employeeId, $branchId, $departmentId, $positionId, $designationId, $serviceTypeId, $serviceEventTypeId, $fromDate, $toDate, $status, $companyId,$employeeTypeId);
+        $list = [];
+        foreach ($result as $row) {
+            if ($status == 'L') {
+                $row['STATUS'] = "On Leave[" . $row['LEAVE_ENAME'] . "]";
+            } else if ($status == 'H') {
+                $row['STATUS'] = "On Holiday[" . $row['HOLIDAY_ENAME'] . "]";
+            } else if ($status == 'A') {
+                $row['STATUS'] = "Absent";
+            } else if ($status == 'P') {
+                $row['STATUS'] = "Present";
+            } else {
+                if ($row['LEAVE_ENAME'] != null) {
+                    $row['STATUS'] = "On Leave[" . $row['LEAVE_ENAME'] . "]";
+                } else if ($row['HOLIDAY_ENAME'] != null) {
+                    $row['STATUS'] = "On Holiday[" . $row['HOLIDAY_ENAME'] . "]";
+                } else if ($row['HOLIDAY_ENAME'] == null && $row['LEAVE_ENAME'] == null && $row['IN_TIME'] == null) {
+                    $row['STATUS'] = "Absent";
+                } else if ($row['IN_TIME'] != null) {
+                    $row['STATUS'] = "Present";
+                }
+            }
+            $middleName = ($row['MIDDLE_NAME']!=null)? " ".$row['MIDDLE_NAME']." ":" ";
+            $row['EMPLOYEE_NAME'] = $row['FIRST_NAME'].$middleName.$row['LAST_NAME']; 
         }
         return [
             'success' => "true",

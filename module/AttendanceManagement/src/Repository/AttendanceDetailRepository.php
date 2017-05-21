@@ -78,7 +78,7 @@ class AttendanceDetailRepository implements RepositoryInterface {
     }
 
     //this function need changes
-    public function filterRecord($employeeId, $branchId, $departmentId, $positionId, $designationId, $serviceTypeId, $serviceEventTypeId, $fromDate, $toDate, $status,$companyId=null,$employeeTypeId=null,$widOvertime=false) {
+    public function filterRecord($employeeId, $branchId, $departmentId, $positionId, $designationId, $serviceTypeId, $serviceEventTypeId, $fromDate, $toDate, $status,$companyId=null,$employeeTypeId=null,$widOvertime=false,$onlyMisPunch=false) {
         $sql = new Sql($this->adapter);
         $select = $sql->select();
         
@@ -177,6 +177,14 @@ class AttendanceDetailRepository implements RepositoryInterface {
         if ($serviceEventTypeId != -1) {
             $select->where(["E.SERVICE_EVENT_TYPE_ID=" . $serviceEventTypeId]);
         }
+        
+        if($onlyMisPunch!=false){
+            $select->where([
+                "mod((SELECT COUNT(*) FROM HRIS_ATTENDANCE A1
+                WHERE A1.EMPLOYEE_ID = A.EMPLOYEE_ID
+                AND A1.ATTENDANCE_DT = A.ATTENDANCE_DT),2 )<>0"
+            ]);
+        }
 
         $select->order("A.ATTENDANCE_DT DESC");
         $select->order("A.IN_TIME");
@@ -186,6 +194,10 @@ class AttendanceDetailRepository implements RepositoryInterface {
 //        die();
         $result = $statement->execute();
         return $result;
+    }
+    
+    public function filterRecordForMisPunch($employeeId, $branchId, $departmentId, $positionId, $designationId, $serviceTypeId, $serviceEventTypeId, $fromDate, $toDate, $status, $companyId,$employeeTypeId){
+        
     }
 
     //may need changes

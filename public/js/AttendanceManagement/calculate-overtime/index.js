@@ -2,9 +2,9 @@
     'use strict';
     $(document).ready(function () {
         $("select").select2();
-        app.startEndDatePickerWithNepali('nepaliFromDate', 'fromDate', 'nepaliToDate', 'toDate');
+        app.startEndDatePickerWithNepali('nepaliFromDate', 'fromDate', 'nepaliToDate', 'toDate',null,true);
 
-        app.startEndDatePickerWithNepali('nepaliFromDate1', 'fromDate1', 'nepaliToDate1', 'toDate1');
+        app.startEndDatePickerWithNepali('nepaliFromDate1', 'fromDate1', 'nepaliToDate1', 'toDate1',null,true);
 
         var setEndDate = function () {
             app.getServerDate().then(function (response) {
@@ -112,7 +112,7 @@ angular.module('hris', [])
                     ],
                     detailInit: function detailInit(e) {
                         console.log(attendanceList);
-                        console.log(e.data.ID)
+                        console.log(e.data.ID);
                         var parentId = e.data.ID;
                         var childData = $.grep(attendanceList, function (e) {
                             return e.ID === parentId;
