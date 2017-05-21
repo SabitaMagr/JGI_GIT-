@@ -165,7 +165,7 @@ angular.module('hris', [])
                 angular.element(document.getElementById('employeeId')).val(employeeIdFromParam).change();
                 $scope.view();
             }
-
+            var displayKendoFirstTime = true;
             $scope.viewTrainingAssignList = function () {
                 var companyId = angular.element(document.getElementById('companyId')).val();
                 var branchId = angular.element(document.getElementById('branchId')).val();
@@ -195,23 +195,26 @@ angular.module('hris', [])
                     console.log("Training Assign List", success);
                     $scope.$apply(function () {
                         App.unblockUI("#hris-page-content1");
-                        $scope.initializekendoGrid(success.data);
+                        if (displayKendoFirstTime) {
+                            $scope.initializekendoGrid();
+                            displayKendoFirstTime = false;
+                        }
+                        var dataSource = new kendo.data.DataSource({data: success.data, pageSize: 20});
+                        var grid = $('#trainingAssignListTable').data("kendoGrid");
+                        dataSource.read();
+                        grid.setDataSource(dataSource);
                         window.app.UIConfirmations();
                     });
                 }, function (failure) {
                     console.log("Employee Get All", failure);
                 });
             };
-            $scope.initializekendoGrid = function (trainingAssignList) {
+            $scope.initializekendoGrid = function () {
                 $("#trainingAssignListTable").kendoGrid({
                     excel: {
                         fileName: "TrainingAssignList.xlsx",
                         filterable: true,
                         allPages: true
-                    },
-                    dataSource: {
-                        data: trainingAssignList,
-                        pageSize: 20
                     },
                     height: 450,
                     scrollable: true,

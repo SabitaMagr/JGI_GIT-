@@ -2,13 +2,14 @@
     'use strict';
     $(document).ready(function () {
         $("select").select2();
-        app.startEndDatePickerWithNepali('nepaliFromDate', 'fromDate1', 'nepaliToDate', 'toDate1');
+        app.startEndDatePickerWithNepali('nepaliFromDate', 'fromDate1', 'nepaliToDate', 'toDate1',null,true);
     });
 })(window.jQuery, window.app);
 
 angular.module('hris', [])
         .controller("overtimeStatusListController", function ($scope, $http) {
             var $tableContainer = $("#overtimeRequestStatusTable");
+            var displayKendoFirstTime = true;
             $scope.view = function () {
                 var employeeId = angular.element(document.getElementById('employeeId')).val();
                 var companyId = angular.element(document.getElementById('companyId')).val();
@@ -40,22 +41,25 @@ angular.module('hris', [])
                 }).then(function (success) {
                     App.unblockUI("#hris-page-content");
                     console.log(success.data);
-                    $scope.initializekendoGrid(success.data);
+                    if (displayKendoFirstTime) {
+                        $scope.initializekendoGrid();
+                        displayKendoFirstTime = false;
+                    }
+                    var dataSource = new kendo.data.DataSource({data: success.data, pageSize: 20});
+                    var grid = $('#overtimeRequestStatusTable').data("kendoGrid");
+                    dataSource.read();
+                    grid.setDataSource(dataSource);
                 }, function (failure) {
                     App.unblockUI("#hris-page-content");
                     console.log(failure);
                 });
             }
-            $scope.initializekendoGrid = function (overtimeRequestStatus) {
+            $scope.initializekendoGrid = function () {
                 $("#overtimeRequestStatusTable").kendoGrid({
                     excel: {
                         fileName: "OvertimeRequestList.xlsx",
                         filterable: true,
                         allPages: true
-                    },
-                    dataSource: {
-                        data: overtimeRequestStatus,
-                        pageSize: 20
                     },
                     height: 450,
                     scrollable: true,

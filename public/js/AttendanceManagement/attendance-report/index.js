@@ -2,7 +2,7 @@
     'use strict';
     $(document).ready(function () {
         $("select").select2();
-        app.startEndDatePickerWithNepali('nepaliFromDate', 'fromDate', 'nepaliToDate', 'toDate');
+        app.startEndDatePickerWithNepali('nepaliFromDate', 'fromDate', 'nepaliToDate', 'toDate',null,true);
     });
 })(window.jQuery, window.app);
 
@@ -10,6 +10,7 @@
 angular.module('hris', [])
         .controller("allAttendanceReportController", function ($scope, $http) {
             var $tableContainer = $("#allAttendanceReportTable");
+            var displayKendoFirstTime = true;
             $scope.view = function () {
                 var employeeId = angular.element(document.getElementById('employeeId')).val();
                 var companyId = angular.element(document.getElementById('companyId')).val();
@@ -39,22 +40,25 @@ angular.module('hris', [])
                     }
                 }).then(function (success) {
                     App.unblockUI("#hris-page-content");
-                    $scope.initializekendoGrid(success.data);
+                    if (displayKendoFirstTime) {
+                        $scope.initializekendoGrid();
+                        displayKendoFirstTime = false;
+                    }
+                    var dataSource = new kendo.data.DataSource({data: success.data, pageSize: 20});
+                    var grid = $('#allAttendanceReportTable').data("kendoGrid");
+                    dataSource.read();
+                    grid.setDataSource(dataSource);
                 }, function (failure) {
                     App.unblockUI("#hris-page-content");
                     console.log(failure);
                 });
             }
-            $scope.initializekendoGrid = function (attendanceRequestStatus) {
+            $scope.initializekendoGrid = function () {
                 $("#allAttendanceReportTable").kendoGrid({
                     excel: {
                         fileName: "AttendanceReport.xlsx",
                         filterable: true,
                         allPages: true
-                    },
-                    dataSource: {
-                        data: attendanceRequestStatus,
-                        pageSize: 20
                     },
                     height: 450,
                     scrollable: true,

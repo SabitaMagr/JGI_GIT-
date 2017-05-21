@@ -9,6 +9,7 @@
 angular.module('hris', [])
         .controller('jobHistoryController', function ($scope, $http) {
             $scope.jobHistoryList = [];
+            var displayKendoFirstTime = true;
             var $tableContainer = $("#jobHistoryTable");
             $scope.view = function () {
                 var employeeId = angular.element(document.getElementById('employeeId')).val();
@@ -39,7 +40,14 @@ angular.module('hris', [])
                 }).then(function (success) {
                     App.unblockUI("#hris-page-content");
                     console.log(success);
-                    $scope.initializekendoGrid(success.data);
+                    if (displayKendoFirstTime) {
+                        $scope.initializekendoGrid();
+                        displayKendoFirstTime = false;
+                    }
+                    var dataSource = new kendo.data.DataSource({data: success.data, pageSize: 20});
+                    var grid = $('#jobHistoryTable').data("kendoGrid");
+                    dataSource.read();
+                    grid.setDataSource(dataSource);
                     window.app.scrollTo('jobHistoryTable');
                 }, function (failure) {
                     App.unblockUI("#hris-page-content");
@@ -47,16 +55,12 @@ angular.module('hris', [])
                 });
             }
 
-            $scope.initializekendoGrid = function (jobHistoryRecord) {
+            $scope.initializekendoGrid = function () {
                 $("#jobHistoryTable").kendoGrid({
                     excel: {
                         fileName: "JobHistoryList.xlsx",
                         filterable: true,
                         allPages: true
-                    },
-                    dataSource: {
-                        data: jobHistoryRecord,
-                        pageSize: 20
                     },
                     height: 450,
                     scrollable: true,

@@ -9,6 +9,7 @@
 angular.module('hris', [])
         .controller('generateController', function ($scope) {
             var generateBtn = angular.element(document.querySelector('#generateBtn'));
+            var displayKendoFirstTime = true;
 
             $scope.rules = document.rules;
             $scope.employeeList = document.employeeList;
@@ -56,7 +57,14 @@ angular.module('hris', [])
 
                         initializeHeaders($scope.rules);
                         initializeDatas($scope.rules, $scope.employeeRuleValues);
-                        initializekendoGrid(headers, datas);
+                        if (displayKendoFirstTime) {
+                            initializekendoGrid(headers);
+                            displayKendoFirstTime = false;
+                        }
+                        var dataSource = new kendo.data.DataSource({data: datas, pageSize: 20});
+                        var grid = $('#salarySheetTable').data("kendoGrid");
+                        dataSource.read();
+                        grid.setDataSource(dataSource);
                         if (!reqParams.regenerateFlag) {
                             $scope.fetchPayRollGeneratedMonths();
                         }
@@ -198,17 +206,13 @@ angular.module('hris', [])
                 }
             };
 
-            var initializekendoGrid = function (columns, datas) {
+            var initializekendoGrid = function (columns) {
                 $("#salarySheetTable").kendoGrid({
                     toolbar: ["excel"],
                     excel: {
                         fileName: "SalarySheet.xlsx",
                         filterable: true,
                         allPages: true
-                    },
-                    dataSource: {
-                        data: datas,
-                        pageSize: 20,
                     },
                     columnMenu: true,
                     height: 450,

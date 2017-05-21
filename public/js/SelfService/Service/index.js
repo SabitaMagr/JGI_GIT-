@@ -4,7 +4,7 @@
 (function ($, app) {
     'use strict';
     $(document).ready(function () {
-        app.startEndDatePickerWithNepali('nepaliFromDate', 'fromDate', 'nepaliToDate', 'toDate');
+        app.startEndDatePickerWithNepali('nepaliFromDate', 'fromDate', 'nepaliToDate', 'toDate',null,true);
         
           $("#reset").on("click", function () {
             if (typeof document.ids !== "undefined") {
@@ -21,6 +21,7 @@
 angular.module('hris', [])
         .controller('serviceController', function ($scope, $http) {
             var $tableContainer = $("#serviceHistoryTable");
+            var displayKendoFirstTime = true;
             $scope.serviceHistory = [];
             $scope.view = function () {
                 var employeeId = angular.element(document.getElementById('employeeId')).val();
@@ -36,22 +37,25 @@ angular.module('hris', [])
                     }
                 }).then(function (success) {
                     App.unblockUI("#hris-page-content");
-                    $scope.initializeKendoGrid(success.data);
+                    if (displayKendoFirstTime) {
+                        $scope.initializeKendoGrid();
+                        displayKendoFirstTime = false;
+                    }
+                    var dataSource = new kendo.data.DataSource({data: success.data, pageSize: 20});
+                    var grid = $('#serviceHistoryTable').data("kendoGrid");
+                    dataSource.read();
+                    grid.setDataSource(dataSource);
                 }, function (failure) {
                     App.unblockUI("#hris-page-content");
                     console.log(failure);
                 });
             }
-            $scope.initializeKendoGrid = function (serviceHistoryRecord) {
+            $scope.initializeKendoGrid = function () {
                 $("#serviceHistoryTable").kendoGrid({
                     excel: {
                         fileName: "ServiceHistory.xlsx",
                         filterable: true,
                         allPages: true
-                    },
-                    dataSource: {
-                        data: serviceHistoryRecord,
-                        pageSize: 20
                     },
                     height: 450,
                     scrollable: true,
