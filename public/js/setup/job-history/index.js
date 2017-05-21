@@ -71,7 +71,6 @@ angular.module('hris', [])
                     columns: [
                         {field: "FIRST_NAME", title: "Employee Name", width: 200},
                         {field: "START_DATE", title: "Start Date", width: 120},
-                        {field: "END_DATE", title: "End Date", width: 120},
                         {field: "SERVICE_EVENT_TYPE_NAME", title: "Service Event Type", width: 150},
                         {field: "FROM_SERVICE_NAME", title: "Service Type", width: 150},
                         {field: "FROM_BRANCH_NAME", title: "Branch", width: 150},
@@ -96,7 +95,6 @@ angular.module('hris', [])
                             cells: [
                                 {value: "Employee Name"},
                                 {value: "Start Date"},
-                                {value: "End Date"},
                                 {value: "Service Event Type"},
                                 {value: "Service Type"},
                                 {value: "Branch"},
@@ -121,7 +119,6 @@ angular.module('hris', [])
                             cells: [
                                 {value: dataItem.FIRST_NAME + middleName + dataItem.LAST_NAME},
                                 {value: dataItem.START_DATE},
-                                {value: dataItem.END_DATE},
                                 {value: dataItem.SERVICE_EVENT_TYPE_NAME},
                                 {value: dataItem.FROM_SERVICE_NAME + "-" + dataItem.TO_SERVICE_NAME},
                                 {value: dataItem.FROM_BRANCH_NAME + "-" + dataItem.TO_BRANCH_NAME},
@@ -140,7 +137,6 @@ angular.module('hris', [])
                         sheets: [
                             {
                                 columns: [
-                                    {autoWidth: true},
                                     {autoWidth: true},
                                     {autoWidth: true},
                                     {autoWidth: true},
