@@ -247,6 +247,7 @@ return [
             'dashboard-item/birthdays' => __DIR__ . '/../view/layout/dashboard-items/birthdays.phtml',
             'dashboard/employee' => __DIR__ . '/../view/application/dashboard/employee-dashboard.phtml',
             'dashboard/hrm' => __DIR__ . '/../view/application/dashboard/hrm-dashboard.phtml',
+            'dashboard/branch-manager' => __DIR__ . '/../view/application/dashboard/branch-manager-dashboard.phtml',
         ],
 //        'base_path' => '/public/',
         'template_path_stack' => [
@@ -265,7 +266,7 @@ return [
     ],
     'role-types' => [
         'A' => 'Human Resource',
-//        'B' => 'Branch Manager',
+        'B' => 'Branch Manager',
         'E' => 'Employee'
     ],
 //    'role-types' => [
