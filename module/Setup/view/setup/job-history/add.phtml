@@ -89,6 +89,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
 
 <script>
     document.wsPullEmployeeDetailWithOptions = '<?php echo $this->url('jobHistory', ['action' => 'pullEmployeeDetailWithOptions']); ?>';
+    document.prevAndNextHistory = <?php echo json_encode($prevAndNextHistory); ?>;
 </script>
 
 <div class="row margin-top-20">
@@ -190,7 +191,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                             <?php print $this->formElement($toServiceTypeId); ?>
                             <?php print $this->formElementErrors()->render($toServiceTypeId, ['class' => 'help-block']); ?>
                         </div>
-                        
+
                         <div class="form-group companyToggle">
                             <?php print $this->formLabel($toCompanyId); ?>
                             <?php print $this->formElement($toCompanyId); ?>

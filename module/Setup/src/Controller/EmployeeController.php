@@ -342,7 +342,16 @@ class EmployeeController extends AbstractActionController {
                                 $jobHistoryModel->toPositionId = $formFourModel->appPositionId;
                                 $jobHistoryModel->toServiceTypeId = $formFourModel->appServiceTypeId;
 
+                                $companyId = ApplicationHelper::getTableList($this->adapter, HrEmployees::TABLE_NAME, [HrEmployees::COMPANY_ID], [HrEmployees::EMPLOYEE_ID => $id]);
+                                if (sizeof($companyId) == 0) {
+                                    throw new Exception("No Company is added for this employee.");
+                                }
+                                $companyId = $companyId[0][HrEmployees::COMPANY_ID];
+                                $jobHistoryModel->fromCompanyId = $companyId;
+                                $jobHistoryModel->toCompanyId = $companyId;
+
                                 $jobHistoryModel->status = 'E';
+
                                 $this->jobHistoryRepo->add($jobHistoryModel);
                             }
                         }

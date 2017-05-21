@@ -116,7 +116,7 @@ window.app = (function ($, toastr, App) {
                     $fromEnglishDate.val(temp);
                     $toEnglishDate.datepicker('setStartDate', nepaliDatePickerExt.getDate(temp));
                     oldFromNepali = $fromNepaliDate.val();
-                    
+
                     //to set value of to date from value of from date
                     if(typeof setToDate !== "undefined" && setToDate != null && setToDate!=false){
                         $toEnglishDate.val(temp);
@@ -171,7 +171,7 @@ window.app = (function ($, toastr, App) {
             $fromNepaliDate.val(oldFromNepali);
             var minDate = nepaliDatePickerExt.getDate($(this).val());
             $toEnglishDate.datepicker('setStartDate', minDate);
-            
+
             //to set value of to date from value of from date
             if(typeof setToDate !== "undefined" && setToDate != null && setToDate!=false){
                 $toEnglishDate.datepicker('update', $(this).val());
@@ -202,8 +202,6 @@ window.app = (function ($, toastr, App) {
 
                     try {
                         var toEnglishStartDate = $toEnglishDate.datepicker('getStartDate');
-                        console.log("test", toEnglishStartDate.getTime());
-                        console.log("test", nepaliDatePickerExt.getDate(toDate).getTime());
 //                        if ((toEnglishStartDate !== -Infinity) && (toEnglishStartDate.getTime() > nepaliDatePickerExt.getDate(toDate).getTime())) {
                         if ((toEnglishStartDate !== -Infinity) && daysBetween(nepaliDatePickerExt.getDate(toDate), toEnglishStartDate) > 0) {
                             throw {message: 'The Selected Date cannot be less than ' + toEnglishStartDate};
@@ -250,7 +248,7 @@ window.app = (function ($, toastr, App) {
             $toNepaliDate.val(oldtoNepali);
             var maxDate = nepaliDatePickerExt.getDate($(this).val());
             $fromEnglishDate.datepicker('setEndDate', maxDate);
-            
+
             if (typeof fn !== "undefined" && fn != null && typeof $fromEnglishDate !== "undefined" &&
                     $fromEnglishDate.val() != "" && typeof $toEnglishDate !== "undefined" && $toEnglishDate.val() != "") {
                 fn(getDate($fromEnglishDate.val()), getDate($toEnglishDate.val()));

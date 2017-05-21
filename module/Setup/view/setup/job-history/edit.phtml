@@ -63,6 +63,7 @@ print $this->form()->openTag($form);
     document.jobHistoryId =<?= $id ?>;
     document.employeeId =<?= $empId ?>;
     document.wsPullEmployeeDetailWithOptions = '<?php echo $this->url('jobHistory', ['action' => 'pullEmployeeDetailWithOptions']); ?>';
+    document.prevAndNextHistory = <?php echo json_encode($prevAndNextHistory); ?>;
 </script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\jobHistory')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
@@ -197,13 +198,9 @@ print $this->form()->openTag($form);
                         </div>
                     </div>
                 </div>
-                <?php if ($latestJobHistoryId == $id) { ?>
-                    <div class="form-group">
-                        <?php print $this->formSubmit($submit); ?>
-                    </div>
-                <?php } else { ?>
-                    <div class="form-group" style="font-size:11px;">[note:You can only view this detail. If you wish to update, you need to go through latest service status of selected employee!!!!]</div>
-                <?php } ?>
+                <div class="form-group">
+                    <?php print $this->formSubmit($submit); ?>
+                </div>
             </div>
         </div>
     </div>

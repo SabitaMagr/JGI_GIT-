@@ -22,7 +22,7 @@ angular.module('hris', [])
                 var fromDate = angular.element(document.getElementById('fromDate')).val();
                 var toDate = angular.element(document.getElementById('toDate')).val();
                 App.blockUI({target: "#hris-page-content"});
-                window.app.pullDataById(document.url, {
+                window.app.pullDataById(document.restfulUrl, {
                     action: 'pullJobHistoryList',
                     data: {
                         'fromDate': fromDate,
@@ -72,12 +72,12 @@ angular.module('hris', [])
                         {field: "FIRST_NAME", title: "Employee Name", width: 200},
                         {field: "START_DATE", title: "Start Date", width: 120},
                         {field: "END_DATE", title: "End Date", width: 120},
-                        {field: "SERVICE_EVENT_TYPE_NAME", title: "Service Event Type", width: 180},
-                        {field: "FROM_SERVICE_NAME", title: "Service Type (From-To)", width: 220},
-                        {field: "FROM_BRANCH_NAME", title: "Branch (From-To)", width: 250},
-                        {field: "FROM_DEPARTMENT_NAME", title: "Department (From-To)", width: 300},
-                        {field: "FROM_DESIGNATION_TITLE", title: "Designation (From-To)", width: 300},
-                        {field: "FROM_POSITION_NAME", title: "Position (From-To)", width: 300},
+                        {field: "SERVICE_EVENT_TYPE_NAME", title: "Service Event Type", width: 150},
+                        {field: "FROM_SERVICE_NAME", title: "Service Type", width: 150},
+                        {field: "FROM_BRANCH_NAME", title: "Branch", width: 150},
+                        {field: "FROM_DEPARTMENT_NAME", title: "Department", width: 150},
+                        {field: "FROM_DESIGNATION_TITLE", title: "Designation", width: 150},
+                        {field: "FROM_POSITION_NAME", title: "Position", width: 150},
                         {title: "Action", width: 140}
                     ]
                 });
@@ -98,11 +98,11 @@ angular.module('hris', [])
                                 {value: "Start Date"},
                                 {value: "End Date"},
                                 {value: "Service Event Type"},
-                                {value: "Service Type (From-To)"},
-                                {value: "Branch (From-To)"},
-                                {value: "Department (From-To)"},
-                                {value: "Designation (From-To)"},
-                                {value: "Position (From-To)"}
+                                {value: "Service Type"},
+                                {value: "Branch"},
+                                {value: "Department"},
+                                {value: "Designation"},
+                                {value: "Position"}
                             ]
                         }];
                     var dataSource = $("#jobHistoryTable").data("kendoGrid").dataSource;

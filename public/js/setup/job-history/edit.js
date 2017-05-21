@@ -28,50 +28,33 @@
         var designationList = [];
         var positionList = [];
 
+        var prevAndNextHistory = document.prevAndNextHistory;
 
-        var toggleEmployeeInfo = function (flag) {
-            $fromCompanyId.prop("disabled", !flag);
-            $fromBranchId.prop("disabled", !flag);
-            $fromServiceTypeId.prop("disabled", !flag);
-            $fromDepartmentId.prop("disabled", !flag);
-            $fromDesignationId.prop("disabled", !flag);
-            $fromPositionId.prop("disabled", !flag);
-            
-            $serviceEventTypeId.prop("disabled", flag);
-            
-            $toCompanyId.prop("disabled", flag);
-            $toBranchId.prop("disabled", flag);
-            $toServiceTypeId.prop("disabled", flag);
-            $toDepartmentId.prop("disabled", flag);
-            $toDesignationId.prop("disabled", flag);
-            $toPositionId.prop("disabled", flag);
-
-        };
-        
-        var toggleCompanyChange= function(){
-           var selectedServiceEventType=$serviceEventTypeId.val();
-           console.log('service id',selectedServiceEventType);
-           if(selectedServiceEventType==17){
-               $(".companyToggle").show();
-           }else{
-               $(".companyToggle").hide();
-           }
-        }
-         toggleCompanyChange();
-        
-        $serviceEventTypeId.on('change',function(){
-            toggleCompanyChange();
+        $fromServiceTypeId.on("change", function () {
+            $toServiceTypeId.val($(this).val()).trigger("change");
+        });
+        $fromCompanyId.on("change", function () {
+            $toCompanyId.val($(this).val()).trigger("change");
+        });
+        $fromBranchId.on("change", function () {
+            $toBranchId.val($(this).val()).trigger("change");
+        });
+        $fromDepartmentId.on("change", function () {
+            $toDepartmentId.val($(this).val()).trigger("change");
+        });
+        $fromDesignationId.on("change", function () {
+            $toDesignationId.val($(this).val()).trigger("change");
+        });
+        $fromPositionId.on("change", function () {
+            $toPositionId.val($(this).val()).trigger("change");
         });
 
-        var disableEmployee = function () {
-            $employeeId.prop("disabled", true);
-        };
 
         var updateView = function (employee) {
             if (employee.SERVICE_TYPE_ID !== null) {
                 $fromServiceTypeId.val(employee.SERVICE_TYPE_ID).trigger("change");
             }
-            
+
             if (employee.COMPANY_ID !== null) {
                 $fromCompanyId.val(employee.COMPANY_ID).trigger("change");
             }
@@ -93,54 +76,29 @@
             }
         };
 
-        var pullEmployeeDetail = function (employeeId) {
-            app.pullDataById(document.wsPullEmployeeDetailWithOptions, {
-                employeeId: employeeId
-            }).then(function (success) {
-                var employeeDetail = success.data.employeeDetail;
-                
-                
-                companyList = success.data.companyList;
-                branchList = success.data.branchList;
-                departmentList = success.data.departmentList;
-                designationList = success.data.designationList;
-                positionList = success.data.positionList;
-                
-                
-                populateList($fromCompanyId, companyList, "COMPANY_ID", "COMPANY_NAME", "----");
-                populateList($toCompanyId, companyList, "COMPANY_ID", "COMPANY_NAME", "----");
+        var toggleEmployeeInfo = function (flag) {
+            $fromCompanyId.prop("disabled", !flag);
+            $fromBranchId.prop("disabled", !flag);
+            $fromServiceTypeId.prop("disabled", !flag);
+            $fromDepartmentId.prop("disabled", !flag);
+            $fromDesignationId.prop("disabled", !flag);
+            $fromPositionId.prop("disabled", !flag);
 
-                populateList($fromBranchId, branchList, "BRANCH_ID", "BRANCH_NAME", "----");
-                populateList($toBranchId, branchList, "BRANCH_ID", "BRANCH_NAME", "----");
+            $serviceEventTypeId.prop("disabled", flag);
 
-                populateList($fromDepartmentId, departmentList, "DEPARTMENT_ID", "DEPARTMENT_NAME", "----");
-                populateList($toDepartmentId, departmentList, "DEPARTMENT_ID", "DEPARTMENT_NAME", "----");
+            $toCompanyId.prop("disabled", flag);
+            $toBranchId.prop("disabled", flag);
+            $toServiceTypeId.prop("disabled", flag);
+            $toDepartmentId.prop("disabled", flag);
+            $toDesignationId.prop("disabled", flag);
+            $toPositionId.prop("disabled", flag);
 
-                populateList($fromDesignationId, designationList, "DESIGNATION_ID", "DESIGNATION_TITLE", "----");
-                populateList($toDesignationId, designationList, "DESIGNATION_ID", "DESIGNATION_TITLE", "----");
-
-                populateList($fromPositionId, positionList, "POSITION_ID", "POSITION_NAME", "----");
-                populateList($toPositionId, positionList, "POSITION_ID", "POSITION_NAME", "----");
-
-                updateView(employeeDetail);
-                checkAppointmentOption(employeeDetail);
-
-            }, function (failure) {
-                console.log("pullEmployeeById failure", failure);
-            });
         };
 
-        $employeeId.on("change", function () {
-            var $this = $(this);
-            app.floatingProfile.setDataFromRemote($this.val());
-            pullEmployeeDetail($this.val())
-        });
+        var disableEmployee = function () {
+            $employeeId.prop("disabled", true);
+        };
 
-        app.floatingProfile.setDataFromRemote($employeeId.val());
-
-        $employeeId.val(document.employeeId);
-        pullEmployeeDetail($employeeId.val());
-        disableEmployee();
 
         var checkAppointmentOption = function (employeeDtl) {
             if (employeeDtl.APP_BRANCH_ID == null && employeeDtl.APP_DEPARTMENT_ID == null && employeeDtl.APP_DESIGNATION_ID == null && employeeDtl.APP_POSITION_ID == null && employeeDtl.APP_SERVICE_TYPE_ID == null) {
@@ -163,30 +121,38 @@
 
             }
         };
-        $fromServiceTypeId.on("change", function () {
-            $toServiceTypeId.val($(this).val()).trigger("change");
-        });
-         $fromCompanyId.on("change", function () {
-            $toCompanyId.val($(this).val()).trigger("change");
-        });
-        $fromBranchId.on("change", function () {
-//            populateList($fromDepartmentId, search(departmentList, {'BRANCH_ID': $(this).val()}), "DEPARTMENT_ID", "DEPARTMENT_NAME", "----");
-            $toBranchId.val($(this).val()).trigger("change");
-        });
-        $fromDepartmentId.on("change", function () {
-            $toDepartmentId.val($(this).val()).trigger("change");
-        });
-        $fromDesignationId.on("change", function () {
-            $toDesignationId.val($(this).val()).trigger("change");
-        });
-        $fromPositionId.on("change", function () {
-            $toPositionId.val($(this).val()).trigger("change");
-        });
 
-//        $toBranchId.on('change', function () {
-//            $this = $(this);
-//            populateList($toDepartmentId, search(departmentList, {'BRANCH_ID': $(this).val()}), "DEPARTMENT_ID", "DEPARTMENT_NAME", "----");
-//        });
+        var serviceEventChangeAction = function () {
+            var selectedServiceEventType = $serviceEventTypeId.val();
+            if (selectedServiceEventType == 2) {
+                toggleEmployeeInfo(true);
+            } else {
+                toggleEmployeeInfo(false);
+            }
+        }
+        $serviceEventTypeId.on('change', function () {
+            serviceEventChangeAction();
+        });
+        serviceEventChangeAction();
+
+
+        if (typeof prevAndNextHistory['prev'] !== 'undefined' || typeof prevAndNextHistory['next'] !== 'undefined') {
+            var prevHistory = prevAndNextHistory['prev'];
+            if (typeof prevHistory !== "undefined") {
+                $('#startDate').datepicker('setStartDate', nepaliDatePickerExt.getDate(prevHistory['START_DATE']));
+            }
+            var nextHistory = prevAndNextHistory['next'];
+            if (typeof nextHistory !== "undefined") {
+                $('#startDate').datepicker('setEndDate', nepaliDatePickerExt.getDate(nextHistory['START_DATE']));
+            }
+        }
+
+        app.floatingProfile.setDataFromRemote($employeeId.val());
+
+        disableEmployee();
+
+
+
 
         app.setLoadingOnSubmit("jobHistory-form", function () {
             localStorage.setItem("ServiceJobHistorylastEmployeeId", $employeeId.val());
@@ -204,50 +170,6 @@
             app.floatingProfile.setDataFromRemote(lastEmpId);
         }
 
-        var populateList = function ($element, list, id, value, defaultMessage, selectedId) {
-            $element.html('');
-            $element.append($("<option></option>").val(null).text(defaultMessage));
-            var concatArray = function (keyList, list, concatWith) {
-                var temp = '';
-                if (typeof concatWith === 'undefined') {
-                    concatWith = ' ';
-                }
-                for (var i in keyList) {
-                    var listValue = list[keyList[i]];
-                    if (i == (keyList.length - 1)) {
-                        temp = temp + ((listValue === null) ? '' : listValue);
-                        continue;
-                    }
-                    temp = temp + ((listValue === null) ? '' : listValue) + concatWith;
-                }
-
-                return temp;
-            };
-            for (var i in list) {
-                var text = null;
-                if (typeof value === 'object') {
-                    text = concatArray(value, list[i], ' ');
-                } else {
-                    text = list[i][value];
-                }
-                if (typeof selectedId !== 'undefined' && selectedId != null && selectedId == list[i][id]) {
-                    $element.append($("<option selected='selected'></option>").val(list[i][id]).text(text));
-                } else {
-                    $element.append($("<option></option>").val(list[i][id]).text(text));
-                }
-            }
-        };
-
-        var search = function (list, where) {
-            return list.filter(function (item) {
-                for (var i in where) {
-                    if (!(item[i] === where[i] || where[i] == -1)) {
-                        return false;
-                    }
-                }
-                return true;
-            });
-        };
 
     });
 })(window.jQuery, window.app);
