@@ -94,6 +94,10 @@ class JobHistoryController extends AbstractActionController {
 
                 $this->repository->add($jobHistory);
 
+                $stmt = $this->adapter->createStatement();
+                $stmt->prepare("CALL HRIS_UPDATE_EMPLOYEE_SERVICE({$jobHistory->toCompanyId},{$jobHistory->toBranchId},{$jobHistory->toDepartmentId},{$jobHistory->toDesignationId},{$jobHistory->toPositionId},{$jobHistory->toServiceTypeId},{$jobHistory->serviceEventTypeId},{$jobHistory->employeeId},{$jobHistory->startDate->getExpression()})");
+                $stmt->execute();
+
                 $jobHistoryRepo = new JobHistoryRepository($this->adapter);
                 $nextJobHistory = $jobHistoryRepo->fetchAfterStartDate($jobHistory->startDate->getExpression());
 
@@ -178,6 +182,10 @@ class JobHistoryController extends AbstractActionController {
                 $jobHistory->modifiedBy = $this->employeeId;
 
                 $this->repository->edit($jobHistory, $id);
+                $stmt = $this->adapter->createStatement();
+                $stmt->prepare("CALL HRIS_UPDATE_EMPLOYEE_SERVICE({$jobHistory->toCompanyId},{$jobHistory->toBranchId},{$jobHistory->toDepartmentId},{$jobHistory->toDesignationId},{$jobHistory->toPositionId},{$jobHistory->toServiceTypeId},{$jobHistory->serviceEventTypeId},{$jobHistory->employeeId},{$jobHistory->startDate->getExpression()})");
+                $stmt->execute();
+
 
 
                 $jobHistoryRepo = new JobHistoryRepository($this->adapter);
