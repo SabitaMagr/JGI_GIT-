@@ -28,7 +28,7 @@ class CalculateOvertime extends AbstractActionController{
         $this->repository = new AttendanceDetailRepository($adapter);
     }
     
-     public function indexAction() {
+    public function indexAction() {
         $statusFormElement = new Select();
         $statusFormElement->setName("status");
         $status = array(

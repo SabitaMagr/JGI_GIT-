@@ -2,7 +2,7 @@
     'use strict';
     $(document).ready(function () {
         $("select").select2();
-        app.startEndDatePickerWithNepali('nepaliFromDate', 'fromDate', 'nepaliToDate', 'toDate');
+        app.startEndDatePickerWithNepali('nepaliFromDate', 'fromDate', 'nepaliToDate', 'toDate',null,true);
     });
 })(window.jQuery, window.app);
 
@@ -21,6 +21,10 @@ angular.module('hris', [])
                 var fromDate = angular.element(document.getElementById('fromDate')).val();
                 var toDate = angular.element(document.getElementById('toDate')).val();
                 var status = angular.element(document.getElementById('statusId')).val();
+                var missPunchOnly = 0;
+                if (($("#missPunchOnly").is(":checked"))) {
+                    missPunchOnly = 1;
+                }
                 App.blockUI({target: "#hris-page-content"});
                 window.app.pullDataById(document.url, {
                     action: 'pullAttendanceList',
@@ -35,19 +39,24 @@ angular.module('hris', [])
                         'serviceEventTypeId': serviceEventTypeId,
                         'fromDate': fromDate,
                         'toDate': toDate,
-                        'status': status
+                        'status': status,
+                        'missPunchOnly':missPunchOnly
                     }
                 }).then(function (success) {
                     App.unblockUI("#hris-page-content");
                     console.log(success.data);
-                    $scope.initializekendoGrid(success.data);
+                    $scope.$apply(function(){
+                       $scope.initializekendoGrid(success.data); 
+                    });
+                    
                 }, function (failure) {
                     App.unblockUI("#hris-page-content");
                     console.log(failure);
                 });
             };
-
+            var firstTime = true;
             $scope.initializekendoGrid = function (attendanceList) {
+                console.log(attendanceList);
                 $("#attendanceByHrTable").kendoGrid({
                     excel: {
                         fileName: "AttendanceList.xlsx",
@@ -67,15 +76,98 @@ angular.module('hris', [])
                         numeric: false
                     },
                     dataBound: gridDataBound,
-                    rowTemplate: kendo.template($("#rowTemplate").html()),
+//                    rowTemplate: kendo.template($("#rowTemplate").html()),
                     columns: [
-                        {field: "FIRST_NAME", title: "Employee", width: 160},
+                        {field: "EMPLOYEE_NAME", title: "Employee", width: 160},
                         {field: "ATTENDANCE_DT", title: "Attendance Date", width: 120},
                         {field: "IN_TIME", title: "Check In", width: 110},
                         {field: "OUT_TIME", title: "Check Out", width: 120},
                         {field: "STATUS", title: "Status", width: 150},
-                        {title: "Action", width: 110}
-                    ]
+                    ],
+                    detailInit: function detailInit(e) {
+                        console.log(attendanceList);
+                        console.log(e.data.ID);
+                        var parentId = e.data.ID;
+                        var childData = $.grep(attendanceList, function (e) {
+                            return e.ID === parentId;
+                        });
+                        console.log(childData)
+                        if (firstTime) {
+                            App.blockUI({target: "#hris-page-content"});
+
+                        } else {
+                            App.blockUI({target: "#attendanceByHrTable"});
+                        }
+                        window.app.pullDataById(document.url, {
+                            action: 'pullInOutTime',
+                            data: {
+                                employeeId: e.data.EMPLOYEE_ID,
+                                attendanceDt: e.data.ATTENDANCE_DT
+                            },
+                        }).then(function (success) {
+                            if (firstTime) {
+                                App.unblockUI("#hris-page-content");
+                                firstTime = false;
+                            } else {
+                                App.unblockUI("#attendanceByHrTable");
+                            }
+                            console.log(success.data);
+                            if (success.data.length > 0) {
+                                inOutTimeList = success.data;
+                            } else {
+                                inOutTimeList = childData;
+                            }
+                            $("<div/>", {
+                                class: "col-sm-3",
+                                css: {
+                                    float: "left",
+                                    padding: "0px",
+                                }
+                            }).appendTo(e.detailCell).kendoGrid({
+                                dataSource: {
+                                    data: inOutTimeList,
+                                    pageSize: 10,
+                                },
+                                scrollable: false,
+                                sortable: false,
+                                pageable: false,
+                                columns:
+                                        [
+                                            {field: "IN_TIME", title: "In Time"},
+                                            {field: "OUT_TIME", title: "Out Out"},
+                                        ]
+                            }).data("kendoGrid");
+                            $("<div/>", {
+                                class: "col-sm-8",
+                                css: {
+                                    float: "left",
+                                    padding: "0px",
+                                    margin: "0px 0px 0px 20px"
+                                }
+                            }).appendTo(e.detailCell).kendoGrid({
+                                dataSource: {
+                                    data: childData,
+                                    pageSize: 5,
+                                },
+                                scrollable: false,
+                                sortable: false,
+                                pageable: false,
+                                columns:
+                                        [
+                                            {field: "IN_REMARKS", title: "In Remarks"},
+                                            {field: "OUT_REMARKS", title: "Out Remarks"},
+                                        ]
+                            }).data("kendoGrid");
+                        }, function (failure) {
+                            if (firstTime) {
+                                App.unblockUI("#hris-page-content");
+                                firstTime = false;
+                            } else {
+                                App.unblockUI("#attendanceByHrTable");
+                            }
+                            console.log(failure);
+                        });
+                    },
                 });
             };
             function gridDataBound(e) {
@@ -86,8 +178,7 @@ angular.module('hris', [])
                             .find('tbody')
                             .append('<tr class="kendo-data-row"><td colspan="' + colCount + '" class="no-data">There is no data to show in the grid.</td></tr>');
                 }
-            }
-            ;
+            };
             $("#export").click(function (e) {
                 var rows = [{
                         cells: [

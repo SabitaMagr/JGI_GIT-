@@ -96,7 +96,7 @@ window.app = (function ($, toastr, App) {
         });
     };
 
-    var startEndDatePickerWithNepali = function (fromNepali, fromEnglish, toNepali, toEnglish, fn) {
+    var startEndDatePickerWithNepali = function (fromNepali, fromEnglish, toNepali, toEnglish, fn,setToDate) {
 
         var $fromNepaliDate = $('#' + fromNepali);
         var $fromEnglishDate = $('#' + fromEnglish);
@@ -118,8 +118,10 @@ window.app = (function ($, toastr, App) {
                     oldFromNepali = $fromNepaliDate.val();
                     
                     //to set value of to date from value of from date
-                    $toEnglishDate.val(temp);
-                    $toNepaliDate.val(oldFromNepali);
+                    if(typeof setToDate !== "undefined" && setToDate != null && setToDate!=false){
+                        $toEnglishDate.val(temp);
+                        $toNepaliDate.val(oldFromNepali);
+                    }
                 } else {
                     var fromDate = nepaliDatePickerExt.fromNepaliToEnglish($fromNepaliDate.val());
                     var toDate = nepaliDatePickerExt.fromNepaliToEnglish($toNepaliDate.val());
@@ -171,9 +173,11 @@ window.app = (function ($, toastr, App) {
             $toEnglishDate.datepicker('setStartDate', minDate);
             
             //to set value of to date from value of from date
-            $toEnglishDate.datepicker('update', $(this).val());
-            oldtoNepali = nepaliDatePickerExt.fromEnglishToNepali($(this).val())
-            $toNepaliDate.val(oldtoNepali);
+            if(typeof setToDate !== "undefined" && setToDate != null && setToDate!=false){
+                $toEnglishDate.datepicker('update', $(this).val());
+                oldtoNepali = nepaliDatePickerExt.fromEnglishToNepali($(this).val())
+                $toNepaliDate.val(oldtoNepali);
+            }
 
             if (typeof fn !== "undefined" && fn != null && typeof $fromEnglishDate !== "undefined" &&
                     $fromEnglishDate.val() != "" && typeof $toEnglishDate !== "undefined" && $toEnglishDate.val() != "") {
