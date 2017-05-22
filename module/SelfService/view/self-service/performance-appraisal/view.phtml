@@ -172,10 +172,16 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                                 <div style="margin-top:2%;">    
                                                     <h7 style="border-bottom: 1px solid #ddd;"><?php echo $questionRow['QUESTION_EDESC']; ?></h7>  
                                                     <?php if ($questionRow['ANSWER_TYPE'] == 'TEXTAREA') { ?>
-                                                        <textarea class="form-control" rows='5' style="height: 80px !important;">
+                                                        <textarea name="reason" id="form-reason" class="form-reason form-control" style="height: 50px; font-size:12px">
                                                         </textarea>
-                                                    </div>
-                                                <?php } ?>
+                                                    <?php }else if($questionRow['ANSWER_TYPE']=='TEXT'){ ?>
+                                                    <?php }else if($questionRow['ANSWER_TYPE']=='NUMBER'){ ?>
+                                                    <?php }else if($questionRow['ANSWER_TYPE']=='PERCENTAGE'){ ?>
+                                                    <?php }else if($questionRow['ANSWER_TYPE']=='SELECT'){ ?>
+                                                    <?php }else if($questionRow['ANSWER_TYPE']=='RADIO'){ ?>
+                                                    <?php }else if($questionRow['ANSWER_TYPE']=='CHECKBOX'){ ?>
+                                                    <?php } ?>
+                                                </div>
                                             <?php } ?>
                                         </div>
                                     </div>

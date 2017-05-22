@@ -88,19 +88,16 @@ $this->headScript()
                 <thead>
                     <tr>
                         <th>
-                            Employee Code
-                        </th>
-                        <th>
                             Employee Name
                         </th>
                         <th>
                             Appraisal Name
                         </th>
                         <th>
-                            Reviewer Assigned
+                            Appraiser Assigned
                         </th>
                         <th>
-                            Appraiser Assigned
+                            Reviewer Assigned
                         </th>
                         <th class="bs-checkbox " style="width: 36px; " data-field="state" tabindex="0">
                             <div class="th-inner ">
@@ -116,9 +113,6 @@ $this->headScript()
                 <tbody>
                     <tr ng-repeat="employee in employeeList">
                         <td>
-                            <span ng-bind="employee.EMPLOYEE_CODE"></span>
-                        </td>
-                        <td>
                             <span ng-bind="employee.FIRST_NAME"></span>
                             <span ng-bind="employee.MIDDLE_NAME"></span>
                             <span ng-bind="employee.LAST_NAME"></span>
@@ -126,13 +120,12 @@ $this->headScript()
                         <td>                       
                             <span ng-bind="employee.APPRAISAL_EDESC"></span>
                         </td>
-                        <td>                       
-                            <span ng-bind="employee.REVIEWER_NAME"></span>
-                        </td>
                         <td>
                             <span ng-bind="employee.APPRAISER_NAME"></span>
                         </td>
-
+                        <td>                       
+                            <span ng-bind="employee.REVIEWER_NAME"></span>
+                        </td>
                         <td class="bs-checkbox " style="width: 36px; " data-field="state" tabindex="0">
                             <div class="th-inner ">
                                 <label class="mt-checkbox mt-checkbox-single mt-checkbox-outline">
@@ -148,7 +141,25 @@ $this->headScript()
             </table>
         </div>
 
-        <div class="row margin-top-20" ng-show="assignShowHide">                   
+        <div class="row margin-top-20" ng-show="assignShowHide">  
+            <div class="col-sm-3">
+                <label for="appraiserId" style="width:100%">Appraiser</label>             
+                <div class="row">
+                    <div class="col-md-9 parentDiv" style="padding-right: 0px;">                                
+                        <select name="appraiserId" id="appraiserId" class="form-control" ng-options="appraiser.name for appraiser in appraiserOptions track by appraiser.id" ng-model="appraiserSelected">
+                        </select>   
+                    </div>
+                    <div class="col-md-3 rlPadding appraiserWrap" style="padding:0px 0px !important;">
+                        <a class="btn-edit" href="javascript::" ng-click="open(3)" style="height:22px; padding: 0px 7px !important;">
+                            <i class="fa fa-search" style="height:17px;"></i>
+                        </a>
+                        <label class="mt-checkbox mt-checkbox-single mt-checkbox-outline">
+                            <input class="" ng-model="appraiserAssign" ng-click="checkReportingHierarchy()" type="checkbox" id="appraiserAssign"/>
+                            <span></span>
+                        </label>
+                    </div>  
+                </div>
+            </div> 
             <div class="col-sm-3">
                 <label for="reviewerId" style="width:100%">Reviewer</label>
                 <div class="row">
@@ -167,25 +178,6 @@ $this->headScript()
                     </div>  
                 </div>
             </div>
-
-            <div class="col-sm-3">
-                <label for="appraiserId" style="width:100%">Appraiser</label>             
-                <div class="row">
-                    <div class="col-md-9 parentDiv" style="padding-right: 0px;">                                
-                        <select name="appraiserId" id="appraiserId" class="form-control" ng-options="appraiser.name for appraiser in appraiserOptions track by appraiser.id" ng-model="appraiserSelected">
-                        </select>   
-                    </div>
-                    <div class="col-md-3 rlPadding appraiserWrap" style="padding:0px 0px !important;">
-                        <a class="btn-edit" href="javascript::" ng-click="open(3)" style="height:22px; padding: 0px 7px !important;">
-                            <i class="fa fa-search" style="height:17px;"></i>
-                        </a>
-                        <label class="mt-checkbox mt-checkbox-single mt-checkbox-outline">
-                            <input class="" ng-model="appraiserAssign" ng-click="checkReportingHierarchy()" type="checkbox" id="appraiserAssign"/>
-                            <span></span>
-                        </label>
-                    </div>  
-                </div>
-            </div>      
             <div class="col-sm-2 " ng-show="showHideAssignBtn">
                 <label height="45"></label>
                 <button id="assignBtn" ng-click="assign()" class="btn btn-default form-control i-search mt-ladda-btn ladda-button mt-progress-demo">
