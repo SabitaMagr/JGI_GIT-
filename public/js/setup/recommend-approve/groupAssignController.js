@@ -72,9 +72,11 @@ angular.module('hris', ['ui.bootstrap'])
                     console.log("Employee Get All", failure);
                 });
             };
-//            $scope.recommenderOptions = [];
-//            $scope.approverOptions = [];
-
+            $scope.recommenderOptions = document.employeeList;
+            $scope.recommenderSelected = $scope.recommenderOptions[0]
+            $scope.approverOptions = document.employeeList;
+            $scope.approverSelected = $scope.approverOptions[0];
+             console.log(document.employeeList);
             // MODEL CODE
             $ctrl = this;
             $ctrl.animationsEnabled = false;
