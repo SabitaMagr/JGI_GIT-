@@ -9,7 +9,8 @@
 angular.module('hris', [])
         .controller("attendanceListController", function ($scope, $http) {
             var $tableContainer = $("#attendanceByHrTable");
-            var displayKendo = false;
+            var firstTime = true;
+            var displayKendoFirstTime = true;
             $scope.view = function () {
                 var employeeId = angular.element(document.getElementById('employeeId')).val();
                 var companyId = angular.element(document.getElementById('companyId')).val();
@@ -47,14 +48,14 @@ angular.module('hris', [])
                     App.unblockUI("#hris-page-content");
                     console.log(success.data);
                     $scope.$apply(function () {
-//                       initializekendoGrid();
-                        var dataSource = new kendo.data.DataSource({data: success.data});
+                        if (displayKendoFirstTime) {
+                            initializekendoGrid();
+                            displayKendoFirstTime = false;
+                        }
+                        var dataSource = new kendo.data.DataSource({data: success.data, pageSize: 20});
                         var grid = $('#attendanceByHrTable').data("kendoGrid");
                         dataSource.read();
                         grid.setDataSource(dataSource);
-//                       $scope.initializekendoGrid(success.data); 
-//                        $('#attendanceByHrTable').data('kendoGrid').dataSource.read();
-//                        $('#attendanceByHrTable').data('kendoGrid').refresh();
                     });
 
                 }, function (failure) {
@@ -62,142 +63,137 @@ angular.module('hris', [])
                     console.log(failure);
                 });
             };
-            var firstTime = true;
-//             function initializekendoGrid () {
+            function initializekendoGrid() {
                 $("#attendanceByHrTable").kendoGrid({
-                excel: {
-                    fileName: "AttendanceList.xlsx",
+                    excel: {
+                        fileName: "AttendanceList.xlsx",
+                        filterable: true,
+                        allPages: true
+                    },
+                    height: 450,
+                    scrollable: true,
+                    sortable: true,
                     filterable: true,
-                    allPages: true
-                },
-//                    dataSource: {
-//                        data: attendanceList,
-//                        pageSize: 20,
-//                        read: {
-//                            cache: false
-//                        }
-//                    },
-                height: 450,
-                scrollable: true,
-                sortable: true,
-                filterable: true,
-                serverPaging: true,
-                serverSorting: true,
-                pageable: {
-                    input: true,
-                    numeric: false,
-                    refresh: true
-                },
-                dataBound: gridDataBound,
-//                    rowTemplate: kendo.template($("#rowTemplate").html()),
-                columns: [
-                    {field: "EMPLOYEE_NAME", title: "Employee", width: 160},
-                    {field: "ATTENDANCE_DT", title: "Attendance Date", width: 120},
-                    {field: "IN_TIME", title: "Check In", width: 110},
-                    {field: "OUT_TIME", title: "Check Out", width: 120},
-                    {field: "STATUS", title: "Status", width: 150},
-                ],
-                detailInit: function detailInit(e) {
-                    var dataSource = $("#attendanceByHrTable").data("kendoGrid").dataSource.data();
-                    console.log(dataSource);
-                    console.log(e.data.ID);
-                    var parentId = e.data.ID;
-                    var childData = $.grep(dataSource, function (e) {
-                        return e.ID === parentId;
-                    });
-                    console.log(childData)
+                    serverPaging: true,
+                    serverSorting: true,
+                    pageable: {
+                        input: true,
+                        numeric: false,
+                        refresh: true
+                    },
+                    dataBound: gridDataBound,
+                    columns: [
+                        {field: "EMPLOYEE_NAME", title: "Employee", width: 160},
+                        {field: "ATTENDANCE_DT", title: "Attendance Date", width: 120},
+                        {field: "IN_TIME", title: "Check In", width: 110},
+                        {field: "OUT_TIME", title: "Check Out", width: 120},
+                        {field: "STATUS", title: "Status", width: 150},
+                    ],
+                    detailInit: detailInit,
+                });
+
+            }
+            ;
+
+            function detailInit(e) {
+                var dataSource = $("#attendanceByHrTable").data("kendoGrid").dataSource.data();
+                console.log(dataSource);
+                console.log(e.data.ID);
+                var parentId = e.data.ID;
+                var childData = $.grep(dataSource, function (e) {
+                    return e.ID === parentId;
+                });
+                console.log(childData)
+                if (firstTime) {
+                    App.blockUI({target: "#hris-page-content"});
+
+                } else {
+                    App.blockUI({target: "#attendanceByHrTable"});
+                }
+                window.app.pullDataById(document.url, {
+                    action: 'pullInOutTime',
+                    data: {
+                        employeeId: e.data.EMPLOYEE_ID,
+                        attendanceDt: e.data.ATTENDANCE_DT
+                    },
+                }).then(function (success) {
                     if (firstTime) {
-                        App.blockUI({target: "#hris-page-content"});
-
+                        App.unblockUI("#hris-page-content");
+                        firstTime = false;
                     } else {
-                        App.blockUI({target: "#attendanceByHrTable"});
+                        App.unblockUI("#attendanceByHrTable");
                     }
-                    window.app.pullDataById(document.url, {
-                        action: 'pullInOutTime',
-                        data: {
-                            employeeId: e.data.EMPLOYEE_ID,
-                            attendanceDt: e.data.ATTENDANCE_DT
+                    console.log(success.data);
+                    if (success.data.length > 0) {
+                        inOutTimeList = success.data;
+                    } else {
+                        inOutTimeList = childData;
+                    }
+                    $("<div/>", {
+                        class: "col-sm-3",
+                        css: {
+                            float: "left",
+                            padding: "0px",
+                        }
+                    }).appendTo(e.detailCell).kendoGrid({
+                        dataSource: {
+                            data: inOutTimeList,
+                            pageSize: 10,
+                            read: {
+                                cache: false
+                            }
                         },
-                    }).then(function (success) {
-                        if (firstTime) {
-                            App.unblockUI("#hris-page-content");
-                            firstTime = false;
-                        } else {
-                            App.unblockUI("#attendanceByHrTable");
+                        scrollable: false,
+                        sortable: false,
+                        pageable: false,
+                        serverPaging: true,
+                        serverSorting: true,
+                        serverFiltering: true,
+                        columns:
+                                [
+                                    {field: "IN_TIME", title: "In Time"},
+                                    {field: "OUT_TIME", title: "Out Out"},
+                                ]
+                    }).data("kendoGrid");
+                    $("<div/>", {
+                        class: "col-sm-8",
+                        css: {
+                            float: "left",
+                            padding: "0px",
+                            margin: "0px 0px 0px 20px"
                         }
-                        console.log(success.data);
-                        if (success.data.length > 0) {
-                            inOutTimeList = success.data;
-                        } else {
-                            inOutTimeList = childData;
-                        }
-                        $("<div/>", {
-                            class: "col-sm-3",
-                            css: {
-                                float: "left",
-                                padding: "0px",
+                    }).appendTo(e.detailCell).kendoGrid({
+                        dataSource: {
+                            data: childData,
+                            pageSize: 5,
+                            read: {
+                                cache: false
                             }
-                        }).appendTo(e.detailCell).kendoGrid({
-                            dataSource: {
-                                data: inOutTimeList,
-                                pageSize: 10,
-                                read: {
-                                    cache: false
-                                }
-                            },
-                            scrollable: false,
-                            sortable: false,
-                            pageable: false,
-                            serverPaging: true,
-                            serverSorting: true,
-                            serverFiltering: true,
-                            columns:
-                                    [
-                                        {field: "IN_TIME", title: "In Time"},
-                                        {field: "OUT_TIME", title: "Out Out"},
-                                    ]
-                        }).data("kendoGrid");
-                        $("<div/>", {
-                            class: "col-sm-8",
-                            css: {
-                                float: "left",
-                                padding: "0px",
-                                margin: "0px 0px 0px 20px"
-                            }
-                        }).appendTo(e.detailCell).kendoGrid({
-                            dataSource: {
-                                data: childData,
-                                pageSize: 5,
-                                read: {
-                                    cache: false
-                                }
-                            },
-                            scrollable: false,
-                            sortable: false,
-                            pageable: false,
-                            serverPaging: true,
-                            serverSorting: true,
-                            serverFiltering: true,
-                            columns:
-                                    [
-                                        {field: "IN_REMARKS", title: "In Remarks"},
-                                        {field: "OUT_REMARKS", title: "Out Remarks"},
-                                    ]
-                        }).data("kendoGrid");
-                    }, function (failure) {
-                        if (firstTime) {
-                            App.unblockUI("#hris-page-content");
-                            firstTime = false;
-                        } else {
-                            App.unblockUI("#attendanceByHrTable");
-                        }
-                        console.log(failure);
-                    });
-                },
-            });
+                        },
+                        scrollable: false,
+                        sortable: false,
+                        pageable: false,
+                        serverPaging: true,
+                        serverSorting: true,
+                        serverFiltering: true,
+                        columns:
+                                [
+                                    {field: "IN_REMARKS", title: "In Remarks"},
+                                    {field: "OUT_REMARKS", title: "Out Remarks"},
+                                ]
+                    }).data("kendoGrid");
+                }, function (failure) {
+                    if (firstTime) {
+                        App.unblockUI("#hris-page-content");
+                        firstTime = false;
+                    } else {
+                        App.unblockUI("#attendanceByHrTable");
+                    }
+                    console.log(failure);
+                });
+            }
+            ;
 
-//            };
-            
             function gridDataBound(e) {
                 var grid = e.sender;
                 if (grid.dataSource.total() == 0) {

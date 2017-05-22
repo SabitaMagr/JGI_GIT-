@@ -12,9 +12,13 @@ angular.module('hris', [])
         .controller('leaveBalanceController', function ($scope, $http) {
             $scope.leaves = document.leaves;
             var $tableContainer = $("#leaveBalanceTable");
+            var displayKendoFirstTime = true;
             $scope.allList = {};
             // console.log($scope.leaves);
-
+            var headers = [];
+            var datas = [];
+            var headerForExcel = [];
+            var datasForExcel = [];
             $scope.view = function () {
                 var employeeId = angular.element(document.getElementById('employeeId')).val();
                 var companyId = angular.element(document.getElementById('companyId')).val();
@@ -49,7 +53,16 @@ angular.module('hris', [])
 
                         initializeHeaders($scope.leaves);
                         initializeDatas($scope.leaves, $scope.allList);
-                        initializekendoGrid(headers, datas);
+                        
+                        if (displayKendoFirstTime) {
+                            initializekendoGrid(headers);
+                            displayKendoFirstTime = false;
+                        }
+                        var dataSource = new kendo.data.DataSource({data: datas, pageSize: 20});
+                        var grid = $('#leaveBalanceTable').data("kendoGrid");
+                        dataSource.read();
+                        grid.setDataSource(dataSource);
+                    
                     });
                 }, function (failure) {
                     App.unblockUI("#hris-page-content");
@@ -57,12 +70,6 @@ angular.module('hris', [])
                 });
 
             };
-
-
-            var headers = [];
-            var datas = [];
-            var headerForExcel = [];
-            var datasForExcel = [];
 
             var initializeHeaders = function (cols) {
                 headers = [];
@@ -97,13 +104,8 @@ angular.module('hris', [])
                 }
             };
 
-            var initializekendoGrid = function (columns, datas) {
-                // console.log(datas);
+            var initializekendoGrid = function (columns) {
                 $("#leaveBalanceTable").kendoGrid({
-                    dataSource: {
-                        data: datas,
-                        pageSize: 20,
-                    },
                     height: 450,
                     scrollable: true,
                     sortable: true,

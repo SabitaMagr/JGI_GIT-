@@ -2,7 +2,7 @@
     'use strict';
     $(document).ready(function () {
         $("select").select2();
-        app.startEndDatePickerWithNepali('nepaliStartDate1', 'startDate1', 'nepaliEndDate1', 'endDate1');
+        app.startEndDatePickerWithNepali('nepaliStartDate1', 'startDate1', 'nepaliEndDate1', 'endDate1',null,true);
         
         $("#reset").on("click", function () {
             if (typeof document.ids !== "undefined") {
@@ -20,6 +20,7 @@ angular.module('hris', [])
         .controller('holidayListController', function ($scope, $http, $window) {
             $scope.holidayList = [];
             var $tableContainer = $("#holidayTable");
+            var displayKendoFirstTime = true;
             $scope.view = function () {
                 var startDate = angular.element($("#startDate1")).val();
                 var endDate = angular.element($("#endDate1")).val();
@@ -33,7 +34,14 @@ angular.module('hris', [])
                 }).then(function (success) {
                     App.unblockUI("#hris-page-content");
                     $scope.$apply(function () {
-                        $scope.initializekendoGrid(success.data);
+                        if (displayKendoFirstTime) {
+                            $scope.initializekendoGrid();
+                            displayKendoFirstTime = false;
+                        }
+                        var dataSource = new kendo.data.DataSource({data: success.data, pageSize: 20});
+                        var grid = $('#holidayTable').data("kendoGrid");
+                        dataSource.read();
+                        grid.setDataSource(dataSource);
                     });
                     window.app.scrollTo("holidayTable");
                 }, function (failure) {
@@ -41,16 +49,12 @@ angular.module('hris', [])
                     console.log(failure);
                 });
             }
-            $scope.initializekendoGrid = function (holidayList) {
+            $scope.initializekendoGrid = function () {
                 $("#holidayTable").kendoGrid({
                     excel: {
                         fileName: "HolidayList.xlsx",
                         filterable: true,
                         allPages: true
-                    },
-                    dataSource: {
-                        data: holidayList,
-                        pageSize: 35
                     },
                     height: 450,
                     scrollable: true,

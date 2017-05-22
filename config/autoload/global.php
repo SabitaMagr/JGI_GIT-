@@ -13,6 +13,9 @@ return [
         'username' => 'HRIS',
         'password' => 'NEO_HRIS',
         
+//          'username' => 'HRIS_DEMO',
+//          'password' => 'HRIS_DEMO',
+        
 //        'username' => 'JWL_HRIS_APR5',
 //        'password' => 'JWL_HRIS_APR5',
 //        

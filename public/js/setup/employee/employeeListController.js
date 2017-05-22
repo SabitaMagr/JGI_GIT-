@@ -10,6 +10,7 @@
 
 angular.module('hris', [])
         .controller('employeeListController', function ($scope, $http, $window) {
+              var displayKendoFirstTime = true;
 //            $scope.gridData = new kendo.data.ObservableArray([
 //            ]);
 //            $scope.gridColumns = [
@@ -57,7 +58,14 @@ angular.module('hris', [])
                 }).then(function (success) {
                     App.unblockUI("#hris-page-content");
                     console.log("pullEmployeeList", success.data);
-                    $scope.initializekendoGrid(success.data);
+                    if (displayKendoFirstTime) {
+                        $scope.initializekendoGrid();
+                        displayKendoFirstTime = false;
+                    }
+                    var dataSource = new kendo.data.DataSource({data: success.data, pageSize: 20});
+                    var grid = $('#employeeTable').data("kendoGrid");
+                    dataSource.read();
+                    grid.setDataSource(dataSource)
                     window.app.scrollTo('employeeTable');
                 }, function (failure) {
                     App.unblockUI("#hris-page-content");
@@ -66,16 +74,12 @@ angular.module('hris', [])
             };
 
 
-            $scope.initializekendoGrid = function (employees) {
+            $scope.initializekendoGrid = function () {
                 $("#employeeTable").kendoGrid({
                     excel: {
                         fileName: "EmployeeList.xlsx",
                         filterable: true,
                         allPages: true
-                    },
-                    dataSource: {
-                        data: employees,
-                        pageSize: 20,
                     },
                     height: 500,
                     scrollable: true,

@@ -2,7 +2,7 @@
     'use strict';
     $(document).ready(function () {
         $("select").select2();
-        app.startEndDatePickerWithNepali('nepaliFromDate', 'fromDate', 'nepaliToDate', 'toDate');
+        app.startEndDatePickerWithNepali('nepaliFromDate', 'fromDate', 'nepaliToDate', 'toDate',null,true);
         
           $("#reset").on("click", function () {
             if (typeof document.ids !== "undefined") {
@@ -18,6 +18,7 @@
 angular.module('hris', [])
         .controller("leaveRequestListController", function ($scope, $http) {
             var $tableContainer = $("#leaveRequestTable");
+            var displayKendoFirstTime = true;
             $scope.view = function () {
                 var employeeId = angular.element(document.getElementById('employeeId')).val();
                 var leaveId = angular.element(document.getElementById('leaveId')).val();
@@ -37,23 +38,26 @@ angular.module('hris', [])
                 }).then(function (success) {
                     App.unblockUI("#hris-page-content");
                     console.log(success.data);
-                    $scope.initializekendoGrid(success.data);
+                    if (displayKendoFirstTime) {
+                        $scope.initializekendoGrid();
+                        displayKendoFirstTime = false;
+                    }
+                    var dataSource = new kendo.data.DataSource({data: success.data, pageSize: 20});
+                    var grid = $('#leaveRequestTable').data("kendoGrid");
+                    dataSource.read();
+                    grid.setDataSource(dataSource);
                     window.app.UIConfirmations();
                 }, function (failure) {
                     App.unblockUI("#hris-page-content");
                     console.log(failure);
                 });
             }
-            $scope.initializekendoGrid = function (leaveRequest) {
+            $scope.initializekendoGrid = function () {
                 $("#leaveRequestTable").kendoGrid({
                     excel: {
                         fileName: "LeaveRequestList.xlsx",
                         filterable: true,
                         allPages: true
-                    },
-                    dataSource: {
-                        data: leaveRequest,
-                        pageSize: 20
                     },
                     height: 450,
                     scrollable: true,

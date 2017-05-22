@@ -7,6 +7,7 @@
 
 angular.module('hris', [])
         .controller('recommedApproverController', function ($scope, $http, $window) {
+            var displayKendoFirstTime = true;
             $scope.view = function () {
                 var employeeId = angular.element(document.getElementById('employeeId')).val();
                 var companyId = angular.element(document.getElementById('companyId')).val();
@@ -45,19 +46,22 @@ angular.module('hris', [])
                         return !(RECOMMENDER_ID===null && APPROVER_ID===null);
                     });
                     console.log("pullEmployeeList", dataArray);
-                    $scope.initializekendoGrid(dataArray);
+                    if (displayKendoFirstTime) {
+                        $scope.initializekendoGrid();
+                        displayKendoFirstTime = false;
+                    }
+                    var dataSource = new kendo.data.DataSource({data: success.data, pageSize: 20});
+                    var grid = $('#recommendApproveTable').data("kendoGrid");
+                    dataSource.read();
+                    grid.setDataSource(dataSource);
                     window.app.scrollTo('recommendApproveTable');
                 }, function (failure) {
                     App.unblockUI("#hris-page-content");
                     console.log(failure);
                 });
             };
-            $scope.initializekendoGrid = function (employees) {
+            $scope.initializekendoGrid = function () {
                 $("#recommendApproveTable").kendoGrid({
-                    dataSource: {
-                        data: employees,
-                        pageSize: 20
-                    },
                     height: 450,
                     scrollable: true,
                     sortable: true,
