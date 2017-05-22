@@ -50,7 +50,7 @@ angular.module('hris', [])
                         $scope.initializekendoGrid();
                         displayKendoFirstTime = false;
                     }
-                    var dataSource = new kendo.data.DataSource({data: success.data, pageSize: 20});
+                    var dataSource = new kendo.data.DataSource({data: dataArray, pageSize: 20});
                     var grid = $('#recommendApproveTable').data("kendoGrid");
                     dataSource.read();
                     grid.setDataSource(dataSource);
