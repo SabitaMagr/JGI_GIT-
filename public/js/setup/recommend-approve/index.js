@@ -74,7 +74,8 @@ angular.module('hris', [])
                     columns: [
                         {field: "FIRST_NAME", title: "Employee", width: 200},
                         {field: "FIRST_NAME_R", title: "Recommender", width: 200},
-                        {field: "FIRST_NAME_A", title: "Approver", width: 200}
+                        {field: "FIRST_NAME_A", title: "Approver", width: 200},
+                        {field: "Action", title: "Action", width: 200}
                     ]
                 });
                 $("#export").click(function (e) {
@@ -83,6 +84,7 @@ angular.module('hris', [])
                                 {value: "Employee Name"},
                                 {value: "Recommender Name"},
                                 {value: "Approver Name"}
+                                
                             ]
                         }];
                     var dataSource = $("#recommendApproveTable").data("kendoGrid").dataSource;
