@@ -149,8 +149,10 @@ class DashboardController extends AbstractActionController {
                     "departmentAttendance" => $dahsboardRepo->fetchDepartmentAttendance(),
                     'todoList' => $this->getTodoList(),
                     "present" => $dahsboardRepo->fetchEmployeeMonthlyPresentCount($employeeId),
-                    "leave" => $dahsboardRepo->fetchLeaveCount()
-                    
+                    "leave" => $dahsboardRepo->fetchEmployeeMonthlyLeaveCount($employeeId),
+                    "WOH" => $dahsboardRepo->fetchEmployeeMonthlyWOHCount($employeeId),
+                    "training"=>$dahsboardRepo->fetchEmployeeMonthlyTrainingCount($employeeId),
+                    "travel"=>$dahsboardRepo->fetchEmployeeMonthlyTravelCount($employeeId)
                     ))); 
         }
 
