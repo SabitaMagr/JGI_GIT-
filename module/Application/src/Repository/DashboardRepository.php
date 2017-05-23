@@ -796,5 +796,19 @@ ORDER BY N.NEWS_DATE ASC
         
     }
     
+    public function fetchPendingLeave($companyId=null,$branchId=null){
+        $sql="SELECT COUNT(*) AS PENDING_LEAVE
+              FROM HRIS_EMPLOYEE_LEAVE_REQUEST
+              WHERE STATUS='RQ' ";
+        
+        if($companyId != null and $branchId !=null){
+            $sql.=" AND EMPLOYEE_ID IN (SELECT EMPLOYEE_ID FROM HRIS_EMPLOYEES WHERE COMPANY_ID = $companyId AND BRANCH_ID = $branchId)";
+            }
+        
+        $statement = $this->adapter->query($sql);
+        $result = $statement->execute();
+        return $result->current();
+    }
+    
 
 }

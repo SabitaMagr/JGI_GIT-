@@ -187,25 +187,25 @@ ul {
     color: #5fc2d2;
 }
 .icons .colortwo {
-    color: #ff6b6b;
+    color: #81c868;
 }
 .icons .colorthree {
     color: #7266bd;
 }
 .icons .colorfour {
-    color: #81c868;
+    color: #ff6b6b;
 }
 .wigetbox-colorone {
     background-color: #87d1dd;
 }
 .wigetbox-colortwo {
-    background-color: #ff9f9f;
+    background-color: #9fd68d;
 }
 .wigetbox-colorthree {
     background-color: #938acc;
 }
 .wigetbox-colorfour {
-    background-color: #9fd68d;
+    background-color: #ff9f9f;
 }
 .icons i {
     display: inline-block;
@@ -275,13 +275,13 @@ li.line:after {
     background-color: #5fc2d2;
 }
 .widget-thumb-wrap-bgtwo {
-    background-color: #ff6b6b;
+    background-color: #81c868;
 }
 .widget-thumb-wrap-bgthree {
     background-color: #7266bd;
 }
 .widget-thumb-wrap-bgfour {
-    background-color: #81c868;
+    background-color: #ff6b6b;
 }
 .icons .widget-thumb-icon {
     margin-right: 30px;

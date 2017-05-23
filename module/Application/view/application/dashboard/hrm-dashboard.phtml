@@ -325,17 +325,21 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                     <!-- BEGIN WIDGET THUMB -->
                     <div class="wigetbox wigetbox-colorfour clearfix widget-thumb margin-bottom-20 bordered green-haze widget-appraisal-due">
                         <div class="widget-thumb-wrap widget-thumb-wrap-bgfour">
-                            <h4 class="widget-thumb-heading">Appraisal Due</h4>
+                            <h4 class="widget-thumb-heading">Pending Leave</h4>
                             <div class="widget-thumb-body">
                                 <ul>
-                                    <li class="line">
+<!--                                    <li class="line">
                                         <span class="widget-thumb-body-stat" data-counter="counterup">30</span>
                                         This Month
                                     </li>
                                     <li>
                                         <span class="widget-thumb-body-stat" data-counter="counterup">20</span>
                                         Next Month
+                                    </li>-->
+                                    <li class="line">
+                                        <span class="widget-thumb-body-stat" data-counter="counterup"><?=$pendingLeave['PENDING_LEAVE'];?></span>
                                     </li>
+
                                 </ul>
                             </div>
                         </div>
