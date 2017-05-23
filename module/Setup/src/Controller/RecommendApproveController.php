@@ -118,7 +118,7 @@ class RecommendApproveController extends AbstractActionController {
         return Helper::addFlashMessagesToArray($this, [
                     'form' => $this->form,
                     'id' => $id,
-                    //EntityHelper::getTableKVList($this->adapter,"HRIS_EMPLOYEES","EMPLOYEE_ID",["FIRST_NAME","MIDDLE_NAME","LAST_NAME"],["STATUS"=>"E"])
+                    'employeeList'=>EntityHelper::getTableKVList($this->adapter,"HRIS_EMPLOYEES","EMPLOYEE_ID",["FIRST_NAME","MIDDLE_NAME","LAST_NAME"],["STATUS"=>"E"]),
                     'employees' => $this->repository->getEmployees($id)
         ]);
     }
@@ -148,11 +148,18 @@ class RecommendApproveController extends AbstractActionController {
         $designationFormElement->setValueOptions($designations1);
         $designationFormElement->setAttributes(["id" => "designationId", "class" => "form-control"]);
         $designationFormElement->setLabel("Designation");
+        
+        $employeeResult = EntityHelper::getTableKVListWithSortOption($this->adapter, HrEmployees::TABLE_NAME, HrEmployees::EMPLOYEE_ID, [HrEmployees::FIRST_NAME,HrEmployees::MIDDLE_NAME,HrEmployees::LAST_NAME], [HrEmployees::STATUS => 'E',HrEmployees::RETIRED_FLAG=>'N'], "FIRST_NAME", "ASC",null,false,true);
+        $employeeList = [];
+        foreach($employeeResult as $key=>$value){
+            array_push($employeeList, ['id'=>$key,'name'=>$value]);
+        }
         return Helper::addFlashMessagesToArray($this, [
             "branches" => $branchFormElement,
             "departments" => $departmentFormElement,
             'designations' => $designationFormElement,
-            'searchValues' => EntityHelper::getSearchData($this->adapter)
+            'searchValues' => EntityHelper::getSearchData($this->adapter),
+            'employeeList'=>$employeeList
         ]);
     }
 

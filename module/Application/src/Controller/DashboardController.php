@@ -134,8 +134,26 @@ class DashboardController extends AbstractActionController {
                     "training"=>$dahsboardRepo->fetchTrainingCount($empCompanyId,$empBranchId),
                     "travel"=>$dahsboardRepo->fetchTravelCount($empCompanyId,$empBranchId)
         ))); 
-        }
-        else{
+        }else if($empRole=='D'){
+        $view = new ViewModel(Helper::addFlashMessagesToArray($this, array(
+                    "employeeDetail" => $employeeDetail,
+                    "upcomingHolidays" => $dahsboardRepo->fetchUpcomingHolidays($employeeDetail['EMPLOYEE_ID']),
+                    "employeeNotice" => $dahsboardRepo->fetchEmployeeNotice($employeeDetail['EMPLOYEE_ID']),
+                    "employeeTask" => $dahsboardRepo->fetchEmployeeTask($employeeId),
+                    "employeesBirthday" => $dahsboardRepo->fetchEmployeesBirthday(),
+                    "employeeList" => $dahsboardRepo->fetchAllEmployee($empCompanyId,$empBranchId),
+                    "headCountGender" => $dahsboardRepo->fetchGenderHeadCount(),
+                    "headCountDepartment" => $dahsboardRepo->fetchDepartmentHeadCount(),
+                    "headCountLocation" => $dahsboardRepo->fetchLocationHeadCount(),
+                    "departmentAttendance" => $dahsboardRepo->fetchDepartmentAttendance(),
+                    'todoList' => $this->getTodoList(),
+                    "present" => $dahsboardRepo->fetchPresentCount($empCompanyId,$empBranchId),
+                    "leave" => $dahsboardRepo->fetchLeaveCount($empCompanyId,$empBranchId),
+                    "WOH" => $dahsboardRepo->fetchWOHCount($empCompanyId,$empBranchId),
+                    "training"=>$dahsboardRepo->fetchTrainingCount($empCompanyId,$empBranchId),
+                    "travel"=>$dahsboardRepo->fetchTravelCount($empCompanyId,$empBranchId)
+        ))); 
+        }else{
             $view = new ViewModel(Helper::addFlashMessagesToArray($this, array(
                     "employeeDetail" => $employeeDetail,
                     "upcomingHolidays" => $dahsboardRepo->fetchUpcomingHolidays($employeeDetail['EMPLOYEE_ID']),
