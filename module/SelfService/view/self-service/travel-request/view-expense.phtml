@@ -96,8 +96,24 @@ print $this->form()->openTag($form);
                             <table>
                                 <tr>
                                     <td width="40%">
-                                        <label for="travelCode">Travel Code :</label></td>
-                                    <td><input type="text" disabled="disabled" value="<?php echo $detail['TRAVEL_CODE']; ?>" name="travelCode" id="travelCode" class="form-control"></td>
+                                        <label for="destination">Status :</label> 
+                                    </td>
+                                    <td>
+                                        <?php
+                                        if ($status == 'RQ') {
+                                            $currentStatus = "Pending";
+                                        } else if ($status == 'RC') {
+                                            $currentStatus = "Recommended";
+                                        } else if ($status == 'AP') {
+                                            $currentStatus = "Approved";
+                                        } else if ($status == "R") {
+                                            $currentStatus = "Rejected";
+                                        } else if ($status == "C") {
+                                            $currentStatus = "Cancelled";
+                                        }
+                                        ?>
+                                        <input  value="<?php echo $currentStatus; ?>" type="text" disabled="disabled" name="returnedDate" id="returnedDate" class="form-control"> 
+                                    </td>
                                 </tr>
                             </table>
                         </div>
@@ -181,26 +197,11 @@ print $this->form()->openTag($form);
                             <table>
                                 <tr>
                                     <td width="40%">
-                                        <label for="destination">Status :</label> 
-                                    </td>
-                                    <td>
-                                        <?php
-                                        if ($status == 'RQ') {
-                                            $currentStatus = "Pending";
-                                        } else if ($status == 'RC') {
-                                            $currentStatus = "Recommended";
-                                        } else if ($status == 'AP') {
-                                            $currentStatus = "Approved";
-                                        } else if ($status == "R") {
-                                            $currentStatus = "Rejected";
-                                        } else if ($status == "C") {
-                                            $currentStatus = "Cancelled";
-                                        }
-                                        ?>
-                                        <input  value="<?php echo $currentStatus; ?>" type="text" disabled="disabled" name="returnedDate" id="returnedDate" class="form-control"> 
-                                    </td>
+                                        <label for="travelCode">Travel Code :</label></td>
+                                    <td><input type="text" disabled="disabled" value="<?php echo $detail['TRAVEL_ID']; ?>" name="travelCode" id="travelCode" class="form-control"></td>
                                 </tr>
                             </table>
+                            
                         </div> 
                     </div>
                     <div class="margin-top-10 scrollbar-horizantal">
