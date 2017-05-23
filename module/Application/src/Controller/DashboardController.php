@@ -112,7 +112,8 @@ class DashboardController extends AbstractActionController {
                     "WOH" => $dahsboardRepo->fetchWOHCount(),
                     "training"=>$dahsboardRepo->fetchTrainingCount(),
                     "travel"=>$dahsboardRepo->fetchTravelCount(),
-                    "pendingLeave"=>$dahsboardRepo->fetchPendingLeave()
+                    "pendingLeave"=>$dahsboardRepo->fetchPendingLeave(),
+                    "employeeJoinCM"=>$dahsboardRepo->fetchEmployeeJoiningCurrentMonth()
         )));
             
             
@@ -134,7 +135,8 @@ class DashboardController extends AbstractActionController {
                     "WOH" => $dahsboardRepo->fetchWOHCount($empCompanyId,$empBranchId),
                     "training"=>$dahsboardRepo->fetchTrainingCount($empCompanyId,$empBranchId),
                     "travel"=>$dahsboardRepo->fetchTravelCount($empCompanyId,$empBranchId),
-                    "pendingLeave"=>$dahsboardRepo->fetchPendingLeave($empCompanyId,$empBranchId)
+                    "pendingLeave"=>$dahsboardRepo->fetchPendingLeave($empCompanyId,$empBranchId),
+                    "employeeJoinCM"=>$dahsboardRepo->fetchEmployeeJoiningCurrentMonth($empCompanyId, $empBranchId)
         ))); 
         }
         else{
