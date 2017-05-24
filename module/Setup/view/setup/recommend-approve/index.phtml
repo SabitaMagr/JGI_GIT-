@@ -150,6 +150,12 @@ $this->headScript()
         #: (APPROVER_NAME == null) ? ' ' : APPROVER_NAME #
         #}#
         </td>
+        <td>
+        <a class="btn-edit"
+        href="<?= $this->url("recommendapprove", ["action" => "edit"]) ?>/#:EMPLOYEE_ID #" style="height:17px;">
+        <i class="fa fa-edit"></i>
+        </a>
+        </td>
         </tr>
     </script>
 </div>

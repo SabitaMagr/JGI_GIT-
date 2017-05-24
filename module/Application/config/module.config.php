@@ -267,7 +267,8 @@ return [
     'role-types' => [
         'A' => 'Human Resource',
         'B' => 'Branch Manager',
-        'E' => 'Employee'
+        'E' => 'Employee',
+//        'D' => 'Department Manager'
     ],
 //    'role-types' => [
 //        'H' => 'Human Resource',

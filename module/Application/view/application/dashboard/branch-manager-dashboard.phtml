@@ -311,7 +311,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                         <div class="widget-thumb-wrap widget-thumb-wrap-bgtwo">
                             <h4 class="widget-thumb-heading">Joining This Month</h4>
                             <div class="widget-thumb-body">
-                                <span class="widget-thumb-body-stat" data-counter="counterup"><?php print $employeeDetail['JOINED_THIS_MONTH']; ?></span>
+                                <span class="widget-thumb-body-stat" data-counter="counterup"><?php print $employeeJoinCM['ECMJ']; ?></span>
                             </div>
                         </div>
                         <div>
@@ -342,16 +342,11 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                     <!-- BEGIN WIDGET THUMB -->
                     <div class="wigetbox wigetbox-colorfour clearfix widget-thumb margin-bottom-20 bordered green-haze widget-appraisal-due">
                         <div class="widget-thumb-wrap widget-thumb-wrap-bgfour">
-                            <h4 class="widget-thumb-heading">Appraisal Due</h4>
+                            <h4 class="widget-thumb-heading">Pending Leave</h4>
                             <div class="widget-thumb-body">
                                 <ul>
                                     <li class="line">
-                                        <span class="widget-thumb-body-stat" data-counter="counterup">30</span>
-                                        This Month
-                                    </li>
-                                    <li>
-                                        <span class="widget-thumb-body-stat" data-counter="counterup">20</span>
-                                        Next Month
+                                        <span class="widget-thumb-body-stat" data-counter="counterup"><?=$pendingLeave['PENDING_LEAVE'];?></span>
                                     </li>
                                 </ul>
                             </div>

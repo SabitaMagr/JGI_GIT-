@@ -36,8 +36,6 @@ $form->setAttribute('role', 'form');
 $form->setAttribute('id', 'travelApprove-form');
 
 
-$travelCode = $form->get('travelCode');
-$travelCode->setAttributes(["disabled" => "disabled"]);
 $fromDate = $form->get('fromDate');
 $fromDate->setAttributes(["disabled" => "disabled"]);
 $toDate = $form->get('toDate');
@@ -179,13 +177,6 @@ print $this->form()->openTag($form);
                     </div>
 
                     <div class=" row">
-                        <div class="col-sm-4">
-                            <div class="form-group">
-                                <?php print $this->formLabel($travelCode); ?>
-                                <?php print $this->formElement($travelCode); ?>
-                                <?php print $this->formElementErrors()->render($travelCode, ['class' => 'help-block']); ?>
-                            </div>  
-                        </div>
 
                         <div class="col-sm-4">
                             <div class="row">

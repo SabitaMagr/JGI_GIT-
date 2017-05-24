@@ -48,11 +48,14 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                     <input type="hidden" id="requestedType" value="<?php echo $requestedType ?>"/>
                     <div class="row">
                         <div class="col-xs-12 col-sm-4 col-md-4 col-box bottomgap">
-                            <table>
+                           <table>
                                 <tr>
                                     <td width="40%">
-                                        <label for="travelCode">Travel Code :</label></td>
-                                    <td><input type="text" disabled="disabled" value="<?php echo $detail['TRAVEL_CODE']; ?>" name="travelCode" required="required" id="travelCode" class="form-control"></td>
+                                        <label for="purpose">Purpose :</label> 
+                                    </td>
+                                    <td>
+                                        <input type="text" disabled="disabled" value="<?php echo $detail['PURPOSE']; ?>" name="purpose" required="required" id="purpose" class="form-control">
+                                    </td>
                                 </tr>
                             </table>
                         </div>
@@ -83,18 +86,6 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-xs-12 col-sm-4 col-md-4 col-box bottomgap">
-                            <table>
-                                <tr>
-                                    <td width="40%">
-                                        <label for="purpose">Purpose :</label> 
-                                    </td>
-                                    <td>
-                                        <input type="text" disabled="disabled" value="<?php echo $detail['PURPOSE']; ?>" name="purpose" required="required" id="purpose" class="form-control">
-                                    </td>
-                                </tr>
-                            </table>
-                        </div>
                         <div class="col-xs-12 col-sm-4 col-md-4 col-box bottomgap">
                             <table>
                                 <tr>
@@ -130,6 +121,17 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                 </tr>
                             </table>
                         </div>
+                        
+                        <div class="col-xs-12 col-sm-4 col-md-4 col-box bottomgap">
+<!--                             <table>
+                                <tr>
+                                    <td width="40%">
+                                        <label for="travelCode">Travel Code :</label></td>
+                                    <td><input type="text" disabled="disabled" value="<?php // echo $detail['TRAVEL_ID']; ?>" name="travelCode" required="required" id="travelCode" class="form-control"></td>
+                                </tr>
+                            </table>-->
+                        </div>
+                        
                     </div>
                     <div class="margin-top-10 scrollbar-horizantal">
                         <table width="100%" align="center" class="table table-striped table-bordered table-hover no-footer customTable div-font-11">

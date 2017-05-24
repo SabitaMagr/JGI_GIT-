@@ -118,7 +118,7 @@ class RecommendApproveController extends AbstractActionController {
         return Helper::addFlashMessagesToArray($this, [
                     'form' => $this->form,
                     'id' => $id,
-                    //EntityHelper::getTableKVList($this->adapter,"HRIS_EMPLOYEES","EMPLOYEE_ID",["FIRST_NAME","MIDDLE_NAME","LAST_NAME"],["STATUS"=>"E"])
+                    'employeeList'=>EntityHelper::getTableKVList($this->adapter,"HRIS_EMPLOYEES","EMPLOYEE_ID",["FIRST_NAME","MIDDLE_NAME","LAST_NAME"],["STATUS"=>"E"]),
                     'employees' => $this->repository->getEmployees($id)
         ]);
     }

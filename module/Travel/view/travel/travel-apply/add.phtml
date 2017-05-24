@@ -12,7 +12,6 @@ $form->setAttribute('id', 'travelRequest-form');
 
 $employeeId = $form->get('employeeId');
 $employeeId->setValueOptions($employees);
-$travelCode = $form->get('travelCode');
 $fromDate = $form->get('fromDate');
 $toDate = $form->get('toDate');
 $destination = $form->get('destination');
@@ -78,14 +77,6 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                         </div>  
                     </div>
 
-                    <div class="col-sm-4">
-                        <div class="form-group">
-                            <?php print $this->formLabel($travelCode); ?>
-                            <span class="required" aria-required="true">*</span>
-                            <?php print $this->formElement($travelCode); ?>
-                            <?php print $this->formElementErrors()->render($travelCode, ['class' => 'help-block']); ?>
-                        </div>
-                    </div>
 
                     <div class="col-sm-4">
                         <div class="row">
@@ -109,11 +100,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                         </div>
 
                     </div>
-
-                </div>
-
-
-                <div class="row">
+                    
                     <div class="col-sm-4">
                         <div class="row">
                             <div class="col-sm-6">
@@ -133,8 +120,12 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                             </div>
                         </div>     
                     </div>
+                </div>
 
                 </div>
+
+
+                <div class="row">
 
                 <div class="col-sm-4">
                     <div class="form-group">
@@ -152,6 +143,13 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                     </div>
                 </div>
 
+                <div class="col-sm-4">
+                    <div class="form-group">
+                        <?php print $this->formLabel($requestedAmount); ?>
+                        <?php print $this->formElement($requestedAmount); ?>
+                        <?php print $this->formElementErrors()->render($requestedAmount, ['class' => 'help-block']); ?>
+                    </div>
+                </div>
             </div>
 
 
@@ -173,23 +171,14 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
 
                 <div class="col-sm-4">
                     <div class="form-group">
-                        <?php print $this->formLabel($requestedAmount); ?>
-                        <?php print $this->formElement($requestedAmount); ?>
-                        <?php print $this->formElementErrors()->render($requestedAmount, ['class' => 'help-block']); ?>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-
-                <div class="col-sm-4">
-                    <div class="form-group">
                         <?php print $this->formLabel($remarks); ?>
                         <?php print $this->formElement($remarks); ?>
                         <?php print $this->formElementErrors()->render($remarks, ['class' => 'help-block']); ?>
                     </div>
                 </div>
-
+                
             </div>
+                
 
 
             <?php
