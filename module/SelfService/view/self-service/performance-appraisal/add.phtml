@@ -173,18 +173,16 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                             <?php foreach ($questionTemplateRow['QUESTIONS'] as $questionRow) { ?>
                                                 <div style="margin-top:2%;">    
                                                     <h7 style="font-size:12px;"><?php echo $questionRow['QUESTION_EDESC']; ?></h7>  
-                                                    <?php 
-                                                    $keyForQuestion = ($questionRow['ANSWER']==null || count($questionRow['ANSWER'])==0)?$questionRow['QUESTION_ID']:array_keys($questionRow['ANSWER'])[0];
-                                                    if($questionRow['ANSWER_TYPE']=="RADIO"){ ?>
+                                                    <?php if($questionRow['ANSWER_TYPE']=="RADIO"){ ?>
                                                     <div class="md-radio-inline">
-                                                        <?php $customRenderer($performanceAppraisalObj("answer[".$keyForQuestion."]", $questionRow['ANSWER_TYPE'],(count($questionRow['QUESTION_OPTIONS'])>0)?$questionRow['QUESTION_OPTIONS']:null,($questionRow['ANSWER']!=null||count($questionRow['ANSWER'])>0)?array_values($questionRow['ANSWER'])[0]:null)); ?>
+                                                        <?php $customRenderer($performanceAppraisalObj("answer[".$questionRow['QUESTION_ID']."]", $questionRow['ANSWER_TYPE'],(count($questionRow['QUESTION_OPTIONS'])>0)?$questionRow['QUESTION_OPTIONS']:null)); ?>
                                                     </div>
                                                     <?php } else if($questionRow['ANSWER_TYPE']=="CHECKBOX"){?>
                                                         <div class="md-checkbox-inline">
-                                                            <?php $customRendererForCheckbox($performanceAppraisalObj("answer[".$keyForQuestion."][]", $questionRow['ANSWER_TYPE'],(count($questionRow['QUESTION_OPTIONS'])>0)?$questionRow['QUESTION_OPTIONS']:null,($questionRow['ANSWER']!=null||count($questionRow['ANSWER'])>0)?array_values($questionRow['ANSWER'])[0]:null)); ?>
+                                                            <?php $customRendererForCheckbox($performanceAppraisalObj("answer[".$questionRow['QUESTION_ID']."][]", $questionRow['ANSWER_TYPE'],(count($questionRow['QUESTION_OPTIONS'])>0)?$questionRow['QUESTION_OPTIONS']:null)); ?>
                                                         </div>
                                                     <?php } else{
-                                                        print_r($this->formElement($performanceAppraisalObj("answer[".$keyForQuestion."]", $questionRow['ANSWER_TYPE'],(count($questionRow['QUESTION_OPTIONS'])>0)?$questionRow['QUESTION_OPTIONS']:null,($questionRow['ANSWER']!=null||count($questionRow['ANSWER'])>0)?array_values($questionRow['ANSWER'])[0]:null)));
+                                                        print_r($this->formElement($performanceAppraisalObj("answer[".$questionRow['QUESTION_ID']."]", $questionRow['ANSWER_TYPE'],(count($questionRow['QUESTION_OPTIONS'])>0)?$questionRow['QUESTION_OPTIONS']:null)));
                                                     }
                                                     ?>
                                                 </div>
