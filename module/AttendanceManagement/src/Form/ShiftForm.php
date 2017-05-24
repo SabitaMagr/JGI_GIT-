@@ -230,5 +230,23 @@ class ShiftForm {
      * @Annotation\Attributes({ "id":"totalWorkingHr", "data-format":"h:mm", "data-template":"hh : mm", "class":"form-control" })
      */
     public $totalWorkingHr;
+    
+    /**
+     * @Annotation\Type("Zend\Form\Element\Text")
+     * @Annotation\Required(true)
+     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
+     * @Annotation\Options({"label":"Grace Start Time"})
+     * @Annotation\Attributes({ "id":"graceStartTime", "data-format":"h:mm a", "data-template":"hh : mm A", "class":"form-control" })
+     */
+    public $graceStartTime;
+
+    /**
+     * @Annotation\Type("Zend\Form\Element\Text")
+     * @Annotation\Required(true)
+     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
+     * @Annotation\Options({"label":"Grace End Time"})
+     * @Annotation\Attributes({ "id":"graceEndTime", "data-format":"h:mm a", "data-template":"hh : mm A", "class":"form-control"})
+     */
+    public $graceEndTime;
 
 }
