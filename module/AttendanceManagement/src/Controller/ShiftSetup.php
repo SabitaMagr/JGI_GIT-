@@ -62,6 +62,8 @@ class ShiftSetup extends AbstractActionController {
                 $shift->createdDt = Helper::getcurrentExpressionDate();
                 $shift->createdBy = $this->employeeId;
                 $shift->status = 'E';
+                $shift->graceStartTime = Helper::getExpressionTime($shift->graceStartTime);
+                $shift->graceEndTime= Helper::getExpressionTime($shift->graceEndTime);
 
                 $shift->actualWorkingHr = Helper::hoursToMinutes($shift->actualWorkingHr);
                 $shift->totalWorkingHr = Helper::hoursToMinutes($shift->totalWorkingHr);
@@ -117,6 +119,9 @@ class ShiftSetup extends AbstractActionController {
                 $shift->halfTime = Helper::getExpressionTime($shift->halfTime);
                 $shift->modifiedDt = Helper::getcurrentExpressionDate();
                 $shift->modifiedBy = $this->employeeId;
+                
+                $shift->graceStartTime = Helper::getExpressionTime($shift->graceStartTime);
+                $shift->graceEndTime= Helper::getExpressionTime($shift->graceEndTime);
 
                 $shift->actualWorkingHr = Helper::hoursToMinutes($shift->actualWorkingHr);
                 $shift->totalWorkingHr = Helper::hoursToMinutes($shift->totalWorkingHr);

@@ -52,6 +52,8 @@ $companyId->setValueOptions($companies);
 $actualWorkingHr = $form->get('actualWorkingHr');
 $totalWorkingHr = $form->get('totalWorkingHr');
 
+$graceStartTime = $form->get('graceStartTime');
+$graceEndTime = $form->get('graceEndTime');
 
 $submit = $form->get('submit');
 $submit->setAttribute('value', 'SUBMIT');
@@ -230,6 +232,28 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                             </div>
                         </div>
                         <?php print $this->formElementErrors()->render($actualWorkingHr, ['class' => 'help-block error']) ?>
+                    </div>
+                    
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <?php print $this->formLabel($graceStartTime) ?>
+                            <div class="input-group dropdown-select">
+                                <?php print $this->formElement($graceStartTime) ?>
+                            </div>
+                        </div>
+                        <?php print $this->formElementErrors()->render($graceStartTime, ['class' => 'help-block error']) ?>
+                    </div>
+
+                    <div class="col-sm-6">
+                        <div class="form-group required">
+                            <?php print $this->formLabel($graceEndTime) ?>
+                            <div class="input-group dropdown-select">
+                                <?php print $this->formElement($graceEndTime) ?>
+                            </div>
+                            <?php print $this->formElementErrors()->render($graceEndTime, ['class' => 'help-block error']) ?>
+                        </div>
+
+
                     </div>
                 </div>
 
