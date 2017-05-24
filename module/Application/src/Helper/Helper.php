@@ -241,6 +241,35 @@ class Helper {
             }
         };
     }
+    public static function renderCustomViewForCheckbox() {
+        return function ($object) {
+            $elems = $object->getValueOptions();
+            $counter = 1;
+            $name = $object->getName();
+            foreach ($elems as $key => $value) {
+                $temp = '';
+                if ($object->getValue() == "") {
+                    if ($counter == $object->getCheckedValue()) {
+                        $temp = 'checked=checked';
+                    }
+                } else {
+                    if (in_array($key,$object->getValue())) {
+                        $temp = 'checked=checked';
+                    }
+                }
+                echo "<div class = 'md-checkbox'>";
+                echo "<input $temp type = 'checkbox' value = '$key' name = '$name' id = '$name+$value' class = 'md-check'>";
+
+                echo "<label for = '$name+$value'>
+                <span></span>
+                <span class = 'check'></span>
+                <span class = 'box'></span> $value
+                </label>";
+                echo "</div>";
+                $counter++;
+            }
+        };
+    }
 
     public static function hydrate($class, ResultSet $resultSet) {
         $tempArray = [];

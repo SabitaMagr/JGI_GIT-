@@ -26,6 +26,12 @@
         $('#totalWorkingHr').combodate({
             minuteStep: 1
         });
+        $('#graceStartTime').combodate({
+            minuteStep: 1
+        });
+        $('#graceEndTime').combodate({
+            minuteStep: 1
+        });
 
         var $startTime = $('#startTime');
         var $endTime = $('#endTime');

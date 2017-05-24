@@ -11,6 +11,8 @@ namespace ManagerService;
 
 use Zend\Router\Http\Segment;
 use Application\Controller\ControllerFactory;
+use ManagerService\Controller\AppraisalEvaluation;
+use ManagerService\Controller\AppraisalReview;
 
 return [
     'router' => [
@@ -114,6 +116,34 @@ return [
                         'action' => 'index'
                     ]
                 ]
+            ],
+            'appraisal-evaluation' => [
+                'type' => Segment::class,
+                'options' => [
+                    'route' => '/managerservice/appraisalEvaluation[/:action[/:id]]',
+                    'constants' => [
+                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'id' => '[0-9]+',
+                    ],
+                    'defaults' => [
+                        'controller' => AppraisalEvaluation::class,
+                        'action' => 'index',
+                    ]
+                ],
+            ],
+            'appraisal-review' => [
+                'type' => Segment::class,
+                'options' => [
+                    'route' => '/managerservice/appraisalReview[/:action[/:id]]',
+                    'constants' => [
+                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'id' => '[0-9]+',
+                    ],
+                    'defaults' => [
+                        'controller' => AppraisalReview::class,
+                        'action' => 'index',
+                    ]
+                ],
             ],
         ]
     ],
@@ -424,6 +454,50 @@ return [
                 ]
             ]
         ],
+        'appraisalEvaluation' => [
+                [
+                'label' => 'Appraisal Evaluation',
+                'route' => 'appraisalEvaluation',
+            ],
+                [
+                'label' => 'Appraisal Evaluation',
+                'route' => 'appraisalEvaluation',
+                'pages' => [
+                        [
+                        'label' => 'List',
+                        'route' => 'appraisalEvaluation',
+                        'action' => 'index',
+                    ],
+                        [
+                        'label' => 'View',
+                        'route' => 'appraisalEvaluation',
+                        'action' => 'view',
+                    ],
+                ]
+            ]
+        ],
+        'appraisalReview' => [
+                [
+                'label' => 'Appraisal Review',
+                'route' => 'appraisalReview',
+            ],
+                [
+                'label' => 'Appraisal Review',
+                'route' => 'appraisalReview',
+                'pages' => [
+                        [
+                        'label' => 'List',
+                        'route' => 'appraisalReview',
+                        'action' => 'index',
+                    ],
+                        [
+                        'label' => 'View',
+                        'route' => 'appraisalReview',
+                        'action' => 'view',
+                    ],
+                ]
+            ]
+        ],
     ],
     'controllers' => [
         'factories' => [
@@ -436,7 +510,9 @@ return [
             Controller\DayoffWorkApproveController::class => ControllerFactory::class,
             Controller\HolidayWorkApproveController::class => ControllerFactory::class,
             Controller\TrainingApproveController::class => ControllerFactory::class,
-            Controller\OvertimeApproveController::class=> ControllerFactory::class
+            Controller\OvertimeApproveController::class=> ControllerFactory::class,
+            Controller\AppraisalEvaluation::class=> ControllerFactory::class,
+            Controller\AppraisalReview::class=> ControllerFactory::class
         ],
     ],
     'view_manager' => [

@@ -74,7 +74,9 @@ class ShiftRepository implements RepositoryInterface {
                     ShiftSetup::START_TIME,
                     ShiftSetup::END_TIME,
                     ShiftSetup::HALF_TIME,
-                    ShiftSetup::HALF_DAY_END_TIME
+                    ShiftSetup::HALF_DAY_END_TIME,
+                    ShiftSetup::GRACE_START_TIME,
+                    ShiftSetup::GRACE_END_TIME
                         ],null,null,null,false,false, [
                     ShiftSetup::LATE_IN,
                     ShiftSetup::EARLY_OUT,

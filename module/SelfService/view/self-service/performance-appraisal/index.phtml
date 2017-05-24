@@ -75,10 +75,17 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
         #: (END_DATE == null) ? '-' : END_DATE #
         </td>
         <td>
+        # if(ALLOW_ADD){ #
+        <a class="btn-edit"
+        href="<?= $this->url("performanceAppraisal", ["action" => "add"]); ?>/#:APPRAISAL_ID#" style="height:17px;">
+        <i class="fa fa-plus"></i>
+        </a>
+        # }else if(ALLOW_EDIT){ #
         <a class="btn-edit"
         href="<?= $this->url("performanceAppraisal", ["action" => "view"]); ?>/#:APPRAISAL_ID#" style="height:17px;">
         <i class="fa fa-search-plus"></i>
         </a>
+        #} #
         </td>
         </tr>
     </script>
