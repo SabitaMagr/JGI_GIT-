@@ -92,18 +92,8 @@ class DashboardRepository implements RepositoryInterface {
                 LEFT JOIN
                   ( SELECT ATTEN.EMPLOYEE_ID, COUNT (*) LATE_IN
                    FROM
-                     ( SELECT A.EMPLOYEE_ID,
-                              S.START_TIME,
-                              A.IN_TIME,
-                              (((TRUNC (S.START_TIME) - S.START_TIME)) - (TRUNC (A.IN_TIME) - A.IN_TIME) ) LATE_HRS,
-                              S.LATE_IN_NO - TRUNC (S.LATE_IN_NO) LATE_GRACE
-                      FROM HRIS_ATTENDANCE_DETAIL A,
-                           (SELECT S.*,TO_TIMESTAMP( LPAD(TRUNC(NVL(S.LATE_IN,0)/60,0),2, 0)||':'||LPAD(MOD(NVL(S.LATE_IN,0),60),2, 0),'HH24:MI') AS LATE_IN_NO FROM HRIS_SHIFTS S) S
-                      WHERE 1 = 1
-                        AND A.EMPLOYEE_ID = {$employeeId}
-                        AND A.SHIFT_ID = S.SHIFT_ID
-                        AND A.IN_TIME BETWEEN TO_DATE('{$startDate}', 'DD-MON-YYYY') AND TO_DATE('{$endDate}', 'DD-MON-YYYY') ) ATTEN
-                   WHERE ATTEN.LATE_HRS > LATE_GRACE
+         HRIS_ATTENDANCE_DETAIL ATTEN
+                   WHERE ATTEN.LATE_STATUS != 'N' AND ATTEN.EMPLOYEE_ID={$employeeId} AND (ATTEN.ATTENDANCE_DT BETWEEN TO_DATE('{$startDate}', 'DD-MON-YYYY') AND TO_DATE('{$endDate}', 'DD-MON-YYYY'))
                    GROUP BY ATTEN.EMPLOYEE_ID ) LATE_TBL ON LATE_TBL.EMPLOYEE_ID = EMPLOYEE_TBL.EMPLOYEE_ID 
                 -- EARLY OUT
                 LEFT JOIN
@@ -237,7 +227,11 @@ class DashboardRepository implements RepositoryInterface {
                    GROUP BY EMPLOYEE_ID) JOINED_THIS_MONTH_TBL ON JOINED_THIS_MONTH_TBL.EMPLOYEE_ID = EMPLOYEE_TBL.EMPLOYEE_ID";
 
         $statement = $this->adapter->query($sql);
+        print "<pre>";
+        print($statement->getSql());
+        exit;
         $result = $statement->execute()->current();
+
 
         return $result;
     }
@@ -508,7 +502,7 @@ ORDER BY N.NEWS_DATE ASC
         return Helper::extractDbData($result);
     }
 
-    public function fetchAllEmployee($companyId=null,$branchId=null) {
+    public function fetchAllEmployee($companyId = null, $branchId = null) {
         $sql = "SELECT EMP.EMPLOYEE_ID,
                   EMP.EMPLOYEE_CODE,
                   EMP.FIRST_NAME,
@@ -528,12 +522,12 @@ ORDER BY N.NEWS_DATE ASC
                 AND EMP.DEPARTMENT_ID = DPT.DEPARTMENT_ID
                 AND EMP.STATUS = 'E'
                 AND EMP.RETIRED_FLAG = 'N'";
-        
-            if($companyId != null and $branchId !=null){
-                $sql.=" AND EMP.COMPANY_ID=$companyId AND EMP.BRANCH_ID=$branchId";
-            }
-                
-                $sql.=" AND EMP.IS_ADMIN='N'
+
+        if ($companyId != null and $branchId != null) {
+            $sql .= " AND EMP.COMPANY_ID=$companyId AND EMP.BRANCH_ID=$branchId";
+        }
+
+        $sql .= " AND EMP.IS_ADMIN='N'
                 ORDER BY UPPER(EMP.FIRST_NAME), UPPER(EMP.MIDDLE_NAME), UPPER(EMP.LAST_NAME)";
 
         $statement = $this->adapter->query($sql);
@@ -636,193 +630,182 @@ ORDER BY N.NEWS_DATE ASC
 
         return $result;
     }
-    
-    
-    public function fetchPresentCount($companyId=null,$branchId=null){
-        $sql="SELECT COUNT (*) AS PRESENT
+
+    public function fetchPresentCount($companyId = null, $branchId = null) {
+        $sql = "SELECT COUNT (*) AS PRESENT
               FROM HRIS_ATTENDANCE_DETAIL
              WHERE    IN_TIME IS NOT NULL
              AND ATTENDANCE_DT = TRUNC(SYSDATE) ";
-        
-        if($companyId != null and $branchId !=null){
-            $sql.=" AND EMPLOYEE_ID IN (SELECT EMPLOYEE_ID FROM HRIS_EMPLOYEES WHERE COMPANY_ID = $companyId AND BRANCH_ID = $branchId)";
-            }
-        
-        
+
+        if ($companyId != null and $branchId != null) {
+            $sql .= " AND EMPLOYEE_ID IN (SELECT EMPLOYEE_ID FROM HRIS_EMPLOYEES WHERE COMPANY_ID = $companyId AND BRANCH_ID = $branchId)";
+        }
+
+
         $statement = $this->adapter->query($sql);
         $result = $statement->execute();
         return $result->current();
-        
     }
-    
-    public function fetchLeaveCount($companyId=null,$branchId=null){
-        $sql="SELECT COUNT (*) AS LEAVE
+
+    public function fetchLeaveCount($companyId = null, $branchId = null) {
+        $sql = "SELECT COUNT (*) AS LEAVE
               FROM HRIS_ATTENDANCE_DETAIL
               WHERE    LEAVE_ID IS NOT NULL
               AND ATTENDANCE_DT = TRUNC(SYSDATE) ";
-        
-        if($companyId != null and $branchId !=null){
-            $sql.=" AND EMPLOYEE_ID IN (SELECT EMPLOYEE_ID FROM HRIS_EMPLOYEES WHERE COMPANY_ID = $companyId AND BRANCH_ID = $branchId)";
-            }
-        
-        
+
+        if ($companyId != null and $branchId != null) {
+            $sql .= " AND EMPLOYEE_ID IN (SELECT EMPLOYEE_ID FROM HRIS_EMPLOYEES WHERE COMPANY_ID = $companyId AND BRANCH_ID = $branchId)";
+        }
+
+
         $statement = $this->adapter->query($sql);
         $result = $statement->execute();
         return $result->current();
-        
     }
-    
-    public function fetchWOHCount($companyId=null,$branchId=null){
-        $sql="SELECT COUNT (*) AS WOH
+
+    public function fetchWOHCount($companyId = null, $branchId = null) {
+        $sql = "SELECT COUNT (*) AS WOH
               FROM HRIS_ATTENDANCE_DETAIL
               WHERE    HOLIDAY_ID IS NOT NULL
               AND IN_TIME IS NOT NULL 
               AND ATTENDANCE_DT = TRUNC(SYSDATE) ";
-        
-        if($companyId != null and $branchId !=null){
-            $sql.=" AND EMPLOYEE_ID IN (SELECT EMPLOYEE_ID FROM HRIS_EMPLOYEES WHERE COMPANY_ID = $companyId AND BRANCH_ID = $branchId)";
-            }
-        
-        
+
+        if ($companyId != null and $branchId != null) {
+            $sql .= " AND EMPLOYEE_ID IN (SELECT EMPLOYEE_ID FROM HRIS_EMPLOYEES WHERE COMPANY_ID = $companyId AND BRANCH_ID = $branchId)";
+        }
+
+
         $statement = $this->adapter->query($sql);
         $result = $statement->execute();
         return $result->current();
-        
     }
-    
-    public function fetchTravelCount($companyId=null,$branchId=null){
-        $sql="SELECT COUNT (*) AS TRAVEL
+
+    public function fetchTravelCount($companyId = null, $branchId = null) {
+        $sql = "SELECT COUNT (*) AS TRAVEL
               FROM HRIS_ATTENDANCE_DETAIL
              WHERE TRAVEL_ID IS NOT NULL 
              AND DAYOFF_FLAG = 'N' 
              AND ATTENDANCE_DT = TRUNC(SYSDATE)";
-        
-        if($companyId != null and $branchId !=null){
-            $sql.=" AND EMPLOYEE_ID IN (SELECT EMPLOYEE_ID FROM HRIS_EMPLOYEES WHERE COMPANY_ID = $companyId AND BRANCH_ID = $branchId)";
-            }
-        
-        
+
+        if ($companyId != null and $branchId != null) {
+            $sql .= " AND EMPLOYEE_ID IN (SELECT EMPLOYEE_ID FROM HRIS_EMPLOYEES WHERE COMPANY_ID = $companyId AND BRANCH_ID = $branchId)";
+        }
+
+
         $statement = $this->adapter->query($sql);
         $result = $statement->execute();
         return $result->current();
-        
     }
-    
-    public function fetchTrainingCount($companyId=null,$branchId=null){
-        $sql=" SELECT COUNT (*) AS TRAINING 
+
+    public function fetchTrainingCount($companyId = null, $branchId = null) {
+        $sql = " SELECT COUNT (*) AS TRAINING 
             FROM HRIS_ATTENDANCE_DETAIL 
             WHERE    TRAINING_ID IS NOT NULL 
             AND ATTENDANCE_DT = TRUNC(SYSDATE)";
-        
-        if($companyId != null and $branchId !=null){
-            $sql.=" AND EMPLOYEE_ID IN (SELECT EMPLOYEE_ID FROM HRIS_EMPLOYEES WHERE COMPANY_ID = $companyId AND BRANCH_ID = $branchId)";
-            }
-        
-        
+
+        if ($companyId != null and $branchId != null) {
+            $sql .= " AND EMPLOYEE_ID IN (SELECT EMPLOYEE_ID FROM HRIS_EMPLOYEES WHERE COMPANY_ID = $companyId AND BRANCH_ID = $branchId)";
+        }
+
+
         $statement = $this->adapter->query($sql);
         $result = $statement->execute();
         return $result->current();
-        
     }
-    
-    public function fetchEmployeeMonthlyPresentCount($employeeId){
-        $sql="SELECT COUNT (*) AS PRESENT
+
+    public function fetchEmployeeMonthlyPresentCount($employeeId) {
+        $sql = "SELECT COUNT (*) AS PRESENT
               FROM HRIS_ATTENDANCE_DETAIL AD, HRIS_MONTH_CODE MC
              WHERE    AD.IN_TIME IS NOT NULL
              AND AD.ATTENDANCE_DT  BETWEEN MC.FROM_DATE AND MC.TO_DATE 
              AND SYSDATE BETWEEN MC.FROM_DATE AND MC.TO_DATE
              AND EMPLOYEE_ID = $employeeId";
-        
+
         $statement = $this->adapter->query($sql);
         $result = $statement->execute();
         return $result->current();
-        
     }
-    
-    public function fetchEmployeeMonthlyLeaveCount($employeeId){ 
-        $sql="SELECT COUNT (*) AS LEAVE
+
+    public function fetchEmployeeMonthlyLeaveCount($employeeId) {
+        $sql = "SELECT COUNT (*) AS LEAVE
               FROM HRIS_ATTENDANCE_DETAIL AD, HRIS_MONTH_CODE MC
              WHERE    AD.LEAVE_ID IS NOT NULL
              AND AD.ATTENDANCE_DT  BETWEEN MC.FROM_DATE AND MC.TO_DATE 
              AND SYSDATE BETWEEN MC.FROM_DATE AND MC.TO_DATE
              AND EMPLOYEE_ID = $employeeId";
-        
+
         $statement = $this->adapter->query($sql);
         $result = $statement->execute();
         return $result->current();
     }
-    
-    public function fetchEmployeeMonthlyTrainingCount($employeeId){
-        $sql="SELECT COUNT (*) AS TRAINING
+
+    public function fetchEmployeeMonthlyTrainingCount($employeeId) {
+        $sql = "SELECT COUNT (*) AS TRAINING
               FROM HRIS_ATTENDANCE_DETAIL AD, HRIS_MONTH_CODE MC
              WHERE    AD.TRAINING_ID IS NOT NULL
              AND AD.ATTENDANCE_DT  BETWEEN MC.FROM_DATE AND MC.TO_DATE 
              AND SYSDATE BETWEEN MC.FROM_DATE AND MC.TO_DATE
              AND EMPLOYEE_ID = $employeeId";
-        
+
         $statement = $this->adapter->query($sql);
         $result = $statement->execute();
         return $result->current();
-        
     }
-    
-    public function fetchEmployeeMonthlyTravelCount($employeeId){
-        $sql="SELECT COUNT (*) AS TRAVEL
+
+    public function fetchEmployeeMonthlyTravelCount($employeeId) {
+        $sql = "SELECT COUNT (*) AS TRAVEL
               FROM HRIS_ATTENDANCE_DETAIL AD, HRIS_MONTH_CODE MC
              WHERE    AD.TRAVEL_ID IS NOT NULL 
              AND AD.DAYOFF_FLAG = 'N' 
              AND AD.ATTENDANCE_DT  BETWEEN MC.FROM_DATE AND MC.TO_DATE 
              AND SYSDATE BETWEEN MC.FROM_DATE AND MC.TO_DATE
              AND EMPLOYEE_ID = $employeeId";
-        
+
         $statement = $this->adapter->query($sql);
         $result = $statement->execute();
         return $result->current();
-        
     }
-    
-    public function fetchEmployeeMonthlyWOHCount($employeeId){
-        $sql="SELECT COUNT (*) AS WOH
+
+    public function fetchEmployeeMonthlyWOHCount($employeeId) {
+        $sql = "SELECT COUNT (*) AS WOH
               FROM HRIS_ATTENDANCE_DETAIL AD, HRIS_MONTH_CODE MC
              WHERE    AD.HOLIDAY_ID IS NOT NULL 
              AND AD.IN_TIME IS NOT NULL  
              AND AD.ATTENDANCE_DT  BETWEEN MC.FROM_DATE AND MC.TO_DATE 
              AND SYSDATE BETWEEN MC.FROM_DATE AND MC.TO_DATE
              AND EMPLOYEE_ID = $employeeId";
-        
+
         $statement = $this->adapter->query($sql);
         $result = $statement->execute();
         return $result->current();
-        
     }
-    
-    public function fetchPendingLeave($companyId=null,$branchId=null){
-        $sql="SELECT COUNT(*) AS PENDING_LEAVE
+
+    public function fetchPendingLeave($companyId = null, $branchId = null) {
+        $sql = "SELECT COUNT(*) AS PENDING_LEAVE
               FROM HRIS_EMPLOYEE_LEAVE_REQUEST
               WHERE STATUS='RQ' ";
-        
-        if($companyId != null and $branchId !=null){
-            $sql.=" AND EMPLOYEE_ID IN (SELECT EMPLOYEE_ID FROM HRIS_EMPLOYEES WHERE COMPANY_ID = $companyId AND BRANCH_ID = $branchId)";
-            }
-        
+
+        if ($companyId != null and $branchId != null) {
+            $sql .= " AND EMPLOYEE_ID IN (SELECT EMPLOYEE_ID FROM HRIS_EMPLOYEES WHERE COMPANY_ID = $companyId AND BRANCH_ID = $branchId)";
+        }
+
         $statement = $this->adapter->query($sql);
         $result = $statement->execute();
         return $result->current();
     }
-    
-    public function fetchEmployeeJoiningCurrentMonth($companyId=null,$branchId=null){
-        $sql="SELECT count(*) AS ECMJ FROM HRIS_EMPLOYEES E,HRIS_MONTH_CODE MC
+
+    public function fetchEmployeeJoiningCurrentMonth($companyId = null, $branchId = null) {
+        $sql = "SELECT count(*) AS ECMJ FROM HRIS_EMPLOYEES E,HRIS_MONTH_CODE MC
               WHERE E.JOIN_DATE BETWEEN MC.FROM_DATE AND MC.TO_DATE  
               AND SYSDATE BETWEEN MC.FROM_DATE AND MC.TO_DATE ";
-        
-        if($companyId != null and $branchId !=null){
-            $sql.=" AND EMPLOYEE_ID IN (SELECT EMPLOYEE_ID FROM HRIS_EMPLOYEES WHERE COMPANY_ID = $companyId AND BRANCH_ID = $branchId)";
-            }
-            
+
+        if ($companyId != null and $branchId != null) {
+            $sql .= " AND EMPLOYEE_ID IN (SELECT EMPLOYEE_ID FROM HRIS_EMPLOYEES WHERE COMPANY_ID = $companyId AND BRANCH_ID = $branchId)";
+        }
+
         $statement = $this->adapter->query($sql);
         $result = $statement->execute();
         return $result->current();
     }
-    
 
 }

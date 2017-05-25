@@ -70,94 +70,91 @@ class DashboardController extends AbstractActionController {
     public function indexAction() {
         $auth = new AuthenticationService();
         $employeeId = $auth->getStorage()->read()['employee_id'];
-        
+
         //
         $roleId = $auth->getStorage()->read()['role_id'];
         $dashboardDetailRepo = new DashboardDetailRepo($this->adapter);
         $empRoleResult = $dashboardDetailRepo->fetchById($roleId)->current();
         $employeeRepo = new EmployeeRepository($this->adapter);
         $employeeDetail = $employeeRepo->getById($employeeId);
-        
-        $empRole=$empRoleResult['ROLE_TYPE'];
-        $empCompanyId=$employeeDetail['COMPANY_ID'];
-        $empBranchId=$employeeDetail['BRANCH_ID'];
+
+        $empRole = $empRoleResult['ROLE_TYPE'];
+        $empCompanyId = $employeeDetail['COMPANY_ID'];
+        $empBranchId = $employeeDetail['BRANCH_ID'];
         $this->employeeId = $employeeId;
-        
+
 //        echo '<pre>';
 //        print_r($employeeDetail);
 //        print_r($auth->getStorage()->read());
 //        die();
-        
+
         $fiscalYear = $auth->getStorage()->read()['fiscal_year'];
         $dahsboardRepo = new DashboardRepository($this->adapter);
 //        $employeeDetail = $dahsboardRepo->fetchEmployeeDashboardDetail($employeeId, $fiscalYear['START_DATE'], $fiscalYear['END_DATE']);
         $employeeDetail = $dahsboardRepo->fetchEmployeeDashboardDetail($employeeId, Helper::getCurrentDate(), Helper::getCurrentDate());
-        
-        
-        if($empRole=='A'){
+
+
+        if ($empRole == 'A') {
             $view = new ViewModel(Helper::addFlashMessagesToArray($this, array(
-                    "employeeDetail" => $employeeDetail,
-                    "upcomingHolidays" => $dahsboardRepo->fetchUpcomingHolidays($employeeDetail['EMPLOYEE_ID']),
-                    "employeeNotice" => $dahsboardRepo->fetchEmployeeNotice($employeeDetail['EMPLOYEE_ID']),
-                    "employeeTask" => $dahsboardRepo->fetchEmployeeTask($employeeId),
-                    "employeesBirthday" => $dahsboardRepo->fetchEmployeesBirthday(),
-                    "employeeList" => $dahsboardRepo->fetchAllEmployee(),
-                    "headCountGender" => $dahsboardRepo->fetchGenderHeadCount(),
-                    "headCountDepartment" => $dahsboardRepo->fetchDepartmentHeadCount(),
-                    "headCountLocation" => $dahsboardRepo->fetchLocationHeadCount(),
-                    "departmentAttendance" => $dahsboardRepo->fetchDepartmentAttendance(),
-                    'todoList' => $this->getTodoList(),
-                    "present" => $dahsboardRepo->fetchPresentCount(),
-                    "leave" => $dahsboardRepo->fetchLeaveCount(),
-                    "WOH" => $dahsboardRepo->fetchWOHCount(),
-                    "training"=>$dahsboardRepo->fetchTrainingCount(),
-                    "travel"=>$dahsboardRepo->fetchTravelCount(),
-                    "pendingLeave"=>$dahsboardRepo->fetchPendingLeave(),
-                    "employeeJoinCM"=>$dahsboardRepo->fetchEmployeeJoiningCurrentMonth()
-        )));
-            
-            
-        }else if($empRole=='B'){
-        $view = new ViewModel(Helper::addFlashMessagesToArray($this, array(
-                    "employeeDetail" => $employeeDetail,
-                    "upcomingHolidays" => $dahsboardRepo->fetchUpcomingHolidays($employeeDetail['EMPLOYEE_ID']),
-                    "employeeNotice" => $dahsboardRepo->fetchEmployeeNotice($employeeDetail['EMPLOYEE_ID']),
-                    "employeeTask" => $dahsboardRepo->fetchEmployeeTask($employeeId),
-                    "employeesBirthday" => $dahsboardRepo->fetchEmployeesBirthday(),
-                    "employeeList" => $dahsboardRepo->fetchAllEmployee($empCompanyId,$empBranchId),
-                    "headCountGender" => $dahsboardRepo->fetchGenderHeadCount(),
-                    "headCountDepartment" => $dahsboardRepo->fetchDepartmentHeadCount(),
-                    "headCountLocation" => $dahsboardRepo->fetchLocationHeadCount(),
-                    "departmentAttendance" => $dahsboardRepo->fetchDepartmentAttendance(),
-                    'todoList' => $this->getTodoList(),
-                    "present" => $dahsboardRepo->fetchPresentCount($empCompanyId,$empBranchId),
-                    "leave" => $dahsboardRepo->fetchLeaveCount($empCompanyId,$empBranchId),
-                    "WOH" => $dahsboardRepo->fetchWOHCount($empCompanyId,$empBranchId),
-                    "training"=>$dahsboardRepo->fetchTrainingCount($empCompanyId,$empBranchId),
-                    "travel"=>$dahsboardRepo->fetchTravelCount($empCompanyId,$empBranchId),
-                    "pendingLeave"=>$dahsboardRepo->fetchPendingLeave($empCompanyId,$empBranchId),
-                    "employeeJoinCM"=>$dahsboardRepo->fetchEmployeeJoiningCurrentMonth($empCompanyId, $empBranchId)
-        ))); 
-        }
-        else{
+                        "employeeDetail" => $employeeDetail,
+                        "upcomingHolidays" => $dahsboardRepo->fetchUpcomingHolidays($employeeDetail['EMPLOYEE_ID']),
+                        "employeeNotice" => $dahsboardRepo->fetchEmployeeNotice($employeeDetail['EMPLOYEE_ID']),
+                        "employeeTask" => $dahsboardRepo->fetchEmployeeTask($employeeId),
+                        "employeesBirthday" => $dahsboardRepo->fetchEmployeesBirthday(),
+                        "employeeList" => $dahsboardRepo->fetchAllEmployee(),
+                        "headCountGender" => $dahsboardRepo->fetchGenderHeadCount(),
+                        "headCountDepartment" => $dahsboardRepo->fetchDepartmentHeadCount(),
+                        "headCountLocation" => $dahsboardRepo->fetchLocationHeadCount(),
+                        "departmentAttendance" => $dahsboardRepo->fetchDepartmentAttendance(),
+                        'todoList' => $this->getTodoList(),
+                        "present" => $dahsboardRepo->fetchPresentCount(),
+                        "leave" => $dahsboardRepo->fetchLeaveCount(),
+                        "WOH" => $dahsboardRepo->fetchWOHCount(),
+                        "training" => $dahsboardRepo->fetchTrainingCount(),
+                        "travel" => $dahsboardRepo->fetchTravelCount(),
+                        "pendingLeave" => $dahsboardRepo->fetchPendingLeave(),
+                        "employeeJoinCM" => $dahsboardRepo->fetchEmployeeJoiningCurrentMonth()
+            )));
+        } else if ($empRole == 'B') {
             $view = new ViewModel(Helper::addFlashMessagesToArray($this, array(
-                    "employeeDetail" => $employeeDetail,
-                    "upcomingHolidays" => $dahsboardRepo->fetchUpcomingHolidays($employeeDetail['EMPLOYEE_ID']),
-                    "employeeNotice" => $dahsboardRepo->fetchEmployeeNotice($employeeDetail['EMPLOYEE_ID']),
-                    "employeeTask" => $dahsboardRepo->fetchEmployeeTask($employeeId),
-                    "employeesBirthday" => $dahsboardRepo->fetchEmployeesBirthday(),
-                    "employeeList" => $dahsboardRepo->fetchAllEmployee(),
-                    "headCountGender" => $dahsboardRepo->fetchGenderHeadCount(),
-                    "headCountDepartment" => $dahsboardRepo->fetchDepartmentHeadCount(),
-                    "headCountLocation" => $dahsboardRepo->fetchLocationHeadCount(),
-                    "departmentAttendance" => $dahsboardRepo->fetchDepartmentAttendance(),
-                    'todoList' => $this->getTodoList(),
-                    "present" => $dahsboardRepo->fetchEmployeeMonthlyPresentCount($employeeId),
-                    "leave" => $dahsboardRepo->fetchEmployeeMonthlyLeaveCount($employeeId),
-                    "WOH" => $dahsboardRepo->fetchEmployeeMonthlyWOHCount($employeeId),
-                    "training"=>$dahsboardRepo->fetchEmployeeMonthlyTrainingCount($employeeId),
-                    "travel"=>$dahsboardRepo->fetchEmployeeMonthlyTravelCount($employeeId)
-                    ))); 
+                        "employeeDetail" => $employeeDetail,
+                        "upcomingHolidays" => $dahsboardRepo->fetchUpcomingHolidays($employeeDetail['EMPLOYEE_ID']),
+                        "employeeNotice" => $dahsboardRepo->fetchEmployeeNotice($employeeDetail['EMPLOYEE_ID']),
+                        "employeeTask" => $dahsboardRepo->fetchEmployeeTask($employeeId),
+                        "employeesBirthday" => $dahsboardRepo->fetchEmployeesBirthday(),
+                        "employeeList" => $dahsboardRepo->fetchAllEmployee($empCompanyId, $empBranchId),
+                        "headCountGender" => $dahsboardRepo->fetchGenderHeadCount(),
+                        "headCountDepartment" => $dahsboardRepo->fetchDepartmentHeadCount(),
+                        "headCountLocation" => $dahsboardRepo->fetchLocationHeadCount(),
+                        "departmentAttendance" => $dahsboardRepo->fetchDepartmentAttendance(),
+                        'todoList' => $this->getTodoList(),
+                        "present" => $dahsboardRepo->fetchPresentCount($empCompanyId, $empBranchId),
+                        "leave" => $dahsboardRepo->fetchLeaveCount($empCompanyId, $empBranchId),
+                        "WOH" => $dahsboardRepo->fetchWOHCount($empCompanyId, $empBranchId),
+                        "training" => $dahsboardRepo->fetchTrainingCount($empCompanyId, $empBranchId),
+                        "travel" => $dahsboardRepo->fetchTravelCount($empCompanyId, $empBranchId),
+                        "pendingLeave" => $dahsboardRepo->fetchPendingLeave($empCompanyId, $empBranchId),
+                        "employeeJoinCM" => $dahsboardRepo->fetchEmployeeJoiningCurrentMonth($empCompanyId, $empBranchId)
+            )));
+        } else {
+            $view = new ViewModel(Helper::addFlashMessagesToArray($this, array(
+                        "employeeDetail" => $employeeDetail,
+                        "upcomingHolidays" => $dahsboardRepo->fetchUpcomingHolidays($employeeDetail['EMPLOYEE_ID']),
+                        "employeeNotice" => $dahsboardRepo->fetchEmployeeNotice($employeeDetail['EMPLOYEE_ID']),
+                        "employeeTask" => $dahsboardRepo->fetchEmployeeTask($employeeId),
+                        "employeesBirthday" => $dahsboardRepo->fetchEmployeesBirthday(),
+                        "employeeList" => $dahsboardRepo->fetchAllEmployee(),
+                        "headCountGender" => $dahsboardRepo->fetchGenderHeadCount(),
+                        "headCountDepartment" => $dahsboardRepo->fetchDepartmentHeadCount(),
+                        "headCountLocation" => $dahsboardRepo->fetchLocationHeadCount(),
+                        "departmentAttendance" => $dahsboardRepo->fetchDepartmentAttendance(),
+                        'todoList' => $this->getTodoList(),
+                        "present" => $dahsboardRepo->fetchEmployeeMonthlyPresentCount($employeeId),
+                        "leave" => $dahsboardRepo->fetchEmployeeMonthlyLeaveCount($employeeId),
+                        "WOH" => $dahsboardRepo->fetchEmployeeMonthlyWOHCount($employeeId),
+                        "training" => $dahsboardRepo->fetchEmployeeMonthlyTrainingCount($employeeId),
+                        "travel" => $dahsboardRepo->fetchEmployeeMonthlyTravelCount($employeeId)
+            )));
         }
 
 
