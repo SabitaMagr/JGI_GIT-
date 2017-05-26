@@ -96,7 +96,7 @@ window.app = (function ($, toastr, App) {
         });
     };
 
-    var startEndDatePickerWithNepali = function (fromNepali, fromEnglish, toNepali, toEnglish, fn,setToDate) {
+    var startEndDatePickerWithNepali = function (fromNepali, fromEnglish, toNepali, toEnglish, fn, setToDate) {
 
         var $fromNepaliDate = $('#' + fromNepali);
         var $fromEnglishDate = $('#' + fromEnglish);
@@ -118,7 +118,7 @@ window.app = (function ($, toastr, App) {
                     oldFromNepali = $fromNepaliDate.val();
 
                     //to set value of to date from value of from date
-                    if(typeof setToDate !== "undefined" && setToDate != null && setToDate!=false){
+                    if (typeof setToDate !== "undefined" && setToDate != null && setToDate != false) {
                         $toEnglishDate.val(temp);
                         $toNepaliDate.val(oldFromNepali);
                     }
@@ -173,7 +173,7 @@ window.app = (function ($, toastr, App) {
             $toEnglishDate.datepicker('setStartDate', minDate);
 
             //to set value of to date from value of from date
-            if(typeof setToDate !== "undefined" && setToDate != null && setToDate!=false){
+            if (typeof setToDate !== "undefined" && setToDate != null && setToDate != false) {
                 $toEnglishDate.datepicker('update', $(this).val());
                 oldtoNepali = nepaliDatePickerExt.fromEnglishToNepali($(this).val())
                 $toNepaliDate.val(oldtoNepali);
@@ -773,6 +773,39 @@ window.app = (function ($, toastr, App) {
         return Math.floor(days);
     }
 
+    var searchTable = function (kendoId, searchFields,Hidden) {
+        var $searchHtml = $("<div class='row search' id='searchFieldDiv'>"
+                + "<div class='col-sm-12'>"
+                + "<input class='form-group pull-right' placeholder='search here' type='text' id='kendoSearchField' style='width:136px;padding:2px;font-size:12px;'/>"
+                + "</div>"
+                + "</div>");
+        
+
+        $searchHtml.insertBefore("#" + kendoId);
+        
+        if (typeof Hidden !== "undefined") {
+        $("#searchFieldDiv").hide();
+        }
+        $("#kendoSearchField").keyup(function () {
+            var val = $(this).val();
+            var filters = [];
+            for (var i = 0; i < searchFields.length; i++) {
+                filters.push({
+                    field: searchFields[i],
+                    operator: "contains",
+                    value: val
+                });
+            }
+
+            $("#" + kendoId).data("kendoGrid").dataSource.filter({
+                logic: "or",
+                filters: filters
+            });
+        });
+
+
+    }
+
     return {
         format: format,
         pullDataById: pullDataById,
@@ -796,7 +829,8 @@ window.app = (function ($, toastr, App) {
         setLoadingOnSubmit: setLoadingOnSubmit,
         scrollTo: scrollTo,
         showMessage: showMessage,
-        daysBetween: daysBetween
+        daysBetween: daysBetween,
+        searchTable: searchTable
     };
 })(window.jQuery, window.toastr, window.App);
 
