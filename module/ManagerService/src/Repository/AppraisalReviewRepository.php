@@ -49,7 +49,6 @@ class AppraisalReviewRepository implements RepositoryInterface{
             new Expression("A.APPRAISAL_ID AS APPRAISAL_ID"),
             new Expression("A.APPRAISAL_TYPE_ID AS APPRAISAL_TYPE_ID"),
             new Expression("A.STATUS AS STATUS"),
-            new Expression("A.CURRENT_STAGE_ID AS CURRENT_STAGE_ID"),
             new Expression("A.APPRAISAL_CODE AS APPRAISAL_CODE"),
             new Expression("A.APPRAISAL_EDESC AS APPRAISAL_EDESC"),
             new Expression("A.REMARKS AS REMARKS"),
@@ -60,7 +59,7 @@ class AppraisalReviewRepository implements RepositoryInterface{
                 ->join(["AA"=> AppraisalAssign::TABLE_NAME],"A.".Setup::APPRAISAL_ID."=AA.".AppraisalAssign::APPRAISAL_ID,[AppraisalAssign::APPRAISAL_ID])
                 ->join(['E'=> HrEmployees::TABLE_NAME],"E.".HrEmployees::EMPLOYEE_ID."=AA.". AppraisalAssign::EMPLOYEE_ID,["FIRST_NAME"=>new Expression("INITCAP(E.FIRST_NAME)"), "MIDDLE_NAME"=>new Expression("INITCAP(E.MIDDLE_NAME)"), "LAST_NAME"=>new Expression("INITCAP(E.LAST_NAME)"), HrEmployees::EMPLOYEE_ID])
                 ->join(['T'=> Type::TABLE_NAME],"T.".Type::APPRAISAL_TYPE_ID."=A.". Setup::APPRAISAL_TYPE_ID,["APPRAISAL_TYPE_EDESC"=>new Expression("INITCAP(T.APPRAISAL_TYPE_EDESC)")])
-                ->join(['S'=> Stage::TABLE_NAME],"S.". Stage::STAGE_ID."=A.". Setup::CURRENT_STAGE_ID,["STAGE_EDESC"=>new Expression("INITCAP(S.STAGE_EDESC)")]);
+                ->join(['S'=> Stage::TABLE_NAME],"S.". Stage::STAGE_ID."=AA.". AppraisalAssign::CURRENT_STAGE_ID,["STAGE_EDESC"=>new Expression("INITCAP(S.STAGE_EDESC)"),"STAGE_ID"]);
         
         $select->where([
             "AA.".AppraisalAssign::REVIEWER_ID."=".$employeeId,

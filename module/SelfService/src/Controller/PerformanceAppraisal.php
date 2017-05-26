@@ -16,6 +16,7 @@ use Application\Helper\CustomFormElement;
 use Appraisal\Model\AppraisalAnswer;
 use Appraisal\Repository\AppraisalAnswerRepository;
 use Exception;
+use Appraisal\Repository\StageRepository;
 
 class PerformanceAppraisal extends AbstractActionController{
     private $repository;
@@ -47,76 +48,6 @@ class PerformanceAppraisal extends AbstractActionController{
         }
         return Helper::addFlashMessagesToArray($this,['list'=>$list]);
     }
-    public function addAction(){
-        $request = $this->getRequest();
-        $appraisalId = $this->params()->fromRoute('appraisalId');
-        $appraisalAssignRepo = new AppraisalAssignRepository($this->adapter);
-        $employeeRepo = new EmployeeRepository($this->adapter);
-        $headingRepo = new HeadingRepository($this->adapter);
-        $employeeDetail = $employeeRepo->getById($this->employeeId);
-        $assignedAppraisalDetail = $appraisalAssignRepo->getEmployeeAppraisalDetail($this->employeeId,$appraisalId);
-        $appraisalTypeId = $assignedAppraisalDetail['APPRAISAL_TYPE_ID'];
-        $currentStageId = $assignedAppraisalDetail['CURRENT_STAGE_ID'];
-        $headingList = $headingRepo->fetchByAppraisalTypeId($appraisalTypeId);
-        $questionTemplate = [];
-        
-        $appraiseeFlag = ["(Q.".\Appraisal\Model\Question::APPRAISEE_FLAG."='Y' OR Q.".\Appraisal\Model\Question::APPRAISEE_RATING."='Y')"];
-        $appraiserFlag = ["(Q.".\Appraisal\Model\Question::APPRAISER_FLAG."='Y' OR Q.".\Appraisal\Model\Question::APPRAISER_RATING."='Y')"];
-        $reviewerFlag = ["(Q.".\Appraisal\Model\Question::REVIEWER_FLAG."='Y' OR Q.".\Appraisal\Model\Question::REVIEWER_RATING."='Y')"];
-        
-        
-        foreach($headingList as $headingRow){
-            //get question list for appraisee with current stage id
-            $questionList =$this->getAllQuestionWidOptions($headingRow['HEADING_ID'],$currentStageId,$appraiseeFlag);
-            
-            if(count($questionList)>0){
-                array_push($questionTemplate, [
-                    'HEADING_ID'=>$headingRow['HEADING_ID'],
-                    'HEADING_EDESC'=>$headingRow['HEADING_EDESC'],
-                    'QUESTIONS'=>$questionList]);
-            }
-        }
-        if($request->isPost()){
-            try{
-                $appraisalAnswerModel = new AppraisalAnswer();
-                $answer = $request->getPost()->getArrayCopy()['answer'];
-                foreach($answer as $key=>$value){
-                    $appraisalAnswerModel->answerId = (int)(Helper::getMaxId($this->adapter, AppraisalAnswer::TABLE_NAME, AppraisalAnswer::ANSWER_ID))+1;
-                    $appraisalAnswerModel->appraisalId = $appraisalId;
-                    $appraisalAnswerModel->employeeId = $this->employeeId;
-                    $appraisalAnswerModel->userId = $this->employeeId;
-                    $appraisalAnswerModel->questionId = $key;
-                    $appraisalAnswerModel->stageId = $currentStageId;
-                    $appraisalAnswerModel->createdDate = Helper::getcurrentExpressionDate();
-                    $appraisalAnswerModel->status = 'E';
-                    $appraisalAnswerModel->createdBy = $this->employeeId;
-                    $appraisalAnswerModel->approvedDate = Helper::getcurrentExpressionDate();
-                    $appraisalAnswerModel->companyId = $employeeDetail['COMPANY_ID'];
-                    $appraisalAnswerModel->branchId = $employeeDetail['BRANCH_ID'];
-                    if(gettype($value)=='array'){
-                        $appraisalAnswerModel->answer = json_encode($value);
-                    }else{
-                        $appraisalAnswerModel->answer = $value;
-                    }
-                    $this->repository->add($appraisalAnswerModel);
-                }
-                $this->flashmessenger()->addMessage("Appraisal Successfully Submitted!!");
-                $this->redirect()->toRoute("performanceAppraisal");
-            }catch(Exception $e){
-                $this->flashmessenger()->addMessage("Appraisal Submit Failed!!");
-                $this->flashmessenger()->addMessage($e->getMessage());
-            }
-        }
-        return Helper::addFlashMessagesToArray($this,[
-            'assignedAppraisalDetail'=> $assignedAppraisalDetail,
-            'employeeDetail'=>$employeeDetail,
-            'questionTemplate'=>$questionTemplate,
-            'performanceAppraisalObj'=>CustomFormElement::formElement(),
-            'customRenderer' => Helper::renderCustomView(),
-            'customRendererForCheckbox' => Helper::renderCustomViewForCheckbox(),
-            'appraisalId' =>$appraisalId
-            ]);
-    }
     public function viewAction(){
         $request = $this->getRequest();
         $appraisalId = $this->params()->fromRoute('appraisalId');
@@ -126,10 +57,9 @@ class PerformanceAppraisal extends AbstractActionController{
         $employeeDetail = $employeeRepo->getById($this->employeeId);
         $assignedAppraisalDetail = $appraisalAssignRepo->getEmployeeAppraisalDetail($this->employeeId,$appraisalId);
         $appraisalTypeId = $assignedAppraisalDetail['APPRAISAL_TYPE_ID'];
-        $currentStageId = $assignedAppraisalDetail['CURRENT_STAGE_ID'];
+        $currentStageId = $assignedAppraisalDetail['STAGE_ID'];
         $headingList = $headingRepo->fetchByAppraisalTypeId($appraisalTypeId);
         $questionTemplate = [];
-        
         $appraiseeFlag = ["Q.".\Appraisal\Model\Question::APPRAISEE_FLAG."='Y'"];
         $appraiserFlag = ["Q.".\Appraisal\Model\Question::APPRAISER_FLAG."='Y'"];
         $reviewerFlag = ["Q.".\Appraisal\Model\Question::REVIEWER_FLAG."='Y'"];
@@ -205,6 +135,7 @@ class PerformanceAppraisal extends AbstractActionController{
                     }
                     $i+=1;
                 }
+                $appraisalAssignRepo->updateCurrentStageByAppId($this->getNextStageId($assignedAppraisalDetail['STAGE_ORDER_NO']+1), $appraisalId, $this->employeeId);
                 $this->flashmessenger()->addMessage("Appraisal Successfully Submitted!!");
                 $this->redirect()->toRoute("performanceAppraisal");
             }catch(Exception $e){
@@ -255,5 +186,10 @@ class PerformanceAppraisal extends AbstractActionController{
             $answer=[];
         }
         return ['questionList'=>$questionList,'questionForCurStage'=>(($curResult==null)?false:true)];
+    }
+    public function getNextStageId($orderNo){
+        $stageRepo = new StageRepository($this->adapter);
+        $stageDetail = $stageRepo->getNextStageId($orderNo);
+        return $stageDetail['STAGE_ID'];
     }
 }

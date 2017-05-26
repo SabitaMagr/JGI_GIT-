@@ -21,7 +21,7 @@
             columns: [
                 {field: "APPRAISAL_EDESC", title: "Appraisal Name",width:120},
                 {field: "APPRAISAL_TYPE_EDESC", title: "Appraisal Type",width:120},
-                {field: "STAGE_EDESC", title: "Current Stage",width:100},
+                {field: "STAGE_EDESC", title: "Current Status",width:100},
                 {field: "START_DATE", title: "Start Date",width:80},
                 {field: "END_DATE", title: "End Date",width:80},
                 {title: "Action",width:90}

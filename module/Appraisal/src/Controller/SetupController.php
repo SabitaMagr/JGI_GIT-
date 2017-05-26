@@ -13,6 +13,7 @@ use Zend\Authentication\AuthenticationService;
 use Appraisal\Model\Type;
 use Appraisal\Model\Stage;
 use Setup\Repository\EmployeeRepository;
+use Appraisal\Repository\AppraisalAssignRepository;
 
 class SetupController extends AbstractActionController{
     private $repository;
@@ -71,6 +72,7 @@ class SetupController extends AbstractActionController{
         ]);
     }
     public function editAction(){
+        $appraisalAssignRepo = new AppraisalAssignRepository($this->adapter);
         $id = $this->params()->fromRoute('id');
         if($id===0){
             $this->redirect()->toRoute('detailSetup');
@@ -92,6 +94,7 @@ class SetupController extends AbstractActionController{
                 $appraisalModel->modifiedBy = $this->employeeId;
                 $appraisalModel->modifiedDate = Helper::getcurrentExpressionDate();
                 $this->repository->edit($appraisalModel, $id);
+                $appraisalAssignRepo->updateCurrentStageByAppId($appraisalModel->currentStageId,$id);
                 $this->flashmessenger()->addMessage("Appraial Detail Successfully Updated!!!");
                 $this->redirect()->toRoute('detailSetup');
             }

@@ -15,6 +15,7 @@ use Appraisal\Repository\StageQuestionRepository;
 use Appraisal\Repository\AppraisalAnswerRepository;
 use Application\Helper\CustomFormElement;
 use Appraisal\Model\AppraisalAnswer;
+use Appraisal\Repository\StageRepository;
 
 class AppraisalReview extends AbstractActionController{
     
@@ -46,7 +47,7 @@ class AppraisalReview extends AbstractActionController{
         $userDetail = $employeeRepo->getById($this->employeeId);
         $assignedAppraisalDetail = $appraisalAssignRepo->getEmployeeAppraisalDetail($employeeId,$appraisalId);
         $appraisalTypeId = $assignedAppraisalDetail['APPRAISAL_TYPE_ID'];
-        $currentStageId = $assignedAppraisalDetail['CURRENT_STAGE_ID'];
+        $currentStageId = $assignedAppraisalDetail['STAGE_ID'];
         $headingList = $headingRepo->fetchByAppraisalTypeId($appraisalTypeId);
         $questionTemplate = [];
         
@@ -122,6 +123,7 @@ class AppraisalReview extends AbstractActionController{
                     }
                     $i+=1;
                 }
+                $appraisalAssignRepo->updateCurrentStageByAppId($this->getNextStageId($assignedAppraisalDetail['STAGE_ORDER_NO']+1), $appraisalId, $employeeId);
                 $this->flashmessenger()->addMessage("Appraisal Successfully Submitted!!");
                 $this->redirect()->toRoute("appraisal-review");
             }catch(Exception $e){
@@ -173,5 +175,10 @@ class AppraisalReview extends AbstractActionController{
             $answer=[];
         }
         return ['questionList'=>$questionList,'questionForCurStage'=>(($curResult==null)?false:true)];
+    }
+    public function getNextStageId($orderNo){
+        $stageRepo = new StageRepository($this->adapter);
+        $stageDetail = $stageRepo->getNextStageId($orderNo);
+        return $stageDetail['STAGE_ID'];
     }
 }
