@@ -24,6 +24,9 @@
                 {title: "Action",width:100}
             ]
         });
+        
+        app.searchTable('designationTable',['DESIGNATION_TITLE','COMPANY_NAME','BASIC_SALARY']);
+        
                $("#export").click(function (e) {
             var rows = [{
                     cells: [

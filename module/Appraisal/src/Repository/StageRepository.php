@@ -67,5 +67,8 @@ class StageRepository implements RepositoryInterface{
         $result = $statement->execute();
         return $result->current();
     }
-
+    public function getNextStageId($orderNo){
+        $result = $this->tableGateway->select([Stage::ORDER_NO=>$orderNo,Stage::STATUS=>'E']);
+        return $result->current();
+    }
 }

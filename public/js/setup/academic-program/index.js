@@ -27,6 +27,9 @@
                 {title: "Action",width:110}
             ]
         });
+        
+        app.searchTable('academicProgramTable',['ACADEMIC_PROGRAM_NAME']);
+        
         $("#export").click(function (e) {
             var grid = $("#academicProgramTable").data("kendoGrid");
             grid.saveAsExcel();

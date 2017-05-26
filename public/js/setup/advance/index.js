@@ -26,6 +26,8 @@
             ]
         });
         
+        app.searchTable('advanceTable',['ADVANCE_NAME','COMPANY_NAME','MIN_SALARY_AMT','AMOUNT_TO_ALLOW','MONTH_TO_ALLOW']);
+        
         $("#export").click(function (e) {
             var rows = [{
                     cells: [

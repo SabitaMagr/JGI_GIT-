@@ -76,13 +76,13 @@ class StageQuestionRepository implements RepositoryInterface{
                 ->join(['S' => Stage::TABLE_NAME], "S.".Stage::STAGE_ID.'=QS.'.StageQuestion::STAGE_ID, ["STAGE_EDESC"=>new Expression("INITCAP(S.STAGE_EDESC)")], "left")
                 ->join(['Q' => Question::TABLE_NAME], "Q.". Question::QUESTION_ID.'=QS.'.StageQuestion::QUESTION_ID, ["QUESTION_EDESC"=>new Expression("INITCAP(Q.QUESTION_EDESC)")], "left");
         
-        $select->where(["QS.QUESTION_ID=".$questionId." AND QS.STAGE_ID=".$stageId]);
+        $select->where(["QS.QUESTION_ID=".$questionId." AND QS.STAGE_ID=".$stageId." AND QS.STATUS='E' AND Q.STATUS='E' AND S.STATUS='E'"]);
         $select->order("S.STAGE_ID");
         $statement = $sql->prepareStatementForSqlObject($select);
         $result = $statement->execute();
         return $result->current();
     }
-    public function getByStageIdHeadingId($headingId,$currentStageId,$flag=null){
+    public function getByStageIdHeadingId($headingId,$currentStageId,$flag=null,$orderCondition=null){
         $sql = new Sql($this->adapter);
         $select = $sql->select();
         $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(Question::class,
@@ -91,9 +91,12 @@ class StageQuestionRepository implements RepositoryInterface{
                 ->join(['QS' => StageQuestion::TABLE_NAME], "Q.". Question::QUESTION_ID.'=QS.'.StageQuestion::QUESTION_ID, [StageQuestion::QUESTION_ID])
                 ->join(['S' => Stage::TABLE_NAME], "S.".Stage::STAGE_ID.'=QS.'.StageQuestion::STAGE_ID, ["STAGE_EDESC"=>new Expression("INITCAP(S.STAGE_EDESC)")]);
         
-        $select->where(["Q.HEADING_ID=".$headingId." AND QS.STAGE_ID=".$currentStageId]);
+        $select->where(["Q.HEADING_ID=".$headingId." AND QS.STAGE_ID=".$currentStageId." AND QS.STATUS='E' AND Q.STATUS='E' AND S.STATUS='E'"]);
         if($flag!=null){
             $select->where($flag);
+        }
+        if($orderCondition!=null){
+            $select->where(["S.ORDER_NO".$orderCondition]);
         }
         
         $select->order("Q.ORDER_NO");

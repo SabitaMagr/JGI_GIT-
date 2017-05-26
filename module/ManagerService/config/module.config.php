@@ -120,7 +120,7 @@ return [
             'appraisal-evaluation' => [
                 'type' => Segment::class,
                 'options' => [
-                    'route' => '/managerservice/appraisalEvaluation[/:action[/:id]]',
+                    'route' => '/managerservice/appraisalEvaluation[/:action[/:appraisalId][/:employeeId]]',
                     'constants' => [
                         'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
                         'id' => '[0-9]+',
@@ -134,7 +134,7 @@ return [
             'appraisal-review' => [
                 'type' => Segment::class,
                 'options' => [
-                    'route' => '/managerservice/appraisalReview[/:action[/:id]]',
+                    'route' => '/managerservice/appraisalReview[/:action[/:appraisalId][/:employeeId]]',
                     'constants' => [
                         'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
                         'id' => '[0-9]+',
@@ -454,45 +454,45 @@ return [
                 ]
             ]
         ],
-        'appraisalEvaluation' => [
+        'appraisal-evaluation' => [
                 [
                 'label' => 'Appraisal Evaluation',
-                'route' => 'appraisalEvaluation',
+                'route' => 'appraisal-evaluation',
             ],
                 [
                 'label' => 'Appraisal Evaluation',
-                'route' => 'appraisalEvaluation',
+                'route' => 'appraisal-evaluation',
                 'pages' => [
                         [
                         'label' => 'List',
-                        'route' => 'appraisalEvaluation',
+                        'route' => 'appraisal-evaluation',
                         'action' => 'index',
                     ],
                         [
                         'label' => 'View',
-                        'route' => 'appraisalEvaluation',
+                        'route' => 'appraisal-evaluation',
                         'action' => 'view',
                     ],
                 ]
             ]
         ],
-        'appraisalReview' => [
+        'appraisal-review' => [
                 [
                 'label' => 'Appraisal Review',
-                'route' => 'appraisalReview',
+                'route' => 'appraisal-review',
             ],
                 [
                 'label' => 'Appraisal Review',
-                'route' => 'appraisalReview',
+                'route' => 'appraisal-review',
                 'pages' => [
                         [
                         'label' => 'List',
-                        'route' => 'appraisalReview',
+                        'route' => 'appraisal-review',
                         'action' => 'index',
                     ],
                         [
                         'label' => 'View',
-                        'route' => 'appraisalReview',
+                        'route' => 'appraisal-review',
                         'action' => 'view',
                     ],
                 ]

@@ -24,6 +24,8 @@
                 {title: "Action", width: 80}
             ]
         });
+        
+        app.searchTable('departmentTable',['DEPARTMENT_NAME','COMPANY_NAME','BRANCH_NAME']);
 
         $("#export").click(function (e) {
             var rows = [{

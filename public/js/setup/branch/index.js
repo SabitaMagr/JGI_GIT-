@@ -31,6 +31,9 @@
             var grid = $("#branchTable").data("kendoGrid");
             grid.saveAsExcel();
         });
+        
+        app.searchTable('branchTable',['BRANCH_NAME','STREET_ADDRESS','TELEPHONE','EMAIL','COMPANY_NAME']);
+        
         window.app.UIConfirmations();
     });
 })(window.jQuery);
